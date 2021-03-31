@@ -6,7 +6,6 @@ import androidx.lifecycle.Observer
 import com.facebook.AccessToken
 import com.facebook.CallbackManager
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
-import com.tokopedia.loginregister.common.DispatcherProvider
 import com.tokopedia.loginregister.common.domain.pojo.ActivateUserData
 import com.tokopedia.loginregister.common.domain.pojo.ActivateUserPojo
 import com.tokopedia.loginregister.common.domain.usecase.ActivateUserUseCase
@@ -24,10 +23,7 @@ import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentia
 import com.tokopedia.loginregister.loginthirdparty.facebook.data.FacebookCredentialData
 import com.tokopedia.loginregister.registerinitial.di.RegisterInitialQueryConstant
 import com.tokopedia.loginregister.registerinitial.domain.data.ProfileInfoData
-import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterCheckData
-import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterCheckPojo
-import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterRequestData
-import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterRequestPojo
+import com.tokopedia.loginregister.registerinitial.domain.pojo.*
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.sessioncommon.data.LoginToken
 import com.tokopedia.sessioncommon.data.LoginTokenPojo
@@ -37,8 +33,10 @@ import com.tokopedia.sessioncommon.data.profile.ProfilePojo
 import com.tokopedia.sessioncommon.domain.subscriber.GetProfileSubscriber
 import com.tokopedia.sessioncommon.domain.subscriber.LoginTokenFacebookSubscriber
 import com.tokopedia.sessioncommon.domain.subscriber.LoginTokenSubscriber
+import com.tokopedia.sessioncommon.domain.usecase.GeneratePublicKeyUseCase
 import com.tokopedia.sessioncommon.domain.usecase.GetProfileUseCase
 import com.tokopedia.sessioncommon.domain.usecase.LoginTokenUseCase
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -48,22 +46,15 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import junit.framework.TestCase.assertEquals
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import org.hamcrest.CoreMatchers.instanceOf
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import rx.Subscriber
-import java.util.ArrayList
+import java.util.*
 
 class RegisterInitialViewModelTest {
-
-    val testDispatcher = object: DispatcherProvider {
-        override fun io(): CoroutineDispatcher = Dispatchers.Unconfined
-        override fun ui(): CoroutineDispatcher = Dispatchers.Unconfined
-    }
 
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
@@ -113,12 +104,15 @@ class RegisterInitialViewModelTest {
     val mockFragment = mockk<Fragment>(relaxed = true)
     val mockCallbackManager = mockk<CallbackManager>(relaxed = true)
 
+    private var generatePublicKeyUseCase = mockk<GeneratePublicKeyUseCase>(relaxed = true)
+    private var registerV2UseCase = mockk<GraphqlUseCase<RegisterRequestV2>>(relaxed = true)
 
     @Before
     fun setUp() {
         viewModel = RegisterInitialViewModel(
                 registerCheckUseCase,
                 registerRequestUseCase,
+                registerV2UseCase,
                 activateUserUseCase,
                 discoverUseCase,
                 getFacebookCredentialUseCase,
@@ -127,9 +121,10 @@ class RegisterInitialViewModelTest {
                 tickerInfoUseCase,
                 dynamicBannerUseCase,
                 checkHasOvoUseCase,
+                generatePublicKeyUseCase,
                 userSession,
                 rawQueries,
-                testDispatcher
+                CoroutineTestDispatchersProvider
         )
         viewModel.idlingResourceProvider = null
         viewModel.registerCheckResponse.observeForever(registerCheckObserver)

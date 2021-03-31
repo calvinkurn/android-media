@@ -8,13 +8,14 @@ import com.tokopedia.sessioncommon.data.LoginToken
 import com.tokopedia.sessioncommon.data.LoginTokenPojo
 import com.tokopedia.sessioncommon.domain.subscriber.LoginTokenSubscriber
 import com.tokopedia.sessioncommon.domain.usecase.LoginTokenUseCase
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
+import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import io.mockk.every
-import io.mockk.mockk
-import io.mockk.objectMockk
-import io.mockk.use
-import kotlinx.coroutines.Dispatchers
+import io.mockk.*
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -30,7 +31,6 @@ class SellerSeamlessViewModelTest {
 
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
-    val dispatcher = TestCoroutineDispatcher()
 
     val loginTokenUseCase = mockk<LoginTokenUseCase>(relaxed = true)
     val userSession = mockk<UserSessionInterface>(relaxed = true)
@@ -46,7 +46,7 @@ class SellerSeamlessViewModelTest {
         MockKAnnotations.init(this)
         mockkObject(AESUtils)
 
-        viewModel = SellerSeamlessViewModel(userSession, loginTokenUseCase, dispatcher)
+        viewModel = SellerSeamlessViewModel(userSession, loginTokenUseCase, CoroutineTestDispatchersProvider)
         viewModel.loginTokenResponse.observeForever(observerLoginToken)
         viewModel.goToSecurityQuestion.observeForever(observerSecurityQuestion)
     }

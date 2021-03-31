@@ -3,8 +3,8 @@ package com.tokopedia.loginregister.shopcreation.viewmodel
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.loginregister.FileUtil
 import com.tokopedia.loginregister.DispatcherProviderTest
+import com.tokopedia.loginregister.FileUtil
 import com.tokopedia.loginregister.shopcreation.domain.pojo.RegisterCheckData
 import com.tokopedia.loginregister.shopcreation.domain.pojo.RegisterCheckPojo
 import com.tokopedia.loginregister.shopcreation.domain.pojo.ShopInfoByID
@@ -22,6 +22,7 @@ import com.tokopedia.sessioncommon.data.register.RegisterPojo
 import com.tokopedia.sessioncommon.domain.subscriber.GetProfileSubscriber
 import com.tokopedia.sessioncommon.domain.usecase.GetProfileUseCase
 import com.tokopedia.sessioncommon.domain.usecase.RegisterUseCase
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -115,7 +116,7 @@ class ShopCreationViewModelTest {
                 getProfileUseCase,
                 shopInfoUseCase,
                 userSession,
-                dispatcherProviderTest
+                CoroutineTestDispatchersProvider
         )
     }
 
