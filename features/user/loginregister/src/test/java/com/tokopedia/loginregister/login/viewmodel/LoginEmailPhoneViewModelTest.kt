@@ -1,11 +1,12 @@
 package com.tokopedia.loginregister.login.viewmodel
 
+import android.util.Base64
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import com.facebook.AccessToken
 import com.facebook.CallbackManager
-import com.tokopedia.loginregister.common.DispatcherProvider
+import com.tokopedia.encryption.security.RsaUtils
 import com.tokopedia.loginregister.common.domain.pojo.ActivateUserData
 import com.tokopedia.loginregister.common.domain.pojo.ActivateUserPojo
 import com.tokopedia.loginregister.common.domain.usecase.ActivateUserUseCase
@@ -27,27 +28,20 @@ import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentia
 import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentialUseCase
 import com.tokopedia.loginregister.loginthirdparty.facebook.data.FacebookCredentialData
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.sessioncommon.data.LoginToken
-import com.tokopedia.sessioncommon.data.LoginTokenPojo
-import com.tokopedia.sessioncommon.data.PopupError
+import com.tokopedia.network.refreshtoken.EncoderDecoder
+import com.tokopedia.sessioncommon.data.*
 import com.tokopedia.sessioncommon.data.profile.ProfileInfo
 import com.tokopedia.sessioncommon.data.profile.ProfilePojo
 import com.tokopedia.sessioncommon.domain.subscriber.GetProfileSubscriber
 import com.tokopedia.sessioncommon.domain.subscriber.LoginTokenFacebookSubscriber
 import com.tokopedia.sessioncommon.domain.subscriber.LoginTokenSubscriber
-import com.tokopedia.sessioncommon.domain.usecase.GetProfileUseCase
-import com.tokopedia.sessioncommon.domain.usecase.LoginTokenUseCase
-import com.tokopedia.usecase.RequestParams
+import com.tokopedia.sessioncommon.domain.usecase.*
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import io.mockk.coEvery
-import io.mockk.every
-import io.mockk.mockk
-import io.mockk.verify
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
+import io.mockk.*
 import org.hamcrest.CoreMatchers
 import org.hamcrest.MatcherAssert
 import org.junit.Assert.assertEquals
@@ -57,11 +51,6 @@ import org.junit.Test
 import rx.Subscriber
 
 class LoginEmailPhoneViewModelTest {
-
-    val testDispatcher = object: DispatcherProvider {
-        override fun io(): CoroutineDispatcher = Dispatchers.Unconfined
-        override fun ui(): CoroutineDispatcher = Dispatchers.Unconfined
-    }
 
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
@@ -87,6 +76,8 @@ class LoginEmailPhoneViewModelTest {
     private var showPopupErrorObserver = mockk<Observer<PopupError>>(relaxed = true)
     private var goToSecurityQuestionObserver = mockk<Observer<String>>(relaxed = true)
     private var loginToken = mockk<Observer<Result<LoginTokenPojo>>>(relaxed = true)
+    private var loginTokenV2 = mockk<Observer<Result<LoginTokenPojoV2>>>(relaxed = true)
+
     private var loginTokenFacebookPhoneObserver = mockk<Observer<Result<LoginTokenPojo>>>(relaxed = true)
     private var loginTokenFacebookObserver = mockk<Observer<Result<LoginToken>>>(relaxed = true)
     private var loginTokenGoogleObserver = mockk<Observer<Result<LoginTokenPojo>>>(relaxed = true)
@@ -99,6 +90,10 @@ class LoginEmailPhoneViewModelTest {
     private var goToActivationPage = mockk<Observer<String>>(relaxed = true)
     private var statusPinObserver = mockk<Observer<Result<StatusPinData>>>(relaxed = true)
 
+    private var loginTokenV2UseCase = mockk<LoginTokenV2UseCase>(relaxed = true)
+    private var getAdminTypeUseCase = mockk<GetAdminTypeUseCase>(relaxed = true)
+    private var generatePublicKeyUseCase = mockk<GeneratePublicKeyUseCase>(relaxed = true)
+
     private val mockFragment = mockk<Fragment>(relaxed = true)
     private val mockCallbackManager = mockk<CallbackManager>(relaxed = true)
     private val messageException = MessageErrorException("error bro")
@@ -108,6 +103,10 @@ class LoginEmailPhoneViewModelTest {
 
     @Before
     fun setUp() {
+        MockKAnnotations.init(this)
+        mockkObject(RsaUtils)
+        mockkObject(EncoderDecoder())
+
         viewModel = LoginEmailPhoneViewModel(
             registerCheckUseCase,
             discoverUseCase,
@@ -117,9 +116,12 @@ class LoginEmailPhoneViewModelTest {
             getProfileUseCase,
             tickerInfoUseCase,
             statusPinUseCase,
+            getAdminTypeUseCase,
+            loginTokenV2UseCase,
+            generatePublicKeyUseCase,
             dynamicBannerUseCase,
             userSession,
-            testDispatcher
+            CoroutineTestDispatchersProvider
         )
 
         viewModel.registerCheckResponse.observeForever(registerCheckObserver)
@@ -127,6 +129,7 @@ class LoginEmailPhoneViewModelTest {
         viewModel.discoverResponse.observeForever(discoverObserver)
         viewModel.getFacebookCredentialResponse.observeForever(getFacebookObserver)
         viewModel.loginTokenResponse.observeForever(loginToken)
+        viewModel.loginTokenV2Response.observeForever(loginTokenV2)
         viewModel.showPopup.observeForever(showPopupErrorObserver)
         viewModel.goToSecurityQuestion.observeForever(goToSecurityQuestionObserver)
         viewModel.loginTokenFacebookPhoneResponse.observeForever(loginTokenFacebookPhoneObserver)
@@ -338,6 +341,61 @@ class LoginEmailPhoneViewModelTest {
 
         /* Then */
         verify { loginToken.onChanged(Success(responseToken)) }
+    }
+
+    @Test
+    fun `on Login Email V2 Success`() {
+
+        /* When */
+        val loginToken = LoginToken(accessToken = "abc123")
+        val responseToken = LoginTokenPojoV2(loginToken = loginToken)
+
+        val keyData = KeyData(key = "cGFkZGluZw==", hash = "zzzz")
+        val generateKeyPojo = GenerateKeyPojo(keyData = keyData)
+
+        mockkStatic("android.util.Base64")
+        mockkStatic(EncoderDecoder::class)
+
+        every { EncoderDecoder.Encrypt(any(), any()) } returns "ok"
+        every { Base64.decode(keyData.key, any()) } returns ByteArray(10)
+
+        coEvery { RsaUtils.encrypt(any(), any(), true) } returns "qwerty"
+        coEvery { generatePublicKeyUseCase.executeOnBackground() } returns generateKeyPojo
+        coEvery { loginTokenV2UseCase.executeOnBackground() } returns responseToken
+
+        viewModel.loginEmailV2(email, password, useHash = true)
+
+        /* Then */
+        verify {
+            RsaUtils.encrypt(any(), any(), true)
+            loginTokenV2UseCase.setParams(any(), any(), any())
+            loginTokenV2.onChanged(Success(responseToken))
+        }
+    }
+
+    @Test
+    fun `on Login Email V2 Empty key`() {
+        val keyData = KeyData(key = "", hash = "")
+        val generateKeyPojo = GenerateKeyPojo(keyData = keyData)
+
+        coEvery { generatePublicKeyUseCase.executeOnBackground() } returns generateKeyPojo
+
+        viewModel.loginEmailV2(email, password, useHash = true)
+
+        /* Then */
+        MatcherAssert.assertThat(viewModel.loginTokenV2Response.value, CoreMatchers.instanceOf(Fail::class.java))
+    }
+
+    @Test
+    fun `on Login Email V2 Error`() {
+        coEvery { generatePublicKeyUseCase.executeOnBackground() } throws throwable
+
+        viewModel.loginEmailV2(email, password, useHash = true)
+
+        /* Then */
+        verify {
+            loginTokenV2.onChanged(Fail(throwable))
+        }
     }
 
     @Test
