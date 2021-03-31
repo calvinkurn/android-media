@@ -23,7 +23,7 @@ class PowerMerchantSettingInfoMapper @Inject constructor() {
                 shopId = response?.shopId.orZero().toString(),
                 isNewPmContent = response?.isNewPmContent ?: false,
                 isFinalSuccessPopup = response?.isFinalSuccessPopup ?: false,
-                periodeType = PeriodType.TRANSITION_PERIOD, //response?.periodeType ?: PeriodType.COMMUNICATION_PERIOD,
+                periodeType = response?.periodeType ?: PeriodType.TRANSITION_PERIOD,
                 tickers = response?.tickers?.map {
                     TickerUiModel(
                             title = it.title.orEmpty(),
