@@ -39,6 +39,9 @@ object DynamicProductDetailMapper {
                 ProductDetailConstant.MINI_SOCIAL_PROOF -> {
                     listOfComponent.add(ProductMiniSocialProofDataModel(type = component.type, name = component.componentName))
                 }
+                ProductDetailConstant.REVIEW -> {
+                    listOfComponent.add(ProductMostHelpfulReviewDataModel(type = component.type, name = component.componentName))
+                }
                 ProductDetailConstant.INFO -> {
                     val contentData = component.componentData.firstOrNull()
                     val content = if (contentData?.content?.isEmpty() == true) listOf(Content()) else contentData?.content
