@@ -1,0 +1,72 @@
+package com.tokopedia.tradein.view.viewcontrollers.bottomsheet
+
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
+import android.os.Build
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.core.content.ContextCompat.getSystemService
+import com.google.android.material.snackbar.Snackbar
+import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager
+import com.tokopedia.kotlin.extensions.view.getScreenHeight
+import com.tokopedia.tradein.R
+import com.tokopedia.unifycomponents.*
+import com.tokopedia.unifyprinciples.Typography
+
+
+class ShowSessionIdBs(private val sid: String) : BottomSheetUnify() {
+    private var contentView: View? = null
+    private var etWrapper: TextAreaUnify? = null
+
+    companion object {
+        @JvmStatic
+        fun newInstance(sid: String): ShowSessionIdBs {
+            return ShowSessionIdBs(sid)
+        }
+    }
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        initLayout()
+        return super.onCreateView(inflater, container, savedInstanceState)
+    }
+
+    private fun initLayout() {
+        setTitle(getString(R.string.tradein_sid))
+        isDragable = true
+        isHideable = true
+        isKeyboardOverlap = false
+        customPeekHeight = (getScreenHeight()).toDp()
+        showCloseIcon = false
+        showKnob = true
+
+        contentView = View.inflate(context,
+                R.layout.tradein_bs_show_session_id, null)
+
+        val btnCopy = contentView?.findViewById<UnifyButton>(R.id.btn_sid_copy)
+        val tvSid = contentView?.findViewById<Typography>(R.id.text_sid)
+
+        tvSid?.text = sid
+
+        btnCopy?.setOnClickListener {
+
+            val sdk = Build.VERSION.SDK_INT
+            if (sdk < Build.VERSION_CODES.HONEYCOMB) {
+                val clipboard = context?.getSystemService(Context.CLIPBOARD_SERVICE) as android.text.ClipboardManager?
+                clipboard?.text = sid
+            } else {
+                val clipboard = context?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager?
+                val clip = ClipData.newPlainText("sid", sid)
+                clipboard?.setPrimaryClip(clip)
+            }
+
+            SnackbarManager.make(tvSid, getString(R.string.tradein_sid_mes), Snackbar.LENGTH_SHORT).show()
+
+            dismiss()
+        }
+
+        setChild(contentView)
+    }
+}
