@@ -18,7 +18,12 @@ import com.tokopedia.settingnotif.usersetting.view.viewmodel.SettingStateViewMod
 
 class PushNotifFieldFragment : SettingFieldFragment() {
 
-    private lateinit var viewModel: SettingStateViewModel
+    private val viewModel: SettingStateViewModel by lazy {
+        ViewModelProvider(
+                this,
+                viewModelFactory
+        ).get(SettingStateViewModel::class.java)
+    }
 
     private val settingStates by lazy(LazyThreadSafetyMode.NONE) {
         viewModel.getSettingStates()
@@ -26,11 +31,6 @@ class PushNotifFieldFragment : SettingFieldFragment() {
 
     override fun getGqlRawQuery(): Int {
         return R.raw.query_push_notif_setting
-    }
-
-    override fun initViewModel() {
-        viewModel = ViewModelProvider(this, viewModelFactory)
-                .get(SettingStateViewModel::class.java)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
