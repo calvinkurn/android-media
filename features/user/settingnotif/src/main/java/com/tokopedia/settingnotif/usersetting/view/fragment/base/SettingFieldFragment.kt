@@ -2,9 +2,7 @@ package com.tokopedia.settingnotif.usersetting.view.fragment.base
 
 import android.app.Activity
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.annotation.RawRes
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
@@ -53,7 +51,12 @@ abstract class SettingFieldFragment : BaseListFragment<Visitable<*>,
     @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
     @Inject lateinit var userSession: UserSessionInterface
 
-    protected lateinit var settingViewModel: UserSettingViewModel
+    protected val settingViewModel: UserSettingViewModel by lazy {
+        ViewModelProvider(
+                this,
+                viewModelFactory
+        ).get(UserSettingViewModel::class.java)
+    }
 
     /*
     * a flag for preventing request network if needed
@@ -67,11 +70,6 @@ abstract class SettingFieldFragment : BaseListFragment<Visitable<*>,
     *  */
     abstract fun getNotificationType(): String
 
-    open fun initViewModel() {
-        settingViewModel = ViewModelProvider(this, viewModelFactory)
-                .get(UserSettingViewModel::class.java)
-    }
-
     @RawRes abstract fun getGqlRawQuery(): Int
 
     // setting field adapter
@@ -79,20 +77,12 @@ abstract class SettingFieldFragment : BaseListFragment<Visitable<*>,
         adapter as SettingFieldAdapter
     }
 
-    override fun onCreateView(
-            inflater: LayoutInflater,
-            container: ViewGroup?,
-            savedInstanceState: Bundle?
-    ): View? {
-        initViewModel()
-        initObservable()
-        return super.onCreateView(inflater, container, savedInstanceState)
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupToolbar()
         setupRecyclerView(view)
+
+        initObservable()
     }
 
     private fun initObservable() {

@@ -1,7 +1,5 @@
 package com.tokopedia.settingnotif.usersetting.view.fragment
 
-import android.os.Bundle
-import android.view.View
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.config.GlobalConfig
@@ -15,7 +13,12 @@ import com.tokopedia.settingnotif.usersetting.view.viewmodel.SettingStateViewMod
 
 class EmailFieldFragment: SettingFieldFragment() {
 
-    private lateinit var viewModel: SettingStateViewModel
+    private val viewModel: SettingStateViewModel by lazy {
+        ViewModelProvider(
+                this,
+                viewModelFactory
+        ).get(SettingStateViewModel::class.java)
+    }
 
     private val settingStates by lazy(LazyThreadSafetyMode.NONE) {
         viewModel.getSettingStates()
@@ -23,11 +26,6 @@ class EmailFieldFragment: SettingFieldFragment() {
 
     override fun getGqlRawQuery(): Int {
         return R.raw.query_email_setting
-    }
-
-    override fun initViewModel() {
-        viewModel = ViewModelProvider(this, viewModelFactory)
-                .get(SettingStateViewModel::class.java)
     }
 
     override fun onResume() {
