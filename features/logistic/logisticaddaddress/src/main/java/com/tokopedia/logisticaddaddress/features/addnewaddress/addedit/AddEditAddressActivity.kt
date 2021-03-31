@@ -3,6 +3,8 @@ package com.tokopedia.logisticaddaddress.features.addnewaddress.addedit
 import android.os.Bundle
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.logisticaddaddress.R
+import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.utils.permission.PermissionCheckerHelper
 
 /**
  * Created by fwidjaja on 2019-05-22.
@@ -22,6 +24,11 @@ class AddEditAddressActivity: BaseSimpleActivity() {
     }
 
     override fun getParentViewResourceID(): Int = R.id.add_new_address_parent
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        println("++masukk")
+    }
 
     override fun onBackPressed() {
         val fragment =

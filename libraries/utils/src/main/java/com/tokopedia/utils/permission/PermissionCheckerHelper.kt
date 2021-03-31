@@ -307,7 +307,7 @@ class PermissionCheckerHelper {
         dialog.setCancelable(true)
         dialog.setPrimaryCTAClickListener {
             dialog.dismiss()
-            requestPermissions(activity, permissions, REQUEST_PERMISSION_CODE)
+            requestPermissions(fragment, permissions, REQUEST_PERMISSION_CODE)
         }
         dialog.setSecondaryCTAClickListener {
             listener.onPermissionDenied(permissionText)

@@ -79,7 +79,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
     private var staticDimen8dp: Int? = 0
     private lateinit var labelAlamatChipsAdapter: LabelAlamatChipsAdapter
     private val FINISH_PINPOINT_FLAG = 8888
-    private val MINIMUM_CHARACTER = 8
+    private val MINIMUM_CHARACTER = 9
     private var getView: View? = null
     private var getSavedInstanceState: Bundle? = null
     private var labelAlamatList: Array<String> = emptyArray()
@@ -164,7 +164,10 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        permissionCheckerHelper?.onRequestPermissionsResult(context, requestCode, permissions, grantResults)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            permissionCheckerHelper?.onRequestPermissionsResult(context, requestCode, permissions, grantResults)
+        }
     }
 
     private fun createFragment() {
@@ -842,8 +845,8 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
 
     private fun onNavigateToContact() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            permissionCheckerHelper?.checkPermission(this,
-                    PermissionCheckerHelper.Companion.PERMISSION_READ_CONTACT,
+            permissionCheckerHelper?.checkPermissions(this,
+                    getPermissions(),
                     object : PermissionCheckerHelper.PermissionCheckListener {
                         override fun onPermissionDenied(permissionText: String) {
                             //no-op
@@ -858,6 +861,12 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
                         }
                     }, this.getString(R.string.rationale_need_contact))
         }
+    }
+
+    private fun getPermissions(): Array<String> {
+        return arrayOf(
+                PermissionCheckerHelper.Companion.PERMISSION_READ_CONTACT
+        )
     }
 
     private fun openContactPicker() {
