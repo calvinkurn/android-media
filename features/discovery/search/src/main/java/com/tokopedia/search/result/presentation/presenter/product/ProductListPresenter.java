@@ -2290,6 +2290,7 @@ final class ProductListPresenter
 
         changeActiveInspirationCarouselChips(inspirationCarouselViewModel, clickedInspirationCarouselOption);
 
+        getView().trackInspirationCarouselChipsClicked(clickedInspirationCarouselOption);
         getView().refreshItemAtIndex(adapterPosition);
 
         if (clickedInspirationCarouselOption.hasProducts()) return;
