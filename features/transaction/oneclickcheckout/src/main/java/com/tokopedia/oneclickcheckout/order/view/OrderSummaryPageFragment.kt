@@ -421,7 +421,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                             Toaster.build(v, message, type = Toaster.TYPE_ERROR).show()
                         }
                         source = SOURCE_OTHERS
-                        refresh(false, isFullRefresh = it.isFullRefresh)
+                        refresh(isFullRefresh = it.isFullRefresh)
                     }
                 }
                 is OccGlobalEvent.Error -> {
@@ -1350,7 +1350,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
     private fun showGlobalError(type: Int) {
         globalError?.setType(type)
         globalError?.setActionClickListener {
-            refresh(false)
+            refresh()
         }
         mainContent?.gone()
         globalError?.visible()
