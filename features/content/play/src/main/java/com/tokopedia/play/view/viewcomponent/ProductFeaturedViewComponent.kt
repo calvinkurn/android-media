@@ -22,6 +22,8 @@ class ProductFeaturedViewComponent(
 
     private val rvProductFeatured: RecyclerView = findViewById(R.id.rv_product_featured)
 
+    private val availableFeaturedProducts: MutableMap<String, PlayProductUiModel> = mutableMapOf()
+
     private val adapter = ProductFeaturedAdapter(
             productFeaturedListener = object : ProductBasicViewHolder.Listener {
                 override fun onClickProductCard(product: PlayProductUiModel.Product, position: Int) {
@@ -34,9 +36,12 @@ class ProductFeaturedViewComponent(
                 }
             }
     )
-    private val productFeaturedListener = object: RecyclerView.OnScrollListener(){
+    private val productFeaturedListener = object: RecyclerView.OnScrollListener() {
+
         override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-            if (newState == RecyclerView.SCROLL_STATE_IDLE) sendImpression()
+            if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                sendImpression()
+            }
         }
     }
 
@@ -49,6 +54,11 @@ class ProductFeaturedViewComponent(
     fun setFeaturedProducts(products: List<PlayProductUiModel>, maxProducts: Int) {
         val featuredItems = getFinalFeaturedItems(products, maxProducts)
         adapter.setItemsAndAnimateChanges(featuredItems)
+
+        availableFeaturedProducts.clear()
+        featuredItems.forEach {
+            if (it is PlayProductUiModel.Product) availableFeaturedProducts[it.id] = it
+        }
 
         if (featuredItems.isEmpty()) hide()
         else {
@@ -82,14 +92,23 @@ class ProductFeaturedViewComponent(
         val layoutManager = rvProductFeatured.layoutManager
         if (layoutManager !is LinearLayoutManager) return
 
-        val startPosition = layoutManager.findFirstVisibleItemPosition()
-        val endPosition = layoutManager.findLastVisibleItemPosition()
+        val startPosition = layoutManager.findFirstCompletelyVisibleItemPosition()
+        val endPosition = layoutManager.findLastCompletelyVisibleItemPosition()
         if (startPosition < 0 || endPosition > adapter.itemCount) return
 
+        val productImpressed = getProductImpressed(startPosition, endPosition)
+        if (productImpressed.isNotEmpty()) listener.onProductFeaturedImpressed(this@ProductFeaturedViewComponent, productImpressed)
+    }
+
+    private fun getProductImpressed(startPosition: Int, endPosition: Int): List<PlayProductUiModel.Product> {
         val productImpressed = adapter.getItems()
                 .slice(startPosition..endPosition)
                 .filterIsInstance<PlayProductUiModel.Product>()
-        listener.onProductFeaturedImpressed(this@ProductFeaturedViewComponent, productImpressed)
+                .filter { availableFeaturedProducts.containsKey(it.id) }
+
+        val keySet = productImpressed.map { it.id }.toSet()
+        availableFeaturedProducts.keys.removeAll(keySet)
+        return productImpressed
     }
 
     companion object {
