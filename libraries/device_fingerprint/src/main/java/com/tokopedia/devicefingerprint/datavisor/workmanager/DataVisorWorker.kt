@@ -123,13 +123,15 @@ class DataVisorWorker(appContext: Context, params: WorkerParameters) : Coroutine
 
         fun scheduleWorker(context: Context, forceWorker: Boolean) {
             GlobalScope.launch(Dispatchers.IO) {
-                val appContext = context.applicationContext
-                if (GlobalConfig.isSellerApp()) {
-                    return@launch
-                }
-                if (forceWorker || needToRun(appContext)) {
-                    runWorker(appContext)
-                }
+                try {
+                    val appContext = context.applicationContext
+                    if (GlobalConfig.isSellerApp()) {
+                        return@launch
+                    }
+                    if (forceWorker || needToRun(appContext)) {
+                        runWorker(appContext)
+                    }
+                } catch (ignored:Exception) { }
             }
         }
 
