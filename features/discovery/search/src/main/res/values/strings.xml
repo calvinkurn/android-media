@@ -1,6 +1,6 @@
 <resources>
     <string name="title_search_result" >Pencarian</string>
-    <string name="app_name">Search</string>
+    <string name="app_name_search">Search</string>
     <string name="search_result_page">Search Result Page</string>
     <string name="OK">OK</string>
 
