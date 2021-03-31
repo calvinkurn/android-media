@@ -1,17 +1,31 @@
 package com.tokopedia.play.broadcaster.view.viewmodel
 
 import androidx.lifecycle.*
+import com.tokopedia.play.broadcaster.data.config.HydraConfigStore
+import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
+import com.tokopedia.play.broadcaster.ui.validator.tag.TagSetupValidator
+import com.tokopedia.play.broadcaster.ui.validator.title.TitleSetupValidator
+import com.tokopedia.play_common.model.result.NetworkResult
+import com.tokopedia.play_common.util.coroutine.CoroutineDispatcherProvider
+import com.tokopedia.play_common.util.event.Event
+import kotlinx.coroutines.*
 import javax.inject.Inject
 
 /**
  * Created by jegul on 17/02/21
  */
-class PlayTitleAndTagsSetupViewModel @Inject constructor() : ViewModel() {
+class PlayTitleAndTagsSetupViewModel @Inject constructor(
+        private val hydraConfigStore: HydraConfigStore,
+        private val dispatcher: CoroutineDispatcherProvider,
+        private val setupDataStore: PlayBroadcastSetupDataStore,
+) : ViewModel(), TitleSetupValidator, TagSetupValidator {
 
     val observableAddedTags: LiveData<List<String>>
         get() = Transformations.map(_observableAddedTags) { it.toList() }
     val observableRecommendedTags: LiveData<List<String>>
         get() = Transformations.map(_observableRecommendedTags) { it.toList() }
+    val observableUploadEvent: LiveData<Event<NetworkResult<Unit>>>
+        get() = _observableUploadEvent
 
     private val _observableAddedTags = MutableLiveData<Set<String>>()
     private val _observableRecommendedTags = MediatorLiveData<Set<String>>().apply {
@@ -19,6 +33,8 @@ class PlayTitleAndTagsSetupViewModel @Inject constructor() : ViewModel() {
             value = recommendedTags - it
         }
     }
+
+    private val _observableUploadEvent = MutableLiveData<Event<NetworkResult<Unit>>>()
 
     private val validTagRegex = Regex("[a-zA-Z0-9 ]+")
 
@@ -30,8 +46,16 @@ class PlayTitleAndTagsSetupViewModel @Inject constructor() : ViewModel() {
         refreshAddedTags()
     }
 
+    override fun isTitleValid(title: String): Boolean {
+        return title.isNotBlank() && title.length <= hydraConfigStore.getMaxTitleChars()
+    }
+
+    override fun isTagValid(tag: String): Boolean {
+        return tag.length in 2..32 && validTagRegex.matches(tag)
+    }
+
     fun addTag(tag: String) {
-        if(!isValidTag(tag)) return
+        if(!isTagValid(tag)) return
 
         addedTags.add(tag)
         refreshAddedTags()
@@ -42,12 +66,36 @@ class PlayTitleAndTagsSetupViewModel @Inject constructor() : ViewModel() {
         refreshAddedTags()
     }
 
-    fun isValidTitle(title: String): Boolean {
-        return title.isNotEmpty() && title.length <= 32
+    fun finishSetup(title: String) {
+        setupDataStore.setTitle(title)
+        setupDataStore.setTags(addedTags)
+
+        _observableUploadEvent.value = Event(NetworkResult.Loading)
+
+        viewModelScope.launch(dispatcher.main) {
+
+            try {
+                uploadTags(_observableAddedTags.value.orEmpty())
+                /**
+                 * Upload title after tags because when title is success, the channel will already be complete draft,
+                 * even if the tags return error
+                 */
+                uploadTitle()
+
+                _observableUploadEvent.value = Event(NetworkResult.Success(Unit))
+            } catch (e: Throwable) {
+                _observableUploadEvent.value = Event(NetworkResult.Fail(e))
+            }
+        }
     }
 
-    private fun isValidTag(tag: String): Boolean {
-        return tag.length in 2..32 && validTagRegex.matches(tag)
+    private suspend fun uploadTags(tags: Set<String>) = withContext(dispatcher.io) {
+        delay(2500)
+        Unit
+    }
+
+    private suspend fun uploadTitle() = withContext(dispatcher.io) {
+        return@withContext setupDataStore.uploadTitle(hydraConfigStore.getChannelId())
     }
 
     private fun refreshAddedTags() {

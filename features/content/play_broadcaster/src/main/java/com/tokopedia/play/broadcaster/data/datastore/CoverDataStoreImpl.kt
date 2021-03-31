@@ -88,7 +88,6 @@ class CoverDataStoreImpl @Inject constructor(
                     PlayBroadcastUpdateChannelUseCase.createUpdateFullCoverRequest(
                             channelId = channelId,
                             authorId = userSession.shopId,
-                            coverTitle = "",
                             coverUrl = coverUrl
                     )
             )
@@ -101,10 +100,10 @@ class CoverDataStoreImpl @Inject constructor(
 
         updateChannelUseCase.apply {
             setQueryParams(
-                    PlayBroadcastUpdateChannelUseCase.createUpdateCoverTitleRequest(
+                    PlayBroadcastUpdateChannelUseCase.createUpdateTitleRequest(
                             channelId = channelId,
                             authorId = userSession.shopId,
-                            coverTitle = coverTitle
+                            title = coverTitle
                     )
             )
         }

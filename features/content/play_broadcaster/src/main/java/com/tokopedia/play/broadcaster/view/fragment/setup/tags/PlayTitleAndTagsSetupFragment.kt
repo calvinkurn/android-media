@@ -7,16 +7,24 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.transition.*
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
+import com.tokopedia.play.broadcaster.util.extension.showToaster
 import com.tokopedia.play.broadcaster.view.custom.PlayBottomSheetHeader
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseSetupFragment
 import com.tokopedia.play.broadcaster.view.partial.*
+import com.tokopedia.play.broadcaster.view.viewmodel.DataStoreViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayTitleAndTagsSetupViewModel
+import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.util.coroutine.CoroutineDispatcherProvider
+import com.tokopedia.play_common.util.event.EventObserver
 import com.tokopedia.play_common.viewcomponent.viewComponent
+import com.tokopedia.unifycomponents.Toaster
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.yield
 import javax.inject.Inject
 
 /**
@@ -35,6 +43,7 @@ class PlayTitleAndTagsSetupFragment @Inject constructor(
     private var mListener: Listener? = null
 
     private lateinit var viewModel: PlayTitleAndTagsSetupViewModel
+    private lateinit var dataStoreViewModel: DataStoreViewModel
 
     /**
      * UI
@@ -46,6 +55,8 @@ class PlayTitleAndTagsSetupFragment @Inject constructor(
     private val tagAddedListView by viewComponent { TagAddedListViewComponent(it, R.id.rv_tags_added, this) }
     private val bottomActionNextView by viewComponent { BottomActionNextViewComponent(it, this) }
 
+    private var toasterBottomMargin = 0
+
     override fun onInterceptBackPressed(): Boolean {
         return false
     }
@@ -56,9 +67,9 @@ class PlayTitleAndTagsSetupFragment @Inject constructor(
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        viewModel = ViewModelProvider(this, viewModelFactory).get(PlayTitleAndTagsSetupViewModel::class.java)
+        dataStoreViewModel = ViewModelProvider(this, viewModelFactory).get(DataStoreViewModel::class.java)
         setupTransition()
-        viewModel = ViewModelProvider(this, viewModelFactory)
-                .get(PlayTitleAndTagsSetupViewModel::class.java)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -76,7 +87,7 @@ class PlayTitleAndTagsSetupFragment @Inject constructor(
      * Text Field Title View Component
      */
     override fun onTitleInputChanged(view: TextFieldTitleViewComponent, title: String) {
-        bottomActionNextView.setEnabled(viewModel.isValidTitle(title))
+        bottomActionNextView.setEnabled(viewModel.isTitleValid(title))
     }
 
     /**
@@ -105,6 +116,7 @@ class PlayTitleAndTagsSetupFragment @Inject constructor(
      */
     override fun onNextButtonClicked(view: BottomActionNextViewComponent) {
         //Next
+        viewModel.finishSetup(titleFieldView.getText())
     }
 
     fun setListener(listener: Listener?) {
@@ -132,6 +144,7 @@ class PlayTitleAndTagsSetupFragment @Inject constructor(
     private fun setupObserve() {
         observeRecommendedTags()
         observeAddedTags()
+        observeUploadEvent()
     }
 
     private fun observeRecommendedTags() {
@@ -144,6 +157,51 @@ class PlayTitleAndTagsSetupFragment @Inject constructor(
         viewModel.observableAddedTags.observe(viewLifecycleOwner, Observer {
             tagAddedListView.setTags(it.toList())
         })
+    }
+
+    private fun observeUploadEvent() {
+        viewModel.observableUploadEvent.observe(viewLifecycleOwner, Observer {
+            when (val content = it.peekContent()) {
+                NetworkResult.Loading -> bottomActionNextView.setLoading(true)
+                is NetworkResult.Fail -> onUploadFailed(content.error)
+                is NetworkResult.Success -> {
+                    if (!it.hasBeenHandled) onUploadSuccess()
+                }
+            }
+        })
+    }
+
+    private fun onUploadSuccess() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            val error = mListener?.onTitleAndTagsSetupFinished(dataStoreViewModel.getDataStore())
+            error?.let {
+                yield()
+                onUploadFailed(it)
+            }
+        }
+    }
+
+    private fun onUploadFailed(e: Throwable?) {
+        bottomActionNextView.setLoading(false)
+        e?.localizedMessage?.let {
+            errMessage -> showToaster(errMessage, type = Toaster.TYPE_ERROR)
+        }
+    }
+
+    private fun showToaster(message: String, type: Int = Toaster.TYPE_NORMAL, duration: Int = Toaster.LENGTH_SHORT, actionLabel: String = "", actionListener: View.OnClickListener = View.OnClickListener { }) {
+        if (toasterBottomMargin == 0) {
+            val offset8 = resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3)
+            toasterBottomMargin = bottomActionNextView.rootView.height + offset8
+        }
+
+        view?.showToaster(
+                message = message,
+                type = type,
+                duration = duration,
+                actionLabel = actionLabel,
+                actionListener = actionListener,
+                bottomMargin = toasterBottomMargin
+        )
     }
 
     /**

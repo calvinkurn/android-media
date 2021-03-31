@@ -6,6 +6,7 @@ import com.tokopedia.play.broadcaster.data.type.OverwriteMode
 import com.tokopedia.play.broadcaster.ui.model.BroadcastScheduleUiModel
 import com.tokopedia.play.broadcaster.ui.model.CoverSource
 import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
+import com.tokopedia.play.broadcaster.ui.model.title.PlayTitleUiModel
 import com.tokopedia.play.broadcaster.view.state.CoverSetupState
 import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.model.result.map
@@ -15,7 +16,9 @@ import javax.inject.Inject
 class PlayBroadcastSetupDataStoreImpl @Inject constructor(
         private val productDataStore: ProductDataStore,
         private val coverDataStore: CoverDataStore,
-        private val scheduleDataStore: BroadcastScheduleDataStore
+        private val titleDataStore: TitleDataStore,
+        private val tagsDataStore: TagsDataStore,
+        private val scheduleDataStore: BroadcastScheduleDataStore,
 ) : PlayBroadcastSetupDataStore {
 
     override fun overwrite(dataStore: PlayBroadcastSetupDataStore, modeExclusion: List<OverwriteMode>) {
@@ -131,6 +134,40 @@ class PlayBroadcastSetupDataStoreImpl @Inject constructor(
             if (selectedProducts.none { it.id == productId })
                 updateCoverState(CoverSetupState.Blank)
         }
+    }
+
+    /**
+     * Title
+     */
+    override fun getTitleDataStore(): TitleDataStore {
+        return titleDataStore
+    }
+
+    override fun getTitle(): PlayTitleUiModel {
+        return titleDataStore.getTitle()
+    }
+
+    override fun setTitle(title: String) {
+        titleDataStore.setTitle(title)
+    }
+
+    override suspend fun uploadTitle(channelId: String): NetworkResult<Unit> {
+        return titleDataStore.uploadTitle(channelId)
+    }
+
+    /**
+     * Tags
+     */
+    override fun getTags(): Set<String> {
+        return tagsDataStore.getTags()
+    }
+
+    override fun setTags(tags: Set<String>) {
+        tagsDataStore.setTags(tags)
+    }
+
+    override fun addTag(tag: String) {
+        tagsDataStore.addTag(tag)
     }
 
     /**
