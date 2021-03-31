@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:clipToPadding="false"
     android:orientation="vertical">
 
@@ -28,14 +29,14 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
 
-                <TextView
+                <com.tokopedia.unifyprinciples.Typography
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@color/Unify_N0"
                     android:padding="@dimen/dp_20"
-                    android:text="Status Pemesanan"
-                    android:textSize="@dimen/font_large"
-                    android:textStyle="bold" />
+                    android:textColor="@color/Unify_N300"
+                    android:text="@string/order_management_history_order_status"
+                    app:typographyType="heading_3" />
 
                 <View
                     android:layout_width="match_parent"
