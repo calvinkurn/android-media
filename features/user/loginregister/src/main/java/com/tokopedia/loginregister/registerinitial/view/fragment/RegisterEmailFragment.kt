@@ -265,11 +265,7 @@ class RegisterEmailFragment : BaseDaggerFragment() {
 
             override fun afterTextChanged(s: Editable) {
                 showPasswordHint()
-                if (s.isEmpty()) {
-                    setWrapperErrorNew(wrapper, getString(R.string.error_field_required))
-                } else if (wrapperPassword?.textFieldInput?.text.toString().length < PasswordUtils.PASSWORD_MINIMUM_LENGTH) {
-                    setWrapperErrorNew(wrapper, getString(R.string.error_minimal_password))
-                }
+                if (s.isEmpty()) { setWrapperErrorNew(wrapper, getString(R.string.error_field_required)) }
                 checkIsValidForm()
             }
         }
