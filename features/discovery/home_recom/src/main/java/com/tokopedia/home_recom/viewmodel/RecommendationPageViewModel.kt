@@ -60,7 +60,7 @@ open class RecommendationPageViewModel @Inject constructor(
 
     companion object {
         const val PARAM_TXSC = "txsc"
-        const val PARAM_JOB_TIMEOUT = 3000L
+        const val PARAM_JOB_TIMEOUT = 1000L
     }
     /**
      * public variable
