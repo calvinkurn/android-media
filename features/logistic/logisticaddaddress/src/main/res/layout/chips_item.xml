@@ -10,8 +10,8 @@
         style="@style/TextView.Small.BlackSecondary"
         android:paddingTop="@dimen/dp_10"
         android:paddingBottom="@dimen/dp_10"
-        android:paddingLeft="@dimen/dp_12"
-        android:paddingRight="@dimen/dp_12"
+        android:paddingStart="@dimen/dp_12"
+        android:paddingEnd="@dimen/dp_8"
         android:background="@drawable/bg_chips_item_layout" />
 
 </RelativeLayout>
