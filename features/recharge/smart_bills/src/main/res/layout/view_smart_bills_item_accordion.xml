@@ -17,9 +17,6 @@
         android:id="@+id/accordion_smart_bills"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
-        android:layout_marginLeft="@dimen/spacing_lvl4"
-        android:layout_marginRight="@dimen/spacing_lvl4"
-        android:layout_marginBottom="@dimen/spacing_lvl4"
         android:background="@color/Unify_N0" />
 
 </LinearLayout>

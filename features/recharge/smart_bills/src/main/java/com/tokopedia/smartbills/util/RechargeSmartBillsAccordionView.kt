@@ -2,6 +2,7 @@ package com.tokopedia.smartbills.util
 
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.holder.BaseCheckableViewHolder
@@ -36,5 +37,10 @@ object RechargeSmartBillsAccordionView {
             this.adapter = adapter
         }
         return view
+    }
+
+    fun View.disableView() {
+        isEnabled = false
+        isClickable = false
     }
 }

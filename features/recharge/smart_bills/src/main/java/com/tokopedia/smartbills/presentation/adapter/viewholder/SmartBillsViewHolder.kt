@@ -15,6 +15,7 @@ import com.tokopedia.smartbills.R
 import com.tokopedia.smartbills.data.RechargeBills
 import com.tokopedia.smartbills.data.SmartBillsItemDetail
 import com.tokopedia.smartbills.presentation.widget.SmartBillsItemDetailBottomSheet
+import com.tokopedia.smartbills.util.RechargeSmartBillsAccordionView.disableView
 import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.view_smart_bills_item.view.*
 
@@ -39,9 +40,13 @@ class SmartBillsViewHolder(val view: View,
         with(view) {
 
             if(isAccordion){
-                val layout : ViewGroup.MarginLayoutParams = view.layoutParams as ViewGroup.MarginLayoutParams
-                layout.leftMargin = 0
-                layout.rightMargin = 0
+                //showing overlay white
+                smart_bills_view_disable.show()
+
+                //disabling view to cannot clicked
+                disableView()
+                tv_smart_bills_item_detail.disableView()
+                cb_smart_bills_item.disableView()
             }
 
 
