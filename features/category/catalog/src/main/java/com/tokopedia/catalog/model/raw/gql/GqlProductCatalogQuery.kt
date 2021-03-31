@@ -35,6 +35,10 @@ const val GQL_CATALOG_QUERY: String = """query catalogGetDetailModular(${'$'}cat
       type
       sticky
       data{
+        ... on CatalogModularVideo{
+          url
+          type
+        }
         ... on CatalogModularTopSpec {
           key
           value

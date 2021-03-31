@@ -14,7 +14,11 @@ data class ComponentData(
         @SerializedName("icon")
         val icon: String?,
         @SerializedName("row")
-        val specificationsRow : List<SpecificationsRow>? = listOf()
+        val specificationsRow : List<SpecificationsRow>? = listOf(),
+        @SerializedName("url")
+        val url : String?,
+        @SerializedName("type")
+        val type: String?,
 
 ){
     @Parcelize
@@ -39,3 +43,8 @@ data class TopSpecificationsComponentData(
         val key : String?,
         val value : String?,
         val icon : String?) : Parcelable
+
+@Parcelize
+data class VideoComponentData(
+        val url : String?,
+        val type : String?) : Parcelable

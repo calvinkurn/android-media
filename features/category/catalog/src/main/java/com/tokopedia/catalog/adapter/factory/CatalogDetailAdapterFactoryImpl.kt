@@ -7,9 +7,11 @@ import com.tokopedia.catalog.listener.CatalogDetailListener
 import com.tokopedia.catalog.model.datamodel.CatalogInfoDataModel
 import com.tokopedia.catalog.model.datamodel.CatalogProductsContainerDataModel
 import com.tokopedia.catalog.model.datamodel.CatalogTopSpecificationDataModel
+import com.tokopedia.catalog.model.datamodel.CatalogVideoDataModel
 import com.tokopedia.catalog.viewholder.CatalogInfoViewHolder
 import com.tokopedia.catalog.viewholder.CatalogProductsContainerViewHolder
 import com.tokopedia.catalog.viewholder.CatalogSpecificationsContainerViewHolder
+import com.tokopedia.catalog.viewholder.CatalogVideosContainerViewHolder
 
 class CatalogDetailAdapterFactoryImpl(private val catalogDetailListener: CatalogDetailListener) : BaseAdapterTypeFactory() , CatalogDetailAdapterFactory {
 
@@ -25,10 +27,15 @@ class CatalogDetailAdapterFactoryImpl(private val catalogDetailListener: Catalog
         return CatalogProductsContainerViewHolder.LAYOUT
     }
 
+    override fun type(data: CatalogVideoDataModel): Int {
+        return CatalogVideosContainerViewHolder.LAYOUT
+    }
+
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
         return when (type){
             CatalogInfoViewHolder.LAYOUT -> CatalogInfoViewHolder(view,catalogDetailListener)
             CatalogSpecificationsContainerViewHolder.LAYOUT -> CatalogSpecificationsContainerViewHolder(view,catalogDetailListener)
+            CatalogVideosContainerViewHolder.LAYOUT -> CatalogVideosContainerViewHolder(view,catalogDetailListener)
             CatalogProductsContainerViewHolder.LAYOUT -> CatalogProductsContainerViewHolder(view,catalogDetailListener)
             else -> super.createViewHolder(view,type)
         }
