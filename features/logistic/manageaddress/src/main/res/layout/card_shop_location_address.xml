@@ -22,6 +22,7 @@
             android:layout_marginBottom="@dimen/dp_18"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_address_zipcode"
+            app:srcCompat="@drawable/ic_pinpoint_green"
             android:contentDescription="null" />
 
         <ImageView
