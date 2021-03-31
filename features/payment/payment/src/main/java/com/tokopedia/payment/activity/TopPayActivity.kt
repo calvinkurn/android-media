@@ -509,7 +509,7 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
                         context = this@TopPayActivity
                         show(supportFragmentManager, "fingerprintPayment")
                     }
-                    view?.post { view.stopLoading() }
+                    view?.post { view?.stopLoading() }
                 }
             }
             return super.shouldInterceptRequest(view, request)

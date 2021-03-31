@@ -57,6 +57,16 @@ class LoggerRepository(private val logDao: LoggerDao,
     private suspend fun sendLogToServer(priority: Int, logs: List<Logger>) {
         val tokenIndex = priority - 1
 
+        //TODO
+        //decrypt
+        // tag
+        // tagmapScalyr[TAGKEY] -> async{kirim scalyr} -> job1
+        // tagmapNewRelic[TAGKEY] -> kirim newrelic -> job2
+        // job1.await || job2.await
+        // deleteEntries()
+
+        //unit test Logger
+
         if (scalyrConfigs.isNotEmpty() && newRelicConfigs.isEmpty()) {
             val scalyrSendSuccess = sendScalyrLogToServer(scalyrConfigs[tokenIndex], logs)
             if (scalyrSendSuccess) {

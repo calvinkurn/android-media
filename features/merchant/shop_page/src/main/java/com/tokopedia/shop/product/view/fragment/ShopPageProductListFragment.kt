@@ -1451,7 +1451,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
 
     private fun changeSortData(sortId: String){
         this.sortId = sortId
-        shopProductAdapter.changeSelectedSortFilter(this.sortId, sortName)
+        shopProductAdapter.changeSelectedSortFilter(this.sortId ?: "", sortName)
         shopProductAdapter.changeSortFilterIndicatorCounter(getIndicatorCount(
                 shopProductFilterParameter?.getMapData()
         ))

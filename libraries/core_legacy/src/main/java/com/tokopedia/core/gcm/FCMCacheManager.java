@@ -222,7 +222,7 @@ public class FCMCacheManager {
         Object objData;
         try {
             Gson gson = new Gson();
-            objData = Arrays.asList(gson.fromJson(data, clazz));
+            objData = Arrays.asList((T[]) gson.fromJson(data, clazz));
             return (List<T>) objData;
         } catch (ClassCastException | JsonSyntaxException e) {
             e.printStackTrace();
