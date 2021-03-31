@@ -58,7 +58,8 @@
                 "xLabel": "10 Oct"
               }
             ],
-            "error": ""
+            "error": "",
+            "showWidget": true
           }
         ]
       }

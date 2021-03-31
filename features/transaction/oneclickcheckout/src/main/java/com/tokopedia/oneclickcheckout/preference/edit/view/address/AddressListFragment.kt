@@ -377,6 +377,9 @@ class AddressListFragment : BaseDaggerFragment(), AddressListItemAdapter.OnSelec
         if (parent is PreferenceEditParent) {
             val selectedId = viewModel.selectedId.toIntOrZero()
             if (selectedId > 0) {
+                viewModel.selectedAddressModel?.let {
+                    parent.setNewlySelectedAddressModel(it)
+                }
                 preferenceListAnalytics.eventClickSimpanAlamatInPilihAlamatPage()
                 parent.setAddressId(selectedId)
                 setShippingParam()
