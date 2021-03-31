@@ -49,8 +49,8 @@ class AddEditProductDescriptionViewModel @Inject constructor(
     private val _videoYoutubeNew = MutableLiveData<Result<YoutubeVideoDetailModel>>()
     val videoYoutube: LiveData<Result<YoutubeVideoDetailModel>> = _videoYoutubeNew
 
-    private val videoYoutubeFlow = MutableLiveData<String>()
-    private val descriptionFlow = MutableStateFlow<String>("")
+    private val videoYoutubeLiveData = MutableLiveData<String>()
+    private val descriptionFlow = MutableStateFlow("")
 
     var isEditMode: Boolean = false
     var isAddMode: Boolean = false
@@ -84,7 +84,7 @@ class AddEditProductDescriptionViewModel @Inject constructor(
     }
 
     private fun initVideoYoutube() = launch {
-        videoYoutubeFlow
+        videoYoutubeLiveData
                 .asFlow()
                 .filter {
                     return@filter it.isNotBlank()
@@ -151,7 +151,7 @@ class AddEditProductDescriptionViewModel @Inject constructor(
     }
 
     fun urlYoutubeChanged(url: String) {
-        videoYoutubeFlow.value = url
+        videoYoutubeLiveData.value = url
     }
 
     fun validateDescriptionChanged(desc: String) {
