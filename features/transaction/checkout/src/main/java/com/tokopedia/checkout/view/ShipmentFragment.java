@@ -1237,9 +1237,11 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             if (resultCode == Activity.RESULT_CANCELED) {
                 activity.finish();
             } else {
-                SaveAddressDataModel addressDataModel = data.getParcelableExtra(LogisticConstant.EXTRA_ADDRESS_NEW);
-                if (addressDataModel != null) {
-                    updateLocalCacheAddressData(addressDataModel);
+                if (data != null) {
+                    SaveAddressDataModel addressDataModel = data.getParcelableExtra(LogisticConstant.EXTRA_ADDRESS_NEW);
+                    if (addressDataModel != null) {
+                        updateLocalCacheAddressData(addressDataModel);
+                    }
                 }
                 shipmentPresenter.processInitialLoadCheckoutPage(
                         false, isOneClickShipment(), isTradeIn(), false,
