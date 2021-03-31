@@ -18,7 +18,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AutoCompleteTextView
-import android.widget.TextView
 import androidx.core.app.TaskStackBuilder
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
@@ -41,6 +40,7 @@ import com.tokopedia.hotel.booking.di.HotelBookingComponent
 import com.tokopedia.hotel.booking.presentation.activity.HotelBookingActivity.Companion.HOTEL_BOOKING_SCREEN_NAME
 import com.tokopedia.hotel.booking.presentation.viewmodel.HotelBookingViewModel
 import com.tokopedia.hotel.booking.presentation.widget.HotelBookingBottomSheets
+import com.tokopedia.hotel.common.analytics.SCREEN_NAME_CHECKOUT_PROMO
 import com.tokopedia.hotel.common.analytics.TrackingHotelUtil
 import com.tokopedia.hotel.common.presentation.HotelBaseFragment
 import com.tokopedia.hotel.common.presentation.widget.InfoTextView
@@ -61,6 +61,7 @@ import com.tokopedia.travel.passenger.presentation.widget.TravellerInfoWidget
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_hotel_booking.*
@@ -525,6 +526,7 @@ class HotelBookingFragment : HotelBaseFragment() {
 
             booking_pay_now_promo_ticker.actionListener = object : TickerPromoStackingCheckoutView.ActionListener {
                 override fun onClickUsePromo() {
+                    trackingHotelUtil.openScreen(context, SCREEN_NAME_CHECKOUT_PROMO)
                     val intent = RouteManager.getIntent(activity, ApplinkConstInternalPromo.PROMO_LIST_HOTEL)
                     intent.putExtra(COUPON_EXTRA_COUPON_ACTIVE, cart.appliedVoucher.isCoupon)
                     intent.putExtra(COUPON_EXTRA_CART_ID, hotelCart.cartID)
@@ -638,7 +640,7 @@ class HotelBookingFragment : HotelBaseFragment() {
     private fun onImportantNotesClicked(notes: String) {
         context?.run {
             val importantNotesBottomSheets = HotelBookingBottomSheets()
-            val textView = TextView(this)
+            val textView = Typography(this)
             textView.text = notes
             importantNotesBottomSheets.setTitle(getString(R.string.hotel_important_info_title))
             importantNotesBottomSheets.addContentView(textView)
