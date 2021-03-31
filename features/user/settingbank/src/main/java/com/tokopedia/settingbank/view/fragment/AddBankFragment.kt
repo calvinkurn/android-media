@@ -11,14 +11,13 @@ import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
-import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.getDimens
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
@@ -60,8 +59,6 @@ class AddBankFragment : BaseDaggerFragment() {
 
     private lateinit var addAccountViewModel: AddAccountViewModel
 
-    private lateinit var confirmationDialog: AlertDialog
-
     val builder: AddBankRequest.Builder = AddBankRequest.Builder()
 
     var isFragmentRestored: Boolean = false
@@ -89,8 +86,8 @@ class AddBankFragment : BaseDaggerFragment() {
     }
 
     private fun initViewModels() {
-        val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
-        addAccountViewModel = viewModelProvider.get(AddAccountViewModel::class.java)
+        addAccountViewModel = ViewModelProvider(this, viewModelFactory)
+                .get(AddAccountViewModel::class.java)
     }
 
     private fun restoreBuilderAndBank(bundle: Bundle) {
@@ -135,9 +132,12 @@ class AddBankFragment : BaseDaggerFragment() {
         textAreaBankName.textAreaInput.apply {
             isClickable = false
             isFocusable = false
+            isSingleLine = true
             setTextSize(TypedValue.COMPLEX_UNIT_PX,
                     getDimens(com.tokopedia.unifycomponents.R.dimen.unify_font_16).toFloat())
             setOnClickListener { openBankListForSelection() }
+            val paddingEndDimen = getDimens(com.tokopedia.unifycomponents.R.dimen.unify_space_32)
+            setPadding(paddingLeft, paddingTop, paddingEndDimen, paddingBottom)
         }
         textAreaBankAccountNumber.textAreaInput.apply {
             setTextSize(TypedValue.COMPLEX_UNIT_PX,
@@ -406,27 +406,27 @@ class AddBankFragment : BaseDaggerFragment() {
     }
 
     private fun openConfirmationPopUp() {
-        activity?.let { it ->
+        context?.let {context->
             val addBankRequest = builder.build()
-            val dialogBuilder = AlertDialog.Builder(it)
-            val inflater = it.layoutInflater
-            val dialogView = inflater.inflate(R.layout.sbank_confirmation_dialog, null)
-            (dialogView.findViewById(R.id.heading) as TextView).text = getString(R.string.sbank_confirm_add_bank_account)
-            val description = context?.resources?.getString(R.string.sbank_add_bank_confirm, bank.abbreviation,
+            val description = context.getString(R.string.sbank_add_bank_confirm, bank.abbreviation,
                     addBankRequest.accountNo, addBankRequest.accountName)
-            (dialogView.findViewById(R.id.description) as TextView).text = description
-            dialogView.findViewById<View>(R.id.continue_btn).setOnClickListener {
-                bankSettingAnalytics.eventDialogConfirmAddAccountClick()
-                confirmationDialog.dismiss()
-                openPinVerification()
+            DialogUnify(context = context, actionType = DialogUnify.HORIZONTAL_ACTION,
+                    imageType = DialogUnify.NO_IMAGE).apply {
+                setTitle(getString(R.string.sbank_confirm_add_bank_account))
+                setDescription(description)
+                setPrimaryCTAText(getString(R.string.sbank_ya_tambah))
+                setSecondaryCTAText(getString(R.string.sbank_batal))
+                setPrimaryCTAClickListener {
+                    bankSettingAnalytics.eventDialogConfirmAddAccountClick()
+                    openPinVerification()
+                    dismiss()
+                }
+                setSecondaryCTAClickListener {
+                    dismiss()
+                }
+                show()
             }
-            dialogView.findViewById<View>(R.id.back_btn).setOnClickListener {
-                if (::confirmationDialog.isInitialized)
-                    confirmationDialog.dismiss()
-            }
-            confirmationDialog = dialogBuilder.setView(dialogView).show()
         }
-
     }
 
     private fun openPinVerification() {
@@ -507,7 +507,7 @@ class AddBankFragment : BaseDaggerFragment() {
     private fun setTncText() {
         val tncSpannableString = createTermsAndConditionSpannable()
         tvAddBankTnc.text = tncSpannableString
-        tvAddBankTnc.highlightColor = resources.getColor(android.R.color.transparent);
+        tvAddBankTnc.highlightColor = MethodChecker.getColor(context, android.R.color.transparent)
         tvAddBankTnc.movementMethod = LinkMovementMethod.getInstance()
     }
 
@@ -517,7 +517,7 @@ class AddBankFragment : BaseDaggerFragment() {
         val spannableString = SpannableString(readMoreText)
         val startIndex = 0
         val endIndex = spannableString.length
-        val color = this.resources.getColor(com.tokopedia.design.R.color.tkpd_main_green)
+        val color = MethodChecker.getColor(context, com.tokopedia.unifycomponents.R.color.Unify_G400)
         spannableString.setSpan(color, startIndex, endIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         spannableString.setSpan(object : ClickableSpan() {
             override fun onClick(widget: View) {
@@ -564,7 +564,7 @@ class AddBankFragment : BaseDaggerFragment() {
     }
 
     private fun getAlphabetOnlyInputFilter(): Array<InputFilter> {
-        val regex = Regex("^[a-zA-Z ]+$")
+        val regex = Regex("^[a-zA-Z* ]+$")
         return arrayOf(
                 object : InputFilter {
                     override fun filter(
@@ -582,8 +582,8 @@ class AddBankFragment : BaseDaggerFragment() {
         )
     }
 
-    private fun setPeriksaButtonState(isEnable : Boolean){
-        if(isEnable)
+    private fun setPeriksaButtonState(isEnable: Boolean) {
+        if (isEnable)
             btnPeriksa.buttonVariant = UnifyButton.Variant.GHOST
         else
             btnPeriksa.buttonVariant = UnifyButton.Variant.FILLED

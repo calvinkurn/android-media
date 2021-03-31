@@ -57,5 +57,7 @@
     <string name="sbank_please_select_photo">Silakan pilih foto dokumen</string>
     <string name="sbank_name_char_limit_error">Panjang harus dalam min 3 dan maks 128</string>
     <string name="sbank_oke">oke</string>
+    <string name="sbank_ya_tambah">Ya, Tambah</string>
+    <string name="sbank_batal">Batal</string>
 
 </resources>
