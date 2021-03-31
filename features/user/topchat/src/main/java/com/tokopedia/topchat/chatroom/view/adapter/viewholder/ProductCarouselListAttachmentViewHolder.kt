@@ -63,17 +63,14 @@ class ProductCarouselListAttachmentViewHolder constructor(
 
     override fun bind(carousel: ProductCarouselUiModel) {
         super.bind(carousel)
-        updateParentMetaData(carousel)
-        ProductCarouselListAttachmentViewHolderBinder.bindDeferredAttachment(carousel, deferredAttachment)
+        ProductCarouselListAttachmentViewHolderBinder.updateParentMetaData(
+                carousel, adapterPosition, adapter
+        )
+        ProductCarouselListAttachmentViewHolderBinder.bindDeferredAttachment(
+                carousel, deferredAttachment
+        )
         ProductCarouselListAttachmentViewHolderBinder.bindProductCarousel(carousel, adapter)
         ProductCarouselListAttachmentViewHolderBinder.bindScrollState(rv, listener, this)
-    }
-
-    private fun updateParentMetaData(carousel: ProductCarouselUiModel) {
-        val metaData = SingleProductAttachmentContainer.ParentViewHolderMetaData(
-                carousel, adapterPosition
-        )
-        adapter.updateParentMetaData(metaData)
     }
 
     companion object {
