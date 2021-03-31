@@ -249,14 +249,8 @@ class GetRatesEstimateUseCase @Inject constructor(private val graphqlRepository:
             throw MessageErrorException(error.firstOrNull()?.message ?: "")
         }
 
-        val filteredService = data.rates.services.asSequence()
-                .filter { it.status == 200 || it.error.id == "501" }
-                .map { service ->
-                    service.copy(
-                            products = service.products.asSequence()
-                                    .filter { it.status == 200 || it.error.id == "501" }.toList())
-                }
-                .filter { it.products.isNotEmpty() }.toList()
+        val filteredService = data.rates.services.filter { it.products.isNotEmpty() }
+
         data.copy(rates = data.rates.copy(services = filteredService))
         return data
     }

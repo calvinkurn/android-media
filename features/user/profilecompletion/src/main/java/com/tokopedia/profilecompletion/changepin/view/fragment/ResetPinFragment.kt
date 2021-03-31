@@ -11,7 +11,7 @@ import com.tokopedia.profilecompletion.changepin.view.activity.ChangePinActivity
  * Created by Ade Fulki on 05/01/21.
  */
 
-class ChangePinFrom2FAFragment : ChangePinFragment() {
+class ResetPinFragment : ChangePinFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -41,8 +41,8 @@ class ChangePinFrom2FAFragment : ChangePinFragment() {
 
     companion object {
 
-        fun createInstance(bundle: Bundle): ChangePinFrom2FAFragment {
-            val fragment = ChangePinFrom2FAFragment()
+        fun createInstance(bundle: Bundle): ResetPinFragment {
+            val fragment = ResetPinFragment()
             fragment.arguments = bundle
             return fragment
         }
