@@ -75,13 +75,12 @@ open class RecommendationPageViewModel @Inject constructor(
     private val _buyNowLiveData = MutableLiveData<Response<ProductInfoDataModel>>()
 
 
-    fun getRecomDataWithTopads(
-            productId: String,
-            queryParam: String) {
-        getRecommendationList(productId, queryParam)
-
-        getProductTopadsStatus(productId, queryParam)
-    }
+//    fun getRecomDataWithTopads(
+//            productId: String,
+//            queryParam: String) {
+//        getRecommendationList(productId, queryParam)
+//        getProductTopadsStatus(productId, queryParam)
+//    }
 
     /**
      * [getRecommendationList] is the void for get recommendation widgets from the network
@@ -126,6 +125,7 @@ open class RecommendationPageViewModel @Inject constructor(
                         listVisitable.addAll(recommendationMappingWidget)
                     }
                     _recommendationListLiveData.postValue(listVisitable)
+                    getProductTopadsStatus(productId, queryParam)
                 } else {
                     _recommendationListLiveData.postValue(listOf(RecommendationErrorDataModel(TimeoutException())))
                 }
@@ -153,8 +153,8 @@ open class RecommendationPageViewModel @Inject constructor(
                     adsStatus = getTopadsIsAdsUseCase.executeOnBackground()
                     val dataList = recommendationListLiveData.value as MutableList
                     val productRecom = dataList?.firstOrNull { it is ProductInfoDataModel }
-                    val errorCode = adsStatus.status.error_code
-                    if (errorCode >= 200 || errorCode <= 300) {
+                    val errorCode = adsStatus.data.status.error_code
+                    if (errorCode >= 200 && errorCode <= 300) {
                         (productRecom as? ProductInfoDataModel)?.productDetailData?.let {
                             val topadsProduct = adsStatus.data.productList[0]
                             it.isTopads = topadsProduct.isCharge

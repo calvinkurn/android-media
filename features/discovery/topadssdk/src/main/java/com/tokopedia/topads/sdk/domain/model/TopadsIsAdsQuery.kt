@@ -7,14 +7,14 @@ import com.google.gson.annotations.SerializedName
  */
 data class TopadsIsAdsQuery (
         @SerializedName("topAdsGetDynamicSlotting" )
-        val data: TopAdsGetDynamicSlottingData = TopAdsGetDynamicSlottingData(),
-        @SerializedName("status")
-        val status: TopadsStatus = TopadsStatus()
+        val data: TopAdsGetDynamicSlottingData = TopAdsGetDynamicSlottingData()
 )
 
 data class TopAdsGetDynamicSlottingData (
         @SerializedName("data")
-        val productList: List<TopAdsGetDynamicSlottingDataProduct> = mutableListOf()
+        val productList: List<TopAdsGetDynamicSlottingDataProduct> = mutableListOf(),
+        @SerializedName("status")
+        val status: TopadsStatus = TopadsStatus()
 )
 
 data class TopAdsGetDynamicSlottingDataProduct (
