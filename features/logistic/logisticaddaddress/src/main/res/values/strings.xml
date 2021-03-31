@@ -169,4 +169,6 @@
     <string name="txt_phone_helper"> Min. 9 angka</string>
     <string name="contact_not_found">Kontak tidak ditemukan</string>
     <string name="rationale_need_contact">Untuk pakai fitur ini, izinkan Tokpedia mengakses kontakmu.</string>
+    <string name="contact_title_coachmark">Pilih no. HP langsung dari kontakmu</string>
+    <string name="contact_desc_coachmark">Jadi lebih mudah menambahkan nomor HP penerima pesanan!</string>
 </resources>

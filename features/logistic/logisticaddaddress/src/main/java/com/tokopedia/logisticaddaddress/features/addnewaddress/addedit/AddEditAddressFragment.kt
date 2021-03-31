@@ -23,6 +23,9 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.material.textfield.TextInputLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler
+import com.tokopedia.coachmark.CoachMark2
+import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticCommon.data.entity.address.Token
 import com.tokopedia.logisticCommon.util.getLatLng
@@ -65,7 +68,6 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
     private var currentLat: Double = 0.0
     private var currentLong: Double = 0.0
     private var labelRumah: String? = "Rumah"
-    private var permissionCheckerHelper: PermissionCheckerHelper? = null
     private var isMismatch: Boolean = false
     private var isMismatchSolved: Boolean = false
     private var isUnnamedRoad: Boolean = false
@@ -87,6 +89,9 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
     private var isLogisticLabel: Boolean = true
     private var isCircuitBreaker: Boolean = false
 
+    private var permissionCheckerHelper: PermissionCheckerHelper? = null
+    private lateinit var localCacheHandler: LocalCacheHandler
+
     lateinit var mapView: MapView
 
     @Inject
@@ -98,6 +103,8 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
     companion object {
         const val EXTRA_ADDRESS_NEW = "EXTRA_ADDRESS_NEW"
         const val REQUEST_CODE_CONTACT_PICKER = 99
+        const val PREFERENCES_NAME = "add_address_preferences"
+        const val ADDRESS_CONTACT_HAS_SHOWN = "address_show_coach_mark"
 
         @JvmStatic
         fun newInstance(extra: Bundle): AddEditAddressFragment {
@@ -112,7 +119,6 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
                     putBoolean(AddressConstants.EXTRA_IS_LOGISTIC_LABEL, extra.getBoolean(AddressConstants.EXTRA_IS_LOGISTIC_LABEL, true))
                     putBoolean(AddressConstants.EXTRA_IS_CIRCUIT_BREAKER, extra.getBoolean(AddressConstants.EXTRA_IS_CIRCUIT_BREAKER, false))
                 }
-                permissionCheckerHelper = PermissionCheckerHelper()
             }
         }
     }
@@ -139,6 +145,8 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
             isLogisticLabel = it.getBoolean(AddressConstants.EXTRA_IS_LOGISTIC_LABEL, true)
             isCircuitBreaker = it.getBoolean(AddressConstants.EXTRA_IS_CIRCUIT_BREAKER, false)
         }
+        permissionCheckerHelper = PermissionCheckerHelper()
+        localCacheHandler = LocalCacheHandler(context, PREFERENCES_NAME)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -163,6 +171,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
         prepareMap()
         prepareLayout()
         setViewListener()
+        showOnBoarding()
     }
 
     private fun prepareMap() {
@@ -782,6 +791,26 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
             }
         }
         et_kode_pos_mismatch.setText(this.saveAddressDataModel?.postalCode)
+    }
+
+    private fun showOnBoarding() {
+        val coachMarkHasShown = localCacheHandler.getBoolean(ADDRESS_CONTACT_HAS_SHOWN, false)
+        if (coachMarkHasShown) {
+            return
+        }
+
+        val coachMarkItem = ArrayList<CoachMark2Item>()
+        coachMarkItem.add(CoachMark2Item(btn_contact_picker,
+            getString(R.string.contact_title_coachmark),
+            getString(R.string.contact_desc_coachmark)))
+
+        val coachMark = context?.let { CoachMark2(it) }
+        coachMark?.showCoachMark(coachMarkItem)
+
+        localCacheHandler.apply {
+            putBoolean(ADDRESS_CONTACT_HAS_SHOWN, true)
+            applyEditor()
+        }
     }
 
     private fun showDistrictRecommendationBottomSheet() {
