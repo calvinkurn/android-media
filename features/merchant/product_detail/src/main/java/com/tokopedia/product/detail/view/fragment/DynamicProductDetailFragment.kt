@@ -2123,6 +2123,14 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
         }
     }
 
+    private fun shareProductFromNavToolbar() {
+        // new navbar
+        viewModel.getDynamicProductInfoP1?.let { productInfo ->
+            DynamicProductDetailTracking.Click.eventClickShareNavToolbar(productInfo)
+            shareProduct()
+        }
+    }
+
     private fun shareProduct() {
         activity?.let {
             viewModel.getDynamicProductInfoP1?.let { productInfo ->
@@ -2561,7 +2569,7 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
             setIcon(
                     IconBuilder()
                             .addIcon(IconList.ID_SHARE) {
-                                shareProductFromToolbar()
+                                shareProductFromNavToolbar()
                             }
                             .addIcon(IconList.ID_CART) {}
                             .addIcon(IconList.ID_NAV_GLOBAL) {}

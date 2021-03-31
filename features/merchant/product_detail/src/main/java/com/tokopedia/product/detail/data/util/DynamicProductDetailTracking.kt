@@ -150,6 +150,22 @@ object DynamicProductDetailTracking {
             TrackingUtil.addComponentTracker(mapEvent, productInfo, componentTrackDataModel, ProductTrackingConstant.Action.CLICK_FULLSCREEN_VIDEO)
         }
 
+        fun eventClickShareNavToolbar(productInfo: DynamicProductInfoP1?, userId: String) {
+            val mapEvent = TrackAppUtils.gtmData(
+                    ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
+                    ProductTrackingConstant.Category.PDP,
+                    ProductTrackingConstant.Action.CLICK_SHARE_FROM_CONTENT,
+                    "")
+            mapEvent[ProductTrackingConstant.Tracking.KEY_USER_ID_VARIANT] = userId
+            mapEvent[ProductTrackingConstant.Tracking.KEY_ISLOGGIN] = (userId.isNotEmpty()).toString()
+            mapEvent[ProductTrackingConstant.Tracking.KEY_SHOP_TYPE] = productInfo?.shopTypeString
+                    ?: ""
+            mapEvent[ProductTrackingConstant.Tracking.KEY_SHOP_ID_SELLER] = productInfo?.basic?.shopID
+                    ?: ""
+
+            TrackingUtil.addComponentTracker(mapEvent, productInfo, null, ProductTrackingConstant.Action.CLICK_SHARE_FROM_CONTENT)
+        }
+
         fun eventClickReportFromComponent(productInfo: DynamicProductInfoP1?, userId: String, componentTrackDataModel: ComponentTrackDataModel?) {
             val mapEvent = TrackAppUtils.gtmData(
                     ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
