@@ -2207,8 +2207,10 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             true -> if (coachMarkIsShowing) {
                 coachmark?.let {
                     try {
-                        it.showCoachMark(step = it.coachMarkItem, index = it.currentIndex)
-                        it.coachMarkItem[it.currentIndex].setCoachmarkShownPref()
+                        if (it.coachMarkItem.isNotEmpty() && isValidToShowCoachMark()) {
+                            it.showCoachMark(step = it.coachMarkItem, index = it.currentIndex)
+                            it.coachMarkItem[it.currentIndex].setCoachmarkShownPref()
+                        }
                     } catch (e: Exception) {
                         e.printStackTrace()
                     }
