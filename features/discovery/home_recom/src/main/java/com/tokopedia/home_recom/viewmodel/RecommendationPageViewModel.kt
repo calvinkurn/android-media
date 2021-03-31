@@ -139,10 +139,6 @@ open class RecommendationPageViewModel @Inject constructor(
     fun getProductTopadsStatus(
             productId: String,
             queryParam: String) {
-        //todo :
-        // 1. parallel with new usecase getistopads
-        // 2. search viewmodel for ProductInfoDataModel entity
-        // 3. if found, append isTopads, topads click url and topads view url
         if (queryParam.contains(PARAM_TXSC)) {
             launchCatchError(coroutineContext, block = {
                 var adsStatus = TopadsIsAdsQuery()
