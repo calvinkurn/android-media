@@ -309,7 +309,8 @@ class NewShopPageFragmentHeaderViewHolder(private val view: View, private val li
     }
 
     fun updateShopName(shopName: String) {
-        shopPageHeaderAdapter?.setShopName(MethodChecker.fromHtml(shopName).toString())
+        if(shopName.isNotEmpty())
+            shopPageHeaderAdapter?.setShopName(MethodChecker.fromHtml(shopName).toString())
     }
 
 }
