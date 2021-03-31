@@ -38,11 +38,6 @@ class PdpSimulationActivity : BaseSimpleActivity(), HasComponent<PdpSimulationCo
         return PdpSimulationFragment.newInstance(bundle)
     }
 
-    override fun attachBaseContext(newBase: Context) {
-        super.attachBaseContext(newBase)
-        SplitCompat.installActivity(this)
-    }
-
     companion object {
         const val SCREEN_NAME = "PayLater & Cicilan"
     }
