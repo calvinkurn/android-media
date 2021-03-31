@@ -48,8 +48,6 @@ import com.tokopedia.hotel.common.util.TRACKING_HOTEL_CHECKOUT
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.promocheckout.common.data.PromoCheckoutCommonQueryConst
-import com.tokopedia.promocheckout.common.data.REQUEST_CODE_PROMO_DETAIL
-import com.tokopedia.promocheckout.common.data.REQUEST_CODE_PROMO_LIST
 import com.tokopedia.promocheckout.common.view.model.PromoData
 import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView
 import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView
@@ -546,12 +544,12 @@ class HotelBookingFragment : HotelBaseFragment() {
                             intent = RouteManager.getIntent(activity, ApplinkConstInternalPromo.PROMO_DETAIL_HOTEL)
                             intent.putExtra(COUPON_EXTRA_IS_USE, true)
                             intent.putExtra(COUPON_EXTRA_COUPON_CODE, promoCode)
-                            requestCode = REQUEST_CODE_PROMO_DETAIL
+                            requestCode = COUPON_EXTRA_DETAIL_ACTIVITY_RESULT
                         } else {
                             intent = RouteManager.getIntent(activity, ApplinkConstInternalPromo.PROMO_LIST_HOTEL)
                             intent.putExtra(COUPON_EXTRA_PROMO_CODE, promoCode)
                             intent.putExtra(COUPON_EXTRA_COUPON_ACTIVE, true)
-                            requestCode = REQUEST_CODE_PROMO_LIST
+                            requestCode = COUPON_EXTRA_LIST_ACTIVITY_RESULT
                         }
                         intent.putExtra(COUPON_EXTRA_CART_ID, hotelCart.cartID)
                         startActivityForResult(intent, requestCode)
