@@ -4,14 +4,14 @@
   "query": [
     {
       "businessUnit" : "physical goods",
-      "eventCategory" : "{{.*}}",
+      "eventCategory" : ".*",
       "currentSite" : "tokopediamarketplace",
       "screenName" : "/inbox - talk",
       "event" : "clickPDP",
-      "userId" : "{{\\d{1,}}}",
+      "userId" : "\\d{1,}",
       "eventAction" : "click - talk message",
-      "sessionIris": "{{.{1,}}}",
-      "eventLabel" : "{{talk id:.*;product id:.*; filter active:.*; message status:.*; shop id:.*; count unread messages:.*;}}"
+      "sessionIris": ".{1,}",
+      "eventLabel" : "talk id:.*;product id:.*; filter active:.*; message status:.*; shop id:.*; count unread messages:.*;"
     }
   ]
 }

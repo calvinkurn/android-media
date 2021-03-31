@@ -4,62 +4,62 @@
   "query": [
     {
       "promotions": [{
-        "creative_name": "{{.*}}",
-        "creative_slot": "{{.*}}",
-        "item_id": "{{.*}}",
-        "item_name": "{{.*}}",
-        "creative_url": "{{.*}}"
+        "creative_name": ".*",
+        "creative_slot": ".*",
+        "item_id": ".*",
+        "item_name": ".*",
+        "creative_url": ".*"
       }],
       "businessUnit": "home & browse",
       "eventCategory": "homepage",
       "currentSite": "tokopediamarketplace",
       "screenName": "/",
       "event": "view_item",
-      "userId": "{{.*}}",
+      "userId": ".*",
       "eventAction": "impression on category widget banner",
-      "sessionIris": "{{.*}}",
-      "eventLabel": "{{.*}}",
-      "channelId": "{{.*}}"
+      "sessionIris": ".*",
+      "eventLabel": ".*",
+      "channelId": ".*"
     },
     {
       "businessUnit": "home & browse",
       "eventCategory": "homepage",
       "screenName": "/",
-      "userId": "{{.*}}",
+      "userId": ".*",
       "eventAction": "click on category widget banner",
-      "sessionIris": "{{.*}}",
-      "eventLabel": "{{.*}}",
+      "sessionIris": ".*",
+      "eventLabel": ".*",
       "promotions": [{
-        "creative_name": "{{.*}}",
-        "creative_slot": "{{.*}}",
-        "item_id": "{{.*}}",
-        "item_name": "{{.*}}",
-        "creative_url": "{{.*}}"
+        "creative_name": ".*",
+        "creative_slot": ".*",
+        "item_id": ".*",
+        "item_name": ".*",
+        "creative_url": ".*"
       }],
-      "affinityLabel": "{{.*}}",
+      "affinityLabel": ".*",
       "currentSite": "tokopediamarketplace",
-      "attribution": "{{.*}}",
-      "shopId": "{{.*}}",
+      "attribution": ".*",
+      "shopId": ".*",
       "event": "select_content",
-      "categoryId": "{{.*}}",
-      "channelId": "{{.*}}",
-      "campaignCode": "{{.*}}"
+      "categoryId": ".*",
+      "channelId": ".*",
+      "campaignCode": ".*"
     },
     {
       "businessUnit": "home & browse",
       "eventCategory": "homepage",
       "screenName": "/",
-      "userId": "{{.*}}",
+      "userId": ".*",
       "eventAction": "click view all on category widget banner",
-      "sessionIris": "{{.*}}",
-      "eventLabel": "{{.*}}",
-      "affinityLabel": "{{.*}}",
+      "sessionIris": ".*",
+      "eventLabel": ".*",
+      "affinityLabel": ".*",
       "currentSite": "tokopediamarketplace",
-      "attribution": "{{.*}}",
-      "shopId": "{{.*}}",
+      "attribution": ".*",
+      "shopId": ".*",
       "event": "clickHomepage",
-      "categoryId": "{{.*}}",
-      "campaignCode": "{{.*}}"
+      "categoryId": ".*",
+      "campaignCode": ".*"
     }
   ]
 }

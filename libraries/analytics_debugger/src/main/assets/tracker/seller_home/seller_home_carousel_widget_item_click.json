@@ -4,19 +4,19 @@
   "query": [
     {
       "event": "select_content",
-      "eventCategory": "{{seller app - home - click widget banner - .{1,} - .{1,}}}",
-      "eventAction": "{{click widget banner - .{1,}}}",
-      "eventLabel": "{{.* - \\d{1,}}}",
+      "eventCategory": "seller app - home - click widget banner - .{1,} - .{1,}",
+      "eventAction": "click widget banner - .{1,}",
+      "eventLabel": ".* - \\d{1,}",
       "promotions": [
         {
-          "creative_name": "{{\\{.{1,}\\}}}",
-          "creative_slot": "{{\\d{1,}}}",
-          "item_id": "{{\\{\\d{1,}\\}}}",
-          "item_name": "{{.{1,}}}",
-          "creative_url": "{{.{1,}}}"
+          "creative_name": "\\{.{1,}\\}",
+          "creative_slot": "\\d{1,}",
+          "item_id": "\\{\\d{1,}\\}",
+          "item_name": ".{1,}",
+          "creative_url": ".{1,}"
         }
       ],
-      "sessionIris": "{{.{1,}}}"
+      "sessionIris": ".{1,}"
     }
   ]
 }

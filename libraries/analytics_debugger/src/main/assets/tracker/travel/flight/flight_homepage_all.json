@@ -6,36 +6,36 @@
       "event": "genericFlightEvent",
       "eventAction": "select origin",
       "eventCategory": "digital - flight",
-      "eventLabel": "{{.*}}",
-      "sessionIris": "{{.*}}"
+      "eventLabel": ".*",
+      "sessionIris": ".*"
     },
     {
       "event": "genericFlightEvent",
       "eventAction": "select destination",
       "eventCategory": "digital - flight",
-      "eventLabel": "{{.*}}",
-      "sessionIris": "{{.*}}"
+      "eventLabel": ".*",
+      "sessionIris": ".*"
     },
     {
       "event": "genericFlightEvent",
       "eventAction": "select flight class",
       "eventCategory": "digital - flight",
-      "eventLabel": "{{.*}}",
-      "sessionIris": "{{.*}}"
+      "eventLabel": ".*",
+      "sessionIris": ".*"
     },
     {
       "event": "genericFlightEvent",
       "eventAction": "select Passenger",
       "eventCategory": "digital - flight",
-      "eventLabel": "{{\\d* .* - \\d* .* - \\d* .*}}",
-      "sessionIris": "{{.*}}"
+      "eventLabel": "\\d* .* - \\d* .* - \\d* .*",
+      "sessionIris": ".*"
     },
     {
       "event": "genericFlightEvent",
       "eventAction": "select trip type",
       "eventCategory": "digital - flight",
-      "eventLabel": "{{.*}}",
-      "sessionIris": "{{.*}}"
+      "eventLabel": ".*",
+      "sessionIris": ".*"
     }
   ]
 }

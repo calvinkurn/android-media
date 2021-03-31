@@ -7,15 +7,15 @@
       "ecommerce": "",
       "event": "addToCart",
       "eventAction": "click - beli on wishlist",
-      "sessionIris": "{{.*}}",
-      "eventLabel": "{{.*}}"
+      "sessionIris": ".*",
+      "eventLabel": ".*"
     },
     {
       "eventCategory": "wishlist page",
       "event": "clickWishlist",
       "eventAction": "click - cek keranjang on wishlist",
-      "sessionIris": "{{.*}}",
-      "eventLabel": "{{.*}}"
+      "sessionIris": ".*",
+      "eventLabel": ".*"
     }
   ]
 }

@@ -6,22 +6,22 @@
       "event": "clickHomepage",
       "eventCategory": "digital - homepage",
       "eventAction": "click promo tab",
-      "eventLabel": "{{.+}}",
-      "sessionIris": "{{.+}}"
+      "eventLabel": ".+",
+      "sessionIris": ".+"
     },
     {
       "event": "clickHomepage",
       "eventCategory": "digital - homepage",
       "eventAction": "click salin promo digital",
-      "eventLabel": "{{.+ - .+}}",
-      "sessionIris": "{{.+}}"
+      "eventLabel": ".+ - .+",
+      "sessionIris": ".+"
     },
     {
       "event": "clickHomepage",
       "eventCategory": "digital - homepage",
       "eventAction": "input from favorite number",
-      "eventLabel": "{{.+ - .+}}",
-      "sessionIris": "{{.+}}"
+      "eventLabel": ".+ - .+",
+      "sessionIris": ".+"
     }
   ]
 }

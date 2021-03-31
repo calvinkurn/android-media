@@ -4,57 +4,57 @@
   "query": [
     {
       "businessUnit": "travel & entertainment",
-      "clientId": "{{.*}}",
+      "clientId": ".*",
       "eventCategory": "digital - event",
       "currentSite": "tokopediadigitalevents",
-      "screenName": "{{.*}}",
+      "screenName": ".*",
       "category": "events",
       "event": "clickEvent",
-      "userId": "{{.*}}",
+      "userId": ".*",
       "eventAction": "click package",
-      "sessionIris": "{{.*}}",
-      "eventLabel": "{{.*}}"
+      "sessionIris": ".*",
+      "eventLabel": ".*"
     },
     {
       "businessUnit": "travel & entertainment",
-      "clientId": "{{.*}}",
+      "clientId": ".*",
       "eventCategory": "digital - event",
       "currentSite": "tokopediadigitalevents",
-      "screenName": "{{.*}}",
+      "screenName": ".*",
       "category": "events",
       "event": "clickEvent",
-      "userId": "{{.*}}",
+      "userId": ".*",
       "eventAction": "click quantity",
-      "sessionIris": "{{.*}}",
-      "eventLabel": "{{.*}}"
+      "sessionIris": ".*",
+      "eventLabel": ".*"
     },
     {
       "businessUnit": "travel & entertainment",
-      "clientId": "{{.*}}",
+      "clientId": ".*",
       "eventCategory": "digital - event",
       "currentSite": "tokopediadigitalevents",
-      "screenName": "{{.*}}",
+      "screenName": ".*",
       "category": "events",
       "event": "add_to_cart",
-      "userId": "{{.*}}",
+      "userId": ".*",
       "eventAction": "click beli",
-      "sessionIris": "{{.*}}",
+      "sessionIris": ".*",
       "items": [
         {
-          "shop_id": "{{.*}}",
-          "quantity": "{{.*}}",
-          "category_id": "{{.*}}",
-          "item_id": "{{.*}}",
-          "price": "{{.*}}",
-          "shop_type": "{{.*}}",
-          "item_name": "{{.*}}",
-          "shop_name": "{{.*}}",
-          "item_brand": "{{.*}}",
-          "item_variant": "{{.*}}",
-          "item_category": "{{.*}}"
+          "shop_id": ".*",
+          "quantity": ".*",
+          "category_id": ".*",
+          "item_id": ".*",
+          "price": ".*",
+          "shop_type": ".*",
+          "item_name": ".*",
+          "shop_name": ".*",
+          "item_brand": ".*",
+          "item_variant": ".*",
+          "item_category": ".*"
         }
       ],
-      "eventLabel": "{{.*}}"
+      "eventLabel": ".*"
     }
   ]
 }

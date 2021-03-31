@@ -3,9 +3,9 @@
     {
       "promotions": [
         {
-          "creative_name": "{{.*}}",
-          "creative_slot": "{{\\d*}}",
-          "item_id": "{{\\d*}}"
+          "creative_name": ".*",
+          "creative_slot": "\\d*",
+          "item_id": "\\d*"
         }
       ],
       "eventCategory": "homepage-cmp",

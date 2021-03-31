@@ -4,33 +4,33 @@
   "query": [
     {
       "eventAction": "click arrow to category directory",
-      "eventCategory": "{{.*}}",
+      "eventCategory": ".*",
       "currentSite": "tokopediamarketplace",
       "event": "clickDiscovery",
-      "userId": "{{.*}}",
-      "eventLabel": "{{.*}}",
+      "userId": ".*",
+      "eventLabel": ".*",
       "businessUnit": "home & browse",
-      "sessionIris": "{{.*}}"
+      "sessionIris": ".*"
     },
     {
       "eventAction": "click category inside category tree",
-      "eventCategory": "{{.*}}",
+      "eventCategory": ".*",
       "currentSite": "tokopediamarketplace",
       "event": "clickDiscovery",
-      "userId": "{{.*}}",
-      "eventLabel": "{{.*}}",
+      "userId": ".*",
+      "eventLabel": ".*",
       "businessUnit": "home & browse",
-      "sessionIris": "{{.*}}"
+      "sessionIris": ".*"
     },
     {
       "eventAction": "click close category tree",
-      "eventCategory": "{{.*}}",
+      "eventCategory": ".*",
       "currentSite": "tokopediamarketplace",
       "event": "clickDiscovery",
-      "userId": "{{.*}}",
-      "eventLabel": "{{.*}}",
+      "userId": ".*",
+      "eventLabel": ".*",
       "businessUnit": "home & browse",
-      "sessionIris": "{{.*}}"
+      "sessionIris": ".*"
     }
   ]
 }

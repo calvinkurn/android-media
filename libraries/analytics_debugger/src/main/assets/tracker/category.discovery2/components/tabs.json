@@ -3,17 +3,17 @@
   "mode": "exact",
   "query": [
     {
-      "sessionIris": "{{.*}}",
-      "eventCategory": "{{.*}}",
+      "sessionIris": ".*",
+      "eventCategory": ".*",
       "eventAction": "click mega tab",
       "event": "select_content",
-      "eventLabel": "{{.*}}",
+      "eventLabel": ".*",
       "promotions": [
         {
-          "item_id": "{{.*}}",
-          "creative_name": "{{.*}}",
-          "item_name": "{{.*}}",
-          "creative_slot": "{{.*}}"
+          "item_id": ".*",
+          "creative_name": ".*",
+          "item_name": ".*",
+          "creative_slot": ".*"
         }
       ]
     }

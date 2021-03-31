@@ -6,11 +6,11 @@
       "event": "clickReview",
       "eventCategory": "review detail page",
       "eventAction": "click - star filter",
-      "eventLabel": "{{star:.*}}",
-      "isActive": "{{true|false}}",
-      "shopId": "{{\\d{1,}}}",
-      "productId": "{{\\d{1,}}}",
-      "sessionIris": "{{.{1,}}}",
+      "eventLabel": "star:.*",
+      "isActive": "true|false",
+      "shopId": "\\d{1,}",
+      "productId": "\\d{1,}",
+      "sessionIris": ".{1,}",
       "screenName": "review detail page"
     }
   ]
