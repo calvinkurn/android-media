@@ -55,11 +55,6 @@ class PdpSimulationRobot {
         ).perform(ViewActions.click())
     }
 
-    fun testCCTabChangeEvent(position: Int) {
-        onView(CommonMatcher.firstView(withId(R.id.modeSwitcher))).perform(setModeSwitcher(true))
-        testClickTabs(position)
-    }
-
     infix fun assertTest(action: PdpSimulationRobot.() -> Unit) = PdpSimulationRobot().apply(action)
 
     fun validate(gtmLogDbSource: GtmLogDBSource,
@@ -96,19 +91,6 @@ class PdpSimulationRobot {
             override fun perform(uiController: UiController, view: View) {
                 val pager = view as ViewPager
                 pager.pageMargin = 0
-            }
-        }
-    }
-
-    private fun setModeSwitcher(isChecked: Boolean): ViewAction {
-        return object : ViewAction {
-            override fun getDescription() = "with tab at index"
-
-            override fun getConstraints() = AllOf.allOf(isDisplayed(), ViewMatchers.isAssignableFrom(ContentSwitcherUnify::class.java))
-
-            override fun perform(uiController: UiController, view: View) {
-                val modeSwitcher = view as ContentSwitcherUnify
-                modeSwitcher.isChecked = isChecked
             }
         }
     }
