@@ -205,9 +205,12 @@ class DigitalCartActivityWithFintechTest {
         //click use promo
         Thread.sleep(1000)
 
+        val dummyPromoDescription = "dummyDescription"
+        val dummyPromoTitle = "Promo Code dummy"
         val mockIntentData = Intent().apply {
             putExtra(EXTRA_PROMO_DATA, PromoData(state = TickerCheckoutView.State.ACTIVE,
-                    amount = 1000, promoCode = "dummyPromoCode", description = "dummyDescription"))
+                    amount = 1000, promoCode = "dummyPromoCode", description = dummyPromoDescription,
+                    title = dummyPromoTitle))
         }
 
         Intents.intending(IntentMatchers.anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, mockIntentData))
@@ -215,6 +218,11 @@ class DigitalCartActivityWithFintechTest {
         Thread.sleep(1000)
 
         onView(withId(R.id.tvTotalPayment)).check(matches(withText("Rp 12.000")))
+
+        onView(withId(R.id.tv_promo_checkout_title)).check(matches(isDisplayed()))
+        onView(withId(R.id.tv_promo_checkout_title)).check(matches(withText(dummyPromoTitle)))
+        onView(withId(R.id.tv_promo_checkout_desc)).check(matches(isDisplayed()))
+        onView(withId(R.id.tv_promo_checkout_desc)).check(matches(withText(dummyPromoDescription)))
 
         onView(withId(R.id.iv_promo_checkout_right)).perform(click())
         Thread.sleep(1000)
