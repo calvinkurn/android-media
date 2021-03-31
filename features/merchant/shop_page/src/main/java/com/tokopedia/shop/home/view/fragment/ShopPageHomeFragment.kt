@@ -17,7 +17,8 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
-import androidx.recyclerview.widget.SimpleItemAnimator
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.SCROLL_STATE_IDLE
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -43,9 +44,6 @@ import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
-import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
-import com.tokopedia.merchantvoucher.voucherDetail.MerchantVoucherDetailActivity
-import com.tokopedia.merchantvoucher.voucherList.MerchantVoucherListActivity
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play.widget.analytic.list.DefaultPlayWidgetInListAnalyticListener
@@ -83,6 +81,7 @@ import com.tokopedia.shop.common.util.ShopPageProductChangeGridRemoteConfig
 import com.tokopedia.shop.common.util.ShopProductViewGridType
 import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.common.util.getIndicatorCount
+import com.tokopedia.shop.common.view.listener.InterfaceShopPageClickScrollToTop
 import com.tokopedia.shop.common.view.listener.ShopProductChangeGridSectionListener
 import com.tokopedia.shop.common.view.model.ShopProductFilterParameter
 import com.tokopedia.shop.common.view.viewmodel.ShopChangeProductGridSharedViewModel
@@ -103,7 +102,8 @@ import com.tokopedia.shop.home.view.listener.ShopHomeEndlessProductListener
 import com.tokopedia.shop.home.view.model.*
 import com.tokopedia.shop.home.view.viewmodel.ShopHomeViewModel
 import com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity
-import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageFragment
+import com.tokopedia.shop.pageheader.presentation.fragment.InterfaceShopPageHeader
+import com.tokopedia.shop.pageheader.presentation.fragment.NewShopPageFragment
 import com.tokopedia.shop.pageheader.presentation.listener.ShopPagePerformanceMonitoringListener
 import com.tokopedia.shop.product.data.model.ShopProduct
 import com.tokopedia.shop.product.util.StaggeredGridLayoutManagerWrapper
@@ -134,7 +134,8 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         ShopHomeCampaignNplWidgetListener,
         ShopProductChangeGridSectionListener,
         SortFilterBottomSheet.Callback,
-        PlayWidgetListener {
+        PlayWidgetListener,
+        InterfaceShopPageClickScrollToTop {
 
     companion object {
         const val KEY_SHOP_ID = "SHOP_ID"
@@ -210,6 +211,8 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     private var remoteConfig: RemoteConfig? = null
     private var sortFilterBottomSheet: SortFilterBottomSheet? = null
     private var shopProductFilterParameter: ShopProductFilterParameter? = ShopProductFilterParameter()
+    private var isClickToScrollToTop = false
+    private var latestCompletelyVisibleItemIndex = -1
 
     val isLogin: Boolean
         get() = viewModel?.isLogin ?: false
@@ -271,7 +274,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     }
 
     private fun isShopHomeTabSelected(): Boolean {
-        return (parentFragment as? ShopPageFragment)?.isTabSelected(this::class.java) ?: false
+        return (parentFragment as? InterfaceShopPageHeader)?.isTabSelected(this::class.java) ?: false
     }
 
     private fun startMonitoringPltRenderPage() {
@@ -329,10 +332,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             it.layoutManager = staggeredGridLayoutManager
             endlessRecyclerViewScrollListener = createEndlessRecyclerViewListener()
             it.addOnScrollListener(endlessRecyclerViewScrollListener)
-            val animator = it.itemAnimator
-            if (animator is SimpleItemAnimator) {
-                animator.supportsChangeAnimations = false
-            }
+            it.itemAnimator = null
         }
         observeShopProductFilterParameterSharedViewModel()
         observeShopChangeProductGridSharedViewModel()
@@ -421,7 +421,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
 
     override fun loadInitialData() {
         shopHomeAdapter.clearAllElements()
-        recycler_view.visible()
+        recycler_view?.visible()
         recyclerViewTopPadding = recycler_view?.paddingTop ?: 0
         globalError_shopPage.hide()
         showLoading()
@@ -778,7 +778,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             globalError_shopPage.setType(GlobalError.NO_CONNECTION)
         }
         globalError_shopPage.visible()
-        recycler_view.hide()
+        recycler_view?.hide()
 
         globalError_shopPage.setOnClickListener {
             loadInitialData()
@@ -856,6 +856,29 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
 
     override fun createEndlessRecyclerViewListener(): EndlessRecyclerViewScrollListener {
         return object : DataEndlessScrollListener(staggeredGridLayoutManager, shopHomeAdapter) {
+
+            override fun onScrolled(view: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(view, dx, dy)
+                val firstCompletelyVisibleItemPosition = (layoutManager as? StaggeredGridLayoutManager)?.findFirstCompletelyVisibleItemPositions(null)?.getOrNull(0).orZero()
+                if (firstCompletelyVisibleItemPosition == 0 && isClickToScrollToTop) {
+                    isClickToScrollToTop = false
+                    (parentFragment as? NewShopPageFragment)?.expandHeader()
+                }
+                if (firstCompletelyVisibleItemPosition != latestCompletelyVisibleItemIndex)
+                    (parentFragment as? NewShopPageFragment)?.hideScrollToTopButton()
+                latestCompletelyVisibleItemIndex = firstCompletelyVisibleItemPosition
+            }
+
+            override fun onScrollStateChanged(recyclerView: RecyclerView, state: Int) {
+                super.onScrollStateChanged(recyclerView, state)
+                if(state ==  SCROLL_STATE_IDLE){
+                    val firstCompletelyVisibleItemPosition = (layoutManager as? StaggeredGridLayoutManager)?.findFirstCompletelyVisibleItemPositions(null)?.getOrNull(0).orZero()
+                    if (firstCompletelyVisibleItemPosition > 0) {
+                        (parentFragment as? NewShopPageFragment)?.showScrollToTopButton()
+                    }
+                }
+            }
+
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
                 shopHomeAdapter.showLoading()
                 getProductList(page)
@@ -918,7 +941,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             }
             REQUEST_CODE_USER_LOGIN -> {
                 if (resultCode == Activity.RESULT_OK)
-                    (parentFragment as? ShopPageFragment)?.refreshData()
+                    (parentFragment as? InterfaceShopPageHeader)?.refreshData()
             }
             REQUEST_CODE_USER_LOGIN_PLAY_WIDGET_REMIND_ME -> if (resultCode == Activity.RESULT_OK) {
                 val lastEvent = viewModel?.playWidgetReminderEvent?.value
@@ -1756,6 +1779,15 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         this.initialProductListData = productListData
     }
 
+    override fun scrollToTop() {
+        isClickToScrollToTop = true
+        recycler_view?.scrollToPosition(0)
+    }
+
+    override fun isShowScrollToTopButton(): Boolean {
+        return latestCompletelyVisibleItemIndex > 0
+    }
+
     //region play widget
     /**
      * Play Widget
@@ -1822,7 +1854,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                 if (widget.hasSuccessfulTranscodedChannel) showWidgetTranscodeSuccessToaster()
 
                 val parent = parentFragment
-                if (parent is ShopPageFragment) {
+                if (parent is InterfaceShopPageHeader) {
                     val recyclerView = getRecyclerView(view)
 
                     if (parent.isNewlyBroadcastSaved() == true) {

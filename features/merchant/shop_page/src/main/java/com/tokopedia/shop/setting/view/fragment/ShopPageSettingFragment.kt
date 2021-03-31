@@ -121,6 +121,11 @@ class ShopPageSettingFragment : BaseDaggerFragment(),
             if (shopDomain.isNullOrEmpty()) {
                 shopDomain = getQueryParameter(SHOP_DOMAIN)
             }
+            pathSegments?.let{
+                if (it.size > 1) {
+                    shopId = it.getOrNull(1).orEmpty()
+                }
+            }
         }
 
         activity?.run {

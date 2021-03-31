@@ -146,6 +146,25 @@
 
         </activity>
 
+        <activity
+            android:name=".feature.reviewreminder.view.activity.ReviewReminderActivity"
+            android:label="@string/review_reminder_title"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"
+            android:windowSoftInputMode="adjustResize">
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_marketplace"
+                    android:pathPattern="@string/path_review_reminder"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
+        </activity>
+
     </application>
 
 </manifest>

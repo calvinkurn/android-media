@@ -15,7 +15,7 @@ import java.util.List;
  * @author Irfan Khoirul on 23/04/18.
  */
 
-public class ShipmentCartItemModel implements ShipmentData, Parcelable {
+public class ShipmentCartItemModel implements Parcelable {
 
     private boolean allItemError;
     private boolean isError;
@@ -189,7 +189,7 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         dest.writeByte((byte) (stateDropshipperHasError ? 1 : 0));
         dest.writeByte((byte) (stateLoadingCourierState ? 1 : 0));
         dest.writeByte((byte) (stateHasLoadCourierState ? 1 : 0));
-        dest.writeByte((byte) (stateHasLoadCourierTradeInDropOffState ? 1: 0));
+        dest.writeByte((byte) (stateHasLoadCourierTradeInDropOffState ? 1 : 0));
         dest.writeByte((byte) (stateHasExtraMarginTop ? 1 : 0));
         dest.writeByte((byte) (useCourierRecommendation ? 1 : 0));
         dest.writeByte((byte) (isHidingCourier ? 1 : 0));
@@ -439,9 +439,13 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         isHidingCourier = hidingCourier;
     }
 
-    public String getCartString() { return cartString; }
+    public String getCartString() {
+        return cartString;
+    }
 
-    public void setCartString(String cartString) { this.cartString = cartString; }
+    public void setCartString(String cartString) {
+        this.cartString = cartString;
+    }
 
     public int getShippingId() {
         return shippingId;
@@ -563,11 +567,17 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         this.fulfillmentId = fulfillmentId;
     }
 
-    public String getBlackboxInfo() { return blackboxInfo; }
+    public String getBlackboxInfo() {
+        return blackboxInfo;
+    }
 
-    public void setBlackboxInfo(String blackboxInfo) { this.blackboxInfo = blackboxInfo; }
+    public void setBlackboxInfo(String blackboxInfo) {
+        this.blackboxInfo = blackboxInfo;
+    }
 
-    public boolean getHasPromoList() { return hasPromoList; }
+    public boolean getHasPromoList() {
+        return hasPromoList;
+    }
 
     public void setHasPromoList(boolean hasPromoList) {
         this.hasPromoList = hasPromoList;
@@ -589,13 +599,21 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         this.saveStateFlag = saveStateFlag;
     }
 
-    public boolean getIsLeasingProduct() { return isLeasingProduct; }
+    public boolean getIsLeasingProduct() {
+        return isLeasingProduct;
+    }
 
-    public void setIsLeasingProduct(boolean leasingProduct) { isLeasingProduct = leasingProduct; }
+    public void setIsLeasingProduct(boolean leasingProduct) {
+        isLeasingProduct = leasingProduct;
+    }
 
-    public int getBookingFee() { return bookingFee; }
+    public int getBookingFee() {
+        return bookingFee;
+    }
 
-    public void setBookingFee(int bookingFee) { this.bookingFee = bookingFee; }
+    public void setBookingFee(int bookingFee) {
+        this.bookingFee = bookingFee;
+    }
 
     public boolean isDropshipperDisable() {
         return isDropshipperDisable;
