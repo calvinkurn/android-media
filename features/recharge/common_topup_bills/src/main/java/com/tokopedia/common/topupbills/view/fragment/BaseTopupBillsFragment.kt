@@ -397,8 +397,8 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
 
     private fun showErrorMessage(error: Throwable) {
         view?.let { v ->
-            Toaster.build(v, error.message
-                    ?: "", Toaster.LENGTH_INDEFINITE, Toaster.TYPE_ERROR).show()
+            Toaster.build(v, error.message ?: "", Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
+                    getString(com.tokopedia.resources.common.R.string.general_label_ok)).show()
         }
     }
 
