@@ -133,6 +133,5 @@ class PlayCountDownTimer @Inject constructor(private val context: Context) {
         fun onCountDownActive(millis: Long)
         fun onCountDownAlmostFinish(minutes: Long)
         fun onCountDownFinish()
-//        fun onReachMaximumPauseDuration()
     }
 }

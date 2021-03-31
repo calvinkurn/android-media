@@ -336,6 +336,7 @@ class PlayBroadcastViewModel @Inject constructor(
         livePusher.stop()
         livePusher.stopPreview()
         sendLivePusherState(PlayLivePusherState.Stop(shouldNavigate))
+        countDownTimer.destroy()
         livePusher.destroy()
     }
 

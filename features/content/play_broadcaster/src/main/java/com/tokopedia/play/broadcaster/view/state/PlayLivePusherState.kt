@@ -11,7 +11,6 @@ sealed class PlayLivePusherState {
     object Pause: PlayLivePusherState()
     data class Stop(val shouldNavigate: Boolean): PlayLivePusherState()
     data class Error(val errorState: PlayLivePusherErrorState, val throwable: Throwable): PlayLivePusherState()
-//    object Unknown: PlayLivePusherState()
 }
 
 sealed class PlayLivePusherErrorState {
