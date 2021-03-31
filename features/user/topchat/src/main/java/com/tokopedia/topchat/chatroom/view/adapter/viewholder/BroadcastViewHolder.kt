@@ -9,7 +9,6 @@ import com.tokopedia.chat_common.data.MessageViewModel
 import com.tokopedia.chat_common.util.ChatLinkHandlerMovementMethod
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ChatLinkHandlerListener
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ImageAnnouncementListener
-import com.tokopedia.chat_common.view.adapter.viewholder.listener.ProductAttachmentListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -24,6 +23,7 @@ import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.binder.Chat
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.binder.ImageAnnouncementViewHolderBinder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.binder.ProductCarouselListAttachmentViewHolderBinder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.binder.TopChatVoucherViewHolderBinder
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.listener.TopchatProductAttachmentListener
 import com.tokopedia.topchat.chatroom.view.custom.FlexBoxChatLayout
 import com.tokopedia.topchat.chatroom.view.custom.ProductCarouselRecyclerView
 import com.tokopedia.topchat.chatroom.view.custom.SingleProductAttachmentContainer
@@ -35,7 +35,7 @@ class BroadcastViewHolder constructor(
         itemView: View?,
         private val imageAnnouncementListener: ImageAnnouncementListener,
         private val voucherListener: TopChatVoucherListener,
-        private val productListener: ProductAttachmentListener,
+        private val productListener: TopchatProductAttachmentListener,
         private val productCarouselListener: ProductCarouselListAttachmentViewHolder.Listener,
         private val deferredAttachment: DeferredViewHolderAttachment,
         private val searchListener: SearchListener,
@@ -158,7 +158,7 @@ class BroadcastViewHolder constructor(
             singleProduct?.show()
             singleProduct?.bindData(
                     product, adapterPosition, productListener, deferredAttachment,
-                    searchListener, commonListener, adapterListener, false
+                    searchListener, commonListener, adapterListener, false, null
             )
         } else {
             singleProduct?.gone()

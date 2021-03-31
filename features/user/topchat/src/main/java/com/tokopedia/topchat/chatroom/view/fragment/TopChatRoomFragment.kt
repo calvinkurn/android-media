@@ -90,10 +90,8 @@ import com.tokopedia.topchat.chatroom.view.adapter.viewholder.AttachedInvoiceVie
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.CommonViewHolderListener
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.DeferredViewHolderAttachment
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.SearchListener
-import com.tokopedia.topchat.chatroom.view.custom.ChatMenuStickerView
-import com.tokopedia.topchat.chatroom.view.custom.ChatMenuView
-import com.tokopedia.topchat.chatroom.view.custom.MessageTextWatcher
-import com.tokopedia.topchat.chatroom.view.custom.TransactionOrderProgressLayout
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.listener.TopchatProductAttachmentListener
+import com.tokopedia.topchat.chatroom.view.custom.*
 import com.tokopedia.topchat.chatroom.view.customview.TopChatRoomDialog
 import com.tokopedia.topchat.chatroom.view.customview.TopChatViewStateImpl
 import com.tokopedia.topchat.chatroom.view.listener.*
@@ -136,7 +134,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         StickerViewHolder.Listener, DeferredViewHolderAttachment, CommonViewHolderListener,
         SearchListener, BroadcastSpamHandlerViewHolder.Listener,
         RoomSettingFraudAlertViewHolder.Listener,
-        ReviewViewHolder.Listener {
+        ReviewViewHolder.Listener, TopchatProductAttachmentListener {
 
     @Inject
     lateinit var presenter: TopChatRoomPresenter
@@ -408,12 +406,16 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         }
     }
 
-    override fun updateProductStock(product: ProductAttachmentViewModel, adapterPosition: Int) {
+    override fun updateProductStock(
+            product: ProductAttachmentViewModel,
+            adapterPosition: Int,
+            parentMetaData: SingleProductAttachmentContainer.ParentViewHolderMetaData?
+    ) {
         val intent = RouteManager.getIntent(
                 context, ApplinkConstInternalMarketplace.RESERVED_STOCK,
                 product.productId, product.shopId.toString()
         )
-        presenter.addOngoingUpdateProductStock(product, adapterPosition)
+        presenter.addOngoingUpdateProductStock(product, adapterPosition, parentMetaData)
         startActivityForResult(intent, REQUEST_UPDATE_STOCK)
     }
 

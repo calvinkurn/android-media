@@ -16,6 +16,7 @@ import com.tokopedia.topchat.chatroom.domain.pojo.orderprogress.ChatOrderProgres
 import com.tokopedia.topchat.chatroom.domain.pojo.sticker.Sticker
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactory
 import com.tokopedia.topchat.chatroom.view.custom.ChatMenuView
+import com.tokopedia.topchat.chatroom.view.custom.SingleProductAttachmentContainer
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendablePreview
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.wishlist.common.listener.WishListActionListener
@@ -189,6 +190,9 @@ interface TopChatContract {
                 onError: (msg: String) -> Unit
         )
 
-        fun addOngoingUpdateProductStock(product: ProductAttachmentViewModel, adapterPosition: Int)
+        fun addOngoingUpdateProductStock(
+                product: ProductAttachmentViewModel, adapterPosition: Int,
+                parentMetaData: SingleProductAttachmentContainer.ParentViewHolderMetaData?
+        )
     }
 }

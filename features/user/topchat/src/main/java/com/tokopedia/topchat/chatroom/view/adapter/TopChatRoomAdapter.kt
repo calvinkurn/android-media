@@ -321,9 +321,18 @@ class TopChatRoomAdapter constructor(
         val itemPair = getUpToDateUiModelPosition(
                 updateProductResult.lastKnownPosition, updateProductResult.product
         )
-        val position = itemPair.first
+        val parentPair: Pair<Int, Visitable<*>?>? = updateProductResult.parentMetaData?.let {
+            getUpToDateUiModelPosition(
+                    it.lastKnownPosition, it.uiModel
+            )
+        }
+        val position = if (parentPair != null && parentPair.first != RecyclerView.NO_POSITION) {
+            parentPair.first
+        } else {
+            itemPair.first
+        }
         if (position == RecyclerView.NO_POSITION) return
-        val item = itemPair.second ?: return
+        val item = itemPair.second ?: updateProductResult.product
         when (status) {
             ProductStatus.ACTIVE.name -> {
                 item.status = statusActive
@@ -334,7 +343,8 @@ class TopChatRoomAdapter constructor(
                 item.status = statusWarehouse
             }
         }
-        notifyItemChanged(position, SingleProductAttachmentContainer.PAYLOAD_UPDATE_STOCK)
+        val payload = SingleProductAttachmentContainer.PayloadUpdateStock(item.productId)
+        notifyItemChanged(position, payload)
     }
 
     private fun postUpdateReviewState(

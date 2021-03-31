@@ -42,6 +42,7 @@ import com.tokopedia.topchat.chatroom.domain.pojo.stickergroup.StickerGroup
 import com.tokopedia.topchat.chatroom.domain.subscriber.DeleteMessageAllSubscriber
 import com.tokopedia.topchat.chatroom.domain.usecase.*
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactory
+import com.tokopedia.topchat.chatroom.view.custom.SingleProductAttachmentContainer
 import com.tokopedia.topchat.chatroom.view.listener.TopChatContract
 import com.tokopedia.topchat.chatroom.view.uimodel.StickerUiModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendablePreview
@@ -747,9 +748,10 @@ open class TopChatRoomPresenter @Inject constructor(
     }
 
     override fun addOngoingUpdateProductStock(
-            product: ProductAttachmentViewModel, adapterPosition: Int
+            product: ProductAttachmentViewModel, adapterPosition: Int,
+            parentMetaData: SingleProductAttachmentContainer.ParentViewHolderMetaData?
     ) {
-        val result = UpdateProductStockResult(product, adapterPosition)
+        val result = UpdateProductStockResult(product, adapterPosition, parentMetaData)
         onGoingStockUpdate[product.productId] = result
     }
 

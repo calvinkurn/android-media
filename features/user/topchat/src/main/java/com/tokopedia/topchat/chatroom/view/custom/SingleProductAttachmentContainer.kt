@@ -17,9 +17,9 @@ import androidx.annotation.RequiresApi
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import androidx.transition.Slide
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.chat_common.data.ProductAttachmentViewModel
-import com.tokopedia.chat_common.view.adapter.viewholder.listener.ProductAttachmentListener
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.imagepreview.ImagePreviewActivity
 import com.tokopedia.kotlin.extensions.view.hide
@@ -29,6 +29,7 @@ import com.tokopedia.kotlin.extensions.view.toPx
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ErrorAttachment
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.*
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.listener.TopchatProductAttachmentListener
 import com.tokopedia.topchat.common.Constant
 import com.tokopedia.topchat.common.util.ViewUtil
 import com.tokopedia.unifycomponents.Label
@@ -60,11 +61,12 @@ class SingleProductAttachmentContainer : ConstraintLayout {
     private var footerContainer: LinearLayout? = null
     private var adapterPosition: Int = RecyclerView.NO_POSITION
 
-    private var listener: ProductAttachmentListener? = null
+    private var listener: TopchatProductAttachmentListener? = null
     private var deferredAttachment: DeferredViewHolderAttachment? = null
     private var searchListener: SearchListener? = null
     private var commonListener: CommonViewHolderListener? = null
     private var adapterListener: AdapterListener? = null
+    private var parentMetaData: ParentViewHolderMetaData? = null
     private val bgOpposite: Drawable? by lazy(LazyThreadSafetyMode.NONE) {
         ViewUtil.generateBackgroundWithShadow(
                 this,
@@ -174,14 +176,15 @@ class SingleProductAttachmentContainer : ConstraintLayout {
     fun bindData(
             product: ProductAttachmentViewModel,
             adapterPosition: Int,
-            listener: ProductAttachmentListener,
+            listener: TopchatProductAttachmentListener,
             deferredAttachment: DeferredViewHolderAttachment,
             searchListener: SearchListener,
             commonListener: CommonViewHolderListener,
             adapterListener: AdapterListener,
-            useStrokeSender: Boolean = true
+            useStrokeSender: Boolean = true,
+            parentMetaData: ParentViewHolderMetaData?
     ) {
-        initViewHolderData(adapterPosition)
+        initViewHolderData(adapterPosition, parentMetaData)
         initListener(listener, deferredAttachment, searchListener, commonListener, adapterListener)
         initBackgroundDrawable(useStrokeSender)
         bindSyncProduct(product)
@@ -234,12 +237,15 @@ class SingleProductAttachmentContainer : ConstraintLayout {
         }
     }
 
-    private fun initViewHolderData(adapterPosition: Int) {
+    private fun initViewHolderData(
+            adapterPosition: Int, parentMetaData: ParentViewHolderMetaData?
+    ) {
         this.adapterPosition = adapterPosition
+        this.parentMetaData = parentMetaData
     }
 
     private fun initListener(
-            listener: ProductAttachmentListener,
+            listener: TopchatProductAttachmentListener,
             deferredAttachment: DeferredViewHolderAttachment,
             searchListener: SearchListener,
             commonListener: CommonViewHolderListener,
@@ -382,7 +388,7 @@ class SingleProductAttachmentContainer : ConstraintLayout {
 
     private fun bindSellerUpdateStockClick(product: ProductAttachmentViewModel) {
         btnUpdateStock?.setOnClickListener {
-            listener?.updateProductStock(product, adapterPosition)
+            listener?.updateProductStock(product, adapterPosition, parentMetaData)
         }
     }
 
@@ -597,9 +603,19 @@ class SingleProductAttachmentContainer : ConstraintLayout {
         }
     }
 
-    companion object {
-        const val PAYLOAD_UPDATE_STOCK = 1
+    /**
+     * To refer product in carousel (broadcast or normal carousel)
+     */
+    class ParentViewHolderMetaData(
+            val uiModel: Visitable<*>,
+            val lastKnownPosition: Int
+    )
 
+    class PayloadUpdateStock(
+            val productId: String
+    )
+
+    companion object {
         private const val DEFAULT_WIDTH_MULTIPLIER = 0.83f
         private val LAYOUT = R.layout.item_topchat_product_card
     }
