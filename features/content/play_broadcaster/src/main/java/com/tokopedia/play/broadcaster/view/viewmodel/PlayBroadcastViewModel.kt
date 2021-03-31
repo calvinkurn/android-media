@@ -34,6 +34,7 @@ import com.tokopedia.play_common.util.event.Event
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.filterIsInstance
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 /**
@@ -88,12 +89,11 @@ class PlayBroadcastViewModel @Inject constructor(
         get() = _observableNewChat
     val observableNewMetrics: LiveData<Event<List<PlayMetricUiModel>>>
         get() = _observableNewMetrics
-    val observableProductList = Transformations.map(getCurrentSetupDataStore().getObservableSelectedProducts()) { dataList ->
-        dataList.map { ProductContentUiModel.createFromData(it) }
-    }
+    val observableProductList = getCurrentSetupDataStore().getObservableSelectedProducts()
+            .map { dataList -> dataList.map { ProductContentUiModel.createFromData(it) } }
+            .asLiveData(viewModelScope.coroutineContext + dispatcher.computation)
     val observableCover = getCurrentSetupDataStore().getObservableSelectedCover()
-    val observableTitle: LiveData<PlayTitleUiModel.HasTitle>
-        get() = getCurrentSetupDataStore().getObservableTitle()
+    val observableTitle: LiveData<PlayTitleUiModel.HasTitle> = getCurrentSetupDataStore().getObservableTitle()
                 .filterIsInstance<PlayTitleUiModel.HasTitle>()
                 .asLiveData(viewModelScope.coroutineContext + dispatcher.computation)
     val observableEvent: LiveData<EventUiModel>

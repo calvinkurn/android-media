@@ -1,9 +1,6 @@
 package com.tokopedia.play.broadcaster.view.viewmodel
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.*
 import com.tokopedia.play.broadcaster.data.config.HydraConfigStore
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
 import com.tokopedia.play.broadcaster.domain.usecase.GetProductsInEtalaseUseCase
@@ -28,6 +25,7 @@ import kotlinx.coroutines.channels.BroadcastChannel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 import kotlin.math.min
 
@@ -66,9 +64,9 @@ class PlayEtalasePickerViewModel @Inject constructor(
         get() = _observableEtalaseProductState
     private val _observableEtalaseProductState = MutableLiveData<PageResult<String>>()
 
-    val observableSelectedProducts: LiveData<List<ProductContentUiModel>> = Transformations.map(setupDataStore.getObservableSelectedProducts()) { dataList ->
-        dataList.map { ProductContentUiModel.createFromData(it, ::isProductSelected, ::isSelectable) }
-    }
+    val observableSelectedProducts = setupDataStore.getObservableSelectedProducts()
+            .map { dataList -> dataList.map { ProductContentUiModel.createFromData(it, ::isProductSelected, ::isSelectable) } }
+            .asLiveData(viewModelScope.coroutineContext + dispatcher.computation)
 
     val observableUploadProductEvent: LiveData<NetworkResult<Event<Unit>>>
         get() = _observableUploadProductEvent

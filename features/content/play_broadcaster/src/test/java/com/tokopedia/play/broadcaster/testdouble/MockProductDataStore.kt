@@ -7,6 +7,7 @@ import com.tokopedia.play.broadcaster.data.model.ProductData
 import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.util.coroutine.CoroutineDispatcherProvider
 import io.mockk.mockk
+import kotlinx.coroutines.flow.Flow
 
 /**
  * Created by jegul on 25/09/20
@@ -22,7 +23,7 @@ class MockProductDataStore(
 
     private val realImpl = ProductDataStoreImpl(dispatcherProvider, mockk(relaxed = true))
 
-    override fun getObservableSelectedProducts(): LiveData<List<ProductData>> {
+    override fun getObservableSelectedProducts(): Flow<List<ProductData>> {
         return realImpl.getObservableSelectedProducts()
     }
 

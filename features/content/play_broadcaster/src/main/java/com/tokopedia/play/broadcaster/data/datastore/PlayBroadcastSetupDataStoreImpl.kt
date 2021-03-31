@@ -70,7 +70,7 @@ class PlayBroadcastSetupDataStoreImpl @Inject constructor(
     /**
      * Product
      */
-    override fun getObservableSelectedProducts(): LiveData<List<ProductData>> {
+    override fun getObservableSelectedProducts(): Flow<List<ProductData>> {
         return productDataStore.getObservableSelectedProducts()
     }
 

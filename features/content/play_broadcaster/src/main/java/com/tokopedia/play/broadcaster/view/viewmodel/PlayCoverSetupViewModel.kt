@@ -2,9 +2,7 @@ package com.tokopedia.play.broadcaster.view.viewmodel
 
 import android.graphics.Bitmap
 import android.net.Uri
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
+import androidx.lifecycle.*
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.mediauploader.data.state.UploadResult
@@ -25,6 +23,7 @@ import com.tokopedia.play_common.model.result.map
 import com.tokopedia.play_common.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play_common.util.event.Event
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.yield
 import java.io.File
@@ -84,9 +83,9 @@ class PlayCoverSetupViewModel @Inject constructor(
 //            it.title
 //        }
 
-    val observableSelectedProducts: LiveData<List<CarouselCoverUiModel.Product>> = Transformations.map(setupDataStore.getObservableSelectedProducts()) { dataList ->
-        dataList.map { CarouselCoverUiModel.Product(ProductContentUiModel.createFromData(it)) }
-    }
+    val observableSelectedProducts: LiveData<List<CarouselCoverUiModel.Product>> = setupDataStore.getObservableSelectedProducts()
+            .map { dataList -> dataList.map { CarouselCoverUiModel.Product(ProductContentUiModel.createFromData(it)) } }
+            .asLiveData(viewModelScope.coroutineContext + dispatcher.computation)
 
     val observableUploadCoverEvent: LiveData<NetworkResult<Event<Unit>>>
         get() = _observableUploadCoverEvent
