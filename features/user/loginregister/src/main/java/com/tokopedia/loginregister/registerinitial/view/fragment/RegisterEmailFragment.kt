@@ -96,8 +96,8 @@ class RegisterEmailFragment : BaseDaggerFragment() {
     private val REGISTER_BUTTON_IME = 123321
     override fun onStart() {
         super.onStart()
-        activity?.run {
-            analytics?.trackScreen(this, screenName)
+        activity?.let {
+            analytics?.trackScreen(it, screenName)
         }
     }
 

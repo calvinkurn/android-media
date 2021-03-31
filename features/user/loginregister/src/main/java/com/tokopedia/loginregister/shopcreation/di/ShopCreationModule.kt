@@ -4,6 +4,8 @@ import android.content.Context
 import android.os.Build
 import androidx.annotation.RequiresApi
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.loginfingerprint.utils.crypto.Cryptography
 import com.tokopedia.loginfingerprint.utils.crypto.CryptographyUtils
 import com.tokopedia.loginregister.common.DispatcherProvider
@@ -29,6 +31,12 @@ class ShopCreationModule {
     fun provideDispatcherProvider(): DispatcherProvider = object : DispatcherProvider {
         override fun ui(): CoroutineDispatcher = Dispatchers.Main
         override fun io(): CoroutineDispatcher = Dispatchers.IO
+    }
+
+    @ShopCreationScope
+    @Provides
+    fun provideCoroutineDispatchersProvider(): CoroutineDispatchers {
+        return CoroutineDispatchersProvider
     }
 
     @Provides

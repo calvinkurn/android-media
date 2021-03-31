@@ -210,8 +210,8 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
     override fun onStart() {
         super.onStart()
         setupSpannableText()
-        activity?.run {
-            analytics.trackScreen(this, screenName)
+        activity?.let {
+            analytics.trackScreen(it, screenName)
         }
     }
 
@@ -280,13 +280,13 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         callbackManager = CallbackManager.Factory.create()
-        activity?.run {
+        activity?.let {
             val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                    .requestIdToken(getGoogleClientId(this))
+                    .requestIdToken(getGoogleClientId(it))
                     .requestEmail()
                     .requestProfile()
                     .build()
-            mGoogleSignInClient = GoogleSignIn.getClient(this, gso)
+            mGoogleSignInClient = GoogleSignIn.getClient(it, gso)
         }
 
         performanceMonitoring = PerformanceMonitoring.start(LOGIN_LOAD_TRACE)
@@ -580,15 +580,15 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
         }
 
         if (isEnableFingerprint && ScanFingerprintDialog.isFingerprintAvailable(activity) && fingerprintPreferenceHelper.isFingerprintRegistered()) {
-            activity?.run {
-                val icon = VectorDrawableCompat.create(this.resources, R.drawable.ic_fingerprint_thumb, this.theme)
+            activity?.let {
+                val icon = VectorDrawableCompat.create(it.resources, R.drawable.ic_fingerprint_thumb, it.theme)
                 fingerprint_btn.setCompoundDrawablesWithIntrinsicBounds(icon, null, null, null)
             }
 
             fingerprint_btn.visibility = View.VISIBLE
             fingerprint_btn.setOnClickListener {
-                activity?.run {
-                    ScanFingerprintDialog(this, this@LoginEmailPhoneFragment).showWithMode(ScanFingerprintDialog.MODE_LOGIN)
+                activity?.let { act ->
+                    ScanFingerprintDialog(act, this@LoginEmailPhoneFragment).showWithMode(ScanFingerprintDialog.MODE_LOGIN)
                 }
             }
         }
@@ -646,7 +646,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
     }
 
     private fun setupSpannableText(){
-        activity?.run {
+        activity?.let {
             val sourceString = resources.getString(R.string.span_not_have_tokopedia_account)
 
             val spannable = SpannableString(sourceString)
@@ -786,7 +786,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
     private fun onLoginFacebookClick() {
         if (activity != null) {
             onDismissBottomSheet()
-            activity?.applicationContext?.let { analytics.eventClickLoginFacebook(it) }
+            activity?.let { analytics.eventClickLoginFacebook(it) }
             viewModel.getFacebookCredential(this, callbackManager)
         }
     }
@@ -973,12 +973,12 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
 
         registerPushNotif()
 
-        activity?.run {
+        activity?.let {
             if (GlobalConfig.isSellerApp()) {
                 setLoginSuccessSellerApp()
             } else {
-                setResult(Activity.RESULT_OK)
-                finish()
+                it.setResult(Activity.RESULT_OK)
+                it.finish()
             }
 
             if (userSession.loginMethod == SeamlessLoginAnalytics.LOGIN_METHOD_SEAMLESS) {
@@ -989,9 +989,9 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
 
             setTrackingUserId(userSession.userId)
             setFCM()
-            SubmitDeviceWorker.scheduleWorker(this, true)
-            DataVisorWorker.scheduleWorker(this, true)
-            AppAuthWorker.scheduleWorker(this, true)
+            SubmitDeviceWorker.scheduleWorker(it, true)
+            DataVisorWorker.scheduleWorker(it, true)
+            AppAuthWorker.scheduleWorker(it, true)
         }
 
         RemoteConfigInstance.getInstance().abTestPlatform.fetchByType(null)
