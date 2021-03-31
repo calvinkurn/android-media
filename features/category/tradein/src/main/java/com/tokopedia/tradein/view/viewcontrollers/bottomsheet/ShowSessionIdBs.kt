@@ -8,10 +8,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
-import androidx.core.content.ContextCompat.getSystemService
-import com.google.android.material.snackbar.Snackbar
-import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.tradein.R
 import com.tokopedia.unifycomponents.*
@@ -21,6 +17,7 @@ import com.tokopedia.unifyprinciples.Typography
 class ShowSessionIdBs(private val sid: String) : BottomSheetUnify() {
     private var contentView: View? = null
     private var etWrapper: TextAreaUnify? = null
+    private var actionListener: ShowSessionIdBs.ActionListenerBs? = null
 
     companion object {
         @JvmStatic
@@ -63,11 +60,20 @@ class ShowSessionIdBs(private val sid: String) : BottomSheetUnify() {
                 clipboard?.setPrimaryClip(clip)
             }
 
-            Toaster.build(contentView as View, getString(R.string.tradein_sid_mes), Toast.LENGTH_SHORT,actionText = "Oke",clickListener = View.OnClickListener {  }).show()
-
             dismiss()
+
+            actionListener?.onClick(sid)
+
         }
 
         setChild(contentView)
+    }
+
+    fun setActionListener(actionListener: ShowSessionIdBs.ActionListenerBs?) {
+        this.actionListener = actionListener
+    }
+
+    interface ActionListenerBs {
+        fun onClick(sid: String?)
     }
 }
