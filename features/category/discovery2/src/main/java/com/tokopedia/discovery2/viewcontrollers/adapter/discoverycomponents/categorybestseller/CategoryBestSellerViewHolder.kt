@@ -14,6 +14,7 @@ import com.tokopedia.discovery2.data.LihatSemua
 import com.tokopedia.discovery2.di.getSubComponent
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.DiscoveryRecycleAdapter
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardcarousel.CarouselProductCardItemDecorator
 import com.tokopedia.discovery2.viewcontrollers.adapter.factory.ComponentsList
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.discovery2.viewcontrollers.customview.CustomViewCreator
@@ -25,6 +26,7 @@ class CategoryBestSellerViewHolder (itemView: View, val fragment: Fragment) : Ab
     private var linearLayoutManager: LinearLayoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
     private var mDiscoveryRecycleAdapter: DiscoveryRecycleAdapter
     private lateinit var categoryBestSellerViewModel: CategoryBestSellerViewModel
+    private val carouselRecyclerViewDecorator = CarouselProductCardItemDecorator(fragment.context?.resources?.getDimensionPixelSize(R.dimen.dp_12))
 
     init {
         linearLayoutManager.initialPrefetchItemCount = 4
@@ -38,7 +40,7 @@ class CategoryBestSellerViewHolder (itemView: View, val fragment: Fragment) : Ab
         categoryBestSellerViewModel = discoveryBaseViewModel as CategoryBestSellerViewModel
         getSubComponent().inject(categoryBestSellerViewModel)
         addShimmer()
-//        addDefaultItemDecorator()
+        addDefaultItemDecorator()
     }
 
     override fun setUpObservers(lifecycleOwner: LifecycleOwner?) {
@@ -61,6 +63,12 @@ class CategoryBestSellerViewHolder (itemView: View, val fragment: Fragment) : Ab
                 if (it) handleErrorState()
             })
         }
+    }
+
+    private fun addDefaultItemDecorator() {
+        if (mProductCarouselRecyclerView.itemDecorationCount > 0)
+            mProductCarouselRecyclerView.removeItemDecorationAt(0)
+        mProductCarouselRecyclerView.addItemDecoration(carouselRecyclerViewDecorator)
     }
 
     private fun setMaxHeight(height: Int) {
