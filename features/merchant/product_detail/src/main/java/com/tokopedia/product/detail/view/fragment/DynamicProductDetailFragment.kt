@@ -2126,7 +2126,7 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
     private fun shareProductFromNavToolbar() {
         // new navbar
         viewModel.getDynamicProductInfoP1?.let { productInfo ->
-            DynamicProductDetailTracking.Click.eventClickShareNavToolbar(productInfo)
+            DynamicProductDetailTracking.Click.eventClickShareNavToolbar(productInfo, viewModel.userId)
             shareProduct()
         }
     }
