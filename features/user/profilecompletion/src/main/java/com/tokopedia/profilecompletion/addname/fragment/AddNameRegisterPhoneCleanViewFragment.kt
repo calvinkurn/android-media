@@ -15,6 +15,7 @@ class AddNameRegisterPhoneCleanViewFragment : AddNameRegisterPhoneFragment() {
         presenter.attachView(this)
         phoneNumber?.let {
             presenter.registerPhoneNumberAndName("", it)
+            analytics.trackClickFinishAddNameButton()
         }
     }
 
