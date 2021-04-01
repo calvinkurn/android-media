@@ -203,7 +203,7 @@ public class ShipmentDataRequestConverter {
                 .shippingPrice(shippingPrice)
                 .codFlag(cartItem.getAnalyticsProductCheckoutData().getCodFlag())
                 .tokopediaCornerFlag(cartItem.getAnalyticsProductCheckoutData().getTokopediaCornerFlag())
-                .isFulfillment(cartItem.getAnalyticsProductCheckoutData().getIsFulfillment())
+                .isFulfillment(cartItem.getAnalyticsProductCheckoutData().isFulfillment())
                 .setDiscountedPrice(cartItem.getAnalyticsProductCheckoutData().isDiscountedPrice())
                 .isFreeShipping(cartItem.isFreeShipping())
                 .isFreeShippingExtra(cartItem.isFreeShippingExtra())

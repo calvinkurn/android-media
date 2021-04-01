@@ -2412,7 +2412,10 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
-    public void triggerSendEnhancedEcommerceCheckoutAnalyticAfterCheckoutSuccess(String transactionId, String deviceModel, int devicePrice, String diagnosticId) {
+    public void triggerSendEnhancedEcommerceCheckoutAnalyticAfterCheckoutSuccess(String transactionId,
+                                                                                 String deviceModel,
+                                                                                 long devicePrice,
+                                                                                 String diagnosticId) {
         List<DataCheckoutRequest> dataCheckoutRequests = shipmentPresenter.updateEnhancedEcommerceCheckoutAnalyticsDataLayerPromoData(shipmentAdapter.getShipmentCartItemModelList());
 
         String eventCategory = ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION;

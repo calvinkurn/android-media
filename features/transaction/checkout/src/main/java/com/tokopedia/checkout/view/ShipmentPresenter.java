@@ -618,7 +618,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         if (checkoutRequest != null && checkoutRequest.data != null && checkoutRequest.data.size() > 0) {
             // Get additional param for trade in analytics
             String deviceModel = "";
-            int devicePrice = 0;
+            long devicePrice = 0L;
             String diagnosticId = "";
             if (shipmentCartItemModelList != null && shipmentCartItemModelList.size() > 0) {
                 List<CartItemModel> cartItemModels = shipmentCartItemModelList.get(0).getCartItemModels();
@@ -901,7 +901,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                                                String cornerId,
                                                                String leasingId,
                                                                String deviceModel,
-                                                               int devicePrice,
+                                                               long devicePrice,
                                                                String diagnosticId) {
         return new Subscriber<CheckoutData>() {
             @Override

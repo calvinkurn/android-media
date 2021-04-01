@@ -126,7 +126,7 @@ public interface ShipmentContract {
 
         void triggerSendEnhancedEcommerceCheckoutAnalyticAfterCheckoutSuccess(String transactionId,
                                                                               String deviceModel,
-                                                                              int devicePrice,
+                                                                              long devicePrice,
                                                                               String diagnosticId);
 
         void removeIneligiblePromo(ArrayList<NotEligiblePromoHolderdata> notEligiblePromoHolderdataList);
