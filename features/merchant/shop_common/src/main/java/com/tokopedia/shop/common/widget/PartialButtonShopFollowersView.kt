@@ -115,7 +115,7 @@ class PartialButtonShopFollowersView private constructor(val view: View, private
 
     private fun setupButtonFollowers(buttonLabel: String?, voucherIconUrl: String?) {
         voucherIconUrl?.run {
-            followersBtn?.layoutParams?.width = 100.toPx()
+            followersBtn?.layoutParams?.width = 110.toPx()
             followersBtn?.loadLeftDrawable(
                     context = view.context,
                     url = voucherIconUrl,
