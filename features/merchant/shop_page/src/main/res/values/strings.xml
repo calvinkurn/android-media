@@ -1,6 +1,7 @@
 <resources>
 
     <string name="shop_page_label_authorized">Authorized</string>
+    <string name="shop_page_label_new_icon_tab">BARU</string>
 
     <string name="shop_page_label_reputation">Reputasi</string>
     <string name="shop_page_label_product_quality">Kualitas Produk</string>

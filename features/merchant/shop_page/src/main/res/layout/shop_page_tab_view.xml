@@ -2,17 +2,44 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:background="@color/clr_transparent">
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/shop_page_tab_view_icon"
         android:layout_width="@dimen/layout_lvl3"
         android:layout_height="@dimen/layout_lvl3"
+        android:layout_marginTop="@dimen/dp_6"
         android:adjustViewBounds="true"
+        android:src="@drawable/ic_shop_tab_showcase_inactive"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_icon_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="@dimen/dp_28"
+        />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/icon_tab_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/guideline_icon_label"
+        android:text="@string/shop_page_label_new_icon_tab"
+        android:background="@drawable/bg_tab_icon_label"
+        app:typographyType="small"
+        android:textColor="@color/Unify_N0"
+        android:padding="@dimen/dp_1"
+        android:visibility="gone"
+        tools:visibility="visible"
+        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
