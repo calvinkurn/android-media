@@ -122,7 +122,7 @@ class PartialButtonShopFollowersView private constructor(val view: View, private
             followersBtn?.loadLeftDrawable(
                     context = view.context,
                     url = voucherIconUrl,
-                    convertIntoSize = 50
+                    convertIntoSize = 20.toPx()
             )
         }
         followersBtn?.run {
