@@ -99,9 +99,10 @@
             android:layout_width="@dimen/dp_24"
             android:layout_height="@dimen/dp_24"
             android:layout_marginRight="@dimen/unify_space_16"
+            android:layout_marginTop="@dimen/unify_space_16"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:visibility="gone"
+            android:visibility="visible"
             app:icon_name="CONTACT"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

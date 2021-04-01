@@ -199,8 +199,6 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
         et_label_address.setText(labelRumah)
         et_receiver_name.setText(userSession.name)
         et_kode_pos_mismatch.setText(saveAddressDataModel?.postalCode ?: "")
-        et_phone_wrapper.endIconDrawable = btn_contact_picker.drawable
-        et_phone_wrapper.endIconMode = TextInputLayout.END_ICON_CUSTOM
         et_phone.setText(userSession.phoneNumber)
 
         if (!isMismatch && !isMismatchSolved) {
@@ -546,7 +544,6 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
             wrapper.setErrorEnabled(false)
         } else {
             wrapper.setErrorEnabled(true)
-            wrapper.setHint("")
             wrapper.error = s
         }
     }
@@ -577,6 +574,8 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
                 if (s.length < 9 && s.isNotEmpty()) {
                     setWrapperError(wrapper, textWatcher)
+                } else {
+                    setWrapperError(wrapper, null)
                 }
             }
 
@@ -617,33 +616,6 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
             }
         }
     }
-/*
-    private fun setPhoneWatcher(): TextWatcher {
-        return object: TextWatcher {
-            override fun afterTextChanged(s: Editable?) {
-                //no-op
-            }
-
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-                //no-op
-            }
-
-            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                if (s.isNotEmpty()) {
-                    val strLength = s.toString().length
-                    when {
-                        strLength < 9 -> {
-                            tv_phone_helper.text = getString(R.string.txt_phone_helper)
-                        }
-                        else -> {
-                            tv_phone_helper.text = ""
-                        }
-                    }
-                }
-            }
-
-        }
-    }*/
 
     private fun arrangeLayout(isMismatch: Boolean, isMismatchSolved: Boolean, isCircuitBreaker: Boolean) {
         if (!isMismatch && !isMismatchSolved) {
