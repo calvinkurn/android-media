@@ -74,14 +74,6 @@ open class RecommendationPageViewModel @Inject constructor(
     val buyNowLiveData : LiveData<Response<ProductInfoDataModel>> get() = _buyNowLiveData
     private val _buyNowLiveData = MutableLiveData<Response<ProductInfoDataModel>>()
 
-
-//    fun getRecomDataWithTopads(
-//            productId: String,
-//            queryParam: String) {
-//        getRecommendationList(productId, queryParam)
-//        getProductTopadsStatus(productId, queryParam)
-//    }
-
     /**
      * [getRecommendationList] is the void for get recommendation widgets from the network
      * @param productId product Id from deeplink
