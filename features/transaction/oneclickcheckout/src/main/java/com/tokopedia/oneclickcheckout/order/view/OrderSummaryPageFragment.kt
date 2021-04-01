@@ -628,7 +628,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
 
     private fun showPreferenceTicker(preference: OrderPreference) {
         val sharedPreferences = getRemoveProfileTickerSharedPreference()
-        if (preference.removeProfileData.type == OccRemoveProfileData.TYPE_PRE && preference.removeProfileData.message.hasMessage() &&
+        if (preference.removeProfileData.enable && preference.removeProfileData.type == OccRemoveProfileData.TYPE_PRE && preference.removeProfileData.message.hasMessage() &&
                 sharedPreferences != null && sharedPreferences.getInt(SP_KEY_REMOVE_PROFILE_TICKER, 0) != OccRemoveProfileData.TYPE_PRE) {
             tickerPreferenceInfo?.tickerTitle = preference.removeProfileData.message.title
             tickerPreferenceInfo?.setHtmlDescription(preference.removeProfileData.message.description)

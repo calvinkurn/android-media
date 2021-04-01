@@ -621,6 +621,7 @@
             "change_template_text": "Pilih template lain"
           },
           "occ_remove_profile": {
+            "enable": true,
             "ui_type": 1,
             "message": {
               "title": "Proses belanjamu akan lebih mudah!",

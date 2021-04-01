@@ -305,7 +305,7 @@ class GetOccCartMapper @Inject constructor() {
     }
 
     private fun mapOccRemoveProfile(removeProfileResponse: OccRemoveProfileResponse): OccRemoveProfileData {
-        return OccRemoveProfileData(removeProfileResponse.type,
+        return OccRemoveProfileData(removeProfileResponse.enable, removeProfileResponse.type,
                 OccRemoveProfileMessageData(removeProfileResponse.message.title, removeProfileResponse.message.description))
     }
 }
