@@ -104,8 +104,8 @@ class PdpSimulationFragment : BaseDaggerFragment(),
     override fun getSimulationProductInfo() {
         parentDataGroup.visible()
         when (paymentMode) {
-            is PayLater -> payLaterViewModel.getPayLaterSimulationData(productPrice.toIntOrZero())
-            is CreditCard -> creditCardViewModel.getCreditCardSimulationData(productPrice.toFloatOrZero())
+            is PayLater -> payLaterViewModel.getPayLaterSimulationData(productPrice.toDoubleOrZero().toLong())
+            is CreditCard -> creditCardViewModel.getCreditCardSimulationData(productPrice.toDoubleOrZero().toLong())
         }
     }
 

@@ -30,7 +30,7 @@ class PayLaterViewModel @Inject constructor(
     val payLaterSimulationResultLiveData: LiveData<Result<ArrayList<PayLaterSimulationGatewayItem>>> = _payLaterSimulationResultLiveData
     var isPayLaterProductActive = false
 
-    fun getPayLaterSimulationData(amount: Int) {
+    fun getPayLaterSimulationData(amount: Long) {
         payLaterSimulationDataUseCase.cancelJobs()
         payLaterSimulationDataUseCase.getSimulationData(
                 ::onPayLaterSimulationDataSuccess,
