@@ -56,16 +56,8 @@ class TopchatRoomSellerProductAttachmentTest : BaseSellerTopchatRoomTest() {
         inflateTestFragment()
 
         // Then
-        onView(
-                withRecyclerView(R.id.recycler_view).atPositionOnView(
-                        1, R.id.tp_seller_stock_category
-                )
-        ).check(matches(isDisplayed()))
-        onView(
-                withRecyclerView(R.id.recycler_view).atPositionOnView(
-                        1, R.id.tp_seller_stock_category
-                )
-        ).check(matches(withText("Stok:")))
+        assertProductStockType(R.id.recycler_view, 1, isDisplayed())
+        assertProductStockTypeText(R.id.recycler_view, 1, "Stok:")
         assertStockCountVisibilityAt(R.id.recycler_view, 1, isDisplayed())
         assertStockCountValueAt(R.id.recycler_view, 1, 5)
     }
@@ -81,16 +73,8 @@ class TopchatRoomSellerProductAttachmentTest : BaseSellerTopchatRoomTest() {
         inflateTestFragment()
 
         // Then
-        onView(
-                withRecyclerView(R.id.recycler_view).atPositionOnView(
-                        1, R.id.tp_seller_stock_category
-                )
-        ).check(matches(isDisplayed()))
-        onView(
-                withRecyclerView(R.id.recycler_view).atPositionOnView(
-                        1, R.id.tp_seller_stock_category
-                )
-        ).check(matches(withText("Stok campaign:")))
+        assertProductStockType(R.id.recycler_view, 1, isDisplayed())
+        assertProductStockTypeText(R.id.recycler_view, 1, "Stok campaign:")
         assertStockCountVisibilityAt(R.id.recycler_view, 1, isDisplayed())
         assertStockCountValueAt(R.id.recycler_view, 1, 5)
     }

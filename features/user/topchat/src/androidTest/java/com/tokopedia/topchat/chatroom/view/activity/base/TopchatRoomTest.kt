@@ -256,6 +256,30 @@ abstract class TopchatRoomTest {
         ).check(matches(withText(text)))
     }
 
+    protected fun assertProductStockType(
+            recyclerViewId: Int,
+            atPosition: Int,
+            viewMatcher: Matcher<in View>
+    ) {
+        onView(
+                withRecyclerView(recyclerViewId).atPositionOnView(
+                        atPosition, R.id.tp_seller_stock_category
+                )
+        ).check(matches(viewMatcher))
+    }
+
+    protected fun assertProductStockTypeText(
+            recyclerViewId: Int,
+            atPosition: Int,
+            text: String
+    ) {
+        onView(
+                withRecyclerView(recyclerViewId).atPositionOnView(
+                        atPosition, R.id.tp_seller_stock_category
+                )
+        ).check(matches(withText(text)))
+    }
+
     protected fun generateTemplateResponse(
             enable: Boolean = true,
             success: Boolean = true,
