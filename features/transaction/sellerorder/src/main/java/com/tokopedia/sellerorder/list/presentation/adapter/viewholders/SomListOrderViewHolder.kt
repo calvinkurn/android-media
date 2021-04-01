@@ -34,9 +34,9 @@ import com.tokopedia.unifycomponents.dpToPx
 import com.tokopedia.unifycomponents.toPx
 import kotlinx.android.synthetic.main.item_som_list_order.view.*
 
-class SomListOrderViewHolder(
+open class SomListOrderViewHolder(
         itemView: View?,
-        private val listener: SomListOrderItemListener
+        protected val listener: SomListOrderItemListener
 ) : AbstractViewHolder<SomListOrderUiModel>(itemView) {
 
     companion object {
@@ -136,26 +136,6 @@ class SomListOrderViewHolder(
             }
         }
         super.bind(element, payloads)
-    }
-
-    private fun setupOrderCard(element: SomListOrderUiModel) {
-        itemView.cardSomOrder.alpha = if (listener.isMultiSelectEnabled() && element.cancelRequest != 0 && element.cancelRequestStatus != 0) 0.5f else 1f
-        itemView.setOnClickListener {
-            if (listener.isMultiSelectEnabled()) touchCheckBox(element)
-            else listener.onOrderClicked(element)
-        }
-    }
-
-    private fun touchCheckBox(element: SomListOrderUiModel) {
-        if (element.cancelRequest != 0 && element.cancelRequestStatus != 0) {
-            listener.onCheckBoxClickedWhenDisabled()
-        } else {
-            itemView.checkBoxSomListMultiSelect.apply {
-                isChecked = !isChecked
-                element.isChecked = isChecked
-            }
-            listener.onCheckChanged()
-        }
     }
 
     private fun setupQuickActionButton(element: SomListOrderUiModel) {
@@ -369,10 +349,30 @@ class SomListOrderViewHolder(
         }
     }
 
+    protected fun touchCheckBox(element: SomListOrderUiModel) {
+        if (element.cancelRequest != 0 && element.cancelRequestStatus != 0) {
+            listener.onCheckBoxClickedWhenDisabled()
+        } else {
+            itemView.checkBoxSomListMultiSelect.apply {
+                isChecked = !isChecked
+                element.isChecked = isChecked
+            }
+            listener.onCheckChanged()
+        }
+    }
+
+    protected open fun setupOrderCard(element: SomListOrderUiModel) {
+        itemView.cardSomOrder.alpha = if (listener.isMultiSelectEnabled() && element.cancelRequest != 0 && element.cancelRequestStatus != 0) 0.5f else 1f
+        itemView.setOnClickListener {
+            if (listener.isMultiSelectEnabled()) touchCheckBox(element)
+            else listener.onOrderClicked(adapterPosition)
+        }
+    }
+
     interface SomListOrderItemListener {
         fun onCheckChanged()
         fun onCheckBoxClickedWhenDisabled()
-        fun onOrderClicked(order: SomListOrderUiModel)
+        fun onOrderClicked(position: Int)
         fun onTrackButtonClicked(orderId: String, url: String)
         fun onConfirmShippingButtonClicked(orderId: String)
         fun onAcceptOrderButtonClicked(orderId: String)

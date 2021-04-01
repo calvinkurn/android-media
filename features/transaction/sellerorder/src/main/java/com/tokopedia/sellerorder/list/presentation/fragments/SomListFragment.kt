@@ -506,10 +506,13 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                 somListSortFilterTab?.getSelectedFilterStatusName().orEmpty())
     }
 
-    override fun onOrderClicked(order: SomListOrderUiModel) {
-        selectedOrderId = order.orderId
-        goToSomOrderDetail(this, selectedOrderId)
-        SomAnalytics.eventClickOrderCard(order.orderStatusId, order.status)
+    override fun onOrderClicked(position: Int) {
+        adapter.data.getOrNull(position)?.let {
+            if (it !is SomListOrderUiModel) return
+            selectedOrderId = it.orderId
+            goToSomOrderDetail(this, selectedOrderId)
+            SomAnalytics.eventClickOrderCard(it.orderStatusId, it.status)
+        }
     }
 
     override fun onTrackButtonClicked(orderId: String, url: String) {
@@ -1487,71 +1490,6 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
         }, 1000L)
     }
 
-    private fun renderOrderList(data: List<SomListOrderUiModel>) {
-        skipSearch = false
-        if (rvSomList?.visibility != View.VISIBLE) rvSomList?.show()
-        // show only if current order list is based on current search keyword
-        if (isLoadingInitialData && data.isEmpty()) {
-            showEmptyState()
-            multiEditViews?.gone()
-            toggleBulkActionButtonVisibility()
-        } else if (data.firstOrNull()?.searchParam == searchBarSomList.searchBarTextField.text.toString()) {
-            if (isLoadingInitialData) {
-                (adapter as SomListOrderAdapter).updateOrders(data)
-                tvSomListOrderCounter?.text = getString(R.string.som_list_order_counter, somListSortFilterTab?.getSelectedFilterOrderCount().orZero())
-                multiEditViews?.showWithCondition((somListSortFilterTab?.shouldShowBulkAction()?.and(canMultiAcceptOrder)
-                        ?: false) && GlobalConfig.isSellerApp())
-                toggleTvSomListBulkText()
-                toggleBulkActionCheckboxVisibility()
-                toggleBulkActionButtonVisibility()
-                if (shouldScrollToTop) {
-                    shouldScrollToTop = false
-                    rvSomList?.addOneTimeGlobalLayoutListener {
-                        rvSomList?.smoothScrollToPosition(0)
-                    }
-                }
-                if (coachMark?.currentIndex == COACHMARK_INDEX_ITEM_NEW_ORDER || (coachMark?.currentIndex == COACHMARK_INDEX_ITEM_BULK_ACCEPT && !multiEditViews.isVisible)) {
-                    dismissCoachMark(true)
-                }
-            } else {
-                val lastIndex = adapter.data.size - 1
-                adapter.data.getOrNull(lastIndex)?.let { index ->
-                    if (index is SomListEmptyStateUiModel) {
-                        adapter.data.removeAt(lastIndex)
-                        adapter.notifyItemRemoved(lastIndex)
-                    }
-                }
-                (adapter as SomListOrderAdapter).updateOrders(adapter.data.plus(data))
-                rvSomList?.post {
-                    updateBulkActionCheckboxStatus()
-                }
-            }
-            rvSomList?.postDelayed({
-                reshowNewOrderCoachMark(data)
-                reshowStatusFilterCoachMark()
-                reshowWaitingPaymentOrderListCoachMark()
-                reshowBulkAcceptOrderCoachMark()
-            }, DELAY_COACHMARK)
-        }
-        updateScrollListenerState(viewModel.hasNextPage())
-        isLoadingInitialData = false
-    }
-
-    private fun onRefreshOrderSuccess(result: OptionalOrderData) {
-        val order = result.order
-        if (order == null) {
-            (adapter as SomListOrderAdapter).removeOrder(result.orderId)
-            updateOrderCounter()
-            checkLoadMore()
-        } else {
-            (adapter as SomListOrderAdapter).updateOrder(order)
-        }
-        if (adapter.dataSize == 0) {
-            multiEditViews?.showWithCondition(adapter.dataSize > 0 && canMultiAcceptOrder)
-            showEmptyState()
-        }
-    }
-
     private fun onRefreshOrderFailed() {
         showToasterError(view, getString(R.string.som_list_failed_refresh_order))
     }
@@ -2108,6 +2046,71 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                         getString(R.string.som_list_button_ok))
                 commonToaster?.show()
             }
+        }
+    }
+
+    protected open fun renderOrderList(data: List<SomListOrderUiModel>) {
+        skipSearch = false
+        if (rvSomList?.visibility != View.VISIBLE) rvSomList?.show()
+        // show only if current order list is based on current search keyword
+        if (isLoadingInitialData && data.isEmpty()) {
+            showEmptyState()
+            multiEditViews?.gone()
+            toggleBulkActionButtonVisibility()
+        } else if (data.firstOrNull()?.searchParam == searchBarSomList.searchBarTextField.text.toString()) {
+            if (isLoadingInitialData) {
+                (adapter as SomListOrderAdapter).updateOrders(data)
+                tvSomListOrderCounter?.text = getString(R.string.som_list_order_counter, somListSortFilterTab?.getSelectedFilterOrderCount().orZero())
+                multiEditViews?.showWithCondition((somListSortFilterTab?.shouldShowBulkAction()?.and(canMultiAcceptOrder)
+                        ?: false) && GlobalConfig.isSellerApp())
+                toggleTvSomListBulkText()
+                toggleBulkActionCheckboxVisibility()
+                toggleBulkActionButtonVisibility()
+                if (shouldScrollToTop) {
+                    shouldScrollToTop = false
+                    rvSomList?.addOneTimeGlobalLayoutListener {
+                        rvSomList?.smoothScrollToPosition(0)
+                    }
+                }
+                if (coachMark?.currentIndex == COACHMARK_INDEX_ITEM_NEW_ORDER || (coachMark?.currentIndex == COACHMARK_INDEX_ITEM_BULK_ACCEPT && !multiEditViews.isVisible)) {
+                    dismissCoachMark(true)
+                }
+            } else {
+                val lastIndex = adapter.data.size - 1
+                adapter.data.getOrNull(lastIndex)?.let { index ->
+                    if (index is SomListEmptyStateUiModel) {
+                        adapter.data.removeAt(lastIndex)
+                        adapter.notifyItemRemoved(lastIndex)
+                    }
+                }
+                (adapter as SomListOrderAdapter).updateOrders(adapter.data.plus(data))
+                rvSomList?.post {
+                    updateBulkActionCheckboxStatus()
+                }
+            }
+            rvSomList?.postDelayed({
+                reshowNewOrderCoachMark(data)
+                reshowStatusFilterCoachMark()
+                reshowWaitingPaymentOrderListCoachMark()
+                reshowBulkAcceptOrderCoachMark()
+            }, DELAY_COACHMARK)
+        }
+        updateScrollListenerState(viewModel.hasNextPage())
+        isLoadingInitialData = false
+    }
+
+    protected open fun onRefreshOrderSuccess(result: OptionalOrderData) {
+        val order = result.order
+        if (order == null) {
+            (adapter as SomListOrderAdapter).removeOrder(result.orderId)
+            updateOrderCounter()
+            checkLoadMore()
+        } else {
+            (adapter as SomListOrderAdapter).updateOrder(order)
+        }
+        if (adapter.dataSize == 0) {
+            multiEditViews?.showWithCondition(adapter.dataSize > 0 && canMultiAcceptOrder)
+            showEmptyState()
         }
     }
 

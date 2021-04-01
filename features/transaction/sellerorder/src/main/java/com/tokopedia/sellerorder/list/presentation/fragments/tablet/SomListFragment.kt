@@ -4,6 +4,9 @@ import android.os.Bundle
 import com.tokopedia.applink.sellerhome.AppLinkMapperSellerHome
 import com.tokopedia.sellerorder.analytics.SomAnalytics
 import com.tokopedia.sellerorder.common.util.SomConsts
+import com.tokopedia.sellerorder.list.presentation.adapter.typefactories.tablet.SomListAdapterTypeFactory
+import com.tokopedia.sellerorder.list.presentation.adapter.viewholders.tablet.SomListOrderViewHolder
+import com.tokopedia.sellerorder.list.presentation.models.OptionalOrderData
 import com.tokopedia.sellerorder.list.presentation.models.SomListOrderUiModel
 
 class SomListFragment : com.tokopedia.sellerorder.list.presentation.fragments.SomListFragment() {
@@ -24,12 +27,35 @@ class SomListFragment : com.tokopedia.sellerorder.list.presentation.fragments.So
         }
     }
 
+    private var openedOrderId: String = ""
+
     private var somListOrderListener: SomListClickListener? = null
 
-    override fun onOrderClicked(order: SomListOrderUiModel) {
-        selectedOrderId = order.orderId
-        somListOrderListener?.onOrderClicked(order.orderId)
-        SomAnalytics.eventClickOrderCard(order.orderStatusId, order.status)
+    override fun getAdapterTypeFactory(): SomListAdapterTypeFactory = SomListAdapterTypeFactory(this, this)
+
+    override fun renderOrderList(data: List<SomListOrderUiModel>) {
+        if (openedOrderId.isNotEmpty()) {
+            data.find { it.orderId == openedOrderId }?.isOpen = true
+        }
+        super.renderOrderList(data)
+    }
+
+    override fun onRefreshOrderSuccess(result: OptionalOrderData) {
+        if (result.orderId == openedOrderId) {
+            result.order?.isOpen = true
+        }
+        super.onRefreshOrderSuccess(result)
+    }
+
+    override fun onOrderClicked(position: Int) {
+        adapter.data.getOrNull(position)?.let {
+            if (it !is SomListOrderUiModel) return
+            selectedOrderId = it.orderId
+            openedOrderId = it.orderId
+            somListOrderListener?.onOrderClicked(it.orderId)
+            notifyOpenOrderDetail(it)
+            SomAnalytics.eventClickOrderCard(it.orderStatusId, it.status)
+        }
     }
 
     override fun onActionCompleted(refreshOrder: Boolean, orderId: String) {
@@ -45,6 +71,28 @@ class SomListFragment : com.tokopedia.sellerorder.list.presentation.fragments.So
     }
 
     override fun showBackButton(): Boolean = false
+
+    private fun notifyOpenOrderDetail(order: SomListOrderUiModel) {
+        adapter.data.firstOrNull {
+            it is SomListOrderUiModel && it.isOpen
+        }.let { openedOrder ->
+            if (openedOrder is SomListOrderUiModel && openedOrder.orderId != order.orderId) {
+                openedOrder.isOpen = false
+                order.isOpen = true
+                adapter.notifyItemChanged(adapter.data.indexOf(openedOrder), Bundle().apply {
+                    putBoolean(SomListOrderViewHolder.TOGGLE_OPEN, openedOrder.isOpen)
+                })
+                adapter.notifyItemChanged(adapter.data.indexOf(order), Bundle().apply {
+                    putBoolean(SomListOrderViewHolder.TOGGLE_OPEN, order.isOpen)
+                })
+            } else if (openedOrder == null) {
+                order.isOpen = true
+                adapter.notifyItemChanged(adapter.data.indexOf(order), Bundle().apply {
+                    putBoolean(SomListOrderViewHolder.TOGGLE_OPEN, order.isOpen)
+                })
+            }
+        }
+    }
 
     fun setSomListOrderListener(listener: SomListClickListener) {
         this.somListOrderListener = listener
