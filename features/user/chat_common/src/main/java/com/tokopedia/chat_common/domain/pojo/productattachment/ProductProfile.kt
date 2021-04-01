@@ -71,4 +71,7 @@ class ProductProfile {
     @SerializedName("is_fullfilment")
     @Expose
     val isFullFilment: Boolean = false
+    @SerializedName("c")
+    @Expose
+    val urlTokocabang: String = ""
 }

@@ -296,7 +296,8 @@
                 android:layout_height="@dimen/dp_topchat_20"
                 android:layout_gravity="center_vertical"
                 android:contentDescription="@null"
-                app:srcCompat="@drawable/ic_topchat_shop_branch"
+                android:scaleType="fitCenter"
+                tools:srcCompat="@tools:sample/avatars"
                 tools:text="Stok:"
                 tools:visibility="visible" />
 

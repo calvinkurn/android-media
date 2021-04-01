@@ -56,6 +56,7 @@ class SingleProductAttachmentContainer : ConstraintLayout {
     private var sellerStockType: Typography? = null
     private var sellerStockCount: Typography? = null
     private var sellerFullfilment: LinearLayout? = null
+    private var sellerFullfilmentImage: ImageView? = null
     private var btnUpdateStockContainer: LinearLayout? = null
     private var btnUpdateStock: UnifyButton? = null
     private var footerContainer: LinearLayout? = null
@@ -142,6 +143,7 @@ class SingleProductAttachmentContainer : ConstraintLayout {
         sellerStockType = findViewById(R.id.tp_seller_stock_category)
         sellerStockCount = findViewById(R.id.tp_seller_stock_count)
         sellerFullfilment = findViewById(R.id.ll_seller_fullfilment)
+        sellerFullfilmentImage = findViewById(R.id.iv_seller_fullfilment)
         btnUpdateStockContainer = findViewById(R.id.ll_seller_update_stock)
         btnUpdateStock = findViewById(R.id.btn_update_stock)
         footerContainer = findViewById(R.id.ll_footer)
@@ -378,6 +380,7 @@ class SingleProductAttachmentContainer : ConstraintLayout {
     private fun bindSellerFullfilment(product: ProductAttachmentViewModel) {
         if (commonListener?.isSeller() == true && product.isFullfilment) {
             sellerFullfilment?.show()
+            ImageHandler.LoadImage(sellerFullfilmentImage, product.urlTokocabang)
         } else {
             sellerFullfilment?.hide()
         }

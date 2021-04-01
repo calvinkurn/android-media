@@ -75,6 +75,7 @@ open class ProductAttachmentViewModel : SendableViewModel,
     val stringBlastId: String get() = blastId.toString()
     var campaignId: Long = 0
     var isFullfilment: Boolean = false
+    var urlTokocabang: String = ""
 
     override fun updateData(attribute: Any?) {
         if (attribute is ProductAttachmentAttributes) {
@@ -101,6 +102,7 @@ open class ProductAttachmentViewModel : SendableViewModel,
             isPreOrder = attribute.productProfile.isPreOrder
             campaignId = attribute.productProfile.campaignId
             isFullfilment = attribute.productProfile.isFullFilment
+            urlTokocabang = attribute.productProfile.urlTokocabang
             if (variants.isNotEmpty()) {
                 setupVariantsField()
             }
