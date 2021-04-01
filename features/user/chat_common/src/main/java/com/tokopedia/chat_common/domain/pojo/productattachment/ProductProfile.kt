@@ -34,10 +34,10 @@ class ProductProfile {
     val variant: List<AttachmentVariant>? = listOf()
     @SerializedName("drop_percentage")
     @Expose
-    val dropPercentage: String = ""
+    var dropPercentage: String = ""
     @SerializedName("price_before")
     @Expose
-    val priceBefore: String = ""
+    var priceBefore: String = ""
     @SerializedName("shop_id")
     @Expose
     val shopId: Long = 0

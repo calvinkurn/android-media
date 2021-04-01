@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName
 
 open class Attachment(
         @SerializedName("attributes")
-        val attributes: String = "",
+        var attributes: String = "",
         @SerializedName("fallback")
         val fallback: Fallback = Fallback(),
         @SerializedName("id")

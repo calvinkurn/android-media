@@ -72,6 +72,31 @@ class TopchatRoomSellerProductAttachmentTest : BaseSellerTopchatRoomTest() {
     }
 
     @Test
+    fun assert_campaign_product_stock_info() {
+        // Given
+        setupChatRoomActivity()
+        getChatUseCase.response = sellerProductChatReplies
+        chatAttachmentUseCase.response = sellerProductAttachment.setCampaignStock(
+                0, true
+        )
+        inflateTestFragment()
+
+        // Then
+        onView(
+                withRecyclerView(R.id.recycler_view).atPositionOnView(
+                        1, R.id.tp_seller_stock_category
+                )
+        ).check(matches(isDisplayed()))
+        onView(
+                withRecyclerView(R.id.recycler_view).atPositionOnView(
+                        1, R.id.tp_seller_stock_category
+                )
+        ).check(matches(withText("Stok campaign:")))
+        assertStockCountVisibilityAt(1, isDisplayed())
+        assertStockCountValueAt(1, 5)
+    }
+
+    @Test
     fun user_update_stock_single_product_active() {
         // Given
         setupChatRoomActivity()

@@ -9,7 +9,9 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents.intending
 import androidx.test.espresso.intent.matcher.IntentMatchers.anyIntent
 import androidx.test.espresso.matcher.ViewMatchers.withText
+import com.google.gson.Gson
 import com.tokopedia.chat_common.domain.pojo.GetExistingChatPojo
+import com.tokopedia.chat_common.domain.pojo.productattachment.ProductAttachmentAttributes
 import com.tokopedia.product.manage.common.feature.list.constant.ProductManageCommonConstant
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 import com.tokopedia.topchat.AndroidFileUtil
@@ -19,6 +21,8 @@ import com.tokopedia.topchat.matchers.withRecyclerView
 import org.hamcrest.Matcher
 
 open class BaseSellerTopchatRoomTest : TopchatRoomTest() {
+
+    private val gson = Gson()
 
     protected lateinit var sellerProductChatReplies: GetExistingChatPojo
     protected lateinit var sellerProductAttachment: ChatAttachmentResponse
@@ -62,5 +66,24 @@ open class BaseSellerTopchatRoomTest : TopchatRoomTest() {
         intending(anyIntent()).respondWith(
                 Instrumentation.ActivityResult(Activity.RESULT_OK, intent)
         )
+    }
+
+    protected fun ChatAttachmentResponse.setCampaignStock(
+            attachmentIndex: Int,
+            isCampaign: Boolean
+    ): ChatAttachmentResponse {
+        val attachment = chatAttachments.list[attachmentIndex]
+        val product = gson.fromJson(
+                attachment.attributes, ProductAttachmentAttributes::class.java
+        )
+        if (isCampaign) {
+            product.productProfile.dropPercentage = "50"
+            product.productProfile.priceBefore = "Rp 10.000.000"
+        } else {
+            product.productProfile.dropPercentage = ""
+            product.productProfile.priceBefore = ""
+        }
+        attachment.attributes = gson.toJson(product)
+        return this
     }
 }
