@@ -1,6 +1,6 @@
 package com.tokopedia.settingnotif.usersetting.view.fragment
 
-import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.settingnotif.R
@@ -13,7 +13,12 @@ import com.tokopedia.settingnotif.usersetting.view.viewmodel.SettingStateViewMod
 
 class EmailFieldFragment: SettingFieldFragment() {
 
-    private val viewModel: SettingStateViewModel by viewModels { viewModelFactory }
+    private val viewModel: SettingStateViewModel by lazy {
+        ViewModelProvider(
+                this,
+                viewModelFactory
+        ).get(SettingStateViewModel::class.java)
+    }
 
     private val settingStates by lazy(LazyThreadSafetyMode.NONE) {
         viewModel.getSettingStates()
