@@ -484,6 +484,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
         showLoading()
         setupQuickFilter()
         fetchSortAndFilterData()
+        promoChipsWidget.resetState()
     }
 
     private fun setupSwipeRefresh() {

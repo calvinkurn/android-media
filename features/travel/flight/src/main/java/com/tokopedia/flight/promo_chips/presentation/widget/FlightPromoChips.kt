@@ -55,7 +55,7 @@ class FlightPromoChips @JvmOverloads constructor(context: Context, attrs: Attrib
     }
 
     fun resetState(){
-        if(adapter.itemCount >= 0 && adapter.selectedPosition != FlightPromoChipsAdapter.SELECTED_POSITION_INIT){
+        if(adapter.itemCount > 0 && adapter.selectedPosition != FlightPromoChipsAdapter.SELECTED_POSITION_INIT){
             recyclerView.findViewHolderForAdapterPosition(adapter.selectedPosition).let {
                 (it as FlightPromoChipsViewHolder).itemView.performClick()
             }
