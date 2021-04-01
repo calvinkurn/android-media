@@ -2,9 +2,11 @@ package com.tokopedia.topchat.chatroom.view.activity
 
 import android.view.Gravity
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withText
+import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.view.activity.base.BaseSellerTopchatRoomTest
 import com.tokopedia.topchat.matchers.withLinearLayoutGravity
@@ -69,5 +71,26 @@ class TopchatRoomSellerProductAttachmentTest : BaseSellerTopchatRoomTest() {
         assertStockCountValueAt(1, 5)
     }
 
+    @Test
+    fun user_update_stock_single_product_active() {
+        // Given
+        setupChatRoomActivity()
+        getChatUseCase.response = sellerProductChatReplies
+        chatAttachmentUseCase.response = sellerProductAttachment
+        createSuccessUpdateStockIntentResult(
+                "1261590628", 55, ProductStatus.ACTIVE
+        )
+        inflateTestFragment()
 
+        // When
+        onView(
+                withRecyclerView(R.id.recycler_view).atPositionOnView(
+                        1, R.id.btn_update_stock
+                )
+        ).perform(click())
+
+        // Then
+        assertStockCountVisibilityAt(1, isDisplayed())
+        assertStockCountValueAt(1, 55)
+    }
 }
