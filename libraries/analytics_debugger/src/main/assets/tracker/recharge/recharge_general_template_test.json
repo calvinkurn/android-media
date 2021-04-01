@@ -6,50 +6,50 @@
       "event": "clickHomepage",
       "eventCategory": "digital - homepage",
       "eventAction": "click dropdown operator cluster list",
-      "eventLabel": "{{.+}}",
-      "sessionIris": "{{.+}}"
+      "eventLabel": ".+",
+      "sessionIris": ".+"
     },
     {
       "event": "clickHomepage",
       "eventCategory": "digital - homepage",
       "eventAction": "choose operator cluster",
-      "eventLabel": "{{.+ - .+}}",
-      "sessionIris": "{{.+}}"
+      "eventLabel": ".+ - .+",
+      "sessionIris": ".+"
     },
     {
       "event": "clickHomepage",
       "eventCategory": "digital - homepage",
       "eventAction": "click dropdown operator list",
-      "eventLabel": "{{.+}}",
-      "sessionIris": "{{.+}}"
+      "eventLabel": ".+",
+      "sessionIris": ".+"
     },
     {
       "event": "clickHomepage",
       "eventCategory": "digital - homepage",
       "eventAction": "choose operator",
-      "eventLabel": "{{.+ - .+}}",
-      "sessionIris": "{{.+}}"
+      "eventLabel": ".+ - .+",
+      "sessionIris": ".+"
     },
     {
       "event": "clickCategory",
       "eventCategory": "digital - homepage",
       "eventAction": "click dropdown product list",
-      "eventLabel": "{{.+ - .+}}",
-      "sessionIris": "{{.+}}"
+      "eventLabel": ".+ - .+",
+      "sessionIris": ".+"
     },
     {
       "event": "clickHomepage",
       "eventCategory": "digital - homepage",
       "eventAction": "click on product card",
-      "eventLabel": "{{.+ - .+ - .+}}",
-      "sessionIris": "{{.+}}"
+      "eventLabel": ".+ - .+ - .+",
+      "sessionIris": ".+"
     },
     {
       "event": "clickHomepage",
       "eventCategory": "digital - homepage",
-      "eventAction": "{{input manual number|input manual number \\d+}}",
-      "eventLabel": "{{.+ - .+}}",
-      "sessionIris": "{{.+}}"
+      "eventAction": "input manual number|input manual number \\d+",
+      "eventLabel": ".+ - .+",
+      "sessionIris": ".+"
     }
   ]
 }

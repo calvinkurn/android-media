@@ -3,137 +3,137 @@
   "mode": "exact",
   "query": [
     {
-      "digitalCategoryId": "{{.+}}",
+      "digitalCategoryId": ".+",
       "businessUnit": "recharge",
-      "clientId": "{{.+}}",
-      "appsflyerId": "{{.*}}",
+      "clientId": ".+",
+      "appsflyerId": ".*",
       "screenName": "/digital/voucher game",
-      "userId": "{{.+}}",
-      "sessionIris": "{{.+}}",
-      "networkSpeed": "{{.*}}",
+      "userId": ".+",
+      "sessionIris": ".+",
+      "networkSpeed": ".*",
       "currentSite": "tokopediadigital",
-      "isLoggedInStatus": "{{true|false}}",
+      "isLoggedInStatus": "true|false",
       "eventName": "openScreen",
-      "shopId": "{{.+}}",
+      "shopId": ".+",
       "category": "Voucher Game",
       "event": "openScreen"
     },
     {
       "promotions": [
         {
-          "creative_name": "{{.*}}",
-          "creative_slot": "{{.*}}",
-          "item_id": "{{.+}}",
-          "item_name": "{{.+}}",
-          "creative_url": "{{.+}}"
+          "creative_name": ".*",
+          "creative_slot": ".*",
+          "item_id": ".+",
+          "item_name": ".+",
+          "creative_url": ".+"
         }
       ],
       "eventCategory": "digital - homepage",
       "event": "view_item",
       "eventAction": "impression banner digital",
-      "sessionIris": "{{.+}}",
-      "eventLabel": "{{.* - .*}}"
+      "sessionIris": ".+",
+      "eventLabel": ".* - .*"
     },
     {
       "promotions": [
         {
-          "creative_name": "{{.*}}",
-          "creative_slot": "{{.*}}",
-          "item_id": "{{.+}}",
-          "item_name": "{{.+}}",
-          "creative_url":  "{{.*}}"
+          "creative_name": ".*",
+          "creative_slot": ".*",
+          "item_id": ".+",
+          "item_name": ".+",
+          "creative_url":  ".*"
         }
       ],
       "eventCategory": "digital - homepage",
       "event": "select_content",
       "eventAction": "click banner digital",
-      "sessionIris": "{{.+}}",
-      "eventLabel":  "{{.* - .*}}"
+      "sessionIris": ".+",
+      "eventLabel":  ".* - .*"
     },
     {
       "promotions": [
         {
-          "creative_name": "{{.*}}",
-          "creative_slot": "{{.*}}",
-          "item_id": "{{.+}}",
-          "item_name": "{{.+}}",
-          "category": "{{.*}}"
+          "creative_name": ".*",
+          "creative_slot": ".*",
+          "item_id": ".+",
+          "item_name": ".+",
+          "category": ".*"
         }
       ],
       "eventCategory": "digital - homepage",
       "event": "select_content",
       "eventAction": "click on operator card",
-      "sessionIris": "{{.+}}",
-      "eventLabel": "{{.* - .*}}"
+      "sessionIris": ".+",
+      "eventLabel": ".* - .*"
     },
     {
       "eventCategory": "digital - homepage",
       "event": "clickHomepage",
       "eventAction": "click search box",
-      "sessionIris": "{{.+}}",
+      "sessionIris": ".+",
       "eventLabel": ""
     },
     {
       "eventCategory": "digital - homepage",
       "event": "clickHomepage",
       "eventAction": "click `x` ticker on search box",
-      "sessionIris": "{{.+}}",
+      "sessionIris": ".+",
       "eventLabel": ""
     },
     {
       "promotions": [
         {
-          "creative_name": "{{.*}}",
-          "creative_slot": "{{.*}}",
-          "item_id": "{{.+}}",
-          "item_name": "{{.+}}",
-          "category": "{{.*}}"
+          "creative_name": ".*",
+          "creative_slot": ".*",
+          "item_id": ".+",
+          "item_name": ".+",
+          "category": ".*"
         }
       ],
       "eventCategory": "digital - homepage",
       "event": "view_item",
       "eventAction": "impression on operator card",
-      "sessionIris": "{{.+}}",
+      "sessionIris": ".+",
       "eventLabel": ""
     },
     {
       "promotions": [
         {
-          "creative_name": "{{.*}}",
-          "creative_slot": "{{.*}}",
-          "item_id": "{{.+}}",
-          "item_name": "{{.+}}",
-          "category": "{{.*}}"
+          "creative_name": ".*",
+          "creative_slot": ".*",
+          "item_id": ".+",
+          "item_name": ".+",
+          "category": ".*"
         }
       ],
       "eventCategory": "digital - homepage",
       "event": "select_content",
       "eventAction": "click product card result",
-      "sessionIris": "{{.+}}",
-      "eventLabel": "{{.* - .*}}"
+      "sessionIris": ".+",
+      "eventLabel": ".* - .*"
     },
     {
       "eventCategory": "digital - homepage",
       "event": "clickHomepage",
       "eventAction": "click search result",
-      "sessionIris": "{{.+}}",
-      "eventLabel": "{{.*}}"
+      "sessionIris": ".+",
+      "eventLabel": ".*"
     },
     {
       "promotions": [
         {
-          "creative_name": "{{.*}}",
-          "creative_slot": "{{.*}}",
-          "item_id": "{{.+}}",
-          "item_name": "{{.+}}",
-          "category": "{{.*}}"
+          "creative_name": ".*",
+          "creative_slot": ".*",
+          "item_id": ".+",
+          "item_name": ".+",
+          "category": ".*"
         }
       ],
       "eventCategory": "digital - homepage",
       "event": "view_item",
       "eventAction": "impression product card result",
-      "sessionIris": "{{.+}}",
-      "eventLabel": "{{.*}}"
+      "sessionIris": ".+",
+      "eventLabel": ".*"
     }
   ]
 }

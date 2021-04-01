@@ -5,9 +5,9 @@
     {
       "eventCategory": "inbox pesan bantuan",
       "event": "clickInboxBantuan",
-      "eventAction": "{{.*}}",
-      "sessionIris": "{{.*}}",
-      "eventLabel": "{{.*}}"
+      "eventAction": ".*",
+      "sessionIris": ".*",
+      "eventLabel": ".*"
     }
   ]
 }

@@ -6,8 +6,8 @@
       "event" : "clickAddProduct",
       "eventCategory" : "add product page",
       "eventAction" : "click failed add product notification",
-      "eventLabel" : "{{.*}}",
-      "shopId" : "{{.+}}"
+      "eventLabel" : ".*",
+      "shopId" : ".+"
     }
   ]
 }

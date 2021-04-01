@@ -6,26 +6,26 @@
       "event": "clickHomepage",
       "eventCategory": "digital - homepage",
       "eventAction": "input from favorite number",
-      "eventLabel": "{{.* - .*}}",
-      "sessionIris": "{{.*}}"
+      "eventLabel": ".* - .*",
+      "sessionIris": ".*"
     },
     {
       "event": "view_item_list",
       "eventCategory": "digital - homepage",
       "eventAction": "impression recent icon",
-      "eventLabel": "{{.*}}",
-      "sessionIris": "{{.*}}",
-      "item_list": "{{.*}}",
+      "eventLabel": ".*",
+      "sessionIris": ".*",
+      "item_list": ".*",
       "items": [
         {
-          "item_id": "{{.*}}",
-          "item_name": "{{.*}}",
-          "item_brand": "{{.*}}",
-          "item_variant": "{{.*}}",
-          "item_category": "{{.*}}",
-          "index": "{{\\d*.\\d*}}",
-          "price": "{{\\d*.\\d*|\\d.\\d+E\\d}}",
-          "dimension40": "{{.*}}"
+          "item_id": ".*",
+          "item_name": ".*",
+          "item_brand": ".*",
+          "item_variant": ".*",
+          "item_category": ".*",
+          "index": "\\d*.\\d*",
+          "price": "\\d*.\\d*|\\d.\\d+E\\d",
+          "dimension40": ".*"
         }
       ]
     },
@@ -33,18 +33,18 @@
       "event": "select_content",
       "eventCategory": "digital - homepage",
       "eventAction": "click recent icon",
-      "eventLabel": "{{.* - .*}}",
-      "sessionIris": "{{.*}}",
-      "item_list": "{{.* - .* - .* - .*}}",
+      "eventLabel": ".* - .*",
+      "sessionIris": ".*",
+      "item_list": ".* - .* - .* - .*",
       "items": [
         {
-          "item_id": "{{.*}}",
-          "item_name": "{{.*}}",
-          "item_brand": "{{.*}}",
-          "item_variant": "{{.*}}",
-          "item_category": "{{.*}}",
-          "index": "{{\\d*.\\d*}}",
-          "price": "{{\\d*.\\d*|\\d.\\d+E\\d}}"
+          "item_id": ".*",
+          "item_name": ".*",
+          "item_brand": ".*",
+          "item_variant": ".*",
+          "item_category": ".*",
+          "index": "\\d*.\\d*",
+          "price": "\\d*.\\d*|\\d.\\d+E\\d"
         }
       ]
     },
@@ -52,31 +52,31 @@
       "event": "clickHomepage",
       "eventCategory": "digital - homepage",
       "eventAction": "click tab promo",
-      "eventLabel": "{{.*}}",
+      "eventLabel": ".*",
       "currentSite": "tokopediadigital",
-      "userId": "{{.*}}",
+      "userId": ".*",
       "businessUnit": "recharge",
-      "sessionIris": "{{.*}}"
+      "sessionIris": ".*"
     },
     {
       "event": "clickHomepage",
       "eventCategory": "digital - homepage",
       "eventAction": "click tab recent",
-      "eventLabel": "{{.*}}",
+      "eventLabel": ".*",
       "currentSite": "tokopediadigital",
-      "userId": "{{.*}}",
+      "userId": ".*",
       "businessUnit": "recharge",
-      "sessionIris": "{{.*}}"
+      "sessionIris": ".*"
     },
     {
       "event": "clickHomepage",
       "eventCategory": "digital - homepage",
       "eventAction": "click cek tagihan",
-      "eventLabel": "{{.* - .*}}",
+      "eventLabel": ".* - .*",
       "currentSite": "tokopediadigital",
-      "userId": "{{.*}}",
+      "userId": ".*",
       "businessUnit": "recharge",
-      "sessionIris": "{{.*}}"
+      "sessionIris": ".*"
     }
   ]
 }

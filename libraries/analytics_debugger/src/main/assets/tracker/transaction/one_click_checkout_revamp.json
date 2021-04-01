@@ -8,8 +8,8 @@
       "eventLabel": "",
       "businessUnit": "purchase platform",
       "currentSite": "tokopediamarketplace",
-      "userId": "{{\\d+}}",
-      "sessionIris": "{{.*}}"
+      "userId": "\\d+",
+      "sessionIris": ".*"
     },
     {
       "event": "clickCheckoutExpress",
@@ -18,8 +18,8 @@
       "eventLabel": "",
       "businessUnit": "purchase platform",
       "currentSite": "tokopediamarketplace",
-      "userId": "{{\\d+}}",
-      "sessionIris": "{{.*}}"
+      "userId": "\\d+",
+      "sessionIris": ".*"
     },
     {
       "event": "viewCheckoutExpressIris",
@@ -28,58 +28,58 @@
       "eventLabel": "",
       "businessUnit": "purchase platform",
       "currentSite": "tokopediamarketplace",
-      "userId": "{{\\d+}}",
-      "sessionIris": "{{.*}}"
+      "userId": "\\d+",
+      "sessionIris": ".*"
     },
     {
       "event": "clickCheckoutExpress",
       "eventCategory": "order summary",
       "eventAction": "preference - click profile option on profile list",
-      "eventLabel": "{{\\d+}}",
+      "eventLabel": "\\d+",
       "businessUnit": "purchase platform",
       "currentSite": "tokopediamarketplace",
-      "userId": "{{\\d+}}",
-      "sessionIris": "{{.*}}"
+      "userId": "\\d+",
+      "sessionIris": ".*"
     },
     {
       "event": "clickCheckoutExpress",
       "eventCategory": "order summary",
       "eventAction": "address - click arrow to change address option",
-      "eventLabel": "{{\\d+}}",
+      "eventLabel": "\\d+",
       "businessUnit": "purchase platform",
       "currentSite": "tokopediamarketplace",
-      "userId": "{{\\d+}}",
-      "sessionIris": "{{.*}}"
+      "userId": "\\d+",
+      "sessionIris": ".*"
     },
     {
       "event": "clickCheckoutExpress",
       "eventCategory": "order summary",
       "eventAction": "duration - click arrow to change duration option",
-      "eventLabel": "{{\\d+}}",
+      "eventLabel": "\\d+",
       "businessUnit": "purchase platform",
       "currentSite": "tokopediamarketplace",
-      "userId": "{{\\d+}}",
-      "sessionIris": "{{.*}}"
+      "userId": "\\d+",
+      "sessionIris": ".*"
     },
     {
       "event": "clickCheckoutExpress",
       "eventCategory": "order summary",
       "eventAction": "duration - click selected duration option",
-      "eventLabel": "{{\\d+}}",
+      "eventLabel": "\\d+",
       "businessUnit": "purchase platform",
       "currentSite": "tokopediamarketplace",
-      "userId": "{{\\d+}}",
-      "sessionIris": "{{.*}}"
+      "userId": "\\d+",
+      "sessionIris": ".*"
     },
     {
       "event": "clickCheckoutExpress",
       "eventCategory": "order summary",
       "eventAction": "payment - click arrow to change payment option",
-      "eventLabel": "{{.*}}",
+      "eventLabel": ".*",
       "businessUnit": "purchase platform",
       "currentSite": "tokopediamarketplace",
-      "userId": "{{\\d+}}",
-      "sessionIris": "{{.*}}"
+      "userId": "\\d+",
+      "sessionIris": ".*"
     },
     {
       "event": "clickCheckoutExpress",
@@ -88,8 +88,8 @@
       "eventLabel": "",
       "businessUnit": "purchase platform",
       "currentSite": "tokopediamarketplace",
-      "userId": "{{\\d+}}",
-      "sessionIris": "{{.*}}"
+      "userId": "\\d+",
+      "sessionIris": ".*"
     }
   ]
 }

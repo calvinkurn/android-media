@@ -3,29 +3,29 @@
   "mode": "subset",
   "query": [
     {
-      "networkSpeed": "{{.+}}",
-      "clientId": "{{.+}}",
-      "isLoggedInStatus": "{{.+}}",
-      "appsflyerId": "{{.+}}",
-      "shopId": "{{.*}}",
+      "networkSpeed": ".+",
+      "clientId": ".+",
+      "isLoggedInStatus": ".+",
+      "appsflyerId": ".+",
+      "shopId": ".*",
       "screenName": "Register page",
       "event": "openScreen",
-      "userId": "{{.*}}",
-      "sessionIris": "{{.+}}"
+      "userId": ".*",
+      "sessionIris": ".+"
     },
     {
       "event": "clickRegister",
       "eventCategory": "register page",
       "eventAction": "click on button daftar - phone number",
       "eventLabel": "click",
-      "sessionIris": "{{.*}}"
+      "sessionIris": ".*"
     },
     {
       "event": "clickRegister",
       "eventCategory": "register page",
       "eventAction": "click on button daftar - phone number",
       "eventLabel": "success",
-      "sessionIris": "{{.*}}"
+      "sessionIris": ".*"
     }
   ]
 }

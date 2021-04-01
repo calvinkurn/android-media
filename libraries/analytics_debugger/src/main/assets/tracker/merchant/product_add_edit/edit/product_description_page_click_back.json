@@ -6,8 +6,8 @@
       "event" : "clickEditProduct",
       "eventCategory" : "edit product page",
       "eventAction" : "click back on product description page",
-      "eventLabel" : "{{.*}}",
-      "shopId" : "{{.+}}"
+      "eventLabel" : ".*",
+      "shopId" : ".+"
     }
   ]
 }

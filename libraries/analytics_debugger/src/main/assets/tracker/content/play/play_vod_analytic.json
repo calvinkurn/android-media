@@ -4,85 +4,85 @@
   "query": [
     {
       "event": "openScreen",
-      "networkSpeed": "{{.*}}",
-      "clientId": "{{.*}}",
-      "isLoggedInStatus": "{{true|false}}",
-      "appsflyerId": "{{.*}}",
-      "shopId": "{{.*}}",
-      "screenName": "{{/group-chat-room/\\d+/(vod|live)}}",
-      "userId": "{{.*}}",
-      "sessionIris": "{{.*}}"
+      "networkSpeed": ".*",
+      "clientId": ".*",
+      "isLoggedInStatus": "true|false",
+      "appsflyerId": ".*",
+      "shopId": ".*",
+      "screenName": "/group-chat-room/\\d+/(vod|live)",
+      "userId": ".*",
+      "sessionIris": ".*"
     },
     {
       "eventAction": "leave room",
       "event": "clickBack",
       "eventCategory": "groupchat room",
-      "eventLabel": "{{\\d+ - \\d+ - (vod|live)}}",
-      "sessionIris": "{{.*}}"
+      "eventLabel": "\\d+ - \\d+ - (vod|live)",
+      "sessionIris": ".*"
     },
     {
       "eventAction": "click like",
       "event": "clickGroupChat",
       "eventCategory": "groupchat room",
-      "eventLabel": "{{\\d+ - (live|vod)}}",
-      "sessionIris": "{{.*}}"
+      "eventLabel": "\\d+ - (live|vod)",
+      "sessionIris": ".*"
     },
     {
       "eventAction": "click unlike",
       "event": "clickGroupChat",
       "eventCategory": "groupchat room",
-      "eventLabel": "{{\\d+ - (live|vod)}}",
-      "sessionIris": "{{.*}}"
+      "eventLabel": "\\d+ - (live|vod)",
+      "sessionIris": ".*"
     },
     {
       "eventAction": "click on play button video",
       "event": "clickGroupChat",
       "eventCategory": "groupchat room",
-      "eventLabel": "{{\\d+ - (live|vod)}}",
-      "sessionIris": "{{.*}}"
+      "eventLabel": "\\d+ - (live|vod)",
+      "sessionIris": ".*"
     },
     {
       "eventAction": "click cart icon",
       "event": "clickGroupChat",
       "eventCategory": "groupchat room",
-      "eventLabel": "{{\\d+ - (live|vod)}}",
-      "sessionIris": "{{.*}}"
+      "eventLabel": "\\d+ - (live|vod)",
+      "sessionIris": ".*"
     },
     {
       "eventAction": "scroll merchant voucher",
       "event": "clickGroupChat",
       "eventCategory": "groupchat room",
-      "eventLabel": "{{\\d+ - \\d+}}",
-      "sessionIris": "{{.*}}"
+      "eventLabel": "\\d+ - \\d+",
+      "sessionIris": ".*"
     },
     {
       "eventAction": "click buy in bottom sheet with varian",
       "event": "clickGroupChat",
       "eventCategory": "groupchat room",
-      "eventLabel": "{{\\d+ - \\d+ - (live|vod)}}",
-      "sessionIris": "{{.*}}"
+      "eventLabel": "\\d+ - \\d+ - (live|vod)",
+      "sessionIris": ".*"
     },
     {
       "eventAction": "click buy in bottom sheet",
       "event": "add_to_cart",
       "eventCategory": "groupchat room",
-      "eventLabel": "{{\\d+ - \\d+ - (live|vod)}}",
-      "sessionIris": "{{.*}}",
+      "eventLabel": "\\d+ - \\d+ - (live|vod)",
+      "sessionIris": ".*",
       "items": [
         {
-          "quantity": "{{\\d+(.\\d+)?}}",
-          "item_id": "{{\\d+}}",
-          "item_name": "{{.*}}",
-          "dimension81": "{{.*}}",
-          "dimension80": "{{.*}}",
-          "item_brand": "{{.*}}",
-          "item_category": "{{.*}}",
-          "dimension45": "{{\\d+}}",
-          "dimension82": "{{.*}}",
-          "price": "{{\\d+.\\d+}}",
+          "quantity": "\\d+(.\\d+)?",
+          "item_id": "\\d+",
+          "item_name": ".*",
+          "dimension81": ".*",
+          "dimension80": ".*",
+          "item_brand": ".*",
+          "item_category": ".*",
+          "dimension45": "\\d+",
+          "dimension82": ".*",
+          "price": "\\d+.\\d+",
           "dimension40": "/groupchat - bottom sheet",
-          "dimension79": "{{.*}}",
-          "item_variant": "{{.*}}"
+          "dimension79": ".*",
+          "item_variant": ".*"
         }
       ]
     },
@@ -90,30 +90,30 @@
       "eventAction": "click atc in bottom sheet with varian",
       "event": "clickGroupChat",
       "eventCategory": "groupchat room",
-      "eventLabel": "{{\\d+ - \\d+ - (live|vod)}}",
-      "sessionIris": "{{.*}}"
+      "eventLabel": "\\d+ - \\d+ - (live|vod)",
+      "sessionIris": ".*"
     },
     {
       "eventAction": "click atc in bottom sheet",
       "event": "add_to_cart",
       "eventCategory": "groupchat room",
-      "eventLabel": "{{\\d+ - \\d+ - (live|vod)}}",
-      "sessionIris": "{{.*}}",
+      "eventLabel": "\\d+ - \\d+ - (live|vod)",
+      "sessionIris": ".*",
       "items": [
         {
-          "quantity": "{{\\d+(.\\d+)?}}",
-          "item_id": "{{\\d+}}",
-          "item_name": "{{.*}}",
-          "dimension81": "{{.*}}",
-          "dimension80": "{{.*}}",
-          "item_brand": "{{.*}}",
-          "item_category": "{{.*}}",
-          "dimension45": "{{\\d+}}",
-          "dimension82": "{{.*}}",
-          "price": "{{\\d+.\\d+}}",
+          "quantity": "\\d+(.\\d+)?",
+          "item_id": "\\d+",
+          "item_name": ".*",
+          "dimension81": ".*",
+          "dimension80": ".*",
+          "item_brand": ".*",
+          "item_category": ".*",
+          "dimension45": "\\d+",
+          "dimension82": ".*",
+          "price": "\\d+.\\d+",
           "dimension40": "/groupchat - bottom sheet",
-          "dimension79": "{{.*}}",
-          "item_variant": "{{.*}}"
+          "dimension79": ".*",
+          "item_variant": ".*"
         }
       ]
     },
@@ -121,17 +121,17 @@
       "eventAction": "view product",
       "event": "view_item_list",
       "eventCategory": "groupchat room",
-      "eventLabel": "{{\\d+ - \\d+ - (live|vod) - product in bottom sheet}}",
-      "sessionIris": "{{.*}}",
+      "eventLabel": "\\d+ - \\d+ - (live|vod) - product in bottom sheet",
+      "sessionIris": ".*",
       "items": [
         {
-          "item_id": "{{\\d+}}",
-          "item_name": "{{.*}}",
-          "item_brand": "{{.*}}",
-          "item_category": "{{.*}}",
-          "price": "{{\\d+.\\d+}}",
-          "item_variant": "{{.*}}",
-          "index": "{{\\d+(.\\d+)?}}"
+          "item_id": "\\d+",
+          "item_name": ".*",
+          "item_brand": ".*",
+          "item_category": ".*",
+          "price": "\\d+.\\d+",
+          "item_variant": ".*",
+          "index": "\\d+(.\\d+)?"
         }
       ],
       "item_list": "/groupchat - bottom sheet"
@@ -140,18 +140,18 @@
       "eventAction": "click",
       "event": "select_content",
       "eventCategory": "groupchat room",
-      "eventLabel": "{{\\d+ - \\d+ - (live|vod) - product in bottom sheet}}",
-      "sessionIris": "{{.*}}",
+      "eventLabel": "\\d+ - \\d+ - (live|vod) - product in bottom sheet",
+      "sessionIris": ".*",
       "items": [
         {
-          "item_id": "{{\\d+}}",
-          "item_name": "{{.*}}",
-          "item_brand": "{{.*}}",
-          "item_category": "{{.*}}",
-          "price": "{{\\d+.\\d+}}",
-          "item_variant": "{{.*}}",
+          "item_id": "\\d+",
+          "item_name": ".*",
+          "item_brand": ".*",
+          "item_category": ".*",
+          "price": "\\d+.\\d+",
+          "item_variant": ".*",
           "dimension40": "/groupchat - bottom sheet",
-          "index": "{{\\d+(.\\d+)?}}"
+          "index": "\\d+(.\\d+)?"
         }
       ],
       "item_list": "/groupchat - bottom sheet"
@@ -160,23 +160,23 @@
       "eventAction": "click atc in varian page",
       "event": "add_to_cart",
       "eventCategory": "groupchat room",
-      "eventLabel": "{{\\d+ - \\d+ - (live|vod)}}",
-      "sessionIris": "{{.*}}",
+      "eventLabel": "\\d+ - \\d+ - (live|vod)",
+      "sessionIris": ".*",
       "items": [
         {
-          "quantity": "{{\\d+(.\\d+)?}}",
-          "item_id": "{{\\d+}}",
-          "item_name": "{{.*}}",
-          "dimension81": "{{.*}}",
-          "dimension80": "{{.*}}",
-          "item_brand": "{{.*}}",
-          "item_category": "{{.*}}",
-          "dimension45": "{{\\d+}}",
-          "dimension82": "{{.*}}",
-          "price": "{{\\d+.\\d+}}",
+          "quantity": "\\d+(.\\d+)?",
+          "item_id": "\\d+",
+          "item_name": ".*",
+          "dimension81": ".*",
+          "dimension80": ".*",
+          "item_brand": ".*",
+          "item_category": ".*",
+          "dimension45": "\\d+",
+          "dimension82": ".*",
+          "price": "\\d+.\\d+",
           "dimension40": "/groupchat - varian page",
-          "dimension79": "{{.*}}",
-          "item_variant": "{{.*}}"
+          "dimension79": ".*",
+          "item_variant": ".*"
         }
       ]
     },
@@ -184,23 +184,23 @@
       "eventAction": "click beli in varian page",
       "event": "add_to_cart",
       "eventCategory": "groupchat room",
-      "eventLabel": "{{\\d+ - \\d+ - (live|vod)}}",
-      "sessionIris": "{{.*}}",
+      "eventLabel": "\\d+ - \\d+ - (live|vod)",
+      "sessionIris": ".*",
       "items": [
         {
-          "quantity": "{{\\d+(.\\d+)?}}",
-          "item_id": "{{\\d+}}",
-          "item_name": "{{.*}}",
-          "dimension81": "{{.*}}",
-          "dimension80": "{{.*}}",
-          "item_brand": "{{.*}}",
-          "item_category": "{{.*}}",
-          "dimension45": "{{\\d+}}",
-          "dimension82": "{{.*}}",
-          "price": "{{\\d+.\\d+}}",
+          "quantity": "\\d+(.\\d+)?",
+          "item_id": "\\d+",
+          "item_name": ".*",
+          "dimension81": ".*",
+          "dimension80": ".*",
+          "item_brand": ".*",
+          "item_category": ".*",
+          "dimension45": "\\d+",
+          "dimension82": ".*",
+          "price": "\\d+.\\d+",
           "dimension40": "/groupchat - varian page",
-          "dimension79": "{{.*}}",
-          "item_variant": "{{.*}}"
+          "dimension79": ".*",
+          "item_variant": ".*"
         }
       ]
     },
@@ -208,26 +208,26 @@
       "eventAction": "click lihat in message ticker",
       "event": "clickGroupChat",
       "eventCategory": "groupchat room",
-      "eventLabel": "{{\\d+ - (live|vod)}}",
-      "sessionIris": "{{.*}}"
+      "eventLabel": "\\d+ - (live|vod)",
+      "sessionIris": ".*"
     },
     {
       "eventAction": "click product pinned message",
       "event": "clickGroupChat",
       "eventCategory": "groupchat room",
-      "eventLabel": "{{\\d+}}",
-      "sessionIris": "{{.*}}"
+      "eventLabel": "\\d+",
+      "sessionIris": ".*"
     },
     {
       "eventAction": "click full screen to landscape",
       "event": "clickGroupChat",
       "eventCategory": "groupchat room",
-      "eventLabel": "{{\\d+ - (live|vod)}}",
-      "sessionIris": "{{.*}}",
-      "screenName": "{{/group-chat-room/\\d+/(vod|live)}}",
-      "currentSite": "{{.*}}",
-      "clientId": "{{.*}}",
-      "userId": "{{.*}}",
+      "eventLabel": "\\d+ - (live|vod)",
+      "sessionIris": ".*",
+      "screenName": "/group-chat-room/\\d+/(vod|live)",
+      "currentSite": ".*",
+      "clientId": ".*",
+      "userId": ".*",
       "businessUnit": "play"
     }
   ]

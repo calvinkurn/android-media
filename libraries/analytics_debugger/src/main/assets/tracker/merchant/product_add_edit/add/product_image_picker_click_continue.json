@@ -6,8 +6,8 @@
       "event" : "clickAddProduct",
       "eventCategory" : "add product page",
       "eventAction" : "click continue on gallery page",
-      "eventLabel" : "{{.*}}",
-      "shopId" : "{{.+}}",
+      "eventLabel" : ".*",
+      "shopId" : ".+",
       "screenName":"/addproductpage - choose photo"
     }
   ]

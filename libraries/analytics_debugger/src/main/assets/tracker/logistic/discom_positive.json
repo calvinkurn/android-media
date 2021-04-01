@@ -5,7 +5,7 @@
       "event": "clickShipping",
       "eventCategory": "cart change address",
       "eventAction": "click checklist kota atau kecamatan pada + address",
-      "eventLabel": "{{.*}}"
+      "eventLabel": ".*"
     }
   ],
   "readme": "Positive flow district recommendation"

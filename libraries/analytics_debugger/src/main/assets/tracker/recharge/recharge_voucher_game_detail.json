@@ -4,29 +4,29 @@
   "query": [
     {
       "eventCategory": "digital - homepage",
-      "item_list": "{{.*}}",
+      "item_list": ".*",
       "event": "select_content",
       "eventAction": "click on product card",
-      "sessionIris": "{{.+}}",
+      "sessionIris": ".+",
       "items": [
         {
-          "item_id": "{{.+}}",
-          "price": "{{\\d*.\\d*|\\d.\\d+E\\d}}",
-          "dimension40": "{{.*}}",
-          "index": "{{\\d*.\\d*}}",
-          "item_name": "{{.+}}",
-          "item_brand": "{{.*}}",
-          "item_variant": "{{.*}}",
-          "item_category": "{{.*}}"
+          "item_id": ".+",
+          "price": "\\d*.\\d*|\\d.\\d+E\\d",
+          "dimension40": ".*",
+          "index": "\\d*.\\d*",
+          "item_name": ".+",
+          "item_brand": ".*",
+          "item_variant": ".*",
+          "item_category": ".*"
         }
       ],
-      "eventLabel": "{{.* - .*}}"
+      "eventLabel": ".* - .*"
     },
     {
       "eventCategory": "digital - homepage",
       "event": "clickHomepage",
       "eventAction": "click info button on operator page",
-      "sessionIris": "{{.+}}",
+      "sessionIris": ".+",
       "eventLabel": ""
     }
   ]

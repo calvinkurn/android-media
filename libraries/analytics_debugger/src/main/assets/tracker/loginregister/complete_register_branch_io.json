@@ -6,13 +6,13 @@
       "buoList": [],
       "customProperties": {
         "nameValuePairs": {
-          "email": "{{.*}}",
-          "userId": "{{\\w+}}",
-          "phone": "{{.*}}"
+          "email": ".*",
+          "userId": "\\w+",
+          "phone": ".*"
         }
       },
       "eventName": "COMPLETE_REGISTRATION",
-      "isStandardEvent": "{{true|false}}",
+      "isStandardEvent": "true|false",
       "standardProperties": {
         "nameValuePairs": {}
       }
