@@ -78,6 +78,7 @@ import com.tokopedia.loginregister.login.di.LoginComponentBuilder
 import com.tokopedia.loginregister.login.domain.StatusFingerprint
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckData
 import com.tokopedia.loginregister.login.router.LoginRouter
+import com.tokopedia.loginregister.login.service.GetDefaultChosenAddressService
 import com.tokopedia.loginregister.login.service.RegisterPushNotifService
 import com.tokopedia.loginregister.login.view.activity.LoginActivity
 import com.tokopedia.loginregister.login.view.listener.LoginEmailPhoneContract
@@ -1074,6 +1075,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
             } else {
                 onSuccessLogin()
             }
+            getDefaultChosenAddress()
         }
     }
 
@@ -1372,7 +1374,6 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
         val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_PIN)
         intent.putExtras(Bundle().apply {
             putBoolean(ApplinkConstInternalGlobal.PARAM_ENABLE_SKIP_2FA, enableSkip2FA)
-            putBoolean(ApplinkConstInternalGlobal.PARAM_IS_FROM_2FA, true)
             putBoolean(ApplinkConstInternalGlobal.PARAM_IS_SKIP_OTP, true)
         })
         startActivityForResult(intent, REQUEST_ADD_PIN_AFTER_REGISTER_PHONE)
@@ -1645,6 +1646,12 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
             activity?.let {
                 RegisterPushNotifService.startService(it.applicationContext)
             }
+        }
+    }
+
+    private fun getDefaultChosenAddress() {
+        activity?.let {
+            GetDefaultChosenAddressService.startService(it.applicationContext)
         }
     }
 

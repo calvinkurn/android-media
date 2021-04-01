@@ -60,8 +60,8 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
             isPreorder = orderProduct.isPreorder != 0
             categoryIds = orderProduct.categoryId.toString()
             uniqueId = orderCart.cartString
-            addressId = address.addressId
-            products = listOf(Product(orderProduct.productId, orderProduct.isFreeOngkir))
+            addressId = address.addressId.toString()
+            products = listOf(Product(orderProduct.productId, orderProduct.isFreeOngkir, orderProduct.isFreeOngkirExtra))
             weightInKilograms = orderProduct.quantity.orderQuantity * orderProduct.weight / 1000.0
             productInsurance = orderProduct.productFinsurance
             orderValue = orderProduct.quantity.orderQuantity * orderProduct.getPrice()
@@ -631,6 +631,23 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
             }
         }
         return null
+    }
+
+    internal fun resetBbo(orderShipment: OrderShipment): OrderShipment {
+        val logisticPromoViewModel = orderShipment.logisticPromoViewModel
+        val logisticPromoShipping = orderShipment.logisticPromoShipping
+        val shippingRecommendationData = orderShipment.shippingRecommendationData
+        if (shippingRecommendationData != null && logisticPromoViewModel != null && orderShipment.isApplyLogisticPromo && logisticPromoShipping != null) {
+            shippingRecommendationData.logisticPromo = shippingRecommendationData.logisticPromo.copy(isApplied = false)
+            val shippingDuration = shippingRecommendationData.shippingDurationViewModels.first { it.serviceData.serviceId == logisticPromoShipping.serviceData.serviceId }
+            shippingDuration.isSelected = true
+            shippingDuration.shippingCourierViewModelList.first { it.productData.shipperProductId == logisticPromoShipping.productData.shipperProductId }.isSelected = true
+            return orderShipment.copy(shippingRecommendationData = shippingRecommendationData,
+                    isApplyLogisticPromo = false,
+                    logisticPromoShipping = null,
+                    logisticPromoTickerMessage = "Tersedia ${logisticPromoViewModel.title}")
+        }
+        return orderShipment
     }
 }
 

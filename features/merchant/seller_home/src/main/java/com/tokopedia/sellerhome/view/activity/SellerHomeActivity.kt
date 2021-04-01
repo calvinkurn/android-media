@@ -24,6 +24,8 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst
+import com.tokopedia.internal_review.common.InternalReviewHelper
+import com.tokopedia.internal_review.factory.createReviewHelper
 import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.requestStatusBarDark
@@ -48,7 +50,6 @@ import com.tokopedia.sellerhome.view.navigator.SellerHomeNavigator
 import com.tokopedia.sellerhome.view.viewhelper.lottiebottomnav.BottomMenu
 import com.tokopedia.sellerhome.view.viewhelper.lottiebottomnav.IBottomClickListener
 import com.tokopedia.sellerhome.view.viewmodel.SellerHomeActivityViewModel
-import com.tokopedia.sellerreview.common.SellerReviewHelper
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.activity_sah_seller_home.*
@@ -71,7 +72,8 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
     @Inject lateinit var userSession: UserSessionInterface
     @Inject lateinit var viewModelFactory: ViewModelFactory
     @Inject lateinit var remoteConfig: SellerHomeRemoteConfig
-    @Inject lateinit var sellerReviewHelper: SellerReviewHelper
+
+    private val sellerReviewHelper by lazy { createReviewHelper(applicationContext) }
 
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val homeViewModel by lazy { viewModelProvider.get(SellerHomeActivityViewModel::class.java) }
@@ -432,7 +434,8 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
 
         val animEnterDuration = 4f
         val animExitDuration = 1f
-        menu.add(BottomMenu(R.id.menu_home, resources.getString(R.string.sah_home), R.raw.anim_bottom_nav_home, R.raw.anim_bottom_nav_home_to_enabled, R.drawable.ic_sah_bottom_nav_home_active, R.drawable.ic_sah_bottom_nav_home_inactive, R.color.color_active_bottom_nav, false, animExitDuration, animEnterDuration))
+
+        menu.add(BottomMenu(R.id.menu_home, resources.getString(R.string.sah_home), R.raw.anim_bottom_nav_home_mosque, R.raw.anim_bottom_nav_home_mosque_to_enabled, R.drawable.ic_sah_bottom_nav_home_mosque_active, R.drawable.ic_sah_bottom_nav_home_mosque_inactive, R.color.color_active_bottom_nav, false, animExitDuration, animEnterDuration))
         menu.add(BottomMenu(R.id.menu_product, resources.getString(R.string.sah_product), R.raw.anim_bottom_nav_product, R.raw.anim_bottom_nav_product_to_enabled, R.drawable.ic_sah_bottom_nav_product_active, R.drawable.ic_sah_bottom_nav_product_inactive, R.color.color_active_bottom_nav, false, animExitDuration, animEnterDuration))
         menu.add(BottomMenu(R.id.menu_chat, resources.getString(R.string.sah_chat), R.raw.anim_bottom_nav_chat, R.raw.anim_bottom_nav_chat_to_enabled, R.drawable.ic_sah_bottom_nav_chat_active, R.drawable.ic_sah_bottom_nav_chat_inactive, R.color.color_active_bottom_nav, true, animExitDuration, animEnterDuration))
         menu.add(BottomMenu(R.id.menu_order, resources.getString(R.string.sah_sale), R.raw.anim_bottom_nav_order, R.raw.anim_bottom_nav_order_to_enabled, R.drawable.ic_sah_bottom_nav_order_active, R.drawable.ic_sah_bottom_nav_order_inactive, R.color.color_active_bottom_nav, true, animExitDuration, animEnterDuration))
@@ -464,7 +467,7 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
     private fun checkForSellerAppReview(pageType: Int) {
         if (pageType == FragmentType.HOME) {
             lifecycleScope.launch(Dispatchers.IO) {
-                sellerReviewHelper.checkForReview(this@SellerHomeActivity, supportFragmentManager)
+                sellerReviewHelper?.checkForSellerReview(this@SellerHomeActivity, supportFragmentManager)
             }
         }
     }

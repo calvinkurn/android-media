@@ -52,5 +52,12 @@ public class ShopPageConstant {
     public static final String URL_IMAGE_BUYER_EMPTY_STATE_TOKOPEDIA_IMAGE = "https://ecs7.tokopedia.net/android/shop_page/image_product_empty_state_buyer.png";
     public static final String URL_IMAGE_BUYER_SHOP_SEARCH_EMPTY_STATE = "https://ecs7.tokopedia.net/android/empty_state_search_filter.png";
     public static final String DISABLE_SHOP_PAGE_CACHE_INITIAL_PRODUCT_LIST = "android_shop_page_disable_cache_initial_product_list";
+    public static final String ENABLE_SHOP_PAGE_HEADER_CHOOSE_ADDRESS_WIDGET = "android_shop_page_enable_choose_address_widget_on_shop_page_header";
+    public static final String REMOTE_CONFIG_ENABLE_NEW_SHOP_PAGE_HEADER = "android_shop_page_enable_new_shop_page_header";
+
+    public static final String AB_TEST_NEW_SHOP_HEADER_KEY = "shop_header_revamp";
+    public static final String AB_TEST_NEW_SHOP_HEADER_OLD_VALUE = "old_shop_header";
+    public static final String AB_TEST_NEW_SHOP_HEADER_NEW_VALUE = "new_shop_header";
+
 
 }

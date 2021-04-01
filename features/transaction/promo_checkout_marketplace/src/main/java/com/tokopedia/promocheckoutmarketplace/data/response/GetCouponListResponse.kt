@@ -1,5 +1,6 @@
 package com.tokopedia.promocheckoutmarketplace.data.response
 
+import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 data class CouponListRecommendationResponse(
@@ -157,7 +158,11 @@ data class Coupon(
         @SerializedName("radio_check_state")
         val radioCheckState: String = "",
         @SerializedName("clashing_infos")
-        val clashingInfos: List<ClashingInfo> = emptyList()
+        val clashingInfos: List<ClashingInfo> = emptyList(),
+        @SerializedName("currency_details_str")
+        val currencyDetailStr: String = "",
+        @SerializedName("coachmark")
+        val coachMark: PromoCoachmark = PromoCoachmark()
 )
 
 data class ClashingInfo(
@@ -165,6 +170,18 @@ data class ClashingInfo(
         val code: String = "",
         @SerializedName("message")
         val message: String = ""
+)
+
+data class PromoCoachmark(
+        @SerializedName("is_shown")
+        @Expose
+        val isShown: Boolean = false,
+        @SerializedName("title")
+        @Expose
+        val title: String = "",
+        @SerializedName("content")
+        @Expose
+        val content: String = ""
 )
 
 data class AttemptedPromoCodeError(

@@ -1,6 +1,6 @@
-query dynamicHomeChannel($type: String) {
+query dynamicHomeChannel($type: String, $location: String) {
     dynamicHomeChannel {
-        channels(type: $type) {
+        channels(type: $type, location: $location) {
             id
             name
             layout
@@ -40,15 +40,24 @@ query dynamicHomeChannel($type: String) {
                 productClickUrl
                 impression
                 cashback
+                rating
+                ratingAverage
+                count_review
+                warehouseID
                 discountPercentage
                 freeOngkir {
                     isActive
                     imageUrl
                 }
+                shop{
+                    shopID
+                }
+                campaignCode
                 labelGroup {
                     position
                     title
                     type
+                    url
                 }
             }
             banner {

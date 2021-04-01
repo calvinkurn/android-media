@@ -8,7 +8,6 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.pdplayout.CampaignModular
-import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductContentMainData
 import com.tokopedia.product.detail.data.util.getCurrencyFormatted
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
@@ -19,23 +18,20 @@ import kotlinx.android.synthetic.main.item_product_content.view.*
  * Created by Yehezkiel on 25/05/20
  */
 class PartialContentView(private val view: View, private val listener: DynamicProductDetailListener) : CampaignRibbon.CampaignCountDownCallback {
-    companion object {
-    }
-
     private var campaignRibbon: CampaignRibbon? = null
 
     fun renderData(data: ProductContentMainData,
-                   isUpcomingNplType: Boolean) = with(view) {
+                   isUpcomingNplType: Boolean, freeOngkirImgUrl: String) = with(view) {
         txt_main_price.contentDescription = context.getString(R.string.content_desc_txt_main_price, data.price.value)
         product_name.contentDescription = context.getString(R.string.content_desc_product_name, MethodChecker.fromHtml(data.productName))
         product_name.text = MethodChecker.fromHtml(data.productName)
 
-        img_free_ongkir.shouldShowWithAction(data.freeOngkir.isActive) {
+        img_free_ongkir.shouldShowWithAction(freeOngkirImgUrl.isNotEmpty()) {
+            //If !enableBoe render image from p1
             Glide.with(view.context)
-                    .load(data.freeOngkir.imageURL)
-                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .load(freeOngkirImgUrl)
+                    .diskCacheStrategy(DiskCacheStrategy.DATA)
                     .dontAnimate()
-                    .fitCenter()
                     .into(view.img_free_ongkir)
         }
 
@@ -93,14 +89,14 @@ class PartialContentView(private val view: View, private val listener: DynamicPr
         }
     }
 
-    fun renderShareButton(componentTrackDataModel: ComponentTrackDataModel?) = with(view) {
-        if (!listener.isNavOld()) {
-            share_product_pdp.show()
-            share_product_pdp.setOnClickListener {
-                listener.shareProductFromContent(componentTrackDataModel)
-            }
-        } else {
-            share_product_pdp.hide()
+    fun renderFreeOngkir(freeOngkirUrl: String) = with(view) {
+        img_free_ongkir.shouldShowWithAction(freeOngkirUrl.isNotEmpty()) {
+            Glide.with(view.context)
+                    .load(freeOngkirUrl)
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .dontAnimate()
+                    .fitCenter()
+                    .into(view.img_free_ongkir)
         }
     }
 
@@ -163,8 +159,9 @@ class PartialContentView(private val view: View, private val listener: DynamicPr
     }
 
     fun renderTradein(showTradein: Boolean) = with(view) {
-        tradein_header_container.showWithCondition(showTradein)
-        tradein_header_container.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable(view.context, com.tokopedia.common_tradein.R.drawable.tradein_white), null, null, null)
+        tradein_header_container.shouldShowWithAction(showTradein) {
+            tradein_header_container.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable(view.context, com.tokopedia.common_tradein.R.drawable.tradein_white), null, null, null)
+        }
     }
 
     override fun onOnGoingCampaignEnded(campaign: CampaignModular) {
