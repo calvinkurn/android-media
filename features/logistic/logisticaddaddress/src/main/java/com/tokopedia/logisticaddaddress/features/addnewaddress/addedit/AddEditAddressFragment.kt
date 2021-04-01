@@ -199,6 +199,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
         et_label_address.setText(labelRumah)
         et_receiver_name.setText(userSession.name)
         et_kode_pos_mismatch.setText(saveAddressDataModel?.postalCode ?: "")
+        et_phone_wrapper.endIconDrawable = btn_contact_picker.drawable
         et_phone.setText(userSession.phoneNumber)
 
         if (!isMismatch && !isMismatchSolved) {
@@ -313,7 +314,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
             setOnTouchLabelAddress(ANA_NEGATIVE)
 
             et_receiver_name.apply {
-                addTextChangedListener(setWrapperWatcher(et_phone_wrapper, getString(R.string.validate_no_ponsel_less_char)))
+                addTextChangedListener(setWrapperWatcher(et_detail_address_wrapper, null))
                 setOnTouchListener { view, event ->
                     view.parent.requestDisallowInterceptTouchEvent(true)
                     if ((event.action and MotionEvent.ACTION_MASK) == MotionEvent.ACTION_UP) {
@@ -566,22 +567,20 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
         setWrapperError(et_phone_wrapper, null)
     }
 
-    private fun setWrapperWatcher(wrapper: TextInputLayout, text: String?): TextWatcher {
+    private fun setWrapperWatcher(wrapper: TextInputLayout, textWatcher: String?): TextWatcher {
         return object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
 
             }
 
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                if (s.isNotEmpty()) {
-                    setWrapperError(wrapper, text)
+                if (s.length < 9 && s.isNotEmpty()) {
+                    setWrapperError(wrapper, textWatcher)
                 }
             }
 
             override fun afterTextChanged(text: Editable) {
-                if (text.isNotEmpty()) {
-                    setWrapperError(wrapper, null)
-                }
+
             }
         }
     }

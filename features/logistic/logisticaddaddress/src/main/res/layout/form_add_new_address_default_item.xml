@@ -101,7 +101,7 @@
             android:layout_marginRight="@dimen/unify_space_16"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:visibility="gone"
             app:icon_name="CONTACT"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
