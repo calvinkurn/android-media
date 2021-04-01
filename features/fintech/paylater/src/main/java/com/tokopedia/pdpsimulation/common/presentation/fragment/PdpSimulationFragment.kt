@@ -60,8 +60,9 @@ class PdpSimulationFragment : BaseDaggerFragment(),
         BottomSheetNavigator(childFragmentManager)
     }
 
-    private val productPrice: String by lazy {
-        arguments?.getString(PRODUCT_PRICE) ?: ""
+    private val productPrice: Long by lazy {
+        val price = arguments?.getString(PRODUCT_PRICE)
+        price.toDoubleOrZero().toLong()
     }
     private val productUrl: String by lazy {
         arguments?.getString(PARAM_PRODUCT_URL) ?: ""
@@ -104,8 +105,8 @@ class PdpSimulationFragment : BaseDaggerFragment(),
     override fun getSimulationProductInfo() {
         parentDataGroup.visible()
         when (paymentMode) {
-            is PayLater -> payLaterViewModel.getPayLaterSimulationData(productPrice.toDoubleOrZero().toLong())
-            is CreditCard -> creditCardViewModel.getCreditCardSimulationData(productPrice.toDoubleOrZero().toLong())
+            is PayLater -> payLaterViewModel.getPayLaterSimulationData(productPrice)
+            is CreditCard -> creditCardViewModel.getCreditCardSimulationData(productPrice)
         }
     }
 
