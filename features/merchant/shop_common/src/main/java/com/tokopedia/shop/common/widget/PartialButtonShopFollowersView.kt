@@ -72,10 +72,7 @@ class PartialButtonShopFollowersView private constructor(val view: View, private
         shop_followers_title.text = title
         shop_followers_desc.text = desc
 
-        //mock url
-        val url = "https://ecs7.tokopedia.net/android/other/il_pdp%20bts_follower.png"
-
-        setupButtonFollowers(buttonLabel, url)
+        setupButtonFollowers(buttonLabel, voucherIconUrl)
         setOnClickListener {}
         setupRoundedTopShadow()
 
