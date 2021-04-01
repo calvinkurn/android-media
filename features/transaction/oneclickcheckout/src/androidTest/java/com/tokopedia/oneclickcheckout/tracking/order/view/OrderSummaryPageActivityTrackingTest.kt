@@ -139,7 +139,7 @@ class OrderSummaryPageActivityTrackingTest {
             pay()
             clickButtonContinueWithRedPromo()
             closeBottomSheet()
-            closePromoNotEligibleBottomSheet()
+            closeBottomSheet()
 
             checkoutInterceptor.customCheckoutResponsePath = null
             pay()

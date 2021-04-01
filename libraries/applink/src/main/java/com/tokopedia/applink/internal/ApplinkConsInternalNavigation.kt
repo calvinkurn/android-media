@@ -6,6 +6,7 @@ object ApplinkConsInternalNavigation {
     const val PARAM_PAGE_SOURCE = "PAGE_SOURCE"
 
     const val SOURCE_HOME = "home"
+    const val SOURCE_ACCOUNT = "account"
 
     @JvmField
     val HOST_NAVIGATION = "navigation"

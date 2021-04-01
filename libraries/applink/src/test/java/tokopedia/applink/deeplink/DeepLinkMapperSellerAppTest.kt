@@ -256,4 +256,11 @@ class DeepLinkMapperSellerAppTest: DeepLinkMapperTestFixture() {
         assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
         assertEqualsDeeplinkParameters(appLink, filterParam to filterUnread)
     }
+
+    @Test
+    fun `check shop setting appLink then should return tokopedia internal shop setting in sellerapp`() {
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://sellerapp/menu-setting"
+        val appLink = UriUtil.buildUri(ApplinkConst.SellerApp.SHOP_SETTINGS_SELLER_APP, "1479278")
+        assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
+    }
 }

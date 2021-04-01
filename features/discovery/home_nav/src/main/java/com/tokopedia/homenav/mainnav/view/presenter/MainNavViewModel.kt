@@ -376,18 +376,19 @@ class MainNavViewModel @Inject constructor(
                         NavOrderListModel(orderListToShow, paymentList), othersTransactionCount)
 
                 //find shimmering and change with result value
-                findAllTransactionTitle()?.let {
+                findTransactionShimmer()?.let {
                     updateWidget(transactionListItemViewModel, it)
+                }
+            } else {
+                findTransactionShimmer()?.let {
+                    deleteWidget(InitialShimmerTransactionDataModel())
                 }
             }
             onlyForLoggedInUser { _allProcessFinished.postValue(Event(true)) }
         } catch (e: Exception) {
             //find shimmering and change with result value
-            val transactionShimmering = _mainNavListVisitable.withIndex().find {
-                it.value is InitialShimmerTransactionDataModel
-            }
-            transactionShimmering?.let {
-                updateWidget(ErrorStateOngoingTransactionModel(), it.index)
+            findTransactionShimmer()?.let {
+                updateWidget(ErrorStateOngoingTransactionModel(), it)
             }
             onlyForLoggedInUser { _allProcessFinished.postValue(Event(true)) }
             e.printStackTrace()
@@ -419,9 +420,7 @@ class MainNavViewModel @Inject constructor(
             firstSectionList.add(SeparatorDataModel())
 
             val secondSectionList = listOf(
-                    it.getMenu(menuId = ID_QR_CODE, sectionId = MainNavConst.Section.USER_MENU),
-                    it.getMenu(menuId = ID_RECENT_VIEW, sectionId = MainNavConst.Section.USER_MENU),
-                    it.getMenu(menuId = ID_SUBSCRIPTION, sectionId = MainNavConst.Section.USER_MENU)
+                    it.getMenu(menuId = ID_QR_CODE, sectionId = MainNavConst.Section.USER_MENU)
             )
             val completeList = firstSectionList.plus(secondSectionList)
             return completeList
@@ -431,16 +430,25 @@ class MainNavViewModel @Inject constructor(
 
     private fun buildTransactionMenuList(): List<Visitable<*>> {
         clientMenuGenerator.get()?.let {
-            val transactionDataList: MutableList<Visitable<*>> = mutableListOf(
-                    SeparatorDataModel(),
-                    it.getSectionTitle(IDENTIFIER_TITLE_MY_ACTIVITY),
-                    it.getMenu(ID_ALL_TRANSACTION, sectionId = MainNavConst.Section.ORDER),
-                    it.getMenu(ID_TICKET, sectionId = MainNavConst.Section.ORDER),
-                    it.getMenu(ID_REVIEW, sectionId = MainNavConst.Section.ORDER),
-                    it.getMenu(menuId = ID_WISHLIST_MENU, sectionId = MainNavConst.Section.ORDER),
-                    it.getMenu(menuId = ID_FAVORITE_SHOP, sectionId = MainNavConst.Section.ORDER))
-            val showOpenShopTicker = userSession.get().isLoggedIn && !userSession.get().hasShop()
-            if (showOpenShopTicker) transactionDataList.add(it.getTicker(ID_OPEN_SHOP_TICKER))
+            var transactionDataList: MutableList<Visitable<*>> = mutableListOf()
+            if (userSession.get().isLoggedIn) {
+                transactionDataList = mutableListOf(
+                        SeparatorDataModel(),
+                        it.getSectionTitle(IDENTIFIER_TITLE_MY_ACTIVITY),
+                        InitialShimmerTransactionDataModel(),
+                        it.getMenu(menuId = ID_ALL_TRANSACTION, sectionId = MainNavConst.Section.ORDER),
+                        it.getMenu(menuId = ID_REVIEW, sectionId = MainNavConst.Section.ORDER),
+                        it.getMenu(menuId = ID_WISHLIST_MENU, sectionId = MainNavConst.Section.ORDER),
+                        it.getMenu(menuId = ID_FAVORITE_SHOP, sectionId = MainNavConst.Section.ORDER))
+            } else {
+                transactionDataList = mutableListOf(
+                        SeparatorDataModel(),
+                        it.getSectionTitle(IDENTIFIER_TITLE_MY_ACTIVITY),
+                        it.getMenu(menuId = ID_ALL_TRANSACTION, sectionId = MainNavConst.Section.ORDER),
+                        it.getMenu(menuId = ID_REVIEW, sectionId = MainNavConst.Section.ORDER),
+                        it.getMenu(menuId = ID_WISHLIST_MENU, sectionId = MainNavConst.Section.ORDER),
+                        it.getMenu(menuId = ID_FAVORITE_SHOP, sectionId = MainNavConst.Section.ORDER))
+            }
             return transactionDataList
         }
         return listOf()
@@ -616,28 +624,14 @@ class MainNavViewModel @Inject constructor(
         return INDEX_DEFAULT_ALL_TRANSACTION
     }
 
-    private fun findAllTransactionTitle(): Int? {
-        val findBUTitle = _mainNavListVisitable.firstOrNull {
-            it is HomeNavTitleDataModel && it.identifier == IDENTIFIER_TITLE_MY_ACTIVITY
+    private fun findTransactionShimmer(): Int? {
+        val transactionShimmer = _mainNavListVisitable.firstOrNull {
+            it is InitialShimmerTransactionDataModel
         }
-        findBUTitle?.let{
-            return _mainNavListVisitable.indexOf(it) + 1
+        transactionShimmer?.let{
+            return _mainNavListVisitable.indexOf(it)
         }
         return null
-    }
-
-    fun findAllTransactionModelEndPosition(): Int? {
-        val findHomeMenu = _mainNavListVisitable.find {
-            it is HomeNavMenuDataModel && it.id == ID_HOME
-        }
-        val findAllTransactionMenu = _mainNavListVisitable.find {
-            it is HomeNavMenuDataModel && it.id == ID_ALL_TRANSACTION
-        }
-        findHomeMenu?.let{
-            //if home menu is exist, then the position of all transaction menu is after home menu
-            return _mainNavListVisitable.indexOf(it) + 1
-        }
-        return INDEX_DEFAULT_ALL_TRANSACTION
     }
 
     fun findHeaderModelPosition(): Int? {
