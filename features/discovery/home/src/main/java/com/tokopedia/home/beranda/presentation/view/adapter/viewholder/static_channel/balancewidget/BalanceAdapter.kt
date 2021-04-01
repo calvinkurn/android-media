@@ -147,7 +147,7 @@ class BalanceAdapter(val listener: HomeCategoryListener?): RecyclerView.Adapter<
                                         else
                                             element.mainPageTitle
                                 )
-                                OvoWidgetTracking.sendClickOnTokopointsBalanceWidgetTracker(isOvoAvailable, listener?.userId?:"")
+                                OvoWidgetTracking.sendClickOnCouponBalanceWidgetTracker(isOvoAvailable, listener?.userId?:"")
                             },
                             bboAction = {
                                 //handle click for type bbo
