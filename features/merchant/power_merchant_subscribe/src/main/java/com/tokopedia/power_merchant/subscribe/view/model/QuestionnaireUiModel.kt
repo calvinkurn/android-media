@@ -16,6 +16,8 @@ sealed class QuestionnaireUiModel(
         const val TYPE_MULTIPLE_OPTION = "multi_answer_question"
     }
 
+    open fun isNoAnswer(): Boolean = true
+
     data class QuestionnaireRatingUiModel(
             val question: String = "",
             var givenRating: Int = 0
@@ -24,6 +26,8 @@ sealed class QuestionnaireUiModel(
         override fun type(typeFactory: QuestionnaireAdapterFactory): Int {
             return typeFactory.type(this)
         }
+
+        override fun isNoAnswer(): Boolean = givenRating == 0
     }
 
     data class QuestionnaireMultipleOptionUiModel(
@@ -35,5 +39,12 @@ sealed class QuestionnaireUiModel(
         override fun type(typeFactory: QuestionnaireAdapterFactory): Int {
             return typeFactory.type(this)
         }
+
+        fun getAnswerList(): List<String> {
+            return options.filter { it.isChecked }
+                    .map { it.text }
+        }
+
+        override fun isNoAnswer(): Boolean = options.any { it.isChecked }.not()
     }
 }

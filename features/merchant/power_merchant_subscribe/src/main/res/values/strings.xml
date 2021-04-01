@@ -219,4 +219,10 @@
     <string name="pm_network_error_message">Koneksi internetmu terganggu</string>
     <string name="pm_try_again">Coba lagi</string>
     <string name="pm_cancel_pm_deactivation_success">Penonaktifan Power Merchant-mu dibatalkan.</string>
+    <string name="pm_rate_1_star">Sangat Kurang</string>
+    <string name="pm_rate_2_star">Kurang</string>
+    <string name="pm_rate_3_star">Cukup</string>
+    <string name="pm_rate_4_star">Puas</string>
+    <string name="pm_rate_5_star">Sangat Puas</string>
+    <string name="pm_all_questionnaire_must_be_answered">Anda belum menjawab semua pertanyaan</string>
 </resources>

@@ -5,7 +5,9 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.gm.common.data.source.cloud.model.PMCancellationQuestionnaireAnswerModel
+import com.tokopedia.gm.common.domain.interactor.DeactivatePMUseCase
 import com.tokopedia.gm.common.domain.interactor.DeactivatePowerMerchantUseCase
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.power_merchant.subscribe.data.model.GoldCancellationsQuestionaire
 import com.tokopedia.power_merchant.subscribe.data.model.Question
 import com.tokopedia.power_merchant.subscribe.domain.interactor.GetPMCancellationQuestionnaireDataUseCase
@@ -17,6 +19,7 @@ import com.tokopedia.power_merchant.subscribe.view_old.model.PMCancellationQuest
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import kotlinx.coroutines.withContext
 import rx.Subscriber
 import javax.inject.Inject
 
@@ -26,9 +29,9 @@ import javax.inject.Inject
 
 class DeactivationViewModel @Inject constructor(
         private val getPMCancellationQuestionnaireDataUseCase: GetPMCancellationQuestionnaireDataUseCase,
-        private val deactivatePowerMerchantUseCase: DeactivatePowerMerchantUseCase,
-        dispatcher: CoroutineDispatchers
-) : BaseViewModel(dispatcher.main) {
+        private val deactivatePmUseCase: DeactivatePMUseCase,
+        private val dispatchers: CoroutineDispatchers
+) : BaseViewModel(dispatchers.main) {
 
     private val _pmDeactivationQuestionnaireData by lazy {
         MutableLiveData<Result<DeactivationQuestionnaireUiModel>>()
@@ -98,23 +101,15 @@ class DeactivationViewModel @Inject constructor(
         )
     }
 
-    fun sendQuestionAnswerDataAndTurnOffAutoExtend(
-            questionData: MutableList<PMCancellationQuestionnaireAnswerModel>
-    ) {
-        deactivatePowerMerchantUseCase.execute(
-                DeactivatePowerMerchantUseCase.createRequestParam(questionData),
-                object : Subscriber<Boolean>() {
-                    override fun onNext(successUnsubscribe: Boolean) {
-                        _isSuccessDeactivate.value = Success(successUnsubscribe)
-                    }
-
-                    override fun onCompleted() {
-                    }
-
-                    override fun onError(e: Throwable) {
-                        _isSuccessDeactivate.value = Fail(e)
-                    }
-                }
-        )
+    fun submitPmDeactivation(questionData: MutableList<PMCancellationQuestionnaireAnswerModel>) {
+        launchCatchError(block = {
+            deactivatePmUseCase.params = DeactivatePMUseCase.createRequestParam(questionData)
+            val result = Success(withContext(dispatchers.io) {
+                deactivatePmUseCase.executeOnBackground()
+            })
+            _isSuccessDeactivate.value = result
+        }, onError = {
+            _isSuccessDeactivate.value = Fail(it)
+        })
     }
 }

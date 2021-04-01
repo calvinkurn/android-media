@@ -628,6 +628,9 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
         val bottomSheet = DeactivationBottomSheet.createInstance()
         if (bottomSheet.isAdded || childFragmentManager.isStateSaved) return
         bottomSheet.show(childFragmentManager)
+        bottomSheet.setOnDeactivationSuccess {
+            fetchPmStatusAndShopInfo()
+        }
     }
 
     private fun logToCrashlytic(message: String, throwable: Throwable) {

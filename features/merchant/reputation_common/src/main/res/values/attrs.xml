@@ -5,5 +5,7 @@
     </declare-styleable>
     <declare-styleable name="AnimatedRatingPickerCreateReviewView">
         <attr name="show_description" format="boolean" />
+        <attr name="star_height" format="dimension"/>
+        <attr name="star_width" format="dimension"/>
     </declare-styleable>
 </resources>
