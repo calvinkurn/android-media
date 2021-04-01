@@ -23,7 +23,7 @@ interface InitialStateContract {
 
         fun finish()
 
-        fun trackEventClickRecentSearch(label: String, adapterPosition: Int)
+        fun trackEventClickRecentSearch(label: String)
 
         fun trackEventClickRecentShop(label: String, userId: String)
 

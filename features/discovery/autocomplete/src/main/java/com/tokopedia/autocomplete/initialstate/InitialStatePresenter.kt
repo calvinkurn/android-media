@@ -12,6 +12,9 @@ import com.tokopedia.autocomplete.initialstate.popularsearch.PopularSearchTitleV
 import com.tokopedia.autocomplete.initialstate.popularsearch.PopularSearchViewModel
 import com.tokopedia.autocomplete.initialstate.popularsearch.RefreshInitialStateUseCase
 import com.tokopedia.autocomplete.initialstate.popularsearch.convertPopularSearchToVisitableList
+import com.tokopedia.autocomplete.initialstate.productline.InitialStateProductLineTitleDataView
+import com.tokopedia.autocomplete.initialstate.productline.InitialStateProductListDataView
+import com.tokopedia.autocomplete.initialstate.productline.convertToListInitialStateProductLineDataView
 import com.tokopedia.autocomplete.initialstate.recentview.RecentViewTitleViewModel
 import com.tokopedia.autocomplete.initialstate.recentsearch.*
 import com.tokopedia.autocomplete.initialstate.recentview.convertRecentViewSearchToVisitableList
@@ -180,6 +183,11 @@ class InitialStatePresenter @Inject constructor(
                             )
                     )
                 }
+                InitialStateData.INITIAL_STATE_LIST_PRODUCT_LINE -> {
+                    data.addAll(
+                            initialStateData.convertToListInitialStateProductLineDataView().insertProductListTitle(initialStateData.header)
+                    )
+                }
                 else -> {
                     onDynamicSectionImpressed(initialStateData)
                     data.addAll(
@@ -260,6 +268,12 @@ class InitialStatePresenter @Inject constructor(
         if (title.isEmpty()) return this
 
         val titleSearch = DynamicInitialStateTitleViewModel(featureId, title, labelAction)
+        this.add(0, titleSearch)
+        return this
+    }
+
+    private fun MutableList<Visitable<*>>.insertProductListTitle(title: String): List<Visitable<*>> {
+        val titleSearch = InitialStateProductLineTitleDataView(title)
         this.add(0, titleSearch)
         return this
     }
@@ -463,10 +477,7 @@ class InitialStatePresenter @Inject constructor(
     private fun trackEventItemClicked(item: BaseItemInitialStateSearch, adapterPosition: Int) {
         when(item.type) {
             TYPE_SHOP -> view?.trackEventClickRecentShop(getRecentShopLabelForTracking(item), getUserId())
-            else -> view?.trackEventClickRecentSearch(
-                    getItemEventLabelForTracking(item, adapterPosition),
-                    adapterPosition
-            )
+            else -> view?.trackEventClickRecentSearch(getItemEventLabelForTracking(item, adapterPosition))
         }
     }
 

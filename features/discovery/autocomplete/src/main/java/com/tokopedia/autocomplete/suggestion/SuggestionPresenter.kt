@@ -9,7 +9,10 @@ import com.tokopedia.autocomplete.suggestion.domain.usecase.SuggestionTrackerUse
 import com.tokopedia.autocomplete.suggestion.domain.usecase.SuggestionUseCase
 import com.tokopedia.autocomplete.suggestion.doubleline.convertToDoubleLineVisitableList
 import com.tokopedia.autocomplete.suggestion.doubleline.convertToDoubleLineWithoutImageVisitableList
+import com.tokopedia.autocomplete.suggestion.productline.SuggestionProductLineDataView
+import com.tokopedia.autocomplete.suggestion.productline.convertToSuggestionProductLineDataView
 import com.tokopedia.autocomplete.suggestion.singleline.convertToSingleLineVisitableList
+import com.tokopedia.autocomplete.suggestion.title.SuggestionTitleViewModel
 import com.tokopedia.autocomplete.suggestion.title.convertToTitleHeader
 import com.tokopedia.autocomplete.suggestion.topshop.SuggestionTopShopCardViewModel
 import com.tokopedia.autocomplete.suggestion.topshop.convertToTopShopWidgetVisitableList
@@ -106,7 +109,7 @@ class SuggestionPresenter @Inject constructor() : BaseDaggerPresenter<Suggestion
                     SUGGESTION_DOUBLE_LINE -> addDoubleLineToVisitable(typePosition, item)
                     SUGGESTION_TOP_SHOP_WIDGET -> addTopShopWidgetToVisitable(typePosition, item, suggestionUniverse.topShop)
                     SUGGESTION_DOUBLE_LINE_WITHOUT_IMAGE -> addDoubleLineWithoutImageToVisitable(typePosition, item)
-                    else -> addSingleLineToVisitable(typePosition, item)
+                    SUGGESTION_PRODUCT_LINE -> addProductLineToVisitable(typePosition, item)
                 }
             }
         }
@@ -180,6 +183,17 @@ class SuggestionPresenter @Inject constructor() : BaseDaggerPresenter<Suggestion
             )
         }
         shouldAddSeparator = false
+    }
+
+    private fun addProductLineToVisitable(typePosition: HashMap<String, Int?>, item: SuggestionItem) {
+        typePosition.incrementPosition(item.type)
+        typePosition[item.type]?.let {
+            item.convertToSuggestionProductLineDataView(getQueryKey(), position = it)
+        }?.let {
+            listVisitable.add(
+                    it
+            )
+        }
     }
 
     private fun notifyView() {

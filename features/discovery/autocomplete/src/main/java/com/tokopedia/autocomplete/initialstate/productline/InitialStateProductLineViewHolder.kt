@@ -1,0 +1,122 @@
+package com.tokopedia.autocomplete.initialstate.productline
+
+import android.graphics.Paint
+import android.view.View
+import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.autocomplete.R
+import com.tokopedia.autocomplete.initialstate.BaseItemInitialStateSearch
+import com.tokopedia.autocomplete.initialstate.InitialStateItemClickListener
+import com.tokopedia.kotlin.extensions.view.setMargin
+import com.tokopedia.kotlin.extensions.view.setTextAndCheckShow
+import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
+import com.tokopedia.unifyprinciples.Typography
+import kotlinx.android.synthetic.main.layout_autocomplete_product_list_item.view.*
+
+class InitialStateProductLineViewHolder(
+        itemView: View,
+        private val clickListener: InitialStateItemClickListener
+) : RecyclerView.ViewHolder(itemView) {
+
+    fun bind(item: BaseItemInitialStateSearch) {
+        setComponentHeight(item)
+        setImage(item)
+        setTitle(item)
+        setTitleMargin(item)
+        setLabelDiscountPercentage(item)
+        setOriginalPrice(item)
+        setPrice(item)
+        setPriceMargin(item)
+        setListener(item)
+    }
+
+    private fun setComponentHeight(item: BaseItemInitialStateSearch) {
+        val layoutParams = itemView.autocompleteProductItem.layoutParams
+
+        if (item.isTripleLine()) layoutParams.height = itemView.context.resources.getDimensionPixelSize(R.dimen.autocomplete_product_triple_line_height)
+        else layoutParams.height = itemView.context.resources.getDimensionPixelSize(R.dimen.autocomplete_product_double_line_height)
+
+        itemView.autocompleteProductItem.layoutParams = layoutParams
+    }
+
+    private fun BaseItemInitialStateSearch.isTripleLine(): Boolean {
+        return discountPercentage.isNotEmpty() && originalPrice.isNotEmpty();
+    }
+
+    private fun setImage(item: BaseItemInitialStateSearch) {
+        setImageHeight()
+        bindImage(item)
+    }
+
+    private fun setImageHeight() {
+        val layoutParams = itemView.autocompleteProductImage.layoutParams
+        val resources = itemView.context.resources
+
+        layoutParams.height = resources.getDimensionPixelSize(R.dimen.autocomplete_product_initial_state_image_size)
+        layoutParams.width = resources.getDimensionPixelSize(R.dimen.autocomplete_product_initial_state_image_size)
+
+        itemView.autocompleteProductImage.layoutParams = layoutParams
+    }
+
+    private fun bindImage(item: BaseItemInitialStateSearch) {
+        val context = itemView.context
+        itemView.autocompleteProductImage?.let {
+            ImageHandler.loadImageRounded(context, it, item.imageUrl, context.resources.getDimension(R.dimen.autocomplete_product_initial_state_image_radius))
+        }
+    }
+
+    private fun setTitle(item: BaseItemInitialStateSearch) {
+        itemView.autocompleteProductTitle?.fontType = Typography.BODY_3
+        itemView.autocompleteProductTitle?.weightType = Typography.REGULAR
+
+        itemView.autocompleteProductTitle?.setTextAndCheckShow(item.title)
+    }
+
+    private fun setTitleMargin(item: BaseItemInitialStateSearch) {
+        if (!item.isTripleLine()) {
+            itemView.autocompleteProductTitle?.setMargin(
+                    R.dimen.autocomplete_product_double_line_title_margin_left,
+                    R.dimen.autocomplete_product_double_line_title_margin_top,
+                    R.dimen.autocomplete_product_double_line_title_margin_right,
+                    R.dimen.autocomplete_product_double_line_title_margin_bottom
+            )
+        }
+    }
+
+    private fun setLabelDiscountPercentage(item: BaseItemInitialStateSearch) {
+        itemView.autocompleteProductLabelDiscountPercentage?.shouldShowWithAction(item.discountPercentage.isNotEmpty()) {
+            itemView.autocompleteProductLabelDiscountPercentage?.text = item.discountPercentage
+        }
+    }
+
+    private fun setOriginalPrice(item: BaseItemInitialStateSearch) {
+        itemView.autocompleteProductOriginalPrice?.shouldShowWithAction(item.originalPrice.isNotEmpty()) {
+            itemView.autocompleteProductOriginalPrice?.setTextAndCheckShow(item.originalPrice)
+            itemView.autocompleteProductOriginalPrice?.paintFlags = itemView.autocompleteProductOriginalPrice.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+        }
+    }
+
+    private fun setPrice(item: BaseItemInitialStateSearch) {
+        itemView.autocompleteProductPrice?.fontType = Typography.BODY_2
+        itemView.autocompleteProductPrice?.weightType = Typography.BOLD
+
+        itemView.autocompleteProductPrice?.setTextAndCheckShow(item.subtitle)
+    }
+
+    private fun setPriceMargin(item: BaseItemInitialStateSearch) {
+        if (!item.isTripleLine()) {
+            itemView.autocompleteProductPrice?.setMargin(
+                    R.dimen.autocomplete_product_double_line_price_margin_left,
+                    R.dimen.autocomplete_product_double_line_price_margin_top,
+                    R.dimen.autocomplete_product_double_line_price_margin_right,
+                    R.dimen.autocomplete_product_double_line_price_margin_bottom
+            )
+        }
+    }
+
+    private fun setListener(item: BaseItemInitialStateSearch) {
+        itemView.autocompleteProductItem?.setOnClickListener {
+            clickListener.onItemClicked(item.applink, item.url)
+        }
+    }
+}
