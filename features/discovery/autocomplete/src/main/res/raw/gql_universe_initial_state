@@ -19,6 +19,8 @@ query universe_initial_state($params: String!){
         label_type
         shortcut_image
         type
+        discount_percentage
+        original_price
       }
     }
   }
