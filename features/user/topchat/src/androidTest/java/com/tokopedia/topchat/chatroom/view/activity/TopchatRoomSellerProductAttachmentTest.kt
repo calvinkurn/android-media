@@ -2,7 +2,6 @@ package com.tokopedia.topchat.chatroom.view.activity
 
 import android.view.Gravity
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withText
@@ -130,16 +129,8 @@ class TopchatRoomSellerProductAttachmentTest : BaseSellerTopchatRoomTest() {
         clickChangeStockBtn(R.id.recycler_view, 1)
 
         // Then
-        onView(
-                withRecyclerView(R.id.recycler_view).atPositionOnView(
-                        1, R.id.lb_product_label
-                )
-        ).check(matches(isDisplayed()))
-        onView(
-                withRecyclerView(R.id.recycler_view).atPositionOnView(
-                        1, R.id.lb_product_label
-                )
-        ).check(matches(withText("Stok habis")))
+        assertLabelOnProductCard(R.id.recycler_view, 1, isDisplayed())
+        assertLabelTextOnProductCard(R.id.recycler_view, 1, "Stok habis")
         assertStockCountVisibilityAt(R.id.recycler_view, 1, isDisplayed())
         assertStockCountValueAt(R.id.recycler_view, 1, 0)
     }

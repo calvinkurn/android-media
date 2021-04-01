@@ -2,6 +2,7 @@ package com.tokopedia.topchat.chatroom.view.activity.base
 
 import android.content.Context
 import android.content.Intent
+import android.view.View
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
@@ -10,8 +11,7 @@ import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.intent.rule.IntentsTestRule
-import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
-import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.ApplinkConst
@@ -32,6 +32,7 @@ import com.tokopedia.topchat.chatroom.domain.pojo.sticker.StickerResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.stickergroup.ChatListGroupStickerResponse
 import com.tokopedia.topchat.chattemplate.domain.pojo.TemplateData
 import com.tokopedia.topchat.idling.FragmentTransactionIdle
+import com.tokopedia.topchat.matchers.withRecyclerView
 import com.tokopedia.topchat.stub.chatroom.di.ChatComponentStub
 import com.tokopedia.topchat.stub.chatroom.di.DaggerChatComponentStub
 import com.tokopedia.topchat.stub.chatroom.usecase.*
@@ -42,6 +43,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.setMain
+import org.hamcrest.Matcher
 import org.junit.Before
 import org.junit.Rule
 import java.util.concurrent.TimeUnit
@@ -228,6 +230,30 @@ abstract class TopchatRoomTest {
                 position, click()
         )
         onView(withId(R.id.list_template)).perform(viewAction)
+    }
+
+    protected fun assertLabelOnProductCard(
+            recyclerViewId: Int,
+            atPosition: Int,
+            viewMatcher: Matcher<in View>
+    ) {
+        onView(
+                withRecyclerView(recyclerViewId).atPositionOnView(
+                        atPosition, R.id.lb_product_label
+                )
+        ).check(matches(viewMatcher))
+    }
+
+    protected fun assertLabelTextOnProductCard(
+            recyclerViewId: Int,
+            atPosition: Int,
+            text: String
+    ) {
+        onView(
+                withRecyclerView(recyclerViewId).atPositionOnView(
+                        atPosition, R.id.lb_product_label
+                )
+        ).check(matches(withText(text)))
     }
 
     protected fun generateTemplateResponse(
