@@ -31,17 +31,10 @@ class PinnedVoucherViewComponent(
             listener.onVoucherClicked(this@PinnedVoucherViewComponent, voucher)
         }
     })
-    private val pinnedVoucherListener = object: RecyclerView.OnScrollListener() {
-
-        override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-            if (newState == RecyclerView.SCROLL_STATE_IDLE) sendImpression()
-        }
-    }
 
     init {
         rvPinnedVoucherList.adapter = pinnedVoucherAdapter
         rvPinnedVoucherList.addItemDecoration(ProductFeaturedItemDecoration(rvPinnedVoucherList.context))
-        rvPinnedVoucherList.addOnScrollListener(pinnedVoucherListener)
     }
 
     fun setVoucher(vouchers: List<PlayVoucherUiModel>) {
