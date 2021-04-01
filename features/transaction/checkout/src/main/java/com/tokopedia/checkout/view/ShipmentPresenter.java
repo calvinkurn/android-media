@@ -15,7 +15,7 @@ import com.tokopedia.authentication.AuthHelper;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.analytics.CheckoutAnalyticsPurchaseProtection;
 import com.tokopedia.checkout.data.api.CommonPurchaseApiUrl;
-import com.tokopedia.checkout.data.model.request.DataChangeAddressRequest;
+import com.tokopedia.checkout.data.model.request.changeaddress.DataChangeAddressRequest;
 import com.tokopedia.checkout.data.model.request.saveshipmentstate.SaveShipmentStateRequest;
 import com.tokopedia.checkout.data.model.request.saveshipmentstate.ShipmentStateDropshipData;
 import com.tokopedia.checkout.data.model.request.saveshipmentstate.ShipmentStateProductData;
@@ -81,15 +81,15 @@ import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceCheckout;
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceProductCartMapData;
 import com.tokopedia.purchase_platform.common.exception.CartResponseErrorException;
-import com.tokopedia.purchase_platform.common.feature.checkout.request.CheckoutRequest;
-import com.tokopedia.purchase_platform.common.feature.checkout.request.CheckoutRequestGqlDataMapper;
-import com.tokopedia.purchase_platform.common.feature.checkout.request.DataCheckoutRequest;
-import com.tokopedia.purchase_platform.common.feature.checkout.request.EgoldData;
-import com.tokopedia.purchase_platform.common.feature.checkout.request.ProductDataCheckoutRequest;
-import com.tokopedia.purchase_platform.common.feature.checkout.request.PromoRequest;
-import com.tokopedia.purchase_platform.common.feature.checkout.request.RatesFeature;
-import com.tokopedia.purchase_platform.common.feature.checkout.request.ShopProductCheckoutRequest;
-import com.tokopedia.purchase_platform.common.feature.checkout.request.TokopediaCornerData;
+import com.tokopedia.checkout.data.model.request.checkout.CheckoutRequest;
+import com.tokopedia.checkout.data.model.request.checkout.CheckoutRequestGqlDataMapper;
+import com.tokopedia.checkout.data.model.request.checkout.DataCheckoutRequest;
+import com.tokopedia.checkout.data.model.request.checkout.EgoldData;
+import com.tokopedia.checkout.data.model.request.checkout.ProductDataCheckoutRequest;
+import com.tokopedia.checkout.data.model.request.checkout.PromoRequest;
+import com.tokopedia.checkout.data.model.request.common.RatesFeature;
+import com.tokopedia.checkout.data.model.request.checkout.ShopProductCheckoutRequest;
+import com.tokopedia.checkout.data.model.request.checkout.TokopediaCornerData;
 import com.tokopedia.purchase_platform.common.feature.helpticket.data.request.SubmitHelpTicketRequest;
 import com.tokopedia.purchase_platform.common.feature.helpticket.domain.model.SubmitTicketResult;
 import com.tokopedia.purchase_platform.common.feature.helpticket.domain.usecase.SubmitHelpTicketUseCase;
@@ -1422,21 +1422,19 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         if (courierData != null) {
             List<ShipmentStateProductData> shipmentStateProductDataList = new ArrayList<>();
             for (CartItemModel cartItemModel : shipmentCartItemModel.getCartItemModels()) {
-                ShipmentStateProductData.Builder builder = new ShipmentStateProductData.Builder()
-                        .productId(cartItemModel.getProductId());
+                ShipmentStateProductData shipmentStateProductData = new ShipmentStateProductData();
+                shipmentStateProductData.setProductId(cartItemModel.getProductId());
                 if (cartItemModel.isPreOrder()) {
-                    ShipmentStateProductPreorder.Builder shipmentStateProductPreorder =
-                            new ShipmentStateProductPreorder.Builder()
-                                    .durationDay(cartItemModel.getPreOrderDurationDay());
-                    builder.productPreorder(shipmentStateProductPreorder.build());
+                    ShipmentStateProductPreorder shipmentStateProductPreorder = new ShipmentStateProductPreorder();
+                    shipmentStateProductPreorder.setDurationDay(cartItemModel.getPreOrderDurationDay());
+                    shipmentStateProductData.setProductPreorder(shipmentStateProductPreorder);
                 }
-                shipmentStateProductDataList.add(builder.build());
+                shipmentStateProductDataList.add(shipmentStateProductData);
             }
 
-            ShipmentStateDropshipData dropshipDataBuilder = new ShipmentStateDropshipData.Builder()
-                    .name(shipmentCartItemModel.getSelectedShipmentDetailData().getDropshipperName())
-                    .telpNo(shipmentCartItemModel.getSelectedShipmentDetailData().getDropshipperPhone())
-                    .build();
+            ShipmentStateDropshipData shipmentStateDropshipData = new ShipmentStateDropshipData();
+            shipmentStateDropshipData.setName(shipmentCartItemModel.getSelectedShipmentDetailData().getDropshipperName());
+            shipmentStateDropshipData.setTelpNo(shipmentCartItemModel.getSelectedShipmentDetailData().getDropshipperPhone());
 
             RatesFeature ratesFeature = ShipmentDataRequestConverter.generateRatesFeature(courierData);
 
@@ -1456,7 +1454,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                             shipmentCartItemModel.getSelectedShipmentDetailData().isOrderPriority()) ? 1 : 0)
                     .isPreorder(shipmentCartItemModel.isProductIsPreorder() ? 1 : 0)
                     .warehouseId(shipmentCartItemModel.getFulfillmentId())
-                    .dropshipData(dropshipDataBuilder)
+                    .dropshipData(shipmentStateDropshipData)
                     .shippingInfoData(shippingInfoDataBuilder)
                     .productDataList(shipmentStateProductDataList);
             shipmentStateShopProductDataList.add(builder.build());

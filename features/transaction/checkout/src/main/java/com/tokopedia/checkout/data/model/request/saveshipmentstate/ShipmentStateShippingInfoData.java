@@ -2,7 +2,7 @@ package com.tokopedia.checkout.data.model.request.saveshipmentstate;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.tokopedia.purchase_platform.common.feature.checkout.request.RatesFeature;
+import com.tokopedia.checkout.data.model.request.common.RatesFeature;
 
 /**
  * Created by Irfan Khoirul on 24/09/18.

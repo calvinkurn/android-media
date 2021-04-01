@@ -94,7 +94,7 @@ import com.tokopedia.purchase_platform.common.constant.CartConstant;
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant;
 import com.tokopedia.purchase_platform.common.feature.bottomsheet.GeneralBottomSheet;
 import com.tokopedia.purchase_platform.common.feature.checkout.ShipmentFormRequest;
-import com.tokopedia.purchase_platform.common.feature.checkout.request.DataCheckoutRequest;
+import com.tokopedia.checkout.data.model.request.checkout.DataCheckoutRequest;
 import com.tokopedia.purchase_platform.common.feature.helpticket.domain.model.SubmitTicketResult;
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.Order;
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.ProductDetail;
@@ -133,7 +133,6 @@ import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 
 import kotlin.Unit;
-import kotlin.jvm.functions.Function0;
 import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
