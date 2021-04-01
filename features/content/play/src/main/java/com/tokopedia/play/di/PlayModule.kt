@@ -13,7 +13,6 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.play.analytic.PlayAnalytic
 import com.tokopedia.play.data.websocket.revamp.PlayWebSocket
-import com.tokopedia.play.data.websocket.revamp.PlayWebSocketBody
 import com.tokopedia.play.data.websocket.revamp.PlayWebSocketImpl
 import com.tokopedia.play.data.websocket.PlaySocket.Companion.KEY_GROUPCHAT_PREFERENCES
 import com.tokopedia.play.view.storage.PlayChannelStateStorage
