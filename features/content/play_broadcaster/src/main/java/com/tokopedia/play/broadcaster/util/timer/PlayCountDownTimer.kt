@@ -2,6 +2,7 @@ package com.tokopedia.play.broadcaster.util.timer
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.os.CountDownTimer
 import com.tokopedia.play.broadcaster.util.extension.convertMillisToMinuteSecond
 import javax.inject.Inject
 import kotlin.math.max
@@ -46,13 +47,11 @@ class PlayCountDownTimer @Inject constructor(private val context: Context) {
     }
 
     fun start() {
-        val lastMillis = localStorage.getLong(KEY_REMAINING_MILLIS, 0L)
-        this.mDuration = if (lastMillis > 0) lastMillis else mDuration
         start(mDuration)
     }
 
     private fun start(duration: Long) {
-        if (mCountDownTimer != null){
+        if (mCountDownTimer != null) {
             mCountDownTimer?.cancel()
             mCountDownTimer = null
         }
@@ -76,11 +75,12 @@ class PlayCountDownTimer @Inject constructor(private val context: Context) {
     }
 
     fun resume() {
-        mCountDownTimer?.resume()
+        val lastMillis = localStorage.getLong(KEY_REMAINING_MILLIS, 0L)
+        restart(lastMillis)
     }
 
     fun pause() {
-        mCountDownTimer?.pause()
+        mCountDownTimer?.cancel()
         saveLastRemainingMillis()
     }
 

@@ -75,6 +75,7 @@ class PlayLiveStateProcessor(
             removeLastPauseMillis()
         }
         livePusherWrapper.destroy()
+        countDownTimer.destroy()
     }
 
     fun setPauseDuration(duration: Long) {
