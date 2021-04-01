@@ -30,7 +30,6 @@ class PackageParentViewHolder(
     : AbstractViewHolder<EventPDPTicketGroup>(view) {
 
     lateinit var eventPDPTracking: EventPDPTracking
-    var idPackage = ""
 
     var eventPDPTicketAdapter = EventPDPTicketItemPackageAdapter(onBindItemTicketListener, onCoachmarkListener)
 
@@ -49,7 +48,7 @@ class PackageParentViewHolder(
             }
         }
         element?.ticketModels?.forEach {
-            idPackage = it.id
+//            idPackage = it.id
             if (it.isRecommendationPackage) {
                 renderForRecommendationPackage(it)
             } else {
