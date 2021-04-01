@@ -97,6 +97,78 @@
           "item_name": "{{/search - .+}}"
         }
       ]
+    },
+    {
+      "event": "productView",
+      "eventCategory": "search result",
+      "eventAction": "impression - inspiration carousel chips product",
+      "eventLabel": "{{.+}} - {{.+}} - {{.+}}",
+      "businessUnit": "search",
+      "currentSite": "tokopediamarketplace",
+      "userId": "{{.+}}",
+      "ecommerce": {
+        "currencyCode": "IDR",
+        "impressions": [
+          {
+            "brand": "none / other",
+            "category": "none / other",
+            "dimension61": "{{.*}}",
+            "id": "{{.+}}",
+            "list": "/search - carousel chips",
+            "name": "{{.+}}",
+            "position": "{{\\d}}",
+            "price": "{{\\d*.\\d*|\\d.\\d+E\\d}}",
+            "variant": "none / other"
+          }
+        ]
+      }
+    },
+    {
+      "event": "clickSearchResult",
+      "eventCategory": "search result",
+      "eventAction": "click - inspiration carousel chips lihat semua",
+      "eventLabel": "{{.+}} - {{.+}} - {{.+}}",
+      "businessUnit": "search",
+      "currentSite": "tokopediamarketplace",
+      "userId": "{{.+}}"
+    },
+    {
+      "event": "productClick",
+      "eventCategory": "search result",
+      "eventAction": "click - inspiration carousel chips product",
+      "eventLabel": "{{.+}} - {{.+}} - {{.+}}",
+      "businessUnit": "search",
+      "currentSite": "tokopediamarketplace",
+      "userId": "{{.+}}",
+      "ecommerce": {
+        "click": {
+          "actionField": {
+            "list": "/search - carousel chips"
+          },
+          "products": [
+            {
+              "brand": "none / other",
+              "category": "none / other",
+              "dimension61": "{{.*}}",
+              "id": "{{.+}}",
+              "list": "/search - carousel chips",
+              "name": "{{.+}}",
+              "position": "{{\\d}}",
+              "price": "{{\\d*.\\d*|\\d.\\d+E\\d}}",
+              "variant": "none / other"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "event": "clickSearchResult",
+      "eventCategory": "search result",
+      "eventAction": "click - inspiration carousel chips variant",
+      "eventLabel": "{{.+}} - {{.+}} - {{.+}}",
+      "businessUnit": "search",
+      "currentSite": "tokopediamarketplace",
+      "userId": "{{.+}}"
     }
   ]
 }
