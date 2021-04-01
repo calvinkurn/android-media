@@ -48,11 +48,8 @@ import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
-import com.tokopedia.topads.sdk.utils.ImpresionTask
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.trackingoptimizer.TrackingQueue
-import com.tokopedia.user.session.UserSession
-import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_product_info.*
 import javax.inject.Inject
 
@@ -98,7 +95,6 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
     private val adapterFactory by lazy { HomeRecommendationTypeFactoryImpl(this, this, this, this) }
     private val adapter by lazy { HomeRecommendationAdapter(adapterTypeFactory) }
     private lateinit var recommendationWidgetViewModel: RecommendationPageViewModel
-    private var userSession: UserSessionInterface? = null
 
     companion object{
         private const val className = "com.tokopedia.home_recom.view.fragment.RecommendationFragment"
@@ -129,7 +125,6 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        userSession = UserSession(context)
         activity ?.let {
             viewModelProvider = ViewModelProviders.of(it, viewModelFactory)
             recommendationWidgetViewModel = viewModelProvider.get(RecommendationPageViewModel::class.java)
@@ -437,7 +432,12 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
     override fun onProductAnchorImpression(productInfoDataModel: ProductInfoDataModel) {
         productInfoDataModel.productDetailData?.let { productDetailData ->
             if (productDetailData.isTopads) {
-                ImpresionTask(className, userSession).execute(productDetailData.trackerImageUrl)
+                TopAdsUrlHitter(context).hitImpressionUrl(
+                        className,
+                        productDetailData.trackerImageUrl,
+                        productDetailData.id.toString(),
+                        productDetailData.name,
+                        productDetailData.imageUrl)
             }
         }
         RecommendationPageTracking.eventImpressionPrimaryProductWithProductId(productInfoDataModel.mapToRecommendationTracking(), "0", ref, internalRef)
@@ -446,7 +446,12 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
     override fun onProductAnchorClick(productInfoDataModel: ProductInfoDataModel) {
         productInfoDataModel.productDetailData?.let { productDetailData ->
             if (productDetailData.isTopads) {
-                ImpresionTask(className, userSession).execute(productDetailData.clickUrl)
+                TopAdsUrlHitter(context).hitClickUrl(
+                        className,
+                        productDetailData.clickUrl,
+                        productDetailData.id.toString(),
+                        productDetailData.name,
+                        productDetailData.imageUrl)
             }
         }
         RecommendationPageTracking.eventClickPrimaryProductWithProductId(productInfoDataModel.mapToRecommendationTracking(), "0", ref, internalRef)
@@ -456,7 +461,12 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
     override fun onProductAnchorAddToCart(productInfoDataModel: ProductInfoDataModel) {
         productInfoDataModel.productDetailData?.let {productDetailData ->
             if (productDetailData.isTopads) {
-                ImpresionTask(className, userSession).execute(productDetailData.clickUrl)
+                TopAdsUrlHitter(className).hitClickUrl(
+                        className,
+                        productDetailData.clickUrl,
+                        productDetailData.id.toString(),
+                        productDetailData.name,
+                        productDetailData.imageUrl)
             }
             if (recommendationWidgetViewModel.isLoggedIn()) {
                 recommendationWidgetViewModel.onAddToCart(productInfoDataModel)
@@ -470,7 +480,12 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
     override fun onProductAnchorBuyNow(productInfoDataModel: ProductInfoDataModel) {
         productInfoDataModel.productDetailData?.let { productDetailData ->
             if (productDetailData.isTopads) {
-                ImpresionTask(className, userSession).execute(productDetailData.clickUrl)
+                TopAdsUrlHitter(context).hitClickUrl(
+                        className,
+                        productDetailData.clickUrl,
+                        productDetailData.id.toString(),
+                        productDetailData.name,
+                        productDetailData.imageUrl)
             }
             if (recommendationWidgetViewModel.isLoggedIn()){
                 recommendationWidgetViewModel.onBuyNow(productInfoDataModel)
@@ -486,7 +501,12 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
     override fun onProductAnchorClickWishlist(productInfoDataModel: ProductInfoDataModel, isAddWishlist: Boolean, callback: (Boolean, Throwable?) -> Unit) {
         productInfoDataModel.productDetailData?.let {productDetailData ->
             if (productDetailData.isTopads) {
-                ImpresionTask(className, userSession).execute(productDetailData.clickUrl)
+                TopAdsUrlHitter(context).hitClickUrl(
+                        className,
+                        productDetailData.clickUrl,
+                        productDetailData.id.toString(),
+                        productDetailData.name,
+                        productDetailData.imageUrl)
             }
             if (recommendationWidgetViewModel.isLoggedIn()) {
                 RecommendationPageTracking.eventUserClickProductToWishlistForUserLoginWithProductId(isAddWishlist, ref, productDetailData.shop.id.toString())
@@ -574,7 +594,7 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
      */
     private fun loadData(){
         activity?.let{
-            recommendationWidgetViewModel.getRecommendationList(productId,
+            recommendationWidgetViewModel.getRecomDataWithTopads(productId,
                     queryParam)
         }
     }
