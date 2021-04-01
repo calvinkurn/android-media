@@ -79,6 +79,8 @@ data class ThanksPageData(
         val configFlag: String?,
         @SerializedName("config_list")
         val configList: String?,
+        @SerializedName("gateway_additional_data")
+        val gatewayAdditionalDataList: ArrayList<GatewayAdditionalData>?,
         @SerializedName("fee_details")
         val feeDetailList : ArrayList<FeeDetail>?,
         //created and used locally
@@ -92,6 +94,15 @@ data class FeeDetail (
         @SerializedName("amount")
         val amount: Long,
 ) : Parcelable
+
+@Parcelize
+data class GatewayAdditionalData(
+        @SerializedName("key")
+        val key : String?,
+        @SerializedName("value")
+        val value : String?
+) : Parcelable
+
 
 data class PaymentDetail(
         @SerializedName("gateway_code")
@@ -146,7 +157,7 @@ data class AdditionalInfo(
         @SerializedName("masked_number")
         val maskedNumber: String,
         @SerializedName("installment_info")
-        val installmentInfo: String,
+        val installmentInfo: String?,
         @SerializedName("interest")
         val interest: Float,
         @SerializedName("revenue")

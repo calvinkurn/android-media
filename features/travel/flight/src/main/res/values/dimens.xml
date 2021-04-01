@@ -20,6 +20,7 @@
     <dimen name="flight_dp_20">20dp</dimen>
     <dimen name="flight_dp_28">28dp</dimen>
     <dimen name="flight_dp_30">30dp</dimen>
+    <dimen name="flight_dp_32">32dp</dimen>
     <dimen name="flight_dp_36">36dp</dimen>
     <dimen name="flight_dp_40">40dp</dimen>
     <dimen name="flight_dp_50">50dp</dimen>

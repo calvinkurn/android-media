@@ -44,4 +44,7 @@ object ApplinkConstInternalLogistic {
     @JvmField
     val MANAGE_ADDRESS = "$INTERNAL_LOGISTIC/manageaddress/"
 
+    @JvmField
+    val SHOP_EDIT_ADDRESS = "$INTERNAL_LOGISTIC/editaddress/"
+
 }

@@ -50,6 +50,7 @@ import com.tokopedia.notifications.CMPushNotificationManager
 import com.tokopedia.sessioncommon.data.LoginToken
 import com.tokopedia.sessioncommon.data.profile.ProfileInfo
 import com.tokopedia.sessioncommon.di.SessionModule
+import com.tokopedia.sessioncommon.view.admin.dialog.LocationAdminDialog
 import com.tokopedia.track.TrackApp
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.usecase.coroutines.Fail
@@ -225,6 +226,25 @@ class ChooseAccountFragment : BaseDaggerFragment(),
         chooseAccountViewModel.goToSecurityQuestion.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             onGoToSecurityQuestion()
         })
+        chooseAccountViewModel.showAdminLocationPopUp.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            when(it) {
+                is Success -> showLocationAdminPopUp()
+                is Fail -> showLocationAdminError(it.throwable)
+            }
+        })
+    }
+
+    private fun showLocationAdminPopUp() {
+        LocationAdminDialog(context) {
+            userSessionInterface.logoutSession()
+            activity?.onBackPressed()
+        }.show()
+    }
+
+    private fun showLocationAdminError(error: Throwable) {
+        val errorMessage = ErrorHandler.getErrorMessage(context, error)
+        NetworkErrorHelper.showSnackbar(activity, errorMessage)
+        dismissLoadingProgress()
     }
 
     override fun onSelectedAccount(account: UserDetail, phone: String) {
@@ -250,7 +270,7 @@ class ChooseAccountFragment : BaseDaggerFragment(),
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_CAN_USE_OTHER_METHOD, false)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_SHOW_CHOOSE_METHOD, false)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_REQUEST_OTP_MODE, OTP_MODE_PIN);
-        intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_FROM_2FA, true);
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_RESET_PIN, true);
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_LOGIN_REGISTER_FLOW, true)
         startActivityForResult(intent, REQUEST_CODE_PIN_CHALLENGE)
     }
@@ -307,7 +327,7 @@ class ChooseAccountFragment : BaseDaggerFragment(),
                 analytics.eventSuccessLoginPhoneNumber()
             } else {
                 if (viewModel.isFacebook) {
-                    analytics.eventSuccessLoginPhoneNumberFBSmartRegister()
+                    analytics.eventSuccessFbPhoneNumber()
                 } else {
                     analytics.eventSuccessLoginPhoneNumberSmartRegister()
                 }

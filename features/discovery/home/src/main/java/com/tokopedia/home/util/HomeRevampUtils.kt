@@ -1,6 +1,7 @@
 package com.tokopedia.home.util
 
-import com.tokopedia.home.HomeInternalRouter
+import com.tokopedia.discovery.common.model.ProductCardOptionsModel
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 
@@ -32,4 +33,16 @@ fun homeRevampTestCondition(ifHomeRevamp: ()-> Unit = {}, ifHomeOld: ()-> Unit =
     } else if (isHomeRevampOld()) {
         ifHomeOld.invoke()
     }
+}
+
+fun RecommendationItem.createProductCardOptionsModel(position: Int): ProductCardOptionsModel {
+    val productCardOptionsModel = ProductCardOptionsModel()
+    productCardOptionsModel.hasWishlist = true
+    productCardOptionsModel.isWishlisted = isWishlist
+    productCardOptionsModel.productId = productId.toString()
+    productCardOptionsModel.isTopAds = isTopAds
+    productCardOptionsModel.topAdsWishlistUrl = wishlistUrl
+    productCardOptionsModel.productPosition = position
+    productCardOptionsModel.screenName = header
+    return productCardOptionsModel
 }
