@@ -16,19 +16,9 @@ class EventPDPParentPackageAdapter (packageTypeFactoryImpl: PackageTypeFactoryIm
 
     override fun onBindViewHolder(holder: AbstractViewHolder<out Visitable<*>>, position: Int) {
         if(holder is PackageParentViewHolder){
-            holder.chooseNewPackage = ::chooseNewPackage
             holder.eventPDPTracking = eventPDPTracking
         }
         super.onBindViewHolder(holder, position)
 
-    }
-
-    private fun chooseNewPackage(idPackage: String){
-//        data.forEachIndexed{index, it ->
-//            if(it is PackageV3) {
-//                it.isChoosen = it.id.equals(idPackage)
-//                notifyItemChanged(index)
-//            }
-//        }
     }
 }
