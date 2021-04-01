@@ -796,7 +796,7 @@ public class SearchTracking {
         TrackApp.getInstance().getGTM().sendGeneralEvent(
                 DataLayer.mapOf(EVENT, SearchEventTracking.Event.SEARCH_RESULT,
                         EVENT_CATEGORY,  SearchEventTracking.Category.SEARCH_RESULT,
-                        EVENT_ACTION, SearchEventTracking.Action.CLICK_INSPIRATION_CAROUSEL_CHIPS_LIHAT_SEMUA,
+                        EVENT_ACTION, SearchEventTracking.Action.CLICK_INSPIRATION_CAROUSEL_CHIPS_VARIANT,
                         EVENT_LABEL, type + " - " + keyword + " - " + chipsValue,
                         CURRENT_SITE, TOKOPEDIA_MARKETPLACE,
                         USER_ID, userId,

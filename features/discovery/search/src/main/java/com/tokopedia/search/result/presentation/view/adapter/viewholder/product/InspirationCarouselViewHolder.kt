@@ -127,14 +127,14 @@ class InspirationCarouselViewHolder(
                 carouselProductCardOnItemClickListener = object : CarouselProductCardListener.OnItemClickListener {
                     override fun onItemClick(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
                         val product = activeOptionsProducts.getOrNull(carouselProductCardPosition) ?: return
-                        inspirationCarouselListener.onInspirationCarouselGridProductClicked(product)
+                        inspirationCarouselListener.onInspirationCarouselChipsProductClicked(product)
                     }
                 },
                 carouselProductCardOnItemImpressedListener = object : CarouselProductCardListener.OnItemImpressedListener {
                     override fun onItemImpressed(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
                         val product = activeOptionsProducts.getOrNull(carouselProductCardPosition) ?: return
 
-                        inspirationCarouselListener.onImpressedInspirationCarouselGridProduct(product)
+                        inspirationCarouselListener.onImpressedInspirationCarouselChipsProduct(product)
                     }
 
                     override fun getImpressHolder(carouselProductCardPosition: Int): ImpressHolder? {
@@ -145,7 +145,7 @@ class InspirationCarouselViewHolder(
                 },
                 carouselSeeMoreClickListener = object : CarouselProductCardListener.OnSeeMoreClickListener {
                     override fun onSeeMoreClick() {
-                        inspirationCarouselListener.onInspirationCarouselSeeAllClicked(activeOption)
+                        inspirationCarouselListener.onInspirationCarouselChipsSeeAllClicked(activeOption)
                     }
                 }
         )
