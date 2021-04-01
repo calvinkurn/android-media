@@ -317,7 +317,7 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
                     btn_continue.setText(R.string.tp_label_use)
                     btn_continue.isEnabled = true
                     progress_refetch_code.visibility = View.GONE
-                    btn_continue.setTextColor(ContextCompat.getColor(activityContext!!, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+                    setButtonTextColor(btn_continue)
                     mSubscriptionCouponTimer?.unsubscribe()
                     return
                 }
@@ -326,7 +326,7 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
                     btn_continue.setText(R.string.tp_label_refresh_repeat)
                     btn_continue.isEnabled = true
                     progress_refetch_code.visibility = View.GONE
-                    btn_continue.setTextColor(ContextCompat.getColor(activityContext!!, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+                    setButtonTextColor(btn_continue)
                     mSubscriptionCouponTimer?.unsubscribe()
                 }
             }
@@ -348,7 +348,7 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
             btnAction2.setText(R.string.tp_label_refresh_repeat)
             btnAction2.isEnabled = true
             progressBar.visibility = View.GONE
-            btnAction2.setTextColor(ContextCompat.getColor(activityContext!!, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+            setButtonTextColor(btnAction2)
             mSubscriptionCouponTimer!!.unsubscribe()
         } catch (e: Exception) {
             e.printStackTrace()
@@ -371,7 +371,7 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
         val description = view!!.findViewById<TextView>(R.id.tv_title)
         val label = view!!.findViewById<TextView>(R.id.text_time_label)
         val value = view!!.findViewById<Typography>(R.id.text_time_value)
-        val btnAction2 = view!!.findViewById<TextView>(R.id.btn_continue)
+        val btnAction2 = view!!.findViewById<UnifyButton>(R.id.btn_continue)
         val imgBanner = view!!.findViewById<ImageView>(R.id.img_banner_coupon)
         val imgLabel = view!!.findViewById<ImageView>(R.id.img_time)
         val textMinExchangeValue = view!!.findViewById<TextView>(R.id.tv_min_txn_value)
@@ -464,7 +464,7 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
         if (data.realCode != null && !data.realCode.isEmpty()) {
             btnAction2.setText(R.string.tp_label_use)
             btnAction2.isEnabled = true
-            btnAction2.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N0))
+            setButtonTextColor(btnAction2)
             progressBar.visibility = View.GONE
         } else {
             //check for real_code and start rxjava-timer
@@ -556,7 +556,7 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
         }
     }
 
-    private fun addCountDownTimer(item: CouponValueEntity, label: Typography, btnContinue: TextView) {
+    private fun addCountDownTimer(item: CouponValueEntity, label: Typography, btnContinue: UnifyButton) {
         if (mTimer != null || view == null) {
             mTimer?.cancel()
         }
@@ -586,7 +586,7 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
             } else {
                 btnContinue.text = item.usage.btnUsage.text
                 btnContinue.isEnabled = true
-                btnContinue.setTextColor(ContextCompat.getColor(btnContinue.context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+                setButtonTextColor(btnContinue)
             }
         } else {
             if (item.usage.activeCountDown > 0) {
@@ -611,7 +611,7 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
             } else {
                 btnContinue.text = item.usage.usageStr
                 btnContinue.isEnabled = true
-                btnContinue.setTextColor(ContextCompat.getColor(btnContinue.context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+                setButtonTextColor(btnContinue)
             }
         }
     }
@@ -685,6 +685,14 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
     private fun showToasterAndRedirect(data: String) {
         view?.let { ToasterHelper.showCouponClaimToast(resources.getString(R.string.tp_coupon_autoapply_msg), it,BOTTOM_HEIGHT_TOASTER) }
         Handler().postDelayed({ RouteManager.route(context, data) }, 1000)
+    }
+
+    fun setButtonTextColor(btnContinue : UnifyButton){
+        context?.let {
+            if (isDarkMode(it) || !isDarkMode(it)){
+                btnContinue.setTextColor(ContextCompat.getColor(btnContinue.context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White))
+            }
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

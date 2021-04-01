@@ -43,6 +43,7 @@ import com.tokopedia.tokopoints.view.model.CatalogsValueEntity
 import com.tokopedia.tokopoints.view.sendgift.SendGiftFragment
 import com.tokopedia.tokopoints.view.util.*
 import com.tokopedia.tokopoints.view.util.CommonConstant.Companion.CATALOG_CLAIM_MESSAGE
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSession
@@ -395,7 +396,7 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
         if (mRefreshRepeatCount >= CommonConstant.MAX_COUPON_RE_FETCH_COUNT) {
             btnAction2.setText(R.string.tp_label_refresh_repeat)
             btnAction2.isEnabled = true
-            btnAction2.setTextColor(ContextCompat.getColor(activityContext, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+            setButtonTextColor(btnAction2)
             mSubscriptionCouponTimer.unsubscribe()
         }
     }
@@ -422,7 +423,7 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
         if (data.isDisabledButton) {
             btnAction2.setTextColor(ContextCompat.getColor(btnAction2.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_32))
         } else {
-            btnAction2.setTextColor(ContextCompat.getColor(btnAction2.context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+            setButtonTextColor(btnAction2)
         }
         //Quota text handling
         if (data.upperTextDesc == null || data.upperTextDesc.isEmpty()) {
@@ -582,7 +583,7 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
             btnAction2.setTextColor(ContextCompat.getColor(btnAction2.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_20))
         } else {
             giftSectionMainLayout.visibility = View.VISIBLE
-            btnAction2.setTextColor(ContextCompat.getColor(btnAction2.context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+            setButtonTextColor(btnAction2)
         }
         if (data.pointsSlash <= 0) {
             labelPoint.visibility = View.GONE
@@ -683,6 +684,14 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
         val sendGiftFragment = SendGiftFragment()
         sendGiftFragment.arguments = bundle
         sendGiftFragment.show(childFragmentManager, CommonConstant.FRAGMENT_DETAIL_TOKOPOINT)
+    }
+
+    fun setButtonTextColor(btnContinue : Typography){
+        context?.let {
+            if (isDarkMode(it) || !isDarkMode(it)){
+                btnContinue.setTextColor(ContextCompat.getColor(btnContinue.context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White))
+            }
+        }
     }
 
     private fun setMenuVisibility(menu: Menu , isMenuVisible: Boolean){
