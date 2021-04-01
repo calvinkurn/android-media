@@ -147,7 +147,6 @@ class StickyLoginView : FrameLayout, CoroutineScope, DarkModeListener {
     private fun initView() {
         initInjector()
         updateDarkMode()
-        setContent(content, highlight)
 
         if (leftImage != null) {
             imageViewLeft.setImageDrawable(leftImage)
