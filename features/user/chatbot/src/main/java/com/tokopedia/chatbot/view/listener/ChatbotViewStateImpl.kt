@@ -61,7 +61,6 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
 
     override fun initView() {
         recyclerView = view.findViewById(getRecyclerViewId())
-        mainLoading = view.findViewById(getProgressId())
         replyEditText = view.findViewById(getNewCommentId())
         replyBox = view.findViewById(getReplyBoxId())
         actionBox = view.findViewById(getActionBoxId())
@@ -338,10 +337,6 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
 
     override fun getRecyclerViewId(): Int {
         return R.id.recycler_view
-    }
-
-    override fun getProgressId(): Int {
-        return R.id.progress
     }
 
     override fun getNewCommentId(): Int {
