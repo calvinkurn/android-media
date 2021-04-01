@@ -23,12 +23,15 @@ class GetTopadsIsAdsUseCase @Inject constructor(
 
     override suspend fun executeOnBackground(): TopadsIsAdsQuery {
         graphqlUseCase.clearCache()
-        graphqlUseCase.setGraphqlQuery(query)
-        graphqlUseCase.setRequestParams(params.parameters)
-        return graphqlUseCase.executeOnBackground()
+        if (params.parameters.contains(PARAM_TXSC)) {
+            graphqlUseCase.setGraphqlQuery(query)
+            graphqlUseCase.setRequestParams(params.parameters)
+            return graphqlUseCase.executeOnBackground()
+        }
+        return TopadsIsAdsQuery()
     }
-    companion object {
 
+    companion object {
         const val PARAM_PRODUCT_ID = "product_id"
         const val PARAM_PRODUCT_KEY = "product_key"
         const val PARAM_SHOP_DOMAIN = "shop_domain"
@@ -44,6 +47,9 @@ class GetTopadsIsAdsUseCase @Inject constructor(
         const val DEFAULT_PAGE_NAME_FACEBOOK = "im_facebook"
         const val DEFAULT_PAGE_NAME_TIKTOK = "im_tiktok"
         const val DEFAULT_Q = "recom"
+
+
+        const val PARAM_TXSC = "txsc"
     }
 
     private var params: RequestParams = RequestParams.create()
