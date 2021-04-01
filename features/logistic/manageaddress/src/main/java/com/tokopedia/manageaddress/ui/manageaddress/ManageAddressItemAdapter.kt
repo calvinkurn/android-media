@@ -19,6 +19,7 @@ import com.tokopedia.manageaddress.R
 import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.toDp
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.item_manage_people_address.view.*
 
@@ -100,9 +101,10 @@ class ManageAddressItemAdapter(private val listener: ManageAddressItemAdapterLis
                     cardSelected = selectedPos == layoutPosition
                 }
                 cardAddress.hasCheckIcon = cardSelected
+                cardAddress.setPadding(6.toPx(), 6.toPx(), 22.toPx(), 6.toPx())
                 if (cardSelected) {
                     cardAddress.cardType = CardUnify.TYPE_BORDER_ACTIVE
-                    cardAddress.setPadding(itemView.getDimens(R.dimen.dp_6), itemView.getDimens(R.dimen.dp_6), itemView.getDimens(com.tokopedia.abstraction.R.dimen.dp_16), itemView.getDimens(R.dimen.dp_6))
+                    cardAddress.setPadding(6.toPx(), 6.toPx(), 16.toPx(), 6.toPx())
                 } else {
                     cardAddress.cardType = CardUnify.TYPE_BORDER
                 }
