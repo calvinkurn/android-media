@@ -15,8 +15,10 @@ import com.tokopedia.logger.model.scalyr.ScalyrEvent
 import com.tokopedia.logger.model.scalyr.ScalyrEventAttrs
 import com.tokopedia.logger.utils.Constants
 import com.tokopedia.logger.utils.LoggerReporting
+import com.tokopedia.logger.utils.Priority
 import com.tokopedia.logger.utils.Tag
 import kotlinx.coroutines.*
+import java.lang.StringBuilder
 import javax.crypto.SecretKey
 import kotlin.coroutines.CoroutineContext
 import kotlin.math.log
@@ -81,15 +83,14 @@ class LoggerRepository(private val logDao: LoggerDao,
         coroutineScope {
             launch {
                 val jobList = mutableListOf<Deferred<Boolean>>()
-                when {
-                    isExistTagMapsScalyr(scalyrEventList) -> {
-                        val jobScalyr = async { sendScalyrLogToServer(scalyrConfigs[tokenIndex], logs, scalyrEventList) }
-                        jobList.add(jobScalyr)
-                    }
-                    isExistTagMapsNewRelic(newRelicConfigList) -> {
-                        val jobNewRelic = async { sendNewRelicLogToServer(newRelicConfigs[tokenIndex], logs, newRelicConfigList) }
-                        jobList.add(jobNewRelic)
-                    }
+                if (isExistTagMapsScalyr(scalyrEventList)) {
+                    val jobScalyr = async { sendScalyrLogToServer(scalyrConfigs[tokenIndex], logs, scalyrEventList) }
+                    jobList.add(jobScalyr)
+                }
+
+                if (isExistTagMapsNewRelic(newRelicConfigList)) {
+                    val jobNewRelic = async { sendNewRelicLogToServer(newRelicConfigs[tokenIndex], logs, newRelicConfigList) }
+                    jobList.add(jobNewRelic)
                 }
 
                 jobList.awaitAll().forEach {
@@ -128,8 +129,17 @@ class LoggerRepository(private val logDao: LoggerDao,
 
     private fun isExistTagMapsScalyr(scalyrEventList: List<ScalyrEvent>): Boolean {
         for (scalyrEvent in scalyrEventList) {
-            val tagValue = jsonStringToMap(scalyrEvent.attrs.message).get(Constants.TAG) ?: ""
-            LoggerReporting.getInstance().tagMapsScalyr[tagValue]?.let {
+            val tagValue = jsonStringToMap(scalyrEvent.attrs.message).get(Constants.TAG_LOG)
+                    ?: ""
+            val priorityValue = jsonStringToMap(scalyrEvent.attrs.message).get(Constants.PRIORITY_LOG)?.toIntOrNull()
+                    ?: 0
+            val priorityName = when (priorityValue) {
+                Constants.SEVERITY_HIGH -> LoggerReporting.P1
+                Constants.SEVERITY_MEDIUM -> LoggerReporting.P2
+                else -> ""
+            }
+            val tagMapsValue = StringBuilder(priorityName).append(LoggerReporting.DELIMITER_TAG_MAPS).append(tagValue).toString()
+            LoggerReporting.getInstance().tagMapsScalyr[tagMapsValue]?.let {
                 return true
             }
         }
@@ -138,8 +148,16 @@ class LoggerRepository(private val logDao: LoggerDao,
 
     private fun isExistTagMapsNewRelic(messageList: List<String>): Boolean {
         for (message in messageList) {
-            val tagValue = jsonStringToMap(message).get(Constants.TAG) ?: ""
-            LoggerReporting.getInstance().tagMapsNewRelic[tagValue]?.let {
+            val tagValue = jsonStringToMap(message).get(Constants.TAG_LOG) ?: ""
+            val priorityValue = jsonStringToMap(message).get(Constants.PRIORITY_LOG)?.toIntOrNull()
+                    ?: 0
+            val priorityName = when (priorityValue) {
+                Constants.SEVERITY_HIGH -> LoggerReporting.P1
+                Constants.SEVERITY_MEDIUM -> LoggerReporting.P2
+                else -> ""
+            }
+            val tagMapsValue = StringBuilder(priorityName).append(LoggerReporting.DELIMITER_TAG_MAPS).append(tagValue).toString()
+            LoggerReporting.getInstance().tagMapsNewRelic[tagMapsValue]?.let {
                 return true
             }
         }

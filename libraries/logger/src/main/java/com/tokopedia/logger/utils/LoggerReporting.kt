@@ -43,7 +43,6 @@ class LoggerReporting {
             var priorityTag = -1
             tagMapsScalyr[tagMapKey]?.let {
                 priorityTag = it.postPriority
-                LogManager.setScalyrConfigList()
             }
 
             tagMapsNewRelic[tagMapKey]?.let {

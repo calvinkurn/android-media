@@ -32,7 +32,8 @@ class Constants {
 
         const val METHOD_POST = "POST"
 
-        const val TAG = "tag"
+        const val TAG_LOG = "log_tag"
+        const val PRIORITY_LOG = "log_priority"
 
         private const val URL_NEW_RELIC_EVENT_UID_PLACEHOLDER = "{uid}"
         const val NEW_RELIC_SERVER_URL = "https://insights-collector.newrelic.com/v1/accounts/$URL_NEW_RELIC_EVENT_UID_PLACEHOLDER/events"
