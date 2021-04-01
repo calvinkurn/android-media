@@ -118,4 +118,37 @@ class TopchatRoomSellerProductAttachmentTest : BaseSellerTopchatRoomTest() {
         assertStockCountVisibilityAt(1, isDisplayed())
         assertStockCountValueAt(1, 55)
     }
+
+    @Test
+    fun user_update_stock_single_product_inactive() {
+        // Given
+        setupChatRoomActivity()
+        getChatUseCase.response = sellerProductChatReplies
+        chatAttachmentUseCase.response = sellerProductAttachment
+        createSuccessUpdateStockIntentResult(
+                "1261590628", 55, ProductStatus.INACTIVE
+        )
+        inflateTestFragment()
+
+        // When
+        onView(
+                withRecyclerView(R.id.recycler_view).atPositionOnView(
+                        1, R.id.btn_update_stock
+                )
+        ).perform(click())
+
+        // Then
+        onView(
+                withRecyclerView(R.id.recycler_view).atPositionOnView(
+                        1, R.id.lb_product_label
+                )
+        ).check(matches(isDisplayed()))
+        onView(
+                withRecyclerView(R.id.recycler_view).atPositionOnView(
+                        1, R.id.lb_product_label
+                )
+        ).check(matches(withText("Stok habis")))
+        assertStockCountVisibilityAt(1, isDisplayed())
+        assertStockCountValueAt(1, 0)
+    }
 }
