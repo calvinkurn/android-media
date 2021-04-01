@@ -21,9 +21,9 @@ class ShopPenaltyDetailViewModel @Inject constructor(
     val penaltyDetailData: LiveData<Result<ShopPenaltyDetailUiModel>>
         get() = _penaltyDetailData
 
-    fun getPenaltyDetailData() {
+    fun getPenaltyDetailData(statusPenalty: String) {
         launchCatchError(block = {
-            _penaltyDetailData.value = Success(penaltyMapper.mapToPenaltyDetailDummy())
+            _penaltyDetailData.value = Success(penaltyMapper.mapToPenaltyDetailDummy(statusPenalty))
         }, onError = {
             _penaltyDetailData.value = Fail(it)
         })

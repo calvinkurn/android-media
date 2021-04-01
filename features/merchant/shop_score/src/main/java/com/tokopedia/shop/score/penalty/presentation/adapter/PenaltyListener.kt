@@ -9,7 +9,7 @@ interface FilterPenaltyListener {
 }
 
 interface ItemDetailPenaltyListener {
-    fun onItemPenaltyClick()
+    fun onItemPenaltyClick(statusPenalty: String)
 }
 
 interface FilterPenaltyBottomSheetListener {

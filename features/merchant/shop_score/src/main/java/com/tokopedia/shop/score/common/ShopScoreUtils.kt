@@ -70,9 +70,8 @@ fun getNPastMonthTimeStamp(monthBefore: Int): Date {
     return date.time
 }
 
-fun getColoredIndicator(context: Context, colorHex: String): Drawable? {
-    val color = if (colorHex.length > 1) Color.parseColor(colorHex)
-    else MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0)
+fun getColoredIndicator(context: Context, colorRes: Int): Drawable? {
+    val color = ContextCompat.getColor(context, colorRes)
     val drawable = MethodChecker.getDrawable(context, R.drawable.ic_penalty_indicator)
     val filter: ColorFilter = LightingColorFilter(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Static_Black), color)
     drawable.colorFilter = filter

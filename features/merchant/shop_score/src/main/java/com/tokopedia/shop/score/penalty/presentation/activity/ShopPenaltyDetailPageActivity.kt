@@ -10,7 +10,7 @@ import com.tokopedia.shop.score.penalty.presentation.fragment.ShopPenaltyDetailF
 
 class ShopPenaltyDetailPageActivity: BaseSimpleActivity(), HasComponent<PenaltyComponent> {
 
-    override fun getNewFragment(): Fragment? {
+    override fun getNewFragment(): Fragment {
         return ShopPenaltyDetailFragment.newInstance()
     }
 

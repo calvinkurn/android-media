@@ -13,6 +13,7 @@ import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.penalty.di.component.PenaltyComponent
 import com.tokopedia.shop.score.penalty.presentation.adapter.PenaltyPageAdapter
 import com.tokopedia.shop.score.penalty.presentation.adapter.detail.PenaltyDetailStepperAdapter
+import com.tokopedia.shop.score.penalty.presentation.bottomsheet.PenaltyStatusBottomSheet
 import com.tokopedia.shop.score.penalty.presentation.model.ShopPenaltyDetailUiModel
 import com.tokopedia.shop.score.penalty.presentation.viewmodel.ShopPenaltyDetailViewModel
 import com.tokopedia.usecase.coroutines.Success
@@ -25,6 +26,8 @@ class ShopPenaltyDetailFragment: BaseDaggerFragment() {
     lateinit var shopPenaltyDetailViewModel: ShopPenaltyDetailViewModel
 
     private val penaltyDetailStepperAdapter by lazy { PenaltyDetailStepperAdapter() }
+
+    private var statusPenalty = ""
 
     override fun getScreenName(): String = ""
 
@@ -39,6 +42,7 @@ class ShopPenaltyDetailFragment: BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         activity?.window?.decorView?.setBackgroundColor(ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_N0))
+        statusPenalty = activity?.intent?.extras?.getString(STATUS_PENALTY) ?: ""
         observePenaltyDetailData()
     }
 
@@ -50,7 +54,7 @@ class ShopPenaltyDetailFragment: BaseDaggerFragment() {
                 }
             }
         }
-        shopPenaltyDetailViewModel.getPenaltyDetailData()
+        shopPenaltyDetailViewModel.getPenaltyDetailData(statusPenalty)
     }
 
     private fun initDataView(shopPenaltyDetailUiModel: ShopPenaltyDetailUiModel) {
@@ -62,6 +66,10 @@ class ShopPenaltyDetailFragment: BaseDaggerFragment() {
         tvDateResultDetailPenalty?.text = MethodChecker.fromHtml(getString(R.string.point_deduction_date_result_detail_penalty,
                 shopPenaltyDetailUiModel.statusDate))
         setupRvStepper(shopPenaltyDetailUiModel.stepperPenaltyDetailList)
+
+        ic_info_status_penalty?.setOnClickListener {
+            showStatusPenaltyBottomSheet()
+        }
     }
 
     private fun setupRvStepper(stepperList: List<ShopPenaltyDetailUiModel.StepperPenaltyDetail>) {
@@ -72,7 +80,14 @@ class ShopPenaltyDetailFragment: BaseDaggerFragment() {
         penaltyDetailStepperAdapter.setStepperPenaltyDetail(stepperList)
     }
 
+    private fun showStatusPenaltyBottomSheet() {
+        val bottomSheet = PenaltyStatusBottomSheet.newInstance()
+        bottomSheet.show(childFragmentManager)
+    }
+
     companion object {
+        const val STATUS_PENALTY = "EXTRA_STATUS_PENALTY"
+
         fun newInstance(): ShopPenaltyDetailFragment {
             return ShopPenaltyDetailFragment()
         }

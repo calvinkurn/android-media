@@ -14,6 +14,7 @@ data class ShopPenaltyDetailUiModel(val titleDetail: String = "",
             @ColorRes val colorLineStepper: Int? = null,
             val titleStepper: String = "",
             @ColorRes val colorStatusTitle: Int? = null,
-            val isBold: Boolean = false
+            val isBold: Boolean = false,
+            val isDividerShow: Boolean = false
     )
 }

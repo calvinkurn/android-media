@@ -1,13 +1,14 @@
 package com.tokopedia.shop.score.penalty.presentation.model
 
+import androidx.annotation.ColorRes
 import com.tokopedia.shop.score.penalty.presentation.adapter.PenaltyPageAdapterFactory
 
 data class ItemPenaltyUiModel(val statusPenalty: String = "",
-                              val endDate: String = "",
+                              val periodDate: String = "",
                               val statusDate: String = "",
                               val transactionPenalty: String = "",
                               val descPenalty: String = "",
-                              val colorPenalty: String = ""
+                              @ColorRes val colorPenalty: Int? = null
 ) : BasePenaltyPage {
     override fun type(typeFactory: PenaltyPageAdapterFactory): Int {
         return typeFactory.type(this)

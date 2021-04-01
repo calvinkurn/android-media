@@ -5,10 +5,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.hideLoading
+import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.penalty.presentation.model.ShopPenaltyDetailUiModel
+import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.item_penalty_stepper.view.*
 
 class PenaltyDetailStepperAdapter: RecyclerView.Adapter<PenaltyDetailStepperAdapter.DetailPenaltyStepperViewHolder>() {
@@ -37,19 +41,22 @@ class PenaltyDetailStepperAdapter: RecyclerView.Adapter<PenaltyDetailStepperAdap
 
         fun bind(data: ShopPenaltyDetailUiModel.StepperPenaltyDetail) {
             with(itemView) {
-                if (adapterPosition + 1 == MAX_STATUS_PENALTY) {
-                    divider_stepper_penalty?.hide()
-                } else {
+                setBackgroundColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+                if (data.isDividerShow) {
                     divider_stepper_penalty?.show()
                     data.colorLineStepper?.let { divider_stepper_penalty?.setBackgroundColor(ContextCompat.getColor(context, it)) }
+                } else {
+                    divider_stepper_penalty?.hide()
                 }
-                tv_title_status_stepper?.text = data.titleStepper
+                tv_title_status_stepper?.text = MethodChecker.fromHtml(data.titleStepper)
+                data.colorStatusTitle?.let { tv_title_status_stepper?.setTextColor(ContextCompat.getColor(context, it)) }
+                if (data.isBold) {
+                    tv_title_status_stepper?.setWeight(Typography.BOLD)
+                } else {
+                    tv_title_status_stepper?.setWeight(Typography.REGULAR)
+                }
                 data.colorDotStepper?.let { ic_dot_stepper?.setColorFilter(ContextCompat.getColor(context, it) ) }
             }
         }
-    }
-
-    companion object {
-        const val MAX_STATUS_PENALTY = 3
     }
 }

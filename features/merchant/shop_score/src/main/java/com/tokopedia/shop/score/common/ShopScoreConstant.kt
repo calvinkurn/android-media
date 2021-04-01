@@ -78,11 +78,6 @@ object ShopScoreConstant {
 
     const val PENALTY_IDENTIFIER = "penalty"
 
-    const val CASH_ADVANCE = "Cash advance"
-    const val PRODUCT_DUPLICATE = "Duplikasi produk"
-    const val PRODUCT_VIOLATION = "Pelanggaran produk"
-    const val TRANSACTION_MANIPULATION = "Manipulasi Transaksi"
-
     const val minuteText = "menit"
     const val percentText = "%"
     const val dayText = "hari"
@@ -97,4 +92,10 @@ object ShopScoreConstant {
     const val ON_GOING = "Sedang Berlangsung"
     const val PENALTY_DONE = "Penalty Selesai"
 
+    const val GUILT_RESOLUTION_CENTER = "Bersalah di Pusat Resolusi"
+    const val ORDER_IGNORED = "Pesanan diabaikan"
+    const val DELIVERY_IGNORED = " Pengiriman diabaikan"
+    const val DELIVERY_REFUSED = "Pengiriman ditolak"
+
+    
 }

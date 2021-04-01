@@ -202,11 +202,15 @@
     <string name="desc_status_penalty">Status memperlihatkan status dari setiap periode penaltimu.</string>
     <string name="title_my_shop">Tokomu</string>
 
-    <string name="title_point_have_not_been_deducted">Poin belum dipotong</string>
+    <string name="title_point_have_not_been_deducted_bottom_sheet">Poin belum dipotong</string>
+    <string name="title_on_going_bottom_sheet">Sedang berlangsung</string>
+    <string name="title_penalty_over_bottom_sheet">Penalti selesai</string>
+
+    <string name="title_point_have_not_been_deducted">Poin belum &lt;br /&gt;dipotong</string>
     <string name="desc_point_have_not_been_deducted">Penalti belum aktif dan poin pelanggaran akan dikenakan mulai dari tanggal yang tertera.</string>
-    <string name="title_on_going">Sedang berlangsung</string>
+    <string name="title_on_going">Sedang &lt;br /&gt;berlangsung</string>
     <string name="desc_on_going">Penalti saat ini sedang aktif dan poin pelanggaran akan dikenakan pada tokomu. Masa aktif penalti berlangsung selama 30 hari dari tanggal aktif.</string>
-    <string name="title_penalty_over">Penalti selesai</string>
+    <string name="title_penalty_over">Penalti &lt;br /&gt;selesai</string>
     <string name="desc_penalty_over">Penalti sudah tidak aktif dan tidak akan dikenakan poin pelanggaran.</string>
     <string name="example_desc_result_detail_penalty">Penalti belum aktif dan poin pelanggaran akan dikenakan mulai dari tanggal yang tertera.</string>
     <string name="example_title_faq_shop_score">Apa keuntungan skor Performa Toko yang baru bagi toko saya?</string>

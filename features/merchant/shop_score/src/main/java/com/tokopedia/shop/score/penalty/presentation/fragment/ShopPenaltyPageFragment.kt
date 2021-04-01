@@ -14,6 +14,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.removeObservers
 import com.tokopedia.shop.score.R
@@ -122,8 +123,9 @@ class ShopPenaltyPageFragment: BaseListFragment<Visitable<*>, PenaltyPageAdapter
         penaltyPageAdapter.updateFilterDatePenalty(date)
     }
 
-    override fun onItemPenaltyClick() {
-        val intent = RouteManager.getIntent(context, ApplinkConst.SHOP_PENALTY_DETAIL)
+    override fun onItemPenaltyClick(statusPenalty: String) {
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.SHOP_PENALTY_DETAIL)
+        intent.putExtra(ShopPenaltyDetailFragment.STATUS_PENALTY, statusPenalty)
         startActivity(intent)
     }
 
