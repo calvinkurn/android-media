@@ -33,9 +33,9 @@ class PdpSimulationActivity : BaseSimpleActivity(), HasComponent<PdpSimulationCo
 
     override fun getNewFragment(): Fragment? {
         val bundle = Bundle()
-        if (intent.data != null) {
-            bundle.putString(PRODUCT_PRICE, intent.data?.getQueryParameter(PRODUCT_PRICE))
-            bundle.putString(PARAM_PRODUCT_URL, intent.data?.getQueryParameter(PARAM_PRODUCT_URL))
+        intent.data?.let {
+            bundle.putString(PRODUCT_PRICE, it.getQueryParameter(PRODUCT_PRICE))
+            bundle.putString(PARAM_PRODUCT_URL, it.getQueryParameter(PARAM_PRODUCT_URL))
         }
         return PdpSimulationFragment.newInstance(bundle)
     }

@@ -27,13 +27,9 @@ object DeeplinkMapperFintech {
     fun getRegisteredNavigationForPayLater(deeplink: String): String {
         val query = Uri.parse(deeplink).query
         val path = Uri.parse(deeplink).path
-        var deepLinkInternal = ApplinkConstInternalFintech.PAYLATER
-        if (query?.isNotEmpty() == true || path?.isNotEmpty() == true) {
-            deepLinkInternal = "$deepLinkInternal?$query"
-            return deepLinkInternal
-        }
-        return  deepLinkInternal
+        val deepLinkInternal = ApplinkConstInternalFintech.PAYLATER
+        return if (query?.isNotEmpty() == true || path?.isNotEmpty() == true) {
+            "$deepLinkInternal?$query"
+        } else deepLinkInternal
     }
-
-
 }
