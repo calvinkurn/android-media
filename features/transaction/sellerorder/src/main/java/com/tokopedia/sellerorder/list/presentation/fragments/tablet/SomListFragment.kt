@@ -32,10 +32,26 @@ class SomListFragment : com.tokopedia.sellerorder.list.presentation.fragments.So
         SomAnalytics.eventClickOrderCard(order.orderStatusId, order.status)
     }
 
+    override fun onActionCompleted(refreshOrder: Boolean, orderId: String) {
+        super.onActionCompleted(refreshOrder, orderId)
+        if (refreshOrder) {
+            somListOrderListener?.onRefreshSelectedOrder(selectedOrderId)
+        }
+    }
+
+    override fun onReceiveRefreshOrderRequest(orderId: String, invoice: String) {
+        super.onReceiveRefreshOrderRequest(orderId, invoice)
+        somListOrderListener?.onRefreshSelectedOrder(orderId)
+    }
+
     override fun showBackButton(): Boolean = false
 
     fun setSomListOrderListener(listener: SomListClickListener) {
         this.somListOrderListener = listener
+    }
+
+    fun refreshSelectedOrder(orderId: String) {
+        super.onActionCompleted(true, orderId)
     }
 
     interface SomListClickListener {

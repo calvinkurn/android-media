@@ -72,7 +72,7 @@ import com.tokopedia.sellerhome.SellerHomeRouter;
 import com.tokopedia.sellerhome.view.activity.SellerHomeActivity;
 import com.tokopedia.sellerorder.common.util.SomConsts;
 import com.tokopedia.sellerorder.list.presentation.fragments.SomListFragment;
-import com.tokopedia.sellerorder.list.presentation.fragments.tablet.SomContainerFragment;
+import com.tokopedia.sellerorder.common.presenter.fragments.SomContainerFragment;
 import com.tokopedia.talk.feature.inbox.presentation.activity.TalkInboxActivity;
 import com.tokopedia.topads.TopAdsComponentInstance;
 import com.tokopedia.topads.TopAdsModuleRouter;

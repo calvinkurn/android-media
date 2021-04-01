@@ -48,7 +48,7 @@ object SomNavigator {
         }
     }
 
-    fun goToConfirmShippingPage(fragment: SomListFragment, orderId: String) {
+    fun goToConfirmShippingPage(fragment: Fragment, orderId: String) {
         fragment.run {
             Intent(context, SomConfirmShippingActivity::class.java).apply {
                 putExtra(SomConsts.PARAM_ORDER_ID, orderId)
@@ -58,7 +58,7 @@ object SomNavigator {
         }
     }
 
-    fun goToRequestPickupPage(fragment: SomListFragment, orderId: String) {
+    fun goToRequestPickupPage(fragment: Fragment, orderId: String) {
         fragment.run {
             Intent(context, SomConfirmReqPickupActivity::class.java).apply {
                 putExtra(SomConsts.PARAM_ORDER_ID, orderId)
@@ -67,7 +67,7 @@ object SomNavigator {
         }
     }
 
-    fun goToChangeCourierPage(fragment: SomListFragment, orderId: String) {
+    fun goToChangeCourierPage(fragment: Fragment, orderId: String) {
         fragment.run {
             Intent(activity, SomConfirmShippingActivity::class.java).apply {
                 putExtra(SomConsts.PARAM_ORDER_ID, orderId)

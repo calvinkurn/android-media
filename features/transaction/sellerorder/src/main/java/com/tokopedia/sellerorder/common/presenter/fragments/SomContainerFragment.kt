@@ -1,5 +1,6 @@
-package com.tokopedia.sellerorder.list.presentation.fragments.tablet
+package com.tokopedia.sellerorder.common.presenter.fragments
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,9 +12,10 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.detail.presentation.fragment.tablet.SomDetailFragment
+import com.tokopedia.sellerorder.list.presentation.fragments.tablet.SomListFragment
 import kotlinx.android.synthetic.main.fragment_som_container.*
 
-class SomContainerFragment : Fragment(), SomListFragment.SomListClickListener {
+class SomContainerFragment : Fragment(), SomListFragment.SomListClickListener, SomDetailFragment.SomOrderDetailListener {
     companion object {
         @JvmStatic
         fun newInstance(bundle: Bundle): SomContainerFragment {
@@ -42,14 +44,17 @@ class SomContainerFragment : Fragment(), SomListFragment.SomListClickListener {
         attachFragments()
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        somListFragment?.onActivityResult(requestCode, resultCode, data)
+        somDetailFragment?.onActivityResult(requestCode, resultCode, data)
+    }
+
     override fun onOrderClicked(orderId: String) {
         attachDetailFragment(orderId)
     }
 
     override fun onRefreshSelectedOrder(orderId: String) {
-        somDetailFragment?.let {
-            it.setOrderIdToShow(orderId)
-        }
+        somDetailFragment?.refreshOrder(orderId)
     }
 
     private fun attachFragments() {
@@ -67,7 +72,9 @@ class SomContainerFragment : Fragment(), SomListFragment.SomListClickListener {
     private fun initiateDetailFragment(orderId: String): SomDetailFragment {
         val somDetailFragment = SomDetailFragment.newInstance(Bundle().apply {
             putString(SomConsts.PARAM_ORDER_ID, orderId)
-        })
+        }).apply {
+            setOrderDetailListener(this@SomContainerFragment)
+        }
         this.somDetailFragment = somDetailFragment
         return somDetailFragment
     }
@@ -88,10 +95,14 @@ class SomContainerFragment : Fragment(), SomListFragment.SomListClickListener {
                         .commit()
             }
         } else {
-            onRefreshSelectedOrder(orderId)
+            somDetailFragment?.setOrderIdToShow(orderId)
         }
         fragmentDetail?.show()
         ivSomDetailWelcomeIllustration?.gone()
         tvSomDetailWelcome?.gone()
+    }
+
+    override fun onRefreshOrder(orderId: String) {
+        somListFragment?.refreshSelectedOrder(orderId)
     }
 }

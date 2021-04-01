@@ -128,8 +128,6 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
         private const val COACHMARK_ITEM_COUNT_SELLERAPP = 4
         private const val COACHMARK_ITEM_COUNT_MAINAPP = 3
 
-        private const val TAG_BOTTOM_SHEET_BULK_ACCEPT = "bulkAcceptBottomSheet"
-
         private const val KEY_LAST_ACTIVE_FILTER = "lastActiveFilter"
         private const val KEY_LAST_SELECTED_ORDER_ID = "lastSelectedOrderId"
 
@@ -271,17 +269,6 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + masterJob
 
-    override fun getSwipeRefreshLayoutResourceId() = R.id.swipeRefreshLayoutSomList
-    override fun getSwipeRefreshLayout(view: View?) = view?.findViewById<SwipeRefreshLayout>(swipeRefreshLayoutResourceId)
-    override fun createAdapterInstance() = SomListOrderAdapter(adapterTypeFactory)
-    override fun onItemClicked(t: Visitable<SomListAdapterTypeFactory>?) {}
-    override fun getAdapterTypeFactory() = SomListAdapterTypeFactory(this, this)
-    override fun getRecyclerViewResourceId() = R.id.rvSomList
-    override fun getRecyclerView(view: View?) = view?.findViewById<RecyclerView>(recyclerViewResourceId)
-    override fun getScreenName(): String = ""
-    override fun initInjector() = inject()
-    override fun onDismiss() {}
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         getActivityPltPerformanceMonitoring()
@@ -319,6 +306,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
         observeBulkAcceptOrder()
         observeBulkAcceptOrderStatus()
         observeIsAdminEligible()
+        observeRefreshOrderRequest()
     }
 
     override fun onHiddenChanged(hidden: Boolean) {
@@ -501,14 +489,6 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
 
     override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
 
-    private fun onTickerDescriptionClicked(linkUrl: String) {
-        if (linkUrl.isNotBlank()) {
-            context?.let { context ->
-                RouteManager.route(context, linkUrl)
-            }
-        }
-    }
-
     override fun onCheckChanged() {
         updateBulkActionCheckboxStatus()
         toggleBulkActionButtonVisibility()
@@ -653,6 +633,78 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
     override fun onPrintButtonClicked(markAsPrinted: Boolean) {
         goToPrintAwb(activity, view, getSelectedOrderIds(), markAsPrinted)
         SomAnalytics.eventClickYesOnBulkPrintAwb(userSession.userId)
+    }
+
+    override fun onMenuItemClick(item: MenuItem?): Boolean {
+        return if ((item?.itemId == R.id.som_list_action_waiting_payment_order) && viewModel.waitingPaymentCounterResult.value !is Fail) {
+            goToWaitingPaymentOrderListPage()
+            val waitingPaymentOrderCounterResult = viewModel.waitingPaymentCounterResult.value
+            if (waitingPaymentOrderCounterResult is Success) {
+                SomAnalytics.eventClickWaitingPaymentOrderCard(
+                        tabActive,
+                        waitingPaymentOrderCounterResult.data.amount,
+                        userSession.userId,
+                        userSession.shopId)
+            }
+            isWaitingPaymentOrderPageOpened = true
+            updateToolbarMenu()
+            true
+        } else {
+            false
+        }
+    }
+
+    override fun onClickShowOrderFilter(
+            filterData: SomListGetOrderListParam, somFilterUiModelList: List<SomFilterUiModel>,
+            idFilter: String, filterDate: String, isRequestCancelFilterApplied: Boolean) {
+        this.filterDate = filterDate
+        this.filterOrderType = if (isRequestCancelFilterApplied) FILTER_CANCELLATION_REQUEST else 0
+        this.shouldScrollToTop = true
+        isLoadingInitialData = true
+        somListSortFilterTab?.updateSomListFilterUi(somFilterUiModelList)
+        somListSortFilterTab?.updateCounterSortFilter(filterDate)
+        val selectedStatusFilterKey = somFilterUiModelList.find {
+            it.nameFilter == SomConsts.FILTER_STATUS_ORDER
+        }?.somFilterData?.find {
+            it.isSelected
+        }?.key
+        tabActive = selectedStatusFilterKey.orEmpty()
+        viewModel.updateGetOrderListParams(filterData)
+        loadFilters(showShimmer = false, loadOrders = true)
+        if (shouldReloadOrderListImmediately()) {
+            loadOrderList()
+        } else {
+            getSwipeRefreshLayout(view)?.isRefreshing = true
+        }
+        setDefaultSortByValue()
+    }
+
+    override fun onClickOverlayBottomSheet(filterCancelWrapper: SomFilterCancelWrapper) {
+        somListSortFilterTab?.updateSomListFilterUi(filterCancelWrapper.somFilterUiModelList)
+        val orderListParam = viewModel.getDataOrderListParams()
+        orderListParam.statusList = filterCancelWrapper.orderStatusIdList
+        viewModel.updateGetOrderListParams(orderListParam)
+        this.filterDate = filterCancelWrapper.filterDate
+        this.filterOrderType = if (filterCancelWrapper.requestCancelFilterApplied) FILTER_CANCELLATION_REQUEST else 0
+    }
+
+    override fun getSwipeRefreshLayoutResourceId() = R.id.swipeRefreshLayoutSomList
+    override fun getSwipeRefreshLayout(view: View?) = view?.findViewById<SwipeRefreshLayout>(swipeRefreshLayoutResourceId)
+    override fun createAdapterInstance() = SomListOrderAdapter(adapterTypeFactory)
+    override fun onItemClicked(t: Visitable<SomListAdapterTypeFactory>?) {}
+    override fun getAdapterTypeFactory() = SomListAdapterTypeFactory(this, this)
+    override fun getRecyclerViewResourceId() = R.id.rvSomList
+    override fun getRecyclerView(view: View?) = view?.findViewById<RecyclerView>(recyclerViewResourceId)
+    override fun getScreenName(): String = ""
+    override fun initInjector() = inject()
+    override fun onDismiss() {}
+
+    private fun onTickerDescriptionClicked(linkUrl: String) {
+        if (linkUrl.isNotBlank()) {
+            context?.let { context ->
+                RouteManager.route(context, linkUrl)
+            }
+        }
     }
 
     private fun setDefaultSortByValue() {
@@ -846,7 +898,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                 is Success -> {
                     val rejectOrderResponse = it.data.rejectOrder
                     if (rejectOrderResponse.success == 1) {
-                        handleRejectOrderResult(rejectOrderResponse)
+                        handleRejectOrderResult(rejectOrderResponse, false)
                     } else {
                         showToasterError(view, rejectOrderResponse.message.first(), canRetry = false)
                     }
@@ -865,7 +917,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                     val successEditAwbResponse = it.data
                     if (successEditAwbResponse.mpLogisticEditRefNum.listMessage.isNotEmpty()) {
                         showCommonToaster(view, successEditAwbResponse.mpLogisticEditRefNum.listMessage.first())
-                        onActionCompleted(false)
+                        onActionCompleted(false, selectedOrderId)
                     } else {
                         showToasterError(view, getString(R.string.global_error), canRetry = false)
                     }
@@ -886,7 +938,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
         viewModel.rejectCancelOrderResult.observe(viewLifecycleOwner, Observer { result ->
             when (result) {
                 is Success -> {
-                    onActionCompleted(false)
+                    onActionCompleted(false, selectedOrderId)
                     showCommonToaster(view, result.data.rejectCancelRequest.message)
                 }
                 is Fail -> {
@@ -988,6 +1040,12 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
         })
     }
 
+    private fun observeRefreshOrderRequest() {
+        viewModel.refreshOrderRequest.observe(viewLifecycleOwner, Observer { request ->
+            onReceiveRefreshOrderRequest(request.first, request.second)
+        })
+    }
+
     private fun showOnProgressAcceptAllOrderDialog(orderCount: Int) {
         bulkAcceptOrderDialog?.run {
             hidePrimaryButton()
@@ -1069,20 +1127,6 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                 .map { it.orderId }
     }
 
-    private fun onActionCompleted(refreshOrder: Boolean) {
-        if (!viewModel.isRefreshingAllOrder()) {
-            getSwipeRefreshLayout(view)?.apply {
-                isEnabled = true
-                isRefreshing = true
-            }
-            if (refreshOrder) {
-                val invoice = getOrderBy(selectedOrderId)
-                loadFilters(showShimmer = false, loadOrders = false)
-                viewModel.refreshSelectedOrder(selectedOrderId, invoice)
-            }
-        }
-    }
-
     private fun showEmptyState() {
         val newItems = arrayListOf(createSomListEmptyStateModel(viewModel.isTopAdsActive()))
         (adapter as? SomListOrderAdapter)?.updateOrders(newItems)
@@ -1127,15 +1171,6 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
             somListLoadTimeMonitoring?.startNetworkPerformanceMonitoring()
         }
         viewModel.getAdminPermission()
-    }
-
-    private fun onAcceptOrderSuccess(acceptOrderResponse: SomAcceptOrderResponse.Data.AcceptOrder, refreshOrder: Boolean) {
-        if (acceptOrderResponse.success == 1) {
-            onActionCompleted(refreshOrder)
-            showCommonToaster(view, acceptOrderResponse.listMessage.firstOrNull())
-        } else {
-            showToasterError(view, acceptOrderResponse.listMessage.firstOrNull().orEmpty(), canRetry = false)
-        }
     }
 
     private fun loadAllInitialData() {
@@ -1256,26 +1291,26 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                 }
                 data.hasExtra(SomConsts.RESULT_REJECT_ORDER) -> {
                     data.getParcelableExtra<SomRejectOrderResponse.Data.RejectOrder>(SomConsts.RESULT_REJECT_ORDER)?.let { resultRejectOrder ->
-                        handleRejectOrderResult(resultRejectOrder)
+                        handleRejectOrderResult(resultRejectOrder, true)
                     }
                 }
                 data.hasExtra(SomConsts.RESULT_SET_DELIVERED) -> {
                     data.getStringExtra(SomConsts.RESULT_SET_DELIVERED)?.let { message ->
-                        onActionCompleted(true)
+                        onActionCompleted(true, selectedOrderId)
                         showCommonToaster(view, message)
                     }
                 }
                 data.hasExtra(SomConsts.RESULT_REFRESH_ORDER) -> {
                     if (data.getBooleanExtra(SomConsts.RESULT_REFRESH_ORDER, false)) {
-                        onActionCompleted(true)
+                        onActionCompleted(true, selectedOrderId)
                     }
                 }
             }
         }
     }
 
-    private fun handleRejectOrderResult(resultRejectOrder: SomRejectOrderResponse.Data.RejectOrder) {
-        onActionCompleted(true)
+    private fun handleRejectOrderResult(resultRejectOrder: SomRejectOrderResponse.Data.RejectOrder, shouldRefreshOrder: Boolean) {
+        onActionCompleted(shouldRefreshOrder, selectedOrderId)
         showCommonToaster(view, resultRejectOrder.message.firstOrNull())
     }
 
@@ -1298,19 +1333,19 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
     private fun handleSomChangeCourierActivityResult(resultCode: Int, data: Intent?) {
         if (resultCode == Activity.RESULT_OK && data != null) {
             data.getStringExtra(RESULT_CONFIRM_SHIPPING).takeIf { !it.isNullOrBlank() }?.let {
-                onActionCompleted(true)
+                onActionCompleted(true, selectedOrderId)
                 showCommonToaster(view, it)
             }
         }
     }
 
     private fun handleRequestPickUpResult(message: String?) {
-        onActionCompleted(true)
+        onActionCompleted(true, selectedOrderId)
         showCommonToaster(view, message)
     }
 
     private fun handleConfirmShippingResult(message: String?) {
-        onActionCompleted(true)
+        onActionCompleted(true, selectedOrderId)
         showCommonToaster(view, message)
     }
 
@@ -1581,54 +1616,6 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
         loadOrderList()
     }
 
-    private fun showToasterError(
-            view: View?,
-            message: String = getString(R.string.som_list_error_some_information_cannot_be_loaded),
-            buttonMessage: String = getString(R.string.btn_reload),
-            canRetry: Boolean = true) {
-        view?.let {
-            if (canRetry) {
-                errorToaster = Toaster.build(
-                        it,
-                        message,
-                        Toaster.LENGTH_INDEFINITE,
-                        Toaster.TYPE_ERROR,
-                        buttonMessage,
-                        View.OnClickListener {
-                            refreshFailedRequests()
-                        })
-            } else {
-                errorToaster = Toaster.build(
-                        it,
-                        message,
-                        Toaster.LENGTH_INDEFINITE,
-                        Toaster.TYPE_ERROR,
-                        getString(R.string.som_list_button_ok),
-                        View.OnClickListener {
-                            errorToaster?.dismiss()
-                        })
-            }
-        }
-        if (errorToaster?.isShown == false) {
-            errorToaster?.show()
-        }
-    }
-
-    private fun showCommonToaster(view: View?, message: String?, toasterType: Int = Toaster.TYPE_NORMAL) {
-        message?.run {
-            view?.let {
-                commonToaster?.dismiss()
-                commonToaster = Toaster.build(
-                        it,
-                        message,
-                        Toaster.LENGTH_SHORT,
-                        toasterType,
-                        getString(R.string.som_list_button_ok))
-                commonToaster?.show()
-            }
-        }
-    }
-
     private fun refreshFailedRequests() {
         if (viewModel.waitingPaymentCounterResult.value is Fail) {
             showWaitingPaymentOrderListMenuShimmer()
@@ -1773,40 +1760,6 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
     }
 
     private fun shouldReloadOrderListImmediately(): Boolean = tabActive.isBlank() || tabActive == SomConsts.STATUS_ALL_ORDER
-
-    override fun onClickShowOrderFilter(
-            filterData: SomListGetOrderListParam, somFilterUiModelList: List<SomFilterUiModel>,
-            idFilter: String, filterDate: String, isRequestCancelFilterApplied: Boolean) {
-        this.filterDate = filterDate
-        this.filterOrderType = if (isRequestCancelFilterApplied) FILTER_CANCELLATION_REQUEST else 0
-        this.shouldScrollToTop = true
-        isLoadingInitialData = true
-        somListSortFilterTab?.updateSomListFilterUi(somFilterUiModelList)
-        somListSortFilterTab?.updateCounterSortFilter(filterDate)
-        val selectedStatusFilterKey = somFilterUiModelList.find {
-            it.nameFilter == SomConsts.FILTER_STATUS_ORDER
-        }?.somFilterData?.find {
-            it.isSelected
-        }?.key
-        tabActive = selectedStatusFilterKey.orEmpty()
-        viewModel.updateGetOrderListParams(filterData)
-        loadFilters(showShimmer = false, loadOrders = true)
-        if (shouldReloadOrderListImmediately()) {
-            loadOrderList()
-        } else {
-            getSwipeRefreshLayout(view)?.isRefreshing = true
-        }
-        setDefaultSortByValue()
-    }
-
-    override fun onClickOverlayBottomSheet(filterCancelWrapper: SomFilterCancelWrapper) {
-        somListSortFilterTab?.updateSomListFilterUi(filterCancelWrapper.somFilterUiModelList)
-        val orderListParam = viewModel.getDataOrderListParams()
-        orderListParam.statusList = filterCancelWrapper.orderStatusIdList
-        viewModel.updateGetOrderListParams(orderListParam)
-        this.filterDate = filterCancelWrapper.filterDate
-        this.filterOrderType = if (filterCancelWrapper.requestCancelFilterApplied) FILTER_CANCELLATION_REQUEST else 0
-    }
 
     private fun setCoachMarkStepListener() {
         coachMark?.setStepListener(object : CoachMark2.OnStepListener {
@@ -2107,24 +2060,82 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
         }
     }
 
-    protected open fun showBackButton(): Boolean = !GlobalConfig.isSellerApp()
-
-    override fun onMenuItemClick(item: MenuItem?): Boolean {
-        return if ((item?.itemId == R.id.som_list_action_waiting_payment_order) && viewModel.waitingPaymentCounterResult.value !is Fail) {
-            goToWaitingPaymentOrderListPage()
-            val waitingPaymentOrderCounterResult = viewModel.waitingPaymentCounterResult.value
-            if (waitingPaymentOrderCounterResult is Success) {
-                SomAnalytics.eventClickWaitingPaymentOrderCard(
-                        tabActive,
-                        waitingPaymentOrderCounterResult.data.amount,
-                        userSession.userId,
-                        userSession.shopId)
+    private fun showToasterError(
+            view: View?,
+            message: String = getString(R.string.som_list_error_some_information_cannot_be_loaded),
+            buttonMessage: String = getString(R.string.btn_reload),
+            canRetry: Boolean = true) {
+        view?.let {
+            if (canRetry) {
+                errorToaster = Toaster.build(
+                        it,
+                        message,
+                        Toaster.LENGTH_INDEFINITE,
+                        Toaster.TYPE_ERROR,
+                        buttonMessage,
+                        View.OnClickListener {
+                            refreshFailedRequests()
+                        })
+            } else {
+                errorToaster = Toaster.build(
+                        it,
+                        message,
+                        Toaster.LENGTH_INDEFINITE,
+                        Toaster.TYPE_ERROR,
+                        getString(R.string.som_list_button_ok),
+                        View.OnClickListener {
+                            errorToaster?.dismiss()
+                        })
             }
-            isWaitingPaymentOrderPageOpened = true
-            updateToolbarMenu()
-            true
-        } else {
-            false
+        }
+        if (errorToaster?.isShown == false) {
+            errorToaster?.show()
         }
     }
+
+    private fun showCommonToaster(view: View?, message: String?, toasterType: Int = Toaster.TYPE_NORMAL) {
+        message?.run {
+            view?.let {
+                commonToaster?.dismiss()
+                commonToaster = Toaster.build(
+                        it,
+                        message,
+                        Toaster.LENGTH_SHORT,
+                        toasterType,
+                        getString(R.string.som_list_button_ok))
+                commonToaster?.show()
+            }
+        }
+    }
+
+    protected open fun onReceiveRefreshOrderRequest(orderId: String, invoice: String) {
+        viewModel.refreshSelectedOrder(orderId, invoice)
+    }
+
+    protected open fun onActionCompleted(refreshOrder: Boolean, orderId: String) {
+        if (!viewModel.isRefreshingAllOrder()) {
+            if (refreshOrder) {
+                val invoice = getOrderBy(orderId)
+                if (invoice.isNotEmpty()) {
+                    getSwipeRefreshLayout(view)?.apply {
+                        isEnabled = true
+                        isRefreshing = true
+                    }
+                    loadFilters(showShimmer = false, loadOrders = false)
+                    viewModel.refreshSelectedOrder(orderId, invoice)
+                }
+            }
+        }
+    }
+
+    protected open fun onAcceptOrderSuccess(acceptOrderResponse: SomAcceptOrderResponse.Data.AcceptOrder, refreshOrder: Boolean) {
+        if (acceptOrderResponse.success == 1) {
+            onActionCompleted(refreshOrder, selectedOrderId)
+            showCommonToaster(view, acceptOrderResponse.listMessage.firstOrNull())
+        } else {
+            showToasterError(view, acceptOrderResponse.listMessage.firstOrNull().orEmpty(), canRetry = false)
+        }
+    }
+
+    protected open fun showBackButton(): Boolean = !GlobalConfig.isSellerApp()
 }
