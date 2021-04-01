@@ -979,9 +979,21 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                 permissionCheckerHelper,
                 fusedLocationClient,
                 requireActivity().applicationContext)
-        locationDetectorHelper.getLocation(hotelSearchMapViewModel.onGetLocation(), requireActivity(),
-                LocationDetectorHelper.TYPE_DEFAULT_FROM_CLOUD,
-                requireActivity().getString(R.string.hotel_destination_need_permission))
+
+        permissionCheckerHelper.checkPermission(this, PermissionCheckerHelper.Companion.PERMISSION_ACCESS_FINE_LOCATION,
+                object : PermissionCheckerHelper.PermissionCheckListener {
+                    override fun onNeverAskAgain(permissionText: String) {}
+
+                    override fun onPermissionDenied(permissionText: String) {
+                    }
+
+                    override fun onPermissionGranted() {
+                        locationDetectorHelper.getLocation(hotelSearchMapViewModel.onGetLocation(), requireActivity(),
+                                LocationDetectorHelper.TYPE_DEFAULT_FROM_CLOUD,
+                                requireActivity().getString(R.string.hotel_destination_need_permission))
+                    }
+
+                })
     }
 
     private fun setupFindWithMapButton() {
