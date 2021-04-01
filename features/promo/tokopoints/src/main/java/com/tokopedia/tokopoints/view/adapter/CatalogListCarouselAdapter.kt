@@ -20,6 +20,7 @@ import com.tokopedia.tokopoints.view.model.CatalogsValueEntity
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil.sendECommerceEvent
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil.sendECommerceEventBanner
+import com.tokopedia.tokopoints.view.util.ColorUtil
 import com.tokopedia.tokopoints.view.util.CommonConstant
 import com.tokopedia.tokopoints.view.util.ImageUtil
 import java.util.*
@@ -118,7 +119,7 @@ class CatalogListCarouselAdapter(var items: List<CatalogsValueEntity>,
                             upperText.append(item.upperTextDesc!![i])
                         } else {
                             //exclusive case for handling font color of second index.
-                            upperText.append("<font color='${holder.pbQuota.context?.resources?.getColor(R.color.clr_ff5722)}'>" + item.upperTextDesc!![i] + "</font>")
+                            upperText.append("<font color='${ColorUtil.getColorFromResToString(holder.quota.context,com.tokopedia.unifyprinciples.R.color.Unify_Y400)}>" + item?.upperTextDesc?.get(i) + "</font>")
                         }
                     } else {
                         upperText.append(item.upperTextDesc!![i]).append(" ")

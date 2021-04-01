@@ -434,7 +434,7 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
             val upperText = StringBuilder()
             for (i in data.upperTextDesc.indices) {
                 if (i == 1) { //exclusive case for handling font color of second index.
-                    upperText.append("<font color='${context?.resources?.getColor(R.color.clr_ff5722)}'>" + data.upperTextDesc[i] + "</font>")
+                    upperText.append("<font color='${ColorUtil.getColorFromResToString(quota.context,com.tokopedia.unifyprinciples.R.color.Unify_Y400)}>" + data?.upperTextDesc?.get(i) + "</font>")
                 } else {
                     upperText.append(data.upperTextDesc[i]).append(" ")
                 }
@@ -534,7 +534,7 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
             val upperText = StringBuilder()
             for (i in data.upperTextDesc!!.indices) {
                 if (i == 1) { //exclusive case for handling font color of second index.
-                    upperText.append("<font color='${context?.resources?.getColor(R.color.clr_ff5722)}'>" + data.upperTextDesc!![i] + "</font>")
+                    upperText.append("<font color='${ColorUtil.getColorFromResToString(quota.context,com.tokopedia.unifyprinciples.R.color.Unify_Y400)}>" + data?.upperTextDesc?.get(i) + "</font>")
                 } else {
                     upperText.append(data.upperTextDesc!![i]).append(" ")
                 }
