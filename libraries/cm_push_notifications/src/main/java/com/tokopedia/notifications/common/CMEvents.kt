@@ -145,7 +145,7 @@ object IrisAnalyticsEvents {
     private fun trackEvent(context: Context, irisAnalytics: IrisAnalytics, values: HashMap<String, Any>) {
         logTimber(values)
         if (CMNotificationUtils.isNetworkAvailable(context))
-            saveEvent(input)
+            irisAnalytics.sendEvent(values)
         else irisAnalytics.saveEvent(values)
     }
 
