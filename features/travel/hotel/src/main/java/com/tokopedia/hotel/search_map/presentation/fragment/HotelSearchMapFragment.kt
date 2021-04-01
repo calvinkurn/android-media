@@ -985,6 +985,9 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                     override fun onNeverAskAgain(permissionText: String) {}
 
                     override fun onPermissionDenied(permissionText: String) {
+                        locationDetectorHelper.getLocation(hotelSearchMapViewModel.onGetLocation(), requireActivity(),
+                                LocationDetectorHelper.TYPE_DEFAULT_FROM_CLOUD,
+                                requireActivity().getString(R.string.hotel_destination_need_permission))
                     }
 
                     override fun onPermissionGranted() {
