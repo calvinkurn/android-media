@@ -35,7 +35,7 @@
             android:orientation="horizontal"
             android:layout_below="@id/product_rating"
             android:layout_marginTop="@dimen/dp_8">
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
@@ -43,10 +43,11 @@
                 android:textColor="@color/Unify_N700_96"
                 android:maxLines="1"
                 android:text="@string/by"
+                app:typographyType="body_3"
                 style="@style/TextView.Small"
                 />
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/reviewer_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -57,10 +58,11 @@
                 style="@style/TextView.Small.Bold"
                 tools:text="Sarah Elizabeth"
                 android:layout_marginLeft="@dimen/dp_3"
+                app:typographyType="body_3"
                 />
         </LinearLayout>
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/review_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -70,6 +72,7 @@
             android:textColor="@color/Unify_N700_32"
             style="@style/TextView.Micro.BlackDisabled"
             tools:text="31 Jul 2016, pukul 11:48"
+            app:typographyType="body_3"
             />
 
         <ImageView
@@ -78,11 +81,12 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
+            android:contentDescription="@null"
             app:srcCompat="@drawable/ic_more_vert_black_24dp"/>
 
     </RelativeLayout>
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/review"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -95,6 +99,7 @@
         android:paddingRight="@dimen/dp_10"
         android:textColor="@color/Unify_N700"
         style="@style/TextView.Small"
+        app:typographyType="body_3"
         tools:text="One morning, when Gregor Samsa woke from troubled dreams, he found himself…Selengkapnya"
         />
 
@@ -125,9 +130,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
+            android:contentDescription="@null"
             app:srcCompat="@drawable/ic_red_hourglass"/>
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/helpful_text"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -137,11 +143,12 @@
             android:ellipsize="end"
             android:lineSpacingExtra="6sp"
             android:maxLines="1"
+            app:typographyType="body_3"
             style="@style/TextView.Micro.BlackDisabled"
             tools:text="Anda dan 2 orang lainnya"
             />
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/see_reply_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -149,6 +156,7 @@
             android:lineSpacingExtra="6sp"
             style="@style/TextView.Micro.BlackDisabled"
             tools:text="Lihat Balasan"
+            app:typographyType="body_3"
             />
     </LinearLayout>
 </LinearLayout>

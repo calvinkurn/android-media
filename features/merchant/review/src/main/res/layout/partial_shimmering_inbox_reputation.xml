@@ -94,11 +94,12 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/action"
                 android:layout_width="0dp"
                 android:layout_weight="1"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                app:typographyType="body_3"/>
 
             <com.elyeproj.loaderviewlibrary.LoaderTextView
                 android:layout_width="@dimen/dp_150"

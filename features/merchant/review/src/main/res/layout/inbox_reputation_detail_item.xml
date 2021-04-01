@@ -30,7 +30,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/action"
                 android:layout_width="0dp"
                 android:layout_weight="1"
@@ -40,6 +40,8 @@
                 android:paddingRight="@dimen/dp_10"
                 android:paddingLeft="@dimen/dp_10"
                 android:text="@string/review_product"
+                app:typographyWeight="reguler"
+                app:typographyType="body_1"
                 style="@style/TextView.Small.Green" />
 
             <ImageView
@@ -66,14 +68,16 @@
             android:visibility="gone"
             tools:visibility="gone">
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:layout_marginLeft="@dimen/dp_5"
+                android:layout_marginStart="@dimen/dp_5"
                 android:gravity="center"
                 android:lineSpacingExtra="5sp"
                 android:text="@string/reply"
+                app:typographyWeight="reguler"
+                app:typographyType="body_1"
                 style="@style/TextView.Small.BlackSecondary"
                 />
 
