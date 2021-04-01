@@ -346,12 +346,12 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
 
     override fun showLoading() {
         if (adapterCardList.dataSize <= MINIMUM_NUMBER_OF_RESULT_LOADED) {
-            hideGetMyLocation()
             if (isLoadingInitialData) {
                 adapterCardList.clearAllElements()
                 adapterCardList.addElement(HotelLoadingModel(isForHorizontalItem = true))
             }
         }
+        hideGetMyLocation()
         super.showLoading()
     }
 
@@ -686,6 +686,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         val searchProperties = data.properties
 
         if (searchProperties.isNotEmpty()) {
+            showCardListView()
             if (adapterCardList.itemCount <= MINIMUM_NUMBER_OF_RESULT_LOADED) {
                 renderCardListMap(searchProperties)
                 searchProperties.forEach {
@@ -694,7 +695,6 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                 }
             } else {
                 hideLoadingCardListMap()
-                searchPropertiesMap.clear()
             }
 
             renderList(searchProperties.map {
