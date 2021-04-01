@@ -525,6 +525,10 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
 
             googleMap.setOnMarkerClickListener(this)
             googleMap.setOnCameraMoveListener(this)
+
+            googleMap.setOnMapClickListener {
+                collapseBottomSheet()
+            }
         }
     }
 
@@ -596,9 +600,9 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                 if (cardListPosition == position && !searchPropertiesMap.isNullOrEmpty()) {
                     allMarker[position].setIcon(createCustomMarker(requireContext(), HOTEL_PRICE_ACTIVE_PIN, allMarker[position].title))
                     if (cardListPosition == SELECTED_POSITION_INIT) {
-                        googleMap.moveCamera(CameraUpdateFactory.newLatLng(searchPropertiesMap[position]))
+                        googleMap.animateCamera(CameraUpdateFactory.newLatLng(searchPropertiesMap[position]))
                     } else {
-                        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(searchPropertiesMap[position], MAPS_STREET_LEVEL_ZOOM))
+                        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(searchPropertiesMap[position], MAPS_STREET_LEVEL_ZOOM))
                     }
                 }
             }
@@ -627,7 +631,6 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
     /** Location permission is handled by LocationDetector */
     private fun initGetMyLocation() {
         ivGetLocationHotelSearchMap.setOnClickListener {
-            hideCardListView()
             showFindNearHereView()
             getCurrentLocation()
             changeHeaderTitle()
@@ -842,6 +845,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
 
     private fun hideFindNearHereView() {
         animatebtnGetRadiusHotelSearchMap(BUTTON_RADIUS_HIDE_VALUE)
+        btnGetRadiusHotelSearchMap.gone()
     }
 
     private fun animatebtnGetRadiusHotelSearchMap(value: Float) {
