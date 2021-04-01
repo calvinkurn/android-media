@@ -188,7 +188,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
 
             override fun onFinish() {
                 countdownTimer.gone()
-                parentViewModel.startTimer()
+                parentViewModel.startCountDownTimer()
             }
         })
     }
@@ -259,7 +259,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                    secondaryCta = getString(R.string.play_broadcast_exit),
                    secondaryListener = { dialog ->
                        dialog.dismiss()
-                       parentViewModel.stopPushStream(shouldNavigate = true)
+                       parentViewModel.stopLiveStream(shouldNavigate = true)
                        analytic.clickDialogExitOnLivePage(parentViewModel.channelId, parentViewModel.title)
                    }
            )
@@ -307,12 +307,12 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                     primaryCta = getString(R.string.play_next),
                     primaryListener = { dialog ->
                         dialog.dismiss()
-                        parentViewModel.resumePushStream()
+                        parentViewModel.continueLiveStream()
                     },
                     secondaryCta = getString(R.string.play_broadcast_end),
                     secondaryListener = { dialog ->
                         dialog.dismiss()
-                        parentViewModel.stopPushStream(shouldNavigate = true)
+                        parentViewModel.stopLiveStream(shouldNavigate = true)
                     }
             )
         }

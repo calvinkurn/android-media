@@ -278,7 +278,7 @@ class PlayBeforeLiveFragment @Inject constructor(
             when (it) {
                 NetworkResult.Loading -> btnStartLive.setLoading(true)
                 is NetworkResult.Success -> {
-                    parentViewModel.startPushStream(withTimer = false)
+                    parentViewModel.startLiveStream(withTimer = false)
                 }
                 is NetworkResult.Fail -> {
                     showToaster(

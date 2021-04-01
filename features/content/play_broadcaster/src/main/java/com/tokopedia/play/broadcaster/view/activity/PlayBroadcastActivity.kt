@@ -140,13 +140,13 @@ class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator, PlayBroadcast
         super.onResume()
         setLayoutFullScreen()
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-        viewModel.onResume()
+        viewModel.checkShouldContinueLiveStream()
     }
 
     override fun onPause() {
         super.onPause()
         window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-        viewModel.onPause()
+        viewModel.pauseLiveStream()
     }
 
     override fun onDestroy() {
@@ -359,12 +359,12 @@ class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator, PlayBroadcast
     fun startPreview() {
         if (surfaceStatus != SurfaceStatus.UNINITED &&
                 surfaceStatus != SurfaceStatus.DESTROYED) {
-            viewModel.startPreview(surfaceView)
+            viewModel.startCameraPreview(surfaceView)
         }
     }
 
     fun stopPreview() {
-        viewModel.stopPreview()
+        viewModel.stopCameraPreview()
     }
 
     fun checkAllPermission() {

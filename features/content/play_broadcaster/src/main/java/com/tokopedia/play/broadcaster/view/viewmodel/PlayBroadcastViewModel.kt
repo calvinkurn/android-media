@@ -122,7 +122,7 @@ class PlayBroadcastViewModel @Inject constructor(
         override fun onStateChanged(state: PlayLivePusherState) {
             if (state is PlayLivePusherState.Start) startWebSocket()
             if (state is PlayLivePusherState.Stop) {
-                if (!state.isStopped) stopPushStream(state.shouldNavigate)
+                if (!state.isStopped) stopLiveStream(state.shouldNavigate)
             } else sendLivePusherState(state)
         }
     }
@@ -146,7 +146,7 @@ class PlayBroadcastViewModel @Inject constructor(
             val event = _observableEvent.value
             if (event == null || (!event.freeze && !event.banned)) {
                 _observableLiveDurationState.value = PlayTimerState.Finish
-                stopPushStream()
+                stopLiveStream()
             }
         }
     }
@@ -280,11 +280,11 @@ class PlayBroadcastViewModel @Inject constructor(
         livePusher.switchCamera()
     }
 
-    fun startPreview(surfaceView: SurfaceView) {
+    fun startCameraPreview(surfaceView: SurfaceView) {
         livePusher.startPreview(surfaceView)
     }
 
-    fun stopPreview() {
+    fun stopCameraPreview() {
         livePusher.stopPreview()
     }
 
@@ -292,13 +292,13 @@ class PlayBroadcastViewModel @Inject constructor(
         sharedPref.setNotFirstStreaming()
     }
 
-    fun startPushStream(withTimer: Boolean = true) {
+    fun startLiveStream(withTimer: Boolean = true) {
         livePusher.start(ingestUrl)
-        if (withTimer) startTimer()
+        if (withTimer) startCountDownTimer()
         isLiveStarted = true
     }
 
-    private fun reconnectPushStream() {
+    private fun reconnectLiveStream() {
         sendLivePusherState(PlayLivePusherState.Connecting)
         scope.launch {
             val err = getChannelDetail()
@@ -307,7 +307,7 @@ class PlayBroadcastViewModel @Inject constructor(
                 when (channelInfo.status) {
                     PlayChannelStatusType.Pause,
                     PlayChannelStatusType.Live -> livePusher.resume()
-                    else -> stopPushStream(shouldNavigate = true)
+                    else -> stopLiveStream(shouldNavigate = true)
                 }
             } else {
                 sendLivePusherState(
@@ -319,19 +319,19 @@ class PlayBroadcastViewModel @Inject constructor(
         }
     }
 
-    fun startTimer() {
+    fun startCountDownTimer() {
         scope.launch {
             delay(1000)
             countDownTimer.start()
         }
     }
 
-    fun resumePushStream() {
-        if (isLiveStarted) reconnectPushStream()
-        else startPushStream()
+    fun continueLiveStream() {
+        if (isLiveStarted) reconnectLiveStream()
+        else startLiveStream()
     }
 
-    fun stopPushStream(shouldNavigate: Boolean = false) {
+    fun stopLiveStream(shouldNavigate: Boolean = false) {
         playSocket.destroy()
         countDownTimer.stop()
         livePusher.stop()
@@ -343,11 +343,11 @@ class PlayBroadcastViewModel @Inject constructor(
         hydraConfigStore.setChannelId(channelId)
     }
 
-    fun onResume() {
+    fun checkShouldContinueLiveStream() {
         liveStateProcessor.onResume()
     }
 
-    fun onPause() {
+    fun pauseLiveStream() {
         liveStateProcessor.onPause()
     }
 
@@ -360,7 +360,7 @@ class PlayBroadcastViewModel @Inject constructor(
     private suspend fun onLivePusherStateChanged(state: PlayLivePusherState) = withContext(dispatcher.main) {
         _observableLivePusherState.value = if (state is PlayLivePusherState.Error) state.copy(
                 errorState = if (state.errorState is PlayLivePusherErrorState.ConnectFailed) {
-                    state.errorState.copy(onRetry = { reconnectPushStream() })
+                    state.errorState.copy(onRetry = { reconnectLiveStream() })
                 } else state.errorState
         ) else state
     }
@@ -388,7 +388,7 @@ class PlayBroadcastViewModel @Inject constructor(
                             if (_observableLiveDurationState.value !is PlayTimerState.Finish) {
                                 val eventUiModel = playBroadcastMapper.mapFreezeEvent(data, _observableEvent.value)
                                 if (eventUiModel.freeze) {
-                                    stopPushStream()
+                                    stopLiveStream()
                                     _observableEvent.value = eventUiModel
                                 }
                             }
@@ -397,7 +397,7 @@ class PlayBroadcastViewModel @Inject constructor(
                             if (_observableLiveDurationState.value !is PlayTimerState.Finish) {
                                 val eventUiModel = playBroadcastMapper.mapBannedEvent(data, _observableEvent.value)
                                 if (eventUiModel.banned) {
-                                    stopPushStream()
+                                    stopLiveStream()
                                     _observableEvent.value = eventUiModel
                                 }
                             }
