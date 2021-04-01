@@ -6,6 +6,7 @@ import com.tokopedia.sellerhomecommon.domain.mapper.PostMapper
 import com.tokopedia.sellerhomecommon.domain.model.GetPostDataResponse
 import com.tokopedia.sellerhomecommon.domain.model.DynamicParameterModel
 import com.tokopedia.sellerhomecommon.utils.TestHelper
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.impl.annotations.RelaxedMockK
@@ -37,7 +38,7 @@ class GetPostDataUseCaseTest {
     @RelaxedMockK
     lateinit var mapper: PostMapper
     private val getPostDataUseCase by lazy {
-        GetPostDataUseCase(gqlRepository, mapper)
+        GetPostDataUseCase(gqlRepository, mapper, CoroutineTestDispatchersProvider)
     }
 
     private val params = GetPostDataUseCase.getRequestParams(

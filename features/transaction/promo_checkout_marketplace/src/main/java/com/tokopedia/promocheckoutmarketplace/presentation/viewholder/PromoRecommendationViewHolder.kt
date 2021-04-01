@@ -5,7 +5,6 @@ import android.view.View
 import android.widget.ImageView
 import com.airbnb.lottie.LottieAnimationView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.promocheckoutmarketplace.R
@@ -14,6 +13,7 @@ import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.PromoRecommen
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.utils.currency.CurrencyFormatUtil
 
 class PromoRecommendationViewHolder(private val view: View,
                                     private val listener: PromoCheckoutActionListener

@@ -12,7 +12,7 @@ class PieChartDataUiModel(
         override val showWidget: Boolean = false
 ) : BaseDataUiModel {
     override fun shouldRemove(): Boolean {
-        return !isFromCache && data.item.all { it.value == 0 }
+        return data.item.all { it.value == 0 }
     }
 }
 

@@ -19,7 +19,6 @@ import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
 import com.tokopedia.purchase_platform.common.exception.CartResponseErrorException
-import com.tokopedia.purchase_platform.common.feature.button.ABTestButton
 import com.tokopedia.purchase_platform.common.feature.helpticket.domain.usecase.SubmitHelpTicketUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ValidateUsePromoRevampUseCase
 import com.tokopedia.purchase_platform.common.schedulers.TestSchedulers
@@ -117,7 +116,6 @@ class ShipmentPresenterLoadShipmentAddressFormTest {
         // Given
         val data = DataProvider.provideShipmentAddressFormResponse()
         val cartShipmentAddressFormData = shipmentMapper.convertToShipmentAddressFormData(data.shipmentAddressFormResponse.data)
-        cartShipmentAddressFormData.abTestButton = ABTestButton(enable = true)
         presenter.shipmentButtonPaymentModel = ShipmentButtonPaymentModel()
 
         every { getShipmentAddressFormGqlUseCase.createObservable(any()) } returns Observable.just(cartShipmentAddressFormData)

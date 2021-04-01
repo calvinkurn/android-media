@@ -1,0 +1,29 @@
+{
+  "readme": "Review Detail - click quick filter",
+  "mode": "exact",
+  "query": [
+    {
+      "networkSpeed": "{{.*}}",
+      "clientId": "{{.*}}",
+      "productId": "{{.*}}",
+      "isLoggedInStatus": "{{true|false}}",
+      "appsflyerId": "{{.*}}",
+      "shopId": "{{.*}}",
+      "screenName": "review detail page",
+      "event": "openScreen",
+      "userId": "{{.*}}",
+      "sessionIris": "{{.*}}"
+    },
+    {
+      "eventCategory": "review detail page",
+      "productId": "{{.*}}",
+      "shopId": "{{.*}}",
+      "screenName": "review detail page",
+      "isActive": "{{true|false}}",
+      "event": "clickReview",
+      "eventAction": "click - quick filter on review detail page",
+      "sessionIris": "{{.*}}",
+      "eventLabel": "{{filterBy:.*}}"
+    }
+  ]
+}

@@ -439,7 +439,7 @@ class NotificationViewModel @Inject constructor(
     companion object {
         const val TOP_ADS_SOURCE = "5"
         const val TOP_ADS_COUNT = 1
-        const val TOP_ADS_DIMEN_ID = 4
+        const val TOP_ADS_DIMEN_ID = 3
 
         const val RECOM_WIDGET = "recom_widget"
         const val RECOM_SOURCE_INBOX_PAGE = "inbox"

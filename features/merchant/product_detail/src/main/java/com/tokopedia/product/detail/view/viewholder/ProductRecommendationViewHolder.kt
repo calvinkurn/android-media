@@ -112,7 +112,7 @@ class ProductRecommendationViewHolder(
                             listener.sendTopAdsClick(topAdsClickUrl, productRecommendation.productId.toString(), productRecommendation.name, productRecommendation.imageUrl)
                         }
 
-                        listener.eventRecommendationClick(productRecommendation, carouselProductCardPosition, product.pageName, product.title, componentTrackDataModel)
+                        listener.eventRecommendationClick(productRecommendation, annotationChipAdapter?.getSelectedChip()?.value ?: "", carouselProductCardPosition, product.pageName, product.title, componentTrackDataModel)
 
                         view.context?.run {
                             RouteManager.route(this,
@@ -134,6 +134,7 @@ class ProductRecommendationViewHolder(
                         }
 
                         listener.eventRecommendationImpression(productRecommendation,
+                                annotationChipAdapter?.getSelectedChip()?.value ?: "",
                                 carouselProductCardPosition,
                                 product.pageName,
                                 product.title, componentTrackDataModel)
@@ -145,6 +146,12 @@ class ProductRecommendationViewHolder(
                     }
                 },
                 productCardModelList = cardModel?.toMutableList() ?: listOf(),
+                carouselProductCardOnItemThreeDotsClickListener = object : CarouselProductCardListener.OnItemThreeDotsClickListener {
+                    override fun onItemThreeDotsClick(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
+                        val productRecommendation = product.recommendationItemList.getOrNull(carouselProductCardPosition) ?: return
+                        listener.onThreeDotsClick(productRecommendation, adapterPosition, carouselProductCardPosition)
+                    }
+                },
                 finishCalculate = {
                     view.rvProductRecom.show()
                     view.loadingRecom.gone()
@@ -185,6 +192,8 @@ class ProductRecommendationViewHolder(
             annotationList.addAll(list)
             diffResult.dispatchUpdatesTo(this)
         }
+
+        fun getSelectedChip() = annotationList.find { it.recommendationFilterChip.isActivated }?.recommendationFilterChip
     }
     interface AnnotationChipListener{
         fun onFilterAnnotationClicked(annotationChip: AnnotationChip, position: Int)

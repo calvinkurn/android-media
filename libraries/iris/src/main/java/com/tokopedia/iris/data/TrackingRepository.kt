@@ -179,10 +179,6 @@ class TrackingRepository(
                         "data" to request.take(ERROR_MAX_LENGTH).trim()))
                 break
             }
-            if (lastSuccessSent){
-                ServerLogger.log(Priority.P1, "IRIS", mapOf("type" to "successSendData",
-                        "data" to request.take(ERROR_MAX_LENGTH).trim()))
-            }
             counterLoop++
         }
         if (totalSentData == 0 && !lastSuccessSent) {
