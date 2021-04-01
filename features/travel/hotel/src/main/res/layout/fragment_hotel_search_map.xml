@@ -113,7 +113,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/hotel_search_map_bottom_sheet"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:background="@color/Unify_N0"
             android:elevation="@dimen/spacing_lvl2"
             app:layout_behavior="@string/bottom_sheet_behavior">
@@ -161,7 +161,7 @@
                 android:layout_marginTop="@dimen/spacing_lvl3"
                 android:clipToPadding="false"
                 android:paddingTop="@dimen/hotel_12dp"
-                android:paddingBottom="@dimen/hotel_12dp"
+                android:paddingBottom="@dimen/hotel_140dp"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/tvHotelSearchListTitle" />

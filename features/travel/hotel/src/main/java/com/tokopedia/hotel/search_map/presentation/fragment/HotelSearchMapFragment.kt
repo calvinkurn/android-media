@@ -32,9 +32,10 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
+import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHolder
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
-import com.tokopedia.cachemanager.PersistentCacheManager
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.common.travel.utils.TravelDateUtil
@@ -49,6 +50,7 @@ import com.tokopedia.hotel.search.data.model.FilterV2.Companion.FILTER_TYPE_SORT
 import com.tokopedia.hotel.search.data.model.params.ParamFilterV2
 import com.tokopedia.hotel.search.presentation.adapter.HotelSearchResultAdapter
 import com.tokopedia.hotel.search.presentation.adapter.PropertyAdapterTypeFactory
+import com.tokopedia.hotel.search.presentation.fragment.HotelSearchResultFragment
 import com.tokopedia.hotel.search.presentation.widget.HotelFilterBottomSheets
 import com.tokopedia.hotel.search.presentation.widget.SubmitFilterListener
 import com.tokopedia.hotel.search_map.data.HotelLoadingModel
@@ -68,7 +70,6 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.permission.PermissionCheckerHelper
 import kotlinx.android.synthetic.main.fragment_hotel_search_map.*
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 /**
@@ -88,6 +89,8 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
     lateinit var fusedLocationClient: FusedLocationProviderClient
     lateinit var permissionCheckerHelper: PermissionCheckerHelper
 
+    private lateinit var localCacheHandler: LocalCacheHandler
+
     private lateinit var adapterCardList: HotelSearchResultAdapter
 
     private lateinit var googleMap: GoogleMap
@@ -96,7 +99,6 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
     private var searchDestinationType = ""
     private var allMarker: ArrayList<Marker> = ArrayList()
     private var markerCounter: Int = INIT_MARKER_TAG
-    private var isInAnimation: Boolean = false
     private var cardListPosition: Int = SELECTED_POSITION_INIT
     private var hotelSearchModel: HotelSearchModel = HotelSearchModel()
     private var isFirstInitializeFilter = true
@@ -145,6 +147,8 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         activity?.let {
             (it as HotelSearchMapActivity).setSupportActionBar(headerHotelSearchMap)
         }
+
+        localCacheHandler = LocalCacheHandler(context, PREFERENCES_NAME)
 
         setCardListViewAdapter()
     }
@@ -277,7 +281,6 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        setupPersistentBottomSheet()
         initRecyclerViewMap()
         initFloatingButton()
         initLocationMap()
@@ -352,7 +355,13 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
             }
         }
         hideGetMyLocation()
+        setupPersistentBottomSheet()
         super.showLoading()
+
+        if (adapter.list.size > 0 && adapter.list[0] is LoadingModel) {
+            halfExpandBottomSheet()
+            hideSearchWithMap()
+        }
     }
 
     override fun hideLoading() {
@@ -426,7 +435,9 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
     }
 
     private fun setupPersistentBottomSheet() {
-        bottomSheetBehavior = BottomSheetBehavior.from<ConstraintLayout>(hotel_search_map_bottom_sheet)
+        if (!::bottomSheetBehavior.isInitialized) {
+            bottomSheetBehavior = BottomSheetBehavior.from<ConstraintLayout>(hotel_search_map_bottom_sheet)
+        }
         bottomSheetBehavior.isFitToContents = false
 
         val bottomSheetHeaderHeight = resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl7)
@@ -706,6 +717,8 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                 halfExpandBottomSheet()
             }
             hotelSearchMapViewModel.searchParam.page.plus(DEFAULT_INCREMENT_PAGE)
+
+            showSearchWithMap()
         } else if (adapter.data.isEmpty()) {
             hideCardListView()
             hideSearchWithMap()
@@ -746,8 +759,8 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
 
     private fun showCoachMark() {
         context?.let {
-            if (PersistentCacheManager.instance.get(KEY_SEARCH_MAP_COACHMARK, Boolean::class.java, false) != true) {
-                isInAnimation = true
+            val coachmarkShowed = localCacheHandler.getBoolean(HotelSearchResultFragment.SHOW_COACH_MARK_KEY, false)
+            if (!coachmarkShowed) {
                 val coachMarkItem = arrayListOf(
                         CoachMark2Item(
                                 invisibleViewMap,
@@ -778,11 +791,8 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                         }
                     }
                 })
-                coachmark.onFinishListener = {
-                    isInAnimation = false
-                    PersistentCacheManager.instance.put(KEY_SEARCH_MAP_COACHMARK, true, TimeUnit.DAYS.toMillis(DAYS_A_YEAR))
-                }
                 coachmark.showCoachMark(coachMarkItem, null, 0)
+                localCacheHandler.putBoolean(SHOW_COACH_MARK_KEY, true)
             }
         }
     }
@@ -1043,7 +1053,6 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
     }
 
     companion object {
-        private const val KEY_SEARCH_MAP_COACHMARK = "key_hotel_search_map_coachmark"
         private const val COACHMARK_LIST_STEP_POSITION = 1
         private const val COACHMARK_FILTER_STEP_POSITION = 2
         private const val DAYS_A_YEAR: Long = 365
@@ -1076,6 +1085,9 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         const val BUTTON_RADIUS_HIDE_VALUE: Float = -150f
 
         private const val MAPS_STREET_LEVEL_ZOOM: Float = 15f
+
+        private const val PREFERENCES_NAME = "hotel_search_map_preferences"
+        private const val SHOW_COACH_MARK_KEY = "hotel_search_map_show_coach_mark"
 
         fun createInstance(hotelSearchModel: HotelSearchModel, selectedParam: ParamFilterV2): HotelSearchMapFragment =
                 HotelSearchMapFragment().also {
