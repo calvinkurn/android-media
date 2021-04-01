@@ -162,7 +162,6 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                     showCollapsingHeader()
                     onSuccessGetResult(it.data)
                     if (!it.data.properties.isNullOrEmpty()) {
-                        cardListPosition = SELECTED_POSITION_INIT
                         changeMarkerState(cardListPosition)
                     } else {
                         hideLoader()
@@ -266,6 +265,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         tvHotelSearchListTitleLoader.visible()
         tvHotelSearchListTitle.gone()
 
+        cardListPosition = SELECTED_POSITION_INIT
         adapterCardList.clearAllElements()
         removeAllMarker()
 
