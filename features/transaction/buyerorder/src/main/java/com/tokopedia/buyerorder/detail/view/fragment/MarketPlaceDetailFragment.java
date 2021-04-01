@@ -917,7 +917,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                     if (getContext() != null) {
                         DialogUnify dialogUnify = new DialogUnify(getContext(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE);
                         View childView = LayoutInflater.from(getContext()).inflate(com.tokopedia.buyerorder.R.layout.dialog_seller_finish, null);
-                        TextView title = childView.findViewById(R.id.tv_title_dialog);
+                        Typography title = childView.findViewById(R.id.tv_title_dialog);
                         TextView desc = childView.findViewById(R.id.tv_desc_dialog);
 
                         title.setText(actionButton.getActionButtonPopUp().getTitle());
