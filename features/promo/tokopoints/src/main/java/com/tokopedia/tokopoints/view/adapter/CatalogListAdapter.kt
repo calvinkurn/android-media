@@ -19,6 +19,7 @@ import com.tokopedia.tokopoints.view.catalogdetail.CouponCatalogDetailsActivity.
 import com.tokopedia.tokopoints.view.model.CatalogsValueEntity
 import com.tokopedia.tokopoints.view.model.section.CountDownInfo
 import com.tokopedia.tokopoints.view.util.*
+import com.tokopedia.tokopoints.view.util.CommonConstant.Companion.HASH
 import com.tokopedia.tokopoints.view.util.CommonConstant.Companion.TIMER_RED_BACKGROUND_HEX
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import java.util.*
@@ -110,7 +111,7 @@ class CatalogListAdapter(private val list: ArrayList<Any>) : RecyclerView.Adapte
                         holder.pbQuota.progress = item.quota
                         upperText.append(item.upperTextDesc!![i])
                     } else { //exclusive case for handling font color of second index.
-                        upperText.append("<font color='#ff5722'>" + item.upperTextDesc!![i] + "</font>")
+                        upperText.append("<font color='${holder.pbQuota.context?.resources?.getColor(R.color.clr_ff5722)}'>" + item.upperTextDesc!![i] + "</font>")
                     }
                 } else {
                     upperText.append(item.upperTextDesc!![i]).append(" ")
@@ -169,7 +170,7 @@ class CatalogListAdapter(private val list: ArrayList<Any>) : RecyclerView.Adapte
         }
         var timerValue = countDownInfo.countdownUnix
         val timerFlagType = countDownInfo.backgroundColor
-        if (timerFlagType == TIMER_RED_BACKGROUND_HEX) {
+        if (timerFlagType == HASH + TIMER_RED_BACKGROUND_HEX) {
             holder.timerUnifySingle.timerVariant = TimerUnifySingle.VARIANT_MAIN
         } else {
             holder.timerUnifySingle.timerVariant = TimerUnifySingle.VARIANT_INFORMATIVE

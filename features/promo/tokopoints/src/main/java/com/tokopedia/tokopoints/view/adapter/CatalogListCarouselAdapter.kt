@@ -118,7 +118,7 @@ class CatalogListCarouselAdapter(var items: List<CatalogsValueEntity>,
                             upperText.append(item.upperTextDesc!![i])
                         } else {
                             //exclusive case for handling font color of second index.
-                            upperText.append("<font color='#ff5722'>" + item.upperTextDesc!![i] + "</font>")
+                            upperText.append("<font color='${holder.pbQuota.context?.resources?.getColor(R.color.clr_ff5722)}'>" + item.upperTextDesc!![i] + "</font>")
                         }
                     } else {
                         upperText.append(item.upperTextDesc!![i]).append(" ")
