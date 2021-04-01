@@ -37,22 +37,13 @@
                     app:tickerType="announcement" />
 
                 <include
-                    android:id="@+id/layout_occ_onboarding"
-                    layout="@layout/layout_occ_onboarding"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/ticker_osp" />
-
-                <include
                     android:id="@+id/layout_new_occ_onboarding"
                     layout="@layout/layout_occ_onboarding_new"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/layout_occ_onboarding" />
+                    app:layout_constraintTop_toBottomOf="@+id/ticker_osp" />
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/tv_header"
@@ -128,18 +119,6 @@
                     app:tickerType="announcement" />
 
                 <include
-                    android:id="@+id/preference_card"
-                    layout="@layout/card_order_preference"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_12"
-                    android:layout_marginBottom="@dimen/dp_16"
-                    android:visibility="gone"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/ticker_preference_info" />
-
-                <include
                     android:id="@+id/new_preference_card"
                     layout="@layout/card_order_preference_new"
                     android:layout_width="0dp"
@@ -149,7 +128,7 @@
                     android:visibility="gone"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/preference_card" />
+                    app:layout_constraintTop_toBottomOf="@+id/ticker_preference_info" />
 
                 <include
                     android:id="@+id/empty_preference_card"

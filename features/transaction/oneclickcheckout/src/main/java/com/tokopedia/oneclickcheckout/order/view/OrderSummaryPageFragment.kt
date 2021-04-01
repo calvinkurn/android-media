@@ -118,12 +118,6 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
 
     private val tickerOsp by lazy { view?.findViewById<Ticker>(R.id.ticker_osp) }
 
-    private val onboardingCard by lazy { view?.findViewById<View>(R.id.layout_occ_onboarding) }
-    private val btnOnboardingAction by lazy { view?.findViewById<Typography>(R.id.lbl_occ_onboarding_action) }
-    private val lblOnboardingMessage by lazy { view?.findViewById<Typography>(R.id.lbl_occ_onboarding_message) }
-    private val lblOnboardingHeader by lazy { view?.findViewById<Typography>(R.id.lbl_occ_onboarding_header) }
-    private val ivOnboarding by lazy { view?.findViewById<ImageUnify>(R.id.iv_occ_onboarding) }
-
     private val newOnboardingCard by lazy { view?.findViewById<View>(R.id.layout_new_occ_onboarding) }
     private val ivNewOnboarding by lazy { view?.findViewById<ImageUnify>(R.id.iv_new_occ_onboarding) }
     private val tvNewOnboardingMessage by lazy { view?.findViewById<Typography>(R.id.tv_new_occ_onboarding_message) }
@@ -133,7 +127,6 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
 
     private val tickerPreferenceInfo by lazy { view?.findViewById<Ticker>(R.id.ticker_preference_info) }
     private val emptyPreferenceCard by lazy { view?.findViewById<View>(R.id.empty_preference_card) }
-    private val preferenceCard by lazy { view?.findViewById<View>(R.id.preference_card) }
     private val newPreferenceCard by lazy { view?.findViewById<View>(R.id.new_preference_card) }
 
     private val btnPromoCheckout by lazy { view?.findViewById<ButtonPromoCheckoutView>(R.id.btn_promo_checkout) }
@@ -142,7 +135,6 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
     private val buttonAturPilihan by lazy { view?.findViewById<UnifyButton>(R.id.button_atur_pilihan) }
 
     private var orderProductCard: OrderProductCard? = null
-    private lateinit var orderPreferenceCard: OrderPreferenceCard
     private lateinit var newOrderPreferenceCard: NewOrderPreferenceCard
     private lateinit var orderInsuranceCard: OrderInsuranceCard
     private lateinit var orderTotalPaymentCard: OrderTotalPaymentCard
@@ -288,7 +280,6 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         swipeRefreshLayout?.isRefreshing = true
         orderProductCard = OrderProductCard(view, this, orderSummaryAnalytics)
         newOrderPreferenceCard = NewOrderPreferenceCard(view, getNewOrderPreferenceCardListener(), orderSummaryAnalytics)
-        orderPreferenceCard = OrderPreferenceCard(view, getOrderPreferenceCardListener(), orderSummaryAnalytics)
         orderInsuranceCard = OrderInsuranceCard(view, getOrderInsuranceCardListener(), orderSummaryAnalytics)
         orderTotalPaymentCard = OrderTotalPaymentCard(view, getOrderTotalPaymentCardListener())
         btnPromoCheckout?.margin = ButtonPromoCheckoutView.Margin.NO_BOTTOM
@@ -316,7 +307,6 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                                 it.data.preference.shipment.serviceId > 0 &&
                                 it.data.preference.payment.gatewayCode.isNotEmpty()) {
                             showPreferenceCard()
-                            orderPreferenceCard.setPreference(it.data)
                             newOrderPreferenceCard.setPreference(it.data, viewModel.revampData)
                         } else {
                             showEmptyPreferenceCard()
@@ -339,7 +329,6 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                                     it.data.preference.shipment.serviceId > 0 &&
                                     it.data.preference.payment.gatewayCode.isNotEmpty()) {
                                 showPreferenceCard()
-                                orderPreferenceCard.setPreference(it.data)
                                 newOrderPreferenceCard.setPreference(it.data, viewModel.revampData)
                             } else {
                                 showEmptyPreferenceCard()
@@ -360,7 +349,6 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         })
 
         viewModel.orderShipment.observe(viewLifecycleOwner, {
-            orderPreferenceCard.setShipment(it)
             newOrderPreferenceCard.setShipment(it)
             orderInsuranceCard.setupInsurance(it?.insuranceData, viewModel.orderProduct.productId.toString())
             if (it?.needPinpoint == true && orderPreference?.preference?.address != null) {
@@ -369,12 +357,11 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         })
 
         viewModel.orderPayment.observe(viewLifecycleOwner, {
-            orderPreferenceCard.setPayment(it)
             newOrderPreferenceCard.setPayment(it)
         })
 
         viewModel.orderTotal.observe(viewLifecycleOwner, {
-            orderTotalPaymentCard.setupPayment(it, viewModel.isNewFlow)
+            orderTotalPaymentCard.setupPayment(it)
         })
 
         viewModel.orderPromo.observe(viewLifecycleOwner, {
@@ -580,7 +567,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
             tvHeader2?.visible()
             tvHeader3?.gone()
         } else {
-            tvHeader2?.text = if (viewModel.isNewFlow) getString(R.string.lbl_osp_secondary_header) else getString(R.string.lbl_osp_secondary_header_intro)
+            tvHeader2?.text = getString(R.string.lbl_osp_secondary_header)
             val message = MethodChecker.fromHtml(preference.onboardingHeaderMessage)
             val infoButton = getString(R.string.lbl_osp_secondary_header_info)
             val spannableString = SpannableString("$message $infoButton")
@@ -598,70 +585,12 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         tickerPreferenceInfo?.setHtmlDescription(preference.message)
         tickerPreferenceInfo?.visibility = if (preference.message.isNotBlank()) View.VISIBLE else View.GONE
 
-        if (!viewModel.isNewFlow && orderPreference.onboarding.isShowOnboardingTicker) {
-            lblOnboardingHeader?.text = orderPreference.onboarding.onboardingTicker.title
-            lblOnboardingMessage?.text = orderPreference.onboarding.onboardingTicker.message
-            ivOnboarding?.setImageUrl(orderPreference.onboarding.onboardingTicker.image)
-            if (orderPreference.onboarding.onboardingTicker.showActionButton) {
-                btnOnboardingAction?.text = orderPreference.onboarding.onboardingTicker.actionText
-                btnOnboardingAction?.setOnClickListener {
-                    orderSummaryAnalytics.eventClickYukCobaLagiInOnboardingTicker()
-                    showOnboarding(orderPreference.onboarding)
-                }
-                btnOnboardingAction?.visible()
-            } else {
-                btnOnboardingAction?.gone()
-            }
-            onboardingCard?.visible()
-            newOnboardingCard?.gone()
-        } else if (viewModel.isNewFlow && orderPreference.onboarding.isShowOnboardingTicker) {
-            onboardingCard?.gone()
+        if (orderPreference.onboarding.isShowOnboardingTicker) {
             newOnboardingCard?.visible()
             ivNewOnboarding?.setImageUrl(orderPreference.onboarding.onboardingTicker.image)
             tvNewOnboardingMessage?.text = orderPreference.onboarding.onboardingTicker.message
         } else {
-            onboardingCard?.gone()
             newOnboardingCard?.gone()
-        }
-    }
-
-    private fun showOnboarding(onboarding: OccMainOnboarding) {
-        view?.let {
-            it.post {
-                val scrollview = it.findViewById<ScrollView>(R.id.nested_scroll_view)
-                val layoutPayment = it.findViewById<View>(R.id.layout_payment)
-                val coachMarkItems = ArrayList<CoachMarkItem>()
-                for (detailIndexed in onboarding.onboardingCoachMark.details.withIndex()) {
-                    val view = when (detailIndexed.index) {
-                        0 -> it.findViewById(R.id.preference_card)
-                        1 -> it.findViewById(R.id.iv_edit_preference)
-                        2 -> it.findViewById(R.id.layout_order_preference_shipping)
-                        3 -> layoutPayment
-                        else -> null
-                    }
-                    val color = context?.let { ctx ->
-                        ContextCompat.getColor(ctx, com.tokopedia.unifyprinciples.R.color.Unify_N0)
-                    } ?: com.tokopedia.unifyprinciples.R.color.Unify_N0
-                    coachMarkItems.add(CoachMarkItem(view, detailIndexed.value.title, detailIndexed.value.message, tintBackgroundColor = color))
-                }
-                val coachMark = CoachMarkBuilder().build()
-                coachMark.enableSkip = true
-                if (onboarding.onboardingCoachMark.skipButtonText.isNotEmpty()) {
-                    coachMark.setSkipText(onboarding.onboardingCoachMark.skipButtonText)
-                }
-                coachMark.setShowCaseStepListener(object : CoachMark.OnShowCaseStepListener {
-                    override fun onShowCaseGoTo(previousStep: Int, nextStep: Int, coachMarkItem: CoachMarkItem): Boolean {
-                        if (nextStep == 0) {
-                            scrollview.scrollTo(0, it.findViewById<View>(R.id.tv_header_2).top)
-                        } else if (nextStep == 3) {
-                            scrollview.scrollTo(0, layoutPayment.bottom)
-                        }
-                        return false
-                    }
-                })
-                coachMark.show(activity, COACH_MARK_TAG, coachMarkItems)
-                orderSummaryAnalytics.eventViewOnboardingTicker()
-            }
         }
     }
 
@@ -761,24 +690,14 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
 
     private fun forceShowOnboarding(onboarding: OccMainOnboarding?) {
         if (onboarding?.isForceShowCoachMark == true) {
-            if (viewModel.isNewFlow) {
-                showNewOnboarding(onboarding)
-            } else {
-                showOnboarding(onboarding)
-            }
+            showNewOnboarding(onboarding)
             viewModel.consumeForceShowOnboarding()
         }
     }
 
     private fun showPreferenceCard() {
         emptyPreferenceCard?.gone()
-        if (viewModel.isNewFlow) {
-            preferenceCard?.gone()
-            newPreferenceCard?.visible()
-        } else {
-            newPreferenceCard?.gone()
-            preferenceCard?.visible()
-        }
+        newPreferenceCard?.visible()
         orderTotalPaymentCard.setPaymentVisible(true)
         btnPromoCheckout?.visible()
     }
@@ -786,17 +705,12 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
     private fun showEmptyPreferenceCard() {
         imageEmptyProfile?.setImageUrl(EMPTY_PROFILE_IMAGE)
         emptyPreferenceCard?.visible()
-        preferenceCard?.gone()
         newPreferenceCard?.gone()
         orderTotalPaymentCard.setPaymentVisible(false)
         btnPromoCheckout?.gone()
         orderInsuranceCard.setGroupInsuranceVisible(false)
 
-        if (viewModel.isNewFlow) {
             buttonAturPilihan?.text = getString(R.string.lbl_add_new_occ_profile_name)
-        } else {
-            buttonAturPilihan?.text = getString(R.string.atur_pilihan)
-        }
 
         val addressState = viewModel.addressState.value
         if (addressState.state == AddressState.STATE_ADDRESS_ID_NOT_MATCH_ANY_OCC ||
@@ -805,11 +719,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         }
 
         buttonAturPilihan?.setOnClickListener {
-            if (viewModel.isNewFlow) {
                 orderSummaryAnalytics.eventClickTambahTemplateBeliLangsungOnOrderSummary(userSession.get().userId)
-            } else {
-                orderSummaryAnalytics.eventUserSetsFirstPreference(userSession.get().userId)
-            }
             val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PREFERENCE_EDIT).apply {
                 putExtra(PreferenceEditActivity.EXTRA_FROM_FLOW, PreferenceEditActivity.FROM_FLOW_OSP)
                 putExtra(PreferenceEditActivity.EXTRA_IS_EXTRA_PROFILE, false)
@@ -1104,132 +1014,22 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         }
     }
 
-    private fun getOrderPreferenceCardListener() = object : OrderPreferenceCard.OrderPreferenceCardListener {
-
-        override fun onChangePreferenceClicked() {
-            orderSummaryAnalytics.eventChangesProfile()
-            showPreferenceListBottomSheet()
-        }
-
-        override fun onCourierChange(shippingCourierViewModel: ShippingCourierUiModel) {
-            orderSummaryAnalytics.eventChooseCourierSelectionOSP(shippingCourierViewModel.productData.shipperId.toString())
-            viewModel.chooseCourier(shippingCourierViewModel)
-        }
-
-        override fun onDurationChange(selectedServiceId: Int, selectedShippingCourierUiModel: ShippingCourierUiModel, flagNeedToSetPinpoint: Boolean) {
-            orderSummaryAnalytics.eventClickSelectedDurationOption(selectedServiceId.toString(), userSession.get().userId)
-            viewModel.chooseDuration(selectedServiceId, selectedShippingCourierUiModel, flagNeedToSetPinpoint)
-        }
-
-        override fun onLogisticPromoClick(logisticPromoUiModel: LogisticPromoUiModel) {
-            orderSummaryAnalytics.eventChooseBboAsDuration()
-            viewModel.chooseLogisticPromo(logisticPromoUiModel)
-        }
-
-        override fun chooseCourier() {
-            orderSummaryAnalytics.eventChangeCourierOSP(viewModel.getCurrentShipperId().toString())
-            if (viewModel.orderTotal.value.buttonState != OccButtonState.LOADING) {
-                orderPreferenceCard.showCourierBottomSheet(this@OrderSummaryPageFragment)
-            }
-        }
-
-        override fun chooseDuration(isDurationError: Boolean) {
-            if (isDurationError) {
-                orderSummaryAnalytics.eventClickUbahWhenDurationError(userSession.get().userId)
-            }
-            if (viewModel.orderTotal.value.buttonState != OccButtonState.LOADING) {
-                orderPreferenceCard.showDurationBottomSheet(this@OrderSummaryPageFragment)
-            }
-        }
-
-        override fun onPreferenceEditClicked(preference: OrderPreference) {
-            val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PREFERENCE_EDIT).apply {
-                putExtra(PreferenceEditActivity.EXTRA_FROM_FLOW, PreferenceEditActivity.FROM_FLOW_OSP)
-                putExtra(PreferenceEditActivity.EXTRA_IS_EXTRA_PROFILE, false)
-                putExtra(PreferenceEditActivity.EXTRA_PREFERENCE_INDEX, preference.profileIndex)
-                putExtra(PreferenceEditActivity.EXTRA_PROFILE_ID, preference.preference.profileId)
-                putExtra(PreferenceEditActivity.EXTRA_ADDRESS_ID, preference.preference.address.addressId)
-                putExtra(PreferenceEditActivity.EXTRA_SHIPPING_ID, preference.preference.shipment.serviceId)
-                putExtra(PreferenceEditActivity.EXTRA_GATEWAY_CODE, preference.preference.payment.gatewayCode)
-                putExtra(PreferenceEditActivity.EXTRA_PAYMENT_PROFILE, viewModel.getPaymentProfile())
-                val orderCost = viewModel.orderTotal.value.orderCost
-                val priceWithoutPaymentFee = orderCost.totalPrice - orderCost.paymentFee
-                putExtra(PreferenceEditActivity.EXTRA_PAYMENT_AMOUNT, priceWithoutPaymentFee)
-                putExtra(PreferenceEditActivity.EXTRA_SHIPPING_PARAM, viewModel.generateShippingParam())
-                putParcelableArrayListExtra(PreferenceEditActivity.EXTRA_LIST_SHOP_SHIPMENT, ArrayList(viewModel.generateListShopShipment()))
-                putExtra(PreferenceEditActivity.EXTRA_IS_NEW_FLOW, viewModel.isNewFlow)
-                val addressState = viewModel.addressState.value.state
-                putExtra(PreferenceEditActivity.EXTRA_ADDRESS_STATE, addressState)
-            }
-            startActivityForResult(intent, REQUEST_EDIT_PREFERENCE)
-        }
-
-        override fun onInstallmentDetailClicked() {
-            if (viewModel.orderTotal.value.buttonState != OccButtonState.LOADING) {
-                orderPreferenceCard.showInstallmentDetailBottomSheet(this@OrderSummaryPageFragment)
-            }
-        }
-
-        override fun onInstallmentDetailChange(selectedInstallmentTerm: OrderPaymentInstallmentTerm) {
-            viewModel.chooseInstallment(selectedInstallmentTerm)
-        }
-
-        override fun onChangeCreditCardClicked(additionalData: OrderPaymentCreditCardAdditionalData) {
-            context?.let {
-                startActivityForResult(CreditCardPickerActivity.createIntent(it, additionalData), REQUEST_CODE_CREDIT_CARD)
-            }
-        }
-
-        override fun onOvoActivateClicked(callbackUrl: String) {
-            OvoActivationWebViewBottomSheet(ovoActivationUrl.get(), callbackUrl, object : OvoActivationWebViewBottomSheet.OvoActivationWebViewBottomSheetListener {
-                override fun onActivationResult(isSuccess: Boolean) {
-                    view?.let {
-                        it.post {
-                            if (isSuccess) {
-                                Toaster.build(it, getString(R.string.message_ovo_activation_success), actionText = getString(R.string.button_ok_message_ovo_activation)).show()
-                            } else {
-                                Toaster.build(it, getString(R.string.message_ovo_activation_failed), type = Toaster.TYPE_ERROR, actionText = getString(R.string.button_ok_message_ovo_activation)).show()
-                            }
-                            source = SOURCE_OTHERS
-                            refresh()
-                        }
-                    }
-                }
-            }).show(this@OrderSummaryPageFragment, userSession.get())
-        }
-
-        override fun onOvoTopUpClicked(callbackUrl: String, isHideDigital: Int, customerData: OrderPaymentOvoCustomerData) {
-            context?.let {
-                startActivityForResult(OvoTopUpWebViewActivity.createIntent(it, callbackUrl, isHideDigital, customerData), REQUEST_CODE_OVO_TOP_UP)
-            }
-        }
-    }
-
     fun showPreferenceListBottomSheet() {
         viewModel.updateCart()
         val profileId = viewModel.getCurrentProfileId()
         val updateCartParam = viewModel.generateUpdateCartParam()
         if (profileId > 0 && updateCartParam != null) {
             PreferenceListBottomSheet(
-                    isNewFlow = viewModel.isNewFlow,
                     paymentProfile = viewModel.getPaymentProfile(),
                     getPreferenceListUseCase = viewModel.getPreferenceListUseCase.get(),
                     listener = object : PreferenceListBottomSheet.PreferenceListBottomSheetListener {
                         override fun onChangePreference(preference: ProfilesItemModel) {
-                            if (viewModel.isNewFlow) {
                                 orderSummaryAnalytics.eventClickProfileOptionOnProfileList(preference.profileId.toString(), userSession.get().userId)
-                            } else {
-                                orderSummaryAnalytics.eventClickGunakanPilihanIniFromGantiPilihanOSP()
-                            }
                             viewModel.updatePreference(preference)
                         }
 
                         override fun onEditPreference(preference: ProfilesItemModel, position: Int, profileSize: Int) {
-                            if (viewModel.isNewFlow) {
                                 orderSummaryAnalytics.eventClickEditProfileOnProfileList(preference.profileId.toString(), userSession.get().userId)
-                            } else {
-                                orderSummaryAnalytics.eventClickGearLogoInPreferenceFromGantiPilihanOSP()
-                            }
                             val preferenceIndex = "${getString(R.string.lbl_summary_preference_option)} $position"
                             val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PREFERENCE_EDIT).apply {
                                 putExtra(PreferenceEditActivity.EXTRA_FROM_FLOW, PreferenceEditActivity.FROM_FLOW_OSP)
@@ -1254,11 +1054,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                         }
 
                         override fun onAddPreference(itemCount: Int) {
-                            if (viewModel.isNewFlow) {
                                 orderSummaryAnalytics.eventClickTambahTemplateBeliLangsungOnProfileList(userSession.get().userId)
-                            } else {
-                                orderSummaryAnalytics.eventAddPreferensiFromOSP()
-                            }
                             val preferenceIndex = "${getString(R.string.preference_number_summary)} ${itemCount + 1}"
                             val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PREFERENCE_EDIT).apply {
                                 putExtra(PreferenceEditActivity.EXTRA_FROM_FLOW, PreferenceEditActivity.FROM_FLOW_OSP)
@@ -1375,7 +1171,8 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
             }
             if (atcError.throwable is AkamaiErrorException) {
                 view?.let {
-                    Toaster.build(it, atcError.throwable.message ?: DEFAULT_LOCAL_ERROR_MESSAGE, type = Toaster.TYPE_ERROR).show()
+                    Toaster.build(it, atcError.throwable.message
+                            ?: DEFAULT_LOCAL_ERROR_MESSAGE, type = Toaster.TYPE_ERROR).show()
                 }
             }
         } else {

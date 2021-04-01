@@ -10,10 +10,7 @@ class PreferenceListAdapter(private val listener: PreferenceListAdapterListener,
 
     private var list: ArrayList<ProfilesItemModel> = ArrayList()
 
-    private var isNewLayout: Boolean = false
-
-    fun submitList(newList: List<ProfilesItemModel>?, isNewLayout: Boolean) {
-        this.isNewLayout = isNewLayout
+    fun submitList(newList: List<ProfilesItemModel>?) {
         list.clear()
         if (newList != null) {
             list.addAll(newList)
@@ -50,9 +47,6 @@ class PreferenceListAdapter(private val listener: PreferenceListAdapterListener,
     }
 
     override fun getItemViewType(position: Int): Int {
-        if (!isNewLayout) {
-            return PreferenceListViewHolder.LAYOUT
-        }
         val mainProfile = list[position].status == MAIN_PROFILE_STATUS
         return if (mainProfile) NewMainPreferenceListViewHolder.LAYOUT else NewPreferenceListViewHolder.LAYOUT
     }

@@ -85,7 +85,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
 
     var revampData: OccRevampData = OccRevampData()
     val isNewFlow
-        get() = revampData.isEnable
+        get() = true
 
     fun getCurrentProfileId(): Int {
         return _orderPreference.preference.profileId
@@ -174,7 +174,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
 
     fun getRates() {
         launch(executorDispatchers.main) {
-            val result = logisticProcessor.getRates(orderCart, _orderPreference, _orderShipment, generateListShopShipment(), isNewFlow)
+            val result = logisticProcessor.getRates(orderCart, _orderPreference, _orderShipment, generateListShopShipment())
             if (result.clearOldPromoCode.isNotEmpty()) {
                 clearOldLogisticPromo(result.clearOldPromoCode)
             }
@@ -234,7 +234,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             orderPromo.value = orderPromo.value.copy(state = OccButtonState.LOADING)
             val (isApplied, resultValidateUse, newGlobalEvent) = promoProcessor.validateUseLogisticPromo(generateValidateUsePromoRequestWithBbo(logisticPromoUiModel, oldCode), logisticPromoUiModel.promoCode)
             if (isApplied && resultValidateUse != null) {
-                val (newShipment, _) = logisticProcessor.onApplyBbo(shipping, logisticPromoUiModel, isNewFlow)
+                val (newShipment, _) = logisticProcessor.onApplyBbo(shipping, logisticPromoUiModel)
                 if (newShipment != null) {
                     _orderShipment = newShipment
                     orderShipment.value = _orderShipment
@@ -333,7 +333,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                 globalEvent.value = OccGlobalEvent.Loading
                 val (isApplied, resultValidateUse, newGlobalEvent) = promoProcessor.validateUseLogisticPromo(generateValidateUsePromoRequestWithBbo(logisticPromoUiModel), logisticPromoUiModel.promoCode)
                 if (isApplied && resultValidateUse != null) {
-                    val (newShipment, newEvent) = logisticProcessor.onApplyBbo(shipping, logisticPromoUiModel, isNewFlow)
+                    val (newShipment, newEvent) = logisticProcessor.onApplyBbo(shipping, logisticPromoUiModel)
                     if (newShipment != null) {
                         _orderShipment = newShipment
                         orderShipment.value = _orderShipment
@@ -596,7 +596,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         launch(executorDispatchers.main) {
             val (newOrderPayment, newOrderTotal) = calculator.calculateTotal(orderCart, _orderPreference,
                     _orderShipment, validateUsePromoRevampUiModel, _orderPayment, orderTotal.value,
-                    forceButtonState, isNewFlow, orderPromo.value)
+                    forceButtonState, orderPromo.value)
             _orderPayment = newOrderPayment
             orderPayment.value = _orderPayment
             orderTotal.value = newOrderTotal
@@ -741,9 +741,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         if (onboarding.isForceShowCoachMark) {
             val preference = _orderPreference.preference
             if (preference.shipment.serviceId > 0) {
-                if (isNewFlow && _orderShipment.isValid()) {
-                    forceShowOnboarding(onboarding)
-                } else if (!isNewFlow) {
+                if (_orderShipment.isValid()) {
                     forceShowOnboarding(onboarding)
                 }
             } else {

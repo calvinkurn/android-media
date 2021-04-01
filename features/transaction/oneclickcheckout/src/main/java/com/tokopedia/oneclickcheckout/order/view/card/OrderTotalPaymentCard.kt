@@ -29,12 +29,12 @@ class OrderTotalPaymentCard(private val view: View, private val listener: OrderT
         layoutPayment?.visibility = if (isVisible) View.VISIBLE else View.GONE
     }
 
-    fun setupPayment(orderTotal: OrderTotal, isNewFlow: Boolean) {
+    fun setupPayment(orderTotal: OrderTotal) {
         setupPaymentError(orderTotal.paymentErrorMessage)
-        setupButtonBayar(orderTotal, isNewFlow)
+        setupButtonBayar(orderTotal)
     }
 
-    private fun setupButtonBayar(orderTotal: OrderTotal, isNewFlow: Boolean) {
+    private fun setupButtonBayar(orderTotal: OrderTotal) {
         view.context?.let { context ->
             btnPay?.apply {
                 when (orderTotal.buttonType) {
@@ -46,21 +46,13 @@ class OrderTotalPaymentCard(private val view: View, private val listener: OrderT
                                 layoutParams?.height = ViewGroup.LayoutParams.WRAP_CONTENT
                                 isEnabled = true
                                 isLoading = false
-                                if (isNewFlow) {
-                                    setText(R.string.change_payment_method)
-                                } else {
-                                    setText(com.tokopedia.purchase_platform.common.R.string.label_choose_payment)
-                                }
+                                setText(R.string.change_payment_method)
                             }
                             OccButtonState.DISABLE -> {
                                 layoutParams?.height = ViewGroup.LayoutParams.WRAP_CONTENT
                                 isEnabled = false
                                 isLoading = false
-                                if (isNewFlow) {
-                                    setText(R.string.change_payment_method)
-                                } else {
-                                    setText(com.tokopedia.purchase_platform.common.R.string.label_choose_payment)
-                                }
+                                setText(R.string.change_payment_method)
                             }
                             else -> {
                                 layoutParams?.width = Utils.convertDpToPixel(BUTTON_CHOOSE_PAYMENT_WIDTH, context)
