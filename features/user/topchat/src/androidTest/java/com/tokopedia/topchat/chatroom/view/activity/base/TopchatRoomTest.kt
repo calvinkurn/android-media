@@ -114,7 +114,7 @@ abstract class TopchatRoomTest {
         chatComponentStub.inject(this)
     }
 
-    private fun setupResponse() {
+    protected open fun setupResponse() {
         firstPageChatAsBuyer = AndroidFileUtil.parse(
                 "success_get_chat_first_page_as_buyer.json",
                 GetExistingChatPojo::class.java

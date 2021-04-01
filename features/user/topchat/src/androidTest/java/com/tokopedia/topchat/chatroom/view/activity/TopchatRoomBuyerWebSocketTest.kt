@@ -8,8 +8,8 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import com.tokopedia.topchat.AndroidFileUtil
 import com.tokopedia.topchat.R
-import com.tokopedia.topchat.action.RecyclerViewChildActions.Companion.atPositionOnView
 import com.tokopedia.topchat.chatroom.view.activity.base.TopchatRoomTest
+import com.tokopedia.topchat.matchers.withRecyclerView
 import com.tokopedia.topchat.stub.chatroom.view.presenter.TopChatRoomPresenterStub
 import com.tokopedia.websocket.WebSocketResponse
 import org.junit.Test
@@ -43,11 +43,9 @@ class TopchatRoomBuyerWebSocketTest : TopchatRoomTest() {
         waitForIt(RV_DELAY)
 
         // Then
-        onView(withId(R.id.recycler_view)).check(
-                matches(
-                        atPositionOnView(0, withText(myMsg), R.id.tvMessage)
-                )
-        )
+        onView(withRecyclerView(R.id.recycler_view).atPositionOnView(
+                0, R.id.tvMessage
+        )).check(matches(withText(myMsg)))
     }
 
 }
