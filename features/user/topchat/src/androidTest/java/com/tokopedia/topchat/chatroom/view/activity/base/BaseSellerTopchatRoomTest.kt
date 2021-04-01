@@ -5,6 +5,7 @@ import android.app.Instrumentation
 import android.content.Intent
 import android.view.View
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents.intending
 import androidx.test.espresso.intent.matcher.IntentMatchers.anyIntent
@@ -104,5 +105,16 @@ open class BaseSellerTopchatRoomTest : TopchatRoomTest() {
         }
         attachment.attributes = gson.toJson(product)
         return this
+    }
+
+    protected fun clickChangeStockBtn(
+            recyclerViewId: Int,
+            atPosition: Int
+    ) {
+        onView(
+                withRecyclerView(recyclerViewId).atPositionOnView(
+                        atPosition, R.id.btn_update_stock
+                )
+        ).perform(ViewActions.click())
     }
 }

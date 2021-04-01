@@ -108,11 +108,7 @@ class TopchatRoomSellerProductAttachmentTest : BaseSellerTopchatRoomTest() {
         inflateTestFragment()
 
         // When
-        onView(
-                withRecyclerView(R.id.recycler_view).atPositionOnView(
-                        1, R.id.btn_update_stock
-                )
-        ).perform(click())
+        clickChangeStockBtn(R.id.recycler_view, 1)
 
         // Then
         assertStockCountVisibilityAt(R.id.recycler_view, 1, isDisplayed())
@@ -131,11 +127,7 @@ class TopchatRoomSellerProductAttachmentTest : BaseSellerTopchatRoomTest() {
         inflateTestFragment()
 
         // When
-        onView(
-                withRecyclerView(R.id.recycler_view).atPositionOnView(
-                        1, R.id.btn_update_stock
-                )
-        ).perform(click())
+        clickChangeStockBtn(R.id.recycler_view, 1)
 
         // Then
         onView(
@@ -164,11 +156,7 @@ class TopchatRoomSellerProductAttachmentTest : BaseSellerTopchatRoomTest() {
         inflateTestFragment()
 
         // When
-        onView(
-                withRecyclerView(R.id.rv_product).atPositionOnView(
-                        0, R.id.btn_update_stock
-                )
-        ).perform(click())
+        clickChangeStockBtn(R.id.rv_product, 0)
 
         // Then
         assertStockCountVisibilityAt(R.id.rv_product, 0, isDisplayed())
@@ -187,11 +175,7 @@ class TopchatRoomSellerProductAttachmentTest : BaseSellerTopchatRoomTest() {
         inflateTestFragment()
 
         // When
-        onView(
-                withRecyclerView(R.id.rv_product_carousel).atPositionOnView(
-                        0, R.id.btn_update_stock
-                )
-        ).perform(click())
+        clickChangeStockBtn(R.id.rv_product_carousel, 0)
 
         // Then
         assertStockCountVisibilityAt(R.id.rv_product_carousel, 0, isDisplayed())
