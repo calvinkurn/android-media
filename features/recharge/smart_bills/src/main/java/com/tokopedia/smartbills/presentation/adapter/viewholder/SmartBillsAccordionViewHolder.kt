@@ -25,8 +25,11 @@ class SmartBillsAccordionViewHolder(view: View,
                 PAID_TYPE ->  getAccordionwithPaid(itemView, element, checkableListener, detailListener)
                 else -> getAccordionwithAction(itemView, element, checkableListener, detailListener)
             }
-
-            accordion_smart_bills.addGroup(addAccordionData(view, element))
+            accordion_smart_bills.apply {
+                accordionData.clear()
+                removeAllViews()
+                addGroup(addAccordionData(view, element))
+            }
         }
     }
 

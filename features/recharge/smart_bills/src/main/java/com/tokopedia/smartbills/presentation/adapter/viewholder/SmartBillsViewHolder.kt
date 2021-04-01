@@ -2,7 +2,6 @@ package com.tokopedia.smartbills.presentation.adapter.viewholder
 
 import android.content.Context
 import android.view.View
-import android.view.ViewGroup
 import android.widget.CompoundButton
 import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
@@ -19,6 +18,7 @@ import com.tokopedia.smartbills.util.RechargeSmartBillsAccordionView.disableView
 import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.view_smart_bills_item.view.*
 
+
 /**
  * @author by resakemal on 17/05/20
  */
@@ -27,8 +27,7 @@ class SmartBillsViewHolder(val view: View,
                            checkableListener: CheckableInteractionListener,
                            private val detailListener: DetailListener,
                            private val isAccordion: Boolean = false
-) :
-        BaseCheckableViewHolder<RechargeBills>(view, checkableListener) {
+) : BaseCheckableViewHolder<RechargeBills>(view, checkableListener) {
 
     companion object {
         @LayoutRes
