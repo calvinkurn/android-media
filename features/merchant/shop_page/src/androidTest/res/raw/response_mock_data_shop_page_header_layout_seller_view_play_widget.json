@@ -1,0 +1,195 @@
+[
+  {
+    "data": {
+      "ShopPageGetHeaderLayout": {
+        "widgets": [
+          {
+            "component": [
+              {
+                "data": {
+                  "__typename": "ImageOnly",
+                  "image": "https://images.tokopedia.net/img/cache/215-square/shops-1/2020/4/9/3418893/3418893_d26c2fbe-cc43-459f-bd10-b67829a45e51.png",
+                  "imageLink": "",
+                  "isBottomSheet": false
+                },
+                "name": "shop_logo",
+                "type": "image_only"
+              },
+              {
+                "data": {
+                  "__typename": "BadgeTextValue",
+                  "ctaIcon": "https://images.tokopedia.net/img/chevron_down.png",
+                  "ctaLink": "",
+                  "ctaText": "",
+                  "text": [
+                    {
+                      "icon": "https://images.tokopedia.net/img/official_store/badge_os.png",
+                      "isBottomSheet": false,
+                      "textHtml": "Dettol Official GGZ",
+                      "textLink": "tokopedia://shop/3418893/info"
+                    },
+                    {
+                      "icon": "",
+                      "isBottomSheet": false,
+                      "textHtml": "<span style=\"color:#31353B;\">Online <strong>2 menit lalu</strong></span><b> • </b><span style=\"color:#31353B;\">Kota Tangerang Selatan</span>",
+                      "textLink": ""
+                    }
+                  ]
+                },
+                "name": "shop_name",
+                "type": "badge_text_value"
+              }
+            ],
+            "name": "shop_basic_info",
+            "type": "shop_basic_info",
+            "widgetID": 1
+          },
+          {
+            "component": [
+              {
+                "data": {
+                  "__typename": "BadgeTextValue",
+                  "ctaIcon": "",
+                  "ctaLink": "",
+                  "ctaText": "",
+                  "text": [
+                    {
+                      "icon": "https://images.tokopedia.net/img/autocomplete/rating.png",
+                      "isBottomSheet": false,
+                      "textHtml": "<b>4.9</b>",
+                      "textLink": "tokopedia://shop/3418893/review"
+                    },
+                    {
+                      "icon": "",
+                      "isBottomSheet": false,
+                      "textHtml": "Rating toko",
+                      "textLink": ""
+                    }
+                  ]
+                },
+                "name": "shop_rating",
+                "type": "badge_text_value"
+              },
+              {
+                "data": {
+                  "__typename": "BadgeTextValue",
+                  "ctaIcon": "",
+                  "ctaLink": "",
+                  "ctaText": "",
+                  "text": [
+                    {
+                      "icon": "",
+                      "isBottomSheet": false,
+                      "textHtml": "<b>± 3 Jam</b>",
+                      "textLink": ""
+                    },
+                    {
+                      "icon": "",
+                      "isBottomSheet": false,
+                      "textHtml": "Pesanan diproses",
+                      "textLink": ""
+                    }
+                  ]
+                },
+                "name": "shop_handling",
+                "type": "badge_text_value"
+              },
+              {
+                "data": {
+                  "__typename": "ImageOnly",
+                  "image": "https://ecs7.tokopedia.net/img/autocomplete/bebas%20ongkir%20icon.png",
+                  "imageLink": "",
+                  "isBottomSheet": false
+                },
+                "name": "bebas_ongkir",
+                "type": "image_only"
+              },
+              {
+                "data": {
+                  "__typename": "BadgeTextValue",
+                  "ctaIcon": "",
+                  "ctaLink": "",
+                  "ctaText": "",
+                  "text": [
+                    {
+                      "icon": "",
+                      "isBottomSheet": false,
+                      "textHtml": "<b>09:00-17:00</b>",
+                      "textLink": ""
+                    },
+                    {
+                      "icon": "",
+                      "isBottomSheet": false,
+                      "textHtml": "Jam operasi toko",
+                      "textLink": ""
+                    }
+                  ]
+                },
+                "name": "shop_operational_hour",
+                "type": "badge_text_value"
+              },
+              {
+                "data": {
+                  "__typename": "BadgeTextValue",
+                  "ctaIcon": "",
+                  "ctaLink": "",
+                  "ctaText": "",
+                  "text": [
+                    {
+                      "icon": "",
+                      "isBottomSheet": false,
+                      "textHtml": "<b>75 rb</b>",
+                      "textLink": "tokopedia://shop/3418893/follower"
+                    },
+                    {
+                      "icon": "",
+                      "isBottomSheet": false,
+                      "textHtml": "Follower",
+                      "textLink": ""
+                    }
+                  ]
+                },
+                "name": "shop_total_follower",
+                "type": "badge_text_value"
+              }
+            ],
+            "name": "shop_performance",
+            "type": "shop_performance",
+            "widgetID": 2
+          },
+          {
+            "component": [
+              {
+                "data": {
+                  "__typename": "ButtonComponent",
+                  "buttonType": "",
+                  "icon": "",
+                  "isBottomSheet": false,
+                  "label": "Chat",
+                  "link": ""
+                },
+                "name": "chat",
+                "type": "button"
+              },
+              {
+                "data": {
+                  "__typename": "ButtonComponent",
+                  "buttonType": "",
+                  "icon": "",
+                  "isBottomSheet": false,
+                  "label": "",
+                  "link": ""
+                },
+                "name": "follow_member",
+                "type": "button"
+              }
+            ],
+            "name": "action_button",
+            "type": "action_button",
+            "widgetID": 3
+          }
+        ]
+      }
+    }
+  }
+]

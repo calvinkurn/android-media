@@ -87,9 +87,11 @@
     <string name="coachmark_title_setting">Ubah pengaturan dan cek info lainnya</string>
     <string name="coachmark_desc_setting">Mau atur akun dan aplikasi sesuai seleramu atau lihat info tentang Tokopedia? Lewat sini aja!</string>
 
-    <string name="new_home_account_finance_failed_config_title">Gagal memuat transaksi</string>
-    <string name="new_home_account_finance_failed_config_desc">Klik untuk coba lagi.</string>
+    <string name="new_home_account_finance_failed_config_title">Konten gagal ditampilkan</string>
+    <string name="new_home_account_finance_failed_config_desc">Klik ikon di samping buat coba lagi.</string>
 
-    <string name="new_home_account_local_load_title">Gagal memuat menu ini</string>
-    <string name="new_home_account_local_load_desc">Klik untuk coba lagi.</string>
+    <string name="new_home_account_local_load_title">Konten gagal ditampilkan</string>
+    <string name="new_home_account_local_load_desc">Klik ikon di samping buat coba lagi.</string>
+
+    <string name="default_member_title">Rewards</string>
 </resources>

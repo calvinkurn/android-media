@@ -330,8 +330,8 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     private var bottomSheetIsShowing = false
     private var coachMarkIsShowing = false
     private var useNewInbox = false
-    private val bannerCarouselCallback = BannerComponentCallback(context, this)
     private var coachmark: CoachMark2? = null
+    private var bannerCarouselCallback: BannerComponentCallback? = null
 
     private lateinit var playWidgetCoordinator: PlayWidgetCoordinator
     private var chooseAddressWidgetInitialized: Boolean = false
@@ -1096,7 +1096,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         getHomeViewModel().isNeedRefresh.observe(viewLifecycleOwner, Observer { data: Event<Boolean> ->
             val isNeedRefresh = data.peekContent()
             if (isNeedRefresh) {
-                bannerCarouselCallback.resetImpression()
+                bannerCarouselCallback?.resetImpression()
             }
         })
         getHomeViewModel().setRollanceNavigationType(AbTestPlatform.NAVIGATION_VARIANT_REVAMP)
@@ -1431,6 +1431,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         layoutManager = LinearLayoutManager(context)
         homeRecyclerView?.layoutManager = layoutManager
         setupPlayWidgetCoordinator()
+        bannerCarouselCallback = BannerComponentCallback(context, this)
         val adapterFactory = HomeAdapterFactory(
                 this,
                 this,
@@ -1453,7 +1454,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                 RechargeBUWidgetCallback(context, this),
                 bannerCarouselCallback,
                 DynamicIconComponentCallback(context, this),
-                Lego6AutoBannerComponentCallback(context, this)
+                Lego6AutoBannerComponentCallback(context, this),
         )
         val asyncDifferConfig = AsyncDifferConfig.Builder(HomeVisitableDiffUtil())
                 .setBackgroundThreadExecutor(Executors.newSingleThreadExecutor())
@@ -1683,7 +1684,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
     override fun onRefresh() { //on refresh most likely we already lay out many view, then we can reduce
 //animation to keep our performance
-        bannerCarouselCallback.resetImpression()
+        bannerCarouselCallback?.resetImpression()
         resetFeedState()
         removeNetworkError()
         if (this::viewModel.isInitialized) {

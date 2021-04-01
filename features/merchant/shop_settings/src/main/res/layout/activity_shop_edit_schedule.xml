@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -11,47 +10,13 @@
     android:focusableInTouchMode="true"
     android:orientation="vertical">
 
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar"
+    <com.tokopedia.header.HeaderUnify
+        android:id="@+id/header"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:theme="?toolbarTheme"
-        app:contentInsetLeft="0dp"
-        app:contentInsetStart="0dp"
-        android:background="@android:color/transparent"
-        app:contentInsetStartWithNavigation="0dp"
-        app:subtitleTextAppearance="?subtitleTextAppearance"
-        app:titleTextAppearance="?titleTextAppearance"
-        tools:targetApi="lollipop">
+        android:layout_height="@dimen/dp_64"
+        app:unify_header_action_text="@string/label_save"/>
 
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tvSave"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end"
-            android:layout_marginEnd="@dimen/dp_14"
-            android:background="?attr/selectableItemBackground"
-            android:clickable="true"
-            android:focusable="true"
-            android:paddingBottom="@dimen/dp_8"
-            android:paddingLeft="@dimen/dp_8"
-            android:paddingRight="@dimen/dp_8"
-            android:paddingTop="@dimen/dp_8"
-            android:text="@string/label_save"
-            android:textColor="@color/g_500"
-            app:typographyType="body_1"
-            app:typographyWeight="reguler"
-            android:visibility="gone"
-            tools:visibility="visible" />
-    </androidx.appcompat.widget.Toolbar>
-
-    <View
-        android:id="@+id/shadow"
-        android:layout_width="match_parent"
-        android:layout_height="5dp"
-        android:background="@drawable/bg_shadow" />
-
-    <com.tokopedia.shop.settings.common.widget.ImageLabelView
+    <com.tokopedia.shop.settings.common.view.customview.ImageLabelView
         android:id="@+id/labelStartClose"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -59,7 +24,7 @@
         app:ilv_drawable="@drawable/ic_calendar_grey"
         app:ilv_title="@string/date_start_shop_close" />
 
-    <com.tokopedia.shop.settings.common.widget.ImageLabelView
+    <com.tokopedia.shop.settings.common.view.customview.ImageLabelView
         android:id="@+id/labelEndClose"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -74,14 +39,15 @@
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_16"
+        android:theme="@style/TextDarkMode"
         app:text_field_input_type="text"
         app:text_field_label="@string/shop_close_note"
         app:text_field_counter="@integer/max_slogan_char"/>
 
     <com.tokopedia.unifyprinciples.Typography
-        android:textColor="@color/font_black_disabled_38"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:textColor="@color/Unify_N700_32"
         app:typographyType="body_2"
         app:typographyWeight="reguler"
         android:layout_margin="@dimen/dp_16"
