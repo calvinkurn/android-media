@@ -72,20 +72,6 @@
       }],
       "eventLabel": "{{.*}}"
     },
-    {
-      "eventCategory": "{{.*}}",
-      "event": "select_content",
-      "eventAction": "{{click - shop - all brand list - search result - login|click - shop - all brand list - search result - non login}}",
-      "sessionIris" : "{{.*}}",
-      "promotions": [{
-        "creative_name": "{{.*}}",
-        "creative_slot": "{{.*}}",
-        "item_id": "{{.*}}",
-        "item_name": "{{.*}}",
-        "creative_url": "{{.*}}"
-      }],
-      "eventLabel": "{{.*}}"
-    },
 
     {
       "eventCategory": "{{.*}}",

@@ -24,6 +24,7 @@ import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import org.hamcrest.CoreMatchers
 import org.hamcrest.MatcherAssert
+import org.hamcrest.Matchers
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -138,7 +139,13 @@ class BrandListPageCassava {
                 CommonActions.clickOnEachItemRecyclerView(viewHolder.itemView, R.id.rv_new_brand, 0)
             }
             is AllBrandGroupHeaderViewHolder -> {
-                CommonActions.clickOnEachItemRecyclerView(viewHolder.itemView, R.id.rv_groups_chip, 0)
+                val childRecyclerView: RecyclerView = viewHolder.itemView.findViewById(R.id.rv_groups_chip)
+                var childItemCount = childRecyclerView.adapter!!.itemCount
+                val tempStoreDesc = childRecyclerView.contentDescription
+                childRecyclerView.contentDescription = CommonActions.UNDER_TEST_TAG
+                Espresso.onView(Matchers.allOf(withId(R.id.rv_groups_chip), ViewMatchers.withContentDescription(CommonActions.UNDER_TEST_TAG)))
+                        .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(2, click()))
+                childRecyclerView.contentDescription = tempStoreDesc
             }
             is AllBrandViewHolder -> {
                 Espresso.onView(CoreMatchers.allOf(ViewMatchers.isDisplayed(), withId(R.id.recycler_view)))
