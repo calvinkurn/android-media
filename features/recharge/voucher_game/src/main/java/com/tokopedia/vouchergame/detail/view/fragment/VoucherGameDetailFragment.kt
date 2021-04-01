@@ -37,6 +37,7 @@ import com.tokopedia.common.topupbills.widget.TopupBillsCheckoutWidget
 import com.tokopedia.common.topupbills.widget.TopupBillsInputDropdownWidget
 import com.tokopedia.common.topupbills.widget.TopupBillsInputDropdownWidget.Companion.SHOW_KEYBOARD_DELAY
 import com.tokopedia.common.topupbills.widget.TopupBillsInputFieldWidget
+import com.tokopedia.common_digital.atc.DigitalAddToCartViewModel
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam.EXTRA_PARAM_VOUCHER_GAME
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -76,6 +77,8 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     lateinit var voucherGameViewModel: VoucherGameDetailViewModel
+
+    private val viewModelFragmentProvider by lazy { ViewModelProvider(this, viewModelFactory) }
 
     lateinit var adapter: VoucherGameDetailAdapter
 
@@ -258,6 +261,10 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
 
     override fun onLoadingMenuDetail(showLoading: Boolean) {
         //do nothing
+    }
+
+    override fun onLoadingAtc(showLoading: Boolean) {
+        checkout_view.onBuyButtonLoading(showLoading)
     }
 
     override fun onCatalogPluginDataError(error: Throwable) {
@@ -626,6 +633,10 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
 
     override fun getCheckoutView(): TopupBillsCheckoutWidget? {
         return checkout_view
+    }
+
+    override fun initAddToCartViewModel() {
+        addToCartViewModel = viewModelFragmentProvider.get(DigitalAddToCartViewModel::class.java)
     }
 
     override fun onClickNextBuyButton() {

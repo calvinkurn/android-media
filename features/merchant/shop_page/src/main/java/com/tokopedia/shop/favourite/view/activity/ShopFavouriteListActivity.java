@@ -14,6 +14,8 @@ import com.tokopedia.shop.common.constant.ShopParamConstant;
 import com.tokopedia.shop.common.di.component.ShopComponent;
 import com.tokopedia.shop.favourite.view.fragment.ShopFavouriteListFragment;
 
+import java.util.List;
+
 /**
  * Created by normansyahputa on 2/8/18.
  */
@@ -31,6 +33,12 @@ public class ShopFavouriteListActivity extends BaseSimpleActivity implements Has
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         shopId = getIntent().getStringExtra(ShopParamConstant.EXTRA_SHOP_ID);
+        if (shopId == null) {
+            List<String> pathSegments = getIntent().getData().getPathSegments();
+            if (pathSegments.size() > 1) {
+                shopId = pathSegments.get(1);
+            }
+        }
         super.onCreate(savedInstanceState);
         toolbar.setTitleTextColor(MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N700_96));
         toolbar.setBackground(new ColorDrawable(

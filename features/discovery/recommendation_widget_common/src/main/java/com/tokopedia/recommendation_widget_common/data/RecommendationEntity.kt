@@ -6,143 +6,151 @@ import com.google.gson.annotations.SerializedName
  * Created by devara fikry on 16/04/19.
  * Credit errysuprayogi
  */
-class RecommendationEntity {
+data class RecommendationEntity (
+        @SerializedName("productRecommendationWidget")
+        val productRecommendationWidget: ProductRecommendationWidget = ProductRecommendationWidget()
+){
 
-    @SerializedName("productRecommendationWidget")
-    var productRecommendationWidget: ProductRecommendationWidget? = ProductRecommendationWidget()
-
-    class ProductRecommendationWidget {
+    data class ProductRecommendationWidget (
         @SerializedName("data")
-        var data: List<RecomendationData>? = listOf()
-    }
+        val data: List<RecommendationData> = listOf()
+    )
 
-    class Pagination {
+    class Pagination(
         @SerializedName("currentPage")
-        var currentPage: Int = 0
+        val currentPage: Int = 0,
         @SerializedName("nextPage")
-        var nextPage: Int = 0
+        val nextPage: Int = 0,
         @SerializedName("prevPage")
-        var prevPage: Int = 0
+        val prevPage: Int = 0,
         @SerializedName("hasNext")
-        var hasNext: Boolean = false
-    }
+        val hasNext: Boolean = false
+    )
 
     class Recommendation {
-
         @SerializedName("id")
-        var id: Int = 0
+        val id: Long = 0
         @SerializedName("name")
-        var name: String? = ""
+        val name: String = ""
         @SerializedName("categoryBreadcrumbs")
-        var categoryBreadcrumbs: String? = ""
+        val categoryBreadcrumbs: String = ""
         @SerializedName("url")
-        var url: String? = ""
+        val url: String = ""
         @SerializedName("appUrl")
-        var appUrl: String? = ""
+        val appUrl: String = ""
         @SerializedName("clickUrl")
-        var clickUrl: String? = ""
+        val clickUrl: String = ""
         @SerializedName("wishlistUrl")
-        var wishlistUrl: String? = ""
+        val wishlistUrl: String = ""
         @SerializedName("discountPercentage")
-        var discountPercentage: Int = 0
+        val discountPercentage: Int = 0
         @SerializedName("slashedPrice")
-        var slashedPrice: String? = ""
+        val slashedPrice: String = ""
         @SerializedName("slashedPriceInt")
-        var slashedPriceInt: Int = 0
+        val slashedPriceInt: Int = 0
         @SerializedName("trackerImageUrl")
-        var trackerImageUrl: String? = ""
+        val trackerImageUrl: String = ""
         @SerializedName("imageUrl")
-        var imageUrl: String? = ""
+        val imageUrl: String = ""
         @SerializedName("price")
-        var price: String? = ""
+        val price: String = ""
         @SerializedName("priceInt")
-        var priceInt: Int = 0
+        val priceInt: Int = 0
         @SerializedName("shop")
-        var shop: Shop? = Shop()
+        val shop: Shop = Shop()
         @SerializedName("freeOngkir")
-        var freeOngkirInformation: FreeOngkirInformation? = FreeOngkirInformation()
+        val freeOngkirInformation: FreeOngkirInformation = FreeOngkirInformation()
         @SerializedName("departmentId")
-        var departmentId: Int = 0
+        val departmentId: Int = 0
         @SerializedName("rating")
-        var rating: Int = 0
+        val rating: Int = 0
         @SerializedName("ratingAverage")
         val ratingAverage: String = ""
         @SerializedName("countReview")
-        var countReview: Int = 0
+        val countReview: Int = 0
         @SerializedName("recommendationType")
-        var recommendationType: String? = ""
+        val recommendationType: String = ""
         @SerializedName("stock")
-        var stock: Int = 0
+        val stock: Int = 0
         @SerializedName("isTopads")
-        var isIsTopads: Boolean = false
+        val isIsTopads: Boolean = false
         @SerializedName("isWishlist")
-        var isWishlist: Boolean = false
+        val isWishlist: Boolean = false
         @SerializedName("labelgroup")
-        var labelGroups: List<LabelGroup>? = listOf<LabelGroup>()
+        val labelGroups: List<LabelGroup> = listOf()
         @SerializedName("badges")
-        var badges: List<Badges>? = listOf()
+        val badges: List<Badges> = listOf()
         @SerializedName("minOrder")
-        var minOrder: Int? = 0
+        val minOrder: Int = 0
+        @SerializedName("specificationLabels")
+        val specificationsLabels: List<SpecificationsLabels> = listOf()
+
+        class SpecificationsLabels {
+            @SerializedName("key")
+            val key: String = ""
+            @SerializedName("value")
+            val value: String = ""
+        }
 
         class LabelGroup {
             @SerializedName("position")
-            var position: String = "0"
+            val position: String = "0"
             @SerializedName("title")
-            var title: String? = ""
+            val title: String = ""
             @SerializedName("type")
-            var type: String? = ""
+            val type: String = ""
+            @SerializedName("url")
+            val imageUrl: String = ""
         }
 
         class Shop {
             @SerializedName("id")
-            var id: Int = 0
+            val id: Int = -1
             @SerializedName("name")
-            var name: String? = ""
+            val name: String = ""
             @SerializedName("city")
-            var city: String? =""
+            val city: String = ""
             @SerializedName("isGold")
-            var isGold: Boolean ?= false
+            val isGold: Boolean = false
             @SerializedName("isOfficial")
-            var isOfficial: Boolean ?= false
+            val isOfficial: Boolean = false
         }
 
         class Badges {
 
             @SerializedName("imageUrl")
-            var imageUrl: String? = ""
+            val imageUrl: String = ""
         }
 
         class FreeOngkirInformation {
 
             @SerializedName("isActive")
-            var isActive: Boolean? = false
+            val isActive: Boolean = false
             @SerializedName("imageUrl")
-            var imageUrl: String? = ""
+            val imageUrl: String = ""
         }
     }
 
-    class RecomendationData {
-
-        @SerializedName("tID")
-        var tid: String? = ""
-        @SerializedName("source")
-        var source: String? = ""
-        @SerializedName("title")
-        var title: String? = ""
-        @SerializedName("foreignTitle")
-        var foreignTitle: String? = ""
-        @SerializedName("widgetUrl")
-        var widgetUrl: String? = ""
-        @SerializedName("pageName")
-        var pageName: String? = ""
-        @SerializedName("layoutType")
-        var layoutType: String? = ""
-        @SerializedName("seeMoreAppLink")
-        var seeMoreAppLink: String? = ""
-        @SerializedName("pagination")
-        var pagination: Pagination = Pagination()
-        @SerializedName("recommendation")
-        var recommendation: List<Recommendation>? = listOf()
-
-    }
+    data class RecommendationData(
+            @SerializedName("tID")
+            val tid: String = "",
+            @SerializedName("source")
+            val source: String = "",
+            @SerializedName("title")
+            val title: String = "",
+            @SerializedName("foreignTitle")
+            val foreignTitle: String = "",
+            @SerializedName("widgetUrl")
+            val widgetUrl: String = "",
+            @SerializedName("pageName")
+            val pageName: String = "",
+            @SerializedName("layoutType")
+            val layoutType: String = "",
+            @SerializedName("seeMoreAppLink")
+            val seeMoreAppLink: String = "",
+            @SerializedName("pagination")
+            val pagination: Pagination = Pagination(),
+            @SerializedName("recommendation")
+            val recommendation: List<Recommendation> = listOf()
+    )
 }

@@ -4,8 +4,15 @@ import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
 
+import com.google.gson.reflect.TypeToken;
 import com.tokopedia.abstraction.common.network.exception.HttpErrorException;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
+import com.tokopedia.common.network.data.model.RestResponse;
+import com.tokopedia.common_digital.atc.DigitalAddToCartUseCase;
+import com.tokopedia.common_digital.atc.data.response.DigitalSubscriptionParams;
+import com.tokopedia.common_digital.atc.data.response.ResponseCartData;
+import com.tokopedia.common_digital.atc.utils.DigitalAtcMapper;
+import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier;
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
 import com.tokopedia.common_digital.common.RechargeAnalytics;
 import com.tokopedia.config.GlobalConfig;
@@ -23,18 +30,22 @@ import com.tokopedia.digital.product.view.model.HistoryClientNumber;
 import com.tokopedia.digital.product.view.model.OrderClientNumber;
 import com.tokopedia.digital.product.view.model.ProductDigitalData;
 import com.tokopedia.network.constant.ErrorNetMessage;
+import com.tokopedia.network.data.model.response.DataResponse;
 import com.tokopedia.network.exception.ResponseDataNullException;
 import com.tokopedia.network.exception.ResponseErrorException;
 import com.tokopedia.user.session.UserSessionInterface;
 
+import java.lang.reflect.Type;
 import java.net.ConnectException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
+import kotlin.Unit;
 import rx.Subscriber;
 
 import static com.tokopedia.digital.product.view.adapter.PromoGuidePagerAdapter.GUIDE_TAB;
@@ -58,6 +69,7 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter<IProductDigita
     private RechargeAnalytics rechargeAnalytics;
     private GetDigitalCategoryByIdUseCase getDigitalCategoryByIdUseCase;
     private CategoryData categoryData;
+    private DigitalAddToCartUseCase addToCartUseCase;
     private UserSessionInterface userSession;
 
     @Inject
@@ -66,10 +78,12 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter<IProductDigita
             RechargeAnalytics rechargeAnalytics,
             LocalCacheHandler localCacheHandler,
             GetDigitalCategoryByIdUseCase getDigitalCategoryByIdUseCase,
+            com.tokopedia.common_digital.atc.DigitalAddToCartUseCase addToCartUseCase,
             UserSessionInterface userSession) {
         super(localCacheHandler, userSession);
         this.digitalAnalytics = digitalAnalytics;
         this.rechargeAnalytics = rechargeAnalytics;
+        this.addToCartUseCase = addToCartUseCase;
         this.getDigitalCategoryByIdUseCase = getDigitalCategoryByIdUseCase;
         this.userSession = userSession;
     }
@@ -126,6 +140,48 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter<IProductDigita
         }
     }
 
+    @Override
+    public void addToCart(DigitalCheckoutPassData digitalCheckoutPassData,
+                          RequestBodyIdentifier digitalIdentifierParam,
+                          DigitalSubscriptionParams digitalSubscriptionParams) {
+
+        getView().onBuyButtonLoading(true);
+        addToCartUseCase.setRequestParams(
+                DigitalAddToCartUseCase.Companion.getRequestBodyAtcDigital(
+                        digitalCheckoutPassData,
+                        Integer.parseInt(userSession.getUserId()),
+                        digitalIdentifierParam,
+                        digitalSubscriptionParams
+                ), digitalCheckoutPassData.getIdemPotencyKey());
+
+        addToCartUseCase.execute(
+                (it) -> {
+                    onSuccess(it, digitalCheckoutPassData);
+                    return Unit.INSTANCE;
+                }
+                , (it) -> {
+                    onError(it);
+                    return Unit.INSTANCE;
+                }, addToCartUseCase.getRequestParams());
+    }
+
+    private void onSuccess(Map<Type, ? extends RestResponse> responseMap, DigitalCheckoutPassData digitalCheckoutPassData) {
+        Type token = new TypeToken<DataResponse<ResponseCartData>>() {
+        }.getType();
+        ResponseCartData responseCartData = ((DataResponse<ResponseCartData>) responseMap.get(token).getData()).getData();
+        if (responseCartData != null && responseCartData.getId() != null) {
+            rechargeAnalytics.eventAddToCart(DigitalAtcMapper.INSTANCE.mapToDigitalAtcTrackingModel(responseCartData,
+                    digitalCheckoutPassData, userSession.getUserId()));
+            getView().navigateToDigitalCart(digitalCheckoutPassData);
+        } else onError(new Throwable());
+        getView().onBuyButtonLoading(false);
+    }
+
+    private void onError(Throwable e) {
+        getView().showSnackBar(handleCategoryToaster(e));
+        getView().onBuyButtonLoading(false);
+    }
+
     @NonNull
     private Subscriber<ProductDigitalData> getSubscriberProductDigitalData() {
         return new Subscriber<ProductDigitalData>() {
@@ -174,6 +230,20 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter<IProductDigita
                 getView().sendOpenScreenEventTracking(productDigitalData.getCategoryData());
             }
         };
+    }
+
+    private String handleCategoryToaster(Throwable e) {
+        if (e instanceof UnknownHostException || e instanceof ConnectException) {
+            return ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL;
+        } else if (e instanceof SocketTimeoutException) {
+            return ErrorNetMessage.MESSAGE_ERROR_TIMEOUT;
+        } else if (e instanceof ResponseErrorException
+                || e instanceof ResponseDataNullException
+                || e instanceof HttpErrorException) {
+            return e.getMessage();
+        } else {
+            return ErrorNetMessage.MESSAGE_ERROR_DEFAULT;
+        }
     }
 
     private void handleCategoryError(Throwable e) {
@@ -290,6 +360,7 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter<IProductDigita
                 versionInfoApplication,
                 userLoginId);
         passData.setSource(DigitalCheckoutPassData.Companion.getPARAM_NATIVE());
+        passData.setFromPDP(true);
         return passData;
     }
 

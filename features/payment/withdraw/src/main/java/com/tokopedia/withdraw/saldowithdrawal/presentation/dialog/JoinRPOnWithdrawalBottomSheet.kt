@@ -114,9 +114,9 @@ class JoinRPOnWithdrawalBottomSheet : BottomSheetUnify() {
 
     private fun getDescription(context: Context, container: LinearLayout) {
         if (!joinRekeningPremium.descriptionStringArray.isNullOrEmpty()) {
-            val bulletSpacing = context.resources.getDimension(R.dimen.spacing_lvl3).toInt()
+            val bulletSpacing = context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_8).toInt()
             val bulletRadius = context.resources.getDimension(R.dimen.swd_corner_radius)
-            val color = ContextCompat.getColor(context, R.color.Neutral_N700_68)
+            val color = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68)
             val bulletPointSpan = BulletPointSpan(bulletSpacing, bulletRadius, color)
             joinRekeningPremium.descriptionStringArray.forEach {
                 val spannable = SpannableString(it)
@@ -136,7 +136,7 @@ class JoinRPOnWithdrawalBottomSheet : BottomSheetUnify() {
         val spannableString = SpannableString(originalText)
         val startIndex = originalText.indexOf(termsAndConditionStr)
         val endIndex = startIndex + termsAndConditionStr.length
-        val color = ContextCompat.getColor(context, R.color.Green_G500)
+        val color = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500)
         spannableString.setSpan(color, startIndex, endIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         spannableString.setSpan(object : ClickableSpan() {
             override fun onClick(widget: View) {

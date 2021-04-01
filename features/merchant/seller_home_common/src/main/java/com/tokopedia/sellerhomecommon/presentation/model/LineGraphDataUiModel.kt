@@ -11,9 +11,10 @@ data class LineGraphDataUiModel(
         val header: String = "",
         val list: List<XYAxisUiModel> = emptyList(),
         val yLabels: List<XYAxisUiModel> = emptyList(),
-        override var isFromCache: Boolean = false
+        override var isFromCache: Boolean = false,
+        override val showWidget: Boolean = false
 ) : BaseDataUiModel {
     override fun shouldRemove(): Boolean {
-        return !isFromCache && list.all { it.yVal == 0f }
+        return list.all { it.yVal == 0f }
     }
 }
