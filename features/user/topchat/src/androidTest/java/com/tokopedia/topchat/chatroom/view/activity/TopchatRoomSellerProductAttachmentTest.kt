@@ -139,6 +139,27 @@ class TopchatRoomSellerProductAttachmentTest : BaseSellerTopchatRoomTest() {
     }
 
     @Test
+    fun user_update_stock_normal_carousel_product_inactive() {
+        // Given
+        setupChatRoomActivity()
+        getChatUseCase.response = sellerProductCarouselChatReplies
+        chatAttachmentUseCase.response = sellerProductAttachment
+        createSuccessUpdateStockIntentResult(
+                "1261590628", 55, ProductStatus.INACTIVE
+        )
+        inflateTestFragment()
+
+        // When
+        clickChangeStockBtn(R.id.rv_product, 0)
+
+        // Then
+        assertLabelOnProductCard(R.id.rv_product, 0, isDisplayed())
+        assertLabelTextOnProductCard(R.id.rv_product, 0, "Stok habis")
+        assertStockCountVisibilityAt(R.id.rv_product, 0, isDisplayed())
+        assertStockCountValueAt(R.id.rv_product, 0, 0)
+    }
+
+    @Test
     fun user_update_stock_broadcast_carousel_product_active() {
         // Given
         setupChatRoomActivity()
