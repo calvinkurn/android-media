@@ -122,7 +122,6 @@ interface CommonConstant {
             const val TP_GQL_REWARD_INTRO = "tp_gql_reward_intro"
             const val TP_GQL_CATALOG_LIST = "tp_gql_catalog_listing"
             const val TP_GQL_REWARD_USESAVING = "tp_gql_usersaving"
-            const val TP_GQL_REWARD_MERCHANTCOUPON = "tp_gql_reward_merchantcoupon"
         }
     }
 

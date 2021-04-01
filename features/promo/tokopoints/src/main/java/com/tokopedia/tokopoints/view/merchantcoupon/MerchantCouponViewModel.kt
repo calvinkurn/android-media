@@ -11,7 +11,7 @@ import com.tokopedia.tokopoints.view.util.Success
 import kotlinx.coroutines.Dispatchers
 import javax.inject.Inject
 
-class MerchantCouponViewModel @Inject constructor(private val repository: MerchantCouponRepository) : BaseViewModel(Dispatchers.Main) {
+class MerchantCouponViewModel @Inject constructor(private val usecase: MerchantCouponUsecase) : BaseViewModel(Dispatchers.Main) {
 
     val couponData = MutableLiveData<Resources<MerchantCouponData>>()
 
@@ -25,8 +25,8 @@ class MerchantCouponViewModel @Inject constructor(private val repository: Mercha
 
     fun merchantCouponData(page: Int) {
         launchCatchError(block = {
-            val response = repository.getProductData(page, category)
-            val data = response.getData<MerchantCouponResponse>(MerchantCouponResponse::class.java)
+            usecase.params = MerchantCouponUsecase.createParams(page,category)
+            val data = usecase.executeOnBackground()
             if (data != null) {
                 couponData.value = Success(MerchantCouponData(data, firstSetup))
             } else throw NullPointerException()

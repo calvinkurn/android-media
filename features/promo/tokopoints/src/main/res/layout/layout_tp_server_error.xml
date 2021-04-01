@@ -10,7 +10,7 @@
         android:layout_height="@dimen/dp_56"
         android:orientation="vertical"
         app:layout_constraintStart_toStartOf="parent"
-        android:visibility="visible"
+        android:visibility="gone"
         app:layout_constraintTop_toTopOf="parent">
 
         <RelativeLayout
