@@ -200,6 +200,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
         et_receiver_name.setText(userSession.name)
         et_kode_pos_mismatch.setText(saveAddressDataModel?.postalCode ?: "")
         et_phone_wrapper.endIconDrawable = btn_contact_picker.drawable
+        et_phone_wrapper.endIconMode = TextInputLayout.END_ICON_CUSTOM
         et_phone.setText(userSession.phoneNumber)
 
         if (!isMismatch && !isMismatchSolved) {
