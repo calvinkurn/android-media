@@ -26,6 +26,7 @@ open class BaseSellerTopchatRoomTest : TopchatRoomTest() {
 
     protected lateinit var sellerProductChatReplies: GetExistingChatPojo
     protected lateinit var sellerProductCarouselChatReplies: GetExistingChatPojo
+    protected lateinit var sellerBroadcastProductCarouselChatReplies: GetExistingChatPojo
     protected lateinit var sellerProductAttachment: ChatAttachmentResponse
 
     override fun setupResponse() {
@@ -36,6 +37,11 @@ open class BaseSellerTopchatRoomTest : TopchatRoomTest() {
         )
         sellerProductCarouselChatReplies = AndroidFileUtil.parse(
                 "seller/success_get_chat_first_page_product_carousel_as_seller.json",
+                GetExistingChatPojo::class.java
+        )
+        sellerBroadcastProductCarouselChatReplies = AndroidFileUtil.parse(
+                "seller/success_get_chat_first_page_broadcast_" +
+                        "product_carousel_as_seller.json",
                 GetExistingChatPojo::class.java
         )
         sellerProductAttachment = AndroidFileUtil.parse(

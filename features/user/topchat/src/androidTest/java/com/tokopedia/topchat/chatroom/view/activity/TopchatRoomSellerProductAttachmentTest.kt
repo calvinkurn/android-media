@@ -153,7 +153,7 @@ class TopchatRoomSellerProductAttachmentTest : BaseSellerTopchatRoomTest() {
     }
 
     @Test
-    fun user_update_stock_carousel_product_active() {
+    fun user_update_stock_normal_carousel_product_active() {
         // Given
         setupChatRoomActivity()
         getChatUseCase.response = sellerProductCarouselChatReplies
@@ -173,5 +173,28 @@ class TopchatRoomSellerProductAttachmentTest : BaseSellerTopchatRoomTest() {
         // Then
         assertStockCountVisibilityAt(R.id.rv_product, 0, isDisplayed())
         assertStockCountValueAt(R.id.rv_product, 0, 55)
+    }
+
+    @Test
+    fun user_update_stock_broadcast_carousel_product_active() {
+        // Given
+        setupChatRoomActivity()
+        getChatUseCase.response = sellerBroadcastProductCarouselChatReplies
+        chatAttachmentUseCase.response = sellerProductAttachment
+        createSuccessUpdateStockIntentResult(
+                "1261590628", 55, ProductStatus.ACTIVE
+        )
+        inflateTestFragment()
+
+        // When
+        onView(
+                withRecyclerView(R.id.rv_product_carousel).atPositionOnView(
+                        0, R.id.btn_update_stock
+                )
+        ).perform(click())
+
+        // Then
+        assertStockCountVisibilityAt(R.id.rv_product_carousel, 0, isDisplayed())
+        assertStockCountValueAt(R.id.rv_product_carousel, 0, 55)
     }
 }

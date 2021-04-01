@@ -44,13 +44,23 @@ class BroadcastViewHolder constructor(
         private val chatMessageListener: ChatLinkHandlerListener
 ) : AbstractViewHolder<BroadCastUiModel>(itemView) {
 
-    private val broadcastContainer: LinearLayout? = itemView?.findViewById(R.id.bubble_broadcast_container)
+    private val broadcastContainer: LinearLayout? = itemView?.findViewById(
+            R.id.bubble_broadcast_container
+    )
     private val bannerView: ImageView? = itemView?.findViewById(R.id.iv_banner)
-    private val voucherView: TopchatMerchantVoucherView? = itemView?.findViewById(R.id.broadcast_merchant_voucher)
-    private val singleProduct: SingleProductAttachmentContainer? = itemView?.findViewById(R.id.broadcast_product)
-    private val broadcastText: FlexBoxChatLayout? = itemView?.findViewById(R.id.broadcast_fx_chat)
+    private val voucherView: TopchatMerchantVoucherView? = itemView?.findViewById(
+            R.id.broadcast_merchant_voucher
+    )
+    private val singleProduct: SingleProductAttachmentContainer? = itemView?.findViewById(
+            R.id.broadcast_product
+    )
+    private val broadcastText: FlexBoxChatLayout? = itemView?.findViewById(
+            R.id.broadcast_fx_chat
+    )
     private val cta: LinearLayout? = itemView?.findViewById(R.id.ll_cta_container)
-    private val rvProductCarousel: ProductCarouselRecyclerView? = itemView?.findViewById(R.id.rv_product_carousel)
+    private val rvProductCarousel: ProductCarouselRecyclerView? = itemView?.findViewById(
+            R.id.rv_product_carousel
+    )
     private val adapterProductCarousel = ProductListAdapter(
             searchListener = searchListener,
             listener = productListener,
