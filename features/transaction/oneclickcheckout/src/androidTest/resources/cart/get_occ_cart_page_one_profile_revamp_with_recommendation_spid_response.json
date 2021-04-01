@@ -521,9 +521,11 @@
               "is_ovo_only_campaign": false
             },
             "shipment": {
-              "service_id": 1104,
-              "service_duration": "Reguler (2-4 hari)",
-              "service_name": "Reguler"
+              "service_id": 1004,
+              "service_duration": "Reguler Lama (2-4 hari)",
+              "service_name": "Reguler Lama",
+              "recommendation_service_id": 1104,
+              "recommendation_sp_id": 45
             }
           },
           "promo": {
