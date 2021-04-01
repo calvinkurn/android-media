@@ -249,8 +249,8 @@ object CheckoutRequestGqlDataMapper {
             ontimeDeliveryGuarantee =
                     if (ratesFeature.ontimeDeliveryGuarantee != null) {
                         OntimeDeliveryGuaranteeGqlData().apply {
-                            available = ratesFeature.ontimeDeliveryGuarantee.available
-                            duration = ratesFeature.ontimeDeliveryGuarantee.duration
+                            available = ratesFeature.ontimeDeliveryGuarantee?.available ?: false
+                            duration = ratesFeature.ontimeDeliveryGuarantee?.duration ?: 0
                         }
                     } else null
         }

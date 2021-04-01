@@ -1398,15 +1398,15 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             setSaveShipmentStateData(shipmentCartItemModel, shipmentStateShopProductDataList);
         }
 
-        ShipmentStateRequestData shipmentStateRequestData = new ShipmentStateRequestData.Builder()
-                .addressId(Integer.parseInt(recipientAddressModel.getId()))
-                .shopProductDataList(shipmentStateShopProductDataList)
-                .build();
+        ShipmentStateRequestData shipmentStateRequestData = new ShipmentStateRequestData();
+        shipmentStateRequestData.setAddressId(Integer.parseInt(recipientAddressModel.getId()));
+        shipmentStateRequestData.setShopProductDataList(shipmentStateShopProductDataList);
         shipmentStateRequestDataList.add(shipmentStateRequestData);
 
-        return new SaveShipmentStateRequest.Builder()
-                .requestDataList(shipmentStateRequestDataList)
-                .build();
+        SaveShipmentStateRequest saveShipmentStateRequest = new SaveShipmentStateRequest();
+        saveShipmentStateRequest.setRequestDataList(shipmentStateRequestDataList);
+
+        return saveShipmentStateRequest;
     }
 
     private void setSaveShipmentStateData(ShipmentCartItemModel shipmentCartItemModel,
@@ -1438,26 +1438,25 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
             RatesFeature ratesFeature = ShipmentDataRequestConverter.generateRatesFeature(courierData);
 
-            ShipmentStateShippingInfoData shippingInfoDataBuilder = new ShipmentStateShippingInfoData.Builder()
-                    .shippingId(courierData.getShipperId())
-                    .spId(courierData.getShipperProductId())
-                    .ratesFeature(ratesFeature)
-                    .build();
+            ShipmentStateShippingInfoData shipmentStateShippingInfoData = new ShipmentStateShippingInfoData();
+            shipmentStateShippingInfoData.setShippingId(courierData.getShipperId());
+            shipmentStateShippingInfoData.setSpId(courierData.getShipperProductId());
+            shipmentStateShippingInfoData.setRatesFeature(ratesFeature);
 
-            ShipmentStateShopProductData.Builder builder = new ShipmentStateShopProductData.Builder()
-                    .shopId(shipmentCartItemModel.getShopId())
-                    .finsurance((shipmentCartItemModel.getSelectedShipmentDetailData().getUseInsurance() != null &&
-                            shipmentCartItemModel.getSelectedShipmentDetailData().getUseInsurance()) ? 1 : 0)
-                    .isDropship((shipmentCartItemModel.getSelectedShipmentDetailData().getUseDropshipper() != null &&
-                            shipmentCartItemModel.getSelectedShipmentDetailData().getUseDropshipper()) ? 1 : 0)
-                    .isOrderPriority((shipmentCartItemModel.getSelectedShipmentDetailData().isOrderPriority() != null &&
-                            shipmentCartItemModel.getSelectedShipmentDetailData().isOrderPriority()) ? 1 : 0)
-                    .isPreorder(shipmentCartItemModel.isProductIsPreorder() ? 1 : 0)
-                    .warehouseId(shipmentCartItemModel.getFulfillmentId())
-                    .dropshipData(shipmentStateDropshipData)
-                    .shippingInfoData(shippingInfoDataBuilder)
-                    .productDataList(shipmentStateProductDataList);
-            shipmentStateShopProductDataList.add(builder.build());
+            ShipmentStateShopProductData shipmentStateShopProductData = new ShipmentStateShopProductData();
+            shipmentStateShopProductData.setShopId(shipmentCartItemModel.getShopId());
+            shipmentStateShopProductData.setFinsurance((shipmentCartItemModel.getSelectedShipmentDetailData().getUseInsurance() != null &&
+                            shipmentCartItemModel.getSelectedShipmentDetailData().getUseInsurance()) ? 1 : 0);
+            shipmentStateShopProductData.setDropship((shipmentCartItemModel.getSelectedShipmentDetailData().getUseDropshipper() != null &&
+                            shipmentCartItemModel.getSelectedShipmentDetailData().getUseDropshipper()) ? 1 : 0);
+            shipmentStateShopProductData.setOrderPriority((shipmentCartItemModel.getSelectedShipmentDetailData().isOrderPriority() != null &&
+                            shipmentCartItemModel.getSelectedShipmentDetailData().isOrderPriority()) ? 1 : 0);
+            shipmentStateShopProductData.setPreorder(shipmentCartItemModel.isProductIsPreorder() ? 1 : 0);
+            shipmentStateShopProductData.setWarehouseId(shipmentCartItemModel.getFulfillmentId());
+            shipmentStateShopProductData.setDropshipData(shipmentStateDropshipData);
+            shipmentStateShopProductData.setShippingInfoData(shipmentStateShippingInfoData);
+            shipmentStateShopProductData.setProductDataList(shipmentStateProductDataList);
+            shipmentStateShopProductDataList.add(shipmentStateShopProductData);
         }
     }
 
