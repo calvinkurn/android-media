@@ -49,7 +49,7 @@ public class TimberWrapper {
             if (dataLogConfig != null && dataLogConfig.isEnabled() && GlobalConfig.VERSION_CODE >= dataLogConfig.getAppVersionMin() &&
                     dataLogConfig.getTags() != null) {
                 UserSession userSession = new UserSession(context);
-                loggerReporting.setPopulateTagMaps(dataLogConfig.getTags());
+                loggerReporting.setPopulateTagMapsScalyr(dataLogConfig.getTags());
                 loggerReporting.setUserId(userSession.getUserId());
                 loggerReporting.setPartDeviceId(LoggerUtils.INSTANCE.getPartDeviceId(context));
                 loggerReporting.setVersionName(GlobalConfig.RAW_VERSION_NAME);

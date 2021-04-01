@@ -2,7 +2,9 @@ package com.tokopedia.logger.repository
 
 import com.google.gson.Gson
 import com.google.gson.JsonObject
+import com.google.gson.reflect.TypeToken
 import com.tokopedia.encryption.security.BaseEncryptor
+import com.tokopedia.logger.LogManager
 import com.tokopedia.logger.datasource.cloud.LoggerCloudDataSource
 import com.tokopedia.logger.datasource.cloud.LoggerCloudNewRelicImpl
 import com.tokopedia.logger.datasource.db.Logger
@@ -13,9 +15,11 @@ import com.tokopedia.logger.model.scalyr.ScalyrEvent
 import com.tokopedia.logger.model.scalyr.ScalyrEventAttrs
 import com.tokopedia.logger.utils.Constants
 import com.tokopedia.logger.utils.LoggerReporting
+import com.tokopedia.logger.utils.Tag
 import kotlinx.coroutines.*
 import javax.crypto.SecretKey
 import kotlin.coroutines.CoroutineContext
+import kotlin.math.log
 
 class LoggerRepository(private val logDao: LoggerDao,
                        private val loggerCloudScalyrDataSource: LoggerCloudDataSource,
@@ -57,45 +61,55 @@ class LoggerRepository(private val logDao: LoggerDao,
     private suspend fun sendLogToServer(priority: Int, logs: List<Logger>) {
         val tokenIndex = priority - 1
 
-        //TODO
-        //decrypt
-        // tag
-        // tagmapScalyr[TAGKEY] -> async{kirim scalyr} -> job1
-        // tagmapNewRelic[TAGKEY] -> kirim newrelic -> job2
-        // job1.await || job2.await
-        // deleteEntries()
+        val scalyrEventList = setScalyrEventList(logs)
+        val newRelicConfigList = setNewRelicConfigList(logs)
 
-        //unit test Logger
+//        if (scalyrConfigs.isNotEmpty() && newRelicConfigs.isEmpty()) {
+//            val scalyrSendSuccess = sendScalyrLogToServer(scalyrConfigs[tokenIndex], logs)
+//            if (scalyrSendSuccess) {
+//                deleteEntries(logs)
+//            }
+//        } else if (scalyrConfigs.isEmpty() && newRelicConfigs.isNotEmpty()) {
+//            val newRelicSendSuccess = sendNewRelicLogToServer(newRelicConfigs[tokenIndex], logs)
+//            if (newRelicSendSuccess) {
+//                deleteEntries(logs)
+//            }
+//        } else if (scalyrConfigs.isNotEmpty() && newRelicConfigs.isNotEmpty()) {
+//            sendMultipleLogToServer(tokenIndex, logs)
+//        }
 
-        if (scalyrConfigs.isNotEmpty() && newRelicConfigs.isEmpty()) {
-            val scalyrSendSuccess = sendScalyrLogToServer(scalyrConfigs[tokenIndex], logs)
-            if (scalyrSendSuccess) {
-                deleteEntries(logs)
+        coroutineScope {
+            launch {
+                val jobList = mutableListOf<Deferred<Boolean>>()
+                when {
+                    isExistTagMapsScalyr(scalyrEventList) -> {
+                        val jobScalyr = async { sendScalyrLogToServer(scalyrConfigs[tokenIndex], logs, scalyrEventList) }
+                        jobList.add(jobScalyr)
+                    }
+                    isExistTagMapsNewRelic(newRelicConfigList) -> {
+                        val jobNewRelic = async { sendNewRelicLogToServer(newRelicConfigs[tokenIndex], logs, newRelicConfigList) }
+                        jobList.add(jobNewRelic)
+                    }
+                }
+
+                jobList.awaitAll().forEach {
+                    if (it) {
+                        deleteEntries(logs)
+                    }
+                }
             }
-        } else if (scalyrConfigs.isEmpty() && newRelicConfigs.isNotEmpty()) {
-            val newRelicSendSuccess = sendNewRelicLogToServer(newRelicConfigs[tokenIndex], logs)
-            if (newRelicSendSuccess) {
-                deleteEntries(logs)
-            }
-        } else if (scalyrConfigs.isNotEmpty() && newRelicConfigs.isNotEmpty()) {
-            sendMultipleLogToServer(tokenIndex, logs)
         }
     }
 
-    private fun sendMultipleLogToServer(tokenIndex: Int, logs: List<Logger>) {
-        launch(context = Dispatchers.IO, block = {
-            val scalyrSendSuccess = async { sendScalyrLogToServer(scalyrConfigs[tokenIndex], logs) }
-            val newRelicSendSuccess = async { sendNewRelicLogToServer(newRelicConfigs[tokenIndex], logs) }
-            if (scalyrSendSuccess.await() || newRelicSendSuccess.await()) {
-                deleteEntries(logs)
-            }
-        })
-    }
-
-    suspend fun sendScalyrLogToServer(config: ScalyrConfig, logs: List<Logger>): Boolean {
+    suspend fun sendScalyrLogToServer(config: ScalyrConfig, logs: List<Logger>, scalyrEventList: List<ScalyrEvent>): Boolean {
         if (logs.isEmpty()) {
             return true
         }
+
+        return loggerCloudScalyrDataSource.sendLogToServer(config, scalyrEventList)
+    }
+
+    private fun setScalyrEventList(logs: List<Logger>): List<ScalyrEvent> {
         val scalyrEventList = mutableListOf<ScalyrEvent>()
         //make the timestamp equals to timestamp when hit the api
         //convert the milli to nano, based on scalyr requirement.
@@ -109,27 +123,56 @@ class LoggerRepository(private val logDao: LoggerDao,
             val message = encryptor.decrypt(log.message, secretKey)
             scalyrEventList.add(ScalyrEvent(ts, ScalyrEventAttrs(truncate(message))))
         }
-        return loggerCloudScalyrDataSource.sendLogToServer(config, scalyrEventList)
+        return scalyrEventList
     }
 
-    suspend fun sendNewRelicLogToServer(config: NewRelicConfig, logs: List<Logger>): Boolean {
+    private fun isExistTagMapsScalyr(scalyrEventList: List<ScalyrEvent>): Boolean {
+        for (scalyrEvent in scalyrEventList) {
+            val tagValue = jsonStringToMap(scalyrEvent.attrs.message).get(Constants.TAG) ?: ""
+            LoggerReporting.getInstance().tagMapsScalyr[tagValue]?.let {
+                return true
+            }
+        }
+        return false
+    }
+
+    private fun isExistTagMapsNewRelic(messageList: List<String>): Boolean {
+        for (message in messageList) {
+            val tagValue = jsonStringToMap(message).get(Constants.TAG) ?: ""
+            LoggerReporting.getInstance().tagMapsNewRelic[tagValue]?.let {
+                return true
+            }
+        }
+        return false
+    }
+
+    suspend fun sendNewRelicLogToServer(config: NewRelicConfig, logs: List<Logger>, messageList: List<String>): Boolean {
         if (logs.isEmpty()) {
-            return true
+            return false
         }
 
+        return loggerCloudNewRelicImpl.sendToLogServer(config, messageList)
+    }
+
+    private fun setNewRelicConfigList(logs: List<Logger>): List<String> {
         val messageList = mutableListOf<String>()
+
         for (log in logs) {
             val message = encryptor.decrypt(log.message, secretKey)
             messageList.add(addEventNewRelic(message))
         }
-
-        return loggerCloudNewRelicImpl.sendToLogServer(config, messageList)
+        return messageList
     }
 
     private fun addEventNewRelic(message: String): String {
         val gson = Gson().fromJson(message, JsonObject::class.java)
         gson.addProperty(Constants.EVENT_TYPE_NEW_RELIC, Constants.EVENT_ANDROID_NEW_RELIC)
         return gson.toString()
+    }
+
+    private fun jsonStringToMap(message: String): Map<String, String> {
+        val type = object : TypeToken<Map<String, String>>() {}.type
+        return Gson().fromJson(message, type)
     }
 
     fun truncate(str: String): String {

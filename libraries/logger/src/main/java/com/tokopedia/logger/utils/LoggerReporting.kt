@@ -40,7 +40,7 @@ class LoggerReporting {
                 return@globalScopeLaunch
             }
 
-            var priorityTag = 0
+            var priorityTag = -1
             tagMapsScalyr[tagMapKey]?.let {
                 priorityTag = it.postPriority
                 LogManager.setScalyrConfigList()
@@ -48,10 +48,9 @@ class LoggerReporting {
 
             tagMapsNewRelic[tagMapKey]?.let {
                 priorityTag = it.postPriority
-                LogManager.setNewRelicConfigList()
             }
 
-            if (LogManager.newRelicConfigList.isNotEmpty() || LogManager.scalyrConfigList.isNotEmpty()) {
+            if (priorityTag != -1) {
                 val processedMessage = getMessage(tag, timeStamp, logPriority, message)
                 LogManager.log(processedMessage, timeStamp, priorityTag, logPriority)
             }
@@ -101,7 +100,7 @@ class LoggerReporting {
         return Gson().toJson(this)
     }
 
-    fun setPopulateTagMaps(tags: List<String>?) {
+    fun setPopulateTagMapsScalyr(tags: List<String>?) {
         if (tags.isNullOrEmpty()) {
             return
         }
@@ -122,6 +121,7 @@ class LoggerReporting {
                 }
             }
         }
+        LogManager.setScalyrConfigList()
     }
 
     fun setPopulateTagMapsNewRelic(tags: List<String>?) {
@@ -145,6 +145,7 @@ class LoggerReporting {
                 }
             }
         }
+        LogManager.setNewRelicConfigList()
     }
 
     companion object {

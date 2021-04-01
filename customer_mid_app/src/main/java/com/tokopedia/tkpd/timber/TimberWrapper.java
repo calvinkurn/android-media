@@ -54,7 +54,7 @@ public class TimberWrapper {
                 if (dataLogConfigScalyr != null && dataLogConfigScalyr.isEnabled() && GlobalConfig.VERSION_CODE >= dataLogConfigScalyr.getAppVersionMin()
                         && dataLogConfigScalyr.getTags() != null) {
                     UserSession userSession = new UserSession(context);
-                    loggerReporting.setPopulateTagMaps(dataLogConfigScalyr.getTags());
+                    loggerReporting.setPopulateTagMapsScalyr(dataLogConfigScalyr.getTags());
                     loggerReporting.setUserId(userSession.getUserId());
                     loggerReporting.setPartDeviceId(LoggerUtils.INSTANCE.getPartDeviceId(context));
                     loggerReporting.setVersionName(GlobalConfig.RAW_VERSION_NAME);
