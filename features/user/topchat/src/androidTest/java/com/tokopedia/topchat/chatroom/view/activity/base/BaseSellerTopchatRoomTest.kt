@@ -25,6 +25,7 @@ open class BaseSellerTopchatRoomTest : TopchatRoomTest() {
     private val gson = Gson()
 
     protected lateinit var sellerProductChatReplies: GetExistingChatPojo
+    protected lateinit var sellerProductCarouselChatReplies: GetExistingChatPojo
     protected lateinit var sellerProductAttachment: ChatAttachmentResponse
 
     override fun setupResponse() {
@@ -33,23 +34,35 @@ open class BaseSellerTopchatRoomTest : TopchatRoomTest() {
                 "seller/success_get_chat_first_page_as_seller.json",
                 GetExistingChatPojo::class.java
         )
+        sellerProductCarouselChatReplies = AndroidFileUtil.parse(
+                "seller/success_get_chat_first_page_product_carousel_as_seller.json",
+                GetExistingChatPojo::class.java
+        )
         sellerProductAttachment = AndroidFileUtil.parse(
                 "seller/success_get_chat_attachments_seller.json",
                 ChatAttachmentResponse::class.java
         )
     }
 
-    protected fun assertStockCountVisibilityAt(productCardPosition: Int, viewMatcher: Matcher<in View>) {
+    protected fun assertStockCountVisibilityAt(
+            recyclerViewId: Int,
+            productCardPosition: Int,
+            viewMatcher: Matcher<in View>
+    ) {
         onView(
-                withRecyclerView(R.id.recycler_view).atPositionOnView(
+                withRecyclerView(recyclerViewId).atPositionOnView(
                         productCardPosition, R.id.tp_seller_stock_count
                 )
         ).check(matches(viewMatcher))
     }
 
-    protected fun assertStockCountValueAt(productCardPosition: Int, stockCount: Int) {
+    protected fun assertStockCountValueAt(
+            recyclerViewId: Int,
+            productCardPosition: Int,
+            stockCount: Int
+    ) {
         onView(
-                withRecyclerView(R.id.recycler_view).atPositionOnView(
+                withRecyclerView(recyclerViewId).atPositionOnView(
                         productCardPosition, R.id.tp_seller_stock_count
                 )
         ).check(matches(withText("$stockCount")))

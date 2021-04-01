@@ -67,8 +67,8 @@ class TopchatRoomSellerProductAttachmentTest : BaseSellerTopchatRoomTest() {
                         1, R.id.tp_seller_stock_category
                 )
         ).check(matches(withText("Stok:")))
-        assertStockCountVisibilityAt(1, isDisplayed())
-        assertStockCountValueAt(1, 5)
+        assertStockCountVisibilityAt(R.id.recycler_view, 1, isDisplayed())
+        assertStockCountValueAt(R.id.recycler_view, 1, 5)
     }
 
     @Test
@@ -92,8 +92,8 @@ class TopchatRoomSellerProductAttachmentTest : BaseSellerTopchatRoomTest() {
                         1, R.id.tp_seller_stock_category
                 )
         ).check(matches(withText("Stok campaign:")))
-        assertStockCountVisibilityAt(1, isDisplayed())
-        assertStockCountValueAt(1, 5)
+        assertStockCountVisibilityAt(R.id.recycler_view, 1, isDisplayed())
+        assertStockCountValueAt(R.id.recycler_view, 1, 5)
     }
 
     @Test
@@ -115,8 +115,8 @@ class TopchatRoomSellerProductAttachmentTest : BaseSellerTopchatRoomTest() {
         ).perform(click())
 
         // Then
-        assertStockCountVisibilityAt(1, isDisplayed())
-        assertStockCountValueAt(1, 55)
+        assertStockCountVisibilityAt(R.id.recycler_view, 1, isDisplayed())
+        assertStockCountValueAt(R.id.recycler_view, 1, 55)
     }
 
     @Test
@@ -148,7 +148,30 @@ class TopchatRoomSellerProductAttachmentTest : BaseSellerTopchatRoomTest() {
                         1, R.id.lb_product_label
                 )
         ).check(matches(withText("Stok habis")))
-        assertStockCountVisibilityAt(1, isDisplayed())
-        assertStockCountValueAt(1, 0)
+        assertStockCountVisibilityAt(R.id.recycler_view, 1, isDisplayed())
+        assertStockCountValueAt(R.id.recycler_view, 1, 0)
+    }
+
+    @Test
+    fun user_update_stock_carousel_product_active() {
+        // Given
+        setupChatRoomActivity()
+        getChatUseCase.response = sellerProductCarouselChatReplies
+        chatAttachmentUseCase.response = sellerProductAttachment
+        createSuccessUpdateStockIntentResult(
+                "1261590628", 55, ProductStatus.ACTIVE
+        )
+        inflateTestFragment()
+
+        // When
+        onView(
+                withRecyclerView(R.id.rv_product).atPositionOnView(
+                        0, R.id.btn_update_stock
+                )
+        ).perform(click())
+
+        // Then
+        assertStockCountVisibilityAt(R.id.rv_product, 0, isDisplayed())
+        assertStockCountValueAt(R.id.rv_product, 0, 55)
     }
 }
