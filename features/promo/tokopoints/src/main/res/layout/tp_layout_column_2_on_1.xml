@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white">
+    android:background="@color/Unify_N0">
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/iv_col_1"
@@ -30,7 +30,7 @@
         android:layout_marginTop="@dimen/dp_8"
         android:ellipsize="end"
         android:maxLines="2"
-        android:textColor="@color/white"
+        android:textColor="@color/Unify_N0"
         app:typographyType="heading_2"
         app:typographyWeight="bold"
         app:layout_constraintEnd_toEndOf="@id/iv_col_1"
@@ -44,7 +44,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_2"
-        android:textColor="@color/white"
+        android:textColor="@color/Unify_N0"
         app:typographyType="heading_5"
         app:typographyWeight="bold"
         app:layout_constraintEnd_toEndOf="parent"
@@ -62,7 +62,7 @@
         android:layout_marginTop="@dimen/dp_8"
         android:ellipsize="end"
         android:singleLine="true"
-        android:textColor="@color/tp_loyalty_color"
+        android:textColor="@color/Unify_N700_96"
         app:typographyType="heading_5"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="@id/iv_col_1"
@@ -80,7 +80,7 @@
         android:ellipsize="end"
         android:lines="2"
         android:maxLines="2"
-        android:textColor="@color/tp_subtitle_color_topads"
+        android:textColor="@color/Unify_N700_68"
         app:typographyType="small"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="@id/iv_col_1"

@@ -406,8 +406,8 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
                     btnAction2.visibility = View.VISIBLE
                 }
                 if (data.usage.btnUsage.type.equals("disable", ignoreCase = true)) {
-                    btnAction2.setTextColor(MethodChecker.getColor(context, R.color.clr_31353b))
-                    btnAction2.background.colorFilter = PorterDuffColorFilter(MethodChecker.getColor(context, R.color.bg_label_grey_tokopoints), PorterDuff.Mode.SRC_IN)
+                    btnAction2.setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700))
+                    btnAction2.background.colorFilter = PorterDuffColorFilter(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N50), PorterDuff.Mode.SRC_IN)
                     btnAction2.isEnabled = false
                 }
             }
@@ -451,7 +451,7 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
                 } else {
                     if (arguments != null && arguments!!.getString(CommonConstant.EXTRA_COUPON_CODE) != null) {
                         btnAction2.isEnabled = false
-                        btnAction2.setTextColor(resources.getColor(com.tokopedia.abstraction.R.color.black_12))
+                        btnAction2.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_20))
                         progressBar.visibility = View.VISIBLE
                         btnAction2.text = ""
                         mPresenter.reFetchRealCode()
@@ -469,7 +469,7 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
         } else {
             //check for real_code and start rxjava-timer
             btnAction2.isEnabled = false
-            btnAction2.setTextColor(resources.getColor(com.tokopedia.abstraction.R.color.black_12))
+            btnAction2.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_20))
             progressBar.visibility = View.VISIBLE
 
             mSubscriptionCouponTimer = Observable.interval(CommonConstant.COUPON_RE_FETCH_DELAY_S.toLong(), CommonConstant.COUPON_RE_FETCH_DELAY_S.toLong(), TimeUnit.SECONDS)
@@ -574,7 +574,7 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
                         label.text = "00 : 00 : 00"
                         btnContinue.text = "Expired"
                         btnContinue.isEnabled = false
-                        btnContinue.setTextColor(ContextCompat.getColor(btnContinue.context, com.tokopedia.abstraction.R.color.black_12))
+                        btnContinue.setTextColor(ContextCompat.getColor(btnContinue.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_20))
                     }
                     onTick = {
                         item.usage.expiredCountDown = it / 1000
@@ -591,7 +591,7 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
         } else {
             if (item.usage.activeCountDown > 0) {
                 btnContinue.isEnabled = false
-                btnContinue.setTextColor(ContextCompat.getColor(btnContinue.context, com.tokopedia.abstraction.R.color.black_12))
+                btnContinue.setTextColor(ContextCompat.getColor(btnContinue.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_20))
                 if (item.usage.activeCountDown <= CommonConstant.COUPON_SHOW_COUNTDOWN_MAX_LIMIT_S) {
                     mTimer = object : CountDownTimer(item.usage.activeCountDown * 1000, 1000) {
                         override fun onTick(l: Long) {
@@ -638,7 +638,7 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
             if (note != null && !note.isEmpty()) {
                 text_swipe_note.visibility = View.VISIBLE
                 text_swipe_note.text = note
-                text_swipe_note.setTextColor(ContextCompat.getColor(activityContext!!, com.tokopedia.design.R.color.black_38))
+                text_swipe_note.setTextColor(ContextCompat.getColor(activityContext!!, com.tokopedia.unifyprinciples.R.color.Unify_N700_32))
                 visibility = View.VISIBLE
             } else {
                 text_swipe_note.visibility = View.GONE

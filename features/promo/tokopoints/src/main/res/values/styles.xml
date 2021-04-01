@@ -15,7 +15,7 @@
         <item name="android:background">@drawable/border_bottom_no_rounded</item>
     </style>
 
-    <style name="MyRadioButtonStyle" parent="Theme.AppCompat.Light">
+    <style name="MyRadioButtonStyle" parent="Theme.AppCompat.DayNight">
         <item name="colorControlNormal">@color/grey_400</item>
         <item name="colorControlActivated">@color/tkpd_main_green</item>
     </style>
