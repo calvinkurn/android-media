@@ -1,10 +1,11 @@
-package com.tokopedia.purchase_platform.common.feature.checkout.request;
+package com.tokopedia.checkout.data.model.request.checkout;
 
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.tokopedia.checkout.data.model.request.common.RatesFeature;
 
 /**
  * @author anggaprasetiyo on 05/03/18.

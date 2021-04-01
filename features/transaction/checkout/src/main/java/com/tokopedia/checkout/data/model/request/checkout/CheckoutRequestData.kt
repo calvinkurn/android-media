@@ -1,4 +1,4 @@
-package com.tokopedia.purchase_platform.common.feature.checkout.request
+package com.tokopedia.checkout.data.model.request.checkout
 
 import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
@@ -244,7 +244,7 @@ object CheckoutRequestGqlDataMapper {
         }
     }
 
-    private fun mapRatesFeature(ratesFeature: RatesFeature): RatesFeatureGqlData {
+    private fun mapRatesFeature(ratesFeature: com.tokopedia.checkout.data.model.request.common.RatesFeature): RatesFeatureGqlData {
         return RatesFeatureGqlData().apply {
             ontimeDeliveryGuarantee =
                     if (ratesFeature.ontimeDeliveryGuarantee != null) {
