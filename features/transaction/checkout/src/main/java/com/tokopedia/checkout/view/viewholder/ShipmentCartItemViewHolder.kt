@@ -21,9 +21,6 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.unifyprinciples.Typography.Companion.SMALL
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 
-/**
- * @author Aghny A. Putra on 02/03/18
- */
 class ShipmentCartItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     private var shipmentItemListener: ShipmentItemListener? = null
     private val mIvProductImage: ImageView = itemView.findViewById(R.id.iv_product_image)
