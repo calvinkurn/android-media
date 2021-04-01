@@ -14,18 +14,15 @@ import javax.inject.Inject
  * Created by mzennis on 16/03/21.
  */
 class PlayLiveStateProcessor(
-        private val livePusherWrapper: ApsaraLivePusherWrapper,
-        private val countDownTimer: PlayCountDownTimer
+        private val livePusherWrapper: ApsaraLivePusherWrapper
 ) {
 
     class Factory @Inject constructor() {
         fun create(
-                livePusherWrapper: ApsaraLivePusherWrapper,
-                countDownTimer: PlayCountDownTimer
+                livePusherWrapper: ApsaraLivePusherWrapper
         ): PlayLiveStateProcessor {
             return PlayLiveStateProcessor(
-                    livePusherWrapper = livePusherWrapper,
-                    countDownTimer = countDownTimer
+                    livePusherWrapper = livePusherWrapper
             )
         }
     }
@@ -75,7 +72,6 @@ class PlayLiveStateProcessor(
             removeLastPauseMillis()
         }
         livePusherWrapper.destroy()
-        countDownTimer.destroy()
     }
 
     fun setPauseDuration(duration: Long) {
@@ -108,13 +104,9 @@ class PlayLiveStateProcessor(
             ApsaraLivePusherState.Resume -> {
                 if (isLiveStarted) {
                     broadcastState(PlayLivePusherState.Resume(isResumed = true))
-                    countDownTimer.resume()
                 }
             }
-            ApsaraLivePusherState.Pause -> {
-                broadcastState(PlayLivePusherState.Pause)
-                countDownTimer.pause()
-            }
+            ApsaraLivePusherState.Pause -> broadcastState(PlayLivePusherState.Pause)
             ApsaraLivePusherState.Restart -> broadcastState(PlayLivePusherState.Resume(isResumed = true))
             ApsaraLivePusherState.Recovered -> broadcastState(PlayLivePusherState.Resume(isResumed = true))
             ApsaraLivePusherState.Stop -> broadcastState(PlayLivePusherState.Stop(isStopped = true, shouldNavigate = false))

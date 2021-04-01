@@ -120,7 +120,13 @@ class PlayBroadcastViewModel @Inject constructor(
 
     private val liveStateListener = object : PlayLiveStateListener {
         override fun onStateChanged(state: PlayLivePusherState) {
-            if (state is PlayLivePusherState.Start) startWebSocket()
+            when (state) {
+                is PlayLivePusherState.Start -> startWebSocket()
+                is PlayLivePusherState.Resume -> resumeTimer()
+                is PlayLivePusherState.Pause -> countDownTimer.pause()
+                else -> {}
+            }
+
             if (state is PlayLivePusherState.Stop) {
                 if (!state.isStopped) stopLiveStream(state.shouldNavigate)
             } else sendLivePusherState(state)
@@ -151,7 +157,7 @@ class PlayBroadcastViewModel @Inject constructor(
         }
     }
     
-    private val liveStateProcessor = livePusherStateProcessorFactory.create(livePusher, countDownTimer)
+    private val liveStateProcessor = livePusherStateProcessorFactory.create(livePusher)
     private var isLiveStarted: Boolean = false
 
     init {
@@ -167,6 +173,7 @@ class PlayBroadcastViewModel @Inject constructor(
         liveStateProcessor.removeStateListener(liveStateListener)
         liveStateProcessor.removeStateListener(channelLiveStateListener)
         liveStateProcessor.onDestroy()
+        countDownTimer.destroy()
     }
 
     fun getCurrentSetupDataStore(): PlayBroadcastSetupDataStore {
@@ -455,6 +462,12 @@ class PlayBroadcastViewModel @Inject constructor(
         scope.launchCatchError(block = {
             val remainingDuration = duration.remaining*1000
             countDownTimer.restart(duration = remainingDuration)
+        }) { }
+    }
+
+    private fun resumeTimer() {
+        scope.launchCatchError(block = {
+            countDownTimer.resume()
         }) { }
     }
 
