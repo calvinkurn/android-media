@@ -17,7 +17,7 @@
 
     <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/divider_stepper_penalty"
-        android:layout_width="144dp"
+        android:layout_width="@dimen/width_divider_stepper_penalty_detail"
         android:layout_height="@dimen/spacing_lvl1"
         app:layout_constraintBottom_toBottomOf="@id/ic_dot_stepper"
         app:layout_constraintStart_toEndOf="@id/ic_dot_stepper"
