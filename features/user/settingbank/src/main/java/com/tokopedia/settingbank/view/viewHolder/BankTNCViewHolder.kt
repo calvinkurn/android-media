@@ -22,8 +22,6 @@ class BankTNCViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
             ticker.tickerTitle = context?.getString(R.string.sbank_catatan)
             ticker.setHtmlDescription(templateData.template)
             ticker.findViewById<TextView>(com.tokopedia.unifycomponents.R.id.ticker_description).text = fromHtml(templateData.template)
-            ticker.findViewById<TextView>(com.tokopedia.unifycomponents.R.id.ticker_description)
-                    .setTextColor(MethodChecker.getColor(context, com.tokopedia.unifycomponents.R.color.Unify_N700_68))
         } ?: ticker.gone()
     }
 

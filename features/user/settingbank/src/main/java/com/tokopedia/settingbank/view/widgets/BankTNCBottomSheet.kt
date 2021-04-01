@@ -1,5 +1,6 @@
 package com.tokopedia.settingbank.view.widgets
 
+import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -7,11 +8,11 @@ import android.view.ViewGroup
 import android.webkit.WebView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.FragmentActivity
-import com.tokopedia.kotlin.extensions.view.getScreenHeight
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.settingbank.R
 import com.tokopedia.settingbank.domain.model.TemplateData
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import com.tokopedia.unifycomponents.toDp
+
 
 class BankTNCBottomSheet : BottomSheetUnify() {
 
@@ -37,9 +38,18 @@ class BankTNCBottomSheet : BottomSheetUnify() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val textHexColor = String.format("#%06x",
+                MethodChecker.getColor(context, com.tokopedia.unifycomponents.R.color.Unify_N700) and 0xffffff)
+
         templateData?.let {
-            view.findViewById<WebView>(R.id.tncWebView).loadData( it.template,
-                    MIME_TYPE, ENCODING)
+            val text = "<html><head><style type=\"text/css\">" +
+                    "   body {" +
+                    "      color:${textHexColor}" +
+                    "   }" +
+                    "</style></head><body>${it.template}</body></html>"
+            view.findViewById<WebView>(R.id.tncWebView).setBackgroundColor(Color.TRANSPARENT)
+            view.findViewById<WebView>(R.id.tncWebView).loadDataWithBaseURL(null, text,
+                    MIME_TYPE, ENCODING, null)
         }
     }
 
