@@ -773,23 +773,6 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
     }
 
     @Test
-    fun `Force Show Onboarding With Profile`() {
-        // Given
-        val onboarding = OccMainOnboarding(isForceShowCoachMark = true)
-        val shipment = OrderProfileShipment(serviceId = 1)
-        val profile = OrderProfile(shipment = shipment)
-        val response = OrderData(cart = OrderCart(product = OrderProduct(productId = 1)), preference = profile, onboarding = onboarding)
-        every { getOccCartUseCase.createRequestParams(any()) } returns RequestParams.EMPTY
-        coEvery { getOccCartUseCase.executeSuspend(any()) } returns response
-
-        // When
-        orderSummaryPageViewModel.getOccCart(true, "")
-
-        // Then
-        assertEquals(OccGlobalEvent.ForceOnboarding(onboarding), orderSummaryPageViewModel.globalEvent.value)
-    }
-
-    @Test
     fun `Force Show Onboarding Revamp With Profile And Failed Get Rates`() {
         // Given
         val onboarding = OccMainOnboarding(isForceShowCoachMark = true)
@@ -862,7 +845,6 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
 
         // Then
         assertEquals(revampData, orderSummaryPageViewModel.revampData)
-        assertEquals(true, orderSummaryPageViewModel.isNewFlow)
     }
 
     @Test
@@ -878,6 +860,5 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
 
         // Then
         assertEquals(revampData, orderSummaryPageViewModel.revampData)
-        assertEquals(false, orderSummaryPageViewModel.isNewFlow)
     }
 }

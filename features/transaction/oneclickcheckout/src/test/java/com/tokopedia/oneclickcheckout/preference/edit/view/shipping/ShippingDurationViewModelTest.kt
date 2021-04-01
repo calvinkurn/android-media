@@ -93,7 +93,7 @@ class ShippingDurationViewModelTest {
         }
         every { useCaseRates.execute(any()) } returns Observable.just(response)
 
-        shippingDurationViewModel.getRates(ArrayList(), shippingParam, false)
+        shippingDurationViewModel.getRates(ArrayList(), shippingParam)
 
         assertEquals(OccState.Success(ShippingListModel()), shippingDurationViewModel.shippingDuration.value)
     }
@@ -131,7 +131,7 @@ class ShippingDurationViewModelTest {
         every { useCaseRates.execute(any()) } returns Observable.just(response)
 
         shippingDurationViewModel.selectedId = 2
-        shippingDurationViewModel.getRates(ArrayList(), shippingParam, false)
+        shippingDurationViewModel.getRates(ArrayList(), shippingParam)
 
         val data = ShippingListModel(listOf(ServicesItemModel(servicesId = 1, texts = TextsModel()), ServicesItemModel(servicesId = 2, isSelected = true, texts = TextsModel())))
         assertEquals(OccState.Success(data), shippingDurationViewModel.shippingDuration.value)
@@ -142,7 +142,7 @@ class ShippingDurationViewModelTest {
         val response = Throwable()
         every { useCaseRates.execute(any()) } returns Observable.error(response)
 
-        shippingDurationViewModel.getRates(ArrayList(), shippingParam, false)
+        shippingDurationViewModel.getRates(ArrayList(), shippingParam)
 
         assertEquals(OccState.Failed(Failure(response)), shippingDurationViewModel.shippingDuration.value)
     }
@@ -152,7 +152,7 @@ class ShippingDurationViewModelTest {
         val response = Throwable()
         every { useCaseRates.execute(any()) } returns Observable.error(response)
 
-        shippingDurationViewModel.getRates(null, null, false)
+        shippingDurationViewModel.getRates(null, null)
 
         verify(inverse = true) { useCaseRates.execute(any()) }
     }
@@ -162,7 +162,7 @@ class ShippingDurationViewModelTest {
         val response = Throwable()
         every { useCaseRates.execute(any()) } returns Observable.error(response)
 
-        shippingDurationViewModel.getRates(null, shippingParam, false)
+        shippingDurationViewModel.getRates(null, shippingParam)
 
         verify(inverse = true) { useCaseRates.execute(any()) }
     }
@@ -232,7 +232,7 @@ class ShippingDurationViewModelTest {
         }
         every { useCaseRates.execute(any()) } returns Observable.just(response)
 
-        shippingDurationViewModel.getRates(ArrayList(), shippingParam, false)
+        shippingDurationViewModel.getRates(ArrayList(), shippingParam)
         shippingDurationViewModel.setSelectedShipping(2)
 
         val data = ShippingListModel(listOf(ServicesItemModel(servicesId = 1, texts = TextsModel()), ServicesItemModel(servicesId = 2, isSelected = true, texts = TextsModel())))

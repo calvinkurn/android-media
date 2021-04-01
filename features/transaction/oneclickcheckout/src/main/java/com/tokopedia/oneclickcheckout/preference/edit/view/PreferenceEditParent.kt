@@ -60,6 +60,5 @@ interface PreferenceEditParent {
 
     fun isDirectPaymentStep(): Boolean
 
-    fun isNewFlow(): Boolean
     fun isSelectedPreference(): Boolean
 }

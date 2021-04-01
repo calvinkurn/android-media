@@ -727,7 +727,6 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                 putExtra(PreferenceEditActivity.EXTRA_PAYMENT_PROFILE, viewModel.getPaymentProfile())
                 putExtra(PreferenceEditActivity.EXTRA_SHIPPING_PARAM, viewModel.generateShippingParam())
                 putParcelableArrayListExtra(PreferenceEditActivity.EXTRA_LIST_SHOP_SHIPMENT, ArrayList(viewModel.generateListShopShipment()))
-                putExtra(PreferenceEditActivity.EXTRA_IS_NEW_FLOW, viewModel.isNewFlow)
                 putExtra(PreferenceEditActivity.EXTRA_ADDRESS_STATE, addressState.state)
             }
             startActivityForResult(intent, REQUEST_CREATE_PREFERENCE)
@@ -864,7 +863,6 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                 putExtra(PreferenceEditActivity.EXTRA_PAYMENT_AMOUNT, priceWithoutPaymentFee)
                 putExtra(PreferenceEditActivity.EXTRA_SHIPPING_PARAM, viewModel.generateShippingParam())
                 putParcelableArrayListExtra(PreferenceEditActivity.EXTRA_LIST_SHOP_SHIPMENT, ArrayList(viewModel.generateListShopShipment()))
-                putExtra(PreferenceEditActivity.EXTRA_IS_NEW_FLOW, viewModel.isNewFlow)
                 val addressState = viewModel.addressState.value.state
                 putExtra(PreferenceEditActivity.EXTRA_ADDRESS_STATE, addressState)
             }
@@ -944,7 +942,6 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                 val priceWithoutPaymentFee = orderCost.totalPrice - orderCost.paymentFee
                 putExtra(PreferenceEditActivity.EXTRA_PAYMENT_AMOUNT, priceWithoutPaymentFee)
                 putExtra(PreferenceEditActivity.EXTRA_DIRECT_PAYMENT_STEP, true)
-                putExtra(PreferenceEditActivity.EXTRA_IS_NEW_FLOW, viewModel.isNewFlow)
                 val addressState = viewModel.addressState.value.state
                 putExtra(PreferenceEditActivity.EXTRA_ADDRESS_STATE, addressState)
             }
@@ -966,7 +963,6 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                 putExtra(PreferenceEditActivity.EXTRA_PAYMENT_AMOUNT, priceWithoutPaymentFee)
                 putExtra(PreferenceEditActivity.EXTRA_SHIPPING_PARAM, viewModel.generateShippingParam())
                 putParcelableArrayListExtra(PreferenceEditActivity.EXTRA_LIST_SHOP_SHIPMENT, ArrayList(viewModel.generateListShopShipment()))
-                putExtra(PreferenceEditActivity.EXTRA_IS_NEW_FLOW, viewModel.isNewFlow)
                 val addressState = viewModel.addressState.value.state
                 putExtra(PreferenceEditActivity.EXTRA_ADDRESS_STATE, addressState)
             }
@@ -1045,7 +1041,6 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                                 putExtra(PreferenceEditActivity.EXTRA_PAYMENT_AMOUNT, priceWithoutPaymentFee)
                                 putExtra(PreferenceEditActivity.EXTRA_SHIPPING_PARAM, viewModel.generateShippingParam())
                                 putParcelableArrayListExtra(PreferenceEditActivity.EXTRA_LIST_SHOP_SHIPMENT, ArrayList(viewModel.generateListShopShipment()))
-                                putExtra(PreferenceEditActivity.EXTRA_IS_NEW_FLOW, viewModel.isNewFlow)
                                 val addressState = viewModel.addressState.value.state
                                 putExtra(PreferenceEditActivity.EXTRA_ADDRESS_STATE, addressState)
                                 putExtra(PreferenceEditActivity.EXTRA_SELECTED_PREFERENCE, preference.enable && preference.profileId == profileId)
@@ -1066,7 +1061,6 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                                 putExtra(PreferenceEditActivity.EXTRA_PAYMENT_AMOUNT, priceWithoutPaymentFee)
                                 putExtra(PreferenceEditActivity.EXTRA_SHIPPING_PARAM, viewModel.generateShippingParam())
                                 putParcelableArrayListExtra(PreferenceEditActivity.EXTRA_LIST_SHOP_SHIPMENT, ArrayList(viewModel.generateListShopShipment()))
-                                putExtra(PreferenceEditActivity.EXTRA_IS_NEW_FLOW, viewModel.isNewFlow)
                                 val addressState = viewModel.addressState.value.state
                                 putExtra(PreferenceEditActivity.EXTRA_ADDRESS_STATE, addressState)
                             }
