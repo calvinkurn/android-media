@@ -3,8 +3,9 @@
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/transparent"
-    android:paddingTop="@dimen/hotel_12dp">
+    android:background="@color/transparent">
+
+    <include layout="@layout/item_property_horizontal_search_shimmering"/>
 
     <include layout="@layout/item_property_horizontal_search_shimmering"/>
 
