@@ -8,6 +8,7 @@ import android.content.Intent
 import android.graphics.Rect
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
@@ -1480,8 +1481,10 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
             tickerPagerAdapter.setPagerDescriptionClickEvent(this)
             this.tickerPagerAdapter = tickerPagerAdapter
         }
-        tickerSomList?.addPagerView(tickerPagerAdapter, activeTickers)
-        tickerSomList?.showWithCondition(data.isNotEmpty())
+        tickerSomList?.showWithCondition(activeTickers.isNotEmpty())
+        Handler().postDelayed({
+            tickerSomList?.addPagerView(tickerPagerAdapter, activeTickers)
+        }, 1000L)
     }
 
     private fun renderOrderList(data: List<SomListOrderUiModel>) {
