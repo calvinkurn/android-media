@@ -5,7 +5,7 @@ import com.tokopedia.autocomplete.initialstate.BaseItemInitialStateSearch
 import com.tokopedia.autocomplete.initialstate.InitialStateData
 import java.util.ArrayList
 
-fun InitialStateData.convertToListInitialStateProductLineDataView(): MutableList<Visitable<*>> {
+fun InitialStateData.convertToListInitialStateProductListDataView(): MutableList<Visitable<*>> {
     val childList = ArrayList<BaseItemInitialStateSearch>()
     for (item in this.items) {
         val model = BaseItemInitialStateSearch(

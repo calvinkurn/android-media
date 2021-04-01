@@ -14,7 +14,7 @@ import com.tokopedia.autocomplete.initialstate.popularsearch.RefreshInitialState
 import com.tokopedia.autocomplete.initialstate.popularsearch.convertPopularSearchToVisitableList
 import com.tokopedia.autocomplete.initialstate.productline.InitialStateProductLineTitleDataView
 import com.tokopedia.autocomplete.initialstate.productline.InitialStateProductListDataView
-import com.tokopedia.autocomplete.initialstate.productline.convertToListInitialStateProductLineDataView
+import com.tokopedia.autocomplete.initialstate.productline.convertToListInitialStateProductListDataView
 import com.tokopedia.autocomplete.initialstate.recentview.RecentViewTitleViewModel
 import com.tokopedia.autocomplete.initialstate.recentsearch.*
 import com.tokopedia.autocomplete.initialstate.recentview.convertRecentViewSearchToVisitableList
@@ -185,7 +185,7 @@ class InitialStatePresenter @Inject constructor(
                 }
                 InitialStateData.INITIAL_STATE_LIST_PRODUCT_LINE -> {
                     data.addAll(
-                            initialStateData.convertToListInitialStateProductLineDataView().insertProductListTitle(initialStateData.header)
+                            initialStateData.convertToListInitialStateProductListDataView().insertProductListTitle(initialStateData.header)
                     )
                 }
                 else -> {

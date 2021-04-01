@@ -16,7 +16,7 @@
     <dimen name="autocomplete_product_suggestion_image_radius">4dp</dimen>
 
     <dimen name="autocomplete_product_double_line_title_margin_left">8dp</dimen>
-    <dimen name="autocomplete_product_double_line_title_margin_top">10dp</dimen>
+    <dimen name="autocomplete_product_double_line_title_margin_top">16dp</dimen>
     <dimen name="autocomplete_product_double_line_title_margin_right">16dp</dimen>
     <dimen name="autocomplete_product_double_line_title_margin_bottom">0dp</dimen>
 

@@ -126,11 +126,12 @@ class SuggestionProductLineViewHolder(
 
     private fun setTitleMargin(item: SuggestionProductLineDataView) {
         if (!item.isTripleLine()) {
+            val resources = itemView.context.resources
             itemView.autocompleteProductTitle?.setMargin(
-                    R.dimen.autocomplete_product_double_line_title_margin_left,
-                    R.dimen.autocomplete_product_double_line_title_margin_top,
-                    R.dimen.autocomplete_product_double_line_title_margin_right,
-                    R.dimen.autocomplete_product_double_line_title_margin_bottom
+                    resources.getDimensionPixelSize(R.dimen.autocomplete_product_double_line_title_margin_left),
+                    resources.getDimensionPixelSize(R.dimen.autocomplete_product_double_line_title_margin_top),
+                    resources.getDimensionPixelSize(R.dimen.autocomplete_product_double_line_title_margin_right),
+                    resources.getDimensionPixelSize(R.dimen.autocomplete_product_double_line_title_margin_bottom)
             )
         }
     }
@@ -157,11 +158,12 @@ class SuggestionProductLineViewHolder(
 
     private fun setPriceMargin(item: SuggestionProductLineDataView) {
         if (!item.isTripleLine()) {
+            val resources = itemView.context.resources
             itemView.autocompleteProductPrice?.setMargin(
-                    R.dimen.autocomplete_product_double_line_price_margin_left,
-                    R.dimen.autocomplete_product_double_line_price_margin_top,
-                    R.dimen.autocomplete_product_double_line_price_margin_right,
-                    R.dimen.autocomplete_product_double_line_price_margin_bottom
+                    resources.getDimensionPixelSize(R.dimen.autocomplete_product_double_line_price_margin_left),
+                    resources.getDimensionPixelSize(R.dimen.autocomplete_product_double_line_price_margin_top),
+                    resources.getDimensionPixelSize(R.dimen.autocomplete_product_double_line_price_margin_right),
+                    resources.getDimensionPixelSize(R.dimen.autocomplete_product_double_line_price_margin_bottom)
             )
         }
     }
