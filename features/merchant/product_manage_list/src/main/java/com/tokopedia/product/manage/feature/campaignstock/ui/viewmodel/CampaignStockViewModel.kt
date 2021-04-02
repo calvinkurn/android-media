@@ -180,7 +180,7 @@ class CampaignStockViewModel @Inject constructor(
                 }
 
                 if(nonVariantStock != currentNonVariantStock) {
-                    result = editProductStock(nonVariantStock)
+                    result = editProductStock(nonVariantStock, result.data.isSuccess)
                 }
 
                 mProductUpdateResponseLiveData.value = result
@@ -191,7 +191,7 @@ class CampaignStockViewModel @Inject constructor(
         )
     }
 
-    private suspend fun editProductStock(nonVariantStock: Int): Success<UpdateCampaignStockResult> {
+    private suspend fun editProductStock(nonVariantStock: Int, isUpdateStatusSuccess: Boolean = true): Success<UpdateCampaignStockResult> {
         return withContext(dispatchers.io) {
             val requestParams = UpdateProductStockWarehouseUseCase.createRequestParams(
                 shopId,
@@ -200,7 +200,14 @@ class CampaignStockViewModel @Inject constructor(
                 nonVariantStock.toString()
             )
             val response = editStockUseCase.execute(requestParams)
-            val status = response.getProductStatus() ?: currentNonVariantStatus
+            // If edit product status success, use current status. If fail, use initial status
+            val successProductStatus =
+                    if (isUpdateStatusSuccess) {
+                        nonVariantStatus
+                    } else {
+                        currentNonVariantStatus
+                    }
+            val status = response.getProductStatus() ?: successProductStatus
 
             Success(UpdateCampaignStockResult(
                 productId,

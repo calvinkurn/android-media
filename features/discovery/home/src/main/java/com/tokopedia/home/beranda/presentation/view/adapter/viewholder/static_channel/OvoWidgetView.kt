@@ -67,6 +67,10 @@ class OvoWidgetView: FrameLayout {
         private const val CDN_URL = "https://ecs7.tokopedia.net/img/android/"
         private const val BG_CONTAINER_URL = CDN_URL + "bg_product_fintech_tokopoint_normal/" +
                 "drawable-xhdpi/bg_product_fintech_tokopoint_normal.png"
+        private const val TYPE_BBO = "BBO"
+        private const val TYPE_COUPON = "Coupon"
+        private const val TYPE_REWARDS = "Rewards"
+        private const val TYPE_TOKOPOINTS = "TokoPoints"
     }
 
     init {
@@ -184,7 +188,6 @@ class OvoWidgetView: FrameLayout {
                         tvActionTokocash.visibility = if (homeHeaderWalletAction.isVisibleActionButton) View.VISIBLE else View.GONE
                         tvTitleTokocash.visibility = if (homeHeaderWalletAction.isVisibleActionButton) View.GONE else View.VISIBLE
 
-                        //TODO: Move to viewmodel implementation / mapper
                         if (homeHeaderWalletAction.isShowTopup) {
                             tvBalanceTokocash.setTextColor(itemView.context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_G500))
                             tvBalanceTokocash.text = itemView.resources.getString(R.string.home_header_topup_ovo)
@@ -198,7 +201,6 @@ class OvoWidgetView: FrameLayout {
                         tvTitleTokocash.text = TITLE
                         tvActionTokocash.visibility = View.VISIBLE
                         tvBalanceTokocash.visibility = View.GONE
-                        //TODO: Move to viewmodel implementation / mapper
                         if (element.isPendingTokocashChecked && element.cashBackData != null) {
                             if (element.cashBackData?.amount?:0 > 0) {
                                 tvTitleTokocash.text = "(+ ${element?.cashBackData?.amountText} )"
@@ -249,8 +251,6 @@ class OvoWidgetView: FrameLayout {
                                     listener?.actionInfoPendingCashBackTokocash(it, homeHeaderWalletAction.appLinkActionButton)
                                 }
                             }
-                        } else {
-//                            listener?.onRequestPendingCashBack()
                         }
                     }
                 }
@@ -327,14 +327,12 @@ class OvoWidgetView: FrameLayout {
                                 else
                                     tokopointsDrawerHomeData.mainPageTitle
                         )
-                        if(tokopointsDrawerHomeData.sectionContent.isNotEmpty() &&
-                                tokopointsDrawerHomeData.sectionContent.first().textAttributes?.text?.contains(BEBAS_ONGKIR_TYPE, ignoreCase = true) == true){
-                            OvoWidgetTracking.sendBebasOngkir(listener?.userId ?: "0")
-                        } else if (tokopointsDrawerHomeData.sectionContent.isNotEmpty() &&
-                                tokopointsDrawerHomeData.redirectAppLink.contains(KUPON_SAYA_URL_PATH)) {
-                            OvoWidgetTracking.sendClickOnTokopointsNewCouponTracker()
-                        } else {
-                            OvoWidgetTracking.sendTokopointTrackerClick()
+                        if(tokopointsDrawerHomeData.type == TYPE_BBO){
+                            OvoWidgetTracking.sendClickOnBBOBalanceWidgetTracker(true, listener?.userId ?: "0")
+                        } else if (tokopointsDrawerHomeData.type == TYPE_COUPON || tokopointsDrawerHomeData.type == TYPE_REWARDS) {
+                            OvoWidgetTracking.sendClickOnCouponBalanceWidgetTracker(true, listener?.userId?:"")
+                        } else if (tokopointsDrawerHomeData.type == TYPE_TOKOPOINTS) {
+                            OvoWidgetTracking.sendClickOnTokopointsBalanceWidgetTracker(true, listener?.userId?:"")
                         }
                     }
                 }
@@ -413,7 +411,7 @@ class OvoWidgetView: FrameLayout {
                                 else
                                     tokopointsDrawerHomeData.mainPageTitle
                         )
-                        OvoWidgetTracking.sendBebasOngkir(listener?.userId ?: "0")
+                        OvoWidgetTracking.sendClickOnBBOBalanceWidgetTracker(true, listener?.userId?:"")
                     }
                 }
             }
@@ -476,7 +474,7 @@ class OvoWidgetView: FrameLayout {
                 }
                 walletAnalytics.eventClickActivationOvoHomepage()
             } else {
-                OvoWidgetTracking.eventOvo()
+                OvoWidgetTracking.sendClickOnOVOBalanceWidgetTracker(true, listener?.userId?:"")
             }
             val intentBalanceWallet = RouteManager.getIntent(context, applinkString)
             context.startActivity(intentBalanceWallet)
