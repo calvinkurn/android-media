@@ -278,6 +278,10 @@ class TopChatViewStateImpl constructor(
         onCheckChatBlocked(viewModel.headerModel.role, viewModel.headerModel.name, viewModel.blockedStatus)
     }
 
+    override fun scrollToBottom() {
+        recyclerView.scrollToPosition(0)
+    }
+
     private fun initListPadding(viewModel: ChatroomViewModel) {
         if (!viewModel.replyable) {
             val bottomPadding = recyclerView.context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4)

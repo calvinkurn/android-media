@@ -40,7 +40,6 @@ class TopchatRoomBuyerWebSocketTest : TopchatRoomTest() {
         onView(withId(R.id.send_but))
                 .perform(click())
         websocket.simulateResponse(wsResponseText)
-        waitForIt(RV_DELAY)
 
         // Then
         onView(withRecyclerView(R.id.recycler_view).atPositionOnView(
