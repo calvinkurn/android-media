@@ -30,25 +30,27 @@ class PackageParentViewHolder(
     : AbstractViewHolder<EventPDPTicketGroup>(view) {
 
     lateinit var eventPDPTracking: EventPDPTracking
+    private var ticketItemGrouplist: MutableList<PackageV3> = mutableListOf()
 
-    var eventPDPTicketAdapter = EventPDPTicketItemPackageAdapter(onBindItemTicketListener, onCoachmarkListener)
 
     override fun bind(element: EventPDPTicketGroup?) {
         itemView.accordionEventPDPTicket.run {
             accordionData.clear()
             removeAllViews()
             onItemClick = { position: Int, _ ->
-                onBindItemTicketListener.resetPackage()
                 val rvTicketItem = itemView.accordionEventPDPTicket.getChildAt(position).findViewById<RecyclerView>(rvId)
                 for (i in 0 until rvTicketItem.childCount) {
                     val vh = rvTicketItem.findViewHolderForAdapterPosition(i)
                             as EventPDPTicketItemPackageAdapter.EventPDPTicketItemPackageViewHolder
                     vh.resetQuantities()
                 }
+
+                onBindItemTicketListener.resetPackage()
             }
         }
         element?.ticketModels?.forEach {
 //            idPackage = it.id
+            ticketItemGrouplist.add(it)
             if (it.isRecommendationPackage) {
                 renderForRecommendationPackage(it)
             } else {
@@ -59,6 +61,7 @@ class PackageParentViewHolder(
 
     private fun mapPackageV3ToAccordionData(view: View, value: PackageV3, isRecommendation: Boolean)
             : AccordionDataUnify {
+        val eventPDPTicketAdapter = EventPDPTicketItemPackageAdapter(onBindItemTicketListener, onCoachmarkListener)
         val salesPrice = getRupiahAllowZeroFormat(value.salesPrice.toLong())
         val rvEventChildTicket = RecyclerView(view.context)
         rvEventChildTicket.layoutParams = RecyclerView.LayoutParams(

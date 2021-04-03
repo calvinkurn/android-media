@@ -3,6 +3,7 @@ package com.tokopedia.entertainment.pdp.adapter
 import android.app.Activity
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -38,6 +39,7 @@ class EventPDPTicketItemPackageAdapter(
     lateinit var eventPDPTracking: EventPDPTracking
 
     inner class EventPDPTicketItemPackageViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        private var textWatcher: TextWatcher? = null
         fun bind(items: PackageItem) {
             if (isRecommendationPackage) {
                 renderForRecommendationPackage(items)
@@ -47,6 +49,8 @@ class EventPDPTicketItemPackageAdapter(
         }
 
         private fun renderForMainPackage(items: PackageItem) {
+            Log.d("EventPDPPackageAdapter", "lets bind $items :::: $itemView ::: $adapterPosition")
+            Log.d("EventPDPPackageAdapter", "listItemPackage : ${listItemPackage.size} ::: ${listItemPackage}")
             with(itemView) {
 
                 onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
@@ -96,15 +100,19 @@ class EventPDPTicketItemPackageAdapter(
                     eventPDPTracking.onClickQuantity()
                 }
 
+                if (textWatcher != null) {
+                    quantityEditor.editText.removeTextChangedListener(textWatcher)
+                    textWatcher = null
+                }
 
-                quantityEditor.editText.addTextChangedListener(object : TextWatcher {
+                textWatcher = object : TextWatcher {
                     override fun afterTextChanged(txtTotal: Editable?) {
-
                     }
 
                     override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 
                     override fun onTextChanged(txtTotal: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                        Log.d("EventPDPPackageAdapter", "instance : $txtTotal ::: ${this@EventPDPTicketItemPackageAdapter} : ${items.name}")
                         if (txtTotal.toString().isNotBlank()) {
                             if (getDigit(txtTotal.toString()) > items.maxQty.toInt()) {
                                 quantityEditor.editText.error = String.format(resources.getString(R.string.ent_error_value_exceeded), items.maxQty)
@@ -144,7 +152,9 @@ class EventPDPTicketItemPackageAdapter(
                                 total.toString(), isError, items.name, items.productId, items.salesPrice,
                                 getDate(items.dates, onBindItemTicketListener.getSelectedDate()), packageName)
                     }
-                })
+                }
+
+                quantityEditor.editText.addTextChangedListener(textWatcher)
 
                 txtPilih_ticket.setOnClickListener {
                     itemView.txtPilih_ticket.visibility = View.GONE

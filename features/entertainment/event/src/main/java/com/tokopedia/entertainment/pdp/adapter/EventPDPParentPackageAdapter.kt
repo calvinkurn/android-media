@@ -19,6 +19,5 @@ class EventPDPParentPackageAdapter (packageTypeFactoryImpl: PackageTypeFactoryIm
             holder.eventPDPTracking = eventPDPTracking
         }
         super.onBindViewHolder(holder, position)
-
     }
 }
