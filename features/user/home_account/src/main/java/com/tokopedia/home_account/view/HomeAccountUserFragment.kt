@@ -88,7 +88,6 @@ import com.tokopedia.searchbar.navigation_component.listener.NavRecyclerViewScro
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.LocalLoad
@@ -189,14 +188,14 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
     }
 
     private fun setupObserver() {
-        viewModel.buyerAccountDataData.observe(viewLifecycleOwner, {
+        viewModel.buyerAccountDataData.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> onSuccessGetBuyerAccount(it.data)
                 is Fail -> onFailGetData()
             }
         })
 
-        viewModel.firstRecommendationData.observe(viewLifecycleOwner, {
+        viewModel.firstRecommendationData.observe(viewLifecycleOwner, Observer {
             removeLoadMoreLoading()
             when (it) {
                 is Success -> onSuccessGetFirstRecommendationData(it.data)
@@ -207,7 +206,7 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
             }
         })
 
-        viewModel.getRecommendationData.observe(viewLifecycleOwner, {
+        viewModel.getRecommendationData.observe(viewLifecycleOwner, Observer {
             removeLoadMoreLoading()
             when (it) {
                 is Success -> addRecommendationItem(it.data)
@@ -218,7 +217,7 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
             }
         })
 
-        viewModel.ovoBalance.observe(viewLifecycleOwner, {
+        viewModel.ovoBalance.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     onSuccessGetOvoBalance(it.data)
@@ -229,7 +228,7 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
             }
         })
 
-        viewModel.shortcutData.observe(viewLifecycleOwner, {
+        viewModel.shortcutData.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     memberLocalLoad?.hide()
