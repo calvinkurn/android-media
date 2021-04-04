@@ -69,6 +69,5 @@ class PinnedViewComponent(
     interface Listener {
 
         fun onPinnedMessageActionClicked(view: PinnedViewComponent, applink: String, message: String)
-        fun onPinnedProductActionClicked(view: PinnedViewComponent)
     }
 }

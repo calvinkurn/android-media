@@ -28,6 +28,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.coachmark.CoachMark2
@@ -83,6 +84,7 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.searchbar.helper.ViewHelper
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
+import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.searchbar.navigation_component.listener.NavRecyclerViewScrollListener
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
@@ -485,9 +487,9 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         home_account_user_toolbar?.let {
-            it.setIcon(IconBuilder()
-                    .addIcon(IconList.ID_NAV_GLOBAL) {}
-            )
+            it.setIcon(IconBuilder(
+                    IconBuilderFlag(pageSource = ApplinkConsInternalNavigation.SOURCE_ACCOUNT)
+            ).addIcon(iconId = IconList.ID_NAV_GLOBAL) {})
         }
 
         setupStatusBar()
@@ -546,7 +548,7 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
         viewModel.getShortcutData()
     }
 
-    private fun showHomeAccountTokopoints() : Boolean {
+    private fun showHomeAccountTokopoints(): Boolean {
         return isShowHomeAccountTokopoints
     }
 
@@ -592,7 +594,6 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
         home_account_user_fragment_rv.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
         home_account_user_fragment_rv?.adapter = adapter
         home_account_user_fragment_rv?.isNestedScrollingEnabled = false
-        setupSettingList()
     }
 
     private fun setupSettingList() {
