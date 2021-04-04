@@ -66,20 +66,6 @@ class LoggerRepository(private val logDao: LoggerDao,
         val scalyrEventList = setScalyrEventList(logs)
         val newRelicConfigList = setNewRelicConfigList(logs)
 
-//        if (scalyrConfigs.isNotEmpty() && newRelicConfigs.isEmpty()) {
-//            val scalyrSendSuccess = sendScalyrLogToServer(scalyrConfigs[tokenIndex], logs)
-//            if (scalyrSendSuccess) {
-//                deleteEntries(logs)
-//            }
-//        } else if (scalyrConfigs.isEmpty() && newRelicConfigs.isNotEmpty()) {
-//            val newRelicSendSuccess = sendNewRelicLogToServer(newRelicConfigs[tokenIndex], logs)
-//            if (newRelicSendSuccess) {
-//                deleteEntries(logs)
-//            }
-//        } else if (scalyrConfigs.isNotEmpty() && newRelicConfigs.isNotEmpty()) {
-//            sendMultipleLogToServer(tokenIndex, logs)
-//        }
-
         coroutineScope {
             launch {
                 val jobList = mutableListOf<Deferred<Boolean>>()
