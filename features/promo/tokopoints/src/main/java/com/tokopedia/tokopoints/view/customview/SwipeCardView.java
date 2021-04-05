@@ -120,7 +120,7 @@ public class SwipeCardView extends FrameLayout implements View.OnTouchListener {
                     layoutParams.width = (int) event.getX();
                     mTouchView.setLayoutParams(layoutParams);
                     if (event.getX() > getMaxSwipeWidth() * .3) {
-                        mTextSwipeTitle.setTextColor(androidx.core.content.ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0));
+                        mTextSwipeTitle.setTextColor(androidx.core.content.ContextCompat.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N0));
                         mSwipeIcon.setVisibility(GONE);
                     }
                 }
