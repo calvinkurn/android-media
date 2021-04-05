@@ -31,6 +31,15 @@ class OrderProductViewHolder(itemView: View, val mainNavListener: MainNavListene
     override fun bind(productModel: OrderProductModel) {
         val context = itemView.context
 
+        itemView.addOnImpressionListener(productModel)  {
+            TrackingTransactionSection.impressionOnOrderStatus(
+                    userId = mainNavListener.getUserId(),
+                    orderLabel = productModel.navProductModel.productNameText,
+                    position = adapterPosition,
+                    orderId = productModel.navProductModel.id,
+                    orderStatusCard = productModel.navProductModel.statusText
+            )
+        }
         //title
         itemView.order_product_name.text = productModel.navProductModel.productNameText
 

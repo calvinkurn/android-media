@@ -110,6 +110,7 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
 
     private fun View.renderStockPercentage(productCardModel: ProductCardModel) {
         progressBarStock?.shouldShowWithAction(productCardModel.stockBarLabel.isNotEmpty()) {
+            progressBarStock.setProgressIcon(icon = null)
             if (productCardModel.stockBarLabel.equals(WORDING_SEGERA_HABIS, ignoreCase = true)) {
                 progressBarStock.setProgressIcon(
                         icon = ContextCompat.getDrawable(context, R.drawable.ic_fire_filled),

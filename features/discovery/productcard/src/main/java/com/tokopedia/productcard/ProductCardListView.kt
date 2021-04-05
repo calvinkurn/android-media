@@ -19,6 +19,7 @@ import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.ProgressBarUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import kotlinx.android.synthetic.main.product_card_content_layout.view.*
+import kotlinx.android.synthetic.main.product_card_grid_layout.view.*
 import kotlinx.android.synthetic.main.product_card_list_layout.view.*
 import kotlinx.android.synthetic.main.product_card_list_layout.view.buttonAddToCart
 import kotlinx.android.synthetic.main.product_card_list_layout.view.buttonNotify
@@ -117,6 +118,7 @@ class ProductCardListView: BaseCustomView, IProductCardView {
 
     private fun View.renderStockPercentage(productCardModel: ProductCardModel) {
         progressBarStock?.shouldShowWithAction(productCardModel.stockBarLabel.isNotEmpty()) {
+            progressBarStock.setProgressIcon(icon = null)
             if (productCardModel.stockBarLabel.equals(WORDING_SEGERA_HABIS, ignoreCase = true)) {
                 progressBarStock.setProgressIcon(
                         icon = ContextCompat.getDrawable(context, R.drawable.ic_fire_filled),
