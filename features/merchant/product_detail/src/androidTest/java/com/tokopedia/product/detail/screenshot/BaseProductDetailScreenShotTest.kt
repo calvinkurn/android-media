@@ -1,7 +1,6 @@
 package com.tokopedia.product.detail.screenshot
 
 import android.content.Context
-import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.assertion.ViewAssertions
@@ -12,9 +11,11 @@ import androidx.test.rule.ActivityTestRule
 import com.tokopedia.instrumentation.test.R
 import com.tokopedia.product.detail.ProductDetailActivityCommonTest
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
-import com.tokopedia.test.application.espresso_component.CommonActions.getAllViewsViewHolder
+import com.tokopedia.test.application.espresso_component.CommonActions.findViewAndScreenShot
+import com.tokopedia.test.application.espresso_component.CommonActions.findViewHolderAndScreenshot
+import com.tokopedia.test.application.espresso_component.CommonActions.screenShotFullRecyclerView
+import com.tokopedia.test.application.espresso_component.CommonActions.takeScreenShotVisibleViewInScreen
 import com.tokopedia.test.application.util.InstrumentationMockHelper
-import com.tokopedia.test.application.util.ViewUtils
 import com.tokopedia.test.application.util.setupDarkModeTest
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import org.junit.Before
@@ -41,17 +42,32 @@ abstract class BaseProductDetailScreenShotTest {
 
     @Test
     fun screenShot() {
+        val activity = activityCommonRule.activity
         waitForData()
         scrollToBottom() // trigger recom listener
         scrollToTop()
-        waitForData()
 
-        val views: MutableList<View?> = mutableListOf()
-        getAllViewsViewHolder(com.tokopedia.product.detail.R.id.rv_pdp, activityCommonRule.activity.getAdapterTotalSize() - 2) { view, index ->
-            Thread.sleep(2000)
-            views.add(view)
-        }
-        ViewUtils.mergeScreenShot(filePrefix(), "test", views)
+        //Screenshot visible screen
+        takeScreenShotVisibleViewInScreen(activity.window.decorView, filePrefix(), "top")
+
+        //Screenshot full recycler view
+        screenShotFullRecyclerView(com.tokopedia.product.detail.R.id.rv_pdp,
+                1, // exclude media at position 0
+                activityCommonRule.activity.getAdapterTotalSize() - 1,  //Here I dont want include last position in my recyclerview
+                "${filePrefix()}-full")
+
+        //Screenshot partial view
+        findViewAndScreenShot(com.tokopedia.product.detail.R.id.base_btn_action, filePrefix(), "button")
+
+        //Screenshot per-viewholder
+        findViewHolderAndScreenshot(com.tokopedia.product.detail.R.id.rv_pdp, activity.getPositionViewHolderByName("product_content"), filePrefix(), "content")
+        findViewHolderAndScreenshot(com.tokopedia.product.detail.R.id.rv_pdp, activity.getPositionViewHolderByName("social_proof_mini"), filePrefix(), "social proof")
+        findViewHolderAndScreenshot(com.tokopedia.product.detail.R.id.rv_pdp, activity.getPositionViewHolderByName("review"), filePrefix(), "review")
+        findViewHolderAndScreenshot(com.tokopedia.product.detail.R.id.rv_pdp, activity.getPositionViewHolderByName("variant_options"), filePrefix(), "variant")
+        findViewHolderAndScreenshot(com.tokopedia.product.detail.R.id.rv_pdp, activity.getPositionViewHolderByName("protection"), filePrefix(), "info")
+        findViewHolderAndScreenshot(com.tokopedia.product.detail.R.id.rv_pdp, activity.getPositionViewHolderByName("shop_credibility"), filePrefix(), "shop info")
+        findViewHolderAndScreenshot(com.tokopedia.product.detail.R.id.rv_pdp, activity.getPositionViewHolderByName("discussion_faq"), filePrefix(), "discussion", true)
+        findViewHolderAndScreenshot(com.tokopedia.product.detail.R.id.rv_pdp, activity.getPositionViewHolderByName("pdp_5"), filePrefix(), "recom", true)
 
         activityCommonRule.activity.finishAndRemoveTask()
     }
@@ -73,10 +89,11 @@ abstract class BaseProductDetailScreenShotTest {
     }
 
     private fun scrollToBottom() {
+        val activity = activityCommonRule.activity
         Espresso.onView(ViewMatchers.withId(com.tokopedia.product.detail.R.id.rv_pdp))
                 .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
                 .perform(
-                        RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(activityCommonRule.activity.getLastPositionIndex())
+                        RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(activity.getPositionViewHolderByName("pdp_5"))
                 )
     }
 
