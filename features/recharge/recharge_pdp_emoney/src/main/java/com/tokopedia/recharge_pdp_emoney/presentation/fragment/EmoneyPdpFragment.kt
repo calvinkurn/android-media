@@ -59,15 +59,12 @@ class EmoneyPdpFragment : BaseDaggerFragment() {
 
         loadData()
 
-        //dummmy
+        // dummy
+        // will replace this
         emoneyPdpHeaderView.titleText = "Cek saldo kamu di sini"
         emoneyPdpHeaderView.subtitleText = "Yuk, coba cek sisa saldo di kartu e-money kamu."
         emoneyPdpHeaderView.buttonCtaText = "Cek Saldo"
-
         emoneyPdpInputCardWidget.initView()
-
-        emoneyPdpTab.addNewTab("Recents")
-        emoneyPdpTab.addNewTab("Promo")
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -105,6 +102,15 @@ class EmoneyPdpFragment : BaseDaggerFragment() {
         if (recommendations.isEmpty() && promoList.isEmpty()) {
             emoneyPdpViewPager.hide()
             return
+        }
+
+        val itemCount = arrayListOf(recommendations.isNotEmpty(), promoList.isNotEmpty()).count { it }
+
+        if (itemCount == 1 && recommendations.isEmpty()) {
+            emoneyPdpTab.addNewTab(getString(R.string.recharge_pdp_emoney_promo_tab))
+        } else if (itemCount == 2) {
+            emoneyPdpTab.addNewTab(getString(R.string.recharge_pdp_emoney_recents_tab))
+            emoneyPdpTab.addNewTab(getString(R.string.recharge_pdp_emoney_promo_tab))
         }
 
         val adapter = EmoneyPdpFragmentPagerAdapter(this, recommendations, promoList)
