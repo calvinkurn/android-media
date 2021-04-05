@@ -251,7 +251,7 @@ class OtherMenuViewHolder(private val itemView: View,
 
     private fun setShopStatusType(shopStatusUiModel: ShopStatusUiModel) {
         val shopType = shopStatusUiModel.shopType
-        showShopStatusHeader(shopType)
+        showShopStatusHeader(shopType, shopStatusUiModel.thematicIllustrationUrl)
         val layoutInflater = LayoutInflater.from(context).inflate(shopType.shopTypeLayoutRes, null, false)
         val shopStatusLayout: View = when(shopType) {
             is RegularMerchant -> {
@@ -289,17 +289,11 @@ class OtherMenuViewHolder(private val itemView: View,
         }
     }
 
-    private fun showShopStatusHeader(shopType: ShopType) {
-        itemView.shopStatusHeader?.setImageDrawable(ContextCompat.getDrawable(context, shopType.shopTypeHeaderRes))
-        itemView.shopStatusHeaderIcon?.run {
-            if (shopType !is RegularMerchant) {
-                visibility = View.VISIBLE
-                shopType.shopTypeHeaderIconRes?.let { iconRes ->
-                    setImageDrawable(ContextCompat.getDrawable(context, iconRes))
-                }
-            } else {
-                visibility = View.GONE
-            }
+    private fun showShopStatusHeader(shopType: ShopType, thematicIllustrationUrl: String = "") {
+        itemView.shopStatusHeader?.setImageResource(shopType.shopTypeHeaderRes)
+
+        itemView.findViewById<AppCompatImageView>(R.id.iv_other_menu_thematic)?.let { thematicIv ->
+            ImageHandler.loadImageWithoutPlaceholderAndError(thematicIv, thematicIllustrationUrl)
         }
     }
 
