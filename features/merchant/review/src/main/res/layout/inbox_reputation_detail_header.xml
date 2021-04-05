@@ -180,6 +180,7 @@
                 android:layout_width="@dimen/icon_prod_size"
                 android:layout_height="@dimen/icon_prod_size"
                 android:layout_margin="@dimen/dp_5"
+                android:contentDescription="@null"
                 app:srcCompat="@drawable/ic_locked2"/>
 
             <com.tokopedia.unifyprinciples.Typography
