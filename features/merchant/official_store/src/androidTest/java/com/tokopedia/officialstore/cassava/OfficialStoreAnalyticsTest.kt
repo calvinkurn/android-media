@@ -4,7 +4,6 @@ import android.content.Intent
 import android.util.Log
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
-import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.contrib.RecyclerViewActions
@@ -68,11 +67,8 @@ class OfficialStoreAnalyticsTest {
     @Test
     fun testOfficialStore() {
         initTest()
-
         doActivityTest()
-
-        doHomeCassavaTest()
-
+        assertCassava()
         addDebugEnd()
     }
 
@@ -110,7 +106,7 @@ class OfficialStoreAnalyticsTest {
         logTestMessage("Done UI Test")
     }
 
-    private fun doHomeCassavaTest() {
+    private fun assertCassava() {
         waitForData()
         //worked
         MatcherAssert.assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME),
@@ -157,10 +153,9 @@ class OfficialStoreAnalyticsTest {
                 CommonActions.clickOnEachItemRecyclerView(viewHolder.itemView, R.id.carouselProductCardRecyclerView,0)
             }
             is OfficialProductRecommendationViewHolder -> {
-                Espresso.onView(allOf(isDisplayed(), withId(R.id.recycler_view)))
+                onView(allOf(isDisplayed(), withId(R.id.recycler_view)))
                         .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(i, ViewActions.click()))
             }
         }
     }
-
 }
