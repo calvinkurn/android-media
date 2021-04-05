@@ -205,6 +205,10 @@ data class ProductCardModel (
         return isShowLabelCategory && isShowLabelCostPerUnit
     }
 
+    fun isShowLabelShipping() =
+            !isShowFreeOngkirBadge()
+                    && (getLabelShipping()?.title?.isNotEmpty() == true)
+
     fun getRenderedLabelGroupVariantList(): List<LabelGroupVariant> {
         val (colorVariant, sizeVariant, customVariant) = getSplittedLabelGroupVariant()
 

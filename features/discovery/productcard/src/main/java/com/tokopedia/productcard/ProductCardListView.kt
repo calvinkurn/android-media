@@ -43,7 +43,7 @@ class ProductCardListView: BaseCustomView, IProductCardView {
 
         textTopAds?.showWithCondition(productCardModel.isTopAds)
 
-        renderProductCardContent(productCardModel)
+        renderProductCardContent(productCardModel, isWideContent = true)
 
         renderStockBar(progressBarStock, textViewStockLabel, productCardModel)
 
