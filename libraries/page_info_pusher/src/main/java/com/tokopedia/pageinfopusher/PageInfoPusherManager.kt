@@ -108,7 +108,7 @@ class PageInfoPusherManager(val activity: Activity) {
     private fun eventDisplayGeneralInfo(infoId: String?) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(
                 DataLayer.mapOf(
-                        EVENT, "",
+                        EVENT, "viewGeneralInfo",
                         EVENT_CATEGORY, "android - tools",
                         EVENT_ACTION, "general info - impression",
                         EVENT_LABEL, "$infoId"
