@@ -67,16 +67,17 @@ class LoggerRepository(private val logDao: LoggerDao,
             launch {
                 val jobList = mutableListOf<Deferred<Boolean>>()
 
-                val scalyrEventListList = setConfigListServer(logs).first
-                val newRelicMessageList = setConfigListServer(logs).second
+                val mappedList = mapLogs(logs)
+                val scalyrEventListList = mappedList.first
+                val newRelicConfigList = mappedList.second
 
                 if (scalyrEventListList.isNotEmpty()) {
                     val jobScalyr = async { sendScalyrLogToServer(scalyrConfigs[tokenIndex], logs, scalyrEventListList) }
                     jobList.add(jobScalyr)
                 }
 
-                if (newRelicMessageList.isNotEmpty()) {
-                    val jobNewRelic = async { sendNewRelicLogToServer(newRelicConfigs[tokenIndex], logs, newRelicMessageList) }
+                if (newRelicConfigList.isNotEmpty()) {
+                    val jobNewRelic = async { sendNewRelicLogToServer(newRelicConfigs[tokenIndex], logs, newRelicConfigList) }
                     jobList.add(jobNewRelic)
                 }
 
@@ -96,7 +97,7 @@ class LoggerRepository(private val logDao: LoggerDao,
         return loggerCloudScalyrDataSource.sendLogToServer(config, scalyrEventList)
     }
 
-    private fun setConfigListServer(logs: List<Logger>): Pair<List<ScalyrEvent>, List<String>> {
+    private fun mapLogs(logs: List<Logger>): Pair<List<ScalyrEvent>, List<String>> {
         val scalyrEventList = mutableListOf<ScalyrEvent>()
         val messageNewRelicList = mutableListOf<String>()
         //make the timestamp equals to timestamp when hit the api
