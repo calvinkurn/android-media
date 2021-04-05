@@ -213,7 +213,7 @@ object SmartBillsQueries {
       ],
       "Sections": [
         {
-          "Title": "Pilih Tagihan",
+          "Title": "Sudah Dibayar",
           "Type": 1,
           "Text": "",
           "Bills": [
@@ -225,7 +225,7 @@ object SmartBillsQueries {
               "ProductID": 31,
               "ProductName": "50.000",
               "CategoryID": 1,
-              "CategoryName": "Pulsa",
+              "CategoryName": "PAID",
               "OperatorID": 5,
               "OperatorName": "XL",
               "ClientNumber": "0877171717711",
@@ -466,7 +466,7 @@ object SmartBillsQueries {
           ]
         },
 {
-          "Title": "Tagihan Butuh Tindakan",
+          "Title": "Pilih Tagihan",
           "Type": 2,
           "Text": "",
           "Bills": [
@@ -478,7 +478,7 @@ object SmartBillsQueries {
               "ProductID": 31,
               "ProductName": "50.000",
               "CategoryID": 1,
-              "CategoryName": "Pulsa",
+              "CategoryName": "MAIN",
               "OperatorID": 5,
               "OperatorName": "XL",
               "ClientNumber": "0877171717711",
@@ -719,7 +719,7 @@ object SmartBillsQueries {
           ]
         },
 {
-          "Title": "Tagihan sudah dibayar",
+          "Title": "Butuh Tindakan",
           "Type": 3,
           "Text": "",
           "Bills": [
@@ -731,7 +731,7 @@ object SmartBillsQueries {
               "ProductID": 31,
               "ProductName": "50.000",
               "CategoryID": 1,
-              "CategoryName": "Pulsa",
+              "CategoryName": "ACTION",
               "OperatorID": 5,
               "OperatorName": "XL",
               "ClientNumber": "0877171717711",

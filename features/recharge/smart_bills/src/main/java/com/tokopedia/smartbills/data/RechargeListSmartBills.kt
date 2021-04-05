@@ -54,7 +54,8 @@ data class Section(
     val text: String = "",
     @SerializedName("Bills")
     @Expose
-    val bills: List<RechargeBills> = listOf()
+    val bills: List<RechargeBills> = listOf(),
+    val positionAccordion: Int = 0
 ): RechargeBillsModel() {
     override fun type(typeFactory: SmartBillsAdapterFactory): Int {
         return typeFactory.type(this)

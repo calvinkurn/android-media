@@ -21,7 +21,7 @@ class SmartBillsAccordionViewHolder(view: View,
 
     override fun bind(element: Section) {
         with(itemView){
-            if(element.type == ACTION_TYPE) smart_bills_view_margin.show()
+            if(element.positionAccordion==0) smart_bills_view_margin.show()
             val view = when(element.type){
                 ACTION_TYPE -> getAccordionwithAction(itemView, element, checkableListener, detailListener, ACTION_TYPE)
                 PAID_TYPE ->  getAccordionwithPaid(itemView, element, checkableListener, detailListener, PAID_TYPE)

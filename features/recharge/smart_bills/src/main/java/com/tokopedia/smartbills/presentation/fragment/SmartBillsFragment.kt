@@ -46,6 +46,7 @@ import com.tokopedia.smartbills.presentation.adapter.viewholder.SmartBillsViewHo
 import com.tokopedia.smartbills.presentation.viewmodel.SmartBillsViewModel
 import com.tokopedia.smartbills.presentation.widget.SmartBillsItemDetailBottomSheet
 import com.tokopedia.smartbills.presentation.widget.SmartBillsToolTipBottomSheet
+import com.tokopedia.smartbills.util.RechargeSmartBillsMapper.getAccordionSection
 import com.tokopedia.smartbills.util.RechargeSmartBillsMapper.getNotAccordionSection
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -151,15 +152,15 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
             view_smart_bills_shimmering.hide()
             when (it) {
                 is Success -> {
-                    val bills = it.data.sections.first().bills
-                    if (bills.isNotEmpty()) {
+                    val bills = getNotAccordionSection(it.data.sections)?.bills
+                    if (!bills.isNullOrEmpty()) {
                         view_smart_bills_select_all_checkbox_container.show()
 
-                        if(it.data.sections.first().title.isNotEmpty())
-                        tv_smart_bills_title.text = it.data.sections.first().title
+                        if(!getNotAccordionSection(it.data.sections)?.title.isNullOrEmpty())
+                        tv_smart_bills_title.text = getNotAccordionSection(it.data.sections)?.title
 
                         renderList(bills)
-                        renderList(getNotAccordionSection(it.data.sections))
+                        renderList(getAccordionSection(it.data.sections))
                         smartBillsAnalytics.impressionAllProducts(bills)
 
                         // Auto select bills based on data
@@ -538,8 +539,9 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
     companion object {
         const val EXTRA_SOURCE_TYPE = "source"
 
-        const val ACTION_TYPE = 2
-        const val PAID_TYPE = 3
+        const val MAIN_TYPE = 2
+        const val ACTION_TYPE = 3
+        const val PAID_TYPE = 1
 
         const val RECHARGE_SMART_BILLS_PAGE_PERFORMANCE = "dg_smart_bills_pdp"
 

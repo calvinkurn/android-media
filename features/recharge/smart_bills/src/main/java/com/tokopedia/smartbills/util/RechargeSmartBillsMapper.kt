@@ -3,6 +3,7 @@ package com.tokopedia.smartbills.util
 import android.view.View
 import com.tokopedia.accordion.AccordionDataUnify
 import com.tokopedia.smartbills.data.Section
+import com.tokopedia.smartbills.presentation.fragment.SmartBillsFragment.Companion.MAIN_TYPE
 
 object RechargeSmartBillsMapper {
 
@@ -19,7 +20,18 @@ object RechargeSmartBillsMapper {
     }
 
 
-    fun getNotAccordionSection(listSection: List<Section>): List<Section>{
-        return listSection.filterNot { it.type == 1 }
+    fun getAccordionSection(listSection: List<Section>): List<Section>{
+        return listSection.filterNot { it.type == MAIN_TYPE }.sortedByDescending { it.type }
+                .mapIndexed { index, it ->
+                    Section(title = it.title, type = it.type,
+                    text = it.text, bills = it.bills, positionAccordion = index)
+        }
     }
+
+    fun getNotAccordionSection(listSection: List<Section>): Section?{
+        val listMainSection = listSection.filter { it.type == MAIN_TYPE }
+        return listMainSection.firstOrNull()
+    }
+
+
 }
