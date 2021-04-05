@@ -4,8 +4,10 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.talk.feature.sellersettings.smartreply.common.data.DiscussionSmartReplyMutationResult
 import com.tokopedia.talk.feature.sellersettings.smartreply.detail.data.DiscussionSetSmartReplySettingResponseWrapper
 import com.tokopedia.talk.feature.sellersettings.smartreply.detail.data.DiscussionSetSmartReplyTemplateResponseWrapper
+import com.tokopedia.talk.feature.sellersettings.smartreply.detail.data.TalkSmartReplyDetailButtonState
 import com.tokopedia.unit.test.ext.verifyErrorEquals
 import com.tokopedia.unit.test.ext.verifySuccessEquals
+import com.tokopedia.unit.test.ext.verifyValueEquals
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
@@ -90,6 +92,44 @@ class TalkSmartReplyDetailViewModelTest : TalkSmartReplyDetailViewModelTestFixtu
         viewModel.setSmartReplyResult.verifyErrorEquals(Fail(expectedResponse))
     }
 
+    @Test
+    fun `when updateIsSwitchActive should set buttonState accordingly`() {
+        val isSwitchActive = true
+        val expectedButtonState = TalkSmartReplyDetailButtonState(isSwitchActive = isSwitchActive)
+
+        viewModel.updateIsSwitchActive(isSwitchActive)
+
+        verifyButtonState(expectedButtonState)
+    }
+
+    @Test
+    fun `when updateMessageChanged should set buttonState accordingly`() {
+        val originalMessage = "Ready gan"
+        val isReady = true
+        val newMessage = "Ready gan, order aja"
+        val expectedButtonState = TalkSmartReplyDetailButtonState(isReadyTextChanged = true)
+
+        viewModel.messageReady = originalMessage
+        viewModel.initMessages()
+        viewModel.updateMessageChanged(newMessage, isReady)
+
+        verifyButtonState(expectedButtonState)
+    }
+
+    @Test
+    fun `when updateMessageChanged for not ready message should set buttonState accordingly`() {
+        val originalMessageNotReady = "Lagi kosong gan"
+        val isNotReady = false
+        val newMessageNotReady = "Lagi kosong gan, entar kita update ya"
+        val expectedButtonState = TalkSmartReplyDetailButtonState(isNotReadyTextChanged = true)
+
+        viewModel.messageNotReady = originalMessageNotReady
+        viewModel.initMessages()
+        viewModel.updateMessageChanged(newMessageNotReady, isNotReady)
+
+        verifyButtonState(expectedButtonState)
+    }
+
     private fun onSetSmartReply_thenReturn(expectedResponse: DiscussionSetSmartReplySettingResponseWrapper) {
         coEvery { discussionSetSmartReplySettingsUseCase.executeOnBackground() } returns expectedResponse
     }
@@ -112,5 +152,9 @@ class TalkSmartReplyDetailViewModelTest : TalkSmartReplyDetailViewModelTestFixtu
 
     private fun verifyDiscussionSetSmartReplyTemplateUseCaseCalled() {
         coVerify { discussionSetSmartReplyTemplateUseCase.executeOnBackground() }
+    }
+
+    private fun verifyButtonState(buttonState: TalkSmartReplyDetailButtonState) {
+        viewModel.buttonState.verifyValueEquals(buttonState)
     }
 }
