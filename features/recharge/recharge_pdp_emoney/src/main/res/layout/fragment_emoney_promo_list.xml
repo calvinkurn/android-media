@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.recyclerview.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/emoneyPdpPromoListRv"
+<com.tokopedia.common.topupbills.widget.TopupBillsPromoListWidget xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/emoneyPdpPromoListWidget"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" />
+    android:layout_height="wrap_content"
+    android:paddingHorizontal="@dimen/unify_space_12"
+    android:paddingBottom="@dimen/unify_space_12"
+    android:paddingTop="@dimen/spacing_lvl3"
+    android:background="@color/Unify_N0" />

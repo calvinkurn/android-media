@@ -5,14 +5,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.common.topupbills.view.adapter.TopupBillsPromoListAdapter
 import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsViewModel
 import com.tokopedia.recharge_pdp_emoney.R
 import com.tokopedia.recharge_pdp_emoney.di.EmoneyPdpComponent
 import com.tokopedia.recharge_pdp_emoney.presentation.viewmodel.EmoneyPdpViewModel
+import com.tokopedia.recharge_pdp_emoney.presentation.widget.EmoneyPdpPromoListSpaceID
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_emoney_promo_list.*
 import javax.inject.Inject
@@ -45,8 +43,9 @@ class EmoneyPdpPromoListFragment : BaseDaggerFragment() {
 
     private fun renderView() {
         val promoData = (topUpBillsViewModel.menuDetailData.value as Success).data.promos
+        emoneyPdpPromoListWidget.setPromoList(promoData)
+        emoneyPdpPromoListWidget.toggleTitle(false)
 
-        emoneyPdpPromoListRv.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
-        emoneyPdpPromoListRv.adapter = TopupBillsPromoListAdapter(promoData)
+        emoneyPdpPromoListWidget.recyclerView.addItemDecoration(EmoneyPdpPromoListSpaceID())
     }
 }
