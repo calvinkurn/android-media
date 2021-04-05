@@ -625,7 +625,6 @@ class TopChatViewStateImpl constructor(
 
     private fun showTemplateChat() {
         templateRecyclerView.show()
-        addBottomPaddingTemplateChat(8.toPx())
     }
 
     private fun hideTemplateChat() {

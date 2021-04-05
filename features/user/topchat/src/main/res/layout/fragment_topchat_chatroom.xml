@@ -157,11 +157,10 @@
                 android:clipToPadding="false"
                 android:overScrollMode="never"
                 android:paddingStart="@dimen/spacing_lvl4"
-                android:paddingTop="@dimen/dp_topchat_12"
+                android:paddingTop="@dimen/unify_space_8"
                 android:paddingEnd="@dimen/spacing_lvl4"
                 android:visibility="gone"
                 tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                tools:layout_marginBottom="@dimen/spacing_lvl3"
                 tools:listitem="@layout/item_template_chat_layout"
                 tools:orientation="horizontal"
                 tools:scrollbars="horizontal"
@@ -174,7 +173,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingStart="@dimen/spacing_lvl4"
-                android:paddingTop="@dimen/dp_topchat_12"
+                android:paddingTop="@dimen/unify_space_8"
                 android:paddingEnd="@dimen/spacing_lvl4">
 
                 <ImageView
