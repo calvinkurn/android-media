@@ -865,7 +865,9 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         if (swipeRefreshLayout!= null) {
             swipeRefreshLayout.setVisibility(View.VISIBLE);
         }
-        globalError.setVisibility(View.GONE);
+        if (globalError!= null) {
+            globalError.setVisibility(View.GONE);
+        }
         webView.reload();
     }
 
