@@ -355,16 +355,16 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
             }
         }
         hideGetMyLocation()
+        setupPersistentBottomSheet()
 
-        if (isLoadingSearchByMap && adapter.dataSize >= MINIMUM_NUMBER_OF_RESULT_LOADED) {
-            isLoadingSearchByMap = false
-        } else {
-            setupPersistentBottomSheet()
-        }
         super.showLoading()
 
         if (adapter.list.size > 0 && adapter.list[0] is LoadingModel) {
-            halfExpandBottomSheet()
+            if (isLoadingSearchByMap && adapter.dataSize >= MINIMUM_NUMBER_OF_RESULT_LOADED) {
+                isLoadingSearchByMap = false
+            } else {
+                halfExpandBottomSheet()
+            }
             hideSearchWithMap()
         }
     }
