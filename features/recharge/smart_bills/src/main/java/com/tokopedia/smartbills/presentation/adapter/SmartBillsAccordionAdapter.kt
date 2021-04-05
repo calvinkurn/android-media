@@ -10,7 +10,8 @@ import com.tokopedia.smartbills.presentation.adapter.viewholder.SmartBillsViewHo
 
 class SmartBillsAccordionAdapter(
         private val checkableListener: BaseCheckableViewHolder.CheckableInteractionListener,
-        private val detailListener: SmartBillsViewHolder.DetailListener):
+        private val detailListener: SmartBillsViewHolder.DetailListener,
+        private val accordionType: Int):
         RecyclerView.Adapter<SmartBillsViewHolder>() {
 
     var bills = emptyList<RechargeBills>()
@@ -26,7 +27,7 @@ class SmartBillsAccordionAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SmartBillsViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.view_smart_bills_item,
                 parent, false)
-        return SmartBillsViewHolder(view, checkableListener, detailListener, true)
+        return SmartBillsViewHolder(view, checkableListener, detailListener, accordionType)
     }
 
     fun addList(bills: List<RechargeBills>){

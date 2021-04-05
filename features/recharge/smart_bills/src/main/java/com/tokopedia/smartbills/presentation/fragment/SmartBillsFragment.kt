@@ -538,6 +538,9 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
     companion object {
         const val EXTRA_SOURCE_TYPE = "source"
 
+        const val ACTION_TYPE = 2
+        const val PAID_TYPE = 3
+
         const val RECHARGE_SMART_BILLS_PAGE_PERFORMANCE = "dg_smart_bills_pdp"
 
         const val SMART_BILLS_PREF = "smart_bills_preference"

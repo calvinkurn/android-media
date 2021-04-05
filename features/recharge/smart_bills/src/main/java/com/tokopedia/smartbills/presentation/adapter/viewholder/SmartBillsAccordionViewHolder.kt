@@ -7,6 +7,8 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.smartbills.R
 import com.tokopedia.smartbills.data.Section
+import com.tokopedia.smartbills.presentation.fragment.SmartBillsFragment.Companion.ACTION_TYPE
+import com.tokopedia.smartbills.presentation.fragment.SmartBillsFragment.Companion.PAID_TYPE
 import com.tokopedia.smartbills.util.RechargeSmartBillsAccordionView.getAccordionwithAction
 import com.tokopedia.smartbills.util.RechargeSmartBillsAccordionView.getAccordionwithPaid
 import com.tokopedia.smartbills.util.RechargeSmartBillsMapper.addAccordionData
@@ -21,9 +23,9 @@ class SmartBillsAccordionViewHolder(view: View,
         with(itemView){
             if(element.type == ACTION_TYPE) smart_bills_view_margin.show()
             val view = when(element.type){
-                ACTION_TYPE -> getAccordionwithAction(itemView, element, checkableListener, detailListener)
-                PAID_TYPE ->  getAccordionwithPaid(itemView, element, checkableListener, detailListener)
-                else -> getAccordionwithAction(itemView, element, checkableListener, detailListener)
+                ACTION_TYPE -> getAccordionwithAction(itemView, element, checkableListener, detailListener, ACTION_TYPE)
+                PAID_TYPE ->  getAccordionwithPaid(itemView, element, checkableListener, detailListener, PAID_TYPE)
+                else -> getAccordionwithAction(itemView, element, checkableListener, detailListener, ACTION_TYPE)
             }
             accordion_smart_bills.apply {
                 accordionData.clear()
@@ -36,7 +38,5 @@ class SmartBillsAccordionViewHolder(view: View,
     companion object{
         @LayoutRes
         val LAYOUT = R.layout.view_smart_bills_item_accordion
-        const val ACTION_TYPE = 2
-        const val PAID_TYPE = 3
     }
 }

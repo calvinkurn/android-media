@@ -16,17 +16,21 @@ import kotlinx.android.synthetic.main.view_smart_bills_need_paid.view.*
 
 object RechargeSmartBillsAccordionView {
 
-    fun getAccordionwithAction(itemView: View, section: Section, checkableListener: BaseCheckableViewHolder.CheckableInteractionListener,
-                               detailListener: SmartBillsViewHolder.DetailListener): View{
+    fun getAccordionwithAction(itemView: View, section: Section,
+                               checkableListener: BaseCheckableViewHolder.CheckableInteractionListener,
+                               detailListener: SmartBillsViewHolder.DetailListener,
+                               accordionType: Int): View{
         val view = LayoutInflater.from(itemView.context).inflate(R.layout.view_smart_bills_need_action, null)
-        view.rv_smart_bills_need_action.showAdapterAccordion(itemView, section, checkableListener, detailListener)
+        view.rv_smart_bills_need_action.showAdapterAccordion(itemView, section, checkableListener, detailListener, accordionType)
         return view
     }
 
-    fun getAccordionwithPaid(itemView: View, section: Section, checkableListener: BaseCheckableViewHolder.CheckableInteractionListener,
-                             detailListener: SmartBillsViewHolder.DetailListener): View{
+    fun getAccordionwithPaid(itemView: View, section: Section,
+                             checkableListener: BaseCheckableViewHolder.CheckableInteractionListener,
+                             detailListener: SmartBillsViewHolder.DetailListener,
+                             accordionType: Int): View{
         val view = LayoutInflater.from(itemView.context).inflate(R.layout.view_smart_bills_need_paid, null)
-        view.rv_smart_bills_need_paid.showAdapterAccordion(itemView, section, checkableListener, detailListener)
+        view.rv_smart_bills_need_paid.showAdapterAccordion(itemView, section, checkableListener, detailListener, accordionType)
         return view
     }
 
@@ -45,8 +49,9 @@ object RechargeSmartBillsAccordionView {
 
     fun RecyclerView.showAdapterAccordion(itemView: View,section: Section,
                                           checkableListener: BaseCheckableViewHolder.CheckableInteractionListener,
-                                          detailListener: SmartBillsViewHolder.DetailListener){
-        val adapterAccordion = SmartBillsAccordionAdapter(checkableListener, detailListener)
+                                          detailListener: SmartBillsViewHolder.DetailListener,
+                                          accordionType: Int){
+        val adapterAccordion = SmartBillsAccordionAdapter(checkableListener, detailListener, accordionType)
         adapterAccordion.addList(section.bills)
         layoutManager = LinearLayoutManager(itemView.context)
         adapter = adapterAccordion

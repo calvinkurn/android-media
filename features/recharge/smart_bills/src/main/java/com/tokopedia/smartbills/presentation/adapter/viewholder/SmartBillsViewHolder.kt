@@ -13,6 +13,8 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.smartbills.R
 import com.tokopedia.smartbills.data.RechargeBills
 import com.tokopedia.smartbills.data.SmartBillsItemDetail
+import com.tokopedia.smartbills.presentation.fragment.SmartBillsFragment.Companion.ACTION_TYPE
+import com.tokopedia.smartbills.presentation.fragment.SmartBillsFragment.Companion.PAID_TYPE
 import com.tokopedia.smartbills.presentation.widget.SmartBillsItemDetailBottomSheet
 import com.tokopedia.smartbills.util.RechargeSmartBillsAccordionView.disableView
 import com.tokopedia.unifyprinciples.Typography
@@ -26,7 +28,7 @@ import kotlinx.android.synthetic.main.view_smart_bills_item.view.*
 class SmartBillsViewHolder(val view: View,
                            checkableListener: CheckableInteractionListener,
                            private val detailListener: DetailListener,
-                           private val isAccordion: Boolean = false
+                           private val accordionType: Int = 0
 ) : BaseCheckableViewHolder<RechargeBills>(view, checkableListener) {
 
     companion object {
@@ -38,7 +40,7 @@ class SmartBillsViewHolder(val view: View,
         super.bind(element)
         with(view) {
 
-            if(isAccordion){
+            if(accordionType == ACTION_TYPE){
                 //showing overlay white
                 smart_bills_view_disable.show()
 
@@ -46,6 +48,15 @@ class SmartBillsViewHolder(val view: View,
                 disableView()
                 tv_smart_bills_item_detail.disableView()
                 cb_smart_bills_item.disableView()
+                tv_smart_bills_item_title.disableView()
+                tv_smart_bills_item_description_bill_name.disableView()
+                tv_smart_bills_item_description_number.disableView()
+                tv_smart_bills_item_price.disableView()
+                tv_due_message.disableView()
+                tv_due_date_label.disableView()
+                tv_smart_bills_item_detail.disableView()
+            } else if(accordionType == PAID_TYPE){
+                cb_smart_bills_item.gone()
             }
 
 
