@@ -37,9 +37,9 @@ class PageInfoPusherManager(val activity: Activity) {
                 remoteConfig.getString(SELLERAPP_GENERAL_INFO)
             } else if (GlobalConfig.APPLICATION_TYPE == GlobalConfig.CONSUMER_APPLICATION) {
                 remoteConfig.getString(MAINAPP_GENERAL_INFO)
-            } else {
+            } else if (GlobalConfig.APPLICATION_TYPE == GlobalConfig.CONSUMER_PRO_APPLICATION) {
                 remoteConfig.getString(PRO_GENERAL_INFO)
-            }
+            } else { "" }
 
             if (rawConfig.isNullOrBlank()) return
 
@@ -86,15 +86,7 @@ class PageInfoPusherManager(val activity: Activity) {
             if (isHitTimber) {
                 Timber.w("P1#DISPLAY_GENERAL_INFO#'" + className
                         + "';id='" + id
-                        + "';dev='" + GlobalConfig.isAllowDebuggingTools()
-                        + "';ver='" + GlobalConfig.VERSION_NAME
-                        + "';manufacturer='" + android.os.Build.MANUFACTURER
-                        + "';model='" + android.os.Build.MODEL
-                        + "';os='" + android.os.Build.VERSION.SDK_INT.toString()
-                        + "';title='" + title + "'"
-                        + "';button_text='" + buttonText + "'"
-                        + "';action_applink='" + actionApplink + "'"
-                        + "';message='" + message + "'")
+                        + "';dev='" + GlobalConfig.isAllowDebuggingTools() + "'")
             }
 
             if (isHitGa) {
