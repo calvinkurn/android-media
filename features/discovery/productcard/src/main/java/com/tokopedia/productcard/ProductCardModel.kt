@@ -195,19 +195,11 @@ data class ProductCardModel (
                 && labelFulfillment.imageUrl.isNotEmpty()
     }
 
-    fun willShowCategoryAndCostPerUnit(): Boolean {
-        val labelCategory = getLabelCategory()
-        val isShowLabelCategory = labelCategory != null && labelCategory.title.isNotEmpty()
+    fun isShowLabelCategory() = !willShowVariant() && (getLabelCategory()?.title?.isNotEmpty() == true)
 
-        val labelCostPerUnit = getLabelCostPerUnit()
-        val isShowLabelCostPerUnit = labelCostPerUnit != null && labelCostPerUnit.title.isNotEmpty()
+    fun isShowLabelCostPerUnit() = !willShowVariant() && (getLabelCostPerUnit()?.title?.isNotEmpty() == true)
 
-        return isShowLabelCategory && isShowLabelCostPerUnit
-    }
-
-    fun isShowLabelShipping() =
-            !isShowFreeOngkirBadge()
-                    && (getLabelShipping()?.title?.isNotEmpty() == true)
+    fun isShowCategoryAndCostPerUnit() = isShowLabelCategory() && isShowLabelCostPerUnit()
 
     fun getRenderedLabelGroupVariantList(): List<LabelGroupVariant> {
         val (colorVariant, sizeVariant, customVariant) = getSplittedLabelGroupVariant()

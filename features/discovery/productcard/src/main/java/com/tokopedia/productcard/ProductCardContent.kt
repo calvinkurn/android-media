@@ -187,11 +187,15 @@ private fun LinearLayout.addLabelVariantCustom(labelVariant: ProductCardModel.La
 }
 
 fun View.renderTextCategoryAndCostPerUnit(productCardModel: ProductCardModel) {
-    textViewCategory?.initLabelGroup(productCardModel.getLabelCategory())
+    textViewCategory?.shouldShowWithAction(productCardModel.isShowLabelCategory()) {
+        it.initLabelGroup(productCardModel.getLabelCategory())
+    }
 
-    dividerCategory?.showWithCondition(productCardModel.willShowCategoryAndCostPerUnit())
+    dividerCategory?.showWithCondition(productCardModel.isShowCategoryAndCostPerUnit())
 
-    textViewCostPerUnit?.initLabelGroup(productCardModel.getLabelCostPerUnit())
+    textViewCostPerUnit?.shouldShowWithAction(productCardModel.isShowLabelCostPerUnit()) {
+        it.initLabelGroup(productCardModel.getLabelCostPerUnit())
+    }
 }
 
 private fun View.renderTextPrice(productCardModel: ProductCardModel) {

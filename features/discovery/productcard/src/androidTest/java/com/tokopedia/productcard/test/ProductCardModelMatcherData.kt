@@ -67,6 +67,7 @@ internal val productCardModelMatcherData: List<ProductCardModelMatcher> = mutabl
     it.add(testLabelCategory())
     it.add(testLabelCostPerUnit())
     it.add(testLabelCategoryAndCostPerUnit())
+    it.add(testLabelVariantPrioritizedOverCategoryAndCostPerUnit())
 }
 
 private fun testOneLineProductName(): ProductCardModelMatcher {
@@ -2000,6 +2001,46 @@ private fun testLabelCategoryAndCostPerUnit(): ProductCardModelMatcher {
         it[R.id.textViewCategory] = isDisplayedWithText(labelCategory.title)
         it[R.id.dividerCategory] = isDisplayed()
         it[R.id.textViewCostPerUnit] = isDisplayedWithText(labelCostPerUnit.title)
+        it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
+        it[R.id.imageShopBadge] = isDisplayed()
+        it[R.id.textViewShopLocation] = isDisplayedWithText(productCardModel.shopLocation)
+        it[R.id.imageSalesRatingFloat] = isDisplayed()
+        it[R.id.salesRatingFloat] = isDisplayedWithText(productCardModel.countSoldRating)
+        it[R.id.imageFreeOngkirPromo] = isDisplayed()
+        it[R.id.imageThreeDots] = isDisplayed()
+    }
+
+    return ProductCardModelMatcher(productCardModel, productCardMatcher)
+}
+
+private fun testLabelVariantPrioritizedOverCategoryAndCostPerUnit(): ProductCardModelMatcher {
+    val labelSize1 = LabelGroupVariant(typeVariant = TYPE_VARIANT_SIZE, title = "S", type = LIGHT_GREY)
+    val labelSize2 = LabelGroupVariant(typeVariant = TYPE_VARIANT_SIZE, title = "M", type = LIGHT_GREY)
+    val labelSize3 = LabelGroupVariant(typeVariant = TYPE_VARIANT_SIZE, title = "XXXL", type = LIGHT_GREY)
+    val labelCustom = LabelGroupVariant(typeVariant = TYPE_VARIANT_CUSTOM, title = "2")
+
+    val labelCategory = LabelGroup(position = LABEL_CATEGORY, title = "Halal", type = TEXT_GREEN)
+    val labelCostPerUnit = LabelGroup(position = LABEL_COST_PER_UNIT, title = "Rp6.500/100 g", type = TEXT_DARK_GREY)
+
+    val productCardModel = ProductCardModel(
+            productName = "Label Variant prioritized over Category and Cost per Unit",
+            productImageUrl = productImageUrl,
+            formattedPrice = "Rp7.999.000",
+            shopBadgeList = mutableListOf<ShopBadge>().also { badges ->
+                badges.add(ShopBadge(isShown = true, imageUrl = officialStoreBadgeImageUrl))
+            },
+            shopLocation = "DKI Jakarta",
+            countSoldRating = "4.5",
+            freeOngkir = FreeOngkir(isActive = true, imageUrl = freeOngkirImageUrl),
+            hasThreeDots = true,
+            labelGroupList = listOf(labelCategory, labelCostPerUnit),
+            labelGroupVariantList = listOf(labelSize1, labelSize2, labelSize3, labelCustom),
+    )
+
+    val productCardMatcher = mutableMapOf<Int, Matcher<View?>>().also {
+        it[R.id.imageProduct] = isDisplayed()
+        it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
+        it[R.id.labelVariantContainer] = isDisplayedWithChildCount(4)
         it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
         it[R.id.imageShopBadge] = isDisplayed()
         it[R.id.textViewShopLocation] = isDisplayedWithText(productCardModel.shopLocation)
