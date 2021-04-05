@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.ApplinkConst
@@ -117,6 +118,13 @@ class EmoneyPdpFragment : BaseDaggerFragment() {
 
             override fun onTabUnselected(p0: TabLayout.Tab?) {}
             override fun onTabReselected(p0: TabLayout.Tab?) {}
+        })
+
+        emoneyPdpViewPager?.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+            override fun onPageSelected(position: Int) {
+                val tab = emoneyPdpTab?.getUnifyTabLayout()?.getTabAt(position)
+                tab?.select()
+            }
         })
     }
 
