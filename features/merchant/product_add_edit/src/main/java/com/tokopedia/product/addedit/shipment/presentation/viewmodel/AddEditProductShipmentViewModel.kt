@@ -6,8 +6,8 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.product.addedit.productlimitation.model.ProductLimitationData
-import com.tokopedia.product.addedit.productlimitation.usecase.ProductLimitationUseCase
+import com.tokopedia.product.addedit.productlimitation.domain.model.ProductLimitationData
+import com.tokopedia.product.addedit.productlimitation.domain.usecase.ProductLimitationUseCase
 import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants.Companion.MAX_WEIGHT_GRAM
 import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants.Companion.MAX_WEIGHT_KILOGRAM
 import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants.Companion.MIN_WEIGHT

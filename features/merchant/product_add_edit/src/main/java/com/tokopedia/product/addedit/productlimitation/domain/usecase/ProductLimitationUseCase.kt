@@ -1,9 +1,9 @@
-package com.tokopedia.product.addedit.productlimitation.usecase
+package com.tokopedia.product.addedit.productlimitation.domain.usecase
 
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.product.addedit.productlimitation.model.ProductAddRuleResponse
+import com.tokopedia.product.addedit.productlimitation.domain.model.ProductAddRuleResponse
 import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 
