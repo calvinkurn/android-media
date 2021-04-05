@@ -332,7 +332,7 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
                     response.data?.let {
                         RecommendationPageTracking.eventUserClickAddToCartWithProductId(it.mapToRecommendationTracking(), ref, internalRef)
                         activity?.run {
-                            showToastSuccessWithAction(RecommendationPageErrorHandler.getErrorMessage(this, response.exception), getString(R.string.recom_see_cart)){
+                            showToastSuccessWithAction(getString(R.string.recom_msg_success_add_to_cart), getString(R.string.recom_see_cart)){
                                 RecommendationPageTracking.eventUserClickSeeToCartWithProductId()
                                 RouteManager.route(context, ApplinkConst.CART)
                             }
