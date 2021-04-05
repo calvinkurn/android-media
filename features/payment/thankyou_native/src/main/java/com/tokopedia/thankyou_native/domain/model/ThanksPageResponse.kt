@@ -81,8 +81,18 @@ data class ThanksPageData(
         val configList: String?,
         @SerializedName("gateway_additional_data")
         val gatewayAdditionalDataList: ArrayList<GatewayAdditionalData>?,
+        @SerializedName("fee_details")
+        val feeDetailList : ArrayList<FeeDetail>?,
         //created and used locally
         var paymentMethodCount: Int
+) : Parcelable
+
+@Parcelize
+data class FeeDetail (
+        @SerializedName("name")
+        val name: String,
+        @SerializedName("amount")
+        val amount: Long,
 ) : Parcelable
 
 @Parcelize

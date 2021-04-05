@@ -127,6 +127,10 @@ query ThanksPageData($paymentID : Int!, $merchant: String!){
        key
        value
     }
+    fee_details{
+        name
+        amount
+    }
   }
 }
 

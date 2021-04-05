@@ -7,7 +7,6 @@ import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.data.config.ChannelConfigStore
 import com.tokopedia.play.broadcaster.data.config.HydraConfigStore
 import com.tokopedia.play.broadcaster.data.config.ProductConfigStore
-import com.tokopedia.play.broadcaster.pusher.PlayPusher
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastMapper
 import com.tokopedia.play.broadcaster.util.bottomsheet.PlayBroadcastDialogCustomizer
 import com.tokopedia.play.broadcaster.util.preference.PermissionSharedPreferences
@@ -35,8 +34,6 @@ interface PlayBroadcastComponent {
     fun permissionPrefs(): PermissionSharedPreferences
 
     fun userSession(): UserSessionInterface
-
-    fun playPusher(): PlayPusher
 
     fun inject(broadcastActivity: PlayBroadcastActivity)
 

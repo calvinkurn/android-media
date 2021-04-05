@@ -11,10 +11,8 @@ import android.widget.ImageView
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.inflateLayout
-import com.tokopedia.kotlin.extensions.view.toBitmap
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.address.Token
 import com.tokopedia.manageaddress.R
@@ -63,7 +61,7 @@ class ManageAddressItemAdapter(private val listener: ManageAddressItemAdapterLis
 
     inner class ManageAddressViewHolder(itemView: View, private val listener: ManageAddressItemAdapterListener) : RecyclerView.ViewHolder(itemView) {
         val pinpointText = itemView.findViewById<Typography>(R.id.tv_pinpoint_state)
-        val imageLocation = itemView.findViewById<ImageView>(R.id.img_location_state)
+        val imageLocation = itemView.findViewById<IconUnify>(R.id.img_location_state)
         val btnPrimary = itemView.findViewById<UnifyButton>(R.id.btn_primary)
         val btnSecondary = itemView.findViewById<UnifyButton>(R.id.btn_secondary)
         val cardAddress = itemView.findViewById<CardUnify>(R.id.card_address)
@@ -104,10 +102,10 @@ class ManageAddressItemAdapter(private val listener: ManageAddressItemAdapterLis
                 cardAddress.hasCheckIcon = cardSelected
                 if (cardSelected) {
                     cardAddress.cardType = CardUnify.TYPE_BORDER_ACTIVE
+                    cardAddress.setPadding(itemView.getDimens(R.dimen.dp_6), itemView.getDimens(R.dimen.dp_6), itemView.getDimens(com.tokopedia.abstraction.R.dimen.dp_16), itemView.getDimens(R.dimen.dp_6))
                 } else {
                     cardAddress.cardType = CardUnify.TYPE_BORDER
                 }
-
                 setListener(itemView, data)
             }
         }
@@ -124,15 +122,13 @@ class ManageAddressItemAdapter(private val listener: ManageAddressItemAdapterLis
 
         private fun setVisibility(peopleAddress: RecipientAddressModel) {
             if(peopleAddress.latitude.isNullOrEmpty()|| peopleAddress.longitude.isNullOrEmpty()) {
-                val icon = ContextCompat.getDrawable(itemView.context, R.drawable.ic_no_pinpoint)
-                imageLocation.setImageDrawable(icon)
+                val colorGrey = ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96)
+                imageLocation.setImage(IconUnify.LOCATION_OFF, colorGrey, colorGrey)
                 pinpointText.text = itemView.context.getString(R.string.no_pinpoint)
-                pinpointText.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
             } else {
-                val icon = ContextCompat.getDrawable(itemView.context, R.drawable.ic_pinpoint_green)
-                imageLocation.setImageDrawable(icon)
+                val colorGreen = ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_G500)
+                imageLocation.setImage(IconUnify.LOCATION, colorGreen, colorGreen)
                 pinpointText.text = itemView.context.getString(R.string.pinpoint)
-                pinpointText.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
             }
         }
 
