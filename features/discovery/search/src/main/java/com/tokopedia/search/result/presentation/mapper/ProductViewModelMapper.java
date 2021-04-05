@@ -27,7 +27,8 @@ public class ProductViewModelMapper {
     public ProductDataView convertToProductViewModel(
             int lastProductItemPositionFromCache,
             SearchProductModel searchProductModel,
-            String pageTitle
+            String pageTitle,
+            boolean isLocalSearch
     ) {
         SearchProductModel.SearchProduct aceSearchProduct = searchProductModel.getSearchProduct();
         SearchProductModel.SearchProductHeader searchProductHeader = aceSearchProduct.getHeader();
@@ -39,7 +40,7 @@ public class ProductViewModelMapper {
             productDataView.setGlobalNavDataView(convertToViewModel(searchProductModel.getGlobalSearchNavigation()));
         }
         productDataView.setCpmModel(searchProductModel.getCpmModel());
-        productDataView.setRelatedDataView(convertToRelatedViewModel(searchProductData.getRelated()));
+        productDataView.setRelatedDataView(convertToRelatedViewModel(searchProductData.getRelated(), isLocalSearch));
         productDataView.setProductList(convertToProductItemViewModelList(
                 lastProductItemPositionFromCache, searchProductData.getProductList(), pageTitle
         ));
@@ -107,10 +108,10 @@ public class ProductViewModelMapper {
         return itemList;
     }
 
-    private RelatedDataView convertToRelatedViewModel(SearchProductModel.Related related) {
+    private RelatedDataView convertToRelatedViewModel(SearchProductModel.Related related, boolean isLocalSearch) {
         List<BroadMatchDataView> broadMatchDataViewList = new ArrayList<>();
         for (SearchProductModel.OtherRelated otherRelated: related.getOtherRelatedList()) {
-            broadMatchDataViewList.add(convertToBroadMatchViewModel(otherRelated));
+            broadMatchDataViewList.add(convertToBroadMatchViewModel(otherRelated, isLocalSearch));
         }
 
         return new RelatedDataView(
@@ -120,7 +121,7 @@ public class ProductViewModelMapper {
         );
     }
 
-    private BroadMatchDataView convertToBroadMatchViewModel(SearchProductModel.OtherRelated otherRelated) {
+    private BroadMatchDataView convertToBroadMatchViewModel(SearchProductModel.OtherRelated otherRelated, boolean isLocalSearch) {
         List<BroadMatchItemDataView> broadMatchItemDataViewList = new ArrayList<>();
         int position = 0;
         for (SearchProductModel.OtherRelatedProduct otherRelatedProduct: otherRelated.getProductList()) {
@@ -132,6 +133,7 @@ public class ProductViewModelMapper {
                 otherRelated.getKeyword(),
                 otherRelated.getUrl(),
                 otherRelated.getApplink(),
+                isLocalSearch,
                 broadMatchItemDataViewList
         );
     }
