@@ -286,7 +286,6 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         initLocationMap()
         setupToolbarAction()
         setUpTitleAndSubtitle()
-        setupContentMargin()
         setupFindWithMapButton()
         initGetMyLocation()
 
@@ -441,18 +440,8 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         }
         bottomSheetBehavior.isFitToContents = false
 
-        tvHotelSearchListTitle.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
-            override fun onGlobalLayout() {
-                tvHotelSearchListTitle.viewTreeObserver.removeOnGlobalLayoutListener(this)
-
-                var bottomSheetHeaderHeight = 0
-                bottomSheetHeaderHeight += topHotelSearchMapListKnob.measuredHeight
-                bottomSheetHeaderHeight += tvHotelSearchListTitle.measuredHeight
-                bottomSheetHeaderHeight += resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3)
-
-                bottomSheetBehavior.peekHeight = bottomSheetHeaderHeight
-            }
-        })
+        val bottomSheetHeaderHeight = resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl7)
+        bottomSheetBehavior.peekHeight = bottomSheetHeaderHeight
     }
 
     private fun setUpTitleAndSubtitle() {
@@ -469,33 +458,6 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                     hotelSearchModel.adult)
             headerHotelSearchMap.subheaderView?.setTextColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N700_44))
         }
-    }
-
-    private fun setupContentMargin() {
-        val viewTree = container_hotel_search_map_header.viewTreeObserver
-        viewTree.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
-            override fun onGlobalLayout() {
-                viewTree.removeOnGlobalLayoutListener(this)
-
-                val headerHeight = container_hotel_search_map_header.measuredHeight
-
-                // setup vertical recyclerview margin
-                rvVerticalPropertiesHotelSearchMap.setMargin(
-                        left = 0,
-                        top = headerHeight,
-                        right = 0,
-                        bottom = 0
-                )
-
-                // setup empty result margin
-                containerEmptyResultState.setMargin(
-                        left = 0,
-                        top = headerHeight,
-                        right = 0,
-                        bottom = 0
-                )
-            }
-        })
     }
 
     private fun changeSearchParameter() {
