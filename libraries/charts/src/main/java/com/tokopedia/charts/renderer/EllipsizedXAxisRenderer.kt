@@ -18,9 +18,10 @@ class EllipsizedXAxisRenderer(
 
     companion object {
         private const val NO_POSITION = -1f
+        private const val MAX_TEXT_WIDTH_PERCENTAGE = 0.95f
     }
 
-    private fun calculateXAxis(): List<Float> {
+    private fun calculateXAxis(): FloatArray {
         val centeringEnabled = mXAxis.isCenterAxisLabelsEnabled
 
         val positions = FloatArray(mXAxis.mEntryCount * 2)
@@ -55,12 +56,12 @@ class EllipsizedXAxisRenderer(
             }
         }
 
-        return positions.filter { it != NO_POSITION }
+        return positions
     }
 
     private fun drawLabel(c: Canvas?, formattedLabel: String?, x: Float, y: Float, maxX: Float, anchor: MPPointF?, angleDegrees: Float) {
         if (maxX != NO_POSITION) {
-            val trimmedLabel = TextUtils.ellipsize(formattedLabel, TextPaint(mAxisLabelPaint), abs(maxX - x), TextUtils.TruncateAt.END)
+            val trimmedLabel = TextUtils.ellipsize(formattedLabel, TextPaint(mAxisLabelPaint), abs(maxX - x) * MAX_TEXT_WIDTH_PERCENTAGE, TextUtils.TruncateAt.END)
             drawLabel(c, trimmedLabel.toString(), x, y, anchor, angleDegrees)
         } else {
             drawLabel(c, formattedLabel, x, y, anchor, angleDegrees)
@@ -71,8 +72,11 @@ class EllipsizedXAxisRenderer(
         val labelRotationAngleDegrees = mXAxis.labelRotationAngle
         val positions = calculateXAxis()
         for (i in positions.indices step 2) {
-            val label = mXAxis.valueFormatter.getAxisLabel(mXAxis.mEntries[i / 2], mXAxis)
-            drawLabel(c, label, positions[i], pos, positions.getOrElse(i + 2) { NO_POSITION }, anchor, labelRotationAngleDegrees)
+            if (positions[i] != NO_POSITION) {
+                val label = mXAxis.valueFormatter.getAxisLabel(mXAxis.mEntries[i / 2], mXAxis)
+                val maxX = positions.getOrElse(i + 2) { NO_POSITION }
+                drawLabel(c, label, positions[i], pos, maxX, anchor, labelRotationAngleDegrees)
+            }
         }
     }
 }
