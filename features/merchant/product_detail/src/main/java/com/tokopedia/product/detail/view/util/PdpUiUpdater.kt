@@ -41,17 +41,11 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
     val basicContentMap: ProductContentDataModel?
         get() = mapOfData[ProductDetailConstant.PRODUCT_CONTENT] as? ProductContentDataModel
 
-    val shopInfoMap: ProductShopInfoDataModel?
-        get() = mapOfData[ProductDetailConstant.SHOP_INFO] as? ProductShopInfoDataModel
-
     val productInfoMap: ProductInfoDataModel?
         get() = mapOfData[ProductDetailConstant.PRODUCT_INFO] as? ProductInfoDataModel
 
     val productDiscussionMostHelpfulMap: ProductDiscussionMostHelpfulDataModel?
         get() = mapOfData[ProductDetailConstant.DISCUSSION_FAQ] as? ProductDiscussionMostHelpfulDataModel
-
-    val productReviewOldMap: ProductMostHelpfulReviewDataModel?
-        get() = mapOfData[ProductDetailConstant.MOST_HELPFUL_REVIEW] as? ProductMostHelpfulReviewDataModel
 
     val productReviewMap: ProductMostHelpfulReviewDataModel?
         get() = mapOfData[ProductDetailConstant.REVIEW] as? ProductMostHelpfulReviewDataModel
@@ -86,9 +80,6 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
     val notifyMeMap: ProductNotifyMeDataModel?
         get() = mapOfData[ProductDetailConstant.UPCOMING_DEALS] as? ProductNotifyMeDataModel
 
-    val miniShopInfo: ProductMiniShopInfoDataModel?
-        get() = mapOfData[ProductDetailConstant.MINI_SHOP_INFO] as? ProductMiniShopInfoDataModel
-
     val mediaMap: ProductMediaDataModel?
         get() = mapOfData[ProductDetailConstant.MEDIA] as? ProductMediaDataModel
 
@@ -97,9 +88,6 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
 
     val shopCredibility: ProductShopCredibilityDataModel?
         get() = mapOfData[ProductDetailConstant.PRODUCT_SHOP_CREDIBILITY] as? ProductShopCredibilityDataModel
-
-    val getShopInfo: ProductShopInfoDataModel
-        get() = shopInfoMap ?: ProductShopInfoDataModel()
 
     val productByMeMap: ProductGeneralInfoDataModel?
         get() = mapOfData[ProductDetailConstant.KEY_BYME] as? ProductGeneralInfoDataModel
@@ -152,24 +140,8 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                 }
             }
 
-            updateData(ProductDetailConstant.MINI_SHOP_INFO, loadInitialData) {
-                miniShopInfo?.run {
-                    shopName = it.basic.shopName
-                    isOS = it.data.isOS
-                    isGoldMerchant = it.data.isPowerMerchant
-                }
-            }
-
             updateData(ProductDetailConstant.PRODUCT_SHOP_CREDIBILITY, loadInitialData) {
                 shopCredibility?.run {
-                    isOs = it.data.isOS
-                    isPm = it.data.isPowerMerchant
-                }
-            }
-
-            updateData(ProductDetailConstant.SHOP_INFO, loadInitialData) {
-                shopInfoMap?.run {
-                    shopName = it.basic.shopName
                     isOs = it.data.isOS
                     isPm = it.data.isPowerMerchant
                 }
@@ -205,14 +177,6 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                     ratingScore = it.basic.stats.rating
                 }
             }
-
-            updateData(ProductDetailConstant.MOST_HELPFUL_REVIEW, loadInitialData) {
-                productReviewOldMap?.run {
-                    totalRating = it.basic.stats.countReview.toIntOrZero()
-                    ratingScore = it.basic.stats.rating
-                }
-            }
-
         }
     }
 
@@ -289,17 +253,6 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                      isOutOfStock: Boolean,
                      boeImageUrl: String) {
         p2Data.let {
-            updateData(ProductDetailConstant.SHOP_INFO) {
-                shopInfoMap?.run {
-                    shopLocation = it.shopInfo.location
-                    shopLastActive = it.shopInfo.shopLastActive
-                    shopAvatar = it.shopInfo.shopAssets.avatar
-                    isAllowManage = it.shopInfo.isAllowManage
-                    isGoAPotik = it.isGoApotik
-                    shopBadge = it.shopBadge
-                    shouldRenderShopInfo = true
-                }
-            }
 
             updateData(ProductDetailConstant.TICKER_INFO) {
                 tickerInfoMap?.run {
@@ -366,13 +319,6 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
             updateDataTradein(context, it.validateTradeIn)
             updateData(ProductDetailConstant.REVIEW) {
                 productReviewMap?.run {
-                    listOfReviews = it.helpfulReviews
-                    imageReviews = it.imageReviews?.imageReviewItems
-                }
-            }
-
-            updateData(ProductDetailConstant.MOST_HELPFUL_REVIEW) {
-                productReviewOldMap?.run {
                     listOfReviews = it.helpfulReviews
                     imageReviews = it.imageReviews?.imageReviewItems
                 }
@@ -578,28 +524,18 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
     }
 
     fun successUpdateShopFollow(isFavorite: Boolean) {
-        updateData(ProductDetailConstant.SHOP_INFO) {
-            shopInfoMap?.isFavorite = !isFavorite
-        }
-
         updateData(ProductDetailConstant.PRODUCT_SHOP_CREDIBILITY) {
             shopCredibility?.isFavorite = !isFavorite
         }
     }
 
     fun updateShopFollow(isFollow: Int) {
-        updateData(ProductDetailConstant.SHOP_INFO) {
-            shopInfoMap?.isFavorite = isFollow == ProductDetailConstant.ALREADY_FAVORITE_SHOP
-        }
         updateData(ProductDetailConstant.PRODUCT_SHOP_CREDIBILITY) {
             shopCredibility?.isFavorite = isFollow == ProductDetailConstant.ALREADY_FAVORITE_SHOP
         }
     }
 
     fun failUpdateShopFollow() {
-        updateData(ProductDetailConstant.SHOP_INFO) {
-            shopInfoMap?.enableButtonFavorite = true
-        }
         updateData(ProductDetailConstant.PRODUCT_SHOP_CREDIBILITY) {
             shopCredibility?.enableButtonFavorite = true
         }
