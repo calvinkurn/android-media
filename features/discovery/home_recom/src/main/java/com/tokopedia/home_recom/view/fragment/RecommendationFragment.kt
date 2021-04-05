@@ -462,7 +462,7 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
         productInfoDataModel.productDetailData?.let {productDetailData ->
             if (recommendationWidgetViewModel.isLoggedIn()) {
                 if (productDetailData.isTopads) {
-                    TopAdsUrlHitter(className).hitClickUrl(
+                    TopAdsUrlHitter(context).hitClickUrl(
                             className,
                             productDetailData.clickUrl,
                             productDetailData.id.toString(),
