@@ -98,6 +98,25 @@ class TopchatRoomSellerProductAttachmentTest : BaseSellerTopchatRoomTest() {
     }
 
     @Test
+    fun user_update_stock_single_product_active_snackbar() {
+        // Given
+        val productName = "Product Testing"
+        setupChatRoomActivity()
+        getChatUseCase.response = sellerProductChatReplies
+        chatAttachmentUseCase.response = sellerProductAttachment
+        createSuccessUpdateStockIntentResult(
+                "1261590628", 55, ProductStatus.ACTIVE
+        )
+        inflateTestFragment()
+
+        // When
+        clickChangeStockBtn(R.id.recycler_view, 1)
+
+        // Then
+        assertSnackbarText("Stok produk \"$productName\" berhasil diubah.")
+    }
+
+    @Test
     fun user_update_stock_single_product_inactive() {
         // Given
         setupChatRoomActivity()

@@ -279,6 +279,10 @@ abstract class TopchatRoomTest {
         ).check(matches(withText(text)))
     }
 
+    protected fun assertSnackbarText(msg: String) {
+        onView(withText(msg)).check(matches(isDisplayed()))
+    }
+
     protected fun generateTemplateResponse(
             enable: Boolean = true,
             success: Boolean = true,

@@ -76,12 +76,16 @@ open class BaseSellerTopchatRoomTest : TopchatRoomTest() {
     }
 
     protected fun createSuccessUpdateStockIntentResult(
-            productId: String, stock: Int, status: ProductStatus
+            productId: String,
+            stock: Int,
+            status: ProductStatus,
+            productName: String = "Product Testing"
     ) {
         val intent = Intent().apply {
             putExtra(ProductManageCommonConstant.EXTRA_PRODUCT_ID, productId)
             putExtra(ProductManageCommonConstant.EXTRA_UPDATED_STOCK, stock)
             putExtra(ProductManageCommonConstant.EXTRA_UPDATED_STATUS, status.name)
+            putExtra(ProductManageCommonConstant.EXTRA_PRODUCT_NAME, productName)
         }
         intending(anyIntent()).respondWith(
                 Instrumentation.ActivityResult(Activity.RESULT_OK, intent)
