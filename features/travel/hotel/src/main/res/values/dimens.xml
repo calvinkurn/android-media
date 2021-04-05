@@ -45,5 +45,4 @@
     <dimen name="hotel_28sp">28sp</dimen>
     <dimen name="hotel_image_list_horizontal_width">112dp</dimen>
     <dimen name="hotel_image_list_horizontal_height">98dp</dimen>
-    <dimen name="margin_top_hotel_fab_search_around_here">64dp</dimen>
 </resources>

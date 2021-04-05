@@ -565,6 +565,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         }
 
         btnGetRadiusHotelSearchMap.addItem(wrapper)
+        btnGetRadiusHotelSearchMap.setMargins(0, resources.getDimensionPixelSize(R.dimen.hotel_70dp),0,0)
     }
 
     private fun addMyLocation(latLong: LatLng) {
