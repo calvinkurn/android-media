@@ -106,12 +106,8 @@ class EmoneyPdpFragment : BaseDaggerFragment() {
 
         val itemCount = arrayListOf(recommendations.isNotEmpty(), promoList.isNotEmpty()).count { it }
 
-        if (itemCount == 1 && recommendations.isEmpty()) {
-            emoneyPdpTab.addNewTab(getString(R.string.recharge_pdp_emoney_promo_tab))
-        } else if (itemCount == 2) {
-            emoneyPdpTab.addNewTab(getString(R.string.recharge_pdp_emoney_recents_tab))
-            emoneyPdpTab.addNewTab(getString(R.string.recharge_pdp_emoney_promo_tab))
-        }
+        if (recommendations.isNotEmpty()) emoneyPdpTab.addNewTab(getString(R.string.recharge_pdp_emoney_recents_tab))
+        if (promoList.isNotEmpty()) emoneyPdpTab.addNewTab(getString(R.string.recharge_pdp_emoney_promo_tab))
 
         val adapter = EmoneyPdpFragmentPagerAdapter(this, recommendations, promoList)
         emoneyPdpViewPager.adapter = adapter
