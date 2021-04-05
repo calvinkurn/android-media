@@ -186,9 +186,6 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), RedDotGimmickView, 
             }
         }
 
-        settingItems.add(SettingItemViewModel(SettingConstant.SETTING_OCC_PREFERENCE_ID,
-                getString(R.string.title_occ_preference_setting), getString(R.string.subtitle_occ_preference_setting)))
-
         settingItems.add(SettingItemViewModel(SettingConstant.SETTING_NOTIFICATION_ID,
                 getString(R.string.title_notification_setting), getString(R.string.subtitle_notification_setting)))
         settingItems.add(SwitchSettingItemViewModel(SettingConstant.SETTING_SHAKE_ID,
@@ -292,9 +289,6 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), RedDotGimmickView, 
             }
             SettingConstant.SETTING_FEEDBACK_FORM -> {
                 RouteManager.route(context, ApplinkConst.FEEDBACK_FORM)
-            }
-            SettingConstant.SETTING_OCC_PREFERENCE_ID -> {
-                RouteManager.route(context, ApplinkConstInternalMarketplace.PREFERENCE_LIST)
             }
             else -> {
             }

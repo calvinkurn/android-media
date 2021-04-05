@@ -20,7 +20,6 @@ object SettingConstant {
     const val SETTING_ACCOUNT_SAMPAI_ID = 15
     const val SETTING_TEMPLATE_ID = 16
     const val SETTING_PIN = 17
-    const val SETTING_OCC_PREFERENCE_ID = 18
     const val SETTING_SHOP_INFO_ID = 21
     const val SETTING_SHOP_ETALASE_ID = 22
     const val SETTING_SHOP_PRODUCT_ID = 23
