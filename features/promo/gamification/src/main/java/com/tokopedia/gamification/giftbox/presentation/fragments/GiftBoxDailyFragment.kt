@@ -24,6 +24,7 @@ import com.bumptech.glide.Glide
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.gamification.R
 import com.tokopedia.gamification.audio.AudioFactory
 import com.tokopedia.gamification.di.ActivityContextModule
@@ -47,7 +48,9 @@ import com.tokopedia.gamification.pdp.data.LiveDataResult
 import com.tokopedia.gamification.pdp.presentation.views.PdpErrorListener
 import com.tokopedia.gamification.pdp.presentation.views.PdpGamificationView
 import com.tokopedia.gamification.pdp.presentation.views.Wishlist
+import com.tokopedia.gamification.taptap.data.entiity.BackButton
 import com.tokopedia.kotlin.extensions.view.setMargin
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.unifycomponents.toPx
 import kotlinx.android.synthetic.main.fragment_gift_box_daily.*
 import timber.log.Timber
@@ -78,6 +81,9 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
     var disableGiftBoxTap = false
     var autoApplyMessage = ""
     var infoUrl: String? = null
+    var backButtonData: BackButton? = null
+    val APPLNK_REWARD_HISTORY_KEY = "app_flag_gami_reward_history"
+    val APPLNK_HOME = "tokopedia://home"
 
     private val HTTP_STATUS_OK = "200"
 
@@ -191,7 +197,6 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
             val shadowOffset = tvRewardFirstLine.dpToPx(4)
             tvRewardFirstLine.setShadowLayer(shadowRadius, 0f, shadowOffset, shadowColor)
             tvRewardSecondLine.setShadowLayer(shadowRadius, 0f, shadowOffset, shadowColor)
-//            tvBenefits.setShadowLayer(shadowRadius, 0f, shadowOffset, shadowColor)
         }
 
     }
@@ -215,19 +220,21 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                         giftBoxDailyView.postDelayed({ playPrizeSound() }, soundDelay)
 
                         when (rewardState) {
-                            RewardContainer.RewardState.COUPON_WITH_POINTS -> {
-                                performRewardAnimation(startDelay, stageLightAnim)
-                            }
-                            RewardContainer.RewardState.POINTS_ONLY -> {
-                                performRewardAnimation(startDelay, stageLightAnim)
-                            }
-
                             RewardContainer.RewardState.COUPON_ONLY -> {
                                 performRewardAnimation(startDelay, stageLightAnim)
                             }
+
+                            RewardContainer.RewardState.RP_0_ONLY -> {
+                                backButtonData = BackButton(requireContext().getString(R.string.gami_back_button_cancel),
+                                        null, true,
+                                        requireContext().getString(R.string.gami_back_button_message),
+                                        requireContext().getString(R.string.gami_back_button_title),
+                                        requireContext().getString(R.string.gami_back_button_ok))
+
+                                performRp0Animation(startDelay)
+                            }
                         }
                     })
-
                 }
             }
 
@@ -361,9 +368,14 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                                     if (indexOfAnd > 0) {
                                         val array = benefitText[1].split("&")
                                         val sb = StringBuilder()
-                                        sb.append(array[0])
-                                        sb.append(" & ")
-                                        sb.append(array[1])
+                                        var i = 0
+                                        while (i < array.size) {
+                                            sb.append(array[i])
+                                            if (i != array.size - 1) {
+                                                sb.append(" & ")
+                                            }
+                                            i += 1
+                                        }
                                         tvRewardSecondLine.text = sb.toString()
                                     } else {
                                         tvRewardSecondLine.text = benefitText[1]
@@ -373,11 +385,17 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                             }
 
                             val actionButtonList = giftBoxRewardEntity?.gamiCrack?.actionButton
-                            if (actionButtonList != null && actionButtonList.isNotEmpty()) {
+                            if (actionButtonList != null
+                                    && actionButtonList.isNotEmpty()
+                                    && !actionButtonList[0].type.isNullOrEmpty()
+                                    && actionButtonList[0].type == "redirect"
+                            ) {
                                 tokoBtnContainer.setSecondButtonText(actionButtonList[0].text)
                                 tokoBtnContainer.btnSecond.setOnClickListener {
                                     checkInternetOnButtonActionAndRedirect()
                                 }
+                            } else {
+                                tokoButtonContainer.btnSecond.visibility = View.GONE
                             }
 
                             handleRecomPage(it.data?.gamiCrack?.recommendation)
@@ -464,6 +482,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
             override fun onStateChanged(bottomSheet: View, newState: Int) {
                 if (newState == BottomSheetBehavior.STATE_EXPANDED) {
                     GtmEvents.clickProductRecom(userSession?.userId)
+                    pdpGamificationView.recyclerView.scrollBy(0, 1.toPx())
                 }
             }
         })
@@ -475,18 +494,18 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                 rewardContainer.postDelayed({
                     setupBottomSheet(true)
                     var shopId = ""
-                    if(!recommendation.shopId.isNullOrEmpty()){
+                    if (!recommendation.shopId.isNullOrEmpty()) {
                         shopId = recommendation.shopId
                     }
-                    pdpGamificationView.getRecommendationParams(recommendation.pageName?:"", shopId, shopId.isEmpty())
+                    pdpGamificationView.getRecommendationParams(recommendation.pageName ?: "", shopId, shopId.isEmpty())
                 }, 1000L)
 
             }
         }
     }
 
-    fun canShowRecomPage(recommendation: Recommendation?) :Boolean{
-        if(recommendation!=null){
+    fun canShowRecomPage(recommendation: Recommendation?): Boolean {
+        if (recommendation != null) {
             return recommendation.isShow == true && !recommendation.pageName.isNullOrEmpty()
         }
         return false
@@ -501,6 +520,12 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
         animatorSet.start()
     }
 
+    fun performRp0Animation(startDelay: Long) {
+        val rewardAnim = rewardContainer.showSingleLargeRewardAnimation()
+        rewardAnim.startDelay = startDelay
+        rewardAnim.start()
+    }
+
     private fun handleInfoIcon(statusCode: String?, infoUrl: String?) {
         if (statusCode == HTTP_STATUS_OK && !infoUrl.isNullOrEmpty()) {
             this.infoUrl = infoUrl
@@ -513,36 +538,36 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
         GtmEvents.clickInfoButton(userSession?.userId)
     }
 
-    fun handleButtonAction() {
+    private fun handleButtonAction() {
         val actionButtonList = giftBoxRewardEntity?.gamiCrack?.actionButton
         if (actionButtonList != null && actionButtonList.isNotEmpty()) {
             val applink = actionButtonList[0].applink
             if (!applink.isNullOrEmpty()) {
-
-                //check for auto-apply
-                var isAutoApply = false
-                var dummyCode = ""
-                val list = giftBoxRewardEntity?.gamiCrack?.benefits
-                if (!list.isNullOrEmpty()) {
-                    for (item in list) {
-                        if (item.isAutoApply) {
-                            isAutoApply = true
-                            autoApplyMessage = item.autoApplyMsg
-                            dummyCode = item.dummyCode
-                            break
-                        }
-                    }
-                }
-
-                if (isAutoApply && !autoApplyMessage.isNullOrEmpty() && !dummyCode.isNullOrEmpty()) {
-                    viewModel.autoApply(dummyCode)
-                }
+                performAutoApply()
                 RouteManager.route(context, applink)
                 GtmEvents.clickClaimButton(tokoButtonContainer.btnSecond.btn.text.toString(), userSession?.userId)
             }
         }
+    }
 
+    fun performAutoApply() {
+        var isAutoApply = false
+        var dummyCode = ""
+        val list = giftBoxRewardEntity?.gamiCrack?.benefits
+        if (!list.isNullOrEmpty()) {
+            for (item in list) {
+                if (item.isAutoApply) {
+                    isAutoApply = true
+                    autoApplyMessage = item.autoApplyMsg
+                    dummyCode = item.dummyCode
+                    break
+                }
+            }
+        }
 
+        if (isAutoApply && !autoApplyMessage.isNullOrEmpty() && !dummyCode.isNullOrEmpty()) {
+            viewModel.autoApply(dummyCode)
+        }
     }
 
     fun setClickEventOnReminder() {
@@ -839,6 +864,67 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
     }
 
     override fun getMenu() = if (infoUrl.isNullOrEmpty()) R.menu.gami_menu_share else R.menu.gami_menu_daily
+
+    private fun showBackDialog(backButton: BackButton, appLinkForReward: String) {
+        context?.let {
+            val dialog = DialogUnify(it, DialogUnify.VERTICAL_ACTION, DialogUnify.WITH_ICON)
+            dialog.setTitle(backButton.title)
+            dialog.dialogImageContainer.layoutParams.apply {
+                height = 180.toPx()
+                width = 180.toPx()
+            }
+            dialog.dialogImageContainer.setBackgroundColor(ContextCompat.getColor(it, R.color.gf_black_transparent))
+            dialog.dialogImageContainer.outlineProvider = null
+            dialog.setImageDrawable(R.drawable.gami_exit_icon)
+            dialog.setDescription(backButton.text)
+            dialog.setPrimaryCTAText(backButton.yesText)
+            dialog.setPrimaryCTAClickListener {
+                try {
+                    dialog.dismiss()
+                    backButtonData = null
+                    RouteManager.route(context, appLinkForReward)
+                    GtmEvents.clickGreenCtaOnBackButtonDialog(userSession?.userId)
+                } catch (ex: Exception) {
+                }
+            }
+            dialog.setSecondaryCTAText(backButton.cancelText)
+            dialog.setSecondaryCTAClickListener {
+                try {
+                    dialog.dismiss()
+                    RouteManager.route(context, APPLNK_HOME)
+                    GtmEvents.clickCancelCtaOnBackButtonDialog(userSession?.userId)
+                } catch (ex: Exception) {
+                }
+
+            }
+            if (isTablet) {
+                val layoutParams = dialog.findViewById<View>(com.tokopedia.dialog.R.id.dialog_bg).layoutParams
+                layoutParams.width = (giftBoxDailyView.width - giftBoxDailyView.width * 0.3).toInt()
+            }
+            dialog.show()
+            GtmEvents.impressionRpZeroDialog(userSession?.userId)
+        }
+    }
+
+    private fun getAppLinkForBackButtonDialog(): String? {
+        try {
+            val remoteConfig = FirebaseRemoteConfigImpl(requireContext())
+            return remoteConfig.getString(APPLNK_REWARD_HISTORY_KEY, "")
+        } catch (e: Exception) {
+            return ""
+        }
+    }
+
+    fun onBackPressed(): Boolean {
+        if (backButtonData != null) {
+            val appLinkForReward = getAppLinkForBackButtonDialog()
+            if (!appLinkForReward.isNullOrEmpty()) {
+                showBackDialog(backButtonData!!, appLinkForReward)
+                return false
+            }
+        }
+        return true
+    }
 }
 
 @Retention(AnnotationRetention.SOURCE)

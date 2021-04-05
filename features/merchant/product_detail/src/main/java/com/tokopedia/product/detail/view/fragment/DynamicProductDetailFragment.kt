@@ -134,8 +134,10 @@ import com.tokopedia.purchase_platform.common.constant.CartConstant
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
 import com.tokopedia.purchase_platform.common.feature.checkout.ShipmentFormRequest
 import com.tokopedia.purchase_platform.common.feature.helpticket.domain.model.SubmitTicketResult
+import com.tokopedia.recommendation_widget_common.RecommendationTypeConst
 import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationChip
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+import com.tokopedia.recommendation_widget_common.widget.comparison.stickytitle.StickyTitleView
 import com.tokopedia.referral.Constants
 import com.tokopedia.referral.ReferralAction
 import com.tokopedia.remoteconfig.RemoteConfigInstance
@@ -855,15 +857,15 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
         RouteManager.route(context, applink)
     }
 
-    override fun eventRecommendationClick(recomItem: RecommendationItem, position: Int, pageName: String, title: String, componentTrackDataModel: ComponentTrackDataModel) {
+    override fun eventRecommendationClick(recomItem: RecommendationItem, chipValue: String, position: Int, pageName: String, title: String, componentTrackDataModel: ComponentTrackDataModel) {
         DynamicProductDetailTracking.Click.eventRecommendationClick(
-                recomItem, position, viewModel.isUserSessionActive, pageName, title, viewModel.getDynamicProductInfoP1, componentTrackDataModel)
+                recomItem, chipValue, false, position, viewModel.isUserSessionActive, pageName, title, viewModel.getDynamicProductInfoP1, componentTrackDataModel)
     }
 
-    override fun eventRecommendationImpression(recomItem: RecommendationItem, position: Int, pageName: String, title: String, componentTrackDataModel: ComponentTrackDataModel) {
+    override fun eventRecommendationImpression(recomItem: RecommendationItem, chipValue: String, position: Int, pageName: String, title: String, componentTrackDataModel: ComponentTrackDataModel) {
         if (::trackingQueue.isInitialized) {
             DynamicProductDetailTracking.Impression.eventRecommendationImpression(
-                    trackingQueue, position, recomItem, viewModel.isUserSessionActive, pageName, title,
+                    trackingQueue, position, recomItem, chipValue, false, viewModel.isUserSessionActive, pageName, title,
                     viewModel.getDynamicProductInfoP1, componentTrackDataModel)
         }
     }
@@ -878,6 +880,13 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
 
     override fun loadTopads(pageName: String) {
         viewModel.loadRecommendation(pageName)
+    }
+
+    /**
+     * PdpComparisonWidgetViewHolder
+     */
+    override fun getStickyTitleView(): StickyTitleView? {
+        return stickyTitleComparisonWidget
     }
 
     /**
@@ -1541,8 +1550,20 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
     private fun observeRecommendationProduct() {
         viewLifecycleOwner.observe(viewModel.loadTopAdsProduct) { data ->
             data.doSuccessOrFail({
-                pdpUiUpdater?.updateRecommendationData(it.data)
-                updateUi()
+                val enableComparisonWidget = remoteConfig()?.getBoolean(
+                        RemoteConfigKey.RECOMMENDATION_ENABLE_COMPARISON_WIDGET, true) ?:true
+                if (enableComparisonWidget) {
+                    if (it.data.layoutType == RecommendationTypeConst.TYPE_COMPARISON_WIDGET) {
+                        pdpUiUpdater?.updateComparisonDataModel(it.data)
+                        updateUi()
+                    } else {
+                        pdpUiUpdater?.updateRecommendationData(it.data)
+                        updateUi()
+                    }
+                } else {
+                    pdpUiUpdater?.updateRecommendationData(it.data)
+                    updateUi()
+                }
             }, {
                 pdpUiUpdater?.removeComponent(it.message ?: "")
                 updateUi()
@@ -3374,6 +3395,10 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
             e.printStackTrace()
             true
         }
+    }
+
+    override fun getFragmentTrackingQueue(): TrackingQueue? {
+        return trackingQueue
     }
 
     private fun navAbTestCondition(ifNavRevamp: () -> Unit = {}, ifNavOld: () -> Unit = {}) {

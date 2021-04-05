@@ -1,5 +1,6 @@
 package com.tokopedia.linker;
 
+import android.app.Activity;
 import android.content.Context;
 import android.net.Uri;
 import android.text.TextUtils;
@@ -27,6 +28,7 @@ import com.tokopedia.track.TrackApp;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Method;
 import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
@@ -36,6 +38,7 @@ import io.branch.referral.Branch;
 import io.branch.referral.BranchError;
 import io.branch.referral.ServerRequestGetLATD;
 import io.branch.referral.util.LinkProperties;
+import timber.log.Timber;
 
 
 public class BranchWrapper implements WrapperInterface {
@@ -43,6 +46,8 @@ public class BranchWrapper implements WrapperInterface {
     private String deferredDeeplinkPath;
     private String DESKTOP_GROUPCHAT_URL = "https://www.tokopedia.com/play/redirect?plain=1&url=https://www.tokopedia.link/playblog?";
     private static boolean isBranchInitialized = false;
+    private RemoteConfig remoteConfig;
+    private static Boolean APP_OPEN_FROM_BRANCH_LINK = false;
 
     @Override
     public void init(Context context) {
@@ -51,6 +56,26 @@ public class BranchWrapper implements WrapperInterface {
             if (GlobalConfig.isAllowDebuggingTools()) {
                 Branch.enableLogging();
             }
+            sendPreInstallData(context);
+        }
+    }
+
+    private boolean isXiaomiPreInstallApp(String pkgName){
+        try{
+            Class<?> miui = Class.forName("miui.os.MiuiInit");
+            Method method = miui.getMethod("isPreinstalledPAIPackage", String.class);
+            return (Boolean) method.invoke(null, pkgName);
+        }catch(Exception ex){
+            Timber.w("P2#PRE_INSTALL_XIAOMI#error;error='%s'", ex.getMessage());
+        }
+        return false;
+    }
+
+    private void sendPreInstallData(Context context){
+        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(context);
+        if(remoteConfig.getBoolean(LinkerConstants.ENABLE_XIAOMI_PAI_TRACKING) && isXiaomiPreInstallApp(context.getPackageName())) {
+            Branch.getInstance().setPreinstallCampaign("xiaomipreinstallol-dp_int-tp-10001511-0000-alon-alon");
+            Branch.getInstance().setPreinstallPartner("a_custom_885438735322423255");
         }
     }
 
@@ -71,6 +96,7 @@ public class BranchWrapper implements WrapperInterface {
     @Override
     public void handleDefferedDeeplink(LinkerDeeplinkRequest linkerDeeplinkRequest, Context context) {
         Branch branch = Branch.getInstance();
+        checkBranchLinkUTMParams(linkerDeeplinkRequest);
         if (branch == null) {
             if (linkerDeeplinkRequest != null && linkerDeeplinkRequest.getDefferedDeeplinkCallback() != null) {
                 linkerDeeplinkRequest.getDefferedDeeplinkCallback().onError(
@@ -437,6 +463,9 @@ public class BranchWrapper implements WrapperInterface {
 
 
     private void checkAndSendUtmParams(Context context, JSONObject referringParams) {
+        if (context == null) return;
+        if(needSkipEvent(context)) return;
+
         String utmSource;
         String utmCampaign;
         String utmMedium;
@@ -451,17 +480,13 @@ public class BranchWrapper implements WrapperInterface {
             utmCampaign = referringParams.optString(LinkerConstants.BRANCH_CAMPAIGN);
             utmMedium = referringParams.optString(LinkerConstants.BRANCH_UTM_MEDIUM);
         }
-        sendCampaignTOGTM(context, utmSource, utmCampaign, utmMedium, utmTerm);
+        convertToCampaign(context, utmSource, utmCampaign, utmMedium, utmTerm);
     }
 
-
-    private void sendCampaignTOGTM(Context context, String utmSource, String utmCampaign, String utmMedium, String utmTerm) {
-        if (context == null) return;
-        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(context);
-        if (remoteConfig.getBoolean(RemoteConfigKey.ENABLE_BRANCH_UTM_SUPPORT) &&
-                !(TextUtils.isEmpty(utmSource) || TextUtils.isEmpty(utmMedium))) {
+    private void convertToCampaign(Context context, String utmSource, String utmCampaign, String utmMedium, String utmTerm) {
+        if (!(TextUtils.isEmpty(utmSource) || TextUtils.isEmpty(utmMedium))) {
             Map<String, Object> param = new HashMap<>();
-            param.put(LinkerConstants.SCREEN_NAME, "Deeplink Page");
+            param.put(LinkerConstants.SCREEN_NAME_KEY, LinkerConstants.SCREEN_NAME_VALUE);
             param.put(LinkerConstants.UTM_SOURCE, utmSource);
             param.put(LinkerConstants.UTM_CAMPAIGN, utmCampaign);
             param.put(LinkerConstants.UTM_MEDIUM, utmMedium);
@@ -469,7 +494,45 @@ public class BranchWrapper implements WrapperInterface {
                 param.put(LinkerConstants.UTM_TERM, utmTerm);
             }
 
+            sendCampaignToTrackApp( context, param);
+        }
+    }
+
+    private void sendCampaignToTrackApp(Context context, Map<String,Object> param) {
+        if (isBranchUtmSupportActivated(context)) {
             TrackApp.getInstance().getGTM().sendCampaign(param);
         }
     }
+
+    private void checkBranchLinkUTMParams(LinkerDeeplinkRequest linkerDeeplinkRequest){
+        APP_OPEN_FROM_BRANCH_LINK = false;
+        Activity activity= ((LinkerDeeplinkData) linkerDeeplinkRequest.getDataObj()).getActivity();
+        if(activity != null && activity.getIntent().getData()!= null && activity.getIntent().getData().toString().contains(LinkerConstants.BRANCH_LINK_DOMAIN)){
+            APP_OPEN_FROM_BRANCH_LINK = true;
+        }
+    }
+
+
+    private Boolean isBranchUtmSupportActivated(Context context) {
+        return getBooleanValue(context,RemoteConfigKey.ENABLE_BRANCH_UTM_SUPPORT);
+    }
+
+    private Boolean isBranchUtmOnlyBranchLinkActivated(Context context) {
+        return getBooleanValue(context,RemoteConfigKey.ENABLE_BRANCH_UTM_ONLY_BRANCH_LINK);
+    }
+
+    private Boolean getBooleanValue(Context context, String key){
+        if(remoteConfig == null)
+            remoteConfig = new FirebaseRemoteConfigImpl(context);
+        return remoteConfig.getBoolean(key);
+
+    }
+
+    private Boolean needSkipEvent(Context context){
+        if(isBranchUtmOnlyBranchLinkActivated(context) && !APP_OPEN_FROM_BRANCH_LINK){
+            return true;
+        }
+        return false;
+    }
+
 }
