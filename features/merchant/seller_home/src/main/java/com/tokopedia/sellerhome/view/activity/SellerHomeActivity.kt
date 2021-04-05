@@ -478,7 +478,7 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
     private fun saveFlagHasShowPmInterruptPopup() {
         lifecycleScope.launch(Dispatchers.IO) {
             pmCommonPreferenceManager.putBoolean(PMCommonPreferenceManager.KEY_HAS_SHOW_TRANSITION_INTERRUPT_POPUP, true)
-            //pmCommonPreferenceManager.apply()
+            pmCommonPreferenceManager.apply()
         }
     }
 
