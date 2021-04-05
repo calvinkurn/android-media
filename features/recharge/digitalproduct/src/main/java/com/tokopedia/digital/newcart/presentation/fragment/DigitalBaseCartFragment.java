@@ -122,9 +122,12 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        //if user don't keep activities
         if (savedInstanceState != null) {
             checkoutDataParameterBuilder = saveInstanceCacheManager.get(EXTRA_STATE_CHECKOUT_DATA_PARAMETER_BUILDER,
                     CheckoutDataParameter.Builder.class, null);
+            cartPassData.setNeedGetCart(true);
         }
         setupView(view);
         presenter.attachView(this);

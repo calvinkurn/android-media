@@ -6,6 +6,7 @@ data class ChannelModel(
         val id: String,
         val groupId: String,
         val type: String = "",
+        val style: ChannelStyle = ChannelStyle.ChannelHome,
         var verticalPosition: Int = 0,
         val contextualInfo: Int = 0,
         val widgetParam: String = "",
@@ -17,4 +18,9 @@ data class ChannelModel(
         val channelGrids: List<ChannelGrid>  = listOf(),
         val name : String = "",
         val layout: String = ""
-): ImpressHolder()
+): ImpressHolder(){
+    companion object{
+        const val CHANNEL_HOME = "home"
+        const val CHANNEL_OS = "os"
+    }
+}

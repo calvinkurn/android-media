@@ -226,8 +226,11 @@ class HotelOrderDetailFragment : HotelBaseFragment(), ContactAdapter.OnClickCall
     private fun renderTransactionDetail(orderDetail: HotelOrderDetail) {
 
         transaction_status.text = orderDetail.status.statusText
-        if (orderDetail.status.textColor.isNotEmpty())
+        if (orderDetail.status.textColor.isNotEmpty()){
             transaction_status.setTextColor(Color.parseColor(orderDetail.status.textColor))
+        }else{
+            transaction_status.setTextColor(ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_G400_96))
+        }
 
         var transactionDetailAdapter = TitleTextAdapter(TitleTextAdapter.HORIZONTAL_LAYOUT)
         transaction_detail_title_recycler_view.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)

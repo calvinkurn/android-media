@@ -85,9 +85,9 @@ fun RecommendationEntity.RecommendationData.toRecommendationWidget(): Recommenda
             pageName)
 }
 
-fun List<RecommendationItem>.toProductCardModels(): List<ProductCardModel>{
+fun List<RecommendationItem>.toProductCardModels(hasThreeDots: Boolean = false): List<ProductCardModel>{
     return map {
-        it.toProductCardModel()
+        it.toProductCardModel(hasThreeDots = hasThreeDots)
     }
 }
 

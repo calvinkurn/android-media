@@ -41,7 +41,6 @@
                     app:layout_behavior="@string/appbar_scrolling_view_behavior"
                     tools:itemCount="3"
                     tools:listitem="@layout/ent_ticket_adapter_item" />
-
             </LinearLayout>
         </ScrollView>
 
@@ -59,7 +58,7 @@
             android:id="@+id/containerEventBottom"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/Neutral_N0"
+            android:background="@color/Unify_N0"
             android:paddingLeft="@dimen/spacing_lvl4"
             android:paddingTop="@dimen/spacing_lvl3"
             android:paddingRight="@dimen/spacing_lvl4"
