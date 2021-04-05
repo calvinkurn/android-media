@@ -156,7 +156,7 @@
                 app:layout_constraintTop_toBottomOf="@id/topHotelSearchMapListKnob"
                 app:typographyType="heading_3" />
 
-            <com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
+            <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rvVerticalPropertiesHotelSearchMap"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
