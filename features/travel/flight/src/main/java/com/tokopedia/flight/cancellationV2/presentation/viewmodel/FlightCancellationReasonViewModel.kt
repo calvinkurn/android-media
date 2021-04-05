@@ -59,8 +59,8 @@ class FlightCancellationReasonViewModel @Inject constructor(
         get() = mutableViewAttachmentModelList
 
     init {
-        mutableCanNavigateToNextStep.value = false
-        mutableAttachmentErrorStringRes.value = DEFAULT_STRING_RES_ERROR
+        mutableCanNavigateToNextStep.postValue(false)
+        mutableAttachmentErrorStringRes.postValue(DEFAULT_STRING_RES_ERROR)
     }
 
     fun trackOnNext() {

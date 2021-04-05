@@ -65,8 +65,8 @@ class FlightHomepageViewModel @Inject constructor(
         get() = mutableAutoSearch
 
     fun init() {
-        mutableDashboardData.value = FlightHomepageModel()
-        mutableAutoSearch.value = false
+        mutableDashboardData.postValue(FlightHomepageModel())
+        mutableAutoSearch.postValue (false)
     }
 
     fun fetchBannerData(isFromCloud: Boolean) {
@@ -135,7 +135,7 @@ class FlightHomepageViewModel @Inject constructor(
             dashboardCache.putClassCache(extrasClass.toInt())
 
             if (extrasAutoSearch.toInt() == 1) {
-                mutableAutoSearch.value = true
+                mutableAutoSearch.postValue(true)
             }
         } catch (t: Throwable) {
             t.printStackTrace()
@@ -163,7 +163,7 @@ class FlightHomepageViewModel @Inject constructor(
         homepageData.value?.let {
             val newDashboardData = cloneViewModel(it)
             newDashboardData.departureAirport = departureAirport
-            mutableDashboardData.value = newDashboardData
+            mutableDashboardData.postValue(newDashboardData)
         }
     }
 
@@ -172,7 +172,7 @@ class FlightHomepageViewModel @Inject constructor(
         homepageData.value?.let {
             val newDashboardData = cloneViewModel(it)
             newDashboardData.arrivalAirport = arrivalAirport
-            mutableDashboardData.value = newDashboardData
+            mutableDashboardData.postValue(newDashboardData)
         }
     }
 
@@ -181,7 +181,7 @@ class FlightHomepageViewModel @Inject constructor(
         homepageData.value?.let {
             val newDashboardData = cloneViewModel(it)
             newDashboardData.flightClass = classModel
-            mutableDashboardData.value = newDashboardData
+            mutableDashboardData.postValue(newDashboardData)
         }
     }
 
@@ -190,7 +190,7 @@ class FlightHomepageViewModel @Inject constructor(
         homepageData.value?.let {
             val newDashboardData = cloneViewModel(it)
             newDashboardData.flightPassengerViewModel = passengerModel
-            mutableDashboardData.value = newDashboardData
+            mutableDashboardData.postValue(newDashboardData)
         }
     }
 
