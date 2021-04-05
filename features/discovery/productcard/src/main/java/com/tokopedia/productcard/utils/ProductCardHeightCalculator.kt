@@ -26,7 +26,7 @@ suspend fun List<ProductCardModel>?.getMaxHeightForGridView(context: Context?, c
             val campaignLabelHeight = getLabelCampaignHeight(context, hasLabelCampaign)
 
             val contentMarginTop = getGridViewContentMarginTop(context, hasLabelBestSeller)
-            val contentHeight = productCardModel.getContentHeight(context)
+            val contentHeight = productCardModel.getContentHeightGrid(context)
             val buttonAddToCartSectionHeight = productCardModel.getButtonAddToCartSectionHeight(context)
             val buttonNotifyMeSectionHeight = productCardModel.getButtonNotifyMeSectionHeight(context)
 
@@ -82,7 +82,7 @@ suspend fun List<ProductCardModel>?.getMaxHeightForListView(context: Context?, c
 
             val contentMarginTop = getListViewContentMarginTop(context, hasLabelBestSeller)
             val imageSize = context.resources.getDimensionPixelSize(R.dimen.product_card_list_image_size)
-            val contentHeight = productCardModel.getContentHeight(context)
+            val contentHeight = productCardModel.getContentHeightList(context)
             val buttonDeleteProductSectionHeight = productCardModel.getButtonDeleteProductSectionHeight(context)
             val buttonAddToCartSectionHeight = productCardModel.getButtonAddToCartSectionHeight(context)
             val buttonNotifyMeSectionHeight = productCardModel.getButtonNotifyMeSectionHeight(context)
@@ -110,7 +110,35 @@ private fun getListViewContentMarginTop(context: Context, hasLabelBestSeller: Bo
     else 0
 }
 
-private fun ProductCardModel.getContentHeight(context: Context): Int {
+private fun ProductCardModel.getContentHeightGrid(context: Context): Int {
+    val gimmickSectionHeight = getGimmickSectionHeight(context)
+    val pdpViewCountHeight = getPdpViewCountSectionHeight(context)
+    val productNameSectionHeight = getProductNameSectionHeight(context)
+    val categoryCostPerUnitHeight = getCategoryCostPerUnitHeight(context)
+    val priceSectionHeight = getPriceSectionHeight(context)
+    val promoSectionHeight = getPromoSectionHeight(context)
+    val shopInfoSectionHeight = getShopInfoSectionHeight(context)
+    val credibilitySectionHeight = getCredibilitySectionHeight(context)
+    val shopRatingSectionHeight = getShopRatingSectionHeight(context)
+    val shippingInfoSectionHeight = getShippingInfoSectionHeight(context)
+    val etaHeight = getLabelETA(context)
+    val stockBarHeight = getStockBarAndLabelSectionHeight(context)
+
+    return gimmickSectionHeight +
+            pdpViewCountHeight+
+            productNameSectionHeight +
+            categoryCostPerUnitHeight +
+            priceSectionHeight +
+            promoSectionHeight +
+            shopInfoSectionHeight +
+            credibilitySectionHeight +
+            shopRatingSectionHeight +
+            shippingInfoSectionHeight +
+            etaHeight +
+            stockBarHeight
+}
+
+private fun ProductCardModel.getContentHeightList(context: Context): Int {
     val gimmickSectionHeight = getGimmickSectionHeight(context)
     val pdpViewCountHeight = getPdpViewCountSectionHeight(context)
     val productNameSectionHeight = getProductNameSectionHeight(context)
