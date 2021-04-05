@@ -73,15 +73,17 @@ class InitialStateProductLineViewHolder(
     }
 
     private fun setTitleMargin(item: BaseItemInitialStateSearch) {
-        if (!item.isTripleLine()) {
-            val resources = itemView.context.resources
-            itemView.autocompleteProductTitle?.setMargin(
-                    resources.getDimensionPixelSize(R.dimen.autocomplete_product_double_line_title_margin_left),
-                    resources.getDimensionPixelSize(R.dimen.autocomplete_product_double_line_title_margin_top),
-                    resources.getDimensionPixelSize(R.dimen.autocomplete_product_double_line_title_margin_right),
-                    resources.getDimensionPixelSize(R.dimen.autocomplete_product_double_line_title_margin_bottom)
-            )
-        }
+        val resources = itemView.context.resources
+
+        val topMargin = if (item.isTripleLine()) resources.getDimensionPixelSize(R.dimen.autocomplete_product_triple_line_title_margin_top)
+        else resources.getDimensionPixelSize(R.dimen.autocomplete_product_double_line_title_margin_top)
+
+        itemView.autocompleteProductTitle?.setMargin(
+                resources.getDimensionPixelSize(R.dimen.autocomplete_product_line_title_margin_left),
+                topMargin,
+                resources.getDimensionPixelSize(R.dimen.autocomplete_product_line_title_margin_right),
+                resources.getDimensionPixelSize(R.dimen.autocomplete_product_line_title_margin_bottom)
+        )
     }
 
     private fun setLabelDiscountPercentage(item: BaseItemInitialStateSearch) {
@@ -105,15 +107,17 @@ class InitialStateProductLineViewHolder(
     }
 
     private fun setPriceMargin(item: BaseItemInitialStateSearch) {
-        if (!item.isTripleLine()) {
-            val resources = itemView.context.resources
-            itemView.autocompleteProductPrice?.setMargin(
-                    resources.getDimensionPixelSize(R.dimen.autocomplete_product_double_line_price_margin_left),
-                    resources.getDimensionPixelSize(R.dimen.autocomplete_product_double_line_price_margin_top),
-                    resources.getDimensionPixelSize(R.dimen.autocomplete_product_double_line_price_margin_right),
-                    resources.getDimensionPixelSize(R.dimen.autocomplete_product_double_line_price_margin_bottom)
-            )
-        }
+        val resources = itemView.context.resources
+
+        val bottomMargin = if (item.isTripleLine()) resources.getDimensionPixelSize(R.dimen.autocomplete_product_triple_line_price_margin_bottom)
+        else resources.getDimensionPixelSize(R.dimen.autocomplete_product_double_line_price_margin_bottom)
+
+        itemView.autocompleteProductPrice?.setMargin(
+                resources.getDimensionPixelSize(R.dimen.autocomplete_product_line_price_margin_left),
+                resources.getDimensionPixelSize(R.dimen.autocomplete_product_line_price_margin_top),
+                resources.getDimensionPixelSize(R.dimen.autocomplete_product_line_price_margin_right),
+                bottomMargin
+        )
     }
 
     private fun setListener(item: BaseItemInitialStateSearch) {

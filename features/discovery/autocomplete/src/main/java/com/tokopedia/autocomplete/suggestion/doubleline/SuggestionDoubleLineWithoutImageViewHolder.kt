@@ -44,7 +44,7 @@ class SuggestionDoubleLineWithoutImageViewHolder(
         return applink.isNotEmpty() || url.isNotEmpty()
     }
 
-    private fun Typography.setTypography(context: Context, weightType: Int = Typography.REGULAR, color: Int = com.tokopedia.unifyprinciples.R.color.Unify_N700_96) {
+    private fun Typography.setTypography(context: Context, weightType: Int, color: Int) {
         this.weightType = weightType
         setTextColor(ContextCompat.getColor(context, color))
     }
