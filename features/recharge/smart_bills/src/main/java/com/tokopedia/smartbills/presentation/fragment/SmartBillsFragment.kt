@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.graphics.Rect
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -12,6 +13,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListCheckableAdapter
@@ -46,6 +48,7 @@ import com.tokopedia.smartbills.presentation.adapter.viewholder.SmartBillsViewHo
 import com.tokopedia.smartbills.presentation.viewmodel.SmartBillsViewModel
 import com.tokopedia.smartbills.presentation.widget.SmartBillsItemDetailBottomSheet
 import com.tokopedia.smartbills.presentation.widget.SmartBillsToolTipBottomSheet
+import com.tokopedia.smartbills.util.DividerSBMItemDecoration
 import com.tokopedia.smartbills.util.RechargeSmartBillsMapper.getAccordionSection
 import com.tokopedia.smartbills.util.RechargeSmartBillsMapper.getNotAccordionSection
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -302,12 +305,7 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
 
                 rv_smart_bills_items.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
                 rv_smart_bills_items.adapter = adapter
-                rv_smart_bills_items.addItemDecoration(object : DividerItemDecoration(context) {
-                    override fun getDimenPaddingLeft(): Int {
-                        return R.dimen.smart_bills_divider_left_padding
-                    }
-                })
-
+                rv_smart_bills_items.addItemDecoration(DividerSBMItemDecoration(context))
                 smart_bills_checkout_view.listener = this
                 smart_bills_checkout_view.setBuyButtonLabel(getString(R.string.smart_bills_checkout_view_button_label))
                 updateCheckoutView()

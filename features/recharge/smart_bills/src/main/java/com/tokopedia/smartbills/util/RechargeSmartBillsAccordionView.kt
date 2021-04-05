@@ -1,5 +1,6 @@
 package com.tokopedia.smartbills.util
 
+import android.graphics.Rect
 import android.view.LayoutInflater
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -7,10 +8,13 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ItemDecoration
 import com.tokopedia.abstraction.base.view.adapter.holder.BaseCheckableViewHolder
 import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration
+import com.tokopedia.kotlin.extensions.view.getDimens
 import com.tokopedia.smartbills.R
 import com.tokopedia.smartbills.data.Section
 import com.tokopedia.smartbills.presentation.adapter.SmartBillsAccordionAdapter
 import com.tokopedia.smartbills.presentation.adapter.viewholder.SmartBillsViewHolder
+import com.tokopedia.smartbills.presentation.fragment.SmartBillsFragment.Companion.ACTION_TYPE
+import com.tokopedia.smartbills.presentation.fragment.SmartBillsFragment.Companion.PAID_TYPE
 import kotlinx.android.synthetic.main.view_smart_bills_need_action.view.*
 import kotlinx.android.synthetic.main.view_smart_bills_need_paid.view.*
 
@@ -39,10 +43,10 @@ object RechargeSmartBillsAccordionView {
         isClickable = false
     }
 
-    fun RecyclerView.addDecorationItemCheckable(){
+    fun RecyclerView.addDecorationItemCheckable(margin: Int){
         addItemDecoration(object : DividerItemDecoration(context) {
             override fun getDimenPaddingLeft(): Int {
-                return R.dimen.smart_bills_divider_left_padding
+                return margin
             }
         })
     }
@@ -55,6 +59,11 @@ object RechargeSmartBillsAccordionView {
         adapterAccordion.addList(section.bills)
         layoutManager = LinearLayoutManager(itemView.context)
         adapter = adapterAccordion
-        addDecorationItemCheckable()
+        if(accordionType == ACTION_TYPE)
+            addDecorationItemCheckable(R.dimen.smart_bills_divider_left_padding)
+        else if (accordionType == PAID_TYPE)
+            addDecorationItemCheckable(com.tokopedia.unifyprinciples.R.dimen.unify_space_64)
+
+
     }
 }
