@@ -60,6 +60,7 @@ class TestRecommendationPageViewModel {
             getPrimaryProductUseCase = getPrimaryProductUseCase
     )
     private val recommendation = RecommendationItem(productId = 1234)
+    private val recommendationTopads = RecommendationItem(productId = 1234, isTopAds = true, wishlistUrl = "1234")
 
     @Test
     fun `get success data from network without product info`(){
@@ -143,7 +144,7 @@ class TestRecommendationPageViewModel {
         every { topAdsWishlishedUseCase.execute(any(), capture(slot)) } answers {
             slot.captured.onNext(mockWishlistModel)
         }
-        viewModel.addWishlist(recommendation.productId.toString(), recommendation.wishlistUrl, true){ success, _ ->
+        viewModel.addWishlist(recommendationTopads.productId.toString(), recommendationTopads.wishlistUrl, true){ success, _ ->
             status = success
         }
         assert(status == true)
@@ -157,7 +158,7 @@ class TestRecommendationPageViewModel {
         every { topAdsWishlishedUseCase.execute(any(), capture(slot)) } answers {
             slot.captured.onError(mockk())
         }
-        viewModel.addWishlist(recommendation.productId.toString(), recommendation.wishlistUrl, true){ success, _ ->
+        viewModel.addWishlist(recommendationTopads.productId.toString(), recommendationTopads.wishlistUrl, true){ success, _ ->
             status = success
         }
         assert(status == false)
