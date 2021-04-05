@@ -460,15 +460,15 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
 
     override fun onProductAnchorAddToCart(productInfoDataModel: ProductInfoDataModel) {
         productInfoDataModel.productDetailData?.let {productDetailData ->
-            if (productDetailData.isTopads) {
-                TopAdsUrlHitter(className).hitClickUrl(
-                        className,
-                        productDetailData.clickUrl,
-                        productDetailData.id.toString(),
-                        productDetailData.name,
-                        productDetailData.imageUrl)
-            }
             if (recommendationWidgetViewModel.isLoggedIn()) {
+                if (productDetailData.isTopads) {
+                    TopAdsUrlHitter(className).hitClickUrl(
+                            className,
+                            productDetailData.clickUrl,
+                            productDetailData.id.toString(),
+                            productDetailData.name,
+                            productDetailData.imageUrl)
+                }
                 recommendationWidgetViewModel.onAddToCart(productInfoDataModel)
             } else {
                 RecommendationPageTracking.eventUserAddToCartNonLoginWithProductId(ref, productDetailData.shop.id.toString())
@@ -479,15 +479,15 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
 
     override fun onProductAnchorBuyNow(productInfoDataModel: ProductInfoDataModel) {
         productInfoDataModel.productDetailData?.let { productDetailData ->
-            if (productDetailData.isTopads) {
-                TopAdsUrlHitter(context).hitClickUrl(
-                        className,
-                        productDetailData.clickUrl,
-                        productDetailData.id.toString(),
-                        productDetailData.name,
-                        productDetailData.imageUrl)
-            }
             if (recommendationWidgetViewModel.isLoggedIn()){
+                if (productDetailData.isTopads) {
+                    TopAdsUrlHitter(context).hitClickUrl(
+                            className,
+                            productDetailData.clickUrl,
+                            productDetailData.id.toString(),
+                            productDetailData.name,
+                            productDetailData.imageUrl)
+                }
                 recommendationWidgetViewModel.onBuyNow(productInfoDataModel)
             } else {
                 RecommendationPageTracking.eventUserClickBuyNonLoginWithProductId(ref, productDetailData.shop.id.toString())
@@ -500,15 +500,15 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
 
     override fun onProductAnchorClickWishlist(productInfoDataModel: ProductInfoDataModel, isAddWishlist: Boolean, callback: (Boolean, Throwable?) -> Unit) {
         productInfoDataModel.productDetailData?.let {productDetailData ->
-            if (productDetailData.isTopads) {
-                TopAdsUrlHitter(context).hitClickUrl(
-                        className,
-                        productDetailData.clickUrl,
-                        productDetailData.id.toString(),
-                        productDetailData.name,
-                        productDetailData.imageUrl)
-            }
             if (recommendationWidgetViewModel.isLoggedIn()) {
+                if (productDetailData.isTopads) {
+                    TopAdsUrlHitter(context).hitClickUrl(
+                            className,
+                            productDetailData.clickUrl,
+                            productDetailData.id.toString(),
+                            productDetailData.name,
+                            productDetailData.imageUrl)
+                }
                 RecommendationPageTracking.eventUserClickProductToWishlistForUserLoginWithProductId(isAddWishlist, ref, productDetailData.shop.id.toString())
                 if (!isAddWishlist) {
                     recommendationWidgetViewModel.removeWishlist(productDetailData.id.toString()){ state, throwable ->
