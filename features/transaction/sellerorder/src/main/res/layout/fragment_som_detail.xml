@@ -95,38 +95,37 @@
                 app:layout_constraintTop_toBottomOf="@id/rv_detail"
                 tools:visibility="visible">
 
-                <LinearLayout
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingStart="@dimen/spacing_lvl3"
+                android:paddingEnd="@dimen/spacing_lvl4">
+
+                <com.tokopedia.unifycomponents.UnifyImageButton
+                    android:id="@+id/btn_secondary"
+                    android:contentDescription="@string/content_desc_btn_secondary"
+                    android:layout_width="@dimen/dp_40"
+                    android:layout_height="@dimen/dp_40"
+                    android:layout_marginStart="@dimen/spacing_lvl3"
+                    android:layout_marginLeft="@dimen/spacing_lvl3"
+                    android:layout_marginTop="@dimen/dp_8"
+                    android:layout_marginBottom="@dimen/dp_8"
+                    app:srcCompat="@drawable/ic_horizontal"
+                    app:unifyImageButtonType="main"
+                    app:unifyImageButtonVariant="ghost" />
+
+                <com.tokopedia.unifycomponents.UnifyButton
+                    android:id="@+id/btn_primary"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <com.tokopedia.unifycomponents.UnifyImageButton
-                        android:id="@+id/btn_secondary"
-                        android:layout_width="@dimen/dp_40"
-                        android:layout_height="@dimen/dp_40"
-                        android:layout_marginStart="@dimen/dp_16"
-                        android:layout_marginLeft="@dimen/dp_16"
-                        android:layout_marginTop="@dimen/dp_8"
-                        android:layout_marginBottom="@dimen/dp_8"
-                        android:contentDescription="@string/content_desc_btn_secondary"
-                        app:srcCompat="@drawable/ic_horizontal"
-                        app:unifyImageButtonType="main"
-                        app:unifyImageButtonVariant="ghost" />
-
-                    <com.tokopedia.unifycomponents.UnifyButton
-                        android:id="@+id/btn_primary"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/dp_16"
-                        android:layout_marginLeft="@dimen/dp_16"
-                        android:layout_marginTop="@dimen/dp_8"
-                        android:layout_marginEnd="@dimen/dp_16"
-                        android:layout_marginRight="@dimen/dp_16"
-                        android:layout_marginBottom="@dimen/dp_8"
-                        android:text="@string/terima_pesanan"
-                        app:unifyButtonSize="medium"
-                        app:unifyButtonType="main"
-                        app:unifyButtonVariant="filled" />
+                    android:layout_marginStart="@dimen/spacing_lvl3"
+                    android:layout_marginTop="@dimen/dp_8"
+                    android:layout_marginBottom="@dimen/dp_8"
+                    android:text="@string/terima_pesanan"
+                    app:unifyButtonSize="medium"
+                    app:unifyButtonType="main"
+                    app:unifyButtonVariant="filled" />
 
                 </LinearLayout>
 
