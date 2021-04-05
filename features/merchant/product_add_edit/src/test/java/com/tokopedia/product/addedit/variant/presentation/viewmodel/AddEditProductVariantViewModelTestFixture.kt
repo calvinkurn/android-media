@@ -19,6 +19,7 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.jupiter.api.AfterEach
+import kotlin.jvm.Throws
 
 @ExperimentalCoroutinesApi
 abstract class AddEditProductVariantViewModelTestFixture {

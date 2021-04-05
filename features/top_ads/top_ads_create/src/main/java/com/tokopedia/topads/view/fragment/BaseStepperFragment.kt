@@ -28,6 +28,7 @@ abstract class BaseStepperFragment<T : CreateManualAdsStepperModel>: BaseDaggerF
                 stepperModel = it.getParcelable(BaseStepperActivity.STEPPER_MODEL_EXTRA)
             }
         }
+        initiateStepperModel()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

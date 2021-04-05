@@ -135,7 +135,7 @@ class ShopCarouselBannerImageUnify : AppCompatImageView {
         scaleType = ScaleType.FIT_XY
 
         paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-            color = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Neutral_N0)
+            color = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0)
             xfermode = PorterDuffXfermode(PorterDuff.Mode.DST_IN)
         }
     }

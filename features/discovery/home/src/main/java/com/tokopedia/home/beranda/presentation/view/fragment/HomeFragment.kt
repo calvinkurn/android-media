@@ -2051,6 +2051,10 @@ open class HomeFragment : BaseDaggerFragment(),
         trackingQueue?.putEETracking(BestSellerWidgetTracker.getImpressionTracker(recommendationItem, bestSellerDataModel.id, bestSellerDataModel.title, bestSellerDataModel.pageName, userId, widgetPosition) as HashMap<String, Any>)
     }
 
+    override fun onBestSellerThreeDotsClick(bestSellerDataModel: BestSellerDataModel, recommendationItem: RecommendationItem, widgetPosition: Int) {
+
+    }
+
     override fun onBestSellerFilterClick(filter: RecommendationFilterChipsEntity.RecommendationFilterChip, bestSellerDataModel: BestSellerDataModel, widgetPosition: Int) {
         BestSellerWidgetTracker.sendFilterClickTracker(filter.value, bestSellerDataModel.id, bestSellerDataModel.title, userId)
         getHomeViewModel().getRecommendationWidget(filter, bestSellerDataModel)

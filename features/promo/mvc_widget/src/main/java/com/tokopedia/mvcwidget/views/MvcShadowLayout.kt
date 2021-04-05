@@ -28,7 +28,7 @@ class MvcShadowLayout @JvmOverloads constructor(
         enableShadow = true
         shadowStrokeWidth = dpToPx(3)
         blurRadius = dpToPx(8)
-        shadowColor = ContextCompat.getColor(context, R.color.promo_ui_com_shadow_color)
+        shadowColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_32)
     }
 
     override fun drawShadow(canvas: Canvas) {
