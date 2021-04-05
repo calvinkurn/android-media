@@ -638,7 +638,9 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
                 }
             });
             globalError.setVisibility(View.VISIBLE);
-            swipeRefreshLayout.setVisibility(View.GONE);
+            if (swipeRefreshLayout!= null) {
+                swipeRefreshLayout.setVisibility(View.GONE);
+            }
         }
     }
 
@@ -860,7 +862,9 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         if (activity instanceof BaseSimpleWebViewActivity) {
             ((BaseSimpleWebViewActivity) activity).setWebViewTitle("");
         }
-        swipeRefreshLayout.setVisibility(View.VISIBLE);
+        if (swipeRefreshLayout!= null) {
+            swipeRefreshLayout.setVisibility(View.VISIBLE);
+        }
         globalError.setVisibility(View.GONE);
         webView.reload();
     }
