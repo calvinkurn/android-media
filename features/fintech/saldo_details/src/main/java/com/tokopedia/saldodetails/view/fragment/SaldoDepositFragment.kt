@@ -603,18 +603,20 @@ class SaldoDepositFragment : BaseDaggerFragment() {
     }
 
     private fun showBottomSheetInfoDialog(isSellerClicked: Boolean) {
-        val userStatusInfoBottomSheet = UserStatusInfoBottomSheet(context!!)
+        context?.let { context ->
+            UserStatusInfoBottomSheet(context).apply {
+                if (isSellerClicked) {
+                    setBody(getString(com.tokopedia.saldodetails.R.string.saldo_balance_seller_desc))
+                    setTitle(getString(com.tokopedia.saldodetails.R.string.saldo_total_balance_seller))
+                } else {
+                    setBody(getString(com.tokopedia.saldodetails.R.string.saldo_balance_buyer_desc))
+                    setTitle(getString(com.tokopedia.saldodetails.R.string.saldo_total_balance_buyer))
+                }
 
-        if (isSellerClicked) {
-            userStatusInfoBottomSheet.setBody(getString(com.tokopedia.saldodetails.R.string.saldo_balance_seller_desc))
-            userStatusInfoBottomSheet.setTitle(getString(com.tokopedia.saldodetails.R.string.saldo_total_balance_seller))
-        } else {
-            userStatusInfoBottomSheet.setBody(getString(com.tokopedia.saldodetails.R.string.saldo_balance_buyer_desc))
-            userStatusInfoBottomSheet.setTitle(getString(com.tokopedia.saldodetails.R.string.saldo_total_balance_buyer))
+                setButtonText(getString(com.tokopedia.saldodetails.R.string.sp_saldo_withdraw_warning_positiv_button))
+                show()
+            }
         }
-
-        userStatusInfoBottomSheet.setButtonText(getString(com.tokopedia.saldodetails.R.string.sp_saldo_withdraw_warning_positiv_button))
-        userStatusInfoBottomSheet.show()
     }
 
     override fun initInjector() {
@@ -641,7 +643,7 @@ class SaldoDepositFragment : BaseDaggerFragment() {
     }
 
     private fun onFirstTimeLaunched() {
-        val remoteConfig = FirebaseRemoteConfigImpl(getContext())
+        val remoteConfig = FirebaseRemoteConfigImpl(context)
         showMclBlockTickerFirebaseFlag = remoteConfig.getBoolean(APP_ENABLE_SALDO_LOCK, false)
         saldoDetailViewModel.getUserSaldoBalance()
         saldoDetailViewModel.getTickerWithdrawalMessage()
@@ -653,7 +655,7 @@ class SaldoDepositFragment : BaseDaggerFragment() {
         builder.setTitle(resources.getString(com.tokopedia.saldodetails.R.string.sp_error_deposit_no_password_title))
         builder.setMessage(resources.getString(com.tokopedia.saldodetails.R.string.sp_error_deposit_no_password_content))
         builder.setPositiveButton(resources.getString(com.tokopedia.saldodetails.R.string.sp_error_no_password_yes)) { dialogInterface, i ->
-            intentToAddPassword(context!!)
+            intentToAddPassword(requireContext())
             dialogInterface.dismiss()
         }
         builder.setNegativeButton(getString(com.tokopedia.saldodetails.R.string.sp_cancel)) { dialogInterface, i -> dialogInterface.dismiss() }
@@ -815,8 +817,8 @@ class SaldoDepositFragment : BaseDaggerFragment() {
     private fun showMerchantCreditLineWidget(response: GqlMerchantCreditResponse?) {
         merchantStatusLL!!.show()
         val bundle = Bundle()
-        saveInstanceCacheManager = SaveInstanceCacheManager(context!!, true)
-        saveInstanceCacheManager!!.put(BUNDLE_PARAM_MERCHANT_CREDIT_DETAILS, response)
+        saveInstanceCacheManager = context?.let { context -> SaveInstanceCacheManager(context, true) }
+        saveInstanceCacheManager?.put(BUNDLE_PARAM_MERCHANT_CREDIT_DETAILS, response)
         if (!saveInstanceCacheManager?.id.isNullOrBlank()) {
             bundle.putString(BUNDLE_PARAM_MERCHANT_CREDIT_DETAILS_ID, saveInstanceCacheManager?.id)
         }
@@ -831,7 +833,7 @@ class SaldoDepositFragment : BaseDaggerFragment() {
         if (gqlDetailsResponse != null && gqlDetailsResponse.isEligible) {
             merchantStatusLL!!.show()
             val bundle = Bundle()
-            saveInstanceCacheManager = SaveInstanceCacheManager(context!!, true)
+            saveInstanceCacheManager = context?.let { context -> SaveInstanceCacheManager(context, true) }
             saveInstanceCacheManager?.put(BUNDLE_PARAM_SELLER_DETAILS, gqlDetailsResponse)
             if (!saveInstanceCacheManager?.id.isNullOrBlank()) {
                 bundle.putString(BUNDLE_PARAM_SELLER_DETAILS_ID, saveInstanceCacheManager?.id)
