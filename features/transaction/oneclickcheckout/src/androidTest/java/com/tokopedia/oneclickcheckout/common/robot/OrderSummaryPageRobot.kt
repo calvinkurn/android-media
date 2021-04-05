@@ -66,8 +66,11 @@ class OrderSummaryPageRobot {
         }
     }
 
-    fun clickChangeAddressRevamp() {
+    fun clickChangeAddressRevamp(func: (AddressBottomSheetRobot.() -> Unit)? = null) {
         onView(withId(R.id.btn_new_change_address)).perform(scrollTo()).perform(click())
+        if (func != null) {
+            AddressBottomSheetRobot().apply(func)
+        }
     }
 
     fun clickChangeDurationRevamp(func: DurationBottomSheetRobot.() -> Unit) {

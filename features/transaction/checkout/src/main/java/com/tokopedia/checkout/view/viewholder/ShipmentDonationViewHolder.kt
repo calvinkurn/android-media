@@ -9,8 +9,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.checkout.R
 import com.tokopedia.checkout.view.ShipmentAdapterActionListener
 import com.tokopedia.checkout.view.uimodel.ShipmentDonationModel
-import com.tokopedia.design.component.Tooltip
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.purchase_platform.common.feature.bottomsheet.GeneralBottomSheet
 import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
 
 class ShipmentDonationViewHolder(itemView: View, private val shipmentAdapterActionListener: ShipmentAdapterActionListener) : RecyclerView.ViewHolder(itemView) {
@@ -30,13 +30,13 @@ class ShipmentDonationViewHolder(itemView: View, private val shipmentAdapterActi
     }
 
     private fun showBottomSheet(shipmentDonationModel: ShipmentDonationModel) {
-        Tooltip(llContainer.context).apply {
+        GeneralBottomSheet().apply {
             setTitle(shipmentDonationModel.donation.title)
             setDesc(shipmentDonationModel.donation.description)
-            setTextButton(llContainer.context.getString(com.tokopedia.purchase_platform.common.R.string.label_button_bottomsheet_close))
+            setButtonText(llContainer.context.getString(com.tokopedia.purchase_platform.common.R.string.label_button_bottomsheet_close))
             setIcon(R.drawable.checkout_module_ic_donation)
-            btnAction.setOnClickListener { dismiss() }
-        }.show()
+            setButtonOnClickListener { it.dismiss() }
+        }.show(llContainer.context, shipmentAdapterActionListener.currentFragmentManager)
     }
 
     companion object {

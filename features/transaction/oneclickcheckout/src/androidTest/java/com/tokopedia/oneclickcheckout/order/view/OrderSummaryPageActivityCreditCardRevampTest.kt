@@ -165,7 +165,7 @@ class OrderSummaryPageActivityCreditCardRevampTest {
 
             assertPayment("Rp116.725", "Ganti Metode Bayar")
 
-            assertPaymentErrorTicker("Maaf, metode bayar dengan kartu kredit sedang tidak bisa digunakan. Silakan pilih metode pembayaran lain.")
+            assertProfilePaymentErrorRevamp("Maaf, metode bayar dengan kartu kredit sedang tidak bisa digunakan. Silakan pilih metode pembayaran lain.", null)
         }
     }
 
@@ -240,7 +240,7 @@ class OrderSummaryPageActivityCreditCardRevampTest {
 
             assertPayment("Rp25.375", "Ganti Metode Bayar")
 
-            assertPaymentErrorTicker("Belanjaanmu kurang dari min. transaksi Kartu Kredit (Rp50.000). Silahkan pilih pembayaran lain.")
+            assertProfilePaymentErrorRevamp("Belanjaanmu kurang dari min. transaksi Kartu Kredit.", "Ubah")
 
             clickButtonOrderDetail {
                 assertSummary(
