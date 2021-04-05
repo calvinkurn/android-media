@@ -100,10 +100,10 @@
                 android:layout_width="@dimen/spacing_lvl8"
                 android:layout_height="@dimen/spacing_lvl8"
                 android:layout_margin="@dimen/spacing_lvl4"
-                app:layout_goneMarginTop="@dimen/layout_lvl7"
-                app:layout_goneMarginBottom="@dimen/layout_lvl7"
                 app:layout_constraintBottom_toTopOf="@+id/rvHorizontalPropertiesHotelSearchMap"
                 app:layout_constraintRight_toRightOf="parent"
+                app:layout_goneMarginBottom="@dimen/layout_lvl7"
+                app:layout_goneMarginTop="@dimen/layout_lvl7"
                 app:srcCompat="@drawable/ic_get_location" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
@@ -116,6 +116,7 @@
             android:layout_height="match_parent"
             android:background="@color/Unify_N0"
             android:elevation="@dimen/spacing_lvl2"
+            android:focusableInTouchMode="true"
             app:layout_behavior="@string/bottom_sheet_behavior">
 
             <View
@@ -164,7 +165,7 @@
                 android:paddingBottom="@dimen/hotel_140dp"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tvHotelSearchListTitle" />
+                app:layout_constraintTop_toTopOf="parent" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/containerEmptyResultState"
@@ -231,6 +232,7 @@
 
     <!-- Start of Linear Layout for Header (Toolbar and Quick Filter) -->
     <LinearLayout
+        android:id="@+id/container_hotel_search_map_header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/Unify_N0"
