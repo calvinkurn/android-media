@@ -27,6 +27,17 @@ import org.junit.Test
  */
 abstract class BaseProductDetailScreenShotTest {
 
+    companion object {
+        const val KEY_CONTENT = "product_content"
+        const val KEY_SOCIAL_PROOF = "social_proof_mini"
+        const val KEY_REVIEW = "review"
+        const val KEY_VARIANT = "variant_options"
+        const val KEY_INFO = "protection"
+        const val KEY_SHOP = "shop_credibility"
+        const val KEY_DISCUSSION = "discussion_faq"
+        const val KEY_RECOM = "pdp_5"
+    }
+
     @get:Rule
     var activityCommonRule: ActivityTestRule<ProductDetailActivityCommonTest> = ActivityTestRule(ProductDetailActivityCommonTest::class.java, false, false)
 
@@ -60,14 +71,14 @@ abstract class BaseProductDetailScreenShotTest {
         findViewAndScreenShot(com.tokopedia.product.detail.R.id.base_btn_action, filePrefix(), "button")
 
         //Screenshot per-viewholder
-        findViewHolderAndScreenshot(com.tokopedia.product.detail.R.id.rv_pdp, activity.getPositionViewHolderByName("product_content"), filePrefix(), "content")
-        findViewHolderAndScreenshot(com.tokopedia.product.detail.R.id.rv_pdp, activity.getPositionViewHolderByName("social_proof_mini"), filePrefix(), "social proof")
-        findViewHolderAndScreenshot(com.tokopedia.product.detail.R.id.rv_pdp, activity.getPositionViewHolderByName("review"), filePrefix(), "review")
-        findViewHolderAndScreenshot(com.tokopedia.product.detail.R.id.rv_pdp, activity.getPositionViewHolderByName("variant_options"), filePrefix(), "variant")
-        findViewHolderAndScreenshot(com.tokopedia.product.detail.R.id.rv_pdp, activity.getPositionViewHolderByName("protection"), filePrefix(), "info")
-        findViewHolderAndScreenshot(com.tokopedia.product.detail.R.id.rv_pdp, activity.getPositionViewHolderByName("shop_credibility"), filePrefix(), "shop info")
-        findViewHolderAndScreenshot(com.tokopedia.product.detail.R.id.rv_pdp, activity.getPositionViewHolderByName("discussion_faq"), filePrefix(), "discussion", true)
-        findViewHolderAndScreenshot(com.tokopedia.product.detail.R.id.rv_pdp, activity.getPositionViewHolderByName("pdp_5"), filePrefix(), "recom", true)
+        findViewHolderAndScreenshot(com.tokopedia.product.detail.R.id.rv_pdp, activity.getPositionViewHolderByName(KEY_CONTENT), filePrefix(), "content")
+        findViewHolderAndScreenshot(com.tokopedia.product.detail.R.id.rv_pdp, activity.getPositionViewHolderByName(KEY_SOCIAL_PROOF), filePrefix(), "social proof")
+        findViewHolderAndScreenshot(com.tokopedia.product.detail.R.id.rv_pdp, activity.getPositionViewHolderByName(KEY_REVIEW), filePrefix(), "review")
+        findViewHolderAndScreenshot(com.tokopedia.product.detail.R.id.rv_pdp, activity.getPositionViewHolderByName(KEY_VARIANT), filePrefix(), "variant")
+        findViewHolderAndScreenshot(com.tokopedia.product.detail.R.id.rv_pdp, activity.getPositionViewHolderByName(KEY_INFO), filePrefix(), "info")
+        findViewHolderAndScreenshot(com.tokopedia.product.detail.R.id.rv_pdp, activity.getPositionViewHolderByName(KEY_SHOP), filePrefix(), "shop info")
+        findViewHolderAndScreenshot(com.tokopedia.product.detail.R.id.rv_pdp, activity.getPositionViewHolderByName(KEY_DISCUSSION), filePrefix(), "discussion", true)
+        findViewHolderAndScreenshot(com.tokopedia.product.detail.R.id.rv_pdp, activity.getPositionViewHolderByName(KEY_RECOM), filePrefix(), "recom", true)
 
         activityCommonRule.activity.finishAndRemoveTask()
     }
