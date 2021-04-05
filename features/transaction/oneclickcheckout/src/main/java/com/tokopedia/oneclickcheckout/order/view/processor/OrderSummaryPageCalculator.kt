@@ -231,23 +231,27 @@ class OrderSummaryPageCalculator @Inject constructor(private val orderSummaryAna
 
         if (validateUsePromoRevampUiModel?.promoUiModel?.additionalInfoUiModel?.usageSummariesUiModel != null) {
             validateUsePromoRevampUiModel.promoUiModel.additionalInfoUiModel.usageSummariesUiModel.map {
-                cashbacks.add(
-                        OrderCostCashbackData(
-                                description = it.desc,
-                                amountStr = it.amountStr,
-                                currencyDetailStr = it.currencyDetailStr
-                        )
-                )
+                if (it.type == SummariesUiModel.TYPE_CASHBACK) {
+                    cashbacks.add(
+                            OrderCostCashbackData(
+                                    description = it.desc,
+                                    amountStr = it.amountStr,
+                                    currencyDetailStr = it.currencyDetailStr
+                            )
+                    )
+                }
             }
         } else if (orderPromo?.lastApply?.additionalInfo?.usageSummaries != null) {
             (orderPromo.lastApply?.additionalInfo?.usageSummaries as List<LastApplyUsageSummariesUiModel>).map {
-                cashbacks.add(
-                        OrderCostCashbackData(
-                                description = it.description,
-                                amountStr = it.amountStr,
-                                currencyDetailStr = it.currencyDetailsStr
-                        )
-                )
+                if (it.type == SummariesUiModel.TYPE_CASHBACK) {
+                    cashbacks.add(
+                            OrderCostCashbackData(
+                                    description = it.description,
+                                    amountStr = it.amountStr,
+                                    currencyDetailStr = it.currencyDetailsStr
+                            )
+                    )
+                }
             }
         }
 
