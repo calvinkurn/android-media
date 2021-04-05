@@ -173,6 +173,8 @@
                 android:layout_height="match_parent"
                 android:layout_marginTop="@dimen/spacing_lvl2"
                 android:background="@color/Unify_N0"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
                 android:padding="@dimen/spacing_lvl4"
                 android:visibility="gone"
                 app:layout_constraintLeft_toLeftOf="parent"

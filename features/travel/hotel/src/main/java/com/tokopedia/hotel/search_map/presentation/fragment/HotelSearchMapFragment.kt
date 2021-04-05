@@ -459,14 +459,18 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                         }
                         btnHotelSearchWithMap.startAnimation(bounceAnim)
                         setupContentMargin(true)
+
+                        googleMap.uiSettings.isScrollGesturesEnabled = false
                     }
                     BottomSheetBehavior.STATE_HALF_EXPANDED -> {
                         googleMap.animateCamera(CameraUpdateFactory.zoomOut())
                         setupContentMargin(false)
+                        googleMap.uiSettings.isScrollGesturesEnabled = true
                     }
                     BottomSheetBehavior.STATE_COLLAPSED -> {
                         googleMap.animateCamera(CameraUpdateFactory.zoomIn())
                         setupContentMargin(false)
+                        googleMap.uiSettings.isScrollGesturesEnabled = true
                     }
                     else -> {
                         setupContentMargin(false)
