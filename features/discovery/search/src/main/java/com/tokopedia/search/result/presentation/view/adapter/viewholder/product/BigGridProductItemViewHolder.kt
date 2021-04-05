@@ -21,7 +21,7 @@ class BigGridProductItemViewHolder(
     override fun bind(productItemData: ProductItemDataView?) {
         if (productItemData == null) return
 
-        itemView.productCardView?.setProductModel(productItemData.toProductCardModel(productItemData.imageUrl700))
+        itemView.productCardView?.setProductModel(productItemData.toProductCardModel(productItemData.imageUrl700, true))
 
         itemView.productCardView?.setThreeDotsOnClickListener {
             productListener.onThreeDotsClick(productItemData, adapterPosition)

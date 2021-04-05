@@ -50,7 +50,8 @@ data class ProductCardModel (
         val countSoldRating: String = "",
         val hasNotifyMeButton: Boolean = false,
         val labelGroupVariantList: List<LabelGroupVariant> = listOf(),
-        val addToCartButtonType: Int = UnifyButton.Type.TRANSACTION
+        val addToCartButtonType: Int = UnifyButton.Type.TRANSACTION,
+        val isWideContent: Boolean = false,
 ) {
     @Deprecated("replace with labelGroupList")
     var isProductSoldOut: Boolean = false

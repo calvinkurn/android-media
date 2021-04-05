@@ -44,7 +44,7 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
 
         textTopAds?.showWithCondition(productCardModel.isTopAds)
 
-        renderProductCardContent(productCardModel)
+        renderProductCardContent(productCardModel, productCardModel.isWideContent)
 
         renderStockBar(progressBarStock, textViewStockLabel, productCardModel)
 
