@@ -128,7 +128,7 @@ class ChatRoomFakeUseCaseModule {
     @ChatScope
     fun provideGetShopFollowingUseCaseStub(
             gqlUseCase: GraphqlUseCaseStub<ShopFollowingPojo>,
-            dispatchers: TopchatCoroutineContextProvider
+            dispatchers: CoroutineTestDispatchersProvider
     ): GetShopFollowingUseCaseStub {
         return GetShopFollowingUseCaseStub(gqlUseCase, dispatchers)
     }
