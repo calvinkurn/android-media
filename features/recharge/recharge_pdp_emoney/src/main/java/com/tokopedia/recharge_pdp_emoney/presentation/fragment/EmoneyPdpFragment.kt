@@ -104,8 +104,6 @@ class EmoneyPdpFragment : BaseDaggerFragment() {
             return
         }
 
-        val itemCount = arrayListOf(recommendations.isNotEmpty(), promoList.isNotEmpty()).count { it }
-
         if (recommendations.isNotEmpty()) emoneyPdpTab.addNewTab(getString(R.string.recharge_pdp_emoney_recents_tab))
         if (promoList.isNotEmpty()) emoneyPdpTab.addNewTab(getString(R.string.recharge_pdp_emoney_promo_tab))
 
