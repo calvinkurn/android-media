@@ -108,7 +108,7 @@ public class ShippingCourierBottomsheet implements ShippingCourierContract.View,
             mCourierModelList = shippingCourierUiModels;
             setupRecyclerView(cartPosition);
         } else {
-            showErrorPage("Terjadi kesalahan", shipmentCartItemModel, cartPosition);
+            showErrorPage(activity.getString(R.string.message_error_shipping_general), shipmentCartItemModel, cartPosition);
         }
     }
 
