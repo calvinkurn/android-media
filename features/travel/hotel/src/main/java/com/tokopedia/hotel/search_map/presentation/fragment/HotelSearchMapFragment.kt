@@ -172,6 +172,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                 is Fail -> {
                     hideLoader()
                     hideCollapsingHeader()
+                    hideSearchWithMap()
                     expandBottomSheet()
                     showGetListError(it.throwable)
                 }
@@ -288,10 +289,10 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         setUpTitleAndSubtitle()
         setupFindWithMapButton()
         initGetMyLocation()
+        setupPersistentBottomSheet()
+        halfExpandBottomSheet()
 
         ivHotelSearchMapNoResult.loadImage(getString(R.string.hotel_url_empty_search_map_result))
-
-        bottomSheetBehavior.state = BottomSheetBehavior.STATE_HALF_EXPANDED
     }
 
     override fun onMapReady(map: GoogleMap) {
@@ -1114,9 +1115,10 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
             override fun onGlobalLayout() {
                 viewTree.removeOnGlobalLayoutListener(this)
                 bottomSheetBehavior.peekHeight = containerEmptyResultState.measuredHeight
+
+                collapseBottomSheet()
             }
         })
-        collapseBottomSheet()
     }
 
     private fun hideErrorNoResult() {
@@ -1138,7 +1140,6 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
     companion object {
         private const val COACHMARK_LIST_STEP_POSITION = 1
         private const val COACHMARK_FILTER_STEP_POSITION = 2
-        private const val DAYS_A_YEAR: Long = 365
 
         private const val REQUEST_CODE_DETAIL_HOTEL = 101
         private const val REQUEST_CHANGE_SEARCH_HOTEL = 105
