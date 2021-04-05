@@ -92,8 +92,8 @@ class ProductFeaturedViewComponent(
         val layoutManager = rvProductFeatured.layoutManager
         if (layoutManager !is LinearLayoutManager) return
 
-        val startPosition = layoutManager.findFirstCompletelyVisibleItemPosition()
-        val endPosition = layoutManager.findLastCompletelyVisibleItemPosition()
+        val startPosition = layoutManager.findFirstVisibleItemPosition()
+        val endPosition = layoutManager.findLastVisibleItemPosition()
         if (startPosition < 0 || endPosition > adapter.itemCount) return
 
         val productImpressed = getProductImpressed(startPosition, endPosition)
