@@ -107,7 +107,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
 
     private lateinit var filterBottomSheet: HotelFilterBottomSheets
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<ConstraintLayout>
-    private lateinit var bounceAnim : Animation
+    private lateinit var bounceAnim: Animation
 
     override fun getScreenName(): String = SEARCH_SCREEN_NAME
 
@@ -292,8 +292,6 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         ivHotelSearchMapNoResult.loadImage(getString(R.string.hotel_url_empty_search_map_result))
 
         bottomSheetBehavior.state = BottomSheetBehavior.STATE_HALF_EXPANDED
-
-        setAnimBottomSheetBehavior()
     }
 
     override fun onMapReady(map: GoogleMap) {
@@ -456,7 +454,19 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
             override fun onStateChanged(bottomSheet: View, newState: Int) {
                 when (newState) {
                     BottomSheetBehavior.STATE_EXPANDED -> {
+                        context?.let {
+                            bounceAnim = AnimationUtils.loadAnimation(it, R.anim.bounce_anim)
+                        }
+                        btnHotelSearchWithMap.startAnimation(bounceAnim)
                         setupContentMargin(true)
+                    }
+                    BottomSheetBehavior.STATE_HALF_EXPANDED -> {
+                        googleMap.animateCamera(CameraUpdateFactory.zoomOut())
+                        setupContentMargin(false)
+                    }
+                    BottomSheetBehavior.STATE_COLLAPSED -> {
+                        googleMap.animateCamera(CameraUpdateFactory.zoomIn())
+                        setupContentMargin(false)
                     }
                     else -> {
                         setupContentMargin(false)
@@ -615,7 +625,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         }
 
         btnGetRadiusHotelSearchMap.addItem(wrapper)
-        btnGetRadiusHotelSearchMap.setMargins(0, resources.getDimensionPixelSize(R.dimen.hotel_70dp),0,0)
+        btnGetRadiusHotelSearchMap.setMargins(0, resources.getDimensionPixelSize(R.dimen.hotel_70dp), 0, 0)
     }
 
     private fun addMyLocation(latLong: LatLng) {
@@ -1119,31 +1129,6 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
 
     private fun collapseBottomSheet() {
         bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
-    }
-
-    private fun setAnimBottomSheetBehavior(){
-        if(::bottomSheetBehavior.isInitialized){
-            bottomSheetBehavior.addBottomSheetCallback(object: BottomSheetBehavior.BottomSheetCallback(){
-                override fun onStateChanged(bottomSheet: View, state: Int) {
-                    when (state) {
-                        BottomSheetBehavior.STATE_EXPANDED ->{
-                            context?.let {
-                                bounceAnim = AnimationUtils.loadAnimation(it, R.anim.bounce_anim)
-                            }
-                            btnHotelSearchWithMap.startAnimation(bounceAnim)
-                        }
-                        BottomSheetBehavior.STATE_COLLAPSED ->{
-                            googleMap.animateCamera(CameraUpdateFactory.zoomIn())
-                        }
-                        BottomSheetBehavior.STATE_HALF_EXPANDED ->{
-                            googleMap.animateCamera(CameraUpdateFactory.zoomOut())
-                        }
-                    }
-                }
-                override fun onSlide(bottomSheet: View, slideOffset: Float) {
-                }
-            })
-        }
     }
 
     companion object {
