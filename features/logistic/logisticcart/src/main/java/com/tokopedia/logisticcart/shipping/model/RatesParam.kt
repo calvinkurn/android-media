@@ -132,7 +132,7 @@ data class RatesParam(
             private set
         var is_blackbox: Int = if (shipping.isBlackbox) 1 else 0
             private set
-        var address_id: String = shipping.addressId
+        var address_id: String = shipping.addressId ?: "0"
             private set
         var preorder: Int = if (shipping.isPreorder) 1 else 0
             private set
