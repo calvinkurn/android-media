@@ -4,6 +4,7 @@ package com.tokopedia.productcard.utils
 import android.content.Context
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.R
+import com.tokopedia.unifycomponents.toPx
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import kotlin.math.max
@@ -127,14 +128,13 @@ private fun ProductCardModel.getContentHeight(context: Context): Int {
             pdpViewCountHeight+
             productNameSectionHeight +
             categoryCostPerUnitHeight +
-            priceSectionHeight +
-            promoSectionHeight +
+            max(priceSectionHeight, promoSectionHeight) +
             shopInfoSectionHeight +
             credibilitySectionHeight +
             shopRatingSectionHeight +
-            shippingInfoSectionHeight +
-            etaHeight +
-            stockBarHeight
+            max(shippingInfoSectionHeight, etaHeight) +
+            stockBarHeight +
+            6.toPx() // small hack, unknown height missing from calculation
 }
 
 private fun ProductCardModel.getGimmickSectionHeight(context: Context): Int {
