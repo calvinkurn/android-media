@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white"
+    android:background="@color/Unify_N0"
     app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
     <androidx.appcompat.widget.AppCompatImageView
@@ -36,7 +36,7 @@
         android:layout_marginLeft="@dimen/dp_12"
         android:layout_toEndOf="@id/img_egg"
         android:layout_toRightOf="@id/img_egg"
-        android:textColor="@color/tp_toolbar_navigation_white_color"
+        android:textColor="@color/Unify_N0"
         app:typographyType="heading_5"
         tools:text="Gulfikar Rinjani" />
 
@@ -53,7 +53,7 @@
         android:layout_toRightOf="@id/img_egg"
         android:ellipsize="end"
         android:maxLines="1"
-        android:textColor="@color/white"
+        android:textColor="@color/Unify_N0"
         app:typographyType="heading_3"
         app:typographyWeight="bold"
         tools:text="Classic Member" />
@@ -78,7 +78,7 @@
             android:layout_marginTop="@dimen/dp_12"
             android:layout_marginBottom="@dimen/dp_12"
             android:lineSpacingExtra="4sp"
-            android:textColor="@color/red_30"
+            android:textColor="@color/Unify_Y200"
             android:translationY="-1.84sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/ic_arrow_icon"
@@ -113,7 +113,7 @@
         android:layout_marginTop="@dimen/dp_9"
         android:layout_marginEnd="@dimen/dp_10"
         android:layout_marginRight="@dimen/dp_10"
-        android:background="@color/white"
+        android:background="@color/Unify_N0"
         android:visibility="visible">
 
         <com.tokopedia.tokopoints.view.customview.DynamicItemActionView

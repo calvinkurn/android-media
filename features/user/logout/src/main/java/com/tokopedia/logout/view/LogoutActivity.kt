@@ -165,7 +165,6 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
         AppWidgetUtil.sendBroadcastToAppWidget(applicationContext)
         NotificationModHandler.clearCacheAllNotification(applicationContext)
         CacheApiClearAllUseCase(applicationContext).executeSync()
-        RemoteConfigInstance.getInstance().abTestPlatform.fetchByType(null)
         NotificationModHandler(applicationContext).dismissAllActivedNotifications()
         clearWebView()
         clearLocalChooseAddress()
@@ -175,6 +174,7 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
         tetraDebugger?.setUserId("")
         userSession.clearToken()
         userSession.logoutSession()
+        RemoteConfigInstance.getInstance().abTestPlatform.fetchByType(null)
 
         if (isReturnToHome) {
             if (GlobalConfig.isSellerApp()) {
@@ -231,16 +231,18 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
     }
 
     private fun clearWebView() {
-        WebView(applicationContext).clearCache(true)
-        val cookieManager: CookieManager
-        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            CookieSyncManager.createInstance(this)
-            cookieManager = CookieManager.getInstance()
-            cookieManager.removeAllCookie()
-        } else {
-            cookieManager = CookieManager.getInstance()
-            cookieManager.removeAllCookies {}
-        }
+        try {
+            WebView(applicationContext).clearCache(true)
+            val cookieManager: CookieManager
+            if(Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+                CookieSyncManager.createInstance(this)
+                cookieManager = CookieManager.getInstance()
+                cookieManager.removeAllCookie()
+            } else {
+                cookieManager = CookieManager.getInstance()
+                cookieManager.removeAllCookies {}
+            }
+        } catch (ignored: Exception) {}
     }
 
     companion object {
