@@ -76,7 +76,7 @@ class LoggerRepository(private val logDao: LoggerDao,
                 }
 
                 if (newRelicMessageList.isNotEmpty()) {
-                    val jobNewRelic = async { sendNewRelicLogToServer(newRelicConfigs[tokenIndex], logs, newRelicConfigList) }
+                    val jobNewRelic = async { sendNewRelicLogToServer(newRelicConfigs[tokenIndex], logs, newRelicMessageList) }
                     jobList.add(jobNewRelic)
                 }
 
