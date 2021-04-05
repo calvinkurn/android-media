@@ -15,26 +15,4 @@ public interface ContactUsHomeContract {
     String ContactUsName = "Contact_Us";
     String CONTACT_US_WEB = "app_enable_contactus_native";
 
-    interface View extends CustomerView {
-        void addPopularArticle(ContactUsArticleResponse articleResponse);
-
-        void addPopularArticleDivider();
-
-        void setEmptyPurchaseListHide();
-
-        void setPurchaseList(List<BuyerPurchaseList> buyerPurchaseLists);
-
-        void setChatBotVisible();
-
-        void setChatBotMessageId(int msgId);
-
-        void setChatBotMessage(String message);
-
-        void setHighMessageUserName(String userName);
-    }
-
-    interface Presenter extends CustomerPresenter<View> {
-
-
-    }
 }

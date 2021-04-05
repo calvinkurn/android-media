@@ -10,7 +10,6 @@ import com.google.android.play.core.splitcompat.SplitCompat;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.contactus.R;
 import com.tokopedia.contactus.createticket.ContactUsConstant;
-import com.tokopedia.contactus.home.view.fragment.ContactUsHomeFragment;
 import com.tokopedia.contactus.home.view.presenter.ContactUsHomeContract;
 import com.tokopedia.contactus.inboxticket2.view.activity.InboxListActivity;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
@@ -37,8 +36,10 @@ public class ContactUsHomeActivity extends BaseSimpleActivity {
             } else {
                 return BaseSessionWebViewFragment.newInstance(URL_HELP);
             }
-        } else {
-            return ContactUsHomeFragment.newInstance();
+        }
+        else {
+//            return ContactUsHomeFragment.newInstance();
+            return BaseSessionWebViewFragment.newInstance(URL_HELP);
         }
     }
 
