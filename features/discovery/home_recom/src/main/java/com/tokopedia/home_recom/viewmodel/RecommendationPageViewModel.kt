@@ -172,7 +172,7 @@ open class RecommendationPageViewModel @Inject constructor(
      * @param callback the callback for handling [added or removed, throwable] to UI
      */
     fun addWishlist(productId: String, wishlistUrl: String, isTopAds: Boolean, callback: ((Boolean, Throwable?) -> Unit)){
-        if(isTopAds){
+        if(isTopAds && wishlistUrl.isNotEmpty()){
             val params = RequestParams.create()
             params.putString(TopAdsWishlishedUseCase.WISHSLIST_URL, wishlistUrl)
             topAdsWishlishedUseCase.execute(params, object : Subscriber<WishlistModel>() {
