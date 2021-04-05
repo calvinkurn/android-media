@@ -50,7 +50,6 @@ import com.tokopedia.hotel.search.data.model.FilterV2.Companion.FILTER_TYPE_SORT
 import com.tokopedia.hotel.search.data.model.params.ParamFilterV2
 import com.tokopedia.hotel.search.presentation.adapter.HotelSearchResultAdapter
 import com.tokopedia.hotel.search.presentation.adapter.PropertyAdapterTypeFactory
-import com.tokopedia.hotel.search.presentation.fragment.HotelSearchResultFragment
 import com.tokopedia.hotel.search.presentation.widget.HotelFilterBottomSheets
 import com.tokopedia.hotel.search.presentation.widget.SubmitFilterListener
 import com.tokopedia.hotel.search_map.data.HotelLoadingModel
@@ -148,7 +147,9 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
             (it as HotelSearchMapActivity).setSupportActionBar(headerHotelSearchMap)
         }
 
-        localCacheHandler = LocalCacheHandler(context, PREFERENCES_NAME)
+        context?.let {
+            localCacheHandler = LocalCacheHandler(it, PREFERENCES_NAME)
+        }
 
         setCardListViewAdapter()
     }
@@ -801,7 +802,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
 
     private fun showCoachMark() {
         context?.let {
-            val coachmarkShowed = localCacheHandler.getBoolean(HotelSearchResultFragment.SHOW_COACH_MARK_KEY, false)
+            val coachmarkShowed = localCacheHandler.getBoolean(SHOW_COACH_MARK_KEY, false)
             if (!coachmarkShowed) {
                 val coachMarkItem = arrayListOf(
                         CoachMark2Item(
