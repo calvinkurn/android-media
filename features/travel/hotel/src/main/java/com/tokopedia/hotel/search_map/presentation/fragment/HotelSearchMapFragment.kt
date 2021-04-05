@@ -10,6 +10,8 @@ import android.os.Build
 import android.os.Bundle
 import android.util.DisplayMetrics
 import android.view.*
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -19,9 +21,7 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.LinearSnapHelper
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.SnapHelper
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -106,8 +106,8 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
     private var isLoadingSearchByMap: Boolean = false
 
     private lateinit var filterBottomSheet: HotelFilterBottomSheets
-    private val snapHelper: SnapHelper = LinearSnapHelper()
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<ConstraintLayout>
+    private lateinit var bounceAnim : Animation
 
     override fun getScreenName(): String = SEARCH_SCREEN_NAME
 
@@ -162,7 +162,6 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                     showCollapsingHeader()
                     onSuccessGetResult(it.data)
                     if (!it.data.properties.isNullOrEmpty()) {
-                        cardListPosition = SELECTED_POSITION_INIT
                         changeMarkerState(cardListPosition)
                     } else {
                         hideLoader()
@@ -266,6 +265,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         tvHotelSearchListTitleLoader.visible()
         tvHotelSearchListTitle.gone()
 
+        cardListPosition = SELECTED_POSITION_INIT
         adapterCardList.clearAllElements()
         removeAllMarker()
 
@@ -292,6 +292,8 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         ivHotelSearchMapNoResult.loadImage(getString(R.string.hotel_url_empty_search_map_result))
 
         bottomSheetBehavior.state = BottomSheetBehavior.STATE_HALF_EXPANDED
+
+        setAnimBottomSheetBehavior()
     }
 
     override fun onMapReady(map: GoogleMap) {
@@ -352,6 +354,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
             if (isLoadingInitialData) {
                 adapterCardList.clearAllElements()
                 adapterCardList.addElement(HotelLoadingModel(isForHorizontalItem = true))
+                hideGetMyLocation()
             }
         }
         hideGetMyLocation()
@@ -540,10 +543,6 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         val linearLayoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         rvHorizontalPropertiesHotelSearchMap.layoutManager = linearLayoutManager
 
-        if (rvHorizontalPropertiesHotelSearchMap.onFlingListener == null) {
-            snapHelper.attachToRecyclerView(rvHorizontalPropertiesHotelSearchMap)
-        }
-
         initScrollCardList()
     }
 
@@ -573,6 +572,10 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
 
             googleMap.setOnMarkerClickListener(this)
             googleMap.setOnCameraMoveListener(this)
+
+            googleMap.setOnMapClickListener {
+                collapseBottomSheet()
+            }
         }
     }
 
@@ -612,6 +615,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         }
 
         btnGetRadiusHotelSearchMap.addItem(wrapper)
+        btnGetRadiusHotelSearchMap.setMargins(0, resources.getDimensionPixelSize(R.dimen.hotel_70dp),0,0)
     }
 
     private fun addMyLocation(latLong: LatLng) {
@@ -645,9 +649,9 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                 if (cardListPosition == position && !searchPropertiesMap.isNullOrEmpty()) {
                     allMarker[position].setIcon(createCustomMarker(requireContext(), HOTEL_PRICE_ACTIVE_PIN, allMarker[position].title))
                     if (cardListPosition == SELECTED_POSITION_INIT) {
-                        googleMap.moveCamera(CameraUpdateFactory.newLatLng(searchPropertiesMap[position]))
+                        googleMap.animateCamera(CameraUpdateFactory.newLatLng(searchPropertiesMap[position]))
                     } else {
-                        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(searchPropertiesMap[position], MAPS_STREET_LEVEL_ZOOM))
+                        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(searchPropertiesMap[position], MAPS_STREET_LEVEL_ZOOM))
                     }
                 }
             }
@@ -676,7 +680,6 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
     /** Location permission is handled by LocationDetector */
     private fun initGetMyLocation() {
         ivGetLocationHotelSearchMap.setOnClickListener {
-            hideCardListView()
             showFindNearHereView()
             getCurrentLocation()
             changeHeaderTitle()
@@ -892,6 +895,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
 
     private fun hideFindNearHereView() {
         animatebtnGetRadiusHotelSearchMap(BUTTON_RADIUS_HIDE_VALUE)
+        btnGetRadiusHotelSearchMap.gone()
     }
 
     private fun animatebtnGetRadiusHotelSearchMap(value: Float) {
@@ -1115,6 +1119,31 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
 
     private fun collapseBottomSheet() {
         bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+    }
+
+    private fun setAnimBottomSheetBehavior(){
+        if(::bottomSheetBehavior.isInitialized){
+            bottomSheetBehavior.addBottomSheetCallback(object: BottomSheetBehavior.BottomSheetCallback(){
+                override fun onStateChanged(bottomSheet: View, state: Int) {
+                    when (state) {
+                        BottomSheetBehavior.STATE_EXPANDED ->{
+                            context?.let {
+                                bounceAnim = AnimationUtils.loadAnimation(it, R.anim.bounce_anim)
+                            }
+                            btnHotelSearchWithMap.startAnimation(bounceAnim)
+                        }
+                        BottomSheetBehavior.STATE_COLLAPSED ->{
+                            googleMap.animateCamera(CameraUpdateFactory.zoomIn())
+                        }
+                        BottomSheetBehavior.STATE_HALF_EXPANDED ->{
+                            googleMap.animateCamera(CameraUpdateFactory.zoomOut())
+                        }
+                    }
+                }
+                override fun onSlide(bottomSheet: View, slideOffset: Float) {
+                }
+            })
+        }
     }
 
     companion object {
