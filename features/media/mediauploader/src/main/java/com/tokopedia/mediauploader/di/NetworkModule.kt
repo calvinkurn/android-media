@@ -7,6 +7,9 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.mediauploader.util.NetworkTimeOutInterceptor
 import com.tokopedia.mediauploader.util.NetworkTimeOutInterceptor.Companion.DEFAULT_TIMEOUT
+import com.tokopedia.network.NetworkRouter
+import com.tokopedia.network.interceptor.TkpdAuthInterceptor
+import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
@@ -19,7 +22,8 @@ import java.util.concurrent.TimeUnit
     @Provides
     @MediaUploaderQualifier
     fun provideOkHttpClientBuilder(
-            @ApplicationContext context: Context
+            @ApplicationContext context: Context,
+            @MediaUploaderQualifier userSession: UserSessionInterface
     ): OkHttpClient.Builder {
         return OkHttpClient.Builder()
                 .connectTimeout(DEFAULT_TIMEOUT.toLong(), TimeUnit.SECONDS)
@@ -28,6 +32,11 @@ import java.util.concurrent.TimeUnit
                 .callTimeout(DEFAULT_TIMEOUT.toLong(), TimeUnit.SECONDS)
                 .retryOnConnectionFailure(false)
                 .addInterceptor(NetworkTimeOutInterceptor())
+                .addInterceptor(TkpdAuthInterceptor(
+                        context,
+                        context.applicationContext as NetworkRouter,
+                        userSession
+                ))
                 .also {
                     if (GlobalConfig.isAllowDebuggingTools()) {
                         it.addInterceptor(ChuckerInterceptor(context))
