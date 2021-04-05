@@ -3,6 +3,7 @@ package com.tokopedia.sellerorder.list.presentation.adapter.viewholders.tablet
 import android.animation.ValueAnimator
 import android.os.Bundle
 import android.view.View
+import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.list.presentation.models.SomListOrderUiModel
 import kotlinx.android.synthetic.main.item_som_list_order.view.*
 
@@ -41,10 +42,15 @@ class SomListOrderViewHolder(
     }
 
     override fun setupOrderCard(element: SomListOrderUiModel) {
-        if ((listener.isMultiSelectEnabled() && element.cancelRequest != 0 && element.cancelRequestStatus != 0) || element.isOpen) {
+        if ((listener.isMultiSelectEnabled() && element.cancelRequest != 0 && element.cancelRequestStatus != 0)) {
             itemView.cardSomOrder?.animateFadeOut()
         } else {
             itemView.cardSomOrder?.animateFadeIn()
+        }
+        if (element.isOpen) {
+            itemView.container?.background = itemView.context.getDrawable(R.drawable.bg_selected_order)
+        } else {
+            itemView.container?.background = null
         }
         itemView.setOnClickListener {
             if (listener.isMultiSelectEnabled()) touchCheckBox(element)

@@ -63,8 +63,7 @@ class SomContainerFragment : Fragment(), SomListFragment.SomListClickListener, S
     }
 
     private fun initiateListFragment() {
-        somListFragment = SomListFragment.newInstance(arguments
-                ?: Bundle.EMPTY).apply {
+        somListFragment = SomListFragment.newInstance(arguments ?: Bundle.EMPTY).apply {
             setSomListOrderListener(this@SomContainerFragment)
         }
     }
