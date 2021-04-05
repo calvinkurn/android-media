@@ -35,6 +35,7 @@
             android:layout_gravity="center"
             android:clipToPadding="false"
             android:descendantFocusability="beforeDescendants"
+            android:paddingBottom="@dimen/unify_space_8"
             android:scrollbars="vertical" />
 
         <com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify
@@ -45,6 +46,12 @@
             android:visibility="gone"
             app:fbType="group"
             tools:visibility="visible" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/spacing_lvl3"
+            android:layout_gravity="bottom"
+            android:background="@drawable/bg_shadow_attachment_chat_room" />
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
@@ -186,7 +193,6 @@
                     android:layout_marginEnd="@dimen/spacing_lvl3"
                     android:layout_marginBottom="@dimen/dp_topchat_14"
                     android:hint="@string/chat_edit_text"
-                    android:textColorHint="@color/Unify_N700_32"
                     android:inputType="textMultiLine"
                     android:maxLines="5"
                     android:minHeight="@dimen/dp_topchat_40"
@@ -194,8 +200,9 @@
                     android:paddingTop="@dimen/dp_topchat_10"
                     android:paddingEnd="@dimen/spacing_lvl8"
                     android:paddingBottom="@dimen/dp_topchat_10"
-                    android:textSize="@dimen/fontSize_lvl4"
                     android:textColor="@color/Unify_N700_96"
+                    android:textColorHint="@color/Unify_N700_32"
+                    android:textSize="@dimen/fontSize_lvl4"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/send_but"
                     app:layout_constraintStart_toStartOf="parent"
