@@ -20,6 +20,8 @@ import com.tokopedia.graphql.util.Const
 import com.tokopedia.graphql.util.Const.AKAMAI_SENSOR_DATA_HEADER
 import com.tokopedia.graphql.util.Const.QUERY_HASHING_HEADER
 import com.tokopedia.graphql.util.LoggingUtils
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
 import kotlinx.coroutines.*
 import okhttp3.internal.http2.ConnectionShutdownException
 import retrofit2.Response
@@ -132,7 +134,12 @@ class GraphqlCloudDataStore @Inject constructor(
                             else{
                                 header[QUERY_HASHING_HEADER] = ""
                             }
-                            Timber.w("P1#GQL_HASHING#error;name='%s';key='%s';hash='%s'", CacheHelper.getQueryName(requests[0].query), requests[0].md5, queryHashValues.toString());
+                            ServerLogger.log(Priority.P1, "GQL_HASHING",
+                                    mapOf("type" to "error",
+                                            "name" to CacheHelper.getQueryName(requests[0].query),
+                                            "key" to requests[0].md5,
+                                            "hash" to queryHashValues.toString()
+                                    ))
                             api.getResponseSuspend(requests.toMutableList(), header, FingerprintManager.getQueryDigest(requests))
                         }
                         if (result.code() != Const.GQL_RESPONSE_HTTP_OK) {
@@ -157,7 +164,12 @@ class GraphqlCloudDataStore @Inject constructor(
                         requests.forEachIndexed { index, request ->
                             if (executeQueryHashFlow) {
                                 cacheManager.saveQueryHash(request.md5, qhValues.get(index))
-                                Timber.w("P1#GQL_HASHING#success;name='%s';key='%s';hash='%s'", CacheHelper.getQueryName(request.query), request.md5, qhValues[index]);
+                                ServerLogger.log(Priority.P1, "GQL_HASHING",
+                                        mapOf("type" to "success",
+                                                "name" to CacheHelper.getQueryName(request.query),
+                                                "key" to request.md5,
+                                                "hash" to qhValues[index]
+                                        ))
                             }
                             if (request.isNoCache || (executeCacheFlow && caches[request.md5] == null)) {
                                 return@forEachIndexed  //Do nothing
