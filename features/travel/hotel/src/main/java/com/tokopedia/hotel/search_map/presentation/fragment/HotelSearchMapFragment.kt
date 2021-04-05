@@ -148,15 +148,13 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
             (it as HotelSearchMapActivity).setSupportActionBar(headerHotelSearchMap)
         }
 
-        context?.let {
-            localCacheHandler = LocalCacheHandler(it, PREFERENCES_NAME)
-        }
-
         setCardListViewAdapter()
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+
+        localCacheHandler = LocalCacheHandler(requireContext(), PREFERENCES_NAME)
 
         hotelSearchMapViewModel.liveSearchResult.observe(viewLifecycleOwner, Observer {
             when (it) {
