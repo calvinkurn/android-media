@@ -129,7 +129,9 @@ class SaldoDepositActivity : BaseSimpleActivity(), HasComponent<SaldoDetailsComp
 
     private fun addAutoWithdrawalSettingIcon(isSeller : Boolean){
         if(isSeller) {
-            if(isAutoWithRollenceActive()) {
+            val isAutoWithdrawalPageEnable = FirebaseRemoteConfigImpl(this)
+                    .getBoolean(FLAG_APP_SALDO_AUTO_WITHDRAWAL, false)
+            if(isAutoWithdrawalPageEnable && isAutoWithRollenceActive()) {
                 toolbarAutoWithdrawalSetting.visible()
                 toolbarAutoWithdrawalSetting.setOnClickListener {
                     RouteManager.route(this, ApplinkConstInternalGlobal.AUTO_WITHDRAW_SETTING)
@@ -163,6 +165,7 @@ class SaldoDepositActivity : BaseSimpleActivity(), HasComponent<SaldoDetailsComp
 
     companion object {
         private const val KEY_ROLLENCE_AUTO_WITHDRAWAL = "Auto_Withdrawal_RP"
+        private const val FLAG_APP_SALDO_AUTO_WITHDRAWAL = "app_flag_saldo_auto_withdrawal_v2"
         private val REQUEST_CODE_LOGIN = 1001
         private val TAG = "DEPOSIT_FRAGMENT"
 
