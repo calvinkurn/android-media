@@ -140,26 +140,29 @@ class CampaignRibbon @JvmOverloads constructor(context: Context, attrs: Attribut
     // SLASH PRICE - not eligible for thematic campaign - use campaign ribbon structure type 3
     private fun renderSlashPriceCampaignRibbon(onGoingData: ProductContentMainData) {
         val campaign = onGoingData.campaign
-        if (campaign.shouldShowRibbonCampaign) {
-            // thematic data
-            val thematicCampaign = onGoingData.thematicCampaign
-            // render campaign name
-            val campaignName = if (thematicCampaign.campaignName.isNotBlank()) thematicCampaign.campaignName else campaign.campaignTypeName
-            campaignNameViews3?.text = campaignName
-            // render campaign ribbon background
-            val gradientHexCodes = if (thematicCampaign.background.isNotBlank()) thematicCampaign.background else campaign.background
-            val gradientDrawable = getGradientDrawableForBackGround(gradientHexCodes, SLASH_PRICE)
-            campaignRibbonType3View?.background = gradientDrawable
-            // show count down wording
-            endsInWordingView3?.show()
-            // render ongoing count down timer
-            renderOnGoingCountDownTimer(campaign = campaign, timerView = timerView3)
-            // hide irrelevant views
-            regulatoryInfo3?.hide()
-            campaignLogoView3?.hide()
-            // show campaign ribbon type 3
-            showCampaignRibbonType3()
-        } else this.hide()
+        if (onGoingData.thematicCampaign.campaignName.isEmpty()) {
+            if (campaign.shouldShowRibbonCampaign) {
+                // thematic data
+                val thematicCampaign = onGoingData.thematicCampaign
+                // render campaign name
+                campaignNameViews3?.text = campaign.campaignTypeName
+                // render campaign ribbon background
+                val gradientDrawable = getGradientDrawableForBackGround(campaign.background, SLASH_PRICE)
+                campaignRibbonType3View?.background = gradientDrawable
+                // show count down wording
+                endsInWordingView3?.show()
+                // render ongoing count down timer
+                renderOnGoingCountDownTimer(campaign = campaign, timerView = timerView3)
+                // hide irrelevant views
+                regulatoryInfo3?.hide()
+                campaignLogoView3?.hide()
+                // show campaign ribbon type 3
+                showCampaignRibbonType3()
+            } else this.hide()
+        } else {
+            // if thematic have value, render thematic instead of slash price
+            renderThematicCampaignRibbon(onGoingData)
+        }
     }
 
     // THEMATIC ONLY - use campaign ribbon structure type 3
