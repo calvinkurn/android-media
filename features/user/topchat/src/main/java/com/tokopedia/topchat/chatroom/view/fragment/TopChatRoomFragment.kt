@@ -71,6 +71,7 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.reputation.common.constant.ReputationCommonConstants
+import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.data.activityresult.ReviewRequestResult
@@ -967,9 +968,25 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             val status = data.getStringExtra(
                     ProductManageCommonConstant.EXTRA_UPDATED_STATUS
             ) ?: return
+            val productName = data.getStringExtra(ProductManageCommonConstant.EXTRA_PRODUCT_NAME)
             val updateProductResult = presenter.onGoingStockUpdate[productId] ?: return
+            showToasterMsgFromUpdateStock(productName, status)
             adapter.updateProductStock(updateProductResult, stockCount, status)
             presenter.onGoingStockUpdate.remove(productId)
+        }
+    }
+
+    private fun showToasterMsgFromUpdateStock(productName: String?, status: String) {
+        when (status) {
+            ProductStatus.ACTIVE.name -> {
+                view?.let {
+                    val name = productName?.ellipsize(20) ?: return
+                    Toaster.build(
+                            it, "Stok produk \"$name\" berhasil diubah.",
+                            Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL
+                    ).show()
+                }
+            }
         }
     }
 
@@ -1756,6 +1773,14 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     override fun trackReviewCardClick(element: ReviewUiModel) {
         analytics.trackReviewCardClick(element, isSeller(), session.userId)
+    }
+
+    private fun String.ellipsize(maxChar: Int): String {
+        return if (length > maxChar) {
+            "${substring(0, maxChar)}..."
+        } else {
+            this
+        }
     }
 
     companion object {
