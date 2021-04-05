@@ -226,7 +226,7 @@ class DeactivationBottomSheet : BaseBottomSheet() {
         }
 
         showButtonProgress()
-        //mViewModel.submitPmDeactivation(answers)
+        mViewModel.submitPmDeactivation(answers)
     }
 
     private fun showButtonProgress() = childView?.run {
