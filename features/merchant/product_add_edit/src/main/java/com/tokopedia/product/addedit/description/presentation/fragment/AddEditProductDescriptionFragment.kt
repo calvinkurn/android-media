@@ -44,7 +44,6 @@ import com.tokopedia.product.addedit.description.di.DaggerAddEditProductDescript
 import com.tokopedia.product.addedit.description.presentation.adapter.VideoLinkTypeFactory
 import com.tokopedia.product.addedit.description.presentation.constant.AddEditProductDescriptionConstants.Companion.MAX_DESCRIPTION_CHAR
 import com.tokopedia.product.addedit.description.presentation.constant.AddEditProductDescriptionConstants.Companion.MAX_VIDEOS
-import com.tokopedia.product.addedit.description.presentation.constant.AddEditProductDescriptionConstants.Companion.VALIDATE_REQUEST_DELAY
 import com.tokopedia.product.addedit.description.presentation.dialog.GiftingDescriptionBottomSheet
 import com.tokopedia.product.addedit.description.presentation.model.DescriptionInputModel
 import com.tokopedia.product.addedit.description.presentation.model.VideoLinkModel
@@ -558,9 +557,7 @@ class AddEditProductDescriptionFragment:
     }
 
     private fun validateDescriptionText(it: String) {
-        view?.postDelayed({
-            descriptionViewModel.validateProductDescriptionInput(it)
-        }, VALIDATE_REQUEST_DELAY)
+        descriptionViewModel.validateDescriptionChanged(it)
     }
 
     private fun updateDescriptionFieldErrorMessage(message: String) {

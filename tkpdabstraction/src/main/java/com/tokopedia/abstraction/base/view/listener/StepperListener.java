@@ -11,4 +11,6 @@ public interface StepperListener {
     void goToNextPage(StepperModel object);
 
     void finishPage();
+
+    void getToFragment(int pos, StepperModel model);
 }
