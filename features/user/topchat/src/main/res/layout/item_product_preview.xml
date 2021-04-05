@@ -24,100 +24,21 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:src="@color/Unify_G200" />
 
-    <LinearLayout
-        android:id="@+id/ll_variant"
-        android:layout_width="@dimen/dp_topchat_0"
-        android:layout_height="@dimen/dp_topchat_14"
-        android:layout_marginStart="@dimen/spacing_lvl3"
-        android:layout_marginLeft="@dimen/spacing_lvl3"
-        android:layout_marginEnd="@dimen/spacing_lvl3"
-        android:layout_marginRight="@dimen/spacing_lvl3"
-        android:orientation="horizontal"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/iv_product"
-        app:layout_constraintTop_toTopOf="@+id/iv_product"
-        tools:visibility="visible">
-
-        <LinearLayout
-            android:id="@+id/ll_variant_color"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_marginEnd="@dimen/spacing_lvl2"
-            android:background="@drawable/bg_rounded_grey"
-            android:orientation="horizontal"
-            android:paddingStart="@dimen/spacing_lvl3"
-            android:paddingEnd="@dimen/spacing_lvl3">
-
-            <ImageView
-                android:id="@+id/iv_variant_color"
-                android:layout_width="@dimen/dp_topchat_6"
-                android:layout_height="@dimen/dp_topchat_6"
-                android:layout_gravity="center_vertical"
-                android:layout_marginEnd="@dimen/spacing_lvl2"
-                android:contentDescription="@null"
-                tools:background="@color/Unify_N700" />
-
-            <com.tokopedia.design.component.TextViewCompat
-                android:id="@+id/tv_variant_color"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:textSize="@dimen/fontSize_lvl10"
-                tools:text="Hitam" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/ll_variant_size"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_marginEnd="@dimen/spacing_lvl3"
-            android:background="@drawable/bg_rounded_grey"
-            android:orientation="horizontal"
-            android:paddingStart="@dimen/spacing_lvl3"
-            android:paddingEnd="@dimen/spacing_lvl3">
-
-            <com.tokopedia.design.component.TextViewCompat
-                android:id="@+id/tv_variant_size"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:textSize="@dimen/fontSize_lvl10"
-                tools:text="Besar" />
-
-        </LinearLayout>
-
-    </LinearLayout>
-
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_product_name"
         android:layout_width="@dimen/dp_topchat_0"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/spacing_lvl3"
+        android:layout_marginStart="@dimen/unify_space_8"
         android:ellipsize="end"
         android:maxLines="1"
+        app:layout_constraintBottom_toBottomOf="@+id/iv_product"
         app:layout_constraintEnd_toStartOf="@+id/iv_close"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintStart_toEndOf="@+id/iv_product"
-        app:layout_constraintTop_toBottomOf="@+id/ll_variant"
+        app:layout_constraintTop_toTopOf="@+id/iv_product"
         app:typographyType="heading_5"
         app:typographyWeight="bold"
         tools:text="This is really long product name that appear on the screen" />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tv_product_price"
-        android:layout_width="@dimen/dp_topchat_0"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/spacing_lvl3"
-        android:ellipsize="end"
-        android:maxLines="1"
-        android:textColor="@color/Unify_Y500"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toStartOf="@+id/iv_close"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/iv_product"
-        app:layout_constraintTop_toBottomOf="@+id/tv_product_name"
-        tools:text="Rp500.000" />
 
     <ImageView
         android:id="@+id/iv_close"
