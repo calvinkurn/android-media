@@ -105,7 +105,7 @@ class TopchatRoomSellerProductAttachmentTest : BaseSellerTopchatRoomTest() {
         getChatUseCase.response = sellerProductChatReplies
         chatAttachmentUseCase.response = sellerProductAttachment
         createSuccessUpdateStockIntentResult(
-                "1261590628", 55, ProductStatus.ACTIVE
+                "1261590628", 55, ProductStatus.ACTIVE, productName
         )
         inflateTestFragment()
 
@@ -114,6 +114,26 @@ class TopchatRoomSellerProductAttachmentTest : BaseSellerTopchatRoomTest() {
 
         // Then
         assertSnackbarText("Stok produk \"$productName\" berhasil diubah.")
+    }
+
+    @Test
+    fun user_update_stock_single_product_active_snackbar_trimmed() {
+        // Given
+        val productName = "Long product name testing"
+        val subProductName = productName.substring(0, 20)
+        setupChatRoomActivity()
+        getChatUseCase.response = sellerProductChatReplies
+        chatAttachmentUseCase.response = sellerProductAttachment
+        createSuccessUpdateStockIntentResult(
+                "1261590628", 55, ProductStatus.ACTIVE, productName
+        )
+        inflateTestFragment()
+
+        // When
+        clickChangeStockBtn(R.id.recycler_view, 1)
+
+        // Then
+        assertSnackbarText("Stok produk \"$subProductName...\" berhasil diubah.")
     }
 
     @Test
