@@ -21,9 +21,7 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.LinearSnapHelper
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.SnapHelper
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -108,7 +106,6 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
     private var searchPropertiesMap: ArrayList<LatLng> = arrayListOf()
 
     private lateinit var filterBottomSheet: HotelFilterBottomSheets
-    private val snapHelper: SnapHelper = LinearSnapHelper()
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<ConstraintLayout>
     private lateinit var bounceAnim : Animation
 
@@ -496,10 +493,6 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         rvHorizontalPropertiesHotelSearchMap.adapter = adapterCardList
         val linearLayoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         rvHorizontalPropertiesHotelSearchMap.layoutManager = linearLayoutManager
-
-        if (rvHorizontalPropertiesHotelSearchMap.onFlingListener == null) {
-            snapHelper.attachToRecyclerView(rvHorizontalPropertiesHotelSearchMap)
-        }
 
         initScrollCardList()
     }
