@@ -89,7 +89,6 @@ ext {
             trackingOptimizer       : ":libraries:tracking_optimizer",
             travelCalendar          : ":libraries:travel_calendar",
             twitterShare            : ":libraries:twitter_share",
-            videoRecorder           : ":libraries:video_recorder",
             videoUploader           : ":libraries:videouploader",
             weaver                  : ":libraries:weaver",
             workManagerUtil         : ":libraries:work_manager_util",
