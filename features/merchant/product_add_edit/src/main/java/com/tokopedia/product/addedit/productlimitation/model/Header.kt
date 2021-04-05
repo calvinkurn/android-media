@@ -6,13 +6,13 @@ import com.google.gson.annotations.SerializedName
 class Header {
     @SerializedName("reason")
     @Expose
-    var reason: String? = null
+    var reason: String = ""
 
     @SerializedName("messages")
     @Expose
-    var messages: List<Any>? = null
+    var messages: List<String> = emptyList()
 
     @SerializedName("errorCode")
     @Expose
-    var errorCode: String? = null
+    var errorCode: String = ""
 }

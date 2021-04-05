@@ -51,8 +51,6 @@ import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitori
 import com.tokopedia.product.addedit.common.AddEditProductComponentBuilder
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.EXTRA_CACHE_MANAGER_ID
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.HTTP_PREFIX
-import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.KEY_SAVE_INSTANCE_ISDRAFTING
-import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.KEY_SAVE_INSTANCE_ISEDITING
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.KEY_SAVE_INSTANCE_PREVIEW
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.PHOTO_TIPS_URL_1
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.PHOTO_TIPS_URL_2
@@ -203,13 +201,16 @@ class AddEditProductPreviewFragment :
     private var editProductStatusLayout: ViewGroup? = null
     private var productStatusSwitch: SwitchUnify? = null
 
-    //loading
+    // loading
     private var loadingLayout: MotionLayout? = null
 
     // admin revamp
     private var multiLocationTicker: Ticker? = null
     private var adminRevampErrorLayout: FrameLayout? = null
     private var adminRevampGlobalError: GlobalError? = null
+
+    // product limitation
+    private var productLimitationTicker: Ticker? = null
 
     private lateinit var userSession: UserSessionInterface
     private lateinit var shopId: String
@@ -286,7 +287,7 @@ class AddEditProductPreviewFragment :
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(com.tokopedia.product.addedit.R.layout.fragment_add_edit_product_preview, container, false)
+        return inflater.inflate(R.layout.fragment_add_edit_product_preview, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -349,13 +350,16 @@ class AddEditProductPreviewFragment :
         editProductStatusLayout = view.findViewById(R.id.edit_product_status_layout)
         productStatusSwitch = view.findViewById(R.id.su_product_status)
 
-        //loading
+        // loading
         loadingLayout = view.findViewById(R.id.loading_layout)
 
         // admin revamp
         multiLocationTicker = view.findViewById(R.id.ticker_add_edit_multi_location)
         adminRevampErrorLayout = view.findViewById(R.id.add_edit_error_layout)
         adminRevampGlobalError = view.findViewById(R.id.add_edit_admin_global_error)
+
+        // product limitation
+        productLimitationTicker = view.findViewById(R.id.ticker_add_edit_product_limitation)
 
         addEditProductPhotoButton?.setOnClickListener {
             val ctx = context ?: return@setOnClickListener
@@ -492,6 +496,9 @@ class AddEditProductPreviewFragment :
         multiLocationTicker?.showWithCondition(viewModel.shouldShowMultiLocationTicker)
 
         context?.let { UpdateShopActiveService.startService(it) }
+
+        setupProductLimitationViews()
+
         //If you add another observe, don't forget to remove observers at removeObservers()
         observeIsEditingStatus()
         observeProductData()
@@ -1591,5 +1598,13 @@ class AddEditProductPreviewFragment :
             }
         }
         adminRevampErrorLayout?.show()
+    }
+
+    private fun setupProductLimitationViews() {
+        val htmlDescription = getString(R.string.label_product_limitation_ticker, "[DD - MM - YYYY]")
+        productLimitationTicker?.apply {
+            setHtmlDescription(htmlDescription)
+            showWithCondition(isAdding())
+        }
     }
 }

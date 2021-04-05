@@ -371,6 +371,9 @@
     <string name="action_specification_refresh">Muat Ulang</string>
     <string name="action_specification_counter">, +%1$d lainnya</string>
 
+    <!-- Product Limitation -->
+    <string name="label_product_limitation_ticker">Mulai %1$s, ada perubahan Syarat &amp; Ketentuan jumlah produk. <![CDATA[<font color=\'#42b549\'><b>Selengkapnya</b></font>.]]></string>
+
     <!--CONTENT DESC-->
     <string name="content_desc_tv_start_add_edit_product_photo">text mulai</string>
     <string name="content_desc_tv_add_product_photo">text tambah foto</string>
