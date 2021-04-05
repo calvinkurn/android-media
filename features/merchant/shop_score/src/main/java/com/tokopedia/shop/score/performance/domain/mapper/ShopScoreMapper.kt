@@ -144,8 +144,10 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
 //            if (shopInfoPeriodUiModel.isNewSeller) {
 //                add(mapToTimerNewSellerUiModel(shopInfoPeriodUiModel.shopAge, shopInfoPeriodUiModel.isEndTenureNewSeller).first)
 //            }
-            add(mapToTimerNewSellerUiModel(shopInfoPeriodUiModel.shopAge, shopInfoPeriodUiModel.isEndTenureNewSeller).first)
+            val mapTimerNewSeller = mapToTimerNewSellerUiModel(shopInfoPeriodUiModel.shopAge, shopInfoPeriodUiModel.isEndTenureNewSeller)
+            add(mapTimerNewSeller.first)
             add(ItemLevelScoreProjectUiModel())
+
             add(mapToHeaderShopPerformance(shopScoreWrapperResponse.shopScoreLevelResponse?.result, shopInfoPeriodUiModel.isNewSeller))
             add(mapToSectionPeriodDetailPerformanceUiModel(shopScoreWrapperResponse.shopScoreTooltipResponse?.result))
             if (shopScoreResult?.shopScoreDetail?.isNotEmpty() == true) {

@@ -327,7 +327,7 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
                 MenuItemUiModel(
                         resources.getString(R.string.setting_menu_performance),
                         null,
-                        ApplinkConst.SHOP_SCORE_PERFORMANCE,
+                        ApplinkConst.SHOP_PERFORMANCE,
                         eventActionSuffix = SettingTrackingConstant.SHOP_PERFORMANCE,
                         iconUnify = IconUnify.GRAPH),
                 SettingTitleUiModel(resources.getString(R.string.setting_menu_buyer_info)),

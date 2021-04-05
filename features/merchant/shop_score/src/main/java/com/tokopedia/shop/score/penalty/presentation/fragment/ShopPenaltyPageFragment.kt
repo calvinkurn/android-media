@@ -15,6 +15,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.removeObservers
 import com.tokopedia.shop.score.R
@@ -27,6 +28,8 @@ import com.tokopedia.shop.score.penalty.presentation.adapter.PenaltyPageAdapter
 import com.tokopedia.shop.score.penalty.presentation.adapter.PenaltyPageAdapterFactory
 import com.tokopedia.shop.score.penalty.presentation.bottomsheet.PenaltyDateFilterBottomSheet
 import com.tokopedia.shop.score.penalty.presentation.bottomsheet.PenaltyFilterBottomSheet
+import com.tokopedia.shop.score.penalty.presentation.model.FilterTypePenaltyUiModelWrapper
+import com.tokopedia.shop.score.penalty.presentation.model.ItemDetailPenaltyFilterUiModel
 import com.tokopedia.shop.score.penalty.presentation.model.PenaltyFilterUiModel
 import com.tokopedia.shop.score.performance.presentation.viewmodel.ShopPerformanceViewModel
 import com.tokopedia.sortfilter.SortFilterItem
@@ -107,7 +110,12 @@ class ShopPenaltyPageFragment: BaseListFragment<Visitable<*>, PenaltyPageAdapter
     }
 
     override fun onParentSortFilterClick() {
-        val bottomSheetFilterPenalty = PenaltyFilterBottomSheet.newInstance()
+        val cacheManager = context?.let { SaveInstanceCacheManager(it, true) }
+        val itemPenaltyFilterData = penaltyPageAdapter.data.filterIsInstance<ItemDetailPenaltyFilterUiModel>().firstOrNull() ?: ItemDetailPenaltyFilterUiModel()
+        val itemTypePenaltyData = itemPenaltyFilterData.itemSortFilterWrapperList.filterTypePenaltyTransform()
+        cacheManager?.put(PenaltyFilterBottomSheet.KEY_FILTER_TYPE_PENALTY, FilterTypePenaltyUiModelWrapper(itemTypePenaltyData))
+
+        val bottomSheetFilterPenalty = PenaltyFilterBottomSheet.newInstance(cacheManager?.id.orEmpty())
         bottomSheetFilterPenalty.setPenaltyFilterFinishListener(this)
         bottomSheetFilterPenalty.show(childFragmentManager)
     }
@@ -136,6 +144,17 @@ class ShopPenaltyPageFragment: BaseListFragment<Visitable<*>, PenaltyPageAdapter
     override fun onDestroy() {
         removeObservers(viewModelShopPenalty.penaltyPageData)
         super.onDestroy()
+    }
+
+    private fun List<ItemDetailPenaltyFilterUiModel.ItemSortFilterWrapper>.filterTypePenaltyTransform(): List<FilterTypePenaltyUiModelWrapper.ItemFilterTypePenalty> {
+        val itemFilterTypePenaltyList = mutableListOf<FilterTypePenaltyUiModelWrapper.ItemFilterTypePenalty>()
+        for (item in this) {
+            itemFilterTypePenaltyList.add(FilterTypePenaltyUiModelWrapper.ItemFilterTypePenalty(
+                    title = item.sortFilterItem?.title?.toString().orEmpty(),
+                    isSelected = item.isSelected
+            ))
+        }
+        return itemFilterTypePenaltyList
     }
 
     private fun observeUpdateSortFilter() {

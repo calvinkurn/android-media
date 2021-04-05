@@ -42,6 +42,7 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.coach_mark
     implementation rootProject.ext.miscDependencies.chips
 
+    implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     implementation rootProject.ext.miscDependencies.dagger

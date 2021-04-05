@@ -40,7 +40,7 @@ public interface ApplinkConst {
     String SHOP_FEED = "tokopedia://shop/{shop_id}/feed";
     String SHOP_ETALASE_LIST = "tokopedia://shop/{shop_id}/etalase-list";
     String MY_SHOP_ETALASE_LIST = "tokopedia://my-shop/etalase/list";
-    String SHOP_SCORE_PERFORMANCE = "tokopedia://shop-score-performance";
+    String SHOP_PERFORMANCE = "tokopedia://shop-performance";
     String SHOP_PENALTY = "tokopedia://shop-penalty";
     String SHOP_PENALTY_DETAIL = "tokopedia://shop-penalty-detail";
 

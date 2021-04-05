@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.observe
@@ -22,6 +23,8 @@ import com.tokopedia.shop.score.penalty.presentation.adapter.FilterPenaltyBottom
 import com.tokopedia.shop.score.penalty.presentation.adapter.filter.BaseFilterPenaltyPage
 import com.tokopedia.shop.score.penalty.presentation.adapter.filter.FilterPenaltyAdapter
 import com.tokopedia.shop.score.penalty.presentation.adapter.filter.FilterPenaltyAdapterFactory
+import com.tokopedia.shop.score.penalty.presentation.model.FilterTypePenaltyUiModelWrapper
+import com.tokopedia.shop.score.penalty.presentation.model.ItemDetailPenaltyFilterUiModel
 import com.tokopedia.shop.score.penalty.presentation.model.PenaltyFilterUiModel
 import com.tokopedia.shop.score.penalty.presentation.viewmodel.ShopPenaltyViewModel
 import com.tokopedia.unifycomponents.UnifyButton
@@ -30,7 +33,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
-class PenaltyFilterBottomSheet: BaseBottomSheetShopScore(), FilterPenaltyBottomSheetListener {
+class PenaltyFilterBottomSheet : BaseBottomSheetShopScore(), FilterPenaltyBottomSheetListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -77,6 +80,7 @@ class PenaltyFilterBottomSheet: BaseBottomSheetShopScore(), FilterPenaltyBottomS
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        getDataCacheFromManager()
         initView(view)
         setupRecyclerView()
         observePenaltyFilter()
@@ -97,6 +101,12 @@ class PenaltyFilterBottomSheet: BaseBottomSheetShopScore(), FilterPenaltyBottomS
         }
     }
 
+    private fun getDataCacheFromManager() {
+        val cacheManager = context?.let { SaveInstanceCacheManager(it, arguments?.getString(KEY_CACHE_MANAGER_ID_PENALTY_FILTER)) }
+        val filterTypePenalty = cacheManager?.get(KEY_FILTER_TYPE_PENALTY, FilterTypePenaltyUiModelWrapper::class.java) ?: FilterTypePenaltyUiModelWrapper()
+        viewModelShopPenalty.getFilterPenalty(filterTypePenalty.itemFilterTypePenalty)
+    }
+
     private fun clickBtnApplied() {
         btnShowPenalty?.setOnClickListener {
             isApplyFilter = true
@@ -109,31 +119,13 @@ class PenaltyFilterBottomSheet: BaseBottomSheetShopScore(), FilterPenaltyBottomS
         observe(viewModelShopPenalty.filterPenaltyData) {
             when (it) {
                 is Success -> {
-                    filterPenaltyAdapter.updateData(it.data.updateFilterPenaltyFromSortFilter())
+                    filterPenaltyAdapter.updateData(it.data)
                     showHideBottomSheetReset()
                 }
-                else -> {}
+                else -> {
+                }
             }
         }
-        viewModelShopPenalty.getFilterPenalty()
-    }
-
-    private fun List<BaseFilterPenaltyPage>.updateFilterPenaltyFromSortFilter(): List<BaseFilterPenaltyPage> {
-
-        val chipsFilterUiModelList = mutableListOf<PenaltyFilterUiModel.ChipsFilterPenaltyUiModel>()
-
-        viewModelShopPenalty.getSortFilterWrapperList().map {
-            chipsFilterUiModelList.add(PenaltyFilterUiModel.ChipsFilterPenaltyUiModel(
-                    title = it.sortFilterItem?.title.toString(),
-                    isSelected = it.isSelected
-            ))
-        }
-
-        this.filterIsInstance<PenaltyFilterUiModel>().find {
-            it.title == ShopScoreConstant.TITLE_TYPE_PENALTY
-        }?.chipsFilerList = chipsFilterUiModelList
-
-        return this
     }
 
     private fun observeUpdateFilterSelected() = observe(viewModelShopPenalty.updateFilterSelected) {
@@ -142,7 +134,8 @@ class PenaltyFilterBottomSheet: BaseBottomSheetShopScore(), FilterPenaltyBottomS
                 filterPenaltyAdapter.updateFilterSelected(it.data.first, it.data.second)
                 showHideBottomSheetReset()
             }
-            is Fail -> {}
+            is Fail -> {
+            }
         }
     }
 
@@ -152,7 +145,8 @@ class PenaltyFilterBottomSheet: BaseBottomSheetShopScore(), FilterPenaltyBottomS
                 filterPenaltyAdapter.resetFilterSelected(it.data)
                 showHideBottomSheetReset()
             }
-            else -> {}
+            else -> {
+            }
         }
     }
 
@@ -206,9 +200,15 @@ class PenaltyFilterBottomSheet: BaseBottomSheetShopScore(), FilterPenaltyBottomS
 
     companion object {
         const val PENALTY_FILTER_BOTTOM_SHEET_TAG = "PenaltyFilterBottomSheetTag"
+        const val KEY_FILTER_TYPE_PENALTY = "key_filter_type_penalty"
+        const val KEY_CACHE_MANAGER_ID_PENALTY_FILTER = "key_cache_manager_id_penalty_filter"
 
-        fun newInstance(): PenaltyFilterBottomSheet {
-            return PenaltyFilterBottomSheet()
+        fun newInstance(cacheManagerId: String): PenaltyFilterBottomSheet {
+            val penaltyFilterBottomSheet = PenaltyFilterBottomSheet()
+            val args = Bundle()
+            args.putString(KEY_CACHE_MANAGER_ID_PENALTY_FILTER, cacheManagerId)
+            penaltyFilterBottomSheet.arguments = args
+            return penaltyFilterBottomSheet
         }
     }
 }

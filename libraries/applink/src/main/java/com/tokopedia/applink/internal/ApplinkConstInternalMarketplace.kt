@@ -255,7 +255,7 @@ object ApplinkConstInternalMarketplace {
 
     //ShopScorePerformanceActivity
     @JvmField
-    val SHOP_SCORE_PERFORMANCE = "$INTERNAL_MARKETPLACE/shop-score-performance"
+    val SHOP_PERFORMANCE = "$INTERNAL_MARKETPLACE/shop/performance"
 
     //ShopPenaltyActivity
     @JvmField
