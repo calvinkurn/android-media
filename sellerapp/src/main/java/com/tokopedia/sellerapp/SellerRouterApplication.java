@@ -140,7 +140,7 @@ public abstract class SellerRouterApplication extends MainApplication implements
         WeaveInterface initWeave = new WeaveInterface() {
             @NotNull
             @Override
-            public Object execute() {
+            public void execute() {
                 return initLibraries();
             }
         };
@@ -371,14 +371,26 @@ public abstract class SellerRouterApplication extends MainApplication implements
             @Override
             public void onComplete(@NonNull Task<InstanceIdResult> task) {
                 if (!task.isSuccessful() || task.getResult() == null) {
-                    try {
-                        sessionRefresh.gcmUpdate();
-                    } catch (IOException e) {}
+                    gcmUpdateLegacy(sessionRefresh);
                 } else {
                     fcmManager.get().onNewToken(task.getResult().getToken());
                 }
             }
         });
+    }
+
+    private void gcmUpdateLegacy(SessionRefresh sessionRefresh) {
+        WeaveInterface weave = new WeaveInterface() {
+            @NotNull
+            @Override
+            public Object execute() {
+                try {
+                    sessionRefresh.gcmUpdate();
+                } catch (Throwable ignored) {}
+                return true;
+            }
+        };
+        Weaver.Companion.executeWeaveCoRoutineNow(weave);
     }
 
     @Override

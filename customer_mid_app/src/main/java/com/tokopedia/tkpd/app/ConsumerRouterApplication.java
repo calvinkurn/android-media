@@ -543,14 +543,26 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
             @Override
             public void onComplete(@NonNull Task<InstanceIdResult> task) {
                 if (!task.isSuccessful() || task.getResult() == null) {
-                    try {
-                        sessionRefresh.gcmUpdate();
-                    } catch (IOException e) {}
+                    gcmUpdateLegacy(sessionRefresh);
                 } else {
                     fcmManager.onNewToken(task.getResult().getToken());
                 }
             }
         });
+    }
+
+    private void gcmUpdateLegacy(SessionRefresh sessionRefresh) {
+        WeaveInterface weave = new WeaveInterface() {
+            @NotNull
+            @Override
+            public Object execute() {
+                try {
+                    sessionRefresh.gcmUpdate();
+                } catch (Throwable ignored) {}
+                return true;
+            }
+        };
+        Weaver.Companion.executeWeaveCoRoutineNow(weave);
     }
 
     @Override
