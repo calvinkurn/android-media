@@ -566,7 +566,11 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         val preference = orderPreference.preference
         if (preference.profileId > 0) {
             tvHeader2?.text = getString(R.string.lbl_osp_secondary_header)
-            tvHeader2?.visible()
+            if (orderPreference.removeProfileData.enable && orderPreference.removeProfileData.type == OccRemoveProfileData.TYPE_POST) {
+                tvHeader2?.gone()
+            } else {
+                tvHeader2?.visible()
+            }
             tvHeader3?.gone()
         } else {
             tvHeader2?.text = if (viewModel.isNewFlow) getString(R.string.lbl_osp_secondary_header) else getString(R.string.lbl_osp_secondary_header_intro)

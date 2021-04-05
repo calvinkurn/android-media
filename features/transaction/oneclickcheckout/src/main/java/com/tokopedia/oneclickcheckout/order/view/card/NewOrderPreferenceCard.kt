@@ -46,6 +46,7 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
     private var shipment: OrderShipment? = null
     private var payment: OrderPayment? = null
 
+    private val tvHeader by lazy { view.findViewById<Typography>(R.id.tv_new_header) }
     private val tvCardHeader by lazy { view.findViewById<Typography>(R.id.tv_new_card_header) }
     private val lblDefaultPreference by lazy { view.findViewById<Label>(R.id.lbl_new_default_preference) }
     private val tvChoosePreference by lazy { view.findViewById<Typography>(R.id.tv_new_choose_preference) }
@@ -121,9 +122,15 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
     }
 
     private fun showHeader(revampData: OccRevampData) {
-        if (preference.removeProfileData.enable) {
+        if (preference.removeProfileData.enable && preference.removeProfileData.type == OccRemoveProfileData.TYPE_POST) {
+            tvHeader?.visible()
             tvCardHeader?.gone()
+            lblDefaultPreference?.gone()
+            tvChoosePreference?.gone()
         } else {
+            tvHeader?.gone()
+            tvCardHeader?.visible()
+            tvChoosePreference?.visible()
             if (preference.preference.profileRevampWording.isNotEmpty()) {
                 tvCardHeader?.text = preference.preference.profileRevampWording
             } else {

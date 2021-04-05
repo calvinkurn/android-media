@@ -246,6 +246,22 @@ class OrderSummaryPageRobot {
         onView(withId(R.id.tv_new_choose_preference)).perform(scrollTo()).check(matches(withText(actionWording)))
     }
 
+    fun assertProfileRevampNewHeader() {
+        onView(withId(R.id.tv_new_card_header)).check { view, noViewFoundException ->
+            noViewFoundException?.printStackTrace()
+            assertEquals(View.GONE, view.visibility)
+        }
+        onView(withId(R.id.lbl_new_default_preference)).check { view, noViewFoundException ->
+            noViewFoundException?.printStackTrace()
+            assertEquals(View.GONE, view.visibility)
+        }
+        onView(withId(R.id.tv_new_choose_preference)).check { view, noViewFoundException ->
+            noViewFoundException?.printStackTrace()
+            assertEquals(View.GONE, view.visibility)
+        }
+        onView(withId(R.id.tv_new_header)).perform(scrollTo()).check(matches(withText("Pengiriman dan pembayaran")))
+    }
+
     fun assertProfileTicker(isShown: Boolean,
                             title: String? = null,
                             description: String? = null,
@@ -288,9 +304,13 @@ class OrderSummaryPageRobot {
         }
     }
 
-    fun assertAddressRevamp(addressName: String, addressDetail: String) {
+    fun assertAddressRevamp(addressName: String, addressDetail: String, isMainAddress: Boolean = false) {
         onView(withId(R.id.tv_new_address_name)).check(matches(withText(addressName)))
         onView(withId(R.id.tv_new_address_detail)).check(matches(withText(addressDetail)))
+        onView(withId(R.id.lbl_main_address)).check { view, noViewFoundException ->
+            noViewFoundException?.printStackTrace()
+            assertEquals(if (isMainAddress) View.VISIBLE else View.GONE, view.visibility)
+        }
     }
 
     fun assertShipment(shippingName: String, shippingDuration: String, shippingPrice: String?, hasPromo: Boolean) {

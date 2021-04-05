@@ -17,7 +17,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/spacing_lvl4"
-            android:layout_marginTop="@dimen/spacing_lvl4"
+            android:layout_marginTop="@dimen/spacing_lvl2"
             android:layout_marginEnd="@dimen/spacing_lvl4"
             android:text="@string/lbl_osp_secondary_header"
             android:textColor="@color/Unify_N700_96"
