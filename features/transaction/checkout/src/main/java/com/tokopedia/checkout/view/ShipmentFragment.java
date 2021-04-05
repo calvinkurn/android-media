@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -303,6 +304,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         if (delayScrollToFirstShopSubscription != null) {
             delayScrollToFirstShopSubscription.unsubscribe();
         }
+        shippingCourierBottomsheet = null;
+        CountDownTimer countDownTimer = cdView.getTimer();
+        if (countDownTimer != null) countDownTimer.cancel();
         shipmentPresenter.detachView();
     }
 
