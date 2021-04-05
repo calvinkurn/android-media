@@ -697,7 +697,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         btnPromoCheckout?.gone()
         orderInsuranceCard.setGroupInsuranceVisible(false)
 
-            buttonAturPilihan?.text = getString(R.string.lbl_add_new_occ_profile_name)
+        buttonAturPilihan?.text = getString(R.string.lbl_add_new_occ_profile_name)
 
         val addressState = viewModel.addressState.value
         if (addressState.state == AddressState.STATE_ADDRESS_ID_NOT_MATCH_ANY_OCC ||
@@ -706,7 +706,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         }
 
         buttonAturPilihan?.setOnClickListener {
-                orderSummaryAnalytics.eventClickTambahTemplateBeliLangsungOnOrderSummary(userSession.get().userId)
+            orderSummaryAnalytics.eventClickTambahTemplateBeliLangsungOnOrderSummary(userSession.get().userId)
             val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PREFERENCE_EDIT).apply {
                 putExtra(PreferenceEditActivity.EXTRA_FROM_FLOW, PreferenceEditActivity.FROM_FLOW_OSP)
                 putExtra(PreferenceEditActivity.EXTRA_IS_EXTRA_PROFILE, false)
@@ -1019,12 +1019,12 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                     getPreferenceListUseCase = viewModel.getPreferenceListUseCase.get(),
                     listener = object : PreferenceListBottomSheet.PreferenceListBottomSheetListener {
                         override fun onChangePreference(preference: ProfilesItemModel) {
-                                orderSummaryAnalytics.eventClickProfileOptionOnProfileList(preference.profileId.toString(), userSession.get().userId)
+                            orderSummaryAnalytics.eventClickProfileOptionOnProfileList(preference.profileId.toString(), userSession.get().userId)
                             viewModel.updatePreference(preference)
                         }
 
                         override fun onEditPreference(preference: ProfilesItemModel, position: Int, profileSize: Int) {
-                                orderSummaryAnalytics.eventClickEditProfileOnProfileList(preference.profileId.toString(), userSession.get().userId)
+                            orderSummaryAnalytics.eventClickEditProfileOnProfileList(preference.profileId.toString(), userSession.get().userId)
                             val preferenceIndex = "${getString(R.string.lbl_summary_preference_option)} $position"
                             val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PREFERENCE_EDIT).apply {
                                 putExtra(PreferenceEditActivity.EXTRA_FROM_FLOW, PreferenceEditActivity.FROM_FLOW_OSP)
@@ -1048,7 +1048,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                         }
 
                         override fun onAddPreference(itemCount: Int) {
-                                orderSummaryAnalytics.eventClickTambahTemplateBeliLangsungOnProfileList(userSession.get().userId)
+                            orderSummaryAnalytics.eventClickTambahTemplateBeliLangsungOnProfileList(userSession.get().userId)
                             val preferenceIndex = "${getString(R.string.preference_number_summary)} ${itemCount + 1}"
                             val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PREFERENCE_EDIT).apply {
                                 putExtra(PreferenceEditActivity.EXTRA_FROM_FLOW, PreferenceEditActivity.FROM_FLOW_OSP)

@@ -23,20 +23,14 @@ class PreferenceListAdapter(private val listener: PreferenceListAdapterListener,
             NewMainPreferenceListViewHolder.LAYOUT -> NewMainPreferenceListViewHolder(
                     LayoutInflater.from(parent.context).inflate(NewMainPreferenceListViewHolder.LAYOUT, parent, false),
                     listener)
-            NewPreferenceListViewHolder.LAYOUT -> NewPreferenceListViewHolder(
+            else -> NewPreferenceListViewHolder(
                     LayoutInflater.from(parent.context).inflate(NewPreferenceListViewHolder.LAYOUT, parent, false),
-                    listener)
-            else -> PreferenceListViewHolder(
-                    LayoutInflater.from(parent.context).inflate(PreferenceListViewHolder.LAYOUT, parent, false),
                     listener)
         }
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (holder) {
-            is PreferenceListViewHolder -> {
-                holder.bind(list[position], currentProfileId, itemCount)
-            }
             is NewMainPreferenceListViewHolder -> {
                 holder.bind(list[position], currentProfileId, itemCount)
             }

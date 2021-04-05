@@ -44,6 +44,16 @@
     {
       "event": "clickCheckoutExpress",
       "eventCategory": "order summary",
+      "eventAction": "preference - click edit profile on profile list",
+      "eventLabel": "{{\\d+}}",
+      "businessUnit": "purchase platform",
+      "currentSite": "tokopediamarketplace",
+      "userId": "{{\\d+}}",
+      "sessionIris": "{{.*}}"
+    },
+    {
+      "event": "clickCheckoutExpress",
+      "eventCategory": "order summary",
       "eventAction": "address - click arrow to change address option",
       "eventLabel": "{{\\d+}}",
       "businessUnit": "purchase platform",
