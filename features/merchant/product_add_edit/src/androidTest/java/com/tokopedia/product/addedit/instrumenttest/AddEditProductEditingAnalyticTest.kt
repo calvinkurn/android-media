@@ -1,5 +1,7 @@
 package com.tokopedia.product.addedit.instrumenttest
 
+import android.content.Intent
+import android.net.Uri
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.intent.rule.IntentsTestRule
@@ -7,13 +9,13 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.GrantPermissionRule
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
+import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.cassavatest.getAnalyticsWithQuery
 import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.mock.AddEditProductEditingMockResponseConfig
 import com.tokopedia.product.addedit.preview.presentation.activity.AddEditProductPreviewActivity
-import com.tokopedia.product.addedit.utils.InstrumentedTestUtil.createIntentEditProduct
 import com.tokopedia.product.addedit.utils.InstrumentedTestUtil.performClick
 import com.tokopedia.product.addedit.utils.InstrumentedTestUtil.performDialogPrimaryClick
 import com.tokopedia.product.addedit.utils.InstrumentedTestUtil.performDialogSecondaryClick
@@ -196,6 +198,18 @@ class AddEditProductEditingAnalyticTest {
         Espresso.onView(CommonMatcher
                 .firstView(withText("Lanjut")))
                 .perform(click())
+    }
+
+    private fun createIntentEditProduct(productId: String): Intent {
+        val applink = Uri.parse(ApplinkConstInternalMechant.MERCHANT_OPEN_PRODUCT_PREVIEW)
+                .buildUpon()
+                .appendQueryParameter(ApplinkConstInternalMechant.QUERY_PARAM_ID, productId)
+                .appendQueryParameter(ApplinkConstInternalMechant.QUERY_PARAM_MODE, ApplinkConstInternalMechant.MODE_EDIT_PRODUCT)
+                .build()
+
+        return Intent(InstrumentationRegistry.getInstrumentation().targetContext, AddEditProductPreviewActivity::class.java).also {
+            it.data = applink
+        }
     }
 
     private fun doAnalyticDebuggerTest(fileName: String) {

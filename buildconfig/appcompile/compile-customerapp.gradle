@@ -4,6 +4,7 @@ includeDynamicFeatureIfEnabled("customerapp")
 include "features:common:developer_options"
 include "features:common:developer_options_noop"
 include "features:common:nps"
+include "features:common:internal_review"
 include "features:common:resources_common"
 include "features:common:qr_scanner"
 include "features:category:catalog"

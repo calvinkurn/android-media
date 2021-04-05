@@ -72,7 +72,7 @@
         android:adjustViewBounds="true"
         app:layout_constrainedWidth="true"
         app:layout_constraintBottom_toBottomOf="@+id/txt_main_price"
-        app:layout_constraintEnd_toStartOf="@+id/barrier_fab_share"
+        app:layout_constraintEnd_toStartOf="@+id/fab_detail_pdp"
         app:layout_constraintStart_toEndOf="@+id/txt_main_price"
         app:layout_constraintTop_toTopOf="@+id/txt_main_price"
         tools:srcCompat="@drawable/ic_af_byme_square" />
@@ -88,25 +88,6 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="@+id/txt_main_price"
         app:srcCompat="@drawable/ic_pdp_wishlist_unfilled" />
-
-    <com.tokopedia.iconunify.IconUnify
-        android:id="@+id/share_product_pdp"
-        android:layout_width="@dimen/dp_24"
-        android:layout_height="@dimen/dp_24"
-        android:layout_marginEnd="@dimen/dp_8"
-        android:visibility="gone"
-        app:icon_name="SHARE_MOBILE"
-        app:layout_constraintEnd_toStartOf="@+id/fab_detail_pdp"
-        app:layout_constraintTop_toTopOf="@+id/txt_main_price"
-        app:layout_goneMarginEnd="@dimen/dp_16"
-        tools:visibility="visible" />
-
-    <androidx.constraintlayout.widget.Barrier
-        android:id="@+id/barrier_fab_share"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:barrierDirection="start"
-        app:constraint_referenced_ids="share_product_pdp,fab_detail_pdp" />
 
     <LinearLayout
         android:id="@+id/discount_container"

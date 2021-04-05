@@ -165,7 +165,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     }
 
     override fun getRecyclerView(view: View?): RecyclerView {
-        return view!!.findViewById(R.id.recyclerView)
+        return requireView().findViewById(R.id.recyclerView)
     }
 
     override fun callInitialLoadAutomatically(): Boolean {
@@ -718,7 +718,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
 
         if (context != null) {
             RouteManager.route(
-                    context!!,
+                    requireContext(),
                     redirectUrl
             )
         }
@@ -906,7 +906,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
 
     private fun showError(message: String, listener: View.OnClickListener?) {
         listener?.let {
-            Toaster.make(view!!, message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR,
+            Toaster.make(requireView(), message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR,
                     getString(com.tokopedia.abstraction.R.string.title_try_again), it)
         }
     }
@@ -916,7 +916,8 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     }
 
     fun clearCache() {
-        presenter.clearCache()
+        if(::presenter.isInitialized)
+            presenter.clearCache()
     }
 
     private fun trackGotoSellerApp() {
