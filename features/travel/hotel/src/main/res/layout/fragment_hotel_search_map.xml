@@ -65,12 +65,12 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/hotel_76dp"
                 android:background="@color/transparent"
+                android:clipToPadding="false"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 tools:itemCount="3"
-                tools:listitem="@layout/item_property_search_result_horizontal"
-                android:clipToPadding="false"/>
+                tools:listitem="@layout/item_property_search_result_horizontal" />
 
             <com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify
                 android:id="@+id/btnGetRadiusHotelSearchMap"
@@ -99,8 +99,6 @@
                 android:layout_width="@dimen/spacing_lvl8"
                 android:layout_height="@dimen/spacing_lvl8"
                 android:layout_margin="@dimen/spacing_lvl3"
-                app:layout_goneMarginTop="@dimen/layout_lvl7"
-                app:layout_goneMarginBottom="@dimen/layout_lvl7"
                 app:layout_constraintBottom_toTopOf="@+id/rvHorizontalPropertiesHotelSearchMap"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_goneMarginBottom="@dimen/layout_lvl7"
