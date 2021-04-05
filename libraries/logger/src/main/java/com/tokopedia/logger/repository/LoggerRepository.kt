@@ -63,26 +63,26 @@ class LoggerRepository(private val logDao: LoggerDao,
     private suspend fun sendLogToServer(priority: Int, logs: List<Logger>) {
         val tokenIndex = priority - 1
 
-        val scalyrEventList = setScalyrEventList(logs)
-        val newRelicConfigList = setNewRelicConfigList(logs)
-
         coroutineScope {
             launch {
                 val jobList = mutableListOf<Deferred<Boolean>>()
-                if (isExistTagMapsScalyr(scalyrEventList)) {
-                    val jobScalyr = async { sendScalyrLogToServer(scalyrConfigs[tokenIndex], logs, scalyrEventList) }
+
+                val scalyrEventListList = setConfigListServer(logs).first
+                val newRelicConfigList = setConfigListServer(logs).second
+
+                if (scalyrEventListList.isNotEmpty()) {
+                    val jobScalyr = async { sendScalyrLogToServer(scalyrConfigs[tokenIndex], logs, scalyrEventListList) }
                     jobList.add(jobScalyr)
                 }
 
-                if (isExistTagMapsNewRelic(newRelicConfigList)) {
+                if (newRelicConfigList.isNotEmpty()) {
                     val jobNewRelic = async { sendNewRelicLogToServer(newRelicConfigs[tokenIndex], logs, newRelicConfigList) }
                     jobList.add(jobNewRelic)
                 }
 
-                jobList.awaitAll().forEach {
-                    if (it) {
-                        deleteEntries(logs)
-                    }
+                val isSuccess = jobList.awaitAll().any { it }
+                if (isSuccess) {
+                    deleteEntries(logs)
                 }
             }
         }
@@ -96,8 +96,9 @@ class LoggerRepository(private val logDao: LoggerDao,
         return loggerCloudScalyrDataSource.sendLogToServer(config, scalyrEventList)
     }
 
-    private fun setScalyrEventList(logs: List<Logger>): List<ScalyrEvent> {
+    private fun setConfigListServer(logs: List<Logger>): Pair<List<ScalyrEvent>, List<String>> {
         val scalyrEventList = mutableListOf<ScalyrEvent>()
+        val messageNewRelicList = mutableListOf<String>()
         //make the timestamp equals to timestamp when hit the api
         //convert the milli to nano, based on scalyr requirement.
         var counter = 0
@@ -108,32 +109,6 @@ class LoggerRepository(private val logDao: LoggerDao,
             ts += counter
             counter++
             val message = encryptor.decrypt(log.message, secretKey)
-            scalyrEventList.add(ScalyrEvent(ts, ScalyrEventAttrs(truncate(message))))
-        }
-        return scalyrEventList
-    }
-
-    private fun isExistTagMapsScalyr(scalyrEventList: List<ScalyrEvent>): Boolean {
-        for (scalyrEvent in scalyrEventList) {
-            val tagValue = jsonStringToMap(scalyrEvent.attrs.message).get(Constants.TAG_LOG)
-                    ?: ""
-            val priorityValue = jsonStringToMap(scalyrEvent.attrs.message).get(Constants.PRIORITY_LOG)?.toIntOrNull()
-                    ?: 0
-            val priorityName = when (priorityValue) {
-                Constants.SEVERITY_HIGH -> LoggerReporting.P1
-                Constants.SEVERITY_MEDIUM -> LoggerReporting.P2
-                else -> ""
-            }
-            val tagMapsValue = StringBuilder(priorityName).append(LoggerReporting.DELIMITER_TAG_MAPS).append(tagValue).toString()
-            LoggerReporting.getInstance().tagMapsScalyr[tagMapsValue]?.let {
-                return true
-            }
-        }
-        return false
-    }
-
-    private fun isExistTagMapsNewRelic(messageList: List<String>): Boolean {
-        for (message in messageList) {
             val tagValue = jsonStringToMap(message).get(Constants.TAG_LOG) ?: ""
             val priorityValue = jsonStringToMap(message).get(Constants.PRIORITY_LOG)?.toIntOrNull()
                     ?: 0
@@ -143,11 +118,14 @@ class LoggerRepository(private val logDao: LoggerDao,
                 else -> ""
             }
             val tagMapsValue = StringBuilder(priorityName).append(LoggerReporting.DELIMITER_TAG_MAPS).append(tagValue).toString()
+            LoggerReporting.getInstance().tagMapsScalyr[tagMapsValue]?.let {
+                scalyrEventList.add(ScalyrEvent(ts, ScalyrEventAttrs(truncate(message))))
+            }
             LoggerReporting.getInstance().tagMapsNewRelic[tagMapsValue]?.let {
-                return true
+                messageNewRelicList.add(addEventNewRelic(message))
             }
         }
-        return false
+        return Pair(scalyrEventList, messageNewRelicList)
     }
 
     suspend fun sendNewRelicLogToServer(config: NewRelicConfig, logs: List<Logger>, messageList: List<String>): Boolean {
@@ -156,16 +134,6 @@ class LoggerRepository(private val logDao: LoggerDao,
         }
 
         return loggerCloudNewRelicImpl.sendToLogServer(config, messageList)
-    }
-
-    private fun setNewRelicConfigList(logs: List<Logger>): List<String> {
-        val messageList = mutableListOf<String>()
-
-        for (log in logs) {
-            val message = encryptor.decrypt(log.message, secretKey)
-            messageList.add(addEventNewRelic(message))
-        }
-        return messageList
     }
 
     private fun addEventNewRelic(message: String): String {
