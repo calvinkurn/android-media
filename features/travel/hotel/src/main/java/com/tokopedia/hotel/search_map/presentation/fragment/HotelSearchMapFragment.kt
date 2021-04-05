@@ -10,6 +10,8 @@ import android.os.Build
 import android.os.Bundle
 import android.util.DisplayMetrics
 import android.view.*
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -108,6 +110,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
     private lateinit var filterBottomSheet: HotelFilterBottomSheets
     private val snapHelper: SnapHelper = LinearSnapHelper()
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<ConstraintLayout>
+    private lateinit var bounceAnim : Animation
 
     override fun getScreenName(): String = SEARCH_SCREEN_NAME
 
@@ -292,6 +295,8 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         ivHotelSearchMapNoResult.loadImage(getString(R.string.hotel_url_empty_search_map_result))
 
         bottomSheetBehavior.state = BottomSheetBehavior.STATE_HALF_EXPANDED
+
+        setAnimBottomSheetBehavior()
     }
 
     override fun onMapReady(map: GoogleMap) {
@@ -1069,6 +1074,32 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
 
     private fun collapseBottomSheet() {
         bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+    }
+
+    private fun setAnimBottomSheetBehavior(){
+        if(::bottomSheetBehavior.isInitialized){
+            bottomSheetBehavior.addBottomSheetCallback(object: BottomSheetBehavior.BottomSheetCallback(){
+                override fun onStateChanged(bottomSheet: View, state: Int) {
+                    when (state) {
+                        BottomSheetBehavior.STATE_EXPANDED ->{
+                            context?.let {
+                                bounceAnim = AnimationUtils.loadAnimation(it, R.anim.bounce_anim)
+                            }
+                            btnHotelSearchWithMap.startAnimation(bounceAnim)
+                        }
+                        BottomSheetBehavior.STATE_COLLAPSED ->{
+                            ObjectAnimator.ofFloat(rvHorizontalPropertiesHotelSearchMap, "alpha", 0f, 1f).apply {
+                                duration = 100
+                                start()
+                            }
+                        }
+                        BottomSheetBehavior.STATE_HALF_EXPANDED ->{}
+                    }
+                }
+                override fun onSlide(bottomSheet: View, slideOffset: Float) {
+                }
+            })
+        }
     }
 
     companion object {
