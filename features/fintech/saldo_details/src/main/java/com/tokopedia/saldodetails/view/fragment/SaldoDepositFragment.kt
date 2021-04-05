@@ -64,7 +64,7 @@ class SaldoDepositFragment : BaseDaggerFragment() {
 
     companion object {
         val REQUEST_WITHDRAW_CODE = 3333
-
+        val TAG = SaldoDepositFragment::class.java.name
         val SALDODETAIL_FINTECH_PLT = "saldodetailfintech_plt"
         val SALDODETAIL_FINTECH_PLT_PREPARE_METRICS = "saldodetailfintech_plt_prepare_metrics"
         val SALDODETAIL_FINTECH_PLT_NETWORK_METRICS = "saldodetailfintech_plt_network_metrics"
@@ -98,7 +98,7 @@ class SaldoDepositFragment : BaseDaggerFragment() {
     }
 
     private val animationDuration: Long = 300
-    private val SHOW_CASE_DELAY: Long = 400
+    private val COACH_MARK_DELAY: Long = 400
 
     @Inject
     lateinit var userSession: UserSession
