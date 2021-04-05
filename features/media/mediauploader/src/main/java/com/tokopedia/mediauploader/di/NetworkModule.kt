@@ -8,6 +8,7 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.mediauploader.util.NetworkTimeOutInterceptor
 import com.tokopedia.mediauploader.util.NetworkTimeOutInterceptor.Companion.DEFAULT_TIMEOUT
 import com.tokopedia.network.NetworkRouter
+import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -32,12 +33,13 @@ import java.util.concurrent.TimeUnit
                 .callTimeout(DEFAULT_TIMEOUT.toLong(), TimeUnit.SECONDS)
                 .retryOnConnectionFailure(false)
                 .addInterceptor(NetworkTimeOutInterceptor())
-                .addInterceptor(TkpdAuthInterceptor(
-                        context,
-                        context.applicationContext as NetworkRouter,
-                        userSession
-                ))
                 .also {
+                    // adding tkpdAuth and fingerprint interceptor
+                    (context as? NetworkRouter?)?.let { router ->
+                        it.addInterceptor(FingerprintInterceptor(router, userSession))
+                        it.addInterceptor(TkpdAuthInterceptor(context, router, userSession))
+                    }
+
                     if (GlobalConfig.isAllowDebuggingTools()) {
                         it.addInterceptor(ChuckerInterceptor(context))
                     }
@@ -50,7 +52,7 @@ import java.util.concurrent.TimeUnit
         return Retrofit.Builder()
                 .baseUrl(BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create(Gson())
-        )
+                )
     }
 
     companion object {
