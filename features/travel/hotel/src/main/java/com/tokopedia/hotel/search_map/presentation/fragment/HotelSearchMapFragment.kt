@@ -360,7 +360,8 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         super.showLoading()
 
         if (adapter.list.size > 0 && adapter.list[0] is LoadingModel) {
-            if (isLoadingSearchByMap && adapter.dataSize >= MINIMUM_NUMBER_OF_RESULT_LOADED) {
+            if (isLoadingSearchByMap) {
+                collapseBottomSheet()
                 isLoadingSearchByMap = false
             } else {
                 halfExpandBottomSheet()
