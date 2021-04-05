@@ -103,6 +103,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
     private var isFirstInitializeFilter = true
     private var quickFilters: List<QuickFilter> = listOf()
     private var searchPropertiesMap: ArrayList<LatLng> = arrayListOf()
+    private var isLoadingSearchByMap: Boolean = false
 
     private lateinit var filterBottomSheet: HotelFilterBottomSheets
     private val snapHelper: SnapHelper = LinearSnapHelper()
@@ -356,7 +357,12 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
             }
         }
         hideGetMyLocation()
-        setupPersistentBottomSheet()
+
+        if (isLoadingSearchByMap) {
+            isLoadingSearchByMap = false
+        } else {
+            setupPersistentBottomSheet()
+        }
         super.showLoading()
 
         if (adapter.list.size > 0 && adapter.list[0] is LoadingModel) {
@@ -469,12 +475,12 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                     0,
                     0)
             containerEmptyResultState.setMargin(0,
-                    resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl7),
+                    resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl8),
                     0,
                     0)
         } else {
             rvVerticalPropertiesHotelSearchMap.setMargin(0,
-                    resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4),
+                    resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3),
                     0,
                     0)
             containerEmptyResultState.setMargin(0,
@@ -597,6 +603,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         }
         wrapper.addView(textView)
         wrapper.setOnClickListener {
+            isLoadingSearchByMap = true
             removeAllMarker()
             showCardListView()
             hideFindNearHereView()
