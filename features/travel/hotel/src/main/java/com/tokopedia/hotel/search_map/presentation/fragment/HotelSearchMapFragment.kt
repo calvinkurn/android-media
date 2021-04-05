@@ -123,6 +123,8 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        localCacheHandler = LocalCacheHandler(context, PREFERENCES_NAME)
+
         activity?.run {
             val viewModelProvider = ViewModelProvider(this, viewModelFactory)
             hotelSearchMapViewModel = viewModelProvider.get(HotelSearchMapViewModel::class.java)
@@ -153,8 +155,6 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-
-        localCacheHandler = LocalCacheHandler(requireContext(), PREFERENCES_NAME)
 
         hotelSearchMapViewModel.liveSearchResult.observe(viewLifecycleOwner, Observer {
             when (it) {
@@ -841,6 +841,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                 })
                 coachmark.showCoachMark(coachMarkItem, null, 0)
                 localCacheHandler.putBoolean(SHOW_COACH_MARK_KEY, true)
+                localCacheHandler.applyEditor()
             }
         }
     }
