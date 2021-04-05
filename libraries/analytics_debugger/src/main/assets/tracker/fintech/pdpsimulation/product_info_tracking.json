@@ -1,0 +1,14 @@
+{
+  "readme": "Fintech Pay Later Impression Tracker",
+  "mode": "subset",
+  "query": [
+    {
+      "sessionIris": "{{.*}}",
+      "userId": "{{.*}}",
+      "eventCategory": "fin - info page",
+      "eventAction": "sim vcc - impression paylater info page",
+      "event": "clickFintechMicrosite",
+      "eventLabel": "{{.*}}"
+    }
+  ]
+}

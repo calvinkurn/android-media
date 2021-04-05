@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.unifycomponents.UnifyButton xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/image_button_shop_note"
+    android:gravity="left"
+    android:layout_width="@dimen/dp_24"
+    app:unifyButtonSize="small"
+    android:layout_height="@dimen/dp_24"
+    app:unifyButtonType="alternate"
+    app:unifyButtonVariant="ghost"
+    tools:visibility="visible" />

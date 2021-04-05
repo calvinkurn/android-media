@@ -1,12 +1,12 @@
 package com.tokopedia.search.result.presentation.presenter.product
 
 import com.tokopedia.recommendation_widget_common.data.RecommendationEntity
-import com.tokopedia.recommendation_widget_common.data.mapper.RecommendationEntityMapper
+import com.tokopedia.recommendation_widget_common.extension.mappingToRecommendationModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.search.jsonToObject
 import com.tokopedia.search.result.complete
 import com.tokopedia.search.result.domain.model.SearchProductModel
-import com.tokopedia.search.result.presentation.model.EmptySearchProductViewModel
+import com.tokopedia.search.result.presentation.model.EmptySearchProductDataView
 import com.tokopedia.search.shouldBe
 import io.mockk.every
 import io.mockk.slot
@@ -43,7 +43,8 @@ internal class SearchProductEmptySearchTest: ProductListPresenterTestFixtures() 
             val recommendationEntity = "searchproduct/emptysearchrecommendation/empty-search-recommendation.json".jsonToObject<RecommendationEntity>()
             val recommendationDataList = recommendationEntity.productRecommendationWidget?.data
                     ?: listOf()
-            val recommendationWidgetList = RecommendationEntityMapper().call(recommendationDataList)
+
+            val recommendationWidgetList = recommendationDataList.mappingToRecommendationModel()
 
             secondArg<Subscriber<List<RecommendationWidget>>>().complete(recommendationWidgetList)
         }
@@ -54,7 +55,7 @@ internal class SearchProductEmptySearchTest: ProductListPresenterTestFixtures() 
     }
 
     private fun `Then verify empty search product model`(expectedIsFilterActive: Boolean) {
-        val emptySearchViewModelSlot = slot<EmptySearchProductViewModel>()
+        val emptySearchViewModelSlot = slot<EmptySearchProductDataView>()
 
         verify {
             productListView.setEmptyProduct(null, capture(emptySearchViewModelSlot))

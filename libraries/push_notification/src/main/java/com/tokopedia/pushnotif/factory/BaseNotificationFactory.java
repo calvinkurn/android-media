@@ -81,7 +81,7 @@ public abstract class BaseNotificationFactory {
 
     protected int getDrawableIcon() {
         if (GlobalConfig.isSellerApp()) {
-            return R.mipmap.ic_statusbar_notif_seller;
+            return com.tokopedia.notification.common.R.mipmap.ic_statusbar_notif_seller;
         } else {
             return R.mipmap.ic_statusbar_notif_customer;
         }
@@ -89,7 +89,7 @@ public abstract class BaseNotificationFactory {
 
     protected int getDrawableLargeIcon() {
         if (GlobalConfig.isSellerApp()) {
-            return R.mipmap.ic_big_notif_seller;
+            return com.tokopedia.resources.common.R.mipmap.ic_launcher_sellerapp_ramadhan;
         } else {
             return com.tokopedia.resources.common.R.mipmap.ic_launcher_customerapp;
         }

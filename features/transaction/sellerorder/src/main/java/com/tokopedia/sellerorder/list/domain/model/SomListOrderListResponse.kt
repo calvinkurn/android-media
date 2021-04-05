@@ -63,10 +63,10 @@ data class SomListOrderListResponse(
                     val status: String = "",
                     @SerializedName("status_color")
                     @Expose
-                    val statusColor: String = "#FFFFFF",
+                    val statusColor: String = "",
                     @SerializedName("status_indicator_color")
                     @Expose
-                    val statusIndicatorColor: String = "#FFFFFF",
+                    val statusIndicatorColor: String = "",
                     @SerializedName("destination_province")
                     @Expose
                     val destinationProvince: String = "",

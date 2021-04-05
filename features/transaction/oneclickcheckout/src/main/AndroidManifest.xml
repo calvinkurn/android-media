@@ -8,8 +8,8 @@
             android:name=".order.view.OrderSummaryPageActivity"
             android:label="@string/title_one_click_checkout"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White">
-            <intent-filter android:autoVerify="true">
+            android:theme="@style/Theme.WhiteUnify">
+            <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
@@ -26,8 +26,8 @@
             android:name=".preference.edit.view.PreferenceEditActivity"
             android:label="@string/title_one_click_checkout_preference"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White">
-            <intent-filter android:autoVerify="true">
+            android:theme="@style/Theme.WhiteUnify">
+            <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
@@ -44,8 +44,8 @@
             android:name=".preference.list.view.PreferenceListActivity"
             android:label="@string/title_one_click_checkout_preference"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White">
-            <intent-filter android:autoVerify="true">
+            android:theme="@style/Theme.WhiteUnify">
+            <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
@@ -61,12 +61,12 @@
             android:name=".preference.edit.view.payment.creditcard.CreditCardPickerActivity"
             android:label="@string/title_one_click_checkout_credit_card_and_debit"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White" />
+            android:theme="@style/Theme.WhiteUnify" />
         <activity
             android:name=".preference.edit.view.payment.topup.OvoTopUpWebViewActivity"
             android:label="@string/title_one_click_checkout_top_up_ovo"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White" />
+            android:theme="@style/Theme.WhiteUnify" />
     </application>
 
 </manifest>

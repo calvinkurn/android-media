@@ -191,7 +191,8 @@ class ShopPageProductListResultViewModelTest : ShopPageProductListViewModelTestF
             shopPageProductListResultViewModel.getShopProduct(
                     shopId = "123",
                     etalaseType = 2,
-                    shopProductFilterParameter = ShopProductFilterParameter()
+                    shopProductFilterParameter = ShopProductFilterParameter(),
+                    widgetUserAddressLocalData = addressWidgetData
             )
             verifyGetShopProductUseCaseCalled()
             assertTrue(shopPageProductListResultViewModel.productData.value is Success)
@@ -207,7 +208,7 @@ class ShopPageProductListResultViewModelTest : ShopPageProductListViewModelTestF
                     shopId = "123",
                     etalaseType = 2,
                     shopProductFilterParameter = ShopProductFilterParameter(),
-                    isForceRefresh = true
+                    widgetUserAddressLocalData = addressWidgetData
             )
             verifyGetShopProductUseCaseCalled()
             assertTrue(shopPageProductListResultViewModel.productData.value is Success)
@@ -225,7 +226,7 @@ class ShopPageProductListResultViewModelTest : ShopPageProductListViewModelTestF
                     shopId = "123",
                     etalaseType = 2,
                     shopProductFilterParameter = ShopProductFilterParameter(),
-                    isForceRefresh = true
+                    widgetUserAddressLocalData = addressWidgetData
             )
             verifyGetShopProductUseCaseCalled()
             assertTrue(shopPageProductListResultViewModel.productData.value is Success)
@@ -246,7 +247,7 @@ class ShopPageProductListResultViewModelTest : ShopPageProductListViewModelTestF
                     shopId = "123",
                     etalaseType = 2,
                     shopProductFilterParameter = ShopProductFilterParameter(),
-                    isForceRefresh = true
+                    widgetUserAddressLocalData = addressWidgetData
             )
             verifyGetShopProductUseCaseCalled()
             assertTrue(shopPageProductListResultViewModel.productData.value is Success)
@@ -267,7 +268,7 @@ class ShopPageProductListResultViewModelTest : ShopPageProductListViewModelTestF
                     shopId = "123",
                     etalaseType = 2,
                     shopProductFilterParameter = ShopProductFilterParameter(),
-                    isForceRefresh = true
+                    widgetUserAddressLocalData = addressWidgetData
             )
             verifyGetShopProductUseCaseCalled()
             assertTrue(shopPageProductListResultViewModel.productData.value is Success)
@@ -288,9 +289,9 @@ class ShopPageProductListResultViewModelTest : ShopPageProductListViewModelTestF
                     perPage = 10,
                     etalase = "123",
                     search = "search",
-                    isForceRefresh = true,
                     etalaseType = 2,
-                    shopProductFilterParameter = ShopProductFilterParameter()
+                    shopProductFilterParameter = ShopProductFilterParameter(),
+                    widgetUserAddressLocalData = addressWidgetData
             )
             verifyGetShopProductUseCaseCalled()
             assertTrue(shopPageProductListResultViewModel.productData.value is Success)
@@ -305,7 +306,8 @@ class ShopPageProductListResultViewModelTest : ShopPageProductListViewModelTestF
             shopPageProductListResultViewModel.getShopProduct(
                     shopId = "123",
                     etalaseType = 2,
-                    shopProductFilterParameter = ShopProductFilterParameter()
+                    shopProductFilterParameter = ShopProductFilterParameter(),
+                    widgetUserAddressLocalData = addressWidgetData
             )
             verifyGetShopProductUseCaseCalled()
             assertTrue(shopPageProductListResultViewModel.productData.value is Fail)
@@ -320,7 +322,8 @@ class ShopPageProductListResultViewModelTest : ShopPageProductListViewModelTestF
             } returns ShopProduct.GetShopProduct()
 
             shopPageProductListResultViewModel.getShopProductEmptyState(
-                    shopId = "123"
+                    shopId = "123",
+                    widgetUserAddressLocalData = addressWidgetData
             )
 
             verifyGetShopProductUseCaseCalled()
@@ -439,7 +442,8 @@ class ShopPageProductListResultViewModelTest : ShopPageProductListViewModelTestF
                     shopId = anyString(),
                     searchKeyword = anyString(),
                     etalaseId = anyString(),
-                    tempShopProductFilterParameter = ShopProductFilterParameter()
+                    tempShopProductFilterParameter = ShopProductFilterParameter(),
+                    widgetUserAddressLocalData = addressWidgetData
             )
 
             verifyGetShopFilterProductCountUseCaseCalled()

@@ -94,6 +94,14 @@ public class FirebaseRemoteConfigImpl implements RemoteConfig {
 
     @Override
     public double getDouble(String key, double defaultValue) {
+        if (isDebug()) {
+            String cachedValue = sharedPrefs.getString(key, null);
+
+            if (cachedValue != null) {
+                return Double.parseDouble(cachedValue);
+            }
+        }
+
         if (firebaseRemoteConfig != null) {
             return firebaseRemoteConfig.getDouble(key);
         }

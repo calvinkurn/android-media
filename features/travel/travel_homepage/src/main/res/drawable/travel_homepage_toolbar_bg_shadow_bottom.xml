@@ -7,7 +7,7 @@
             <padding
                 android:bottom="2dp"/>
 
-            <solid android:color="@color/travel_subhome_shadow_color_1" />
+            <solid android:color="@color/travel_dms_toolbar_bg_shadow_bottom1" />
         </shape>
     </item>
     <item>
@@ -15,7 +15,7 @@
             <padding
                 android:bottom="2dp"/>
 
-            <solid android:color="@color/travel_subhome_shadow_color_2" />
+            <solid android:color="@color/travel_dms_toolbar_bg_shadow_bottom2" />
         </shape>
     </item>
     <item>
@@ -23,7 +23,7 @@
             <padding
                 android:bottom="2dp"/>
 
-            <solid android:color="@color/travel_subhome_shadow_color_3" />
+            <solid android:color="@color/travel_dms_toolbar_bg_shadow_bottom3" />
         </shape>
     </item>
     <item>
@@ -31,7 +31,7 @@
             <padding
                 android:bottom="2dp"/>
 
-            <solid android:color="@color/travel_subhome_shadow_color_5" />
+            <solid android:color="@color/travel_dms_toolbar_bg_shadow_bottom4" />
         </shape>
     </item>
     <item>
@@ -39,7 +39,7 @@
             <padding
                 android:bottom="2dp"/>
 
-            <solid android:color="@color/travel_subhome_shadow_color_5" />
+            <solid android:color="@color/travel_dms_toolbar_bg_shadow_bottom4" />
         </shape>
     </item>
 

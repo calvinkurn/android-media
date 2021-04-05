@@ -113,6 +113,7 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
     private lateinit var remoteConfigInstance: RemoteConfigInstance
     private var shouldHitRoleChangedTracker = false
     private var talkInboxPreference: TalkInboxPreference? = null
+    private var coachMark: CoachMark2? = null
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == REPLY_REQUEST_CODE) {
@@ -275,6 +276,12 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
     override fun onAttachActivity(context: Context?) {
         if (context is InboxFragmentContainer) {
             containerListener = context
+        }
+    }
+
+    override fun onHiddenChanged(hidden: Boolean) {
+        if (hidden) {
+            coachMark?.dismissCoachMark()
         }
     }
 
@@ -464,9 +471,9 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
         if(GlobalConfig.isSellerApp()) {
             val filter = activity?.intent?.data?.getQueryParameter(FILTER_PARAM)
             if (filter == FILTER_UNREAD) {
-                val unrespondedFilter = talkInboxSortFilter.chipItems.getOrNull(INDEX_UNRESPONDED_FILTER)
-                val problemFilter = talkInboxSortFilter.chipItems.getOrNull(INDEX_PROBLEM_FILTER)
-                val autoRepliedFilterChip = talkInboxSortFilter.chipItems.getOrNull(INDEX_AUTOREPLY_FILTER)
+                val unrespondedFilter = talkInboxSortFilter.chipItems?.getOrNull(INDEX_UNRESPONDED_FILTER)
+                val problemFilter = talkInboxSortFilter.chipItems?.getOrNull(INDEX_PROBLEM_FILTER)
+                val autoRepliedFilterChip = talkInboxSortFilter.chipItems?.getOrNull(INDEX_AUTOREPLY_FILTER)
                 unrespondedFilter?.toggle()
                 selectFilter(TalkInboxFilter.TalkInboxUnrespondedFilter(), shouldTrack = false)
                 if(unrespondedFilter?.type == ChipsUnify.TYPE_SELECTED) {
@@ -540,7 +547,7 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
     }
 
     private fun setupSettingsIcon() {
-        talkInboxSettingsIcon.apply {
+        talkInboxSettingsIcon?.apply {
             setOnClickListener {
                 goToSellerSettings()
             }
@@ -549,7 +556,7 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
     }
 
     private fun updateSettingsIconVisibility() {
-        talkInboxSettingsIcon.apply {
+        talkInboxSettingsIcon?.apply {
             if(isSellerView()) {
                 show()
                 return
@@ -637,19 +644,19 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
 
     private fun initCoachmark() {
         if (isShowCoachMark()) {
+            coachMark = context?.let { CoachMark2(it) }
             val coachMarkItem = ArrayList<CoachMark2Item>()
-            val coachMark = context?.let { CoachMark2(it) }
             if (talkInboxSortFilter?.chipItems != null) {
                 coachMarkItem.addAll(listOf(
-                        getCoachMarkItem(talkInboxSortFilter.chipItems.getOrNull(0)?.refChipUnify, getString(R.string.inbox_coach_mark_filter_title), getString(R.string.inbox_coach_mark_filter_subtitle)),
-                        getCoachMarkItem(talkInboxSortFilter.chipItems.getOrNull(1)?.refChipUnify, getString(R.string.inbox_coach_mark_reported_title), getString(R.string.inbox_coach_mark_reported_subtitle)),
-                        getCoachMarkItem(talkInboxSortFilter.chipItems.getOrNull(2)?.refChipUnify, getString(R.string.inbox_coach_mark_smart_reply_title), getString(R.string.inbox_coach_mark_smart_reply_subtitle))
+                        getCoachMarkItem(talkInboxSortFilter.chipItems?.getOrNull(0)?.refChipUnify, getString(R.string.inbox_coach_mark_filter_title), getString(R.string.inbox_coach_mark_filter_subtitle)),
+                        getCoachMarkItem(talkInboxSortFilter.chipItems?.getOrNull(1)?.refChipUnify, getString(R.string.inbox_coach_mark_reported_title), getString(R.string.inbox_coach_mark_reported_subtitle)),
+                        getCoachMarkItem(talkInboxSortFilter.chipItems?.getOrNull(2)?.refChipUnify, getString(R.string.inbox_coach_mark_smart_reply_title), getString(R.string.inbox_coach_mark_smart_reply_subtitle))
                 ))
             }
             coachMark?.setStepListener(object : CoachMark2.OnStepListener {
                 override fun onStep(currentIndex: Int, coachMarkItem: CoachMark2Item) {
                     if (currentIndex == COACH_MARK_LAST_INDEX) {
-                        coachMark.stepNext?.text = getString(R.string.inbox_coach_mark_finish)
+                        coachMark?.stepNext?.text = getString(R.string.inbox_coach_mark_finish)
                     }
                 }
             })
@@ -680,16 +687,18 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
     private fun setupToolbar() {
         headerTalkInbox.apply {
             setTitle(R.string.title_talk_discuss)
-            if (GlobalConfig.isSellerApp() && isNewView()) {
-                addRightIcon(0).apply {
-                    clearImage()
-                    setImageDrawable(com.tokopedia.iconunify.getIconUnifyDrawable(context, IconUnify.SETTING, ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700)))
-                    setOnClickListener {
-                        goToSellerSettings()
+            if (GlobalConfig.isSellerApp()) {
+                if(isNewView()) {
+                    addRightIcon(0).apply {
+                        clearImage()
+                        setImageDrawable(com.tokopedia.iconunify.getIconUnifyDrawable(context, IconUnify.SETTING, ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700)))
+                        setOnClickListener {
+                            goToSellerSettings()
+                        }
                     }
                 }
                 show()
-                talkInboxSettingsIcon.hide()
+                talkInboxSettingsIcon?.hide()
             }
         }
     }

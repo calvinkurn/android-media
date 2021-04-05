@@ -32,4 +32,8 @@ class ProgressWidgetUiModel(
     override fun copy(): BaseWidgetUiModel<ProgressDataUiModel> {
         return ProgressWidgetUiModel(id, widgetType, title, appLink, subtitle, tooltip, dataKey, ctaText, isShowEmpty, data, impressHolder, isLoaded, isLoading, isFromCache, emptyState)
     }
+
+    override fun needToRefreshData(other: BaseWidgetUiModel<ProgressDataUiModel>): Boolean {
+        return dataKey != other.dataKey
+    }
 }

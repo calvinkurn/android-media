@@ -12,7 +12,6 @@ object SomConsts {
     const val PARAM_BOOKING_CODE = "bookingCode"
     const val PARAM_BARCODE_TYPE = "barcodeType"
     const val PARAM_ORDER_CODE = "order_code"
-    const val PARAM_USER_ROLES = "user_roles"
     const val PARAM_INVOICE = "invoice"
 
     const val VAR_PARAM_ORDERID = "orderID"
