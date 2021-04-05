@@ -2,7 +2,7 @@
   {
     "data": {
       "discussionMostHelpful": {
-        "productID": "1060957408",
+        "productID": "1060957410",
         "question": [
           {
             "answer": {
@@ -10,16 +10,16 @@
               "attachedProductCount": 0,
               "content": "Hi Toppers, Mohon Maaf jika ada keterlambatan respondnya , Terus follow Toko Kami agar terus terupdate jika ada Stock dan produk baru :)",
               "createTime": "2021-03-16T13:09:16Z",
-              "createTimeFormatted": "18 jam",
+              "createTimeFormatted": "16 Mar",
               "isSeller": true,
               "userID": "65370927",
               "userName": "Tokopedia Merchandise",
               "userThumbnail": "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2020/11/10/d54ad402-71a0-45c8-badd-64d8f78bd66a.png",
               "userThumbnail2": "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2020/11/10/d54ad402-71a0-45c8-badd-64d8f78bd66a.png"
             },
-            "content": "ready kahh..?",
+            "content": "ready kahh.. SCREENSHOT TEST?",
             "createTime": "2020-12-21T17:09:29Z",
-            "createTimeFormatted": "21 Des",
+            "createTimeFormatted": "Des 2020",
             "questionID": "300689192",
             "totalAnswer": 1,
             "userID": "28357290",
@@ -30,30 +30,6 @@
         "shopID": "1990266",
         "shopURL": "https://www.tokopedia.com/merchandise",
         "totalQuestion": 1
-      }
-    }
-  },
-  {
-    "data": {
-      "tokopointsCatalogMVCList": {
-        "catalogList": [],
-        "followWidget": {
-          "content": "",
-          "iconURL": "",
-          "isShown": false,
-          "membershipCardID": "0",
-          "membershipHowTo": [],
-          "type": ""
-        },
-        "resultStatus": {
-          "code": "200",
-          "message": [
-            "Success"
-          ],
-          "status": "OK"
-        },
-        "shopName": "Tokopedia Merchandise",
-        "toasterSuccessMessage": ""
       }
     }
   }

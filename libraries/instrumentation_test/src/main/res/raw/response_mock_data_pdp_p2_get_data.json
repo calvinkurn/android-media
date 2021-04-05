@@ -2,20 +2,47 @@
   {
     "data": {
       "pdpGetData": {
+        "bebasOngkir": {
+          "images": [
+            {
+              "boType": 2,
+              "imageURL": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/BOE_Badge.png",
+              "tokoCabangImageURL": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/TokoCabang_Icon.png"
+            }
+          ],
+          "products": [
+            {
+              "boType": 2,
+              "productID": "1060957410"
+            },
+            {
+              "boType": 2,
+              "productID": "1060957409"
+            },
+            {
+              "boType": 2,
+              "productID": "1060957411"
+            },
+            {
+              "boType": 2,
+              "productID": "1060957408"
+            }
+          ]
+        },
         "cartRedirection": {
           "data": [
             {
               "available_buttons": [
                 {
                   "cart_type": "normal",
-                  "color": "secondary",
+                  "color": "secondary_green",
                   "onboarding_message": "",
                   "show_recommendation": false,
                   "text": "Beli"
                 },
                 {
                   "cart_type": "normal",
-                  "color": "primary",
+                  "color": "primary_green",
                   "onboarding_message": "",
                   "show_recommendation": true,
                   "text": "+ Keranjang"
@@ -45,14 +72,14 @@
               "available_buttons": [
                 {
                   "cart_type": "normal",
-                  "color": "secondary",
+                  "color": "secondary_green",
                   "onboarding_message": "",
                   "show_recommendation": false,
                   "text": "Beli"
                 },
                 {
                   "cart_type": "normal",
-                  "color": "primary",
+                  "color": "primary_green",
                   "onboarding_message": "",
                   "show_recommendation": true,
                   "text": "+ Keranjang"
@@ -119,9 +146,9 @@
         "merchantVoucherSummary": {
           "imageURL": "",
           "isShown": true,
-          "subtitle": "Contoh Merchant Voucher",
+          "subtitle": "Merchant voucher screenshot test",
           "title": [{
-            "text" : "Merchant Voucher Screenshot Testing"
+            "text":"Test title"
           }]
         },
         "mostHelpFulReviewData": {
@@ -135,7 +162,7 @@
               },
               "message": "Barang bagus, packing profesional. Makasih Kak, sukses selalu TOKOPEDIA.",
               "productRating": 5,
-              "reviewCreateTime": "6 bulan lalu",
+              "reviewCreateTime": "7 bulan lalu",
               "reviewId": "234596125",
               "user": {
                 "fullName": "Bagus",
@@ -204,11 +231,12 @@
             "titlePDP": "Proteksi Fashion"
           }
         },
-        "productView": "14859",
+        "productView": "15270",
+        "ratesEstimate": [],
         "reputationShop": {
           "badge": "https://ecs7.tokopedia.net/img/repsys/diamond-4.gif",
           "badgeHD": "https://ecs7.tokopedia.net/img/repsys/diamond-4-hd.gif",
-          "score": "218.835",
+          "score": "219.445",
           "scoreMap": "19"
         },
         "restrictionInfo": {
@@ -217,7 +245,7 @@
         },
         "reviewImage": {
           "detail": {
-            "imageCount": "100",
+            "imageCount": "17",
             "imageCountFmt": "Lainnya 13+",
             "images": [
               {
@@ -225,57 +253,38 @@
                 "imageAttachmentID": 29631241,
                 "reviewID": 316760733,
                 "uriLarge": "https://ecs7.tokopedia.net/img/cache/600/bjFkPX/2021/1/26/9ce3ce32-4f9d-46c1-9411-3e3689c36b25.jpg",
-                "uriThumbnail": "https://ecs7.tokopedia.net/img/cache/200-square/bjFkPX/2021/1/26/9ce3ce32-4f9d-46c1-9411-3e3689c36b25.jpg"
+                "uriThumbnail": "https://images.tokopedia.net/img/android/review/review_incentive_submitted_resize.png"
               },
               {
                 "description": "",
                 "imageAttachmentID": 29969283,
                 "reviewID": 319864333,
                 "uriLarge": "https://ecs7.tokopedia.net/img/cache/600/bjFkPX/2021/1/31/9fa6789c-d684-490a-b9de-83e31a221c73.jpg",
-                "uriThumbnail": "https://ecs7.tokopedia.net/img/cache/200-square/bjFkPX/2021/1/31/9fa6789c-d684-490a-b9de-83e31a221c73.jpg"
+                "uriThumbnail": "https://images.tokopedia.net/img/android/review/review_incentive_submitted_resize.png"
               },
               {
                 "description": "",
                 "imageAttachmentID": 29969284,
                 "reviewID": 319864333,
                 "uriLarge": "https://ecs7.tokopedia.net/img/cache/600/bjFkPX/2021/1/31/04b2565a-0de2-424b-b4c5-57992de86d45.jpg",
-                "uriThumbnail": "https://ecs7.tokopedia.net/img/cache/200-square/bjFkPX/2021/1/31/04b2565a-0de2-424b-b4c5-57992de86d45.jpg"
+                "uriThumbnail": "https://images.tokopedia.net/img/android/review/review_incentive_submitted_resize.png"
               },
               {
                 "description": "",
                 "imageAttachmentID": 29969285,
                 "reviewID": 319864333,
                 "uriLarge": "https://ecs7.tokopedia.net/img/cache/600/bjFkPX/2021/1/31/8a20086b-9462-4e76-bbe5-1964ebce9b5f.jpg",
-                "uriThumbnail": "https://ecs7.tokopedia.net/img/cache/200-square/bjFkPX/2021/1/31/8a20086b-9462-4e76-bbe5-1964ebce9b5f.jpg"
+                "uriThumbnail": "https://images.tokopedia.net/img/android/review/review_incentive_submitted_resize.png"
               },
               {
                 "description": "",
                 "imageAttachmentID": 30083355,
                 "reviewID": 320926056,
                 "uriLarge": "https://ecs7.tokopedia.net/img/cache/600/bjFkPX/2021/2/1/8c3434d9-a2a1-4063-8f72-e2ad5653b878.jpg",
-                "uriThumbnail": "https://ecs7.tokopedia.net/img/cache/200-square/bjFkPX/2021/2/1/8c3434d9-a2a1-4063-8f72-e2ad5653b878.jpg"
+                "uriThumbnail": "https://images.tokopedia.net/img/android/review/review_incentive_submitted_resize.png"
               }
             ],
             "reviews": [
-              {
-                "isAnonymous": false,
-                "isReportable": false,
-                "isUpdated": false,
-                "message": "",
-                "rating": 5,
-                "ratingDescription": "Sangat Baik",
-                "reviewId": 320926056,
-                "reviewer": {
-                  "fullName": "Cecep",
-                  "profilePicture": "https://accounts.tokopedia.com/image/v1/u/71516355/user_thumbnail/desktop",
-                  "url": "https://www.tokopedia.com/people/71516355",
-                  "userID": 71516355
-                },
-                "time_format": {
-                  "date_time_fmt1": "01 Feb 2021, 17:22 WIB"
-                },
-                "updateTime": 1612200172
-              },
               {
                 "isAnonymous": false,
                 "isReportable": false,
@@ -313,6 +322,25 @@
                   "date_time_fmt1": "31 Jan 2021, 00:35 WIB"
                 },
                 "updateTime": 1612053325
+              },
+              {
+                "isAnonymous": false,
+                "isReportable": false,
+                "isUpdated": false,
+                "message": "",
+                "rating": 5,
+                "ratingDescription": "Sangat Baik",
+                "reviewId": 320926056,
+                "reviewer": {
+                  "fullName": "Cecep",
+                  "profilePicture": "https://accounts.tokopedia.com/image/v1/u/71516355/user_thumbnail/desktop",
+                  "url": "https://www.tokopedia.com/people/71516355",
+                  "userID": 71516355
+                },
+                "time_format": {
+                  "date_time_fmt1": "01 Feb 2021, 17:22 WIB"
+                },
+                "updateTime": 1612200172
               }
             ]
           },
@@ -614,16 +642,16 @@
           "shopCore": {
             "description": "Produk-produk lucu berkarakter Toped siap untuk mewarnai harimu. Yuk lengkapi koleksimu, beli merchandise eksklusif Tokopedia hanya di sini!",
             "domain": "merchandise",
-            "name": "Tokopedia Merchandise Testing",
+            "name": "Tokopedia Screenshot Test",
             "shopID": "1990266",
             "tagLine": "Dapatkan eksklusif design Merchandise Tokopedia",
             "url": "https://www.tokopedia.com/merchandise"
           },
-          "shopLastActive": "1615942272",
+          "shopLastActive": "1616658722",
           "shopStats": {
-            "productSold": "204255",
+            "productSold": "206347",
             "totalShowcase": "27",
-            "totalTx": "96397"
+            "totalTx": "96685"
           },
           "shopTerms": "0",
           "shopType": 0,
@@ -635,14 +663,19 @@
           }
         },
         "shopPackSpeed": {
-          "hour": 4,
-          "speedFmt": "4 Jam"
+          "hour": 3,
+          "speedFmt": "3 Jam"
         },
         "shopRatingsQuery": {
           "ratingScore": 4.800000190734863
         },
         "shopTopChatSpeed": {
-          "messageResponseTime": "13"
+          "messageResponseTime": "9"
+        },
+        "uniqueSellingPoint": {
+          "bebasOngkirExtra": {
+            "icon": "https://images.tokopedia.net/img/pdp/icon/usp/boextoped.png"
+          }
         },
         "upcomingCampaigns": [],
         "validateTradeIn": {
@@ -654,7 +687,7 @@
           "usedPrice": "0",
           "widgetString": ""
         },
-        "wishlistCount": "72"
+        "wishlistCount": "19"
       }
     }
   }

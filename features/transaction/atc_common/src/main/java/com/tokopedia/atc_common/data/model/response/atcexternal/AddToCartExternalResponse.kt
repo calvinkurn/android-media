@@ -57,5 +57,7 @@ data class AddToCartExternalDataResponse(
         @SerializedName("is_multi_origin")
         val isMultiOrigin: Boolean = false,
         @SerializedName("is_free_ongkir")
-        val isFreeOngkir: Boolean = false
+        val isFreeOngkir: Boolean = false,
+        @SerializedName("is_free_ongkir_extra")
+        val isFreeOngkirExtra: Boolean = false
 )

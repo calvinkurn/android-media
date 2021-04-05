@@ -47,6 +47,7 @@ class CreateReviewTextAreaBottomSheet : BottomSheetUnify() {
                 setOnFocusChangeListener { _, hasFocus ->
                     activity?.run {
                         if (hasFocus) {
+                            editText.setSelection(editText.text.length)
                             showKeyboard()
                         } else {
                             hideKeyboard()

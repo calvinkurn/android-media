@@ -5,10 +5,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.chat_common.data.preview.ProductPreview
 import com.tokopedia.common.network.util.CommonUtil
 import com.tokopedia.product.detail.common.data.model.constant.ProductStatusTypeDef
-import com.tokopedia.product.detail.common.data.model.pdplayout.BasicInfo
-import com.tokopedia.product.detail.common.data.model.pdplayout.ComponentData
-import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
-import com.tokopedia.product.detail.common.data.model.pdplayout.Media
+import com.tokopedia.product.detail.common.data.model.pdplayout.*
 import com.tokopedia.product.detail.view.util.toDate
 import com.tokopedia.variant_common.model.ProductVariantCommon
 import com.tokopedia.variant_common.model.VariantChildCommon
@@ -22,7 +19,8 @@ object VariantMapper {
             intent: Intent?,
             productId: String?,
             productInfo: DynamicProductInfoP1?,
-            variantResp: ProductVariantCommon?
+            variantResp: ProductVariantCommon?,
+            freeOngkirImgUrl: String
     ) {
         if (intent == null || productId == null) return
         val variants = variantResp?.mapSelectedProductVariants(productId)
@@ -38,8 +36,7 @@ object VariantMapper {
         val dropPercentage = productInfo?.dropPercentage ?: ""
         val productUrl = productInfo?.basic?.url ?: ""
         val isActive = productInfo?.basic?.isActive() ?: true
-        val productFsIsActive = productInfo?.data?.getFsProductIsActive() ?: false
-        val productFsImageUrl = productInfo?.data?.getFsProductImageUrl() ?: ""
+        val productFsIsActive = freeOngkirImgUrl.isNotEmpty()
         val productColorVariant = variants?.get("colour")?.get("value") ?: ""
         val productColorHexVariant = variants?.get("colour")?.get("hex") ?: ""
         val productSizeVariant = variants?.get("size")?.get("value") ?: ""
@@ -57,7 +54,7 @@ object VariantMapper {
                 productSizeVariant,
                 productUrl,
                 productFsIsActive,
-                productFsImageUrl,
+                freeOngkirImgUrl,
                 priceBefore,
                 priceBeforeInt,
                 dropPercentage,
@@ -99,7 +96,16 @@ object VariantMapper {
                 stockSoldPercentage = newData?.campaign?.stockSoldPercentage?.toInt() ?: 0,
                 isCheckImei = newData?.campaign?.isCheckImei ?: false,
                 isUsingOvo = newData?.campaign?.isUsingOvo ?: false,
-                hideGimmick = newData?.campaign?.hideGimmick ?: false
+                hideGimmick = newData?.campaign?.hideGimmick ?: false,
+                background = newData?.campaign?.background ?: "",
+                campaignIdentifier = newData?.campaign?.campaignIdentifier ?: 0
+        )
+
+        val newThematicCampaign = ThematicCampaign(
+                campaignName = newData?.thematicCampaign?.campaignName ?: "",
+                icon = newData?.thematicCampaign?.icon ?: "",
+                background = newData?.thematicCampaign?.background ?: "",
+                additionalInfo = newData?.thematicCampaign?.additionalInfo ?: ""
         )
 
         val newMedia = if (newData?.hasPicture == true) {
@@ -129,10 +135,12 @@ object VariantMapper {
         val data = oldData.data.copy(
                 isWishlist = newData?.isWishlist ?: false,
                 campaign = newCampaign,
+                thematicCampaign = newThematicCampaign,
                 price = newPrice,
                 name = newData?.name ?: "",
                 media = newMedia,
-                stock = newStock
+                stock = newStock,
+                isCod = newData?.isCod ?: false
         )
 
         return DynamicProductInfoP1(basic, data, oldData.layoutName)

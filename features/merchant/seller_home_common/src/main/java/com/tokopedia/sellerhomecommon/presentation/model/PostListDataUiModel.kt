@@ -9,9 +9,10 @@ data class PostListDataUiModel(
         val items: List<PostUiModel> = emptyList(),
         val cta: PostCtaDataUiModel = PostCtaDataUiModel(),
         override var error: String = "",
-        override var isFromCache: Boolean = false
-): BaseDataUiModel {
+        override var isFromCache: Boolean = false,
+        override val showWidget: Boolean = false
+) : BaseDataUiModel {
     override fun shouldRemove(): Boolean {
-        return !isFromCache && items.isEmpty()
+        return items.isEmpty()
     }
 }

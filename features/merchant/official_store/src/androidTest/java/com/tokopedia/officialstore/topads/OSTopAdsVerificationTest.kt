@@ -126,9 +126,6 @@ class OSTopAdsVerificationTest {
             is MixLeftComponentViewHolder -> {
                 clickOnEachItemRecyclerView(viewHolder.itemView, R.id.rv_product, 0)
             }
-            is DynamicChannelMixLeftViewHolder -> {
-                clickOnEachItemRecyclerView(viewHolder.itemView, R.id.rv_product, 0)
-            }
             is DynamicChannelMixTopViewHolder -> {
                 clickOnEachItemRecyclerView(viewHolder.itemView, R.id.dc_banner_rv, 0)
             }

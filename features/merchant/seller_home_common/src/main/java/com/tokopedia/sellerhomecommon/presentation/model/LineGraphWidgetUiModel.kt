@@ -32,4 +32,8 @@ data class LineGraphWidgetUiModel(
     override fun copy(): BaseWidgetUiModel<LineGraphDataUiModel> {
         return LineGraphWidgetUiModel(id, widgetType, title, subtitle, tooltip, appLink, dataKey, ctaText, isShowEmpty, data, impressHolder, isLoaded, isLoading, isFromCache, emptyState)
     }
+
+    override fun needToRefreshData(other: BaseWidgetUiModel<LineGraphDataUiModel>): Boolean {
+        return dataKey != other.dataKey
+    }
 }

@@ -32,4 +32,8 @@ data class PieChartWidgetUiModel(
     override fun copy(): BaseWidgetUiModel<PieChartDataUiModel> {
         return PieChartWidgetUiModel(id, widgetType, title, subtitle, tooltip, appLink, dataKey, ctaText, isShowEmpty, data, impressHolder, isLoaded, isLoading, isFromCache, emptyState)
     }
+
+    override fun needToRefreshData(other: BaseWidgetUiModel<PieChartDataUiModel>): Boolean {
+        return dataKey != other.dataKey
+    }
 }
