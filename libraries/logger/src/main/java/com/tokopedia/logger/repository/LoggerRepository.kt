@@ -68,14 +68,14 @@ class LoggerRepository(private val logDao: LoggerDao,
                 val jobList = mutableListOf<Deferred<Boolean>>()
 
                 val scalyrEventListList = setConfigListServer(logs).first
-                val newRelicConfigList = setConfigListServer(logs).second
+                val newRelicMessageList = setConfigListServer(logs).second
 
                 if (scalyrEventListList.isNotEmpty()) {
                     val jobScalyr = async { sendScalyrLogToServer(scalyrConfigs[tokenIndex], logs, scalyrEventListList) }
                     jobList.add(jobScalyr)
                 }
 
-                if (newRelicConfigList.isNotEmpty()) {
+                if (newRelicMessageList.isNotEmpty()) {
                     val jobNewRelic = async { sendNewRelicLogToServer(newRelicConfigs[tokenIndex], logs, newRelicConfigList) }
                     jobList.add(jobNewRelic)
                 }
