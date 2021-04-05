@@ -2116,16 +2116,19 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
         }
     }
 
-    override fun shareProductFromContent(componentTrackDataModel: ComponentTrackDataModel?) {
-        DynamicProductDetailTracking.Click.eventClickShareFromContent(viewModel.getDynamicProductInfoP1, viewModel.userId, componentTrackDataModel)
-        shareProduct()
-    }
-
     private fun shareProductFromToolbar() {
         viewModel.getDynamicProductInfoP1?.let { productInfo ->
             DynamicProductDetailTracking.Click.eventClickPdpShare(productInfo)
+            shareProduct()
         }
-        shareProduct()
+    }
+
+    private fun shareProductFromNavToolbar() {
+        // new navbar
+        viewModel.getDynamicProductInfoP1?.let { productInfo ->
+            DynamicProductDetailTracking.Click.eventClickShareNavToolbar(productInfo, viewModel.userId)
+            shareProduct()
+        }
     }
 
     private fun shareProduct() {
@@ -2199,7 +2202,7 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
                 }
             }, {
                 hideProgressDialog()
-            })
+            }, true)
         }
     }
 
@@ -2565,6 +2568,9 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
         navToolbar?.apply {
             setIcon(
                     IconBuilder()
+                            .addIcon(IconList.ID_SHARE) {
+                                shareProductFromNavToolbar()
+                            }
                             .addIcon(IconList.ID_CART) {}
                             .addIcon(IconList.ID_NAV_GLOBAL) {}
             )
