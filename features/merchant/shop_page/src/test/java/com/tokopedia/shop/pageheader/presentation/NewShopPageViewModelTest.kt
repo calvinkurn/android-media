@@ -56,9 +56,6 @@ class NewShopPageViewModelTest {
     lateinit var gqlGetShopInfobUseCaseCoreAndAssets: Lazy<GQLGetShopInfoUseCase>
 
     @RelaxedMockK
-    lateinit var toggleFavouriteShopUseCase: Lazy<ToggleFavouriteShopUseCase>
-
-    @RelaxedMockK
     lateinit var shopQuestGeneralTrackerUseCase: Lazy<ShopQuestGeneralTrackerUseCase>
 
     @RelaxedMockK
@@ -388,6 +385,33 @@ class NewShopPageViewModelTest {
         assert(shopSellerPLayWidgetData is Success)
     }
 
+    @Test
+    fun `check whether shopPageTickerData and shopPageShopShareData post success value`() {
+        val mockShopId = "123"
+        val mockShopDomain = "mock domain"
+        coEvery {
+            gqlGetShopInfoForHeaderUseCase.get().executeOnBackground()
+        } returns ShopInfo()
+        shopPageViewModel.getShopInfoData(mockShopId, mockShopDomain, false)
+        assert(shopPageViewModel.shopPageTickerData.value is Success)
+        assert(shopPageViewModel.shopPageShopShareData.value is Success)
+
+        shopPageViewModel.getShopInfoData("0", mockShopDomain, true)
+        assert(shopPageViewModel.shopPageTickerData.value is Success)
+        assert(shopPageViewModel.shopPageShopShareData.value is Success)
+    }
+
+    @Test
+    fun `check whether shopPageTickerData and shopPageShopShareData value is null if error when get data`() {
+        val mockShopId = "123"
+        val mockShopDomain = "mock domain"
+        coEvery {
+            gqlGetShopInfoForHeaderUseCase.get().executeOnBackground()
+        } throws Throwable()
+        shopPageViewModel.getShopInfoData(mockShopId, mockShopDomain, false)
+        assert(shopPageViewModel.shopPageTickerData.value == null)
+        assert(shopPageViewModel.shopPageShopShareData.value == null)
+    }
 
 
 }
