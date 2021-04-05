@@ -20,6 +20,7 @@ import com.tokopedia.applink.DeeplinkMapper
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.common.travel.data.entity.TravelCollectiveBannerModel
 import com.tokopedia.travelhomepage.R
+import com.tokopedia.travelhomepage.common.util.TravelHomepageGqlQuery
 import com.tokopedia.travelhomepage.homepage.analytics.TravelHomepageTrackingUtil
 import com.tokopedia.travelhomepage.homepage.data.*
 import com.tokopedia.travelhomepage.homepage.data.widgetmodel.LegoBannerItemModel
@@ -177,7 +178,7 @@ class TravelHomepageFragment : BaseListFragment<TravelHomepageItemModel,
     }
 
     override fun loadData(page: Int) {
-        travelHomepageViewModel.getListFromCloud(GraphqlHelper.loadRawString(resources, R.raw.query_travel_homepage_get_layout),
+        travelHomepageViewModel.getListFromCloud(TravelHomepageGqlQuery.LAYOUT_SUBHOMEPAGE,
                 swipeToRefresh?.isRefreshing ?: false)
     }
 
@@ -186,7 +187,7 @@ class TravelHomepageFragment : BaseListFragment<TravelHomepageItemModel,
         clearAllData()
         showLoading()
         showSwipeLoading()
-        travelHomepageViewModel.getListFromCloud(GraphqlHelper.loadRawString(resources, R.raw.query_travel_homepage_get_layout), true)
+        travelHomepageViewModel.getListFromCloud(TravelHomepageGqlQuery.LAYOUT_SUBHOMEPAGE, true)
     }
 
     override fun initInjector() {
@@ -196,32 +197,32 @@ class TravelHomepageFragment : BaseListFragment<TravelHomepageItemModel,
     override fun getScreenName(): String = ""
 
     override fun onBannerItemBind(travelLayoutSubhomepage: TravelLayoutSubhomepage.Data, isFromCloud: Boolean) {
-        travelHomepageViewModel.getTravelUnifiedData(GraphqlHelper.loadRawString(resources, R.raw.query_travel_homepage_dynamic_subhomepage),
+        travelHomepageViewModel.getTravelUnifiedData(TravelHomepageGqlQuery.DYNAMIC_SUBHOMEPAGE,
                 travelLayoutSubhomepage, true, TypeUnifiedSubhomepageResponse.SliderBannerResponse::class.java)
     }
 
     override fun onCategoryItemBind(travelLayoutSubhomepage: TravelLayoutSubhomepage.Data, isFromCloud: Boolean) {
-        travelHomepageViewModel.getTravelUnifiedData(GraphqlHelper.loadRawString(resources, R.raw.query_travel_homepage_dynamic_subhomepage),
+        travelHomepageViewModel.getTravelUnifiedData(TravelHomepageGqlQuery.DYNAMIC_SUBHOMEPAGE,
                 travelLayoutSubhomepage, true, TypeUnifiedSubhomepageResponse.CategoryResponse::class.java)
     }
 
     override fun onDestinationItemBind(travelLayoutSubhomepage: TravelLayoutSubhomepage.Data, isFromCloud: Boolean) {
-        travelHomepageViewModel.getTravelUnifiedData(GraphqlHelper.loadRawString(resources, R.raw.query_travel_homepage_dynamic_subhomepage),
+        travelHomepageViewModel.getTravelUnifiedData(TravelHomepageGqlQuery.DYNAMIC_SUBHOMEPAGE,
                 travelLayoutSubhomepage, true, TypeUnifiedSubhomepageResponse.DestinationResponse::class.java)
     }
 
     override fun onLegoBannerItemBind(travelLayoutSubhomepage: TravelLayoutSubhomepage.Data, isFromCloud: Boolean) {
-        travelHomepageViewModel.getTravelUnifiedData(GraphqlHelper.loadRawString(resources, R.raw.query_travel_homepage_dynamic_subhomepage),
+        travelHomepageViewModel.getTravelUnifiedData(TravelHomepageGqlQuery.DYNAMIC_SUBHOMEPAGE,
                 travelLayoutSubhomepage, true, TypeUnifiedSubhomepageResponse.LegoBannerResponse::class.java)
     }
 
     override fun onProductCardItemBind(travelLayoutSubhomepage: TravelLayoutSubhomepage.Data, isFromCloud: Boolean) {
-        travelHomepageViewModel.getTravelUnifiedData(GraphqlHelper.loadRawString(resources, R.raw.query_travel_homepage_dynamic_subhomepage),
+        travelHomepageViewModel.getTravelUnifiedData(TravelHomepageGqlQuery.DYNAMIC_SUBHOMEPAGE,
                 travelLayoutSubhomepage, true, TypeUnifiedSubhomepageResponse.ProductCardResponse::class.java)
     }
 
     override fun onHomepageSectionItemBind(travelLayoutSubhomepage: TravelLayoutSubhomepage.Data, isFromCloud: Boolean) {
-        travelHomepageViewModel.getTravelUnifiedData(GraphqlHelper.loadRawString(resources, R.raw.query_travel_homepage_dynamic_subhomepage),
+        travelHomepageViewModel.getTravelUnifiedData(TravelHomepageGqlQuery.DYNAMIC_SUBHOMEPAGE,
                 travelLayoutSubhomepage, true, TypeUnifiedSubhomepageResponse.HomepageSectionResponse::class.java)
     }
 
