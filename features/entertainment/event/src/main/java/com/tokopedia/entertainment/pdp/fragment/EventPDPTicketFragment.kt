@@ -120,7 +120,6 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicket, PackageTypeFacto
     override fun getSwipeRefreshLayoutResourceId(): Int = R.id.swipe_refresh_layout
 
     override fun loadData(p0: Int) {
-        // TODO: [Misael] ini harus load MainPackage + RecommendationList
         viewModel.getData(urlPDP, selectedDate, true, EventQuery.eventPDPV3(),
                 eventContentById())
     }
@@ -203,7 +202,7 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicket, PackageTypeFacto
                 showViewBottom(false) //ini bisa balikin rv
                 showUbah(false)
                 loadInitialData()
-                // TODO: [Misael] nnti check ini
+                // TODO: [Misael] confirm ke ka Firman ini kenapa perlu di hide
 //                hideRecommendationView()
             }
         }
@@ -233,7 +232,7 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicket, PackageTypeFacto
                         eventPDPTracking.onClickPickDate()
                         showViewBottom(false)
                         loadInitialData()
-                        // TODO: [Misael] ini
+                        // TODO: [Misael] ini juga
 //                        hideRecommendationView()
                     }
 
@@ -506,7 +505,7 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicket, PackageTypeFacto
 
         const val PREFERENCES_NAME = "event_ticket_preferences"
         const val SHOW_COACH_MARK_KEY = "show_coach_mark_key_event_ticket"
-        private const val COACH_MARK_START_DELAY = 300L
+        private const val COACH_MARK_START_DELAY = 400L
         private const val EXPAND_ACCORDION_START_DELAY = 150L
     }
 

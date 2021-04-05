@@ -1,9 +1,5 @@
 package com.tokopedia.entertainment.pdp.adapter.viewholder
 
-import android.graphics.Typeface.BOLD
-import android.text.SpannableStringBuilder
-import android.text.style.StyleSpan
-import android.util.Log
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -37,19 +33,19 @@ class PackageParentViewHolder(
         itemView.accordionEventPDPTicket.run {
             accordionData.clear()
             removeAllViews()
-            onItemClick = { position: Int, _ ->
-                val rvTicketItem = itemView.accordionEventPDPTicket.getChildAt(position).findViewById<RecyclerView>(rvId)
-                for (i in 0 until rvTicketItem.childCount) {
-                    val vh = rvTicketItem.findViewHolderForAdapterPosition(i)
-                            as EventPDPTicketItemPackageAdapter.EventPDPTicketItemPackageViewHolder
-                    vh.resetQuantities()
+            onItemClick = { position, isExpanded ->
+                if (isExpanded) {
+                    val rvTicketItem = itemView.accordionEventPDPTicket.getChildAt(position).findViewById<RecyclerView>(rvId)
+                    for (i in 0 until rvTicketItem.childCount) {
+                        val vh = rvTicketItem.findViewHolderForAdapterPosition(i)
+                                as EventPDPTicketItemPackageAdapter.EventPDPTicketItemPackageViewHolder
+                        vh.resetQuantities()
+                    }
                 }
-
                 onBindItemTicketListener.resetPackage()
             }
         }
         element?.ticketModels?.forEach {
-//            idPackage = it.id
             ticketItemGrouplist.add(it)
             if (it.isRecommendationPackage) {
                 renderForRecommendationPackage(it)
@@ -61,8 +57,8 @@ class PackageParentViewHolder(
 
     private fun mapPackageV3ToAccordionData(view: View, value: PackageV3, isRecommendation: Boolean)
             : AccordionDataUnify {
-        val eventPDPTicketAdapter = EventPDPTicketItemPackageAdapter(onBindItemTicketListener, onCoachmarkListener)
         val salesPrice = getRupiahAllowZeroFormat(value.salesPrice.toLong())
+        val eventPDPTicketAdapter = EventPDPTicketItemPackageAdapter(onBindItemTicketListener, onCoachmarkListener)
         val rvEventChildTicket = RecyclerView(view.context)
         rvEventChildTicket.layoutParams = RecyclerView.LayoutParams(
                 RecyclerView.LayoutParams.MATCH_PARENT,
@@ -85,7 +81,7 @@ class PackageParentViewHolder(
             true -> "${getString(R.string.ent_pdp_available_date_label)} " +
                         DateUtils.dateToString(Date(value.dates[0].toLong() * SECOND_IN_MILIS),
                         DateUtils.DEFAULT_VIEW_FORMAT)
-            false -> "Mulai dari $salesPrice"
+            false -> "${getString(R.string.ent_checkout_price_expand)} $salesPrice"
         }
 
         return AccordionDataUnify(
@@ -114,7 +110,6 @@ class PackageParentViewHolder(
 
     companion object {
         val LAYOUT = R.layout.item_event_pdp_parent_ticket
-        // TODO: [Misael] ini ID dibikin disini ato di tempat lain ya?
         val rvId = View.generateViewId()
 
     }
