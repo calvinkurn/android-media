@@ -358,7 +358,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         }
         hideGetMyLocation()
 
-        if (isLoadingSearchByMap) {
+        if (isLoadingSearchByMap && adapter.dataSize >= MINIMUM_NUMBER_OF_RESULT_LOADED) {
             isLoadingSearchByMap = false
         } else {
             setupPersistentBottomSheet()
