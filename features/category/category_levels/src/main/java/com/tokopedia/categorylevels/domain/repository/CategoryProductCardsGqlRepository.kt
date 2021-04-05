@@ -62,14 +62,14 @@ class CategoryProductCardsGqlRepository @Inject constructor() : BaseRepository()
 
     private fun mapRecommendationToDiscoveryResponse(componentId: String, recommendationData: List<RecommendationWidget>, productComponentName: String?): ArrayList<ComponentsItem> {
         val components = arrayListOf<ComponentsItem>()
-        recommendationData[0].recommendationItemList.forEachIndexed { index, it ->
+        recommendationData.firstOrNull()?.recommendationItemList?.forEachIndexed { index, it ->
             val componentsItem = ComponentsItem()
             val dataItem = DataItem()
             componentsItem.position = index
             componentsItem.parentComponentId = componentId
             if(productComponentName == ComponentNames.CategoryBestSeller.componentName) {
                 componentsItem.name = ComponentNames.ProductCardCarouselItem.componentName
-                componentsItem.lihatSemua = LihatSemua(applink = recommendationData[0].seeMoreAppLink, header = "Lagi Hits, nih!")
+                componentsItem.lihatSemua = LihatSemua(applink = recommendationData.firstOrNull()?.seeMoreAppLink ?: "", header = recommendationData.firstOrNull()?.title ?: "")
                 dataItem.typeProductCard = ComponentNames.ProductCardCarouselItem.componentName
             }
             else {
