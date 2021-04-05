@@ -286,6 +286,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         initLocationMap()
         setupToolbarAction()
         setUpTitleAndSubtitle()
+        setupContentMargin()
         setupFindWithMapButton()
         initGetMyLocation()
 
