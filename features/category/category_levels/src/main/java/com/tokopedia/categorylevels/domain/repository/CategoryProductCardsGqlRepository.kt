@@ -64,16 +64,19 @@ class CategoryProductCardsGqlRepository @Inject constructor() : BaseRepository()
         val components = arrayListOf<ComponentsItem>()
         recommendationData[0].recommendationItemList.forEachIndexed { index, it ->
             val componentsItem = ComponentsItem()
+            val dataItem = DataItem()
             componentsItem.position = index
             componentsItem.parentComponentId = componentId
             if(productComponentName == ComponentNames.CategoryBestSeller.componentName) {
                 componentsItem.name = ComponentNames.ProductCardCarouselItem.componentName
                 componentsItem.lihatSemua = LihatSemua(applink = recommendationData[0].seeMoreAppLink, header = "Lagi Hits, nih!")
+                dataItem.typeProductCard = ComponentNames.ProductCardCarouselItem.componentName
             }
-            else
+            else {
+                dataItem.typeProductCard = ComponentNames.ProductCardRevampItem.componentName
                 componentsItem.name = ComponentNames.ProductCardRevampItem.componentName
+            }
             val dataItems = mutableListOf<DataItem>()
-            val dataItem = DataItem()
             val labelsGroupList = arrayListOf<LabelsGroup>()
             it.labelGroupList.forEach {
                 labelsGroupList.add(LabelsGroup(it.position, it.title, it.type, it.imageUrl))
@@ -102,7 +105,6 @@ class CategoryProductCardsGqlRepository @Inject constructor() : BaseRepository()
             dataItem.applinks = it.appUrl
             dataItem.goldMerchant = it.isGold
             dataItem.officialStore = it.isOfficial
-            dataItem.typeProductCard = ComponentNames.ProductCardRevampItem.componentName
             dataItem.labelsGroupList = labelsGroupList
             dataItems.add(dataItem)
             componentsItem.id = it.productId.toString()

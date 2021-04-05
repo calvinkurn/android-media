@@ -156,7 +156,11 @@ class CategoryRevampAnalytics(pageType: String = EMPTY_STRING,
             productMap[KEY_BRAND] = NONE_OTHER
             productMap[KEY_CATEGORY] = it.departmentID
             productMap[KEY_ID] = it.productId.toString()
-            productMap[LIST] = if (it.isTopads == false) dimension40 else "$dimension40 - topads"
+            if(getProductName(it.typeProductCard) ==  PRODUCT_CARD_CAROUSEL) {
+                productMap[LIST] = if (it.isTopads == false) "$dimension40 - carousel-best-seller" else "$dimension40 - topads - carousel-best-seller"
+            } else {
+                productMap[LIST] = if (it.isTopads == false) "$dimension40 - product-card-infinite" else "$dimension40 - topads - product-card-infinite"
+            }
             productMap[KEY_NAME] = it.name.toString()
             var label = ""
             getComponent(componentsItems.parentComponentId, pageIdentifier)?.selectedFilters?.forEach { map ->
@@ -182,6 +186,16 @@ class CategoryRevampAnalytics(pageType: String = EMPTY_STRING,
         trackingQueue.putEETracking(map as HashMap<String, Any>)
     }
 
+    private fun getProductName(productType: String?): String {
+        return when (productType) {
+            PRODUCT_CARD_REVAMP_ITEM, MASTER_PRODUCT_CARD_ITEM_LIST -> PRODUCT_CARD_REVAMP
+            PRODUCT_CARD_CAROUSEL_ITEM -> PRODUCT_CARD_CAROUSEL
+            PRODUCT_SPRINT_SALE_ITEM -> PRODUCT_SPRINT_SALE
+            PRODUCT_SPRINT_SALE_CAROUSEL_ITEM -> PRODUCT_SPRINT_SALE_CAROUSEL
+            else -> EMPTY_STRING
+        }
+    }
+
     override fun trackProductCardClick(componentsItems: ComponentsItem, isLogin: Boolean) {
         if (!componentsItems.data.isNullOrEmpty()) {
             var productCardItemList = ""
@@ -191,7 +205,11 @@ class CategoryRevampAnalytics(pageType: String = EMPTY_STRING,
             if(!pagePath.isNullOrEmpty())
                 dimension40 = pagePath
             componentsItems.data?.firstOrNull()?.let {
-                productCardItemList = if (it.isTopads == false) dimension40 else "$dimension40 - topads"
+                productCardItemList = if(getProductName(it.typeProductCard) ==  PRODUCT_CARD_CAROUSEL) {
+                    if (it.isTopads == false) "$dimension40 - carousel-best-seller" else "$dimension40 - topads - carousel-best-seller"
+                } else {
+                    if (it.isTopads == false) "$dimension40 - product-card-infinite" else "$dimension40 - topads - product-card-infinite"
+                }
                 productMap[KEY_ATTRIBUTION] = NONE_OTHER
                 productMap[KEY_BRAND] = NONE_OTHER
                 productMap[KEY_CATEGORY] = it.departmentID
@@ -298,5 +316,9 @@ class CategoryRevampAnalytics(pageType: String = EMPTY_STRING,
             label = "$label&${map.key}=${map.value}"
         }
         getTracker().sendGeneralEvent(createGeneralEvent(eventName = EVENT_CLICK_FILTER, eventAction = APPLY_FILTER, eventLabel = label.removePrefix("&")))
+    }
+
+    override fun trackLihatSemuaClick(headerName: String?) {
+        getTracker().sendGeneralEvent(createGeneralEvent(eventAction = CLICK_LIHAT_SEMUA, eventLabel = CAROUSEL_BEST_SELLER))
     }
 }
