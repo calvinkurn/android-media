@@ -354,9 +354,9 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
             if (isLoadingInitialData) {
                 adapterCardList.clearAllElements()
                 adapterCardList.addElement(HotelLoadingModel(isForHorizontalItem = true))
+                hideGetMyLocation()
             }
         }
-        hideGetMyLocation()
         setupPersistentBottomSheet()
         super.showLoading()
 
@@ -1081,12 +1081,11 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                             btnHotelSearchWithMap.startAnimation(bounceAnim)
                         }
                         BottomSheetBehavior.STATE_COLLAPSED ->{
-                            ObjectAnimator.ofFloat(rvHorizontalPropertiesHotelSearchMap, "alpha", 0f, 1f).apply {
-                                duration = 100
-                                start()
-                            }
+                            googleMap.animateCamera(CameraUpdateFactory.zoomIn())
                         }
-                        BottomSheetBehavior.STATE_HALF_EXPANDED ->{}
+                        BottomSheetBehavior.STATE_HALF_EXPANDED ->{
+                            googleMap.animateCamera(CameraUpdateFactory.zoomOut())
+                        }
                     }
                 }
                 override fun onSlide(bottomSheet: View, slideOffset: Float) {
