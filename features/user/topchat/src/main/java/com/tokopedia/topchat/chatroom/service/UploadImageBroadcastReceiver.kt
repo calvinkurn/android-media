@@ -9,14 +9,14 @@ class UploadImageBroadcastReceiver(private val listener: UploadImageBroadcastLis
     override fun onReceive(context: Context?, intent: Intent?) {
         if (intent?.action == UploadImageChatService.BROADCAST_UPLOAD_IMAGE) {
             when (intent.getIntExtra(TkpdState.ProductService.STATUS_FLAG, 0)) {
-                TkpdState.ProductService.STATUS_DONE -> listener.onSuccessUploadImageWS(intent)
-                TkpdState.ProductService.STATUS_ERROR -> listener.onErrorUploadImageWS(intent)
+                TkpdState.ProductService.STATUS_DONE -> listener.onSuccessUploadImageWithService(intent)
+                TkpdState.ProductService.STATUS_ERROR -> listener.onErrorUploadImageWithService(intent)
             }
         }
     }
 }
 
 interface UploadImageBroadcastListener {
-    fun onSuccessUploadImageWS(intent: Intent)
-    fun onErrorUploadImageWS(intent: Intent)
+    fun onSuccessUploadImageWithService(intent: Intent)
+    fun onErrorUploadImageWithService(intent: Intent)
 }

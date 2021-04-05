@@ -1774,8 +1774,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         }
     }
 
-    //Success upload image with service
-    override fun onSuccessUploadImageWS(intent: Intent) {
+    override fun onSuccessUploadImageWithService(intent: Intent) {
         if(messageId == getResultMessageId(intent)) {
             val image = intent.getParcelableExtra<ImageUploadServiceModel>(UploadImageChatService.IMAGE)
             image?.let {
@@ -1784,8 +1783,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         }
     }
 
-    //Error upload image with service
-    override fun onErrorUploadImageWS(intent: Intent) {
+    override fun onErrorUploadImageWithService(intent: Intent) {
         if(messageId == getResultMessageId(intent)) {
             val errorMessage = intent.getStringExtra(UploadImageChatService.ERROR_MESSAGE)?: ""
             val position = intent.getIntExtra(UploadImageChatService.RETRY_POSITION, -1)

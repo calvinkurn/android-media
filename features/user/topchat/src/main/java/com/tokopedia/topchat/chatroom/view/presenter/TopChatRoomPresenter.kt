@@ -2,6 +2,7 @@ package com.tokopedia.topchat.chatroom.view.presenter
 
 import android.content.SharedPreferences
 import androidx.annotation.StringRes
+import androidx.annotation.VisibleForTesting
 import androidx.collection.ArrayMap
 import com.google.gson.JsonObject
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -813,17 +814,16 @@ open class TopChatRoomPresenter @Inject constructor(
         view?.renderOrderProgress(orderProgressResponse.chatOrderProgress)
     }
 
-    private fun isEnableUploadImageService(): Boolean {
-//        val result =  try {
-//            if(remoteConfig == null) {
-//                remoteConfig = FirebaseRemoteConfigImpl(view.context)
-//            }
-//            remoteConfig?.getBoolean(ENABLE_UPLOAD_IMAGE_SERVICE, false)?: false
-//        } catch (ex: Exception) {
-//            false
-//        }
-//        return result
-        return true
+    @VisibleForTesting
+    fun isEnableUploadImageService(): Boolean {
+        return try {
+            if(remoteConfig == null) {
+                remoteConfig = FirebaseRemoteConfigImpl(view.context)
+            }
+            remoteConfig?.getBoolean(ENABLE_UPLOAD_IMAGE_SERVICE, false)?: false
+        } catch (ex: Exception) {
+            false
+        }
     }
 
     private fun onErrorGetOrderProgress(throwable: Throwable) {}
@@ -831,6 +831,6 @@ open class TopChatRoomPresenter @Inject constructor(
     private fun onErrorGetStickerGroup(throwable: Throwable) {}
 
     companion object {
-        const val ENABLE_UPLOAD_IMAGE_SERVICE = "android_enable_topchat_upload_image_service";
+        const val ENABLE_UPLOAD_IMAGE_SERVICE = "android_enable_topchat_upload_image_service"
     }
 }
