@@ -481,6 +481,9 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                     0,
                     0)
         }
+
+        rvVerticalPropertiesHotelSearchMap.requestLayout()
+        containerEmptyResultState.requestLayout()
     }
 
     private fun setUpTitleAndSubtitle() {
