@@ -18,7 +18,7 @@ import com.tokopedia.unifyprinciples.Typography
 class LeftChatMessageViewHolder(
         itemView: View?,
         listener: ChatLinkHandlerListener,
-        private val chatbotAdapterListener: ChatbotAdapterListener,
+        private val chatbotAdapterListener: ChatbotAdapterListener
 ) : CustomChatbotMessageViewHolder(itemView, listener) {
 
     private val senderAvatar = itemView?.findViewById<ImageUnify>(R.id.senderAvatar)
@@ -80,6 +80,8 @@ class LeftChatMessageViewHolder(
             customChatLayout?.hideReadMoreView()
         }
     }
+
+    override fun getDateContainerId(): Int = R.id.dateContainer
 
     companion object {
         val LAYOUT = R.layout.item_chatbot_chat_left

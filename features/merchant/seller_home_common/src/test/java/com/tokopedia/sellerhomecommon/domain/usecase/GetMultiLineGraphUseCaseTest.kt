@@ -5,6 +5,7 @@ import com.tokopedia.sellerhomecommon.domain.mapper.MultiLineGraphMapper
 import com.tokopedia.sellerhomecommon.domain.model.DynamicParameterModel
 import com.tokopedia.sellerhomecommon.domain.model.GetMultiLineGraphResponse
 import com.tokopedia.sellerhomecommon.utils.TestHelper
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.RequestParams
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
@@ -50,7 +51,7 @@ class GetMultiLineGraphUseCaseTest {
                 dataKey = ArgumentMatchers.anyList(),
                 dynamicParameter = DynamicParameterModel()
         )
-        getMultiLineGraphUseCase = GetMultiLineGraphUseCase(gqlRepository, mapper)
+        getMultiLineGraphUseCase = GetMultiLineGraphUseCase(gqlRepository, mapper, CoroutineTestDispatchersProvider)
     }
 
     @Test
