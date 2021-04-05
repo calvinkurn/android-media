@@ -440,8 +440,47 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         }
         bottomSheetBehavior.isFitToContents = false
 
+        bottomSheetBehavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
+            override fun onSlide(bottomSheet: View, slideOffset: Float) {
+            }
+
+            override fun onStateChanged(bottomSheet: View, newState: Int) {
+                when (newState) {
+                    BottomSheetBehavior.STATE_EXPANDED -> {
+                        setupContentMargin(true)
+                    }
+                    else -> {
+                        setupContentMargin(false)
+                    }
+                }
+            }
+
+        })
+
         val bottomSheetHeaderHeight = resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl7)
         bottomSheetBehavior.peekHeight = bottomSheetHeaderHeight
+    }
+
+    private fun setupContentMargin(isExpanded: Boolean) {
+        if (isExpanded) {
+            rvVerticalPropertiesHotelSearchMap.setMargin(0,
+                    resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl6),
+                    0,
+                    0)
+            containerEmptyResultState.setMargin(0,
+                    resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl7),
+                    0,
+                    0)
+        } else {
+            rvVerticalPropertiesHotelSearchMap.setMargin(0,
+                    resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4),
+                    0,
+                    0)
+            containerEmptyResultState.setMargin(0,
+                    resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4),
+                    0,
+                    0)
+        }
     }
 
     private fun setUpTitleAndSubtitle() {
