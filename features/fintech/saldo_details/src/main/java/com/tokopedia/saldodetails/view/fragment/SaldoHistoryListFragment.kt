@@ -130,7 +130,7 @@ class SaldoHistoryListFragment : BaseListFragment<DepositHistoryList, SaldoDetai
     }
 
     private fun initialVar() {
-        transactionType = arguments!!.getString(TRANSACTION_TYPE)
+        transactionType = arguments?.getString(TRANSACTION_TYPE)
         val linearLayoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
         recyclerView?.layoutManager = linearLayoutManager
         recyclerView?.adapter = adapter
