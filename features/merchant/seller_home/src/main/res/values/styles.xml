@@ -11,8 +11,19 @@
         <item name="android:windowContentOverlay">@null</item>
     </style>
 
-    <style name="CentralizedPromoTheme" parent="Theme.White">
+    <style name="CentralizedPromoTheme" parent="Theme.WhiteUnify">
+        <item name="toolbarTheme">@style/Toolbar.SellerHome</item>
         <item name="android:windowBackground">@color/Unify_N0</item>
+        <item name="titleTextAppearance">@style/TitleTextAppearance.SellerHome</item>
+    </style>
+
+    <style name="Toolbar.SellerHome" parent="Base.Toolbar.Theme">
+        <item name="android:background">@color/Unify_N0</item>
+        <item name="actionModeBackground">@color/Unify_N0</item>
+        <item name="android:actionModeBackground">@color/Unify_N0</item>
+        <item name="android:textColorPrimary">@color/Unify_N700_96</item>
+        <item name="android:actionMenuTextColor">@color/Unify_N700_96</item>
+        <item name="android:textColorSecondary">@color/Unify_N700_96</item>
     </style>
 
     <style name="DialogStyle" parent="Theme.Design.Light.BottomSheetDialog">
@@ -22,7 +33,7 @@
 
     <style name="MenuSettingStyle" parent="Base.Theme">
         <item name="toolbarTheme">@style/Toolbar.Transparent</item>
-        <item name="titleTextAppearance">@style/TitleTextAppearance.MenuSetting</item>
+        <item name="titleTextAppearance">@style/TitleTextAppearance.SellerHome</item>
     </style>
 
     <style name="Toolbar.Transparent" parent="Base.Toolbar.Theme">
@@ -35,7 +46,7 @@
         <item name="android:textColorSecondary">@color/Unify_N700_96</item>
     </style>
 
-    <style name="TitleTextAppearance.MenuSetting">
+    <style name="TitleTextAppearance.SellerHome">
         <item name="android:textColor">@color/Unify_N700_96</item>
     </style>
 </resources>
