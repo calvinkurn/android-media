@@ -50,7 +50,6 @@ import com.tokopedia.hotel.search.data.model.FilterV2.Companion.FILTER_TYPE_SORT
 import com.tokopedia.hotel.search.data.model.params.ParamFilterV2
 import com.tokopedia.hotel.search.presentation.adapter.HotelSearchResultAdapter
 import com.tokopedia.hotel.search.presentation.adapter.PropertyAdapterTypeFactory
-import com.tokopedia.hotel.search.presentation.fragment.HotelSearchResultFragment
 import com.tokopedia.hotel.search.presentation.widget.HotelFilterBottomSheets
 import com.tokopedia.hotel.search.presentation.widget.SubmitFilterListener
 import com.tokopedia.hotel.search_map.data.HotelLoadingModel
@@ -104,6 +103,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
     private var isFirstInitializeFilter = true
     private var quickFilters: List<QuickFilter> = listOf()
     private var searchPropertiesMap: ArrayList<LatLng> = arrayListOf()
+    private var isLoadingSearchByMap: Boolean = false
 
     private lateinit var filterBottomSheet: HotelFilterBottomSheets
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<ConstraintLayout>
@@ -148,7 +148,9 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
             (it as HotelSearchMapActivity).setSupportActionBar(headerHotelSearchMap)
         }
 
-        localCacheHandler = LocalCacheHandler(context, PREFERENCES_NAME)
+        context?.let {
+            localCacheHandler = LocalCacheHandler(it, PREFERENCES_NAME)
+        }
 
         setCardListViewAdapter()
     }
@@ -357,7 +359,13 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                 hideGetMyLocation()
             }
         }
-        setupPersistentBottomSheet()
+        hideGetMyLocation()
+
+        if (isLoadingSearchByMap) {
+            isLoadingSearchByMap = false
+        } else {
+            setupPersistentBottomSheet()
+        }
         super.showLoading()
 
         if (adapter.list.size > 0 && adapter.list[0] is LoadingModel) {
@@ -442,8 +450,50 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         }
         bottomSheetBehavior.isFitToContents = false
 
+        bottomSheetBehavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
+            override fun onSlide(bottomSheet: View, slideOffset: Float) {
+            }
+
+            override fun onStateChanged(bottomSheet: View, newState: Int) {
+                when (newState) {
+                    BottomSheetBehavior.STATE_EXPANDED -> {
+                        setupContentMargin(true)
+                    }
+                    else -> {
+                        setupContentMargin(false)
+                    }
+                }
+            }
+
+        })
+
         val bottomSheetHeaderHeight = resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl7)
         bottomSheetBehavior.peekHeight = bottomSheetHeaderHeight
+    }
+
+    private fun setupContentMargin(isExpanded: Boolean) {
+        if (isExpanded) {
+            rvVerticalPropertiesHotelSearchMap.setMargin(0,
+                    resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl6),
+                    0,
+                    0)
+            containerEmptyResultState.setMargin(0,
+                    resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl8),
+                    0,
+                    0)
+        } else {
+            rvVerticalPropertiesHotelSearchMap.setMargin(0,
+                    resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3),
+                    0,
+                    0)
+            containerEmptyResultState.setMargin(0,
+                    resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4),
+                    0,
+                    0)
+        }
+
+        rvVerticalPropertiesHotelSearchMap.requestLayout()
+        containerEmptyResultState.requestLayout()
     }
 
     private fun setUpTitleAndSubtitle() {
@@ -556,6 +606,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         }
         wrapper.addView(textView)
         wrapper.setOnClickListener {
+            isLoadingSearchByMap = true
             removeAllMarker()
             showCardListView()
             hideFindNearHereView()
@@ -761,7 +812,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
 
     private fun showCoachMark() {
         context?.let {
-            val coachmarkShowed = localCacheHandler.getBoolean(HotelSearchResultFragment.SHOW_COACH_MARK_KEY, false)
+            val coachmarkShowed = localCacheHandler.getBoolean(SHOW_COACH_MARK_KEY, false)
             if (!coachmarkShowed) {
                 val coachMarkItem = arrayListOf(
                         CoachMark2Item(

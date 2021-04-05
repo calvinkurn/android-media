@@ -103,6 +103,8 @@
                 app:layout_goneMarginBottom="@dimen/layout_lvl7"
                 app:layout_constraintBottom_toTopOf="@+id/rvHorizontalPropertiesHotelSearchMap"
                 app:layout_constraintRight_toRightOf="parent"
+                app:layout_goneMarginBottom="@dimen/layout_lvl7"
+                app:layout_goneMarginTop="@dimen/layout_lvl7"
                 app:srcCompat="@drawable/ic_get_location" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
@@ -115,6 +117,8 @@
             android:layout_height="match_parent"
             android:background="@color/Unify_N0"
             android:elevation="@dimen/spacing_lvl2"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
             app:layout_behavior="@string/bottom_sheet_behavior">
 
             <View
@@ -157,7 +161,7 @@
                 android:id="@+id/rvVerticalPropertiesHotelSearchMap"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/spacing_lvl3"
+                android:layout_marginTop="@dimen/spacing_lvl4"
                 android:clipToPadding="false"
                 android:paddingTop="@dimen/hotel_12dp"
                 android:paddingBottom="@dimen/hotel_140dp"
@@ -168,7 +172,7 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/containerEmptyResultState"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_marginTop="@dimen/spacing_lvl2"
                 android:background="@color/Unify_N0"
                 android:padding="@dimen/spacing_lvl4"
@@ -230,6 +234,7 @@
 
     <!-- Start of Linear Layout for Header (Toolbar and Quick Filter) -->
     <LinearLayout
+        android:id="@+id/container_hotel_search_map_header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/Unify_N0"
