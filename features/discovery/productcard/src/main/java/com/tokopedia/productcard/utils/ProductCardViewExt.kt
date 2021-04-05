@@ -279,13 +279,13 @@ private fun String?.toUnifyTextColor(context: Context): Int {
     }
 }
 
-internal fun safeParseColor(color: String): Int {
+internal fun safeParseColor(color: String, defaultColor: Int): Int {
     return try {
         Color.parseColor(color)
     }
     catch (throwable: Throwable) {
         throwable.printStackTrace()
-        0
+        defaultColor
     }
 }
 
@@ -347,15 +347,16 @@ private fun Typography.initLabelBestSeller(labelBestSellerModel: ProductCardMode
 private fun Typography.showLabelBestSeller(labelBestSellerModel: ProductCardModel.LabelGroup) {
     show()
 
-    background.overrideColor(labelBestSellerModel.type)
+    val defaultColor = "#E1AA1D"
+    background.overrideColor(labelBestSellerModel.type, defaultColor)
     text = labelBestSellerModel.title
 }
 
-internal fun Drawable.overrideColor(hexColor: String) {
+internal fun Drawable.overrideColor(hexColor: String, defaultColor: String) {
     when (this) {
-        is GradientDrawable -> setColor(safeParseColor(hexColor))
-        is ShapeDrawable -> paint.color = safeParseColor(hexColor)
-        is ColorDrawable -> color = safeParseColor(hexColor)
+        is GradientDrawable -> setColor(safeParseColor(hexColor, Color.parseColor(defaultColor)))
+        is ShapeDrawable -> paint.color = safeParseColor(hexColor, Color.parseColor(defaultColor))
+        is ColorDrawable -> color = safeParseColor(hexColor, Color.parseColor(defaultColor))
     }
 }
 
@@ -385,7 +386,10 @@ private fun renderStockLabel(textViewStockLabel: Typography?, productCardModel: 
             productCardModel.stockBarLabel.equals(WORDING_SEGERA_HABIS, ignoreCase = true) ->
                 MethodChecker.getColor(it.context, com.tokopedia.unifyprinciples.R.color.Unify_R600)
             productCardModel.stockBarLabelColor.isNotEmpty() ->
-                safeParseColor(productCardModel.stockBarLabelColor)
+                safeParseColor(
+                        productCardModel.stockBarLabelColor,
+                        ContextCompat.getColor(it.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68)
+                )
             else ->
                 MethodChecker.getColor(it.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68)
         }
