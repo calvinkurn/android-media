@@ -12,6 +12,8 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
 import io.mockk.coVerify
+import io.mockk.every
+import org.junit.Assert
 import org.junit.Test
 
 class TalkSmartReplyDetailViewModelTest : TalkSmartReplyDetailViewModelTestFixture() {
@@ -130,6 +132,33 @@ class TalkSmartReplyDetailViewModelTest : TalkSmartReplyDetailViewModelTestFixtu
         verifyButtonState(expectedButtonState)
     }
 
+    @Test
+    fun `when getShopAvatar should get expected shop avatar`() {
+        val expectedShopAvatar = "shopAvatar"
+
+        onGetShopAvatar_thenReturn(expectedShopAvatar)
+
+        Assert.assertEquals(expectedShopAvatar, viewModel.shopAvatar)
+    }
+
+    @Test
+    fun `when getShopName should get expected shop name`() {
+        val expectedShopName = "shopName"
+
+        onGetShopName_thenReturn(expectedShopName)
+
+        Assert.assertEquals(expectedShopName, viewModel.shopName)
+    }
+
+    @Test
+    fun `when set isSmartReplyOn should get expected isSmartReplyOn`() {
+        val expectedIsSmartReplyOn = true
+
+        viewModel.isSmartReplyOn = expectedIsSmartReplyOn
+
+        Assert.assertEquals(expectedIsSmartReplyOn, viewModel.isSmartReplyOn)
+    }
+
     private fun onSetSmartReply_thenReturn(expectedResponse: DiscussionSetSmartReplySettingResponseWrapper) {
         coEvery { discussionSetSmartReplySettingsUseCase.executeOnBackground() } returns expectedResponse
     }
@@ -152,6 +181,14 @@ class TalkSmartReplyDetailViewModelTest : TalkSmartReplyDetailViewModelTestFixtu
 
     private fun verifyDiscussionSetSmartReplyTemplateUseCaseCalled() {
         coVerify { discussionSetSmartReplyTemplateUseCase.executeOnBackground() }
+    }
+
+    private fun onGetShopName_thenReturn(shopName: String) {
+        every { viewModel.shopName } returns shopName
+    }
+
+    private fun onGetShopAvatar_thenReturn(shopAvatar: String) {
+        every { viewModel.shopAvatar } returns shopAvatar
     }
 
     private fun verifyButtonState(buttonState: TalkSmartReplyDetailButtonState) {
