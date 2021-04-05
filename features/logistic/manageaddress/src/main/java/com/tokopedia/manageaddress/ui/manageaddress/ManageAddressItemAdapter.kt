@@ -102,7 +102,7 @@ class ManageAddressItemAdapter(private val listener: ManageAddressItemAdapterLis
                 cardAddress.hasCheckIcon = cardSelected
                 if (cardSelected) {
                     cardAddress.cardType = CardUnify.TYPE_BORDER_ACTIVE
-                    cardAddress.setPadding(itemView.getDimens(R.dimen.dp_6), itemView.getDimens(R.dimen.dp_6), itemView.getDimens(com.tokopedia.abstraction.R.dimen.dp_16), itemView.getDimens(R.dimen.dp_6))
+                    cardAddress.setPadding(0, 0, itemView.getDimens(com.tokopedia.abstraction.R.dimen.dp_16), 0)
                 } else {
                     cardAddress.cardType = CardUnify.TYPE_BORDER
                 }
