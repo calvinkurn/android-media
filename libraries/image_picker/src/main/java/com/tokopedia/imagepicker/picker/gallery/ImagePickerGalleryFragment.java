@@ -292,7 +292,7 @@ public class ImagePickerGalleryFragment extends TkpdBaseV4Fragment
                 getString(R.string.default_all_album) :
                 albumItem.getDisplayName());
         if (albumItem.isAll() && albumItem.isEmpty()) {
-            NetworkErrorHelper.showEmptyState(getContext(), getView(), getString(R.string.error_no_media_storage), null);
+            NetworkErrorHelper.showEmptyState(getContext(), getView(), getString(com.tokopedia.imagepicker.common.R.string.error_no_media_storage), null);
         } else {
             LoaderManager.getInstance(this).restartLoader(MEDIA_LOADER_ID, null, this);
         }

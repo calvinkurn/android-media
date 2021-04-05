@@ -41,4 +41,10 @@
         <item name="android:progressDrawable">@drawable/progress_horizontal_tokopedia</item>
     </style>
 
+    <style name="AppCompatAlertDialogStyle" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="colorAccent">@color/Green_G600</item>
+        <item name="android:textColorPrimary">@color/Unify_N600</item>
+        <item name="android:background">@color/Unify_N0</item>
+    </style>
+
 </resources>
