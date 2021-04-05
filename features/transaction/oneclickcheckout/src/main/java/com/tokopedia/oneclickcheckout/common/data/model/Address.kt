@@ -34,5 +34,7 @@ data class Address(
         @SerializedName("state")
         val state: Int = 0,
         @SerializedName("state_detail")
-        val stateDetail: String = ""
+        val stateDetail: String = "",
+        @SerializedName("status")
+        val status: Int = 0
 )

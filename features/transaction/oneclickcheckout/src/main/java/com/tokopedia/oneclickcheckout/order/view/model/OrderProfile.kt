@@ -33,8 +33,16 @@ data class OrderProfileAddress(
         val latitude: String = "",
         val postalCode: String = "",
         val state: Int = 0,
-        val stateDetail: String = ""
-)
+        val stateDetail: String = "",
+        val status: Int = 0
+) {
+    internal val isMainAddress: Boolean
+        get() = status == STATUS_MAIN_ADDRESS
+
+    companion object {
+        private const val STATUS_MAIN_ADDRESS = 2
+    }
+}
 
 data class OrderProfileShipment(
         val serviceName: String = "",

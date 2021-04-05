@@ -52,6 +52,7 @@
     <string name="lbl_make_default_preference">Jadikan Pilihan Utama</string>
     <string name="lbl_new_make_default_preference">Jadikan template utama</string>
     <string name="lbl_default_preference">Utama</string>
+    <string name="occ_lbl_main_address">Utama</string>
     <string name="lbl_default_preference_profile">Pilihan Utama</string>
 
     <!--Choose Address-->

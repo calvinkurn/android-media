@@ -13,9 +13,7 @@ import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.invisible
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.logisticCommon.data.constant.CourierConstant
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.address.Token
@@ -52,6 +50,7 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
     private val lblDefaultPreference by lazy { view.findViewById<Label>(R.id.lbl_new_default_preference) }
     private val tvChoosePreference by lazy { view.findViewById<Typography>(R.id.tv_new_choose_preference) }
 
+    private val lblMainAddress by lazy { view.findViewById<Label>(R.id.lbl_new_main_address) }
     private val tvAddressName by lazy { view.findViewById<Typography>(R.id.tv_new_address_name) }
     private val tvAddressDetail by lazy { view.findViewById<Typography>(R.id.tv_new_address_detail) }
     private val btnChangeAddress by lazy { view.findViewById<IconUnify>(R.id.btn_new_change_address) }
@@ -122,22 +121,26 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
     }
 
     private fun showHeader(revampData: OccRevampData) {
-        if (preference.preference.profileRevampWording.isNotEmpty()) {
-            tvCardHeader?.text = preference.preference.profileRevampWording
+        if (preference.removeProfileData.enable) {
+            tvCardHeader?.gone()
         } else {
-            tvCardHeader?.text = view.context.getString(R.string.lbl_new_occ_profile_name)
-        }
-        if (!preference.preference.isRecom && preference.preference.status == MAIN_PROFILE_STATUS) {
-            lblDefaultPreference?.visible()
-        } else {
-            lblDefaultPreference?.gone()
-        }
-        tvChoosePreference?.text = revampData.changeTemplateText
-        tvChoosePreference?.setOnClickListener {
-            if (revampData.totalProfile > 1) {
-                listener.onChangePreferenceClicked()
+            if (preference.preference.profileRevampWording.isNotEmpty()) {
+                tvCardHeader?.text = preference.preference.profileRevampWording
             } else {
-                listener.onAddPreferenceClicked(preference)
+                tvCardHeader?.text = view.context.getString(R.string.lbl_new_occ_profile_name)
+            }
+            if (!preference.preference.isRecom && preference.preference.status == MAIN_PROFILE_STATUS) {
+                lblDefaultPreference?.visible()
+            } else {
+                lblDefaultPreference?.gone()
+            }
+            tvChoosePreference?.text = revampData.changeTemplateText
+            tvChoosePreference?.setOnClickListener {
+                if (revampData.totalProfile > 1) {
+                    listener.onChangePreferenceClicked()
+                } else {
+                    listener.onAddPreferenceClicked(preference)
+                }
             }
         }
     }
@@ -212,8 +215,8 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
                     }
                 } else if (shipping.shippingEta != null) {
                     tvShippingCourier?.text = "${shipping.shipperName} (${
-                    CurrencyFormatUtil.convertPriceValueToIdrFormat(shipping.shippingPrice
-                            ?: 0, false).removeDecimalSuffix()
+                        CurrencyFormatUtil.convertPriceValueToIdrFormat(shipping.shippingPrice
+                                ?: 0, false).removeDecimalSuffix()
                     })"
                     if (shipping.shippingEta.isNotEmpty()) {
                         tvShippingCourierEta?.text = shipping.shippingEta
@@ -546,6 +549,7 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
         }
     }
 
+    @SuppressLint("SetTextI18n")
     private fun showAddress() {
         val addressModel = preference.preference.address
         val receiverName = addressModel.receiverName
@@ -562,9 +566,17 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
         tvAddressName?.text = span
         tvAddressDetail?.text = "${addressModel.addressStreet}, ${addressModel.districtName}, ${addressModel.cityName}, ${addressModel.provinceName} ${addressModel.postalCode}"
 
+        lblMainAddress?.visibility = if (addressModel.isMainAddress) View.VISIBLE else View.GONE
+        setAddressNameMargin(addressModel.isMainAddress)
+
         setMultiViewsOnClickListener(tvAddressName, tvAddressDetail, btnChangeAddress) {
             listener.chooseAddress(addressModel.addressId.toString())
         }
+    }
+
+    private fun setAddressNameMargin(isMainAddress: Boolean) {
+        val displayMetrics = tvAddressName?.context?.resources?.displayMetrics ?: return
+        tvAddressName?.setMargin(if (isMainAddress) 8.dpToPx(displayMetrics) else 16.dpToPx(displayMetrics), 12.dpToPx(displayMetrics), 0, 0)
     }
 
     fun showAddressBottomSheet(fragment: OrderSummaryPageFragment, usecase: GetAddressCornerUseCase, addressState: Int) {
