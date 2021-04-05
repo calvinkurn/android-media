@@ -19,6 +19,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.saldodetails.R
 import com.tokopedia.saldodetails.di.SaldoDetailsComponent
 import com.tokopedia.saldodetails.di.SaldoDetailsComponentInstance
@@ -128,9 +129,7 @@ class SaldoDepositActivity : BaseSimpleActivity(), HasComponent<SaldoDetailsComp
 
     private fun addAutoWithdrawalSettingIcon(isSeller : Boolean){
         if(isSeller) {
-            val isAutoWithdrawalPageEnable = FirebaseRemoteConfigImpl(this)
-                    .getBoolean(FLAG_APP_SALDO_AUTO_WITHDRAWAL, false)
-            if(isAutoWithdrawalPageEnable) {
+            if(isAutoWithRollenceActive()) {
                 toolbarAutoWithdrawalSetting.visible()
                 toolbarAutoWithdrawalSetting.setOnClickListener {
                     RouteManager.route(this, ApplinkConstInternalGlobal.AUTO_WITHDRAW_SETTING)
@@ -141,6 +140,10 @@ class SaldoDepositActivity : BaseSimpleActivity(), HasComponent<SaldoDetailsComp
         }else{
             toolbarAutoWithdrawalSetting.gone()
         }
+    }
+
+    private fun isAutoWithRollenceActive() : Boolean{
+      return RemoteConfigInstance.getInstance().abTestPlatform.getBoolean(KEY_ROLLENCE_AUTO_WITHDRAWAL, false)
     }
 
     override fun setupStatusBar() {
@@ -159,7 +162,7 @@ class SaldoDepositActivity : BaseSimpleActivity(), HasComponent<SaldoDetailsComp
     }
 
     companion object {
-        private const val FLAG_APP_SALDO_AUTO_WITHDRAWAL = "app_flag_saldo_auto_withdrawal"
+        private const val KEY_ROLLENCE_AUTO_WITHDRAWAL = "Auto_Withdrawal_RP"
         private val REQUEST_CODE_LOGIN = 1001
         private val TAG = "DEPOSIT_FRAGMENT"
 
