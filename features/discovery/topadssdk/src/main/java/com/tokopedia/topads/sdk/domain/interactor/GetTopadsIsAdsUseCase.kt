@@ -23,7 +23,7 @@ class GetTopadsIsAdsUseCase @Inject constructor(
 
     override suspend fun executeOnBackground(): TopadsIsAdsQuery {
         graphqlUseCase.clearCache()
-        if (params.parameters.contains(PARAM_TXSC)) {
+        if (params.parameters.get(PARAM_URL_PARAM).toString().contains(PARAM_TXSC)) {
             graphqlUseCase.setGraphqlQuery(query)
             graphqlUseCase.setRequestParams(params.parameters)
             return graphqlUseCase.executeOnBackground()
