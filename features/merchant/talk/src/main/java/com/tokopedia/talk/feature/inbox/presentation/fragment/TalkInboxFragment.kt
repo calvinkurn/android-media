@@ -113,6 +113,7 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
     private lateinit var remoteConfigInstance: RemoteConfigInstance
     private var shouldHitRoleChangedTracker = false
     private var talkInboxPreference: TalkInboxPreference? = null
+    private var coachMark: CoachMark2? = null
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == REPLY_REQUEST_CODE) {
@@ -275,6 +276,12 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
     override fun onAttachActivity(context: Context?) {
         if (context is InboxFragmentContainer) {
             containerListener = context
+        }
+    }
+
+    override fun onHiddenChanged(hidden: Boolean) {
+        if (hidden) {
+            coachMark?.dismissCoachMark()
         }
     }
 
@@ -637,8 +644,8 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
 
     private fun initCoachmark() {
         if (isShowCoachMark()) {
+            coachMark = context?.let { CoachMark2(it) }
             val coachMarkItem = ArrayList<CoachMark2Item>()
-            val coachMark = context?.let { CoachMark2(it) }
             if (talkInboxSortFilter?.chipItems != null) {
                 coachMarkItem.addAll(listOf(
                         getCoachMarkItem(talkInboxSortFilter.chipItems?.getOrNull(0)?.refChipUnify, getString(R.string.inbox_coach_mark_filter_title), getString(R.string.inbox_coach_mark_filter_subtitle)),
@@ -649,7 +656,7 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
             coachMark?.setStepListener(object : CoachMark2.OnStepListener {
                 override fun onStep(currentIndex: Int, coachMarkItem: CoachMark2Item) {
                     if (currentIndex == COACH_MARK_LAST_INDEX) {
-                        coachMark.stepNext?.text = getString(R.string.inbox_coach_mark_finish)
+                        coachMark?.stepNext?.text = getString(R.string.inbox_coach_mark_finish)
                     }
                 }
             })
@@ -671,9 +678,11 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
     }
 
     private fun hideToolbar() {
-        (activity as? AppCompatActivity)?.run {
-            supportActionBar?.hide()
-            setSupportActionBar(headerTalkInbox)
+        if (isNewNav() && isNewView()) {
+            (activity as? AppCompatActivity)?.run {
+                supportActionBar?.hide()
+                setSupportActionBar(headerTalkInbox)
+            }
         }
     }
 

@@ -83,7 +83,7 @@
             android:layout_marginRight="@dimen/dp_16"
             android:layout_marginBottom="@dimen/dp_16"
             android:contentDescription="@string/content_desc_button_chat"
-            app:backgroundTint="@color/white"
+            app:backgroundTint="@color/Unify_N0"
             app:fabCustomSize="@dimen/dp_56"
             app:layout_behavior="com.tokopedia.shop.ShopPageFABBehaviour"
             app:maxImageSize="@dimen/dp_28"

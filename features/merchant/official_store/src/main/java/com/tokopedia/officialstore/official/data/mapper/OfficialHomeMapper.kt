@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.home_component.visitable.DynamicLegoBannerDataModel
 import com.tokopedia.home_component.visitable.HomeComponentVisitable
 import com.tokopedia.home_component.visitable.MixLeftDataModel
+import com.tokopedia.home_component.visitable.MixTopDataModel
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.officialstore.DynamicChannelIdentifiers
 import com.tokopedia.officialstore.OfficialStoreDispatcherProvider
@@ -116,6 +117,10 @@ class OfficialHomeMapper (
                     when(officialStore.channel.layout) {
                         DynamicChannelIdentifiers.LAYOUT_MIX_LEFT -> {
                             views.add(MixLeftDataModel(
+                                    OfficialStoreDynamicChannelComponentMapper.mapChannelToComponent(officialStore.channel, position)))
+                        }
+                        DynamicChannelIdentifiers.LAYOUT_MIX_TOP -> {
+                            views.add(MixTopDataModel(
                                     OfficialStoreDynamicChannelComponentMapper.mapChannelToComponent(officialStore.channel, position)))
                         }
                         else -> views.add(DynamicChannelDataModel(officialStore))

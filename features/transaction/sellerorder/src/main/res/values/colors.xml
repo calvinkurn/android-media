@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="_dms_zxing_custom_possible_result_points">#903A89CF</color>
+    <color name="_dms_zxing_custom_result_view">#b0000000</color>
+    <color name="_dms_zxing_custom_viewfinder_mask">#60000000</color>
+    <color name="_dms_zxing_status_text">#ffffffff</color>
+</resources>

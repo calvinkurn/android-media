@@ -36,6 +36,10 @@ dependencies {
     androidTestImplementation(rootProject.ext.testDependencies.espressoCore, {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
+
+    implementation (rootProject.ext.firebase.crashlytics) {
+        transitive = true
+    }
 }
 
 project.ext {

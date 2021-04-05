@@ -152,6 +152,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
 
     public static final int REQUEST_CANCEL_ORDER = 101;
     public static final int INSTANT_CANCEL_BUYER_REQUEST = 100;
+    public static final int CANCEL_ORDER_DISABLE = 102;
     public static final int TEXT_SIZE_MEDIUM = 12;
     public static final int TEXT_SIZE_LARGE = 14;
     @Inject
@@ -1115,6 +1116,8 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                 if (result != 0) {
                     finishOrderDetail();
                 }
+            } else if (resultCode == CANCEL_ORDER_DISABLE) {
+                finishOrderDetail();
             }
             orderListAnalytics.sendActionButtonClickEvent(CLICK_SUBMIT_CANCELATION, statusValue.getText().toString() + "-" + reason);
         }
