@@ -1,7 +1,6 @@
 package com.tokopedia.saldodetails.view.fragment
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
@@ -24,6 +23,7 @@ import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -38,6 +38,7 @@ import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.coachmark.CoachMarkBuilder
 import com.tokopedia.coachmark.CoachMarkContentPosition
 import com.tokopedia.coachmark.CoachMarkItem
+import com.tokopedia.coachmark.CoachMarkPreference
 import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
@@ -65,7 +66,7 @@ class SaldoDepositFragment : BaseDaggerFragment() {
 
     companion object {
         val REQUEST_WITHDRAW_CODE = 3333
-        val TAG = SaldoDepositFragment::class.java.name
+        val KEY_CAN_SHOW_BALANCE_COACHMARK = "com.tokopedia.saldodetails.balance_coach_mark"
         val SALDODETAIL_FINTECH_PLT = "saldodetailfintech_plt"
         val SALDODETAIL_FINTECH_PLT_PREPARE_METRICS = "saldodetailfintech_plt_prepare_metrics"
         val SALDODETAIL_FINTECH_PLT_NETWORK_METRICS = "saldodetailfintech_plt_network_metrics"
@@ -201,12 +202,21 @@ class SaldoDepositFragment : BaseDaggerFragment() {
     }
 
     private fun setCoachMark() {
-        val list = buildCoachMark() ?: return
-        (context as Activity?).let {
-            if (!coachMark.hasShown(it, TAG)) {
-                coachMark.show(it, TAG, list)
-            }
+        if (isBalanceCoachMarkShown().not() && context != null) {
+            val list = buildCoachMark() ?: return
+            updateBalanceCoachMarkShown()
+            coachMark.show(activity, KEY_CAN_SHOW_BALANCE_COACHMARK, list)
         }
+    }
+
+    private fun isBalanceCoachMarkShown(): Boolean {
+        context?.let {
+            return CoachMarkPreference.hasShown(it, KEY_CAN_SHOW_BALANCE_COACHMARK)
+        } ?: run { return true }
+    }
+
+    private fun updateBalanceCoachMarkShown() {
+        context?.let { CoachMarkPreference.setShown(it, KEY_CAN_SHOW_BALANCE_COACHMARK, true) }
     }
 
     private fun buildCoachMark(): ArrayList<CoachMarkItem>? {
@@ -217,6 +227,8 @@ class SaldoDepositFragment : BaseDaggerFragment() {
                     getString(com.tokopedia.saldodetails.R.string.saldo_total_balance_buyer),
                     getString(com.tokopedia.saldodetails.R.string.saldo_balance_buyer_desc),
                     CoachMarkContentPosition.BOTTOM,
+                    ContextCompat.getColor(requireContext(),
+                            com.tokopedia.unifyprinciples.R.color.Unify_N700_68)
             ))
 
             list.add(CoachMarkItem(
@@ -224,10 +236,10 @@ class SaldoDepositFragment : BaseDaggerFragment() {
                     getString(com.tokopedia.saldodetails.R.string.saldo_total_balance_seller),
                     getString(com.tokopedia.saldodetails.R.string.saldo_intro_description_seller),
                     CoachMarkContentPosition.BOTTOM,
+                    ContextCompat.getColor(requireContext(),
+                            com.tokopedia.unifyprinciples.R.color.Unify_N700_68)
             ))
-
             list
-
         } else null
     }
 
