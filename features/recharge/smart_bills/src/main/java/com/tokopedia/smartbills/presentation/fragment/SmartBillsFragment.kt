@@ -324,6 +324,14 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
         }
     }
 
+    private fun resetInitialState(){
+        tv_smart_bills_title.show()
+        view_smart_bills_select_all_checkbox_container.hide()
+        view_smart_bills_shimmering.show()
+        smart_bills_checkout_view.setVisibilityLayout(true)
+        toggleAllItems(false)
+    }
+
     override fun callInitialLoadAutomatically(): Boolean {
         return false
     }
@@ -348,12 +356,7 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
 
     override fun loadData(page: Int) {
         // Reset to initial state
-        tv_smart_bills_title.show()
-        view_smart_bills_select_all_checkbox_container.hide()
-        view_smart_bills_shimmering.show()
-        smart_bills_checkout_view.setVisibilityLayout(true)
-        toggleAllItems(false)
-
+        resetInitialState()
         viewModel.getStatementMonths(
                 viewModel.createStatementMonthsParams(1),
                 swipeToRefresh?.isRefreshing ?: false
@@ -540,6 +543,7 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
     }
 
     override fun onRefreshAccordion() {
+        resetInitialState()
         ongoingMonth?.let {
             viewModel.getSBMWithAction(
                     viewModel.createRefreshActionParams(

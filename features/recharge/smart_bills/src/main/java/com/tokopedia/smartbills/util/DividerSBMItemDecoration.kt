@@ -30,7 +30,7 @@ class DividerSBMItemDecoration(context: Context) : RecyclerView.ItemDecoration()
         val childCount = parent.childCount
 
         val listItem = (parent.adapter as BaseListAdapter<RechargeBillsModel, SmartBillsAdapterFactory>).data
-        for (i in 0 until childCount) {
+        for (i in 0 until childCount - 1) {
             if (!listItem.isNullOrEmpty()) {
                 val item = (parent.adapter as BaseListAdapter<RechargeBillsModel, SmartBillsAdapterFactory>).data.get(i)
                 if (item is Section) left = parent.context.resources.getDimensionPixelOffset(dimenPaddingLeftAccordion)
