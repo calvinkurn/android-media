@@ -104,9 +104,9 @@ object TrackingTransactionSection: BaseTrackerConst() {
         getTracker().sendGeneralEvent(trackingBuilder.build())
     }
 
-    fun impressionOnOrderStatus(userId: String, orderLabel: String, position: Int, bannerId: String = "", orderId: String, orderStatusCard: String) {
+    fun getImpressionOnOrderStatus(userId: String, orderLabel: String, position: Int, bannerId: String = "", orderId: String, orderStatusCard: String): HashMap<String, Any> {
         val trackingBuilder = BaseTrackerBuilder()
-        trackingBuilder.constructBasicPromotionView(
+        return trackingBuilder.constructBasicPromotionView(
                 event = Event.PROMO_VIEW,
                 eventCategory = CATEGORY_GLOBAL_MENU,
                 eventAction = IMPRESSION_ON_ORDER_STATUS,
@@ -117,11 +117,10 @@ object TrackingTransactionSection: BaseTrackerConst() {
                         name = String.format(TEMPLATE_GLOBAL_MENU, orderStatusCard),
                         creativeUrl = "",
                         position = position.toString()
-                ))
-        )
-        trackingBuilder.appendCurrentSite(DEFAULT_CURRENT_SITE)
-        trackingBuilder.appendUserId(userId)
-        trackingBuilder.appendBusinessUnit(DEFAULT_BUSINESS_UNIT)
-        getTracker().sendGeneralEvent(trackingBuilder.build())
+                )))
+                .appendCurrentSite(DEFAULT_CURRENT_SITE)
+                .appendUserId(userId)
+                .appendBusinessUnit(DEFAULT_BUSINESS_UNIT)
+                .build() as HashMap<String, Any>
     }
 }

@@ -32,12 +32,13 @@ class OrderProductViewHolder(itemView: View, val mainNavListener: MainNavListene
         val context = itemView.context
 
         itemView.addOnImpressionListener(productModel)  {
-            TrackingTransactionSection.impressionOnOrderStatus(
-                    userId = mainNavListener.getUserId(),
-                    orderLabel = productModel.navProductModel.productNameText,
-                    position = adapterPosition,
-                    orderId = productModel.navProductModel.id,
-                    orderStatusCard = productModel.navProductModel.statusText
+            mainNavListener.putEEToTrackingQueue(
+                    TrackingTransactionSection.getImpressionOnOrderStatus(
+                        userId = mainNavListener.getUserId(),
+                        orderLabel = productModel.navProductModel.productNameText,
+                        position = adapterPosition,
+                        orderId = productModel.navProductModel.id,
+                        orderStatusCard = productModel.navProductModel.statusText)
             )
         }
         //title

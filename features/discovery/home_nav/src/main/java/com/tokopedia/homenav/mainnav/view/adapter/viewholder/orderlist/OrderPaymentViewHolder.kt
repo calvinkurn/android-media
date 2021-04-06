@@ -35,12 +35,13 @@ class OrderPaymentViewHolder(itemView: View, val mainNavListener: MainNavListene
         val context = itemView.context
 
         itemView.addOnImpressionListener(paymentModel)  {
-            TrackingTransactionSection.impressionOnOrderStatus(
-                    userId = mainNavListener.getUserId(),
-                    orderLabel = paymentModel.navPaymentModel.paymentAmountText,
-                    position = adapterPosition,
-                    orderId = paymentModel.navPaymentModel.id,
-                    orderStatusCard = paymentModel.navPaymentModel.statusText
+            mainNavListener.putEEToTrackingQueue(
+                    TrackingTransactionSection.getImpressionOnOrderStatus(
+                        userId = mainNavListener.getUserId(),
+                        orderLabel = paymentModel.navPaymentModel.paymentAmountText,
+                        position = adapterPosition,
+                        orderId = paymentModel.navPaymentModel.id,
+                        orderStatusCard = paymentModel.navPaymentModel.statusText)
             )
         }
         //title
