@@ -9,6 +9,7 @@ import android.os.Handler
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -29,6 +30,7 @@ import com.tokopedia.internal_review.factory.createReviewHelper
 import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.requestStatusBarDark
+import com.tokopedia.kotlin.extensions.view.requestStatusBarLight
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.seller.active.common.service.UpdateShopActiveService
 import com.tokopedia.sellerhome.R
@@ -52,6 +54,7 @@ import com.tokopedia.sellerhome.view.viewhelper.lottiebottomnav.IBottomClickList
 import com.tokopedia.sellerhome.view.viewmodel.SellerHomeActivityViewModel
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import kotlinx.android.synthetic.main.activity_sah_seller_home.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -414,11 +417,14 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
         sahBottomNav.setBadge(notificationCount, FragmentType.ORDER, badgeVisibility)
     }
 
+    @RequiresApi(Build.VERSION_CODES.M)
     private fun setupStatusBar() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            this.requestStatusBarDark()
-            statusBarBackground?.show()
+        if(isDarkMode()) {
+            requestStatusBarLight()
+        } else {
+            requestStatusBarDark()
         }
+        statusBarBackground?.show()
     }
 
     private fun hideToolbarAndStatusBar() {
