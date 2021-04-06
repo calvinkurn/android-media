@@ -104,7 +104,8 @@ abstract class SomBottomSheet(context: Context) : View(context) {
     }
 
     fun dismiss() {
-        overlayLayout?.gone()
-        requireNotNull(bottomSheetBehavior).state = BottomSheetBehavior.STATE_HIDDEN
+        requireNotNull(bottomSheetBehavior).apply {
+            if (state != BottomSheetBehavior.STATE_HIDDEN) state = BottomSheetBehavior.STATE_HIDDEN
+        }
     }
 }
