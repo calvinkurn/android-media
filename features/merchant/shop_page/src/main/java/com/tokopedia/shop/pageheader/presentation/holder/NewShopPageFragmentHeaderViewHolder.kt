@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
@@ -70,7 +71,7 @@ class NewShopPageFragmentHeaderViewHolder(private val view: View, private val li
                     ShopPageConstant.ENABLE_SHOP_PAGE_HEADER_CHOOSE_ADDRESS_WIDGET,
                     true
             )
-            if (isRollOutUser && isRemoteConfigChooseAddressWidgetEnabled) {
+            if (isRollOutUser && isRemoteConfigChooseAddressWidgetEnabled && !GlobalConfig.isSellerApp()) {
                 show()
                 bindChooseAddress(chooseAddressWidgetListener)
                 view.choosee_address_widget_bottom_shadow?.show()

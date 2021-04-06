@@ -142,7 +142,7 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
                     ShopPageConstant.ENABLE_SHOP_PAGE_HEADER_CHOOSE_ADDRESS_WIDGET,
                     true
             )
-            if (isRollOutUser && isRemoteConfigChooseAddressWidgetEnabled) {
+            if (isRollOutUser && isRemoteConfigChooseAddressWidgetEnabled && !GlobalConfig.isSellerApp()) {
                 show()
                 bindChooseAddress(chooseAddressWidgetListener)
                 view.choosee_address_widget_bottom_shadow?.show()
