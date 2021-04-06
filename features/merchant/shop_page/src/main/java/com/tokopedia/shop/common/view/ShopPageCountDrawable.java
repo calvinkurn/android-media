@@ -38,7 +38,7 @@ public class ShopPageCountDrawable extends Drawable {
 
     private void createBadgePaint(Context context) {
         badgePaint = new Paint();
-        badgePaint.setColor(ContextCompat.getColor(context.getApplicationContext(), R.color.red_800));
+        badgePaint.setColor(ContextCompat.getColor(context.getApplicationContext(), R.color.clr_red_800));
         badgePaint.setAntiAlias(true);
         badgePaint.setStyle(Paint.Style.FILL);
     }
