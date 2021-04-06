@@ -19,13 +19,12 @@
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/ic_finish_detail_1"
-        android:layout_width="@dimen/dp_18"
-        android:layout_height="@dimen/dp_18"
+        android:layout_width="@dimen/dp_48"
+        android:layout_height="@dimen/dp_48"
         android:padding="@dimen/dp_15"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@id/finish_detail_1"
-        app:layout_constraintTop_toTopOf="@id/finish_detail_1"
-        app:layout_constraintBottom_toBottomOf="@id/finish_detail_1"
+        app:layout_constraintTop_toBottomOf="@id/finish_desc"
         app:icon_name="PRODUCT"
         android:layout_marginTop="@dimen/dp_20" />
 
@@ -33,23 +32,22 @@
         android:id="@+id/finish_detail_1"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/finish_desc"
+        app:layout_constraintTop_toTopOf="@id/ic_finish_detail_1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/ic_finish_detail_1"
+        app:layout_constraintBottom_toBottomOf="@id/ic_finish_detail_1"
         android:text="@string/uoh_finish_order_1"
         app:typographyWeight="reguler"
         app:typographyType="body_3"
         android:textColor="@color/Unify_N700_96"
-        android:layout_marginStart="@dimen/dp_16"
-        android:layout_marginTop="@dimen/dp_20"/>
+        android:layout_marginStart="@dimen/dp_16"/>
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/ic_finish_detail_2"
-        android:layout_width="@dimen/dp_18"
-        android:layout_height="@dimen/dp_18"
+        android:layout_width="@dimen/dp_48"
+        android:layout_height="@dimen/dp_48"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/finish_detail_2"
-        app:layout_constraintBottom_toBottomOf="@id/finish_detail_2"
+        app:layout_constraintTop_toBottomOf="@id/ic_finish_detail_1"
         app:layout_constraintEnd_toStartOf="@id/finish_detail_2"
         app:icon_name="RELOAD_24H"
         android:padding="@dimen/dp_15"
@@ -59,15 +57,15 @@
         android:id="@+id/finish_detail_2"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/finish_detail_1"
+        app:layout_constraintTop_toTopOf="@id/ic_finish_detail_2"
         app:layout_constraintStart_toEndOf="@id/ic_finish_detail_2"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/ic_finish_detail_2"
         android:text="@string/uoh_finish_order_2"
         app:typographyWeight="reguler"
         app:typographyType="body_3"
         android:textColor="@color/Unify_N700_96"
-        android:layout_marginStart="@dimen/dp_16"
-        android:layout_marginTop="@dimen/dp_20"/>
+        android:layout_marginStart="@dimen/dp_16"/>
 
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/btn_ajukan_komplain"
