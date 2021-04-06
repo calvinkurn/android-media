@@ -1082,10 +1082,10 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                             btnHotelSearchWithMap.startAnimation(bounceAnim)
                         }
                         BottomSheetBehavior.STATE_COLLAPSED ->{
-                            googleMap.animateCamera(CameraUpdateFactory.zoomIn())
+                            googleMap.animateCamera(CameraUpdateFactory.zoomTo(MAPS_ZOOM_IN))
                         }
                         BottomSheetBehavior.STATE_HALF_EXPANDED ->{
-                            googleMap.animateCamera(CameraUpdateFactory.zoomOut())
+                            googleMap.animateCamera(CameraUpdateFactory.zoomTo(MAPS_ZOOM_OUT))
                         }
                     }
                 }
@@ -1128,6 +1128,8 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         const val BUTTON_RADIUS_HIDE_VALUE: Float = -150f
 
         private const val MAPS_STREET_LEVEL_ZOOM: Float = 15f
+        private const val MAPS_ZOOM_IN: Float = 11f
+        private const val MAPS_ZOOM_OUT: Float = 9f
 
         private const val PREFERENCES_NAME = "hotel_search_map_preferences"
         private const val SHOW_COACH_MARK_KEY = "hotel_search_map_show_coach_mark"
