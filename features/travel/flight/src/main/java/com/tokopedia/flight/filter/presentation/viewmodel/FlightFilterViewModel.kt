@@ -56,57 +56,57 @@ class FlightFilterViewModel @Inject constructor(
     }
 
     fun init(selectedSort: Int, filterModel: FlightFilterModel) {
-        mutableSelectedSort.value = selectedSort
-        mutableFilterModel.value = filterModel
+        mutableSelectedSort.postValue(selectedSort)
+        mutableFilterModel.postValue(filterModel)
 
         getStatistics()
         getFlightCount()
     }
 
     fun setSelectedSort(selectedId: Int) {
-        mutableSelectedSort.value = selectedId
+        mutableSelectedSort.postValue(selectedId)
     }
 
     fun filterTransit(selectedTransits: List<TransitEnum>) {
         val updatedFilterModel = (filterModel.value as FlightFilterModel)
         updatedFilterModel.transitTypeList = selectedTransits.toMutableList()
-        mutableFilterModel.value = updatedFilterModel
+        mutableFilterModel.postValue(updatedFilterModel)
     }
 
     fun filterDepartureTime(selectedDepartureTimes: List<DepartureTimeEnum>) {
         val updatedFilterModel = (filterModel.value as FlightFilterModel)
         updatedFilterModel.departureTimeList = selectedDepartureTimes.toMutableList()
-        mutableFilterModel.value = updatedFilterModel
+        mutableFilterModel.postValue(updatedFilterModel)
     }
 
     fun filterArrivalTime(selectedArrivalTimes: List<DepartureTimeEnum>) {
         val updatedFilterModel = (filterModel.value as FlightFilterModel)
         updatedFilterModel.arrivalTimeList = selectedArrivalTimes.toMutableList()
-        mutableFilterModel.value = updatedFilterModel
+        mutableFilterModel.postValue(updatedFilterModel)
     }
 
     fun filterAirlines(selectedArlines: List<String>) {
         val updatedFilterModel = (filterModel.value as FlightFilterModel)
         updatedFilterModel.airlineList = selectedArlines.toMutableList()
-        mutableFilterModel.value = updatedFilterModel
+        mutableFilterModel.postValue(updatedFilterModel)
     }
 
     fun filterFacilities(selectedFacilities: List<FlightFilterFacilityEnum>) {
         val updatedFilterModel = (filterModel.value as FlightFilterModel)
         updatedFilterModel.facilityList = selectedFacilities.toMutableList()
-        mutableFilterModel.value = updatedFilterModel
+        mutableFilterModel.postValue(updatedFilterModel)
     }
 
     fun filterPrices(minPrice: Int, maxPrice: Int) {
         val updateFilterModel = (filterModel.value as FlightFilterModel)
         updateFilterModel.priceMin = minPrice
         updateFilterModel.priceMax = maxPrice
-        mutableFilterModel.value = updateFilterModel
+        mutableFilterModel.postValue(updateFilterModel)
     }
 
     fun resetFilter() {
-        mutableSelectedSort.value = SORT_DEFAULT_VALUE
-        mutableFilterModel.value = resetFilterModel()
+        mutableSelectedSort.postValue(SORT_DEFAULT_VALUE)
+        mutableFilterModel.postValue(resetFilterModel())
     }
 
     fun getAirlineList(): List<AirlineStat> = statisticModel.value?.airlineStatList ?: arrayListOf()

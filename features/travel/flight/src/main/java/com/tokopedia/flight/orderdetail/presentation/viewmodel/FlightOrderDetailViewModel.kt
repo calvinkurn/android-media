@@ -111,7 +111,7 @@ class FlightOrderDetailViewModel @Inject constructor(private val userSession: Us
     }
 
     fun onNavigateToCancellationClicked(journeyList: List<FlightOrderDetailJourneyModel>) {
-        mutableCancellationData.value = orderDetailCancellationMapper.transform(journeyList)
+        mutableCancellationData.postValue(orderDetailCancellationMapper.transform(journeyList))
     }
 
     fun isWebCheckInAvailable(flightOrderDetailData: FlightOrderDetailDataModel): Pair<Boolean, String> {

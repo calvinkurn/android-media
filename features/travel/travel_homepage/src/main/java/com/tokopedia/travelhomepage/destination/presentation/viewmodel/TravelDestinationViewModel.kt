@@ -46,7 +46,7 @@ class TravelDestinationViewModel  @Inject constructor(
     private val mapper = TravelDestinationMapper()
 
     fun getInitialList() {
-        travelDestinationItemListMutable.value = getEmptyModelsUseCase.requestEmptyViewModels()
+        travelDestinationItemListMutable.postValue(getEmptyModelsUseCase.requestEmptyViewModels())
     }
 
     fun getAllContent(summaryQuery: String, recommQuery: String, orderQuery: String, articleQuery: String, cityId: String) {

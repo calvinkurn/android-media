@@ -87,7 +87,7 @@ class HotelSearchResultViewModel @Inject constructor(
         isFilter = searchParam.filters.isNotEmpty()
 
         launch {
-            liveSearchResult.value = searchPropertyUseCase.execute(searchQuery, searchParam)
+            liveSearchResult.postValue(searchPropertyUseCase.execute(searchQuery, searchParam))
         }
     }
 

@@ -39,11 +39,11 @@ class FlightFareCalendarViewModel @Inject constructor(private val dispatcherProv
                 val returnAttributes = getReturnFlightCalendar(mapParam)
                 storeRoundTripCalendarFare(attributes, returnAttributes, departureDate)
             } else {
-                fareFlightCalendarData.value = attributes
+                fareFlightCalendarData.postValue(attributes)
             }
 
         }) {
-            fareFlightCalendarData.value = arrayListOf()
+            fareFlightCalendarData.postValue(arrayListOf())
         }
     }
 
@@ -94,6 +94,6 @@ class FlightFareCalendarViewModel @Inject constructor(private val dispatcherProv
             }
         }
 
-        fareFlightCalendarData.value = attributes
+        fareFlightCalendarData.postValue(attributes)
     }
 }
