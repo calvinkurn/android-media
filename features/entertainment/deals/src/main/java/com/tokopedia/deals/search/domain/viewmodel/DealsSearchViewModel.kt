@@ -16,14 +16,13 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject
 
 class DealsSearchViewModel @Inject constructor (
         private val dealsLoadInitialData: DealsSearchInitialLoadUseCase,
         private val dealsSearchUseCase: DealsSearchUseCase,
         dispatcher: CoroutineDispatchers
-): BaseViewModel(dispatcher.io) {
+): BaseViewModel(dispatcher.main) {
 
     private val _dealsSearchResponse = MutableLiveData<Result<EventSearch>>()
     val dealsSearchResponse: LiveData<Result<EventSearch>>

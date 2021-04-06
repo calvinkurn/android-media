@@ -16,7 +16,7 @@ import javax.inject.Inject
 class DealsBrandCategoryActivityViewModel @Inject constructor(
         private val chipsCategoryUseCase: GetChipsCategoryUseCase,
         dispatcher: CoroutineDispatchers
-) : BaseViewModel(dispatcher.io) {
+) : BaseViewModel(dispatcher.main) {
 
     private val privateCuratedData = MutableLiveData<CuratedData>()
     val curatedData: LiveData<CuratedData>

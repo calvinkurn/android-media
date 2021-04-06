@@ -18,7 +18,7 @@ import javax.inject.Inject
 
 class DealsBaseViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
                                              private val getNearestLocationUseCase: GetNearestLocationUseCase)
-    : BaseViewModel(dispatcher.io) {
+    : BaseViewModel(dispatcher.main) {
 
     // fragments may also observe location to determined whether the location changes.
     private val _observableCurrentLocation = MutableLiveData<Location>()

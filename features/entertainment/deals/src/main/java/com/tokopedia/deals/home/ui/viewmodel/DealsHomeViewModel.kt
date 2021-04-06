@@ -30,7 +30,7 @@ class DealsHomeViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
                                              private val getEventHomeLayoutUseCase: GetEventHomeLayoutUseCase,
                                              private val getEventHomeBrandPopularUseCase: GetEventHomeBrandPopularUseCase,
                                              private val getNearestLocationUseCase: GetNearestLocationUseCase)
-    : BaseViewModel(dispatcher.io) {
+    : BaseViewModel(dispatcher.main) {
 
     private val _observableEventHomeLayout = MutableLiveData<Result<List<DealsBaseItemDataView>>>()
     val observableEventHomeLayout: LiveData<Result<List<DealsBaseItemDataView>>>

@@ -26,10 +26,10 @@ class DealCategoryViewModel @Inject constructor(
         private val chipsCategoryUseCase: GetChipsCategoryUseCase,
         private val dealsSearchUseCase: DealsSearchUseCase,
         private val dispatcher: CoroutineDispatchers
-) : BaseViewModel(dispatcher.io) {
+) : BaseViewModel(dispatcher.main) {
 
     override val coroutineContext: CoroutineContext
-        get() = dispatcher.io + SupervisorJob()
+        get() = dispatcher.main + SupervisorJob()
 
     private val privateObservableChips = MutableLiveData<List<ChipDataView>>()
     val observableChips: LiveData<List<ChipDataView>>

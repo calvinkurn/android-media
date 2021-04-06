@@ -10,7 +10,6 @@ import com.tokopedia.deals.location_picker.model.response.LocationData
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject
 
 class DealsLocationViewModel @Inject constructor (
@@ -19,7 +18,7 @@ class DealsLocationViewModel @Inject constructor (
         private val dealsPopularLocationUseCase: DealsPopularLocationUseCase,
         private val dealsLandmarkLocationUseCase: DealsLandmarkLocationUseCase,
         dispatcher: CoroutineDispatchers
-): BaseViewModel(dispatcher.io) {
+): BaseViewModel(dispatcher.main) {
 
     private val _dealsSearchedLocationResponse = MutableLiveData<Result<EventLocationSearch>>()
     val dealsSearchedLocationResponse: LiveData<Result<EventLocationSearch>>
