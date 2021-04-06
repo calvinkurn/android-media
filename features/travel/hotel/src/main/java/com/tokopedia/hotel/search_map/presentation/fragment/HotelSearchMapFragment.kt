@@ -1137,6 +1137,31 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
     }
 
+    private fun setAnimBottomSheetBehavior(){
+        if(::bottomSheetBehavior.isInitialized){
+            bottomSheetBehavior.addBottomSheetCallback(object: BottomSheetBehavior.BottomSheetCallback(){
+                override fun onStateChanged(bottomSheet: View, state: Int) {
+                    when (state) {
+                        BottomSheetBehavior.STATE_EXPANDED ->{
+                            context?.let {
+                                bounceAnim = AnimationUtils.loadAnimation(it, R.anim.bounce_anim)
+                            }
+                            btnHotelSearchWithMap.startAnimation(bounceAnim)
+                        }
+                        BottomSheetBehavior.STATE_COLLAPSED ->{
+                            googleMap.animateCamera(CameraUpdateFactory.zoomTo(MAPS_ZOOM_IN))
+                        }
+                        BottomSheetBehavior.STATE_HALF_EXPANDED ->{
+                            googleMap.animateCamera(CameraUpdateFactory.zoomTo(MAPS_ZOOM_OUT))
+                        }
+                    }
+                }
+                override fun onSlide(bottomSheet: View, slideOffset: Float) {
+                }
+            })
+        }
+    }
+
     companion object {
         private const val COACHMARK_LIST_STEP_POSITION = 1
         private const val COACHMARK_FILTER_STEP_POSITION = 2
@@ -1169,6 +1194,8 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         const val BUTTON_RADIUS_HIDE_VALUE: Float = -150f
 
         private const val MAPS_STREET_LEVEL_ZOOM: Float = 15f
+        private const val MAPS_ZOOM_IN: Float = 11f
+        private const val MAPS_ZOOM_OUT: Float = 9f
 
         private const val PREFERENCES_NAME = "hotel_search_map_preferences"
         private const val SHOW_COACH_MARK_KEY = "hotel_search_map_show_coach_mark"
