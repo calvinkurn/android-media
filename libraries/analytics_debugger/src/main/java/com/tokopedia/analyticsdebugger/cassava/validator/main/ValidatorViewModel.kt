@@ -5,13 +5,15 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.tokopedia.analyticsdebugger.cassava.validator.Utils
+import com.tokopedia.analyticsdebugger.cassava.validator.core.Validator
+import com.tokopedia.analyticsdebugger.cassava.validator.core.ValidatorEngine
+import com.tokopedia.analyticsdebugger.cassava.validator.core.toDefaultValidator
+import com.tokopedia.analyticsdebugger.cassava.validator.list.ValidatorListFragment
 import com.tokopedia.analyticsdebugger.database.TkpdAnalyticsDatabase
 import com.tokopedia.analyticsdebugger.debugger.data.repository.GtmRepo
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.analyticsdebugger.debugger.helper.SingleLiveEvent
-import com.tokopedia.analyticsdebugger.cassava.validator.core.Validator
-import com.tokopedia.analyticsdebugger.cassava.validator.core.ValidatorEngine
-import com.tokopedia.analyticsdebugger.cassava.validator.core.toDefaultValidator
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -28,6 +30,10 @@ class ValidatorViewModel constructor(val context: Application) : AndroidViewMode
     private val _snackBarMessage = SingleLiveEvent<String>()
     val snackBarMessage: LiveData<String>
         get() = _snackBarMessage
+
+    private val _listFiles = MutableLiveData<List<String>>()
+    val listFiles: LiveData<List<String>>
+        get() = _listFiles
 
     fun run(queries: List<Map<String, Any>>, mode: String) {
         val v = queries.map { it.toDefaultValidator() }
@@ -52,5 +58,17 @@ class ValidatorViewModel constructor(val context: Application) : AndroidViewMode
             _snackBarMessage.setValue("Successfully deleted!")
         }
     }
+
+    fun fetchLocalQueriesList() {
+        viewModelScope.launch {
+            try {
+                _listFiles.postValue(Utils.listAssetFiles(context, ValidatorListFragment.TRACKER_ROOT_PATH))
+            } catch (e: Exception) {
+                _snackBarMessage.postValue(e.message ?: "")
+            }
+        }
+    }
+
+    fun getListFiles(): List<String> = listFiles.value ?: arrayListOf()
 
 }

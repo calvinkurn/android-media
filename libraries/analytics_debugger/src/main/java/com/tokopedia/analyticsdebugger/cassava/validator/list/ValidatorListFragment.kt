@@ -13,18 +13,20 @@ import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.ImageView
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.analyticsdebugger.R
-import com.tokopedia.analyticsdebugger.cassava.validator.Utils
 import com.tokopedia.analyticsdebugger.cassava.validator.main.ValidatorViewModel
 import timber.log.Timber
 
 class ValidatorListFragment : Fragment() {
 
     private var listener: Listener? = null
+
+    private lateinit var listingAdapter: FileListingAdapter
 
     val viewModel: ValidatorViewModel by lazy {
         activity?.application?.let {
@@ -33,18 +35,23 @@ class ValidatorListFragment : Fragment() {
         } ?: throw IllegalArgumentException("Requires activity, fragment should be attached")
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        viewModel.fetchLocalQueriesList()
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_validator_list, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val listTests = Utils.listAssetFiles(requireContext(), TRACKER_ROOT_PATH)
-        Timber.d("List files: %s", listTests)
 
-        val listingAdapter = FileListingAdapter().also {
-            it.setItems(listTests)
-            it.setOnItemClickListener { listener?.goToTestPage(it) }
+        observeLiveData()
+
+        listingAdapter = FileListingAdapter().also { adapter ->
+            adapter.setOnItemClickListener { listener?.goToTestPage(it) }
         }
 
         view.findViewById<ImageView>(R.id.iv_delete).setOnClickListener {
@@ -72,7 +79,7 @@ class ValidatorListFragment : Fragment() {
                     s?.run {
                         searchBarClearButton.visibility = if (s.isNotEmpty()) View.VISIBLE else View.GONE
                         // Filter test cases based on search query
-                        val filteredListTests = listTests.filter { it.contains(s.toString(), true) }
+                        val filteredListTests = viewModel.getListFiles().filter { it.contains(s.toString(), true) }
                         listingAdapter.setItems(filteredListTests)
                     }
                 }
@@ -91,8 +98,15 @@ class ValidatorListFragment : Fragment() {
             searchBarTextField.text.clear()
             searchBarClearButton.visibility = View.GONE
             clearSearchBarFocus(searchBarTextField)
-            listingAdapter.setItems(listTests)
+            listingAdapter.setItems(viewModel.getListFiles())
         }
+    }
+
+    private fun observeLiveData() {
+        viewModel.listFiles.observe(viewLifecycleOwner, Observer {
+            Timber.d("List files: %s", it)
+            listingAdapter.setItems(it)
+        })
     }
 
     private fun clearSearchBarFocus(editText: EditText) {
