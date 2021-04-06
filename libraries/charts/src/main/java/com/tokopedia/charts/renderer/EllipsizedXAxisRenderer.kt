@@ -18,7 +18,7 @@ class EllipsizedXAxisRenderer(
 
     companion object {
         private const val NO_POSITION = -1f
-        private const val MAX_TEXT_WIDTH_PERCENTAGE = 0.95f
+        private const val MAX_TEXT_WIDTH_PERCENTAGE = 0.80f
     }
 
     private fun calculateXAxis(): FloatArray {
