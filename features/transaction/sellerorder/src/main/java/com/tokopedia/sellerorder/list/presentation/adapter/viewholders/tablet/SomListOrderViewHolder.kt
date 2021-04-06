@@ -3,6 +3,8 @@ package com.tokopedia.sellerorder.list.presentation.adapter.viewholders.tablet
 import android.animation.ValueAnimator
 import android.os.Bundle
 import android.view.View
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.list.presentation.models.SomListOrderUiModel
 import kotlinx.android.synthetic.main.item_som_list_order.view.*
@@ -48,9 +50,9 @@ class SomListOrderViewHolder(
             itemView.cardSomOrder?.animateFadeIn()
         }
         if (element.isOpen) {
-            itemView.container?.background = itemView.context.getDrawable(R.drawable.bg_selected_order)
+            itemView.somOrderListOpenIndicator?.show()
         } else {
-            itemView.container?.background = null
+            itemView.somOrderListOpenIndicator?.gone()
         }
         itemView.setOnClickListener {
             if (listener.isMultiSelectEnabled()) touchCheckBox(element)
