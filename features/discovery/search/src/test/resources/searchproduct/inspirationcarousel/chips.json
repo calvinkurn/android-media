@@ -1093,6 +1093,24 @@
             "product": []
           }
         ]
+      },
+      {
+        "title": "Should not be rendered",
+        "type": "price_range_chips",
+        "position": 6,
+        "layout": "chips",
+        "options": [
+          {
+            "title": "Rp1,5 jt - Rp2,4 jt",
+            "url": "https://www.tokopedia.com/search?pmax=2400000&pmin=1500001&q=hp+samsung&source=search&st=product",
+            "applink": "tokopedia://search?pmax=2400000&pmin=1500001&q=hp+samsung&source=search&st=product",
+            "banner_image_url": "",
+            "banner_link_url": "",
+            "banner_applink_url": "",
+            "identifier": "aWMkOjI6aHAgc2Ftc3VuZzpwcmljZV9yYW5nZV9jaGlwczoy",
+            "product": []
+          }
+        ]
       }
     ]
   }

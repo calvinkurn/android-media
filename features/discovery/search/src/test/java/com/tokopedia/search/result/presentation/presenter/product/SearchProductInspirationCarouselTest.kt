@@ -530,6 +530,7 @@ internal class SearchProductInspirationCarouselTest: ProductListPresenterTestFix
     private fun `Then assert inspiration carousel chips`(searchProductModel: SearchProductModel) {
         val visitableList = visitableListSlot.captured
         visitableList.forEachIndexed { index, visitable ->
+            // Position 12 should not be rendered because no product list
             when (index) {
                 4 -> {
                     visitable.shouldBeInstanceOf<InspirationCarouselDataView>(
@@ -546,6 +547,12 @@ internal class SearchProductInspirationCarouselTest: ProductListPresenterTestFix
                         option.identifier shouldBe expectedOption.identifier
                         option.isChipsActive shouldBe (optionIndex == 0)
                     }
+                }
+                else -> {
+                    (visitable is InspirationCarouselDataView).shouldBe(
+                            false,
+                            "Visitable index $index should not be inspiration carousel"
+                    )
                 }
             }
         }

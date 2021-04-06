@@ -248,19 +248,6 @@ data class ProductCardModel (
         customVariant.add(labelGroupCustomVariant)
     }
 
-    fun shouldReserveThreeDotsMarginEndForTextViewSales(): Boolean {
-        val labelShipping = getLabelShipping()
-        val isShowLabelShipping = labelShipping != null && labelShipping.title.isNotEmpty()
-
-        val labelETA = getLabelETA()
-        val isShowLabelETA = labelETA != null && labelETA.title.isNotEmpty()
-
-        return hasThreeDots
-                && !isShowFreeOngkirBadge()
-                && !isShowLabelShipping
-                && !isShowLabelETA
-    }
-
     companion object {
         const val WORDING_SEGERA_HABIS = "Segera Habis"
         val FIRE_WIDTH = R.dimen.dp_12

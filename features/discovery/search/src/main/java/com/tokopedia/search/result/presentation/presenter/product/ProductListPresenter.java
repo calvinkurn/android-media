@@ -1391,7 +1391,7 @@ final class ProductListPresenter
             while(inspirationCarouselViewModelIterator.hasNext()) {
                 InspirationCarouselDataView data = inspirationCarouselViewModelIterator.next();
 
-                if (data.getPosition() <= 0) {
+                if (isInvalidInspirationCarousel(data)) {
                     inspirationCarouselViewModelIterator.remove();
                     continue;
                 }
@@ -1409,6 +1409,15 @@ final class ProductListPresenter
                 }
             }
         }
+    }
+
+    private boolean isInvalidInspirationCarousel(InspirationCarouselDataView data) {
+        if (data.getPosition() <= 0) return true;
+
+        InspirationCarouselDataView.Option firstOption = CollectionsKt.getOrNull(data.getOptions(), 0);
+        return data.getLayout().equals(LAYOUT_INSPIRATION_CAROUSEL_CHIPS)
+                && firstOption != null
+                && !firstOption.hasProducts();
     }
 
     private boolean shouldShowInspirationCarousel(String layout) {
