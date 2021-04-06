@@ -14,7 +14,7 @@
             android:label="@string/hotel_app_name"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.WhiteUnify">
-            <intent-filter android:autoVerify="true">
+            <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
@@ -41,7 +41,7 @@
             android:label="@string/hotel_app_name"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.WhiteUnify">
-            <intent-filter android:autoVerify="true">
+            <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
@@ -63,7 +63,7 @@
             android:label=""
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White.NoActionBar">
-            <intent-filter android:autoVerify="true">
+            <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
@@ -102,7 +102,7 @@
             android:label="@string/hotel_order_detail_title"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.WhiteUnify">
-            <intent-filter android:autoVerify="true">
+            <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
@@ -119,7 +119,7 @@
             android:label="@string/hotel_booking_activity_title"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.WhiteUnify" >
-            <intent-filter android:autoVerify="true">
+            <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
@@ -149,7 +149,7 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.WhiteUnify"
             android:windowSoftInputMode="adjustResize">
-            <intent-filter android:autoVerify="true">
+            <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
@@ -170,7 +170,7 @@
             android:configChanges="uiMode"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White">
-            <intent-filter android:autoVerify="true">
+            <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />

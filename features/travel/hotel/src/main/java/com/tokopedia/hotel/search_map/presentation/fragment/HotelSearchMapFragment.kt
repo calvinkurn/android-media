@@ -50,7 +50,6 @@ import com.tokopedia.hotel.search.data.model.FilterV2.Companion.FILTER_TYPE_SORT
 import com.tokopedia.hotel.search.data.model.params.ParamFilterV2
 import com.tokopedia.hotel.search.presentation.adapter.HotelSearchResultAdapter
 import com.tokopedia.hotel.search.presentation.adapter.PropertyAdapterTypeFactory
-import com.tokopedia.hotel.search.presentation.fragment.HotelSearchResultFragment
 import com.tokopedia.hotel.search.presentation.widget.HotelFilterBottomSheets
 import com.tokopedia.hotel.search.presentation.widget.SubmitFilterListener
 import com.tokopedia.hotel.search_map.data.HotelLoadingModel
@@ -104,10 +103,11 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
     private var isFirstInitializeFilter = true
     private var quickFilters: List<QuickFilter> = listOf()
     private var searchPropertiesMap: ArrayList<LatLng> = arrayListOf()
+    private var isLoadingSearchByMap: Boolean = false
 
     private lateinit var filterBottomSheet: HotelFilterBottomSheets
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<ConstraintLayout>
-    private lateinit var bounceAnim : Animation
+    private lateinit var bounceAnim: Animation
 
     override fun getScreenName(): String = SEARCH_SCREEN_NAME
 
@@ -122,6 +122,8 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        localCacheHandler = LocalCacheHandler(context, PREFERENCES_NAME)
 
         activity?.run {
             val viewModelProvider = ViewModelProvider(this, viewModelFactory)
@@ -148,8 +150,6 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
             (it as HotelSearchMapActivity).setSupportActionBar(headerHotelSearchMap)
         }
 
-        localCacheHandler = LocalCacheHandler(context, PREFERENCES_NAME)
-
         setCardListViewAdapter()
     }
 
@@ -172,6 +172,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                 is Fail -> {
                     hideLoader()
                     hideCollapsingHeader()
+                    hideSearchWithMap()
                     expandBottomSheet()
                     showGetListError(it.throwable)
                 }
@@ -288,12 +289,10 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         setUpTitleAndSubtitle()
         setupFindWithMapButton()
         initGetMyLocation()
+        setupPersistentBottomSheet()
+        halfExpandBottomSheet()
 
         ivHotelSearchMapNoResult.loadImage(getString(R.string.hotel_url_empty_search_map_result))
-
-        bottomSheetBehavior.state = BottomSheetBehavior.STATE_HALF_EXPANDED
-
-        setAnimBottomSheetBehavior()
     }
 
     override fun onMapReady(map: GoogleMap) {
@@ -357,11 +356,18 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                 hideGetMyLocation()
             }
         }
+        hideGetMyLocation()
         setupPersistentBottomSheet()
+
         super.showLoading()
 
         if (adapter.list.size > 0 && adapter.list[0] is LoadingModel) {
-            halfExpandBottomSheet()
+            if (isLoadingSearchByMap) {
+                collapseBottomSheet()
+                isLoadingSearchByMap = false
+            } else {
+                halfExpandBottomSheet()
+            }
             hideSearchWithMap()
         }
     }
@@ -442,8 +448,66 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         }
         bottomSheetBehavior.isFitToContents = false
 
+        bottomSheetBehavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
+            override fun onSlide(bottomSheet: View, slideOffset: Float) {
+            }
+
+            override fun onStateChanged(bottomSheet: View, newState: Int) {
+                when (newState) {
+                    BottomSheetBehavior.STATE_EXPANDED -> {
+                        context?.let {
+                            bounceAnim = AnimationUtils.loadAnimation(it, R.anim.bounce_anim)
+                        }
+                        btnHotelSearchWithMap.startAnimation(bounceAnim)
+                        setupContentMargin(true)
+
+                        googleMap.uiSettings.isScrollGesturesEnabled = false
+                    }
+                    BottomSheetBehavior.STATE_HALF_EXPANDED -> {
+                        googleMap.animateCamera(CameraUpdateFactory.zoomOut())
+                        setupContentMargin(false)
+                        googleMap.uiSettings.isScrollGesturesEnabled = true
+                    }
+                    BottomSheetBehavior.STATE_COLLAPSED -> {
+                        googleMap.animateCamera(CameraUpdateFactory.zoomIn())
+                        setupContentMargin(false)
+                        googleMap.uiSettings.isScrollGesturesEnabled = true
+                    }
+                    else -> {
+                        setupContentMargin(false)
+                    }
+                }
+            }
+
+        })
+
         val bottomSheetHeaderHeight = resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl7)
         bottomSheetBehavior.peekHeight = bottomSheetHeaderHeight
+    }
+
+    private fun setupContentMargin(isExpanded: Boolean) {
+        if (isExpanded) {
+            rvVerticalPropertiesHotelSearchMap.setMargin(0,
+                    resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl6),
+                    0,
+                    0)
+            containerEmptyResultState.setMargin(0,
+                    resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl8),
+                    0,
+                    0)
+        } else {
+            rvVerticalPropertiesHotelSearchMap.setMargin(0,
+                    resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3),
+                    0,
+                    0)
+            containerEmptyResultState.setMargin(0,
+                    resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4),
+                    0,
+                    0)
+        }
+
+        rvVerticalPropertiesHotelSearchMap.requestLayout()
+        containerEmptyResultState.requestLayout()
     }
 
     private fun setUpTitleAndSubtitle() {
@@ -556,6 +620,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         }
         wrapper.addView(textView)
         wrapper.setOnClickListener {
+            isLoadingSearchByMap = true
             removeAllMarker()
             showCardListView()
             hideFindNearHereView()
@@ -565,7 +630,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         }
 
         btnGetRadiusHotelSearchMap.addItem(wrapper)
-        btnGetRadiusHotelSearchMap.setMargins(0, resources.getDimensionPixelSize(R.dimen.hotel_70dp),0,0)
+        btnGetRadiusHotelSearchMap.setMargins(0, resources.getDimensionPixelSize(R.dimen.hotel_70dp), 0, 0)
     }
 
     private fun addMyLocation(latLong: LatLng) {
@@ -761,7 +826,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
 
     private fun showCoachMark() {
         context?.let {
-            val coachmarkShowed = localCacheHandler.getBoolean(HotelSearchResultFragment.SHOW_COACH_MARK_KEY, false)
+            val coachmarkShowed = localCacheHandler.getBoolean(SHOW_COACH_MARK_KEY, false)
             if (!coachmarkShowed) {
                 val coachMarkItem = arrayListOf(
                         CoachMark2Item(
@@ -795,6 +860,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                 })
                 coachmark.showCoachMark(coachMarkItem, null, 0)
                 localCacheHandler.putBoolean(SHOW_COACH_MARK_KEY, true)
+                localCacheHandler.applyEditor()
             }
         }
     }
@@ -1049,9 +1115,10 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
             override fun onGlobalLayout() {
                 viewTree.removeOnGlobalLayoutListener(this)
                 bottomSheetBehavior.peekHeight = containerEmptyResultState.measuredHeight
+
+                collapseBottomSheet()
             }
         })
-        collapseBottomSheet()
     }
 
     private fun hideErrorNoResult() {
@@ -1098,7 +1165,6 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
     companion object {
         private const val COACHMARK_LIST_STEP_POSITION = 1
         private const val COACHMARK_FILTER_STEP_POSITION = 2
-        private const val DAYS_A_YEAR: Long = 365
 
         private const val REQUEST_CODE_DETAIL_HOTEL = 101
         private const val REQUEST_CHANGE_SEARCH_HOTEL = 105

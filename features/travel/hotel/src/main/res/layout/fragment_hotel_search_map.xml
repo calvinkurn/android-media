@@ -65,12 +65,12 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/hotel_76dp"
                 android:background="@color/transparent"
+                android:clipToPadding="false"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 tools:itemCount="3"
-                tools:listitem="@layout/item_property_search_result_horizontal"
-                android:clipToPadding="false"/>
+                tools:listitem="@layout/item_property_search_result_horizontal" />
 
             <com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify
                 android:id="@+id/btnGetRadiusHotelSearchMap"
@@ -99,10 +99,10 @@
                 android:layout_width="@dimen/spacing_lvl8"
                 android:layout_height="@dimen/spacing_lvl8"
                 android:layout_margin="@dimen/spacing_lvl3"
-                app:layout_goneMarginTop="@dimen/layout_lvl7"
-                app:layout_goneMarginBottom="@dimen/layout_lvl7"
                 app:layout_constraintBottom_toTopOf="@+id/rvHorizontalPropertiesHotelSearchMap"
                 app:layout_constraintRight_toRightOf="parent"
+                app:layout_goneMarginBottom="@dimen/layout_lvl7"
+                app:layout_goneMarginTop="@dimen/layout_lvl7"
                 app:srcCompat="@drawable/ic_get_location" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
@@ -115,6 +115,8 @@
             android:layout_height="match_parent"
             android:background="@color/Unify_N0"
             android:elevation="@dimen/spacing_lvl2"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
             app:layout_behavior="@string/bottom_sheet_behavior">
 
             <View
@@ -153,11 +155,11 @@
                 app:layout_constraintTop_toBottomOf="@id/topHotelSearchMapListKnob"
                 app:typographyType="heading_3" />
 
-            <com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
+            <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rvVerticalPropertiesHotelSearchMap"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/spacing_lvl3"
+                android:layout_marginTop="@dimen/spacing_lvl4"
                 android:clipToPadding="false"
                 android:paddingTop="@dimen/hotel_12dp"
                 android:paddingBottom="@dimen/hotel_140dp"
@@ -171,6 +173,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/spacing_lvl2"
                 android:background="@color/Unify_N0"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
                 android:padding="@dimen/spacing_lvl4"
                 android:visibility="gone"
                 app:layout_constraintLeft_toLeftOf="parent"
@@ -230,6 +234,7 @@
 
     <!-- Start of Linear Layout for Header (Toolbar and Quick Filter) -->
     <LinearLayout
+        android:id="@+id/container_hotel_search_map_header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/Unify_N0"

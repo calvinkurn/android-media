@@ -33,8 +33,14 @@ class BroadMatchViewHolder(
     }
 
     private fun bindTitle(broadMatchDataView: BroadMatchDataView) {
-        itemView.searchBroadMatchTitle?.text = broadMatchDataView.keyword
+        itemView.searchBroadMatchTitle?.text = getTitle(broadMatchDataView)
     }
+
+    private fun getTitle(broadMatchDataView: BroadMatchDataView) =
+            broadMatchDataView.keyword +
+                    if (broadMatchDataView.isAppendTitleInTokopedia)
+                        " " + getString(R.string.broad_match_in_tokopedia)
+                    else ""
 
     private fun bindSeeMore(broadMatchDataView: BroadMatchDataView) {
         itemView.searchBroadMatchSeeMore?.showWithCondition(broadMatchDataView.applink.isNotEmpty())
