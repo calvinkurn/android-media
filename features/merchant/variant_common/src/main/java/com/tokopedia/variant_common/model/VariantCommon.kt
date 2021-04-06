@@ -65,7 +65,7 @@ data class Option(
 
         @SerializedName("hex")
         @Expose
-        val hex: String? = null, // ex:#ff3303
+        val hex: String? = null,
 
         @SerializedName("picture")
         @Expose

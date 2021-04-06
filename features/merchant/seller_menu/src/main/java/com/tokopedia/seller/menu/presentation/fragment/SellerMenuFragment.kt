@@ -31,6 +31,7 @@ import com.tokopedia.seller.menu.common.view.viewholder.ShopInfoErrorViewHolder
 import com.tokopedia.seller.menu.common.view.viewholder.ShopInfoViewHolder
 import com.tokopedia.seller.menu.di.component.DaggerSellerMenuComponent
 import com.tokopedia.seller.menu.presentation.adapter.SellerMenuAdapter
+import com.tokopedia.seller.menu.presentation.util.AdminPermissionMapper
 import com.tokopedia.seller.menu.presentation.util.SellerMenuList
 import com.tokopedia.seller.menu.presentation.viewmodel.SellerMenuViewModel
 import com.tokopedia.seller_migration_common.constants.SellerMigrationConstants
@@ -56,6 +57,8 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
     lateinit var remoteConfig: RemoteConfig
     @Inject
     lateinit var sellerMenuTracker: SellerMenuTracker
+    @Inject
+    lateinit var adminPermissionMapper: AdminPermissionMapper
 
     private var canShowErrorToaster = true
 
@@ -219,7 +222,7 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
 
     private fun setupMenuList() {
         context?.let { context ->
-            val menuList = SellerMenuList.create(context, userSession)
+            val menuList = SellerMenuList.create(context, userSession, adminPermissionMapper)
 
             with(listMenu) {
                 adapter = this@SellerMenuFragment.adapter

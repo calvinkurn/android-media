@@ -34,6 +34,7 @@ import com.tokopedia.home.account.presentation.adapter.buyer.BuyerAccountAdapter
 import com.tokopedia.home.account.presentation.util.AccountHomeErrorHandler
 import com.tokopedia.home.account.presentation.viewmodel.AccountRecommendationTitleViewModel
 import com.tokopedia.home.account.presentation.viewmodel.RecommendationProductViewModel
+import com.tokopedia.home.account.presentation.viewmodel.TopadsHeadlineUiModel
 import com.tokopedia.home.account.presentation.viewmodel.base.BuyerViewModel
 import com.tokopedia.home.account.revamp.domain.data.mapper.BuyerAccountMapper
 import com.tokopedia.home.account.revamp.viewmodel.BuyerAccountViewModel
@@ -68,7 +69,7 @@ class BuyerAccountFragment : BaseAccountFragment(), FragmentListener {
     @Inject
     lateinit var buyerAccountMapper: BuyerAccountMapper
 
-    private val adapter: BuyerAccountAdapter = BuyerAccountAdapter(AccountTypeFactory(this), arrayListOf())
+    private var adapter: BuyerAccountAdapter? = null
     private var endlessRecyclerViewScrollListener: EndlessRecyclerViewScrollListener? = null
     private var fpmBuyer: PerformanceMonitoring? = null
     private var layoutManager: StaggeredGridLayoutManager = StaggeredGridLayoutManager(
@@ -98,6 +99,8 @@ class BuyerAccountFragment : BaseAccountFragment(), FragmentListener {
         endlessRecyclerViewScrollListener?.let {
             recycler_buyer.addOnScrollListener(it)
         }
+
+        adapter = BuyerAccountAdapter(AccountTypeFactory(this, userSession), arrayListOf())
         recycler_buyer.layoutManager = layoutManager
         recycler_buyer.adapter = adapter
 
@@ -162,8 +165,9 @@ class BuyerAccountFragment : BaseAccountFragment(), FragmentListener {
                 is Success -> {
                     val visitable = ArrayList<Visitable<*>>()
                     visitable.add(AccountRecommendationTitleViewModel(it.data.title))
+                    addTopAdsHeadLine(visitable)
                     visitable.addAll(getRecommendationVisitable(it.data))
-                    adapter.addElement(visitable)
+                    adapter?.addElement(visitable)
                 }
                 is Fail -> {
                     if (it.throwable is UnknownHostException || it.throwable is SocketTimeoutException) {
@@ -179,7 +183,7 @@ class BuyerAccountFragment : BaseAccountFragment(), FragmentListener {
             hideLoadMoreLoading()
             when (it) {
                 is Success -> {
-                    adapter.addElement(getRecommendationVisitable(it.data))
+                    adapter?.addElement(getRecommendationVisitable(it.data))
                 }
                 is Fail -> {
                     showError(it.throwable.message ?: "")
@@ -234,8 +238,8 @@ class BuyerAccountFragment : BaseAccountFragment(), FragmentListener {
     private fun loadBuyerData(model: BuyerViewModel?) {
         if (model != null) {
             model.items?.let {
-                adapter.clearAllElements()
-                adapter.setElement(it)
+                adapter?.clearAllElements()
+                adapter?.setElement(it)
                 try {
                     Toaster.snackBar.dismiss()
                 } catch (e: Exception) {
@@ -243,8 +247,8 @@ class BuyerAccountFragment : BaseAccountFragment(), FragmentListener {
             }
         } else {
             context?.let {
-                adapter.clearAllElements()
-                adapter.setElement(StaticBuyerModelGenerator.getModel(it, null, getRemoteConfig(), useUoh()))
+                adapter?.clearAllElements()
+                adapter?.setElement(StaticBuyerModelGenerator.getModel(it, null, getRemoteConfig(), useUoh()))
             }
         }
 
@@ -253,12 +257,12 @@ class BuyerAccountFragment : BaseAccountFragment(), FragmentListener {
     }
 
     private fun showLoading() {
-        adapter.showLoading()
+        adapter?.showLoading()
         scrollToTop()
     }
 
     private fun hideLoading() {
-        adapter.hideLoading()
+        adapter?.hideLoading()
 
         if (swipe_refresh_layout != null && swipe_refresh_layout.isRefreshing)
             swipe_refresh_layout.isRefreshing = false
@@ -311,7 +315,7 @@ class BuyerAccountFragment : BaseAccountFragment(), FragmentListener {
     }
 
     internal override fun notifyItemChanged(position: Int) {
-        adapter.notifyItemChanged(position)
+        adapter?.notifyItemChanged(position)
     }
 
     override fun onProductRecommendationClicked(product: RecommendationItem, adapterPosition: Int, widgetTitle: String) {
@@ -372,12 +376,12 @@ class BuyerAccountFragment : BaseAccountFragment(), FragmentListener {
     }
 
     private fun hideLoadMoreLoading() {
-        adapter.hideLoading()
+        adapter?.hideLoading()
         endlessRecyclerViewScrollListener?.updateStateAfterGetData()
     }
 
     private fun showLoadMoreLoading() {
-        adapter.showLoading()
+        adapter?.showLoading()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -409,7 +413,7 @@ class BuyerAccountFragment : BaseAccountFragment(), FragmentListener {
     }
 
     private fun handleWishlistActionSuccess(productCardOptionsModel: ProductCardOptionsModel) {
-        val recommendationItem = adapter.list.getOrNull(productCardOptionsModel.productPosition) as? RecommendationProductViewModel
+        val recommendationItem = adapter?.list?.getOrNull(productCardOptionsModel.productPosition) as? RecommendationProductViewModel
                 ?: return
         recommendationItem.product.isWishlist = productCardOptionsModel.wishlistResult.isAddWishlist
 
@@ -484,14 +488,18 @@ class BuyerAccountFragment : BaseAccountFragment(), FragmentListener {
     }
 
     private fun updateWishlist(wishlistStatusFromPdp: Boolean, position: Int) {
-        if (adapter.list.get(position) is RecommendationProductViewModel) {
-            (adapter.list.get(position) as RecommendationProductViewModel).product.isWishlist = wishlistStatusFromPdp
-            adapter.notifyItemChanged(position)
+        if (adapter?.list?.get(position) is RecommendationProductViewModel) {
+            (adapter?.list?.get(position) as RecommendationProductViewModel).product.isWishlist = wishlistStatusFromPdp
+            adapter?.notifyItemChanged(position)
         }
     }
 
     private fun scrollToTop() {
         recycler_buyer.scrollToPosition(0)
+    }
+
+    private fun addTopAdsHeadLine(visitable: ArrayList<Visitable<*>>) {
+        visitable.add(TopadsHeadlineUiModel())
     }
 
     private fun getRecommendationVisitable(recommendationWidget: RecommendationWidget): List<Visitable<*>> {

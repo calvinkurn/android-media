@@ -6,9 +6,13 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.homenav.base.datamodel.HomeNavMenuDataModel
+import com.tokopedia.homenav.base.datamodel.HomeNavTitleDataModel
 import com.tokopedia.homenav.base.diffutil.HomeNavVisitable
 import com.tokopedia.homenav.common.dispatcher.NavDispatcherProvider
 import com.tokopedia.homenav.common.util.ClientMenuGenerator
+import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.IDENTIFIER_TITLE_ALL_CATEGORIES
+import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.IDENTIFIER_TITLE_HELP_CENTER
+import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.IDENTIFIER_TITLE_MY_ACTIVITY
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_ALL_TRANSACTION
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_COMPLAIN
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_FAVORITE_SHOP
@@ -22,6 +26,7 @@ import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_TICKET
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_TOKOPEDIA_CARE
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_WISHLIST_MENU
 import com.tokopedia.homenav.common.util.Event
+import com.tokopedia.homenav.common.util.isABNewTokopoint
 import com.tokopedia.homenav.mainnav.MainNavConst
 import com.tokopedia.homenav.mainnav.data.pojo.shop.ShopData
 import com.tokopedia.homenav.mainnav.domain.model.NavNotificationModel
@@ -30,9 +35,7 @@ import com.tokopedia.homenav.mainnav.domain.usecases.*
 import com.tokopedia.homenav.mainnav.view.datamodel.*
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
-import com.tokopedia.searchbar.navigation_component.NavConstant
 import com.tokopedia.sessioncommon.domain.usecase.AccountAdminInfoUseCase
-import com.tokopedia.sessioncommon.domain.usecase.GetAdminTypeUseCase
 import com.tokopedia.sessioncommon.util.AdminUserSessionUtil.refreshUserSessionAdminData
 import com.tokopedia.sessioncommon.util.AdminUserSessionUtil.refreshUserSessionShopData
 import com.tokopedia.usecase.coroutines.Fail
@@ -42,7 +45,6 @@ import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
 import kotlinx.coroutines.*
 import javax.inject.Inject
-import kotlin.reflect.KClass
 
 class MainNavViewModel @Inject constructor(
         private val userSession: Lazy<UserSessionInterface>,
@@ -63,6 +65,7 @@ class MainNavViewModel @Inject constructor(
         private const val INDEX_HOME_BACK_SEPARATOR = 1
         private const val ON_GOING_TRANSACTION_TO_SHOW = 6
         private const val INDEX_DEFAULT_BU_POSITION = 1
+        private const val INDEX_DEFAULT_ALL_TRANSACTION = 1
 
         private const val SOURCE = "dave_home_nav"
     }
@@ -151,8 +154,9 @@ class MainNavViewModel @Inject constructor(
         } else {
             initialList.add(AccountHeaderDataModel(loginState = getLoginState()))
         }
-        initialList.add(InitialShimmerDataModel())
         initialList.addTransactionMenu()
+        initialList.addBUTitle()
+        initialList.add(InitialShimmerDataModel())
         initialList.addUserMenu()
         return initialList
     }
@@ -187,6 +191,10 @@ class MainNavViewModel @Inject constructor(
         this.addAll(buildUserMenuList())
     }
 
+    private fun MutableList<Visitable<*>>.addBUTitle() {
+        this.addAll(buildBUTitleList())
+    }
+
     private fun removeHomeBackButtonMenu() {
         val listOfHomeMenuSection = _mainNavListVisitable.filter {
             (it is HomeNavMenuDataModel && it.sectionId == MainNavConst.Section.HOME) ||
@@ -216,7 +224,9 @@ class MainNavViewModel @Inject constructor(
                     it is InitialShimmerDataModel
                 }
                 shimmeringDataModel?.let { deleteWidget(shimmeringDataModel) }
-                addWidgetList(result, findBuStartIndexPosition())
+                findBuStartIndexPosition()?.let {
+                    addWidgetList(result, it)
+                }
             } catch (e: Exception) {
                 e.printStackTrace()
             }
@@ -236,9 +246,12 @@ class MainNavViewModel @Inject constructor(
                     it is InitialShimmerDataModel
                 }
                 shimmeringDataModel?.let { deleteWidget(shimmeringDataModel) }
-                if (findExistingEndBuIndexPosition() == null) {
-                    addWidgetList(result, findBuStartIndexPosition())
+                findBuStartIndexPosition()?.let {
+                    if (findExistingEndBuIndexPosition() == null) {
+                        addWidgetList(result, it)
+                    }
                 }
+
                 onlyForNonLoggedInUser {
                     delay(1000)
                     _allProcessFinished.postValue(Event(true))
@@ -248,7 +261,9 @@ class MainNavViewModel @Inject constructor(
                 //then error state is not needed
                 val isBuExist = findExistingEndBuIndexPosition()
                 if (isBuExist == null) {
-                    updateWidget(ErrorStateBuDataModel(), findBuStartIndexPosition())
+                    findBuStartIndexPosition()?.let {
+                        updateWidget(ErrorStateBuDataModel(), it)
+                    }
                 }
 
                 val buShimmering = _mainNavListVisitable.find {
@@ -303,10 +318,11 @@ class MainNavViewModel @Inject constructor(
             accountModel?.let { account ->
                 if (account.isProfileLoading) {
                     updateWidget(account.copy(
+                            isTokopointExternalAmountError = isABNewTokopoint(),
                             isGetShopError = true,
                             isProfileLoading = false,
-                            isGetOvoError = true,
-                            isGetSaldoError = true,
+                            isGetOvoError = !isABNewTokopoint(),
+                            isGetSaldoError = !isABNewTokopoint(),
                             isGetUserMembershipError = true,
                             isGetUserNameError = true
                     ), INDEX_MODEL_ACCOUNT)
@@ -317,11 +333,13 @@ class MainNavViewModel @Inject constructor(
     }
 
     fun refreshBuListdata() {
-        updateWidget(InitialShimmerDataModel(), findBuStartIndexPosition())
-        launchCatchError(coroutineContext, block = {
-            getBuListMenu()
-        }) {
+        findBuStartIndexPosition()?.let {
+            updateWidget(InitialShimmerDataModel(), it)
+            launchCatchError(coroutineContext, block = {
+                getBuListMenu()
+            }) {
 
+            }
         }
     }
 
@@ -358,46 +376,50 @@ class MainNavViewModel @Inject constructor(
                         NavOrderListModel(orderListToShow, paymentList), othersTransactionCount)
 
                 //find shimmering and change with result value
-                findExistingEndBuIndexPosition()?.let {
+                findTransactionShimmer()?.let {
                     updateWidget(transactionListItemViewModel, it)
+                }
+            } else {
+                findTransactionShimmer()?.let {
+                    deleteWidget(InitialShimmerTransactionDataModel())
                 }
             }
             onlyForLoggedInUser { _allProcessFinished.postValue(Event(true)) }
         } catch (e: Exception) {
             //find shimmering and change with result value
-            val transactionShimmering = _mainNavListVisitable.withIndex().find {
-                it.value is InitialShimmerTransactionDataModel
-            }
-            transactionShimmering?.let {
-                updateWidget(ErrorStateOngoingTransactionModel(), it.index)
+            findTransactionShimmer()?.let {
+                updateWidget(ErrorStateOngoingTransactionModel(), it)
             }
             onlyForLoggedInUser { _allProcessFinished.postValue(Event(true)) }
             e.printStackTrace()
         }
     }
 
+    private fun buildBUTitleList(): List<Visitable<*>> {
+        clientMenuGenerator.get()?.let {
+            return mutableListOf(
+                    it.getSectionTitle(IDENTIFIER_TITLE_ALL_CATEGORIES)
+            )
+        }
+        return listOf()
+    }
+
     private fun buildUserMenuList(): List<Visitable<*>> {
         clientMenuGenerator.get()?.let {
-            val firstSectionList = mutableListOf<Visitable<*>>(
-                    SeparatorDataModel(),
-                    it.getMenu(menuId = ID_WISHLIST_MENU, sectionId = MainNavConst.Section.USER_MENU),
-                    it.getMenu(menuId = ID_FAVORITE_SHOP, sectionId = MainNavConst.Section.USER_MENU),
-                    it.getMenu(menuId = ID_RECENT_VIEW, sectionId = MainNavConst.Section.USER_MENU),
-                    it.getMenu(menuId = ID_SUBSCRIPTION, sectionId = MainNavConst.Section.USER_MENU)
-            )
-            val showOpenShopTicker = userSession.get().isLoggedIn && !userSession.get().hasShop()
-            if (showOpenShopTicker) firstSectionList.add(it.getTicker(ID_OPEN_SHOP_TICKER))
-            firstSectionList.add(SeparatorDataModel())
-
             val complainNotification = if (navNotification.unreadCountComplain.isMoreThanZero())
                 navNotification.unreadCountComplain.toString() else ""
 
             val inboxTicketNotification = if (navNotification.unreadCountInboxTicket.isMoreThanZero())
                 navNotification.unreadCountInboxTicket.toString() else ""
 
-            val secondSectionList = listOf(
+            val firstSectionList = mutableListOf<Visitable<*>>(
+                    it.getSectionTitle(IDENTIFIER_TITLE_HELP_CENTER),
                     it.getMenu(menuId = ID_COMPLAIN, notifCount = complainNotification, sectionId = MainNavConst.Section.USER_MENU),
-                    it.getMenu(menuId = ID_TOKOPEDIA_CARE, notifCount = inboxTicketNotification, sectionId = MainNavConst.Section.USER_MENU),
+                    it.getMenu(menuId = ID_TOKOPEDIA_CARE, notifCount = inboxTicketNotification, sectionId = MainNavConst.Section.USER_MENU)
+            )
+            firstSectionList.add(SeparatorDataModel())
+
+            val secondSectionList = listOf(
                     it.getMenu(menuId = ID_QR_CODE, sectionId = MainNavConst.Section.USER_MENU)
             )
             val completeList = firstSectionList.plus(secondSectionList)
@@ -408,12 +430,26 @@ class MainNavViewModel @Inject constructor(
 
     private fun buildTransactionMenuList(): List<Visitable<*>> {
         clientMenuGenerator.get()?.let {
-            return mutableListOf(
-                    SeparatorDataModel(),
-                    it.getMenu(ID_ALL_TRANSACTION, sectionId = MainNavConst.Section.ORDER),
-                    it.getMenu(ID_TICKET, sectionId = MainNavConst.Section.ORDER),
-                    it.getMenu(ID_REVIEW, sectionId = MainNavConst.Section.ORDER)
-            )
+            var transactionDataList: MutableList<Visitable<*>> = mutableListOf()
+            if (userSession.get().isLoggedIn) {
+                transactionDataList = mutableListOf(
+                        SeparatorDataModel(),
+                        it.getSectionTitle(IDENTIFIER_TITLE_MY_ACTIVITY),
+                        InitialShimmerTransactionDataModel(),
+                        it.getMenu(menuId = ID_ALL_TRANSACTION, sectionId = MainNavConst.Section.ORDER),
+                        it.getMenu(menuId = ID_REVIEW, sectionId = MainNavConst.Section.ORDER),
+                        it.getMenu(menuId = ID_WISHLIST_MENU, sectionId = MainNavConst.Section.ORDER),
+                        it.getMenu(menuId = ID_FAVORITE_SHOP, sectionId = MainNavConst.Section.ORDER))
+            } else {
+                transactionDataList = mutableListOf(
+                        SeparatorDataModel(),
+                        it.getSectionTitle(IDENTIFIER_TITLE_MY_ACTIVITY),
+                        it.getMenu(menuId = ID_ALL_TRANSACTION, sectionId = MainNavConst.Section.ORDER),
+                        it.getMenu(menuId = ID_REVIEW, sectionId = MainNavConst.Section.ORDER),
+                        it.getMenu(menuId = ID_WISHLIST_MENU, sectionId = MainNavConst.Section.ORDER),
+                        it.getMenu(menuId = ID_FAVORITE_SHOP, sectionId = MainNavConst.Section.ORDER))
+            }
+            return transactionDataList
         }
         return listOf()
     }
@@ -575,11 +611,24 @@ class MainNavViewModel @Inject constructor(
         return null
     }
 
+
+    //all transaction menu start index should after back home button or position 1
     fun findAllTransactionModelPosition(): Int? {
-        val findAllTransactionMenu = _mainNavListVisitable.find {
-            it is HomeNavMenuDataModel && it.id == ID_ALL_TRANSACTION
+        val findHomeMenu = _mainNavListVisitable.find {
+            it is HomeNavMenuDataModel && it.id == ID_HOME
         }
-        findAllTransactionMenu?.let{
+        findHomeMenu?.let{
+            //if home menu is exist, then the position of all transaction menu is after home menu
+            return _mainNavListVisitable.indexOf(it) + 1
+        }
+        return INDEX_DEFAULT_ALL_TRANSACTION
+    }
+
+    private fun findTransactionShimmer(): Int? {
+        val transactionShimmer = _mainNavListVisitable.firstOrNull {
+            it is InitialShimmerTransactionDataModel
+        }
+        transactionShimmer?.let{
             return _mainNavListVisitable.indexOf(it)
         }
         return null
@@ -595,16 +644,14 @@ class MainNavViewModel @Inject constructor(
         return null
     }
 
-    //bu menu start index should after back home button or position 1
-    private fun findBuStartIndexPosition(): Int {
-        val findHomeMenu = _mainNavListVisitable.find {
-            it is HomeNavMenuDataModel && it.id == ID_HOME
+    private fun findBuStartIndexPosition(): Int? {
+        val findBUTitle = _mainNavListVisitable.firstOrNull {
+            it is HomeNavTitleDataModel && it.identifier == IDENTIFIER_TITLE_ALL_CATEGORIES
         }
-        findHomeMenu?.let{
-            //if home menu is exist, then the position of bu menu is after home menu
-            return _mainNavListVisitable.indexOf(it)+1
+        findBUTitle?.let{
+            return _mainNavListVisitable.indexOf(it) + 1
         }
-        return INDEX_DEFAULT_BU_POSITION
+        return null
     }
 
     private fun findExistingEndBuIndexPosition(): Int? {
@@ -612,8 +659,7 @@ class MainNavViewModel @Inject constructor(
             it is HomeNavMenuDataModel && it.sectionId == MainNavConst.Section.BU_ICON
         }
         findHomeMenu?.let{
-            //if home menu is exist, then the position of bu menu is after home menu
-            return _mainNavListVisitable.indexOf(it)+1
+            return _mainNavListVisitable.indexOf(it)
         }
         return null
     }

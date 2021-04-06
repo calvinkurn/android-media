@@ -1,8 +1,8 @@
 package com.tokopedia.search.result.presentation.view.fragment;
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
+import com.tokopedia.recommendation_widget_common.di.RecommendationModule;
 import com.tokopedia.search.di.module.GraphqlRepositoryModule;
-import com.tokopedia.search.di.module.RecommendationModule;
 import com.tokopedia.search.di.module.RemoteConfigModule;
 import com.tokopedia.search.di.module.ResourcesModule;
 import com.tokopedia.search.di.module.SearchContextModule;

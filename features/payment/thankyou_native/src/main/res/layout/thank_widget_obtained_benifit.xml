@@ -25,6 +25,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/view_divider_1"
         app:typographyType="body_3"
+        app:layout_goneMarginTop="@dimen/spacing_lvl4"
         app:typographyWeight="bold" />
 
     <LinearLayout
