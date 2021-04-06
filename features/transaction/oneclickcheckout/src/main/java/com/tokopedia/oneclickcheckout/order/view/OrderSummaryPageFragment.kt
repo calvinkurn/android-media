@@ -14,6 +14,7 @@ import android.text.style.StyleSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewPropertyAnimator
 import android.widget.ScrollView
 import androidx.appcompat.app.AlertDialog
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -115,9 +116,9 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
 
     private var orderPreference: OrderPreference? = null
 
-    private val swipeRefreshLayout by lazy { view?.findViewById<SwipeToRefresh>(R.id.swipe_refresh_layout) }
     private val globalError by lazy { view?.findViewById<GlobalError>(R.id.global_error) }
     private val mainContent by lazy { view?.findViewById<ConstraintLayout>(R.id.main_content) }
+    private val loaderContent by lazy { view?.findViewById<ConstraintLayout>(R.id.loader_content) }
     private val layoutNoAddress by lazy { view?.findViewById<ConstraintLayout>(R.id.layout_no_address) }
     private val descNoAddress by lazy { view?.findViewById<Typography>(R.id.desc_no_address) }
     private val btnAddNewAddress by lazy { view?.findViewById<UnifyButton>(R.id.btn_occ_add_new_address) }
@@ -296,7 +297,6 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         context?.let {
             activity?.window?.decorView?.setBackgroundColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0))
         }
-        swipeRefreshLayout?.isRefreshing = true
         orderProductCard = OrderProductCard(view, this, orderSummaryAnalytics)
         newOrderPreferenceCard = NewOrderPreferenceCard(view, getNewOrderPreferenceCardListener(), orderSummaryAnalytics)
         orderPreferenceCard = OrderPreferenceCard(view, getOrderPreferenceCardListener(), orderSummaryAnalytics)
@@ -314,7 +314,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
             when (it) {
                 is OccState.FirstLoad -> {
                     orderPreference = it.data
-                    swipeRefreshLayout?.isRefreshing = false
+                    loaderContent?.gone()
                     globalError?.gone()
                     view?.let { _ ->
                         orderProductCard?.setProduct(viewModel.orderProduct)
@@ -338,7 +338,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                 }
                 is OccState.Success -> {
                     orderPreference = it.data
-                    swipeRefreshLayout?.isRefreshing = false
+                    loaderContent?.gone()
                     globalError?.gone()
                     view?.let { _ ->
                         if (orderProductCard?.isProductInitialized() == false) {
@@ -363,10 +363,12 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                     }
                 }
                 is OccState.Loading -> {
-                    swipeRefreshLayout?.isRefreshing = true
+                    mainContent?.gone()
+                    globalError?.gone()
+                    loaderContent?.visible()
                 }
                 is OccState.Failed -> {
-                    swipeRefreshLayout?.isRefreshing = false
+                    loaderContent?.gone()
                     it.getFailure()?.let { failure ->
                         handleError(failure.throwable)
                     }
@@ -429,7 +431,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                             Toaster.build(v, message, type = Toaster.TYPE_ERROR).show()
                         }
                         source = SOURCE_OTHERS
-                        refresh(false, isFullRefresh = it.isFullRefresh)
+                        refresh(isFullRefresh = it.isFullRefresh)
                     }
                 }
                 is OccGlobalEvent.Error -> {
@@ -515,12 +517,12 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                 }
                 is OccGlobalEvent.AtcError -> {
                     progressDialog?.dismiss()
-                    swipeRefreshLayout?.isRefreshing = false
+                    loaderContent?.gone()
                     handleAtcError(it)
                 }
                 is OccGlobalEvent.AtcSuccess -> {
                     progressDialog?.dismiss()
-                    swipeRefreshLayout?.isRefreshing = false
+                    loaderContent?.gone()
                     view?.let { v ->
                         if (it.message.isNotBlank()) {
                             Toaster.build(v, it.message).show()
@@ -607,7 +609,9 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
             val message = MethodChecker.fromHtml(preference.onboardingHeaderMessage)
             val infoButton = getString(R.string.lbl_osp_secondary_header_info)
             val spannableString = SpannableString("$message $infoButton")
-            spannableString.setSpan(ForegroundColorSpan(Color.parseColor(COLOR_INFO)), spannableString.length - infoButton.length, spannableString.length, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
+            context?.also {
+                spannableString.setSpan(ForegroundColorSpan(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_G500)), spannableString.length - infoButton.length, spannableString.length, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
+            }
             spannableString.setSpan(StyleSpan(BOLD), spannableString.length - infoButton.length, spannableString.length, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
             tvHeader3?.text = spannableString
             tvHeader3?.setOnClickListener {
@@ -1413,7 +1417,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
     private fun showGlobalError(type: Int) {
         globalError?.setType(type)
         globalError?.setActionClickListener {
-            refresh(false)
+            refresh()
         }
         mainContent?.gone()
         layoutNoAddress?.gone()
@@ -1495,11 +1499,11 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
     }
 
     private fun refresh(shouldHideAll: Boolean = true, isFullRefresh: Boolean = true) {
-        swipeRefreshLayout?.isRefreshing = true
         if (shouldHideAll) {
             mainContent?.gone()
             layoutNoAddress?.gone()
             globalError?.gone()
+            loaderContent?.visible()
         }
         viewModel.getOccCart(isFullRefresh, source)
     }
@@ -1635,7 +1639,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
 
     override fun onStop() {
         super.onStop()
-        if (swipeRefreshLayout?.isRefreshing == false && shouldUpdateCart) {
+        if (loaderContent?.visibility == View.GONE && shouldUpdateCart) {
             viewModel.updateCart()
         }
         if (shouldDismissProgressDialog && progressDialog?.isShowing == true) {
@@ -1675,8 +1679,6 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         const val QUERY_PRODUCT_ID = "product_id"
 
         private const val EMPTY_PROFILE_IMAGE = "https://ecs7.tokopedia.net/android/others/beli_langsung_intro.png"
-
-        private const val COLOR_INFO = "#03AC0E"
 
         private const val COACH_MARK_TAG = "osp_coach_mark"
 

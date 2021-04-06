@@ -37,6 +37,7 @@ import com.tokopedia.oneclickcheckout.order.view.model.*
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.Label
+import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 
@@ -55,6 +56,8 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
     private val tvAddressName by lazy { view.findViewById<Typography>(R.id.tv_new_address_name) }
     private val tvAddressDetail by lazy { view.findViewById<Typography>(R.id.tv_new_address_detail) }
     private val btnChangeAddress by lazy { view.findViewById<IconUnify>(R.id.btn_new_change_address) }
+
+    private val loaderShipping by lazy { view.findViewById<LoaderUnify>(R.id.loader_shipping) }
 
     private val tickerShippingPromo by lazy { view.findViewById<CardUnify>(R.id.ticker_new_shipping_promo) }
     private val tickerShippingPromoDescription by lazy { view.findViewById<Typography>(R.id.ticker_new_shipping_promo_description) }
@@ -157,6 +160,7 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
         val shipping = shipment
 
         if (shipping == null || shipping.serviceName.isNullOrEmpty()) {
+            tvShippingDuration?.gone()
             tvShippingDurationEta?.gone()
             btnChangeDuration?.gone()
             tvShippingCourier?.gone()
@@ -167,7 +171,9 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
             btnReloadShipping?.gone()
             iconReloadShipping?.gone()
             tickerShippingPromo?.gone()
+            loaderShipping?.visible()
         } else {
+            loaderShipping?.gone()
             if (shipping.serviceErrorMessage == null || shipping.serviceErrorMessage.isBlank()) {
                 tvShippingDuration?.text = view.context.getString(R.string.lbl_shipping_with_name, shipping.serviceName)
                 tvShippingDuration?.visible()

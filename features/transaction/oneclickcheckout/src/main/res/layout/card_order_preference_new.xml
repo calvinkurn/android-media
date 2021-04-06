@@ -162,6 +162,20 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_new_address_detail" />
 
+            <com.tokopedia.unifycomponents.LoaderUnify
+                android:id="@+id/loader_shipping"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/layout_lvl4"
+                android:layout_marginStart="@dimen/dp_16"
+                android:layout_marginTop="@dimen/dp_16"
+                android:layout_marginEnd="@dimen/dp_16"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/divider_new_address_shipping"
+                app:loader_corner_radius="4dp"
+                app:loader_type="rect" />
+
             <com.tokopedia.unifycomponents.CardUnify
                 android:id="@+id/ticker_new_shipping_promo"
                 android:layout_width="match_parent"
@@ -172,7 +186,7 @@
                 app:card_type="clear"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/divider_new_address_shipping">
+                app:layout_constraintTop_toBottomOf="@+id/loader_shipping">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
