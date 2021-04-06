@@ -13,7 +13,6 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.DiffUtil
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.common.topupbills.data.TelcoEnquiryData
 import com.tokopedia.common.topupbills.data.TopupBillsFavNumber
@@ -24,12 +23,11 @@ import com.tokopedia.common.topupbills.view.fragment.TopupBillsSearchNumberFragm
 import com.tokopedia.common.topupbills.view.model.TopupBillsExtraParam
 import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsViewModel
 import com.tokopedia.common.topupbills.widget.TopupBillsCheckoutWidget
-import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
-import com.tokopedia.common_digital.common.util.CommonDigitalGqlQuery
 import com.tokopedia.common_digital.atc.DigitalAddToCartViewModel
 import com.tokopedia.common_digital.product.presentation.model.ClientNumberType
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.topupbills.R
 import com.tokopedia.topupbills.searchnumber.view.DigitalSearchNumberActivity
@@ -327,19 +325,24 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
 
             enquiryViewModel.enquiryResult.observe(this, Observer {
                 when (it) {
-                    is Success -> enquirySuccess()
-                    is Fail -> enquiryFailed()
+                    is Success -> enquirySuccess(it.data)
+                    is Fail -> {
+                        var throwable = it.throwable
+                        if (throwable.message == TopupBillsViewModel.NULL_RESPONSE) {
+                            throwable = MessageErrorException(getString(com.tokopedia.common.topupbills.R.string.common_topup_enquiry_error))
+                        }
+                        enquiryFailed(throwable)
+                    }
                 }
             })
         }
     }
 
-    private fun enquirySuccess() {
+    private fun enquirySuccess(enquiryData: TelcoEnquiryData) {
         postpaidClientNumberWidget.setLoadingButtonEnquiry(false)
         tabLayout.hide()
         separator.hide()
         viewPager.hide()
-        val enquiryData = (enquiryViewModel.enquiryResult.value as Success).data
         setCheckoutPassData(enquiryData)
         postpaidClientNumberWidget.showEnquiryResultPostpaid(enquiryData)
 
@@ -348,11 +351,10 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
         buyWidget.setVisibilityLayout(true)
     }
 
-    private fun enquiryFailed() {
+    private fun enquiryFailed(throwable: Throwable) {
         postpaidClientNumberWidget.setLoadingButtonEnquiry(false)
-        val errorEnquiry = enquiryViewModel.enquiryResult.value as Fail
         view?.run {
-            errorEnquiry.throwable?.let {
+            throwable.let {
                 Toaster.build(this, ErrorHandler.getErrorMessage(context, it), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
             }
         }

@@ -4,10 +4,12 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.common.topupbills.data.TelcoEnquiryData
+import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsViewModel.Companion.NULL_RESPONSE
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -33,7 +35,12 @@ class DigitalTelcoEnquiryViewModel @Inject constructor(private val graphqlReposi
                 graphqlRepository.getReseponse(listOf(graphqlRequest))
             }.getSuccessData<TelcoEnquiryData>()
 
-            _enquiryResult.postValue(Success(data))
+            val result = if (data?.enquiry != null && data.enquiry.attributes != null) {
+                Success(data)
+            } else {
+                Fail(MessageErrorException(NULL_RESPONSE))
+            }
+            _enquiryResult.postValue(result)
         }) {
             _enquiryResult.postValue(Fail(it))
         }
