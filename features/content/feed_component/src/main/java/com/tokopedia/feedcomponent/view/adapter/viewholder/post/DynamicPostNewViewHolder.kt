@@ -7,10 +7,15 @@ import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.view.viewmodel.DynamicPostUiModel
 import com.tokopedia.feedcomponent.view.widget.PostDynamicViewNew
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.setMargin
+import com.tokopedia.user.session.UserSession
 
 class DynamicPostNewViewHolder(itemView: View) : AbstractViewHolder<DynamicPostUiModel>(itemView) {
 
     private val postDynamicView = itemView.findViewById<PostDynamicViewNew>(R.id.item_post_dynamic_view)
+    private val userSession: UserSession by lazy {
+        UserSession(itemView.context)
+    }
 
     companion object {
         @LayoutRes
@@ -24,8 +29,13 @@ class DynamicPostNewViewHolder(itemView: View) : AbstractViewHolder<DynamicPostU
         }
 
         postDynamicView.bindHeader(element.feedXCard.author)
+        postDynamicView.bindItems(element.feedXCard.media)
         postDynamicView.bindLike(element.feedXCard.like)
-        postDynamicView.bindComment(element.feedXCard.comments)
+        postDynamicView.bindComment(element.feedXCard.comments, userSession.profilePicture, userSession.name)
+        postDynamicView.setMargin(itemView.context.resources.getDimensionPixelSize(R.dimen.unify_space_0),
+                itemView.context.resources.getDimensionPixelSize(R.dimen.unify_space_12),
+                itemView.context.resources.getDimensionPixelSize(R.dimen.unify_space_0),
+                itemView.context.resources.getDimensionPixelSize(R.dimen.unify_space_12))
 
     }
 

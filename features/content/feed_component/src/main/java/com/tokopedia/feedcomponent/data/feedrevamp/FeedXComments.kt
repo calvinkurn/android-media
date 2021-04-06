@@ -10,7 +10,7 @@ data class FeedXComments(
         @SerializedName("countFmt")
         var countFmt: String = "",
         @SerializedName("items")
-        var commentItems: FeedXCommentsItem = FeedXCommentsItem(),
+        var commentItems: List<FeedXCommentsItem> = emptyList(),
         @SerializedName("mods")
         var mods: List<String> = emptyList(),
 )

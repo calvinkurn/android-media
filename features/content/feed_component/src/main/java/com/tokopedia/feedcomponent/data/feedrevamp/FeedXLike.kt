@@ -10,7 +10,7 @@ data class FeedXLike(
         @SerializedName("countFmt")
         var countFmt: String = "",
         @SerializedName("likedBy")
-        var likedBy: String = "",
+        var likedBy: List<String> = emptyList(),
         @SerializedName("isLiked")
         var isLiked: Boolean = false,
         @SerializedName("mods")

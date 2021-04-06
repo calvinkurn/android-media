@@ -19,7 +19,6 @@ private const val TYPE_FEED_X_CARD_PLACEHOLDER: String = "FeedXCardPlaceholder"
 private const val TYPE_FEED_X_CARD_BANNERS: String = "FeedXCardBanners"
 private const val TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT: String = "FeedXCardProductsHighlight"
 private const val TYPE_FEED_X_CARD_POST: String = "FeedXCardPost"
-private const val TYPE_FEED_X_CARD_TOP_ADS: String = "FeedXCardTopAds"
 private const val TYPE_TOPADS_HEADLINE = "topads_headline"
 private const val TYPE_CARD_PLAY_CAROUSEL = "play_carousel"
 
@@ -46,8 +45,6 @@ object DynamicFeedNewMapper {
                 }
                 TYPE_FEED_X_CARD_POST -> {
                     mapCardPost(posts, it)
-                }
-                TYPE_FEED_X_CARD_TOP_ADS -> {
                 }
             }
         }

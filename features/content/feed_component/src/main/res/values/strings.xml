@@ -109,4 +109,11 @@
     <string name="feed_component_report_option_text3">Penipuan</string>
     <string name="feed_component_report_option_text4">Penjualan barang ilegal dan terlarang</string>
     <string name="feed_component_report_option_text5">Pelanggaran kekayaan intelektual</string>
+
+    <!--DYNAMIC POST ASSETS-->
+    <string name="feed_component_liked_count_text">%s orang menyukai</string>
+    <string name="feed_component_liked_by_text">Disukai oleh %s dan %s lainnya</string>
+    <string name="feed_component_see_all_comments">Lihat Semua %s Komentar</string>
+    <string name="feed_component_add_comment">Comment as %s...</string>
+
 </resources>
