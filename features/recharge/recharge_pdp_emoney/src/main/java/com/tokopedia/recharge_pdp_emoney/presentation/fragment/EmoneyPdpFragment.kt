@@ -1,5 +1,7 @@
 package com.tokopedia.recharge_pdp_emoney.presentation.fragment
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,11 +13,16 @@ import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConsInternalDigital
+import com.tokopedia.common.topupbills.data.TopupBillsFavNumberItem
 import com.tokopedia.common.topupbills.data.TopupBillsPromo
 import com.tokopedia.common.topupbills.data.TopupBillsRecommendation
 import com.tokopedia.common.topupbills.utils.CommonTopupBillsGqlMutation
 import com.tokopedia.common.topupbills.utils.CommonTopupBillsGqlQuery
+import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActivity
 import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsViewModel
+import com.tokopedia.common_digital.common.constant.DigitalExtraParam
+import com.tokopedia.common_digital.product.presentation.model.ClientNumberType
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.recharge_pdp_emoney.R
@@ -25,7 +32,6 @@ import com.tokopedia.recharge_pdp_emoney.presentation.viewmodel.EmoneyPdpViewMod
 import com.tokopedia.recharge_pdp_emoney.presentation.widget.EmoneyPdpHeaderViewWidget
 import com.tokopedia.recharge_pdp_emoney.presentation.widget.EmoneyPdpInputCardNumberWidget
 import com.tokopedia.recharge_pdp_emoney.utils.EmoneyPdpMapper
-import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifycomponents.ticker.TickerData
 import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
@@ -172,27 +178,66 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
         }
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (resultCode == Activity.RESULT_OK) {
+            when (requestCode) {
+                REQUEST_CODE_EMONEY_PDP_DIGITAL_SEARCH_NUMBER -> {
+                    val favNumber = data?.getParcelableExtra<TopupBillsFavNumberItem>(TopupBillsSearchNumberActivity.EXTRA_CALLBACK_CLIENT_NUMBER)
+                    favNumber?.let { renderClientNumber(it) }
+                }
+            }
+        }
+    }
+
+    private fun renderClientNumber(item: TopupBillsFavNumberItem) {
+        emoneyPdpInputCardWidget.setNumber(item.clientNumber)
+    }
+
     private fun renderErrorMessage() {
 
     }
 
     override fun onClickCheckBalance() {
-
+        val intent = RouteManager.getIntent(activity,
+                ApplinkConsInternalDigital.SMARTCARD, DigitalExtraParam.EXTRA_NFC_FROM_PDP, "false")
+        startActivityForResult(intent, REQUEST_CODE_EMONEY_PDP_CHECK_SALDO)
     }
 
     override fun onClickUpdateBalance() {
-
+        val intent = RouteManager.getIntent(activity,
+                ApplinkConsInternalDigital.SMARTCARD, DigitalExtraParam.EXTRA_NFC_FROM_PDP, "false")
+        startActivityForResult(intent, REQUEST_CODE_EMONEY_PDP_CHECK_SALDO)
     }
 
     override fun onClickCameraIcon() {
-
+        val intent = RouteManager.getIntent(activity, ApplinkConsInternalDigital.CAMERA_OCR)
+        startActivityForResult(intent, REQUEST_CODE_EMONEY_PDP_CAMERA_OCR)
     }
 
     override fun onClickInputView(inputNumber: String) {
-        Toaster.build(requireView(), "Lala").show()
+        showFavoriteNumbersPage((topUpBillsViewModel.favNumberData.value as Success).data.favNumberList)
     }
 
     override fun onRemoveNumberIconClick() {
 
+    }
+
+    override fun onInputNumberChanged(inputNumber: String) {
+        // call be to get operator name
+    }
+
+    private fun showFavoriteNumbersPage(favoriteNumbers: List<TopupBillsFavNumberItem>) {
+        startActivityForResult(
+                TopupBillsSearchNumberActivity.getCallingIntent(requireContext(),
+                        ClientNumberType.TYPE_INPUT_NUMERIC, "", favoriteNumbers),
+                REQUEST_CODE_EMONEY_PDP_DIGITAL_SEARCH_NUMBER)
+    }
+
+    companion object {
+        private const val REQUEST_CODE_EMONEY_PDP_CHECK_SALDO = 1007
+        private const val REQUEST_CODE_EMONEY_PDP_CAMERA_OCR = 1008
+        private const val REQUEST_CODE_EMONEY_PDP_DIGITAL_SEARCH_NUMBER = 1004
     }
 }

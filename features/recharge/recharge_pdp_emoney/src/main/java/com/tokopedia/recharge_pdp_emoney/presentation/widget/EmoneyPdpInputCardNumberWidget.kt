@@ -1,7 +1,9 @@
 package com.tokopedia.recharge_pdp_emoney.presentation.widget
 
 import android.content.Context
+import android.text.Editable
 import android.text.InputType
+import android.text.TextWatcher
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import com.tokopedia.kotlin.extensions.view.clearImage
@@ -32,14 +34,25 @@ class EmoneyPdpInputCardNumberWidget @JvmOverloads constructor(@NotNull context:
         emoneyPdpCardInputNumber.textFieldInput.setOnClickListener { listener?.onClickInputView(getInputString()) }
         emoneyPdpCardInputNumber.textFieldInput.inputType = InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS
 
-
         emoneyPdpCardInputNumber.getSecondIcon().setPadding(resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2), resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2), resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2), resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2))
         emoneyPdpCardInputNumber.getSecondIcon().setOnClickListener {
             clearNumberAndOperator()
             listener?.onRemoveNumberIconClick()
         }
+        emoneyPdpCardCameraIcon.setOnClickListener {
+            listener?.onClickCameraIcon()
+        }
 
-        emoneyPdpCardCameraIcon.setOnClickListener { listener?.onClickCameraIcon() }
+        emoneyPdpCardInputNumber.textFieldInput.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {
+                listener?.onInputNumberChanged(s.toString())
+            }
+
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+        })
+
+
     }
 
     fun setNumber(number: String) {
@@ -67,5 +80,6 @@ class EmoneyPdpInputCardNumberWidget @JvmOverloads constructor(@NotNull context:
         fun onClickCameraIcon()
         fun onClickInputView(inputNumber: String)
         fun onRemoveNumberIconClick()
+        fun onInputNumberChanged(inputNumber: String)
     }
 }
