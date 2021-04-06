@@ -920,19 +920,19 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
 
                 } else {
                     // dialog finish order --> now bottomsheet
-                    BottomSheetUnify bottomSheetFinishOrder = new BottomSheetUnify();
-                    View bottomSheetView = View.inflate(getContext(), R.layout.bottomsheet_finish_order_uoh, null);
+                    if (!TextUtils.isEmpty(actionButton.getActionButtonPopUp().getActionButtonList().get(1).getUri())) {
+                        if (actionButton.getActionButtonPopUp().getActionButtonList().get(1).getLabel().equalsIgnoreCase("Selesai") && getArguments() != null) {
+                            BottomSheetUnify bottomSheetFinishOrder = new BottomSheetUnify();
+                            View bottomSheetView = View.inflate(getContext(), R.layout.bottomsheet_finish_order_uoh, null);
 
-                    IconUnify iconFinish1 = bottomSheetView.findViewById(R.id.ic_finish_detail_1);
-                    iconFinish1.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.ic_bound_icon));
+                            IconUnify iconFinish1 = bottomSheetView.findViewById(R.id.ic_finish_detail_1);
+                            iconFinish1.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.ic_bound_icon));
 
-                    IconUnify iconFinish2 = bottomSheetView.findViewById(R.id.ic_finish_detail_2);
-                    iconFinish2.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.ic_bound_icon));
+                            IconUnify iconFinish2 = bottomSheetView.findViewById(R.id.ic_finish_detail_2);
+                            iconFinish2.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.ic_bound_icon));
 
-                    UnifyButton finishBtn = bottomSheetView.findViewById(R.id.btn_finish_order);
-                    finishBtn.setOnClickListener(view13 -> {
-                        if (!TextUtils.isEmpty(actionButton.getActionButtonPopUp().getActionButtonList().get(1).getUri())) {
-                            if (actionButton.getActionButtonPopUp().getActionButtonList().get(1).getLabel().equalsIgnoreCase("Selesai") && getArguments() != null) {
+                            UnifyButton finishBtn = bottomSheetView.findViewById(R.id.btn_finish_order);
+                            finishBtn.setOnClickListener(view13 -> {
                                 String actionStatus = "";
                                 if (!status.status().isEmpty() && Integer.parseInt(status.status()) < 600) {
                                     actionStatus = ACTION_FINISH_ORDER;
@@ -944,28 +944,29 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                                         actionStatus,
                                         userSessionInterface.getUserId());
                                 bottomSheetFinishOrder.dismiss();
-                            }
-                        } else {
-                            bottomSheetFinishOrder.dismiss();
-                        }
-                    });
 
-                    UnifyButton komplainBtn = bottomSheetView.findViewById(R.id.btn_ajukan_komplain);
-                    komplainBtn.setOnClickListener(view14 -> {
-                        if (actionButton.getActionButtonPopUp().getActionButtonList().get(1).getLabel().equalsIgnoreCase("Komplain") && getArguments() != null) {
+                            });
+
+                            UnifyButton komplainBtn = bottomSheetView.findViewById(R.id.btn_ajukan_komplain);
+                            komplainBtn.setOnClickListener(view14 -> {
+                                Intent newIntent = RouteManager.getIntent(getContext(), ApplinkConstInternalGlobal.WEBVIEW, String.format(TokopediaUrl.Companion.getInstance().getMOBILEWEB() + ApplinkConst.ResCenter.RESO_CREATE, getArguments().getString(KEY_ORDER_ID)));
+                                startActivityForResult(newIntent, CREATE_RESCENTER_REQUEST_CODE);
+                                bottomSheetFinishOrder.dismiss();
+                            });
+
+                            bottomSheetFinishOrder.setChild(bottomSheetView);
+                            bottomSheetFinishOrder.setTitle(FINISH_ORDER_BOTTOMSHEET_TITLE);
+                            bottomSheetFinishOrder.setCloseClickListener(view8 -> {
+                                bottomSheetFinishOrder.dismiss();
+                                return Unit.INSTANCE;
+                            });
+                            bottomSheetFinishOrder.show(getChildFragmentManager(), getString(R.string.show_bottomsheet));
+
+                        } else if (actionButton.getActionButtonPopUp().getActionButtonList().get(1).getLabel().equalsIgnoreCase("Komplain") && getArguments() != null) {
                             Intent newIntent = RouteManager.getIntent(getContext(), ApplinkConstInternalGlobal.WEBVIEW, String.format(TokopediaUrl.Companion.getInstance().getMOBILEWEB() + ApplinkConst.ResCenter.RESO_CREATE, getArguments().getString(KEY_ORDER_ID)));
                             startActivityForResult(newIntent, CREATE_RESCENTER_REQUEST_CODE);
-                            bottomSheetFinishOrder.dismiss();
                         }
-                    });
-
-                    bottomSheetFinishOrder.setChild(bottomSheetView);
-                    bottomSheetFinishOrder.setTitle(FINISH_ORDER_BOTTOMSHEET_TITLE);
-                    bottomSheetFinishOrder.setCloseClickListener(view8 -> {
-                        bottomSheetFinishOrder.dismiss();
-                        return Unit.INSTANCE;
-                    });
-                    bottomSheetFinishOrder.show(getChildFragmentManager(), getString(R.string.show_bottomsheet));
+                    }
                 }
             } else if (!TextUtils.isEmpty(actionButton.getUri())) {
                 if (actionButton.getUri().contains("askseller")) {
