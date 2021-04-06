@@ -3,6 +3,7 @@ package com.tokopedia.pdpsimulation.paylater.viewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.pdpsimulation.TkpdIdlingResourceProvider
 import com.tokopedia.pdpsimulation.common.di.qualifier.CoroutineMainDispatcher
 import com.tokopedia.pdpsimulation.common.helper.PdpSimulationException
 import com.tokopedia.pdpsimulation.paylater.domain.model.*
@@ -30,7 +31,10 @@ class PayLaterViewModel @Inject constructor(
     val payLaterSimulationResultLiveData: LiveData<Result<ArrayList<PayLaterSimulationGatewayItem>>> = _payLaterSimulationResultLiveData
     var isPayLaterProductActive = false
 
-    fun getPayLaterSimulationData(amount: Int) {
+    private var idlingResourceProvider = TkpdIdlingResourceProvider.provideIdlingResource("SIMULATION")
+
+    fun getPayLaterSimulationData(amount: Long) {
+        idlingResourceProvider?.increment()
         payLaterSimulationDataUseCase.cancelJobs()
         payLaterSimulationDataUseCase.getSimulationData(
                 ::onPayLaterSimulationDataSuccess,
@@ -40,6 +44,7 @@ class PayLaterViewModel @Inject constructor(
     }
 
     fun getPayLaterProductData() {
+        idlingResourceProvider?.increment()
         payLaterProductDetailUseCase.cancelJobs()
         if (payLaterActivityResultLiveData.value !is Success)
             payLaterProductDetailUseCase.getPayLaterData(
@@ -49,6 +54,7 @@ class PayLaterViewModel @Inject constructor(
     }
 
     fun getPayLaterApplicationStatus(shouldFetch: Boolean = true) {
+        idlingResourceProvider?.increment()
         payLaterApplicationStatusUseCase.cancelJobs()
         if (shouldFetch && payLaterApplicationStatusResultLiveData.value !is Success)
             payLaterApplicationStatusUseCase.getPayLaterApplicationStatus(
@@ -61,7 +67,10 @@ class PayLaterViewModel @Inject constructor(
     private fun onPayLaterSimulationDataSuccess(payLaterGetSimulationResponse: PayLaterGetSimulationResponse?) {
         payLaterTenureMapperUseCase.mapTenureToSimulation(payLaterGetSimulationResponse, onSuccess = {
             when (it) {
-                is StatusSuccess -> _payLaterSimulationResultLiveData.value = Success(it.data)
+                is StatusSuccess -> {
+                    idlingResourceProvider?.decrement()
+                    _payLaterSimulationResultLiveData.value = Success(it.data)
+                }
                 StatusPayLaterNotAvailable -> onPayLaterSimulationDataError(PdpSimulationException.PayLaterNotApplicableException(PAY_LATER_NOT_APPLICABLE))
                 StatusDataFailure -> onPayLaterSimulationDataError(PdpSimulationException.PayLaterNullDataException(DATA_FAILURE))
             }
@@ -71,6 +80,7 @@ class PayLaterViewModel @Inject constructor(
     }
 
     private fun onPayLaterSimulationDataError(throwable: Throwable) {
+        idlingResourceProvider?.decrement()
         _payLaterSimulationResultLiveData.value = Fail(throwable)
     }
 
@@ -79,6 +89,7 @@ class PayLaterViewModel @Inject constructor(
             when (it) {
                 is StatusAppSuccess -> {
                     isPayLaterProductActive = it.isPayLaterActive
+                    idlingResourceProvider?.decrement()
                     _payLaterApplicationStatusResultLiveData.value = Success(it.userCreditApplicationStatus)
                 }
                 StatusFail -> onPayLaterApplicationStatusError(PdpSimulationException.PayLaterNullDataException(DATA_FAILURE))
@@ -89,14 +100,17 @@ class PayLaterViewModel @Inject constructor(
     }
 
     private fun onPayLaterApplicationStatusError(throwable: Throwable) {
+        idlingResourceProvider?.decrement()
         _payLaterApplicationStatusResultLiveData.value = Fail(throwable)
     }
 
     private fun onPayLaterDataSuccess(productDataList: PayLaterProductData) {
+        idlingResourceProvider?.decrement()
         _payLaterActivityResultLiveData.value = Success(productDataList)
     }
 
     private fun onPayLaterDataError(throwable: Throwable) {
+        idlingResourceProvider?.decrement()
         _payLaterActivityResultLiveData.value = Fail(throwable)
     }
 
