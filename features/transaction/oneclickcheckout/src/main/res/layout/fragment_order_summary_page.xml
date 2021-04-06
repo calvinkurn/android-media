@@ -22,7 +22,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:visibility="gone"
-                tools:visibility="visible">
+                tools:visibility="gone">
 
                 <com.tokopedia.unifycomponents.ticker.Ticker
                     android:id="@+id/ticker_osp"
@@ -262,6 +262,10 @@
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal"
                 android:visibility="gone" />
+
+            <include
+                android:id="@+id/layout_no_address"
+                layout="@layout/layout_occ_no_address" />
 
         </FrameLayout>
 
