@@ -23,7 +23,8 @@
         android:layout_height="@dimen/dp_18"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/finish_desc"
-        android:layout_marginTop="@dimen/dp_20"/>
+        app:icon_name="PRODUCT"
+        android:layout_marginTop="@dimen/dp_20" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/finish_detail_1"
@@ -45,6 +46,7 @@
         android:layout_height="@dimen/dp_18"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/ic_finish_detail_1"
+        app:icon_name="RELOAD_24H"
         android:layout_marginTop="@dimen/dp_16"/>
 
     <com.tokopedia.unifyprinciples.Typography
