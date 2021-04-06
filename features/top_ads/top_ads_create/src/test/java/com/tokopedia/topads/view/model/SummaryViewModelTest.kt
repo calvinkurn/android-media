@@ -6,7 +6,9 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.topads.common.data.model.ResponseCreateGroup
+import com.tokopedia.topads.common.data.response.ResponseGroupValidateName
 import com.tokopedia.topads.common.domain.usecase.TopAdsGetDepositUseCase
+import com.tokopedia.topads.common.domain.usecase.TopAdsGroupValidateNameUseCase
 import com.tokopedia.topads.view.RequestHelper
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.*
@@ -33,12 +35,14 @@ class SummaryViewModelTest {
     private lateinit var context: Context
 
     private var topAdsGetShopDepositUseCase: TopAdsGetDepositUseCase = mockk(relaxed = true)
+    private val validGroupUseCase: TopAdsGroupValidateNameUseCase = mockk(relaxed = true)
+
 
     @Before
     fun setUp() {
         repository = mockk()
         context = mockk(relaxed = true)
-        viewModel = spyk(SummaryViewModel(context, rule.dispatchers, topAdsGetShopDepositUseCase, repository))
+        viewModel = spyk(SummaryViewModel(context, rule.dispatchers,validGroupUseCase, topAdsGetShopDepositUseCase, repository))
         mockkObject(RequestHelper)
         every { RequestHelper.getGraphQlRequest(any(), any(), any()) } returns mockk(relaxed = true)
         every { RequestHelper.getCacheStrategy() } returns mockk(relaxed = true)
@@ -49,6 +53,23 @@ class SummaryViewModelTest {
         viewModel.getTopAdsDeposit({}, {})
         verify {
             topAdsGetShopDepositUseCase.execute(any(), any())
+        }
+    }
+
+    @Test
+    fun validateGroup() {
+        val data = ResponseGroupValidateName()
+        every {
+            validGroupUseCase.execute(captureLambda(), any())
+        } answers {
+            val onSuccess = lambda<(ResponseGroupValidateName) -> Unit>()
+            onSuccess.invoke(data)
+        }
+
+        viewModel.validateGroup("name") {}
+
+        verify {
+            validGroupUseCase.execute(any(), any())
         }
     }
 

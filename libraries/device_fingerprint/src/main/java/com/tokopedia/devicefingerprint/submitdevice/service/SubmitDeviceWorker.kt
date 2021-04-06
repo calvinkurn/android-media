@@ -7,6 +7,8 @@ import com.tokopedia.devicefingerprint.di.DeviceFingerprintModule
 import com.tokopedia.devicefingerprint.submitdevice.usecase.SubmitDeviceInfoUseCase
 import com.tokopedia.devicefingerprint.submitdevice.utils.InsertDeviceInfoPayloadCreator
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
@@ -63,13 +65,15 @@ class SubmitDeviceWorker(val appContext: Context, params: WorkerParameters) : Co
 
         @JvmStatic
         fun scheduleWorker(context: Context, forceWorker: Boolean) {
-            val appContext = context.applicationContext
-            try {
-                if (forceWorker || needToRunCheckLastSubmit(appContext)) {
-                    runWorker(appContext)
+            GlobalScope.launch(Dispatchers.IO) {
+                try {
+                    val appContext = context.applicationContext
+                    if (forceWorker || needToRunCheckLastSubmit(appContext)) {
+                        runWorker(appContext)
+                    }
+                } catch (ex: Exception) {
+                    Timber.w(ex.toString())
                 }
-            } catch (ex: Exception) {
-                Timber.w(ex.toString())
             }
         }
 
