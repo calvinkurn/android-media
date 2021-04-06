@@ -376,8 +376,8 @@ class PlayUserInteractionFragment @Inject constructor(
     /**
      * Product Featured View Component Listener
      */
-    override fun onProductFeaturedImpressed(view: ProductFeaturedViewComponent, products: List<PlayProductUiModel.Product>) {
-        analytic.impressionFeaturedProduct(products)
+    override fun onProductFeaturedImpressed(view: ProductFeaturedViewComponent, product: PlayProductUiModel.Product, position: Int) {
+        analytic.impressionFeaturedProduct(product, position)
     }
 
     override fun onProductFeaturedClicked(view: ProductFeaturedViewComponent, product: PlayProductUiModel.Product, position: Int) {

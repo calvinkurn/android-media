@@ -2,7 +2,7 @@ package com.tokopedia.play.widget.analytic.impression
 
 import android.view.View
 import android.view.ViewTreeObserver
-import com.tokopedia.play.widget.analytic.ImpressionableModel
+import com.tokopedia.play_common.model.analytic.ImpressionableModel
 
 /**
  * Created by jegul on 28/10/20

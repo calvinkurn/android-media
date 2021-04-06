@@ -369,26 +369,21 @@ class PlayAnalytic(
         )
     }
 
-    fun impressionFeaturedProduct(featuredProducts: List<PlayProductUiModel.Product>) {
-        /**
-         * Sometimes trackingqueue send multiple items when actually we just want to send 1 item
-         */
+    fun impressionFeaturedProduct(featuredProduct: PlayProductUiModel.Product, position: Int) {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
                 mapOf(
                         KEY_EVENT to "productView",
                         KEY_EVENT_CATEGORY to KEY_TRACK_GROUP_CHAT_ROOM,
                         KEY_EVENT_ACTION to "view on featured product",
-                        KEY_EVENT_LABEL to "$channelId - ${featuredProducts[0].id} - ${channelType.value} - featured product tagging",
+                        KEY_EVENT_LABEL to "$channelId - ${featuredProduct.id} - ${channelType.value} - featured product tagging",
                         KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
                         KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
                         KEY_USER_ID to userId,
                         KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
                         "ecommerce" to hashMapOf(
                                 "currencyCode" to "IDR",
-                                "impressions" to convertProductsToListOfObject(
-                                        featuredProducts,
-                                        sourceFrom = "featured product",
-                                        startPosition = 1
+                                "impressions" to mutableListOf(
+                                        convertProductToHashMapWithList(featuredProduct, position,"featured product")
                                 )
                         )
                 )
