@@ -32,7 +32,7 @@
     </style>
 
     <style name="MenuSettingStyle" parent="Base.Theme">
-        <item name="toolbarTheme">@style/Toolbar.Transparent</item>
+        <item name="toolbarTheme">@style/Toolbar.SellerHome</item>
         <item name="titleTextAppearance">@style/TitleTextAppearance.SellerHome</item>
     </style>
 
