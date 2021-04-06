@@ -1,5 +1,6 @@
 package com.tokopedia.checkout.data.model.request.checkout;
 
+import android.annotation.SuppressLint;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -15,6 +16,7 @@ import java.util.List;
 
 public class ShopProductCheckoutRequest implements Parcelable {
 
+    @SuppressLint("Invalid Data Type")
     @SerializedName("shop_id")
     @Expose
     public int shopId;
@@ -39,6 +41,7 @@ public class ShopProductCheckoutRequest implements Parcelable {
     @SerializedName("fcancel_partial")
     @Expose
     public int fcancelPartial;
+    @SuppressLint("Invalid Data Type")
     @SerializedName("warehouse_id")
     @Expose
     public int warehouseId;
