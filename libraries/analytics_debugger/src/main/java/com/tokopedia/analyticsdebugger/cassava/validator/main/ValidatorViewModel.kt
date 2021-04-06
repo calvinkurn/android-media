@@ -6,9 +6,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.analyticsdebugger.cassava.validator.Utils
-import com.tokopedia.analyticsdebugger.cassava.validator.core.Validator
-import com.tokopedia.analyticsdebugger.cassava.validator.core.ValidatorEngine
-import com.tokopedia.analyticsdebugger.cassava.validator.core.toDefaultValidator
+import com.tokopedia.analyticsdebugger.cassava.validator.core.*
 import com.tokopedia.analyticsdebugger.cassava.validator.list.ValidatorListFragment
 import com.tokopedia.analyticsdebugger.database.TkpdAnalyticsDatabase
 import com.tokopedia.analyticsdebugger.debugger.data.repository.GtmRepo
@@ -34,6 +32,10 @@ class ValidatorViewModel constructor(val context: Application) : AndroidViewMode
     private val _listFiles = MutableLiveData<List<String>>()
     val listFiles: LiveData<List<String>>
         get() = _listFiles
+
+    private val _cassavaQuery = MutableLiveData<CassavaQuery>()
+    val cassavaQuery: LiveData<CassavaQuery>
+        get() = _cassavaQuery
 
     fun run(queries: List<Map<String, Any>>, mode: String) {
         val v = queries.map { it.toDefaultValidator() }
@@ -70,5 +72,16 @@ class ValidatorViewModel constructor(val context: Application) : AndroidViewMode
     }
 
     fun getListFiles(): List<String> = listFiles.value ?: arrayListOf()
+
+    fun fetchQueryFromAsset(filePath: String) {
+        viewModelScope.launch {
+            try {
+                _cassavaQuery.postValue(Utils.getJsonDataFromAsset(context, filePath)?.toCassavaQuery())
+            } catch (e: Exception) {
+                e.printStackTrace()
+                _snackBarMessage.postValue(e.message)
+            }
+        }
+    }
 
 }

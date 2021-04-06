@@ -12,8 +12,9 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.analyticsdebugger.R
-import com.tokopedia.analyticsdebugger.cassava.validator.Utils
-import com.tokopedia.analyticsdebugger.cassava.validator.core.*
+import com.tokopedia.analyticsdebugger.cassava.validator.core.GtmLogUi
+import com.tokopedia.analyticsdebugger.cassava.validator.core.Validator
+import com.tokopedia.analyticsdebugger.cassava.validator.core.toJson
 import timber.log.Timber
 
 class MainValidatorFragment : Fragment() {
@@ -21,10 +22,6 @@ class MainValidatorFragment : Fragment() {
     private val testPath: String by lazy {
         arguments?.getString(ARGUMENT_TEST_PATH)
                 ?: throw IllegalArgumentException("Path not found!!")
-    }
-    private val query by lazy {
-        Utils.getJsonDataFromAsset(requireContext(), testPath)?.toCassavaQuery()
-                ?: throw QueryTestParseException()
     }
 
     val viewModel: ValidatorViewModel by lazy {
@@ -40,19 +37,19 @@ class MainValidatorFragment : Fragment() {
     }
     private var callback: Listener? = null
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        viewModel.fetchQueryFromAsset(testPath)
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_main_validator, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        if (query.readme != null) {
-            view.findViewById<View>(R.id.cv_readme).visibility = View.VISIBLE
-            view.findViewById<TextView>(R.id.tv_readme).text = query.readme
-        } else {
-            view.findViewById<View>(R.id.cv_readme).visibility = View.GONE
-        }
-        viewModel.run(query.query, query.mode.value)
+
         with(view.findViewById<RecyclerView>(R.id.rv)) {
             layoutManager = LinearLayoutManager(context)
             addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
@@ -62,6 +59,16 @@ class MainValidatorFragment : Fragment() {
         viewModel.testCases.observe(viewLifecycleOwner, Observer<List<Validator>> {
             Timber.d("Validator got ${it.size}")
             mAdapter.setData(it)
+        })
+
+        viewModel.cassavaQuery.observe(viewLifecycleOwner, Observer {
+            if (it.readme != null) {
+                view.findViewById<View>(R.id.cv_readme).visibility = View.VISIBLE
+                view.findViewById<TextView>(R.id.tv_readme).text = it.readme
+            } else {
+                view.findViewById<View>(R.id.cv_readme).visibility = View.GONE
+            }
+            viewModel.run(it.query, it.mode.value)
         })
     }
 
