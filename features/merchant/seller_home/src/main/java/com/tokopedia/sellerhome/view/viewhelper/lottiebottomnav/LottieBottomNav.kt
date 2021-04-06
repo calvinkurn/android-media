@@ -144,7 +144,7 @@ class LottieBottomNav : LinearLayout {
         val a = context.obtainStyledAttributes(attrs, R.styleable.LottieBottomNav)
         val defaultButtonHeight = DEFAULT_HEIGHT * context.resources.displayMetrics.density
 
-        buttonContainerBackgroundColor = a.getColor(R.styleable.LottieBottomNav_buttonContainerBackgroundColor, context.getResColor(R.color.Unify_N0))
+        buttonContainerBackgroundColor = a.getColor(R.styleable.LottieBottomNav_buttonContainerBackgroundColor, context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_N0))
         buttonsHeight = a.getDimension(R.styleable.LottieBottomNav_buttonsHeight, defaultButtonHeight)
 
         buttonColor = a.getColor(R.styleable.LottieBottomNav_buttonColor, context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_N200))
