@@ -104,7 +104,7 @@ class AddressListItemAdapter(private val listener: AddressListItemAdapterListene
             if (dataIsSame(localAddr, data)) {
                 cardAddress.hasCheckIcon = true
                 cardAddress.cardType = CardUnify.TYPE_BORDER_ACTIVE
-                cardAddress.setPadding(0, 0, 16.toPx(), 0)
+                cardAddress.setPadding(0, 0, 10.toPx(), 0)
                 cardAddress.setOnClickListener(null)
             } else {
                 cardAddress.hasCheckIcon = false
