@@ -464,12 +464,12 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                         googleMap.uiSettings.isScrollGesturesEnabled = false
                     }
                     BottomSheetBehavior.STATE_HALF_EXPANDED -> {
-                        googleMap.animateCamera(CameraUpdateFactory.zoomOut())
+                        googleMap.animateCamera(CameraUpdateFactory.zoomTo(MAPS_ZOOM_OUT))
                         setupContentMargin(false)
                         googleMap.uiSettings.isScrollGesturesEnabled = true
                     }
                     BottomSheetBehavior.STATE_COLLAPSED -> {
-                        googleMap.animateCamera(CameraUpdateFactory.zoomIn())
+                        googleMap.animateCamera(CameraUpdateFactory.zoomTo(MAPS_ZOOM_IN))
                         setupContentMargin(false)
                         googleMap.uiSettings.isScrollGesturesEnabled = true
                     }
@@ -1135,31 +1135,6 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
 
     private fun collapseBottomSheet() {
         bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
-    }
-
-    private fun setAnimBottomSheetBehavior(){
-        if(::bottomSheetBehavior.isInitialized){
-            bottomSheetBehavior.addBottomSheetCallback(object: BottomSheetBehavior.BottomSheetCallback(){
-                override fun onStateChanged(bottomSheet: View, state: Int) {
-                    when (state) {
-                        BottomSheetBehavior.STATE_EXPANDED ->{
-                            context?.let {
-                                bounceAnim = AnimationUtils.loadAnimation(it, R.anim.bounce_anim)
-                            }
-                            btnHotelSearchWithMap.startAnimation(bounceAnim)
-                        }
-                        BottomSheetBehavior.STATE_COLLAPSED ->{
-                            googleMap.animateCamera(CameraUpdateFactory.zoomTo(MAPS_ZOOM_IN))
-                        }
-                        BottomSheetBehavior.STATE_HALF_EXPANDED ->{
-                            googleMap.animateCamera(CameraUpdateFactory.zoomTo(MAPS_ZOOM_OUT))
-                        }
-                    }
-                }
-                override fun onSlide(bottomSheet: View, slideOffset: Float) {
-                }
-            })
-        }
     }
 
     companion object {
