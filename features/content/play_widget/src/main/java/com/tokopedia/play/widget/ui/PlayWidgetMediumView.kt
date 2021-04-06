@@ -11,13 +11,12 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SnapHelper
-import com.elyeproj.loaderviewlibrary.LoaderImageView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.setMargin
+import com.tokopedia.kotlin.extensions.view.toDp
 import com.tokopedia.play.widget.R
 import com.tokopedia.play.widget.analytic.medium.PlayWidgetMediumAnalyticListener
 import com.tokopedia.play.widget.ui.adapter.PlayWidgetCardMediumAdapter
@@ -47,8 +46,6 @@ class PlayWidgetMediumView : ConstraintLayout, IPlayWidgetView {
     constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
     constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
     constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int) : super(context, attrs, defStyleAttr, defStyleRes)
-
-    private val background: LoaderImageView
 
     private val title: Typography
     private val actionTitle: TextView
@@ -153,7 +150,6 @@ class PlayWidgetMediumView : ConstraintLayout, IPlayWidgetView {
 
     init {
         val view = LayoutInflater.from(context).inflate(R.layout.view_play_widget_medium, this)
-        background = view.findViewById(R.id.play_widget_medium_bg_loader)
 
         title = view.findViewById(R.id.play_widget_medium_title)
         actionTitle = view.findViewById(R.id.play_widget_medium_action)
@@ -249,20 +245,27 @@ class PlayWidgetMediumView : ConstraintLayout, IPlayWidgetView {
      * Setup view
      */
     private fun configureOverlay(data: PlayWidgetBackgroundUiModel) {
-        if (data.overlayImageUrl.isEmpty() || data.overlayImageUrl.isBlank()) background.hide()
-        else {
-            background.show()
-            overlayImage.loadImage(data.overlayImageUrl, object : ImageHandler.ImageLoaderStateListener {
-                override fun successLoad() {
-                    configureBackgroundOverlay(data)
-                    background.hide()
-                }
+        if (shouldHandleOverlayImage(data.overlayImageUrl)) overlayImage.loadImage(data.overlayImageUrl, overlayImageHandler(data))
+        val spacing16 = context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4).toDp().toInt()
+        recyclerViewItem.setMargin(
+                left = 0,
+                top = if (shouldHandleOverlayImage(data.overlayImageUrl)) spacing16 else 0,
+                right = 0,
+                bottom = spacing16,
+        )
+    }
 
-                override fun failedLoad() {
-                    configureBackgroundOverlay(data)
-                    background.hide()
-                }
-            })
+    private fun shouldHandleOverlayImage(imageUrl: String) = imageUrl.isNotEmpty() && imageUrl.isNotBlank()
+
+    private fun overlayImageHandler(data: PlayWidgetBackgroundUiModel): ImageHandler.ImageLoaderStateListener {
+        return object : ImageHandler.ImageLoaderStateListener {
+            override fun successLoad() {
+                configureBackgroundOverlay(data)
+            }
+
+            override fun failedLoad() {
+                configureBackgroundOverlay(data)
+            }
         }
     }
 

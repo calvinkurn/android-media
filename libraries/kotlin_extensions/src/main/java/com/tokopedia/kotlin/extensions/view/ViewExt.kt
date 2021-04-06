@@ -142,10 +142,8 @@ fun View.setMargin(left: Int, top: Int, right: Int, bottom: Int) {
     val layoutParams = this.layoutParams as ViewGroup.MarginLayoutParams
     layoutParams.setMargins(left, top, right, bottom)
 
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-        layoutParams.marginStart = left
-        layoutParams.marginEnd = right
-    }
+    layoutParams.marginStart = left
+    layoutParams.marginEnd = right
 }
 
 fun View.getDimens(@DimenRes id: Int): Int {

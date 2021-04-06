@@ -95,7 +95,7 @@ class PlayWidgetView : LinearLayout, LifecycleObserver, IPlayWidgetView {
         val widgetView = addWidgetView { PlayWidgetMediumView(context) }
 
         val overlayItemSize = model.items.filterIsInstance<PlayWidgetMediumOverlayUiModel>().size
-        val isWidgetEmpty = model.items.size.isZero() || overlayItemSize == 1
+        val isWidgetEmpty = model.items.size.isZero() || (model.items.size == overlayItemSize)
         if (isWidgetEmpty) {
             widgetView.hide()
         } else {
