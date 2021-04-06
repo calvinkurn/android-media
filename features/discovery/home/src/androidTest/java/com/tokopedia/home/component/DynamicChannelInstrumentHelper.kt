@@ -67,7 +67,7 @@ fun disableCoachMark(context: Context){
 }
 
 fun waitForData() {
-    Thread.sleep(8000)
+    Thread.sleep(4000)
 }
 fun waitForPopularKeywordData() {
     Thread.sleep(4000)
