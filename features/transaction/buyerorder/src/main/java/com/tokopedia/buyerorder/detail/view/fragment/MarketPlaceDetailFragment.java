@@ -965,6 +965,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                         bottomSheetFinishOrder.dismiss();
                         return Unit.INSTANCE;
                     });
+                    bottomSheetFinishOrder.show(getChildFragmentManager(), getString(R.string.show_bottomsheet));
                 }
             } else if (!TextUtils.isEmpty(actionButton.getUri())) {
                 if (actionButton.getUri().contains("askseller")) {
