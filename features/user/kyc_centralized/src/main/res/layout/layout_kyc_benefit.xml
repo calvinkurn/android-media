@@ -157,7 +157,7 @@
         android:layout_marginRight="@dimen/spacing_lvl4"
         android:text="@string/kyc_intro_button" />
 
-    <ImageButton
+    <com.tokopedia.unifycomponents.UnifyImageButton
         android:id="@+id/close_button"
         android:layout_width="@dimen/layout_lvl6"
         android:layout_height="@dimen/layout_lvl6"
@@ -165,7 +165,8 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_kyc_arrow_back_black"
-        android:contentDescription="close_button"/>
+        app:unifyImageButtonVariant="image"
+        app:unifyImageButtonType="main"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/title"

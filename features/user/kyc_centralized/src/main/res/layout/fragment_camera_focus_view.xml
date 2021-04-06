@@ -17,7 +17,7 @@
         app:cameraPlaySounds="true"
         app:cameraAudio="off"/>
 
-    <ImageView
+    <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/full_image_preview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -38,14 +38,16 @@
         android:layout_height="match_parent"
         android:visibility="gone" />
 
-    <ImageButton
+    <com.tokopedia.unifycomponents.UnifyImageButton
         android:id="@+id/close_button"
         android:layout_width="@dimen/layout_lvl6"
         android:layout_height="@dimen/layout_lvl6"
         android:background="@color/Unify_N0_20"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_kyc_arrow_back" />
+        app:srcCompat="@drawable/ic_kyc_arrow_back"
+        app:unifyImageButtonVariant="image"
+        app:unifyImageButtonType="main"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/title"
@@ -90,12 +92,12 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent">
 
-        <ImageView
+        <com.tokopedia.unifycomponents.ImageUnify
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:src="@drawable/ic_shutter_background" />
 
-        <ImageView
+        <com.tokopedia.unifycomponents.ImageUnify
             android:layout_width="@dimen/kyc_centralized_46dp"
             android:layout_height="@dimen/kyc_centralized_46dp"
             android:layout_gravity="center"
@@ -103,12 +105,11 @@
 
     </FrameLayout>
 
-    <ImageView
+    <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/image_button_flip"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/kyc_centralized_50dp"
-        android:layout_marginLeft="@dimen/kyc_centralized_50dp"
         android:padding="@dimen/spacing_lvl3"
         android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="@+id/image_button_shutter"
@@ -134,7 +135,6 @@
             android:layout_width="@dimen/layout_lvl0"
             android:layout_height="match_parent"
             android:layout_marginEnd="@dimen/spacing_lvl2"
-            android:layout_marginRight="@dimen/spacing_lvl2"
             android:layout_weight="1"
             android:background="@drawable/white_button_ghost"
             android:gravity="center"
@@ -150,7 +150,6 @@
             android:layout_height="match_parent"
             app:unifyButtonVariant="ghost"
             android:layout_marginStart="@dimen/spacing_lvl1"
-            android:layout_marginLeft="@dimen/spacing_lvl1"
             android:layout_weight="1"
             android:gravity="center"
             android:text="@string/camera_next_button"

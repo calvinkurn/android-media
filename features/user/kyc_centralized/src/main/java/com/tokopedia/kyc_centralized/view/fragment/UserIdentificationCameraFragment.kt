@@ -19,7 +19,9 @@ import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.kyc_centralized.R
+import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifycomponents.UnifyImageButton
 import com.tokopedia.user_identification_common.KYCConstant
 import com.tokopedia.user_identification_common.analytics.UserIdentificationCommonAnalytics
 import com.tokopedia.utils.image.ImageProcessingUtil
@@ -32,7 +34,7 @@ import java.io.File
  */
 class UserIdentificationCameraFragment : TkpdBaseV4Fragment() {
     private var cameraView: CameraView? = null
-    private var closeButton: ImageButton? = null
+    private var closeButton: UnifyImageButton? = null
     private var title: TextView? = null
     private var subtitle: TextView? = null
     private var focusedFaceView: View? = null
@@ -40,7 +42,7 @@ class UserIdentificationCameraFragment : TkpdBaseV4Fragment() {
     private var shutterButton: View? = null
     private var loading: View? = null
     private var switchCamera: View? = null
-    private var imagePreview: ImageView? = null
+    private var imagePreview: ImageUnify? = null
     private var buttonLayout: View? = null
     private var reCaptureButton: View? = null
     private var nextButton: UnifyButton? = null
