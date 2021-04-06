@@ -3,6 +3,7 @@ package com.tokopedia.play.widget.ui.mapper
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.play.widget.data.*
 import com.tokopedia.play.widget.domain.PlayWidgetReminderUseCase
+import com.tokopedia.play.widget.extension.isNotEmptyAndBlank
 import com.tokopedia.play.widget.ui.model.*
 import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
 import com.tokopedia.play_common.transformer.DefaultHtmlTextTransformer
@@ -59,9 +60,7 @@ class PlayWidgetMediumUiMapper @Inject constructor(
         }
     }
 
-    private fun shouldAddLeftBanner(item: PlayWidgetBackgroundUiModel): Boolean {
-        return item.overlayImageUrl.isNotBlank() && item.overlayImageUrl.isNotEmpty()
-    }
+    private fun shouldAddLeftBanner(item: PlayWidgetBackgroundUiModel) = item.overlayImageUrl.isNotEmptyAndBlank()
 
     private fun mapWidgetItemOverlay(item: PlayWidgetBackgroundUiModel): PlayWidgetMediumOverlayUiModel = PlayWidgetMediumOverlayUiModel(
             appLink = item.overlayImageAppLink,

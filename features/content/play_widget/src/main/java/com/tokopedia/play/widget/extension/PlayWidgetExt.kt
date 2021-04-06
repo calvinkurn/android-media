@@ -13,3 +13,5 @@ suspend fun RecyclerView.stepScrollToPositionWithDelay(position: Int, delayMilli
         smoothScrollToPosition(cursor++)
     }
 }
+
+fun String.isNotEmptyAndBlank() = this.isNotEmpty() && this.isNotBlank()

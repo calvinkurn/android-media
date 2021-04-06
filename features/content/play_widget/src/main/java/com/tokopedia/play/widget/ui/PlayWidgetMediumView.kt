@@ -19,6 +19,7 @@ import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.toDp
 import com.tokopedia.play.widget.R
 import com.tokopedia.play.widget.analytic.medium.PlayWidgetMediumAnalyticListener
+import com.tokopedia.play.widget.extension.isNotEmptyAndBlank
 import com.tokopedia.play.widget.ui.adapter.PlayWidgetCardMediumAdapter
 import com.tokopedia.play.widget.ui.adapter.viewholder.medium.PlayWidgetCardMediumBannerViewHolder
 import com.tokopedia.play.widget.ui.adapter.viewholder.medium.PlayWidgetCardMediumChannelViewHolder
@@ -249,13 +250,18 @@ class PlayWidgetMediumView : ConstraintLayout, IPlayWidgetView {
         val spacing16 = context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4).toDp().toInt()
         recyclerViewItem.setMargin(
                 left = 0,
-                top = if (shouldHandleOverlayImage(data.overlayImageUrl)) spacing16 else 0,
+                top = if (shouldAddSpacing(data)) spacing16 else 0,
                 right = 0,
                 bottom = spacing16,
         )
     }
 
-    private fun shouldHandleOverlayImage(imageUrl: String) = imageUrl.isNotEmpty() && imageUrl.isNotBlank()
+    private fun shouldHandleOverlayImage(imageUrl: String) = imageUrl.isNotEmptyAndBlank()
+
+    private fun shouldAddSpacing(data: PlayWidgetBackgroundUiModel): Boolean {
+        return data.overlayImageUrl.isNotEmptyAndBlank()
+                && (data.gradientColors.isNotEmpty() || data.backgroundUrl.isNotEmptyAndBlank())
+    }
 
     private fun overlayImageHandler(data: PlayWidgetBackgroundUiModel): ImageHandler.ImageLoaderStateListener {
         return object : ImageHandler.ImageLoaderStateListener {
