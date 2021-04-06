@@ -619,7 +619,8 @@ class TopChatViewStateImpl constructor(
         templateRecyclerView.visibility = View.GONE
         listTemplate?.let {
             templateAdapter.list = listTemplate
-            if (templateAdapter.hasTemplateChat() && !isLastMsgFromBroadcastAndIamBuyer) {
+            if (templateAdapter.hasTemplateChat() &&
+                    !isLastMsgFromBroadcastAndIamBuyer && !hasProductPreviewShown()) {
                 showTemplateChat()
             } else {
                 hideTemplateChat()
@@ -627,11 +628,11 @@ class TopChatViewStateImpl constructor(
         }
     }
 
-    private fun showTemplateChat() {
+    fun showTemplateChat() {
         templateRecyclerView.show()
     }
 
-    private fun hideTemplateChat() {
+    fun hideTemplateChat() {
         templateRecyclerView.hide()
     }
 

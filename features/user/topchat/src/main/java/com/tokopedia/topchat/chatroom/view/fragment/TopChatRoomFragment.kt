@@ -229,8 +229,10 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
                     if (shouldShowSrw()) {
                         rvSrw?.show()
                         rvSrw?.updateSrwList(it.data)
+                        getViewState().hideTemplateChat()
                     } else {
                         rvSrw?.hide()
+                        getViewState().showTemplateChat()
                     }
                 }
                 else -> {
