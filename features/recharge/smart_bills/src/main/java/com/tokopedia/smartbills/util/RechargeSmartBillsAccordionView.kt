@@ -1,17 +1,15 @@
 package com.tokopedia.smartbills.util
 
-import android.graphics.Rect
 import android.view.LayoutInflater
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.RecyclerView.ItemDecoration
 import com.tokopedia.abstraction.base.view.adapter.holder.BaseCheckableViewHolder
 import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration
-import com.tokopedia.kotlin.extensions.view.getDimens
 import com.tokopedia.smartbills.R
 import com.tokopedia.smartbills.data.Section
 import com.tokopedia.smartbills.presentation.adapter.SmartBillsAccordionAdapter
+import com.tokopedia.smartbills.presentation.adapter.viewholder.SmartBillsAccordionViewHolder
 import com.tokopedia.smartbills.presentation.adapter.viewholder.SmartBillsViewHolder
 import com.tokopedia.smartbills.presentation.fragment.SmartBillsFragment.Companion.ACTION_TYPE
 import com.tokopedia.smartbills.presentation.fragment.SmartBillsFragment.Companion.PAID_TYPE
@@ -23,9 +21,15 @@ object RechargeSmartBillsAccordionView {
     fun getAccordionwithAction(itemView: View, section: Section,
                                checkableListener: BaseCheckableViewHolder.CheckableInteractionListener,
                                detailListener: SmartBillsViewHolder.DetailListener,
+                               refreshAccordion: SmartBillsAccordionViewHolder.SBMAccordionListener,
                                accordionType: Int): View{
         val view = LayoutInflater.from(itemView.context).inflate(R.layout.view_smart_bills_need_action, null)
         view.rv_smart_bills_need_action.showAdapterAccordion(itemView, section, checkableListener, detailListener, accordionType)
+        view.sbm_local_load_action.refreshBtn?.setOnClickListener {
+            view.sbm_local_load_action.progressState = !view.sbm_local_load_action.progressState
+            refreshAccordion.onRefreshAccordion()
+            view.sbm_local_load_action.progressState = !view.sbm_local_load_action.progressState
+        }
         return view
     }
 

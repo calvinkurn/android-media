@@ -15,6 +15,7 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.smartbills.data.*
 import com.tokopedia.smartbills.data.api.SmartBillsRepository
+import com.tokopedia.smartbills.util.RechargeSmartBillsMapper.mapActiontoStatement
 import com.tokopedia.smartbills.util.SmartBillsDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -89,6 +90,28 @@ class SmartBillsViewModel @Inject constructor(
         }
     }
 
+    fun getSBMWithAction(mapParams: Map<String, Any>, rechargeListSmartBills: RechargeListSmartBills){
+        launchCatchError(block = {
+//            val graphqlRequest = GraphqlRequest(
+//                    SmartBillsQueries.GET_SBM_RELOAD_ACTION_QUERY,
+//                    RechargeMultipleSBMBill.Response::class.java, mapParams
+//            )
+//
+//            val data = withContext(dispatcher.IO) {
+//                graphqlRepository.getReseponse(listOf(graphqlRequest), GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
+//            }.getSuccessData<RechargeMultipleSBMBill.Response>()
+
+            val datas = Gson().fromJson(SmartBillsQueries.DUMMY_RESPONSE_ACTION, RechargeMultipleSBMBill.Response::class.java)
+            if (datas.response != null) {
+                mutableStatementBills.postValue(Success(mapActiontoStatement(datas.response, rechargeListSmartBills)))
+            } else {
+                throw(MessageErrorException(STATEMENT_BILLS_ERROR))
+            }
+        }){
+            mutableStatementBills.postValue(Fail(it))
+        }
+    }
+
     fun runMultiCheckout(request: MultiCheckoutRequest?) {
         if (request != null) {
             launchCatchError(block = {
@@ -135,11 +158,18 @@ class SmartBillsViewModel @Inject constructor(
         } else null
     }
 
+    fun createRefreshActionParams(uuids:List<String>, month: Int, year: Int, source: Int? = null): Map<String, Any> {
+        val map = mutableMapOf(PARAM_UUIDS to uuids, PARAM_MONTH to month, PARAM_YEAR to year)
+        source?.run { map[PARAM_SOURCE] = source }
+        return map
+    }
+
     companion object {
         const val PARAM_LIMIT = "limit"
         const val PARAM_MONTH = "month"
         const val PARAM_YEAR = "year"
         const val PARAM_SOURCE = "source"
+        const val PARAM_UUIDS = "uuids"
 
         const val STATEMENT_MONTHS_ERROR = "STATEMENT_MONTHS_ERROR"
         const val STATEMENT_BILLS_ERROR = "STATEMENT_BILLS_ERROR"

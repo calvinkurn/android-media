@@ -7,6 +7,7 @@
     android:layout_height="wrap_content">
 
     <com.tokopedia.unifycomponents.LocalLoad
+        android:id="@+id/sbm_local_load_action"
         android:layout_marginLeft="@dimen/spacing_lvl4"
         android:layout_marginRight="@dimen/spacing_lvl4"
         android:layout_width="match_parent"

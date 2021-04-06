@@ -37,13 +37,13 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.smartbills.R
 import com.tokopedia.smartbills.analytics.SmartBillsAnalytics
-import com.tokopedia.smartbills.data.RechargeBills
-import com.tokopedia.smartbills.data.RechargeBillsModel
+import com.tokopedia.smartbills.data.*
 import com.tokopedia.smartbills.di.SmartBillsComponent
 import com.tokopedia.smartbills.presentation.activity.SmartBillsActivity
 import com.tokopedia.smartbills.presentation.activity.SmartBillsOnboardingActivity
 import com.tokopedia.smartbills.presentation.adapter.SmartBillsAdapter
 import com.tokopedia.smartbills.presentation.adapter.SmartBillsAdapterFactory
+import com.tokopedia.smartbills.presentation.adapter.viewholder.SmartBillsAccordionViewHolder
 import com.tokopedia.smartbills.presentation.adapter.viewholder.SmartBillsViewHolder
 import com.tokopedia.smartbills.presentation.viewmodel.SmartBillsViewModel
 import com.tokopedia.smartbills.presentation.widget.SmartBillsItemDetailBottomSheet
@@ -51,6 +51,7 @@ import com.tokopedia.smartbills.presentation.widget.SmartBillsToolTipBottomSheet
 import com.tokopedia.smartbills.util.DividerSBMItemDecoration
 import com.tokopedia.smartbills.util.RechargeSmartBillsMapper.getAccordionSection
 import com.tokopedia.smartbills.util.RechargeSmartBillsMapper.getNotAccordionSection
+import com.tokopedia.smartbills.util.RechargeSmartBillsMapper.getUUIDAction
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.TickerCallback
@@ -73,7 +74,8 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
         SmartBillsViewHolder.DetailListener,
         TopupBillsCheckoutWidget.ActionListener,
         SmartBillsActivity.SbmActivityListener,
-        SmartBillsToolTipBottomSheet.Listener{
+        SmartBillsToolTipBottomSheet.Listener,
+        SmartBillsAccordionViewHolder.SBMAccordionListener{
 
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -94,6 +96,9 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
     private var autoTick = false
     private var totalPrice = 0
     private var maximumPrice = 0
+    private var ongoingMonth: RechargeStatementMonths? = RechargeStatementMonths()
+    private var listAccordion: List<Section> = listOf()
+    private var rechargeStatement: RechargeListSmartBills = RechargeListSmartBills()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_smart_bills, container, false)
@@ -124,17 +129,18 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
         viewModel.statementMonths.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
-                    val ongoingMonth = it.data.firstOrNull { monthItem -> monthItem.isOngoing }
-                    if (ongoingMonth != null) {
+                    ongoingMonth = it.data.firstOrNull { monthItem -> monthItem.isOngoing }
+                    ongoingMonth?.let {
                         viewModel.getStatementBills(
                                 viewModel.createStatementBillsParams(
-                                        ongoingMonth.month,
-                                        ongoingMonth.year,
+                                        it.month,
+                                        it.year,
                                         RechargeBills.Source.getSourceByString(source).ordinal
                                 ),
                                 swipeToRefresh?.isRefreshing ?: false
                         )
-                    } else {
+                    }
+                    if(ongoingMonth == null) {
                         showGetListError(getDataErrorException())
                     }
                 }
@@ -155,6 +161,8 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
             view_smart_bills_shimmering.hide()
             when (it) {
                 is Success -> {
+                    adapter.data.clear()
+                    rechargeStatement = it.data
                     val bills = getNotAccordionSection(it.data.sections)?.bills
                     if (!bills.isNullOrEmpty()) {
                         view_smart_bills_select_all_checkbox_container.show()
@@ -163,7 +171,8 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
                         tv_smart_bills_title.text = getNotAccordionSection(it.data.sections)?.title
 
                         renderList(bills)
-                        renderList(getAccordionSection(it.data.sections))
+                        listAccordion = getAccordionSection(it.data.sections)
+                        renderList(listAccordion)
                         smartBillsAnalytics.impressionAllProducts(bills)
 
                         // Auto select bills based on data
@@ -369,7 +378,7 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
     }
 
     override fun getAdapterTypeFactory(): SmartBillsAdapterFactory {
-        return SmartBillsAdapterFactory(this, this)
+        return SmartBillsAdapterFactory(this, this, this)
     }
 
     override fun showGetListError(throwable: Throwable?) {
@@ -527,6 +536,20 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
         context?.let {
             smartBillsAnalytics.clickMoreLearn()
             RouteManager.route(context, HELP_SBM_URL)
+        }
+    }
+
+    override fun onRefreshAccordion() {
+        ongoingMonth?.let {
+            viewModel.getSBMWithAction(
+                    viewModel.createRefreshActionParams(
+                            getUUIDAction(listAccordion),
+                            it.month,
+                            it.year,
+                            RechargeBills.Source.getSourceByString(source).ordinal
+                    ),
+                    rechargeStatement
+            )
         }
     }
 

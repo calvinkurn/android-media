@@ -137,6 +137,49 @@ object SmartBillsQueries {
 
     }
 
+    val GET_SBM_RELOAD_ACTION_QUERY by lazy {
+        """
+        query GetSBM(${'$'}uuids:[String],${'$'}month: Int!, ${'$'}year: Int!, ${'$'}source: Int){
+        RechargeMultipleSBMBill(
+        UUIDs:${'$'}uuids,
+        Month:${'$'}month,
+        Year:${'$'}year,
+        Source:${'$'}source,
+        ){
+        UserID
+        Bills{
+            Index
+            UUID
+            Notables
+            ProductID
+            ProductName
+            CategoryID
+            CategoryName
+            OperatorID
+            OperatorName
+            ClientNumber
+            Amount
+            AmountText
+            IconURL
+            Date
+            DateText
+            Disabled
+            DisabledText
+            BillName
+            IsChecked
+            DueDate
+            CheckoutFields{Name,Value}
+            Section{
+                Title
+                Type
+                Text
+            }
+        }
+    }
+    }
+    """
+    }
+
     val DUMMY_RESPONSE = """{
     "rechargeSBMList": {
       "UserID": 8940072,
@@ -974,4 +1017,100 @@ object SmartBillsQueries {
       ]
     }
   }"""
+
+    val DUMMY_RESPONSE_ACTION =
+            """
+            { "RechargeMultipleSBMBill": {
+        "UserID": 3816220,
+        "Bills": [
+        {
+            "Index": 0,
+            "UUID": "uuid_sbm_8940072_1_081297896228",
+            "Notables": "InquireSBMBill: product not ready with status:3",
+            "ProductID": 1,
+            "ProductName": "5.000",
+            "CategoryID": 0,
+            "CategoryName": "",
+            "OperatorID": 0,
+            "OperatorName": "",
+            "ClientNumber": "081297896228",
+            "Amount": 0,
+            "AmountText": "",
+            "IconURL": "",
+            "Date": "",
+            "DateText": "",
+            "Disabled": false,
+            "DisabledText": "",
+            "BillName": "",
+            "IsChecked": false,
+            "DueDate": "",
+            "CheckoutFields": [],
+            "Section": {
+            "Type": 3,
+            "Text": "is on preparation, please try to refresh",
+            "Title": "Preparing"
+        }
+        },
+        {
+            "Index": 1,
+            "UUID": "uuid_sbm_8940072_1_081297896228",
+            "Notables": "InquireSBMBill: product not ready with status:3",
+            "ProductID": 1,
+            "ProductName": "5.000",
+            "CategoryID": 0,
+            "CategoryName": "",
+            "OperatorID": 0,
+            "OperatorName": "",
+            "ClientNumber": "081297896228",
+            "Amount": 0,
+            "AmountText": "",
+            "IconURL": "",
+            "Date": "",
+            "DateText": "",
+            "Disabled": false,
+            "DisabledText": "",
+            "BillName": "",
+            "IsChecked": false,
+            "DueDate": "",
+            "CheckoutFields": [],
+            "Section": {
+            "Type": 1,
+            "Text": "is on preparation, please try to refresh",
+            "Title": "Preparing"
+        }
+        },
+        {
+            "Index": 2,
+            "UUID": "uuid_sbm_8940072_1_081297896228",
+            "Notables": "InquireSBMBill: product not ready with status:3",
+            "ProductID": 1,
+            "ProductName": "5.000",
+            "CategoryID": 0,
+            "CategoryName": "",
+            "OperatorID": 0,
+            "OperatorName": "",
+            "ClientNumber": "081297896228",
+            "Amount": 0,
+            "AmountText": "",
+            "IconURL": "",
+            "Date": "",
+            "DateText": "",
+            "Disabled": false,
+            "DisabledText": "",
+            "BillName": "",
+            "IsChecked": false,
+            "DueDate": "",
+            "CheckoutFields": [],
+            "Section": {
+            "Type": 2,
+            "Text": "is on preparation, please try to refresh",
+            "Title": "Preparing"
+        }
+        }
+        ]
+    }
+    }
+    
+    """
+
 }

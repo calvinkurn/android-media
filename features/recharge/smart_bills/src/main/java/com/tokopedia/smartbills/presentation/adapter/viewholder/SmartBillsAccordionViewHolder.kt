@@ -16,7 +16,8 @@ import kotlinx.android.synthetic.main.view_smart_bills_item_accordion.view.*
 
 class SmartBillsAccordionViewHolder(view: View,
                                     private val checkableListener: BaseCheckableViewHolder.CheckableInteractionListener,
-                                    private val detailListener: SmartBillsViewHolder.DetailListener
+                                    private val detailListener: SmartBillsViewHolder.DetailListener,
+                                    private val refreshAccordion: SBMAccordionListener
                             ): AbstractViewHolder<Section>(view){
 
     override fun bind(element: Section) {
@@ -24,9 +25,9 @@ class SmartBillsAccordionViewHolder(view: View,
             if(element.positionAccordion == 0) smart_bills_view_margin.show()
 
             val view = when(element.type){
-                ACTION_TYPE -> getAccordionwithAction(itemView, element, checkableListener, detailListener, ACTION_TYPE)
+                ACTION_TYPE -> getAccordionwithAction(itemView, element, checkableListener, detailListener, refreshAccordion, ACTION_TYPE)
                 PAID_TYPE ->  getAccordionwithPaid(itemView, element, checkableListener, detailListener, PAID_TYPE)
-                else -> getAccordionwithAction(itemView, element, checkableListener, detailListener, ACTION_TYPE)
+                else -> getAccordionwithPaid(itemView, element, checkableListener, detailListener, PAID_TYPE)
             }
             accordion_smart_bills.apply {
                 accordionData.clear()
@@ -39,5 +40,9 @@ class SmartBillsAccordionViewHolder(view: View,
     companion object{
         @LayoutRes
         val LAYOUT = R.layout.view_smart_bills_item_accordion
+    }
+
+    interface SBMAccordionListener{
+        fun onRefreshAccordion()
     }
 }
