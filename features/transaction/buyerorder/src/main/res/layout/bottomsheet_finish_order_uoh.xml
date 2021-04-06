@@ -19,8 +19,8 @@
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/ic_finish_detail_1"
-        android:layout_width="@dimen/dp_48"
-        android:layout_height="@dimen/dp_48"
+        android:layout_width="@dimen/dp_18"
+        android:layout_height="@dimen/dp_18"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/finish_desc"
         android:layout_marginTop="@dimen/dp_20"/>
@@ -41,8 +41,8 @@
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/ic_finish_detail_2"
-        android:layout_width="@dimen/dp_48"
-        android:layout_height="@dimen/dp_48"
+        android:layout_width="@dimen/dp_18"
+        android:layout_height="@dimen/dp_18"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/ic_finish_detail_1"
         android:layout_marginTop="@dimen/dp_16"/>
