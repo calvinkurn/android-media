@@ -30,6 +30,7 @@ import com.tokopedia.chatbot.data.rating.ChatRatingViewModel
 import com.tokopedia.chatbot.data.seprator.ChatSepratorViewModel
 import com.tokopedia.chatbot.domain.mapper.ChatbotGetExistingChatMapper.Companion.SHOW_TEXT
 import com.tokopedia.chatbot.domain.pojo.chatrating.SendRatingPojo
+import com.tokopedia.chatbot.view.adapter.ChatbotAdapter
 import com.tokopedia.chatbot.view.adapter.QuickReplyAdapter
 import com.tokopedia.chatbot.view.adapter.viewholder.listener.QuickReplyListener
 import com.tokopedia.chatbot.view.customview.ReasonBottomSheet
@@ -49,7 +50,8 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
                            typingListener: TypingListener,
                            attachmentMenuListener: AttachmentMenu.AttachmentMenuListener,
                            override val toolbar: Toolbar,
-                           private val adapter: BaseListAdapter<Visitable<*>, BaseAdapterTypeFactory>
+                           private val adapter: BaseListAdapter<Visitable<*>, BaseAdapterTypeFactory>,
+                           private val onChatMenuButtonClicked: () -> Unit
 ) : BaseChatViewStateImpl(view, toolbar, typingListener, attachmentMenuListener), ChatbotViewState {
 
     private lateinit var quickReplyAdapter: QuickReplyAdapter
@@ -59,7 +61,6 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
 
     override fun initView() {
         recyclerView = view.findViewById(getRecyclerViewId())
-        mainLoading = view.findViewById(getProgressId())
         replyEditText = view.findViewById(getNewCommentId())
         replyBox = view.findViewById(getReplyBoxId())
         actionBox = view.findViewById(getActionBoxId())
@@ -143,9 +144,22 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
     }
 
     override fun onShowInvoiceToChat(generatedInvoice: AttachInvoiceSentViewModel) {
-        if (adapter.dataSize > 0 && adapter.data[0] is AttachInvoiceSelectionViewModel)
-            getAdapter().removeElement(adapter.data[0])
+        removeInvoiceCarousel()
         super.onReceiveMessageEvent(generatedInvoice)
+    }
+
+    private fun removeInvoiceCarousel() {
+        var item: AttachInvoiceSelectionViewModel? = null
+        for (it in adapter.list) {
+            if (it is AttachInvoiceSelectionViewModel) {
+                item = it
+                break
+            }
+        }
+
+        if (item != null && adapter.list.isNotEmpty()) {
+            adapter.clearElement(item)
+        }
     }
 
     override fun onSuccessSendRating(element: SendRatingPojo, rating: Int,
@@ -180,6 +194,7 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
 
     override fun onImageUpload(it: ImageUploadViewModel) {
         getAdapter().addElement(it)
+        scrollDownWhenInBottom()
     }
 
     private fun isMyMessage(fromUid: String?): Boolean {
@@ -187,10 +202,10 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
     }
 
     private fun showQuickReply(list: List<QuickReplyViewModel>) {
-            if (::quickReplyAdapter.isInitialized) {
+            if (::quickReplyAdapter.isInitialized && list.isNotEmpty()) {
                 quickReplyAdapter.setList(list)
+                rvQuickReply.visibility = View.VISIBLE
             }
-            rvQuickReply.visibility = View.VISIBLE
     }
 
     private fun hasQuickReply(): Boolean {
@@ -282,6 +297,22 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
         }
     }
 
+    override fun showRetryUploadImages(image: ImageUploadViewModel, retry: Boolean){
+        getAdapter().showRetryFor(image, retry)
+    }
+
+    override fun removeDummy(visitable: Visitable<*>) {
+        getAdapter().removeDummy(visitable)
+    }
+
+    override fun hideInvoiceList() {
+        removeInvoiceCarousel()
+    }
+
+    override fun getAdapter(): ChatbotAdapter {
+        return super.getAdapter() as ChatbotAdapter
+    }
+
     override fun getInterlocutorName(headerName: String): String  = headerName
 
     override fun showErrorWebSocket(isWebSocketError: Boolean) {
@@ -298,12 +329,14 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
         }
     }
 
-    override fun getRecyclerViewId(): Int {
-        return R.id.recycler_view
+    override fun setupChatMenu() {
+        chatMenuButton.setOnClickListener {
+            onChatMenuButtonClicked.invoke()
+        }
     }
 
-    override fun getProgressId(): Int {
-        return R.id.progress
+    override fun getRecyclerViewId(): Int {
+        return R.id.recycler_view
     }
 
     override fun getNewCommentId(): Int {

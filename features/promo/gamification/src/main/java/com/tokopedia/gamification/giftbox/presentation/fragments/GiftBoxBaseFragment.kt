@@ -141,7 +141,7 @@ open class GiftBoxBaseFragment : Fragment() {
     fun getScreenDimens() {
         if (activity != null) {
             val displayMetrics = DisplayMetrics()
-            activity!!.windowManager.defaultDisplay.getMetrics(displayMetrics)
+            activity?.windowManager?.defaultDisplay?.getMetrics(displayMetrics)
             screenHeight = displayMetrics.heightPixels
             screenWidth = displayMetrics.widthPixels
         }
@@ -243,7 +243,7 @@ open class GiftBoxBaseFragment : Fragment() {
         val dialog = NoInternetDialog()
         dialog.showDialog(context)
         dialog.btnRetry.setOnClickListener {
-            dialog.closeAbleDialog.dismiss()
+            dialog.bottomSheet?.dismiss()
             method.invoke()
             when (this) {
                 is GiftBoxTapTapFragment -> GtmGiftTapTap.clickTryAgain(userSession?.userId)

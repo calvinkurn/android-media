@@ -16,6 +16,7 @@ object OvoWidgetTracking: BaseTracking() {
     private const val CATEGORY_HOMEPAGE_TOKOPOINTS = "homepage-tokopoints"
     private const val CATEGORY_HOMEPAGE_TOKOCASH_WIDGET = "homepage tokocash widget"
 
+    private const val ACTION_CLICK_ON_BALANCE_WIDGET = "click on balance widget"
     private const val ACTION_CLICK_TOKO_POINTS = "click tokopoints"
     private const val EVENT_ACTION_CLICK_ON_TOKOPOINTS_NEW_COUPON = "click on tokopoints new coupon"
     private const val ACTION_CLICK_ON_OVO = "click on ovo"
@@ -24,7 +25,17 @@ object OvoWidgetTracking: BaseTracking() {
     private const val ACTION_CLICK_POINT = "click point & tier status"
     private const val ACTION_CLICK_SALDO = "click saldo"
 
+    private const val CLICK_OVO = "ovo"
+    private const val CLICK_TOKOPOINT = "tokopoint"
+    private const val CLICK_COUPON = "kupon"
+    private const val CLICK_FREE_ONGKIR = "bebas ongkir"
+
     private const val LABEL_TOKOPOINTS = "tokopoints"
+    private const val LABEL_OVO_STATUS_AVAILABLE = "ovo available"
+    private const val LABEL_OVO_STATUS_UNAVAILABLE = "ovo unavailable"
+
+    // {clicked component} while {ovo visibility}
+    private const val LABEL_BALANCE_WIDGET = "%s while %s"
 
     private const val BEBAS_ONGKIR_KUOTA = "bebas ongkir kuota"
     private const val NON_LOGIN = "non login"
@@ -41,24 +52,6 @@ object OvoWidgetTracking: BaseTracking() {
                 BusinessUnit.KEY, BusinessUnit.DEFAULT,
                 UserId.KEY, userId)
         )
-    }
-
-    fun eventOvo() {
-        getTracker().sendGeneralEvent(
-                Event.CLICK_HOMEPAGE,
-                Category.HOMEPAGE,
-                ACTION_CLICK_ON_OVO,
-                Label.NONE
-        )
-    }
-
-    fun sendTokopointTrackerClick() {
-        TrackApp.getInstance().gtm.sendGeneralEvent(
-                TrackAppUtils.gtmData(
-                        EVENT_TOKO_POINT,
-                        CATEGORY_HOMEPAGE_TOKOPOINTS,
-                        ACTION_CLICK_POINT,
-                        LABEL_TOKOPOINTS))
     }
 
     fun eventTokopointNonLogin() {
@@ -101,21 +94,6 @@ object OvoWidgetTracking: BaseTracking() {
         ))
     }
 
-    fun sendBebasOngkir(userId: String){
-        TrackApp.getInstance().gtm.sendGeneralEvent(
-            DataLayer.mapOf(
-                Event.KEY, Event.CLICK_HOMEPAGE,
-                Category.KEY, Category.HOMEPAGE,
-                Action.KEY, String.format(Action.CLICK_ON, BEBAS_ONGKIR_KUOTA),
-                Label.KEY, Label.NONE,
-                BusinessUnit.KEY, BusinessUnit.DEFAULT,
-                CurrentSite.KEY, CurrentSite.DEFAULT,
-                Screen.KEY, Screen.DEFAULT,
-                UserId.KEY, userId
-            )
-        )
-    }
-
     fun eventUserProfileTokopoints() {
         val tracker = TrackApp.getInstance().gtm
         tracker.sendGeneralEvent(TrackAppUtils.gtmData(
@@ -126,15 +104,63 @@ object OvoWidgetTracking: BaseTracking() {
         ))
     }
 
-    fun sendClickOnTokopointsNewCouponTracker() {
+    fun sendClickOnCouponBalanceWidgetTracker(isOvoAvailable: Boolean, userId: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(DataLayer.mapOf(
-                Event.KEY, EVENT_TOKO_POINT,
-                Category.KEY, CATEGORY_HOMEPAGE_TOKOPOINTS,
-                Action.KEY, EVENT_ACTION_CLICK_ON_TOKOPOINTS_NEW_COUPON,
-                Label.KEY, Label.NONE,
+                Event.KEY, Event.CLICK_HOMEPAGE,
+                Category.KEY, Category.HOMEPAGE,
+                Action.KEY, ACTION_CLICK_ON_BALANCE_WIDGET,
+                Label.KEY, buildBalanceWidgetLabel(CLICK_COUPON, isOvoAvailable),
                 Screen.KEY, Screen.DEFAULT,
                 CurrentSite.KEY, CurrentSite.DEFAULT,
-                BusinessUnit.KEY, BusinessUnit.DEFAULT
+                BusinessUnit.KEY, BusinessUnit.DEFAULT,
+                UserId.KEY, userId
         ))
+    }
+
+    fun sendClickOnOVOBalanceWidgetTracker(isOvoAvailable: Boolean, userId: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(DataLayer.mapOf(
+                Event.KEY, Event.CLICK_HOMEPAGE,
+                Category.KEY, Category.HOMEPAGE,
+                Action.KEY, ACTION_CLICK_ON_BALANCE_WIDGET,
+                Label.KEY, buildBalanceWidgetLabel(CLICK_OVO, isOvoAvailable),
+                Screen.KEY, Screen.DEFAULT,
+                CurrentSite.KEY, CurrentSite.DEFAULT,
+                BusinessUnit.KEY, BusinessUnit.DEFAULT,
+                UserId.KEY, userId
+        ))
+    }
+
+    fun sendClickOnTokopointsBalanceWidgetTracker(isOvoAvailable: Boolean, userId: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(DataLayer.mapOf(
+                Event.KEY, Event.CLICK_HOMEPAGE,
+                Category.KEY, Category.HOMEPAGE,
+                Action.KEY, ACTION_CLICK_ON_BALANCE_WIDGET,
+                Label.KEY, buildBalanceWidgetLabel(CLICK_TOKOPOINT, isOvoAvailable),
+                Screen.KEY, Screen.DEFAULT,
+                CurrentSite.KEY, CurrentSite.DEFAULT,
+                BusinessUnit.KEY, BusinessUnit.DEFAULT,
+                UserId.KEY, userId
+        ))
+    }
+
+    fun sendClickOnBBOBalanceWidgetTracker(isOvoAvailable: Boolean, userId: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(DataLayer.mapOf(
+                Event.KEY, Event.CLICK_HOMEPAGE,
+                Category.KEY, Category.HOMEPAGE,
+                Action.KEY, ACTION_CLICK_ON_BALANCE_WIDGET,
+                Label.KEY, buildBalanceWidgetLabel(CLICK_FREE_ONGKIR, isOvoAvailable),
+                Screen.KEY, Screen.DEFAULT,
+                CurrentSite.KEY, CurrentSite.DEFAULT,
+                BusinessUnit.KEY, BusinessUnit.DEFAULT,
+                UserId.KEY, userId
+        ))
+    }
+
+    private fun buildBalanceWidgetLabel(clickedComponent: String, isOvoAvailable: Boolean): String {
+        return String.format(
+                LABEL_BALANCE_WIDGET,
+                clickedComponent,
+                if (isOvoAvailable) LABEL_OVO_STATUS_AVAILABLE else LABEL_OVO_STATUS_UNAVAILABLE
+        )
     }
 }

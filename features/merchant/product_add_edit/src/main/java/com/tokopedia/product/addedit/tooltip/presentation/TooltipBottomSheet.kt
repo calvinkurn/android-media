@@ -10,11 +10,14 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
+import com.tokopedia.kotlin.extensions.view.loadImage
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toDp
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.tooltip.adapter.TooltipTypeFactory
 import com.tokopedia.product.addedit.tooltip.model.TooltipModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import kotlinx.android.synthetic.main.bottom_sheet_list.*
 import kotlinx.android.synthetic.main.bottom_sheet_list.view.*
 
 class TooltipBottomSheet : BottomSheetUnify() {
@@ -22,16 +25,14 @@ class TooltipBottomSheet : BottomSheetUnify() {
     private var contentView: View? = null
     private var isDividerVisible: Boolean = false
     private var listAdapter: BaseListAdapter<TooltipModel, TooltipTypeFactory>? = null
+    private var urlImage: String? = null
 
     init {
         listAdapter = BaseListAdapter(TooltipTypeFactory())
+        isKeyboardOverlap = false
         setCloseClickListener {
             dismiss()
         }
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -44,6 +45,14 @@ class TooltipBottomSheet : BottomSheetUnify() {
         changeCloseButtonSize()
         removeContainerPadding()
         addMarginCloseButton()
+        setupBannerImage()
+    }
+
+    private fun setupBannerImage() {
+        urlImage?.apply {
+            bannerTooltip.loadImage(this)
+            bannerTooltip.show()
+        }
     }
 
     private fun changeCloseButtonSize() {
@@ -51,7 +60,7 @@ class TooltipBottomSheet : BottomSheetUnify() {
         bottomSheetTitle.setTextSize(TypedValue.COMPLEX_UNIT_SP, fontSize)
         context?.also { context ->
             bottomSheetClose.apply {
-                setImageDrawable(ContextCompat.getDrawable(context, com.tokopedia.product.addedit.R.drawable.ic_bottomsheet_close))
+                setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_bottomsheet_close))
                 layoutParams.apply {
                     width = context.resources.getDimension(com.tokopedia.product.addedit.R.dimen.tooltip_close_size).toInt()
                     height = context.resources.getDimension(com.tokopedia.product.addedit.R.dimen.tooltip_close_size).toInt()
@@ -81,7 +90,7 @@ class TooltipBottomSheet : BottomSheetUnify() {
             setHasFixedSize(true)
             adapter = listAdapter
             if (isDividerVisible) {
-                ContextCompat.getDrawable(context, com.tokopedia.product.addedit.R.drawable.tooltip_divider)?.also {
+                ContextCompat.getDrawable(context, R.drawable.tooltip_divider)?.also {
                     addItemDecoration(TooltipDividerItemDecoration(
                             drawable = it,
                             drawOnLastItem = false,
@@ -107,7 +116,8 @@ class TooltipBottomSheet : BottomSheetUnify() {
         isDividerVisible = visible
     }
 
-    companion object {
-        const val TAG = "Tag list"
+    fun setBannerImage(url: String) {
+        urlImage = url
     }
+
 }

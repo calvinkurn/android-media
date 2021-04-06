@@ -8,6 +8,7 @@ import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.widget.AppCompatTextView
@@ -22,6 +23,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
@@ -30,10 +32,12 @@ import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
+import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.imagepicker.common.ImagePickerResultExtractor
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
@@ -124,6 +128,8 @@ import com.tokopedia.seller.active.common.service.UpdateShopActiveService
 import com.tokopedia.seller_migration_common.presentation.activity.SellerMigrationActivity
 import com.tokopedia.seller_migration_common.presentation.model.SellerFeatureUiModel
 import com.tokopedia.seller_migration_common.presentation.widget.SellerFeatureCarousel
+import com.tokopedia.shop.common.constant.SellerHomePermissionGroup
+import com.tokopedia.shop.common.constant.admin_roles.AdminPermissionUrl
 import com.tokopedia.unifycomponents.DividerUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
@@ -158,9 +164,6 @@ class AddEditProductPreviewFragment :
 
     // action button
     private var doneButton: AppCompatTextView? = null
-
-    // notification
-    private var tickerAddEditProductNotification: Ticker? = null
 
     // photo
     private var addEditProductPhotoButton: Typography? = null
@@ -203,8 +206,15 @@ class AddEditProductPreviewFragment :
     //loading
     private var loadingLayout: MotionLayout? = null
 
+    // admin revamp
+    private var multiLocationTicker: Ticker? = null
+    private var adminRevampErrorLayout: FrameLayout? = null
+    private var adminRevampGlobalError: GlobalError? = null
+
     private lateinit var userSession: UserSessionInterface
     private lateinit var shopId: String
+
+    private var isAdminEligible = true
 
     @Inject
     lateinit var viewModel: AddEditProductPreviewViewModel
@@ -295,9 +305,6 @@ class AddEditProductPreviewFragment :
         // action button
         doneButton = activity?.findViewById(R.id.tv_done)
 
-        // ticker specification unavailable
-        tickerAddEditProductNotification = activity?.findViewById(R.id.ticker_add_edit_product_notification)
-
         // photos
         productPhotosView = view.findViewById(R.id.rv_product_photos)
         productPhotoAdapter = ProductPhotoAdapter(MAX_PRODUCT_PHOTOS, true, mutableListOf(), this)
@@ -344,6 +351,11 @@ class AddEditProductPreviewFragment :
 
         //loading
         loadingLayout = view.findViewById(R.id.loading_layout)
+
+        // admin revamp
+        multiLocationTicker = view.findViewById(R.id.ticker_add_edit_multi_location)
+        adminRevampErrorLayout = view.findViewById(R.id.add_edit_error_layout)
+        adminRevampGlobalError = view.findViewById(R.id.add_edit_admin_global_error)
 
         addEditProductPhotoButton?.setOnClickListener {
             val ctx = context ?: return@setOnClickListener
@@ -477,6 +489,8 @@ class AddEditProductPreviewFragment :
             checkEnableOrNot()
         }
 
+        multiLocationTicker?.showWithCondition(viewModel.shouldShowMultiLocationTicker)
+
         context?.let { UpdateShopActiveService.startService(it) }
         //If you add another observe, don't forget to remove observers at removeObservers()
         observeIsEditingStatus()
@@ -489,6 +503,7 @@ class AddEditProductPreviewFragment :
         observeSaveProductDraft()
         observeGetShopInfoLocation()
         observeSaveShipmentLocationData()
+        observeAdminPermission()
 
         // validate whether shop has location
         validateShopLocationWhenPageOpened()
@@ -841,7 +856,6 @@ class AddEditProductPreviewFragment :
     private fun displayEditMode() {
         toolbar?.title = getString(R.string.label_title_edit_product)
         doneButton?.show()
-        tickerAddEditProductNotification?.isVisible = !RollenceUtil.getSpecificationRollence()
 
         enablePhotoEdit()
         enableDetailEdit()
@@ -934,6 +948,10 @@ class AddEditProductPreviewFragment :
                     showEmptyVariantState(isVariantEmpty)
                     showProductStatus(result.data)
                     handleSetCashBackResult()
+
+                    // set temporary price when first loaded
+                    SharedPreferencesUtil.setPriceWhenLoaded(requireActivity(), result.data.price)
+
                     // continue to PLT monitoring render
                     stopNetworkRequestPerformanceMonitoring()
                     startRenderPerformanceMonitoring()
@@ -1103,6 +1121,28 @@ class AddEditProductPreviewFragment :
                     AddEditProductErrorHandler.logMessage("$TIMBER_PREFIX_LOCATION_VALIDATION: ${it.throwable.message}")
                 }
             }
+        }
+    }
+
+    private fun observeAdminPermission() {
+        viewModel.isProductManageAuthorized.observe(viewLifecycleOwner) { result ->
+            when(result) {
+                is Success -> {
+                    result.data.let { isEligible ->
+                        isAdminEligible = isEligible
+                        doneButton?.showWithCondition(isAdminEligible)
+                        if (isEligible) {
+                            adminRevampErrorLayout?.hide()
+                        } else {
+                            showAdminNotEligibleView()
+                        }
+                    }
+                }
+                is Fail -> {
+                    showGetProductErrorToast(viewModel.getProductId())
+                }
+            }
+
         }
     }
 
@@ -1353,7 +1393,7 @@ class AddEditProductPreviewFragment :
     }
 
     private fun hideLoading() {
-        doneButton?.show()
+        doneButton?.showWithCondition(isAdminEligible)
         loadingLayout?.transitionToEnd()
         loadingLayout?.setTransitionListener(object : MotionLayout.TransitionListener {
             override fun onTransitionTrigger(p0: MotionLayout?, p1: Int, p2: Boolean, p3: Float) {
@@ -1532,5 +1572,24 @@ class AddEditProductPreviewFragment :
                 onFailedSetCashback()
             }
         }
+    }
+
+    private fun showAdminNotEligibleView() {
+        adminRevampGlobalError?.run {
+            val permissionGroup = SellerHomePermissionGroup.PRODUCT
+            ImageHandler.loadImageAndCache(errorIllustration, AdminPermissionUrl.ERROR_ILLUSTRATION)
+            errorTitle.text = context?.getString(com.tokopedia.shop.common.R.string.admin_no_permission_title, permissionGroup)
+            errorDescription.text = context?.getString(com.tokopedia.shop.common.R.string.admin_no_permission_desc, permissionGroup)
+            errorAction.text = context?.getString(com.tokopedia.shop.common.R.string.admin_no_permission_action)
+            setButtonFull(true)
+
+            setActionClickListener {
+                activity?.finish()
+                if (GlobalConfig.isSellerApp()) {
+                    RouteManager.route(context, ApplinkConstInternalSellerapp.SELLER_HOME)
+                }
+            }
+        }
+        adminRevampErrorLayout?.show()
     }
 }

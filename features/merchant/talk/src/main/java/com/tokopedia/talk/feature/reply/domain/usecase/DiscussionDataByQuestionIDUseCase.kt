@@ -26,6 +26,9 @@ class DiscussionDataByQuestionIDUseCase @Inject constructor(graphqlRepository: G
                     isSellerView
                     url
                     maxAnswerLength
+                    productStock
+                    productStockMessage
+                    isSellerView
                     question {
                       questionID
                       content
@@ -65,6 +68,7 @@ class DiscussionDataByQuestionIDUseCase @Inject constructor(graphqlRepository: G
                           allowReport
                           allowDelete
                           isYours
+                          isAutoReplied
                         }
                         attachedProductCount
                         attachedProduct {

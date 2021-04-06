@@ -24,13 +24,13 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.imagepicker.common.GalleryType
-import com.tokopedia.imagepicker.picker.album.AlbumAdapter
-import com.tokopedia.imagepicker.picker.gallery.adapter.AlbumMediaAdapter
-import com.tokopedia.imagepicker.picker.gallery.loader.AlbumLoader
-import com.tokopedia.imagepicker.picker.gallery.loader.AlbumMediaLoader
-import com.tokopedia.imagepicker.picker.gallery.model.AlbumItem
-import com.tokopedia.imagepicker.picker.gallery.model.MediaItem
-import com.tokopedia.imagepicker.picker.gallery.widget.MediaGridInset
+import com.tokopedia.imagepicker.common.adapter.AlbumAdapter
+import com.tokopedia.imagepicker.common.adapter.AlbumMediaAdapter
+import com.tokopedia.imagepicker.common.loader.AlbumLoader
+import com.tokopedia.imagepicker.common.loader.AlbumMediaLoader
+import com.tokopedia.imagepicker.common.model.AlbumItem
+import com.tokopedia.imagepicker.common.model.MediaItem
+import com.tokopedia.imagepicker.common.widget.MediaGridInset
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.util.bottomsheet.PlayBroadcastDialogCustomizer
@@ -287,7 +287,7 @@ class PlayGalleryImagePickerBottomSheet @Inject constructor(
         tvPlayGalleryAlbumLabel?.text = if (albumItem.isAll) DEFAULT_ALBUM_TITLE else albumItem.displayName
         if (albumItem.isAll && albumItem.isEmpty) {
             showToaster(
-                    message = getString(com.tokopedia.imagepicker.R.string.error_no_media_storage),
+                    message = getString(com.tokopedia.imagepicker.common.R.string.error_no_media_storage),
                     type = Toaster.TYPE_ERROR
             )
         } else {

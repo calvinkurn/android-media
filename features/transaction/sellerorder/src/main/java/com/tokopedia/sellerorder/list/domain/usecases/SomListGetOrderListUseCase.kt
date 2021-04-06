@@ -62,6 +62,7 @@ class SomListGetOrderListUseCase @Inject constructor(
                   cancel_request_note
                   cancel_request_time
                   cancel_request_origin_note
+                  cancel_request_status
                   destination_province
                   courier_name
                   courier_product_name

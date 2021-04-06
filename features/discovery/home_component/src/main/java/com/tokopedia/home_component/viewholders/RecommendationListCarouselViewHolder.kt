@@ -25,7 +25,6 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.productcard.ProductCardListView
 import com.tokopedia.productcard.ProductCardModel
-import com.tokopedia.productcard.utils.getMaxHeightForListView
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.home_component_lego_banner.view.*
@@ -151,11 +150,7 @@ class RecommendationListCarouselViewHolder(itemView: View,
         }
     }
 
-    suspend fun getProductCardMaxHeight(productCardModelList: List<ProductCardModel>): Int {
-        return productCardModelList.getMaxHeightForListView(itemView.context, Dispatchers.Default)
-    }
-
-    fun mapGridToProductData(grid: ChannelGrid) :ProductCardModel{
+    private fun mapGridToProductData(grid: ChannelGrid) :ProductCardModel{
         return ProductCardModel(
                 productImageUrl = grid.imageUrl,
                 productName = grid.name,

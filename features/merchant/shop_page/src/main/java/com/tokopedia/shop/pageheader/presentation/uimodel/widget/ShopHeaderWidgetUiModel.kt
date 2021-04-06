@@ -14,11 +14,7 @@ data class ShopHeaderWidgetUiModel(
         const val SHOP_BASIC_INFO = "shop_basic_info"
         const val SHOP_PERFORMANCE = "shop_performance"
         const val SHOP_ACTION = "action_button"
-        val RENDERED_WIDGETS = listOf(
-                SHOP_BASIC_INFO,
-                SHOP_PERFORMANCE,
-                SHOP_ACTION
-        )
+        const val SHOP_PLAY = "play"
     }
 
     override fun type(typeFactory: ShopPageHeaderAdapterTypeFactory): Int {

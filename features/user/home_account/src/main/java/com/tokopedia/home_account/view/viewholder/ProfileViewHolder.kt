@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.adapterdelegate.BaseViewHolder
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.home_account.AccountConstants
 import com.tokopedia.home_account.R
 import com.tokopedia.home_account.Utils
 import com.tokopedia.home_account.data.model.CommonDataView
@@ -20,11 +21,13 @@ import com.tokopedia.home_account.view.adapter.HomeAccountFinancialAdapter
 import com.tokopedia.home_account.view.adapter.HomeAccountMemberAdapter
 import com.tokopedia.home_account.view.listener.HomeAccountUserListener
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.util.LetUtil
 import com.tokopedia.utils.image.ImageUtils
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import kotlinx.android.synthetic.main.home_account_financial.view.*
 import kotlinx.android.synthetic.main.home_account_item_profile.view.*
 import kotlinx.android.synthetic.main.home_account_member.view.*
+import kotlinx.android.synthetic.main.home_account_profile.view.*
 
 
 /**
@@ -32,14 +35,19 @@ import kotlinx.android.synthetic.main.home_account_member.view.*
  * Copyright (c) 2020 PT. Tokopedia All rights reserved.
  */
 
-class ProfileViewHolder(itemView: View, val listener: HomeAccountUserListener, val financialAdapter: HomeAccountFinancialAdapter?, val memberAdapter: HomeAccountMemberAdapter?): BaseViewHolder(itemView) {
+class ProfileViewHolder(
+        itemView: View,
+        val listener: HomeAccountUserListener,
+        private val financialAdapter: HomeAccountFinancialAdapter?,
+        private val memberAdapter: HomeAccountMemberAdapter?
+) : BaseViewHolder(itemView) {
 
     fun bind(profile: ProfileDataView) {
         with(itemView) {
             account_user_item_profile_name?.text = profile.name
-            if(profile.phone.isNotEmpty()) {
+            if (profile.phone.isNotEmpty()) {
                 account_user_item_profile_phone?.text = Utils.formatPhoneNumber(profile.phone)
-            }else {
+            } else {
                 account_user_item_profile_phone?.hide()
                 account_user_item_profile_name?.run {
                     account_user_item_profile_name?.setPadding(paddingLeft, 8, paddingRight, paddingBottom)
@@ -47,15 +55,21 @@ class ProfileViewHolder(itemView: View, val listener: HomeAccountUserListener, v
             }
             account_user_item_profile_email?.text = profile.email
             account_user_item_profile_edit?.setOnClickListener { listener.onEditProfileClicked() }
+            home_account_profile_section?.setOnClickListener { listener.onProfileClicked() }
 
             loadImage(account_user_item_profile_avatar, profile.avatar)
 
-            setupMemberAdapter(itemView, profile)
-            setupFinancialAdapter(itemView, profile)
+            setupMemberAdapter(itemView)
+            setupFinancialAdapter(itemView)
 
             setBackground(context, account_user_item_profile_container)
             listener.onItemViewBinded(adapterPosition, itemView, profile)
-            listener.onProfileAdapterReady(financialAdapter!!, memberAdapter!!)
+            LetUtil.ifLet(financialAdapter, memberAdapter) { (financialAdapter, memberAdapter) ->
+                if (financialAdapter is HomeAccountFinancialAdapter &&
+                        memberAdapter is HomeAccountMemberAdapter) {
+                    listener.onProfileAdapterReady(financialAdapter, memberAdapter)
+                }
+            }
         }
     }
 
@@ -68,8 +82,10 @@ class ProfileViewHolder(itemView: View, val listener: HomeAccountUserListener, v
             Configuration.UI_MODE_NIGHT_NO -> {
                 accountUserItemProfileContainer?.setBackgroundResource(R.drawable.ic_account_backdrop)
             }
-            Configuration.UI_MODE_NIGHT_UNDEFINED -> {}
-            else -> {}
+            Configuration.UI_MODE_NIGHT_UNDEFINED -> {
+            }
+            else -> {
+            }
         }
     }
 
@@ -77,23 +93,26 @@ class ProfileViewHolder(itemView: View, val listener: HomeAccountUserListener, v
         ImageUtils.loadImageCircleWithPlaceHolder(imageView.context, imageView, imageUrl)
     }
 
-    private fun setupFinancialAdapter(itemView: View, profile: ProfileDataView) {
-        itemView?.home_account_financial_layout_title?.text = profile.financial?.title
-        financialAdapter?.list = profile.financial?.items ?: mutableListOf()
+    private fun setupFinancialAdapter(itemView: View) {
         itemView.home_account_financial_layout_rv?.adapter = financialAdapter
         itemView.home_account_financial_layout_rv?.layoutManager = SpanningLinearLayoutManager(itemView.home_account_financial_layout_rv?.context, LinearLayoutManager.HORIZONTAL, false, minWidth = 180)
     }
 
-    private fun setupMemberAdapter(itemView: View, profile: ProfileDataView) {
-        itemView.home_account_member_layout_title?.text = profile.members?.title
-        ImageUtils.loadImageWithoutPlaceholderAndError(itemView.home_account_member_layout_member_icon, profile.members?.icon ?: "")
+    private fun setupMemberAdapter(itemView: View) {
+        itemView.home_account_member_layout_member_forward?.setOnClickListener {
+            listener.onSettingItemClicked(
+                    CommonDataView(
+                            id = AccountConstants.SettingCode.SETTING_MORE_MEMBER,
+                            applink = ApplinkConst.TOKOPOINTS
+                    )
+            )
+        }
 
-        memberAdapter?.list = profile.members?.items?: arrayListOf()
         itemView.home_account_member_layout_rv?.adapter = memberAdapter
         itemView.home_account_member_layout_rv?.setHasFixedSize(true)
         val layoutManager = SpanningLinearLayoutManager(itemView.home_account_member_layout_rv?.context, LinearLayoutManager.HORIZONTAL, false)
         val verticalDivider = ContextCompat.getDrawable(itemView.context, R.drawable.vertical_divider)
-        if(itemView.context?.isDarkMode() == true) {
+        if (itemView.context?.isDarkMode() == true) {
             verticalDivider?.mutate()?.setColorFilter(itemView.resources.getColor(R.color.vertical_divider_dark), PorterDuff.Mode.SRC_IN)
         } else {
             verticalDivider?.mutate()?.setColorFilter(itemView.resources.getColor(R.color.vertical_divider_light), PorterDuff.Mode.SRC_IN)
@@ -105,17 +124,12 @@ class ProfileViewHolder(itemView: View, val listener: HomeAccountUserListener, v
             dividerItemDecoration.setDrawable(this)
         }
 
-        if(itemView.home_account_member_layout_rv.itemDecorationCount < 1) {
+        if (itemView.home_account_member_layout_rv.itemDecorationCount < 1) {
             itemView.home_account_member_layout_rv.addItemDecoration(dividerItemDecoration)
         }
         itemView.home_account_member_layout_rv?.layoutManager = layoutManager
 
         itemView.home_account_member_layout_rv?.isLayoutFrozen = true
-        itemView.home_account_member_layout_member_forward?.setOnClickListener {
-            listener.onSettingItemClicked(
-                    CommonDataView(applink = ApplinkConst.TOKOPOINTS)
-            )
-        }
     }
 
     companion object {

@@ -14,6 +14,7 @@ import com.tokopedia.notifcenter.data.entity.deletereminder.DeleteReminderRespon
 import com.tokopedia.notifcenter.data.entity.filter.NotifcenterFilterResponse
 import com.tokopedia.notifcenter.data.entity.notification.NotificationDetailResponseModel
 import com.tokopedia.notifcenter.data.entity.notification.ProductData
+import com.tokopedia.notifcenter.data.entity.orderlist.NotifOrderListResponse
 import com.tokopedia.notifcenter.data.model.RecommendationDataModel
 import com.tokopedia.notifcenter.data.state.Resource
 import com.tokopedia.notifcenter.data.uimodel.NotificationTopAdsBannerUiModel
@@ -59,6 +60,7 @@ class NotificationViewModel @Inject constructor(
         private val removeWishListUseCase: RemoveWishListUseCase,
         private val userSessionInterface: UserSessionInterface,
         private var addToCartUseCase: AddToCartUseCase,
+        private var notifOrderListUseCase: NotifOrderListUseCase,
         private val dispatcher: DispatcherProvider
 ) : BaseViewModel(dispatcher.io()), INotificationViewModel {
 
@@ -96,6 +98,10 @@ class NotificationViewModel @Inject constructor(
     val deleteReminder: LiveData<Resource<DeleteReminderResponse>>
         get() = _deleteReminder
 
+    private val _orderList = MutableLiveData<Resource<NotifOrderListResponse>>()
+    val orderList: LiveData<Resource<NotifOrderListResponse>>
+        get() = _orderList
+
     fun hasFilter(): Boolean {
         return filter != NotifcenterDetailUseCase.FILTER_NONE
     }
@@ -103,6 +109,23 @@ class NotificationViewModel @Inject constructor(
     fun cancelAllUseCase() {
         notifcenterDetailUseCase.cancelRunningOperation()
         coroutineContext.cancelChildren()
+    }
+
+    fun loadNotifOrderList(
+            @RoleType
+            role: Int?
+    ) {
+        if (role == null) return
+        launchCatchError(dispatcher.io(),
+                {
+                    notifOrderListUseCase.getOrderList(role).collect {
+                        _orderList.postValue(it)
+                    }
+                },
+                {
+                    _orderList.postValue(Resource.error(it, null))
+                }
+        )
     }
 
     /**
@@ -116,10 +139,8 @@ class NotificationViewModel @Inject constructor(
         notifcenterDetailUseCase.getFirstPageNotification(filter, role,
                 {
                     _mutateNotificationItems.value = Success(it)
-                    if (!hasFilter()) {
-                        if (role == RoleType.BUYER) {
-                            loadTopAdsBannerData()
-                        }
+                    if (!hasFilter() && role == RoleType.BUYER) {
+                        loadTopAdsBannerData()
                     }
                 },
                 {
@@ -418,7 +439,7 @@ class NotificationViewModel @Inject constructor(
     companion object {
         const val TOP_ADS_SOURCE = "5"
         const val TOP_ADS_COUNT = 1
-        const val TOP_ADS_DIMEN_ID = 4
+        const val TOP_ADS_DIMEN_ID = 3
 
         const val RECOM_WIDGET = "recom_widget"
         const val RECOM_SOURCE_INBOX_PAGE = "inbox"

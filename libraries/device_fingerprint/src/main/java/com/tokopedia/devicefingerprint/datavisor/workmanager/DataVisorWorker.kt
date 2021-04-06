@@ -2,6 +2,7 @@ package com.tokopedia.devicefingerprint.datavisor.workmanager
 
 import android.content.Context
 import androidx.work.*
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.devicefingerprint.datavisor.instance.VisorFingerprintInstance
 import com.tokopedia.devicefingerprint.datavisor.instance.VisorFingerprintInstance.Companion.DEFAULT_VALUE_DATAVISOR
 import com.tokopedia.devicefingerprint.datavisor.instance.VisorFingerprintInstance.Companion.DV_SHARED_PREF_NAME
@@ -11,9 +12,7 @@ import com.tokopedia.devicefingerprint.di.DaggerDeviceFingerprintComponent
 import com.tokopedia.devicefingerprint.di.DeviceFingerprintModule
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.suspendCancellableCoroutine
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -41,21 +40,24 @@ class DataVisorWorker(appContext: Context, params: WorkerParameters) : Coroutine
         return withContext(Dispatchers.IO) {
             val result: Result
             var resultInit: Pair<String, String>?
+            val userSession = getUserSession(applicationContext)
+            if (userSession.userId.isEmpty()) {
+                return@withContext Result.success()
+            }
             try {
                 resultInit = suspendCancellableCoroutine { continuation ->
                     try {
-                        val userSession = getUserSession(applicationContext)
                         VisorFingerprintInstance.initToken(applicationContext,
                                 userSession.userId,
                                 listener = object : VisorFingerprintInstance.onVisorInitListener {
-                            override fun onSuccessInitToken(token: String) {
-                                continuation.resume(token to "")
-                            }
+                                    override fun onSuccessInitToken(token: String) {
+                                        continuation.resume(token to "")
+                                    }
 
-                            override fun onFailedInitToken(error: String) {
-                                continuation.resume("" to error)
-                            }
-                        })
+                                    override fun onFailedInitToken(error: String) {
+                                        continuation.resume("" to error)
+                                    }
+                                })
                     } catch (e: Exception) {
                         continuation.resume("" to e.toString())
                     }
@@ -63,7 +65,7 @@ class DataVisorWorker(appContext: Context, params: WorkerParameters) : Coroutine
             } catch (e: Exception) {
                 resultInit = "" to e.toString()
             }
-            val token = resultInit?.first?: ""
+            val token = resultInit?.first ?: ""
             result = if (token.isNotEmpty()) {
                 try {
                     val resultServer = sendDataVisorToServer(token, runAttemptCount, "")
@@ -73,11 +75,11 @@ class DataVisorWorker(appContext: Context, params: WorkerParameters) : Coroutine
                     } else {
                         Result.retry()
                     }
-                } catch (e:Exception) {
+                } catch (e: Exception) {
                     Result.retry()
                 }
             } else {
-                val error = resultInit?.second?: ""
+                val error = resultInit?.second ?: ""
                 sendErrorDataVisorToServer(runAttemptCount, error)
                 Result.retry()
             }
@@ -123,9 +125,16 @@ class DataVisorWorker(appContext: Context, params: WorkerParameters) : Coroutine
         var userSession: UserSessionInterface? = null
 
         fun scheduleWorker(context: Context, forceWorker: Boolean) {
-            val appContext = context.applicationContext
-            if (forceWorker || needToRun(appContext)) {
-                runWorker(appContext)
+            GlobalScope.launch(Dispatchers.IO) {
+                try {
+                    val appContext = context.applicationContext
+                    if (GlobalConfig.isSellerApp()) {
+                        return@launch
+                    }
+                    if (forceWorker || needToRun(appContext)) {
+                        runWorker(appContext)
+                    }
+                } catch (ignored:Exception) { }
             }
         }
 

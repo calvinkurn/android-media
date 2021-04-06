@@ -103,9 +103,9 @@ public class RepositoryManager implements StorageProvider.StorageProviderListene
             } else if (nextInappDisplayTime > currentTimeMillis && !isMaxReached) {
                 return true;
             } else {
-                cacheHandler.saveLongValue(CMConstant.NEXT_INAPP_DISPLAY_TIME, nextInappDisplayTime + HOURS_24_IN_MILLIS);
+                cacheHandler.saveLongValue(CMConstant.NEXT_INAPP_DISPLAY_TIME, currentTimeMillis + HOURS_24_IN_MILLIS);
                 cacheHandler.saveLongValue(CMConstant.INAPP_DISPLAY_COUNTER, 0);
-                return false;
+                return true;
             }
         }
     }

@@ -17,6 +17,7 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.thankyou_native.R
 import com.tokopedia.thankyou_native.data.mapper.CashOnDelivery
 import com.tokopedia.thankyou_native.data.mapper.PaymentTypeMapper
+import com.tokopedia.thankyou_native.domain.model.GatewayAdditionalData
 import com.tokopedia.thankyou_native.domain.model.ThanksPageData
 import com.tokopedia.thankyou_native.helper.getMaskedNumberSubStringPayment
 import com.tokopedia.thankyou_native.presentation.activity.ThankYouPageActivity
@@ -44,7 +45,7 @@ class InstantPaymentFragment : ThankYouBaseFragment() {
         viewModelProvider.get(CheckWhiteListViewModel::class.java)
     }
 
-    override fun getLoadingView(): View? = loadingView
+    override fun getLoadingView(): View? = loadingLayout
 
     override fun getRecommendationContainer(): LinearLayout? = recommendationContainer
     override fun getFeatureListingContainer(): GyroView? = featureListingContainer
@@ -137,13 +138,19 @@ class InstantPaymentFragment : ThankYouBaseFragment() {
             ivPayment.setImageUrl(thanksPageData.gatewayImage)
         }
 
+        val gatewayAdditionalData = getGatewayAdditionalInfo()
+        if (gatewayAdditionalData != null) {
+            tvInstallmentInfo.text = gatewayAdditionalData.value ?: ""
+            tvInstallmentInfo.visible()
+        } else if (!thanksPageData.additionalInfo.installmentInfo.isNullOrBlank()) {
+            tvInstallmentInfo.text = thanksPageData.additionalInfo.installmentInfo
+            tvInstallmentInfo.visible()
+        }else{
+            tvInstallmentInfo.gone()
+        }
 
         if (thanksPageData.additionalInfo.maskedNumber.isNotBlank()) {
             tv_payment_method.text = thanksPageData.additionalInfo.maskedNumber.getMaskedNumberSubStringPayment()
-            if (thanksPageData.additionalInfo.installmentInfo.isNotBlank()) {
-                tvInstallmentInfo.text = thanksPageData.additionalInfo.installmentInfo
-                tvInstallmentInfo.visible()
-            }
         } else
             tv_payment_method.text = thanksPageData.gatewayName
 
@@ -168,6 +175,15 @@ class InstantPaymentFragment : ThankYouBaseFragment() {
         setUpHomeButton(btnShopAgain)
     }
 
+    private fun getGatewayAdditionalInfo(): GatewayAdditionalData? {
+        thanksPageData.gatewayAdditionalDataList?.forEach {
+            if (thanksPageData.gatewayName == it.key) {
+                return it
+            }
+        }
+        return null
+    }
+
     private fun observeViewModel() {
         checkWhiteListViewModel.whiteListResultLiveData.observe(viewLifecycleOwner, Observer {
             when (it) {
@@ -179,12 +195,12 @@ class InstantPaymentFragment : ThankYouBaseFragment() {
     }
 
     private fun onSingleAuthRegisterFail() {
-        loadingView.gone()
+        loadingLayout.gone()
         showErrorOnUI(getString(R.string.thank_enable_single_authentication_error)) { enableSingleAuthentication() }
     }
 
     private fun onSuccessFullyRegister() {
-        loadingView.gone()
+        loadingLayout.gone()
         showToaster(getString(R.string.thank_enable_single_authentication_success))
     }
 
@@ -211,7 +227,7 @@ class InstantPaymentFragment : ThankYouBaseFragment() {
     private fun enableSingleAuthentication() {
         if (::dialogUnify.isInitialized)
             dialogUnify.cancel()
-        loadingView.visible()
+        loadingLayout.visible()
         checkWhiteListViewModel.registerForSingleAuth()
     }
 

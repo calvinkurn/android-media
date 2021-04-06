@@ -3,17 +3,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="match_parent"
-    android:layout_gravity="center"
-    android:minWidth="@dimen/dp_30"
-    android:minHeight="@dimen/dp_30">
+    android:layout_marginRight="@dimen/dp_16"
+    android:layout_marginLeft="@dimen/dp_16"
+    android:layout_gravity="center">
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/iv_image"
-        android:layout_width="wrap_content"
-        android:layout_height="@dimen/dp_18"
+        android:layout_width="@dimen/dp_56"
+        android:layout_height="@dimen/dp_28"
         android:layout_gravity="center"
         android:adjustViewBounds="true"
-        android:minWidth="@dimen/dp_30"
-        android:minHeight="@dimen/dp_30"
         tools:visibility="visible" />
 </FrameLayout>

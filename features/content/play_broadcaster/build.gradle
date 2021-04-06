@@ -42,10 +42,9 @@ dependencies {
     implementation project(rootProject.ext.libraries.websocket)
     implementation project(rootProject.ext.libraries.linker)
     implementation project(rootProject.ext.libraries.graphql)
-    implementation project(rootProject.ext.libraries.imagePicker)
     implementation project(rootProject.ext.libraries.imagePickerCommon)
     implementation project(rootProject.ext.libraries.analytics)
-    implementation project(rootProject.ext.libraries.mediauploader)
+    implementation project(rootProject.ext.features.mediauploader)
     implementation project(rootProject.ext.libraries.utils)
 
     implementation project(rootProject.ext.features.playCommon)
@@ -103,7 +102,7 @@ dependencies {
 
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.assertJCore
-    testImplementation rootProject.ext.testDependencies.couroutinesTest
+    testImplementation rootProject.ext.miscDependencies.coroutineTest
     testImplementation rootProject.ext.testDependencies.archCoreTesting
     testImplementation rootProject.ext.testDependencies.junitJupiterApi
     testImplementation rootProject.ext.testDependencies.junitPlatformRunner

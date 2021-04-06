@@ -73,7 +73,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>, Shop
     }
 
     override fun getNewFragment(): Fragment? {
-        return if(ShopUtil.isUsingNewShopPageHeader())
+        return if(ShopUtil.isUsingNewShopPageHeader(this))
             NewShopPageFragment.createInstance()
         else
             ShopPageFragment.createInstance()
