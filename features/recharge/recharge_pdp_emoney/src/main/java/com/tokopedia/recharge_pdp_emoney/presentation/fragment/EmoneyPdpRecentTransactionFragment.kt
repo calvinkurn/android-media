@@ -5,11 +5,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.common.topupbills.data.TopupBillsRecommendation
 import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsViewModel
 import com.tokopedia.recharge_pdp_emoney.R
 import com.tokopedia.recharge_pdp_emoney.di.EmoneyPdpComponent
-import com.tokopedia.unifycomponents.list.ListItemUnify
+import com.tokopedia.recharge_pdp_emoney.presentation.adapter.EmoneyPdpRecentTransactionAdapter
+import com.tokopedia.recharge_pdp_emoney.presentation.adapter.viewholder.RecentTransactionViewHolder
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_emoney_recent_number.*
 import javax.inject.Inject
@@ -17,7 +20,7 @@ import javax.inject.Inject
 /**
  * @author by jessica on 31/03/21
  */
-class EmoneyPdpRecentTransactionFragment : BaseDaggerFragment() {
+class EmoneyPdpRecentTransactionFragment : BaseDaggerFragment(), RecentTransactionViewHolder.ActionListener {
     override fun getScreenName(): String = ""
 
     @Inject
@@ -38,12 +41,11 @@ class EmoneyPdpRecentTransactionFragment : BaseDaggerFragment() {
 
         val recommendationData = (topUpBillsViewModel.menuDetailData.value as Success).data.recommendations
 
-        val unifyListData = ArrayList(recommendationData.map {
-            val item = ListItemUnify(it.clientNumber, it.title)
-            item.listDrawableUrl = it.iconUrl
-            item
-        })
-        emoneyRecentNumberList.setData(unifyListData)
+        emoneyRecentNumberList.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+        emoneyRecentNumberList.adapter = EmoneyPdpRecentTransactionAdapter(recommendationData, this)
+    }
+
+    override fun onClickItem(item: TopupBillsRecommendation) {
 
     }
 }

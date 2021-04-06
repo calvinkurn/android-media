@@ -21,8 +21,7 @@
             app:layout_constraintEnd_toStartOf="@id/emoneyPdpCardCameraIcon"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:text_field_append_drawable_icon_2="@drawable/ic_system_action_close_grayscale_16"
-            app:text_field_input_type="numberSigned"
+            app:text_field_input_type="number"
             app:text_field_label="@string/recharge_pdp_emoney_input_card_no_label"
             tools:layout_height="@dimen/spacing_lvl4" />
 

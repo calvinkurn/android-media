@@ -1,8 +1,10 @@
 package com.tokopedia.recharge_pdp_emoney.presentation.widget
 
 import android.content.Context
+import android.text.InputType
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import com.tokopedia.kotlin.extensions.view.clearImage
 import com.tokopedia.recharge_pdp_emoney.R
 import com.tokopedia.unifycomponents.BaseCustomView
 import kotlinx.android.synthetic.main.widget_emoney_input_card_number.view.*
@@ -16,14 +18,54 @@ class EmoneyPdpInputCardNumberWidget @JvmOverloads constructor(@NotNull context:
                                                                attrs: AttributeSet? = null, defStyleAttr: Int = 0)
     : BaseCustomView(context, attrs, defStyleAttr) {
 
+    var listener: ActionListener? = null
+
     init {
         LayoutInflater.from(context).inflate(R.layout.widget_emoney_input_card_number, this, true)
     }
 
-    fun initView() {
-        emoneyPdpCardInputNumber.getSecondIcon().setPadding(resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2),
-                resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2),
-                resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2),
-                resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2))
+    fun initView(actionListener: ActionListener) {
+        listener = actionListener
+
+        emoneyPdpCardInputNumber.textFieldInput.isClickable = true
+        emoneyPdpCardInputNumber.textFieldInput.isFocusable = false
+        emoneyPdpCardInputNumber.textFieldInput.setOnClickListener { listener?.onClickInputView(getInputString()) }
+        emoneyPdpCardInputNumber.textFieldInput.inputType = InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS
+
+
+        emoneyPdpCardInputNumber.getSecondIcon().setPadding(resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2), resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2), resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2), resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2))
+        emoneyPdpCardInputNumber.getSecondIcon().setOnClickListener {
+            clearNumberAndOperator()
+            listener?.onRemoveNumberIconClick()
+        }
+
+        emoneyPdpCardCameraIcon.setOnClickListener { listener?.onClickCameraIcon() }
+    }
+
+    fun setNumber(number: String) {
+        emoneyPdpCardInputNumber.textFieldInput.setText(number)
+        showClearIcon()
+    }
+
+    fun setOperator(imageUrl: String) {
+        emoneyPdpCardInputNumber.setFirstIcon(imageUrl)
+    }
+
+    private fun getInputString() = emoneyPdpCardInputNumber.textFieldInput.text.toString()
+
+    private fun clearNumberAndOperator() {
+        emoneyPdpCardInputNumber.textFieldInput.setText("")
+        emoneyPdpCardInputNumber.getSecondIcon().clearImage()
+        emoneyPdpCardInputNumber.getFirstIcon().clearImage()
+    }
+
+    private fun showClearIcon() {
+        emoneyPdpCardInputNumber.setSecondIcon(R.drawable.ic_system_action_close_grayscale_16)
+    }
+
+    interface ActionListener {
+        fun onClickCameraIcon()
+        fun onClickInputView(inputNumber: String)
+        fun onRemoveNumberIconClick()
     }
 }

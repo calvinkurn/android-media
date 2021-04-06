@@ -22,7 +22,10 @@ import com.tokopedia.recharge_pdp_emoney.R
 import com.tokopedia.recharge_pdp_emoney.di.EmoneyPdpComponent
 import com.tokopedia.recharge_pdp_emoney.presentation.adapter.EmoneyPdpFragmentPagerAdapter
 import com.tokopedia.recharge_pdp_emoney.presentation.viewmodel.EmoneyPdpViewModel
+import com.tokopedia.recharge_pdp_emoney.presentation.widget.EmoneyPdpHeaderViewWidget
+import com.tokopedia.recharge_pdp_emoney.presentation.widget.EmoneyPdpInputCardNumberWidget
 import com.tokopedia.recharge_pdp_emoney.utils.EmoneyPdpMapper
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifycomponents.ticker.TickerData
 import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
@@ -36,7 +39,8 @@ import javax.inject.Inject
  * @author by jessica on 29/03/21
  */
 
-class EmoneyPdpFragment : BaseDaggerFragment() {
+class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.ActionListener,
+        EmoneyPdpInputCardNumberWidget.ActionListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -61,10 +65,8 @@ class EmoneyPdpFragment : BaseDaggerFragment() {
 
         // dummy
         // will replace this
-        emoneyPdpHeaderView.titleText = "Cek saldo kamu di sini"
-        emoneyPdpHeaderView.subtitleText = "Yuk, coba cek sisa saldo di kartu e-money kamu."
-        emoneyPdpHeaderView.buttonCtaText = "Cek Saldo"
-        emoneyPdpInputCardWidget.initView()
+        emoneyPdpHeaderView.configureCheckBalanceView()
+        emoneyPdpInputCardWidget.initView(this)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -104,8 +106,14 @@ class EmoneyPdpFragment : BaseDaggerFragment() {
             return
         }
 
-        if (recommendations.isNotEmpty()) emoneyPdpTab.addNewTab(getString(R.string.recharge_pdp_emoney_recents_tab))
-        if (promoList.isNotEmpty()) emoneyPdpTab.addNewTab(getString(R.string.recharge_pdp_emoney_promo_tab))
+        emoneyPdpViewPager.show()
+        if (recommendations.isNotEmpty() && promoList.isNotEmpty()) {
+            emoneyPdpTab.addNewTab(getString(R.string.recharge_pdp_emoney_recents_tab))
+            emoneyPdpTab.addNewTab(getString(R.string.recharge_pdp_emoney_promo_tab))
+            emoneyPdpTab.show()
+        } else {
+            emoneyPdpTab.hide()
+        }
 
         val adapter = EmoneyPdpFragmentPagerAdapter(this, recommendations, promoList)
         emoneyPdpViewPager.adapter = adapter
@@ -165,6 +173,26 @@ class EmoneyPdpFragment : BaseDaggerFragment() {
     }
 
     private fun renderErrorMessage() {
+
+    }
+
+    override fun onClickCheckBalance() {
+
+    }
+
+    override fun onClickUpdateBalance() {
+
+    }
+
+    override fun onClickCameraIcon() {
+
+    }
+
+    override fun onClickInputView(inputNumber: String) {
+        Toaster.build(requireView(), "Lala").show()
+    }
+
+    override fun onRemoveNumberIconClick() {
 
     }
 }

@@ -18,7 +18,7 @@ class EmoneyPdpFragmentPagerAdapter(fragment: Fragment,
     override fun createFragment(position: Int): Fragment {
         return when {
             isRecommendationFragmentPosition(position) -> EmoneyPdpRecentTransactionFragment()
-            isPromoListFragmentPosition(position) -> EmoneyPdpPromoListFragment()
+            isPromoListFragmentPosition(position) -> EmoneyPdpPromoListFragment.newInstance(position == 0)
             else -> Fragment()
         }
     }
