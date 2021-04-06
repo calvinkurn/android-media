@@ -28,6 +28,8 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import static com.tokopedia.pushnotif.util.NotificationRingtoneUtil.ringtoneUri;
+
 /**
  * @author ricoharisin .
  */
@@ -203,35 +205,7 @@ public abstract class BaseNotificationFactory {
     }
 
     protected Uri getRingtoneUri() {
-        Uri actualDefaultNotificationRingtone = null;
-        Uri defaultUri = null;
-        Uri validRingtone = null;
-        Uri actualDefaultAlarmRingtone = null;
-
-        try {
-            actualDefaultNotificationRingtone = RingtoneManager.getActualDefaultRingtoneUri(context, RingtoneManager.TYPE_NOTIFICATION);
-        } catch (Exception ignored) { }
-        try {
-            defaultUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-        } catch (Exception ignored) { }
-        try {
-            validRingtone = RingtoneManager.getValidRingtoneUri(context);
-        } catch (Exception ignored) { }
-        try {
-            actualDefaultAlarmRingtone = RingtoneManager.getActualDefaultRingtoneUri(context, RingtoneManager.TYPE_ALARM);
-        } catch (Exception ignored) { }
-
-        if (actualDefaultNotificationRingtone != null) {
-            return actualDefaultNotificationRingtone;
-        }
-        if (defaultUri != null) {
-            return defaultUri;
-        }
-        if (validRingtone != null) {
-            return validRingtone;
-        }
-
-        return actualDefaultAlarmRingtone;
+        return ringtoneUri(context);
     }
 
     protected void createNotificationChannel() {
