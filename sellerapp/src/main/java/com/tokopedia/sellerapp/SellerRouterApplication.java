@@ -140,7 +140,7 @@ public abstract class SellerRouterApplication extends MainApplication implements
         WeaveInterface initWeave = new WeaveInterface() {
             @NotNull
             @Override
-            public void execute() {
+            public Object execute() {
                 return initLibraries();
             }
         };
@@ -383,7 +383,7 @@ public abstract class SellerRouterApplication extends MainApplication implements
         WeaveInterface weave = new WeaveInterface() {
             @NotNull
             @Override
-            public Object execute() {
+            public Boolean execute() {
                 try {
                     sessionRefresh.gcmUpdate();
                 } catch (Throwable ignored) {}

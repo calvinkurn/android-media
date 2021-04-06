@@ -555,7 +555,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         WeaveInterface weave = new WeaveInterface() {
             @NotNull
             @Override
-            public Object execute() {
+            public Boolean execute() {
                 try {
                     sessionRefresh.gcmUpdate();
                 } catch (Throwable ignored) {}
