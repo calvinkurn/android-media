@@ -136,6 +136,10 @@ class NewShopPageViewModel @Inject constructor(
     val shopPageTickerData : LiveData<Result<ShopInfo.StatusInfo>>
         get() = _shopPageTickerData
 
+    private val _shopPageShopShareData = MutableLiveData<Result<ShopInfo>>()
+    val shopPageShopShareData: LiveData<Result<ShopInfo>>
+        get() = _shopPageShopShareData
+
     fun getShopPageTabData(
             shopId: Int,
             shopDomain: String,
@@ -359,7 +363,7 @@ class NewShopPageViewModel @Inject constructor(
         })
     }
 
-    fun getShopTickerData(shopId: String, shopDomain: String, isRefresh: Boolean){
+    fun getShopInfoData(shopId: String, shopDomain: String, isRefresh: Boolean){
         launchCatchError(dispatcherProvider.io ,block = {
             val shopInfoForHeaderResponse = getShopInfoHeader(
                     shopId.toIntOrZero(),
@@ -367,9 +371,8 @@ class NewShopPageViewModel @Inject constructor(
                     isRefresh
             )
             _shopPageTickerData.postValue(Success(shopInfoForHeaderResponse.statusInfo))
-        }) {
-            _shopPageTickerData.postValue(Fail(it))
-        }
+            _shopPageShopShareData.postValue(Success(shopInfoForHeaderResponse))
+        }) {}
     }
 
     fun getSellerPlayWidgetData(shopId: String){

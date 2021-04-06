@@ -19,6 +19,7 @@ import com.tokopedia.tokopoints.view.catalogdetail.CouponCatalogDetailsActivity.
 import com.tokopedia.tokopoints.view.model.CatalogsValueEntity
 import com.tokopedia.tokopoints.view.model.section.CountDownInfo
 import com.tokopedia.tokopoints.view.util.*
+import com.tokopedia.tokopoints.view.util.CommonConstant.Companion.HASH
 import com.tokopedia.tokopoints.view.util.CommonConstant.Companion.TIMER_RED_BACKGROUND_HEX
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import java.util.*
@@ -100,9 +101,9 @@ class CatalogListAdapter(private val list: ArrayList<Any>) : RecyclerView.Adapte
             holder.pbQuota.progress = 0
             val upperText = StringBuilder()
             if (item.catalogType == CommonConstant.CATALOG_TYPE_FLASH_SALE) {
-                holder.quota.setTextColor(ContextCompat.getColor(holder.quota.context, com.tokopedia.design.R.color.red_150))
+                holder.quota.setTextColor(ContextCompat.getColor(holder.quota.context, com.tokopedia.unifyprinciples.R.color.Unify_Y600))
             } else {
-                holder.quota.setTextColor(ContextCompat.getColor(holder.quota.context, com.tokopedia.design.R.color.black_38))
+                holder.quota.setTextColor(ContextCompat.getColor(holder.quota.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_32))
             }
             for (i in item.upperTextDesc!!.indices) {
                 if (i == 1) {
@@ -110,7 +111,7 @@ class CatalogListAdapter(private val list: ArrayList<Any>) : RecyclerView.Adapte
                         holder.pbQuota.progress = item.quota
                         upperText.append(item.upperTextDesc!![i])
                     } else { //exclusive case for handling font color of second index.
-                        upperText.append("<font color='#ff5722'>" + item.upperTextDesc!![i] + "</font>")
+                        upperText.append("<font color='${ColorUtil.getColorFromResToString(holder.quota.context,com.tokopedia.unifyprinciples.R.color.Unify_Y400)}>" + item?.upperTextDesc?.get(i) + "</font>")
                     }
                 } else {
                     upperText.append(item.upperTextDesc!![i]).append(" ")
@@ -128,13 +129,13 @@ class CatalogListAdapter(private val list: ArrayList<Any>) : RecyclerView.Adapte
         //disabling the coupons if not eligible for current membership
         if (item.isDisabled) {
             ImageUtil.dimImage(holder.imgBanner)
-            holder.pointValue.setTextColor(ContextCompat.getColor(holder.pointValue.context, com.tokopedia.tokopoints.R.color.clr_31353b))
+            holder.pointValue.setTextColor(ContextCompat.getColor(holder.pointValue.context, com.tokopedia.unifyprinciples.R.color.Unify_N700))
         } else {
             ImageUtil.unDimImage(holder.imgBanner)
-            holder.pointValue.setTextColor(ContextCompat.getColor(holder.pointValue.context, com.tokopedia.tokopoints.R.color.clr_31353b))
+            holder.pointValue.setTextColor(ContextCompat.getColor(holder.pointValue.context, com.tokopedia.unifyprinciples.R.color.Unify_N700))
         }
         if (item.isDisabledButton) {
-            holder.btnContinue.setTextColor(ContextCompat.getColor(holder.btnContinue.context, com.tokopedia.abstraction.R.color.black_12))
+            holder.btnContinue.setTextColor(ContextCompat.getColor(holder.btnContinue.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_20))
         } else {
             holder.btnContinue.setTextColor(ContextCompat.getColor(holder.btnContinue.context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
         }
@@ -169,7 +170,7 @@ class CatalogListAdapter(private val list: ArrayList<Any>) : RecyclerView.Adapte
         }
         var timerValue = countDownInfo.countdownUnix
         val timerFlagType = countDownInfo.backgroundColor
-        if (timerFlagType == TIMER_RED_BACKGROUND_HEX) {
+        if (timerFlagType == HASH + TIMER_RED_BACKGROUND_HEX) {
             holder.timerUnifySingle.timerVariant = TimerUnifySingle.VARIANT_MAIN
         } else {
             holder.timerUnifySingle.timerVariant = TimerUnifySingle.VARIANT_INFORMATIVE

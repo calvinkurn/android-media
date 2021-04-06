@@ -243,7 +243,7 @@ class InspirationCarouselViewHolder(
     }
 
     private suspend fun getProductCardMaxHeight(list: List<ProductCardModel>): Int {
-        val productCardWidth = itemView.context.resources.getDimensionPixelSize(R.dimen.inspiration_carousel_grid_product_card_grid_width)
+        val productCardWidth = itemView.context.resources.getDimensionPixelSize(com.tokopedia.productcard.R.dimen.carousel_product_card_grid_width)
         return list.getMaxHeightForGridView(itemView.context, Dispatchers.Default, productCardWidth)
     }
 

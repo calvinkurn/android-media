@@ -515,7 +515,7 @@ final class ProductListPresenter
 
             ProductViewModelMapper mapper = new ProductViewModelMapper();
             ProductDataView productDataView = mapper
-                    .convertToProductViewModel(lastProductItemPositionFromCache, searchProductModel, pageTitle);
+                    .convertToProductViewModel(lastProductItemPositionFromCache, searchProductModel, pageTitle, isLocalSearch());
 
             saveLastProductItemPositionToCache(lastProductItemPositionFromCache, productDataView.getProductList());
 
@@ -814,7 +814,7 @@ final class ProductListPresenter
         getView().setDefaultLayoutType(productDataView.getDefaultView());
 
         if (productDataView.getProductList().isEmpty()) {
-            getViewToHandleEmptyProductList(searchProductModel.getSearchProduct(), productDataView, searchParameter);
+            getViewToHandleEmptyProductList(searchProductModel.getSearchProduct(), productDataView);
         } else {
             getViewToShowProductList(searchParameter, searchProductModel, productDataView);
             processDefaultQuickFilter(searchProductModel);
@@ -856,7 +856,7 @@ final class ProductListPresenter
 
         ProductViewModelMapper mapper = new ProductViewModelMapper();
         ProductDataView productDataView = mapper
-                .convertToProductViewModel(lastProductItemPositionFromCache, searchProductModel, pageTitle);
+                .convertToProductViewModel(lastProductItemPositionFromCache, searchProductModel, pageTitle, isLocalSearch());
 
         saveLastProductItemPositionToCache(lastProductItemPositionFromCache, productDataView.getProductList());
 
@@ -881,8 +881,7 @@ final class ProductListPresenter
 
     private void getViewToHandleEmptyProductList(
             SearchProductModel.SearchProduct searchProduct,
-            ProductDataView productDataView,
-            Map<String, Object> searchParameter
+            ProductDataView productDataView
     ) {
         getView().hideQuickFilterShimmering();
 
@@ -893,6 +892,13 @@ final class ProductListPresenter
                 getViewToHandleEmptySearchWithErrorMessage(searchProduct);
             } else {
                 getViewToShowEmptySearch(productDataView);
+
+                if (isShowBroadMatchWithEmptyLocalSearch()) {
+                    List<Visitable> visitableList = new ArrayList<>();
+                    addBroadMatchToVisitableList(visitableList);
+
+                    getView().addProductList(visitableList);
+                }
             }
 
             getViewToShowRecommendationItem();
@@ -974,6 +980,12 @@ final class ProductListPresenter
         return emptySearchViewModel;
     }
 
+    private boolean isShowBroadMatchWithEmptyLocalSearch() {
+        return responseCode.equals(EMPTY_LOCAL_SEARCH_RESPONSE_CODE)
+                && relatedDataView != null
+                && !relatedDataView.getBroadMatchDataViewList().isEmpty();
+    }
+
     private boolean isShowLocalSearchRecommendation() {
         return isLocalSearch() && responseCode.equals(EMPTY_LOCAL_SEARCH_RESPONSE_CODE);
     }
@@ -1034,7 +1046,7 @@ final class ProductListPresenter
 
         List<Visitable> visitableList = new ArrayList<>();
 
-        if (startFrom == 0) visitableList.add(new SearchProductTitleDataView(pageTitle));
+        if (startFrom == 0) visitableList.add(new SearchProductTitleDataView(pageTitle, true));
 
         visitableList.addAll(productDataView.getProductList());
 
@@ -1056,7 +1068,7 @@ final class ProductListPresenter
 
         ProductViewModelMapper mapper = new ProductViewModelMapper();
         ProductDataView productDataView = mapper
-                .convertToProductViewModel(lastProductItemPositionFromCache, searchProductModel, pageTitle);
+                .convertToProductViewModel(lastProductItemPositionFromCache, searchProductModel, pageTitle, isLocalSearch());
 
         saveLastProductItemPositionToCache(lastProductItemPositionFromCache, productDataView.getProductList());
 
@@ -1189,7 +1201,7 @@ final class ProductListPresenter
     private void addPageTitle(List<Visitable> list) {
         if (pageTitle == null || pageTitle.isEmpty()) return;
 
-        list.add(new SearchProductTitleDataView(pageTitle));
+        list.add(new SearchProductTitleDataView(pageTitle, false));
     }
 
     private boolean getIsGlobalNavWidgetAvailable(ProductDataView productDataView) {
