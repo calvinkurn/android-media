@@ -30,6 +30,7 @@ class GetReviewProductListUseCase @Inject constructor(
                     }
                     rating
                     reviewCount
+                    isKejarUlasan
                 }
                 hasNext
             	}

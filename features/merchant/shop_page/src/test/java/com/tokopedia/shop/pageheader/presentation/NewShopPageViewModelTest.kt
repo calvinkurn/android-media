@@ -14,6 +14,7 @@ import com.tokopedia.shop.common.data.source.cloud.model.ShopModerateRequestStat
 import com.tokopedia.shop.common.domain.interactor.*
 import com.tokopedia.shop.common.data.source.cloud.model.followshop.FollowShopResponse
 import com.tokopedia.shop.common.data.source.cloud.model.followstatus.FollowStatusResponse
+import com.tokopedia.shop.common.graphql.data.shopinfo.Broadcaster
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.GetShopReputationUseCase
 import com.tokopedia.shop.common.view.model.ShopProductFilterParameter
@@ -53,9 +54,6 @@ class NewShopPageViewModelTest {
 
     @RelaxedMockK
     lateinit var gqlGetShopInfobUseCaseCoreAndAssets: Lazy<GQLGetShopInfoUseCase>
-
-    @RelaxedMockK
-    lateinit var toggleFavouriteShopUseCase: Lazy<ToggleFavouriteShopUseCase>
 
     @RelaxedMockK
     lateinit var shopQuestGeneralTrackerUseCase: Lazy<ShopQuestGeneralTrackerUseCase>
@@ -103,7 +101,6 @@ class NewShopPageViewModelTest {
                 gqlGetShopInfoForHeaderUseCase,
                 getBroadcasterShopConfigUseCase,
                 gqlGetShopInfobUseCaseCoreAndAssets,
-                toggleFavouriteShopUseCase,
                 shopQuestGeneralTrackerUseCase,
                 getShopPageP1DataUseCase,
                 getShopProductListUseCase,
@@ -353,5 +350,68 @@ class NewShopPageViewModelTest {
         shopPageViewModel.sendShopShareTracker(mockShopId, mockChannel)
         assert(shopPageViewModel.shopShareTracker.value is Fail)
     }
+
+    @Test
+    fun `check whether shopSellerPLayWidgetData post success value and streamAllowed is false`() {
+        val mockShopId = "123"
+        shopPageViewModel.getSellerPlayWidgetData(mockShopId)
+        val shopSellerPLayWidgetData = shopPageViewModel.shopSellerPLayWidgetData.value
+        assert(shopSellerPLayWidgetData is Success)
+        assert((shopSellerPLayWidgetData as? Success)?.data?.streamAllowed == false)
+    }
+
+    @Test
+    fun `check whether shopSellerPLayWidgetData post success value and streamAllowed is true`() {
+        val mockShopId = "123"
+        every { userSessionInterface.shopId } returns mockShopId
+        coEvery {
+            getBroadcasterShopConfigUseCase.get().executeOnBackground()
+        } returns Broadcaster.Config(true)
+        shopPageViewModel.getSellerPlayWidgetData(mockShopId)
+        val shopSellerPLayWidgetData = shopPageViewModel.shopSellerPLayWidgetData.value
+        assert(shopSellerPLayWidgetData is Success)
+        assert((shopSellerPLayWidgetData as? Success)?.data?.streamAllowed == true)
+    }
+
+    @Test
+    fun `check whether shopSellerPLayWidgetData post Success value if get network data error`() {
+        val mockShopId = "123"
+        every { userSessionInterface.shopId } returns mockShopId
+        coEvery {
+            getBroadcasterShopConfigUseCase.get().executeOnBackground()
+        } throws Throwable()
+        shopPageViewModel.getSellerPlayWidgetData(mockShopId)
+        val shopSellerPLayWidgetData = shopPageViewModel.shopSellerPLayWidgetData.value
+        assert(shopSellerPLayWidgetData is Success)
+    }
+
+    @Test
+    fun `check whether shopPageTickerData and shopPageShopShareData post success value`() {
+        val mockShopId = "123"
+        val mockShopDomain = "mock domain"
+        coEvery {
+            gqlGetShopInfoForHeaderUseCase.get().executeOnBackground()
+        } returns ShopInfo()
+        shopPageViewModel.getShopInfoData(mockShopId, mockShopDomain, false)
+        assert(shopPageViewModel.shopPageTickerData.value is Success)
+        assert(shopPageViewModel.shopPageShopShareData.value is Success)
+
+        shopPageViewModel.getShopInfoData("0", mockShopDomain, true)
+        assert(shopPageViewModel.shopPageTickerData.value is Success)
+        assert(shopPageViewModel.shopPageShopShareData.value is Success)
+    }
+
+    @Test
+    fun `check whether shopPageTickerData and shopPageShopShareData value is null if error when get data`() {
+        val mockShopId = "123"
+        val mockShopDomain = "mock domain"
+        coEvery {
+            gqlGetShopInfoForHeaderUseCase.get().executeOnBackground()
+        } throws Throwable()
+        shopPageViewModel.getShopInfoData(mockShopId, mockShopDomain, false)
+        assert(shopPageViewModel.shopPageTickerData.value == null)
+        assert(shopPageViewModel.shopPageShopShareData.value == null)
+    }
+
 
 }

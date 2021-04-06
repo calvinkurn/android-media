@@ -48,7 +48,6 @@ open class BaseChatViewStateImpl(
     protected lateinit var sendButton: View
     protected lateinit var notifier: View
     protected lateinit var chatMenuButton: ImageView
-    protected var mainLoading: ProgressBar? = null
     protected var attachmentMenu: AttachmentMenuRecyclerView? = null
     protected var attachmentMenuContainer: FrameLayout? = null
 
@@ -61,7 +60,6 @@ open class BaseChatViewStateImpl(
     override fun initView() {
         rootView = view.findViewById(getRootViewId())
         recyclerView = view.findViewById(getRecyclerViewId())
-        mainLoading = view.findViewById(getProgressId())
         replyEditText = view.findViewById(getNewCommentId())
         replyBox = view.findViewById(getReplyBoxId())
         actionBox = view.findViewById(getActionBoxId())
@@ -240,15 +238,6 @@ open class BaseChatViewStateImpl(
         return (recyclerView.layoutManager as LinearLayoutManager).findFirstCompletelyVisibleItemPosition() < 2
     }
 
-
-    fun showLoading() {
-        mainLoading?.visibility = View.VISIBLE
-    }
-
-    fun hideLoading() {
-        mainLoading?.visibility = View.GONE
-    }
-
     fun setAdapter(adapter: BaseChatAdapter) {
         recyclerView.adapter = adapter
     }
@@ -348,7 +337,6 @@ open class BaseChatViewStateImpl(
 
     open fun getInterlocutorName(headerName: String): String = headerName
     open fun getRecyclerViewId() = R.id.recycler_view
-    open fun getProgressId() = R.id.progress
     open fun getNewCommentId() = R.id.new_comment
     open fun getReplyBoxId() = R.id.reply_box
     open fun getActionBoxId() = R.id.add_comment_area
