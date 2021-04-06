@@ -103,6 +103,8 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         private const val MAX_LOTTIE_ANIM_SPEED = 4f
         private const val SCROLL_DELTA_MIN_Y_THRESHOLD = 20f
         private const val SCROLL_DELTA_MAX_Y_THRESHOLD = 100f
+
+        private const val HIDDEN_WIDGET_COUNT = 2
     }
 
     @Inject
@@ -154,6 +156,9 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     private var performanceMonitoringSellerHomePlt: HomeLayoutLoadTimeMonitoring? = null
 
     private var ketupatLottie: KetupatLottieView? = null
+
+    //TODO: Use remote config value
+    private val isSmoothLoadEnabled = true
 
     override fun getScreenName(): String = TrackingConstant.SCREEN_NAME_SELLER_HOME
     override val coroutineContext: CoroutineContext
@@ -325,7 +330,13 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                 if (widget.widgetType == WidgetType.CARD) {
                     visibleWidgets.add(widget)
                 } else {
-                    if (index in firstVisible..lastVisible) {
+                    val lastLoadingWidget =
+                            if (isSmoothLoadEnabled) {
+                                getLastLoadingWidget(lastVisible)
+                            } else {
+                                lastVisible
+                            }
+                    if (index in firstVisible..lastLoadingWidget) {
                         visibleWidgets.add(widget)
                     }
                 }
@@ -333,6 +344,14 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         }
 
         if (visibleWidgets.isNotEmpty()) getWidgetsData(visibleWidgets)
+    }
+
+    private fun getLastLoadingWidget(lastVisibleWidget: Int): Int {
+        return if (lastVisibleWidget + HIDDEN_WIDGET_COUNT >= adapter.dataSize) {
+            adapter.lastIndex
+        } else {
+            lastVisibleWidget + HIDDEN_WIDGET_COUNT
+        }
     }
 
     private fun reloadPage() = view?.run {
