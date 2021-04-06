@@ -36,7 +36,7 @@ class FocusedCameraKTPView : View {
         mSemiBlackPaint?.strokeWidth = CONST_STROKE_WIDTH.toFloat()
         mWhitePaint = Paint()
         mWhitePaint?.style = Paint.Style.STROKE
-        mWhitePaint?.color = Color.WHITE
+        mWhitePaint?.color = androidx.core.content.ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0)
         mWhitePaint?.strokeWidth = CONST_STROKE_WIDTH.toFloat()
     }
 

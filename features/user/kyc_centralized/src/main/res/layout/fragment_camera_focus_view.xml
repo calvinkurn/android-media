@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_centerInParent="true"
-    android:background="@color/Neutral_N700"
+    android:background="@color/Unify_N700"
     android:orientation="vertical">
 
     <com.otaliastudios.cameraview.CameraView
@@ -42,7 +42,7 @@
         android:id="@+id/close_button"
         android:layout_width="@dimen/layout_lvl6"
         android:layout_height="@dimen/layout_lvl6"
-        android:background="@color/kyc_centralized_00ffffff"
+        android:background="@color/Unify_N0_20"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_kyc_arrow_back" />
@@ -52,7 +52,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:lineSpacingExtra="@dimen/kyc_centralized_3sp"
-        android:textColor="@color/Neutral_N0"
+        android:textColor="@color/Unify_N0"
         android:textSize="@dimen/kyc_centralized_17sp"
         app:layout_constraintBottom_toBottomOf="@id/close_button"
         app:layout_constraintLeft_toRightOf="@id/close_button"
@@ -69,7 +69,7 @@
         android:lineSpacingExtra="@dimen/kyc_centralized_6sp"
         android:paddingLeft="@dimen/spacing_lvl4"
         android:paddingRight="@dimen/spacing_lvl4"
-        android:textColor="@color/Neutral_N0"
+        android:textColor="@color/Unify_N0"
         android:textSize="@dimen/fontSize_lvl3"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -139,7 +139,7 @@
             android:background="@drawable/white_button_ghost"
             android:gravity="center"
             android:text="@string/camera_recapture_text"
-            android:textColor="@color/Neutral_N0"
+            android:textColor="@color/Unify_N0"
             android:textSize="@dimen/fontSize_lvl3"
             app:typographyType="heading_4"
             tools:text="Foto Ulang" />

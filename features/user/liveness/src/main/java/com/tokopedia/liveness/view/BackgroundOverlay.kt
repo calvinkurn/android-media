@@ -41,7 +41,7 @@ class BackgroundOverlay : View {
 
         mStatusPaint = Paint()
         mStatusPaint?.style = Paint.Style.STROKE
-        mStatusPaint?.color = Color.WHITE
+        mStatusPaint?.color = androidx.core.content.ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0)
         mStatusPaint?.strokeWidth = borderStrokeWidthDp
     }
 
@@ -64,9 +64,9 @@ class BackgroundOverlay : View {
 
     private fun pickColor() {
         if (!statusColor) {
-            mStatusPaint?.color = Color.WHITE
+            mStatusPaint?.color = androidx.core.content.ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0)
         } else {
-            mStatusPaint?.color = Color.GREEN
+            mStatusPaint?.color = androidx.core.content.ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G700)
         }
         postInvalidate()
     }

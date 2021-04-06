@@ -220,7 +220,7 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(), UserIdentificationI
     }
 
     private fun showStatusNotVerified() {
-        setStatusBar(R.color.kyc_centralized_D8F4F3)
+        setStatusBar(com.tokopedia.unifyprinciples.R.color.Unify_T200)
         mainView?.hide()
         kycBenefitLayout?.show()
         kycBenefitButton?.setOnClickListener(onGoToFormActivityButton(KYCConstant.STATUS_NOT_VERIFIED))
