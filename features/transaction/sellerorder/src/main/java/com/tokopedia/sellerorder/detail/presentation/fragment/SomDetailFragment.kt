@@ -8,7 +8,6 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Typeface
 import android.graphics.drawable.GradientDrawable
-import android.graphics.drawable.StateListDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.text.Spannable
@@ -23,7 +22,6 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputEditText
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -62,6 +60,7 @@ import com.tokopedia.sellerorder.common.navigator.SomNavigator.goToConfirmShippi
 import com.tokopedia.sellerorder.common.navigator.SomNavigator.goToRequestPickupPage
 import com.tokopedia.sellerorder.common.presenter.bottomsheet.SomOrderEditAwbBottomSheet
 import com.tokopedia.sellerorder.common.presenter.bottomsheet.SomOrderRequestCancelBottomSheet
+import com.tokopedia.sellerorder.common.presenter.model.PopUp
 import com.tokopedia.sellerorder.common.util.SomConnectionMonitor
 import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.common.util.SomConsts.ACTION_OK
@@ -112,14 +111,11 @@ import com.tokopedia.sellerorder.detail.presentation.activity.SomDetailBookingCo
 import com.tokopedia.sellerorder.detail.presentation.activity.SomDetailLogisticInfoActivity
 import com.tokopedia.sellerorder.detail.presentation.activity.SomSeeInvoiceActivity
 import com.tokopedia.sellerorder.detail.presentation.adapter.SomDetailAdapter
-import com.tokopedia.sellerorder.detail.presentation.bottomsheet.SomBottomSheetCourierProblemsAdapter
-import com.tokopedia.sellerorder.detail.presentation.bottomsheet.SomBottomSheetRejectOrderAdapter
-import com.tokopedia.sellerorder.detail.presentation.bottomsheet.SomBottomSheetRejectReasonsAdapter
-import com.tokopedia.sellerorder.detail.presentation.bottomsheet.SomBottomSheetStockEmptyAdapter
 import com.tokopedia.sellerorder.detail.presentation.fragment.SomDetailLogisticInfoFragment.Companion.KEY_ID_CACHE_MANAGER_INFO_ALL
 import com.tokopedia.sellerorder.detail.presentation.model.LogisticInfoAllWrapper
 import com.tokopedia.sellerorder.detail.presentation.viewmodel.SomDetailViewModel
 import com.tokopedia.sellerorder.common.util.Utils.setUserNotAllowedToViewSom
+import com.tokopedia.sellerorder.detail.presentation.bottomsheet.*
 import com.tokopedia.sellerorder.requestpickup.data.model.SomProcessReqPickup
 import com.tokopedia.unifycomponents.*
 import com.tokopedia.unifycomponents.Toaster.LENGTH_SHORT
@@ -158,7 +154,7 @@ open class SomDetailFragment : BaseDaggerFragment(),
         SomDetailAdapter.ActionListener,
         SomBottomSheetRejectReasonsAdapter.ActionListener,
         SomBottomSheetCourierProblemsAdapter.ActionListener, Toolbar.OnMenuItemClickListener {
-
+    
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
@@ -180,7 +176,6 @@ open class SomDetailFragment : BaseDaggerFragment(),
     private var listDetailData: ArrayList<SomDetailData> = arrayListOf()
     private var somDetailLoadTimeMonitoring: SomDetailLoadTimeMonitoring? = null
     private lateinit var somDetailAdapter: SomDetailAdapter
-    private lateinit var somBottomSheetRejectOrderAdapter: SomBottomSheetRejectOrderAdapter
     private lateinit var somBottomSheetRejectReasonsAdapter: SomBottomSheetRejectReasonsAdapter
     private lateinit var somBottomSheetStockEmptyAdapter: SomBottomSheetStockEmptyAdapter
     private lateinit var somBottomSheetCourierProblemsAdapter: SomBottomSheetCourierProblemsAdapter
@@ -188,7 +183,9 @@ open class SomDetailFragment : BaseDaggerFragment(),
     private var refreshHandler: RefreshHandler? = null
     private var bottomSheetCourierProblems: BottomSheetUnify? = null
 
-    private var secondaryBottomSheet: BottomSheetUnify? = null
+    private var secondaryBottomSheet: SomDetailSecondaryActionBottomSheet? = null
+    private var orderRequestCancelBottomSheet: SomOrderRequestCancelBottomSheet? = null
+
     private var progressBar: ProgressBar? = null
 
     protected val somDetailViewModel by lazy {
@@ -283,9 +280,7 @@ open class SomDetailFragment : BaseDaggerFragment(),
 
     override fun onPause() {
         super.onPause()
-        (fragmentManager?.findFragmentByTag(TAG_BOTTOMSHEET) as? BottomSheetUnify)?.let {
-            if (it.isVisible) it.dismiss()
-        }
+        dismissBottomSheets()
     }
 
     override fun onDestroy() {
@@ -789,14 +784,11 @@ open class SomDetailFragment : BaseDaggerFragment(),
             if (detailResponse?.button?.size.orZero() > 1) {
                 btn_secondary?.visibility = View.VISIBLE
                 btn_secondary?.setOnClickListener {
-                    somBottomSheetRejectOrderAdapter = SomBottomSheetRejectOrderAdapter(this, hasRadioBtn = false)
-                    showTextOnlyBottomSheet()
-                    val mapKey = HashMap<String, String>()
+                    val actions = HashMap<String, String>()
                     detailResponse?.button?.filterIndexed { index, _ -> (index != 0) }?.forEach { btn ->
-                        mapKey[btn.key] = btn.displayName
+                        actions[btn.key] = btn.displayName
                     }
-                    somBottomSheetRejectOrderAdapter.mapKey = mapKey
-                    somBottomSheetRejectOrderAdapter.notifyDataSetChanged()
+                    showSecondaryActionBottomSheet(actions)
                 }
                 setupSecondaryButtonBackground()
             } else {
@@ -805,6 +797,28 @@ open class SomDetailFragment : BaseDaggerFragment(),
 
         } else {
             containerBtnDetail?.visibility = View.GONE
+        }
+    }
+
+    private fun showSecondaryActionBottomSheet(actions: HashMap<String, String>) {
+        view?.let { view ->
+            if (view is ViewGroup) {
+                secondaryBottomSheet = secondaryBottomSheet?.apply {
+                    init(view)
+                    setTitle(getString(R.string.som_detail_other_bottomsheet_title))
+                    setActions(actions)
+                } ?: initSecondaryActionBottomSheet(view, actions)
+
+                secondaryBottomSheet?.show()
+            }
+        }
+    }
+
+    private fun initSecondaryActionBottomSheet(view: ViewGroup, actions: java.util.HashMap<String, String>): SomDetailSecondaryActionBottomSheet {
+        return SomDetailSecondaryActionBottomSheet(view.context, this).apply {
+            init(view)
+            setTitle(getString(R.string.som_detail_other_bottomsheet_title))
+            setActions(actions)
         }
     }
 
@@ -942,25 +956,6 @@ open class SomDetailFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun showTextOnlyBottomSheet() {
-        val viewBottomSheet = View.inflate(context, R.layout.bottomsheet_secondary, null).apply {
-            rv_bottomsheet_secondary?.apply {
-                layoutManager = LinearLayoutManager(this.context, LinearLayoutManager.VERTICAL, false)
-                adapter = somBottomSheetRejectOrderAdapter
-            }
-            fl_btn_primary?.visibility = View.GONE
-            tf_extra_notes?.visibility = View.GONE
-        }
-
-        secondaryBottomSheet = BottomSheetUnify().apply {
-            setChild(viewBottomSheet)
-            setTitle(this@SomDetailFragment.context?.getString(R.string.som_detail_other_bottomsheet_title).orEmpty())
-            setCloseClickListener { dismiss() }
-        }
-
-        fragmentManager?.let { secondaryBottomSheet?.show(it, TAG_BOTTOMSHEET) }
-    }
-
     private fun setActionChangeCourier() {
         createIntentConfirmShipping(true)
     }
@@ -1027,39 +1022,48 @@ open class SomDetailFragment : BaseDaggerFragment(),
     }
 
     private fun showBuyerRequestCancelBottomSheet(button: SomDetailOrder.Data.GetSomDetail.Button) {
-        view?.let {
-            if (it is ViewGroup) {
-                SomOrderRequestCancelBottomSheet(it.context).apply {
-                    setListener(object : SomOrderRequestCancelBottomSheet.SomOrderRequestCancelBottomSheetListener {
-                        override fun onAcceptOrder() {
-                            setActionAcceptOrder(orderId)
-                        }
-
-                        override fun onRejectOrder(reasonBuyer: String) {
-                            SomAnalytics.eventClickButtonTolakPesananPopup("${detailResponse?.statusCode.orZero()}", detailResponse?.statusText.orEmpty())
-                            val orderRejectRequest = SomRejectRequestParam(
-                                    orderId = detailResponse?.orderId.orEmpty(),
-                                    rCode = "0",
-                                    reason = reasonBuyer
-                            )
-                            doRejectOrder(orderRejectRequest)
-                        }
-
-                        override fun onRejectCancelRequest() {
-                            SomAnalytics.eventClickButtonTolakPesananPopup("${detailResponse?.statusCode.orZero()}", detailResponse?.statusText.orEmpty())
-                            rejectCancelOrder()
-                        }
-                    })
-                    init(it, button.popUp, Utils.getL2CancellationReason(detailResponse?.buyerRequestCancel?.reason.orEmpty()), detailResponse?.statusCode.orZero())
-                    setTitle(it.context.getString(R.string.som_request_cancel_bottomsheet_title))
-                    show()
+        view?.let { view ->
+            if (view is ViewGroup) {
+                orderRequestCancelBottomSheet = orderRequestCancelBottomSheet?.apply { 
+                    setupBuyerRequestCancelBottomSheet(this, view, button.popUp)
+                } ?: SomOrderRequestCancelBottomSheet(view.context).apply {
+                    setupBuyerRequestCancelBottomSheet(this, view, button.popUp)
                 }
+
+                orderRequestCancelBottomSheet?.show()
                 return
             }
         }
         showErrorToaster("Terjadi kesalahan, silahkan coba lagi.")
     }
 
+    private fun setupBuyerRequestCancelBottomSheet(bottomSheet: SomOrderRequestCancelBottomSheet, view: ViewGroup, popUp: PopUp) {
+        bottomSheet.apply {
+            setListener(object : SomOrderRequestCancelBottomSheet.SomOrderRequestCancelBottomSheetListener {
+                override fun onAcceptOrder() {
+                    setActionAcceptOrder(orderId)
+                }
+
+                override fun onRejectOrder(reasonBuyer: String) {
+                    SomAnalytics.eventClickButtonTolakPesananPopup("${detailResponse?.statusCode.orZero()}", detailResponse?.statusText.orEmpty())
+                    val orderRejectRequest = SomRejectRequestParam(
+                            orderId = detailResponse?.orderId.orEmpty(),
+                            rCode = "0",
+                            reason = reasonBuyer
+                    )
+                    doRejectOrder(orderRejectRequest)
+                }
+
+                override fun onRejectCancelRequest() {
+                    SomAnalytics.eventClickButtonTolakPesananPopup("${detailResponse?.statusCode.orZero()}", detailResponse?.statusText.orEmpty())
+                    rejectCancelOrder()
+                }
+            })
+            init(view, popUp, Utils.getL2CancellationReason(detailResponse?.buyerRequestCancel?.reason.orEmpty()), detailResponse?.statusCode.orZero())
+            setTitle(view.context.getString(R.string.som_request_cancel_bottomsheet_title))
+        }
+    }
+    
     private fun setProductEmpty(rejectReason: SomReasonRejectData.Data.SomRejectReason) {
         somBottomSheetStockEmptyAdapter = SomBottomSheetStockEmptyAdapter()
         val bottomSheetProductEmpty = BottomSheetUnify()
@@ -1567,6 +1571,14 @@ open class SomDetailFragment : BaseDaggerFragment(),
         containerBtnDetail?.hide()
         setLoadingIndicator(false)
         refreshHandler?.finishRefresh()
+    }
+
+    protected fun dismissBottomSheets() {
+        (fragmentManager?.findFragmentByTag(TAG_BOTTOMSHEET) as? BottomSheetUnify)?.let {
+            if (it.isVisible) it.dismiss()
+        }
+        secondaryBottomSheet?.dismiss()
+        orderRequestCancelBottomSheet?.dismiss()
     }
 
     protected open fun showBackButton(): Boolean = true

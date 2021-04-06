@@ -8,7 +8,6 @@ import android.content.Intent
 import android.graphics.Rect
 import android.os.Build
 import android.os.Bundle
-import android.os.Handler
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
@@ -388,19 +387,19 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
         }
     }
 
-    override fun onTabClicked(status: SomListFilterUiModel.Status, shouldScrollToTop: Boolean, refreshFilter: Boolean) {
+    override fun onTabClicked(status: SomListFilterUiModel.Status, shouldScrollToTop: Boolean, fromClickTab: Boolean) {
         tabActive = if (status.isChecked) {
             if (somListSortFilterTab?.isStatusFilterAppliedFromAdvancedFilter == true)
                 viewModel.setStatusOrderFilter(viewModel.getDataOrderListParams().statusList)
             else
                 viewModel.setStatusOrderFilter(status.id)
-            if (refreshFilter) {
+            if (fromClickTab) {
                 SomAnalytics.eventClickStatusFilter(status.id.map { it.toString() }, status.status)
             }
             status.key
         } else {
             viewModel.setStatusOrderFilter(emptyList())
-            if (refreshFilter) {
+            if (fromClickTab) {
                 SomAnalytics.eventClickStatusFilter(somListSortFilterTab?.getAllStatusCodes().orEmpty(), SomConsts.STATUS_NAME_ALL_ORDER)
             }
             ""
@@ -409,7 +408,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
         if (viewModel.isMultiSelectEnabled) {
             somListLayoutManager?.findFirstVisibleItemPosition()?.let {
                 somListLayoutManager?.findViewByPosition(it)?.findViewById<View>(R.id.btnQuickAction)?.addOneTimeGlobalLayoutListener {
-                    refreshOrdersOnTabClicked(shouldScrollToTop, refreshFilter)
+                    refreshOrdersOnTabClicked(shouldScrollToTop, fromClickTab)
                 }
             }
             viewModel.isMultiSelectEnabled = false
@@ -420,7 +419,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
             checkBoxBulkAction.setIndeterminate(false)
             checkBoxBulkAction.skipAnimation()
         } else {
-            refreshOrdersOnTabClicked(shouldScrollToTop, refreshFilter)
+            refreshOrdersOnTabClicked(shouldScrollToTop, fromClickTab)
         }
     }
 
@@ -1484,10 +1483,8 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
             tickerPagerAdapter.setPagerDescriptionClickEvent(this)
             this.tickerPagerAdapter = tickerPagerAdapter
         }
+        tickerSomList?.addPagerView(tickerPagerAdapter, activeTickers)
         tickerSomList?.showWithCondition(activeTickers.isNotEmpty())
-        Handler().postDelayed({
-            tickerSomList?.addPagerView(tickerPagerAdapter, activeTickers)
-        }, 1000L)
     }
 
     private fun onRefreshOrderFailed() {

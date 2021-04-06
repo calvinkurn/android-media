@@ -115,6 +115,7 @@ class SomDetailFragment : com.tokopedia.sellerorder.detail.presentation.fragment
     override fun showBackButton(): Boolean = false
 
     fun setOrderIdToShow(orderId: String) {
+        dismissBottomSheets()
         if (orderId != this.orderId) {
             this.orderId = orderId
             loadDetail()
@@ -122,6 +123,7 @@ class SomDetailFragment : com.tokopedia.sellerorder.detail.presentation.fragment
     }
 
     fun refreshOrder(orderId: String) {
+        dismissBottomSheets()
         if (orderId == this.orderId) {
             loadDetail()
         }
@@ -129,6 +131,11 @@ class SomDetailFragment : com.tokopedia.sellerorder.detail.presentation.fragment
 
     fun setOrderDetailListener(listener: SomOrderDetailListener) {
         this.orderDetailListener = listener
+    }
+
+    fun closeOrderDetail() {
+        dismissBottomSheets()
+        orderId = ""
     }
 
     interface SomOrderDetailListener {

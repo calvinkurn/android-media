@@ -53,6 +53,13 @@ class SomContainerFragment : Fragment(), SomListFragment.SomListClickListener, S
         attachDetailFragment(orderId)
     }
 
+    override fun closeOrderDetail() {
+        somDetailFragment?.closeOrderDetail()
+        fragmentDetail?.gone()
+        ivSomDetailWelcomeIllustration?.show()
+        tvSomDetailWelcome?.show()
+    }
+
     override fun onRefreshSelectedOrder(orderId: String) {
         somDetailFragment?.refreshOrder(orderId)
     }
