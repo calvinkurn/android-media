@@ -534,6 +534,10 @@
         <value>false</value>
     </entry>
     <entry>
+        <key>android_enable_xiaomi_pai_tracking</key>
+        <value>true</value>
+    </entry>
+    <entry>
         <key>ANDROID_SELLERAPP_POC_NEW_RELIC_DASHBOARD</key>
         <value>0.0</value>
     </entry>
