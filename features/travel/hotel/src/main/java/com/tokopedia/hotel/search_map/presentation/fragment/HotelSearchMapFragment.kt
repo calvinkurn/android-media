@@ -492,7 +492,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                     0,
                     0)
             containerEmptyResultState.setMargin(0,
-                    resources.getDimensionPixelSize(R.dimen.hotel_70dp),
+                    resources.getDimensionPixelSize(R.dimen.hotel_80dp),
                     0,
                     0)
         } else {
