@@ -11,6 +11,7 @@
         android:layout_width="56dp"
         android:layout_height="56dp"
         android:scaleType="fitXY"
+        android:contentDescription="@null"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:src="@tools:sample/avatars" />
@@ -20,7 +21,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
-        android:textColor="@color/Neutral_N700_96"
+        android:textColor="@color/Unify_N700_96"
         app:layout_constraintBottom_toBottomOf="@+id/shipping_error_img"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/shipping_error_img"
@@ -35,6 +36,7 @@
         android:layout_marginTop="20dp"
         app:unifyButtonSize="medium"
         app:layout_constraintTop_toBottomOf="@+id/shipping_error_img"
+        android:contentDescription="@null"
         tools:text="Ganti alamat, yuk" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

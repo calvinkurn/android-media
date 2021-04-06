@@ -19,11 +19,10 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
-import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.google.android.material.bottomsheet.BottomSheetBehavior.BottomSheetCallback
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.*
@@ -46,6 +45,7 @@ import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.oneclickcheckout.R
+import com.tokopedia.oneclickcheckout.common.DEFAULT_LOCAL_ERROR_MESSAGE
 import com.tokopedia.oneclickcheckout.common.OVO_ACTIVATION_URL
 import com.tokopedia.oneclickcheckout.common.view.model.OccGlobalEvent
 import com.tokopedia.oneclickcheckout.common.view.model.OccState
@@ -69,12 +69,12 @@ import com.tokopedia.oneclickcheckout.preference.edit.view.payment.topup.OvoTopU
 import com.tokopedia.promocheckout.common.view.model.clearpromo.ClearPromoUiModel
 import com.tokopedia.promocheckout.common.view.widget.ButtonPromoCheckoutView
 import com.tokopedia.purchase_platform.common.constant.*
-import com.tokopedia.purchase_platform.common.feature.localizationchooseaddress.request.ChosenAddress
+import com.tokopedia.purchase_platform.common.feature.bottomsheet.GeneralBottomSheet
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
 import com.tokopedia.purchase_platform.common.feature.promonoteligible.PromoNotEligibleActionListener
-import com.tokopedia.purchase_platform.common.feature.promonoteligible.PromoNotEligibleBottomsheet
+import com.tokopedia.purchase_platform.common.feature.promonoteligible.PromoNotEligibleBottomSheet
 import com.tokopedia.purchase_platform.common.feature.purchaseprotection.domain.PurchaseProtectionPlanData
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ImageUnify
@@ -403,7 +403,11 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                     view?.let { v ->
                         var message = it.errorMessage
                         if (message.isBlank() && it.throwable != null) {
-                            message = ErrorHandler.getErrorMessage(context, it.throwable)
+                            message = if (it.throwable is AkamaiErrorException) {
+                                it.throwable.message ?: DEFAULT_LOCAL_ERROR_MESSAGE
+                            } else {
+                                ErrorHandler.getErrorMessage(context, it.throwable)
+                            }
                         }
                         if (message.isNotBlank()) {
                             Toaster.build(v, message, type = Toaster.TYPE_ERROR).show()
@@ -417,7 +421,11 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                     view?.let { v ->
                         var message = it.errorMessage
                         if (message.isBlank()) {
-                            message = ErrorHandler.getErrorMessage(context, it.throwable)
+                            message = if (it.throwable is AkamaiErrorException) {
+                                it.throwable.message ?: DEFAULT_LOCAL_ERROR_MESSAGE
+                            } else {
+                                ErrorHandler.getErrorMessage(context, it.throwable)
+                            }
                         }
                         Toaster.build(v, message, type = Toaster.TYPE_ERROR).show()
                     }
@@ -445,9 +453,9 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                 }
                 is OccGlobalEvent.PriceChangeError -> {
                     progressDialog?.dismiss()
-                    activity?.let { currentActivity ->
+                    if (activity != null) {
                         val messageData = it.message
-                        val priceValidationDialog = DialogUnify(currentActivity, DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE)
+                        val priceValidationDialog = DialogUnify(requireActivity(), DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE)
                         priceValidationDialog.setTitle(messageData.title)
                         priceValidationDialog.setDescription(messageData.desc)
                         priceValidationDialog.setPrimaryCTAText(messageData.action)
@@ -463,42 +471,30 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                 is OccGlobalEvent.PromoClashing -> {
                     progressDialog?.dismiss()
                     if (activity != null) {
-                        fragmentManager?.let { fm ->
-                            val promoNotEligibleBottomsheet = PromoNotEligibleBottomsheet.createInstance()
-                            promoNotEligibleBottomsheet.notEligiblePromoHolderDataList = it.notEligiblePromoHolderDataList
-                            promoNotEligibleBottomsheet.actionListener = object : PromoNotEligibleActionListener {
-                                override fun onShow() {
-                                    val bottomSheetBehavior = promoNotEligibleBottomsheet.bottomSheetBehavior
-                                    bottomSheetBehavior.setBottomSheetCallback(object : BottomSheetCallback() {
-                                        override fun onStateChanged(bottomSheet: View, newState: Int) {
-                                            if (newState == BottomSheetBehavior.STATE_DRAGGING) {
-                                                bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
-                                            }
-                                        }
+                        val promoNotEligibleBottomSheet = PromoNotEligibleBottomSheet(it.notEligiblePromoHolderDataList,
+                                object : PromoNotEligibleActionListener {
+                                    override fun onShow() {
+                                        //no op
+                                    }
 
-                                        override fun onSlide(bottomSheet: View, slideOffset: Float) {}
-                                    })
-                                }
+                                    override fun onButtonContinueClicked() {
+                                        viewModel.cancelIneligiblePromoCheckout(it.notEligiblePromoHolderDataList, onSuccessCheckout())
+                                        orderSummaryAnalytics.eventClickLanjutBayarPromoErrorOSP()
+                                    }
 
-                                override fun onButtonContinueClicked() {
-                                    viewModel.cancelIneligiblePromoCheckout(it.notEligiblePromoHolderDataList, onSuccessCheckout())
-                                    orderSummaryAnalytics.eventClickLanjutBayarPromoErrorOSP()
-                                }
+                                    override fun onButtonChooseOtherPromo() {
+                                        val intent = RouteManager.getIntent(activity, ApplinkConstInternalPromo.PROMO_CHECKOUT_MARKETPLACE)
+                                        intent.putExtra(ARGS_PAGE_SOURCE, PAGE_OCC)
+                                        intent.putExtra(ARGS_VALIDATE_USE_REQUEST, viewModel.generateValidateUsePromoRequest())
+                                        intent.putExtra(ARGS_PROMO_REQUEST, viewModel.generatePromoRequest())
+                                        intent.putStringArrayListExtra(ARGS_BBO_PROMO_CODES, viewModel.generateBboPromoCodes())
 
-                                override fun onButtonChooseOtherPromo() {
-                                    val intent = RouteManager.getIntent(activity, ApplinkConstInternalPromo.PROMO_CHECKOUT_MARKETPLACE)
-                                    intent.putExtra(ARGS_PAGE_SOURCE, PAGE_OCC)
-                                    intent.putExtra(ARGS_VALIDATE_USE_REQUEST, viewModel.generateValidateUsePromoRequest())
-                                    intent.putExtra(ARGS_PROMO_REQUEST, viewModel.generatePromoRequest())
-                                    intent.putStringArrayListExtra(ARGS_BBO_PROMO_CODES, viewModel.generateBboPromoCodes())
-
-                                    orderSummaryAnalytics.eventClickPilihPromoLainPromoErrorOSP()
-                                    startActivityForResult(intent, REQUEST_CODE_PROMO)
-                                }
-                            }
-                            promoNotEligibleBottomsheet.show(fm, "")
-                            orderSummaryAnalytics.eventViewBottomSheetPromoError()
-                        }
+                                        orderSummaryAnalytics.eventClickPilihPromoLainPromoErrorOSP()
+                                        startActivityForResult(intent, REQUEST_CODE_PROMO)
+                                    }
+                                })
+                        promoNotEligibleBottomSheet.show(requireContext(), parentFragmentManager)
+                        orderSummaryAnalytics.eventViewBottomSheetPromoError()
                     }
                 }
                 is OccGlobalEvent.AtcError -> {
@@ -834,6 +830,18 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         return object : OrderInsuranceCard.OrderInsuranceCardListener {
             override fun onInsuranceChecked(isChecked: Boolean) {
                 viewModel.setInsuranceCheck(isChecked)
+            }
+
+            override fun onClickInsuranceInfo(title: String, message: String, image: Int) {
+                context?.also { ctx ->
+                    GeneralBottomSheet().apply {
+                        setTitle(title)
+                        setDesc(message)
+                        setButtonText(getString(com.tokopedia.purchase_platform.common.R.string.label_button_bottomsheet_close))
+                        setIcon(image)
+                        setButtonOnClickListener { it.dismiss() }
+                    }.show(ctx, parentFragmentManager)
+                }
             }
         }
     }
@@ -1318,7 +1326,11 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
             else -> {
                 view?.let {
                     showGlobalError(GlobalError.SERVER_ERROR)
-                    Toaster.build(it, throwable?.message
+                    var message = throwable?.message
+                    if (throwable !is AkamaiErrorException) {
+                        message = ErrorHandler.getErrorMessage(it.context, throwable)
+                    }
+                    Toaster.build(it, message
                             ?: getString(R.string.default_osp_error_message), type = Toaster.TYPE_ERROR).show()
                 }
             }
@@ -1358,6 +1370,11 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                     view?.let {
                         showAtcGlobalError(GlobalError.SERVER_ERROR)
                     }
+                }
+            }
+            if (atcError.throwable is AkamaiErrorException) {
+                view?.let {
+                    Toaster.build(it, atcError.throwable.message ?: DEFAULT_LOCAL_ERROR_MESSAGE, type = Toaster.TYPE_ERROR).show()
                 }
             }
         } else {

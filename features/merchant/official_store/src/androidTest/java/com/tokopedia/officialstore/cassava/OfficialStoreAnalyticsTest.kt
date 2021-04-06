@@ -17,6 +17,7 @@ import com.tokopedia.cassavatest.getAnalyticsWithQuery
 import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.home_component.viewholders.DynamicLegoBannerViewHolder
 import com.tokopedia.home_component.viewholders.MixLeftComponentViewHolder
+import com.tokopedia.home_component.viewholders.MixTopComponentViewHolder
 import com.tokopedia.officialstore.OfficialStoreActivity
 import com.tokopedia.officialstore.R
 import com.tokopedia.officialstore.extension.selectTabAtPosition
@@ -131,10 +132,7 @@ class OfficialStoreAnalyticsTest {
             is MixLeftComponentViewHolder -> {
                 CommonActions.clickOnEachItemRecyclerView(viewHolder.itemView, R.id.rv_product, 0)
             }
-            is DynamicChannelMixLeftViewHolder -> {
-                CommonActions.clickOnEachItemRecyclerView(viewHolder.itemView, R.id.rv_product, 0)
-            }
-            is DynamicChannelMixTopViewHolder -> {
+            is MixTopComponentViewHolder -> {
                 CommonActions.clickOnEachItemRecyclerView(viewHolder.itemView, R.id.dc_banner_rv, 0)
             }
             is OfficialBenefitViewHolder -> {

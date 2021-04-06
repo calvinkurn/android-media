@@ -22,6 +22,7 @@ import com.tokopedia.affiliatecommon.analytics.AffiliateEventTracking
 import com.tokopedia.affiliatecommon.data.util.AffiliatePreference
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalContent.INTERNAL_VIDEO_PICKER
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.coachmark.CoachMark
 import com.tokopedia.coachmark.CoachMarkItem
@@ -56,7 +57,6 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.twitter_share.TwitterAuthenticator
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.videorecorder.main.VideoPickerActivity.Companion.VIDEOS_RESULT
 import kotlinx.android.synthetic.main.bottom_sheet_share_post.view.*
 import kotlinx.android.synthetic.main.fragment_af_create_post.*
 import timber.log.Timber
@@ -125,6 +125,8 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         private const val REQUEST_LOGIN = 83
         private const val MAX_CHAR = 2000
         private const val CHAR_LENGTH_TO_SHOW = 1900
+        private const val IMAGE_EXIST = "image_exist"
+        private const val VIDEOS_RESULT = "video_result"
     }
 
     abstract fun fetchContentForm()
@@ -588,10 +590,9 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
 
     private fun goToVideoPicker() {
         activity?.let { activity ->
-            startActivityForResult(
-                    CreatePostVideoPickerActivity.getInstance(activity,
-                            viewModel.fileImageList.any { it.type == MediaType.VIDEO }),
-                    REQUEST_VIDEO_PICKER)
+            val intent = RouteManager.getIntent(activity, INTERNAL_VIDEO_PICKER)
+            intent.putExtra(IMAGE_EXIST, viewModel.fileImageList.any { it.type == MediaType.VIDEO })
+            startActivityForResult(intent, REQUEST_VIDEO_PICKER)
         }
     }
 

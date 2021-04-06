@@ -22,6 +22,7 @@ object DynamicChannelIdentifiers {
     val LAYOUT_6_IMAGE = "6_image"
     val LAYOUT_MIX_LEFT = "left_carousel"
     val LAYOUT_MIX_TOP = "top_carousel"
+    val LAYOUT_FEATURED_BRAND = "featured_brand"
 
     val CTA_MODE_MAIN = "main"
     val CTA_MODE_TRANSACTION = "transaction"

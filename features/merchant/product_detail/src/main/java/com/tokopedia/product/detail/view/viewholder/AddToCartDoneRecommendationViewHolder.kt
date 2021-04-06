@@ -3,6 +3,7 @@ package com.tokopedia.product.detail.view.viewholder
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.carouselproductcard.CarouselProductCardListener
+import com.tokopedia.discovery.common.manager.showProductCardOptions
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.product.detail.R
@@ -49,7 +50,13 @@ class AddToCartDoneRecommendationViewHolder(
                             recommendationListener.onProductImpression(productRecommendation)
                         }
                     },
-                    productCardModelList = products.map { it.toProductCardModel() }
+                    carouselProductCardOnItemThreeDotsClickListener = object : CarouselProductCardListener.OnItemThreeDotsClickListener {
+                        override fun onItemThreeDotsClick(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
+                            val product = products.getOrNull(carouselProductCardPosition) ?: return
+                            recommendationListener.onThreeDotsClick(product, adapterPosition, carouselProductCardPosition)
+                        }
+                    },
+                    productCardModelList = products.map { it.toProductCardModel(hasThreeDots = true) }
 
             )
             visible()

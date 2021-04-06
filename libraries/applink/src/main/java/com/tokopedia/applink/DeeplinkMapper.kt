@@ -22,6 +22,7 @@ import com.tokopedia.applink.entertaiment.DeeplinkMapperEntertainment.getRegiste
 import com.tokopedia.applink.etalase.DeepLinkMapperEtalase
 import com.tokopedia.applink.feed.DeepLinkMapperFeed.getRegisteredFeed
 import com.tokopedia.applink.find.DeepLinkMapperFind.getRegisteredFind
+import com.tokopedia.applink.fintech.DeeplinkMapperFintech
 import com.tokopedia.applink.fintech.DeeplinkMapperFintech.getRegisteredNavigationForFintech
 import com.tokopedia.applink.fintech.DeeplinkMapperFintech.getRegisteredNavigationForLayanan
 import com.tokopedia.applink.gamification.DeeplinkMapperGamification
@@ -39,6 +40,7 @@ import com.tokopedia.applink.merchant.DeeplinkMapperMerchant
 import com.tokopedia.applink.merchant.DeeplinkMapperMerchant.getRegisteredNavigationProductDetailReview
 import com.tokopedia.applink.merchant.DeeplinkMapperMerchant.getRegisteredNavigationProductReview
 import com.tokopedia.applink.merchant.DeeplinkMapperMerchant.getRegisteredNavigationReputation
+import com.tokopedia.applink.merchant.DeeplinkMapperMerchant.getRegisteredNavigationReviewReminder
 import com.tokopedia.applink.merchant.DeeplinkMapperMerchant.getRegisteredNavigationSellerReviewDetail
 import com.tokopedia.applink.merchant.DeeplinkMapperMerchant.getRegisteredNavigationShopReview
 import com.tokopedia.applink.merchant.DeeplinkMapperMerchant.isShopReview
@@ -345,6 +347,7 @@ object DeeplinkMapper {
             DLP.startWithPattern(ApplinkConst.SHOP_ETALASE_LIST) { _, _, deeplink -> DeepLinkMapperEtalase.getEtalaseListInternalAppLink(deeplink) },
             DLP.startWith(ApplinkConst.PRODUCT_MANAGE) { _, _, deeplink -> DeepLinkMapperProductManage.getProductListInternalAppLink(deeplink) },
             DLP.startWith(ApplinkConst.PRODUCT_CREATE_REVIEW) { _, _, deeplink -> getRegisteredNavigationProductReview(deeplink) },
+            DLP.startWith(ApplinkConst.REVIEW_REMINDER) { _,_, deeplink -> getRegisteredNavigationReviewReminder(deeplink) },
             DLP.startWith(ApplinkConst.REPUTATION) { _, _, deeplink -> getRegisteredNavigationReputation(deeplink) },
             DLP.startWith(ApplinkConst.SELLER_REVIEW) { _,_, deeplink -> getRegisteredNavigationSellerReviewDetail(deeplink) },
             DLP.startWith(ApplinkConst.TOKOPOINTS) { ctx, _, deeplink -> getRegisteredNavigationTokopoints(ctx, deeplink) },
@@ -405,6 +408,10 @@ object DeeplinkMapper {
                     targetDeeplink = { _, uri, deeplink -> DeeplinkMapperMerchant.getRegisteredNavigationShopProduct(deeplink) }),
             DLP(logic = { _, uri, deeplink -> DeeplinkMapperMerchant.isShopPageFeedDeeplink(deeplink) },
                     targetDeeplink = { _, uri, deeplink -> DeeplinkMapperMerchant.getRegisteredNavigationShopFeed(deeplink) }),
+            DLP(logic = { _, uri, deeplink -> DeeplinkMapperMerchant.isShopFollowerListDeeplink(deeplink) },
+                    targetDeeplink = { _, uri, deeplink -> DeeplinkMapperMerchant.getRegisteredNavigationShopFollowerList(deeplink) }),
+            DLP(logic = { _, uri, deeplink -> DeeplinkMapperMerchant.isShopPageSettingCustomerApp(deeplink) },
+                    targetDeeplink = { _, uri, deeplink -> DeeplinkMapperMerchant.getRegisteredNavigationShopPageSettingCustomerApp(deeplink) }),
             DLP(logic = { _, uri, _ -> DeeplinkMapperMerchant.isShopPageInfoDeeplink(uri) },
                     targetDeeplink = { _, uri, _ -> DeeplinkMapperMerchant.getShopPageInfoInternalApplink(uri) }),
             DLP(logic = { _, uri, _ -> DeeplinkMapperMerchant.isShopPageNoteDeeplink(uri) },
@@ -474,7 +481,7 @@ object DeeplinkMapper {
             DLP.exact(ApplinkConst.HAS_PASSWORD, ApplinkConstInternalGlobal.HAS_PASSWORD),
             DLP.exact(ApplinkConst.THANK_YOU_PAGE_NATIVE, ApplinkConstInternalPayment.PAYMENT_THANK_YOU_PAGE),
             DLP.exact(ApplinkConst.HOWTOPAY, ApplinkConstInternalPayment.INTERNAL_HOW_TO_PAY),
-            DLP.exact(ApplinkConst.PAYLATER, ApplinkConstInternalFintech.PAYLATER),
+            DLP.startWith(ApplinkConst.PAYLATER) { _, _, deeplink -> DeeplinkMapperFintech.getRegisteredNavigationForPayLater(deeplink) },
             DLP.exact(ApplinkConst.PROFILE_COMPLETION, ApplinkConstInternalGlobal.PROFILE_COMPLETION),
             DLP.exact(ApplinkConst.MERCHANT_VOUCHER_LIST, ApplinkConstInternalSellerapp.VOUCHER_LIST),
             DLP.exact(ApplinkConst.NOTIFICATION_TROUBLESHOOTER, ApplinkConstInternalGlobal.PUSH_NOTIFICATION_TROUBLESHOOTER),
@@ -598,6 +605,7 @@ object DeeplinkMapper {
             ApplinkConst.SellerApp.STATISTIC_DASHBOARD -> DeepLinkMapperStatistic.getStatisticAppLink(uri)
             else -> when {
                 DeeplinkMapperMerchant.isShopPageFeedDeeplink(deeplink) -> DeeplinkMapperMerchant.getRegisteredNavigationShopFeed(deeplink)
+                DeeplinkMapperMerchant.isShopPageSettingSellerApp(deeplink) -> DeeplinkMapperMerchant.getRegisteredNavigationShopPageSettingSellerApp(deeplink)
                 else -> ""
             }
         }
