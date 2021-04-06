@@ -533,6 +533,7 @@ class ShopPageShowcaseFragment : BaseDaggerFragment(),
     }
 
     private fun showGlobalError() {
+        globalError?.errorSecondaryAction?.hide()
         globalError?.visible()
         showcaseShimmerView?.hide()
         featuredShowcaseRv?.hide()

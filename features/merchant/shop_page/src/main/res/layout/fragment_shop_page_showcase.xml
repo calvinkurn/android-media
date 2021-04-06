@@ -105,8 +105,9 @@
             android:id="@+id/globalError"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:globalerrors_type="SERVER_ERROR"
+            app:globalerrors_type="NO_CONNECTION"
             android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/dp_16"
             android:visibility="gone"
             />
 
