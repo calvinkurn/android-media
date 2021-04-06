@@ -400,6 +400,7 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
     }
 
     override fun updateListByCheck(isChecked: Boolean, position: Int) {
+        if(position>=0)
         adapter.updateListByCheck(isChecked, position)
     }
 

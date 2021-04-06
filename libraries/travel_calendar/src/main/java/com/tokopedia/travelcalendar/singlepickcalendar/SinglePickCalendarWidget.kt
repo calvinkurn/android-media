@@ -137,10 +137,9 @@ open class SinglePickCalendarWidget : BottomSheetUnify() {
     }
 
     companion object {
-
-        private const val MIN_DATE = "min_date"
-        private const val MAX_DATE = "max_date"
-        private const val SELECTED_DATE = "selected_date"
+        const val MIN_DATE = "min_date"
+        const val MAX_DATE = "max_date"
+        const val SELECTED_DATE = "selected_date"
 
         fun newInstance(minDateString: String, maxDateString: String,
                         selectedDate: String): SinglePickCalendarWidget =

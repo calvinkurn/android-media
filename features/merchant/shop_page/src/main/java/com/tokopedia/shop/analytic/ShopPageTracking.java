@@ -56,6 +56,8 @@ import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.IMPRESSION_PR
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.INFO;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.LABEL_CLICK_SHOP_HEADER_BUYER;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.LABEL_CLICK_SHOP_HEADER_SELLER;
+import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.LABEL_IMPRESSION_SHOP_HEADER_BUYER;
+import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.LABEL_IMPRESSION_SHOP_HEADER_SELLER;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.LOGIN;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.MANAGE_PRODUCT;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.MANAGE_SHOP;
@@ -605,9 +607,9 @@ public class ShopPageTracking {
         String eventAction = isMyShop ? ACTION_IMPRESSION_SHOP_HEADER_SELLER : ACTION_IMPRESSION_SHOP_HEADER_BUYER;
         String eventLabel;
         if (isMyShop) {
-            eventLabel = String.format(LABEL_CLICK_SHOP_HEADER_SELLER, shopId);
+            eventLabel = String.format(LABEL_IMPRESSION_SHOP_HEADER_SELLER, shopId);
         } else {
-            eventLabel = String.format(LABEL_CLICK_SHOP_HEADER_BUYER, shopId);
+            eventLabel = String.format(LABEL_IMPRESSION_SHOP_HEADER_BUYER, shopId);
         }
         HashMap<String, Object> eventMap = createMap(
                 PROMO_VIEW,
