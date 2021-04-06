@@ -98,6 +98,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
     private var isReqLocation: Boolean = false
 
     private var binding by autoClearedNullable<FragmentPinpointMapBinding> {
+        // Set map view on destroy before binding is null
         it.mapView.onDestroy()
     }
 
