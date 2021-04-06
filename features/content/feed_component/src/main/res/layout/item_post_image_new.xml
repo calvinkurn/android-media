@@ -7,14 +7,17 @@
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/post_image"
-        android:layout_width="@dimen/unify_space_0"
+        android:layout_width="match_parent"
         android:layout_height="@dimen/unify_space_0"
+        android:adjustViewBounds="true"
+        android:scaleType="fitXY"
         app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.cardview.widget.CardView
+        android:id="@+id/product_tagging_parent"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/layout_lvl3"
         android:layout_marginStart="@dimen/spacing_lvl4"
@@ -26,7 +29,6 @@
         app:layout_constraintStart_toStartOf="@id/post_image">
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/product_tagging_parent"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="center">
@@ -37,6 +39,7 @@
                 android:layout_height="@dimen/unify_space_12"
                 android:layout_margin="@dimen/feed_component_dp_6"
                 app:icon_color_light_enable="@color/Unify_N0"
+                app:icon_color_night_enable="@color/Unify_N0"
                 app:icon_name="PRODUCT"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/product_tag_text"
