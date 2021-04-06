@@ -5,16 +5,15 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.productlimitation.presentation.model.ProductLimitationModel
-import com.tokopedia.product.addedit.variant.presentation.model.VariantPhoto
-import com.tokopedia.product.addedit.variant.presentation.adapter.viewholder.VariantPhotoViewHolder
 
 class ProductLimitationItemAdapter: RecyclerView.Adapter<ProductLimitationItemViewHolder>() {
 
     private var items: MutableList<ProductLimitationModel> = mutableListOf()
+    private var itemOnClick: (String) -> Unit = {}
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProductLimitationItemViewHolder {
         val rootView = LayoutInflater.from(parent.context).inflate(R.layout.item_product_limitation, parent, false)
-        return ProductLimitationItemViewHolder(rootView)
+        return ProductLimitationItemViewHolder(rootView, itemOnClick)
     }
 
     override fun getItemCount(): Int {
@@ -33,5 +32,9 @@ class ProductLimitationItemAdapter: RecyclerView.Adapter<ProductLimitationItemVi
     fun setData(items: List<ProductLimitationModel>) {
         this.items = items.toMutableList()
         notifyDataSetChanged()
+    }
+
+    fun setOnItemClick (listener: (String) -> Unit) {
+        itemOnClick = listener
     }
 }

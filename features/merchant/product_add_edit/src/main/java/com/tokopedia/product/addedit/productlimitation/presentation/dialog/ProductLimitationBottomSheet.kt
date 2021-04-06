@@ -20,6 +20,8 @@ class ProductLimitationBottomSheet(private val actionItems: List<ProductLimitati
         const val TAG = "Tag Product Limitation Bottom Sheet"
     }
 
+    private var onBottomSheetResult: (String) -> Unit = {}
+
     init {
         setTitle("Tidak bisa menambahkan produk")
         setCloseClickListener {
@@ -43,12 +45,6 @@ class ProductLimitationBottomSheet(private val actionItems: List<ProductLimitati
         }
     }
 
-    fun show(manager: FragmentManager?) {
-        manager?.run {
-            super.show(this , TAG)
-        }
-    }
-
     private fun initChildLayout() {
         overlayClickDismiss = true
         val contentView: View? = View.inflate(context,
@@ -57,9 +53,23 @@ class ProductLimitationBottomSheet(private val actionItems: List<ProductLimitati
         val adapter = ProductLimitationItemAdapter()
 
         adapter.setData(actionItems)
+        adapter.setOnItemClick {
+            onBottomSheetResult.invoke(it)
+        }
         rvItems?.adapter = adapter
         rvItems?.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         rvItems?.addItemDecoration(HorizontalItemDecoration(resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3)))
         setChild(contentView)
     }
+
+    fun setOnBottomSheetResult(onBottomSheetResult: (String) -> Unit) {
+        this.onBottomSheetResult = onBottomSheetResult
+    }
+
+    fun show(manager: FragmentManager?) {
+        manager?.run {
+            super.show(this , TAG)
+        }
+    }
+
 }

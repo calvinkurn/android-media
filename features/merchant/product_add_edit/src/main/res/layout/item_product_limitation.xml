@@ -9,9 +9,9 @@
     <com.tokopedia.unifycomponents.CardUnify
         android:layout_width="200dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/spacing_lvl5"
         app:card_type="border"
-        android:paddingTop="@dimen/spacing_lvl5"
+        android:paddingTop="@dimen/spacing_lvl7"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -66,8 +66,8 @@
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/iv_card"
         android:src="@drawable/product_add_edit_ic_tips_bulb"
-        android:layout_width="@dimen/layout_lvl6"
-        android:layout_height="@dimen/layout_lvl5"
+        android:layout_width="@dimen/layout_lvl7"
+        android:layout_height="@dimen/layout_lvl7"
         android:layout_marginStart="@dimen/spacing_lvl4"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

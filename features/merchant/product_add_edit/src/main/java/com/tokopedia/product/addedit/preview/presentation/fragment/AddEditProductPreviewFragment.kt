@@ -113,6 +113,7 @@ import com.tokopedia.product.addedit.preview.presentation.service.AddEditProduct
 import com.tokopedia.product.addedit.preview.presentation.service.AddEditProductEditService
 import com.tokopedia.product.addedit.preview.presentation.viewmodel.AddEditProductPreviewViewModel
 import com.tokopedia.product.addedit.productlimitation.domain.mapper.ProductLimitationMapper
+import com.tokopedia.product.addedit.productlimitation.domain.model.ProductLimitationData
 import com.tokopedia.product.addedit.productlimitation.presentation.dialog.ProductLimitationBottomSheet
 import com.tokopedia.product.addedit.tooltip.model.ImageTooltipModel
 import com.tokopedia.product.addedit.tooltip.model.NumericTooltipModel
@@ -1162,10 +1163,7 @@ class AddEditProductPreviewFragment :
         viewModel.productLimitationData.observe(viewLifecycleOwner) {
             when(it) {
                 is Success -> {
-                    val actionItems = ProductLimitationMapper.mapToActionItems(requireContext(), it.data)
-                    productLimitationTicker?.setOnClickListener {
-                        ProductLimitationBottomSheet(actionItems).show(childFragmentManager)
-                    }
+                    setupBottomSheetProductLimitation(it.data)
                 }
                 is Fail -> {
 
@@ -1626,6 +1624,26 @@ class AddEditProductPreviewFragment :
         productLimitationTicker?.apply {
             setHtmlDescription(htmlDescription)
             showWithCondition(isAdding())
+        }
+    }
+
+    private fun setupBottomSheetProductLimitation(data: ProductLimitationData) {
+        data.eligible?.actionItems = listOf("UpToPM", "Variant", "Delete", "Promotion")
+        val actionItems = ProductLimitationMapper.mapToActionItems(requireContext(), data)
+        val bottomSheet = ProductLimitationBottomSheet(actionItems)
+
+        bottomSheet.setOnBottomSheetResult { urlResult ->
+            if (urlResult.startsWith(HTTP_PREFIX)) {
+                RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, urlResult))
+            } else {
+                val intent = RouteManager.getIntent(context, urlResult)
+                startActivity(intent)
+                activity?.finish()
+            }
+        }
+
+        productLimitationTicker?.setOnClickListener {
+            bottomSheet.show(childFragmentManager)
         }
     }
 }

@@ -1,6 +1,8 @@
 package com.tokopedia.product.addedit.productlimitation.domain.mapper
 
 import android.content.Context
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.productlimitation.domain.model.ProductLimitationData
 import com.tokopedia.product.addedit.productlimitation.presentation.model.ProductLimitationModel
@@ -19,6 +21,7 @@ class ProductLimitationMapper {
             IMAGE_URL_USE_VARIANT,
             context.getString(R.string.title_product_limitation_item_usevariant),
             context.getString(R.string.label_product_limitation_item_usevariant),
+            context.getString(R.string.action_product_limitation_item),
             ACTION_URL_USE_VARIANT
     )
 
@@ -26,7 +29,7 @@ class ProductLimitationMapper {
             IMAGE_URL_DELETE_PRODUCTS,
             context.getString(R.string.title_product_limitation_item_delete),
             context.getString(R.string.label_product_limitation_item_delete),
-            context.getString(R.string.action_product_limitation_item),
+            context.getString(R.string.action_product_limitation_item_goto_productlist),
             ACTION_URL_DELETE_PRODUCTS
     )
 
@@ -49,10 +52,10 @@ class ProductLimitationMapper {
         private const val IMAGE_URL_DELETE_PRODUCTS = "https://images.tokopedia.net/img/android/merchant/add-edit-product/product_limitation_deleting.png"
         private const val IMAGE_URL_USE_PROMOTION = "https://images.tokopedia.net/img/android/merchant/add-edit-product/product_limitation_ads.png"
 
-        private const val ACTION_URL_UPGRADE_TO_PM = "https://seller.tokopedia.com/settings/power-merchant"
+        private val ACTION_URL_UPGRADE_TO_PM = ApplinkConstInternalMarketplace.POWER_MERCHANT_SUBSCRIBE
         private const val ACTION_URL_USE_VARIANT = "https://seller.tokopedia.com/edu/fitur-varian"
-        private const val ACTION_URL_DELETE_PRODUCTS = "https://seller.tokopedia.com/manage-product"
-        private const val ACTION_URL_USE_PROMOTION = "https://seller.tokopedia.com/promo"
+        private val ACTION_URL_DELETE_PRODUCTS = ApplinkConstInternalMarketplace.PRODUCT_MANAGE_LIST
+        private val ACTION_URL_USE_PROMOTION = ApplinkConstInternalSellerapp.CENTRALIZED_PROMO
 
         fun mapToActionItems(context: Context, productLimitationData: ProductLimitationData) =
                 productLimitationData.eligible?.actionItems?.map {

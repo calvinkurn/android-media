@@ -47,7 +47,6 @@
         android:id="@+id/rv_product_limitation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_lvl4"
         app:layout_constraintTop_toBottomOf="@+id/tv_title_product_limitation" />
 
     <com.tokopedia.unifycomponents.UnifyButton
