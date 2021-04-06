@@ -8,8 +8,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageButton
-import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
@@ -33,6 +31,7 @@ import java.io.File
  * @author by alvinatin on 12/11/18.
  */
 class UserIdentificationCameraFragment : TkpdBaseV4Fragment() {
+    private var container: View? = null
     private var cameraView: CameraView? = null
     private var closeButton: UnifyImageButton? = null
     private var title: TextView? = null
@@ -80,6 +79,7 @@ class UserIdentificationCameraFragment : TkpdBaseV4Fragment() {
     }
 
     private fun initView(view: View) {
+        container = view.findViewById(R.id.container)
         cameraView = view.findViewById(R.id.full_camera_view)
         closeButton = view.findViewById(R.id.close_button)
         title = view.findViewById(R.id.title)
@@ -101,6 +101,7 @@ class UserIdentificationCameraFragment : TkpdBaseV4Fragment() {
     }
 
     private fun populateView() {
+        container?.setBackgroundResource(com.tokopedia.unifyprinciples.R.color.Unify_N700)
         shutterButton?.setOnClickListener { v: View? ->
             sendAnalyticClickShutter()
             val fragment: Fragment = this@UserIdentificationCameraFragment
