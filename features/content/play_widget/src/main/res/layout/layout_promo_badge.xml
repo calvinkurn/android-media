@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
@@ -41,16 +42,17 @@
         tools:layout_height="20dp"
         >
 
-        <androidx.appcompat.widget.AppCompatImageView
+        <com.tokopedia.iconunify.IconUnify
             android:id="@+id/promo_image"
-            android:layout_width="14dp"
-            android:layout_height="14dp"
+            android:layout_width="@dimen/play_widget_dp_14"
+            android:layout_height="@dimen/play_widget_dp_14"
             android:layout_marginStart="@dimen/spacing_lvl2"
-            android:layout_marginLeft="@dimen/spacing_lvl2"
             android:layout_marginTop="@dimen/spacing_lvl1"
             android:layout_marginBottom="@dimen/spacing_lvl1"
             android:tint="@color/Unify_Static_White"
-            app:srcCompat="@drawable/ic_play_banner_promo"
+            app:icon_color_light_enable="@color/Unify_Static_White"
+            app:icon_color_night_enable="@color/Unify_Static_White"
+            app:icon_name="PROMO"
             tools:visibility="visible"
             />
 

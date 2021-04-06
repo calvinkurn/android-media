@@ -15,4 +15,6 @@
 
     <color name="play_widget_dms_bg_promo_detail_badge">#00AA5B</color>
 
+    <color name="play_widget_dms_reminder_background">#AD31353B</color>
+
 </resources>

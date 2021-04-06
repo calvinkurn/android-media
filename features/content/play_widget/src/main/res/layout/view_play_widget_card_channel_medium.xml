@@ -53,16 +53,16 @@
             android:background="@drawable/bg_play_widget_medium_top_gradient"
             />
 
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/play_widget_iv_reminder"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+        <include
+            android:id="@+id/view_reminder"
+            layout="@layout/layout_reminder"
+            android:layout_width="@dimen/layout_lvl4"
+            android:layout_height="@dimen/layout_lvl4"
             android:layout_marginTop="@dimen/spacing_lvl3"
             android:layout_marginEnd="@dimen/spacing_lvl3"
             android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_play_reminder"
             tools:visibility="gone"
             />
 

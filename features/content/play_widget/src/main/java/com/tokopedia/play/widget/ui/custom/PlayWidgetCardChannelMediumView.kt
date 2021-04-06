@@ -9,8 +9,8 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.content.ContextCompat
 import com.google.android.exoplayer2.ui.PlayerView
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.loadImage
@@ -18,8 +18,8 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play.widget.R
 import com.tokopedia.play.widget.player.PlayVideoPlayer
 import com.tokopedia.play.widget.player.PlayVideoPlayerReceiver
-import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
 import com.tokopedia.play.widget.ui.model.PlayWidgetMediumChannelUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
 import com.tokopedia.play.widget.ui.model.switch
 import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
 import com.tokopedia.play.widget.ui.type.PlayWidgetPromoType
@@ -40,7 +40,8 @@ class PlayWidgetCardChannelMediumView : ConstraintLayout, PlayVideoPlayerReceive
 
     private val thumbnail: AppCompatImageView
     private val pvVideo: PlayerView
-    private val reminderBadge: AppCompatImageView
+    private val reminderBadge: View
+    private val ivReminder: IconUnify
     private val ivAction: AppCompatImageView
     private val liveBadge: View
     private val totalViewBadge: View
@@ -65,7 +66,8 @@ class PlayWidgetCardChannelMediumView : ConstraintLayout, PlayVideoPlayerReceive
         val view = View.inflate(context, R.layout.view_play_widget_card_channel_medium, this)
         thumbnail = view.findViewById(R.id.play_widget_thumbnail)
         pvVideo = view.findViewById(R.id.play_widget_player_view)
-        reminderBadge = view.findViewById(R.id.play_widget_iv_reminder)
+        reminderBadge = view.findViewById(R.id.view_reminder)
+        ivReminder = view.findViewById(R.id.play_widget_iv_reminder)
         ivAction = view.findViewById(R.id.play_widget_iv_action)
         liveBadge = view.findViewById(R.id.play_widget_badge_live)
         totalViewBadge = view.findViewById(R.id.play_widget_badge_total_view)
@@ -156,13 +158,11 @@ class PlayWidgetCardChannelMediumView : ConstraintLayout, PlayVideoPlayerReceive
     }
 
     private fun setIconToggleReminder(reminderType: PlayWidgetReminderType) {
-        val drawableIconReminder = when (reminderType) {
-            PlayWidgetReminderType.Remind -> R.drawable.ic_play_reminder
-            PlayWidgetReminderType.UnRemind ->  R.drawable.ic_play_reminder_non_active
+        val iconId = when (reminderType) {
+            PlayWidgetReminderType.Reminded -> IconUnify.BELL_FILLED
+            PlayWidgetReminderType.NotReminded -> IconUnify.BELL
         }
-        reminderBadge.setImageDrawable(
-                ContextCompat.getDrawable(context, drawableIconReminder)
-        )
+        ivReminder.setImage(newIconId = iconId)
     }
 
     private fun setPromoType(promoType: PlayWidgetPromoType) {
