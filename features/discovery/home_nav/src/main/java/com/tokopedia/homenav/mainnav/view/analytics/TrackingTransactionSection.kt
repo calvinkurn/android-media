@@ -116,7 +116,7 @@ object TrackingTransactionSection: BaseTrackerConst() {
                         id = String.format("%s - %s", bannerId, orderId),
                         name = String.format(TEMPLATE_GLOBAL_MENU, orderStatusCard),
                         creativeUrl = "",
-                        position = position.toString()
+                        position = (position + 1).toString()
                 )))
                 .appendCurrentSite(DEFAULT_CURRENT_SITE)
                 .appendUserId(userId)
