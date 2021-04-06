@@ -1,6 +1,7 @@
 package com.tokopedia.cart.view.bottomsheet
 
 import android.content.Context
+import android.content.res.Resources
 import android.view.LayoutInflater
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.cart.databinding.LayoutBottomsheetGlobalErrorBinding
@@ -13,6 +14,7 @@ fun showGlobalErrorBottomsheet(fragmentManager: FragmentManager, context: Contex
         showHeader = true
         isDragable = true
         isHideable = true
+        customPeekHeight = Resources.getSystem().displayMetrics.heightPixels / 2
     }
 
     val binding = LayoutBottomsheetGlobalErrorBinding.inflate(LayoutInflater.from(context))

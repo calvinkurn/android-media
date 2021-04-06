@@ -1,6 +1,7 @@
 package com.tokopedia.cart.view.bottomsheet
 
 import android.content.Context
+import android.content.res.Resources
 import android.view.LayoutInflater
 import android.view.View
 import androidx.fragment.app.FragmentManager
@@ -23,6 +24,7 @@ fun showSummaryTransactionBottomsheet(cartListData: CartListData, fragmentManage
         showHeader = false
         isDragable = true
         isHideable = true
+        customPeekHeight = Resources.getSystem().displayMetrics.heightPixels / 2
     }
 
     val binding = LayoutBottomsheetSummaryTransactionBinding.inflate(LayoutInflater.from(context))
