@@ -174,7 +174,7 @@ public abstract class BaseNotificationFactory {
             cache.applyEditor();
             return true;
         }
-        return false;
+        return true;
     }
 
     protected Boolean isAllowVibrate() {
