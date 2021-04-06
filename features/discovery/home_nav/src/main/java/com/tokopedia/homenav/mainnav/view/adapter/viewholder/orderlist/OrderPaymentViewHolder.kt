@@ -38,10 +38,9 @@ class OrderPaymentViewHolder(itemView: View, val mainNavListener: MainNavListene
             mainNavListener.putEEToTrackingQueue(
                     TrackingTransactionSection.getImpressionOnOrderStatus(
                         userId = mainNavListener.getUserId(),
-                        orderLabel = paymentModel.navPaymentModel.paymentAmountText,
+                        orderLabel = paymentModel.navPaymentModel.statusText,
                         position = adapterPosition,
-                        orderId = paymentModel.navPaymentModel.id,
-                        orderStatusCard = paymentModel.navPaymentModel.statusText)
+                        orderId = paymentModel.navPaymentModel.id)
             )
         }
         //title

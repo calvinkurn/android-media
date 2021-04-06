@@ -18,7 +18,7 @@ object TrackingTransactionSection: BaseTrackerConst() {
     private const val ACTION_CLICK_ON_FAVOURITE_SHOP = "click on Favorite Shop"
     private const val ACTION_CLICK_ON_ORDER_STATUS = "click on order status"
     private const val IMPRESSION_ON_ORDER_STATUS = "impression on order status"
-    private const val TEMPLATE_GLOBAL_MENU = "/global_menu - %s"
+    private const val TEMPLATE_GLOBAL_MENU = "/global_menu - order_status_card"
 
     fun clickOnAllTransaction(userId: String) {
         val trackingBuilder = BaseTrackerBuilder()
@@ -104,7 +104,7 @@ object TrackingTransactionSection: BaseTrackerConst() {
         getTracker().sendGeneralEvent(trackingBuilder.build())
     }
 
-    fun getImpressionOnOrderStatus(userId: String, orderLabel: String, position: Int, bannerId: String = "", orderId: String, orderStatusCard: String): HashMap<String, Any> {
+    fun getImpressionOnOrderStatus(userId: String, orderLabel: String, position: Int, bannerId: String = "0", orderId: String): HashMap<String, Any> {
         val trackingBuilder = BaseTrackerBuilder()
         return trackingBuilder.constructBasicPromotionView(
                 event = Event.PROMO_VIEW,
@@ -114,7 +114,7 @@ object TrackingTransactionSection: BaseTrackerConst() {
                 promotions = listOf(Promotion(
                         creative = orderLabel,
                         id = String.format("%s - %s", bannerId, orderId),
-                        name = String.format(TEMPLATE_GLOBAL_MENU, orderStatusCard),
+                        name = TEMPLATE_GLOBAL_MENU,
                         creativeUrl = "",
                         position = (position + 1).toString()
                 )))

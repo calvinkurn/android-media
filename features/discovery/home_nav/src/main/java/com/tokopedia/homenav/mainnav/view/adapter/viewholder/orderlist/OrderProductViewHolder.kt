@@ -35,10 +35,9 @@ class OrderProductViewHolder(itemView: View, val mainNavListener: MainNavListene
             mainNavListener.putEEToTrackingQueue(
                     TrackingTransactionSection.getImpressionOnOrderStatus(
                         userId = mainNavListener.getUserId(),
-                        orderLabel = productModel.navProductModel.productNameText,
+                        orderLabel = productModel.navProductModel.statusText,
                         position = adapterPosition,
-                        orderId = productModel.navProductModel.id,
-                        orderStatusCard = productModel.navProductModel.statusText)
+                        orderId = productModel.navProductModel.id)
             )
         }
         //title
