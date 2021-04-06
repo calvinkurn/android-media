@@ -1,5 +1,6 @@
 package com.tokopedia.checkout.data.model.request.checkout;
 
+import android.annotation.SuppressLint;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -17,9 +18,10 @@ public class TokopediaCornerData implements Parcelable {
     @SerializedName("user_corner_id")
     @Expose
     private String userCornerId;
+    @SuppressLint("Invalid Data Type")
     @SerializedName("corner_id")
     @Expose
-    private int cornerId;
+    private long cornerId;
 
     public TokopediaCornerData() {
     }
@@ -33,14 +35,14 @@ public class TokopediaCornerData implements Parcelable {
     protected TokopediaCornerData(Parcel in) {
         isTokopediaCorner = in.readByte() != 0;
         userCornerId = in.readString();
-        cornerId = in.readInt();
+        cornerId = in.readLong();
     }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeByte((byte) (isTokopediaCorner ? 1 : 0));
         dest.writeString(userCornerId);
-        dest.writeInt(cornerId);
+        dest.writeLong(cornerId);
     }
 
     @Override
@@ -76,11 +78,11 @@ public class TokopediaCornerData implements Parcelable {
         this.userCornerId = userCornerId;
     }
 
-    public int getCornerId() {
+    public long getCornerId() {
         return cornerId;
     }
 
-    public void setCornerId(int cornerId) {
+    public void setCornerId(long cornerId) {
         this.cornerId = cornerId;
     }
 }

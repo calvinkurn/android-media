@@ -1,5 +1,6 @@
 package com.tokopedia.checkout.data.model.request.checkout;
 
+import android.annotation.SuppressLint;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -13,9 +14,11 @@ import com.tokopedia.checkout.data.model.request.common.RatesFeature;
 
 public class ShippingInfoCheckoutRequest implements Parcelable {
 
+    @SuppressLint("Invalid Data Type")
     @SerializedName("shipping_id")
     @Expose
     public int shippingId;
+    @SuppressLint("Invalid Data Type")
     @SerializedName("sp_id")
     @Expose
     public int spId;

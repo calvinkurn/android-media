@@ -47,7 +47,7 @@ data class TokopediaCornerGqlData(
         var userCornerId: String? = null,
         @SerializedName("corner_id")
         @SuppressLint("Invalid Data Type") // Need to add this since we're not ready to change the existing data type to String
-        var cornerId: Int = 0
+        var cornerId: Long = 0
 )
 
 data class CheckoutGqlData(

@@ -1,5 +1,6 @@
 package com.tokopedia.checkout.data.model.request.checkout;
 
+import android.annotation.SuppressLint;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -12,6 +13,7 @@ import com.google.gson.annotations.SerializedName;
 
 public class ProductDataCheckoutRequest implements Parcelable {
 
+    @SuppressLint("Invalid Data Type")
     @SerializedName("product_id")
     @Expose
     public long productId;
