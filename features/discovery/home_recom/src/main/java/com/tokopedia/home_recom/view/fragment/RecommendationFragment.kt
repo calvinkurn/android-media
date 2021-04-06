@@ -310,6 +310,7 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
                 clearAllData()
                 renderList(response)
                 hideLoading()
+                getRecyclerView(view).smoothScrollToPosition(0)
                 (response.firstOrNull() as? ProductInfoDataModel)?.productDetailData?.let { productDetailData ->
                     menu?.findItem(R.id.action_share)?.isVisible = true
                     menu?.findItem(R.id.action_share)?.setOnMenuItemClickListener {

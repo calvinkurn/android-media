@@ -18,6 +18,8 @@ data class TopAdsGetDynamicSlottingData (
 )
 
 data class TopAdsGetDynamicSlottingDataProduct (
+        @SerializedName("product_wishlist_url")
+        val wishlistUrl: String = "",
         @SerializedName("product_click_url")
         val clickUrl: String = "",
         @SerializedName("is_charge")
