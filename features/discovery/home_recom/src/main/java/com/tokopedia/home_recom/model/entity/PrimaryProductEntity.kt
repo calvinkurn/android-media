@@ -88,7 +88,7 @@ data class ProductDetailData(
         @SerializedName("wholesalePrice")
         val wholesalePrice: List<Any> = listOf(),
         @SerializedName("wishlistUrl")
-        var wishlistUrl: String = "",
+        val wishlistUrl: String = "",
         @SerializedName("productKey")
         val productKey: String = "",
         @SerializedName("shopDomain")
