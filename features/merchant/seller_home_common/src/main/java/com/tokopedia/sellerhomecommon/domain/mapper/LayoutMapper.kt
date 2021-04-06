@@ -1,5 +1,6 @@
 package com.tokopedia.sellerhomecommon.domain.mapper
 
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.sellerhomecommon.common.WidgetType
 import com.tokopedia.sellerhomecommon.domain.model.WidgetModel
 import com.tokopedia.sellerhomecommon.presentation.model.*
@@ -28,6 +29,7 @@ class LayoutMapper @Inject constructor(private val tooltipMapper: TooltipMapper)
                     WidgetType.BAR_CHART -> mapToBarChartWidget(it, isFromCache)
                     WidgetType.MULTI_LINE_GRAPH -> mapToMultiLineGraphWidget(it, isFromCache)
                     WidgetType.ANNOUNCEMENT -> mapToAnnouncementWidget(it, isFromCache)
+                    WidgetType.RECOMMENDATION -> mapToRecommendationWidget(it, isFromCache)
                     else -> mapToSectionWidget(it, isFromCache)
                 })
             }
@@ -259,6 +261,25 @@ class LayoutMapper @Inject constructor(private val tooltipMapper: TooltipMapper)
                 dataKey = widget.dataKey.orEmpty(),
                 ctaText = widget.ctaText.orEmpty(),
                 isShowEmpty = widget.isShowEmpty ?: false,
+                data = null,
+                isLoaded = false,
+                isLoading = false,
+                isFromCache = isFromCache,
+                emptyState = widget.emptyStateModel.mapToUiModel()
+        )
+    }
+
+    private fun mapToRecommendationWidget(widget: WidgetModel, isFromCache: Boolean): RecommendationWidgetUiModel {
+        return RecommendationWidgetUiModel(
+                id = (widget.id ?: 0L).toString(),
+                widgetType = widget.widgetType.orEmpty(),
+                title = widget.title.orEmpty(),
+                subtitle = widget.subtitle.orEmpty(),
+                tooltip = tooltipMapper.mapRemoteModelToUiModel(widget.tooltip),
+                appLink = widget.appLink.orEmpty(),
+                dataKey = widget.dataKey.orEmpty(),
+                ctaText = widget.ctaText.orEmpty(),
+                isShowEmpty = widget.isShowEmpty.orFalse(),
                 data = null,
                 isLoaded = false,
                 isLoading = false,
