@@ -95,6 +95,18 @@ class GetShopPerformanceUseCase @Inject constructor(private val gqlRepository: G
             }
         """.trimIndent()
 
+        val RECOMMENDATION_TOOLS_QUERY = """
+            query valuePropositionGetRecommendationTools(${'$'}shopID: Int!){
+              valuePropositionGetRecommendationTools(shopID: ${'$'}shopID, source:"goldmerchant") {
+                 recommendation_tools {
+                  title
+                  text
+                  image_url
+                }
+              }
+            }
+        """.trimIndent()
+
         @JvmStatic
         fun createParams(shopID: Int, shopScoreLevelParam: ShopScoreLevelParam, shopLevelTooltipParam: ShopLevelTooltipParam): RequestParams = RequestParams.create().apply {
             putInt(SHOP_ID_STATUS_INFO, shopID)

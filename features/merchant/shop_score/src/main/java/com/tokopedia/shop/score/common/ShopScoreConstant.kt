@@ -61,8 +61,9 @@ object ShopScoreConstant {
     const val BROADCAST_CHAT_URL = "https://m.tokopedia.com/broadcast-chat"
 
     const val PM_INACTIVE = "inactive"
-    const val PM_INACTIVE_TEXT = "nonaktif"
+    const val SUPPOSED_INACTIVE_TEXT = "nonaktif"
     const val PM_ACTIVE = "active"
+    const val PM_IDLE = "idle"
     const val UP_POTENTIAL_PM = "naik"
     const val STILL_POTENTIAL_PM = "tetap"
     const val DOWN_POTENTIAL_PM = "turun"
@@ -97,5 +98,13 @@ object ShopScoreConstant {
     const val DELIVERY_IGNORED = " Pengiriman diabaikan"
     const val DELIVERY_REFUSED = "Pengiriman ditolak"
 
-    
+    const val TRANSITION_PERIOD = "transition_period"
+    const val COMMUNICATION_PERIOD = "communication_period"
+    const val END_PERIOD = "final"
+
+    const val ONE_MONTH = 1
+    const val TWO_MONTH = 2
+    const val THREE_MONTH = 3
+
+    const val VIDEO_YOUTUBE_ID = ""
 }

@@ -4,10 +4,7 @@ import android.view.View
 import androidx.core.content.ContextCompat
 import com.google.android.material.shape.CornerFamily
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.kotlin.extensions.view.isZero
-import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.kotlin.extensions.view.showWithCondition
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.common.ShopScoreUtils
 import com.tokopedia.shop.score.performance.presentation.adapter.ItemHeaderShopPerformanceListener
@@ -19,7 +16,7 @@ import kotlinx.android.synthetic.main.item_header_shop_performance.view.*
 class ItemHeaderShopPerformanceViewHolder(view: View,
                                           private val shopPerformanceListener: ShopPerformanceListener,
                                           private val itemHeaderShopPerformanceListener: ItemHeaderShopPerformanceListener
-): AbstractViewHolder<HeaderShopPerformanceUiModel>(view) {
+) : AbstractViewHolder<HeaderShopPerformanceUiModel>(view) {
 
     companion object {
         val LAYOUT = R.layout.item_header_shop_performance
@@ -52,10 +49,13 @@ class ItemHeaderShopPerformanceViewHolder(view: View,
             ic_shop_score_performance?.setOnClickListener {
                 shopPerformanceListener.onTooltipScoreClicked()
             }
+        }
+        setupDescHeaderShopPerformance(element)
+        setupTicker(element)
+    }
 
-            tvHeaderShopService?.text = element?.titleHeaderShopService ?: "-"
-            tvDescShopService?.text = element?.descHeaderShopService ?: "-"
-
+    private fun setupTicker(element: HeaderShopPerformanceUiModel?) {
+        with(itemView) {
             tickerShopHasPenalty?.showWithCondition(element?.scorePenalty.orZero() < 0)
             tickerShopHasPenalty?.apply {
                 if (element?.scorePenalty != null) {
@@ -72,4 +72,21 @@ class ItemHeaderShopPerformanceViewHolder(view: View,
         }
     }
 
+    private fun setupDescHeaderShopPerformance(element: HeaderShopPerformanceUiModel?) {
+        with(itemView) {
+            if (element?.showCardNewSeller == true) {
+                tvHeaderShopService?.hide()
+                tvDescShopService?.hide()
+                cardDescNewSeller?.show()
+                tvHeaderShopService?.text = element.titleHeaderShopService ?: "-"
+                tvDescShopService?.text = element.descHeaderShopService ?: "-"
+            } else {
+                tvHeaderShopService?.show()
+                tvDescShopService?.show()
+                cardDescNewSeller?.hide()
+                tvHeaderShopService?.text = element?.titleHeaderShopService ?: "-"
+                tvDescShopService?.text = element?.descHeaderShopService ?: "-"
+            }
+        }
+    }
 }

@@ -4,6 +4,7 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.shop.score.R
+import com.tokopedia.shop.score.common.ShopScoreConstant
 import com.tokopedia.shop.score.common.ShopScoreConstant.BG_GREEN_TIMER
 import com.tokopedia.shop.score.common.ShopScoreConstant.BG_ORANGE_TIMER
 import com.tokopedia.shop.score.performance.presentation.adapter.ItemTimerNewSellerListener
@@ -26,17 +27,20 @@ class ItemTimerNewSellerViewHolder(view: View,
                     element?.effectiveDateText.orEmpty())
 
             ic_video_shop_performance_learn?.setOnClickListener {
-                itemTimerNewSellerListener.onWatchVideoClicked()
+                itemTimerNewSellerListener.onWatchVideoClicked(ShopScoreConstant.VIDEO_YOUTUBE_ID)
             }
 
             tv_watch_video?.setOnClickListener {
-                itemTimerNewSellerListener.onWatchVideoClicked()
+                itemTimerNewSellerListener.onWatchVideoClicked(ShopScoreConstant.VIDEO_YOUTUBE_ID)
             }
 
             btn_shop_performance_learn?.setOnClickListener {
-                itemTimerNewSellerListener.onBtnShopPerformanceClicked()
+                if (element?.isTenureDate == true) {
+                    itemTimerNewSellerListener.onBtnShopPerformanceToInterruptClicked("")
+                } else {
+                    itemTimerNewSellerListener.onBtnShopPerformanceToFaqClicked()
+                }
             }
-
         }
     }
 }

@@ -83,13 +83,22 @@
     <string name="current_regarding_penalty_pm_label">Dari reputasi, tokomu dapat</string>
     <string name="performance_regarding_pm_label">Dari Performamu di %s, tokomu dapat</string>
     <string name="grade_higher_than_reputation_pm_label">Berdasarkan Performamu di %s, tokomu dapat</string>
+    <string name="regarding_performance_reputation_pm_label">Berdasarkan Performa di %s, tokomu dapat</string>
+    <string name="score_performance_pm_less_than_sixty_label">Karena skor Performamu saat ini di bawah 60</string>
+    <string name="score_performance_pm_new_seller_label">Berdasarkan statusmu sebagai Seller baru</string>
 
     <string name="btn_call_help_center">Hubungi Pusat Bantuan</string>
     <string name="next_update_date_pm_status">Update berikutnya: %s</string>
     <string name="point_deduction_date_result_detail_penalty">Mulai aktif pada: <![CDATA[<b>%1s</b>]]></string>
     <string name="on_going_date_result_detail_penalty">Aktif hingga: <![CDATA[<b>%1s</b>]]></string>
     <string name="over_penalty_date_result_detail_penalty">Selesai sejak: <![CDATA[<b>%1s</b>]]></string>
+    <string name="desc_down_end_chance_time_end_game_pm_status">Dari Performamu saat ini, tokomu berpotensi turun ke grade <![CDATA[<b>%s</b>]]>. Kamu masih punya waktu sampai periode penurunan grade untuk memperbaiki Performamu, ya! Jaga skor min. 60 agar PM tetap aktif, ya!</string>
+    <string name="desc_down_end_transition_under_score_pm_status">Dari Performamu saat ini, tokomu berpotensi turun ke grade <![CDATA[<b>%s</b>]]>. Segera tingkatkan Performamu supaya tidak turun grade, ya! Jaga skor min. 60 agar PM tetap aktif, ya!</string>
+    <string name="desc_down_end_transition_warning_score_pm_status">Dari Performamu saat ini, tokomu berpotensi turun ke grade <![CDATA[<b>%s</b>]]>. Segera tingkatkan Performamu supaya tidak turun grade, ya!</string>
+    <string name="desc_inactive_end_transition_pm_status">Dari Performamu saat ini, status Power Merchant <![CDATA[<b>berpotensi jadi %s</b>]]>. Karena saat ini masih masa transisi, kamu punya waktu untuk memperbaiki Performamu, ya!</string>
     <string name="desc_up_still_pm_status">Dari Performamu saat ini, tokomu berpotensi <![CDATA[<b>%1s</b>]]> di grade <![CDATA[<b>%2s</b>]]>.</string>
+    <string name="desc_up_still_but_potential_down_pm_status">Dari Performamu saat ini, tokomu berpotensi <![CDATA[<b>%1s</b>]]> di grade <![CDATA[<b>%2s</b>]]>. Jaga skor min. 60 agar PM tetap aktif, ya!</string>
+    <string name="desc_down_pm_end_game_status">Dari Performamu saat ini, tokomu berpotensi turun ke grade <![CDATA[<b>%s</b>]]>. Kamu masih punya waktu sampai periode penurunan grade untuk memperbaiki Performamu, ya!</string>
     <string name="desc_down_pm_status">Dari Performamu saat ini, tokomu berpotensi turun ke grade <![CDATA[<b>%s</b>]]>. Karena saat ini masih masa transisi, kamu punya waktu untuk memperbaiki Performamu, ya!</string>
     <string name="desc_inactive_pm_status">Dari Performamu saat ini, status Power Merchant <![CDATA[<b>berpotensi jadi %s</b>]]>. Karena saat ini masih masa transisi, kamu punya waktu untuk memperbaiki Performamu, ya!</string>
     <string name="ticker_deduction_point_penalty">Ada potongan poin penalti %s. Lihat detail &lt;a href="#"&gt;di sini&lt;/a&gt;</string>

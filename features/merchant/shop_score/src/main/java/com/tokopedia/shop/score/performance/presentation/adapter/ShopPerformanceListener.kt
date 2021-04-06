@@ -38,6 +38,7 @@ interface ItemFaqListener {
 }
 
 interface ItemTimerNewSellerListener {
-    fun onBtnShopPerformanceClicked()
-    fun onWatchVideoClicked()
+    fun onBtnShopPerformanceToFaqClicked()
+    fun onBtnShopPerformanceToInterruptClicked(infoPageUrl: String)
+    fun onWatchVideoClicked(videoId: String)
 }

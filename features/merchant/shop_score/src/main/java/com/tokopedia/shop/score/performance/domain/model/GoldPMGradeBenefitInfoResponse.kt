@@ -38,7 +38,10 @@ data class GoldPMGradeBenefitInfoResponse(
                 val gradeName: String = "",
                 @Expose
                 @SerializedName("image_badge_url")
-                val imageBadgeUrl: String = ""
+                val imageBadgeUrl: String = "",
+                @Expose
+                @SerializedName("last_updated_date")
+                val lastUpdateDate: String = ""
         )
     }
 }

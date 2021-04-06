@@ -9,7 +9,9 @@ data class ItemStatusPMUiModel(
         val bgPowerMerchant: Int? = null,
         val updateDatePotential: String = "",
         val descPotentialPM: String = "",
-        val isActivePM: Boolean = false
+        val isActivePM: Boolean = false,
+        val isCardBgColor: Boolean = true,
+        val isInActivePM : Boolean = false
 ): BaseShopPerformance {
     override fun type(typeFactory: ShopPerformanceAdapterTypeFactory): Int {
         return typeFactory.type(this)

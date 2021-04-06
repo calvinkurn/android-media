@@ -37,6 +37,17 @@ class GetShopInfoPeriodUseCase @Inject constructor(
             }
         """.trimIndent()
 
+        const val GOLD_MERCHANT_SOURCE = "goldmerchant"
+        val PM_SETTING_INFO_QUERY = """
+            query goldGetPMSettingInfo(${'$'}shopID: Int!, ${'$'}source: String!){
+              goldGetPMSettingInfo(shopID: ${'$'}shopID, source: ${'$'}source) {
+                 period_type
+                 period_start_date
+                 period_end_date 
+              }
+            }
+        """.trimIndent()
+
         @JvmStatic
         fun createParams(shopID: Int): RequestParams = RequestParams.create().apply {
             putInt(SHOP_ID, shopID)
@@ -51,10 +62,10 @@ class GetShopInfoPeriodUseCase @Inject constructor(
         val shopId = requestParams.getInt(SHOP_ID, 0)
 
         val shopInfoParam = mapOf(SHOP_INFO_INPUT to ParamShopInfoByID(shopIDs = listOf(shopId)))
-        val periodTypeParam = mapOf(SHOP_ID_PM to shopId, SOURCE to GetPMPeriodTypeUseCase.GOLD_MERCHANT_SOURCE)
+        val periodTypeParam = mapOf(SHOP_ID_PM to shopId, SOURCE to GOLD_MERCHANT_SOURCE)
 
         val shopInfoRequest = GraphqlRequest(SHOP_INFO_ID_QUERY, ShopInfoByIDResponse::class.java, shopInfoParam)
-        val periodTypeRequest = GraphqlRequest(GetPMPeriodTypeUseCase.PM_SETTING_INFO_QUERY, PMPeriodTypeResponse::class.java, periodTypeParam)
+        val periodTypeRequest = GraphqlRequest(PM_SETTING_INFO_QUERY, PMPeriodTypeResponse::class.java, periodTypeParam)
 
         val requests = mutableListOf(shopInfoRequest, periodTypeRequest)
         try {

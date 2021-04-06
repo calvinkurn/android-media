@@ -5,7 +5,9 @@ import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.gm.common.utils.getShopScoreDate
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.performance.presentation.adapter.ItemStatusPowerMerchantListener
 import com.tokopedia.shop.score.performance.presentation.model.ItemStatusPMUiModel
@@ -33,6 +35,17 @@ class ItemStatusPMViewHolder(view: View,
             }
             ic_pm_reputation_right?.setOnClickListener {
                 itemStatusPowerMerchantListener.onItemClickedGoToPMActivation()
+            }
+            if (element.isCardBgColor) {
+                containerDescPmSection?.setBackgroundColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Y100))
+            } else {
+                containerDescPmSection?.setBackgroundColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+            }
+
+            if (element.isInActivePM) {
+                containerDescPmSection?.hide()
+            } else {
+                containerDescPmSection?.show()
             }
         }
     }

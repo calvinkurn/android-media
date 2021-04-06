@@ -12,6 +12,12 @@ data class PMPeriodTypeResponse(
     data class GoldGetPMSettingInfo(
             @Expose
             @SerializedName("period_type")
-            val periodType: String = ""
+            val periodType: String = "",
+            @Expose
+            @SerializedName("period_start_date")
+            val periodStartDate: String = "",
+            @Expose
+            @SerializedName("period_end_date")
+            val periodEndDate: String = "",
     )
 }

@@ -15,6 +15,12 @@ data class GoldGetPMShopInfoResponse(
                 val isEligiblePm: Boolean = false,
                 @Expose
                 @SerializedName("is_new_seller")
-                val isNewSeller: Boolean = false
+                val isNewSeller: Boolean = false,
+                @Expose
+                @SerializedName("shop_score_sum")
+                val shopScoreSum: Int = 0,
+                @Expose
+                @SerializedName("shop_score_threshold")
+                val shopScoreThreshold: Int = 0,
         )
 }

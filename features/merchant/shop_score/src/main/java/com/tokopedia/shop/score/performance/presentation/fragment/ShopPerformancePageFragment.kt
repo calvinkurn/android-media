@@ -17,6 +17,7 @@ import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.common.ShopScoreCoachMarkPrefs
 import com.tokopedia.shop.score.performance.di.component.ShopPerformanceComponent
 import com.tokopedia.shop.score.performance.domain.model.ShopScoreWrapperResponse
+import com.tokopedia.shop.score.performance.presentation.activity.ShopPerformanceYoutubeActivity
 import com.tokopedia.shop.score.performance.presentation.adapter.*
 import com.tokopedia.shop.score.performance.presentation.bottomsheet.BottomSheetNextUpdatePMSection
 import com.tokopedia.shop.score.performance.presentation.bottomsheet.BottomSheetPerformanceDetail
@@ -127,11 +128,13 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
         goToPenaltyPage()
     }
 
+    /**
+     * ItemShopPerformanceListener
+     */
     override fun onItemClickedToDetailBottomSheet(titlePerformanceDetail: String, identifierPerformanceDetail: String) {
         val bottomSheetDetail = BottomSheetPerformanceDetail.createInstance(titlePerformanceDetail, identifierPerformanceDetail)
         bottomSheetDetail.show(childFragmentManager)
     }
-
 
     /**
      * ItemShopPerformanceListener
@@ -152,11 +155,17 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
         }
     }
 
+    /**
+     * ItemStatusPowerMerchantListener
+     */
     override fun onItemClickedNextUpdatePM() {
         val bottomSheetNextUpdate = BottomSheetNextUpdatePMSection.newInstance()
         bottomSheetNextUpdate.show(childFragmentManager)
     }
 
+    /**
+     * ItemStatusPowerMerchantListener
+     */
     override fun onItemClickedGoToPMActivation() {
         goToPowerMerchantSubscribe()
     }
@@ -176,6 +185,9 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
         showCoachMark()
     }
 
+    /**
+     * ItemPotentialRegularMerchantListener
+     */
     override fun onItemClickedBenefitPotentialRM() {
         goToPowerMerchantSubscribe()
     }
@@ -209,11 +221,17 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
         }
     }
 
+    /**
+     * ItemTimerNewSellerListener
+     */
     override fun onItemClickedRecommendationFeature(appLink: String) {
         RouteManager.route(requireContext(), appLink)
     }
 
-    override fun onBtnShopPerformanceClicked() {
+    /**
+     * ItemTimerNewSellerListener
+     */
+    override fun onBtnShopPerformanceToFaqClicked() {
         val faqData = shopPerformanceAdapter.list.firstOrNull { it is SectionFaqUiModel }
         if (faqData != null) {
             val positionFaqSection = shopPerformanceAdapter.list.indexOf(faqData)
@@ -227,8 +245,12 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
         }
     }
 
-    override fun onWatchVideoClicked() {
+    override fun onBtnShopPerformanceToInterruptClicked(infoPageUrl: String) {
+        RouteManager.route(context, infoPageUrl)
+    }
 
+    override fun onWatchVideoClicked(videoId: String) {
+        context?.startActivity(ShopPerformanceYoutubeActivity.createInstance(context, videoId))
     }
 
     private fun showCoachMark() {

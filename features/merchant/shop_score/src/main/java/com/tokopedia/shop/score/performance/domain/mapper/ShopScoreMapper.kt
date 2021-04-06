@@ -7,8 +7,10 @@ import com.tokopedia.applink.ApplinkConst.SellerApp.TOPADS_CREATE_ONBOARDING
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.gm.common.presentation.model.ShopInfoPeriodUiModel
 import com.tokopedia.gm.common.utils.getShopScoreDate
+import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.shop.score.R
+import com.tokopedia.shop.score.common.ShopScoreConstant
 import com.tokopedia.shop.score.common.ShopScoreConstant.BROADCAST_CHAT_URL
 import com.tokopedia.shop.score.common.ShopScoreConstant.BRONZE_SCORE
 import com.tokopedia.shop.score.common.ShopScoreConstant.CHAT_DISCUSSION_REPLY_SPEED_KEY
@@ -39,8 +41,6 @@ import com.tokopedia.shop.score.common.ShopScoreConstant.OPEN_TOKOPEDIA_SELLER_K
 import com.tokopedia.shop.score.common.ShopScoreConstant.ORDER_SUCCESS_RATE_KEY
 import com.tokopedia.shop.score.common.ShopScoreConstant.PATTERN_DATE_NEW_SELLER
 import com.tokopedia.shop.score.common.ShopScoreConstant.PENALTY_IDENTIFIER
-import com.tokopedia.shop.score.common.ShopScoreConstant.PM_ACTIVE
-import com.tokopedia.shop.score.common.ShopScoreConstant.PM_INACTIVE_TEXT
 import com.tokopedia.shop.score.common.ShopScoreConstant.PRODUCT_REVIEW_WITH_FOUR_STARS_KEY
 import com.tokopedia.shop.score.common.ShopScoreConstant.READ_TIPS_MORE_INFO_URL
 import com.tokopedia.shop.score.common.ShopScoreConstant.SET_OPERATIONAL_HOUR_SHOP_URL
@@ -66,6 +66,7 @@ import com.tokopedia.shop.score.common.ShopScoreConstant.SPECIAL_RELEASE_URL
 import com.tokopedia.shop.score.common.ShopScoreConstant.SPEED_SENDING_ORDERS_KEY
 import com.tokopedia.shop.score.common.ShopScoreConstant.SPEED_SENDING_ORDERS_URL
 import com.tokopedia.shop.score.common.ShopScoreConstant.STILL_POTENTIAL_PM
+import com.tokopedia.shop.score.common.ShopScoreConstant.SUPPOSED_INACTIVE_TEXT
 import com.tokopedia.shop.score.common.ShopScoreConstant.TOTAL_BUYER_KEY
 import com.tokopedia.shop.score.common.ShopScoreConstant.UP_POTENTIAL_PM
 import com.tokopedia.shop.score.common.ShopScoreConstant.dayText
@@ -170,7 +171,10 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
                             shopScoreWrapperResponse.goldGetPMStatusResponse != null) {
                         add(mapToItemPotentialStatusPMUiModel(
                                 shopScoreWrapperResponse.goldPMGradeBenefitInfoResponse,
-                                shopScoreWrapperResponse.goldGetPMStatusResponse
+                                shopScoreWrapperResponse.goldGetPMStatusResponse,
+                                shopScoreWrapperResponse?.goldGetPMShopInfoResponse,
+                                shopInfoPeriodUiModel,
+                                shopScoreResult?.shopScore.orZero()
                         ))
                     }
                 }
@@ -321,7 +325,9 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
             this.shopLevel = shopScoreLevelResponse?.shopLevel?.toString() ?: "-"
             this.shopScore = shopScoreLevelResponse?.shopScore?.toString() ?: "-"
             this.scorePenalty = shopScoreLevelResponse?.shopScoreDetail?.firstOrNull { it.identifier == PENALTY_IDENTIFIER }?.rawValue
-            this.isNewSeller = isNewSeller
+            if (shopScoreLevelResponse?.shopScore.isZero() && shopScoreLevelResponse?.shopLevel?.isZero() == true && isNewSeller) {
+                this.showCardNewSeller = true
+            }
         }
 
         return headerShopPerformanceUiModel
@@ -659,64 +665,242 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
     }
 
     private fun mapToItemPotentialStatusPMUiModel(goldPMGradeBenefitInfoResponse: GoldPMGradeBenefitInfoResponse.GoldGetPMGradeBenefitInfo?,
-                                                  goldGetPMStatusResponse: GoldGetPMStatusResponse.GoldGetPMOSStatus?): ItemStatusPMUiModel {
+                                                  goldGetPMStatusResponse: GoldGetPMStatusResponse.GoldGetPMOSStatus?,
+                                                  goldGetPMShopInfoResponse: GoldGetPMShopInfoResponse.GoldGetPMShopInfo?,
+                                                  shopInfoPeriodUiModel: ShopInfoPeriodUiModel,
+                                                  shopScore: Int
+    ): ItemStatusPMUiModel {
         val potentialPMGrade = goldPMGradeBenefitInfoResponse?.potentialPmGrade
         val currentPMGrade = goldPMGradeBenefitInfoResponse?.currentPmGrade
         val statusPowerMerchant = goldGetPMStatusResponse?.data?.powerMerchant?.status
         val nextDate = goldPMGradeBenefitInfoResponse?.nextMonthlyRefreshDate.orEmpty()
-        val (statusPM, titlePM) = when {
+        val titlePM =
+                when (shopInfoPeriodUiModel.isNewSeller) {
+                    true -> {
+                        when (shopInfoPeriodUiModel.periodType) {
+                            ShopScoreConstant.TRANSITION_PERIOD -> {
+                                context?.getString(R.string.score_performance_pm_new_seller_label).orEmpty()
+                            }
+                            else -> ""
+                        }
+                    }
+                    else ->
+                        when (shopInfoPeriodUiModel.periodType) {
+                            ShopScoreConstant.TRANSITION_PERIOD -> {
+                                when (shopInfoPeriodUiModel.numberMonth) {
+                                    ShopScoreConstant.ONE_MONTH -> {
+                                        context?.getString(R.string.current_regarding_penalty_pm_label).orEmpty()
+                                    }
+                                    ShopScoreConstant.TWO_MONTH, ShopScoreConstant.THREE_MONTH -> {
+                                        context?.getString(R.string.performance_regarding_pm_label, currentPMGrade?.lastUpdateDate.orEmpty()).orEmpty()
+                                    }
+                                    else -> ""
+                                }
+                            }
+                            ShopScoreConstant.END_PERIOD -> {
+                                when (shopInfoPeriodUiModel.numberMonth) {
+                                    ShopScoreConstant.ONE_MONTH, ShopScoreConstant.TWO_MONTH -> {
+                                        when (shopScore) {
+                                            in goldGetPMShopInfoResponse?.shopScoreThreshold.orZero()..SHOP_SCORE_SIXTY_NINE -> {
+                                                context?.getString(R.string.regarding_performance_reputation_pm_label).orEmpty()
+                                            }
+                                            else -> {
+                                                if (goldGetPMShopInfoResponse?.shopScoreSum.orZero() < goldGetPMShopInfoResponse?.shopScoreThreshold.orZero()) {
+                                                    context?.getString(R.string.score_performance_pm_less_than_sixty_label).orEmpty()
+                                                } else {
+                                                    context?.getString(R.string.performance_regarding_pm_label, currentPMGrade?.lastUpdateDate.orEmpty()).orEmpty()
+                                                }
+                                            }
+                                        }
+                                    }
+                                    ShopScoreConstant.THREE_MONTH -> {
+                                        when (shopScore) {
+                                            in SHOP_SCORE_SIXTY..SHOP_SCORE_SIXTY_NINE -> {
+                                                context?.getString(R.string.regarding_performance_reputation_pm_label).orEmpty()
+                                            }
+                                            else -> {
+                                                if (goldGetPMShopInfoResponse?.shopScoreSum.orZero() < goldGetPMShopInfoResponse?.shopScoreThreshold.orZero()) {
+                                                    context?.getString(R.string.score_performance_pm_less_than_sixty_label).orEmpty()
+                                                } else {
+                                                    context?.getString(R.string.performance_regarding_pm_label, currentPMGrade?.lastUpdateDate.orEmpty()).orEmpty()
+                                                }
+                                            }
+                                        }
+                                    }
+                                    else -> ""
+                                }
+                            }
+                            else -> {
+                                ""
+                            }
+                        }
+                }
+
+        val statusPM = when {
             currentPMGrade?.gradeName?.mapToGradeNameToInt().orZero() > potentialPMGrade?.gradeName?.mapToGradeNameToInt().orZero() -> {
-                Pair(UP_POTENTIAL_PM, context?.getString(R.string.performance_regarding_pm_label).orEmpty())
+                UP_POTENTIAL_PM
             }
             currentPMGrade?.gradeName?.mapToGradeNameToInt() == potentialPMGrade?.gradeName?.mapToGradeNameToInt() -> {
-                Pair(STILL_POTENTIAL_PM, context?.getString(R.string.current_regarding_penalty_pm_label).orEmpty())
+                STILL_POTENTIAL_PM
+            }
+            currentPMGrade?.gradeName?.mapToGradeNameToInt().orZero() < potentialPMGrade?.gradeName?.mapToGradeNameToInt().orZero() -> {
+                DOWN_POTENTIAL_PM
+            }
+            goldGetPMShopInfoResponse?.shopScoreSum.orZero() < goldGetPMShopInfoResponse?.shopScoreThreshold.orZero() -> {
+                SUPPOSED_INACTIVE_TEXT
+            }
+            else -> ""
+        }
+
+        val bgPowerMerchant =
+                when (shopInfoPeriodUiModel.isNewSeller) {
+                    true -> {
+                        //need adjust
+                        null
+                    }
+                    else -> {
+                        when (currentPMGrade?.gradeName?.toLowerCase(Locale.getDefault())) {
+                            GRADE_BRONZE_PM -> {
+                                R.drawable.bg_header_bronze
+                            }
+                            GRADE_SILVER_PM -> {
+                                R.drawable.bg_header_silver
+                            }
+                            GRADE_GOLD_PM -> {
+                                R.drawable.bg_header_gold
+                            }
+                            GRADE_DIAMOND_PM -> {
+                                R.drawable.bg_header_diamond
+                            }
+                            else -> null
+                        }
+                    }
+                }
+
+        val (descStatus, isShowCardBg) = when (shopInfoPeriodUiModel.isNewSeller) {
+            true -> {
+                Pair("", false)
             }
             else -> {
-                Pair(DOWN_POTENTIAL_PM, context?.getString(R.string.performance_regarding_pm_label, currentPMGrade?.lastUpdateDate.orEmpty()).orEmpty())
+                when (shopInfoPeriodUiModel.periodType) {
+                    ShopScoreConstant.TRANSITION_PERIOD -> {
+                        when (shopInfoPeriodUiModel.numberMonth) {
+                            ShopScoreConstant.ONE_MONTH, ShopScoreConstant.TWO_MONTH -> {
+                                when (statusPM) {
+                                    UP_POTENTIAL_PM, STILL_POTENTIAL_PM -> {
+                                        Pair(context?.getString(R.string.desc_up_still_pm_status, statusPM, potentialPMGrade?.gradeName).orEmpty(), false)
+                                    }
+                                    DOWN_POTENTIAL_PM -> {
+                                        Pair(context?.getString(R.string.desc_down_pm_status, potentialPMGrade?.gradeName).orEmpty(), false)
+                                    }
+                                    SUPPOSED_INACTIVE_TEXT -> {
+                                        Pair(context?.getString(R.string.desc_inactive_pm_status, SUPPOSED_INACTIVE_TEXT).orEmpty(), false)
+                                    }
+                                    else -> Pair("", false)
+                                }
+                            }
+                            ShopScoreConstant.THREE_MONTH -> {
+                                when (statusPM) {
+                                    UP_POTENTIAL_PM, STILL_POTENTIAL_PM -> {
+                                        Pair(context?.getString(R.string.desc_up_still_pm_status, statusPM, potentialPMGrade?.gradeName).orEmpty(), false)
+                                    }
+                                    DOWN_POTENTIAL_PM -> {
+                                        Pair(context?.getString(R.string.desc_down_end_transition_warning_score_pm_status, potentialPMGrade?.gradeName).orEmpty(), true)
+                                    }
+                                    SUPPOSED_INACTIVE_TEXT -> {
+                                        Pair(context?.getString(R.string.desc_inactive_end_transition_pm_status, SUPPOSED_INACTIVE_TEXT).orEmpty(), true)
+                                    }
+                                    else -> Pair("", false)
+                                }
+                            }
+                            else -> {
+                                Pair("", false)
+                            }
+                        }
+                    }
+                    ShopScoreConstant.END_PERIOD -> {
+                        when (shopInfoPeriodUiModel.numberMonth) {
+                            ShopScoreConstant.ONE_MONTH, ShopScoreConstant.TWO_MONTH -> {
+                                when (statusPM) {
+                                    UP_POTENTIAL_PM, STILL_POTENTIAL_PM -> {
+                                        when (shopScore) {
+                                            in goldGetPMShopInfoResponse?.shopScoreThreshold.orZero()..SHOP_SCORE_SIXTY_NINE -> {
+                                                Pair(context?.getString(R.string.desc_up_still_pm_status, statusPM, potentialPMGrade?.gradeName).orEmpty(), false)
+                                            }
+                                            else -> {
+                                                Pair(context?.getString(R.string.desc_up_still_but_potential_down_pm_status, statusPM, potentialPMGrade?.gradeName).orEmpty(), false)
+                                            }
+                                        }
+                                    }
+                                    DOWN_POTENTIAL_PM -> {
+                                        when (shopScore) {
+                                            in goldGetPMShopInfoResponse?.shopScoreThreshold.orZero()..SHOP_SCORE_SIXTY_NINE -> {
+                                                Pair(context?.getString(R.string.desc_down_end_transition_under_score_pm_status, potentialPMGrade?.gradeName).orEmpty(), true)
+                                            }
+                                            else -> {
+                                                Pair(context?.getString(R.string.desc_down_pm_end_game_status, potentialPMGrade?.gradeName).orEmpty(), false)
+                                            }
+                                        }
+                                    }
+                                    else -> {
+                                        when (statusPowerMerchant) {
+                                            ShopScoreConstant.PM_IDLE -> {
+                                                Pair(context?.getString(R.string.desc_inactive_pm_status, SUPPOSED_INACTIVE_TEXT).orEmpty(), false)
+                                            }
+                                            else -> Pair("", false)
+                                        }
+                                    }
+                                }
+                            }
+                            ShopScoreConstant.THREE_MONTH -> {
+                                when (statusPM) {
+                                    UP_POTENTIAL_PM, STILL_POTENTIAL_PM -> {
+                                        when (shopScore) {
+                                            in goldGetPMShopInfoResponse?.shopScoreThreshold.orZero()..SHOP_SCORE_SIXTY_NINE -> {
+                                                Pair(context?.getString(R.string.desc_up_still_but_potential_down_pm_status, statusPM, potentialPMGrade?.gradeName).orEmpty(), false)
+                                            }
+                                            else -> {
+                                                Pair(context?.getString(R.string.desc_up_still_pm_status, statusPM, potentialPMGrade?.gradeName).orEmpty(), false)
+                                            }
+                                        }
+                                    }
+                                    DOWN_POTENTIAL_PM -> {
+                                        when (shopScore) {
+                                            in goldGetPMShopInfoResponse?.shopScoreThreshold.orZero()..SHOP_SCORE_SIXTY_NINE -> {
+                                                Pair(context?.getString(R.string.desc_down_end_transition_under_score_pm_status, potentialPMGrade?.gradeName).orEmpty(), true)
+                                            }
+                                            else -> {
+                                                Pair(context?.getString(R.string.desc_down_end_transition_warning_score_pm_status, potentialPMGrade?.gradeName).orEmpty(), false)
+                                            }
+                                        }
+                                    }
+                                    else -> Pair("", false)
+                                }
+                            }
+                            else -> Pair("", false)
+                        }
+                    }
+                    else -> Pair("", false)
+                }
             }
         }
 
-        val bgPowerMerchant = when (currentPMGrade?.gradeName?.toLowerCase(Locale.getDefault())) {
-            GRADE_BRONZE_PM -> {
-                R.drawable.bg_header_bronze
-            }
-            GRADE_SILVER_PM -> {
-                R.drawable.bg_header_silver
-            }
-            GRADE_GOLD_PM -> {
-                R.drawable.bg_header_gold
-            }
-            GRADE_DIAMOND_PM -> {
-                R.drawable.bg_header_diamond
-            }
-            else -> null
-        }
-        val descStatus = when (statusPowerMerchant) {
-            PM_ACTIVE -> {
-                when (statusPM) {
-                    UP_POTENTIAL_PM, STILL_POTENTIAL_PM -> {
-                        context?.getString(R.string.desc_up_still_pm_status, statusPM, potentialPMGrade?.gradeName).orEmpty()
-                    }
-                    DOWN_POTENTIAL_PM -> {
-                        context?.getString(R.string.desc_down_pm_status, potentialPMGrade?.gradeName).orEmpty()
-                    }
-                    else -> ""
-                }
-            }
-            else -> {
-                context?.getString(R.string.desc_inactive_pm_status, PM_INACTIVE_TEXT).orEmpty()
-            }
-        }
-        return ItemStatusPMUiModel(statusPowerMerchant = currentPMGrade?.gradeName.orEmpty(),
+
+        return ItemStatusPMUiModel(
+                statusPowerMerchant = currentPMGrade?.gradeName ?: "",
                 titlePowerMerchant = titlePM,
                 bgPowerMerchant = bgPowerMerchant,
                 badgePowerMerchant = currentPMGrade?.imageBadgeUrl.orEmpty(),
                 updateDatePotential = nextDate,
                 descPotentialPM = descStatus,
-                isActivePM = true)
+                isActivePM = true,
+                isCardBgColor = isShowCardBg,
+                isInActivePM = statusPM == ShopScoreConstant.PM_IDLE
+        )
     }
 
-    private fun String?.mapToGradeNameToInt(): Int {
+    private fun String?.mapToGradeNameToInt()
+            : Int {
         return when (this?.toLowerCase(Locale.getDefault())) {
             GRADE_BRONZE_PM -> BRONZE_SCORE
             GRADE_SILVER_PM -> SILVER_SCORE
@@ -726,7 +910,9 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
         }
     }
 
-    private fun mapToItemCurrentStatusRMUiModel(potentialPmGrade: GoldPMGradeBenefitInfoResponse.GoldGetPMGradeBenefitInfo.PotentialPmGrade?): ItemStatusRMUiModel {
+    private fun mapToItemCurrentStatusRMUiModel(potentialPmGrade: GoldPMGradeBenefitInfoResponse.GoldGetPMGradeBenefitInfo.PotentialPmGrade?
+    )
+            : ItemStatusRMUiModel {
         //only regular merchant & eligible
         val updateDate = getShopScoreDate(context)
         val statusPM = potentialPmGrade?.gradeName.orEmpty()
@@ -749,7 +935,9 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
         return ItemStatusRMUiModel(updateDatePotential = updateDate, badgeGradePM = badgePM, bgGradePM = backgroundPM, statusGradePM = statusPM)
     }
 
-    private fun mapToCardTooltipLevel(level: Int = 0): List<CardTooltipLevelUiModel> {
+    private fun mapToCardTooltipLevel(level: Int =
+                                              0)
+            : List<CardTooltipLevelUiModel> {
         return mutableListOf<CardTooltipLevelUiModel>().apply {
             add(CardTooltipLevelUiModel(R.string.title_level_1, R.string.desc_level_1, SHOP_SCORE_LEVEL_ONE == level))
             add(CardTooltipLevelUiModel(R.string.title_level_2, R.string.desc_level_2, SHOP_SCORE_LEVEL_TWO == level))
@@ -758,7 +946,8 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
         }
     }
 
-    private fun mapToItemFaqUiModel(): List<ItemFaqUiModel> {
+    private fun mapToItemFaqUiModel()
+            : List<ItemFaqUiModel> {
         return mutableListOf<ItemFaqUiModel>().apply {
             add(ItemFaqUiModel(
                     title = context?.getString(R.string.title_shop_score_performance).orEmpty(),
@@ -797,7 +986,8 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
         }
     }
 
-    private fun mapToItemParameterFaq(): List<ItemParameterFaqUiModel> {
+    private fun mapToItemParameterFaq()
+            : List<ItemParameterFaqUiModel> {
         return mutableListOf<ItemParameterFaqUiModel>().apply {
             add(ItemParameterFaqUiModel(title = context?.getString(R.string.title_parameter_shop_score_1).orEmpty(),
                     desc = context?.getString(R.string.desc_parameter_shop_score_1).orEmpty(),
@@ -814,7 +1004,10 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
         }
     }
 
-    private fun mapToTimerNewSellerUiModel(shopAge: Int = 0, isEndTenure: Boolean): Pair<ItemTimerNewSellerUiModel, Boolean> {
+    private fun mapToTimerNewSellerUiModel(shopAge: Int =
+                                                   0, isEndTenure: Boolean
+    )
+            : Pair<ItemTimerNewSellerUiModel, Boolean> {
         val nextSellerDays = COUNT_DAYS_NEW_SELLER - shopAge
 
         val effectiveDate = getNNextDaysTimeCalendar(nextSellerDays)
@@ -823,7 +1016,8 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
                 isTenureDate = isEndTenure), nextSellerDays > 0)
     }
 
-    private fun getNNextDaysTimeCalendar(nextDays: Int): Calendar {
+    private fun getNNextDaysTimeCalendar(nextDays: Int)
+            : Calendar {
         val date = Calendar.getInstance(Locale.getDefault())
         date.add(Calendar.DATE, nextDays + 1)
         date.set(Calendar.HOUR_OF_DAY, 0)
@@ -832,7 +1026,9 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
         return date
     }
 
-    private fun format(timeMillis: Long, pattern: String, locale: Locale = Locale.getDefault()): String {
+    private fun format(timeMillis: Long, pattern: String, locale: Locale = Locale.getDefault()
+    )
+            : String {
         val sdf = SimpleDateFormat(pattern, locale)
         return sdf.format(timeMillis)
     }
