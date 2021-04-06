@@ -70,7 +70,7 @@ fun waitForData() {
     Thread.sleep(8000)
 }
 fun waitForPopularKeywordData() {
-    Thread.sleep(1000)
+    Thread.sleep(4000)
 }
 
 fun waitForLoadCassavaAssert() {
@@ -94,8 +94,8 @@ fun clickOnProductHighlightItem() {
 }
 
 fun clickOnPopularKeywordSection(viewHolder: RecyclerView.ViewHolder, itemPosition: Int) {
-    clickLihatSemuaPopularKeyword()
     waitForPopularKeywordData()
+    clickLihatSemuaPopularKeyword()
     clickOnEachItemRecyclerView(viewHolder.itemView, R.id.rv_popular_keyword, itemPosition)
 }
 
