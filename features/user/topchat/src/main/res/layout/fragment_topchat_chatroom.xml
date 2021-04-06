@@ -179,14 +179,13 @@
                     android:paddingEnd="@dimen/chatcommon_12dp"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
-                <com.tokopedia.topchat.chatroom.view.custom.SrwRecyclerView
+                <com.tokopedia.topchat.chatroom.view.custom.SrwLinearLayout
                     android:id="@+id/rv_srw"
-                    android:layout_width="match_parent"
+                    android:layout_width="@dimen/dp_topchat_290"
                     android:layout_height="wrap_content"
-                    android:overScrollMode="never"
-                    android:paddingStart="@dimen/chatcommon_12dp"
-                    android:paddingEnd="@dimen/chatcommon_12dp"
-                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+                    android:layout_gravity="end"
+                    android:orientation="vertical"
+                    tools:layout_height="50dp" />
 
             </LinearLayout>
 

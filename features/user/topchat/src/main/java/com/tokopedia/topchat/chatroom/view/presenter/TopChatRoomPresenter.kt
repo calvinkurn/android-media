@@ -103,7 +103,7 @@ open class TopChatRoomPresenter @Inject constructor(
         private val chatAttachmentUseCase: ChatAttachmentUseCase,
         private val chatToggleBlockChat: ChatToggleBlockChatUseCase,
         private val chatBackgroundUseCase: ChatBackgroundUseCase,
-        private val chatSrwUseCase: ChatSmartReplyQuestionUseCase,
+        private val chatSrwUseCase: SmartReplyQuestionUseCase,
         private val sharedPref: SharedPreferences,
         private val dispatchers: TopchatCoroutineContextProvider
 ) : BaseChatPresenter<TopChatContract.View>(userSession, topChatRoomWebSocketMessageMapper),

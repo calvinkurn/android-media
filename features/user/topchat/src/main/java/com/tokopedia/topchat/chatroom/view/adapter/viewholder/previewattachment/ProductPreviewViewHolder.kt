@@ -39,7 +39,7 @@ class ProductPreviewViewHolder(itemView: View, attachmentItemPreviewListener: At
             R.dimen.dp_topchat_16,
             R.dimen.dp_topchat_16,
             R.dimen.dp_topchat_16,
-            com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
+            R.color.topchat_dms_black_12,
             R.dimen.dp_topchat_6,
             R.dimen.dp_topchat_6,
             Gravity.CENTER

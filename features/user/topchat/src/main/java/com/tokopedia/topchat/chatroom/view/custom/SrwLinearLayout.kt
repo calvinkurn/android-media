@@ -3,23 +3,27 @@ package com.tokopedia.topchat.chatroom.view.custom
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
+import android.widget.LinearLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.factory.AdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.domain.pojo.srw.ChatSmartReplyQuestion
 import com.tokopedia.topchat.chatroom.domain.pojo.srw.ChatSmartReplyQuestionResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.srw.QuestionUiModel
-import com.tokopedia.topchat.chatroom.domain.pojo.srw.SrwTitleUiModel
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.srw.SrwQuestionViewHolder
-import com.tokopedia.topchat.chatroom.view.adapter.viewholder.srw.SrwTitleViewHolder
+import com.tokopedia.unifyprinciples.Typography
 
-class SrwRecyclerView : RecyclerView {
+class SrwLinearLayout : LinearLayout {
 
     private var chatSmartReplyQuestion = ChatSmartReplyQuestion()
     private val rvAdapter = SrwAdapter(SrwTypeFactoryImpl())
+
+    private var title: Typography? = null
+    private var rvSrw: RecyclerView? = null
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
@@ -28,19 +32,49 @@ class SrwRecyclerView : RecyclerView {
     ) : super(context, attrs, defStyleAttr)
 
     init {
-        setHasFixedSize(true)
-        adapter = rvAdapter
+        initViewLayout()
+        initViewBind()
+        initRecyclerView()
+    }
+
+    private fun initViewBind() {
+        title = findViewById(R.id.tp_srw_partial)
+        rvSrw = findViewById(R.id.rv_srw_partial)
+    }
+
+    private fun initRecyclerView() {
+        rvSrw?.apply {
+            setHasFixedSize(true)
+            adapter = rvAdapter
+        }
+    }
+
+    private fun initViewLayout() {
+        View.inflate(context, LAYOUT, this)
     }
 
     fun updateSrwList(data: ChatSmartReplyQuestionResponse?) {
         if (data == null) return
+        updateTitle(data)
+        updateList(data)
+    }
+
+    private fun updateTitle(data: ChatSmartReplyQuestionResponse) {
+        title?.text = data.chatSmartReplyQuestion.title
+    }
+
+    private fun updateList(data: ChatSmartReplyQuestionResponse) {
         chatSmartReplyQuestion = data.chatSmartReplyQuestion
         rvAdapter.updateSrwList(chatSmartReplyQuestion)
+    }
+
+    companion object {
+        private val LAYOUT = R.layout.partial_topchat_srw
     }
 }
 
 /**
- * Adapter used specifically for [SrwRecyclerView]
+ * Adapter used specifically for [SrwLinearLayout]
  */
 class SrwAdapter(
         srwTypeFactory: SrwTypeFactory
@@ -48,7 +82,7 @@ class SrwAdapter(
 
     fun updateSrwList(chatSmartReplyQuestion: ChatSmartReplyQuestion) {
         visitables.clear()
-        visitables.addAll(chatSmartReplyQuestion.visitables)
+        visitables.addAll(chatSmartReplyQuestion.questions)
         notifyDataSetChanged()
     }
 
@@ -58,7 +92,6 @@ class SrwAdapter(
  * TypeFactory used specifically for [SrwAdapter]
  */
 interface SrwTypeFactory : AdapterTypeFactory {
-    fun type(srwTitleUiModel: SrwTitleUiModel): Int
     fun type(questionUiModel: QuestionUiModel): Int
 }
 
@@ -66,9 +99,6 @@ interface SrwTypeFactory : AdapterTypeFactory {
  * TypeFactoryImpl used specifically for [SrwAdapter]
  */
 class SrwTypeFactoryImpl : BaseAdapterTypeFactory(), SrwTypeFactory {
-    override fun type(srwTitleUiModel: SrwTitleUiModel): Int {
-        return SrwTitleViewHolder.LAYOUT
-    }
 
     override fun type(questionUiModel: QuestionUiModel): Int {
         return SrwQuestionViewHolder.LAYOUT
@@ -76,7 +106,6 @@ class SrwTypeFactoryImpl : BaseAdapterTypeFactory(), SrwTypeFactory {
 
     override fun createViewHolder(parent: View?, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
-            SrwTitleViewHolder.LAYOUT -> SrwTitleViewHolder(parent)
             SrwQuestionViewHolder.LAYOUT -> SrwQuestionViewHolder(parent)
             else -> super.createViewHolder(parent, type)
         }

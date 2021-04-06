@@ -195,7 +195,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     private var fbNewUnreadMessage: FloatingButtonUnify? = null
     private var tvTotalUnreadMessage: Typography? = null
     private var rv: RecyclerView? = null
-    private var rvSrw: SrwRecyclerView? = null
+    private var rvSrw: SrwLinearLayout? = null
     private var rvContainer: CoordinatorLayout? = null
     private var chatBackground: ImageView? = null
     private var textWatcher: MessageTextWatcher? = null
