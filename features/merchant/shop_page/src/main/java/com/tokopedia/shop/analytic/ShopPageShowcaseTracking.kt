@@ -30,7 +30,7 @@ class ShopPageShowcaseTracking(
                 customDimensionShopPage = customDimensionShopPage,
                 ecommerceMap = mapOf(
                         PROMO_CLICK to mapOf(
-                                PROMOTIONS to listOf<Any>(
+                                PROMOTIONS to listOf(
                                         mapOf(
                                                 CREATIVE to featuredShowcase.imageUrl,
                                                 ID to joinDash(featuredShowcase.id, customDimensionShopPage.shopId),
@@ -60,7 +60,7 @@ class ShopPageShowcaseTracking(
                 customDimensionShopPage = customDimensionShopPage,
                 ecommerceMap = mapOf(
                         PROMO_VIEW to mapOf(
-                                PROMOTIONS to mutableListOf<Any>(
+                                PROMOTIONS to mutableListOf(
                                         mapOf(
                                                 CREATIVE to featuredShowcase.imageUrl,
                                                 ID to joinDash(featuredShowcase.id, customDimensionShopPage.shopId),
@@ -106,9 +106,9 @@ class ShopPageShowcaseTracking(
                 customDimensionShopPage = customDimensionShopPage,
                 ecommerceMap = mapOf(
                         PROMO_CLICK to mapOf(
-                                PROMOTIONS to listOf<Any>(
+                                PROMOTIONS to listOf(
                                         mapOf(
-                                                CREATIVE to allShowcaseItem.imageUrl,
+                                                CREATIVE to allShowcaseItem.imageUrl.orEmpty(),
                                                 ID to joinDash(allShowcaseItem.id, customDimensionShopPage.shopId),
                                                 NAME to joinDash(ALL_SHOWCASE_LIST, allShowcaseItem.name),
                                                 POSITION to position
@@ -136,9 +136,9 @@ class ShopPageShowcaseTracking(
                 customDimensionShopPage = customDimensionShopPage,
                 ecommerceMap = mapOf(
                         PROMO_VIEW to mapOf(
-                                PROMOTIONS to mutableListOf<Any>(
+                                PROMOTIONS to listOf(
                                         mapOf(
-                                                CREATIVE to showcaseItem.imageUrl,
+                                                CREATIVE to showcaseItem.imageUrl.orEmpty(),
                                                 ID to joinDash(showcaseItem.id, customDimensionShopPage.shopId),
                                                 NAME to joinDash(ALL_SHOWCASE_LIST, showcaseItem.name),
                                                 POSITION to position
