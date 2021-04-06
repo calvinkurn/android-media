@@ -22,7 +22,9 @@ import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
 import com.tokopedia.play.widget.ui.model.PlayWidgetMediumChannelUiModel
 import com.tokopedia.play.widget.ui.model.switch
 import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
+import com.tokopedia.play.widget.ui.type.PlayWidgetPromoType
 import com.tokopedia.play.widget.util.PlayWidgetCompositeTouchDelegate
+import com.tokopedia.play_common.util.extension.exhaustive
 import com.tokopedia.unifycomponents.LoaderUnify
 
 
@@ -43,6 +45,8 @@ class PlayWidgetCardChannelMediumView : ConstraintLayout, PlayVideoPlayerReceive
     private val liveBadge: View
     private val totalViewBadge: View
     private val promoBadge: View
+    private val promoAdditionalContextView: View
+    private val tvPromoDetail: TextView
     private val tvStartTime: TextView
     private val tvTitle: TextView
     private val tvAuthor: TextView
@@ -66,6 +70,8 @@ class PlayWidgetCardChannelMediumView : ConstraintLayout, PlayVideoPlayerReceive
         liveBadge = view.findViewById(R.id.play_widget_badge_live)
         totalViewBadge = view.findViewById(R.id.play_widget_badge_total_view)
         promoBadge = view.findViewById(R.id.play_widget_badge_promo)
+        promoAdditionalContextView = view.findViewById(R.id.tv_promo_additional_context)
+        tvPromoDetail = view.findViewById(R.id.tv_promo_detail)
         tvStartTime = view.findViewById(R.id.play_widget_channel_date)
         tvTitle = view.findViewById(R.id.play_widget_channel_title)
         tvAuthor = view.findViewById(R.id.play_widget_channel_name)
@@ -100,6 +106,8 @@ class PlayWidgetCardChannelMediumView : ConstraintLayout, PlayVideoPlayerReceive
             else -> setActiveModel(model)
         }
 
+        setPromoType(model.promoType)
+
         tvTitle.visibility = if (model.title.isNotEmpty()) View.VISIBLE else View.GONE
         tvAuthor.visibility = if (model.partner.name.isNotEmpty()) View.VISIBLE else View.GONE
         tvStartTime.visibility = if (model.startTime.isNotEmpty() && model.channelType == PlayWidgetChannelType.Upcoming) View.VISIBLE else View.GONE
@@ -128,7 +136,6 @@ class PlayWidgetCardChannelMediumView : ConstraintLayout, PlayVideoPlayerReceive
         liveBadge.visibility = if (model.video.isLive && model.channelType == PlayWidgetChannelType.Live) View.VISIBLE else View.GONE
         reminderBadge.visibility = View.GONE
         totalViewBadge.visibility = if (model.totalViewVisible) View.VISIBLE else View.GONE
-        promoBadge.visibility = if (model.hasPromo) View.VISIBLE else View.GONE
         llLoadingContainer.visibility = View.GONE
     }
 
@@ -137,7 +144,6 @@ class PlayWidgetCardChannelMediumView : ConstraintLayout, PlayVideoPlayerReceive
         liveBadge.visibility = View.GONE
         reminderBadge.visibility = View.VISIBLE
         totalViewBadge.visibility = View.GONE
-        promoBadge.visibility = if (model.hasPromo) View.VISIBLE else View.GONE
         llLoadingContainer.visibility = View.GONE
     }
 
@@ -146,7 +152,6 @@ class PlayWidgetCardChannelMediumView : ConstraintLayout, PlayVideoPlayerReceive
         liveBadge.visibility = if (model.video.isLive && model.channelType == PlayWidgetChannelType.Live) View.VISIBLE else View.GONE
         reminderBadge.visibility = View.GONE
         totalViewBadge.visibility = if (model.totalViewVisible) View.VISIBLE else View.GONE
-        promoBadge.visibility = if (model.hasPromo) View.VISIBLE else View.GONE
         llLoadingContainer.visibility = View.VISIBLE
     }
 
@@ -158,6 +163,30 @@ class PlayWidgetCardChannelMediumView : ConstraintLayout, PlayVideoPlayerReceive
         reminderBadge.setImageDrawable(
                 ContextCompat.getDrawable(context, drawableIconReminder)
         )
+    }
+
+    private fun setPromoType(promoType: PlayWidgetPromoType) {
+        when (promoType) {
+            PlayWidgetPromoType.NoPromo, PlayWidgetPromoType.Unknown -> {
+                promoBadge.visibility = View.GONE
+            }
+            is PlayWidgetPromoType.Default -> {
+                promoAdditionalContextView.visibility = View.GONE
+
+                tvPromoDetail.text = promoType.promoText
+                tvPromoDetail.visibility = View.VISIBLE
+
+                promoBadge.visibility = View.VISIBLE
+            }
+            is PlayWidgetPromoType.LiveOnly -> {
+                promoAdditionalContextView.visibility = View.VISIBLE
+
+                tvPromoDetail.text = promoType.promoText
+                tvPromoDetail.visibility = View.VISIBLE
+
+                promoBadge.visibility = View.VISIBLE
+            }
+        }.exhaustive
     }
 
     override fun setPlayer(player: PlayVideoPlayer?) {

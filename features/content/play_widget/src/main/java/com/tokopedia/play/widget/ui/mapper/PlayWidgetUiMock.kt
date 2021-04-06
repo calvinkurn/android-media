@@ -2,6 +2,7 @@ package com.tokopedia.play.widget.ui.mapper
 
 import com.tokopedia.play.widget.ui.model.*
 import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
+import com.tokopedia.play.widget.ui.type.PlayWidgetPromoType
 import kotlin.random.Random
 
 
@@ -108,7 +109,7 @@ object PlayWidgetUiMock {
             startTime = "",
             totalView = "10,0 rb",
             totalViewVisible = true,
-            hasPromo = cardItemTypeRandom.nextBoolean(),
+            promoType = PlayWidgetPromoType.LiveOnly("Diskon 50%"),
             reminderType = PlayWidgetReminderType.UnRemind,
             partner = PlayWidgetPartnerUiModel("123", "Google"),
             video = getVideoUiModel(channelType),

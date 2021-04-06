@@ -5,6 +5,7 @@ import com.tokopedia.play.widget.data.*
 import com.tokopedia.play.widget.domain.PlayWidgetReminderUseCase
 import com.tokopedia.play.widget.ui.model.*
 import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
+import com.tokopedia.play.widget.ui.type.PlayWidgetPromoType
 import com.tokopedia.play_common.transformer.DefaultHtmlTextTransformer
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
@@ -84,7 +85,7 @@ class PlayWidgetMediumUiMapper @Inject constructor(
                 startTime = item.startTime,
                 totalView = item.stats.view.formatted,
                 totalViewVisible = item.video.isShowTotalView,
-                hasPromo = item.config.hasPromo,
+                promoType = PlayWidgetPromoType.getByType("DEFAULT", "Diskon 30%"), //TODO("Wait for GQL")
                 reminderType = getReminderType(item.config.isReminderSet),
                 partner = mapWidgetPartnerInfo(item.partner),
                 video = videoMapper.mapWidgetItemVideo(item.video),

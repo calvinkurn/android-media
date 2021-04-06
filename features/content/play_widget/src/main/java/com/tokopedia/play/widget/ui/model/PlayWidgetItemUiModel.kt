@@ -3,6 +3,7 @@ package com.tokopedia.play.widget.ui.model
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.play.widget.analytic.ImpressionableModel
 import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
+import com.tokopedia.play.widget.ui.type.PlayWidgetPromoType
 
 /**
  * Created by jegul on 07/10/20
@@ -65,7 +66,7 @@ data class PlayWidgetMediumChannelUiModel(
         val startTime: String,
         val totalView: String,
         val totalViewVisible: Boolean,
-        val hasPromo: Boolean,
+        val promoType: PlayWidgetPromoType,
         val reminderType: PlayWidgetReminderType,
         val partner: PlayWidgetPartnerUiModel,
         val video: PlayWidgetVideoUiModel,
@@ -77,4 +78,7 @@ data class PlayWidgetMediumChannelUiModel(
 ) : PlayWidgetMediumItemUiModel(), ImpressionableModel {
 
     override val impressHolder = ImpressHolder()
+
+    val hasPromo: Boolean
+        get() = promoType != PlayWidgetPromoType.NoPromo || promoType != PlayWidgetPromoType.Unknown
 }

@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <solid android:color="@color/play_widget_dms_bg_promo_detail_badge"/>
+    <corners android:radius="@dimen/dp_4"/>
+</shape>

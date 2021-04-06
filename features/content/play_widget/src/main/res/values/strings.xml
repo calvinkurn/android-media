@@ -28,4 +28,7 @@
     <string name="play_widget_download_tokopedia">Download Tokopedia</string>
     <string name="play_widget_watch_later">Nanti Dulu</string>
 
+    <!--Play Widget Promo-->
+    <string name="play_widget_only_live_promo">Hanya saat LIVE</string>
+
 </resources>
