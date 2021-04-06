@@ -70,7 +70,6 @@ class GetTopadsIsAdsUseCase @Inject constructor(
               topAdsGetDynamicSlotting(product_id: $productId, product_key: $productKey, shop_domain: $shopDomain, src: $src, device: $device, q: $q, url_param: $url_param, page_name: $page_name) {
                 data {
                   product_click_url
-                  product_wishlist_url
                   product {
                     image {
                       m_url

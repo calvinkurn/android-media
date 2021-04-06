@@ -152,7 +152,6 @@ open class RecommendationPageViewModel @Inject constructor(
                             it.isTopads = topadsProduct.isCharge
                             it.clickUrl = topadsProduct.clickUrl
                             it.trackerImageUrl = topadsProduct.product.image.m_url
-                            it.wishlistUrl = topadsProduct.wishlistUrl
 
                             val itemIndex = dataList.indexOf(productRecom)
                             dataList[itemIndex] = productRecom
