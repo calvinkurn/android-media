@@ -41,6 +41,7 @@ import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.network.DataSource;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.interfaces.ContextAnalytics;
+import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.user.session.UserSession;
 
 import java.io.IOException;
@@ -71,6 +72,8 @@ public class MyApplication extends BaseMainApplication
     public void onCreate() {
 
         setVersionCode();
+
+        TokopediaUrl.Companion.init(this); // generate base url
 
         GlobalConfig.VERSION_NAME = BuildConfig.VERSION_NAME;
         GlobalConfig.PACKAGE_APPLICATION = getApplicationInfo().packageName;

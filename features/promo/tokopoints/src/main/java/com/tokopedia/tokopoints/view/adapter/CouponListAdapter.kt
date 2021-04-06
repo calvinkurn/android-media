@@ -139,7 +139,7 @@ class CouponListAdapter(private val mItems: MutableList<CouponValueEntity>) : Re
                                 val hours = (l / (1000 * 60 * 60) % 24).toInt()
                                 holder.value.text = String.format(Locale.ENGLISH, "%02d : %02d : %02d", hours, minutes, seconds)
                                 try {
-                                    holder.value.setTextColor(ContextCompat.getColor(holder.value.context, R.color.tp_coupon_flash_sale_timer_text_color))
+                                    holder.value.setTextColor(ContextCompat.getColor(holder.value.context, com.tokopedia.unifyprinciples.R.color.Unify_R500))
                                 } catch (e: Exception) {
                                 }
                                 holder.progressTimer.progress = l.toInt() / 1000
@@ -159,11 +159,11 @@ class CouponListAdapter(private val mItems: MutableList<CouponValueEntity>) : Re
                     } else {
                         holder.progressTimer.visibility = View.GONE
                         holder.value.setPadding(0, 0, 0, 0)
-                        holder.value.setTextColor(ContextCompat.getColor(holder.value.context, com.tokopedia.design.R.color.black_70))
+                        holder.value.setTextColor(ContextCompat.getColor(holder.value.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
                     }
                 } else {
                     holder.progressTimer.visibility = View.GONE
-                    holder.value.setTextColor(ContextCompat.getColor(holder.value.context, com.tokopedia.design.R.color.black_70))
+                    holder.value.setTextColor(ContextCompat.getColor(holder.value.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
                 }
                 enableOrDisableImages(holder, item)
             } else if (pHolder is HeaderViewHolder) {
@@ -185,13 +185,13 @@ class CouponListAdapter(private val mItems: MutableList<CouponValueEntity>) : Re
     }
 
     private fun disableImages(holder: ViewHolder) {
-        holder.imgLabel.setColorFilter(ContextCompat.getColor(holder.imgLabel.context, R.color.tp_coupon_disable), PorterDuff.Mode.SRC_IN)
-        holder.ivMinTxn.setColorFilter(ContextCompat.getColor(holder.ivMinTxn.context, R.color.tp_coupon_disable), PorterDuff.Mode.SRC_IN)
+        holder.imgLabel.setColorFilter(ContextCompat.getColor(holder.imgLabel.context, com.tokopedia.unifyprinciples.R.color.Unify_N100), PorterDuff.Mode.SRC_IN)
+        holder.ivMinTxn.setColorFilter(ContextCompat.getColor(holder.ivMinTxn.context, com.tokopedia.unifyprinciples.R.color.Unify_N100), PorterDuff.Mode.SRC_IN)
     }
 
     private fun enableImages(holder: ViewHolder) {
-        holder.imgLabel.setColorFilter(ContextCompat.getColor(holder.imgLabel.context, com.tokopedia.design.R.color.medium_green), PorterDuff.Mode.SRC_IN)
-        holder.ivMinTxn.setColorFilter(ContextCompat.getColor(holder.ivMinTxn.context, com.tokopedia.design.R.color.medium_green), PorterDuff.Mode.SRC_IN)
+        holder.imgLabel.setColorFilter(ContextCompat.getColor(holder.imgLabel.context, com.tokopedia.unifyprinciples.R.color.Unify_G400), PorterDuff.Mode.SRC_IN)
+        holder.ivMinTxn.setColorFilter(ContextCompat.getColor(holder.ivMinTxn.context, com.tokopedia.unifyprinciples.R.color.Unify_G400), PorterDuff.Mode.SRC_IN)
     }
 
     override fun getItemCount(): Int {

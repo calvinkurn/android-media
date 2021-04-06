@@ -31,7 +31,7 @@ class CreditCardViewModel @Inject constructor(
     private val _creditCardBankResultLiveData = MutableLiveData<Result<ArrayList<BankCardListItem>>>()
     val creditCardBankResultLiveData : LiveData<Result<ArrayList<BankCardListItem>>> = _creditCardBankResultLiveData
 
-    fun getCreditCardSimulationData(amount: Float) {
+    fun getCreditCardSimulationData(amount: Long) {
         creditCardSimulationUseCase.cancelJobs()
         if (creditCardSimulationResultLiveData.value !is Success) {
             creditCardSimulationUseCase.getCreditCardSimulationData(

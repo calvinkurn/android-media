@@ -25,6 +25,7 @@ import com.otaliastudios.cameraview.gesture.GestureAction;
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.config.GlobalConfig;
+import com.tokopedia.iconunify.IconUnify;
 import com.tokopedia.imagepicker.R;
 import com.tokopedia.imagepicker.picker.main.builder.StateRecorderType;
 import com.tokopedia.imagepicker.picker.widget.VideoPlayerView;
@@ -52,7 +53,7 @@ public class VideoRecorderFragment extends TkpdBaseV4Fragment {
     private VideoPickerCallback videoCallback;
 
     private CameraView cameraView;
-    private ImageButton btnFlash;
+    private IconUnify btnFlash;
     private ImageButton btnFlip;
     private ProgressBar progress;
     private TextView txtDuration;
@@ -292,11 +293,11 @@ public class VideoRecorderFragment extends TkpdBaseV4Fragment {
 
     private void setUIFlashCamera(int flashEnum) {
         if (flashEnum == Flash.AUTO.ordinal()) {
-            btnFlash.setImageDrawable(MethodChecker.getDrawable(btnFlash.getContext(), R.drawable.ic_auto_flash));
+            btnFlash.setImageDrawable(MethodChecker.getDrawable(getActivity(), com.tokopedia.imagepicker.common.R.drawable.ic_auto_flash));
         } else if (flashEnum == Flash.ON.ordinal()) {
-            btnFlash.setImageDrawable(MethodChecker.getDrawable(btnFlash.getContext(), R.drawable.ic_on_flash));
+            btnFlash.setImage(IconUnify.FLASH_ON, null, null, null, null);
         } else if (flashEnum == Flash.OFF.ordinal()) {
-            btnFlash.setImageDrawable(MethodChecker.getDrawable(btnFlash.getContext(), R.drawable.ic_off_flash));
+            btnFlash.setImage(IconUnify.FLASH_OFF, null, null, null, null);
         }
     }
 
