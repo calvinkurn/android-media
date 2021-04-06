@@ -126,7 +126,7 @@ class OfficialStoreAnalyticsTest {
     private fun checkProductOnDynamicChannel(officialStoreRecyclerView: RecyclerView, i: Int) {
         when (val viewHolder = officialStoreRecyclerView.findViewHolderForAdapterPosition(i)) {
             is MixLeftComponentViewHolder -> {
-                CommonActions.clickOnEachItemRecyclerView(viewHolder.itemView, R.id.rv_product, 0)
+                CommonActions.clickOnEachItemRecyclerView(viewHolder.itemView, MixLeftComponentViewHolder.RECYCLER_VIEW_ID, 0)
             }
             is MixTopComponentViewHolder -> {
                 CommonActions.clickOnEachItemRecyclerView(viewHolder.itemView, R.id.dc_banner_rv, 0)
