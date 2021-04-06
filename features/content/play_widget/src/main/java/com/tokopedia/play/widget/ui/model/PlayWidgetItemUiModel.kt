@@ -1,7 +1,7 @@
 package com.tokopedia.play.widget.ui.model
 
 import com.tokopedia.kotlin.model.ImpressHolder
-import com.tokopedia.play_common.model.analytic.ImpressionableModel
+import com.tokopedia.play.widget.analytic.ImpressionableModel
 import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
 
 /**

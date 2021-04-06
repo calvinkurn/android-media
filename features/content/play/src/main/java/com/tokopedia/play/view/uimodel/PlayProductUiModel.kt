@@ -1,9 +1,9 @@
 package com.tokopedia.play.view.uimodel
 
 import com.tokopedia.kotlin.model.ImpressHolder
+import com.tokopedia.play.analytic.TrackingField
 import com.tokopedia.play.view.type.ProductPrice
 import com.tokopedia.play.view.type.ProductStock
-import com.tokopedia.play_common.model.analytic.ImpressionableModel
 
 /**
  * Created by jegul on 03/03/20
@@ -20,11 +20,9 @@ sealed class PlayProductUiModel {
             val price: ProductPrice,
             val minQty: Int,
             val isFreeShipping: Boolean,
-            val applink: String?
-    ) : PlayProductUiModel(), ImpressionableModel {
-
-        override val impressHolder = ImpressHolder()
-    }
+            val applink: String?,
+            @TrackingField val impressHolder: ImpressHolder = ImpressHolder()
+    ) : PlayProductUiModel()
 
     object Placeholder : PlayProductUiModel()
 

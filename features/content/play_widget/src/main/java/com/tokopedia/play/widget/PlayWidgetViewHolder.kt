@@ -5,7 +5,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.play.widget.ui.PlayWidgetView
 import com.tokopedia.play.widget.ui.coordinator.PlayWidgetCoordinator
 import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
-import com.tokopedia.play_common.model.analytic.ImpressionableModel
+import com.tokopedia.play.widget.analytic.ImpressionableModel
 
 /**
  * Created by mzennis on 05/10/20.
