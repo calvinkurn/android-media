@@ -17,23 +17,21 @@
         app:typographyType="body_3"
         android:textColor="@color/Unify_N700_96"/>
 
-    <ImageView
-        android:id="@+id/iv_finish_detail_1"
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/ic_finish_detail_1"
         android:layout_width="@dimen/dp_48"
         android:layout_height="@dimen/dp_48"
-        app:srcCompat="@drawable/ic_finish_detail_1"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/finish_desc"
-        android:layout_marginTop="@dimen/dp_20"
-        tools:ignore="ContentDescription" />
+        android:layout_marginTop="@dimen/dp_20"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/finish_detail_1"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="@id/iv_finish_detail_1"
-        app:layout_constraintBottom_toBottomOf="@id/iv_finish_detail_1"
-        app:layout_constraintStart_toEndOf="@id/iv_finish_detail_1"
+        app:layout_constraintTop_toTopOf="@id/ic_finish_detail_1"
+        app:layout_constraintBottom_toBottomOf="@id/ic_finish_detail_1"
+        app:layout_constraintStart_toEndOf="@id/ic_finish_detail_1"
         app:layout_constraintEnd_toEndOf="parent"
         android:text="@string/uoh_finish_order_1"
         app:typographyWeight="reguler"
@@ -41,23 +39,21 @@
         android:textColor="@color/Unify_N700_96"
         android:layout_marginStart="@dimen/dp_16"/>
 
-    <ImageView
-        android:id="@+id/iv_finish_detail_2"
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/ic_finish_detail_2"
         android:layout_width="@dimen/dp_48"
         android:layout_height="@dimen/dp_48"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/iv_finish_detail_1"
-        android:layout_marginTop="@dimen/dp_16"
-        tools:ignore="ContentDescription"
-        app:srcCompat="@drawable/ic_finish_detail_2"/>
+        app:layout_constraintTop_toBottomOf="@id/ic_finish_detail_1"
+        android:layout_marginTop="@dimen/dp_16"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/finish_detail_2"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="@id/iv_finish_detail_2"
-        app:layout_constraintBottom_toBottomOf="@id/iv_finish_detail_2"
-        app:layout_constraintStart_toEndOf="@id/iv_finish_detail_2"
+        app:layout_constraintTop_toTopOf="@id/ic_finish_detail_2"
+        app:layout_constraintBottom_toBottomOf="@id/ic_finish_detail_2"
+        app:layout_constraintStart_toEndOf="@id/ic_finish_detail_2"
         app:layout_constraintEnd_toEndOf="parent"
         android:text="@string/uoh_finish_order_2"
         app:typographyWeight="reguler"

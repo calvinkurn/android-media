@@ -133,6 +133,7 @@ import com.tokopedia.buyerorder.unifiedhistory.list.view.adapter.UohItemAdapter
 import com.tokopedia.buyerorder.unifiedhistory.list.view.viewmodel.UohListViewModel
 import com.tokopedia.datepicker.DatePickerUnify
 import com.tokopedia.design.utils.StringUtils
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.convertMonth
 import com.tokopedia.kotlin.extensions.getCalculatedFormattedDate
 import com.tokopedia.kotlin.extensions.toFormattedString
@@ -1158,6 +1159,16 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
 
     private fun showBottomSheetFinishOrder(index: Int, orderId: String, isFromKebabMenu: Boolean, status: String) {
         val viewBottomSheet = View.inflate(context, R.layout.bottomsheet_finish_order_uoh, null).apply {
+
+            ic_finish_detail_1?.apply {
+                background = ContextCompat.getDrawable(context, R.drawable.ic_bound_icon)
+                setImage(IconUnify.PRODUCT)
+            }
+
+            ic_finish_detail_2?.apply {
+                background = ContextCompat.getDrawable(context, R.drawable.ic_bound_icon)
+                setImage(IconUnify.RELOAD_24H)
+            }
 
             btn_finish_order?.setOnClickListener {
                 bottomSheetKebabMenu?.dismiss()
