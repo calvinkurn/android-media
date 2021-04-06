@@ -11,7 +11,7 @@ import android.graphics.drawable.Drawable;
 
 import androidx.core.content.ContextCompat;
 
-import com.tokopedia.design.R;
+import com.tokopedia.shop.R;
 
 public class ShopPageCountDrawable extends Drawable {
 
