@@ -229,7 +229,7 @@ class PlayWidgetMediumView : ConstraintLayout, IPlayWidgetView {
             RouteManager.route(context, data.actionAppLink)
         }
 
-        configureBackgroundOverlay(data.background)
+        configureOverlay(data.background)
 
         recyclerViewItem.addOneTimeGlobalLayoutListener {
             mWidgetInternalListener?.onWidgetCardsScrollChanged(recyclerViewItem)
@@ -248,25 +248,25 @@ class PlayWidgetMediumView : ConstraintLayout, IPlayWidgetView {
     /**
      * Setup view
      */
-    private fun configureBackgroundOverlay(data: PlayWidgetBackgroundUiModel) {
+    private fun configureOverlay(data: PlayWidgetBackgroundUiModel) {
         if (data.overlayImageUrl.isEmpty() || data.overlayImageUrl.isBlank()) background.hide()
         else {
             background.show()
             overlayImage.loadImage(data.overlayImageUrl, object : ImageHandler.ImageLoaderStateListener {
                 override fun successLoad() {
-                    configureBackground(data)
+                    configureBackgroundOverlay(data)
                     background.hide()
                 }
 
                 override fun failedLoad() {
-                    configureBackground(data)
+                    configureBackgroundOverlay(data)
                     background.hide()
                 }
             })
         }
     }
 
-    private fun configureBackground(data: PlayWidgetBackgroundUiModel) {
+    private fun configureBackgroundOverlay(data: PlayWidgetBackgroundUiModel) {
         if (data.gradientColors.isNotEmpty()) {
             overlayBackground.setGradientBackground(data.gradientColors)
         } else if (data.backgroundUrl.isNotBlank() && data.backgroundUrl.isNotEmpty()) {
