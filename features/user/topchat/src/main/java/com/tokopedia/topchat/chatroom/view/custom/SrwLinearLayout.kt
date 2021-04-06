@@ -1,7 +1,9 @@
 package com.tokopedia.topchat.chatroom.view.custom
 
 import android.content.Context
+import android.graphics.drawable.Drawable
 import android.util.AttributeSet
+import android.view.Gravity
 import android.view.View
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.RecyclerView
@@ -14,7 +16,9 @@ import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.domain.pojo.srw.ChatSmartReplyQuestion
 import com.tokopedia.topchat.chatroom.domain.pojo.srw.ChatSmartReplyQuestionResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.srw.QuestionUiModel
+import com.tokopedia.topchat.chatroom.view.adapter.decoration.SrwItemDecoration
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.srw.SrwQuestionViewHolder
+import com.tokopedia.topchat.common.util.ViewUtil
 import com.tokopedia.unifyprinciples.Typography
 
 class SrwLinearLayout : LinearLayout {
@@ -25,6 +29,8 @@ class SrwLinearLayout : LinearLayout {
     private var title: Typography? = null
     private var rvSrw: RecyclerView? = null
 
+    private var bgExpanded: Drawable? = null
+
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
     constructor(
@@ -33,8 +39,29 @@ class SrwLinearLayout : LinearLayout {
 
     init {
         initViewLayout()
+        initBackground()
         initViewBind()
         initRecyclerView()
+    }
+
+    private fun initViewLayout() {
+        View.inflate(context, LAYOUT, this)
+    }
+
+    private fun initBackground() {
+        bgExpanded = ViewUtil.generateBackgroundWithShadow(
+                this,
+                com.tokopedia.unifyprinciples.R.color.Unify_N0,
+                R.dimen.dp_topchat_20,
+                R.dimen.dp_topchat_0,
+                R.dimen.dp_topchat_20,
+                R.dimen.dp_topchat_20,
+                com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
+                R.dimen.dp_topchat_2,
+                R.dimen.dp_topchat_2,
+                Gravity.CENTER
+        )
+        background = bgExpanded
     }
 
     private fun initViewBind() {
@@ -46,11 +73,8 @@ class SrwLinearLayout : LinearLayout {
         rvSrw?.apply {
             setHasFixedSize(true)
             adapter = rvAdapter
+            addItemDecoration(SrwItemDecoration(context))
         }
-    }
-
-    private fun initViewLayout() {
-        View.inflate(context, LAYOUT, this)
     }
 
     fun updateSrwList(data: ChatSmartReplyQuestionResponse?) {
