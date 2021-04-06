@@ -17,6 +17,7 @@ import androidx.collection.ArrayMap
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -58,7 +59,9 @@ import com.tokopedia.imagepicker.common.ImagePickerBuilder
 import com.tokopedia.imagepicker.common.ImagePickerResultExtractor
 import com.tokopedia.imagepicker.common.putImagePickerBuilder
 import com.tokopedia.imagepreview.ImagePreviewActivity
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.kotlin.util.getParamBoolean
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
@@ -105,6 +108,7 @@ import com.tokopedia.topchat.common.TopChatInternalRouter
 import com.tokopedia.topchat.common.TopChatInternalRouter.Companion.EXTRA_SHOP_STATUS_FAVORITE_FROM_SHOP
 import com.tokopedia.topchat.common.analytics.ChatSettingsAnalytics
 import com.tokopedia.topchat.common.analytics.TopChatAnalytics
+import com.tokopedia.topchat.common.data.Status
 import com.tokopedia.topchat.common.util.TopChatSellerReviewHelper
 import com.tokopedia.topchat.common.util.Utils
 import com.tokopedia.topchat.common.util.ViewUtil
@@ -191,6 +195,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     private var fbNewUnreadMessage: FloatingButtonUnify? = null
     private var tvTotalUnreadMessage: Typography? = null
     private var rv: RecyclerView? = null
+    private var rvSrw: SrwRecyclerView? = null
     private var rvContainer: CoordinatorLayout? = null
     private var chatBackground: ImageView? = null
     private var textWatcher: MessageTextWatcher? = null
@@ -209,11 +214,33 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_topchat_chatroom, container, false).also {
             bindView(it)
+            initObserver()
             initReplyTextWatcher()
             initStickerView()
             initFbNewUnreadMessage()
             initTextComposeBackground()
         }
+    }
+
+    private fun initObserver() {
+        presenter.srw.observe(viewLifecycleOwner, Observer {
+            when (it.status) {
+                Status.SUCCESS -> {
+                    if (shouldShowSrw()) {
+                        rvSrw?.show()
+                        rvSrw?.updateSrwList(it.data)
+                    } else {
+                        rvSrw?.hide()
+                    }
+                }
+                else -> {
+                }
+            }
+        })
+    }
+
+    private fun shouldShowSrw(): Boolean {
+        return getViewState().hasProductPreviewShown()
     }
 
     private fun initReplyTextWatcher() {
@@ -255,6 +282,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         orderProgress = view?.findViewById(R.id.ll_transaction_progress)
         chatMenu = view?.findViewById(R.id.fl_chat_menu)
         rv = view?.findViewById(recyclerViewResourceId)
+        rvSrw = view?.findViewById(R.id.rv_srw)
         rvContainer = view?.findViewById(R.id.rv_container)
         fbNewUnreadMessage = view?.findViewById(R.id.fb_new_unread_message)
         chatBackground = view?.findViewById(R.id.iv_bg_chat)
@@ -484,6 +512,9 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         getViewState().onSetCustomMessage(customMessage)
         presenter.getTemplate(chatRoom.isSeller())
         presenter.getStickerGroupList(chatRoom)
+        if (!isSeller()) {
+            presenter.getSmartReplyWidget(messageId)
+        }
     }
 
     private fun setupFirstPage(chatRoom: ChatroomViewModel, chat: ChatReplies) {

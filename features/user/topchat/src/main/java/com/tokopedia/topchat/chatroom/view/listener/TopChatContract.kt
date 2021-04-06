@@ -194,5 +194,7 @@ interface TopChatContract {
                 product: ProductAttachmentViewModel, adapterPosition: Int,
                 parentMetaData: SingleProductAttachmentContainer.ParentViewHolderMetaData?
         )
+
+        fun getSmartReplyWidget(msgId: String)
     }
 }

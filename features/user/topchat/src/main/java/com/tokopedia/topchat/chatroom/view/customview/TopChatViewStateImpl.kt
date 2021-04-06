@@ -3,9 +3,9 @@ package com.tokopedia.topchat.chatroom.view.customview
 import android.content.Context
 import android.os.Parcelable
 import android.view.View
-import android.widget.FrameLayout
 import android.widget.ImageButton
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.annotation.DrawableRes
 import androidx.annotation.NonNull
@@ -67,8 +67,8 @@ class TopChatViewStateImpl constructor(
     private var templateRecyclerView: RecyclerView = view.findViewById(R.id.list_template)
     private var headerMenuButton: ImageButton = toolbar.findViewById(com.tokopedia.chat_common.R.id.header_menu)
     private var chatBlockLayout: View = view.findViewById(R.id.chat_blocked_layout)
-    private var attachmentPreviewContainer: FrameLayout = view.findViewById(com.tokopedia.chat_common.R.id.cl_attachment_preview)
-    private var attachmentPreviewRecyclerView = view.findViewById<RecyclerView>(com.tokopedia.chat_common.R.id.rv_attachment_preview)
+    private var attachmentPreviewContainer: LinearLayout = view.findViewById(R.id.cl_attachment_preview)
+    private var attachmentPreviewRecyclerView = view.findViewById<RecyclerView>(R.id.rv_attachment_preview)
     var chatStickerMenuButton: ImageView? = view.findViewById(R.id.iv_chat_sticker)
     var chatMenu: ChatMenuView? = view.findViewById(R.id.fl_chat_menu)
     private var userStatus: Typography? = null
@@ -604,6 +604,10 @@ class TopChatViewStateImpl constructor(
         if (!templateRecyclerView.isVisible && templateAdapter.hasTemplateChat()) {
             showTemplateChat()
         }
+    }
+
+    override fun hasProductPreviewShown(): Boolean {
+        return attachmentPreviewContainer.isVisible && attachmentPreviewAdapter.isShowingProduct()
     }
 
     fun setTemplate(

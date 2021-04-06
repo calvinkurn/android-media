@@ -37,4 +37,6 @@ interface TopChatViewState : BaseChatViewState {
 
     fun updateTemplateState()
 
+    fun hasProductPreviewShown(): Boolean
+
 }

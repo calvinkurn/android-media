@@ -3,6 +3,8 @@ package com.tokopedia.topchat.chatroom.view.presenter
 import android.content.SharedPreferences
 import androidx.annotation.StringRes
 import androidx.collection.ArrayMap
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.google.gson.JsonObject
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
@@ -36,6 +38,7 @@ import com.tokopedia.topchat.chatroom.data.activityresult.UpdateProductStockResu
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.Attachment
 import com.tokopedia.topchat.chatroom.domain.pojo.chatroomsettings.ChatSettingsResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.orderprogress.OrderProgressResponse
+import com.tokopedia.topchat.chatroom.domain.pojo.srw.ChatSmartReplyQuestionResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.sticker.Sticker
 import com.tokopedia.topchat.chatroom.domain.pojo.stickergroup.ChatListGroupStickerResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.stickergroup.StickerGroup
@@ -49,6 +52,7 @@ import com.tokopedia.topchat.chatroom.view.viewmodel.SendablePreview
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendableProductPreview
 import com.tokopedia.topchat.chatroom.view.viewmodel.TopchatCoroutineContextProvider
 import com.tokopedia.topchat.chattemplate.view.viewmodel.GetTemplateUiModel
+import com.tokopedia.topchat.common.data.Resource
 import com.tokopedia.topchat.common.util.ImageUtil
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
@@ -61,6 +65,7 @@ import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.withContext
 import okhttp3.Interceptor
 import okhttp3.WebSocket
@@ -98,6 +103,7 @@ open class TopChatRoomPresenter @Inject constructor(
         private val chatAttachmentUseCase: ChatAttachmentUseCase,
         private val chatToggleBlockChat: ChatToggleBlockChatUseCase,
         private val chatBackgroundUseCase: ChatBackgroundUseCase,
+        private val chatSrwUseCase: ChatSmartReplyQuestionUseCase,
         private val sharedPref: SharedPreferences,
         private val dispatchers: TopchatCoroutineContextProvider
 ) : BaseChatPresenter<TopChatContract.View>(userSession, topChatRoomWebSocketMessageMapper),
@@ -115,6 +121,10 @@ open class TopChatRoomPresenter @Inject constructor(
     private var compressImageSubscription: CompositeSubscription
     private var listInterceptor: ArrayList<Interceptor>
     private var dummyList: ArrayList<Visitable<*>>
+
+    private val _srw = MutableLiveData<Resource<ChatSmartReplyQuestionResponse>>()
+    val srw: LiveData<Resource<ChatSmartReplyQuestionResponse>>
+        get() = _srw
 
     init {
         mSubscription = CompositeSubscription()
@@ -753,6 +763,19 @@ open class TopChatRoomPresenter @Inject constructor(
     ) {
         val result = UpdateProductStockResult(product, adapterPosition, parentMetaData)
         onGoingStockUpdate[product.productId] = result
+    }
+
+    override fun getSmartReplyWidget(msgId: String) {
+        launchCatchError(dispatchers.IO,
+                {
+                    chatSrwUseCase.getSrwList(msgId).collect {
+                        _srw.postValue(it)
+                    }
+                },
+                {
+                    _srw.postValue(Resource.error(it, null))
+                }
+        )
     }
 
     private fun onLoadBackgroundFromCache(url: String) {
