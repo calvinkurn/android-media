@@ -27,6 +27,8 @@ import com.tokopedia.product.addedit.preview.domain.usecase.GetShopInfoLocationU
 import com.tokopedia.product.addedit.preview.domain.usecase.ValidateProductNameUseCase
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.DRAFT_SHOWCASE_ID
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
+import com.tokopedia.product.addedit.productlimitation.domain.model.ProductLimitationData
+import com.tokopedia.product.addedit.productlimitation.domain.usecase.ProductLimitationUseCase
 import com.tokopedia.product.addedit.specification.domain.model.AnnotationCategoryData
 import com.tokopedia.product.addedit.specification.domain.usecase.AnnotationCategoryUseCase
 import com.tokopedia.product.addedit.specification.presentation.model.SpecificationInputModel
@@ -62,16 +64,21 @@ class AddEditProductPreviewViewModel @Inject constructor(
         private val authorizeEditStockUseCase: AuthorizeAccessUseCase,
         private val userSession: UserSessionInterface,
         private val annotationCategoryUseCase: AnnotationCategoryUseCase,
+        private val productLimitationUseCase: ProductLimitationUseCase,
         private val dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.main) {
 
     private val productId = MutableLiveData<String>()
     private val detailInputModel = MutableLiveData<DetailInputModel>()
+    private var draftId = ""
+    var productDomain: Product = Product()
 
     // observing the product id, and will become true if product id exist
     val isEditing = Transformations.map(productId) { id ->
         (!id.isNullOrBlank() || productInputModel.value?.productId.orZero() != 0L) && !isDuplicate
     }
+    val isAdding: Boolean get() = getProductId().isBlank()
+    var isDuplicate: Boolean = false
 
     private val mIsProductManageAuthorized = MutableLiveData<Result<Boolean>>()
     val isProductManageAuthorized: LiveData<Result<Boolean>>
@@ -134,16 +141,11 @@ class AddEditProductPreviewViewModel @Inject constructor(
     private val mSaveShopShipmentLocationResponse = MutableLiveData<Result<SaveShipmentLocation>>()
     val saveShopShipmentLocationResponse: LiveData<Result<SaveShipmentLocation>> get() = mSaveShopShipmentLocationResponse
 
-    val isAdding: Boolean get() = getProductId().isBlank()
-
-    var isDuplicate: Boolean = false
-
-    private var draftId = ""
-
-    var productDomain: Product = Product()
-
     private val saveProductDraftResultMutableLiveData = MutableLiveData<Result<Long>>()
     val saveProductDraftResultLiveData: LiveData<Result<Long>> get() = saveProductDraftResultMutableLiveData
+
+    private val mProductLimitationData = MutableLiveData<Result<ProductLimitationData>>()
+    val productLimitationData: LiveData<Result<ProductLimitationData>> get() = mProductLimitationData
 
     // Enable showing ticker if seller has multi location shop
     val shouldShowMultiLocationTicker
@@ -301,6 +303,17 @@ class AddEditProductPreviewViewModel @Inject constructor(
             }.let { Success(it) }
         }, onError = {
             mGetProductDraftResult.value = Fail(it)
+        })
+    }
+
+    fun getProductLimitation() {
+        launchCatchError(block = {
+            val result = withContext(dispatcher.io) {
+                productLimitationUseCase.executeOnBackground()
+            }
+            mProductLimitationData.value = Success(result.productAddRule.data)
+        }, onError = {
+            mProductLimitationData.value = Fail(it)
         })
     }
 

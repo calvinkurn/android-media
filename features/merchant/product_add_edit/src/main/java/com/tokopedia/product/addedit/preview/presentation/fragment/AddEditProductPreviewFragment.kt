@@ -112,6 +112,8 @@ import com.tokopedia.product.addedit.preview.presentation.model.SetCashbackResul
 import com.tokopedia.product.addedit.preview.presentation.service.AddEditProductAddService
 import com.tokopedia.product.addedit.preview.presentation.service.AddEditProductEditService
 import com.tokopedia.product.addedit.preview.presentation.viewmodel.AddEditProductPreviewViewModel
+import com.tokopedia.product.addedit.productlimitation.domain.mapper.ProductLimitationMapper
+import com.tokopedia.product.addedit.productlimitation.presentation.dialog.ProductLimitationBottomSheet
 import com.tokopedia.product.addedit.tooltip.model.ImageTooltipModel
 import com.tokopedia.product.addedit.tooltip.model.NumericTooltipModel
 import com.tokopedia.product.addedit.tooltip.presentation.TooltipBottomSheet
@@ -511,6 +513,7 @@ class AddEditProductPreviewFragment :
         observeGetShopInfoLocation()
         observeSaveShipmentLocationData()
         observeAdminPermission()
+        observeProductLimitationData()
 
         // validate whether shop has location
         validateShopLocationWhenPageOpened()
@@ -1150,6 +1153,24 @@ class AddEditProductPreviewFragment :
                 }
             }
 
+        }
+    }
+
+    private fun observeProductLimitationData() {
+        if (!isAdding()) return
+        viewModel.getProductLimitation()
+        viewModel.productLimitationData.observe(viewLifecycleOwner) {
+            when(it) {
+                is Success -> {
+                    val actionItems = ProductLimitationMapper.mapToActionItems(requireContext(), it.data)
+                    productLimitationTicker?.setOnClickListener {
+                        ProductLimitationBottomSheet(actionItems).show(childFragmentManager)
+                    }
+                }
+                is Fail -> {
+
+                }
+            }
         }
     }
 

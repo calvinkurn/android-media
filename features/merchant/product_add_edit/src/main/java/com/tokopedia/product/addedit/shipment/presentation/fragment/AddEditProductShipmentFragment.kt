@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.RadioGroup
+import androidx.lifecycle.observe
 import androidx.activity.OnBackPressedCallback
 import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.findNavController
@@ -49,6 +50,7 @@ import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProduc
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.SHIPMENT_DATA
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.UPLOAD_DATA
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
+import com.tokopedia.product.addedit.productlimitation.domain.mapper.ProductLimitationMapper.Companion.mapToActionItems
 import com.tokopedia.product.addedit.shipment.di.DaggerAddEditProductShipmentComponent
 import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants.Companion.MAX_WEIGHT_GRAM
 import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants.Companion.MAX_WEIGHT_KILOGRAM
@@ -64,6 +66,8 @@ import com.tokopedia.unifycomponents.TextFieldUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
 import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
@@ -155,7 +159,7 @@ class AddEditProductShipmentFragment:
         setupSubmitButton()
         setupOnBackPressed()
 
-        shipmentViewModel.getProductLimitation()
+        observeProductLimitationData()
 
         // PLT monitoring
         stopNetworkRequestPerformanceMonitoring()
@@ -485,6 +489,21 @@ class AddEditProductShipmentFragment:
             }
             setNavigationResult(bundle,requestKey)
             findNavController().navigateUp()
+        }
+    }
+
+    private fun observeProductLimitationData() {
+        shipmentViewModel.getProductLimitation()
+        shipmentViewModel.productLimitationData.observe(viewLifecycleOwner) {
+            when(it) {
+                is Success -> {
+                    val actionItems = mapToActionItems(requireContext(), it.data)
+                    println(actionItems.toString())
+                }
+                is Fail -> {
+
+                }
+            }
         }
     }
 }

@@ -22,5 +22,5 @@ class Eligible {
 
     @SerializedName("actionItems")
     @Expose
-    var actionItems: List<String>? = null
+    var actionItems: List<String> = emptyList()
 }
