@@ -357,7 +357,7 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
     }
 
     private fun endActivityTest() {
-        activityRule.activity.finish()
+        activityRule.activity.moveTaskToBack(true)
         logTestMessage("Done UI Test")
         waitForLoadCassavaAssert()
     }
