@@ -1,5 +1,7 @@
 package com.tokopedia.catalog.ui.fragment
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -14,6 +16,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.youtube.player.YouTubeApiServiceUtil
+import com.google.android.youtube.player.YouTubeInitializationResult
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
@@ -29,11 +33,13 @@ import com.tokopedia.catalog.listener.CatalogDetailListener
 import com.tokopedia.catalog.model.datamodel.BaseCatalogDataModel
 import com.tokopedia.catalog.model.datamodel.CatalogFullSpecificationDataModel
 import com.tokopedia.catalog.model.raw.CatalogImage
+import com.tokopedia.catalog.model.raw.VideoComponentData
 import com.tokopedia.catalog.model.util.CatalogConstant
 import com.tokopedia.catalog.model.util.CatalogUiUpdater
 import com.tokopedia.catalog.model.util.CatalogUtil
 import com.tokopedia.catalog.model.util.nestedrecyclerview.NestedRecyclerView
 import com.tokopedia.catalog.ui.activity.CatalogGalleryActivity
+import com.tokopedia.catalog.ui.activity.CatalogYoutubePlayerActivity
 import com.tokopedia.catalog.ui.bottomsheet.CatalogPreferredProductsBottomSheet
 import com.tokopedia.catalog.ui.bottomsheet.CatalogSpecsAndDetailBottomSheet
 import com.tokopedia.catalog.viewmodel.CatalogDetailPageViewModel
@@ -236,7 +242,7 @@ class CatalogDetailPageFragment : Fragment(),
         catalogPageRecyclerView?.show()
         bottom_sheet_fragment_container.show()
         val newData = catalogUiUpdater.mapOfData.values.toList()
-        submitList(newData ?: listOf())
+        submitList(newData)
     }
 
     private fun submitList(visitables: List<BaseCatalogDataModel>) {
@@ -322,6 +328,24 @@ class CatalogDetailPageFragment : Fragment(),
                 CatalogDetailAnalytics.ActionKeys.CLICK_MORE_SPECIFICATIONS,
                 catalogId,userSession.userId)
         viewMoreClicked(CatalogSpecsAndDetailBottomSheet.SPECIFICATION)
+    }
+
+    override fun playVideo(catalogVideo: VideoComponentData, position: Int) {
+        context?.let {
+            if (YouTubeApiServiceUtil.isYouTubeApiServiceAvailable(it.applicationContext)
+                    == YouTubeInitializationResult.SUCCESS) {
+                catalogVideo.url?.let {videoUrl ->
+                    startActivity(CatalogYoutubePlayerActivity.createIntent(it, listOf(videoUrl) , position))
+                }
+            } else {
+                // Handle if user didn't have any apps to open Youtube * Usually rooted phone
+                try {
+                    startActivity(Intent(Intent.ACTION_VIEW,
+                            Uri.parse(CatalogConstant.URL_YOUTUBE + catalogVideo.url)))
+                } catch (e: Throwable) {
+                }
+            }
+        }
     }
 
     override fun hideFloatingLayout() {

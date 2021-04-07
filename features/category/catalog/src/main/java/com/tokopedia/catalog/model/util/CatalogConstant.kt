@@ -36,4 +36,7 @@ object CatalogConstant {
 
     const val SHIMMER_ITEMS_INDEX_START = 0
     const val SHIMMER_ITEMS_INDEX_END = 5
+
+    const val URL_YOUTUBE = "https://www.youtube.com/watch?v="
+
 }

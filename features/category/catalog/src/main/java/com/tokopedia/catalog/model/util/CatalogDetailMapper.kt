@@ -37,7 +37,7 @@ object CatalogDetailMapper {
                     val videoArray = arrayListOf<VideoComponentData>()
                     crudeVideoData?.forEachIndexed { _, componentData ->
                         videoArray.add(VideoComponentData(componentData.url,
-                                componentData.type))
+                                componentData.type,componentData.videoId,componentData.title,componentData.channelName))
                     }
                     listOfComponents.add(CatalogVideoDataModel(name = component.name, type = component.type , videosList = videoArray ))
                 }
@@ -120,10 +120,10 @@ object CatalogDetailMapper {
         // Top Specifications
         val topsSpecifications = arrayListOf<ComponentData>()
         val icon = "https://image.flaticon.com/icons/png/128/3524/3524636.png"
-        topsSpecifications.add(ComponentData(null, "Network", "HSDPA 850 / 900 / 1900 / 2100, GSM 850 / 900 / 1800 / 1900", icon, null,null,null))
-        topsSpecifications.add(ComponentData(null, "Operating System", "iOS 2.0", icon, null,null,null))
-        topsSpecifications.add(ComponentData(null, "Network", "HSDPA 850 / 900 / 1900 / 2100, GSM 850 / 900 / 1800 / 1900", icon, null,null, null))
-        topsSpecifications.add(ComponentData(null, "Operating System", "iOS 2.0", icon, null,null,null))
+        topsSpecifications.add(ComponentData(null, "Network", "HSDPA 850 / 900 / 1900 / 2100, GSM 850 / 900 / 1800 / 1900", icon, null,null,null,null,null,null))
+        topsSpecifications.add(ComponentData(null, "Operating System", "iOS 2.0", icon, null,null,null,null,null,null))
+        topsSpecifications.add(ComponentData(null, "Network", "HSDPA 850 / 900 / 1900 / 2100, GSM 850 / 900 / 1800 / 1900", icon, null,null, null,null,null,null))
+        topsSpecifications.add(ComponentData(null, "Operating System", "iOS 2.0", icon, null,null,null,null,null,null))
         componentList.add(CatalogResponseData.CatalogGetDetailModular.BasicInfo.Component(
                 "1",
                 "Catalog Top Spec",
@@ -148,7 +148,7 @@ object CatalogDetailMapper {
                 "https://cdn4.iconfinder.com/data/icons/basic-user-interface-elements/700/home-house-homepage-building-20.png",
                 rows,
                 null,
-                null
+                null,null,null,null
         )
         val values2 = "GSM / CDMA / HSPA / EVDO / LTE / 5G"
         val row2 = ComponentData.SpecificationsRow(
@@ -163,6 +163,9 @@ object CatalogDetailMapper {
                 null,
                 "https://cdn4.iconfinder.com/data/icons/basic-user-interface-elements/700/exit-enter-leave-out-door-20.png",
                 rows2,
+                null,
+                null,
+                null,
                 null,
                 null
         )
@@ -194,7 +197,7 @@ object CatalogDetailMapper {
                 "https://cdn4.iconfinder.com/data/icons/basic-user-interface-elements/700/exit-enter-leave-out-door-20.png",
                 rows3,
                 null,
-                null
+                null,null,null,null
         )
 
         val specifications = arrayListOf<ComponentData>()
@@ -218,7 +221,7 @@ object CatalogDetailMapper {
                 null,
                 null,
                 "https://www.youtube.com/watch?v=YKOXswCBYq0",
-                "youtube"
+                "youtube","YKOXswCBYq0","CUAN BANYAK NIH? Hasil PO Samsung Galaxy A52","Arrinish"
         )
 
         val video2 = ComponentData(
@@ -228,10 +231,22 @@ object CatalogDetailMapper {
                 null,
                 null,
                 "https://www.youtube.com/watch?v=YKOXswCBYq0",
-                "youtube"
+                "youtube","YKOXswCBYq0","CUAN BANYAK NIH? Hasil PO Samsung Galaxy A52","Arrinish"
         )
+
+        val video3 = ComponentData(
+                null,
+                null,
+                null,
+                null,
+                null,
+                "https://www.youtube.com/watch?v=YKOXswCBYq0",
+                "youtube","YKOXswCBYq0","CUAN BANYAK NIH? Hasil PO Samsung Galaxy A52","Arrinish"
+        )
+
         videos.add(video1)
         videos.add(video2)
+        videos.add(video3)
         componentList.add(CatalogResponseData.CatalogGetDetailModular.BasicInfo.Component(
                 "3",
                 "Video",

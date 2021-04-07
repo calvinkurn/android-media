@@ -19,6 +19,12 @@ data class ComponentData(
         val url : String?,
         @SerializedName("type")
         val type: String?,
+        @SerializedName("videoId")
+        val videoId : String?,
+        @SerializedName("title")
+        val title : String?,
+        @SerializedName("channelName")
+        val channelName : String?
 
 ){
     @Parcelize
@@ -47,4 +53,11 @@ data class TopSpecificationsComponentData(
 @Parcelize
 data class VideoComponentData(
         val url : String?,
-        val type : String?) : Parcelable
+        val type : String?,
+        val videoId : String?,
+        val title : String?,
+        val channelName : String?) : Parcelable {
+
+    val thumbnailUrl: String
+        get() = "https://img.youtube.com/vi/$videoId/1.jpg"
+}

@@ -24,7 +24,7 @@ class CatalogVideosContainerViewHolder(private val view : View,
     override fun bind(element: CatalogVideoDataModel) {
         val videosRV = view.findViewById<RecyclerView>(R.id.catalog_videos_rv)
         videosRV.layoutManager = layoutManager
-        videosAdapter = CatalogVideosAdapter(element.videosList)
+        videosAdapter = CatalogVideosAdapter(element.videosList,catalogDetailListener)
         videosRV.adapter = videosAdapter!!
     }
 }
