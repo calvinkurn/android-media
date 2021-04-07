@@ -28,6 +28,7 @@ class CategoryRevampAnalytics(pageType: String = EMPTY_STRING,
     }
 
     private var viewedProductsSet: ArrayList<String> = arrayListOf()
+    private var viewedBestSellerProductsSet: ArrayList<String> = arrayListOf()
     private var dimension40 = ""
     private fun createGeneralEvent(eventName: String = EVENT_CLICK_CATEGORY,
                                    eventCategory: String = "$VALUE_CATEGORY_PAGE - $categoryPageIdentifier",
@@ -136,10 +137,19 @@ class CategoryRevampAnalytics(pageType: String = EMPTY_STRING,
     override fun viewProductsList(componentsItems: ComponentsItem, isLogin: Boolean) {
         if (!componentsItems.data.isNullOrEmpty()) {
             componentsItems.data?.firstOrNull()?.let {
-                it.productId?.let { productId ->
-                    if (!viewedProductsSet.contains(productId)) {
-                        viewedProductsSet.add(productId)
-                        trackEventImpressionProductCard(componentsItems)
+                if(getProductName(it.typeProductCard) ==  PRODUCT_CARD_CAROUSEL) {
+                    it.productId?.let { productId ->
+                        if (!viewedBestSellerProductsSet.contains(productId)) {
+                            viewedBestSellerProductsSet.add(productId)
+                            trackEventImpressionProductCard(componentsItems)
+                        }
+                    }
+                } else {
+                    it.productId?.let { productId ->
+                        if (!viewedProductsSet.contains(productId)) {
+                            viewedProductsSet.add(productId)
+                            trackEventImpressionProductCard(componentsItems)
+                        }
                     }
                 }
             }
