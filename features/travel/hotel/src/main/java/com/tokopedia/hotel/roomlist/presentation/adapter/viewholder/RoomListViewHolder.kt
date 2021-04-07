@@ -121,7 +121,7 @@ class RoomListViewHolder(val view: View, val listener: OnClickBookListener) : Ab
         roomListModel.occupancyText = hotelRoom.occupancyInfo.occupancyText
         roomListModel.bedInfo = hotelRoom.bedInfo
         roomListModel.roomFacility = hotelRoom.roomInfo.facility
-        roomListModel.payInHotel = !hotelRoom.additionalPropertyInfo.isDirectPayment
+        roomListModel.payInHotel = !hotelRoom.isDirectPayment
         roomListModel.breakfastInfo = hotelRoom.breakfastInfo
         roomListModel.refundInfo = hotelRoom.refundInfo
         roomListModel.refundStatus = hotelRoom.refundInfo.refundStatus
@@ -132,7 +132,7 @@ class RoomListViewHolder(val view: View, val listener: OnClickBookListener) : Ab
         roomListModel.available = hotelRoom.available
         roomListModel.slashPrice = hotelRoom.roomPrice.deals.price
         roomListModel.tagging = hotelRoom.roomPrice.deals.tagging
-        roomListModel.payInHotelString = hotelRoom.additionalPropertyInfo.isDirectPaymentString
+        roomListModel.payInHotelString = hotelRoom.isDirectPaymentString
 
         val images: MutableList<String> = arrayListOf()
         for (item in hotelRoom.roomInfo.roomImages) {

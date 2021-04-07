@@ -60,7 +60,7 @@ class GetHotelRoomListUseCase @Inject constructor(val useCase: MultiRequestGraph
         val propertyInfo: HotelRoom.AdditionalPropertyInfo =
                 HotelRoom.AdditionalPropertyInfo(hotelRoomData.propertyId, hotelRoomData.isAddressRequired,
                         hotelRoomData.isCvCRequired, hotelRoomData.isDirectPayment, hotelRoomData.isEnabled,
-                        hotelName, hotelRoomData.deals.tagging, hotelRoomData.isDirectPaymentString)
+                        hotelName, hotelRoomData.deals.tagging)
         for (room in hotelRoomData.rooms) {
             room.additionalPropertyInfo = propertyInfo
         }
