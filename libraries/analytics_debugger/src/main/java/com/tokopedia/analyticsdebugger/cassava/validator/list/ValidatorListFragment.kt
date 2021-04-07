@@ -18,9 +18,12 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.analyticsdebugger.R
+import com.tokopedia.analyticsdebugger.cassava.di.CassavaComponent
 import com.tokopedia.analyticsdebugger.cassava.validator.main.ValidatorViewModel
 import timber.log.Timber
+import javax.inject.Inject
 
 class ValidatorListFragment : Fragment() {
 
@@ -28,16 +31,18 @@ class ValidatorListFragment : Fragment() {
 
     private lateinit var listingAdapter: FileListingAdapter
 
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+
     val viewModel: ValidatorViewModel by lazy {
-        activity?.application?.let {
-            ViewModelProvider(requireActivity(), ViewModelProvider.AndroidViewModelFactory(it))
-                    .get(ValidatorViewModel::class.java)
-        } ?: throw IllegalArgumentException("Requires activity, fragment should be attached")
+        ViewModelProvider(this, viewModelFactory)
+                .get(ValidatorViewModel::class.java)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        initInjector()
         viewModel.fetchLocalQueriesList()
     }
 
@@ -117,6 +122,10 @@ class ValidatorListFragment : Fragment() {
 
     fun setListener(listener: Listener) {
         this.listener = listener
+    }
+
+    private fun initInjector() {
+        (activity as HasComponent<CassavaComponent>).component.inject(this)
     }
 
     interface Listener {

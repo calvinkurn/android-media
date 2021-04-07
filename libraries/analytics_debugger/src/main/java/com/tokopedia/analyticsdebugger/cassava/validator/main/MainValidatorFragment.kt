@@ -11,13 +11,19 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.analyticsdebugger.R
+import com.tokopedia.analyticsdebugger.cassava.di.CassavaComponent
 import com.tokopedia.analyticsdebugger.cassava.validator.core.GtmLogUi
 import com.tokopedia.analyticsdebugger.cassava.validator.core.Validator
 import com.tokopedia.analyticsdebugger.cassava.validator.core.toJson
 import timber.log.Timber
+import javax.inject.Inject
 
 class MainValidatorFragment : Fragment() {
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
 
     private val testPath: String by lazy {
         arguments?.getString(ARGUMENT_TEST_PATH)
@@ -25,10 +31,8 @@ class MainValidatorFragment : Fragment() {
     }
 
     val viewModel: ValidatorViewModel by lazy {
-        activity?.application?.let {
-            ViewModelProvider(requireActivity(), ViewModelProvider.AndroidViewModelFactory(it))
-                    .get(ValidatorViewModel::class.java)
-        } ?: throw IllegalArgumentException("Requires activity, fragment should be attached")
+        ViewModelProvider(this, viewModelFactory)
+                .get(ValidatorViewModel::class.java)
     }
 
     private val mAdapter: ValidatorResultAdapter by lazy {
@@ -40,6 +44,7 @@ class MainValidatorFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        initInjector()
         viewModel.fetchQueryFromAsset(testPath)
     }
 
@@ -81,6 +86,10 @@ class MainValidatorFragment : Fragment() {
         val act = item.matches
 
         callback?.goDetail(exp, act)
+    }
+
+    private fun initInjector() {
+        (activity as HasComponent<CassavaComponent>).component.inject(this)
     }
 
     interface Listener {

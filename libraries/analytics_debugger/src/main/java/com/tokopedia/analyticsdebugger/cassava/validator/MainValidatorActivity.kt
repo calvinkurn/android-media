@@ -10,25 +10,36 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.snackbar.Snackbar
+import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.analyticsdebugger.R
+import com.tokopedia.analyticsdebugger.cassava.di.CassavaComponent
+import com.tokopedia.analyticsdebugger.cassava.di.CassavaComponentInstance
 import com.tokopedia.analyticsdebugger.cassava.validator.core.GtmLogUi
 import com.tokopedia.analyticsdebugger.cassava.validator.detail.ValidatorDetailFragment
 import com.tokopedia.analyticsdebugger.cassava.validator.list.ValidatorListFragment
 import com.tokopedia.analyticsdebugger.cassava.validator.main.MainValidatorFragment
 import com.tokopedia.analyticsdebugger.cassava.validator.main.ValidatorViewModel
+import javax.inject.Inject
 
-class MainValidatorActivity : AppCompatActivity(), MainValidatorFragment.Listener, ValidatorListFragment.Listener {
+class MainValidatorActivity : AppCompatActivity(),
+        MainValidatorFragment.Listener,
+        ValidatorListFragment.Listener,
+        HasComponent<CassavaComponent> {
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
 
     val viewModel: ValidatorViewModel by lazy {
-        application?.let {
-            ViewModelProvider(this, ViewModelProvider.AndroidViewModelFactory(it))
-                    .get(ValidatorViewModel::class.java)
-        } ?: throw IllegalArgumentException("Requires activity, fragment should be attached")
+        ViewModelProvider(this, viewModelFactory)
+                .get(ValidatorViewModel::class.java)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_analytics_validator)
+
+        initInjector()
+
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
         toolbar.subtitle = "Tokopedia Client Analytics Validator"
@@ -72,4 +83,12 @@ class MainValidatorActivity : AppCompatActivity(), MainValidatorFragment.Listene
                 .replace(R.id.container, MainValidatorFragment.newInstance(filepath))
                 .commit()
     }
+
+    private fun initInjector() {
+        component.inject(this)
+    }
+
+    override fun getComponent(): CassavaComponent =
+            CassavaComponentInstance.getInstance(application)
+
 }

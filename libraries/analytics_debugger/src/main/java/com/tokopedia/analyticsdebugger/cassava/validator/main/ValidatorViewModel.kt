@@ -14,8 +14,10 @@ import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.analyticsdebugger.debugger.helper.SingleLiveEvent
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import javax.inject.Inject
 
-class ValidatorViewModel constructor(val context: Application) : AndroidViewModel(context) {
+class ValidatorViewModel @Inject constructor(val context: Application)
+    : AndroidViewModel(context) {
 
     private val dao: GtmLogDBSource by lazy { GtmLogDBSource(context) }
     private val engine: ValidatorEngine by lazy { ValidatorEngine(dao) }
