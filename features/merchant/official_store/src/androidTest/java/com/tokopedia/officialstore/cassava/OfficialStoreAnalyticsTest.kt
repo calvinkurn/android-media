@@ -5,9 +5,6 @@ import android.util.Log
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.action.ViewActions
-import androidx.test.espresso.contrib.RecyclerViewActions
-import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
@@ -29,7 +26,6 @@ import com.tokopedia.test.application.assertion.topads.TopAdsVerificationTestRep
 import com.tokopedia.test.application.espresso_component.CommonActions
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
-import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.MatcherAssert
 import org.junit.After
 import org.junit.Before
@@ -153,8 +149,9 @@ class OfficialStoreAnalyticsTest {
                 CommonActions.clickOnEachItemRecyclerView(viewHolder.itemView, R.id.carouselProductCardRecyclerView,0)
             }
             is OfficialProductRecommendationViewHolder -> {
-                onView(allOf(isDisplayed(), withId(R.id.recycler_view)))
-                        .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(i, ViewActions.click()))
+                activityRule.runOnUiThread {
+                    viewHolder.itemView.performClick()
+                }
             }
         }
     }
