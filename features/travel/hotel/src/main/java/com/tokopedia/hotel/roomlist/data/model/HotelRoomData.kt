@@ -34,7 +34,11 @@ data class HotelRoomData(
 
         @SerializedName("deals")
         @Expose
-        val deals: PriceDeals = PriceDeals()
+        val deals: PriceDeals = PriceDeals(),
+
+        @SerializedName("isDirectPaymentString")
+        @Expose
+        val isDirectPaymentString: String = ""
 ) {
     data class Response(
             @SerializedName("propertySearchRoom")

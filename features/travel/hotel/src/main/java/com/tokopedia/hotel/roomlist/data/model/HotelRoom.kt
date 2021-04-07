@@ -210,7 +210,9 @@ data class HotelRoom(
 
             val propertyName: String = "",
 
-            val hotelTagging: String = ""
+            val hotelTagging: String = "",
+
+            val isDirectPaymentString: String = ""
     )
 }
 
