@@ -13,8 +13,13 @@ import com.tokopedia.product.addedit.productlimitation.presentation.adapter.Prod
 import com.tokopedia.product.addedit.productlimitation.presentation.model.ProductLimitationModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifycomponents.ticker.Ticker
 
-class ProductLimitationBottomSheet(private val actionItems: List<ProductLimitationModel>) : BottomSheetUnify() {
+class ProductLimitationBottomSheet(
+        private val actionItems: List<ProductLimitationModel> = emptyList(),
+        private val isEligible: Boolean = false,
+        private val limitAmount: Int = 0
+) : BottomSheetUnify() {
 
     companion object {
         const val TAG = "Tag Product Limitation Bottom Sheet"
@@ -22,15 +27,13 @@ class ProductLimitationBottomSheet(private val actionItems: List<ProductLimitati
 
     private var onBottomSheetResult: (String) -> Unit = {}
 
-    init {
-        setTitle("Tidak bisa menambahkan produk")
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        initChildLayout()
+        overlayClickDismiss = true
+        setTitle(getString(R.string.title_product_limitation_cant_add_product))
         setCloseClickListener {
             dismiss()
         }
-    }
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        initChildLayout()
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
@@ -46,19 +49,31 @@ class ProductLimitationBottomSheet(private val actionItems: List<ProductLimitati
     }
 
     private fun initChildLayout() {
-        overlayClickDismiss = true
         val contentView: View? = View.inflate(context,
                 R.layout.add_edit_product_product_limitation_bottom_sheet_content, null)
         val rvItems = contentView?.findViewById<RecyclerView>(R.id.rv_product_limitation)
-        val adapter = ProductLimitationItemAdapter()
+        val ticker = contentView?.findViewById<Ticker>(R.id.ticker_product_limitation)
 
-        adapter.setData(actionItems)
-        adapter.setOnItemClick {
-            onBottomSheetResult.invoke(it)
-        }
-        rvItems?.adapter = adapter
         rvItems?.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         rvItems?.addItemDecoration(HorizontalItemDecoration(resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3)))
+        rvItems?.adapter = ProductLimitationItemAdapter().apply {
+            setData(actionItems)
+            setOnItemClick {
+                onBottomSheetResult.invoke(it)
+            }
+        }
+
+        ticker?.apply {
+            if (isEligible) {
+                tickerType = Ticker.TYPE_ANNOUNCEMENT
+                tickerTitle = getString(R.string.title_product_limitation_bottomsheet_ticker, limitAmount)
+            } else {
+                tickerType = Ticker.TYPE_WARNING
+                tickerTitle = ""
+            }
+            setHtmlDescription(getString(R.string.label_product_limitation_bottomsheet_ticker))
+        }
+
         setChild(contentView)
     }
 

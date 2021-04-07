@@ -383,10 +383,11 @@
     <string name="label_product_limitation_item_delete">Tambahkan produk dengan hapus produk yang habis atau kurang diminati pembeli.</string>
     <string name="title_product_limitation_item_usepromotion">Pasang iklan dan promosi untuk tingkatkan penjualan</string>
     <string name="label_product_limitation_item_usepromotion">Semakin banyak produk yang terjual, semakin banyak kuota produk untuk tokomu!</string>
-    <string name="title_product_limitation_bottomsheet_ticker">Kamu bisa upload hingga [amount] produk</string>
-    <string name="label_product_limitation_bottomsheet_ticker">Jumlah maks. produk yang dapat ditambahkan didasarkan oleh tipe Seller. Selengkapnya</string>
+    <string name="title_product_limitation_bottomsheet_ticker">Kamu bisa upload hingga %1$d produk</string>
+    <string name="label_product_limitation_bottomsheet_ticker">Jumlah maks. produk yang dapat ditambahkan didasarkan oleh tipe Seller. <![CDATA[<font color=\'#42b549\'><b>Selengkapnya</b></font>.]]></string>
     <string name="title_product_limitation_bottomsheet_info">Bagaimana cara menambahkan lebih banyak produk?</string>
     <string name="label_product_limitation_bottomsheet_button">Kembali ke Daftar Produk</string>
+    <string name="title_product_limitation_cant_add_product">Tidak bisa menambahkan produk</string>
 
     <!--CONTENT DESC-->
     <string name="content_desc_tv_start_add_edit_product_photo">text mulai</string>

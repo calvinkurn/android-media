@@ -1628,7 +1628,6 @@ class AddEditProductPreviewFragment :
     }
 
     private fun setupBottomSheetProductLimitation(data: ProductLimitationData) {
-        data.eligible?.actionItems = listOf("UpToPM", "Variant", "Delete", "Promotion")
         val actionItems = ProductLimitationMapper.mapToActionItems(requireContext(), data)
         val bottomSheet = ProductLimitationBottomSheet(actionItems)
 
