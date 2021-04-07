@@ -40,8 +40,6 @@ import kotlinx.coroutines.*
 import javax.inject.Inject
 
 class OrderSummaryPageViewModel @Inject constructor(private val executorDispatchers: ExecutorDispatchers,
-                                                    val getPreferenceListUseCase: Lazy<GetPreferenceListUseCase>,
-                                                    val getAddressCornerUseCase: Lazy<GetAddressCornerUseCase>,
                                                     private val cartProcessor: OrderSummaryPageCartProcessor,
                                                     private val logisticProcessor: OrderSummaryPageLogisticProcessor,
                                                     private val checkoutProcessor: OrderSummaryPageCheckoutProcessor,

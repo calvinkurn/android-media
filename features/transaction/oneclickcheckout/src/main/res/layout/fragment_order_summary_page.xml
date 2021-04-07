@@ -419,7 +419,8 @@
 
             <include
                 android:id="@+id/layout_no_address"
-                layout="@layout/layout_occ_no_address" />
+                layout="@layout/layout_occ_no_address"
+                android:visibility="gone" />
 
         </FrameLayout>
 
