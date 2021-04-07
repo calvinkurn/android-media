@@ -131,6 +131,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
     private var isHitRegisterPushNotif: Boolean = false
     private var activityShouldEnd: Boolean = true
     private var enableOvoRegister: Boolean = false
+    private var validateToken: String = ""
 
     @Inject
     lateinit var externalRegisterPreference: ExternalRegisterPreference
@@ -909,16 +910,14 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
                 }
             } else if (requestCode == REQUEST_REGISTER_EMAIL && resultCode == Activity.RESULT_OK) {
                 registerInitialViewModel.getUserInfo()
-            } else if (requestCode == REQUEST_REGISTER_EMAIL && resultCode == Activity
-                            .RESULT_CANCELED) {
+            } else if (requestCode == REQUEST_REGISTER_EMAIL && resultCode == Activity.RESULT_CANCELED) {
                 dismissProgressBar()
                 it.setResult(Activity.RESULT_CANCELED)
                 userSession.clearToken()
             } else if (requestCode == REQUEST_CREATE_PASSWORD && resultCode == Activity.RESULT_OK) {
                 it.setResult(Activity.RESULT_OK)
                 it.finish()
-            } else if (requestCode == REQUEST_CREATE_PASSWORD && resultCode == Activity
-                            .RESULT_CANCELED) {
+            } else if (requestCode == REQUEST_CREATE_PASSWORD && resultCode == Activity.RESULT_CANCELED) {
                 dismissProgressBar()
                 it.setResult(Activity.RESULT_CANCELED)
             } else if (requestCode == REQUEST_SECURITY_QUESTION
@@ -927,9 +926,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
                 data.extras?.getString(ApplinkConstInternalGlobal.PARAM_UUID, "")?.let { validateToken ->
                     registerInitialViewModel.reloginAfterSQ(validateToken)
                 }
-
-            } else if (requestCode == REQUEST_SECURITY_QUESTION && resultCode == Activity
-                            .RESULT_CANCELED) {
+            } else if (requestCode == REQUEST_SECURITY_QUESTION && resultCode == Activity.RESULT_CANCELED) {
                 dismissProgressBar()
                 it.setResult(Activity.RESULT_CANCELED)
             } else if (requestCode == REQUEST_VERIFY_PHONE_REGISTER_PHONE
@@ -937,9 +934,9 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
                     && data != null
                     && data.extras != null) {
                 val uuid = data.extras?.getString(ApplinkConstInternalGlobal.PARAM_UUID, "") ?: ""
+                validateToken = data.extras?.getString(ApplinkConstInternalGlobal.PARAM_TOKEN, "") ?: ""
                 goToAddName(uuid)
-            } else if (requestCode == REQUEST_VERIFY_PHONE_REGISTER_PHONE && resultCode == Activity
-                            .RESULT_CANCELED) {
+            } else if (requestCode == REQUEST_VERIFY_PHONE_REGISTER_PHONE && resultCode == Activity.RESULT_CANCELED) {
                 dismissProgressBar()
                 it.setResult(Activity.RESULT_CANCELED)
             } else if (requestCode == REQUEST_ADD_NAME_REGISTER_PHONE && resultCode == Activity.RESULT_OK) {
@@ -953,7 +950,6 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
                 val accessToken = data.extras?.getString(ApplinkConstInternalGlobal.PARAM_UUID, "") ?: ""
                 val phoneNumber = data.extras?.getString(ApplinkConstInternalGlobal.PARAM_MSISDN, "") ?: ""
                 goToChooseAccountPage(accessToken, phoneNumber)
-
             } else if (requestCode == REQUEST_CHOOSE_ACCOUNT && resultCode == Activity.RESULT_OK) {
                 it.setResult(Activity.RESULT_OK)
                 if (data != null) {
@@ -1035,8 +1031,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
 
     private fun processAfterAddNameRegisterPhone(data: Bundle?) {
         val enable2FA = data?.getBoolean(ApplinkConstInternalGlobal.PARAM_ENABLE_2FA) ?: false
-        val enableSkip2FA = data?.getBoolean(ApplinkConstInternalGlobal.PARAM_ENABLE_SKIP_2FA)
-                ?: false
+        val enableSkip2FA = data?.getBoolean(ApplinkConstInternalGlobal.PARAM_ENABLE_SKIP_2FA) ?: false
         if (enable2FA) {
             activityShouldEnd = false
             sendTrackingSuccessRegister()
@@ -1050,8 +1045,8 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
         val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_PIN)
         intent.putExtras(Bundle().apply {
             putBoolean(ApplinkConstInternalGlobal.PARAM_ENABLE_SKIP_2FA, enableSkip2FA)
-            putBoolean(ApplinkConstInternalGlobal.PARAM_IS_FROM_2FA, true)
             putBoolean(ApplinkConstInternalGlobal.PARAM_IS_SKIP_OTP, true)
+            putString(ApplinkConstInternalGlobal.PARAM_TOKEN, validateToken)
         })
         startActivityForResult(intent, REQUEST_ADD_PIN)
     }

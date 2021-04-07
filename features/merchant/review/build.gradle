@@ -105,7 +105,6 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
-    implementation rootProject.ext.tkpdInternalLibDependencies.williamchart
     compileOnly rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation
 
     implementation rootProject.ext.unifyDependencies.coach_mark

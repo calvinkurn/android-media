@@ -522,6 +522,10 @@
         <value>false</value>
     </entry>
     <entry>
+        <key>app_iris_gtm_enabled</key>
+        <value>true</value>
+    </entry>
+    <entry>
         <key>app_cm_push_enable_new2</key>
         <value>true</value>
     </entry>
@@ -532,6 +536,10 @@
     <entry>
         <key>android_enable_branch_reinitflow</key>
         <value>false</value>
+    </entry>
+    <entry>
+        <key>android_enable_xiaomi_pai_tracking</key>
+        <value>true</value>
     </entry>
     <entry>
         <key>ANDROID_SELLERAPP_POC_NEW_RELIC_DASHBOARD</key>
