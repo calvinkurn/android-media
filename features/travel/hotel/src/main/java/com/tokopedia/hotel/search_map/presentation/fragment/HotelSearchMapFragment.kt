@@ -183,6 +183,13 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
             when (it) {
                 is Success -> {
                     addMyLocation(LatLng(it.data.second, it.data.first))
+                    hotelSearchModel.apply {
+                        searchType = HotelTypeEnum.COORDINATE.value
+                        searchId = ""
+                        name = getString(R.string.hotel_header_title_nearby)
+                        lat = it.data.second
+                        long = it.data.first
+                    }
                 }
             }
         })
@@ -191,8 +198,6 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
             when (it) {
                 is Success -> {
                     hotelSearchModel.apply {
-                        searchType = HotelTypeEnum.COORDINATE.value
-                        searchId = ""
                         radius = it.data
                     }
                     hotelSearchMapViewModel.initSearchParam(hotelSearchModel)
