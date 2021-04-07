@@ -171,20 +171,21 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
                         itemProduct.attributes.desc,
                         MethodChecker.fromHtml(itemProduct.attributes.detail).toString(),
                         itemProduct.attributes.price,
-                        itemProduct.attributes.productPromo?.newPrice)
+                        itemProduct.attributes.productPromo?.newPrice,
+                        object: DigitalProductBottomSheet.ActionListener {
+                            override fun onClickOnProduct() {
+                                activity?.run {
+                                    telcoTelcoProductView.selectProductItem(position)
+                                    sharedModelPrepaid.setProductCatalogSelected(itemProduct)
+                                    sharedModelPrepaid.setProductAutoCheckout(itemProduct)
+                                    topupAnalytics.pickProductDetail(itemProduct, selectedOperatorName, userSession.userId)
+                                }
+                            }
+                        }
+                )
                 seeMoreBottomSheet.setOnDismissListener {
                     topupAnalytics.eventCloseDetailProduct(itemProduct.attributes.categoryId)
                 }
-                seeMoreBottomSheet.setListener(object : DigitalProductBottomSheet.ActionListener {
-                    override fun onClickOnProduct() {
-                        activity?.run {
-                            telcoTelcoProductView.selectProductItem(position)
-                            sharedModelPrepaid.setProductCatalogSelected(itemProduct)
-                            sharedModelPrepaid.setProductAutoCheckout(itemProduct)
-                            topupAnalytics.pickProductDetail(itemProduct, selectedOperatorName, userSession.userId)
-                        }
-                    }
-                })
                 seeMoreBottomSheet.show(it.supportFragmentManager, "bottom_sheet_product_telco")
 
             }

@@ -75,8 +75,16 @@ class DigitalProductBottomSheet : BottomSheetUnify() {
         private const val PRICE = "price"
         private const val PROMO_PRICE = "promo_price"
 
-        fun newInstance(title: String, details: String, price: String, promoPrice : String?): DigitalProductBottomSheet {
-            val fragment = DigitalProductBottomSheet()
+        fun newInstance(
+                title: String,
+                details: String,
+                price: String,
+                promoPrice : String?,
+                listener: ActionListener
+        ): DigitalProductBottomSheet {
+            val fragment = DigitalProductBottomSheet().apply {
+                setListener(listener)
+            }
             val bundle = Bundle()
             bundle.putString(DETAILS, details)
             bundle.putString(PRICE, price)
