@@ -14,6 +14,9 @@ import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifyprinciples.Typography
 
+/**
+ * Created by Rafli Syam on 07/04/2021
+ */
 abstract class ShopShowcaseListImageBaseViewHolder(
         itemView: View
 ) : RecyclerView.ViewHolder(itemView) {
@@ -41,8 +44,7 @@ abstract class ShopShowcaseListImageBaseViewHolder(
 
     fun isShowCampaignLabel(type: Int): Boolean {
         return when (type) {
-            ShopEtalaseTypeDef.ETALASE_CAMPAIGN,
-            ShopEtalaseTypeDef.ETALASE_THEMATIC_CAMPAIGN -> true
+            ShopEtalaseTypeDef.ETALASE_CAMPAIGN -> true
             else -> false
         }
     }
@@ -55,9 +57,6 @@ abstract class ShopShowcaseListImageBaseViewHolder(
         return when (type) {
             ShopEtalaseTypeDef.ETALASE_CAMPAIGN -> {
                 itemView.context.getString(R.string.shop_page_showcase_npl_text)
-            }
-            ShopEtalaseTypeDef.ETALASE_THEMATIC_CAMPAIGN -> {
-                itemView.context.getString(R.string.shop_page_showcase_thematic_text)
             }
             else -> ""
         }
