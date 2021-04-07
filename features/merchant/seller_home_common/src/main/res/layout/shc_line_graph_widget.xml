@@ -101,7 +101,8 @@
             app:layout_constraintBottom_toBottomOf="@id/btnLineGraphMore"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/btnLineGraphMore"
-            app:srcCompat="@drawable/ic_arrow_right_default" />
+            app:srcCompat="@drawable/ic_arrow_right_default"
+            android:contentDescription="@string/shc_content_desc_button_lihat_selengkapnya" />
 
         <include
             layout="@layout/shc_partial_common_widget_state_error"

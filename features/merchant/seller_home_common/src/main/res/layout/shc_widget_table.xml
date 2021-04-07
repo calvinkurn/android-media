@@ -102,7 +102,8 @@
             app:layout_constraintBottom_toBottomOf="@id/btnTableCta"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/btnTableCta"
-            app:srcCompat="@drawable/ic_arrow_right_default" />
+            app:srcCompat="@drawable/ic_arrow_right_default"
+            android:contentDescription="@string/shc_content_desc_button_lihat_selengkapnya" />
 
         <include
             layout="@layout/shc_partial_common_widget_state_error"
@@ -135,7 +136,8 @@
             app:layout_constraintTop_toBottomOf="@+id/tvTableWidgetTitle"
             app:layout_constraintVertical_chainStyle="packed"
             tools:src="@drawable/unify_globalerrors_connection"
-            tools:visibility="visible" />
+            tools:visibility="visible"
+            android:contentDescription="@string/shc_content_desc_image_table_empty" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvShcTableEmptyTitle"

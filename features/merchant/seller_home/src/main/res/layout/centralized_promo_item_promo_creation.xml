@@ -98,7 +98,8 @@
             android:adjustViewBounds="true"
             android:background="@drawable/ic_squircle"
             android:padding="@dimen/centralized_promo_dimen_12dp"
-            app:srcCompat="@drawable/sh_ic_top_ads_color" />
+            app:srcCompat="@drawable/sh_ic_top_ads_color"
+            android:contentDescription="@string/centralized_promo_content_desc_image_recommended_promo" />
 
     </FrameLayout>
 

@@ -74,6 +74,7 @@
         app:layout_constraintBottom_toBottomOf="@id/tvProgressSeeDetails"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/tvProgressSeeDetails"
-        app:srcCompat="@drawable/ic_arrow_right_default" />
+        app:srcCompat="@drawable/ic_arrow_right_default"
+        android:contentDescription="@string/shc_content_desc_button_lihat_selengkapnya" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

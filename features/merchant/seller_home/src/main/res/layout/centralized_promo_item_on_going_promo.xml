@@ -106,10 +106,8 @@
             android:ellipsize="end"
             android:maxLines="1"
             android:paddingStart="@dimen/layout_lvl1"
-            android:paddingLeft="@dimen/layout_lvl1"
             android:paddingTop="@dimen/layout_lvl1"
             android:paddingEnd="@dimen/layout_lvl2"
-            android:paddingRight="@dimen/layout_lvl2"
             android:paddingBottom="@dimen/layout_lvl1"
             android:singleLine="true"
             android:textColor="@color/Unify_N700_68"
@@ -127,14 +125,13 @@
             android:layout_width="@dimen/centralized_promo_on_going_caret_icon_size"
             android:layout_height="@dimen/centralized_promo_on_going_caret_icon_size"
             android:paddingStart="@dimen/centralized_promo_dimen_4dp"
-            android:paddingLeft="@dimen/centralized_promo_dimen_4dp"
             android:paddingEnd="@dimen/layout_lvl1"
-            android:paddingRight="@dimen/layout_lvl1"
             app:layout_constraintBottom_toBottomOf="@id/tvSeePastPromotion"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="@id/tvSeePastPromotion"
-            app:srcCompat="@drawable/ic_arrow_right_grey" />
+            app:srcCompat="@drawable/ic_arrow_right_grey"
+            android:contentDescription="@string/centralized_promo_content_desc_button_lihat_detail_promo" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
