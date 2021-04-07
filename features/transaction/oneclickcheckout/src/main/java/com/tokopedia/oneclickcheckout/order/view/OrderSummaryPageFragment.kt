@@ -3,6 +3,7 @@ package com.tokopedia.oneclickcheckout.order.view
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.graphics.Typeface.BOLD
 import android.os.Bundle
 import android.text.Spannable
@@ -1492,8 +1493,6 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         const val QUERY_PRODUCT_ID = "product_id"
 
         private const val EMPTY_PROFILE_IMAGE = "https://ecs7.tokopedia.net/android/others/beli_langsung_intro.png"
-
-        private const val COACH_MARK_TAG = "osp_coach_mark"
 
         private const val SOURCE_ADD_PROFILE = "add_profile"
         private const val SOURCE_PDP = "pdp"
