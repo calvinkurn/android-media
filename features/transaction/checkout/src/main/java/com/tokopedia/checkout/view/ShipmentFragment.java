@@ -80,7 +80,6 @@ import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel;
 import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData;
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel;
 import com.tokopedia.logisticcart.shipping.model.ShopShipment;
-import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutUtil;
 import com.tokopedia.promocheckout.common.view.model.clearpromo.ClearPromoUiModel;
 import com.tokopedia.promocheckout.common.view.uimodel.BenefitSummaryInfoUiModel;
 import com.tokopedia.promocheckout.common.view.uimodel.MessageUiModel;
@@ -203,8 +202,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     CheckoutAnalyticsCourierSelection checkoutAnalyticsCourierSelection;
     @Inject
     CheckoutAnalyticsChangeAddress checkoutAnalyticsChangeAddress;
-    @Inject
-    TrackingPromoCheckoutUtil trackingPromoCheckoutUtil;
     @Inject
     CheckoutAnalyticsPurchaseProtection mTrackerPurchaseProtection;
     @Inject

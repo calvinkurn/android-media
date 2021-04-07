@@ -70,7 +70,6 @@ import com.tokopedia.logisticcart.shipping.model.ShopShipment;
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesApiUseCase;
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase;
 import com.tokopedia.network.utils.TKPDMapParam;
-import com.tokopedia.promocheckout.common.domain.CheckPromoCodeException;
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase;
 import com.tokopedia.promocheckout.common.view.model.clearpromo.ClearPromoUiModel;
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection;
@@ -1165,9 +1164,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                             public void onError(Throwable e) {
                                 Timber.d(e);
                                 if (getView() != null) {
-                                    if (e instanceof CheckPromoCodeException) {
-                                        getView().showToastError(e.getMessage());
-                                    } else if (e instanceof AkamaiErrorException) {
+                                    if (e instanceof AkamaiErrorException) {
                                         clearAllPromo();
                                         getView().showToastError(e.getMessage());
                                         getView().resetAllCourier();
