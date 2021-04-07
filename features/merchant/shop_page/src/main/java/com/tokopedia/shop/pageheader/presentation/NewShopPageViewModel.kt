@@ -45,7 +45,6 @@ import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.common.graphql.data.shopoperationalhourstatus.ShopOperationalHourStatus
 import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.GetShopReputationUseCase
 import com.tokopedia.shop.common.view.model.ShopProductFilterParameter
-import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderContentData
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderLayoutResponse
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderP1
 import com.tokopedia.shop.pageheader.data.model.ShopRequestUnmoderateSuccessResponse
@@ -76,7 +75,6 @@ class NewShopPageViewModel @Inject constructor(
         private val getBroadcasterShopConfigUseCase: Lazy<GetBroadcasterShopConfigUseCase>,
         @GqlGetShopInfoUseCaseCoreAndAssetsQualifier
         private val gqlGetShopInfobUseCaseCoreAndAssets: Lazy<GQLGetShopInfoUseCase>,
-        private val toggleFavouriteShopUseCase: Lazy<ToggleFavouriteShopUseCase>,
         private val shopQuestGeneralTrackerUseCase: Lazy<ShopQuestGeneralTrackerUseCase>,
         private val getShopPageP1DataUseCase: Lazy<GetShopPageP1DataUseCase>,
         private val getShopProductListUseCase: Lazy<GqlGetShopProductUseCase>,
@@ -108,7 +106,6 @@ class NewShopPageViewModel @Inject constructor(
 
     val shopPageP1Data = MutableLiveData<Result<NewShopPageP1HeaderData>>()
     val shopIdFromDomainData = MutableLiveData<Result<String>>()
-    val shopPageHeaderContentData = MutableLiveData<Result<ShopPageHeaderContentData>>()
     var productListData: ShopProduct.GetShopProduct = ShopProduct.GetShopProduct()
     val shopImagePath = MutableLiveData<String>()
 
@@ -333,11 +330,6 @@ class NewShopPageViewModel @Inject constructor(
         } catch (t: Throwable) {
         }
         return broadcasterConfig
-    }
-
-    override fun flush() {
-        super.flush()
-        toggleFavouriteShopUseCase.get().unsubscribe()
     }
 
     fun getFollowStatusData(shopId: String) {
