@@ -72,7 +72,7 @@ class PlayWidgetCardChannelMediumView : ConstraintLayout, PlayVideoPlayerReceive
         liveBadge = view.findViewById(R.id.play_widget_badge_live)
         totalViewBadge = view.findViewById(R.id.play_widget_badge_total_view)
         promoBadge = view.findViewById(R.id.play_widget_badge_promo)
-        promoAdditionalContextView = view.findViewById(R.id.tv_promo_additional_context)
+        promoAdditionalContextView = view.findViewById(R.id.iv_promo_additional_context)
         tvPromoDetail = view.findViewById(R.id.tv_promo_detail)
         tvStartTime = view.findViewById(R.id.play_widget_channel_date)
         tvTitle = view.findViewById(R.id.play_widget_channel_title)

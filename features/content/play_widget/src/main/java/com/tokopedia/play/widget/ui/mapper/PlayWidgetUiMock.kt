@@ -110,7 +110,7 @@ object PlayWidgetUiMock {
             totalView = "10,0 rb",
             totalViewVisible = true,
             promoType = PlayWidgetPromoType.LiveOnly("Diskon 50%"),
-            reminderType = PlayWidgetReminderType.UnRemind,
+            reminderType = PlayWidgetReminderType.NotReminded,
             partner = PlayWidgetPartnerUiModel("123", "Google"),
             video = getVideoUiModel(channelType),
             hasAction = true,
