@@ -4,11 +4,11 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.product.addedit.R
-import com.tokopedia.product.addedit.productlimitation.presentation.model.ProductLimitationModel
+import com.tokopedia.product.addedit.productlimitation.presentation.model.ProductLimitationActionItemModel
 
 class ProductLimitationItemAdapter: RecyclerView.Adapter<ProductLimitationItemViewHolder>() {
 
-    private var items: MutableList<ProductLimitationModel> = mutableListOf()
+    private var items: MutableList<ProductLimitationActionItemModel> = mutableListOf()
     private var itemOnClick: (String) -> Unit = {}
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProductLimitationItemViewHolder {
@@ -25,11 +25,11 @@ class ProductLimitationItemAdapter: RecyclerView.Adapter<ProductLimitationItemVi
         holder.bindData(item)
     }
 
-    fun getData(): List<ProductLimitationModel> {
+    fun getData(): List<ProductLimitationActionItemModel> {
         return items
     }
 
-    fun setData(items: List<ProductLimitationModel>) {
+    fun setData(items: List<ProductLimitationActionItemModel>) {
         this.items = items.toMutableList()
         notifyDataSetChanged()
     }

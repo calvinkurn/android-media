@@ -1,7 +1,7 @@
 package com.tokopedia.product.addedit.draft.mapper
 
-import com.google.gson.reflect.TypeToken
-import com.tokopedia.abstraction.common.utils.network.CacheUtil
+import com.tokopedia.product.addedit.common.util.JsonUtil.mapJsonToObject
+import com.tokopedia.product.addedit.common.util.JsonUtil.mapObjectToJson
 import com.tokopedia.product.addedit.description.presentation.model.VideoLinkModel
 import com.tokopedia.product.addedit.detail.presentation.model.PictureInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.WholeSaleInputModel
@@ -12,9 +12,9 @@ import com.tokopedia.product.addedit.variant.presentation.model.VariantInputMode
 import com.tokopedia.product.manage.common.draft.data.model.detail.ShowCaseInputModel
 import com.tokopedia.product.manage.common.feature.draft.data.model.ProductDraft
 import com.tokopedia.product.manage.common.feature.draft.data.model.description.VideoLinkListModel
-import com.tokopedia.product.manage.common.feature.draft.data.model.detail.SpecificationInputModel as DraftSpecificationInputModel
 import com.tokopedia.product.manage.common.feature.draft.mapper.AddEditProductDraftMapper
 import com.tokopedia.shop.common.data.model.ShowcaseItemPicker
+import com.tokopedia.product.manage.common.feature.draft.data.model.detail.SpecificationInputModel as DraftSpecificationInputModel
 import com.tokopedia.product.manage.common.feature.draft.data.model.detail.WholeSaleInputModel as DraftWholeSaleInputModel
 
 object AddEditProductMapper {
@@ -166,18 +166,6 @@ object AddEditProductMapper {
                 draft.detailInputModel.productName,
                 AddEditProductDraftMapper.getCompletionPercent(draft),
         )
-    }
-
-    fun <T> mapObjectToJson(item: T?): String? {
-        return if (item != null) {
-            CacheUtil.convertModelToString(item, object : TypeToken<T>() {}.type)
-        } else {
-            null
-        }
-    }
-
-    fun <T> mapJsonToObject(jsonData : String, itemClass: Class<T>): T {
-        return CacheUtil.convertStringToModel(jsonData, itemClass)
     }
 }
 

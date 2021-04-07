@@ -5,7 +5,7 @@ import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler.loadImageFitCenter
 import com.tokopedia.product.addedit.R
-import com.tokopedia.product.addedit.productlimitation.presentation.model.ProductLimitationModel
+import com.tokopedia.product.addedit.productlimitation.presentation.model.ProductLimitationActionItemModel
 import com.tokopedia.unifyprinciples.Typography
 
 class ProductLimitationItemViewHolder(itemView: View, private val itemOnClick: (String) -> Unit) :
@@ -16,7 +16,7 @@ class ProductLimitationItemViewHolder(itemView: View, private val itemOnClick: (
     private val tvAction: Typography = itemView.findViewById(R.id.tv_action)
     private val ivCard: ImageView = itemView.findViewById(R.id.iv_card)
 
-    fun bindData(data: ProductLimitationModel) {
+    fun bindData(data: ProductLimitationActionItemModel) {
         loadImageFitCenter(itemView.context, ivCard, data.imageUrl)
         tvTitle.text = data.title
         tvDescription.text = data.description

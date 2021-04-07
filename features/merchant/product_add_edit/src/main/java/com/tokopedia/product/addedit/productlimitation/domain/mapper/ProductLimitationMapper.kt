@@ -3,13 +3,16 @@ package com.tokopedia.product.addedit.productlimitation.domain.mapper
 import android.content.Context
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
+import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.productlimitation.domain.model.ProductLimitationData
+import com.tokopedia.product.addedit.productlimitation.presentation.model.ProductLimitationActionItemModel
 import com.tokopedia.product.addedit.productlimitation.presentation.model.ProductLimitationModel
 
 class ProductLimitationMapper {
 
-    fun createUpgradeToPmActionItem(context: Context) = ProductLimitationModel(
+    fun createUpgradeToPmActionItem(context: Context) = ProductLimitationActionItemModel(
             IMAGE_URL_UPGRADE_TO_PM,
             context.getString(R.string.title_product_limitation_item_upgradepm),
             context.getString(R.string.label_product_limitation_item_upgradepm),
@@ -17,7 +20,7 @@ class ProductLimitationMapper {
             ACTION_URL_UPGRADE_TO_PM
     )
 
-    fun createUseVariantActionItem(context: Context) = ProductLimitationModel(
+    fun createUseVariantActionItem(context: Context) = ProductLimitationActionItemModel(
             IMAGE_URL_USE_VARIANT,
             context.getString(R.string.title_product_limitation_item_usevariant),
             context.getString(R.string.label_product_limitation_item_usevariant),
@@ -25,7 +28,7 @@ class ProductLimitationMapper {
             ACTION_URL_USE_VARIANT
     )
 
-    fun createDeleteProductActionItem(context: Context) = ProductLimitationModel(
+    fun createDeleteProductActionItem(context: Context) = ProductLimitationActionItemModel(
             IMAGE_URL_DELETE_PRODUCTS,
             context.getString(R.string.title_product_limitation_item_delete),
             context.getString(R.string.label_product_limitation_item_delete),
@@ -33,13 +36,32 @@ class ProductLimitationMapper {
             ACTION_URL_DELETE_PRODUCTS
     )
 
-    fun createUsePromotionActionItem(context: Context) = ProductLimitationModel(
+    fun createUsePromotionActionItem(context: Context) = ProductLimitationActionItemModel(
             IMAGE_URL_USE_PROMOTION,
             context.getString(R.string.title_product_limitation_item_usepromotion),
             context.getString(R.string.label_product_limitation_item_usepromotion),
             context.getString(R.string.action_product_limitation_item),
             ACTION_URL_USE_PROMOTION
     )
+
+    fun mapToActionItems(context: Context, productLimitationData: ProductLimitationData) =
+            productLimitationData.eligible?.actionItems?.map {
+                when(it) {
+                    UPGRADE_TO_PM -> {
+                        createUpgradeToPmActionItem(context)
+                    }
+                    USE_VARIANT -> {
+                        createUseVariantActionItem(context)
+                    }
+                    DELETE_PRODUCTS -> {
+                        createDeleteProductActionItem(context)
+                    }
+                    USE_PROMOTION -> {
+                        createUsePromotionActionItem(context)
+                    }
+                    else -> ProductLimitationActionItemModel()
+                }
+            }.orEmpty()
 
     companion object {
         private const val UPGRADE_TO_PM = "UpToPM"
@@ -57,23 +79,10 @@ class ProductLimitationMapper {
         private val ACTION_URL_DELETE_PRODUCTS = ApplinkConstInternalMarketplace.PRODUCT_MANAGE_LIST
         private val ACTION_URL_USE_PROMOTION = ApplinkConstInternalSellerapp.CENTRALIZED_PROMO
 
-        fun mapToActionItems(context: Context, productLimitationData: ProductLimitationData) =
-                productLimitationData.eligible?.actionItems?.map {
-                    when(it) {
-                        UPGRADE_TO_PM -> {
-                            ProductLimitationMapper().createUpgradeToPmActionItem(context)
-                        }
-                        USE_VARIANT -> {
-                            ProductLimitationMapper().createUseVariantActionItem(context)
-                        }
-                        DELETE_PRODUCTS -> {
-                            ProductLimitationMapper().createDeleteProductActionItem(context)
-                        }
-                        USE_PROMOTION -> {
-                            ProductLimitationMapper().createUsePromotionActionItem(context)
-                        }
-                        else -> ProductLimitationModel()
-                    }
-                }.orEmpty()
+        fun mapToProductLimitationModel(context: Context, productLimitationData: ProductLimitationData) =
+                ProductLimitationModel(
+                        productLimitationData.eligible?.value.orFalse(),
+                        productLimitationData.eligible?.limit.orZero(),
+                        ProductLimitationMapper().mapToActionItems(context, productLimitationData))
     }
 }

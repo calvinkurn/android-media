@@ -15,6 +15,8 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.kotlin.extensions.view.afterTextChanged
 import com.tokopedia.kotlin.extensions.view.isVisible
@@ -25,6 +27,7 @@ import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitori
 import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitoringConstants.ADD_EDIT_PRODUCT_SHIPMENT_TRACE
 import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitoringListener
 import com.tokopedia.product.addedit.common.AddEditProductComponentBuilder
+import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.HTTP_PREFIX
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.KEY_SAVE_INSTANCE_INPUT_MODEL
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.KEY_SAVE_INSTANCE_ISADDING
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.KEY_SAVE_INSTANCE_ISDRAFTING
@@ -32,11 +35,11 @@ import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.KEY
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.KEY_SAVE_INSTANCE_ISFIRSTMOVED
 import com.tokopedia.product.addedit.common.util.*
 import com.tokopedia.product.addedit.common.util.InputPriceUtil.formatProductPriceInput
+import com.tokopedia.product.addedit.common.util.JsonUtil.mapJsonToObject
+import com.tokopedia.product.addedit.common.util.JsonUtil.mapObjectToJson
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.BUNDLE_CACHE_MANAGER_ID
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.REQUEST_KEY_ADD_MODE
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.REQUEST_KEY_SHIPMENT
-import com.tokopedia.product.addedit.draft.mapper.AddEditProductMapper.mapJsonToObject
-import com.tokopedia.product.addedit.draft.mapper.AddEditProductMapper.mapObjectToJson
 import com.tokopedia.product.addedit.optionpicker.OptionPicker
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.BUNDLE_BACK_PRESSED
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.DESCRIPTION_DATA
@@ -50,7 +53,8 @@ import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProduc
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.SHIPMENT_DATA
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.UPLOAD_DATA
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
-import com.tokopedia.product.addedit.productlimitation.domain.mapper.ProductLimitationMapper.Companion.mapToActionItems
+import com.tokopedia.product.addedit.productlimitation.presentation.dialog.ProductLimitationBottomSheet
+import com.tokopedia.product.addedit.productlimitation.presentation.model.ProductLimitationModel
 import com.tokopedia.product.addedit.shipment.di.DaggerAddEditProductShipmentComponent
 import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants.Companion.MAX_WEIGHT_GRAM
 import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants.Companion.MAX_WEIGHT_KILOGRAM
@@ -158,8 +162,6 @@ class AddEditProductShipmentFragment:
         setupInsuranceRadios()
         setupSubmitButton()
         setupOnBackPressed()
-
-        observeProductLimitationData()
 
         // PLT monitoring
         stopNetworkRequestPerformanceMonitoring()
@@ -297,8 +299,14 @@ class AddEditProductShipmentFragment:
 
     private fun setupSubmitButton() {
         btnEnd?.setOnClickListener {
-            btnEnd?.isLoading = true
-            submitInput(UPLOAD_DATA)
+            val productLimitationModel = SharedPreferencesUtil.getProductLimitationModel(requireActivity())
+            productLimitationModel.isEligible = false
+            if (productLimitationModel.isEligible) {
+                btnEnd?.isLoading = true
+                submitInput(UPLOAD_DATA)
+            } else {
+                showProductLimitationBottomSheet(productLimitationModel)
+            }
         }
         btnSave?.setOnClickListener {
             btnSave?.isLoading = true
@@ -378,6 +386,22 @@ class AddEditProductShipmentFragment:
         radioRequiredInsurance?.isChecked = mustInsurance
         radioOptionalInsurance?.isChecked = !mustInsurance
         tickerInsurance?.isVisible = !mustInsurance
+    }
+
+    private fun showProductLimitationBottomSheet(productLimitationModel: ProductLimitationModel) {
+        val actionItems = productLimitationModel.actionItems
+        val bottomSheet = ProductLimitationBottomSheet(actionItems, productLimitationModel.isEligible,
+                productLimitationModel.limitAmount)
+
+        bottomSheet.setOnBottomSheetResult { urlResult ->
+            if (urlResult.startsWith(HTTP_PREFIX)) {
+                RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, urlResult))
+            } else {
+                val intent = RouteManager.getIntent(context, urlResult)
+                startActivity(intent)
+            }
+        }
+        bottomSheet.show(childFragmentManager)
     }
 
     private fun showUnitWeightOption() {
@@ -489,21 +513,6 @@ class AddEditProductShipmentFragment:
             }
             setNavigationResult(bundle,requestKey)
             findNavController().navigateUp()
-        }
-    }
-
-    private fun observeProductLimitationData() {
-        shipmentViewModel.getProductLimitation()
-        shipmentViewModel.productLimitationData.observe(viewLifecycleOwner) {
-            when(it) {
-                is Success -> {
-                    val actionItems = mapToActionItems(requireContext(), it.data)
-                    println(actionItems.toString())
-                }
-                is Fail -> {
-
-                }
-            }
         }
     }
 }

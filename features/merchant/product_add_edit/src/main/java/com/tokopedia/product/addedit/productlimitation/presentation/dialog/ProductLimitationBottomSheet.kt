@@ -10,13 +10,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.common.util.HorizontalItemDecoration
 import com.tokopedia.product.addedit.productlimitation.presentation.adapter.ProductLimitationItemAdapter
-import com.tokopedia.product.addedit.productlimitation.presentation.model.ProductLimitationModel
+import com.tokopedia.product.addedit.productlimitation.presentation.model.ProductLimitationActionItemModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.Ticker
 
 class ProductLimitationBottomSheet(
-        private val actionItems: List<ProductLimitationModel> = emptyList(),
+        private val actionItems: List<ProductLimitationActionItemModel> = emptyList(),
         private val isEligible: Boolean = false,
         private val limitAmount: Int = 0
 ) : BottomSheetUnify() {

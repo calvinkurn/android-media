@@ -57,6 +57,8 @@ import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.PHO
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.PHOTO_TIPS_URL_3
 import com.tokopedia.product.addedit.common.constant.ProductStatus.STATUS_ACTIVE
 import com.tokopedia.product.addedit.common.util.*
+import com.tokopedia.product.addedit.common.util.JsonUtil.mapJsonToObject
+import com.tokopedia.product.addedit.common.util.JsonUtil.mapObjectToJson
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.BUNDLE_CACHE_MANAGER_ID
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.EXTRA_CASHBACK_IS_DRAFTING
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.EXTRA_CASHBACK_SHOP_ID
@@ -78,8 +80,6 @@ import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProduct
 import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.PictureInputModel
 import com.tokopedia.product.addedit.draft.mapper.AddEditProductMapper
-import com.tokopedia.product.addedit.draft.mapper.AddEditProductMapper.mapJsonToObject
-import com.tokopedia.product.addedit.draft.mapper.AddEditProductMapper.mapObjectToJson
 import com.tokopedia.product.addedit.imagepicker.ImagePickerAddEditNavigation
 import com.tokopedia.product.addedit.preview.data.source.api.response.Cashback
 import com.tokopedia.product.addedit.preview.data.source.api.response.Product
@@ -113,8 +113,8 @@ import com.tokopedia.product.addedit.preview.presentation.service.AddEditProduct
 import com.tokopedia.product.addedit.preview.presentation.service.AddEditProductEditService
 import com.tokopedia.product.addedit.preview.presentation.viewmodel.AddEditProductPreviewViewModel
 import com.tokopedia.product.addedit.productlimitation.domain.mapper.ProductLimitationMapper
-import com.tokopedia.product.addedit.productlimitation.domain.model.ProductLimitationData
 import com.tokopedia.product.addedit.productlimitation.presentation.dialog.ProductLimitationBottomSheet
+import com.tokopedia.product.addedit.productlimitation.presentation.model.ProductLimitationModel
 import com.tokopedia.product.addedit.tooltip.model.ImageTooltipModel
 import com.tokopedia.product.addedit.tooltip.model.NumericTooltipModel
 import com.tokopedia.product.addedit.tooltip.presentation.TooltipBottomSheet
@@ -160,6 +160,8 @@ class AddEditProductPreviewFragment :
     private var formattedAddress: String = ""
     private var productInputModel: ProductInputModel? = null
     private var isFragmentVisible = false
+    private var isAdminEligible = true
+    private var isProductLimitEligible: Boolean = true
 
     private var toolbar: Toolbar? = null
 
@@ -214,11 +216,10 @@ class AddEditProductPreviewFragment :
 
     // product limitation
     private var productLimitationTicker: Ticker? = null
+    private var productLimitationBottomSheet: ProductLimitationBottomSheet? = null
 
     private lateinit var userSession: UserSessionInterface
     private lateinit var shopId: String
-
-    private var isAdminEligible = true
 
     @Inject
     lateinit var viewModel: AddEditProductPreviewViewModel
@@ -399,7 +400,11 @@ class AddEditProductPreviewFragment :
             updateImageList()
             if (isEditing()) {
                 ProductEditStepperTracking.trackFinishButton(shopId)
+            } else if (isAdding() && !isProductLimitEligible) {
+                productLimitationBottomSheet?.show(childFragmentManager)
+                return@setOnClickListener // cancel onclick
             }
+
             val validateMessage = viewModel.validateProductInput(viewModel.productInputModel.value?.detailInputModel
                     ?: DetailInputModel())
             if (validateMessage.isNotEmpty()) {
@@ -1163,7 +1168,11 @@ class AddEditProductPreviewFragment :
         viewModel.productLimitationData.observe(viewLifecycleOwner) {
             when(it) {
                 is Success -> {
-                    setupBottomSheetProductLimitation(it.data)
+                    val productLimitationModel = ProductLimitationMapper.mapToProductLimitationModel(requireContext(), it.data)
+                    setupBottomSheetProductLimitation(productLimitationModel)
+
+                    // store to shared preferences, to reuse at another fragment
+                    SharedPreferencesUtil.setProductLimitationModel(requireActivity(), productLimitationModel)
                 }
                 is Fail -> {
 
@@ -1631,7 +1640,7 @@ class AddEditProductPreviewFragment :
         val actionItems = ProductLimitationMapper.mapToActionItems(requireContext(), data)
         val bottomSheet = ProductLimitationBottomSheet(actionItems)
 
-        bottomSheet.setOnBottomSheetResult { urlResult ->
+        productLimitationBottomSheet?.setOnBottomSheetResult { urlResult ->
             if (urlResult.startsWith(HTTP_PREFIX)) {
                 RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, urlResult))
             } else {
@@ -1642,7 +1651,7 @@ class AddEditProductPreviewFragment :
         }
 
         productLimitationTicker?.setOnClickListener {
-            bottomSheet.show(childFragmentManager)
+            productLimitationBottomSheet?.show(childFragmentManager)
         }
     }
 }
