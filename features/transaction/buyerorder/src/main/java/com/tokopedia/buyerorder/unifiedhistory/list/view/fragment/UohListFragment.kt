@@ -1162,12 +1162,10 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
 
             ic_finish_detail_1?.apply {
                 background = ContextCompat.getDrawable(context, R.drawable.ic_bound_icon)
-                // setImage(IconUnify.PRODUCT)
             }
 
             ic_finish_detail_2?.apply {
                 background = ContextCompat.getDrawable(context, R.drawable.ic_bound_icon)
-                // setImage(IconUnify.RELOAD_24H)
             }
 
             btn_finish_order?.setOnClickListener {
