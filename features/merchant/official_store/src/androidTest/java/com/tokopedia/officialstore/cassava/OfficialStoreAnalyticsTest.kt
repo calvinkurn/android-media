@@ -100,11 +100,9 @@ class OfficialStoreAnalyticsTest {
         itemCount = recyclerView.adapter?.itemCount ?: 0
         for (i in 0 until itemCount) {
             scrollRecyclerViewToPosition(recyclerView, i)
-            //add delay to let view rendered
-            Thread.sleep(2000)
             checkProductOnDynamicChannel(recyclerView, i)
         }
-        activityRule.activity.finish()
+        activityRule.activity.moveTaskToBack(true)
         logTestMessage("Done UI Test")
     }
 
