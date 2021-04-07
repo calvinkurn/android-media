@@ -662,6 +662,7 @@ class SaldoDepositFragment : BaseDaggerFragment() {
         saldoDetailViewModel.getMerchantCreditLateCountValue()
     }
 
+    // @TODO remove alert dialog with unify
     private fun showWithdrawalNoPassword() {
         val builder = AlertDialog.Builder(context)
         builder.setTitle(resources.getString(com.tokopedia.saldodetails.R.string.sp_error_deposit_no_password_title))

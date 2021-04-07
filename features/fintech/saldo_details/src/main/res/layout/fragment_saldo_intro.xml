@@ -2,145 +2,151 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:background="@color/white"
-        android:padding="@dimen/dp_16">
+        android:background="@color/Unify_N0"
+        android:padding="@dimen/unify_space_16">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_20"
                 android:gravity="left|start"
-                android:lineSpacingExtra="@dimen/sp_6"
                 android:text="@string/saldo_intro_title_refund"
-                android:textColor="@color/black_70"
-                android:textSize="@dimen/sp_18"
-                android:textStyle="bold" />
+                android:textColor="@color/Unify_N700_96"
+                app:typographyWeight="bold"
+                app:typographyType="heading_3"
+                />
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/description_1"
-                style="@style/TextView.Small.BlackSecondary"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_10"
                 android:gravity="left|start"
-                android:lineSpacingExtra="@dimen/sp_5"
+                app:typographyType="body_2"
+                android:textColor="@color/Unify_N700_68"
                 android:text="@string/saldo_intro_description_refund" />
 
-            <TextView
-                style="@style/TextView.Small.BlackSecondary"
+            <com.tokopedia.unifyprinciples.Typography
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_16"
+                android:layout_marginTop="@dimen/unify_space_16"
                 android:text="@string/sumber_dana_refund"
-                android:textStyle="bold" />
+                app:typographyType="body_2"
+                app:typographyWeight="bold"
+                android:textColor="@color/Unify_N700_68" />
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/dana_refund"
-                style="@style/TextView.Small.BlackSecondary"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_12"
-                android:drawablePadding="@dimen/dp_8"
+                android:layout_marginTop="@dimen/unify_space_12"
+                android:drawablePadding="@dimen/unify_space_8"
                 android:gravity="center_vertical"
-                android:lineSpacingExtra="@dimen/sp_5"
-                android:text="@string/dana_refund" />
+                android:text="@string/dana_refund"
+                app:typographyType="body_2"
+                android:textColor="@color/Unify_N700_68"/>
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/disbursement_fund"
-                style="@style/TextView.Small.BlackSecondary"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_10"
-                android:drawablePadding="@dimen/dp_8"
+                android:drawablePadding="@dimen/unify_space_8"
                 android:gravity="left|start"
-                android:lineSpacingExtra="@dimen/sp_5"
-                android:text="@string/disbursement_fund" />
+                android:text="@string/disbursement_fund"
+                app:typographyType="body_2"
+                android:textColor="@color/Unify_N700_68"/>
 
-            <View
+            <com.tokopedia.unifycomponents.DividerUnify
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_1"
-                android:layout_marginTop="@dimen/dp_24"
-                android:background="@color/gray_background" />
+                android:layout_marginTop="@dimen/unify_space_24" />
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_20"
                 android:gravity="left|start"
-                android:lineSpacingExtra="@dimen/sp_6"
                 android:text="@string/saldo_intro_title_seller"
-                android:textColor="@color/black_70"
-                android:textSize="@dimen/sp_18"
-                android:textStyle="bold" />
+                android:textColor="@color/Unify_N700_96"
+                app:typographyWeight="bold"
+                app:typographyType="heading_3" />
 
-            <TextView
-                style="@style/TextView.Small.BlackSecondary"
+            <com.tokopedia.unifyprinciples.Typography
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_10"
                 android:gravity="left|start"
-                android:lineSpacingExtra="@dimen/sp_5"
-                android:text="@string/saldo_intro_description_seller" />
+                android:text="@string/saldo_intro_description_seller"
+                app:typographyType="body_2"
+                android:textColor="@color/Unify_N700_68"/>
 
-            <TextView
-                style="@style/TextView.Small.BlackSecondary"
+            <com.tokopedia.unifyprinciples.Typography
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_16"
+                android:layout_marginTop="@dimen/unify_space_16"
                 android:text="@string/sumber_dana_seller"
-                android:textStyle="bold" />
+                app:typographyType="body_2"
+                app:typographyWeight="bold"
+                android:textColor="@color/Unify_N700_68"/>
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/hasil_penjualan"
-                style="@style/TextView.Small.BlackSecondary"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_12"
-                android:drawablePadding="@dimen/dp_8"
+                android:layout_marginTop="@dimen/unify_space_12"
+                android:drawablePadding="@dimen/unify_space_8"
                 android:gravity="center_vertical"
-                android:lineSpacingExtra="@dimen/sp_5"
-                android:text="@string/hasil_penjualan" />
+                android:text="@string/hasil_penjualan"
+                app:typographyType="body_2"
+                android:textColor="@color/Unify_N700_68"/>
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/disbursement_priority_balance"
-                style="@style/TextView.Small.BlackSecondary"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_14"
-                android:drawablePadding="@dimen/dp_8"
+                android:drawablePadding="@dimen/unify_space_8"
                 android:gravity="left|start"
-                android:lineSpacingExtra="@dimen/sp_5"
-                android:text="@string/disbursement_priority_balance" />
+                android:text="@string/disbursement_priority_balance"
+                app:typographyType="body_2"
+                android:textColor="@color/Unify_N700_68"/>
 
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/si_view_more"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_24"
-                android:textColor="@color/black_36"
-                android:textSize="@dimen/sp_14" />
+                android:layout_marginTop="@dimen/unify_space_24"
+                app:typographyType="body_2"
+                android:textColor="@color/Unify_N700_32" />
         </LinearLayout>
     </ScrollView>
 
-    <Button
+    <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/si_goto_balance_page"
-        style="@style/Button.Submit.Green"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginTop="@dimen/unify_space_16"
+        android:layout_marginBottom="@dimen/unify_space_16"
+        android:layout_marginLeft="@dimen/unify_space_16"
+        android:layout_marginRight="@dimen/unify_space_16"
+        app:unifyButtonSize="large"
+        app:unifyButtonType="main"
+        app:unifyButtonVariant="filled"
         android:text="@string/saldo_intro_goto_balance_page" />
 
 </LinearLayout>

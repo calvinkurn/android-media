@@ -99,7 +99,7 @@ class SaldoDepositActivity : BaseSimpleActivity(), HasComponent<SaldoDetailsComp
         toolbar = findViewById(com.tokopedia.saldodetails.R.id.saldo_deposit_toolbar)
         val upArrow = ContextCompat.getDrawable(this, com.tokopedia.abstraction.R.drawable.ic_action_back)
         if (upArrow != null) {
-            upArrow.setColorFilter(ContextCompat.getColor(this, com.tokopedia.design.R.color.grey_700), PorterDuff.Mode.SRC_ATOP)
+            upArrow.setColorFilter(ContextCompat.getColor(this, R.color.saldo_deposit_up_arrow_color), PorterDuff.Mode.SRC_ATOP)
             toolbar.navigationIcon = upArrow
         } else {
             toolbar.setNavigationIcon(com.tokopedia.design.R.drawable.ic_icon_back_black)

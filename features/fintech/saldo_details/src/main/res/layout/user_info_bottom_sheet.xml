@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="@dimen/dp_16">
+    android:padding="@dimen/unify_space_16">
 
     <TextView
         android:id="@+id/title_text_view"
@@ -18,7 +18,7 @@
         android:id="@+id/body_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_8"
+        android:layout_marginTop="@dimen/unify_space_8"
         android:letterSpacing="0.01"
         android:lineSpacingExtra="4sp"
         android:textColor="@color/black_54"
@@ -28,8 +28,8 @@
     <TextView
         android:id="@+id/action_button_text_view"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_48"
-        android:layout_marginTop="@dimen/dp_24"
+        android:layout_height="@dimen/unify_space_48"
+        android:layout_marginTop="@dimen/unify_space_24"
         android:background="@drawable/bg_button_green_enabled"
         android:gravity="center"
         android:textAlignment="center"

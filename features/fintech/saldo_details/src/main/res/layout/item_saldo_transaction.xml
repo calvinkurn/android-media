@@ -6,7 +6,7 @@
     android:layout_height="wrap_content"
     android:background="@color/white"
     android:orientation="horizontal"
-    android:paddingTop="@dimen/dp_8">
+    android:paddingTop="@dimen/unify_space_8">
 
 
     <ImageView
@@ -70,7 +70,7 @@
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_2"
+        android:layout_height="@dimen/unify_space_2"
         android:layout_below="@+id/header"
         android:background="@color/greyish_bg" />
 </RelativeLayout>

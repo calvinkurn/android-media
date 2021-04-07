@@ -151,6 +151,7 @@ class MerchantSaldoPriorityFragment : BaseDaggerFragment() {
                 return@setOnCheckedChangeListener
             }
 
+            // @TODO remove dialog
             val dialog = Dialog(activity, Dialog.Type.PROMINANCE)
             dialog.titleTextView.setTextColor(resources.getColor(com.tokopedia.design.R.color.black_70))
             dialog.titleTextView.setTypeface(null, Typeface.BOLD)
