@@ -16,10 +16,11 @@ class GetPMInterruptDataMapper @Inject constructor() {
     fun mapRemoteModelToUiModel(data: PMInterruptDataResponse): PowerMerchantInterruptUiModel {
         val currentFormat = "yyyy-MM-dd"
         val newFormat = "dd MMMM yyyy"
+        val osActiveStatus = "active"
         val unformattedDate = data.gradeBenefitInfo?.nextMonthlyRefreshDate.orEmpty()
         val pmNewUpdateDateFmt = DateFormatUtils.formatDate(currentFormat, newFormat, unformattedDate)
         val reputationThreshold = 5
-        val hasReputation = data.shopReputation.firstOrNull()?.score.orZero() >= reputationThreshold
+        val hasReputation = data.shopReputation.firstOrNull()?.score?.toDouble().orZero() >= reputationThreshold
         return PowerMerchantInterruptUiModel(
                 shopScore = data.shopInfo?.shopScore.orZero(),
                 shopScoreThreshold = data.shopInfo?.shopScoreThreshold.orZero(),
@@ -32,7 +33,8 @@ class GetPMInterruptDataMapper @Inject constructor() {
                 potentialPmGradeBadge = data.gradeBenefitInfo?.potentialPmGrade?.imgBadgeUrl.orEmpty(),
                 pmNewUpdateDateFmt = pmNewUpdateDateFmt,
                 periodType = data.pmSettingInfo?.periodeType ?: PeriodType.COMMUNICATION_PERIOD,
-                hasReputation = hasReputation
+                hasReputation = hasReputation,
+                isOfficialStore = data.pmStatus?.data?.officialStore?.status == osActiveStatus
         )
     }
 }

@@ -440,11 +440,23 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
     private fun showPmInterruptBottomSheet(data: PowerMerchantInterruptUiModel) {
         when (data.periodType) {
             PeriodType.FINAL_PERIOD -> showFinalPmInterruptPage(data)
-            PeriodType.TRANSITION_PERIOD -> showTransitionPmInterruptPage(data)
+            PeriodType.TRANSITION_PERIOD -> {
+                val hasOpenedInterruptPage = pmCommonPreferenceManager.getBoolean(PMCommonPreferenceManager.KEY_HAS_SHOW_COMMUNICATION_INTERRUPT_PAGE, true)
+                if (hasOpenedInterruptPage) {
+                    showTransitionPmInterruptPopup(data)
+                } else {
+                    showInterruptPage()
+                }
+                showTransitionPmInterruptPopup(data)
+            }
             else -> {
-                //todo: show interrupt page
+                showInterruptPage()
             }
         }
+    }
+
+    private fun showInterruptPage() {
+
     }
 
     private fun showFinalPmInterruptPage(data: PowerMerchantInterruptUiModel) {
@@ -457,7 +469,7 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
         }
     }
 
-    private fun showTransitionPmInterruptPage(data: PowerMerchantInterruptUiModel) {
+    private fun showTransitionPmInterruptPopup(data: PowerMerchantInterruptUiModel) {
         lifecycleScope.launch(Dispatchers.IO) {
             val hasShowInterruptPopup = pmCommonPreferenceManager.getBoolean(PMCommonPreferenceManager.KEY_HAS_SHOW_TRANSITION_INTERRUPT_POPUP, false)
             if (!hasShowInterruptPopup) {
@@ -467,6 +479,9 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
                         if (!bottomSheet.isAdded) {
                             saveFlagHasShowPmInterruptPopup()
                             bottomSheet.setData(data)
+                                    .setOnCtaClickListener {
+                                        RouteManager.route(this@SellerHomeActivity, ApplinkConst.SHOP_SCORE_DETAIL)
+                                    }
                                     .show(supportFragmentManager)
                         }
                     }
@@ -478,7 +493,7 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
     private fun saveFlagHasShowPmInterruptPopup() {
         lifecycleScope.launch(Dispatchers.IO) {
             pmCommonPreferenceManager.putBoolean(PMCommonPreferenceManager.KEY_HAS_SHOW_TRANSITION_INTERRUPT_POPUP, true)
-            pmCommonPreferenceManager.apply()
+            //pmCommonPreferenceManager.apply()
         }
     }
 
@@ -562,6 +577,8 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
                     message = exceptionMessage,
                     cause = throwable
             ))
+        } else {
+            throwable.printStackTrace()
         }
     }
 }

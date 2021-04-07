@@ -25,7 +25,7 @@
         android:id="@+id/tvSahPmTitle"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/layout_lvl3"
+        android:layout_marginTop="@dimen/layout_lvl1"
         app:layout_constraintEnd_toStartOf="@+id/guidelineGmcEnd"
         app:layout_constraintStart_toStartOf="@+id/guidelineGmcStart"
         app:layout_constraintTop_toTopOf="parent"
@@ -80,7 +80,7 @@
         android:id="@+id/tvSahPmLabelShopScoreMax"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/spacing_lvl1"
+        android:layout_marginBottom="1dp"
         android:text="@string/sah_max_shop_score"
         android:textColor="@color/Unify_N700_68"
         app:layout_constraintBottom_toBottomOf="@+id/tvSahPmShopScore"
@@ -92,12 +92,13 @@
         android:id="@+id/pmgSahPmCard"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/layout_lvl5"
+        android:layout_marginTop="@dimen/layout_lvl3"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/slvSahPmShopLevel" />
 
     <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btnGmcCheckShopPerformance"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/layout_lvl3"

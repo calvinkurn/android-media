@@ -6,6 +6,7 @@ package com.tokopedia.gm.common.constant
 
 object PMConstant {
     const val PM_SETTING_INFO_SOURCE = "power-merchant-subscription-ui"
+    const val NEW_PM_CALCULATION_DATE = "31 Mei 2021"
 
     object Images {
         const val PM_REGISTRATION_SUCCESS = "https://images.tokopedia.net/img/android/gold_merchant_common/pm_registration_success.png"

@@ -29,6 +29,14 @@ class PowerMerchantGradeView : RelativeLayout {
     }
 
     fun show(data: PowerMerchantInterruptUiModel) {
+        containerCardPm.setBackgroundResource(R.drawable.bg_gmc_power_merchant_card)
+
+        //for OS
+        if (data.isOfficialStore) {
+            setupCardForOfficialStore()
+            return
+        }
+        //for PM
         when (data.pmStatus) {
             PMStatusConst.ACTIVE, PMStatusConst.IDLE -> {
                 if (data.hasReputation) {
@@ -44,7 +52,20 @@ class PowerMerchantGradeView : RelativeLayout {
                 }
             }
         }
-        containerCardPm.setBackgroundResource(R.drawable.bg_gmc_power_merchant_card)
+    }
+
+    private fun setupCardForOfficialStore() {
+        imgSahPmGrade.visible()
+        icSahPmReputationBadge.gone()
+        imgSahPMPotentialGradeArrow.gone()
+        icSahPmGradeBadge.gone()
+        imgSahPmGrade.loadImageDrawable(R.drawable.ic_gmc_toped_os)
+
+        tvSahPmGradeTitle.gone()
+        val cardDescription = context.getString(R.string.gmc_pm_regular_merchant_registration)
+        setCardDescriptionText(cardDescription)
+        val dp8 = context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl1)
+        tvSahPmGradeDescription.setMargin(0, dp8, 0, dp8)
     }
 
     private fun setupCardRmWithEligiblePm(data: PowerMerchantInterruptUiModel) {
@@ -83,7 +104,8 @@ class PowerMerchantGradeView : RelativeLayout {
         tvSahPmGradeTitle.gone()
         val cardDescription = context.getString(R.string.gmc_pm_regular_merchant_registration)
         setCardDescriptionText(cardDescription)
-        tvSahPmGradeDescription.setMargin(0, 0, 0, 0)
+        val dp8 = context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl1)
+        tvSahPmGradeDescription.setMargin(0, dp8, 0, dp8)
     }
 
     private fun setupCardForPmWithReputation(data: PowerMerchantInterruptUiModel) {

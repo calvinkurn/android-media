@@ -16,5 +16,6 @@ data class PowerMerchantInterruptUiModel(
         val potentialPmGradeBadge: String,
         val pmNewUpdateDateFmt: String,
         val periodType: String,
-        val hasReputation: Boolean
+        val hasReputation: Boolean,
+        val isOfficialStore: Boolean
 )

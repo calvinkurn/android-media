@@ -13,6 +13,7 @@ class PMCommonPreferenceManager(
     companion object {
         private const val PREF_NAME = "pm_common_shared_preferences"
 
+        const val KEY_HAS_SHOW_COMMUNICATION_INTERRUPT_PAGE = "key_has_opened_communication_interrupt_page"
         const val KEY_HAS_SHOW_TRANSITION_INTERRUPT_POPUP = "key_has_show_transition_interrupt_popup"
     }
 

@@ -21,9 +21,10 @@
 
             <com.tokopedia.unifycomponents.ImageUnify
                 android:id="@+id/imgSahPmGrade"
-                android:layout_width="@dimen/layout_lvl6"
-                android:layout_height="@dimen/layout_lvl6"
+                android:layout_width="@dimen/gmc_dimen_54dp"
+                android:layout_height="wrap_content"
                 android:visibility="gone"
+                android:contentDescription="@null"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/guidelineVerSabPmGrade1"
                 app:layout_constraintStart_toStartOf="parent"
@@ -33,10 +34,11 @@
 
             <com.tokopedia.unifycomponents.ImageUnify
                 android:id="@+id/icSahPmReputationBadge"
-                android:layout_width="@dimen/layout_lvl3"
-                android:layout_height="@dimen/layout_lvl3"
+                android:layout_width="@dimen/gmc_dimen_28dp"
+                android:layout_height="@dimen/gmc_dimen_28dp"
                 android:layout_marginEnd="@dimen/spacing_lvl2"
                 android:visibility="gone"
+                android:contentDescription="@null"
                 app:layout_constraintBottom_toBottomOf="@+id/imgSahPMPotentialGradeArrow"
                 app:layout_constraintEnd_toStartOf="@+id/imgSahPMPotentialGradeArrow"
                 app:layout_constraintTop_toTopOf="@+id/imgSahPMPotentialGradeArrow"
@@ -60,8 +62,8 @@
 
             <com.tokopedia.unifycomponents.ImageUnify
                 android:id="@+id/icSahPmGradeBadge"
-                android:layout_width="@dimen/layout_lvl3"
-                android:layout_height="@dimen/layout_lvl3"
+                android:layout_width="@dimen/gmc_dimen_28dp"
+                android:layout_height="@dimen/gmc_dimen_28dp"
                 android:layout_marginStart="@dimen/spacing_lvl2"
                 android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="@+id/imgSahPMPotentialGradeArrow"

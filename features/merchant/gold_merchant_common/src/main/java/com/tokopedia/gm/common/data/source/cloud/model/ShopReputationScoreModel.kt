@@ -8,5 +8,5 @@ import com.google.gson.annotations.SerializedName
 
 data class ShopReputationScoreModel(
         @SerializedName("score")
-        val score: Int
+        val score: String
 )

@@ -59,6 +59,9 @@ class GetPMInterruptDataUseCase @Inject constructor(
                   power_merchant {
                     status
                   }
+                  official_store {
+                    status
+                  }
                 }
               }
               goldGetPMSettingInfo(shopID: ${'$'}shopId, source:${'$'}source) {

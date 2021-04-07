@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.gm.common.R
+import com.tokopedia.gm.common.constant.PMConstant
 import com.tokopedia.gm.common.view.model.PowerMerchantInterruptUiModel
 import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -19,17 +20,19 @@ import kotlinx.android.synthetic.main.bottom_sheet_gmc_pm_transition_interrupt.v
 class PMTransitionInterruptBottomSheet : BottomSheetUnify() {
 
     companion object {
-        const val TAG = "SahPowerMerchantBottomSheet"
+        const val TAG = "GmcPowerMerchantBottomSheet"
 
         fun getInstance(fm: FragmentManager): PMTransitionInterruptBottomSheet {
             return (fm.findFragmentByTag(TAG) as? PMTransitionInterruptBottomSheet) ?: PMTransitionInterruptBottomSheet().apply {
                 clearContentPadding = true
                 showHeader = false
                 showCloseIcon = false
+                overlayClickDismiss = false
             }
         }
     }
 
+    private var ctaClickCallback: (() -> Unit)? = null
     private var data: PowerMerchantInterruptUiModel? = null
     private var childView: View? = null
 
@@ -55,6 +58,11 @@ class PMTransitionInterruptBottomSheet : BottomSheetUnify() {
         setupView()
     }
 
+    fun setOnCtaClickListener(callback: () -> Unit): PMTransitionInterruptBottomSheet  {
+        ctaClickCallback = callback
+        return this
+    }
+
     fun setData(data: PowerMerchantInterruptUiModel): PMTransitionInterruptBottomSheet {
         this.data = data
         return this
@@ -73,12 +81,17 @@ class PMTransitionInterruptBottomSheet : BottomSheetUnify() {
         }
 
         data?.let { data ->
-            tvSahPmTitle.text = context.getString(R.string.gmc_power_merchant_bottom_sheet_title, data.pmNewUpdateDateFmt)
+            tvSahPmTitle.text = context.getString(R.string.gmc_power_merchant_bottom_sheet_title, PMConstant.NEW_PM_CALCULATION_DATE)
             slvSahPmShopLevel.show(data.shopLevel)
             tvSahPmShopScore.text = data.shopScore.toString()
             pmgSahPmCard.show(data)
 
             setShopScoreTextColor()
+        }
+
+        btnGmcCheckShopPerformance.setOnClickListener {
+            ctaClickCallback?.invoke()
+            dismiss()
         }
     }
 
