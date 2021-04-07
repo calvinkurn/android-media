@@ -15,12 +15,13 @@
 
         <activity android:name=".view.activity.UserIdentificationCameraActivity"
             android:configChanges="orientation"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait"
+            android:theme="@style/Kyc_Theme"/>
 
         <activity
             android:name=".view.activity.UserIdentificationFormActivity"
             android:label="@string/title_kyc_form_upload"
-            android:theme="@style/Kyc_Theme">
+            android:theme="@style/Theme.White">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
