@@ -6,4 +6,5 @@ package com.tokopedia.applink
  */
 object FragmentConst {
     const val FEED_PLUS_CONTAINER_FRAGMENT = "com.tokopedia.feedplus.view.fragment.FeedPlusContainerFragment"
+    const val CART_FRAGMENT = "com.tokopedia.cart.view.CartFragment"
 }

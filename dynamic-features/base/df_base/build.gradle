@@ -145,6 +145,7 @@ dependencies {
     implementation project(rootProject.ext.features.inbox)
 
     //Transaction
+    implementation project(rootProject.ext.features.cart)
     implementation project(rootProject.ext.features.checkout)
     implementation project(rootProject.ext.features.oneclickcheckout)
     implementation project(rootProject.ext.features.promoCheckoutMarketplace)
