@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <style name="Liveness_Theme" parent="Theme.White">
+        <item name="android:forceDarkAllowed" tools:targetApi="q">false</item>
+    </style>
 
     <style name="liveness_preview" parent="liveness_horizontal_center">
         <item name="android:layout_width">match_parent</item>

@@ -8,6 +8,7 @@ import android.graphics.Path
 import android.util.AttributeSet
 import android.util.TypedValue
 import android.view.View
+import com.tokopedia.liveness.R
 import java.lang.Exception
 
 class BackgroundOverlay : View {
@@ -41,7 +42,7 @@ class BackgroundOverlay : View {
 
         mStatusPaint = Paint()
         mStatusPaint?.style = Paint.Style.STROKE
-        mStatusPaint?.color = androidx.core.content.ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0)
+        mStatusPaint?.color = androidx.core.content.ContextCompat.getColor(context, R.color.liveness_dms_status_false)
         mStatusPaint?.strokeWidth = borderStrokeWidthDp
     }
 
@@ -64,9 +65,9 @@ class BackgroundOverlay : View {
 
     private fun pickColor() {
         if (!statusColor) {
-            mStatusPaint?.color = androidx.core.content.ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0)
+            mStatusPaint?.color = androidx.core.content.ContextCompat.getColor(context, R.color.liveness_dms_status_false)
         } else {
-            mStatusPaint?.color = androidx.core.content.ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G700)
+            mStatusPaint?.color = androidx.core.content.ContextCompat.getColor(context, R.color.liveness_dms_status_true)
         }
         postInvalidate()
     }

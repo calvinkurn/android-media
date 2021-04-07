@@ -138,7 +138,7 @@
             android:background="@drawable/white_button_ghost"
             android:gravity="center"
             android:text="@string/camera_recapture_text"
-            android:textColor="@color/Unify_N0"
+            android:textColor="@color/kyc_dms_recapture_button_color"
             android:textSize="@dimen/fontSize_lvl3"
             app:typographyType="heading_4"
             tools:text="Foto Ulang" />
