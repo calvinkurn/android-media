@@ -34,11 +34,6 @@ class LoginMockResponse: MockModelConfig() {
                 InstrumentationMockHelper.getRawString(context, R.raw.get_profile_success),
                 FIND_BY_CONTAINS)
 
-//        addMockResponse(
-//                KEY_REGISTER_CHECK_SUCCESS,
-//                InstrumentationMockHelper.getRawString(context, R.raw.register_check_email_success),
-//                FIND_BY_CONTAINS)
-
         return this
     }
 }
