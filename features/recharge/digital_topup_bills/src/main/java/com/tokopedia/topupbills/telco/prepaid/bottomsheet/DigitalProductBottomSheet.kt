@@ -57,8 +57,10 @@ class DigitalProductBottomSheet : BottomSheetUnify() {
                 }
 
                 selectItemBtn.setOnClickListener {
-                    listener.onClickOnProduct()
-                    dismiss()
+                    if (::listener.isInitialized) {
+                        listener.onClickOnProduct()
+                        dismiss()
+                    }
                 }
             }
         }
