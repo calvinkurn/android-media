@@ -2,14 +2,13 @@ package com.tokopedia.sellerhome.view.activity
 
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.Toast
-import androidx.annotation.RequiresApi
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -25,7 +24,6 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst
-import com.tokopedia.internal_review.common.InternalReviewHelper
 import com.tokopedia.internal_review.factory.createReviewHelper
 import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.kotlin.extensions.view.hide
@@ -114,6 +112,7 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
         setupStatusBar()
         setupBottomNav()
         setupNavigator()
+        setupShadow()
 
         val initialPage = savedInstanceState?.getInt(LAST_FRAGMENT_TYPE_KEY) ?: FragmentType.HOME
         setupDefaultPage(initialPage)
@@ -304,6 +303,22 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
         navigator = SellerHomeNavigator(this, supportFragmentManager, sellerHomeRouter, userSession)
     }
 
+    private fun setupShadow() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (isDarkMode()) {
+                ContextCompat.getDrawable(this, R.drawable.sah_shadow_dark).let {
+                    toolbarShadow?.background = it
+                    navBarShadow?.background = it
+                }
+            } else {
+                ContextCompat.getDrawable(this, R.drawable.sah_shadow).let {
+                    toolbarShadow?.background = it
+                    navBarShadow?.background = it
+                }
+            }
+        }
+    }
+
     private fun showToolbarNotificationBadge() {
         val homeFragment = navigator?.getHomeFragment()
         homeFragment?.showNotificationBadge()
@@ -417,14 +432,15 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
         sahBottomNav.setBadge(notificationCount, FragmentType.ORDER, badgeVisibility)
     }
 
-    @RequiresApi(Build.VERSION_CODES.M)
     private fun setupStatusBar() {
-        if(isDarkMode()) {
-            requestStatusBarLight()
-        } else {
-            requestStatusBarDark()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (isDarkMode()) {
+                requestStatusBarLight()
+            } else {
+                requestStatusBarDark()
+            }
+            statusBarBackground?.show()
         }
-        statusBarBackground?.show()
     }
 
     private fun hideToolbarAndStatusBar() {
