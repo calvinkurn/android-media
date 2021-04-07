@@ -4,7 +4,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.common.topupbills.data.TelcoEnquiryData
-import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsViewModel.Companion.NULL_RESPONSE
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
@@ -42,7 +41,19 @@ class DigitalTelcoEnquiryViewModel @Inject constructor(private val graphqlReposi
             }
             _enquiryResult.postValue(result)
         }) {
-            _enquiryResult.postValue(Fail(it))
+            var throwable = it
+
+            throwable.message?.contains(GRPC_ERROR_MSG_RESPONSE, true)?.let { containsGrpc ->
+                if (containsGrpc) {
+                    throwable = MessageErrorException(GRPC_ERROR_MSG_RESPONSE)
+                }
+            }
+            _enquiryResult.postValue(Fail(throwable))
         }
+    }
+
+    companion object {
+        const val NULL_RESPONSE = "null response"
+        const val GRPC_ERROR_MSG_RESPONSE = "grpc"
     }
 }

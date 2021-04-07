@@ -327,11 +327,7 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
                 when (it) {
                     is Success -> enquirySuccess(it.data)
                     is Fail -> {
-                        var throwable = it.throwable
-                        if (throwable.message == TopupBillsViewModel.NULL_RESPONSE) {
-                            throwable = MessageErrorException(getString(com.tokopedia.common.topupbills.R.string.common_topup_enquiry_error))
-                        }
-                        enquiryFailed(throwable)
+                        enquiryFailed(it.throwable)
                     }
                 }
             })
@@ -352,9 +348,16 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
     }
 
     private fun enquiryFailed(throwable: Throwable) {
+        var error = throwable
+
+        when (error.message) {
+            DigitalTelcoEnquiryViewModel.NULL_RESPONSE -> error = MessageErrorException(getString(com.tokopedia.common.topupbills.R.string.common_topup_enquiry_error))
+            DigitalTelcoEnquiryViewModel.GRPC_ERROR_MSG_RESPONSE -> error = MessageErrorException(getString(com.tokopedia.common.topupbills.R.string.common_topup_enquiry_grpc_error_msg))
+        }
+
         postpaidClientNumberWidget.setLoadingButtonEnquiry(false)
         view?.run {
-            throwable.let {
+            error.let {
                 Toaster.build(this, ErrorHandler.getErrorMessage(context, it), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
             }
         }
