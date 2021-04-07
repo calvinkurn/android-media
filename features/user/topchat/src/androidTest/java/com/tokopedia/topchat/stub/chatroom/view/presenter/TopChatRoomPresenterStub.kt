@@ -7,6 +7,7 @@ import com.tokopedia.chat_common.data.ImageUploadViewModel
 import com.tokopedia.chatbot.domain.mapper.TopChatRoomWebSocketMessageMapper
 import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.seamless_login_common.domain.usecase.SeamlessLoginUsecase
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
 import com.tokopedia.topchat.chatlist.domain.usecase.DeleteMessageListUseCase
@@ -49,7 +50,8 @@ class TopChatRoomPresenterStub @Inject constructor(
         chatToggleBlockChat: ChatToggleBlockChatUseCase,
         chatBackgroundUseCase: ChatBackgroundUseCase,
         sharedPref: SharedPreferences,
-        dispatchers: TopchatCoroutineContextProvider
+        dispatchers: TopchatCoroutineContextProvider,
+        remoteConfig: RemoteConfig
 ) : TopChatRoomPresenter(tkpdAuthInterceptor,
         fingerprintInterceptor,
         userSession,
@@ -75,7 +77,8 @@ class TopChatRoomPresenterStub @Inject constructor(
         chatToggleBlockChat,
         chatBackgroundUseCase,
         sharedPref,
-        dispatchers) {
+        dispatchers,
+        remoteConfig) {
 
     override fun sendAttachmentsAndMessage(
             messageId: String,
