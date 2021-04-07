@@ -6,9 +6,12 @@ import android.widget.FrameLayout
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.tokopedia.kotlin.extensions.view.getResDrawable
+import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ChipsUnify
+import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.topads_dash_filter_bottomsheet.*
 import kotlinx.android.synthetic.main.topads_dash_filter_bottomsheet.view.*
 
@@ -19,6 +22,7 @@ private const val SELECTED_STATUS_0 = 0;
 private const val SELECTED_STATUS_1 = 1;
 private const val SELECTED_STATUS_2 = 2;
 private const val SELECTED_STATUS_3 = 3;
+private const val CLICK_TERAPKAN = "click - terapkan"
 
 class TopadsGroupFilterSheet : BottomSheetUnify() {
     private var dialog: BottomSheetDialog? = null
@@ -26,7 +30,11 @@ class TopadsGroupFilterSheet : BottomSheetUnify() {
     private var filterCount = 0
     private var selectedStatus = SELECTED_STATUS_0
 
+    private lateinit var userSession: UserSessionInterface
+
+
     private fun setupView(context: Context) {
+        userSession = UserSession(context)
         dialog?.let {
             it.setOnShowListener { dialogInterface ->
                 val dialog = dialogInterface as BottomSheetDialog
@@ -78,6 +86,10 @@ class TopadsGroupFilterSheet : BottomSheetUnify() {
                 dismissDialog()
             }
             it.submit.setOnClickListener { _ ->
+                context.let {
+                    var eventLabel = "{${userSession.shopId}}" + "-" + "{${getSelectedText(context)}}"+ "-" + "{${getSelectedSortId()}}"
+                    TopAdsCreateAnalytics.topAdsCreateAnalytics.sendHeadlineAdsEvent(CLICK_TERAPKAN, eventLabel, userSession.userId)
+                }
                 filterCount = 0
                 if (selectedStatus != 0)
                     filterCount++

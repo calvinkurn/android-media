@@ -21,6 +21,7 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.kotlin.extensions.view.getResDrawable
+import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.common.data.internal.ParamObject
 import com.tokopedia.topads.common.data.response.GroupInfoResponse
 import com.tokopedia.topads.dashboard.R
@@ -59,6 +60,7 @@ import com.tokopedia.topads.dashboard.view.sheet.CustomDatePicker
 import com.tokopedia.topads.dashboard.view.sheet.DatePickerSheet
 import com.tokopedia.topads.headline.view.fragment.TopAdsHeadlineKeyFragment
 import com.tokopedia.unifycomponents.setCounter
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.partial_top_ads_dashboard_statistics.*
 import kotlinx.android.synthetic.main.topads_dash_headline_detail_layout.*
 import kotlinx.android.synthetic.main.topads_dash_headline_detail_view_widget.*
@@ -72,6 +74,9 @@ import kotlin.math.abs
  * Created by Pika on 16/10/20.
  */
 
+private const val click_edit_icon = "click - edit on detail iklan toko"
+private const val click_toggle_icon = "click - toggle on detail iklan toko"
+private const val view_detail_iklan = "view - detail iklan toko"
 class TopAdsHeadlineAdDetailViewActivity : BaseActivity(), HasComponent<TopAdsDashboardComponent>, CustomDatePicker.ActionListener, CompoundButton.OnCheckedChangeListener, ProductTabFragment.FetchDate {
 
     internal var dataStatistic: DataStatistic? = null
@@ -86,6 +91,9 @@ class TopAdsHeadlineAdDetailViewActivity : BaseActivity(), HasComponent<TopAdsDa
     private var priceDaily = 0
     private var groupTotal = 0
     private var isDataChanged = false
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
     private var mCurrentState = TopAdsProductIklanFragment.State.IDLE
 
@@ -180,6 +188,7 @@ class TopAdsHeadlineAdDetailViewActivity : BaseActivity(), HasComponent<TopAdsDa
                 putExtra(TopAdsDashboardConstant.TAB_POSITION, 0)
                 putExtra(ParamObject.GROUP_ID, groupId.toString())
             }
+            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendHeadlineAdsEvent(click_edit_icon, "{${userSession.shopId}} - {$groupId}", userSession.userId)
             startActivityForResult(intent, EDIT_HEADLINE_REQUEST_CODE)
         }
         app_bar_layout_2?.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { appBarLayout, offset ->
@@ -204,6 +213,7 @@ class TopAdsHeadlineAdDetailViewActivity : BaseActivity(), HasComponent<TopAdsDa
                 }
             }
         })
+        TopAdsCreateAnalytics.topAdsCreateAnalytics.sendHeadlineAdsEvent(view_detail_iklan, "{${userSession.shopId}} - {$groupId}", userSession.userId)
     }
 
     override fun onBackPressed() {
@@ -418,6 +428,7 @@ class TopAdsHeadlineAdDetailViewActivity : BaseActivity(), HasComponent<TopAdsDa
 
     override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
         setResult(Activity.RESULT_OK)
+        TopAdsCreateAnalytics.topAdsCreateAnalytics.sendHeadlineAdsEvent(click_toggle_icon, "{${userSession.shopId}} - {$groupId}", userSession.userId)
         when {
             isChecked -> viewModel.setGroupAction(ACTION_ACTIVATE, listOf(groupId.toString()), resources)
             else -> viewModel.setGroupAction(ACTION_DEACTIVATE, listOf(groupId.toString()), resources)

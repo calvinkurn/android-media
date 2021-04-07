@@ -23,6 +23,7 @@ import com.tokopedia.top_ads_headline.view.activity.*
 import com.tokopedia.top_ads_headline.view.adapter.SINGLE_SELECTION
 import com.tokopedia.top_ads_headline.view.sheet.PromotionalMessageBottomSheet
 import com.tokopedia.top_ads_headline.view.viewmodel.SharedEditHeadlineViewModel
+import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.common.data.response.TopAdsProductModel
 import com.tokopedia.topads.common.view.TopAdsProductImagePreviewWidget
 import com.tokopedia.unifycomponents.Toaster
@@ -33,6 +34,8 @@ import javax.inject.Inject
 private const val SELECT_PRODUCT_REQUEST_CODE = 1001
 private const val MAX_PRODUCT_PREVIEW = 3
 private const val MIN_PROMOTIONAL_MSG_COUNT = 20
+private const val VIEW_KONTEN_IKLAN = "view - isi konten iklan"
+private const val CLICK_LANJUTKAN = "click - lanjutkan on isi konten iklan page"
 
 class AdContentFragment : BaseHeadlineStepperFragment<HeadlineAdStepperModel>(), TopAdsProductImagePreviewWidget.TopAdsImagePreviewClick {
 
@@ -114,6 +117,8 @@ class AdContentFragment : BaseHeadlineStepperFragment<HeadlineAdStepperModel>(),
             }
             btnSubmit.show()
         }
+
+        TopAdsCreateAnalytics.topAdsCreateAnalytics.sendHeadlineCreatFormEvent(VIEW_KONTEN_IKLAN, "{${userSession.shopId} - {${stepperModel?.groupName}}", userSession.userId)
     }
 
     fun onClickSubmit(): Boolean {
@@ -146,6 +151,7 @@ class AdContentFragment : BaseHeadlineStepperFragment<HeadlineAdStepperModel>(),
                 return true
             }
         }
+        TopAdsCreateAnalytics.topAdsCreateAnalytics.sendHeadlineCreatFormEcommerceCLickEvent(CLICK_LANJUTKAN, "{${userSession.shopId}} - {${stepperModel?.groupName}", getSelectedProducts(), userSession.userId)
     }
 
     private fun ifLessProductSelected(): Boolean {
@@ -239,6 +245,7 @@ class AdContentFragment : BaseHeadlineStepperFragment<HeadlineAdStepperModel>(),
         if (position == 0) {
             val intent = Intent(activity, TopAdsProductListActivity::class.java)
             intent.putExtra(SELECTED_PRODUCT_LIST, stepperModel?.selectedTopAdsProductMap)
+            intent.putExtra(GROUP_NAME, stepperModel?.groupName)
             startActivityForResult(intent, SELECT_PRODUCT_REQUEST_CODE)
         }
     }
@@ -247,6 +254,7 @@ class AdContentFragment : BaseHeadlineStepperFragment<HeadlineAdStepperModel>(),
         val result = ArrayList<TopAdsProductModel>()
         stepperModel?.selectedTopAdsProductMap?.forEach { (_, value) ->
             if (value.size > SINGLE_SELECTION) {
+                result.clear()
                 result.addAll(value)
             }
         }
