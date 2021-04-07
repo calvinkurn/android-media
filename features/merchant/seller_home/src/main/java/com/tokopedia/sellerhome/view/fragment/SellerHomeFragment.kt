@@ -1,6 +1,5 @@
 package com.tokopedia.sellerhome.view.fragment
 
-import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.view.*
@@ -14,8 +13,6 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.config.GlobalConfig
-import com.tokopedia.device.info.DeviceConnectionInfo
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.pocnewrelic.*
@@ -105,6 +102,8 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         private const val SCROLL_DELTA_MAX_Y_THRESHOLD = 100f
 
         private const val HIDDEN_WIDGET_COUNT = 2
+
+        private const val DEFAULT_HEIGHT_DP = 720f
     }
 
     @Inject
@@ -128,6 +127,15 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                 super.getRecyclerView(view)
             } catch (ex: Exception) {
                 null
+            }
+
+    private val deviceDisplayHeight: Float
+        get() =
+            try {
+                val dm = resources.displayMetrics
+                dm.heightPixels / dm.density
+            } catch (ex: Exception) {
+                DEFAULT_HEIGHT_DP
             }
 
     private var sellerHomeListener: Listener? = null
@@ -177,7 +185,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         initPltPerformanceMonitoring()
         startHomeLayoutNetworkMonitoring()
         startHomeLayoutCustomMetric()
-        sellerHomeViewModel.getWidgetLayout()
+        sellerHomeViewModel.getWidgetLayout(deviceDisplayHeight)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -360,7 +368,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         swipeRefreshLayout.isRefreshing = isAdapterNotEmpty
 
         sahGlobalError.gone()
-        sellerHomeViewModel.getWidgetLayout()
+        sellerHomeViewModel.getWidgetLayout(deviceDisplayHeight)
         sellerHomeViewModel.getTicker()
     }
 
@@ -373,7 +381,9 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     }
 
     override fun loadData(page: Int) {
+        if (isSmoothLoadEnabled) {
 
+        }
     }
 
     private fun List<BaseWidgetUiModel<*>>.setLoading() {
@@ -1067,6 +1077,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     private fun updateWidgets(newWidgets: List<BaseWidgetUiModel<BaseDataUiModel>>) {
         val diffUtilCallback = SellerHomeDiffUtilCallback(adapter.data as List<BaseWidgetUiModel<BaseDataUiModel>>, newWidgets)
         val diffUtilResult = DiffUtil.calculateDiff(diffUtilCallback)
+//        renderList(newWidgets, true)
         adapter.data.clear()
         adapter.data.addAll(newWidgets)
         diffUtilResult.dispatchUpdatesTo(adapter)

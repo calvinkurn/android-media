@@ -7,16 +7,20 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.sellerhome.config.SellerHomeRemoteConfig
 import com.tokopedia.sellerhome.domain.model.ShippingLoc
 import com.tokopedia.sellerhome.domain.usecase.GetShopLocationUseCase
+import com.tokopedia.sellerhomecommon.common.WidgetType
 import com.tokopedia.sellerhomecommon.common.const.DateFilterType
+import com.tokopedia.sellerhomecommon.common.const.WidgetHeight
 import com.tokopedia.sellerhomecommon.domain.model.DynamicParameterModel
 import com.tokopedia.sellerhomecommon.domain.usecase.*
 import com.tokopedia.sellerhomecommon.presentation.model.*
 import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
+import com.tokopedia.sellerhomecommon.utils.Utils
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.withContext
 import java.util.*
@@ -108,27 +112,40 @@ class SellerHomeViewModel @Inject constructor(
         executeOnBackground()
     }
 
-    private suspend fun <T : Any> getDataFromUseCase(useCase: BaseGqlUseCase<T>, liveData: MutableLiveData<Result<T>>) {
+    private suspend fun <T : Any> getDataFromUseCase(useCase: BaseGqlUseCase<T>,
+                                                     liveData: MutableLiveData<Result<T>>,
+                                                     transformer: suspend (result: T) -> T = {result -> result} ) {
         if (remoteConfig.isSellerHomeDashboardCachingEnabled() && useCase.isFirstLoad) {
             useCase.isFirstLoad = false
             try {
                 useCase.setUseCache(true)
-                liveData.value = Success(useCase.executeUseCase())
+                liveData.value = Success(transformer(useCase.executeUseCase()))
             } catch (_: Exception) {
                 // ignore exception from cache
             }
         }
         useCase.setUseCache(false)
-        liveData.value = Success(useCase.executeUseCase())
+        liveData.value = Success(transformer(useCase.executeUseCase()))
     }
 
-    private fun <T : Any> CloudAndCacheGraphqlUseCase<*, T>.startCollectingResult(liveData: MutableLiveData<Result<T>>) {
+    private suspend fun <T: Any> getDataFromUseCase(useCase: BaseGqlUseCase<T>): T {
+        if (remoteConfig.isSellerHomeDashboardCachingEnabled() && useCase.isFirstLoad) {
+            useCase.isFirstLoad = false
+            useCase.setUseCache(true)
+        } else {
+            useCase.setUseCache(false)
+        }
+        return useCase.executeUseCase()
+    }
+
+    private fun <T : Any> CloudAndCacheGraphqlUseCase<*, T>.startCollectingResult(liveData: MutableLiveData<Result<T>>,
+                                                                                  transformer: suspend (result: T) -> T = {result -> result} ) {
         if (!collectingResult) {
             collectingResult = true
             launchCatchError(block = {
                 getResultFlow().collect {
                     withContext(dispatcher.main) {
-                        liveData.value = Success(it)
+                        liveData.value = Success(transformer(it))
                     }
                 }
             }, onError = {
@@ -154,17 +171,21 @@ class SellerHomeViewModel @Inject constructor(
         })
     }
 
-    fun getWidgetLayout() {
+    fun getWidgetLayout(heightDp: Float) {
         launchCatchError(block = {
             val params = GetLayoutUseCase.getRequestParams(shopId, SELLER_HOME_PAGE_NAME)
             if (remoteConfig.isSellerHomeDashboardNewCachingEnabled()) {
                 getLayoutUseCase.get().run {
-                    startCollectingResult(_widgetLayout)
+                    startCollectingResult(_widgetLayout) {
+                        getInitialWidget(it, heightDp)
+                    }
                     executeOnBackground(params, isFirstLoad && remoteConfig.isSellerHomeDashboardCachingEnabled())
                 }
             } else {
                 getLayoutUseCase.get().params = params
-                getDataFromUseCase(getLayoutUseCase.get(), _widgetLayout)
+                getDataFromUseCase(getLayoutUseCase.get(), _widgetLayout) {
+                    getInitialWidget(it, heightDp)
+                }
             }
         }, onError = {
             _widgetLayout.value = Fail(it)
@@ -359,4 +380,239 @@ class SellerHomeViewModel @Inject constructor(
             _shopLocation.value = Fail(it)
         })
     }
+
+    private suspend fun getInitialWidget(widgets: List<BaseWidgetUiModel<*>>, deviceHeightDp: Float): List<BaseWidgetUiModel<*>> {
+        val predictedInitialWidget = getPredictedInitialWidget(widgets, deviceHeightDp)
+        return widgets
+                .map { widget -> predictedInitialWidget.find { it.id == widget.id } ?: widget }
+                .filter { !it.isNeedToBeRemoved }
+    }
+
+    private suspend fun getPredictedInitialWidget(widgetList: List<BaseWidgetUiModel<*>>, deviceHeightDp: Float): List<BaseWidgetUiModel<*>> {
+        var remainingHeight = deviceHeightDp
+        var hasCardCalculated = false
+        val newWidgetList = widgetList.map { widget ->
+            val requestedHeight = WidgetHeight.getWidgetHeight(widget.widgetType)
+            if (widget.widgetType == WidgetType.CARD) {
+                if (!hasCardCalculated) {
+                    remainingHeight -= requestedHeight
+                }
+                hasCardCalculated = !hasCardCalculated
+            } else {
+                remainingHeight -= requestedHeight
+            }
+            if (remainingHeight > 0f) {
+                widget.apply { isLoading = true }
+            } else {
+                widget
+            }
+        }
+        return getLoadedInitialWidgetData(newWidgetList)
+    }
+
+    private suspend fun getLoadedInitialWidgetData(widgetList: List<BaseWidgetUiModel<*>>): List<BaseWidgetUiModel<*>> {
+        val loadedWidgetList = widgetList.filter { it.isLoading }
+
+        val newWidgetList = loadedWidgetList.toMutableList()
+        loadedWidgetList.filter { it.widgetType == WidgetType.SECTION }.forEach { section ->
+            newWidgetList.indexOf(section).takeIf { it > -1 }?.let { index ->
+                newWidgetList[index] = section.copy().apply { isLoaded = true }
+            }
+        }
+        return getWidgetsData(newWidgetList).mapToWidgetModel(newWidgetList)
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    private suspend fun getWidgetsData(widgets: List<BaseWidgetUiModel<*>>): List<BaseDataUiModel> {
+        val groupedWidgets = widgets.groupBy { it.widgetType } as MutableMap
+        return mutableListOf<BaseDataUiModel>().apply {
+            val lineGraphData = async {
+                groupedWidgets[WidgetType.LINE_GRAPH]?.let {
+                    getLineGraphData(it)
+                }
+            }
+            val announcementData = async {
+                groupedWidgets[WidgetType.ANNOUNCEMENT]?.let {
+                    getAnnouncementData(it)
+                }
+            }
+            val cardData = async {
+                groupedWidgets[WidgetType.CARD]?.let {
+                    getCardData(it)
+                }
+            }
+            val progressData = async {
+                groupedWidgets[WidgetType.PROGRESS]?.let {
+                    getProgressData(it)
+                }
+            }
+            val carouselData = async {
+                groupedWidgets[WidgetType.CAROUSEL]?.let {
+                    getCarouselData(it)
+                }
+            }
+            val postData = async {
+                groupedWidgets[WidgetType.POST_LIST]?.let {
+                    getPostData(it)
+                }
+            }
+            val tableData = async {
+                groupedWidgets[WidgetType.TABLE]?.let {
+                    getTableData(it)
+                }
+            }
+            val pieChartData = async {
+                groupedWidgets[WidgetType.PIE_CHART]?.let {
+                    getPieChartData(it)
+                }
+            }
+            val barChartData = async {
+                groupedWidgets[WidgetType.BAR_CHART]?.let {
+                    getBarChartData(it)
+                }
+            }
+            val multiLineGraphData = async {
+                groupedWidgets[WidgetType.MULTI_LINE_GRAPH]?.let {
+                    getMultiLineGraphData(it)
+                }
+            }
+            lineGraphData.await()?.let { addAll(it) }
+            announcementData.await()?.let { addAll(it) }
+            cardData.await()?.let { addAll(it) }
+            progressData.await()?.let { addAll(it) }
+            carouselData.await()?.let { addAll(it) }
+            postData.await()?.let { addAll(it) }
+            tableData.await()?.let { addAll(it) }
+            pieChartData.await()?.let { addAll(it) }
+            barChartData.await()?.let { addAll(it) }
+            multiLineGraphData.await()?.let { addAll(it) }
+        }
+    }
+
+    private inline fun <D : BaseDataUiModel, reified W : BaseWidgetUiModel<D>> List<D>.mapToWidgetModel(widgets: List<BaseWidgetUiModel<*>>): List<BaseWidgetUiModel<*>> {
+        val newWidgetList = widgets.toMutableList()
+        forEach{ widgetData ->
+            newWidgetList.indexOfFirst {
+                it.dataKey == widgetData.dataKey
+            }.takeIf { it > -1 }?.let { index ->
+                val widget = newWidgetList.getOrNull(index)
+                if (widget is W) {
+                    val copiedWidget = widget.copy()
+                    copiedWidget.data = widgetData
+                    if (shouldRemoveWidget(widget, widgetData)) {
+                        copiedWidget.isNeedToBeRemoved = true
+                        removeEmptySections(newWidgetList, index)
+                    } else {
+                        copiedWidget.isLoading = widget.data?.isFromCache ?: false
+                    }
+                    newWidgetList[index] = copiedWidget
+                }
+            }
+        }
+        return newWidgetList
+    }
+
+    private fun shouldRemoveWidget(widget: BaseWidgetUiModel<*>, widgetData: BaseDataUiModel): Boolean {
+        return !widget.isFromCache && !widgetData.isFromCache && (!widgetData.showWidget || (!widget.isShowEmpty && widgetData.shouldRemove()))
+    }
+
+    private fun removeEmptySections(newWidgetList: MutableList<BaseWidgetUiModel<*>>, removedWidgetIndex: Int) {
+        val previousWidget = newWidgetList.getOrNull(removedWidgetIndex - 1)
+        val widgetReplacement = newWidgetList.getOrNull(removedWidgetIndex)
+        if ((widgetReplacement == null || widgetReplacement is SectionWidgetUiModel) && previousWidget is SectionWidgetUiModel) {
+            newWidgetList.removeAt(removedWidgetIndex - 1)
+        }
+    }
+
+    private suspend fun getCardData(widgets: List<BaseWidgetUiModel<*>>): List<CardDataUiModel> {
+        widgets.setLoading()
+        val dataKeys = Utils.getWidgetDataKeys<CardWidgetUiModel>(widgets)
+        val params = GetCardDataUseCase.getRequestParams(dataKeys, dynamicParameter)
+        getCardDataUseCase.get().params = params
+        return getDataFromUseCase(getCardDataUseCase.get())
+    }
+
+    private suspend fun getLineGraphData(widgets: List<BaseWidgetUiModel<*>>): List<LineGraphDataUiModel> {
+        widgets.setLoading()
+        val dataKeys = Utils.getWidgetDataKeys<LineGraphWidgetUiModel>(widgets)
+        val params = GetLineGraphDataUseCase.getRequestParams(dataKeys, dynamicParameter)
+        getLineGraphDataUseCase.get().params = params
+        return getDataFromUseCase(getLineGraphDataUseCase.get())
+    }
+
+    private suspend fun getProgressData(widgets: List<BaseWidgetUiModel<*>>): List<ProgressDataUiModel> {
+        widgets.setLoading()
+        val today = DateTimeUtil.format(Date().time, DATE_FORMAT)
+        val dataKeys = Utils.getWidgetDataKeys<ProgressWidgetUiModel>(widgets)
+        val params = GetProgressDataUseCase.getRequestParams(today, dataKeys)
+        getProgressDataUseCase.get().params = params
+        return getDataFromUseCase(getProgressDataUseCase.get())
+    }
+
+    private suspend fun getPostData(widgets: List<BaseWidgetUiModel<*>>): List<PostListDataUiModel> {
+        widgets.setLoading()
+        val dataKeys: List<Pair<String, String>> = widgets.filterIsInstance<PostListWidgetUiModel>().map {
+            val postFilter = it.postFilter.find { filter -> filter.isSelected }?.value.orEmpty()
+            return@map Pair(it.dataKey, postFilter)
+        }
+        val params = GetPostDataUseCase.getRequestParams(dataKeys, dynamicParameter)
+        getPostDataUseCase.get().params = params
+        return getDataFromUseCase(getPostDataUseCase.get())
+    }
+
+    private suspend fun getCarouselData(widgets: List<BaseWidgetUiModel<*>>): List<CarouselDataUiModel> {
+        widgets.setLoading()
+        val dataKeys = Utils.getWidgetDataKeys<CarouselWidgetUiModel>(widgets)
+        val params = GetCarouselDataUseCase.getRequestParams(dataKeys)
+        getCarouselDataUseCase.get().params = params
+        return getDataFromUseCase(getCarouselDataUseCase.get())
+    }
+
+    private suspend fun getTableData(widgets: List<BaseWidgetUiModel<*>>): List<TableDataUiModel> {
+        widgets.setLoading()
+        val dataKeys = Utils.getWidgetDataKeys<TableWidgetUiModel>(widgets)
+        val params = GetTableDataUseCase.getRequestParams(dataKeys, dynamicParameter)
+        getTableDataUseCase.get().params = params
+        return getDataFromUseCase(getTableDataUseCase.get())
+    }
+
+    private suspend fun getPieChartData(widgets: List<BaseWidgetUiModel<*>>): List<PieChartDataUiModel> {
+        widgets.setLoading()
+        val dataKeys = Utils.getWidgetDataKeys<PieChartWidgetUiModel>(widgets)
+        val params = GetPieChartDataUseCase.getRequestParams(dataKeys, dynamicParameter)
+        getPieChartDataUseCase.get().params = params
+        return getDataFromUseCase(getPieChartDataUseCase.get())
+    }
+
+    private suspend fun getBarChartData(widgets: List<BaseWidgetUiModel<*>>): List<BarChartDataUiModel> {
+        widgets.setLoading()
+        val dataKeys = Utils.getWidgetDataKeys<BarChartWidgetUiModel>(widgets)
+        val params = GetBarChartDataUseCase.getRequestParams(dataKeys, dynamicParameter)
+        getBarChartDataUseCase.get().params = params
+        return getDataFromUseCase(getBarChartDataUseCase.get())
+    }
+
+    private suspend fun getMultiLineGraphData(widgets: List<BaseWidgetUiModel<*>>): List<MultiLineGraphDataUiModel> {
+        widgets.onEach { it.isLoaded = true }
+        val dataKeys = Utils.getWidgetDataKeys<MultiLineGraphWidgetUiModel>(widgets)
+        val params = GetMultiLineGraphUseCase.getRequestParams(dataKeys, dynamicParameter)
+        getMultiLineGraphUseCase.get().params = params
+        return getMultiLineGraphUseCase.get().executeOnBackground()
+    }
+
+    private suspend fun getAnnouncementData(widgets: List<BaseWidgetUiModel<*>>): List<AnnouncementDataUiModel> {
+        widgets.onEach { it.isLoaded = true }
+        val dataKeys = Utils.getWidgetDataKeys<AnnouncementWidgetUiModel>(widgets)
+        val params = GetAnnouncementDataUseCase.createRequestParams(dataKeys)
+        getAnnouncementUseCase.get().params = params
+        return getAnnouncementUseCase.get().executeOnBackground()
+    }
+
+    private fun List<BaseWidgetUiModel<*>>.setLoading() {
+        forEach {
+            it.isLoading = true
+            it.isLoaded = true
+        }
+    }
+
 }

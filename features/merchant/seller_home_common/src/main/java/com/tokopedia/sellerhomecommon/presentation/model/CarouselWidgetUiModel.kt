@@ -22,6 +22,7 @@ class CarouselWidgetUiModel(
         override var isLoaded: Boolean,
         override var isLoading: Boolean,
         override var isFromCache: Boolean,
+        override var isNeedToBeRemoved: Boolean = false,
         override var emptyState: WidgetEmptyStateUiModel
 ) : BaseWidgetUiModel<CarouselDataUiModel> {
 
@@ -30,7 +31,7 @@ class CarouselWidgetUiModel(
     }
 
     override fun copy(): BaseWidgetUiModel<CarouselDataUiModel> {
-        return CarouselWidgetUiModel(id, widgetType, title, subtitle, tooltip, appLink, dataKey, ctaText, isShowEmpty, data, impressHolder, isLoaded, isLoading, isFromCache, emptyState)
+        return CarouselWidgetUiModel(id, widgetType, title, subtitle, tooltip, appLink, dataKey, ctaText, isShowEmpty, data, impressHolder, isLoaded, isLoading, isFromCache, isNeedToBeRemoved, emptyState)
     }
 
     override fun needToRefreshData(other: BaseWidgetUiModel<CarouselDataUiModel>): Boolean {
