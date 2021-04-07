@@ -15,9 +15,9 @@ data class PMPeriodTypeResponse(
             val periodType: String = "",
             @Expose
             @SerializedName("period_start_date")
-            val periodStartDate: String = "",
+            val periodStartDate: String? = "",
             @Expose
             @SerializedName("period_end_date")
-            val periodEndDate: String = "",
+            val periodEndDate: String? = "",
     )
 }

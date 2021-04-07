@@ -258,7 +258,7 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
             isFinishedCoachMark = true
         }
 
-        if (!isFinishedCoachMark) {
+        if (!isFinishedCoachMark && coachMarkItem.isNotEmpty()) {
             coachMark.showCoachMark(coachMarkItem)
         }
     }

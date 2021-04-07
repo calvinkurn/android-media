@@ -106,5 +106,5 @@ object ShopScoreConstant {
     const val TWO_MONTH = 2
     const val THREE_MONTH = 3
 
-    const val VIDEO_YOUTUBE_ID = ""
+    const val VIDEO_YOUTUBE_ID = "MjbnDFmWbZk"
 }
