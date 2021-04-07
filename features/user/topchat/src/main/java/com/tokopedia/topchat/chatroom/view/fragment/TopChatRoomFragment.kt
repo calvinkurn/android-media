@@ -12,6 +12,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.Toast
 import androidx.annotation.StringRes
 import androidx.collection.ArrayMap
 import androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -82,6 +83,7 @@ import com.tokopedia.topchat.chatroom.di.ChatComponent
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.Attachment
 import com.tokopedia.topchat.chatroom.domain.pojo.chatroomsettings.ChatSettingsResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.orderprogress.ChatOrderProgress
+import com.tokopedia.topchat.chatroom.domain.pojo.srw.QuestionUiModel
 import com.tokopedia.topchat.chatroom.domain.pojo.sticker.Sticker
 import com.tokopedia.topchat.chatroom.view.activity.TopChatRoomActivity.Companion.REQUEST_CODE_CHAT_IMAGE
 import com.tokopedia.topchat.chatroom.view.activity.TopchatReportWebViewActivity
@@ -95,6 +97,7 @@ import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.CommonViewH
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.DeferredViewHolderAttachment
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.SearchListener
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.listener.TopchatProductAttachmentListener
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.srw.SrwQuestionViewHolder
 import com.tokopedia.topchat.chatroom.view.custom.*
 import com.tokopedia.topchat.chatroom.view.customview.TopChatRoomDialog
 import com.tokopedia.topchat.chatroom.view.customview.TopChatViewStateImpl
@@ -139,7 +142,8 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         StickerViewHolder.Listener, DeferredViewHolderAttachment, CommonViewHolderListener,
         SearchListener, BroadcastSpamHandlerViewHolder.Listener,
         RoomSettingFraudAlertViewHolder.Listener,
-        ReviewViewHolder.Listener, TopchatProductAttachmentListener {
+        ReviewViewHolder.Listener, TopchatProductAttachmentListener,
+        SrwQuestionViewHolder.Listener {
 
     @Inject
     lateinit var presenter: TopChatRoomPresenter
@@ -214,6 +218,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_topchat_chatroom, container, false).also {
             bindView(it)
+            initSrw()
             initObserver()
             initReplyTextWatcher()
             initStickerView()
@@ -222,17 +227,23 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         }
     }
 
+    private fun initSrw() {
+        rvSrw?.initialize(this)
+    }
+
     private fun initObserver() {
         presenter.srw.observe(viewLifecycleOwner, Observer {
             when (it.status) {
                 Status.SUCCESS -> {
+                    rvSrw?.updateSrwList(it.data)
                     if (shouldShowSrw()) {
                         rvSrw?.show()
-                        rvSrw?.updateSrwList(it.data)
                         getViewState().hideTemplateChat()
                     } else {
                         rvSrw?.hide()
-                        getViewState().showTemplateChat()
+                        getViewState().showTemplateChatIfReady(
+                                adapter.isLastMessageBroadcast(), !isSeller()
+                        )
                     }
                 }
                 else -> {
@@ -1806,6 +1817,10 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     override fun trackReviewCardClick(element: ReviewUiModel) {
         analytics.trackReviewCardClick(element, isSeller(), session.userId)
+    }
+
+    override fun onClickSrwQuestion(question: QuestionUiModel) {
+        Toast.makeText(context, question.content, Toast.LENGTH_LONG).show()
     }
 
     private fun String.ellipsize(maxChar: Int): String {

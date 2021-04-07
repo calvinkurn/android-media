@@ -24,7 +24,8 @@ import com.tokopedia.unifyprinciples.Typography
 class SrwLinearLayout : LinearLayout {
 
     private var chatSmartReplyQuestion = ChatSmartReplyQuestion()
-    private val rvAdapter = SrwAdapter(SrwTypeFactoryImpl())
+    private val typeFactory = SrwTypeFactoryImpl()
+    private val rvAdapter = SrwAdapter(typeFactory)
 
     private var title: Typography? = null
     private var rvSrw: RecyclerView? = null
@@ -42,6 +43,16 @@ class SrwLinearLayout : LinearLayout {
         initBackground()
         initViewBind()
         initRecyclerView()
+    }
+
+    fun updateSrwList(data: ChatSmartReplyQuestionResponse?) {
+        if (data == null) return
+        updateTitle(data)
+        updateList(data)
+    }
+
+    fun initialize(listener: SrwQuestionViewHolder.Listener) {
+        typeFactory.srwQuestionListener = listener
     }
 
     private fun initViewLayout() {
@@ -75,12 +86,6 @@ class SrwLinearLayout : LinearLayout {
             adapter = rvAdapter
             addItemDecoration(SrwItemDecoration(context))
         }
-    }
-
-    fun updateSrwList(data: ChatSmartReplyQuestionResponse?) {
-        if (data == null) return
-        updateTitle(data)
-        updateList(data)
     }
 
     private fun updateTitle(data: ChatSmartReplyQuestionResponse) {
@@ -124,13 +129,15 @@ interface SrwTypeFactory : AdapterTypeFactory {
  */
 class SrwTypeFactoryImpl : BaseAdapterTypeFactory(), SrwTypeFactory {
 
+    var srwQuestionListener: SrwQuestionViewHolder.Listener? = null
+
     override fun type(questionUiModel: QuestionUiModel): Int {
         return SrwQuestionViewHolder.LAYOUT
     }
 
     override fun createViewHolder(parent: View?, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
-            SrwQuestionViewHolder.LAYOUT -> SrwQuestionViewHolder(parent)
+            SrwQuestionViewHolder.LAYOUT -> SrwQuestionViewHolder(parent, srwQuestionListener)
             else -> super.createViewHolder(parent, type)
         }
     }

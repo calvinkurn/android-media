@@ -186,7 +186,9 @@
                     android:layout_gravity="end"
                     android:layout_marginEnd="@dimen/unify_space_16"
                     android:orientation="vertical"
-                    tools:layout_height="50dp" />
+                    android:visibility="gone"
+                    tools:layout_height="50dp"
+                    tools:visibility="visible" />
 
             </LinearLayout>
 

@@ -38,5 +38,6 @@ interface TopChatViewState : BaseChatViewState {
     fun updateTemplateState()
 
     fun hasProductPreviewShown(): Boolean
+    fun showTemplateChatIfReady(lastMessageBroadcast: Boolean, amIBuyer: Boolean)
 
 }
