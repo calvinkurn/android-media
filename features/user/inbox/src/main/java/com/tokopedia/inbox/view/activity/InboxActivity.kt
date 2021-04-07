@@ -155,6 +155,10 @@ class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentC
         bottomNav?.setBadgeCount(InboxFragmentType.DISCUSSION, notificationRole.talkInt)
     }
 
+    override fun decreaseReviewUnreviewedCounter() {
+        // Decrease counter
+    }
+
     private fun setupToolbar() {
         toolbar?.switchToLightToolbar()
         val view = View.inflate(
@@ -419,6 +423,12 @@ class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentC
                         onBottomNavSelected(InboxFragmentType.DISCUSSION)
                         updateToolbarIcon()
                         InboxConfig.page = InboxFragmentType.DISCUSSION
+                    }
+                    R.id.menu_inbox_review -> {
+                        cacheState.saveInitialPageCache(InboxFragmentType.REVIEW)
+                        onBottomNavSelected(InboxFragmentType.REVIEW)
+                        updateToolbarIcon()
+                        InboxConfig.page = InboxFragmentType.REVIEW
                     }
                 }
                 analytic.trackOpenInboxPage(InboxConfig.page, InboxConfig.role)

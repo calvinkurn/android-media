@@ -4,10 +4,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.reputation.common.data.source.cloud.model.ProductrevReviewTabCount
 import com.tokopedia.reputation.common.domain.usecase.ProductrevReviewTabCounterUseCase
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.review.feature.inbox.container.data.ReviewInboxTabs
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -23,7 +23,7 @@ class ReviewInboxContainerViewModel @Inject constructor(
 ) : BaseViewModel(dispatchers.io){
 
     private val _reviewTabs = MutableLiveData<Result<ProductrevReviewTabCount>>()
-    val reviewTabs: LiveData<List<ReviewInboxTabs>> = Transformations.map(_reviewTabs) {
+    val reviewTabs: LiveData<MutableList<ReviewInboxTabs>> = Transformations.map(_reviewTabs) {
         updateCounters(it)
     }
 
@@ -40,7 +40,7 @@ class ReviewInboxContainerViewModel @Inject constructor(
         }
     }
 
-    private fun updateCounters(tabCount: Result<ProductrevReviewTabCount>): List<ReviewInboxTabs> {
+    private fun updateCounters(tabCount: Result<ProductrevReviewTabCount>): MutableList<ReviewInboxTabs> {
         val result = mutableListOf<ReviewInboxTabs>()
         when(tabCount) {
             is Success -> {
@@ -53,11 +53,13 @@ class ReviewInboxContainerViewModel @Inject constructor(
             }
         }
         result.add(ReviewInboxTabs.ReviewInboxHistory)
-        if(isShopOwner()) {
+        if(isShopOwner() && !isInboxUnified()) {
             result.add(ReviewInboxTabs.ReviewInboxSeller)
         }
         return result
     }
 
     private fun isShopOwner() = userSessionInterface.hasShop()
+
+    private fun isInboxUnified() = true
 }
