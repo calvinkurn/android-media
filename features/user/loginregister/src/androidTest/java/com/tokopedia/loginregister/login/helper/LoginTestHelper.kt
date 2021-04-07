@@ -79,7 +79,6 @@ class LoginTestHelper {
         const val LOGIN_PHONE_P1 = "tracker/user/loginregister/email/login_phone_p1.json"
         const val LOGIN_FORGOT_PASS_P1 = "tracker/user/loginregister/email/login_forgot_pass_p1.json"
         const val LOGIN_EMAIL_REGISTER_P1 = "tracker/user/loginregister/email/login_email_register_p1.json"
-
         const val OTP_LOGIN_PHONE_NUMBER = "tracker/user/otp/otp_login_phone_p1.json"
     }
 }
@@ -112,7 +111,7 @@ fun clearLogin() {
 }
 
 fun waitForData() {
-    Thread.sleep(1500L)
+    Thread.sleep(1000L)
 }
 
 fun waitForTrackerSent() {
