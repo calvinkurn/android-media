@@ -36,10 +36,13 @@ class ItemStatusPMViewHolder(view: View,
             ic_pm_reputation_right?.setOnClickListener {
                 itemStatusPowerMerchantListener.onItemClickedGoToPMActivation()
             }
+
             if (element.isCardBgColor) {
                 containerDescPmSection?.setBackgroundColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Y100))
+                ic_info_potential_pm?.setBackgroundColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Y500))
             } else {
                 containerDescPmSection?.setBackgroundColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+                ic_info_potential_pm?.setBackgroundColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
             }
 
             if (element.isInActivePM) {

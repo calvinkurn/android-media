@@ -37,11 +37,9 @@ class ItemFeatureRecommendationAdapter(private val itemRecommendationFeatureList
     inner class ItemFeatureRecommendationViewHolder(view: View): RecyclerView.ViewHolder(view) {
         fun bind(data: SectionShopRecommendationUiModel.ItemShopRecommendationUiModel) {
             with(itemView) {
-
-                tvItemRecommendedTitle?.text = data.titleRecommendation?.let { context.getString(it) }
-                tvItemRecommendedDescription?.text = data.descRecommendation?.let { context.getString(it) }
+                tvItemRecommendedTitle?.text = data.titleRecommendation
+                tvItemRecommendedDescription?.text = data.descRecommendation
                 ivRecommendedPromo?.loadImage(data.iconRecommendationUrl)
-
                 setOnClickListener {
                     itemRecommendationFeatureListener.onItemClickedRecommendationFeature(data.appLinkRecommendation)
                 }

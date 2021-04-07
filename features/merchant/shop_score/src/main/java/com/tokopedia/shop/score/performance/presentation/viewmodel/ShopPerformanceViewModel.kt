@@ -49,7 +49,6 @@ class ShopPerformanceViewModel @Inject constructor(
     private val _shopInfoLevel = MutableLiveData<Result<ShopInfoLevelUiModel>>()
     private val _shopPerformanceDetail = MutableLiveData<ShopPerformanceDetailUiModel>()
 
-
     private val _shopInfoPeriod = MutableLiveData<Result<ShopInfoPeriodUiModel>>()
 
     fun getShopInfoPeriod() {

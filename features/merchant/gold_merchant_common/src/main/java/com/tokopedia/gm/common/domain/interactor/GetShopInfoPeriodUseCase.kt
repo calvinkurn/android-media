@@ -9,6 +9,7 @@ import com.tokopedia.gm.common.presentation.model.ShopInfoPeriodUiModel
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 
@@ -72,13 +73,21 @@ class GetShopInfoPeriodUseCase @Inject constructor(
             val gqlResponse = graphqlRepository.getReseponse(requests)
             if (!gqlResponse.getError(ShopInfoByIDResponse::class.java).isNullOrEmpty()) {
                 shopInfoPeriodWrapperResponse.shopInfoByIDResponse = gqlResponse.getData<ShopInfoByIDResponse>(ShopInfoByIDResponse::class.java).shopInfoByID
+            } else {
+                val dataError = gqlResponse.getError(ShopInfoByIDResponse::class.java).joinToString { it.message }
+                throw MessageErrorException(dataError)
             }
 
             if (!gqlResponse.getError(PMPeriodTypeResponse::class.java).isNullOrEmpty()) {
                 shopInfoPeriodWrapperResponse.goldGetPMSettingInfo = gqlResponse.getData<PMPeriodTypeResponse>(PMPeriodTypeResponse::class.java).goldGetPMSettingInfo
+            } else {
+                val dataError = gqlResponse.getError(PMPeriodTypeResponse::class.java).joinToString { it.message }
+                throw MessageErrorException(dataError)
             }
             shopInfoPeriodUiModel = shopScoreCommonMapper.mapToGetShopInfo(shopInfoPeriodWrapperResponse)
-        } catch (e: Throwable) { }
+        } catch (e: Throwable) {
+
+        }
 
         return shopInfoPeriodUiModel
     }

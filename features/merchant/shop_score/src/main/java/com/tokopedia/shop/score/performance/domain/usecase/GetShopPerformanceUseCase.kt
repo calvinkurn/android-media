@@ -102,6 +102,7 @@ class GetShopPerformanceUseCase @Inject constructor(private val gqlRepository: G
                   title
                   text
                   image_url
+                  related_link_applink
                 }
               }
             }
@@ -130,6 +131,8 @@ class GetShopPerformanceUseCase @Inject constructor(private val gqlRepository: G
         val goldPMShopInfoParam = mapOf(SHOP_ID_BENEFIT_INFO to shopID)
         val goldPMGradeBenefitInfoParam = mapOf(SHOP_ID_BENEFIT_INFO to shopID)
 
+        val getRecommendationToolsParam = mapOf(SHOP_ID_STATUS_INFO to shopID)
+
         val shopScoreLevelRequest = GraphqlRequest(SHOP_SCORE_LEVEL_QUERY, ShopScoreLevelResponse::class.java, shopScoreLevelParam)
         val shopLevelRequest = GraphqlRequest(SHOP_LEVEL_TOOLTIP_QUERY, ShopLevelTooltipResponse::class.java, shopLevelParam)
         val goldPMGradeBenefitInfoRequest = GraphqlRequest(GOLD_PM_GRADE_BENEFIT_INFO_QUERY,
@@ -137,6 +140,9 @@ class GetShopPerformanceUseCase @Inject constructor(private val gqlRepository: G
         val goldPMStatusRequest = GraphqlRequest(GOLD_PM_STATUS_QUERY,
                 GoldGetPMStatusResponse::class.java, goldPMStatusParam)
         val goldPMShopInfoRequest = GraphqlRequest(GOLD_PM_SHOP_INFO_QUERY, GoldGetPMShopInfoResponse::class.java, goldPMShopInfoParam)
+
+        val getRecommendationToolsRequest =
+                GraphqlRequest(RECOMMENDATION_TOOLS_QUERY, GetRecommendationToolsResponse::class.java, getRecommendationToolsParam)
 
         val requests = mutableListOf<GraphqlRequest>()
 
@@ -187,7 +193,8 @@ class GetShopPerformanceUseCase @Inject constructor(private val gqlRepository: G
                     val goldPMGradeBenefitInfoData = gqlResponse.getData<GoldPMGradeBenefitInfoResponse>(GoldPMGradeBenefitInfoResponse::class.java).goldGetPMGradeBenefitInfo
                     shopScoreWrapperResponse.goldPMGradeBenefitInfoResponse = goldPMGradeBenefitInfoData
 
-
+                    val getRecommendationToolsData = gqlResponse.getData<GetRecommendationToolsResponse>(GetRecommendationToolsResponse::class.java).valuePropositionGetRecommendationTools
+                    shopScoreWrapperResponse.getRecommendationToolsResponse = getRecommendationToolsData
                 } catch (e: Throwable) {
 
                 }

@@ -23,7 +23,10 @@ data class GetRecommendationToolsResponse(
                 val text: String = "",
                 @Expose
                 @SerializedName("title")
-                val title: String = ""
+                val title: String = "",
+                @Expose
+                @SerializedName("related_link_applink")
+                val relatedLinkAppLink: String = ""
         )
     }
 }

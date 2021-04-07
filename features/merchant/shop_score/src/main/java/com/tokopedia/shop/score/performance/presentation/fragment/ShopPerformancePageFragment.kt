@@ -12,7 +12,9 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.observe
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.common.ShopScoreCoachMarkPrefs
 import com.tokopedia.shop.score.performance.di.component.ShopPerformanceComponent
@@ -176,7 +178,7 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
     override fun onViewItemPowerMerchantListener(view: View) {
         if (!shopScoreCoachMarkPrefs.getHasShownItemPM()) {
             coachMarkItem.add(CoachMark2Item(
-                    view.findViewById(R.id.containerCornerShopPerformance),
+                    view.findViewById(R.id.containerPowerMerchant),
                     getString(R.string.title_coachmark_shop_score_3),
                     getString(R.string.desc_coachmark_shop_score_3),
             ))
@@ -198,7 +200,7 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
     override fun onViewRegularMerchantListener(view: View) {
         if (!shopScoreCoachMarkPrefs.getHasShownItemRM()) {
             coachMarkItem.add(CoachMark2Item(
-                    view.findViewById(R.id.containerCornerShopPerformance),
+                    view.findViewById(R.id.containerRegularMerchantSection),
                     getString(R.string.title_coachmark_shop_score_3),
                     getString(R.string.desc_coachmark_shop_score_3),
             ))
@@ -257,6 +259,16 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
         coachMark.onFinishListener = {
             isFinishedCoachMark = true
         }
+
+        coachMark.setStepListener(object : CoachMark2.OnStepListener {
+            override fun onStep(currentIndex: Int, coachMarkItem: CoachMark2Item) {
+                if (currentIndex == 1) {
+                    coachMark.stepPagination?.hide()
+                } else {
+                    coachMark.stepPagination?.show()
+                }
+            }
+        })
 
         if (!isFinishedCoachMark && coachMarkItem.isNotEmpty()) {
             coachMark.showCoachMark(coachMarkItem)
