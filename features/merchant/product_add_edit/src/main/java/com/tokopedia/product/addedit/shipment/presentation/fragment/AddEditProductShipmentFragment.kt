@@ -401,6 +401,7 @@ class AddEditProductShipmentFragment:
                 startActivity(intent)
             }
         }
+        bottomSheet.setSubmitButtonText(getString(R.string.label_product_limitation_bottomsheet_button_draft))
         bottomSheet.show(childFragmentManager)
     }
 

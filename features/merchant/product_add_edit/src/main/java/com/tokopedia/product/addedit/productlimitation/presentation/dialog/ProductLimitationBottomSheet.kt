@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -26,14 +27,22 @@ class ProductLimitationBottomSheet(
     }
 
     private var onBottomSheetResult: (String) -> Unit = {}
+    private var btnSubmitText: String = ""
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         initChildLayout()
         overlayClickDismiss = true
-        setTitle(getString(R.string.title_product_limitation_cant_add_product))
+
+        if (isEligible) {
+            setTitle(getString(R.string.title_product_limitation_add_product_rules))
+        } else {
+            setTitle(getString(R.string.title_product_limitation_cant_add_product))
+        }
+
         setCloseClickListener {
             dismiss()
         }
+
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
@@ -43,7 +52,10 @@ class ProductLimitationBottomSheet(
     }
 
     private fun setupDismissButton() {
-        requireView().findViewById<UnifyButton>(R.id.btn_dismiss).setOnClickListener {
+        val btnSubmit = requireView().findViewById<UnifyButton>(R.id.btn_dismiss)
+        btnSubmit.text = btnSubmitText
+        btnSubmit.isVisible = !isEligible
+        btnSubmit.setOnClickListener {
             dismiss()
         }
     }
@@ -81,10 +93,13 @@ class ProductLimitationBottomSheet(
         this.onBottomSheetResult = onBottomSheetResult
     }
 
+    fun setSubmitButtonText(text: String) {
+        btnSubmitText = text
+    }
+
     fun show(manager: FragmentManager?) {
         manager?.run {
             super.show(this , TAG)
         }
     }
-
 }

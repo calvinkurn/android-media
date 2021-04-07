@@ -374,7 +374,7 @@
     <!-- Product Limitation -->
     <string name="label_product_limitation_ticker">Mulai %1$s, ada perubahan Syarat &amp; Ketentuan jumlah produk. <![CDATA[<font color=\'#42b549\'><b>Selengkapnya</b></font>.]]></string>
     <string name="action_product_limitation_item">Pelajari</string>
-    <string name="action_product_limitation_item_goto_productlist">Pelajari</string>
+    <string name="action_product_limitation_item_goto_productlist">Ke Daftar Produk</string>
     <string name="title_product_limitation_item_upgradepm">Tingkatkan kuota dengan upgrade ke Power Merchant</string>
     <string name="label_product_limitation_item_upgradepm">Kuota produkmu akan bertambah dan dapatkan juga keuntungan lainnya!</string>
     <string name="title_product_limitation_item_usevariant">Gunakan fitur Varian untuk produk yang mirip</string>
@@ -387,7 +387,9 @@
     <string name="label_product_limitation_bottomsheet_ticker">Jumlah maks. produk yang dapat ditambahkan didasarkan oleh tipe Seller. <![CDATA[<font color=\'#42b549\'><b>Selengkapnya</b></font>.]]></string>
     <string name="title_product_limitation_bottomsheet_info">Bagaimana cara menambahkan lebih banyak produk?</string>
     <string name="label_product_limitation_bottomsheet_button">Kembali ke Daftar Produk</string>
+    <string name="label_product_limitation_bottomsheet_button_draft">Simpan Sebagai Draft</string>
     <string name="title_product_limitation_cant_add_product">Tidak bisa menambahkan produk</string>
+    <string name="title_product_limitation_add_product_rules">Aturan jumlah produk toko</string>
 
     <!--CONTENT DESC-->
     <string name="content_desc_tv_start_add_edit_product_photo">text mulai</string>

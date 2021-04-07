@@ -401,6 +401,7 @@ class AddEditProductPreviewFragment :
             if (isEditing()) {
                 ProductEditStepperTracking.trackFinishButton(shopId)
             } else if (isAdding() && !isProductLimitEligible) {
+                productLimitationBottomSheet?.setSubmitButtonText(getString(R.string.label_product_limitation_bottomsheet_button_draft))
                 productLimitationBottomSheet?.show(childFragmentManager)
                 return@setOnClickListener // cancel onclick
             }
@@ -1651,6 +1652,7 @@ class AddEditProductPreviewFragment :
         }
 
         productLimitationTicker?.setOnClickListener {
+            productLimitationBottomSheet?.setSubmitButtonText(getString(R.string.label_product_limitation_bottomsheet_button))
             productLimitationBottomSheet?.show(childFragmentManager)
         }
     }
