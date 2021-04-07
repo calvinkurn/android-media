@@ -322,6 +322,7 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
         val itemCount = homeRecyclerView.adapter?.itemCount ?: 0
         countLoop@ for (i in 0 until itemCount)  {
             scrollHomeRecyclerViewToPosition(homeRecyclerView, i)
+            Thread.sleep(1000)
             val viewHolder = homeRecyclerView.findViewHolderForAdapterPosition(i)
             if (viewHolder != null && viewClass.simpleName == viewHolder.javaClass.simpleName) {
                 isTypeClass.invoke(viewHolder, i)

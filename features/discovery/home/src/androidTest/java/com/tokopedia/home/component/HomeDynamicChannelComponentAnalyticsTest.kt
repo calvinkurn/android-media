@@ -73,8 +73,11 @@ class HomeDynamicChannelComponentAnalyticsTest {
         doActivityTest(PopularKeywordViewHolder::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
             clickOnPopularKeywordSection(viewHolder, i)
         }
+        logTestMessage("DebugDev Popular keyword UI test finished, proceeding to cassava assert")
 
         getAssertPopularKeyword(gtmLogDBSource, context)
+
+        logTestMessage("DebugDev Popular keyword Cassava assert test finished, proceeding to finish test")
 
         onFinishTest()
 
@@ -336,6 +339,7 @@ class HomeDynamicChannelComponentAnalyticsTest {
         val itemCount = homeRecyclerView.adapter?.itemCount ?: 0
         countLoop@ for (i in 0 until itemCount)  {
             scrollHomeRecyclerViewToPosition(homeRecyclerView, i)
+            Thread.sleep(1000)
             val viewHolder = homeRecyclerView.findViewHolderForAdapterPosition(i)
             if (viewHolder != null && viewClass.simpleName == viewHolder.javaClass.simpleName) {
                 isTypeClass.invoke(viewHolder, i)
@@ -371,7 +375,7 @@ class HomeDynamicChannelComponentAnalyticsTest {
     }
 
     private fun endActivityTest() {
-        activityRule.activity.finish()
+        activityRule.activity.moveTaskToBack(true)
         logTestMessage("Done UI Test")
         waitForLoadCassavaAssert()
     }
