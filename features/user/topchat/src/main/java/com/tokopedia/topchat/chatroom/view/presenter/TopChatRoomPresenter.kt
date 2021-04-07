@@ -107,7 +107,8 @@ open class TopChatRoomPresenter @Inject constructor(
         private val chatToggleBlockChat: ChatToggleBlockChatUseCase,
         private val chatBackgroundUseCase: ChatBackgroundUseCase,
         private val sharedPref: SharedPreferences,
-        private val dispatchers: TopchatCoroutineContextProvider
+        private val dispatchers: TopchatCoroutineContextProvider,
+        private val remoteConfig: RemoteConfig
 ) : BaseChatPresenter<TopChatContract.View>(userSession, topChatRoomWebSocketMessageMapper),
         TopChatContract.Presenter, CoroutineScope {
 
@@ -122,7 +123,6 @@ open class TopChatRoomPresenter @Inject constructor(
     private var compressImageSubscription: CompositeSubscription
     private var listInterceptor: ArrayList<Interceptor>
     private var dummyList: ArrayList<Visitable<*>>
-    private var remoteConfig: RemoteConfig? = null
 
     init {
         mSubscription = CompositeSubscription()
@@ -814,13 +814,9 @@ open class TopChatRoomPresenter @Inject constructor(
         view?.renderOrderProgress(orderProgressResponse.chatOrderProgress)
     }
 
-    @VisibleForTesting
-    fun isEnableUploadImageService(): Boolean {
+    private fun isEnableUploadImageService(): Boolean {
         return try {
-            if(remoteConfig == null) {
-                remoteConfig = FirebaseRemoteConfigImpl(view.context)
-            }
-            remoteConfig?.getBoolean(ENABLE_UPLOAD_IMAGE_SERVICE, false)?: false
+            remoteConfig.getBoolean(ENABLE_UPLOAD_IMAGE_SERVICE, false)
         } catch (ex: Exception) {
             false
         }

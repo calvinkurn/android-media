@@ -23,6 +23,8 @@ import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.network.utils.OkHttpRetryPolicy
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.topchat.chatlist.data.factory.MessageFactory
 import com.tokopedia.topchat.chatlist.data.mapper.DeleteMessageMapper
 import com.tokopedia.topchat.chatlist.data.repository.MessageRepository
@@ -272,5 +274,11 @@ class ChatModule {
     fun provideChatReplyUseCase(graphqlRepository: GraphqlRepository)
             : com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<ChatReplyPojo> {
         return com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase(graphqlRepository)
+    }
+
+    @ChatScope
+    @Provides
+    fun provideRemoteConfig(@TopchatContext context: Context) : RemoteConfig {
+        return FirebaseRemoteConfigImpl(context)
     }
 }

@@ -22,6 +22,7 @@ import com.tokopedia.common.network.util.CommonUtil
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.seamless_login_common.domain.usecase.SeamlessLoginUsecase
 import com.tokopedia.seamless_login_common.subscriber.SeamlessLoginSubscriber
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
@@ -189,6 +190,9 @@ class TopChatRoomPresenterTest {
     @RelaxedMockK
     private lateinit var sendAbleProductPreview: SendablePreview
 
+    @RelaxedMockK
+    private lateinit var remoteConfig: RemoteConfig
+
     @SpyK
     private var topChatRoomWebSocketMessageMapper = TopChatRoomWebSocketMessageMapper()
 
@@ -318,7 +322,8 @@ class TopChatRoomPresenterTest {
                         chatToggleBlockChat,
                         chatBackgroundUseCase,
                         sharedPref,
-                        dispatchers
+                        dispatchers,
+                        remoteConfig
                 )
         )
         presenter.attachView(view)
@@ -570,7 +575,7 @@ class TopChatRoomPresenterTest {
     fun `on success upload image and sent through websocket`() {
         // Given
         every {
-            presenter.isEnableUploadImageService()
+            remoteConfig.getBoolean(any())
         } returns false
         every {
             ImageUtil.validateImageAttachment(imageUploadViewModel.imageUrl)
@@ -609,7 +614,7 @@ class TopChatRoomPresenterTest {
         // Given
         val slot = slot<Subscriber<ReplyChatViewModel>>()
         every {
-            presenter.isEnableUploadImageService()
+            remoteConfig.getBoolean(any())
         } returns false
         every {
             ImageUtil.validateImageAttachment(imageUploadViewModel.imageUrl)
@@ -647,7 +652,7 @@ class TopChatRoomPresenterTest {
     fun `on success upload image with service`() {
         val chatReply = mockk<ChatReplyPojo>()
         every {
-            presenter.isEnableUploadImageService()
+            remoteConfig.getBoolean(any())
         } returns true
         every {
             ImageUtil.validateImageAttachment(imageUploadViewModel.imageUrl)
@@ -683,7 +688,7 @@ class TopChatRoomPresenterTest {
         // Given
         val errorUploadImage = Throwable()
         every {
-            presenter.isEnableUploadImageService()
+            remoteConfig.getBoolean(any())
         } returns false
         every {
             ImageUtil.validateImageAttachment(imageUploadViewModel.imageUrl)

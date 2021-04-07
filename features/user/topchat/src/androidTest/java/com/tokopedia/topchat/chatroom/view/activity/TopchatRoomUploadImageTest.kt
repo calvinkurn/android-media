@@ -9,6 +9,7 @@ import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.matcher.ViewMatchers
+import androidx.test.espresso.matcher.ViewMatchers.withId
 import com.tokopedia.imagepicker.common.PICKER_RESULT_PATHS
 import com.tokopedia.imagepicker.common.RESULT_IMAGES_FED_INTO_IMAGE_PICKER
 import com.tokopedia.imagepicker.common.RESULT_PREVIOUS_IMAGE
@@ -25,23 +26,11 @@ class TopchatRoomUploadImageTest : TopchatRoomTest() {
     @Test
     fun upload_image_and_stay_in_chatroom() {
         // Given
-        openChatRoom(replyChatGqlDelay = 1000L)
+        openChatRoom()
         // When
         openImagePicker()
-        waitForIt(1500L)
         // Then
-        onView(ViewMatchers.withId(R.id.fl_image_container)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
-    }
-
-    @Test
-    fun upload_big_image_in_chatroom() {
-        // Given
-        openChatRoom(replyChatGqlDelay = 4000L)
-        // When
-        openImagePicker()
-        waitForIt(5000L)
-        // Then
-        onView(ViewMatchers.withId(R.id.fl_image_container)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+        onView(withId(R.id.fl_image_container)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
     }
 
     @Test
@@ -55,7 +44,7 @@ class TopchatRoomUploadImageTest : TopchatRoomTest() {
         //send second image
         openImagePicker()
         // Then
-        onView(ViewMatchers.withId(R.id.recycler_view)).check(withItemCount(greaterThan(count)))
+        onView(withId(R.id.recycler_view)).check(withItemCount(greaterThan(count)))
     }
 
     private fun openImagePicker() {
