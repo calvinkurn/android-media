@@ -7,6 +7,6 @@ data class AddressState(
 ) {
     companion object {
         const val ERROR_CODE_OPEN_ADDRESS_LIST = "4"
-        const val ERROR_CODE_OPEN_ANA = "4"
+        const val ERROR_CODE_OPEN_ANA = "3"
     }
 }

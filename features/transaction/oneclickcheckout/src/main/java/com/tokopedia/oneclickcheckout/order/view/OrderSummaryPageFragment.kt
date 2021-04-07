@@ -147,9 +147,6 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
 
     private val btnPromoCheckout by lazy { view?.findViewById<ButtonPromoCheckoutView>(R.id.btn_promo_checkout) }
 
-    private val imageEmptyProfile by lazy { view?.findViewById<ImageUnify>(R.id.image_empty_profile) }
-    private val buttonAturPilihan by lazy { view?.findViewById<UnifyButton>(R.id.button_atur_pilihan) }
-
     private var orderProductCard: OrderProductCard? = null
     private lateinit var newOrderPreferenceCard: NewOrderPreferenceCard
     private lateinit var orderInsuranceCard: OrderInsuranceCard
@@ -336,7 +333,6 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                             mainContent?.animateShow()
                         } else {
                             mainContent?.animateGone()
-                            layoutNoAddress?.animateGone()
                         }
                     }
                 }
@@ -359,7 +355,6 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                                 mainContent?.animateShow()
                             } else {
                                 mainContent?.animateGone()
-                                layoutNoAddress?.animateGone()
                             }
                         }
                     }
@@ -572,7 +567,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
     }
 
     private fun showLayoutNoAddress() {
-        layoutNoAddress?.visible()
+        layoutNoAddress?.animateShow()
         val scrollView = view?.findViewById<ScrollView>(R.id.nested_scroll_view)
         val height = scrollView?.height ?: 0
         val displayMetrics = context?.resources?.displayMetrics

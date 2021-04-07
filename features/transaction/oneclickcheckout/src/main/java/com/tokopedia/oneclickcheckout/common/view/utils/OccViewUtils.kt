@@ -27,5 +27,5 @@ private fun View.fadeTo(visible: Boolean, duration: Long) {
             .start()
 }
 
-internal fun View.animateShow(duration: Long = 500) = fadeTo(true, duration)
-internal fun View.animateGone(duration: Long = 500) = fadeTo(false, duration)
+internal fun View.animateShow(duration: Long = 400) = fadeTo(true, duration)
+internal fun View.animateGone(duration: Long = 400) = fadeTo(false, duration)
