@@ -109,7 +109,6 @@ class LoginActivityTest {
 
     @Test
     fun validateRegisterClick() {
-
         actionTest {
             simulateClickRegister()
         } assertTest {
@@ -118,7 +117,6 @@ class LoginActivityTest {
             validate(gtmLogDBSource, targetContext, LOGIN_EMAIL_REGISTER_P1)
             gtmLogDBSource.finishTest()
         }
-
     }
 
     @Test
