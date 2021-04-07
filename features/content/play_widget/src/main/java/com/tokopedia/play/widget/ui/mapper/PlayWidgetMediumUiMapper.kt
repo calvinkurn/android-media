@@ -16,6 +16,7 @@ import javax.inject.Inject
  */
 class PlayWidgetMediumUiMapper @Inject constructor(
         private val configMapper: PlayWidgetConfigMapper,
+        private val promoLabelMapper: PlayWidgetPromoLabelMapper,
         private val videoMapper: PlayWidgetVideoMapper,
         private val userSession: UserSessionInterface
 ) : PlayWidgetMapper {
@@ -85,7 +86,7 @@ class PlayWidgetMediumUiMapper @Inject constructor(
                 startTime = item.startTime,
                 totalView = item.stats.view.formatted,
                 totalViewVisible = item.video.isShowTotalView,
-                promoType = PlayWidgetPromoType.getByType("DEFAULT", "Diskon 30%"), //TODO("Wait for GQL")
+                promoType = promoLabelMapper.mapWidgetPromoType(item.config.promoLabels),
                 reminderType = getReminderType(item.config.isReminderSet),
                 partner = mapWidgetPartnerInfo(item.partner),
                 video = videoMapper.mapWidgetItemVideo(item.video),

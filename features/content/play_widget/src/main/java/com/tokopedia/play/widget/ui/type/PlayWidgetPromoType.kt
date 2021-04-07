@@ -34,8 +34,8 @@ sealed class PlayWidgetPromoType {
         fun getByType(type: String, promoText: String): PlayWidgetPromoType {
             return when (type.toUpperCase(Locale.getDefault())) {
                 "DEFAULT" -> Default(promoText)
-                "LIVE_ONLY" -> LiveOnly(promoText)
-                "NO_PROMO" -> NoPromo
+                "ONLY_LIVE" -> LiveOnly(promoText)
+                "" -> NoPromo
                 else -> Unknown
             }
         }
