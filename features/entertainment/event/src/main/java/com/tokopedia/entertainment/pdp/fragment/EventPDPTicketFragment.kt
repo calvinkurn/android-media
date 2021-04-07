@@ -379,11 +379,11 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicketModel, PackageType
                     context?.let {
                         val coachMark = CoachMark2(it)
                         coachMark.apply {
-                            showCoachMark(ArrayList(getCoachmarkItem(listRecom)), scroll_ticket_pdp, 0)
+                            showCoachMark(ArrayList(getCoachmarkItem(listRecom)), null, 0)
                         }
                     }
                     localCacheHandler.apply {
-                        putBoolean(SHOW_COACH_MARK_KEY, true)
+                        putBoolean(SHOW_COACH_MARK_KEY, false)
                         applyEditor()
                     }
                 }, COACH_MARK_START_DELAY)
