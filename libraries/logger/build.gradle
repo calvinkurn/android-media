@@ -17,6 +17,7 @@ dependencies {
         exclude group: 'org.jetbrains', module: 'annotations'
     }
 
+    implementation project(rootProject.ext.libraries.remoteConfig)
     implementation project(rootProject.ext.libraries.encryption)
     implementation project(rootProject.ext.libraries.keys)
     implementation rootProject.ext.miscDependencies.gson
