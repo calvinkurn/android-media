@@ -15,7 +15,6 @@ class LoginSocmedTestHelper {
             Espresso.onView(ViewMatchers.withId(R.id.socmed_btn))
                     .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
                     .perform(ViewActions.click())
-            Thread.sleep(1000L)
             Espresso.onView(ViewMatchers.withId(R.id.socmed_container)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
         }
 
