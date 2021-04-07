@@ -1,12 +1,16 @@
 package com.tokopedia.contactus.inboxticket2.view.presenter
 
+import android.app.Activity
 import android.view.View
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.contactus.common.analytics.ContactUsTracking
 import com.tokopedia.contactus.createticket.widget.LinearLayoutManager
+import com.tokopedia.contactus.inboxticket2.data.model.ChipTopBotStatusResponse
 import com.tokopedia.contactus.inboxticket2.data.model.InboxTicketListResponse
 import com.tokopedia.contactus.inboxticket2.domain.usecase.ChipTopBotStatusUseCase
 import com.tokopedia.contactus.inboxticket2.domain.usecase.GetTicketListUseCase
+import com.tokopedia.contactus.inboxticket2.view.contract.InboxBaseContract
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxListContract
 import io.mockk.*
 import kotlinx.coroutines.Dispatchers
@@ -15,8 +19,7 @@ import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.setMain
 import org.junit.After
-import org.junit.Assert.assertFalse
-import org.junit.Assert.assertTrue
+import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -148,6 +151,37 @@ class InboxListPresenterTest {
     }
 
     /***************************************getTicketList()*****************************************/
+
+
+    @Test
+    fun `check getChatbotApplink`(){
+        val response = ChipTopBotStatusResponse(ChipTopBotStatusResponse.ChipTopBotStatusInbox(ChipTopBotStatusResponse.ChipTopBotStatusInbox.ChipTopBotStatusData(messageId = "123", welcomeMessage = ""), messageError = null, status = ""))
+        coEvery { view.getActivity().getString(any()) }  returns "applink prefix/%s"
+        coEvery {  topBotStatusUseCase.getChipTopBotStatus()} returns response
+        presenter.getTopBotStatus()
+        val actual = presenter.getChatbotApplink()
+        assertEquals("applink prefix/123", actual)
+
+    }
+
+    @Test
+    fun `check getWelcomeMessage`(){
+        mockkStatic(MethodChecker::class)
+        every { MethodChecker.fromHtmlWithoutExtraSpace(any()) } returns "formatedHtml"
+        val actual = presenter.getWelcomeMessage()
+        assertEquals("formatedHtml", actual)
+
+    }
+
+    @Test
+    fun `check getNotifiactionIndiactor`() {
+        val response = ChipTopBotStatusResponse(ChipTopBotStatusResponse.ChipTopBotStatusInbox(ChipTopBotStatusResponse.ChipTopBotStatusInbox.ChipTopBotStatusData(messageId = "123", welcomeMessage = "", unreadNotif = true), messageError = null, status = ""))
+        coEvery {  topBotStatusUseCase.getChipTopBotStatus()} returns response
+        presenter.getTopBotStatus()
+        val actual = presenter.getNotifiactionIndiactor()
+        assertTrue(actual)
+
+    }
 
 
     /******************************************setFilter()*****************************************/

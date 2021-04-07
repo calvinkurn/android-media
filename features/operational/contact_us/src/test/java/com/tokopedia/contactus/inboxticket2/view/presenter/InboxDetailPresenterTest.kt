@@ -12,6 +12,7 @@ import com.tokopedia.contactus.inboxticket2.data.model.Tickets
 import com.tokopedia.contactus.inboxticket2.domain.AttachmentItem
 import com.tokopedia.contactus.inboxticket2.domain.CommentsItem
 import com.tokopedia.contactus.inboxticket2.domain.usecase.*
+import com.tokopedia.contactus.inboxticket2.view.activity.ContactUsProvideRatingActivity
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxBaseContract
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxDetailContract
 import com.tokopedia.contactus.inboxticket2.view.presenter.InboxDetailPresenter.Companion.KEY_LIKED
@@ -30,12 +31,16 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import kotlin.jvm.Throws
+import com.tokopedia.unit.test.rule.CoroutineTestRule
 
 @ExperimentalCoroutinesApi
 class InboxDetailPresenterTest {
 
     @get:Rule
     var rule = InstantTaskExecutorRule()
+
+    @get:Rule
+    val testRule = CoroutineTestRule()
 
     private lateinit var postMessageUseCase: PostMessageUseCase
     private lateinit var postMessageUseCase2: PostMessageUseCase2
@@ -44,7 +49,6 @@ class InboxDetailPresenterTest {
     private lateinit var submitRatingUseCase: SubmitRatingUseCase
     private lateinit var closeTicketByUserUseCase: CloseTicketByUserUseCase
     private lateinit var uploadImageUseCase: ContactUsUploadImageUseCase
-    private lateinit var dispatcher: TestCoroutineDispatcher
     private lateinit var userSession: UserSessionInterface
 
     private lateinit var presenter: InboxDetailPresenter
@@ -56,8 +60,6 @@ class InboxDetailPresenterTest {
     @Throws(Exception::class)
     fun setUp() {
         MockKAnnotations.init(this)
-        dispatcher = TestCoroutineDispatcher()
-        Dispatchers.setMain(dispatcher)
         postMessageUseCase = mockk(relaxed = true)
         postMessageUseCase2 = mockk(relaxed = true)
         inboxOptionUseCase = mockk(relaxed = true)
@@ -73,7 +75,7 @@ class InboxDetailPresenterTest {
                 inboxOptionUseCase,
                 submitRatingUseCase,
                 closeTicketByUserUseCase,
-                uploadImageUseCase, userSession, dispatcher))
+                uploadImageUseCase, userSession, testRule.dispatchers))
 
         view = mockk(relaxed = true)
         presenter.attachView(view)
@@ -748,33 +750,39 @@ class InboxDetailPresenterTest {
 
     }
 
-//    @Test
-//    fun `check invocation of sendMessageWithImages on invocation of sendMessage when isUploadImageValid returns 1 or more than 1 and response return status OK`() {
-//
-//        val response = mockk<TicketReplyResponse>(relaxed = true)
-//
-//        every { presenter.isUploadImageValid } returns 2
-//
-//
-//        every { uploadImageUseCase.getFile(any()) } returns mockk()
-//
-//        coEvery { uploadImageUseCase.uploadFile(any(), any(), any()) } returns mockk()
-//
-//        every { presenter.getUtils().getAttachmentAsString(any()) } returns ""
-//
-//        every { postMessageUseCase.createRequestParams(any(), any(), any(), any(), any(), any()) } returns mockk()
-//
-//        coEvery { postMessageUseCase.getCreateTicketResult(any()) } returns mockk(relaxed = true)
-//
-//        every { response.ticketReply?.ticketReplyData?.status } returns "OK"
-//
-//        presenter.sendMessage()
-//
-//        verify { view.hideSendProgress() }
-//
-//        verify { view.setSnackBarErrorMessage(any(), true) }
-//
-//    }
+    @Test
+    fun `check invocation of sendMessageWithImages on invocation of sendMessage when isUploadImageValid returns 1 or more than 1 and response return status OK`() {
+
+        val response = TicketReplyResponse(TicketReplyResponse.TicketReply(TicketReplyResponse.TicketReply.Data(status = "OK", postKey = "key")))
+
+        val utils = mockk<Utils>(relaxed = true)
+
+        every { presenter.isUploadImageValid } returns 2
+
+
+        every { uploadImageUseCase.getFile(any()) } returns mockk()
+
+        coEvery { uploadImageUseCase.uploadFile(any(), any(), any()) } returns listOf()
+
+        every { presenter.getUtils().getAttachmentAsString(any()) } returns ""
+
+        every { postMessageUseCase.createRequestParams(any(), any(), any(), any(), any(), any()) } returns mockk()
+
+        coEvery { postMessageUseCase2.getInboxDataResponse(any()) } returns null
+
+        coEvery { postMessageUseCase.getCreateTicketResult(any()) } returns response
+
+        every { presenter.getUtils() } returns utils
+
+        every { utils.getFileUploaded(any()) } returns ""
+
+        presenter.sendMessage()
+
+        verify { view.hideSendProgress() }
+
+        verify { view.setSnackBarErrorMessage(any(), true) }
+
+    }
 
 //    @Test
 //    fun `check invocation of sendMessageWithImages on invocation of sendMessage when isUploadImageValid returns 1 or more than 1 and response return status OK and postKey empty`() {
@@ -1224,5 +1232,14 @@ class InboxDetailPresenterTest {
     }
 
     /******************************************getTicketStatus()***********************************/
+
+    @Test
+    fun `check getUserId`(){
+        every { userSession.userId } returns "123"
+
+        val actual = presenter.getUserId()
+
+        assertEquals("123", actual)
+    }
 
 }
