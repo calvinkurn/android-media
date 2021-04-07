@@ -237,20 +237,24 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             when (it.status) {
                 Status.SUCCESS -> {
                     rvSrw?.updateSrwList(it.data)
-                    if (shouldShowSrw()) {
-                        rvSrw?.show()
-                        getViewState().hideTemplateChat()
-                    } else {
-                        rvSrw?.hide()
-                        getViewState().showTemplateChatIfReady(
-                                adapter.isLastMessageBroadcast(), !isSeller()
-                        )
-                    }
+                    updateSrwState()
                 }
                 else -> {
                 }
             }
         })
+    }
+
+    private fun updateSrwState() {
+        if (shouldShowSrw()) {
+            rvSrw?.show()
+            getViewState().hideTemplateChat()
+        } else {
+            rvSrw?.hide()
+            getViewState().showTemplateChatIfReady(
+                    adapter.isLastMessageBroadcast(), !isSeller()
+            )
+        }
     }
 
     private fun shouldShowSrw(): Boolean {
