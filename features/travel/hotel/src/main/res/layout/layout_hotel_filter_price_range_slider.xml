@@ -44,7 +44,8 @@
 
         <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/min_value"
-            style="@style/TextView.Title.BlackPrimary"
+            style="@style/TextView.Title"
+            android:textColor="@color/Unify_N700_96"
             android:layout_width="@dimen/layout_lvl0"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/hotel_minus4dp"
@@ -71,7 +72,8 @@
 
         <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/max_value"
-            style="@style/TextView.Title.BlackPrimary"
+            style="@style/TextView.Title"
+            android:textColor="@color/Unify_N700_96"
             android:layout_width="@dimen/layout_lvl0"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/hotel_minus4dp"
