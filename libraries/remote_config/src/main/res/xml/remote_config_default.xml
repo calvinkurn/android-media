@@ -522,6 +522,10 @@
         <value>false</value>
     </entry>
     <entry>
+        <key>app_iris_gtm_enabled</key>
+        <value>true</value>
+    </entry>
+    <entry>
         <key>app_cm_push_enable_new2</key>
         <value>true</value>
     </entry>
