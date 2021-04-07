@@ -42,6 +42,7 @@ import com.tokopedia.logisticCommon.data.constant.LogisticConstant
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.address.Token
 import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass
+import com.tokopedia.logisticCommon.domain.usecase.GetAddressCornerUseCase
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.network.interceptor.akamai.AkamaiErrorException
@@ -49,6 +50,7 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.oneclickcheckout.R
 import com.tokopedia.oneclickcheckout.common.DEFAULT_LOCAL_ERROR_MESSAGE
 import com.tokopedia.oneclickcheckout.common.OVO_ACTIVATION_URL
+import com.tokopedia.oneclickcheckout.common.domain.GetPreferenceListUseCase
 import com.tokopedia.oneclickcheckout.common.view.model.OccGlobalEvent
 import com.tokopedia.oneclickcheckout.common.view.model.OccState
 import com.tokopedia.oneclickcheckout.common.view.model.preference.AddressModel
@@ -110,6 +112,12 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
     @field:Named(OVO_ACTIVATION_URL)
     lateinit var ovoActivationUrl: Lazy<String>
 
+    @Inject
+    lateinit var getPreferenceListUseCase: Lazy<GetPreferenceListUseCase>
+
+    @Inject
+    lateinit var getAddressCornerUseCase: Lazy<GetAddressCornerUseCase>
+
     private val viewModel: OrderSummaryPageViewModel by lazy {
         ViewModelProvider(this, viewModelFactory)[OrderSummaryPageViewModel::class.java]
     }
@@ -119,6 +127,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
     private val swipeRefreshLayout by lazy { view?.findViewById<SwipeToRefresh>(R.id.swipe_refresh_layout) }
     private val globalError by lazy { view?.findViewById<GlobalError>(R.id.global_error) }
     private val mainContent by lazy { view?.findViewById<ConstraintLayout>(R.id.main_content) }
+
     private val layoutNoAddress by lazy { view?.findViewById<ConstraintLayout>(R.id.layout_no_address) }
     private val descNoAddress by lazy { view?.findViewById<Typography>(R.id.desc_no_address) }
     private val btnAddNewAddress by lazy { view?.findViewById<UnifyButton>(R.id.btn_occ_add_new_address) }
@@ -197,7 +206,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                     REQUEST_CODE_OVO_TOP_UP -> refresh()
                     REQUEST_CODE_EDIT_PAYMENT -> onResultFromEditPayment(data)
                     REQUEST_CODE_OPEN_ADDRESS_LIST -> onResultFromAddressList(resultCode)
-                    REQUEST_CODE_ADD_ADDRESS -> refresh()
+                    REQUEST_CODE_ADD_ADDRESS -> onResultFromAddNewAddress(resultCode, data)
                 }
             }
         }
@@ -243,6 +252,12 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
             if (locationPass != null) {
                 viewModel.savePinpoint(locationPass.longitude, locationPass.latitude)
             }
+        }
+    }
+
+    private fun onResultFromAddNewAddress(resultCode: Int, data: Intent?) {
+        if (resultCode == Activity.RESULT_OK && data?.extras != null) {
+            refresh()
         }
     }
 
@@ -1077,7 +1092,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         override fun chooseAddress(currentAddressId: String) {
             if (viewModel.orderTotal.value.buttonState != OccButtonState.LOADING) {
                 orderSummaryAnalytics.eventClickArrowToChangeAddressOption(currentAddressId, userSession.get().userId)
-                newOrderPreferenceCard.showAddressBottomSheet(this@OrderSummaryPageFragment, viewModel.getAddressCornerUseCase.get(), viewModel.addressState.value.state)
+                newOrderPreferenceCard.showAddressBottomSheet(this@OrderSummaryPageFragment, getAddressCornerUseCase.get(), viewModel.addressState.value.state)
             }
         }
 
@@ -1294,7 +1309,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
             PreferenceListBottomSheet(
                     isNewFlow = viewModel.isNewFlow,
                     paymentProfile = viewModel.getPaymentProfile(),
-                    getPreferenceListUseCase = viewModel.getPreferenceListUseCase.get(),
+                    getPreferenceListUseCase = getPreferenceListUseCase.get(),
                     listener = object : PreferenceListBottomSheet.PreferenceListBottomSheetListener {
                         override fun onChangePreference(preference: ProfilesItemModel) {
                             if (viewModel.isNewFlow) {

@@ -75,7 +75,7 @@ open class BaseOrderSummaryPageViewModelTest {
     fun setUp() {
         MockKAnnotations.init(this)
         helper = OrderSummaryPageViewModelTestHelper()
-        orderSummaryPageViewModel = OrderSummaryPageViewModel(testDispatchers, getPreferenceListUseCase, getAddressCornerUseCase,
+        orderSummaryPageViewModel = OrderSummaryPageViewModel(testDispatchers,
                 OrderSummaryPageCartProcessor(addToCartOccExternalUseCase, getOccCartUseCase, updateCartOccUseCase, testDispatchers),
                 OrderSummaryPageLogisticProcessor(ratesUseCase, ratesResponseStateConverter, editAddressUseCase, orderSummaryAnalytics, testDispatchers),
                 OrderSummaryPageCheckoutProcessor(checkoutOccUseCase, orderSummaryAnalytics, testDispatchers),
