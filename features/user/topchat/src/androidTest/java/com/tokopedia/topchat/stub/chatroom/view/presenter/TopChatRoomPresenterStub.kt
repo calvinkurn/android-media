@@ -43,6 +43,7 @@ class TopChatRoomPresenterStub @Inject constructor(
         chatAttachmentUseCase: ChatAttachmentUseCase,
         chatToggleBlockChat: ChatToggleBlockChatUseCase,
         chatBackgroundUseCase: ChatBackgroundUseCase,
+        chatSrwUseCase: SmartReplyQuestionUseCase,
         sharedPref: SharedPreferences,
         dispatchers: TopchatCoroutineContextProvider
 ) : TopChatRoomPresenter(tkpdAuthInterceptor,
@@ -69,6 +70,7 @@ class TopChatRoomPresenterStub @Inject constructor(
         chatAttachmentUseCase,
         chatToggleBlockChat,
         chatBackgroundUseCase,
+        chatSrwUseCase,
         sharedPref,
         dispatchers) {
 

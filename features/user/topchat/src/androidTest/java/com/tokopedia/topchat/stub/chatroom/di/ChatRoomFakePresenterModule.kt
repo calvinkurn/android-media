@@ -57,6 +57,7 @@ class ChatRoomFakePresenterModule {
             chatAttachmentUseCase: ChatAttachmentUseCase,
             chatToggleBlockChat: ChatToggleBlockChatUseCase,
             chatBackgroundUseCase: ChatBackgroundUseCase,
+            chatSrwUseCase: SmartReplyQuestionUseCase,
             sharedPref: SharedPreferences,
             dispatchers: TopchatCoroutineContextProvider
     ): TopChatRoomPresenter {
@@ -85,6 +86,7 @@ class ChatRoomFakePresenterModule {
                 chatAttachmentUseCase,
                 chatToggleBlockChat,
                 chatBackgroundUseCase,
+                chatSrwUseCase,
                 sharedPref,
                 dispatchers
         )
