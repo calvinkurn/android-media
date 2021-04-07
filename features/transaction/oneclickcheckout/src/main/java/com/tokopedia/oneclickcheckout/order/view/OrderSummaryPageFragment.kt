@@ -649,8 +649,8 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
 
     private fun showPreferenceTicker(preference: OrderPreference) {
         val sharedPreferences = getRemoveProfileTickerSharedPreference()
-        if (preference.removeProfileData.enable && preference.removeProfileData.type == OccRemoveProfileData.TYPE_PRE && preference.removeProfileData.message.hasMessage() &&
-                sharedPreferences != null && sharedPreferences.getInt(SP_KEY_REMOVE_PROFILE_TICKER, 0) != OccRemoveProfileData.TYPE_PRE) {
+        if (preference.removeProfileData.enable && preference.removeProfileData.message.hasMessage() &&
+                sharedPreferences != null && sharedPreferences.getInt(SP_KEY_REMOVE_PROFILE_TICKER, 0) != preference.removeProfileData.type) {
             tickerPreferenceInfo?.tickerTitle = preference.removeProfileData.message.title
             tickerPreferenceInfo?.setHtmlDescription(preference.removeProfileData.message.description)
             tickerPreferenceInfo?.closeButtonVisibility = View.VISIBLE
@@ -661,7 +661,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
 
                 override fun onDismiss() {
                     val preferences = getRemoveProfileTickerSharedPreference() ?: return
-                    preferences.edit().putInt(SP_KEY_REMOVE_PROFILE_TICKER, OccRemoveProfileData.TYPE_PRE).apply()
+                    preferences.edit().putInt(SP_KEY_REMOVE_PROFILE_TICKER, preference.removeProfileData.type).apply()
                 }
             })
             tickerPreferenceInfo?.visible()
