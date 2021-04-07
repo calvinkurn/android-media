@@ -479,7 +479,8 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
 
     @Override
     public void closeViewWithMessageAlert(String message) {
-        if (cartPassData.isFromPDP()) {
+        if (cartPassData == null) showError(message);
+        else if (cartPassData.isFromPDP()) {
             Intent intent = new Intent();
             intent.putExtra(DigitalExtraParam.EXTRA_MESSAGE, message);
             getActivity().setResult(Activity.RESULT_OK, intent);
