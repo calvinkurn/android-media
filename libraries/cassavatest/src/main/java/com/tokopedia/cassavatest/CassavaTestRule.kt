@@ -5,6 +5,7 @@ import androidx.test.core.app.ApplicationProvider
 import com.tokopedia.analyticsdebugger.cassava.validator.core.Validator
 import com.tokopedia.analyticsdebugger.cassava.validator.core.ValidatorEngine
 import com.tokopedia.analyticsdebugger.cassava.validator.core.toDefaultValidator
+import com.tokopedia.analyticsdebugger.database.GtmLogDB
 import com.tokopedia.analyticsdebugger.database.TkpdAnalyticsDatabase
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import kotlinx.coroutines.runBlocking
@@ -36,6 +37,12 @@ class CassavaTestRule : TestRule {
         val validators = cassavaQuery.query.map { it.toDefaultValidator() }
         return runBlocking {
             ValidatorEngine(daoSource).computeCo(validators, cassavaQuery.mode.value)
+        }
+    }
+
+    fun getRecentTracker(take: Int = 3): List<GtmLogDB> {
+        return runBlocking {
+            dao.getLastTracker(take)
         }
     }
 
