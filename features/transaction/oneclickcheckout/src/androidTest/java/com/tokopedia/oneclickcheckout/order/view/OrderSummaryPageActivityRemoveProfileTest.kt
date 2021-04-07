@@ -31,10 +31,6 @@ class OrderSummaryPageActivityRemoveProfileTest {
     private var idlingResource: IdlingResource? = null
 
     private val cartInterceptor = OneClickCheckoutInterceptor.cartInterceptor
-    private val preferenceInterceptor = OneClickCheckoutInterceptor.preferenceInterceptor
-    private val logisticInterceptor = OneClickCheckoutInterceptor.logisticInterceptor
-    private val promoInterceptor = OneClickCheckoutInterceptor.promoInterceptor
-    private val checkoutInterceptor = OneClickCheckoutInterceptor.checkoutInterceptor
 
     @Before
     fun setup() {
@@ -137,7 +133,7 @@ class OrderSummaryPageActivityRemoveProfileTest {
     }
 
     @Test
-    fun typePost() {
+    fun typePost_NoTicker() {
         cartInterceptor.customGetOccCartResponsePath = GET_OCC_CART_PAGE_REMOVE_PROFILE_POST_RESPONSE_PATH
 
         activityRule.launchActivity(null)
@@ -159,7 +155,6 @@ class OrderSummaryPageActivityRemoveProfileTest {
             assertProfileTicker(isShown = false)
 
             assertProfileRevampNewHeader()
-            Thread.sleep(10_000)
 
             assertAddressRevamp(
                     addressName = "Address 1 - User 1 (1)",
@@ -177,6 +172,62 @@ class OrderSummaryPageActivityRemoveProfileTest {
             assertPaymentRevamp(paymentName = "Payment 1", paymentDetail = null)
 
             assertPayment("Rp116.000", "Bayar")
+        }
+    }
+
+    @Test
+    fun typePost_ShowTicker() {
+        cartInterceptor.customGetOccCartResponsePath = GET_OCC_CART_PAGE_REMOVE_PROFILE_POST_RESPONSE_PATH
+
+        activityRule.launchActivity(null)
+        intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, null))
+
+        orderSummaryPage {
+            assertProductCard(
+                    shopName = "tokocgk",
+                    shopLocation = "Kota Yogyakarta",
+                    hasShopLocationImg = false,
+                    hasShopBadge = true,
+                    productName = "Product1",
+                    productPrice = "Rp100.000",
+                    productSlashPrice = null,
+                    isFreeShipping = true,
+                    productQty = 1
+            )
+
+            assertProfileTicker(
+                    isShown = true,
+                    title = "Tinggal cek, terus langsung bayar!",
+                    description = "Kamu bisa beli langsung dengan alamat, pengiriman dan pembayaran yang kami rekomendasikan.",
+                    closeButtonVisible = true
+            )
+
+            assertProfileRevampNewHeader()
+
+            assertAddressRevamp(
+                    addressName = "Address 1 - User 1 (1)",
+                    addressDetail = "Address Street 1, District 1, City 1, Province 1 1",
+                    isMainAddress = true
+            )
+
+            assertShipmentRevamp(
+                    shippingDuration = "Pengiriman Reguler (2-4 hari)",
+                    shippingCourier = "Kurir Rekomendasi",
+                    shippingPrice = "Rp15.000",
+                    shippingEta = null
+            )
+
+            assertPaymentRevamp(paymentName = "Payment 1", paymentDetail = null)
+
+            assertPayment("Rp116.000", "Bayar")
+
+            clickCloseProfileTicker()
+
+            clickAddOrChangePreferenceRevamp {
+                clickUsePreferenceRevamp(1)
+            }
+
+            assertProfileTicker(isShown = false)
         }
     }
 }
