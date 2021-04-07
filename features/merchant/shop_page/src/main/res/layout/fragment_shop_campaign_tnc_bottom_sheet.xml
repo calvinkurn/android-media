@@ -4,8 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:minHeight="@dimen/dp_100"
-    >
+    android:minHeight="@dimen/dp_100">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_view"
@@ -31,7 +30,7 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <FrameLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/layout_button_follow_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -45,19 +44,35 @@
         app:layout_constraintVertical_bias="1"
         tools:visibility="visible">
 
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tf_follow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:drawablePadding="@dimen/dp_5"
+            app:typographyType="heading_4"
+            app:typographyWeight="bold"
+            android:text="@string/follow_button_label_npl"
+            android:textColor="@color/Unify_G500"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/btn_follow"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginStart="@dimen/dp_16"
             android:layout_marginTop="@dimen/dp_8"
-            android:layout_marginRight="@dimen/dp_16"
+            android:layout_marginEnd="@dimen/dp_16"
             android:layout_marginBottom="@dimen/dp_8"
-            android:gravity="center"
-            android:text="@string/shop_home_npl_campaign_follow"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
             app:unifyButtonSize="medium"
             app:unifyButtonType="main"
-            app:unifyButtonVariant="filled"
-            tools:text="@string/shop_home_npl_campaign_follow" />
-    </FrameLayout>
+            app:unifyButtonVariant="filled" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

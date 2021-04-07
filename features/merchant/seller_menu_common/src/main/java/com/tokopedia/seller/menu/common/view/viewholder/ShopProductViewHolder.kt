@@ -6,8 +6,11 @@ import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.UriUtil
+import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.seller.menu.common.R
 import com.tokopedia.seller.menu.common.analytics.SellerMenuTracker
+import com.tokopedia.seller.menu.common.constant.AdminFeature
 import com.tokopedia.seller.menu.common.view.uimodel.ShopProductUiModel
 import kotlinx.android.synthetic.main.item_seller_menu_product_section.view.*
 
@@ -29,7 +32,13 @@ class ShopProductViewHolder(
         itemView.imageChevronRight.setImageDrawable(chevronRight)
 
         itemView.setOnClickListener {
-            RouteManager.route(itemView.context, ApplinkConst.PRODUCT_MANAGE)
+            itemView.context?.let {
+                if (product.isShopOwner) {
+                    RouteManager.route(itemView.context, ApplinkConst.PRODUCT_MANAGE)
+                } else {
+                    RouteManager.route(it, UriUtil.buildUri(ApplinkConstInternalSellerapp.ADMIN_AUTHORIZE, AdminFeature.MANAGE_PRODUCT))
+                }
+            }
             tracker?.sendEventClickProductList()
         }
     }

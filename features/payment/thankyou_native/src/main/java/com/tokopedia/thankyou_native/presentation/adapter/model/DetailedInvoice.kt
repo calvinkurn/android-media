@@ -19,16 +19,23 @@ data class InvoiceSummaryMap(
         var isDiscounted : Boolean = false
 )
 
-data class TotalFee(val totalBillAmountStr: String,
-                      val serviceFee: String?
+data class TotalFee(
+        val totalBillAmountStr : String,
+        val feeDetailList : ArrayList<FeeDetail>
 ) : Visitable<InvoiceTypeFactory> {
     override fun type(typeFactory: InvoiceTypeFactory): Int {
         return typeFactory.type(this)
     }
 }
 
+data class FeeDetail(
+        val feeTitle : String,
+        val feeAmountStr : String
+)
+
 data class CashBackEarned(
-        val benefitMapList: ArrayList<CashBackMap>
+        val benefitMapList: ArrayList<CashBackMap>,
+        val cashBackOVOPoint: Boolean
 ) : Visitable<InvoiceTypeFactory> {
     override fun type(typeFactory: InvoiceTypeFactory): Int {
         return typeFactory.type(this)
@@ -48,7 +55,9 @@ data class PaymentInfo(
 data class CashBackMap(
         val benefitName: String,
         val benefitAmount: String,
-        var isBBICashBack : Boolean = false
+        val cashBackDescription : String?,
+        var isBBICashBack: Boolean = false,
+        var isStackedCashBack: Boolean = false
 )
 
 data class PaymentModeMap(

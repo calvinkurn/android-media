@@ -1,6 +1,7 @@
 package com.tokopedia.imagepicker.common.presenter;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.media.ExifInterface;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
@@ -44,7 +45,7 @@ public class ImageRatioCropPresenter extends BaseDaggerPresenter<ImageRatioCropP
     }
 
     public void cropBitmapToExpectedRatio(final ArrayList<String> localImagePaths, final ArrayList<ImageRatioType> imageRatioList,
-                                          final boolean needCheckRotate) {
+                                          final boolean needCheckRotate, boolean convertToWebp) {
         Subscription subscription =
                 Observable.zip(
                         Observable.from(localImagePaths),
@@ -88,7 +89,11 @@ public class ImageRatioCropPresenter extends BaseDaggerPresenter<ImageRatioCropP
                                     return imagePath;
                                 } else {
                                     String outputPath;
-                                    outputPath = ImageProcessingUtil.trimBitmap(imagePath, expectedRatio, currentRatio, needCheckRotate);
+                                    if (convertToWebp)
+                                        outputPath = ImageProcessingUtil.trimBitmap(imagePath, expectedRatio, currentRatio, needCheckRotate, Bitmap.CompressFormat.WEBP);
+                                    else {
+                                        outputPath = ImageProcessingUtil.trimBitmap(imagePath, expectedRatio, currentRatio, needCheckRotate);
+                                    }
                                     return outputPath;
                                 }
                             }

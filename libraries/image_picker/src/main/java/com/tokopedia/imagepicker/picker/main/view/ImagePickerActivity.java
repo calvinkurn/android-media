@@ -34,7 +34,7 @@ import com.tokopedia.imagepicker.common.exception.FileSizeAboveMaximumException;
 import com.tokopedia.imagepicker.editor.main.view.ImageEditorActivity;
 import com.tokopedia.imagepicker.picker.camera.ImagePickerCameraFragment;
 import com.tokopedia.imagepicker.picker.gallery.ImagePickerGalleryFragment;
-import com.tokopedia.imagepicker.picker.gallery.model.MediaItem;
+import com.tokopedia.imagepicker.common.model.MediaItem;
 import com.tokopedia.imagepicker.picker.instagram.view.fragment.ImagePickerInstagramFragment;
 import com.tokopedia.imagepicker.picker.main.adapter.ImagePickerViewPagerAdapter;
 import com.tokopedia.imagepicker.picker.main.builder.StateRecorderType;
@@ -137,7 +137,9 @@ public final class ImagePickerActivity extends BaseSimpleActivity
         viewPager = findViewById(R.id.view_pager);
         tabLayout = findViewById(R.id.tab_layout);
 
-        getSupportActionBar().setTitle(imagePickerBuilder.getTitle());
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle(imagePickerBuilder.getTitle());
+        }
 
         setupPreview();
         setupViewPager();
@@ -612,9 +614,21 @@ public final class ImagePickerActivity extends BaseSimpleActivity
 
     @Override
     public void onSuccessResizeImage(ArrayList<String> resultPaths) {
+        initImagePickerPresenter();
+        imagePickerPresenter.convertFormatImage(resultPaths, imagePickerBuilder.getConvertToWebp());
+    }
+
+    @Override
+    public void onErrorConvertFormatImage(Throwable e) {
+        hideDownloadProgressDialog();
+        NetworkErrorHelper.showRedCloseSnackbar(this, ErrorHandler.getErrorMessage(getContext(), e));
+    }
+
+    @Override
+    public void onSuccessConvertFormatImage(ArrayList<String> resultPaths) {
         hideDownloadProgressDialog();
         onFinishWithMultipleFinalImage(resultPaths, selectedImagePaths, imageDescriptionList,
-                new ArrayList<Boolean>(selectedImagePaths.size()));
+                new ArrayList<>(selectedImagePaths.size()));
     }
 
     private void initImagePickerPresenter() {
@@ -628,7 +642,7 @@ public final class ImagePickerActivity extends BaseSimpleActivity
         if (progressDialog == null) {
             progressDialog = new ProgressDialog(this);
             progressDialog.setCancelable(false);
-            progressDialog.setMessage(getString(R.string.title_loading));
+            progressDialog.setMessage(getString(com.tokopedia.abstraction.R.string.title_loading));
         }
         progressDialog.show();
     }

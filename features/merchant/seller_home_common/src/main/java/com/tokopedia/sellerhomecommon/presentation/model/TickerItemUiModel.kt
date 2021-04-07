@@ -10,5 +10,6 @@ data class TickerItemUiModel(
         val id: String = "",
         val message: String = "",
         val title: String = "",
-        val type: Int = 0
+        val type: Int = 0,
+        val isFromCache: Boolean = false
 )

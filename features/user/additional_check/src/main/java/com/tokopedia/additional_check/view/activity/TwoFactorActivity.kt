@@ -14,7 +14,6 @@ import com.tokopedia.additional_check.internal.AdditionalCheckConstants.REMOTE_C
 import com.tokopedia.additional_check.internal.TwoFactorTracker
 import com.tokopedia.additional_check.view.TwoFactorFragment
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
-import kotlin.system.exitProcess
 
 /**
  * Created by Yoris Prayogo on 10/07/20.
@@ -30,14 +29,22 @@ class TwoFactorActivity: BaseSimpleActivity(), ActivePageListener {
     private var currentPage = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+        super.onCreate(null)
         remoteConfig = FirebaseRemoteConfigImpl(this)
         enableBackBtn = intent?.extras?.getParcelable<TwoFactorResult>(TwoFactorFragment.RESULT_POJO_KEY)?.showSkipButton
         toolbar.setTitleTextColor(MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
     }
 
+    fun onFragmentCreated(){
+        fragment?.run {
+            if(this is TwoFactorFragment){
+                this.setActiveListener(this@TwoFactorActivity)
+            }
+        }
+    }
+
     override fun getNewFragment(): Fragment? {
-        return TwoFactorFragment.newInstance(intent?.extras, this)
+        return TwoFactorFragment.newInstance(intent?.extras)
     }
 
     override fun onBackPressed() {

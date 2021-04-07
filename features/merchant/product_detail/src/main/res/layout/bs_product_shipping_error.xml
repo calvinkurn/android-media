@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="16dp">
+
+    <ImageView
+        android:id="@+id/shipping_error_img"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:scaleType="fitXY"
+        android:contentDescription="@null"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:src="@tools:sample/avatars" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/shipping_error_desc"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:textColor="@color/Unify_N700_96"
+        app:layout_constraintBottom_toBottomOf="@+id/shipping_error_img"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/shipping_error_img"
+        app:layout_constraintTop_toTopOf="@+id/shipping_error_img"
+        app:typographyType="body_3"
+        tools:text="Tidak ada kurir yang mendukung pengiriman barang ini ke Rumah Angga." />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/shipping_error_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        app:unifyButtonSize="medium"
+        app:layout_constraintTop_toBottomOf="@+id/shipping_error_img"
+        android:contentDescription="@null"
+        tools:text="Ganti alamat, yuk" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

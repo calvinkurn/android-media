@@ -1,8 +1,8 @@
 package com.tokopedia.search.result.presentation.view.fragment;
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
+import com.tokopedia.recommendation_widget_common.di.RecommendationModule;
 import com.tokopedia.search.di.module.GraphqlRepositoryModule;
-import com.tokopedia.search.di.module.RecommendationModule;
 import com.tokopedia.search.di.module.RemoteConfigModule;
 import com.tokopedia.search.di.module.ResourcesModule;
 import com.tokopedia.search.di.module.SearchContextModule;
@@ -10,6 +10,7 @@ import com.tokopedia.search.di.module.SearchOnBoardingLocalCacheModule;
 import com.tokopedia.search.di.module.UserSessionModule;
 import com.tokopedia.search.di.scope.SearchScope;
 import com.tokopedia.search.result.domain.usecase.getdynamicfilter.GetDynamicFilterGqlUseCaseModule;
+import com.tokopedia.search.result.domain.usecase.getinspirationcarouselchips.GetInspirationCarouselChipsProductUseCaseModule;
 import com.tokopedia.search.result.domain.usecase.getlocalsearchrecommendation.GetLocalSearchRecommendationUseCaseModule;
 import com.tokopedia.search.result.domain.usecase.getproductcount.GetProductCountUseCaseModule;
 import com.tokopedia.search.result.domain.usecase.searchproduct.SearchProductUseCaseModule;
@@ -34,6 +35,7 @@ import dagger.Component;
         SearchOnBoardingLocalCacheModule.class,
         TopAdsUrlHitterModule.class,
         ProductionSchedulersProviderModule.class,
+        GetInspirationCarouselChipsProductUseCaseModule.class,
         ProductListPresenterModule.class
 }, dependencies = BaseAppComponent.class)
 public interface ProductListViewComponent {

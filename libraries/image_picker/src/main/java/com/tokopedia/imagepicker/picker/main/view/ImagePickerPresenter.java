@@ -42,6 +42,10 @@ public class ImagePickerPresenter extends BaseDaggerPresenter<ImagePickerPresent
 
         void onSuccessResizeImage(ArrayList<String> resultPaths);
 
+        void onErrorConvertFormatImage(Throwable e);
+
+        void onSuccessConvertFormatImage(ArrayList<String> resultPaths);
+
     }
 
     public void detachView() {
@@ -115,6 +119,59 @@ public class ImagePickerPresenter extends BaseDaggerPresenter<ImagePickerPresent
                                 }
                                 if (isViewAttached()) {
                                     getView().onSuccessResizeImage(resultLocalPaths);
+                                }
+                            }
+                        }
+                );
+        if (compositeSubscription == null || compositeSubscription.isUnsubscribed()) {
+            compositeSubscription = new CompositeSubscription();
+        }
+        compositeSubscription.add(subscription);
+    }
+
+    public void convertFormatImage(List<String> imagePath, boolean convertToWebp) {
+
+        Subscription subscription = Observable.from(imagePath)
+                .concatMap((Func1<String, Observable<String>>) path -> {
+                    String resultPath = path;
+                    boolean isFileImage = FileUtil.isImageType(getView().getContext(), path);
+                    boolean isWebp = ImageProcessingUtil.isWebp(path);
+
+                    if (convertToWebp && isFileImage && !isWebp) {
+                        resultPath = ImageProcessingUtil.resizeBitmap(path,
+                                ImageProcessingUtil.DEF_WIDTH,
+                                ImageProcessingUtil.DEF_HEIGHT,
+                                true,
+                                Bitmap.CompressFormat.WEBP);
+                    }
+                    return Observable.just(resultPath);
+                }).toList()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .unsubscribeOn(Schedulers.io())
+                .subscribe(
+                        new Subscriber<List<String>>() {
+                            @Override
+                            public void onCompleted() {}
+
+                            @Override
+                            public void onError(Throwable e) {
+                                if (isViewAttached()) {
+                                    getView().onErrorConvertFormatImage(e);
+                                }
+                            }
+
+                            @Override
+                            public void onNext(List<String> paths) {
+                                ArrayList<String> resultLocalPaths = new ArrayList<>();
+                                if (paths == null || paths.size() == 0) {
+                                    throw new NullPointerException();
+                                }
+                                for (int i = 0, sizei = paths.size(); i < sizei; i++) {
+                                    resultLocalPaths.add(paths.get(i));
+                                }
+                                if (isViewAttached()) {
+                                    getView().onSuccessConvertFormatImage(resultLocalPaths);
                                 }
                             }
                         }

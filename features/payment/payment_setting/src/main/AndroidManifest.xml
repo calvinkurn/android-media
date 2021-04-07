@@ -6,9 +6,9 @@
             android:name=".list.view.activity.SettingListPaymentActivity"
             android:label="@string/payment_title_list_card"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White">
+            android:theme="@style/Theme.WhiteUnify">
 
-            <intent-filter android:autoVerify="true">
+            <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
@@ -25,15 +25,15 @@
             android:name=".detail.view.activity.DetailCreditCardActivity"
             android:label="@string/payment_label_credit_card"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White" />
+            android:theme="@style/Theme.WhiteUnify" />
 
         <activity
             android:name=".add.view.activity.AddCreditCardActivity"
             android:label="@string/payment_label_button_add_card"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White">
+            android:theme="@style/Theme.WhiteUnify">
 
-            <intent-filter android:autoVerify="true">
+            <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
@@ -50,6 +50,6 @@
             android:name=".authenticate.view.activity.AuthenticateCreditCardActivity"
             android:label="@string/payment_label_credit_card_verification"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White" />
+            android:theme="@style/Theme.WhiteUnify" />
     </application>
 </manifest>

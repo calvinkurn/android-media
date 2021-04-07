@@ -40,13 +40,19 @@ class HomeNavMenuViewHolder(
         }
 
         if (element.notifCount.isNotEmpty()) {
-            itemView.menu_notification.setNotification(
-                    notif = element.notifCount,
-                    notificationType = NotificationUnify.COUNTER_TYPE,
-                    colorType = NotificationUnify.COLOR_PRIMARY
-            )
-            itemView.menu_notification.visibility = View.VISIBLE
+            if(listener.getReviewCounterAbIsUnify()) {
+                itemView.menu_notification.setNotification(
+                        notif = element.notifCount,
+                        notificationType = NotificationUnify.COUNTER_TYPE,
+                        colorType = NotificationUnify.COLOR_PRIMARY
+                )
+                itemView.menu_notification.visibility = View.VISIBLE
+            } else {
+                itemView.menu_notification_typography.setNotification(element.notifCount, NotificationUnify.COUNTER_TYPE, NotificationUnify.COLOR_PRIMARY)
+                itemView.menu_notification_typography.visibility = View.VISIBLE
+            }
         } else {
+            itemView.menu_notification_typography.visibility = View.GONE
             itemView.menu_notification.visibility = View.GONE
         }
     }

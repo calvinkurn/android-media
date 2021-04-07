@@ -33,7 +33,9 @@ object ApplinkConstInternalGlobal {
     const val PARAM_MESSAGE_TITLE = "messageTitle"
     const val PARAM_MESSAGE_BODY = "messageBody"
     const val PARAM_STATUS = "status"
-    const val PARAM_IS_FROM_2FA = "isFromTwoFactor"
+    const val PARAM_IS_RESET_PIN = "isResetPin"
+    const val PARAM_IS_FROM_REGISTER = "isFromRegister"
+    const val PARAM_IS_FACEBOOK = "isFacebook"
     const val PARAM_NEW_HOME_ACCOUNT = "fromNewAccount"
     const val PARAM_USER_ID_ENC = "userIdEncrypted"
     const val PARAM_USER_ACCESS_TOKEN = "accessToken"
@@ -199,6 +201,9 @@ object ApplinkConstInternalGlobal {
     @JvmField
     val ADD_TALK = "$INTERNAL_GLOBAL/add-talk"
 
+    @JvmField
+    val TALK_SELLER_SETTINGS = "$INTERNAL_GLOBAL/talk-seller-settings/"
+
     // ChangeGenderActivity
     // tokopedia-android-internal://global/change-gender
     @JvmField
@@ -237,6 +242,11 @@ object ApplinkConstInternalGlobal {
     // tokopedia-android-internal://global/add-pin
     @JvmField
     val ADD_PIN = "$INTERNAL_GLOBAL/add-pin"
+
+    // AddPinActivity
+    // tokopedia-android-internal://global/add-pin-from-2fa
+    @JvmField
+    val ADD_PIN_FROM_2FA = "$INTERNAL_GLOBAL/add-pin-from-2fa"
 
     // PinOnboardingActivity
     // tokopedia-android-internal://global/add-pin-onboarding
@@ -463,9 +473,18 @@ object ApplinkConstInternalGlobal {
     @JvmField
     val PUSH_NOTIFICATION_TROUBLESHOOTER = "$INTERNAL_GLOBAL/push-notification-troubleshooter"
 
-    // Topchat
+    /**
+     * Go to chat list
+     */
     @JvmField
     val TOPCHAT = "$INTERNAL_GLOBAL/topchat"
+
+    /**
+     * Go to chatroom with the provided {message_id}
+     * If you want to use {shopId} to chatroom use external applink
+     */
+    val TOPCHAT_ROOM = "$INTERNAL_GLOBAL/topchat/{message_id}"
+
 
 
     //ReferralPhoneNumberVerificationActivity

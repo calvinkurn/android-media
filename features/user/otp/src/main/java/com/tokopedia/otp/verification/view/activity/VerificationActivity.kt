@@ -70,7 +70,7 @@ class VerificationActivity : BaseOtpActivity() {
     }
 
     private fun setupParams() {
-        if(isResetPin2FA || intent?.extras?.getBoolean(ApplinkConstInternalGlobal.PARAM_IS_FROM_2FA) == true) {
+        if(isResetPin2FA || intent?.extras?.getBoolean(ApplinkConstInternalGlobal.PARAM_IS_RESET_PIN) == true) {
             otpData.userId = intent?.extras?.getString(ApplinkConstInternalGlobal.PARAM_USER_ID, "").toEmptyStringIfNull()
         }else {
             otpData.userId = userSession.userId ?: userSession.temporaryUserId
@@ -86,13 +86,14 @@ class VerificationActivity : BaseOtpActivity() {
         isLoginRegisterFlow = intent?.extras?.getBoolean(ApplinkConstInternalGlobal.PARAM_IS_LOGIN_REGISTER_FLOW, false)?: false
     }
 
-    private fun createBundle(modeListData: ModeListData? = null): Bundle {
+    private fun createBundle(modeListData: ModeListData? = null, isMoreThanOne: Boolean = true): Bundle {
         val bundle = Bundle()
         bundle.putParcelable(OtpConstant.OTP_DATA_EXTRA, otpData)
         bundle.putBoolean(ApplinkConstInternalGlobal.PARAM_IS_LOGIN_REGISTER_FLOW, isLoginRegisterFlow)
         modeListData?.let {
             bundle.putParcelable(OtpConstant.OTP_MODE_EXTRA, it)
         }
+        bundle.putBoolean(OtpConstant.IS_MORE_THAN_ONE_EXTRA, isMoreThanOne)
         return bundle
     }
 
@@ -113,8 +114,8 @@ class VerificationActivity : BaseOtpActivity() {
         doFragmentTransaction(fragment, TAG_OTP_MODE, true)
     }
 
-    fun goToVerificationPage(modeListData: ModeListData) {
-        val fragment = VerificationFragment.createInstance(createBundle(modeListData))
+    fun goToVerificationPage(modeListData: ModeListData, isMoreThanOne: Boolean = true) {
+        val fragment = VerificationFragment.createInstance(createBundle(modeListData, isMoreThanOne))
         doFragmentTransaction(fragment, TAG_OTP_VALIDATOR, false)
     }
 

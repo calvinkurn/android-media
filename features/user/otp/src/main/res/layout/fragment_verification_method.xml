@@ -2,9 +2,9 @@
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/parent_container"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/Unify_N0">
+    android:layout_height="match_parent">
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
@@ -18,21 +18,21 @@
             android:fitsSystemWindows="true"
             android:visibility="gone"
             tools:visibility="visible">
-          
-          <com.tokopedia.unifycomponents.ticker.Ticker
-            android:id="@+id/tickerVerificationMethod"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_lvl3"
-            android:layout_marginStart="@dimen/spacing_lvl4"
-            android:layout_marginEnd="@dimen/spacing_lvl4"
-            android:visibility="gone"
-            app:tickerType="announcement"
-            app:tickerShapeType="loose"
-            app:closeButtonVisibility="gone"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"/>
+
+            <com.tokopedia.unifycomponents.ticker.Ticker
+                android:id="@+id/tickerVerificationMethod"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/spacing_lvl4"
+                android:layout_marginTop="@dimen/spacing_lvl3"
+                android:layout_marginEnd="@dimen/spacing_lvl4"
+                android:visibility="gone"
+                app:closeButtonVisibility="gone"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:tickerShapeType="loose"
+                app:tickerType="announcement" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/title"
@@ -84,7 +84,21 @@
                 android:visibility="gone"
                 app:layout_constraintTop_toBottomOf="@id/method_list"
                 app:typographyType="body_2"
-                app:typographyWeight="bold" />
+                app:typographyWeight="bold"
+                tools:visibility="visible" />
+
+            <com.tokopedia.unifycomponents.ticker.Ticker
+                android:id="@+id/phone_inactive_ticker"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/spacing_lvl5"
+                android:visibility="gone"
+                app:closeButtonVisibility="gone"
+                app:descriptionText="@string/change_inactive_phone_number"
+                app:layout_constraintTop_toBottomOf="@id/phone_inactive"
+                app:tickerShapeType="loose"
+                app:tickerType="information"
+                tools:visibility="visible" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

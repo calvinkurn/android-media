@@ -167,6 +167,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         super.onCreate();
         initialiseHansel();
         initFirebase();
+        GraphqlClient.setContextData(getApplicationContext());
         GraphqlClient.init(getApplicationContext());
         NetworkClient.init(getApplicationContext());
         warmUpGQLClient();
@@ -544,7 +545,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                 if (!task.isSuccessful() || task.getResult() == null) {
                     try {
                         sessionRefresh.gcmUpdate();
-                    } catch (IOException e) {}
+                    } catch (Exception e) {}
                 } else {
                     fcmManager.onNewToken(task.getResult().getToken());
                 }

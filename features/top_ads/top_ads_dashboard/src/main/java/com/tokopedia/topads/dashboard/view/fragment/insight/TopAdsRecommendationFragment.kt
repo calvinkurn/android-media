@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.kotlin.extensions.view.getResDrawable
@@ -17,15 +16,12 @@ import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.DAIL
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.KATA_KUNCI
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.PARAM_CURRENT_TAB
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.PRODUK
-import com.tokopedia.topads.dashboard.data.model.DailyBudgetRecommendationModel
-import com.tokopedia.topads.dashboard.data.model.ProductRecommendationData
-import com.tokopedia.topads.dashboard.data.model.ProductRecommendationModel
-import com.tokopedia.topads.dashboard.data.model.TopadsGetDailyBudgetRecommendation
+import com.tokopedia.topads.dashboard.data.model.*
 import com.tokopedia.topads.dashboard.data.model.insightkey.InsightKeyData
 import com.tokopedia.topads.dashboard.data.model.insightkey.KeywordInsightDataMain
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
 import com.tokopedia.topads.dashboard.view.activity.TopAdsDashboardActivity
-import com.tokopedia.topads.dashboard.view.adapter.TopAdsDashInsightPagerAdapter
+import com.tokopedia.topads.dashboard.view.adapter.TopAdsDashboardBasePagerAdapter
 import com.tokopedia.topads.dashboard.view.adapter.insight.TopAdsInsightTabAdapter
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDashboardPresenter
 import kotlinx.android.synthetic.main.topads_dash_fragment_recommendation_layout.*
@@ -49,6 +45,8 @@ class TopAdsRecommendationFragment : BaseDaggerFragment() {
 
     companion object {
         const val HEIGHT = "addp_bar_height"
+        const val PRODUCT_RECOM = "productRecommendData"
+        const val BUDGET_RECOM = "dailyBudgetRecommendData"
         fun createInstance(height: Int?, redirectToTabInsight: Int): TopAdsRecommendationFragment {
             val bundle = Bundle()
             bundle.putInt(HEIGHT, height ?: 0)
@@ -125,6 +123,7 @@ class TopAdsRecommendationFragment : BaseDaggerFragment() {
         empty_view?.image_empty?.setImageDrawable(context?.getResDrawable(com.tokopedia.topads.common.R.drawable.ill_success))
         view_pager?.visibility = View.GONE
     }
+
 
     private fun initInsightTabAdapter() {
         val tabLayoutManager = LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false)
@@ -221,23 +220,37 @@ class TopAdsRecommendationFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun getViewPagerAdapter(): TopAdsDashInsightPagerAdapter? {
-        val list: ArrayList<Fragment> = arrayListOf()
-        if (countProduct != 0)
-            list.add(TopAdsInsightBaseProductFragment(productRecommendData, arguments?.getInt(HEIGHT)))
-        if (countBid != 0)
-            list.add(TopAdsInsightBaseBidFragment(dailyBudgetRecommendData))
+    private fun getViewPagerAdapter(): TopAdsDashboardBasePagerAdapter? {
+        val list: ArrayList<FragmentTabItem> = arrayListOf()
+        if (countProduct != 0) {
+            val bundle = Bundle()
+            bundle.putParcelable(PRODUCT_RECOM, productRecommendData)
+            bundle.putInt(HEIGHT, arguments?.getInt(HEIGHT) ?: 0)
+            list.add(FragmentTabItem("", TopAdsInsightBaseProductFragment.createInstance(bundle)))
+        }
+        if (countBid != 0) {
+            val bundle = Bundle()
+            bundle.putParcelable(BUDGET_RECOM, dailyBudgetRecommendData)
+            list.add(FragmentTabItem("", TopAdsInsightBaseBidFragment.createInstance(bundle)))
+        }
         if (countKey != 0)
-            list.add(TopadsInsightBaseKeywordFragment.createInstance())
-        val pagerAdapter = TopAdsDashInsightPagerAdapter(childFragmentManager, 0)
+            list.add(FragmentTabItem("", TopadsInsightBaseKeywordFragment.createInstance()))
+        val pagerAdapter = TopAdsDashboardBasePagerAdapter(childFragmentManager, 0)
+
         pagerAdapter.setList(list)
         return pagerAdapter
     }
 
     fun setClick() {
-        val fragments = (view_pager?.adapter as? TopAdsDashInsightPagerAdapter)?.listFrag
-        if (fragments?.firstOrNull() is TopAdsInsightBaseProductFragment?) {
-            (fragments?.get(0) as TopAdsInsightBaseProductFragment).openBottomSheet()
+        val fragments = (view_pager?.adapter as? TopAdsDashboardBasePagerAdapter)?.getList()
+        if (fragments != null) {
+            for (frag in fragments) {
+                when (frag.fragment) {
+                    is TopAdsInsightBaseProductFragment -> {
+                        (frag.fragment as TopAdsInsightBaseProductFragment).openBottomSheet()
+                    }
+                }
+            }
         }
     }
 

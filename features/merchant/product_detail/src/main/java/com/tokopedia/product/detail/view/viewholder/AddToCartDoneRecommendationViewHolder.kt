@@ -3,12 +3,14 @@ package com.tokopedia.product.detail.view.viewholder
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.carouselproductcard.CarouselProductCardListener
+import com.tokopedia.discovery.common.manager.showProductCardOptions
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.addtocartrecommendation.AddToCartDoneRecommendationDataModel
 import com.tokopedia.product.detail.view.adapter.RecommendationProductTypeFactory
 import com.tokopedia.productcard.ProductCardModel
+import com.tokopedia.recommendation_widget_common.extension.toProductCardModel
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import kotlinx.android.synthetic.main.add_to_cart_done_recommendation_layout.view.*
 
@@ -48,36 +50,13 @@ class AddToCartDoneRecommendationViewHolder(
                             recommendationListener.onProductImpression(productRecommendation)
                         }
                     },
-                    productCardModelList = products.map {
-                        ProductCardModel(
-                                slashedPrice = it.slashedPrice,
-                                productName = it.name,
-                                formattedPrice = it.price,
-                                productImageUrl = it.imageUrl,
-                                isTopAds = it.isTopAds,
-                                discountPercentage = it.discountPercentage.toString(),
-                                reviewCount = it.countReview,
-                                ratingCount = it.rating,
-                                shopLocation = it.location,
-                                isWishlistVisible = true,
-                                isWishlisted = it.isWishlist,
-                                shopBadgeList = it.badgesUrl.map {
-                                    ProductCardModel.ShopBadge(imageUrl = it
-                                            ?: "")
-                                },
-                                freeOngkir = ProductCardModel.FreeOngkir(
-                                        isActive = it.isFreeOngkirActive,
-                                        imageUrl = it.freeOngkirImageUrl
-                                ),
-                                labelGroupList = it.labelGroupList.map { recommendationLabel ->
-                                    ProductCardModel.LabelGroup(
-                                            position = recommendationLabel.position,
-                                            title = recommendationLabel.title,
-                                            type = recommendationLabel.type
-                                    )
-                                }
-                        )
-                    }
+                    carouselProductCardOnItemThreeDotsClickListener = object : CarouselProductCardListener.OnItemThreeDotsClickListener {
+                        override fun onItemThreeDotsClick(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
+                            val product = products.getOrNull(carouselProductCardPosition) ?: return
+                            recommendationListener.onThreeDotsClick(product, adapterPosition, carouselProductCardPosition)
+                        }
+                    },
+                    productCardModelList = products.map { it.toProductCardModel(hasThreeDots = true) }
 
             )
             visible()

@@ -14,15 +14,16 @@ import com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
  */
 
 interface HomeAccountUserListener {
+    fun onProfileClicked()
     fun onEditProfileClicked()
     fun onSettingItemClicked(item: CommonDataView)
-    fun onMemberItemClicked(applink: String)
+    fun onMemberItemClicked(applink: String, type: Int)
     fun onSwitchChanged(item: CommonDataView, isActive: Boolean, switch: SwitchUnify)
     fun onItemViewBinded(position: Int, itemView: View, data: Any)
     fun onProfileAdapterReady(financialAdapter: HomeAccountFinancialAdapter, memberAdapter: HomeAccountMemberAdapter)
     fun onCommonAdapterReady(position: Int, commonAdapter: HomeAccountUserCommonAdapter)
 
-    fun onFinancialErrorClicked()
+    fun onFinancialErrorClicked(type: Int)
     fun onMemberErrorClicked()
 
     fun onProductRecommendationImpression(item: RecommendationItem, adapterPosition: Int)

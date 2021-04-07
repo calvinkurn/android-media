@@ -6,8 +6,9 @@ import com.tokopedia.devicefingerprint.di.DaggerDeviceFingerprintComponent
 import com.tokopedia.devicefingerprint.di.DeviceFingerprintModule
 import com.tokopedia.devicefingerprint.submitdevice.usecase.SubmitDeviceInfoUseCase
 import com.tokopedia.devicefingerprint.submitdevice.utils.InsertDeviceInfoPayloadCreator
-import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
@@ -21,9 +22,6 @@ class SubmitDeviceWorker(val appContext: Context, params: WorkerParameters) : Co
     @Inject
     lateinit var insertDeviceInfoPayloadCreator: InsertDeviceInfoPayloadCreator
 
-    @Inject
-    lateinit var userSession: UserSessionInterface
-
     init {
         DaggerDeviceFingerprintComponent.builder()
                 .deviceFingerprintModule(DeviceFingerprintModule(appContext))
@@ -36,18 +34,12 @@ class SubmitDeviceWorker(val appContext: Context, params: WorkerParameters) : Co
             return Result.failure()
         }
         return withContext(Dispatchers.IO) {
-            var result = Result.success()
+            var result: Result
             try {
                 useCase.setParams(insertDeviceInfoPayloadCreator.create())
-                useCase.execute(
-                        onSuccess = {
-                            result = Result.success()
-                            setSuccessSubmitDevice()
-                        },
-                        onError = {
-                            result = Result.retry()
-                        }
-                )
+                useCase.executeOnBackground()
+                result = Result.success()
+                setSuccessSubmitDevice()
             } catch (e: Exception) {
                 result = Result.retry()
             }
@@ -73,13 +65,15 @@ class SubmitDeviceWorker(val appContext: Context, params: WorkerParameters) : Co
 
         @JvmStatic
         fun scheduleWorker(context: Context, forceWorker: Boolean) {
-            val appContext = context.applicationContext
-            try {
-                if (forceWorker || needToRunCheckLastSubmit(appContext)) {
-                    runWorker(appContext)
+            GlobalScope.launch(Dispatchers.IO) {
+                try {
+                    val appContext = context.applicationContext
+                    if (forceWorker || needToRunCheckLastSubmit(appContext)) {
+                        runWorker(appContext)
+                    }
+                } catch (ex: Exception) {
+                    Timber.w(ex.toString())
                 }
-            } catch (ex: Exception) {
-                Timber.w(ex.toString())
             }
         }
 
