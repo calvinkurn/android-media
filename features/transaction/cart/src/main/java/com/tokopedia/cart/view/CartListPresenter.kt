@@ -286,10 +286,10 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
         // Collect all Cart Item, if has no error and selected
         val allCartItemDataList = ArrayList<CartItemHolderData>()
         for (cartShopHolderData in dataList) {
-            if (cartShopHolderData.shopGroupAvailableData.cartItemDataList != null &&
-                    !cartShopHolderData.shopGroupAvailableData.isError &&
+            if (cartShopHolderData.shopGroupAvailableData?.cartItemDataList != null &&
+                    cartShopHolderData.shopGroupAvailableData?.isError == false &&
                     (cartShopHolderData.isAllSelected || cartShopHolderData.isPartialSelected)) {
-                cartShopHolderData.shopGroupAvailableData.cartItemDataList?.let {
+                cartShopHolderData.shopGroupAvailableData?.cartItemDataList?.let {
                     for (cartItemHolderData in it) {
                         if (cartItemHolderData.cartItemData?.isError == false && cartItemHolderData.isSelected) {
                             allCartItemDataList.add(cartItemHolderData)
@@ -305,10 +305,10 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
     private fun getErrorProductCount(dataList: List<CartShopHolderData>): Int {
         var errorProductCount = 0
         for (cartShopHolderData in dataList) {
-            if (cartShopHolderData.shopGroupAvailableData.cartItemDataList != null) {
-                if (!cartShopHolderData.shopGroupAvailableData.isError) {
+            if (cartShopHolderData.shopGroupAvailableData?.cartItemDataList != null) {
+                if (cartShopHolderData.shopGroupAvailableData?.isError == false) {
                     if (cartShopHolderData.isAllSelected || cartShopHolderData.isPartialSelected) {
-                        cartShopHolderData.shopGroupAvailableData.cartItemDataList?.let {
+                        cartShopHolderData.shopGroupAvailableData?.cartItemDataList?.let {
                             for (cartItemHolderData in it) {
                                 if (cartItemHolderData.cartItemData?.isError == true) {
                                     errorProductCount++
@@ -317,7 +317,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
                         }
                     }
                 } else {
-                    errorProductCount += cartShopHolderData.shopGroupAvailableData.cartItemDataList?.size
+                    errorProductCount += cartShopHolderData.shopGroupAvailableData?.cartItemDataList?.size
                             ?: 0
                 }
             }

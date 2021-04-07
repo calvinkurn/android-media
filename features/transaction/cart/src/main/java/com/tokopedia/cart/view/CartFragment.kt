@@ -1079,10 +1079,10 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         refreshCartWithSwipeToRefresh()
     }
 
-    override fun onCartItemDeleteButtonClicked(cartItemHolderData: CartItemHolderData, position: Int, parentPosition: Int) {
+    override fun onCartItemDeleteButtonClicked(cartItemHolderData: CartItemHolderData?, position: Int, parentPosition: Int) {
         cartPageAnalytics.eventClickAtcCartClickTrashBin()
         val cartItemDatas = mutableListOf<CartItemData>()
-        cartItemHolderData.cartItemData?.let {
+        cartItemHolderData?.cartItemData?.let {
             cartItemDatas.add(it)
         }
         val allCartItemDataList = cartAdapter.allCartItemData
@@ -1095,11 +1095,11 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         }
     }
 
-    override fun onCartItemQuantityPlusButtonClicked(cartItemHolderData: CartItemHolderData, position: Int, parentPosition: Int) {
+    override fun onCartItemQuantityPlusButtonClicked(cartItemHolderData: CartItemHolderData?, position: Int, parentPosition: Int) {
         cartPageAnalytics.eventClickAtcCartClickButtonPlus()
     }
 
-    override fun onCartItemQuantityMinusButtonClicked(cartItemHolderData: CartItemHolderData, position: Int, parentPosition: Int) {
+    override fun onCartItemQuantityMinusButtonClicked(cartItemHolderData: CartItemHolderData?, position: Int, parentPosition: Int) {
         cartPageAnalytics.eventClickAtcCartClickButtonMinus()
     }
 
@@ -1107,10 +1107,10 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         cartAdapter.resetQuantity(position, parentPosition)
     }
 
-    override fun onCartItemProductClicked(cartItemData: CartItemData) {
-        cartPageAnalytics.eventClickAtcCartClickProductName(cartItemData.originData?.productName
+    override fun onCartItemProductClicked(cartItemData: CartItemData?) {
+        cartPageAnalytics.eventClickAtcCartClickProductName(cartItemData?.originData?.productName
                 ?: "")
-        cartItemData.originData?.productId?.let {
+        cartItemData?.originData?.productId?.let {
             routeToProductDetailPage(it)
         }
     }
@@ -1629,8 +1629,10 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         }
     }
 
-    override fun onCartItemQuantityInputFormClicked(qty: String) {
-        cartPageAnalytics.eventClickAtcCartClickInputQuantity(qty)
+    override fun onCartItemQuantityInputFormClicked(qty: String?) {
+        qty?.let {
+            cartPageAnalytics.eventClickAtcCartClickInputQuantity(it)
+        }
     }
 
     override fun onCartItemLabelInputRemarkClicked() {
@@ -1680,12 +1682,16 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         }
     }
 
-    override fun onWishlistCheckChanged(productId: String, cartId: Long, imageView: ImageView) {
-        cartPageAnalytics.eventClickMoveToWishlistOnAvailableSection(userSession.userId, productId)
-        setProductImageAnimationData(imageView, false)
+    override fun onWishlistCheckChanged(productId: String?, cartId: Long?, imageView: ImageView?) {
+        cartPageAnalytics.eventClickMoveToWishlistOnAvailableSection(userSession.userId, productId
+                ?: "")
+        imageView?.let {
+            setProductImageAnimationData(it, false)
+        }
 
         val isLastItem = cartAdapter.allCartItemData.size == 1
-        dPresenter.processAddCartToWishlist(productId, cartId.toString(), isLastItem, WISHLIST_SOURCE_AVAILABLE_ITEM)
+        dPresenter.processAddCartToWishlist(productId ?: "", cartId?.toString()
+                ?: "", isLastItem, WISHLIST_SOURCE_AVAILABLE_ITEM)
     }
 
     private fun setProductImageAnimationData(imageView: ImageView, isUnavailableItem: Boolean) {
@@ -2227,7 +2233,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 if (isChecked) {
                     // ambil dari shopgroup
                     cartListData?.shopGroupAvailableDataList?.forEach { shopGroup ->
-                        if (cartShop.shopGroupAvailableData.cartString.equals(shopGroup.cartString)) {
+                        if (cartShop.shopGroupAvailableData?.cartString.equals(shopGroup.cartString)) {
                             shopGroup.promoCodes?.forEach {
                                 listPromoCodes.add(it)
                             }
@@ -2235,7 +2241,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                     }
                 } else {
                     cartListData?.lastApplyShopGroupSimplifiedData?.voucherOrders?.forEach { lastApplyVoucherOrders ->
-                        cartShop.shopGroupAvailableData.cartString?.let { cartString ->
+                        cartShop.shopGroupAvailableData?.cartString?.let { cartString ->
                             if (cartString.equals(lastApplyVoucherOrders.uniqueId, true)) {
                                 listPromoCodes.add(lastApplyVoucherOrders.code)
                             }
@@ -2244,15 +2250,17 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 }
 
                 var countItemList: Int
-                cartShop.shopGroupAvailableData.cartItemDataList?.let { listCartItemHolderData ->
-                    countItemList = listCartItemHolderData.size
-                    for (j in 0 until countItemList) {
-                        if (listCartItemHolderData[j].isSelected) {
-                            doAddToListProducts(cartShop.shopGroupAvailableData, j, listProductDetail)
+                cartShop.shopGroupAvailableData?.let { shopGroupAvailableData ->
+                    shopGroupAvailableData.cartItemDataList?.let { listCartItemHolderData ->
+                        countItemList = listCartItemHolderData.size
+                        for (j in 0 until countItemList) {
+                            if (listCartItemHolderData[j].isSelected) {
+                                doAddToListProducts(shopGroupAvailableData, j, listProductDetail)
+                            }
                         }
-                    }
-                    if (listProductDetail.isNotEmpty()) {
-                        doAddToOrderListRequest(cartShop.shopGroupAvailableData, listProductDetail, listPromoCodes, listOrder)
+                        if (listProductDetail.isNotEmpty()) {
+                            doAddToOrderListRequest(shopGroupAvailableData, listProductDetail, listPromoCodes, listOrder)
+                        }
                     }
                 }
             }
@@ -3479,12 +3487,13 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         cartListData?.shoppingSummaryData?.sellerCashbackValue = amount
     }
 
-    override fun onCartItemShowRemainingQty(productId: String) {
-        cartPageAnalytics.eventViewRemainingStockInfo(userSession.userId, productId)
+    override fun onCartItemShowRemainingQty(productId: String?) {
+        cartPageAnalytics.eventViewRemainingStockInfo(userSession.userId, productId ?: "")
     }
 
-    override fun onCartItemShowInformationLabel(productId: String, informationLabel: String) {
-        cartPageAnalytics.eventViewInformationLabelInProductCard(userSession.userId, productId, informationLabel)
+    override fun onCartItemShowInformationLabel(productId: String?, informationLabel: String?) {
+        cartPageAnalytics.eventViewInformationLabelInProductCard(userSession.userId, productId
+                ?: "", informationLabel ?: "")
     }
 
     override fun reCollapseExpandedDeletedUnavailableItems() {

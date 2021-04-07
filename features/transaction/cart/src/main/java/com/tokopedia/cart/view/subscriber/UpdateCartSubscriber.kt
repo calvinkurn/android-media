@@ -76,7 +76,7 @@ class UpdateCartSubscriber(private val view: ICartListView?,
                         allSelectedItemShopCount++
                     } else {
                         var selectedItem = 0
-                        cartShopHolderData.shopGroupAvailableData.cartItemDataList?.let { cartItemHolderDataList ->
+                        cartShopHolderData.shopGroupAvailableData?.cartItemDataList?.let { cartItemHolderDataList ->
                             for (cartItemHolderData in cartItemHolderDataList) {
                                 if (!cartItemHolderData.isSelected) {
                                     selectedItem++

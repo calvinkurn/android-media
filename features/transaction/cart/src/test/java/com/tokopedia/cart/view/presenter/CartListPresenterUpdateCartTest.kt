@@ -289,11 +289,11 @@ object CartListPresenterUpdateCartTest : Spek({
             val shopDataList = mutableListOf<CartShopHolderData>().apply {
                 add(CartShopHolderData().apply {
                     shopGroupAvailableData = ShopGroupAvailableData()
-                    isAllSelected = true
+                    setAllItemSelected(true)
                 })
                 add(CartShopHolderData().apply {
                     shopGroupAvailableData = ShopGroupAvailableData()
-                    isAllSelected = false
+                    setAllItemSelected(false)
                 })
             }
 
@@ -335,7 +335,7 @@ object CartListPresenterUpdateCartTest : Spek({
                             ))
                         }
                     }
-                    isAllSelected = false
+                    setAllItemSelected(false)
                 })
                 add(CartShopHolderData().apply {
                     shopGroupAvailableData = ShopGroupAvailableData().apply {
@@ -346,7 +346,7 @@ object CartListPresenterUpdateCartTest : Spek({
                             ))
                         }
                     }
-                    isAllSelected = false
+                    setAllItemSelected(false)
                 })
             }
 
