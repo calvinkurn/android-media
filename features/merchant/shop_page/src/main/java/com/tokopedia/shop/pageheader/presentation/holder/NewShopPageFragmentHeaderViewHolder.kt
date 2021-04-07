@@ -2,7 +2,6 @@ package com.tokopedia.shop.pageheader.presentation.holder
 
 import android.content.Context
 import android.view.View
-import android.view.ViewTreeObserver
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.coachmark.CoachMark2
@@ -19,7 +18,6 @@ import com.tokopedia.shop.analytic.ShopPageTrackingBuyer
 import com.tokopedia.shop.analytic.ShopPageTrackingSGCPlayWidget
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
 import com.tokopedia.shop.common.constant.ShopPageConstant
-import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant
 import com.tokopedia.shop.common.constant.ShopStatusDef
 import com.tokopedia.shop.common.data.source.cloud.model.followshop.FollowShop
 import com.tokopedia.shop.common.data.source.cloud.model.followstatus.FollowStatus
@@ -39,7 +37,6 @@ import kotlinx.android.synthetic.main.new_partial_new_shop_page_header.view.*
 import kotlinx.android.synthetic.main.new_partial_new_shop_page_header.view.choose_address_widget
 import kotlinx.android.synthetic.main.new_partial_new_shop_page_header.view.choosee_address_widget_bottom_shadow
 import kotlinx.android.synthetic.main.new_partial_new_shop_page_header.view.tickerShopStatus
-import kotlinx.android.synthetic.main.partial_new_shop_page_header.view.*
 
 class NewShopPageFragmentHeaderViewHolder(private val view: View, private val listener: ShopPageFragmentViewHolderListener,
                                           private val shopPageTracking: ShopPageTrackingBuyer?,
@@ -64,14 +61,14 @@ class NewShopPageFragmentHeaderViewHolder(private val view: View, private val li
         chooseAddressWidget?.updateWidget()
     }
 
-    fun setupChooseAddressWidget(remoteConfig: RemoteConfig) {
+    fun setupChooseAddressWidget(remoteConfig: RemoteConfig, isMyShop: Boolean) {
         chooseAddressWidget?.apply {
             val isRollOutUser = ChooseAddressUtils.isRollOutUser(view.context)
             val isRemoteConfigChooseAddressWidgetEnabled = remoteConfig.getBoolean(
                     ShopPageConstant.ENABLE_SHOP_PAGE_HEADER_CHOOSE_ADDRESS_WIDGET,
                     true
             )
-            if (isRollOutUser && isRemoteConfigChooseAddressWidgetEnabled && !GlobalConfig.isSellerApp()) {
+            if (isRollOutUser && isRemoteConfigChooseAddressWidgetEnabled && !isMyShop) {
                 show()
                 bindChooseAddress(chooseAddressWidgetListener)
                 view.choosee_address_widget_bottom_shadow?.show()

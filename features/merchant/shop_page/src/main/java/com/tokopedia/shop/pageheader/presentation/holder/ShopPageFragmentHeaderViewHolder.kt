@@ -24,7 +24,6 @@ import com.tokopedia.shop.analytic.ShopPageTrackingSGCPlayWidget
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
 import com.tokopedia.shop.common.constant.ShopPageConstant
 import com.tokopedia.shop.common.constant.ShopStatusDef
-import com.tokopedia.shop.common.data.source.cloud.model.ShopModerateRequestResult
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopBadge
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.common.graphql.data.shopoperationalhourstatus.ShopOperationalHourStatus
@@ -135,14 +134,14 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
         }
     }
 
-    fun setupChooseAddressWidget(remoteConfig: RemoteConfig) {
+    fun setupChooseAddressWidget(remoteConfig: RemoteConfig, isMyShop: Boolean) {
         chooseAddressWidget?.apply {
             val isRollOutUser = ChooseAddressUtils.isRollOutUser(view.context)
             val isRemoteConfigChooseAddressWidgetEnabled = remoteConfig.getBoolean(
                     ShopPageConstant.ENABLE_SHOP_PAGE_HEADER_CHOOSE_ADDRESS_WIDGET,
                     true
             )
-            if (isRollOutUser && isRemoteConfigChooseAddressWidgetEnabled && !GlobalConfig.isSellerApp()) {
+            if (isRollOutUser && isRemoteConfigChooseAddressWidgetEnabled && !isMyShop) {
                 show()
                 bindChooseAddress(chooseAddressWidgetListener)
                 view.choosee_address_widget_bottom_shadow?.show()
