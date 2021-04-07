@@ -96,9 +96,9 @@ internal class InitialStatePresenterTest: InitialStatePresenterTestFixtures() {
         Assert.assertTrue(visitableList[7] is PopularSearchViewModel)
         Assert.assertTrue(visitableList[8] is DynamicInitialStateTitleViewModel)
         Assert.assertTrue(visitableList[9] is DynamicInitialStateSearchViewModel)
-        Assert.assertTrue(visitableList[10] is InitialStateProductLineTitleDataView)
-        Assert.assertTrue(visitableList[11] is InitialStateProductListDataView)
-        Assert.assertTrue(visitableList.size == 12)
+//        Assert.assertTrue(visitableList[10] is InitialStateProductLineTitleDataView)
+//        Assert.assertTrue(visitableList[11] is InitialStateProductListDataView)
+        Assert.assertTrue(visitableList.size == 10)
 
         `Then verify RecentSearchViewModel only have n items`(3, visitableList[4] as RecentSearchViewModel)
     }

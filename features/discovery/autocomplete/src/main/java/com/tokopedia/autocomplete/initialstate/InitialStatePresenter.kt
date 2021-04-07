@@ -183,11 +183,11 @@ class InitialStatePresenter @Inject constructor(
                             )
                     )
                 }
-                InitialStateData.INITIAL_STATE_LIST_PRODUCT_LINE -> {
-                    data.addAll(
-                            initialStateData.convertToListInitialStateProductListDataView().insertProductListTitle(initialStateData.header)
-                    )
-                }
+//                InitialStateData.INITIAL_STATE_LIST_PRODUCT_LINE -> {
+//                    data.addAll(
+//                            initialStateData.convertToListInitialStateProductListDataView().insertProductListTitle(initialStateData.header)
+//                    )
+//                }
                 else -> {
                     onDynamicSectionImpressed(initialStateData)
                     data.addAll(
