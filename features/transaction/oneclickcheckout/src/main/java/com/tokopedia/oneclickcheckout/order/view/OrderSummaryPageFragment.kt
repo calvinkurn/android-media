@@ -3,7 +3,6 @@ package com.tokopedia.oneclickcheckout.order.view
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
 import android.graphics.Typeface.BOLD
 import android.os.Bundle
 import android.text.Spannable
@@ -13,7 +12,6 @@ import android.text.style.StyleSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewPropertyAnimator
 import android.widget.ScrollView
 import androidx.appcompat.app.AlertDialog
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -21,7 +19,6 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.applink.ApplinkConst
@@ -52,6 +49,8 @@ import com.tokopedia.oneclickcheckout.common.view.model.OccGlobalEvent
 import com.tokopedia.oneclickcheckout.common.view.model.OccState
 import com.tokopedia.oneclickcheckout.common.view.model.preference.AddressModel
 import com.tokopedia.oneclickcheckout.common.view.model.preference.ProfilesItemModel
+import com.tokopedia.oneclickcheckout.common.view.utils.animateGone
+import com.tokopedia.oneclickcheckout.common.view.utils.animateShow
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
 import com.tokopedia.oneclickcheckout.order.data.get.OccMainOnboarding
 import com.tokopedia.oneclickcheckout.order.data.get.OccMainOnboarding.Companion.COACHMARK_TYPE_EXISTING_USER_MULTI_PROFILE
@@ -302,9 +301,9 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
             when (it) {
                 is OccState.FirstLoad -> {
                     orderPreference = it.data
-                    loaderContent?.gone()
-                    globalError?.gone()
-                    mainContent?.visible()
+                    loaderContent?.animateGone()
+                    globalError?.animateGone()
+                    mainContent?.animateShow()
                     view?.let { _ ->
                         orderProductCard?.setProduct(viewModel.orderProduct)
                         orderProductCard?.setShop(viewModel.orderShop)
@@ -324,9 +323,9 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                 }
                 is OccState.Success -> {
                     orderPreference = it.data
-                    loaderContent?.gone()
-                    globalError?.gone()
-                    mainContent?.visible()
+                    loaderContent?.animateGone()
+                    globalError?.animateGone()
+                    mainContent?.animateShow()
                     view?.let { _ ->
                         if (orderProductCard?.isProductInitialized() == false) {
                             orderProductCard?.setProduct(viewModel.orderProduct)
@@ -347,12 +346,12 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                     }
                 }
                 is OccState.Loading -> {
-                    mainContent?.gone()
-                    globalError?.gone()
-                    loaderContent?.visible()
+                    mainContent?.animateGone()
+                    globalError?.animateGone()
+                    loaderContent?.animateShow()
                 }
                 is OccState.Failed -> {
-                    loaderContent?.gone()
+                    loaderContent?.animateGone()
                     it.getFailure()?.let { failure ->
                         handleError(failure.throwable)
                     }
@@ -501,12 +500,12 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                 }
                 is OccGlobalEvent.AtcError -> {
                     progressDialog?.dismiss()
-                    loaderContent?.gone()
+                    loaderContent?.animateGone()
                     handleAtcError(it)
                 }
                 is OccGlobalEvent.AtcSuccess -> {
                     progressDialog?.dismiss()
-                    loaderContent?.gone()
+                    loaderContent?.animateGone()
                     view?.let { v ->
                         if (it.message.isNotBlank()) {
                             Toaster.build(v, it.message).show()
@@ -1398,8 +1397,8 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                 RouteManager.route(context, ApplinkConst.HOME)
                 activity?.finish()
             }
-            mainContent?.gone()
-            globalError?.visible()
+            mainContent?.animateGone()
+            globalError?.animateShow()
         }
     }
 
@@ -1417,15 +1416,15 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
             RouteManager.route(context, ApplinkConst.HOME)
             activity?.finish()
         }
-        mainContent?.gone()
-        globalError?.visible()
+        mainContent?.animateGone()
+        globalError?.animateShow()
     }
 
     private fun refresh(shouldHideAll: Boolean = true, isFullRefresh: Boolean = true) {
         if (shouldHideAll) {
-            mainContent?.gone()
-            globalError?.gone()
-            loaderContent?.visible()
+            mainContent?.animateGone()
+            globalError?.animateGone()
+            loaderContent?.animateShow()
         }
         viewModel.getOccCart(isFullRefresh, source)
     }
