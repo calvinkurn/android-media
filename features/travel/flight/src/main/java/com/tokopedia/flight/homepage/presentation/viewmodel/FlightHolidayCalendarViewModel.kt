@@ -24,10 +24,10 @@ class FlightHolidayCalendarViewModel @Inject constructor(private val useCase: Tr
             useCase.execute().also {
                 when (it) {
                     is Success -> {
-                        holidayCalendarData.value = mappingHolidayData(it.data)
+                        holidayCalendarData.postValue(mappingHolidayData(it.data))
                     }
                     is Fail -> {
-                        holidayCalendarData.value = arrayListOf()
+                        holidayCalendarData.postValue(arrayListOf())
                     }
                 }
             }
