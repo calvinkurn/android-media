@@ -68,6 +68,7 @@ interface TopChatContract {
         fun onSendAndReceiveMessage()
 
         fun renderBackground(url: String)
+        fun updateSrwState()
     }
 
     interface Presenter : BaseChatContract.Presenter<View> {

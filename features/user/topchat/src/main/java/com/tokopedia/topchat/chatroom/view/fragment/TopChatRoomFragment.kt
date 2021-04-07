@@ -245,7 +245,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         })
     }
 
-    private fun updateSrwState() {
+    override fun updateSrwState() {
         if (shouldShowSrw()) {
             rvSrw?.show()
             getViewState().hideTemplateChat()
@@ -258,7 +258,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     private fun shouldShowSrw(): Boolean {
-        return getViewState().hasProductPreviewShown()
+        return !isSeller() && getViewState().hasProductPreviewShown()
     }
 
     private fun initReplyTextWatcher() {
@@ -1137,14 +1137,13 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     private fun onProductAttachmentSelected(data: Intent?) {
-        if (data == null)
-            return
-
-        if (!data.hasExtra(TOKOPEDIA_ATTACH_PRODUCT_RESULT_KEY))
-            return
-
-        val resultProducts: ArrayList<ResultProduct> = data.getParcelableArrayListExtra(TOKOPEDIA_ATTACH_PRODUCT_RESULT_KEY)
-        presenter.initProductPreviewFromAttachProduct(resultProducts)
+        if (data == null || !data.hasExtra(TOKOPEDIA_ATTACH_PRODUCT_RESULT_KEY)) return
+        val resultProducts: ArrayList<ResultProduct>? = data.getParcelableArrayListExtra(
+                TOKOPEDIA_ATTACH_PRODUCT_RESULT_KEY
+        )
+        resultProducts?.let {
+            presenter.initProductPreviewFromAttachProduct(it)
+        }
     }
 
     private fun processImagePathToUpload(data: Intent): ImageUploadViewModel? {
