@@ -15,6 +15,13 @@
       "eventAction": "click on button google",
       "sessionIris": "{{.*}}",
       "eventLabel": "click"
+    },
+    {
+      "event": "clickLogin",
+      "eventCategory": "login page",
+      "eventAction": "click on button facebook",
+      "sessionIris": "{{.*}}",
+      "eventLabel": "click"
     }
   ]
 }

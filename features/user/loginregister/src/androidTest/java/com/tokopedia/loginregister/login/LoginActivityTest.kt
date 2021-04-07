@@ -16,6 +16,7 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
 import androidx.test.platform.app.InstrumentationRegistry
+import com.facebook.FacebookSdk
 import com.google.firebase.FirebaseApp
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.loginregister.R
@@ -51,6 +52,7 @@ class LoginActivityTest {
 
         override fun beforeActivityLaunched() {
             super.beforeActivityLaunched()
+            FacebookSdk.sdkInitialize(InstrumentationRegistry.getInstrumentation().targetContext)
             FirebaseApp.initializeApp(InstrumentationRegistry.getInstrumentation().targetContext)
             setupGraphqlMockResponse(LoginMockResponse())
         }
@@ -134,6 +136,8 @@ class LoginActivityTest {
         intending(IntentMatchers.anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
         LoginSocmedTestHelper.clickSocmedButton()
         LoginSocmedTestHelper.clickGoogleLogin()
+        LoginSocmedTestHelper.clickSocmedButton()
+        LoginSocmedTestHelper.clickFacebookLogin()
     }
 
     fun simulateLoginEmail() {
