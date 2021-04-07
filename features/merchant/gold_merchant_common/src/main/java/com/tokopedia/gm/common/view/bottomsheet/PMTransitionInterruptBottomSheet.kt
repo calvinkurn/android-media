@@ -23,12 +23,13 @@ class PMTransitionInterruptBottomSheet : BottomSheetUnify() {
         const val TAG = "GmcPowerMerchantBottomSheet"
 
         fun getInstance(fm: FragmentManager): PMTransitionInterruptBottomSheet {
-            return (fm.findFragmentByTag(TAG) as? PMTransitionInterruptBottomSheet) ?: PMTransitionInterruptBottomSheet().apply {
-                clearContentPadding = true
-                showHeader = false
-                showCloseIcon = false
-                overlayClickDismiss = false
-            }
+            return (fm.findFragmentByTag(TAG) as? PMTransitionInterruptBottomSheet)
+                    ?: PMTransitionInterruptBottomSheet().apply {
+                        clearContentPadding = true
+                        showHeader = false
+                        showCloseIcon = false
+                        overlayClickDismiss = false
+                    }
         }
     }
 
@@ -58,7 +59,7 @@ class PMTransitionInterruptBottomSheet : BottomSheetUnify() {
         setupView()
     }
 
-    fun setOnCtaClickListener(callback: () -> Unit): PMTransitionInterruptBottomSheet  {
+    fun setOnCtaClickListener(callback: () -> Unit): PMTransitionInterruptBottomSheet {
         ctaClickCallback = callback
         return this
     }
@@ -83,8 +84,10 @@ class PMTransitionInterruptBottomSheet : BottomSheetUnify() {
         data?.let { data ->
             tvSahPmTitle.text = context.getString(R.string.gmc_power_merchant_bottom_sheet_title, PMConstant.NEW_PM_CALCULATION_DATE)
             slvSahPmShopLevel.show(data.shopLevel)
-            tvSahPmShopScore.text = data.shopScore.toString()
             pmgSahPmCard.show(data)
+
+            val shopScore = if (data.shopScore <= 0) "-" else data.shopScore.toString()
+            tvSahPmShopScore.text = shopScore
 
             setShopScoreTextColor()
         }
