@@ -59,6 +59,7 @@ import com.tokopedia.oneclickcheckout.order.data.get.OccMainOnboarding.Companion
 import com.tokopedia.oneclickcheckout.order.data.get.OccMainOnboarding.Companion.COACHMARK_TYPE_EXISTING_USER_ONE_PROFILE
 import com.tokopedia.oneclickcheckout.order.data.get.OccMainOnboarding.Companion.COACHMARK_TYPE_NEW_BUYER_AFTER_CREATE_PROFILE
 import com.tokopedia.oneclickcheckout.order.data.get.OccMainOnboarding.Companion.COACHMARK_TYPE_NEW_BUYER_BEFORE_CREATE_PROFILE
+import com.tokopedia.oneclickcheckout.order.data.get.OccMainOnboarding.Companion.COACHMARK_TYPE_NEW_BUYER_REMOVE_PROFILE
 import com.tokopedia.oneclickcheckout.order.di.OrderSummaryPageComponent
 import com.tokopedia.oneclickcheckout.order.view.bottomsheet.*
 import com.tokopedia.oneclickcheckout.order.view.card.*
@@ -736,9 +737,10 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                         COACHMARK_TYPE_NEW_BUYER_AFTER_CREATE_PROFILE -> generateNewCoachMarkAnchorForNewBuyerAfterCreateProfile(it, detailIndexed.index)
                         COACHMARK_TYPE_EXISTING_USER_ONE_PROFILE -> generateNewCoachMarkAnchorForExistingUserOneProfile(it, detailIndexed.index)
                         COACHMARK_TYPE_EXISTING_USER_MULTI_PROFILE -> generateNewCoachMarkAnchorForExistingUserMultiProfile(it, detailIndexed.index)
+                        COACHMARK_TYPE_NEW_BUYER_REMOVE_PROFILE -> generateNewCoachMarkAnchorForNewBuyerRemoveProfile(it, detailIndexed.index)
                         else -> it.findViewById(R.id.tv_header_2)
                     }
-                    coachMarkItems.add(CoachMark2Item(newView, detailIndexed.value.title, detailIndexed.value.message))
+                    coachMarkItems.add(CoachMark2Item(newView, detailIndexed.value.title, detailIndexed.value.message, CoachMark2.POSITION_TOP))
                 }
                 val coachMark = CoachMark2(it.context)
                 coachMark.setStepListener(object : CoachMark2.OnStepListener {
@@ -816,6 +818,13 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         return when (index) {
             0 -> view.findViewById(R.id.btn_new_change_address)
             else -> view.findViewById(R.id.tv_new_choose_preference)
+        }
+    }
+
+    private fun generateNewCoachMarkAnchorForNewBuyerRemoveProfile(view: View, index: Int): View {
+        return when (index) {
+            1 -> view.findViewById(R.id.btn_new_change_address)
+            else -> view.findViewById(R.id.tv_new_header)
         }
     }
 
