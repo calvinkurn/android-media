@@ -2,6 +2,7 @@ package com.tokopedia.play.viewmodel.play
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.play.helper.ClassBuilder
+import com.tokopedia.play.model.PlayChannelDataModelBuilder
 import com.tokopedia.play.model.PlayChatModelBuilder
 import com.tokopedia.play.robot.play.andWhen
 import com.tokopedia.play.robot.play.givenPlayViewModelRobot
@@ -20,6 +21,8 @@ class PlayViewModelChatTest {
     val instantTaskExecutorRule: InstantTaskExecutorRule = InstantTaskExecutorRule()
 
     private val chatBuilder = PlayChatModelBuilder()
+    private val channelDataBuilder = PlayChannelDataModelBuilder()
+
     private val classBuilder = ClassBuilder()
     private val userSession: UserSessionInterface = mockk(relaxed = true)
     private val modelMapper = classBuilder.getPlayUiModelMapper(
@@ -32,6 +35,10 @@ class PlayViewModelChatTest {
         val name = "User 1"
         val userId = "12345"
 
+        val channelData = channelDataBuilder.buildChannelData(
+                id = "121212"
+        )
+
         givenPlayViewModelRobot(
                 userSession = userSession,
                 playUiModelMapper = modelMapper
@@ -39,6 +46,8 @@ class PlayViewModelChatTest {
             setLoggedIn(true)
             setName(name)
             setUserId(userId)
+
+            createPage(channelData)
         } andWhen {
             sendChat(message)
         } thenVerify {
@@ -59,11 +68,17 @@ class PlayViewModelChatTest {
     fun `given user is not logged in, when send chat, chat should not be sent`() {
         val message = "Hello World"
 
+        val channelData = channelDataBuilder.buildChannelData(
+                id = "121212"
+        )
+
         givenPlayViewModelRobot(
                 userSession = userSession,
                 playUiModelMapper = modelMapper
         ) {
             setLoggedIn(false)
+
+            createPage(channelData)
         } andWhen {
             sendChat(message)
         } thenVerify {

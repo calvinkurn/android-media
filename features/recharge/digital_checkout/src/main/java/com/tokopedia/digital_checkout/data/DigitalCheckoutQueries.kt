@@ -99,12 +99,14 @@ object DigitalCheckoutQueries {
               allow_ovo_points
               fintech_amount
               fintech_partner_amount
+              operator_name
               info {
                 title
                 subtitle
                 link_text
                 link_url
                 tooltip_text
+                icon_url
               }
             }
             atc_source
