@@ -27,6 +27,8 @@ import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.iconunify.IconUnify;
+import com.tokopedia.imagepicker.picker.main.builder.StateRecorderType;
+import com.tokopedia.imagepicker.picker.widget.VideoPlayerView;
 import com.tokopedia.imagepicker.R;
 import com.tokopedia.utils.file.FileUtil;
 
