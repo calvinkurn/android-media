@@ -20,4 +20,8 @@ open class BaseSuggestionViewModel(
         var trackingCode: String = "",
         var discountPercentage: String = "",
         var originalPrice: String = ""
-)
+) {
+    fun hasSlashedPrice(): Boolean {
+        return discountPercentage.isNotEmpty() && originalPrice.isNotEmpty()
+    }
+}

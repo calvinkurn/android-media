@@ -48,14 +48,10 @@ class SuggestionProductLineViewHolder(
     private fun setComponentHeight(item: SuggestionProductLineDataView) {
         val layoutParams = itemView.autocompleteProductItem.layoutParams
 
-        if (item.isTripleLine()) layoutParams.height = itemView.context.resources.getDimensionPixelSize(R.dimen.autocomplete_product_triple_line_height)
+        if (item.hasSlashedPrice()) layoutParams.height = itemView.context.resources.getDimensionPixelSize(R.dimen.autocomplete_product_triple_line_height)
         else layoutParams.height = itemView.context.resources.getDimensionPixelSize(R.dimen.autocomplete_product_double_line_height)
 
         itemView.autocompleteProductItem.layoutParams = layoutParams
-    }
-
-    private fun SuggestionProductLineDataView.isTripleLine(): Boolean {
-        return discountPercentage.isNotEmpty() && originalPrice.isNotEmpty();
     }
 
     private fun setImage(item: SuggestionProductLineDataView) {
@@ -127,7 +123,7 @@ class SuggestionProductLineViewHolder(
     private fun setTitleMargin(item: SuggestionProductLineDataView) {
         val resources = itemView.context.resources
 
-        val topMargin = if (item.isTripleLine()) resources.getDimensionPixelSize(R.dimen.autocomplete_product_triple_line_title_margin_top)
+        val topMargin = if (item.hasSlashedPrice()) resources.getDimensionPixelSize(R.dimen.autocomplete_product_triple_line_title_margin_top)
         else resources.getDimensionPixelSize(R.dimen.autocomplete_product_double_line_title_margin_top)
 
         itemView.autocompleteProductTitle?.setMargin(
@@ -139,13 +135,13 @@ class SuggestionProductLineViewHolder(
     }
 
     private fun setLabelDiscountPercentage(item: SuggestionProductLineDataView) {
-        itemView.autocompleteProductLabelDiscountPercentage?.shouldShowWithAction(item.discountPercentage.isNotEmpty()) {
+        itemView.autocompleteProductLabelDiscountPercentage?.shouldShowWithAction(item.hasSlashedPrice()) {
             itemView.autocompleteProductLabelDiscountPercentage?.text = item.discountPercentage
         }
     }
 
     private fun setOriginalPrice(item: SuggestionProductLineDataView) {
-        itemView.autocompleteProductOriginalPrice?.shouldShowWithAction(item.originalPrice.isNotEmpty()) {
+        itemView.autocompleteProductOriginalPrice?.shouldShowWithAction(item.hasSlashedPrice()) {
             itemView.autocompleteProductOriginalPrice?.setTextAndCheckShow(item.originalPrice)
             itemView.autocompleteProductOriginalPrice?.paintFlags = itemView.autocompleteProductOriginalPrice.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
         }
@@ -161,7 +157,7 @@ class SuggestionProductLineViewHolder(
     private fun setPriceMargin(item: SuggestionProductLineDataView) {
         val resources = itemView.context.resources
 
-        val bottomMargin = if (item.isTripleLine()) resources.getDimensionPixelSize(R.dimen.autocomplete_product_triple_line_price_margin_bottom)
+        val bottomMargin = if (item.hasSlashedPrice()) resources.getDimensionPixelSize(R.dimen.autocomplete_product_triple_line_price_margin_bottom)
         else resources.getDimensionPixelSize(R.dimen.autocomplete_product_double_line_price_margin_bottom)
 
         itemView.autocompleteProductPrice?.setMargin(

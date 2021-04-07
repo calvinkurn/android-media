@@ -41,7 +41,7 @@ class SuggestionDoubleLineWithoutImageViewHolder(
     }
 
     private fun SuggestionDoubleLineWithoutImageViewModel.hasApplinkUrl(): Boolean {
-        return applink.isNotEmpty() || url.isNotEmpty()
+        return applink.isNotEmpty()
     }
 
     private fun Typography.setTypography(context: Context, weightType: Int, color: Int) {
