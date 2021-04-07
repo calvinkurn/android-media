@@ -39,6 +39,7 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.imagepicker.common.ImagePickerResultExtractor
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.network.utils.ErrorHandler
@@ -103,6 +104,7 @@ import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProduc
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.LONGITUDE
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.NO_DATA
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.POSTAL_CODE
+import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.PRODUCT_LIMITATION_START_DATE
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.PRODUCT_STATUS_ACTIVE
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.SHIPMENT_DATA
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.SHOP_ID
@@ -1630,16 +1632,18 @@ class AddEditProductPreviewFragment :
     }
 
     private fun setupProductLimitationViews() {
-        val htmlDescription = getString(R.string.label_product_limitation_ticker, "[DD - MM - YYYY]")
+        val htmlDescription = getString(R.string.label_product_limitation_ticker, PRODUCT_LIMITATION_START_DATE)
         productLimitationTicker?.apply {
             setHtmlDescription(htmlDescription)
             showWithCondition(isAdding())
         }
     }
 
-    private fun setupBottomSheetProductLimitation(data: ProductLimitationData) {
-        val actionItems = ProductLimitationMapper.mapToActionItems(requireContext(), data)
-        val bottomSheet = ProductLimitationBottomSheet(actionItems)
+    private fun setupBottomSheetProductLimitation(productLimitationModel: ProductLimitationModel) {
+        productLimitationModel.apply {
+            productLimitationBottomSheet = ProductLimitationBottomSheet(actionItems, isEligible, limitAmount)
+            isProductLimitEligible = isEligible
+        }
 
         productLimitationBottomSheet?.setOnBottomSheetResult { urlResult ->
             if (urlResult.startsWith(HTTP_PREFIX)) {
@@ -1647,7 +1651,6 @@ class AddEditProductPreviewFragment :
             } else {
                 val intent = RouteManager.getIntent(context, urlResult)
                 startActivity(intent)
-                activity?.finish()
             }
         }
 
