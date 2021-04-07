@@ -357,9 +357,7 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
 
         postpaidClientNumberWidget.setLoadingButtonEnquiry(false)
         view?.run {
-            error.let {
-                Toaster.build(this, ErrorHandler.getErrorMessage(context, it), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
-            }
+            Toaster.build(this, ErrorHandler.getErrorMessage(context, error), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
         }
     }
 

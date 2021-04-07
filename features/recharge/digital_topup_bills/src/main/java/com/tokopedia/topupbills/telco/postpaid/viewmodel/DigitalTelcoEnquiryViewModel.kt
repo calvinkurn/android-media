@@ -54,6 +54,6 @@ class DigitalTelcoEnquiryViewModel @Inject constructor(private val graphqlReposi
 
     companion object {
         const val NULL_RESPONSE = "null response"
-        const val GRPC_ERROR_MSG_RESPONSE = "grpc"
+        const val GRPC_ERROR_MSG_RESPONSE = "grpc timeout"
     }
 }
