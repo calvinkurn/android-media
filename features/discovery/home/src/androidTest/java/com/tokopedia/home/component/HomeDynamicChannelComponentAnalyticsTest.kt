@@ -10,15 +10,26 @@ import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.home.R
+import com.tokopedia.home.beranda.domain.model.banner.BannerDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecycleAdapter
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomepageBannerDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PopularKeywordListDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.TickerDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.BannerViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.CategoryWidgetViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.PopularKeywordViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.TickerViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.widget_business.NewBusinessViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.HomeRecommendationFeedViewHolder
+import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeRecommendationFeedDataModel
 import com.tokopedia.home.environment.InstrumentationHomeTestActivity
 import com.tokopedia.home.mock.HomeMockResponseConfig
 import com.tokopedia.home_component.viewholders.*
+import com.tokopedia.home_component.visitable.MixLeftDataModel
+import com.tokopedia.home_component.visitable.MixTopDataModel
+import com.tokopedia.home_component.visitable.ProductHighlightDataModel
+import com.tokopedia.recharge_component.model.RechargeBUWidgetDataModel
 import com.tokopedia.recharge_component.presentation.adapter.viewholder.RechargeBUWidgetMixLeftViewHolder
 import com.tokopedia.test.application.assertion.topads.TopAdsVerificationTestReportUtil
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
@@ -55,7 +66,7 @@ class HomeDynamicChannelComponentAnalyticsTest {
     fun testComponentProductHighlight() {
         initTest()
 
-        doActivityTest(ProductHighlightComponentViewHolder::class) { _: RecyclerView.ViewHolder, _: Int ->
+        doActivityTestByModelClass(dataModelClass = ProductHighlightDataModel::class) { _: RecyclerView.ViewHolder, _: Int ->
             clickOnProductHighlightItem()
         }
 
@@ -70,8 +81,8 @@ class HomeDynamicChannelComponentAnalyticsTest {
     fun testComponentPopularKeyword() {
         initTest()
 
-        doActivityTest(PopularKeywordViewHolder::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
-            clickOnPopularKeywordSection(viewHolder, i)
+        doActivityTestByModelClass(delayBeforeRender = 2000, dataModelClass = PopularKeywordListDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
+            clickOnPopularKeywordSection(viewHolder)
         }
         logTestMessage("DebugDev Popular keyword UI test finished, proceeding to cassava assert")
 
@@ -88,7 +99,7 @@ class HomeDynamicChannelComponentAnalyticsTest {
     fun testComponentMixLeft() {
         initTest()
 
-        doActivityTest(MixLeftComponentViewHolder::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
+        doActivityTestByModelClass(dataModelClass = MixLeftDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
             clickOnMixLeftSection(viewHolder, i)
         }
 
@@ -103,7 +114,7 @@ class HomeDynamicChannelComponentAnalyticsTest {
     fun testComponentMixTop() {
         initTest()
 
-        doActivityTest(MixTopComponentViewHolder::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
+        doActivityTestByModelClass(dataModelClass = MixTopDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
             clickOnMixTopSection(viewHolder, i)
         }
 
@@ -152,7 +163,7 @@ class HomeDynamicChannelComponentAnalyticsTest {
     fun testRecommendationFeedBanner() {
         initTest()
 
-        doActivityTest(HomeRecommendationFeedViewHolder::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
+        doActivityTestByModelClass(dataModelClass = HomeRecommendationFeedDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
             clickOnRecommendationFeedSection(viewHolder)
         }
 
@@ -186,7 +197,7 @@ class HomeDynamicChannelComponentAnalyticsTest {
 
         login()
 
-        doActivityTest(HomeRecommendationFeedViewHolder::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
+        doActivityTestByModelClass(dataModelClass = HomeRecommendationFeedDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
             clickOnRecommendationFeedSection(viewHolder)
         }
 
@@ -201,7 +212,7 @@ class HomeDynamicChannelComponentAnalyticsTest {
     fun testOpenScreenHomepage() {
         initTest()
 
-        doActivityTest(HomeRecommendationFeedViewHolder::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
+        doActivityTestByModelClass(dataModelClass = HomeRecommendationFeedDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
             clickOnRecommendationFeedSection(viewHolder)
         }
 
@@ -216,7 +227,7 @@ class HomeDynamicChannelComponentAnalyticsTest {
     fun testHPB() {
         initTest()
 
-        doActivityTest(BannerViewHolder::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
+        doActivityTestByModelClass(dataModelClass = HomepageBannerDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
             clickHPBSection(viewHolder)
         }
 
@@ -231,7 +242,7 @@ class HomeDynamicChannelComponentAnalyticsTest {
     fun testTicker() {
         initTest()
 
-        doActivityTest(TickerViewHolder::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
+        doActivityTestByModelClass(dataModelClass = TickerDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
             clickOnTickerSection(viewHolder)
         }
 
@@ -276,7 +287,7 @@ class HomeDynamicChannelComponentAnalyticsTest {
     fun testRecommendationFeedProductNonLogin() {
         initTest()
 
-        doActivityTest(HomeRecommendationFeedViewHolder::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
+        doActivityTestByModelClass(dataModelClass = HomeRecommendationFeedDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
             clickOnRecommendationFeedSection(viewHolder)
         }
 
@@ -291,7 +302,7 @@ class HomeDynamicChannelComponentAnalyticsTest {
     fun testComponentCategoryWidget() {
         initTest()
 
-        doActivityTest(CategoryWidgetViewHolder::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
+        doActivityTestByModelClass(dataModelClass = DynamicChannelDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
             clickOnCategoryWidgetSection(viewHolder, i)
         }
 
@@ -308,7 +319,7 @@ class HomeDynamicChannelComponentAnalyticsTest {
 
         login()
 
-        doActivityTest(RechargeBUWidgetMixLeftViewHolder::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
+        doActivityTestByModelClass(dataModelClass = RechargeBUWidgetDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
             checkRechargeBUWidget(viewHolder, i)
         }
 
@@ -332,6 +343,23 @@ class HomeDynamicChannelComponentAnalyticsTest {
                 layout.visibility = View.GONE
             }
         }
+    }
+
+    private fun <T: Any> doActivityTestByModelClass(delayBeforeRender: Long = 2000L, dataModelClass : KClass<T>, isTypeClass: (viewHolder: RecyclerView.ViewHolder, itemClickLimit: Int)-> Unit) {
+        val homeRecyclerView = activityRule.activity.findViewById<RecyclerView>(R.id.home_fragment_recycler_view)
+        val homeRecycleAdapter = homeRecyclerView.adapter as? HomeRecycleAdapter
+
+        val visitableList = homeRecycleAdapter?.currentList?: listOf()
+        val targetModel = visitableList.find { it.javaClass.simpleName == dataModelClass.simpleName }
+        val targetModelIndex = visitableList.indexOf(targetModel)
+
+        targetModelIndex.let { targetModelIndex->
+            scrollHomeRecyclerViewToPosition(homeRecyclerView, targetModelIndex)
+            if (delayBeforeRender > 0) Thread.sleep(delayBeforeRender)
+            val targetModelViewHolder = homeRecyclerView.findViewHolderForAdapterPosition(targetModelIndex)
+            targetModelViewHolder?.let { targetModelViewHolder-> isTypeClass.invoke(targetModelViewHolder, targetModelIndex) }
+        }
+        endActivityTest()
     }
 
     private fun <T: Any> doActivityTest(viewClass : KClass<T>, isTypeClass: (viewHolder: RecyclerView.ViewHolder, itemPosition: Int)-> Unit) {
