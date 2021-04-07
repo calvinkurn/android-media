@@ -166,6 +166,18 @@ public abstract class BaseNotificationFactory {
     }
 
     protected Boolean isAllowBell() {
+        if (isRevert()) {
+            return checkCacheAllowBell();
+        } else {
+            return true;
+        }
+    }
+
+    protected Boolean isRevert() {
+        return false;
+    }
+
+    protected Boolean checkCacheAllowBell() {
         LocalCacheHandler cache = new LocalCacheHandler(context, Constant.CACHE_DELAY);
         long prevTime = cache.getLong(Constant.PREV_TIME);
         long currTIme = System.currentTimeMillis();
@@ -174,7 +186,7 @@ public abstract class BaseNotificationFactory {
             cache.applyEditor();
             return true;
         }
-        return true;
+        return false;
     }
 
     protected Boolean isAllowVibrate() {
