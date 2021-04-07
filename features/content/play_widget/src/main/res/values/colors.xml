@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="play_widget_dms_small_border_gradient_top">#FFD15C</color>
+    <color name="play_widget_dms_small_live_border_gradient_top">#FFD15C</color>
+    <color name="play_widget_dms_small_live_border_gradient_bottom">#FF5C84</color>
+
+    <color name="play_widget_dms_small_promo_border_gradient_top">#32AFFF</color>
+    <color name="play_widget_dms_small_promo_border_gradient_bottom">#00AA5B</color>
+
     <color name="play_widget_dms_light_gray">#e0e0e0</color>
     <color name="play_widget_dms_info_container">#CCFFFFFF</color>
 

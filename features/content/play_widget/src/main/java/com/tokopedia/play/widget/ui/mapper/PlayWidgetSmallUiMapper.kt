@@ -4,6 +4,7 @@ import com.tokopedia.play.widget.data.PlayWidget
 import com.tokopedia.play.widget.data.PlayWidgetItem
 import com.tokopedia.play.widget.ui.model.*
 import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
+import com.tokopedia.play.widget.ui.type.PlayWidgetPromoType
 import javax.inject.Inject
 
 /**
@@ -47,7 +48,7 @@ class PlayWidgetSmallUiMapper @Inject constructor(
             startTime = item.startTime,
             totalView = item.stats.view.formatted,
             totalViewVisible = item.video.isShowTotalView,
-            hasPromo = item.config.hasPromo,
+            promoType = PlayWidgetPromoType.getByType("DEFAULT", "Diskon 30%"), //TODO("Wait for GQL")
             video = videoMapper.mapWidgetItemVideo(item.video)
     )
 }

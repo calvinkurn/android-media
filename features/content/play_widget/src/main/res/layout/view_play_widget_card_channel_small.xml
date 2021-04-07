@@ -71,29 +71,18 @@
         app:layout_constraintTop_toTopOf="@id/cl_media"
         />
 
-    <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/iv_discount"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/play_widget_dp_6"
-        android:layout_marginTop="@dimen/play_widget_dp_6"
-        app:layout_constraintStart_toStartOf="@id/cl_media"
-        app:layout_constraintTop_toTopOf="@id/cl_media"
-        app:srcCompat="@drawable/ic_discount_small"
-        />
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/cl_total_view"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/play_view_stats_info_height"
-        android:layout_marginStart="@dimen/spacing_lvl1"
+        android:layout_marginStart="@dimen/spacing_lvl3"
         android:layout_marginTop="@dimen/play_widget_dp_6"
         android:layout_marginEnd="@dimen/play_widget_dp_6"
         android:background="@drawable/bg_play_stats_info_view_badge"
         app:layout_constrainedWidth="true"
         app:layout_constraintEnd_toEndOf="@id/cl_media"
         app:layout_constraintHorizontal_bias="0"
-        app:layout_constraintStart_toEndOf="@id/iv_discount"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/cl_media"
         app:layout_goneMarginStart="@dimen/play_widget_dp_6"
         >

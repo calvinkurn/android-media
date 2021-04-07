@@ -83,7 +83,7 @@ object PlayWidgetUiMock {
             startTime = "",
             totalView = "10,0 rb",
             totalViewVisible = true,
-            hasPromo = cardItemTypeRandom.nextBoolean(),
+            promoType = PlayWidgetPromoType.LiveOnly("Diskon 50%"),
             video = getVideoUiModel(channelType)
     )
 

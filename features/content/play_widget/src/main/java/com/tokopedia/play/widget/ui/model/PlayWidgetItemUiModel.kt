@@ -29,12 +29,15 @@ data class PlayWidgetSmallChannelUiModel(
         val startTime: String,
         val totalView: String,
         val totalViewVisible: Boolean,
-        val hasPromo: Boolean,
+        val promoType: PlayWidgetPromoType,
         val video: PlayWidgetVideoUiModel,
         val channelType: PlayWidgetChannelType
 ): PlayWidgetSmallItemUiModel(), ImpressionableModel {
 
     override val impressHolder = ImpressHolder()
+
+    val hasPromo: Boolean
+        get() = promoType != PlayWidgetPromoType.NoPromo || promoType != PlayWidgetPromoType.Unknown
 }
 
 /**

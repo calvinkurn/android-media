@@ -31,7 +31,6 @@ class PlayWidgetCardChannelSmallView : ConstraintLayout, PlayVideoPlayerReceiver
     private val flBorder: FrameLayout
     private val ivCover: ImageView
     private val pvVideo: PlayerView
-    private val ivDiscount: ImageView
     private val clTotalView: ConstraintLayout
     private val tvTotalView: TextView
     private val tvTitle: TextView
@@ -48,7 +47,6 @@ class PlayWidgetCardChannelSmallView : ConstraintLayout, PlayVideoPlayerReceiver
         flBorder = view.findViewById(R.id.fl_border)
         ivCover = view.findViewById(R.id.iv_cover)
         pvVideo = view.findViewById(R.id.pv_video)
-        ivDiscount = view.findViewById(R.id.iv_discount)
         clTotalView = view.findViewById(R.id.cl_total_view)
         tvTotalView = view.findViewById(R.id.tv_total_view)
         tvTitle = view.findViewById(R.id.tv_title)
@@ -107,12 +105,19 @@ class PlayWidgetCardChannelSmallView : ConstraintLayout, PlayVideoPlayerReceiver
             mListener?.onChannelClicked(this, model)
         }
 
-        if (model.video.isLive) {
-            flBorder.setBackgroundResource(R.drawable.bg_play_widget_small_live_border)
-            ivLiveBadge.visible()
-        } else {
-            flBorder.setBackgroundResource(R.drawable.bg_play_widget_small_default_border)
-            ivLiveBadge.invisible()
+        when {
+            model.video.isLive -> {
+                flBorder.setBackgroundResource(R.drawable.bg_play_widget_small_live_border)
+                ivLiveBadge.visible()
+            }
+            model.hasPromo -> {
+                flBorder.setBackgroundResource(R.drawable.bg_play_widget_small_promo_border)
+                ivLiveBadge.invisible()
+            }
+            else -> {
+                flBorder.setBackgroundResource(R.drawable.bg_play_widget_small_default_border)
+                ivLiveBadge.invisible()
+            }
         }
     }
 
@@ -122,23 +127,19 @@ class PlayWidgetCardChannelSmallView : ConstraintLayout, PlayVideoPlayerReceiver
 
     private fun handleType(type: PlayWidgetChannelType) {
         when (type) {
-            PlayWidgetChannelType.Live -> {
-                tvUpcoming.gone()
-            }
-            PlayWidgetChannelType.Vod -> {
+            PlayWidgetChannelType.Live, PlayWidgetChannelType.Vod -> {
                 tvUpcoming.gone()
             }
             PlayWidgetChannelType.Upcoming -> {
                 tvUpcoming.visible()
-                ivDiscount.gone()
             }
         }
     }
 
     private fun handlePromo(type: PlayWidgetChannelType, hasPromo: Boolean) {
-        if (type == PlayWidgetChannelType.Upcoming || type == PlayWidgetChannelType.Unknown) ivDiscount.gone()
-        else if (hasPromo) ivDiscount.visible()
-        else ivDiscount.gone()
+//        if (type == PlayWidgetChannelType.Upcoming || type == PlayWidgetChannelType.Unknown) ivDiscount.gone()
+//        else if (hasPromo) ivDiscount.visible()
+//        else ivDiscount.gone()
     }
 
     private fun handleTotalView(type: PlayWidgetChannelType, isVisible: Boolean, totalViewString: String) {
