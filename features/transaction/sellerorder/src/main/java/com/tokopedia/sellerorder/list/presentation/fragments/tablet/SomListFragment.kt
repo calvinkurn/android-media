@@ -58,13 +58,17 @@ class SomListFragment : com.tokopedia.sellerorder.list.presentation.fragments.So
             }
         }
         super.renderOrderList(data)
-        onOrderListChanged()
+        // only refresh order detail if the response contains the same order that opened in order detail view
+        if (data.find { it.orderId == openedOrderId } != null) {
+            onOrderListChanged()
+        }
     }
 
     override fun onRefreshOrderSuccess(result: OptionalOrderData) {
         if (result.orderId == openedOrderId) {
             result.order?.isOpen = true
         }
+        keepOpenOrderDetail = false
         super.onRefreshOrderSuccess(result)
         onOrderListChanged()
     }
