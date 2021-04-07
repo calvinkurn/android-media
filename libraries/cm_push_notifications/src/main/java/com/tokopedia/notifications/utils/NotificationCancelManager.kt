@@ -33,8 +33,10 @@ open class NotificationCancelManager: CoroutineScope {
 
         if (remoteConfig.getBooleanRemoteConfig(NOTIFICATION_TRAY_CLEAR, false)) {
             cancellableItems(context, remoteConfig) { notifications ->
-                notifications.forEach {
-                    cancelNotificationManager(context, it.notificationId)
+                kotlin.runCatching {
+                    notifications.forEach {
+                        cancelNotificationManager(context, it.notificationId)
+                    }
                 }
             }
         }
@@ -48,12 +50,14 @@ open class NotificationCancelManager: CoroutineScope {
         launch {
             val notifications = pushRepository(context).getNotification()
             withContext(Dispatchers.Main) {
-                invoke(notifications
-                        .filter { it.campaignId != 0L }
-                        .intersect(excludeIds(remoteConfig)) { notification, excludedItem ->
-                            notification.campaignId == excludedItem.toLong()
-                        }
-                )
+                runCatching {
+                    invoke(notifications
+                            .filter { it.campaignId != 0L }
+                            .intersect(excludeIds(remoteConfig)) { notification, excludedItem ->
+                                notification.campaignId == excludedItem.toLong()
+                            }
+                    )
+                }
             }
         }
     }

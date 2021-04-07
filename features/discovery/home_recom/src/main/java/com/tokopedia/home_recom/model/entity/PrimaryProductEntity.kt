@@ -40,7 +40,7 @@ data class ProductDetailData(
         @SerializedName("categoryBreadcrumbs")
         val categoryBreadcrumbs: String = "",
         @SerializedName("clickUrl")
-        val clickUrl: String = "",
+        var clickUrl: String = "",
         @SerializedName("countReview")
         val countReview: Int = -1,
         @SerializedName("countReviewFloat")
@@ -54,7 +54,7 @@ data class ProductDetailData(
         @SerializedName("imageUrl")
         val imageUrl: String = "",
         @SerializedName("isTopads")
-        val isTopads: Boolean = false,
+        var isTopads: Boolean = false,
         @SerializedName("IsWishlist")
         val isWishlist: Boolean = false,
         @SerializedName("labels")
@@ -82,7 +82,7 @@ data class ProductDetailData(
         @SerializedName("minOrder")
         val minOrder: Int = 0,
         @SerializedName("trackerImageUrl")
-        val trackerImageUrl: String = "",
+        var trackerImageUrl: String = "",
         @SerializedName("url")
         val url: String = "",
         @SerializedName("wholesalePrice")

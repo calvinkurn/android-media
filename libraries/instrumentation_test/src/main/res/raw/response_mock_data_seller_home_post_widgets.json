@@ -29,7 +29,8 @@
               }
             ],
             "error": false,
-            "errorMsg": ""
+            "errorMsg": "",
+            "showWidget": true
           },
           {
             "datakey": "article",
@@ -57,7 +58,8 @@
               }
             ],
             "error": false,
-            "errorMsg": ""
+            "errorMsg": "",
+            "showWidget": true
           }
         ]
       }

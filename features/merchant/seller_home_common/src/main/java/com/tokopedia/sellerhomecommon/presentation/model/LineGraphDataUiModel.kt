@@ -15,6 +15,6 @@ data class LineGraphDataUiModel(
         override val showWidget: Boolean = false
 ) : BaseDataUiModel {
     override fun shouldRemove(): Boolean {
-        return !isFromCache && list.all { it.yVal == 0f }
+        return list.all { it.yVal == 0f }
     }
 }
