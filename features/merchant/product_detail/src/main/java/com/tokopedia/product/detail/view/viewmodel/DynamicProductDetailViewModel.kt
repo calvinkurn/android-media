@@ -37,6 +37,7 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDa
 import com.tokopedia.product.detail.data.model.ratesestimate.ErrorBottomSheet
 import com.tokopedia.product.detail.data.model.ratesestimate.P2RatesEstimateData
 import com.tokopedia.product.detail.data.model.restrictioninfo.BebasOngkirImage
+import com.tokopedia.product.detail.data.model.restrictioninfo.RestrictionData
 import com.tokopedia.product.detail.data.model.talk.DiscussionMostHelpfulResponseWrapper
 import com.tokopedia.product.detail.data.model.tradein.ValidateTradeIn
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper.generateUserLocationRequest
@@ -265,6 +266,10 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
 
     fun getCartTypeByProductId(): CartTypeData? {
         return p2Data.value?.cartRedirection?.get(getDynamicProductInfoP1?.basic?.productID ?: "")
+    }
+
+    fun getReExclusiveData(): RestrictionData? {
+        return p2Data.value?.restrictionInfo?.restrictionData?.firstOrNull { it.productId == getDynamicProductInfoP1?.basic?.productID }
     }
 
     fun updateLastAction(talkLastAction: DynamicProductDetailTalkLastAction) {

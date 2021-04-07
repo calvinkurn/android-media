@@ -99,6 +99,7 @@ import com.tokopedia.product.detail.data.model.datamodel.*
 import com.tokopedia.product.detail.data.model.financing.FtInstallmentCalculationDataResponse
 import com.tokopedia.product.detail.data.model.ratesestimate.P2RatesEstimateData
 import com.tokopedia.product.detail.data.model.restrictioninfo.BebasOngkirImage
+import com.tokopedia.product.detail.data.model.restrictioninfo.RestrictionData
 import com.tokopedia.product.detail.data.model.restrictioninfo.RestrictionInfoResponse
 import com.tokopedia.product.detail.data.util.*
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper.generateUserLocationRequestRates
@@ -264,6 +265,7 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
     private var alreadyHitVideoTracker: Boolean = false
     private var shouldRefreshProductInfoBottomSheet = false
     private var shouldRefreshShippingBottomSheet = false
+
     //Prevent several method at onResume to being called when first open page.
     private var firstOpenPage: Boolean? = null
 
@@ -396,8 +398,6 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
         // Then just ignore onActivityResult with this variable
         outState.putBoolean(ProductDetailConstant.SAVED_ACTIVITY_RESULT, false)
     }
-
-
 
     override fun onPause() {
         super.onPause()
@@ -1307,7 +1307,8 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
         pdpUiUpdater?.updateDataP1(context, updatedDynamicProductInfo, enableVideo())
         pdpUiUpdater?.updateNotifyMeAndContent(selectedChild?.productId.toString(), viewModel.p2Data.value?.upcomingCampaigns, boeData.imageURL)
         pdpUiUpdater?.updateFulfillmentData(context, viewModel.getMultiOriginByProductId().isFulfillment)
-        val isUpcomingType = viewModel.p2Data.value?.upcomingCampaigns?.get(selectedChild?.productId.toString())?.isUpcomingNplType() ?: false
+        val isUpcomingType = viewModel.p2Data.value?.upcomingCampaigns?.get(selectedChild?.productId.toString())?.isUpcomingNplType()
+                ?: false
         pdpUiUpdater?.updateTickerData(viewModel.getDynamicProductInfoP1?.basic?.isWarehouse()
                 ?: false, viewModel.getDynamicProductInfoP1?.data?.campaign?.isActive ?: false,
                 viewModel.getDynamicProductInfoP1?.getFinalStock()?.toIntOrNull() == 0,
@@ -1320,6 +1321,8 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
                 boeData,
                 viewModel.getUserLocationCache()
         )
+
+        renderExclusiveBottomSheet(viewModel.getReExclusiveData())
 
         /*
             If the p2 data is empty, dont update the button
@@ -1500,7 +1503,7 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
 
     private fun observeToggleFavourite() {
         viewLifecycleOwner.observe(viewModel.toggleFavoriteResult) { data ->
-            nplFollowersButton?.stopLoading()
+            setLoadingNplShopFollowers(false)
             data.doSuccessOrFail({
                 onSuccessFavoriteShop(it.data.first, it.data.second)
                 setupShopFavoriteToaster(it.data.second)
@@ -1541,7 +1544,7 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
         viewLifecycleOwner.observe(viewModel.loadTopAdsProduct) { data ->
             data.doSuccessOrFail({
                 val enableComparisonWidget = remoteConfig()?.getBoolean(
-                        RemoteConfigKey.RECOMMENDATION_ENABLE_COMPARISON_WIDGET, true) ?:true
+                        RemoteConfigKey.RECOMMENDATION_ENABLE_COMPARISON_WIDGET, true) ?: true
                 if (enableComparisonWidget) {
                     if (it.data.layoutType == RecommendationTypeConst.TYPE_COMPARISON_WIDGET) {
                         pdpUiUpdater?.updateComparisonDataModel(it.data)
@@ -1638,8 +1641,8 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
                 when (result.data.ovoValidationDataModel.status) {
                     ProductDetailConstant.OVO_INACTIVE_STATUS -> {
                         val applink = "${result.data.ovoValidationDataModel.applink}&product_id=${
-                        viewModel.getDynamicProductInfoP1?.parentProductId
-                                ?: ""
+                            viewModel.getDynamicProductInfoP1?.parentProductId
+                                    ?: ""
                         }"
                         DynamicProductDetailTracking.Click.eventActivationOvo(
                                 viewModel.getDynamicProductInfoP1?.parentProductId ?: "",
@@ -1738,6 +1741,7 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
             viewModel.shippingMinimumPrice = minimumShippingPriceP2
         }
         updateNplButtonFollowers(it.restrictionInfo)
+        renderExclusiveBottomSheet(viewModel.getReExclusiveData())
         updateButtonState()
 
         if (it.helpfulReviews?.isEmpty() == true && viewModel.getDynamicProductInfoP1?.basic?.stats?.countReview.toIntOrZero() == 0) {
@@ -1778,7 +1782,7 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
             pdpUiUpdater?.removeComponent(ProductDetailConstant.TRADE_IN)
         }
 
-        if(!it.merchantVoucherSummary.isShown) {
+        if (!it.merchantVoucherSummary.isShown) {
             pdpUiUpdater?.removeComponent(ProductDetailConstant.MVC)
         }
 
@@ -1791,8 +1795,10 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
                 context = context,
                 p2Data = it,
                 productId = viewModel.getDynamicProductInfoP1?.basic?.productID ?: "",
-                isProductWarehouse = viewModel.getDynamicProductInfoP1?.basic?.isWarehouse() ?: false,
-                isProductInCampaign = viewModel.getDynamicProductInfoP1?.data?.campaign?.isActive ?: false,
+                isProductWarehouse = viewModel.getDynamicProductInfoP1?.basic?.isWarehouse()
+                        ?: false,
+                isProductInCampaign = viewModel.getDynamicProductInfoP1?.data?.campaign?.isActive
+                        ?: false,
                 isOutOfStock = viewModel.getDynamicProductInfoP1?.getFinalStock()?.toIntOrNull() == 0,
                 boeImageUrl = boeData.imageURL)
 
@@ -1800,10 +1806,10 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
     }
 
     private fun updateNplButtonFollowers(restrictionInfo: RestrictionInfoResponse) {
-        val alreadyFollowShop = restrictionInfo.restrictionData.firstOrNull()?.alreadyFollowShop
+        val alreadyFollowShop = restrictionInfo.restrictionData.firstOrNull()?.isEligible
                 ?: true
         val shouldShowRe = !alreadyFollowShop
-        if (shouldShowRe && !viewModel.isShopOwner()) {
+        if (shouldShowRe && !viewModel.isShopOwner() && restrictionInfo.restrictionShopFollowersType()) {
             if (!base_btn_follow.isShown) {
                 base_btn_follow.translationY = 100.toPx().toFloat()
             }
@@ -1949,8 +1955,8 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
         }
     }
 
-    override fun openShipmentClickedBottomSheet(title:String, labelShipping:String, isCod:Boolean,
-                                                componentTrackDataModel:ComponentTrackDataModel?) {
+    override fun openShipmentClickedBottomSheet(title: String, labelShipping: String, isCod: Boolean,
+                                                componentTrackDataModel: ComponentTrackDataModel?) {
         viewModel.getDynamicProductInfoP1?.let {
             DynamicProductDetailTracking.Click.eventClickShipment(viewModel.getDynamicProductInfoP1, viewModel.userId, componentTrackDataModel, title, labelShipping, isCod)
             val boData = viewModel.getBebasOngkirDataByProductId()
@@ -1990,7 +1996,8 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
             if (rates?.p2RatesError?.isEmpty() == true || rates?.p2RatesError?.firstOrNull()?.errorCode == 0 || bottomSheetData == null) return false
 
             DynamicProductDetailTracking.BottomSheetErrorShipment.impressShipmentErrorBottomSheet(viewModel.getDynamicProductInfoP1, viewModel.userId, bottomSheetData.title)
-            ProductDetailBottomSheetBuilder.getShippingErrorBottomSheet(it, bottomSheetData, rates?.p2RatesError?.firstOrNull()?.errorCode ?: 0) { errorCode ->
+            ProductDetailBottomSheetBuilder.getShippingErrorBottomSheet(it, bottomSheetData, rates?.p2RatesError?.firstOrNull()?.errorCode
+                    ?: 0) { errorCode ->
                 DynamicProductDetailTracking.BottomSheetErrorShipment.eventClickButtonShipmentErrorBottomSheet(viewModel.getDynamicProductInfoP1, viewModel.userId, bottomSheetData.title, errorCode)
                 goToShipmentErrorAddressOrChat(errorCode)
             }.show(childFragmentManager, ProductDetailConstant.BS_SHIPMENT_ERROR_TAG)
@@ -2201,7 +2208,8 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
     }
 
     override fun onBuyerPhotosClicked(componentTrackDataModel: ComponentTrackDataModel?) {
-        DynamicProductDetailTracking.Click.eventClickBuyerPhotosClicked(viewModel.getDynamicProductInfoP1, viewModel.userId, componentTrackDataModel ?: ComponentTrackDataModel())
+        DynamicProductDetailTracking.Click.eventClickBuyerPhotosClicked(viewModel.getDynamicProductInfoP1, viewModel.userId, componentTrackDataModel
+                ?: ComponentTrackDataModel())
         goToReviewImagePreview()
     }
 
@@ -2362,7 +2370,7 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
                 recomWishlistItem?.isWishlist = !(recomWishlistItem?.isWishlist ?: false)
                 recomWishlistItem?.let { DynamicProductDetailTracking.Click.eventAddToCartRecommendationWishlist(it, viewModel.userSessionInterface.isLoggedIn, wishlistResult.isAddWishlist) }
                 view?.showToasterSuccess(
-                        message = if(wishlistResult.isAddWishlist) getString(com.tokopedia.topads.sdk.R.string.msg_success_add_wishlist) else getString(com.tokopedia.topads.sdk.R.string.msg_success_remove_wishlist),
+                        message = if (wishlistResult.isAddWishlist) getString(com.tokopedia.topads.sdk.R.string.msg_success_add_wishlist) else getString(com.tokopedia.topads.sdk.R.string.msg_success_remove_wishlist),
                         ctaText = getString(R.string.recom_go_to_wishlist),
                         ctaListener = {
                             goToWishlist()
@@ -2370,7 +2378,7 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
                 )
             } else {
                 view?.showToasterError(
-                        if(wishlistResult.isAddWishlist) getString(com.tokopedia.topads.sdk.R.string.msg_error_add_wishlist) else getString(com.tokopedia.topads.sdk.R.string.msg_error_remove_wishlist)
+                        if (wishlistResult.isAddWishlist) getString(com.tokopedia.topads.sdk.R.string.msg_error_add_wishlist) else getString(com.tokopedia.topads.sdk.R.string.msg_error_remove_wishlist)
                 )
             }
         } else {
@@ -2922,7 +2930,7 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
     private fun onShopFavoriteClick(componentTrackDataModel: ComponentTrackDataModel? = null, isNplFollowType: Boolean = false) {
         if (viewModel.getShopInfo().isShopInfoNotEmpty()) {
             doActionOrLogin({
-                nplFollowersButton?.startLoading()
+                setLoadingNplShopFollowers(true)
                 trackToggleFavoriteShop(componentTrackDataModel)
                 pdpUiUpdater?.shopCredibility?.enableButtonFavorite = false
                 viewModel.toggleFavorite(viewModel.getDynamicProductInfoP1?.basic?.shopID
@@ -2952,11 +2960,45 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
     }
 
     private fun setupNplVisibility(isFavorite: Boolean) {
-        val restrictionData = viewModel.p2Data.value?.restrictionInfo?.restrictionData
-        nplFollowersButton?.setupVisibility = if (restrictionData?.isNotEmpty() == true && restrictionData.firstOrNull()?.action?.isNotEmpty() == true && !viewModel.isShopOwner()) {
+        val restrictionData = viewModel.p2Data.value?.restrictionInfo
+        if (restrictionData?.restrictionShopFollowersType() == false) return
+
+        nplFollowersButton?.setupVisibility = if (restrictionData?.restrictionData?.isNotEmpty() == true
+                && restrictionData.restrictionData.firstOrNull()?.action?.isNotEmpty() == true
+                && !viewModel.isShopOwner()) {
             isFavorite
         } else {
             false
+        }
+    }
+
+    private fun setupExclusiveVisibility(shouldVisible: Boolean, isExclusiveType: Boolean) {
+        if (!isExclusiveType) return
+        nplFollowersButton?.setupVisibility = shouldVisible
+    }
+
+    private fun renderExclusiveBottomSheet(restrictionData: RestrictionData?) {
+        if (restrictionData == null || !restrictionData.restrictionExclusiveType()) return
+        val isExclusiveType = restrictionData.restrictionExclusiveType()
+        if (restrictionData.action.isNotEmpty()) {
+            val title = restrictionData.action.firstOrNull()?.title ?: ""
+            val desc = restrictionData.action.firstOrNull()?.description ?: ""
+            val badgeUrl = restrictionData.action.firstOrNull()?.badgeURL ?: ""
+            nplFollowersButton?.renderView(title = title,
+                    desc = desc,
+                    iconUrl = badgeUrl,
+                    hideButton = true)
+        }
+        setupExclusiveVisibility(restrictionData.isEligible, isExclusiveType)
+    }
+
+    private fun setLoadingNplShopFollowers(isLoading: Boolean) {
+        val restrictionData = viewModel.p2Data.value?.restrictionInfo
+        if (restrictionData?.restrictionShopFollowersType() == false) return
+        if (isLoading) {
+            nplFollowersButton?.startLoading()
+        } else {
+            nplFollowersButton?.stopLoading()
         }
     }
 
@@ -3386,7 +3428,8 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
     }
 
     private fun setupRemoteConfig() {
-        enableCheckImeiRemoteConfig = remoteConfig()?.getBoolean(RemoteConfigKey.ENABLE_CHECK_IMEI_PDP, false) ?: false
+        enableCheckImeiRemoteConfig = remoteConfig()?.getBoolean(RemoteConfigKey.ENABLE_CHECK_IMEI_PDP, false)
+                ?: false
     }
 
     private fun getAbTestPlatform(): AbTestPlatform? {

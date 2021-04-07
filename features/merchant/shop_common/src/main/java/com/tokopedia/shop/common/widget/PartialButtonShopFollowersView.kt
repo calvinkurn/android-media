@@ -8,9 +8,9 @@ import android.view.View
 import android.widget.ImageView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.shop.common.R
+import com.tokopedia.shop.common.util.RoundedShadowUtill
 import com.tokopedia.shop.common.util.loadLeftDrawable
 import com.tokopedia.shop.common.util.removeDrawable
-import com.tokopedia.shop.common.util.RoundedShadowUtill
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
@@ -63,7 +63,7 @@ class PartialButtonShopFollowersView private constructor(val view: View, private
         }
     }
 
-    fun renderView(title: String, desc: String, alreadyFollowShop: Boolean = true, buttonLabel: String? = null, voucherIconUrl: String? = null) = with(view) {
+    fun renderView(title: String, desc: String, alreadyFollowShop: Boolean = true, buttonLabel: String? = null, voucherIconUrl: String? = null, iconUrl: String = "", hideButton: Boolean = false) = with(view) {
         if (alreadyFollowShop) {
             setupVisibility = false
             return@with
@@ -77,8 +77,19 @@ class PartialButtonShopFollowersView private constructor(val view: View, private
         setupRoundedTopShadow()
 
         followersImageAsset?.run {
-            ImageHandler.loadImageWithoutPlaceholderAndError(this, SHOP_FOLLOWERS_IMG_ASSET)
+            if (iconUrl.isNotEmpty()) {
+                ImageHandler.loadImageWithoutPlaceholderAndError(this, iconUrl)
+            } else {
+                ImageHandler.loadImageWithoutPlaceholderAndError(this, SHOP_FOLLOWERS_IMG_ASSET)
+            }
         }
+
+        if (hideButton) {
+            followersBtn?.visibility = View.GONE
+        } else {
+            followersBtn?.visibility = View.VISIBLE
+        }
+
         setupVisibility = true
     }
 
