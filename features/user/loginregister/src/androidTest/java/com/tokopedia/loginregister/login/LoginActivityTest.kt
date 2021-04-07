@@ -27,7 +27,6 @@ import com.tokopedia.loginregister.login.helper.LoginTestHelper.Companion.LOGIN_
 import com.tokopedia.loginregister.login.helper.LoginTestHelper.Companion.LOGIN_PHONE_P1
 import com.tokopedia.loginregister.login.helper.actionTest
 import com.tokopedia.loginregister.login.helper.waitForData
-import com.tokopedia.loginregister.login.helper.waitForTrackerSent
 import com.tokopedia.loginregister.login.stub.response.LoginMockResponse
 import com.tokopedia.loginregister.login.view.activity.LoginActivity
 import com.tokopedia.loginregister.registerinitial.view.activity.RegisterInitialActivity
@@ -77,7 +76,6 @@ class LoginActivityTest {
             simulateLoginEmail()
         } assertTest {
             performClose(activityRule)
-            waitForTrackerSent()
             validate(gtmLogDBSource, targetContext, LOGIN_EMAIL_P1)
             gtmLogDBSource.finishTest()
         }
@@ -89,7 +87,6 @@ class LoginActivityTest {
             simulateLoginPhone()
         } assertTest {
             performClose(activityRule)
-            waitForTrackerSent()
             validate(gtmLogDBSource, targetContext, LOGIN_PHONE_P1)
             gtmLogDBSource.finishTest()
         }
@@ -101,7 +98,6 @@ class LoginActivityTest {
             simulateClickForgotPass()
         } assertTest {
             performClose(activityRule)
-            waitForTrackerSent()
             validate(gtmLogDBSource, targetContext, LOGIN_FORGOT_PASS_P1)
             gtmLogDBSource.finishTest()
         }
@@ -113,7 +109,6 @@ class LoginActivityTest {
             simulateClickRegister()
         } assertTest {
             performClose(activityRule)
-            waitForTrackerSent()
             validate(gtmLogDBSource, targetContext, LOGIN_EMAIL_REGISTER_P1)
             gtmLogDBSource.finishTest()
         }
@@ -125,7 +120,6 @@ class LoginActivityTest {
             simulateLoginSocmed()
         } assertTest {
             performClose(activityRule)
-            waitForTrackerSent()
             validate(gtmLogDBSource, targetContext, LOGIN_SOCMED_TRACKER)
             gtmLogDBSource.finishTest()
         }
