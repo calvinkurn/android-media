@@ -94,7 +94,7 @@ class OfficialStoreAnalyticsTest {
         onView(firstView(withId(R.id.recycler_view))).perform(ViewActions.swipeUp())
         Thread.sleep(2500)
         recyclerView.layoutManager?.smoothScrollToPosition(recyclerView, null, 0)
-
+        Thread.sleep(2500)
         val itemCount = recyclerView.adapter?.itemCount ?: 0
         val productRecommendationOffset = 5
         for (i in 0 until (itemCount + productRecommendationOffset)) {
