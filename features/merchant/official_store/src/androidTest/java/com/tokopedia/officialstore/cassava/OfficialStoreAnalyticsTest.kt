@@ -90,11 +90,12 @@ class OfficialStoreAnalyticsTest {
         val recyclerView = activityRule.activity.findViewById<RecyclerView>(R.id.recycler_view)
         var itemCount = recyclerView.adapter?.itemCount ?: 0
         recyclerView.layoutManager?.smoothScrollToPosition(recyclerView, null, itemCount - 1)
-        Thread.sleep(1000)
+        Thread.sleep(2500)
         recyclerView.layoutManager?.smoothScrollToPosition(recyclerView, null, 0)
-        Thread.sleep(1000)
+        Thread.sleep(2500)
         itemCount = recyclerView.adapter?.itemCount ?: 0
-        for (i in 0 until itemCount) {
+        val productRecommendationOffset = 5
+        for (i in 0 until (itemCount + productRecommendationOffset)) {
             scrollRecyclerViewToPosition(recyclerView, i)
             checkProductOnDynamicChannel(recyclerView, i)
         }
