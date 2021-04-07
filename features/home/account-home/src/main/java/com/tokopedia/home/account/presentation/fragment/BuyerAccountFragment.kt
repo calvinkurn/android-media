@@ -41,7 +41,6 @@ import com.tokopedia.home.account.presentation.viewmodel.TopadsHeadlineUiModel
 import com.tokopedia.home.account.presentation.viewmodel.base.BuyerViewModel
 import com.tokopedia.home.account.revamp.domain.data.mapper.BuyerAccountMapper
 import com.tokopedia.home.account.revamp.viewmodel.BuyerAccountViewModel
-import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.navigation_common.listener.FragmentListener
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
@@ -407,6 +406,10 @@ class BuyerAccountFragment : BaseAccountFragment(), FragmentListener {
             gotoSettingProfile()
         }
 
+        if (requestCode == REQUEST_CODE_PROFILE_SETTING) {
+            getData()
+        }
+
         handleProductCardOptionsActivityResult(requestCode, resultCode, data, object : ProductCardOptionsWishlistCallback {
             override fun onReceiveWishlistResult(productCardOptionsModel: ProductCardOptionsModel) {
                 handleWishlistAction(productCardOptionsModel)
@@ -592,6 +595,7 @@ class BuyerAccountFragment : BaseAccountFragment(), FragmentListener {
 
         private val DEFAULT_SPAN_COUNT = 2
         private const val REQUEST_CODE_CHANGE_NAME = 300
+        private const val REQUEST_CODE_PROFILE_SETTING = 301
 
         private const val COMPONENT_NAME_TOP_ADS = "Account Home Recommendation Top Ads"
 

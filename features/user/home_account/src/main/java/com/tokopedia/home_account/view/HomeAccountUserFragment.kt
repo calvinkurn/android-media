@@ -1170,6 +1170,10 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
             gotoSettingProfile()
         }
 
+        if (requestCode == REQUEST_CODE_PROFILE_SETTING) {
+            getData()
+        }
+
         handleProductCardOptionsActivityResult(requestCode, resultCode, data, object : ProductCardOptionsWishlistCallback {
             override fun onReceiveWishlistResult(productCardOptionsModel: ProductCardOptionsModel) {
                 handleWishlistAction(productCardOptionsModel)
@@ -1258,7 +1262,7 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
 
     private fun gotoSettingProfile() {
         val intent = RouteManager.getIntent(requireContext(), ApplinkConstInternalGlobal.SETTING_PROFILE)
-        startActivity(intent)
+        startActivityForResult(intent, REQUEST_CODE_PROFILE_SETTING)
     }
 
     private fun showSuccessRemoveWishlist() {
@@ -1303,6 +1307,7 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
 
     companion object {
         private const val REQUEST_CODE_CHANGE_NAME = 300
+        private const val REQUEST_CODE_PROFILE_SETTING = 301
 
         private const val COMPONENT_NAME_TOP_ADS = "Account Home Recommendation Top Ads"
         private const val PDP_EXTRA_UPDATED_POSITION = "wishlistUpdatedPosition"
