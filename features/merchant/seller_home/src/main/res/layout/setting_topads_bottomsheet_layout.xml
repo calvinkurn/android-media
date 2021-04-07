@@ -14,7 +14,7 @@
         app:typographyType="heading_2"
         app:layout_constraintTop_toTopOf="parent"/>
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/topAdsBottomSheetDescription"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

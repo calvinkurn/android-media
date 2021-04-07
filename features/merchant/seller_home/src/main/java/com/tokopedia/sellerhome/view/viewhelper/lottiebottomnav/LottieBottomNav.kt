@@ -16,6 +16,7 @@ import androidx.core.content.ContextCompat
 import com.airbnb.lottie.LottieAnimationView
 import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.sellerhome.R
+import com.tokopedia.unifyprinciples.Typography
 
 class LottieBottomNav : LinearLayout {
 
@@ -303,7 +304,7 @@ class LottieBottomNav : LinearLayout {
             buttonContainer.addView(imageContainer)
 
             // add text view to show title
-            val title = TextView(context)
+            val title = Typography(context)
             title.layoutParams = txtLayoutParam
             title.text = bottomMenu.title
             title.tag = context.getString(R.string.tag_title_textview) + bottomMenu.id
