@@ -83,6 +83,10 @@ class OrderSummaryPageActivityRevampTrackingTest {
             clickAddOrChangePreferenceRevamp(null)
 
             clickAddOrChangePreferenceRevamp {
+                clickEditPreference(1)
+            }
+
+            clickAddOrChangePreferenceRevamp {
                 clickUsePreferenceRevamp(1)
             }
 

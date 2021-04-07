@@ -33,12 +33,12 @@ class OrderTotalPaymentCard(private val view: View, private val listener: OrderT
         layoutPayment?.visibility = if (isVisible) View.VISIBLE else View.GONE
     }
 
-    fun setupPayment(orderTotal: OrderTotal, isNewFlow: Boolean) {
+    fun setupPayment(orderTotal: OrderTotal) {
         setupPaymentError(orderTotal.paymentErrorMessage)
-        setupButtonBayar(orderTotal, isNewFlow)
+        setupButtonBayar(orderTotal)
     }
 
-    private fun setupButtonBayar(orderTotal: OrderTotal, isNewFlow: Boolean) {
+    private fun setupButtonBayar(orderTotal: OrderTotal) {
         view.context?.let { context ->
             btnPay?.apply {
                 when (orderTotal.buttonType) {
@@ -47,21 +47,13 @@ class OrderTotalPaymentCard(private val view: View, private val listener: OrderT
                         when (orderTotal.buttonState) {
                             OccButtonState.NORMAL -> {
                                 isEnabled = true
-                                if (isNewFlow) {
                                     setText(R.string.change_payment_method)
-                                } else {
-                                    setText(com.tokopedia.purchase_platform.common.R.string.label_choose_payment)
-                                }
                                 groupLoaderPayment?.gone()
                                 groupPayment?.visible()
                             }
                             OccButtonState.DISABLE -> {
                                 isEnabled = false
-                                if (isNewFlow) {
                                     setText(R.string.change_payment_method)
-                                } else {
-                                    setText(com.tokopedia.purchase_platform.common.R.string.label_choose_payment)
-                                }
                                 groupLoaderPayment?.gone()
                                 groupPayment?.visible()
                             }

@@ -20,16 +20,13 @@ import com.tokopedia.unifyprinciples.Typography
 class ShippingDurationItemAdapter(var listener: OnShippingMenuSelected) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private val shippingDurationList = mutableListOf<ServicesItem>()
-    private var isNewFlow = false
 
     companion object {
         private const val SHIPPING_DURATION_VIEW_TYPE = 1
-        private const val LOGISTIC_PROMO_INFO_VIEW_TYPE = 2
         private const val LOGISTIC_PROMO_INFO_NEW_VIEW_TYPE = 3
     }
 
-    fun renderData(data: List<ServicesItem>, isNewFlow: Boolean) {
-        this.isNewFlow = isNewFlow
+    fun renderData(data: List<ServicesItem>) {
         shippingDurationList.clear()
         shippingDurationList.addAll(data)
         notifyDataSetChanged()
@@ -40,9 +37,7 @@ class ShippingDurationItemAdapter(var listener: OnShippingMenuSelected) : Recycl
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        if (viewType == LOGISTIC_PROMO_INFO_VIEW_TYPE) {
-            return LogisticPromoInfoViewHolder(parent.inflateLayout(R.layout.item_logistic_promo_info))
-        } else if (viewType == LOGISTIC_PROMO_INFO_NEW_VIEW_TYPE) {
+        if (viewType == LOGISTIC_PROMO_INFO_NEW_VIEW_TYPE) {
             return LogisticPromoInfoViewHolder(parent.inflateLayout(R.layout.item_logistic_promo_info_new))
         }
         return ShippingDurationViewHolder(parent.inflateLayout(R.layout.item_shipping_duration))
@@ -55,19 +50,22 @@ class ShippingDurationItemAdapter(var listener: OnShippingMenuSelected) : Recycl
     override fun getItemViewType(position: Int): Int {
         val servicesItem = shippingDurationList[position]
         if (servicesItem is LogisticPromoInfo) {
-            return if (servicesItem.isNewLayout) LOGISTIC_PROMO_INFO_NEW_VIEW_TYPE else LOGISTIC_PROMO_INFO_VIEW_TYPE
+            return LOGISTIC_PROMO_INFO_NEW_VIEW_TYPE
         }
         return SHIPPING_DURATION_VIEW_TYPE
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        val servicesItem = shippingDurationList[position]
-        if (servicesItem is ServicesItemModelNoPrice) {
-            (holder as ShippingDurationViewHolder).bind(servicesItem)
-        } else if (servicesItem is ServicesItemModel) {
-            (holder as ShippingDurationViewHolder).bind(servicesItem, isNewFlow)
-        } else if (servicesItem is LogisticPromoInfo) {
-            (holder as LogisticPromoInfoViewHolder).bind(servicesItem)
+        when (val servicesItem = shippingDurationList[position]) {
+            is ServicesItemModelNoPrice -> {
+                (holder as ShippingDurationViewHolder).bind(servicesItem)
+            }
+            is ServicesItemModel -> {
+                (holder as ShippingDurationViewHolder).bind(servicesItem)
+            }
+            is LogisticPromoInfo -> {
+                (holder as LogisticPromoInfoViewHolder).bind(servicesItem)
+            }
         }
     }
 
@@ -94,8 +92,8 @@ class ShippingDurationItemAdapter(var listener: OnShippingMenuSelected) : Recycl
             }
         }
 
-        fun bind(data: ServicesItemModel, isNewFlow: Boolean) {
-            val shouldShowEta = isNewFlow && data.texts?.textEta != null
+        fun bind(data: ServicesItemModel) {
+            val shouldShowEta = data.texts?.textEta != null
             if (shouldShowEta) {
                 if (data.texts?.textRangePrice?.isNotBlank() == true) {
                     itemShippingText.text = "${data.servicesName} (${data.texts?.textRangePrice})"
