@@ -95,6 +95,8 @@ query PropertySearchRoom($data:PropertySearchRoomRequest!){
         IsFreeExtraBed
         Content
       }
+      isDirectPayment
+      isDirectPaymentString
     }
     isAddressRequired
     isCvCRequired

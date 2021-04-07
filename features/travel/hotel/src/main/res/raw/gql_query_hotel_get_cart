@@ -51,6 +51,7 @@ query PropertyCart($data: PropertyGetCartRequest!) {
       checkOutFrom
       checkOutTo
       isDirectPayment
+      isDirectPaymentString
       room {
         roomID
         isBreakFastIncluded
