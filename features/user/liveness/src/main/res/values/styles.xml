@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
 
-    <style name="Liveness_Theme" parent="Theme.White">
+    <style name="Theme.Liveness" parent="Theme.White">
         <item name="android:forceDarkAllowed" tools:targetApi="q">false</item>
     </style>
 

@@ -14,7 +14,7 @@
             android:label="@string/app_name"
             android:launchMode="singleTop"
             android:screenOrientation="portrait"
-            android:theme="@style/Liveness_Theme">
+            android:theme="@style/Theme.Liveness">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
