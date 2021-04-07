@@ -447,7 +447,7 @@
     </entry>
     <entry>
         <key>android_async_gcm_legacy</key>
-        <value>false</value>
+        <value>true</value>
     </entry>
     <entry>
         <key>android_async_remoteconfig_mainapp_init</key>
