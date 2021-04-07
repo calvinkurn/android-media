@@ -5,6 +5,8 @@ import android.util.Log
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions
+import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
@@ -24,6 +26,7 @@ import com.tokopedia.officialstore.official.presentation.adapter.viewholder.Offi
 import com.tokopedia.officialstore.official.presentation.dynamic_channel.*
 import com.tokopedia.test.application.assertion.topads.TopAdsVerificationTestReportUtil
 import com.tokopedia.test.application.espresso_component.CommonActions
+import com.tokopedia.test.application.espresso_component.CommonMatcher.firstView
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import org.hamcrest.MatcherAssert
@@ -88,12 +91,11 @@ class OfficialStoreAnalyticsTest {
         // 2. scroll and click item at OS
         // Scroll to bottom first and then back to top for load all data (recom case)
         val recyclerView = activityRule.activity.findViewById<RecyclerView>(R.id.recycler_view)
-        var itemCount = recyclerView.adapter?.itemCount ?: 0
-        recyclerView.layoutManager?.smoothScrollToPosition(recyclerView, null, itemCount - 1)
+        onView(firstView(withId(R.id.recycler_view))).perform(ViewActions.swipeUp())
         Thread.sleep(2500)
         recyclerView.layoutManager?.smoothScrollToPosition(recyclerView, null, 0)
-        Thread.sleep(2500)
-        itemCount = recyclerView.adapter?.itemCount ?: 0
+
+        val itemCount = recyclerView.adapter?.itemCount ?: 0
         val productRecommendationOffset = 5
         for (i in 0 until (itemCount + productRecommendationOffset)) {
             scrollRecyclerViewToPosition(recyclerView, i)
