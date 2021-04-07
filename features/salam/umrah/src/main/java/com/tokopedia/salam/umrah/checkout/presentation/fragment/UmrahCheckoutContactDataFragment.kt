@@ -200,7 +200,7 @@ class UmrahCheckoutContactDataFragment : BaseDaggerFragment(), TravelContactArra
         sp_umrah_checkout_contact_phone_code.setSelection(0)
         sp_umrah_checkout_contact_phone_code.setOnTouchListener { _, event ->
             if (event.action == MotionEvent.ACTION_UP) {
-                startActivityForResult(PhoneCodePickerActivity.getCallingIntent(context!!), REQUEST_CODE_PHONE_CODE)
+                startActivityForResult(PhoneCodePickerActivity.getCallingIntent(requireContext()), REQUEST_CODE_PHONE_CODE)
             }
             true
         }

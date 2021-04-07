@@ -72,7 +72,7 @@ class HotelContactDataFragment : BaseDaggerFragment(), TravelContactArrayAdapter
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        bookingViewModel.contactListResult.observe(this, androidx.lifecycle.Observer { contactList ->
+        bookingViewModel.contactListResult.observe(viewLifecycleOwner, androidx.lifecycle.Observer { contactList ->
             contactList?.let { travelContactArrayAdapter.updateItem(it.toMutableList()) }
         })
 

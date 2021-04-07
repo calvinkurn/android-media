@@ -231,6 +231,9 @@ class UmrahCheckoutPilgrimsFragment : BaseDaggerFragment() {
                         MotionEvent.ACTION_DOWN -> {
                             datePickerUnify.show(activity!!.supportFragmentManager, "")
                         }
+                        MotionEvent.ACTION_UP -> {
+                            v?.performClick()
+                        }
                     }
                     return v?.onTouchEvent(event) ?: true
                 }

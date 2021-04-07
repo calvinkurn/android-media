@@ -53,7 +53,7 @@ class HotelSearchDestinationFragment : BaseListFragment<SearchDestination, Searc
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        destinationViewModel.searchDestination.observe(this, androidx.lifecycle.Observer {
+        destinationViewModel.searchDestination.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             when (it) {
                 is Loaded -> {
                     when (it.data) {

@@ -100,9 +100,7 @@ class TravelHomepageFragment : BaseListFragment<TravelHomepageItemModel,
 
     private fun hideStatusBar() {
         travel_homepage_container.fitsSystemWindows = false
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
-            travel_homepage_container.requestApplyInsets()
-        }
+        travel_homepage_container.requestApplyInsets()
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             var flags = travel_homepage_container.systemUiVisibility
@@ -117,9 +115,7 @@ class TravelHomepageFragment : BaseListFragment<TravelHomepageItemModel,
             activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
         }
 
-        if (Build.VERSION.SDK_INT >= 19) {
-            activity?.window?.decorView?.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-        }
+        activity?.window?.decorView?.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
 
         if (Build.VERSION.SDK_INT >= 21) {
             activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
