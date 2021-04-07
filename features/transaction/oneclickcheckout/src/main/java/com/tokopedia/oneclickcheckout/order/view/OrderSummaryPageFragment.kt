@@ -346,9 +346,8 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                             layoutNoAddress?.gone()
                             mainContent?.visible()
                         } else {
-                            showEmptyPreferenceCard()
                             mainContent?.gone()
-                            showLayoutNoAddress()
+                            layoutNoAddress?.gone()
                         }
                     }
                 }
@@ -371,9 +370,8 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                                 layoutNoAddress?.gone()
                                 mainContent?.visible()
                             } else {
-                                showEmptyPreferenceCard()
                                 mainContent?.gone()
-                                showLayoutNoAddress()
+                                layoutNoAddress?.gone()
                             }
                         }
                     }
@@ -610,13 +608,8 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         }
 
         val preference = orderPreference.preference
-        if (preference.profileId > 0) {
-            tvHeader2?.text = getString(R.string.lbl_osp_secondary_header)
-            if (orderPreference.removeProfileData.enable && orderPreference.removeProfileData.type == OccRemoveProfileData.TYPE_POST) {
-                tvHeader2?.gone()
-            } else {
-                tvHeader2?.visible()
-            }
+        if (orderPreference.isValid) {
+            tvHeader2?.gone()
             tvHeader3?.gone()
         } else {
             tvHeader2?.text = if (viewModel.isNewFlow) getString(R.string.lbl_osp_secondary_header) else getString(R.string.lbl_osp_secondary_header_intro)
@@ -665,8 +658,8 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
 
     private fun showPreferenceTicker(preference: OrderPreference) {
         val sharedPreferences = getRemoveProfileTickerSharedPreference()
-        if (preference.removeProfileData.enable && preference.removeProfileData.message.hasMessage() &&
-                sharedPreferences != null && sharedPreferences.getInt(SP_KEY_REMOVE_PROFILE_TICKER, 0) != preference.removeProfileData.type) {
+        if (preference.removeProfileData.message.hasMessage() && sharedPreferences != null &&
+                sharedPreferences.getInt(SP_KEY_REMOVE_PROFILE_TICKER, 0) != preference.removeProfileData.type) {
             tickerPreferenceInfo?.tickerTitle = preference.removeProfileData.message.title
             tickerPreferenceInfo?.setHtmlDescription(preference.removeProfileData.message.description)
             tickerPreferenceInfo?.closeButtonVisibility = View.VISIBLE
@@ -867,47 +860,6 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         btnPromoCheckout?.visible()
     }
 
-    private fun showEmptyPreferenceCard() {
-        imageEmptyProfile?.setImageUrl(EMPTY_PROFILE_IMAGE)
-        emptyPreferenceCard?.visible()
-        preferenceCard?.gone()
-        newPreferenceCard?.gone()
-        orderTotalPaymentCard.setPaymentVisible(false)
-        btnPromoCheckout?.gone()
-        orderInsuranceCard.setGroupInsuranceVisible(false)
-
-        if (viewModel.isNewFlow) {
-            buttonAturPilihan?.text = getString(R.string.lbl_add_new_occ_profile_name)
-        } else {
-            buttonAturPilihan?.text = getString(R.string.atur_pilihan)
-        }
-
-        val addressState = viewModel.addressState.value
-        if (addressState.state == AddressState.STATE_ADDRESS_ID_NOT_MATCH_ANY_OCC ||
-                addressState.state == AddressState.STATE_DISTRICT_ID_NOT_MATCH_ANY_OCC) {
-            buttonAturPilihan?.text = getString(R.string.atur_pilihan)
-        }
-
-        buttonAturPilihan?.setOnClickListener {
-            if (viewModel.isNewFlow) {
-                orderSummaryAnalytics.eventClickTambahTemplateBeliLangsungOnOrderSummary(userSession.get().userId)
-            } else {
-                orderSummaryAnalytics.eventUserSetsFirstPreference(userSession.get().userId)
-            }
-            val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PREFERENCE_EDIT).apply {
-                putExtra(PreferenceEditActivity.EXTRA_FROM_FLOW, PreferenceEditActivity.FROM_FLOW_OSP)
-                putExtra(PreferenceEditActivity.EXTRA_IS_EXTRA_PROFILE, false)
-                putExtra(PreferenceEditActivity.EXTRA_PREFERENCE_INDEX, "${getString(R.string.preference_number_summary)} 1")
-                putExtra(PreferenceEditActivity.EXTRA_PAYMENT_PROFILE, viewModel.getPaymentProfile())
-                putExtra(PreferenceEditActivity.EXTRA_SHIPPING_PARAM, viewModel.generateShippingParam())
-                putParcelableArrayListExtra(PreferenceEditActivity.EXTRA_LIST_SHOP_SHIPMENT, ArrayList(viewModel.generateListShopShipment()))
-                putExtra(PreferenceEditActivity.EXTRA_IS_NEW_FLOW, viewModel.isNewFlow)
-                putExtra(PreferenceEditActivity.EXTRA_ADDRESS_STATE, addressState.state)
-            }
-            startActivityForResult(intent, REQUEST_CREATE_PREFERENCE)
-        }
-    }
-
     private fun goToPinpoint(address: OrderProfileAddress?) {
         address?.let {
             val locationPass = LocationPass()
@@ -1022,11 +974,13 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
             }
         }
 
-        if (addressState.errorCode == AddressState.IS_ERROR) {
+        if (addressState.errorCode == AddressState.ERROR_CODE_OPEN_ADDRESS_LIST) {
             val intent = RouteManager.getIntent(activity, ApplinkConstInternalLogistic.MANAGE_ADDRESS)
             intent.putExtra(CheckoutConstant.EXTRA_PREVIOUS_STATE_ADDRESS, addressState.state)
             intent.putExtra(CheckoutConstant.EXTRA_IS_FROM_CHECKOUT_SNIPPET, true)
             startActivityForResult(intent, REQUEST_CODE_OPEN_ADDRESS_LIST)
+        } else if (addressState.errorCode == AddressState.ERROR_CODE_OPEN_ANA) {
+            showLayoutNoAddress()
         }
     }
 
@@ -1697,8 +1651,6 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         const val REQUEST_CODE_OPEN_ADDRESS_LIST = 20
 
         const val QUERY_PRODUCT_ID = "product_id"
-
-        private const val EMPTY_PROFILE_IMAGE = "https://ecs7.tokopedia.net/android/others/beli_langsung_intro.png"
 
         private const val COLOR_INFO = "#03AC0E"
 

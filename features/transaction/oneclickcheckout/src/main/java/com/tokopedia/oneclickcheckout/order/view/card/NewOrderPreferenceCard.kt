@@ -28,7 +28,6 @@ import com.tokopedia.logisticcart.shipping.model.NotifierModel
 import com.tokopedia.logisticcart.shipping.model.RatesViewModelType
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.oneclickcheckout.R
-import com.tokopedia.oneclickcheckout.common.view.model.preference.ProfilesItemModel.Companion.MAIN_PROFILE_STATUS
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
 import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageFragment
 import com.tokopedia.oneclickcheckout.order.view.bottomsheet.AddressListBottomSheet
@@ -122,34 +121,10 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
     }
 
     private fun showHeader(revampData: OccRevampData) {
-        if (preference.removeProfileData.enable && preference.removeProfileData.type == OccRemoveProfileData.TYPE_POST) {
-            tvHeader?.visible()
-            tvCardHeader?.gone()
-            lblDefaultPreference?.gone()
-            tvChoosePreference?.gone()
-        } else {
-            tvHeader?.gone()
-            tvCardHeader?.visible()
-            tvChoosePreference?.visible()
-            if (preference.preference.profileRevampWording.isNotEmpty()) {
-                tvCardHeader?.text = preference.preference.profileRevampWording
-            } else {
-                tvCardHeader?.text = view.context.getString(R.string.lbl_new_occ_profile_name)
-            }
-            if (!preference.preference.isRecom && preference.preference.status == MAIN_PROFILE_STATUS) {
-                lblDefaultPreference?.visible()
-            } else {
-                lblDefaultPreference?.gone()
-            }
-            tvChoosePreference?.text = revampData.changeTemplateText
-            tvChoosePreference?.setOnClickListener {
-                if (revampData.totalProfile > 1) {
-                    listener.onChangePreferenceClicked()
-                } else {
-                    listener.onAddPreferenceClicked(preference)
-                }
-            }
-        }
+        tvHeader?.visible()
+        tvCardHeader?.gone()
+        lblDefaultPreference?.gone()
+        tvChoosePreference?.gone()
     }
 
     @SuppressLint("SetTextI18n")
