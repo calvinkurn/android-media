@@ -39,6 +39,7 @@ import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.Attachment
 import com.tokopedia.topchat.chatroom.domain.pojo.chatroomsettings.ChatSettingsResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.orderprogress.OrderProgressResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.srw.ChatSmartReplyQuestionResponse
+import com.tokopedia.topchat.chatroom.domain.pojo.srw.QuestionUiModel
 import com.tokopedia.topchat.chatroom.domain.pojo.sticker.Sticker
 import com.tokopedia.topchat.chatroom.domain.pojo.stickergroup.ChatListGroupStickerResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.stickergroup.StickerGroup
@@ -458,9 +459,65 @@ open class TopChatRoomPresenter @Inject constructor(
         view?.clearAttachmentPreviews()
     }
 
-    override fun sendMessageWithWebsocket(messageId: String, sendMessage: String, startTime: String, opponentId: String) {
+    override fun sendAttachmentsAndSrw(
+            messageId: String,
+            question: QuestionUiModel,
+            startTime: String,
+            opponentId: String,
+            onSendingMessage: () -> Unit
+    ) {
+        sendAttachments(messageId, opponentId, question.content)
+        sendMessage(messageId, question.content, startTime, opponentId, question.intent)
+        view?.clearAttachmentPreviews()
+    }
+
+    /**
+     * sendMessage but with param [intention]
+     * make sure the [sendMessage] is valid before sending msg
+     */
+    private fun sendMessage(
+            messageId: String,
+            sendMessage: String,
+            startTime: String,
+            opponentId: String,
+            intention: String? = null
+    ) {
+        if (networkMode == MODE_WEBSOCKET) {
+            topchatSendMessageWithWebsocket(
+                    messageId, sendMessage, startTime, opponentId, intention
+            )
+        }
+    }
+
+
+    /**
+     * send with websocket but with param [intention]
+     */
+    private fun topchatSendMessageWithWebsocket(
+            messageId: String, sendMessage: String,
+            startTime: String, opponentId: String,
+            intention: String?
+    ) {
         processDummyMessage(mapToDummyMessage(thisMessageId, sendMessage, startTime))
-        sendMessageWebSocket(TopChatWebSocketParam.generateParamSendMessage(messageId, sendMessage, startTime, attachmentsPreview))
+        sendMessageWebSocket(
+                TopChatWebSocketParam.generateParamSendMessage(
+                        messageId, sendMessage, startTime, attachmentsPreview, intention
+                )
+        )
+        sendMessageWebSocket(TopChatWebSocketParam.generateParamStopTyping(messageId))
+    }
+
+    /**
+     * @deprecated use [topchatSendMessageWithWebsocket] instead
+     */
+    override fun sendMessageWithWebsocket(
+            messageId: String, sendMessage: String,
+            startTime: String, opponentId: String
+    ) {
+        processDummyMessage(mapToDummyMessage(thisMessageId, sendMessage, startTime))
+        sendMessageWebSocket(TopChatWebSocketParam.generateParamSendMessage(
+                messageId, sendMessage, startTime, attachmentsPreview)
+        )
         sendMessageWebSocket(TopChatWebSocketParam.generateParamStopTyping(messageId))
     }
 

@@ -175,6 +175,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     private var searchQuery: String = ""
     private var delaySendMessage: String = ""
     private var delaySendSticker: Sticker? = null
+    private var delaySendSrw: QuestionUiModel? = null
 
     //This used only for set extra in finish activity
     private var isFavoriteShop: Boolean? = null
@@ -886,12 +887,16 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         if (delaySendMessage.isNotEmpty()) {
             sendMessage(delaySendMessage)
         }
-        if (delaySendSticker != null) {
-            sendSticker(delaySendSticker)
+        delaySendSticker?.let {
+            sendSticker(it)
+        }
+        delaySendSrw?.let {
+            sendSrwQuestion(it)
         }
         setupFirstPage(chatRoom, chat)
         delaySendMessage = ""
         delaySendSticker = null
+        delaySendSrw = null
     }
 
     override fun onClickSticker(sticker: Sticker) {
@@ -1820,7 +1825,31 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     override fun onClickSrwQuestion(question: QuestionUiModel) {
-        Toast.makeText(context, question.content, Toast.LENGTH_LONG).show()
+        if (presenter.isInTheMiddleOfThePage()) {
+            resetItemList()
+            delaySendSrwQuestion(question)
+            presenter.getExistingChat(
+                    messageId, ::onErrorResetChatToFirstPage, ::onSuccessResetChatToFirstPage
+            )
+        } else {
+            sendSrwQuestion(question)
+        }
+    }
+
+    private fun delaySendSrwQuestion(question: QuestionUiModel) {
+        delaySendSrw = question
+    }
+
+    private fun sendSrwQuestion(question: QuestionUiModel) {
+        onSendAndReceiveMessage()
+        val startTime = SendableViewModel.generateStartTime()
+        presenter.sendAttachmentsAndSrw(
+                messageId,
+                question,
+                startTime,
+                opponentId,
+                onSendingMessage()
+        )
     }
 
     private fun String.ellipsize(maxChar: Int): String {

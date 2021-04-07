@@ -13,6 +13,7 @@ import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.Attachment
 import com.tokopedia.topchat.chatroom.domain.pojo.chatroomsettings.ChatSettingsResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.orderprogress.ChatOrderProgress
+import com.tokopedia.topchat.chatroom.domain.pojo.srw.QuestionUiModel
 import com.tokopedia.topchat.chatroom.domain.pojo.sticker.Sticker
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactory
 import com.tokopedia.topchat.chatroom.view.custom.ChatMenuView
@@ -133,6 +134,10 @@ interface TopChatContract {
         fun sendAttachmentsAndSticker(messageId: String, sticker: Sticker,
                                       startTime: String, opponentId: String,
                                       onSendingMessage: () -> Unit)
+
+        fun sendAttachmentsAndSrw(messageId: String, question: QuestionUiModel,
+                                  startTime: String, opponentId: String,
+                                  onSendingMessage: () -> Unit)
 
         fun initAttachmentPreview()
 
