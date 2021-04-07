@@ -11,12 +11,9 @@ import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.shop.R
 import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.pageheader.data.model.ShopPageTabModel
-import com.tokopedia.shop.showcase.presentation.fragment.ShopPageShowcaseFragment
 import kotlinx.android.synthetic.main.shop_page_tab_view.view.*
 import java.lang.ref.WeakReference
 
@@ -35,17 +32,11 @@ internal class ShopPageFragmentPagerAdapter(
 
     fun getTabView(position: Int, selectedPosition: Int): View? = LayoutInflater.from(ctxRef.get())
             .inflate(tabViewLayout, null)?.apply {
-                if (listShopPageTabModel[position].tabFragment is ShopPageShowcaseFragment) {
-                    icon_tab_label.visible()
-                }
                 shop_page_tab_view_icon.setImageDrawable(getTabIconDrawable(position,  position == selectedPosition))
             }
 
     fun handleSelectedTab(tab: TabLayout.Tab, isActive: Boolean) {
         tab.customView?.apply {
-            if(listShopPageTabModel[tab.position].tabFragment is ShopPageShowcaseFragment && isActive) {
-                icon_tab_label.gone()
-            }
             shop_page_tab_view_icon.setImageDrawable(getTabIconDrawable(tab.position, isActive))
         }
     }
