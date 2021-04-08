@@ -6,8 +6,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.topupbills.R
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 
 class DigitalProductBottomSheet : BottomSheetUnify() {
@@ -59,8 +61,8 @@ class DigitalProductBottomSheet : BottomSheetUnify() {
                 selectItemBtn.setOnClickListener {
                     if (::listener.isInitialized) {
                         listener.onClickOnProduct()
-                        dismiss()
                     }
+                    dismiss()
                 }
             }
         }
