@@ -37,6 +37,7 @@ import com.tokopedia.home.account.presentation.viewmodel.RecommendationProductVi
 import com.tokopedia.home.account.presentation.viewmodel.TopadsHeadlineUiModel
 import com.tokopedia.home.account.presentation.viewmodel.base.BuyerViewModel
 import com.tokopedia.home.account.revamp.domain.data.mapper.BuyerAccountMapper
+import com.tokopedia.home.account.revamp.domain.data.mapper.BuyerAccountStaticMapper
 import com.tokopedia.home.account.revamp.viewmodel.BuyerAccountViewModel
 import com.tokopedia.navigation_common.listener.FragmentListener
 import com.tokopedia.network.utils.ErrorHandler
@@ -68,6 +69,9 @@ class BuyerAccountFragment : BaseAccountFragment(), FragmentListener {
 
     @Inject
     lateinit var buyerAccountMapper: BuyerAccountMapper
+
+    @Inject
+    lateinit var buyerAccountStaticMapper: BuyerAccountStaticMapper
 
     private var adapter: BuyerAccountAdapter? = null
     private var endlessRecyclerViewScrollListener: EndlessRecyclerViewScrollListener? = null
@@ -124,6 +128,7 @@ class BuyerAccountFragment : BaseAccountFragment(), FragmentListener {
                         showErrorNoConnection()
                     } else {
                         showError(it.throwable, AccountConstants.ErrorCodes.ERROR_CODE_BUYER_ACCOUNT)
+                        loadStaticBuyerData()
                     }
                 }
             }
@@ -254,6 +259,11 @@ class BuyerAccountFragment : BaseAccountFragment(), FragmentListener {
 
         fpmBuyer?.run { stopTrace() }
         viewModel.getFirstRecommendationData()
+    }
+
+    private fun loadStaticBuyerData() {
+        adapter?.clearAllElements()
+        adapter?.setElement(buyerAccountStaticMapper.getStaticBuyerModel(useUoh()).items)
     }
 
     private fun showLoading() {
