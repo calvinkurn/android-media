@@ -56,5 +56,6 @@
     <string name="play_voucher_code_copied">Kode kupon berhasil disalin, gunakan saat transaksi</string>
 
     <string name="play_action_ok">Oke</string>
+    <string name="play_out_of_stock">Stok habis</string>
 
 </resources>
