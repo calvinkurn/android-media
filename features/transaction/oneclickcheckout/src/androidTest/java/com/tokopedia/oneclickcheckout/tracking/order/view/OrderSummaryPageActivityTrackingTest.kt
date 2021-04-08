@@ -70,7 +70,7 @@ class OrderSummaryPageActivityTrackingTest {
 
     @Test
     fun performOrderSummaryPageTrackingActions() {
-        cartInterceptor.customGetOccCartResponsePath = GET_OCC_CART_PAGE_NO_PROFILE_REVAMP_RESPONSE_PATH
+        cartInterceptor.customGetOccCartResponsePath = GET_OCC_CART_PAGE_MANY_PROFILE_REVAMP_RESPONSE_PATH
         activityRule.launchActivity(null)
 
         performOrderSummaryPageBackAction()
@@ -78,28 +78,32 @@ class OrderSummaryPageActivityTrackingTest {
         intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, null))
 
         orderSummaryPage {
-            clickOnboardingInfo()
-            closeBottomSheet()
-
-            cartInterceptor.customGetOccCartResponsePath = GET_OCC_CART_PAGE_MANY_PROFILE_REVAMP_RESPONSE_PATH
-            clickAddPreferenceForNewBuyer()
+//            clickOnboardingInfo()
+//            closeBottomSheet()
+//
+//            cartInterceptor.customGetOccCartResponsePath = GET_OCC_CART_PAGE_MANY_PROFILE_REVAMP_RESPONSE_PATH
+//            clickAddPreferenceForNewBuyer()
 
             clickButtonPromo()
 
-            clickAddOrChangePreferenceRevamp {
-                clickAddPreference()
-            }
+//            clickAddOrChangePreferenceRevamp {
+//                clickAddPreference()
+//            }
 
             cartInterceptor.customGetOccCartResponsePath = GET_OCC_CART_PAGE_LAST_APPLY_REVAMP_RESPONSE_PATH
             promoInterceptor.customValidateUseResponsePath = VALIDATE_USE_PROMO_REVAMP_CASHBACK_FULL_APPLIED_RESPONSE
 
-            clickAddOrChangePreferenceRevamp {
-                clickEditPreference(1)
+            clickChangeAddressRevamp {
+                clickAddress(1)
             }
 
-            clickAddOrChangePreferenceRevamp {
-                clickUsePreference(1)
-            }
+//            clickAddOrChangePreferenceRevamp {
+//                clickEditPreference(1)
+//            }
+//
+//            clickAddOrChangePreferenceRevamp {
+//                clickUsePreference(1)
+//            }
 
             clickChangeCourierRevamp {
                 promoInterceptor.customValidateUseResponsePath = VALIDATE_USE_PROMO_REVAMP_CASHBACK_HALF_APPLIED_RESPONSE

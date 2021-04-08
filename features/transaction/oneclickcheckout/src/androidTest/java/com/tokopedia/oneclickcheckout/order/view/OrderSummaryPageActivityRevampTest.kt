@@ -71,10 +71,11 @@ class OrderSummaryPageActivityRevampTest {
                     productQty = 1
             )
 
-            assertProfileRevampWording("Template Beli Langsung")
-            assertProfileRevampUtama(true)
-
-            assertProfileRevampActionWording("Tambah template")
+        //    Deprecated Test (will delete in next iteration)
+//            assertProfileRevampWording("Template Beli Langsung")
+//            assertProfileRevampUtama(true)
+//
+//            assertProfileRevampActionWording("Tambah template")
 
             assertAddressRevamp(
                     addressName = "Address 1 - User 1 (1)",
