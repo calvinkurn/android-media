@@ -1,5 +1,6 @@
 package com.tokopedia.home.beranda.domain.model
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.analyticconstant.DataLayer
@@ -360,6 +361,7 @@ data class DynamicHomeChannel(
             @Expose
             @SerializedName("url")
             val url: String = "",
+            @SuppressLint("Invalid Data Type")
             @Expose
             @SerializedName("price")
             val price: String = "0",
@@ -384,6 +386,7 @@ data class DynamicHomeChannel(
             @Expose
             @SerializedName("shop")
             val shop: Shop = Shop(),
+            @SuppressLint("Invalid Data Type")
             @Expose
             @SerializedName("price")
             val price: String = "0",
