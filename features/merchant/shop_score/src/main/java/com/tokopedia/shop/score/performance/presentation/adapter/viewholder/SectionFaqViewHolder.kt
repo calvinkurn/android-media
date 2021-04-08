@@ -8,10 +8,11 @@ import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.common.setTextMakeHyperlink
 import com.tokopedia.shop.score.performance.presentation.adapter.ItemFaqAdapter
 import com.tokopedia.shop.score.performance.presentation.adapter.ItemFaqListener
+import com.tokopedia.shop.score.performance.presentation.adapter.SectionFaqListener
 import com.tokopedia.shop.score.performance.presentation.model.SectionFaqUiModel
 import kotlinx.android.synthetic.main.section_faq_shop_score.view.*
 
-class SectionFaqViewHolder(view: View): AbstractViewHolder<SectionFaqUiModel>(view), ItemFaqListener {
+class SectionFaqViewHolder(view: View, private val sectionFaqListener: SectionFaqListener): AbstractViewHolder<SectionFaqUiModel>(view), ItemFaqListener {
 
     companion object {
         val LAYOUT = R.layout.section_faq_shop_score
@@ -33,7 +34,7 @@ class SectionFaqViewHolder(view: View): AbstractViewHolder<SectionFaqUiModel>(vi
             }
 
             tv_label_help_center?.setTextMakeHyperlink(getString(R.string.title_help_center_tokopedia)) {
-                //TODO
+                sectionFaqListener.onHelpCenterClicked()
             }
         }
     }

@@ -9,7 +9,7 @@
         android:pathData="M0,0h344v64h-344z"/>
     <path
         android:pathData="M0,0h344v64h-344z"
-        android:fillColor="#ffffff"/>
+        android:fillColor="@color/Unify_N0"/>
     <path
         android:pathData="M-24,25a50.5,32 0,1 0,101 0a50.5,32 0,1 0,-101 0z"
         android:fillAlpha="0.5">

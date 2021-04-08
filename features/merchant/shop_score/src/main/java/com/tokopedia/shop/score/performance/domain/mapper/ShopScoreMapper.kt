@@ -6,6 +6,7 @@ import com.tokopedia.gm.common.presentation.model.ShopInfoPeriodUiModel
 import com.tokopedia.gm.common.utils.getShopScoreDate
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.common.ShopScoreConstant
 import com.tokopedia.shop.score.common.ShopScoreConstant.BRONZE_SCORE
@@ -158,6 +159,7 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
                                 shopScoreWrapperResponse.goldGetPMStatusResponse,
                                 shopScoreWrapperResponse.goldGetPMShopInfoResponse,
                                 shopInfoPeriodUiModel,
+                                shopScoreWrapperResponse.reputationShopResponse,
                                 shopScoreResult?.shopScore.orZero()
                         ))
                     }
@@ -402,6 +404,7 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
                                                   goldGetPMStatusResponse: GoldGetPMStatusResponse.GoldGetPMOSStatus?,
                                                   goldGetPMShopInfoResponse: GoldGetPMShopInfoResponse.GoldGetPMShopInfo?,
                                                   shopInfoPeriodUiModel: ShopInfoPeriodUiModel,
+                                                  reputationShopResponse: List<ReputationShopResponse.ReputationShop>?,
                                                   shopScore: Int
     ): ItemStatusPMUiModel {
         val potentialPMGrade = goldPMGradeBenefitInfoResponse?.potentialPmGrade
@@ -489,8 +492,7 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
         val bgPowerMerchant =
                 when (shopInfoPeriodUiModel.isNewSeller) {
                     true -> {
-                        //need adjust
-                        null
+                        R.drawable.bg_header_new_seller
                     }
                     else -> {
                         when (currentPMGrade?.gradeName?.toLowerCase(Locale.getDefault())) {
@@ -513,7 +515,33 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
 
         val (descStatus, isShowCardBg) = when (shopInfoPeriodUiModel.isNewSeller) {
             true -> {
-                Pair("", false)
+                when(statusPM) {
+                    SUPPOSED_INACTIVE_TEXT -> {
+                        when (shopInfoPeriodUiModel.numberMonth) {
+                            ShopScoreConstant.ONE_MONTH, ShopScoreConstant.TWO_MONTH -> {
+                                Pair(context?.getString(R.string.desc_inactive_new_seller_status, SUPPOSED_INACTIVE_TEXT).orEmpty(), true)
+                            }
+                            ShopScoreConstant.THREE_MONTH -> {
+                                Pair(context?.getString(R.string.desc_inactive_new_seller_end_month_status, SUPPOSED_INACTIVE_TEXT).orEmpty(), true)
+                            }
+                            else -> Pair("", false)
+                        }
+                    }
+                    else -> {
+                        when (shopInfoPeriodUiModel.shopAge) {
+                            in SHOP_SCORE_SIXTY.. SHOP_SCORE_SIXTY_NINE -> {
+                                val thresholdReputation = 5
+                                val hasScore = reputationShopResponse?.firstOrNull()?.score.toIntOrZero() < thresholdReputation
+                                if (hasScore) {
+                                    Pair(context?.getString(R.string.desc_new_seller_with_reputation_pm_status, potentialPMGrade?.gradeName).orEmpty(), false)
+                                } else {
+                                    Pair(context?.getString(R.string.desc_new_seller_no_reputation_pm_status).orEmpty(), false)
+                                }
+                            }
+                            else -> Pair("", false)
+                        }
+                    }
+                }
             }
             else -> {
                 when (shopInfoPeriodUiModel.periodType) {

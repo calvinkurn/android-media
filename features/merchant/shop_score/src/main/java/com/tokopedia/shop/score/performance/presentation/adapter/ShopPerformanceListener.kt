@@ -33,6 +33,10 @@ interface ItemStatusPowerMerchantListener {
     fun onViewItemPowerMerchantListener(view: View)
 }
 
+interface SectionFaqListener {
+    fun onHelpCenterClicked()
+}
+
 interface ItemFaqListener {
     fun onArrowClicked(position: Int)
 }

@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
@@ -17,6 +18,7 @@ import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.common.ShopScoreCoachMarkPrefs
+import com.tokopedia.shop.score.common.ShopScoreConstant
 import com.tokopedia.shop.score.performance.di.component.ShopPerformanceComponent
 import com.tokopedia.shop.score.performance.domain.model.ShopScoreWrapperResponse
 import com.tokopedia.shop.score.performance.presentation.activity.ShopPerformanceYoutubeActivity
@@ -39,7 +41,7 @@ import javax.inject.Inject
 class ShopPerformancePageFragment : BaseDaggerFragment(),
         ShopPerformanceListener, ItemShopPerformanceListener,
         ItemPotentialRegularMerchantListener, ItemRecommendationFeatureListener,
-        ItemStatusPowerMerchantListener, ItemTimerNewSellerListener, ItemHeaderShopPerformanceListener {
+        ItemStatusPowerMerchantListener, ItemTimerNewSellerListener, ItemHeaderShopPerformanceListener, SectionFaqListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -51,7 +53,7 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
     private val shopPerformanceAdapterTypeFactory by lazy {
         ShopPerformanceAdapterTypeFactory(this, this,
                 this, this,
-                this, this, this)
+                this, this, this, this)
     }
 
     private val shopPerformanceAdapter by lazy { ShopPerformanceAdapter(shopPerformanceAdapterTypeFactory) }
@@ -253,6 +255,10 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
 
     override fun onWatchVideoClicked(videoId: String) {
         context?.startActivity(ShopPerformanceYoutubeActivity.createInstance(context, videoId))
+    }
+
+    override fun onHelpCenterClicked() {
+        RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, ShopScoreConstant.HELP_URL)
     }
 
     private fun showCoachMark() {

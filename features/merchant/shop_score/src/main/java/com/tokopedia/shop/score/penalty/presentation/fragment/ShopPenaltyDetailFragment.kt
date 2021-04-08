@@ -8,8 +8,11 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.shop.score.R
+import com.tokopedia.shop.score.common.ShopScoreConstant
 import com.tokopedia.shop.score.penalty.di.component.PenaltyComponent
 import com.tokopedia.shop.score.penalty.presentation.adapter.PenaltyPageAdapter
 import com.tokopedia.shop.score.penalty.presentation.adapter.detail.PenaltyDetailStepperAdapter
@@ -69,6 +72,10 @@ class ShopPenaltyDetailFragment: BaseDaggerFragment() {
 
         ic_info_status_penalty?.setOnClickListener {
             showStatusPenaltyBottomSheet()
+        }
+
+        btnCallHelpCenter?.setOnClickListener {
+            RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, ShopScoreConstant.HELP_URL)
         }
     }
 

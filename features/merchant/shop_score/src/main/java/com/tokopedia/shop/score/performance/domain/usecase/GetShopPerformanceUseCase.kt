@@ -108,6 +108,13 @@ class GetShopPerformanceUseCase @Inject constructor(private val gqlRepository: G
             }
         """.trimIndent()
 
+        val REPUTATION_SHOPS_QUERY = """
+            query reputation_shops(${'$'}shopID: Int!){
+                reputation_shops(shop_ids: [${'$'}shopID]) {
+                    score
+                  }
+        """.trimIndent()
+
         @JvmStatic
         fun createParams(shopID: Int, shopScoreLevelParam: ShopScoreLevelParam, shopLevelTooltipParam: ShopLevelTooltipParam): RequestParams = RequestParams.create().apply {
             putInt(SHOP_ID_STATUS_INFO, shopID)
@@ -132,6 +139,7 @@ class GetShopPerformanceUseCase @Inject constructor(private val gqlRepository: G
         val goldPMGradeBenefitInfoParam = mapOf(SHOP_ID_BENEFIT_INFO to shopID)
 
         val getRecommendationToolsParam = mapOf(SHOP_ID_STATUS_INFO to shopID)
+        val reputationShopsParam = mapOf(SHOP_ID_STATUS_INFO to shopID)
 
         val shopScoreLevelRequest = GraphqlRequest(SHOP_SCORE_LEVEL_QUERY, ShopScoreLevelResponse::class.java, shopScoreLevelParam)
         val shopLevelRequest = GraphqlRequest(SHOP_LEVEL_TOOLTIP_QUERY, ShopLevelTooltipResponse::class.java, shopLevelParam)
@@ -144,6 +152,8 @@ class GetShopPerformanceUseCase @Inject constructor(private val gqlRepository: G
         val getRecommendationToolsRequest =
                 GraphqlRequest(RECOMMENDATION_TOOLS_QUERY, GetRecommendationToolsResponse::class.java, getRecommendationToolsParam)
 
+        val reputationShopRequest = GraphqlRequest(REPUTATION_SHOPS_QUERY, ReputationShopResponse::class.java, reputationShopsParam)
+
         val requests = mutableListOf<GraphqlRequest>()
 
         val shopScoreWrapperResponse = ShopScoreWrapperResponse()
@@ -152,6 +162,7 @@ class GetShopPerformanceUseCase @Inject constructor(private val gqlRepository: G
             userSession.isShopOfficialStore -> {
                 requests.add(shopScoreLevelRequest)
                 requests.add(shopLevelRequest)
+                requests.add(getRecommendationToolsRequest)
                 try {
                     val gqlResponse = gqlRepository.getReseponse(requests)
 
@@ -171,6 +182,8 @@ class GetShopPerformanceUseCase @Inject constructor(private val gqlRepository: G
                     add(goldPMStatusRequest)
                     add(goldPMShopInfoRequest)
                     add(goldPMGradeBenefitInfoRequest)
+                    add(getRecommendationToolsRequest)
+                    add(reputationShopRequest)
                 }
 
                 try {
@@ -195,6 +208,9 @@ class GetShopPerformanceUseCase @Inject constructor(private val gqlRepository: G
 
                     val getRecommendationToolsData = gqlResponse.getData<GetRecommendationToolsResponse>(GetRecommendationToolsResponse::class.java).valuePropositionGetRecommendationTools
                     shopScoreWrapperResponse.getRecommendationToolsResponse = getRecommendationToolsData
+
+                    val reputationShopData = gqlResponse.getData<ReputationShopResponse>(ReputationShopResponse::class.java).reputationShops
+                    shopScoreWrapperResponse.reputationShopResponse = reputationShopData
                 } catch (e: Throwable) {
 
                 }

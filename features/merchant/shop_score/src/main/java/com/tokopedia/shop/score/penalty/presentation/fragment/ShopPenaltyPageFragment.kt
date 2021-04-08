@@ -12,8 +12,8 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
-import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.kotlin.extensions.view.observe
@@ -21,25 +21,20 @@ import com.tokopedia.kotlin.extensions.view.removeObservers
 import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.common.ShopScoreConstant
 import com.tokopedia.shop.score.penalty.di.component.PenaltyComponent
-import com.tokopedia.shop.score.penalty.presentation.adapter.FilterPenaltyListener
-import com.tokopedia.shop.score.penalty.presentation.adapter.ItemDetailPenaltyListener
-import com.tokopedia.shop.score.penalty.presentation.viewmodel.ShopPenaltyViewModel
-import com.tokopedia.shop.score.penalty.presentation.adapter.PenaltyPageAdapter
-import com.tokopedia.shop.score.penalty.presentation.adapter.PenaltyPageAdapterFactory
+import com.tokopedia.shop.score.penalty.presentation.adapter.*
 import com.tokopedia.shop.score.penalty.presentation.bottomsheet.PenaltyDateFilterBottomSheet
 import com.tokopedia.shop.score.penalty.presentation.bottomsheet.PenaltyFilterBottomSheet
 import com.tokopedia.shop.score.penalty.presentation.model.FilterTypePenaltyUiModelWrapper
 import com.tokopedia.shop.score.penalty.presentation.model.ItemDetailPenaltyFilterUiModel
 import com.tokopedia.shop.score.penalty.presentation.model.PenaltyFilterUiModel
-import com.tokopedia.shop.score.performance.presentation.viewmodel.ShopPerformanceViewModel
+import com.tokopedia.shop.score.penalty.presentation.viewmodel.ShopPenaltyViewModel
 import com.tokopedia.sortfilter.SortFilterItem
-import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
 class ShopPenaltyPageFragment: BaseListFragment<Visitable<*>, PenaltyPageAdapterFactory>(),
         FilterPenaltyListener, PenaltyDateFilterBottomSheet.CalenderListener,
-        PenaltyFilterBottomSheet.PenaltyFilterFinishListener, ItemDetailPenaltyListener {
+        PenaltyFilterBottomSheet.PenaltyFilterFinishListener, ItemDetailPenaltyListener, ItemCardShopPenaltyListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -48,7 +43,7 @@ class ShopPenaltyPageFragment: BaseListFragment<Visitable<*>, PenaltyPageAdapter
         ViewModelProvider(this, viewModelFactory).get(ShopPenaltyViewModel::class.java)
     }
 
-    private val penaltyPageAdapterFactory by lazy { PenaltyPageAdapterFactory(this, this) }
+    private val penaltyPageAdapterFactory by lazy { PenaltyPageAdapterFactory(this, this, this) }
     private val penaltyPageAdapter by lazy { PenaltyPageAdapter(penaltyPageAdapterFactory) }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -98,6 +93,10 @@ class ShopPenaltyPageFragment: BaseListFragment<Visitable<*>, PenaltyPageAdapter
         val bottomSheetDateFilter = PenaltyDateFilterBottomSheet.newInstance()
         bottomSheetDateFilter.setCalendarListener(this)
         bottomSheetDateFilter.show(childFragmentManager)
+    }
+
+    override fun onMoreInfoHelpPenaltyClicked() {
+        RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, ShopScoreConstant.SYSTEM_PENALTY_HELP_URL)
     }
 
     override fun onChildSortFilterItemClick(sortFilterItem: SortFilterItem, position: Int) {

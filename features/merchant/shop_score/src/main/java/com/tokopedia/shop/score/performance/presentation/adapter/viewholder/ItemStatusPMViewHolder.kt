@@ -39,10 +39,10 @@ class ItemStatusPMViewHolder(view: View,
 
             if (element.isCardBgColor) {
                 containerDescPmSection?.setBackgroundColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Y100))
-                ic_info_potential_pm?.setBackgroundColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Y500))
+                ic_speaker_potential_pm?.setColorFilter(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Y500))
             } else {
                 containerDescPmSection?.setBackgroundColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
-                ic_info_potential_pm?.setBackgroundColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
+                ic_speaker_potential_pm?.setColorFilter(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
             }
 
             if (element.isInActivePM) {

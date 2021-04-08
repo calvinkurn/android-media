@@ -107,4 +107,7 @@ object ShopScoreConstant {
     const val THREE_MONTH = 3
 
     const val VIDEO_YOUTUBE_ID = "MjbnDFmWbZk"
+
+    const val SYSTEM_PENALTY_HELP_URL = "https://www.tokopedia.com/help/article/bagaimana-sistem-penalti-pengurangan-reputasi-toko"
+    const val HELP_URL = "https://www.tokopedia.com/help"
 }

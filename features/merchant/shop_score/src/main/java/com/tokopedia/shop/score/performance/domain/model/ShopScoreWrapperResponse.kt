@@ -5,5 +5,6 @@ data class ShopScoreWrapperResponse(var shopScoreLevelResponse: ShopScoreLevelRe
                                     var goldGetPMShopInfoResponse: GoldGetPMShopInfoResponse.GoldGetPMShopInfo? = null,
                                     var goldGetPMStatusResponse: GoldGetPMStatusResponse.GoldGetPMOSStatus? = null,
                                     var goldPMGradeBenefitInfoResponse: GoldPMGradeBenefitInfoResponse.GoldGetPMGradeBenefitInfo? = null,
-                                    var getRecommendationToolsResponse: GetRecommendationToolsResponse.ValuePropositionGetRecommendationTools? = null
+                                    var getRecommendationToolsResponse: GetRecommendationToolsResponse.ValuePropositionGetRecommendationTools? = null,
+                                    var reputationShopResponse: List<ReputationShopResponse.ReputationShop>? = null
 )

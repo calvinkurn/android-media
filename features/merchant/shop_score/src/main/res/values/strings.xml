@@ -92,6 +92,8 @@
     <string name="point_deduction_date_result_detail_penalty">Mulai aktif pada: <![CDATA[<b>%1s</b>]]></string>
     <string name="on_going_date_result_detail_penalty">Aktif hingga: <![CDATA[<b>%1s</b>]]></string>
     <string name="over_penalty_date_result_detail_penalty">Selesai sejak: <![CDATA[<b>%1s</b>]]></string>
+    <string name="desc_new_seller_with_reputation_pm_status">Setelah 90 hari bergabung, Power Merchant akan dihitung dari skor Performa. Dari Performamu, tokomu berpotensi dapat grade <![CDATA[<b>%s</b>]]></string>
+    <string name="desc_new_seller_no_reputation_pm_status">Dari Reputasi, tokomu berpotensi dapat grade Bronze!></string>
     <string name="desc_down_end_chance_time_end_game_pm_status">Dari Performamu saat ini, tokomu berpotensi turun ke grade <![CDATA[<b>%s</b>]]>. Kamu masih punya waktu sampai periode penurunan grade untuk memperbaiki Performamu, ya! Jaga skor min. 60 agar PM tetap aktif, ya!</string>
     <string name="desc_down_end_transition_under_score_pm_status">Dari Performamu saat ini, tokomu berpotensi turun ke grade <![CDATA[<b>%s</b>]]>. Segera tingkatkan Performamu supaya tidak turun grade, ya! Jaga skor min. 60 agar PM tetap aktif, ya!</string>
     <string name="desc_down_end_transition_warning_score_pm_status">Dari Performamu saat ini, tokomu berpotensi turun ke grade <![CDATA[<b>%s</b>]]>. Segera tingkatkan Performamu supaya tidak turun grade, ya!</string>
@@ -101,6 +103,8 @@
     <string name="desc_down_pm_end_game_status">Dari Performamu saat ini, tokomu berpotensi turun ke grade <![CDATA[<b>%s</b>]]>. Kamu masih punya waktu sampai periode penurunan grade untuk memperbaiki Performamu, ya!</string>
     <string name="desc_down_pm_status">Dari Performamu saat ini, tokomu berpotensi turun ke grade <![CDATA[<b>%s</b>]]>. Karena saat ini masih masa transisi, kamu punya waktu untuk memperbaiki Performamu, ya!</string>
     <string name="desc_inactive_pm_status">Dari Performamu saat ini, status Power Merchant <![CDATA[<b>berpotensi jadi %s</b>]]>. Karena saat ini masih masa transisi, kamu punya waktu untuk memperbaiki Performamu, ya!</string>
+    <string name="desc_inactive_new_seller_status">Dari Performamu saat ini, status Power Merchant <![CDATA[<b>berpotensi jadi %s</b>]]>. Kamu punya waktu selama masa transisi untuk memperbaiki Performamu, ya!</string>
+    <string name="desc_inactive_new_seller_end_month_status">Dari Performamu saat ini, status Power Merchant <![CDATA[<b>berpotensi jadi %s</b>]]>. Segera tingkatkan Performa supaya PM tetap aktif, ya!</string>
     <string name="ticker_deduction_point_penalty">Ada potongan poin penalti %s. Lihat detail &lt;a href="#"&gt;di sini&lt;/a&gt;</string>
     <string name="content_penalty_label">Penalti adalah pengurangan nilai Performa karena pelanggaran dalam waktu tertentu. &lt;a href="#"&gt;Pelajari Selengkapnya&lt;/a&gt;</string>
     <string name="title_eligible_status_power_merchant">Kamu sudah mencapai min. skor untuk bisa dapat keuntungan Power Merchant %s, lho!</string>
