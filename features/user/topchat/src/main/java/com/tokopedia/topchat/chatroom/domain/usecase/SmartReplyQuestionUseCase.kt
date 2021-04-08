@@ -6,7 +6,7 @@ import com.tokopedia.topchat.common.data.Resource
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
-class SmartReplyQuestionUseCase @Inject constructor(
+open class SmartReplyQuestionUseCase @Inject constructor(
         private val gqlUseCase: GraphqlUseCase<ChatSmartReplyQuestionResponse>
 ) {
 

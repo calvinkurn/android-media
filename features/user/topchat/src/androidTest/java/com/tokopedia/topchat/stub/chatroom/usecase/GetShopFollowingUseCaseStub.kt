@@ -15,4 +15,9 @@ class GetShopFollowingUseCaseStub(
             gqlUseCase.response = value
             field = value
         }
+
+    init {
+        gqlUseCase.response = response
+    }
+
 }

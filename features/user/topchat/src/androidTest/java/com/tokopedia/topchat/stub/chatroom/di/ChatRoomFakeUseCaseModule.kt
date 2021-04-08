@@ -9,6 +9,7 @@ import com.tokopedia.topchat.chatroom.domain.mapper.GetTemplateChatRoomMapper
 import com.tokopedia.topchat.chatroom.domain.mapper.TopChatRoomGetExistingChatMapper
 import com.tokopedia.topchat.chatroom.domain.pojo.ShopFollowingPojo
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ChatAttachmentResponse
+import com.tokopedia.topchat.chatroom.domain.pojo.srw.ChatSmartReplyQuestionResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.sticker.StickerResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.stickergroup.ChatListGroupStickerResponse
 import com.tokopedia.topchat.chatroom.domain.usecase.*
@@ -130,5 +131,21 @@ class ChatRoomFakeUseCaseModule {
             dispatchers: TopchatAndroidTestCoroutineContextDispatcher
     ): GetShopFollowingUseCaseStub {
         return GetShopFollowingUseCaseStub(gqlUseCase, dispatchers)
+    }
+
+    // -- separator -- //
+
+    @Provides
+    @ChatScope
+    fun provideSmartReplyQuestionUseCase(
+            stub: SmartReplyQuestionUseCaseStub
+    ): SmartReplyQuestionUseCase = stub
+
+    @Provides
+    @ChatScope
+    fun provideSmartReplyQuestionUseCaseStub(
+            gqlUseCase: GraphqlUseCaseStub<ChatSmartReplyQuestionResponse>
+    ): SmartReplyQuestionUseCaseStub {
+        return SmartReplyQuestionUseCaseStub(gqlUseCase)
     }
 }

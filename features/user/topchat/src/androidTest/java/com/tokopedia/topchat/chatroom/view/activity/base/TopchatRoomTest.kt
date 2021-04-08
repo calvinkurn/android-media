@@ -83,6 +83,9 @@ abstract class TopchatRoomTest {
     protected lateinit var getShopFollowingUseCaseStub: GetShopFollowingUseCaseStub
 
     @Inject
+    protected lateinit var chatSrwUseCase: SmartReplyQuestionUseCaseStub
+
+    @Inject
     protected lateinit var websocket: RxWebSocketUtilStub
 
     protected open lateinit var activity: TopChatRoomActivityStub
