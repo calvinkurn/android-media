@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.reputation.common.data.source.cloud.model.ProductrevReviewTabCount
 import com.tokopedia.reputation.common.domain.usecase.ProductrevReviewTabCounterUseCase
+import com.tokopedia.review.feature.inbox.common.presentation.InboxUnifiedRemoteConfig.isInboxUnified
 import com.tokopedia.review.feature.inbox.container.data.ReviewInboxTabs
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -60,6 +61,4 @@ class ReviewInboxContainerViewModel @Inject constructor(
     }
 
     private fun isShopOwner() = userSessionInterface.hasShop()
-
-    private fun isInboxUnified() = true
 }
