@@ -1,6 +1,5 @@
 package com.tokopedia.media.loader
 
-import android.graphics.Bitmap
 import android.os.Handler
 import android.widget.ImageView
 import androidx.appcompat.content.res.AppCompatResources.getDrawable
@@ -10,7 +9,6 @@ import com.tokopedia.media.loader.common.Properties
 import com.tokopedia.media.loader.common.factory.BitmapFactory
 import com.tokopedia.media.loader.common.factory.GifFactory
 import com.tokopedia.media.loader.module.GlideApp
-import com.tokopedia.media.loader.module.GlideRequest
 import com.tokopedia.media.loader.tracker.PerformanceTracker
 
 internal object MediaLoaderApi {
@@ -19,24 +17,6 @@ internal object MediaLoaderApi {
 
     private val bitmap by lazy { BitmapFactory() }
     private val gif by lazy { GifFactory() }
-
-    /*
-    * the medialoader will automatically scaling up based on
-    * scale_type properties (if exist) on imageView
-    * */
-    private fun automateScaleType(
-            imageView: ImageView,
-            request: GlideRequest<Bitmap>
-    ): GlideRequest<Bitmap> {
-        return request.apply {
-            when (imageView.scaleType) {
-                ImageView.ScaleType.FIT_CENTER -> fitCenter()
-                ImageView.ScaleType.CENTER_CROP -> centerCrop()
-                ImageView.ScaleType.CENTER_INSIDE -> centerInside()
-                else -> {}
-            }
-        }
-    }
 
     @JvmOverloads
     fun loadImage(imageView: ImageView, properties: Properties) {
@@ -55,12 +35,6 @@ internal object MediaLoaderApi {
         }
 
         GlideApp.with(context).asBitmap().apply {
-
-            /*
-             * automateScaleType mean, the image will be scaled automatically
-             * based on scaleType attribute which is already defined on ImageView
-             * */
-            automateScaleType(imageView, this)
 
             val request = when(properties.data) {
                 /*

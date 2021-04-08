@@ -46,6 +46,7 @@ abstract class MediaLoaderFactory<T> {
             }
 
             /*
+            * built-in transformations:
             * regarding the circleCrop(), centerCrop(), fitCenter(), and centerInside()
             * didn't work in transformation above, we need to transform manually in here
             * */
