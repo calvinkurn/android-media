@@ -14,7 +14,6 @@ import com.tokopedia.purchase_platform.common.feature.tickerannouncement.Ticker
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerData
 import java.util.*
 import javax.inject.Inject
-import kotlin.collections.ArrayList
 import kotlin.math.min
 
 class GetOccCartMapper @Inject constructor() {
@@ -317,7 +316,7 @@ class GetOccCartMapper @Inject constructor() {
     }
 
     private fun mapOccRemoveProfile(removeProfileResponse: OccRemoveProfileResponse): OccRemoveProfileData {
-        return OccRemoveProfileData(true, 2,
-                OccRemoveProfileMessageData("removeProfileResponse.message.title", "removeProfileResponse.message.description"))
+        return OccRemoveProfileData(true, removeProfileResponse.type,
+                OccRemoveProfileMessageData(removeProfileResponse.message.title, removeProfileResponse.message.description))
     }
 }

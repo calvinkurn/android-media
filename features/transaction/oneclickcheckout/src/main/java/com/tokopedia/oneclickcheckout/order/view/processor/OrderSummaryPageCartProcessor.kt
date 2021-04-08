@@ -97,7 +97,7 @@ class OrderSummaryPageCartProcessor @Inject constructor(private val atcOccExtern
             val selectedTerm = orderPayment.creditCard.selectedTerm
             if (selectedTerm != null) {
                 try {
-                    val parse = JsonParser().parse(metadata)
+                    val parse = JsonParser.parseString(metadata)
                     val expressCheckoutParams = parse.asJsonObject.getAsJsonObject(UpdateCartOccProfileRequest.EXPRESS_CHECKOUT_PARAM)
                     if (expressCheckoutParams.get(UpdateCartOccProfileRequest.INSTALLMENT_TERM) == null) {
                         throw Exception()

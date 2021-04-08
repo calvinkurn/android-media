@@ -118,20 +118,6 @@
       "eventLabel": ""
     },
     {
-      "eventAction": "click button info on order summary page",
-      "eventCategory": "order summary",
-      "event": "clickCheckoutExpress",
-      "sessionIris": "{{.*}}",
-      "eventLabel": "new buyer"
-    },
-    {
-      "eventAction": "view onboarding info",
-      "eventCategory": "order summary",
-      "event": "viewCheckoutExpressIris",
-      "sessionIris": "{{.*}}",
-      "eventLabel": ""
-    },
-    {
       "eventAction": "{{click (?:bayar|pilih pembayaran) - not success}}",
       "eventCategory": "order summary",
       "event": "clickCheckoutExpress",

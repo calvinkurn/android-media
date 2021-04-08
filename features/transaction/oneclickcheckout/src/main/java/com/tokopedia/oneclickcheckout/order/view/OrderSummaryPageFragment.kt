@@ -24,7 +24,8 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.*
-import com.tokopedia.coachmark.*
+import com.tokopedia.coachmark.CoachMark2
+import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.coachmark.util.ViewHelper
 import com.tokopedia.common.payment.PaymentConstant
 import com.tokopedia.common.payment.model.PaymentPassData
@@ -64,7 +65,10 @@ import com.tokopedia.oneclickcheckout.order.data.get.OccMainOnboarding.Companion
 import com.tokopedia.oneclickcheckout.order.data.get.OccMainOnboarding.Companion.COACHMARK_TYPE_NEW_BUYER_REMOVE_PROFILE
 import com.tokopedia.oneclickcheckout.order.di.OrderSummaryPageComponent
 import com.tokopedia.oneclickcheckout.order.view.bottomsheet.*
-import com.tokopedia.oneclickcheckout.order.view.card.*
+import com.tokopedia.oneclickcheckout.order.view.card.NewOrderPreferenceCard
+import com.tokopedia.oneclickcheckout.order.view.card.OrderInsuranceCard
+import com.tokopedia.oneclickcheckout.order.view.card.OrderProductCard
+import com.tokopedia.oneclickcheckout.order.view.card.OrderTotalPaymentCard
 import com.tokopedia.oneclickcheckout.order.view.model.*
 import com.tokopedia.oneclickcheckout.preference.edit.view.PreferenceEditActivity
 import com.tokopedia.oneclickcheckout.preference.edit.view.address.AddressListFragment
@@ -309,17 +313,17 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
     }
 
     private fun initViewModel(savedInstanceState: Bundle?) {
-        viewModel.addressState.observe(viewLifecycleOwner, {
+        viewModel.addressState.observe(viewLifecycleOwner) {
             validateAddressState(it)
-        })
+        }
 
-        viewModel.orderPreference.observe(viewLifecycleOwner, {
+        viewModel.orderPreference.observe(viewLifecycleOwner) {
             when (it) {
                 is OccState.FirstLoad -> {
                     orderPreference = it.data
                     loaderContent?.animateGone()
                     globalError?.animateGone()
-                    view?.let { _ ->
+                    view?.also { _ ->
                         orderProductCard?.setProduct(viewModel.orderProduct)
                         orderProductCard?.setShop(viewModel.orderShop)
                         orderProductCard?.initView()
@@ -340,7 +344,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                     orderPreference = it.data
                     loaderContent?.animateGone()
                     globalError?.animateGone()
-                    view?.let { _ ->
+                    view?.also { _ ->
                         if (orderProductCard?.isProductInitialized() == false) {
                             orderProductCard?.setProduct(viewModel.orderProduct)
                             orderProductCard?.setShop(viewModel.orderShop)
@@ -372,29 +376,29 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                     }
                 }
             }
-        })
+        }
 
-        viewModel.orderShipment.observe(viewLifecycleOwner, {
+        viewModel.orderShipment.observe(viewLifecycleOwner) {
             newOrderPreferenceCard.setShipment(it)
             orderInsuranceCard.setupInsurance(it?.insuranceData, viewModel.orderProduct.productId.toString())
             if (it?.needPinpoint == true && orderPreference?.preference?.address != null) {
                 goToPinpoint(orderPreference?.preference?.address)
             }
-        })
+        }
 
-        viewModel.orderPayment.observe(viewLifecycleOwner, {
+        viewModel.orderPayment.observe(viewLifecycleOwner) {
             newOrderPreferenceCard.setPayment(it)
-        })
+        }
 
-        viewModel.orderTotal.observe(viewLifecycleOwner, {
+        viewModel.orderTotal.observe(viewLifecycleOwner) {
             orderTotalPaymentCard.setupPayment(it)
-        })
+        }
 
-        viewModel.orderPromo.observe(viewLifecycleOwner, {
+        viewModel.orderPromo.observe(viewLifecycleOwner) {
             setupButtonPromo(it)
-        })
+        }
 
-        viewModel.globalEvent.observe(viewLifecycleOwner, {
+        viewModel.globalEvent.observe(viewLifecycleOwner) {
             when (it) {
                 is OccGlobalEvent.Loading -> {
                     if (progressDialog == null) {
@@ -538,7 +542,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                     updateLocalCacheAddressData(it.addressModel)
                 }
             }
-        })
+        }
 
         // first load
         if (viewModel.orderProduct.productId == 0L) {
