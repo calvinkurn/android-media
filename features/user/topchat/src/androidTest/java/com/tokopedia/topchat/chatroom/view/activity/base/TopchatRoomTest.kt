@@ -16,6 +16,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_IMAGE_ANNOUNCEMENT
+import com.tokopedia.chat_common.domain.pojo.ChatReplyPojo
 import com.tokopedia.chat_common.domain.pojo.GetExistingChatPojo
 import com.tokopedia.chat_common.domain.pojo.Reply
 import com.tokopedia.chat_common.domain.pojo.imageannouncement.ImageAnnouncementPojo
@@ -83,6 +84,12 @@ abstract class TopchatRoomTest {
     protected lateinit var getShopFollowingUseCaseStub: GetShopFollowingUseCaseStub
 
     @Inject
+    protected lateinit var uploadImageUseCase: TopchatUploadImageUseCaseStub
+
+    @Inject
+    protected lateinit var replyChatGQLUseCase: ReplyChatGQLUseCaseStub
+
+    @Inject
     protected lateinit var chatSrwUseCase: SmartReplyQuestionUseCaseStub
 
     @Inject
@@ -101,6 +108,7 @@ abstract class TopchatRoomTest {
     protected var firstPageChatBroadcastAsBuyer: GetExistingChatPojo = GetExistingChatPojo()
     protected var getShopFollowingStatus: ShopFollowingPojo = ShopFollowingPojo()
     protected var chatSrwResponse: ChatSmartReplyQuestionResponse = ChatSmartReplyQuestionResponse()
+    protected var uploadImageReplyResponse: ChatReplyPojo = ChatReplyPojo()
 
     protected lateinit var chatComponentStub: ChatComponentStub
 
@@ -145,6 +153,10 @@ abstract class TopchatRoomTest {
         getShopFollowingStatus = AndroidFileUtil.parse(
                 "success_get_shop_following_status.json",
                 ShopFollowingPojo::class.java
+        )
+        uploadImageReplyResponse = AndroidFileUtil.parse(
+                "success_upload_image_reply.json",
+                ChatReplyPojo::class.java
         )
     }
 
@@ -197,6 +209,15 @@ abstract class TopchatRoomTest {
         val viewAction = RecyclerViewActions
                 .actionOnItemAtPosition<AttachmentItemViewHolder>(
                         0, click()
+                )
+        onView(withId(R.id.rv_topchat_attachment_menu))
+                .perform(viewAction)
+    }
+
+    protected fun clickAttachImageMenu() {
+        val viewAction = RecyclerViewActions
+                .actionOnItemAtPosition<AttachmentItemViewHolder>(
+                        1, click()
                 )
         onView(withId(R.id.rv_topchat_attachment_menu))
                 .perform(viewAction)

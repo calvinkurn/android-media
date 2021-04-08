@@ -16,6 +16,7 @@ data class FeedbackUiModel(
         var reviewerName: String? = "",
         var variantName: String? = "",
         var sellerUser: String? = "",
+        var isKejarUlasan: Boolean = false,
         var page : Int? = 0
 ): BaseSellerReviewDetail {
 

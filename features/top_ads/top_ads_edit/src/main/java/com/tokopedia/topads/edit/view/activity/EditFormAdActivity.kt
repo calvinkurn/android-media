@@ -34,7 +34,6 @@ import com.tokopedia.topads.edit.view.fragment.edit.EditProductFragment
 import com.tokopedia.topads.edit.view.model.EditFormDefaultViewModel
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.topads_base_edit_activity_layout.*
-import kotlinx.android.synthetic.main.topads_edit_keyword_search_layout.*
 import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
@@ -118,11 +117,13 @@ class EditFormAdActivity : BaseActivity(), HasComponent<TopAdsEditComponent>, Sa
     }
 
     private fun onErrorEdit(error: String?) {
-        val errorMessage = Utils.getErrorMessage(this, error?:"")
-        Toaster.build(rootView, errorMessage,
-                Snackbar.LENGTH_LONG,
-                Toaster.TYPE_ERROR,
-                getString(com.tokopedia.topads.common.R.string.topads_common_text_ok)).show()
+        val errorMessage = Utils.getErrorMessage(this, error ?: "")
+        root?.let {
+            Toaster.build(it, errorMessage,
+                    Snackbar.LENGTH_LONG,
+                    Toaster.TYPE_ERROR,
+                    getString(com.tokopedia.topads.common.R.string.topads_common_text_ok)).show()
+        }
         btn_submit?.isEnabled = true
     }
 
