@@ -1866,6 +1866,7 @@ class ShopPageFragment :
     }
 
     override fun onLocalizingAddressServerDown() {
+        shopPageFragmentHeaderViewHolder?.hideChooseAddressWidget()
     }
 
     override fun onLocalizingAddressRollOutUser(isRollOutUser: Boolean) { }
