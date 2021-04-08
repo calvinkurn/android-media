@@ -27,13 +27,13 @@ abstract class MediaLoaderFactory<T> {
         _transform.clear()
 
         with(properties) {
-            // built-in RoundedCorners transformation
-            if (roundedRadius > 0f) {
-                _transform.add(RoundedCorners(roundedRadius.toInt()))
-            }
-
             transforms?.let { _transform.addAll(it) }
             transform?.let { _transform.add(it) }
+
+            // built-in RoundedCorners transformation
+            if (roundedRadius > 0f && transforms?.filterIsInstance<RoundedCorners>().isNullOrEmpty()) {
+                _transform.add(RoundedCorners(roundedRadius.toInt()))
+            }
         }
     }
 
@@ -46,7 +46,7 @@ abstract class MediaLoaderFactory<T> {
             * set multiple transformation into list of transform (_transform)
             * and then bulk it the transforms from transformList with MultiTransformation
             * */
-            transformation(properties)
+            transformation(this)
 
             /*
             * regarding the circleCrop() didn't work in transformation above,
