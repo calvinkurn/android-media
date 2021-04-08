@@ -28,34 +28,15 @@ class PenaltyPageAdapter(penaltyPageAdapterFactory: PenaltyPageAdapterFactory):
     }
 
     fun updateSortFilterPenaltyFromBottomSheet(chipsPenaltyList: List<PenaltyFilterUiModel.ChipsFilterPenaltyUiModel>?) {
-        val sortFilterIndex = visitables.indexOfFirst { it is ItemDetailPenaltyFilterUiModel }
-        visitables.filterIsInstance<ItemDetailPenaltyFilterUiModel>().firstOrNull()?.itemSortFilterWrapperList?.mapIndexed { index, item ->
-            item.isSelected = chipsPenaltyList?.getOrNull(index)?.isSelected ?: false
-        }
-        if (sortFilterIndex != -1) {
-            notifyItemChanged(sortFilterIndex)
-        }
+//        val sortFilterIndex = visitables.indexOfFirst { it is ItemDetailPenaltyFilterUiModel }
+//        visitables.filterIsInstance<ItemDetailPenaltyFilterUiModel>().firstOrNull()?.itemSortFilterWrapperList?.mapIndexed { index, item ->
+//            item.isSelected = chipsPenaltyList?.getOrNull(index)?.isSelected ?: false
+//        }
+//        if (sortFilterIndex != -1) {
+//            notifyItemChanged(sortFilterIndex)
+//        }
 
         //need adjust lazy load
         //notifyItemRangeRemoved()
-    }
-
-    fun updateItemSortFilterPenalty(itemSortFilterWrapper: List<ItemDetailPenaltyFilterUiModel.ItemSortFilterWrapper>) {
-        val sortFilterIndex = visitables.indexOfFirst { it is PenaltyFilterUiModel }
-
-        if (sortFilterIndex != -1) {
-            visitables.filterIsInstance<ItemDetailPenaltyFilterUiModel>().firstOrNull()?.
-                    itemSortFilterWrapperList = itemSortFilterWrapper
-            notifyItemChanged(sortFilterIndex)
-        }
-    }
-
-    fun updateFilterDatePenalty(date: String) {
-        val dateFilterIndex = visitables.indexOfFirst { it is ItemDetailPenaltyFilterUiModel }
-
-        if (dateFilterIndex != -1) {
-            visitables.filterIsInstance<ItemDetailPenaltyFilterUiModel>().firstOrNull()?.periodDetail = date
-            notifyItemChanged(dateFilterIndex)
-        }
     }
 }

@@ -5,7 +5,5 @@ import com.tokopedia.shop.score.penalty.presentation.model.ItemDetailPenaltyFilt
 import com.tokopedia.shop.score.penalty.presentation.model.ItemPenaltyUiModel
 
 interface PenaltyTypeFactory {
-    fun type(itemCardShopPenaltyUiModel: ItemCardShopPenaltyUiModel): Int
-    fun type(itemDetailPenaltyFilterUiModel: ItemDetailPenaltyFilterUiModel): Int
     fun type(itemPenaltyUiModel: ItemPenaltyUiModel): Int
 }

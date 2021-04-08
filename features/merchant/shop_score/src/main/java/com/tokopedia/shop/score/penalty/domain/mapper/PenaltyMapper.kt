@@ -8,15 +8,20 @@ import com.tokopedia.shop.score.common.ShopScoreConstant.DELIVERY_REFUSED
 import com.tokopedia.shop.score.common.ShopScoreConstant.GUILT_RESOLUTION_CENTER
 import com.tokopedia.shop.score.common.ShopScoreConstant.ON_GOING
 import com.tokopedia.shop.score.common.ShopScoreConstant.ORDER_IGNORED
+import com.tokopedia.shop.score.common.ShopScoreConstant.PATTER_DATE_TEXT
 import com.tokopedia.shop.score.common.ShopScoreConstant.PENALTY_DONE
 import com.tokopedia.shop.score.common.ShopScoreConstant.POINTS_NOT_YET_DEDUCTED
 import com.tokopedia.shop.score.common.ShopScoreConstant.SORT_LATEST
 import com.tokopedia.shop.score.common.ShopScoreConstant.SORT_OLDEST
 import com.tokopedia.shop.score.common.ShopScoreConstant.TITLE_SORT
 import com.tokopedia.shop.score.common.ShopScoreConstant.TITLE_TYPE_PENALTY
+import com.tokopedia.shop.score.common.format
+import com.tokopedia.shop.score.common.getNPastMonthTimeStamp
+import com.tokopedia.shop.score.common.getNowTimeStamp
 import com.tokopedia.shop.score.penalty.presentation.model.*
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
+import java.util.*
 import javax.inject.Inject
 
 class PenaltyMapper @Inject constructor(@ApplicationContext val context: Context?) {
@@ -108,12 +113,12 @@ class PenaltyMapper @Inject constructor(@ApplicationContext val context: Context
         }
     }
 
-    fun mapToPenaltyVisitableDummy(): List<BasePenaltyPage> {
-        return mutableListOf<BasePenaltyPage>().apply {
-            add(mapToCardShopPenalty())
-            add(mapToDetailPenaltyFilter())
-            addAll(mapToItemPenaltyList())
-        }
+    fun mapToPenaltyDataDummy(): PenaltyDataWrapper {
+        return PenaltyDataWrapper(
+                cardShopPenaltyUiModel = mapToCardShopPenalty(),
+                itemDetailPenaltyFilterUiModel = mapToDetailPenaltyFilter(),
+                itemPenaltyUiModel = mapToItemPenaltyList()
+        )
     }
 
     private fun mapToCardShopPenalty(): ItemCardShopPenaltyUiModel {
@@ -121,7 +126,8 @@ class PenaltyMapper @Inject constructor(@ApplicationContext val context: Context
     }
 
     private fun mapToDetailPenaltyFilter(): ItemDetailPenaltyFilterUiModel {
-        return ItemDetailPenaltyFilterUiModel(periodDetail = "5 july - 6 sept", itemSortFilterWrapperList = mapToSortFilterPenalty())
+        return ItemDetailPenaltyFilterUiModel(periodDetail = "${format(getNPastMonthTimeStamp(1).time, PATTER_DATE_TEXT)} - ${format(getNowTimeStamp(), PATTER_DATE_TEXT)}",
+                itemSortFilterWrapperList = mapToSortFilterPenalty())
     }
 
     private fun mapToSortFilterPenalty(): List<ItemDetailPenaltyFilterUiModel.ItemSortFilterWrapper> {

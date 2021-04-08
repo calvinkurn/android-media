@@ -7,10 +7,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.shop.score.common.ShopScoreConstant
 import com.tokopedia.shop.score.penalty.domain.mapper.PenaltyMapper
-import com.tokopedia.shop.score.penalty.presentation.model.BasePenaltyPage
-import com.tokopedia.shop.score.penalty.presentation.model.FilterTypePenaltyUiModelWrapper
-import com.tokopedia.shop.score.penalty.presentation.model.ItemDetailPenaltyFilterUiModel
-import com.tokopedia.shop.score.penalty.presentation.model.PenaltyFilterUiModel
+import com.tokopedia.shop.score.penalty.presentation.model.*
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.usecase.coroutines.Fail
@@ -24,8 +21,8 @@ class ShopPenaltyViewModel @Inject constructor(
         private val penaltyMapper: PenaltyMapper
 ) : BaseViewModel(coroutineDispatchers.main) {
 
-    private val _penaltyPageData = MutableLiveData<Result<List<BasePenaltyPage>>>()
-    val penaltyPageData: LiveData<Result<List<BasePenaltyPage>>>
+    private val _penaltyPageData = MutableLiveData<Result<PenaltyDataWrapper>>()
+    val penaltyPageData: LiveData<Result<PenaltyDataWrapper>>
         get() = _penaltyPageData
 
     private val _filterPenaltyData = MutableLiveData<Result<List<PenaltyFilterUiModel>>>()
@@ -45,27 +42,29 @@ class ShopPenaltyViewModel @Inject constructor(
     private var penaltyFilterUiModel = mutableListOf<PenaltyFilterUiModel>()
     private var itemSortFilterWrapperList = mutableListOf<ItemDetailPenaltyFilterUiModel.ItemSortFilterWrapper>()
 
+    private var penaltyDataWrapper: PenaltyDataWrapper? = null
+
     fun getPenaltyFilterUiModelList() = penaltyFilterUiModel
 
-    fun getSortFilterWrapperList() = itemSortFilterWrapperList
+    fun getSortFilterItemList() = itemSortFilterWrapperList
 
     fun getDataDummyPenalty() {
         launch {
-            val penaltyDummyData = penaltyMapper.mapToPenaltyVisitableDummy()
-            if (itemSortFilterWrapperList.isNotEmpty()) {
-                penaltyDummyData.filterIsInstance<ItemDetailPenaltyFilterUiModel>()
-                        .firstOrNull()?.itemSortFilterWrapperList = itemSortFilterWrapperList
+            if (penaltyDataWrapper == null) {
+                val penaltyDummyData = penaltyMapper.mapToPenaltyDataDummy()
+                penaltyDataWrapper = penaltyDummyData
+                itemSortFilterWrapperList = penaltyDataWrapper?.itemDetailPenaltyFilterUiModel?.itemSortFilterWrapperList?.toMutableList() ?: mutableListOf()
             } else {
-                itemSortFilterWrapperList = penaltyDummyData.filterIsInstance<ItemDetailPenaltyFilterUiModel>()
-                        .firstOrNull()?.itemSortFilterWrapperList?.toMutableList() ?: mutableListOf()
+                penaltyDataWrapper?.itemDetailPenaltyFilterUiModel?.itemSortFilterWrapperList = itemSortFilterWrapperList
             }
-            _penaltyPageData.value = Success(penaltyDummyData)
+            penaltyDataWrapper?.let {
+                _penaltyPageData.value = Success(it)
+            }
         }
     }
 
     fun getFilterPenalty(itemFilterTypePenalty: List<FilterTypePenaltyUiModelWrapper.ItemFilterTypePenalty>) {
         launchCatchError(block = {
-            penaltyFilterUiModel.clear()
             val filterPenaltyList = penaltyMapper.mapToPenaltyFilterBottomSheet()
             filterPenaltyList.find { it.title == ShopScoreConstant.TITLE_TYPE_PENALTY }?.chipsFilerList?.mapIndexed { index, data ->
                 data.isSelected = itemFilterTypePenalty.getOrNull(index)?.isSelected ?: false

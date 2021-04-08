@@ -21,6 +21,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.util.*
+import kotlin.math.max
 
 class PenaltyDateFilterBottomSheet : BaseBottomSheetShopScore() {
 
@@ -31,7 +32,7 @@ class PenaltyDateFilterBottomSheet : BaseBottomSheetShopScore() {
 
     private var mode: CalendarPickerView.SelectionMode = CalendarPickerView.SelectionMode.RANGE
 
-    private var selectedDates: List<Date> = emptyList()
+    private var selectedDates = mutableListOf<Date>()
 
     private var calenderFilterListener: CalenderListener? = null
 
@@ -79,15 +80,10 @@ class PenaltyDateFilterBottomSheet : BaseBottomSheetShopScore() {
 
     private fun setDefaultSelectedDate() {
         calendarView?.let { cpv ->
-            val startDate = selectedDates.firstOrNull()
-            val endDate = selectedDates.lastOrNull()
-            startDate?.let {
+            minDate = Date(getNowTimeStamp())
+            minDate?.let {
                 selectDate(cpv, it)
                 selectStartDate(it)
-            }
-            endDate?.let {
-                selectDate(cpv, it)
-                selectEndDate(it)
             }
         }
     }
@@ -102,12 +98,13 @@ class PenaltyDateFilterBottomSheet : BaseBottomSheetShopScore() {
     }
 
     private fun setupCalendarView() {
-        val minDate = getNPastMonthTimeStamp(3)
-        val maxDate = Date(getNowTimeStamp())
+        val initMinDate = getNPastMonthTimeStamp(3)
+        val initMaxDate = Date(getNowTimeStamp())
 
         calendarView?.let { cpv ->
-            cpv.init(minDate, maxDate, emptyList()).inMode(mode)
-            cpv.scrollToDate(maxDate)
+            cpv.init(initMinDate, initMaxDate, emptyList()).inMode(mode)
+            cpv.scrollToDate(initMaxDate)
+
             cpv.selectDateClickListener()
         }
     }

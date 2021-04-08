@@ -41,26 +41,11 @@ object ShopScoreConstant {
     const val IC_ORDER_PM_URL = "https://images.tokopedia.net/img/android/shop_score/ic_order_pm@3x.png"
     const val IC_INCOME_PM_URL = "https://images.tokopedia.net/img/android/shop_score/ic_income_pm@3x.png"
 
-    const val IC_VOUCHER_EXCLUSIVE_FEATURE_URL = "https://images.tokopedia.net/img/android/shop_score/ic_voucher_exclusive_feature@3x.png"
-    const val IC_FREE_SHIPPING_FEATURE_URL = "https://images.tokopedia.net/img/android/shop_score/ic_free_shipping_feature@3x.png"
-    const val IC_SPECIAL_DISCOUNT_FEATURE_URL = "https://images.tokopedia.net/img/android/shop_score/ic_special_discount_feature@3x.png"
-    const val IC_SPECIAL_RELEASE_FEATURE_URL = "https://images.tokopedia.net/img/android/shop_score/ic_special_release_feature@3x.png"
-    const val IC_TOP_ADS_FEATURE_URL = "https://images.tokopedia.net/img/android/shop_score/ic_topads_feature@3x.png"
-    const val IC_WIB_FEATURE_URL = "https://images.tokopedia.net/img/android/shop_score/ic_wib_feature@3x.png"
-    const val IC_BROADCAST_CHAT_FEATURE_URL = "https://images.tokopedia.net/img/android/shop_score/ic_broadcast_chat_feature@3x.png"
-    const val IC_ADMIN_FEATURE = "https://images.tokopedia.net/img/android/shop_score/ic_admin_feature@3x.png"
-
     const val IC_SELLER_ANNOUNCE = "https://images.tokopedia.net/img/android/shop_score/ic_seller_announce@3x.png"
     const val BG_HAS_PENALTY = "https://images.tokopedia.net/img/android/shop_score/bg_has_penalty@3x.png "
     const val BG_NO_PENALTY = "https://images.tokopedia.net/img/android/shop_score/bg_no_penalty@3x.png"
     const val BG_GREEN_TIMER = "https://images.tokopedia.net/img/android/shop_score/bg_green_timer@3x.png"
     const val BG_ORANGE_TIMER = "https://images.tokopedia.net/img/android/shop_score/bg_orange_timer@3x.png"
-
-    const val FREE_SHIPPING_URL = "https://m.tokopedia.com/bebas-ongkir"
-    const val SPECIAL_RELEASE_URL = "https://seller.tokopedia.com/rilisan-spesial"
-    const val SHOP_ADMIN_URL = "http://seller.tokopedia.com/shop/admin"
-    const val DISCOUNT_SHOP_URL = "https://seller.tokopedia.com/pengaturan-diskon"
-    const val BROADCAST_CHAT_URL = "https://m.tokopedia.com/broadcast-chat"
 
     const val PM_INACTIVE = "inactive"
     const val SUPPOSED_INACTIVE_TEXT = "nonaktif"
@@ -112,4 +97,6 @@ object ShopScoreConstant {
 
     const val SYSTEM_PENALTY_HELP_URL = "https://www.tokopedia.com/help/article/bagaimana-sistem-penalti-pengurangan-reputasi-toko"
     const val HELP_URL = "https://www.tokopedia.com/help"
+
+    const val PATTER_DATE_TEXT = "dd MMM yyyy"
 }

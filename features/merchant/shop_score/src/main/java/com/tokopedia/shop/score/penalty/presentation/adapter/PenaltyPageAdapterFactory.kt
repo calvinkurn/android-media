@@ -6,22 +6,11 @@ import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.shop.score.penalty.presentation.adapter.viewholder.*
-import com.tokopedia.shop.score.penalty.presentation.model.ItemCardShopPenaltyUiModel
-import com.tokopedia.shop.score.penalty.presentation.model.ItemDetailPenaltyFilterUiModel
 import com.tokopedia.shop.score.penalty.presentation.model.ItemPenaltyUiModel
 
-class PenaltyPageAdapterFactory(private val dateFilterPenaltyListener: FilterPenaltyListener,
-                                private val itemPenaltyDetailPenaltyListener: ItemDetailPenaltyListener,
-                                private val itemCardShopPenaltyListener: ItemCardShopPenaltyListener
+class PenaltyPageAdapterFactory(
+        private val itemPenaltyDetailPenaltyListener: ItemDetailPenaltyListener
 ): BaseAdapterTypeFactory(), PenaltyTypeFactory {
-
-    override fun type(itemCardShopPenaltyUiModel: ItemCardShopPenaltyUiModel): Int {
-        return ItemCardShopPenaltyViewHolder.LAYOUT
-    }
-
-    override fun type(itemDetailPenaltyFilterUiModel: ItemDetailPenaltyFilterUiModel): Int {
-        return ItemDetailPenaltyFilterViewHolder.LAYOUT
-    }
 
     override fun type(itemPenaltyUiModel: ItemPenaltyUiModel): Int {
         return ItemPenaltyViewHolder.LAYOUT
@@ -37,8 +26,6 @@ class PenaltyPageAdapterFactory(private val dateFilterPenaltyListener: FilterPen
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
-            ItemCardShopPenaltyViewHolder.LAYOUT -> ItemCardShopPenaltyViewHolder(parent, itemCardShopPenaltyListener)
-            ItemDetailPenaltyFilterViewHolder.LAYOUT -> ItemDetailPenaltyFilterViewHolder(parent, dateFilterPenaltyListener)
             ItemPenaltyViewHolder.LAYOUT -> ItemPenaltyViewHolder(parent, itemPenaltyDetailPenaltyListener)
             ItemPenaltyShimmerViewHolder.LAYOUT -> ItemPenaltyShimmerViewHolder(parent)
             ItemPenaltyEmptyViewHolder.LAYOUT -> ItemPenaltyEmptyViewHolder(parent)
