@@ -1,5 +1,6 @@
 package com.tokopedia.talk.analytics
 
+import android.app.Application
 import android.content.Intent
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions
@@ -15,8 +16,11 @@ import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.talk.R
 import com.tokopedia.talk.analytics.util.*
 import com.tokopedia.talk.analytics.util.TalkPageRobot.Companion.TALK_ITEM_THREAD_MESSAGE_PATH
+import com.tokopedia.talk.analytics.util.TalkPageRobot.Companion.TALK_VIEW_INBOX_TAB
+import com.tokopedia.talk.analytics.util.TalkPageRobot.Companion.TALK_VIEW_INBOX_THREAD
 import com.tokopedia.talk.feature.inbox.presentation.activity.TalkInboxActivity
 import com.tokopedia.talk.feature.inbox.presentation.adapter.viewholder.TalkInboxViewHolder
+import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import org.junit.After
 import org.junit.Before
@@ -36,7 +40,7 @@ class TalkInboxActivityTest {
 
         override fun beforeActivityLaunched() {
             super.beforeActivityLaunched()
-            fakeLogin()
+            login()
         }
 
         override fun getActivityIntent(): Intent {
@@ -72,9 +76,54 @@ class TalkInboxActivityTest {
         }
     }
 
+    @Test
+    fun validateLoadedViewThread() {
+        actionTest {
+            refreshView()
+        } assertTest {
+            performClose(activityRule)
+            waitForTrackerSent()
+            validate(gtmLogDBSource, targetContext, TALK_VIEW_INBOX_THREAD)
+            gtmLogDBSource.finishTest()
+        }
+    }
+
+    @Test
+    fun validateSwitchTab() {
+        actionTest {
+            swipeAnotherTab()
+        } assertTest {
+            performClose(activityRule)
+            waitForTrackerSent()
+            validate(gtmLogDBSource, targetContext, TALK_VIEW_INBOX_TAB)
+            gtmLogDBSource.finishTest()
+        }
+    }
+
     private fun clickItemThread() {
         pauseTestFor(2000L)
         val viewInteraction = onView(withId(R.id.talkInboxRecyclerView)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
         viewInteraction.perform(RecyclerViewActions.actionOnItemAtPosition<TalkInboxViewHolder>(0, ViewActions.click()))
+    }
+
+    private fun swipeAnotherTab(){
+        pauseTestFor(2000L)
+        val viewInteraction = onView(withId(R.id.talkInboxContainer)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+        viewInteraction.perform(ViewActions.swipeLeft())
+    }
+
+    private fun refreshView(){
+        pauseTestFor(2000L)
+        val viewInteraction = onView(withId(R.id.talkInboxContainer)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+        viewInteraction.perform(ViewActions.swipeDown())
+    }
+
+    private fun login(){
+        InstrumentationAuthHelper.loginToAnUser(
+                InstrumentationRegistry.getInstrumentation().targetContext.applicationContext as Application,
+                null,
+                "evy.maria@tokopedia.com",
+                "tokopedia888"
+        )
     }
 }
