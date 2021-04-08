@@ -106,6 +106,10 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
     }
 
     private fun prepareView() {
+        if (stepperModel?.redirectionToSummary == true) {
+            btn_next?.text = getString(R.string.topads_common_save_butt)
+        }
+
         addKeyword?.setOnClickListener {
             val intent = Intent(context, KeywordSuggestionActivity::class.java)
             stepperModel?.selectedKeywordStage = getItemSelected()
@@ -384,6 +388,14 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
         })
         bid_list.adapter = bidInfoAdapter
         bid_list.layoutManager = LinearLayoutManager(context)
+        tipView?.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
+        bottom?.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
+        if(tipView!=null && bottom!=null) {
+            val heightButton = tipView.measuredHeight
+            val bottomHeight = bottom.measuredHeight
+            val height = (heightButton + bottomHeight)
+            bid_list?.setPadding(0, 0, 0, height)
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

@@ -91,8 +91,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_16"
-        android:layout_marginEnd="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginEnd="@dimen/dp_16"
         app:layout_constraintTop_toBottomOf="@id/separator">
 
         <com.tokopedia.unifyprinciples.Typography
@@ -153,10 +153,10 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginTop="@dimen/dp_12"
+        app:layout_constraintBottom_toTopOf="@id/selected_info"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/headlineList"
-        app:layout_constraintBottom_toTopOf="@id/selected_info"
         tools:itemCount="5"
         tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         tools:listitem="@layout/topads_create_layout_keyword_list_item" />
@@ -168,10 +168,10 @@
         android:layout_height="0dp"
         android:layout_marginTop="@dimen/dp_12"
         android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@id/selected_info"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/headlineList"
-        app:layout_constraintBottom_toTopOf="@id/selected_info"
         tools:itemCount="5"
         tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         tools:listitem="@layout/topads_create_layout_keyword_list_item"
