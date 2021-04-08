@@ -370,6 +370,7 @@ class PlayAnalytic(
     }
 
     fun impressionFeaturedProduct(featuredProduct: PlayProductUiModel.Product, position: Int) {
+        val finalPosition = position + 1
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
                 mapOf(
                         KEY_EVENT to "productView",
@@ -383,7 +384,7 @@ class PlayAnalytic(
                         "ecommerce" to hashMapOf(
                                 "currencyCode" to "IDR",
                                 "impressions" to mutableListOf(
-                                        convertProductToHashMapWithList(featuredProduct, position,"featured product")
+                                        convertProductToHashMapWithList(featuredProduct, finalPosition,"featured product")
                                 )
                         )
                 )
