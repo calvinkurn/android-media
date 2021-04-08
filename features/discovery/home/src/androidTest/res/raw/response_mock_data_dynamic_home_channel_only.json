@@ -27,7 +27,7 @@
                         "expiredTime": "",
                         "backColor": "",
                         "backImage": "",
-                        "textColor": "#000000"
+                        "textColor": ""
                     },
                     "grids": [{
                         "id": 160305,
@@ -238,7 +238,7 @@
                         "text_color": "",
                         "image_url": "",
                         "attribution": "",
-                        "gradient_color": ["#FFFFFF"]
+                        "gradient_color": []
                     }
                 },
                 {
@@ -416,7 +416,7 @@
                         "text_color": "",
                         "image_url": "",
                         "attribution": "",
-                        "gradient_color": ["#FFFFFF"]
+                        "gradient_color": []
                     }
                 },
                 {
@@ -559,7 +559,7 @@
                         "text_color": "",
                         "image_url": "",
                         "attribution": "",
-                        "gradient_color": ["#FFFFFF"]
+                        "gradient_color": []
                     }
                 },
                 {
@@ -588,7 +588,7 @@
                         "expiredTime": "",
                         "backColor": "",
                         "backImage": "",
-                        "textColor": "#000000"
+                        "textColor": ""
                     },
                     "hero": null,
                     "grids": [
@@ -667,9 +667,7 @@
                         "text_color": "",
                         "image_url": "",
                         "attribution": "",
-                        "gradient_color": [
-                            "#FFFFFF"
-                        ]
+                        "gradient_color": []
                     }
                 },
                 {
@@ -698,12 +696,12 @@
                         "expiredTime": "",
                         "backColor": "",
                         "backImage": "",
-                        "textColor": "#000000"
+                        "textColor": ""
                     },
                     "grids": [
                         {
                             "id": 1768,
-                            "back_color": "#ff5c84",
+                            "back_color": "red",
                             "name": "Atasan Wanita",
                             "url": "https://www.tokopedia.com/rekomendasi/0/d/?ref=channel_banner&category_id=1768&search_ref=homepage.4_banners_auto.2.1768.38550&max_cashback=96",
                             "applink": "tokopedia://rekomendasi/0/d/?ref=channel_banner&max_cashback=96&category_id=1768&search_ref=homepage.4_banners_auto.2.1768.38550",
@@ -737,11 +735,11 @@
                                 "type": "Cashback Hingga",
                                 "value": "96%"
                             },
-                            "textColor": "#FFFFFF"
+                            "textColor": ""
                         },
                         {
                             "id": 1899,
-                            "back_color": "#1aaba6",
+                            "back_color": "red",
                             "name": "Jilbab",
                             "url": "https://www.tokopedia.com/rekomendasi/0/d/?ref=channel_banner&max_cashback=99&category_id=1899&search_ref=homepage.4_banners_auto.2.1899.38550",
                             "applink": "tokopedia://rekomendasi/0/d/?ref=channel_banner&search_ref=homepage.4_banners_auto.2.1899.38550&max_cashback=99&category_id=1899",
@@ -775,11 +773,11 @@
                                 "type": "Cashback Hingga",
                                 "value": "99%"
                             },
-                            "textColor": "#FFFFFF"
+                            "textColor": ""
                         },
                         {
                             "id": 863,
-                            "back_color": "#1aaba6",
+                            "back_color": "red",
                             "name": "Pendidikan",
                             "url": "https://www.tokopedia.com/rekomendasi/0/d/?ref=channel_banner&max_cashback=95&category_id=863&search_ref=homepage.4_banners_auto.2.863.38550",
                             "applink": "tokopedia://rekomendasi/0/d/?ref=channel_banner&max_cashback=95&category_id=863&search_ref=homepage.4_banners_auto.2.863.38550",
@@ -813,11 +811,11 @@
                                 "type": "Cashback Hingga",
                                 "value": "95%"
                             },
-                            "textColor": "#FFFFFF"
+                            "textColor": ""
                         },
                         {
                             "id": 3441,
-                            "back_color": "#ff8b00",
+                            "back_color": "red",
                             "name": "Perlengkapan Cuci Piring",
                             "url": "https://www.tokopedia.com/rekomendasi/0/d/?ref=channel_banner&max_cashback=99&category_id=3441&search_ref=homepage.4_banners_auto.2.3441.38550",
                             "applink": "tokopedia://rekomendasi/0/d/?ref=channel_banner&max_cashback=99&category_id=3441&search_ref=homepage.4_banners_auto.2.3441.38550",
@@ -851,7 +849,7 @@
                                 "type": "Cashback Hingga",
                                 "value": "99%"
                             },
-                            "textColor": "#FFFFFF"
+                            "textColor": ""
                         }
                     ],
                     "banner": {
@@ -870,16 +868,14 @@
                         "text_color": "",
                         "image_url": "",
                         "attribution": "",
-                        "gradient_color": [
-                            "#FFFFFF"
-                        ]
+                        "gradient_color": []
                     }
                 },
                 {
                     "banner": {
                         "applink": "tokopedia://discovery/kejar-diskon?source=homepage.6_image_auto.0.71344",
                         "attribution": "",
-                        "back_color": "#346eeb",
+                        "back_color": "red",
                         "cta": {
                             "coupon_code": "",
                             "mode": "",
@@ -887,12 +883,10 @@
                             "type": ""
                         },
                         "description": "",
-                        "gradient_color": [
-                            "#FFFFFF"
-                        ],
+                        "gradient_color": [],
                         "id": 10197,
                         "image_url": "https://ecs7-p.tokopedia.net/img/PYbRbC/2021/1/28/e6a29f96-c463-4960-91ce-90ddf8678567.png",
-                        "text_color": "#ffffff",
+                        "text_color": "",
                         "title": "",
                         "url": "https://www.tokopedia.com/discovery/kejar-diskon"
                     },
@@ -1079,7 +1073,7 @@
                         "name": "Android Test - Lego 6 Auto",
                         "serverTime": 0,
                         "subtitle": "",
-                        "textColor": "#000000",
+                        "textColor": "",
                         "url": "https://www.tokopedia.com/discovery/kejar-diskon"
                     },
                     "id": 71344,
@@ -1119,7 +1113,7 @@
                         "expiredTime": "",
                         "backColor": "",
                         "backImage": "",
-                        "textColor": "#000000"
+                        "textColor": ""
                     },
                     "grids": [
                         {
@@ -1190,13 +1184,10 @@
                             "coupon_code": ""
                         },
                         "applink": "tokopedia://discovery/produk-baru?source=homepage.list_carousel.0.25744",
-                        "text_color": "#ffffff",
+                        "text_color": "",
                         "image_url": "",
                         "attribution": "",
-                        "gradient_color": [
-                            "#8600b3",
-                            "#00b37a"
-                        ]
+                        "gradient_color": []
                     }
                 },
                 {
@@ -1225,7 +1216,7 @@
                         "expiredTime": "",
                         "backColor": "red",
                         "backImage": "",
-                        "textColor": "#000000"
+                        "textColor": ""
                     },
                     "grids": [
                         {
@@ -1278,7 +1269,7 @@
                         "title": "",
                         "description": "",
                         "url": "",
-                        "back_color": "#ffffff",
+                        "back_color": "",
                         "cta": {
                             "type": "",
                             "mode": "",
@@ -1286,13 +1277,10 @@
                             "coupon_code": ""
                         },
                         "applink": "",
-                        "text_color": "#ffffff",
+                        "text_color": "",
                         "image_url": "",
                         "attribution": "",
-                        "gradient_color": [
-                            "#c97de3",
-                            "#4e9985"
-                        ]
+                        "gradient_color": []
                     }
                 },
                 {
@@ -1321,7 +1309,7 @@
                         "expiredTime": "",
                         "backColor": "red",
                         "backImage": "",
-                        "textColor": "#000000"
+                        "textColor": ""
                     },
                     "grids": [
                         {
@@ -1569,9 +1557,7 @@
                         "text_color": "",
                         "image_url": "",
                         "attribution": "",
-                        "gradient_color": [
-                            "#FFFFFF"
-                        ]
+                        "gradient_color": []
                     }
                 },
                 {
@@ -1599,7 +1585,7 @@
                         "expiredTime": "2020-07-23T23:59:00+07:00",
                         "backColor": "",
                         "backImage": "",
-                        "textColor": "#000000"
+                        "textColor": ""
                     },
                     "grids": [
                         {
@@ -1674,7 +1660,7 @@
                         "title": "",
                         "description": "",
                         "url": "https://www.tokopedia.com/discovery/pengguna-baru?source=home",
-                        "back_color": "#005C98",
+                        "back_color": "",
                         "cta": {
                             "type": "",
                             "mode": "",
@@ -1682,10 +1668,10 @@
                             "coupon_code": ""
                         },
                         "applink": "tokopedia://discovery/pengguna-baru?source=home",
-                        "text_color": "#ffffff",
+                        "text_color": "",
                         "image_url": "https://ecs7-p.tokopedia.net/img/cache/240/PYbRbC/2020/7/21/15355103-6e76-48ee-a8bb-c455adecdf47.png",
                         "attribution": "X_PG_NUZ_Deal Pengguna Baru_July 20",
-                        "gradient_color": ["#005C98"]
+                        "gradient_color": []
                     }
                 },
                 {
@@ -1713,7 +1699,7 @@
                         "expiredTime": "",
                         "backColor": "",
                         "backImage": "",
-                        "textColor": "#000000"
+                        "textColor": ""
                     },
                     "grids": [
                         {
@@ -1788,7 +1774,7 @@
                         "title": "",
                         "description": "",
                         "url": "",
-                        "back_color": "#ffffff",
+                        "back_color": "",
                         "cta": {
                             "type": "",
                             "mode": "",
@@ -1796,10 +1782,10 @@
                             "coupon_code": ""
                         },
                         "applink": "",
-                        "text_color": "#ffffff",
+                        "text_color": "",
                         "image_url": "https://ecs7-p.tokopedia.net/img/attachment/2020/4/20/88321389/88321389_45a5c71e-a590-48d8-8753-70ed4a3b6ca0.jpg",
                         "attribution": "",
-                        "gradient_color": ["#FFFFFF", "#FFFFFF"]
+                        "gradient_color": []
                     }
                 },
                 {
@@ -1836,7 +1822,7 @@
                         "expiredTime": "",
                         "backColor": "red",
                         "backImage": "",
-                        "textColor": "#000000"
+                        "textColor": ""
                     },
                     "grids": [{
                         "id": 105704,
@@ -1951,7 +1937,7 @@
                         "text_color": "",
                         "image_url": "",
                         "attribution": "",
-                        "gradient_color": ["#FFFFFF"]
+                        "gradient_color": []
                     }
                 },
                 {

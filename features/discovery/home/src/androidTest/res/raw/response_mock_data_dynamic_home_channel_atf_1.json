@@ -33,7 +33,7 @@
                             "expiredTime": "",
                             "backColor": "",
                             "backImage": "",
-                            "textColor": "#000000"
+                            "textColor": ""
                         },
                         "grids": [
                             {
@@ -135,9 +135,7 @@
                             "text_color": "",
                             "image_url": "",
                             "attribution": "",
-                            "gradient_color": [
-                                "#FFFFFF"
-                            ]
+                            "gradient_color": []
                         }
                     }
                 ]
