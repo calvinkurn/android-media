@@ -12,7 +12,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.ImageView
-import android.widget.Toast
 import androidx.annotation.StringRes
 import androidx.collection.ArrayMap
 import androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -257,12 +256,12 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         }
     }
 
-    override fun hasProductPreviewShown(): Boolean {
+    private fun hasProductPreviewShown(): Boolean {
         return getViewState().hasProductPreviewShown()
     }
 
-    private fun shouldShowSrw(): Boolean {
-        return !isSeller() && hasProductPreviewShown()
+    override fun shouldShowSrw(): Boolean {
+        return !isSeller() && hasProductPreviewShown() && rvSrw?.isAllowToShow() == true
     }
 
     private fun initReplyTextWatcher() {
@@ -483,6 +482,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     private fun setupPresenter(savedInstanceState: Bundle?) {
         presenter.attachView(this)
+        getViewState().attachFragmentView(this)
     }
 
     private fun setupArguments(savedInstanceState: Bundle?) {

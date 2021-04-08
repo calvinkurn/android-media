@@ -35,6 +35,7 @@ import com.tokopedia.topchat.chatroom.view.custom.ChatMenuView
 import com.tokopedia.topchat.chatroom.view.listener.HeaderMenuListener
 import com.tokopedia.topchat.chatroom.view.listener.ImagePickerListener
 import com.tokopedia.topchat.chatroom.view.listener.SendButtonListener
+import com.tokopedia.topchat.chatroom.view.listener.TopChatContract
 import com.tokopedia.topchat.chatroom.view.viewmodel.ReplyParcelableModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendablePreview
 import com.tokopedia.topchat.chattemplate.view.adapter.TemplateChatAdapter
@@ -74,6 +75,7 @@ class TopChatViewStateImpl constructor(
     private var userStatus: Typography? = null
     private var typingImage: ImageUnify? = null
     private var typingText: Typography? = null
+    private var fragmentView: TopChatContract.View? = null
 
     lateinit var attachmentPreviewAdapter: AttachmentPreviewAdapter
     lateinit var templateAdapter: TemplateChatAdapter
@@ -614,10 +616,14 @@ class TopChatViewStateImpl constructor(
         val isLastMsgFromBroadcastAndIamBuyer = lastMessageBroadcast && amIBuyer
         if (templateAdapter.hasTemplateChat() &&
                 !isLastMsgFromBroadcastAndIamBuyer &&
-                !hasProductPreviewShown() &&
-                !templateRecyclerView.isVisible ) {
+                fragmentView?.shouldShowSrw() == false &&
+                !templateRecyclerView.isVisible) {
             showTemplateChat()
         }
+    }
+
+    override fun attachFragmentView(fragmentView: TopChatContract.View) {
+        this.fragmentView = fragmentView
     }
 
     fun setTemplate(
@@ -630,7 +636,8 @@ class TopChatViewStateImpl constructor(
         listTemplate?.let {
             templateAdapter.list = listTemplate
             if (templateAdapter.hasTemplateChat() &&
-                    !isLastMsgFromBroadcastAndIamBuyer && !hasProductPreviewShown()) {
+                    !isLastMsgFromBroadcastAndIamBuyer &&
+                    fragmentView?.shouldShowSrw() == false) {
                 showTemplateChat()
             } else {
                 hideTemplateChat()

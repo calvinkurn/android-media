@@ -69,7 +69,7 @@ interface TopChatContract {
 
         fun renderBackground(url: String)
         fun updateSrwState()
-        fun hasProductPreviewShown(): Boolean
+        fun shouldShowSrw(): Boolean
     }
 
     interface Presenter : BaseChatContract.Presenter<View> {

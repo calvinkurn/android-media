@@ -66,6 +66,10 @@ class SrwLinearLayout : LinearLayout {
         typeFactory.srwQuestionListener = listener
     }
 
+    fun isAllowToShow(): Boolean {
+        return chatSmartReplyQuestion.hasQuestion
+    }
+
     private fun initViewLayout() {
         View.inflate(context, LAYOUT, this)
     }
