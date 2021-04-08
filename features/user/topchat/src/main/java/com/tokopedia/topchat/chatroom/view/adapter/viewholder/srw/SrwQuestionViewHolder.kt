@@ -27,7 +27,7 @@ class SrwQuestionViewHolder constructor(
     }
 
     private fun bindClick(element: QuestionUiModel) {
-        title?.setOnClickListener {
+        itemView.setOnClickListener {
             listener?.onClickSrwQuestion(element)
         }
     }
