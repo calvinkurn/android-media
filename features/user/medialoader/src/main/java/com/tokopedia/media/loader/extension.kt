@@ -42,7 +42,6 @@ inline fun ImageView.loadImageFitCenter(
         crossinline properties: Properties.() -> Unit = {}
 ) = call(url, Properties().apply(properties).also {
     it.transform(fitCenter)
-    it.useBlurHash(false)
 })
 
 inline fun ImageView.loadImageWithoutPlaceholder(
@@ -50,7 +49,6 @@ inline fun ImageView.loadImageWithoutPlaceholder(
         crossinline properties: Properties.() -> Unit = {}
 ) = call(url, Properties().apply(properties).also {
     it.setPlaceHolder(-1)
-    it.useBlurHash(false)
 })
 
 inline fun ImageView.loadImageCircle(
@@ -104,6 +102,7 @@ internal fun ImageView.call(source: Any?, properties: Properties) {
                     imageView = this,
                     properties = properties.apply {
                         // passing the image source (url, uri, etc.)
+                        useBlurHash(false)
                         setSource(source)
                     }
             )
