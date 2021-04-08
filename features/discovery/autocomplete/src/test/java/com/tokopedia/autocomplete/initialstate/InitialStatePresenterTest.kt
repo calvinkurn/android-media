@@ -96,6 +96,10 @@ internal class InitialStatePresenterTest: InitialStatePresenterTestFixtures() {
         Assert.assertTrue(visitableList[7] is PopularSearchViewModel)
         Assert.assertTrue(visitableList[8] is DynamicInitialStateTitleViewModel)
         Assert.assertTrue(visitableList[9] is DynamicInitialStateSearchViewModel)
+        /*
+            Backend not ready, will be implemented after the new field is already in production.
+            Estimated release on 3.124
+        */
 //        Assert.assertTrue(visitableList[10] is InitialStateProductLineTitleDataView)
 //        Assert.assertTrue(visitableList[11] is InitialStateProductListDataView)
         Assert.assertTrue(visitableList.size == 10)

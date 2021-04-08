@@ -34,7 +34,7 @@ class InitialStateProductLineViewHolder(
         val layoutParams = itemView.autocompleteProductItem.layoutParams
 
         if (item.hasSlashedPrice()) layoutParams.height = itemView.context.resources.getDimensionPixelSize(R.dimen.autocomplete_product_triple_line_height)
-        else layoutParams.height = itemView.context.resources.getDimensionPixelSize(R.dimen.autocomplete_product_double_line_height)
+        else layoutParams.height = itemView.context.resources.getDimensionPixelSize(R.dimen.autocomplete_initial_state_product_double_line_height)
 
         itemView.autocompleteProductItem.layoutParams = layoutParams
     }
@@ -62,8 +62,8 @@ class InitialStateProductLineViewHolder(
     }
 
     private fun setTitle(item: BaseItemInitialStateSearch) {
-        itemView.autocompleteProductTitle?.fontType = Typography.BODY_3
-        itemView.autocompleteProductTitle?.weightType = Typography.REGULAR
+        itemView.autocompleteProductTitle?.setType(Typography.BODY_3)
+        itemView.autocompleteProductTitle?.setWeight(Typography.REGULAR)
 
         itemView.autocompleteProductTitle?.setTextAndCheckShow(item.title)
     }
@@ -96,8 +96,8 @@ class InitialStateProductLineViewHolder(
     }
 
     private fun setPrice(item: BaseItemInitialStateSearch) {
-        itemView.autocompleteProductPrice?.fontType = Typography.BODY_2
-        itemView.autocompleteProductPrice?.weightType = Typography.BOLD
+        itemView.autocompleteProductPrice?.setType(Typography.BODY_2)
+        itemView.autocompleteProductPrice?.setWeight(Typography.BOLD)
 
         itemView.autocompleteProductPrice?.setTextAndCheckShow(item.subtitle)
     }

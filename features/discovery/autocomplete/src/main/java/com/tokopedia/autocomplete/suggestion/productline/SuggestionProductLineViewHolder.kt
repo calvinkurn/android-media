@@ -49,7 +49,7 @@ class SuggestionProductLineViewHolder(
         val layoutParams = itemView.autocompleteProductItem.layoutParams
 
         if (item.hasSlashedPrice()) layoutParams.height = itemView.context.resources.getDimensionPixelSize(R.dimen.autocomplete_product_triple_line_height)
-        else layoutParams.height = itemView.context.resources.getDimensionPixelSize(R.dimen.autocomplete_product_double_line_height)
+        else layoutParams.height = itemView.context.resources.getDimensionPixelSize(R.dimen.autocomplete_suggestion_product_double_line_height)
 
         itemView.autocompleteProductItem.layoutParams = layoutParams
     }
@@ -86,8 +86,8 @@ class SuggestionProductLineViewHolder(
     }
 
     private fun setTitle(item: SuggestionProductLineDataView) {
-        itemView.autocompleteProductTitle?.fontType = Typography.BODY_2
-        itemView.autocompleteProductTitle?.weightType = Typography.REGULAR
+        itemView.autocompleteProductTitle?.setType(Typography.BODY_2)
+        itemView.autocompleteProductTitle?.setWeight(Typography.REGULAR)
 
         if (searchQueryStartIndexInKeyword == -1) itemView.autocompleteProductTitle?.text = MethodChecker.fromHtml(item.title)
         else itemView.autocompleteProductTitle?.text = getHighlightedTitle(item)
@@ -148,8 +148,8 @@ class SuggestionProductLineViewHolder(
     }
 
     private fun setPrice(item: SuggestionProductLineDataView) {
-        itemView.autocompleteProductPrice?.fontType = Typography.BODY_3
-        itemView.autocompleteProductPrice?.weightType = Typography.BOLD
+        itemView.autocompleteProductPrice?.setType(Typography.BODY_3)
+        itemView.autocompleteProductPrice?.setWeight(Typography.BOLD)
 
         itemView.autocompleteProductPrice?.setTextAndCheckShow(item.subtitle)
     }

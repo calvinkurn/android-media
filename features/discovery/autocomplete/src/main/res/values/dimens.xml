@@ -8,7 +8,8 @@
     <dimen name="dp_6">6dp</dimen>
 
     <dimen name="autocomplete_product_triple_line_height">82dp</dimen>
-    <dimen name="autocomplete_product_double_line_height">72dp</dimen>
+    <dimen name="autocomplete_initial_state_product_double_line_height">72dp</dimen>
+    <dimen name="autocomplete_suggestion_product_double_line_height">60dp</dimen>
 
     <dimen name="autocomplete_product_initial_state_image_size">46dp</dimen>
     <dimen name="autocomplete_product_suggestion_image_size">32dp</dimen>
