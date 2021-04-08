@@ -1347,12 +1347,14 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             }
             adapter?.submitList(data)
             (data.firstOrNull { it is HomeHeaderOvoDataModel } as? HomeHeaderOvoDataModel)?.let {
-                Handler().postDelayed({
-                    val isBalanceWidgetNotEmpty = it.headerDataModel?.homeBalanceModel?.balanceDrawerItemModels?.isNotEmpty()
-                            ?: false
-                    if (!coachMarkIsShowing && !bottomSheetIsShowing && isBalanceWidgetNotEmpty)
-                        showCoachMark()
-                }, 5000)
+                val isBalanceWidgetNotEmpty = it.headerDataModel?.homeBalanceModel?.balanceDrawerItemModels?.isNotEmpty()
+                        ?: false
+                if (isBalanceWidgetNotEmpty) {
+                    Handler().postDelayed({
+                        if (!coachMarkIsShowing && !bottomSheetIsShowing)
+                            showCoachMark()
+                    }, 5000)
+                }
             }
         }
     }
