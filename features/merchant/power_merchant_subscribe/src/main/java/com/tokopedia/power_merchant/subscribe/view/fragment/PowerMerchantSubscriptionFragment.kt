@@ -199,7 +199,7 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
             val message = getString(R.string.pm_cancel_pm_deactivation_success)
             val actionText = getString(R.string.power_merchant_ok_label)
             Toaster.toasterCustomBottomHeight = context.resources.getDimensionPixelSize(R.dimen.layout_lvl2)
-            Toaster.build(rvPmRegistration, message, Toaster.LENGTH_SHORT,
+            Toaster.build(rvPmRegistration, message, Toaster.LENGTH_LONG,
                     Toaster.TYPE_NORMAL, actionText)
                     .show()
         }
