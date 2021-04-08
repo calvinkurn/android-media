@@ -62,6 +62,8 @@
     <string name="path_mitra_toppers_dashboard" translatable="false">/mitra-toppers-dashboard</string>
     <string name="path_seller_info" translatable="false">/seller-info</string>
     <string name="path_shop_favourite_list" translatable="false">/shop-favourites</string>
+    <string name="path_shop_favourite_list_with_shop_id" translatable="false">/shop-page/.*\\/shop-favourites</string>
+    <string name="path_shop_page_setting_customer_app_with_shop_id" translatable="false">/shop-page/.*\\/settings</string>
 
     <string name="path_review_inbox" translatable="false">/review</string>
     <string name="path_review_detail_buyer" translatable="false">/review/detail/.*\\/</string>
@@ -87,7 +89,6 @@
 
     <string name="path_district_recommendation_shop_settings" translatable="false">/district-recommendation-shop-settings</string>
     <string name="path_geolocation" translatable="false">/geolocation</string>
-    <string name="path_cod" translatable="false">/cod</string>
 
     <string name="path_chat_search">/chat-search</string>
     <string name="path_chat_template_setting">/chat/settings/templatechat</string>

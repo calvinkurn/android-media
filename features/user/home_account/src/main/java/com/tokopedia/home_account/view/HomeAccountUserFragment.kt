@@ -11,6 +11,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -26,6 +27,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.coachmark.CoachMark2
@@ -72,6 +74,7 @@ import com.tokopedia.home_account.view.viewholder.MemberItemViewHolder.Companion
 import com.tokopedia.home_account.view.viewholder.MemberItemViewHolder.Companion.TYPE_TOPQUEST
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.navigation_common.model.WalletModel
 import com.tokopedia.network.utils.ErrorHandler
@@ -80,12 +83,17 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.searchbar.helper.ViewHelper
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
+import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.searchbar.navigation_component.listener.NavRecyclerViewScrollListener
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.trackingoptimizer.TrackingQueue
+import com.tokopedia.unifycomponents.CardUnify
+import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.LocalLoad
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -141,6 +149,10 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
     var appBarCollapseListener: onAppBarCollapseListener? = null
     var isNeedRefreshProfileItems = true
     var coachMark: CoachMark2? = null
+    var memberLocalLoad: LocalLoad? = null
+    var memberCardView: CardUnify? = null
+    var memberTitle: Typography? = null
+    var memberIcon: ImageUnify? = null
 
     override fun getScreenName(): String = "homeAccountUserFragment"
 
@@ -174,14 +186,14 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
     }
 
     private fun setupObserver() {
-        viewModel.buyerAccountDataData.observe(viewLifecycleOwner, Observer {
+        viewModel.buyerAccountDataData.observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> onSuccessGetBuyerAccount(it.data)
                 is Fail -> onFailGetData()
             }
         })
 
-        viewModel.firstRecommendationData.observe(viewLifecycleOwner, Observer {
+        viewModel.firstRecommendationData.observe(viewLifecycleOwner, {
             removeLoadMoreLoading()
             when (it) {
                 is Success -> onSuccessGetFirstRecommendationData(it.data)
@@ -192,7 +204,7 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
             }
         })
 
-        viewModel.getRecommendationData.observe(viewLifecycleOwner, Observer {
+        viewModel.getRecommendationData.observe(viewLifecycleOwner, {
             removeLoadMoreLoading()
             when (it) {
                 is Success -> addRecommendationItem(it.data)
@@ -203,7 +215,7 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
             }
         })
 
-        viewModel.ovoBalance.observe(viewLifecycleOwner, Observer {
+        viewModel.ovoBalance.observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> {
                     onSuccessGetOvoBalance(it.data)
@@ -214,20 +226,27 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
             }
         })
 
-        viewModel.shortcutData.observe(viewLifecycleOwner, Observer {
+        viewModel.shortcutData.observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> {
+                    memberLocalLoad?.hide()
+                    memberCardView?.show()
+
+                    val leftMargin = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 6f, resources.displayMetrics)
+                    memberTitle?.setMargin(leftMargin.toInt(), 0, 0,  0)
+                    memberTitle?.text = it.data.tokopointsStatusFiltered.statusFilteredData.tier.nameDesc
+                    memberIcon?.show()
+                    memberIcon?.setImageUrl(it.data.tokopointsStatusFiltered.statusFilteredData.tier.imageURL)
+
                     val mappedMember = mapper.mapMemberItemDataView(it.data)
                     memberAdapter?.addItems(mappedMember)
                     memberAdapter?.notifyDataSetChanged()
-                    adapter?.notifyItemChanged(0)
+                    adapter?.notifyDataSetChanged()
                 }
 
                 is Fail -> {
-                    memberAdapter?.addItems(listOf(MemberItemDataView(
-                            type = AccountConstants.LAYOUT.TYPE_ERROR
-                    )))
-                    adapter?.notifyItemChanged(0)
+                    memberCardView?.hide()
+                    memberLocalLoad?.show()
                 }
             }
         })
@@ -267,6 +286,7 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
     }
 
     private fun onSuccessGetUserPageAssetConfig(userPageAssetConfig: UserPageAssetConfig) {
+        financialAdapter?.removeByType(ErrorFinancialViewHolder.ERROR_TYPE)
         var ovoUserPageAssetConfigData = UserPageAssetConfigData()
         var tokopointUserPageAssetConfigData = UserPageAssetConfigData()
         userPageAssetConfig.userPageAssetConfig.forEach { userPageAssetConfigData ->
@@ -295,49 +315,61 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
     }
 
     private fun onFailedGetUserPageAssetConfig() {
+        ErrorFinancialViewHolder.ERROR_TYPE
         financialAdapter?.showError()
+        adapter?.notifyDataSetChanged()
     }
 
     private fun onSuccessGetTokopointsDrawerList(tokopointsDrawerList: TokopointsDrawerList) {
+        financialAdapter?.removeByType(ErrorFinancialItemViewHolder.TYPE_ERROR_TOKOPOINTS)
+        val mappedData = mapper.mapTokopoints(tokopointsDrawerList)
+        financialAdapter?.addSingleItem(mappedData)
+        adapter?.notifyDataSetChanged()
+    }
+
+    private fun onFailedGetTokopointsDrawerList() {
         context?.let {
-            val mappedData = mapper.mapTokopoints(tokopointsDrawerList)
+            financialAdapter?.removeByType(ErrorFinancialItemViewHolder.TYPE_ERROR_TOKOPOINTS)
+            val mappedData = mapper.mapError(it, ErrorFinancialItemViewHolder.TYPE_ERROR_TOKOPOINTS, R.drawable.ic_account_tokopoint)
             financialAdapter?.addSingleItem(mappedData)
             adapter?.notifyDataSetChanged()
         }
     }
 
-    private fun onFailedGetTokopointsDrawerList() {
-        val mappedData = mapper.mapError(context, ErrorFinancialItemViewHolder.TYPE_ERROR_TOKOPOINTS, R.drawable.ic_account_tokopoint)
-        financialAdapter?.addSingleItem(mappedData)
-        adapter?.notifyDataSetChanged()
-    }
-
     private fun onSuccessGetSaldoBalance(balance: Balance) {
         context?.let {
-            val mappedData = mapper.mapSaldo(context, balance)
+            financialAdapter?.removeByType(ErrorFinancialItemViewHolder.TYPE_ERROR_SALDO)
+            val mappedData = mapper.mapSaldo(it, balance)
             financialAdapter?.addSingleItem(mappedData)
             adapter?.notifyDataSetChanged()
         }
     }
 
     private fun onFailedGetSaldoBalance() {
-        val mappedData = mapper.mapError(context, ErrorFinancialItemViewHolder.TYPE_ERROR_SALDO, R.drawable.ic_account_balance)
-        financialAdapter?.addSingleItem(mappedData)
-        adapter?.notifyDataSetChanged()
+        context?.let {
+            financialAdapter?.removeByType(ErrorFinancialItemViewHolder.TYPE_ERROR_SALDO)
+            val mappedData = mapper.mapError(it, ErrorFinancialItemViewHolder.TYPE_ERROR_SALDO, R.drawable.ic_account_balance)
+            financialAdapter?.addSingleItem(mappedData)
+            adapter?.notifyDataSetChanged()
+        }
     }
 
     private fun onSuccessGetOvoBalance(walletModel: WalletModel) {
         context?.let {
-            val mappedMember = mapper.mapToFinancialData(context, walletModel)
+            financialAdapter?.removeByType(ErrorFinancialItemViewHolder.TYPE_ERROR_OVO)
+            val mappedMember = mapper.mapToFinancialData(it, walletModel)
             financialAdapter?.addSingleItem(mappedMember)
             adapter?.notifyDataSetChanged()
         }
     }
 
     private fun onFailedGetOvoBalance() {
-        val mappedData = mapper.mapError(context, ErrorFinancialItemViewHolder.TYPE_ERROR_OVO, R.drawable.ic_account_ovo)
-        financialAdapter?.addSingleItem(mappedData)
-        adapter?.notifyDataSetChanged()
+        context?.let {
+            financialAdapter?.removeByType(ErrorFinancialItemViewHolder.TYPE_ERROR_OVO)
+            val mappedData = mapper.mapError(it, ErrorFinancialItemViewHolder.TYPE_ERROR_OVO, R.drawable.ic_account_ovo)
+            financialAdapter?.addSingleItem(mappedData)
+            adapter?.notifyDataSetChanged()
+        }
     }
 
     override fun onMemberErrorClicked() {
@@ -347,25 +379,23 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
     override fun onFinancialErrorClicked(type: Int) {
         when (type) {
             ErrorFinancialItemViewHolder.TYPE_ERROR_TOKOPOINTS -> {
-                financialAdapter?.removeByType(type)
                 viewModel.getTokopoints()
             }
             ErrorFinancialItemViewHolder.TYPE_ERROR_OVO -> {
-                financialAdapter?.removeByType(type)
                 viewModel.getOvoBalance()
             }
             ErrorFinancialItemViewHolder.TYPE_ERROR_SALDO -> {
-                financialAdapter?.removeByType(type)
                 viewModel.getSaldoBalance()
             }
             ErrorFinancialViewHolder.ERROR_TYPE -> {
-                financialAdapter?.removeByType(type)
                 viewModel.getUserPageAssetConfig()
             }
         }
     }
 
     private fun onFailGetData() {
+        memberCardView?.hide()
+        memberLocalLoad?.show()
         adapter?.run {
             if (getItem(0) is ProfileDataView) {
                 removeItemAt(0)
@@ -389,11 +419,13 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
     }
 
     private fun onSuccessGetBuyerAccount(buyerAccount: UserAccountDataModel) {
+        memberLocalLoad?.hide()
+        memberCardView?.show()
         adapter?.run {
             if (getItem(0) is ProfileDataView) {
                 removeItemAt(0)
             }
-            addItem(0, mapper.mapToProfileDataView(activity, buyerAccount))
+            addItem(0, mapper.mapToProfileDataView(buyerAccount))
             notifyDataSetChanged()
         }
         hideLoading()
@@ -451,9 +483,9 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         home_account_user_toolbar?.let {
-            it.setIcon(IconBuilder()
-                    .addIcon(IconList.ID_NAV_GLOBAL) {}
-            )
+            it.setIcon(IconBuilder(
+                    IconBuilderFlag(pageSource = ApplinkConsInternalNavigation.SOURCE_ACCOUNT)
+            ).addIcon(iconId = IconList.ID_NAV_GLOBAL) {})
         }
 
         setupStatusBar()
@@ -512,7 +544,7 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
         viewModel.getShortcutData()
     }
 
-    private fun showHomeAccountTokopoints() : Boolean {
+    private fun showHomeAccountTokopoints(): Boolean {
         return isShowHomeAccountTokopoints
     }
 
@@ -558,7 +590,6 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
         home_account_user_fragment_rv.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
         home_account_user_fragment_rv?.adapter = adapter
         home_account_user_fragment_rv?.isNestedScrollingEnabled = false
-        setupSettingList()
     }
 
     private fun setupSettingList() {
@@ -945,6 +976,14 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
     }
 
     override fun onItemViewBinded(position: Int, itemView: View, data: Any) {
+        initCoachMark(position, itemView, data)
+        if (position == 0) {
+            initMemberLocalLoad(itemView)
+            initMemberTitle(itemView)
+        }
+    }
+
+    private fun initCoachMark(position: Int, itemView: View, data: Any) {
         if (accountPref.isShowCoachmark()) {
             if (!isProfileSectionBinded) {
                 if (coachMarkItem.count() < 3) {
@@ -983,6 +1022,30 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
             }
             coachMark?.showCoachMark(coachMarkItem)
             isProfileSectionBinded = true
+        }
+    }
+
+    private fun initMemberLocalLoad(itemView: View) {
+        itemView.findViewById<LocalLoad>(R.id.home_account_local_load)?.let {
+            memberLocalLoad = it
+            memberLocalLoad?.refreshBtn?.setOnClickListener {
+                memberLocalLoad?.progressState = !(memberLocalLoad?.progressState ?: false)
+                onMemberErrorClicked()
+            }
+        }
+
+        itemView.findViewById<CardUnify>(R.id.home_account_member_card)?.let {
+            memberCardView = it
+        }
+    }
+
+    private fun initMemberTitle(itemView: View) {
+        itemView.findViewById<Typography>(R.id.home_account_member_layout_title)?.let {
+            memberTitle = it
+        }
+
+        itemView.findViewById<ImageUnify>(R.id.home_account_member_layout_member_icon)?.let {
+            memberIcon = it
         }
     }
 

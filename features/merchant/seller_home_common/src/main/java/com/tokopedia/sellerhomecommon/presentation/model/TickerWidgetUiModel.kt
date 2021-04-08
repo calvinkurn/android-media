@@ -32,4 +32,8 @@ data class TickerWidgetUiModel(
     override fun copy(): BaseWidgetUiModel<TickerDataUiModel> {
         return TickerWidgetUiModel(id, widgetType, title, subtitle, tooltip, appLink, dataKey, ctaText, isShowEmpty, data, impressHolder, isLoaded, isLoading, isFromCache, emptyState)
     }
+
+    override fun needToRefreshData(other: BaseWidgetUiModel<TickerDataUiModel>): Boolean {
+        return dataKey != other.dataKey
+    }
 }

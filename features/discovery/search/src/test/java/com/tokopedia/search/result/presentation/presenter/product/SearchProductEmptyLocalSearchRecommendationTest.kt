@@ -118,7 +118,9 @@ internal class SearchProductEmptyLocalSearchRecommendationTest : ProductListPres
     }
 
     private fun Visitable<*>.assertSearchProductTitle() {
-        (this as SearchProductTitleDataView).title shouldBe searchProductPageTitle
+        val searchProductTitleViewModel = this as SearchProductTitleDataView
+        searchProductTitleViewModel.title shouldBe searchProductPageTitle
+        searchProductTitleViewModel.isRecommendationTitle shouldBe true
     }
 
     private fun `Then verify has next page`(expectedHasNextPage: Boolean) {

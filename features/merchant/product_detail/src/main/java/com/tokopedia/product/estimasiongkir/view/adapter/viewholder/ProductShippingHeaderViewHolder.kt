@@ -11,6 +11,7 @@ import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.product.detail.R
+import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.view.util.boldOrLinkText
 import com.tokopedia.product.estimasiongkir.data.model.shipping.ProductShippingHeaderDataModel
 import com.tokopedia.product.estimasiongkir.view.bottomsheet.ProductDetailShippingListener
@@ -46,7 +47,7 @@ class ProductShippingHeaderViewHolder(view: View,
     }
 
     private fun renderTokoCabang(element: ProductShippingHeaderDataModel) = with(itemView) {
-        if (element.isFulfillment) {
+        if (element.isFulfillment && element.boType == ProductDetailConstant.BEBAS_ONGKIR_EXTRA) {
             icShippingLine?.setMargin(0, 20.toDp(), 0, 20.toDp())
             txtTokoCabang?.shouldShowWithAction(element.tokoCabangContent.isNotEmpty()) {
                 val linkHelper = HtmlLinkHelper(context, element.tokoCabangContent)

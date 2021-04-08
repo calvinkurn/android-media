@@ -16,6 +16,6 @@ class Cache(context: Context) {
     }
 
     fun isEnabled() : Boolean {
-        return sharedPreferences.getBoolean(IRIS_ENABLED, false)
+        return sharedPreferences.getBoolean(IRIS_ENABLED, true)
     }
 }

@@ -146,6 +146,12 @@ class ProductRecommendationViewHolder(
                     }
                 },
                 productCardModelList = cardModel?.toMutableList() ?: listOf(),
+                carouselProductCardOnItemThreeDotsClickListener = object : CarouselProductCardListener.OnItemThreeDotsClickListener {
+                    override fun onItemThreeDotsClick(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
+                        val productRecommendation = product.recommendationItemList.getOrNull(carouselProductCardPosition) ?: return
+                        listener.onThreeDotsClick(productRecommendation, adapterPosition, carouselProductCardPosition)
+                    }
+                },
                 finishCalculate = {
                     view.rvProductRecom.show()
                     view.loadingRecom.gone()
