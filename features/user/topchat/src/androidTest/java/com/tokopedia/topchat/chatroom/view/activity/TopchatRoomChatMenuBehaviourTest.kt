@@ -72,7 +72,6 @@ class TopchatRoomChatMenuBehaviourTest : TopchatRoomTest() {
         // When
         clickPlusIconMenu()
         clickComposeArea()
-        waitForIt(KEYBOARD_DELAY)
 
         // Then
         assertThat(isKeyboardShown(), `is`(true))
@@ -98,7 +97,6 @@ class TopchatRoomChatMenuBehaviourTest : TopchatRoomTest() {
         // When
         clickStickerIconMenu()
         clickComposeArea()
-        waitForIt(KEYBOARD_DELAY)
 
         // Then
         assertThat(isKeyboardShown(), `is`(true))
@@ -151,7 +149,6 @@ class TopchatRoomChatMenuBehaviourTest : TopchatRoomTest() {
         // WHen
         clickStickerIconMenu()
         clickStickerIconMenu()
-        waitForIt(KEYBOARD_DELAY)
 
         // Then
         assertThat(isKeyboardShown(), `is`(true))

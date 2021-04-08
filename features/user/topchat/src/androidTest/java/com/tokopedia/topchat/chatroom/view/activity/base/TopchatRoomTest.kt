@@ -47,7 +47,6 @@ import kotlinx.coroutines.test.setMain
 import org.hamcrest.Matcher
 import org.junit.Before
 import org.junit.Rule
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 abstract class TopchatRoomTest {
@@ -93,8 +92,6 @@ abstract class TopchatRoomTest {
     protected open lateinit var fragmentTransactionIdling: FragmentTransactionIdle
 
     protected open val exMessageId = "66961"
-
-    protected val KEYBOARD_DELAY = TimeUnit.SECONDS.toMillis(1)
 
     protected var firstPageChatAsBuyer: GetExistingChatPojo = GetExistingChatPojo()
     protected var firstPageChatAsSeller: GetExistingChatPojo = GetExistingChatPojo()
@@ -179,10 +176,6 @@ abstract class TopchatRoomTest {
         onView(withId(R.id.recycler_view))
                 .check(matches(isDisplayed()))
         IdlingRegistry.getInstance().unregister(fragmentTransactionIdling)
-    }
-
-    protected fun waitForIt(millis: Long) {
-        Thread.sleep(millis)
     }
 
     protected fun inflateTestFragment() {
