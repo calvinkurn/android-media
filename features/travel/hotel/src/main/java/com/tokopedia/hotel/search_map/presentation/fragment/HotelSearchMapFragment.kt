@@ -6,8 +6,10 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Canvas
+import android.location.LocationManager
 import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
 import android.util.DisplayMetrics
 import android.view.*
 import android.view.animation.Animation
@@ -16,6 +18,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.annotation.DrawableRes
+import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
@@ -39,6 +42,7 @@ import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.common.travel.utils.TravelDateUtil
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.common.analytics.TrackingHotelUtil
 import com.tokopedia.hotel.common.data.HotelTypeEnum
@@ -1052,7 +1056,12 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
             } else null
 
     private fun getCurrentLocation() {
-        val locationDetectorHelper = LocationDetectorHelper(
+        val locationManager = context?.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+
+        if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            showDialogEnableGPS()
+        }else{
+            val locationDetectorHelper = LocationDetectorHelper(
                 permissionCheckerHelper,
                 fusedLocationClient,
                 requireActivity().applicationContext)
@@ -1074,6 +1083,32 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                     }
 
                 })
+        }
+    }
+
+    private fun showDialogEnableGPS() {
+        val dialog = DialogUnify(activity as AppCompatActivity, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
+        dialog.setTitle(getString(R.string.hotel_recommendation_gps_dialog_title))
+        dialog.setDescription(getString(R.string.hotel_recommendation_gps_dialog_desc))
+        dialog.setPrimaryCTAText(getString(R.string.hotel_recommendation_gps_dialog_ok))
+        dialog.setPrimaryCTAClickListener {
+            startActivityForResult(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS), REQUEST_CODE_GPS)
+            dialog.dismiss()
+        }
+        dialog.setSecondaryCTAText(getString(R.string.hotel_recommendation_gps_dialog_cancel))
+        dialog.setSecondaryCTAClickListener {
+            onErrorGetLocation()
+            dialog.dismiss()
+        }
+        dialog.show()
+    }
+
+    private fun onErrorGetLocation() {
+        view?.let { v ->
+            Toaster.build(v, getString(R.string.hotel_destination_error_get_location),
+                    Toaster.LENGTH_INDEFINITE, Toaster.TYPE_ERROR,
+                    getString(com.tokopedia.resources.common.R.string.general_label_ok)).show()
+        }
     }
 
     private fun setupFindWithMapButton() {
@@ -1151,6 +1186,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
 
         private const val REQUEST_CODE_DETAIL_HOTEL = 101
         private const val REQUEST_CHANGE_SEARCH_HOTEL = 105
+        private const val REQUEST_CODE_GPS = 108
 
         private const val ANCHOR_MARKER_X: Float = 0.8f
         private const val ANCHOR_MARKER_Y: Float = 1f
