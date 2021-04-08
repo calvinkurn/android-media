@@ -1,6 +1,8 @@
 package com.tokopedia.feedcomponent.view.widget
 
 import android.content.Context
+import android.text.SpannableString
+import android.text.method.LinkMovementMethod
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
@@ -8,19 +10,25 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.carousel.CarouselUnify
 import com.tokopedia.feedcomponent.R
-import com.tokopedia.feedcomponent.data.feedrevamp.FeedXAuthor
-import com.tokopedia.feedcomponent.data.feedrevamp.FeedXComments
-import com.tokopedia.feedcomponent.data.feedrevamp.FeedXLike
-import com.tokopedia.feedcomponent.data.feedrevamp.FeedXMedia
+import com.tokopedia.feedcomponent.data.feedrevamp.*
+import com.tokopedia.feedcomponent.util.TagConverter
+import com.tokopedia.feedcomponent.util.TimeConverter
+import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.PageControl
 import com.tokopedia.unifyprinciples.Typography
+import java.net.URLEncoder
 
 private const val TYPE_IMAGE = "image"
 
@@ -80,12 +88,14 @@ class PostDynamicViewNew @JvmOverloads constructor(context: Context, attrs: Attr
         }
     }
 
-    fun bindHeader(author: FeedXAuthor) {
+    fun bindHeader(author: FeedXAuthor, isFollowed: Boolean) {
         shopImage.setImageUrl(author.logoURL)
         shopBadge.setImageUrl(author.badgeURL)
         shopBadge.showWithCondition(author.badgeURL.isNotEmpty())
         shopName.text = author.name
-        //handle 3 dots click listener
+        followText.showWithCondition(!isFollowed)
+        //handle follow click listener here
+        //handle 3 dots click listener here
     }
 
     fun bindLike(like: FeedXLike) {
@@ -117,6 +127,62 @@ class PostDynamicViewNew @JvmOverloads constructor(context: Context, attrs: Attr
             }
         }
         return text
+    }
+
+    fun bindCaption(caption: FeedXCard) {
+        val tagConverter = TagConverter()
+        captionText.shouldShowWithAction(caption.text.isNotEmpty()) {
+            if (caption.text.length > DynamicPostViewHolder.MAX_CHAR ||
+                    hasSecondLine(caption.text)) {
+                val captionEnd = if (findSubstringSecondLine(caption.text) < DynamicPostViewHolder.CAPTION_END)
+                    findSubstringSecondLine(caption.text)
+                else
+                    DynamicPostViewHolder.CAPTION_END
+                val captionTxt = caption.text.substring(0, captionEnd)
+                        .replace("\n", "<br/>")
+                        .replace(DynamicPostViewHolder.NEWLINE, "<br/>")
+                        .plus("... ")
+                        .plus("<font color='#42b549'><b>")
+                        .plus(context.getString(R.string.feed_component_read_more_button))
+                        .plus("</b></font>")
+
+                captionText.text = tagConverter.convertToLinkifyHashtag(
+                        SpannableString(MethodChecker.fromHtml(captionTxt)), colorLinkHashtag) { hashtag -> onHashtagClicked(hashtag) }
+                captionText.setOnClickListener {
+                    if (caption.appLink.isNotEmpty()) {
+//                        handle caption click here
+                    } else {
+                        captionText.text = tagConverter.convertToLinkifyHashtag(SpannableString(caption.text),
+                                colorLinkHashtag) { hashtag -> onHashtagClicked(hashtag) }
+                    }
+                }
+                captionText.movementMethod = LinkMovementMethod.getInstance()
+            } else {
+                captionText.text = tagConverter
+                        .convertToLinkifyHashtag(SpannableString(caption.text.replace(DynamicPostViewHolder.NEWLINE, " ")),
+                                colorLinkHashtag) { hashtag -> onHashtagClicked(hashtag) }
+                captionText.movementMethod = LinkMovementMethod.getInstance()
+            }
+        }
+    }
+
+    private val colorLinkHashtag: Int
+        get() = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G400)
+
+    private fun onHashtagClicked(hashtag: String) {
+        val encodeHashtag = URLEncoder.encode(hashtag, "UTF-8")
+        RouteManager.route(context, ApplinkConstInternalContent.HASHTAG_PAGE, encodeHashtag)
+    }
+
+    private fun hasSecondLine(caption: String): Boolean {
+        val firstIndex = caption.indexOf("\n", 0)
+        return caption.indexOf("\n", firstIndex + 1) != -1
+    }
+
+    private fun findSubstringSecondLine(caption: String): Int {
+        val firstIndex = caption.indexOf("\n", 0)
+        return if (hasSecondLine(caption)) caption.indexOf("\n",
+                firstIndex + 1) else caption.length
     }
 
     fun bindComment(comments: FeedXComments, profilePicture: String, name: String) {
@@ -181,5 +247,18 @@ class PostDynamicViewNew @JvmOverloads constructor(context: Context, attrs: Attr
         }
     }
 
+    fun bindPublishedAt(publishedAt: String, subTitle: String) {
+        val avatarDate = TimeConverter.generateTime(context, publishedAt)
+        val spannableString: SpannableString =
+                if (subTitle.isNotEmpty()) {
+                    SpannableString(String.format(
+                            context.getString(R.string.feed_header_time_format),
+                            avatarDate,
+                            subTitle))
+                } else {
+                    SpannableString(avatarDate)
+                }
+        timestampText.text = spannableString
+    }
 
 }
