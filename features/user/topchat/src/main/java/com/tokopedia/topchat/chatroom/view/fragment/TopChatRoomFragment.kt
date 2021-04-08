@@ -257,8 +257,12 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         }
     }
 
+    override fun hasProductPreviewShown(): Boolean {
+        return getViewState().hasProductPreviewShown()
+    }
+
     private fun shouldShowSrw(): Boolean {
-        return !isSeller() && getViewState().hasProductPreviewShown()
+        return !isSeller() && hasProductPreviewShown()
     }
 
     private fun initReplyTextWatcher() {
