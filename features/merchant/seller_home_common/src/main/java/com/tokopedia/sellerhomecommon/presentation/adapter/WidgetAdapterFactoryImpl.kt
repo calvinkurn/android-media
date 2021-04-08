@@ -62,7 +62,7 @@ class WidgetAdapterFactoryImpl(
             TickerViewHolder.RES_LAYOUT -> TickerViewHolder(parent, listener)
             MultiLineGraphViewHolder.RES_LAYOUT -> MultiLineGraphViewHolder(parent, listener)
             AnnouncementViewHolder.RES_LAYOUT -> AnnouncementViewHolder(parent, listener)
-            RecommendationViewHolder.RES_LAYOUT -> RecommendationViewHolder(parent)
+            RecommendationViewHolder.RES_LAYOUT -> RecommendationViewHolder(parent, listener)
             else -> super.createViewHolder(parent, type)
         }
     }

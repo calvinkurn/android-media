@@ -23,7 +23,14 @@ data class RecommendationDataUiModel(
 data class RecommendationTickerUiModel(
         val type: String,
         val text: String
-)
+) {
+
+    companion object {
+        const val TYPE_INFO = "info"
+        const val TYPE_WARNING = "warning"
+        const val TYPE_ERROR = "error"
+    }
+}
 
 data class RecommendationProgressUiModel(
         val isShown: Boolean,
@@ -46,4 +53,11 @@ data class RecommendationItemUiModel(
         val text: String,
         val appLink: String,
         val type: String
-)
+) {
+
+    companion object {
+        const val TYPE_POSITIVE = "positive"
+        const val TYPE_NEGATIVE = "negative"
+        const val TYPE_NO_DATA = "no_data"
+    }
+}

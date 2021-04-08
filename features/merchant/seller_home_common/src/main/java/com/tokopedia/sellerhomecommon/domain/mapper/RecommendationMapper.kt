@@ -14,6 +14,14 @@ import javax.inject.Inject
 
 class RecommendationMapper @Inject constructor() {
 
+    companion object {
+        private const val TICKER_TYPE_INFO = 1
+        private const val TICKER_TYPE_WARNING = 2
+
+        private const val RECOMMENDATION_TYPE_POSITIVE = 3
+        private const val RECOMMENDATION_TYPE_NEGATIVE = 2
+    }
+
     fun mapRemoteModelToUiModel(data: List<RecommendationWidgetDataModel>, isFromCache: Boolean): List<RecommendationDataUiModel> {
         return data.map {
             RecommendationDataUiModel(
@@ -37,7 +45,11 @@ class RecommendationMapper @Inject constructor() {
                         RecommendationItemUiModel(
                                 text = item.text,
                                 appLink = item.appLink,
-                                type = item.type.toString()
+                                type = when (item.type) {
+                                    RECOMMENDATION_TYPE_POSITIVE -> RecommendationItemUiModel.TYPE_POSITIVE
+                                    RECOMMENDATION_TYPE_NEGATIVE -> RecommendationItemUiModel.TYPE_NEGATIVE
+                                    else -> RecommendationItemUiModel.TYPE_NO_DATA
+                                }
                         )
                     }
             )
@@ -48,8 +60,12 @@ class RecommendationMapper @Inject constructor() {
     private fun getTicker(ticker: RecommendationTicker?): RecommendationTickerUiModel? {
         ticker?.let {
             return RecommendationTickerUiModel(
-                    type = it.type.toString(),
-                    text = it.text
+                    text = it.text,
+                    type = when (ticker.type) {
+                        TICKER_TYPE_INFO -> RecommendationTickerUiModel.TYPE_INFO
+                        TICKER_TYPE_WARNING -> RecommendationTickerUiModel.TYPE_WARNING
+                        else -> RecommendationTickerUiModel.TYPE_ERROR
+                    }
             )
         }
         return null
