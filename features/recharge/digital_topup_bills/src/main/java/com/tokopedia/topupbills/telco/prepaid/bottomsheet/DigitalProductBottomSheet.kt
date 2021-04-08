@@ -64,7 +64,9 @@ class DigitalProductBottomSheet : BottomSheetUnify() {
                         listener.onClickOnProduct()
                     } else {
                         activity?.let { it2 ->
-                            Toaster.build(it2.findViewById(android.R.id.content), "HAHAHA222", Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
+                            Toaster.build(it2.findViewById(android.R.id.content),
+                                    getString(R.string.digital_telco_error_try_again),
+                                    Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
                         }
                     }
                     dismiss()
