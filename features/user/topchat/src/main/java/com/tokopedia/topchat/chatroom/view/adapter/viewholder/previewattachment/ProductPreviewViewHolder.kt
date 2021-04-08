@@ -33,16 +33,17 @@ class ProductPreviewViewHolder(itemView: View, attachmentItemPreviewListener: At
     private val productSizeVariantValue = itemView.findViewById<TextView>(R.id.tv_variant_size)
 
     private val bg = ViewUtil.generateBackgroundWithShadow(
-            container,
-            com.tokopedia.unifyprinciples.R.color.Unify_N0,
-            R.dimen.dp_topchat_16,
-            R.dimen.dp_topchat_16,
-            R.dimen.dp_topchat_16,
-            R.dimen.dp_topchat_16,
-            R.color.topchat_dms_black_12,
-            R.dimen.dp_topchat_6,
-            R.dimen.dp_topchat_6,
-            Gravity.CENTER
+            view = container,
+            backgroundColor = com.tokopedia.unifyprinciples.R.color.Unify_N0,
+            topLeftRadius = com.tokopedia.unifyprinciples.R.dimen.unify_space_8,
+            topRightRadius = com.tokopedia.unifyprinciples.R.dimen.unify_space_8,
+            bottomLeftRadius = com.tokopedia.unifyprinciples.R.dimen.unify_space_8,
+            bottomRightRadius = com.tokopedia.unifyprinciples.R.dimen.unify_space_8,
+            shadowColor = R.color.topchat_dms_black_12,
+            elevation = R.dimen.dp_topchat_2,
+            shadowRadius = R.dimen.dp_topchat_2,
+            shadowGravity = Gravity.CENTER,
+            useViewPadding = true
     )
 
     override fun getButtonView(itemView: View): ImageView? {

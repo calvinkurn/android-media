@@ -29,7 +29,8 @@ object ViewUtil {
             @DimenRes shadowRadius: Int,
             shadowGravity: Int,
             @ColorRes strokeColor: Int? = null,
-            @DimenRes strokeWidth: Int? = null
+            @DimenRes strokeWidth: Int? = null,
+            useViewPadding: Boolean = false
     ): Drawable? {
         if (view == null) return null
         val topLeftRadiusValue = view.context.resources.getDimension(topLeftRadius)
@@ -77,6 +78,21 @@ object ViewUtil {
                 shapeDrawablePadding.top = elevationValue
                 shapeDrawablePadding.bottom = elevationValue * 2
                 DY = elevationValue / 3f
+            }
+        }
+
+        if (useViewPadding) {
+            if (view.paddingTop > shapeDrawablePadding.top) {
+                shapeDrawablePadding.top += view.paddingTop
+            }
+            if (view.paddingBottom > shapeDrawablePadding.bottom) {
+                shapeDrawablePadding.bottom += view.paddingBottom
+            }
+            if (view.paddingStart > shapeDrawablePadding.left) {
+                shapeDrawablePadding.left += view.paddingStart
+            }
+            if (view.paddingEnd > shapeDrawablePadding.right) {
+                shapeDrawablePadding.right += view.paddingEnd
             }
         }
 
