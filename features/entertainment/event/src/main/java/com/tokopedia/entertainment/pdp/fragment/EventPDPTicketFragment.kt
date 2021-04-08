@@ -391,7 +391,7 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicketModel, PackageType
                         }
                     }
                     localCacheHandler.apply {
-                        putBoolean(SHOW_COACH_MARK_KEY, false)
+                        putBoolean(SHOW_COACH_MARK_KEY, true)
                         applyEditor()
                     }
                 }, COACH_MARK_START_DELAY)
