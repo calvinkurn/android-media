@@ -68,8 +68,8 @@ interface TopChatContract {
         fun onSendAndReceiveMessage()
 
         fun renderBackground(url: String)
-        fun updateSrwState(isError: Boolean = false)
-        fun shouldShowSrw(isError: Boolean = false): Boolean
+        fun updateSrwState()
+        fun shouldShowSrw(): Boolean
         fun hasProductPreviewShown(): Boolean
     }
 

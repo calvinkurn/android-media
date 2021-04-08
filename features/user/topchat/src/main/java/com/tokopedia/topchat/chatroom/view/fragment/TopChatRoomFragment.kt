@@ -140,7 +140,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         SearchListener, BroadcastSpamHandlerViewHolder.Listener,
         RoomSettingFraudAlertViewHolder.Listener,
         ReviewViewHolder.Listener, TopchatProductAttachmentListener,
-        SrwQuestionViewHolder.Listener {
+        SrwQuestionViewHolder.Listener, SrwLinearLayout.Listener {
 
     @Inject
     lateinit var presenter: TopChatRoomPresenter
@@ -226,18 +226,18 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     private fun initSrw() {
-        rvSrw?.initialize(this)
+        rvSrw?.initialize(this, this)
     }
 
     private fun initObserver() {
         presenter.srw.observe(viewLifecycleOwner, Observer {
+            rvSrw?.updateStatus(it)
             when (it.status) {
                 Status.SUCCESS -> {
-                    rvSrw?.updateSrwList(it.data)
                     updateSrwState()
                 }
                 Status.ERROR -> {
-                    updateSrwState(isError = true)
+                    updateSrwState()
                 }
                 else -> {
                 }
@@ -245,9 +245,9 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         })
     }
 
-    override fun updateSrwState(isError: Boolean) {
-        if (shouldShowSrw(isError)) {
-            rvSrw?.showSrw(isError)
+    override fun updateSrwState() {
+        if (shouldShowSrw()) {
+            rvSrw?.renderSrwState()
             getViewState().hideTemplateChat()
         } else {
             rvSrw?.hideSrw()
@@ -261,9 +261,10 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         return getViewState().hasProductPreviewShown()
     }
 
-    override fun shouldShowSrw(isError: Boolean): Boolean {
+    override fun shouldShowSrw(): Boolean {
         return !isSeller() && hasProductPreviewShown() &&
-                rvSrw?.isAllowToShow() == true || isError
+                rvSrw?.isAllowToShow() == true ||
+                (rvSrw?.isErrorState() == true && hasProductPreviewShown())
     }
 
     private fun initReplyTextWatcher() {
@@ -539,6 +540,10 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         if (!isSeller()) {
             presenter.getSmartReplyWidget(messageId)
         }
+    }
+
+    override fun onRetrySrw() {
+        presenter.getSmartReplyWidget(messageId)
     }
 
     private fun setupFirstPage(chatRoom: ChatroomViewModel, chat: ChatReplies) {

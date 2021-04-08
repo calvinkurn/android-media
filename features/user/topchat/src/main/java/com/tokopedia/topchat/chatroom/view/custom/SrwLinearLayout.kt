@@ -5,6 +5,7 @@ import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.view.Gravity
 import android.view.View
+import android.widget.FrameLayout
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -21,11 +22,13 @@ import com.tokopedia.topchat.chatroom.domain.pojo.srw.ChatSmartReplyQuestionResp
 import com.tokopedia.topchat.chatroom.domain.pojo.srw.QuestionUiModel
 import com.tokopedia.topchat.chatroom.view.adapter.decoration.SrwItemDecoration
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.srw.SrwQuestionViewHolder
+import com.tokopedia.topchat.common.data.Resource
+import com.tokopedia.topchat.common.data.Status
 import com.tokopedia.topchat.common.util.ViewUtil
 import com.tokopedia.unifycomponents.LocalLoad
 import com.tokopedia.unifyprinciples.Typography
 
-class SrwLinearLayout : LinearLayout {
+class SrwLinearLayout : FrameLayout {
 
     private var chatSmartReplyQuestion = ChatSmartReplyQuestion()
     private val typeFactory = SrwTypeFactoryImpl()
@@ -35,6 +38,7 @@ class SrwLinearLayout : LinearLayout {
     private var titleContainer: LinearLayout? = null
     private var titleIcon: IconUnify? = null
     private var rvSrw: RecyclerView? = null
+    private var srwContentContainer: LinearLayout? = null
     private var errorState: LocalLoad? = null
 
     private var bgExpanded: Drawable? = null
@@ -43,6 +47,12 @@ class SrwLinearLayout : LinearLayout {
      * Default state would be expanded
      */
     private var isExpanded = true
+    private var listener: Listener? = null
+    private var latestState: Resource<ChatSmartReplyQuestionResponse>? = null
+
+    interface Listener {
+        fun onRetrySrw()
+    }
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
@@ -52,10 +62,21 @@ class SrwLinearLayout : LinearLayout {
 
     init {
         initViewLayout()
-        initBackground()
         initViewBind()
+        initBackground()
         initToggleExpandCollapsed()
         initRecyclerView()
+        initErrorState()
+    }
+
+    private fun initErrorState() {
+        errorState?.let { errorView ->
+            errorView.refreshBtn?.setOnClickListener {
+                // refresh here
+                listener?.onRetrySrw()
+                errorView.progressState = !errorView.progressState
+            }
+        }
     }
 
     fun updateSrwList(data: ChatSmartReplyQuestionResponse?) {
@@ -64,12 +85,24 @@ class SrwLinearLayout : LinearLayout {
         updateList(data)
     }
 
-    fun initialize(listener: SrwQuestionViewHolder.Listener) {
-        typeFactory.srwQuestionListener = listener
+    fun initialize(questionListener: SrwQuestionViewHolder.Listener, listener: Listener) {
+        typeFactory.srwQuestionListener = questionListener
+        this.listener = listener
     }
 
     fun isAllowToShow(): Boolean {
         return chatSmartReplyQuestion.hasQuestion
+    }
+
+    fun updateStatus(latestState: Resource<ChatSmartReplyQuestionResponse>) {
+        this.latestState = latestState
+        when (latestState.status) {
+            Status.SUCCESS -> {
+                updateSrwList(latestState.data)
+            }
+            else -> {
+            }
+        }
     }
 
     private fun initViewLayout() {
@@ -89,7 +122,7 @@ class SrwLinearLayout : LinearLayout {
                 R.dimen.dp_topchat_2,
                 Gravity.CENTER
         )
-        background = bgExpanded
+        srwContentContainer?.background = bgExpanded
     }
 
     private fun initViewBind() {
@@ -97,6 +130,7 @@ class SrwLinearLayout : LinearLayout {
         titleContainer = findViewById(R.id.tp_srw_container_partial)
         titleIcon = findViewById(R.id.ic_header_state_partial)
         rvSrw = findViewById(R.id.rv_srw_partial)
+        srwContentContainer = findViewById(R.id.rv_srw_content_container)
         errorState = findViewById(R.id.ll_srw_partial)
     }
 
@@ -134,18 +168,21 @@ class SrwLinearLayout : LinearLayout {
         rvAdapter.updateSrwList(chatSmartReplyQuestion)
     }
 
-    fun showSrw(isError: Boolean) {
+    fun renderSrwState() {
         show()
-        if (isError) {
+        if (isErrorState()) {
             showErrorState()
-        } else {
+        } else if (isSuccessState()) {
             showSrwContent()
         }
     }
 
-    private fun showSrwContent() {
-        rvSrw?.show()
-        titleContainer?.show()
+    private fun isSuccessState(): Boolean {
+        return latestState != null && latestState?.status == Status.SUCCESS
+    }
+
+    fun isErrorState(): Boolean {
+        return latestState != null && latestState?.status == Status.ERROR
     }
 
     private fun showErrorState() {
@@ -158,9 +195,13 @@ class SrwLinearLayout : LinearLayout {
         hideSrwContent()
     }
 
+    private fun showSrwContent() {
+        srwContentContainer?.show()
+        errorState?.hide()
+    }
+
     private fun hideSrwContent() {
-        rvSrw?.hide()
-        titleContainer?.hide()
+        srwContentContainer?.hide()
     }
 
     companion object {
