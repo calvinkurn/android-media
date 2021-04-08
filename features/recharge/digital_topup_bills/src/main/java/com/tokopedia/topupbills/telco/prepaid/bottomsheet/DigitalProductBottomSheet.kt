@@ -1,5 +1,6 @@
 package com.tokopedia.topupbills.telco.prepaid.bottomsheet
 
+import android.content.DialogInterface
 import android.graphics.Paint
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -61,6 +62,10 @@ class DigitalProductBottomSheet : BottomSheetUnify() {
                 selectItemBtn.setOnClickListener {
                     if (::listener.isInitialized) {
                         listener.onClickOnProduct()
+                    } else {
+                        activity?.let { it2 ->
+                            Toaster.build(it2.findViewById(android.R.id.content), "HAHAHA222", Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
+                        }
                     }
                     dismiss()
                 }
