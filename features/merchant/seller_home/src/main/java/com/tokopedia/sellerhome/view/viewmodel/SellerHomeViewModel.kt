@@ -499,7 +499,7 @@ class SellerHomeViewModel @Inject constructor(
                 if (widget is W) {
                     val copiedWidget = widget.copy()
                     copiedWidget.data = widgetData
-                    if (shouldRemoveWidget(widget, widgetData)) {
+                    if (shouldRemoveWidgetInitially(widget, widgetData)) {
                         copiedWidget.isNeedToBeRemoved = true
                         removeEmptySections(newWidgetList, index)
                     } else {
@@ -512,8 +512,8 @@ class SellerHomeViewModel @Inject constructor(
         return newWidgetList
     }
 
-    private fun shouldRemoveWidget(widget: BaseWidgetUiModel<*>, widgetData: BaseDataUiModel): Boolean {
-        return !widget.isFromCache && !widgetData.isFromCache && (!widgetData.showWidget || (!widget.isShowEmpty && widgetData.shouldRemove()))
+    private fun shouldRemoveWidgetInitially(widget: BaseWidgetUiModel<*>, widgetData: BaseDataUiModel): Boolean {
+        return !widgetData.showWidget || (!widget.isShowEmpty && widgetData.shouldRemove())
     }
 
     private fun removeEmptySections(newWidgetList: MutableList<BaseWidgetUiModel<*>>, removedWidgetIndex: Int) {
