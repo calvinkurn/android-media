@@ -5,7 +5,9 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import androidx.fragment.app.Fragment
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
@@ -17,6 +19,8 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.data.util.ProductDetailLoadTimeMonitoringListener
+import com.tokopedia.product.detail.di.DaggerProductDetailComponent
+import com.tokopedia.product.detail.di.ProductDetailComponent
 import com.tokopedia.product.detail.view.fragment.DynamicProductDetailFragment
 import com.tokopedia.product.detail.view.fragment.ProductVideoDetailFragment
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
@@ -30,7 +34,7 @@ import com.tokopedia.user.session.UserSessionInterface
  * @see ApplinkConstInternalMarketplace.PRODUCT_DETAIL or
  * @see ApplinkConstInternalMarketplace.PRODUCT_DETAIL_DOMAIN
  */
-open class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityInterface {
+open class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityInterface, HasComponent<ProductDetailComponent> {
 
     companion object {
         private const val PARAM_PRODUCT_ID = "product_id"
@@ -80,6 +84,7 @@ open class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityIn
     private var deeplinkUrl: String? = null
     private var layoutId: String? = null
     private var userSessionInterface: UserSessionInterface? = null
+    private var productDetailComponent: ProductDetailComponent? = null
     var remoteConfig: RemoteConfig? = null
 
     //Performance Monitoring
@@ -146,6 +151,17 @@ open class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityIn
         finish()
     }
 
+    override fun getComponent(): ProductDetailComponent {
+        return productDetailComponent ?: initializeComponent()
+    }
+
+    private fun initializeComponent(): ProductDetailComponent {
+        val baseComponent = (applicationContext as BaseMainApplication).baseAppComponent
+        return DaggerProductDetailComponent.builder()
+                .baseAppComponent(baseComponent)
+                .build()
+    }
+
     override fun getParentViewResourceID(): Int {
         return R.id.product_detail_parent_view
     }
@@ -196,9 +212,9 @@ open class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityIn
     }
 
     override fun getNewFragment(): Fragment = DynamicProductDetailFragment.newInstance(productId, warehouseId, shopDomain,
-                    productKey, isFromDeeplink,
-                    isFromAffiliate ?: false, trackerAttribution,
-                    trackerListName, affiliateString, deeplinkUrl, layoutId)
+            productKey, isFromDeeplink,
+            isFromAffiliate ?: false, trackerAttribution,
+            trackerListName, affiliateString, deeplinkUrl, layoutId)
 
     override fun getLayoutRes(): Int = R.layout.activity_product_detail
 
