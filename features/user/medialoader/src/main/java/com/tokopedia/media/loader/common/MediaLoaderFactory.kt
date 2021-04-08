@@ -6,6 +6,8 @@ import com.bumptech.glide.RequestBuilder
 import com.bumptech.glide.load.MultiTransformation
 import com.bumptech.glide.load.Transformation
 import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.load.resource.bitmap.CenterCrop
+import com.bumptech.glide.load.resource.bitmap.CircleCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.signature.ObjectKey
 import com.tokopedia.media.loader.module.GlideApp
@@ -22,18 +24,35 @@ abstract class MediaLoaderFactory<T> {
     * */
     private val _transform = mutableListOf<Transformation<Bitmap>>()
 
-    private fun transformation(properties: Properties) {
+    private fun transformation(
+            properties: Properties,
+            request: GlideRequest<T>
+    ) {
         // clear before applying a transformations
         _transform.clear()
 
         with(properties) {
+            // built-in RoundedCorners transformation
+            if (roundedRadius > 0f) {
+                _transform.add(RoundedCorners(roundedRadius.toInt()))
+            }
+
+            // store-bulk transformation into MultiTransformations()
             transforms?.let { _transform.addAll(it) }
             transform?.let { _transform.add(it) }
 
-            // built-in RoundedCorners transformation
-            if (roundedRadius > 0f && transforms?.filterIsInstance<RoundedCorners>().isNullOrEmpty()) {
-                _transform.add(RoundedCorners(roundedRadius.toInt()))
+            if (_transform.isNotEmpty()) {
+                request.transform(MultiTransformation(_transform))
             }
+
+            /*
+            * regarding the circleCrop(), centerCrop(), fitCenter(), and centerInside()
+            * didn't work in transformation above, we need to transform manually in here
+            * */
+            if (properties.isCircular) request.circleCrop()
+            if (properties.centerCrop) request.centerCrop()
+            if (properties.fitCenter) request.fitCenter()
+            if (properties.centerInside) request.centerInside()
         }
     }
 
@@ -46,19 +65,7 @@ abstract class MediaLoaderFactory<T> {
             * set multiple transformation into list of transform (_transform)
             * and then bulk it the transforms from transformList with MultiTransformation
             * */
-            transformation(this)
-
-            /*
-            * regarding the circleCrop() didn't work in transformation above,
-            * we need to transform manually in here
-            * */
-            if (properties.isCircular) {
-                circleCrop()
-            }
-
-            if (_transform.isNotEmpty()) {
-                request.transform(MultiTransformation(_transform))
-            }
+            transformation(this, request)
 
             // set custom error drawable
             error(error)

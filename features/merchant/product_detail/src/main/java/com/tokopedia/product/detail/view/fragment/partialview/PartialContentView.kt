@@ -5,7 +5,6 @@ import android.view.View
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.media.loader.loadIcon
-import com.tokopedia.media.loader.transform.fitCenter
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.pdplayout.CampaignModular
 import com.tokopedia.product.detail.data.model.datamodel.ProductContentMainData
@@ -87,7 +86,7 @@ class PartialContentView(private val view: View, private val listener: DynamicPr
     fun renderFreeOngkir(freeOngkirUrl: String) = with(view) {
         img_free_ongkir.shouldShowWithAction(freeOngkirUrl.isNotEmpty()) {
             view.img_free_ongkir.loadIcon(freeOngkirUrl) {
-                transform(fitCenter)
+                fitCenter()
             }
         }
     }

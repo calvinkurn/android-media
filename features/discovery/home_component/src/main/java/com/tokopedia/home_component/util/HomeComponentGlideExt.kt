@@ -7,9 +7,6 @@ import com.tokopedia.media.loader.data.Resize
 import com.tokopedia.media.loader.loadAsGif
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
-import com.tokopedia.media.loader.transform.centerCrop
-import com.tokopedia.media.loader.transform.fitCenter
-import com.tokopedia.media.loader.transform.roundedOf
 import com.tokopedia.media.loader.wrapper.MediaDataSource
 
 const val FPM_ATTRIBUTE_IMAGE_URL = "image_url"
@@ -40,7 +37,7 @@ fun ImageView.loadImage(url: String, fpmItemLabel: String = "", listener: ImageH
 fun ImageView.loadImageFitCenter(url: String, fpmItemLabel: String = ""){
     val performanceMonitoring = getPerformanceMonitoring(url, fpmItemLabel)
     this.loadImage(url) {
-        transform(fitCenter)
+        fitCenter()
         setPlaceHolder(R.drawable.placeholder_grey)
         listener({ _, mediaDataSource ->
             handleOnResourceReady(mediaDataSource, performanceMonitoring)
@@ -53,7 +50,8 @@ fun ImageView.loadImageFitCenter(url: String, fpmItemLabel: String = ""){
 fun ImageView.loadImageRounded(url: String, roundedRadius: Int, fpmItemLabel: String = ""){
     val performanceMonitoring = getPerformanceMonitoring(url, fpmItemLabel)
     this.loadImage(url) {
-        transforms(listOf(centerCrop, roundedOf(roundedRadius)))
+        centerCrop()
+        setRoundedRadius(roundedRadius.toFloat())
         listener({ _, mediaDataSource ->
             handleOnResourceReady(mediaDataSource, performanceMonitoring)
         })
@@ -65,7 +63,7 @@ fun ImageView.loadMiniImage(url: String, width: Int, height: Int, fpmItemLabel: 
     this.loadImage(url) {
         overrideSize(Resize(width, height))
         setPlaceHolder(R.drawable.placeholder_grey)
-        transform(fitCenter)
+        fitCenter()
         listener({ _, mediaDataSource ->
             listener?.successLoad()
             handleOnResourceReady(mediaDataSource, performanceMonitoring)
@@ -77,8 +75,9 @@ fun ImageView.loadMiniImage(url: String, width: Int, height: Int, fpmItemLabel: 
 
 fun ImageView.loadImageCenterCrop(url: String){
     this.loadImage(url) {
+        centerCrop()
+        setRoundedRadius(15.toFloat())
         setPlaceHolder(R.drawable.placeholder_grey)
-        transforms(listOf(centerCrop, roundedOf(15)))
     }
 }
 
@@ -102,13 +101,13 @@ fun ImageView.loadImageWithoutPlaceholder(url: String, fpmItemLabel: String = ""
 fun ImageView.loadImageNoRounded(url: String, placeholder: Int = -1){
     this.loadImage(url) {
         setPlaceHolder(placeholder)
-        transform(centerCrop)
+        centerCrop()
     }
 }
 
 fun ImageView.loadGif(url: String){
     this.loadAsGif(url) {
-        transform(roundedOf(10))
+        setRoundedRadius(10.toFloat())
     }
 }
 

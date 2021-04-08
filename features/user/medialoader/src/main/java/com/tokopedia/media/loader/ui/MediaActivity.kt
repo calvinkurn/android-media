@@ -9,8 +9,6 @@ import androidx.appcompat.app.AppCompatActivity
 import com.tokopedia.media.loader.*
 import com.tokopedia.media.loader.common.Properties
 import com.tokopedia.media.loader.transform.BlurHashDecoder
-import com.tokopedia.media.loader.transform.centerCrop
-import com.tokopedia.media.loader.transform.fitCenter
 import com.tokopedia.media.loader.utils.AspectRatio
 import com.tokopedia.media.loader.utils.MediaTarget
 import kotlinx.android.synthetic.main.activity_test_media.*
@@ -99,14 +97,14 @@ class MediaActivity : AppCompatActivity() {
 
     private fun loadImageFitCenter() {
         imgTest?.loadImage(url) {
-            transform(fitCenter)
+            fitCenter()
             status("loadImageFitCenter()", this)
         }
     }
 
     private fun loadImageCenterCrop() {
         imgTest?.loadImage(url) {
-            transform(centerCrop)
+            centerCrop()
             status("loadImageCenterCrop()", this)
         }
     }

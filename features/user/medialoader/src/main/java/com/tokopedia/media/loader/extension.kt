@@ -10,7 +10,6 @@ import android.widget.ImageView
 import com.tokopedia.media.loader.MediaLoaderApi.loadGifImage
 import com.tokopedia.media.loader.common.Properties
 import com.tokopedia.media.loader.module.GlideApp
-import com.tokopedia.media.loader.transform.fitCenter
 import com.tokopedia.media.loader.utils.DEFAULT_ROUNDED
 import com.tokopedia.media.loader.utils.MediaTarget
 import com.tokopedia.media.loader.utils.drawableFromId
@@ -41,7 +40,7 @@ inline fun ImageView.loadImageFitCenter(
         url: String?,
         crossinline properties: Properties.() -> Unit = {}
 ) = call(url, Properties().apply(properties).also {
-    it.transform(fitCenter)
+    it.fitCenter()
 })
 
 inline fun ImageView.loadImageWithoutPlaceholder(

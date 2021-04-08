@@ -29,7 +29,10 @@ open class Properties(
         internal var decodeFormat: MediaDecodeFormat? = MediaDecodeFormat.DEFAULT,
         internal var loaderListener: MediaListener? = null,
         internal var transform: Transformation<Bitmap>? = null,
-        internal var transforms: List<Transformation<Bitmap>>? = null
+        internal var transforms: List<Transformation<Bitmap>>? = null,
+        internal var centerCrop: Boolean = false,
+        internal var centerInside: Boolean = false,
+        internal var fitCenter: Boolean = false
 ) {
 
     /*
@@ -141,9 +144,16 @@ open class Properties(
         this.transform = transform
     }
 
-    // mapping multiple transform
-    fun transforms(transforms: List<Transformation<Bitmap>>) = apply {
-        this.transforms = transforms
+    fun centerCrop() = apply {
+        this.centerCrop = true
+    }
+
+    fun fitCenter() = apply {
+        this.fitCenter = true
+    }
+
+    fun centerInside() = apply {
+        this.centerInside = true
     }
 
     override fun equals(other: Any?): Boolean {
@@ -168,7 +178,10 @@ open class Properties(
                 decodeFormat == other.decodeFormat &&
                 loaderListener == other.loaderListener &&
                 transform == other.transform &&
-                transforms == other.transforms
+                transforms == other.transforms &&
+                centerCrop == other.centerCrop &&
+                centerInside == other.centerInside &&
+                fitCenter == other.fitCenter
     }
 
     override fun hashCode(): Int {
@@ -192,6 +205,9 @@ open class Properties(
         result = 31 * result + loaderListener.hashCode()
         result = 31 * result + transform.hashCode()
         result = 31 * result + transforms.hashCode()
+        result = 31 * result + centerCrop.hashCode()
+        result = 31 * result + fitCenter.hashCode()
+        result = 31 * result + centerInside.hashCode()
         return result
     }
 
