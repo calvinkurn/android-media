@@ -1352,7 +1352,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                             ?: false
                     if (!coachMarkIsShowing && !bottomSheetIsShowing && isBalanceWidgetNotEmpty)
                         showCoachMark()
-                }, 2000)
+                }, 5000)
             }
         }
     }
