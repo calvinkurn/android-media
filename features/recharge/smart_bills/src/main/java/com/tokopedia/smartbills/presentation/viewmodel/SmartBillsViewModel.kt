@@ -67,21 +67,19 @@ class SmartBillsViewModel @Inject constructor(
 
     fun getStatementBills(mapParams: Map<String, Any>, isLoadFromCloud: Boolean = false) {
         launchCatchError(block = {
-//            val graphqlRequest = GraphqlRequest(
-//                    SmartBillsQueries.STATEMENT_BILLS_QUERY_CLUSTERING,
-//                    RechargeListSmartBills.Response::class.java, mapParams
-//            )
-//            val graphqlCacheStrategy = GraphqlCacheStrategy.Builder(
-//                    if (isLoadFromCloud) CacheType.CLOUD_THEN_CACHE else CacheType.CACHE_FIRST
-//            ).setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * 5).build()
-//            val data = withContext(dispatcher.IO) {
-//                graphqlRepository.getReseponse(listOf(graphqlRequest), graphqlCacheStrategy)
-//            }.getSuccessData<RechargeListSmartBills.Response>()
+            val graphqlRequest = GraphqlRequest(
+                    SmartBillsQueries.STATEMENT_BILLS_QUERY_CLUSTERING,
+                    RechargeListSmartBills.Response::class.java, mapParams
+            )
+            val graphqlCacheStrategy = GraphqlCacheStrategy.Builder(
+                    if (isLoadFromCloud) CacheType.CLOUD_THEN_CACHE else CacheType.CACHE_FIRST
+            ).setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * 5).build()
+            val data = withContext(dispatcher.IO) {
+                graphqlRepository.getReseponse(listOf(graphqlRequest), graphqlCacheStrategy)
+            }.getSuccessData<RechargeListSmartBills.Response>()
 
-            val datas = Gson().fromJson(SmartBillsQueries.DUMMY_RESPONSE, RechargeListSmartBills.Response::class.java)
-
-            if (datas.response != null) {
-                    mutableStatementBills.postValue(Success(datas.response))
+            if (data.response != null) {
+                    mutableStatementBills.postValue(Success(data.response))
             } else {
                 throw(MessageErrorException(STATEMENT_BILLS_ERROR))
             }
@@ -92,18 +90,17 @@ class SmartBillsViewModel @Inject constructor(
 
     fun getSBMWithAction(mapParams: Map<String, Any>, rechargeListSmartBills: RechargeListSmartBills){
         launchCatchError(block = {
-//            val graphqlRequest = GraphqlRequest(
-//                    SmartBillsQueries.GET_SBM_RELOAD_ACTION_QUERY,
-//                    RechargeMultipleSBMBill.Response::class.java, mapParams
-//            )
-//
-//            val data = withContext(dispatcher.IO) {
-//                graphqlRepository.getReseponse(listOf(graphqlRequest), GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
-//            }.getSuccessData<RechargeMultipleSBMBill.Response>()
+            val graphqlRequest = GraphqlRequest(
+                    SmartBillsQueries.GET_SBM_RELOAD_ACTION_QUERY,
+                    RechargeMultipleSBMBill.Response::class.java, mapParams
+            )
 
-            val datas = Gson().fromJson(SmartBillsQueries.DUMMY_RESPONSE_ACTION, RechargeMultipleSBMBill.Response::class.java)
-            if (datas.response != null) {
-                mutableStatementBills.postValue(Success(mapActiontoStatement(datas.response, rechargeListSmartBills)))
+            val data = withContext(dispatcher.IO) {
+                graphqlRepository.getReseponse(listOf(graphqlRequest), GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
+            }.getSuccessData<RechargeMultipleSBMBill.Response>()
+
+            if (data.response != null) {
+                mutableStatementBills.postValue(Success(mapActiontoStatement(data.response, rechargeListSmartBills)))
             } else {
                 throw(MessageErrorException(STATEMENT_BILLS_ERROR))
             }
