@@ -151,17 +151,19 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
                     add(SectionFaqUiModel(mapToItemFaqUiModel()))
                 }
                 userSession.isGoldMerchant && !userSession.isShopOfficialStore -> {
-                    add(mapToTransitionPeriodReliefUiModel())
                     if (shopScoreWrapperResponse.goldPMGradeBenefitInfoResponse != null &&
                             shopScoreWrapperResponse.goldGetPMStatusResponse != null) {
-                        add(mapToItemPotentialStatusPMUiModel(
-                                shopScoreWrapperResponse.goldPMGradeBenefitInfoResponse,
-                                shopScoreWrapperResponse.goldGetPMStatusResponse,
-                                shopScoreWrapperResponse.goldGetPMShopInfoResponse,
-                                shopInfoPeriodUiModel,
-                                shopScoreWrapperResponse.reputationShopResponse,
-                                shopScoreResult?.shopScore.orZero()
-                        ))
+                                if (shopInfoPeriodUiModel.shopAge >= ShopScoreConstant.SHOP_AGE_SIXTY) {
+                                    add(mapToTransitionPeriodReliefUiModel())
+                                    add(mapToItemPotentialStatusPMUiModel(
+                                            shopScoreWrapperResponse.goldPMGradeBenefitInfoResponse,
+                                            shopScoreWrapperResponse.goldGetPMStatusResponse,
+                                            shopScoreWrapperResponse.goldGetPMShopInfoResponse,
+                                            shopInfoPeriodUiModel,
+                                            shopScoreWrapperResponse.reputationShopResponse,
+                                            shopScoreResult?.shopScore.orZero()
+                                    ))
+                                }
                     }
                 }
                 else -> {
@@ -518,29 +520,22 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
                 when (statusPM) {
                     SUPPOSED_INACTIVE_TEXT -> {
                         when (shopInfoPeriodUiModel.numberMonth) {
-                            ShopScoreConstant.ONE_MONTH, ShopScoreConstant.TWO_MONTH -> {
-                                Pair(context?.getString(R.string.desc_inactive_new_seller_status, SUPPOSED_INACTIVE_TEXT).orEmpty(), true)
-                            }
                             ShopScoreConstant.THREE_MONTH -> {
                                 Pair(context?.getString(R.string.desc_inactive_new_seller_end_month_status, SUPPOSED_INACTIVE_TEXT).orEmpty(), true)
                             }
-                            else -> Pair("", false)
+                            else -> Pair(context?.getString(R.string.desc_inactive_new_seller_status, SUPPOSED_INACTIVE_TEXT).orEmpty(), true)
                         }
                     }
                     else -> {
-                        when (shopInfoPeriodUiModel.shopAge) {
-                            in SHOP_SCORE_SIXTY..SHOP_SCORE_SIXTY_NINE -> {
-                                val thresholdReputation = 5
-                                val hasScore = reputationShopResponse?.firstOrNull()?.score.toIntOrZero() < thresholdReputation
-                                if (hasScore) {
-                                    Pair(context?.getString(R.string.desc_new_seller_with_reputation_pm_status, potentialPMGrade?.gradeName).orEmpty(), false)
-                                } else {
-                                    Pair(context?.getString(R.string.desc_new_seller_no_reputation_pm_status).orEmpty(), false)
-                                }
-                            }
-                            else -> Pair("", false)
+                        val thresholdReputation = 5
+                        val hasScore = reputationShopResponse?.firstOrNull()?.score.toIntOrZero() < thresholdReputation
+                        if (hasScore) {
+                            Pair(context?.getString(R.string.desc_new_seller_with_reputation_pm_status, potentialPMGrade?.gradeName).orEmpty(), false)
+                        } else {
+                            Pair(context?.getString(R.string.desc_new_seller_no_reputation_pm_status).orEmpty(), false)
                         }
                     }
+
                 }
             }
             else -> {

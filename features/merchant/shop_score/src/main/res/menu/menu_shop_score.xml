@@ -3,9 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/menu_warning_shop_perfoemance"
+        android:id="@+id/menu_penalty_shop_performance"
         android:title="@string/menu_title_warning_shop_performance"
-        android:icon="@drawable/ic_warning_shop_score"
+        android:icon="@drawable/ic_penalty_group_shop_score"
         app:showAsAction="always" />
 
     <item

@@ -1,6 +1,7 @@
 package com.tokopedia.shop.score.performance.presentation.fragment
 
 import android.os.Bundle
+import android.os.Handler
 import android.view.*
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -15,6 +16,7 @@ import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.observe
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.common.ShopScoreCoachMarkPrefs
@@ -27,11 +29,9 @@ import com.tokopedia.shop.score.performance.presentation.bottomsheet.BottomSheet
 import com.tokopedia.shop.score.performance.presentation.bottomsheet.BottomSheetPerformanceDetail
 import com.tokopedia.shop.score.performance.presentation.bottomsheet.BottomSheetShopTooltipLevel
 import com.tokopedia.shop.score.performance.presentation.bottomsheet.BottomSheetShopTooltipScore
-import com.tokopedia.shop.score.performance.presentation.model.ItemShopPerformanceErrorUiModel
-import com.tokopedia.shop.score.performance.presentation.model.ItemStatusPMUiModel
-import com.tokopedia.shop.score.performance.presentation.model.ItemStatusRMUiModel
-import com.tokopedia.shop.score.performance.presentation.model.SectionFaqUiModel
+import com.tokopedia.shop.score.performance.presentation.model.*
 import com.tokopedia.shop.score.performance.presentation.viewmodel.ShopPerformanceViewModel
+import com.tokopedia.shop.score.performance.presentation.widget.PenaltyDotBadge
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_shop_performance.*
@@ -60,10 +60,15 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
     private var shopScoreWrapperResponse: ShopScoreWrapperResponse? = null
 
     private val coachMarkItem = ArrayList<CoachMark2Item>()
-    private val coachMark by lazy { CoachMark2(requireContext()) }
+    private val coachMark by lazy { context?.let { CoachMark2(it) } }
     private val shopScoreCoachMarkPrefs by lazy { ShopScoreCoachMarkPrefs(requireContext()) }
 
-    private var isFinishedCoachMark = false
+    private val penaltyDotBadge: PenaltyDotBadge? by lazy {
+        context?.let { PenaltyDotBadge(it) }
+    }
+
+    private var counterPenalty = 0
+    private var menu: Menu? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -91,15 +96,17 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.menu_shop_score, menu)
+        this.menu = menu
+        showPenaltyBadge()
         super.onCreateOptionsMenu(menu, inflater)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.menu_info_shop_performance -> {
+            INFO_MENU_ID -> {
 
             }
-            R.id.menu_warning_shop_perfoemance -> {
+            PENALTY_WARNING_MENU_ID -> {
                 goToPenaltyPage()
             }
         }
@@ -144,14 +151,14 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
      * ItemShopPerformanceListener
      **/
     override fun onViewItemDetailPerformanceListener(view: View) {
-        if (!shopScoreCoachMarkPrefs.getHasShownItemPerformanceDetail()) {
+//        if (!shopScoreCoachMarkPrefs.getHasShownItemPerformanceDetail()) {
             coachMarkItem.add(CoachMark2Item(
                     view.findViewById(R.id.cardItemDetailShopPerformance),
                     getString(R.string.title_coachmark_shop_score_2),
                     getString(R.string.desc_coachmark_shop_score_2),
             ))
             shopScoreCoachMarkPrefs.setHasShownItemPerformanceDetail(true)
-        }
+//        }
         val isShowCoachMarkTwoItem = shopPerformanceAdapter.list.find { it is ItemStatusPMUiModel }
         val itemStatusRMUiModel = shopPerformanceAdapter.list.find { it is ItemStatusRMUiModel }
         if (isShowCoachMarkTwoItem == null && itemStatusRMUiModel == null) {
@@ -178,14 +185,14 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
      * ItemStatusPowerMerchantListener
      **/
     override fun onViewItemPowerMerchantListener(view: View) {
-        if (!shopScoreCoachMarkPrefs.getHasShownItemPM()) {
+//        if (!shopScoreCoachMarkPrefs.getHasShownItemPM()) {
             coachMarkItem.add(CoachMark2Item(
                     view.findViewById(R.id.containerPowerMerchant),
                     getString(R.string.title_coachmark_shop_score_3),
                     getString(R.string.desc_coachmark_shop_score_3),
             ))
             shopScoreCoachMarkPrefs.setHasShownItemPM(true)
-        }
+//        }
         showCoachMark()
     }
 
@@ -261,23 +268,28 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
         RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, ShopScoreConstant.HELP_URL)
     }
 
-    private fun showCoachMark() {
-        coachMark.onFinishListener = {
-            isFinishedCoachMark = true
-        }
+    private fun showPenaltyBadge() {
+        Handler().postDelayed({
+            context?.let {
+                val menuItem = menu?.findItem(PENALTY_WARNING_MENU_ID)
+                penaltyDotBadge?.showBadge(menuItem ?: return@let)
+            }
+        }, PENALTY_BADGE_DELAY)
+    }
 
-        coachMark.setStepListener(object : CoachMark2.OnStepListener {
+    private fun showCoachMark() {
+        coachMark?.setStepListener(object : CoachMark2.OnStepListener {
             override fun onStep(currentIndex: Int, coachMarkItem: CoachMark2Item) {
                 if (currentIndex == 1) {
-                    coachMark.stepPagination?.hide()
+                    coachMark?.stepPagination?.hide()
                 } else {
-                    coachMark.stepPagination?.show()
+                    coachMark?.stepPagination?.show()
                 }
             }
         })
 
-        if (!isFinishedCoachMark && coachMarkItem.isNotEmpty()) {
-            coachMark.showCoachMark(coachMarkItem)
+        if (coachMarkItem.isNotEmpty()) {
+            coachMark?.showCoachMark(coachMarkItem)
         }
     }
 
@@ -319,6 +331,8 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
                 is Success -> {
                     shopPerformanceAdapter.setShopPerformanceData(it.data.first)
                     this.shopScoreWrapperResponse = it.data.second
+                    counterPenalty = it.data.first.filterIsInstance<HeaderShopPerformanceUiModel>().firstOrNull()?.scorePenalty.orZero()
+                    showPenaltyBadge()
                 }
                 is Fail -> {
                     shopPerformanceAdapter.hideLoading()
@@ -331,6 +345,7 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
     private fun onSwipeRefreshShopPerformance() {
         shopPerformanceSwipeRefresh?.setOnRefreshListener {
             loadData()
+            showPenaltyBadge()
         }
     }
 
@@ -351,8 +366,10 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
 
     companion object {
 
-        const val COACH_MARK_TWO_ITEMS = 2
-        const val COACH_MARK_THREE_ITEMS = 3
+        val PENALTY_WARNING_MENU_ID = R.id.menu_penalty_shop_performance
+        val INFO_MENU_ID = R.id.menu_info_shop_performance
+
+        private const val PENALTY_BADGE_DELAY = 1000L
 
         @JvmStatic
         fun newInstance(): ShopPerformancePageFragment {

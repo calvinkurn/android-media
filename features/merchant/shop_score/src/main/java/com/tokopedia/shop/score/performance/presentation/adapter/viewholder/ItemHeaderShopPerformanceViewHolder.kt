@@ -24,7 +24,6 @@ class ItemHeaderShopPerformanceViewHolder(view: View,
 
     override fun bind(element: HeaderShopPerformanceUiModel?) {
         with(itemView) {
-
             itemHeaderShopPerformanceListener.onViewHeaderListener(this)
 
             val roundedRadius = 16F

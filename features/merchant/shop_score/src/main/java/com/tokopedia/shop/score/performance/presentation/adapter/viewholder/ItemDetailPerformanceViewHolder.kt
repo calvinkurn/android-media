@@ -17,11 +17,14 @@ class ItemDetailPerformanceViewHolder(view: View,
 
     companion object {
         val LAYOUT = R.layout.item_detail_shop_performance
+        const val POSITION_ITEM_DETAIL_PERFORMANCE_COACH_MARK = 2
     }
 
     override fun bind(element: ItemDetailPerformanceUiModel?) {
         with(itemView) {
-            itemShopPerformanceListener.onViewItemDetailPerformanceListener(this)
+            if (adapterPosition == POSITION_ITEM_DETAIL_PERFORMANCE_COACH_MARK) {
+                itemShopPerformanceListener.onViewItemDetailPerformanceListener(this)
+            }
 
             setBackgroundColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
             separatorItemDetail?.showWithCondition(element?.isDividerHide == false)
