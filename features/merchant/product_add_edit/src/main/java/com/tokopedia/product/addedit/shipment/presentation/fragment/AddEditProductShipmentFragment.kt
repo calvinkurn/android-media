@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.RadioGroup
-import androidx.lifecycle.observe
 import androidx.activity.OnBackPressedCallback
 import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.findNavController
@@ -17,6 +16,7 @@ import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.kotlin.extensions.view.afterTextChanged
 import com.tokopedia.kotlin.extensions.view.isVisible
@@ -70,8 +70,6 @@ import com.tokopedia.unifycomponents.TextFieldUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
 import com.tokopedia.unifycomponents.ticker.Ticker
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
@@ -394,13 +392,26 @@ class AddEditProductShipmentFragment:
                 productLimitationModel.limitAmount)
 
         bottomSheet.setOnBottomSheetResult { urlResult ->
-            if (urlResult.startsWith(HTTP_PREFIX)) {
-                RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, urlResult))
-            } else {
-                val intent = RouteManager.getIntent(context, urlResult)
-                startActivity(intent)
+            when {
+                urlResult.startsWith(ProductLimitationBottomSheet.RESULT_FINISH_ACTIVITY) -> {
+                    activity?.finish()
+                }
+                urlResult.startsWith(ProductLimitationBottomSheet.RESULT_SAVING_DRAFT) -> {
+                    val intent = RouteManager.getIntent(context, ApplinkConstInternalMechant.MERCHANT_PRODUCT_DRAFT)
+                    startActivity(intent)
+                    productInputModel?.let { shipmentViewModel.saveProductDraft(it) }
+                    activity?.finish()
+                }
+                urlResult.startsWith(HTTP_PREFIX) -> {
+                    RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, urlResult))
+                }
+                else -> {
+                    val intent = RouteManager.getIntent(context, urlResult)
+                    startActivity(intent)
+                }
             }
         }
+        bottomSheet.setIsSavingToDraft(true)
         bottomSheet.setSubmitButtonText(getString(R.string.label_product_limitation_bottomsheet_button_draft))
         bottomSheet.show(childFragmentManager)
     }

@@ -24,10 +24,13 @@ class ProductLimitationBottomSheet(
 
     companion object {
         const val TAG = "Tag Product Limitation Bottom Sheet"
+        const val RESULT_FINISH_ACTIVITY = "result finish activity"
+        const val RESULT_SAVING_DRAFT = "result saving draft"
     }
 
     private var onBottomSheetResult: (String) -> Unit = {}
     private var btnSubmitText: String = ""
+    private var savingToDraft: Boolean = false
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         initChildLayout()
@@ -56,6 +59,8 @@ class ProductLimitationBottomSheet(
         btnSubmit.text = btnSubmitText
         btnSubmit.isVisible = !isEligible
         btnSubmit.setOnClickListener {
+            val result = if (savingToDraft) RESULT_SAVING_DRAFT else RESULT_FINISH_ACTIVITY
+            onBottomSheetResult.invoke(result)
             dismiss()
         }
     }
@@ -97,9 +102,14 @@ class ProductLimitationBottomSheet(
         btnSubmitText = text
     }
 
+    fun setIsSavingToDraft(savingToDraft: Boolean) {
+        this.savingToDraft = savingToDraft
+    }
+
     fun show(manager: FragmentManager?) {
         manager?.run {
             super.show(this , TAG)
         }
     }
+
 }

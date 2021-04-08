@@ -402,16 +402,17 @@ class AddEditProductPreviewFragment :
             updateImageList()
             if (isEditing()) {
                 ProductEditStepperTracking.trackFinishButton(shopId)
-            } else if (isAdding() && !isProductLimitEligible) {
-                productLimitationBottomSheet?.setSubmitButtonText(getString(R.string.label_product_limitation_bottomsheet_button_draft))
-                productLimitationBottomSheet?.show(childFragmentManager)
-                return@setOnClickListener // cancel onclick
             }
 
             val validateMessage = viewModel.validateProductInput(viewModel.productInputModel.value?.detailInputModel
                     ?: DetailInputModel())
+
             if (validateMessage.isNotEmpty()) {
                 Toaster.make(view, validateMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
+            } else if (isAdding() && !isProductLimitEligible) {
+                productLimitationBottomSheet?.setSubmitButtonText(getString(R.string.label_product_limitation_bottomsheet_button_draft))
+                productLimitationBottomSheet?.setIsSavingToDraft(true)
+                productLimitationBottomSheet?.show(childFragmentManager)
             } else {
                 viewModel.productInputModel.value?.detailInputModel?.productName?.let {
                     viewModel.validateProductNameInput(it)
@@ -1178,7 +1179,7 @@ class AddEditProductPreviewFragment :
                     SharedPreferencesUtil.setProductLimitationModel(requireActivity(), productLimitationModel)
                 }
                 is Fail -> {
-
+                    AddEditProductErrorHandler.logExceptionToCrashlytics(it.throwable)
                 }
             }
         }
@@ -1646,16 +1647,29 @@ class AddEditProductPreviewFragment :
         }
 
         productLimitationBottomSheet?.setOnBottomSheetResult { urlResult ->
-            if (urlResult.startsWith(HTTP_PREFIX)) {
-                RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, urlResult))
-            } else {
-                val intent = RouteManager.getIntent(context, urlResult)
-                startActivity(intent)
+            when {
+                urlResult.startsWith(ProductLimitationBottomSheet.RESULT_FINISH_ACTIVITY) -> {
+                    activity?.finish()
+                }
+                urlResult.startsWith(ProductLimitationBottomSheet.RESULT_SAVING_DRAFT) -> {
+                    val intent = RouteManager.getIntent(context, ApplinkConstInternalMechant.MERCHANT_PRODUCT_DRAFT)
+                    startActivity(intent)
+                    saveProductToDraft()
+                    activity?.finish()
+                }
+                urlResult.startsWith(HTTP_PREFIX) -> {
+                    RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, urlResult))
+                }
+                else -> {
+                    val intent = RouteManager.getIntent(context, urlResult)
+                    startActivity(intent)
+                }
             }
         }
 
         productLimitationTicker?.setOnClickListener {
             productLimitationBottomSheet?.setSubmitButtonText(getString(R.string.label_product_limitation_bottomsheet_button))
+            productLimitationBottomSheet?.setIsSavingToDraft(false)
             productLimitationBottomSheet?.show(childFragmentManager)
         }
     }
