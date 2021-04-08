@@ -254,7 +254,7 @@ class DigitalCartActivityWithFintechTest {
         onView(AllOf.allOf(withId(R.id.digitalPromoBtnView))).perform(click())
         Thread.sleep(1000)
 
-        onView(withId(R.id.tvTotalPayment)).check(matches(withText("Rp 12.000")))
+        onView(withId(R.id.tvTotalPayment)).check(matches(withText("Rp13.000")))
 
         onView(withId(R.id.tv_promo_checkout_title)).check(matches(isDisplayed()))
         onView(withId(R.id.tv_promo_checkout_title)).check(matches(withText(dummyPromoTitle)))
