@@ -7,8 +7,8 @@
             },
             "tickers": [{
                 "id": "663",
-                "title": "Info Pengembangan Sistem",
-                "message": "&nbsp;<a href=\\\"tokopedia://home\\\"\\>here refresh home</a>",
+                "title": "Android Test",
+                "message": "&nbsp;<a href=\\\"tokopedia://home\\\"\\>here refresh home</a> Attention, you are on Android Instrumentation Test",
                 "color": "#cde4c3",
                 "layout": "default",
                 "ticker_type": 1
@@ -32,52 +32,7 @@
                 "creative_name": "X_PG_HPB_NU_COD_New User_22_July-20",
                 "type": "new_user_mp",
                 "campaignCode": ""
-            },
-                {
-                    "id": "11992",
-                    "galaxy_attribution": "PG",
-                    "persona": "Parenthood",
-                    "brand_id": "",
-                    "category_persona": "500,2042,69,972,146,161,980,401,1036,2013",
-                    "image_url": "https://ecs7-p.tokopedia.net/img/cache/800/VxWOnu/2020/7/22/c86f6bc1-cb41-4e55-b69d-9ed830211356.jpg",
-                    "redirect_url": "https://www.tokopedia.com/discovery/kebutuhan-bayi?source=homepage.slider_banner.0.11992",
-                    "applink": "tokopedia://discovery/kebutuhan-bayi?source=homepage.slider_banner.0.11992",
-                    "topads_view_url": "",
-                    "promo_code": "",
-                    "creative_name": "X_PG_HPB1_Kamis Pilihan Bunda Spesial_All-User_23-July-20",
-                    "type": "general",
-                    "campaignCode": "mbk00000115_kamis pilihan bunda spesial selebrasi hari anak nasional 23 july_23july20-23july20"
-                },
-                {
-                    "id": "11975",
-                    "galaxy_attribution": "PG",
-                    "persona": "",
-                    "brand_id": "",
-                    "category_persona": "",
-                    "image_url": "https://ecs7-p.tokopedia.net/img/cache/800/VxWOnu/2020/7/22/21724daf-1d72-4d35-ac50-e4c2e3c03c0d.jpg",
-                    "redirect_url": "https://www.tokopedia.com/discovery/vyatta?source=homepage.slider_banner.0.11975",
-                    "applink": "tokopedia://discovery/vyatta?source=homepage.slider_banner.0.11975",
-                    "topads_view_url": "",
-                    "promo_code": "",
-                    "creative_name": "X_PG_HPB2_Vyatta - Comeback_All User_23 July 20",
-                    "type": "general",
-                    "campaignCode": "hpg00000048_vyatta comeback campaign_06july20-20august20ere"
-                },
-                {
-                    "id": "11954",
-                    "galaxy_attribution": "PG",
-                    "persona": "Homeliving,Cook,Others,Parenthood,Household,Healthy Life",
-                    "brand_id": "",
-                    "category_persona": "1043,999,1045,1052,1270,1042,1372,1368,1038,1011,912,948,949,951,916,952,950,946,953,958,69,1517,497,2121,1875,500,744,498,2102,752,500,2042,69,972,146,161,980,401,1036,2013,520,1270,1045,667,500,656,636,69,1043,1042,469,1383,394,743,1318,1808,1822,1821,1863,1483",
-                    "image_url": "https://ecs7-p.tokopedia.net/img/cache/800/VxWOnu/2020/7/21/776cc687-f31c-4fcf-abab-3857e08b18a0.jpg",
-                    "redirect_url": "https://www.tokopedia.com/discovery/power-merchant-produk-lokal?source=homepage.slider_banner.0.11954",
-                    "applink": "tokopedia://discovery/power-merchant-produk-lokal?source=homepage.slider_banner.0.11954",
-                    "topads_view_url": "",
-                    "promo_code": "",
-                    "creative_name": "X_PG_HPB RGX_UMKM Campaign RGX_All User_23 July 20",
-                    "type": "general",
-                    "campaignCode": ""
-                }]
+            }]
         },
         "dynamicHomeIcon": {
             "dynamicIcon": [{
