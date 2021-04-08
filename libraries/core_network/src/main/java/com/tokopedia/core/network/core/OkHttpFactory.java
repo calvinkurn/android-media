@@ -1,7 +1,6 @@
 package com.tokopedia.core.network.core;
 
 import com.chuckerteam.chucker.api.ChuckerInterceptor;
-import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor;
 import com.tokopedia.core.network.CoreNetworkApplication;
 import com.tokopedia.core.network.di.qualifier.TopAdsQualifier;
 import com.tokopedia.core.network.retrofit.interceptors.AccountsBasicInterceptor;
@@ -82,7 +81,6 @@ public class OkHttpFactory {
     public TkpdOkHttpBuilder buildClientDefaultAuthBuilder() {
         return new TkpdOkHttpBuilder(builder)
                 .addInterceptor(new FingerprintInterceptor(CoreNetworkApplication.getAppContext()))
-                .addInterceptor(new CacheApiInterceptor(CoreNetworkApplication.getAppContext()))
                 .addInterceptor(new TkpdAuthInterceptor())
                 .setOkHttpRetryPolicy(getOkHttpRetryPolicy())
                 .addDebugInterceptor();
@@ -326,7 +324,6 @@ public class OkHttpFactory {
     @Deprecated
     public OkHttpClient buildClientTopAdsAuth() {
         return new TkpdOkHttpBuilder(builder)
-                .addInterceptor(new CacheApiInterceptor(CoreNetworkApplication.getAppContext()))
                 .addInterceptor(new FingerprintInterceptor(CoreNetworkApplication.getAppContext()))
                 .addInterceptor(new TopAdsAuthInterceptor())
                 .addInterceptor(new TkpdErrorResponseInterceptor(TopAdsResponseError.class))
