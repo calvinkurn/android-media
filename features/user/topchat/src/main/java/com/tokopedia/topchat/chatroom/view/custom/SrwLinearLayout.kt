@@ -131,6 +131,16 @@ class SrwLinearLayout : LinearLayout {
         rvAdapter.updateSrwList(chatSmartReplyQuestion)
     }
 
+    fun showSrw() {
+        show()
+        titleContainer?.show()
+    }
+
+    fun hideSrw() {
+        hide()
+        titleContainer?.hide()
+    }
+
     companion object {
         private val LAYOUT = R.layout.partial_topchat_srw
     }

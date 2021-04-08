@@ -637,7 +637,7 @@ class TopChatViewStateImpl constructor(
             templateAdapter.list = listTemplate
             if (templateAdapter.hasTemplateChat() &&
                     !isLastMsgFromBroadcastAndIamBuyer &&
-                    fragmentView?.shouldShowSrw() == false) {
+                    fragmentView?.hasProductPreviewShown() == false) {
                 showTemplateChat()
             } else {
                 hideTemplateChat()

@@ -59,9 +59,7 @@ import com.tokopedia.imagepicker.common.ImagePickerBuilder
 import com.tokopedia.imagepicker.common.ImagePickerResultExtractor
 import com.tokopedia.imagepicker.common.putImagePickerBuilder
 import com.tokopedia.imagepreview.ImagePreviewActivity
-import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.kotlin.util.getParamBoolean
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
@@ -246,10 +244,10 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     override fun updateSrwState() {
         if (shouldShowSrw()) {
-            rvSrw?.show()
+            rvSrw?.showSrw()
             getViewState().hideTemplateChat()
         } else {
-            rvSrw?.hide()
+            rvSrw?.hideSrw()
             getViewState().showTemplateChatIfReady(
                     adapter.isLastMessageBroadcast(), !isSeller()
             )
