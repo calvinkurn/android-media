@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.graphics.Typeface
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.text.SpannableString
@@ -1118,7 +1119,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
             dialog?.setPrimaryCTAClickListener {
                 registerAnalytics.trackClickYesButtonRegisteredEmailDialog()
                 dialog.dismiss()
-                val intent = RouteManager.getIntent(activity, ApplinkConstInternalUserPlatform.LOGIN_EMAIL, email, "", source)
+                val intent = RouteManager.getIntent(activity, ApplinkConstInternalUserPlatform.LOGIN_EMAIL, Uri.encode(email), source)
                 startActivity(intent)
                 activity.finish()
             }
