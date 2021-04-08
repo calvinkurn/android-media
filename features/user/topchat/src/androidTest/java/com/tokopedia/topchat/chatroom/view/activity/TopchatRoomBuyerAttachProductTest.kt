@@ -20,16 +20,16 @@ import com.tokopedia.chat_common.data.preview.ProductPreview
 import com.tokopedia.common.network.util.CommonUtil
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.action.ClickChildViewWithIdAction
-import com.tokopedia.topchat.chatroom.view.activity.base.TopchatRoomTest
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.TopchatProductAttachmentViewHolder
 import com.tokopedia.topchat.common.TopChatInternalRouter.Companion.SOURCE_TOPCHAT
 import com.tokopedia.topchat.assertion.hasTotalItemOf
+import com.tokopedia.topchat.chatroom.view.activity.base.BaseBuyerTopchatRoomTest
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.hamcrest.Matchers.not
 import org.junit.Before
 import org.junit.Test
 
-class TopchatRoomBuyerAttachProductTest : TopchatRoomTest() {
+class TopchatRoomBuyerAttachProductTest : BaseBuyerTopchatRoomTest() {
 
     lateinit var productPreview: ProductPreview
     private val productName = "Testing Attach Product 1"

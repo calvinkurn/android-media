@@ -28,6 +28,7 @@ import com.tokopedia.topchat.chatroom.di.ChatRoomContextModule
 import com.tokopedia.topchat.chatroom.domain.pojo.FavoriteData.Companion.IS_FOLLOW
 import com.tokopedia.topchat.chatroom.domain.pojo.ShopFollowingPojo
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ChatAttachmentResponse
+import com.tokopedia.topchat.chatroom.domain.pojo.srw.ChatSmartReplyQuestionResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.sticker.StickerResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.stickergroup.ChatListGroupStickerResponse
 import com.tokopedia.topchat.chattemplate.domain.pojo.TemplateData
@@ -95,13 +96,14 @@ abstract class TopchatRoomTest {
 
     protected val KEYBOARD_DELAY = TimeUnit.SECONDS.toMillis(1)
 
-    protected lateinit var firstPageChatAsBuyer: GetExistingChatPojo
-    protected lateinit var firstPageChatAsSeller: GetExistingChatPojo
-    protected lateinit var chatAttachmentResponse: ChatAttachmentResponse
-    protected lateinit var stickerGroupAsBuyer: ChatListGroupStickerResponse
-    protected lateinit var stickerListAsBuyer: StickerResponse
-    protected lateinit var firstPageChatBroadcastAsBuyer: GetExistingChatPojo
-    protected lateinit var getShopFollowingStatus: ShopFollowingPojo
+    protected var firstPageChatAsBuyer: GetExistingChatPojo = GetExistingChatPojo()
+    protected var firstPageChatAsSeller: GetExistingChatPojo = GetExistingChatPojo()
+    protected var chatAttachmentResponse: ChatAttachmentResponse = ChatAttachmentResponse()
+    protected var stickerGroupAsBuyer: ChatListGroupStickerResponse = ChatListGroupStickerResponse()
+    protected var stickerListAsBuyer: StickerResponse = StickerResponse()
+    protected var firstPageChatBroadcastAsBuyer: GetExistingChatPojo = GetExistingChatPojo()
+    protected var getShopFollowingStatus: ShopFollowingPojo = ShopFollowingPojo()
+    protected var chatSrwResponse: ChatSmartReplyQuestionResponse = ChatSmartReplyQuestionResponse()
 
     protected lateinit var chatComponentStub: ChatComponentStub
 
