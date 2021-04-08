@@ -5,6 +5,7 @@ import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.sellerhomecommon.domain.mapper.RecommendationMapper
 import com.tokopedia.sellerhomecommon.domain.model.DataKeyModel
+import com.tokopedia.sellerhomecommon.domain.model.DynamicParameterModel
 import com.tokopedia.sellerhomecommon.domain.model.GetRecommendationDataResponse
 import com.tokopedia.sellerhomecommon.presentation.model.RecommendationDataUiModel
 import com.tokopedia.usecase.RequestParams
@@ -81,12 +82,13 @@ class GetRecommendationDataUseCase(
         """.trimIndent()
 
         fun createParams(
-                dataKey: List<String>
+                dataKey: List<String>,
+                dynamicParameter: DynamicParameterModel
         ): RequestParams = RequestParams.create().apply {
             val dataKeys = dataKey.map {
                 DataKeyModel(
                         key = it,
-                        jsonParams = ""
+                        jsonParams = dynamicParameter.toJsonString()
                 )
             }
             putObject(DATA_KEYS, dataKeys)

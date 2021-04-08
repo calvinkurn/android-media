@@ -16,7 +16,7 @@ data class RecommendationDataUiModel(
 ) : BaseDataUiModel {
 
     override fun shouldRemove(): Boolean {
-        return !isFromCache && recommendation?.recommendations.isNullOrEmpty()
+        return !isFromCache && !showWidget
     }
 }
 

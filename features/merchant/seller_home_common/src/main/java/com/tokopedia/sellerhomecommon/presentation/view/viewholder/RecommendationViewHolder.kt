@@ -3,10 +3,12 @@ package com.tokopedia.sellerhomecommon.presentation.view.viewholder
 import android.view.View
 import android.view.ViewStub
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.sellerhomecommon.R
 import com.tokopedia.sellerhomecommon.presentation.model.RecommendationWidgetUiModel
+import kotlinx.android.synthetic.main.shc_partial_common_widget_state_error.view.*
 import kotlinx.android.synthetic.main.shc_recommendation_widget_error.view.*
 import kotlinx.android.synthetic.main.shc_recommendation_widget_loading.view.*
 import kotlinx.android.synthetic.main.shc_recommendation_widget_success.view.*
@@ -48,6 +50,7 @@ class RecommendationViewHolder(itemView: View) : AbstractViewHolder<Recommendati
         onLoadingView.containerShcRecommendationLoading.gone()
 
         tvShcRecommendationErrorStateTitle.text = title
+        ImageHandler.loadImageWithId(imgWidgetOnError, com.tokopedia.globalerror.R.drawable.unify_globalerrors_connection)
     }
 
     private fun showLoadingState() = with(onLoadingView) {

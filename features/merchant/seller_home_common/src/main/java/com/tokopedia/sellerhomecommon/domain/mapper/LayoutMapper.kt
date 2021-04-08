@@ -250,7 +250,7 @@ class LayoutMapper @Inject constructor(private val tooltipMapper: TooltipMapper)
         )
     }
 
-    private fun mapToAnnouncementWidget(widget: WidgetModel, isFromCache: Boolean): BaseWidgetUiModel<out BaseDataUiModel> {
+    private fun mapToAnnouncementWidget(widget: WidgetModel, isFromCache: Boolean): AnnouncementWidgetUiModel {
         return AnnouncementWidgetUiModel(
                 id = (widget.id ?: 0L).toString(),
                 widgetType = widget.widgetType.orEmpty(),

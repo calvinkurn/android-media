@@ -243,7 +243,7 @@ class SellerHomeViewModel @Inject constructor(
     fun getRecommendationWidgetData(dataKeys: List<String>) {
         launchCatchError(block = {
             val result: Success<List<RecommendationDataUiModel>> = Success(withContext(dispatcher.io) {
-                getRecommendationUseCase.get().params = GetRecommendationDataUseCase.createParams(dataKeys)
+                getRecommendationUseCase.get().params = GetRecommendationDataUseCase.createParams(dataKeys, dynamicParameter)
                 return@withContext getRecommendationUseCase.get().executeOnBackground()
             })
             _recommendationWidgetData.value = result
