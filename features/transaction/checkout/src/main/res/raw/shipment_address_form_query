@@ -160,18 +160,6 @@ query shipment_address_form($params: ShipmentAddressFormParams) {
             product_cat_id
             product_catalog_id
             product_category
-            product_shipment {
-              shipment_id
-              service_id
-            }
-            product_shipment_mapping {
-              shipment_id
-              shipping_ids
-              service_ids {
-                service_id
-                sp_ids
-              }
-            }
             purchase_protection_plan_data {
               protection_available
               protection_type_id

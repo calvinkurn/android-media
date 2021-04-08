@@ -40,9 +40,6 @@ public class ShipmentAddressFormDataResponse {
     @SerializedName("cod")
     @Expose
     private Cod cod;
-    @SerializedName("message")
-    @Expose
-    private Message message;
     @SuppressLint("Invalid Data Type")
     @SerializedName("is_hide_courier_name")
     @Expose
@@ -120,10 +117,6 @@ public class ShipmentAddressFormDataResponse {
 
     public Cod getCod() {
         return cod;
-    }
-
-    public Message getMessage() {
-        return message;
     }
 
     public boolean getHideCourier() {

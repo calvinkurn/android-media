@@ -46,8 +46,6 @@ public class Product implements Parcelable {
     private int productMenuId;
     private boolean productFinsurance;
     private boolean productFcancelPartial;
-    private List<ProductShipment> productShipment = new ArrayList<>();
-    private List<ProductShipmentMapping> productShipmentMapping = new ArrayList<>();
     private int productCatId;
     private int productCatalogId;
     private PurchaseProtectionPlanData purchaseProtectionPlanData;
@@ -195,14 +193,6 @@ public class Product implements Parcelable {
         this.productFcancelPartial = productFcancelPartial;
     }
 
-    public void setProductShipment(List<ProductShipment> productShipment) {
-        this.productShipment = productShipment;
-    }
-
-    public void setProductShipmentMapping(List<ProductShipmentMapping> productShipmentMapping) {
-        this.productShipmentMapping = productShipmentMapping;
-    }
-
     public void setProductCatId(int productCatId) {
         this.productCatId = productCatId;
     }
@@ -321,14 +311,6 @@ public class Product implements Parcelable {
 
     public boolean isProductFcancelPartial() {
         return productFcancelPartial;
-    }
-
-    public List<ProductShipment> getProductShipment() {
-        return productShipment;
-    }
-
-    public List<ProductShipmentMapping> getProductShipmentMapping() {
-        return productShipmentMapping;
     }
 
     public int getProductCatId() {
@@ -472,8 +454,6 @@ public class Product implements Parcelable {
         dest.writeInt(productMenuId);
         dest.writeByte((byte) (productFinsurance ? 1 : 0));
         dest.writeByte((byte) (productFcancelPartial ? 1 : 0));
-        dest.writeTypedList(productShipment);
-        dest.writeTypedList(productShipmentMapping);
         dest.writeInt(productCatId);
         dest.writeInt(productCatalogId);
         dest.writeParcelable(purchaseProtectionPlanData, flags);
@@ -521,8 +501,6 @@ public class Product implements Parcelable {
         productMenuId = in.readInt();
         productFinsurance = in.readByte() != 0;
         productFcancelPartial = in.readByte() != 0;
-        productShipment = in.createTypedArrayList(ProductShipment.CREATOR);
-        productShipmentMapping = in.createTypedArrayList(ProductShipmentMapping.CREATOR);
         productCatId = in.readInt();
         productCatalogId = in.readInt();
         purchaseProtectionPlanData = in.readParcelable(PurchaseProtectionPlanData.class.getClassLoader());

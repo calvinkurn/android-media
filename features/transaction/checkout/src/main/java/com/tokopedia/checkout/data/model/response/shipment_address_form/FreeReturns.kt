@@ -5,6 +5,5 @@ import com.google.gson.annotations.SerializedName
 
 data class FreeReturns(
         @SerializedName("free_returns_logo")
-        @Expose
         var freeReturnsLogo: String = ""
 )
