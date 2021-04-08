@@ -22,4 +22,5 @@
     <color name="kyc_dms_shutter_stroke_color">#000000</color>
     <color name="kyc_dms_recapture_button_color">#ffffff</color>
     <color name="kyc_dms_border_camera">#ffffff</color>
+    <color name="kyc_dms_border_button">#ADFFFFFF</color>
 </resources>

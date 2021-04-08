@@ -16,7 +16,7 @@
         <activity android:name=".view.activity.UserIdentificationCameraActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.Kyc"/>
+            android:theme="@style/Theme.White"/>
 
         <activity
             android:name=".view.activity.UserIdentificationFormActivity"
