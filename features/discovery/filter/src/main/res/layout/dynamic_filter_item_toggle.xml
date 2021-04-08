@@ -21,7 +21,7 @@
         android:id="@+id/toggle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:thumbTint="@color/filter_switch_thumb_color_state"
-        app:trackTint="@color/filter_switch_track_color_state"/>
+        app:thumbTint="@color/filter_dms_switch_thumb_color_state"
+        app:trackTint="@color/filter_dms_switch_track_color_state"/>
 
 </LinearLayout>

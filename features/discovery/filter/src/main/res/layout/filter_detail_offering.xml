@@ -58,7 +58,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
-        app:buttonTint="@color/filter_checkbox_color_state"
+        app:buttonTint="@color/filter_dms_checkbox_color_state"
         style="@style/CheckBox"/>
 
 </RelativeLayout>
