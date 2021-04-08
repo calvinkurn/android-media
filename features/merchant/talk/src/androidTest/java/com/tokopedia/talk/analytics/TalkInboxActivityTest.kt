@@ -1,6 +1,5 @@
 package com.tokopedia.talk.analytics
 
-import android.app.Application
 import android.content.Intent
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions
@@ -20,8 +19,8 @@ import com.tokopedia.talk.analytics.util.TalkPageRobot.Companion.TALK_VIEW_INBOX
 import com.tokopedia.talk.analytics.util.TalkPageRobot.Companion.TALK_VIEW_INBOX_THREAD
 import com.tokopedia.talk.feature.inbox.presentation.activity.TalkInboxActivity
 import com.tokopedia.talk.feature.inbox.presentation.adapter.viewholder.TalkInboxViewHolder
-import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
+import com.tokopedia.user.session.UserSession
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -34,13 +33,16 @@ class TalkInboxActivityTest {
 
     private val targetContext = InstrumentationRegistry.getInstrumentation().targetContext
     private val gtmLogDBSource = GtmLogDBSource(targetContext)
+    private val userSession = UserSession(targetContext)
 
     @get:Rule
     var activityRule: IntentsTestRule<TalkInboxActivity> = object : IntentsTestRule<TalkInboxActivity>(TalkInboxActivity::class.java) {
 
         override fun beforeActivityLaunched() {
             super.beforeActivityLaunched()
-            login()
+            setupGraphqlMockResponse(TalkMockResponse())
+            fakeLogin()
+            additionalLoginInfo()
         }
 
         override fun getActivityIntent(): Intent {
@@ -56,11 +58,13 @@ class TalkInboxActivityTest {
     @Before
     fun setup() {
         gtmLogDBSource.deleteAll().toBlocking().first()
-        setupGraphqlMockResponse(TalkMockResponse())
     }
 
     @After
     fun tear() {
+        userSession.name = ""
+        userSession.shopId = ""
+        userSession.shopName = ""
         clearLogin()
     }
 
@@ -106,24 +110,21 @@ class TalkInboxActivityTest {
         viewInteraction.perform(RecyclerViewActions.actionOnItemAtPosition<TalkInboxViewHolder>(0, ViewActions.click()))
     }
 
-    private fun swipeAnotherTab(){
+    private fun swipeAnotherTab() {
         pauseTestFor(2000L)
         val viewInteraction = onView(withId(R.id.talkInboxContainer)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
         viewInteraction.perform(ViewActions.swipeLeft())
     }
 
-    private fun refreshView(){
+    private fun refreshView() {
         pauseTestFor(2000L)
         val viewInteraction = onView(withId(R.id.talkInboxContainer)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
         viewInteraction.perform(ViewActions.swipeDown())
     }
 
-    private fun login(){
-        InstrumentationAuthHelper.loginToAnUser(
-                InstrumentationRegistry.getInstrumentation().targetContext.applicationContext as Application,
-                null,
-                "evy.maria@tokopedia.com",
-                "tokopedia888"
-        )
+    private fun additionalLoginInfo() {
+        userSession.name = "User Name"
+        userSession.shopId = "fakeShopId"
+        userSession.shopName = "Shop Name"
     }
 }
