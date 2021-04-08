@@ -25,6 +25,7 @@ import com.tokopedia.review.common.analytics.ReviewPerformanceMonitoringContract
 import com.tokopedia.review.common.analytics.ReviewPerformanceMonitoringListener
 import com.tokopedia.review.common.util.OnBackPressedListener
 import com.tokopedia.review.feature.inbox.common.ReviewInboxConstants
+import com.tokopedia.review.feature.inbox.common.presentation.InboxUnifiedRemoteConfig
 import com.tokopedia.review.feature.inbox.container.analytics.ReviewInboxContainerTracking
 import com.tokopedia.review.feature.inbox.container.data.ReviewInboxTabs
 import com.tokopedia.review.feature.inbox.container.di.DaggerReviewInboxContainerComponent
@@ -174,8 +175,8 @@ class ReviewInboxContainerFragment : BaseDaggerFragment(), HasComponent<ReviewIn
     }
 
     private fun setupViewPager(tabTitles: List<String>) {
+        reviewInboxTabs.tabLayout.removeAllTabs()
         tabTitles.forEach {
-            reviewInboxTabs.tabLayout.removeAllTabs()
             reviewInboxTabs.addNewTab(it)
         }
         reviewInboxViewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
@@ -249,6 +250,9 @@ class ReviewInboxContainerFragment : BaseDaggerFragment(), HasComponent<ReviewIn
     }
 
     private fun updateCounter(counter: Int) {
+        if(InboxUnifiedRemoteConfig.isInboxUnified()) {
+            return
+        }
         reviewInboxTabs.tabLayout.getTabAt(PENDING_TAB_INDEX)?.setCounter(counter)
     }
 

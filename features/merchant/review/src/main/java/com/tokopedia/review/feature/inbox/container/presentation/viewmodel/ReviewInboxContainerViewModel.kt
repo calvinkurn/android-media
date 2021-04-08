@@ -43,15 +43,12 @@ class ReviewInboxContainerViewModel @Inject constructor(
 
     private fun updateCounters(tabCount: Result<ProductrevReviewTabCount>): MutableList<ReviewInboxTabs> {
         val result = mutableListOf<ReviewInboxTabs>()
-        when(tabCount) {
-            is Success -> {
-                with(tabCount.data.count) {
-                    result.add(ReviewInboxTabs.ReviewInboxPending(this.toString()))
-                }
+        if(tabCount is Success && !isInboxUnified()) {
+            with(tabCount.data.count) {
+                result.add(ReviewInboxTabs.ReviewInboxPending(this.toString()))
             }
-            else -> {
-                result.add(ReviewInboxTabs.ReviewInboxPending())
-            }
+        } else {
+            result.add(ReviewInboxTabs.ReviewInboxPending())
         }
         result.add(ReviewInboxTabs.ReviewInboxHistory)
         if(isShopOwner() && !isInboxUnified()) {
