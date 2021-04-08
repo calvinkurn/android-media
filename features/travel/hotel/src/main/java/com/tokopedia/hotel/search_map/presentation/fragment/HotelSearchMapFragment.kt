@@ -198,6 +198,9 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
             when (it) {
                 is Success -> {
                     hotelSearchModel.apply {
+                        searchType = HotelTypeEnum.COORDINATE.value
+                        searchId = ""
+                        name = getString(R.string.hotel_header_title_nearby)
                         radius = it.data
                     }
                     hotelSearchMapViewModel.initSearchParam(hotelSearchModel)
