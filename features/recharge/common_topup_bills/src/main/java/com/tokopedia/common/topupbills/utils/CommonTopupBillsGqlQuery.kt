@@ -172,4 +172,36 @@ object CommonTopupBillsGqlQuery {
           }
         }
     """.trimIndent()
+
+    val prefixSelectTelco = """
+        query telcoPrefixSelect(${'$'}menuID: Int!) {
+          rechargeCatalogPrefixSelect(menuID:${'$'}menuID, platformID: 5) {
+            componentID
+            name
+            paramName
+            text
+            help
+            placeholder
+            validations {
+              id
+              title
+              message
+              rule
+            }
+            prefixes {
+              key
+              value
+              operator {
+                id
+                attributes {
+                  name
+                  default_product_id
+                  image_url
+                }
+              }
+            }
+          }
+        }
+
+    """.trimIndent()
 }

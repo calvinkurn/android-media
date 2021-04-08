@@ -22,4 +22,9 @@ class EmoneyPdpActivity : BaseSimpleActivity(), HasComponent<EmoneyPdpComponent>
         super.onCreate(savedInstanceState)
         toolbar.elevation = 0f
     }
+
+    companion object {
+        const val EMONEY_MENU_ID = 267
+        const val EMONEY_CATEGORY_ID = 34
+    }
 }

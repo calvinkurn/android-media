@@ -17,21 +17,25 @@ import com.tokopedia.applink.internal.ApplinkConsInternalDigital
 import com.tokopedia.common.topupbills.data.TopupBillsFavNumberItem
 import com.tokopedia.common.topupbills.data.TopupBillsPromo
 import com.tokopedia.common.topupbills.data.TopupBillsRecommendation
+import com.tokopedia.common.topupbills.data.prefix_select.RechargePrefix
 import com.tokopedia.common.topupbills.utils.CommonTopupBillsGqlMutation
 import com.tokopedia.common.topupbills.utils.CommonTopupBillsGqlQuery
 import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActivity
 import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsViewModel
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam
+import com.tokopedia.common_digital.common.presentation.model.DigitalCategoryDetailPassData
 import com.tokopedia.common_digital.product.presentation.model.ClientNumberType
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.recharge_pdp_emoney.R
 import com.tokopedia.recharge_pdp_emoney.di.EmoneyPdpComponent
+import com.tokopedia.recharge_pdp_emoney.presentation.activity.EmoneyPdpActivity
 import com.tokopedia.recharge_pdp_emoney.presentation.adapter.EmoneyPdpFragmentPagerAdapter
 import com.tokopedia.recharge_pdp_emoney.presentation.viewmodel.EmoneyPdpViewModel
 import com.tokopedia.recharge_pdp_emoney.presentation.widget.EmoneyPdpHeaderViewWidget
 import com.tokopedia.recharge_pdp_emoney.presentation.widget.EmoneyPdpInputCardNumberWidget
 import com.tokopedia.recharge_pdp_emoney.utils.EmoneyPdpMapper
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifycomponents.ticker.TickerData
 import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
@@ -93,15 +97,25 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
         emoneyPdpViewModel.errorMessage.observe(viewLifecycleOwner, Observer {
             renderErrorMessage()
         })
+
+        emoneyPdpViewModel.catalogPrefixSelect.observe(viewLifecycleOwner, Observer {
+            if (it is Fail) emoneyPdpViewModel.setErrorMessage(it.throwable)
+        })
+
+        emoneyPdpViewModel.selectedOperator.observe(viewLifecycleOwner, Observer {
+            renderOperatorIcon(it)
+        })
     }
 
     private fun loadData() {
         topUpBillsViewModel.getMenuDetail(CommonTopupBillsGqlQuery.catalogMenuDetail,
-                topUpBillsViewModel.createMenuDetailParams(267))
+                topUpBillsViewModel.createMenuDetailParams(EmoneyPdpActivity.EMONEY_MENU_ID))
 
         topUpBillsViewModel.getFavoriteNumbers(
                 CommonTopupBillsGqlMutation.favoriteNumber,
-                topUpBillsViewModel.createFavoriteNumbersParams(34))
+                topUpBillsViewModel.createFavoriteNumbersParams(EmoneyPdpActivity.EMONEY_CATEGORY_ID))
+
+        emoneyPdpViewModel.getPrefixOperator(EmoneyPdpActivity.EMONEY_MENU_ID)
     }
 
     private fun renderRecommendationsAndPromoList(recommendations: List<TopupBillsRecommendation>,
@@ -187,12 +201,40 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
                     val favNumber = data?.getParcelableExtra<TopupBillsFavNumberItem>(TopupBillsSearchNumberActivity.EXTRA_CALLBACK_CLIENT_NUMBER)
                     favNumber?.let { renderClientNumber(it) }
                 }
+
+                REQUEST_CODE_EMONEY_PDP_CAMERA_OCR -> {
+                    val clientNumber = data?.getStringExtra(DigitalExtraParam.EXTRA_NUMBER_FROM_CAMERA_OCR)
+
+                    clientNumber?.let {
+                        showToastMessage(getString(R.string.recharge_pdp_success_message_scan_ocr));
+                        renderClientNumber(TopupBillsFavNumberItem(clientNumber = clientNumber))
+                    }
+                }
+
+                REQUEST_CODE_EMONEY_PDP_CHECK_SALDO -> {
+                    val checkSaldoData = data?.getParcelableExtra<DigitalCategoryDetailPassData>(DigitalExtraParam.EXTRA_CATEGORY_PASS_DATA)
+                    checkSaldoData?.run {
+                        renderClientNumber(TopupBillsFavNumberItem(
+                                clientNumber = clientNumber,
+                                productId = productId,
+                                operatorId = operatorId,
+                                categoryId = categoryId
+                        ))
+                        //renderProduct
+                        //renderCardState
+                    }
+                }
             }
         }
     }
 
+    private fun showToastMessage(message: String) {
+        Toaster.build(requireView(), message, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL).show()
+    }
+
     private fun renderClientNumber(item: TopupBillsFavNumberItem) {
         emoneyPdpInputCardWidget.setNumber(item.clientNumber)
+        emoneyPdpViewModel.getSelectedOperator(item.clientNumber)
     }
 
     private fun renderErrorMessage() {
@@ -233,6 +275,10 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
                 TopupBillsSearchNumberActivity.getCallingIntent(requireContext(),
                         ClientNumberType.TYPE_INPUT_NUMERIC, "", favoriteNumbers),
                 REQUEST_CODE_EMONEY_PDP_DIGITAL_SEARCH_NUMBER)
+    }
+
+    private fun renderOperatorIcon(operator: RechargePrefix) {
+        emoneyPdpInputCardWidget.setOperator(operator.operator.attributes.imageUrl)
     }
 
     companion object {
