@@ -1,12 +1,12 @@
 package com.tokopedia.checkout.domain.mapper;
 
 import com.tokopedia.checkout.data.model.response.egold.EgoldTieringData;
-import com.tokopedia.checkout.data.model.response.shipment_address_form.Addresses;
-import com.tokopedia.checkout.data.model.response.shipment_address_form.CampaignTimer;
-import com.tokopedia.checkout.data.model.response.shipment_address_form.CheckoutDisabledFeaturesKt;
-import com.tokopedia.checkout.data.model.response.shipment_address_form.FreeShipping;
-import com.tokopedia.checkout.data.model.response.shipment_address_form.ShipmentAddressFormDataResponse;
-import com.tokopedia.checkout.data.model.response.shipment_address_form.ShipmentInformation;
+import com.tokopedia.checkout.data.model.response.shipmentaddressform.Addresses;
+import com.tokopedia.checkout.data.model.response.shipmentaddressform.CampaignTimer;
+import com.tokopedia.checkout.data.model.response.shipmentaddressform.CheckoutDisabledFeaturesKt;
+import com.tokopedia.checkout.data.model.response.shipmentaddressform.FreeShipping;
+import com.tokopedia.checkout.data.model.response.shipmentaddressform.ShipmentAddressFormDataResponse;
+import com.tokopedia.checkout.data.model.response.shipmentaddressform.ShipmentInformation;
 import com.tokopedia.checkout.domain.model.cartshipmentform.AddressData;
 import com.tokopedia.checkout.domain.model.cartshipmentform.AddressesData;
 import com.tokopedia.checkout.domain.model.cartshipmentform.CampaignTimerUi;
@@ -333,7 +333,7 @@ public class ShipmentMapper implements IShipmentMapper {
 
             if (!UtilsKt.isNullOrEmpty(shipmentAddressFormDataResponse.getGroupAddress())) {
                 List<GroupAddress> groupAddressListResult = new ArrayList<>();
-                for (com.tokopedia.checkout.data.model.response.shipment_address_form.GroupAddress
+                for (com.tokopedia.checkout.data.model.response.shipmentaddressform.GroupAddress
                         groupAddress : shipmentAddressFormDataResponse.getGroupAddress()) {
                     GroupAddress groupAddressResult = new GroupAddress();
                     groupAddressResult.setError(!UtilsKt.isNullOrEmpty(groupAddress.getErrors()));
@@ -366,7 +366,7 @@ public class ShipmentMapper implements IShipmentMapper {
 
                     if (!UtilsKt.isNullOrEmpty(groupAddress.getGroupShop())) {
                         List<GroupShop> groupShopListResult = new ArrayList<>();
-                        for (com.tokopedia.checkout.data.model.response.shipment_address_form.GroupShop
+                        for (com.tokopedia.checkout.data.model.response.shipmentaddressform.GroupShop
                                 groupShop : groupAddress.getGroupShop()) {
                             com.tokopedia.checkout.domain.model.cartshipmentform.GroupShop groupShopResult =
                                     new com.tokopedia.checkout.domain.model.cartshipmentform.GroupShop();
@@ -452,7 +452,7 @@ public class ShipmentMapper implements IShipmentMapper {
 
                             if (!UtilsKt.isNullOrEmpty(groupShop.getShopShipments())) {
                                 List<ShopShipment> shopShipmentListResult = new ArrayList<>();
-                                for (com.tokopedia.checkout.data.model.response.shipment_address_form.ShopShipment shopShipment :
+                                for (com.tokopedia.checkout.data.model.response.shipmentaddressform.ShopShipment shopShipment :
                                         groupShop.getShopShipments()) {
                                     ShopShipment shopShipmentResult = new ShopShipment();
                                     shopShipmentResult.setDropshipEnabled(shopShipment.isDropshipEnabled() == 1);
@@ -462,7 +462,7 @@ public class ShipmentMapper implements IShipmentMapper {
                                     shopShipmentResult.setShipName(shopShipment.getShipName());
                                     if (!UtilsKt.isNullOrEmpty(shopShipment.getShipProds())) {
                                         List<ShipProd> shipProdListResult = new ArrayList<>();
-                                        for (com.tokopedia.checkout.data.model.response.shipment_address_form.ShipProd shipProd :
+                                        for (com.tokopedia.checkout.data.model.response.shipmentaddressform.ShipProd shipProd :
                                                 shopShipment.getShipProds()) {
                                             ShipProd shipProdResult = new ShipProd();
                                             shipProdResult.setAdditionalFee(shipProd.getAdditionalFee());
@@ -482,7 +482,7 @@ public class ShipmentMapper implements IShipmentMapper {
 
                             if (!UtilsKt.isNullOrEmpty(groupShop.getProducts())) {
                                 List<Product> productListResult = new ArrayList<>();
-                                for (com.tokopedia.checkout.data.model.response.shipment_address_form.Product product
+                                for (com.tokopedia.checkout.data.model.response.shipmentaddressform.Product product
                                         : groupShop.getProducts()) {
                                     Product productResult = new Product();
 
@@ -681,7 +681,7 @@ public class ShipmentMapper implements IShipmentMapper {
         // Set default address for normal checkout or tradein checkout
         AddressData addressData = new AddressData();
         if (shipmentAddressFormDataResponse.getGroupAddress().size() > 0) {
-            com.tokopedia.checkout.data.model.response.shipment_address_form.UserAddress defaultAddress =
+            com.tokopedia.checkout.data.model.response.shipmentaddressform.UserAddress defaultAddress =
                     shipmentAddressFormDataResponse.getGroupAddress().get(0).getUserAddress();
             UserAddress defaultAddressData = getUserAddress(defaultAddress);
             addressData.setDefaultAddress(defaultAddressData);
@@ -691,10 +691,10 @@ public class ShipmentMapper implements IShipmentMapper {
         // Get trade in address if available
         Addresses addresses = shipmentAddressFormDataResponse.getAddresses();
         if (!UtilsKt.isNullOrEmpty(addresses.getActive())) {
-            com.tokopedia.checkout.data.model.response.shipment_address_form.UserAddress tradeInDefaultAddress = null;
-            com.tokopedia.checkout.data.model.response.shipment_address_form.UserAddress tradeInDropOffAddress = null;
+            com.tokopedia.checkout.data.model.response.shipmentaddressform.UserAddress tradeInDefaultAddress = null;
+            com.tokopedia.checkout.data.model.response.shipmentaddressform.UserAddress tradeInDropOffAddress = null;
 
-            for (com.tokopedia.checkout.data.model.response.shipment_address_form.Data dataAddress : addresses.getData()) {
+            for (com.tokopedia.checkout.data.model.response.shipmentaddressform.Data dataAddress : addresses.getData()) {
                 if (dataAddress.getKey().equals(AddressesData.DEFAULT_ADDRESS)) {
                     tradeInDefaultAddress = dataAddress.getValue();
                 } else if (dataAddress.getKey().equals(AddressesData.TRADE_IN_ADDRESS)) {
@@ -719,7 +719,7 @@ public class ShipmentMapper implements IShipmentMapper {
     }
 
     @NotNull
-    private UserAddress getUserAddress(com.tokopedia.checkout.data.model.response.shipment_address_form.UserAddress defaultAddress) {
+    private UserAddress getUserAddress(com.tokopedia.checkout.data.model.response.shipmentaddressform.UserAddress defaultAddress) {
         UserAddress defaultAddressData = new UserAddress();
         defaultAddressData.setAddressId(defaultAddress.getAddressId());
         defaultAddressData.setAddressName(defaultAddress.getAddressName());
@@ -780,7 +780,7 @@ public class ShipmentMapper implements IShipmentMapper {
         return hasError;
     }
 
-    private String generateShopType(com.tokopedia.checkout.data.model.response.shipment_address_form.Shop shop) {
+    private String generateShopType(com.tokopedia.checkout.data.model.response.shipmentaddressform.Shop shop) {
         if (shop.isOfficial() == 1)
             return SHOP_TYPE_OFFICIAL_STORE;
         else if (shop.getGoldMerchant().isGoldBadge())

@@ -1,6 +1,6 @@
 package com.tokopedia.checkout.domain.usecase
 
-import com.tokopedia.checkout.data.model.response.shipment_address_form.ShipmentAddressFormGqlResponse
+import com.tokopedia.checkout.data.model.response.shipmentaddressform.ShipmentAddressFormGqlResponse
 import com.tokopedia.checkout.domain.mapper.IShipmentMapper
 import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData
 import com.tokopedia.graphql.data.model.GraphqlRequest

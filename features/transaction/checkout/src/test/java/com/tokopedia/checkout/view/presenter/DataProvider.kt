@@ -2,7 +2,7 @@ package com.tokopedia.checkout.view.presenter
 
 import com.google.gson.Gson
 import com.tokopedia.checkout.UnitTestFileUtils
-import com.tokopedia.checkout.data.model.response.shipment_address_form.ShipmentAddressFormGqlResponse
+import com.tokopedia.checkout.data.model.response.shipmentaddressform.ShipmentAddressFormGqlResponse
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.RatesApiGqlResponse
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.RatesGqlResponse
 import com.tokopedia.checkout.data.model.request.checkout.DataCheckoutRequest
