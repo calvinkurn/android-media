@@ -365,7 +365,7 @@ object ParentTrackingKey {
     val KEY_EVENT_ACTION = "eventAction"
     val KEY_EVENT_LABEL = "eventLabel"
     val KEY_PAYMENT_ID = "payment_id"
-    val KEY_MERCHANT_CODE = "merchant_code"
+    val KEY_MERCHANT_CODE = "merchantCode"
     val KEY_PAYMENT_STATUS = "payment_status"
     val KEY_PAYMENT_TYPE = "payment_type"
 
