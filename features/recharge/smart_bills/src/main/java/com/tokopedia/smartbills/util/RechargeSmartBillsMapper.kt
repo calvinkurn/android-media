@@ -26,15 +26,15 @@ object RechargeSmartBillsMapper {
 
 
     fun getAccordionSection(listSection: List<Section>): List<Section>{
-        return listSection.filterNot { it.type == MAIN_TYPE }.sortedByDescending { it.type }
+        return listSection.filterNot { it.type == MAIN_TYPE || it.bills.isNullOrEmpty()}.sortedByDescending { it.type }
                 .mapIndexed { index, it ->
-                    Section(title = it.title, type = it.type,
-                    text = it.text, bills = it.bills, positionAccordion = index)
+                        Section(title = it.title, type = it.type,
+                                text = it.text, bills = it.bills, positionAccordion = index)
         }
     }
 
     fun getNotAccordionSection(listSection: List<Section>): Section?{
-        val listMainSection = listSection.filter { it.type == MAIN_TYPE }
+        val listMainSection = listSection.filter { it.type == MAIN_TYPE}
         return listMainSection.firstOrNull()
     }
 
