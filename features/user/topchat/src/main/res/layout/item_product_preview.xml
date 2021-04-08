@@ -6,7 +6,7 @@
     android:layout_width="@dimen/dp_topchat_230"
     android:layout_height="wrap_content"
     android:layout_marginStart="@dimen/dp_topchat_1"
-    android:layout_marginTop="@dimen/unify_space_2"
+    android:layout_marginTop="@dimen/dp_topchat_6"
     android:layout_marginBottom="@dimen/unify_space_2"
     android:minHeight="@dimen/unify_space_64"
     android:paddingTop="@dimen/unify_space_8"
