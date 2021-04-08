@@ -6,6 +6,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.analyticsdebugger.cassava.data.CassavaSource
 import com.tokopedia.analyticsdebugger.cassava.domain.QueryListUseCase
 import com.tokopedia.analyticsdebugger.cassava.validator.Utils
@@ -30,6 +31,8 @@ class ValidatorViewModel @Inject constructor(private val context: Application,
     private val engine: ValidatorEngine by lazy { ValidatorEngine(dao) }
     private val repo: GtmRepo by lazy { GtmRepo(TkpdAnalyticsDatabase.getInstance(context).gtmLogDao()) }
 
+    private val localCacheHandler: LocalCacheHandler by lazy { LocalCacheHandler(context, PREF_NAME) }
+
     private val _testCases: MutableLiveData<List<Validator>> = MutableLiveData()
     val testCases: LiveData<List<Validator>>
         get() = _testCases
@@ -49,6 +52,22 @@ class ValidatorViewModel @Inject constructor(private val context: Application,
     private val _cassavaSource = MutableLiveData<CassavaSource>()
     val cassavaSource: LiveData<CassavaSource>
         get() = _cassavaSource
+
+    init {
+        setCassavaSource(localCacheHandler.getBoolean(KEY_IS_NETWORK, true))
+    }
+
+    private fun setCassavaSource(isFromNetwork: Boolean) {
+        _cassavaSource.value = if (isFromNetwork) CassavaSource.NETWORK else CassavaSource.LOCAL
+    }
+
+    fun changeSource(isFromNetwork: Boolean) {
+        setCassavaSource(isFromNetwork)
+        localCacheHandler.apply {
+            putBoolean(KEY_IS_NETWORK, isFromNetwork)
+            applyEditor()
+        }
+    }
 
     fun run(queries: List<Pair<Int, Map<String, Any>>>, mode: String) {
         val v = queries.map { it.toDefaultValidator() }
@@ -74,7 +93,7 @@ class ValidatorViewModel @Inject constructor(private val context: Application,
         }
     }
 
-    fun fetchLocalQueriesList() {
+    fun fetchJourneyQueriesList() {
         viewModelScope.launch {
             try {
                 _listFiles.postValue(Utils.listAssetFiles(context, ValidatorListFragment.TRACKER_ROOT_PATH))
@@ -99,6 +118,12 @@ class ValidatorViewModel @Inject constructor(private val context: Application,
                 _snackBarMessage.postValue(t.message)
             }
         }
+    }
+
+    companion object {
+        private const val PREF_NAME = "pref_cassava"
+
+        private const val KEY_IS_NETWORK = "is_network"
     }
 
 }

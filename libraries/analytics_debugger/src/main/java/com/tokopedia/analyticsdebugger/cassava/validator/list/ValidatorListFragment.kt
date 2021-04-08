@@ -12,6 +12,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.ImageView
+import android.widget.ToggleButton
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -20,6 +21,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.analyticsdebugger.R
+import com.tokopedia.analyticsdebugger.cassava.data.CassavaSource
 import com.tokopedia.analyticsdebugger.cassava.di.CassavaComponent
 import com.tokopedia.analyticsdebugger.cassava.validator.main.ValidatorViewModel
 import timber.log.Timber
@@ -43,7 +45,8 @@ class ValidatorListFragment : Fragment() {
         super.onCreate(savedInstanceState)
 
         initInjector()
-        viewModel.fetchLocalQueriesList()
+        viewModel.changeSource(true)
+        viewModel.fetchJourneyQueriesList()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -68,6 +71,12 @@ class ValidatorListFragment : Fragment() {
             setHasFixedSize(true)
             addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
             adapter = listingAdapter
+        }
+
+        with(view.findViewById<ToggleButton>(R.id.toggle_cassava_source)) {
+            setOnCheckedChangeListener { compoundButton, isChecked ->
+                viewModel.changeSource(isChecked)
+            }
         }
 
         val searchBarTextField = view.findViewById<EditText>(R.id.searchbar_textfield)
@@ -111,6 +120,21 @@ class ValidatorListFragment : Fragment() {
         viewModel.listFiles.observe(viewLifecycleOwner, Observer {
             Timber.d("List files: %s", it)
             listingAdapter.setItems(it)
+        })
+
+        viewModel.cassavaSource.observe(viewLifecycleOwner, Observer {
+            view?.let { mView ->
+                val toggleButton = mView.findViewById<ToggleButton>(R.id.toggle_cassava_source)
+                when (it) {
+                    CassavaSource.NETWORK -> {
+                        toggleButton.isChecked = true
+                    }
+                    CassavaSource.LOCAL -> {
+                        toggleButton.isChecked = false
+                    }
+                }
+                viewModel.fetchJourneyQueriesList()
+            }
         })
     }
 
