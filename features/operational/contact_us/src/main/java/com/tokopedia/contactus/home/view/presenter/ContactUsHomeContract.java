@@ -1,12 +1,5 @@
 package com.tokopedia.contactus.home.view.presenter;
 
-import com.tokopedia.abstraction.base.view.listener.CustomerView;
-import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
-import com.tokopedia.contactus.common.data.BuyerPurchaseList;
-import com.tokopedia.contactus.home.data.ContactUsArticleResponse;
-
-import java.util.List;
-
 /**
  * Created by sandeepgoyal on 04/04/18.
  */

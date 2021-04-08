@@ -38,7 +38,6 @@ public class ContactUsHomeActivity extends BaseSimpleActivity {
             }
         }
         else {
-//            return ContactUsHomeFragment.newInstance();
             return BaseSessionWebViewFragment.newInstance(URL_HELP);
         }
     }
