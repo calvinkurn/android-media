@@ -88,7 +88,8 @@ object DynamicChannelComponentMapper {
                             isFreeOngkirActive = it.freeOngkir.isActive,
                             freeOngkirImageUrl = it.freeOngkir.imageUrl,
                             shop =  ChannelShop(
-                                    id = it.shop.shopId
+                                    id = it.shop.shopId,
+                                    shopLocation = it.shop.city
                             ),
                             labelGroup = it.labelGroup.map { label ->
                                 LabelGroup(
