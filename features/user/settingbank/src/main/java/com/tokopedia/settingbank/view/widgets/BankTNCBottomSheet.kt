@@ -38,17 +38,10 @@ class BankTNCBottomSheet : BottomSheetUnify() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val textHexColor = String.format("#%06x",
-                MethodChecker.getColor(context, com.tokopedia.unifycomponents.R.color.Unify_N700) and 0xffffff)
-
         templateData?.let {
-            val text = "<html><head><style type=\"text/css\">" +
-                    "   body {" +
-                    "      color:${textHexColor}" +
-                    "   }" +
-                    "</style></head><body>${it.template}</body></html>"
+            val htmlText = getHTMLTextFromString(it.template)
             view.findViewById<WebView>(R.id.tncWebView).setBackgroundColor(Color.TRANSPARENT)
-            view.findViewById<WebView>(R.id.tncWebView).loadDataWithBaseURL(null, text,
+            view.findViewById<WebView>(R.id.tncWebView).loadDataWithBaseURL(null, htmlText,
                     MIME_TYPE, ENCODING, null)
         }
     }
@@ -60,6 +53,17 @@ class BankTNCBottomSheet : BottomSheetUnify() {
             setTitle(getString(R.string.sbank_terms_and_condition) )
             setChild(child)
         }
+    }
+
+    private fun getHTMLTextFromString(text : String) : String{
+        val textHexColor = String.format("#%06x",
+                MethodChecker.getColor(context,
+                        com.tokopedia.unifycomponents.R.color.Unify_N700) and 0xffffff)
+        return  "<html><head><style type=\"text/css\">" +
+                "   body {" +
+                "      color:${textHexColor}" +
+                "   }" +
+                "</style></head><body>${text}</body></html>"
     }
 
     private fun setDefaultParams() {
