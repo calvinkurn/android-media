@@ -1,6 +1,6 @@
 {
   "readme": "Mix Top component on home; impression, click, cta click, and click lihat semua",
-  "mode": "subset",
+  "mode": "exact",
   "query": [
     {
       "eventCategory": "homepage",
