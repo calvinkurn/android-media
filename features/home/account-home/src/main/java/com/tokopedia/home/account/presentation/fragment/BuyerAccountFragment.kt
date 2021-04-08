@@ -128,8 +128,8 @@ class BuyerAccountFragment : BaseAccountFragment(), FragmentListener {
                         showErrorNoConnection()
                     } else {
                         showError(it.throwable, AccountConstants.ErrorCodes.ERROR_CODE_BUYER_ACCOUNT)
-                        loadStaticBuyerData()
                     }
+                    loadStaticBuyerData()
                 }
             }
         })
