@@ -2730,9 +2730,10 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     private void setChosenAddressForTradeInDropOff(Intent intent) {
         Activity activity = getActivity();
-        if (activity != null && isTradeInByDropOff() && ChooseAddressUtils.INSTANCE.isRollOutUser(activity)) {
-            LocationDataModel locationDataModel = shipmentPresenter.getRecipientAddressModel().getLocationDataModel();
-            ChosenAddress chosenAddress = new ChosenAddress(0, "0", "0", "", "");
+        RecipientAddressModel recipientAddressModel = shipmentPresenter.getRecipientAddressModel();
+        if (activity != null && isTradeInByDropOff() && ChooseAddressUtils.INSTANCE.isRollOutUser(activity) && recipientAddressModel != null) {
+            LocationDataModel locationDataModel = recipientAddressModel.getLocationDataModel();
+            ChosenAddress chosenAddress;
             if (locationDataModel != null) {
                 chosenAddress = new ChosenAddress(
                         ChosenAddress.MODE_ADDRESS,
@@ -2740,6 +2741,14 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                         locationDataModel.getDistrict(),
                         locationDataModel.getPostalCode(),
                         (!TextUtils.isEmpty(locationDataModel.getLatitude()) && !TextUtils.isEmpty(locationDataModel.getLongitude())) ? locationDataModel.getLatitude() + "," + locationDataModel.getLongitude() : ""
+                );
+            } else {
+                chosenAddress = new ChosenAddress(
+                        ChosenAddress.MODE_ADDRESS,
+                        recipientAddressModel.getId(),
+                        recipientAddressModel.getDestinationDistrictId(),
+                        recipientAddressModel.getPostalCode(),
+                        (!TextUtils.isEmpty(recipientAddressModel.getLatitude()) && !TextUtils.isEmpty(recipientAddressModel.getLongitude())) ? recipientAddressModel.getLatitude() + "," + recipientAddressModel.getLongitude() : ""
                 );
             }
             intent.putExtra(ARGS_CHOSEN_ADDRESS, chosenAddress);
