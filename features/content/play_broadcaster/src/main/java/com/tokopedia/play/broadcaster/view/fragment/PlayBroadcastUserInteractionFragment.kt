@@ -308,6 +308,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                     primaryListener = { dialog ->
                         dialog.dismiss()
                         parentViewModel.continueLiveStream()
+                        analytic.clickDialogContinueBroadcastOnLivePage(parentViewModel.channelId, parentViewModel.title)
                     },
                     secondaryCta = getString(R.string.play_broadcast_end),
                     secondaryListener = { dialog ->
