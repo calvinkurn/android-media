@@ -72,26 +72,18 @@ data class Product(
         val campaignId: Int = 0,
         @SerializedName("purchase_protection_plan_data")
         val purchaseProtectionPlanDataResponse: PurchaseProtectionPlanDataResponse = PurchaseProtectionPlanDataResponse(),
-
         @SerializedName("product_tracker_data")
-        val productTrackerData: ProductTrackerData? = null,
-
+        val productTrackerData: ProductTrackerData = ProductTrackerData(),
         @SerializedName("product_preorder")
-        val productPreorder: ProductPreorder? = null,
-
+        val productPreorder: ProductPreorder = ProductPreorder(),
         @SerializedName("trade_in_info")
-        val tradeInInfo: TradeInInfo? = null,
-
+        val tradeInInfo: TradeInInfo = TradeInInfo(),
         @SerializedName("free_shipping")
-        val freeShipping: FreeShipping? = null,
-
+        val freeShipping: FreeShipping = FreeShipping(),
         @SerializedName("free_shipping_extra")
-        val freeShippingExtra: FreeShipping? = null,
-
+        val freeShippingExtra: FreeShipping = FreeShipping(),
         @SerializedName("product_ticker")
-        val productTicker: ProductTicker? = null,
-
+        val productTicker: ProductTicker = ProductTicker(),
         @SerializedName("variant_description_detail")
-        val variantDescriptionDetail: VariantDescriptionDetail? = null,
-
+        val variantDescriptionDetail: VariantDescriptionDetail = VariantDescriptionDetail()
 )

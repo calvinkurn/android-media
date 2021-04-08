@@ -2,7 +2,6 @@ package com.tokopedia.checkout.data.model.response.shipment_address_form
 
 import com.google.gson.annotations.SerializedName
 
-
 data class CampaignTimer(
         @SerializedName("description")
         var description: String = "",
