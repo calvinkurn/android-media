@@ -18,8 +18,7 @@ class ImageReviewAdapter(private val imageReviews: MutableList<ImageReviewItem> 
                          private val showSeeAll: Boolean = true,
                          private val onOnImageReviewClick: OnImageReviewClick? = null,
                          private val onOnSeeAllReviewClick: OnSeeAllReviewClick? = null,
-                         private val componentTrackDataModel: ComponentTrackDataModel? = null,
-                         private val isNewViewHolder: Boolean = false) :
+                         private val componentTrackDataModel: ComponentTrackDataModel? = null) :
         RecyclerView.Adapter<ImageReviewAdapter.ImageReviewViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ImageReviewViewHolder {
@@ -33,10 +32,7 @@ class ImageReviewAdapter(private val imageReviews: MutableList<ImageReviewItem> 
     }
 
     override fun getItemViewType(position: Int): Int {
-        return if (
-                (showSeeAll && position == TOTAL_REVIEW_IMAGE_VISIBLE - 1 && !isNewViewHolder) ||
-                (showSeeAll && position == TOTAL_REVIEW_IMAGE_VISIBLE_NEW_VIEWHOLDER - 1 && isNewViewHolder)
-        )  {
+        return if ((showSeeAll && position == TOTAL_REVIEW_IMAGE_VISIBLE_NEW_VIEWHOLDER - 1))  {
             VIEW_TYPE_IMAGE_WITH_SEE_ALL_LAYER
         }
         else VIEW_TYPE_IMAGE
@@ -68,7 +64,6 @@ class ImageReviewAdapter(private val imageReviews: MutableList<ImageReviewItem> 
     companion object {
         private const val VIEW_TYPE_IMAGE = 77
         private const val VIEW_TYPE_IMAGE_WITH_SEE_ALL_LAYER = 88
-        private const val TOTAL_REVIEW_IMAGE_VISIBLE = 4
         private const val TOTAL_REVIEW_IMAGE_VISIBLE_NEW_VIEWHOLDER = 5
     }
 }

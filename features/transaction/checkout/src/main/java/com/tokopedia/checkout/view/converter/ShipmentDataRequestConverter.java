@@ -6,14 +6,14 @@ import com.tokopedia.logisticcart.shipping.model.CartItemModel;
 import com.tokopedia.logisticcart.shipping.model.CourierItemData;
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel;
 import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData;
-import com.tokopedia.purchase_platform.common.feature.checkout.request.DataCheckoutRequest;
-import com.tokopedia.purchase_platform.common.feature.checkout.request.DropshipDataCheckoutRequest;
-import com.tokopedia.purchase_platform.common.feature.checkout.request.OntimeDeliveryGuarantee;
-import com.tokopedia.purchase_platform.common.feature.checkout.request.ProductDataCheckoutRequest;
-import com.tokopedia.purchase_platform.common.feature.checkout.request.PromoRequest;
-import com.tokopedia.purchase_platform.common.feature.checkout.request.RatesFeature;
-import com.tokopedia.purchase_platform.common.feature.checkout.request.ShippingInfoCheckoutRequest;
-import com.tokopedia.purchase_platform.common.feature.checkout.request.ShopProductCheckoutRequest;
+import com.tokopedia.checkout.data.model.request.checkout.DataCheckoutRequest;
+import com.tokopedia.checkout.data.model.request.checkout.DropshipDataCheckoutRequest;
+import com.tokopedia.checkout.data.model.request.common.OntimeDeliveryGuarantee;
+import com.tokopedia.checkout.data.model.request.checkout.ProductDataCheckoutRequest;
+import com.tokopedia.checkout.data.model.request.checkout.PromoRequest;
+import com.tokopedia.checkout.data.model.request.common.RatesFeature;
+import com.tokopedia.checkout.data.model.request.checkout.ShippingInfoCheckoutRequest;
+import com.tokopedia.checkout.data.model.request.checkout.ShopProductCheckoutRequest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -203,7 +203,7 @@ public class ShipmentDataRequestConverter {
                 .shippingPrice(shippingPrice)
                 .codFlag(cartItem.getAnalyticsProductCheckoutData().getCodFlag())
                 .tokopediaCornerFlag(cartItem.getAnalyticsProductCheckoutData().getTokopediaCornerFlag())
-                .isFulfillment(cartItem.getAnalyticsProductCheckoutData().getIsFulfillment())
+                .isFulfillment(cartItem.getAnalyticsProductCheckoutData().isFulfillment())
                 .setDiscountedPrice(cartItem.getAnalyticsProductCheckoutData().isDiscountedPrice())
                 .isFreeShipping(cartItem.isFreeShipping())
                 .isFreeShippingExtra(cartItem.isFreeShippingExtra())

@@ -8,7 +8,6 @@ import com.tokopedia.media.loader.loadIcon
 import com.tokopedia.media.loader.transform.fitCenter
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.pdplayout.CampaignModular
-import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductContentMainData
 import com.tokopedia.product.detail.data.util.getCurrencyFormatted
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
@@ -82,17 +81,6 @@ class PartialContentView(private val view: View, private val listener: DynamicPr
                 fab_detail_pdp.setImageDrawable(MethodChecker.getDrawable(context, R.drawable.ic_pdp_wishlist_unfilled))
                 fab_detail_pdp.show()
             }
-        }
-    }
-
-    fun renderShareButton(componentTrackDataModel: ComponentTrackDataModel?) = with(view) {
-        if (!listener.isNavOld()) {
-            share_product_pdp.show()
-            share_product_pdp.setOnClickListener {
-                listener.shareProductFromContent(componentTrackDataModel)
-            }
-        } else {
-            share_product_pdp.hide()
         }
     }
 
