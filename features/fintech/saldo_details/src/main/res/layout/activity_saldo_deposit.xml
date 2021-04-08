@@ -1,39 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/il_main_content"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/white">
+    android:layout_height="match_parent">
 
-    <androidx.appcompat.widget.Toolbar
+    <com.tokopedia.header.HeaderUnify
         android:id="@+id/saldo_deposit_toolbar"
         android:layout_width="match_parent"
         android:layout_height="?actionBarSize"
         android:elevation="@dimen/unify_space_4"
-        android:theme="?toolbarTheme"
         app:contentInsetLeft="0dp"
         app:contentInsetStart="0dp"
         app:contentInsetStartWithNavigation="0dp"
         app:elevation="@dimen/unify_space_4"
-        app:subtitleTextAppearance="?subtitleTextAppearance"
-        app:titleTextAppearance="?titleTextAppearance">
-
+        app:unify_header_is_show_back_button="true"
+        app:unify_header_title="@string/title_saldo_detail"
+        >
+<!--
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="?actionBarSize">
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
-                android:fontFamily="sans-serif-medium"
                 android:text="@string/title_saldo_detail"
-                android:textColor="@color/black_70"
-                android:textSize="@dimen/sp_16" />
+                android:textColor="@color/Unify_N700_96"
+                app:typographyType="heading_4"/>
 
             <ImageView
                 android:id="@+id/toolbar_saldo_help"
@@ -45,7 +42,8 @@
                 android:layout_marginEnd="@dimen/unify_space_12"
                 android:layout_marginRight="@dimen/unify_space_12"
                 android:padding="@dimen/unify_space_4"
-                app:srcCompat="@drawable/saldo_ic_info" />
+                app:srcCompat="@drawable/saldo_ic_info"
+                android:contentDescription="null" />
 
             <ImageView
                 android:id="@+id/toolbarAutoWithdrawalSetting"
@@ -57,10 +55,11 @@
                 android:layout_marginEnd="@dimen/unify_space_12"
                 android:layout_marginRight="@dimen/unify_space_12"
                 android:padding="@dimen/unify_space_4"
-                app:srcCompat="@drawable/saldo_ic_setting" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
+                app:srcCompat="@drawable/saldo_ic_setting"
+                android:contentDescription="null"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>-->
 
-    </androidx.appcompat.widget.Toolbar>
+    </com.tokopedia.header.HeaderUnify>
 
 
     <FrameLayout

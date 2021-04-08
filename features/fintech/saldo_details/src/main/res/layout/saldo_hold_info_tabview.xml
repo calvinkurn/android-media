@@ -41,8 +41,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/saldo_hold_info_ticker"
             app:layout_goneMarginTop="@dimen/dp_20"
-            app:typographyType="heading_5"
-            app:typographyWeight="reguler" />
+            app:typographyType="heading_5" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_valueTotalSaldoHold"
@@ -51,7 +50,7 @@
             android:layout_marginTop="@dimen/dp_20"
             android:layout_marginEnd="@dimen/unify_space_16"
             android:layout_marginRight="@dimen/unify_space_16"
-            android:textColor="#03ac0e"
+            android:textColor="@color/Unify_G500"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/saldo_hold_info_ticker"
             app:typographyType="heading_4"
@@ -79,19 +78,21 @@
             <com.google.android.material.appbar.AppBarLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/white">
+                android:background="@color/Unify_N0">
 
-                <com.tokopedia.design.component.Tabs
+                <com.tokopedia.unifycomponents.TabsUnify
                     android:id="@+id/tabs_saldo_info_type"
+                    style="?tabTheme"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@color/white"
-                    android:theme="@style/ThemeOverlay.AppCompat.Light"
-                    app:tabGravity="fill"
-                    app:tabIndicatorColor="@color/tkpd_main_green"
-                    app:tabPaddingBottom="@dimen/unify_space_12"
-                    app:tabSelectedTextColor="@color/tkpd_main_green"
-                    app:tabTextColor="@color/black_38"></com.tokopedia.design.component.Tabs>
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/payLaterBorder"
+                    app:tabIndicatorColor="@color/Unify_G500"
+                    app:tabMode="fixed"
+                    android:paddingBottom="@dimen/unify_space_12"
+                    app:tabSelectedTextColor="@color/Unify_G500"
+                    app:tabTextColor="@color/Unify_N700_68" />
 
             </com.google.android.material.appbar.AppBarLayout>
 
@@ -110,22 +111,21 @@
             app:layout_constraintBottom_toTopOf="@+id/btn_bantuan"
             app:layout_constraintStart_toStartOf="parent" />
 
-        <com.tokopedia.design.component.ButtonCompat
+        <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/btn_bantuan"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/unify_space_40"
+            android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/unify_space_8"
             android:layout_marginRight="@dimen/unify_space_8"
             android:layout_marginBottom="@dimen/unify_space_8"
-            android:background="@drawable/bg_round_corner_solid_green"
-            android:gravity="center"
             android:text="@string/saldo_info_btn_text"
-            android:textColor="@color/white"
-            android:textSize="@dimen/sp_14"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:unifyButtonVariant="filled"
+            app:unifyButtonType="main"
+            app:unifyButtonSize="large"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

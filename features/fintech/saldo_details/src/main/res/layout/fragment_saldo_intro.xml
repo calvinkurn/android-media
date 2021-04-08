@@ -71,7 +71,7 @@
 
             <com.tokopedia.unifycomponents.DividerUnify
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_1"
+                android:layout_height="@dimen/sd_dp_1"
                 android:layout_marginTop="@dimen/unify_space_24" />
 
             <com.tokopedia.unifyprinciples.Typography

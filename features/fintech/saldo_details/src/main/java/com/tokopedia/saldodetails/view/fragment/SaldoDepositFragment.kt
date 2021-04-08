@@ -1,18 +1,12 @@
 package com.tokopedia.saldodetails.view.fragment
 
 import android.annotation.SuppressLint
-import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
-import android.text.SpannableString
-import android.text.Spanned
-import android.text.TextPaint
 import android.text.TextUtils
 import android.text.method.LinkMovementMethod
-import android.text.style.ClickableSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -28,7 +22,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
@@ -39,13 +32,16 @@ import com.tokopedia.coachmark.CoachMarkBuilder
 import com.tokopedia.coachmark.CoachMarkContentPosition
 import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.coachmark.CoachMarkPreference
-import com.tokopedia.design.utils.CurrencyFormatUtil
+import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.remoteconfig.RemoteConfigKey.APP_ENABLE_SALDO_LOCK
+import com.tokopedia.saldodetails.R
 import com.tokopedia.saldodetails.commom.analytics.SaldoDetailsConstants
 import com.tokopedia.saldodetails.design.UserStatusInfoBottomSheet
 import com.tokopedia.saldodetails.di.SaldoDetailsComponent
@@ -58,7 +54,11 @@ import com.tokopedia.saldodetails.view.activity.SaldoHoldInfoActivity
 import com.tokopedia.saldodetails.viewmodels.SaldoDetailViewModel
 import com.tokopedia.seller.active.common.service.UpdateShopActiveService
 import com.tokopedia.seller_migration_common.isSellerMigrationEnabled
+import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.user.session.UserSession
+import com.tokopedia.utils.currency.CurrencyFormatUtil
 import javax.inject.Inject
 
 
@@ -105,7 +105,7 @@ class SaldoDepositFragment : BaseDaggerFragment() {
     @Inject
     lateinit var userSession: UserSession
     private var totalBalanceTV: TextView? = null
-    private var drawButton: TextView? = null
+    private var drawButton: UnifyButton? = null
 
     private var topSlideOffBar: RelativeLayout? = null
     private var holdBalanceLayout: RelativeLayout? = null
@@ -137,15 +137,15 @@ class SaldoDepositFragment : BaseDaggerFragment() {
     private var saldoTypeLL: LinearLayout? = null
     private var merchantDetailLL: LinearLayout? = null
 
-    private var saldoDepositExpandIV: ImageView? = null
-    private var merchantDetailsExpandIV: ImageView? = null
+    private var saldoDepositExpandIV: IconUnify? = null
+    private var merchantDetailsExpandIV: IconUnify? = null
     private var expandLayout: Boolean = false
     private var expandMerchantDetailLayout = true
     private var merchantCreditFrameLayout: View? = null
     private var merchantStatusLL: LinearLayout? = null
     private val CHECK_VISIBILITY_DELAY: Long = 700
 
-    private var layoutTicker: View? = null
+    private var saldoLockTicker: Ticker? = null
     private var tvTickerMessage: TextView? = null
     private var ivDismissTicker: ImageView? = null
     private var mclLateCount = 0
@@ -279,10 +279,7 @@ class SaldoDepositFragment : BaseDaggerFragment() {
         saldoTypeLL = view.findViewById(com.tokopedia.saldodetails.R.id.saldo_type_ll)
         merchantDetailLL = view.findViewById(com.tokopedia.saldodetails.R.id.merchant_details_ll)
         merchantStatusLL = view.findViewById(com.tokopedia.saldodetails.R.id.merchant_status_ll)
-        saldoDepositExpandIV!!.setImageDrawable(MethodChecker.getDrawable(activity, com.tokopedia.design.R.drawable.ic_arrow_up_grey))
-        layoutTicker = view.findViewById(com.tokopedia.saldodetails.R.id.layout_holdwithdrawl_dialog)
-        tvTickerMessage = view.findViewById(com.tokopedia.design.R.id.tv_desc_info)
-        ivDismissTicker = view.findViewById(com.tokopedia.design.R.id.iv_dismiss_ticker)
+        saldoLockTicker = view.findViewById(com.tokopedia.saldodetails.R.id.layout_holdwithdrawl_dialog)
 
         if (expandLayout) {
             saldoTypeLL!!.show()
@@ -325,7 +322,7 @@ class SaldoDepositFragment : BaseDaggerFragment() {
                             showBuyerSaldoRL()
 
                             val totalBalance = it.data.saldo!!.buyerUsable + it.data.saldo!!.sellerUsable
-                            setBalance(totalBalance, CurrencyFormatUtil.convertPriceValueToIdrFormat(totalBalance, false))
+                            setBalance(CurrencyFormatUtil.convertPriceValueToIdrFormat(totalBalance, false))
                             setWithdrawButtonState(totalBalance != 0L)
 
                             val holdBalance = (it.data.saldo!!.buyerHold + it.data.saldo!!.sellerHold).toFloat()
@@ -662,29 +659,28 @@ class SaldoDepositFragment : BaseDaggerFragment() {
         saldoDetailViewModel.getMerchantCreditLateCountValue()
     }
 
-    // @TODO remove alert dialog with unify
     private fun showWithdrawalNoPassword() {
-        val builder = AlertDialog.Builder(context)
-        builder.setTitle(resources.getString(com.tokopedia.saldodetails.R.string.sp_error_deposit_no_password_title))
-        builder.setMessage(resources.getString(com.tokopedia.saldodetails.R.string.sp_error_deposit_no_password_content))
-        builder.setPositiveButton(resources.getString(com.tokopedia.saldodetails.R.string.sp_error_no_password_yes)) { dialogInterface, i ->
-            intentToAddPassword(requireContext())
-            dialogInterface.dismiss()
+        DialogUnify(requireContext(),
+                actionType = DialogUnify.HORIZONTAL_ACTION,
+                imageType = DialogUnify.NO_IMAGE).apply {
+            setTitle(resources.getString(com.tokopedia.saldodetails.R.string.sp_error_deposit_no_password_title))
+            setDescription(resources.getString(com.tokopedia.saldodetails.R.string.sp_error_deposit_no_password_content))
+            setPrimaryCTAText(resources.getString(com.tokopedia.saldodetails.R.string.sp_error_no_password_yes))
+            setSecondaryCTAText(resources.getString(com.tokopedia.saldodetails.R.string.sp_cancel))
+            setPrimaryCTAClickListener {
+                intentToAddPassword(requireContext())
+                dismiss()
+            }
+            setSecondaryCTAClickListener { dismiss() }
+            show()
         }
-        builder.setNegativeButton(getString(com.tokopedia.saldodetails.R.string.sp_cancel)) { dialogInterface, i -> dialogInterface.dismiss() }
-        val dialog = builder.create()
-        dialog.show()
-        dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(MethodChecker.getColor(context, com.tokopedia.design.R.color.black_54))
-        dialog.getButton(AlertDialog.BUTTON_NEGATIVE).isAllCaps = false
-        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(MethodChecker.getColor(context, com.tokopedia.design.R.color.tkpd_main_green))
-        dialog.getButton(AlertDialog.BUTTON_POSITIVE).isAllCaps = false
     }
 
     private fun intentToAddPassword(context: Context) {
         context.startActivity(RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_PASSWORD))
     }
 
-    private fun setBalance(totalBalance: Long, summaryUsebleDepositIdr: String) {
+    private fun setBalance(summaryUsebleDepositIdr: String) {
         if (!TextUtils.isEmpty(summaryUsebleDepositIdr)) {
             totalBalanceTV!!.text = summaryUsebleDepositIdr
             totalBalanceTV!!.show()
@@ -695,11 +691,7 @@ class SaldoDepositFragment : BaseDaggerFragment() {
     }
 
     private fun setWithdrawButtonState(state: Boolean) {
-        if (state) {
-            drawButton!!.setTextColor(Color.WHITE)
-        } else {
-            drawButton!!.setTextColor(resources.getColor(com.tokopedia.design.R.color.black_26))
-        }
+        drawButton!!.buttonType = if (state) UnifyButton.Type.MAIN else UnifyButton.Type.ALTERNATE
         drawButton!!.isEnabled = state
         drawButton!!.isClickable = state
     }
@@ -739,37 +731,26 @@ class SaldoDepositFragment : BaseDaggerFragment() {
     }
 
     private fun showTicker() {
-
         if (showMclBlockTickerFirebaseFlag) {
-            var tickerMsg = getString(com.tokopedia.design.R.string.saldolock_tickerDescription)
-            val startIndex = tickerMsg.indexOf(resources.getString(com.tokopedia.saldodetails.R.string.tickerClickableText))
-            val late = Integer.toString(mclLateCount)
-            tickerMsg = String.format(resources.getString(com.tokopedia.design.R.string.saldolock_tickerDescription), late)
-            val ss = SpannableString(tickerMsg)
+            saldoLockTicker?.visible()
+            saldoLockTicker?.tickerTitle = getString(R.string.saldo_lock_tickerTitle)
+            val descriptionStr = getString(R.string.saldo_lock_tickerDescription, mclLateCount)
+            val payNowLinkStr = getString(R.string.saldo_lock_pay_now)
+            val combinedHtmlDescription = getString(R.string.saldo_ticker_description_html,
+                    descriptionStr, payNowLinkStr)
+            saldoLockTicker?.setHtmlDescription(combinedHtmlDescription)
+            saldoLockTicker?.setDescriptionClickEvent(object : TickerCallback {
+                override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                    RouteManager.route(context, String.format("%s?url=%s",
+                            ApplinkConst.WEBVIEW, SaldoDetailsConstants.SALDOLOCK_PAYNOW_URL))
+                }
 
-            tvTickerMessage!!.movementMethod = LinkMovementMethod.getInstance()
+                override fun onDismiss() {
+                    saldoLockTicker?.gone()
+                }
 
-            if (startIndex != -1) {
-                ss.setSpan(object : ClickableSpan() {
-                    override fun onClick(view: View) {
-                        RouteManager.route(context, String.format("%s?url=%s",
-                                ApplinkConst.WEBVIEW, SaldoDetailsConstants.SALDOLOCK_PAYNOW_URL))
-                    }
-
-                    override fun updateDrawState(ds: TextPaint) {
-                        super.updateDrawState(ds)
-                        ds.isUnderlineText = false
-                        ds.color = resources.getColor(com.tokopedia.design.R.color.tkpd_main_green)
-                    }
-                }, startIndex - 1, tickerMsg.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-            }
-
-
-            tvTickerMessage!!.text = ss
-            ivDismissTicker!!.setOnClickListener { v -> layoutTicker!!.gone() }
-            layoutTicker!!.show()
+            })
         }
-
     }
 
     private fun hideTickerMessage() {
@@ -781,7 +762,7 @@ class SaldoDepositFragment : BaseDaggerFragment() {
     }
 
     private fun hideWithdrawTicker() {
-        layoutTicker!!.gone()
+        saldoLockTicker!!.gone()
     }
 
     private fun showSellerSaldoRL() {
@@ -806,19 +787,15 @@ class SaldoDepositFragment : BaseDaggerFragment() {
         if (response != null && response.isEligible) {
             statusWithDrawLock = response.status
             when (statusWithDrawLock) {
-
                 MCL_STATUS_ZERO -> hideMerchantCreditLineFragment()
-
                 MCL_STATUS_BLOCK1 -> {
                     showTicker()
                     showMerchantCreditLineWidget(response)
                 }
-
                 MCL_STATUS_BLOCK3 -> {
                     showTicker()
                     hideMerchantCreditLineFragment()
                 }
-
                 else -> showMerchantCreditLineWidget(response)
             }
         } else {
