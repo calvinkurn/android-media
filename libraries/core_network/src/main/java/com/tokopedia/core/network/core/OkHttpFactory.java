@@ -141,11 +141,9 @@ public class OkHttpFactory {
                                               GlobalTkpdAuthInterceptor globalTkpdAuthInterceptor,
                                               OkHttpRetryPolicy okHttpRetryPolicy,
                                               ChuckerInterceptor chuckInterceptor,
-                                              DebugInterceptor debugInterceptor,
-                                              CacheApiInterceptor cacheApiInterceptor) {
+                                              DebugInterceptor debugInterceptor) {
 
         TkpdOkHttpBuilder tkpdbBuilder = new TkpdOkHttpBuilder(builder)
-                .addInterceptor(cacheApiInterceptor)
                 .addInterceptor(fingerprintInterceptor)
                 .addInterceptor(globalTkpdAuthInterceptor)
                 .setOkHttpRetryPolicy(okHttpRetryPolicy);
@@ -161,11 +159,9 @@ public class OkHttpFactory {
                                                      TkpdAuthInterceptor tkpdAuthInterceptor,
                                                      OkHttpRetryPolicy okHttpRetryPolicy,
                                                      ChuckerInterceptor chuckInterceptor,
-                                                     DebugInterceptor debugInterceptor,
-                                                     CacheApiInterceptor cacheApiInterceptor) {
+                                                     DebugInterceptor debugInterceptor) {
 
         TkpdOkHttpBuilder tkpdbBuilder = new TkpdOkHttpBuilder(builder)
-                .addInterceptor(cacheApiInterceptor)
                 .addInterceptor(fingerprintInterceptor)
                 .addInterceptor(tkpdAuthInterceptor)
                 .setOkHttpRetryPolicy(okHttpRetryPolicy);
@@ -199,13 +195,11 @@ public class OkHttpFactory {
                                                 TkpdBaseInterceptor tkpdBaseInterceptor,
                                                 OkHttpRetryPolicy okHttpRetryPolicy,
                                                 ChuckerInterceptor chuckInterceptor,
-                                                DebugInterceptor debugInterceptor,
-                                                CacheApiInterceptor cacheApiInterceptor) {
+                                                DebugInterceptor debugInterceptor) {
 
         TkpdOkHttpBuilder tkpdbBuilder = new TkpdOkHttpBuilder(builder)
                 .addInterceptor(fingerprintInterceptor)
                 .addInterceptor(tkpdBaseInterceptor)
-                .addInterceptor(cacheApiInterceptor)
                 .setOkHttpRetryPolicy(okHttpRetryPolicy);
 
         if (GlobalConfig.isAllowDebuggingTools()) {
@@ -221,14 +215,12 @@ public class OkHttpFactory {
             TkpdBaseInterceptor tkpdBaseInterceptor,
             OkHttpRetryPolicy okHttpRetryPolicy,
             ChuckerInterceptor chuckInterceptor,
-            DebugInterceptor debugInterceptor,
-            CacheApiInterceptor cacheApiInterceptor) {
+            DebugInterceptor debugInterceptor) {
 
         TkpdOkHttpBuilder tkpdbBuilder = new TkpdOkHttpBuilder(builder)
                 .addInterceptor(bearerWithAuthInterceptor)
                 .addInterceptor(fingerprintInterceptor)
                 .addInterceptor(tkpdBaseInterceptor)
-                .addInterceptor(cacheApiInterceptor)
                 .setOkHttpRetryPolicy(okHttpRetryPolicy);
 
         if (GlobalConfig.isAllowDebuggingTools()) {
@@ -257,12 +249,10 @@ public class OkHttpFactory {
     public OkHttpClient buildDaggerClientBearerWithClientDefaultAuth(TkpdBearerWithAuthTypeJsonUtInterceptor tkpdBearerWithAuthTypeJsonUtInterceptor,
                                                                      OkHttpRetryPolicy okHttpRetryPolicy,
                                                                      ChuckerInterceptor chuckInterceptor,
-                                                                     DebugInterceptor debugInterceptor,
-                                                                     CacheApiInterceptor cacheApiInterceptor) {
+                                                                     DebugInterceptor debugInterceptor) {
 
         TkpdOkHttpBuilder tkpdbBuilder = new TkpdOkHttpBuilder(builder)
                 .addInterceptor(tkpdBearerWithAuthTypeJsonUtInterceptor)
-                .addInterceptor(cacheApiInterceptor)
                 .addInterceptor(new TkpdErrorResponseInterceptor(TkpdV4ResponseError.class))
                 .setOkHttpRetryPolicy(okHttpRetryPolicy);
 
@@ -279,12 +269,10 @@ public class OkHttpFactory {
                                                                      OkHttpRetryPolicy okHttpRetryPolicy,
                                                                      ChuckerInterceptor chuckInterceptor,
                                                                      DebugInterceptor debugInterceptor,
-                                                                     Interceptor tkpdErrorHandlerInterceptor,
-                                                                     CacheApiInterceptor cacheApiInterceptor) {
+                                                                     Interceptor tkpdErrorHandlerInterceptor) {
         TkpdOkHttpBuilder tkpdbBuilder = new TkpdOkHttpBuilder(builder)
                 .addInterceptor(fingerprintInterceptor)
                 .addInterceptor(tkpdAuthInterceptor)
-                .addInterceptor(cacheApiInterceptor)
                 .addInterceptor(tkpdErrorHandlerInterceptor)
                 .setOkHttpRetryPolicy(okHttpRetryPolicy);
 
@@ -324,11 +312,9 @@ public class OkHttpFactory {
     public OkHttpClient buildDaggerClientBearerTopAdsAuth(FingerprintInterceptor fingerprintInterceptor,
                                                           TopAdsAuthInterceptor topAdsAuthInterceptor,
                                                           OkHttpRetryPolicy okHttpRetryPolicy,
-                                                          @TopAdsQualifier TkpdErrorResponseInterceptor errorResponseInterceptor,
-                                                          CacheApiInterceptor cacheApiInterceptor) {
+                                                          @TopAdsQualifier TkpdErrorResponseInterceptor errorResponseInterceptor) {
 
         return new TkpdOkHttpBuilder(builder)
-                .addInterceptor(cacheApiInterceptor)
                 .addInterceptor(fingerprintInterceptor)
                 .addInterceptor(topAdsAuthInterceptor)
                 .addInterceptor(errorResponseInterceptor)
