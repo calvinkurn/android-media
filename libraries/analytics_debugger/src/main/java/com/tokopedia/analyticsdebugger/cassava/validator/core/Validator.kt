@@ -4,7 +4,8 @@ data class Validator(
         val data: Map<String, Any>,
         var status: Status = Status.PENDING,
         var matches: List<GtmLogUi> = emptyList(),
-        val name: String = getAnalyticsName(data)
+        val name: String = getAnalyticsName(data),
+        val id: Int = 0
 )
 
 fun getAnalyticsName(item: Map<String, Any>): String = when {

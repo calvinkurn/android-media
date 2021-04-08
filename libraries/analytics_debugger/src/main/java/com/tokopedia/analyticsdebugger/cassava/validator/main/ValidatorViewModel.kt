@@ -5,8 +5,14 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
+import com.tokopedia.analyticsdebugger.cassava.data.CassavaSource
+import com.tokopedia.analyticsdebugger.cassava.domain.QueryListUseCase
 import com.tokopedia.analyticsdebugger.cassava.validator.Utils
-import com.tokopedia.analyticsdebugger.cassava.validator.core.*
+import com.tokopedia.analyticsdebugger.cassava.validator.core.CassavaQuery
+import com.tokopedia.analyticsdebugger.cassava.validator.core.Validator
+import com.tokopedia.analyticsdebugger.cassava.validator.core.ValidatorEngine
+import com.tokopedia.analyticsdebugger.cassava.validator.core.toDefaultValidator
 import com.tokopedia.analyticsdebugger.cassava.validator.list.ValidatorListFragment
 import com.tokopedia.analyticsdebugger.database.TkpdAnalyticsDatabase
 import com.tokopedia.analyticsdebugger.debugger.data.repository.GtmRepo
@@ -16,7 +22,8 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
 
-class ValidatorViewModel @Inject constructor(val context: Application)
+class ValidatorViewModel @Inject constructor(private val context: Application,
+                                             private val queryListUseCase: QueryListUseCase)
     : AndroidViewModel(context) {
 
     private val dao: GtmLogDBSource by lazy { GtmLogDBSource(context) }
@@ -39,7 +46,11 @@ class ValidatorViewModel @Inject constructor(val context: Application)
     val cassavaQuery: LiveData<CassavaQuery>
         get() = _cassavaQuery
 
-    fun run(queries: List<Map<String, Any>>, mode: String) {
+    private val _cassavaSource = MutableLiveData<CassavaSource>()
+    val cassavaSource: LiveData<CassavaSource>
+        get() = _cassavaSource
+
+    fun run(queries: List<Pair<Int, Map<String, Any>>>, mode: String) {
         val v = queries.map { it.toDefaultValidator() }
         _testCases.value = v
 
@@ -75,13 +86,17 @@ class ValidatorViewModel @Inject constructor(val context: Application)
 
     fun getListFiles(): List<String> = listFiles.value ?: arrayListOf()
 
-    fun fetchQueryFromAsset(filePath: String) {
-        viewModelScope.launch {
+    fun fetchQueryFromAsset(filePath: String, journeyId: Int) {
+        viewModelScope.launch(CoroutineDispatchersProvider.io) {
             try {
-                _cassavaQuery.postValue(Utils.getJsonDataFromAsset(context, filePath)?.toCassavaQuery())
-            } catch (e: Exception) {
-                e.printStackTrace()
-                _snackBarMessage.postValue(e.message)
+                _cassavaQuery.postValue(queryListUseCase.execute(
+                        context,
+                        cassavaSource.value ?: CassavaSource.NETWORK,
+                        journeyId,
+                        filePath))
+            } catch (t: Throwable) {
+                t.printStackTrace()
+                _snackBarMessage.postValue(t.message)
             }
         }
     }

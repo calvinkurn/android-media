@@ -11,8 +11,8 @@ import retrofit2.http.Query
 interface CassavaApi {
     @GET(CassavaUrl.GET_QUERY_LIST)
     suspend fun getQueryList(
-            @Header("accounts-authorization") auth: String,
             @Header("Content-Type") contentType: String = "application/json",
+            @Query("token") token: String,
             @Query("journey_id") journeyId: Int
     ): QueryListEntity.DataResponse
 }

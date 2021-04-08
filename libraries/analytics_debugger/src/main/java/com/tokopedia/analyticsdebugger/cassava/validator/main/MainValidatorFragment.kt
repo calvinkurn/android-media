@@ -45,7 +45,7 @@ class MainValidatorFragment : Fragment() {
         super.onCreate(savedInstanceState)
 
         initInjector()
-        viewModel.fetchQueryFromAsset(testPath)
+        viewModel.fetchQueryFromAsset(testPath,1)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

@@ -11,7 +11,7 @@ class CassavaRepository @Inject constructor(private val cassavaApi: CassavaApi) 
 
     suspend fun getNetworkQueryList(journeyId: Int): QueryListEntity =
             cassavaApi.getQueryList(
-                    auth = "",
+                    token = "yQrDWdx97HRurBY8nvGt_Q6B4zMncJ22DGByVmzUBCI=",
                     journeyId = journeyId
             ).data
 
