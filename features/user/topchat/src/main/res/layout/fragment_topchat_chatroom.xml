@@ -176,7 +176,7 @@
                     android:clipToPadding="false"
                     android:orientation="horizontal"
                     android:paddingStart="@dimen/chatcommon_12dp"
-                    android:paddingEnd="@dimen/chatcommon_12dp"
+                    android:paddingEnd="@dimen/dp_topchat_14"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
                 <com.tokopedia.topchat.chatroom.view.custom.SrwLinearLayout
