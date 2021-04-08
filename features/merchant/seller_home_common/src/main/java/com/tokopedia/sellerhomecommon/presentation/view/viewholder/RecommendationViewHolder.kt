@@ -38,16 +38,16 @@ class RecommendationViewHolder(itemView: View) : AbstractViewHolder<Recommendati
 
     private fun setOnSuccess(element: RecommendationWidgetUiModel) {
         with(onSuccessView) {
-            containerShcRecommendationSuccess.visible()
             onLoadingView.containerShcRecommendationLoading.gone()
             onErrorView.containerShcRecommendationError.gone()
+            containerShcRecommendationSuccess.visible()
         }
     }
 
     private fun showErrorState(title: String) = with(onErrorView) {
-        containerShcRecommendationError.visible()
         onSuccessView.containerShcRecommendationSuccess.gone()
         onLoadingView.containerShcRecommendationLoading.gone()
+        containerShcRecommendationError.visible()
 
         tvShcRecommendationErrorStateTitle.text = title
         ImageHandler.loadImageWithId(imgWidgetOnError, com.tokopedia.globalerror.R.drawable.unify_globalerrors_connection)
