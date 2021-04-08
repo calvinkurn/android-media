@@ -40,7 +40,6 @@ import com.tokopedia.hotel.booking.di.HotelBookingComponent
 import com.tokopedia.hotel.booking.presentation.activity.HotelBookingActivity.Companion.HOTEL_BOOKING_SCREEN_NAME
 import com.tokopedia.hotel.booking.presentation.viewmodel.HotelBookingViewModel
 import com.tokopedia.hotel.booking.presentation.widget.HotelBookingBottomSheets
-import com.tokopedia.hotel.common.analytics.SCREEN_NAME_CHECKOUT_PROMO
 import com.tokopedia.hotel.common.analytics.TrackingHotelUtil
 import com.tokopedia.hotel.common.presentation.HotelBaseFragment
 import com.tokopedia.hotel.common.presentation.widget.InfoTextView
@@ -49,8 +48,6 @@ import com.tokopedia.hotel.common.util.TRACKING_HOTEL_CHECKOUT
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.promocheckout.common.data.PromoCheckoutCommonQueryConst
-import com.tokopedia.promocheckout.common.data.REQUEST_CODE_PROMO_DETAIL
-import com.tokopedia.promocheckout.common.data.REQUEST_CODE_PROMO_LIST
 import com.tokopedia.promocheckout.common.view.model.PromoData
 import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView
 import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView
@@ -229,35 +226,36 @@ class HotelBookingFragment : HotelBaseFragment() {
                 if (resultCode == Activity.RESULT_OK) {
                     data?.let {
                         if (it.hasExtra(COUPON_EXTRA_PROMO_DATA)) {
-                            val itemPromoData = it.getParcelableExtra<PromoData>(COUPON_EXTRA_PROMO_DATA)
-                            promoCode = itemPromoData.promoCode
-                            hotelCart.appliedVoucher.isCoupon = if (itemPromoData.typePromo == PromoData.TYPE_COUPON) 1 else 0
+                            it.getParcelableExtra<PromoData>(COUPON_EXTRA_PROMO_DATA)?.let { itemPromoData ->
+                                promoCode = itemPromoData.promoCode
+                                hotelCart.appliedVoucher.isCoupon = if (itemPromoData.typePromo == PromoData.TYPE_COUPON) 1 else 0
 
-                            when (itemPromoData.state) {
-                                TickerCheckoutView.State.EMPTY -> {
-                                    promoCode = ""
-                                    setupPromoTicker(TickerCheckoutView.State.EMPTY,
-                                            "",
-                                            "")
-                                }
-                                TickerCheckoutView.State.FAILED -> {
-                                    promoCode = ""
-                                    setupPromoTicker(TickerCheckoutView.State.FAILED,
-                                            itemPromoData?.title.toEmptyStringIfNull(),
-                                            itemPromoData?.description.toEmptyStringIfNull())
+                                when (itemPromoData.state) {
+                                    TickerCheckoutView.State.EMPTY -> {
+                                        promoCode = ""
+                                        setupPromoTicker(TickerCheckoutView.State.EMPTY,
+                                                "",
+                                                "")
+                                    }
+                                    TickerCheckoutView.State.FAILED -> {
+                                        promoCode = ""
+                                        setupPromoTicker(TickerCheckoutView.State.FAILED,
+                                                itemPromoData.title.toEmptyStringIfNull(),
+                                                itemPromoData.description.toEmptyStringIfNull())
 
-                                }
-                                TickerCheckoutView.State.ACTIVE -> {
-                                    trackingHotelUtil.hotelApplyPromo(context, promoCode, HOTEL_BOOKING_SCREEN_NAME)
-                                    setupPromoTicker(TickerCheckoutView.State.ACTIVE,
-                                            itemPromoData?.title.toEmptyStringIfNull(),
-                                            itemPromoData?.description.toEmptyStringIfNull())
-                                }
-                                else -> {
-                                    promoCode = ""
-                                    setupPromoTicker(TickerCheckoutView.State.EMPTY,
-                                            "",
-                                            "")
+                                    }
+                                    TickerCheckoutView.State.ACTIVE -> {
+                                        trackingHotelUtil.hotelApplyPromo(context, promoCode, HOTEL_BOOKING_SCREEN_NAME)
+                                        setupPromoTicker(TickerCheckoutView.State.ACTIVE,
+                                                itemPromoData.title.toEmptyStringIfNull(),
+                                                itemPromoData.description.toEmptyStringIfNull())
+                                    }
+                                    else -> {
+                                        promoCode = ""
+                                        setupPromoTicker(TickerCheckoutView.State.EMPTY,
+                                                "",
+                                                "")
+                                    }
                                 }
                             }
                         }
@@ -526,7 +524,6 @@ class HotelBookingFragment : HotelBaseFragment() {
 
             booking_pay_now_promo_ticker.actionListener = object : TickerPromoStackingCheckoutView.ActionListener {
                 override fun onClickUsePromo() {
-                    trackingHotelUtil.openScreen(context, SCREEN_NAME_CHECKOUT_PROMO)
                     val intent = RouteManager.getIntent(activity, ApplinkConstInternalPromo.PROMO_LIST_HOTEL)
                     intent.putExtra(COUPON_EXTRA_COUPON_ACTIVE, cart.appliedVoucher.isCoupon)
                     intent.putExtra(COUPON_EXTRA_CART_ID, hotelCart.cartID)
@@ -547,12 +544,12 @@ class HotelBookingFragment : HotelBaseFragment() {
                             intent = RouteManager.getIntent(activity, ApplinkConstInternalPromo.PROMO_DETAIL_HOTEL)
                             intent.putExtra(COUPON_EXTRA_IS_USE, true)
                             intent.putExtra(COUPON_EXTRA_COUPON_CODE, promoCode)
-                            requestCode = REQUEST_CODE_PROMO_DETAIL
+                            requestCode = COUPON_EXTRA_DETAIL_ACTIVITY_RESULT
                         } else {
                             intent = RouteManager.getIntent(activity, ApplinkConstInternalPromo.PROMO_LIST_HOTEL)
                             intent.putExtra(COUPON_EXTRA_PROMO_CODE, promoCode)
                             intent.putExtra(COUPON_EXTRA_COUPON_ACTIVE, true)
-                            requestCode = REQUEST_CODE_PROMO_LIST
+                            requestCode = COUPON_EXTRA_LIST_ACTIVITY_RESULT
                         }
                         intent.putExtra(COUPON_EXTRA_CART_ID, hotelCart.cartID)
                         startActivityForResult(intent, requestCode)

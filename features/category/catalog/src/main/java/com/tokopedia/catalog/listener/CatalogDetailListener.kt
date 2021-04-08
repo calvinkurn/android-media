@@ -15,7 +15,6 @@ interface CatalogDetailListener {
      * CatalogImageViewHolder
      */
     fun onProductImageClick(catalogImage : CatalogImage, position: Int)
-    fun onImagesScrolled()
 
     /**
      * CatalogSpecificationsContainerViewHolder

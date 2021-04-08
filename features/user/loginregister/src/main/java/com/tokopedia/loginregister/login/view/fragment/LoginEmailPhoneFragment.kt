@@ -166,6 +166,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
     private var activityShouldEnd = true
     private var isFromRegister = false
     private var isUseHash = false
+    private var validateToken = ""
 
     private lateinit var remoteConfigInstance: RemoteConfigInstance
 
@@ -1297,6 +1298,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
                     && data.extras != null) {
                 val uuid = data.extras?.getString(ApplinkConstInternalGlobal.PARAM_UUID, "") ?: ""
                 val msisdn = data.extras?.getString(ApplinkConstInternalGlobal.PARAM_MSISDN, "") ?: ""
+                validateToken = data.extras?.getString(ApplinkConstInternalGlobal.PARAM_TOKEN).toString()
                 goToAddNameFromRegisterPhone(uuid, msisdn)
             } else if (requestCode == REQUEST_ADD_NAME) {
                 onSuccessLogin()
@@ -1361,8 +1363,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
 
     private fun processAfterAddNameRegisterPhone(data: Bundle?) {
         val enable2FA = data?.getBoolean(ApplinkConstInternalGlobal.PARAM_ENABLE_2FA) ?: false
-        val enableSkip2FA = data?.getBoolean(ApplinkConstInternalGlobal.PARAM_ENABLE_SKIP_2FA)
-                ?: false
+        val enableSkip2FA = data?.getBoolean(ApplinkConstInternalGlobal.PARAM_ENABLE_SKIP_2FA) ?: false
         if (enable2FA) {
             goToAddPin2FA(enableSkip2FA)
         } else {
@@ -1374,8 +1375,8 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
         val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_PIN)
         intent.putExtras(Bundle().apply {
             putBoolean(ApplinkConstInternalGlobal.PARAM_ENABLE_SKIP_2FA, enableSkip2FA)
-            putBoolean(ApplinkConstInternalGlobal.PARAM_IS_FROM_2FA, true)
             putBoolean(ApplinkConstInternalGlobal.PARAM_IS_SKIP_OTP, true)
+            putString(ApplinkConstInternalGlobal.PARAM_TOKEN, validateToken)
         })
         startActivityForResult(intent, REQUEST_ADD_PIN_AFTER_REGISTER_PHONE)
     }

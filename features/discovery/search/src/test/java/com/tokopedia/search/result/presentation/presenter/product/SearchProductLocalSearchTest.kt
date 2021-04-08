@@ -83,7 +83,9 @@ internal class SearchProductLocalSearchTest: ProductListPresenterTestFixtures() 
         val searchProductTitle = visitableList[0]
         searchProductTitle.shouldBeInstanceOf<SearchProductTitleDataView>()
 
-        (searchProductTitle as SearchProductTitleDataView).title shouldBe searchProductPageTitle
+        val searchProductTitleViewModel = searchProductTitle as SearchProductTitleDataView
+        searchProductTitleViewModel.title shouldBe searchProductPageTitle
+        searchProductTitleViewModel.isRecommendationTitle shouldBe false
     }
 
     private fun `Then verify visitable list does not contain CPM`() {
@@ -157,6 +159,7 @@ internal class SearchProductLocalSearchTest: ProductListPresenterTestFixtures() 
 
         `Then verify recommendation use case not called`()
         `Then verify empty search view model during local search`()
+        `Then verify view added broad match`(searchProductModel)
         `Then verify local search recommendation use case is called`()
     }
 
@@ -182,6 +185,31 @@ internal class SearchProductLocalSearchTest: ProductListPresenterTestFixtures() 
         emptySearchViewModel.globalSearchApplink shouldBe "${ApplinkConstInternalDiscovery.SEARCH_RESULT}?q=asus"
         emptySearchViewModel.keyword shouldBe keyword
         emptySearchViewModel.pageTitle shouldBe searchProductPageTitle
+    }
+
+    private fun `Then verify view added broad match`(searchProductModel: SearchProductModel) {
+        verify {
+            productListView.addProductList(capture(visitableListSlot))
+        }
+
+        val visitableList = visitableListSlot.captured
+        visitableList[0].shouldBeInstanceOf<SuggestionDataView>()
+
+        val otherRelated = searchProductModel.searchProduct.data.related.otherRelatedList
+        visitableList.filterIsInstance<BroadMatchDataView>().size shouldBe otherRelated.size
+
+        var index = visitableList.indexOfFirst { it is BroadMatchDataView }
+        index shouldBe 1
+
+        repeat(otherRelated.size) {
+            val visitable = visitableList[index]
+            visitable.shouldBeInstanceOf<BroadMatchDataView>()
+
+            val broadMatchViewModel = visitable as BroadMatchDataView
+            broadMatchViewModel.isAppendTitleInTokopedia shouldBe true
+
+            index++
+        }
     }
 
     private fun `Then verify local search recommendation use case is called`() {
