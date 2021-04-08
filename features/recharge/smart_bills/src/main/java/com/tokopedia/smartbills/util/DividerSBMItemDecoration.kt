@@ -38,7 +38,7 @@ class DividerSBMItemDecoration(context: Context) : RecyclerView.ItemDecoration()
             val child = parent.getChildAt(i)
             val params = child.layoutParams as RecyclerView.LayoutParams
             val top = child.bottom + params.bottomMargin
-            val bottom = top + parent.context.resources.getDimensionPixelSize(R.dimen.dp_half)
+            val bottom = top + parent.context.resources.getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_half)
             mDivider.setBounds(left, top, right, bottom)
             mDivider.draw(c)
         }
