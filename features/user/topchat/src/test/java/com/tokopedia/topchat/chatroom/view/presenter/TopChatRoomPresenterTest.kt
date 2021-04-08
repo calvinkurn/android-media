@@ -181,6 +181,9 @@ class TopChatRoomPresenterTest {
     @RelaxedMockK
     private lateinit var sendAbleProductPreview: SendablePreview
 
+    @RelaxedMockK
+    private lateinit var chatSrwUseCase: SmartReplyQuestionUseCase
+
     @SpyK
     private var topChatRoomWebSocketMessageMapper = TopChatRoomWebSocketMessageMapper()
 
@@ -309,6 +312,7 @@ class TopChatRoomPresenterTest {
                         chatAttachmentUseCase,
                         chatToggleBlockChat,
                         chatBackgroundUseCase,
+                        chatSrwUseCase,
                         sharedPref,
                         dispatchers
                 )
