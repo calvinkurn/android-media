@@ -649,10 +649,6 @@ public class ShipmentMapper implements IShipmentMapper {
                                         }
                                     }
 
-                                    if (product.getFreeReturns() != null) {
-                                        productResult.setFreeReturnLogo(product.getFreeReturns().getFreeReturnsLogo());
-                                    }
-
                                     if (product.getVariantDescriptionDetail() != null) {
                                         productResult.setVariant(product.getVariantDescriptionDetail().getVariantDescription());
                                     }

@@ -73,9 +73,6 @@ data class Product(
         @SerializedName("purchase_protection_plan_data")
         val purchaseProtectionPlanDataResponse: PurchaseProtectionPlanDataResponse = PurchaseProtectionPlanDataResponse(),
 
-        @SerializedName("free_returns")
-        val freeReturns: FreeReturns? = null,
-
         @SerializedName("product_tracker_data")
         val productTrackerData: ProductTrackerData? = null,
 

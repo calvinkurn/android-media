@@ -301,7 +301,6 @@ public class ShipmentDataConverter {
         cartItemModel.setFreeReturn(product.isProductIsFreeReturns());
         cartItemModel.setCashback(product.getProductCashback());
         cartItemModel.setCashback(!UtilsKt.isNullOrEmpty(product.getProductCashback()));
-        cartItemModel.setFreeReturnLogo(product.getFreeReturnLogo());
         cartItemModel.setFInsurance(product.isProductFcancelPartial());
         cartItemModel.setFCancelPartial(product.isProductFinsurance());
         cartItemModel.setError(product.isError());

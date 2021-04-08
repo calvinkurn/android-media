@@ -30,7 +30,6 @@ public class Product implements Parcelable {
     private int productWeight;
     private int productCondition;
     private String productUrl;
-    private String freeReturnLogo;
     private boolean productReturnable;
     private boolean productIsFreeReturns;
     private boolean productIsPreorder;
@@ -95,14 +94,6 @@ public class Product implements Parcelable {
 
     public void setProductPriceFmt(String productPriceFmt) {
         this.productPriceFmt = productPriceFmt;
-    }
-
-    public String getFreeReturnLogo() {
-        return freeReturnLogo;
-    }
-
-    public void setFreeReturnLogo(String freeReturnLogo) {
-        this.freeReturnLogo = freeReturnLogo;
     }
 
     public void setProductPrice(long productPrice) {
@@ -438,7 +429,6 @@ public class Product implements Parcelable {
         dest.writeInt(productWeight);
         dest.writeInt(productCondition);
         dest.writeString(productUrl);
-        dest.writeString(freeReturnLogo);
         dest.writeByte((byte) (productReturnable ? 1 : 0));
         dest.writeByte((byte) (productIsFreeReturns ? 1 : 0));
         dest.writeByte((byte) (productIsPreorder ? 1 : 0));
@@ -485,7 +475,6 @@ public class Product implements Parcelable {
         productWeight = in.readInt();
         productCondition = in.readInt();
         productUrl = in.readString();
-        freeReturnLogo = in.readString();
         productReturnable = in.readByte() != 0;
         productIsFreeReturns = in.readByte() != 0;
         productIsPreorder = in.readByte() != 0;

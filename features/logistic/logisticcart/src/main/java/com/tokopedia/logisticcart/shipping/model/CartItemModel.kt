@@ -21,7 +21,6 @@ data class CartItemModel(
         var noteToSeller: String? = null,
         var imageUrl: String? = null,
         var cashback: String? = null,
-        var freeReturnLogo: String? = null,
         var preOrderDurationDay: Int = 0,
         var isCashback: Boolean = false,
         var isPreOrder: Boolean = false,
