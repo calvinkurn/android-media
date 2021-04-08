@@ -82,7 +82,6 @@ import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitableDiffUtil
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.CashBackData
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDataModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomeHeaderOvoDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PlayCardDataModel
@@ -1349,8 +1348,9 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             adapter?.submitList(data)
             (data.firstOrNull { it is HomeHeaderOvoDataModel } as? HomeHeaderOvoDataModel)?.let {
                 Handler().postDelayed({
-                    val isTokopointsTypeAvailable = it.headerDataModel?.homeBalanceModel?.balanceDrawerItemModels?.values?.firstOrNull { it.drawerItemType == BalanceDrawerItemModel.TYPE_TOKOPOINT }
-                    if (!coachMarkIsShowing && !bottomSheetIsShowing && isTokopointsTypeAvailable != null)
+                    val isBalanceWidgetNotEmpty = it.headerDataModel?.homeBalanceModel?.balanceDrawerItemModels?.isNotEmpty()
+                            ?: false
+                    if (!coachMarkIsShowing && !bottomSheetIsShowing && isBalanceWidgetNotEmpty)
                         showCoachMark()
                 }, 5000)
             }
