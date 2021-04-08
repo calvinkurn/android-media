@@ -25,6 +25,7 @@ public interface LinkerConstants {
     String FEATURE_GATE_BRANCH_LINKS = "mainapp_activate_branch_links";
     String APP_SHOW_REFERRAL_BUTTON = "app_show_referral_button";
     String enableBranchReinitFlow = "android_enable_branch_reinitflow";
+    String ENABLE_XIAOMI_PAI_TRACKING = "android_enable_xiaomi_pai_tracking";
     String STRING_FORMAT_TAG = "%s - %s";
     String STRING_FORMAT_DESKTOP_URL = "%s%s";
     String STRING_FORMAT_GROUP_CHAT = "groupchat/%s%sutm_source=%s&utm_medium=%s&utm_campaign=%s&utm_content=%s";

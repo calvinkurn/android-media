@@ -27,12 +27,14 @@
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
     <View
+        android:id="@+id/toolbarShadow"
         android:layout_width="match_parent"
         android:layout_height="@dimen/spacing_lvl1"
         android:background="@drawable/sah_shadow"
         android:layout_below="@id/sahToolbar"/>
 
     <View
+        android:id="@+id/navBarShadow"
         android:layout_width="match_parent"
         android:layout_height="@dimen/spacing_lvl1"
         android:background="@drawable/sah_shadow"
@@ -44,7 +46,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        app:buttonColor="@color/color_bottom_nav_btn"
+        app:buttonColor="@color/Unify_N500"
         app:buttonsHeight="@dimen/shc_dimen_56dp"
         app:offscreenPageLimit="4"
         app:setViewPagerSwipeable="false"
