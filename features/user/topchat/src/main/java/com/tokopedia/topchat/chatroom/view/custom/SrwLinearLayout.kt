@@ -25,6 +25,7 @@ import com.tokopedia.topchat.chatroom.view.adapter.viewholder.srw.SrwQuestionVie
 import com.tokopedia.topchat.common.data.Resource
 import com.tokopedia.topchat.common.data.Status
 import com.tokopedia.topchat.common.util.ViewUtil
+import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.LocalLoad
 import com.tokopedia.unifyprinciples.Typography
 
@@ -40,6 +41,7 @@ class SrwLinearLayout : FrameLayout {
     private var rvSrw: RecyclerView? = null
     private var srwContentContainer: LinearLayout? = null
     private var errorState: LocalLoad? = null
+    private var loadingState: LoaderUnify? = null
 
     private var bgExpanded: Drawable? = null
 
@@ -132,6 +134,7 @@ class SrwLinearLayout : FrameLayout {
         rvSrw = findViewById(R.id.rv_srw_partial)
         srwContentContainer = findViewById(R.id.rv_srw_content_container)
         errorState = findViewById(R.id.ll_srw_partial)
+        loadingState = findViewById(R.id.lu_srw_partial)
     }
 
     private fun initToggleExpandCollapsed() {
@@ -170,14 +173,18 @@ class SrwLinearLayout : FrameLayout {
 
     fun renderSrwState() {
         show()
-        if (isErrorState()) {
-            showErrorState()
-        } else if (isSuccessState()) {
-            showSrwContent()
+        when {
+            isLoadingState() -> renderLoadingState()
+            isErrorState() -> renderErrorState()
+            isSuccessState() -> renderSrwContent()
         }
     }
 
-    private fun isSuccessState(): Boolean {
+    fun isLoadingState(): Boolean {
+        return latestState != null && latestState?.status == Status.LOADING
+    }
+
+    fun isSuccessState(): Boolean {
         return latestState != null && latestState?.status == Status.SUCCESS
     }
 
@@ -185,9 +192,22 @@ class SrwLinearLayout : FrameLayout {
         return latestState != null && latestState?.status == Status.ERROR
     }
 
-    private fun showErrorState() {
+    private fun renderLoadingState() {
         hideSrwContent()
-        errorState?.show()
+        hideErrorState()
+        showLoadingState()
+    }
+
+    private fun renderSrwContent() {
+        hideErrorState()
+        hideLoadingState()
+        showSrwContent()
+    }
+
+    private fun renderErrorState() {
+        hideSrwContent()
+        hideLoadingState()
+        showErrorState()
     }
 
     fun hideSrw() {
@@ -195,13 +215,28 @@ class SrwLinearLayout : FrameLayout {
         hideSrwContent()
     }
 
+    private fun showErrorState() {
+        errorState?.show()
+    }
+
+    private fun hideErrorState() {
+        errorState?.hide()
+    }
+
     private fun showSrwContent() {
         srwContentContainer?.show()
-        errorState?.hide()
     }
 
     private fun hideSrwContent() {
         srwContentContainer?.hide()
+    }
+
+    private fun showLoadingState() {
+        loadingState?.show()
+    }
+
+    private fun hideLoadingState() {
+        loadingState?.hide()
     }
 
     companion object {

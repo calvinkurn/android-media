@@ -232,16 +232,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     private fun initObserver() {
         presenter.srw.observe(viewLifecycleOwner, Observer {
             rvSrw?.updateStatus(it)
-            when (it.status) {
-                Status.SUCCESS -> {
-                    updateSrwState()
-                }
-                Status.ERROR -> {
-                    updateSrwState()
-                }
-                else -> {
-                }
-            }
+            updateSrwState()
         })
     }
 
@@ -264,7 +255,8 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     override fun shouldShowSrw(): Boolean {
         return !isSeller() && hasProductPreviewShown() &&
                 rvSrw?.isAllowToShow() == true ||
-                (rvSrw?.isErrorState() == true && hasProductPreviewShown())
+                (rvSrw?.isErrorState() == true && hasProductPreviewShown()) ||
+                (rvSrw?.isLoadingState() == true && hasProductPreviewShown())
     }
 
     private fun initReplyTextWatcher() {
