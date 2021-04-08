@@ -64,7 +64,7 @@ class AuthenticateCreditCardFragment : BaseListFragment<TypeAuthenticateCreditCa
             ContextCompat.getDrawable(it, R.drawable.divider_list_card)?.let { it1 ->
                 dividerItemDecoration.setDrawable(it1)
             }
-            getRecyclerView(view).addItemDecoration(dividerItemDecoration)
+            getRecyclerView(view)?.addItemDecoration(dividerItemDecoration)
         }
         progressDialog.setMessage(getString(com.tokopedia.abstraction.R.string.title_loading))
         updateVisibilityButtonUse()

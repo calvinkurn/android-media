@@ -28,7 +28,7 @@ class SendOtp2FAUseCase @Inject constructor(
             mode: String,
             msisdn: String = "",
             email: String = "",
-            otpDigit: Int = 6,
+            otpDigit: Int = 4,
             userIdEnc: String,
             validateToken: String
     ): Map<String, Any> = mapOf(
