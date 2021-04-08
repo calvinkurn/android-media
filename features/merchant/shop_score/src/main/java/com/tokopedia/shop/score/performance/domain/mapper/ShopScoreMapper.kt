@@ -515,7 +515,7 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
 
         val (descStatus, isShowCardBg) = when (shopInfoPeriodUiModel.isNewSeller) {
             true -> {
-                when(statusPM) {
+                when (statusPM) {
                     SUPPOSED_INACTIVE_TEXT -> {
                         when (shopInfoPeriodUiModel.numberMonth) {
                             ShopScoreConstant.ONE_MONTH, ShopScoreConstant.TWO_MONTH -> {
@@ -529,7 +529,7 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
                     }
                     else -> {
                         when (shopInfoPeriodUiModel.shopAge) {
-                            in SHOP_SCORE_SIXTY.. SHOP_SCORE_SIXTY_NINE -> {
+                            in SHOP_SCORE_SIXTY..SHOP_SCORE_SIXTY_NINE -> {
                                 val thresholdReputation = 5
                                 val hasScore = reputationShopResponse?.firstOrNull()?.score.toIntOrZero() < thresholdReputation
                                 if (hasScore) {
@@ -672,8 +672,7 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
         }
     }
 
-    private fun mapToItemCurrentStatusRMUiModel(potentialPmGrade: GoldPMGradeBenefitInfoResponse.GoldGetPMGradeBenefitInfo.PotentialPmGrade?
-    )
+    private fun mapToItemCurrentStatusRMUiModel(potentialPmGrade: GoldPMGradeBenefitInfoResponse.GoldGetPMGradeBenefitInfo.PotentialPmGrade?)
             : ItemStatusRMUiModel {
         //only regular merchant & eligible
         val updateDate = getShopScoreDate(context)
@@ -697,9 +696,7 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
         return ItemStatusRMUiModel(updateDatePotential = updateDate, badgeGradePM = badgePM, bgGradePM = backgroundPM, statusGradePM = statusPM)
     }
 
-    private fun mapToCardTooltipLevel(level: Int =
-                                              0)
-            : List<CardTooltipLevelUiModel> {
+    private fun mapToCardTooltipLevel(level: Int = 0): List<CardTooltipLevelUiModel> {
         return mutableListOf<CardTooltipLevelUiModel>().apply {
             add(CardTooltipLevelUiModel(R.string.title_level_1, R.string.desc_level_1, SHOP_SCORE_LEVEL_ONE == level))
             add(CardTooltipLevelUiModel(R.string.title_level_2, R.string.desc_level_2, SHOP_SCORE_LEVEL_TWO == level))
@@ -708,8 +705,7 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
         }
     }
 
-    private fun mapToItemFaqUiModel()
-            : List<ItemFaqUiModel> {
+    private fun mapToItemFaqUiModel(): List<ItemFaqUiModel> {
         return mutableListOf<ItemFaqUiModel>().apply {
             add(ItemFaqUiModel(
                     title = context?.getString(R.string.title_shop_score_performance).orEmpty(),
@@ -748,8 +744,7 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
         }
     }
 
-    private fun mapToItemParameterFaq()
-            : List<ItemParameterFaqUiModel> {
+    private fun mapToItemParameterFaq(): List<ItemParameterFaqUiModel> {
         return mutableListOf<ItemParameterFaqUiModel>().apply {
             add(ItemParameterFaqUiModel(title = context?.getString(R.string.title_parameter_shop_score_1).orEmpty(),
                     desc = context?.getString(R.string.desc_parameter_shop_score_1).orEmpty(),
@@ -766,9 +761,7 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
         }
     }
 
-    private fun mapToTimerNewSellerUiModel(shopAge: Int =
-                                                   0, isEndTenure: Boolean
-    )
+    private fun mapToTimerNewSellerUiModel(shopAge: Int = 0, isEndTenure: Boolean)
             : Pair<ItemTimerNewSellerUiModel, Boolean> {
         val nextSellerDays = COUNT_DAYS_NEW_SELLER - shopAge
 
@@ -778,8 +771,7 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
                 isTenureDate = isEndTenure), nextSellerDays > 0)
     }
 
-    private fun getNNextDaysTimeCalendar(nextDays: Int)
-            : Calendar {
+    private fun getNNextDaysTimeCalendar(nextDays: Int): Calendar {
         val date = Calendar.getInstance(Locale.getDefault())
         date.add(Calendar.DATE, nextDays + 1)
         date.set(Calendar.HOUR_OF_DAY, 0)
@@ -788,8 +780,7 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
         return date
     }
 
-    private fun format(timeMillis: Long, pattern: String, locale: Locale = Locale.getDefault()
-    )
+    private fun format(timeMillis: Long, pattern: String, locale: Locale = Locale.getDefault())
             : String {
         val sdf = SimpleDateFormat(pattern, locale)
         return sdf.format(timeMillis)
