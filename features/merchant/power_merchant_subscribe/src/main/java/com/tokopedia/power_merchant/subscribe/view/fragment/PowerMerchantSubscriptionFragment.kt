@@ -525,7 +525,7 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
     private fun renderPMActiveState(data: PMActiveDataUiModel) {
         val isAutoExtendEnabled = getAutoExtendEnabled()
         val widgets = mutableListOf<BaseWidgetUiModel>()
-        if (!pmSettingInfo?.tickers.isNullOrEmpty()) {
+        if (!pmSettingInfo?.tickers.isNullOrEmpty() && isAutoExtendEnabled) {
             widgets.add(WidgetTickerUiModel(pmSettingInfo?.tickers.orEmpty()))
         }
         if (!isAutoExtendEnabled) {
