@@ -30,7 +30,7 @@ class SmartReplyQuestionUseCase @Inject constructor(
     }
 
     private val query = """
-        query chatSmartReplyQuestion($$paramMsgId: String){
+        query chatSmartReplyQuestion($$paramMsgId: String!){
           chatSmartReplyQuestion(msgID: $$paramMsgId){
             isSuccess
             hasQuestion
