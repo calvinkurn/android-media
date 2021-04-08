@@ -1136,7 +1136,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
         dismissLoadingLogin()
         partialRegisterInputView?.showLoginEmailView(email)
         partialActionButton?.setOnClickListener {
-            loginEmail(email, wrapper_password?.textFieldInput?.text.toString(), isUseHash)
+            loginEmail(email, wrapper_password?.textFieldInput?.text.toString(), useHash = isUseHash)
             activity?.let {
                 analytics.eventClickLoginEmailButton(it.applicationContext)
                 KeyboardHandler.hideSoftKeyboard(it)
