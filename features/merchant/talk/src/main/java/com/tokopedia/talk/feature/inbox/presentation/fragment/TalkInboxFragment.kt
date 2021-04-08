@@ -553,7 +553,7 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
 
     private fun updateSettingsIconVisibility() {
         talkInboxSettingsIcon?.apply {
-            if(isSellerView()) {
+            if(isSellerView() && isNewInbox()) {
                 show()
                 return
             }
