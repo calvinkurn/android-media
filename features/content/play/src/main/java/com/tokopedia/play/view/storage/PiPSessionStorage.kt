@@ -9,11 +9,14 @@ import javax.inject.Inject
 @PlayScope
 class PiPSessionStorage @Inject constructor() {
 
-    private var mHasRequestedPiPBrowsing = false
-
     fun hasRequestedPiPBrowsing() = mHasRequestedPiPBrowsing
 
     fun setHasRequestedPiPBrowsing(hasRequested: Boolean) {
         mHasRequestedPiPBrowsing = hasRequested
+    }
+
+    companion object {
+
+        private var mHasRequestedPiPBrowsing = false
     }
 }
