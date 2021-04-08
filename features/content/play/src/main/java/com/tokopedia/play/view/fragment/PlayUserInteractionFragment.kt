@@ -393,8 +393,8 @@ class PlayUserInteractionFragment @Inject constructor(
     /**
      * Pinned Voucher View Component Listener
      */
-    override fun onVoucherImpressed(view: PinnedVoucherViewComponent, vouchers: List<MerchantVoucherUiModel>) {
-        analytic.impressionHighlightedVoucher(vouchers)
+    override fun onVoucherImpressed(view: PinnedVoucherViewComponent, voucher: MerchantVoucherUiModel, position: Int) {
+        analytic.impressionHighlightedVoucher(voucher)
     }
 
     override fun onVoucherClicked(view: PinnedVoucherViewComponent, voucher: MerchantVoucherUiModel) {
