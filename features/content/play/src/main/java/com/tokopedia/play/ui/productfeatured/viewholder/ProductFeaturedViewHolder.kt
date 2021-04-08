@@ -14,11 +14,10 @@ class ProductFeaturedViewHolder(
         private val listener: Listener,
 ) : ProductBasicViewHolder(itemView, listener) {
 
-    override fun bind(item: PlayProductUiModel.Product) {
+    fun sendImpression(item: PlayProductUiModel.Product) {
         itemView.addOnImpressionListener(item.impressHolder) {
             listener.onProductCardImpressed(item, adapterPosition)
         }
-        super.bind(item)
     }
 
     interface Listener : ProductBasicViewHolder.Listener {
