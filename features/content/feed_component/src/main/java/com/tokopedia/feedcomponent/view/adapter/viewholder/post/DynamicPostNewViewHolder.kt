@@ -28,8 +28,10 @@ class DynamicPostNewViewHolder(itemView: View) : AbstractViewHolder<DynamicPostU
             return
         }
 
-        postDynamicView.bindHeader(element.feedXCard.author)
+        postDynamicView.bindHeader(element.feedXCard.author, element.feedXCard.followers.isFollowed)
         postDynamicView.bindItems(element.feedXCard.media)
+        postDynamicView.bindCaption(element.feedXCard)
+        postDynamicView.bindPublishedAt(element.feedXCard.publishedAt, element.feedXCard.subTitle)
         postDynamicView.bindLike(element.feedXCard.like)
         postDynamicView.bindComment(element.feedXCard.comments, userSession.profilePicture, userSession.name)
         postDynamicView.setMargin(itemView.context.resources.getDimensionPixelSize(R.dimen.unify_space_0),

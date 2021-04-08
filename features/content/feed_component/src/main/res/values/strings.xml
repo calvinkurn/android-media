@@ -115,5 +115,6 @@
     <string name="feed_component_liked_by_text">Disukai oleh %s dan %s lainnya</string>
     <string name="feed_component_see_all_comments">Lihat Semua %s Komentar</string>
     <string name="feed_component_add_comment">Comment as %s...</string>
+    <string name="feed_component_read_more_button">Selengkapnya</string>
 
 </resources>
