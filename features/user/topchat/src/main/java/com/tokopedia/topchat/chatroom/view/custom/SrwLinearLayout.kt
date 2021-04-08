@@ -22,6 +22,7 @@ import com.tokopedia.topchat.chatroom.domain.pojo.srw.QuestionUiModel
 import com.tokopedia.topchat.chatroom.view.adapter.decoration.SrwItemDecoration
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.srw.SrwQuestionViewHolder
 import com.tokopedia.topchat.common.util.ViewUtil
+import com.tokopedia.unifycomponents.LocalLoad
 import com.tokopedia.unifyprinciples.Typography
 
 class SrwLinearLayout : LinearLayout {
@@ -34,6 +35,7 @@ class SrwLinearLayout : LinearLayout {
     private var titleContainer: LinearLayout? = null
     private var titleIcon: IconUnify? = null
     private var rvSrw: RecyclerView? = null
+    private var errorState: LocalLoad? = null
 
     private var bgExpanded: Drawable? = null
 
@@ -95,6 +97,7 @@ class SrwLinearLayout : LinearLayout {
         titleContainer = findViewById(R.id.tp_srw_container_partial)
         titleIcon = findViewById(R.id.ic_header_state_partial)
         rvSrw = findViewById(R.id.rv_srw_partial)
+        errorState = findViewById(R.id.ll_srw_partial)
     }
 
     private fun initToggleExpandCollapsed() {
@@ -131,13 +134,32 @@ class SrwLinearLayout : LinearLayout {
         rvAdapter.updateSrwList(chatSmartReplyQuestion)
     }
 
-    fun showSrw() {
+    fun showSrw(isError: Boolean) {
         show()
+        if (isError) {
+            showErrorState()
+        } else {
+            showSrwContent()
+        }
+    }
+
+    private fun showSrwContent() {
+        rvSrw?.show()
         titleContainer?.show()
+    }
+
+    private fun showErrorState() {
+        hideSrwContent()
+        errorState?.show()
     }
 
     fun hideSrw() {
         hide()
+        hideSrwContent()
+    }
+
+    private fun hideSrwContent() {
+        rvSrw?.hide()
         titleContainer?.hide()
     }
 

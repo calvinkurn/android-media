@@ -236,15 +236,18 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
                     rvSrw?.updateSrwList(it.data)
                     updateSrwState()
                 }
+                Status.ERROR -> {
+                    updateSrwState(isError = true)
+                }
                 else -> {
                 }
             }
         })
     }
 
-    override fun updateSrwState() {
-        if (shouldShowSrw()) {
-            rvSrw?.showSrw()
+    override fun updateSrwState(isError: Boolean) {
+        if (shouldShowSrw(isError)) {
+            rvSrw?.showSrw(isError)
             getViewState().hideTemplateChat()
         } else {
             rvSrw?.hideSrw()
@@ -258,8 +261,9 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         return getViewState().hasProductPreviewShown()
     }
 
-    override fun shouldShowSrw(): Boolean {
-        return !isSeller() && hasProductPreviewShown() && rvSrw?.isAllowToShow() == true
+    override fun shouldShowSrw(isError: Boolean): Boolean {
+        return !isSeller() && hasProductPreviewShown() &&
+                rvSrw?.isAllowToShow() == true || isError
     }
 
     private fun initReplyTextWatcher() {
