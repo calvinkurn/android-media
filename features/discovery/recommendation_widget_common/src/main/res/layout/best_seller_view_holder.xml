@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:visibility="gone"
+    tools:visibility="visible"
     android:paddingTop="@dimen/dp_8"
     android:paddingBottom="@dimen/dp_8"
     tools:ignore="RtlSymmetry">
@@ -81,14 +82,13 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/dp_8"
         android:layout_marginTop="@dimen/dp_8"
-        android:paddingStart="@dimen/dp_8"
         android:orientation="horizontal"
         android:visibility="gone"
+        tools:visibility="visible"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/best_seller_subtitle" />
-
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/best_seller_recommendation_recycler_view"
@@ -99,7 +99,6 @@
         android:orientation="horizontal"
         android:layout_marginTop="@dimen/dp_8"
         android:paddingBottom="@dimen/dp_8"
-        android:paddingStart="@dimen/dp_16"
         android:visibility="gone"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintBottom_toBottomOf="parent"
