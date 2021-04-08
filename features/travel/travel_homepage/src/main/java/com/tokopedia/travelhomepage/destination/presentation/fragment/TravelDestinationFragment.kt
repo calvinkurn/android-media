@@ -158,7 +158,7 @@ class TravelDestinationFragment : BaseListFragment<TravelDestinationItemModel, T
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        (getRecyclerView(view) as VerticalRecyclerView).clearItemDecoration()
+        (getRecyclerView(view) as? VerticalRecyclerView)?.clearItemDecoration()
 
         if (savedInstanceState != null) {
             webUrl = savedInstanceState.getString(SAVED_DESTINATION_WEB_URL, "")
@@ -170,11 +170,7 @@ class TravelDestinationFragment : BaseListFragment<TravelDestinationItemModel, T
             val display = it.windowManager.defaultDisplay
             val size = Point()
             try {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-                    display.getRealSize(size)
-                } else {
-                    display.getSize(size)
-                }
+                display.getRealSize(size)
             } catch (err: NoSuchMethodError) {
                 display.getSize(size)
             }
@@ -207,10 +203,7 @@ class TravelDestinationFragment : BaseListFragment<TravelDestinationItemModel, T
         return titleBarHeight
     }
 
-    @SuppressLint("NewApi")
     private fun getSoftButtonsBarHeight(): Int {
-        // getRealMetrics is only available with API 17 and +
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
             val metrics = DisplayMetrics();
             activity?.let {
                 it.windowManager.defaultDisplay.getMetrics(metrics);
@@ -222,7 +215,6 @@ class TravelDestinationFragment : BaseListFragment<TravelDestinationItemModel, T
                 else
                     return 0;
             }
-        }
         return 0;
     }
 
@@ -235,7 +227,6 @@ class TravelDestinationFragment : BaseListFragment<TravelDestinationItemModel, T
         (activity as TravelDestinationActivity).supportActionBar?.setHomeAsUpIndicator(navIcon)
 
         collapsing_toolbar.title = ""
-
         shimmering_back_icon.setOnClickListener { activity?.onBackPressed() }
         app_bar_layout.addOnOffsetChangedListener(object : AppBarLayout.OnOffsetChangedListener {
             var isShow = false

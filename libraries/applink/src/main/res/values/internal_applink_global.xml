@@ -42,6 +42,7 @@
     <string name="path_otp_push_notif_setting">/otp-push-notif-setting</string>
     <string name="path_otp_validator">/otp-validator</string>
     <string name="path_image_picker">/image-picker</string>
+    <string name="path_video_picker">/video-picker</string>
     <string name="path_image_editor">/image-editor</string>
     <string name="path_webview" translatable="false">/webview</string>
     <string name="path_webview_download_html" translatable="false">/webview-download-html</string>
@@ -51,6 +52,7 @@
     <string name="path_add_bod">/add-bod</string>
     <string name="path_logout" translatable="false">/logout</string>
     <string name="path_add_pin">/add-pin</string>
+    <string name="path_add_pin_from_2fa">/add-pin-from-2fa</string>
     <string name="path_add_pin_onboarding">/add-pin-onboarding</string>
     <string name="path_add_pin_complete">/add-pin-complete</string>
     <string name="path_setting_bank" translatable="false">/setting-bank</string>

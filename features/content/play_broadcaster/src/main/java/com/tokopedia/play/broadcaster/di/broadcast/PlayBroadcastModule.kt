@@ -6,8 +6,7 @@ import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
-import com.tokopedia.play.broadcaster.pusher.PlayPusher
-import com.tokopedia.play.broadcaster.pusher.PlayPusherImpl
+import com.tokopedia.play.broadcaster.pusher.ApsaraLivePusherWrapper
 import com.tokopedia.play.broadcaster.socket.PlayBroadcastSocket
 import com.tokopedia.play.broadcaster.socket.PlayBroadcastSocket.Companion.KEY_GROUP_CHAT_PREFERENCES
 import com.tokopedia.play.broadcaster.socket.PlayBroadcastSocketImpl
@@ -27,7 +26,12 @@ import dagger.Provides
  * Created by jegul on 20/05/20
  */
 @Module
-class PlayBroadcastModule(val mContext: Context) {
+class PlayBroadcastModule(private val mContext: Context) {
+
+    @Provides
+    fun provideContext(): Context {
+        return mContext
+    }
 
     @PlayBroadcastScope
     @Provides
@@ -43,11 +47,13 @@ class PlayBroadcastModule(val mContext: Context) {
         return LocalCacheHandler(mContext, KEY_GROUP_CHAT_PREFERENCES)
     }
 
+    @PlayBroadcastScope
     @Provides
-    fun providePlayPusher(@ApplicationContext context: Context): PlayPusher {
-        return PlayPusherImpl(context)
+    fun provideApsaraLivePusherWrapperBuilder(@ApplicationContext context: Context) : ApsaraLivePusherWrapper.Builder {
+        return ApsaraLivePusherWrapper.Builder(context)
     }
 
+    @PlayBroadcastScope
     @Provides
     fun providePlaySocket(userSession: UserSessionInterface, cacheHandler: LocalCacheHandler): PlayBroadcastSocket {
         return PlayBroadcastSocketImpl(userSession, cacheHandler)

@@ -373,7 +373,7 @@ public abstract class SellerRouterApplication extends MainApplication implements
                 if (!task.isSuccessful() || task.getResult() == null) {
                     try {
                         sessionRefresh.gcmUpdate();
-                    } catch (IOException e) {}
+                    } catch (Exception e) {}
                 } else {
                     fcmManager.get().onNewToken(task.getResult().getToken());
                 }

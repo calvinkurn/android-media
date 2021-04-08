@@ -63,7 +63,8 @@ import com.tokopedia.design.drawable.CountDrawable
 import com.tokopedia.device.info.DeviceConnectionInfo
 import com.tokopedia.device.info.permission.ImeiPermissionAsker
 import com.tokopedia.dialog.DialogUnify
-import com.tokopedia.discovery.common.manager.AdultManager
+import com.tokopedia.discovery.common.manager.*
+import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.discovery.common.utils.CoachMarkLocalCache
 import com.tokopedia.gallery.ImageReviewGalleryActivity
 import com.tokopedia.gallery.viewmodel.ImageReviewItem
@@ -254,6 +255,7 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
     private var warehouseId: String? = null
     private var doActivityResult = true
     private var shouldFireVariantTracker = true
+    private var recomWishlistItem: RecommendationItem? = null
     private var pdpUiUpdater: PdpUiUpdater? = PdpUiUpdater(mutableMapOf())
     private var enableCheckImeiRemoteConfig = false
     private var alreadyPerformSellerMigrationAction = false
@@ -395,6 +397,8 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
         outState.putBoolean(ProductDetailConstant.SAVED_ACTIVITY_RESULT, false)
     }
 
+
+
     override fun onPause() {
         super.onPause()
         trackVideoState()
@@ -508,8 +512,7 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
                 if (data != null) {
                     val isFavoriteFromShopPage = data.getBooleanExtra(ProductDetailConstant.SHOP_STATUS_FAVOURITE, false)
                     val isUserLoginFromShopPage = data.getBooleanExtra(ProductDetailConstant.SHOP_STICKY_LOGIN, false)
-                    val wasFavorite = pdpUiUpdater?.shopInfoMap?.isFavorite
-                            ?: pdpUiUpdater?.shopCredibility?.isFavorite ?: return
+                    val wasFavorite = pdpUiUpdater?.shopCredibility?.isFavorite ?: return
 
                     if (isUserLoginFromShopPage) {
                         stickyLoginView?.hide()
@@ -524,8 +527,7 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
                     val favoriteData = data.getStringExtra(ApplinkConst.Chat.SHOP_FOLLOWERS_CHAT_KEY)
                     if (favoriteData != null) {
                         val isFavoriteFromTopChat = favoriteData == "true"
-                        val wasFavorite = pdpUiUpdater?.shopInfoMap?.isFavorite
-                                ?: pdpUiUpdater?.shopCredibility?.isFavorite ?: return
+                        val wasFavorite = pdpUiUpdater?.shopCredibility?.isFavorite ?: return
 
                         if (isFavoriteFromTopChat != wasFavorite) {
                             onSuccessFavoriteShop(true)
@@ -533,8 +535,15 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
                     }
                 }
             }
-            else ->
-                super.onActivityResult(requestCode, resultCode, data)
+            PRODUCT_CARD_OPTIONS_REQUEST_CODE -> {
+                handleProductCardOptionsActivityResult(requestCode, resultCode, data,
+                        object : ProductCardOptionsWishlistCallback {
+                            override fun onReceiveWishlistResult(productCardOptionsModel: ProductCardOptionsModel) {
+                                handleWishlistAction(productCardOptionsModel)
+                            }
+                        })
+            }
+            else -> super.onActivityResult(requestCode, resultCode, data)
         }
     }
 
@@ -677,20 +686,6 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
     }
 
     /**
-     * ProductMiniShopInfoViewHolder
-     */
-    override fun onMiniShopInfoClicked(componentTrackDataModel: ComponentTrackDataModel) {
-        DynamicProductDetailTracking.Click.eventClickShopMiniShopInfo(viewModel.getDynamicProductInfoP1, componentTrackDataModel, viewModel.userId)
-        val shopCredibilityIndex = getComponentPosition(pdpUiUpdater?.shopCredibility)
-
-        if (shopCredibilityIndex != RecyclerView.NO_POSITION) {
-            scrollToPosition(shopCredibilityIndex)
-        } else {
-            scrollToPosition(getComponentPosition(pdpUiUpdater?.shopInfoMap))
-        }
-    }
-
-    /**
      * ImpressionComponent
      */
     override fun onImpressComponent(componentTrackDataModel: ComponentTrackDataModel) {
@@ -710,11 +705,7 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
      */
     override fun onShopInfoClicked(itemId: Int, componentTrackDataModel: ComponentTrackDataModel) {
         when (itemId) {
-            R.id.btn_favorite, R.id.btn_follow -> onShopFavoriteClick()
-            R.id.send_msg_shop -> {
-                DynamicProductDetailTracking.Click.eventButtonChatShopClicked(viewModel.getDynamicProductInfoP1, componentTrackDataModel)
-                onShopChatClicked()
-            }
+            R.id.btn_follow -> onShopFavoriteClick()
             R.id.shop_ava, R.id.shop_name -> gotoShopDetail(componentTrackDataModel)
             else -> {
 
@@ -870,6 +861,13 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
         }
     }
 
+    override fun onThreeDotsClick(recomItem: RecommendationItem, adapterPosition: Int, carouselPosition: Int) {
+        recomWishlistItem = recomItem
+        showProductCardOptions(
+                this,
+                recomItem.createProductCardOptionsModel(adapterPosition))
+    }
+
     override fun getParentRecyclerViewPool(): RecyclerView.RecycledViewPool? {
         return getRecyclerView()?.recycledViewPool
     }
@@ -940,13 +938,6 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
             DynamicProductDetailTracking.Moengage.sendMoEngageClickReview(this)
             goToReviewDetail(basic.productID, getProductName)
         }
-    }
-
-    override fun onImageHelpfulReviewClick(listOfImages: List<String>, position: Int, reviewId: String?, componentTrackDataModel: ComponentTrackDataModel?) {
-        DynamicProductDetailTracking.Click.eventClickReviewOnMostHelpfulReview(viewModel.getDynamicProductInfoP1, componentTrackDataModel
-                ?: ComponentTrackDataModel(),
-                reviewId)
-        context?.let { ImageReviewGalleryActivity.moveTo(it, ArrayList(listOfImages), position) }
     }
 
     /**
@@ -1520,8 +1511,7 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
     }
 
     private fun setupShopFavoriteToaster(isNplFollowerType: Boolean) {
-        val isFavorite = pdpUiUpdater?.shopInfoMap?.isFavorite
-                ?: pdpUiUpdater?.shopCredibility?.isFavorite ?: return
+        val isFavorite = pdpUiUpdater?.shopCredibility?.isFavorite ?: return
         val message = if (isFavorite) getString(R.string.merchant_product_detail_success_follow_shop) else getString(R.string.merchant_product_detail_success_unfollow_shop)
 
         view?.showToasterSuccess(if (isNplFollowerType) getString(R.string.merchant_product_detail_success_follow_shop_npl) else message)
@@ -1751,7 +1741,6 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
         updateButtonState()
 
         if (it.helpfulReviews?.isEmpty() == true && viewModel.getDynamicProductInfoP1?.basic?.stats?.countReview.toIntOrZero() == 0) {
-            pdpUiUpdater?.removeComponent(ProductDetailConstant.MOST_HELPFUL_REVIEW)
             pdpUiUpdater?.removeComponent(ProductDetailConstant.REVIEW)
         }
 
@@ -1787,14 +1776,6 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
 
         if (!it.validateTradeIn.isEligible) {
             pdpUiUpdater?.removeComponent(ProductDetailConstant.TRADE_IN)
-        }
-
-        it.productFinancingRecommendationData.let { financingData ->
-            if (financingData.data.partnerCode.isNotBlank()) {
-                pdpUiUpdater?.updateDataInstallment(context, financingData, viewModel.getDynamicProductInfoP1?.data?.isOS == true)
-            } else {
-                pdpUiUpdater?.removeComponent(ProductDetailConstant.PRODUCT_INSTALLMENT_INFO)
-            }
         }
 
         if(!it.merchantVoucherSummary.isShown) {
@@ -2098,16 +2079,19 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
         }
     }
 
-    override fun shareProductFromContent(componentTrackDataModel: ComponentTrackDataModel?) {
-        DynamicProductDetailTracking.Click.eventClickShareFromContent(viewModel.getDynamicProductInfoP1, viewModel.userId, componentTrackDataModel)
-        shareProduct()
-    }
-
     private fun shareProductFromToolbar() {
         viewModel.getDynamicProductInfoP1?.let { productInfo ->
             DynamicProductDetailTracking.Click.eventClickPdpShare(productInfo)
+            shareProduct()
         }
-        shareProduct()
+    }
+
+    private fun shareProductFromNavToolbar() {
+        // new navbar
+        viewModel.getDynamicProductInfoP1?.let { productInfo ->
+            DynamicProductDetailTracking.Click.eventClickShareNavToolbar(productInfo, viewModel.userId)
+            shareProduct()
+        }
     }
 
     private fun shareProduct() {
@@ -2181,7 +2165,7 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
                 }
             }, {
                 hideProgressDialog()
-            })
+            }, true)
         }
     }
 
@@ -2369,6 +2353,34 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
         }
     }
 
+    private fun handleWishlistAction(productCardOptionsModel: ProductCardOptionsModel?) {
+        if (productCardOptionsModel == null) return
+
+        val wishlistResult = productCardOptionsModel.wishlistResult
+        if (wishlistResult.isUserLoggedIn) {
+            if (wishlistResult.isSuccess) {
+                recomWishlistItem?.isWishlist = !(recomWishlistItem?.isWishlist ?: false)
+                recomWishlistItem?.let { DynamicProductDetailTracking.Click.eventAddToCartRecommendationWishlist(it, viewModel.userSessionInterface.isLoggedIn, wishlistResult.isAddWishlist) }
+                view?.showToasterSuccess(
+                        message = if(wishlistResult.isAddWishlist) getString(com.tokopedia.topads.sdk.R.string.msg_success_add_wishlist) else getString(com.tokopedia.topads.sdk.R.string.msg_success_remove_wishlist),
+                        ctaText = getString(R.string.recom_go_to_wishlist),
+                        ctaListener = {
+                            goToWishlist()
+                        }
+                )
+            } else {
+                view?.showToasterError(
+                        if(wishlistResult.isAddWishlist) getString(com.tokopedia.topads.sdk.R.string.msg_error_add_wishlist) else getString(com.tokopedia.topads.sdk.R.string.msg_error_remove_wishlist)
+                )
+            }
+        } else {
+            RouteManager.route(context, ApplinkConst.LOGIN)
+        }
+
+        recomWishlistItem = null
+    }
+
+
     private fun onAffiliateClick() {
         activity?.let {
             doActionOrLogin({
@@ -2519,6 +2531,9 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
         navToolbar?.apply {
             setIcon(
                     IconBuilder()
+                            .addIcon(IconList.ID_SHARE) {
+                                shareProductFromNavToolbar()
+                            }
                             .addIcon(IconList.ID_CART) {}
                             .addIcon(IconList.ID_NAV_GLOBAL) {}
             )
@@ -2910,7 +2925,6 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
                 nplFollowersButton?.startLoading()
                 trackToggleFavoriteShop(componentTrackDataModel)
                 pdpUiUpdater?.shopCredibility?.enableButtonFavorite = false
-                pdpUiUpdater?.shopInfoMap?.enableButtonFavorite = false
                 viewModel.toggleFavorite(viewModel.getDynamicProductInfoP1?.basic?.shopID
                         ?: "", isNplFollowType)
             })
@@ -2918,8 +2932,8 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
     }
 
     private fun trackToggleFavoriteShop(componentTrackDataModel: ComponentTrackDataModel?) {
-        val isFavorite = pdpUiUpdater?.getShopInfo?.isFavorite ?: return
-        val shopName = pdpUiUpdater?.getShopInfo?.shopName ?: ""
+        val isFavorite = pdpUiUpdater?.shopCredibility?.isFavorite ?: return
+        val shopName = pdpUiUpdater?.shopCredibility?.shopName ?: ""
 
         if (isFavorite)
             DynamicProductDetailTracking.Click.eventUnfollowShop(viewModel.getDynamicProductInfoP1, componentTrackDataModel, shopName)
@@ -2928,8 +2942,7 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
     }
 
     private fun onSuccessFavoriteShop(isSuccess: Boolean, isNplFollowerType: Boolean = false) {
-        val isFavorite = pdpUiUpdater?.shopInfoMap?.isFavorite
-                ?: pdpUiUpdater?.shopCredibility?.isFavorite ?: return
+        val isFavorite = pdpUiUpdater?.shopCredibility?.isFavorite ?: return
         if (isSuccess) {
             viewModel.clearCacheP2Data()
             pdpUiUpdater?.successUpdateShopFollow(if (isNplFollowerType) false else isFavorite)
