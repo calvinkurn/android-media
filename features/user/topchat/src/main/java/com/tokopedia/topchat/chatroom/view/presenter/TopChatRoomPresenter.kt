@@ -661,7 +661,7 @@ open class TopChatRoomPresenter @Inject constructor(
         if (attachmentsPreview.isEmpty()) return
         view?.showAttachmentPreview(attachmentsPreview)
         view?.updateSrwState()
-        if (view?.shouldShowSrw() == false) {
+        if (view?.hasProductPreviewShown() == false) {
             view?.focusOnReply()
         }
     }

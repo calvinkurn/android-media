@@ -256,7 +256,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         }
     }
 
-    private fun hasProductPreviewShown(): Boolean {
+    override fun hasProductPreviewShown(): Boolean {
         return getViewState().hasProductPreviewShown()
     }
 
