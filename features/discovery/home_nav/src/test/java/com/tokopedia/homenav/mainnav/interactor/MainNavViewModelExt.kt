@@ -2,6 +2,7 @@ package com.tokopedia.homenav.mainnav.interactor
 
 import com.tokopedia.homenav.base.datamodel.HomeNavMenuDataModel
 import com.tokopedia.homenav.base.datamodel.HomeNavTickerDataModel
+import com.tokopedia.homenav.base.datamodel.HomeNavTitleDataModel
 import com.tokopedia.homenav.mainnav.domain.model.NavNotificationModel
 import com.tokopedia.homenav.mainnav.view.presenter.MainNavViewModel
 import com.tokopedia.homenav.common.util.ClientMenuGenerator
@@ -40,6 +41,8 @@ fun createViewModel (
                 .answers { HomeNavMenuDataModel(id = firstArg(), notifCount = secondArg(), sectionId = thirdArg()) }
         every { it.getTicker(menuId = any()) }
                 .answers { HomeNavTickerDataModel() }
+        every { it.getSectionTitle(identifier = any()) }
+                .answers { HomeNavTitleDataModel(identifier = firstArg()) }
     }
     val getNavNotificationMock = getOrUseDefault(getNavNotification) {
         coEvery { it.executeOnBackground() }.answers { NavNotificationModel(0) }

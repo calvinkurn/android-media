@@ -26,6 +26,9 @@ object AccountConstants {
         const val EVENT_CATEGORY = "eventCategory"
         const val EVENT_ACTION = "eventAction"
         const val EVENT_LABEL = "eventLabel"
+        const val EVENT_BUSINESS_UNIT = "businessUnit"
+        const val EVENT_CURRENT_SITE = "currentSite"
+        const val EVENT_USER_ID = "userId"
         const val ECOMMERCE = "ecommerce"
         const val CURRENCY_CODE = "currencyCode"
         const val IDR = "IDR"
@@ -105,6 +108,14 @@ object AccountConstants {
             const val LABEL_TERMS_AND_CONDITIONS = "Syarat dan Ketentuan"
             const val LABEL_PRIVACY_POLICY = "Kebijakan Privasi"
             const val LABEL_REVIEW_THIS_APP = "Ulas Aplikasi Ini"
+        }
+
+        object BusinessUnit {
+            const val USER_PLATFORM_UNIT = "user platform"
+        }
+
+        object CurrentSite {
+            const val TOKOPEDIA_MARKETPLACE_SITE = "tokopediamarketplace"
         }
     }
 

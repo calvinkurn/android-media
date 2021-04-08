@@ -20,7 +20,7 @@
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvSave"
             app:typographyWeight="reguler"
-            android:textColor="@color/g_500"
+            android:textColor="@color/Unify_G500"
             app:typographyType="body_1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

@@ -10,6 +10,7 @@ import android.os.Handler
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -26,9 +27,11 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst
 import com.tokopedia.device.info.DeviceScreenInfo
+import com.tokopedia.internal_review.factory.createReviewHelper
 import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.requestStatusBarDark
+import com.tokopedia.kotlin.extensions.view.requestStatusBarLight
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.seller.active.common.service.UpdateShopActiveService
 import com.tokopedia.sellerhome.R
@@ -50,9 +53,9 @@ import com.tokopedia.sellerhome.view.navigator.SellerHomeNavigator
 import com.tokopedia.sellerhome.view.viewhelper.lottiebottomnav.BottomMenu
 import com.tokopedia.sellerhome.view.viewhelper.lottiebottomnav.IBottomClickListener
 import com.tokopedia.sellerhome.view.viewmodel.SellerHomeActivityViewModel
-import com.tokopedia.sellerreview.common.SellerReviewHelper
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import kotlinx.android.synthetic.main.activity_sah_seller_home.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -73,7 +76,8 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
     @Inject lateinit var userSession: UserSessionInterface
     @Inject lateinit var viewModelFactory: ViewModelFactory
     @Inject lateinit var remoteConfig: SellerHomeRemoteConfig
-    @Inject lateinit var sellerReviewHelper: SellerReviewHelper
+
+    private val sellerReviewHelper by lazy { createReviewHelper(applicationContext) }
 
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val homeViewModel by lazy { viewModelProvider.get(SellerHomeActivityViewModel::class.java) }
@@ -112,6 +116,7 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
         setupStatusBar()
         setupBottomNav()
         setupNavigator()
+        setupShadow()
 
         setupDefaultPage(savedInstanceState)
 
@@ -219,7 +224,7 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
     }
 
     private fun setupBackground() {
-        window.decorView.setBackgroundColor(Color.WHITE)
+        window.decorView.setBackgroundColor(androidx.core.content.ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N0))
     }
 
     private fun setupToolbar() {
@@ -300,6 +305,22 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
 
     private fun setupNavigator() {
         navigator = SellerHomeNavigator(this, supportFragmentManager, sellerHomeRouter, userSession)
+    }
+
+    private fun setupShadow() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (isDarkMode()) {
+                ContextCompat.getDrawable(this, R.drawable.sah_shadow_dark).let {
+                    toolbarShadow?.background = it
+                    navBarShadow?.background = it
+                }
+            } else {
+                ContextCompat.getDrawable(this, R.drawable.sah_shadow).let {
+                    toolbarShadow?.background = it
+                    navBarShadow?.background = it
+                }
+            }
+        }
     }
 
     private fun showToolbarNotificationBadge() {
@@ -417,7 +438,11 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
 
     private fun setupStatusBar() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            this.requestStatusBarDark()
+            if (isDarkMode()) {
+                requestStatusBarLight()
+            } else {
+                requestStatusBarDark()
+            }
             statusBarBackground?.show()
         }
     }
@@ -435,11 +460,12 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
 
         val animEnterDuration = 4f
         val animExitDuration = 1f
-        menu.add(BottomMenu(R.id.menu_home, resources.getString(R.string.sah_home), R.raw.anim_bottom_nav_home, R.raw.anim_bottom_nav_home_to_enabled, R.drawable.ic_sah_bottom_nav_home_active, R.drawable.ic_sah_bottom_nav_home_inactive, R.color.color_active_bottom_nav, false, animExitDuration, animEnterDuration))
-        menu.add(BottomMenu(R.id.menu_product, resources.getString(R.string.sah_product), R.raw.anim_bottom_nav_product, R.raw.anim_bottom_nav_product_to_enabled, R.drawable.ic_sah_bottom_nav_product_active, R.drawable.ic_sah_bottom_nav_product_inactive, R.color.color_active_bottom_nav, false, animExitDuration, animEnterDuration))
-        menu.add(BottomMenu(R.id.menu_chat, resources.getString(R.string.sah_chat), R.raw.anim_bottom_nav_chat, R.raw.anim_bottom_nav_chat_to_enabled, R.drawable.ic_sah_bottom_nav_chat_active, R.drawable.ic_sah_bottom_nav_chat_inactive, R.color.color_active_bottom_nav, true, animExitDuration, animEnterDuration))
-        menu.add(BottomMenu(R.id.menu_order, resources.getString(R.string.sah_sale), R.raw.anim_bottom_nav_order, R.raw.anim_bottom_nav_order_to_enabled, R.drawable.ic_sah_bottom_nav_order_active, R.drawable.ic_sah_bottom_nav_order_inactive, R.color.color_active_bottom_nav, true, animExitDuration, animEnterDuration))
-        menu.add(BottomMenu(R.id.menu_other, resources.getString(R.string.sah_others), R.raw.anim_bottom_nav_other, R.raw.anim_bottom_nav_other_to_enabled, R.drawable.ic_sah_bottom_nav_other_active, R.drawable.ic_sah_bottom_nav_other_inactive, R.color.color_active_bottom_nav, false, animExitDuration, animEnterDuration))
+
+        menu.add(BottomMenu(R.id.menu_home, resources.getString(R.string.sah_home), R.raw.anim_bottom_nav_home_mosque, R.raw.anim_bottom_nav_home_mosque_to_enabled, R.drawable.ic_sah_bottom_nav_home_mosque_active, R.drawable.ic_sah_bottom_nav_home_mosque_inactive, com.tokopedia.unifyprinciples.R.color.Unify_G600, false, animExitDuration, animEnterDuration))
+        menu.add(BottomMenu(R.id.menu_product, resources.getString(R.string.sah_product), R.raw.anim_bottom_nav_product, R.raw.anim_bottom_nav_product_to_enabled, R.drawable.ic_sah_bottom_nav_product_active, R.drawable.ic_sah_bottom_nav_product_inactive, com.tokopedia.unifyprinciples.R.color.Unify_G600, false, animExitDuration, animEnterDuration))
+        menu.add(BottomMenu(R.id.menu_chat, resources.getString(R.string.sah_chat), R.raw.anim_bottom_nav_chat, R.raw.anim_bottom_nav_chat_to_enabled, R.drawable.ic_sah_bottom_nav_chat_active, R.drawable.ic_sah_bottom_nav_chat_inactive, com.tokopedia.unifyprinciples.R.color.Unify_G600, true, animExitDuration, animEnterDuration))
+        menu.add(BottomMenu(R.id.menu_order, resources.getString(R.string.sah_sale), R.raw.anim_bottom_nav_order, R.raw.anim_bottom_nav_order_to_enabled, R.drawable.ic_sah_bottom_nav_order_active, R.drawable.ic_sah_bottom_nav_order_inactive, com.tokopedia.unifyprinciples.R.color.Unify_G600, true, animExitDuration, animEnterDuration))
+        menu.add(BottomMenu(R.id.menu_other, resources.getString(R.string.sah_others), R.raw.anim_bottom_nav_other, R.raw.anim_bottom_nav_other_to_enabled, R.drawable.ic_sah_bottom_nav_other_active, R.drawable.ic_sah_bottom_nav_other_inactive, com.tokopedia.unifyprinciples.R.color.Unify_G600, false, animExitDuration, animEnterDuration))
         sahBottomNav.setMenu(menu)
 
         sahBottomNav.setMenuClickListener(this)
@@ -467,7 +493,7 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
     private fun checkForSellerAppReview(pageType: Int) {
         if (pageType == FragmentType.HOME) {
             lifecycleScope.launch(Dispatchers.IO) {
-                sellerReviewHelper.checkForReview(this@SellerHomeActivity, supportFragmentManager)
+                sellerReviewHelper?.checkForSellerReview(this@SellerHomeActivity, supportFragmentManager)
             }
         }
     }

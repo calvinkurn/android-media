@@ -3,6 +3,7 @@ package com.tokopedia.home.beranda.presentation.view.listener
 import android.content.Context
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.home.analytics.v2.BannerCarouselTracking
+import com.tokopedia.home.analytics.v2.LegoBannerTracking
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home_component.listener.BannerComponentListener
 import com.tokopedia.home_component.model.ChannelGrid
@@ -37,8 +38,11 @@ class BannerComponentCallback (val context: Context?,
         homeCategoryListener.onPageDragStateChanged(isDrag)
     }
 
-    override fun onPromoAllClick(applink: String) {
-
+    override fun onPromoAllClick(channelModel: ChannelModel) {
+        BannerCarouselTracking.sendBannerCarouselSeeAllClick(channelModel, homeCategoryListener.userId)
+        RouteManager.route(context,
+                if (channelModel.channelHeader.applink.isNotEmpty())
+                    channelModel.channelHeader.applink else channelModel.channelHeader.url)
     }
 
     override fun onChannelBannerImpressed(channelModel: ChannelModel, parentPosition: Int) {

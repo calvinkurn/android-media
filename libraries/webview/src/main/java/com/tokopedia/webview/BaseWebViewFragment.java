@@ -66,12 +66,14 @@ import timber.log.Timber;
 import static android.app.Activity.RESULT_OK;
 import static com.tokopedia.abstraction.common.utils.image.ImageHandler.encodeToBase64;
 import static com.tokopedia.webview.ConstantKt.DEFAULT_TITLE;
+import static com.tokopedia.webview.ConstantKt.JS_STAGING_TOKOPEDIA;
 import static com.tokopedia.webview.ConstantKt.JS_TOKOPEDIA;
 import static com.tokopedia.webview.ConstantKt.KEY_ALLOW_OVERRIDE;
 import static com.tokopedia.webview.ConstantKt.KEY_NEED_LOGIN;
 import static com.tokopedia.webview.ConstantKt.KEY_PULL_TO_REFRESH;
 import static com.tokopedia.webview.ConstantKt.KEY_URL;
 import static com.tokopedia.webview.ConstantKt.SEAMLESS;
+import static com.tokopedia.webview.ConstantKt.STAGING;
 import static com.tokopedia.webview.ext.UrlEncoderExtKt.encodeOnce;
 
 
@@ -140,7 +142,8 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
      */
     @NonNull
     protected String getUrl() {
-        if (url.contains(JS_TOKOPEDIA)) {
+        String env = TokopediaUrl.Companion.getInstance().getTYPE().getValue();
+        if (url.contains(JS_TOKOPEDIA) || (url.contains(JS_STAGING_TOKOPEDIA) && env.equalsIgnoreCase(STAGING))) {
             return url;
         } else if (isTokopediaUrl) {
             String gcmId = userSession.getDeviceId();
@@ -635,7 +638,9 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
                 }
             });
             globalError.setVisibility(View.VISIBLE);
-            swipeRefreshLayout.setVisibility(View.GONE);
+            if (swipeRefreshLayout!= null) {
+                swipeRefreshLayout.setVisibility(View.GONE);
+            }
         }
     }
 
@@ -853,12 +858,16 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     }
 
     public void reloadPage() {
-        BaseSimpleWebViewActivity activity = (BaseSimpleWebViewActivity) getActivity();
-        if (activity!= null) {
-            activity.setWebViewTitle("");
+        Activity activity = getActivity();
+        if (activity instanceof BaseSimpleWebViewActivity) {
+            ((BaseSimpleWebViewActivity) activity).setWebViewTitle("");
         }
-        swipeRefreshLayout.setVisibility(View.VISIBLE);
-        globalError.setVisibility(View.GONE);
+        if (swipeRefreshLayout!= null) {
+            swipeRefreshLayout.setVisibility(View.VISIBLE);
+        }
+        if (globalError!= null) {
+            globalError.setVisibility(View.GONE);
+        }
         webView.reload();
     }
 
