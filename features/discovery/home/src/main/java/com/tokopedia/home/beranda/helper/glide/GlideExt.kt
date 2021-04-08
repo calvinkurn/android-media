@@ -76,17 +76,6 @@ fun ImageView.loadImageRounded(url: String, roundedRadius: Int, fpmItemLabel: St
     }
 }
 
-fun ImageView.loadImageRoundedWithoutBlurHash(url: String, roundedRadius: Int, fpmItemLabel: String = ""){
-    val performanceMonitoring = getPerformanceMonitoring(url, fpmItemLabel)
-    this.loadImage(url) {
-        useBlurHash(false)
-        transforms(listOf(roundedOf(roundedRadius), centerCrop))
-        listener({ resource, dataSource ->
-            handleOnResourceReady(dataSource, resource, performanceMonitoring)
-        })
-    }
-}
-
 fun ImageView.loadMiniImage(
         url: String,
         width: Int,
