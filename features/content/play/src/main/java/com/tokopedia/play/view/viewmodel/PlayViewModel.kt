@@ -241,6 +241,7 @@ class PlayViewModel @Inject constructor(
                 if (pinnedProduct != null) {
                     val newPinnedProduct = pinnedProduct.copy(
                             productTags = pinnedProduct.productTags.setContent(
+                                    basicInfo = it.data.basicInfo,
                                     productList = it.data.productList,
                                     voucherList = it.data.voucherList
                             )
