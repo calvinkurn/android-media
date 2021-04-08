@@ -144,14 +144,22 @@ open class Properties(
         this.transform = transform
     }
 
+    // mapping multiple transform
+    fun transforms(transforms: List<Transformation<Bitmap>>) = apply {
+        this.transforms = transforms
+    }
+
+    // set built-in centerCrop
     fun centerCrop() = apply {
         this.centerCrop = true
     }
 
+    // set built-in fitCenter
     fun fitCenter() = apply {
         this.fitCenter = true
     }
 
+    // set built-in centerInside
     fun centerInside() = apply {
         this.centerInside = true
     }
