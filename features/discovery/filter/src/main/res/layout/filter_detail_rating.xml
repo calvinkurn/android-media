@@ -20,8 +20,9 @@
 
     <ImageView
         android:id="@+id/filter_rating_view"
+        android:contentDescription="@string/content_desc_ratingView"
         android:layout_width="@dimen/filter_rating_width"
         android:layout_height="@dimen/filter_rating_height"
-        android:layout_marginLeft="18dp" />
+        android:layout_marginStart="18dp" />
 
 </LinearLayout>
