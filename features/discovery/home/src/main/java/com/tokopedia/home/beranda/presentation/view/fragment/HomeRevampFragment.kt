@@ -1353,7 +1353,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                     Handler().postDelayed({
                         if (!coachMarkIsShowing && !bottomSheetIsShowing)
                             showCoachMark()
-                    }, 5000)
+                    }, 3000)
                 }
             }
         }
