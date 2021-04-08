@@ -45,7 +45,7 @@ class SuggestionDoubleLineWithoutImageViewHolder(
     }
 
     private fun Typography.setTypography(context: Context, weightType: Int, color: Int) {
-        this.weightType = weightType
+        this.setWeight(weightType)
         setTextColor(ContextCompat.getColor(context, color))
     }
 

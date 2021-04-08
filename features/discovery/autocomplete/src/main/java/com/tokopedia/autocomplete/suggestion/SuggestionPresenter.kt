@@ -101,6 +101,7 @@ class SuggestionPresenter @Inject constructor() : BaseDaggerPresenter<Suggestion
 
     private fun updateListVisitable(suggestionUniverse: SuggestionUniverse) {
         val typePosition = HashMap<String, Int?>()
+        shouldAddSeparator = true
         for (item in suggestionUniverse.data.items) {
             if (suggestionUniverse.data.items.isNotEmpty()) {
                 when (item.template) {
