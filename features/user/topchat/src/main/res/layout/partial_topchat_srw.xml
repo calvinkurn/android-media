@@ -8,6 +8,7 @@
     tools:parentTag="android.widget.LinearLayout">
 
     <LinearLayout
+        android:id="@+id/tp_srw_container_partial"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
@@ -26,10 +27,11 @@
             tools:text="Srw Title" />
 
         <com.tokopedia.iconunify.IconUnify
-            android:layout_width="@dimen/unify_space_24"
-            android:layout_height="@dimen/unify_space_24"
+            android:id="@+id/ic_header_state_partial"
+            android:layout_width="@dimen/unify_space_16"
+            android:layout_height="@dimen/unify_space_16"
             android:layout_gravity="center_vertical"
-            android:layout_marginEnd="@dimen/unify_space_8"
+            android:layout_marginEnd="@dimen/unify_space_12"
             app:icon_color_light_enable="@color/Unify_N700_96"
             app:icon_name="CHEVRON_UP" />
     </LinearLayout>

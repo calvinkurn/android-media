@@ -12,6 +12,9 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.factory.AdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.domain.pojo.srw.ChatSmartReplyQuestion
 import com.tokopedia.topchat.chatroom.domain.pojo.srw.ChatSmartReplyQuestionResponse
@@ -28,9 +31,16 @@ class SrwLinearLayout : LinearLayout {
     private val rvAdapter = SrwAdapter(typeFactory)
 
     private var title: Typography? = null
+    private var titleContainer: LinearLayout? = null
+    private var titleIcon: IconUnify? = null
     private var rvSrw: RecyclerView? = null
 
     private var bgExpanded: Drawable? = null
+
+    /**
+     * Default state would be expanded
+     */
+    private var isExpanded = true
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
@@ -42,6 +52,7 @@ class SrwLinearLayout : LinearLayout {
         initViewLayout()
         initBackground()
         initViewBind()
+        initToggleExpandCollapsed()
         initRecyclerView()
     }
 
@@ -77,7 +88,26 @@ class SrwLinearLayout : LinearLayout {
 
     private fun initViewBind() {
         title = findViewById(R.id.tp_srw_partial)
+        titleContainer = findViewById(R.id.tp_srw_container_partial)
+        titleIcon = findViewById(R.id.ic_header_state_partial)
         rvSrw = findViewById(R.id.rv_srw_partial)
+    }
+
+    private fun initToggleExpandCollapsed() {
+        titleContainer?.setOnClickListener {
+            isExpanded = !isExpanded
+            updateState()
+        }
+    }
+
+    private fun updateState() {
+        if (isExpanded) {
+            rvSrw?.show()
+            titleIcon?.setImage(IconUnify.CHEVRON_UP)
+        } else {
+            rvSrw?.hide()
+            titleIcon?.setImage(IconUnify.CHEVRON_DOWN)
+        }
     }
 
     private fun initRecyclerView() {
