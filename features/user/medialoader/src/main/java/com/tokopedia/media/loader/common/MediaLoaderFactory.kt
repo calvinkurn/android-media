@@ -6,9 +6,7 @@ import com.bumptech.glide.RequestBuilder
 import com.bumptech.glide.load.MultiTransformation
 import com.bumptech.glide.load.Transformation
 import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.bumptech.glide.load.resource.bitmap.CenterCrop
-import com.bumptech.glide.load.resource.bitmap.CircleCrop
-import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.bumptech.glide.load.resource.bitmap.*
 import com.bumptech.glide.signature.ObjectKey
 import com.tokopedia.media.loader.module.GlideApp
 import com.tokopedia.media.loader.module.GlideRequest
@@ -32,6 +30,27 @@ abstract class MediaLoaderFactory<T> {
         _transform.clear()
 
         with(properties) {
+            // built-in transformations
+            if (properties.isCircular) {
+                _transform.add(CircleCrop())
+                request.circleCrop()
+            }
+
+            if (properties.centerCrop) {
+                _transform.add(CenterCrop())
+                request.centerCrop()
+            }
+
+            if (properties.fitCenter) {
+                _transform.add(FitCenter())
+                request.fitCenter()
+            }
+
+            if (properties.centerInside) {
+                _transform.add(CenterInside())
+                request.centerInside()
+            }
+
             // built-in RoundedCorners transformation
             if (roundedRadius > 0f) {
                 _transform.add(RoundedCorners(roundedRadius.toInt()))
@@ -44,16 +63,6 @@ abstract class MediaLoaderFactory<T> {
             if (_transform.isNotEmpty()) {
                 request.transform(MultiTransformation(_transform))
             }
-
-            /*
-            * built-in transformations:
-            * regarding the circleCrop(), centerCrop(), fitCenter(), and centerInside()
-            * didn't work in transformation above, we need to transform manually in here
-            * */
-            if (properties.isCircular) request.circleCrop()
-            if (properties.centerCrop) request.centerCrop()
-            if (properties.fitCenter) request.fitCenter()
-            if (properties.centerInside) request.centerInside()
         }
     }
 
