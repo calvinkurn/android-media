@@ -166,6 +166,10 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        if (!userSession.isLoggedIn) {
+            goToApplink(ApplinkConst.LOGIN)
+            activity?.finish()
+        }
         fetchRemoteConfig()
         fpmBuyer = PerformanceMonitoring.start(FPM_BUYER)
         context?.let {
