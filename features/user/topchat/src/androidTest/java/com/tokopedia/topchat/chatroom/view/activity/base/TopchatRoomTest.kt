@@ -5,7 +5,6 @@ import android.app.Instrumentation
 import android.content.Context
 import android.content.Intent
 import android.view.View
-import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.IdlingRegistry
@@ -55,7 +54,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.setMain
 import org.hamcrest.Matcher
-import org.hamcrest.Matchers
+import org.hamcrest.Matchers.not
 import org.junit.Before
 import org.junit.Rule
 import javax.inject.Inject
@@ -319,10 +318,10 @@ abstract class TopchatRoomTest {
         )
     }
 
-    protected fun assertSrwVisibility(
+    protected fun assertSrwContentContainerVisibility(
             visibilityMatcher: Matcher<in View>
     ) {
-        onView(withId(R.id.tp_srw_container_partial)).check(
+        onView(withId(R.id.rv_srw_content_container)).check(
                 matches(visibilityMatcher)
         )
     }
@@ -362,17 +361,24 @@ abstract class TopchatRoomTest {
     }
 
     protected fun assertSrwContentIsVisible() {
-        assertSrwVisibility(isDisplayed())
-        assertTemplateChatVisibility(Matchers.not(isDisplayed()))
-        assertSrwErrorVisibility(Matchers.not(isDisplayed()))
-        assertSrwLoadingVisibility(Matchers.not(isDisplayed()))
+        assertSrwContentContainerVisibility(isDisplayed())
+        assertTemplateChatVisibility(not(isDisplayed()))
+        assertSrwErrorVisibility(not(isDisplayed()))
+        assertSrwLoadingVisibility(not(isDisplayed()))
+    }
+
+    protected fun assertSrwContentIsLoading() {
+        assertSrwLoadingVisibility(isDisplayed())
+        assertSrwContentContainerVisibility(not(isDisplayed()))
+        assertTemplateChatVisibility(not(isDisplayed()))
+        assertSrwErrorVisibility(not(isDisplayed()))
     }
 
     protected fun assertSrwContentIsHidden() {
         assertTemplateChatVisibility(isDisplayed())
-        assertSrwVisibility(Matchers.not(isDisplayed()))
-        assertSrwErrorVisibility(Matchers.not(isDisplayed()))
-        assertSrwLoadingVisibility(Matchers.not(isDisplayed()))
+        assertSrwContentContainerVisibility(not(isDisplayed()))
+        assertSrwErrorVisibility(not(isDisplayed()))
+        assertSrwLoadingVisibility(not(isDisplayed()))
     }
 
     protected fun generateTemplateResponse(
