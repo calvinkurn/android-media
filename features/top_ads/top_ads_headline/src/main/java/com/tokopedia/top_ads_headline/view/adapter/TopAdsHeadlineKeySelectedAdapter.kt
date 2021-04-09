@@ -40,9 +40,10 @@ class TopAdsHeadlineKeySelectedAdapter(private val onCheck: ((position: Int, key
         holder.view.keywordDesc.visibility = View.GONE
         holder.view.setOnClickListener {
             holder.view.checkBox.isChecked = !holder.view.checkBox.isChecked
-            items[holder.adapterPosition].onChecked = holder.view.checkBox.isChecked
-            if (holder.adapterPosition != RecyclerView.NO_POSITION)
+            if (holder.adapterPosition != RecyclerView.NO_POSITION) {
+                items[holder.adapterPosition].onChecked = holder.view.checkBox.isChecked
                 onCheck(holder.adapterPosition, items[holder.adapterPosition])
+            }
         }
         setBidInfo(holder)
     }

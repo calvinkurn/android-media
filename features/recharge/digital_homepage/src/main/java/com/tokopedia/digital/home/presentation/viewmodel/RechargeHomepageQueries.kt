@@ -82,4 +82,25 @@ object RechargeHomepageQueries {
                 }
             """.trimIndent()
     }
+
+    val TICKER_QUERY by lazy {
+        val categoryIDs = "\$categoryIDs"
+        val deviceID = "\$deviceID"
+
+        """query rechargeTicker($categoryIDs: [Int], $deviceID: Int!) {
+                rechargeTicker(categoryIDs:$categoryIDs, deviceID: $deviceID) {
+                     ID
+                     Name
+                     Content
+                     Type
+                     Environment
+                     ActionText
+                     ActionLink
+                     StartDate
+                     ExpireDate
+                     Status
+              }
+           }
+            """.trimIndent()
+    }
 }

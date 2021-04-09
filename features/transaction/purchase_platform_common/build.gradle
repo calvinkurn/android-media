@@ -16,6 +16,10 @@ android {
             testLogging.events = ["passed", "skipped", "failed"]
         }
     }
+
+    viewBinding {
+        enabled true
+    }
 }
 
 repositories {
@@ -34,7 +38,6 @@ buildscript {
 }
 dependencies {
     implementation project(rootProject.ext.libraries.tkpdabstraction)
-    implementation project(rootProject.ext.libraries.tkpddesign)
     implementation project(rootProject.ext.libraries.track)
     implementation project(rootProject.ext.libraries.iris)
     implementation project(rootProject.ext.libraries.irisSession)

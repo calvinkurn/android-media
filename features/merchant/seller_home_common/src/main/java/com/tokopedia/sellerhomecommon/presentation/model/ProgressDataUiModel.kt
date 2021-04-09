@@ -19,6 +19,6 @@ data class ProgressDataUiModel(
         override val showWidget: Boolean = false
 ) : BaseDataUiModel {
     override fun shouldRemove(): Boolean {
-        return !isFromCache && value == 0
+        return value == 0
     }
 }

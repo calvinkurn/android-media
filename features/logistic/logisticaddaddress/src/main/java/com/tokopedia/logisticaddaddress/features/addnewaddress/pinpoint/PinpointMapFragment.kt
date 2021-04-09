@@ -53,6 +53,7 @@ import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.get_distr
 import com.tokopedia.logisticaddaddress.utils.RequestPermissionUtil
 import com.tokopedia.logisticaddaddress.utils.SimpleIdlingResource
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.utils.permission.PermissionCheckerHelper
 import rx.Subscriber
 import rx.subscriptions.CompositeSubscription
@@ -96,8 +97,10 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
     private var isEditWarehouse: Boolean = false
     private var isReqLocation: Boolean = false
 
-    private var _binding: FragmentPinpointMapBinding? = null
-    private val binding get() = _binding!!
+    private var binding by autoClearedNullable<FragmentPinpointMapBinding> {
+        // Set map view on destroy before binding is null
+        it.mapView.onDestroy()
+    }
 
     private var composite = CompositeSubscription()
 
@@ -178,8 +181,8 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
     override fun onCreateView(inflater: LayoutInflater,
                               container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        _binding = FragmentPinpointMapBinding.inflate(inflater, container, false)
-        return binding.root
+        binding = FragmentPinpointMapBinding.inflate(inflater, container, false)
+        return binding?.root
     }
 
 
@@ -194,14 +197,14 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
     }
 
     private fun prepareMap(savedInstanceState: Bundle?) {
-        binding.mapView.run {
+        binding?.mapView?.run {
             onCreate(savedInstanceState)
             getMapAsync(this@PinpointMapFragment)
         }
     }
 
     private fun prepareLayout() {
-        with(binding.bottomSheetGetDistrict) {
+        binding?.bottomSheetGetDistrict?.run {
             bottomSheetBehavior = BottomSheetBehavior.from(this.bottomSheetGetDistrict)
             getdistrictContainer.visibility = View.GONE
             invalidContainer.visibility = View.GONE
@@ -216,7 +219,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
     }
 
     private fun setViewListener() {
-        with(binding) {
+        binding?.run {
             backButton.setOnClickListener {
                 // hide keyboard
                 val inputMethodManager = context?.getSystemService(Activity.INPUT_METHOD_SERVICE)
@@ -297,7 +300,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
     }
 
     override fun showLoading() {
-        with(binding.bottomSheetGetDistrict) {
+        binding?.bottomSheetGetDistrict?.run {
             getdistrictContainer.visibility = View.GONE
             invalidContainer.visibility = View.GONE
             wholeLoadingContainer.visibility = View.VISIBLE
@@ -346,12 +349,12 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
 
     override fun onResume() {
         super.onResume()
-        binding.mapView.onResume()
+        binding?.mapView?.onResume()
         if (AddNewAddressUtils.isGpsEnabled(context)) {
-            binding.icCurrentLocation.setImageResource(R.drawable.ic_gps_enable)
+            binding?.icCurrentLocation?.setImageResource(R.drawable.ic_gps_enable)
         } else {
             isGpsEnable = false
-            binding.icCurrentLocation.setImageResource(R.drawable.ic_gps_disable)
+            binding?.icCurrentLocation?.setImageResource(R.drawable.ic_gps_disable)
         }
         getLastLocationClient()
     }
@@ -387,22 +390,23 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
 
     override fun onPause() {
         super.onPause()
-        binding.mapView.onPause()
+        binding?.mapView?.onPause()
     }
 
     override fun onLowMemory() {
         super.onLowMemory()
-        binding.mapView.onLowMemory()
+        binding?.mapView?.onLowMemory()
     }
 
     override fun onStop() {
         super.onStop()
-        binding.mapView.onStop()
+        binding?.mapView?.onStop()
     }
 
     override fun onDestroyView() {
-        binding.mapView.onDestroy()
-        _binding = null
+        binding?.mapView?.onDestroy()
+        composite.unsubscribe()
+        presenter.detachView()
         super.onDestroyView()
     }
 
@@ -468,8 +472,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
 
     private fun showNotFoundLocation() {
         showInvalidBottomSheet()
-        with(binding.bottomSheetGetDistrict) {
-
+        binding?.bottomSheetGetDistrict?.run {
             tvAddressGetdistrict.visibility = View.GONE
             invalidTitle.text = getString(R.string.not_found_location)
             invalidDesc.text = getString(R.string.not_found_location_desc)
@@ -517,7 +520,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
     override fun showOutOfReachDialog() {
         showInvalidBottomSheet()
 
-        with(binding.bottomSheetGetDistrict) {
+        binding?.bottomSheetGetDistrict?.run {
             invalidTitle.text = getString(R.string.out_of_indonesia_title)
             invalidDesc.text = getString(R.string.out_of_indonesia_desc)
             invalidImg.loadRemoteImageDrawable(ADDRESS_OUT_OF_INDONESIA)
@@ -531,7 +534,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
     override fun showUndetectedDialog() {
         showInvalidBottomSheet()
 
-        with(binding.bottomSheetGetDistrict) {
+        binding?.bottomSheetGetDistrict?.run {
             invalidTitle.text = getString(R.string.undetected_title)
             invalidDesc.text = getString(R.string.undetected_desc)
             invalidImg.loadRemoteImageDrawable(ADDRESS_KONSLET)
@@ -545,7 +548,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
     override fun showLocationNotFoundCTA() {
         showInvalidBottomSheet()
 
-        with(binding.bottomSheetGetDistrict) {
+        binding?.bottomSheetGetDistrict?.run {
             invalidTitle.text = getString(R.string.invalid_title)
             invalidDesc.text = getString(R.string.invalid_desc)
             invalidImg.loadRemoteImageDrawable(ADDRESS_INVALID)
@@ -569,7 +572,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
     private fun showDialogForUnnamedRoad() {
         showInvalidBottomSheet()
 
-        with(binding.bottomSheetGetDistrict) {
+        binding?.bottomSheetGetDistrict?.run {
             invalidTitle.text = getString(R.string.invalid_title)
             invalidDesc.text = getString(R.string.invalid_desc)
             invalidImg.loadRemoteImageDrawable(ADDRESS_INVALID)
@@ -604,7 +607,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
     private fun setDefaultResultGetDistrict(saveAddressDataModel: SaveAddressDataModel) {
         showDistrictBottomSheet()
 
-        with(binding.bottomSheetGetDistrict) {
+        binding?.bottomSheetGetDistrict?.run {
             icSearchBtn.setOnClickListener {
                 AddNewAddressAnalytics.eventClickMagnifier(isFullFlow, isLogisticLabel)
                 showAutoCompleteBottomSheet("")
@@ -654,7 +657,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
     }
 
     private fun setResultPinpoint() {
-        saveAddressDataModel?.editDetailAddress = binding.bottomSheetGetDistrict.etDetailAddress.text.toString()
+        saveAddressDataModel?.editDetailAddress = binding?.bottomSheetGetDistrict?.etDetailAddress?.text?.toString() ?: ""
         if (isEditWarehouse && saveAddressDataModel?.districtId != warehouseDataModel?.districtId) {
             view?.let { Toaster.build(it, getString(R.string.toaster_not_avail_shop_loc), Toaster.LENGTH_SHORT, type = Toaster.TYPE_ERROR).show() }
         } else {
@@ -668,7 +671,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
     }
 
     private fun showDistrictBottomSheet() {
-        with(binding.bottomSheetGetDistrict) {
+        binding?.bottomSheetGetDistrict?.run {
             invalidContainer.visibility = View.GONE
             wholeLoadingContainer.visibility = View.GONE
             getdistrictContainer.visibility = View.VISIBLE
@@ -676,7 +679,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
     }
 
     private fun showInvalidBottomSheet() {
-        with(binding.bottomSheetGetDistrict) {
+        binding?.bottomSheetGetDistrict?.run {
             invalidContainer.visibility = View.VISIBLE
             wholeLoadingContainer.visibility = View.GONE
             getdistrictContainer.visibility = View.GONE
@@ -689,7 +692,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
     }
 
     private fun doLoadAddEdit() {
-        saveAddressDataModel?.editDetailAddress = binding.bottomSheetGetDistrict.etDetailAddress.text.toString()
+        saveAddressDataModel?.editDetailAddress = binding?.bottomSheetGetDistrict?.etDetailAddress?.text?.toString() ?: ""
         if (this.isPolygon) {
             isMismatchSolved = true
         }
@@ -766,7 +769,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
                     finishActivity(newAddress)
                 } else if (data.hasExtra(EXTRA_DETAIL_ADDRESS_LATEST)) {
                     val latestDetailAddress = data.getStringExtra(EXTRA_DETAIL_ADDRESS_LATEST)
-                    binding.bottomSheetGetDistrict.etDetailAddress.setText(latestDetailAddress)
+                    binding?.bottomSheetGetDistrict?.etDetailAddress?.setText(latestDetailAddress)
                 }
             }
         }
@@ -850,14 +853,14 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
                 if (s.isNotEmpty()) {
                     when (val countCharLeft = 60 - s.toString().length) {
                         60 -> {
-                            binding.bottomSheetGetDistrict.tvDetailAddressCounter.text = "0/60"
+                            binding?.bottomSheetGetDistrict?.tvDetailAddressCounter?.text = "0/60"
                         }
                         else -> {
-                            binding.bottomSheetGetDistrict.tvDetailAddressCounter.text = "$countCharLeft/60"
+                            binding?.bottomSheetGetDistrict?.tvDetailAddressCounter?.text = "$countCharLeft/60"
                         }
                     }
                 } else {
-                    binding.bottomSheetGetDistrict.tvDetailAddressCounter.text = "60/60"
+                    binding?.bottomSheetGetDistrict?.tvDetailAddressCounter?.text = "60/60"
                 }
             }
 
@@ -900,9 +903,4 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
                 PermissionCheckerHelper.Companion.PERMISSION_ACCESS_COARSE_LOCATION)
     }
 
-    override fun onDetach() {
-        super.onDetach()
-        presenter.detachView()
-        composite.unsubscribe()
-    }
 }

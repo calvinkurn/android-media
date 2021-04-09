@@ -7,6 +7,7 @@ import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
@@ -52,6 +53,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.user_identification_common.KYCConstant
+import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import kotlinx.android.synthetic.main.fragment_power_merchant_subscribe.*
 import kotlinx.android.synthetic.main.fragment_power_merchant_subscribe.view.*
 import javax.inject.Inject
@@ -106,9 +108,21 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
         observeGetPmStatusInfo()
         observeViewState()
 
+        setupCallToActionBtn()
         setupFreeShippingError()
 
         viewModel.getPmStatusInfo()
+    }
+
+    private fun setupCallToActionBtn() {
+        btnCallToAction.apply {
+            val backgroundColor = if (context?.isDarkMode() == true) {
+                ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N50)
+            } else {
+                ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0)
+            }
+            setBackgroundColor(backgroundColor)
+        }
     }
 
     private fun setupFreeShippingError() {
