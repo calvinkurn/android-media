@@ -612,18 +612,17 @@ class SaldoDepositFragment : BaseDaggerFragment() {
     }
 
     private fun showBottomSheetInfoDialog(isSellerClicked: Boolean) {
-        context?.let { context ->
-            UserStatusInfoBottomSheet(context).apply {
+        context?.let {
+            UserStatusInfoBottomSheet().apply {
                 if (isSellerClicked) {
-                    setBody(getString(com.tokopedia.saldodetails.R.string.saldo_balance_seller_desc))
-                    setTitle(getString(com.tokopedia.saldodetails.R.string.saldo_total_balance_seller))
+                    setBody(it.getString(com.tokopedia.saldodetails.R.string.saldo_balance_seller_desc))
+                    setBottomSheetTitle(it.getString(com.tokopedia.saldodetails.R.string.saldo_total_balance_seller))
                 } else {
-                    setBody(getString(com.tokopedia.saldodetails.R.string.saldo_balance_buyer_desc))
-                    setTitle(getString(com.tokopedia.saldodetails.R.string.saldo_total_balance_buyer))
+                    setBody(it.getString(com.tokopedia.saldodetails.R.string.saldo_balance_buyer_desc))
+                    setBottomSheetTitle(it.getString(com.tokopedia.saldodetails.R.string.saldo_total_balance_buyer))
                 }
-
-                setButtonText(getString(com.tokopedia.saldodetails.R.string.sp_saldo_withdraw_warning_positiv_button))
-                show()
+                setButtonText(it.getString(com.tokopedia.saldodetails.R.string.sp_saldo_withdraw_warning_positiv_button))
+                show(this@SaldoDepositFragment.childFragmentManager, UserStatusInfoBottomSheet.TAG)
             }
         }
     }

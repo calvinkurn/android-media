@@ -70,14 +70,12 @@ class SaldoDepositActivity : BaseSimpleActivity(), HasComponent<SaldoDetailsComp
     }
 
     override fun getNewFragment(): Fragment? {
-
-        if (userSession.isLoggedIn) {
-            return SaldoDepositFragment.createInstance(isSeller)
+        return if (userSession.isLoggedIn) {
+            SaldoDepositFragment.createInstance(isSeller)
         } else {
             startActivityForResult(RouteManager.getIntent(this, ApplinkConst.LOGIN), REQUEST_CODE_LOGIN)
-            return null
+            null
         }
-
     }
 
     override fun getToolbarResourceID() = com.tokopedia.saldodetails.R.id.saldo_deposit_toolbar
