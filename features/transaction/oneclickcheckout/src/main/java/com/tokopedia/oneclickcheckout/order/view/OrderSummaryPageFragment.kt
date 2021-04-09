@@ -199,7 +199,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                     REQUEST_CODE_OVO_TOP_UP -> refresh()
                     REQUEST_CODE_EDIT_PAYMENT -> onResultFromEditPayment(data)
                     REQUEST_CODE_OPEN_ADDRESS_LIST -> onResultFromAddressList(resultCode)
-                    REQUEST_CODE_ADD_ADDRESS -> onResultFromAddNewAddress(resultCode, data)
+                    REQUEST_CODE_ADD_NEW_ADDRESS -> onResultFromAddNewAddress(resultCode, data)
                 }
             }
         }
@@ -582,7 +582,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
             startActivityForResult(RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V2).apply {
                 putExtra(AddressListFragment.EXTRA_IS_FULL_FLOW, true)
                 putExtra(AddressListFragment.EXTRA_IS_LOGISTIC_LABEL, false)
-            }, REQUEST_CODE_ADD_ADDRESS)
+            }, REQUEST_CODE_ADD_NEW_ADDRESS)
         }
     }
 
@@ -1452,6 +1452,8 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         const val REQUEST_CODE_EDIT_PAYMENT = 19
 
         const val REQUEST_CODE_OPEN_ADDRESS_LIST = 20
+
+        const val REQUEST_CODE_ADD_NEW_ADDRESS = 21
 
         const val QUERY_PRODUCT_ID = "product_id"
 
