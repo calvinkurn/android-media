@@ -9,6 +9,7 @@ import androidx.test.internal.runner.junit4.statement.UiThreadStatement
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
+import com.tokopedia.circular_view_pager.presentation.widgets.circularViewPager.CircularViewPager
 import com.tokopedia.home.R
 import com.tokopedia.home.beranda.domain.model.banner.BannerDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecycleAdapter
@@ -225,9 +226,11 @@ class HomeDynamicChannelComponentAnalyticsTest {
 
     @Test
     fun testHPB() {
-        initTest()
-
+        InstrumentationAuthHelper.clearUserSession()
         doActivityTestByModelClass(dataModelClass = HomepageBannerDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
+            Thread.sleep(2000)
+            val bannerViewPager = activityRule.activity.findViewById<CircularViewPager>(R.id.circular_view_pager)
+            bannerViewPager.pauseAutoScroll()
             clickHPBSection(viewHolder)
         }
 
