@@ -236,4 +236,22 @@ class TopchatRoomSellerProductAttachmentTest : BaseSellerTopchatRoomTest() {
         assertStockCountVisibilityAt(R.id.rv_product_carousel, 0, isDisplayed())
         assertStockCountValueAt(R.id.rv_product_carousel, 0, 0)
     }
+
+    @Test
+    fun srw_not_displayed_if_seller_attach_from_attach_product() {
+        // Given
+        setupChatRoomActivity()
+        getChatUseCase.response = firstPageChatAsBuyer
+        chatAttachmentUseCase.response = chatAttachmentResponse
+        chatSrwUseCase.response = chatSrwResponse
+        inflateTestFragment()
+        intendingAttachProduct(1)
+
+        // When
+        clickPlusIconMenu()
+        clickAttachProductMenu()
+
+        // Then
+        assertSrwContentIsHidden()
+    }
 }

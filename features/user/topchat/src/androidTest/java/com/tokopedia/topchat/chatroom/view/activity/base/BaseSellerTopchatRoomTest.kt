@@ -19,16 +19,34 @@ import com.tokopedia.topchat.AndroidFileUtil
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ChatAttachmentResponse
 import com.tokopedia.topchat.matchers.withRecyclerView
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.hamcrest.Matcher
 
 open class BaseSellerTopchatRoomTest : TopchatRoomTest() {
 
     private val gson = Gson()
 
-    protected lateinit var sellerProductChatReplies: GetExistingChatPojo
-    protected lateinit var sellerProductCarouselChatReplies: GetExistingChatPojo
-    protected lateinit var sellerBroadcastProductCarouselChatReplies: GetExistingChatPojo
-    protected lateinit var sellerProductAttachment: ChatAttachmentResponse
+    protected var sellerProductChatReplies = GetExistingChatPojo()
+    protected var sellerProductCarouselChatReplies = GetExistingChatPojo()
+    protected var sellerBroadcastProductCarouselChatReplies = GetExistingChatPojo()
+    protected var sellerProductAttachment = ChatAttachmentResponse()
+
+    private val templateChats = listOf(
+            "I am seller", "Yes, this product is ready"
+    )
+
+    @ExperimentalCoroutinesApi
+    override fun before() {
+        super.before()
+        setupDefaultResponse()
+    }
+
+    private fun setupDefaultResponse() {
+        chatSrwUseCase.response = chatSrwResponse
+        getTemplateChatRoomUseCase.response = generateTemplateResponse(
+                templates = templateChats
+        )
+    }
 
     override fun setupResponse() {
         super.setupResponse()

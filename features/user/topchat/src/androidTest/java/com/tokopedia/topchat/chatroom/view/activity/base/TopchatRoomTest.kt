@@ -1,5 +1,7 @@
 package com.tokopedia.topchat.chatroom.view.activity.base
 
+import android.app.Activity
+import android.app.Instrumentation
 import android.content.Context
 import android.content.Intent
 import android.view.View
@@ -10,11 +12,14 @@ import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
+import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.attachcommon.data.ResultProduct
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_IMAGE_ANNOUNCEMENT
 import com.tokopedia.chat_common.domain.pojo.ChatReplyPojo
 import com.tokopedia.chat_common.domain.pojo.GetExistingChatPojo
@@ -35,6 +40,7 @@ import com.tokopedia.topchat.chatroom.domain.pojo.sticker.StickerResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.stickergroup.ChatListGroupStickerResponse
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.TopchatProductAttachmentViewHolder
 import com.tokopedia.topchat.chattemplate.domain.pojo.TemplateData
+import com.tokopedia.topchat.common.TopChatInternalRouter
 import com.tokopedia.topchat.idling.FragmentTransactionIdle
 import com.tokopedia.topchat.matchers.withRecyclerView
 import com.tokopedia.topchat.matchers.withTotalItem
@@ -49,6 +55,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.setMain
 import org.hamcrest.Matcher
+import org.hamcrest.Matchers
 import org.junit.Before
 import org.junit.Rule
 import javax.inject.Inject
@@ -114,6 +121,12 @@ abstract class TopchatRoomTest {
     protected var uploadImageReplyResponse: ChatReplyPojo = ChatReplyPojo()
 
     protected lateinit var chatComponentStub: ChatComponentStub
+
+    object ProductPreviewAttribute {
+        const val productName = "Testing Attach Product 1"
+        const val productThumbnail = "https://ecs7-p.tokopedia.net/img/cache/350/attachment/" +
+                "2020/8/24/40768394/40768394_732546f9-371d-45c6-a412-451ea50aa22c.jpg.webp"
+    }
 
     @ExperimentalCoroutinesApi
     @Before
@@ -351,6 +364,20 @@ abstract class TopchatRoomTest {
         onView(withText(msg)).check(matches(isDisplayed()))
     }
 
+    protected fun assertSrwContentIsVisible() {
+        assertSrwVisibility(isDisplayed())
+        assertTemplateChatVisibility(Matchers.not(isDisplayed()))
+        assertSrwErrorVisibility(Matchers.not(isDisplayed()))
+        assertSrwLoadingVisibility(Matchers.not(isDisplayed()))
+    }
+
+    protected fun assertSrwContentIsHidden() {
+        assertTemplateChatVisibility(isDisplayed())
+        assertSrwVisibility(Matchers.not(isDisplayed()))
+        assertSrwErrorVisibility(Matchers.not(isDisplayed()))
+        assertSrwLoadingVisibility(Matchers.not(isDisplayed()))
+    }
+
     protected fun generateTemplateResponse(
             enable: Boolean = true,
             success: Boolean = true,
@@ -373,10 +400,44 @@ abstract class TopchatRoomTest {
         onView(withId(R.id.rv_attachment_preview)).perform(viewAction)
     }
 
+
+    protected fun intendingAttachProduct(totalProductAttached: Int) {
+        Intents.intending(IntentMatchers.hasExtra(ApplinkConst.AttachProduct.TOKOPEDIA_ATTACH_PRODUCT_SOURCE_KEY, TopChatInternalRouter.Companion.SOURCE_TOPCHAT))
+                .respondWith(
+                        Instrumentation.ActivityResult(
+                                Activity.RESULT_OK, getAttachProductData(totalProductAttached)
+                        )
+                )
+    }
+
+    protected fun getAttachProductData(totalProduct: Int): Intent {
+        val products = ArrayList<ResultProduct>(totalProduct)
+        for (i in 0 until totalProduct) {
+            products.add(
+                    ResultProduct(
+                            "11111",
+                            "tokopedia://product/1111",
+                            ProductPreviewAttribute.productThumbnail,
+                            "Rp ${i + 1}5.000.000",
+                            "${i + 1} ${ProductPreviewAttribute.productName}"
+                    )
+            )
+        }
+        return Intent().apply {
+            putParcelableArrayListExtra(
+                    ApplinkConst.AttachProduct.TOKOPEDIA_ATTACH_PRODUCT_RESULT_KEY, products
+            )
+        }
+    }
+
     protected fun waitForIt(timeMillis: Long) {
         Thread.sleep(timeMillis)
     }
 }
+
+/*
+    Extension function below
+ */
 
 fun GetExistingChatPojo.blockPromo(blockPromo: Boolean): GetExistingChatPojo {
     chatReplies.block.isPromoBlocked = blockPromo

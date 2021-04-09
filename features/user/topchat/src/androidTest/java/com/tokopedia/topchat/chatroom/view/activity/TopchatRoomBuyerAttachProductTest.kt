@@ -12,9 +12,7 @@ import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.ApplinkConst.AttachProduct.TOKOPEDIA_ATTACH_PRODUCT_RESULT_KEY
 import com.tokopedia.applink.ApplinkConst.AttachProduct.TOKOPEDIA_ATTACH_PRODUCT_SOURCE_KEY
-import com.tokopedia.attachcommon.data.ResultProduct
 import com.tokopedia.chat_common.data.preview.ProductPreview
 import com.tokopedia.common.network.util.CommonUtil
 import com.tokopedia.topchat.R
@@ -30,8 +28,6 @@ import org.junit.Test
 class TopchatRoomBuyerAttachProductTest : BaseBuyerTopchatRoomTest() {
 
     lateinit var productPreview: ProductPreview
-    private val productName = "Testing Attach Product 1"
-    private val productThumbnail = "https://ecs7-p.tokopedia.net/img/cache/350/attachment/2020/8/24/40768394/40768394_732546f9-371d-45c6-a412-451ea50aa22c.jpg.webp"
 
     @ExperimentalCoroutinesApi
     @Before
@@ -39,8 +35,8 @@ class TopchatRoomBuyerAttachProductTest : BaseBuyerTopchatRoomTest() {
         super.before()
         productPreview = ProductPreview(
                 "1111",
-                productThumbnail,
-                productName,
+                ProductPreviewAttribute.productThumbnail,
+                ProductPreviewAttribute.productName,
                 "Rp 23.000.000",
                 "",
                 "",
@@ -278,55 +274,11 @@ class TopchatRoomBuyerAttachProductTest : BaseBuyerTopchatRoomTest() {
         assertSrwContentIsHidden()
     }
 
-    // TODO: test srw is hidden if it is seller
     // TODO: test srw loading state
     // TODO: test srw error state
     // TODO: test srw interaction expand and collapse
     // TODO: test srw interaction click and send msg
     // TODO: test srw seller side
-
-    private fun assertSrwContentIsVisible() {
-        assertSrwVisibility(isDisplayed())
-        assertTemplateChatVisibility(not(isDisplayed()))
-        assertSrwErrorVisibility(not(isDisplayed()))
-        assertSrwLoadingVisibility(not(isDisplayed()))
-    }
-
-    private fun assertSrwContentIsHidden() {
-        assertTemplateChatVisibility(isDisplayed())
-        assertSrwVisibility(not(isDisplayed()))
-        assertSrwErrorVisibility(not(isDisplayed()))
-        assertSrwLoadingVisibility(not(isDisplayed()))
-    }
-
-    private fun intendingAttachProduct(totalProductAttached: Int) {
-        intending(hasExtra(TOKOPEDIA_ATTACH_PRODUCT_SOURCE_KEY, SOURCE_TOPCHAT))
-                .respondWith(
-                        Instrumentation.ActivityResult(
-                                Activity.RESULT_OK, getAttachProductData(totalProductAttached)
-                        )
-                )
-    }
-
-    private fun getAttachProductData(totalProduct: Int): Intent {
-        val products = ArrayList<ResultProduct>(totalProduct)
-        for (i in 0 until totalProduct) {
-            products.add(
-                    ResultProduct(
-                            "11111",
-                            "tokopedia://product/1111",
-                            productThumbnail,
-                            "Rp ${i + 1}5.000.000",
-                            "${i + 1} $productName"
-                    )
-            )
-        }
-        return Intent().apply {
-            putParcelableArrayListExtra(
-                    TOKOPEDIA_ATTACH_PRODUCT_RESULT_KEY, products
-            )
-        }
-    }
 
     private fun putProductAttachmentIntent(intent: Intent) {
         val productPreviews = listOf(productPreview)
