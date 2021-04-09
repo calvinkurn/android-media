@@ -23,7 +23,7 @@
                 android:layout_marginTop="@dimen/dp_20"
                 android:gravity="left|start"
                 android:text="@string/saldo_intro_title_refund"
-                android:textColor="@color/Unify_N700_96"
+                android:textColor="@color/Unify_N700_68"
                 app:typographyWeight="bold"
                 app:typographyType="heading_3"
                 />
@@ -80,7 +80,7 @@
                 android:layout_marginTop="@dimen/dp_20"
                 android:gravity="left|start"
                 android:text="@string/saldo_intro_title_seller"
-                android:textColor="@color/Unify_N700_96"
+                android:textColor="@color/Unify_N700_68"
                 app:typographyWeight="bold"
                 app:typographyType="heading_3" />
 
@@ -131,7 +131,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/unify_space_24"
                 app:typographyType="body_2"
-                android:textColor="@color/Unify_N700_32" />
+                android:textColor="@color/Unify_N700_44" />
         </LinearLayout>
     </ScrollView>
 

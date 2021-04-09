@@ -9,6 +9,7 @@ import android.text.style.ClickableSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -47,6 +48,7 @@ class SaldoIntroFragment : TkpdBaseV4Fragment() {
         val spannableString = SpannableString(text)
         val indexOfString = getString(com.tokopedia.saldodetails.R.string.saldo_help_text)
         val startIndexOfLink = text.indexOf(indexOfString)
+        val color = ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_G500)
         if (startIndexOfLink != -1) {
             spannableString.setSpan(object : ClickableSpan() {
                 override fun onClick(view: View) {
@@ -56,7 +58,7 @@ class SaldoIntroFragment : TkpdBaseV4Fragment() {
                 override fun updateDrawState(ds: TextPaint) {
                     super.updateDrawState(ds)
                     ds.isUnderlineText = false
-                    ds.color = resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_G200_44)
+                    ds.color = color
                 }
             }, startIndexOfLink, startIndexOfLink + resources.getString(com.tokopedia.saldodetails.R.string.saldo_help_text).length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
             viewMore!!.movementMethod = LinkMovementMethod.getInstance()
