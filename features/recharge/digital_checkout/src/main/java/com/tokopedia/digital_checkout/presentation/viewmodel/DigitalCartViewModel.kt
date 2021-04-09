@@ -119,7 +119,7 @@ class DigitalCartViewModel @Inject constructor(
             _showLoading.postValue(true)
             digitalGetCartUseCase.execute(
                     DigitalGetCartUseCase.createParams(categoryId.toIntOrZero()),
-                    onSuccessGetCart(),
+                    onSuccessGetCart(categoryId),
                     onErrorGetCart()
             )
         }
@@ -151,10 +151,10 @@ class DigitalCartViewModel @Inject constructor(
         }
     }
 
-    private fun onSuccessGetCart(): (RechargeGetCart.Response) -> Unit {
+    private fun onSuccessGetCart(categoryId: String): (RechargeGetCart.Response) -> Unit {
         return {
             val mappedCartData = DigitalCheckoutMapper.mapGetCartToCartDigitalInfoData(it)
-            mapDataSuccessCart(mappedCartData)
+            mapDataSuccessCart(mappedCartData, categoryId)
         }
     }
 
@@ -164,8 +164,8 @@ class DigitalCartViewModel @Inject constructor(
         }
     }
 
-    private fun mapDataSuccessCart(mappedCartData: CartDigitalInfoData) {
-        analytics.eventCheckout(mappedCartData, userSession.userId)
+    private fun mapDataSuccessCart(mappedCartData: CartDigitalInfoData, categoryId: String) {
+        analytics.eventCheckout(mappedCartData, userSession.userId, categoryId)
 
         requestCheckoutParam = DigitalCheckoutMapper.buildCheckoutData(mappedCartData, userSession.accessToken, requestCheckoutParam)
 
