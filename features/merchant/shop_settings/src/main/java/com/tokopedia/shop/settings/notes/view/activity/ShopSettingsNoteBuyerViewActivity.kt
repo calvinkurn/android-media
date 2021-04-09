@@ -29,11 +29,16 @@ class ShopSettingsNoteBuyerViewActivity : BaseSimpleActivity(), HasComponent<Sho
 
     override fun getParentViewResourceID(): Int = R.id.parent_view
 
-    override fun getNewFragment(): Fragment = ShopSettingsNoteBuyerViewFragment.createInstance(intent.getStringExtra(SHOP_ID))
+    override fun getNewFragment(): Fragment = createFragment()
 
     override fun getComponent(): ShopSettingsComponent = DaggerShopSettingsComponent.builder()
                                                             .baseAppComponent((application as BaseMainApplication).baseAppComponent)
                                                             .build()
+
+    private fun createFragment(): ShopSettingsNoteBuyerViewFragment {
+        val shopId = intent.getStringExtra(SHOP_ID) ?: intent.data?.lastPathSegment.orEmpty()
+        return ShopSettingsNoteBuyerViewFragment.createInstance(shopId)
+    }
 
     private fun setupToolbarActions() {
         findViewById<HeaderUnify>(R.id.toolbar_shop_note).apply {

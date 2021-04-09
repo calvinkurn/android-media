@@ -176,7 +176,7 @@ object ApplinkConstInternalMarketplace {
 
     //ShopSettingsNoteBuyerViewActivity
     @JvmField
-    val SHOP_SETTINGS_NOTES_BUYER_VIEW = "$SHOP_SETTINGS_NOTES-buyer-view"
+    val SHOP_SETTINGS_NOTES_BUYER_VIEW = "$SHOP_SETTINGS_NOTES-buyer-view/{shop_id}/"
 
     //ShopSettingsEtalaseActivity
     @JvmField
