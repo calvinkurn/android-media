@@ -17,4 +17,10 @@
     <string name="multi_line_empty_state_cta">Yuk, Promosikan Produkmu!</string>
     <string name="shc_empty_state_description_post_list">Tenang, kamu tetap bisa ikuti semua update mengenai Seller di Pusat Edukasi Seller, ya.</string>
     <string name="shc_empty_state_button_post_list">Ke Pusat Edukasi Seller</string>
+    <string name="shc_content_desc_button_lihat_selengkapnya">button lihat selengkapnya</string>
+    <string name="shc_content_desc_image_post">image post</string>
+    <string name="shc_content_desc_image_post_empty">image post empty</string>
+    <string name="shc_content_desc_image_dot">image dot</string>
+    <string name="shc_content_desc_image_error">image error</string>
+    <string name="shc_content_desc_image_table_empty">image table empty</string>
 </resources>
