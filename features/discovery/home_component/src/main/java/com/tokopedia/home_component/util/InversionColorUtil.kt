@@ -16,5 +16,5 @@ fun Int.invertIfDarkMode(context: Context?): Int{
 private fun getContrastColor(@ColorInt color: Int): Int {
     // Counting the perceptive luminance - human eye favors green color...
     val a = 1 - (0.299 * Color.red(color) + 0.587 * Color.green(color) + 0.114 * Color.blue(color)) / 255.0
-    return if (a < 0.5) color else Color.WHITE
+    return if (a < 0.5) color else androidx.core.content.ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0)
 }
