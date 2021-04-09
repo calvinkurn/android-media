@@ -136,7 +136,8 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
     fun `Get Occ Cart Success With Preference`() {
         // Given
         val shipment = OrderProfileShipment(serviceId = 1)
-        val profile = OrderProfile(shipment = shipment)
+        val address = OrderProfileAddress(addressId = 1)
+        val profile = OrderProfile(shipment = shipment, address = address)
         val response = OrderData(cart = OrderCart(product = OrderProduct(productId = 1)), preference = profile)
         every { getOccCartUseCase.createRequestParams(any()) } returns RequestParams.EMPTY
         coEvery { getOccCartUseCase.executeSuspend(any()) } returns response
@@ -154,8 +155,9 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
     @Test
     fun `Get Occ Cart Success With Prompt`() {
         // Given
+        val address = OrderProfileAddress(addressId = 1)
         val shipment = OrderProfileShipment(serviceId = 1)
-        val profile = OrderProfile(shipment = shipment)
+        val profile = OrderProfile(shipment = shipment, address = address)
         val prompt = OccPrompt(OccPrompt.TYPE_DIALOG)
         val response = OrderData(cart = OrderCart(product = OrderProduct(productId = 1)), preference = profile, prompt = prompt)
         every { getOccCartUseCase.createRequestParams(any()) } returns RequestParams.EMPTY
@@ -175,7 +177,8 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
     fun `Get Occ Cart Success With Preference And Rates`() {
         // Given
         val shipment = OrderProfileShipment(serviceId = 1)
-        val profile = OrderProfile(shipment = shipment, profileId = 1)
+        val address = OrderProfileAddress(addressId = 1)
+        val profile = OrderProfile(shipment = shipment, address = address)
         val cart = OrderCart(product = OrderProduct(productId = 1, quantity = QuantityUiModel(orderQuantity = 1)))
         val promo = OrderPromo(LastApplyUiModel(listOf("promo")))
         val response = OrderData(cart = cart, preference = profile, promo = promo)
@@ -223,7 +226,6 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         }
         assertEquals(cart, orderSummaryPageViewModel.orderCart)
         assertEquals(1, orderSummaryPageViewModel.getCurrentShipperId())
-        assertEquals(1, orderSummaryPageViewModel.getCurrentProfileId())
         verify(exactly = 1) { ratesUseCase.execute(any()) }
         verify(exactly = 1) { validateUsePromoRevampUseCase.get().createObservable(any()) }
     }
@@ -337,7 +339,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         orderSummaryPageViewModel.updateCart()
 
         // Then
-        coVerify { updateCartOccUseCase.executeSuspend(withArg { assertEquals(UpdateCartOccRequest(arrayListOf(UpdateCartOccCartRequest(cartId = "0", quantity = 1, productId = "1", spId = 1, shippingId = 1)), UpdateCartOccProfileRequest(profileId = "1", serviceId = 1, addressId = "1")), it) }) }
+        coVerify { updateCartOccUseCase.executeSuspend(withArg { assertEquals(UpdateCartOccRequest(arrayListOf(UpdateCartOccCartRequest(cartId = "0", quantity = 1, productId = "1", spId = 1, shippingId = 1)), UpdateCartOccProfileRequest(profileId = "0", serviceId = 1, addressId = "1")), it) }) }
     }
 
     @Test
@@ -355,7 +357,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
     }
 
     @Test
-    fun `Update Cart Invalid Profile Id`() {
+    fun `Update Cart Invalid Address Id`() {
         // Given
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
         orderSummaryPageViewModel._orderPreference = OrderPreference(preference = OrderProfile(), isValid = true)
@@ -758,21 +760,6 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
     }
 
     @Test
-    fun `Force Show Onboarding With No Profile`() {
-        // Given
-        val onboarding = OccMainOnboarding(isForceShowCoachMark = true)
-        val response = OrderData(onboarding = onboarding)
-        every { getOccCartUseCase.createRequestParams(any()) } returns RequestParams.EMPTY
-        coEvery { getOccCartUseCase.executeSuspend(any()) } returns response
-
-        // When
-        orderSummaryPageViewModel.getOccCart(true, "")
-
-        // Then
-        assertEquals(OccGlobalEvent.ForceOnboarding(onboarding), orderSummaryPageViewModel.globalEvent.value)
-    }
-
-    @Test
     fun `Force Show Onboarding Revamp With Profile And Failed Get Rates`() {
         // Given
         val onboarding = OccMainOnboarding(isForceShowCoachMark = true)
@@ -796,7 +783,8 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         // Given
         val onboarding = OccMainOnboarding(isForceShowCoachMark = true)
         val shipment = OrderProfileShipment(serviceId = 1)
-        val profile = OrderProfile(shipment = shipment)
+        val address = OrderProfileAddress(addressId = 1)
+        val profile = OrderProfile(shipment = shipment, address = address)
         val response = OrderData(cart = OrderCart(product = OrderProduct(productId = 1)), preference = profile, onboarding = onboarding, revampData = OccRevampData(true))
         every { getOccCartUseCase.createRequestParams(any()) } returns RequestParams.EMPTY
         coEvery { getOccCartUseCase.executeSuspend(any()) } returns response

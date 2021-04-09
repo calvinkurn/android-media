@@ -122,13 +122,12 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             result.globalEvent?.also {
                 globalEvent.value = it
             }
-            if (orderProduct.productId > 0 && _orderPreference.preference.shipment.serviceId > 0) {
+            if (orderProduct.productId > 0 && _orderPreference.preference.shipment.serviceId > 0 && _orderPreference.preference.address.addressId > 0) {
                 orderTotal.value = orderTotal.value.copy(buttonState = OccButtonState.LOADING)
                 getRatesSuspend()
             } else if (result.throwable == null) {
                 orderTotal.value = orderTotal.value.copy(buttonState = OccButtonState.DISABLE)
                 sendViewOspEe()
-                configureForceShowOnboarding()
             }
         }
     }
@@ -752,11 +751,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         val onboarding = _orderPreference.onboarding
         if (onboarding.isForceShowCoachMark) {
             val preference = _orderPreference.preference
-            if (preference.shipment.serviceId > 0) {
-                if (_orderShipment.isValid()) {
-                    forceShowOnboarding(onboarding)
-                }
-            } else {
+            if (preference.shipment.serviceId > 0 && _orderShipment.isValid()) {
                 forceShowOnboarding(onboarding)
             }
         }

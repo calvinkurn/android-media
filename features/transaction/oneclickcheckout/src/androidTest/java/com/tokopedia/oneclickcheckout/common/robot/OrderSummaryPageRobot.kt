@@ -21,6 +21,7 @@ fun orderSummaryPage(func: OrderSummaryPageRobot.() -> Unit) = OrderSummaryPageR
 
 class OrderSummaryPageRobot {
 
+    @Deprecated("will be removed in next iteration")
     fun clickOnboardingInfo() {
         onView(withId(R.id.tv_header_3)).perform(scrollTo()).perform(click())
     }
@@ -29,6 +30,7 @@ class OrderSummaryPageRobot {
         onView(withId(com.tokopedia.unifycomponents.R.id.bottom_sheet_close)).perform(click())
     }
 
+    @Deprecated("will be removed in next iteration")
     fun clickAddPreferenceForNewBuyer() {
         onView(withId(R.id.button_atur_pilihan)).perform(scrollTo()).perform(click())
     }
@@ -132,6 +134,10 @@ class OrderSummaryPageRobot {
         OrderSummaryPageResultRobot().apply(func)
     }
 
+    fun clickAddNewAddress() {
+        onView(withId(R.id.btn_occ_add_new_address)).perform(click())
+    }
+
     fun assertProductCard(shopName: String,
                           shopLocation: String,
                           hasShopLocationImg: Boolean,
@@ -189,6 +195,7 @@ class OrderSummaryPageRobot {
         onView(withId(R.id.tv_new_card_header)).perform(scrollTo()).check(matches(withText(wording)))
     }
 
+    @Deprecated("will be remove in next iteration")
     fun assertProfileRevampUtama(isDefaultProfile: Boolean) {
         onView(withId(R.id.lbl_new_default_preference)).check { view, noViewFoundException ->
             noViewFoundException?.printStackTrace()
@@ -394,6 +401,10 @@ class OrderSummaryPageRobot {
             noViewFoundException?.printStackTrace()
             assertEquals(View.VISIBLE, view.visibility)
         }
+    }
+
+    fun assertNoAddressLayoutVisible() {
+        onView(withId(R.id.layout_no_address)).check(matches(isDisplayed()))
     }
 
     fun assertPromptBottomSheetVisible(title: String = "", description: String = "", primaryButton: String = "", secondaryButton: String? = null) {
