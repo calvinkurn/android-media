@@ -44,6 +44,10 @@ data class RestrictionData(
         @Expose
         val action: List<RestrictionAction> = listOf()
 ) {
+    fun isNotEligibleExclusive():Boolean {
+        return restrictionExclusiveType() && !isEligible
+    }
+
     fun restrictionShopFollowersType(): Boolean {
         return action.firstOrNull()?.attributeName ?: "" == RestrictionInfoResponse.SHOP_FOLLOWERS_TYPE
     }

@@ -2989,7 +2989,7 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
                     iconUrl = badgeUrl,
                     hideButton = true)
         }
-        setupExclusiveVisibility(restrictionData.isEligible, isExclusiveType)
+        setupExclusiveVisibility(restrictionData.isNotEligibleExclusive(), isExclusiveType)
     }
 
     private fun setLoadingNplShopFollowers(isLoading: Boolean) {
