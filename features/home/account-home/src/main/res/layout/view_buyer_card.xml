@@ -16,7 +16,8 @@
         android:minHeight="@dimen/dp_50"
         android:visibility="visible"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:contentDescription="@string/desc_image_profile_completed" />
 
     <ImageView
         android:id="@+id/ic_affiliate_byme"
@@ -80,7 +81,8 @@
                     android:clickable="false"
                     android:focusable="false"
                     app:layout_constraintTop_toTopOf="parent"
-                    tools:layout_editor_absoluteX="45dp" />
+                    tools:layout_editor_absoluteX="45dp"
+                    android:contentDescription="@string/desc_image_tokopoint" />
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/label_tokopoint"
@@ -143,7 +145,8 @@
                     android:clickable="false"
                     android:focusable="false"
                     app:layout_constraintTop_toTopOf="parent"
-                    tools:layout_editor_absoluteX="45dp" />
+                    tools:layout_editor_absoluteX="45dp"
+                    android:contentDescription="@string/desc_image_voucher" />
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/label_voucher"
@@ -206,7 +209,8 @@
                     android:clickable="false"
                     android:focusable="false"
                     app:layout_constraintTop_toTopOf="parent"
-                    tools:layout_editor_absoluteX="45dp" />
+                    tools:layout_editor_absoluteX="45dp"
+                    android:contentDescription="@string/desc_image_tokomember" />
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/label_tokomember"
@@ -277,25 +281,22 @@
 
     </androidx.cardview.widget.CardView>
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/by_me_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/dp_16"
-        android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginEnd="@dimen/layout_lvl2"
         android:background="@drawable/bg_button_white_border"
         android:clickable="true"
         android:focusable="true"
-        android:fontFamily="sans-serif-medium"
         android:foreground="?attr/selectableItemBackground"
         android:gravity="center_horizontal"
         android:paddingLeft="@dimen/layout_lvl1"
-        android:paddingTop="@dimen/dp_8"
+        android:paddingTop="@dimen/layout_lvl1"
         android:paddingRight="@dimen/layout_lvl1"
-        android:paddingBottom="@dimen/dp_8"
+        android:paddingBottom="@dimen/layout_lvl1"
         android:text="@string/create_post_by_me"
-        android:textColor="@color/Unify_N700_68"
-        android:textSize="@dimen/sp_12"
+        android:textSize="@dimen/fontSize_lvl2"
         android:textStyle="bold"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@+id/text_profile_completion"
