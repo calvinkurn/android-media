@@ -287,6 +287,7 @@ private fun clickHomeBannerItemAndViewAll(viewHolder: RecyclerView.ViewHolder) {
     //banner item click
     val bannerViewPager = childView.findViewById<CircularViewPager>(R.id.circular_view_pager)
     val itemCount = bannerViewPager.getViewPager().adapter?.itemCount ?: 0
+    bannerViewPager.pauseAutoScroll()
     try {
         Espresso.onView(firstView(ViewMatchers.withId(R.id.circular_view_pager)))
                 .perform(ViewActions.click())
