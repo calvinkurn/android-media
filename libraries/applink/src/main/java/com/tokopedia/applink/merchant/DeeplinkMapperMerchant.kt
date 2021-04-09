@@ -9,6 +9,8 @@ import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.startsWithPattern
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 
 
 /**
@@ -59,7 +61,17 @@ object DeeplinkMapperMerchant {
                 val feedbackId = segments.last()
                 return UriUtil.buildUri(ApplinkConstInternalMarketplace.INBOX_REPUTATION_DETAIL, feedbackId)
             }
-            return ApplinkConstInternalMarketplace.INBOX_REPUTATION
+            val useNewInbox = RemoteConfigInstance.getInstance().abTestPlatform.getString(
+                    AbTestPlatform.KEY_AB_INBOX_REVAMP, AbTestPlatform.VARIANT_OLD_INBOX
+            ) == AbTestPlatform.VARIANT_NEW_INBOX
+            val useNewNav = RemoteConfigInstance.getInstance().abTestPlatform.getString(
+                    AbTestPlatform.NAVIGATION_EXP_TOP_NAV, AbTestPlatform.NAVIGATION_VARIANT_OLD
+            ) == AbTestPlatform.NAVIGATION_VARIANT_REVAMP
+            return if (useNewInbox && useNewNav) {
+                ApplinkConstInternalMarketplace.INBOX
+            } else {
+                return ApplinkConstInternalMarketplace.INBOX_REPUTATION
+            }
         }
         return deeplink
     }
