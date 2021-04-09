@@ -401,3 +401,10 @@ fun ShopFollowingPojo.setFollowing(following: Boolean): ShopFollowingPojo {
     shopInfoById.result[0].favoriteData.alreadyFavorited = follow
     return this
 }
+
+fun ChatSmartReplyQuestionResponse.hasQuestion(
+        hasQuestion: Boolean
+): ChatSmartReplyQuestionResponse {
+    chatSmartReplyQuestion.hasQuestion = hasQuestion
+    return this
+}

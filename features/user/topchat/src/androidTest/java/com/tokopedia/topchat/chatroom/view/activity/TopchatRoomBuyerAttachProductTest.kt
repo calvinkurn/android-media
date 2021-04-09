@@ -6,7 +6,6 @@ import android.content.Intent
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.intent.Intents.intending
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra
@@ -19,9 +18,8 @@ import com.tokopedia.attachcommon.data.ResultProduct
 import com.tokopedia.chat_common.data.preview.ProductPreview
 import com.tokopedia.common.network.util.CommonUtil
 import com.tokopedia.topchat.R
-import com.tokopedia.topchat.action.ClickChildViewWithIdAction
 import com.tokopedia.topchat.chatroom.view.activity.base.BaseBuyerTopchatRoomTest
-import com.tokopedia.topchat.chatroom.view.adapter.viewholder.TopchatProductAttachmentViewHolder
+import com.tokopedia.topchat.chatroom.view.activity.base.hasQuestion
 import com.tokopedia.topchat.common.TopChatInternalRouter.Companion.SOURCE_TOPCHAT
 import com.tokopedia.topchat.matchers.withTotalItem
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -210,7 +208,6 @@ class TopchatRoomBuyerAttachProductTest : BaseBuyerTopchatRoomTest() {
                 .check(matches(withTotalItem(1)))
     }
 
-    // TODO: test srw is displayed if has question
     @Test
     fun srw_displayed_if_buyer_attach_from_start_intent() {
         // Given
@@ -248,7 +245,40 @@ class TopchatRoomBuyerAttachProductTest : BaseBuyerTopchatRoomTest() {
         assertSrwTotalQuestion(1)
     }
 
-    // TODO: test srw is hidden if it doesn't has question
+    @Test
+    fun srw_no_question_not_displayed_if_buyer_attach_from_start_intent() {
+        // Given
+        setupChatRoomActivity {
+            putProductAttachmentIntent(it)
+        }
+        getChatUseCase.response = firstPageChatAsBuyer
+        chatAttachmentUseCase.response = chatAttachmentResponse
+        chatSrwUseCase.response = chatSrwResponse.hasQuestion(false)
+        inflateTestFragment()
+
+        // Then
+        assertSrwContentIsHidden()
+    }
+
+    @Test
+    fun srw_no_question_not_displayed_if_buyer_attach_from_attach_product() {
+        // Given
+        setupChatRoomActivity()
+        getChatUseCase.response = firstPageChatAsBuyer
+        chatAttachmentUseCase.response = chatAttachmentResponse
+        chatSrwUseCase.response = chatSrwResponse.hasQuestion(false)
+        inflateTestFragment()
+        intendingAttachProduct(1)
+
+        // When
+        clickPlusIconMenu()
+        clickAttachProductMenu()
+
+        // Then
+        assertSrwContentIsHidden()
+    }
+
+    // TODO: test srw is hidden if it is seller
     // TODO: test srw loading state
     // TODO: test srw error state
     // TODO: test srw interaction expand and collapse
@@ -258,6 +288,13 @@ class TopchatRoomBuyerAttachProductTest : BaseBuyerTopchatRoomTest() {
     private fun assertSrwContentIsVisible() {
         assertSrwVisibility(isDisplayed())
         assertTemplateChatVisibility(not(isDisplayed()))
+        assertSrwErrorVisibility(not(isDisplayed()))
+        assertSrwLoadingVisibility(not(isDisplayed()))
+    }
+
+    private fun assertSrwContentIsHidden() {
+        assertTemplateChatVisibility(isDisplayed())
+        assertSrwVisibility(not(isDisplayed()))
         assertSrwErrorVisibility(not(isDisplayed()))
         assertSrwLoadingVisibility(not(isDisplayed()))
     }

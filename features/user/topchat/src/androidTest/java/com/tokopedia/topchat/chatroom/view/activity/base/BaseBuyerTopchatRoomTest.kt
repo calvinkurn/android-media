@@ -6,6 +6,10 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 open class BaseBuyerTopchatRoomTest : TopchatRoomTest() {
 
+    private val templateChats = listOf(
+            "I am buyer", "Is this product ready?"
+    )
+
     @ExperimentalCoroutinesApi
     override fun before() {
         super.before()
@@ -22,6 +26,9 @@ open class BaseBuyerTopchatRoomTest : TopchatRoomTest() {
 
     private fun setupDefaultResponse() {
         chatSrwUseCase.response = chatSrwResponse
+        getTemplateChatRoomUseCase.response = generateTemplateResponse(
+                templates = templateChats
+        )
     }
 
 }
