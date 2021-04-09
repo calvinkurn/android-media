@@ -18,7 +18,6 @@ class GetShopScorePenaltyTypesUseCase @Inject constructor(
     companion object {
         const val SHOP_SCORE_PENALTY_TYPES_INPUT = "input"
 
-        //need adjust name input
         val SHOP_SCORE_PENALTY_TYPES_QUERY = """   
             query shopScorePenaltyTypes(${'$'}input: ShopScorePenaltyTypesParam!){
               shopScorePenaltyTypes(input: ${'$'}input){

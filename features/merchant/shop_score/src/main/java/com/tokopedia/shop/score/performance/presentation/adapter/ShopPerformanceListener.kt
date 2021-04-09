@@ -46,3 +46,7 @@ interface ItemTimerNewSellerListener {
     fun onBtnShopPerformanceToInterruptClicked(infoPageUrl: String)
     fun onWatchVideoClicked(videoId: String)
 }
+
+interface GlobalErrorListener {
+    fun onBtnErrorStateClicked()
+}

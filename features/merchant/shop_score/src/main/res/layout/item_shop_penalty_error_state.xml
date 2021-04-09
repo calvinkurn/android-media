@@ -5,7 +5,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <com.tokopedia.globalerror.GlobalError
-        android:id="@+id/globalErrorShopPerformance"
+        android:id="@+id/globalErrorPenalty"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:gravity="center"

@@ -7,3 +7,7 @@ interface ItemDetailPenaltyListener {
 interface FilterPenaltyBottomSheetListener {
     fun onChipsFilterItemClick(nameFilter: String, chipType: String, chipTitle: String, position: Int)
 }
+
+interface PenaltyGlobalErrorListener {
+    fun onBtnErrorClicked()
+}

@@ -41,7 +41,8 @@ import javax.inject.Inject
 class ShopPerformancePageFragment : BaseDaggerFragment(),
         ShopPerformanceListener, ItemShopPerformanceListener,
         ItemPotentialRegularMerchantListener, ItemRecommendationFeatureListener,
-        ItemStatusPowerMerchantListener, ItemTimerNewSellerListener, ItemHeaderShopPerformanceListener, SectionFaqListener {
+        ItemStatusPowerMerchantListener, ItemTimerNewSellerListener, ItemHeaderShopPerformanceListener, SectionFaqListener,
+        GlobalErrorListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -53,7 +54,8 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
     private val shopPerformanceAdapterTypeFactory by lazy {
         ShopPerformanceAdapterTypeFactory(this, this,
                 this, this,
-                this, this, this, this)
+                this, this, this,
+                this, this)
     }
 
     private val shopPerformanceAdapter by lazy { ShopPerformanceAdapter(shopPerformanceAdapterTypeFactory) }
@@ -152,12 +154,12 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
      **/
     override fun onViewItemDetailPerformanceListener(view: View) {
 //        if (!shopScoreCoachMarkPrefs.getHasShownItemPerformanceDetail()) {
-            coachMarkItem.add(CoachMark2Item(
-                    view.findViewById(R.id.cardItemDetailShopPerformance),
-                    getString(R.string.title_coachmark_shop_score_2),
-                    getString(R.string.desc_coachmark_shop_score_2),
-            ))
-            shopScoreCoachMarkPrefs.setHasShownItemPerformanceDetail(true)
+        coachMarkItem.add(CoachMark2Item(
+                view.findViewById(R.id.cardItemDetailShopPerformance),
+                getString(R.string.title_coachmark_shop_score_2),
+                getString(R.string.desc_coachmark_shop_score_2),
+        ))
+        shopScoreCoachMarkPrefs.setHasShownItemPerformanceDetail(true)
 //        }
         val isShowCoachMarkTwoItem = shopPerformanceAdapter.list.find { it is ItemStatusPMUiModel }
         val itemStatusRMUiModel = shopPerformanceAdapter.list.find { it is ItemStatusRMUiModel }
@@ -186,12 +188,12 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
      **/
     override fun onViewItemPowerMerchantListener(view: View) {
 //        if (!shopScoreCoachMarkPrefs.getHasShownItemPM()) {
-            coachMarkItem.add(CoachMark2Item(
-                    view.findViewById(R.id.containerPowerMerchant),
-                    getString(R.string.title_coachmark_shop_score_3),
-                    getString(R.string.desc_coachmark_shop_score_3),
-            ))
-            shopScoreCoachMarkPrefs.setHasShownItemPM(true)
+        coachMarkItem.add(CoachMark2Item(
+                view.findViewById(R.id.containerPowerMerchant),
+                getString(R.string.title_coachmark_shop_score_3),
+                getString(R.string.desc_coachmark_shop_score_3),
+        ))
+        shopScoreCoachMarkPrefs.setHasShownItemPM(true)
 //        }
         showCoachMark()
     }
@@ -375,5 +377,10 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
         fun newInstance(): ShopPerformancePageFragment {
             return ShopPerformancePageFragment()
         }
+    }
+
+    override fun onBtnErrorStateClicked() {
+        loadData()
+        showPenaltyBadge()
     }
 }

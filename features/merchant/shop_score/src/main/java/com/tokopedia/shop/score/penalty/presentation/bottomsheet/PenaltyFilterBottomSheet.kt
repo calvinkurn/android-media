@@ -20,11 +20,9 @@ import com.tokopedia.shop.score.common.ShopScoreConstant
 import com.tokopedia.shop.score.common.presentation.BaseBottomSheetShopScore
 import com.tokopedia.shop.score.penalty.di.component.PenaltyComponent
 import com.tokopedia.shop.score.penalty.presentation.adapter.FilterPenaltyBottomSheetListener
-import com.tokopedia.shop.score.penalty.presentation.adapter.filter.BaseFilterPenaltyPage
 import com.tokopedia.shop.score.penalty.presentation.adapter.filter.FilterPenaltyAdapter
 import com.tokopedia.shop.score.penalty.presentation.adapter.filter.FilterPenaltyAdapterFactory
 import com.tokopedia.shop.score.penalty.presentation.model.FilterTypePenaltyUiModelWrapper
-import com.tokopedia.shop.score.penalty.presentation.model.ItemDetailPenaltyFilterUiModel
 import com.tokopedia.shop.score.penalty.presentation.model.PenaltyFilterUiModel
 import com.tokopedia.shop.score.penalty.presentation.viewmodel.ShopPenaltyViewModel
 import com.tokopedia.unifycomponents.UnifyButton
@@ -104,14 +102,14 @@ class PenaltyFilterBottomSheet : BaseBottomSheetShopScore(), FilterPenaltyBottom
     private fun getDataCacheFromManager() {
         val cacheManager = context?.let { SaveInstanceCacheManager(it, arguments?.getString(KEY_CACHE_MANAGER_ID_PENALTY_FILTER)) }
         val filterTypePenalty = cacheManager?.get(KEY_FILTER_TYPE_PENALTY, FilterTypePenaltyUiModelWrapper::class.java) ?: FilterTypePenaltyUiModelWrapper()
-        viewModelShopPenalty.getFilterPenalty(filterTypePenalty.itemFilterTypePenalty)
+        filterTypePenalty.sortBy?.let { viewModelShopPenalty.getFilterPenalty(filterTypePenalty.itemFilterTypePenalty, it) }
     }
 
     private fun clickBtnApplied() {
         btnShowPenalty?.setOnClickListener {
             isApplyFilter = true
             penaltyFilterFinishListener?.onClickFilterApplied(viewModelShopPenalty.getPenaltyFilterUiModelList())
-            dismissAllowingStateLoss()
+            dismiss()
         }
     }
 

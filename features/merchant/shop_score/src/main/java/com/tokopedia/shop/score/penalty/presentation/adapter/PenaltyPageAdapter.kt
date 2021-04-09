@@ -2,11 +2,10 @@ package com.tokopedia.shop.score.penalty.presentation.adapter
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
+import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel
 import com.tokopedia.shop.score.penalty.presentation.model.BasePenaltyPage
-import com.tokopedia.shop.score.penalty.presentation.model.ItemDetailPenaltyFilterUiModel
 import com.tokopedia.shop.score.penalty.presentation.model.ItemPenaltyUiModel
-import com.tokopedia.shop.score.penalty.presentation.model.PenaltyFilterUiModel
-import com.tokopedia.unifycomponents.ChipsUnify
+import com.tokopedia.shop.score.performance.presentation.model.ItemShopPerformanceErrorUiModel
 
 class PenaltyPageAdapter(penaltyPageAdapterFactory: PenaltyPageAdapterFactory):
         BaseListAdapter<Visitable<*>, PenaltyPageAdapterFactory>(penaltyPageAdapterFactory) {
@@ -27,16 +26,11 @@ class PenaltyPageAdapter(penaltyPageAdapterFactory: PenaltyPageAdapterFactory):
         notifyDataSetChanged()
     }
 
-    fun updateSortFilterPenaltyFromBottomSheet(chipsPenaltyList: List<PenaltyFilterUiModel.ChipsFilterPenaltyUiModel>?) {
-//        val sortFilterIndex = visitables.indexOfFirst { it is ItemDetailPenaltyFilterUiModel }
-//        visitables.filterIsInstance<ItemDetailPenaltyFilterUiModel>().firstOrNull()?.itemSortFilterWrapperList?.mapIndexed { index, item ->
-//            item.isSelected = chipsPenaltyList?.getOrNull(index)?.isSelected ?: false
-//        }
-//        if (sortFilterIndex != -1) {
-//            notifyItemChanged(sortFilterIndex)
-//        }
-
-        //need adjust lazy load
-        //notifyItemRangeRemoved()
+    fun setPenaltyError(item: ErrorNetworkModel) {
+        if (visitables.getOrNull(lastIndex) !is ErrorNetworkModel) {
+            visitables.add(item)
+            notifyItemInserted(lastIndex)
+        }
     }
+
 }

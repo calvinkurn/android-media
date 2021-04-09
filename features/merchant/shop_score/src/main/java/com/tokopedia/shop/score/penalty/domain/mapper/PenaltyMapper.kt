@@ -18,6 +18,7 @@ import com.tokopedia.shop.score.common.ShopScoreConstant.TITLE_TYPE_PENALTY
 import com.tokopedia.shop.score.common.format
 import com.tokopedia.shop.score.common.getNPastMonthTimeStamp
 import com.tokopedia.shop.score.common.getNowTimeStamp
+import com.tokopedia.shop.score.penalty.domain.response.ShopScorePenaltyTypesResponse
 import com.tokopedia.shop.score.penalty.presentation.model.*
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
@@ -113,10 +114,10 @@ class PenaltyMapper @Inject constructor(@ApplicationContext val context: Context
         }
     }
 
-    fun mapToPenaltyDataDummy(): PenaltyDataWrapper {
+    fun mapToPenaltyData(shopScorePenaltyTypes: ShopScorePenaltyTypesResponse.ShopScorePenaltyTypes): PenaltyDataWrapper {
         return PenaltyDataWrapper(
                 cardShopPenaltyUiModel = mapToCardShopPenalty(),
-                itemDetailPenaltyFilterUiModel = mapToDetailPenaltyFilter(),
+                itemDetailPenaltyFilterUiModel = mapToDetailPenaltyFilter(shopScorePenaltyTypes.result),
                 itemPenaltyUiModel = mapToItemPenaltyList()
         )
     }
@@ -125,45 +126,21 @@ class PenaltyMapper @Inject constructor(@ApplicationContext val context: Context
         return ItemCardShopPenaltyUiModel(totalPenalty = 9, hasPenalty = true, deductionPoints = -5)
     }
 
-    private fun mapToDetailPenaltyFilter(): ItemDetailPenaltyFilterUiModel {
+    private fun mapToDetailPenaltyFilter(penaltyTypes: List<ShopScorePenaltyTypesResponse.ShopScorePenaltyTypes.Result>): ItemDetailPenaltyFilterUiModel {
         return ItemDetailPenaltyFilterUiModel(periodDetail = "${format(getNPastMonthTimeStamp(1).time, PATTER_DATE_TEXT)} - ${format(getNowTimeStamp(), PATTER_DATE_TEXT)}",
-                itemSortFilterWrapperList = mapToSortFilterPenalty())
+                itemSortFilterWrapperList = mapToSortFilterPenalty(penaltyTypes))
     }
 
-    private fun mapToSortFilterPenalty(): List<ItemDetailPenaltyFilterUiModel.ItemSortFilterWrapper> {
+    private fun mapToSortFilterPenalty(penaltyTypes: List<ShopScorePenaltyTypesResponse.ShopScorePenaltyTypes.Result>): List<ItemDetailPenaltyFilterUiModel.ItemSortFilterWrapper> {
         return mutableListOf<ItemDetailPenaltyFilterUiModel.ItemSortFilterWrapper>().apply {
-            add(ItemDetailPenaltyFilterUiModel.ItemSortFilterWrapper(
-                    sortFilterItem = SortFilterItem(
-                            title = GUILT_RESOLUTION_CENTER,
-                            type = ChipsUnify.TYPE_NORMAL,
-                            size = ChipsUnify.SIZE_SMALL
-                    ),
-                    isSelected = false
-            ))
-            add(ItemDetailPenaltyFilterUiModel.ItemSortFilterWrapper(
-                    sortFilterItem = SortFilterItem(
-                            title = ORDER_IGNORED,
-                            type = ChipsUnify.TYPE_NORMAL,
-                            size = ChipsUnify.SIZE_SMALL
-                    ),
-                    isSelected = false
-            ))
-            add(ItemDetailPenaltyFilterUiModel.ItemSortFilterWrapper(
-                    sortFilterItem = SortFilterItem(
-                            title = DELIVERY_IGNORED,
-                            type = ChipsUnify.TYPE_NORMAL,
-                            size = ChipsUnify.SIZE_SMALL
-                    ),
-                    isSelected = false
-            ))
-            add(ItemDetailPenaltyFilterUiModel.ItemSortFilterWrapper(
-                    sortFilterItem = SortFilterItem(
-                            title = DELIVERY_REFUSED,
-                            type = ChipsUnify.TYPE_NORMAL,
-                            size = ChipsUnify.SIZE_SMALL
-                    ),
-                    isSelected = false
-            ))
+            penaltyTypes.map {
+                add(ItemDetailPenaltyFilterUiModel.ItemSortFilterWrapper(
+                        sortFilterItem = SortFilterItem(
+                                title = it.name,
+                                type = ChipsUnify.TYPE_NORMAL,
+                                size = ChipsUnify.SIZE_SMALL
+                ), isSelected = false))
+            }
         }
     }
 
