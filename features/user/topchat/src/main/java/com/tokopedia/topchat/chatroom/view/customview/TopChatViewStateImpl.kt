@@ -24,6 +24,7 @@ import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderViewModel
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.Menus
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.widget.LongClickMenu
@@ -69,7 +70,7 @@ class TopChatViewStateImpl constructor(
     private var chatBlockLayout: View = view.findViewById(R.id.chat_blocked_layout)
     private var attachmentPreviewContainer: LinearLayout = view.findViewById(R.id.cl_attachment_preview)
     private var attachmentPreviewRecyclerView = view.findViewById<RecyclerView>(R.id.rv_attachment_preview)
-    var chatStickerMenuButton: ImageView? = view.findViewById(R.id.iv_chat_sticker)
+    var chatStickerMenuButton: IconUnify? = view.findViewById(R.id.iv_chat_sticker)
     var chatMenu: ChatMenuView? = view.findViewById(R.id.fl_chat_menu)
     private var userStatus: Typography? = null
     private var typingImage: ImageUnify? = null
@@ -151,7 +152,7 @@ class TopChatViewStateImpl constructor(
     }
 
     override fun onStickerOpened() {
-        chatStickerMenuButton?.setImageResource(R.drawable.ic_topchat_keyboard)
+        chatStickerMenuButton?.setImage(IconUnify.KEYBOARD)
         chatStickerMenuButton?.setOnClickListener {
             replyEditText.requestFocus()
             chatMenu?.showKeyboard(replyEditText)
@@ -159,7 +160,7 @@ class TopChatViewStateImpl constructor(
     }
 
     override fun onStickerClosed() {
-        chatStickerMenuButton?.setImageResource(R.drawable.ic_topchat_sticker)
+        chatStickerMenuButton?.setImage(IconUnify.STICKER)
         chatStickerMenuButton?.setOnClickListener {
             chatMenu?.toggleStickerMenu()
         }

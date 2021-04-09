@@ -5,4 +5,4 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_margin="@dimen/spacing_lvl2"
-    tools:src="@drawable/ic_topchat_sticker" />
+    tools:src="@tools:sample/avatars" />
