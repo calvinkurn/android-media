@@ -175,8 +175,8 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
         super.onActivityCreated(savedInstanceState)
         setHasOptionsMenu(true)
         disableLoadMore()
-        getRecyclerView(view).layoutManager = recyclerViewLayoutManager
-        getRecyclerView(view).addItemDecoration(StaggerGridSpacingItemDecoration(30))
+        getRecyclerView(view)?.layoutManager = recyclerViewLayoutManager
+        getRecyclerView(view)?.addItemDecoration(StaggerGridSpacingItemDecoration(30))
         observeLiveData()
         observeAtcLiveData()
         observeBuyNowLiveData()

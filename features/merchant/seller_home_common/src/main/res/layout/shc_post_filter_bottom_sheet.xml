@@ -8,7 +8,7 @@
         android:id="@+id/rvShcPostFilter"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:divider="@color/Neutral_N50" />
+        android:divider="@color/Unify_N50" />
 
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/btnShcPostFilterApply"
