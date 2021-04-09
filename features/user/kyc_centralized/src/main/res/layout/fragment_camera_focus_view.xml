@@ -153,8 +153,6 @@
             android:gravity="center"
             android:text="@string/camera_next_button"
             android:textSize="@dimen/fontSize_lvl3"
-            android:theme="@style/Base.Theme"
-            android:forceDarkAllowed="false"
             app:typographyType="heading_4" />
     </LinearLayout>
 
