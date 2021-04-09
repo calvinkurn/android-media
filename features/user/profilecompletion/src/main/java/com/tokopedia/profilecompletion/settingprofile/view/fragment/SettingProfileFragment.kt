@@ -355,7 +355,7 @@ class SettingProfileFragment : BaseDaggerFragment() {
         renderNameField(profileCompletionData)
 
         if (profileCompletionData.birthDay.isEmpty()) {
-            bod.showEmpty(
+            bod?.showEmpty(
                     getString(R.string.subtitle_bod_setting_profile),
                     getString(R.string.hint_bod_setting_profile),
                     true,
@@ -364,7 +364,7 @@ class SettingProfileFragment : BaseDaggerFragment() {
                     }
             )
         } else {
-            bod.showFilled(
+            bod?.showFilled(
                     getString(R.string.subtitle_bod_setting_profile),
                     DateFormatUtils.formatDate(
                             DateFormatUtils.FORMAT_YYYY_MM_DD,
@@ -379,7 +379,7 @@ class SettingProfileFragment : BaseDaggerFragment() {
         }
 
         if (profileCompletionData.gender != 1 && profileCompletionData.gender != 2) {
-            gender.showEmpty(
+            gender?.showEmpty(
                     getString(R.string.subtitle_gender_setting_profile),
                     getString(R.string.hint_gender_setting_profile),
                     true,
@@ -389,7 +389,7 @@ class SettingProfileFragment : BaseDaggerFragment() {
                     }
             )
         } else {
-            gender.showFilled(
+            gender?.showFilled(
                     getString(R.string.subtitle_gender_setting_profile),
                     if (profileCompletionData.gender == 1)
                         getString(R.string.profile_completion_man)
@@ -400,7 +400,7 @@ class SettingProfileFragment : BaseDaggerFragment() {
         }
         val isEmailDone = profileCompletionData.isEmailDone
         if (profileCompletionData.email.isEmpty() || !isEmailDone) {
-            email.showEmpty(
+            email?.showEmpty(
                     getString(R.string.subtitle_email_setting_profile),
                     getString(R.string.hint_email_setting_profile),
                     getString(R.string.message_email_setting_profile),
@@ -410,7 +410,7 @@ class SettingProfileFragment : BaseDaggerFragment() {
                         startActivityForResult(intent, REQUEST_CODE_ADD_EMAIL)
                     })
         } else {
-            email.showFilled(
+            email?.showFilled(
                     getString(R.string.subtitle_email_setting_profile),
                     profileCompletionData.email,
                     true,
@@ -428,7 +428,7 @@ class SettingProfileFragment : BaseDaggerFragment() {
         }
 
         if (profileCompletionData.msisdn.isEmpty()) {
-            phone.showEmpty(
+            phone?.showEmpty(
                     getString(R.string.subtitle_phone_setting_profile),
                     getString(R.string.hint_phone_setting_profile),
                     getString(R.string.message_phone_setting_profile),
@@ -439,7 +439,7 @@ class SettingProfileFragment : BaseDaggerFragment() {
             )
             tickerPhoneVerification.visibility = View.GONE
         } else {
-            phone.showFilled(
+            phone?.showFilled(
                     getString(R.string.subtitle_phone_setting_profile),
                     PhoneNumberUtil.transform(profileCompletionData.msisdn),
                     profileCompletionData.isMsisdnVerified,
@@ -488,7 +488,7 @@ class SettingProfileFragment : BaseDaggerFragment() {
 
     private fun onSuccessGetProfileRole(profileRoleData: ProfileRoleData) {
         dismissLoading()
-        bod.isEnabled = profileRoleData.isAllowedChangeDob
+        bod?.isEnabled = profileRoleData.isAllowedChangeDob
         name?.isEnabled = profileRoleData.isAllowedChangeName && remoteConfig.getBoolean(REMOTE_KEY_CHANGE_NAME, false)
         chancesChangeName = profileRoleData.chancesChangeName
     }
@@ -590,16 +590,16 @@ class SettingProfileFragment : BaseDaggerFragment() {
         if (isOverlay) {
             overlayView.visibility = View.VISIBLE
         } else {
-            mainView.visibility = View.GONE
+            mainView?.visibility = View.GONE
         }
 
-        progressBar.visibility = View.VISIBLE
+        progressBar?.visibility = View.VISIBLE
     }
 
     private fun dismissLoading() {
         overlayView.visibility = View.GONE
-        mainView.visibility = View.VISIBLE
-        progressBar.visibility = View.GONE
+        mainView?.visibility = View.VISIBLE
+        progressBar?.visibility = View.GONE
     }
 
     companion object {
