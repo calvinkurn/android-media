@@ -126,11 +126,12 @@ class AdContentFragment : BaseHeadlineStepperFragment<HeadlineAdStepperModel>(),
             btnSubmit.show()
         }
 
-        TopAdsCreateAnalytics.topAdsCreateAnalytics.sendHeadlineCreatFormEvent(VIEW_KONTEN_IKLAN, "{${userSession.shopId} - {${stepperModel?.groupName}}", userSession.userId)
+        TopAdsCreateAnalytics.topAdsCreateAnalytics.sendHeadlineCreatFormEvent(VIEW_KONTEN_IKLAN, "{${userSession.shopId}} - {${stepperModel?.groupName}}", userSession.userId)
     }
 
     fun onClickSubmit(): Boolean {
         stepperModel?.selectedTopAdsProducts = getSelectedProducts()
+        TopAdsCreateAnalytics.topAdsCreateAnalytics.sendHeadlineCreatFormEcommerceCLickEvent(CLICK_LANJUTKAN, "{${userSession.shopId}} - {${stepperModel?.groupName}}", getSelectedProducts(), userSession.userId)
         when {
             ifLessProductSelected() -> {
                 productPickerErrorText.show()
@@ -159,7 +160,6 @@ class AdContentFragment : BaseHeadlineStepperFragment<HeadlineAdStepperModel>(),
                 return true
             }
         }
-        TopAdsCreateAnalytics.topAdsCreateAnalytics.sendHeadlineCreatFormEcommerceCLickEvent(CLICK_LANJUTKAN, "{${userSession.shopId}} - {${stepperModel?.groupName}", getSelectedProducts(), userSession.userId)
     }
 
     private fun ifLessProductSelected(): Boolean {

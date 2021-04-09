@@ -328,7 +328,7 @@ class TopAdsHeadlineKeyFragment : BaseHeadlineStepperFragment<HeadlineAdStepperM
                 ?: 0, stepperModel?.selectedKeywords, stepperModel?.stateRestoreKeyword)
         setCount()
         list.forEachIndexed { index, keywordData ->
-            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendHeadlineCreatFormEcommerceKeywordViewEvent(VIEW_PILIH_KATA_KUNCI, "{${userSession.shopId}} - {${stepperModel?.groupName}", keywordData.keywordData, userSession.userId)
+            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendHeadlineCreatFormEcommerceKeywordViewEvent(VIEW_PILIH_KATA_KUNCI, "{${userSession.shopId}} - {${stepperModel?.groupName}}", keywordData.keywordData, userSession.userId)
         }
     }
 

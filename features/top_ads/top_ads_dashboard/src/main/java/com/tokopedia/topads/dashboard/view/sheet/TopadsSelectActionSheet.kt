@@ -67,13 +67,13 @@ class TopadsSelectActionSheet : BottomSheetUnify() {
             action_edit.setOnClickListener {
                 onEditAction?.invoke()
                 if (isHideable)
-                    TopAdsCreateAnalytics.topAdsCreateAnalytics.sendHeadlineAdsEvent(click_ubah_iklan, "{$userSession.shopId} - {$groupId}", userSession.userId)
+                    TopAdsCreateAnalytics.topAdsCreateAnalytics.sendHeadlineAdsEvent(click_ubah_iklan, "{${userSession.shopId}} - {${groupId}}", userSession.userId)
                 dismissAllowingStateLoss()
             }
 
             action_delete.setOnClickListener {
                 if (isHideable)
-                    TopAdsCreateAnalytics.topAdsCreateAnalytics.sendHeadlineAdsEvent(click_hapus_iklan, "{$userSession.shopId} - {$groupId}", userSession.userId)
+                    TopAdsCreateAnalytics.topAdsCreateAnalytics.sendHeadlineAdsEvent(click_hapus_iklan, "{${userSession.shopId}} - {${groupId}}", userSession.userId)
                 showConfirmationDialog(name)
                 dismiss()
             }
@@ -87,7 +87,7 @@ class TopadsSelectActionSheet : BottomSheetUnify() {
             }
             action_activate.setOnClickListener {
                 if (isHideable)
-                    TopAdsCreateAnalytics.topAdsCreateAnalytics.sendHeadlineAdsEvent(click_aktifkan_iklan, "{$userSession.shopId} - {$groupId}", userSession.userId)
+                    TopAdsCreateAnalytics.topAdsCreateAnalytics.sendHeadlineAdsEvent(click_aktifkan_iklan, "{${userSession.shopId}} - {${groupId}}", userSession.userId)
                 changeStatus?.invoke(activeStatus)
                 dismiss()
             }
@@ -114,12 +114,12 @@ class TopadsSelectActionSheet : BottomSheetUnify() {
             dialog.setSecondaryCTAText(it.getString(R.string.topads_dash_ya_hapus))
             dialog.setPrimaryCTAClickListener {
                 if (isHideable)
-                    TopAdsCreateAnalytics.topAdsCreateAnalytics.sendHeadlineAdsEvent(click_bataiklan_iklan, "{$userSession.shopId} - {$groupId}", userSession.userId)
+                    TopAdsCreateAnalytics.topAdsCreateAnalytics.sendHeadlineAdsEvent(click_bataiklan_iklan, "{${userSession.shopId}} - {${groupId}}", userSession.userId)
                 dialog.dismiss()
             }
             dialog.setSecondaryCTAClickListener {
                 if (isHideable)
-                    TopAdsCreateAnalytics.topAdsCreateAnalytics.sendHeadlineAdsEvent(click_ya_hapus_iklan, "{$userSession.shopId} - {$groupId}", userSession.userId)
+                    TopAdsCreateAnalytics.topAdsCreateAnalytics.sendHeadlineAdsEvent(click_ya_hapus_iklan, "{${userSession.shopId}} - {${groupId}}", userSession.userId)
                 dialog.dismiss()
                 onDeleteClick?.invoke()
             }

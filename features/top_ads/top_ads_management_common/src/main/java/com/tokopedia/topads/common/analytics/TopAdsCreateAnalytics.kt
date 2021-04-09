@@ -298,7 +298,7 @@ class TopAdsCreateAnalytics {
             list.add(mapOf(
                     "id" to "",
                     "name" to it.keyword,
-                    "creative" to it.bidSuggest.toString() + " - " + it.competition,
+                    "creative" to it.bidSuggest + " - " + it.competition,
                     "position" to index + 1))
         }
         return list
