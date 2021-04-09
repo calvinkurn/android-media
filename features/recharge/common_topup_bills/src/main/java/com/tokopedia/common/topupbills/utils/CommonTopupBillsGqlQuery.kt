@@ -1,7 +1,7 @@
 package com.tokopedia.common.topupbills.utils
 
 object CommonTopupBillsGqlQuery {
-    val rechargeCatalogProductInput = """
+    val rechargeCatalogDynamicProductInput = """
         query rechargeCatalogDynamicInput(${'$'}menuID: Int!,${'$'}operator: String!) {
           rechargeCatalogDynamicInput(menuID:${'$'}menuID, platformID: 5, operator:${'$'}operator) {
             needEnquiry
@@ -40,6 +40,55 @@ object CommonTopupBillsGqlQuery {
               validations {
                 rule
                 title
+              }
+            }
+          }
+        }
+    """.trimIndent()
+
+    val rechargeCatalogProductInput = """
+        query voucherGameProductDetail(${'$'}menuID: Int!,${'$'}operator: String!){
+          rechargeCatalogProductInput(menuID:${'$'}menuID, platformID: 5, operator:${'$'}operator) {
+            needEnquiry
+            isShowingProduct
+            enquiryFields {
+              id
+              param_name
+              name
+              style
+              text
+              placeholder
+              help
+              data_collections {
+                value
+              }
+              validations {
+                rule
+                title
+              }
+            }
+            product {
+              name
+              text
+              dataCollections {
+                name
+                products {
+                  id
+                  attributes {
+                    desc
+                    price
+                    price_plain
+                    promo {
+                      id
+                      new_price
+                    }
+                    product_labels
+                    detail
+                    detail_compact
+                    detail_url
+                    detail_url_text
+                  }
+                }
               }
             }
           }

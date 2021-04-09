@@ -18,6 +18,8 @@ import com.tokopedia.common.topupbills.data.TopupBillsFavNumberItem
 import com.tokopedia.common.topupbills.data.TopupBillsPromo
 import com.tokopedia.common.topupbills.data.TopupBillsRecommendation
 import com.tokopedia.common.topupbills.data.prefix_select.RechargePrefix
+import com.tokopedia.common.topupbills.data.prefix_select.TelcoOperator
+import com.tokopedia.common.topupbills.data.product.CatalogProduct
 import com.tokopedia.common.topupbills.utils.CommonTopupBillsGqlMutation
 import com.tokopedia.common.topupbills.utils.CommonTopupBillsGqlQuery
 import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActivity
@@ -31,9 +33,11 @@ import com.tokopedia.recharge_pdp_emoney.R
 import com.tokopedia.recharge_pdp_emoney.di.EmoneyPdpComponent
 import com.tokopedia.recharge_pdp_emoney.presentation.activity.EmoneyPdpActivity
 import com.tokopedia.recharge_pdp_emoney.presentation.adapter.EmoneyPdpFragmentPagerAdapter
+import com.tokopedia.recharge_pdp_emoney.presentation.adapter.viewholder.EmoneyPdpProductViewHolder
 import com.tokopedia.recharge_pdp_emoney.presentation.viewmodel.EmoneyPdpViewModel
 import com.tokopedia.recharge_pdp_emoney.presentation.widget.EmoneyPdpHeaderViewWidget
 import com.tokopedia.recharge_pdp_emoney.presentation.widget.EmoneyPdpInputCardNumberWidget
+import com.tokopedia.recharge_pdp_emoney.presentation.widget.EmoneyProductDetailBottomSheet
 import com.tokopedia.recharge_pdp_emoney.utils.EmoneyPdpMapper
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.TickerCallback
@@ -50,7 +54,7 @@ import javax.inject.Inject
  */
 
 class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.ActionListener,
-        EmoneyPdpInputCardNumberWidget.ActionListener {
+        EmoneyPdpInputCardNumberWidget.ActionListener, EmoneyPdpProductViewHolder.ActionListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -76,6 +80,7 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
         // dummy
         // will replace this
         emoneyPdpHeaderView.configureCheckBalanceView()
+        emoneyPdpHeaderView.actionListener = this
         emoneyPdpInputCardWidget.initView(this)
     }
 
@@ -104,6 +109,17 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
 
         emoneyPdpViewModel.selectedOperator.observe(viewLifecycleOwner, Observer {
             renderOperatorIcon(it)
+            loadProducts(it.operator)
+        })
+
+        emoneyPdpViewModel.catalogData.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Success -> {
+                    renderProducts(it.data.product.dataCollections.firstOrNull()?.products
+                            ?: listOf())
+                }
+                is Fail -> emoneyPdpViewModel.setErrorMessage(it.throwable)
+            }
         })
     }
 
@@ -214,14 +230,15 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
                 REQUEST_CODE_EMONEY_PDP_CHECK_SALDO -> {
                     val checkSaldoData = data?.getParcelableExtra<DigitalCategoryDetailPassData>(DigitalExtraParam.EXTRA_CATEGORY_PASS_DATA)
                     checkSaldoData?.run {
-                        renderClientNumber(TopupBillsFavNumberItem(
+                        val clientNumberData = TopupBillsFavNumberItem(
                                 clientNumber = clientNumber,
                                 productId = productId,
                                 operatorId = operatorId,
-                                categoryId = categoryId
-                        ))
+                                categoryId = categoryId)
+
+                        renderClientNumber(clientNumberData)
                         //renderProduct
-                        //renderCardState
+                        renderCardState(this)
                     }
                 }
             }
@@ -263,7 +280,7 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
     }
 
     override fun onRemoveNumberIconClick() {
-
+        showRecentNumberAndPromo()
     }
 
     override fun onInputNumberChanged(inputNumber: String) {
@@ -279,6 +296,40 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
 
     private fun renderOperatorIcon(operator: RechargePrefix) {
         emoneyPdpInputCardWidget.setOperator(operator.operator.attributes.imageUrl)
+    }
+
+    private fun renderCardState(detailPassData: DigitalCategoryDetailPassData) {
+        //
+    }
+
+    private fun loadProducts(operator: TelcoOperator) {
+        emoneyPdpViewModel.getProductFromOperator(EmoneyPdpActivity.EMONEY_MENU_ID, operator.id)
+    }
+
+    private fun renderProducts(productList: List<CatalogProduct>) {
+        showProducts()
+        emoneyPdpProductWidget.titleText = "Pilih Nominal"
+        emoneyPdpProductWidget.setProducts(productList)
+        emoneyPdpProductWidget.setListener(this)
+    }
+
+    private fun showProducts() {
+        emoneyPdpProductWidget.show()
+        emoneyPdpViewPager.hide()
+    }
+
+    private fun showRecentNumberAndPromo() {
+        emoneyPdpProductWidget.hide()
+        emoneyPdpViewPager.show()
+    }
+
+    override fun onClickProduct(product: CatalogProduct) {
+        //ac
+    }
+
+    override fun onClickSeeDetailProduct(product: CatalogProduct) {
+        val bottomSheet = EmoneyProductDetailBottomSheet(product)
+        bottomSheet.show(childFragmentManager, "")
     }
 
     companion object {

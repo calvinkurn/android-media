@@ -22,5 +22,9 @@
     <string name="recharge_pdp_emoney_update_saldo_cta">Update Saldo</string>
 
     <string name="recharge_pdp_emoney_card_number_label">No. Kartu</string>
-    <string name="recharge_pdp_success_message_scan_ocr">Nomor kartu berhasil dipindai</string>"
+    <string name="recharge_pdp_success_message_scan_ocr">Nomor kartu berhasil dipindai</string>
+
+    <string name="recharge_pdp_emoney_product_see_details">Lihat Detail</string>
+    <string name="recharge_pdp_emoney_product_detail_bottom_sheet_title">Detail Produk</string>
+    <string name="recharge_pdp_emoney_product_price_label">Harga</string>
 </resources>
