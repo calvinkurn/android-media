@@ -632,6 +632,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
             })
             tickerPreferenceInfo?.visible()
         } else {
+            tickerPreferenceInfo?.tickerTitle = null
             tickerPreferenceInfo?.setHtmlDescription(preference.preference.message)
             tickerPreferenceInfo?.closeButtonVisibility = View.GONE
             tickerPreferenceInfo?.setDescriptionClickEvent(object : TickerCallback {
