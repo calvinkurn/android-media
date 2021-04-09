@@ -108,14 +108,16 @@ class SmartBillsViewModelTest {
 
     @Test
     fun getStatementBills_Success() {
-        val statementBillsResponse = RechargeStatementBills.Response(RechargeStatementBills(
-            month = 4, monthText = "April", isOngoing = true, bills = listOf(
-                RechargeBills(false, 0, 1, "test", checkoutFields = listOf(checkoutField))
-            )
+        val statementBillsResponse = RechargeListSmartBills.Response(RechargeListSmartBills(
+            month = "4", monthText = "April", isOngoing = true, sections = listOf(Section(
+                title = "Section 2", type = 2, bills = listOf(
+                RechargeBills(uuid = "122_123",flag = false, index = 0, productID =  1, productName = "test", checkoutFields = listOf(checkoutField))
+        )
+        ))
         ))
         val result = HashMap<Type, Any>()
         val errors = HashMap<Type, List<GraphqlError>>()
-        val objectType = RechargeStatementBills.Response::class.java
+        val objectType = RechargeListSmartBills.Response::class.java
         result[objectType] = statementBillsResponse
         val gqlResponseSuccess = GraphqlResponse(result, errors, false)
 
@@ -125,10 +127,10 @@ class SmartBillsViewModelTest {
         val actualData = smartBillsViewModel.statementBills.value
         assert(actualData is Success)
         val statementBills = (actualData as Success).data
-        assertEquals(statementBills.month, 4)
+        assertEquals(statementBills.month, "4")
         assertEquals(statementBills.monthText, "April")
         assert(statementBills.isOngoing)
-        val bills = statementBills.bills
+        val bills = statementBills.sections[0].bills
         assert(bills.isNotEmpty())
         assertEquals(bills[0].index, 0)
         assertEquals(bills[0].productID, 1)
@@ -140,12 +142,14 @@ class SmartBillsViewModelTest {
 
     @Test
     fun getStatementBills_Success_EmptyResponse() {
-        val statementBillsResponse = RechargeStatementBills.Response(RechargeStatementBills(
-                month = 4, monthText = "April", isOngoing = true, bills = listOf()
+        val statementBillsResponse = RechargeListSmartBills.Response(RechargeListSmartBills(
+                month = "4", monthText = "April", isOngoing = true, sections = listOf(Section(
+                title = "Section 2", type = 2, bills = listOf()
+        ))
         ))
         val result = HashMap<Type, Any>()
         val errors = HashMap<Type, List<GraphqlError>>()
-        val objectType = RechargeStatementBills.Response::class.java
+        val objectType = RechargeListSmartBills.Response::class.java
         result[objectType] = statementBillsResponse
         val gqlResponseSuccess = GraphqlResponse(result, errors, false)
 
@@ -155,10 +159,10 @@ class SmartBillsViewModelTest {
         val actualData = smartBillsViewModel.statementBills.value
         assert(actualData is Success)
         val statementBills = (actualData as Success).data
-        assertEquals(statementBills.month, 4)
+        assertEquals(statementBills.month, "4")
         assertEquals(statementBills.monthText, "April")
         assert(statementBills.isOngoing)
-        val bills = statementBills.bills
+        val bills = statementBills.sections[0].bills
         assert(bills.isEmpty())
     }
 
@@ -267,7 +271,7 @@ class SmartBillsViewModelTest {
 
     @Test
     fun createMultiCheckoutParams_Success() {
-        val bills = listOf(RechargeBills(false, 0, 1, checkoutFields = listOf(checkoutField)))
+        val bills = listOf(RechargeBills("123",false, 0, 1, checkoutFields = listOf(checkoutField)))
         val actual = smartBillsViewModel.createMultiCheckoutParams(bills, userSession)
         assertNotNull(actual)
         actual?.run {
@@ -287,5 +291,95 @@ class SmartBillsViewModelTest {
         val bills = listOf(RechargeBills(productID = 1, checkoutFields = listOf(checkoutField)))
         val actual = smartBillsViewModel.createMultiCheckoutParams(bills, userSession)
         assertNull(actual)
+    }
+
+    @Test
+    fun createActionsParam_Success(){
+        val uuids = listOf<String>("11","22")
+        val month = 4
+        val year = 2020
+        val source = 0
+        val actual = smartBillsViewModel.createRefreshActionParams(uuids, month, year, source)
+        assertEquals(actual, mapOf(
+                SmartBillsViewModel.PARAM_UUIDS to uuids,
+                SmartBillsViewModel.PARAM_MONTH to month,
+                SmartBillsViewModel.PARAM_YEAR to year,
+                SmartBillsViewModel.PARAM_SOURCE to source
+        ))
+    }
+
+    @Test
+    fun createActionsParam_NullSource(){
+        val uuids = listOf<String>("11","22")
+        val month = 4
+        val year = 2020
+        val actual = smartBillsViewModel.createRefreshActionParams(uuids, month, year)
+        assertEquals(actual, mapOf(
+                SmartBillsViewModel.PARAM_UUIDS to uuids,
+                SmartBillsViewModel.PARAM_MONTH to month,
+                SmartBillsViewModel.PARAM_YEAR to year
+        ))
+    }
+
+    @Test
+    fun getSBMWithAction_Success() {
+        val statementBillsResponse = RechargeListSmartBills.Response(RechargeListSmartBills(
+                month = "4", monthText = "April", isOngoing = true, sections = listOf(Section(
+                title = "Section 2", type = 2, bills = listOf(
+                RechargeBills(uuid = "122_123",flag = false, index = 0, productID =  1, productName = "test", checkoutFields = listOf(checkoutField))
+        )))))
+
+        val getSBMActionResponse = RechargeMultipleSBMBill.Response(RechargeMultipleSBMBill(
+                userID = "1124",
+                bills = listOf(
+                        RechargeBills(uuid = "122_124", section = Section(title = "Main", type = 2) ,flag = false, index = 1, productID =  2, productName = "testAction", checkoutFields = listOf(checkoutField))
+                )
+        ))
+        val result = HashMap<Type, Any>()
+        val errors = HashMap<Type, List<GraphqlError>>()
+        val objectType = RechargeMultipleSBMBill.Response::class.java
+        result[objectType] = getSBMActionResponse
+        val gqlResponseSuccess = GraphqlResponse(result, errors, false)
+
+        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseSuccess
+
+        smartBillsViewModel.getSBMWithAction(mapParams, statementBillsResponse.response!!)
+        val actualData = smartBillsViewModel.statementBills.value
+        assert(actualData is Success)
+        val statementBills = (actualData as Success).data
+        assertEquals(statementBills.month, "4")
+        assertEquals(statementBills.monthText, "April")
+        assert(statementBills.isOngoing)
+
+        val bills = statementBills.sections[0].bills
+        assert(bills.isNotEmpty())
+        assertEquals(bills[0].index, 0)
+        assertEquals(bills[0].productID, 1)
+        assertEquals(bills[0].productName, "test")
+        val checkoutFields = bills[0].checkoutFields
+        assert(checkoutFields.isNotEmpty())
+        assertEquals(checkoutFields[0], checkoutField)
+
+        assert(bills.isNotEmpty())
+        assertEquals(bills[1].index, 1)
+        assertEquals(bills[1].productID, 2)
+        assertEquals(bills[1].productName, "testAction")
+        val checkoutFieldsAction = bills[1].checkoutFields
+        assert(checkoutFieldsAction.isNotEmpty())
+        assertEquals(checkoutFieldsAction[0], checkoutField)
+    }
+
+    @Test
+    fun getSBMWithAction_Fail() {
+        val statementBillsResponse = RechargeListSmartBills.Response(RechargeListSmartBills(
+                month = "4", monthText = "April", isOngoing = true, sections = listOf(Section(
+                title = "Section 2", type = 2, bills = listOf(
+                RechargeBills(uuid = "122_123",flag = false, index = 0, productID =  1, productName = "test", checkoutFields = listOf(checkoutField))
+        )))))
+        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseFail
+
+        smartBillsViewModel.getSBMWithAction(mapParams, statementBillsResponse.response!!)
+        val actualData = smartBillsViewModel.statementBills.value
+        assert(actualData is Fail)
     }
 }
