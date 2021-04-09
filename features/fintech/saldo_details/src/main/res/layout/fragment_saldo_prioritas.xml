@@ -26,7 +26,7 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif"
                 android:text="Saldo Prioritas"
-                android:textColor="@color/black_70"
+                android:textColor="@color/Unify_N700_68"
                 android:textSize="14sp"
                 android:textStyle="bold" />
 
@@ -45,7 +45,7 @@
                 android:paddingBottom="@dimen/unify_space_2"
                 android:text="@string/sp_label_new"
                 android:textAllCaps="true"
-                android:textColor="@color/white"
+                android:textColor="@color/Unify_N0"
                 android:textSize="@dimen/sp_10" />
 
             <Switch
@@ -63,7 +63,7 @@
                 android:layout_marginTop="@dimen/dp_6"
                 android:fontFamily="sans-serif"
                 android:lineSpacingExtra="3sp"
-                android:textColor="#8a000000"
+                android:textColor="@color/Unify_N700_44"
                 android:textSize="12sp"
                 android:textStyle="normal"
                 android:visibility="gone" />
@@ -104,7 +104,7 @@
                         android:fontFamily="sans-serif-medium"
                         android:lineSpacingExtra="3sp"
                         android:text="Status: Menunggu Verifikasi Aplikasi"
-                        android:textColor="@color/black_70"
+                        android:textColor="@color/Unify_N700_68"
                         android:textSize="12sp"
                         android:textStyle="normal" />
 
@@ -130,7 +130,7 @@
                     android:fontFamily="sans-serif"
                     android:lineSpacingExtra="4sp"
                     android:text="Status: Menunggu Verifikasi Aplikasi"
-                    android:textColor="@color/black_38"
+                    android:textColor="@color/Unify_N700_32"
                     android:textSize="@dimen/sp_11"
                     android:textStyle="normal" />
 
@@ -156,7 +156,7 @@
                 android:layout_below="@+id/sp_detail_list"
                 android:layout_marginTop="@dimen/unify_space_4"
                 android:layout_marginBottom="@dimen/unify_space_4"
-                android:background="@color/greyish_bg" />
+                android:background="@color/Unify_N75" />
 
             <LinearLayout
                 android:id="@+id/sp_action_list"

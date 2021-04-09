@@ -51,7 +51,7 @@ class SaldoTransactionViewHolder(itemView: View) : AbstractViewHolder<DepositHis
         ImageHandler.LoadImage(imageView, element.imageURL)
         if (element.amount > 0) {
             if (context != null) {
-                nominal.setTextColor(context.resources.getColor(com.tokopedia.design.R.color.tkpd_light_green))
+                nominal.setTextColor(context.resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_G700))
                 nominal.text = String.format(
                         context.resources.getString(com.tokopedia.saldodetails.R.string.sp_positive_saldo_balance),
                         CurrencyFormatUtil.convertPriceValueToIdrFormat(element.amount, false))
@@ -61,7 +61,7 @@ class SaldoTransactionViewHolder(itemView: View) : AbstractViewHolder<DepositHis
 
         } else {
             if (context != null) {
-                nominal.setTextColor(context.resources.getColor(com.tokopedia.design.R.color.tkpd_prod_price))
+                nominal.setTextColor(context.resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_Y600))
                 nominal.text = String.format(
                         context.resources.getString(com.tokopedia.saldodetails.R.string.sp_negative_saldo_balance),
                         CurrencyFormatUtil.convertPriceValueToIdrFormat(Math.abs(element.amount), false))

@@ -11,7 +11,7 @@
         android:layout_marginLeft="@dimen/unify_space_24"
         android:layout_marginStart="@dimen/unify_space_24"
         android:fontFamily="sans-serif-medium"
-        android:textColor="@color/colorPrimary"
+        android:textColor="@color/Unify_G500"
         android:textSize="@dimen/sp_12"
         android:textStyle="normal" />
 </LinearLayout>

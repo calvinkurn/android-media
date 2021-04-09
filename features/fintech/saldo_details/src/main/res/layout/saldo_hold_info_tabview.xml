@@ -61,7 +61,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/unify_space_8"
             android:layout_marginTop="@dimen/dp_20"
-            android:background="@color/saldo_info_bottom_separator_color"
+            android:background="@color/Unify_N50"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_totalSaldoHold" />
 
@@ -85,13 +85,10 @@
                     style="?tabTheme"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/payLaterBorder"
-                    app:tabIndicatorColor="@color/Unify_G500"
+                    app:tabIndicatorColor="@color/Unify_G400"
                     app:tabMode="fixed"
                     android:paddingBottom="@dimen/unify_space_12"
-                    app:tabSelectedTextColor="@color/Unify_G500"
+                    app:tabSelectedTextColor="@color/Unify_G400"
                     app:tabTextColor="@color/Unify_N700_68" />
 
             </com.google.android.material.appbar.AppBarLayout>

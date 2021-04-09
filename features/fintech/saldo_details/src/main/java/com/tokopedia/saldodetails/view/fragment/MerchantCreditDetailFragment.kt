@@ -171,7 +171,7 @@ class MerchantCreditDetailFragment : BaseDaggerFragment() {
                             try {
                                 ds.color = Color.parseColor(merchantCreditDetails!!.boxInfo!!.linkTextColor)
                             } catch (e: Exception) {
-                                ds.color = resources.getColor(com.tokopedia.design.R.color.tkpd_main_green)
+                                ds.color = resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_G400)
                             }
 
                         }
@@ -219,7 +219,7 @@ class MerchantCreditDetailFragment : BaseDaggerFragment() {
             try {
                 mclActionItemTV!!.setTextColor(Color.parseColor(gqlAnchorListResponse.color))
             } catch (e: Exception) {
-                mclActionItemTV!!.setTextColor(resources.getColor(com.tokopedia.design.R.color.tkpd_main_green))
+                mclActionItemTV!!.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_G400))
             }
 
             mclActionItemTV!!.setOnClickListener { v ->

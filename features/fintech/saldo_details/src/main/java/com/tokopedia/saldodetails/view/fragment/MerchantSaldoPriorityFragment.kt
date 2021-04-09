@@ -153,7 +153,7 @@ class MerchantSaldoPriorityFragment : BaseDaggerFragment() {
 
             // @TODO remove dialog
             val dialog = Dialog(activity, Dialog.Type.PROMINANCE)
-            dialog.titleTextView.setTextColor(resources.getColor(com.tokopedia.design.R.color.black_70))
+            dialog.titleTextView.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
             dialog.titleTextView.setTypeface(null, Typeface.BOLD)
             if (isChecked) {
                 dialog.setTitle(resources.getString(com.tokopedia.saldodetails.R.string.sp_enable_title))
@@ -183,8 +183,8 @@ class MerchantSaldoPriorityFragment : BaseDaggerFragment() {
             }
 
             dialog.show()
-            dialog.btnCancel.setTextColor(resources.getColor(com.tokopedia.design.R.color.black_38))
-            dialog.btnOk.setTextColor(resources.getColor(com.tokopedia.design.R.color.tkpd_main_green))
+            dialog.btnCancel.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_32))
+            dialog.btnOk.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_G400))
         }
 
         if (sellerDetails!!.isBoxShowPopup) {
@@ -307,7 +307,7 @@ class MerchantSaldoPriorityFragment : BaseDaggerFragment() {
                 try {
                     anchorLabel.setTextColor(Color.parseColor(gqlAnchorListResponse.color))
                 } catch (e: Exception) {
-                    anchorLabel.setTextColor(resources.getColor(com.tokopedia.design.R.color.tkpd_main_green))
+                    anchorLabel.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_G400))
                 }
 
                 anchorLabel.setOnClickListener { v ->

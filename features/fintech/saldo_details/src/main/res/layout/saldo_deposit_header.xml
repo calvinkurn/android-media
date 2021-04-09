@@ -139,7 +139,7 @@
                         android:layout_toEndOf="@+id/saldo_deposit_text_info"
                         android:layout_toRightOf="@+id/saldo_deposit_text_info"
                         android:gravity="end"
-                        android:textColor="@color/Unify_N700"
+                        android:textColor="@color/Unify_N700_68"
                         android:textSize="@dimen/sp_16"
                         android:textStyle="bold"
                         app:typographyType="body_1"
@@ -220,7 +220,7 @@
                             android:layout_alignParentRight="true"
                             android:layout_centerVertical="true"
                             android:maxLines="1"
-                            android:textColor="@color/Unify_N700_96"
+                            android:textColor="@color/Unify_N700_68"
                             app:typographyType="body_3"
                             tools:text="Rp 1.000.000" />
 
@@ -271,7 +271,7 @@
                             android:layout_centerVertical="true"
                             android:gravity="start"
                             android:maxLines="1"
-                            android:textColor="@color/Unify_N700_96"
+                            android:textColor="@color/Unify_N700_68"
                             app:typographyType="body_3"
                             tools:text="Rp 1.000.000" />
 
@@ -306,7 +306,7 @@
                 android:layout_marginTop="@dimen/dp_5"
                 android:text="@string/saldo_hold_balance_text"
                 android:textColor="@color/Unify_N700_68"
-                app:typographyType="heading_5" />
+                app:typographyType="body_2" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/check_balance"
@@ -318,7 +318,7 @@
                 android:layout_toRightOf="@+id/amount_review"
                 android:text="@string/check_saldo_hold_balance_status"
                 android:textColor="@color/Unify_G500"
-                app:typographyType="heading_5" />
+                app:typographyType="body_2" />
 
         </RelativeLayout>
 
@@ -334,7 +334,7 @@
             android:gravity="center"
             android:padding="@dimen/unify_space_12"
             android:text="@string/sp_title_withdraw"
-            app:unifyButtonSize="large"
+            app:unifyButtonSize="medium"
             app:unifyButtonType="main"
             app:unifyButtonVariant="filled" />
     </LinearLayout>

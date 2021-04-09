@@ -19,7 +19,7 @@
         android:paddingEnd="@dimen/dp_18"
         android:paddingRight="@dimen/dp_18"
         android:text="@string/sp_transaction_history_heading"
-        android:textColor="@color/black_56"
+        android:textColor="@color/Unify_N700_68"
         android:textSize="@dimen/sp_17"
         android:textStyle="bold" />
 
@@ -44,7 +44,7 @@
                 android:fontFamily="sans-serif"
                 android:lineSpacingExtra="6sp"
                 android:text="@string/sp_start_date"
-                android:textColor="@color/font_black_disabled_38"
+                android:textColor="@color/Unify_N700_32"
                 android:textSize="@dimen/sp_10"
                 android:textStyle="normal" />
 
@@ -64,7 +64,7 @@
                     android:foregroundGravity="center_vertical"
                     android:gravity="end|center_vertical"
                     android:lineSpacingExtra="@dimen/sp_10"
-                    android:textColor="@color/green_nob"
+                    android:textColor="@color/Unify_G400"
                     android:textSize="@dimen/sp_14"
                     android:textStyle="normal" />
 
@@ -72,7 +72,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="0.5dp"
                     android:layout_marginTop="@dimen/unify_space_8"
-                    android:background="@color/black_24" />
+                    android:background="@color/Unify_N700_20" />
 
             </LinearLayout>
 
@@ -85,7 +85,7 @@
             android:layout_marginTop="@dimen/unify_space_8"
             android:layout_marginEnd="@dimen/unify_space_32"
             android:layout_marginRight="@dimen/unify_space_32"
-            android:background="@color/black_56" />
+            android:background="@color/Unify_N700_68" />
 
         <RelativeLayout
             android:id="@+id/end_date_layout"
@@ -100,7 +100,7 @@
                 android:fontFamily="sans-serif"
                 android:lineSpacingExtra="6sp"
                 android:text="@string/sp_end_date"
-                android:textColor="@color/font_black_disabled_38"
+                android:textColor="@color/Unify_N700_32"
                 android:textSize="@dimen/sp_10"
                 android:textStyle="normal" />
 
@@ -120,7 +120,7 @@
                     android:foregroundGravity="center_vertical"
                     android:gravity="end|center_vertical"
                     android:lineSpacingExtra="@dimen/sp_10"
-                    android:textColor="@color/green_nob"
+                    android:textColor="@color/Unify_G400"
                     android:textSize="@dimen/sp_14"
                     android:textStyle="normal" />
 
@@ -128,7 +128,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="0.5dp"
                     android:layout_marginTop="@dimen/unify_space_8"
-                    android:background="@color/black_24" />
+                    android:background="@color/Unify_N700_20" />
             </LinearLayout>
         </RelativeLayout>
     </LinearLayout>
@@ -144,13 +144,13 @@
             android:id="@+id/transaction_history_tab_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:tabBackground="@color/white"
+            app:tabBackground="@color/Unify_N0"
             app:tabGravity="fill"
-            app:tabIndicatorColor="@color/tkpd_green_header"
+            app:tabIndicatorColor="@color/Unify_G400"
             app:tabMode="scrollable"
-            app:tabSelectedTextColor="@color/tkpd_green_header"
+            app:tabSelectedTextColor="@color/Unify_G400"
             app:tabTextAppearance="@android:style/TextAppearance.Widget.TabWidget"
-            app:tabTextColor="@color/black_38" />
+            app:tabTextColor="@color/Unify_N700_32" />
 
         <View
             android:id="@+id/transaction_history_tab_view_separator"
