@@ -87,12 +87,14 @@ class TravelHomepageFragment : BaseListFragment<TravelHomepageItemModel,
         travel_homepage_toolbar.setNavigationOnClickListener { activity?.onBackPressed() }
         calculateToolbarView(0)
 
-        (getRecyclerView(view) as VerticalRecyclerView).clearItemDecoration()
+        (getRecyclerView(view) as? VerticalRecyclerView)?.clearItemDecoration()
 
-        getRecyclerView(view).addOnScrollListener(object : RecyclerView.OnScrollListener() {
+        getRecyclerView(view)?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
-                calculateToolbarView(getRecyclerView(view).computeVerticalScrollOffset())
+                getRecyclerView(view)?.computeVerticalScrollOffset()?.let {
+                    calculateToolbarView(it)
+                }
             }
         })
     }

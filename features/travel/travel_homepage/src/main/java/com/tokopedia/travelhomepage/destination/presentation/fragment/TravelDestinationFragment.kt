@@ -158,7 +158,7 @@ class TravelDestinationFragment : BaseListFragment<TravelDestinationItemModel, T
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        (getRecyclerView(view) as VerticalRecyclerView).clearItemDecoration()
+        (getRecyclerView(view) as? VerticalRecyclerView)?.clearItemDecoration()
 
         if (savedInstanceState != null) {
             webUrl = savedInstanceState.getString(SAVED_DESTINATION_WEB_URL, "")
