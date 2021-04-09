@@ -5,7 +5,6 @@ import android.net.Uri
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
-import com.tokopedia.applink.constant.DeeplinkConstant
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder
 import com.tokopedia.applink.startsWithPattern
 import com.tokopedia.device.info.DeviceScreenInfo
@@ -39,24 +38,31 @@ object DeeplinkMapperOrder {
     const val QUERY_PARAM_ORDER_ID = "order_id"
 
     fun getRegisteredNavigationOrder(context: Context, uri: Uri, deeplink: String): String {
-        return if (deeplink.startsWithPattern(ApplinkConst.SELLER_ORDER_DETAIL)) getRegisteredNavigationOrderInternal(context, uri, deeplink)
+        return if (deeplink.startsWithPattern(ApplinkConst.SELLER_ORDER_DETAIL)) getRegisteredNavigationOrderInternal(context, uri)
         else deeplink
     }
 
     /**
-     * tokopedia://seller/order/{order_id}
+     * tokopedia://seller/order/{order_id}/
      */
-    private fun getRegisteredNavigationOrderInternal(context: Context, uri: Uri, deeplink: String): String {
+    private fun getRegisteredNavigationOrderInternal(context: Context, uri: Uri): String {
+        val redirectToSellerApp = uri.getBooleanQueryParameter(RouteManager.KEY_REDIRECT_TO_SELLER_APP, false)
         return if (DeviceScreenInfo.isTablet(context)) {
             val orderId = uri.getQueryParameter(QUERY_PARAM_ORDER_ID) ?: uri.pathSegments.last()
-            val redirectToSellerApp = uri.getBooleanQueryParameter(RouteManager.KEY_REDIRECT_TO_SELLER_APP, false)
             getRegisteredNavigationMainAppSellerSplitOrderListOrderDetail(orderId, redirectToSellerApp)
         } else {
-            deeplink.replace(DeeplinkConstant.SCHEME_TOKOPEDIA, DeeplinkConstant.SCHEME_INTERNAL)
+            val orderId = uri.getQueryParameter(QUERY_PARAM_ORDER_ID) ?: uri.pathSegments.last()
+            getRegisteredNavigationMainAppOrderDetail(orderId, redirectToSellerApp)
         }
     }
 
-    fun getRegisteredNavigationMainAppSellerSplitOrderListOrderDetail(orderId: String, redirectToSellerApp: Boolean): String {
+    private fun getRegisteredNavigationMainAppOrderDetail(orderId: String, redirectToSellerApp: Boolean): String {
+        return ApplinkConstInternalOrder.ORDER_DETAIL.replace("{order_id}", orderId).apply {
+            if (redirectToSellerApp) plus("&${RouteManager.KEY_REDIRECT_TO_SELLER_APP}=true")
+        }
+    }
+
+    private fun getRegisteredNavigationMainAppSellerSplitOrderListOrderDetail(orderId: String, redirectToSellerApp: Boolean): String {
         val param = mutableMapOf<String, Any>().apply {
             put(QUERY_PARAM_ORDER_ID, orderId)
             if (redirectToSellerApp) put(RouteManager.KEY_REDIRECT_TO_SELLER_APP, true)

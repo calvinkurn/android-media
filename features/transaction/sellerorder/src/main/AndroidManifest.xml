@@ -109,11 +109,6 @@
 
                 <data
                     android:host="@string/host_seller"
-                    android:pathPattern="@string/path_order"
-                    android:scheme="@string/internal_scheme" />
-
-                <data
-                    android:host="@string/host_seller"
                     android:path="@string/path_order"
                     android:scheme="@string/internal_scheme" />
 
