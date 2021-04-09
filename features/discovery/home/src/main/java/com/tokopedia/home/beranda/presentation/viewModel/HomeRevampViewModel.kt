@@ -233,9 +233,6 @@ open class HomeRevampViewModel @Inject constructor(
     private val _isNeedRefresh = MutableLiveData<Event<Boolean>>()
     val isNeedRefresh: LiveData<Event<Boolean>> get() = _isNeedRefresh
 
-    private val _isTokopointsAndOvoDataAvailable = MutableLiveData<Event<Boolean>>()
-    val isTokopointsAndOvoDataAvailable: LiveData<Event<Boolean>> get() = _isTokopointsAndOvoDataAvailable
-
 // ============================================================================================
 // ==================================== Helper Local Job ======================================
 // ================================= PLEASE SORT BY NAME A-Z ==================================
@@ -1613,16 +1610,6 @@ open class HomeRevampViewModel @Inject constructor(
             }
 
             newUpdateHeaderViewModel(homeBalanceModel)
-
-            var isTokopointsOrOvoFailed = false
-            homeBalanceModel.balanceDrawerItemModels.values.forEach { data ->
-                if (data.state != BalanceDrawerItemModel.STATE_SUCCESS) {
-                    isTokopointsOrOvoFailed = true
-                }
-            }
-            if (!isTokopointsOrOvoFailed) {
-                _isTokopointsAndOvoDataAvailable.postValue(Event(true))
-            }
         }) {
 
         }

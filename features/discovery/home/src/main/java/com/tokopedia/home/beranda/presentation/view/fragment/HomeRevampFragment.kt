@@ -82,6 +82,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitableDiffUtil
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.CashBackData
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomeHeaderOvoDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PlayCardDataModel
@@ -1103,19 +1104,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         observePlayWidgetReminder()
         observePlayWidgetReminderEvent()
         observeRechargeBUWidget()
-        observeTokopointsSuccessData()
-    }
-
-    private fun observeTokopointsSuccessData() {
-        getHomeViewModel().isTokopointsAndOvoDataAvailable.observe(viewLifecycleOwner, Observer {data: Event<Boolean> ->
-            val isDataAvailable = data.peekContent()
-            if (isDataAvailable) {
-                Handler().postDelayed({
-                    if (!coachMarkIsShowing && !bottomSheetIsShowing)
-                        showCoachMark()
-                }, 3000)
-            }
-        })
     }
 
     private fun observeIsNeedRefresh() {
@@ -1359,14 +1347,24 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                 setOnRecyclerViewLayoutReady(isCache)
             }
             adapter?.submitList(data)
-//            val isBalanceWidgetNotEmpty = it.headerDataModel?.homeBalanceModel?.balanceDrawerItemModels?.isNotEmpty()
-//                    ?: false
-//            if (isBalanceWidgetNotEmpty) {
-//                Handler().postDelayed({
-//                    if (!coachMarkIsShowing && !bottomSheetIsShowing)
-//                        showCoachMark()
-//                }, 3000)
-//            }
+            (data.firstOrNull { it is HomeHeaderOvoDataModel } as? HomeHeaderOvoDataModel)?.let {
+                val isBalanceWidgetNotEmpty = it.headerDataModel?.homeBalanceModel?.balanceDrawerItemModels?.isNotEmpty()
+                        ?: false
+                if (isBalanceWidgetNotEmpty) {
+                    var isTokopointsOrOvoFailed = false
+                    it.headerDataModel?.homeBalanceModel?.balanceDrawerItemModels?.values?.forEach { data ->
+                        if (data.state != BalanceDrawerItemModel.STATE_SUCCESS) {
+                            isTokopointsOrOvoFailed = true
+                        }
+                    }
+                    if (isTokopointsOrOvoFailed) {
+                        Handler().postDelayed({
+                            if (!coachMarkIsShowing && !bottomSheetIsShowing)
+                                showCoachMark()
+                        }, 3000)
+                    }
+                }
+            }
         }
     }
 
