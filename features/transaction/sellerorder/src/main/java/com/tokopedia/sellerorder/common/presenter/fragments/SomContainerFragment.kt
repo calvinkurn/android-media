@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.tokopedia.applink.order.DeeplinkMapperOrder
 import com.tokopedia.applink.sellerhome.AppLinkMapperSellerHome
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
@@ -26,6 +27,7 @@ class SomContainerFragment : Fragment(), SomListFragment.SomListClickListener, S
                     putString(SomConsts.TAB_ACTIVE, bundle.getString(SomConsts.TAB_ACTIVE))
                     putString(SomConsts.TAB_STATUS, bundle.getString(SomConsts.TAB_STATUS))
                     putString(AppLinkMapperSellerHome.QUERY_PARAM_SEARCH, bundle.getString(AppLinkMapperSellerHome.QUERY_PARAM_SEARCH))
+                    putString(DeeplinkMapperOrder.QUERY_PARAM_ORDER_ID, bundle.getString(DeeplinkMapperOrder.QUERY_PARAM_ORDER_ID))
                     putInt(SomConsts.FILTER_ORDER_TYPE, bundle.getInt(SomConsts.FILTER_ORDER_TYPE))
                 }
             }
@@ -50,7 +52,7 @@ class SomContainerFragment : Fragment(), SomListFragment.SomListClickListener, S
     }
 
     override fun onOrderClicked(orderId: String) {
-        attachDetailFragment(orderId)
+        attachDetailFragment(orderId, false)
     }
 
     override fun closeOrderDetail() {
@@ -64,9 +66,24 @@ class SomContainerFragment : Fragment(), SomListFragment.SomListClickListener, S
         somDetailFragment?.refreshOrder(orderId)
     }
 
+    override fun onRefreshOrder(orderId: String) {
+        somListFragment?.refreshSelectedOrder(orderId)
+    }
+
+    override fun onShouldPassInvoice(invoice: String) {
+        somListFragment?.applySearchParam(invoice)
+    }
+
     private fun attachFragments() {
         initiateListFragment()
         attachListFragment()
+        arguments?.let {
+            it.getString(DeeplinkMapperOrder.QUERY_PARAM_ORDER_ID).let { orderId ->
+                if (!orderId.isNullOrEmpty()) {
+                    attachDetailFragment(orderId, true)
+                }
+            }
+        }
     }
 
     private fun initiateListFragment() {
@@ -75,9 +92,10 @@ class SomContainerFragment : Fragment(), SomListFragment.SomListClickListener, S
         }
     }
 
-    private fun initiateDetailFragment(orderId: String): SomDetailFragment {
+    private fun initiateDetailFragment(orderId: String, passOrderDetail: Boolean): SomDetailFragment {
         val somDetailFragment = SomDetailFragment.newInstance(Bundle().apply {
             putString(SomConsts.PARAM_ORDER_ID, orderId)
+            putBoolean(SomConsts.PARAM_PASS_INVOICE, passOrderDetail)
         }).apply {
             setOrderDetailListener(this@SomContainerFragment)
         }
@@ -93,9 +111,9 @@ class SomContainerFragment : Fragment(), SomListFragment.SomListClickListener, S
         }
     }
 
-    private fun attachDetailFragment(orderId: String) {
+    private fun attachDetailFragment(orderId: String, passOrderDetail: Boolean) {
         if (somDetailFragment == null) {
-            initiateDetailFragment(orderId).let {
+            initiateDetailFragment(orderId, passOrderDetail).let {
                 childFragmentManager.beginTransaction()
                         .replace(R.id.fragmentDetail, it)
                         .commit()
@@ -106,9 +124,5 @@ class SomContainerFragment : Fragment(), SomListFragment.SomListClickListener, S
         fragmentDetail?.show()
         ivSomDetailWelcomeIllustration?.gone()
         tvSomDetailWelcome?.gone()
-    }
-
-    override fun onRefreshOrder(orderId: String) {
-        somListFragment?.refreshSelectedOrder(orderId)
     }
 }

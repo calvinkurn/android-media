@@ -3,10 +3,12 @@ package com.tokopedia.applink.order
 import android.content.Context
 import android.net.Uri
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.constant.DeeplinkConstant
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder
 import com.tokopedia.applink.startsWithPattern
+import com.tokopedia.device.info.DeviceScreenInfo
 
 /**
  * Created by fwidjaja on 2020-01-26.
@@ -34,17 +36,32 @@ object DeeplinkMapperOrder {
     private const val PATH_ORDER = "order"
     const val PATH_ORDER_ID = "order_id"
     const val PATH_ORDER_DETAIL_ID = "order_detail_id"
+    const val QUERY_PARAM_ORDER_ID = "order_id"
 
-    fun getRegisteredNavigationOrder(deeplink: String): String {
-        return if (deeplink.startsWithPattern(ApplinkConst.SELLER_ORDER_DETAIL)) getRegisteredNavigationOrderInternal(deeplink)
+    fun getRegisteredNavigationOrder(context: Context, uri: Uri, deeplink: String): String {
+        return if (deeplink.startsWithPattern(ApplinkConst.SELLER_ORDER_DETAIL)) getRegisteredNavigationOrderInternal(context, uri, deeplink)
         else deeplink
     }
 
     /**
      * tokopedia://seller/order/{order_id}
      */
-    private fun getRegisteredNavigationOrderInternal(deeplink: String): String {
-        return deeplink.replace(DeeplinkConstant.SCHEME_TOKOPEDIA, DeeplinkConstant.SCHEME_INTERNAL)
+    private fun getRegisteredNavigationOrderInternal(context: Context, uri: Uri, deeplink: String): String {
+        return if (DeviceScreenInfo.isTablet(context)) {
+            val orderId = uri.getQueryParameter(QUERY_PARAM_ORDER_ID) ?: uri.pathSegments.last()
+            val redirectToSellerApp = uri.getBooleanQueryParameter(RouteManager.KEY_REDIRECT_TO_SELLER_APP, false)
+            getRegisteredNavigationMainAppSellerSplitOrderListOrderDetail(orderId, redirectToSellerApp)
+        } else {
+            deeplink.replace(DeeplinkConstant.SCHEME_TOKOPEDIA, DeeplinkConstant.SCHEME_INTERNAL)
+        }
+    }
+
+    fun getRegisteredNavigationMainAppSellerSplitOrderListOrderDetail(orderId: String, redirectToSellerApp: Boolean): String {
+        val param = mutableMapOf<String, Any>().apply {
+            put(QUERY_PARAM_ORDER_ID, orderId)
+            if (redirectToSellerApp) put(RouteManager.KEY_REDIRECT_TO_SELLER_APP, true)
+        }
+        return UriUtil.buildUriAppendParams(ApplinkConstInternalOrder.HISTORY, param)
     }
 
     fun getRegisteredNavigationMainAppSellerNewOrder(): String {
@@ -85,9 +102,12 @@ object DeeplinkMapperOrder {
         return UriUtil.buildUriAppendParams(ApplinkConstInternalOrder.CANCELLATION_REQUEST, param)
     }
 
-    fun getRegisteredNavigationMainAppSellerHistory(): String {
-        val param = mapOf(QUERY_TAB_ACTIVE to ALL_ORDER)
-        return UriUtil.buildUriAppendParam(ApplinkConstInternalOrder.HISTORY, param)
+    fun getRegisteredNavigationMainAppSellerHistory(orderId: String): String {
+        val param = mutableMapOf<String, Any>().apply {
+            if (orderId.isNotEmpty()) put(QUERY_PARAM_ORDER_ID, orderId)
+            put(QUERY_TAB_ACTIVE, ALL_ORDER)
+        }
+        return UriUtil.buildUriAppendParams(ApplinkConstInternalOrder.HISTORY, param)
     }
 
     fun getRegisteredNavigationMainAppSellerWaitingPickup(): String {

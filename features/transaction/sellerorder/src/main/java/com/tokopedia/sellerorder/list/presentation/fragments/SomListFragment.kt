@@ -150,7 +150,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
 
     private val masterJob = SupervisorJob()
 
-    private val viewModel: SomListViewModel by lazy {
+    protected val viewModel: SomListViewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(SomListViewModel::class.java)
     }
 
@@ -255,7 +255,6 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
     private var canDisplayOrderData = false
     private var canMultiAcceptOrder = false
     private var somListBulkProcessOrderBottomSheet: SomListBulkProcessOrderBottomSheet? = null
-    private var somListLoadTimeMonitoring: SomListLoadTimeMonitoring? = null
     private var bulkAcceptOrderDialog: SomListBulkAcceptOrderDialog? = null
     private var tickerPagerAdapter: TickerPagerAdapter? = null
     private var errorToaster: Snackbar? = null
@@ -264,6 +263,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
     private var filterDate = ""
     private var somFilterBottomSheet: SomFilterBottomSheet? = null
 
+    protected var somListLoadTimeMonitoring: SomListLoadTimeMonitoring? = null
     protected var selectedOrderId: String = ""
 
     override val coroutineContext: CoroutineContext
@@ -1135,27 +1135,6 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
         (adapter as? SomListOrderAdapter)?.updateOrders(newItems)
     }
 
-    private fun loadTopAdsCategory() {
-        viewModel.getTopAdsCategory()
-    }
-
-    private fun loadTickers() {
-        viewModel.getTickers()
-    }
-
-    private fun loadWaitingPaymentOrderCounter() {
-        showWaitingPaymentOrderListMenuShimmer()
-        viewModel.getWaitingPaymentCounter()
-    }
-
-    private fun loadFilters(showShimmer: Boolean = true, loadOrders: Boolean) {
-        if (showShimmer) {
-            sortFilterSomList.invisible()
-            shimmerViews.show()
-        }
-        viewModel.getFilters(loadOrders)
-    }
-
     private fun loadOrderList() {
         if (isLoadingInitialData) {
             viewModel.resetNextOrderId()
@@ -1174,20 +1153,6 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
             somListLoadTimeMonitoring?.startNetworkPerformanceMonitoring()
         }
         viewModel.getAdminPermission()
-    }
-
-    private fun loadAllInitialData() {
-        viewModel.isMultiSelectEnabled = false
-        resetOrderSelectedStatus()
-        isLoadingInitialData = true
-        somListLoadTimeMonitoring?.startNetworkPerformanceMonitoring()
-        loadTopAdsCategory()
-        loadTickers()
-        loadWaitingPaymentOrderCounter()
-        loadFilters(loadOrders = true)
-        if (shouldReloadOrderListImmediately()) {
-            loadOrderList()
-        }
     }
 
     private fun setupListeners() {
@@ -1354,12 +1319,6 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
 
     private fun toggleBulkAction() {
         viewModel.isMultiSelectEnabled = !viewModel.isMultiSelectEnabled
-    }
-
-    private fun resetOrderSelectedStatus() {
-        adapter.data.filterIsInstance<SomListOrderUiModel>().onEach { it.isChecked = false }.run {
-            adapter.notifyItemRangeChanged(0, size, Bundle().apply { putBoolean(SomListOrderViewHolder.TOGGLE_SELECTION, true) })
-        }
     }
 
     private fun checkAllOrder() {
@@ -2043,6 +2002,47 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                         getString(R.string.som_list_button_ok))
                 commonToaster?.show()
             }
+        }
+    }
+
+    protected fun loadTopAdsCategory() {
+        viewModel.getTopAdsCategory()
+    }
+
+    protected fun loadTickers() {
+        viewModel.getTickers()
+    }
+
+    protected fun loadWaitingPaymentOrderCounter() {
+        showWaitingPaymentOrderListMenuShimmer()
+        viewModel.getWaitingPaymentCounter()
+    }
+
+    protected fun loadFilters(showShimmer: Boolean = true, loadOrders: Boolean) {
+        if (showShimmer) {
+            sortFilterSomList.invisible()
+            shimmerViews.show()
+        }
+        viewModel.getFilters(loadOrders)
+    }
+
+    protected open fun loadAllInitialData() {
+        viewModel.isMultiSelectEnabled = false
+        resetOrderSelectedStatus()
+        isLoadingInitialData = true
+        somListLoadTimeMonitoring?.startNetworkPerformanceMonitoring()
+        loadTopAdsCategory()
+        loadTickers()
+        loadWaitingPaymentOrderCounter()
+        loadFilters(loadOrders = true)
+        if (shouldReloadOrderListImmediately()) {
+            loadOrderList()
+        }
+    }
+
+    protected fun resetOrderSelectedStatus() {
+        adapter.data.filterIsInstance<SomListOrderUiModel>().onEach { it.isChecked = false }.run {
+            adapter.notifyItemRangeChanged(0, size, Bundle().apply { putBoolean(SomListOrderViewHolder.TOGGLE_SELECTION, true) })
         }
     }
 

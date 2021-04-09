@@ -165,8 +165,6 @@ open class SomDetailFragment : BaseDaggerFragment(),
 
     private var somToaster: Snackbar? = null
 
-    protected var orderId = ""
-    private var detailResponse: SomDetailOrder.Data.GetSomDetail? = SomDetailOrder.Data.GetSomDetail()
     private var dynamicPriceResponse: SomDynamicPriceResponse.GetSomDynamicPrice? = SomDynamicPriceResponse.GetSomDynamicPrice()
     private var acceptOrderResponse = SomAcceptOrderResponse.Data.AcceptOrder()
     private var rejectOrderResponse = SomRejectOrderResponse.Data.RejectOrder()
@@ -187,6 +185,9 @@ open class SomDetailFragment : BaseDaggerFragment(),
     private var orderRequestCancelBottomSheet: SomOrderRequestCancelBottomSheet? = null
 
     private var progressBar: ProgressBar? = null
+
+    protected var orderId = ""
+    protected var detailResponse: SomDetailOrder.Data.GetSomDetail? = SomDetailOrder.Data.GetSomDetail()
 
     protected val somDetailViewModel by lazy {
         ViewModelProviders.of(this, viewModelFactory)[SomDetailViewModel::class.java]
@@ -644,23 +645,6 @@ open class SomDetailFragment : BaseDaggerFragment(),
         somDetailAdminPermissionView?.gone()
         somDetailLoadTimeMonitoring?.startNetworkPerformanceMonitoring()
         loadDetail()
-    }
-
-    private fun renderDetail() {
-        showSuccessState()
-        listDetailData = arrayListOf()
-        somDetailAdapter.listDataDetail = arrayListOf()
-        renderHeader()
-        renderProducts()
-        renderShipment()
-        renderPayment()
-        renderButtons()
-
-        somDetailAdapter.listDataDetail = listDetailData.toMutableList()
-        rv_detail.addOneTimeGlobalLayoutListener {
-            stopLoadTimeMonitoring()
-        }
-        somDetailAdapter.notifyDataSetChanged()
     }
 
     private fun renderHeader() {
@@ -1507,6 +1491,23 @@ open class SomDetailFragment : BaseDaggerFragment(),
     private fun stopLoadTimeMonitoring() {
         somDetailLoadTimeMonitoring?.stopRenderPerformanceMonitoring()
         (activity as? SomDetailActivity)?.somLoadTimeMonitoringListener?.onStopPltMonitoring()
+    }
+
+    protected open fun renderDetail() {
+        showSuccessState()
+        listDetailData = arrayListOf()
+        somDetailAdapter.listDataDetail = arrayListOf()
+        renderHeader()
+        renderProducts()
+        renderShipment()
+        renderPayment()
+        renderButtons()
+
+        somDetailAdapter.listDataDetail = listDetailData.toMutableList()
+        rv_detail.addOneTimeGlobalLayoutListener {
+            stopLoadTimeMonitoring()
+        }
+        somDetailAdapter.notifyDataSetChanged()
     }
 
     protected open fun loadDetail() {

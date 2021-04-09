@@ -1,8 +1,10 @@
 package com.tokopedia.sellerorder.list.presentation.fragments.tablet
 
+import android.animation.ValueAnimator
 import android.os.Bundle
 import android.text.Editable
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.applink.order.DeeplinkMapperOrder
 import com.tokopedia.applink.sellerhome.AppLinkMapperSellerHome
 import com.tokopedia.sellerorder.analytics.SomAnalytics
 import com.tokopedia.sellerorder.common.util.SomConsts
@@ -11,6 +13,7 @@ import com.tokopedia.sellerorder.list.presentation.adapter.viewholders.tablet.So
 import com.tokopedia.sellerorder.list.presentation.models.OptionalOrderData
 import com.tokopedia.sellerorder.list.presentation.models.SomListFilterUiModel
 import com.tokopedia.sellerorder.list.presentation.models.SomListOrderUiModel
+import kotlinx.android.synthetic.main.fragment_som_list.*
 
 class SomListFragment : com.tokopedia.sellerorder.list.presentation.fragments.SomListFragment() {
 
@@ -24,6 +27,7 @@ class SomListFragment : com.tokopedia.sellerorder.list.presentation.fragments.So
                     putString(SomConsts.TAB_ACTIVE, bundle.getString(SomConsts.TAB_ACTIVE))
                     putString(SomConsts.TAB_STATUS, bundle.getString(SomConsts.TAB_STATUS))
                     putString(AppLinkMapperSellerHome.QUERY_PARAM_SEARCH, bundle.getString(AppLinkMapperSellerHome.QUERY_PARAM_SEARCH))
+                    putString(DeeplinkMapperOrder.QUERY_PARAM_ORDER_ID, bundle.getString(DeeplinkMapperOrder.QUERY_PARAM_ORDER_ID))
                     putInt(SomConsts.FILTER_ORDER_TYPE, bundle.getInt(SomConsts.FILTER_ORDER_TYPE))
                 }
             }
@@ -34,6 +38,7 @@ class SomListFragment : com.tokopedia.sellerorder.list.presentation.fragments.So
 
     // to keep order detail view opened even if the order card is not showed on the som list view
     private var keepOpenOrderDetail: Boolean = false
+    private var firstOpen: Boolean = true
 
     private var somListOrderListener: SomListClickListener? = null
 
@@ -85,6 +90,22 @@ class SomListFragment : com.tokopedia.sellerorder.list.presentation.fragments.So
         }
     }
 
+    override fun loadAllInitialData() {
+        if (!firstOpen || arguments?.getString(DeeplinkMapperOrder.QUERY_PARAM_ORDER_ID).isNullOrEmpty()) {
+            super.loadAllInitialData()
+        } else {
+            openedOrderId = arguments?.getString(DeeplinkMapperOrder.QUERY_PARAM_ORDER_ID).orEmpty()
+            viewModel.isMultiSelectEnabled = false
+            resetOrderSelectedStatus()
+            isLoadingInitialData = true
+            somListLoadTimeMonitoring?.startNetworkPerformanceMonitoring()
+            loadTopAdsCategory()
+            loadTickers()
+            loadWaitingPaymentOrderCounter()
+            loadFilters(loadOrders = false)
+        }
+    }
+
     override fun showBackButton(): Boolean = false
 
     private fun notifyOpenOrderDetail(order: SomListOrderUiModel) {
@@ -114,6 +135,10 @@ class SomListFragment : com.tokopedia.sellerorder.list.presentation.fragments.So
     }
 
     private fun onOrderListChanged() {
+        if (firstOpen && openedOrderId.isNotEmpty()) {
+            firstOpen = false
+            return
+        }
         getOpenedOrder().let { openedOrder ->
             if (openedOrder == null) {
                 if (keepOpenOrderDetail) {
@@ -134,6 +159,16 @@ class SomListFragment : com.tokopedia.sellerorder.list.presentation.fragments.So
 
     fun refreshSelectedOrder(orderId: String) {
         super.onActionCompleted(true, orderId)
+    }
+
+    fun applySearchParam(invoice: String) {
+        firstOpen = true
+        val typingAnimator = ValueAnimator.ofInt(0, invoice.length)
+        typingAnimator.duration = 500
+        typingAnimator.addUpdateListener { animation ->
+            searchBarSomList?.searchBarTextField?.setText(invoice.substring(0, animation.animatedValue as Int))
+        }
+        typingAnimator.start()
     }
 
     interface SomListClickListener {

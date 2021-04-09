@@ -7,6 +7,7 @@ import android.os.Bundle
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
+import com.tokopedia.applink.order.DeeplinkMapperOrder
 import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.kotlin.extensions.view.requestStatusBarDark
 import com.tokopedia.kotlin.extensions.view.requestStatusBarLight
@@ -67,6 +68,9 @@ class SomListActivity : BaseActivity(), SomListLoadTimeMonitoringActivity {
             bundle = intent.extras ?: Bundle()
         } else {
             bundle.putString(SomConsts.TAB_ACTIVE, "")
+        }
+        intent?.data?.getQueryParameter(DeeplinkMapperOrder.QUERY_PARAM_ORDER_ID)?.let {
+            bundle.putString(DeeplinkMapperOrder.QUERY_PARAM_ORDER_ID, it)
         }
         return if (DeviceScreenInfo.isTablet(this)) {
             SomContainerFragment.newInstance(bundle)

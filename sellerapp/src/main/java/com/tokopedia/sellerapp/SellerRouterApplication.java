@@ -24,6 +24,7 @@ import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.ApplinkUnsupported;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp;
+import com.tokopedia.applink.order.DeeplinkMapperOrder;
 import com.tokopedia.cachemanager.CacheManager;
 import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.config.GlobalConfig;
@@ -457,13 +458,16 @@ public abstract class SellerRouterApplication extends MainApplication implements
 
     @NotNull
     @Override
-    public Fragment getSomListFragment(String tabPage, int orderType, String searchKeyword) {
+    public Fragment getSomListFragment(String tabPage, int orderType, String searchKeyword, String orderId) {
         Bundle bundle = new Bundle();
         tabPage = (null == tabPage || "".equals(tabPage)) ? SomConsts.STATUS_ALL_ORDER : tabPage;
         bundle.putString(SomConsts.TAB_ACTIVE, tabPage);
         bundle.putInt(SomConsts.FILTER_ORDER_TYPE, orderType);
         bundle.putString(QUERY_PARAM_SEARCH, searchKeyword);
         if (DeviceScreenInfo.isTablet(context)) {
+            if (orderId != null && orderId.trim().length() > 0) {
+                bundle.putString(DeeplinkMapperOrder.QUERY_PARAM_ORDER_ID, orderId);
+            }
             return SomContainerFragment.newInstance(bundle);
         } else {
             return SomListFragment.newInstance(bundle);

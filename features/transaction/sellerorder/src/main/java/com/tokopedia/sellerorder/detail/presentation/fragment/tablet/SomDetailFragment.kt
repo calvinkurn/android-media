@@ -19,6 +19,7 @@ class SomDetailFragment : com.tokopedia.sellerorder.detail.presentation.fragment
 
     private var orderDetailListener: SomOrderDetailListener? = null
     private var shouldRefreshOrderList: Boolean = false
+    private var shouldPassInvoice: Boolean = false
 
     companion object {
         @JvmStatic
@@ -26,9 +27,15 @@ class SomDetailFragment : com.tokopedia.sellerorder.detail.presentation.fragment
             return SomDetailFragment().apply {
                 arguments = Bundle().apply {
                     putString(SomConsts.PARAM_ORDER_ID, bundle.getString(SomConsts.PARAM_ORDER_ID))
+                    putBoolean(SomConsts.PARAM_PASS_INVOICE, bundle.getBoolean(SomConsts.PARAM_PASS_INVOICE))
                 }
             }
         }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        shouldPassInvoice = arguments?.getBoolean(SomConsts.PARAM_PASS_INVOICE, false) ?: false
+        super.onCreate(savedInstanceState)
     }
 
     override fun initInjector() {
@@ -74,6 +81,14 @@ class SomDetailFragment : com.tokopedia.sellerorder.detail.presentation.fragment
         } else {
             showErrorState(GlobalError.NO_CONNECTION)
         }
+    }
+
+    override fun renderDetail() {
+        if (shouldPassInvoice) {
+            shouldPassInvoice = false
+            orderDetailListener?.onShouldPassInvoice(detailResponse?.invoice.orEmpty())
+        }
+        super.renderDetail()
     }
 
     override fun onSuccessAcceptOrder() {
@@ -139,6 +154,7 @@ class SomDetailFragment : com.tokopedia.sellerorder.detail.presentation.fragment
     }
 
     interface SomOrderDetailListener {
-        fun onRefreshOrder(orderId: String )
+        fun onRefreshOrder(orderId: String)
+        fun onShouldPassInvoice(invoice: String)
     }
 }

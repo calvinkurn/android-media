@@ -21,6 +21,7 @@
     <string name="path_shipped" translatable="false">/shipped</string>
     <string name="path_delivered" translatable="false">/delivered</string>
     <string name="path_history" translatable="false">/history</string>
+    <string name="path_pattern_order" translatable="false">/order/.*\\/</string>
     <string name="path_order" translatable="false">/order</string>
     <string name="path_orderlist" translatable="false">/orderlist</string>
     <string name="path_track" translatable="false">/track</string>

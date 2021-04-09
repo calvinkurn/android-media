@@ -8,7 +8,7 @@ import androidx.fragment.app.Fragment
 
 interface SellerHomeRouter {
 
-    fun getSomListFragment(tabPage: String?, orderType: Int, searchKeyword: String): Fragment
+    fun getSomListFragment(tabPage: String?, orderType: Int, searchKeyword: String, orderId: String): Fragment
 
     fun getProductManageFragment(filterOptions: ArrayList<String>, searchKeyword: String): Fragment
 
