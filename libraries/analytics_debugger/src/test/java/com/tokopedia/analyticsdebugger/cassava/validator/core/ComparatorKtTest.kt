@@ -94,4 +94,26 @@ class ComparatorKtTest {
         val objVal = true
         assertTrue(regexEquals(tesVal, objVal))
     }
+
+    @Test
+    fun `contains pair can validate root case`() {
+        val test = """
+            { "foo": "bar" }
+        """.trimIndent()
+        val result = test.toJsonMap().containsPairOf("foo" to "bar")
+        assertTrue(result)
+    }
+
+    @Test
+    fun `contains pair can validate nested case with regex`() {
+        val test = """
+            {
+                "nested": {
+                    "foo": "bar"
+                    }
+            }
+        """.trimIndent()
+        val result = test.toJsonMap().containsPairOf("foo" to "\\w+")
+        assertTrue(result)
+    }
 }
