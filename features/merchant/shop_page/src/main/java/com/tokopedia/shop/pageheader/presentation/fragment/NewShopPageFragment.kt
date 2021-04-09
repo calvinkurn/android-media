@@ -1212,7 +1212,7 @@ class NewShopPageFragment :
         swipeToRefresh.isRefreshing = false
         shopPageFragmentHeaderViewHolder?.setShopHeaderWidgetData(shopPageP1Data.listShopHeaderWidget)
         remoteConfig?.let{
-            shopPageFragmentHeaderViewHolder?.setupChooseAddressWidget(it)
+            shopPageFragmentHeaderViewHolder?.setupChooseAddressWidget(it, isMyShop)
         }
         getShopPageP2Data()
         setupTabs()
@@ -2064,6 +2064,7 @@ class NewShopPageFragment :
     }
 
     override fun onLocalizingAddressServerDown() {
+        shopPageFragmentHeaderViewHolder?.hideChooseAddressWidget()
     }
 
     override fun onLocalizingAddressRollOutUser(isRollOutUser: Boolean) { }

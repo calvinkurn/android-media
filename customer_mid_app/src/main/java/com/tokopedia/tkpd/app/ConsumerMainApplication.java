@@ -54,7 +54,6 @@ import com.tokopedia.moengage_wrapper.interfaces.MoengagePushListener;
 import com.tokopedia.moengage_wrapper.util.NotificationBroadcast;
 import com.tokopedia.navigation.presentation.activity.MainParentActivity;
 import com.tokopedia.notifications.common.CMConstant;
-import com.tokopedia.devicefingerprint.appauth.AppAuthActivityLifecycleCallbacks;
 import com.tokopedia.notifications.data.AmplificationDataSource;
 import com.tokopedia.notifications.inApp.CMInAppManager;
 import com.tokopedia.prereleaseinspector.ViewInspectorSubscriber;
@@ -288,7 +287,6 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         registerActivityLifecycleCallbacks(new LoggerActivityLifecycleCallbacks());
         registerActivityLifecycleCallbacks(new NFCSubscriber());
         registerActivityLifecycleCallbacks(new SessionActivityLifecycleCallbacks());
-        registerActivityLifecycleCallbacks(new AppAuthActivityLifecycleCallbacks());
         if (GlobalConfig.isAllowDebuggingTools()) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 registerActivityLifecycleCallbacks(new JankyFrameActivityLifecycleCallbacks.Builder().build());

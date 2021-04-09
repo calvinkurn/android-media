@@ -26,7 +26,7 @@ open class FollowCardView @JvmOverloads constructor(
     init {
         paint.isAntiAlias = true
         paint.style = Paint.Style.FILL
-        paint.color = ContextCompat.getColor(context, R.color.mvcw_green_100)
+        paint.color = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G100)
 
         readFromAttrs(attrs)
     }
@@ -82,9 +82,9 @@ open class FollowCardView @JvmOverloads constructor(
     }
 
     override fun onDraw(canvas: Canvas?) {
-        paint.color = ContextCompat.getColor(context, R.color.mvcw_green_100)
+        paint.color = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G100)
         canvas?.drawArc(rectLarge, -90f, 180f, false, paint)
-        paint.color = ContextCompat.getColor(context, R.color.mvcw_green_200)
+        paint.color = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G200)
         canvas?.drawArc(rectSmall, -90f, 180f, false, paint)
         super.onDraw(canvas)
     }
