@@ -80,7 +80,13 @@ class TapETollCardView @JvmOverloads constructor(@NotNull context: Context, attr
     fun showErrorState(errorMessage: String) {
         textTitle.text = resources.getString(R.string.emoney_tap_card_instruction_title)
         textTitle.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_R600))
-        textLabel.text = errorMessage
+
+        if (errorMessage.contains(resources.getString(R.string.emoney_nfc_grpc_timeout), true)) {
+            textLabel.text = resources.getString(R.string.emoney_nfc_grpc_label_error)
+        } else {
+            textLabel.text = errorMessage
+        }
+
         lottieAnimationView.visibility = View.GONE
         imageviewError.visibility = View.VISIBLE
         buttonTryAgain.visibility = View.VISIBLE
