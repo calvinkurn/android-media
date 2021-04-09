@@ -14,6 +14,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.inboxcommon.InboxFragment
+import com.tokopedia.inboxcommon.InboxFragmentContainer
 import com.tokopedia.inboxcommon.RoleType
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.removeObservers
@@ -24,6 +25,7 @@ import com.tokopedia.review.ReviewInstance
 import com.tokopedia.review.common.analytics.ReviewPerformanceMonitoringContract
 import com.tokopedia.review.common.analytics.ReviewPerformanceMonitoringListener
 import com.tokopedia.review.common.util.OnBackPressedListener
+import com.tokopedia.review.feature.inbox.buyerreview.view.fragment.InboxReputationFragment
 import com.tokopedia.review.feature.inbox.common.ReviewInboxConstants
 import com.tokopedia.review.feature.inbox.common.presentation.InboxUnifiedRemoteConfig
 import com.tokopedia.review.feature.inbox.container.analytics.ReviewInboxContainerTracking
@@ -63,8 +65,9 @@ class ReviewInboxContainerFragment : BaseDaggerFragment(), HasComponent<ReviewIn
     private var tab = ""
     private var source = ""
 
-    private var adapter: ReviewInboxContainerAdapter? = null
     private var counter = 0
+    private var buyerReviewFragment: InboxReputationFragment? = null
+    private var containerListener: InboxFragmentContainer? = null
 
     override fun getScreenName(): String {
         return ""
@@ -131,6 +134,7 @@ class ReviewInboxContainerFragment : BaseDaggerFragment(), HasComponent<ReviewIn
         observeReviewTabs()
         getCounterData()
         setupTabLayout()
+        adjustViewBasedOnRole()
     }
 
     override fun onDestroy() {
@@ -152,11 +156,9 @@ class ReviewInboxContainerFragment : BaseDaggerFragment(), HasComponent<ReviewIn
     override fun onRoleChanged(role: Int) {
         when (role) {
             RoleType.BUYER -> {
-                showTabLayout()
-                updateInboxUnifiedBuyerView(getTabTitles(getTabs()))
+                updateInboxUnifiedBuyerView()
             }
             RoleType.SELLER -> {
-                hideTabLayout()
                 updateInboxUnifiedSellerView()
             }
         }
@@ -164,6 +166,12 @@ class ReviewInboxContainerFragment : BaseDaggerFragment(), HasComponent<ReviewIn
 
     override fun onPageClickedAgain() {
         // No Op
+    }
+
+    override fun onAttachActivity(context: Context?) {
+        if (context is InboxFragmentContainer) {
+            containerListener = context
+        }
     }
 
     private fun getCounterData() {
@@ -275,22 +283,38 @@ class ReviewInboxContainerFragment : BaseDaggerFragment(), HasComponent<ReviewIn
         }
     }
 
-    private fun hideTabLayout() {
-        reviewInboxTabs?.hide()
-    }
-
-    private fun showTabLayout() {
-        reviewInboxTabs?.show()
-    }
-
     private fun updateInboxUnifiedSellerView() {
-        adapter?.setSellerTab()
+        setBuyerReviewFragment()
+        attachBuyerReviewFragment()
+        reviewInboxTabs?.hide()
+        reviewSellerInboxFragment.show()
+        reviewInboxViewPager.hide()
+    }
+
+    private fun updateInboxUnifiedBuyerView() {
+        reviewInboxTabs?.show()
+        reviewSellerInboxFragment.hide()
+        reviewInboxViewPager.show()
     }
 
     private fun updateInboxUnifiedBuyerView(tabTitles: List<String>) {
         setupBuyerAdapter()
         setupViewPager(tabTitles)
         selectTab()
+    }
+
+    private fun setBuyerReviewFragment() {
+        if(buyerReviewFragment == null) {
+            buyerReviewFragment = InboxReputationFragment.createInstance(ReviewInboxContainerAdapter.TAB_BUYER_REVIEW) as? InboxReputationFragment?
+        }
+    }
+
+    private fun attachBuyerReviewFragment() {
+        buyerReviewFragment?.let {
+            childFragmentManager.beginTransaction()
+                    .replace(R.id.reviewSellerInboxFragment, it)
+                    .commit()
+        }
     }
 
     private fun getTabTitles(tabs: MutableList<ReviewInboxTabs>): MutableList<String> {
@@ -312,7 +336,10 @@ class ReviewInboxContainerFragment : BaseDaggerFragment(), HasComponent<ReviewIn
         return tabTitles
     }
 
-    private fun getTabs(): MutableList<ReviewInboxTabs> {
-        return viewModel.reviewTabs.value ?: mutableListOf()
+    private fun adjustViewBasedOnRole() {
+        if(containerListener?.role == RoleType.BUYER) {
+            return
+        }
+        updateInboxUnifiedSellerView()
     }
 }

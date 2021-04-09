@@ -37,8 +37,4 @@ class ReviewInboxContainerAdapter(private val tabs: MutableList<ReviewInboxTabs>
             }
         }
     }
-
-    fun setSellerTab() {
-        notifyDataSetChanged()
-    }
 }
