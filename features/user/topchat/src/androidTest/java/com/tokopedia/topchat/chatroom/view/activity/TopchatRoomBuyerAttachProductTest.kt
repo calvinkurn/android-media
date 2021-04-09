@@ -210,6 +210,13 @@ class TopchatRoomBuyerAttachProductTest : BaseBuyerTopchatRoomTest() {
                 .check(hasTotalItemOf(1))
     }
 
+    // TODO: test srw is displayed if has question
+    // TODO: test srw is hidden if it doesn't has question
+    // TODO: test srw loading state
+    // TODO: test srw error state
+    // TODO: test srw interaction expand and collapse
+    // TODO: test srw interaction click and send msg
+
     private fun clickCloseAttachmentPreview(position: Int) {
         val viewAction = RecyclerViewActions
                 .actionOnItemAtPosition<TopchatProductAttachmentViewHolder>(
