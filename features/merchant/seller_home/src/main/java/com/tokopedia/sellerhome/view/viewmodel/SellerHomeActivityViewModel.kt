@@ -36,8 +36,7 @@ class SellerHomeActivityViewModel @Inject constructor(
         private val sellerAdminUseCase: SellerAdminUseCase,
         private val authorizeChatAccessUseCase: AuthorizeAccessUseCase,
         private val authorizeOrderAccessUseCase: AuthorizeAccessUseCase,
-        private val getPMInterruptDataUseCase: GetPMInterruptDataUseCase,
-        private val dispatcher: CoroutineDispatchers
+        dispatcher: CoroutineDispatchers
 ) : CustomBaseViewModel(dispatcher) {
 
     companion object {
@@ -45,12 +44,9 @@ class SellerHomeActivityViewModel @Inject constructor(
     }
 
     private val _notifications = MutableLiveData<Result<NotificationUiModel>>()
-    private val _pmInterruptData = MutableLiveData<Result<PowerMerchantInterruptUiModel>>()
 
     val notifications: LiveData<Result<NotificationUiModel>>
         get() = _notifications
-    val pmInterruptData: LiveData<Result<PowerMerchantInterruptUiModel>>
-        get() = _pmInterruptData
 
     private val _shopInfo = MutableLiveData<Result<ShopInfoUiModel>>()
     val shopInfo: LiveData<Result<ShopInfoUiModel>>
@@ -143,19 +139,5 @@ class SellerHomeActivityViewModel @Inject constructor(
             setIsShopAdmin(roleType.isShopAdmin)
             setIsMultiLocationShop(isMultiLocationShop)
         }
-    }
-
-
-    fun getPmInterruptInfo() {
-        launchCatchError(context = dispatcher.io, block = {
-            getPMInterruptDataUseCase.params = GetPMInterruptDataUseCase.createParams(
-                    shopId = userSession.shopId,
-                    source = PMConstant.PM_SETTING_INFO_SOURCE
-            )
-            val result = getPMInterruptDataUseCase.executeOnBackground()
-            _pmInterruptData.postValue(Success(result))
-        }, onError = {
-            _pmInterruptData.postValue(Fail(it))
-        })
     }
 }

@@ -19,6 +19,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.device.info.DeviceConnectionInfo
+import com.tokopedia.gm.common.utils.InterruptPopupHelper
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.pocnewrelic.*
@@ -180,6 +181,8 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         observeWidgetData(sellerHomeViewModel.recommendationWidgetData, WidgetType.RECOMMENDATION)
         observeTickerLiveData()
         context?.let { UpdateShopActiveService.startService(it) }
+
+        showInterruptPopup()
     }
 
     override fun onResume() {
@@ -1000,6 +1003,12 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         if (!isAnyLoadingWidget) {
             view?.swipeRefreshLayout?.isRefreshing = false
             hideLoading()
+        }
+    }
+
+    private fun showInterruptPopup() {
+        activity?.let {
+            InterruptPopupHelper.showPopup(it, viewLifecycleOwner, childFragmentManager)
         }
     }
 

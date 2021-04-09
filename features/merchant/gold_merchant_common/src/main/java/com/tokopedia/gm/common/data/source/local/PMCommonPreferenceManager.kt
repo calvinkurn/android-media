@@ -15,6 +15,7 @@ class PMCommonPreferenceManager(
 
         const val KEY_HAS_SHOW_COMMUNICATION_INTERRUPT_PAGE = "key_has_opened_communication_interrupt_page"
         const val KEY_HAS_SHOW_TRANSITION_INTERRUPT_POPUP = "key_has_show_transition_interrupt_popup"
+        const val KEY_HAS_OPENED_COMMUNICATION_INTERRUPT_PAGE = "key_has_opened_communication_interrupt_page"
     }
 
     private val sp: SharedPreferences by lazy {

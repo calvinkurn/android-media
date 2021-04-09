@@ -15,4 +15,8 @@ object PMConstant {
         const val PM_NEW_BENEFITS = "https://images.tokopedia.net/img/android/gold_merchant_common/pm_new_benefits.png"
         const val PM_INTEGRATED_WITH_REPUTATION = "https://images.tokopedia.net/img/android/gold_merchant_common/pm_integrated_with_reputation.png"
     }
+
+    object Urls {
+        const val SHOP_SCORE_INTERRUPT_PAGE = "https://178-beta-feature.tokopedia.com/score-interrupt"
+    }
 }

@@ -1,6 +1,8 @@
 package com.tokopedia.gm.common.utils
 
 import android.content.Context
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import com.tokopedia.kotlin.extensions.view.getResColor
 
 /**

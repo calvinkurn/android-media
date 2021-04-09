@@ -81,14 +81,11 @@ class GetRecommendationDataUseCase(
             }
         """.trimIndent()
 
-        fun createParams(
-                dataKey: List<String>,
-                dynamicParameter: DynamicParameterModel
-        ): RequestParams = RequestParams.create().apply {
+        fun createParams(dataKey: List<String>): RequestParams = RequestParams.create().apply {
             val dataKeys = dataKey.map {
                 DataKeyModel(
                         key = it,
-                        jsonParams = dynamicParameter.toJsonString()
+                        jsonParams = "{}"
                 )
             }
             putObject(DATA_KEYS, dataKeys)

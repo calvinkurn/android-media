@@ -17,7 +17,7 @@ import kotlinx.android.synthetic.main.bottom_sheet_gmc_pm_transition_interrupt.v
  * Created By @ilhamsuaib on 20/03/21
  */
 
-class PMTransitionInterruptBottomSheet : BottomSheetUnify() {
+class PMTransitionInterruptBottomSheet : BaseBottomSheet() {
 
     companion object {
         const val TAG = "GmcPowerMerchantBottomSheet"
@@ -35,47 +35,10 @@ class PMTransitionInterruptBottomSheet : BottomSheetUnify() {
 
     private var ctaClickCallback: (() -> Unit)? = null
     private var data: PowerMerchantInterruptUiModel? = null
-    private var childView: View? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setStyle(DialogFragment.STYLE_NO_FRAME, com.tokopedia.unifycomponents.R.style.UnifyBottomSheetNotOverlapStyle)
-    }
+    override fun getResLayout(): Int = R.layout.bottom_sheet_gmc_pm_transition_interrupt
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        setChildView(inflater, container)
-        return super.onCreateView(inflater, container, savedInstanceState)
-    }
-
-    private fun setChildView(inflater: LayoutInflater, container: ViewGroup?) {
-        val view = inflater.inflate(R.layout.bottom_sheet_gmc_pm_transition_interrupt, container, false)
-        childView = view
-        setChild(view)
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        setupView()
-    }
-
-    fun setOnCtaClickListener(callback: () -> Unit): PMTransitionInterruptBottomSheet {
-        ctaClickCallback = callback
-        return this
-    }
-
-    fun setData(data: PowerMerchantInterruptUiModel): PMTransitionInterruptBottomSheet {
-        this.data = data
-        return this
-    }
-
-    fun show(fm: FragmentManager) {
-        data?.let {
-            show(fm, TAG)
-        }
-    }
-
-    private fun setupView() = childView?.run {
+    override fun setupView() = childView?.run {
         if (data == null) {
             dismiss()
             return@run
@@ -95,6 +58,22 @@ class PMTransitionInterruptBottomSheet : BottomSheetUnify() {
         btnGmcCheckShopPerformance.setOnClickListener {
             ctaClickCallback?.invoke()
             dismiss()
+        }
+    }
+
+    fun setOnCtaClickListener(callback: () -> Unit): PMTransitionInterruptBottomSheet {
+        ctaClickCallback = callback
+        return this
+    }
+
+    fun setData(data: PowerMerchantInterruptUiModel): PMTransitionInterruptBottomSheet {
+        this.data = data
+        return this
+    }
+
+    fun show(fm: FragmentManager) {
+        data?.let {
+            show(fm, TAG)
         }
     }
 
