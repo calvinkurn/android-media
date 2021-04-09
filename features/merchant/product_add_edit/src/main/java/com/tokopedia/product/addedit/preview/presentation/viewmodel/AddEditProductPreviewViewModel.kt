@@ -306,17 +306,6 @@ class AddEditProductPreviewViewModel @Inject constructor(
         })
     }
 
-    fun getProductLimitation() {
-        launchCatchError(block = {
-            val result = withContext(dispatcher.io) {
-                productLimitationUseCase.executeOnBackground()
-            }
-            mProductLimitationData.value = Success(result.productAddRule.data)
-        }, onError = {
-            mProductLimitationData.value = Fail(it)
-        })
-    }
-
     fun saveProductDraft(productDraft: ProductDraft, productId: Long, isUploading: Boolean) {
         launchCatchError(block = {
             saveProductDraftUseCase.params = SaveProductDraftUseCase.createRequestParams(productDraft, productId, isUploading)
@@ -325,6 +314,17 @@ class AddEditProductPreviewViewModel @Inject constructor(
             }.let { Success(it) }
         }, onError = {
             saveProductDraftResultMutableLiveData.value = Fail(it)
+        })
+    }
+
+    fun getProductLimitation() {
+        launchCatchError(block = {
+            val result = withContext(dispatcher.io) {
+                productLimitationUseCase.executeOnBackground()
+            }
+            mProductLimitationData.value = Success(result.productAddRule.data)
+        }, onError = {
+            mProductLimitationData.value = Fail(it)
         })
     }
 
