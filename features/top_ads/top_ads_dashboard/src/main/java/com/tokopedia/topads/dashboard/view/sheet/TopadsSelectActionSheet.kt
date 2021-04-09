@@ -66,13 +66,13 @@ class TopadsSelectActionSheet : BottomSheetUnify() {
             action_edit.show()
             action_edit.setOnClickListener {
                 onEditAction?.invoke()
-                if (isHideable)
+                if (hideDisable)
                     TopAdsCreateAnalytics.topAdsCreateAnalytics.sendHeadlineAdsEvent(click_ubah_iklan, "{${userSession.shopId}} - {${groupId}}", userSession.userId)
                 dismissAllowingStateLoss()
             }
 
             action_delete.setOnClickListener {
-                if (isHideable)
+                if (hideDisable)
                     TopAdsCreateAnalytics.topAdsCreateAnalytics.sendHeadlineAdsEvent(click_hapus_iklan, "{${userSession.shopId}} - {${groupId}}", userSession.userId)
                 showConfirmationDialog(name)
                 dismiss()
@@ -86,7 +86,7 @@ class TopadsSelectActionSheet : BottomSheetUnify() {
                 img_active.setImageDrawable(it.getResDrawable(R.drawable.topads_dash_grey_dot))
             }
             action_activate.setOnClickListener {
-                if (isHideable)
+                if (hideDisable)
                     TopAdsCreateAnalytics.topAdsCreateAnalytics.sendHeadlineAdsEvent(click_aktifkan_iklan, "{${userSession.shopId}} - {${groupId}}", userSession.userId)
                 changeStatus?.invoke(activeStatus)
                 dismiss()
@@ -113,12 +113,12 @@ class TopadsSelectActionSheet : BottomSheetUnify() {
             dialog.setPrimaryCTAText(it.getString(com.tokopedia.topads.common.R.string.topads_common_cancel_btn))
             dialog.setSecondaryCTAText(it.getString(R.string.topads_dash_ya_hapus))
             dialog.setPrimaryCTAClickListener {
-                if (isHideable)
+                if (hideDisable)
                     TopAdsCreateAnalytics.topAdsCreateAnalytics.sendHeadlineAdsEvent(click_bataiklan_iklan, "{${userSession.shopId}} - {${groupId}}", userSession.userId)
                 dialog.dismiss()
             }
             dialog.setSecondaryCTAClickListener {
-                if (isHideable)
+                if (hideDisable)
                     TopAdsCreateAnalytics.topAdsCreateAnalytics.sendHeadlineAdsEvent(click_ya_hapus_iklan, "{${userSession.shopId}} - {${groupId}}", userSession.userId)
                 dialog.dismiss()
                 onDeleteClick?.invoke()
