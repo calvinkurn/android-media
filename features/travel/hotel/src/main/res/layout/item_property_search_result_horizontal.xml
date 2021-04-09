@@ -81,6 +81,7 @@
                 android:layout_height="wrap_content"
                 android:background="@drawable/bg_hotel_rating_radius"
                 android:ellipsize="end"
+                android:layout_marginTop="@dimen/spacing_lvl1"
                 android:paddingLeft="@dimen/hotel_6dp"
                 android:paddingTop="@dimen/spacing_lvl1"
                 android:paddingRight="@dimen/hotel_6dp"
