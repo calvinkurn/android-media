@@ -30,6 +30,9 @@ interface SmartBillsAnalyticConstants {
             const val CLICK_DETAIL = "click detail"
             const val CLICK_TOOL_TIP = "click on tooltip icon"
             const val CLICK_MORE_LEARN = "click pelajari selengkapnya"
+            const val CLICK_EXPAND_ACCORDION = "click expand button pdp"
+            const val CLICK_COLLAPSE_ACCORDION = "click collapse button pdp"
+            const val CLICK_REFRESH_ACCORDION = "click reload button pdp"
         }
     }
 

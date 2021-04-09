@@ -27,7 +27,7 @@ object RechargeSmartBillsAccordionView {
         view.rv_smart_bills_need_action.showAdapterAccordion(itemView, section, checkableListener, detailListener, accordionType)
         view.sbm_local_load_action.refreshBtn?.setOnClickListener {
             view.sbm_local_load_action.progressState = !view.sbm_local_load_action.progressState
-            refreshAccordion.onRefreshAccordion()
+            refreshAccordion.onRefreshAccordion(section.title)
             view.sbm_local_load_action.progressState = !view.sbm_local_load_action.progressState
         }
         return view

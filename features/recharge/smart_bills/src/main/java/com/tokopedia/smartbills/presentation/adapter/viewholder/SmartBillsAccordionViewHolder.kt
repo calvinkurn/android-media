@@ -17,7 +17,7 @@ import kotlinx.android.synthetic.main.view_smart_bills_item_accordion.view.*
 class SmartBillsAccordionViewHolder(view: View,
                                     private val checkableListener: BaseCheckableViewHolder.CheckableInteractionListener,
                                     private val detailListener: SmartBillsViewHolder.DetailListener,
-                                    private val refreshAccordion: SBMAccordionListener
+                                    private val accordionListener: SBMAccordionListener
                             ): AbstractViewHolder<Section>(view){
 
     override fun bind(element: Section) {
@@ -25,7 +25,8 @@ class SmartBillsAccordionViewHolder(view: View,
             if(element.positionAccordion == 0) smart_bills_view_margin.show()
 
             val view = when(element.type){
-                ACTION_TYPE -> getAccordionwithAction(itemView, element, checkableListener, detailListener, refreshAccordion, ACTION_TYPE)
+                ACTION_TYPE -> getAccordionwithAction(itemView, element, checkableListener,
+                        detailListener, accordionListener, ACTION_TYPE)
                 PAID_TYPE ->  getAccordionwithPaid(itemView, element, checkableListener, detailListener, PAID_TYPE)
                 else -> getAccordionwithPaid(itemView, element, checkableListener, detailListener, PAID_TYPE)
             }
@@ -33,6 +34,10 @@ class SmartBillsAccordionViewHolder(view: View,
                 accordionData.clear()
                 removeAllViews()
                 addGroup(addAccordionData(view, element))
+                onItemClick = { position, isExpanded ->
+                    if(isExpanded) accordionListener.onExpandAccordion(element.title)
+                    else accordionListener.onCollapseAccordion(element.title)
+                }
             }
         }
     }
@@ -43,6 +48,8 @@ class SmartBillsAccordionViewHolder(view: View,
     }
 
     interface SBMAccordionListener{
-        fun onRefreshAccordion()
+        fun onRefreshAccordion(titleAccordion: String)
+        fun onCollapseAccordion(titleAccordion: String)
+        fun onExpandAccordion(titleAccordion: String)
     }
 }

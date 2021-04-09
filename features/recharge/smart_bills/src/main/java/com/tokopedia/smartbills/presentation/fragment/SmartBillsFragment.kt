@@ -543,8 +543,9 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
         }
     }
 
-    override fun onRefreshAccordion() {
+    override fun onRefreshAccordion(titleAccordion: String) {
         resetInitialState()
+        smartBillsAnalytics.clickRefreshAccordion(titleAccordion)
         ongoingMonth?.let {
             viewModel.getSBMWithAction(
                     viewModel.createRefreshActionParams(
@@ -556,6 +557,14 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
                     rechargeStatement
             )
         }
+    }
+
+    override fun onExpandAccordion(titleAccordion: String) {
+        smartBillsAnalytics.clickExpandAccordion(titleAccordion)
+    }
+
+    override fun onCollapseAccordion(titleAccordion: String) {
+        smartBillsAnalytics.clickCollapseAccordion(titleAccordion)
     }
 
     private fun getDataErrorException(): Throwable {

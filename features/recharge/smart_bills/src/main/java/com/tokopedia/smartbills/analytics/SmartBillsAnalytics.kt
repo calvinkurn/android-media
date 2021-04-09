@@ -219,6 +219,39 @@ class SmartBillsAnalytics {
         }
     }
 
+    fun clickExpandAccordion(titleAccordion: String) {
+        val map = TrackAppUtils.gtmData(
+                Event.CLICK_SMART_BILLS,
+                CATEGORY_SMART_BILLS,
+                Action.CLICK_EXPAND_ACCORDION,
+                titleAccordion)
+        map[Key.USER_ID] = userId
+        map.putAll(ADDITIONAL_INFO_MAP)
+        TrackApp.getInstance().gtm.sendGeneralEvent(map)
+    }
+
+    fun clickCollapseAccordion(titleAccordion: String) {
+        val map = TrackAppUtils.gtmData(
+                Event.CLICK_SMART_BILLS,
+                CATEGORY_SMART_BILLS,
+                Action.CLICK_COLLAPSE_ACCORDION,
+                titleAccordion)
+        map[Key.USER_ID] = userId
+        map.putAll(ADDITIONAL_INFO_MAP)
+        TrackApp.getInstance().gtm.sendGeneralEvent(map)
+    }
+
+    fun clickRefreshAccordion(titleAccordion: String) {
+        val map = TrackAppUtils.gtmData(
+                Event.CLICK_SMART_BILLS,
+                CATEGORY_SMART_BILLS,
+                Action.CLICK_REFRESH_ACCORDION,
+                titleAccordion)
+        map[Key.USER_ID] = userId
+        map.putAll(ADDITIONAL_INFO_MAP)
+        TrackApp.getInstance().gtm.sendGeneralEvent(map)
+    }
+
     companion object {
 
         const val CATEGORY_SMART_BILLS = "digital - smart bill management"
