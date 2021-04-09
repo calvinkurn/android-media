@@ -10,8 +10,7 @@ import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.intent.Intents.intending
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra
-import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
-import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.*
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.ApplinkConst.AttachProduct.TOKOPEDIA_ATTACH_PRODUCT_RESULT_KEY
 import com.tokopedia.applink.ApplinkConst.AttachProduct.TOKOPEDIA_ATTACH_PRODUCT_SOURCE_KEY
@@ -20,10 +19,11 @@ import com.tokopedia.chat_common.data.preview.ProductPreview
 import com.tokopedia.common.network.util.CommonUtil
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.action.ClickChildViewWithIdAction
-import com.tokopedia.topchat.chatroom.view.adapter.viewholder.TopchatProductAttachmentViewHolder
-import com.tokopedia.topchat.common.TopChatInternalRouter.Companion.SOURCE_TOPCHAT
 import com.tokopedia.topchat.assertion.hasTotalItemOf
 import com.tokopedia.topchat.chatroom.view.activity.base.BaseBuyerTopchatRoomTest
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.TopchatProductAttachmentViewHolder
+import com.tokopedia.topchat.common.TopChatInternalRouter.Companion.SOURCE_TOPCHAT
+import com.tokopedia.topchat.matchers.withTotalItem
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.hamcrest.Matchers.not
 import org.junit.Before
@@ -101,14 +101,14 @@ class TopchatRoomBuyerAttachProductTest : BaseBuyerTopchatRoomTest() {
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         inflateTestFragment()
-
-        // When
         intending(hasExtra(TOKOPEDIA_ATTACH_PRODUCT_SOURCE_KEY, SOURCE_TOPCHAT))
                 .respondWith(
                         Instrumentation.ActivityResult(
                                 Activity.RESULT_OK, getAttachProductData(1)
                         )
                 )
+
+        // When
         clickPlusIconMenu()
         clickAttachProductMenu()
 
@@ -168,14 +168,14 @@ class TopchatRoomBuyerAttachProductTest : BaseBuyerTopchatRoomTest() {
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         inflateTestFragment()
-
-        // When
         intending(hasExtra(TOKOPEDIA_ATTACH_PRODUCT_SOURCE_KEY, SOURCE_TOPCHAT))
                 .respondWith(
                         Instrumentation.ActivityResult(
                                 Activity.RESULT_OK, getAttachProductData(1)
                         )
                 )
+
+        // When
         clickPlusIconMenu()
         clickAttachProductMenu()
         clickCloseAttachmentPreview(0)
@@ -191,14 +191,14 @@ class TopchatRoomBuyerAttachProductTest : BaseBuyerTopchatRoomTest() {
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         inflateTestFragment()
-
-        // When
         intending(hasExtra(TOKOPEDIA_ATTACH_PRODUCT_SOURCE_KEY, SOURCE_TOPCHAT))
                 .respondWith(
                         Instrumentation.ActivityResult(
                                 Activity.RESULT_OK, getAttachProductData(3)
                         )
                 )
+
+        // When
         clickPlusIconMenu()
         clickAttachProductMenu()
         clickCloseAttachmentPreview(0)
@@ -211,11 +211,32 @@ class TopchatRoomBuyerAttachProductTest : BaseBuyerTopchatRoomTest() {
     }
 
     // TODO: test srw is displayed if has question
+    @Test
+    fun srw_displayed_if_buyer_attach_from_start_intent() {
+        // Given
+        setupChatRoomActivity {
+            putProductAttachmentIntent(it)
+        }
+        getChatUseCase.response = firstPageChatAsBuyer
+        chatAttachmentUseCase.response = chatAttachmentResponse
+        chatSrwUseCase.response = chatSrwResponse
+        inflateTestFragment()
+
+        // Then
+        onView(withId(R.id.list_template)).check(matches(not(isDisplayed())))
+        onView(withId(R.id.tp_srw_container_partial)).check(matches(isDisplayed()))
+        onView(withId(R.id.ll_srw_partial)).check(matches(not(isDisplayed())))
+        onView(withId(R.id.lu_srw_partial)).check(matches(not(isDisplayed())))
+        onView(withId(R.id.tp_srw_partial)).check(matches(withText("Tanya ke Chupacup Indonesia")))
+        onView(withId(R.id.rv_srw_partial)).check(matches(withTotalItem(1)))
+    }
+
     // TODO: test srw is hidden if it doesn't has question
     // TODO: test srw loading state
     // TODO: test srw error state
     // TODO: test srw interaction expand and collapse
     // TODO: test srw interaction click and send msg
+    // TODO: test srw seller side
 
     private fun clickCloseAttachmentPreview(position: Int) {
         val viewAction = RecyclerViewActions
