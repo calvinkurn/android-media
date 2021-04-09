@@ -18,8 +18,7 @@
         android:id="@+id/imgTest"
         android:layout_width="match_parent"
         android:layout_height="200dp"
-        android:scaleType="fitXY"
-        android:src="@drawable/media_state_default_placeholder"/>
+        android:src="@drawable/imagestate_placeholder"/>
 
     <LinearLayout
         android:layout_width="match_parent"
