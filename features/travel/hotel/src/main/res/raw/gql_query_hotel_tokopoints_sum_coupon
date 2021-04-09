@@ -1,7 +1,0 @@
-query {
-  tokopointsSumCoupon (categoryID: 51) {
-    sumCoupon
-    sumCouponStr
-    sumCouponUnitOpt
-  }
-}
