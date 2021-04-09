@@ -246,16 +246,17 @@
                     app:layout_constraintBottom_toBottomOf="@+id/new_comment"
                     app:layout_constraintStart_toStartOf="@+id/new_comment" />
 
-                <ImageView
+                <com.tokopedia.iconunify.IconUnify
                     android:id="@+id/iv_chat_menu"
                     android:layout_width="@dimen/spacing_lvl7"
                     android:layout_height="@dimen/spacing_lvl7"
                     android:layout_marginEnd="@dimen/spacing_lvl1"
                     android:layout_marginBottom="@dimen/dp_topchat_1"
                     android:padding="@dimen/spacing_lvl3"
+                    app:icon_color_light_enable="@color/topchat_dms_icon_compose"
+                    app:icon_name="ADD_CIRCLE"
                     app:layout_constraintBottom_toBottomOf="@+id/new_comment"
-                    app:layout_constraintEnd_toEndOf="@+id/new_comment"
-                    app:srcCompat="@drawable/ic_add_grey_chat_common" />
+                    app:layout_constraintEnd_toEndOf="@+id/new_comment" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
