@@ -177,16 +177,16 @@ open abstract class NfcCheckBalanceFragment : BaseDaggerFragment() {
         statusCloseBtn = FAILED_CLOSE_BTN
         emoneyAnalytics.onShowErrorTracking()
 
-        val message = if (errorMessage.contains(getString(R.string.emoney_nfc_grpc_timeout), true)) {
+        val updatedErrorMessage = if (errorMessage.contains(getString(R.string.emoney_nfc_grpc_timeout), true)) {
             getString(R.string.emoney_nfc_grpc_label_error)
         } else errorMessage
 
         if (eTollUpdateBalanceResultView.visibility == View.VISIBLE) {
-            eTollUpdateBalanceResultView.showError(message)
+            eTollUpdateBalanceResultView.showError(updatedErrorMessage)
         } else {
             tapETollCardView.visibility = View.VISIBLE
             tapETollCardView.showInitialState()
-            tapETollCardView.showErrorState(message)
+            tapETollCardView.showErrorState(updatedErrorMessage)
         }
         emoneyAnalytics.openScreenFailedReadCardNFC(userSession.userId, irisSessionId)
     }
