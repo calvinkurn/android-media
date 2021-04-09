@@ -134,7 +134,7 @@ class TopAdsHeadlineKeyFragment : BaseDaggerFragment() {
         }
         Utils.setSearchListener(context, view, ::fetchData)
         btnFilter?.setOnClickListener {
-            groupFilterSheet.show()
+            groupFilterSheet.show(childFragmentManager, "")
             groupFilterSheet.onSubmitClick = { fetchData() }
         }
         btnAddItem?.setOnClickListener{

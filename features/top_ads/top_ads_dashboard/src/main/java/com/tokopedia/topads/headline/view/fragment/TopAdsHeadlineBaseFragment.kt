@@ -142,7 +142,7 @@ open class TopAdsHeadlineBaseFragment : TopAdsBaseTabFragment() {
         loader.visibility = View.VISIBLE
         loadStatisticsData()
         btnFilter.setOnClickListener {
-            groupFilterSheet.show()
+            groupFilterSheet.show(childFragmentManager, "")
             groupFilterSheet.onSubmitClick = { fetchData() }
         }
         close_butt.setOnClickListener {
