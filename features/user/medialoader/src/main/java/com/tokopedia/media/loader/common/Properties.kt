@@ -5,6 +5,7 @@ import com.bumptech.glide.load.Key
 import com.bumptech.glide.load.Transformation
 import com.tokopedia.media.common.data.CDN_IMAGE_URL
 import com.tokopedia.media.loader.R
+import com.tokopedia.media.loader.data.ERROR_RES_UNIFY
 import com.tokopedia.media.loader.data.Resize
 import com.tokopedia.media.loader.listener.MediaListener
 import com.tokopedia.media.loader.utils.AspectRatio
@@ -22,7 +23,7 @@ open class Properties(
         internal var isCircular: Boolean = false,
         internal var roundedRadius: Float = 0f,
         internal var signatureKey: Key? = null,
-        internal var error: Int = R.drawable.media_state_default_error,
+        internal var error: Int = ERROR_RES_UNIFY,
         internal var placeHolder: Int = 0,
         internal var cacheStrategy: MediaCacheStrategy? = MediaCacheStrategy.RESOURCE,
         internal var overrideSize: Resize? = null,

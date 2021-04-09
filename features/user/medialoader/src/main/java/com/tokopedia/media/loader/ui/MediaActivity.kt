@@ -8,6 +8,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.tokopedia.media.loader.*
 import com.tokopedia.media.loader.common.Properties
+import com.tokopedia.media.loader.data.ERROR_RES_UNIFY
 import com.tokopedia.media.loader.transform.BlurHashDecoder
 import com.tokopedia.media.loader.utils.AspectRatio
 import com.tokopedia.media.loader.utils.MediaTarget
@@ -129,7 +130,7 @@ class MediaActivity : AppCompatActivity() {
     private fun loadImageCustomError() {
         Toast.makeText(applicationContext, "initialize...", Toast.LENGTH_SHORT).show()
         imgTest?.loadImage(url) {
-            setErrorDrawable(R.drawable.media_sample_error)
+            setErrorDrawable(ERROR_RES_UNIFY)
             setDelay(3000)
             listener({ _, _ ->
                 Toast.makeText(applicationContext, "loaded!", Toast.LENGTH_SHORT).show()

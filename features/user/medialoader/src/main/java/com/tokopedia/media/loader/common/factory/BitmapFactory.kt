@@ -9,6 +9,7 @@ import com.tokopedia.media.common.data.toUri
 import com.tokopedia.media.loader.R
 import com.tokopedia.media.loader.common.MediaLoaderFactory
 import com.tokopedia.media.loader.common.Properties
+import com.tokopedia.media.loader.data.PLACEHOLDER_RES_UNIFY
 import com.tokopedia.media.loader.module.GlideRequest
 import com.tokopedia.media.loader.utils.AspectRatio
 import com.tokopedia.media.loader.listener.MediaListenerBuilder.callback as callbackListener
@@ -91,7 +92,7 @@ class BitmapFactory : MediaLoaderFactory<Bitmap>() {
                                 height = properties.imageViewSize.second
                         )))
                     } else {
-                        placeholder(R.drawable.media_state_default_placeholder)
+                        placeholder(PLACEHOLDER_RES_UNIFY)
                     }
                 }
 
