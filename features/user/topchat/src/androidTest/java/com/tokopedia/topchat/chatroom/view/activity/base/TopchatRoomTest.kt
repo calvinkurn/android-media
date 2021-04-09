@@ -313,6 +313,10 @@ abstract class TopchatRoomTest {
             this.templates = templates
         }
     }
+
+    protected fun waitForIt(timeMillis: Long) {
+        Thread.sleep(timeMillis)
+    }
 }
 
 fun GetExistingChatPojo.blockPromo(blockPromo: Boolean): GetExistingChatPojo {
