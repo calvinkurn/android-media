@@ -91,7 +91,7 @@ class HomeProductFragment : BaseDaggerFragment() {
         }
         clearCache(shopPageNestedWebView)
         if (shopProductPromoUiModel.isLogin) {
-            shopPageNestedWebView.loadAuthUrl(shopProductPromoUiModel.url, userSession)
+            shopPageNestedWebView.loadAuthUrl(shopProductPromoUiModel.url.orEmpty(), userSession)
         } else {
             shopPageNestedWebView.loadUrl(shopProductPromoUiModel.url)
         }
@@ -151,7 +151,7 @@ class HomeProductFragment : BaseDaggerFragment() {
 
     fun promoClicked(url: String?) {
         activity?.let {
-            val urlProceed = ShopProductOfficialStoreUtils.proceedUrl(it, url, shopId,
+            val urlProceed = ShopProductOfficialStoreUtils.proceedUrl(it, url.orEmpty(), shopId,
                     userSession.isLoggedIn,
                     userSession.deviceId,
                     userSession.userId)

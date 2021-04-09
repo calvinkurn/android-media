@@ -64,7 +64,7 @@ import javax.inject.Named
 class ShopProductModule {
     @ShopProductScope
     @Provides
-    fun getNetworkRouter(@ApplicationContext context: Context?): NetworkRouter {
+    fun getNetworkRouter(@ApplicationContext context: Context): NetworkRouter {
         return context as NetworkRouter
     }
 
@@ -128,8 +128,8 @@ class ShopProductModule {
 
     @ShopProductScope
     @Provides
-    fun provideGetMembershipUseCase(@Named(ShopCommonParamApiConstant.QUERY_STAMP_PROGRESS) gqlQuery: String?,
-                                    gqlUseCase: MultiRequestGraphqlUseCase?): GetMembershipUseCase {
+    fun provideGetMembershipUseCase(@Named(ShopCommonParamApiConstant.QUERY_STAMP_PROGRESS) gqlQuery: String,
+                                    gqlUseCase: MultiRequestGraphqlUseCase): GetMembershipUseCase {
         return GetMembershipUseCase(gqlQuery!!, gqlUseCase!!)
     }
 
@@ -209,13 +209,13 @@ class ShopProductModule {
 
     @ShopProductScope
     @Provides
-    fun provideClaimBenefitMembershipUseCase(@Named(ShopCommonParamApiConstant.QUERY_CLAIM_MEMBERSHIP) gqlQuery: String?,
-                                             gqlUseCase: MultiRequestGraphqlUseCase?): ClaimBenefitMembershipUseCase {
+    fun provideClaimBenefitMembershipUseCase(@Named(ShopCommonParamApiConstant.QUERY_CLAIM_MEMBERSHIP) gqlQuery: String,
+                                             gqlUseCase: MultiRequestGraphqlUseCase): ClaimBenefitMembershipUseCase {
         return ClaimBenefitMembershipUseCase(gqlQuery!!, gqlUseCase!!)
     }
 
     @Provides
-    fun provideGMAuthInterceptor(@ShopPageContext context: Context?,
+    fun provideGMAuthInterceptor(@ShopPageContext context: Context,
                                  userSession: UserSessionInterface,
                                  abstractionRouter: NetworkRouter): GMAuthInterceptor {
         return GMAuthInterceptor(context, userSession, abstractionRouter)
@@ -223,10 +223,10 @@ class ShopProductModule {
 
     @ShopProductGMFeaturedQualifier
     @Provides
-    fun provideGMOkHttpClient(gmAuthInterceptor: GMAuthInterceptor?,
-                              @ApplicationScope httpLoggingInterceptor: HttpLoggingInterceptor?,
-                              errorResponseInterceptor: HeaderErrorResponseInterceptor?,
-                              cacheApiInterceptor: CacheApiInterceptor?): OkHttpClient {
+    fun provideGMOkHttpClient(gmAuthInterceptor: GMAuthInterceptor,
+                              @ApplicationScope httpLoggingInterceptor: HttpLoggingInterceptor,
+                              errorResponseInterceptor: HeaderErrorResponseInterceptor,
+                              cacheApiInterceptor: CacheApiInterceptor): OkHttpClient {
         return Builder()
             .addInterceptor(cacheApiInterceptor)
             .addInterceptor(gmAuthInterceptor)
@@ -238,7 +238,7 @@ class ShopProductModule {
     @ShopProductGMFeaturedQualifier
     @ShopProductScope
     @Provides
-    fun provideGMRetrofit(@ShopProductGMFeaturedQualifier okHttpClient: OkHttpClient?,
+    fun provideGMRetrofit(@ShopProductGMFeaturedQualifier okHttpClient: OkHttpClient,
                           retrofitBuilder: Retrofit.Builder): Retrofit {
         return retrofitBuilder.baseUrl(GMCommonUrl.BASE_URL).client(okHttpClient).build()
     }
@@ -251,35 +251,35 @@ class ShopProductModule {
 
     @ShopProductScope
     @Provides
-    fun provideGMCommonCloudDataSource(gmCommonApi: GMCommonApi?): GMCommonCloudDataSource {
+    fun provideGMCommonCloudDataSource(gmCommonApi: GMCommonApi): GMCommonCloudDataSource {
         return GMCommonCloudDataSource(gmCommonApi)
     }
 
     @ShopProductScope
     @Provides
-    fun provideGMCommonDataSource(gmCommonCloudDataSource: GMCommonCloudDataSource?): GMCommonDataSource {
+    fun provideGMCommonDataSource(gmCommonCloudDataSource: GMCommonCloudDataSource): GMCommonDataSource {
         return GMCommonDataSource(gmCommonCloudDataSource)
     }
 
     @ShopProductScope
     @Provides
-    fun provideGMCommonRepository(gmCommonDataSource: GMCommonDataSource?): GMCommonRepository {
+    fun provideGMCommonRepository(gmCommonDataSource: GMCommonDataSource): GMCommonRepository {
         return GMCommonRepositoryImpl(gmCommonDataSource)
     }
 
     // WishList
     @Provides
-    fun provideWishListAuthInterceptor(@ShopPageContext context: Context?,
-                                       networkRouter: NetworkRouter?,
-                                       userSessionInterface: UserSessionInterface?): WishListAuthInterceptor {
+    fun provideWishListAuthInterceptor(@ShopPageContext context: Context,
+                                       networkRouter: NetworkRouter,
+                                       userSessionInterface: UserSessionInterface): WishListAuthInterceptor {
         return WishListAuthInterceptor(context, networkRouter, userSessionInterface)
     }
 
     @ShopProductWishListFeaturedQualifier
     @Provides
-    fun provideWishListOkHttpClient(wishListAuthInterceptor: WishListAuthInterceptor?,
-                                    @ApplicationScope httpLoggingInterceptor: HttpLoggingInterceptor?,
-                                    errorResponseInterceptor: HeaderErrorResponseInterceptor?): OkHttpClient {
+    fun provideWishListOkHttpClient(wishListAuthInterceptor: WishListAuthInterceptor,
+                                    @ApplicationScope httpLoggingInterceptor: HttpLoggingInterceptor,
+                                    errorResponseInterceptor: HeaderErrorResponseInterceptor): OkHttpClient {
         return Builder()
             .addInterceptor(wishListAuthInterceptor)
             .addInterceptor(errorResponseInterceptor)
@@ -290,7 +290,7 @@ class ShopProductModule {
     @ShopProductWishListFeaturedQualifier
     @ShopProductScope
     @Provides
-    fun provideWishListRetrofit(@ShopProductWishListFeaturedQualifier okHttpClient: OkHttpClient?,
+    fun provideWishListRetrofit(@ShopProductWishListFeaturedQualifier okHttpClient: OkHttpClient,
                                 retrofitBuilder: Retrofit.Builder): Retrofit {
         return retrofitBuilder.baseUrl(WishListCommonUrl.BASE_URL).client(okHttpClient).build()
     }
@@ -309,42 +309,42 @@ class ShopProductModule {
 
     @ShopProductScope
     @Provides
-    fun provideWishListCommonCloudDataSource(wishListCommonApi: WishListCommonApi?): WishListCommonCloudDataSource {
+    fun provideWishListCommonCloudDataSource(wishListCommonApi: WishListCommonApi): WishListCommonCloudDataSource {
         return WishListCommonCloudDataSource(wishListCommonApi)
     }
 
     @ShopProductScope
     @Provides
-    fun provideWishListCommonDataSource(wishListCommonCloudDataSource: WishListCommonCloudDataSource?): WishListCommonDataSource {
+    fun provideWishListCommonDataSource(wishListCommonCloudDataSource: WishListCommonCloudDataSource): WishListCommonDataSource {
         return WishListCommonDataSource(wishListCommonCloudDataSource)
     }
 
     @ShopProductScope
     @Provides
-    fun provideWishListCommonRepository(wishListCommonDataSource: WishListCommonDataSource?): WishListCommonRepository {
+    fun provideWishListCommonRepository(wishListCommonDataSource: WishListCommonDataSource): WishListCommonRepository {
         return WishListCommonRepositoryImpl(wishListCommonDataSource)
     }
 
     @ShopProductScope
     @Provides
-    fun provideGetWishListUseCase(wishListCommonRepository: WishListCommonRepository?): GetWishListUseCase {
+    fun provideGetWishListUseCase(wishListCommonRepository: WishListCommonRepository): GetWishListUseCase {
         return GetWishListUseCase(wishListCommonRepository)
     }
 
     // Product
     @Provides
-    fun provideShopOfficialStoreAuthInterceptor(@ShopPageContext context: Context?,
-                                                networkRouter: NetworkRouter?,
-                                                userSessionInterface: UserSessionInterface?): ShopOfficialStoreAuthInterceptor {
+    fun provideShopOfficialStoreAuthInterceptor(@ShopPageContext context: Context,
+                                                networkRouter: NetworkRouter,
+                                                userSessionInterface: UserSessionInterface): ShopOfficialStoreAuthInterceptor {
         return ShopOfficialStoreAuthInterceptor(context, networkRouter, userSessionInterface)
     }
 
     @ShopProductQualifier
     @Provides
-    fun provideOfficialStoreOkHttpClient(shopOfficialStoreAuthInterceptor: ShopOfficialStoreAuthInterceptor?,
-                                         @ApplicationScope httpLoggingInterceptor: HttpLoggingInterceptor?,
-                                         errorResponseInterceptor: HeaderErrorResponseInterceptor?,
-                                         cacheApiInterceptor: CacheApiInterceptor?): OkHttpClient {
+    fun provideOfficialStoreOkHttpClient(shopOfficialStoreAuthInterceptor: ShopOfficialStoreAuthInterceptor,
+                                         @ApplicationScope httpLoggingInterceptor: HttpLoggingInterceptor,
+                                         errorResponseInterceptor: HeaderErrorResponseInterceptor,
+                                         cacheApiInterceptor: CacheApiInterceptor): OkHttpClient {
         return Builder()
             .addInterceptor(cacheApiInterceptor)
             .addInterceptor(shopOfficialStoreAuthInterceptor)
@@ -356,7 +356,7 @@ class ShopProductModule {
     @ShopProductQualifier
     @ShopProductScope
     @Provides
-    fun provideOfficialStoreRetrofit(@ShopProductQualifier okHttpClient: OkHttpClient?, retrofitBuilder: Retrofit.Builder): Retrofit {
+    fun provideOfficialStoreRetrofit(@ShopProductQualifier okHttpClient: OkHttpClient, retrofitBuilder: Retrofit.Builder): Retrofit {
         return retrofitBuilder.baseUrl(ShopUrl.BASE_OFFICIAL_STORE_URL).client(okHttpClient).build()
     }
 
@@ -368,41 +368,41 @@ class ShopProductModule {
 
     @ShopProductScope
     @Provides
-    fun provideShopProductRepository(shopProductDataSource: ShopProductCloudDataSource?): ShopProductRepository {
+    fun provideShopProductRepository(shopProductDataSource: ShopProductCloudDataSource): ShopProductRepository {
         return ShopProductRepositoryImpl(shopProductDataSource)
     }
 
     @ShopProductScope
     @Provides
-    fun provideDeleteShopProductTomeUseCase(@ShopPageContext context: Context?): DeleteShopProductTomeUseCase {
+    fun provideDeleteShopProductTomeUseCase(@ShopPageContext context: Context): DeleteShopProductTomeUseCase {
         return DeleteShopProductTomeUseCase(context)
     }
 
     @ShopProductScope
     @Provides
-    fun provideDeleteShopProductAceUseCase(@ShopPageContext context: Context?): DeleteShopProductAceUseCase {
+    fun provideDeleteShopProductAceUseCase(@ShopPageContext context: Context): DeleteShopProductAceUseCase {
         return DeleteShopProductAceUseCase(context)
     }
 
     @ShopProductScope
     @Provides
-    fun provideGetProductCampaignsUseCase(wishListCommonRepository: ShopProductRepository?): GetProductCampaignsUseCase {
+    fun provideGetProductCampaignsUseCase(wishListCommonRepository: ShopProductRepository): GetProductCampaignsUseCase {
         return GetProductCampaignsUseCase(wishListCommonRepository)
     }
 
     @ShopProductScope
     @Provides
-    fun provideUserSessionInterface(@ShopPageContext context: Context?): UserSessionInterface {
+    fun provideUserSessionInterface(@ShopPageContext context: Context): UserSessionInterface {
         return UserSession(context)
     }
 
     @ShopProductSortQualifier
     @ShopProductScope
     @Provides
-    fun provideOkHttpClient(shopAuthInterceptor: ShopAuthInterceptor?,
-                            @ApplicationScope httpLoggingInterceptor: HttpLoggingInterceptor?,
-                            errorResponseInterceptor: HeaderErrorResponseInterceptor?,
-                            cacheApiInterceptor: CacheApiInterceptor?): OkHttpClient? {
+    fun provideOkHttpClient(shopAuthInterceptor: ShopAuthInterceptor,
+                            @ApplicationScope httpLoggingInterceptor: HttpLoggingInterceptor,
+                            errorResponseInterceptor: HeaderErrorResponseInterceptor,
+                            cacheApiInterceptor: CacheApiInterceptor): OkHttpClient {
         return Builder()
                 .addInterceptor(cacheApiInterceptor)
                 .addInterceptor(shopAuthInterceptor)
@@ -414,7 +414,7 @@ class ShopProductModule {
     @ShopProductSortQualifier
     @ShopProductScope
     @Provides
-    fun provideShopAceRetrofit(@ShopProductSortQualifier okHttpClient: OkHttpClient?,
+    fun provideShopAceRetrofit(@ShopProductSortQualifier okHttpClient: OkHttpClient,
                                retrofitBuilder: Retrofit.Builder): Retrofit {
         return retrofitBuilder.baseUrl(ShopUrl.BASE_ACE_URL).client(okHttpClient).build()
     }
