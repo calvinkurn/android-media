@@ -11,8 +11,8 @@ import androidx.test.rule.ActivityTestRule
 import com.tokopedia.topchat.AndroidFileUtil
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.pojo.ChatListPojo
-import com.tokopedia.topchat.assertion.hasTotalItemOf
 import com.tokopedia.topchat.matchers.withIndex
+import com.tokopedia.topchat.matchers.withTotalItem
 import com.tokopedia.topchat.stub.chatlist.activity.ChatListActivityStub
 import com.tokopedia.topchat.stub.chatlist.usecase.GetChatListMessageUseCaseStub
 import com.tokopedia.topchat.stub.chatlist.usecase.GetChatNotificationUseCaseStub
@@ -93,7 +93,7 @@ class ChatListActivityTest {
 
         // Then
         onView(withId(R.id.recycler_view))
-                .check(hasTotalItemOf(2))
+                .check(matches(withTotalItem(2)))
     }
 
     @Test
@@ -135,6 +135,6 @@ class ChatListActivityTest {
 
         // Then
         onView(withIndex(withId(R.id.recycler_view), 0))
-                .check(hasTotalItemOf(5))
+                .check(matches(withTotalItem(5)))
     }
 }

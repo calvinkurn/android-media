@@ -19,7 +19,6 @@ import com.tokopedia.chat_common.data.preview.ProductPreview
 import com.tokopedia.common.network.util.CommonUtil
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.action.ClickChildViewWithIdAction
-import com.tokopedia.topchat.assertion.hasTotalItemOf
 import com.tokopedia.topchat.chatroom.view.activity.base.BaseBuyerTopchatRoomTest
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.TopchatProductAttachmentViewHolder
 import com.tokopedia.topchat.common.TopChatInternalRouter.Companion.SOURCE_TOPCHAT
@@ -72,7 +71,7 @@ class TopchatRoomBuyerAttachProductTest : BaseBuyerTopchatRoomTest() {
         // Then
         onView(withId(R.id.rv_attachment_preview)).check(matches(isDisplayed()))
         onView(withId(R.id.rv_attachment_preview))
-                .check(hasTotalItemOf(1))
+                .check(matches(withTotalItem(1)))
     }
 
     @Test
@@ -91,7 +90,7 @@ class TopchatRoomBuyerAttachProductTest : BaseBuyerTopchatRoomTest() {
         // Then
         onView(withId(R.id.rv_attachment_preview)).check(matches(isDisplayed()))
         onView(withId(R.id.rv_attachment_preview))
-                .check(hasTotalItemOf(1))
+                .check(matches(withTotalItem(1)))
     }
 
     @Test
@@ -115,7 +114,7 @@ class TopchatRoomBuyerAttachProductTest : BaseBuyerTopchatRoomTest() {
         // Then
         onView(withId(R.id.rv_attachment_preview)).check(matches(isDisplayed()))
         onView(withId(R.id.rv_attachment_preview))
-                .check(hasTotalItemOf(1))
+                .check(matches(withTotalItem(1)))
     }
 
     @Test
@@ -158,7 +157,7 @@ class TopchatRoomBuyerAttachProductTest : BaseBuyerTopchatRoomTest() {
         // Then
         onView(withId(R.id.rv_attachment_preview)).check(matches(isDisplayed()))
         onView(withId(R.id.rv_attachment_preview))
-                .check(hasTotalItemOf(3))
+                .check(matches(withTotalItem(3)))
     }
 
     @Test
@@ -207,7 +206,7 @@ class TopchatRoomBuyerAttachProductTest : BaseBuyerTopchatRoomTest() {
         // Then
         onView(withId(R.id.rv_attachment_preview)).check(matches(isDisplayed()))
         onView(withId(R.id.rv_attachment_preview))
-                .check(hasTotalItemOf(1))
+                .check(matches(withTotalItem(1)))
     }
 
     // TODO: test srw is displayed if has question
