@@ -133,6 +133,7 @@ open class HomeViewModel @Inject constructor(
     }
 
     private var navRollanceType: String = ""
+    private var popularKeywordRefreshCount = 1
     var currentTopAdsBannerToken: String = ""
     private val homeFlowData: Flow<HomeDataModel?> = homeUseCase.get().getHomeData().flowOn(homeDispatcher.get().io())
 
@@ -1209,14 +1210,26 @@ open class HomeViewModel @Inject constructor(
     fun getPopularKeywordData() {
         if(getPopularKeywordJob?.isActive == true) return
         getPopularKeywordJob = launchCatchError(coroutineContext, {
-            popularKeywordUseCase.get().setParams()
+            popularKeywordUseCase.get().setParams(page = popularKeywordRefreshCount)
             val results = popularKeywordUseCase.get().executeOnBackground()
             if (results.data.keywords.isNotEmpty()) {
                 val resultList = convertPopularKeywordDataList(results.data)
                 homeVisitableListData.withIndex().find { it.value is PopularKeywordListDataModel }?.let { indexedData ->
                     val oldData = indexedData.value
                     if (oldData is PopularKeywordListDataModel) {
-                        homeProcessor.get().sendWithQueueMethod(UpdateWidgetCommand(oldData.copy(popularKeywordList = resultList), indexedData.index, this@HomeViewModel))
+                        homeProcessor.get().sendWithQueueMethod(UpdateWidgetCommand(oldData.copy(
+                                title = results.data.title,
+                                subTitle = results.data.subTitle,
+                                popularKeywordList = resultList), indexedData.index, this@HomeViewModel))
+                    }
+                }
+                popularKeywordRefreshCount++
+            } else {
+                homeVisitableListData.withIndex().find { it.value is PopularKeywordListDataModel }?.let { indexedData ->
+                    val oldData = indexedData.value
+                    if (oldData is PopularKeywordListDataModel) {
+                        homeProcessor.get().sendWithQueueMethod(
+                                DeleteWidgetCommand(oldData, indexedData.index, this@HomeViewModel))
                     }
                 }
             }

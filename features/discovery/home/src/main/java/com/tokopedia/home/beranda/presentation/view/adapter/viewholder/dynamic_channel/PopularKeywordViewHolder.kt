@@ -6,6 +6,7 @@ import android.view.ViewStub
 import android.view.animation.Animation
 import android.view.animation.LinearInterpolator
 import android.view.animation.RotateAnimation
+import android.widget.TextView
 import androidx.annotation.LayoutRes
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.content.ContextCompat
@@ -49,6 +50,8 @@ class PopularKeywordViewHolder (val view: View,
     var tvReload: Typography? = null
     var ivReload: AppCompatImageView? = null
     var loadingView: View? = null
+    var channelSubtitle: TextView? = null
+
     private val errorPopularKeyword = view.findViewById<LocalLoad>(R.id.error_popular_keyword)
     private val rotateAnimation = RotateAnimation(0f, 360f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f)
     private val recyclerView = view.findViewById<RecyclerView>(R.id.rv_popular_keyword)
@@ -87,6 +90,7 @@ class PopularKeywordViewHolder (val view: View,
     private fun initStub(element: PopularKeywordListDataModel) {
         try {
             val channelTitleStub: View? = itemView.findViewById(R.id.channel_title)
+            val channelSubtitleStub: View? = itemView?.findViewById(com.tokopedia.home_component.R.id.channel_subtitle)
             val tvReloadStub: View? = itemView.findViewById(R.id.tv_reload)
             val ivReloadStub: View? = itemView.findViewById(R.id.iv_reload)
             val loadingViewStub: View? = itemView.findViewById(R.id.loading_popular)
@@ -101,7 +105,7 @@ class PopularKeywordViewHolder (val view: View,
             }
 
             channelTitleStub?.let {
-                if (element.channel.header.name.isNotEmpty()) {
+                if (element.title.isNotEmpty()) {
                     it.visibility = View.VISIBLE
                     channelTitle = if (channelTitleStub is ViewStub &&
                             !isViewStubHasBeenInflated(channelTitleStub)) {
@@ -120,6 +124,25 @@ class PopularKeywordViewHolder (val view: View,
                     it.visibility = View.GONE
                 }
             }
+            /**
+             * Requirement:
+             * Only show channel subtitle when it is exist
+             */
+            val channelSubtitleName = element.subTitle
+            if (channelSubtitleName.isNotEmpty()) {
+                channelSubtitle = if (channelSubtitleStub is ViewStub &&
+                        !isViewStubHasBeenInflated(channelSubtitleStub)) {
+                    val stubChannelView = channelSubtitleStub.inflate()
+                    stubChannelView?.findViewById(com.tokopedia.home_component.R.id.channel_subtitle)
+                } else {
+                    itemView?.findViewById(com.tokopedia.home_component.R.id.channel_subtitle)
+                }
+                channelSubtitle?.text = channelSubtitleName
+                channelSubtitle?.visibility = View.VISIBLE
+            } else {
+                channelSubtitle?.visibility = View.GONE
+            }
+
             tvReloadStub?.let {
                 it.visibility = View.VISIBLE
                 tvReload = if (tvReloadStub is ViewStub &&
@@ -142,8 +165,15 @@ class PopularKeywordViewHolder (val view: View,
                 }
                 ivReload?.setOnClickListener(reloadClickListener(element))
             }
-            if(!element.isErrorLoad) errorPopularKeyword?.hide()
-            else errorPopularKeyword.show()
+            if(!element.isErrorLoad) {
+                errorPopularKeyword?.hide()
+                channelTitle?.show()
+                channelSubtitle?.show()
+            } else {
+                errorPopularKeyword.show()
+                channelTitle?.hide()
+                channelSubtitle?.hide()
+            }
             errorPopularKeyword.progressState = false
             errorPopularKeyword?.refreshBtn?.setOnClickListener(reloadClickListener(element))
         } catch (e: Exception) {

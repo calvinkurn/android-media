@@ -3,33 +3,49 @@
     android:id="@+id/loading_popular"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_marginStart="@dimen/dp_16"
+    android:layout_marginEnd="@dimen/dp_16"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
-    <com.elyeproj.loaderviewlibrary.LoaderImageView
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/loader_popular_keyword_title"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_24"
+        app:loader_type="rect"
+        android:layout_marginTop="@dimen/dp_16"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        />
+
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loader1"
         android:layout_width="0dp"
         android:layout_height="64dp"
-        android:layout_marginTop="@dimen/dp_4"
+        android:layout_marginTop="@dimen/dp_8"
         android:layout_marginStart="@dimen/dp_4"
         android:layout_marginEnd="@dimen/dp_4"
+        app:loader_type="rect"
         app:corners="16"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/loader2"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/loader_popular_keyword_title"
         app:layout_constraintBottom_toTopOf="@+id/loader3"/>
-    <com.elyeproj.loaderviewlibrary.LoaderImageView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loader2"
         android:layout_width="0dp"
         android:layout_height="64dp"
         android:layout_marginTop="@dimen/dp_4"
         android:layout_marginStart="@dimen/dp_4"
         android:layout_marginEnd="@dimen/dp_4"
+        app:loader_type="rect"
         app:corners="16"
         app:layout_constraintStart_toEndOf="@+id/loader1"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/loader_popular_keyword_title"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toTopOf="@+id/loader4"/>
-    <com.elyeproj.loaderviewlibrary.LoaderImageView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loader3"
         android:layout_width="0dp"
         android:layout_height="64dp"
@@ -37,12 +53,13 @@
         android:layout_marginStart="@dimen/dp_4"
         android:layout_marginEnd="@dimen/dp_4"
         android:layout_marginBottom="@dimen/dp_4"
+        app:loader_type="rect"
         app:corners="16"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/loader4"
         app:layout_constraintTop_toBottomOf="@+id/loader1"
         app:layout_constraintBottom_toBottomOf="parent"/>
-    <com.elyeproj.loaderviewlibrary.LoaderImageView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loader4"
         android:layout_width="0dp"
         android:layout_height="64dp"
@@ -50,6 +67,7 @@
         android:layout_marginStart="@dimen/dp_4"
         android:layout_marginEnd="@dimen/dp_4"
         android:layout_marginBottom="@dimen/dp_4"
+        app:loader_type="rect"
         app:corners="16"
         app:layout_constraintStart_toEndOf="@+id/loader3"
         app:layout_constraintTop_toBottomOf="@+id/loader2"

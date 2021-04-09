@@ -7,6 +7,7 @@
     android:paddingTop="@dimen/dp_4">
 
     <ViewStub
+        tools:visibility="visible"
         android:id="@+id/channel_title"
         android:inflatedId="@+id/channel_title"
         android:layout="@layout/view_stub_pk_title"
@@ -20,6 +21,23 @@
         app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
+
+    <ViewStub
+        android:id="@+id/channel_subtitle"
+        android:inflatedId="@+id/channel_subtitle"
+        android:layout="@layout/view_stub_dc_subtitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_1"
+        android:layout_marginStart="@dimen/home_component_margin_default"
+        android:layout_marginLeft="@dimen/home_component_margin_default"
+        android:visibility="gone"
+        tools:visibility="visible"
+        tools:background="@color/Unify_N700"
+        tools:text="Berakhir dalam"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/channel_title"/>
+
     <ViewStub
         android:id="@+id/iv_reload"
         android:inflatedId="@+id/iv_reload"
@@ -56,7 +74,7 @@
         tools:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
         tools:itemCount="4"
         tools:listitem="@layout/layout_popular_keyword_item"
-        app:layout_constraintTop_toBottomOf="@+id/channel_title"
+        app:layout_constraintTop_toBottomOf="@+id/channel_subtitle"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="@+id/channel_title"
         app:layout_constraintRight_toRightOf="@+id/tv_reload"/>
@@ -75,6 +93,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"/>
     <com.tokopedia.unifycomponents.LocalLoad
+        tools:visibility="invisible"
         android:id="@+id/error_popular_keyword"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

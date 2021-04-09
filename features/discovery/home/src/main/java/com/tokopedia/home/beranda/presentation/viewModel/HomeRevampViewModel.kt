@@ -141,6 +141,7 @@ open class HomeRevampViewModel @Inject constructor(
 
     private var navRollanceType: String = ""
     private var useNewBalanceWidget: Boolean = true
+    private var popularKeywordRefreshCount = 1
 
     var currentTopAdsBannerToken: String = ""
     private val homeFlowData: Flow<HomeDataModel?> = homeUseCase.get().getHomeData().flowOn(homeDispatcher.get().ui())
@@ -1136,12 +1137,16 @@ open class HomeRevampViewModel @Inject constructor(
     }
 
     fun refreshHomeData() {
-        if (homeFlowDataCancelled) {
-            initFlow()
-            homeFlowDataCancelled = false
-        }
+        modifyVariableOnRefresh()
+        validateHomeFlow()
+        launchRefreshJob()
+    }
 
+    private fun modifyVariableOnRefresh() {
         onRefreshState = true
+    }
+
+    private fun launchRefreshJob() {
         if (getHomeDataJob?.isActive == true) return
         getHomeDataJob = launchCatchError(coroutineContext, block = {
             homeUseCase.get().updateHomeData().collect {
@@ -1150,7 +1155,7 @@ open class HomeRevampViewModel @Inject constructor(
                     removeDynamicChannelLoadingModel()
                 }
 
-                if (it.status === Result.Status.ERROR_ATF || it.status === Result.Status.ERROR_GENERAL ) {
+                if (it.status === Result.Status.ERROR_ATF || it.status === Result.Status.ERROR_GENERAL) {
                     _updateNetworkLiveData.postValue(it)
                 }
             }
@@ -1158,9 +1163,16 @@ open class HomeRevampViewModel @Inject constructor(
             homeRateLimit.reset(HOME_LIMITER_KEY)
             _updateNetworkLiveData.postValue(Result.error(Throwable(), null))
 
-            Timber.w("${ConstantKey.HomeTimber.TAG}revamp_error_refresh;reason='${it.message?:""
+            Timber.w("${ConstantKey.HomeTimber.TAG}revamp_error_refresh;reason='${it.message ?: ""
                     .take(ConstantKey.HomeTimber.MAX_LIMIT)}';data='${Log.getStackTraceString(it)
                     .take(ConstantKey.HomeTimber.MAX_LIMIT)}'")
+        }
+    }
+
+    private fun validateHomeFlow() {
+        if (homeFlowDataCancelled) {
+            initFlow()
+            homeFlowDataCancelled = false
         }
     }
 
@@ -1427,14 +1439,29 @@ open class HomeRevampViewModel @Inject constructor(
     fun getPopularKeywordData() {
         if(getPopularKeywordJob?.isActive == true) return
         getPopularKeywordJob = launchCatchError(coroutineContext, {
-            popularKeywordUseCase.get().setParams()
+            popularKeywordUseCase.get().setParams(page = popularKeywordRefreshCount)
             val results = popularKeywordUseCase.get().executeOnBackground()
             if (results.data.keywords.isNotEmpty()) {
                 val resultList = convertPopularKeywordDataList(results.data)
                 homeVisitableListData.withIndex().find { it.value is PopularKeywordListDataModel }?.let { indexedData ->
                     val oldData = indexedData.value
                     if (oldData is PopularKeywordListDataModel) {
-                        homeProcessor.get().sendWithQueueMethod(UpdateWidgetCommand(oldData.copy(popularKeywordList = resultList, isErrorLoad = false), indexedData.index, this@HomeRevampViewModel))
+                        homeProcessor.get().sendWithQueueMethod(
+                                UpdateWidgetCommand(oldData.copy(
+                                        title = results.data.title,
+                                        subTitle = results.data.subTitle,
+                                        popularKeywordList = resultList,
+                                        isErrorLoad = false
+                                ), indexedData.index, this@HomeRevampViewModel))
+                    }
+                }
+                popularKeywordRefreshCount++
+            } else {
+                homeVisitableListData.withIndex().find { it.value is PopularKeywordListDataModel }?.let { indexedData ->
+                    val oldData = indexedData.value
+                    if (oldData is PopularKeywordListDataModel) {
+                        homeProcessor.get().sendWithQueueMethod(
+                                DeleteWidgetCommand(oldData, indexedData.index, this@HomeRevampViewModel))
                     }
                 }
             }

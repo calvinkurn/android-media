@@ -63,6 +63,12 @@ class HomeWidget(
             @SerializedName("recommendation_type")
             val recommendationType: String = "",
             @Expose
+            @SerializedName("title")
+            val title: String = "",
+            @Expose
+            @SerializedName("sub_title")
+            val subTitle: String = "",
+            @Expose
             @SerializedName("keywords")
             val keywords: List<PopularKeyword> = listOf()
     )
