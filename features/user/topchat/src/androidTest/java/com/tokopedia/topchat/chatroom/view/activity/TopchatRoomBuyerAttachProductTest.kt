@@ -223,10 +223,27 @@ class TopchatRoomBuyerAttachProductTest : BaseBuyerTopchatRoomTest() {
         inflateTestFragment()
 
         // Then
-        assertTemplateChatVisibility(not(isDisplayed()))
-        assertSrwVisibility(isDisplayed())
-        assertSrwErrorVisibility(not(isDisplayed()))
-        assertSrwLoadingVisibility(not(isDisplayed()))
+        assertSrwContentIsVisible()
+        assertSrwTitle(chatSrwResponse.chatSmartReplyQuestion.title)
+        assertSrwTotalQuestion(1)
+    }
+
+    @Test
+    fun srw_displayed_if_buyer_attach_from_attach_product() {
+        // Given
+        setupChatRoomActivity()
+        getChatUseCase.response = firstPageChatAsBuyer
+        chatAttachmentUseCase.response = chatAttachmentResponse
+        chatSrwUseCase.response = chatSrwResponse
+        inflateTestFragment()
+        intendingAttachProduct(1)
+
+        // When
+        clickPlusIconMenu()
+        clickAttachProductMenu()
+
+        // Then
+        assertSrwContentIsVisible()
         assertSrwTitle(chatSrwResponse.chatSmartReplyQuestion.title)
         assertSrwTotalQuestion(1)
     }
@@ -238,14 +255,20 @@ class TopchatRoomBuyerAttachProductTest : BaseBuyerTopchatRoomTest() {
     // TODO: test srw interaction click and send msg
     // TODO: test srw seller side
 
-    private fun clickCloseAttachmentPreview(position: Int) {
-        val viewAction = RecyclerViewActions
-                .actionOnItemAtPosition<TopchatProductAttachmentViewHolder>(
-                        position,
-                        ClickChildViewWithIdAction()
-                                .clickChildViewWithId(R.id.iv_close)
+    private fun assertSrwContentIsVisible() {
+        assertSrwVisibility(isDisplayed())
+        assertTemplateChatVisibility(not(isDisplayed()))
+        assertSrwErrorVisibility(not(isDisplayed()))
+        assertSrwLoadingVisibility(not(isDisplayed()))
+    }
+
+    private fun intendingAttachProduct(totalProductAttached: Int) {
+        intending(hasExtra(TOKOPEDIA_ATTACH_PRODUCT_SOURCE_KEY, SOURCE_TOPCHAT))
+                .respondWith(
+                        Instrumentation.ActivityResult(
+                                Activity.RESULT_OK, getAttachProductData(totalProductAttached)
+                        )
                 )
-        onView(withId(R.id.rv_attachment_preview)).perform(viewAction)
     }
 
     private fun getAttachProductData(totalProduct: Int): Intent {

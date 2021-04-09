@@ -25,6 +25,7 @@ import com.tokopedia.common.network.util.CommonUtil
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.topchat.AndroidFileUtil
 import com.tokopedia.topchat.R
+import com.tokopedia.topchat.action.ClickChildViewWithIdAction
 import com.tokopedia.topchat.chatroom.di.ChatRoomContextModule
 import com.tokopedia.topchat.chatroom.domain.pojo.FavoriteData.Companion.IS_FOLLOW
 import com.tokopedia.topchat.chatroom.domain.pojo.ShopFollowingPojo
@@ -32,6 +33,7 @@ import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ChatAttachmentR
 import com.tokopedia.topchat.chatroom.domain.pojo.srw.ChatSmartReplyQuestionResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.sticker.StickerResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.stickergroup.ChatListGroupStickerResponse
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.TopchatProductAttachmentViewHolder
 import com.tokopedia.topchat.chattemplate.domain.pojo.TemplateData
 import com.tokopedia.topchat.idling.FragmentTransactionIdle
 import com.tokopedia.topchat.matchers.withRecyclerView
@@ -359,6 +361,16 @@ abstract class TopchatRoomTest {
             this.isSuccess = success
             this.templates = templates
         }
+    }
+
+    protected fun clickCloseAttachmentPreview(position: Int) {
+        val viewAction = RecyclerViewActions
+                .actionOnItemAtPosition<TopchatProductAttachmentViewHolder>(
+                        position,
+                        ClickChildViewWithIdAction()
+                                .clickChildViewWithId(R.id.iv_close)
+                )
+        onView(withId(R.id.rv_attachment_preview)).perform(viewAction)
     }
 
     protected fun waitForIt(timeMillis: Long) {
