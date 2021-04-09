@@ -7,6 +7,7 @@ import android.graphics.Paint
 import android.graphics.Path
 import android.util.AttributeSet
 import android.view.View
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kyc_centralized.R
 import com.tokopedia.user_identification_common.KYCConstant
 
@@ -36,7 +37,7 @@ class FocusedCameraKTPView : View {
         mSemiBlackPaint?.strokeWidth = CONST_STROKE_WIDTH.toFloat()
         mWhitePaint = Paint()
         mWhitePaint?.style = Paint.Style.STROKE
-        mWhitePaint?.color = androidx.core.content.ContextCompat.getColor(context, R.color.kyc_dms_border_camera)
+        mWhitePaint?.color = MethodChecker.getColor(context, R.color.kyc_dms_border_camera)
         mWhitePaint?.strokeWidth = CONST_STROKE_WIDTH.toFloat()
     }
 
