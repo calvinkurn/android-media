@@ -1120,6 +1120,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
                 registerAnalytics.trackClickYesButtonRegisteredEmailDialog()
                 dialog.dismiss()
                 val intent = RouteManager.getIntent(activity, ApplinkConstInternalUserPlatform.LOGIN_EMAIL, Uri.encode(email), source)
+                intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_FROM_REGISTER, true)
                 startActivity(intent)
                 activity.finish()
             }
