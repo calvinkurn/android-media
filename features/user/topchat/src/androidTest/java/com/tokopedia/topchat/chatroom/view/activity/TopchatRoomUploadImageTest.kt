@@ -14,8 +14,8 @@ import com.tokopedia.imagepicker.common.PICKER_RESULT_PATHS
 import com.tokopedia.imagepicker.common.RESULT_IMAGES_FED_INTO_IMAGE_PICKER
 import com.tokopedia.imagepicker.common.RESULT_PREVIOUS_IMAGE
 import com.tokopedia.topchat.R
+import com.tokopedia.topchat.assertion.withItemCount
 import com.tokopedia.topchat.chatroom.view.activity.base.TopchatRoomTest
-import com.tokopedia.topchat.matchers.withItemCount
 import com.tokopedia.topchat.stub.chatroom.view.service.UploadImageChatServiceStub
 import org.hamcrest.Matchers.greaterThan
 import org.junit.After
@@ -54,7 +54,7 @@ class TopchatRoomUploadImageTest : TopchatRoomTest() {
 
     private fun getCurrentItemCount(): Int {
         val recyclerView = activityTestRule.activity.findViewById<RecyclerView>(R.id.recycler_view)
-        return recyclerView.adapter?.itemCount?: 0
+        return recyclerView.adapter?.itemCount ?: 0
     }
 
     private fun getImageData(): Intent {
