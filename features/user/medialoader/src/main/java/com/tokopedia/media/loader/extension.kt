@@ -9,6 +9,7 @@ import android.view.View
 import android.widget.ImageView
 import com.tokopedia.media.loader.MediaLoaderApi.loadGifImage
 import com.tokopedia.media.loader.common.Properties
+import com.tokopedia.media.loader.data.ERROR_RES_UNIFY
 import com.tokopedia.media.loader.module.GlideApp
 import com.tokopedia.media.loader.utils.DEFAULT_ROUNDED
 import com.tokopedia.media.loader.utils.MediaTarget
@@ -112,7 +113,7 @@ internal fun ImageView.call(source: Any?, properties: Properties) {
             * don't let the imageView haven't image
             * render with error drawable
             * */
-            this.loadImage(R.drawable.media_state_default_error)
+            this.loadImage(ERROR_RES_UNIFY)
         }
     }
 }
