@@ -93,8 +93,8 @@ fun clickOnProductHighlightItem() {
 
 fun clickOnPopularKeywordSection(viewHolder: RecyclerView.ViewHolder) {
     waitForPopularKeywordData()
-    clickLihatSemuaPopularKeyword()
     clickOnEachItemRecyclerView(viewHolder.itemView, R.id.rv_popular_keyword, 0)
+    clickLihatSemuaPopularKeyword()
 }
 
 fun clickOnMixLeftSection(viewHolder: RecyclerView.ViewHolder, itemPosition: Int) {
