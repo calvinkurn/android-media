@@ -10,7 +10,8 @@ import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.intent.Intents.intending
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra
-import androidx.test.espresso.matcher.ViewMatchers.*
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.withId
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.ApplinkConst.AttachProduct.TOKOPEDIA_ATTACH_PRODUCT_RESULT_KEY
 import com.tokopedia.applink.ApplinkConst.AttachProduct.TOKOPEDIA_ATTACH_PRODUCT_SOURCE_KEY
@@ -223,11 +224,11 @@ class TopchatRoomBuyerAttachProductTest : BaseBuyerTopchatRoomTest() {
 
         // Then
         assertTemplateChatVisibility(not(isDisplayed()))
-        onView(withId(R.id.tp_srw_container_partial)).check(matches(isDisplayed()))
-        onView(withId(R.id.ll_srw_partial)).check(matches(not(isDisplayed())))
-        onView(withId(R.id.lu_srw_partial)).check(matches(not(isDisplayed())))
-        onView(withId(R.id.tp_srw_partial)).check(matches(withText("Tanya ke Chupacup Indonesia")))
-        onView(withId(R.id.rv_srw_partial)).check(matches(withTotalItem(1)))
+        assertSrwVisibility(isDisplayed())
+        assertSrwErrorVisibility(not(isDisplayed()))
+        assertSrwLoadingVisibility(not(isDisplayed()))
+        assertSrwTitle(chatSrwResponse.chatSmartReplyQuestion.title)
+        assertSrwTotalQuestion(1)
     }
 
     // TODO: test srw is hidden if it doesn't has question

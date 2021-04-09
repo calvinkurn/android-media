@@ -35,6 +35,7 @@ import com.tokopedia.topchat.chatroom.domain.pojo.stickergroup.ChatListGroupStic
 import com.tokopedia.topchat.chattemplate.domain.pojo.TemplateData
 import com.tokopedia.topchat.idling.FragmentTransactionIdle
 import com.tokopedia.topchat.matchers.withRecyclerView
+import com.tokopedia.topchat.matchers.withTotalItem
 import com.tokopedia.topchat.stub.chatroom.di.ChatComponentStub
 import com.tokopedia.topchat.stub.chatroom.di.DaggerChatComponentStub
 import com.tokopedia.topchat.stub.chatroom.usecase.*
@@ -302,6 +303,44 @@ abstract class TopchatRoomTest {
             visibilityMatcher: Matcher<in View>
     ) {
         onView(withId(R.id.list_template)).check(
+                matches(visibilityMatcher)
+        )
+    }
+
+    protected fun assertSrwVisibility(
+            visibilityMatcher: Matcher<in View>
+    ) {
+        onView(withId(R.id.tp_srw_container_partial)).check(
+                matches(visibilityMatcher)
+        )
+    }
+
+    protected fun assertSrwTitle(
+            title: String
+    ) {
+        onView(withId(R.id.tp_srw_partial)).check(
+                matches(withText(title))
+        )
+    }
+
+    protected fun assertSrwTotalQuestion(
+            totalQuestion: Int
+    ) {
+        onView(withId(R.id.rv_srw_partial)).check(matches(withTotalItem(totalQuestion)))
+    }
+
+    protected fun assertSrwErrorVisibility(
+            visibilityMatcher: Matcher<in View>
+    ) {
+        onView(withId(R.id.ll_srw_partial)).check(
+                matches(visibilityMatcher)
+        )
+    }
+
+    protected fun assertSrwLoadingVisibility(
+            visibilityMatcher: Matcher<in View>
+    ) {
+        onView(withId(R.id.lu_srw_partial)).check(
                 matches(visibilityMatcher)
         )
     }
