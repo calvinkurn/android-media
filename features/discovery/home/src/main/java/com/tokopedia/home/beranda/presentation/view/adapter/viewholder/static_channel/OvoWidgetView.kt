@@ -317,7 +317,6 @@ class OvoWidgetView: FrameLayout {
 
             tokoPointHolder.setOnClickListener {
                 if (element.tokopointsDrawerHomeData != null) {
-                    OvoWidgetTracking.eventUserProfileTokopoints()
                     element.tokopointsDrawerHomeData?.let {tokopointsDrawerHomeData->
                         listener?.actionTokoPointClicked(
                                 tokopointsDrawerHomeData.redirectAppLink,
@@ -408,7 +407,6 @@ class OvoWidgetView: FrameLayout {
 
             bebasOngkirContainer.setOnClickListener {
                 if (element.tokopointsDrawerBBOHomeData != null) {
-                    OvoWidgetTracking.eventUserProfileTokopoints()
                     element.tokopointsDrawerBBOHomeData?.let {tokopointsDrawerHomeData->
                         listener?.actionTokoPointClicked(
                                 tokopointsDrawerHomeData.redirectAppLink,

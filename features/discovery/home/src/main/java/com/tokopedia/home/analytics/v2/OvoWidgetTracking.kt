@@ -9,10 +9,8 @@ import com.tokopedia.track.TrackAppUtils
  */
 
 object OvoWidgetTracking: BaseTracking() {
-    private const val EVENT_TOKO_POINT = "eventTokopoint"
     private const val EVENT_USER_INTERACTION_HOMEPAGE = "userInteractionHomePage"
 
-    private const val CATEGORY_TOKOPOINTS_USER_PAGE = "tokopoints - user profile page"
     private const val CATEGORY_HOMEPAGE_TOKOCASH_WIDGET = "homepage tokocash widget"
 
     private const val ACTION_CLICK_ON_TOKOPOINTS = "click on tokopoints"
@@ -21,7 +19,6 @@ object OvoWidgetTracking: BaseTracking() {
     private const val ACTION_CLICK_ON_COUPON = "click new coupon"
     private const val ACTION_CLICK_ON_REWARDS = "click tier status"
 
-    private const val ACTION_CLICK_TOKO_POINTS = "click tokopoints"
     private const val ACTION_CLICK_ON_TOPUP_OVO = "click on top up ovo"
     private const val ACTION_CLICK_ACTIVATE = "click activate"
     private const val ACTION_CLICK_SALDO = "click saldo"
@@ -86,16 +83,6 @@ object OvoWidgetTracking: BaseTracking() {
                 CATEGORY_HOMEPAGE_TOKOCASH_WIDGET,
                 ACTION_CLICK_SALDO,
                 Label.NONE
-        ))
-    }
-
-    fun eventUserProfileTokopoints() {
-        val tracker = TrackApp.getInstance().gtm
-        tracker.sendGeneralEvent(TrackAppUtils.gtmData(
-                EVENT_TOKO_POINT,
-                CATEGORY_TOKOPOINTS_USER_PAGE,
-                ACTION_CLICK_TOKO_POINTS,
-                LABEL_TOKOPOINTS
         ))
     }
 
