@@ -625,6 +625,10 @@ data class SearchProductModel(
             @Expose
             val bannerApplinkUrl: String = "",
 
+            @SerializedName("identifier")
+            @Expose
+            val identifier: String = "",
+
             @SerializedName("product")
             @Expose
             val inspirationCarouselProducts: List<InspirationCarouselProduct> = listOf()

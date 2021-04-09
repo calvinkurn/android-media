@@ -130,16 +130,16 @@ class SaldoHistoryListFragment : BaseListFragment<DepositHistoryList, SaldoDetai
     }
 
     private fun initialVar() {
-        transactionType = arguments!!.getString(TRANSACTION_TYPE)
+        transactionType = arguments?.getString(TRANSACTION_TYPE)
         val linearLayoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
-        recyclerView!!.layoutManager = linearLayoutManager
-        recyclerView!!.adapter = adapter
-        recyclerView!!.setHasFixedSize(false)
+        recyclerView?.layoutManager = linearLayoutManager
+        recyclerView?.adapter = adapter
+        recyclerView?.setHasFixedSize(false)
     }
 
     override fun createEndlessRecyclerViewListener(): EndlessRecyclerViewScrollListener {
 
-        return object : DataEndLessScrollListener(recyclerView!!.layoutManager!!, adapter!!) {
+        return object : DataEndLessScrollListener(recyclerView?.layoutManager, adapter) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
                 showLoading()
                 when (transactionType) {
@@ -167,7 +167,7 @@ class SaldoHistoryListFragment : BaseListFragment<DepositHistoryList, SaldoDetai
 
     }
 
-    override fun getRecyclerView(view: View): RecyclerView {
+    override fun getRecyclerView(view: View): RecyclerView? {
         this.recyclerView = super.getRecyclerView(view)
         return super.getRecyclerView(view)
     }
