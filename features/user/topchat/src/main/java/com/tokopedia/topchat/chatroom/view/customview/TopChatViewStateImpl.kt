@@ -43,7 +43,6 @@ import com.tokopedia.topchat.chattemplate.view.adapter.TemplateChatTypeFactoryIm
 import com.tokopedia.topchat.chattemplate.view.listener.ChatTemplateListener
 import com.tokopedia.topchat.common.analytics.TopChatAnalytics
 import com.tokopedia.unifycomponents.ImageUnify
-import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 
 /**
@@ -226,25 +225,6 @@ class TopChatViewStateImpl constructor(
 
     override fun hideProductPreviewLayout() {
         attachmentPreviewContainer.hide()
-        setChatTemplatesBottomPadding(0)
-    }
-
-    private fun setChatTemplatesBottomPadding(bottomPadding: Int) {
-        if (!templateRecyclerView.isVisible) return
-        addBottomPaddingTemplateChat(bottomPadding)
-    }
-
-    private fun addBottomPaddingTemplateChat(bottomPadding: Int) {
-        templateRecyclerView.post {
-            with(templateRecyclerView) {
-                setPadding(
-                        paddingLeft,
-                        paddingTop,
-                        paddingRight,
-                        bottomPadding
-                )
-            }
-        }
     }
 
     override fun onSetCustomMessage(customMessage: String) {
@@ -668,7 +648,6 @@ class TopChatViewStateImpl constructor(
 
     override fun showAttachmentPreview(attachmentPreview: ArrayList<SendablePreview>) {
         attachmentPreviewContainer.show()
-        setChatTemplatesBottomPadding(8.toPx())
         attachmentPreviewAdapter.updateAttachments(attachmentPreview)
     }
 

@@ -6,7 +6,7 @@
     android:layout_width="@dimen/dp_topchat_240"
     android:layout_height="wrap_content"
     android:layout_marginStart="@dimen/dp_topchat_1"
-    android:layout_marginTop="@dimen/unify_space_2"
+    android:layout_marginTop="@dimen/dp_topchat_6"
     android:layout_marginBottom="@dimen/unify_space_2">
 
     <ImageView
