@@ -55,5 +55,7 @@
 
         <include layout="@layout/item_shimmer_penalty" />
 
+        <include layout="@layout/item_shop_penalty_error_state" />
+
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

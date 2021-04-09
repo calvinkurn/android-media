@@ -11,10 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
-import com.tokopedia.kotlin.extensions.view.getScreenHeight
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.observe
-import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.common.ShopScoreConstant
 import com.tokopedia.shop.score.common.presentation.BaseBottomSheetShopScore
@@ -86,6 +83,15 @@ class PenaltyFilterBottomSheet : BaseBottomSheetShopScore(), FilterPenaltyBottom
         observeResetFilter()
         clickBtnApplied()
         clickBtnReset()
+    }
+
+    override fun onDestroy() {
+        removeObservers(viewModelShopPenalty.penaltyPageData)
+        removeObservers(viewModelShopPenalty.filterPenaltyData)
+        removeObservers(viewModelShopPenalty.updateSortFilterSelected)
+        removeObservers(viewModelShopPenalty.resetFilterResult)
+        removeObservers(viewModelShopPenalty.updateFilterSelected)
+        super.onDestroy()
     }
 
     override fun onChipsFilterItemClick(nameFilter: String, chipType: String, chipTitle: String, position: Int) {

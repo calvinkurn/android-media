@@ -80,9 +80,9 @@ class ShopPenaltyViewModel @Inject constructor(
             }
             filterPenaltyList.find { it.title == ShopScoreConstant.TITLE_SORT }?.chipsFilerList?.find { it.title == sortBy.first }?.isSelected = sortBy.second
             penaltyFilterUiModel = filterPenaltyList.toMutableList()
-            _filterPenaltyData.value = Success(penaltyFilterUiModel)
+            _filterPenaltyData.postValue(Success(penaltyFilterUiModel))
         }, onError = {
-            _filterPenaltyData.value = Fail(it)
+            _filterPenaltyData.postValue(Fail(it))
         })
     }
 

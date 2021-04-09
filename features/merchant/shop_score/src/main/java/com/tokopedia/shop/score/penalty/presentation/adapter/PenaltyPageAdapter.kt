@@ -26,11 +26,4 @@ class PenaltyPageAdapter(penaltyPageAdapterFactory: PenaltyPageAdapterFactory):
         notifyDataSetChanged()
     }
 
-    fun setPenaltyError(item: ErrorNetworkModel) {
-        if (visitables.getOrNull(lastIndex) !is ErrorNetworkModel) {
-            visitables.add(item)
-            notifyItemInserted(lastIndex)
-        }
-    }
-
 }

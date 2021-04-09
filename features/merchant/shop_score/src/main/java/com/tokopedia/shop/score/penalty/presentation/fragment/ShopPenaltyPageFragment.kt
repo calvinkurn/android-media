@@ -19,6 +19,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
+import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.common.ShopScoreConstant
@@ -39,11 +40,12 @@ import kotlinx.android.synthetic.main.card_shop_score_total_penalty.*
 import kotlinx.android.synthetic.main.fragment_penalty_page.*
 import kotlinx.android.synthetic.main.item_detail_penalty_filter.*
 import kotlinx.android.synthetic.main.item_shimmer_penalty.*
+import kotlinx.android.synthetic.main.item_shop_penalty_error_state.*
 import javax.inject.Inject
 
 class ShopPenaltyPageFragment : BaseListFragment<Visitable<*>, PenaltyPageAdapterFactory>(),
         PenaltyDateFilterBottomSheet.CalenderListener,
-        PenaltyFilterBottomSheet.PenaltyFilterFinishListener, ItemDetailPenaltyListener, PenaltyGlobalErrorListener {
+        PenaltyFilterBottomSheet.PenaltyFilterFinishListener, ItemDetailPenaltyListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -52,7 +54,7 @@ class ShopPenaltyPageFragment : BaseListFragment<Visitable<*>, PenaltyPageAdapte
         ViewModelProvider(this, viewModelFactory).get(ShopPenaltyViewModel::class.java)
     }
 
-    private val penaltyPageAdapterFactory by lazy { PenaltyPageAdapterFactory(this, this) }
+    private val penaltyPageAdapterFactory by lazy { PenaltyPageAdapterFactory(this) }
     private val penaltyPageAdapter by lazy { PenaltyPageAdapter(penaltyPageAdapterFactory) }
 
 
@@ -167,10 +169,6 @@ class ShopPenaltyPageFragment : BaseListFragment<Visitable<*>, PenaltyPageAdapte
         super.onDestroy()
     }
 
-    override fun onBtnErrorClicked() {
-
-    }
-
     private fun setupCardPenalty(element: ItemCardShopPenaltyUiModel?) {
         tvContentPenalty?.setTextMakeHyperlink(getString(R.string.content_penalty_label)) {
             onMoreInfoHelpPenaltyClicked()
@@ -261,14 +259,24 @@ class ShopPenaltyPageFragment : BaseListFragment<Visitable<*>, PenaltyPageAdapte
                     showAllPenaltyData(it.data)
                 }
                 is Fail -> {
-                    penaltyPageAdapter.setPenaltyError(ErrorNetworkModel())
+                    containerShimmerPenalty?.hide()
+                    setupGlobalErrorState()
                 }
             }
         }
     }
 
+    private fun setupGlobalErrorState() {
+        globalErrorPenalty.show()
+        globalErrorPenalty.setType(GlobalError.SERVER_ERROR)
+        globalErrorPenalty?.errorAction?.setOnClickListener {
+            onSwipeRefresh()
+        }
+    }
+
     private fun hideAllViewWithLoading() {
         containerShimmerPenalty?.show()
+        globalErrorPenalty?.hide()
         appBarPenaltyPage?.hide()
         containerHeaderTotalPenalty?.hide()
         itemDetailPenaltyContainer?.hide()

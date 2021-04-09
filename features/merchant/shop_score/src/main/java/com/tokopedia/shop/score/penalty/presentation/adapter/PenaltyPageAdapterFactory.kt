@@ -9,7 +9,6 @@ import com.tokopedia.shop.score.penalty.presentation.model.ItemPenaltyUiModel
 
 class PenaltyPageAdapterFactory(
         private val itemPenaltyDetailPenaltyListener: ItemDetailPenaltyListener,
-        private val itemGlobalErrorListener: PenaltyGlobalErrorListener
 ): BaseAdapterTypeFactory(), PenaltyTypeFactory {
 
     override fun type(itemPenaltyUiModel: ItemPenaltyUiModel): Int {
@@ -24,7 +23,6 @@ class PenaltyPageAdapterFactory(
         return when (type) {
             ItemPenaltyViewHolder.LAYOUT -> ItemPenaltyViewHolder(parent, itemPenaltyDetailPenaltyListener)
             ItemPenaltyEmptyViewHolder.LAYOUT -> ItemPenaltyEmptyViewHolder(parent)
-            ItemPenaltyGlobalErrorViewHolder.LAYOUT -> ItemPenaltyGlobalErrorViewHolder(parent, itemGlobalErrorListener)
             else -> super.createViewHolder(parent, type)
         }
     }
