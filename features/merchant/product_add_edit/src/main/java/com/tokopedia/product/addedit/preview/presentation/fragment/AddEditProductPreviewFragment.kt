@@ -1167,19 +1167,20 @@ class AddEditProductPreviewFragment :
     }
 
     private fun observeProductLimitationData() {
-        if (!isAdding()) return
-        viewModel.getProductLimitation()
-        viewModel.productLimitationData.observe(viewLifecycleOwner) {
-            when(it) {
-                is Success -> {
-                    val productLimitationModel = ProductLimitationMapper.mapToProductLimitationModel(requireContext(), it.data)
-                    setupBottomSheetProductLimitation(productLimitationModel)
+        if (isAdding() || viewModel.isDuplicate) {
+            viewModel.getProductLimitation()
+            viewModel.productLimitationData.observe(viewLifecycleOwner) {
+                when(it) {
+                    is Success -> {
+                        val productLimitationModel = ProductLimitationMapper.mapToProductLimitationModel(requireContext(), it.data)
+                        setupBottomSheetProductLimitation(productLimitationModel)
 
-                    // store to shared preferences, to reuse at another fragment
-                    SharedPreferencesUtil.setProductLimitationModel(requireActivity(), productLimitationModel)
-                }
-                is Fail -> {
-                    AddEditProductErrorHandler.logExceptionToCrashlytics(it.throwable)
+                        // store to shared preferences, to reuse at another fragment
+                        SharedPreferencesUtil.setProductLimitationModel(requireActivity(), productLimitationModel)
+                    }
+                    is Fail -> {
+                        AddEditProductErrorHandler.logExceptionToCrashlytics(it.throwable)
+                    }
                 }
             }
         }
@@ -1636,7 +1637,7 @@ class AddEditProductPreviewFragment :
         val htmlDescription = getString(R.string.label_product_limitation_ticker, PRODUCT_LIMITATION_START_DATE)
         productLimitationTicker?.apply {
             setHtmlDescription(htmlDescription)
-            showWithCondition(isAdding())
+            showWithCondition((isAdding() && !isDrafting()) || viewModel.isDuplicate)
         }
     }
 
