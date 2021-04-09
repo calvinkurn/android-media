@@ -1,6 +1,5 @@
 package com.tokopedia.sellerhome.view.fragment
 
-import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.view.*
@@ -17,9 +16,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.config.GlobalConfig
-import com.tokopedia.device.info.DeviceConnectionInfo
-import com.tokopedia.gm.common.utils.InterruptPopupHelper
+import com.tokopedia.gm.common.utils.PMShopScoreInterruptHelper
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.pocnewrelic.*
@@ -76,7 +73,6 @@ import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_sah.view.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import java.lang.Exception
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
@@ -1008,7 +1004,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     private fun showInterruptPopup() {
         activity?.let {
-            InterruptPopupHelper.showPopup(it, viewLifecycleOwner, childFragmentManager)
+            PMShopScoreInterruptHelper.showPopup(it, viewLifecycleOwner, childFragmentManager)
         }
     }
 

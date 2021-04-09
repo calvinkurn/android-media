@@ -7,6 +7,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.work.*
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.gm.common.constant.PMConstant
 import com.tokopedia.gm.common.constant.PeriodType
@@ -22,7 +23,7 @@ import java.util.concurrent.TimeUnit
  * Created By @ilhamsuaib on 08/04/21
  */
 
-object InterruptPopupHelper {
+object PMShopScoreInterruptHelper {
 
     private const val WORKER_TAG = "get_pm_interrupt_dat_worker"
 
@@ -88,7 +89,7 @@ object InterruptPopupHelper {
 
     private fun setupInterruptFinalPeriod(data: PowerMerchantInterruptUiModel, fm: FragmentManager) {
         val bottomSheet = PMFinalInterruptBottomSheet.getInstance(fm)
-        if (!bottomSheet.isAdded) {
+        if (!bottomSheet.isAdded && !fm.isStateSaved) {
             Handler().post {
                 bottomSheet.setData(data).show(fm)
             }
@@ -96,24 +97,22 @@ object InterruptPopupHelper {
     }
 
     private fun setupInterruptTransitionPeriod(context: Context, data: PowerMerchantInterruptUiModel, fm: FragmentManager) {
-        val hasOpenedInterruptPage = pmCommonPreferenceManager?.getBoolean(PMCommonPreferenceManager.KEY_HAS_OPENED_COMMUNICATION_INTERRUPT_PAGE, false)
-        if (hasOpenedInterruptPage.orFalse()) {
-            showTransitionPmInterruptPopup(data, fm)
+        if (hasOpenedInterruptPage()) {
+            showTransitionPmInterruptPopup(context, data, fm)
         } else {
             showInterruptPage(context)
         }
     }
 
-    private fun showTransitionPmInterruptPopup(data: PowerMerchantInterruptUiModel, fm: FragmentManager) {
-        val hasShowInterruptPopup = pmCommonPreferenceManager?.getBoolean(PMCommonPreferenceManager.KEY_HAS_SHOW_TRANSITION_INTERRUPT_POPUP, false)
-        if (!hasShowInterruptPopup.orFalse()) {
+    private fun showTransitionPmInterruptPopup(context: Context, data: PowerMerchantInterruptUiModel, fm: FragmentManager) {
+        if (!hasOpenedInterruptPopup()) {
             val bottomSheet = PMTransitionInterruptBottomSheet.getInstance(fm)
             Handler().post {
-                if (!bottomSheet.isAdded) {
-                    //saveFlagHasShowPmInterruptPopup()
+                if (!bottomSheet.isAdded && !fm.isStateSaved) {
+                    saveBooleanFlag(PMCommonPreferenceManager.KEY_HAS_OPENED_TRANSITION_INTERRUPT_POPUP, true)
                     bottomSheet.setData(data)
                             .setOnCtaClickListener {
-                                //RouteManager.route(this@SellerHomeActivity, ApplinkConst.SHOP_SCORE_DETAIL)
+                                RouteManager.route(context, ApplinkConst.SHOP_SCORE_DETAIL)
                             }
                             .show(fm)
                 }
@@ -122,6 +121,22 @@ object InterruptPopupHelper {
     }
 
     private fun showInterruptPage(context: Context) {
-        RouteManager.route(context, PMConstant.Urls.SHOP_SCORE_INTERRUPT_PAGE)
+        if (!hasOpenedInterruptPage()) {
+            saveBooleanFlag(PMCommonPreferenceManager.KEY_HAS_OPENED_COMMUNICATION_INTERRUPT_PAGE, true)
+            RouteManager.route(context, PMConstant.Urls.SHOP_SCORE_INTERRUPT_PAGE)
+        }
+    }
+
+    private fun saveBooleanFlag(key: String, value: Boolean) {
+        pmCommonPreferenceManager?.putBoolean(key, value)
+        pmCommonPreferenceManager?.apply()
+    }
+
+    private fun hasOpenedInterruptPopup(): Boolean {
+        return pmCommonPreferenceManager?.getBoolean(PMCommonPreferenceManager.KEY_HAS_OPENED_TRANSITION_INTERRUPT_POPUP, false).orFalse()
+    }
+
+    private fun hasOpenedInterruptPage(): Boolean {
+        return pmCommonPreferenceManager?.getBoolean(PMCommonPreferenceManager.KEY_HAS_OPENED_COMMUNICATION_INTERRUPT_PAGE, false).orFalse()
     }
 }
