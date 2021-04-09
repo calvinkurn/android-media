@@ -6,7 +6,9 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder
+import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.startsWithPattern
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.device.info.DeviceScreenInfo
 
 /**
@@ -67,7 +69,11 @@ object DeeplinkMapperOrder {
             put(QUERY_PARAM_ORDER_ID, orderId)
             if (redirectToSellerApp) put(RouteManager.KEY_REDIRECT_TO_SELLER_APP, true)
         }
-        return UriUtil.buildUriAppendParams(ApplinkConstInternalOrder.HISTORY, param)
+        return if (redirectToSellerApp || GlobalConfig.isSellerApp()) {
+            UriUtil.buildUriAppendParams(ApplinkConstInternalSellerapp.SELLER_HOME_SOM_ALL, param)
+        } else {
+            UriUtil.buildUriAppendParams(ApplinkConstInternalOrder.HISTORY, param)
+        }
     }
 
     fun getRegisteredNavigationMainAppSellerNewOrder(): String {
