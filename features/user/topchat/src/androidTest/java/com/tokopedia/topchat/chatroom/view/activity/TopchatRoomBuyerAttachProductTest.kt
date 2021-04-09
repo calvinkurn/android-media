@@ -222,7 +222,7 @@ class TopchatRoomBuyerAttachProductTest : BaseBuyerTopchatRoomTest() {
         inflateTestFragment()
 
         // Then
-        onView(withId(R.id.list_template)).check(matches(not(isDisplayed())))
+        assertTemplateChatVisibility(not(isDisplayed()))
         onView(withId(R.id.tp_srw_container_partial)).check(matches(isDisplayed()))
         onView(withId(R.id.ll_srw_partial)).check(matches(not(isDisplayed())))
         onView(withId(R.id.lu_srw_partial)).check(matches(not(isDisplayed())))

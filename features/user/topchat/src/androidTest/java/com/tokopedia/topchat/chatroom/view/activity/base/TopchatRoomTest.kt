@@ -298,6 +298,14 @@ abstract class TopchatRoomTest {
         ).check(matches(withText(text)))
     }
 
+    protected fun assertTemplateChatVisibility(
+            visibilityMatcher: Matcher<in View>
+    ) {
+        onView(withId(R.id.list_template)).check(
+                matches(visibilityMatcher)
+        )
+    }
+
     protected fun assertSnackbarText(msg: String) {
         onView(withText(msg)).check(matches(isDisplayed()))
     }
