@@ -3,6 +3,7 @@ package com.tokopedia.oneclickcheckout.order.view
 import android.app.Activity
 import android.app.Instrumentation.ActivityResult
 import android.content.Intent
+import android.os.Bundle
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.IdlingResource
 import androidx.test.espresso.intent.Intents.intending
@@ -72,9 +73,10 @@ class OrderSummaryPageActivityRemoveProfileTest {
                     closeButtonVisible = true
             )
 
-            assertProfileRevampWording("Template Beli Langsung")
-
-            assertProfileRevampActionWording("Pilih template lain")
+//            Deprecated Test (will remove on next iteration)
+//            assertProfileRevampWording("Template Beli Langsung")
+//
+//            assertProfileRevampActionWording("Pilih template lain")
 
             assertAddressRevamp(
                     addressName = "Address 1 - User 1 (1)",
@@ -123,8 +125,8 @@ class OrderSummaryPageActivityRemoveProfileTest {
 
             clickCloseProfileTicker()
 
-            clickAddOrChangePreferenceRevamp {
-                clickUsePreferenceRevamp(1)
+            clickChangeAddressRevamp {
+                clickAddress(1)
             }
 
             assertProfileTicker(isShown = false)
@@ -222,8 +224,8 @@ class OrderSummaryPageActivityRemoveProfileTest {
 
             clickCloseProfileTicker()
 
-            clickAddOrChangePreferenceRevamp {
-                clickUsePreferenceRevamp(1)
+            clickChangeAddressRevamp {
+                clickAddress(1)
             }
 
             assertProfileTicker(isShown = false)
@@ -245,7 +247,7 @@ class OrderSummaryPageActivityRemoveProfileTest {
             clickAddNewAddress()
 
             cartInterceptor.customGetOccCartResponsePath = GET_OCC_CART_PAGE_REMOVE_PROFILE_POST_RESPONSE_PATH
-            intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, Intent()))
+            intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, Intent().putExtras(Bundle())))
 
             clickAddNewAddress()
 
