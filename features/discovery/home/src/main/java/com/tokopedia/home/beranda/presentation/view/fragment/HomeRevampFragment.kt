@@ -1359,6 +1359,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         }
     }
 
+
     private fun <T> containsInstance(list: List<T>, type: Class<*>): Boolean {
         val instance = list.filterIsInstance(type)
         return instance.isNotEmpty()
@@ -2221,18 +2222,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
     private fun manageCoachmarkOnFragmentVisible(isVisibleToUser: Boolean) {
         when (isVisibleToUser) {
-            true -> if (coachMarkIsShowing) {
-                coachmark?.let {
-                    try {
-                        if (it.coachMarkItem.isNotEmpty() && isValidToShowCoachMark()) {
-                            it.showCoachMark(step = it.coachMarkItem, index = it.currentIndex)
-                            it.coachMarkItem[it.currentIndex].setCoachmarkShownPref()
-                        }
-                    } catch (e: Exception) {
-                        e.printStackTrace()
-                    }
-                }
-            }
             false -> if (coachMarkIsShowing) {
                 coachmark?.hideCoachMark()
             }
