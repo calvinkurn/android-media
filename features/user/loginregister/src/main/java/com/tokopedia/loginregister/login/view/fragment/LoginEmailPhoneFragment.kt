@@ -540,6 +540,19 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
         }
     }
 
+    private fun doLoginAfterSmartLock(data: Intent) {
+        val username = data.extras?.getString(SmartLockActivity.USERNAME).orEmpty()
+        val password = data.extras?.getString(SmartLockActivity.PASSWORD).orEmpty()
+
+        emailPhoneEditText?.let {
+            it.setText(username)
+            it.setSelection(it.text.length)
+        }
+
+        loginEmail(username, password, true)
+        analytics.eventClickSmartLock(activity?.applicationContext)
+    }
+
     override fun showLoadingDiscover() {
         LetUtil.ifLet(context, socmedButtonsContainer) { (context, socmedButtonsContainer) ->
             if(context is Context && socmedButtonsContainer is LinearLayout) {
@@ -1458,21 +1471,12 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (activity != null) {
             callbackManager.onActivityResult(requestCode, resultCode, data)
-            if (requestCode == REQUEST_SMART_LOCK
-                    && resultCode == Activity.RESULT_OK
+            if (requestCode == REQUEST_SMART_LOCK && resultCode == Activity.RESULT_OK
                     && data != null
                     && data.extras != null
                     && data.extras?.getString(SmartLockActivity.USERNAME) != null
-                    && data.extras?.getString(SmartLockActivity.PASSWORD) != null) run {
-                emailPhoneEditText?.let {
-                    it.setText(data.extras?.getString(SmartLockActivity.USERNAME))
-                    it.setSelection(it.text.length)
-                }
-                loginEmail(data.extras?.getString(SmartLockActivity.USERNAME, "").toString(),
-                        data.extras?.getString(SmartLockActivity.PASSWORD, "").toString())
-                activity?.let {
-                    analytics.eventClickSmartLock(it.applicationContext)
-                }
+                    && data.extras?.getString(SmartLockActivity.PASSWORD) != null) {
+                doLoginAfterSmartLock(data)
             } else if (requestCode == REQUEST_SMART_LOCK
                     && resultCode == SmartLockActivity.RC_READ
                     && !userSession.autofillUserData.isNullOrEmpty()) {
