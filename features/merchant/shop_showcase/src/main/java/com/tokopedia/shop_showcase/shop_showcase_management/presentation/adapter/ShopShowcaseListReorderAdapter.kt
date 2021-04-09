@@ -3,13 +3,11 @@ package com.tokopedia.shop_showcase.shop_showcase_management.presentation.adapte
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import androidx.core.view.MotionEventCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.design.touchhelper.ItemTouchHelperAdapter
 import com.tokopedia.design.touchhelper.OnStartDragListener
 import com.tokopedia.kotlin.extensions.view.inflateLayout
-import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.shop.common.R
 import com.tokopedia.shop.common.constant.ShopEtalaseTypeDef
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
@@ -73,35 +71,19 @@ class ShopShowcaseListReorderAdapter(
 
     inner class ViewHolder(itemView: View) : ShopShowcaseListImageBaseViewHolder(itemView) {
 
-        override var showcaseActionButton: Any? = null
-
         init {
             showcaseActionButton = itemView.findViewById(R.id.img_move_showcase)
         }
 
         override fun bind(element: Any) {
+            // cast to actual ui model
+            val elementUiModel = element as ShopEtalaseModel
 
-            renderShowcaseMainInfo(element)
+            // render showcase info
+            renderShowcaseMainInfo(elementUiModel, isMyShop = true)
 
-            val showcaseItem = element as ShopEtalaseModel
-
-            // showcase show campaign label condition
-            showcaseCampaignLabel?.shouldShowWithAction(
-                    isShowCampaignLabel(showcaseItem.type),
-                    action = {
-                        adjustShowcaseNameConstraintPosition()
-                    }
-            )
-            showcaseCampaignLabel?.setLabel(getCampaignLabelTitle(showcaseItem.type))
-
-            // showcase show action button condition
-            val actionButton = (showcaseActionButton as? ImageView)
-            actionButton?.apply {
-                shouldShowWithAction(
-                        shouldShow = isShowActionButton(showcaseItem.type),
-                        action = { adjustShowcaseNameConstraintPosition() }
-                )
-
+            // set listener for showcase action button
+            showcaseActionButton?.apply {
                 // handle showcase action drag listener
                 setOnTouchListener { _, event ->
                     @Suppress("DEPRECATION")

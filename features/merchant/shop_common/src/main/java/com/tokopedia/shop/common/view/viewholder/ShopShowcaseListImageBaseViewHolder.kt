@@ -6,6 +6,8 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.isValidGlideContext
+import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.shop.common.R
 import com.tokopedia.shop.common.constant.ShopEtalaseTypeDef
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
@@ -30,8 +32,7 @@ abstract class ShopShowcaseListImageBaseViewHolder(
     var tvShowcaseCount: Typography? = null
     var ivShowcaseImage: ImageUnify? = null
     var showcaseCampaignLabel: Label? = null
-
-    abstract var showcaseActionButton: Any?
+    var showcaseActionButton: View? = null
 
     abstract fun bind(element: Any)
 
@@ -42,34 +43,10 @@ abstract class ShopShowcaseListImageBaseViewHolder(
         showcaseCampaignLabel = itemView.findViewById(R.id.showcaseCampaignLabel)
     }
 
-    fun isShowCampaignLabel(type: Int): Boolean {
-        return when (type) {
-            ShopEtalaseTypeDef.ETALASE_CAMPAIGN -> true
-            else -> false
-        }
-    }
-
-    fun isShowcaseTypeGenerated(type: Int): Boolean {
-        return ShopEtalaseTypeDef.ETALASE_DEFAULT == type
-    }
-
-    fun isShowActionButton(type: Int): Boolean {
-        return !isShowCampaignLabel(type) && !isShowcaseTypeGenerated(type)
-    }
-
-    fun getCampaignLabelTitle(type: Int): String {
-        return when (type) {
-            ShopEtalaseTypeDef.ETALASE_CAMPAIGN -> {
-                itemView.context.getString(R.string.shop_page_showcase_npl_text)
-            }
-            else -> ""
-        }
-    }
-
-    fun renderShowcaseMainInfo(element: Any) {
+    fun renderShowcaseMainInfo(element: Any, isMyShop: Boolean = false) {
         when (element) {
-            is ShopEtalaseModel -> renderShowcaseMainInfo(element)
-            is ShopEtalaseUiModel -> renderShowcaseMainInfo(element)
+            is ShopEtalaseModel -> renderShowcaseMainInfo(element, isMyShop)
+            is ShopEtalaseUiModel -> renderShowcaseMainInfo(element, isMyShop)
         }
     }
 
@@ -79,7 +56,27 @@ abstract class ShopShowcaseListImageBaseViewHolder(
         }
     }
 
-    fun adjustShowcaseNameConstraintPosition() {
+    private fun isShowCampaignLabel(type: Int): Boolean {
+        return when (type) {
+            ShopEtalaseTypeDef.ETALASE_CAMPAIGN -> true
+            else -> false
+        }
+    }
+
+    private fun isShowActionButton(type: Int): Boolean {
+        return !isShowCampaignLabel(type) && !isShowcaseTypeGenerated(type)
+    }
+
+    private fun getCampaignLabelTitle(type: Int): String {
+        return when (type) {
+            ShopEtalaseTypeDef.ETALASE_CAMPAIGN -> {
+                itemView.context.getString(R.string.shop_page_showcase_npl_text)
+            }
+            else -> ""
+        }
+    }
+
+    private fun adjustShowcaseNameConstraintPosition() {
         val parentConstraintLayout = itemView.findViewById<ConstraintLayout>(R.id.parent_layout)
         val constraintSet = ConstraintSet()
         val tvShowcaseNameId = R.id.tvShowcaseName
@@ -106,19 +103,30 @@ abstract class ShopShowcaseListImageBaseViewHolder(
         constraintSet.applyTo(parentConstraintLayout)
     }
 
-    private fun renderShowcaseMainInfo(element: ShopEtalaseModel) {
-        setShowcaseInfo(
-                name = element.name,
-                count = element.count
-        )
+    private fun isShowcaseTypeGenerated(type: Int) = type == ShopEtalaseTypeDef.ETALASE_DEFAULT
+
+    private fun renderShowcaseMainInfo(element: ShopEtalaseModel, isMyShop: Boolean) {
+        // set showcase name & count
+        setShowcaseInfo(name = element.name, count = element.count)
+
+        // set showcase campaign label
+        setCampaignLabel(element.type, isSellerView = isMyShop)
+
+        // set showcase action button
+        setActionButton(isMyShop, element.type)
+
+        // set showcase image
         setShowcaseImage(element.imageUrl)
     }
 
-    private fun renderShowcaseMainInfo(element: ShopEtalaseUiModel) {
-        setShowcaseInfo(
-                name = element.name,
-                count = element.count
-        )
+    private fun renderShowcaseMainInfo(element: ShopEtalaseUiModel, isMyShop: Boolean) {
+        // set showcase name & count
+        setShowcaseInfo(name = element.name, count = element.count)
+
+        // set showcase campaign label
+        setCampaignLabel(element.type, isSellerView = isMyShop)
+
+        // set showcase image
         setShowcaseImage(element.imageUrl)
     }
 
@@ -128,6 +136,28 @@ abstract class ShopShowcaseListImageBaseViewHolder(
                 R.string.shop_page_showcase_product_count_text,
                 count.toString()
         )
+    }
+
+    private fun setCampaignLabel(type: Int, isSellerView: Boolean) {
+        showcaseCampaignLabel?.apply {
+            if (isSellerView)
+                shouldShowWithAction(isShowCampaignLabel(type), action = { adjustShowcaseNameConstraintPosition() })
+            else
+                showWithCondition(isShowCampaignLabel(type))
+
+            setLabel(getCampaignLabelTitle(type))
+        }
+    }
+
+    private fun setActionButton(isMyShop: Boolean, type: Int) {
+        showcaseActionButton?.let { actionButton ->
+            actionButton.apply {
+                shouldShowWithAction(
+                        shouldShow = (isMyShop && isShowActionButton(type)),
+                        action = { adjustShowcaseNameConstraintPosition() }
+                )
+            }
+        }
     }
 
     private fun setShowcaseImage(imageUrl: String?) {

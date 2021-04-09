@@ -3,7 +3,6 @@ package com.tokopedia.shop.showcase.presentation.adapter.viewholder
 import android.view.View
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
-import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.shop.common.view.model.ShopEtalaseUiModel
 import com.tokopedia.shop.common.view.viewholder.ShopShowcaseListImageBaseViewHolder
 
@@ -15,17 +14,13 @@ class ShopShowcaseListImageViewHolder(
         private val listener: ShopShowcaseListImageListener
 ) : ShopShowcaseListImageBaseViewHolder(itemView) {
 
-    // set to null since its buyer view
-    override var showcaseActionButton: Any? = null
-
     override fun bind(element: Any) {
 
-        renderShowcaseMainInfo(element)
-
-        // showcase show campaign label condition
+        // cast to actual ui model
         val showcaseItem = element as ShopEtalaseUiModel
-        showcaseCampaignLabel?.showWithCondition(isShowCampaignLabel(showcaseItem.type))
-        showcaseCampaignLabel?.setLabel(getCampaignLabelTitle(showcaseItem.type))
+
+        // render showcase info
+        renderShowcaseMainInfo(showcaseItem)
 
         // showcase item impressed listener
         ivShowcaseImage?.addOnImpressionListener(

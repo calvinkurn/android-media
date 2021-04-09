@@ -2,10 +2,8 @@ package com.tokopedia.shop_showcase.shop_showcase_management.presentation.adapte
 
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.inflateLayout
-import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.shop.common.R
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
 import com.tokopedia.shop.common.view.viewholder.ShopShowcaseListImageBaseViewHolder
@@ -39,44 +37,27 @@ class ShopShowcaseListAdapter(
 
     inner class ViewHolder(itemView: View) : ShopShowcaseListImageBaseViewHolder(itemView) {
 
-        override var showcaseActionButton: Any? = null
-
         init {
             showcaseActionButton = itemView.findViewById(R.id.img_menu_more)
         }
 
         override fun bind(element: Any) {
+            // cast to actual ui model
+            val elementUiModel = element as ShopEtalaseModel
 
-            renderShowcaseMainInfo(element)
+            // render showcase info
+            renderShowcaseMainInfo(elementUiModel, isMyShop)
 
-            val showcaseItem = element as ShopEtalaseModel
-
-            // showcase action button condition
-            showcaseCampaignLabel?.shouldShowWithAction(
-                    isShowCampaignLabel(showcaseItem.type),
-                    action = {
-                        adjustShowcaseNameConstraintPosition()
-                    }
-            )
-            // set showcase campaign label title
-            showcaseCampaignLabel?.setLabel(getCampaignLabelTitle(showcaseItem.type))
-
-            // handle item showcase click
+            // handle item view showcase click
             setItemShowcaseClickListener {
-                listener.sendClickShowcase(showcaseItem, adapterPosition)
+                listener.sendClickShowcase(elementUiModel, adapterPosition)
             }
 
-            // showcase action button show condition
-            val actionButton = (showcaseActionButton as? ImageView)
-            actionButton?.apply {
-                shouldShowWithAction(
-                        shouldShow = (isMyShop && isShowActionButton(showcaseItem.type)),
-                        action = { adjustShowcaseNameConstraintPosition() }
-                )
-
+            // set listener for showcase action button
+            showcaseActionButton?.apply {
                 // action button click listener
                 setOnClickListener {
-                    listener.sendClickShowcaseMenuMore(element, adapterPosition)
+                    listener.sendClickShowcaseMenuMore(elementUiModel, adapterPosition)
                 }
             }
         }
