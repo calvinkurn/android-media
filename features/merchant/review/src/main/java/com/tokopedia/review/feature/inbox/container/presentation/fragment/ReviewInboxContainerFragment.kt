@@ -287,14 +287,14 @@ class ReviewInboxContainerFragment : BaseDaggerFragment(), HasComponent<ReviewIn
         setBuyerReviewFragment()
         attachBuyerReviewFragment()
         reviewInboxTabs?.hide()
-        reviewSellerInboxFragment.show()
-        reviewInboxViewPager.hide()
+        reviewSellerInboxFragment?.show()
+        reviewInboxViewPager?.hide()
     }
 
     private fun updateInboxUnifiedBuyerView() {
         reviewInboxTabs?.show()
-        reviewSellerInboxFragment.hide()
-        reviewInboxViewPager.show()
+        reviewSellerInboxFragment?.hide()
+        reviewInboxViewPager?.show()
     }
 
     private fun updateInboxUnifiedBuyerView(tabTitles: List<String>) {
