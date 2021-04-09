@@ -59,6 +59,7 @@ class RegisterInitialRouterHelper {
                 ApplinkConstInternalGlobal.CHOOSE_ACCOUNT)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_UUID, accessToken)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_MSISDN, phoneNumber)
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_FROM_REGISTER, true)
 
         fragment.startActivityForResult(intent, RegisterInitialFragment.REQUEST_CHOOSE_ACCOUNT)
     }
