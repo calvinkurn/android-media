@@ -549,7 +549,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
             it.setSelection(it.text.length)
         }
 
-        loginEmail(username, password, true)
+        loginEmail(username, password, isSmartLock = true)
         analytics.eventClickSmartLock(activity?.applicationContext)
     }
 
