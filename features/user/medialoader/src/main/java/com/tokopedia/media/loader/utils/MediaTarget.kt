@@ -7,14 +7,14 @@ import com.bumptech.glide.request.target.CustomViewTarget
 import com.bumptech.glide.request.transition.Transition
 
 class MediaTarget<T : View>(
-        view: T,
-        private val onFailed: (errorDrawable: Drawable?) -> Unit = {},
+        private val viewComponent: T,
+        private val onFailed: (viewComponent: T, errorDrawable: Drawable?) -> Unit = { _, _ -> },
         private val onCleared: (placeholder: Drawable?) -> Unit = {},
-        private val onReady: (resource: Bitmap) -> Unit = {}
-) : CustomViewTarget<T, Bitmap>(view) {
+        private val onReady: (viewComponent: T, resource: Bitmap) -> Unit = { _, _ -> }
+) : CustomViewTarget<T, Bitmap>(viewComponent) {
 
     override fun onLoadFailed(errorDrawable: Drawable?) {
-        onFailed(errorDrawable)
+        onFailed(viewComponent, errorDrawable)
     }
 
     override fun onResourceCleared(placeholder: Drawable?) {
@@ -22,7 +22,7 @@ class MediaTarget<T : View>(
     }
 
     override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-        onReady(resource)
+        onReady(viewComponent, resource)
     }
 
 }

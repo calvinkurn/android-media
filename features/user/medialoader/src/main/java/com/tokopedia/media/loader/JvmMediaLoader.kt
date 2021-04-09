@@ -8,7 +8,11 @@ object JvmMediaLoader {
         imageView.loadImage(url)
     }
 
-    @JvmStatic fun loadImage(imageView: ImageView, url: String, properties:Properties.() -> Unit) {
+    @JvmStatic fun loadImageFitCenter(imageView: ImageView, url: String) {
+        imageView.loadImageFitCenter(url)
+    }
+
+    @JvmStatic fun loadImage(imageView: ImageView, url: String, properties: Properties.() -> Unit) {
         imageView.loadImage(url, properties)
     }
 }

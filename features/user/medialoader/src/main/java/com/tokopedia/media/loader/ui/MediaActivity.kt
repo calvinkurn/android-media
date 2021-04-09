@@ -153,8 +153,8 @@ class MediaActivity : AppCompatActivity() {
             setDelay(3000)
             useBlurHash(true)
             properties = this
-        }, MediaTarget(imgTest, onReady = {
-            imgTest.setImageBitmap(it)
+        }, MediaTarget(imgTest, onReady = { viewComponent, resource ->
+            imgTest.setImageBitmap(resource)
             status("loadImageCustomTarget()", properties!!)
             Toast.makeText(applicationContext, "loaded!", Toast.LENGTH_SHORT).show()
         }))
