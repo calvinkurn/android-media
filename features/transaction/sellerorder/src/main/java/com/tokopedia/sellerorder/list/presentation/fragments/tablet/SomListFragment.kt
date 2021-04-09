@@ -37,61 +37,55 @@ class SomListFragment : com.tokopedia.sellerorder.list.presentation.fragments.So
     private var openedOrderId: String = ""
 
     // to keep order detail view opened even if the order card is not showed on the som list view
-    private var keepOpenOrderDetail: Boolean = false
-    private var firstOpen: Boolean = true
+    private var isOpeningOrderDetailAppLink: Boolean = false
+    private var updateOrderDetail: Boolean = false
+    private var hideOrderDetail: Boolean = false
 
     private var somListOrderListener: SomListClickListener? = null
 
     override fun getAdapterTypeFactory(): SomListAdapterTypeFactory = SomListAdapterTypeFactory(this, this)
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        isOpeningOrderDetailAppLink = !arguments?.getString(DeeplinkMapperOrder.QUERY_PARAM_ORDER_ID).isNullOrEmpty()
+        super.onCreate(savedInstanceState)
+    }
+
     override fun afterTextChanged(s: Editable?) {
-        keepOpenOrderDetail = true
+        updateOrderDetail = true
+        hideOrderDetail = false
         super.afterTextChanged(s)
     }
 
-    override fun onTabClicked(status: SomListFilterUiModel.Status, shouldScrollToTop: Boolean, fromClickTab: Boolean) {
-        if (fromClickTab) {
-            keepOpenOrderDetail = false
-        }
-        super.onTabClicked(status, shouldScrollToTop, fromClickTab)
+    override fun onSwipeRefresh() {
+        updateOrderDetail = true
+        hideOrderDetail = true
+        super.onSwipeRefresh()
     }
 
-    override fun renderOrderList(data: List<SomListOrderUiModel>) {
-        if (openedOrderId.isNotEmpty()) {
-            data.find { it.orderId == openedOrderId }.let { openedOrder ->
-                openedOrder?.isOpen = true
-            }
-        }
-        super.renderOrderList(data)
-        // only refresh order detail if the response contains the same order that opened in order detail view
-        if (data.find { it.orderId == openedOrderId } != null) {
-            onOrderListChanged()
-        }
+    override fun onReceiveRefreshOrderRequest(orderId: String, invoice: String) {
+        updateOrderDetail = true
+        hideOrderDetail = true
+        super.onReceiveRefreshOrderRequest(orderId, invoice)
     }
 
-    override fun onRefreshOrderSuccess(result: OptionalOrderData) {
-        if (result.orderId == openedOrderId) {
-            result.order?.isOpen = true
+    override fun onActionCompleted(refreshOrder: Boolean, orderId: String) {
+        if (refreshOrder) {
+            updateOrderDetail = true
+            hideOrderDetail = true
         }
-        keepOpenOrderDetail = false
-        super.onRefreshOrderSuccess(result)
-        onOrderListChanged()
+        super.onActionCompleted(refreshOrder, orderId)
     }
 
-    override fun onOrderClicked(position: Int) {
-        adapter.data.getOrNull(position)?.let {
-            if (it !is SomListOrderUiModel) return
-            keepOpenOrderDetail = false
-            selectedOrderId = it.orderId
-            openedOrderId = it.orderId
-            somListOrderListener?.onOrderClicked(it.orderId)
-            notifyOpenOrderDetail(it)
-            SomAnalytics.eventClickOrderCard(it.orderStatusId, it.status)
+    override fun loadData(page: Int) {
+        if (page > 0) {
+            updateOrderDetail = true
+            hideOrderDetail = false
         }
+        super.loadData(page)
     }
 
     override fun loadAllInitialData() {
-        if (!firstOpen || arguments?.getString(DeeplinkMapperOrder.QUERY_PARAM_ORDER_ID).isNullOrEmpty()) {
+        if (!isOpeningOrderDetailAppLink) {
             super.loadAllInitialData()
         } else {
             openedOrderId = arguments?.getString(DeeplinkMapperOrder.QUERY_PARAM_ORDER_ID).orEmpty()
@@ -103,6 +97,52 @@ class SomListFragment : com.tokopedia.sellerorder.list.presentation.fragments.So
             loadTickers()
             loadWaitingPaymentOrderCounter()
             loadFilters(loadOrders = false)
+        }
+    }
+
+    override fun onTabClicked(status: SomListFilterUiModel.Status, shouldScrollToTop: Boolean, fromClickTab: Boolean) {
+        if (fromClickTab) {
+            updateOrderDetail = true
+            hideOrderDetail = true
+        }
+        super.onTabClicked(status, shouldScrollToTop, fromClickTab)
+    }
+
+    override fun renderOrderList(data: List<SomListOrderUiModel>) {
+        if (openedOrderId.isNotEmpty()) {
+            data.find { it.orderId == openedOrderId }.let { openedOrder ->
+                if (openedOrder != null) {
+                    openedOrder.isOpen = true
+                } else {
+                    updateOrderDetail = false
+                }
+            }
+        }
+        super.renderOrderList(data)
+        onOrderListChanged()
+        isOpeningOrderDetailAppLink = false
+    }
+
+    override fun onRefreshOrderSuccess(result: OptionalOrderData) {
+        if (result.orderId == openedOrderId) {
+            result.order?.isOpen = true
+            updateOrderDetail = result.order != null
+            adapter.data.find { it is SomListOrderUiModel && it.orderId == openedOrderId }?.let {
+                result.order?.isChecked = (it as SomListOrderUiModel).isChecked
+            }
+        }
+        super.onRefreshOrderSuccess(result)
+        onOrderListChanged()
+    }
+
+    override fun onOrderClicked(position: Int) {
+        adapter.data.getOrNull(position)?.let {
+            if (it !is SomListOrderUiModel) return
+            selectedOrderId = it.orderId
+            openedOrderId = it.orderId
+            somListOrderListener?.onOrderClicked(it.orderId)
+            notifyOpenOrderDetail(it)
+            SomAnalytics.eventClickOrderCard(it.orderStatusId, it.status)
         }
     }
 
@@ -135,21 +175,11 @@ class SomListFragment : com.tokopedia.sellerorder.list.presentation.fragments.So
     }
 
     private fun onOrderListChanged() {
-        if (firstOpen && openedOrderId.isNotEmpty()) {
-            firstOpen = false
-            return
-        }
-        getOpenedOrder().let { openedOrder ->
-            if (openedOrder == null) {
-                if (keepOpenOrderDetail) {
-                    return
-                }
-                openedOrderId = ""
-                somListOrderListener?.closeOrderDetail()
-            } else {
-                openedOrderId = (openedOrder as SomListOrderUiModel).orderId
-                somListOrderListener?.onRefreshSelectedOrder(openedOrderId)
-            }
+        if (updateOrderDetail && !isOpeningOrderDetailAppLink) {
+            somListOrderListener?.onRefreshSelectedOrder(openedOrderId)
+        } else if (hideOrderDetail) {
+            openedOrderId = ""
+            somListOrderListener?.closeOrderDetail()
         }
     }
 
@@ -158,11 +188,12 @@ class SomListFragment : com.tokopedia.sellerorder.list.presentation.fragments.So
     }
 
     fun refreshSelectedOrder(orderId: String) {
+        updateOrderDetail = true
+        hideOrderDetail = true
         super.onActionCompleted(true, orderId)
     }
 
     fun applySearchParam(invoice: String) {
-        firstOpen = true
         val typingAnimator = ValueAnimator.ofInt(0, invoice.length)
         typingAnimator.duration = 500
         typingAnimator.addUpdateListener { animation ->

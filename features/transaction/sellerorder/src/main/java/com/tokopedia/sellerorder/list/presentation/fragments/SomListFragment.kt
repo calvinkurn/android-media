@@ -1392,7 +1392,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
         somListLoading.gone()
         rvSomList?.gone()
         multiEditViews.gone()
-        containerBtnBulkAction.gone()
+        animateBulkAcceptOrderButtonLeave()
         getSwipeRefreshLayout(view)?.apply {
             isRefreshing = false
             isEnabled = false
@@ -1413,7 +1413,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
         somListLoading?.gone()
         rvSomList?.gone()
         multiEditViews?.gone()
-        containerBtnBulkAction?.gone()
+        animateBulkAcceptOrderButtonLeave()
         searchBarSomList?.gone()
         shimmerViews?.gone()
         getSwipeRefreshLayout(view)?.apply {
@@ -2107,6 +2107,8 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
         }
         if (adapter.dataSize == 0) {
             multiEditViews?.showWithCondition(adapter.dataSize > 0 && canMultiAcceptOrder)
+            toggleBulkActionButtonVisibility()
+            viewModel.isMultiSelectEnabled = false
             showEmptyState()
         }
     }
