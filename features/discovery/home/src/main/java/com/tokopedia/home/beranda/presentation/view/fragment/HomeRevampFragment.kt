@@ -1103,6 +1103,19 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         observePlayWidgetReminder()
         observePlayWidgetReminderEvent()
         observeRechargeBUWidget()
+        observeTokopointsSuccessData()
+    }
+
+    private fun observeTokopointsSuccessData() {
+        getHomeViewModel().isTokopointsAndOvoDataAvailable.observe(viewLifecycleOwner, Observer {data: Event<Boolean> ->
+            val isDataAvailable = data.peekContent()
+            if (isDataAvailable) {
+                Handler().postDelayed({
+                    if (!coachMarkIsShowing && !bottomSheetIsShowing)
+                        showCoachMark()
+                }, 3000)
+            }
+        })
     }
 
     private fun observeIsNeedRefresh() {
@@ -1346,16 +1359,14 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                 setOnRecyclerViewLayoutReady(isCache)
             }
             adapter?.submitList(data)
-            (data.firstOrNull { it is HomeHeaderOvoDataModel } as? HomeHeaderOvoDataModel)?.let {
-                val isBalanceWidgetNotEmpty = it.headerDataModel?.homeBalanceModel?.balanceDrawerItemModels?.isNotEmpty()
-                        ?: false
-                if (isBalanceWidgetNotEmpty) {
-                    Handler().postDelayed({
-                        if (!coachMarkIsShowing && !bottomSheetIsShowing)
-                            showCoachMark()
-                    }, 3000)
-                }
-            }
+//            val isBalanceWidgetNotEmpty = it.headerDataModel?.homeBalanceModel?.balanceDrawerItemModels?.isNotEmpty()
+//                    ?: false
+//            if (isBalanceWidgetNotEmpty) {
+//                Handler().postDelayed({
+//                    if (!coachMarkIsShowing && !bottomSheetIsShowing)
+//                        showCoachMark()
+//                }, 3000)
+//            }
         }
     }
 

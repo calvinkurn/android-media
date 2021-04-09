@@ -40,6 +40,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.Ba
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.CashBackData
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeNotifModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.HomeBalanceModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.PendingCashbackModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.*
@@ -231,6 +232,9 @@ open class HomeRevampViewModel @Inject constructor(
 
     private val _isNeedRefresh = MutableLiveData<Event<Boolean>>()
     val isNeedRefresh: LiveData<Event<Boolean>> get() = _isNeedRefresh
+
+    private val _isTokopointsAndOvoDataAvailable = MutableLiveData<Event<Boolean>>()
+    val isTokopointsAndOvoDataAvailable: LiveData<Event<Boolean>> get() = _isTokopointsAndOvoDataAvailable
 
 // ============================================================================================
 // ==================================== Helper Local Job ======================================
@@ -1609,6 +1613,16 @@ open class HomeRevampViewModel @Inject constructor(
             }
 
             newUpdateHeaderViewModel(homeBalanceModel)
+
+            var isTokopointsOrOvoFailed = false
+            homeBalanceModel.balanceDrawerItemModels.values.forEach { data ->
+                if (data.state != BalanceDrawerItemModel.STATE_SUCCESS) {
+                    isTokopointsOrOvoFailed = true
+                }
+            }
+            if (!isTokopointsOrOvoFailed) {
+                _isTokopointsAndOvoDataAvailable.postValue(Event(true))
+            }
         }) {
 
         }
