@@ -1673,5 +1673,11 @@ class AddEditProductPreviewFragment :
             productLimitationBottomSheet?.setIsSavingToDraft(false)
             productLimitationBottomSheet?.show(childFragmentManager)
         }
+
+        if (!isProductLimitEligible && dataBackPressed == null) {
+            productLimitationBottomSheet?.setSubmitButtonText(getString(R.string.label_product_limitation_bottomsheet_button))
+            productLimitationBottomSheet?.setIsSavingToDraft(false)
+            productLimitationBottomSheet?.show(childFragmentManager)
+        }
     }
 }
