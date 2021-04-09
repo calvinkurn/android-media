@@ -38,7 +38,6 @@
             android:padding="@dimen/dp_10"
             android:text="@string/see_reply"
             android:textColor="@color/Unify_N700_44"
-            style="@style/TextView.Small.BlackDisabled.Bold"
             android:visibility="invisible"
             tools:visibility="visible"
             app:typographyType="body_3"
@@ -81,7 +80,6 @@
             android:layout_height="wrap_content"
             android:lineSpacingExtra="7sp"
             android:textColor="@color/Unify_N700_96"
-            style="@style/TextView.Small"
             app:typographyType="body_3"
             tools:text="Oleh Pretty Sugar Shop"
             />
@@ -101,8 +99,8 @@
             android:paddingLeft="@dimen/dp_10"
             android:text="@string/seller"
             android:textColor="@color/Unify_G400"
-            style="@style/TextView.Micro.Bold"
             android:textStyle="normal"
+            app:typographyWeight="bold"
             app:typographyType="body_3"
             />
 
@@ -119,7 +117,6 @@
             android:paddingTop="@dimen/dp_2"
             android:paddingBottom="@dimen/dp_2"
             android:textColor="@color/Unify_N700_44"
-            style="@style/TextView.Micro.BlackDisabled"
             tools:text="31 Jul 2016, pukul 11:48"
             app:typographyType="body_3"
             />

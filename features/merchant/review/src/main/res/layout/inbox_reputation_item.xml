@@ -31,7 +31,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                style="@style/TextView.Micro.BlackDisabled"
                 android:textColor="@color/Unify_N700_44"
                 android:fontFamily="sans-serif"
                 android:lineSpacingExtra="6sp"
@@ -49,7 +48,6 @@
                 android:gravity="end"
                 android:lineSpacingExtra="6sp"
                 android:textColor="@color/Unify_N700_44"
-                style="@style/TextView.Micro.BlackDisabled"
                 android:text="@string/deadline_review"
                 android:visibility="visible"
                 app:typographyType="body_3"
@@ -69,7 +67,6 @@
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:textColor="@color/Unify_N700_96"
-                style="@style/TextView.Micro"
                 tools:text="INV/20170116/XVII/65862137"
                 app:typographyType="body_3"
                 />
@@ -91,7 +88,6 @@
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
                 android:gravity="center"
-                style="@style/TextView.Micro"
                 android:textColor="@color/Unify_N0"
                 android:padding="@dimen/dp_3"
                 android:visibility="visible"
@@ -123,12 +119,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_toRightOf="@id/avatar"
-                style="@style/TextView.Small.Bold"
                 tools:text="Pretty Sugar Shop"
                 android:textColor="@color/Unify_N700_96"
                 android:layout_toEndOf="@id/avatar"
                 android:layout_alignTop="@+id/avatar"
-                app:typographyType="body_3"/>
+                app:typographyType="body_3"
+                app:typographyWeight="bold"/>
 
             <com.tokopedia.review.feature.inbox.buyerreview.view.customview.UserReputationView
                 android:id="@+id/user_reputation"
@@ -160,6 +156,7 @@
             android:orientation="horizontal">
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/action"
+                android:layout_height="wrap_content"
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:textColor="@color/Unify_G500_96"
@@ -169,8 +166,7 @@
                 android:paddingLeft="@dimen/dp_10"
                 app:typographyWeight="reguler"
                 app:typographyType="body_2"
-                style="@style/TextView.Small.Green"
-                tools:text="Beri Penilaian dan Balas Ulasan"/>
+                tools:text="Beri Penilaian dan Balas Ulasan" />
 
             <ImageView
                 android:layout_width="wrap_content"

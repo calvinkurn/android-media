@@ -38,9 +38,9 @@
                 android:ellipsize="end"
                 android:lineSpacingExtra="8sp"
                 android:textColor="@color/Unify_N700_96"
-                style="@style/TextView.Small.Bold"
                 android:maxLines="1"
                 app:typographyType="body_3"
+                app:typographyWeight="bold"
                 tools:text="Pretty Sugar Shop"
                 />
 
@@ -83,7 +83,6 @@
                 android:layout_gravity="center_vertical"
                 android:gravity="center_vertical"
                 android:textColor="@color/Unify_N0"
-                style="@style/TextView.Micro"
                 tools:text="@string/already_favorite"
                 app:typographyType="body_3"
                 />
@@ -143,7 +142,6 @@
                 android:textColor="@color/Unify_N700_68"
                 android:gravity="center_vertical"
                 app:typographyType="body_3"
-                style="@style/TextView.Micro.BlackSecondary"
                 tools:text="Batas memberikan penilaian 3 hari lagi"/>
 
         </RelativeLayout>
@@ -193,8 +191,7 @@
                 android:layout_marginLeft="@dimen/dp_5"
                 android:layout_toRightOf="@id/icon_locked"
                 app:typographyType="body_3"
-                android:text="@string/locked_reputation"
-                style="@style/TextView.Micro.BlackSecondary"/>
+                android:text="@string/locked_reputation" />
 
         </RelativeLayout>
 
@@ -220,7 +217,6 @@
             android:fontFamily="sans-serif"
             android:gravity="center_horizontal"
             android:lineSpacingExtra="6sp"
-            style="@style/TextView.Small"
             tools:text="Bagaimana pen"
             android:layout_marginTop="@dimen/dp_8"
             app:typographyType="body_3"
@@ -236,7 +232,6 @@
             android:text="@string/change"
             android:textColor="@color/Unify_G400"
             app:typographyType="body_3"
-            style="@style/TextView.Small.Green"
             android:layout_marginTop="@dimen/dp_8"
             />
     </RelativeLayout>
@@ -272,7 +267,6 @@
             android:layout_marginRight="@dimen/dp_5"
             android:gravity="center_vertical"
             android:lineSpacingExtra="6sp"
-            style="@style/TextView.Micro.BlackSecondary"
             android:textColor="@color/Unify_N700_68"
             tools:text="Penjual Belum Menilai"
             app:typographyType="body_3"
