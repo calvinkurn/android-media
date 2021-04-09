@@ -67,9 +67,6 @@ abstract class TopchatRoomTest {
             TopChatRoomActivityStub::class.java, false, false
     )
 
-    @get:Rule
-    val instantTaskExecutorRule: InstantTaskExecutorRule = InstantTaskExecutorRule()
-
     protected val context: Context = InstrumentationRegistry.getInstrumentation().targetContext
     protected val applicationContext: Context
         get() = InstrumentationRegistry
