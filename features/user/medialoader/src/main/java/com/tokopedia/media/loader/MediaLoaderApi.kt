@@ -4,6 +4,7 @@ import android.os.Handler
 import android.widget.ImageView
 import androidx.appcompat.content.res.AppCompatResources.getDrawable
 import com.tokopedia.analytics.performance.PerformanceMonitoring
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.media.common.Loader
 import com.tokopedia.media.loader.common.Properties
 import com.tokopedia.media.loader.common.factory.BitmapFactory
@@ -59,6 +60,10 @@ internal object MediaLoaderApi {
                             height = imageView.measuredHeight
                     )
 
+                    if (GlobalConfig.isAllowDebuggingTools()) {
+                        println("Medialoader => $source")
+                    }
+
                     bitmap.build(
                             context = context,
                             performanceMonitoring = tracker,
@@ -77,9 +82,14 @@ internal object MediaLoaderApi {
                 }
             }
 
-            handler.postDelayed({
+            // handling image delayed display
+            if (properties.renderDelay <= 0L) {
                 request.into(imageView)
-            }, properties.renderDelay)
+            } else {
+                handler.postDelayed({
+                    request.into(imageView)
+                }, properties.renderDelay)
+            }
         }
     }
 

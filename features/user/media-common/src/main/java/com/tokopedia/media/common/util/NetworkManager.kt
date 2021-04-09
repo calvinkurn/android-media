@@ -17,7 +17,7 @@ import com.tokopedia.media.common.state.Undefined
 
 object NetworkManager {
 
-    fun state(context: Context): String {
+    fun state(context: Context?): String {
         return when (networkState(context)) {
             Low -> LOW_QUALITY
             Fast -> HIGH_QUALITY
@@ -25,8 +25,9 @@ object NetworkManager {
         }
     }
 
-    private fun networkState(context: Context): NetworkState {
-        val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+    private fun networkState(context: Context?): NetworkState? {
+        val connectivityManager = context?.getSystemService(Context.CONNECTIVITY_SERVICE) as? ConnectivityManager? ?: return Undefined
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             val networkState = connectivityManager.activeNetwork ?: return Undefined
             val capabilities = connectivityManager.getNetworkCapabilities(networkState)?: return Undefined
@@ -42,13 +43,13 @@ object NetworkManager {
         }
     }
 
-    private fun isFast(context: Context): NetworkState {
+    private fun isFast(context: Context?): NetworkState {
         val networkInfo = networkInfo(context)?: return Undefined
         return if (isConnectionFast(networkInfo.type, networkInfo.subtype)) Fast else Low
     }
 
-    private fun networkInfo(context: Context): NetworkInfo? {
-        return (context.getSystemService(
+    private fun networkInfo(context: Context?): NetworkInfo? {
+        return (context?.getSystemService(
                 Context.CONNECTIVITY_SERVICE
         ) as ConnectivityManager).activeNetworkInfo
     }

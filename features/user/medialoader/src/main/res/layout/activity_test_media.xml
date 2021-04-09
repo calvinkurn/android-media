@@ -81,6 +81,13 @@
                 android:layout_height="wrap_content"
                 android:text="loadImageCircle"/>
 
+            <com.tokopedia.unifycomponents.UnifyButton
+                android:id="@+id/btnTopRightCrop"
+                android:layout_marginTop="@dimen/unify_space_8"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="TopRightCrop"/>
+
         </LinearLayout>
 
         <LinearLayout

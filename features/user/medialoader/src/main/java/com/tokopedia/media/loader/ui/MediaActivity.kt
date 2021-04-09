@@ -10,6 +10,7 @@ import com.tokopedia.media.loader.*
 import com.tokopedia.media.loader.common.Properties
 import com.tokopedia.media.loader.data.ERROR_RES_UNIFY
 import com.tokopedia.media.loader.transform.BlurHashDecoder
+import com.tokopedia.media.loader.transform.TopRightCrop
 import com.tokopedia.media.loader.utils.AspectRatio
 import com.tokopedia.media.loader.utils.MediaTarget
 import kotlinx.android.synthetic.main.activity_test_media.*
@@ -58,6 +59,8 @@ class MediaActivity : AppCompatActivity() {
         btnBlurHash?.setOnClickListener { loadImageBlurHash() }
 
         btnLoadIcon?.setOnClickListener { loadIcon() }
+
+        btnTopRightCrop?.setOnClickListener { loadImageTopRightCrop() }
     }
 
     private fun generateBlurHash(hash: String?, width: Int? = 2, height: Int? = 2): Bitmap? {
@@ -118,7 +121,7 @@ class MediaActivity : AppCompatActivity() {
                 isCircular(true)
                 status("loadImageCircle()", this)
             }
-        }, 5000)
+        }, 3000)
     }
 
     private fun loadImageError() {
@@ -153,7 +156,7 @@ class MediaActivity : AppCompatActivity() {
             setDelay(3000)
             useBlurHash(true)
             properties = this
-        }, MediaTarget(imgTest, onReady = { viewComponent, resource ->
+        }, MediaTarget(imgTest, onReady = { _, resource ->
             imgTest.setImageBitmap(resource)
             status("loadImageCustomTarget()", properties!!)
             Toast.makeText(applicationContext, "loaded!", Toast.LENGTH_SHORT).show()
@@ -173,6 +176,16 @@ class MediaActivity : AppCompatActivity() {
 
         imgTest?.loadIcon(url)
         imgTest?.scaleType = ImageView.ScaleType.FIT_CENTER
+    }
+    
+    private fun loadImageTopRightCrop() {
+        imgTest?.loadImage(url)
+
+        Handler().postDelayed({
+            imgTest?.loadImage(url) {
+                transform(TopRightCrop())
+            }
+        }, 3000)
     }
 
     private fun status(methodNme: String, properties: Properties) {

@@ -10,18 +10,14 @@ import com.tokopedia.media.common.util.NetworkManager.state as networkManagerSta
 object Loader {
 
     private const val KEY_ADAPTIVE_IMAGE = "is_adaptive_image_status"
+    private var context: Context? = null
 
-    private lateinit var context: Context
-    private lateinit var remoteConfig: RemoteConfig
-
-    val settings by lazy {
-        MediaSettingPreferences(context)
-    }
+    private val remoteConfig by lazy { FirebaseRemoteConfigImpl(context) }
+    private val settings by lazy { MediaSettingPreferences(context) }
 
     @JvmStatic
     fun initialize(context: Context) {
         this.context = context
-        remoteConfig = FirebaseRemoteConfigImpl(context)
     }
 
     fun urlBuilder(url: String): String {
