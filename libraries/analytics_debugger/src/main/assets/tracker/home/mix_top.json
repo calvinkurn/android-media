@@ -11,6 +11,7 @@
       "items": [{
         "dimension83": "{{bebas ongkir|none / other}}",
         "item_id": "{{.*}}",
+        "dimension96": "{{.*}}",
         "price": "{{\\d*.\\d*|\\d.\\d+E\\d}}",
         "dimension40": "{{.*}}",
         "dimension84": "{{.*}}",
@@ -34,6 +35,7 @@
       "items": [{
         "dimension83": "{{bebas ongkir|none / other}}",
         "item_id": "{{.*}}",
+        "dimension96": "{{.*}}",
         "price": "{{\\d*.\\d*|\\d.\\d+E\\d}}",
         "dimension40": "{{.*}}",
         "dimension84": "{{.*}}",
