@@ -32,13 +32,32 @@ class SomListFragment : com.tokopedia.sellerorder.list.presentation.fragments.So
                 }
             }
         }
+
+        private const val SEARCH_ANIMATION_DURATION = 500L
     }
 
     private var openedOrderId: String = ""
 
-    // to keep order detail view opened even if the order card is not showed on the som list view
+    /*
+        when isOpeningOrderDetailAppLink is true means that we're handling order detail applink, in this case
+        we need postpone load order list because we need to get invoice from order detail then use that invoice
+        to filter order that we need in order list fragment (to make order list fragment only show 1 order which
+        showed in order detail), and after we're receiving the response in order list, we must not refresh
+        order detail page
+     */
     private var isOpeningOrderDetailAppLink: Boolean = false
+
+    /*
+        to mark whether we need to update order detail page after refreshing new order data in order list page
+        we need to set this value whenever we're trying to get new order data in order list
+     */
     private var updateOrderDetail: Boolean = false
+
+    /*
+        to mark whether we need to remove order detail page after refreshing new order data in order list page
+        if updateOrderDetail is true, ignore the value of hideOrderDetail
+        we need to set this value whenever we're trying to get new order data in order list
+     */
     private var hideOrderDetail: Boolean = false
 
     private var somListOrderListener: SomListClickListener? = null
@@ -195,7 +214,7 @@ class SomListFragment : com.tokopedia.sellerorder.list.presentation.fragments.So
 
     fun applySearchParam(invoice: String) {
         val typingAnimator = ValueAnimator.ofInt(0, invoice.length)
-        typingAnimator.duration = 500
+        typingAnimator.duration = SEARCH_ANIMATION_DURATION
         typingAnimator.addUpdateListener { animation ->
             searchBarSomList?.searchBarTextField?.setText(invoice.substring(0, animation.animatedValue as Int))
         }
