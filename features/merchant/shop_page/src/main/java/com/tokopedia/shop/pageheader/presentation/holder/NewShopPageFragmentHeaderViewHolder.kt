@@ -61,6 +61,10 @@ class NewShopPageFragmentHeaderViewHolder(private val view: View, private val li
         chooseAddressWidget?.updateWidget()
     }
 
+    fun hideChooseAddressWidget(){
+        chooseAddressWidget?.hide()
+    }
+
     fun setupChooseAddressWidget(remoteConfig: RemoteConfig, isMyShop: Boolean) {
         chooseAddressWidget?.apply {
             val isRollOutUser = ChooseAddressUtils.isRollOutUser(view.context)
