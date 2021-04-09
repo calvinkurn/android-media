@@ -64,6 +64,7 @@ object QueryHome {
             "              recommendationType\n" +
             "              shop{\n" +
             "                shopID\n" +
+            "                city\n" +
             "               }\n" +
             "              labelGroup {\n" +
             "                title\n" +
@@ -80,6 +81,10 @@ object QueryHome {
             "                 value\n" +
             "              }\n" +
             "              textColor\n" +
+            "              badges {\n" +
+            "                 title\n" +
+            "                 image_url\n" +
+            "              }\n" +
             "          }\n" +
             "          banner {\n" +
             "            id\n" +
