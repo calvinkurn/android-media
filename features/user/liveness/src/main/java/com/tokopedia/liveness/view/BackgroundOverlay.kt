@@ -95,7 +95,7 @@ class BackgroundOverlay : View {
 
         mSemiBlackPaint?.let { canvas.drawPath(mPath, it) }
         canvas.clipPath(mPath)
-        canvas.drawColor(Color.parseColor(BACKGROUND_COLOR))
+        canvas.drawColor(MethodChecker.getColor(context, R.color.liveness_dms_background_overlay))
 
         mStatusPaint?.let { canvas.drawCircle((right / 2).toFloat(),
                 (bottom / 3).toFloat(),
@@ -108,6 +108,5 @@ class BackgroundOverlay : View {
     companion object {
         private const val CONST_STROKE_WIDTH = 1F
         private const val CONST_BORDER_STROKE_WIDTH = 10F
-        private const val BACKGROUND_COLOR = "#ae000000"
     }
 }
