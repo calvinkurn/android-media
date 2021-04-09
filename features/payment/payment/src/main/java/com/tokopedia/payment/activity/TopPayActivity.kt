@@ -102,6 +102,9 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
 
     private var webChromeWebviewClient: CommonWebViewClient? = null
 
+    // Flag to prevent calling BACK_DIALOG_URL before web view loaded
+    private var hasFinishedFirstLoad: Boolean = false
+
     private val localCacheHandler by lazy { LocalCacheHandler(this, GCM_STORAGE) }
 
     private val webViewOnKeyListener: View.OnKeyListener
@@ -355,7 +358,7 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
 
     override fun onBackPressed() {
         val url = scroogeWebView?.url
-        if (url != null && url.contains(getBaseUrlDomainPayment())) {
+        if (url != null && url.contains(getBaseUrlDomainPayment()) && hasFinishedFirstLoad) {
             scroogeWebView?.loadUrl(BACK_DIALOG_URL)
         } else if (isEndThanksPage(url)) {
             callbackPaymentSucceed()
@@ -366,6 +369,7 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
 
     override fun onDestroy() {
         presenter.detachView()
+        scroogeWebView = null
         super.onDestroy()
     }
 
@@ -514,6 +518,7 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
         }
 
         override fun onPageFinished(view: WebView?, url: String?) {
+            hasFinishedFirstLoad = true
             presenter.clearTimeoutSubscription()
             hideProgressLoading()
         }
