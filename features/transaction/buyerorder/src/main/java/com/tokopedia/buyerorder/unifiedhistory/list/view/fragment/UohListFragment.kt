@@ -131,7 +131,7 @@ import com.tokopedia.buyerorder.unifiedhistory.list.view.adapter.UohBottomSheetK
 import com.tokopedia.buyerorder.unifiedhistory.list.view.adapter.UohBottomSheetOptionAdapter
 import com.tokopedia.buyerorder.unifiedhistory.list.view.adapter.UohItemAdapter
 import com.tokopedia.buyerorder.unifiedhistory.list.view.viewmodel.UohListViewModel
-import com.tokopedia.datepicker.DatePickerUnify
+import com.tokopedia.datepicker.datetimepicker.DateTimePickerUnify
 import com.tokopedia.design.utils.StringUtils
 import com.tokopedia.kotlin.extensions.convertMonth
 import com.tokopedia.kotlin.extensions.getCalculatedFormattedDate
@@ -1412,7 +1412,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
             if (splitDate.isNotEmpty()) {
                 splitDate.let {
                     currentDate.set(it[0].toInt(), it[1].toInt() - 1, it[2].toInt())
-                    val datePicker = DatePickerUnify(context, minDate, currentDate, maxDate)
+                    val datePicker = DateTimePickerUnify(context, minDate, currentDate, maxDate, null, DateTimePickerUnify.TYPE_DATEPICKER)
                     fragmentManager?.let { it1 -> datePicker.show(it1, "") }
                     datePicker.datePickerButton.setOnClickListener {
                         val resultDate = datePicker.getDate()
