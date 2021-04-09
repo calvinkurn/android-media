@@ -68,6 +68,8 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
+                android:paddingLeft="@dimen/layout_lvl0"
+                android:paddingRight="@dimen/spacing_lvl4"
                 tools:itemCount="3"
                 tools:listitem="@layout/item_property_search_result_horizontal" />
 
