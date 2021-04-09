@@ -80,6 +80,8 @@ import com.tokopedia.shop.common.domain.interactor.UpdateFollowStatusUseCase
 import com.tokopedia.shop.common.util.ShopPageExceptionHandler
 import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.common.util.ShopUtil.getShopPageWidgetUserAddressLocalData
+import com.tokopedia.shop.common.util.ShopUtil.isShouldCheckShopType
+import com.tokopedia.shop.common.util.ShopUtil.isNotRegularMerchant
 import com.tokopedia.shop.common.util.ShopUtil.isUsingNewNavigation
 import com.tokopedia.shop.common.view.bottomsheet.ShopShareBottomSheet
 import com.tokopedia.shop.common.view.bottomsheet.listener.ShopShareBottomsheetListener
@@ -1383,19 +1385,37 @@ class NewShopPageFragment :
                     iconTabProductActive,
                     shopPageProductFragment
             ))
-            val shopPageShowcaseFragment = ShopPageShowcaseFragment.createInstance(
-                    shopId,
-                    shopRef,
-                    shopAttribution,
-                    shopPageHeaderDataModel?.isOfficial ?: false,
-                    shopPageHeaderDataModel?.isGoldMerchant ?: false,
-            )
-            add(ShopPageTabModel(
-                    getString(R.string.shop_info_title_tab_showcase),
-                    iconTabShowcaseInactive,
-                    iconTabShowcaseActive,
-                    shopPageShowcaseFragment
-            ))
+
+            if (isShouldCheckShopType()) {
+                if (isNotRegularMerchant(shopPageHeaderDataModel)) {
+                    add(ShopPageTabModel(
+                            getString(R.string.shop_info_title_tab_showcase),
+                            iconTabShowcaseInactive,
+                            iconTabShowcaseActive,
+                            ShopPageShowcaseFragment.createInstance(
+                                    shopId,
+                                    shopRef,
+                                    shopAttribution,
+                                    shopPageHeaderDataModel?.isOfficial ?: false,
+                                    shopPageHeaderDataModel?.isGoldMerchant ?: false,
+                            )
+                    ))
+                }
+            } else {
+                add(ShopPageTabModel(
+                        getString(R.string.shop_info_title_tab_showcase),
+                        iconTabShowcaseInactive,
+                        iconTabShowcaseActive,
+                        ShopPageShowcaseFragment.createInstance(
+                                shopId,
+                                shopRef,
+                                shopAttribution,
+                                shopPageHeaderDataModel?.isOfficial ?: false,
+                                shopPageHeaderDataModel?.isGoldMerchant ?: false,
+                        )
+                ))
+            }
+
             if (isShowFeed) {
                 val feedFragment = FeedShopFragment.createInstance(
                         shopId,

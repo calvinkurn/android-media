@@ -458,6 +458,7 @@ class ShopPageShowcaseFragment : BaseDaggerFragment(),
             RouteManager.getIntent(ctx, ApplinkConstInternalMechant.MERCHANT_SHOP_SHOWCASE_LIST).apply {
                 val showcaseListBundle = Bundle().apply {
                     putString(ShopShowcaseParamConstant.EXTRA_SHOP_ID, shopId)
+                    putString(ShopShowcaseParamConstant.EXTRA_SHOP_TYPE, customDimensionShopPage.shopType)
                     putString(ShopShowcaseParamConstant.EXTRA_SELECTED_ETALASE_ID, "")
                     putBoolean(ShopShowcaseParamConstant.EXTRA_IS_SHOW_DEFAULT, false)
                     putBoolean(ShopShowcaseParamConstant.EXTRA_IS_SHOW_ZERO_PRODUCT, false)

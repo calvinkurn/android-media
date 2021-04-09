@@ -53,6 +53,10 @@ abstract class ShopShowcaseListImageBaseViewHolder(
         return ShopEtalaseTypeDef.ETALASE_DEFAULT == type
     }
 
+    fun isShowActionButton(type: Int): Boolean {
+        return !isShowCampaignLabel(type) && !isShowcaseTypeGenerated(type)
+    }
+
     fun getCampaignLabelTitle(type: Int): String {
         return when (type) {
             ShopEtalaseTypeDef.ETALASE_CAMPAIGN -> {

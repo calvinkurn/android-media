@@ -1,26 +1,26 @@
 package com.tokopedia.shop_showcase.shop_showcase_management.presentation.adapter
 
+import android.content.Context
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.core.view.MotionEventCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.design.touchhelper.ItemTouchHelperAdapter
 import com.tokopedia.design.touchhelper.OnStartDragListener
 import com.tokopedia.kotlin.extensions.view.inflateLayout
-import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
-import com.tokopedia.shop.common.R
 import com.tokopedia.shop.common.constant.ShopEtalaseTypeDef
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
-import com.tokopedia.shop.common.view.viewholder.ShopShowcaseListImageBaseViewHolder
+import com.tokopedia.shop_showcase.R
 import com.tokopedia.shop_showcase.common.ShopShowcaseReorderListener
 
-class ShopShowcaseListReorderAdapter(
+class ShopShowcaseListReorderAdapterOld(
         val listener: ShopShowcaseReorderListener,
         val onStartDragListener: OnStartDragListener?,
         private val isMyShop: Boolean
-) : RecyclerView.Adapter<ShopShowcaseListReorderAdapter.ViewHolder>(), ItemTouchHelperAdapter {
+) : RecyclerView.Adapter<ShopShowcaseListReorderAdapterOld.ViewHolder>(), ItemTouchHelperAdapter {
 
     private var generatedSowcaseList: Int = 0
     private var showcaseList: MutableList<ShopEtalaseModel> = mutableListOf()
@@ -40,9 +40,7 @@ class ShopShowcaseListReorderAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder(parent.inflateLayout(
-                ShopShowcaseListImageBaseViewHolder.LAYOUT
-        ))
+        return ViewHolder(parent.inflateLayout(R.layout.shop_showcase_item_reorder_old))
     }
 
     override fun getItemCount(): Int {
@@ -50,7 +48,7 @@ class ShopShowcaseListReorderAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(showcaseList[position])
+        holder.bindData(showcaseList[position], position)
     }
 
     override fun onItemDismiss(position: Int) {
@@ -71,46 +69,35 @@ class ShopShowcaseListReorderAdapter(
         }
     }
 
-    inner class ViewHolder(itemView: View) : ShopShowcaseListImageBaseViewHolder(itemView) {
-
-        override var showcaseActionButton: Any? = null
+    inner class ViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
+        val context: Context
+        private var titleShowcase: TextView? = null
+        private var buttonMove: ImageView? = null
 
         init {
-            showcaseActionButton = itemView.findViewById(R.id.img_move_showcase)
+            context = itemView.context
+            titleShowcase = itemView.findViewById(R.id.tv_showcase_name)
+            buttonMove = itemView.findViewById(R.id.img_move)
         }
 
-        override fun bind(element: Any) {
+        fun bindData(dataShowcase: ShopEtalaseModel, position: Int) {
+            titleShowcase?.text = dataShowcase.name
 
-            renderShowcaseMainInfo(element)
+            if (dataShowcase.type == ShopEtalaseTypeDef.ETALASE_CUSTOM) {
+                buttonMove?.visibility = View.VISIBLE
+            } else {
+                buttonMove?.visibility = View.INVISIBLE
+            }
 
-            val showcaseItem = element as ShopEtalaseModel
-
-            // showcase show campaign label condition
-            showcaseCampaignLabel?.shouldShowWithAction(
-                    isShowCampaignLabel(showcaseItem.type),
-                    action = {
-                        adjustShowcaseNameConstraintPosition()
-                    }
-            )
-            showcaseCampaignLabel?.setLabel(getCampaignLabelTitle(showcaseItem.type))
-
-            // showcase show action button condition
-            val actionButton = (showcaseActionButton as? ImageView)
-            actionButton?.apply {
-                shouldShowWithAction(
-                        shouldShow = isShowActionButton(showcaseItem.type),
-                        action = { adjustShowcaseNameConstraintPosition() }
-                )
-
-                // handle showcase action drag listener
-                setOnTouchListener { _, event ->
-                    @Suppress("DEPRECATION")
-                    if (MotionEventCompat.getActionMasked(event) == MotionEvent.ACTION_DOWN) {
-                        onStartDragListener?.onStartDrag(this@ViewHolder)
-                    }
-                    false
+            buttonMove?.setOnTouchListener { _, event ->
+                @Suppress("DEPRECATION")
+                if (MotionEventCompat.getActionMasked(event) == MotionEvent.ACTION_DOWN) {
+                    onStartDragListener?.onStartDrag(this@ViewHolder)
                 }
+                false
             }
         }
+
     }
+
 }

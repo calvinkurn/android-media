@@ -58,17 +58,6 @@ class ShopShowcaseListAdapter(
                         adjustShowcaseNameConstraintPosition()
                     }
             )
-
-            // showcase action button show condition
-            val actionButton = (showcaseActionButton as? ImageView)
-            val actionButtonShowCondition = !isShowCampaignLabel(showcaseItem.type) && !isShowcaseTypeGenerated(showcaseItem.type)
-            actionButton?.shouldShowWithAction(
-                    shouldShow = (isMyShop && actionButtonShowCondition),
-                    action = {
-                        adjustShowcaseNameConstraintPosition()
-                    }
-            )
-
             // set showcase campaign label title
             showcaseCampaignLabel?.setLabel(getCampaignLabelTitle(showcaseItem.type))
 
@@ -77,9 +66,18 @@ class ShopShowcaseListAdapter(
                 listener.sendClickShowcase(showcaseItem, adapterPosition)
             }
 
-            // handle showcase action click
-            (showcaseActionButton as ImageView).setOnClickListener {
-                listener.sendClickShowcaseMenuMore(element, adapterPosition)
+            // showcase action button show condition
+            val actionButton = (showcaseActionButton as? ImageView)
+            actionButton?.apply {
+                shouldShowWithAction(
+                        shouldShow = (isMyShop && isShowActionButton(showcaseItem.type)),
+                        action = { adjustShowcaseNameConstraintPosition() }
+                )
+
+                // action button click listener
+                setOnClickListener {
+                    listener.sendClickShowcaseMenuMore(element, adapterPosition)
+                }
             }
         }
     }

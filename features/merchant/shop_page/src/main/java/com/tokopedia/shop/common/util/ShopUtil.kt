@@ -10,8 +10,8 @@ import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.shop.common.constant.IGNORED_FILTER_KONDISI
 import com.tokopedia.shop.common.constant.IGNORED_FILTER_PENAWARAN
 import com.tokopedia.shop.common.constant.IGNORED_FILTER_PENGIRIMAN
-import com.tokopedia.shop.common.constant.ShopPageConstant
 import com.tokopedia.shop.common.constant.ShopPageConstant.*
+import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderDataModel
 import timber.log.Timber
 
 object ShopUtil {
@@ -56,5 +56,19 @@ object ShopUtil {
                 true
         )
         return abTestShopHeaderType.equals(AB_TEST_NEW_SHOP_HEADER_NEW_VALUE, true) && remoteConfigEnableNewShopHeaderValue
+    }
+
+    fun isShouldCheckShopType(): Boolean {
+        val shopEtalaseRevampKey = RemoteConfigInstance.getInstance().abTestPlatform?.getString(
+                AB_TEST_ROLLOUT_NEW_SHOP_ETALASE,
+                ""
+        )
+        return shopEtalaseRevampKey.equals(AB_TEST_ROLLOUT_NEW_SHOP_ETALASE, true)
+    }
+
+    fun isNotRegularMerchant(shopPageHeaderDataModel: ShopPageHeaderDataModel?): Boolean {
+        return shopPageHeaderDataModel?.let { shop ->
+            shop.isGoldMerchant || shop.isOfficial
+        } ?: false
     }
 }
