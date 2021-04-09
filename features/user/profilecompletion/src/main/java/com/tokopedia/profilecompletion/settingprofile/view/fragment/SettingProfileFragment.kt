@@ -351,19 +351,8 @@ class SettingProfileFragment : BaseDaggerFragment() {
 
         ImageHandler.loadImageCircle2(context, profilePhoto, profileCompletionData.profilePicture)
 
-        name?.showFilled(
-                getString(R.string.subtitle_name_setting_profile),
-                profileCompletionData.fullName,
-                showVerified = false,
-                showButton = true,
-                fieldClickListener = View.OnClickListener {
-                    ChangeNameTracker().clickOnChangeName()
-                    val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.CHANGE_NAME, profileCompletionData.fullName, chancesChangeName)
-                    startActivityForResult(intent, REQUEST_CODE_CHANGE_NAME)
-                }
-        )
-
-        loadTickerAddNameVisibility(profileCompletionData)
+        renderWarningTickerName(profileCompletionData)
+        renderNameField(profileCompletionData)
 
         if (profileCompletionData.birthDay.isEmpty()) {
             bod.showEmpty(
@@ -557,7 +546,21 @@ class SettingProfileFragment : BaseDaggerFragment() {
         )
     }
 
-    private fun loadTickerAddNameVisibility(profileCompletionData: ProfileCompletionData) {
+    private fun renderNameField(profileCompletionData: ProfileCompletionData) {
+        name?.showFilled(
+                getString(R.string.subtitle_name_setting_profile),
+                profileCompletionData.fullName,
+                showVerified = false,
+                showButton = true,
+                fieldClickListener = View.OnClickListener {
+                    ChangeNameTracker().clickOnChangeName()
+                    val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.CHANGE_NAME, profileCompletionData.fullName, chancesChangeName)
+                    startActivityForResult(intent, REQUEST_CODE_CHANGE_NAME)
+                }
+        )
+    }
+
+    private fun renderWarningTickerName(profileCompletionData: ProfileCompletionData) {
         if (profileCompletionData.fullName.contains(DEFAULT_NAME)) {
             tickerAddNameWarning?.show()
         } else {
