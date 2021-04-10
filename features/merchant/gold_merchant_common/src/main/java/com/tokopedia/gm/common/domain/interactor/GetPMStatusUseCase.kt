@@ -63,7 +63,7 @@ class GetPMStatusUseCase @Inject constructor(
         fun createParams(shopId: String): RequestParams {
             return RequestParams.create().apply {
                 putLong(KEY_SHOP_ID, shopId.toLongOrZero())
-                putBoolean(KEY_INCLUDE_OS, false)
+                putBoolean(KEY_INCLUDE_OS, true)
             }
         }
     }
