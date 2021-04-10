@@ -126,7 +126,8 @@ object ViewUtil {
 
     }
 
-    fun areSystemAnimationsEnabled(context: Context): Boolean {
+    fun areSystemAnimationsEnabled(context: Context?): Boolean {
+        if (context == null) return false
         val duration: Float = Settings.Global.getFloat(
                 context.contentResolver,
                 Settings.Global.ANIMATOR_DURATION_SCALE, 0f)
