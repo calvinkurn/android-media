@@ -10,6 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -131,6 +132,7 @@ import com.tokopedia.buyerorder.unifiedhistory.list.view.adapter.UohBottomSheetK
 import com.tokopedia.buyerorder.unifiedhistory.list.view.adapter.UohBottomSheetOptionAdapter
 import com.tokopedia.buyerorder.unifiedhistory.list.view.adapter.UohItemAdapter
 import com.tokopedia.buyerorder.unifiedhistory.list.view.viewmodel.UohListViewModel
+import com.tokopedia.datepicker.LocaleUtils
 import com.tokopedia.datepicker.datetimepicker.DateTimePickerUnify
 import com.tokopedia.design.utils.StringUtils
 import com.tokopedia.kotlin.extensions.convertMonth
@@ -1367,32 +1369,28 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     @SuppressLint("SetTextI18n")
     private fun showDatePicker(flag: String) {
         context?.let { context ->
-            val minDate = Calendar.getInstance()
-
+            val minDate = GregorianCalendar()
             val resultMinDate = orderList.dateLimit.split('-')
-            if (resultMinDate.isNotEmpty()) {
-                minDate.set(Calendar.YEAR, resultMinDate[0].toInt())
-                minDate.set(Calendar.MONTH, resultMinDate[1].toInt())
-                minDate.set(Calendar.DATE, resultMinDate[2].toInt())
+            if (resultMinDate.isNotEmpty() && resultMinDate.size == 3) {
+                minDate.set(resultMinDate[0].toInt(), resultMinDate[1].toInt(), resultMinDate[2].toInt())
             }
-            val maxDate = Calendar.getInstance()
+            val maxDate = GregorianCalendar()
             val isEndDateFilled = paramUohOrder.createTimeEnd.isNotEmpty()
             if (isEndDateFilled && flag.equals(START_DATE, true)) {
                 val splitEndDate = paramUohOrder.createTimeEnd.split('-')
-                if (splitEndDate.isNotEmpty()) {
-                    maxDate.set(splitEndDate[0].toInt(), splitEndDate[1].toInt() - 1, splitEndDate[2].toInt())
+                if (splitEndDate.isNotEmpty() && splitEndDate.size == 3) {
+                    maxDate.set(splitEndDate[0].toInt(), splitEndDate[1].toInt(), splitEndDate[2].toInt())
                 }
             }
             val isStartDateFilled = paramUohOrder.createTimeStart.isNotEmpty()
             if (isStartDateFilled && flag.equals(END_DATE, true)) {
                 val splitStartDate = paramUohOrder.createTimeStart.split('-')
-                if (splitStartDate.isNotEmpty()) {
-                    minDate.set(splitStartDate[0].toInt(), splitStartDate[1].toInt() - 1, splitStartDate[2].toInt())
+                if (splitStartDate.isNotEmpty() && splitStartDate.size == 3) {
+                    minDate.set(splitStartDate[0].toInt(), splitStartDate[1].toInt(), splitStartDate[2].toInt())
                 }
             }
 
-            val currentDate = Calendar.getInstance()
-
+            val currentDate = GregorianCalendar()
             val splitDate = if (flag.equals(START_DATE, true)) {
                 if (paramUohOrder.createTimeStart.isNotEmpty()) {
                     paramUohOrder.createTimeStart.split('-')
@@ -1412,34 +1410,37 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
             if (splitDate.isNotEmpty()) {
                 splitDate.let {
                     currentDate.set(it[0].toInt(), it[1].toInt() - 1, it[2].toInt())
-                    val datePicker = DateTimePickerUnify(context, minDate, currentDate, maxDate, null, DateTimePickerUnify.TYPE_DATEPICKER)
-                    fragmentManager?.let { it1 -> datePicker.show(it1, "") }
-                    datePicker.datePickerButton.setOnClickListener {
-                        val resultDate = datePicker.getDate()
-                        val monthInt = resultDate[1]+1
-                        var monthStr = monthInt.toString()
-                        if (monthStr.length == 1) monthStr = "0$monthStr"
+                    val datePicker = DateTimePickerUnify(context, minDate, currentDate, maxDate, null, DateTimePickerUnify.TYPE_DATEPICKER).apply {
+                        datePickerButton.setOnClickListener {
+                            val resultDate = getDate()
+                            Toast.makeText(activity,"${resultDate.get(Calendar.DATE)} ${resultDate.getDisplayName(Calendar.MONTH, Calendar.LONG, LocaleUtils.getIDLocale())} ${resultDate.get(Calendar.YEAR)} ${resultDate.get(Calendar.HOUR_OF_DAY)} ${resultDate.get(Calendar.MINUTE)}", Toast.LENGTH_SHORT).show()
+                            val monthInt = resultDate.get(Calendar.MONTH) + 1
+                            var monthStr = monthInt.toString()
+                            if (monthStr.length == 1) monthStr = "0$monthStr"
 
-                        var dateStr = resultDate[0].toString()
-                        if (dateStr.length == 1) dateStr = "0$dateStr"
+                            var dateStr = resultDate.get(Calendar.DATE).toString()
+                            if (dateStr.length == 1) dateStr = "0$dateStr"
+
+                            if (flag.equals(START_DATE, true)) {
+                                paramUohOrder.createTimeStart = "${resultDate.get(Calendar.YEAR)}-$monthStr-$dateStr"
+                                bottomSheetOption?.tf_start_date?.textFieldInput?.setText("$dateStr ${convertMonth(resultDate.get(Calendar.MONTH))} ${resultDate.get(Calendar.YEAR)}")
+                                defaultStartDateStr = "$dateStr ${convertMonth(resultDate.get(Calendar.MONTH))} ${resultDate.get(Calendar.YEAR)}"
+                            } else {
+                                paramUohOrder.createTimeEnd = "${resultDate.get(Calendar.YEAR)}-$monthStr-$dateStr"
+                                bottomSheetOption?.tf_end_date?.textFieldInput?.setText("$dateStr ${convertMonth(resultDate.get(Calendar.MONTH))} ${resultDate.get(Calendar.YEAR)}")
+                                defaultEndDateStr = "$dateStr ${convertMonth(resultDate.get(Calendar.MONTH))} ${resultDate.get(Calendar.YEAR)}"
+                            }
+                            dismiss()
+                        }
 
                         if (flag.equals(START_DATE, true)) {
-                            paramUohOrder.createTimeStart = "${resultDate[2]}-$monthStr-$dateStr"
-                            bottomSheetOption?.tf_start_date?.textFieldInput?.setText("$dateStr ${convertMonth(resultDate[1])} ${resultDate[2]}")
-                            defaultStartDateStr = "$dateStr ${convertMonth(resultDate[1])} ${resultDate[2]}"
+                            setTitle(context.getString(R.string.uoh_custom_start_date))
                         } else {
-                            paramUohOrder.createTimeEnd = "${resultDate[2]}-$monthStr-$dateStr"
-                            bottomSheetOption?.tf_end_date?.textFieldInput?.setText("$dateStr ${convertMonth(resultDate[1])} ${resultDate[2]}")
-                            defaultEndDateStr = "$dateStr ${convertMonth(resultDate[1])} ${resultDate[2]}"
+                            setTitle(context.getString(R.string.uoh_custom_end_date))
                         }
-                        datePicker.dismiss()
+                        setCloseClickListener { dismiss() }
                     }
-                    if (flag.equals(START_DATE, true)) {
-                        datePicker.setTitle(getString(R.string.uoh_custom_start_date))
-                    } else {
-                        datePicker.setTitle(getString(R.string.uoh_custom_end_date))
-                    }
-                    datePicker.setCloseClickListener { datePicker.dismiss() }
+                    activity?.supportFragmentManager?.let { it1 -> datePicker.show(it1, "") }
                 }
             }
         }
