@@ -1357,7 +1357,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                             isTokopointsOrOvoFailed = true
                         }
                     }
-                    if (isTokopointsOrOvoFailed) {
+                    if (!isTokopointsOrOvoFailed) {
                         Handler().postDelayed({
                             if (!coachMarkIsShowing && !bottomSheetIsShowing)
                                 showCoachMark()
