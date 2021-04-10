@@ -253,6 +253,7 @@ class TopchatRoomBuyerAttachProductTest : BaseBuyerTopchatRoomTest() {
         inflateTestFragment()
 
         // Then
+        assertTemplateChatVisibility(isDisplayed())
         assertSrwContentIsHidden()
     }
 
