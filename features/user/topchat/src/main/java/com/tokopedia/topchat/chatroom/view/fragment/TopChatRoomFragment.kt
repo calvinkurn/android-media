@@ -116,7 +116,6 @@ import com.tokopedia.topchat.common.TopChatInternalRouter.Companion.EXTRA_SHOP_S
 import com.tokopedia.topchat.common.analytics.ChatSettingsAnalytics
 import com.tokopedia.topchat.common.analytics.TopChatAnalytics
 import com.tokopedia.topchat.common.mapper.ImageUploadMapper
-import com.tokopedia.topchat.common.data.Status
 import com.tokopedia.topchat.common.util.TopChatSellerReviewHelper
 import com.tokopedia.topchat.common.util.Utils
 import com.tokopedia.topchat.common.util.ViewUtil
@@ -529,10 +528,10 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     private fun setupDummyData() {
         for (dummy in UploadImageChatService.dummyMap) {
-            if(dummy.messageId == messageId) {
+            if (dummy.messageId == messageId) {
                 dummy.visitable?.let {
                     addDummyMessage(it)
-                    if(dummy.isFail) {
+                    if (dummy.isFail) {
                         getViewState().showRetryUploadImages(it as ImageUploadViewModel, true)
                     }
                 }
@@ -1876,7 +1875,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     override fun onSuccessUploadImageWithService(intent: Intent) {
-        if(messageId == getResultMessageId(intent)) {
+        if (messageId == getResultMessageId(intent)) {
             val image = intent.getParcelableExtra<ImageUploadServiceModel>(UploadImageChatService.IMAGE)
             image?.let {
                 removeDummy(ImageUploadMapper.mapToImageUploadViewModel(it))
@@ -1885,10 +1884,10 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     override fun onErrorUploadImageWithService(intent: Intent) {
-        if(messageId == getResultMessageId(intent)) {
-            val errorMessage = intent.getStringExtra(UploadImageChatService.ERROR_MESSAGE)?: ""
+        if (messageId == getResultMessageId(intent)) {
+            val errorMessage = intent.getStringExtra(UploadImageChatService.ERROR_MESSAGE) ?: ""
             val position = intent.getIntExtra(UploadImageChatService.RETRY_POSITION, -1)
-            if(position > -1 && position < UploadImageChatService.dummyMap.size) {
+            if (position > -1 && position < UploadImageChatService.dummyMap.size) {
                 val dummyTarget = UploadImageChatService.dummyMap[position]
                 onErrorUploadImage(errorMessage, dummyTarget.visitable as ImageUploadViewModel)
             }
@@ -1896,7 +1895,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     private fun getResultMessageId(intent: Intent): String {
-        return intent.getStringExtra(UploadImageChatService.MESSAGE_ID)?: ""
+        return intent.getStringExtra(UploadImageChatService.MESSAGE_ID) ?: ""
     }
 
     private fun unregisterUploadImageReceiver() {
