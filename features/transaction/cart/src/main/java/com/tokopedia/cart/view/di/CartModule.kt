@@ -192,7 +192,7 @@ class CartModule {
     @CartScope
     @Named(FollowShopUseCase.MUTATION_NAME)
     fun provideFollowShopMutation(@ApplicationContext context: Context): String {
-        return GraphqlHelper.loadRawString(context.resources, R.raw.gql_mutation_favorite_shop)
+        return GraphqlHelper.loadRawString(context.resources, com.tokopedia.shop.common.R.raw.gql_mutation_favorite_shop)
     }
 
 }
