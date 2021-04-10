@@ -13,7 +13,7 @@ class GraphqlUseCaseStub<T : Any> @Inject constructor(
     var delayMs = 0L
 
     override suspend fun executeOnBackground(): T {
-        if(delayMs != 0L) {
+        if (delayMs != 0L) {
             delay(delayMs)
         }
         return response

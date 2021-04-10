@@ -271,10 +271,28 @@ class TopchatRoomBuyerAttachProductTest : BaseBuyerTopchatRoomTest() {
         clickAttachProductMenu()
 
         // Then
+        assertTemplateChatVisibility(isDisplayed())
         assertSrwContentIsHidden()
     }
 
-    // TODO: test srw loading state
+    @Test
+    fun srw_loading_state_displayed_if_buyer_attach_from_start_intent() {
+        // Given
+        setupChatRoomActivity {
+            putProductAttachmentIntent(it)
+        }
+        getChatUseCase.response = firstPageChatAsBuyer
+        chatAttachmentUseCase.response = chatAttachmentResponse
+        chatSrwUseCase.setResponseWithDelay(
+                chatSrwResponse, 1500
+        )
+        inflateTestFragment()
+
+        // Then
+        assertTemplateChatVisibility(not(isDisplayed()))
+        assertSrwContentIsLoading()
+    }
+
     // TODO: test srw error state
     // TODO: test srw interaction expand and collapse
     // TODO: test srw interaction click and send msg

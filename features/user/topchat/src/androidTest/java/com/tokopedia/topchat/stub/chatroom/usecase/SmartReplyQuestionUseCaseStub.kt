@@ -14,6 +14,14 @@ class SmartReplyQuestionUseCaseStub(
             field = value
         }
 
+    fun setResponseWithDelay(
+            response: ChatSmartReplyQuestionResponse,
+            delayMillis: Long
+    ) {
+        this.response = response
+        gqlUseCase.delayMs = delayMillis
+    }
+
     init {
         gqlUseCase.response = response
     }
