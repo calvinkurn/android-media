@@ -22,7 +22,7 @@ internal object MediaLoaderApi {
     @JvmOverloads
     fun loadImage(imageView: ImageView, properties: Properties) {
         var tracker: PerformanceMonitoring? = null
-        val context = imageView.context.applicationContext
+        val context = imageView.context
 
         // handling empty url
         if (properties.data is String && properties.data.toString().isEmpty()) {

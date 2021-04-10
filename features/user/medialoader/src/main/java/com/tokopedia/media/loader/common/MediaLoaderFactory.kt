@@ -31,25 +31,10 @@ abstract class MediaLoaderFactory<T> {
 
         with(properties) {
             // built-in transformations
-            if (properties.isCircular) {
-                _transform.add(CircleCrop())
-                request.circleCrop()
-            }
-
-            if (properties.centerCrop) {
-                _transform.add(CenterCrop())
-                request.centerCrop()
-            }
-
-            if (properties.fitCenter) {
-                _transform.add(FitCenter())
-                request.fitCenter()
-            }
-
-            if (properties.centerInside) {
-                _transform.add(CenterInside())
-                request.centerInside()
-            }
+            if (properties.isCircular) _transform.add(CircleCrop())
+            if (properties.centerCrop) _transform.add(CenterCrop())
+            if (properties.fitCenter) _transform.add(FitCenter())
+            if (properties.centerInside) _transform.add(CenterInside())
 
             // built-in RoundedCorners transformation
             if (roundedRadius > 0f) {
