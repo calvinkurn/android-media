@@ -8,6 +8,7 @@ import android.view.View
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.RecyclerView
+import androidx.vectordrawable.graphics.drawable.Animatable2Compat
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.factory.AdapterTypeFactory
@@ -68,7 +69,19 @@ class SrwLinearLayout : FrameLayout {
         initBackground()
         initToggleExpandCollapsed()
         initRecyclerView()
+        initLoadingState()
         initErrorState()
+    }
+
+    private fun initLoadingState() {
+        loadingState?.avd?.registerAnimationCallback(object : Animatable2Compat.AnimationCallback() {
+            override fun onAnimationEnd(drawable: Drawable?) {
+                super.onAnimationEnd(drawable)
+                if (!ViewUtil.areSystemAnimationsEnabled(context)) {
+                    loadingState?.avd?.clearAnimationCallbacks()
+                }
+            }
+        })
     }
 
     private fun initErrorState() {
