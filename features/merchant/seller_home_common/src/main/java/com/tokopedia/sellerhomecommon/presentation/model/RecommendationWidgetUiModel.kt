@@ -32,4 +32,8 @@ data class RecommendationWidgetUiModel(
     override fun copy(): BaseWidgetUiModel<RecommendationDataUiModel> {
         return RecommendationWidgetUiModel(id, widgetType, title, subtitle, tooltip, appLink, dataKey, ctaText, isShowEmpty, data, isLoaded, isLoading, isFromCache, emptyState, impressHolder)
     }
+
+    override fun needToRefreshData(other: BaseWidgetUiModel<RecommendationDataUiModel>): Boolean {
+        return dataKey != other.dataKey
+    }
 }
