@@ -143,8 +143,8 @@ internal fun ImageView.loadImageRounded(url: String?) {
 internal fun ImageView.loadImageTopRightCrop(url: String?) {
     if (url != null && url.isNotEmpty()) {
         loadImage(url) {
-            setErrorDrawable(R.drawable.product_card_placeholder_grey)
             transform(TopRightCrop())
+            setErrorDrawable(R.drawable.product_card_placeholder_grey)
         }
     }
 }
