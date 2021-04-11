@@ -1,10 +1,13 @@
 package com.tokopedia.topchat.stub.chatroom.di
 
+import android.content.Context
 import android.content.SharedPreferences
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.chatbot.domain.mapper.TopChatRoomWebSocketMessageMapper
 import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.seamless_login_common.domain.usecase.SeamlessLoginUsecase
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
 import com.tokopedia.topchat.TopchatAndroidTestCoroutineContextDispatcher
@@ -13,6 +16,7 @@ import com.tokopedia.topchat.chatroom.di.ChatScope
 import com.tokopedia.topchat.chatroom.domain.usecase.*
 import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenter
 import com.tokopedia.topchat.chatroom.view.viewmodel.TopchatCoroutineContextProvider
+import com.tokopedia.topchat.common.di.qualifier.TopchatContext
 import com.tokopedia.topchat.stub.chatroom.view.presenter.TopChatRoomPresenterStub
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.websocket.RxWebSocketUtil
@@ -28,6 +32,12 @@ class ChatRoomFakePresenterModule {
     @ChatScope
     fun provideTestDispatcher(): TopchatCoroutineContextProvider {
         return TopchatAndroidTestCoroutineContextDispatcher()
+    }
+
+    @ChatScope
+    @Provides
+    fun provideRemoteConfig(@TopchatContext context: Context) : RemoteConfig {
+        return FirebaseRemoteConfigImpl(context)
     }
 
     @Provides
@@ -58,7 +68,8 @@ class ChatRoomFakePresenterModule {
             chatToggleBlockChat: ChatToggleBlockChatUseCase,
             chatBackgroundUseCase: ChatBackgroundUseCase,
             sharedPref: SharedPreferences,
-            dispatchers: TopchatCoroutineContextProvider
+            dispatchers: TopchatCoroutineContextProvider,
+            remoteConfig: RemoteConfig
     ): TopChatRoomPresenter {
         return TopChatRoomPresenterStub(
                 tkpdAuthInterceptor,
@@ -86,7 +97,8 @@ class ChatRoomFakePresenterModule {
                 chatToggleBlockChat,
                 chatBackgroundUseCase,
                 sharedPref,
-                dispatchers
+                dispatchers,
+                remoteConfig
         )
     }
 

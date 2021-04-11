@@ -115,7 +115,7 @@ class RecentViewFragment : BaseDaggerFragment(), RecentView.View {
                               container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         val parentView: View = inflater.inflate(R.layout.fragment_recent_view_detail, container, false)
-        recyclerView = parentView.findViewById<View>(R.id.list) as RecyclerView
+        recyclerView = parentView.findViewById<View>(R.id.rv_recent_view_page) as RecyclerView
         prepareView()
         return parentView
     }
