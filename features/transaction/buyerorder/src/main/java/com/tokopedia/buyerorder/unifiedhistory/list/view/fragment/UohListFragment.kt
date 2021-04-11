@@ -204,9 +204,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     private var filter1: SortFilterItem? = null
     private var filter2: SortFilterItem? = null
     private var filter3: SortFilterItem? = null
-    private var defaultStartDate = ""
     private var defaultStartDateStr = ""
-    private var defaultEndDate = ""
     private var defaultEndDateStr = ""
     private var arrayFilterDate: Array<String>? = arrayOf()
     private var onLoadMore = false
@@ -934,6 +932,9 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         currFilterCategoryLabel = ""
         tempFilterCategoryKey = ""
         tempFilterCategoryLabel = ""
+
+        defaultStartDateStr = ""
+        defaultEndDateStr = ""
 
         isFilterClicked = false
         isReset = true
