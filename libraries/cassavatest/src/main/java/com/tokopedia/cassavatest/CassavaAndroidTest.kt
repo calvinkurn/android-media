@@ -58,6 +58,7 @@ internal fun getTestCases(context: Context, journeyId: Int): Pair<List<Validator
     val useCase = QueryListUseCase(CassavaRepository(getCassavaApi()))
     val query: CassavaQuery = useCase.execute(context, CassavaSource.NETWORK,
             journeyId, "") ?: throw Throwable("Failed to get Query")
+
     return@runBlocking query.query.map {
         it.toDefaultValidator()
     } to query.mode.value
