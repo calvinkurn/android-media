@@ -8,12 +8,13 @@ import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.analyticsdebugger.cassava.data.CassavaSource
+import com.tokopedia.analyticsdebugger.cassava.data.api.CassavaUrl
+import com.tokopedia.analyticsdebugger.cassava.data.request.ValidationResultData
+import com.tokopedia.analyticsdebugger.cassava.data.request.ValidationResultRequest
 import com.tokopedia.analyticsdebugger.cassava.domain.QueryListUseCase
+import com.tokopedia.analyticsdebugger.cassava.domain.ValidationResultUseCase
 import com.tokopedia.analyticsdebugger.cassava.validator.Utils
-import com.tokopedia.analyticsdebugger.cassava.validator.core.CassavaQuery
-import com.tokopedia.analyticsdebugger.cassava.validator.core.Validator
-import com.tokopedia.analyticsdebugger.cassava.validator.core.ValidatorEngine
-import com.tokopedia.analyticsdebugger.cassava.validator.core.toDefaultValidator
+import com.tokopedia.analyticsdebugger.cassava.validator.core.*
 import com.tokopedia.analyticsdebugger.cassava.validator.list.ValidatorListFragment
 import com.tokopedia.analyticsdebugger.database.TkpdAnalyticsDatabase
 import com.tokopedia.analyticsdebugger.debugger.data.repository.GtmRepo
@@ -24,7 +25,8 @@ import timber.log.Timber
 import javax.inject.Inject
 
 class ValidatorViewModel @Inject constructor(private val context: Application,
-                                             private val queryListUseCase: QueryListUseCase)
+                                             private val queryListUseCase: QueryListUseCase,
+                                             private val validationResultUseCase: ValidationResultUseCase)
     : AndroidViewModel(context) {
 
     private val dao: GtmLogDBSource by lazy { GtmLogDBSource(context) }
@@ -32,6 +34,7 @@ class ValidatorViewModel @Inject constructor(private val context: Application,
     private val repo: GtmRepo by lazy { GtmRepo(TkpdAnalyticsDatabase.getInstance(context).gtmLogDao()) }
 
     private val localCacheHandler: LocalCacheHandler by lazy { LocalCacheHandler(context, PREF_NAME) }
+    private var journeyId: Int = -1
 
     private val _testCases: MutableLiveData<List<Validator>> = MutableLiveData()
     val testCases: LiveData<List<Validator>>
@@ -79,6 +82,9 @@ class ValidatorViewModel @Inject constructor(private val context: Application,
                 val testResult = engine.computeCo(v, mode)
                 _testCases.value = testResult
                 val endTime = System.currentTimeMillis()
+                if (cassavaSource.value == CassavaSource.NETWORK) {
+                    sendValidationResult(testResult)
+                }
                 Timber.i("Retrieved in: ${endTime - startTime} Got ${testResult.size} results")
             } catch (e: Exception) {
                 _snackBarMessage.setValue(e.message ?: "")
@@ -106,6 +112,7 @@ class ValidatorViewModel @Inject constructor(private val context: Application,
     fun getListFiles(): List<String> = listFiles.value ?: arrayListOf()
 
     fun fetchQueryFromAsset(filePath: String, journeyId: Int) {
+        this.journeyId = journeyId
         viewModelScope.launch(CoroutineDispatchersProvider.io) {
             try {
                 _cassavaQuery.postValue(queryListUseCase.execute(
@@ -117,6 +124,24 @@ class ValidatorViewModel @Inject constructor(private val context: Application,
                 t.printStackTrace()
                 _snackBarMessage.postValue(t.message)
             }
+        }
+    }
+
+    private fun sendValidationResult(testResult: List<Validator>) {
+        viewModelScope.launch(CoroutineDispatchersProvider.io) {
+            validationResultUseCase.execute(
+                    journeyId = journeyId,
+                    validationResult = ValidationResultRequest(
+                            version = "",
+                            token = CassavaUrl.TOKEN,
+                            data = testResult.map {
+                                ValidationResultData(
+                                        dataLayerId = it.id,
+                                        result = it.status == Status.SUCCESS,
+                                        errorMessage = ""
+                                )
+                            }.toList()
+                    ))
         }
     }
 

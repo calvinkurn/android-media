@@ -1,7 +1,10 @@
 package com.tokopedia.analyticsdebugger.cassava.data
 
 import com.tokopedia.analyticsdebugger.cassava.data.api.CassavaApi
+import com.tokopedia.analyticsdebugger.cassava.data.api.CassavaUrl
 import com.tokopedia.analyticsdebugger.cassava.data.entity.QueryListEntity
+import com.tokopedia.analyticsdebugger.cassava.data.entity.ValidationResultEntity
+import com.tokopedia.analyticsdebugger.cassava.data.request.ValidationResultRequest
 import javax.inject.Inject
 
 /**
@@ -11,8 +14,14 @@ class CassavaRepository @Inject constructor(private val cassavaApi: CassavaApi) 
 
     suspend fun getNetworkQueryList(journeyId: Int): QueryListEntity =
             cassavaApi.getQueryList(
-                    token = "yQrDWdx97HRurBY8nvGt_Q6B4zMncJ22DGByVmzUBCI=",
+                    token = CassavaUrl.TOKEN,
                     journeyId = journeyId
             ).data
+
+    suspend fun sendValidationResult(journeyId: String, validationResult: ValidationResultRequest): ValidationResultEntity =
+            cassavaApi.postValidationResult(
+                    journeyId = journeyId,
+                    validationRequest = validationResult
+            )
 
 }
