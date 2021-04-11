@@ -30,6 +30,11 @@ class MainValidatorFragment : Fragment() {
                 ?: throw IllegalArgumentException("Path not found!!")
     }
 
+    private val journeyId: Int by lazy {
+        arguments?.getInt(ARGUMENT_JOURNEY_ID)
+                ?: 0
+    }
+
     val viewModel: ValidatorViewModel by lazy {
         ViewModelProvider(this, viewModelFactory)
                 .get(ValidatorViewModel::class.java)
@@ -45,7 +50,7 @@ class MainValidatorFragment : Fragment() {
         super.onCreate(savedInstanceState)
 
         initInjector()
-        viewModel.fetchQueryFromAsset(testPath,1)
+        viewModel.fetchQueryFromAsset(testPath, journeyId)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -99,10 +104,12 @@ class MainValidatorFragment : Fragment() {
     companion object {
 
         private const val ARGUMENT_TEST_PATH = "ARGUMENT_TEST_PATH"
+        private const val ARGUMENT_JOURNEY_ID = "ARGUMENT_JOURNEY_ID"
 
-        fun newInstance(path: String): MainValidatorFragment = MainValidatorFragment().apply {
+        fun newInstance(path: String, journeyId: Int): MainValidatorFragment = MainValidatorFragment().apply {
             arguments = Bundle().apply {
                 putString(ARGUMENT_TEST_PATH, path)
+                putInt(ARGUMENT_JOURNEY_ID, journeyId)
             }
         }
     }

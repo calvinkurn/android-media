@@ -80,7 +80,7 @@ class MainValidatorActivity : AppCompatActivity(),
     override fun goToTestPage(filepath: String) {
         supportFragmentManager.beginTransaction()
                 .addToBackStack("runner")
-                .replace(R.id.container, MainValidatorFragment.newInstance(filepath))
+                .replace(R.id.container, MainValidatorFragment.newInstance(filepath, 1)) // dummy journey id
                 .commit()
     }
 
