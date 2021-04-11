@@ -488,7 +488,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 refreshHandler = RefreshHandler(it, swipeRefreshLayout, this)
             }
             progressDialog = AlertDialog.Builder(it)
-                    .setView(R.layout.purchase_platform_progress_dialog_view)
+                    .setView(com.tokopedia.purchase_platform.common.R.layout.purchase_platform_progress_dialog_view)
                     .setCancelable(false)
                     .create()
         }
