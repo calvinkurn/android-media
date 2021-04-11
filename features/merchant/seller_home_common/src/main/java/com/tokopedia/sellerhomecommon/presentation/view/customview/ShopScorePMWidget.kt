@@ -53,20 +53,20 @@ class ShopScorePMWidget : FrameLayout {
     fun setProgressColor(state: State) {
         val colors = when (state) {
             is State.Good -> {
-                tv_current_progress.setTextColor(ContextCompat.getColor(context,com.tokopedia.unifyprinciples.R.color.Green_G500))
-                intArrayOf(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Green_G400), ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Green_G600))
+                tv_current_progress.setTextColor(ContextCompat.getColor(context,com.tokopedia.unifyprinciples.R.color.Unify_G500))
+                intArrayOf(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G400), ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G600))
             }
             is State.Warning -> {
-                tv_current_progress.setTextColor(ContextCompat.getColor(context,com.tokopedia.unifyprinciples.R.color.Yellow_Y400))
-                intArrayOf(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Yellow_Y300), ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Yellow_Y400))
+                tv_current_progress.setTextColor(ContextCompat.getColor(context,com.tokopedia.unifyprinciples.R.color.Unify_Y400))
+                intArrayOf(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Y300), ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Y400))
             }
             is State.Custom -> {
                 tv_current_progress.setTextColor(ContextCompat.getColor(context, state.valueTextColorResId))
                 intArrayOf(ContextCompat.getColor(context, state.barStartColorResId), ContextCompat.getColor(context, state.barEndColorResId))
             }
             else -> {
-                tv_current_progress.setTextColor(ContextCompat.getColor(context,com.tokopedia.unifyprinciples.R.color.Red_R500))
-                intArrayOf(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Red_R400), ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Red_R500))
+                tv_current_progress.setTextColor(ContextCompat.getColor(context,com.tokopedia.unifyprinciples.R.color.Unify_R500))
+                intArrayOf(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_R400), ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_R500))
             }
         }
         progress_bar_current.setProgressColor(colors)

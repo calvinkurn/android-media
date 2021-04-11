@@ -1434,6 +1434,80 @@ public class ProductListFragment
     }
 
     @Override
+    public void onInspirationCarouselChipsProductClicked(@NotNull InspirationCarouselDataView.Option.Product product) {
+        redirectionStartActivity(product.getApplink(), product.getUrl());
+
+        String filterSortParams = searchParameter == null ? "" :
+                SearchFilterUtilsKt.getSortFilterParamsString(searchParameter.getSearchParameterMap());
+
+        List<Object> products = new ArrayList<>();
+        products.add(product.getInspirationCarouselChipsProductAsObjectDataLayer(filterSortParams));
+        SearchTracking.trackEventClickInspirationCarouselChipsProduct(
+                product.getInspirationCarouselType(),
+                getQueryKey(),
+                product.getOptionTitle(),
+                getUserId(),
+                products
+        );
+    }
+
+    @Override
+    public void onImpressedInspirationCarouselChipsProduct(@NotNull InspirationCarouselDataView.Option.Product product) {
+        String filterSortParams = searchParameter == null ? "" :
+                SearchFilterUtilsKt.getSortFilterParamsString(searchParameter.getSearchParameterMap());
+
+        List<Object> products = new ArrayList<>();
+        products.add(product.getInspirationCarouselChipsProductAsObjectDataLayer(filterSortParams));
+
+        SearchTracking.trackImpressionInspirationCarouselChips(
+                trackingQueue,
+                product.getInspirationCarouselType(),
+                getQueryKey(),
+                product.getOptionTitle(),
+                getUserId(),
+                products
+        );
+    }
+
+    @Override
+    public void onInspirationCarouselChipsSeeAllClicked(@NotNull InspirationCarouselDataView.Option option) {
+        redirectionStartActivity(option.getApplink(), option.getUrl());
+
+        SearchTracking.trackEventClickInspirationCarouselChipsSeeAll(
+                option.getInspirationCarouselType(),
+                getQueryKey(),
+                option.getTitle(),
+                getUserId()
+        );
+    }
+
+    @Override
+    public void onInspirationCarouselChipsClicked(
+            int inspirationCarouselAdapterPosition,
+            @NotNull InspirationCarouselDataView inspirationCarouselViewModel,
+            @NotNull InspirationCarouselDataView.Option inspirationCarouselOption
+    ) {
+        if (presenter == null) return;
+
+        presenter.onInspirationCarouselChipsClick(
+                inspirationCarouselAdapterPosition,
+                inspirationCarouselViewModel,
+                inspirationCarouselOption,
+                getSearchParameter().getSearchParameterMap()
+        );
+    }
+
+    @Override
+    public void trackInspirationCarouselChipsClicked(@NotNull InspirationCarouselDataView.Option option) {
+        SearchTracking.trackEventClickInspirationCarouselChipsVariant(
+                option.getInspirationCarouselType(),
+                getQueryKey(),
+                option.getTitle(),
+                getUserId()
+        );
+    }
+
+    @Override
     public RemoteConfig getABTestRemoteConfig() {
         return RemoteConfigInstance.getInstance().getABTestPlatform();
     }
@@ -1926,5 +2000,12 @@ public class ProductListFragment
         } catch (Exception e) {
             return false;
         }
+    }
+
+    @Override
+    public void refreshItemAtIndex(int index) {
+        if (adapter == null) return;
+
+        adapter.refreshItemAtIndex(index);
     }
 }
