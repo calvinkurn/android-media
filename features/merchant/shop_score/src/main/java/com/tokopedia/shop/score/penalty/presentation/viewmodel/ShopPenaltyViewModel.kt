@@ -60,10 +60,11 @@ class ShopPenaltyViewModel @Inject constructor(
             getShopScorePenaltyTypesUseCase.requestParams = GetShopScorePenaltyTypesUseCase.createParams(ShopScorePenaltyTypesParam())
             val penaltyData = penaltyMapper.mapToPenaltyData(getShopScorePenaltyTypesUseCase.executeOnBackground())
 
-            if (itemSortFilterWrapperList.isNullOrEmpty()) {
-                itemSortFilterWrapperList = penaltyData.itemDetailPenaltyFilterUiModel?.itemSortFilterWrapperList?.toMutableList() ?: mutableListOf()
-            } else {
-                penaltyData.itemDetailPenaltyFilterUiModel?.itemSortFilterWrapperList = itemSortFilterWrapperList
+            penaltyData.itemDetailPenaltyFilterUiModel?.itemSortFilterWrapperList?.mapIndexed { index, itemSortFilterWrapper ->
+                val sortFilterItem = penaltyFilterUiModel.find { it.title == ShopScoreConstant.TITLE_TYPE_PENALTY }?.chipsFilerList
+                if (sortFilterItem?.getOrNull(index)?.title == itemSortFilterWrapper.sortFilterItem?.title) {
+                    itemSortFilterWrapper.isSelected = sortFilterItem?.getOrNull(index)?.isSelected ?: false
+                }
             }
             _penaltyPageData.postValue(Success(penaltyData))
         }, onError = {
