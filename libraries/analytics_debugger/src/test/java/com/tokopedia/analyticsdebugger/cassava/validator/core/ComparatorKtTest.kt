@@ -54,21 +54,21 @@ class ComparatorKtTest {
 
     @Test
     fun `regex match given * when compared to any string should return true`() {
-        val tesVal = "{{.*}}"
+        val tesVal = ".*"
         val objVal = "any string would match"
         assertTrue(regexEquals(tesVal, objVal))
     }
 
     @Test
     fun `regex match given d* when compared to any string should return true`() {
-        val tesVal = "{{\\d*}}"
+        val tesVal = "\\d*"
         val objVal = "55643"
         assertTrue(regexEquals(tesVal, objVal))
     }
 
     @Test
     fun `regex match given idd* when compared to any string should return true`() {
-        val tesVal = "{{id/\\d*}}"
+        val tesVal = "id/\\d*"
         val objVal = "id/55643"
         assertTrue(regexEquals(tesVal, objVal))
     }
@@ -76,21 +76,21 @@ class ComparatorKtTest {
     @Test
     fun `regex match given d regex when compared to int json val should return true`() {
         // this test should rarely happen as gson parses int to double
-        val tesVal = "{{\\d*}}"
+        val tesVal = "\\d*"
         val objVal = 55643
         assertTrue(regexEquals(tesVal, objVal))
     }
 
     @Test
     fun `regex match given d regex when compared to double json val should return true`() {
-        val tesVal = "{{\\d*\\.\\d*}}"
+        val tesVal = "\\d*\\.\\d*"
         val objVal = 749000.5
         assertTrue(regexEquals(tesVal, objVal))
     }
 
     @Test
     fun `regex match given bool regex when compared to bool json val should return true`() {
-        val tesVal = "{{true|false}}"
+        val tesVal = "true|false"
         val objVal = true
         assertTrue(regexEquals(tesVal, objVal))
     }
