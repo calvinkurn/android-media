@@ -154,6 +154,10 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         }
     }
 
+    private val isNewLazyLoad by lazy {
+        remoteConfig.isSellerHomeDashboardNewLazyLoad()
+    }
+
     private var notifCenterCount = 0
     private var isFirstLoad = true
     private var isErrorToastShown = false
@@ -163,9 +167,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     private var performanceMonitoringSellerHomePlt: HomeLayoutLoadTimeMonitoring? = null
 
     private var ketupatLottie: KetupatLottieView? = null
-
-    //TODO: Use remote config value
-    private val isSmoothLoadEnabled = true
 
     override fun getScreenName(): String = TrackingConstant.SCREEN_NAME_SELLER_HOME
     override val coroutineContext: CoroutineContext
@@ -345,7 +346,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                     visibleWidgets.add(widget)
                 } else {
                     val lastLoadingWidget =
-                            if (isSmoothLoadEnabled) {
+                            if (isNewLazyLoad) {
                                 getLastLoadingWidget(lastVisible)
                             } else {
                                 lastVisible
@@ -392,11 +393,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     }
 
-    override fun loadData(page: Int) {
-        if (isSmoothLoadEnabled) {
-
-        }
-    }
+    override fun loadData(page: Int) {}
 
     private fun List<BaseWidgetUiModel<*>>.setLoading() {
         forEach {
@@ -1098,7 +1095,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     private fun updateWidgets(newWidgets: List<BaseWidgetUiModel<BaseDataUiModel>>) {
         val diffUtilCallback = SellerHomeDiffUtilCallback(adapter.data as List<BaseWidgetUiModel<BaseDataUiModel>>, newWidgets)
         val diffUtilResult = DiffUtil.calculateDiff(diffUtilCallback)
-//        renderList(newWidgets, true)
         adapter.data.clear()
         adapter.data.addAll(newWidgets)
         diffUtilResult.dispatchUpdatesTo(adapter)
