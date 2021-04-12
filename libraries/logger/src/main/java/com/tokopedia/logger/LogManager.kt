@@ -34,10 +34,6 @@ import com.tokopedia.logger.utils.LoggerUtils.getPartDeviceId
 class LogManager(val application: Application, val loggerProxy: LoggerProxy) {
 
     init {
-        initByConfig()
-    }
-
-    fun initByConfig(){
         try {
             val loggerReporting = LoggerReporting.getInstance()
             loggerReporting.partDeviceId = getPartDeviceId(application)
