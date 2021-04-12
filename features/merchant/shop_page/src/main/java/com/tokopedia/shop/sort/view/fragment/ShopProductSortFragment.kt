@@ -19,7 +19,7 @@ import javax.inject.Inject
 /**
  * Created by normansyahputa on 2/23/18.
  */
-class ShopProductSortFragment : BaseListFragment<ShopProductSortModel?, ShopProductSortAdapterTypeFactory?>() {
+class ShopProductSortFragment : BaseListFragment<ShopProductSortModel, ShopProductSortAdapterTypeFactory>() {
     @kotlin.jvm.JvmField
     @Inject
     var shopProductFilterPresenter: ShopProductSortPresenter? = null

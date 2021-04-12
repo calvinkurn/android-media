@@ -13,7 +13,7 @@ import javax.inject.Inject
 /**
  * Created by normansyahputa on 2/23/18.
  */
-class ShopProductSortPresenter @Inject constructor(private val getShopProductFilterUseCase: GetShopProductSortUseCase, private val shopProductFilterMapper: ShopProductSortMapper, private val userSession: UserSessionInterface) : BaseDaggerPresenter<BaseListViewListener<ShopProductSortModel?>?>() {
+class ShopProductSortPresenter @Inject constructor(private val getShopProductFilterUseCase: GetShopProductSortUseCase, private val shopProductFilterMapper: ShopProductSortMapper, private val userSession: UserSessionInterface) : BaseDaggerPresenter<BaseListViewListener<ShopProductSortModel>>() {
     fun getShopFilterList() {
         getShopProductFilterUseCase.execute(object : Subscriber<List<ShopProductSort>>() {
             override fun onCompleted() {}
