@@ -29,7 +29,6 @@ data class CartShipmentAddressFormData(
         var isIneligiblePromoDialogEnabled: Boolean = false,
         var tickerData: TickerData? = null,
         var addressesData: AddressesData? = null,
-        var disabledFeaturesDetailData: DisabledFeaturesDetailData? = null,
         var campaignTimerUi: CampaignTimerUi? = null,
         var lastApplyData: LastApplyUiModel? = null,
         var promoCheckoutErrorDefault: PromoCheckoutErrorDefault? = null,
