@@ -1,5 +1,6 @@
 package com.tokopedia.inbox.view.activity
 
+import android.net.Uri
 import androidx.test.filters.LargeTest
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import androidx.test.platform.app.InstrumentationRegistry
@@ -44,6 +45,23 @@ class InboxActivityApplinkTest {
 
         // When
         val intent = RouteManager.getIntent(context, applink)
+
+        // Then
+        assertThat(intent, isPointingTo(inbox))
+    }
+
+    @Test
+    fun test_inbox_external_applink_with_query_page() {
+        // Given
+        val applinkUri = Uri.parse(ApplinkConst.INBOX).buildUpon().apply {
+            appendQueryParameter(
+                    ApplinkConst.Inbox.PARAM_PAGE,
+                    ApplinkConst.Inbox.VALUE_PAGE_CHAT
+            )
+        }
+
+        // When
+        val intent = RouteManager.getIntent(context, applinkUri.toString())
 
         // Then
         assertThat(intent, isPointingTo(inbox))

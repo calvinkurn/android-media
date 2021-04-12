@@ -68,8 +68,18 @@ import javax.inject.Inject
  * - tokopedia://inbox?page=notification
  * - tokopedia://inbox?role=buyer
  *
+ * How to construct the applink with query parameters:
+ * ```
+ * val applinkUri = Uri.parse(ApplinkConst.INBOX).buildUpon().apply {
+ *      appendQueryParameter(
+ *          ApplinkConst.Inbox.PARAM_PAGE,
+ *          ApplinkConst.Inbox.VALUE_PAGE_CHAT
+ *      )
+ * }
+ * ```
+ *
  * note: Do not hardcode applink.
- * use variable reference in [com.tokopedia.applink.ApplinkConst]
+ * use variables provided in [com.tokopedia.applink.ApplinkConst]
  */
 class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentContainer {
 
