@@ -567,7 +567,7 @@ final class ProductListPresenter
         processBannerAndBroadmatchInSamePosition(searchProduct, list);
         processBanner(searchProduct, list);
         processBroadMatch(searchProduct, list);
-        addSearchInTokopedia(searchProductModel.getSearchProduct(), list);
+        addSearchInTokopedia(searchProduct, list);
 
         getView().removeLoading();
         getView().addProductList(list);
