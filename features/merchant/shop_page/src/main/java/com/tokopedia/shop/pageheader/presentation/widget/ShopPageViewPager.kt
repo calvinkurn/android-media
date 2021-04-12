@@ -23,6 +23,10 @@ class ShopPageViewPager : TouchViewPager {
         return pagingStatus && super.onTouchEvent(event)
     }
 
+    override fun performClick(): Boolean {
+        return super.performClick()
+    }
+
     override fun onInterceptTouchEvent(event: MotionEvent): Boolean {
         try {
             return pagingStatus && super.onInterceptTouchEvent(event)

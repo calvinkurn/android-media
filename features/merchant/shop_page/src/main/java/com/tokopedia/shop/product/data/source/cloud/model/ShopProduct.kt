@@ -14,7 +14,7 @@ class ShopProduct {
 
     @SerializedName("shop_id")
     @Expose
-    var shopId: Long = 0
+    var shopId: String = ""
 
     @SerializedName("badges")
     @Expose

@@ -117,6 +117,10 @@ class NestedWebView @JvmOverloads constructor(context: Context?, attrs: Attribut
         return returnValue
     }
 
+    override fun performClick(): Boolean {
+        return super.performClick()
+    }
+
     // Nested Scroll implements
     override fun setNestedScrollingEnabled(enabled: Boolean) {
         mChildHelper.isNestedScrollingEnabled = enabled
