@@ -6,8 +6,10 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Canvas
+import android.location.LocationManager
 import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
 import android.util.DisplayMetrics
 import android.view.*
 import android.view.animation.Animation
@@ -16,12 +18,15 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.annotation.DrawableRes
+import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearSnapHelper
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.SnapHelper
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -39,6 +44,7 @@ import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.common.travel.utils.TravelDateUtil
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.common.analytics.TrackingHotelUtil
 import com.tokopedia.hotel.common.data.HotelTypeEnum
@@ -104,10 +110,12 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
     private var quickFilters: List<QuickFilter> = listOf()
     private var searchPropertiesMap: ArrayList<LatLng> = arrayListOf()
     private var isLoadingSearchByMap: Boolean = false
+    private var isSearchByMap: Boolean = false
 
     private lateinit var filterBottomSheet: HotelFilterBottomSheets
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<ConstraintLayout>
     private lateinit var bounceAnim: Animation
+    private val snapHelper: SnapHelper = LinearSnapHelper()
 
     override fun getScreenName(): String = SEARCH_SCREEN_NAME
 
@@ -198,6 +206,9 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
             when (it) {
                 is Success -> {
                     hotelSearchModel.apply {
+                        searchType = HotelTypeEnum.COORDINATE.value
+                        searchId = ""
+                        name = if(isSearchByMap) getString(R.string.hotel_header_title_nearby) else getString(R.string.hotel_header_title_nearby_area)
                         radius = it.data
                     }
                     hotelSearchMapViewModel.initSearchParam(hotelSearchModel)
@@ -248,7 +259,6 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                         adult = it.getIntExtra(HotelChangeSearchActivity.NUM_OF_GUESTS, 0),
                         searchType = it.getStringExtra(HotelChangeSearchActivity.SEARCH_TYPE) ?: "",
                         searchId = it.getStringExtra(HotelChangeSearchActivity.SEARCH_ID) ?: "")
-
                 hotelSearchMapViewModel.initSearchParam(hotelSearchModel)
                 searchDestinationName = hotelSearchModel.name
                 searchDestinationType = if (hotelSearchModel.searchType.isNotEmpty()) hotelSearchModel.searchType else hotelSearchModel.type
@@ -256,6 +266,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                 setUpTitleAndSubtitle()
                 hotelSearchMapViewModel.searchParam.page = defaultInitialPage
                 hotelSearchMapViewModel.addFilter(listOf())
+                isSearchByMap = false
             }
         }
     }
@@ -563,6 +574,10 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         val linearLayoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         rvHorizontalPropertiesHotelSearchMap.layoutManager = linearLayoutManager
 
+        if (rvHorizontalPropertiesHotelSearchMap.onFlingListener == null) {
+            snapHelper.attachToRecyclerView(rvHorizontalPropertiesHotelSearchMap)
+        }
+
         initScrollCardList()
     }
 
@@ -700,6 +715,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
     /** Location permission is handled by LocationDetector */
     private fun initGetMyLocation() {
         ivGetLocationHotelSearchMap.setOnClickListener {
+            isSearchByMap = true
             showFindNearHereView()
             getCurrentLocation()
             changeHeaderTitle()
@@ -905,7 +921,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
     }
 
     private fun changeHeaderTitle() {
-        headerHotelSearchMap.setTitle(R.string.hotel_header_title_nearby)
+        headerHotelSearchMap.title = if(isSearchByMap) getString(R.string.hotel_header_title_nearby) else getString(R.string.hotel_header_title_nearby_area)
     }
 
     private fun showFindNearHereView() {
@@ -1049,7 +1065,12 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
             } else null
 
     private fun getCurrentLocation() {
-        val locationDetectorHelper = LocationDetectorHelper(
+        val locationManager = context?.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+
+        if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            showDialogEnableGPS()
+        }else{
+            val locationDetectorHelper = LocationDetectorHelper(
                 permissionCheckerHelper,
                 fusedLocationClient,
                 requireActivity().applicationContext)
@@ -1071,6 +1092,32 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                     }
 
                 })
+        }
+    }
+
+    private fun showDialogEnableGPS() {
+        val dialog = DialogUnify(activity as AppCompatActivity, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
+        dialog.setTitle(getString(R.string.hotel_recommendation_gps_dialog_title))
+        dialog.setDescription(getString(R.string.hotel_recommendation_gps_dialog_desc))
+        dialog.setPrimaryCTAText(getString(R.string.hotel_recommendation_gps_dialog_ok))
+        dialog.setPrimaryCTAClickListener {
+            startActivityForResult(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS), REQUEST_CODE_GPS)
+            dialog.dismiss()
+        }
+        dialog.setSecondaryCTAText(getString(R.string.hotel_recommendation_gps_dialog_cancel))
+        dialog.setSecondaryCTAClickListener {
+            onErrorGetLocation()
+            dialog.dismiss()
+        }
+        dialog.show()
+    }
+
+    private fun onErrorGetLocation() {
+        view?.let { v ->
+            Toaster.build(v, getString(R.string.hotel_destination_error_get_location),
+                    Toaster.LENGTH_INDEFINITE, Toaster.TYPE_ERROR,
+                    getString(com.tokopedia.resources.common.R.string.general_label_ok)).show()
+        }
     }
 
     private fun setupFindWithMapButton() {
@@ -1148,6 +1195,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
 
         private const val REQUEST_CODE_DETAIL_HOTEL = 101
         private const val REQUEST_CHANGE_SEARCH_HOTEL = 105
+        private const val REQUEST_CODE_GPS = 108
 
         private const val ANCHOR_MARKER_X: Float = 0.8f
         private const val ANCHOR_MARKER_Y: Float = 1f
