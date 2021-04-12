@@ -152,21 +152,13 @@ object MockSearchProductModel {
         )
     }
 
-    fun getCpmViewModel(): CpmDataView {
-        val cpmViewModel = CpmDataView()
-        cpmViewModel.cpmModel = CpmModel(cpmJSONObject)
+    fun getCpmViewModel() = CpmDataView(CpmModel(cpmJSONObject))
 
-        return cpmViewModel
-    }
-
-    fun getSuggestionViewModel(): SuggestionDataView {
-        val suggestionViewModel = SuggestionDataView()
-        suggestionViewModel.suggestionText = "Menampilkan hasil untuk <strong>\"bju batik\"</strong>. </br> Apakah yang anda maksud <strong><font color=\"#42b549\">\"baju batik\"</font></strong> ?"
-        suggestionViewModel.suggestion = "baju batik"
-        suggestionViewModel.suggestedQuery = "q=baju batik&rf=true"
-
-        return suggestionViewModel
-    }
+    fun getSuggestionViewModel() = SuggestionDataView(
+            suggestionText = "Menampilkan hasil untuk <strong>\"bju batik\"</strong>. </br> Apakah yang anda maksud <strong><font color=\"#42b549\">\"baju batik\"</font></strong> ?",
+            suggestion = "baju batik",
+            suggestedQuery = "q=baju batik&rf=true",
+        )
 
     fun getEmptySearchProductViewModel(): EmptySearchProductDataView {
         val emptySearchProductViewModel = EmptySearchProductDataView()

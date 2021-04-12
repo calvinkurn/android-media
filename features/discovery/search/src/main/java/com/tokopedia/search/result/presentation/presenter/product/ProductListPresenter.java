@@ -968,7 +968,7 @@ final class ProductListPresenter
         EmptySearchProductDataView emptySearchViewModel = new EmptySearchProductDataView();
 
         emptySearchViewModel.setBannerAdsAllowed(isBannerAdsAllowed);
-        emptySearchViewModel.setIsFilterActive(getView().isAnyFilterActive());
+        emptySearchViewModel.setFilterActive(getView().isAnyFilterActive());
 
         if (isShowLocalSearchRecommendation() && !getView().isAnyFilterActive()) {
             emptySearchViewModel.setLocalSearch(true);
@@ -1095,7 +1095,11 @@ final class ProductListPresenter
                             List<RecommendationItemDataView> recommendationItemDataView = new RecommendationViewModelMapper().convertToRecommendationItemViewModel(recommendationWidgets.get(0));
                             List<Visitable> items = new ArrayList<>();
                             RecommendationWidget recommendationWidget = recommendationWidgets.get(0);
-                            items.add(new RecommendationTitleDataView(recommendationWidget.getTitle().isEmpty() ? DEFAULT_PAGE_TITLE_RECOMMENDATION : recommendationWidget.getTitle(), recommendationWidget.getSeeMoreAppLink(), recommendationWidget.getPageName()));
+                            RecommendationTitleDataView recommendationTitleDataView = new RecommendationTitleDataView(
+                                    recommendationWidget.getTitle().isEmpty() ? DEFAULT_PAGE_TITLE_RECOMMENDATION : recommendationWidget.getTitle(),
+                                    recommendationWidget.getSeeMoreAppLink(),
+                                    recommendationWidget.getPageName());
+                            items.add(recommendationTitleDataView);
                             items.addAll(recommendationItemDataView);
                             getView().addRecommendationList(items);
                         }
@@ -1125,7 +1129,7 @@ final class ProductListPresenter
             list.add(productDataView.getGlobalNavDataView());
             getView().sendImpressionGlobalNav(productDataView.getGlobalNavDataView());
 
-            isShowHeadlineAdsBasedOnGlobalNav = productDataView.getGlobalNavDataView().getIsShowTopAds();
+            isShowHeadlineAdsBasedOnGlobalNav = productDataView.getGlobalNavDataView().isShowTopAds();
         }
 
         if (isEnableChooseAddress)
@@ -1310,10 +1314,7 @@ final class ProductListPresenter
 
         if (cpmForViewModel == null) return null;
 
-        CpmDataView cpmDataView = new CpmDataView();
-        cpmDataView.setCpmModel(cpmForViewModel);
-
-        return cpmDataView;
+        return new CpmDataView(cpmForViewModel);
     }
 
     @Nullable

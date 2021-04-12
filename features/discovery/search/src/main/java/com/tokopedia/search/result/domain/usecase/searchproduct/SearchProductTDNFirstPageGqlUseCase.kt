@@ -48,7 +48,7 @@ class SearchProductTDNFirstPageGqlUseCase(
         get() = coroutineDispatchers.main + masterJob
 
     override fun createObservable(requestParams: RequestParams): Observable<SearchProductModel> {
-        val searchProductParams = requestParams.parameters[SEARCH_PRODUCT_PARAMS] as Map<String, Any>
+        val searchProductParams = requestParams.parameters[SEARCH_PRODUCT_PARAMS] as Map<String?, Any?>
 
         val query = getQueryFromParameters(searchProductParams)
         val params = UrlParamUtils.generateUrlParamString(searchProductParams)
@@ -75,11 +75,11 @@ class SearchProductTDNFirstPageGqlUseCase(
         return Observable.zip(gqlSearchProductObservable, topAdsImageViewModelObservable, this::setTopAdsImageViewModelList)
     }
 
-    private fun getQueryFromParameters(parameters: Map<String, Any>): String {
+    private fun getQueryFromParameters(parameters: Map<String?, Any?>): String {
         return parameters[SearchApiConst.Q]?.toString() ?: ""
     }
 
-    private fun createHeadlineParams(parameters: Map<String, Any>): String {
+    private fun createHeadlineParams(parameters: Map<String?, Any?>): String {
         val headlineParams = HashMap(parameters)
 
         headlineParams[TopAdsParams.KEY_EP] = HEADLINE
@@ -101,7 +101,7 @@ class SearchProductTDNFirstPageGqlUseCase(
                     mapOf(GQL.KEY_QUERY to query, GQL.KEY_PARAMS to params)
             )
 
-    private fun MutableList<GraphqlRequest>.addHeadlineAdsRequest(requestParams: RequestParams, searchProductParams: Map<String, Any>) {
+    private fun MutableList<GraphqlRequest>.addHeadlineAdsRequest(requestParams: RequestParams, searchProductParams: Map<String?, Any?>) {
         if (!requestParams.isSkipHeadlineAds()) {
             val headlineParams = createHeadlineParams(searchProductParams)
             add(createHeadlineAdsRequest(headlineParams = headlineParams))

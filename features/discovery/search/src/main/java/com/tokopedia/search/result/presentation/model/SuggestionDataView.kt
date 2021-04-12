@@ -1,75 +1,45 @@
-package com.tokopedia.search.result.presentation.model;
+package com.tokopedia.search.result.presentation.model
 
-import android.os.Parcel;
-import android.os.Parcelable;
+import android.os.Parcel
+import android.os.Parcelable
+import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory
 
-import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory;
+class SuggestionDataView(
+        val suggestionText: String = "",
+        val suggestedQuery: String = "",
+        val suggestion: String = "",
+) : Parcelable, Visitable<ProductListTypeFactory?> {
 
-public class SuggestionDataView implements Parcelable, Visitable<ProductListTypeFactory> {
-    private String suggestionText = "";
-    private String suggestedQuery = "";
-    private String suggestion = "";
-
-    public String getSuggestionText() {
-        return suggestionText;
+    override fun type(typeFactory: ProductListTypeFactory?): Int {
+        return typeFactory?.type(this) ?: 0
     }
 
-    public void setSuggestionText(String suggestionText) {
-        this.suggestionText = suggestionText;
+    override fun describeContents(): Int {
+        return 0
     }
 
-    public String getSuggestedQuery() {
-        return suggestedQuery;
+    override fun writeToParcel(dest: Parcel, flags: Int) {
+        dest.writeString(suggestionText)
+        dest.writeString(suggestedQuery)
+        dest.writeString(suggestion)
     }
 
-    public void setSuggestedQuery(String suggestedQuery) {
-        this.suggestedQuery = suggestedQuery;
-    }
+    constructor(parcel: Parcel) : this(
+        suggestionText = parcel.readString() ?: "",
+        suggestedQuery = parcel.readString() ?: "",
+        suggestion = parcel.readString() ?: ""
+    )
 
-    public void setSuggestion(String suggestion) {
-        this.suggestion = suggestion;
-    }
+    companion object {
+        val CREATOR: Parcelable.Creator<SuggestionDataView> = object : Parcelable.Creator<SuggestionDataView> {
+            override fun createFromParcel(source: Parcel): SuggestionDataView {
+                return SuggestionDataView(source)
+            }
 
-    public String getSuggestion() {
-        return this.suggestion;
-    }
-
-    @Override
-    public int type(ProductListTypeFactory typeFactory) {
-        return typeFactory.type(this);
-    }
-
-    public SuggestionDataView() {
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.suggestionText);
-        dest.writeString(this.suggestedQuery);
-        dest.writeString(this.suggestion);
-    }
-
-    protected SuggestionDataView(Parcel in) {
-        this.suggestionText = in.readString();
-        this.suggestedQuery = in.readString();
-        this.suggestion = in.readString();
-    }
-
-    public static final Creator<SuggestionDataView> CREATOR = new Creator<SuggestionDataView>() {
-        @Override
-        public SuggestionDataView createFromParcel(Parcel source) {
-            return new SuggestionDataView(source);
+            override fun newArray(size: Int): Array<SuggestionDataView?> {
+                return arrayOfNulls(size)
+            }
         }
-
-        @Override
-        public SuggestionDataView[] newArray(int size) {
-            return new SuggestionDataView[size];
-        }
-    };
+    }
 }

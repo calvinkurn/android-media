@@ -96,4 +96,21 @@ internal class UrlParamUtilsTest {
         UrlParamUtils.getQueryParams("xxx") shouldBe ""
         UrlParamUtils.getQueryParams("?xxx") shouldBe "xxx"
     }
+
+    @Test
+    fun `Get param map from query parameter`() {
+        val actualExpected = listOf(
+                Pair("", mapOf()),
+                Pair("q", mapOf()),
+                Pair("q=", mapOf()),
+                Pair("q=samsung&fcity=", mapOf("q" to "samsung")),
+                Pair("q=samsung&fcity=1,2#3", mapOf("q" to "samsung", "fcity" to "1,2#3")),
+                Pair("q=samsung&fcity=1,2#3?", mapOf("q" to "samsung", "fcity" to "1,2#3?")),
+                Pair("q=samsung&fcity=1,2#3?&", mapOf("q" to "samsung", "fcity" to "1,2#3?")),
+        )
+
+        actualExpected.forEach {
+            UrlParamUtils.getParamMap(it.first) shouldBe it.second
+        }
+    }
 }

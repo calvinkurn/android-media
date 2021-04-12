@@ -167,7 +167,7 @@ public class ProductEmptySearchViewHolder extends AbstractViewHolder<EmptySearch
 
         if (boundedEmptySearchModel.isLocalSearch())
             emptyContentTextView.setText(getLocalSearchEmptyMessage());
-        else if (boundedEmptySearchModel.getIsFilterActive())
+        else if (boundedEmptySearchModel.isFilterActive())
             emptyContentTextView.setText(getString(R.string.msg_empty_search_product_content_with_filter));
         else
             emptyContentTextView.setText(getString(R.string.msg_empty_search_product_content));
@@ -184,7 +184,7 @@ public class ProductEmptySearchViewHolder extends AbstractViewHolder<EmptySearch
     }
 
     private void bindNewSearchButton() {
-        if (boundedEmptySearchModel.getIsFilterActive()) {
+        if (boundedEmptySearchModel.isFilterActive()) {
             emptyButtonItemButton.setVisibility(View.GONE);
         } else {
             emptyButtonItemButton.setOnClickListener(this::newSearchButtonOnClick);

@@ -180,10 +180,11 @@ public class ProductViewModelMapper {
     private BadgeItemDataView convertOtherRelatedProductBadgeToBadgeItem(
             SearchProductModel.OtherRelatedProductBadge badgeModel
     ) {
-        BadgeItemDataView badgeItem = new BadgeItemDataView();
-        badgeItem.setImageUrl(badgeModel.getImageUrl());
-        badgeItem.setShown(badgeModel.isShown());
-        return badgeItem;
+        return new BadgeItemDataView(
+                badgeModel.getImageUrl(),
+                "",
+                badgeModel.isShown()
+        );
     }
 
     private FreeOngkirDataView convertOtherRelatedProductFreeOngkirToFreeOngkirViewModel(
@@ -265,11 +266,11 @@ public class ProductViewModelMapper {
     }
 
     private BadgeItemDataView convertToBadgeItem(SearchProductModel.ProductBadge badgeModel) {
-        BadgeItemDataView badgeItem = new BadgeItemDataView();
-        badgeItem.setImageUrl(badgeModel.getImageUrl());
-        badgeItem.setTitle(badgeModel.getTitle());
-        badgeItem.setShown(badgeModel.isShown());
-        return badgeItem;
+        return new BadgeItemDataView(
+                badgeModel.getImageUrl(),
+                badgeModel.getTitle(),
+                badgeModel.isShown()
+        );
     }
 
     private List<LabelGroupDataView> convertToLabelGroupList(List<SearchProductModel.ProductLabelGroup> labelGroupModelList) {
@@ -314,23 +315,21 @@ public class ProductViewModelMapper {
     private TickerDataView createTickerModel(SearchProductModel.SearchProductData searchProductData) {
         SearchProductModel.Ticker tickerModel = searchProductData.getTicker();
 
-        TickerDataView tickerDataView = new TickerDataView();
-        tickerDataView.setText(tickerModel.getText());
-        tickerDataView.setQuery(tickerModel.getQuery());
-        tickerDataView.setTypeId(tickerModel.getTypeId());
-
-        return tickerDataView;
+        return new TickerDataView(
+                tickerModel.getText(),
+                tickerModel.getQuery(),
+                tickerModel.getTypeId()
+        );
     }
 
     private SuggestionDataView createSuggestionModel(SearchProductModel.SearchProductData searchProduct) {
         SearchProductModel.Suggestion suggestionModel = searchProduct.getSuggestion();
 
-        SuggestionDataView suggestionDataView = new SuggestionDataView();
-        suggestionDataView.setSuggestionText(suggestionModel.getText());
-        suggestionDataView.setSuggestedQuery(suggestionModel.getQuery());
-        suggestionDataView.setSuggestion(suggestionModel.getSuggestion());
-
-        return suggestionDataView;
+        return new SuggestionDataView(
+                suggestionModel.getText(),
+                suggestionModel.getQuery(),
+                suggestionModel.getSuggestion()
+        );
     }
 
     private  List<InspirationCarouselDataView> convertToInspirationCarouselViewModel(SearchProductModel.SearchInspirationCarousel searchInspirationCarousel) {
