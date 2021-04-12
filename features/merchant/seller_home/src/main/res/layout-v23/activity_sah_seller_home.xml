@@ -29,11 +29,11 @@
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
     <View
-        android:id="@+id/toolbarShadow"
+        android:id="@+id/statusBarShadow"
         android:layout_width="match_parent"
         android:layout_height="@dimen/spacing_lvl1"
         android:background="@drawable/sah_shadow"
-        android:layout_below="@id/sahToolbar"/>
+        android:layout_alignParentTop="true"/>
 
     <View
         android:id="@+id/navBarShadow"

@@ -3,7 +3,6 @@ package com.tokopedia.sellerhome.view.activity
 import android.content.Context
 import android.content.Intent
 import android.content.pm.ActivityInfo
-import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
@@ -311,12 +310,12 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (isDarkMode()) {
                 ContextCompat.getDrawable(this, R.drawable.sah_shadow_dark).let {
-                    toolbarShadow?.background = it
+                    statusBarShadow?.background = it
                     navBarShadow?.background = it
                 }
             } else {
                 ContextCompat.getDrawable(this, R.drawable.sah_shadow).let {
-                    toolbarShadow?.background = it
+                    statusBarShadow?.background = it
                     navBarShadow?.background = it
                 }
             }
@@ -345,10 +344,12 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
             val pageTitle = navigator?.getPageTitle(pageType)
             supportActionBar?.title = pageTitle
             sahToolbar?.show()
-            toolbarShadow?.show()
+            statusBarShadow?.hide()
         } else {
-            if (DeviceScreenInfo.isTablet(this)) {
-                toolbarShadow?.hide()
+            if (!DeviceScreenInfo.isTablet(this)) {
+                statusBarShadow?.hide()
+            } else {
+                statusBarShadow?.show()
             }
             sahToolbar?.hide()
         }
