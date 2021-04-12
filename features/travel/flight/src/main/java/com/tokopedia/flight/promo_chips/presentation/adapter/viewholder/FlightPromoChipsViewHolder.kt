@@ -25,7 +25,7 @@ class FlightPromoChipsViewHolder (itemView: View, private val onFlightPromoChips
     override fun bind(element: AirlinePrice) {
         with(itemView){
             tv_flight_promo_chips_price.text = element.price
-            tv_flight_promo_chips_line2.text = context.resources.getString(R.string.flight_srp_promo_chips_content_line2, element.shortName)
+            tv_flight_promo_chips_title.text = element.shortName
             iv_multiairline_logo.setAirlineLogo(element.logo)
             setSelectedItem(element)
         }
