@@ -71,7 +71,7 @@ internal object MediaLoaderApi {
                                 it.setUrlHasQuality(source)
                             },
                             request = this
-                    ).load(source)
+                    ).skipMemoryCache(true).load(source)
                 }
                 else -> {
                     bitmap.build(

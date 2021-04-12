@@ -30,16 +30,22 @@ abstract class MediaLoaderFactory<T> {
         _transform.clear()
 
         with(properties) {
-            // built-in RoundedCorners transformation
-            if (roundedRadius > 0f) {
-                _transform.add(RoundedCorners(roundedRadius.toInt()))
+            // built-in transformations
+            if (properties.isCircular) {
+                request.circleCrop()
             }
 
-            // built-in transformations
-            if (properties.isCircular) _transform.add(CircleCrop())
-            if (properties.centerCrop) _transform.add(CenterCrop())
-            if (properties.fitCenter) _transform.add(FitCenter())
-            if (properties.centerInside) _transform.add(CenterInside())
+            if (properties.centerCrop) {
+                request.centerCrop()
+            }
+
+            if (properties.fitCenter) {
+                request.fitCenter()
+            }
+
+            if (properties.centerInside) {
+                request.centerInside()
+            }
 
             // store-bulk transformation into MultiTransformations()
             if (transform != null) {
@@ -48,6 +54,11 @@ abstract class MediaLoaderFactory<T> {
 
             if (!transforms.isNullOrEmpty()) {
                 _transform.addAll(transforms!!)
+            }
+
+            // built-in RoundedCorners transformation
+            if (roundedRadius > 0f) {
+                _transform.add(RoundedCorners(roundedRadius.toInt()))
             }
         }
     }
@@ -65,7 +76,6 @@ abstract class MediaLoaderFactory<T> {
             if (_transform.isNotEmpty()) {
                 request.transform(MultiTransformation(_transform))
             }
-
 
             // set custom error drawable
             it.error(error)
