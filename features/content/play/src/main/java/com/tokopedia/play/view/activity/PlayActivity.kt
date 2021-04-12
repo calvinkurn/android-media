@@ -145,6 +145,7 @@ class PlayActivity : BaseActivity(),
         val newBundle = intent.extras
 
         if (newBundle != null) {
+            newBundle.putString(PLAY_KEY_CHANNEL_ID, intent.data?.lastPathSegment.orEmpty())
             viewModel.setNewChannelParams(newBundle)
         }
     }

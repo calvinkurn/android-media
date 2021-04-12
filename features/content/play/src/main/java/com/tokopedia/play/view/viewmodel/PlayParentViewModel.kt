@@ -93,7 +93,7 @@ class PlayParentViewModel constructor(
     fun setNewChannelParams(bundle: Bundle) {
         val channelId = bundle.get(PLAY_KEY_CHANNEL_ID) as? String
 
-        if (channelId != null) {
+        if (!channelId.isNullOrEmpty()) {
             handle.set(PLAY_KEY_CHANNEL_ID, channelId)
             handle.set(PLAY_KEY_SOURCE_TYPE, bundle.get(PLAY_KEY_SOURCE_TYPE))
             handle.set(PLAY_KEY_SOURCE_ID, bundle.get(PLAY_KEY_SOURCE_ID))
