@@ -18,16 +18,18 @@ import com.tokopedia.gm.common.view.model.PowerMerchantInterruptUiModel
 import com.tokopedia.gm.common.view.worker.GetPMInterruptDataWorker
 import com.tokopedia.kotlin.extensions.orFalse
 import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 
 /**
  * Created By @ilhamsuaib on 08/04/21
  */
 
-object PMShopScoreInterruptHelper {
+class PMShopScoreInterruptHelper @Inject constructor() {
 
-    private const val WORKER_TAG = "get_pm_ss_interrupt_data_worker"
+    companion object {
+        private const val WORKER_TAG = "get_pm_ss_interrupt_data_worker"
+    }
 
-    private val gson = Gson()
     private var oneTimeWorkRequest: OneTimeWorkRequest? = null
     private var pmCommonPreferenceManager: PMCommonPreferenceManager? = null
 
@@ -37,6 +39,11 @@ object PMShopScoreInterruptHelper {
         fetchInterruptDataWorker(context, owner) {
             showPmInterruptBottomSheet(context, it, fm)
         }
+    }
+
+    fun destroy() {
+        oneTimeWorkRequest = null
+        pmCommonPreferenceManager = null
     }
 
     private fun initVar(context: Context) {
@@ -61,6 +68,7 @@ object PMShopScoreInterruptHelper {
     }
 
     private fun getDataFromWorkerOutput(outputData: Data): PowerMerchantInterruptUiModel {
+        val gson = Gson()
         val json = gson.toJson(outputData.keyValueMap)
         return gson.fromJson(json, object : TypeToken<PowerMerchantInterruptUiModel>() {}.type)
     }

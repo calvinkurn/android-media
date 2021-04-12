@@ -114,6 +114,9 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     @Inject
     lateinit var newRelic: SellerHomeNewRelic
 
+    @Inject
+    lateinit var pmShopScoreInterruptHelper: PMShopScoreInterruptHelper
+
     private val sellerHomeViewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(SellerHomeViewModel::class.java)
     }
@@ -211,6 +214,11 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     override fun onPause() {
         super.onPause()
         hideTooltipIfExist()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        pmShopScoreInterruptHelper.destroy()
     }
 
     override fun onHiddenChanged(hidden: Boolean) {
@@ -1080,7 +1088,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     private fun showInterruptPopup() {
         activity?.let {
-            PMShopScoreInterruptHelper.showPopup(it, viewLifecycleOwner, childFragmentManager)
+            pmShopScoreInterruptHelper.showPopup(it, viewLifecycleOwner, childFragmentManager)
         }
     }
 
