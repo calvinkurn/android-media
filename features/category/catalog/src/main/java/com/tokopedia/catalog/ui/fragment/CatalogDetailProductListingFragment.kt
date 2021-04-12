@@ -58,10 +58,7 @@ import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import kotlinx.android.synthetic.main.fragment_catalog_detail_product_listing.*
-import java.util.*
 import javax.inject.Inject
-import kotlin.collections.ArrayList
-import kotlin.collections.HashMap
 
 class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
         BaseCategoryAdapter.OnItemChangeView,
@@ -151,7 +148,7 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
 
     private fun setUpAdapter() {
         catalogTypeFactory = CatalogTypeFactoryImpl(this)
-        productNavListAdapter = CatalogProductNavListAdapter(catalogTypeFactory, viewModel.list, this)
+        productNavListAdapter = CatalogProductNavListAdapter(catalogTypeFactory, viewModel.list, this,this)
         productNavListAdapter?.changeListView()
         if(viewModel.list.size == 0)
             productNavListAdapter?.addShimmer()
@@ -426,28 +423,14 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
         if (intent != null) {
             intent.putExtra(SearchConstant.Wishlist.WISHLIST_STATUS_UPDATED_POSITION, adapterPosition)
             startActivityForResult(intent, 1002)
-            item.run {
-                val product = HashMap<String, String?>()
-                product["brand"]= ""
-                product["category"]= categoryName
-                product["dimensions61"]= viewModel.searchParametersMap.value?.keys.toString()
-                product["id"]= id
-                product["list"]= ""
-                product["name"]= name
-                product["position"]= ""
-                product["price"]= priceString
-                product["variant"]= ""
-                val products = HashMap<String, List<Map<String, String?>>>()
-                products["products"] = Arrays.asList<Map<String, String?>>(product)
-                val click = HashMap<String,Map<String, List<Map<String, String?>>>>()
-                click["click"] = products
-                CatalogDetailAnalytics.sendECommerceEvent(
-                        CatalogDetailAnalytics.EventKeys.EVENT_NAME_PRODUCT_CLICK,
-                        CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
-                        CatalogDetailAnalytics.ActionKeys.CLICK_PRODUCT,
-                        catalogId,click,item.id)
-            }
+            CatalogDetailAnalytics.trackProductCardClick(catalogId,userSession.userId,
+                    item,(adapterPosition + 1).toString(),viewModel.searchParametersMap.value)
         }
+    }
+
+    override fun onProductImpressed(item: CatalogProductItem, adapterPosition: Int) {
+        CatalogDetailAnalytics.trackEventImpressionProductCard(catalogId,userSession.userId,
+                item,(adapterPosition + 1).toString(),viewModel.searchParametersMap.value)
     }
 
     override fun onLongClick(item: CatalogProductItem, adapterPosition: Int) {
@@ -470,11 +453,6 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
     }
 
     override fun onThreeDotsClicked(productItem: CatalogProductItem, position: Int) {
-        CatalogDetailAnalytics.sendEvent(
-                CatalogDetailAnalytics.EventKeys.EVENT_NAME_CATALOG_CLICK,
-                CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
-                CatalogDetailAnalytics.ActionKeys.CLICK_THREE_DOTS,
-                catalogId)
         onWishlistButtonClicked(productItem,position)
     }
 
@@ -487,39 +465,27 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
     }
 
     private fun removeWishList(productId: String, userId: String, adapterPosition: Int) {
+        CatalogDetailAnalytics.sendEvent(
+                CatalogDetailAnalytics.EventKeys.EVENT_NAME_CATALOG_CLICK,
+                CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
+                CatalogDetailAnalytics.ActionKeys.CLICK_THREE_DOTS,
+                "$catalogId - ${CatalogDetailAnalytics.ActionKeys.ACTION_REMOVE_WISHLIST}",userSession.userId)
         removeWishlistActionUseCase.createObservable(productId,
                 userId, this)
     }
 
     private fun addWishList(productId: String, userId: String, adapterPosition: Int) {
+        CatalogDetailAnalytics.sendEvent(
+                CatalogDetailAnalytics.EventKeys.EVENT_NAME_CATALOG_CLICK,
+                CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
+                CatalogDetailAnalytics.ActionKeys.CLICK_THREE_DOTS,
+                "$catalogId - ${CatalogDetailAnalytics.ActionKeys.ACTION_ADD_WISHLIST}",userSession.userId)
         addWishlistActionUseCase.createObservable(productId, userId,
                 this)
     }
 
     private fun launchLoginActivity(productId: String) {
         RouteManager.route(context, ApplinkConst.LOGIN)
-    }
-
-    override fun onProductImpressed(item: CatalogProductItem, adapterPosition: Int) {
-        item.run {
-            val product = HashMap<String, String?>()
-            product["brand"]= ""
-            product["category"]= categoryName
-            product["dimensions61"]= viewModel.searchParametersMap.value?.keys.toString()
-            product["id"]= id
-            product["list"]= ""
-            product["name"]= name
-            product["position"]= ""
-            product["price"]= priceString
-            product["variant"]= ""
-            val products = HashMap<String, List<Map<String, String?>>>()
-            products["impressions"] = Arrays.asList<Map<String, String?>>(product)
-            CatalogDetailAnalytics.sendECommerceEvent(
-                    CatalogDetailAnalytics.EventKeys.EVENT_NAME_PRODUCT_VIEW,
-                    CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
-                    CatalogDetailAnalytics.ActionKeys.IMPRESSION_PRODUCT,
-                    catalogId,products,item.id)
-        }
     }
 
     override fun onQuickFilterSelected(option: Option) {
@@ -533,7 +499,8 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
                     CatalogDetailAnalytics.EventKeys.EVENT_NAME_CATALOG_CLICK,
                     CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
                     CatalogDetailAnalytics.ActionKeys.CLICK_QUICK_FILTER,
-                    "$catalogId - ${viewModel.searchParametersMap.value?.keys.toString()}")
+                    "$catalogId - ${CatalogUtil.getSortFilterAnalytics(viewModel.searchParametersMap.value)}",
+                    userSession.userId)
         } else {
             val filter = getSelectedFilter()
             filter.remove(option.key)
@@ -666,7 +633,7 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
             visibility = View.VISIBLE
             sortFilterHorizontalScrollView.scrollX = 0
             addItem(items as ArrayList<SortFilterItem>)
-            textView.text = getString(R.string.catalog_filter_text)
+            textView?.text = getString(R.string.catalog_filter_text)
         }
         searchSortFilter?.parentListener = { this.openBottomSheetFilterRevamp() }
         setSortFilterNewNotification(items)
@@ -723,7 +690,8 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
             CatalogDetailAnalytics.EventKeys.EVENT_NAME_CATALOG_CLICK,
             CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
             CatalogDetailAnalytics.ActionKeys.CLICK_DYNAMIC_FILTER,
-            catalogId)
+                    "$catalogId - ${CatalogUtil.getSortFilterAnalytics(viewModel.searchParametersMap.value)}",
+                    userSession.userId)
             sortFilterBottomSheet?.show(
                     it,
                     viewModel.searchParametersMap.value,

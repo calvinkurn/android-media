@@ -58,6 +58,12 @@ private const val ACE_SEARCH_PRODUCT_QUERY = """
                     query
                     typeId
                 }
+                banner {
+                    position
+                    text
+                    applink
+                    imageUrl
+                }
                 related {
                     relatedKeyword
                     position
@@ -237,6 +243,7 @@ private const val TOPADS_PRODUCT_QUERY = """
                         position
                         type
                         title
+                        url
                     }
                 }
                 shop{

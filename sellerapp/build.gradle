@@ -223,7 +223,6 @@ dependencies {
     implementation project(rootProject.ext.features.topAdsCreate)
     implementation project(rootProject.ext.features.topAdsEdit)
     implementation project(rootProject.ext.features.topAdsHeadline)
-    implementation project(rootProject.ext.features.tkpdseller)
     implementation project(rootProject.ext.features.reputationCommon)
     implementation project(rootProject.ext.features.sellerActiveCommon)
     implementation project(rootProject.ext.features.topAdsSdk)
@@ -289,7 +288,6 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.akamaiBMP
     implementation project(rootProject.ext.libraries.akamaiBotLib)
 
-    implementation rootProject.ext.tkpdInternalLibDependencies.cacheapi
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation project(rootProject.ext.libraries.graphql)

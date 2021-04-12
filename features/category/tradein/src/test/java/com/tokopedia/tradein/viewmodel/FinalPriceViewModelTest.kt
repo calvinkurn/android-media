@@ -26,11 +26,9 @@ import org.junit.Test
 
 @ExperimentalCoroutinesApi
 class FinalPriceViewModelTest {
-    val context: Context = mockk()
     val getAddressUseCase: GetAddressUseCase = mockk()
     val diagnosticDataUseCase: DiagnosticDataUseCase = mockk()
     var finalPriceViewModel = spyk(FinalPriceViewModel(getAddressUseCase, diagnosticDataUseCase))
-    val resources: Resources = mockk()
 
     @get:Rule
     var rule = InstantTaskExecutorRule()
@@ -51,7 +49,7 @@ class FinalPriceViewModelTest {
     /**************************** getDiagnosticData() *******************************************/
     @Test
     fun getDiagnosticData() {
-        val deviceDataResponse: DeviceDataResponse? = null
+        val deviceDataResponse: DeviceDataResponse = mockk<DeviceDataResponse>(relaxed = true)
         coEvery { diagnosticDataUseCase.getDiagnosticData(any(), any()) } returns deviceDataResponse
 
         finalPriceViewModel.getDiagnosticData()

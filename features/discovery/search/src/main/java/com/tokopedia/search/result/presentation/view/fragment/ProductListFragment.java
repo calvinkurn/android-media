@@ -3,6 +3,7 @@ package com.tokopedia.search.result.presentation.view.fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -13,6 +14,7 @@ import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -29,6 +31,8 @@ import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
+import com.tokopedia.coachmark.CoachMark2;
+import com.tokopedia.coachmark.CoachMark2Item;
 import com.tokopedia.coachmark.CoachMarkBuilder;
 import com.tokopedia.coachmark.CoachMarkItem;
 import com.tokopedia.discovery.common.constants.SearchApiConst;
@@ -50,6 +54,9 @@ import com.tokopedia.filter.newdynamicfilter.analytics.FilterTrackingData;
 import com.tokopedia.filter.newdynamicfilter.controller.FilterController;
 import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper;
 import com.tokopedia.iris.util.IrisSession;
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel;
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant;
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils;
 import com.tokopedia.productcard.IProductCardView;
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener;
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem;
@@ -62,20 +69,23 @@ import com.tokopedia.search.analytics.SearchEventTracking;
 import com.tokopedia.search.analytics.SearchTracking;
 import com.tokopedia.search.di.module.SearchContextModule;
 import com.tokopedia.search.result.presentation.ProductListSectionContract;
-import com.tokopedia.search.result.presentation.model.BroadMatchItemViewModel;
-import com.tokopedia.search.result.presentation.model.BroadMatchViewModel;
-import com.tokopedia.search.result.presentation.model.EmptySearchProductViewModel;
-import com.tokopedia.search.result.presentation.model.GlobalNavViewModel;
-import com.tokopedia.search.result.presentation.model.InspirationCardOptionViewModel;
-import com.tokopedia.search.result.presentation.model.InspirationCarouselViewModel;
-import com.tokopedia.search.result.presentation.model.ProductItemViewModel;
-import com.tokopedia.search.result.presentation.model.SearchProductTopAdsImageViewModel;
-import com.tokopedia.search.result.presentation.model.SuggestionViewModel;
-import com.tokopedia.search.result.presentation.model.TickerViewModel;
+import com.tokopedia.search.result.presentation.model.BannerDataView;
+import com.tokopedia.search.result.presentation.model.BroadMatchItemDataView;
+import com.tokopedia.search.result.presentation.model.BroadMatchDataView;
+import com.tokopedia.search.result.presentation.model.EmptySearchProductDataView;
+import com.tokopedia.search.result.presentation.model.GlobalNavDataView;
+import com.tokopedia.search.result.presentation.model.InspirationCardOptionDataView;
+import com.tokopedia.search.result.presentation.model.InspirationCarouselDataView;
+import com.tokopedia.search.result.presentation.model.ProductItemDataView;
+import com.tokopedia.search.result.presentation.model.SearchProductTopAdsImageDataView;
+import com.tokopedia.search.result.presentation.model.SuggestionDataView;
+import com.tokopedia.search.result.presentation.model.TickerDataView;
 import com.tokopedia.search.result.presentation.view.adapter.ProductListAdapter;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.decoration.ProductItemDecoration;
 import com.tokopedia.search.result.presentation.view.listener.BannerAdsListener;
+import com.tokopedia.search.result.presentation.view.listener.BannerListener;
 import com.tokopedia.search.result.presentation.view.listener.BroadMatchListener;
+import com.tokopedia.search.result.presentation.view.listener.ChooseAddressListener;
 import com.tokopedia.search.result.presentation.view.listener.EmptyStateListener;
 import com.tokopedia.search.result.presentation.view.listener.GlobalNavListener;
 import com.tokopedia.search.result.presentation.view.listener.InspirationCardListener;
@@ -146,7 +156,9 @@ public class ProductListFragment
         SortFilterBottomSheet.Callback,
         SearchInTokopediaListener,
         SearchNavigationClickListener,
-        TopAdsImageViewListener  {
+        TopAdsImageViewListener,
+        ChooseAddressListener,
+        BannerListener {
 
     private static final String SCREEN_SEARCH_PAGE_PRODUCT_TAB = "Search result - Product tab";
     private static final int REQUEST_CODE_GOTO_PRODUCT_DETAIL = 123;
@@ -322,6 +334,7 @@ public class ProductListFragment
                 this, this,
                 this, this, this,
                 this, this, this,
+                this, this,
                 topAdsConfig);
 
         adapter = new ProductListAdapter(this, productListTypeFactory);
@@ -420,6 +433,13 @@ public class ProductListFragment
         }
 
         return null;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        if (presenter != null) presenter.onViewResumed();
     }
 
     @Override
@@ -546,16 +566,16 @@ public class ProductListFragment
     }
 
     @Override
-    public void sendProductImpressionTrackingEvent(ProductItemViewModel item, String suggestedRelatedKeyword, String dimension90) {
+    public void sendProductImpressionTrackingEvent(ProductItemDataView item, String suggestedRelatedKeyword, String dimension90) {
         String userId = getUserId();
         String eventLabel = getSearchProductTrackingEventLabel(item, suggestedRelatedKeyword);
         List<Object> dataLayerList = new ArrayList<>();
-        List<ProductItemViewModel> productItemViewModels = new ArrayList<>();
+        List<ProductItemDataView> productItemDataViews = new ArrayList<>();
 
         String filterSortParams = searchParameter == null ? "" :
                 SearchFilterUtilsKt.getSortFilterParamsString(searchParameter.getSearchParameterMap());
         dataLayerList.add(item.getProductAsObjectDataLayer(userId, filterSortParams, dimension90));
-        productItemViewModels.add(item);
+        productItemDataViews.add(item);
 
         if(irisSession != null){
             SearchTracking.eventImpressionSearchResultProduct(trackingQueue, dataLayerList, eventLabel,
@@ -569,7 +589,7 @@ public class ProductListFragment
         return searchParameter.get(SearchApiConst.SEARCH_REF);
     }
 
-    private String getSearchProductTrackingEventLabel(ProductItemViewModel item, String suggestedRelatedKeyword) {
+    private String getSearchProductTrackingEventLabel(ProductItemDataView item, String suggestedRelatedKeyword) {
         String keyword = suggestedRelatedKeyword.isEmpty() ? getQueryKey() : suggestedRelatedKeyword;
         return TextUtils.isEmpty(item.getPageTitle()) ? keyword : item.getPageTitle();
     }
@@ -694,20 +714,20 @@ public class ProductListFragment
     }
 
     @Override
-    public void onProductImpressed(ProductItemViewModel item) {
+    public void onProductImpressed(ProductItemDataView item, int adapterPosition) {
         if (presenter == null) return;
 
-        presenter.onProductImpressed(item);
+        presenter.onProductImpressed(item, adapterPosition);
     }
 
     @Override
-    public void sendTopAdsGTMTrackingProductImpression(ProductItemViewModel item) {
+    public void sendTopAdsGTMTrackingProductImpression(ProductItemDataView item) {
         Product product = createTopAdsProductForTracking(item);
 
         TopAdsGtmTracker.getInstance().addSearchResultProductViewImpressions(product, item.getPosition());
     }
 
-    private Product createTopAdsProductForTracking(ProductItemViewModel item) {
+    private Product createTopAdsProductForTracking(ProductItemDataView item) {
         Product product = new Product();
         product.setId(item.getProductID());
         product.setName(item.getProductName());
@@ -719,11 +739,11 @@ public class ProductListFragment
         return product;
     }
 
-    private FreeOngkir createTopAdsProductFreeOngkirForTracking(ProductItemViewModel item) {
-        if (item != null && item.getFreeOngkirViewModel() != null) {
+    private FreeOngkir createTopAdsProductFreeOngkirForTracking(ProductItemDataView item) {
+        if (item != null && item.getFreeOngkirDataView() != null) {
             return new FreeOngkir(
-                    item.getFreeOngkirViewModel().isActive(),
-                    item.getFreeOngkirViewModel().getImageUrl()
+                    item.getFreeOngkirDataView().isActive(),
+                    item.getFreeOngkirDataView().getImageUrl()
             );
         }
 
@@ -731,7 +751,7 @@ public class ProductListFragment
     }
 
     @Override
-    public void onGlobalNavWidgetClicked(GlobalNavViewModel.Item item, String keyword) {
+    public void onGlobalNavWidgetClicked(GlobalNavDataView.Item item, String keyword) {
         redirectionStartActivity(item.getApplink(), item.getUrl());
 
         SearchTracking.trackEventClickGlobalNavWidgetItem(item.getGlobalNavItemAsObjectDataLayer(item.getName()),
@@ -739,7 +759,7 @@ public class ProductListFragment
     }
 
     @Override
-    public void onGlobalNavWidgetClickSeeAll(GlobalNavViewModel model) {
+    public void onGlobalNavWidgetClickSeeAll(GlobalNavDataView model) {
         redirectionStartActivity(model.getSeeAllApplink(), model.getSeeAllUrl());
 
         SearchTracking.eventUserClickSeeAllGlobalNavWidget(model.getKeyword(),
@@ -758,21 +778,21 @@ public class ProductListFragment
     }
 
     @Override
-    public void onItemClicked(ProductItemViewModel item, int adapterPosition) {
+    public void onItemClicked(ProductItemDataView item, int adapterPosition) {
         if (presenter == null) return;
 
         presenter.onProductClick(item, adapterPosition);
     }
 
     @Override
-    public void sendTopAdsGTMTrackingProductClick(ProductItemViewModel item) {
+    public void sendTopAdsGTMTrackingProductClick(ProductItemDataView item) {
         Product product = createTopAdsProductForTracking(item);
 
         TopAdsGtmTracker.eventSearchResultProductClick(getContext(), getQueryKey(), product, item.getPosition(), SCREEN_SEARCH_PAGE_PRODUCT_TAB);
     }
 
     @Override
-    public void sendGTMTrackingProductClick(ProductItemViewModel item, String userId, String suggestedRelatedKeyword, String dimension90) {
+    public void sendGTMTrackingProductClick(ProductItemDataView item, String userId, String suggestedRelatedKeyword, String dimension90) {
         String eventLabel = getSearchProductTrackingEventLabel(item, suggestedRelatedKeyword);
         String filterSortParams = searchParameter == null ? "" :
                 SearchFilterUtilsKt.getSortFilterParamsString(searchParameter.getSearchParameterMap());
@@ -786,7 +806,7 @@ public class ProductListFragment
     }
 
     @Override
-    public void routeToProductDetail(ProductItemViewModel item, int adapterPosition) {
+    public void routeToProductDetail(ProductItemDataView item, int adapterPosition) {
         Intent intent = getProductIntent(item.getProductID(), item.getWarehouseID());
 
         if (intent != null) {
@@ -857,7 +877,7 @@ public class ProductListFragment
     }
 
     @Override
-    public void onThreeDotsClick(ProductItemViewModel item, int adapterPosition) {
+    public void onThreeDotsClick(ProductItemDataView item, int adapterPosition) {
         if (getSearchParameter() == null || getActivity() == null || presenter == null) return;
 
         presenter.onThreeDotsClick(item, adapterPosition);
@@ -874,9 +894,9 @@ public class ProductListFragment
     }
 
     @Override
-    public void onTickerClicked(TickerViewModel tickerViewModel) {
-        SearchTracking.trackEventClickTicker(getQueryKey(), tickerViewModel.getTypeId());
-        applyParamsFromTicker(UrlParamUtils.getParamMap(tickerViewModel.getQuery()));
+    public void onTickerClicked(TickerDataView tickerDataView) {
+        SearchTracking.trackEventClickTicker(getQueryKey(), tickerDataView.getTypeId());
+        applyParamsFromTicker(UrlParamUtils.getParamMap(tickerDataView.getQuery()));
     }
 
     private void applyParamsFromTicker(HashMap<String, String> tickerParams) {
@@ -920,9 +940,9 @@ public class ProductListFragment
     }
 
     @Override
-    public void onSuggestionClicked(SuggestionViewModel suggestionViewModel) {
-        SearchTracking.eventClickSuggestedSearch(getQueryKey(), suggestionViewModel.getSuggestion());
-        performNewProductSearch(suggestionViewModel.getSuggestedQuery());
+    public void onSuggestionClicked(SuggestionDataView suggestionDataView) {
+        SearchTracking.eventClickSuggestedSearch(getQueryKey(), suggestionDataView.getSuggestion());
+        performNewProductSearch(suggestionDataView.getSuggestedQuery());
     }
 
     private void performNewProductSearch(String queryParams) {
@@ -1071,8 +1091,8 @@ public class ProductListFragment
     }
 
     @Override
-    public void setEmptyProduct(GlobalNavViewModel globalNavViewModel, EmptySearchProductViewModel emptySearchProductViewModel) {
-        adapter.showEmptyState(globalNavViewModel, emptySearchProductViewModel);
+    public void setEmptyProduct(GlobalNavDataView globalNavDataView, EmptySearchProductDataView emptySearchProductDataView) {
+        adapter.showEmptyState(globalNavDataView, emptySearchProductDataView);
     }
 
     private void setSortFilterIndicatorCounter() {
@@ -1211,12 +1231,12 @@ public class ProductListFragment
     }
 
     @Override
-    public void sendImpressionGlobalNav(GlobalNavViewModel globalNavViewModel) {
+    public void sendImpressionGlobalNav(GlobalNavDataView globalNavDataView) {
         List<Object> dataLayerList = new ArrayList<>();
-        for (GlobalNavViewModel.Item item : globalNavViewModel.getItemList()) {
+        for (GlobalNavDataView.Item item : globalNavDataView.getItemList()) {
             dataLayerList.add(item.getGlobalNavItemAsObjectDataLayer(item.getApplink()));
         }
-        SearchTracking.trackEventImpressionGlobalNavWidgetItem(trackingQueue, dataLayerList, globalNavViewModel.getKeyword());
+        SearchTracking.trackEventImpressionGlobalNavWidgetItem(trackingQueue, dataLayerList, globalNavDataView.getKeyword());
     }
 
     @Override
@@ -1314,19 +1334,6 @@ public class ProductListFragment
     }
 
     @Override
-    public void showFreeOngkirShowCase(boolean hasFreeOngkirBadge) {
-        if (getActivity() != null) {
-            FreeOngkirShowCaseDialog.show(getActivity(), hasFreeOngkirBadge, this::onFreeOngkirOnBoardingShown);
-        }
-    }
-
-    private void onFreeOngkirOnBoardingShown() {
-        if (presenter != null) {
-            presenter.onFreeOngkirOnBoardingShown();
-        }
-    }
-
-    @Override
     public void onBannerAdsClicked(int position, String applink, CpmData cpmData) {
         if (getActivity() == null || redirectionListener == null) return;
 
@@ -1356,7 +1363,7 @@ public class ProductListFragment
     }
 
     @Override
-    public void onInspirationCarouselListProductClicked(@NotNull InspirationCarouselViewModel.Option.Product product) {
+    public void onInspirationCarouselListProductClicked(@NotNull InspirationCarouselDataView.Option.Product product) {
         redirectionStartActivity(product.getApplink(), product.getUrl());
 
         List<Object> products = new ArrayList<>();
@@ -1365,7 +1372,7 @@ public class ProductListFragment
     }
     
     @Override
-    public void onInspirationCarouselInfoProductClicked(@NotNull InspirationCarouselViewModel.Option.Product product) {
+    public void onInspirationCarouselInfoProductClicked(@NotNull InspirationCarouselDataView.Option.Product product) {
         redirectionStartActivity(product.getApplink(), product.getUrl());
 
         List<Object> products = new ArrayList<>();
@@ -1374,7 +1381,7 @@ public class ProductListFragment
     }
 
     @Override
-    public void onInspirationCarouselSeeAllClicked(@NotNull InspirationCarouselViewModel.Option option) {
+    public void onInspirationCarouselSeeAllClicked(@NotNull InspirationCarouselDataView.Option option) {
         redirectionStartActivity(option.getApplink(), option.getUrl());
 
         String keywordBefore = getQueryKey();
@@ -1384,7 +1391,7 @@ public class ProductListFragment
     }
 
     @Override
-    public void onInspirationCarouselGridProductClicked(@NotNull InspirationCarouselViewModel.Option.Product product) {
+    public void onInspirationCarouselGridProductClicked(@NotNull InspirationCarouselDataView.Option.Product product) {
         redirectionStartActivity(product.getApplink(), product.getUrl());
 
         List<Object> products = new ArrayList<>();
@@ -1393,7 +1400,7 @@ public class ProductListFragment
     }
 
     @Override
-    public void onInspirationCarouselGridBannerClicked(@NotNull InspirationCarouselViewModel.Option option) {
+    public void onInspirationCarouselGridBannerClicked(@NotNull InspirationCarouselDataView.Option option) {
         redirectionStartActivity(option.getBannerApplinkUrl(), option.getBannerLinkUrl());
 
         SearchTracking.trackEventClickInspirationCarouselGridBanner(
@@ -1402,7 +1409,7 @@ public class ProductListFragment
     }
 
     @Override
-    public void onImpressedInspirationCarouselInfoProduct(InspirationCarouselViewModel.Option.Product product) {
+    public void onImpressedInspirationCarouselInfoProduct(InspirationCarouselDataView.Option.Product product) {
         if (product == null) return;
 
         List<Object> products = new ArrayList<>();
@@ -1412,7 +1419,7 @@ public class ProductListFragment
     }
 
     @Override
-    public void onImpressedInspirationCarouselListProduct(InspirationCarouselViewModel.Option.Product product) {
+    public void onImpressedInspirationCarouselListProduct(InspirationCarouselDataView.Option.Product product) {
         if (product == null) return;
 
         List<Object> products = new ArrayList<>();
@@ -1422,11 +1429,85 @@ public class ProductListFragment
     }
 
     @Override
-    public void onImpressedInspirationCarouselGridProduct(@NotNull InspirationCarouselViewModel.Option.Product product) {
+    public void onImpressedInspirationCarouselGridProduct(@NotNull InspirationCarouselDataView.Option.Product product) {
         List<Object> products = new ArrayList<>();
         products.add(product.getInspirationCarouselListProductImpressionAsObjectDataLayer());
 
         SearchTracking.trackImpressionInspirationCarouselList(trackingQueue, product.getInspirationCarouselType(), getQueryKey(), products);
+    }
+
+    @Override
+    public void onInspirationCarouselChipsProductClicked(@NotNull InspirationCarouselDataView.Option.Product product) {
+        redirectionStartActivity(product.getApplink(), product.getUrl());
+
+        String filterSortParams = searchParameter == null ? "" :
+                SearchFilterUtilsKt.getSortFilterParamsString(searchParameter.getSearchParameterMap());
+
+        List<Object> products = new ArrayList<>();
+        products.add(product.getInspirationCarouselChipsProductAsObjectDataLayer(filterSortParams));
+        SearchTracking.trackEventClickInspirationCarouselChipsProduct(
+                product.getInspirationCarouselType(),
+                getQueryKey(),
+                product.getOptionTitle(),
+                getUserId(),
+                products
+        );
+    }
+
+    @Override
+    public void onImpressedInspirationCarouselChipsProduct(@NotNull InspirationCarouselDataView.Option.Product product) {
+        String filterSortParams = searchParameter == null ? "" :
+                SearchFilterUtilsKt.getSortFilterParamsString(searchParameter.getSearchParameterMap());
+
+        List<Object> products = new ArrayList<>();
+        products.add(product.getInspirationCarouselChipsProductAsObjectDataLayer(filterSortParams));
+
+        SearchTracking.trackImpressionInspirationCarouselChips(
+                trackingQueue,
+                product.getInspirationCarouselType(),
+                getQueryKey(),
+                product.getOptionTitle(),
+                getUserId(),
+                products
+        );
+    }
+
+    @Override
+    public void onInspirationCarouselChipsSeeAllClicked(@NotNull InspirationCarouselDataView.Option option) {
+        redirectionStartActivity(option.getApplink(), option.getUrl());
+
+        SearchTracking.trackEventClickInspirationCarouselChipsSeeAll(
+                option.getInspirationCarouselType(),
+                getQueryKey(),
+                option.getTitle(),
+                getUserId()
+        );
+    }
+
+    @Override
+    public void onInspirationCarouselChipsClicked(
+            int inspirationCarouselAdapterPosition,
+            @NotNull InspirationCarouselDataView inspirationCarouselViewModel,
+            @NotNull InspirationCarouselDataView.Option inspirationCarouselOption
+    ) {
+        if (presenter == null) return;
+
+        presenter.onInspirationCarouselChipsClick(
+                inspirationCarouselAdapterPosition,
+                inspirationCarouselViewModel,
+                inspirationCarouselOption,
+                getSearchParameter().getSearchParameterMap()
+        );
+    }
+
+    @Override
+    public void trackInspirationCarouselChipsClicked(@NotNull InspirationCarouselDataView.Option option) {
+        SearchTracking.trackEventClickInspirationCarouselChipsVariant(
+                option.getInspirationCarouselType(),
+                getQueryKey(),
+                option.getTitle(),
+                getUserId()
+        );
     }
 
     @Override
@@ -1516,45 +1597,45 @@ public class ProductListFragment
     }
 
     @Override
-    public void onBroadMatchItemImpressed(@NotNull BroadMatchItemViewModel broadMatchItemViewModel) {
+    public void onBroadMatchItemImpressed(@NotNull BroadMatchItemDataView broadMatchItemDataView) {
         if (presenter == null) return;
 
-        presenter.onBroadMatchItemImpressed(broadMatchItemViewModel);
+        presenter.onBroadMatchItemImpressed(broadMatchItemDataView);
     }
 
     @Override
-    public void onBroadMatchItemClicked(@NotNull BroadMatchItemViewModel broadMatchItemViewModel) {
+    public void onBroadMatchItemClicked(@NotNull BroadMatchItemDataView broadMatchItemDataView) {
         if (presenter == null) return;
 
-        presenter.onBroadMatchItemClick(broadMatchItemViewModel);
+        presenter.onBroadMatchItemClick(broadMatchItemDataView);
     }
 
     @Override
-    public void trackEventClickBroadMatchItem(@NotNull BroadMatchItemViewModel broadMatchItemViewModel) {
+    public void trackEventClickBroadMatchItem(@NotNull BroadMatchItemDataView broadMatchItemDataView) {
         List<Object> broadMatchItem = new ArrayList<>();
-        broadMatchItem.add(broadMatchItemViewModel.asClickObjectDataLayer());
+        broadMatchItem.add(broadMatchItemDataView.asClickObjectDataLayer());
 
         SearchTracking.trackEventClickBroadMatchItem(
-                getQueryKey(), broadMatchItemViewModel.getAlternativeKeyword(), getUserId(), broadMatchItem
+                getQueryKey(), broadMatchItemDataView.getAlternativeKeyword(), getUserId(), broadMatchItem
         );
     }
 
     @Override
-    public void onBroadMatchSeeMoreClicked(@NotNull BroadMatchViewModel broadMatchViewModel) {
-        SearchTracking.trackEventClickBroadMatchSeeMore(getQueryKey(), broadMatchViewModel.getKeyword());
+    public void onBroadMatchSeeMoreClicked(@NotNull BroadMatchDataView broadMatchDataView) {
+        SearchTracking.trackEventClickBroadMatchSeeMore(getQueryKey(), broadMatchDataView.getKeyword());
 
-        String applink = (broadMatchViewModel.getApplink().startsWith(ApplinkConst.DISCOVERY_SEARCH)) ?
-            modifyApplinkToSearchResult(broadMatchViewModel.getApplink()) : broadMatchViewModel.getApplink();
+        String applink = (broadMatchDataView.getApplink().startsWith(ApplinkConst.DISCOVERY_SEARCH)) ?
+            modifyApplinkToSearchResult(broadMatchDataView.getApplink()) : broadMatchDataView.getApplink();
 
-        redirectionStartActivity(applink, broadMatchViewModel.getUrl());
+        redirectionStartActivity(applink, broadMatchDataView.getUrl());
     }
 
     @Override
-    public void onBroadMatchThreeDotsClicked(@NotNull BroadMatchItemViewModel broadMatchItemViewModel) {
-        ProductCardOptionsManager.showProductCardOptions(this, createProductCardOptionsModel(broadMatchItemViewModel));
+    public void onBroadMatchThreeDotsClicked(@NotNull BroadMatchItemDataView broadMatchItemDataView) {
+        ProductCardOptionsManager.showProductCardOptions(this, createProductCardOptionsModel(broadMatchItemDataView));
     }
 
-    private ProductCardOptionsModel createProductCardOptionsModel(BroadMatchItemViewModel item) {
+    private ProductCardOptionsModel createProductCardOptionsModel(BroadMatchItemDataView item) {
         ProductCardOptionsModel productCardOptionsModel = new ProductCardOptionsModel();
 
         productCardOptionsModel.setHasWishlist(true);
@@ -1571,21 +1652,21 @@ public class ProductListFragment
     }
 
     @Override
-    public void trackBroadMatchImpression(BroadMatchItemViewModel broadMatchItemViewModel) {
+    public void trackBroadMatchImpression(BroadMatchItemDataView broadMatchItemDataView) {
         List<Object> broadMatchItemAsObjectDataLayer = new ArrayList<>();
-        broadMatchItemAsObjectDataLayer.add(broadMatchItemViewModel.asImpressionObjectDataLayer());
+        broadMatchItemAsObjectDataLayer.add(broadMatchItemDataView.asImpressionObjectDataLayer());
 
-        SearchTracking.trackEventImpressionBroadMatch(trackingQueue, getQueryKey(), broadMatchItemViewModel.getAlternativeKeyword(), getUserId(), broadMatchItemAsObjectDataLayer);
+        SearchTracking.trackEventImpressionBroadMatch(trackingQueue, getQueryKey(), broadMatchItemDataView.getAlternativeKeyword(), getUserId(), broadMatchItemAsObjectDataLayer);
     }
 
     @Override
-    public void onInspirationCardOptionClicked(@NotNull InspirationCardOptionViewModel option) {
+    public void onInspirationCardOptionClicked(@NotNull InspirationCardOptionDataView option) {
         trackEventClickInspirationCardOption(option);
 
         redirectionStartActivity(option.getApplink(), option.getUrl());
     }
 
-    private void trackEventClickInspirationCardOption(InspirationCardOptionViewModel option) {
+    private void trackEventClickInspirationCardOption(InspirationCardOptionDataView option) {
         String label = option.getInspirationCardType() + " - " + getQueryKey() + " - " + option.getText();
         SearchTracking.trackEventClickInspirationCardOption(label);
     }
@@ -1606,7 +1687,7 @@ public class ProductListFragment
         searchSortFilter.setVisibility(View.VISIBLE);
         searchSortFilter.getSortFilterHorizontalScrollView().setScrollX(0);
         searchSortFilter.addItem((ArrayList<SortFilterItem>) items);
-        searchSortFilter.getTextView().setText(getString(R.string.search_filter));
+        if (searchSortFilter.getTextView() != null) searchSortFilter.getTextView().setText(getString(R.string.search_filter));
         searchSortFilter.setParentListener(this::openBottomSheetFilterRevamp);
         setSortFilterNewNotification(items);
     }
@@ -1631,50 +1712,82 @@ public class ProductListFragment
     }
 
     @Override
-    public void showOnBoarding(int firstProductPosition, boolean showThreeDotsOnBoarding) {
-        if (recyclerView == null) return;
+    public void showOnBoarding(int firstProductPositionWithBOELabel) {
+        if (recyclerView == null || getContext() == null) return;
 
-        recyclerView.post(() -> {
-            View threeDots = showThreeDotsOnBoarding ? getThreeDotsOfFirstProductItem(firstProductPosition) : null;
+        View productWithBOELabel = getFirstProductWithBOELabel(firstProductPositionWithBOELabel);
 
-            if (firstProductPosition > 0 && threeDots != null)
-                recyclerView.smoothScrollToPosition(firstProductPosition);
-
-            recyclerView.postDelayed(() -> {
-                ArrayList<CoachMarkItem> coachMarkItemList = createCoachMarkItemList(threeDots);
-
-                CoachMarkBuilder builder = new CoachMarkBuilder();
-                builder.allowPreviousButton(false);
-                builder.build().show(getActivity(), SEARCH_RESULT_PRODUCT_ONBOARDING_TAG, coachMarkItemList);
-            }, 200);
-        });
+        recyclerView.postDelayed(() -> {
+            if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.M) {
+                buildCoachMark(productWithBOELabel);
+            }
+            else {
+                buildCoachMark2(productWithBOELabel);
+            }
+        }, 200);
     }
 
-    private View getThreeDotsOfFirstProductItem(int firstProductPosition) {
+    private View getFirstProductWithBOELabel(int firstProductPositionWithBOELabel) {
         if (recyclerView == null) return null;
 
-        RecyclerView.ViewHolder viewHolder = recyclerView.findViewHolderForAdapterPosition(firstProductPosition);
+        RecyclerView.ViewHolder viewHolder = recyclerView.findViewHolderForAdapterPosition(firstProductPositionWithBOELabel);
         if (viewHolder == null) return null;
 
         if (viewHolder.itemView instanceof IProductCardView)
-            return ((IProductCardView) viewHolder.itemView).getThreeDotsButton();
+            return viewHolder.itemView;
         else
             return null;
     }
 
-    private ArrayList<CoachMarkItem> createCoachMarkItemList(@Nullable View threeDots) {
+    private void buildCoachMark(View view) {
+        ArrayList<CoachMarkItem> coachMarkItemList = createCoachMarkItemList(view);
+
+        if (coachMarkItemList.size() <= 0) return;
+
+        CoachMarkBuilder builder = new CoachMarkBuilder();
+        builder.allowPreviousButton(false);
+        builder.build().show(getActivity(), SEARCH_RESULT_PRODUCT_ONBOARDING_TAG, coachMarkItemList);
+    }
+
+    private ArrayList<CoachMarkItem> createCoachMarkItemList(@Nullable View boeLabelProductCard) {
         ArrayList<CoachMarkItem> coachMarkItemList = new ArrayList<>();
 
-        if (threeDots != null) coachMarkItemList.add(createThreeDotsOnBoarding(threeDots));
+        if (boeLabelProductCard != null) coachMarkItemList.add(createBOELabelCoachMarkItem(boeLabelProductCard));
 
         return coachMarkItemList;
     }
 
-    private CoachMarkItem createThreeDotsOnBoarding(View threeDotsButton) {
+    private CoachMarkItem createBOELabelCoachMarkItem(View boeLabelProductCard) {
         return new CoachMarkItem(
-                threeDotsButton,
-                getString(R.string.search_product_three_dots_onboarding_title),
-                getString(R.string.search_product_three_dots_onboarding_description)
+                boeLabelProductCard,
+                getString(R.string.search_product_boe_label_onboarding_title),
+                getString(R.string.search_product_boe_label_onboarding_description)
+        );
+    }
+
+    private void buildCoachMark2(View view) {
+        ArrayList<CoachMark2Item> coachMark2ItemList = createCoachMark2ItemList(view);
+
+        if (coachMark2ItemList.size() <= 0) return;
+
+        CoachMark2 coachMark = new CoachMark2(getContext());
+        coachMark.showCoachMark(coachMark2ItemList, null, 0);
+    }
+
+    private ArrayList<CoachMark2Item> createCoachMark2ItemList(@Nullable View boeLabelProductCard) {
+        ArrayList<CoachMark2Item> coachMarkItemList = new ArrayList<>();
+
+        if (boeLabelProductCard != null) coachMarkItemList.add(createBOELabelCoachMark2Item(boeLabelProductCard));
+
+        return coachMarkItemList;
+    }
+
+    private CoachMark2Item createBOELabelCoachMark2Item(View boeLabelProductCard) {
+        return new CoachMark2Item(
+                boeLabelProductCard,
+                getString(R.string.search_product_boe_label_onboarding_title),
+                getString(R.string.search_product_boe_label_onboarding_description),
+                CoachMark2.POSITION_TOP
         );
     }
 
@@ -1827,7 +1940,7 @@ public class ProductListFragment
     @Override
     public void onTopAdsImageViewImpressed(
             String className,
-            @NotNull SearchProductTopAdsImageViewModel searchTopAdsImageViewModel
+            @NotNull SearchProductTopAdsImageDataView searchTopAdsImageViewModel
     ) {
         if (className == null || getContext() == null) return;
 
@@ -1841,9 +1954,66 @@ public class ProductListFragment
     }
 
     @Override
-    public void onTopAdsImageViewClick(@NotNull SearchProductTopAdsImageViewModel searchTopAdsImageViewModel) {
+    public void onTopAdsImageViewClick(@NotNull SearchProductTopAdsImageDataView searchTopAdsImageViewModel) {
         if (getContext() == null) return;
 
         RouteManager.route(getContext(), searchTopAdsImageViewModel.getTopAdsImageViewModel().getApplink());
+    }
+
+    @Override
+    public void onLocalizingAddressSelected() {
+        if (presenter != null)
+            presenter.onLocalizingAddressSelected();
+    }
+
+    @NotNull
+    @Override
+    public Fragment getFragment() {
+        return this;
+    }
+
+    @Override
+    public boolean isChooseAddressWidgetEnabled() {
+        if (getContext() == null) return false;
+
+        try {
+            return ChooseAddressUtils.INSTANCE.isRollOutUser(getContext());
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    @Override
+    public LocalCacheModel getChooseAddressData() {
+        if (getContext() == null) return ChooseAddressConstant.Companion.getEmptyAddress();
+
+        try {
+            return ChooseAddressUtils.INSTANCE.getLocalizingAddressData(getContext());
+        } catch (Exception e) {
+            return ChooseAddressConstant.Companion.getEmptyAddress();
+        }
+    }
+
+    @Override
+    public boolean getIsLocalizingAddressHasUpdated(LocalCacheModel currentChooseAddressData) {
+        if (getContext() == null) return false;
+
+        try {
+            return ChooseAddressUtils.INSTANCE.isLocalizingAddressHasUpdated(getContext(), currentChooseAddressData);
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    @Override
+    public void refreshItemAtIndex(int index) {
+        if (adapter == null) return;
+
+        adapter.refreshItemAtIndex(index);
+    }
+
+    @Override
+    public void onBannerClicked(@NotNull BannerDataView bannerDataView) {
+        redirectionStartActivity(bannerDataView.getApplink(), "");
     }
 }

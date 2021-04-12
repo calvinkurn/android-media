@@ -3,8 +3,9 @@ package com.tokopedia.shop.product.di.module
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseInterceptor
-import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor
 import com.tokopedia.gm.common.constant.GMCommonUrl
 import com.tokopedia.gm.common.data.interceptor.GMAuthInterceptor
 import com.tokopedia.gm.common.data.repository.GMCommonRepositoryImpl
@@ -21,21 +22,20 @@ import com.tokopedia.shop.common.constant.ShopCommonParamApiConstant.GQL_PRODUCT
 import com.tokopedia.shop.common.constant.ShopUrl
 import com.tokopedia.shop.common.data.interceptor.ShopAuthInterceptor
 import com.tokopedia.shop.common.di.ShopPageContext
-import com.tokopedia.shop.common.domain.interactor.DeleteShopInfoCacheUseCase
 import com.tokopedia.shop.common.graphql.data.stampprogress.MembershipStampProgress
 import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.ClaimBenefitMembershipUseCase
 import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.GetMembershipUseCase
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
-import com.tokopedia.shop.product.data.GQLQueryConstant
 import com.tokopedia.shop.product.data.model.ShopFeaturedProduct
 import com.tokopedia.shop.product.data.repository.ShopProductRepositoryImpl
 import com.tokopedia.shop.product.data.source.cloud.ShopProductCloudDataSource
 import com.tokopedia.shop.product.data.source.cloud.api.ShopOfficialStoreApi
 import com.tokopedia.shop.product.data.source.cloud.interceptor.ShopOfficialStoreAuthInterceptor
-import com.tokopedia.shop.product.di.*
+import com.tokopedia.shop.product.di.ShopProductGMFeaturedQualifier
+import com.tokopedia.shop.product.di.ShopProductQualifier
+import com.tokopedia.shop.product.di.ShopProductSortQualifier
+import com.tokopedia.shop.product.di.ShopProductWishListFeaturedQualifier
 import com.tokopedia.shop.product.di.scope.ShopProductScope
-import com.tokopedia.shop.product.domain.interactor.*
+import com.tokopedia.shop.product.domain.interactor.GetProductCampaignsUseCase
 import com.tokopedia.shop.product.domain.repository.ShopProductRepository
 import com.tokopedia.shop.sort.data.repository.ShopProductSortRepositoryImpl
 import com.tokopedia.shop.sort.data.source.cloud.ShopProductSortCloudDataSource
@@ -67,121 +67,6 @@ class ShopProductModule {
     @Provides
     fun getNetworkRouter(@ApplicationContext context: Context?): NetworkRouter {
         return context as NetworkRouter
-    }
-
-    @ShopProductScope
-    @Provides
-    @Named(GQLQueryConstant.SHOP_FEATURED_PRODUCT)
-    fun getShopFeaturedProductQuery(@ShopPageContext context: Context): String {
-        return """
-            query getShopFeaturedProduct(${'$'}shopId: Int!,${'$'}userID: Int!){
-              shop_featured_product(shopID:${'$'}shopId, userID:${'$'}userID){
-                data{
-                  parent_id
-                  product_id
-                  name
-                  uri
-                  image_uri
-                  price
-                  preorder
-                  returnable
-                  wholesale
-                  cashback
-                  isWishlist
-                  is_rated
-                  original_price
-                  percentage_amount
-                  cashback_detail{
-                    cashback_status
-                    cashback_percent
-                    is_cashback_expired
-                    cashback_value
-                  }
-                  free_ongkir {
-                    is_active
-                    img_url
-                  }
-                  label_groups {
-                    position
-                    type
-                    title
-                  }
-                  total_review
-                  rating
-                }
-              }
-            }
-        """.trimIndent()
-    }
-
-    @ShopProductScope
-    @Provides
-    @Named(GQLQueryConstant.SHOP_PRODUCT)
-    fun getShopProductQuery(@ShopPageContext context: Context): String {
-        return """
-            query getShopProduct(${'$'}shopId: String!,${'$'}filter: ProductListFilter!){
-              GetShopProduct(shopID:${'$'}shopId, filter:${'$'}filter){
-                status
-                errors
-                data {
-                  product_id
-                  name
-                  product_url
-                  stock
-                  status
-                  price{
-                    text_idr
-                  }
-                  flags{
-                    isFeatured
-                    isPreorder
-                    isFreereturn
-                    isVariant
-                    isWholesale
-                    isWishlist
-                    isSold
-                    supportFreereturn
-                    mustInsurance
-                    withStock
-                  }
-                  stats{
-                    reviewCount
-                    rating
-                    viewCount
-                  }
-                  campaign{
-                    hide_gimmick
-                    original_price
-                    original_price_fmt
-                    discounted_price_fmt
-                    discounted_percentage
-                    discounted_price
-                    is_upcoming
-                    stock_sold_percentage
-                  }
-                  primary_image{
-                    original
-                    thumbnail
-                    resize300
-                  }
-                  cashback{
-                    cashback
-                    cashback_amount
-                  }
-                  freeOngkir {
-                    isActive
-                    imgURL
-                  }
-                  label_groups {
-                    position
-                    type
-                    title
-                  }
-                }
-                totalData
-              }
-            }
-        """.trimIndent()
     }
 
     @Provides
@@ -319,36 +204,9 @@ class ShopProductModule {
 
     @ShopProductScope
     @Provides
-    fun provideDeleteShopInfoUseCase(@ShopPageContext context: Context ): DeleteShopInfoCacheUseCase {
-        return DeleteShopInfoCacheUseCase(context)
-    }
-
-    @ShopProductScope
-    @Provides
     fun provideClaimBenefitMembershipUseCase(@Named(ShopCommonParamApiConstant.QUERY_CLAIM_MEMBERSHIP) gqlQuery: String?,
                                              gqlUseCase: MultiRequestGraphqlUseCase?): ClaimBenefitMembershipUseCase {
         return ClaimBenefitMembershipUseCase(gqlQuery!!, gqlUseCase!!)
-    }
-
-    @ShopProductScope
-    @Provides
-    fun getShopFeaturedProductUseCase(@Named(GQLQueryConstant.SHOP_FEATURED_PRODUCT) gqlQuery: String?,
-                                      gqlUseCase: MultiRequestGraphqlUseCase?): GetShopFeaturedProductUseCase {
-        return GetShopFeaturedProductUseCase(gqlQuery!!, gqlUseCase!!)
-    }
-
-    @ShopProductScope
-    @Provides
-    fun getShopProductUseCase(@Named(GQLQueryConstant.SHOP_PRODUCT) gqlQuery: String?,
-                              gqlUseCase: MultiRequestGraphqlUseCase?): GqlGetShopProductUseCase {
-        return GqlGetShopProductUseCase(gqlQuery!!, gqlUseCase!!)
-    }
-
-    @ShopProductGetHighlightProductQualifier
-    @Provides
-    fun getShopHighlightProductUseCase(@Named(GQLQueryConstant.SHOP_PRODUCT) gqlQuery: String?,
-                              gqlUseCase: MultiRequestGraphqlUseCase?): GqlGetShopProductUseCase {
-        return GqlGetShopProductUseCase(gqlQuery!!, gqlUseCase!!)
     }
 
     @Provides
@@ -362,10 +220,8 @@ class ShopProductModule {
     @Provides
     fun provideGMOkHttpClient(gmAuthInterceptor: GMAuthInterceptor?,
                               @ApplicationScope httpLoggingInterceptor: HttpLoggingInterceptor?,
-                              errorResponseInterceptor: HeaderErrorResponseInterceptor?,
-                              cacheApiInterceptor: CacheApiInterceptor?): OkHttpClient {
+                              errorResponseInterceptor: HeaderErrorResponseInterceptor?): OkHttpClient {
         return Builder()
-            .addInterceptor(cacheApiInterceptor)
             .addInterceptor(gmAuthInterceptor)
             .addInterceptor(errorResponseInterceptor)
             .addInterceptor(httpLoggingInterceptor)
@@ -480,10 +336,8 @@ class ShopProductModule {
     @Provides
     fun provideOfficialStoreOkHttpClient(shopOfficialStoreAuthInterceptor: ShopOfficialStoreAuthInterceptor?,
                                          @ApplicationScope httpLoggingInterceptor: HttpLoggingInterceptor?,
-                                         errorResponseInterceptor: HeaderErrorResponseInterceptor?,
-                                         cacheApiInterceptor: CacheApiInterceptor?): OkHttpClient {
+                                         errorResponseInterceptor: HeaderErrorResponseInterceptor?): OkHttpClient {
         return Builder()
-            .addInterceptor(cacheApiInterceptor)
             .addInterceptor(shopOfficialStoreAuthInterceptor)
             .addInterceptor(errorResponseInterceptor)
             .addInterceptor(httpLoggingInterceptor)
@@ -511,18 +365,6 @@ class ShopProductModule {
 
     @ShopProductScope
     @Provides
-    fun provideDeleteShopProductTomeUseCase(@ShopPageContext context: Context?): DeleteShopProductTomeUseCase {
-        return DeleteShopProductTomeUseCase(context)
-    }
-
-    @ShopProductScope
-    @Provides
-    fun provideDeleteShopProductAceUseCase(@ShopPageContext context: Context?): DeleteShopProductAceUseCase {
-        return DeleteShopProductAceUseCase(context)
-    }
-
-    @ShopProductScope
-    @Provides
     fun provideGetProductCampaignsUseCase(wishListCommonRepository: ShopProductRepository?): GetProductCampaignsUseCase {
         return GetProductCampaignsUseCase(wishListCommonRepository)
     }
@@ -538,10 +380,8 @@ class ShopProductModule {
     @Provides
     fun provideOkHttpClient(shopAuthInterceptor: ShopAuthInterceptor?,
                             @ApplicationScope httpLoggingInterceptor: HttpLoggingInterceptor?,
-                            errorResponseInterceptor: HeaderErrorResponseInterceptor?,
-                            cacheApiInterceptor: CacheApiInterceptor?): OkHttpClient? {
+                            errorResponseInterceptor: HeaderErrorResponseInterceptor?): OkHttpClient? {
         return Builder()
-                .addInterceptor(cacheApiInterceptor)
                 .addInterceptor(shopAuthInterceptor)
                 .addInterceptor(errorResponseInterceptor)
                 .addInterceptor(httpLoggingInterceptor)

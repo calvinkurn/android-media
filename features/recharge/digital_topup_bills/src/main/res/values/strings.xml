@@ -11,6 +11,7 @@
     <string name="digital_title_input_number">Masukkan Nomor HP</string>
     <string name="digital_telco_error_min_phone_number">Nomor HP minimum 10 digit</string>
     <string name="digital_telco_error_max_phone_number">Nomor HP maksimum 14 digit</string>
+    <string name="digital_telco_error_try_again">Mohon maaf terjadi kendala, silahkan coba lagi</string>
     <string name="digital_btn_check_bill">Cek Tagihan</string>
     <string name="digital_title_details">Kuota Utama:</string>
     <string name="digital_title_price">Harga</string>

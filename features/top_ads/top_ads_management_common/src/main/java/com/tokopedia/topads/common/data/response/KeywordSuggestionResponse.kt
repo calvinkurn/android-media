@@ -1,6 +1,7 @@
 package com.tokopedia.topads.common.data.response
 
 import android.os.Parcelable
+import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import kotlinx.android.parcel.Parcelize
 
@@ -57,7 +58,10 @@ data class KeywordDataItem(
 
         var onChecked: Boolean = false,
 
-        var fromSearch:Boolean = false
+        var fromSearch:Boolean = false,
+
+        @Expose(serialize = false, deserialize = false)
+        var keywordType: String = "Spesifik"
 
 
 ) : Parcelable

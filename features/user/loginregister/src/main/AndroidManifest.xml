@@ -86,7 +86,7 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"
             android:windowSoftInputMode="adjustResize">
-            <intent-filter >
+            <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
@@ -254,6 +254,11 @@
         </service>
         <service
             android:name=".login.service.RegisterPushNotifService"
+            android:exported="true"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
+
+        <service
+            android:name=".login.service.GetDefaultChosenAddressService"
             android:exported="true"
             android:permission="android.permission.BIND_JOB_SERVICE" />
     </application>

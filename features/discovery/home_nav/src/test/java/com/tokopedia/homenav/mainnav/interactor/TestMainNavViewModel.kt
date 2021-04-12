@@ -7,6 +7,7 @@ import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.homenav.base.datamodel.HomeNavMenuDataModel
 import com.tokopedia.homenav.base.datamodel.HomeNavTickerDataModel
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.homenav.base.datamodel.HomeNavTitleDataModel
 import com.tokopedia.homenav.mainnav.MainNavConst
 import com.tokopedia.homenav.mainnav.domain.model.NavPaymentOrder
 import com.tokopedia.homenav.mainnav.domain.model.NavProductOrder
@@ -59,6 +60,8 @@ class TestMainNavViewModel {
                 .answers { HomeNavMenuDataModel(id = firstArg(), notifCount = secondArg(), sectionId = thirdArg()) }
         every { clientMenuGenerator.getTicker(menuId = any()) }
                 .answers { HomeNavTickerDataModel() }
+        every { clientMenuGenerator.getSectionTitle(identifier = any()) }
+                .answers {(HomeNavTitleDataModel(identifier = firstArg()))}
 
         viewModel = createViewModel(clientMenuGenerator = clientMenuGenerator)
         viewModel.setPageSource(pageSource)
@@ -77,6 +80,8 @@ class TestMainNavViewModel {
                 .answers { HomeNavMenuDataModel(id = firstArg(), notifCount = secondArg(), sectionId = thirdArg()) }
         every { clientMenuGenerator.getTicker(menuId = any()) }
                 .answers { HomeNavTickerDataModel() }
+        every { clientMenuGenerator.getSectionTitle(identifier = any()) }
+                .answers {(HomeNavTitleDataModel(identifier = firstArg()))}
 
         viewModel = createViewModel(clientMenuGenerator = clientMenuGenerator)
         viewModel.setPageSource(pageSource)
@@ -89,14 +94,16 @@ class TestMainNavViewModel {
 
     //user menu section
     @Test
-    fun `test when viewmodel created and user has no shop then viewmodel create at least 7 user menu`() {
-        val defaultUserMenuCount = 7
+    fun `test when viewmodel created and user has no shop then viewmodel create at least 3 user menu`() {
+        val defaultUserMenuCount = 3
 
         val clientMenuGenerator = mockk<ClientMenuGenerator>()
         every { clientMenuGenerator.getMenu(menuId = any(), notifCount = any(), sectionId = any()) }
                 .answers { HomeNavMenuDataModel(id = firstArg(), notifCount = secondArg(), sectionId = thirdArg()) }
         every { clientMenuGenerator.getTicker(menuId = any()) }
                 .answers { HomeNavTickerDataModel() }
+        every { clientMenuGenerator.getSectionTitle(identifier = any()) }
+                .answers {(HomeNavTitleDataModel(identifier = firstArg()))}
 
         viewModel = createViewModel(clientMenuGenerator = clientMenuGenerator)
 
@@ -105,29 +112,6 @@ class TestMainNavViewModel {
         }
 
         Assert.assertEquals(defaultUserMenuCount, visitableList!!.size)
-    }
-
-    //user menu section
-    @Test
-    fun `test when viewmodel created and logged in user does not have shop then viewmodel create open shop ticker user menu`() {
-        val testTickerTitle = "This is test ticker"
-        val clientMenuGenerator = mockk<ClientMenuGenerator>()
-        val userSession = mockk<UserSession>()
-
-        every { userSession.hasShop() } returns false
-        every { userSession.isLoggedIn() } returns true
-        every { clientMenuGenerator.getMenu(menuId = any(), notifCount = any(), sectionId = any()) }
-                .answers { HomeNavMenuDataModel(id = firstArg(), notifCount = secondArg(), sectionId = thirdArg()) }
-        every { clientMenuGenerator.getTicker(menuId = any()) }
-                .answers { HomeNavTickerDataModel(title = testTickerTitle) }
-
-        viewModel = createViewModel(userSession = userSession, clientMenuGenerator = clientMenuGenerator)
-
-        val visitableList = viewModel.mainNavLiveData.value?.dataList?: listOf()
-        val shopTicker = visitableList.find { it is HomeNavTickerDataModel } as HomeNavTickerDataModel
-
-        Assert.assertNotNull(shopTicker)
-        Assert.assertEquals(shopTicker.title, testTickerTitle)
     }
 
     //user menu section
@@ -142,6 +126,8 @@ class TestMainNavViewModel {
                 .answers { HomeNavMenuDataModel(id = firstArg(), notifCount = secondArg(), sectionId = thirdArg()) }
         every { clientMenuGenerator.getTicker(menuId = any()) }
                 .answers { HomeNavTickerDataModel() }
+        every { clientMenuGenerator.getSectionTitle(identifier = any()) }
+                .answers {(HomeNavTitleDataModel(identifier = firstArg()))}
         coEvery { getNavNotification.executeOnBackground() }.answers { NavNotificationModel(unreadCountComplain = mockUnreadCount) }
 
         viewModel = createViewModel(
@@ -168,6 +154,8 @@ class TestMainNavViewModel {
                 .answers { HomeNavMenuDataModel(id = firstArg(), notifCount = secondArg(), sectionId = thirdArg()) }
         every { clientMenuGenerator.getTicker(menuId = any()) }
                 .answers { HomeNavTickerDataModel() }
+        every { clientMenuGenerator.getSectionTitle(identifier = any()) }
+                .answers {(HomeNavTitleDataModel(identifier = firstArg()))}
         coEvery { getNavNotification.executeOnBackground() }.answers { NavNotificationModel(unreadCountInboxTicket = mockUnreadCount) }
 
         viewModel = createViewModel(
@@ -332,7 +320,8 @@ class TestMainNavViewModel {
                                         roleType = AdminRoleType(
                                                 isLocationAdmin = isLocationAdmin
                                         )
-                                )
+                                ),
+                                status = "1"
                         )
                 )
         val expectedCanGoToSellerAccount = !isLocationAdmin

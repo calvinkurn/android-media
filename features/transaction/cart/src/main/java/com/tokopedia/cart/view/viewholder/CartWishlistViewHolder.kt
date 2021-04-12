@@ -1,21 +1,20 @@
 package com.tokopedia.cart.view.viewholder
 
-import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
 import com.tokopedia.cart.R
+import com.tokopedia.cart.databinding.ItemCartWishlistBinding
 import com.tokopedia.cart.view.ActionListener
 import com.tokopedia.cart.view.adapter.wishlist.CartWishlistAdapter
 import com.tokopedia.cart.view.decorator.CartHorizontalItemDecoration
 import com.tokopedia.cart.view.uimodel.CartWishlistHolderData
-import kotlinx.android.synthetic.main.item_cart_wishlist.view.*
 
 /**
  * Created by Irfan Khoirul on 2019-05-31.
  */
 
-class CartWishlistViewHolder(val view: View, val listener: ActionListener?) : RecyclerView.ViewHolder(view) {
+class CartWishlistViewHolder(private val binding: ItemCartWishlistBinding, val listener: ActionListener?) : RecyclerView.ViewHolder(binding.root) {
 
     var wishlistAdapter: CartWishlistAdapter? = null
 
@@ -37,7 +36,7 @@ class CartWishlistViewHolder(val view: View, val listener: ActionListener?) : Re
         }
         wishlistAdapter?.updateWishlistItems(element.wishList)
 
-        itemView.rv_wishlist?.apply {
+        binding.rvWishlist.apply {
             val layoutManager = LinearLayoutManager(itemView.context, RecyclerView.HORIZONTAL, false)
             setLayoutManager(layoutManager)
             adapter = wishlistAdapter
@@ -53,7 +52,7 @@ class CartWishlistViewHolder(val view: View, val listener: ActionListener?) : Re
     }
 
     private fun updateList(element: CartWishlistHolderData) {
-        itemView.rv_wishlist?.apply {
+        binding.rvWishlist.apply {
             adapter?.let {
                 (it as CartWishlistAdapter).updateWishlistItems(element.wishList)
                 scrollToPosition(0)

@@ -50,6 +50,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalEntertainment.EVENT_PD
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.ADD_BOD
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.ADD_EMAIL
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.ADD_NAME_REGISTER
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.ADD_NAME_REGISTER_CLEAN_VIEW
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.ADD_PHONE
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.ADD_PIN
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.ADD_PIN_COMPLETE
@@ -130,6 +131,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalOrder.ORDERLIST_DIGITA
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.ORDER_LIST_INTERNAL
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PESAWAT_INTERNAL_ORDER
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.INTERNAL_ORDER_SNAPSHOT
+import com.tokopedia.applink.internal.ApplinkConstInternalOrder.TRACK
 import com.tokopedia.applink.internal.ApplinkConstInternalPayment.PAYMENT_SETTING
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo.INTERNAL_TOKOPOINTS
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo.PROMO_CAMPAIGN_SHAKE_LANDING_PREFIX
@@ -426,6 +428,7 @@ object DeeplinkDFMapper : CoroutineScope {
                         || it.startsWithPattern(CHANGE_NAME)
                         || it.startsWith(CHANGE_GENDER)
                         || it.startsWith(ADD_NAME_REGISTER)
+                        || it.startsWith(ADD_NAME_REGISTER_CLEAN_VIEW)
                         || it.startsWith(CHANGE_PIN)
                         || it.startsWith(ADD_PIN_ONBOARDING)
                         || it.startsWith(ADD_PIN)
@@ -494,6 +497,9 @@ object DeeplinkDFMapper : CoroutineScope {
 
             // snapshot
             add(DFP({ it.startsWith(INTERNAL_ORDER_SNAPSHOT)}, DF_BASE, R.string.title_snapshot))
+
+            // Order History
+            add(DFP({ it.startsWith(TRACK)}, DF_BASE, R.string.title_order_management_history))
         }
     }
 
@@ -577,6 +583,12 @@ object DeeplinkDFMapper : CoroutineScope {
             }, DF_BASE_SELLER_APP, R.string.title_product_detail))
             // User
             add(DFP({ it.startsWithPattern(CHANGE_INACTIVE_PHONE) }, DF_BASE, R.string.title_update_inactive_phone))
+
+            // Order History
+            add(DFP({ it.startsWith(TRACK)}, DF_BASE_SELLER_APP, R.string.title_order_management_history))
+
+            // Review Reminder
+            add(DFP({ it.startsWith(REVIEW_REMINDER) }, DF_BASE_SELLER_APP, R.string.title_review_reminder))
         }
     }
 

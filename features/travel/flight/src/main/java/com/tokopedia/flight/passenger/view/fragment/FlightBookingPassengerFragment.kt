@@ -52,10 +52,13 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.travel.country_code.presentation.activity.PhoneCodePickerActivity
 import com.tokopedia.travel.country_code.presentation.fragment.PhoneCodePickerFragment
 import com.tokopedia.travel.country_code.presentation.model.TravelCountryPhoneCode
+import com.tokopedia.travel.country_code.util.TravelCountryCodeGqlQuery
 import com.tokopedia.travel.passenger.data.entity.TravelContactIdCard
 import com.tokopedia.travel.passenger.data.entity.TravelContactListModel
 import com.tokopedia.travel.passenger.data.entity.TravelUpsertContactModel
 import com.tokopedia.travel.passenger.presentation.adapter.TravelContactArrayAdapter
+import com.tokopedia.travel.passenger.util.TravelPassengerGqlMutation
+import com.tokopedia.travel.passenger.util.TravelPassengerGqlQuery
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.fragment_flight_booking_passenger.*
 import java.util.*
@@ -120,7 +123,7 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         if (autofillName.isNotEmpty()) loading_screen.show() else loading_screen.hide()
-        passengerViewModel.getContactList(GraphqlHelper.loadRawString(resources, com.tokopedia.travel.passenger.R.raw.query_get_travel_contact_list),
+        passengerViewModel.getContactList(TravelPassengerGqlQuery.CONTACT_LIST,
                 getPassengerTypeString(passengerModel.type))
         initView()
     }
@@ -249,9 +252,7 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
                     expiry = FlightDateUtil.formatDate(FlightDateUtil.DEFAULT_VIEW_FORMAT, FlightDateUtil.DEFAULT_FORMAT, getPassportExpiryDate())))
         }
 
-        passengerViewModel.updateContactList(GraphqlHelper.loadRawString(resources,
-                com.tokopedia.travel.passenger.R.raw.query_upsert_travel_contact_list),
-                contact)
+        passengerViewModel.updateContactList(TravelPassengerGqlMutation.UPSERT_CONTACT, contact)
     }
 
     private fun finishActivityWithData() {
@@ -621,8 +622,8 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
                         til_passport_no.textFieldInput.setText(id.number)
                         til_passport_expiration_date.textFieldInput.setText(FlightDateUtil.formatDate(FlightDateUtil.DEFAULT_FORMAT,
                                 FlightDateUtil.DEFAULT_VIEW_FORMAT, id.expiry))
-                        passengerViewModel.getNationalityById(GraphqlHelper.loadRawString(resources, com.tokopedia.travel.country_code.R.raw.query_travel_get_all_country), contact.nationality)
-                        passengerViewModel.getPassportIssuerCountryById(GraphqlHelper.loadRawString(resources, com.tokopedia.travel.country_code.R.raw.query_travel_get_all_country), id.country)
+                        passengerViewModel.getNationalityById(TravelCountryCodeGqlQuery.ALL_COUNTRY, contact.nationality)
+                        passengerViewModel.getPassportIssuerCountryById(TravelCountryCodeGqlQuery.ALL_COUNTRY, id.country)
                         break
                     }
                 }
@@ -714,10 +715,6 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
                 }
                 flightPassengerInfoValidator.validateFirstNameIsMoreThanMaxLength(getFirstName()) -> {
                     til_first_name.error = getString(R.string.flight_booking_passenger_first_name_max_error)
-                    false
-                }
-                flightPassengerInfoValidator.validateLastNameIsLessThanMinLength(getFirstName()) -> {
-                    til_first_name.error = getString(R.string.flight_booking_passenger_first_name_error)
                     false
                 }
                 else -> true

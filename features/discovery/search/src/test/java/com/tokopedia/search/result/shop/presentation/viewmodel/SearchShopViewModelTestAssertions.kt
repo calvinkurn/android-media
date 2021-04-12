@@ -4,9 +4,9 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.search.result.shop.presentation.model.*
 import com.tokopedia.discovery.common.State
-import com.tokopedia.search.result.shop.presentation.model.ShopCpmViewModel
-import com.tokopedia.search.result.shop.presentation.model.ShopEmptySearchViewModel
-import com.tokopedia.search.result.shop.presentation.model.ShopViewModel
+import com.tokopedia.search.result.shop.presentation.model.ShopCpmDataView
+import com.tokopedia.search.result.shop.presentation.model.ShopEmptySearchDataView
+import com.tokopedia.search.result.shop.presentation.model.ShopDataView
 import com.tokopedia.search.shouldBe
 
 internal inline fun <reified T> Any?.shouldBeInstanceOf(customMessage: String = "") {
@@ -56,7 +56,7 @@ private fun State<List<Visitable<*>>>?.shouldNotBeNull() {
 private fun State<List<Visitable<*>>>?.shouldHaveCpmViewModel(cpmViewModelPosition: Int) {
     val data = this?.data as List<Visitable<*>>
 
-    data[cpmViewModelPosition].shouldBeInstanceOf<ShopCpmViewModel>()
+    data[cpmViewModelPosition].shouldBeInstanceOf<ShopCpmDataView>()
 }
 
 private fun State<List<Visitable<*>>>?.shouldHaveShopItemViewModel(shopItemStartPosition: Int, shopItemLastPosition: Int) {
@@ -74,25 +74,25 @@ private fun State<List<Visitable<*>>>?.shouldHaveLoadingMoreViewModel(loadingMor
 }
 
 internal fun Visitable<*>.verifyShopItemIsCorrect(index: Int) {
-    this.shouldBeInstanceOf<ShopViewModel.ShopItem>()
+    this.shouldBeInstanceOf<ShopDataView.ShopItem>()
 
-    val shopItem = this as ShopViewModel.ShopItem
+    val shopItem = this as ShopDataView.ShopItem
     shopItem.shouldHaveCorrectPosition(index + 1)
     shopItem.shouldHaveCorrectProductItemPosition()
 }
 
-internal fun ShopViewModel.ShopItem.shouldHaveCorrectPosition(expectedPosition: Int) {
+internal fun ShopDataView.ShopItem.shouldHaveCorrectPosition(expectedPosition: Int) {
     this.position shouldBe expectedPosition
 }
 
-internal fun ShopViewModel.ShopItem.shouldHaveCorrectProductItemPosition() {
+internal fun ShopDataView.ShopItem.shouldHaveCorrectProductItemPosition() {
     this.productList.forEachIndexed { index, productItem ->
         productItem.position shouldBe index + 1
     }
 }
 
 internal fun State<List<Visitable<*>>>?.shouldHaveShopItemCount(size: Int) {
-    this?.data?.count { it is ShopViewModel.ShopItem } shouldBe size
+    this?.data?.count { it is ShopDataView.ShopItem } shouldBe size
 }
 
 internal fun State<List<Visitable<*>>>?.shouldBeNullOrEmpty() {
@@ -101,7 +101,7 @@ internal fun State<List<Visitable<*>>>?.shouldBeNullOrEmpty() {
 
 internal fun State<List<Visitable<*>>>?.shouldOnlyHaveEmptySearchModel() {
     this?.data?.shouldHaveSize(1)
-    this?.data?.first().shouldBeInstanceOf<ShopEmptySearchViewModel>()
+    this?.data?.first().shouldBeInstanceOf<ShopEmptySearchDataView>()
 }
 
 internal fun State<List<Visitable<*>>>?.shouldHaveEmptySearchWithRecommendationAndLoadMore() {
@@ -109,7 +109,7 @@ internal fun State<List<Visitable<*>>>?.shouldHaveEmptySearchWithRecommendationA
 
     this.shouldNotBeNull()
 
-    this?.data?.first().shouldBeInstanceOf<ShopEmptySearchViewModel>()
+    this?.data?.first().shouldBeInstanceOf<ShopEmptySearchDataView>()
     this.shouldHaveRecommendationTitle()
     this.shouldHaveShopItemViewModel(2, lastIndex - 1)
     this.shouldHaveLoadingMoreViewModel(lastIndex)
@@ -120,13 +120,13 @@ internal fun State<List<Visitable<*>>>?.shouldHaveEmptySearchWithRecommendationW
 
     this.shouldNotBeNull()
 
-    this?.data?.first().shouldBeInstanceOf<ShopEmptySearchViewModel>()
+    this?.data?.first().shouldBeInstanceOf<ShopEmptySearchDataView>()
     this.shouldHaveRecommendationTitle()
     this.shouldHaveShopItemViewModel(2, lastIndex)
 }
 
 private fun State<List<Visitable<*>>>?.shouldHaveRecommendationTitle() {
-    this?.data?.get(1).shouldBeInstanceOf<ShopRecommendationTitleViewModel>()
+    this?.data?.get(1).shouldBeInstanceOf<ShopRecommendationTitleDataView>()
 }
 
 internal fun List<*>.shouldHaveSize(expectedSize: Int) {
@@ -141,7 +141,7 @@ internal fun State<List<Visitable<*>>>?.shouldHaveEmptySearchModelWithExpectedIs
     }
 
     this?.data?.forEach {
-        if (it is ShopEmptySearchViewModel) {
+        if (it is ShopEmptySearchDataView) {
             it.isFilterActive shouldBe expectedIsFilterActive
             return
         }

@@ -51,7 +51,7 @@ data class Variant(
 
 data class Option(
 
-        @SerializedName("productVariantOptionID") // ex:23454
+        @SerializedName("productVariantOptionID")
         @Expose
         val id: Int? = null,
 
@@ -65,7 +65,7 @@ data class Option(
 
         @SerializedName("hex")
         @Expose
-        val hex: String? = null, // ex:#ff3303
+        val hex: String? = null,
 
         @SerializedName("picture")
         @Expose

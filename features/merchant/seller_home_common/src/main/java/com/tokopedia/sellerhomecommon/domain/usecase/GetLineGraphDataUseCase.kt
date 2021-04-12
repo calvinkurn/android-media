@@ -1,5 +1,6 @@
 package com.tokopedia.sellerhomecommon.domain.usecase
 
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
@@ -18,19 +19,24 @@ import com.tokopedia.usecase.RequestParams
  */
 
 class GetLineGraphDataUseCase(
-        private val gqlRepository: GraphqlRepository,
-        private val lineGraphMapper: LineGraphMapper
-) : BaseGqlUseCase<List<LineGraphDataUiModel>>() {
+        gqlRepository: GraphqlRepository,
+        lineGraphMapper: LineGraphMapper,
+        dispatchers: CoroutineDispatchers
+) : CloudAndCacheGraphqlUseCase<GetLineGraphDataResponse, List<LineGraphDataUiModel>>(
+        gqlRepository, lineGraphMapper, dispatchers, GetLineGraphDataResponse::class.java, QUERY, false) {
+
+    override suspend fun executeOnBackground(requestParams: RequestParams, includeCache: Boolean) {
+        super.executeOnBackground(requestParams, includeCache).also { isFirstLoad = false }
+    }
 
     override suspend fun executeOnBackground(): List<LineGraphDataUiModel> {
         val gqlRequest = GraphqlRequest(QUERY, GetLineGraphDataResponse::class.java, params.parameters)
-        val gqlResponse: GraphqlResponse = gqlRepository.getReseponse(listOf(gqlRequest), cacheStrategy)
+        val gqlResponse: GraphqlResponse = graphqlRepository.getReseponse(listOf(gqlRequest), cacheStrategy)
 
         val errors: List<GraphqlError>? = gqlResponse.getError(GetLineGraphDataResponse::class.java)
         if (errors.isNullOrEmpty()) {
             val data = gqlResponse.getData<GetLineGraphDataResponse>()
-            val widgetDataList = data.getLineGraphData?.widgetData.orEmpty()
-            return lineGraphMapper.mapRemoteDataModelToUiDataModel(widgetDataList, cacheStrategy.type == CacheType.CACHE_ONLY)
+            return mapper.mapRemoteDataToUiData(data, cacheStrategy.type == CacheType.CACHE_ONLY)
         } else {
             throw MessageErrorException(errors.joinToString(", ") { it.message })
         }
@@ -69,6 +75,7 @@ class GetLineGraphDataUseCase(
                     xLabel
                   }
                   error
+                  showWidget
                 }
               }
             }

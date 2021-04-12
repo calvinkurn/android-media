@@ -22,6 +22,7 @@ import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerModel
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.common.analytics.TrackingHotelUtil
 import com.tokopedia.hotel.common.util.ErrorHandlerHotel
+import com.tokopedia.hotel.common.util.HotelGqlQuery
 import com.tokopedia.hotel.common.util.TRACKING_HOTEL_SEARCH
 import com.tokopedia.hotel.hoteldetail.presentation.activity.HotelDetailActivity
 import com.tokopedia.hotel.search.data.model.*
@@ -164,9 +165,9 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val recyclerView = getRecyclerView(view)
-        recyclerView.removeItemDecorationAt(0)
+        recyclerView?.removeItemDecorationAt(0)
         context?.let {
-            recyclerView.addItemDecoration(SpaceItemDecoration(it.resources.getDimensionPixelSize(R.dimen.hotel_12dp),
+            recyclerView?.addItemDecoration(SpaceItemDecoration(it.resources.getDimensionPixelSize(R.dimen.hotel_12dp),
                     LinearLayoutManager.VERTICAL))
         }
         searchResultviewModel.fetchTickerData()
@@ -206,7 +207,7 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
             isFirstInitializeFilter = false
             initializeQuickFilter(data.quickFilter, data.filters, data.displayInfo.sort)
 
-            quick_filter_sort_filter.chipItems.filter { it.type == ChipsUnify.TYPE_SELECTED }.forEach { _ ->
+            quick_filter_sort_filter.chipItems?.filter { it.type == ChipsUnify.TYPE_SELECTED }?.forEach { _ ->
                 quick_filter_sort_filter.indicatorCounter -= 1
             }
         }
@@ -225,8 +226,10 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
             quickFilter
         }
 
-        quick_filter_sort_filter.dismissListener = {
-            searchResultviewModel.addFilter(quickFilters, quick_filter_sort_filter.chipItems)
+        quick_filter_sort_filter.chipItems?.let {
+            quick_filter_sort_filter.dismissListener = {
+                searchResultviewModel.addFilter(quickFilters, it)
+            }
         }
 
         val sortFilterItem = quickFilters.map {
@@ -239,11 +242,13 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
         }
         quick_filter_sort_filter.addItem(ArrayList(sortFilterItem))
 
-        for ((index, item) in quick_filter_sort_filter.chipItems.withIndex()) {
-            item.refChipUnify.setOnClickListener {
-                item.toggleSelected()
-                trackingHotelUtil.clickOnQuickFilter(context, SEARCH_SCREEN_NAME, item.title.toString(), index)
-                searchResultviewModel.addFilter(quickFilters, quick_filter_sort_filter.chipItems)
+        quick_filter_sort_filter.chipItems?.let { sortFilterItemList ->
+            for ((index, item) in sortFilterItemList.withIndex()) {
+                item.refChipUnify.setOnClickListener {
+                    item.toggleSelected()
+                    trackingHotelUtil.clickOnQuickFilter(context, SEARCH_SCREEN_NAME, item.title.toString(), index)
+                    searchResultviewModel.addFilter(quickFilters, sortFilterItemList)
+                }
             }
         }
 
@@ -403,7 +408,7 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
 
     //for setup quick filter after click submit in bottom sheet
     private fun setUpQuickFilterBaseOnSelectedFilter(selectedFilters: List<ParamFilterV2>) {
-        quick_filter_sort_filter.chipItems.forEach { it.type = ChipsUnify.TYPE_NORMAL }
+        quick_filter_sort_filter.chipItems?.forEach { it.type = ChipsUnify.TYPE_NORMAL }
         val selectedFiltersMap = selectedFilters.associateBy({ it.name }, { it })
         quickFilters.forEachIndexed { index, quickFilter ->
             if (selectedFiltersMap.containsKey(quickFilter.name)) {
@@ -417,7 +422,9 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
                         }
                         if (!contains) break
                     }
-                    if (contains) quick_filter_sort_filter.chipItems[index].type = ChipsUnify.TYPE_SELECTED
+                    quick_filter_sort_filter.chipItems?.let {
+                        if (contains) it[index].type = ChipsUnify.TYPE_SELECTED
+                    }
                 }
             }
         }
@@ -449,7 +456,7 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
     }
 
     override fun loadData(page: Int) {
-        val searchQuery = GraphqlHelper.loadRawString(resources, R.raw.gql_get_property_search)
+        val searchQuery = HotelGqlQuery.PROPERTY_SEARCH
         searchResultviewModel.searchProperty(page, searchQuery)
     }
 

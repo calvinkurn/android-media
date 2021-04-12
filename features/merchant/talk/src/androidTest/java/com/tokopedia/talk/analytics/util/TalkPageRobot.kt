@@ -74,6 +74,8 @@ class TalkPageRobot {
         const val TALK_CLICK_CREATE_NEW_QUESTION_PATH = "tracker/merchant/talk/click_create_new_question.json"
         const val TALK_CLICK_SENT_NEW_QUESTION_PATH = "tracker/merchant/talk/click_sent_new_question.json"
         const val TALK_CLICK_SENT_TO_REPLY_PATH = "tracker/merchant/talk/click_sent_to_reply.json"
+        const val TALK_VIEW_INBOX_THREAD = "tracker/merchant/talk/view_inbox_thread.json"
+        const val TALK_VIEW_INBOX_TAB = "tracker/merchant/talk/view_inbox_tab.json"
         const val SENT_TO_REPLY_TEXT = "Mantap gan, barangnya sudah nyampai. Thank you"
         const val SENT_TO_WRITE_QUESTION_TEXT = "Barangnya, ready gan?"
         const val EMAIL_LOGIN = "evy.maria@tokopedia.com"
