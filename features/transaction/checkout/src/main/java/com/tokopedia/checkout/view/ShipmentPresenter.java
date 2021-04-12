@@ -1907,7 +1907,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
     @Override
     public CampaignTimerUi getCampaignTimer() {
-        if (campaignTimer == null) return null;
+        if (campaignTimer == null || !campaignTimer.getShowTimer()) return null;
         else {
             // Set necessary analytics attributes to be passed so the gtm will just trigger
             // the method without collecting the data again (quite expensive)

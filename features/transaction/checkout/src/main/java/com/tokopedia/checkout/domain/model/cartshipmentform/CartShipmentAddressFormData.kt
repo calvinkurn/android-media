@@ -29,9 +29,9 @@ data class CartShipmentAddressFormData(
         var isIneligiblePromoDialogEnabled: Boolean = false,
         var tickerData: TickerData? = null,
         var addressesData: AddressesData? = null,
-        var campaignTimerUi: CampaignTimerUi? = null,
-        var lastApplyData: LastApplyUiModel? = null,
-        var promoCheckoutErrorDefault: PromoCheckoutErrorDefault? = null,
+        var campaignTimerUi: CampaignTimerUi = CampaignTimerUi(),
+        var lastApplyData: LastApplyUiModel = LastApplyUiModel(),
+        var promoCheckoutErrorDefault: PromoCheckoutErrorDefault = PromoCheckoutErrorDefault(),
         var isOpenPrerequisiteSite: Boolean = false,
         var isEligibleNewShippingExperience: Boolean = false,
         var popUpMessage: String = ""
