@@ -196,7 +196,7 @@ class TopAdsDashGroupFragment : BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         fetchData()
         btnFilter.setOnClickListener {
-            groupFilterSheet.show()
+            groupFilterSheet.show(childFragmentManager, "")
             groupFilterSheet.onSubmitClick = { fetchData() }
         }
         close_butt.setOnClickListener {
