@@ -18,6 +18,7 @@
         android:layout_height="wrap_content">
 
         <com.tokopedia.unifycomponents.Label
+            android:id="@+id/flight_promochips_side_line"
             android:layout_width="@dimen/flight_dp_3"
             android:layout_height="@dimen/layout_lvl3"
             android:layout_marginTop="@dimen/flight_dp_10"
