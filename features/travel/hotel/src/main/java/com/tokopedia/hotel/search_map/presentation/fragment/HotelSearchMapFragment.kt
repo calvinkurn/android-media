@@ -484,18 +484,17 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                         }
                         btnHotelSearchWithMap.startAnimation(bounceAnim)
                         setupContentMargin(true)
-
-                        googleMap.uiSettings.isScrollGesturesEnabled = false
+                        googleMap.uiSettings.setAllGesturesEnabled(false)
                     }
                     BottomSheetBehavior.STATE_HALF_EXPANDED -> {
                         googleMap.animateCamera(CameraUpdateFactory.zoomTo(MAPS_ZOOM_OUT))
                         setupContentMargin(false)
-                        googleMap.uiSettings.isScrollGesturesEnabled = true
+                        googleMap.uiSettings.setAllGesturesEnabled(false)
                     }
                     BottomSheetBehavior.STATE_COLLAPSED -> {
                         googleMap.animateCamera(CameraUpdateFactory.zoomTo(MAPS_ZOOM_IN))
                         setupContentMargin(false)
-                        googleMap.uiSettings.isScrollGesturesEnabled = true
+                        googleMap.uiSettings.setAllGesturesEnabled(true)
                     }
                     else -> {
                         setupContentMargin(false)
@@ -526,7 +525,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
     private fun setupContentMargin(isExpanded: Boolean) {
         if (isExpanded) {
             rvVerticalPropertiesHotelSearchMap.setMargin(0,
-                    resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl6),
+                    resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl7),
                     0,
                     0)
             containerEmptyResultState.setMargin(0,
@@ -630,6 +629,15 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
             googleMap.setOnMarkerClickListener(this)
             googleMap.setOnCameraMoveListener(this)
 
+            mapHotelSearchMap.setOnTouchListener(object : View.OnTouchListener {
+                override fun onTouch(p0: View, motionEvent: MotionEvent): Boolean {
+                    when (motionEvent.action) {
+                        MotionEvent.ACTION_DOWN -> collapseBottomSheet()
+                    }
+                    return true
+                }
+
+            })
             googleMap.setOnMapClickListener {
                 collapseBottomSheet()
             }
