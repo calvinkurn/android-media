@@ -195,7 +195,7 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
         val message = intent.getStringExtra(PaymentConstant.EXTRA_PARAMETER_TOP_PAY_TOASTER_MESSAGE)
         if (!message.isNullOrEmpty()) {
             scroogeWebView?.let {
-                Toaster.make(it, message)
+                Toaster.build(it, message).show()
             }
         }
     }
