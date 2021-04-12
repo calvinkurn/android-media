@@ -50,11 +50,11 @@ class KeyboardWatcher(private val threshold: Int = 100) {
                     }
                 }
             }
-            vto?.removeOnGlobalLayoutListener(globalLayoutListener)
-            weakView.get()?.viewTreeObserver?.removeOnGlobalLayoutListener(globalLayoutListener)
+            vto?.safeRemoveOnGlobalLayoutListener(globalLayoutListener)
+            weakView.get()?.viewTreeObserver?.safeRemoveOnGlobalLayoutListener(globalLayoutListener)
 
             vto = weakView.get()?.viewTreeObserver
-            vto?.addOnGlobalLayoutListener(globalLayoutListener)
+            vto?.safeAddOnGlobalLayoutListener(globalLayoutListener)
         }
     }
 
@@ -62,10 +62,22 @@ class KeyboardWatcher(private val threshold: Int = 100) {
         val weakView = WeakReference(view)
         synchronized(this) {
             if (::globalLayoutListener.isInitialized) {
-                vto?.removeOnGlobalLayoutListener(globalLayoutListener)
-                weakView.get()?.viewTreeObserver?.removeOnGlobalLayoutListener(globalLayoutListener)
+                vto?.safeRemoveOnGlobalLayoutListener(globalLayoutListener)
+                weakView.get()?.viewTreeObserver?.safeRemoveOnGlobalLayoutListener(globalLayoutListener)
             }
         }
+    }
+
+    private fun ViewTreeObserver.safeRemoveOnGlobalLayoutListener(victim: ViewTreeObserver.OnGlobalLayoutListener) {
+        doIfAlive { removeOnGlobalLayoutListener(victim) }
+    }
+
+    private fun ViewTreeObserver.safeAddOnGlobalLayoutListener(listener: ViewTreeObserver.OnGlobalLayoutListener) {
+        doIfAlive { addOnGlobalLayoutListener(listener) }
+    }
+
+    private fun ViewTreeObserver.doIfAlive(fn: ViewTreeObserver.() -> Unit) {
+        if (isAlive) fn()
     }
 
     interface Listener {

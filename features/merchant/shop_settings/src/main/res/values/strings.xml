@@ -146,6 +146,7 @@
     <string name="label_open">Buka</string>
     <string name="label_cancel">Batal</string>
     <string name="label_close">Tutup</string>
+    <string name="label_save">Simpan</string>
     <string name="tokopedia_domain" translatable="false">www.tokopedia.com</string>
     <string name="label_regular_merchant">Regular Merchant</string>
     <string name="label_power_merchant">Power Merchant</string>

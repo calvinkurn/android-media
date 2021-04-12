@@ -2,6 +2,8 @@ package com.tokopedia.cassavatest
 
 import android.content.Context
 import androidx.test.platform.app.InstrumentationRegistry
+import com.tokopedia.analyticsdebugger.cassava.validator.Utils
+import com.tokopedia.analyticsdebugger.cassava.validator.core.*
 import com.google.gson.GsonBuilder
 import com.tokopedia.analyticsdebugger.cassava.data.CassavaRepository
 import com.tokopedia.analyticsdebugger.cassava.data.CassavaSource
@@ -41,25 +43,27 @@ fun getAnalyticsWithQuery(gtmLogDBSource: GtmLogDBSource,
 fun getAnalyticsWithQuery(gtmLogDBSource: GtmLogDBSource,
                           context: Context,
                           queryFileName: String): List<Validator> {
-    val testCases = getTestCases(context, queryFileName)
+    val cassavaQuery = getQuery(context, queryFileName)
+    val validators = cassavaQuery.query.map { it.toDefaultValidator() }
     return ValidatorEngine(gtmLogDBSource)
-            .computeRx(testCases.first, testCases.second)
+            .computeRx(validators, cassavaQuery.mode.value)
             .toBlocking()
             .first()
 }
 
 fun getAnalyticsWithQuery(gtmLogDBSource: GtmLogDBSource, queryString: String): List<Validator> {
-    val queryPairs = getTestCases(InstrumentationRegistry.getInstrumentation().context, queryString)
+    val cassavaQuery = getQuery(InstrumentationRegistry.getInstrumentation().context, queryString)
+    val validators = cassavaQuery.query.map { it.toDefaultValidator() }
     return ValidatorEngine(gtmLogDBSource)
-            .computeRx(queryPairs.first, queryPairs.second)
+            .computeRx(validators, cassavaQuery.mode.value)
             .toBlocking()
             .first()
 }
 
-internal fun getTestCases(context: Context, queryFileName: String): Pair<List<Validator>, String> {
-    val cassavaQueryStr = Utils.getJsonDataFromAsset(context, queryFileName)
+internal fun getQuery(context: Context, queryFileName: String): CassavaQuery {
+    val queryJson = Utils.getJsonDataFromAsset(context, queryFileName)
             ?: throw AssertionError("Cassava query is not found: \"$queryFileName\"")
-    return queryFormat(cassavaQueryStr)
+    return queryJson.toCassavaQuery()
 }
 
 internal fun getTestCases(context: Context, journeyId: Int): Pair<List<Validator>, String> = runBlocking {

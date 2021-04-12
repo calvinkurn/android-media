@@ -50,8 +50,8 @@ class HomeAccountUserModules(val context: Context) {
     }
 
     @Provides
-    fun provideDataViewMapper(userSession: UserSessionInterface, remoteConfig: RemoteConfig): DataViewMapper {
-        return DataViewMapper(userSession, remoteConfig)
+    fun provideDataViewMapper(userSession: UserSessionInterface): DataViewMapper {
+        return DataViewMapper(userSession)
     }
 
     @Provides

@@ -403,6 +403,8 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
     override fun onDestroyView() {
         binding.mapView.onDestroy()
         _binding = null
+        composite.unsubscribe()
+        presenter.detachView()
         super.onDestroyView()
     }
 
@@ -900,9 +902,4 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
                 PermissionCheckerHelper.Companion.PERMISSION_ACCESS_COARSE_LOCATION)
     }
 
-    override fun onDetach() {
-        super.onDetach()
-        presenter.detachView()
-        composite.unsubscribe()
-    }
 }

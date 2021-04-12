@@ -14,6 +14,16 @@ internal fun Map<String, Any>.canValidate(obj: Map<String, Any>, strict: Boolean
     }
 }
 
+fun Map<String, Any>.containsPairOf(pair: Pair<String, String>): Boolean {
+    forEach {
+        when {
+            it.key == pair.first && regexEquals(pair.second, it.value) -> return true
+            it.value is LinkedTreeMap<*, *> -> return (it.value as Map<String, Any>).containsPairOf(pair)
+        }
+    }
+    return false
+}
+
 private fun List<Map<String, Any>>.validateArray(arr: List<Map<String, Any>>): Boolean {
     if (this.size > 1) throw Exception("Tracker Query array should only contains one element")
     for (map in arr) {
