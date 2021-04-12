@@ -86,9 +86,11 @@ abstract class MediaLoaderFactory<T> {
             }
 
             // use custom signature for caching
-            signatureKey?.let { key ->
-                it.signature(key)
-            }?: it.signature(ObjectKey(properties.urlHasQualityParam))
+            if (isCache) {
+                signatureKey?.let { key ->
+                    it.signature(key)
+                }?: it.signature(ObjectKey(properties.urlHasQualityParam))
+            }
 
             cacheStrategy?.let { cacheStrategy -> it.diskCacheStrategy(MediaCacheStrategy.mapTo(cacheStrategy)) }
             decodeFormat?.let { format -> it.format(MediaDecodeFormat.mapTo(format)) }

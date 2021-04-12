@@ -25,6 +25,7 @@ open class Properties(
         internal var signatureKey: Key? = null,
         internal var error: Int = ERROR_RES_UNIFY,
         internal var placeHolder: Int = 0,
+        internal var isCache: Boolean = true,
         internal var cacheStrategy: MediaCacheStrategy? = MediaCacheStrategy.RESOURCE,
         internal var overrideSize: Resize? = null,
         internal var decodeFormat: MediaDecodeFormat? = MediaDecodeFormat.DEFAULT,
@@ -109,6 +110,11 @@ open class Properties(
         this.placeHolder = resourceId
     }
 
+    // set cache validation
+    fun useCache(cache: Boolean) = apply {
+        this.isCache = cache
+    }
+
     // use custom cache strategy for image rendering
     fun setCacheStrategy(strategy: MediaCacheStrategy) = apply {
         this.cacheStrategy = strategy
@@ -182,6 +188,7 @@ open class Properties(
                 signatureKey == other.signatureKey &&
                 error == other.error &&
                 placeHolder == other.placeHolder &&
+                isCache == other.isCache &&
                 cacheStrategy == other.cacheStrategy &&
                 overrideSize == other.overrideSize &&
                 decodeFormat == other.decodeFormat &&
@@ -208,6 +215,7 @@ open class Properties(
         result = 31 * result + signatureKey.hashCode()
         result = 31 * result + error.hashCode()
         result = 31 * result + placeHolder.hashCode()
+        result = 31 * result + isCache.hashCode()
         result = 31 * result + cacheStrategy.hashCode()
         result = 31 * result + overrideSize.hashCode()
         result = 31 * result + decodeFormat.hashCode()
