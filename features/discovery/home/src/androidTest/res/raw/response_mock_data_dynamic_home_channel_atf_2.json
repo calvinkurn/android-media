@@ -25,7 +25,7 @@
                         "contextualInfo": 1,
                         "header": {
                             "id": 45638,
-                            "name": "QC Event Widget",
+                            "name": "Android Test - ATF - Lego 4 Image",
                             "subtitle": "",
                             "url": "",
                             "applink": "",
@@ -33,7 +33,7 @@
                             "expiredTime": "",
                             "backColor": "",
                             "backImage": "",
-                            "textColor": "#000000"
+                            "textColor": ""
                         },
                         "grids": [
                             {
@@ -217,9 +217,7 @@
                             "text_color": "",
                             "image_url": "",
                             "attribution": "",
-                            "gradient_color": [
-                                "#FFFFFF"
-                            ]
+                            "gradient_color": []
                         }
                     }
                 ]

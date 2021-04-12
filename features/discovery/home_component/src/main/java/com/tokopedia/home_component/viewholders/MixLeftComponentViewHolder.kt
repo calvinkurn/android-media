@@ -72,6 +72,7 @@ class MixLeftComponentViewHolder (itemView: View,
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.global_dc_mix_left
+        val RECYCLER_VIEW_ID = R.id.rv_product
         private const val FPM_MIX_LEFT = "home_mix_left"
     }
 

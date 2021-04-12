@@ -1,5 +1,6 @@
 package com.tokopedia.logout.view
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
@@ -231,6 +232,7 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
         logoutLoading?.visibility = View.GONE
     }
 
+    @SuppressLint("ObsoleteSdkInt")
     private fun clearWebView() {
         try {
             WebView(applicationContext).clearCache(true)

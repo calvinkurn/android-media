@@ -24,6 +24,7 @@ import com.tokopedia.play.util.video.state.*
 import com.tokopedia.play.view.monitoring.PlayVideoLatencyPerformanceMonitoring
 import com.tokopedia.play.view.storage.PlayChannelData
 import com.tokopedia.play.view.type.*
+import com.tokopedia.play.view.uimodel.OpenApplinkUiModel
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.VideoPropertyUiModel
 import com.tokopedia.play.view.uimodel.mapper.PlaySocketToModelMapper
@@ -482,11 +483,15 @@ class PlayViewModel @Inject constructor(
     }
 
     fun requestWatchInPiP() {
-        _observableEventPiPState.value = Event(PiPState.Requesting(PiPMode.WatchInPip))
+        _observableEventPiPState.value = Event(PiPState.Requesting(PiPMode.WatchInPiP))
     }
 
-    fun requestPiPBrowsingPage() {
-        _observableEventPiPState.value = Event(PiPState.Requesting(PiPMode.BrowsingOtherPage))
+    fun requestPiPBrowsingPage(applinkModel: OpenApplinkUiModel) {
+        _observableEventPiPState.value = Event(
+                PiPState.Requesting(
+                        PiPMode.BrowsingOtherPage(applinkModel)
+                )
+        )
     }
 
     fun stopPiP() {

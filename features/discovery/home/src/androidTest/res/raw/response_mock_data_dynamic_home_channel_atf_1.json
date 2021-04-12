@@ -25,7 +25,7 @@
                         "contextualInfo": 1,
                         "header": {
                             "id": 65553,
-                            "name": "",
+                            "name": "Android Test - ATF - Banner Carousel",
                             "subtitle": "",
                             "url": "",
                             "applink": "",
@@ -33,7 +33,7 @@
                             "expiredTime": "",
                             "backColor": "",
                             "backImage": "",
-                            "textColor": "#000000"
+                            "textColor": ""
                         },
                         "grids": [
                             {
@@ -135,9 +135,7 @@
                             "text_color": "",
                             "image_url": "",
                             "attribution": "",
-                            "gradient_color": [
-                                "#FFFFFF"
-                            ]
+                            "gradient_color": []
                         }
                     }
                 ]
