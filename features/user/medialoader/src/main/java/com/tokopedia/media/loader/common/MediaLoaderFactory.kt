@@ -54,7 +54,7 @@ abstract class MediaLoaderFactory<T> {
     fun setup(
             properties: Properties,
             request: GlideRequest<T>
-    ) = request.apply {
+    ) = request.also {
         with(properties) {
             /*
             * set multiple transformation into list of transform (_transform)
@@ -63,22 +63,22 @@ abstract class MediaLoaderFactory<T> {
             transformation(this, request)
 
             // set custom error drawable
-            error(error)
+            it.error(error)
 
             // disable animation (default)
             if (!isAnimate) {
-                dontAnimate()
+                it.dontAnimate()
             }
 
             // use custom signature for caching
-            signatureKey?.let {
-                signature(it)
-            }?: signature(ObjectKey(properties.urlHasQualityParam))
+            signatureKey?.let { key ->
+                it.signature(key)
+            }?: it.signature(ObjectKey(properties.urlHasQualityParam))
 
-            cacheStrategy?.let { diskCacheStrategy(MediaCacheStrategy.mapTo(it)) }
-            decodeFormat?.let { format(MediaDecodeFormat.mapTo(it)) }
-            overrideSize?.let { override(it.width, it.height) }
-            signatureKey?.let { signature(it) }
+            cacheStrategy?.let { cacheStrategy -> it.diskCacheStrategy(MediaCacheStrategy.mapTo(cacheStrategy)) }
+            decodeFormat?.let { format -> it.format(MediaDecodeFormat.mapTo(format)) }
+            overrideSize?.let { newSize -> it.override(newSize.width, newSize.height) }
+            signatureKey?.let { key -> it.signature(key) }
         }
     }
 

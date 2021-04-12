@@ -31,7 +31,7 @@ object MediaLoaderTarget {
         }
 
         if (properties.data is String) {
-            GlideApp.with(context).asBitmap().apply {
+            GlideApp.with(context).asBitmap().also {
                 // url builder
                 val source = Loader.urlBuilder(properties.data.toString())
 
@@ -47,7 +47,7 @@ object MediaLoaderTarget {
                         context = context,
                         properties = properties,
                         performanceMonitoring = tracker,
-                        request = this
+                        request = it
                 ).load(source)
 
                 // delay handler

@@ -67,8 +67,8 @@ internal object MediaLoaderApi {
                     bitmap.build(
                             context = context,
                             performanceMonitoring = tracker,
-                            properties = properties.apply {
-                                setUrlHasQuality(source)
+                            properties = properties.also {
+                                it.setUrlHasQuality(source)
                             },
                             request = this
                     ).load(source)
