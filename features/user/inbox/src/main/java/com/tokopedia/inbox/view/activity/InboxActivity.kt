@@ -222,6 +222,10 @@ class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentC
         // Decrease counter
     }
 
+    override fun hideReviewCounter() {
+        bottomNav?.setBadgeCount(InboxFragmentType.REVIEW, 0)
+    }
+
     private fun setupToolbar() {
         toolbar?.switchToLightToolbar()
         val view = View.inflate(
