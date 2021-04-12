@@ -216,6 +216,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         observeWidgetData(sellerHomeViewModel.multiLineGraphWidgetData, WidgetType.MULTI_LINE_GRAPH)
         observeWidgetData(sellerHomeViewModel.announcementWidgetData, WidgetType.ANNOUNCEMENT)
         observeTickerLiveData()
+        observeCustomTracePerformanceMonitoring()
         context?.let { UpdateShopActiveService.startService(it) }
     }
 
@@ -878,6 +879,15 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         })
         startCustomMetric(SellerHomePerformanceMonitoringConstant.SELLER_HOME_TICKER_TRACE)
         sellerHomeViewModel.getTicker()
+    }
+
+    private fun observeCustomTracePerformanceMonitoring() {
+        sellerHomeViewModel.startWidgetCustomMetricTag.observe(viewLifecycleOwner) { tag ->
+            startCustomMetric(tag)
+        }
+        sellerHomeViewModel.stopWidgetType.observe(viewLifecycleOwner) { widgetType ->
+            stopSellerHomeFragmentWidgetPerformanceMonitoring(widgetType, false)
+        }
     }
 
     private fun setViewBackground() = view?.run {

@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.sellerhome.analytic.performance.SellerHomePerformanceMonitoringConstant
 import com.tokopedia.sellerhome.config.SellerHomeRemoteConfig
 import com.tokopedia.sellerhome.domain.model.ShippingLoc
 import com.tokopedia.sellerhome.domain.usecase.GetShopLocationUseCase
@@ -79,6 +80,8 @@ class SellerHomeViewModel @Inject constructor(
     private val _barChartWidgetData = MutableLiveData<Result<List<BarChartDataUiModel>>>()
     private val _multiLineGraphWidgetData = MutableLiveData<Result<List<MultiLineGraphDataUiModel>>>()
     private val _announcementWidgetData = MutableLiveData<Result<List<AnnouncementDataUiModel>>>()
+    private val _startWidgetCustomMetricTag = MutableLiveData<String>()
+    private val _stopWidgetType = MutableLiveData<String>()
 
     val homeTicker: LiveData<Result<List<TickerItemUiModel>>>
         get() = _homeTicker
@@ -106,6 +109,10 @@ class SellerHomeViewModel @Inject constructor(
         get() = _multiLineGraphWidgetData
     val announcementWidgetData: LiveData<Result<List<AnnouncementDataUiModel>>>
         get() = _announcementWidgetData
+    val startWidgetCustomMetricTag: LiveData<String>
+        get() = _startWidgetCustomMetricTag
+    val stopWidgetType: LiveData<String>
+        get() = _stopWidgetType
 
     private suspend fun <T : Any> BaseGqlUseCase<T>.executeUseCase() = withContext(dispatcher.io) {
         executeOnBackground()
@@ -512,6 +519,8 @@ class SellerHomeViewModel @Inject constructor(
                         }.orEmpty()
                     }
             emit(widgetDataList)
+        }.onCompletion {
+            _stopWidgetType.value = widgetType
         }
     }
 
@@ -555,6 +564,9 @@ class SellerHomeViewModel @Inject constructor(
         val dataKeys = Utils.getWidgetDataKeys<CardWidgetUiModel>(widgets)
         val params = GetCardDataUseCase.getRequestParams(dataKeys, dynamicParameter)
         getCardDataUseCase.get().params = params
+        withContext(dispatcher.main) {
+            _startWidgetCustomMetricTag.value = SellerHomePerformanceMonitoringConstant.SELLER_HOME_CARD_TRACE
+        }
         return getDataFromUseCase(getCardDataUseCase.get())
     }
 
@@ -563,6 +575,9 @@ class SellerHomeViewModel @Inject constructor(
         val dataKeys = Utils.getWidgetDataKeys<LineGraphWidgetUiModel>(widgets)
         val params = GetLineGraphDataUseCase.getRequestParams(dataKeys, dynamicParameter)
         getLineGraphDataUseCase.get().params = params
+        withContext(dispatcher.main) {
+            _startWidgetCustomMetricTag.value = SellerHomePerformanceMonitoringConstant.SELLER_HOME_LINE_GRAPH_TRACE
+        }
         return getDataFromUseCase(getLineGraphDataUseCase.get())
     }
 
@@ -572,6 +587,9 @@ class SellerHomeViewModel @Inject constructor(
         val dataKeys = Utils.getWidgetDataKeys<ProgressWidgetUiModel>(widgets)
         val params = GetProgressDataUseCase.getRequestParams(today, dataKeys)
         getProgressDataUseCase.get().params = params
+        withContext(dispatcher.main) {
+            _startWidgetCustomMetricTag.value = SellerHomePerformanceMonitoringConstant.SELLER_HOME_PROGRESS_TRACE
+        }
         return getDataFromUseCase(getProgressDataUseCase.get())
     }
 
@@ -583,6 +601,9 @@ class SellerHomeViewModel @Inject constructor(
         }
         val params = GetPostDataUseCase.getRequestParams(dataKeys, dynamicParameter)
         getPostDataUseCase.get().params = params
+        withContext(dispatcher.main) {
+            _startWidgetCustomMetricTag.value = SellerHomePerformanceMonitoringConstant.SELLER_HOME_POST_LIST_TRACE
+        }
         return getDataFromUseCase(getPostDataUseCase.get())
     }
 
@@ -591,6 +612,9 @@ class SellerHomeViewModel @Inject constructor(
         val dataKeys = Utils.getWidgetDataKeys<CarouselWidgetUiModel>(widgets)
         val params = GetCarouselDataUseCase.getRequestParams(dataKeys)
         getCarouselDataUseCase.get().params = params
+        withContext(dispatcher.main) {
+            _startWidgetCustomMetricTag.value = SellerHomePerformanceMonitoringConstant.SELLER_HOME_CAROUSEL_TRACE
+        }
         return getDataFromUseCase(getCarouselDataUseCase.get())
     }
 
@@ -599,6 +623,9 @@ class SellerHomeViewModel @Inject constructor(
         val dataKeys = Utils.getWidgetDataKeys<TableWidgetUiModel>(widgets)
         val params = GetTableDataUseCase.getRequestParams(dataKeys, dynamicParameter)
         getTableDataUseCase.get().params = params
+        withContext(dispatcher.main) {
+            _startWidgetCustomMetricTag.value = SellerHomePerformanceMonitoringConstant.SELLER_HOME_TABLE_TRACE
+        }
         return getDataFromUseCase(getTableDataUseCase.get())
     }
 
@@ -607,6 +634,9 @@ class SellerHomeViewModel @Inject constructor(
         val dataKeys = Utils.getWidgetDataKeys<PieChartWidgetUiModel>(widgets)
         val params = GetPieChartDataUseCase.getRequestParams(dataKeys, dynamicParameter)
         getPieChartDataUseCase.get().params = params
+        withContext(dispatcher.main) {
+            _startWidgetCustomMetricTag.value = SellerHomePerformanceMonitoringConstant.SELLER_HOME_PIE_CHART_TRACE
+        }
         return getDataFromUseCase(getPieChartDataUseCase.get())
     }
 
@@ -615,6 +645,9 @@ class SellerHomeViewModel @Inject constructor(
         val dataKeys = Utils.getWidgetDataKeys<BarChartWidgetUiModel>(widgets)
         val params = GetBarChartDataUseCase.getRequestParams(dataKeys, dynamicParameter)
         getBarChartDataUseCase.get().params = params
+        withContext(dispatcher.main) {
+            _startWidgetCustomMetricTag.value = SellerHomePerformanceMonitoringConstant.SELLER_HOME_BAR_CHART_TRACE
+        }
         return getDataFromUseCase(getBarChartDataUseCase.get())
     }
 
@@ -623,6 +656,9 @@ class SellerHomeViewModel @Inject constructor(
         val dataKeys = Utils.getWidgetDataKeys<MultiLineGraphWidgetUiModel>(widgets)
         val params = GetMultiLineGraphUseCase.getRequestParams(dataKeys, dynamicParameter)
         getMultiLineGraphUseCase.get().params = params
+        withContext(dispatcher.main) {
+            _startWidgetCustomMetricTag.value = SellerHomePerformanceMonitoringConstant.SELLER_HOME_MULTI_LINE_GRAPH_TRACE
+        }
         return getMultiLineGraphUseCase.get().executeOnBackground()
     }
 
@@ -631,6 +667,9 @@ class SellerHomeViewModel @Inject constructor(
         val dataKeys = Utils.getWidgetDataKeys<AnnouncementWidgetUiModel>(widgets)
         val params = GetAnnouncementDataUseCase.createRequestParams(dataKeys)
         getAnnouncementUseCase.get().params = params
+        withContext(dispatcher.main) {
+            _startWidgetCustomMetricTag.value = SellerHomePerformanceMonitoringConstant.SELLER_HOME_ANNOUNCEMENT_TRACE
+        }
         return getAnnouncementUseCase.get().executeOnBackground()
     }
 
