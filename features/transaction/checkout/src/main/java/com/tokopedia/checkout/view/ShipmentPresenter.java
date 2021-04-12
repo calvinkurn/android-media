@@ -1221,6 +1221,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         TokopediaCornerData cornerData = null;
         if (getRecipientAddressModel() != null && getRecipientAddressModel().isCornerAddress()) {
             cornerData = new TokopediaCornerData(
+                    true,
                     getRecipientAddressModel().getUserCornerId(),
                     Integer.parseInt(getRecipientAddressModel().getCornerId())
             );
