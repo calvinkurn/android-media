@@ -358,13 +358,17 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
 
     override fun onBackPressed() {
         val url = scroogeWebView?.url
-        if (url != null && url.contains(getBaseUrlDomainPayment()) && hasFinishedFirstLoad) {
+        if (url != null && url.contains(getBaseUrlDomainPayment()) && isHasFinishedFirstLoad()) {
             scroogeWebView?.loadUrl(BACK_DIALOG_URL)
         } else if (isEndThanksPage(url)) {
             callbackPaymentSucceed()
         } else {
             callbackPaymentCanceled()
         }
+    }
+
+    private fun isHasFinishedFirstLoad(): Boolean {
+        return hasFinishedFirstLoad
     }
 
     override fun onDestroy() {
