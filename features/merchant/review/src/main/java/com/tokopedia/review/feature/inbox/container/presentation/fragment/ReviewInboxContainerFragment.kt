@@ -134,7 +134,9 @@ class ReviewInboxContainerFragment : BaseDaggerFragment(), HasComponent<ReviewIn
         observeReviewTabs()
         getCounterData()
         setupTabLayout()
-        adjustViewBasedOnRole()
+        if(InboxUnifiedRemoteConfig.isInboxUnified()) {
+            adjustViewBasedOnRole()
+        }
     }
 
     override fun onDestroy() {
