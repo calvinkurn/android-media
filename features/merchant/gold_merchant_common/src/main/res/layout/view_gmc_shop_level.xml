@@ -8,28 +8,16 @@
     android:orientation="horizontal">
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tvGmcPmLabelShopLevel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/spacing_lvl1"
-        android:text="@string/sah_label_pm_shop_level"
-        android:textColor="@color/Unify_N700_68"
-        app:layout_constraintBottom_toBottomOf="@+id/tvGmcPmShopLevel"
-        app:layout_constraintStart_toStartOf="parent"
-        app:typographyType="body_1" />
-
-    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvGmcPmShopLevel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_lvl2"
-        android:textColor="@color/Unify_N700"
+        android:textColor="@color/Unify_N700_96"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/tvGmcPmLabelShopLevel"
-        app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="heading_2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:typographyType="heading_4"
         app:typographyWeight="bold"
-        tools:text="3" />
+        tools:text="Level 3" />
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/imgGmcPmShopLevel"
@@ -37,6 +25,7 @@
         android:layout_height="@dimen/gmc_dimen_18dp"
         android:layout_marginStart="@dimen/layout_lvl1"
         android:contentDescription="@null"
+        android:layout_marginBottom="@dimen/spacing_lvl2"
         android:scaleType="fitXY"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/tvGmcPmShopLevel"

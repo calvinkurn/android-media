@@ -122,21 +122,26 @@ class RecommendationViewHolder(
 
     private fun setupRecommendations(data: RecommendationUiModel?) = with(onSuccessView) {
         data?.let { data ->
-            tvShcRecommendationHeaderItem.setUnifyDrawableEnd(IconUnify.CHEVRON_UP)
+            val dp24 = context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.layout_lvl3)
+            tvShcRecommendationHeaderItem.setUnifyDrawableEnd(IconUnify.CHEVRON_UP, width = dp24, height = dp24)
             tvShcRecommendationHeaderItem.text = data.title
 
             tvShcRecommendationHeaderItem.setOnClickListener {
                 if (rvShcRecommendationList.isVisible) {
                     rvShcRecommendationList.gone()
-                    tvShcRecommendationHeaderItem.setUnifyDrawableEnd(IconUnify.CHEVRON_DOWN)
+                    tvShcRecommendationHeaderItem.setUnifyDrawableEnd(IconUnify.CHEVRON_DOWN, width = dp24, height = dp24)
+                    horLineShcShopScore2.gone()
                 } else {
                     rvShcRecommendationList.visible()
-                    tvShcRecommendationHeaderItem.setUnifyDrawableEnd(IconUnify.CHEVRON_UP)
+                    tvShcRecommendationHeaderItem.setUnifyDrawableEnd(IconUnify.CHEVRON_UP, width = dp24, height = dp24)
+                    horLineShcShopScore2.visible()
                 }
             }
 
             val adapter = WidgetRecommendationItemAdapter(data.recommendations)
-            rvShcRecommendationList.layoutManager = LinearLayoutManager(context)
+            rvShcRecommendationList.layoutManager = object : LinearLayoutManager(context) {
+                override fun canScrollVertically(): Boolean = false
+            }
             rvShcRecommendationList.adapter = adapter
         }
     }

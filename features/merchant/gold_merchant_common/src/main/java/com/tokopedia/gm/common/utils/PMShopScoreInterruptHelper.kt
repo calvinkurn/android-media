@@ -25,7 +25,7 @@ import java.util.concurrent.TimeUnit
 
 object PMShopScoreInterruptHelper {
 
-    private const val WORKER_TAG = "get_pm_interrupt_dat_worker"
+    private const val WORKER_TAG = "get_pm_ss_interrupt_data_worker"
 
     private val gson = Gson()
     private var oneTimeWorkRequest: OneTimeWorkRequest? = null

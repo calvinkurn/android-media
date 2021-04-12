@@ -9,36 +9,25 @@
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/icShcRecommendationItemType"
-        android:layout_width="@dimen/layout_lvl4"
-        android:layout_height="@dimen/layout_lvl4"
+        android:layout_width="@dimen/layout_lvl3"
+        android:layout_height="@dimen/layout_lvl3"
         android:padding="@dimen/spacing_lvl2"
         app:icon_name="CHEVRON_RIGHT"
-        tools:background="@drawable/bg_recommendation_positive"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:background="@drawable/bg_recommendation_positive" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvShcRecommendationItem"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/unify_space_12"
-        android:layout_marginEnd="@dimen/layout_lvl3"
         android:textColor="@color/Unify_N700_96"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/icShcRecommendationItem"
         app:layout_constraintStart_toEndOf="@+id/icShcRecommendationItemType"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="body_3"
         tools:text="Tingkatkan kecepatan balas chat menjadi 2 menit " />
-
-    <com.tokopedia.iconunify.IconUnify
-        android:id="@+id/icShcRecommendationItem"
-        android:layout_width="@dimen/layout_lvl2"
-        android:layout_height="@dimen/layout_lvl2"
-        app:icon_name="CHEVRON_RIGHT"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

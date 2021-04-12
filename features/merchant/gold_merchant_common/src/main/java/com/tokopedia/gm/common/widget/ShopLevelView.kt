@@ -26,7 +26,8 @@ class ShopLevelView : LinearLayout {
     }
 
     fun show(shopLevel: Int) {
-        tvGmcPmShopLevel.text = shopLevel.toString()
+        val levelLbl = context.getString(R.string.gmc_level, shopLevel.toString())
+        tvGmcPmShopLevel.text = levelLbl
 
         val imgLevelDrawableRes = when (shopLevel) {
             ShopLevel.ONE -> R.drawable.ic_gmc_shop_level_1

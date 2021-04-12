@@ -7,11 +7,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.getResColor
-import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
-import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.sellerhomecommon.R
 import com.tokopedia.sellerhomecommon.presentation.model.RecommendationItemUiModel
+import com.tokopedia.sellerhomecommon.utils.clearUnifyDrawableEnd
+import com.tokopedia.sellerhomecommon.utils.setUnifyDrawableEnd
 import kotlinx.android.synthetic.main.shc_item_recommendation.view.*
 
 /**
@@ -40,14 +40,13 @@ class WidgetRecommendationItemAdapter(
         fun bind(item: RecommendationItemUiModel) {
             with(itemView) {
                 tvShcRecommendationItem.text = item.text.parseAsHtml()
-
                 setupIconType(item)
 
                 if (item.appLink.isBlank()) {
-                    icShcRecommendationItem.gone()
+                    tvShcRecommendationItem.clearUnifyDrawableEnd()
                 } else {
-                    icShcRecommendationItem.visible()
-
+                    val dp24 = context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.layout_lvl3)
+                    tvShcRecommendationItem.setUnifyDrawableEnd(IconUnify.CHEVRON_RIGHT, width = dp24, height = dp24)
                     setOnClickListener {
                         RouteManager.route(context, item.appLink)
                     }
