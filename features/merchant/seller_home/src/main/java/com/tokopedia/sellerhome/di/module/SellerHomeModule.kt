@@ -4,7 +4,6 @@ import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
-import com.tokopedia.gm.common.data.source.local.PMCommonPreferenceManager
 import com.tokopedia.graphql.coroutines.data.Interactor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
@@ -52,11 +51,5 @@ class SellerHomeModule {
     fun provideFreeShippingTracker(userSession: UserSessionInterface): SettingFreeShippingTracker {
         val analytics = TrackApp.getInstance().gtm
         return SettingFreeShippingTracker(analytics, userSession)
-    }
-
-    @SellerHomeScope
-    @Provides
-    fun providePMCommonPreferenceManager(@ApplicationContext context: Context): PMCommonPreferenceManager {
-        return PMCommonPreferenceManager(context)
     }
 }
