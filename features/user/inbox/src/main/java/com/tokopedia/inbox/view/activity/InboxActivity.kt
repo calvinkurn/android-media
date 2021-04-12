@@ -43,6 +43,15 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import javax.inject.Inject
 
+/**
+ * How to go to this page
+ * Applink: [com.tokopedia.applink.ApplinkConst.INBOX]
+ * This page accept 2 optional query parameters `page` and `role`.
+ * the value you can use defined below
+ * page: notif, chat, talk, review
+ * role: buyer, seller
+ * If the query parameters is not provided it will use recent page & role
+ */
 class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentContainer {
 
     @Inject

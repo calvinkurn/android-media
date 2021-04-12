@@ -87,7 +87,7 @@ object DeeplinkMapperHome {
         }
     }
 
-    fun getRegisteredInboxNavigation(): String {
+    fun getRegisteredInboxNavigation(deeplink: String): String {
         val useNewInbox = RemoteConfigInstance.getInstance().abTestPlatform.getString(
                 AbTestPlatform.KEY_AB_INBOX_REVAMP, AbTestPlatform.VARIANT_OLD_INBOX
         ) == AbTestPlatform.VARIANT_NEW_INBOX
@@ -95,9 +95,18 @@ object DeeplinkMapperHome {
                 AbTestPlatform.NAVIGATION_EXP_TOP_NAV, AbTestPlatform.NAVIGATION_VARIANT_OLD
         ) == AbTestPlatform.NAVIGATION_VARIANT_REVAMP
         return if (useNewInbox && useNewNav) {
-            ApplinkConstInternalMarketplace.INBOX
+            getRegisteredNavigationInbox(deeplink)
         } else {
             ApplinkConsInternalHome.HOME_INBOX
         }
+    }
+
+    private fun getRegisteredNavigationInbox(deeplink: String): String {
+        var applinkInternal = ApplinkConstInternalMarketplace.INBOX
+        val query = Uri.parse(deeplink).query ?: ""
+        if (query.isNotEmpty()) {
+            applinkInternal = "$applinkInternal?$query"
+        }
+        return applinkInternal
     }
 }
