@@ -486,8 +486,22 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
 
         })
 
-        val bottomSheetHeaderHeight = resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl7)
-        bottomSheetBehavior.peekHeight = bottomSheetHeaderHeight
+        tvHotelSearchListTitle.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                tvHotelSearchListTitle.viewTreeObserver.removeOnGlobalLayoutListener(this)
+
+                val titleLayoutParam = tvHotelSearchListTitle.layoutParams as ViewGroup.MarginLayoutParams
+
+                var bottomSheetHeaderHeight = tvHotelSearchListTitle.measuredHeight
+                bottomSheetHeaderHeight = bottomSheetHeaderHeight.plus(resources.getDimensionPixelSize(
+                        com.tokopedia.unifycomponents.R.dimen.bottom_sheet_knob_height)) // knob height
+                bottomSheetHeaderHeight = bottomSheetHeaderHeight.plus(resources.getDimensionPixelSize(
+                        com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3)) // knob top margin
+                bottomSheetHeaderHeight = bottomSheetHeaderHeight.plus(titleLayoutParam.topMargin)
+
+                bottomSheetBehavior.peekHeight = bottomSheetHeaderHeight
+            }
+        })
     }
 
     private fun setupContentMargin(isExpanded: Boolean) {
