@@ -2,6 +2,8 @@ package com.tokopedia.logger
 
 import android.app.Application
 import android.content.Context
+import com.google.gson.Gson
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.encryption.security.AESEncryptorECB
 import com.tokopedia.keys.Keys.AUTH_NEW_RELIC_API_KEY
 import com.tokopedia.keys.Keys.AUTH_SCALYR_API_KEY
@@ -14,7 +16,10 @@ import com.tokopedia.logger.model.scalyr.ScalyrConfig
 import com.tokopedia.logger.repository.LoggerRepository
 import com.tokopedia.logger.service.LogWorker
 import com.tokopedia.logger.utils.Constants
+import com.tokopedia.logger.utils.DataLogConfig
+import com.tokopedia.logger.utils.LoggerReporting
 import com.tokopedia.logger.utils.LoggerUtils.getLogSession
+import com.tokopedia.logger.utils.LoggerUtils.getPartDeviceId
 
 /**
  * Class to wrap the mechanism to send the logging message to server.
@@ -26,7 +31,48 @@ import com.tokopedia.logger.utils.LoggerUtils.getLogSession
  * To send message to server:
  * LogManager.log(serverSeverity, priority, message)
  */
-class LogManager(val application: Application) {
+class LogManager(val application: Application, val loggerProxy: LoggerProxy) {
+
+    init {
+        initByConfig()
+    }
+
+    fun initByConfig(){
+        try {
+            val loggerReporting = LoggerReporting.getInstance()
+            loggerReporting.partDeviceId = getPartDeviceId(application)
+            loggerReporting.versionName = GlobalConfig.RAW_VERSION_NAME
+            loggerReporting.versionCode = GlobalConfig.VERSION_CODE
+            val installer: String? = application.packageManager.getInstallerPackageName(application.packageName)
+            loggerReporting.installer = installer
+            loggerReporting.packageName = application.packageName
+            loggerReporting.debug = GlobalConfig.DEBUG
+            refreshConfig()
+        } catch (throwable: Throwable) {
+            // do nothing
+        }
+    }
+
+    fun refreshConfig(){
+        val loggerReporting = LoggerReporting.getInstance()
+        val logScalyrConfigString: String = loggerProxy.scalyrConfig
+        val logNewRelicConfigString: String = loggerProxy.newRelicConfig
+        if (logScalyrConfigString.isNotEmpty()) {
+            val dataLogConfigScalyr = Gson().fromJson(logScalyrConfigString, DataLogConfig::class.java)
+            if (dataLogConfigScalyr != null && dataLogConfigScalyr.isEnabled && GlobalConfig.VERSION_CODE >= dataLogConfigScalyr.appVersionMin && dataLogConfigScalyr.tags != null) {
+                loggerReporting.setQueryLimits(dataLogConfigScalyr.queryLimits)
+                loggerReporting.setPopulateTagMapsScalyr(dataLogConfigScalyr.tags)
+            }
+        }
+        if (logNewRelicConfigString.isNotEmpty()) {
+            val dataLogConfigNewRelic = Gson().fromJson(logNewRelicConfigString, DataLogConfig::class.java)
+            if (dataLogConfigNewRelic != null && dataLogConfigNewRelic.tags != null &&
+                    dataLogConfigNewRelic.isEnabled && GlobalConfig.VERSION_CODE >= dataLogConfigNewRelic.appVersionMin) {
+                loggerReporting.setPopulateTagMapsNewRelic(dataLogConfigNewRelic.tags)
+                loggerReporting.setQueryLimits(dataLogConfigNewRelic.queryLimits)
+            }
+        }
+    }
 
     var loggerRepository: LoggerRepository? = null
 
@@ -78,8 +124,8 @@ class LogManager(val application: Application) {
         var instance: LogManager? = null
 
         @JvmStatic
-        fun init(application: Application) {
-            instance = LogManager(application)
+        fun init(application: Application, loggerProxy: LoggerProxy) {
+            instance = LogManager(application, loggerProxy)
         }
 
         /**
@@ -109,4 +155,10 @@ class LogManager(val application: Application) {
             instance?.getLogger()?.deleteExpiredData()
         }
     }
+}
+
+interface LoggerProxy {
+    val userId: String
+    val scalyrConfig: String
+    val newRelicConfig: String
 }

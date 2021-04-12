@@ -6,12 +6,8 @@ import com.tokopedia.logger.LogManager
 import java.text.SimpleDateFormat
 import java.util.*
 
-/**
- * If there is log, it might be sent to logging server
- */
 class LoggerReporting {
 
-    var userId: String = ""
     var partDeviceId: String = ""
     var versionName: String = ""
     var versionCode: Int = 0
@@ -20,10 +16,6 @@ class LoggerReporting {
     var packageName: String? = null
     var tagMapsScalyr: HashMap<String, Tag> = hashMapOf()
     var tagMapsNewRelic: HashMap<String, Tag> = hashMapOf()
-
-    fun setClientLogs(clientLogs: List<String>?) {
-        // noop. only has 1 client now.
-    }
 
     fun setQueryLimits(queryLimit: List<Int>?) {
         if (queryLimit != null) {
@@ -51,7 +43,8 @@ class LoggerReporting {
             }
 
             if (priorityTag != -1) {
-                val processedMessage = getMessage(tag, timeStamp, logPriority, message)
+                val userId = LogManager.instance?.loggerProxy?.userId ?: ""
+                val processedMessage = getMessage(tag, timeStamp, logPriority, message, userId)
                 LogManager.log(processedMessage, timeStamp, priorityTag, logPriority)
             }
         })
@@ -61,7 +54,7 @@ class LoggerReporting {
         return SimpleDateFormat(Constants.DATE_TIME_FORMAT, Locale.US).format(Date(timeStamp))
     }
 
-    private fun getMessage(tag: String, timeStamp: Long, priority: String, message: Map<String, String>): String {
+    private fun getMessage(tag: String, timeStamp: Long, priority: String, message: Map<String, String>, userId:String): String {
         val mapMessage = mutableMapOf<String, String>()
         val p = when (priority) {
             P1 -> Constants.SEVERITY_HIGH
@@ -73,7 +66,7 @@ class LoggerReporting {
             put("log_timestamp", timeStamp.toString())
             put("log_time", getReadableTimeStamp(timeStamp))
             put("log_did", partDeviceId)
-            put("log_uid", userId)
+            put("log_uid",  userId)
             put("log_vernm", versionName)
             put("log_vercd", versionCode.toString())
             put("log_os", Build.VERSION.RELEASE)

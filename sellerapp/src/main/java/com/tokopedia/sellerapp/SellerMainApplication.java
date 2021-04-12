@@ -30,6 +30,8 @@ import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.developer_options.DevOptsSubscriber;
 import com.tokopedia.device.info.DeviceInfo;
 import com.tokopedia.graphql.data.GraphqlClient;
+import com.tokopedia.logger.LogManager;
+import com.tokopedia.logger.LoggerProxy;
 import com.tokopedia.moengage_wrapper.MoengageInteractor;
 import com.tokopedia.moengage_wrapper.interfaces.MoengageInAppListener;
 import com.tokopedia.moengage_wrapper.interfaces.MoengagePushListener;
@@ -42,12 +44,13 @@ import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
 import com.tokopedia.sellerapp.fcm.AppNotificationReceiver;
 import com.tokopedia.sellerapp.utils.SessionActivityLifecycleCallbacks;
 import com.tokopedia.sellerapp.utils.timber.LoggerActivityLifecycleCallbacks;
-import com.tokopedia.sellerapp.utils.timber.TimberWrapper;
 import com.tokopedia.sellerhome.view.activity.SellerHomeActivity;
 import com.tokopedia.tokopatch.TokoPatch;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.utils.permission.SlicePermission;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
@@ -66,6 +69,8 @@ public class SellerMainApplication extends SellerRouterApplication implements
 
     public static final String ANDROID_ROBUST_ENABLE = "android_sellerapp_robust_enable";
     private static final String ADD_BROTLI_INTERCEPTOR = "android_add_brotli_interceptor";
+    private static final String REMOTE_CONFIG_SCALYR_KEY_LOG = "android_sellerapp_log_config_scalyr";
+    private static final String REMOTE_CONFIG_NEW_RELIC_KEY_LOG = "android_sellerapp_log_config_new_relic";
 
     static {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
@@ -138,8 +143,8 @@ public class SellerMainApplication extends SellerRouterApplication implements
         TrackApp.getInstance().registerImplementation(TrackApp.MOENGAGE, MoengageAnalytics.class);
         TrackApp.getInstance().initializeAllApis();
 
-        TimberWrapper.init(this);
         super.onCreate();
+        initLogManager();
         MoengageInteractor.INSTANCE.setPushListener(SellerMainApplication.this);
         MoengageInteractor.INSTANCE.setInAppListener(this);
         com.tokopedia.akamai_bot_lib.UtilsKt.initAkamaiBotManager(SellerMainApplication.this);
@@ -158,6 +163,28 @@ public class SellerMainApplication extends SellerRouterApplication implements
     private void initCacheManager() {
         PersistentCacheManager.init(this);
         cacheManager = PersistentCacheManager.instance;
+    }
+
+    private void initLogManager(){
+        LogManager.init(SellerMainApplication.this, new LoggerProxy() {
+            @NotNull
+            @Override
+            public String getUserId() {
+                return getUserSession().getUserId();
+            }
+
+            @NotNull
+            @Override
+            public String getScalyrConfig() {
+                return remoteConfig.getString(REMOTE_CONFIG_SCALYR_KEY_LOG);
+            }
+
+            @NotNull
+            @Override
+            public String getNewRelicConfig() {
+                return remoteConfig.getString(REMOTE_CONFIG_NEW_RELIC_KEY_LOG);
+            }
+        });
     }
 
     private void setVersionName() {
