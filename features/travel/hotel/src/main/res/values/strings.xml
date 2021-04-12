@@ -302,4 +302,5 @@
     <string name="hotel_search_map_no_result_subtitle">Coba ubah lokasi petamu, geser ke area lain, atau hapus pilihan filter kamu.</string>
     <string name="hotel_list_per_night">/malam</string>
     <string name="hotel_header_title_nearby">Hotel dekat lokasimu</string>
+    <string name="hotel_header_title_nearby_area">Hotel di area pilihanmu</string>
 </resources>

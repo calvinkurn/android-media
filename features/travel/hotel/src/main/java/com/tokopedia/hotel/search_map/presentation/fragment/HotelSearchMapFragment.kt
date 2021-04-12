@@ -110,6 +110,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
     private var quickFilters: List<QuickFilter> = listOf()
     private var searchPropertiesMap: ArrayList<LatLng> = arrayListOf()
     private var isLoadingSearchByMap: Boolean = false
+    private var isSearchByMap: Boolean = false
 
     private lateinit var filterBottomSheet: HotelFilterBottomSheets
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<ConstraintLayout>
@@ -207,7 +208,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                     hotelSearchModel.apply {
                         searchType = HotelTypeEnum.COORDINATE.value
                         searchId = ""
-                        name = getString(R.string.hotel_header_title_nearby)
+                        name = if(isSearchByMap) getString(R.string.hotel_header_title_nearby) else getString(R.string.hotel_header_title_nearby_area)
                         radius = it.data
                     }
                     hotelSearchMapViewModel.initSearchParam(hotelSearchModel)
@@ -258,7 +259,6 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                         adult = it.getIntExtra(HotelChangeSearchActivity.NUM_OF_GUESTS, 0),
                         searchType = it.getStringExtra(HotelChangeSearchActivity.SEARCH_TYPE) ?: "",
                         searchId = it.getStringExtra(HotelChangeSearchActivity.SEARCH_ID) ?: "")
-
                 hotelSearchMapViewModel.initSearchParam(hotelSearchModel)
                 searchDestinationName = hotelSearchModel.name
                 searchDestinationType = if (hotelSearchModel.searchType.isNotEmpty()) hotelSearchModel.searchType else hotelSearchModel.type
@@ -266,6 +266,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                 setUpTitleAndSubtitle()
                 hotelSearchMapViewModel.searchParam.page = defaultInitialPage
                 hotelSearchMapViewModel.addFilter(listOf())
+                isSearchByMap = false
             }
         }
     }
@@ -714,6 +715,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
     /** Location permission is handled by LocationDetector */
     private fun initGetMyLocation() {
         ivGetLocationHotelSearchMap.setOnClickListener {
+            isSearchByMap = true
             showFindNearHereView()
             getCurrentLocation()
             changeHeaderTitle()
@@ -919,7 +921,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
     }
 
     private fun changeHeaderTitle() {
-        headerHotelSearchMap.setTitle(R.string.hotel_header_title_nearby)
+        headerHotelSearchMap.title = if(isSearchByMap) getString(R.string.hotel_header_title_nearby) else getString(R.string.hotel_header_title_nearby_area)
     }
 
     private fun showFindNearHereView() {
