@@ -39,7 +39,7 @@ class LogManager(val application: Application, val loggerProxy: LoggerProxy) {
             loggerReporting.partDeviceId = getPartDeviceId(application)
             loggerReporting.versionName = GlobalConfig.RAW_VERSION_NAME
             loggerReporting.versionCode = GlobalConfig.VERSION_CODE
-            val installer: String? = application.packageManager.getInstallerPackageName(application.packageName)
+            val installer: String = application.packageManager.getInstallerPackageName(application.packageName) ?: ""
             loggerReporting.installer = installer
             loggerReporting.packageName = application.packageName
             loggerReporting.debug = GlobalConfig.DEBUG
