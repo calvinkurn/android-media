@@ -1,5 +1,7 @@
 package com.tokopedia.logger.repository
 
+import com.google.gson.Gson
+import com.google.gson.JsonObject
 import com.tokopedia.encryption.security.BaseEncryptor
 import com.tokopedia.logger.datasource.cloud.LoggerCloudDataSource
 import com.tokopedia.logger.datasource.cloud.LoggerCloudNewRelicImpl
@@ -116,8 +118,7 @@ class LoggerRepository(private val logDao: LoggerDao,
                 scalyrEventList.add(ScalyrEvent(ts, ScalyrEventAttrs(truncate(message))))
             }
             LoggerReporting.getInstance().tagMapsNewRelic[tagMapsValue]?.let {
-                obj.put(Constants.EVENT_TYPE_NEW_RELIC, Constants.EVENT_ANDROID_NEW_RELIC)
-                messageNewRelicList.add(obj.toString())
+                messageNewRelicList.add(addEventNewRelic(message))
             }
         }
         return Pair(scalyrEventList, messageNewRelicList)
@@ -129,6 +130,12 @@ class LoggerRepository(private val logDao: LoggerDao,
         }
 
         return loggerCloudNewRelicImpl.sendToLogServer(config, messageList)
+    }
+
+    private fun addEventNewRelic(message: String): String {
+        val gson = Gson().fromJson(message, JsonObject::class.java)
+        gson.addProperty(Constants.EVENT_TYPE_NEW_RELIC, Constants.EVENT_ANDROID_NEW_RELIC)
+        return gson.toString()
     }
 
     fun truncate(str: String): String {
