@@ -48,6 +48,7 @@ class GetNotificationUseCase(
                 "  notifcenter_unread(type_id:\$typeId) {\n" +
                 "    notif_unread_int\n" +
                 "  }\n" +
+                "  status\n" + //Don't remove `status` field since it's necessary for refresh token flow
                 "}"
 
         private const val TYPE_ID = "typeId"

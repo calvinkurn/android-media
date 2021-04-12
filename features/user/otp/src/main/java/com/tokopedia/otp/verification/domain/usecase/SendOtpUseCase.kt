@@ -27,7 +27,7 @@ class SendOtpUseCase @Inject constructor(
             mode: String,
             msisdn: String = "",
             email: String = "",
-            otpDigit: Int = 6
+            otpDigit: Int = 4
     ): Map<String, Any> = mapOf(
         PARAM_OTP_TYPE to otpType,
         PARAM_MODE to mode,

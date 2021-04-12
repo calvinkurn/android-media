@@ -65,13 +65,16 @@ import javax.inject.Inject
  */
 
 private const val CLICK_BUAT_IKLAN = "click - tambah iklan"
-
+private const val VIEW_BUAT_IKLAN = "view - tambah iklan"
+private const val CLICK_IKLAN_TOKO = " click - iklan toko"
+private const val VIEW_HEADLINE_EVENT = "view - iklan toko"
 class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComponent>,
         TopAdsProductIklanFragment.AppBarAction, BerandaTabFragment.GoToInsight,
         TopAdsProductIklanFragment.AdInfo, TopAdsHeadlineBaseFragment.AppBarActionHeadline {
 
     private var tracker: TopAdsDashboardTracking? = null
     private val INSIGHT_PAGE = 3
+    private val HEADLINE_ADS_TAB = 2
     private var adType = "-1"
     private var isNoProduct = false
     var redirectToTab = 0
@@ -148,6 +151,10 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
                         multiActionBtn.buttonSize = UnifyButton.Size.MEDIUM
                         multiActionBtn?.text = getString(com.tokopedia.topads.common.R.string.topads_iklankan_button)
                         checkVisibility()
+                    }
+                    HEADLINE_ADS_TAB -> {
+                        TopAdsCreateAnalytics.topAdsCreateAnalytics.sendHeadlineAdsEvent(CLICK_IKLAN_TOKO, "{${userSession.shopId}", userSession.userId)
+                        TopAdsCreateAnalytics.topAdsCreateAnalytics.sendHeadlineAdsViewEvent(VIEW_HEADLINE_EVENT, "{${userSession.shopId}}", userSession.userId)
                     }
                     else -> {
                         bottom.visibility = View.GONE
@@ -379,6 +386,7 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
             val noProductBottomSheet = NoProductBottomSheet.newInstance()
             noProductBottomSheet.show(supportFragmentManager, "")
         } else {
+            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendHeadlineCreatFormEvent(VIEW_BUAT_IKLAN, "{${userSession.shopId}}", userSession.userId)
             val intent = RouteManager.getIntent(this, ApplinkConstInternalTopAds.TOPADS_ADS_SELECTION)
             startActivityForResult(intent, AUTO_ADS_DISABLED)
         }

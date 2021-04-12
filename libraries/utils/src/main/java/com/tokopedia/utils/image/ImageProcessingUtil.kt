@@ -59,7 +59,7 @@ object ImageProcessingUtil {
         return inSampleSize
     }
 
-    private fun getWidthAndHeight(file: File): Pair<Int, Int> {
+    fun getWidthAndHeight(file: File): Pair<Int, Int> {
         return try {
             val options = BitmapFactory.Options()
             options.inJustDecodeBounds = true

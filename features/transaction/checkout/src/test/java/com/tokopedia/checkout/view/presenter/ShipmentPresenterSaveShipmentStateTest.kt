@@ -153,7 +153,7 @@ class ShipmentPresenterSaveShipmentStateTest {
         assertEquals(addressId.toInt(), data.addressId)
 
         val shopProductDataList = data.shopProductDataList
-        assertEquals(1, shopProductDataList.size)
+        assertEquals(1, shopProductDataList?.size ?: 0)
 
         verify(exactly = 1) { saveShipmentStateGqlUseCase.createObservable(any()) }
     }
@@ -198,7 +198,7 @@ class ShipmentPresenterSaveShipmentStateTest {
         assertEquals(addressId.toInt(), data.addressId)
 
         val shopProductDataList = data.shopProductDataList
-        assertEquals(1, shopProductDataList.size)
+        assertEquals(1, shopProductDataList?.size ?: 0)
 
         verify(exactly = 1) { saveShipmentStateGqlUseCase.createObservable(any()) }
     }
@@ -243,7 +243,7 @@ class ShipmentPresenterSaveShipmentStateTest {
         assertEquals(addressId.toInt(), data.addressId)
 
         val shopProductDataList = data.shopProductDataList
-        assertEquals(1, shopProductDataList.size)
+        assertEquals(1, shopProductDataList?.size ?: 0)
 
         verify(exactly = 1) { saveShipmentStateGqlUseCase.createObservable(any()) }
     }
@@ -286,7 +286,7 @@ class ShipmentPresenterSaveShipmentStateTest {
         assertEquals(addressId.toInt(), data.addressId)
 
         val shopProductDataList = data.shopProductDataList
-        assertEquals(1, shopProductDataList.size)
+        assertEquals(1, shopProductDataList?.size ?: 0)
 
         verify(exactly = 1) { saveShipmentStateGqlUseCase.createObservable(any()) }
     }

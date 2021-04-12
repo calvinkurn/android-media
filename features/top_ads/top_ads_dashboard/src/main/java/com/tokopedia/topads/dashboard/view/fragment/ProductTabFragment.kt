@@ -43,9 +43,9 @@ import com.tokopedia.topads.dashboard.view.interfaces.FetchDate
 import com.tokopedia.topads.dashboard.view.model.GroupDetailViewModel
 import com.tokopedia.topads.dashboard.view.sheet.MovetoGroupSheetList
 import com.tokopedia.topads.dashboard.view.sheet.TopadsGroupFilterSheet
+import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.Toaster
-import kotlinx.android.synthetic.main.topads_dash_fragment_non_group_list.actionbar
-import kotlinx.android.synthetic.main.topads_dash_fragment_product_list.loader
+import kotlinx.android.synthetic.main.topads_dash_fragment_non_group_list.*
 import kotlinx.android.synthetic.main.topads_dash_layout_common_action_bar.*
 import kotlinx.android.synthetic.main.topads_dash_layout_common_searchbar_layout.*
 import kotlinx.coroutines.CoroutineScope
@@ -73,6 +73,7 @@ class ProductTabFragment : BaseDaggerFragment() {
     private var totalPage = 0
     private var currentPageNum = 1
     private var adIds: MutableList<String> = mutableListOf()
+    private lateinit var loader: LoaderUnify
 
     companion object {
         fun createInstance(bundle: Bundle): ProductTabFragment {
@@ -94,14 +95,10 @@ class ProductTabFragment : BaseDaggerFragment() {
     }
 
     private val groupFilterSheet: TopadsGroupFilterSheet by lazy {
-        context.run {
-            TopadsGroupFilterSheet.newInstance(context!!)
-        }
+        TopadsGroupFilterSheet.newInstance(context)
     }
     private val movetoGroupSheet: MovetoGroupSheetList by lazy {
-        context.run {
-            MovetoGroupSheetList.newInstance(context!!)
-        }
+        MovetoGroupSheetList.newInstance(requireContext())
     }
 
     override fun getScreenName(): String {
@@ -120,6 +117,7 @@ class ProductTabFragment : BaseDaggerFragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(resources.getLayout(R.layout.topads_dash_fragment_product_list), container, false)
         recyclerView = view.findViewById(R.id.product_list)
+        loader = view.findViewById(R.id.loader)
         setAdapter()
         return view
     }
@@ -159,7 +157,7 @@ class ProductTabFragment : BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         fetchData()
         btnFilter.setOnClickListener {
-            groupFilterSheet.show()
+            groupFilterSheet.show(childFragmentManager, "")
             groupFilterSheet.onSubmitClick = { fetchData() }
         }
 
@@ -183,7 +181,9 @@ class ProductTabFragment : BaseDaggerFragment() {
             }
         }
         delete.setOnClickListener {
-            showConfirmationDialog(context!!)
+            context?.let {
+                showConfirmationDialog(it)
+            }
         }
         btnAddItem.setOnClickListener {
             startEditActivity()
