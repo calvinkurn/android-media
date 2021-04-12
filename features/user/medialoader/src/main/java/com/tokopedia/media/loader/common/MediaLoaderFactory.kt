@@ -30,6 +30,10 @@ abstract class MediaLoaderFactory<T> {
         _transform.clear()
 
         with(properties) {
+            // store-bulk transformation into MultiTransformations()
+            transforms?.let { _transform.addAll(it) }
+            transform?.let { _transform.add(it) }
+
             // built-in transformations
             if (properties.isCircular) _transform.add(CircleCrop())
             if (properties.centerCrop) _transform.add(CenterCrop())
@@ -40,10 +44,6 @@ abstract class MediaLoaderFactory<T> {
             if (roundedRadius > 0f) {
                 _transform.add(RoundedCorners(roundedRadius.toInt()))
             }
-
-            // store-bulk transformation into MultiTransformations()
-            transforms?.let { _transform.addAll(it) }
-            transform?.let { _transform.add(it) }
 
             if (_transform.isNotEmpty()) {
                 request.transform(MultiTransformation(_transform))
