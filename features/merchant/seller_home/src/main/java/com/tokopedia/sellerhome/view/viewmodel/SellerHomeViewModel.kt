@@ -4,7 +4,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.sellerhome.config.SellerHomeRemoteConfig
 import com.tokopedia.sellerhome.domain.model.ShippingLoc
 import com.tokopedia.sellerhome.domain.usecase.GetShopLocationUseCase
@@ -21,8 +20,7 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
-import kotlinx.coroutines.async
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.withContext
 import java.util.*
 import javax.inject.Inject
@@ -114,39 +112,70 @@ class SellerHomeViewModel @Inject constructor(
     }
 
     private suspend fun <T : Any> getDataFromUseCase(useCase: BaseGqlUseCase<T>,
-                                                     liveData: MutableLiveData<Result<T>>,
-                                                     transformer: suspend (result: T) -> T = {result -> result} ) {
+                                                     liveData: MutableLiveData<Result<T>>) {
         if (remoteConfig.isSellerHomeDashboardCachingEnabled() && useCase.isFirstLoad) {
             useCase.isFirstLoad = false
             try {
                 useCase.setUseCache(true)
-                liveData.value = Success(transformer(useCase.executeUseCase()))
+                liveData.value = Success(useCase.executeUseCase())
             } catch (_: Exception) {
                 // ignore exception from cache
             }
         }
         useCase.setUseCache(false)
-        liveData.value = Success(transformer(useCase.executeUseCase()))
+        liveData.value = Success(useCase.executeUseCase())
     }
 
     private suspend fun <T: Any> getDataFromUseCase(useCase: BaseGqlUseCase<T>): T {
-        if (remoteConfig.isSellerHomeDashboardCachingEnabled() && useCase.isFirstLoad) {
-            useCase.isFirstLoad = false
-            useCase.setUseCache(true)
-        } else {
-            useCase.setUseCache(false)
-        }
+        useCase.setUseCache(false)
         return useCase.executeUseCase()
     }
 
-    private fun <T : Any> CloudAndCacheGraphqlUseCase<*, T>.startCollectingResult(liveData: MutableLiveData<Result<T>>,
-                                                                                  transformer: suspend (result: T) -> T = {result -> result} ) {
+    private suspend fun <T : Any> getDataFromUseCase(useCase: BaseGqlUseCase<T>,
+                                                     liveData: MutableLiveData<Result<T>>,
+                                                     getTransformerFlow: suspend (T) -> Flow<T>) {
+        if (remoteConfig.isSellerHomeDashboardCachingEnabled() && useCase.isFirstLoad) {
+            useCase.isFirstLoad = false
+            try {
+                useCase.setUseCache(true)
+                getTransformerFlow(useCase.executeOnBackground()).collect {
+                    liveData.value = Success(it)
+                }
+            } catch (_: Exception) {
+                // ignore exception from cache
+            }
+        }
+        useCase.setUseCache(false)
+        getTransformerFlow(useCase.executeOnBackground()).collect {
+            liveData.value = Success(it)
+        }
+    }
+
+    private fun <T : Any> CloudAndCacheGraphqlUseCase<*, T>.startCollectingResult(liveData: MutableLiveData<Result<T>>) {
         if (!collectingResult) {
             collectingResult = true
             launchCatchError(block = {
                 getResultFlow().collect {
                     withContext(dispatcher.main) {
-                        liveData.value = Success(transformer(it))
+                        liveData.value = Success(it)
+                    }
+                }
+            }, onError = {
+                liveData.value = Fail(it)
+            })
+        }
+    }
+
+    private fun <T : Any> CloudAndCacheGraphqlUseCase<*, T>.startCollectingResult(liveData: MutableLiveData<Result<T>>,
+                                                                                  getTransformedFlow: suspend (T) -> Flow<T>) {
+        if (!collectingResult) {
+            collectingResult = true
+            launchCatchError(block = {
+                getResultFlow().collect { initialResult ->
+                    getTransformedFlow(initialResult).collect {
+                        withContext(dispatcher.main) {
+                            liveData.value = Success(it)
+                        }
                     }
                 }
             }, onError = {
@@ -382,14 +411,16 @@ class SellerHomeViewModel @Inject constructor(
         })
     }
 
-    private suspend fun getInitialWidget(widgets: List<BaseWidgetUiModel<*>>, deviceHeightDp: Float): List<BaseWidgetUiModel<*>> {
-        val predictedInitialWidget = getPredictedInitialWidget(widgets, deviceHeightDp)
-        return widgets
-                .map { widget -> predictedInitialWidget.find { it.id == widget.id } ?: widget }
-                .filter { !it.isNeedToBeRemoved }
+    private suspend fun getInitialWidget(widgets: List<BaseWidgetUiModel<*>>, deviceHeightDp: Float): Flow<List<BaseWidgetUiModel<*>>> {
+        val widgetFlow = flow { emit(widgets) }
+        val predictedInitialWidgetFlow = getPredictedInitialWidget(widgets, deviceHeightDp)
+        return widgetFlow.combine(predictedInitialWidgetFlow) { widgetsFromFlow, initialWidgets ->
+            widgetsFromFlow.map {
+                widget -> initialWidgets.find { it.id == widget.id } ?: widget }.filter { !it.isNeedToBeRemoved }
+        }
     }
 
-    private suspend fun getPredictedInitialWidget(widgetList: List<BaseWidgetUiModel<*>>, deviceHeightDp: Float): List<BaseWidgetUiModel<*>> {
+    private fun getPredictedInitialWidget(widgetList: List<BaseWidgetUiModel<*>>, deviceHeightDp: Float): Flow<List<BaseWidgetUiModel<*>>> {
         var remainingHeight = deviceHeightDp
         var hasCardCalculated = false
         val newWidgetList = widgetList.map { widget ->
@@ -411,7 +442,7 @@ class SellerHomeViewModel @Inject constructor(
         return getLoadedInitialWidgetData(newWidgetList)
     }
 
-    private suspend fun getLoadedInitialWidgetData(widgetList: List<BaseWidgetUiModel<*>>): List<BaseWidgetUiModel<*>> {
+    private fun getLoadedInitialWidgetData(widgetList: List<BaseWidgetUiModel<*>>): Flow<List<BaseWidgetUiModel<*>>> {
         val loadedWidgetList = widgetList.filter { it.isLoading }
 
         val newWidgetList = loadedWidgetList.toMutableList()
@@ -420,71 +451,59 @@ class SellerHomeViewModel @Inject constructor(
                 newWidgetList[index] = section.copy().apply { isLoaded = true }
             }
         }
-        return getWidgetsData(newWidgetList).mapToWidgetModel(newWidgetList)
+        return getWidgetsData(newWidgetList)
     }
 
-    private suspend fun getWidgetsData(widgets: List<BaseWidgetUiModel<*>>): List<BaseDataUiModel> {
+    private fun getWidgetsData(widgets: List<BaseWidgetUiModel<*>>): Flow<List<BaseWidgetUiModel<*>>> {
         val groupedWidgets = widgets.groupBy { it.widgetType } as MutableMap
-        return mutableListOf<BaseDataUiModel>().apply {
-            val lineGraphData = async { groupedWidgets.getWidgetDataByType<LineGraphDataUiModel>(WidgetType.LINE_GRAPH) }
-            val announcementData = async { groupedWidgets.getWidgetDataByType<AnnouncementDataUiModel>(WidgetType.ANNOUNCEMENT) }
-            val cardData = async { groupedWidgets.getWidgetDataByType<CardDataUiModel>(WidgetType.CARD) }
-            val progressData = async { groupedWidgets.getWidgetDataByType<ProgressDataUiModel>(WidgetType.PROGRESS) }
-            val carouselData = async { groupedWidgets.getWidgetDataByType<CarouselDataUiModel>(WidgetType.CAROUSEL) }
-            val postData = async { groupedWidgets.getWidgetDataByType<PostListDataUiModel>(WidgetType.POST_LIST) }
-            val tableData = async { groupedWidgets.getWidgetDataByType<TableDataUiModel>(WidgetType.TABLE) }
-            val pieChartData = async { groupedWidgets.getWidgetDataByType<PieChartDataUiModel>(WidgetType.PIE_CHART) }
-            val barChartData = async { groupedWidgets.getWidgetDataByType<BarChartDataUiModel>(WidgetType.BAR_CHART) }
-            val multiLineGraphData = async { groupedWidgets.getWidgetDataByType<MultiLineGraphDataUiModel>(WidgetType.MULTI_LINE_GRAPH) }
+        val lineGraphDataFlow = groupedWidgets.getWidgetDataByType<LineGraphDataUiModel>(WidgetType.LINE_GRAPH)
+        val announcementDataFlow = groupedWidgets.getWidgetDataByType<AnnouncementDataUiModel>(WidgetType.ANNOUNCEMENT)
+        val cardDataFlow = groupedWidgets.getWidgetDataByType<CardDataUiModel>(WidgetType.CARD)
+        val progressDataFlow = groupedWidgets.getWidgetDataByType<ProgressDataUiModel>(WidgetType.PROGRESS)
+        val carouselDataFlow = groupedWidgets.getWidgetDataByType<CarouselDataUiModel>(WidgetType.CAROUSEL)
+        val postDataFlow = groupedWidgets.getWidgetDataByType<PostListDataUiModel>(WidgetType.POST_LIST)
+        val tableDataFlow = groupedWidgets.getWidgetDataByType<TableDataUiModel>(WidgetType.TABLE)
+        val pieChartDataFlow = groupedWidgets.getWidgetDataByType<PieChartDataUiModel>(WidgetType.PIE_CHART)
+        val barChartDataFlow = groupedWidgets.getWidgetDataByType<BarChartDataUiModel>(WidgetType.BAR_CHART)
+        val multiLineGraphDataFlow = groupedWidgets.getWidgetDataByType<MultiLineGraphDataUiModel>(WidgetType.MULTI_LINE_GRAPH)
 
-            val concattedResult = concatAllResult(
-                    lineGraphData.await(),
-                    announcementData.await(),
-                    cardData.await(),
-                    progressData.await(),
-                    carouselData.await(),
-                    postData.await(),
-                    tableData.await(),
-                    pieChartData.await(),
-                    barChartData.await(),
-                    multiLineGraphData.await())
-            addAll(concattedResult)
+        return combine(lineGraphDataFlow, announcementDataFlow, cardDataFlow, progressDataFlow,
+                carouselDataFlow, postDataFlow, tableDataFlow, pieChartDataFlow,
+                barChartDataFlow, multiLineGraphDataFlow) { widgetDataList ->
+            val widgetsData = widgetDataList.flatMap { it }
+            widgetsData.mapToWidgetModel(widgets)
         }
     }
 
-    private fun <T> concatAllResult(vararg lists: List<T>): List<T> {
-        return mutableListOf<T>().apply {
-            lists.forEach {
-                addAll(it)
-            }
-        }
-    }
-
-    private suspend inline fun <reified D : BaseDataUiModel> MutableMap<String, List<BaseWidgetUiModel<*>>>.getWidgetDataByType(widgetType: String): List<BaseDataUiModel> {
-        val widgetList = this[widgetType]
-        return try {
-            widgetList?.let {
-                when(widgetType) {
-                    WidgetType.LINE_GRAPH -> getLineGraphData(it)
-                    WidgetType.ANNOUNCEMENT -> getAnnouncementData(it)
-                    WidgetType.CARD -> getCardData(it)
-                    WidgetType.PROGRESS -> getProgressData(it)
-                    WidgetType.CAROUSEL -> getCarouselData(it)
-                    WidgetType.POST_LIST -> getPostData(it)
-                    WidgetType.TABLE -> getTableData(it)
-                    WidgetType.PIE_CHART -> getPieChartData(it)
-                    WidgetType.BAR_CHART -> getBarChartData(it)
-                    WidgetType.MULTI_LINE_GRAPH -> getMultiLineGraphData(it)
-                    else -> null
-                }
-            }.orEmpty()
-        } catch (ex: Exception) {
-            widgetList?.map { widget ->
-                D::class.java.newInstance().apply {
-                    dataKey = widget.dataKey
-                    error = ex.message.orEmpty()
-                }
-            }.orEmpty()
+    private inline fun <reified D : BaseDataUiModel> MutableMap<String, List<BaseWidgetUiModel<*>>>.getWidgetDataByType(widgetType: String): Flow<List<BaseDataUiModel>> {
+        return flow {
+            val widgetList = this@getWidgetDataByType[widgetType]
+            val widgetDataList =
+                    try {
+                        widgetList?.let {
+                            when(widgetType) {
+                                WidgetType.LINE_GRAPH -> getLineGraphData(it)
+                                WidgetType.ANNOUNCEMENT -> getAnnouncementData(it)
+                                WidgetType.CARD -> getCardData(it)
+                                WidgetType.PROGRESS -> getProgressData(it)
+                                WidgetType.CAROUSEL -> getCarouselData(it)
+                                WidgetType.POST_LIST -> getPostData(it)
+                                WidgetType.TABLE -> getTableData(it)
+                                WidgetType.PIE_CHART -> getPieChartData(it)
+                                WidgetType.BAR_CHART -> getBarChartData(it)
+                                WidgetType.MULTI_LINE_GRAPH -> getMultiLineGraphData(it)
+                                else -> null
+                            }
+                        }.orEmpty()
+                    } catch (ex: Exception) {
+                        widgetList?.map { widget ->
+                            D::class.java.newInstance().apply {
+                                dataKey = widget.dataKey
+                                error = ex.message.orEmpty()
+                            }
+                        }.orEmpty()
+                    }
+            emit(widgetDataList)
         }
     }
 
