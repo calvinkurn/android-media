@@ -65,10 +65,12 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/hotel_76dp"
                 android:background="@color/transparent"
-                android:clipToPadding="false"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
+                android:paddingLeft="@dimen/layout_lvl0"
+                android:paddingRight="@dimen/spacing_lvl4"
+                android:clipToPadding="false"
                 tools:itemCount="3"
                 tools:listitem="@layout/item_property_search_result_horizontal" />
 
@@ -96,14 +98,15 @@
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/ivGetLocationHotelSearchMap"
-                android:layout_width="@dimen/spacing_lvl8"
-                android:layout_height="@dimen/spacing_lvl8"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_margin="@dimen/spacing_lvl3"
                 app:layout_constraintBottom_toTopOf="@+id/rvHorizontalPropertiesHotelSearchMap"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_goneMarginBottom="@dimen/layout_lvl7"
                 app:layout_goneMarginTop="@dimen/layout_lvl7"
-                app:srcCompat="@drawable/ic_get_location" />
+                app:srcCompat="@drawable/ic_get_location"
+                android:elevation="@dimen/unify_space_12"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
         <!-- End of Constraint Layout for Content (Maps, Horizontal Properties List, etc) -->
@@ -224,7 +227,8 @@
                 app:fbType="group"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent" />
+                app:layout_constraintRight_toRightOf="parent"
+                android:elevation="@dimen/unify_space_12"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
         <!-- End of Constraint Layout for Bottom Sheet -->

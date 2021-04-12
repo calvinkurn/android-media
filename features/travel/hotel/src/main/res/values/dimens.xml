@@ -23,6 +23,7 @@
     <dimen name="hotel_20dp">20dp</dimen>
     <dimen name="hotel_22dp">22dp</dimen>
     <dimen name="hotel_25dp">25dp</dimen>
+    <dimen name="hotel_26dp">26dp</dimen>
     <dimen name="hotel_28dp">28dp</dimen>
     <dimen name="hotel_30dp">30dp</dimen>
     <dimen name="hotel_34dp">34dp</dimen>
