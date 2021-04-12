@@ -35,6 +35,7 @@ class ProductCheckoutViewHolder(
     private val btnCheckout: UnifyButton = itemView.findViewById(R.id.btn_checkout)
     private val campaignTag: ImageView = itemView.findViewById(R.id.img_campaign)
     private val btnAtc: UnifyButton = itemView.findViewById(R.id.btn_atc)
+    private val btnReminder: UnifyButton = itemView.findViewById(R.id.btn_reminder)
 
     private var multiProductAdapter: MultipleProductCardAdapter? = null
     private val context by lazy { itemView.context }
@@ -92,7 +93,28 @@ class ProductCheckoutViewHolder(
                     userId = element.userInfo.userId,
                     notification = element
             )
+            showRemindButtonIfEmptyStock(element.products[0].stock)
         }
+    }
+
+    private fun showRemindButtonIfEmptyStock(stock: Int) {
+        if(stock < SINGLE_PRODUCT) {
+            showReminderButton()
+        } else {
+            hideReminderButton()
+        }
+    }
+
+    private fun showReminderButton() {
+        btnReminder.show()
+        btnAtc.hide()
+        btnCheckout.hide()
+    }
+
+    private fun hideReminderButton() {
+        btnReminder.hide()
+        btnAtc.show()
+        btnCheckout.show()
     }
 
     override fun trackProduct(element: NotificationItemViewBean) {
@@ -111,19 +133,15 @@ class ProductCheckoutViewHolder(
         val product = element.getAtcProduct() ?: return
         btnCheckout.setOnClickListener {
             notificationItemMarkedClick(element)
-            if (product.stock < SINGLE_PRODUCT) {
-                listener.onItemStockHandlerClick(element)
-            } else {
-                listener.addProductToCart(product) {
-                    // goto cart page
-                    routeCartPage()
+            listener.addProductToCart(product) {
+                // goto cart page
+                routeCartPage()
 
-                    // tracker
-                    listener.getAnalytic().trackAtcOnSingleProductClick(
-                            notification = element,
-                            cartId = it.cartId
-                    )
-                }
+                // tracker
+                listener.getAnalytic().trackAtcOnSingleProductClick(
+                        notification = element,
+                        cartId = it.cartId
+                )
             }
         }
 
@@ -138,6 +156,11 @@ class ProductCheckoutViewHolder(
                 // tracker
                 trackAddToCartClicked(element, product, it)
             }
+        }
+
+        btnReminder.setOnClickListener {
+            notificationItemMarkedClick(element)
+            listener.onItemStockHandlerClick(element)
         }
     }
 

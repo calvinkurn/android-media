@@ -10,6 +10,7 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.atc_common.domain.model.response.DataModel
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.notifcenter.R
@@ -38,6 +39,7 @@ class MultipleProductCardViewHolder(
     private val btnCheckout: UnifyButton = itemView.findViewById(R.id.btn_checkout)
     private val campaignTag: ImageView = itemView.findViewById(R.id.img_campaign)
     private val btnAtc: UnifyButton = itemView.findViewById(R.id.btn_atc)
+    private val btnReminder: UnifyButton = itemView.findViewById(R.id.btn_reminder)
 
     private val context by lazy { itemView.context }
 
@@ -54,7 +56,28 @@ class MultipleProductCardViewHolder(
             productVariant.setupVariant(variant)
             productPrice.text = priceFormat
             productName.text = name
+            showRemindButtonIfEmptyStock(this.stock)
         }
+    }
+
+    private fun showRemindButtonIfEmptyStock(stock: Int) {
+        if(stock < MINIMUM_STOCK) {
+            showReminderButton()
+        } else {
+            hideReminderButton()
+        }
+    }
+
+    private fun showReminderButton() {
+        btnReminder.show()
+        btnAtc.hide()
+        btnCheckout.hide()
+    }
+
+    private fun hideReminderButton() {
+        btnReminder.hide()
+        btnAtc.show()
+        btnCheckout.show()
     }
 
     private fun impressionTracker(element: MultipleProductCardViewBean) {
@@ -152,6 +175,11 @@ class MultipleProductCardViewHolder(
                 trackAddToCartClicked(element, element.product, it)
             }
         }
+
+        btnReminder.setOnClickListener {
+            listener.itemClicked(notification, adapterPosition)
+            listener.onItemStockHandlerClick(notification)
+        }
     }
 
     private fun trackAddToCartClicked(
@@ -171,6 +199,7 @@ class MultipleProductCardViewHolder(
     }
 
     companion object {
+        private const val MINIMUM_STOCK = 1
         @LayoutRes
         val LAYOUT = R.layout.item_notification_product_card
     }

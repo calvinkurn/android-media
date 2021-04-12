@@ -9,10 +9,12 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.analytics.StockHandlerAnalytics
 import com.tokopedia.notifcenter.data.entity.ProductData
 import com.tokopedia.notifcenter.data.mapper.ProductHighlightMapper.mapToProductData
+import com.tokopedia.notifcenter.data.state.Status
 import com.tokopedia.notifcenter.data.viewbean.NotificationItemViewBean
 import com.tokopedia.notifcenter.data.viewbean.ProductHighlightViewBean
 import com.tokopedia.notifcenter.listener.NotificationItemListener
@@ -90,7 +92,7 @@ class ProductStockHandlerDialog(
             val successMessage = getString(R.string.product_reminder_success)
             val actionText = getString(R.string.notifcenter_btn_title_ok)
             onSuccessListener(successMessage, actionText)
-            btnReminder?.isEnabled = false
+            setDeleteReminderButton()
         })
 
         viewModel.addToCart.observe(viewLifecycleOwner, Observer {
@@ -114,6 +116,19 @@ class ProductStockHandlerDialog(
 
         viewModel.errorMessage.observe(viewLifecycleOwner, Observer {
             showToastErrorMessage(it)
+        })
+
+        viewModel.deleteReminder.observe(viewLifecycleOwner, Observer {
+            when(it.status) {
+                Status.SUCCESS -> {
+                    val successMessage = getString(R.string.title_success_delete_reminder)
+                    onSuccessToastMessage(successMessage)
+                }
+                Status.ERROR -> {
+                    showToastErrorMessage(ErrorHandler.getErrorMessage(context, it.throwable))
+                }
+                else -> {}
+            }
         })
     }
 
@@ -226,6 +241,12 @@ class ProductStockHandlerDialog(
         }
     }
 
+    private fun onSuccessToastMessage(message: String) {
+        dialogWindow()?.let {
+            Toaster.make(it, message, Toaster.LENGTH_LONG, TYPE_NORMAL)
+        }
+    }
+
     private fun showToastErrorMessage(message: String) {
         dialogWindow()?.let {
             Toaster.make(it, message, Toaster.LENGTH_LONG, TYPE_ERROR)
@@ -239,8 +260,7 @@ class ProductStockHandlerDialog(
                 btnReminder?.buttonType = UnifyButton.Type.TRANSACTION
             }
             TYPE_REMINDER_BUTTON -> {
-                btnReminder?.text = context?.getString(R.string.notifcenter_btn_reminder)
-                btnReminder?.buttonType = UnifyButton.Type.MAIN
+                setReminderButton()
             }
         }
     }
@@ -264,6 +284,24 @@ class ProductStockHandlerDialog(
         super.onDestroyView()
         viewModel.cleared()
         dismissAllowingStateLoss()
+    }
+
+    private fun setReminderButton() {
+        btnReminder?.text = context?.getString(R.string.notifcenter_btn_reminder)
+        btnReminder?.buttonType = UnifyButton.Type.MAIN
+        btnReminder?.buttonVariant = UnifyButton.Variant.FILLED
+    }
+
+    private fun setDeleteReminderButton() {
+        btnReminder?.buttonType = UnifyButton.Type.ALTERNATE
+        btnReminder?.buttonVariant = UnifyButton.Variant.GHOST
+        btnReminder?.text = context?.getString(R.string.notifcenter_btn_delete_reminder)
+        btnReminder?.setOnClickListener {
+            setReminderButton()
+            element.getAtcProduct()?.productId?.let {
+                viewModel.deleteReminder(it, element.notificationId)
+            }
+        }
     }
 
     companion object {
