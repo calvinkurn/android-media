@@ -14,19 +14,7 @@ import com.tokopedia.thankyou_native.data.mapper.PaymentTypeMapper
 import com.tokopedia.thankyou_native.domain.model.ThanksPageData
 import com.tokopedia.thankyou_native.presentation.views.GyroView
 import com.tokopedia.unifycomponents.ticker.Ticker
-import kotlinx.android.synthetic.main.thank_fragment_deferred.*
 import kotlinx.android.synthetic.main.thank_fragment_processing.*
-import kotlinx.android.synthetic.main.thank_fragment_processing.btnCheckPaymentStatus
-import kotlinx.android.synthetic.main.thank_fragment_processing.btnShopAgain
-import kotlinx.android.synthetic.main.thank_fragment_processing.featureListingContainer
-import kotlinx.android.synthetic.main.thank_fragment_processing.ivPaymentGatewayImage
-import kotlinx.android.synthetic.main.thank_fragment_processing.loadingLayout
-import kotlinx.android.synthetic.main.thank_fragment_processing.recommendationContainer
-import kotlinx.android.synthetic.main.thank_fragment_processing.topTicker
-import kotlinx.android.synthetic.main.thank_fragment_processing.tvCheckPaymentStatusTitle
-import kotlinx.android.synthetic.main.thank_fragment_processing.tvPaymentGatewayName
-import kotlinx.android.synthetic.main.thank_fragment_processing.tvSeeDetail
-import kotlinx.android.synthetic.main.thank_fragment_processing.tvTotalAmount
 
 class ProcessingPaymentFragment : ThankYouBaseFragment() {
 
