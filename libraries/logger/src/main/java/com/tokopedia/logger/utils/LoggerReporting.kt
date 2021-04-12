@@ -93,8 +93,8 @@ class LoggerReporting {
     }
 
     fun setPopulateTagMapsScalyr(tags: List<String>?) {
+        tagMapsScalyr.clear()
         if (tags.isNullOrEmpty()) {
-            tagMapsScalyr.clear()
             return
         }
         for (tag in tags) {
@@ -117,8 +117,8 @@ class LoggerReporting {
     }
 
     fun setPopulateTagMapsNewRelic(tags: List<String>?) {
+        tagMapsNewRelic.clear()
         if (tags.isNullOrEmpty()) {
-            tagMapsNewRelic.clear()
             return
         }
         for (tag in tags) {
