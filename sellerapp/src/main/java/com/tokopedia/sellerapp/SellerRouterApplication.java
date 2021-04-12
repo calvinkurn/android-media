@@ -308,7 +308,7 @@ public abstract class SellerRouterApplication extends MainApplication implements
         messageMap.put("refreshToken", refreshToken);
         messageMap.put("response", response);
         messageMap.put("request", request);
-        ServerLogger.INSTANCE.log(Priority.P2, "USER_ANOMALY_REPONSE", messageMap);
+        ServerLogger.log(Priority.P2, "USER_ANOMALY_REPONSE", messageMap);
     }
 
     @Override

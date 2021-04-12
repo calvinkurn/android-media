@@ -77,7 +77,7 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
         messageMap.put("isSupported", String.valueOf(isSupportedApplinkNotification(bundle)));
         messageMap.put("isDedicated", String.valueOf(isDedicatedNotification(bundle)));
         messageMap.put("bundle", bundle.toString());
-        ServerLogger.INSTANCE.log(Priority.P2, "PUSH_NOTIF_UNUSED", messageMap);
+        ServerLogger.log(Priority.P2, "PUSH_NOTIF_UNUSED", messageMap);
         if (isAllowedNotification(bundle)) {
             mFCMCacheManager.setCache();
             if (isApplinkNotification(bundle)) {

@@ -44,14 +44,14 @@ public class DeferredResourceInitializer implements DeferredCallback {
             messageMap.put("type", msg[0]);
             messageMap.put("worker", msg[1]);
             messageMap.put("url", msg[2]);
-            ServerLogger.INSTANCE.log(Priority.P1, MANAGER_TAG, messageMap);
+            ServerLogger.log(Priority.P1, MANAGER_TAG, messageMap);
         }
         else {
             Map<String, String> messageMap = new HashMap<>();
             messageMap.put("type", message);
             messageMap.put("worker", "null");
             messageMap.put("url", "null");
-            ServerLogger.INSTANCE.log(Priority.P1, MANAGER_TAG, messageMap);
+            ServerLogger.log(Priority.P1, MANAGER_TAG, messageMap);
         }
 
     }

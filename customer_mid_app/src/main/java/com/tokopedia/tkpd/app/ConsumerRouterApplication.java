@@ -412,7 +412,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         messageMap.put("refreshToken", refreshToken);
         messageMap.put("response", refreshToken);
         messageMap.put("request", request);
-        ServerLogger.INSTANCE.log(Priority.P2, "USER_ANOMALY_REPONSE", messageMap);
+        ServerLogger.log(Priority.P2, "USER_ANOMALY_REPONSE", messageMap);
     }
 
     @Override

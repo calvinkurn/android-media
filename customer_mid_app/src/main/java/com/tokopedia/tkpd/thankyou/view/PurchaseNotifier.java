@@ -48,7 +48,7 @@ public class PurchaseNotifier {
 
                 Map<String, String> messageMap = new HashMap<>();
                 messageMap.put("type", "PurchaseNotifier");
-                ServerLogger.INSTANCE.log(Priority.P2, "PUSH_NOTIF_UNUSED", messageMap);
+                ServerLogger.log(Priority.P2, "PUSH_NOTIF_UNUSED", messageMap);
             }
         } catch (Exception e) {
             e.printStackTrace();

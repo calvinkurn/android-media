@@ -43,7 +43,7 @@ public class PushNotificationDataRepository implements PushNotificationRepositor
     public Observable<FCMTokenUpdateEntity> updateTokenServer(FCMTokenUpdate data) {
         Map<String, String> messageMap = new HashMap<>();
         messageMap.put("type", "updateTokenServer");
-        ServerLogger.INSTANCE.log(Priority.P2, "PUSH_NOTIF_UNUSED", messageMap);
+        ServerLogger.log(Priority.P2, "PUSH_NOTIF_UNUSED", messageMap);
         return mPushNotificationDataStoreFactory
                 .createCloudPushNotificationDataStore()
                 .updateTokenServer(data);
@@ -53,7 +53,7 @@ public class PushNotificationDataRepository implements PushNotificationRepositor
     public Observable<DeviceRegistrationDataResponse> deviceRegistration() {
         Map<String, String> messageMap = new HashMap<>();
         messageMap.put("type", "deviceRegistration");
-        ServerLogger.INSTANCE.log(Priority.P2, "PUSH_NOTIF_UNUSED", messageMap);
+        ServerLogger.log(Priority.P2, "PUSH_NOTIF_UNUSED", messageMap);
         return Observable
                 .concat(
                         mPushNotificationDataStoreFactory
@@ -70,7 +70,7 @@ public class PushNotificationDataRepository implements PushNotificationRepositor
     public Observable<Boolean> saveRegistrationDevice(String registration) {
         Map<String, String> messageMap = new HashMap<>();
         messageMap.put("type", "saveRegistrationDevice");
-        ServerLogger.INSTANCE.log(Priority.P2, "PUSH_NOTIF_UNUSED", messageMap);
+        ServerLogger.log(Priority.P2, "PUSH_NOTIF_UNUSED", messageMap);
         return mPushNotificationDataStoreFactory
                 .createDiskPushNotificationDataStore()
                 .saveRegistrationDevice(registration);
@@ -80,7 +80,7 @@ public class PushNotificationDataRepository implements PushNotificationRepositor
     public Observable<List<MessagePushNotification>> getSavedMessagePushNotification() {
         Map<String, String> messageMap = new HashMap<>();
         messageMap.put("type", "getSavedMessagePushNotification");
-        ServerLogger.INSTANCE.log(Priority.P2, "PUSH_NOTIF_UNUSED", messageMap);
+        ServerLogger.log(Priority.P2, "PUSH_NOTIF_UNUSED", messageMap);
         return mPushNotificationDataStoreFactory.createDiskPushNotificationDataStore()
                 .getPushSavedPushNotificationWithOrderBy(Constants.ARG_NOTIFICATION_APPLINK_MESSAGE, true)
                 .map(mPushNotificationMapper::transformMessage);
@@ -90,7 +90,7 @@ public class PushNotificationDataRepository implements PushNotificationRepositor
     public Observable<String> storePushNotification(String category, String response, String customIndex, String serverId) {
         Map<String, String> messageMap = new HashMap<>();
         messageMap.put("type", "storePushNotification");
-        ServerLogger.INSTANCE.log(Priority.P2, "PUSH_NOTIF_UNUSED", messageMap);
+        ServerLogger.log(Priority.P2, "PUSH_NOTIF_UNUSED", messageMap);
         return mPushNotificationDataStoreFactory
                 .createDiskPushNotificationDataStore()
                 .savePushNotification(category, response, customIndex, serverId);
@@ -100,7 +100,7 @@ public class PushNotificationDataRepository implements PushNotificationRepositor
     public Observable<List<DiscussionPushNotification>> getSavedDiscussionPushNotification() {
         Map<String, String> messageMap = new HashMap<>();
         messageMap.put("type", "getSavedDiscussionPushNotification");
-        ServerLogger.INSTANCE.log(Priority.P2, "PUSH_NOTIF_UNUSED", messageMap);
+        ServerLogger.log(Priority.P2, "PUSH_NOTIF_UNUSED", messageMap);
         return mPushNotificationDataStoreFactory.createDiskPushNotificationDataStore()
                 .getPushSavedPushNotificationWithOrderBy(Constants.ARG_NOTIFICATION_APPLINK_DISCUSSION, true)
                 .map(mPushNotificationMapper::transformDiscussion);

@@ -6,23 +6,16 @@ import com.tokopedia.logger.LogManager
 import java.text.SimpleDateFormat
 import java.util.*
 
-/**
- * Tree that used for Timber in release Version
- * If there is log, it might be sent to logging server
- */
 class LoggerReporting {
 
-    var userId: String = ""
     var partDeviceId: String = ""
     var versionName: String = ""
     var versionCode: Int = 0
-    var installerPackageName: String? = ""
+    var installer: String? = ""
+    var debug: Boolean? = false
+    var packageName: String? = null
     var tagMapsScalyr: HashMap<String, Tag> = hashMapOf()
     var tagMapsNewRelic: HashMap<String, Tag> = hashMapOf()
-
-    fun setClientLogs(clientLogs: List<String>?) {
-        // noop. only has 1 client now.
-    }
 
     fun setQueryLimits(queryLimit: List<Int>?) {
         if (queryLimit != null) {
@@ -50,7 +43,8 @@ class LoggerReporting {
             }
 
             if (priorityTag != -1) {
-                val processedMessage = getMessage(tag, timeStamp, logPriority, message)
+                val userId = LogManager.instance?.loggerProxy?.userId ?: ""
+                val processedMessage = getMessage(tag, timeStamp, logPriority, message, userId)
                 LogManager.log(processedMessage, timeStamp, priorityTag, logPriority)
             }
         })
@@ -60,28 +54,27 @@ class LoggerReporting {
         return SimpleDateFormat(Constants.DATE_TIME_FORMAT, Locale.US).format(Date(timeStamp))
     }
 
-    private fun getMessage(tag: String, timeStamp: Long, priority: String, message: Map<String, String>): String {
+    private fun getMessage(tag: String, timeStamp: Long, priority: String, message: Map<String, String>, userId:String): String {
         val mapMessage = mutableMapOf<String, String>()
-        val tokenIndex = when (priority) {
-            P1 -> Constants.SEVERITY_HIGH - 1
-            P2 -> Constants.SEVERITY_MEDIUM - 1
+        val p = when (priority) {
+            P1 -> Constants.SEVERITY_HIGH
+            P2 -> Constants.SEVERITY_MEDIUM
             else -> -1
         }
-        val scalyrConfig = LogManager.scalyrConfigList.getOrNull(tokenIndex)
         with(mapMessage) {
             put("log_tag", tag)
             put("log_timestamp", timeStamp.toString())
             put("log_time", getReadableTimeStamp(timeStamp))
             put("log_did", partDeviceId)
-            put("log_uid", userId)
+            put("log_uid",  userId)
             put("log_vernm", versionName)
             put("log_vercd", versionCode.toString())
             put("log_os", Build.VERSION.RELEASE)
             put("log_device", Build.MODEL)
-            put("log_packageName", scalyrConfig?.packageName.orEmpty())
-            put("log_installer", scalyrConfig?.installer.orEmpty())
-            put("log_debug", scalyrConfig?.debug.toString())
-            put("log_priority", scalyrConfig?.priority.toString())
+            put("log_packageName", packageName.toString())
+            put("log_installer", installer.toString())
+            put("log_debug", debug.toString())
+            put("log_priority",p.toString())
             putAll(message)
         }
 
@@ -101,6 +94,7 @@ class LoggerReporting {
 
     fun setPopulateTagMapsScalyr(tags: List<String>?) {
         if (tags.isNullOrEmpty()) {
+            tagMapsScalyr.clear()
             return
         }
         for (tag in tags) {
@@ -120,11 +114,11 @@ class LoggerReporting {
                 }
             }
         }
-        LogManager.setScalyrConfigList()
     }
 
     fun setPopulateTagMapsNewRelic(tags: List<String>?) {
         if (tags.isNullOrEmpty()) {
+            tagMapsNewRelic.clear()
             return
         }
         for (tag in tags) {
@@ -144,7 +138,6 @@ class LoggerReporting {
                 }
             }
         }
-        LogManager.setNewRelicConfigList()
     }
 
     companion object {

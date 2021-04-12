@@ -37,7 +37,7 @@ public abstract class BaseNotification implements Visitable {
 
         Map<String, String> messageMap = new HashMap<>();
         messageMap.put("type", "BaseNotification");
-        ServerLogger.INSTANCE.log(Priority.P2, "PUSH_NOTIF_UNUSED", messageMap);
+        ServerLogger.log(Priority.P2, "PUSH_NOTIF_UNUSED", messageMap);
     }
 
     @Override

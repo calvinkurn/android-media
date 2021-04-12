@@ -100,7 +100,7 @@ public class GCMHandler {
                                 Map<String, String> messageMap = new HashMap<>();
                                 messageMap.put("type", "gcm");
                                 messageMap.put("fingerprint", Build.FINGERPRINT);
-                                ServerLogger.INSTANCE.log(Priority.P1, "PLAY_SERVICE_ERROR", messageMap);
+                                ServerLogger.log(Priority.P1, "PLAY_SERVICE_ERROR", messageMap);
                             }).show();
                 }
             }

@@ -300,6 +300,6 @@ public class AppsflyerEventValidation {
     }
 
     private void logging(Map<String, String> messageMap) {
-        ServerLogger.INSTANCE.log(Priority.P2, "APPSFLYER_VALIDATION", messageMap);
+        ServerLogger.log(Priority.P2, "APPSFLYER_VALIDATION", messageMap);
     }
 }

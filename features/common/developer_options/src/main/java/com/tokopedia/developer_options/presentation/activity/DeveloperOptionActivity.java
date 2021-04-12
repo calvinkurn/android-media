@@ -463,7 +463,7 @@ public class DeveloperOptionActivity extends BaseActivity {
                         priorityLogger = Priority.P2;
                     }
                     if (priorityLogger != null) {
-                        ServerLogger.INSTANCE.log(priorityLogger, tag, messageMap);
+                        ServerLogger.log(priorityLogger, tag, messageMap);
                         Toast.makeText(DeveloperOptionActivity.this,
                                 timberMessage + " has been sent", Toast.LENGTH_LONG).show();
                     }

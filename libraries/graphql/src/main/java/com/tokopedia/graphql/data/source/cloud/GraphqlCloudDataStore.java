@@ -137,7 +137,7 @@ public class GraphqlCloudDataStore implements GraphqlDataStore {
                         messageMap.put("name", CacheHelper.getQueryName(requests.get(0).getQuery()));
                         messageMap.put("key", requests.get(0).getMd5());
                         messageMap.put("hash", queryHashValues.toString());
-                        ServerLogger.INSTANCE.log(Priority.P1, "GQL_HASHING", messageMap);
+                        ServerLogger.log(Priority.P1, "GQL_HASHING", messageMap);
                         mApi.getResponse(requests, header, FingerprintManager.getQueryDigest(requests));
                     }
                     if (httpResponse.code() != Const.GQL_RESPONSE_HTTP_OK && httpResponse.body() != null) {
@@ -175,7 +175,7 @@ public class GraphqlCloudDataStore implements GraphqlDataStore {
                                 messageMap.put("name", CacheHelper.getQueryName(request.getQuery()));
                                 messageMap.put("key", request.getMd5());
                                 messageMap.put("hash", qhValues[i]);
-                                ServerLogger.INSTANCE.log(Priority.P1, "GQL_HASHING", messageMap);
+                                ServerLogger.log(Priority.P1, "GQL_HASHING", messageMap);
                             }
                             if (request == null || request.isNoCache() || (executeCacheFlow && caches.get(request.getMd5()) == null)) {
                                 continue;

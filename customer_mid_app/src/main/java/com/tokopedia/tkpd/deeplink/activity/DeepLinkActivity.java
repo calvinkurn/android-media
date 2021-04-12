@@ -209,6 +209,6 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
         messageMap.put("referrer", referrer);
         messageMap.put("extra_referrer", extraReferrer.toString());
         messageMap.put("uri", uri.toString());
-        ServerLogger.INSTANCE.log(Priority.P1, "DEEPLINK_OPEN_APP", messageMap);
+        ServerLogger.log(Priority.P1, "DEEPLINK_OPEN_APP", messageMap);
     }
 }

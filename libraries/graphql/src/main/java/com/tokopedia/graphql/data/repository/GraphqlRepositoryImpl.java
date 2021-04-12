@@ -107,7 +107,7 @@ public class GraphqlRepositoryImpl implements GraphqlRepository {
                         messageMap.put("type", "json");
                         messageMap.put("err", Log.getStackTraceString(jse));
                         messageMap.put("req", String.valueOf(requests));
-                        ServerLogger.INSTANCE.log(Priority.P1, "GQL_PARSE_ERROR", messageMap);
+                        ServerLogger.log(Priority.P1, "GQL_PARSE_ERROR", messageMap);
                     } catch (Exception e) {
                         e.printStackTrace();
                         //Just to avoid any accidental data loss
@@ -165,7 +165,7 @@ public class GraphqlRepositoryImpl implements GraphqlRepository {
             messageMap.put("type", "json");
             messageMap.put("err", Log.getStackTraceString(jse));
             messageMap.put("req", String.valueOf(requests));
-            ServerLogger.INSTANCE.log(Priority.P1, "GQL_PARSE_ERROR", messageMap);
+            ServerLogger.log(Priority.P1, "GQL_PARSE_ERROR", messageMap);
         } catch (Exception e) {
             e.printStackTrace();
         }

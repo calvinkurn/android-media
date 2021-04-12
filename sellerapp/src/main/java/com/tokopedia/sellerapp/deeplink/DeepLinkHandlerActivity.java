@@ -156,7 +156,7 @@ public class DeepLinkHandlerActivity extends AppCompatActivity {
                         messageMap.put("type", "applink");
                         messageMap.put("domain", domain);
                         messageMap.put("url", String.valueOf(uri));
-                        ServerLogger.INSTANCE.log(Priority.P1, "WEBVIEW_OPENED", messageMap);
+                        ServerLogger.log(Priority.P1, "WEBVIEW_OPENED", messageMap);
                     }
                 }
             }

@@ -100,7 +100,7 @@ public abstract class BaseNotificationMessagingService extends FirebaseMessaging
                     + " | " + Build.TAGS;
             Map<String, String> messageMap = new HashMap<>();
             messageMap.put("type", messageType);
-            ServerLogger.INSTANCE.log(Priority.P2, "TOKEN_REFRESH", messageMap);
+            ServerLogger.log(Priority.P2, "TOKEN_REFRESH", messageMap);
         } catch (Exception e) {
             e.printStackTrace();
         }

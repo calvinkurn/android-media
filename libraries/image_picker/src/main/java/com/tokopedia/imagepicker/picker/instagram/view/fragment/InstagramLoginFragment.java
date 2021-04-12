@@ -178,7 +178,7 @@ public class InstagramLoginFragment extends BaseDaggerFragment{
             messageMap.put("type", failingUrl);
             messageMap.put("error_code", String.valueOf(errorCode));
             messageMap.put("desc", description);
-            ServerLogger.INSTANCE.log(Priority.P1, "WEBVIEW_ERROR", messageMap);
+            ServerLogger.log(Priority.P1, "WEBVIEW_ERROR", messageMap);
         }
 
     }

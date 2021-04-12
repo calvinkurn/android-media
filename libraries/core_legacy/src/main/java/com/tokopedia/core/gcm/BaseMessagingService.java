@@ -64,21 +64,21 @@ public class BaseMessagingService extends BaseNotificationMessagingService {
             messageMap.put("type", "HanselPush");
             messageMap.put("from", remoteMessage.getFrom());
             messageMap.put("data", data.toString());
-            ServerLogger.INSTANCE.log(Priority.P1, "MESSAGING_SERVICE", messageMap);
+            ServerLogger.log(Priority.P1, "MESSAGING_SERVICE", messageMap);
         } else if (MoengageInteractor.INSTANCE.isFromMoEngagePlatform(remoteMessage.getData()) && showPromoNotification()) {
             appNotificationReceiver.onMoengageNotificationReceived(remoteMessage);
             Map<String, String> messageMap = new HashMap<>();
             messageMap.put("type", "MoengageNotification");
             messageMap.put("from", remoteMessage.getFrom());
             messageMap.put("data", data.toString());
-            ServerLogger.INSTANCE.log(Priority.P1, "MESSAGING_SERVICE", messageMap);
+            ServerLogger.log(Priority.P1, "MESSAGING_SERVICE", messageMap);
         } else if (appNotificationReceiver.isFromCMNotificationPlatform(remoteMessage.getData())) {
             appNotificationReceiver.onCampaignManagementNotificationReceived(remoteMessage);
             Map<String, String> messageMap = new HashMap<>();
             messageMap.put("type", "CampaignManagementNotification");
             messageMap.put("from", remoteMessage.getFrom());
             messageMap.put("data", data.toString());
-            ServerLogger.INSTANCE.log(Priority.P1, "MESSAGING_SERVICE", messageMap);
+            ServerLogger.log(Priority.P1, "MESSAGING_SERVICE", messageMap);
         } else {
             AnalyticsLog.logNotification(mContext, userSession.getUserId(), remoteMessage.getFrom(), data.getString(Constants.ARG_NOTIFICATION_CODE, ""));
             appNotificationReceiver.onNotificationReceived(remoteMessage.getFrom(), data);
@@ -110,7 +110,7 @@ public class BaseMessagingService extends BaseNotificationMessagingService {
             Map<String, String> messageMap = new HashMap<>();
             messageMap.put("type", logMessage);
             messageMap.put("data", logMessage);
-            ServerLogger.INSTANCE.log(Priority.P2, "LOG_PUSH_NOTIF", messageMap);
+            ServerLogger.log(Priority.P2, "LOG_PUSH_NOTIF", messageMap);
         }
     }
 
@@ -162,7 +162,7 @@ public class BaseMessagingService extends BaseNotificationMessagingService {
         messageMap.put("type", "TokopediaNotification");
         messageMap.put("from", remoteMessage.getFrom());
         messageMap.put("data", bundleTemp.toString());
-        ServerLogger.INSTANCE.log(Priority.P1, "MESSAGING_SERVICE", messageMap);
+        ServerLogger.log(Priority.P1, "MESSAGING_SERVICE", messageMap);
     }
 
     public static IAppNotificationReceiver createInstance(Context context) {
