@@ -15,6 +15,9 @@ class PMCommonPreferenceManager(
 
         const val KEY_HAS_OPENED_TRANSITION_INTERRUPT_POPUP = "key_has_opened_transition_interrupt_popup"
         const val KEY_HAS_OPENED_COMMUNICATION_INTERRUPT_PAGE = "key_has_opened_communication_interrupt_page"
+
+        const val KEY_SHOP_SCORE_CONSENT_CHECKED = "key_shop_score_consent_checked"
+        const val KEY_NUMBER_OF_INTERRUPT_PAGE_OPENED = "key_number_of_interrupt_page_opened"
     }
 
     private val sp: SharedPreferences by lazy {
@@ -28,6 +31,14 @@ class PMCommonPreferenceManager(
 
     fun getBoolean(key: String, defValue: Boolean): Boolean {
         return sp.getBoolean(key, defValue)
+    }
+
+    fun putInt(key: String, value: Int) {
+        spe.putInt(key, value)
+    }
+
+    fun getInt(key: String, defValue: Int): Int {
+        return sp.getInt(key, defValue)
     }
 
     fun apply() {

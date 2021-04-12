@@ -9,6 +9,7 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.gm.common.constant.PMConstant
 import com.tokopedia.gm.common.constant.PeriodType
 import com.tokopedia.gm.common.data.source.local.PMCommonPreferenceManager
@@ -17,6 +18,7 @@ import com.tokopedia.gm.common.view.bottomsheet.PMTransitionInterruptBottomSheet
 import com.tokopedia.gm.common.view.model.PowerMerchantInterruptUiModel
 import com.tokopedia.gm.common.view.worker.GetPMInterruptDataWorker
 import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.kotlin.extensions.view.orZero
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -28,6 +30,9 @@ class PMShopScoreInterruptHelper @Inject constructor() {
 
     companion object {
         private const val WORKER_TAG = "get_pm_ss_interrupt_data_worker"
+
+        private const val PARAM_OPEN = "open"
+        private const val PARAM_HAS_CLICKED = "has_clicked"
     }
 
     private var oneTimeWorkRequest: OneTimeWorkRequest? = null
@@ -91,7 +96,7 @@ class PMShopScoreInterruptHelper @Inject constructor() {
         when (data.periodType) {
             PeriodType.FINAL_PERIOD -> setupInterruptFinalPeriod(data, fm)
             PeriodType.TRANSITION_PERIOD -> setupInterruptTransitionPeriod(context, data, fm)
-            else -> showInterruptPage(context)
+            else -> showInterruptPage(context, data)
         }
     }
 
@@ -108,7 +113,7 @@ class PMShopScoreInterruptHelper @Inject constructor() {
         if (hasOpenedInterruptPage()) {
             showTransitionPmInterruptPopup(context, data, fm)
         } else {
-            showInterruptPage(context)
+            showInterruptPage(context, data)
         }
     }
 
@@ -117,7 +122,8 @@ class PMShopScoreInterruptHelper @Inject constructor() {
             val bottomSheet = PMTransitionInterruptBottomSheet.getInstance(fm)
             Handler().post {
                 if (!bottomSheet.isAdded && !fm.isStateSaved) {
-                    saveBooleanFlag(PMCommonPreferenceManager.KEY_HAS_OPENED_TRANSITION_INTERRUPT_POPUP, true)
+                    pmCommonPreferenceManager?.putBoolean(PMCommonPreferenceManager.KEY_HAS_OPENED_TRANSITION_INTERRUPT_POPUP, true)
+                    pmCommonPreferenceManager?.apply()
                     bottomSheet.setData(data)
                             .setOnCtaClickListener {
                                 RouteManager.route(context, ApplinkConst.SHOP_SCORE_DETAIL)
@@ -128,16 +134,36 @@ class PMShopScoreInterruptHelper @Inject constructor() {
         }
     }
 
-    private fun showInterruptPage(context: Context) {
-        if (!hasOpenedInterruptPage()) {
-            saveBooleanFlag(PMCommonPreferenceManager.KEY_HAS_OPENED_COMMUNICATION_INTERRUPT_PAGE, true)
-            RouteManager.route(context, PMConstant.Urls.SHOP_SCORE_INTERRUPT_PAGE)
+    private fun showInterruptPage(context: Context, data: PowerMerchantInterruptUiModel) {
+        if (data.periodType == PeriodType.TRANSITION_PERIOD) {
+            if (!hasOpenedInterruptPage()) {
+                pmCommonPreferenceManager?.putBoolean(PMCommonPreferenceManager.KEY_HAS_OPENED_COMMUNICATION_INTERRUPT_PAGE, true)
+                pmCommonPreferenceManager?.apply()
+                RouteManager.route(context, getInterruptPageUrl(0, false))
+            }
+        } else {
+            val hasConsentChecked = hasConsentChecked()
+            if (!hasConsentChecked) {
+                val numberOfPageOpened = pmCommonPreferenceManager?.getInt(PMCommonPreferenceManager.KEY_NUMBER_OF_INTERRUPT_PAGE_OPENED, 0).orZero()
+                pmCommonPreferenceManager?.putBoolean(PMCommonPreferenceManager.KEY_HAS_OPENED_COMMUNICATION_INTERRUPT_PAGE, true)
+                pmCommonPreferenceManager?.putInt(PMCommonPreferenceManager.KEY_NUMBER_OF_INTERRUPT_PAGE_OPENED, numberOfPageOpened.plus(1))
+                pmCommonPreferenceManager?.apply()
+                val interruptPageUrl = getInterruptPageUrl(numberOfPageOpened, hasConsentChecked)
+                RouteManager.route(context, interruptPageUrl)
+            }
         }
     }
 
-    private fun saveBooleanFlag(key: String, value: Boolean) {
-        pmCommonPreferenceManager?.putBoolean(key, value)
-        pmCommonPreferenceManager?.apply()
+    private fun getInterruptPageUrl(numberOfPageOpened: Int, hasConsentChecked: Boolean): String {
+        val param = mapOf<String, Any>(
+                PARAM_OPEN to numberOfPageOpened,
+                PARAM_HAS_CLICKED to hasConsentChecked
+        )
+        return UriUtil.buildUriAppendParams(PMConstant.Urls.SHOP_SCORE_INTERRUPT_PAGE, param)
+    }
+
+    private fun hasConsentChecked(): Boolean {
+        return pmCommonPreferenceManager?.getBoolean(PMCommonPreferenceManager.KEY_SHOP_SCORE_CONSENT_CHECKED, false).orFalse()
     }
 
     private fun hasOpenedInterruptPopup(): Boolean {
