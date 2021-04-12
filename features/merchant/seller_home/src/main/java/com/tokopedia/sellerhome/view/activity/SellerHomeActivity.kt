@@ -345,7 +345,11 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
             val pageTitle = navigator?.getPageTitle(pageType)
             supportActionBar?.title = pageTitle
             sahToolbar?.show()
+            toolbarShadow?.show()
         } else {
+            if (DeviceScreenInfo.isTablet(this)) {
+                toolbarShadow?.hide()
+            }
             sahToolbar?.hide()
         }
     }
