@@ -3,8 +3,9 @@ package com.tokopedia.shop.product.di.module
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseInterceptor
-import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor
 import com.tokopedia.gm.common.constant.GMCommonUrl
 import com.tokopedia.gm.common.data.interceptor.GMAuthInterceptor
 import com.tokopedia.gm.common.data.repository.GMCommonRepositoryImpl
@@ -21,20 +22,20 @@ import com.tokopedia.shop.common.constant.ShopCommonParamApiConstant.GQL_PRODUCT
 import com.tokopedia.shop.common.constant.ShopUrl
 import com.tokopedia.shop.common.data.interceptor.ShopAuthInterceptor
 import com.tokopedia.shop.common.di.ShopPageContext
-import com.tokopedia.shop.common.domain.interactor.DeleteShopInfoCacheUseCase
 import com.tokopedia.shop.common.graphql.data.stampprogress.MembershipStampProgress
 import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.ClaimBenefitMembershipUseCase
 import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.GetMembershipUseCase
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.shop.product.data.model.ShopFeaturedProduct
 import com.tokopedia.shop.product.data.repository.ShopProductRepositoryImpl
 import com.tokopedia.shop.product.data.source.cloud.ShopProductCloudDataSource
 import com.tokopedia.shop.product.data.source.cloud.api.ShopOfficialStoreApi
 import com.tokopedia.shop.product.data.source.cloud.interceptor.ShopOfficialStoreAuthInterceptor
-import com.tokopedia.shop.product.di.*
+import com.tokopedia.shop.product.di.ShopProductGMFeaturedQualifier
+import com.tokopedia.shop.product.di.ShopProductQualifier
+import com.tokopedia.shop.product.di.ShopProductSortQualifier
+import com.tokopedia.shop.product.di.ShopProductWishListFeaturedQualifier
 import com.tokopedia.shop.product.di.scope.ShopProductScope
-import com.tokopedia.shop.product.domain.interactor.*
+import com.tokopedia.shop.product.domain.interactor.GetProductCampaignsUseCase
 import com.tokopedia.shop.product.domain.repository.ShopProductRepository
 import com.tokopedia.shop.sort.data.repository.ShopProductSortRepositoryImpl
 import com.tokopedia.shop.sort.data.source.cloud.ShopProductSortCloudDataSource
@@ -203,12 +204,6 @@ class ShopProductModule {
 
     @ShopProductScope
     @Provides
-    fun provideDeleteShopInfoUseCase(@ShopPageContext context: Context ): DeleteShopInfoCacheUseCase {
-        return DeleteShopInfoCacheUseCase(context)
-    }
-
-    @ShopProductScope
-    @Provides
     fun provideClaimBenefitMembershipUseCase(@Named(ShopCommonParamApiConstant.QUERY_CLAIM_MEMBERSHIP) gqlQuery: String,
                                              gqlUseCase: MultiRequestGraphqlUseCase): ClaimBenefitMembershipUseCase {
         return ClaimBenefitMembershipUseCase(gqlQuery!!, gqlUseCase!!)
@@ -223,12 +218,10 @@ class ShopProductModule {
 
     @ShopProductGMFeaturedQualifier
     @Provides
-    fun provideGMOkHttpClient(gmAuthInterceptor: GMAuthInterceptor,
-                              @ApplicationScope httpLoggingInterceptor: HttpLoggingInterceptor,
-                              errorResponseInterceptor: HeaderErrorResponseInterceptor,
-                              cacheApiInterceptor: CacheApiInterceptor): OkHttpClient {
+    fun provideGMOkHttpClient(gmAuthInterceptor: GMAuthInterceptor?,
+                              @ApplicationScope httpLoggingInterceptor: HttpLoggingInterceptor?,
+                              errorResponseInterceptor: HeaderErrorResponseInterceptor?): OkHttpClient {
         return Builder()
-            .addInterceptor(cacheApiInterceptor)
             .addInterceptor(gmAuthInterceptor)
             .addInterceptor(errorResponseInterceptor)
             .addInterceptor(httpLoggingInterceptor)
@@ -341,12 +334,10 @@ class ShopProductModule {
 
     @ShopProductQualifier
     @Provides
-    fun provideOfficialStoreOkHttpClient(shopOfficialStoreAuthInterceptor: ShopOfficialStoreAuthInterceptor,
-                                         @ApplicationScope httpLoggingInterceptor: HttpLoggingInterceptor,
-                                         errorResponseInterceptor: HeaderErrorResponseInterceptor,
-                                         cacheApiInterceptor: CacheApiInterceptor): OkHttpClient {
+    fun provideOfficialStoreOkHttpClient(shopOfficialStoreAuthInterceptor: ShopOfficialStoreAuthInterceptor?,
+                                         @ApplicationScope httpLoggingInterceptor: HttpLoggingInterceptor?,
+                                         errorResponseInterceptor: HeaderErrorResponseInterceptor?): OkHttpClient {
         return Builder()
-            .addInterceptor(cacheApiInterceptor)
             .addInterceptor(shopOfficialStoreAuthInterceptor)
             .addInterceptor(errorResponseInterceptor)
             .addInterceptor(httpLoggingInterceptor)
@@ -374,18 +365,6 @@ class ShopProductModule {
 
     @ShopProductScope
     @Provides
-    fun provideDeleteShopProductTomeUseCase(@ShopPageContext context: Context): DeleteShopProductTomeUseCase {
-        return DeleteShopProductTomeUseCase(context)
-    }
-
-    @ShopProductScope
-    @Provides
-    fun provideDeleteShopProductAceUseCase(@ShopPageContext context: Context): DeleteShopProductAceUseCase {
-        return DeleteShopProductAceUseCase(context)
-    }
-
-    @ShopProductScope
-    @Provides
     fun provideGetProductCampaignsUseCase(wishListCommonRepository: ShopProductRepository): GetProductCampaignsUseCase {
         return GetProductCampaignsUseCase(wishListCommonRepository)
     }
@@ -399,12 +378,10 @@ class ShopProductModule {
     @ShopProductSortQualifier
     @ShopProductScope
     @Provides
-    fun provideOkHttpClient(shopAuthInterceptor: ShopAuthInterceptor,
-                            @ApplicationScope httpLoggingInterceptor: HttpLoggingInterceptor,
-                            errorResponseInterceptor: HeaderErrorResponseInterceptor,
-                            cacheApiInterceptor: CacheApiInterceptor): OkHttpClient {
+    fun provideOkHttpClient(shopAuthInterceptor: ShopAuthInterceptor?,
+                            @ApplicationScope httpLoggingInterceptor: HttpLoggingInterceptor?,
+                            errorResponseInterceptor: HeaderErrorResponseInterceptor?): OkHttpClient? {
         return Builder()
-                .addInterceptor(cacheApiInterceptor)
                 .addInterceptor(shopAuthInterceptor)
                 .addInterceptor(errorResponseInterceptor)
                 .addInterceptor(httpLoggingInterceptor)

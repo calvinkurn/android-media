@@ -6,7 +6,6 @@ import com.tokopedia.abstraction.AbstractionRouter
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseInterceptor
-import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
@@ -36,7 +35,6 @@ import javax.inject.Named
 interface ShopComponent {
     @get:ApplicationContext
     val context: Context
-    fun cacheApiInterceptor(): CacheApiInterceptor
     val shopApi: ShopApi
     val abstractionRouter: AbstractionRouter
     fun retrofitBuilder(): Retrofit.Builder

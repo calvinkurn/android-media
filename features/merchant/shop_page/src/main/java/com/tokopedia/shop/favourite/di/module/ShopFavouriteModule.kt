@@ -4,7 +4,6 @@ import android.content.Context
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.shop.common.di.ShopPageContext
-import com.tokopedia.shop.common.domain.interactor.DeleteShopInfoCacheUseCase
 import com.tokopedia.shop.favourite.data.query.GetShopFollowerListQueryProvider.getQuery
 import com.tokopedia.shop.favourite.di.scope.ShopFavouriteScope
 import com.tokopedia.shop.favourite.domain.interactor.GetShopFollowerListUseCase
@@ -16,12 +15,6 @@ import javax.inject.Named
 
 @Module
 class ShopFavouriteModule {
-    @ShopFavouriteScope
-    @Provides
-    fun provideDeleteShopInfoUseCase(@ShopPageContext context: Context?): DeleteShopInfoCacheUseCase {
-        return DeleteShopInfoCacheUseCase(context)
-    }
-
     @ShopFavouriteScope
     @Provides
     fun provideUserSessionInterface(@ShopPageContext context: Context?): UserSessionInterface {

@@ -9,5 +9,6 @@ data class OrderPreference(
         val profileIndex: String? = null,
         val profileRecommendation: String? = null,
         val preference: OrderProfile = OrderProfile(),
-        val isValid: Boolean = false
+        val isValid: Boolean = false,
+        val removeProfileData: OccRemoveProfileData = OccRemoveProfileData()
 )
