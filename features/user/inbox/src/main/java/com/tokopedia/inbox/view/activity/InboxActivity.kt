@@ -13,6 +13,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
+import com.tokopedia.applink.ApplinkConst.Inbox.*
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.inbox.R
@@ -46,11 +47,29 @@ import javax.inject.Inject
 /**
  * How to go to this page
  * Applink: [com.tokopedia.applink.ApplinkConst.INBOX]
- * This page accept 2 optional query parameters `page` and `role`.
- * the value you can use defined below
- * page: notif, chat, talk, review
- * role: buyer, seller
- * If the query parameters is not provided it will use recent page & role
+ *
+ * This page accept 2 optional query parameters:
+ * - [com.tokopedia.applink.ApplinkConst.Inbox.PARAM_PAGE]
+ * - [com.tokopedia.applink.ApplinkConst.Inbox.PARAM_ROLE]
+ * the value you can use are as follows
+ * param page:
+ * - [com.tokopedia.applink.ApplinkConst.Inbox.VALUE_PAGE_NOTIFICATION]
+ * - [com.tokopedia.applink.ApplinkConst.Inbox.VALUE_PAGE_CHAT]
+ * - [com.tokopedia.applink.ApplinkConst.Inbox.VALUE_PAGE_TALK]
+ * - [com.tokopedia.applink.ApplinkConst.Inbox.VALUE_PAGE_REVIEW]
+ * param role:
+ * - [com.tokopedia.applink.ApplinkConst.Inbox.VALUE_ROLE_BUYER]
+ * - [com.tokopedia.applink.ApplinkConst.Inbox.VALUE_ROLE_SELLER]
+ * If the query parameters is not provided it will use recent/last opened page & role
+ *
+ * example form of applinks:
+ * - tokopedia://inbox
+ * - tokopedia://inbox?page=notification&role=buyer
+ * - tokopedia://inbox?page=notification
+ * - tokopedia://inbox?role=buyer
+ *
+ * note: Do not hardcode applink.
+ * use variable reference in [com.tokopedia.applink.ApplinkConst]
  */
 class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentContainer {
 
@@ -89,6 +108,7 @@ class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentC
         setContentView(R.layout.activity_inbox)
         setupInjector()
         setupLastPreviousState()
+        setupStateFromAppLink()
         trackOpenInbox()
         setupView()
         setupConfig()
@@ -119,6 +139,30 @@ class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentC
     private fun setupLastPreviousState() {
         InboxConfig.setRole(cacheState.role)
         InboxConfig.page = cacheState.initialPage
+    }
+
+    private fun setupStateFromAppLink() {
+        val data = intent?.data
+        val page = data?.getQueryParameter(PARAM_PAGE)
+        val role = data?.getQueryParameter(PARAM_ROLE)
+        val pageInt = when (page) {
+            VALUE_PAGE_NOTIFICATION -> InboxFragmentType.NOTIFICATION
+            VALUE_PAGE_CHAT -> InboxFragmentType.CHAT
+            VALUE_PAGE_TALK -> InboxFragmentType.DISCUSSION
+            VALUE_PAGE_REVIEW -> InboxFragmentType.REVIEW
+            else -> null
+        }
+        val roleInt = when (role) {
+            VALUE_ROLE_BUYER -> RoleType.BUYER
+            VALUE_ROLE_SELLER -> RoleType.SELLER
+            else -> null
+        }
+        pageInt?.let {
+            InboxConfig.page = it
+        }
+        roleInt?.let {
+            InboxConfig.setRole(it)
+        }
     }
 
     private fun trackOpenInbox() {
@@ -461,5 +505,4 @@ class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentC
     private fun onBottomNavSelected(@InboxFragmentType page: Int) {
         navigator?.onPageSelected(page)
     }
-
 }
