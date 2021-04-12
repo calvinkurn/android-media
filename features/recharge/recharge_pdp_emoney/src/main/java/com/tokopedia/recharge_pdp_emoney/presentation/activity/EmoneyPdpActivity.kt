@@ -1,15 +1,33 @@
 package com.tokopedia.recharge_pdp_emoney.presentation.activity
 
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import androidx.fragment.app.Fragment
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.common.topupbills.CommonTopupBillsComponentInstance
+import com.tokopedia.recharge_pdp_emoney.R
 import com.tokopedia.recharge_pdp_emoney.di.DaggerEmoneyPdpComponent
 import com.tokopedia.recharge_pdp_emoney.di.EmoneyPdpComponent
+import com.tokopedia.recharge_pdp_emoney.presentation.bottomsheet.EmoneyMenuBottomSheets
 import com.tokopedia.recharge_pdp_emoney.presentation.fragment.EmoneyPdpFragment
+import com.tokopedia.url.TokopediaUrl
+import com.tokopedia.user.session.UserSessionInterface
+import javax.inject.Inject
 
-class EmoneyPdpActivity : BaseSimpleActivity(), HasComponent<EmoneyPdpComponent> {
+class EmoneyPdpActivity : BaseSimpleActivity(), HasComponent<EmoneyPdpComponent>,
+        EmoneyMenuBottomSheets.MenuListener {
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
+    var promoCode = ""
+
+    lateinit var menuEmoney: Menu
+
     override fun getNewFragment(): Fragment = EmoneyPdpFragment()
 
     override fun getComponent(): EmoneyPdpComponent {
@@ -23,8 +41,61 @@ class EmoneyPdpActivity : BaseSimpleActivity(), HasComponent<EmoneyPdpComponent>
         toolbar.elevation = 0f
     }
 
+    private fun showBottomMenus() {
+        val menuBottomSheet = EmoneyMenuBottomSheets.newInstance()
+        menuBottomSheet.listener = this
+        menuBottomSheet.setShowListener {
+            menuBottomSheet.bottomSheet.state = BottomSheetBehavior.STATE_EXPANDED
+        }
+        menuBottomSheet.show(supportFragmentManager, TAG_EMONEY_MENU)
+    }
+
+    override fun onMenuOpened(featureId: Int, menu: Menu?): Boolean {
+        showBottomMenus()
+        return false
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menu?.let {
+            menuEmoney = menu
+            menuInflater.inflate(R.menu.menu_emoney, menu)
+            return true
+        }
+        return false
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        if (item?.itemId ?: "" == R.id.emoney_action_overflow_menu) {
+            showBottomMenus()
+            return true
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    override fun onOrderListClicked() {
+        if (userSession.isLoggedIn) {
+            RouteManager.route(this, ApplinkConst.DIGITAL_ORDER)
+        } else {
+            val intent = RouteManager.getIntent(this, ApplinkConst.LOGIN)
+            startActivityForResult(intent, REQUEST_CODE_LOGIN_EMONEY)
+        }
+    }
+
+    override fun onSubscriptionLanggananClicked() {
+        RouteManager.route(this, TokopediaUrl.getInstance().PULSA + PATH_SUBSCRIPTIONS)
+    }
+
+    override fun onHelpClicked() {
+        RouteManager.route(this, ApplinkConst.CONTACT_US_NATIVE)
+    }
+
     companion object {
         const val EMONEY_MENU_ID = 267
         const val EMONEY_CATEGORY_ID = 34
+
+        const val REQUEST_CODE_LOGIN_EMONEY = 10000
+
+        const val TAG_EMONEY_MENU = "menu_emoney"
+        const val PATH_SUBSCRIPTIONS = "subscribe/"
     }
 }

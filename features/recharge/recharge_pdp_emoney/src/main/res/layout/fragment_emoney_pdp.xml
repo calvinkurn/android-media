@@ -36,21 +36,30 @@
             android:layout_marginTop="@dimen/unify_space_12" />
     </LinearLayout>
 
-    <com.tokopedia.unifycomponents.TabsUnify
-        android:id="@+id/emoneyPdpTab"
+    <LinearLayout
+        android:id="@+id/emoneyTabAndViewPagerLayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/layout_lvl0"
         app:layout_constraintTop_toBottomOf="@id/emoneyPdpHeaderLayout"
-        android:visibility="gone" />
-
-    <androidx.viewpager2.widget.ViewPager2
-        android:id="@+id/emoneyPdpViewPager"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_0"
-        app:layout_constraintTop_toBottomOf="@id/emoneyPdpTab"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:background="@color/Unify_N0"
-        android:visibility="gone" />
+        android:orientation="vertical"
+        tools:visibility="visible">
+
+        <com.tokopedia.unifycomponents.TabsUnify
+            android:id="@+id/emoneyPdpTab"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            tools:visibility="visible" />
+
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/emoneyPdpViewPager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/Unify_N0"
+            android:visibility="gone"
+            tools:visibility="visible" />
+    </LinearLayout>
 
     <com.tokopedia.recharge_pdp_emoney.presentation.widget.EmoneyPdpProductWidget
         android:id="@+id/emoneyPdpProductWidget"
@@ -60,6 +69,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         android:background="@color/Unify_N0"
         android:visibility="gone"
-        tools:visibility="visible" />
+        tools:visibility="gone" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

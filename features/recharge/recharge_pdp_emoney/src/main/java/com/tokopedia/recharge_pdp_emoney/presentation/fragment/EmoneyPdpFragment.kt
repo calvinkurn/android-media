@@ -24,6 +24,9 @@ import com.tokopedia.common.topupbills.utils.CommonTopupBillsGqlMutation
 import com.tokopedia.common.topupbills.utils.CommonTopupBillsGqlQuery
 import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActivity
 import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsViewModel
+import com.tokopedia.common_digital.atc.DigitalAddToCartViewModel
+import com.tokopedia.common_digital.atc.data.response.DigitalSubscriptionParams
+import com.tokopedia.common_digital.atc.utils.DeviceUtil
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam
 import com.tokopedia.common_digital.common.presentation.model.DigitalCategoryDetailPassData
 import com.tokopedia.common_digital.product.presentation.model.ClientNumberType
@@ -61,6 +64,7 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
     private val viewModelFragmentProvider by lazy { ViewModelProvider(requireActivity(), viewModelFactory) }
     private val topUpBillsViewModel by lazy { viewModelFragmentProvider.get(TopupBillsViewModel::class.java) }
     private val emoneyPdpViewModel by lazy { viewModelFragmentProvider.get(EmoneyPdpViewModel::class.java) }
+    private val addToCartViewModel by lazy { viewModelFragmentProvider.get(DigitalAddToCartViewModel::class.java) }
 
     override fun getScreenName(): String = ""
 
@@ -100,7 +104,7 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
         })
 
         emoneyPdpViewModel.errorMessage.observe(viewLifecycleOwner, Observer {
-            renderErrorMessage()
+            renderErrorMessage(it)
         })
 
         emoneyPdpViewModel.catalogPrefixSelect.observe(viewLifecycleOwner, Observer {
@@ -117,6 +121,15 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
                 is Success -> {
                     renderProducts(it.data.product.dataCollections.firstOrNull()?.products
                             ?: listOf())
+                }
+                is Fail -> emoneyPdpViewModel.setErrorMessage(it.throwable)
+            }
+        })
+
+        addToCartViewModel.addToCartResult.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Success -> {
+
                 }
                 is Fail -> emoneyPdpViewModel.setErrorMessage(it.throwable)
             }
@@ -251,11 +264,10 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
 
     private fun renderClientNumber(item: TopupBillsFavNumberItem) {
         emoneyPdpInputCardWidget.setNumber(item.clientNumber)
-        emoneyPdpViewModel.getSelectedOperator(item.clientNumber)
     }
 
-    private fun renderErrorMessage() {
-
+    private fun renderErrorMessage(message: String) {
+        Toaster.build(requireView(), message, Toaster.LENGTH_LONG).show()
     }
 
     override fun onClickCheckBalance() {
@@ -285,6 +297,7 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
 
     override fun onInputNumberChanged(inputNumber: String) {
         // call be to get operator name
+        emoneyPdpViewModel.getSelectedOperator(inputNumber)
     }
 
     private fun showFavoriteNumbersPage(favoriteNumbers: List<TopupBillsFavNumberItem>) {
@@ -315,17 +328,23 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
 
     private fun showProducts() {
         emoneyPdpProductWidget.show()
-        emoneyPdpViewPager.hide()
+        emoneyTabAndViewPagerLayout.hide()
     }
 
     private fun showRecentNumberAndPromo() {
         emoneyPdpProductWidget.hide()
-        emoneyPdpViewPager.show()
+        emoneyTabAndViewPagerLayout.show()
     }
 
     override fun onClickProduct(product: CatalogProduct) {
-        //ac
+        //atc
+        addToCartViewModel.addToCart(emoneyPdpViewModel.generateCheckoutPassData(product,
+                (requireActivity() as EmoneyPdpActivity).promoCode,
+                emoneyPdpInputCardWidget.getNumber()),
+                DeviceUtil.getDigitalIdentifierParam(requireActivity()),
+                DigitalSubscriptionParams())
     }
+
 
     override fun onClickSeeDetailProduct(product: CatalogProduct) {
         val bottomSheet = EmoneyProductDetailBottomSheet(product)

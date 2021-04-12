@@ -7,11 +7,14 @@ import com.tokopedia.common.topupbills.data.prefix_select.RechargePrefix
 import com.tokopedia.common.topupbills.data.prefix_select.TelcoCatalogPrefixSelect
 import com.tokopedia.common.topupbills.data.prefix_select.TelcoOperator
 import com.tokopedia.common.topupbills.data.product.CatalogData
+import com.tokopedia.common.topupbills.data.product.CatalogProduct
 import com.tokopedia.common.topupbills.usecase.RechargeCatalogPrefixSelectUseCase
 import com.tokopedia.common.topupbills.usecase.RechargeCatalogProductInputUseCase
+import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject
 
@@ -19,6 +22,7 @@ import javax.inject.Inject
  * @author by jessica on 01/04/21
  */
 class EmoneyPdpViewModel @Inject constructor(private val dispatcher: CoroutineDispatcher,
+                                             private val userSession: UserSessionInterface,
                                              private val rechargeCatalogPrefixSelectUseCase: RechargeCatalogPrefixSelectUseCase,
                                              private val rechargeCatalogProductInputUseCase: RechargeCatalogProductInputUseCase)
     : BaseViewModel(dispatcher) {
@@ -58,6 +62,9 @@ class EmoneyPdpViewModel @Inject constructor(private val dispatcher: CoroutineDi
     }
 
     fun getSelectedOperator(inputNumber: String) {
+        if (inputNumber.isEmpty()) {
+            return
+        }
         try {
             if (catalogPrefixSelect.value is Success) {
                 val operatorSelected = (catalogPrefixSelect.value as Success).data.rechargeCatalogPrefixSelect.prefixes.single {
@@ -84,5 +91,13 @@ class EmoneyPdpViewModel @Inject constructor(private val dispatcher: CoroutineDi
         )
     }
 
+    fun generateCheckoutPassData(product: CatalogProduct, copiedPromoCode: String, clientNumber: String): DigitalCheckoutPassData {
+        val checkoutPassData = DigitalCheckoutPassData()
+//        checkoutPassData.idemPotencyKey = userSession.userId.generateRechargeCheckoutToken()
+        checkoutPassData.voucherCodeCopied = copiedPromoCode
+        checkoutPassData.clientNumber = clientNumber
+        checkoutPassData.operatorId = product.id
+        return checkoutPassData
+    }
 
 }

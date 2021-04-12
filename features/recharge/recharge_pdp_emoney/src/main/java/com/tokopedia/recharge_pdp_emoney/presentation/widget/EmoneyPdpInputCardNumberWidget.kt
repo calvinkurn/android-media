@@ -60,6 +60,8 @@ class EmoneyPdpInputCardNumberWidget @JvmOverloads constructor(@NotNull context:
         showClearIcon()
     }
 
+    fun getNumber(): String = emoneyPdpCardInputNumber.textFieldInput.text.toString()
+
     fun setOperator(imageUrl: String) {
         emoneyPdpCardInputNumber.setFirstIcon(imageUrl)
     }
