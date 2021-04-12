@@ -27,7 +27,6 @@ import com.tokopedia.analyticsdebugger.debugger.TetraDebugger.Companion.instance
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.cacheapi.domain.interactor.CacheApiClearAllUseCase
 import com.tokopedia.cachemanager.PersistentCacheManager
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.core.gcm.FCMCacheManager
@@ -165,7 +164,6 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
         PersistentCacheManager.instance.delete()
         AppWidgetUtil.sendBroadcastToAppWidget(applicationContext)
         NotificationModHandler.clearCacheAllNotification(applicationContext)
-        CacheApiClearAllUseCase(applicationContext).executeSync()
         NotificationModHandler(applicationContext).dismissAllActivedNotifications()
         clearWebView()
         clearLocalChooseAddress()
