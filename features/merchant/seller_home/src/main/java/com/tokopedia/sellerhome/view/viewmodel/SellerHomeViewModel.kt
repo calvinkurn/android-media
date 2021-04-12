@@ -201,20 +201,28 @@ class SellerHomeViewModel @Inject constructor(
         })
     }
 
-    fun getWidgetLayout(heightDp: Float) {
+    fun getWidgetLayout(heightDp: Float? = null) {
         launchCatchError(block = {
             val params = GetLayoutUseCase.getRequestParams(shopId, SELLER_HOME_PAGE_NAME)
             if (remoteConfig.isSellerHomeDashboardNewCachingEnabled()) {
                 getLayoutUseCase.get().run {
-                    startCollectingResult(_widgetLayout) {
-                        getInitialWidget(it, heightDp)
+                    if (heightDp == null) {
+                        startCollectingResult(_widgetLayout)
+                    } else {
+                        startCollectingResult(_widgetLayout) {
+                            getInitialWidget(it, heightDp)
+                        }
                     }
                     executeOnBackground(params, isFirstLoad && remoteConfig.isSellerHomeDashboardCachingEnabled())
                 }
             } else {
                 getLayoutUseCase.get().params = params
-                getDataFromUseCase(getLayoutUseCase.get(), _widgetLayout) {
-                    getInitialWidget(it, heightDp)
+                if (heightDp == null) {
+                    getDataFromUseCase(getLayoutUseCase.get(), _widgetLayout)
+                } else {
+                    getDataFromUseCase(getLayoutUseCase.get(), _widgetLayout) {
+                        getInitialWidget(it, heightDp)
+                    }
                 }
             }
         }, onError = {
