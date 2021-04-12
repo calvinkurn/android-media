@@ -7,7 +7,7 @@ import com.tokopedia.sellerhomecommon.common.const.MetricsType
  */
 
 data class MultiLineGraphDataUiModel(
-        override val dataKey: String = "",
+        override var dataKey: String = "",
         override var error: String = "",
         override var isFromCache: Boolean = false,
         override val showWidget: Boolean = false,

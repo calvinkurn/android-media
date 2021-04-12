@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.sellerhome.config.SellerHomeRemoteConfig
 import com.tokopedia.sellerhome.domain.model.ShippingLoc
 import com.tokopedia.sellerhome.domain.usecase.GetShopLocationUseCase
@@ -422,70 +423,68 @@ class SellerHomeViewModel @Inject constructor(
         return getWidgetsData(newWidgetList).mapToWidgetModel(newWidgetList)
     }
 
-    @Suppress("UNCHECKED_CAST")
     private suspend fun getWidgetsData(widgets: List<BaseWidgetUiModel<*>>): List<BaseDataUiModel> {
         val groupedWidgets = widgets.groupBy { it.widgetType } as MutableMap
         return mutableListOf<BaseDataUiModel>().apply {
-            val lineGraphData = async {
-                groupedWidgets[WidgetType.LINE_GRAPH]?.let {
-                    getLineGraphData(it)
-                }
+            val lineGraphData = async { groupedWidgets.getWidgetDataByType<LineGraphDataUiModel>(WidgetType.LINE_GRAPH) }
+            val announcementData = async { groupedWidgets.getWidgetDataByType<AnnouncementDataUiModel>(WidgetType.ANNOUNCEMENT) }
+            val cardData = async { groupedWidgets.getWidgetDataByType<CardDataUiModel>(WidgetType.CARD) }
+            val progressData = async { groupedWidgets.getWidgetDataByType<ProgressDataUiModel>(WidgetType.PROGRESS) }
+            val carouselData = async { groupedWidgets.getWidgetDataByType<CarouselDataUiModel>(WidgetType.CAROUSEL) }
+            val postData = async { groupedWidgets.getWidgetDataByType<PostListDataUiModel>(WidgetType.POST_LIST) }
+            val tableData = async { groupedWidgets.getWidgetDataByType<TableDataUiModel>(WidgetType.TABLE) }
+            val pieChartData = async { groupedWidgets.getWidgetDataByType<PieChartDataUiModel>(WidgetType.PIE_CHART) }
+            val barChartData = async { groupedWidgets.getWidgetDataByType<BarChartDataUiModel>(WidgetType.BAR_CHART) }
+            val multiLineGraphData = async { groupedWidgets.getWidgetDataByType<MultiLineGraphDataUiModel>(WidgetType.MULTI_LINE_GRAPH) }
+
+            val concattedResult = concatAllResult(
+                    lineGraphData.await(),
+                    announcementData.await(),
+                    cardData.await(),
+                    progressData.await(),
+                    carouselData.await(),
+                    postData.await(),
+                    tableData.await(),
+                    pieChartData.await(),
+                    barChartData.await(),
+                    multiLineGraphData.await())
+            addAll(concattedResult)
+        }
+    }
+
+    private fun <T> concatAllResult(vararg lists: List<T>): List<T> {
+        return mutableListOf<T>().apply {
+            lists.forEach {
+                addAll(it)
             }
-            val announcementData = async {
-                groupedWidgets[WidgetType.ANNOUNCEMENT]?.let {
-                    getAnnouncementData(it)
+        }
+    }
+
+    private suspend inline fun <reified D : BaseDataUiModel> MutableMap<String, List<BaseWidgetUiModel<*>>>.getWidgetDataByType(widgetType: String): List<BaseDataUiModel> {
+        val widgetList = this[widgetType]
+        return try {
+            widgetList?.let {
+                when(widgetType) {
+                    WidgetType.LINE_GRAPH -> getLineGraphData(it)
+                    WidgetType.ANNOUNCEMENT -> getAnnouncementData(it)
+                    WidgetType.CARD -> getCardData(it)
+                    WidgetType.PROGRESS -> getProgressData(it)
+                    WidgetType.CAROUSEL -> getCarouselData(it)
+                    WidgetType.POST_LIST -> getPostData(it)
+                    WidgetType.TABLE -> getTableData(it)
+                    WidgetType.PIE_CHART -> getPieChartData(it)
+                    WidgetType.BAR_CHART -> getBarChartData(it)
+                    WidgetType.MULTI_LINE_GRAPH -> getMultiLineGraphData(it)
+                    else -> null
                 }
-            }
-            val cardData = async {
-                groupedWidgets[WidgetType.CARD]?.let {
-                    getCardData(it)
+            }.orEmpty()
+        } catch (ex: Exception) {
+            widgetList?.map { widget ->
+                D::class.java.newInstance().apply {
+                    dataKey = widget.dataKey
+                    error = ex.message.orEmpty()
                 }
-            }
-            val progressData = async {
-                groupedWidgets[WidgetType.PROGRESS]?.let {
-                    getProgressData(it)
-                }
-            }
-            val carouselData = async {
-                groupedWidgets[WidgetType.CAROUSEL]?.let {
-                    getCarouselData(it)
-                }
-            }
-            val postData = async {
-                groupedWidgets[WidgetType.POST_LIST]?.let {
-                    getPostData(it)
-                }
-            }
-            val tableData = async {
-                groupedWidgets[WidgetType.TABLE]?.let {
-                    getTableData(it)
-                }
-            }
-            val pieChartData = async {
-                groupedWidgets[WidgetType.PIE_CHART]?.let {
-                    getPieChartData(it)
-                }
-            }
-            val barChartData = async {
-                groupedWidgets[WidgetType.BAR_CHART]?.let {
-                    getBarChartData(it)
-                }
-            }
-            val multiLineGraphData = async {
-                groupedWidgets[WidgetType.MULTI_LINE_GRAPH]?.let {
-                    getMultiLineGraphData(it)
-                }
-            }
-            lineGraphData.await()?.let { addAll(it) }
-            announcementData.await()?.let { addAll(it) }
-            cardData.await()?.let { addAll(it) }
-            progressData.await()?.let { addAll(it) }
-            carouselData.await()?.let { addAll(it) }
-            postData.await()?.let { addAll(it) }
-            tableData.await()?.let { addAll(it) }
-            pieChartData.await()?.let { addAll(it) }
-            barChartData.await()?.let { addAll(it) }
-            multiLineGraphData.await()?.let { addAll(it) }
+            }.orEmpty()
         }
     }
 
