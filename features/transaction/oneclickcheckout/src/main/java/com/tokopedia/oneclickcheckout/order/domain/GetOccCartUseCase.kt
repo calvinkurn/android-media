@@ -303,7 +303,7 @@ class GetOccCartUseCase @Inject constructor(private val graphqlRepository: Graph
         }
         profile_revamp_wording
         is_recom
-        #profile_id
+        profile_id
         status
         address {
           address_id
@@ -323,6 +323,7 @@ class GetOccCartUseCase @Inject constructor(private val graphqlRepository: Graph
           geolocation
           state
           state_detail
+          status
         }
         payment {
           enable
