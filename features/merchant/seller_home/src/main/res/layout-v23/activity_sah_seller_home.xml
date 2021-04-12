@@ -33,7 +33,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/spacing_lvl1"
         android:background="@drawable/sah_shadow"
-        android:layout_alignParentTop="true"/>
+        android:layout_below="@id/statusBarBackground"/>
 
     <View
         android:id="@+id/navBarShadow"

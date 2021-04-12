@@ -132,11 +132,14 @@ class SomDetailHeaderViewHolder(itemView: View, private val actionListener: SomD
 
     private fun setupOrderStatus(statusText: String, statusCode: Int) {
         itemView.header_title?.text = statusText
-        if (statusCode == STATUS_CODE_ORDER_CANCELLED ||
+        val statusOrderColor = if (statusCode == STATUS_CODE_ORDER_CANCELLED ||
                 statusCode == STATUS_CODE_ORDER_AUTO_CANCELLED ||
                 statusCode == STATUS_CODE_ORDER_REJECTED) {
-            itemView.header_title?.setTextColor(MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_R600))
+            com.tokopedia.unifyprinciples.R.color.Unify_R600
+        } else {
+            com.tokopedia.unifyprinciples.R.color.Unify_N700_96
         }
+        itemView.header_title?.setTextColor(MethodChecker.getColor(itemView.context, statusOrderColor))
     }
 
     private fun setupTicker(tickerBuyerRequestCancel: Ticker?, tickerInfo: TickerInfo, tickerContent: String, tickerUrl: String, isAwb: Boolean) {
