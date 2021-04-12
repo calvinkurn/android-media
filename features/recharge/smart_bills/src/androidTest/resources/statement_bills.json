@@ -24,64 +24,122 @@
             "percentage": 8.424599647521973
           }
         ],
-        "bills": [
+        "Sections": [
           {
-            "index": 0,
-            "productID": 1976,
-            "productName": "ATB BATAM",
-            "categoryID": 5,
-            "categoryName": "Air PDAM",
-            "operatorID": 623,
-            "operatorName": "ATB BATAM",
-            "clientNumber": "13111516111",
-            "amount": 102500,
-            "amountText": "Rp 102.500",
-            "iconURL": "https://ecs7.tokopedia.net/img/recharge/operator/pdamatb.png",
-            "date": "",
-            "dateText": "",
-            "disabled": false,
-            "disabledText": "",
-            "checkoutFields": [
+            "Title": "Pilih Tagihan",
+            "Type": 2,
+            "Text": "",
+            "Bills": [
               {
-                "name": "product_id",
-                "value": "1976"
+                "Index": 0,
+                "UUID": "uuid_sbm_8940072_31_0877171717711",
+                "ProductID": 1976,
+                "ProductName": "ATB BATAM",
+                "CategoryID": 5,
+                "CategoryName": "Air PDAM",
+                "OperatorID": 623,
+                "OperatorName": "ATB BATAM",
+                "ClientNumber": "13111516111",
+                "Amount": 102500,
+                "AmountText": "Rp 102.500",
+                "IconURL": "https://ecs7.tokopedia.net/img/recharge/operator/pdamatb.png",
+                "Date": "",
+                "DateText": "",
+                "Disabled": false,
+                "DisabledText": "",
+                "CheckoutFields": [
+                  {
+                    "Name": "product_id",
+                    "Value": "1976"
+                  },
+                  {
+                    "Name": "client_number",
+                    "Value": "13111516111"
+                  }
+                ],
+                "BillName": "",
+                "IsChecked": false
               },
               {
-                "name": "client_number",
-                "value": "13111516111"
+                "Index": 1,
+                "UUID": "uuid_sbm_8940072_938_081319695557",
+                "Notables": "",
+                "IsSubscribed": false,
+                "ProductID": 938,
+                "ProductName": "Rp 15.000",
+                "CategoryID": 48,
+                "CategoryName": "OVO",
+                "OperatorID": 464,
+                "OperatorName": "OVO",
+                "ClientNumber": "081319695557",
+                "Amount": 15000,
+                "AmountText": "Rp 15.000",
+                "IconURL": "https://ecs7.tokopedia.net/img/recharge/operator/uob.png",
+                "Date": "",
+                "DateText": "",
+                "Disabled": false,
+                "DisabledText": "",
+                "BillName": "",
+                "IsChecked": false,
+                "DueDate": "",
+                "DueMessage": {
+                  "Type": 0,
+                  "Text": ""
+                },
+                "DueDateLabel": {
+                  "Type": 0,
+                  "Text": ""
+                },
+                "CheckoutFields": [
+                  {
+                    "Name": "product_id",
+                    "Value": "938"
+                  },
+                  {
+                    "Name": "client_number",
+                    "Value": "081319695557"
+                  }
+                ]
               }
-            ],
-            "billName": "",
-            "isChecked": false
-          },
+            ]
+          }
+        ,
           {
-            "index": 1,
-            "productID": 563,
-            "productName": "Prioritas XL Pascabayar",
-            "categoryID": 9,
-            "categoryName": "Pasca Bayar",
-            "operatorID": 116,
-            "operatorName": "XL Prioritas",
-            "clientNumber": "0818405100",
-            "amount": 80000,
-            "amountText": "Rp 80.000",
-            "iconURL": "https://ecs7.tokopedia.net/img/recharge/operator/xl_3.png",
-            "date": "",
-            "dateText": "",
-            "disabled": false,
-            "disabledText": "",
-            "checkoutFields": [
+            "Title": "Tagihan perlu dibayar",
+            "Type": 3,
+            "Text": "",
+            "Bills": [
               {
-                "name": "product_id",
-                "value": "563"
-              },
-              {
-                "name": "client_number",
-                "value": "0818405100"
+                "Index": 0,
+                "UUID": "uuid_sbm_8940072_31_0877171717712",
+                "ProductID": 1976,
+                "ProductName": "ATB BATA",
+                "CategoryID": 5,
+                "CategoryName": "Air PDA",
+                "OperatorID": 623,
+                "OperatorName": "ATB BATA",
+                "ClientNumber": "1311151611",
+                "Amount": 102500,
+                "AmountText": "Rp 102.501",
+                "IconURL": "https://ecs7.tokopedia.net/img/recharge/operator/pdamatb.png",
+                "Date": "",
+                "DateText": "",
+                "Disabled": false,
+                "DisabledText": "",
+                "CheckoutFields": [
+                  {
+                    "Name": "product_id",
+                    "Value": "1976"
+                  },
+                  {
+                    "Name": "client_number",
+                    "Value": "13111516111"
+                  }
+                ],
+                "BillName": "",
+                "IsChecked": false
               }
-            ],
-            "billName": "",
-            "isChecked": false
+            ]
           }
         ]
       }
