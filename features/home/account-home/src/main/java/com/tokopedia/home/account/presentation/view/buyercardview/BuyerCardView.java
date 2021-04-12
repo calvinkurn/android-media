@@ -29,6 +29,8 @@ import com.tokopedia.unifycomponents.CardUnify;
 import com.tokopedia.unifyprinciples.Typography;
 import com.tokopedia.user.session.UserSession;
 
+import java.util.Locale;
+
 /**
  * @author okasurya on 7/17/18.
  */
@@ -116,7 +118,7 @@ public class BuyerCardView extends BaseCustomView implements BuyerCardContract.V
     @Override
     public void setName(String name) {
         textUsername.setText(name);
-        if (name.toLowerCase().contains(DEFAULT_NAME)) {
+        if (name.toLowerCase(Locale.ROOT).contains(DEFAULT_NAME)) {
             iconWarningName.setVisibility(View.VISIBLE);
         } else {
             iconWarningName.setVisibility(View.GONE);
