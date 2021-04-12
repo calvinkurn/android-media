@@ -89,5 +89,6 @@ class ChangeNameViewModel @Inject constructor(
     override fun onCleared() {
         super.onCleared()
         graphqlUseCase.cancelJobs()
+        userProfileRoleUseCase.cancelJobs()
     }
 }
