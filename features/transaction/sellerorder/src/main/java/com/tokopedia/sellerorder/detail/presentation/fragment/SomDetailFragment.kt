@@ -55,6 +55,8 @@ import com.tokopedia.sellerorder.common.errorhandler.SomErrorHandler
 import com.tokopedia.sellerorder.common.navigator.SomNavigator
 import com.tokopedia.sellerorder.common.presenter.bottomsheet.SomOrderEditAwbBottomSheet
 import com.tokopedia.sellerorder.common.presenter.bottomsheet.SomOrderRequestCancelBottomSheet
+import com.tokopedia.sellerorder.common.presenter.dialogs.SomOrderHasRequestCancellationDialog
+import com.tokopedia.sellerorder.common.presenter.model.SomPendingAction
 import com.tokopedia.sellerorder.common.util.SomConnectionMonitor
 import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.common.util.SomConsts.ACTION_OK
@@ -189,8 +191,10 @@ class SomDetailFragment : BaseDaggerFragment(),
     private var refreshHandler: RefreshHandler? = null
     private var bottomSheetCourierProblems: BottomSheetUnify? = null
 
+    private var somOrderHasCancellationRequestDialog: SomOrderHasRequestCancellationDialog? = null
     private var secondaryBottomSheet: BottomSheetUnify? = null
     private var progressBar: ProgressBar? = null
+    private var pendingAction: SomPendingAction? = null
 
     private val somDetailViewModel by lazy {
         ViewModelProviders.of(this, viewModelFactory)[SomDetailViewModel::class.java]
@@ -279,6 +283,7 @@ class SomDetailFragment : BaseDaggerFragment(),
         observingSetDelivered()
         observingUserRoles()
         observeRejectCancelOrder()
+        observeValidateOrder()
     }
 
     override fun onPause() {
@@ -462,7 +467,7 @@ class SomDetailFragment : BaseDaggerFragment(),
     }
 
     private fun observingUserRoles() {
-        somDetailViewModel.somDetailChatEligibility.observe(viewLifecycleOwner, { result ->
+        somDetailViewModel.somDetailChatEligibility.observe(viewLifecycleOwner, Observer { result ->
             when (result) {
                 is Success -> {
                     result.data.let { (isSomDetailEligible, isReplyChatEligible) ->
@@ -639,10 +644,10 @@ class SomDetailFragment : BaseDaggerFragment(),
                     setOnClickListener {
                         eventClickCtaActionInOrderDetail(buttonResp.displayName, detailResponse?.statusText.orEmpty())
                         when {
-                            buttonResp.key.equals(KEY_ACCEPT_ORDER, true) -> setActionAcceptOrder(orderId)
+                            buttonResp.key.equals(KEY_ACCEPT_ORDER, true) -> setActionAcceptOrder(buttonResp.displayName, orderId)
                             buttonResp.key.equals(KEY_TRACK_SELLER, true) -> setActionGoToTrackingPage(buttonResp)
-                            buttonResp.key.equals(KEY_REQUEST_PICKUP, true) -> setActionRequestPickup()
-                            buttonResp.key.equals(KEY_CONFIRM_SHIPPING, true) -> setActionConfirmShipping()
+                            buttonResp.key.equals(KEY_REQUEST_PICKUP, true) -> setActionRequestPickup(buttonResp.displayName)
+                            buttonResp.key.equals(KEY_CONFIRM_SHIPPING, true) -> setActionConfirmShipping(buttonResp.displayName)
                             buttonResp.key.equals(KEY_VIEW_COMPLAINT_SELLER, true) -> setActionSeeComplaint(buttonResp.url)
                             buttonResp.key.equals(KEY_BATALKAN_PESANAN, true) -> setActionRejectOrder()
                             buttonResp.key.equals(KEY_ASK_BUYER, true) -> goToAskBuyer()
@@ -681,18 +686,21 @@ class SomDetailFragment : BaseDaggerFragment(),
         RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, url))
     }
 
-    private fun setActionAcceptOrder(orderId: String) {
+    private fun setActionAcceptOrder(actionName: String, orderId: String) {
         if (detailResponse?.flagOrderMeta?.flagFreeShipping == true) {
             showFreeShippingAcceptOrderDialog(orderId)
         } else {
-            acceptOrder(orderId)
+            acceptOrder(actionName, orderId)
         }
     }
 
-    private fun acceptOrder(orderId: String) {
-        if (orderId.isNotBlank()) {
-            somDetailViewModel.acceptOrder(orderId)
+    private fun acceptOrder(actionName: String, orderId: String) {
+        pendingAction = SomPendingAction(actionName, orderId) {
+            if (orderId.isNotBlank()) {
+                somDetailViewModel.acceptOrder(orderId)
+            }
         }
+        somDetailViewModel.validateOrders(listOf(orderId.toLong()))
     }
 
     private fun rejectCancelOrder() {
@@ -781,29 +789,35 @@ class SomDetailFragment : BaseDaggerFragment(),
         RouteManager.route(context, routingAppLink)
     }
 
-    private fun setActionRequestPickup() {
-        Intent(activity, SomConfirmReqPickupActivity::class.java).apply {
-            putExtra(PARAM_ORDER_ID, orderId)
-            startActivityForResult(this, FLAG_CONFIRM_REQ_PICKUP)
+    private fun setActionRequestPickup(actionName: String) {
+        pendingAction = SomPendingAction(actionName, orderId) {
+            Intent(activity, SomConfirmReqPickupActivity::class.java).apply {
+                putExtra(PARAM_ORDER_ID, orderId)
+                startActivityForResult(this, FLAG_CONFIRM_REQ_PICKUP)
+            }
         }
+        somDetailViewModel.validateOrders(listOf(orderId.toLong()))
     }
 
-    private fun setActionConfirmShipping() {
-        if (detailResponse?.onlineBooking?.isRemoveInputAwb == true) {
-            val btSheet = BottomSheetUnify()
-            val infoLayout = View.inflate(context, R.layout.partial_info_layout, null)
-            infoLayout.tv_confirm_info?.text = detailResponse?.onlineBooking?.infoText
-            infoLayout.button_understand?.setOnClickListener { btSheet.dismiss() }
+    private fun setActionConfirmShipping(actionName: String) {
+        pendingAction = SomPendingAction(actionName, orderId) {
+            if (detailResponse?.onlineBooking?.isRemoveInputAwb == true) {
+                val btSheet = BottomSheetUnify()
+                val infoLayout = View.inflate(context, R.layout.partial_info_layout, null)
+                infoLayout.tv_confirm_info?.text = detailResponse?.onlineBooking?.infoText
+                infoLayout.button_understand?.setOnClickListener { btSheet.dismiss() }
 
-            fragmentManager?.let {
-                btSheet.setTitle(context?.getString(R.string.automatic_shipping) ?: "")
-                btSheet.setChild(infoLayout)
-                btSheet.setCloseClickListener { btSheet.dismiss() }
-                btSheet.show(it, TAG_BOTTOMSHEET)
+                fragmentManager?.let {
+                    btSheet.setTitle(context?.getString(R.string.automatic_shipping) ?: "")
+                    btSheet.setChild(infoLayout)
+                    btSheet.setCloseClickListener { btSheet.dismiss() }
+                    btSheet.show(it, TAG_BOTTOMSHEET)
+                }
+            } else {
+                createIntentConfirmShipping(false)
             }
-        } else {
-            createIntentConfirmShipping(false)
         }
+        somDetailViewModel.validateOrders(listOf(orderId.toLong()))
     }
 
     private fun showTextOnlyBottomSheet() {
@@ -837,7 +851,7 @@ class SomDetailFragment : BaseDaggerFragment(),
                     key.equals(KEY_UBAH_NO_RESI, true) -> setActionUbahNoResi()
                     key.equals(KEY_UPLOAD_AWB, true) -> setActionUploadAwb(it)
                     key.equals(KEY_CHANGE_COURIER, true) -> setActionChangeCourier()
-                    key.equals(KEY_ACCEPT_ORDER, true) -> setActionAcceptOrder(orderId)
+                    key.equals(KEY_ACCEPT_ORDER, true) -> setActionAcceptOrder(it.displayName, orderId)
                     key.equals(KEY_ASK_BUYER, true) -> goToAskBuyer()
                     key.equals(KEY_SET_DELIVERED, true) -> showSetDeliveredDialog()
                     key.equals(KEY_PRINT_AWB, true) -> SomNavigator.goToPrintAwb(activity, view, listOf(detailResponse?.orderId.orEmpty()), true)
@@ -919,8 +933,8 @@ class SomDetailFragment : BaseDaggerFragment(),
     private fun showBuyerRequestCancelBottomSheet(it: SomDetailOrder.Data.GetSomDetail.Button) {
         SomOrderRequestCancelBottomSheet().apply {
             setListener(object : SomOrderRequestCancelBottomSheet.SomOrderRequestCancelBottomSheetListener {
-                override fun onAcceptOrder() {
-                    setActionAcceptOrder(orderId)
+                override fun onAcceptOrder(actionName: String) {
+                    setActionAcceptOrder(actionName, orderId)
                 }
 
                 override fun onRejectOrder(reasonBuyer: String) {
@@ -1521,5 +1535,37 @@ class SomDetailFragment : BaseDaggerFragment(),
     private fun stopLoadTimeMonitoring() {
         somDetailLoadTimeMonitoring?.stopRenderPerformanceMonitoring()
         (activity as? SomDetailActivity)?.somLoadTimeMonitoringListener?.onStopPltMonitoring()
+    }
+
+    private fun observeValidateOrder() {
+        somDetailViewModel.validateOrderResult.observe(viewLifecycleOwner, Observer { result ->
+            when (result) {
+                is Success -> onSuccessValidateOrder(result.data)
+                is Fail -> onFailedValidateOrder()
+            }
+        })
+    }
+
+    private fun onFailedValidateOrder() {
+        showToasterError(getString(R.string.som_error_validate_order), view)
+    }
+
+    private fun onSuccessValidateOrder(valid: Boolean) {
+        val pendingAction = pendingAction ?: return
+        if (valid) {
+            pendingAction.action.invoke()
+        } else {
+            context?.let { context ->
+                val somOrderHasCancellationRequestDialog = somOrderHasCancellationRequestDialog ?: SomOrderHasRequestCancellationDialog(context)
+                this.somOrderHasCancellationRequestDialog = somOrderHasCancellationRequestDialog
+                somOrderHasCancellationRequestDialog.apply {
+                    setupActionButton(pendingAction.actionName, pendingAction.action)
+                    setupGoToOrderDetailButton {
+                        loadDetail()
+                    }
+                    show()
+                }
+            }
+        }
     }
 }
