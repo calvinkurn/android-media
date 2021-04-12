@@ -381,8 +381,6 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
             if (isLoadingSearchByMap) {
                 collapseBottomSheet()
                 isLoadingSearchByMap = false
-            } else {
-                halfExpandBottomSheet()
             }
             hideSearchWithMap()
         }
