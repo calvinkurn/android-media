@@ -99,6 +99,6 @@ class AddressRobot {
 
 class ResultRobot {
     fun hasPassedAnalytics(rule: CassavaTestRule, path: String) {
-        assertThat(rule.validateByQuery(path), hasAllSuccess())
+        assertThat(rule.validate(path), hasAllSuccess())
     }
 }

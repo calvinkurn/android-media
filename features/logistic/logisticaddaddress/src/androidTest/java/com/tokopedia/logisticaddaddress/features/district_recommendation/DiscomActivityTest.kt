@@ -18,7 +18,7 @@ import androidx.test.filters.MediumTest
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.cassavatest.CassavaTestRule
-import com.tokopedia.cassavatest.hasAllSuccess
+import com.tokopedia.cassavatest.containsMapOf
 import com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomContract.Constant.Companion.INTENT_DISTRICT_RECOMMENDATION_ADDRESS
 import com.tokopedia.logisticaddaddress.test.R
 import com.tokopedia.logisticaddaddress.utils.SimpleIdlingResource
@@ -70,8 +70,13 @@ class DiscomActivityTest {
         assertThat(activityRule.activityResult,
                 hasResultData(hasExtraWithKey(INTENT_DISTRICT_RECOMMENDATION_ADDRESS)))
 
-        val discomQuery = "tracker/logistic/discom_positive.json"
-        assertThat(cassavaTestRule.validateByQuery(discomQuery), hasAllSuccess())
+        val query = mapOf(
+                "event" to "clickShipping",
+                "eventCategory" to "cart change address",
+                "eventAction" to "click checklist kota atau kecamatan pada \\+ address",
+                "eventLabel" to ".*"
+        )
+        assertThat(cassavaTestRule.getRecent(), containsMapOf(query, CassavaTestRule.MODE_SUBSET))
     }
 
     @After

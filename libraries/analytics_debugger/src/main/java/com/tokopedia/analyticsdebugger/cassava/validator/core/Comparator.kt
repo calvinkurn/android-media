@@ -1,6 +1,27 @@
 package com.tokopedia.analyticsdebugger.cassava.validator.core
 
 import com.google.gson.internal.LinkedTreeMap
+import com.tokopedia.analyticsdebugger.database.GtmLogDB
+
+fun Map<String, Any>.containsPairOf(pair: Pair<String, String>): Boolean {
+    forEach {
+        when {
+            it.key == pair.first && regexEquals(pair.second, it.value) -> return true
+            it.value is LinkedTreeMap<*, *> -> return (it.value as Map<String, Any>).containsPairOf(pair)
+        }
+    }
+    return false
+}
+
+fun List<GtmLogDB>.containsMapOf(map: Map<String, Any>, isExact: Boolean): Boolean {
+    for (gtm in this) {
+        val mapGtm = gtm.data.toJsonMap()
+        if (map.canValidate(mapGtm, isExact)) {
+            return true
+        }
+    }
+    return false
+}
 
 internal fun Map<String, Any>.canValidate(obj: Map<String, Any>, strict: Boolean = false): Boolean {
     for (entry in this) {
@@ -12,16 +33,6 @@ internal fun Map<String, Any>.canValidate(obj: Map<String, Any>, strict: Boolean
         strict -> this.size == obj.size
         else -> true
     }
-}
-
-fun Map<String, Any>.containsPairOf(pair: Pair<String, String>): Boolean {
-    forEach {
-        when {
-            it.key == pair.first && regexEquals(pair.second, it.value) -> return true
-            it.value is LinkedTreeMap<*, *> -> return (it.value as Map<String, Any>).containsPairOf(pair)
-        }
-    }
-    return false
 }
 
 private fun List<Map<String, Any>>.validateArray(arr: List<Map<String, Any>>): Boolean {
