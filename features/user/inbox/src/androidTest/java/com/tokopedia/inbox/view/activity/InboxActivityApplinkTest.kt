@@ -5,10 +5,9 @@ import androidx.test.filters.LargeTest
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.ApplinkConst.Inbox.PARAM_PAGE
+import com.tokopedia.applink.ApplinkConst.Inbox.*
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.applink.ApplinkConst.Inbox.*
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.test.application.matcher.hasQueryParameter
 import com.tokopedia.test.application.matcher.isPointingTo
@@ -42,7 +41,7 @@ class InboxActivityApplinkTest {
     }
 
     @Test
-    fun test_inbox_external_applink() {
+    fun inbox_external_applink() {
         // Given
         val applink = ApplinkConst.INBOX
 
@@ -54,7 +53,7 @@ class InboxActivityApplinkTest {
     }
 
     @Test
-    fun test_inbox_external_applink_with_query_page() {
+    fun inbox_external_applink_with_query_page() {
         // Given
         val applinkUri = Uri.parse(ApplinkConst.INBOX).buildUpon().apply {
             appendQueryParameter(
@@ -68,5 +67,22 @@ class InboxActivityApplinkTest {
         // Then
         assertThat(intent, isPointingTo(inbox))
         assertThat(intent, hasQueryParameter(PARAM_PAGE, VALUE_PAGE_CHAT))
+    }
+
+    @Test
+    fun inbox_external_applink_with_role_page() {
+        // Given
+        val applinkUri = Uri.parse(ApplinkConst.INBOX).buildUpon().apply {
+            appendQueryParameter(
+                    PARAM_ROLE, VALUE_ROLE_BUYER
+            )
+        }
+
+        // When
+        val intent = RouteManager.getIntent(context, applinkUri.toString())
+
+        // Then
+        assertThat(intent, isPointingTo(inbox))
+        assertThat(intent, hasQueryParameter(PARAM_ROLE, VALUE_ROLE_BUYER))
     }
 }
