@@ -6,7 +6,6 @@ import android.content.Context.MODE_PRIVATE
 import com.akamai.botman.CYFMonitor
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
-import timber.log.Timber
 import java.util.concurrent.ConcurrentHashMap
 import java.util.regex.Matcher
 import java.util.regex.Pattern
