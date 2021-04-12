@@ -159,7 +159,11 @@ class RecommendationListCarouselViewHolder(itemView: View,
                 formattedPrice = grid.price,
                 hasAddToCartButton = grid.hasBuyButton,
                 isTopAds = grid.isTopads,
-                addToCardText = itemView.context.getString(R.string.home_global_component_buy_again)
+                addToCardText = itemView.context.getString(R.string.home_global_component_buy_again),
+                shopLocation = grid.shop.shopLocation,
+                shopBadgeList = grid.badges.map {
+                    ProductCardModel.ShopBadge(imageUrl = it.imageUrl)
+                }
         )
     }
 
@@ -220,7 +224,11 @@ class RecommendationListCarouselViewHolder(itemView: View,
                                 isOutOfStock = recommendation.grid.isOutOfStock,
                                 ratingCount = recommendation.grid.rating,
                                 reviewCount = recommendation.grid.countReview,
-                                countSoldRating = recommendation.grid.ratingFloat
+                                countSoldRating = recommendation.grid.ratingFloat,
+                                shopLocation = recommendation.grid.shop.shopLocation,
+                                shopBadgeList = recommendation.grid.badges.map {
+                                    ProductCardModel.ShopBadge(imageUrl = it.imageUrl)
+                                }
                         )
                 )
                 val addToCartButton = recommendationCard.findViewById<UnifyButton>(R.id.buttonAddToCart)
