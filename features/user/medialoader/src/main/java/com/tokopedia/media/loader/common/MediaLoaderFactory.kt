@@ -20,7 +20,7 @@ abstract class MediaLoaderFactory<T> {
     * that it will collect any transformations specified in the properties applied
     * and will be transformed at the same time using MultiTransform().
     * */
-    private val _transform = mutableListOf<Transformation<Bitmap>>()
+    private val _transform = arrayListOf<Transformation<Bitmap>>()
 
     private fun transformation(
             properties: Properties,
@@ -30,9 +30,10 @@ abstract class MediaLoaderFactory<T> {
         _transform.clear()
 
         with(properties) {
-            // store-bulk transformation into MultiTransformations()
-            transforms?.let { _transform.addAll(it) }
-            transform?.let { _transform.add(it) }
+            // built-in RoundedCorners transformation
+            if (roundedRadius > 0f) {
+                _transform.add(RoundedCorners(roundedRadius.toInt()))
+            }
 
             // built-in transformations
             if (properties.isCircular) _transform.add(CircleCrop())
@@ -40,13 +41,13 @@ abstract class MediaLoaderFactory<T> {
             if (properties.fitCenter) _transform.add(FitCenter())
             if (properties.centerInside) _transform.add(CenterInside())
 
-            // built-in RoundedCorners transformation
-            if (roundedRadius > 0f) {
-                _transform.add(RoundedCorners(roundedRadius.toInt()))
+            // store-bulk transformation into MultiTransformations()
+            if (transform != null) {
+                _transform.add(transform!!)
             }
 
-            if (_transform.isNotEmpty()) {
-                request.transform(MultiTransformation(_transform))
+            if (!transforms.isNullOrEmpty()) {
+                _transform.addAll(transforms!!)
             }
         }
     }
@@ -61,6 +62,10 @@ abstract class MediaLoaderFactory<T> {
             * and then bulk it the transforms from transformList with MultiTransformation
             * */
             transformation(this, request)
+            if (_transform.isNotEmpty()) {
+                request.transform(MultiTransformation(_transform))
+            }
+
 
             // set custom error drawable
             it.error(error)
