@@ -5,9 +5,12 @@ import androidx.test.filters.LargeTest
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.ApplinkConst.Inbox.PARAM_PAGE
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.applink.ApplinkConst.Inbox.*
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
+import com.tokopedia.test.application.matcher.hasQueryParameter
 import com.tokopedia.test.application.matcher.isPointingTo
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Before
@@ -55,8 +58,7 @@ class InboxActivityApplinkTest {
         // Given
         val applinkUri = Uri.parse(ApplinkConst.INBOX).buildUpon().apply {
             appendQueryParameter(
-                    ApplinkConst.Inbox.PARAM_PAGE,
-                    ApplinkConst.Inbox.VALUE_PAGE_CHAT
+                    PARAM_PAGE, VALUE_PAGE_CHAT
             )
         }
 
@@ -65,5 +67,6 @@ class InboxActivityApplinkTest {
 
         // Then
         assertThat(intent, isPointingTo(inbox))
+        assertThat(intent, hasQueryParameter(PARAM_PAGE, VALUE_PAGE_CHAT))
     }
 }
