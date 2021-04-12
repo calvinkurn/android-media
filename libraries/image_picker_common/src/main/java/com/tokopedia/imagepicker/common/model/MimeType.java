@@ -1,12 +1,11 @@
 package com.tokopedia.imagepicker.common.model;
 
-import android.annotation.SuppressLint;
 import android.content.ContentResolver;
 import android.net.Uri;
 import android.text.TextUtils;
-import android.util.ArraySet;
 import android.webkit.MimeTypeMap;
 
+import androidx.collection.ArraySet;
 import com.tokopedia.imagepicker.common.PhotoMetadataUtils;
 
 import java.util.Arrays;
@@ -117,7 +116,6 @@ public enum MimeType {
         return mimeType.equals(MimeType.GIF.toString());
     }
 
-    @SuppressLint("NewApi")
     private static Set<String> arraySetOf(String... suffixes) {
         return new ArraySet<>(Arrays.asList(suffixes));
     }
