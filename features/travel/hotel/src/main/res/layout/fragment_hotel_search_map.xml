@@ -104,7 +104,8 @@
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_goneMarginBottom="@dimen/layout_lvl7"
                 app:layout_goneMarginTop="@dimen/layout_lvl7"
-                app:srcCompat="@drawable/ic_get_location" />
+                app:srcCompat="@drawable/ic_get_location"
+                android:elevation="@dimen/unify_space_12"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
         <!-- End of Constraint Layout for Content (Maps, Horizontal Properties List, etc) -->
@@ -226,7 +227,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-                android:elevation="@dimen/hotel_6dp"/>
+                android:elevation="@dimen/unify_space_12"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
         <!-- End of Constraint Layout for Bottom Sheet -->
