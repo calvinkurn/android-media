@@ -95,6 +95,7 @@ class SaldoTransactionHistoryFragment : BaseDaggerFragment(), SaldoHistoryContra
         saldoHistoryViewModel.getSummaryDeposit()
     }
 
+    // @Todo remove calendar approach
     private fun initViews(view: View) {
         startDateLayout = view.findViewById(com.tokopedia.saldodetails.R.id.start_date_layout)
         endDateLayout = view.findViewById(com.tokopedia.saldodetails.R.id.end_date_layout)
@@ -175,9 +176,7 @@ class SaldoTransactionHistoryFragment : BaseDaggerFragment(), SaldoHistoryContra
 
     }
 
-    override fun onEmptyContentItemTextClicked() {
-
-    }
+    override fun onEmptyContentItemTextClicked() {}
 
     override fun onEmptyButtonClicked() {
         val intent = RouteManager.getIntent(context, ApplinkConst.HOME)
@@ -193,9 +192,7 @@ class SaldoTransactionHistoryFragment : BaseDaggerFragment(), SaldoHistoryContra
     }
 
 
-    override fun refresh() {
-
-    }
+    override fun refresh() {}
 
     override fun showEmptyState() {
         setActionsEnabled(false)
@@ -227,13 +224,9 @@ class SaldoTransactionHistoryFragment : BaseDaggerFragment(), SaldoHistoryContra
         endDateTV!!.text = date
     }
 
-    override fun getStartDate(): String {
-        return startDateTV!!.text.toString()
-    }
+    override fun getStartDate() = startDateTV!!.text.toString()
 
-    override fun getEndDate(): String {
-        return endDateTV!!.text.toString()
-    }
+    override fun getEndDate() = endDateTV!!.text.toString()
 
     override fun showErrorMessage(s: String) {
         NetworkErrorHelper.showRedCloseSnackbar(activity, s)
