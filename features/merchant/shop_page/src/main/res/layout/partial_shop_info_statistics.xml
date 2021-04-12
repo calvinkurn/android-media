@@ -75,7 +75,7 @@
         android:layout_marginRight="@dimen/dp_16"
         android:background="@drawable/bg_line_separator_thin"/>
 
-    <com.tokopedia.design.label.LabelView
+    <com.tokopedia.shop.common.view.ShopPageLabelView
         android:id="@+id/labelViewDiscussion"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_64"
@@ -95,7 +95,7 @@
         android:layout_marginRight="@dimen/dp_16"
         android:background="@drawable/bg_line_separator_thin"/>
 
-    <com.tokopedia.design.label.LabelView
+    <com.tokopedia.shop.common.view.ShopPageLabelView
         android:id="@+id/labelViewProcessOrder"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_64"

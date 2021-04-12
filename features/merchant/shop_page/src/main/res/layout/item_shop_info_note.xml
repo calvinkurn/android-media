@@ -6,7 +6,7 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <com.tokopedia.design.label.LabelView
+    <com.tokopedia.shop.common.view.ShopPageLabelView
         android:id="@+id/label_view"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_64"

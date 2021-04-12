@@ -5,8 +5,8 @@ import android.view.View;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
-import com.tokopedia.design.label.LabelView;
 import com.tokopedia.shop.R;
+import com.tokopedia.shop.common.view.ShopPageLabelView;
 import com.tokopedia.shop.favourite.view.model.ShopFollowerUiModel;
 
 /**
@@ -19,7 +19,7 @@ public class ShopFavouriteViewHolder extends AbstractViewHolder<ShopFollowerUiMo
     public static final int LAYOUT = R.layout.item_shop_favourite_user;
 
 
-    private LabelView userLabelView;
+    private ShopPageLabelView userLabelView;
 
     public ShopFavouriteViewHolder(View itemView) {
         super(itemView);

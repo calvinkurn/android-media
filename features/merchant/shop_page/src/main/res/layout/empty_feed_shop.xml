@@ -35,14 +35,16 @@
         android:layout_gravity="center"
         android:gravity="center"/>
 
-    <com.tokopedia.design.component.ButtonCompat
+    <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/btn_post"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_40"
         android:layout_marginLeft="@dimen/dp_24"
         android:layout_marginRight="@dimen/dp_24"
         android:layout_marginTop="@dimen/dp_16"
-        app:buttonCompatType="primary"
+        app:unifyButtonSize="medium"
+        app:unifyButtonType="main"
+        app:unifyButtonVariant="filled"
         android:layout_gravity="center"
         android:gravity="center"
         android:text="@string/empty_feed_btn"/>
