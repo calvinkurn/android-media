@@ -875,7 +875,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
             if (!coachmarkShowed) {
                 val coachMarkItem = arrayListOf(
                         CoachMark2Item(
-                                invisibleViewMap,
+                                topHotelSearchMapListKnob,
                                 getString(R.string.hotel_search_map_coach_mark_map_title),
                                 getString(R.string.hotel_search_map_coach_mark_map_desc),
                                 CoachMark2.POSITION_BOTTOM
@@ -887,7 +887,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                                 CoachMark2.POSITION_TOP
                         ),
                         CoachMark2Item(
-                                quickFilterSortHotelSearchMap,
+                                requireView().findViewById(com.tokopedia.sortfilter.R.id.sort_filter_prefix),
                                 getString(R.string.hotel_search_map_coach_mark_filter_title),
                                 getString(R.string.hotel_search_map_coach_mark_filter_desc),
                                 CoachMark2.POSITION_BOTTOM
