@@ -377,6 +377,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        getSwipeRefreshLayout(view)?.isRefreshing = viewModel.isRefreshingOrder()
         when (requestCode) {
             REQUEST_DETAIL -> handleSomDetailActivityResult(resultCode, data)
             REQUEST_CONFIRM_SHIPPING -> handleSomConfirmShippingActivityResult(resultCode, data)
@@ -581,31 +582,46 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
         goToTrackingPage(context, orderId, url)
     }
 
-    override fun onConfirmShippingButtonClicked(actionName: String, orderId: String) {
+    override fun onConfirmShippingButtonClicked(actionName: String, orderId: String, skipValidateOrder: Boolean) {
         getSwipeRefreshLayout(view)?.isRefreshing = true
-        pendingAction = SomPendingAction(actionName, orderId) {
+        if (!skipValidateOrder) {
+            pendingAction = SomPendingAction(actionName, orderId) {
+                selectedOrderId = orderId
+                goToConfirmShippingPage(this, orderId)
+            }
+            viewModel.validateOrders(listOf(orderId.toLong()))
+        } else {
             selectedOrderId = orderId
             goToConfirmShippingPage(this, orderId)
         }
-        viewModel.validateOrders(listOf(orderId.toLong()))
     }
 
-    override fun onAcceptOrderButtonClicked(actionName: String, orderId: String) {
+    override fun onAcceptOrderButtonClicked(actionName: String, orderId: String, skipValidateOrder: Boolean) {
         getSwipeRefreshLayout(view)?.isRefreshing = true
-        pendingAction = SomPendingAction(actionName, orderId) {
+        if (!skipValidateOrder) {
+            pendingAction = SomPendingAction(actionName, orderId) {
+                val invoice = getOrderBy(orderId)
+                viewModel.acceptOrder(orderId, invoice)
+            }
+            viewModel.validateOrders(listOf(orderId.toLong()))
+        } else {
             val invoice = getOrderBy(orderId)
             viewModel.acceptOrder(orderId, invoice)
         }
-        viewModel.validateOrders(listOf(orderId.toLong()))
     }
 
-    override fun onRequestPickupButtonClicked(actionName: String, orderId: String) {
+    override fun onRequestPickupButtonClicked(actionName: String, orderId: String, skipValidateOrder: Boolean) {
         getSwipeRefreshLayout(view)?.isRefreshing = true
-        pendingAction = SomPendingAction(actionName, orderId) {
+        if (!skipValidateOrder) {
+            pendingAction = SomPendingAction(actionName, orderId) {
+                selectedOrderId = orderId
+                goToRequestPickupPage(this, orderId)
+            }
+            viewModel.validateOrders(listOf(orderId.toLong()))
+        } else {
             selectedOrderId = orderId
             goToRequestPickupPage(this, orderId)
         }
-        viewModel.validateOrders(listOf(orderId.toLong()))
     }
 
     override fun onRespondToCancellationButtonClicked(order: SomListOrderUiModel) {
@@ -613,7 +629,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
         SomOrderRequestCancelBottomSheet().apply {
             setListener(object : SomOrderRequestCancelBottomSheet.SomOrderRequestCancelBottomSheetListener {
                 override fun onAcceptOrder(actionName: String) {
-                    onAcceptOrderButtonClicked(actionName, selectedOrderId)
+                    onAcceptOrderButtonClicked(actionName, selectedOrderId, true)
                 }
 
                 override fun onRejectOrder(reasonBuyer: String) {

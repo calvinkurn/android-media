@@ -705,13 +705,24 @@ class SomDetailFragment : BaseDaggerFragment(),
     }
 
     private fun acceptOrder(actionName: String, orderId: String) {
-        pendingAction = SomPendingAction(actionName, orderId) {
+        if (!skipOrderValidation()) {
+            pendingAction = SomPendingAction(actionName, orderId) {
+                btn_primary?.isLoading = true
+                if (orderId.isNotBlank()) {
+                    somDetailViewModel.acceptOrder(orderId)
+                }
+            }
+            somDetailViewModel.validateOrders(listOf(orderId.toLong()))
+        } else {
             btn_primary?.isLoading = true
             if (orderId.isNotBlank()) {
                 somDetailViewModel.acceptOrder(orderId)
             }
         }
-        somDetailViewModel.validateOrders(listOf(orderId.toLong()))
+    }
+
+    private fun skipOrderValidation(): Boolean{
+        return detailResponse?.buyerRequestCancel?.isRequestCancel == true && detailResponse?.buyerRequestCancel?.status == 0
     }
 
     private fun rejectCancelOrder() {
@@ -801,36 +812,52 @@ class SomDetailFragment : BaseDaggerFragment(),
     }
 
     private fun setActionRequestPickup(actionName: String) {
-        pendingAction = SomPendingAction(actionName, orderId) {
-            btn_primary?.isLoading = true
-            Intent(activity, SomConfirmReqPickupActivity::class.java).apply {
-                putExtra(PARAM_ORDER_ID, orderId)
-                startActivityForResult(this, FLAG_CONFIRM_REQ_PICKUP)
+        if (!skipOrderValidation()) {
+            pendingAction = SomPendingAction(actionName, orderId) {
+                requestPickUp()
             }
+            somDetailViewModel.validateOrders(listOf(orderId.toLong()))
+        } else {
+            requestPickUp()
         }
-        somDetailViewModel.validateOrders(listOf(orderId.toLong()))
+    }
+
+    private fun requestPickUp() {
+        btn_primary?.isLoading = true
+        Intent(activity, SomConfirmReqPickupActivity::class.java).apply {
+            putExtra(PARAM_ORDER_ID, orderId)
+            startActivityForResult(this, FLAG_CONFIRM_REQ_PICKUP)
+        }
     }
 
     private fun setActionConfirmShipping(actionName: String) {
-        pendingAction = SomPendingAction(actionName, orderId) {
-            btn_primary?.isLoading = true
-            if (detailResponse?.onlineBooking?.isRemoveInputAwb == true) {
-                val btSheet = BottomSheetUnify()
-                val infoLayout = View.inflate(context, R.layout.partial_info_layout, null)
-                infoLayout.tv_confirm_info?.text = detailResponse?.onlineBooking?.infoText
-                infoLayout.button_understand?.setOnClickListener { btSheet.dismiss() }
-
-                fragmentManager?.let {
-                    btSheet.setTitle(context?.getString(R.string.automatic_shipping) ?: "")
-                    btSheet.setChild(infoLayout)
-                    btSheet.setCloseClickListener { btSheet.dismiss() }
-                    btSheet.show(it, TAG_BOTTOMSHEET)
-                }
-            } else {
-                createIntentConfirmShipping(false)
+        if (!skipOrderValidation()) {
+            pendingAction = SomPendingAction(actionName, orderId) {
+                confirmShipping()
             }
+            somDetailViewModel.validateOrders(listOf(orderId.toLong()))
+        } else {
+            confirmShipping()
         }
-        somDetailViewModel.validateOrders(listOf(orderId.toLong()))
+    }
+
+    private fun confirmShipping() {
+        btn_primary?.isLoading = true
+        if (detailResponse?.onlineBooking?.isRemoveInputAwb == true) {
+            val btSheet = BottomSheetUnify()
+            val infoLayout = View.inflate(context, R.layout.partial_info_layout, null)
+            infoLayout.tv_confirm_info?.text = detailResponse?.onlineBooking?.infoText
+            infoLayout.button_understand?.setOnClickListener { btSheet.dismiss() }
+
+            fragmentManager?.let {
+                btSheet.setTitle(context?.getString(R.string.automatic_shipping) ?: "")
+                btSheet.setChild(infoLayout)
+                btSheet.setCloseClickListener { btSheet.dismiss() }
+                btSheet.show(it, TAG_BOTTOMSHEET)
+            }
+        } else {
+            createIntentConfirmShipping(false)
+        }
     }
 
     private fun showTextOnlyBottomSheet() {
