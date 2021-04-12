@@ -68,7 +68,6 @@ interface DynamicProductDetailListener {
     fun onSeeAllLastItemImageReview(componentTrackDataModel: ComponentTrackDataModel?)
     fun onImageReviewClick(listOfImage: List<ImageReviewItem>, position: Int, componentTrackDataModel: ComponentTrackDataModel?)
     fun onReviewClick()
-    fun onImageHelpfulReviewClick(listOfImages: List<String>, position: Int, reviewId: String?, componentTrackDataModel: ComponentTrackDataModel?)
     fun onSeeAllTextView(componentTrackDataModel: ComponentTrackDataModel?)
 
     /**
@@ -80,7 +79,7 @@ interface DynamicProductDetailListener {
     fun onSeeAllMerchantVoucherClick(componentTrackDataModel: ComponentTrackDataModel)
 
     /**
-     * ProductShopInfoViewHolder
+     * ProductShopCredibilityViewHolder
      */
     fun onShopInfoClicked(itemId: Int, componentTrackDataModel: ComponentTrackDataModel)
     fun gotoShopDetail(componentTrackDataModel: ComponentTrackDataModel)
@@ -133,11 +132,6 @@ interface DynamicProductDetailListener {
      * ProductNotifyMeViewHolder
      */
     fun onNotifyMeClicked(data: ProductNotifyMeDataModel, componentTrackDataModel: ComponentTrackDataModel)
-
-    /**
-     * ProductMiniShopInfoViewHolder
-     */
-    fun onMiniShopInfoClicked(componentTrackDataModel: ComponentTrackDataModel)
 
     /**
      * ProductTickerViewHolder

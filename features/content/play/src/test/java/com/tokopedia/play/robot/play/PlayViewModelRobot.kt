@@ -2,6 +2,7 @@ package com.tokopedia.play.robot.play
 
 import com.tokopedia.play.data.ReportSummaries
 import com.tokopedia.play.data.ShopInfo
+import com.tokopedia.play.data.websocket.PlayChannelWebSocket
 import com.tokopedia.play.data.websocket.PlaySocket
 import com.tokopedia.play.domain.*
 import com.tokopedia.play.helper.ClassBuilder
@@ -56,7 +57,8 @@ class PlayViewModelRobot(
         dispatchers: CoroutineDispatcherProvider,
         remoteConfig: RemoteConfig,
         playPreference: PlayPreference,
-        videoLatencyPerformanceMonitoring: PlayVideoLatencyPerformanceMonitoring
+        videoLatencyPerformanceMonitoring: PlayVideoLatencyPerformanceMonitoring,
+        playChannelWebSocket: PlayChannelWebSocket,
 ) {
 
     private val productTagBuilder = PlayProductTagsModelBuilder()
@@ -85,7 +87,8 @@ class PlayViewModelRobot(
                 dispatchers,
                 remoteConfig,
                 playPreference,
-                videoLatencyPerformanceMonitoring
+                videoLatencyPerformanceMonitoring,
+                playChannelWebSocket
         )
     }
 
@@ -119,15 +122,15 @@ class PlayViewModelRobot(
 
     fun setPiPState(pipState: PiPState) {
         when(pipState) {
-            is PiPState.Requesting -> when (pipState.mode) {
-                PiPMode.WatchInPip -> viewModel.requestWatchInPiP()
-                PiPMode.BrowsingOtherPage -> viewModel.requestPiPBrowsingPage()
+            is PiPState.Requesting -> when (val mode = pipState.mode) {
+                PiPMode.WatchInPiP -> viewModel.requestWatchInPiP()
+                is PiPMode.BrowsingOtherPage -> viewModel.requestPiPBrowsingPage(mode.applinkModel)
                 else -> {}
             }
             is PiPState.InPiP -> {
-                when (pipState.mode) {
-                    PiPMode.WatchInPip -> viewModel.requestWatchInPiP()
-                    PiPMode.BrowsingOtherPage -> viewModel.requestPiPBrowsingPage()
+                when (val mode = pipState.mode) {
+                    PiPMode.WatchInPiP -> viewModel.requestWatchInPiP()
+                    is PiPMode.BrowsingOtherPage -> viewModel.requestPiPBrowsingPage(mode.applinkModel)
                     else -> {}
                 }
                 viewModel.goPiP()
@@ -221,6 +224,7 @@ fun givenPlayViewModelRobot(
         remoteConfig: RemoteConfig = mockk(relaxed = true),
         playPreference: PlayPreference = mockk(relaxed = true),
         videoLatencyPerformanceMonitoring: PlayVideoLatencyPerformanceMonitoring = mockk(relaxed = true),
+        playChannelWebSocket: PlayChannelWebSocket = mockk(relaxed = true),
         fn: PlayViewModelRobot.() -> Unit = {}
 ): PlayViewModelRobot {
     return PlayViewModelRobot(
@@ -244,7 +248,8 @@ fun givenPlayViewModelRobot(
             dispatchers = dispatchers,
             remoteConfig = remoteConfig,
             playPreference = playPreference,
-            videoLatencyPerformanceMonitoring = videoLatencyPerformanceMonitoring
+            videoLatencyPerformanceMonitoring = videoLatencyPerformanceMonitoring,
+            playChannelWebSocket = playChannelWebSocket,
     ).apply(fn)
 }
 
