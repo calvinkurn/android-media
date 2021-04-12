@@ -27,7 +27,11 @@ dependencies {
     kapt rootProject.ext.dbDependencies.dbRoomCompiler
 
     androidTestImplementation rootProject.ext.dbDependencies.dbRoomTesting
+    testImplementation rootProject.ext.testDependencies.archCoreTesting
+    testImplementation rootProject.ext.testDependencies.testCore
+    testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.junit
+    testImplementation rootProject.ext.testDependencies.robolectric
     testImplementation rootProject.ext.testDependencies.mockitorCore
     testImplementation rootProject.ext.testDependencies.kotlinMockito
 }
