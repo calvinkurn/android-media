@@ -370,9 +370,15 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
             if (linkSegment.get(1).equals("search")) {
                 RouteManager.route(context, ApplinkConstInternalTravel.HOTEL_SRP + "?" + uri.getQuery());
                 context.finish();
-            } else if (linkSegment.size() >= 3 && linkSegment.get(2).equals("h")) {
-                String hotelId = uri.getQueryParameter("id");
-                RouteManager.route(context, ApplinkConstInternalTravel.HOTEL_DETAIL + "/" + hotelId + "?" + uri.getQuery());
+            } else if (linkSegment.size() >= 4 && linkSegment.get(2).equals("h")) {
+                // eg : https://www.tokopedia.com/hotel/Indonesia/h/the-apurva-kempinski-bali-960088/
+                String[] hotelNames = linkSegment.get(3).split("-");
+                String hotelId = hotelNames[hotelNames.length - 1];
+                if (uri.getQuery() != null) {
+                    RouteManager.route(context, ApplinkConstInternalTravel.HOTEL_DETAIL + "/" + hotelId + "?" + uri.getQuery());
+                } else {
+                    RouteManager.route(context, ApplinkConstInternalTravel.HOTEL_DETAIL + "/" + hotelId);
+                }
                 context.finish();
             } else {
                 RouteManager.route(context, bundle, getApplinkWithUriQueryParams(uri, ApplinkConstInternalTravel.DASHBOARD_HOTEL));
@@ -847,8 +853,8 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
 
             Object xClid = campaignMap.get(AppEventTracking.GTM.X_CLID);
             if (xClid != null && xClid instanceof String) {
-                String xClid_  = (String)xClid;
-                customDimension.put(AppEventTracking.GTM.X_CLID,xClid_);
+                String xClid_ = (String) xClid;
+                customDimension.put(AppEventTracking.GTM.X_CLID, xClid_);
             }
             TrackApp.getInstance().getGTM().sendScreenAuthenticated(screenName, customDimension);
         } catch (MalformedURLException e) {

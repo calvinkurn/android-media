@@ -678,9 +678,11 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
     }
 
     private fun hideToolbar() {
-        (activity as? AppCompatActivity)?.run {
-            supportActionBar?.hide()
-            setSupportActionBar(headerTalkInbox)
+        if (isNewNav() && isNewView()) {
+            (activity as? AppCompatActivity)?.run {
+                supportActionBar?.hide()
+                setSupportActionBar(headerTalkInbox)
+            }
         }
     }
 

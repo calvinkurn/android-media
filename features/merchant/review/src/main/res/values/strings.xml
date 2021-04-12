@@ -324,4 +324,9 @@
     <string name="review_reminder_snackbar_error_action">Refresh</string>
     <string name="review_reminder_content_description_top_shadow">Top Shadow</string>
 
+    <!-- Kejar Ulasan -->
+    <string name="kejar_ulasan_label">Kejar Ulasan</string>
+    <string name="kejar_ulasan_coach_mark_title">Cek ulasan yang ditandai</string>
+    <string name="kejar_ulasan_coach_mark_subtitle">Ulasan yang masuk lewat Kejar Ulasan akan disertai dengan tanda khusus seperti ini, ya!</string>
+
 </resources>

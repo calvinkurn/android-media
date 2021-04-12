@@ -129,6 +129,7 @@ public abstract class SellerRouterApplication extends MainApplication implements
     Lazy<FirebaseMessagingManager> fcmManager;
 
     private static final String ENABLE_ASYNC_CMPUSHNOTIF_INIT = "android_async_cmpushnotif_init";
+    private static final String ENABLE_ASYNC_GCM_LEGACY = "android_async_gcm_legacy";
 
     @Override
     public void onCreate() {
@@ -380,14 +381,26 @@ public abstract class SellerRouterApplication extends MainApplication implements
             @Override
             public void onComplete(@NonNull Task<InstanceIdResult> task) {
                 if (!task.isSuccessful() || task.getResult() == null) {
-                    try {
-                        sessionRefresh.gcmUpdate();
-                    } catch (IOException e) {}
+                    gcmUpdateLegacy(sessionRefresh);
                 } else {
                     fcmManager.get().onNewToken(task.getResult().getToken());
                 }
             }
         });
+    }
+
+    private void gcmUpdateLegacy(SessionRefresh sessionRefresh) {
+        WeaveInterface weave = new WeaveInterface() {
+            @NotNull
+            @Override
+            public Boolean execute() {
+                try {
+                    sessionRefresh.gcmUpdate();
+                } catch (Throwable ignored) {}
+                return true;
+            }
+        };
+        Weaver.Companion.executeWeaveCoRoutineWithFirebase(weave, ENABLE_ASYNC_GCM_LEGACY, getApplicationContext());
     }
 
     @Override
