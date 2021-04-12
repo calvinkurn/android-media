@@ -208,7 +208,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                     hotelSearchModel.apply {
                         searchType = HotelTypeEnum.COORDINATE.value
                         searchId = ""
-                        name = if(isSearchByMap) getString(R.string.hotel_header_title_nearby_area) else getString(R.string.hotel_header_title_nearby)
+                        name = if (isSearchByMap) getString(R.string.hotel_header_title_nearby_area) else getString(R.string.hotel_header_title_nearby)
                         radius = it.data
                     }
                     hotelSearchMapViewModel.initSearchParam(hotelSearchModel)
@@ -430,6 +430,16 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         hotelSearchMapViewModel.addFilter(selectedFilter)
     }
 
+    override fun onGetListErrorWithEmptyData(throwable: Throwable?) {
+        super.onGetListErrorWithEmptyData(throwable)
+        bottomSheetBehavior.peekHeight = hotel_search_map_bottom_sheet.measuredHeight
+    }
+
+    override fun getEmptyDataViewModel(): Visitable<*> {
+        bottomSheetBehavior.peekHeight = hotel_search_map_bottom_sheet.measuredHeight
+        return super.getEmptyDataViewModel()
+    }
+
     private fun setupToolbarAction() {
         context?.let {
             val wrapper = LinearLayout(it).apply {
@@ -503,12 +513,12 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
 
                 val titleLayoutParam = tvHotelSearchListTitle.layoutParams as ViewGroup.MarginLayoutParams
 
-                var bottomSheetHeaderHeight = tvHotelSearchListTitle.measuredHeight
+                var bottomSheetHeaderHeight = tvHotelSearchListTitle.measuredHeight // title height
                 bottomSheetHeaderHeight = bottomSheetHeaderHeight.plus(resources.getDimensionPixelSize(
                         com.tokopedia.unifycomponents.R.dimen.bottom_sheet_knob_height)) // knob height
                 bottomSheetHeaderHeight = bottomSheetHeaderHeight.plus(resources.getDimensionPixelSize(
                         com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3)) // knob top margin
-                bottomSheetHeaderHeight = bottomSheetHeaderHeight.plus(titleLayoutParam.topMargin)
+                bottomSheetHeaderHeight = bottomSheetHeaderHeight.plus(titleLayoutParam.topMargin) // title top margin
 
                 bottomSheetBehavior.peekHeight = bottomSheetHeaderHeight
             }
@@ -935,7 +945,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
     }
 
     private fun changeHeaderTitle() {
-        headerHotelSearchMap.title = if(isSearchByMap) getString(R.string.hotel_header_title_nearby_area) else getString(R.string.hotel_header_title_nearby)
+        headerHotelSearchMap.title = if (isSearchByMap) getString(R.string.hotel_header_title_nearby_area) else getString(R.string.hotel_header_title_nearby)
     }
 
     private fun showFindNearHereView() {
@@ -1083,29 +1093,29 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
 
         if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
             showDialogEnableGPS()
-        }else{
+        } else {
             val locationDetectorHelper = LocationDetectorHelper(
-                permissionCheckerHelper,
-                fusedLocationClient,
-                requireActivity().applicationContext)
+                    permissionCheckerHelper,
+                    fusedLocationClient,
+                    requireActivity().applicationContext)
 
-        permissionCheckerHelper.checkPermission(this, PermissionCheckerHelper.Companion.PERMISSION_ACCESS_FINE_LOCATION,
-                object : PermissionCheckerHelper.PermissionCheckListener {
-                    override fun onNeverAskAgain(permissionText: String) {}
+            permissionCheckerHelper.checkPermission(this, PermissionCheckerHelper.Companion.PERMISSION_ACCESS_FINE_LOCATION,
+                    object : PermissionCheckerHelper.PermissionCheckListener {
+                        override fun onNeverAskAgain(permissionText: String) {}
 
-                    override fun onPermissionDenied(permissionText: String) {
-                        locationDetectorHelper.getLocation(hotelSearchMapViewModel.onGetLocation(), requireActivity(),
-                                LocationDetectorHelper.TYPE_DEFAULT_FROM_CLOUD,
-                                requireActivity().getString(R.string.hotel_destination_need_permission))
-                    }
+                        override fun onPermissionDenied(permissionText: String) {
+                            locationDetectorHelper.getLocation(hotelSearchMapViewModel.onGetLocation(), requireActivity(),
+                                    LocationDetectorHelper.TYPE_DEFAULT_FROM_CLOUD,
+                                    requireActivity().getString(R.string.hotel_destination_need_permission))
+                        }
 
-                    override fun onPermissionGranted() {
-                        locationDetectorHelper.getLocation(hotelSearchMapViewModel.onGetLocation(), requireActivity(),
-                                LocationDetectorHelper.TYPE_DEFAULT_FROM_CLOUD,
-                                requireActivity().getString(R.string.hotel_destination_need_permission))
-                    }
+                        override fun onPermissionGranted() {
+                            locationDetectorHelper.getLocation(hotelSearchMapViewModel.onGetLocation(), requireActivity(),
+                                    LocationDetectorHelper.TYPE_DEFAULT_FROM_CLOUD,
+                                    requireActivity().getString(R.string.hotel_destination_need_permission))
+                        }
 
-                })
+                    })
         }
     }
 
