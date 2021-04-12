@@ -104,6 +104,7 @@ class NestedWebView @JvmOverloads constructor(context: Context?, attrs: Attribut
                 returnValue = super.onTouchEvent(event)
                 // end NestedScroll
                 stopNestedScroll()
+                performClick()
             }
             MotionEvent.ACTION_CANCEL -> {
                 returnValue = super.onTouchEvent(event)
