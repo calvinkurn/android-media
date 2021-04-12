@@ -16,6 +16,8 @@ import androidx.annotation.DimenRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -141,10 +143,13 @@ internal fun ImageView.loadImageRounded(url: String?) {
 }
 
 internal fun ImageView.loadImageTopRightCrop(url: String?) {
-    this.loadImage(url) {
-        transform(TopRightCrop())
-        setErrorDrawable(R.drawable.product_card_placeholder_grey)
-    }
+    Glide.with(context)
+            .load(url)
+            .transform(TopRightCrop())
+            .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+            .placeholder(R.drawable.product_card_placeholder_grey)
+            .error(R.drawable.product_card_placeholder_grey)
+            .into(this)
 }
 
 internal fun Label.initLabelGroup(labelGroup: ProductCardModel.LabelGroup?) {
