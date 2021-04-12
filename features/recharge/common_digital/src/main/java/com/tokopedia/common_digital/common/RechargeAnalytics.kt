@@ -42,9 +42,9 @@ class RechargeAnalytics(private val rechargePushEventRecommendationUseCase: Rech
         TrackApp.getInstance().gtm.pushEvent(EVENT_DIGITAL_CATEGORY_SCREEN_LAUNCH, mapScreenLaunchData)
 
         // Branch
-//        LinkerManager.getInstance().sendEvent(LinkerUtils.createGenericRequest(
-//                LinkerConstants.EVENT_DIGITAL_SCREEN_LAUNCH, createScreenLaunchLinkerData(userId, categoryName, categoryId)
-//        ))
+        LinkerManager.getInstance().sendEvent(LinkerUtils.createGenericRequest(
+                LinkerConstants.EVENT_DIGITAL_SCREEN_LAUNCH, createScreenLaunchLinkerData(userId, categoryName, categoryId)
+        ))
     }
 
     fun trackVisitRechargePushEventRecommendation(categoryId: Int) {
