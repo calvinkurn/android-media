@@ -92,6 +92,7 @@ object ShopPageHomeMapper {
 
         val freeOngkirObject = ProductCardModel.FreeOngkir(shopHomeProductViewModel.isShowFreeOngkir, shopHomeProductViewModel.freeOngkirPromoIcon
                 ?: "")
+
         return if(isHasOCCButton) {
             ProductCardModel(
                     productImageUrl = shopHomeProductViewModel.imageUrl ?: "",
@@ -110,7 +111,7 @@ object ShopPageHomeMapper {
                     discountPercentage = discountPercentage,
                     slashedPrice = shopHomeProductViewModel.originalPrice ?: "",
                     formattedPrice = shopHomeProductViewModel.displayedPrice ?: "",
-                    countSoldRating = shopHomeProductViewModel.rating.toString(),
+                    countSoldRating = if (shopHomeProductViewModel.rating != 0.0) shopHomeProductViewModel.rating.toString() else "",
                     freeOngkir = freeOngkirObject,
                     labelGroupList = shopHomeProductViewModel.labelGroupList.map {
                         mapToProductCardLabelGroup(it)
