@@ -10,6 +10,7 @@ object DigitalCheckoutQueries {
         query (${'$'}categoryId: Int!) {
           rechargeGetCart(CategoryID: ${'$'}categoryId) {
             id
+            product_id
             user_id
             client_number
             title
@@ -99,12 +100,14 @@ object DigitalCheckoutQueries {
               allow_ovo_points
               fintech_amount
               fintech_partner_amount
+              operator_name
               info {
                 title
                 subtitle
                 link_text
                 link_url
                 tooltip_text
+                icon_url
               }
             }
             atc_source

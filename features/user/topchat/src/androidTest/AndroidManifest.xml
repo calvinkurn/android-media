@@ -23,5 +23,10 @@
             android:name=".stub.chatsearch.view.activity.ChatSearchActivityStub"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 
+        <service
+            android:name=".stub.chatroom.view.service.UploadImageChatServiceStub"
+            android:permission="android.permission.BIND_JOB_SERVICE"
+            android:exported="false"/>
+
     </application>
 </manifest>

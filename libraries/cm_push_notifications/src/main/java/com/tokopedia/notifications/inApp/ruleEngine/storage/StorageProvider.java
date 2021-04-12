@@ -181,7 +181,7 @@ public class StorageProvider implements InterfaceDataStore {
             public void call() {
                 CMInApp inAppData = inAppDataDao.getInAppData(id);
                 if (inAppData != null) {
-                    inAppDataDao.updateFrequency(inAppData.parentId);
+                    inAppDataDao.updateFrequencyWithShownTime(inAppData.parentId, System.currentTimeMillis());
                     inAppDataDao.updateShown(id);
                     storageProviderListener.onInappFreqUpdated();
                 }

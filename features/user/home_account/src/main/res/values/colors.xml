@@ -8,4 +8,8 @@
     <color name="vertical_divider_dark">#6C727C</color>
 
     <color name="home_account_icon_dark">#C7CBD2</color>
+  
+    <color name="icon_bg_shadow_1">#1031353B</color>
+    <color name="icon_bg_shadow_2">#1531353B</color>
+    <color name="icon_bg_shadow_3">#2031353B</color>
 </resources>
