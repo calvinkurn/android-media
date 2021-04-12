@@ -1107,7 +1107,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
     }
 
     override fun isFromRegister(): Boolean {
-        return (activity?.intent?.getBooleanExtra(IS_FROM_REGISTER, false) ?: false)
+        return arguments?.getBoolean(ApplinkConstInternalGlobal.PARAM_IS_FROM_REGISTER, false) ?: false
     }
 
     override fun trackSuccessValidate() {
@@ -1922,7 +1922,6 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
 
         const val IS_AUTO_FILL = "auto_fill"
         const val AUTO_FILL_EMAIL = "email"
-        const val IS_FROM_REGISTER = "is_from_register"
 
         const val FACEBOOK = "facebook"
         const val GPLUS = "gplus"
