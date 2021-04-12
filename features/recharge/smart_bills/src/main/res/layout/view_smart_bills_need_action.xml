@@ -11,7 +11,7 @@
         android:layout_marginLeft="@dimen/spacing_lvl4"
         android:layout_marginRight="@dimen/spacing_lvl4"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/layout_lvl8"
+        android:layout_height="wrap_content"
         app:unify_local_load_title="@string/smart_bills_clustering_local_load_title"
         app:unify_local_load_description="@string/smart_bills_clustering_local_load_desc"
         />

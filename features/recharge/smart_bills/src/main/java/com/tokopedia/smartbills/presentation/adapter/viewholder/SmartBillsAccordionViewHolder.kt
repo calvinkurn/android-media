@@ -4,6 +4,7 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.holder.BaseCheckableViewHolder
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.accordion.AccordionUnify
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.smartbills.R
 import com.tokopedia.smartbills.data.Section
@@ -22,7 +23,10 @@ class SmartBillsAccordionViewHolder(view: View,
 
     override fun bind(element: Section) {
         with(itemView){
-            if(element.positionAccordion == 0) smart_bills_view_margin.show()
+            if(element.positionAccordion == 0) {
+                accordionListener.collapseOnNow(accordion_smart_bills)
+                smart_bills_view_margin.show()
+            }
 
             val view = when(element.type){
                 ACTION_TYPE -> getAccordionwithAction(itemView, element, checkableListener,
@@ -51,5 +55,6 @@ class SmartBillsAccordionViewHolder(view: View,
         fun onRefreshAccordion(titleAccordion: String)
         fun onCollapseAccordion(titleAccordion: String)
         fun onExpandAccordion(titleAccordion: String)
+        fun collapseOnNow(accordion: AccordionUnify)
     }
 }

@@ -6,6 +6,7 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.graphics.Rect
 import android.os.Bundle
+import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -21,6 +22,7 @@ import com.tokopedia.abstraction.base.view.adapter.holder.BaseCheckableViewHolde
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
+import com.tokopedia.accordion.AccordionUnify
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -567,6 +569,15 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
         smartBillsAnalytics.clickCollapseAccordion(titleAccordion)
     }
 
+    override fun collapseOnNow(accordion: AccordionUnify) {
+        Handler().run {
+            postDelayed({
+                    accordion.expandGroup(0)},
+                    EXPAND_ACCORDION_START_DELAY
+            )
+        }
+    }
+
     private fun getDataErrorException(): Throwable {
         return MessageErrorException(getString(R.string.smart_bills_data_error))
     }
@@ -579,6 +590,8 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
         const val PAID_TYPE = 1
 
         const val RECHARGE_SMART_BILLS_PAGE_PERFORMANCE = "dg_smart_bills_pdp"
+
+        const val EXPAND_ACCORDION_START_DELAY = 150L
 
         const val SMART_BILLS_PREF = "smart_bills_preference"
         const val SMART_BILLS_VIEWED_ONBOARDING_COACH_MARK = "SMART_BILLS_VIEWED_ONBOARDING_COACH_MARK"
