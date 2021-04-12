@@ -26,7 +26,7 @@
         android:text="@string/buyer_reputation_given_by_seller"
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_16"
-        android:textColor="@color/unify_N700_32"
+        android:textColor="@color/Unify_N700_32"
         app:typographyType="body_3"
         />
 
