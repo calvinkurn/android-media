@@ -154,7 +154,7 @@ public class ScroogeActivity extends AppCompatActivity implements FilePickerInte
                 messageMap.put("type", failingUrl);
                 messageMap.put("error_code", String.valueOf(errorCode));
                 messageMap.put("desc", description);
-                ServerLogger.INSTANCE.log(Priority.P1, "WEBVIEW_ERROR", messageMap);
+                ServerLogger.log(Priority.P1, "WEBVIEW_ERROR", messageMap);
                 Intent responseIntent = new Intent();
                 responseIntent.putExtra(ScroogePGUtil.RESULT_EXTRA_MSG, description);
                 setResult(ScroogePGUtil.RESULT_CODE_RECIEVED_ERROR, responseIntent);

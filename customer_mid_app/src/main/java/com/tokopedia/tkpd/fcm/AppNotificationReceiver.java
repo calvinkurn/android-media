@@ -96,7 +96,7 @@ public class AppNotificationReceiver implements IAppNotificationReceiver {
             Map<String, String> messageMap = new HashMap<>();
             messageMap.put("type", "AppNotificationReceiver::onNotificationReceived(String from, Bundle bundle)");
             messageMap.put("data", logMessage);
-            ServerLogger.INSTANCE.log(Priority.P2, "LOG_PUSH_NOTIF", messageMap);
+            ServerLogger.log(Priority.P2, "LOG_PUSH_NOTIF", messageMap);
         }
     }
 

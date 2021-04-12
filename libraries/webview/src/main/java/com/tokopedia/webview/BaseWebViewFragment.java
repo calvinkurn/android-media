@@ -626,7 +626,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             messageMap.put("status_code", String.valueOf(errorResponse.getStatusCode()));
             messageMap.put("reason", errorResponse.getReasonPhrase());
             messageMap.put("web_url", webUrl);
-            ServerLogger.INSTANCE.log(Priority.P1, "WEBVIEW_ERROR_RESPONSE", messageMap);
+            ServerLogger.log(Priority.P1, "WEBVIEW_ERROR_RESPONSE", messageMap);
         }
     }
 
@@ -637,7 +637,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         messageMap.put("error_code", String.valueOf(errorCode));
         messageMap.put("desc", description);
         messageMap.put("web_url", webUrl);
-        ServerLogger.INSTANCE.log(Priority.P1, "WEBVIEW_ERROR", messageMap);
+        ServerLogger.log(Priority.P1, "WEBVIEW_ERROR", messageMap);
         if (errorCode == WebViewClient.ERROR_HOST_LOOKUP &&
                 description.contains(ERR_INTERNET_DISCONNECTED) &&
                 globalError != null && swipeRefreshLayout != null) {
@@ -789,7 +789,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         messageMap.put("referrer", referrer);
         messageMap.put("uri", url);
         messageMap.put("journey", "-");
-        ServerLogger.INSTANCE.log(Priority.P1, "APPLINK_OPEN_ERROR", messageMap);
+        ServerLogger.log(Priority.P1, "APPLINK_OPEN_ERROR", messageMap);
     }
 
     private void checkActivityFinish() {

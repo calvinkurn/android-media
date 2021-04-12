@@ -66,7 +66,7 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
         messageMap.put("type", "AppNotificationReceiverUIBackground_Seller");
         messageMap.put("isSupported", String.valueOf(isSupportedApplinkNotification(data)));
         messageMap.put("isDedicated", String.valueOf(isDedicatedNotification(data)));
-        ServerLogger.INSTANCE.log(Priority.P2, "PUSH_NOTIF_UNUSED", messageMap);
+        ServerLogger.log(Priority.P2, "PUSH_NOTIF_UNUSED", messageMap);
         if (isSupportedApplinkNotification(data)) {
             handleApplinkNotification(data);
         } else if (isDedicatedNotification(data)) {

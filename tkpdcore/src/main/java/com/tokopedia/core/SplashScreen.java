@@ -111,7 +111,7 @@ public class SplashScreen extends AppCompatActivity {
             Map<String, String> messageMap = new HashMap<>();
             messageMap.put("type", "splash_screen");
             messageMap.put("fingerprint", Build.FINGERPRINT);
-            ServerLogger.INSTANCE.log(Priority.P1, "PLAY_SERVICE_ERROR", messageMap);
+            ServerLogger.log(Priority.P1, "PLAY_SERVICE_ERROR", messageMap);
         }
         Pgenerator = new PasswordGenerator(SplashScreen.this);
         InitNew();
@@ -205,7 +205,7 @@ public class SplashScreen extends AppCompatActivity {
                             Map<String, String> messageMap = new HashMap<>();
                             messageMap.put("type", "splash_screen");
                             messageMap.put("deeplink", tokopediaDeeplink);
-                            ServerLogger.INSTANCE.log(Priority.P2, "LINKER", messageMap);
+                            ServerLogger.log(Priority.P2, "LINKER", messageMap);
                             intent.setData(Uri.parse(tokopediaDeeplink));
                             startActivity(intent);
                             finish();

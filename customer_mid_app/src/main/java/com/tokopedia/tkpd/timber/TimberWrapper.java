@@ -49,24 +49,31 @@ public class TimberWrapper {
             String logScalyrConfigString = remoteConfig.getString(REMOTE_CONFIG_SCALRY_KEY_LOG);
             String logNewRelicConfigString = remoteConfig.getString(REMOTE_CONFIG_NEW_RELIC_KEY_LOG);
             LoggerReporting loggerReporting = LoggerReporting.Companion.getInstance();
+            UserSession userSession = new UserSession(context);
+            loggerReporting.setUserId(userSession.getUserId());
+            loggerReporting.setPartDeviceId(LoggerUtils.INSTANCE.getPartDeviceId(context));
+            loggerReporting.setVersionName(GlobalConfig.RAW_VERSION_NAME);
+            loggerReporting.setVersionCode(GlobalConfig.VERSION_CODE);
+            String installer = context.getPackageManager().getInstallerPackageName(context.getPackageName());
+            loggerReporting.setInstaller(installer);
+            loggerReporting.setPackageName(context.getPackageName());
+            loggerReporting.setDebug(GlobalConfig.DEBUG);
             if (!TextUtils.isEmpty(logScalyrConfigString)) {
                 DataLogConfig dataLogConfigScalyr = new Gson().fromJson(logScalyrConfigString, DataLogConfig.class);
                 if (dataLogConfigScalyr != null && dataLogConfigScalyr.isEnabled() && GlobalConfig.VERSION_CODE >= dataLogConfigScalyr.getAppVersionMin()
                         && dataLogConfigScalyr.getTags() != null) {
-                    UserSession userSession = new UserSession(context);
-                    loggerReporting.setPopulateTagMapsScalyr(dataLogConfigScalyr.getTags());
-                    loggerReporting.setUserId(userSession.getUserId());
-                    loggerReporting.setPartDeviceId(LoggerUtils.INSTANCE.getPartDeviceId(context));
-                    loggerReporting.setVersionName(GlobalConfig.RAW_VERSION_NAME);
-                    loggerReporting.setVersionCode(GlobalConfig.VERSION_CODE);
                     loggerReporting.setClientLogs(dataLogConfigScalyr.getClientLogs());
                     loggerReporting.setQueryLimits(dataLogConfigScalyr.getQueryLimits());
+                    loggerReporting.setPopulateTagMapsScalyr(dataLogConfigScalyr.getTags());
                 }
             }
             if (!TextUtils.isEmpty(logNewRelicConfigString)) {
                 DataLogConfig dataLogConfigNewRelic = new Gson().fromJson(logNewRelicConfigString, DataLogConfig.class);
-                if (dataLogConfigNewRelic.getTags() != null) {
+                if (dataLogConfigNewRelic != null && dataLogConfigNewRelic.getTags() != null &&
+                        dataLogConfigNewRelic.isEnabled() && GlobalConfig.VERSION_CODE >= dataLogConfigNewRelic.getAppVersionMin()) {
                     loggerReporting.setPopulateTagMapsNewRelic(dataLogConfigNewRelic.getTags());
+                    loggerReporting.setClientLogs(dataLogConfigNewRelic.getClientLogs());
+                    loggerReporting.setQueryLimits(dataLogConfigNewRelic.getQueryLimits());
                 }
             }
         } catch (Throwable throwable) {

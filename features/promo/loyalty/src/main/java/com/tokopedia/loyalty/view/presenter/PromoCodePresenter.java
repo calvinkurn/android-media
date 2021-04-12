@@ -109,7 +109,7 @@ public class PromoCodePresenter implements IPromoCodePresenter {
                             messageMap.put("type", "json");
                             messageMap.put("err", Log.getStackTraceString(e));
                             messageMap.put("req", PromoCodePresenter.class.getCanonicalName());
-                            ServerLogger.INSTANCE.log(Priority.P2, "LOYALTY_PARSE_ERROR", messageMap);
+                            ServerLogger.log(Priority.P2, "LOYALTY_PARSE_ERROR", messageMap);
                         }
 
                         if (e instanceof TokoPointResponseErrorException || e instanceof ResponseErrorException || e instanceof com.tokopedia.abstraction.common.network.exception.ResponseErrorException) {
@@ -178,7 +178,7 @@ public class PromoCodePresenter implements IPromoCodePresenter {
                     messageMap.put("type", "json");
                     messageMap.put("err", Log.getStackTraceString(e));
                     messageMap.put("req", PromoCodePresenter.class.getCanonicalName());
-                    ServerLogger.INSTANCE.log(Priority.P2, "LOYALTY_PARSE_ERROR", messageMap);
+                    ServerLogger.log(Priority.P2, "LOYALTY_PARSE_ERROR", messageMap);
                 }
 
                 if (e instanceof LoyaltyErrorException || e instanceof ResponseErrorException) {
@@ -214,7 +214,7 @@ public class PromoCodePresenter implements IPromoCodePresenter {
                     messageMap.put("type", "json");
                     messageMap.put("err", Log.getStackTraceString(e));
                     messageMap.put("req", PromoCodePresenter.class.getCanonicalName());
-                    ServerLogger.INSTANCE.log(Priority.P2, "LOYALTY_PARSE_ERROR", messageMap);
+                    ServerLogger.log(Priority.P2, "LOYALTY_PARSE_ERROR", messageMap);
                 }
 
                 if (e instanceof LoyaltyErrorException || e instanceof ResponseErrorException) {
@@ -249,7 +249,7 @@ public class PromoCodePresenter implements IPromoCodePresenter {
                     messageMap.put("type", "json");
                     messageMap.put("err", Log.getStackTraceString(e));
                     messageMap.put("req", PromoCodePresenter.class.getCanonicalName());
-                    ServerLogger.INSTANCE.log(Priority.P2, "LOYALTY_PARSE_ERROR", messageMap);
+                    ServerLogger.log(Priority.P2, "LOYALTY_PARSE_ERROR", messageMap);
                 }
 
                 if (e instanceof TokoPointResponseErrorException || e instanceof ResponseErrorException) {

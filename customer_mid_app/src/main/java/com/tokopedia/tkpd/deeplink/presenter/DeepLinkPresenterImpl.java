@@ -513,7 +513,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     messageMap.put("type", "OneSegment");
                     messageMap.put("link_segment", linkSegment.get(0));
                     messageMap.put("uri", uriData.toString());
-                    ServerLogger.INSTANCE.log(Priority.P1, "DEEPLINK_OPEN_WEBVIEW", messageMap);
+                    ServerLogger.log(Priority.P1, "DEEPLINK_OPEN_WEBVIEW", messageMap);
                 }
             }
 
@@ -566,7 +566,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                         messageMap.put("type", "OneSegment");
                         messageMap.put("link_segment", linkSegment.get(0));
                         messageMap.put("uri", uriData.toString());
-                        ServerLogger.INSTANCE.log(Priority.P1, "DEEPLINK_OPEN_WEBVIEW", messageMap);
+                        ServerLogger.log(Priority.P1, "DEEPLINK_OPEN_WEBVIEW", messageMap);
                         if (!GlobalConfig.DEBUG) {
                             crashlytics.recordException(new ShopNotFoundException(linkSegment.get(0)));
                         }
@@ -652,7 +652,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     messageMap.put("type", "TwoSegments");
                     messageMap.put("link_segment", linkSegment.get(0) + linkSegment.get(1));
                     messageMap.put("uri", uriData.toString());
-                    ServerLogger.INSTANCE.log(Priority.P1, "DEEPLINK_OPEN_WEBVIEW", messageMap);
+                    ServerLogger.log(Priority.P1, "DEEPLINK_OPEN_WEBVIEW", messageMap);
                 }
             }
 
@@ -684,7 +684,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                         messageMap.put("type", "TwoSegments");
                         messageMap.put("link_segment", linkSegment.get(0) + linkSegment.get(1));
                         messageMap.put("uri", uriData.toString());
-                        ServerLogger.INSTANCE.log(Priority.P1, "DEEPLINK_OPEN_WEBVIEW", messageMap);
+                        ServerLogger.log(Priority.P1, "DEEPLINK_OPEN_WEBVIEW", messageMap);
                         if (!GlobalConfig.DEBUG) {
                             crashlytics.recordException(new ShopNotFoundException(linkSegment.get(0)));
                             crashlytics.recordException(new ProductNotFoundException(linkSegment.get(0) + "/" + linkSegment.get(1)));

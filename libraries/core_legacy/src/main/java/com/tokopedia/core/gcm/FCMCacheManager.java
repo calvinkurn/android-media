@@ -179,7 +179,7 @@ public class FCMCacheManager {
     public void saveIncomingNotification(NotificationEntity notificationEntity) {
         Map<String, String> messageMap = new HashMap<>();
         messageMap.put("type", "FCMCacheManager_saveIncomingNotification");
-        ServerLogger.INSTANCE.log(Priority.P2, "PUSH_NOTIF_UNUSED", messageMap);
+        ServerLogger.log(Priority.P2, "PUSH_NOTIF_UNUSED", messageMap);
         boolean isExist = false;
         List<NotificationEntity> notificationEntities = getHistoryPushNotification();
         for (int i = 0; i < notificationEntities.size(); i++) {

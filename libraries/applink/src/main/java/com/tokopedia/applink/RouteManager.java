@@ -302,7 +302,7 @@ public class RouteManager {
             messageMap.put("referrer", referrer);
             messageMap.put("uri", uriString);
             messageMap.put("journey", UserJourney.INSTANCE.getReadableJourneyActivity(5));
-            ServerLogger.INSTANCE.log(Priority.P1, "APPLINK_OPEN_ERROR", messageMap);
+            ServerLogger.log(Priority.P1, "APPLINK_OPEN_ERROR", messageMap);
         } catch (Exception e) {
             Timber.e(e);
         }

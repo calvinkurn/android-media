@@ -1,10 +1,6 @@
 package com.tokopedia.logger.repository
 
-import com.google.gson.Gson
-import com.google.gson.JsonObject
-import com.google.gson.reflect.TypeToken
 import com.tokopedia.encryption.security.BaseEncryptor
-import com.tokopedia.logger.LogManager
 import com.tokopedia.logger.datasource.cloud.LoggerCloudDataSource
 import com.tokopedia.logger.datasource.cloud.LoggerCloudNewRelicImpl
 import com.tokopedia.logger.datasource.db.Logger
@@ -15,22 +11,18 @@ import com.tokopedia.logger.model.scalyr.ScalyrEvent
 import com.tokopedia.logger.model.scalyr.ScalyrEventAttrs
 import com.tokopedia.logger.utils.Constants
 import com.tokopedia.logger.utils.LoggerReporting
-import com.tokopedia.logger.utils.Priority
-import com.tokopedia.logger.utils.Tag
 import kotlinx.coroutines.*
-import java.lang.StringBuilder
+import org.json.JSONObject
 import javax.crypto.SecretKey
 import kotlin.coroutines.CoroutineContext
-import kotlin.math.log
 
 class LoggerRepository(private val logDao: LoggerDao,
                        private val loggerCloudScalyrDataSource: LoggerCloudDataSource,
                        private val loggerCloudNewRelicImpl: LoggerCloudNewRelicImpl,
                        private val scalyrConfigs: List<ScalyrConfig>,
-                       private val newRelicConfigs: List<NewRelicConfig>,
+                       private val newRelicConfig: NewRelicConfig,
                        private val encryptor: BaseEncryptor,
                        private val secretKey: SecretKey) : LoggerRepositoryContract, CoroutineScope {
-
 
     override suspend fun insert(logger: Logger) {
         val encryptedLogger = logger.copy(message = encryptor.encrypt(logger.message, secretKey))
@@ -77,7 +69,7 @@ class LoggerRepository(private val logDao: LoggerDao,
                 }
 
                 if (newRelicConfigList.isNotEmpty()) {
-                    val jobNewRelic = async { sendNewRelicLogToServer(newRelicConfigs[tokenIndex], logs, newRelicConfigList) }
+                    val jobNewRelic = async { sendNewRelicLogToServer(newRelicConfig, logs, newRelicConfigList) }
                     jobList.add(jobNewRelic)
                 }
 
@@ -110,8 +102,9 @@ class LoggerRepository(private val logDao: LoggerDao,
             ts += counter
             counter++
             val message = encryptor.decrypt(log.message, secretKey)
-            val tagValue = jsonStringToMap(message).get(Constants.TAG_LOG) ?: ""
-            val priorityValue = jsonStringToMap(message).get(Constants.PRIORITY_LOG)?.toIntOrNull()
+            val obj = JSONObject(message)
+            val tagValue = obj.getString (Constants.TAG_LOG) ?: ""
+            val priorityValue = obj.getString(Constants.PRIORITY_LOG).toIntOrNull()
                     ?: 0
             val priorityName = when (priorityValue) {
                 Constants.SEVERITY_HIGH -> LoggerReporting.P1
@@ -123,7 +116,8 @@ class LoggerRepository(private val logDao: LoggerDao,
                 scalyrEventList.add(ScalyrEvent(ts, ScalyrEventAttrs(truncate(message))))
             }
             LoggerReporting.getInstance().tagMapsNewRelic[tagMapsValue]?.let {
-                messageNewRelicList.add(addEventNewRelic(message))
+                obj.put(Constants.EVENT_TYPE_NEW_RELIC, Constants.EVENT_ANDROID_NEW_RELIC)
+                messageNewRelicList.add(obj.toString())
             }
         }
         return Pair(scalyrEventList, messageNewRelicList)
@@ -135,17 +129,6 @@ class LoggerRepository(private val logDao: LoggerDao,
         }
 
         return loggerCloudNewRelicImpl.sendToLogServer(config, messageList)
-    }
-
-    private fun addEventNewRelic(message: String): String {
-        val gson = Gson().fromJson(message, JsonObject::class.java)
-        gson.addProperty(Constants.EVENT_TYPE_NEW_RELIC, Constants.EVENT_ANDROID_NEW_RELIC)
-        return gson.toString()
-    }
-
-    private fun jsonStringToMap(message: String): Map<String, String> {
-        val type = object : TypeToken<Map<String, String>>() {}.type
-        return Gson().fromJson(message, type)
     }
 
     fun truncate(str: String): String {

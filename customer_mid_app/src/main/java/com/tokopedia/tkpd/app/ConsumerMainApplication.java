@@ -166,7 +166,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         if (!packageNameValid) {
             Map<String, String> messageMap = new HashMap<>();
             messageMap.put("packageName", this.getPackageName());
-            ServerLogger.INSTANCE.log(Priority.P1, "APP_SIGNATURE_FAILED", messageMap);
+            ServerLogger.log(Priority.P1, "APP_SIGNATURE_FAILED", messageMap);
         }
         return packageNameValid;
     }
@@ -194,12 +194,12 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
             if (rawCertNative == null) {
                 Map<String, String> messageMap = new HashMap<>();
                 messageMap.put("rawCertNative", "null");
-                ServerLogger.INSTANCE.log(Priority.P1, "APP_SIGNATURE_FAILED", messageMap);
+                ServerLogger.log(Priority.P1, "APP_SIGNATURE_FAILED", messageMap);
                 return true;
             } else if (rawCertJava == null) {
                 Map<String, String> messageMap = new HashMap<>();
                 messageMap.put("rawCertJava", "null");
-                ServerLogger.INSTANCE.log(Priority.P1, "APP_SIGNATURE_FAILED", messageMap);
+                ServerLogger.log(Priority.P1, "APP_SIGNATURE_FAILED", messageMap);
                 return true;
             } else {
                 signatureValid = getInfoFromBytes(rawCertJava).equals(getInfoFromBytes(rawCertNative));
@@ -207,13 +207,13 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
             if (!signatureValid) {
                 Map<String, String> messageMap = new HashMap<>();
                 messageMap.put("certJava", "!=certNative");
-                ServerLogger.INSTANCE.log(Priority.P1, "APP_SIGNATURE_FAILED", messageMap);
+                ServerLogger.log(Priority.P1, "APP_SIGNATURE_FAILED", messageMap);
             }
             return signatureValid;
         } catch (PackageManager.NameNotFoundException e) {
             Map<String, String> messageMap = new HashMap<>();
             messageMap.put("type", "PackageManager.NameNotFoundException");
-            ServerLogger.INSTANCE.log(Priority.P1, "APP_SIGNATURE_FAILED", messageMap);
+            ServerLogger.log(Priority.P1, "APP_SIGNATURE_FAILED", messageMap);
             return false;
         }
     }
@@ -430,7 +430,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
                 messageMap.put("err", Log.getStackTraceString
                         (e).substring(0, (Math.min(Log.getStackTraceString(e).length(), CMConstant.TimberTags.MAX_LIMIT))));
                 messageMap.put("data", "");
-                ServerLogger.INSTANCE.log(Priority.P2, "CM_VALIDATION", messageMap);
+                ServerLogger.log(Priority.P2, "CM_VALIDATION", messageMap);
             }
         }
     }

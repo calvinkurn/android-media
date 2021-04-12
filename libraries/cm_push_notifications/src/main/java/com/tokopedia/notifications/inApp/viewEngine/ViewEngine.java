@@ -148,7 +148,7 @@ public class ViewEngine {
             messageMap.put("err", Log.getStackTraceString(e)
                     .substring(0, (Math.min(Log.getStackTraceString(e).length(), CMConstant.TimberTags.MAX_LIMIT))));
             messageMap.put("data", cmInApp.toString().substring(0, (Math.min(cmInApp.toString().length(), CMConstant.TimberTags.MAX_LIMIT))));
-            ServerLogger.INSTANCE.log(Priority.P2, "CM_VALIDATION", messageMap);
+            ServerLogger.log(Priority.P2, "CM_VALIDATION", messageMap);
             inAppView = null;
             CmInAppListener listener = CMInAppManager.getCmInAppListener();
             if (listener != null) {
@@ -360,7 +360,7 @@ public class ViewEngine {
             messageMap.put("type", "exception");
             messageMap.put("err", Log.getStackTraceString(e).substring(0, (Math.min(Log.getStackTraceString(e).length(), CMConstant.TimberTags.MAX_LIMIT))));
             messageMap.put("data", cmButton.toString().substring(0, (Math.min(cmButton.toString().length(), CMConstant.TimberTags.MAX_LIMIT))));
-            ServerLogger.INSTANCE.log(Priority.P2, "CM_VALIDATION", messageMap);
+            ServerLogger.log(Priority.P2, "CM_VALIDATION", messageMap);
         }
 
         int[] margin = {0, 0, 0, 0};

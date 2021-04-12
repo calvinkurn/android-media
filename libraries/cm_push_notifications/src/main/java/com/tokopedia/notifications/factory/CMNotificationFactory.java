@@ -44,7 +44,7 @@ public class CMNotificationFactory {
                 messageMap.put("reason", "type_missing");
                 messageMap.put("data", baseNotificationModel.toString().substring(0, (Math.min(baseNotificationModel.toString().length(),
                         CMConstant.TimberTags.MAX_LIMIT))));
-                ServerLogger.INSTANCE.log(Priority.P2, "CM_VALIDATION", messageMap);
+                ServerLogger.log(Priority.P2, "CM_VALIDATION", messageMap);
                 return null;
             }
             switch (baseNotificationModel.getType()) {

@@ -255,7 +255,7 @@ public class CMInAppManager implements CmInAppListener,
                     messageMap.put("type", "validation");
                     messageMap.put("reason", "application_null");
                     messageMap.put("data",  "");
-                    ServerLogger.INSTANCE.log(Priority.P2, "CM_VALIDATION", messageMap);
+                    ServerLogger.log(Priority.P2, "CM_VALIDATION", messageMap);
                 }
             }
         } catch (Exception e) {
@@ -267,7 +267,7 @@ public class CMInAppManager implements CmInAppListener,
                         (e).substring(0, (Math.min(Log.getStackTraceString(e).length(), CMConstant.TimberTags.MAX_LIMIT))));
                 messageMap.put("data", data.toString()
                         .substring(0, (Math.min(data.toString().length(), CMConstant.TimberTags.MAX_LIMIT))));
-                ServerLogger.INSTANCE.log(Priority.P2, "CM_VALIDATION", messageMap);
+                ServerLogger.log(Priority.P2, "CM_VALIDATION", messageMap);
             }
             else {
                 Map<String, String> messageMap = new HashMap<>();
@@ -275,7 +275,7 @@ public class CMInAppManager implements CmInAppListener,
                 messageMap.put("err", Log.getStackTraceString
                         (e).substring(0, (Math.min(Log.getStackTraceString(e).length(), CMConstant.TimberTags.MAX_LIMIT))));
                 messageMap.put("data", "");
-                ServerLogger.INSTANCE.log(Priority.P2, "CM_VALIDATION", messageMap);
+                ServerLogger.log(Priority.P2, "CM_VALIDATION", messageMap);
             }
         }
     }
@@ -304,7 +304,7 @@ public class CMInAppManager implements CmInAppListener,
             messageMap.put("type", "svalidation");
             messageMap.put("reason", "application_null_no_activity");
             messageMap.put("data", "");
-            ServerLogger.INSTANCE.log(Priority.P2, "CM_VALIDATION", messageMap);
+            ServerLogger.log(Priority.P2, "CM_VALIDATION", messageMap);
         }
 
         switch (elementType.getViewType()) {

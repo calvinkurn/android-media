@@ -895,7 +895,7 @@ public class GTMAnalytics extends ContextAnalytics {
             messageMap.put("name", eventName);
             messageMap.put("size", String.valueOf(size));
             messageMap.put("value", eventCategory);
-            ServerLogger.INSTANCE.log(Priority.P1, "GTM_SIZE", messageMap);
+            ServerLogger.log(Priority.P1, "GTM_SIZE", messageMap);
             return;
         }
         String screenName = (String) values.get("screenName");
@@ -905,7 +905,7 @@ public class GTMAnalytics extends ContextAnalytics {
             messageMap.put("name", eventName);
             messageMap.put("size", String.valueOf(size));
             messageMap.put("value", screenName);
-            ServerLogger.INSTANCE.log(Priority.P1, "GTM_SIZE", messageMap);
+            ServerLogger.log(Priority.P1, "GTM_SIZE", messageMap);
             return;
         }
         String pageType = (String) values.get("pageType");
@@ -915,14 +915,14 @@ public class GTMAnalytics extends ContextAnalytics {
             messageMap.put("name", eventName);
             messageMap.put("size", String.valueOf(size));
             messageMap.put("value", pageType);
-            ServerLogger.INSTANCE.log(Priority.P1, "GTM_SIZE", messageMap);
+            ServerLogger.log(Priority.P1, "GTM_SIZE", messageMap);
             return;
         }
         Map<String, String> messageMap = new HashMap<>();
         messageMap.put("type", "event_others");
         messageMap.put("name", eventName);
         messageMap.put("size", String.valueOf(size));
-        ServerLogger.INSTANCE.log(Priority.P1, "GTM_SIZE", messageMap);
+        ServerLogger.log(Priority.P1, "GTM_SIZE", messageMap);
     }
 
     public void sendScreenAuthenticated(String screenName) {

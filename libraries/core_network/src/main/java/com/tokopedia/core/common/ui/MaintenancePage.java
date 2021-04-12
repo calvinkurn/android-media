@@ -45,7 +45,7 @@ public class MaintenancePage extends Activity {
         Map<String, String> messageMap = new HashMap<>();
         messageMap.put("type", "createIntentFromNetwork");
         messageMap.put("data", "");
-        ServerLogger.INSTANCE.log(Priority.P1, "MAINTENANCE_PAGE", messageMap);
+        ServerLogger.log(Priority.P1, "MAINTENANCE_PAGE", messageMap);
         return intent;
     }
 
@@ -57,7 +57,7 @@ public class MaintenancePage extends Activity {
         Map<String, String> messageMap = new HashMap<>();
         messageMap.put("type", "createIntent");
         messageMap.put("data", "");
-        ServerLogger.INSTANCE.log(Priority.P1, "MAINTENANCE_PAGE", messageMap);
+        ServerLogger.log(Priority.P1, "MAINTENANCE_PAGE", messageMap);
         return intent;
     }
 
@@ -80,7 +80,7 @@ public class MaintenancePage extends Activity {
         Map<String, String> messageMap = new HashMap<>();
         messageMap.put("type", "onCreateShow");
         messageMap.put("data", "");
-        ServerLogger.INSTANCE.log(Priority.P1, "MAINTENANCE_PAGE", messageMap);
+        ServerLogger.log(Priority.P1, "MAINTENANCE_PAGE", messageMap);
     }
 
     private void initVar() {
@@ -105,7 +105,7 @@ public class MaintenancePage extends Activity {
         Map<String, String> messageMap = new HashMap<>();
         messageMap.put("type", "checkServerMaintenanceStatusLoad");
         messageMap.put("data", "");
-        ServerLogger.INSTANCE.log(Priority.P1, "MAINTENANCE_PAGE", messageMap);
+        ServerLogger.log(Priority.P1, "MAINTENANCE_PAGE", messageMap);
         Map<String, String> param = new HashMap<>();
         new HotListService().getApi().getHotList(AuthUtil.generateParams(this, param))
                 .observeOn(AndroidSchedulers.mainThread())
@@ -130,7 +130,7 @@ public class MaintenancePage extends Activity {
                         Map<String, String> messageMap = new HashMap<>();
                         messageMap.put("type", "checkServerMaintenanceStatusResult");
                         messageMap.put("data", status);
-                        ServerLogger.INSTANCE.log(Priority.P1, "MAINTENANCE_PAGE", messageMap);
+                        ServerLogger.log(Priority.P1, "MAINTENANCE_PAGE", messageMap);
 
                         if (status.equals(UNDER_MAINTENANCE)) {
                             hideProgressBar();

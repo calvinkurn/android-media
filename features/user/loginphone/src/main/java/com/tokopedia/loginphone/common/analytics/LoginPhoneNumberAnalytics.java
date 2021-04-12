@@ -69,7 +69,7 @@ public class LoginPhoneNumberAnalytics {
                 + " | " + Build.TAGS;
         Map<String, String> screenNameMap = new HashMap<>();
         screenNameMap.put("screenName", screenNameMessage);
-        ServerLogger.INSTANCE.log(Priority.P2, "FINGERPRINT", screenNameMap);
+        ServerLogger.log(Priority.P2, "FINGERPRINT", screenNameMap);
         TrackApp.getInstance().getGTM().sendScreenAuthenticated(screenName);
     }
 

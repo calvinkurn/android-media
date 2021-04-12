@@ -38,7 +38,7 @@ public class ErrorNetworkReceiver extends BroadcastReceiver {
             messageMap.put("action", action);
             messageMap.put("accessToken", accessToken);
             messageMap.put("path", path);
-            ServerLogger.INSTANCE.log(Priority.P1, "BROADCAST_RECEIVER", messageMap);
+            ServerLogger.log(Priority.P1, "BROADCAST_RECEIVER", messageMap);
             if (action == null) {
                 return;
             }

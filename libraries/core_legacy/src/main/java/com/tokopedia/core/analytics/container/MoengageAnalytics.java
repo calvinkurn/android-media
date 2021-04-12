@@ -63,7 +63,7 @@ public class MoengageAnalytics extends ContextAnalytics {
             Map<String, String> messageMap = new HashMap<>();
             messageMap.put("type", "error");
             messageMap.put("name", ex.getMessage());
-            ServerLogger.INSTANCE.log(Priority.P2, "INIT_MOENGAGE", messageMap);
+            ServerLogger.log(Priority.P2, "INIT_MOENGAGE", messageMap);
         }
     }
 

@@ -93,7 +93,7 @@ public class SessionActivityLifecycleCallbacks implements Application.ActivityLi
         messageMap.put("open_page_total", String.valueOf(openedPageCountTotal));
         messageMap.put("open_page", String.valueOf(openedPageCount));
         messageMap.put("diff_time", getDiffDuration(lastSessionMillis, currentMillis));
-        ServerLogger.INSTANCE.log(Priority.P1, "ACTIVE_SESSION", messageMap);
+        ServerLogger.log(Priority.P1, "ACTIVE_SESSION", messageMap);
     }
 
     private String getDiffDuration(long startDuration, long stopDuration) {
@@ -144,7 +144,7 @@ public class SessionActivityLifecycleCallbacks implements Application.ActivityLi
         messageMap.put("boot_net", getFormattedMBSize(bootNetwork));
         messageMap.put("boot_tx", getFormattedMBSize(bootTx));
         messageMap.put("boot_rx", getFormattedMBSize(bootRx));
-        ServerLogger.INSTANCE.log(Priority.P1, "DATA_USAGE", messageMap);
+        ServerLogger.log(Priority.P1, "DATA_USAGE", messageMap);
     }
 
     private void updateLastSumTraffic(long currentSumTx, long currentSumRx) {

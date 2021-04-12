@@ -51,7 +51,7 @@ public class CMActivityLifeCycle implements Application.ActivityLifecycleCallbac
             messageMap.put("err", Log.getStackTraceString
                             (e).substring(0, (Math.min(Log.getStackTraceString(e).length(), CMConstant.TimberTags.MAX_LIMIT))));
             messageMap.put("data", "");
-            ServerLogger.INSTANCE.log(Priority.P2, "CM_VALIDATION", messageMap);
+            ServerLogger.log(Priority.P2, "CM_VALIDATION", messageMap);
         }
     }
 

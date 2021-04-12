@@ -313,7 +313,7 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
         messageMap.put("referrer", referrer);
         messageMap.put("extra_referrer", extraReferrer.toString());
         messageMap.put("uri", uri.toString());
-        ServerLogger.INSTANCE.log(Priority.P1, "DEEPLINK_OPEN_APP", messageMap);
+        ServerLogger.log(Priority.P1, "DEEPLINK_OPEN_APP", messageMap);
     }
 
     private void logWebViewApplink() {
@@ -328,7 +328,7 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
                         messageMap.put("type", "applink");
                         messageMap.put("domain", domain);
                         messageMap.put("url", uri.toString());
-                        ServerLogger.INSTANCE.log(Priority.P1, "WEBVIEW_OPENED", messageMap);
+                        ServerLogger.log(Priority.P1, "WEBVIEW_OPENED", messageMap);
                     }
                 }
             }

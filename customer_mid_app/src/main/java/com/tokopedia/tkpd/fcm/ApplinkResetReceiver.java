@@ -26,7 +26,7 @@ public class ApplinkResetReceiver extends BroadcastReceiver {
         Map<String, String> messageMap = new HashMap<>();
         messageMap.put("type", "ApplinkResetReceiver");
         messageMap.put("category", category);
-        ServerLogger.INSTANCE.log(Priority.P2, "PUSH_NOTIF_UNUSED", messageMap);
+        ServerLogger.log(Priority.P2, "PUSH_NOTIF_UNUSED", messageMap);
         ApplinkBuildAndShowNotification applinkBuildAndShowNotification = new ApplinkBuildAndShowNotification(context);
         switch (category) {
             case Constants.ARG_NOTIFICATION_APPLINK_MESSAGE:

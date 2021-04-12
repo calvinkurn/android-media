@@ -117,7 +117,7 @@ public class ReactNativeThankYouPageActivity extends ReactFragmentActivity<React
         resetWalletCache();
         Map<String, String> messageMap = new HashMap<>();
         messageMap.put("type", "open");
-        ServerLogger.INSTANCE.log(Priority.P2, "RN_THANK_YOU", messageMap);
+        ServerLogger.log(Priority.P2, "RN_THANK_YOU", messageMap);
     }
 
     @Override
@@ -171,7 +171,7 @@ public class ReactNativeThankYouPageActivity extends ReactFragmentActivity<React
         messageMap.put("type", "sendAnalytics");
         messageMap.put("id", data.getId());
         messageMap.put("platform", data.getPlatform());
-        ServerLogger.INSTANCE.log(Priority.P2, "RN_THANK_YOU", messageMap);
+        ServerLogger.log(Priority.P2, "RN_THANK_YOU", messageMap);
     }
 
     @Override
