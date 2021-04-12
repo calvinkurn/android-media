@@ -430,8 +430,9 @@ class SellerHomeViewModel @Inject constructor(
         val widgetFlow = flow { emit(widgets) }
         val predictedInitialWidgetFlow = getPredictedInitialWidget(widgets, deviceHeightDp)
         return widgetFlow.combine(predictedInitialWidgetFlow) { widgetsFromFlow, initialWidgets ->
-            widgetsFromFlow.map {
-                widget -> initialWidgets.find { it.id == widget.id } ?: widget }.filter { !it.isNeedToBeRemoved }
+            widgetsFromFlow
+                    .map { widget -> initialWidgets.find { it.id == widget.id } ?: widget }
+                    .filter { !it.isNeedToBeRemoved }
         }
     }
 

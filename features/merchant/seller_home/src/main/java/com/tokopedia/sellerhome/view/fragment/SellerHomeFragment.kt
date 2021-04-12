@@ -728,6 +728,9 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                 val newWidgets = arrayListOf<BaseWidgetUiModel<*>>()
                 widgets.forEach { newWidget ->
                     oldWidgets.find { isTheSameWidget(it, newWidget) }.let { oldWidget ->
+                        if (newWidget is CardWidgetUiModel) {
+                            newWidget.data?.previousValue = (oldWidget as? CardWidgetUiModel)?.data?.previousValue
+                        }
                         if (oldWidget == null) {
                             newWidgets.add(newWidget)
                         } else {

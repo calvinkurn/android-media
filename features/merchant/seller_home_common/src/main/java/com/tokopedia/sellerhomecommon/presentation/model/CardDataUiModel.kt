@@ -11,7 +11,8 @@ data class CardDataUiModel(
         val value: String = "",
         override var error: String = "",
         override var isFromCache: Boolean = false,
-        override val showWidget: Boolean = false
+        override val showWidget: Boolean = false,
+        var previousValue: String? = null
 ): BaseDataUiModel {
     override fun shouldRemove(): Boolean {
         return value.filterIndexed { index, c ->
