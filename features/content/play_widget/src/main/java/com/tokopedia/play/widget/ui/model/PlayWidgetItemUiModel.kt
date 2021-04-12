@@ -37,7 +37,7 @@ data class PlayWidgetSmallChannelUiModel(
     override val impressHolder = ImpressHolder()
 
     val hasPromo: Boolean
-        get() = promoType != PlayWidgetPromoType.NoPromo || promoType != PlayWidgetPromoType.Unknown
+        get() = promoType != PlayWidgetPromoType.NoPromo && promoType != PlayWidgetPromoType.Unknown
 }
 
 /**
@@ -83,5 +83,5 @@ data class PlayWidgetMediumChannelUiModel(
     override val impressHolder = ImpressHolder()
 
     val hasPromo: Boolean
-        get() = promoType != PlayWidgetPromoType.NoPromo || promoType != PlayWidgetPromoType.Unknown
+        get() = promoType != PlayWidgetPromoType.NoPromo && promoType != PlayWidgetPromoType.Unknown
 }

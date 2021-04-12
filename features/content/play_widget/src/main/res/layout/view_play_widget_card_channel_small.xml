@@ -87,16 +87,19 @@
         app:layout_goneMarginStart="@dimen/play_widget_dp_6"
         >
 
-        <androidx.appcompat.widget.AppCompatImageView
+        <com.tokopedia.iconunify.IconUnify
             android:id="@+id/iv_total_view"
             android:layout_width="@dimen/spacing_lvl4"
             android:layout_height="@dimen/spacing_lvl4"
             android:layout_marginStart="@dimen/spacing_lvl2"
             android:layout_marginTop="@dimen/spacing_lvl2"
             android:layout_marginBottom="@dimen/spacing_lvl2"
+            app:icon_color_light_enable="@color/Unify_Static_White"
+            app:icon_color_night_enable="@color/Unify_Static_White"
+            app:icon_name="VISIBILITY"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:srcCompat="@drawable/ic_play_eye_white"
             />
 
@@ -152,15 +155,23 @@
         tools:text="12 Jan 22:00 - 22:30"
         />
 
-    <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/iv_live_badge"
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_contextual_info"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:srcCompat="@drawable/ic_live_badge"
-        app:layout_constraintStart_toStartOf="@id/fl_border"
-        app:layout_constraintEnd_toEndOf="@id/fl_border"
+        android:background="@drawable/bg_play_widget_small_live_context"
+        android:paddingStart="@dimen/spacing_lvl2"
+        android:paddingTop="@dimen/spacing_lvl1"
+        android:paddingEnd="@dimen/spacing_lvl2"
+        android:paddingBottom="@dimen/spacing_lvl1"
+        android:textColor="@color/Unify_Static_White"
         app:layout_constraintBottom_toBottomOf="@id/fl_border"
+        app:layout_constraintEnd_toEndOf="@id/fl_border"
+        app:layout_constraintStart_toStartOf="@id/fl_border"
         app:layout_constraintTop_toBottomOf="@id/fl_border"
+        app:typographyType="small"
+        app:typographyWeight="bold"
+        tools:text="Kejar Diskon"
         />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

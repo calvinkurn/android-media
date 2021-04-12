@@ -22,4 +22,7 @@
 
     <color name="play_widget_dms_reminder_background">#AD31353B</color>
 
+    <color name="play_widget_dms_bg_small_live_context">#EF144A</color>
+    <color name="play_widget_dms_bg_small_promo_context">#00AA5B</color>
+
 </resources>

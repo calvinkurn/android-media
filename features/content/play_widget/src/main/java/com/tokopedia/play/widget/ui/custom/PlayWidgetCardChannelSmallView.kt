@@ -35,7 +35,7 @@ class PlayWidgetCardChannelSmallView : ConstraintLayout, PlayVideoPlayerReceiver
     private val tvTotalView: TextView
     private val tvTitle: TextView
     private val tvUpcoming: TextView
-    private val ivLiveBadge: ImageView
+    private val tvContextualInfo: TextView
 
     private var mListener: Listener? = null
 
@@ -51,7 +51,7 @@ class PlayWidgetCardChannelSmallView : ConstraintLayout, PlayVideoPlayerReceiver
         tvTotalView = view.findViewById(R.id.tv_total_view)
         tvTitle = view.findViewById(R.id.tv_title)
         tvUpcoming = view.findViewById(R.id.tv_upcoming)
-        ivLiveBadge = view.findViewById(R.id.iv_live_badge)
+        tvContextualInfo = view.findViewById(R.id.tv_contextual_info)
     }
 
     private val playerListener = object : PlayVideoPlayer.VideoPlayerListener {
@@ -101,22 +101,28 @@ class PlayWidgetCardChannelSmallView : ConstraintLayout, PlayVideoPlayerReceiver
         tvTitle.text = model.title
         tvUpcoming.text = model.startTime
 
+        tvContextualInfo.text = model.promoType.promoText
+
         setOnClickListener {
             mListener?.onChannelClicked(this, model)
         }
 
         when {
-            model.video.isLive -> {
-                flBorder.setBackgroundResource(R.drawable.bg_play_widget_small_live_border)
-                ivLiveBadge.visible()
-            }
+            model.video.isLive -> flBorder.setBackgroundResource(R.drawable.bg_play_widget_small_live_border)
+            model.hasPromo -> flBorder.setBackgroundResource(R.drawable.bg_play_widget_small_promo_border)
+            else -> flBorder.setBackgroundResource(R.drawable.bg_play_widget_small_default_border)
+        }
+
+        when {
             model.hasPromo -> {
-                flBorder.setBackgroundResource(R.drawable.bg_play_widget_small_promo_border)
-                ivLiveBadge.invisible()
+                tvContextualInfo.setBackgroundResource(
+                        if (model.video.isLive) R.drawable.bg_play_widget_small_live_context
+                        else R.drawable.bg_play_widget_small_promo_context
+                )
+                tvContextualInfo.visible()
             }
             else -> {
-                flBorder.setBackgroundResource(R.drawable.bg_play_widget_small_default_border)
-                ivLiveBadge.invisible()
+                tvContextualInfo.invisible()
             }
         }
     }

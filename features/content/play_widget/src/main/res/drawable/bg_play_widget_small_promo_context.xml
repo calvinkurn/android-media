@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <solid
+        android:color="@color/play_widget_dms_bg_small_promo_context"
+        />
+    <corners
+        android:radius="@dimen/play_widget_card_small_promo_radius"
+        />
+</shape>

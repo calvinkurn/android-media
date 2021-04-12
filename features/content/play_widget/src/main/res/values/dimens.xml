@@ -40,4 +40,7 @@
 
     <!--Play Widget Channel Medium-->
     <dimen name="play_widget_channel_medium_promo_height">50dp</dimen>
+
+    <!--Contextual Promo-->
+    <dimen name="play_widget_card_small_promo_radius">4dp</dimen>
 </resources>
