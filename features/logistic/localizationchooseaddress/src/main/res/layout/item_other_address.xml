@@ -21,9 +21,12 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:icon_color_light_enable="@color/Unify_G500"
+            app:icon_color_night_enable="@color/Unify_G500"
             app:icon_name="CHEVRON_RIGHT"
             android:background="@drawable/bg_circle_more"
-            tools:ignore="ContentDescription" />
+            tools:ignore="ContentDescription"
+            android:elevation="@dimen/unify_space_4"/>
 
 
         <com.tokopedia.unifyprinciples.Typography

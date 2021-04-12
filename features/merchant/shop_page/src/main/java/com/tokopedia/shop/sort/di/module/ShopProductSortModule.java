@@ -5,7 +5,6 @@ import android.content.Context;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
 import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseInterceptor;
-import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.shop.common.constant.ShopUrl;
 import com.tokopedia.shop.common.data.interceptor.ShopAuthInterceptor;
@@ -36,10 +35,8 @@ public class ShopProductSortModule {
     @Provides
     public OkHttpClient provideOkHttpClient(ShopAuthInterceptor shopAuthInterceptor,
                                             @ApplicationScope HttpLoggingInterceptor httpLoggingInterceptor,
-                                            HeaderErrorResponseInterceptor errorResponseInterceptor,
-                                            CacheApiInterceptor cacheApiInterceptor) {
+                                            HeaderErrorResponseInterceptor errorResponseInterceptor) {
         return new OkHttpClient.Builder()
-                .addInterceptor(cacheApiInterceptor)
                 .addInterceptor(shopAuthInterceptor)
                 .addInterceptor(errorResponseInterceptor)
                 .addInterceptor(httpLoggingInterceptor)
