@@ -85,4 +85,25 @@ class InboxActivityApplinkTest {
         assertThat(intent, isPointingTo(inbox))
         assertThat(intent, hasQueryParameter(PARAM_ROLE, VALUE_ROLE_BUYER))
     }
+
+    @Test
+    fun inbox_external_applink_with_page_and_role_page() {
+        // Given
+        val applinkUri = Uri.parse(ApplinkConst.INBOX).buildUpon().apply {
+            appendQueryParameter(
+                    PARAM_PAGE, VALUE_PAGE_NOTIFICATION
+            )
+            appendQueryParameter(
+                    PARAM_ROLE, VALUE_ROLE_SELLER
+            )
+        }
+
+        // When
+        val intent = RouteManager.getIntent(context, applinkUri.toString())
+
+        // Then
+        assertThat(intent, isPointingTo(inbox))
+        assertThat(intent, hasQueryParameter(PARAM_PAGE, VALUE_PAGE_NOTIFICATION))
+        assertThat(intent, hasQueryParameter(PARAM_ROLE, VALUE_ROLE_SELLER))
+    }
 }
