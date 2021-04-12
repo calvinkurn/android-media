@@ -151,9 +151,9 @@ fun TokopointsDrawer.mapToHomeBalanceItemModel(drawerItemType: Int, defaultIconR
 
 fun TextAttributes.mapToBalanceTextAttributes(): BalanceTextAttribute {
     return BalanceTextAttribute(
-            colour = colour,
+            colour = if (colour.contains("#adadad")) "" else colour,
             text = text,
-            isBold = isBold
+            isBold = if (colour.contains("#adadad")) false else isBold
     )
 }
 
