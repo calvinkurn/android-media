@@ -49,15 +49,13 @@ class DetailInvoiceMapper(val thanksPageData: ThanksPageData) {
     }
 
     private fun addTotalFee() {
-        var totalFee: String? = null
-        thanksPageData.paymentItems?.filter {
-            it.itemName == PaymentItemKey.SERVICE_FEE
-        }?.forEach {
-            totalFee = it.amountStr
+        val totalFee = TotalFee(thanksPageData.orderAmountStr, arrayListOf())
+        thanksPageData.feeDetailList?.forEach {
+            val formattedAmountStr = CurrencyFormatUtil.convertPriceValueToIdrFormat(it.amount, false)
+            totalFee.feeDetailList.add(FeeDetail(it.name, formattedAmountStr))
         }
-        totalFee?.let {
-            visitableList.add(TotalFee(thanksPageData.orderAmountStr, totalFee.toString()))
-        }
+        if (totalFee.feeDetailList.isNotEmpty())
+            visitableList.add(totalFee)
     }
 
     private fun addPaymentInfo() {

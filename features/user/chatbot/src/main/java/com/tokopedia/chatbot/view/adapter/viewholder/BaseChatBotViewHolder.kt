@@ -4,6 +4,7 @@ import android.text.TextUtils
 import android.text.format.DateUtils
 import android.view.Gravity
 import android.view.View
+import androidx.cardview.widget.CardView
 import com.google.gson.GsonBuilder
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
@@ -11,6 +12,7 @@ import com.tokopedia.chat_common.data.BaseChatViewModel
 import com.tokopedia.chat_common.view.adapter.viewholder.BaseChatViewHolder
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.domain.pojo.senderinfo.SenderInfoData
+import com.tokopedia.chatbot.util.ChatBotTimeConverter
 import com.tokopedia.chatbot.util.ViewUtil
 import com.tokopedia.chatbot.view.adapter.viewholder.binder.ChatbotMessageViewHolderBinder
 import com.tokopedia.chatbot.view.adapter.viewholder.listener.ChatbotAdapterListener
@@ -29,10 +31,12 @@ open class BaseChatBotViewHolder<T : Visitable<*>>(itemView: View,
     protected val customChatLayout: CustomChatbotChatLayout? = itemView.findViewById(getCustomChatLayoutId())
     private val senderAvatar = itemView.findViewById<ImageUnify>(getSenderAvatarId())
     private val senderName = itemView.findViewById<Typography>(getSenderNameId())
+    private val dateContainer: CardView? = itemView.findViewById(getDateContainerId())
 
     open protected fun getCustomChatLayoutId(): Int = com.tokopedia.chatbot.R.id.customChatLayout
     open protected fun getSenderAvatarId(): Int = R.id.senderAvatar
     open protected fun getSenderNameId(): Int = R.id.senderName
+    open fun getDateContainerId(): Int = R.id.dateContainer
 
     private val bg = ViewUtil.generateBackgroundWithShadow(
             customChatLayout,
@@ -62,12 +66,12 @@ open class BaseChatBotViewHolder<T : Visitable<*>>(itemView: View,
 
     }
 
-    private fun hideSenderInfo() {
+    protected fun hideSenderInfo() {
         senderAvatar?.hide()
         senderName?.hide()
     }
 
-    private fun convertToSenderInfo(source: String): SenderInfoData? {
+    protected fun convertToSenderInfo(source: String): SenderInfoData? {
         val senderInfoPrefix = itemView.context.getString(R.string.chatbot_sender_info_prefix)
         if (source.isNotEmpty() && source.startsWith(senderInfoPrefix)) {
             val s = source.substring(senderInfoPrefix.length, source.length)
@@ -77,7 +81,7 @@ open class BaseChatBotViewHolder<T : Visitable<*>>(itemView: View,
         } else return null
     }
 
-    private fun bindSenderInfo(senderInfoData: SenderInfoData) {
+    protected fun bindSenderInfo(senderInfoData: SenderInfoData) {
         senderAvatar?.show()
         senderName?.show()
         ImageHandler.loadImageCircle2(itemView.context, senderAvatar, senderInfoData.iconUrl)
@@ -88,7 +92,7 @@ open class BaseChatBotViewHolder<T : Visitable<*>>(itemView: View,
         customChatLayout?.background = bg
     }
 
-    private fun verifyReplyTime(chat: BaseChatViewModel) {
+    protected fun verifyReplyTime(chat: BaseChatViewModel) {
         try {
             if (chat.replyTime.toLongOrZero() / MILISECONDS < START_YEAR) {
                 chat.replyTime = (chat.replyTime.toLongOrZero() * MILISECONDS).toString()
@@ -100,33 +104,18 @@ open class BaseChatBotViewHolder<T : Visitable<*>>(itemView: View,
 
     override fun setHeaderDate(element: BaseChatViewModel?) {
         if (date == null) return
-        var time: String? = ""
-
-        try {
-            var myTime = element?.replyTime?.toLong()
-            if (myTime != null) {
-                myTime = myTime / MILISECONDS
-                val date = Date(myTime)
-                time = if (DateUtils.isToday(myTime)) {
-                    itemView.context.getString(com.tokopedia.chat_common.R.string.chat_today_date)
-                } else if (DateUtils.isToday(myTime + DateUtils.DAY_IN_MILLIS)) {
-                    itemView.context.getString(com.tokopedia.chat_common.R.string.chat_yesterday_date)
-                } else {
-                    val formatter = SimpleDateFormat("d MMM")
-                    formatter.format(date)
-                }
-            }
-
-        } catch (e: NumberFormatException) {
-            time = element?.replyTime
+        val time = element?.replyTime?.let {
+            ChatBotTimeConverter.getDateIndicatorTime(
+                    it,
+                    itemView.context.getString(com.tokopedia.chat_common.R.string.chat_today_date),
+                    itemView.context.getString(com.tokopedia.chat_common.R.string.chat_yesterday_date))
         }
-
+        date.text = time
         if (date != null && element?.isShowDate == true
                 && !TextUtils.isEmpty(time)) {
-            date.show()
-            date.text = time
+            dateContainer?.show()
         } else if (date != null) {
-            date.hide()
+            dateContainer?.hide()
         }
     }
 

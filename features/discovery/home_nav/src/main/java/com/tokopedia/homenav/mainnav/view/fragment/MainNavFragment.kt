@@ -21,6 +21,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConsInternalNavigation.SOURCE_ACCOUNT
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
@@ -29,8 +30,10 @@ import com.tokopedia.homenav.base.datamodel.HomeNavMenuDataModel
 import com.tokopedia.homenav.common.util.ClientMenuGenerator
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_ALL_TRANSACTION
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_COMPLAIN
+import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_FAVORITE_SHOP
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_REVIEW
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_TICKET
+import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_WISHLIST_MENU
 import com.tokopedia.homenav.common.util.NpaLayoutManager
 import com.tokopedia.homenav.di.DaggerBaseNavComponent
 import com.tokopedia.homenav.mainnav.MainNavConst
@@ -53,9 +56,11 @@ import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.searchbar.navigation_component.NavConstant
 import com.tokopedia.searchbar.navigation_component.NavToolbar
+import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
+import java.util.HashMap
 import javax.inject.Inject
 
 class MainNavFragment : BaseDaggerFragment(), MainNavListener {
@@ -79,6 +84,8 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
     lateinit var adapter: MainNavListAdapter
 
     private var navToolbar: NavToolbar? = null
+
+    protected var trackingQueue: TrackingQueue? = null
 
     private lateinit var userSession: UserSessionInterface
     private val args: MainNavFragmentArgs by navArgs()
@@ -171,12 +178,37 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
         })
     }
 
+    override fun onPause() {
+        super.onPause()
+
+        getTrackingQueueObj()?.sendAll()
+    }
+
     override fun onRefresh() {
     }
 
+    override fun getTrackingQueueObj(): TrackingQueue? {
+        if (trackingQueue == null) {
+            activity?.let {
+                trackingQueue = TrackingQueue(it)
+            }
+        }
+        return trackingQueue
+    }
+
+    override fun putEEToTrackingQueue(data: HashMap<String, Any>) {
+        if (getTrackingQueueObj() != null) {
+            getTrackingQueueObj()?.putEETracking(data)
+        }
+    }
+
     override fun onProfileSectionClicked() {
-        val intent = RouteManager.getIntent(context, ApplinkConst.ACCOUNT)
-        startActivity(intent)
+        if (pageSource == SOURCE_ACCOUNT) {
+            activity?.onBackPressed()
+        } else {
+            val intent = RouteManager.getIntent(context, ApplinkConst.ACCOUNT)
+            startActivity(intent)
+        }
     }
 
     override fun onProfileLoginClicked() {
@@ -225,6 +257,8 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
             ID_ALL_TRANSACTION -> TrackingTransactionSection.clickOnAllTransaction(userSession.userId)
             ID_TICKET -> TrackingTransactionSection.clickOnTicket(userSession.userId)
             ID_REVIEW -> TrackingTransactionSection.clickOnReview(userSession.userId)
+            ID_WISHLIST_MENU -> TrackingTransactionSection.clickOnWishlist(userSession.userId)
+            ID_FAVORITE_SHOP -> TrackingTransactionSection.clickOnTokoFavorit(userSession.userId)
             else -> TrackingUserMenuSection.clickOnUserMenu(homeNavMenuDataModel.trackerName, userSession.userId)
         }
     }

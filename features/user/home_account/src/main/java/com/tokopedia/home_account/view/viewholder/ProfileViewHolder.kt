@@ -21,6 +21,7 @@ import com.tokopedia.home_account.view.adapter.HomeAccountFinancialAdapter
 import com.tokopedia.home_account.view.adapter.HomeAccountMemberAdapter
 import com.tokopedia.home_account.view.listener.HomeAccountUserListener
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.util.LetUtil
 import com.tokopedia.utils.image.ImageUtils
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
@@ -53,13 +54,21 @@ class ProfileViewHolder(
                     account_user_item_profile_name?.setPadding(paddingLeft, 8, paddingRight, paddingBottom)
                 }
             }
-            account_user_item_profile_email?.text = profile.email
+
+            if (profile.name.toLowerCase().contains(DEFAULT_NAME)) {
+                account_user_item_profile_icon_warning_name?.show()
+                account_user_item_profile_icon_warning_name?.setOnClickListener { listener.onIconWarningClicked(profile) }
+            } else account_user_item_profile_icon_warning_name?.hide()
+
+            if (profile.phone != profile.email) {
+                account_user_item_profile_email?.text = profile.email
+            }
             account_user_item_profile_edit?.setOnClickListener { listener.onEditProfileClicked() }
             home_account_profile_section?.setOnClickListener { listener.onProfileClicked() }
 
             loadImage(account_user_item_profile_avatar, profile.avatar)
 
-            setupMemberAdapter(itemView, profile)
+            setupMemberAdapter(itemView)
             setupFinancialAdapter(itemView)
 
             setBackground(context, account_user_item_profile_container)
@@ -98,12 +107,16 @@ class ProfileViewHolder(
         itemView.home_account_financial_layout_rv?.layoutManager = SpanningLinearLayoutManager(itemView.home_account_financial_layout_rv?.context, LinearLayoutManager.HORIZONTAL, false, minWidth = 180)
     }
 
-    private fun setupMemberAdapter(itemView: View, profile: ProfileDataView) {
-        itemView.home_account_member_layout_title?.text = profile.members?.title
-        ImageUtils.loadImageWithoutPlaceholderAndError(itemView.home_account_member_layout_member_icon, profile.members?.icon
-                ?: "")
+    private fun setupMemberAdapter(itemView: View) {
+        itemView.home_account_member_layout_member_forward?.setOnClickListener {
+            listener.onSettingItemClicked(
+                    CommonDataView(
+                            id = AccountConstants.SettingCode.SETTING_MORE_MEMBER,
+                            applink = ApplinkConst.TOKOPOINTS
+                    )
+            )
+        }
 
-        memberAdapter?.list = profile.members?.items ?: arrayListOf()
         itemView.home_account_member_layout_rv?.adapter = memberAdapter
         itemView.home_account_member_layout_rv?.setHasFixedSize(true)
         val layoutManager = SpanningLinearLayoutManager(itemView.home_account_member_layout_rv?.context, LinearLayoutManager.HORIZONTAL, false)
@@ -126,17 +139,10 @@ class ProfileViewHolder(
         itemView.home_account_member_layout_rv?.layoutManager = layoutManager
 
         itemView.home_account_member_layout_rv?.isLayoutFrozen = true
-        itemView.home_account_member_layout_member_forward?.setOnClickListener {
-            listener.onSettingItemClicked(
-                    CommonDataView(
-                            id = AccountConstants.SettingCode.SETTING_MORE_MEMBER,
-                            applink = ApplinkConst.TOKOPOINTS
-                    )
-            )
-        }
     }
 
     companion object {
         val LAYOUT = R.layout.home_account_item_profile
+        private const val DEFAULT_NAME = "toppers-"
     }
 }

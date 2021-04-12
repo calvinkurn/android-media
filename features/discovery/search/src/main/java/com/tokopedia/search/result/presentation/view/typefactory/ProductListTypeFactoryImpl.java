@@ -7,28 +7,30 @@ import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.discovery.common.constants.SearchConstant;
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener;
-import com.tokopedia.search.result.presentation.model.BannedProductsEmptySearchViewModel;
-import com.tokopedia.search.result.presentation.model.BannedProductsTickerViewModel;
-import com.tokopedia.search.result.presentation.model.BroadMatchViewModel;
-import com.tokopedia.search.result.presentation.model.ChooseAddressViewModel;
-import com.tokopedia.search.result.presentation.model.CpmViewModel;
-import com.tokopedia.search.result.presentation.model.EmptySearchProductViewModel;
-import com.tokopedia.search.result.presentation.model.GlobalNavViewModel;
-import com.tokopedia.search.result.presentation.model.InspirationCardViewModel;
-import com.tokopedia.search.result.presentation.model.InspirationCarouselViewModel;
-import com.tokopedia.search.result.presentation.model.ProductItemViewModel;
-import com.tokopedia.search.result.presentation.model.RecommendationItemViewModel;
-import com.tokopedia.search.result.presentation.model.RecommendationTitleViewModel;
-import com.tokopedia.search.result.presentation.model.SearchInTokopediaViewModel;
-import com.tokopedia.search.result.presentation.model.SearchProductCountViewModel;
-import com.tokopedia.search.result.presentation.model.SearchProductTopAdsImageViewModel;
-import com.tokopedia.search.result.presentation.model.SeparatorViewModel;
-import com.tokopedia.search.result.presentation.model.SearchProductTitleViewModel;
-import com.tokopedia.search.result.presentation.model.SuggestionViewModel;
-import com.tokopedia.search.result.presentation.model.TickerViewModel;
+import com.tokopedia.search.result.presentation.model.BannedProductsEmptySearchDataView;
+import com.tokopedia.search.result.presentation.model.BannedProductsTickerDataView;
+import com.tokopedia.search.result.presentation.model.BannerDataView;
+import com.tokopedia.search.result.presentation.model.BroadMatchDataView;
+import com.tokopedia.search.result.presentation.model.ChooseAddressDataView;
+import com.tokopedia.search.result.presentation.model.CpmDataView;
+import com.tokopedia.search.result.presentation.model.EmptySearchProductDataView;
+import com.tokopedia.search.result.presentation.model.GlobalNavDataView;
+import com.tokopedia.search.result.presentation.model.InspirationCardDataView;
+import com.tokopedia.search.result.presentation.model.InspirationCarouselDataView;
+import com.tokopedia.search.result.presentation.model.ProductItemDataView;
+import com.tokopedia.search.result.presentation.model.RecommendationItemDataView;
+import com.tokopedia.search.result.presentation.model.RecommendationTitleDataView;
+import com.tokopedia.search.result.presentation.model.SearchInTokopediaDataView;
+import com.tokopedia.search.result.presentation.model.SearchProductCountDataView;
+import com.tokopedia.search.result.presentation.model.SearchProductTopAdsImageDataView;
+import com.tokopedia.search.result.presentation.model.SeparatorDataView;
+import com.tokopedia.search.result.presentation.model.SearchProductTitleDataView;
+import com.tokopedia.search.result.presentation.model.SuggestionDataView;
+import com.tokopedia.search.result.presentation.model.TickerDataView;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.common.SearchLoadingMoreViewHolder;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.BannedProductsEmptySearchViewHolder;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.BannedProductsTickerViewHolder;
+import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.BannerViewHolder;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.BigGridInspirationCardViewHolder;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.BigGridProductItemViewHolder;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.BroadMatchViewHolder;
@@ -50,6 +52,7 @@ import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.SuggestionViewHolder;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.TickerViewHolder;
 import com.tokopedia.search.result.presentation.view.listener.BannerAdsListener;
+import com.tokopedia.search.result.presentation.view.listener.BannerListener;
 import com.tokopedia.search.result.presentation.view.listener.BroadMatchListener;
 import com.tokopedia.search.result.presentation.view.listener.ChooseAddressListener;
 import com.tokopedia.search.result.presentation.view.listener.EmptyStateListener;
@@ -80,6 +83,7 @@ public class ProductListTypeFactoryImpl extends BaseAdapterTypeFactory implement
     private final SearchNavigationClickListener searchNavigationListener;
     private final TopAdsImageViewListener topAdsImageViewListener;
     private final ChooseAddressListener chooseAddressListener;
+    private final BannerListener bannerListener;
     private final Config topAdsConfig;
     private int recyclerViewItem;
 
@@ -97,6 +101,7 @@ public class ProductListTypeFactoryImpl extends BaseAdapterTypeFactory implement
                                       SearchNavigationClickListener searchNavigationListener,
                                       TopAdsImageViewListener topAdsImageViewListener,
                                       ChooseAddressListener chooseAddressListener,
+                                      BannerListener bannerListener,
                                       Config config) {
 
         this.productListener = productListener;
@@ -114,6 +119,7 @@ public class ProductListTypeFactoryImpl extends BaseAdapterTypeFactory implement
         this.searchNavigationListener = searchNavigationListener;
         this.topAdsImageViewListener = topAdsImageViewListener;
         this.chooseAddressListener = chooseAddressListener;
+        this.bannerListener = bannerListener;
     }
 
     @Override
@@ -127,22 +133,22 @@ public class ProductListTypeFactoryImpl extends BaseAdapterTypeFactory implement
     }
 
     @Override
-    public int type(CpmViewModel cpmViewModel) {
+    public int type(CpmDataView cpmDataView) {
         return CpmViewHolder.LAYOUT;
     }
 
     @Override
-    public int type(TickerViewModel tickerViewModel) {
+    public int type(TickerDataView tickerDataView) {
         return TickerViewHolder.LAYOUT;
     }
 
     @Override
-    public int type(SuggestionViewModel suggestionViewModel) {
+    public int type(SuggestionDataView suggestionDataView) {
         return SuggestionViewHolder.LAYOUT;
     }
 
     @Override
-    public int type(ProductItemViewModel productItem) {
+    public int type(ProductItemDataView productItem) {
         switch (getRecyclerViewItem()) {
             case SearchConstant.RecyclerView.VIEW_LIST:
                 return ListProductItemViewHolder.LAYOUT;
@@ -155,17 +161,17 @@ public class ProductListTypeFactoryImpl extends BaseAdapterTypeFactory implement
     }
 
     @Override
-    public int type(EmptySearchProductViewModel emptySearchModel) {
+    public int type(EmptySearchProductDataView emptySearchModel) {
         return ProductEmptySearchViewHolder.LAYOUT;
     }
 
     @Override
-    public int type(GlobalNavViewModel globalNavViewModel) {
+    public int type(GlobalNavDataView globalNavDataView) {
         return GlobalNavViewHolder.LAYOUT;
     }
 
     @Override
-    public int type(InspirationCarouselViewModel inspirationCarouselViewModel) {
+    public int type(InspirationCarouselDataView inspirationCarouselDataView) {
         return InspirationCarouselViewHolder.LAYOUT;
     }
 
@@ -175,32 +181,32 @@ public class ProductListTypeFactoryImpl extends BaseAdapterTypeFactory implement
     }
 
     @Override
-    public int type(RecommendationTitleViewModel titleViewModel) {
+    public int type(RecommendationTitleDataView titleViewModel) {
         return RecommendationTitleViewHolder.LAYOUT;
     }
 
     @Override
-    public int type(RecommendationItemViewModel recommendationItemViewModel) {
+    public int type(RecommendationItemDataView recommendationItemDataView) {
         return RecommendationItemViewHolder.LAYOUT;
     }
 
     @Override
-    public int type(BannedProductsEmptySearchViewModel bannedProductsEmptySearchViewModel) {
+    public int type(BannedProductsEmptySearchDataView bannedProductsEmptySearchDataView) {
         return BannedProductsEmptySearchViewHolder.LAYOUT;
     }
 
     @Override
-    public int type(BannedProductsTickerViewModel bannedProductsTickerViewModel) {
+    public int type(BannedProductsTickerDataView bannedProductsTickerDataView) {
         return BannedProductsTickerViewHolder.LAYOUT;
     }
 
     @Override
-    public int type(BroadMatchViewModel broadMatchViewModel) {
+    public int type(BroadMatchDataView broadMatchDataView) {
         return BroadMatchViewHolder.LAYOUT;
     }
 
     @Override
-    public int type(InspirationCardViewModel inspirationCardViewModel) {
+    public int type(InspirationCardDataView inspirationCardDataView) {
         switch (getRecyclerViewItem()) {
             case SearchConstant.RecyclerView.VIEW_LIST:
             case SearchConstant.RecyclerView.VIEW_PRODUCT_BIG_GRID:
@@ -212,33 +218,38 @@ public class ProductListTypeFactoryImpl extends BaseAdapterTypeFactory implement
     }
 
     @Override
-    public int type(SeparatorViewModel separatorViewModel) {
+    public int type(SeparatorDataView separatorDataView) {
         return SeparatorViewHolder.LAYOUT;
     }
 
     @Override
-    public int type(SearchProductTitleViewModel searchProductTitleViewModel) {
+    public int type(SearchProductTitleDataView searchProductTitleDataView) {
         return SearchProductTitleViewHolder.LAYOUT;
     }
 
     @Override
-    public int type(SearchInTokopediaViewModel searchInTokopediaViewModel) {
+    public int type(SearchInTokopediaDataView searchInTokopediaDataView) {
         return SearchInTokopediaViewHolder.LAYOUT;
     }
 
     @Override
-    public int type(SearchProductCountViewModel searchProductCountViewModel) {
+    public int type(SearchProductCountDataView searchProductCountDataView) {
         return SearchProductCountViewHolder.LAYOUT;
     }
 
     @Override
-    public int type(SearchProductTopAdsImageViewModel searchProductTopAdsImageViewModel) {
+    public int type(SearchProductTopAdsImageDataView searchProductTopAdsImageDataView) {
         return SearchProductTopAdsImageViewHolder.LAYOUT;
     }
 
     @Override
-    public int type(ChooseAddressViewModel chooseAddressViewModel) {
+    public int type(ChooseAddressDataView chooseAddressDataView) {
         return ChooseAddressViewHolder.LAYOUT;
+    }
+
+    @Override
+    public int type(BannerDataView bannerDataView) {
+        return BannerViewHolder.LAYOUT;
     }
 
     @Override
@@ -291,6 +302,8 @@ public class ProductListTypeFactoryImpl extends BaseAdapterTypeFactory implement
             viewHolder = new SearchProductTopAdsImageViewHolder(view, topAdsImageViewListener);
         } else if (type == ChooseAddressViewHolder.LAYOUT) {
             viewHolder = new ChooseAddressViewHolder(view, chooseAddressListener, searchNavigationListener);
+        } else if (type == BannerViewHolder.LAYOUT) {
+            viewHolder = new BannerViewHolder(view, bannerListener);
         } else {
             viewHolder = super.createViewHolder(view, type);
         }

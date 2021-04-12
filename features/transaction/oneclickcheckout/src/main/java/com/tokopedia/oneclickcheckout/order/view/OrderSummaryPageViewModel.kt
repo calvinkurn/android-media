@@ -254,9 +254,9 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                 updateCart()
                 return@launch
             }
-            orderPromo.value = orderPromo.value.copy(state = OccButtonState.DISABLE)
+            clearAllPromoFromLastRequest()
+            calculateTotal(forceButtonState = OccButtonState.NORMAL)
             globalEvent.value = newGlobalEvent
-            calculateTotal(forceButtonState = OccButtonState.DISABLE)
             updateCart()
         }
     }
@@ -266,6 +266,11 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         if (logisticPromoViewModel != null && _orderShipment.isApplyLogisticPromo && _orderShipment.logisticPromoShipping != null) {
             clearOldLogisticPromo(logisticPromoViewModel.promoCode)
         }
+    }
+
+    private fun resetBbo() {
+        _orderShipment = logisticProcessor.resetBbo(_orderShipment)
+        orderShipment.value = _orderShipment
     }
 
     fun chooseCourier(chosenShippingCourierViewModel: ShippingCourierUiModel) {
@@ -339,8 +344,11 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                     updateCart()
                     return@launch
                 }
-                resultValidateUse?.let {
-                    validateUsePromoRevampUiModel = it
+                if (resultValidateUse != null) {
+                    validateUsePromoRevampUiModel = resultValidateUse
+                } else {
+                    clearAllPromoFromLastRequest()
+                    calculateTotal(forceButtonState = OccButtonState.NORMAL)
                 }
                 globalEvent.value = newGlobalEvent
                 updateCart()
@@ -544,18 +552,39 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         launch(executorDispatchers.main) {
             orderTotal.value = orderTotal.value.copy(buttonState = OccButtonState.LOADING)
             orderPromo.value = orderPromo.value.copy(state = OccButtonState.LOADING)
-            val (isSuccess, resultValidateUse) = promoProcessor.validateUsePromo(generateValidateUsePromoRequest(), validateUsePromoRevampUiModel)
-            if (!isSuccess) {
-                orderPromo.value = orderPromo.value.copy(state = OccButtonState.DISABLE)
-                orderTotal.value = orderTotal.value.copy(buttonState = OccButtonState.DISABLE)
-            } else if (resultValidateUse != null) {
-                validateUsePromoRevampUiModel = resultValidateUse
-                updatePromoState(resultValidateUse.promoUiModel)
-            } else {
-                orderPromo.value = orderPromo.value.copy(state = OccButtonState.NORMAL)
-                calculateTotal(forceButtonState = OccButtonState.NORMAL)
+            val (error, resultValidateUse, isAkamaiError) = promoProcessor.validateUsePromo(generateValidateUsePromoRequest(), validateUsePromoRevampUiModel)
+            when {
+                error != null && isAkamaiError -> {
+                    resetBbo()
+                    clearAllPromoFromLastRequest()
+                    calculateTotal(forceButtonState = OccButtonState.NORMAL)
+                    globalEvent.value = OccGlobalEvent.Error(error)
+                }
+                error != null && !isAkamaiError -> {
+                    orderPromo.value = orderPromo.value.copy(state = OccButtonState.DISABLE)
+                    orderTotal.value = orderTotal.value.copy(buttonState = OccButtonState.DISABLE)
+                    globalEvent.value = OccGlobalEvent.Error(error)
+                }
+                resultValidateUse != null -> {
+                    validateUsePromoRevampUiModel = resultValidateUse
+                    updatePromoState(resultValidateUse.promoUiModel)
+                }
+                else -> {
+                    orderPromo.value = orderPromo.value.copy(state = OccButtonState.NORMAL)
+                    calculateTotal(forceButtonState = OccButtonState.NORMAL)
+                }
             }
         }
+    }
+
+    private fun clearAllPromoFromLastRequest() {
+        validateUsePromoRevampUiModel = null
+        val orders = lastValidateUsePromoRequest?.orders ?: emptyList()
+        if (orders.isNotEmpty()) {
+            orders[0]?.codes?.clear()
+        }
+        lastValidateUsePromoRequest?.codes?.clear()
+        orderPromo.value = OrderPromo(state = OccButtonState.NORMAL)
     }
 
     fun updatePromoState(promoUiModel: PromoUiModel) {

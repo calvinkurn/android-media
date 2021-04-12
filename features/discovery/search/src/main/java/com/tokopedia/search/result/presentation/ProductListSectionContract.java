@@ -14,10 +14,12 @@ import com.tokopedia.filter.common.data.Option;
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.search.analytics.GeneralSearchTrackingModel;
-import com.tokopedia.search.result.presentation.model.BroadMatchItemViewModel;
-import com.tokopedia.search.result.presentation.model.EmptySearchProductViewModel;
-import com.tokopedia.search.result.presentation.model.GlobalNavViewModel;
-import com.tokopedia.search.result.presentation.model.ProductItemViewModel;
+import com.tokopedia.search.result.domain.model.SearchProductModel;
+import com.tokopedia.search.result.presentation.model.BroadMatchItemDataView;
+import com.tokopedia.search.result.presentation.model.EmptySearchProductDataView;
+import com.tokopedia.search.result.presentation.model.GlobalNavDataView;
+import com.tokopedia.search.result.presentation.model.ProductItemDataView;
+import com.tokopedia.search.result.presentation.model.InspirationCarouselDataView;
 import com.tokopedia.sortfilter.SortFilterItem;
 
 import org.jetbrains.annotations.NotNull;
@@ -43,7 +45,7 @@ public interface ProductListSectionContract {
 
         String getQueryKey();
 
-        void setEmptyProduct(GlobalNavViewModel globalNavViewModel, EmptySearchProductViewModel emptySearchProductViewModel);
+        void setEmptyProduct(GlobalNavDataView globalNavDataView, EmptySearchProductDataView emptySearchProductDataView);
 
         void setBannedProductsErrorMessage(List<Visitable> bannedProductsErrorMessageAsList);
 
@@ -67,7 +69,7 @@ public interface ProductListSectionContract {
 
         void sendTrackingGTMEventSearchAttempt(GeneralSearchTrackingModel generalSearchTrackingModel);
 
-        void sendImpressionGlobalNav(GlobalNavViewModel globalNavViewModel);
+        void sendImpressionGlobalNav(GlobalNavDataView globalNavDataView);
 
         boolean isAnySortActive();
 
@@ -125,13 +127,13 @@ public interface ProductListSectionContract {
 
         void logWarning(String message, @Nullable Throwable throwable);
 
-        void sendTopAdsGTMTrackingProductImpression(ProductItemViewModel item);
+        void sendTopAdsGTMTrackingProductImpression(ProductItemDataView item);
 
-        void sendTopAdsGTMTrackingProductClick(ProductItemViewModel item);
+        void sendTopAdsGTMTrackingProductClick(ProductItemDataView item);
 
-        void sendGTMTrackingProductClick(ProductItemViewModel item, String userId, String suggestedRelatedKeyword, String dimension90);
+        void sendGTMTrackingProductClick(ProductItemDataView item, String userId, String suggestedRelatedKeyword, String dimension90);
 
-        void routeToProductDetail(ProductItemViewModel item, int adapterPosition);
+        void routeToProductDetail(ProductItemDataView item, int adapterPosition);
 
         void stopPreparePagePerformanceMonitoring();
 
@@ -141,9 +143,9 @@ public interface ProductListSectionContract {
 
         void startRenderPerformanceMonitoring();
 
-        void sendProductImpressionTrackingEvent(ProductItemViewModel item, String suggestedRelatedKeyword, String dimension90);
+        void sendProductImpressionTrackingEvent(ProductItemDataView item, String suggestedRelatedKeyword, String dimension90);
 
-        void trackBroadMatchImpression(BroadMatchItemViewModel broadMatchItemViewModel);
+        void trackBroadMatchImpression(BroadMatchItemDataView broadMatchItemDataView);
 
         void onQuickFilterSelected(Option option);
 
@@ -167,7 +169,7 @@ public interface ProductListSectionContract {
 
         void setDynamicFilter(@NotNull DynamicFilterModel dynamicFilterModel);
 
-        void trackEventClickBroadMatchItem(BroadMatchItemViewModel broadMatchItemViewModel);
+        void trackEventClickBroadMatchItem(BroadMatchItemDataView broadMatchItemDataView);
 
         void redirectionStartActivity(String applink, String url);
 
@@ -200,6 +202,10 @@ public interface ProductListSectionContract {
         LocalCacheModel getChooseAddressData();
 
         boolean getIsLocalizingAddressHasUpdated(LocalCacheModel currentChooseAddressData);
+
+        void refreshItemAtIndex(int index);
+
+        void trackInspirationCarouselChipsClicked(@NotNull InspirationCarouselDataView.Option option);
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -230,9 +236,9 @@ public interface ProductListSectionContract {
 
         void handleWishlistAction(ProductCardOptionsModel productCardOptionsModel);
 
-        void onProductImpressed(ProductItemViewModel item, int adapterPosition);
+        void onProductImpressed(ProductItemDataView item, int adapterPosition);
 
-        void onProductClick(ProductItemViewModel item, int adapterPosition);
+        void onProductClick(ProductItemDataView item, int adapterPosition);
 
         List<Option> getQuickFilterOptionList();
 
@@ -244,11 +250,11 @@ public interface ProductListSectionContract {
 
         void onBottomSheetFilterDismissed();
 
-        void onBroadMatchItemImpressed(@NotNull BroadMatchItemViewModel broadMatchItemViewModel);
+        void onBroadMatchItemImpressed(@NotNull BroadMatchItemDataView broadMatchItemDataView);
 
-        void onBroadMatchItemClick(@NotNull BroadMatchItemViewModel broadMatchItemViewModel);
+        void onBroadMatchItemClick(@NotNull BroadMatchItemDataView broadMatchItemDataView);
 
-        void onThreeDotsClick(ProductItemViewModel item, int adapterPosition);
+        void onThreeDotsClick(ProductItemDataView item, int adapterPosition);
 
         void handleAddToCartAction(@NotNull ProductCardOptionsModel productCardOptionModel);
 
@@ -259,5 +265,12 @@ public interface ProductListSectionContract {
         void onViewResumed();
 
         void onLocalizingAddressSelected();
+
+        void onInspirationCarouselChipsClick(
+                int adapterPosition,
+                InspirationCarouselDataView inspirationCarouselViewModel,
+                InspirationCarouselDataView.Option clickedInspirationCarouselOption,
+                Map<String, Object> searchParameter
+        );
     }
 }

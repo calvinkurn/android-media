@@ -5,10 +5,10 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.search.R
-import com.tokopedia.search.result.shop.presentation.model.ShopSuggestionViewModel
+import com.tokopedia.search.result.shop.presentation.model.ShopSuggestionDataView
 import com.tokopedia.unifyprinciples.Typography
 
-internal class ShopSuggestionViewHolder(itemView: View): AbstractViewHolder<ShopSuggestionViewModel>(itemView) {
+internal class ShopSuggestionViewHolder(itemView: View): AbstractViewHolder<ShopSuggestionDataView>(itemView) {
 
     companion object {
         @LayoutRes
@@ -17,7 +17,7 @@ internal class ShopSuggestionViewHolder(itemView: View): AbstractViewHolder<Shop
 
     private var suggestionText: Typography? = null
 
-    override fun bind(element: ShopSuggestionViewModel?) {
+    override fun bind(element: ShopSuggestionDataView?) {
         element ?: return
 
         suggestionText = itemView.findViewById(R.id.shopSuggestionTextView)

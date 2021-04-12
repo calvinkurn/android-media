@@ -9,27 +9,25 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.tokopedia.coachmark.CoachMarkBuilder
-import com.tokopedia.coachmark.CoachMarkItem
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.getResDrawable
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.common.data.response.KeywordData
 import com.tokopedia.topads.common.data.response.KeywordDataItem
 import com.tokopedia.topads.common.data.response.SearchData
 import com.tokopedia.topads.common.data.util.Utils
-import com.tokopedia.topads.common.view.sheet.TipSheetKeywordList
 import com.tokopedia.topads.create.R
 import com.tokopedia.topads.data.CreateManualAdsStepperModel
 import com.tokopedia.topads.di.CreateAdsComponent
-import com.tokopedia.topads.view.activity.KeywordSearchActivity
-import com.tokopedia.topads.view.activity.StepperActivity
+import com.tokopedia.topads.view.adapter.bidinfo.viewholder.UNKNOWN_SEARCH
 import com.tokopedia.topads.view.adapter.keyword.KeywordListAdapter
-import com.tokopedia.topads.view.adapter.keyword.KeywordListAdapterTypeFactoryImpl
-import com.tokopedia.topads.view.adapter.keyword.viewmodel.KeywordItemViewModel
-import com.tokopedia.topads.view.adapter.keyword.viewmodel.KeywordSelectedAdapter
+import com.tokopedia.topads.view.adapter.keyword.KeywordSearchAdapter
 import com.tokopedia.topads.view.model.KeywordAdsViewModel
+import com.tokopedia.topads.view.sheet.KeyTipsSheet
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.SearchBarUnify
 import com.tokopedia.unifyprinciples.Typography
@@ -53,32 +51,23 @@ private const val CLICK_ON_SEARCH = "click - tambah kata kunci manual"
 private const val EVENT_CLICK_ON_SEARCH = "kata kunci yang ditambahkan manual"
 
 
-class KeywordAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
-
+class KeywordAdsListFragment : BaseDaggerFragment() {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private lateinit var viewModel: KeywordAdsViewModel
     private lateinit var keywordListAdapter: KeywordListAdapter
-    private lateinit var keywordSelectedAdapter: KeywordSelectedAdapter
-    private var STAGE = 0
-    private var selectedKeyFromSearch: ArrayList<SearchData>? = arrayListOf()
+    private lateinit var keywordSearchAdapter: KeywordSearchAdapter
     private var userID: String = ""
     private var shopID = ""
     private var tvToolTipText: Typography? = null
     private var imgTooltipIcon: ImageUnify? = null
+    private var stepModel: CreateManualAdsStepperModel? = null
 
     companion object {
 
-        private const val COACH_MARK_TAG = "keyword"
-        const val PRODUCT_IDS_SELECTED = "product_ids"
-        const val SEARCH_QUERY = "search"
-        const val SELECTED_KEYWORDS = "selected_key"
-        const val REQUEST_CODE_SEARCH = 47
-        fun createInstance(): Fragment {
-
+        fun createInstance(extras: Bundle?): Fragment {
             val fragment = KeywordAdsListFragment()
-            val args = Bundle()
-            fragment.arguments = args
+            fragment.arguments = extras
             return fragment
         }
     }
@@ -86,93 +75,49 @@ class KeywordAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         activity?.let {
-            viewModel = ViewModelProviders.of(it, viewModelFactory).get(KeywordAdsViewModel::class.java)
+            viewModel = ViewModelProvider(this, viewModelFactory).get(KeywordAdsViewModel::class.java)
             it.window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING)
         }
-        keywordListAdapter = KeywordListAdapter(KeywordListAdapterTypeFactoryImpl(this::onKeywordSelected))
-        keywordSelectedAdapter = KeywordSelectedAdapter(::onItemUnchecked)
-
+        keywordListAdapter = KeywordListAdapter(::onKeywordSelected)
+        keywordSearchAdapter = KeywordSearchAdapter(::onCheckedItem)
+        getModel()
     }
 
-    private fun onItemUnchecked(pos: Int) {
-        if (!keywordSelectedAdapter.items[pos].fromSearch) {
-            keywordListAdapter.items.add(KeywordItemViewModel(
-                    KeywordDataItem(keywordSelectedAdapter.items[pos].bidSuggest, keywordSelectedAdapter.items[pos].totalSearch,
-                            keywordSelectedAdapter.items[pos].keyword, keywordSelectedAdapter.items[pos].source, keywordSelectedAdapter.items[pos].competition)))
-
-        } else {
-            removeSearchedItem(pos)
-        }
-        keywordSelectedAdapter.items.removeAt(pos)
-        keywordSelectedAdapter.notifyItemRemoved(pos)
-        if (keywordSelectedAdapter.items.isEmpty()) {
-            setStepLayout(View.GONE)
-            STAGE = 0
-            setBtnText()
-        }
-        sortList()
+    private fun onCheckedItem(pos: Int, isChecked: Boolean) {
+        if (isChecked)
+            addToMainList(pos)
+        else
+            removeFromMainList(pos)
         showSelectMessage()
+
     }
 
-    private fun removeSearchedItem(pos: Int) {
-        val iterator = selectedKeyFromSearch?.iterator()
-        while (iterator?.hasNext() == true) {
-            val key = iterator.next()
-            if (key.keyword == keywordSelectedAdapter.items[pos].keyword) {
-                iterator.remove()
-            }
-        }
+    private fun removeFromMainList(pos: Int) {
+        keywordListAdapter.items.remove(keywordSearchAdapter.items[pos])
+        keywordListAdapter.notifyDataSetChanged()
     }
 
-    private fun startShowCase() {
-        val coachMark = CoachMarkBuilder().build()
-        if (!coachMark.hasShown(activity, COACH_MARK_TAG)) {
-            val coachItems = ArrayList<CoachMarkItem>()
-            coachItems.add(CoachMarkItem(searchBar, getString(R.string.coach_mark_title_1), getString(R.string.coach_mark_desc_1)))
-            coachItems.add(CoachMarkItem(txtRecommended, getString(R.string.coach_mark_title_2), getString(R.string.coach_mark_desc_2)))
-            coachMark.show(activity, COACH_MARK_TAG, coachItems)
-        }
+    private fun addToMainList(pos: Int) {
+        keywordListAdapter.items.add(0, keywordSearchAdapter.items[pos])
+        keywordListAdapter.notifyItemChanged(0)
+    }
+
+    private fun getModel() {
+        stepModel = arguments?.getParcelable("model")
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        STAGE = stepperModel?.STAGE ?: 0
-        if (STAGE == 0) {
-            keywordSelectedAdapter.items.clear()
-        }
-        val list: MutableList<String>? = stepperModel?.selectedProductIds
-        val productId = list?.joinToString(",")
         keywordListAdapter.items.clear()
-        viewModel.getSuggestionKeyword(productId
-                ?: "", 0, this::onSuccessSuggestion, this::onEmptySuggestion)
-    }
-
-    private fun restorePrevState() {
-        STAGE = 1
-        setStepLayout(View.VISIBLE)
-        setBtnText()
-        keywordSelectedAdapter.items.clear()
-        stepperModel?.selectedKeywordStage?.asIterable()?.let { keywordSelectedAdapter.items.addAll(it) }
-        keywordSelectedAdapter.notifyDataSetChanged()
-        removeFromRecommended()
-    }
-
-    private fun setBtnText() {
-        if (STAGE == 0) {
-            btn_next?.text = resources.getString(R.string.topads_common_keyword_list_step)
-            txtRecommendation?.text = resources.getString(R.string.topads_common_recommended_list)
-        } else {
-            btn_next?.text = resources.getString(R.string.lanjutkan)
-            txtRecommendation?.text = resources.getString(R.string.topads_common_label_top_ads_keyword)
-        }
+        viewModel.getSuggestionKeyword(getProductIds(), 0, this::onSuccessSuggestion, this::onEmptySuggestion)
     }
 
     private fun removeFromRecommended() {
         val iterator = keywordListAdapter.items.iterator()
         while (iterator.hasNext()) {
             val key = iterator.next()
-            if (stepperModel?.selectedKeywordStage?.find { item ->
-                        (key as KeywordItemViewModel).data.keyword == item.keyword
+            if (stepModel?.selectedKeywordStage?.find { item ->
+                        key.keyword == item.keyword
                     } != null) {
                 iterator.remove()
             }
@@ -181,114 +126,57 @@ class KeywordAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
     }
 
     private fun onKeywordSelected(pos: Int) {
-        if (pos != -1 && keywordListAdapter.items[pos] is KeywordItemViewModel) {
-            val eventLabel = if ((keywordListAdapter.items[pos] as KeywordItemViewModel).isChecked) {
+        if (pos != -1) {
+            val eventLabel = if (keywordListAdapter.items[pos].onChecked) {
                 "$SELCTED - $shopID - $EVENT_LIST_CHECKBOX"
             } else {
                 "$UNSELECT - $shopID - $EVENT_LIST_CHECKBOX"
             }
             TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_CHECKBOX, eventLabel, userID)
-
-            if (STAGE == 1) {
-                keywordSelectedAdapter.items.add((keywordListAdapter.items[pos] as KeywordItemViewModel).data)
-                keywordListAdapter.items.removeAt(pos)
-                keywordListAdapter.notifyItemRemoved(pos)
-                sortListSelected()
-            }
             showSelectMessage()
-
         }
     }
 
     private fun showSelectMessage() {
-        val count = if (STAGE == 0)
-            getTotalChosenKeywords().size
-        else
-            keywordSelectedAdapter.itemCount
-        selected_info.text = String.format(getString(R.string.format_selected_keyword), count)
-        btn_next.isEnabled = count < 50
+        val count = keywordListAdapter.getSelectedItems().count()
+        selected_info?.text = MethodChecker.fromHtml(String.format(getString(R.string.topads_common_kata_kunci_lihat), count))
+        btn_next?.isEnabled = count < 50
     }
 
     private fun onSuccessSuggestion(keywords: List<KeywordData>) {
         startLoading(false)
-        startShowCase()
         keywords.forEach { key ->
-            key.keywordData.forEach { index ->
-                keywordListAdapter.items.add(KeywordItemViewModel(index))
+            key.keywordData.forEach {
+                keywordListAdapter.items.add(it)
             }
         }
-        tip_btn.visibility = View.VISIBLE
-        headlineList.visibility = View.VISIBLE
-        keywordListAdapter.notifyDataSetChanged()
-        if (stepperModel?.STAGE == 1) {
-            restorePrevState()
-        }
+        getAlreadySelected()
         showSelectMessage()
+    }
+
+    private fun getAlreadySelected() {
+        removeFromRecommended()
+        stepModel?.selectedKeywordStage?.let {
+            keywordListAdapter.items.addAll(0, it)
+        }
+        keywordListAdapter.setSelectedItem(stepModel?.selectedKeywordStage)
+        sortFinalList()
     }
 
     private fun onEmptySuggestion() {
         startLoading(false)
-        STAGE = 1
-        setBtnText()
-        if (stepperModel?.STAGE == 1) {
-            if (stepperModel?.selectedKeywordStage?.isNotEmpty() != false)
-                restorePrevState()
-        }
-        if (keywordSelectedAdapter.items.isEmpty() && selectedKeyFromSearch?.isEmpty() != false) {
-            setEmptyView(true)
-        }
+        setEmptyView()
         showSelectMessage()
     }
 
-    private fun setEmptyView(empty: Boolean) {
-        if (empty) {
-            tip_btn.visibility = View.GONE
-            headlineList.visibility = View.GONE
-            emptyLayout.visibility = View.VISIBLE
-
-        } else {
-            tip_btn.visibility = View.VISIBLE
-            headlineList.visibility = View.VISIBLE
-            emptyLayout.visibility = View.GONE
-        }
-    }
-
-    override fun initiateStepperModel() {
-        stepperModel = stepperModel ?: CreateManualAdsStepperModel()
-    }
-
-    override fun saveStepperModel(stepperModel: CreateManualAdsStepperModel) {}
-
-    override fun gotoNextPage() {
-        stepperModel?.selectedKeywords = getSelectedKeyword()
-        stepperModel?.selectedSuggestBid = getSelectedBid()
-        stepperModel?.STAGE = 1
-        stepperModel?.selectedKeywordStage = keywordSelectedAdapter.items
+    private fun gotoNextPage() {
+        stepModel?.selectedKeywordStage = keywordListAdapter.getSelectedItems().toMutableList()
         val eventLabel = "$shopID - $EVENT_CLICK_LAJUKTAN"
         TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_PILIH_KEYWORD, eventLabel, userID)
-        stepperListener?.goToNextPage(stepperModel)
-
-    }
-
-    private fun getSelectedKeyword(): MutableList<String> {
-        val list = mutableListOf<String>()
-        keywordSelectedAdapter.items.forEach {
-            list.add(it.keyword)
-        }
-        return list
-    }
-
-    private fun getSelectedBid(): MutableList<String> {
-        val list = mutableListOf<String>()
-        keywordSelectedAdapter.items.forEach {
-            list.add(it.bidSuggest)
-        }
-        return list
-    }
-
-    override fun populateView() {
-        if (activity is StepperActivity)
-            (activity as StepperActivity).updateToolbarTitle(getString(R.string.topads_common_keyword_list_step))
+        val intent = Intent()
+        intent.putExtra("model", stepModel)
+        activity?.setResult(Activity.RESULT_OK, intent)
+        activity?.finish()
     }
 
     override fun getScreenName(): String {
@@ -307,48 +195,106 @@ class KeywordAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
         super.onViewCreated(view, savedInstanceState)
         userID = UserSession(view.context).userId
         shopID = UserSession(view.context).shopId
+        setAdapters()
         startLoading(true)
-        setStepLayout(View.GONE)
+        setTipLayout()
+        setEmptyLayout()
+        btn_next.setOnClickListener {
+            gotoNextPage()
+        }
+        selected_info?.setOnClickListener {
+            goToFinalStage()
+        }
+        setSearchAction()
+    }
+
+    private fun setSearchAction() {
+        view?.let {
+            val searchBar = it.findViewById<SearchBarUnify>(R.id.searchBar)
+            searchBar?.searchBarTextField?.setOnFocusChangeListener { v, hasFocus ->
+                if (hasFocus) {
+                    val eventLabel = "$shopID - $EVENT_CLICK_ON_SEARCH"
+                    TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_ON_SEARCH, eventLabel, userID)
+                }
+            }
+            Utils.setSearchListener(searchBar, context, it, ::fetchData)
+        }
+    }
+
+    private fun setEmptyLayout() {
         emptyLayout.ic_tip.setImageDrawable(view?.context?.getResDrawable(com.tokopedia.topads.common.R.drawable.ic_bulp_fill))
         emptyLayout.imageView2.setImageDrawable(view?.context?.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_create_ic_checklist))
         emptyLayout.imageView3.setImageDrawable(view?.context?.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_create_ic_checklist))
         emptyLayout.imageView4.setImageDrawable(view?.context?.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_create_ic_checklist))
-        btn_next.setOnClickListener {
-            if (btn_next.text == resources.getString(R.string.topads_common_keyword_list_step)) {
-                gotoNextStage()
-            } else
-                gotoNextPage()
-        }
-        val tooltipView = layoutInflater.inflate(com.tokopedia.topads.common.R.layout.tooltip_custom_view, null).apply {
-            tvToolTipText = this.findViewById(R.id.tooltip_text)
-            tvToolTipText?.text = getString(com.tokopedia.topads.common.R.string.topads_common_tip_memilih_kata_kunci)
-
-            imgTooltipIcon = this.findViewById(R.id.tooltip_icon)
-            imgTooltipIcon?.setImageDrawable(view.context.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_ic_tips))
-        }
-
-        tip_btn?.addItem(tooltipView)
-
-        tip_btn.setOnClickListener {
-            TipSheetKeywordList().show(childFragmentManager, KeywordAdsListFragment::class.java.name)
-            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_TIPS_KEYWORD, shopID, userID)
-        }
-        setAdapters()
-        val searchBar = view.findViewById<SearchBarUnify>(R.id.searchBar)
-        searchBar?.searchBarTextField?.setOnFocusChangeListener { v, hasFocus ->
-            if (hasFocus) {
-                val eventLabel = "$shopID - $EVENT_CLICK_ON_SEARCH"
-                TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_ON_SEARCH, eventLabel, userID)
-            }
-        }
-        Utils.setSearchListener(searchBar, context, view, ::fetchData)
     }
 
-    private fun startLoading(isLoading: Boolean) {
+    private fun setTipLayout() {
+        val tooltipView = layoutInflater.inflate(com.tokopedia.topads.common.R.layout.tooltip_custom_view, null).apply {
+            tvToolTipText = this.findViewById(R.id.tooltip_text)
+            tvToolTipText?.text = getString(com.tokopedia.topads.common.R.string.topads_empty_tip_memilih_kata_kunci_title)
+            imgTooltipIcon = this.findViewById(R.id.tooltip_icon)
+            imgTooltipIcon?.setImageDrawable(view?.context?.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_ic_tips))
+        }
+        tip_btn?.addItem(tooltipView)
+        tip_btn.setOnClickListener {
+            KeyTipsSheet().show(childFragmentManager, KeywordAdsListFragment::class.java.name)
+            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_TIPS_KEYWORD, shopID, userID)
+        }
+    }
+
+    private fun goToFinalStage() {
+        keyword_list?.visible()
+        searchList?.gone()
+        sortFinalList()
+    }
+
+    private fun sortFinalList() {
+        keywordListAdapter.items.sortWith(Comparator
+        { lhs, rhs ->
+            (lhs.onChecked.compareTo(rhs.onChecked))
+        })
+        keywordListAdapter.items.reverse()
+        keywordListAdapter.notifyDataSetChanged()
+    }
+
+    private fun checkIfNeedsManualAddition(listKeywords: MutableList<String>) {
+        if (listKeywords.find { key -> searchBar?.searchBarTextField?.text.toString() == key } == null) {
+            manualAd?.visible()
+            manualAdTxt?.visible()
+            dividerManual?.visible()
+            manualAdTxt.text = MethodChecker.fromHtml(String.format(getString(R.string.topads_common_new_manual_key), searchBar?.searchBarTextField?.text.toString()))
+            manualAd?.setOnClickListener {
+                addManualKeyword()
+                searchBar?.searchBarTextField?.text?.clear()
+            }
+        }
+    }
+
+    private fun addManualKeyword() {
+        headlineList.visible()
+        manualAd.gone()
+        manualAdTxt?.gone()
+        dividerManual?.gone()
+        val item = KeywordDataItem()
+        item.keyword = searchBar.searchBarTextField.text.toString()
+        item.onChecked = true
+        item.totalSearch = UNKNOWN_SEARCH
+        keywordSearchAdapter.items.add(0, item)
+        keywordSearchAdapter.notifyItemInserted(0)
+        addToMainList(0)
+        showSelectMessage()
+        setEmpty(false)
+    }
+
+    private fun startLoading(isLoading: Boolean, search: Boolean = false) {
         if (isLoading) {
-            loading.visibility = View.VISIBLE
+            loading.visible()
+            if (search) {
+                searchLoading?.visible()
+            }
         } else {
-            loading.visibility = View.GONE
+            loading.gone()
+            searchLoading?.gone()
             headlineList.visibility = View.VISIBLE
         }
     }
@@ -356,116 +302,68 @@ class KeywordAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
     private fun setAdapters() {
         keyword_list?.adapter = keywordListAdapter
         keyword_list?.layoutManager = LinearLayoutManager(context)
-        selectedKeyList?.isNestedScrollingEnabled = false
-        selectedKeyList?.adapter = keywordSelectedAdapter
-        selectedKeyList?.layoutManager = LinearLayoutManager(context)
-    }
-
-    private fun gotoNextStage() {
-        setStepLayout(View.VISIBLE)
-        keywordSelectedAdapter.items.clear()
-        keywordSelectedAdapter.items.addAll(getTotalChosenKeywords())
-        sortListSelected()
-        keywordListAdapter.items.removeAll(keywordListAdapter.getSelectedItems())
-        keywordListAdapter.notifyDataSetChanged()
-        STAGE = 1
-        setBtnText()
-        showSelectMessage()
-    }
-
-    private fun sortListSelected() {
-        keywordSelectedAdapter.items.sortWith(Comparator
-        { lhs, rhs -> lhs?.totalSearch?.toInt() ?: 0.compareTo(rhs?.totalSearch?.toInt() ?: 0) })
-        keywordSelectedAdapter.items.reverse()
-        keywordSelectedAdapter.notifyDataSetChanged()
-    }
-
-    private fun sortList() {
-        keywordListAdapter.items.sortWith(Comparator
-        { lhs, rhs ->
-            (lhs as KeywordItemViewModel).data.totalSearch.toInt()
-                    .compareTo((rhs as KeywordItemViewModel).data.totalSearch.toInt())
-        })
-        keywordListAdapter.items.reverse()
-        keywordListAdapter.notifyDataSetChanged()
-    }
-
-    private fun setStepLayout(visible: Int) {
-        txtSelected?.visibility = visible
-        separate_select?.visibility = visible
-        txtRecommended?.visibility = visible
+        searchList?.adapter = keywordSearchAdapter
+        searchList?.layoutManager = LinearLayoutManager(context)
     }
 
     private fun getProductIds(): String {
         val ids: MutableList<String> = mutableListOf()
-        stepperModel?.selectedProductIds?.forEach {
+        stepModel?.selectedProductIds?.forEach {
             ids.add(it)
         }
         return ids.joinToString(",")
     }
 
     private fun fetchData() {
+        setSearchLayout()
         if (searchBar.searchBarTextField.text.toString().isNotEmpty()) {
-            val intent = Intent(context, KeywordSearchActivity::class.java).apply {
-                putExtra(PRODUCT_IDS_SELECTED, getProductIds())
-                putExtra(SEARCH_QUERY, searchBar.searchBarTextField.text.toString())
-            }
-            startActivityForResult(intent, REQUEST_CODE_SEARCH)
+            viewModel.searchKeyword(searchBar.searchBarTextField.text.toString(), getProductIds(), ::showSearchResult)
         }
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == REQUEST_CODE_SEARCH) {
-            selectedKeyFromSearch?.clear()
-            if (resultCode == Activity.RESULT_OK) {
-                val dataFromSearch: ArrayList<SearchData>? = data?.getParcelableArrayListExtra(SELECTED_KEYWORDS)
-                dataFromSearch?.forEach {
-                    selectedKeyFromSearch?.add(it)
-                }
-                if (selectedKeyFromSearch?.isNotEmpty() != false)
-                    setEmptyView(false)
-                if (STAGE == 0)
-                    gotoNextStage()
-                else {
-                    addSearchItems()
-                }
-            }
-        }
+    private fun setSearchLayout() {
+        startLoading(true, search = true)
+        keyword_list?.gone()
+        searchList?.visible()
     }
 
-    private fun addSearchItems() {
-        emptyLayout?.visibility = View.GONE
-        val list: MutableList<KeywordDataItem> = mapSearchDataToModel()
-        if (list.isNotEmpty()) {
-            keywordSelectedAdapter.items.addAll(list)
-            sortListSelected()
-        }
-        showSelectMessage()
-    }
-
-    private fun getTotalChosenKeywords(): MutableList<KeywordDataItem> {
-        val list: MutableList<KeywordDataItem> = mutableListOf()
-        if (STAGE == 0) {
-            keywordListAdapter.getSelectedItems().forEach {
-                list.add(it.data)
-            }
-        } else {
-            list.addAll(keywordSelectedAdapter.items)
-        }
-        list.addAll(mapSearchDataToModel())
-        val distinctList = list.distinctBy { it.keyword }
-        return distinctList.toMutableList()
-    }
-
-    private fun mapSearchDataToModel(): MutableList<KeywordDataItem> {
-        val list: MutableList<KeywordDataItem> = mutableListOf()
-        selectedKeyFromSearch?.forEach { item ->
-            if (keywordSelectedAdapter.items.find { selected -> selected.keyword == item.keyword } == null) {
+    private fun showSearchResult(data: List<SearchData>) {
+        keywordSearchAdapter.items.clear()
+        startLoading(false)
+        val listKeywords: MutableList<String> = mutableListOf()
+        if (searchBar.searchBarTextField.text.toString().isNotEmpty() && data.isNotEmpty()) {
+            val list: MutableList<KeywordDataItem> = mutableListOf()
+            data.forEach { item ->
+                listKeywords.add(item.keyword ?: "")
                 list.add(KeywordDataItem(item.bidSuggest, item.totalSearch.toString(), item.keyword
-                        ?: "", item.source ?: "", item.competition ?: "", true, fromSearch = true))
+                        ?: "", item.source ?: "", item.competition
+                        ?: "", item.onChecked, fromSearch = true))
             }
+            keywordSearchAdapter.setSearchList(list)
+        } else {
+            setEmpty(data.isEmpty())
         }
-        return list
+        checkIfNeedsManualAddition(listKeywords)
+    }
+
+    private fun setEmpty(setEmpty: Boolean) {
+        if (setEmpty) {
+            emptyImage?.visible()
+            title_empty?.visible()
+            desc_empty?.visible()
+            headlineList?.gone()
+        } else {
+            emptyImage?.gone()
+            title_empty?.gone()
+            desc_empty?.gone()
+            headlineList?.visible()
+            emptyLayout?.gone()
+        }
+    }
+
+
+    private fun setEmptyView() {
+        headlineList?.gone()
+        emptyLayout?.visible()
     }
 }

@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
@@ -78,7 +77,7 @@ class ProductAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = ViewModelProviders.of(this, viewModelFactory).get(ProductAdsListViewModel::class.java)
+        viewModel = ViewModelProvider(this, viewModelFactory).get(ProductAdsListViewModel::class.java)
         productListAdapter = ProductListAdapter(ProductListAdapterTypeFactoryImpl(this::onProductListSelected))
     }
 
@@ -89,9 +88,13 @@ class ProductAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
     override fun saveStepperModel(stepperModel: CreateManualAdsStepperModel) {}
 
     override fun gotoNextPage() {
-        stepperModel?.STAGE = 0
         TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_PRODUCT_IKLAN, getSelectedProduct().joinToString(","))
-        stepperListener?.goToNextPage(stepperModel)
+        if (stepperModel?.redirectionToSummary == false)
+            stepperListener?.goToNextPage(stepperModel)
+        else {
+            stepperModel?.redirectionToSummary = false
+            stepperListener?.getToFragment(3, stepperModel)
+        }
     }
 
     private fun getSelectedProductAdId(): MutableList<String> {
@@ -161,6 +164,9 @@ class ProductAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        if (stepperModel?.redirectionToSummary == true) {
+            btn_next?.text = getString(R.string.topads_common_save_butt)
+        }
         context?.let {
             sortProductList = ProductSortSheetList.newInstance()
             filterSheetProductList = ProductFilterSheetList.newInstance()
@@ -191,7 +197,7 @@ class ProductAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
             TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_TIPS_PRODUCT_IKLAN, "")
         }
         btn_sort.setOnClickListener {
-            sortProductList.show(fragmentManager!!, "")
+            sortProductList.show(childFragmentManager, "")
         }
         btn_filter.setOnClickListener {
             if (filterSheetProductList.getSelectedFilter().isBlank()) {
@@ -199,7 +205,7 @@ class ProductAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
             } else {
                 filterSheetProductList.updateData(items)
             }
-            filterSheetProductList.show(fragmentManager!!, "filterList")
+            filterSheetProductList.show(childFragmentManager, "filterList")
         }
         filterSheetProductList.onItemClick = { refreshProduct() }
         sortProductList.onItemClick = { refreshProduct() }
@@ -211,7 +217,8 @@ class ProductAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
         promoted.setOnClickListener {
             not_promoted.chipType = ChipsUnify.TYPE_NORMAL
             promoted.chipType = ChipsUnify.TYPE_SELECTED
-            refreshProduct() }
+            refreshProduct()
+        }
         Utils.setSearchListener(searchInputView, context, linearLayout10, ::refreshProduct)
         swipe_refresh_layout.setOnRefreshListener {
             refreshProduct()
@@ -271,7 +278,7 @@ class ProductAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
                 stepperModel?.adIds = ((getSelectedProductAdId() + it).toMutableList())
             }
         }
-        val count = stepperModel?.selectedProductIds?.size?:0
+        val count = stepperModel?.selectedProductIds?.size ?: 0
         select_product_info.text = String.format(getString(R.string.format_selected_produk), count)
         btn_next.isEnabled = count > 0
     }
@@ -306,7 +313,7 @@ class ProductAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
         if (productListAdapter.items.isEmpty()) {
             productListAdapter.items.addAll(mutableListOf(ProductEmptyViewModel()))
         }
-        if (productListAdapter.items[0] !is ProductEmptyViewModel){
+        if (productListAdapter.items[0] !is ProductEmptyViewModel) {
             stepperModel?.selectedProductIds?.let {
                 productListAdapter.setSelectedList(it)
             }
