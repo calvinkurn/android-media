@@ -52,7 +52,7 @@ class ShopProductListResultActivity : BaseSimpleActivity(), HasComponent<ShopCom
         sort = if (intent.getStringExtra(ShopParamConstant.EXTRA_SORT_ID) == null) "" else intent.getStringExtra(ShopParamConstant.EXTRA_SORT_ID)
         attribution = intent.getStringExtra(ShopParamConstant.EXTRA_ATTRIBUTION)
         isNeedToReloadData = intent.getBooleanExtra(ShopParamConstant.EXTRA_IS_NEED_TO_RELOAD_DATA, false)
-        sourceRedirection = intent.getStringExtra(ShopParamConstant.EXTRA_SOURCE_REDIRECTION)
+        sourceRedirection = intent.getStringExtra(ShopParamConstant.EXTRA_SOURCE_REDIRECTION).orEmpty()
         if (savedInstanceState == null) {
             keyword = intent.getStringExtra(ShopParamConstant.EXTRA_PRODUCT_KEYWORD)
             if (null == keyword) {
