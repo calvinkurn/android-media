@@ -145,7 +145,8 @@ class SaldoDepositActivity : BaseSimpleActivity(), HasComponent<SaldoDetailsComp
     }
 
     private fun isAutoWithRollenceActive() : Boolean{
-      return RemoteConfigInstance.getInstance().abTestPlatform.getBoolean(KEY_ROLLENCE_AUTO_WITHDRAWAL, false)
+      return (KEY_ROLLENCE_AUTO_WITHDRAWAL == RemoteConfigInstance.getInstance()
+              .abTestPlatform.getString(KEY_ROLLENCE_AUTO_WITHDRAWAL, ""))
     }
 
     override fun setupStatusBar() {
