@@ -24,7 +24,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             android:layout_centerVertical="true"
-            app:srcCompat="@drawable/ic_close" />
+            app:srcCompat="@drawable/ic_close_thin" />
 
         <TextView
             android:id="@+id/title_closeable_rounded"

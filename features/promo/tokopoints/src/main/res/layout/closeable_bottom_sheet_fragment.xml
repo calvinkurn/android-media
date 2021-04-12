@@ -33,7 +33,7 @@
             android:visibility="gone"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_close" />
+            app:srcCompat="@drawable/ic_close_thin" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/title_closeable_rounded"
