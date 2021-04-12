@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import com.otaliastudios.cameraview.CameraListener
 import com.otaliastudios.cameraview.CameraOptions
 import com.otaliastudios.cameraview.VideoResult
@@ -213,10 +214,11 @@ class VideoRecorderFragment: TkpdBaseV4Fragment() {
     }
 
     private fun setUIFlashCamera(flashEnum: Int) {
+        val colorWhite = context?.let { ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_Static_White) }
         when (flashEnum) {
             Flash.AUTO.ordinal -> btnFlash.setImageDrawable(com.tokopedia.abstraction.common.utils.view.MethodChecker.getDrawable(activity, com.tokopedia.imagepicker.common.R.drawable.ic_auto_flash))
-            Flash.ON.ordinal -> btnFlash.setImage(IconUnify.FLASH_ON, null, null, null, null)
-            Flash.OFF.ordinal -> btnFlash.setImage(IconUnify.FLASH_OFF, null, null, null, null)
+            Flash.ON.ordinal -> btnFlash.setImage(IconUnify.FLASH_ON, colorWhite, colorWhite, colorWhite, colorWhite)
+            Flash.OFF.ordinal -> btnFlash.setImage(IconUnify.FLASH_OFF, colorWhite, colorWhite, colorWhite, colorWhite)
         }
     }
 
