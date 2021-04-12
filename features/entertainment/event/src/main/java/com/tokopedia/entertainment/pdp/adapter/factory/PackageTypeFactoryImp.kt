@@ -14,10 +14,7 @@ import com.tokopedia.entertainment.pdp.listener.OnCoachmarkListener
 
 class PackageTypeFactoryImpl(private val onBindItemTicketListener: OnBindItemTicketListener,
                             private val onCoachmarkListener: OnCoachmarkListener): BaseAdapterTypeFactory(), PackageTypeFactory {
-
-//    override fun type(dataModel: List<PackageV3>): Int {
-//        return PackageParentViewHolder.LAYOUT
-//    }
+    
 
     override fun type(dataModel: EventPDPTicketGroup): Int {
         return PackageParentViewHolder.LAYOUT

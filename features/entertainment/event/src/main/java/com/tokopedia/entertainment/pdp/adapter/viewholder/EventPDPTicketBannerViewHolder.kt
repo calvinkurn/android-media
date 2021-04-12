@@ -9,7 +9,8 @@ import kotlinx.android.synthetic.main.item_event_pdp_parent_ticket_banner.view.*
 class EventPDPTicketBannerViewHolder(view: View): AbstractViewHolder<EventPDPTicketBanner>(view) {
 
     override fun bind(element: EventPDPTicketBanner?) {
-        itemView.tgEventTicketRecommendationTitle.text = element?.text ?: "Coba Produk Ini!"
+        itemView.tgEventTicketRecommendationTitle.text =
+                getString(R.string.ent_event_pdp_ticket_recommendation_label)
     }
 
     companion object {

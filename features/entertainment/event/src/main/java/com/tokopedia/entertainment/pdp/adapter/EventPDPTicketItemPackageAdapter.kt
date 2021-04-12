@@ -3,7 +3,6 @@ package com.tokopedia.entertainment.pdp.adapter
 import android.app.Activity
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -22,7 +21,6 @@ import com.tokopedia.entertainment.pdp.data.pdp.mapper.EventDateMapper.getDate
 import com.tokopedia.entertainment.pdp.listener.OnBindItemTicketListener
 import com.tokopedia.entertainment.pdp.listener.OnCoachmarkListener
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.unifycomponents.toDp
 import kotlinx.android.synthetic.main.ent_ticket_adapter_item.view.*
 import java.util.*
 
@@ -54,8 +52,6 @@ class EventPDPTicketItemPackageAdapter(
         }
 
         private fun renderForMainPackage(items: PackageItem) {
-            Log.d("EventPDPPackageAdapter", "lets bind $items :::: $itemView ::: $adapterPosition")
-            Log.d("EventPDPPackageAdapter", "listItemPackage : ${listItemPackage.size} ::: ${listItemPackage}")
             with(itemView) {
 
                 onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
@@ -113,7 +109,6 @@ class EventPDPTicketItemPackageAdapter(
                         override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 
                         override fun onTextChanged(txtTotal: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                            Log.d("EventPDPPackageAdapter", "instance : $txtTotal ::: ${this@EventPDPTicketItemPackageAdapter} : ${items.name}")
                             if (txtTotal.toString().isNotBlank()) {
                                 if (getDigit(txtTotal.toString()) > items.maxQty.toInt()) {
                                     quantityEditor.editText.error = String.format(resources.getString(R.string.ent_error_value_exceeded), items.maxQty)

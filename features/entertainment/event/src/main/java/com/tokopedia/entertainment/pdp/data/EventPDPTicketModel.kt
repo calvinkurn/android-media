@@ -17,9 +17,7 @@ class EventPDPTicketGroup(
     }
 }
 
-class EventPDPTicketBanner(
-        var text: String = "COBA CEK YANG INI JUGA YUK"
-): EventPDPTicket() {
+class EventPDPTicketBanner: EventPDPTicket() {
     override fun type(typeFactory: PackageTypeFactory): Int {
         return typeFactory.type(this)
     }

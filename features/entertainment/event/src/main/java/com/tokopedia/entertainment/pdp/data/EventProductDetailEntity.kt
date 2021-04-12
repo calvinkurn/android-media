@@ -775,7 +775,6 @@ data class Media(
         val url: String = ""
 )
 
-// TODO: [Misael] Check this, just removed extend type n function
 data class PackageV3(
         @SerializedName("id")
         @Expose

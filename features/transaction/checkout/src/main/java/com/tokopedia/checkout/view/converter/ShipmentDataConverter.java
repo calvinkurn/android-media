@@ -302,8 +302,8 @@ public class ShipmentDataConverter {
         cartItemModel.setCashback(product.getProductCashback());
         cartItemModel.setCashback(!UtilsKt.isNullOrEmpty(product.getProductCashback()));
         cartItemModel.setFreeReturnLogo(product.getFreeReturnLogo());
-        cartItemModel.setfInsurance(product.isProductFcancelPartial());
-        cartItemModel.setfCancelPartial(product.isProductFinsurance());
+        cartItemModel.setFInsurance(product.isProductFcancelPartial());
+        cartItemModel.setFCancelPartial(product.isProductFinsurance());
         cartItemModel.setError(product.isError());
         cartItemModel.setErrorMessage(product.getErrorMessage());
         cartItemModel.setErrorMessageDescription(product.getErrorMessageDescription());
@@ -350,10 +350,10 @@ public class ShipmentDataConverter {
             if (cartItem.isPreOrder()) {
                 isPreOrder = 1;
             }
-            if (cartItem.isfInsurance()) {
+            if (cartItem.getFInsurance()) {
                 isFcancelPartial = 1;
             }
-            if (cartItem.isfCancelPartial()) {
+            if (cartItem.getFCancelPartial()) {
                 isFinsurance = 1;
             }
         }

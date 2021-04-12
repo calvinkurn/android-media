@@ -17,6 +17,7 @@ class PopularCityAdapter(context: Context?, private var actionListener: ActionLi
     var cityList = mutableListOf<String>()
     private var drawablePressed = context?.let { ContextCompat.getDrawable(it, R.drawable.bg_chips_pressed) }
     private var drawableDefault = context?.let { ContextCompat.getDrawable(it, R.drawable.bg_chips) }
+    private var lastIndex = -1
 
     interface ActionListener {
         fun onCityChipClicked(city: String)
@@ -34,8 +35,12 @@ class PopularCityAdapter(context: Context?, private var actionListener: ActionLi
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val res = holder.itemView.context.resources
         holder.itemView.tv_chips_item.apply {
+            background = drawableDefault
             text = cityList[position]
+            setTextColor(res.getColor(com.tokopedia.unifyprinciples.R.color.Unify_Static_Black_32))
             setOnClickListener {
+                notifyItemChanged(lastIndex)
+                lastIndex = position
                 background = drawablePressed
                 setTextColor(res.getColor(com.tokopedia.unifyprinciples.R.color.Unify_G300))
                 actionListener.onCityChipClicked(cityList[position])

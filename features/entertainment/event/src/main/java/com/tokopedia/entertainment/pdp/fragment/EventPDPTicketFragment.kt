@@ -4,7 +4,6 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -60,13 +59,15 @@ import com.tokopedia.entertainment.pdp.di.EventPDPComponent
 import com.tokopedia.entertainment.pdp.listener.OnBindItemTicketListener
 import com.tokopedia.entertainment.pdp.listener.OnCoachmarkListener
 import com.tokopedia.entertainment.pdp.viewmodel.EventPDPTicketViewModel
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.android.synthetic.main.ent_ticket_adapter_item.view.*
 import kotlinx.android.synthetic.main.ent_ticket_listing_activity.*
 import kotlinx.android.synthetic.main.ent_ticket_listing_fragment.*
 import kotlinx.android.synthetic.main.item_event_pdp_parent_ticket.*
+import kotlinx.android.synthetic.main.item_event_pdp_parent_ticket.view.*
+import kotlinx.android.synthetic.main.item_event_pdp_parent_ticket_banner.*
 import kotlinx.android.synthetic.main.widget_event_pdp_calendar.view.*
 import java.util.*
 import javax.inject.Inject
@@ -199,7 +200,7 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicket, PackageTypeFacto
     private fun setupSwipeRefresh() {
         swipe_refresh_layout.apply {
             setOnRefreshListener {
-                showViewBottom(false) //ini bisa balikin rv
+                showViewBottom(false)
                 showUbah(false)
                 loadInitialData()
                 // TODO: [Misael] confirm ke ka Firman ini kenapa perlu di hide
@@ -291,7 +292,6 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicket, PackageTypeFacto
         showViewBottom(false)
     }
 
-    // TODO: [Misael] Check this cast
     private fun observeData() {
         viewModel.ticketModel.observe(viewLifecycleOwner, Observer {
             val packageV3 = it as? List<PackageV3>
@@ -308,7 +308,7 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicket, PackageTypeFacto
                 val packageV3 = it as? List<PackageV3>
                 packageV3?.let { packages ->
                     if (this.isNotEmpty()) {
-                        renderList(listOf(EventPDPTicketBanner(getString(R.string.ent_event_pdp_ticket_recommendation_label))))
+                        renderList(listOf(EventPDPTicketBanner()))
                         renderList(listOf(EventPDPTicketGroup(packages)))
                     }
                 }
@@ -389,7 +389,15 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicket, PackageTypeFacto
                 context?.let {
                     val coachMark = CoachMark2(it)
                     coachMark.apply {
-                        showCoachMark(ArrayList(getCoachmarkItem(listRecom)), scroll_ticket_pdp, 0)
+                        showCoachMark(ArrayList(getCoachmarkItem(listRecom)), null, 0)
+                        setStepListener(object : CoachMark2.OnStepListener{
+                            override fun onStep(currentIndex: Int, coachMarkItem: CoachMark2Item) {
+                                if(currentIndex == 1){
+                                    val position = tgEventTicketRecommendationTitle.y
+                                    scroll_ticket_pdp.smoothScrollTo(0, position.toInt())
+                                }
+                            }
+                        })
                     }
                 }
                 localCacheHandler.apply {
@@ -464,15 +472,6 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicket, PackageTypeFacto
                 ?.findViewById<RecyclerView>(PackageParentViewHolder.rvId)
                 ?.findViewHolderForLayoutPosition(0)?.itemView
                 ?.findViewById<Typography>(id)
-
-//        return rvEventTicketList.findViewHolderForAdapterPosition(0)?.itemView?.
-//        findViewById<AccordionUnify>(R.id.accordionEventPDPTicket)?.getChildAt(0)?.
-//        findViewById<RecyclerView>(PackageParentViewHolder.rvId)?.
-//        findViewHolderForAdapterPosition(0)?.itemView?.
-//        findViewById<Typography>(id)
-//        return rvEventTicketList.findViewHolderForAdapterPosition(0)?.itemView?.
-//        findViewById<AccordionUnify>(R.id.accordionEventPDPTicket)?.getChildAt(0)?.
-//        findViewById<RecyclerView>(PackageParentViewHolder.rvId)
     }
 
     private fun checkAvailableCoachmark():View? {
@@ -505,8 +504,8 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicket, PackageTypeFacto
 
         const val PREFERENCES_NAME = "event_ticket_preferences"
         const val SHOW_COACH_MARK_KEY = "show_coach_mark_key_event_ticket"
-        private const val COACH_MARK_START_DELAY = 400L
-        private const val EXPAND_ACCORDION_START_DELAY = 150L
+        private const val COACH_MARK_START_DELAY = 650L
+        private const val EXPAND_ACCORDION_START_DELAY = 500L
     }
 
 }
