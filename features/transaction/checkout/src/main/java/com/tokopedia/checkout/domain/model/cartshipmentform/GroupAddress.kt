@@ -5,7 +5,9 @@ import com.tokopedia.logisticCommon.data.entity.address.UserAddress
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
-data class AddressData(
-        var defaultAddress: UserAddress? = null,
-        var tradeInAddress: UserAddress? = null
+data class GroupAddress(
+        var isError: Boolean = false,
+        var errorMessage: String = "",
+        var userAddress: UserAddress = UserAddress(),
+        var groupShop: List<GroupShop> = emptyList(),
 ) : Parcelable

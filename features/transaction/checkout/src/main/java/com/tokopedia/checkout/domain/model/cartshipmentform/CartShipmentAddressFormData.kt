@@ -8,10 +8,6 @@ import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerData
 import kotlinx.android.parcel.Parcelize
 
-/**
- * @author anggaprasetiyo on 21/02/18.
- */
-
 @Parcelize
 data class CartShipmentAddressFormData(
         var isHasError: Boolean = false,
@@ -48,8 +44,7 @@ data class CartShipmentAddressFormData(
             for (address in addresses) {
                 for (groupShop in address.groupShop) {
                     for (product in groupShop.products) {
-                        if (product.purchaseProtectionPlanData != null &&
-                                product.purchaseProtectionPlanData.isProtectionAvailable) {
+                        if (product.purchaseProtectionPlanData.isProtectionAvailable) {
                             return true
                         }
                     }
