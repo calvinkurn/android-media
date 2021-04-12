@@ -61,17 +61,17 @@ class BarChartMapper @Inject constructor(): BaseResponseMapper<GetBarChartDataRe
             {
                 "value": 0,
                 "valueFmt": "0",
-                "color": "#4FBA68"
+                "color": "# 4FBA68"
             },
             {
                 "value": 0,
                 "valueFmt": "0",
-                "color": "#4FBA68"
+                "color": "# 4FBA68"
             },
             {
                 "value": 0,
                 "valueFmt": "0",
-                "color": "#4FBA68"
+                "color": "# 4FBA68"
             }
         ]
      */

@@ -362,7 +362,7 @@ class MultiLineGraphViewHolder(
             xAxis {
                 val xAxisLabels = lineChartData?.chartEntry?.map { it.xLabel }.orEmpty()
                 gridEnabled { false }
-                textColor { itemView.context.getResColor(com.tokopedia.unifyprinciples.R.color.Neutral_N700_96) }
+                textColor { itemView.context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_96) }
                 labelFormatter {
                     ChartXAxisLabelFormatter(xAxisLabels)
                 }
@@ -370,7 +370,7 @@ class MultiLineGraphViewHolder(
 
             yAxis {
                 val yAxisLabels = lineChartData?.yAxisLabel.orEmpty()
-                textColor { itemView.context.getResColor(com.tokopedia.unifyprinciples.R.color.Neutral_N700_96) }
+                textColor { itemView.context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_96) }
                 labelFormatter {
                     ChartYAxisLabelFormatter(yAxisLabels)
                 }

@@ -84,8 +84,8 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
     }
 
     private fun onCheckedItem(pos: Int, isChecked: Boolean) {
-        if(isChecked)
-        addToMainList(pos)
+        if (isChecked)
+            addToMainList(pos)
         else
             removeFromMainList(pos)
         showSelectMessage()
@@ -165,7 +165,7 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
 
     private fun onEmptySuggestion() {
         startLoading(false)
-        setEmptyView(true)
+        setEmptyView()
         showSelectMessage()
     }
 
@@ -362,14 +362,8 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
     }
 
 
-    private fun setEmptyView(empty: Boolean) {
-        if (empty) {
-            headlineList?.gone()
-            emptyLayout?.visible()
-
-        } else {
-            headlineList?.visible()
-            emptyLayout?.gone()
-        }
+    private fun setEmptyView() {
+        headlineList?.gone()
+        emptyLayout?.visible()
     }
 }

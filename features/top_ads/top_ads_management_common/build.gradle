@@ -33,6 +33,7 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation project(rootProject.ext.libraries.trackingOptimizer)
     implementation project(rootProject.ext.libraries.track)
+    implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
     implementation project(rootProject.ext.libraries.remoteResourceRequest)
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.miscDependencies.loaderviewlibrary

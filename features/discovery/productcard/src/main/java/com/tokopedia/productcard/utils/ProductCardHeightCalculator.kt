@@ -53,7 +53,8 @@ private fun getLabelCampaignHeight(context: Context, hasLabelCampaign: Boolean):
 
 private fun getLabelBestSellerHeight(context: Context, hasLabelBestSeller: Boolean): Int {
     return if (hasLabelBestSeller)
-        context.resources.getDimensionPixelSize(R.dimen.product_card_label_best_seller_height)
+        context.resources.getDimensionPixelSize(R.dimen.product_card_label_best_seller_height) +
+                context.resources.getDimensionPixelSize(R.dimen.product_card_label_best_seller_margintop)
     else 0
 }
 
@@ -116,7 +117,6 @@ private fun ProductCardModel.getContentHeight(context: Context): Int {
     val priceSectionHeight = getPriceSectionHeight(context)
     val shopInfoSectionHeight = getShopInfoSectionHeight(context)
     val credibilitySectionHeight = getCredibilitySectionHeight(context)
-    val salesRatingFloatHeight = getSalesRatingFloatHeight(context)
     val shopRatingSectionHeight = getShopRatingSectionHeight(context)
     val shippingInfoSectionHeight = getShippingInfoSectionHeight(context)
     val etaHeight = getLabelETA(context)
@@ -129,7 +129,6 @@ private fun ProductCardModel.getContentHeight(context: Context): Int {
             priceSectionHeight +
             shopInfoSectionHeight +
             credibilitySectionHeight +
-            salesRatingFloatHeight +
             shopRatingSectionHeight +
             shippingInfoSectionHeight +
             etaHeight +
@@ -231,6 +230,7 @@ private fun ProductCardModel.getCredibilitySectionHeight(context: Context): Int 
         it.add(getRatingHeight(context))
         it.add(getReviewCountHeight(context))
         it.add(getLabelIntegrityHeight(context))
+        it.add(getSalesRatingFloatHeight(context))
     }
 
     return credibilitySectionHeightList.max() ?: 0
