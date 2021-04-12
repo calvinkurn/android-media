@@ -372,6 +372,7 @@ class SomDetailFragment : BaseDaggerFragment(),
 
     private fun observingAcceptOrder() {
         somDetailViewModel.acceptOrderResult.observe(viewLifecycleOwner, Observer {
+            btn_primary?.isLoading = false
             when (it) {
                 is Success -> {
                     SomAnalytics.eventClickAcceptOrderPopup(true)
@@ -644,10 +645,19 @@ class SomDetailFragment : BaseDaggerFragment(),
                     setOnClickListener {
                         eventClickCtaActionInOrderDetail(buttonResp.displayName, detailResponse?.statusText.orEmpty())
                         when {
-                            buttonResp.key.equals(KEY_ACCEPT_ORDER, true) -> setActionAcceptOrder(buttonResp.displayName, orderId)
+                            buttonResp.key.equals(KEY_ACCEPT_ORDER, true) -> {
+                                btn_primary?.isLoading = true
+                                setActionAcceptOrder(buttonResp.displayName, orderId)
+                            }
                             buttonResp.key.equals(KEY_TRACK_SELLER, true) -> setActionGoToTrackingPage(buttonResp)
-                            buttonResp.key.equals(KEY_REQUEST_PICKUP, true) -> setActionRequestPickup(buttonResp.displayName)
-                            buttonResp.key.equals(KEY_CONFIRM_SHIPPING, true) -> setActionConfirmShipping(buttonResp.displayName)
+                            buttonResp.key.equals(KEY_REQUEST_PICKUP, true) -> {
+                                btn_primary?.isLoading = true
+                                setActionRequestPickup(buttonResp.displayName)
+                            }
+                            buttonResp.key.equals(KEY_CONFIRM_SHIPPING, true) -> {
+                                btn_primary?.isLoading = true
+                                setActionConfirmShipping(buttonResp.displayName)
+                            }
                             buttonResp.key.equals(KEY_VIEW_COMPLAINT_SELLER, true) -> setActionSeeComplaint(buttonResp.url)
                             buttonResp.key.equals(KEY_BATALKAN_PESANAN, true) -> setActionRejectOrder()
                             buttonResp.key.equals(KEY_ASK_BUYER, true) -> goToAskBuyer()
@@ -696,6 +706,7 @@ class SomDetailFragment : BaseDaggerFragment(),
 
     private fun acceptOrder(actionName: String, orderId: String) {
         pendingAction = SomPendingAction(actionName, orderId) {
+            btn_primary?.isLoading = true
             if (orderId.isNotBlank()) {
                 somDetailViewModel.acceptOrder(orderId)
             }
@@ -791,6 +802,7 @@ class SomDetailFragment : BaseDaggerFragment(),
 
     private fun setActionRequestPickup(actionName: String) {
         pendingAction = SomPendingAction(actionName, orderId) {
+            btn_primary?.isLoading = true
             Intent(activity, SomConfirmReqPickupActivity::class.java).apply {
                 putExtra(PARAM_ORDER_ID, orderId)
                 startActivityForResult(this, FLAG_CONFIRM_REQ_PICKUP)
@@ -801,6 +813,7 @@ class SomDetailFragment : BaseDaggerFragment(),
 
     private fun setActionConfirmShipping(actionName: String) {
         pendingAction = SomPendingAction(actionName, orderId) {
+            btn_primary?.isLoading = true
             if (detailResponse?.onlineBooking?.isRemoveInputAwb == true) {
                 val btSheet = BottomSheetUnify()
                 val infoLayout = View.inflate(context, R.layout.partial_info_layout, null)
@@ -1386,6 +1399,7 @@ class SomDetailFragment : BaseDaggerFragment(),
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        btn_primary?.isLoading = false
         if (requestCode == FLAG_CONFIRM_REQ_PICKUP && resultCode == Activity.RESULT_OK) {
             if (data != null) {
                 if (data.hasExtra(RESULT_PROCESS_REQ_PICKUP)) {
@@ -1556,6 +1570,7 @@ class SomDetailFragment : BaseDaggerFragment(),
             pendingAction.action.invoke()
         } else {
             context?.let { context ->
+                btn_primary?.isLoading = false
                 val somOrderHasCancellationRequestDialog = somOrderHasCancellationRequestDialog ?: SomOrderHasRequestCancellationDialog(context)
                 this.somOrderHasCancellationRequestDialog = somOrderHasCancellationRequestDialog
                 somOrderHasCancellationRequestDialog.apply {

@@ -582,6 +582,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
     }
 
     override fun onConfirmShippingButtonClicked(actionName: String, orderId: String) {
+        getSwipeRefreshLayout(view)?.isRefreshing = true
         pendingAction = SomPendingAction(actionName, orderId) {
             selectedOrderId = orderId
             goToConfirmShippingPage(this, orderId)
@@ -590,6 +591,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
     }
 
     override fun onAcceptOrderButtonClicked(actionName: String, orderId: String) {
+        getSwipeRefreshLayout(view)?.isRefreshing = true
         pendingAction = SomPendingAction(actionName, orderId) {
             val invoice = getOrderBy(orderId)
             viewModel.acceptOrder(orderId, invoice)
@@ -598,6 +600,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
     }
 
     override fun onRequestPickupButtonClicked(actionName: String, orderId: String) {
+        getSwipeRefreshLayout(view)?.isRefreshing = true
         pendingAction = SomPendingAction(actionName, orderId) {
             selectedOrderId = orderId
             goToRequestPickupPage(this, orderId)
@@ -1008,6 +1011,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
 
     private fun observeValidateOrder() {
         viewModel.validateOrderResult.observe(viewLifecycleOwner, Observer { result ->
+            getSwipeRefreshLayout(view)?.isRefreshing = viewModel.isRefreshingOrder()
             when (result) {
                 is Success -> onSuccessValidateOrder(result.data)
                 is Fail -> onFailedValidateOrder()

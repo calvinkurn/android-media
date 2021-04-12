@@ -15,6 +15,8 @@ class SomOrderHasRequestCancellationDialog(context: Context) {
             setPrimaryCTAText(context.getString(R.string.see_detail))
             dialogSecondaryCTA.buttonType = UnifyButton.Type.ALTERNATE
             dialogSecondaryCTA.buttonVariant = UnifyButton.Variant.TEXT_ONLY
+            setOverlayClose(false)
+            setCancelable(false)
         }
     }
 
