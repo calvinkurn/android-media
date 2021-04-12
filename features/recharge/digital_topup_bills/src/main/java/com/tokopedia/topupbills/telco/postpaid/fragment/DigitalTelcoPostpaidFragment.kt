@@ -361,6 +361,14 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
         }
     }
 
+    private fun onInputNewNumberUpdateLayout() {
+        tabLayout.show()
+        separator.show()
+        viewPager.show()
+        buyWidget.setVisibilityLayout(false)
+        postpaidClientNumberWidget.resetEnquiryResult()
+    }
+
     private fun setCheckoutPassData(telcoEnquiryData: TelcoEnquiryData) {
         telcoEnquiryData?.run {
             operatorSelected?.run {
@@ -404,6 +412,7 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
                     }
                     postpaidClientNumberWidget.setIconOperator(operator.attributes.imageUrl)
                     if (postpaidClientNumberWidget.getInputNumber().length in 10..14) {
+                        onInputNewNumberUpdateLayout()
                         postpaidClientNumberWidget.setButtonEnquiry(true)
                     } else {
                         postpaidClientNumberWidget.setButtonEnquiry(false)
