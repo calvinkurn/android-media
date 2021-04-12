@@ -2,6 +2,7 @@ package com.tokopedia.shop.score.performance.domain.usecase
 
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.shop.score.performance.domain.model.*
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
@@ -173,6 +174,7 @@ class GetShopPerformanceUseCase @Inject constructor(private val gqlRepository: G
                     shopScoreWrapperResponse.shopScoreTooltipResponse = shopLevelTooltipData
 
                 } catch (e: Throwable) {
+                    throw MessageErrorException(e.message)
                 }
             }
             else -> {
@@ -212,7 +214,7 @@ class GetShopPerformanceUseCase @Inject constructor(private val gqlRepository: G
                     val reputationShopData = gqlResponse.getData<ReputationShopResponse>(ReputationShopResponse::class.java).reputationShops
                     shopScoreWrapperResponse.reputationShopResponse = reputationShopData
                 } catch (e: Throwable) {
-
+                    throw MessageErrorException(e.message)
                 }
             }
         }

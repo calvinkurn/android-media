@@ -128,19 +128,18 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
         val isEligiblePM = shopScoreWrapperResponse.goldGetPMShopInfoResponse?.isEligiblePm
         val shopScoreResult = shopScoreWrapperResponse.shopScoreLevelResponse?.result
         shopScoreVisitableList.apply {
-//            if (shopInfoPeriodUiModel.isNewSeller) {
-//                add(mapToTimerNewSellerUiModel(shopInfoPeriodUiModel.shopAge, shopInfoPeriodUiModel.isEndTenureNewSeller).first)
-//            }
-            val mapTimerNewSeller = mapToTimerNewSellerUiModel(shopInfoPeriodUiModel.shopAge, shopInfoPeriodUiModel.isEndTenureNewSeller)
-            add(mapTimerNewSeller.first)
-            add(ItemLevelScoreProjectUiModel())
+            if (shopInfoPeriodUiModel.isNewSeller) {
+                val mapTimerNewSeller = mapToTimerNewSellerUiModel(shopInfoPeriodUiModel.shopAge, shopInfoPeriodUiModel.isEndTenureNewSeller)
+                add(mapToTimerNewSellerUiModel(shopInfoPeriodUiModel.shopAge, shopInfoPeriodUiModel.isEndTenureNewSeller).first)
+                add(mapTimerNewSeller.first)
+                add(ItemLevelScoreProjectUiModel())
+            }
 
             add(mapToHeaderShopPerformance(shopScoreWrapperResponse.shopScoreLevelResponse?.result, shopInfoPeriodUiModel.isNewSeller))
             add(mapToSectionPeriodDetailPerformanceUiModel(shopScoreWrapperResponse.shopScoreTooltipResponse?.result))
             if (shopScoreResult?.shopScoreDetail?.isNotEmpty() == true) {
                 addAll(mapToItemDetailPerformanceUiModel(shopScoreResult.shopScoreDetail))
             }
-
 
             if (shopScoreWrapperResponse.getRecommendationToolsResponse?.recommendationTools?.isNotEmpty() == true) {
                 add(mapToItemRecommendationPMUiModel(shopScoreWrapperResponse.getRecommendationToolsResponse?.recommendationTools))

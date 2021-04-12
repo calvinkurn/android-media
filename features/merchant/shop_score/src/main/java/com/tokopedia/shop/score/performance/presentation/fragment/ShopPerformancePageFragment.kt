@@ -153,18 +153,18 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
      * ItemShopPerformanceListener
      **/
     override fun onViewItemDetailPerformanceListener(view: View) {
-//        if (!shopScoreCoachMarkPrefs.getHasShownItemPerformanceDetail()) {
-        coachMarkItem.add(CoachMark2Item(
-                view.findViewById(R.id.cardItemDetailShopPerformance),
-                getString(R.string.title_coachmark_shop_score_2),
-                getString(R.string.desc_coachmark_shop_score_2),
-        ))
-        shopScoreCoachMarkPrefs.setHasShownItemPerformanceDetail(true)
-//        }
+        if (!shopScoreCoachMarkPrefs.getHasShownItemPerformanceDetail()) {
+            coachMarkItem.add(CoachMark2Item(
+                    view.findViewById(R.id.cardItemDetailShopPerformance),
+                    getString(R.string.title_coachmark_shop_score_2),
+                    getString(R.string.desc_coachmark_shop_score_2),
+            ))
+            shopScoreCoachMarkPrefs.setHasShownItemPerformanceDetail(true)
+        }
         val isShowCoachMarkTwoItem = shopPerformanceAdapter.list.find { it is ItemStatusPMUiModel }
         val itemStatusRMUiModel = shopPerformanceAdapter.list.find { it is ItemStatusRMUiModel }
         if (isShowCoachMarkTwoItem == null && itemStatusRMUiModel == null) {
-            showCoachMark()
+            //need adjust
         }
     }
 
@@ -187,15 +187,14 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
      * ItemStatusPowerMerchantListener
      **/
     override fun onViewItemPowerMerchantListener(view: View) {
-//        if (!shopScoreCoachMarkPrefs.getHasShownItemPM()) {
-        coachMarkItem.add(CoachMark2Item(
-                view.findViewById(R.id.containerPowerMerchant),
-                getString(R.string.title_coachmark_shop_score_3),
-                getString(R.string.desc_coachmark_shop_score_3),
-        ))
-        shopScoreCoachMarkPrefs.setHasShownItemPM(true)
-//        }
-        showCoachMark()
+        if (!shopScoreCoachMarkPrefs.getHasShownItemPM()) {
+            coachMarkItem.add(CoachMark2Item(
+                    view.findViewById(R.id.containerPowerMerchant),
+                    getString(R.string.title_coachmark_shop_score_3),
+                    getString(R.string.desc_coachmark_shop_score_3),
+            ))
+            shopScoreCoachMarkPrefs.setHasShownItemPM(true)
+        }
     }
 
     /**
@@ -217,7 +216,6 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
             ))
             shopScoreCoachMarkPrefs.setHasShownItemRM(true)
         }
-        showCoachMark()
     }
 
     /**
