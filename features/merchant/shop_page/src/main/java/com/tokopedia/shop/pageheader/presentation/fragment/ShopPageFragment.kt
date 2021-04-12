@@ -1085,7 +1085,7 @@ class ShopPageFragment :
         swipeToRefresh?.isRefreshing = false
         shopPageHeaderDataModel?.let {
             remoteConfig?.let { nonNullableRemoteConfig ->
-                shopPageFragmentHeaderViewHolder?.setupChooseAddressWidget(nonNullableRemoteConfig)
+                shopPageFragmentHeaderViewHolder?.setupChooseAddressWidget(nonNullableRemoteConfig, isMyShop)
                 shopPageFragmentHeaderViewHolder?.bind(it, isMyShop, nonNullableRemoteConfig)
             }
         }
@@ -1870,6 +1870,7 @@ class ShopPageFragment :
     }
 
     override fun onLocalizingAddressServerDown() {
+        shopPageFragmentHeaderViewHolder?.hideChooseAddressWidget()
     }
 
     override fun onLocalizingAddressRollOutUser(isRollOutUser: Boolean) {}
