@@ -50,23 +50,27 @@ class LogManager(val application: Application, val loggerProxy: LoggerProxy) {
     }
 
     fun refreshConfig(){
-        val loggerReporting = LoggerReporting.getInstance()
-        val logScalyrConfigString: String = loggerProxy.scalyrConfig
-        val logNewRelicConfigString: String = loggerProxy.newRelicConfig
-        if (logScalyrConfigString.isNotEmpty()) {
-            val dataLogConfigScalyr = Gson().fromJson(logScalyrConfigString, DataLogConfig::class.java)
-            if (dataLogConfigScalyr != null && dataLogConfigScalyr.isEnabled && GlobalConfig.VERSION_CODE >= dataLogConfigScalyr.appVersionMin && dataLogConfigScalyr.tags != null) {
-                loggerReporting.setQueryLimits(dataLogConfigScalyr.queryLimits)
-                loggerReporting.setPopulateTagMapsScalyr(dataLogConfigScalyr.tags)
+        try {
+            val loggerReporting = LoggerReporting.getInstance()
+            val logScalyrConfigString: String = loggerProxy.scalyrConfig
+            val logNewRelicConfigString: String = loggerProxy.newRelicConfig
+            if (logScalyrConfigString.isNotEmpty()) {
+                val dataLogConfigScalyr = Gson().fromJson(logScalyrConfigString, DataLogConfig::class.java)
+                if (dataLogConfigScalyr != null && dataLogConfigScalyr.isEnabled && GlobalConfig.VERSION_CODE >= dataLogConfigScalyr.appVersionMin && dataLogConfigScalyr.tags != null) {
+                    loggerReporting.setQueryLimits(dataLogConfigScalyr.queryLimits)
+                    loggerReporting.setPopulateTagMapsScalyr(dataLogConfigScalyr.tags)
+                }
             }
-        }
-        if (logNewRelicConfigString.isNotEmpty()) {
-            val dataLogConfigNewRelic = Gson().fromJson(logNewRelicConfigString, DataLogConfig::class.java)
-            if (dataLogConfigNewRelic != null && dataLogConfigNewRelic.tags != null &&
-                    dataLogConfigNewRelic.isEnabled && GlobalConfig.VERSION_CODE >= dataLogConfigNewRelic.appVersionMin) {
-                loggerReporting.setPopulateTagMapsNewRelic(dataLogConfigNewRelic.tags)
-                loggerReporting.setQueryLimits(dataLogConfigNewRelic.queryLimits)
+            if (logNewRelicConfigString.isNotEmpty()) {
+                val dataLogConfigNewRelic = Gson().fromJson(logNewRelicConfigString, DataLogConfig::class.java)
+                if (dataLogConfigNewRelic != null && dataLogConfigNewRelic.tags != null &&
+                        dataLogConfigNewRelic.isEnabled && GlobalConfig.VERSION_CODE >= dataLogConfigNewRelic.appVersionMin) {
+                    loggerReporting.setPopulateTagMapsNewRelic(dataLogConfigNewRelic.tags)
+                    loggerReporting.setQueryLimits(dataLogConfigNewRelic.queryLimits)
+                }
             }
+        } catch (e:Exception) {
+
         }
     }
 
