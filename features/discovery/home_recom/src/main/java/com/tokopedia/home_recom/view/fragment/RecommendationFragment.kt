@@ -175,8 +175,8 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
         super.onActivityCreated(savedInstanceState)
         setHasOptionsMenu(true)
         disableLoadMore()
-        getRecyclerView(view).layoutManager = recyclerViewLayoutManager
-        getRecyclerView(view).addItemDecoration(StaggerGridSpacingItemDecoration(30))
+        getRecyclerView(view)?.layoutManager = recyclerViewLayoutManager
+        getRecyclerView(view)?.addItemDecoration(StaggerGridSpacingItemDecoration(30))
         observeLiveData()
         observeAtcLiveData()
         observeBuyNowLiveData()
@@ -310,7 +310,7 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
                 clearAllData()
                 renderList(response)
                 hideLoading()
-                getRecyclerView(view).smoothScrollToPosition(0)
+                getRecyclerView(view)?.smoothScrollToPosition(0)
                 (response.firstOrNull() as? ProductInfoDataModel)?.productDetailData?.let { productDetailData ->
                     menu?.findItem(R.id.action_share)?.isVisible = true
                     menu?.findItem(R.id.action_share)?.setOnMenuItemClickListener {

@@ -20,6 +20,12 @@ class DigitalCartInputPriceWidget @JvmOverloads constructor(@NotNull context: Co
     : BaseCustomView(context, attrs, defStyleAttr) {
 
     private var priceInput: Long? = null
+
+    private var minPayment: Long = 0
+    private var maxPayment: Long = 0
+    private var minPaymentString: String = ""
+    private var maxPaymentString: String = ""
+
     var actionListener: ActionListener? = null
 
     init {
@@ -28,19 +34,16 @@ class DigitalCartInputPriceWidget @JvmOverloads constructor(@NotNull context: Co
 
     fun getPriceInput(): Long? = priceInput
 
-    fun setMinMaxPayment(totalPayment: Long, minPayment: Long, maxPayment: Long,
+    fun setMinMaxPayment(minPayment: Long, maxPayment: Long,
                          minPaymentString: String, maxPaymentString: String) {
-
-        setPriceInput(totalPayment)
-        etDigitalCheckoutInputPrice.textFieldInput.setText(getFormattedPriceString(totalPayment))
-        etDigitalCheckoutInputPrice.textFieldInput.setSelection(getFormattedPriceString(totalPayment).length)
-
-        validateUserInput(priceInput, minPayment, maxPayment, minPaymentString, maxPaymentString)
+        this.minPayment = minPayment
+        this.maxPayment = maxPayment
+        this.minPaymentString = minPaymentString
+        this.maxPaymentString = maxPaymentString
 
         etDigitalCheckoutInputPrice.textFieldInput.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
-                onAfterTextChanged(this, s.toString(), minPayment,
-                        maxPayment, minPaymentString, maxPaymentString)
+                onAfterTextChanged(this, s.toString())
             }
 
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
@@ -49,29 +52,21 @@ class DigitalCartInputPriceWidget @JvmOverloads constructor(@NotNull context: Co
         })
     }
 
-    private fun onAfterTextChanged(watcher: TextWatcher, s: String, minPayment: Long, maxPayment: Long,
-                                   minPaymentString: String, maxPaymentString: String) {
+    private fun onAfterTextChanged(watcher: TextWatcher, s: String) {
         val beforePrice = priceInput
         val price: Long? = s.replace(".", "").toLongOrNull()
         val stringFormatted = getFormattedPriceString(price ?: 0)
-
-        setPriceInput(price)
-
-        actionListener?.onInputPriceByUserFilled(priceInput)
-        validateUserInput(priceInput, minPayment, maxPayment, minPaymentString, maxPaymentString)
-
         val selectionPosition = etDigitalCheckoutInputPrice.textFieldInput.selectionStart
 
         etDigitalCheckoutInputPrice.textFieldInput.removeTextChangedListener(watcher)
-        etDigitalCheckoutInputPrice.textFieldInput.setText(stringFormatted)
+        setPriceInput(price)
         getSelectionPosition(beforePrice ?: 0, stringFormatted, selectionPosition).let {
             if (it >= 0) etDigitalCheckoutInputPrice.textFieldInput.setSelection(it)
         }
         etDigitalCheckoutInputPrice.textFieldInput.addTextChangedListener(watcher)
     }
 
-    private fun validateUserInput(priceInput: Long?, minPayment: Long, maxPayment: Long,
-                                  minPaymentString: String, maxPaymentString: String) {
+    private fun validateUserInput(priceInput: Long?) {
         if (priceInput == null) return
         when {
             isUserInputValid(priceInput, minPayment, maxPayment) -> {
@@ -92,7 +87,7 @@ class DigitalCartInputPriceWidget @JvmOverloads constructor(@NotNull context: Co
             }
             else -> {
                 if (minPayment > 0L) {
-                    etDigitalCheckoutInputPrice.setError(true)
+                    if (priceInput > 0L) etDigitalCheckoutInputPrice.setError(true)
                     etDigitalCheckoutInputPrice.setMessage(resources
                             .getString(R.string.digital_cart_error_input_price_less_than_min, minPaymentString))
                     actionListener?.disableCheckoutButton()
@@ -106,15 +101,21 @@ class DigitalCartInputPriceWidget @JvmOverloads constructor(@NotNull context: Co
     }
 
     private fun getFormattedPriceString(price: Long): String {
-        return String.format("%,d", price).replace(",", ".")
+        return if (price > 0L) String.format("%,d", price).replace(",", ".") else ""
     }
 
-    private fun setPriceInput(price: Long?) {
-        priceInput = if (price != null) {
-            price
+    fun setPriceInput(price: Long?) {
+        if (price != null) {
+            price.let {
+                this.priceInput = it
+                etDigitalCheckoutInputPrice.textFieldInput.setText(getFormattedPriceString(it))
+                etDigitalCheckoutInputPrice.textFieldInput.setSelection(getFormattedPriceString(it).length)
+                actionListener?.onInputPriceByUserFilled(it)
+                validateUserInput(it)
+            }
         } else {
             priceInput = 0
-            etDigitalCheckoutInputPrice.setError(true)
+            actionListener?.onInputPriceByUserFilled(priceInput)
             actionListener?.disableCheckoutButton()
             return
         }

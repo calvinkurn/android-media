@@ -1,6 +1,5 @@
 package com.tokopedia.sellerhome.view.fragment
 
-import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.view.*
@@ -14,11 +13,8 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.config.GlobalConfig
-import com.tokopedia.device.info.DeviceConnectionInfo
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.kotlin.model.ImpressHolder
-import com.tokopedia.pocnewrelic.*
 import com.tokopedia.seller.active.common.plt.LoadTimeMonitoringActivity
 import com.tokopedia.seller.active.common.service.UpdateShopActiveService
 import com.tokopedia.sellerhome.BuildConfig
@@ -972,7 +968,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     private fun onSuccessGetTickers(tickers: List<TickerItemUiModel>) {
 
-        fun getTickerType(hexColor: String): Int = when (hexColor) {
+        fun getTickerType(hexColor: String?): Int = when (hexColor) {
             context?.getString(R.string.sah_ticker_warning) -> Ticker.TYPE_WARNING
             else -> Ticker.TYPE_ANNOUNCEMENT
         }
