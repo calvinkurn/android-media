@@ -617,7 +617,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             }
             globalEvent.value = OccGlobalEvent.Loading
             try {
-                val metadata = JsonParser.parseString(param.profile.metadata)
+                val metadata = JsonParser().parse(param.profile.metadata)
                 val expressCheckoutParams = metadata.asJsonObject.getAsJsonObject(UpdateCartOccProfileRequest.EXPRESS_CHECKOUT_PARAM)
                 if (expressCheckoutParams.get(UpdateCartOccProfileRequest.INSTALLMENT_TERM) == null) {
                     // unexpected null installment term param

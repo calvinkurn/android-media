@@ -21,6 +21,7 @@ import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccCartRequest
 import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccProfileRequest
 import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccRequest
 import com.tokopedia.oneclickcheckout.order.view.model.*
+import com.tokopedia.oneclickcheckout.order.view.model.OccPrompt.Companion.TYPE_DIALOG
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
 import com.tokopedia.usecase.RequestParams
@@ -821,6 +822,50 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
     }
 
     @Test
+    fun `Force Show Onboarding Revamp With Profile And Prompt`() {
+        // Given
+        val onboarding = OccMainOnboarding(isForceShowCoachMark = true)
+        val shipment = OrderProfileShipment(serviceId = 1)
+        val address = OrderProfileAddress(addressId = 1)
+        val profile = OrderProfile(shipment = shipment, address = address)
+        val prompt = OccPrompt(type = TYPE_DIALOG, "Prompt")
+        val response = OrderData(cart = OrderCart(product = OrderProduct(productId = 1)), preference = profile,
+                onboarding = onboarding, revampData = OccRevampData(true), prompt = prompt)
+        every { getOccCartUseCase.createRequestParams(any()) } returns RequestParams.EMPTY
+        coEvery { getOccCartUseCase.executeSuspend(any()) } returns response
+
+        val shippingRecommendationData = ShippingRecommendationData().apply {
+            shippingDurationViewModels = listOf(
+                    ShippingDurationUiModel().apply {
+                        serviceData = ServiceData().apply {
+                            serviceId = 1
+                            serviceName = "kirimaja (2 hari)"
+                        }
+                        shippingCourierViewModelList = listOf(
+                                ShippingCourierUiModel().apply {
+                                    productData = ProductData().apply {
+                                        shipperName = "kirimin"
+                                        shipperProductId = 1
+                                        shipperId = 1
+                                        insurance = InsuranceData()
+                                        price = PriceData()
+                                    }
+                                    ratesId = "0"
+                                }
+                        )
+                    }
+            )
+        }
+        every { ratesUseCase.execute(any()) } returns Observable.just(shippingRecommendationData)
+
+        // When
+        orderSummaryPageViewModel.getOccCart(true, "")
+
+        // Then
+        assertEquals(OccGlobalEvent.Prompt(prompt), orderSummaryPageViewModel.globalEvent.value)
+    }
+
+    @Test
     fun `Get Enabled Revamp Data`() {
         // Given
         val revampData = OccRevampData(isEnable = true, 1, "")
@@ -848,5 +893,20 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
 
         // Then
         assertEquals(revampData, orderSummaryPageViewModel.revampData)
+    }
+
+    @Test
+    fun `Get Payment Profile`() {
+        // Given
+        val paymentProfile = "paymentProfile"
+        val response = helper.orderData.copy(cart = helper.orderData.cart.copy(paymentProfile = paymentProfile))
+        every { getOccCartUseCase.createRequestParams(any()) } returns RequestParams.EMPTY
+        coEvery { getOccCartUseCase.executeSuspend(any()) } returns response
+
+        // When
+        orderSummaryPageViewModel.getOccCart(true, "")
+
+        // Then
+        assertEquals(paymentProfile, orderSummaryPageViewModel.getPaymentProfile())
     }
 }

@@ -403,7 +403,7 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
                 var messageError: String? = null
                 var statusSuccess: Boolean
                 try {
-                    val response = JsonParser.parseString(stringResponse).asJsonObject
+                    val response = JsonParser().parse(stringResponse).asJsonObject
                     val statusCode = response.getAsJsonObject(EditAddressUseCase.RESPONSE_DATA)
                             .get(EditAddressUseCase.RESPONSE_IS_SUCCESS).asInt
                     statusSuccess = statusCode == 1

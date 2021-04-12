@@ -332,7 +332,6 @@ class GetOccCartUseCase @Inject constructor(private val graphqlRepository: Graph
           gateway_name
           image
           description
-          url
           fee
           minimum_amount
           maximum_amount
