@@ -3,7 +3,6 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="@color/transparent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <View
@@ -55,7 +54,7 @@
         android:id="@+id/shopName"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:textColor="@color/default_black_text"
+        android:textColor="@color/Unify_N700_96"
         android:ellipsize="end"
         android:maxLines="1"
         app:layout_constraintTop_toTopOf="@id/shopInfoView"
@@ -80,7 +79,7 @@
         android:id="@+id/dot"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
-        android:textColor="@color/setting_grey_text"
+        android:textColor="@color/Unify_N700_68"
         android:gravity="center_vertical"
         android:text="@string/dot_string"
         app:typographyType="body_2"
@@ -93,7 +92,7 @@
         android:id="@+id/shopFollowers"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
-        android:textColor="@color/setting_grey_text"
+        android:textColor="@color/Unify_N700_68"
         android:gravity="center_vertical"
         app:typographyType="body_3"
         app:typographyWeight="reguler"
