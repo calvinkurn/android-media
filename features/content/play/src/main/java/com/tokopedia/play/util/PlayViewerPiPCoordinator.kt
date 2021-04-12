@@ -10,21 +10,27 @@ import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.getScreenWidth
 import com.tokopedia.play.view.fragment.PlayVideoFragment
 import com.tokopedia.play.view.pip.PlayViewerPiPView
+import com.tokopedia.play.view.type.PiPMode
 import com.tokopedia.play.view.type.VideoOrientation
+import com.tokopedia.play.view.uimodel.OpenApplinkUiModel
 import com.tokopedia.play.view.uimodel.PiPInfoUiModel
+import com.tokopedia.play_common.player.PlayVideoWrapper
 
 /**
  * Created by jegul on 01/12/20
  */
 class PlayViewerPiPCoordinator(
         context: Context,
+        videoPlayer: PlayVideoWrapper,
         videoOrientation: VideoOrientation,
-        pipInfoUiModel: PiPInfoUiModel,
+        private val pipInfoUiModel: PiPInfoUiModel,
         private val pipAdapter: FloatingWindowAdapter,
         private val listener: Listener
 ) {
 
     private val floatingView: FloatingWindowView
+
+    val view: PlayViewerPiPView
 
     init {
         val scaleFactor =
@@ -39,7 +45,8 @@ class PlayViewerPiPCoordinator(
             screenWidth to screenHeight
         }
 
-        val view = PlayViewerPiPView(context.applicationContext).also {
+        view = PlayViewerPiPView(context.applicationContext).also {
+            it.setPlayer(videoPlayer)
             it.setPiPInfo(pipInfoUiModel)
         }
 
@@ -82,16 +89,21 @@ class PlayViewerPiPCoordinator(
         pipAdapter.addView(
                 floatingView = floatingView,
                 overwrite = true,
-                onSuccess = { listener.onSucceededEnterPiPMode(floatingView.view as PlayViewerPiPView) },
+                onSuccess = {
+                    listener.onSucceededEnterPiPMode(floatingView.view as PlayViewerPiPView)
+                    if (pipInfoUiModel.pipMode is PiPMode.BrowsingOtherPage) listener.onShouldOpenApplink(pipInfoUiModel.pipMode.applinkModel)
+                },
                 onFailure = listener::onFailedEnterPiPMode,
-                onShouldRequestPermission = listener::onShouldRequestPermission
+                onShouldRequestPermission = { listener.onShouldRequestPermission(pipMode = pipInfoUiModel.pipMode, requestPermissionFlow = it) }
         )
     }
 
     interface Listener {
 
-        fun onShouldRequestPermission(requestPermissionFlow: FloatingWindowPermissionManager.RequestPermissionFlow)
+        fun onShouldRequestPermission(pipMode: PiPMode, requestPermissionFlow: FloatingWindowPermissionManager.RequestPermissionFlow)
         fun onFailedEnterPiPMode(error: FloatingWindowException)
         fun onSucceededEnterPiPMode(view: PlayViewerPiPView)
+
+        fun onShouldOpenApplink(applinkModel: OpenApplinkUiModel)
     }
 }

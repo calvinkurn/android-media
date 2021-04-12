@@ -2,8 +2,8 @@ package com.tokopedia.topads.dashboard.view.adapter.autoads
 
 import android.view.View
 import com.tokopedia.topads.dashboard.view.adapter.autoads.viewholder.AutoAdsItemsViewHolder
-import com.tokopedia.topads.dashboard.view.adapter.autoads.viewmodel.AutoAdsItemsEmptyViewModel
-import com.tokopedia.topads.dashboard.view.adapter.autoads.viewmodel.AutoAdsItemsItemViewModel
+import com.tokopedia.topads.dashboard.view.adapter.autoads.viewmodel.AutoAdsItemsEmptyModel
+import com.tokopedia.topads.dashboard.view.adapter.autoads.viewmodel.AutoAdsItemsItemModel
 
 /**
  * Created by Pika on 2/6/20.
@@ -11,9 +11,9 @@ import com.tokopedia.topads.dashboard.view.adapter.autoads.viewmodel.AutoAdsItem
 
 interface AutoAdsItemsAdapterTypeFactory {
 
-    fun type(model: AutoAdsItemsEmptyViewModel): Int
+    fun type(model: AutoAdsItemsEmptyModel): Int
 
-    fun type(model: AutoAdsItemsItemViewModel): Int
+    fun type(model: AutoAdsItemsItemModel): Int
 
     fun holder(type: Int, view: View): AutoAdsItemsViewHolder<*>
 

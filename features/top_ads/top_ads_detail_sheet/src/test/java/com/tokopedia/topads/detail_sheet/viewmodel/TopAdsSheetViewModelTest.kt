@@ -110,33 +110,18 @@ class TopAdsSheetViewModelTest {
 
     @Test
     fun testSetProductAction() {
-        val data = ProductActionResponse()
-        every {
-            topAdsProductActionUseCase.executeQuerySafeMode(captureLambda(), any())
-        } answers {
-            val onSuccess = lambda<(ProductActionResponse) -> Unit>()
-            onSuccess.invoke(data)
-        }
         viewModel.setProductAction({}, "123", adIds, resources, "filter")
-
         verify {
-            topAdsProductActionUseCase.executeQuerySafeMode(any(), any())
+            topAdsProductActionUseCase.execute(any(), any())
         }
     }
 
     @Test
     fun `test on error testSetProductAction`() {
-        val exception = Exception("my excep")
-        every {
-            topAdsProductActionUseCase.executeQuerySafeMode(any(), captureLambda())
-        } answers {
-            val onError = lambda<(Exception) -> Unit>()
-            onError.invoke(exception)
-        }
         viewModel.setProductAction({}, "123", adIds, resources, "filter")
 
         verify {
-            topAdsProductActionUseCase.executeQuerySafeMode(any(), any())
+            topAdsProductActionUseCase.execute(any(), any())
         }
     }
 
@@ -199,7 +184,7 @@ class TopAdsSheetViewModelTest {
         verify { topAdsGetGroupProductDataUseCase.unsubscribe() }
         verify { topAdsGetProductStatisticsUseCase.cancelJobs() }
         verify { topAdsGetGroupIdUseCase.cancelJobs() }
-        verify { topAdsProductActionUseCase.cancelJobs() }
+        verify { topAdsProductActionUseCase.unsubscribe() }
         verify { topAdsGetAutoAdsStatusUseCase.cancelJobs() }
     }
 }

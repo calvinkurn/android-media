@@ -12,7 +12,7 @@ import com.tokopedia.unifycomponents.ChipsUnify
 
 class ProductManageFilterTab(
     private val sortFilterTab: SortFilter,
-    private val onClickMoreFilter: (FilterTabUiModel) -> Unit,
+    private val onClickMoreFilter: () -> Unit,
     private val onClickFilterTab: (FilterTabUiModel) -> Unit
 ) {
 
@@ -29,7 +29,7 @@ class ProductManageFilterTab(
     fun show(data: GetFilterTabResult) {
         val tabs = data.tabs
         updateTabs(tabs)
-        setOnClickMoreFilter(tabs)
+        setOnClickMoreFilter()
         changeTabSortFilterText()
     }
 
@@ -37,7 +37,7 @@ class ProductManageFilterTab(
         val tabs = data.tabs
         // keep index and prev filter of selected tab
         var selectedTabIndex = -1
-        sortFilterTab.chipItems.forEachIndexed { i, chip ->
+        sortFilterTab.chipItems?.forEachIndexed { i, chip ->
             if (chip.type == ChipsUnify.TYPE_SELECTED) {
                 selectedTabIndex = i
                 return@forEachIndexed
@@ -48,14 +48,14 @@ class ProductManageFilterTab(
 
         // add or remove the tabs
         updateTabs(tabs)
-        val currentChipsCount = sortFilterTab.chipItems.count() - 1
+        val currentChipsCount = sortFilterTab.chipItems?.count() ?: 0 - 1
         if(selectedTabIndex > currentChipsCount) {
             //if selectedTab more than current chips
             // set chip to be the last of chips
             selectedTabIndex = currentChipsCount
         }
 
-        sortFilterTab.chipItems.forEachIndexed { i, chip ->
+        sortFilterTab.chipItems?.forEachIndexed { i, chip ->
             if(i == selectedTabIndex) {
                 // set initial counter with count of filter active
                 sortFilterTab.indicatorCounter = activeFilterCount
@@ -78,7 +78,7 @@ class ProductManageFilterTab(
             }
         }
         changeTabSortFilterText()
-
+        setOnClickMoreFilter()
     }
 
     fun getSelectedFilter(): ProductStatus? {
@@ -90,8 +90,8 @@ class ProductManageFilterTab(
 
         sortFilterTab.indicatorCounter = if (isFilterActive()) {
             val selectedTabCount = sortFilterTab.chipItems
-                    .filter { it.type == ChipsUnify.TYPE_SELECTED }
-                    .count()
+                    ?.filter { it.type == ChipsUnify.TYPE_SELECTED }
+                    ?.count() ?: 0
 
             activeFilterCount + selectedTabCount
         } else {
@@ -145,14 +145,9 @@ class ProductManageFilterTab(
         onClickFilterTab(tab)
     }
 
-    private fun setOnClickMoreFilter(tabs: List<FilterTabUiModel>) {
-        tabs.firstOrNull()?.let { clickMoreFilterTab(it) }
-    }
-
-    private fun clickMoreFilterTab(tab: FilterTabUiModel) {
-        val moreFilterTab = sortFilterTab.sortFilterPrefix
-        moreFilterTab.setOnClickListener {
-            onClickMoreFilter(tab)
+    private fun setOnClickMoreFilter() {
+        sortFilterTab.sortFilterPrefix.setOnClickListener {
+            onClickMoreFilter()
         }
     }
 
@@ -168,6 +163,6 @@ class ProductManageFilterTab(
     }
 
     private fun changeTabSortFilterText() {
-        sortFilterTab.textView.text = context.getString(R.string.product_manage_filter)
+        sortFilterTab.textView?.text = context.getString(R.string.product_manage_filter)
     }
 }

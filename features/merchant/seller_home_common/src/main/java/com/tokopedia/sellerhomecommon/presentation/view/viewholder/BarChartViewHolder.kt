@@ -122,7 +122,7 @@ class BarChartViewHolder(
     }
 
     private fun getBarChartConfig(element: BarChartWidgetUiModel): BarChartConfigModel {
-        val labelTextColor = itemView.context.getResColor(com.tokopedia.unifyprinciples.R.color.Neutral_N700_96)
+        val labelTextColor = itemView.context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_96)
         val data = getBarChartData(element.data?.chartData)
         return BarChartConfig.create {
             xAnimationDuration { 200 }
@@ -155,7 +155,7 @@ class BarChartViewHolder(
     private fun getBarChartTooltip(): ChartTooltip {
         return ChartTooltip(itemView.context, R.layout.shc_partial_chart_tooltip)
                 .setOnDisplayContent { view, data, x, y ->
-                    data?.let {
+                    (data as? BarChartMetricValue)?.let {
                         view.tvShcTooltipTitle.text = it.xLabel
                         view.tvShcTooltipValue.text = it.yLabel
                     }

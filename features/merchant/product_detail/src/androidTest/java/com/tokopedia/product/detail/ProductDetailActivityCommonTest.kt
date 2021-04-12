@@ -3,9 +3,10 @@ package com.tokopedia.product.detail
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
-import com.tokopedia.product.detail.view.fragment.DynamicProductDetailFragmentDiffutil
+import com.tokopedia.product.detail.view.fragment.DynamicProductDetailFragment
 
 
 /**
@@ -45,15 +46,20 @@ class ProductDetailActivityCommonTest : BaseSimpleActivity() {
         return PRODUCT_DETAIL_TAG
     }
 
-    override fun getNewFragment(): Fragment? = DynamicProductDetailFragmentDiffutil.newInstance(productId, "", "",
+    override fun getNewFragment(): Fragment? = DynamicProductDetailFragment.newInstance(productId, "", "",
             "", false,
             isAffiliate = false, trackerAttribution = "",
             trackerListName = "", affiliateString = "", deeplinkUrl = "", layoutId = "")
 
-    fun getLastPositionIndex(): Int {
-        val fragment = supportFragmentManager.findFragmentByTag(PRODUCT_DETAIL_TAG) as DynamicProductDetailFragmentDiffutil
+    fun getPositionViewHolderByName(name: String): Int {
+        val fragment = supportFragmentManager.findFragmentByTag(PRODUCT_DETAIL_TAG) as DynamicProductDetailFragment
         return fragment.productAdapter?.currentList?.indexOfFirst {
-            it.name() == "pdp_5"
+            it.name() == name
         } ?: 0
+    }
+
+    fun getAdapterTotalSize(): Int {
+        val fragment = supportFragmentManager.findFragmentByTag(PRODUCT_DETAIL_TAG) as DynamicProductDetailFragment
+        return fragment.productAdapter?.currentList?.size ?: 0
     }
 }

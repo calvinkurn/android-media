@@ -22,6 +22,7 @@ import com.tokopedia.seller.menu.common.analytics.SettingTrackingListener
 import com.tokopedia.seller.menu.common.view.typefactory.OtherMenuAdapterTypeFactory
 import com.tokopedia.seller.menu.common.view.uimodel.SellerFeatureUiModel
 import com.tokopedia.seller.menu.common.view.uimodel.TickerShopScoreUiModel
+import com.tokopedia.seller.menu.common.view.uimodel.SellerMenuItemUiModel
 import com.tokopedia.seller.menu.common.view.uimodel.base.SettingResponseState
 import com.tokopedia.seller.menu.common.view.uimodel.base.SettingResponseState.SettingError
 import com.tokopedia.seller.menu.common.view.uimodel.base.SettingResponseState.SettingLoading
@@ -32,6 +33,7 @@ import com.tokopedia.seller.menu.common.view.viewholder.ShopInfoErrorViewHolder
 import com.tokopedia.seller.menu.common.view.viewholder.ShopInfoViewHolder
 import com.tokopedia.seller.menu.di.component.DaggerSellerMenuComponent
 import com.tokopedia.seller.menu.presentation.adapter.SellerMenuAdapter
+import com.tokopedia.seller.menu.presentation.util.AdminPermissionMapper
 import com.tokopedia.seller.menu.presentation.util.SellerMenuList
 import com.tokopedia.seller.menu.presentation.viewmodel.SellerMenuViewModel
 import com.tokopedia.seller_migration_common.constants.SellerMigrationConstants
@@ -60,6 +62,8 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
 
     @Inject
     lateinit var sellerMenuTracker: SellerMenuTracker
+    @Inject
+    lateinit var adminPermissionMapper: AdminPermissionMapper
 
     private var canShowErrorToaster = true
 
@@ -198,6 +202,9 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
                 is Success -> {
                     val order = it.data.order
                     adapter.showOrderSection(order)
+                    adapter.showNotificationCounter(notificationCount = it.data.resolutionCount, matcher = { item ->
+                        item is SellerMenuItemUiModel && item.title == getString(com.tokopedia.seller.menu.common.R.string.setting_menu_complaint)
+                    })
                 }
             }
             swipeRefreshLayout.isRefreshing = false
@@ -238,7 +245,7 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
 
     private fun setupMenuList() {
         context?.let { context ->
-            val menuList = SellerMenuList.create(context, userSession)
+            val menuList = SellerMenuList.create(context, userSession, adminPermissionMapper)
 
             with(listMenu) {
                 adapter = this@SellerMenuFragment.adapter

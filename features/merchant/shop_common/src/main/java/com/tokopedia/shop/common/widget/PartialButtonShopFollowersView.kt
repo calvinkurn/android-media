@@ -8,8 +8,11 @@ import android.view.View
 import android.widget.ImageView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.shop.common.R
+import com.tokopedia.shop.common.util.loadLeftDrawable
+import com.tokopedia.shop.common.util.removeDrawable
 import com.tokopedia.shop.common.util.RoundedShadowUtill
 import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.layout_button_npl_follow.view.*
 
@@ -60,7 +63,7 @@ class PartialButtonShopFollowersView private constructor(val view: View, private
         }
     }
 
-    fun renderView(title: String, desc: String, alreadyFollowShop: Boolean = true) = with(view) {
+    fun renderView(title: String, desc: String, alreadyFollowShop: Boolean = true, buttonLabel: String? = null, voucherIconUrl: String? = null) = with(view) {
         if (alreadyFollowShop) {
             setupVisibility = false
             return@with
@@ -69,7 +72,7 @@ class PartialButtonShopFollowersView private constructor(val view: View, private
         shop_followers_title.text = title
         shop_followers_desc.text = desc
 
-        setupButtonFollowers()
+        setupButtonFollowers(buttonLabel, voucherIconUrl)
         setOnClickListener {}
         setupRoundedTopShadow()
 
@@ -110,14 +113,33 @@ class PartialButtonShopFollowersView private constructor(val view: View, private
         })
     }
 
-    private fun setupButtonFollowers() {
+    private fun setupButtonFollowers(buttonLabel: String?, voucherIconUrl: String?) {
+        voucherIconUrl?.run {
+            followersBtn?.layoutParams?.width = 110.toPx()
+            followersBtn?.loadLeftDrawable(
+                    context = view.context,
+                    url = voucherIconUrl,
+                    convertIntoSize = 20.toPx()
+            )
+        }
         followersBtn?.run {
+            if (!buttonLabel.isNullOrBlank()) {
+                text = buttonLabel
+            }
             setOnClickListener {
                 if (!isLoading) {
-                    followersBtn?.isLoading = true
                     listener.onButtonFollowNplClick()
                 }
+                voucherIconUrl?.run {
+                    removeCompoundDrawableFollowButton()
+                }
             }
+        }
+    }
+
+    private fun removeCompoundDrawableFollowButton() {
+        if (!followersBtn?.compoundDrawables.isNullOrEmpty()) {
+            followersBtn?.removeDrawable()
         }
     }
 

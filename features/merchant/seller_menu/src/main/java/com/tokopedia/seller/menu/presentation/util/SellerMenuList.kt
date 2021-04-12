@@ -1,19 +1,19 @@
 package com.tokopedia.seller.menu.presentation.util
 
 import android.content.Context
-import android.content.Intent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.seller.menu.common.R
 import com.tokopedia.seller.menu.common.analytics.SettingTrackingConstant
+import com.tokopedia.seller.menu.common.constant.AdminFeature
 import com.tokopedia.seller.menu.common.constant.MenuItemType
 import com.tokopedia.seller.menu.common.constant.SellerBaseUrl
+import com.tokopedia.seller.menu.presentation.activity.AdminRoleAuthorizeActivity
 import com.tokopedia.seller.menu.common.view.uimodel.*
 import com.tokopedia.seller.menu.common.view.uimodel.SectionTitleUiModel.SectionTitleType.*
 import com.tokopedia.seller.menu.common.view.uimodel.base.DividerType
 import com.tokopedia.seller.menu.common.view.uimodel.base.SettingUiModel
 import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.ShopInfoLoadingUiModel
-import com.tokopedia.seller.menu.presentation.activity.SellerSettingsActivity
 import com.tokopedia.seller.menu.presentation.uimodel.OrderSectionTitleUiModel
 import com.tokopedia.seller.menu.presentation.uimodel.ProductSectionTitleUiModel
 import com.tokopedia.user.session.UserSessionInterface
@@ -21,20 +21,21 @@ import com.tokopedia.user.session.UserSessionInterface
 object SellerMenuList {
 
     private const val APPLINK_FORMAT = "%s?url=%s%s"
-    private const val GO_TO_BUYER_REVIEW = "GO_TO_BUYER_REVIEW"
-    private const val GO_TO_MY_PRODUCT = "GO_TO_MY_PRODUCT"
 
-    fun create(context: Context, userSession: UserSessionInterface): List<SettingUiModel> {
+    fun create(context: Context,
+               userSession: UserSessionInterface,
+               mapper: AdminPermissionMapper): List<SettingUiModel> {
+        val isShopOwner = userSession.isShopOwner
         val menuList = mutableListOf<SettingUiModel>()
-        val buyerInfoMenu = createBuyerInfoMenu(context)
-        val helpAndOtherMenu = createOtherInfoMenu(context)
+        val buyerInfoMenu = createBuyerInfoMenu(context, isShopOwner, mapper)
+        val helpAndOtherMenu = createOtherInfoMenu(context, isShopOwner, mapper)
 
         menuList.add(ShopInfoLoadingUiModel)
-        menuList.add(OrderSectionTitleUiModel)
-        menuList.add(ShopOrderUiModel())
+        menuList.add(OrderSectionTitleUiModel(isShopOwner))
+        menuList.add(ShopOrderUiModel(isShopOwner = isShopOwner))
         menuList.add(DividerUiModel(DividerType.THIN_PARTIAL))
-        menuList.add(ProductSectionTitleUiModel)
-        menuList.add(ShopProductUiModel())
+        menuList.add(ProductSectionTitleUiModel(isShopOwner))
+        menuList.add(ShopProductUiModel(isShopOwner = isShopOwner))
         menuList.add(DividerUiModel(DividerType.THIN_PARTIAL))
         menuList.addAll(buyerInfoMenu)
         menuList.addAll(helpAndOtherMenu)
@@ -44,10 +45,8 @@ object SellerMenuList {
         return menuList.toList()
     }
 
-    private fun createBuyerInfoMenu(context: Context): List<SettingUiModel> {
+    private fun createBuyerInfoMenu(context: Context, isShopOwner: Boolean, mapper: AdminPermissionMapper): List<SettingUiModel> {
         val sectionTitle = context.getString(R.string.setting_menu_buyer_info)
-        val resolutionInboxApplink = String.format(APPLINK_FORMAT, ApplinkConst.WEBVIEW,
-            SellerBaseUrl.HOSTNAME, SellerBaseUrl.RESO_INBOX_SELLER)
 
         return listOf(
                 SettingTitleUiModel(sectionTitle, R.dimen.spacing_lvl4),
@@ -56,18 +55,14 @@ object SellerMenuList {
                         R.drawable.ic_star_setting,
                         type = MenuItemType.REVIEW,
                         eventActionSuffix = SettingTrackingConstant.REVIEW) {
-                    val intent = RouteManager.getIntent(context, ApplinkConst.REPUTATION)
-                    intent.putExtra(GO_TO_BUYER_REVIEW, true)
-                    context.startActivity(intent)
+                    checkAccessPermissionIfNotShopOwner(context, isShopOwner, mapper, AdminFeature.REVIEW)
                 },
                 SellerMenuItemUiModel(
                         context.getString(R.string.setting_menu_discussion),
                         R.drawable.ic_setting_discussion,
                         type = MenuItemType.DISCUSSION,
                         eventActionSuffix = SettingTrackingConstant.DISCUSSION) {
-                    val intent = RouteManager.getIntent(context, ApplinkConst.TALK)
-                    intent.putExtra(GO_TO_MY_PRODUCT, true)
-                    context.startActivity(intent)
+                    checkAccessPermissionIfNotShopOwner(context, isShopOwner, mapper, AdminFeature.DISCUSSION)
                 },
                 SellerMenuItemUiModel(
                         context.getString(R.string.setting_menu_complaint),
@@ -75,13 +70,12 @@ object SellerMenuList {
                         null,
                         type = MenuItemType.COMPLAIN,
                         eventActionSuffix = SettingTrackingConstant.COMPLAINT) {
-                    val intent = RouteManager.getIntent(context, resolutionInboxApplink)
-                    context.startActivity(intent)
+                    checkAccessPermissionIfNotShopOwner(context, isShopOwner, mapper, AdminFeature.COMPLAINT)
                 }
         )
     }
 
-    private fun createOtherInfoMenu(context: Context): List<SettingUiModel> {
+    private fun createOtherInfoMenu(context: Context, isShopOwner: Boolean, mapper: AdminPermissionMapper): List<SettingUiModel> {
         val sectionTitle = SectionTitleUiModel(title = R.string.setting_menu_other_info, type = OTHER_SECTION_TITLE)
         val sellerEduApplink = String.format(APPLINK_FORMAT, ApplinkConst.WEBVIEW,
             SellerBaseUrl.SELLER_HOSTNAME, SellerBaseUrl.SELLER_EDU)
@@ -109,8 +103,19 @@ object SellerMenuList {
                         null,
                         type = MenuItemType.SHOP_SETTINGS,
                         eventActionSuffix = SettingTrackingConstant.SETTINGS) {
-                    context.startActivity(Intent(context, SellerSettingsActivity::class.java))
+                    checkAccessPermissionIfNotShopOwner(context, isShopOwner, mapper, AdminFeature.MANAGE_SHOP)
                 }
         )
     }
+
+    private fun checkAccessPermissionIfNotShopOwner(context: Context, isShopOwner: Boolean, mapper: AdminPermissionMapper, @AdminFeature feature: String) {
+        val intent =
+                if (isShopOwner) {
+                    mapper.mapFeatureToDestination(context, feature)
+                } else {
+                    AdminRoleAuthorizeActivity.createIntent(context, feature)
+                }
+        context.startActivity(intent)
+    }
+
 }

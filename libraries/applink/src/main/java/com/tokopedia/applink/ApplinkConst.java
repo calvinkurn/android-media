@@ -43,6 +43,8 @@ public interface ApplinkConst {
     String SHOP_PERFORMANCE = "tokopedia://shop-performance";
     String SHOP_PENALTY = "tokopedia://shop-penalty";
     String SHOP_PENALTY_DETAIL = "tokopedia://shop-penalty-detail";
+    String SHOP_FOLLOWER_LIST = "tokopedia://shop/{shop_id}/follower";
+    String SHOP_SETTINGS_CUSTOMER_APP = "tokopedia://shop/{shop_id}/settings";
 
     String SHOP_SETTINGS_NOTE = "tokopedia://setting/shop/note";
     String SHOP_SETTINGS_INFO = "tokopedia://setting/shop/info";
@@ -67,6 +69,7 @@ public interface ApplinkConst {
     String PRODUCT_CREATE_REVIEW = "tokopedia://product-review/create/";
     String PRODUCT_REPUTATION = "tokopedia://product/{product_id}/review";
     String SELLER_REVIEW = "tokopedia://seller-review-detail";
+    String REVIEW_REMINDER = "tokopedia://review-reminder";
     String WEBVIEW = "tokopedia://webview";
     String WEBVIEW_DOWNLOAD = "tokopedia://webviewdownload";
     String WEBVIEW_DOWNLOAD_HTML = "tokopedia://webview-download-html";
@@ -114,8 +117,28 @@ public interface ApplinkConst {
     String TOP_CHAT = "tokopedia://topchat";
     String TOPCHAT_IDLESS = "tokopedia://topchat";
     String TOPCHAT_OLD = "tokopedia://topchatold";
+    /**
+     * Go to chat room and chat with seller use one of the pattern below:
+     * - {@value TOPCHAT_ROOM_ASKSELLER} - use shopId only
+     * - {@value TOPCHAT_ROOM_ASKSELLER_WITH_MSG} - use shopId and provide initial msg in editText
+     * - {@value TOPCHAT_ASKSELLER} - use shopId and several parameters
+     *
+     */
+    String TOPCHAT_ROOM_ASKSELLER = "tokopedia://topchat/askseller/{toShopId}";
+    String TOPCHAT_ROOM_ASKSELLER_WITH_MSG = "tokopedia://topchat/askseller/{toShopId}" +
+            "?customMessage={customMessage}";
     String TOPCHAT_ASKSELLER = "tokopedia://topchat/askseller/{toShopId}?customMessage" +
             "={customMessage}&source={source}&opponent_name={opponent_name}&avatar={avatar}";
+    /**
+     * Go to chat room and chat with buyer use one of the pattern below:
+     * - {@value TOPCHAT_ROOM_ASKBUYER} - use userId only
+     * - {@value TOPCHAT_ROOM_ASKBUYER_WITH_MSG} - use userId and provide initial msg in editText
+     * - {@value TOPCHAT_ASKBUYER} - use userId and several parameters
+     *
+     */
+    String TOPCHAT_ROOM_ASKBUYER = "tokopedia://topchat/askbuyer/{toUserId}";
+    String TOPCHAT_ROOM_ASKBUYER_WITH_MSG = "tokopedia://topchat/askbuyer/{toUserId}" +
+            "?customMessage={customMessage}";
     String TOPCHAT_ASKBUYER = "tokopedia://topchat/askbuyer/{toUserId}?customMessage" +
             "={customMessage}&source={source}&opponent_name={opponent_name}&avatar={avatar}";
     String CHATBOT = "tokopedia://chatbot/{message_id}";
@@ -144,6 +167,7 @@ public interface ApplinkConst {
     String SHOP_SCORE_DETAIL = "tokopedia://shop-score-detail";
 
     String EVENTS = "tokopedia://events";
+    String EVENTS_CATEGORY = "tokopedia://events/category";
     String EVENTS_ACTIVITIES = "tokopedia://events/activities";
     String EVENTS_DETAILS = "tokopedia://events/{event}";
     String REFERRAL_WELCOME = "tokopedia://referral/{code}/{owner}";
@@ -169,6 +193,7 @@ public interface ApplinkConst {
     String MARKETPLACE_ORDER_SUB = "tokopedia://order/marketplace/filter";
     String MARKETPLACE_ORDER_FILTER = "tokopedia://order/marketplace/filter/{filter_id}";
     String TRAVEL_AND_ENTERTAINMENT_ORDER = "tokopedia://travelent/order";
+    String SNAPSHOT_ORDER = "tokopedia://snapshot/order";
 
     String MARKETPLACE_WAITING_CONFIRMATION = "tokopedia://order/marketplace/filter/5";
     String MARKETPLACE_SENT = "tokopedia://order/marketplace/filter/13";
@@ -201,6 +226,7 @@ public interface ApplinkConst {
     String SELLER_CENTER = "tokopedia://seller/seller-center";
     String SELLER_SHIPPING_EDITOR = "tokopedia://seller/setting/shipping-editor";
     String SELLER_COD_ACTIVATION = "tokopedia://seller/setting/cod-activation";
+    String SELLER_WAREHOUSE_DATA = "tokopedia://seller/setting/shop-address";
     String CONTACT_US = "tokopedia://contact-us";
     String CONTACT_US_NATIVE = "tokopedia://contactus";
 
@@ -229,6 +255,7 @@ public interface ApplinkConst {
     String PURCHASE_SHIPPED = "tokopedia://buyer/shipped";
     String PURCHASE_DELIVERED = "tokopedia://buyer/delivered";
     String PURCHASE_HISTORY = "tokopedia://buyer/history";
+    String PURCHASE_ONGOING = "tokopedia://buyer/ongoing-order";
 
     String SELLER_PURCHASE_READY_TO_SHIP = "tokopedia://seller/ready-to-ship";
     String SELLER_PURCHASE_SHIPPED = "tokopedia://seller/shipped";
@@ -298,6 +325,7 @@ public interface ApplinkConst {
     String HOME_CREDIT_KTP_WITH_TYPE = "tokopedia://fintech/home-credit/ktp/{type}";
     String HOME_CREDIT_SELFIE_WITHOUT_TYPE = "tokopedia://fintech/home-credit/selfie";
     String HOME_CREDIT_SELFIE_WITH_TYPE = "tokopedia://fintech/home-credit/selfie/{type}";
+    String PAYLATER = "tokopedia://fintech/paylater";
     String INBOX = "tokopedia://inbox";
 
     String PLAY_WEBVIEW = "tokopedia://play/webview?url={url}&titlebar={has_titlebar}";
@@ -422,6 +450,8 @@ public interface ApplinkConst {
         String SHOP_FEED = "sellerapp://shop/{shop_id}/feed";
         String CONTENT_CREATE_POST = "sellerapp://content/create_post";
         String SELLER_SHIPPING_EDITOR = "sellerapp://setting/shipping-editor";
+        String STATISTIC_DASHBOARD = "sellerapp://gold-merchant-statistic-dashboard";
+        String SHOP_SETTINGS_SELLER_APP = "sellerapp://shop/{shop_id}/settings";
     }
 
     interface Query {
@@ -538,7 +568,6 @@ public interface ApplinkConst {
         String EXTRA_SHOP_TYPE = "shop_type";
         String EXTRA_SHOP_NAME = "shop_name";
         String EXTRA_OCS = "ocs";
-        String EXTRA_TRADE_IN_PARAMS = "trade_in_params";
         String EXTRA_NEED_REFRESH = "extra_need_refresh";
         String TRACKER_ATTRIBUTION = "tracker_attribution";
         String TRACKER_LIST_NAME = "tracker_list_name";

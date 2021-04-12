@@ -92,12 +92,11 @@ fun getReviewStar(ratingCount: Int): Int {
     }
 }
 
-fun String.toReviewDescriptionFormatted(maxChar: Int): Spanned {
+fun String.toReviewDescriptionFormatted(maxChar: Int, context: Context): CharSequence? {
     return if (MethodChecker.fromHtml(this).toString().length > maxChar) {
         val subDescription = MethodChecker.fromHtml(this).toString().substring(0, maxChar)
-        MethodChecker
-                .fromHtml(subDescription.replace("(\r\n|\n)".toRegex(), "<br />") + "... "
-                        + "<font color='#42b549'>Selengkapnya</font>")
+        HtmlLinkHelper(context, subDescription.replace("(\r\n|\n)".toRegex(), "<br />") + "... "
+                + context.getString(R.string.review_expand)).spannedString
     } else {
         MethodChecker.fromHtml(this)
     }

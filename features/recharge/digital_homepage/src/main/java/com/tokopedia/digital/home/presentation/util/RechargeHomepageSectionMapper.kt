@@ -2,6 +2,7 @@ package com.tokopedia.digital.home.presentation.util
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.digital.home.model.*
+import com.tokopedia.digital.home.old.model.DigitalHomePageSearchCategoryModel
 import com.tokopedia.digital.home.presentation.viewmodel.RechargeHomepageViewModel
 import com.tokopedia.home_component.customview.DynamicChannelHeaderView
 import com.tokopedia.home_component.customview.HeaderListener
@@ -12,6 +13,9 @@ import com.tokopedia.home_component.util.ServerTimeOffsetUtil
 import com.tokopedia.home_component.visitable.DynamicLegoBannerDataModel
 import com.tokopedia.home_component.visitable.ReminderWidgetModel
 import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifycomponents.ticker.TickerData
+import com.tokopedia.unifycomponents.ticker.TickerType
 import java.util.*
 
 object RechargeHomepageSectionMapper {
@@ -22,7 +26,7 @@ object RechargeHomepageSectionMapper {
         // Remove empty sections
         var sections = oldData.toMutableList()
         val updatedSections = newData.sections.filter { it.items.isNotEmpty() }
-        val requestIDs = newData.requestIDs
+        val requestIDs = newData.requestIDs.map { it.toString() }
         when (updatedSections.size) {
             0 -> {
                 // Remove sections
@@ -55,12 +59,20 @@ object RechargeHomepageSectionMapper {
     }
 
     fun mapInitialHomepageSections(sections: List<RechargeHomepageSectionSkeleton.Item>): List<RechargeHomepageSections.Section> {
-        return sections.map { RechargeHomepageSections.Section(it.id, template = it.template) }
+        val sectionsList = mutableListOf<RechargeHomepageSections.Section>()
+        for (section in sections){
+            sectionsList.add(RechargeHomepageSections.Section(section.id, template = section.template))
+            if(section.template.equals(RechargeHomepageViewModel.SECTION_TOP_BANNER) ||
+                    section.template.equals(RechargeHomepageViewModel.SECTION_TOP_BANNER_EMPTY)){
+                sectionsList.add(RechargeHomepageSections.Section(RechargeHomepageViewModel.ID_TICKER, template = RechargeHomepageViewModel.SECTION_TICKER))
+            }
+        }
+        return sectionsList
     }
 
-    fun mapHomepageSections(sections: List<RechargeHomepageSections.Section>): List<Visitable<*>> {
+    fun mapHomepageSections(sections: List<RechargeHomepageSections.Section>, tickerList: RechargeTickerHomepageModel): List<Visitable<*>> {
         return sections.mapNotNull {
-            val id = it.id.toString()
+            val id = it.id
             with(RechargeHomepageViewModel.Companion) {
                 when (it.template) {
                     SECTION_TOP_BANNER -> RechargeHomepageBannerModel(it)
@@ -79,6 +91,10 @@ object RechargeHomepageSectionMapper {
                     SECTION_DUAL_ICONS -> RechargeHomepageTrustMarkModel(it)
                     SECTION_SINGLE_BANNER -> RechargeHomepageSingleBannerModel(it, mapSectionToChannel(it))
                     SECTION_COUNTDOWN_SINGLE_BANNER -> {
+                        /**
+                         * Count down widget is always from cloud because
+                         * its countdown time is based on server time
+                         */
                         if (!isExpired(it)) {
                             RechargeHomepageSingleBannerModel(it, mapSectionToChannel(it), true)
                         } else null
@@ -94,11 +110,21 @@ object RechargeHomepageSectionMapper {
                     }
                     SECTION_PRODUCT_CARD_ROW -> RechargeHomepageProductCardsModel(it)
                     SECTION_COUNTDOWN_PRODUCT_BANNER -> {
+                        /**
+                         * Count down widget is always from cloud because
+                         * its countdown time is based on server time
+                         */
                         if (!isExpired(it)) {
                             RechargeHomepageProductBannerModel(it, mapSectionToChannel(it), true)
                         } else null
                     }
                     SECTION_PRODUCT_CARD_CUSTOM_BANNER -> RechargeProductCardCustomBannerModel(it)
+                    SECTION_MINI_CAROUSELL -> RechargeHomepageCarousellModel(it)
+                    SECTION_TICKER -> {
+                        if(!tickerList.rechargeTickers.isEmpty()){
+                            tickerList
+                        } else null
+                    }
                     else -> null
                 }
             }
@@ -178,6 +204,39 @@ object RechargeHomepageSectionMapper {
             )
         }
         return null
+    }
+
+    fun mapItemsToSearchCategoryModels(sections: RechargeHomepageSections): List<DigitalHomePageSearchCategoryModel> {
+        val searchCategoryModels = mutableListOf<DigitalHomePageSearchCategoryModel>()
+        sections.sections.forEach {
+            searchCategoryModels.addAll(it.items.map{ item ->
+                DigitalHomePageSearchCategoryModel(
+                        item.id.toString(),
+                        item.title,
+                        item.title,
+                        item.applink,
+                        item.mediaUrl
+                )
+            })
+        }
+        return searchCategoryModels
+    }
+
+    fun mapRechargeTickertoTickerData(list: List<RechargeTicker>): List<TickerData>{
+        return list.map {
+            TickerData(
+                    it.name,
+                    it.content,
+                    when(it.type){
+                        TickerRechargeEnum.INFO.type -> Ticker.TYPE_INFORMATION
+                        TickerRechargeEnum.SUCCESS.type -> Ticker.TYPE_ANNOUNCEMENT
+                        TickerRechargeEnum.DANGER.type -> Ticker.TYPE_ERROR
+                        TickerRechargeEnum.WARNING.type -> Ticker.TYPE_WARNING
+                        else -> Ticker.TYPE_INFORMATION
+                    },
+                    true
+            )
+        }
     }
 
     private fun isExpired(section: RechargeHomepageSections.Section): Boolean {

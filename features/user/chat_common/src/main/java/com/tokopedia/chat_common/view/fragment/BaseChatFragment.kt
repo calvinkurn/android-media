@@ -83,7 +83,7 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
     }
 
     private fun prepareView(view: View) {
-        getRecyclerView(view).setHasFixedSize(true)
+        getRecyclerView(view)?.setHasFixedSize(true)
     }
 
     private fun setupViewData(arguments: Bundle?, savedInstanceState: Bundle?) {
@@ -265,8 +265,6 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
     override fun onClickAttachVoucher(voucherMenu: VoucherMenu) {}
 
     override fun onClickBannedProduct(viewModel: BannedProductAttachmentViewModel) {}
-
-    override fun onClickOccFromProductAttachment(product: ProductAttachmentViewModel, position: Int) { }
 
     override fun trackSeenProduct(element: ProductAttachmentViewModel) {}
 

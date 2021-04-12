@@ -18,22 +18,22 @@ class CampaignStockAdapterTypeFactory(private val onAccordionStateChange: (Int) 
 
     override fun type(model: TotalStockEditorUiModel): Int = TotalStockEditorViewHolder.LAYOUT_RES
 
-    override fun type(model: StockTickerInfoUiModel): Int = StockTickerInfoViewHolder.LAYOUT_RES
-
     override fun type(model: ReservedEventInfoUiModel): Int = ReservedEventInfoViewHolder.LAYOUT_RES
 
     override fun type(model: SellableStockProductUIModel): Int = SellableStockProductViewHolder.LAYOUT_RES
 
     override fun type(model: ReservedStockRedirectionUiModel): Int = ReservedStockRedirectionViewHolder.LAYOUT_RES
 
+    override fun type(model: CampaignStockTickerUiModel): Int = CampaignStockTickerViewHolder.LAYOUT
+
     override fun createViewHolder(parent: View?, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when(type) {
             ActiveProductSwitchViewHolder.LAYOUT_RES -> ActiveProductSwitchViewHolder(parent, onActiveStockChanged)
             TotalStockEditorViewHolder.LAYOUT_RES -> TotalStockEditorViewHolder(parent, onTotalStockChanged)
             SellableStockProductViewHolder.LAYOUT_RES -> SellableStockProductViewHolder(parent, onVariantStockChanged, onVariantStatusChanged)
-            StockTickerInfoViewHolder.LAYOUT_RES -> StockTickerInfoViewHolder(parent)
             ReservedEventInfoViewHolder.LAYOUT_RES -> ReservedEventInfoViewHolder(parent, onAccordionStateChange)
             ReservedStockRedirectionViewHolder.LAYOUT_RES -> ReservedStockRedirectionViewHolder(parent)
+            CampaignStockTickerViewHolder.LAYOUT -> CampaignStockTickerViewHolder(parent)
             else -> super.createViewHolder(parent, type)
         }
     }

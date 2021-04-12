@@ -53,7 +53,8 @@ private fun getLabelCampaignHeight(context: Context, hasLabelCampaign: Boolean):
 
 private fun getLabelBestSellerHeight(context: Context, hasLabelBestSeller: Boolean): Int {
     return if (hasLabelBestSeller)
-        context.resources.getDimensionPixelSize(R.dimen.product_card_label_best_seller_height)
+        context.resources.getDimensionPixelSize(R.dimen.product_card_label_best_seller_height) +
+                context.resources.getDimensionPixelSize(R.dimen.product_card_label_best_seller_margintop)
     else 0
 }
 
@@ -116,9 +117,9 @@ private fun ProductCardModel.getContentHeight(context: Context): Int {
     val priceSectionHeight = getPriceSectionHeight(context)
     val shopInfoSectionHeight = getShopInfoSectionHeight(context)
     val credibilitySectionHeight = getCredibilitySectionHeight(context)
-    val salesRatingFloatHeight = getSalesRatingFloatHeight(context)
     val shopRatingSectionHeight = getShopRatingSectionHeight(context)
     val shippingInfoSectionHeight = getShippingInfoSectionHeight(context)
+    val etaHeight = getLabelETA(context)
     val stockBarHeight = getStockBarAndLabelSectionHeight(context)
 
     return gimmickSectionHeight +
@@ -128,9 +129,9 @@ private fun ProductCardModel.getContentHeight(context: Context): Int {
             priceSectionHeight +
             shopInfoSectionHeight +
             credibilitySectionHeight +
-            salesRatingFloatHeight +
             shopRatingSectionHeight +
             shippingInfoSectionHeight +
+            etaHeight +
             stockBarHeight
 }
 
@@ -197,22 +198,31 @@ private fun ProductCardModel.getPriceSectionHeight(context: Context): Int {
 }
 
 private fun ProductCardModel.getShopInfoSectionHeight(context: Context): Int {
+    val labelFulfillment = getLabelFulfillment()
     var shopBadgeMarginTop = 0
     var shopBadgeSize = 0
     var shopLocationMarginTop = 0
     var shopLocationHeight = 0
+    var labelFulfillmentMarginTop = 0
+    var labelFulfillmentHeight = 0
 
     if (isShowShopBadge()) {
         shopBadgeMarginTop = context.resources.getDimensionPixelSize(R.dimen.product_card_shop_badge_margin_top)
         shopBadgeSize = context.resources.getDimensionPixelSize(R.dimen.product_card_shop_badge_size)
     }
 
-    if (shopLocation.isNotEmpty()) {
+    if (shopLocation.isNotEmpty() && labelFulfillment == null) {
         shopLocationMarginTop = context.resources.getDimensionPixelSize(R.dimen.product_card_text_shop_location_margin_top)
         shopLocationHeight = context.resources.getDimensionPixelSize(R.dimen.product_card_text_shop_location_height)
+        return max(shopBadgeMarginTop + shopBadgeSize, shopLocationMarginTop + shopLocationHeight)
     }
 
-    return max(shopBadgeMarginTop + shopBadgeSize, shopLocationMarginTop + shopLocationHeight)
+    if (labelFulfillment != null) {
+        labelFulfillmentMarginTop = context.resources.getDimensionPixelSize(R.dimen.product_card_text_fulfillment_margin_top)
+        labelFulfillmentHeight = context.resources.getDimensionPixelSize(R.dimen.product_card_text_fulfillment_height)
+    }
+
+    return max(shopBadgeMarginTop + shopBadgeSize, labelFulfillmentMarginTop + labelFulfillmentHeight)
 }
 
 private fun ProductCardModel.getCredibilitySectionHeight(context: Context): Int {
@@ -220,6 +230,7 @@ private fun ProductCardModel.getCredibilitySectionHeight(context: Context): Int 
         it.add(getRatingHeight(context))
         it.add(getReviewCountHeight(context))
         it.add(getLabelIntegrityHeight(context))
+        it.add(getSalesRatingFloatHeight(context))
     }
 
     return credibilitySectionHeightList.max() ?: 0
@@ -309,6 +320,18 @@ private fun ProductCardModel.getLabelShippingHeight(context: Context): Int {
         val labelShippingHeight = context.resources.getDimensionPixelSize(R.dimen.product_card_text_view_shipping_height)
 
         labelShippingMarginTop + labelShippingHeight
+    }
+    else 0
+}
+
+private fun ProductCardModel.getLabelETA(context: Context): Int {
+    val labelETA = getLabelETA()
+
+    return if (labelETA != null && labelETA.title.isNotEmpty()) {
+        val labelETAMarginTop = context.resources.getDimensionPixelSize(R.dimen.product_card_text_view_eta_margin_top)
+        val labelETAHeight = context.resources.getDimensionPixelSize(R.dimen.product_card_text_view_eta_height)
+
+        labelETAMarginTop + labelETAHeight
     }
     else 0
 }

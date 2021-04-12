@@ -4,15 +4,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/Unify_N0"
     android:orientation="vertical"
-    android:paddingLeft="@dimen/dp_16">
+    android:paddingStart="@dimen/dp_16"
+    android:id="@+id/item_note_reorder"
+    tools:ignore="RtlSymmetry">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        tools:ignore="UselessParent">
 
         <LinearLayout
             android:layout_width="0dp"
@@ -21,36 +23,38 @@
             android:orientation="vertical"
             android:paddingTop="@dimen/dp_16"
             android:paddingBottom="@dimen/dp_16">
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tvNoteName"
-                style="@style/TextView.Title"
+                android:layout_height="wrap_content"
                 android:layout_width="match_parent"
                 android:layout_marginEnd="@dimen/dp_32"
-                android:layout_marginRight="@dimen/dp_32"
                 tools:text="Waktu Pengiriman"
+                app:typographyType="body_1"
+                app:typographyWeight="reguler"
                 android:singleLine="true"
                 android:ellipsize="end"/>
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tvLastUpdate"
-                style="@style/TextView.Title.BlackDisabled"
+                android:textColor="@color/Unify_N700_32"
+                android:layout_height="wrap_content"
                 android:layout_width="match_parent"
                 android:layout_marginEnd="@dimen/dp_32"
-                android:layout_marginRight="@dimen/dp_32"
                 android:layout_marginTop="@dimen/dp_2"
+                app:typographyType="body_1"
+                app:typographyWeight="reguler"
                 tools:text="22 Juni 2018, pukul 14:04" />
         </LinearLayout>
         <ImageView
             android:id="@+id/ivReorder"
             android:layout_width="@dimen/dp_60"
             android:layout_height="@dimen/dp_60"
-            android:paddingLeft="@dimen/dp_8"
-            android:paddingRight="@dimen/dp_16"
+            android:paddingStart="@dimen/dp_8"
+            android:paddingEnd="@dimen/dp_16"
             android:paddingTop="@dimen/dp_16"
             android:paddingBottom="@dimen/dp_16"
             android:layout_gravity="center_vertical"
-            app:srcCompat="@drawable/ic_reorder_four_arrow" />
-
+            app:srcCompat="@drawable/ic_reorder_with_four_arrow"
+            android:contentDescription="@string/move_the_item"/>
     </LinearLayout>
-
 </LinearLayout>

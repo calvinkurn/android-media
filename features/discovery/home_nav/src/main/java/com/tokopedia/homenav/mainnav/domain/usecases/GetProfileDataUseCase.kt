@@ -4,12 +4,16 @@ import android.content.Context
 import android.content.SharedPreferences
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.common_wallet.balance.view.WalletBalanceModel
+import com.tokopedia.homenav.common.util.isABNewTokopoint
 import com.tokopedia.homenav.mainnav.data.mapper.AccountHeaderMapper
 import com.tokopedia.homenav.mainnav.data.pojo.membership.MembershipPojo
 import com.tokopedia.homenav.mainnav.data.pojo.saldo.SaldoPojo
-import com.tokopedia.homenav.mainnav.data.pojo.shop.ShopInfoPojo
+import com.tokopedia.homenav.mainnav.data.pojo.shop.ShopData
+import com.tokopedia.homenav.mainnav.data.pojo.tokopoint.TokopointsStatusFilteredPojo
 import com.tokopedia.homenav.mainnav.data.pojo.user.UserPojo
 import com.tokopedia.homenav.mainnav.view.datamodel.AccountHeaderDataModel
+import com.tokopedia.kotlin.extensions.view.isZero
+import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.coroutines.UseCase
 import com.tokopedia.user.session.UserSessionInterface
@@ -24,6 +28,7 @@ class GetProfileDataUseCase @Inject constructor(
         private val getOvoUseCase: GetCoroutineWalletBalanceUseCase,
         private val getSaldoUseCase: GetSaldoUseCase,
         private val getUserMembershipUseCase: GetUserMembershipUseCase,
+        private val getTokopointStatusFiltered: GetTokopointStatusFiltered,
         private val getShopInfoUseCase: GetShopInfoUseCase,
         private val userSession: UserSessionInterface,
         @ApplicationContext private val context: Context
@@ -32,7 +37,6 @@ class GetProfileDataUseCase @Inject constructor(
 
     override suspend fun executeOnBackground(): AccountHeaderDataModel {
         getUserInfoUseCase.setStrategyCloudThenCache()
-        getUserMembershipUseCase.setStrategyCloudThenCache()
         getShopInfoUseCase.setStrategyCloudThenCache()
 
         return withContext(coroutineContext){
@@ -41,10 +45,14 @@ class GetProfileDataUseCase @Inject constructor(
             var ovoData: WalletBalanceModel? = null
             var saldoData: SaldoPojo? = null
             var userMembershipData: MembershipPojo? = null
-            var shopData: ShopInfoPojo? = null
+            var shopData: ShopData? = null
+            var tokopoint: TokopointsStatusFilteredPojo? = null
 
             val getUserInfoCall = async {
                 getUserInfoUseCase.executeOnBackground()
+            }
+            val getTokopointCall = async {
+                getTokopointStatusFiltered.executeOnBackground()
             }
             val getOvoCall = async {
                 getOvoUseCase.executeOnBackground()
@@ -59,17 +67,30 @@ class GetProfileDataUseCase @Inject constructor(
                 getShopInfoUseCase.executeOnBackground()
             }
             userInfoData = (getUserInfoCall.await().takeIf { it is Success } as? Success<UserPojo>)?.data
-            ovoData = (getOvoCall.await().takeIf { it is Success } as? Success<WalletBalanceModel>)?.data
-            saldoData = (getSaldoCall.await().takeIf { it is Success } as? Success<SaldoPojo>)?.data
+
             userMembershipData = (getUserMembershipCall.await().takeIf { it is Success } as? Success<MembershipPojo>)?.data
-            shopData = (getShopInfoCall.await().takeIf { it is Success } as? Success<ShopInfoPojo>)?.data
+
+            if(isABNewTokopoint()) tokopoint =
+                    (getTokopointCall.await().takeIf { it is Success } as? Success<TokopointsStatusFilteredPojo>)?.data
+
+
+            // check if tokopoint = 0 or null then follow old flow (fetch saldo)
+            if(tokopoint?.tokopointsStatusFiltered?.statusFilteredData?.points?.pointsAmount.toZeroIfNull().isZero() && tokopoint?.tokopointsStatusFiltered?.statusFilteredData?.points?.externalCurrencyAmount.toZeroIfNull().isZero()){
+                ovoData = (getOvoCall.await().takeIf { it is Success } as? Success<WalletBalanceModel>)?.data
+                saldoData = (getSaldoCall.await().takeIf { it is Success } as? Success<SaldoPojo>)?.data
+                tokopoint = null
+            }
+
+            shopData = (getShopInfoCall.await().takeIf { it is Success } as? Success<ShopData>)?.data
 
             accountHeaderMapper.mapToHeaderModel(
                     userInfoData,
                     ovoData,
+                    tokopoint,
                     saldoData,
                     userMembershipData,
-                    shopData,
+                    shopData?.userShopInfo,
+                    shopData?.notifications,
                     false
             )
         }
@@ -78,7 +99,6 @@ class GetProfileDataUseCase @Inject constructor(
     private fun getLoginState(): Int {
         return when {
             userSession.isLoggedIn -> AccountHeaderDataModel.LOGIN_STATE_LOGIN
-            haveUserLogoutData() -> AccountHeaderDataModel.LOGIN_STATE_LOGIN_AS
             else -> AccountHeaderDataModel.LOGIN_STATE_NON_LOGIN
         }
     }

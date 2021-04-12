@@ -22,10 +22,13 @@ import com.tokopedia.pushnotif.R;
 import com.tokopedia.pushnotif.data.repository.TransactionRepository;
 import com.tokopedia.pushnotif.data.model.ApplinkNotificationModel;
 import com.tokopedia.pushnotif.services.DismissBroadcastReceiver;
+import com.tokopedia.pushnotif.util.NotificationChannelBuilder;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+
+import static com.tokopedia.pushnotif.util.NotificationRingtoneUtil.ringtoneUri;
 
 /**
  * @author ricoharisin .
@@ -37,6 +40,7 @@ public abstract class BaseNotificationFactory {
 
     public BaseNotificationFactory(Context context) {
         this.context = context;
+        createNotificationChannel();
     }
 
     public abstract Notification createNotification(
@@ -79,7 +83,7 @@ public abstract class BaseNotificationFactory {
 
     protected int getDrawableIcon() {
         if (GlobalConfig.isSellerApp()) {
-            return R.mipmap.ic_statusbar_notif_seller;
+            return com.tokopedia.notification.common.R.mipmap.ic_statusbar_notif_seller;
         } else {
             return R.mipmap.ic_statusbar_notif_customer;
         }
@@ -87,7 +91,7 @@ public abstract class BaseNotificationFactory {
 
     protected int getDrawableLargeIcon() {
         if (GlobalConfig.isSellerApp()) {
-            return R.mipmap.ic_big_notif_seller;
+            return com.tokopedia.resources.common.R.mipmap.ic_launcher_sellerapp_ramadhan;
         } else {
             return com.tokopedia.resources.common.R.mipmap.ic_launcher_customerapp;
         }
@@ -162,6 +166,18 @@ public abstract class BaseNotificationFactory {
     }
 
     protected Boolean isAllowBell() {
+        if (isRevert()) {
+            return checkCacheAllowBell();
+        } else {
+            return true;
+        }
+    }
+
+    protected Boolean isRevert() {
+        return false;
+    }
+
+    protected Boolean checkCacheAllowBell() {
         LocalCacheHandler cache = new LocalCacheHandler(context, Constant.CACHE_DELAY);
         long prevTime = cache.getLong(Constant.PREV_TIME);
         long currTIme = System.currentTimeMillis();
@@ -201,6 +217,17 @@ public abstract class BaseNotificationFactory {
     }
 
     protected Uri getRingtoneUri() {
-        return RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+        return ringtoneUri(context);
     }
+
+    protected void createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannelBuilder.create(
+                    context,
+                    getRingtoneUri(),
+                    getVibratePattern()
+            );
+        }
+    }
+
 }

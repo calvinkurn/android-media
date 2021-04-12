@@ -1,4 +1,3 @@
-package com.tokopedia.seller.menu.common.view.uimodel.base
 
 enum class SettingUiType {
     TICKER_SHOP_SCORE,

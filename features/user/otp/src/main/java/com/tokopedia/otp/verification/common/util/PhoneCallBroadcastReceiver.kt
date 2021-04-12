@@ -6,6 +6,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.telephony.PhoneStateListener
 import android.telephony.TelephonyManager
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import java.lang.Exception
 import javax.inject.Inject
 
@@ -18,7 +19,8 @@ import javax.inject.Inject
 
 class PhoneCallBroadcastReceiver @Inject constructor(): BroadcastReceiver() {
 
-    private lateinit var listener: OnCallStateChange
+    private var crashlytics: FirebaseCrashlytics = FirebaseCrashlytics.getInstance()
+    private var listener: OnCallStateChange? = null
 
     private var lastState = TelephonyManager.CALL_STATE_IDLE
     private var isIncomingCall = false
@@ -30,6 +32,8 @@ class PhoneCallBroadcastReceiver @Inject constructor(): BroadcastReceiver() {
             this.listener = listener
             context?.registerReceiver(this, getIntentFilter())
             isRegistered = true
+        } else {
+            sendLogTracker("PhoneCallBroadcastReceiver already registered")
         }
     }
 
@@ -45,12 +49,11 @@ class PhoneCallBroadcastReceiver @Inject constructor(): BroadcastReceiver() {
             val telephony = context?.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
             telephony.listen(object : PhoneStateListener() {
                 override fun onCallStateChanged(state: Int, phoneNumber: String?) {
-                    if (::listener.isInitialized) {
-                        onStateChanged(state, phoneNumber ?: "")
-                    }
+                    onStateChanged(state, phoneNumber.orEmpty())
                 }
             }, PhoneStateListener.LISTEN_CALL_STATE)
         } catch (e: Exception) {
+            sendLogTracker("error [PhoneCallBroadcastReceiver#onReceive(); msg=$e]")
             e.printStackTrace()
         }
     }
@@ -61,18 +64,26 @@ class PhoneCallBroadcastReceiver @Inject constructor(): BroadcastReceiver() {
         when (state) {
             TelephonyManager.CALL_STATE_RINGING -> {
                 isIncomingCall = true
-                listener.onIncomingCallStart(number)
+                listener?.onIncomingCallStart(number)
             }
             TelephonyManager.CALL_STATE_IDLE -> {
                 if (lastState == TelephonyManager.CALL_STATE_RINGING) {
-                    listener.onIncomingCallEnded(number)
+                    listener?.onIncomingCallEnded(number)
                 } else if (isIncomingCall) {
-                    listener.onMissedCall(number)
+                    listener?.onMissedCall(number)
                 }
             }
         }
 
         lastState = state
+    }
+
+    private fun sendLogTracker(message: String) {
+        try {
+            crashlytics.recordException(Throwable(message))
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 
     interface OnCallStateChange {

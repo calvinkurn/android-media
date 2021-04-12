@@ -1,6 +1,7 @@
 package com.tokopedia.topads.common.data.response
 
 import android.os.Parcelable
+import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import kotlinx.android.parcel.Parcelize
 
@@ -27,13 +28,13 @@ data class TopAdsGetKeywordSuggestionV3(
 data class KeywordData(
 
         @field:SerializedName("product_id")
-        val productId: Int = 0,
+        val productId: String = "0",
 
         @field:SerializedName("keyword_data")
         val keywordData: List<KeywordDataItem> = listOf(),
 
         @field:SerializedName("min_bid")
-        val minBid: Int = 0
+        val minBid: String = "0"
 
 
 ) : Parcelable
@@ -41,7 +42,7 @@ data class KeywordData(
 @Parcelize
 data class KeywordDataItem(
         @field:SerializedName("bid_suggest")
-        var bidSuggest: Int = 0,
+        var bidSuggest: String = "0",
 
         @field:SerializedName("total_search")
         var totalSearch: String = "",
@@ -57,7 +58,10 @@ data class KeywordDataItem(
 
         var onChecked: Boolean = false,
 
-        var fromSearch:Boolean = false
+        var fromSearch:Boolean = false,
+
+        @Expose(serialize = false, deserialize = false)
+        var keywordType: String = "Spesifik"
 
 
 ) : Parcelable

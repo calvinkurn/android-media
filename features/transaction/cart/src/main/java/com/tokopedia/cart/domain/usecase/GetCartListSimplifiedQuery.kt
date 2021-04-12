@@ -2,13 +2,40 @@ package com.tokopedia.cart.domain.usecase
 
 fun getQueryCartRevamp(): String {
     return """
-        query cart_revamp(${'$'}lang: String, ${'$'}selected_cart_id: String) {
+        query cart_revamp(${'$'}lang: String, ${'$'}selected_cart_id: String, ${'$'}additional_params: CartRevampAdditionalParams) {
           status
-          cart_revamp(lang:${'$'}lang, selected_cart_id: ${'$'}selected_cart_id) {
+          cart_revamp(lang:${'$'}lang, selected_cart_id: ${'$'}selected_cart_id, additional_params:${'$'}additional_params) {
             error_message
             status
             data {
               errors
+              pop_up_message
+              localization_choose_address {
+                address_id
+                address_name
+                address
+                postal_code
+                phone
+                receiver_name
+                status
+                country
+                province_id
+                province_name
+                city_id
+                city_name
+                district_id
+                district_name
+                address_2
+                latitude
+                longitude
+                corner_id
+                is_corner
+                is_primary
+                buyer_store_code
+                type
+                state
+                state_detail
+              }
               empty_cart {
                 title
                 image
@@ -44,6 +71,16 @@ fun getQueryCartRevamp(): String {
                 seller_cashback_wording
                 seller_cashback_value
               }
+              promo_summary {
+                title
+                detail {
+                    description
+                    type
+                    amount_str
+                    amount
+                    currency_details_str
+                }
+              }
               max_quantity
               max_char_note
               messages {
@@ -56,6 +93,10 @@ fun getQueryCartRevamp(): String {
                 ErrorProductMinQuantity
               }
               fulfillment_message
+              toko_cabang {
+                message
+                badge_url
+              }
               available_section {
                 action {
                   id
@@ -68,6 +109,10 @@ fun getQueryCartRevamp(): String {
                     shop_location
                     estimation
                     free_shipping {
+                      eligible
+                      badge_url
+                    }
+                    free_shipping_extra {
                       eligible
                       badge_url
                     }
@@ -245,6 +290,10 @@ fun getQueryCartRevamp(): String {
                         eligible
                         badge_url
                       }
+                      free_shipping_extra {
+                        eligible
+                        badge_url
+                      }
                       booking_stock
                       is_product_volume_weight
                       initial_price
@@ -312,6 +361,10 @@ fun getQueryCartRevamp(): String {
                     shop_location
                     estimation
                     free_shipping {
+                      eligible
+                      badge_url
+                    }
+                    free_shipping_extra {
                       eligible
                       badge_url
                     }
@@ -487,6 +540,10 @@ fun getQueryCartRevamp(): String {
                       is_campaign_error
                       is_blacklisted
                       free_shipping {
+                        eligible
+                        badge_url
+                      }
+                      free_shipping_extra {
                         eligible
                         badge_url
                       }
@@ -672,11 +729,8 @@ fun getQueryCartRevamp(): String {
                   description
                 }
               }
-              ab_test_button {
-                enable
-              }
             }
           }
         }
-    """
+    """.trimIndent()
 }

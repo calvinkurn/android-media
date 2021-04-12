@@ -2,6 +2,7 @@ package com.tokopedia.seller.menu.presentation.adapter
 
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.seller.menu.common.view.typefactory.OtherMenuAdapterTypeFactory
+import com.tokopedia.seller.menu.common.view.uimodel.SellerMenuItemUiModel
 import com.tokopedia.seller.menu.common.view.uimodel.ShopOrderUiModel
 import com.tokopedia.seller.menu.common.view.uimodel.ShopProductUiModel
 import com.tokopedia.seller.menu.common.view.uimodel.TickerShopScoreUiModel
@@ -53,12 +54,27 @@ class SellerMenuAdapter(
         }
     }
 
+    fun showNotificationCounter(matcher: (SettingUiModel) -> Boolean, notificationCount: Int) {
+        findItem(matcher)?.let { item ->
+            updateNotificationCounter(item, notificationCount)
+        }
+    }
+
     private fun updateItemAt(index: Int, item: SettingUiModel) {
         visitables.removeAt(index)
         notifyItemRemoved(index)
 
         addElement(index, item)
         notifyItemChanged(index)
+    }
+
+    private fun updateNotificationCounter(item: SettingUiModel, notificationCount: Int) {
+        visitables.indexOf(item).takeIf { it != -1 }?.let { index ->
+            if (item is SellerMenuItemUiModel) {
+                item.notificationCount = notificationCount
+                notifyItemChanged(index)
+            }
+        }
     }
 
     private fun findShopInfoIndex(): Int? {
@@ -72,5 +88,9 @@ class SellerMenuAdapter(
     private fun findIndex(predicate: (SettingUiModel) -> Boolean): Int? {
         val item = data.firstOrNull { predicate.invoke(it) }
         return item?.let { data.indexOf(it) }
+    }
+
+    private fun findItem(predicate: (SettingUiModel) -> Boolean): SettingUiModel? {
+        return data.firstOrNull { predicate(it) }
     }
 }

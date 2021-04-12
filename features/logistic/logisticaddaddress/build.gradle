@@ -22,6 +22,10 @@ android {
             testLogging.events = ["passed", "skipped", "failed"]
         }
     }
+
+    viewBinding {
+        enabled true
+    }
 }
 
 repositories {
@@ -53,11 +57,14 @@ dependencies {
 
     implementation project(rootProject.ext.features.logisticCommon)
     implementation project(rootProject.ext.features.purchase_platform_common)
+    implementation project(rootProject.ext.features.localizationchooseaddress)
 
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.icons
+    implementation rootProject.ext.unifyDependencies.dialog
     implementation rootProject.ext.unifyDependencies.global_error
+    implementation rootProject.ext.unifyDependencies.coach_mark
     implementation project(rootProject.ext.libraries.graphql)
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
     implementation rootProject.ext.tkpdInternalLibDependencies.network
