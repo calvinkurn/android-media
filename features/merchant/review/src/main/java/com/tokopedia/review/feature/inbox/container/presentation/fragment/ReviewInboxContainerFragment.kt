@@ -68,6 +68,7 @@ class ReviewInboxContainerFragment : BaseDaggerFragment(), HasComponent<ReviewIn
     private var counter = 0
     private var buyerReviewFragment: InboxReputationFragment? = null
     private var containerListener: InboxFragmentContainer? = null
+    private var shouldCommitBuyerReviewFragment: Boolean = false
 
     override fun getScreenName(): String {
         return ""
@@ -136,6 +137,7 @@ class ReviewInboxContainerFragment : BaseDaggerFragment(), HasComponent<ReviewIn
         setupTabLayout()
         if(InboxUnifiedRemoteConfig.isInboxUnified()) {
             adjustViewBasedOnRole()
+            attachBuyerReviewFragment()
         }
     }
 
@@ -288,7 +290,6 @@ class ReviewInboxContainerFragment : BaseDaggerFragment(), HasComponent<ReviewIn
 
     private fun updateInboxUnifiedSellerView() {
         setBuyerReviewFragment()
-        attachBuyerReviewFragment()
         reviewInboxTabs?.hide()
         reviewSellerInboxFragment?.show()
         reviewInboxViewPager?.hide()
@@ -309,14 +310,18 @@ class ReviewInboxContainerFragment : BaseDaggerFragment(), HasComponent<ReviewIn
     private fun setBuyerReviewFragment() {
         if(buyerReviewFragment == null) {
             buyerReviewFragment = InboxReputationFragment.createInstance(ReviewInboxContainerAdapter.TAB_BUYER_REVIEW) as? InboxReputationFragment?
+            shouldCommitBuyerReviewFragment = true
         }
     }
 
     private fun attachBuyerReviewFragment() {
-        buyerReviewFragment?.let {
-            childFragmentManager.beginTransaction()
-                    .replace(R.id.reviewSellerInboxFragment, it)
-                    .commit()
+        if(shouldCommitBuyerReviewFragment) {
+            buyerReviewFragment?.let {
+                childFragmentManager.beginTransaction()
+                        .replace(R.id.reviewSellerInboxFragment, it)
+                        .commit()
+            }
+            shouldCommitBuyerReviewFragment = false
         }
     }
 
