@@ -138,7 +138,6 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
         showKeyboard()
     }
 
-
     override fun onPause() {
         super.onPause()
         hideKeyboard()
