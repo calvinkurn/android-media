@@ -24,15 +24,11 @@ class ShopActionButtonWidgetNoteButtonComponentViewHolder(
         val LAYOUT = R.layout.layout_shop_action_button_widget_note_button_component
     }
 
-    interface Listener {
-        fun onClickNoteButton()
-    }
-
     private val imageButtonShopNote: UnifyButton? = itemView.findViewById(R.id.image_button_shop_note)
 
     override fun bind(model: ShopHeaderButtonComponentUiModel) {
         imageButtonShopNote?.setOnClickListener {
-            listener.onClickNoteButton()
+            listener.onClickNoteButton(model.link)
         }
         imageButtonShopNote?.let {
             setDrawable(it,model.icon)
@@ -67,6 +63,10 @@ class ShopActionButtonWidgetNoteButtonComponentViewHolder(
         if (!imageButtonShopNote?.compoundDrawables.isNullOrEmpty()) {
             imageButtonShopNote?.removeDrawable()
         }
+    }
+
+    interface Listener {
+        fun onClickNoteButton(link: String)
     }
 
 }

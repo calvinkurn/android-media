@@ -1943,10 +1943,8 @@ class NewShopPageFragment :
         )
     }
 
-    override fun onClickNoteButton() {
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.SHOP_SETTINGS_NOTES_BUYER_VIEW)
-        intent.putExtra(SHOP_ID, shopId)
-        startActivity(intent)
+    override fun onClickNoteButton(link: String) {
+        startActivity(RouteManager.getIntent(context, link))
     }
 
     override fun setFollowStatus(isFollowing: Boolean) {
