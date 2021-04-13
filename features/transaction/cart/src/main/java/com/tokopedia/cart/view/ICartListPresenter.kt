@@ -79,6 +79,8 @@ interface ICartListPresenter {
 
     fun processGetRecommendationData(page: Int, allProductIds: List<String>)
 
+    fun processGetTopAdsBannerData()
+
     fun processAddToCart(productModel: Any)
 
     fun processAddToCartExternal(productId: Long)

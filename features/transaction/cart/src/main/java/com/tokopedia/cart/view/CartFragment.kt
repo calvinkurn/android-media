@@ -1791,6 +1791,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     private fun loadRecommendation() {
+        // Todo : load TopAdsBannerView
+        dPresenter.processGetTopAdsBannerData()
         dPresenter.processGetRecommendationData(recommendationPage, cartAdapter.allCartItemProductId)
     }
 
@@ -3212,6 +3214,10 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         }
 
         recommendationPage++
+    }
+
+    override fun renderTopAdsBannerView() {
+
     }
 
     override fun showItemLoading() {

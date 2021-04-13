@@ -84,6 +84,8 @@ interface ICartListView : CustomerView {
 
     fun renderRecommendation(recommendationWidget: RecommendationWidget?)
 
+    fun renderTopAdsBannerView()
+
     fun showItemLoading()
 
     fun hideItemLoading()
