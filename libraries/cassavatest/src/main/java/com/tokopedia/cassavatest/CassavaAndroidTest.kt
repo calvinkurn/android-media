@@ -38,6 +38,7 @@ fun getAnalyticsWithQuery(gtmLogDBSource: GtmLogDBSource,
     return validationResult
 }
 
+@Deprecated("consider using Cassava Test Rule")
 fun getAnalyticsWithQuery(gtmLogDBSource: GtmLogDBSource,
                           context: Context,
                           queryFileName: String): List<Validator> {
@@ -49,6 +50,7 @@ fun getAnalyticsWithQuery(gtmLogDBSource: GtmLogDBSource,
             .first()
 }
 
+@Deprecated("consider using Cassava Test Rule")
 fun getAnalyticsWithQuery(gtmLogDBSource: GtmLogDBSource, queryString: String): List<Validator> {
     val cassavaQuery = getQuery(InstrumentationRegistry.getInstrumentation().context, queryString)
     val validators = cassavaQuery.query.map { it.toDefaultValidator() }

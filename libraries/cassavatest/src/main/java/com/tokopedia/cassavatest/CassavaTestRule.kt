@@ -32,7 +32,7 @@ class CassavaTestRule : TestRule {
         }
     }
 
-    fun validateByQuery(path: String): List<Validator> {
+    fun validate(path: String): List<Validator> {
         val cassavaQuery = getQuery(context, path)
         val validators = cassavaQuery.query.map { it.toDefaultValidator() }
         return runBlocking {
@@ -40,10 +40,22 @@ class CassavaTestRule : TestRule {
         }
     }
 
-    fun getRecentTracker(take: Int = 3): List<GtmLogDB> {
+    fun validate(query: List<Map<String, Any>>, mode: String = MODE_EXACT): List<Validator> {
+        val validators = query.map { it.toDefaultValidator() }
+        return runBlocking {
+            ValidatorEngine(daoSource).computeCo(validators, mode)
+        }
+    }
+
+    fun getRecent(take: Int = 3): List<GtmLogDB> {
         return runBlocking {
             dao.getLastTracker(take)
         }
+    }
+
+    companion object {
+        const val MODE_EXACT = "exact"
+        const val MODE_SUBSET = "subset"
     }
 
 }

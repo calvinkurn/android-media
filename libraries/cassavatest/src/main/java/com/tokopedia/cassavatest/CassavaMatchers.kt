@@ -1,9 +1,6 @@
 package com.tokopedia.cassavatest
 
-import com.tokopedia.analyticsdebugger.cassava.validator.core.Status
-import com.tokopedia.analyticsdebugger.cassava.validator.core.Validator
-import com.tokopedia.analyticsdebugger.cassava.validator.core.containsPairOf
-import com.tokopedia.analyticsdebugger.cassava.validator.core.toJsonMap
+import com.tokopedia.analyticsdebugger.cassava.validator.core.*
 import com.tokopedia.analyticsdebugger.database.GtmLogDB
 import org.hamcrest.Description
 import org.hamcrest.Matcher
@@ -31,7 +28,7 @@ fun hasAllSuccess(): Matcher<List<Validator>> {
 }
 
 /*
-* Match if a tracker has exact key and value pair on any of listed gtm object
+* Match if a tracker has given key and value pair on any of listed gtm object
 * Can also work on nested tracker
 * */
 fun containsPairOf(pair: Pair<String, String>): Matcher<List<GtmLogDB>> {
@@ -45,6 +42,20 @@ fun containsPairOf(pair: Pair<String, String>): Matcher<List<GtmLogDB>> {
             return item.any {
                 it.data.toJsonMap().containsPairOf(pair)
             }
+        }
+    }
+}
+
+fun containsMapOf(map: Map<String, Any>, mode: String = CassavaTestRule.MODE_EXACT): Matcher<List<GtmLogDB>> {
+    return object : TypeSafeMatcher<List<GtmLogDB>>(ArrayList::class.java) {
+        override fun describeTo(description: Description?) {
+            description?.appendText("last hit contains map of $map")
+        }
+
+        override fun matchesSafely(item: List<GtmLogDB>?): Boolean {
+            if (item == null) return false
+            val isExact = mode != CassavaTestRule.MODE_SUBSET
+            return item.containsMapOf(map, isExact)
         }
     }
 }

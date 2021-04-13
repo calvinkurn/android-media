@@ -146,7 +146,7 @@ class OrderSummaryPageActivityTrackingTest {
             clickButtonContinueWithRedPromo()
         }
 
-        assertThat(cassavaTestRule.validateByQuery(ANALYTIC_VALIDATOR_QUERY_FILE_NAME), hasAllSuccess())
+        assertThat(cassavaTestRule.validate(ANALYTIC_VALIDATOR_QUERY_FILE_NAME), hasAllSuccess())
     }
 
     private fun performOrderSummaryPageBackAction() {
