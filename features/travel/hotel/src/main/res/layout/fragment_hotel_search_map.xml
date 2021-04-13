@@ -239,7 +239,8 @@
         <com.tokopedia.header.HeaderUnify
             android:id="@+id/headerHotelSearchMap"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            app:elevation="@dimen/layout_lvl0" />
 
         <include
             android:id="@+id/shimmeringQuickFilterHotelSearchMap"
@@ -255,7 +256,6 @@
             android:layout_height="wrap_content"
             android:background="@color/Unify_N0"
             android:clipToPadding="false"
-            android:elevation="@dimen/spacing_lvl2"
             android:paddingStart="@dimen/spacing_lvl4"
             android:paddingTop="@dimen/spacing_lvl3"
             android:paddingEnd="@dimen/spacing_lvl2"
