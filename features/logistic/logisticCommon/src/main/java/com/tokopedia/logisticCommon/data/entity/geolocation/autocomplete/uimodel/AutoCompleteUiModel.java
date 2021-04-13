@@ -1,4 +1,4 @@
-package com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.viewmodel;
+package com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.uimodel;
 
 import java.util.List;
 
@@ -6,7 +6,7 @@ import java.util.List;
  * Created by kris on 9/18/17. Tokopedia
  */
 
-public class AutoCompleteViewModel {
+public class AutoCompleteUiModel {
 
     private List<PredictionResult> listOfPredictionResults;
 

@@ -1,4 +1,4 @@
-package com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.viewmodel;
+package com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.uimodel;
 
 /**
  * Created by kris on 9/18/17. Tokopedia

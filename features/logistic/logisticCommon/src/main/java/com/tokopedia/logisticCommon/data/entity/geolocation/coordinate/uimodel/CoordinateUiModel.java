@@ -1,4 +1,4 @@
-package com.tokopedia.logisticCommon.data.entity.geolocation.coordinate.viewmodel;
+package com.tokopedia.logisticCommon.data.entity.geolocation.coordinate.uimodel;
 
 import com.google.android.gms.maps.model.LatLng;
 
@@ -6,7 +6,7 @@ import com.google.android.gms.maps.model.LatLng;
  * Created by kris on 9/18/17. Tokopedia
  */
 
-public class CoordinateViewModel {
+public class CoordinateUiModel {
 
     private LatLng coordinate;
     private String title;
