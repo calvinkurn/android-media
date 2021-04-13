@@ -142,7 +142,6 @@ class ProductStockHandlerDialog(
         element.getAtcProduct()?.let { product ->
             // set product card data
             productCard?.setOnClickListener { onProductCardClicked(product) }
-            btnReminder?.setOnClickListener { onProductStockReminderClicked(product) }
             buttonReminderValidation(product.typeButton)
             setDataProductCard(product)
 
@@ -290,6 +289,9 @@ class ProductStockHandlerDialog(
         btnReminder?.text = context?.getString(R.string.notifcenter_btn_reminder)
         btnReminder?.buttonType = UnifyButton.Type.MAIN
         btnReminder?.buttonVariant = UnifyButton.Variant.FILLED
+        element.getAtcProduct()?.let {product ->
+            btnReminder?.setOnClickListener { onProductStockReminderClicked(product) }
+        }
     }
 
     private fun setDeleteReminderButton() {

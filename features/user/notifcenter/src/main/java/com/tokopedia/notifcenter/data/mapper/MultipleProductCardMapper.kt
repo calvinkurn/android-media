@@ -16,7 +16,7 @@ object MultipleProductCardMapper {
             multiProductCardItem.notificationId = notification.notificationId
             multiProductCards.add(multiProductCardItem)
         }
-        return multiProductCards
+        return sortMultipleProductCardBasedOnStock(multiProductCards)
     }
 
     fun map(notification: MultipleProductCardViewBean): NotificationItemViewBean {
@@ -27,6 +27,20 @@ object MultipleProductCardMapper {
             templateKey = notification.templateKey
             userInfo = notification.userInfo
         }
+    }
+
+    fun sortMultipleProductCardBasedOnStock(multiProductCards: ArrayList<MultipleProductCardViewBean>): List<MultipleProductCardViewBean> {
+        val sortedMultiProductCards = arrayListOf<MultipleProductCardViewBean>()
+        val emptyStockMultiProductCards = arrayListOf<MultipleProductCardViewBean>()
+        multiProductCards.forEach { productCard ->
+            if(productCard.product.stock > 0) {
+                sortedMultiProductCards.add(productCard)
+            } else {
+                emptyStockMultiProductCards.add(productCard)
+            }
+        }
+        sortedMultiProductCards.addAll(emptyStockMultiProductCards)
+        return sortedMultiProductCards
     }
 
 }
