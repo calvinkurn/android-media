@@ -16,6 +16,7 @@ class GetShopPerformanceUseCase @Inject constructor(private val gqlRepository: G
     companion object {
         const val SHOP_ID_STATUS_INFO = "shopID"
         const val SHOP_ID_BENEFIT_INFO = "shop_id"
+        const val SHOP_ID_REPUTATION = "shop_ids"
         const val SHOP_SCORE_LEVEL_INPUT = "input"
         const val SHOP_SCORE_TOOLTIP_KEY = "tooltip_key"
 
@@ -52,6 +53,7 @@ class GetShopPerformanceUseCase @Inject constructor(private val gqlRepository: G
             query goldGetPMShopInfo(${'$'}shop_id: Int!) {
               goldGetPMShopInfo(shop_id:${'$'}shop_id, source: "goldmerchant", lang: "id", device: "android") {
                 is_new_seller
+                shop_age
                 is_eligible_pm
               }
             }
@@ -110,10 +112,11 @@ class GetShopPerformanceUseCase @Inject constructor(private val gqlRepository: G
         """.trimIndent()
 
         val REPUTATION_SHOPS_QUERY = """
-            query reputation_shops(${'$'}shopID: Int!){
-                reputation_shops(shop_ids: [${'$'}shopID]) {
+            query reputation_shops(${'$'}shop_ids: Int!){
+                reputation_shops(shop_ids: [${'$'}shop_ids]) {
                     score
                   }
+            }
         """.trimIndent()
 
         @JvmStatic
@@ -140,7 +143,7 @@ class GetShopPerformanceUseCase @Inject constructor(private val gqlRepository: G
         val goldPMGradeBenefitInfoParam = mapOf(SHOP_ID_BENEFIT_INFO to shopID)
 
         val getRecommendationToolsParam = mapOf(SHOP_ID_STATUS_INFO to shopID)
-        val reputationShopsParam = mapOf(SHOP_ID_STATUS_INFO to shopID)
+        val reputationShopsParam = mapOf(SHOP_ID_REPUTATION to shopID)
 
         val shopScoreLevelRequest = GraphqlRequest(SHOP_SCORE_LEVEL_QUERY, ShopScoreLevelResponse::class.java, shopScoreLevelParam)
         val shopLevelRequest = GraphqlRequest(SHOP_LEVEL_TOOLTIP_QUERY, ShopLevelTooltipResponse::class.java, shopLevelParam)

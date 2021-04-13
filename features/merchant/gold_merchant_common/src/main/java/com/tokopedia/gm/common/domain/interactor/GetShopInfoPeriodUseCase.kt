@@ -43,8 +43,6 @@ class GetShopInfoPeriodUseCase @Inject constructor(
             query goldGetPMSettingInfo(${'$'}shopID: Int!, ${'$'}source: String!){
               goldGetPMSettingInfo(shopID: ${'$'}shopID, source: ${'$'}source) {
                  period_type
-                 period_start_date
-                 period_end_date 
               }
             }
         """.trimIndent()
