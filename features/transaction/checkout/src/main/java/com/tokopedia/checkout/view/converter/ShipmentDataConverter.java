@@ -321,7 +321,7 @@ public class ShipmentDataConverter {
             cartItemModel.setDiagnosticId(product.getTradeInInfoData().getDiagnosticId());
         }
 
-        if (product.getPurchaseProtectionPlanData() != null) {
+        if (product.getPurchaseProtectionPlanData() != null && product.getPurchaseProtectionPlanData().isProtectionAvailable()) {
             PurchaseProtectionPlanData ppp = product.getPurchaseProtectionPlanData();
             cartItemModel.setProtectionAvailable(ppp.isProtectionAvailable());
             cartItemModel.setProtectionPricePerProduct(ppp.getProtectionPricePerProduct());

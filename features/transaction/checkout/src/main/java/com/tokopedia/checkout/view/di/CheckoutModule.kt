@@ -8,8 +8,6 @@ import com.tokopedia.checkout.analytics.CheckoutAnalyticsPurchaseProtection
 import com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics
 import com.tokopedia.checkout.domain.mapper.CheckoutMapper
 import com.tokopedia.checkout.domain.mapper.ICheckoutMapper
-import com.tokopedia.checkout.domain.mapper.IShipmentMapper
-import com.tokopedia.checkout.domain.mapper.ShipmentMapper
 import com.tokopedia.checkout.domain.usecase.*
 import com.tokopedia.checkout.domain.usecase.ChangeShippingAddressGqlUseCase.Companion.CHANGE_SHIPPING_ADDRESS_MUTATION
 import com.tokopedia.checkout.domain.usecase.CheckoutGqlUseCase.Companion.CHECKOUT_MUTATION
@@ -64,12 +62,6 @@ class CheckoutModule constructor(val shipmentFragment: ShipmentFragment) {
     @CheckoutScope
     fun provideICheckoutMapper(): ICheckoutMapper {
         return CheckoutMapper()
-    }
-
-    @Provides
-    @CheckoutScope
-    fun provideIShipmentMapper(): IShipmentMapper {
-        return ShipmentMapper()
     }
 
     @Provides

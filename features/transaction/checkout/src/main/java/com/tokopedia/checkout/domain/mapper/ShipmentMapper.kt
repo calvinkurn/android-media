@@ -20,7 +20,9 @@ import com.tokopedia.purchase_platform.common.feature.promo.view.model.PromoChec
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.*
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.MvcShippingBenefitUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoSpIdUiModel
+import com.tokopedia.purchase_platform.common.feature.purchaseprotection.data.PurchaseProtectionPlanDataResponse
 import com.tokopedia.purchase_platform.common.feature.purchaseprotection.domain.PurchaseProtectionPlanData
+import com.tokopedia.purchase_platform.common.feature.tickerannouncement.Ticker
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerData
 import com.tokopedia.purchase_platform.common.utils.Utils.isNotNullOrEmptyOrZero
 import com.tokopedia.purchase_platform.common.utils.convertToString
@@ -31,327 +33,376 @@ import javax.inject.Inject
 class ShipmentMapper @Inject constructor() {
 
     fun convertToShipmentAddressFormData(shipmentAddressFormDataResponse: ShipmentAddressFormDataResponse): CartShipmentAddressFormData {
-        val dataResult = CartShipmentAddressFormData()
-
-        var isDisableEgold = false
-        var isDisablePPP = false
-        var isDisableDonation = false
-        for (disabledFeature in shipmentAddressFormDataResponse.disabledFeatures) {
-            when (disabledFeature) {
-                dropshipper -> dataResult.isDropshipperDisable = true
-                orderPrioritas -> dataResult.isOrderPrioritasDisable = true
-                egold -> isDisableEgold = true
-                ppp -> isDisablePPP = true
-                donation -> isDisableDonation = true
-            }
-        }
-
-        dataResult.keroDiscomToken = shipmentAddressFormDataResponse.keroDiscomToken
-        dataResult.keroToken = shipmentAddressFormDataResponse.keroToken
-        dataResult.keroUnixTime = shipmentAddressFormDataResponse.keroUnixTime
-        dataResult.isHidingCourier = shipmentAddressFormDataResponse.hideCourier
-        dataResult.isBlackbox = shipmentAddressFormDataResponse.isBlackbox == 1
-        dataResult.errorCode = shipmentAddressFormDataResponse.errorCode
-        dataResult.isError = !isNullOrEmpty(shipmentAddressFormDataResponse.errors)
-        dataResult.errorMessage = convertToString(shipmentAddressFormDataResponse.errors)
-        dataResult.isShowOnboarding = shipmentAddressFormDataResponse.isShowOnboarding
-        dataResult.isIneligiblePromoDialogEnabled = shipmentAddressFormDataResponse.isIneligiblePromoDialogEnabled
-        dataResult.isOpenPrerequisiteSite = shipmentAddressFormDataResponse.isOpenPrerequisiteSite
-        dataResult.isEligibleNewShippingExperience = shipmentAddressFormDataResponse.isEligibleNewShippingExperience
-        dataResult.addressesData = mapAddressesData(shipmentAddressFormDataResponse)
-
-        if (shipmentAddressFormDataResponse.tickers.isNotEmpty()) {
-            val ticker = shipmentAddressFormDataResponse.tickers[0]
-            dataResult.tickerData = TickerData(ticker.id, ticker.message, ticker.page, "")
-        }
-
-        if (!isDisableEgold) {
-            dataResult.egoldAttributes = mapEgold(shipmentAddressFormDataResponse)
-        }
-
-        if (!isDisableDonation) {
-            dataResult.donation = mapDonation(shipmentAddressFormDataResponse)
-        }
-
-        dataResult.cod = mapCod(shipmentAddressFormDataResponse)
-        dataResult.campaignTimerUi = mapCampaignTimer(shipmentAddressFormDataResponse.campaignTimer)
-        dataResult.lastApplyData = mapPromoLastApply(shipmentAddressFormDataResponse.promoSAFResponse.lastApply?.data)
-        dataResult.promoCheckoutErrorDefault = mapPromoCheckoutErrorDefault(shipmentAddressFormDataResponse.promoSAFResponse.errorDefault)
-
-        if (!isNullOrEmpty(shipmentAddressFormDataResponse.groupAddress)) {
-            val groupAddressListResult: MutableList<GroupAddress> = ArrayList()
-            for (groupAddress in shipmentAddressFormDataResponse.groupAddress) {
-                val groupAddressResult = GroupAddress()
-                groupAddressResult.isError = !isNullOrEmpty(groupAddress.errors)
-                groupAddressResult.errorMessage = convertToString(groupAddress.errors)
-
-                val userAddressResult = com.tokopedia.logisticCommon.data.entity.address.UserAddress()
-                userAddressResult.status = groupAddress.userAddress.status
-                userAddressResult.address = groupAddress.userAddress.address
-                userAddressResult.address2 = groupAddress.userAddress.address2
-                userAddressResult.addressId = groupAddress.userAddress.addressId
-                userAddressResult.addressName = groupAddress.userAddress.addressName
-                userAddressResult.cityId = groupAddress.userAddress.cityId
-                userAddressResult.cityName = groupAddress.userAddress.cityName
-                userAddressResult.country = groupAddress.userAddress.country
-                userAddressResult.districtId = groupAddress.userAddress.districtId
-                userAddressResult.districtName = groupAddress.userAddress.districtName
-                userAddressResult.latitude = groupAddress.userAddress.latitude
-                userAddressResult.longitude = groupAddress.userAddress.longitude
-                userAddressResult.phone = groupAddress.userAddress.phone
-                userAddressResult.postalCode = groupAddress.userAddress.postalCode
-                userAddressResult.provinceId = groupAddress.userAddress.provinceId
-                userAddressResult.provinceName = groupAddress.userAddress.provinceName
-                userAddressResult.receiverName = groupAddress.userAddress.receiverName
-                userAddressResult.cornerId = groupAddress.userAddress.cornerId
-                userAddressResult.isCorner = groupAddress.userAddress.isCorner
-                userAddressResult.state = groupAddress.userAddress.state
-                userAddressResult.stateDetail = groupAddress.userAddress.stateDetail
-                groupAddressResult.userAddress = userAddressResult
-
-                if (!isNullOrEmpty(groupAddress.groupShop)) {
-                    val groupShopListResult: MutableList<GroupShop> = ArrayList()
-                    for (groupShop in groupAddress.groupShop) {
-                        val groupShopResult = GroupShop()
-                        groupShopResult.isError = !isNullOrEmpty(groupShop.errors)
-                        groupShopResult.errorMessage = convertToString(groupShop.errors)
-                        groupShopResult.shippingId = groupShop.shippingId
-                        groupShopResult.spId = groupShop.spId
-                        groupShopResult.dropshipperName = groupShop.dropshiper.name
-                        groupShopResult.dropshipperPhone = groupShop.dropshiper.telpNo
-                        groupShopResult.isUseInsurance = groupShop.isInsurance
-                        groupShopResult.cartString = groupShop.cartString
-                        groupShopResult.isHasPromoList = groupShop.isHasPromoList
-                        groupShopResult.isSaveStateFlag = groupShop.isSaveStateFlag
-                        groupShopResult.isLeasingProduct = groupShop.vehicleLeasing.isLeasingProduct
-                        groupShopResult.bookingFee = groupShop.vehicleLeasing.bookingFee
-                        if (groupShop.listPromoCodes.isNotEmpty()) {
-                            groupShopResult.listPromoCodes = groupShop.listPromoCodes
-                        }
-                        groupShopResult.isFulfillment = groupShop.isFulfillment
-                        groupShopResult.fulfillmentId = groupShop.warehouse.warehouseId
-
-                        val tokoCabangInfo = groupShop.tokoCabangInfo
-                        groupShopResult.fulfillmentBadgeUrl = tokoCabangInfo.badgeUrl
-                        groupShopResult.fulfillmentName = tokoCabangInfo.message
-
-                        val shipmentInformation = groupShop.shipmentInformation
-                        val freeShippingData = FreeShippingData()
-                        freeShippingData.badgeUrl = shipmentInformation.freeShipping.badgeUrl
-                        freeShippingData.eligible = shipmentInformation.freeShipping.eligible
-                        val freeShippingExtra = shipmentInformation.freeShippingExtra
-                        val freeShippingExtraData = FreeShippingData(freeShippingExtra.eligible, freeShippingExtra.badgeUrl)
-                        val preorderData = PreorderData()
-                        preorderData.duration = shipmentInformation.preorder.duration
-                        preorderData.isPreorder = shipmentInformation.preorder.isPreorder
-                        val shipmentInformationData = ShipmentInformationData()
-                        shipmentInformationData.estimation = shipmentInformation.estimation
-                        shipmentInformationData.shopLocation = shipmentInformation.shopLocation
-                        shipmentInformationData.freeShipping = freeShippingData
-                        shipmentInformationData.freeShippingExtra = freeShippingExtraData
-                        shipmentInformationData.preorder = preorderData
-                        groupShopResult.shipmentInformationData = shipmentInformationData
-                        val shopResult = com.tokopedia.checkout.domain.model.cartshipmentform.Shop()
-                        shopResult.shopId = groupShop.shop.shopId
-                        shopResult.userId = groupShop.shop.userId
-                        shopResult.shopName = groupShop.shop.shopName
-                        shopResult.shopImage = groupShop.shop.shopImage
-                        shopResult.shopUrl = groupShop.shop.shopUrl
-                        shopResult.shopStatus = groupShop.shop.shopStatus
-                        shopResult.isGold = groupShop.shop.goldMerchant.isGoldBadge
-                        shopResult.isGoldBadge = groupShop.shop.goldMerchant.isGoldBadge
-                        shopResult.isOfficial = groupShop.shop.isOfficial == 1
-                        if (groupShop.shop.isOfficial == 1) {
-                            shopResult.shopBadge = groupShop.shop.officialStore.osLogoUrl
-                        } else if (groupShop.shop.goldMerchant.isGold == 1) {
-                            shopResult.shopBadge = groupShop.shop.goldMerchant.goldMerchantLogoUrl
-                        }
-                        shopResult.isFreeReturns = groupShop.shop.isFreeReturns == 1
-                        shopResult.addressId = groupShop.shop.addressId
-                        shopResult.postalCode = groupShop.shop.postalCode
-                        shopResult.latitude = groupShop.shop.latitude
-                        shopResult.longitude = groupShop.shop.longitude
-                        shopResult.districtId = groupShop.shop.districtId
-                        shopResult.districtName = groupShop.shop.districtName
-                        shopResult.origin = groupShop.shop.origin
-                        shopResult.addressStreet = groupShop.shop.addressStreet
-                        shopResult.provinceId = groupShop.shop.provinceId
-                        shopResult.cityId = groupShop.shop.cityId
-                        shopResult.cityName = groupShop.shop.cityName
-                        shopResult.shopAlertMessage = groupShop.shop.shopAlertMessage
-                        groupShopResult.shop = shopResult
-                        if (!isNullOrEmpty(groupShop.shopShipments)) {
-                            val shopShipmentListResult: MutableList<ShopShipment> = ArrayList()
-                            for ((shipId, shipName, shipCode, shipLogo, shipProds, isDropshipEnabled) in groupShop.shopShipments) {
-                                val shopShipmentResult = ShopShipment()
-                                shopShipmentResult.isDropshipEnabled = isDropshipEnabled == 1
-                                shopShipmentResult.shipCode = shipCode
-                                shopShipmentResult.shipId = shipId
-                                shopShipmentResult.shipLogo = shipLogo
-                                shopShipmentResult.shipName = shipName
-                                if (!isNullOrEmpty(shipProds)) {
-                                    val shipProdListResult: MutableList<ShipProd> = ArrayList()
-                                    for ((shipProdId, shipProdName, shipGroupName, shipGroupId, additionalFee, minimumWeight) in shipProds) {
-                                        val shipProdResult = ShipProd()
-                                        shipProdResult.additionalFee = additionalFee
-                                        shipProdResult.minimumWeight = minimumWeight
-                                        shipProdResult.shipGroupId = shipGroupId
-                                        shipProdResult.shipGroupName = shipGroupName
-                                        shipProdResult.shipProdId = shipProdId
-                                        shipProdResult.shipProdName = shipProdName
-                                        shipProdListResult.add(shipProdResult)
-                                    }
-                                    shopShipmentResult.shipProds = shipProdListResult
-                                }
-                                shopShipmentListResult.add(shopShipmentResult)
-                            }
-                            groupShopResult.shopShipments = shopShipmentListResult
-                        }
-                        if (!isNullOrEmpty(groupShop.products)) {
-                            val productListResult: MutableList<Product> = ArrayList()
-                            for ((errors, productId, cartId, productName, productPriceFmt, productPrice, productOriginalPrice, productWholesalePrice, productWholesalePriceFmt, productWeightFmt, productWeight, productCondition, productUrl, productReturnable, productIsFreeReturns, productIsPreorder, productCashback, productMinOrder, productInvenageValue, productSwitchInvenage, productPriceCurrency, productImageSrc200Square, productNotes, productQuantity, productMenuId, productFinsurance, productFcancelPartial, productCatId, productCatalogId, productCategory, productAlertMessage, productInformation, campaignId, pppDataMapping, productTrackerData, productPreorder, tradeInInfo, freeShipping, freeShippingExtra1, productTicker, variantDescriptionDetail) in groupShop.products) {
-                                val productResult = Product()
-                                val analyticsProductCheckoutData = AnalyticsProductCheckoutData()
-                                analyticsProductCheckoutData.productId = productId.toString()
-                                analyticsProductCheckoutData.productAttribution = productTrackerData.attribution
-                                analyticsProductCheckoutData.productListName = productTrackerData.trackerListName
-                                analyticsProductCheckoutData.productCategory = productCategory
-                                analyticsProductCheckoutData.productCategoryId = productCatId.toString()
-                                analyticsProductCheckoutData.productName = productName
-                                analyticsProductCheckoutData.productPrice = productPrice.toString()
-                                if (tradeInInfo.isValidTradeIn) {
-                                    analyticsProductCheckoutData.productPrice = tradeInInfo.newDevicePrice.toString()
-                                    productResult.productPrice = tradeInInfo.newDevicePrice.toLong()
-                                }
-                                analyticsProductCheckoutData.productShopId = groupShop.shop.shopId.toString()
-                                analyticsProductCheckoutData.productShopName = groupShop.shop.shopName
-                                analyticsProductCheckoutData.productShopType = generateShopType(groupShop.shop)
-                                analyticsProductCheckoutData.productVariant = ""
-                                analyticsProductCheckoutData.productBrand = ""
-                                analyticsProductCheckoutData.productQuantity = productQuantity
-                                analyticsProductCheckoutData.warehouseId = groupShop.warehouse.warehouseId.toString()
-                                analyticsProductCheckoutData.productWeight = productWeight.toString()
-                                if (groupAddressResult.userAddress != null) {
-                                    analyticsProductCheckoutData.buyerAddressId = groupAddressResult.userAddress.addressId
-                                }
-                                analyticsProductCheckoutData.shippingDuration = ""
-                                analyticsProductCheckoutData.courier = ""
-                                analyticsProductCheckoutData.shippingPrice = ""
-                                if (dataResult.cod != null) {
-                                    analyticsProductCheckoutData.codFlag = dataResult.cod!!.isCod.toString()
-                                } else {
-                                    analyticsProductCheckoutData.codFlag = false.toString()
-                                }
-                                if (groupAddressResult.userAddress != null && isNotNullOrEmptyOrZero(groupAddressResult.userAddress.cornerId)) {
-                                    analyticsProductCheckoutData.tokopediaCornerFlag = true.toString()
-                                } else {
-                                    analyticsProductCheckoutData.tokopediaCornerFlag = false.toString()
-                                }
-                                analyticsProductCheckoutData.isFulfillment = groupShop.isFulfillment.toString()
-                                analyticsProductCheckoutData.isDiscountedPrice = productOriginalPrice > 0
-                                analyticsProductCheckoutData.campaignId = campaignId
-                                productResult.isError = !isNullOrEmpty(errors)
-                                productResult.errorMessage = if (errors.size >= 1) errors[0] else ""
-                                productResult.errorMessageDescription = if (errors.size >= 2) errors[1] else ""
-                                productResult.productId = productId
-                                productResult.cartId = cartId
-                                productResult.productName = productName
-                                productResult.productPriceFmt = productPriceFmt
-                                productResult.productPrice = productPrice
-                                productResult.productOriginalPrice = productOriginalPrice
-                                productResult.productWholesalePrice = productWholesalePrice
-                                productResult.productWholesalePriceFmt = productWholesalePriceFmt
-                                productResult.productWeightFmt = productWeightFmt
-                                productResult.productWeight = productWeight
-                                productResult.productCondition = productCondition
-                                productResult.productUrl = productUrl
-                                productResult.isProductReturnable = productReturnable == 1
-                                productResult.isProductIsFreeReturns = productIsFreeReturns == 1
-                                productResult.isProductIsPreorder = productIsPreorder == 1
-                                productResult.preOrderDurationDay = productPreorder.durationDay
-                                if (productPreorder.durationText.length > 0) {
-                                    productResult.productPreOrderInfo = "PO " + productPreorder.durationText
-                                }
-                                productResult.productCashback = productCashback
-                                productResult.productMinOrder = productMinOrder
-                                productResult.productInvenageValue = productInvenageValue
-                                productResult.productSwitchInvenage = productSwitchInvenage
-                                productResult.productPriceCurrency = productPriceCurrency
-                                productResult.productImageSrc200Square = productImageSrc200Square
-                                productResult.productNotes = productNotes
-                                productResult.productQuantity = productQuantity
-                                productResult.productMenuId = productMenuId
-                                productResult.isProductFinsurance = productFinsurance == 1
-                                productResult.isProductFcancelPartial = productFcancelPartial == 1
-                                productResult.productCatId = productCatId
-                                productResult.productCatalogId = productCatalogId
-                                productResult.analyticsProductCheckoutData = analyticsProductCheckoutData
-                                productResult.isShowTicker = productTicker.isShowTicker
-                                productResult.tickerMessage = productTicker.message
-                                if (freeShippingExtra1.eligible) {
-                                    productResult.isFreeShippingExtra = true
-                                }
-                                if (freeShipping.eligible) {
-                                    productResult.isFreeShipping = true
-                                }
-                                if (tradeInInfo.isValidTradeIn) {
-                                    val tradeInInfoData = TradeInInfoData()
-                                    tradeInInfoData.isValidTradeIn = tradeInInfo.isValidTradeIn
-                                    tradeInInfoData.newDevicePrice = tradeInInfo.newDevicePrice
-                                    tradeInInfoData.newDevicePriceFmt = tradeInInfo.newDevicePriceFmt
-                                    tradeInInfoData.oldDevicePrice = tradeInInfo.oldDevicePrice
-                                    tradeInInfoData.oldDevicePriceFmt = tradeInInfo.oldDevicePriceFmt
-                                    tradeInInfoData.isDropOffEnable = tradeInInfo.isDropOffEnable
-                                    tradeInInfoData.deviceModel = tradeInInfo.deviceModel
-                                    tradeInInfoData.diagnosticId = tradeInInfo.diagnosticId
-                                    productResult.tradeInInfoData = tradeInInfoData
-                                }
-                                if (!isDisablePPP) {
-                                    if (pppDataMapping.protectionAvailable) {
-                                        val purchaseProtectionPlanData = PurchaseProtectionPlanData()
-                                        purchaseProtectionPlanData.isProtectionAvailable = pppDataMapping.protectionAvailable
-                                        purchaseProtectionPlanData.protectionLinkText = pppDataMapping.protectionLinkText
-                                        purchaseProtectionPlanData.protectionLinkUrl = pppDataMapping.protectionLinkUrl
-                                        purchaseProtectionPlanData.isProtectionOptIn = pppDataMapping.protectionOptIn
-                                        purchaseProtectionPlanData.protectionPrice = pppDataMapping.protectionPrice
-                                        purchaseProtectionPlanData.protectionPricePerProduct = pppDataMapping.protectionPricePerProduct
-                                        purchaseProtectionPlanData.protectionSubtitle = pppDataMapping.protectionSubtitle
-                                        purchaseProtectionPlanData.protectionTitle = pppDataMapping.protectionTitle
-                                        purchaseProtectionPlanData.protectionTypeId = pppDataMapping.protectionTypeId
-                                        purchaseProtectionPlanData.isProtectionCheckboxDisabled = pppDataMapping.protectionCheckboxDisabled
-                                        productResult.purchaseProtectionPlanData = purchaseProtectionPlanData
-                                    }
-                                }
-                                productResult.variant = variantDescriptionDetail.variantDescription
-                                productResult.productAlertMessage = productAlertMessage
-                                productResult.productInformation = productInformation
-                                val promoSAFResponse = shipmentAddressFormDataResponse.promoSAFResponse
-                                if (promoSAFResponse.lastApply != null && promoSAFResponse.lastApply!!.data != null && promoSAFResponse.lastApply!!.data!!.trackingDetails != null) {
-                                    val trackingDetailsItems = promoSAFResponse.lastApply!!.data!!.trackingDetails
-                                    if (trackingDetailsItems!!.size > 0) {
-                                        for (trackingDetail in trackingDetailsItems) {
-                                            if (trackingDetail!!.productId != null && trackingDetail.productId == productResult.productId) {
-                                                analyticsProductCheckoutData.promoCode = trackingDetail.promoCodesTracking
-                                                analyticsProductCheckoutData.promoDetails = trackingDetail.promoDetailsTracking
-                                            }
-                                        }
-                                    }
-                                }
-                                productListResult.add(productResult)
-                            }
-                            groupShopResult.products = productListResult
-                        }
-                        groupShopListResult.add(groupShopResult)
-                    }
-                    groupAddressResult.groupShop = groupShopListResult
+        val cartShipmentAddressFormData = CartShipmentAddressFormData().apply {
+            var isDisableEgold = false
+            var isDisablePPP = false
+            var isDisableDonation = false
+            for (disabledFeature in shipmentAddressFormDataResponse.disabledFeatures) {
+                when (disabledFeature) {
+                    DISABLED_DROPSHIPPER -> isDropshipperDisable = true
+                    DISABLED_ORDER_PRIORITY -> isOrderPrioritasDisable = true
+                    DISABLED_EGOLD -> isDisableEgold = true
+                    DISABLED_PURCHASE_PROTECTION -> isDisablePPP = true
+                    DISABLED_DONATION -> isDisableDonation = true
                 }
-                groupAddressListResult.add(groupAddressResult)
             }
-            dataResult.groupAddress = groupAddressListResult
-            dataResult.isHasError = checkCartHasError(dataResult)
+
+            keroDiscomToken = shipmentAddressFormDataResponse.keroDiscomToken
+            keroToken = shipmentAddressFormDataResponse.keroToken
+            keroUnixTime = shipmentAddressFormDataResponse.keroUnixTime
+            isHidingCourier = shipmentAddressFormDataResponse.hideCourier
+            isBlackbox = shipmentAddressFormDataResponse.isBlackbox == 1
+            errorCode = shipmentAddressFormDataResponse.errorCode
+            isError = !isNullOrEmpty(shipmentAddressFormDataResponse.errors)
+            errorMessage = convertToString(shipmentAddressFormDataResponse.errors)
+            isShowOnboarding = shipmentAddressFormDataResponse.isShowOnboarding
+            isIneligiblePromoDialogEnabled = shipmentAddressFormDataResponse.isIneligiblePromoDialogEnabled
+            isOpenPrerequisiteSite = shipmentAddressFormDataResponse.isOpenPrerequisiteSite
+            isEligibleNewShippingExperience = shipmentAddressFormDataResponse.isEligibleNewShippingExperience
+            addressesData = mapAddressesData(shipmentAddressFormDataResponse)
+            cod = mapCod(shipmentAddressFormDataResponse.cod)
+            campaignTimerUi = mapCampaignTimer(shipmentAddressFormDataResponse.campaignTimer)
+            lastApplyData = mapPromoLastApply(shipmentAddressFormDataResponse.promoSAFResponse.lastApply?.data)
+            promoCheckoutErrorDefault = mapPromoCheckoutErrorDefault(shipmentAddressFormDataResponse.promoSAFResponse.errorDefault)
+            groupAddress = mapGroupAddresses(shipmentAddressFormDataResponse, isDisablePPP)
+            isHasError = checkCartHasError(this)
+            popUpMessage = shipmentAddressFormDataResponse.popUpMessage
+            shipmentAddressFormDataResponse.tickers.firstOrNull()?.let {
+                tickerData = mapTickerData(it)
+            }
+            if (!isDisableEgold) {
+                egoldAttributes = mapEgold(shipmentAddressFormDataResponse)
+            }
+            if (!isDisableDonation) {
+                donation = mapDonation(shipmentAddressFormDataResponse)
+            }
         }
-        dataResult.popUpMessage = shipmentAddressFormDataResponse.popUpMessage
-        return dataResult
+        return cartShipmentAddressFormData
+    }
+
+    private fun mapTickerData(it: Ticker): TickerData {
+        val tickerData = TickerData().apply {
+            id = it.id
+            message = it.message
+            page = it.page
+            title = ""
+        }
+        return tickerData
+    }
+
+    private fun mapGroupAddresses(shipmentAddressFormDataResponse: ShipmentAddressFormDataResponse, isDisablePPP: Boolean): MutableList<GroupAddress> {
+        val groupAddressListResult = arrayListOf<GroupAddress>()
+        for (groupAddress in shipmentAddressFormDataResponse.groupAddress) {
+            groupAddressListResult.add(
+                    GroupAddress().apply {
+                        isError = !groupAddress.errors.isNullOrEmpty()
+                        errorMessage = convertToString(groupAddress.errors)
+                        userAddress = mapUserAddress(groupAddress)
+                        groupShop = mapGroupShops(groupAddress, shipmentAddressFormDataResponse, isDisablePPP)
+                    }
+            )
+        }
+        return groupAddressListResult
+    }
+
+    private fun mapGroupShops(groupAddress: com.tokopedia.checkout.data.model.response.shipmentaddressform.GroupAddress,
+                              shipmentAddressFormDataResponse: ShipmentAddressFormDataResponse,
+                              isDisablePPP: Boolean): MutableList<GroupShop> {
+        val groupShopListResult = arrayListOf<GroupShop>()
+        groupAddress.groupShop.forEach {
+            groupShopListResult.add(
+                    GroupShop().apply {
+                        isError = !it.errors.isNullOrEmpty()
+                        errorMessage = convertToString(it.errors)
+                        shippingId = it.shippingId
+                        spId = it.spId
+                        dropshipperName = it.dropshiper.name
+                        dropshipperPhone = it.dropshiper.telpNo
+                        isUseInsurance = it.isInsurance
+                        cartString = it.cartString
+                        isHasPromoList = it.isHasPromoList
+                        isSaveStateFlag = it.isSaveStateFlag
+                        isLeasingProduct = it.vehicleLeasing.isLeasingProduct
+                        bookingFee = it.vehicleLeasing.bookingFee
+                        listPromoCodes = it.listPromoCodes
+                        isFulfillment = it.isFulfillment
+                        fulfillmentId = it.warehouse.warehouseId
+                        fulfillmentBadgeUrl = it.tokoCabangInfo.badgeUrl
+                        fulfillmentName = it.tokoCabangInfo.message
+                        shipmentInformationData = mapShipmentInformationData(it.shipmentInformation)
+                        shop = mapShopData(it.shop)
+                        shopShipments = mapShopShipments(it.shopShipments)
+                        products = mapProducts(it, groupAddress, shipmentAddressFormDataResponse, isDisablePPP)
+                    }
+            )
+        }
+        return groupShopListResult
+    }
+
+    private fun mapProducts(groupShop: com.tokopedia.checkout.data.model.response.shipmentaddressform.GroupShop,
+                            groupAddress: com.tokopedia.checkout.data.model.response.shipmentaddressform.GroupAddress,
+                            shipmentAddressFormDataResponse: ShipmentAddressFormDataResponse,
+                            isDisablePPP: Boolean): MutableList<Product> {
+        val productListResult = arrayListOf<Product>()
+        groupShop.products.forEach {
+            val productResult = Product().apply {
+                analyticsProductCheckoutData = mapAnalyticsProductCheckoutData(
+                        it,
+                        groupAddress.userAddress,
+                        groupShop,
+                        shipmentAddressFormDataResponse.cod,
+                        shipmentAddressFormDataResponse.promoSAFResponse
+                )
+                if (it.tradeInInfo.isValidTradeIn) {
+                    productPrice = it.tradeInInfo.newDevicePrice.toLong()
+                }
+                isError = !it.errors.isNullOrEmpty()
+                errorMessage = if (it.errors.isNotEmpty()) it.errors[0] else ""
+                errorMessageDescription = if (it.errors.size >= 2) it.errors[1] else ""
+                productId = it.productId
+                cartId = it.cartId
+                productName = it.productName
+                productPriceFmt = it.productPriceFmt
+                productPrice = it.productPrice
+                productOriginalPrice = it.productOriginalPrice
+                productWholesalePrice = it.productWholesalePrice
+                productWholesalePriceFmt = it.productWholesalePriceFmt
+                productWeightFmt = it.productWeightFmt
+                productWeight = it.productWeight
+                productCondition = it.productCondition
+                productUrl = it.productUrl
+                isProductReturnable = it.productReturnable == 1
+                isProductIsFreeReturns = it.productIsFreeReturns == 1
+                isProductIsPreorder = it.productIsPreorder == 1
+                preOrderDurationDay = it.productPreorder.durationDay
+                if (it.productPreorder.durationText.isNotEmpty()) {
+                    productPreOrderInfo = "PO " + it.productPreorder.durationText
+                }
+                productCashback = it.productCashback
+                productMinOrder = it.productMinOrder
+                productInvenageValue = it.productInvenageValue
+                productSwitchInvenage = it.productSwitchInvenage
+                productPriceCurrency = it.productPriceCurrency
+                productImageSrc200Square = it.productImageSrc200Square
+                productNotes = it.productNotes
+                productQuantity = it.productQuantity
+                productMenuId = it.productMenuId
+                isProductFinsurance = it.productFinsurance == 1
+                isProductFcancelPartial = it.productFcancelPartial == 1
+                productCatId = it.productCatId
+                productCatalogId = it.productCatalogId
+                isShowTicker = it.productTicker.isShowTicker
+                tickerMessage = it.productTicker.message
+                if (it.freeShippingExtra.eligible) {
+                    isFreeShippingExtra = true
+                }
+                if (it.freeShipping.eligible) {
+                    isFreeShipping = true
+                }
+                if (it.tradeInInfo.isValidTradeIn) {
+                    tradeInInfoData = mapTradeInInfoData(it.tradeInInfo)
+                }
+                if (!isDisablePPP && it.purchaseProtectionPlanDataResponse.protectionAvailable) {
+                    purchaseProtectionPlanData = mapPurchaseProtectionData(it.purchaseProtectionPlanDataResponse)
+                }
+                variant = it.variantDescriptionDetail.variantDescription
+                productAlertMessage = it.productAlertMessage
+                productInformation = it.productInformation
+            }
+            productListResult.add(productResult)
+        }
+        return productListResult
+    }
+
+    private fun mapAnalyticsProductCheckoutData(product: com.tokopedia.checkout.data.model.response.shipmentaddressform.Product,
+                                                userAddress: UserAddress,
+                                                groupShop: com.tokopedia.checkout.data.model.response.shipmentaddressform.GroupShop,
+                                                cod: Cod,
+                                                promoSAFResponse: PromoSAFResponse): AnalyticsProductCheckoutData {
+        return AnalyticsProductCheckoutData().apply {
+            productId = product.productId.toString()
+            productAttribution = product.productTrackerData.attribution
+            productListName = product.productTrackerData.trackerListName
+            productCategory = product.productCategory
+            productCategoryId = product.productCatId.toString()
+            productName = product.productName
+            productPrice = product.productPrice.toString()
+            if (product.tradeInInfo.isValidTradeIn) {
+                productPrice = product.tradeInInfo.newDevicePrice.toString()
+            }
+            productShopId = groupShop.shop.shopId.toString()
+            productShopName = groupShop.shop.shopName
+            productShopType = generateShopType(groupShop.shop)
+            productVariant = ""
+            productBrand = ""
+            productQuantity = product.productQuantity
+            warehouseId = groupShop.warehouse.warehouseId.toString()
+            productWeight = product.productWeight.toString()
+            buyerAddressId = userAddress.addressId
+            shippingDuration = ""
+            courier = ""
+            shippingPrice = ""
+            codFlag = cod.isCod.toString()
+            if (isNotNullOrEmptyOrZero(userAddress.cornerId)) {
+                tokopediaCornerFlag = true.toString()
+            } else {
+                tokopediaCornerFlag = false.toString()
+            }
+            isFulfillment = groupShop.isFulfillment.toString()
+            isDiscountedPrice = product.productOriginalPrice > 0
+            campaignId = product.campaignId
+            promoSAFResponse.lastApply?.data?.trackingDetails?.forEach {
+                if (it?.productId != null && it.productId == product.productId) {
+                    promoCode = it.promoCodesTracking
+                    promoDetails = it.promoDetailsTracking
+                }
+            }
+        }
+    }
+
+    private fun mapShopShipments(shopShipment: List<com.tokopedia.checkout.data.model.response.shipmentaddressform.ShopShipment>): List<ShopShipment> {
+        val shopShipmentListResult = arrayListOf<ShopShipment>()
+        shopShipment.forEach {
+            shopShipmentListResult.add(
+                    ShopShipment().apply {
+                        isDropshipEnabled = it.isDropshipEnabled == 1
+                        shipCode = it.shipCode
+                        shipId = it.shipId
+                        shipLogo = it.shipLogo
+                        shipName = it.shipName
+                        shipProds = mapShipProds(it.shipProds)
+                    }
+            )
+        }
+        return shopShipmentListResult
+    }
+
+    private fun mapShipProds(shipProds: List<com.tokopedia.checkout.data.model.response.shipmentaddressform.ShipProd>): List<ShipProd> {
+        val shipProdListResult = arrayListOf<ShipProd>()
+        shipProds.forEach {
+            shipProdListResult.add(
+                    ShipProd().apply {
+                        additionalFee = it.additionalFee
+                        minimumWeight = it.minimumWeight
+                        shipGroupId = it.shipGroupId
+                        shipGroupName = it.shipGroupName
+                        shipProdId = it.shipProdId
+                        shipProdName = it.shipProdName
+                    }
+            )
+        }
+
+        return shipProdListResult
+    }
+
+    private fun mapShopData(shop: Shop): com.tokopedia.checkout.domain.model.cartshipmentform.Shop {
+        return com.tokopedia.checkout.domain.model.cartshipmentform.Shop().apply {
+            shopId = shop.shopId
+            userId = shop.userId
+            shopName = shop.shopName
+            shopImage = shop.shopImage
+            shopUrl = shop.shopUrl
+            shopStatus = shop.shopStatus
+            isGold = shop.goldMerchant.isGoldBadge
+            isGoldBadge = shop.goldMerchant.isGoldBadge
+            isOfficial = shop.isOfficial == 1
+            if (shop.isOfficial == 1) {
+                shopBadge = shop.officialStore.osLogoUrl
+            } else if (shop.goldMerchant.isGold == 1) {
+                shopBadge = shop.goldMerchant.goldMerchantLogoUrl
+            }
+            isFreeReturns = shop.isFreeReturns == 1
+            addressId = shop.addressId
+            postalCode = shop.postalCode
+            latitude = shop.latitude
+            longitude = shop.longitude
+            districtId = shop.districtId
+            districtName = shop.districtName
+            origin = shop.origin
+            addressStreet = shop.addressStreet
+            provinceId = shop.provinceId
+            cityId = shop.cityId
+            cityName = shop.cityName
+            shopAlertMessage = shop.shopAlertMessage
+        }
+    }
+
+    private fun mapShipmentInformationData(shipmentInformation: ShipmentInformation): ShipmentInformationData {
+        return ShipmentInformationData().apply {
+            preorder = mapPreorderData(shipmentInformation)
+            estimation = shipmentInformation.estimation
+            shopLocation = shipmentInformation.shopLocation
+            freeShipping = mapFreeShippingData(shipmentInformation.freeShipping)
+            freeShippingExtra = mapFreeShippingData(shipmentInformation.freeShippingExtra)
+        }
+    }
+
+    private fun mapFreeShippingData(freeShipping: FreeShipping): FreeShippingData {
+        return FreeShippingData().apply {
+            badgeUrl = freeShipping.badgeUrl
+            eligible = freeShipping.eligible
+        }
+    }
+
+    private fun mapPreorderData(shipmentInformation: ShipmentInformation): PreorderData {
+        return PreorderData().apply {
+            duration = shipmentInformation.preorder.duration
+            isPreorder = shipmentInformation.preorder.isPreorder
+        }
+    }
+
+    private fun mapUserAddress(groupAddress: com.tokopedia.checkout.data.model.response.shipmentaddressform.GroupAddress): com.tokopedia.logisticCommon.data.entity.address.UserAddress {
+        return com.tokopedia.logisticCommon.data.entity.address.UserAddress().apply {
+            status = groupAddress.userAddress.status
+            address = groupAddress.userAddress.address
+            address2 = groupAddress.userAddress.address2
+            addressId = groupAddress.userAddress.addressId
+            addressName = groupAddress.userAddress.addressName
+            cityId = groupAddress.userAddress.cityId
+            cityName = groupAddress.userAddress.cityName
+            country = groupAddress.userAddress.country
+            districtId = groupAddress.userAddress.districtId
+            districtName = groupAddress.userAddress.districtName
+            latitude = groupAddress.userAddress.latitude
+            longitude = groupAddress.userAddress.longitude
+            phone = groupAddress.userAddress.phone
+            postalCode = groupAddress.userAddress.postalCode
+            provinceId = groupAddress.userAddress.provinceId
+            provinceName = groupAddress.userAddress.provinceName
+            receiverName = groupAddress.userAddress.receiverName
+            cornerId = groupAddress.userAddress.cornerId
+            isCorner = groupAddress.userAddress.isCorner
+            state = groupAddress.userAddress.state
+            stateDetail = groupAddress.userAddress.stateDetail
+        }
+    }
+
+    private fun mapTradeInInfoData(tradeInInfo: TradeInInfo): TradeInInfoData {
+        return TradeInInfoData().apply {
+            isValidTradeIn = tradeInInfo.isValidTradeIn
+            newDevicePrice = tradeInInfo.newDevicePrice
+            newDevicePriceFmt = tradeInInfo.newDevicePriceFmt
+            oldDevicePrice = tradeInInfo.oldDevicePrice
+            oldDevicePriceFmt = tradeInInfo.oldDevicePriceFmt
+            isDropOffEnable = tradeInInfo.isDropOffEnable
+            deviceModel = tradeInInfo.deviceModel
+            diagnosticId = tradeInInfo.diagnosticId
+        }
+    }
+
+    private fun mapPurchaseProtectionData(pppDataMapping: PurchaseProtectionPlanDataResponse): PurchaseProtectionPlanData {
+        return PurchaseProtectionPlanData().apply {
+            isProtectionAvailable = pppDataMapping.protectionAvailable
+            protectionLinkText = pppDataMapping.protectionLinkText
+            protectionLinkUrl = pppDataMapping.protectionLinkUrl
+            isProtectionOptIn = pppDataMapping.protectionOptIn
+            protectionPrice = pppDataMapping.protectionPrice
+            protectionPricePerProduct = pppDataMapping.protectionPricePerProduct
+            protectionSubtitle = pppDataMapping.protectionSubtitle
+            protectionTitle = pppDataMapping.protectionTitle
+            protectionTypeId = pppDataMapping.protectionTypeId
+            isProtectionCheckboxDisabled = pppDataMapping.protectionCheckboxDisabled
+        }
     }
 
     private fun mapPromoLastApply(promoData: Data?): LastApplyUiModel {
@@ -367,11 +418,9 @@ class ShipmentMapper @Inject constructor() {
 
     private fun mapListAllPromos(promoData: Data?): List<String> {
         val listAllPromoCodes = arrayListOf<String>()
-        if (promoData?.codes != null) {
-            promoData.codes?.forEach {
-                it?.let {
-                    listAllPromoCodes.add(it)
-                }
+        promoData?.codes?.forEach {
+            it?.let {
+                listAllPromoCodes.add(it)
             }
         }
         promoData?.voucherOrders?.forEach {
@@ -508,20 +557,20 @@ class ShipmentMapper @Inject constructor() {
         )
     }
 
-    private fun mapCod(shipmentAddressFormDataResponse: ShipmentAddressFormDataResponse): CodModel {
-        val cod = CodModel()
-        cod.isCod = shipmentAddressFormDataResponse.cod.isCod
-        cod.counterCod = shipmentAddressFormDataResponse.cod.counterCod
-        return cod
+    private fun mapCod(cod: Cod): CodModel {
+        return CodModel().apply {
+            isCod = cod.isCod
+            counterCod = cod.counterCod
+        }
     }
 
     private fun mapDonation(shipmentAddressFormDataResponse: ShipmentAddressFormDataResponse): Donation {
-        val donation = Donation()
-        donation.title = shipmentAddressFormDataResponse.donation.title
-        donation.description = shipmentAddressFormDataResponse.donation.description
-        donation.nominal = shipmentAddressFormDataResponse.donation.nominal
-        donation.isChecked = shipmentAddressFormDataResponse.isDonationCheckboxStatus
-        return donation
+        return Donation().apply {
+            title = shipmentAddressFormDataResponse.donation.title
+            description = shipmentAddressFormDataResponse.donation.description
+            nominal = shipmentAddressFormDataResponse.donation.nominal
+            isChecked = shipmentAddressFormDataResponse.isDonationCheckboxStatus
+        }
     }
 
     private fun mapEgold(shipmentAddressFormDataResponse: ShipmentAddressFormDataResponse): EgoldAttributeModel {
@@ -561,9 +610,10 @@ class ShipmentMapper @Inject constructor() {
                 if (promoSpId.mvcShippingBenefits.isNotEmpty()) {
                     val mvcShippingBenefitUiModels: MutableList<MvcShippingBenefitUiModel> = ArrayList()
                     for (mvcShippingBenefit in promoSpId.mvcShippingBenefits) {
-                        val mvcShippingBenefitUiModel = MvcShippingBenefitUiModel()
-                        mvcShippingBenefitUiModel.benefitAmount = mvcShippingBenefit.benefitAmount
-                        mvcShippingBenefitUiModel.spId = mvcShippingBenefit.spId
+                        val mvcShippingBenefitUiModel = MvcShippingBenefitUiModel().apply {
+                            benefitAmount = mvcShippingBenefit.benefitAmount
+                            spId = mvcShippingBenefit.spId
+                        }
                         mvcShippingBenefitUiModels.add(mvcShippingBenefitUiModel)
                     }
                     promoSpIdUiModel.mvcShippingBenefits = mvcShippingBenefitUiModels
@@ -679,5 +729,11 @@ class ShipmentMapper @Inject constructor() {
         private const val SHOP_TYPE_OFFICIAL_STORE = "official_store"
         private const val SHOP_TYPE_GOLD_MERCHANT = "gold_merchant"
         private const val SHOP_TYPE_REGULER = "reguler"
+
+        const val DISABLED_DROPSHIPPER = "dropshipper"
+        const val DISABLED_ORDER_PRIORITY = "order_prioritas"
+        const val DISABLED_EGOLD = "egold"
+        const val DISABLED_PURCHASE_PROTECTION = "ppp"
+        const val DISABLED_DONATION = "donation"
     }
 }
