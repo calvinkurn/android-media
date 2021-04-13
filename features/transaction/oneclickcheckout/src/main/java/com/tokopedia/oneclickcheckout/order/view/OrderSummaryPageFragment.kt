@@ -692,7 +692,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                 coachMark.onFinishListener = {
                     when (onboarding.coachmarkType) {
                         COACHMARK_TYPE_NEW_BUYER_BEFORE_CREATE_PROFILE -> orderSummaryAnalytics.eventClickLanjutOnCoachmark2ForNewBuyerBeforeCreateProfile(userSession.get().userId)
-                        COACHMARK_TYPE_NEW_BUYER_AFTER_CREATE_PROFILE -> orderSummaryAnalytics.eventClickDoneOnCoachmark3ForNewBuyerAfterCreateProfile(userSession.get().userId)
+                        COACHMARK_TYPE_NEW_BUYER_AFTER_CREATE_PROFILE, COACHMARK_TYPE_NEW_BUYER_REMOVE_PROFILE -> orderSummaryAnalytics.eventClickDoneOnCoachmark3ForNewBuyerAfterCreateProfile(userSession.get().userId)
                         COACHMARK_TYPE_EXISTING_USER_ONE_PROFILE -> orderSummaryAnalytics.eventClickDoneOnCoachmark2ForExistingUserOneProfile(userSession.get().userId)
                         COACHMARK_TYPE_EXISTING_USER_MULTI_PROFILE -> orderSummaryAnalytics.eventClickDoneOnCoachmark2ForExistingUserMultiProfile(userSession.get().userId)
                     }
@@ -717,7 +717,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                 0 -> orderSummaryAnalytics.eventViewCoachmark1ForNewBuyerBeforeCreateProfile(userSession.get().userId)
                 1 -> orderSummaryAnalytics.eventViewCoachmark2ForNewBuyerBeforeCreateProfile(userSession.get().userId)
             }
-            COACHMARK_TYPE_NEW_BUYER_AFTER_CREATE_PROFILE -> when (currentIndex) {
+            COACHMARK_TYPE_NEW_BUYER_AFTER_CREATE_PROFILE, COACHMARK_TYPE_NEW_BUYER_REMOVE_PROFILE -> when (currentIndex) {
                 0 -> orderSummaryAnalytics.eventViewCoachmark1ForNewBuyerAfterCreateProfile(userSession.get().userId)
                 1 -> orderSummaryAnalytics.eventViewCoachmark2ForNewBuyerAfterCreateProfile(userSession.get().userId)
                 2 -> orderSummaryAnalytics.eventViewCoachmark3ForNewBuyerAfterCreateProfile(userSession.get().userId)
