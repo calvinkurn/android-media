@@ -51,7 +51,7 @@ public class ProductDataView implements Parcelable {
         return isQuerySafe;
     }
 
-    public void setIsQuerySafe(boolean querySafe) {
+    public void setQuerySafe(boolean querySafe) {
         isQuerySafe = querySafe;
     }
 
