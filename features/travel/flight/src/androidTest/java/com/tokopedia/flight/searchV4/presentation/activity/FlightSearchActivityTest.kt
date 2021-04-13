@@ -156,9 +156,11 @@ class FlightSearchActivityTest {
     fun promoChipsOnClicked(){
         Thread.sleep(2000)
         if (getPromoChipsItemCount() > 0) {
-            onView(withId(R.id.recycler_view_promo_chips)).perform(RecyclerViewActions
+            val viewInteraction = onView(AllOf.allOf(
+                    AllOf.allOf(withId(R.id.recycler_view_promo_chips), withParent(withId(R.id.layout_widget_flight_promo_chips)),
+                            isDisplayed()))).check(matches(isDisplayed()))
+            viewInteraction.perform(RecyclerViewActions
                     .actionOnItemAtPosition<FlightPromoChipsViewHolder>(0, click()))
-            Thread.sleep(2000)
             assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_PROMO_CHIPS),
                     hasAllSuccess())
         }
