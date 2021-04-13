@@ -33,7 +33,7 @@ import javax.inject.Inject
 class ShipmentMapper @Inject constructor() {
 
     fun convertToShipmentAddressFormData(shipmentAddressFormDataResponse: ShipmentAddressFormDataResponse): CartShipmentAddressFormData {
-        val cartShipmentAddressFormData = CartShipmentAddressFormData().apply {
+        return CartShipmentAddressFormData().apply {
             var isDisableEgold = false
             var isDisablePPP = false
             var isDisableDonation = false
@@ -77,17 +77,15 @@ class ShipmentMapper @Inject constructor() {
                 donation = mapDonation(shipmentAddressFormDataResponse)
             }
         }
-        return cartShipmentAddressFormData
     }
 
     private fun mapTickerData(it: Ticker): TickerData {
-        val tickerData = TickerData().apply {
+        return TickerData().apply {
             id = it.id
             message = it.message
             page = it.page
             title = ""
         }
-        return tickerData
     }
 
     private fun mapGroupAddresses(shipmentAddressFormDataResponse: ShipmentAddressFormDataResponse, isDisablePPP: Boolean): MutableList<GroupAddress> {
@@ -243,10 +241,10 @@ class ShipmentMapper @Inject constructor() {
             courier = ""
             shippingPrice = ""
             codFlag = cod.isCod.toString()
-            if (isNotNullOrEmptyOrZero(userAddress.cornerId)) {
-                tokopediaCornerFlag = true.toString()
+            tokopediaCornerFlag = if (isNotNullOrEmptyOrZero(userAddress.cornerId)) {
+                true.toString()
             } else {
-                tokopediaCornerFlag = false.toString()
+                false.toString()
             }
             isFulfillment = groupShop.isFulfillment.toString()
             isDiscountedPrice = product.productOriginalPrice > 0
@@ -419,13 +417,13 @@ class ShipmentMapper @Inject constructor() {
     private fun mapListAllPromos(promoData: Data?): List<String> {
         val listAllPromoCodes = arrayListOf<String>()
         promoData?.codes?.forEach {
-            it?.let {
-                listAllPromoCodes.add(it)
+            it?.let { promoCode ->
+                listAllPromoCodes.add(promoCode)
             }
         }
         promoData?.voucherOrders?.forEach {
-            it?.code?.let {
-                listAllPromoCodes.add(it)
+            it?.code?.let { promoCode ->
+                listAllPromoCodes.add(promoCode)
             }
         }
         return listAllPromoCodes
@@ -435,16 +433,16 @@ class ShipmentMapper @Inject constructor() {
         val listRedStates = arrayListOf<String>()
         if (promoData?.message?.state.equals(CheckoutConstant.STATE_RED, ignoreCase = true)) {
             promoData?.codes?.forEach {
-                it?.let { code ->
-                    listRedStates.add(code)
+                it?.let { promoCode ->
+                    listRedStates.add(promoCode)
                 }
             }
         }
         promoData?.voucherOrders?.forEach {
             it?.let {
                 if (it.message?.state.equals(CheckoutConstant.STATE_RED, ignoreCase = true)) {
-                    it.code?.let {
-                        listRedStates.add(it)
+                    it.code?.let { promoCode ->
+                        listRedStates.add(promoCode)
                     }
                 }
             }
