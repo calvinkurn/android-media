@@ -110,7 +110,6 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
     private var isFirstInitializeFilter = true
     private var quickFilters: List<QuickFilter> = listOf()
     private var searchPropertiesMap: ArrayList<LatLng> = arrayListOf()
-    private var isLoadingSearchByMap: Boolean = false
     private var isSearchByMap: Boolean = false
 
     private lateinit var filterBottomSheet: HotelFilterBottomSheets
@@ -378,11 +377,8 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
 
         super.showLoading()
 
-        if (adapter.list.size > 0 && adapter.list[0] is LoadingModel) {
-            if (isLoadingSearchByMap) {
-                collapseBottomSheet()
-                isLoadingSearchByMap = false
-            }
+        if ((adapter.list.size > 0 && adapter.list[0] is LoadingModel) ||
+                isHotelListShowingError()) {
             hideSearchWithMap()
         }
     }
@@ -544,7 +540,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                     0)
         }
 
-        if (adapter.list.size > 0 && adapter.list[0] is ErrorNetworkModel) {
+        if (isHotelListShowingError()) {
             rvVerticalPropertiesHotelSearchMap.setMargin(0,
                     resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl7),
                     0,
@@ -678,7 +674,6 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         }
         wrapper.addView(textView)
         wrapper.setOnClickListener {
-            isLoadingSearchByMap = true
             removeAllMarker()
             showCardListView()
             hideFindNearHereView()
@@ -1226,6 +1221,9 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
     private fun collapseBottomSheet() {
         bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
     }
+
+    private fun isHotelListShowingError(): Boolean =
+            adapter.list.size > 0 && adapter.list[0] is ErrorNetworkModel
 
     companion object {
         private const val COACHMARK_LIST_STEP_POSITION = 1
