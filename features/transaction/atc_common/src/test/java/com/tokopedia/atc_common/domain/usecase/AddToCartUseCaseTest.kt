@@ -8,15 +8,14 @@ import com.tokopedia.atc_common.domain.analytics.AddToCartBaseAnalytics
 import com.tokopedia.atc_common.domain.mapper.AddToCartDataMapper
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.model.response.DataModel
+import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase.Companion.REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.usecase.RequestParams
-import io.mockk.MockKAnnotations
-import io.mockk.every
+import io.mockk.*
 import io.mockk.impl.annotations.MockK
-import io.mockk.verify
-import io.mockk.verifySequence
+import org.junit.After
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
@@ -29,7 +28,7 @@ class AddToCartUseCaseTest {
     @MockK
     private lateinit var addToCartDataMapper: AddToCartDataMapper
 
-    @MockK
+    @MockK(relaxed = true)
     private lateinit var chosenAddressAddToCartRequestHelper: ChosenAddressAddToCartRequestHelper
 
     @MockK(relaxUnitFun = true)
@@ -42,12 +41,16 @@ class AddToCartUseCaseTest {
         putObject(REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST, AddToCartRequestParams())
     }
 
-    val REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST = "REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST";
-
     @Before
     fun before() {
         MockKAnnotations.init(this)
+        mockkObject(AddToCartBaseAnalytics)
         addToCartUseCase = AddToCartUseCase("mock_query", graphqlUseCase, addToCartDataMapper, chosenAddressAddToCartRequestHelper)
+    }
+
+    @After
+    fun after() {
+        unmockkObject(AddToCartBaseAnalytics)
     }
 
     @Test
@@ -60,6 +63,8 @@ class AddToCartUseCaseTest {
 
         every { graphqlUseCase.createObservable(any()) } returns
                 Observable.just(GraphqlResponse(result, errors, false))
+
+        every { addToCartDataMapper.mapAddToCartResponse(any()) } returns AddToCartDataModel(status = "OK", data = DataModel(success = 1))
 
         // When
         subscriber = addToCartUseCase.createObservable(requestParam).test()
@@ -99,4 +104,45 @@ class AddToCartUseCaseTest {
         subscriber.assertCompleted()
     }
 
+    @Test
+    fun addToCartUseCaseRun_Error() {
+        // Given
+        val result = HashMap<Type, Any>()
+        val errors = HashMap<Type, List<GraphqlError>>()
+        val objectType = AddToCartGqlResponse::class.java
+        result[objectType] = MockResponseProvider.getResponseAtcError()
+        every { graphqlUseCase.createObservable(any()) } returns Observable.just(GraphqlResponse(result, errors, false))
+
+        every { addToCartDataMapper.mapAddToCartResponse(any()) } returns AddToCartDataModel(status = "OK", data = DataModel(success = 0))
+
+        // When
+        val subscriber = addToCartUseCase.createObservable(requestParam).test()
+
+        // Then
+        // should run sequence task
+        verifySequence {
+            graphqlUseCase.clearRequest()
+            graphqlUseCase.addRequest(any())
+            graphqlUseCase.createObservable(any())
+        }
+
+        // Should not give error
+        subscriber.assertNoErrors()
+
+        // Should has 1 value
+        subscriber.assertValueCount(1)
+
+        // Value should be failed AddToCartDataModel
+        subscriber.assertValue(AddToCartDataModel(status = "OK", data = DataModel(success = 0)))
+
+        // Should not run analytics
+        verify(inverse = true) {
+            AddToCartBaseAnalytics.sendAppsFlyerTracking(any(), any(), any(), any(), any())
+            AddToCartBaseAnalytics.sendBranchIoTracking(any(), any(), any(), any(), any(),
+                    any(), any(), any(), any(), any(), any(), any())
+        }
+
+        // Should complete
+        subscriber.assertCompleted()
+    }
 }
