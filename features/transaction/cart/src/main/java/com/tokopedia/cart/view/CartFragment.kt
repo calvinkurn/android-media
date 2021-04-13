@@ -2001,7 +2001,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         binding?.apply {
             promoCheckoutBtnCart.state = ButtonPromoCheckoutView.State.ACTIVE
             promoCheckoutBtnCart.margin = ButtonPromoCheckoutView.Margin.WITH_BOTTOM
-            promoCheckoutBtnCart.title = getString(R.string.promo_funnel_label)
+            promoCheckoutBtnCart.title = getString(com.tokopedia.purchase_platform.common.R.string.promo_funnel_label)
             promoCheckoutBtnCart.desc = ""
             promoCheckoutBtnCart.setOnClickListener {
                 dPresenter.doUpdateCartForPromo()
@@ -2015,7 +2015,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         binding?.apply {
             promoCheckoutBtnCart.state = ButtonPromoCheckoutView.State.ACTIVE
             promoCheckoutBtnCart.margin = ButtonPromoCheckoutView.Margin.WITH_BOTTOM
-            promoCheckoutBtnCart.title = getString(R.string.promo_funnel_label)
+            promoCheckoutBtnCart.title = getString(com.tokopedia.purchase_platform.common.R.string.promo_funnel_label)
             promoCheckoutBtnCart.desc = getString(R.string.promo_desc_no_selected_item)
             promoCheckoutBtnCart.setOnClickListener {
                 showToastMessageGreen(getString(R.string.promo_choose_item_cart))
@@ -2038,7 +2038,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 lastApplyData.defaultEmptyPromoMessage
             }
             else -> {
-                getString(R.string.promo_funnel_label)
+                getString(com.tokopedia.purchase_platform.common.R.string.promo_funnel_label)
             }
         }
 
