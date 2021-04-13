@@ -239,5 +239,13 @@
     <string name="title_uoh_1">Menunggu Pembayaran</string>
     <string name="title_uoh_3">Semua Transaksi</string>
     <string name="e_ticket_desc">Cek tiket dan voucher siap pakai</string>
+  
+    <string name="text_description_add_name_bottom_sheet">Nama asli akan mempermudah proses verifikasi jika akunmu bermasalah. Akunmu jadi makin aman, deh!</string>
+    <string name="text_title_add_name_bottom_sheet">Ubah nama akun jadi nama asli</string>
+    <string name="text_button_add_name_bottom_sheet">Ubah Nama Akun</string>
+    <string name="desc_image_profile_completed">image_profile_completed</string>
+    <string name="desc_image_tokopoint">image_tokopoint</string>
+    <string name="desc_image_voucher">image_voucher</string>
+    <string name="desc_image_tokomember">image_tokomember</string>
 
 </resources>

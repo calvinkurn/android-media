@@ -2,6 +2,7 @@ package com.tokopedia.search.result.presentation.mapper;
 
 import com.tokopedia.search.result.domain.model.SearchProductModel;
 import com.tokopedia.search.result.presentation.model.BadgeItemDataView;
+import com.tokopedia.search.result.presentation.model.BannerDataView;
 import com.tokopedia.search.result.presentation.model.BroadMatchItemDataView;
 import com.tokopedia.search.result.presentation.model.BroadMatchDataView;
 import com.tokopedia.search.result.presentation.model.FreeOngkirDataView;
@@ -62,6 +63,7 @@ public class ProductViewModelMapper {
         productDataView.setAdditionalParams(searchProductHeader.getAdditionalParams());
         productDataView.setAutocompleteApplink(searchProductData.getAutocompleteApplink());
         productDataView.setDefaultView(searchProductHeader.getDefaultView());
+        productDataView.setBannerDataView(convertToBannerDataView(searchProductData.getBanner()));
 
         return productDataView;
     }
@@ -417,5 +419,14 @@ public class ProductViewModelMapper {
         }
 
         return options;
+    }
+
+    private BannerDataView convertToBannerDataView(SearchProductModel.Banner bannerModel) {
+        return new BannerDataView(
+                bannerModel.getPosition(),
+                bannerModel.getText(),
+                bannerModel.getApplink(),
+                bannerModel.getImageUrl()
+        );
     }
 }
