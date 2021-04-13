@@ -71,14 +71,14 @@
         app:layout_constraintTop_toTopOf="@id/cl_media"
         />
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/cl_total_view"
+    <LinearLayout
+        android:id="@+id/ll_total_view"
         android:layout_width="wrap_content"
+        android:orientation="horizontal"
         android:layout_height="@dimen/play_view_stats_info_height"
         android:layout_marginStart="@dimen/spacing_lvl3"
         android:layout_marginTop="@dimen/play_widget_dp_6"
         android:layout_marginEnd="@dimen/play_widget_dp_6"
-        android:background="@drawable/bg_play_stats_info_view_badge"
         app:layout_constrainedWidth="true"
         app:layout_constraintEnd_toEndOf="@id/cl_media"
         app:layout_constraintHorizontal_bias="0"
@@ -90,38 +90,59 @@
         <com.tokopedia.iconunify.IconUnify
             android:id="@+id/iv_total_view"
             android:layout_width="@dimen/spacing_lvl4"
-            android:layout_height="@dimen/spacing_lvl4"
-            android:layout_marginStart="@dimen/spacing_lvl2"
-            android:layout_marginTop="@dimen/spacing_lvl2"
-            android:layout_marginBottom="@dimen/spacing_lvl2"
+            android:layout_height="match_parent"
+            android:background="@drawable/bg_play_widget_small_eye_badge"
+            android:paddingStart="@dimen/spacing_lvl2"
+            android:paddingTop="@dimen/spacing_lvl2"
+            android:paddingBottom="@dimen/spacing_lvl2"
             app:icon_color_light_enable="@color/Unify_Static_White"
             app:icon_color_night_enable="@color/Unify_Static_White"
             app:icon_name="VISIBILITY"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/ic_play_eye_white"
+            tools:ignore="RtlSymmetry"
+            tools:visibility="gone"
+            />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_live_badge"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="@drawable/bg_play_widget_small_live_badge"
+            android:gravity="center"
+            android:includeFontPadding="false"
+            android:paddingStart="@dimen/spacing_lvl2"
+            android:paddingTop="@dimen/spacing_lvl2"
+            android:paddingEnd="@dimen/spacing_lvl2"
+            android:paddingBottom="@dimen/spacing_lvl2"
+            android:text="@string/play_common_live"
+            android:textAllCaps="true"
+            android:textColor="@color/Unify_Static_White"
+            app:typographyType="small"
+            app:typographyWeight="bold"
+            tools:visibility="visible"
             />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_total_view"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/spacing_lvl1"
+            android:layout_height="match_parent"
             android:layout_marginEnd="@dimen/spacing_lvl2"
+            android:background="@drawable/bg_play_widget_small_total_view_badge"
             android:ellipsize="end"
+            android:includeFontPadding="false"
             android:maxLines="1"
+            android:paddingStart="@dimen/spacing_lvl2"
+            android:paddingTop="@dimen/spacing_lvl2"
+            android:paddingEnd="@dimen/spacing_lvl2"
+            android:paddingBottom="@dimen/spacing_lvl2"
+            android:gravity="center"
             android:textColor="@color/Unify_Static_White"
-            app:layout_constrainedWidth="true"
-            app:layout_constraintBottom_toBottomOf="@id/iv_total_view"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/iv_total_view"
-            app:layout_constraintTop_toTopOf="@id/iv_total_view"
             app:typographyType="small"
+            android:inputType="text"
             tools:text="10,0 rb"
             />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_title"

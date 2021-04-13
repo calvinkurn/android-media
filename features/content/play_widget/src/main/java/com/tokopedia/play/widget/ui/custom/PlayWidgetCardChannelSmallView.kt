@@ -5,6 +5,7 @@ import android.util.AttributeSet
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.google.android.exoplayer2.ui.PlayerView
@@ -31,8 +32,10 @@ class PlayWidgetCardChannelSmallView : ConstraintLayout, PlayVideoPlayerReceiver
     private val flBorder: FrameLayout
     private val ivCover: ImageView
     private val pvVideo: PlayerView
-    private val clTotalView: ConstraintLayout
+    private val llTotalView: LinearLayout
     private val tvTotalView: TextView
+    private val tvLiveBadge: TextView
+    private val ivTotalView: ImageView
     private val tvTitle: TextView
     private val tvUpcoming: TextView
     private val tvContextualInfo: TextView
@@ -47,8 +50,10 @@ class PlayWidgetCardChannelSmallView : ConstraintLayout, PlayVideoPlayerReceiver
         flBorder = view.findViewById(R.id.fl_border)
         ivCover = view.findViewById(R.id.iv_cover)
         pvVideo = view.findViewById(R.id.pv_video)
-        clTotalView = view.findViewById(R.id.cl_total_view)
+        llTotalView = view.findViewById(R.id.ll_total_view)
         tvTotalView = view.findViewById(R.id.tv_total_view)
+        tvLiveBadge = view.findViewById(R.id.tv_live_badge)
+        ivTotalView = view.findViewById(R.id.iv_total_view)
         tvTitle = view.findViewById(R.id.tv_title)
         tvUpcoming = view.findViewById(R.id.tv_upcoming)
         tvContextualInfo = view.findViewById(R.id.tv_contextual_info)
@@ -133,12 +138,22 @@ class PlayWidgetCardChannelSmallView : ConstraintLayout, PlayVideoPlayerReceiver
 
     private fun handleType(type: PlayWidgetChannelType) {
         when (type) {
-            PlayWidgetChannelType.Live, PlayWidgetChannelType.Vod -> {
+            PlayWidgetChannelType.Live -> {
+                tvLiveBadge.visible()
+                ivTotalView.gone()
+                tvUpcoming.gone()
+            }
+            PlayWidgetChannelType.Vod -> {
+                ivTotalView.visible()
+                tvLiveBadge.gone()
                 tvUpcoming.gone()
             }
             PlayWidgetChannelType.Upcoming -> {
+                ivTotalView.gone()
+                tvLiveBadge.gone()
                 tvUpcoming.visible()
             }
+            else -> {}
         }
     }
 
@@ -149,12 +164,12 @@ class PlayWidgetCardChannelSmallView : ConstraintLayout, PlayVideoPlayerReceiver
     }
 
     private fun handleTotalView(type: PlayWidgetChannelType, isVisible: Boolean, totalViewString: String) {
-        if (type == PlayWidgetChannelType.Upcoming || type == PlayWidgetChannelType.Unknown) clTotalView.gone()
+        if (type == PlayWidgetChannelType.Upcoming || type == PlayWidgetChannelType.Unknown) llTotalView.gone()
         else if (isVisible) {
-            clTotalView.visible()
+            llTotalView.visible()
             tvTotalView.text = totalViewString
         }
-        else clTotalView.gone()
+        else llTotalView.gone()
     }
 
     interface Listener {
