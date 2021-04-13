@@ -54,7 +54,7 @@ class SaldoTransactionViewHolder(itemView: View) : AbstractViewHolder<DepositHis
                 nominal.setTextColor(context.resources.getColor(com.tokopedia.design.R.color.tkpd_light_green))
                 nominal.text = String.format(
                         context.resources.getString(com.tokopedia.saldodetails.R.string.sp_positive_saldo_balance),
-                        CurrencyFormatUtil.convertPriceValueToIdrFormat(element.amount.toDouble(), false))
+                        CurrencyFormatUtil.convertPriceValueToIdrFormat(element.amount, false))
             } else {
                 nominal.text = element.amount.toString()
             }
@@ -64,7 +64,7 @@ class SaldoTransactionViewHolder(itemView: View) : AbstractViewHolder<DepositHis
                 nominal.setTextColor(context.resources.getColor(com.tokopedia.design.R.color.tkpd_prod_price))
                 nominal.text = String.format(
                         context.resources.getString(com.tokopedia.saldodetails.R.string.sp_negative_saldo_balance),
-                        CurrencyFormatUtil.convertPriceValueToIdrFormat(Math.abs(element.amount).toDouble(), false))
+                        CurrencyFormatUtil.convertPriceValueToIdrFormat(Math.abs(element.amount), false))
             } else {
                 nominal.text = element.amount.toString()
             }

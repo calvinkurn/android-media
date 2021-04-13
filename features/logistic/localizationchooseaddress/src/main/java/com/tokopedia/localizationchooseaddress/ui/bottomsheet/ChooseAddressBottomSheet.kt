@@ -35,6 +35,7 @@ import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressList
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.ui.preference.ChooseAddressSharePref
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant.Companion.EXTRA_IS_FROM_ANA
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant.Companion.EXTRA_SELECTED_ADDRESS_DATA
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
@@ -116,6 +117,11 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         initLayout()
         return super.onCreateView(inflater, container, savedInstanceState)
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        changeCloseButtonSize()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -224,6 +230,7 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
     }
 
     private fun initLayout() {
+        clearContentPadding = true
         val view = View.inflate(context, R.layout.bottomsheet_choose_address, null)
         setupView(view)
         setChild(view)
@@ -332,7 +339,7 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
                         } else {
                             setViewState(userSession.isLoggedIn)
                         }
-                    } else {
+                    } else if (it.data.addressData.cityId != 0){
                         val data = it.data.addressData
                         val localData = ChooseAddressUtils.setLocalizingAddressData(
                                 addressId = data.addressId.toString(),
@@ -357,6 +364,10 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
                             listener?.onAddressDataChanged()
                             dismissBottomSheet()
                         }
+                    } else {
+                        chooseAddressPref?.setLocalCache(ChooseAddressConstant.defaultAddress)
+                        listener?.onAddressDataChanged()
+                        dismissBottomSheet()
                     }
                 }
 
@@ -555,6 +566,18 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
     private fun onBottomSheetShown() {
         hasBottomSheetShown = true
         showGpsPopUp()
+    }
+
+    private fun changeCloseButtonSize() {
+        context?.also { context ->
+            bottomSheetClose.apply {
+                setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_bottomsheet_close_choose_address))
+                layoutParams.apply {
+                    width = context.resources.getDimension(R.dimen.choose_address_close).toInt()
+                    height = context.resources.getDimension(R.dimen.choose_address_close).toInt()
+                }
+            }
+        }
     }
 
     interface ChooseAddressBottomSheetListener {

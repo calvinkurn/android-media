@@ -560,7 +560,7 @@ public class ShipmentMapper implements IShipmentMapper {
                                     } else {
                                         analyticsProductCheckoutData.setTokopediaCornerFlag(String.valueOf(false));
                                     }
-                                    analyticsProductCheckoutData.setIsFulfillment(String.valueOf(groupShop.isFulfillment()));
+                                    analyticsProductCheckoutData.setFulfillment(String.valueOf(groupShop.isFulfillment()));
                                     analyticsProductCheckoutData.setDiscountedPrice(product.getProductOriginalPrice() > 0);
                                     analyticsProductCheckoutData.setCampaignId(product.getCampaignId());
 

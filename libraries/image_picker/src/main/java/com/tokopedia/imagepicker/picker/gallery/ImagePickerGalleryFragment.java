@@ -28,13 +28,13 @@ import com.tokopedia.design.label.LabelView;
 import com.tokopedia.imagepicker.R;
 import com.tokopedia.imagepicker.common.GalleryType;
 import com.tokopedia.imagepicker.picker.album.AlbumPickerActivity;
-import com.tokopedia.imagepicker.picker.gallery.adapter.AlbumMediaAdapter;
-import com.tokopedia.imagepicker.picker.gallery.internal.entity.Album;
-import com.tokopedia.imagepicker.picker.gallery.loader.AlbumLoader;
-import com.tokopedia.imagepicker.picker.gallery.loader.AlbumMediaLoader;
-import com.tokopedia.imagepicker.picker.gallery.model.AlbumItem;
-import com.tokopedia.imagepicker.picker.gallery.model.MediaItem;
-import com.tokopedia.imagepicker.picker.gallery.widget.MediaGridInset;
+import com.tokopedia.imagepicker.common.adapter.AlbumMediaAdapter;
+import com.tokopedia.imagepicker.common.internal.entity.Album;
+import com.tokopedia.imagepicker.common.loader.AlbumLoader;
+import com.tokopedia.imagepicker.common.loader.AlbumMediaLoader;
+import com.tokopedia.imagepicker.common.model.AlbumItem;
+import com.tokopedia.imagepicker.common.model.MediaItem;
+import com.tokopedia.imagepicker.common.widget.MediaGridInset;
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerInterface;
 
 import java.io.File;
@@ -43,7 +43,7 @@ import java.util.ArrayList;
 import static com.tokopedia.imagepicker.common.BuilderConstantKt.DEFAULT_MIN_RESOLUTION;
 import static com.tokopedia.imagepicker.picker.album.AlbumPickerActivity.EXTRA_ALBUM_ITEM;
 import static com.tokopedia.imagepicker.picker.album.AlbumPickerActivity.EXTRA_ALBUM_POSITION;
-import static com.tokopedia.imagepicker.picker.gallery.model.AlbumItem.ALBUM_ID_ALL;
+import static com.tokopedia.imagepicker.common.model.AlbumItem.ALBUM_ID_ALL;
 
 /**
  * Created by hendry on 19/04/18.
@@ -156,7 +156,7 @@ public class ImagePickerGalleryFragment extends TkpdBaseV4Fragment
         recyclerView.setHasFixedSize(true);
         int spanCount = getContext().getResources().getInteger(R.integer.gallery_span_count);
         recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), spanCount));
-        int spacing = getResources().getDimensionPixelSize(R.dimen.image_picker_media_grid_spacing);
+        int spacing = getResources().getDimensionPixelSize(com.tokopedia.imagepicker.common.R.dimen.image_picker_media_grid_spacing);
         recyclerView.addItemDecoration(new MediaGridInset(spanCount, spacing, false));
         recyclerView.setAdapter(albumMediaAdapter);
         RecyclerView.ItemAnimator itemAnimator = recyclerView.getItemAnimator();
@@ -292,7 +292,7 @@ public class ImagePickerGalleryFragment extends TkpdBaseV4Fragment
                 getString(R.string.default_all_album) :
                 albumItem.getDisplayName());
         if (albumItem.isAll() && albumItem.isEmpty()) {
-            NetworkErrorHelper.showEmptyState(getContext(), getView(), getString(R.string.error_no_media_storage), null);
+            NetworkErrorHelper.showEmptyState(getContext(), getView(), getString(com.tokopedia.imagepicker.common.R.string.error_no_media_storage), null);
         } else {
             LoaderManager.getInstance(this).restartLoader(MEDIA_LOADER_ID, null, this);
         }

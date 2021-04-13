@@ -15,15 +15,15 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/unify_globalerrors_connection" />
+        app:srcCompat="@drawable/unify_globalerrors_connection"
+        android:contentDescription="@string/centralized_promo_content_desc_image_promo_post" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvPromotionPostTitle"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/centralized_promo_post_title_left_margin"
-        android:layout_marginLeft="@dimen/centralized_promo_post_title_left_margin"
-        android:textColor="@color/Neutral_N700_96"
+        android:textColor="@color/Unify_N700_96"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintLeft_toRightOf="@id/ivPromotionPost"
         app:layout_constraintRight_toRightOf="parent"

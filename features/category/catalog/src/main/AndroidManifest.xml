@@ -4,9 +4,8 @@
     <application>
         <activity
             android:name="com.tokopedia.catalog.ui.activity.CatalogDetailPageActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White">
-            <intent-filter android:autoVerify="true">
+            android:screenOrientation="portrait">
+            <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
@@ -16,7 +15,7 @@
                     android:host="@string/catalog_host"
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
-            <intent-filter android:autoVerify="true">
+            <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
