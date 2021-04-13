@@ -305,7 +305,6 @@ class NewShopPageFragment :
 
     override fun onDestroy() {
         shopViewModel?.shopPageP1Data?.removeObservers(this)
-        shopViewModel?.shopPageHeaderContentData?.removeObservers(this)
         shopViewModel?.shopImagePath?.removeObservers(this)
         shopViewModel?.shopUnmoderateData?.removeObservers(this)
         shopViewModel?.shopModerateRequestStatus?.removeObservers(this)
@@ -2064,6 +2063,7 @@ class NewShopPageFragment :
     }
 
     override fun onLocalizingAddressServerDown() {
+        shopPageFragmentHeaderViewHolder?.hideChooseAddressWidget()
     }
 
     override fun onLocalizingAddressRollOutUser(isRollOutUser: Boolean) { }

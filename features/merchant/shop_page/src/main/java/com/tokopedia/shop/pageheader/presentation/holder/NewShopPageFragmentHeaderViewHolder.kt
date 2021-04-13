@@ -61,6 +61,10 @@ class NewShopPageFragmentHeaderViewHolder(private val view: View, private val li
         chooseAddressWidget?.updateWidget()
     }
 
+    fun hideChooseAddressWidget(){
+        chooseAddressWidget?.hide()
+    }
+
     fun setupChooseAddressWidget(remoteConfig: RemoteConfig, isMyShop: Boolean) {
         chooseAddressWidget?.apply {
             val isRollOutUser = ChooseAddressUtils.isRollOutUser(view.context)
@@ -139,7 +143,7 @@ class NewShopPageFragmentHeaderViewHolder(private val view: View, private val li
         view.tickerShopStatus.show()
         view.tickerShopStatus.tickerTitle = MethodChecker.fromHtml(shopPageHeaderDataModel.statusTitle).toString()
         view.tickerShopStatus.setHtmlDescription(
-                if(shopPageHeaderDataModel.shopStatus == ShopStatusDef.MODERATED) {
+                if(shopPageHeaderDataModel.shopStatus == ShopStatusDef.MODERATED && isMyShop) {
                     generateShopModerateTickerDescription(shopPageHeaderDataModel.statusMessage)
                 } else {
                     shopPageHeaderDataModel.statusMessage
