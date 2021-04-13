@@ -1,5 +1,6 @@
 package com.tokopedia.seller.menu.presentation.fragment
 
+import android.net.Uri
 import android.os.Bundle
 import android.view.*
 import androidx.appcompat.app.AppCompatActivity
@@ -12,6 +13,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.gm.common.utils.PMShopScoreInterruptHelper
 import com.tokopedia.gm.common.utils.getShopScoreDate
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.remoteconfig.RemoteConfig
@@ -65,6 +67,9 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
     @Inject
     lateinit var adminPermissionMapper: AdminPermissionMapper
 
+    @Inject
+    lateinit var pmShopScoreInterruptHelper: PMShopScoreInterruptHelper
+
     private var canShowErrorToaster = true
 
     private val adapter by lazy {
@@ -95,6 +100,7 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
         setupSwipeRefresh()
         observeShopInfoPeriod()
         observeViewModel()
+        setupPMShopScoreInterrupt()
         setupScrollToShopSetting()
     }
 
@@ -106,6 +112,11 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
     override fun onResume() {
         super.onResume()
         sellerMenuTracker.sendEventOpenScreen(SCREEN_NAME)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        pmShopScoreInterruptHelper.destroy()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -143,6 +154,14 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
                 .baseAppComponent((requireContext().applicationContext as BaseMainApplication).baseAppComponent)
                 .build()
                 .inject(this)
+    }
+
+    fun onNewIntent(uri: Uri?) {
+        uri?.let {
+            activity?.let { activity ->
+                pmShopScoreInterruptHelper.setShopScoreInterruptConsent(activity, it)
+            }
+        }
     }
 
     private fun setupSwipeRefresh() {
@@ -302,6 +321,12 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
                 setSupportActionBar(seller_menu_toolbar)
                 seller_menu_toolbar?.title = getString(R.string.title_seller_menu)
             }
+        }
+    }
+
+    private fun setupPMShopScoreInterrupt() {
+        activity?.let {
+            pmShopScoreInterruptHelper.showInterrupt(it, viewLifecycleOwner, childFragmentManager)
         }
     }
 }

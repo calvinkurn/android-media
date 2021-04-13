@@ -16,4 +16,5 @@ const val TRANSITION_PERIOD = "transition_period"
 const val COMMUNICATION_PERIOD = "communication_period"
 const val END_PERIOD = "final"
 const val APP_DATE_SHOP_SCORE = "android_sellerapp_shop_score_date"
+const val SHOP_SCORE_PM_PERIOD = "android_shop_score_pm_period"
 
