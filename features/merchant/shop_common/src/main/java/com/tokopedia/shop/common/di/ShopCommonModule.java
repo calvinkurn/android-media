@@ -6,7 +6,6 @@ import com.tokopedia.abstraction.common.data.model.response.TkpdV4ResponseError;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
-import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor;
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.network.NetworkRouter;
@@ -19,13 +18,11 @@ import com.tokopedia.shop.common.data.repository.ShopCommonRepositoryImpl;
 import com.tokopedia.shop.common.data.source.ShopCommonDataSource;
 import com.tokopedia.shop.common.data.source.cloud.ShopCommonCloudDataSource;
 import com.tokopedia.shop.common.data.source.cloud.api.ShopCommonApi;
-import com.tokopedia.shop.common.domain.interactor.DeleteShopInfoCacheUseCase;
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopFavoriteStatusUseCase;
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase;
 import com.tokopedia.shop.common.domain.interactor.GetShopInfoByDomainUseCase;
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase;
 import com.tokopedia.shop.common.domain.repository.ShopCommonRepository;
-import com.tokopedia.shop.common.util.CacheApiTKPDResponseValidator;
 
 import javax.inject.Named;
 
@@ -122,11 +119,6 @@ public class ShopCommonModule {
     }
 
     @Provides
-    public DeleteShopInfoCacheUseCase provideDeleteShopInfoCacheUseCase(@ApplicationContext Context context) {
-        return new DeleteShopInfoCacheUseCase(context);
-    }
-
-    @Provides
     public ShopCommonRepository provideShopCommonRepository(ShopCommonDataSource shopInfoDataSource) {
         return new ShopCommonRepositoryImpl(shopInfoDataSource);
     }
@@ -149,10 +141,8 @@ public class ShopCommonModule {
     @Provides
     public OkHttpClient provideOkHttpClient(ShopAuthInterceptor shopAuthInterceptor,
                                             @ApplicationScope HttpLoggingInterceptor httpLoggingInterceptor,
-                                            ErrorResponseInterceptor errorResponseInterceptor,
-                                            CacheApiInterceptor cacheApiInterceptor) {
+                                            ErrorResponseInterceptor errorResponseInterceptor) {
         return new OkHttpClient.Builder()
-                .addInterceptor(cacheApiInterceptor)
                 .addInterceptor(shopAuthInterceptor)
                 .addInterceptor(errorResponseInterceptor)
                 .addInterceptor(httpLoggingInterceptor)
@@ -164,11 +154,6 @@ public class ShopCommonModule {
     public Retrofit provideRetrofit(@ShopQualifier OkHttpClient okHttpClient,
                                     Retrofit.Builder retrofitBuilder) {
         return retrofitBuilder.baseUrl(ShopCommonUrl.BASE_URL).client(okHttpClient).build();
-    }
-
-    @Provides
-    public CacheApiInterceptor provideApiCacheInterceptor(@ApplicationContext Context context) {
-        return new CacheApiInterceptor(context, new CacheApiTKPDResponseValidator<>(TkpdV4ResponseError.class));
     }
 
     @Provides

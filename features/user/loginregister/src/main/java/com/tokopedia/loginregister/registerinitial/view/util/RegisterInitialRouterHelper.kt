@@ -78,11 +78,12 @@ class RegisterInitialRouterHelper {
         fragment.startActivityForResult(intent, RegisterInitialFragment.REQUEST_CHANGE_NAME)
     }
 
-    fun goToAddPin2FA(fragment: Fragment, enableSkip2FA: Boolean){
+    fun goToAddPin2FA(fragment: Fragment, enableSkip2FA: Boolean, validateToken: String = ""){
         val intent = RouteManager.getIntent(fragment.context, ApplinkConstInternalGlobal.ADD_PIN)
         intent.putExtras(Bundle().apply {
             putBoolean(ApplinkConstInternalGlobal.PARAM_ENABLE_SKIP_2FA, enableSkip2FA)
             putBoolean(ApplinkConstInternalGlobal.PARAM_IS_SKIP_OTP, true)
+            putString(ApplinkConstInternalGlobal.PARAM_TOKEN, validateToken)
         })
         fragment.startActivityForResult(intent, RegisterInitialFragment.REQUEST_ADD_PIN)
     }

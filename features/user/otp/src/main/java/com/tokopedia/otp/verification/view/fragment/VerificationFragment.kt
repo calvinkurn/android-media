@@ -178,7 +178,7 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed, Phon
         if (permissionCheckerHelper.hasPermission(it, getPermissions())) {
             phoneCallBroadcastReceiver.registerReceiver(it, this)
         } else {
-            sendLogTracker("PhoneCallBroadcastReceiver not registered")
+            sendLogTracker("PhoneCallBroadcastReceiver not registered; permission=${permissionCheckerHelper.hasPermission(it, getPermissions())}")
         }
     }
 

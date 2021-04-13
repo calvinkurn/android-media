@@ -5,16 +5,19 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
-import android.graphics.Typeface
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.text.SpannableString
 import android.text.TextPaint
+import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
+import android.text.style.ForegroundColorSpan
 import android.util.Patterns
 import android.view.*
 import android.widget.*
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.*
 import com.facebook.CallbackManager
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -29,6 +32,8 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PAGE_PRIVACY_POLICY
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PAGE_TERM_AND_CONDITION
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PARAM_IS_SUCCESS_REGISTER
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.config.GlobalConfig
@@ -76,6 +81,7 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.interceptor.akamai.AkamaiErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.sessioncommon.data.LoginTokenPojo
 import com.tokopedia.sessioncommon.data.Token.Companion.getGoogleClientId
 import com.tokopedia.sessioncommon.di.SessionModule.SESSION_MODULE
@@ -83,11 +89,13 @@ import com.tokopedia.sessioncommon.util.TokenGenerator
 import com.tokopedia.sessioncommon.view.forbidden.activity.ForbiddenActivity
 import com.tokopedia.track.TrackApp
 import com.tokopedia.unifycomponents.LoaderUnify
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifycomponents.ticker.TickerData
 import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -109,6 +117,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
     private lateinit var partialRegisterInputView: PartialRegisterInputView
     private lateinit var emailPhoneEditText: AutoCompleteTextView
     private lateinit var registerButton: LoginTextView
+    private var textTermAndCondition: Typography? = null
     private lateinit var loginButton: Typography
     private lateinit var container: ScrollView
     private lateinit var progressBar: RelativeLayout
@@ -130,6 +139,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
     private var isHitRegisterPushNotif: Boolean = false
     private var activityShouldEnd: Boolean = true
     private var enableOvoRegister: Boolean = false
+    private var validateToken: String = ""
 
     @Inject
     lateinit var externalRegisterPreference: ExternalRegisterPreference
@@ -243,13 +253,12 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
         emailPhoneEditText = partialRegisterInputView.findViewById(R.id.input_email_phone)
         registerButton = view.findViewById(R.id.register)
         socmedButton = view.findViewById(R.id.socmed_btn)
-        loginButton = view.findViewById(R.id.login_button)
+        textTermAndCondition = view.findViewById(R.id.text_term_privacy)
         container = view.findViewById(R.id.container)
         progressBar = view.findViewById(R.id.progress_bar)
         tickerAnnouncement = view.findViewById(R.id.ticker_announcement)
         bannerRegister = view.findViewById(R.id.banner_register)
         prepareView()
-        setViewListener()
         if (isSmartLogin) {
             activity?.let {
                 if (isPending) {
@@ -292,6 +301,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
     private fun fetchRemoteConfig() {
         context?.let {
             val firebaseRemoteConfig = FirebaseRemoteConfigImpl(it)
+            RemoteConfigInstance.getInstance().abTestPlatform.fetchByType(null)
             isShowTicker = firebaseRemoteConfig.getBoolean(REMOTE_CONFIG_KEY_TICKER_FROM_ATC, false)
             isShowBanner = firebaseRemoteConfig.getBoolean(REMOTE_CONFIG_KEY_BANNER_REGISTER, false)
             isHitRegisterPushNotif = firebaseRemoteConfig.getBoolean(REMOTE_CONFIG_KEY_REGISTER_PUSH_NOTIF, false)
@@ -350,30 +360,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
 
             }
 
-            val sourceString = resources.getString(R.string
-                    .span_already_have_tokopedia_account)
-            val spannable = SpannableString(sourceString)
-            spannable.setSpan(object : ClickableSpan() {
-                override fun onClick(view: View) {}
-                override fun updateDrawState(ds: TextPaint) {
-                    ds.color = MethodChecker.getColor(
-                            activity, com.tokopedia.unifyprinciples.R.color.Unify_G400
-                    )
-                    ds.typeface = Typeface.create("sans-serif-medium", Typeface
-                            .NORMAL)
-                }
-            }, sourceString.indexOf("Masuk"), sourceString.length, 0)
-            loginButton.setText(spannable, TextView.BufferType.SPANNABLE)
-        }
-    }
-
-    private fun setViewListener() {
-        loginButton.setOnClickListener {
-            registerAnalytics.trackClickBottomSignInButton()
-            activity?.let { act ->
-                analytics.eventClickOnLoginFromRegister()
-                registerInitialRouter.goToLoginPage(act)
-            }
+            initTermPrivacyView()
         }
     }
 
@@ -609,7 +596,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
         } else {
             NetworkErrorHelper.createSnackbarWithAction(activity,
                     errorMessage) { registerInitialViewModel.getProvider() }.showRetrySnackbar()
-            loginButton.isEnabled = false
+            textTermAndCondition?.isEnabled = false
         }
     }
 
@@ -875,51 +862,38 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
                 }
             } else if (requestCode == REQUEST_REGISTER_EMAIL && resultCode == Activity.RESULT_OK) {
                 registerInitialViewModel.getUserInfo()
-            } else if (requestCode == REQUEST_REGISTER_EMAIL && resultCode == Activity
-                            .RESULT_CANCELED) {
+            } else if (requestCode == REQUEST_REGISTER_EMAIL && resultCode == Activity.RESULT_CANCELED) {
                 dismissProgressBar()
                 it.setResult(Activity.RESULT_CANCELED)
                 userSession.clearToken()
             } else if (requestCode == REQUEST_CREATE_PASSWORD && resultCode == Activity.RESULT_OK) {
                 it.setResult(Activity.RESULT_OK)
                 it.finish()
-            } else if (requestCode == REQUEST_CREATE_PASSWORD && resultCode == Activity
-                            .RESULT_CANCELED) {
+            } else if (requestCode == REQUEST_CREATE_PASSWORD && resultCode == Activity.RESULT_CANCELED) {
                 dismissProgressBar()
                 it.setResult(Activity.RESULT_CANCELED)
-            } else if (requestCode == REQUEST_SECURITY_QUESTION
-                    && resultCode == Activity.RESULT_OK
-                    && data != null) {
+            } else if (requestCode == REQUEST_SECURITY_QUESTION && resultCode == Activity.RESULT_OK && data != null) {
                 data.extras?.getString(ApplinkConstInternalGlobal.PARAM_UUID, "")?.let { validateToken ->
                     registerInitialViewModel.reloginAfterSQ(validateToken)
                 }
-
-            } else if (requestCode == REQUEST_SECURITY_QUESTION && resultCode == Activity
-                            .RESULT_CANCELED) {
+            } else if (requestCode == REQUEST_SECURITY_QUESTION && resultCode == Activity.RESULT_CANCELED) {
                 dismissProgressBar()
                 it.setResult(Activity.RESULT_CANCELED)
-            } else if (requestCode == REQUEST_VERIFY_PHONE_REGISTER_PHONE
-                    && resultCode == Activity.RESULT_OK
-                    && data != null
-                    && data.extras != null) {
-                val uuid = data.extras?.getString(ApplinkConstInternalGlobal.PARAM_UUID, "") ?: ""
+            } else if (requestCode == REQUEST_VERIFY_PHONE_REGISTER_PHONE && resultCode == Activity.RESULT_OK && data != null && data.extras != null) {
+                val uuid = data.extras?.getString(ApplinkConstInternalGlobal.PARAM_UUID).orEmpty()
+                validateToken = data.extras?.getString(ApplinkConstInternalGlobal.PARAM_TOKEN).orEmpty()
                 goToAddName(uuid)
-            } else if (requestCode == REQUEST_VERIFY_PHONE_REGISTER_PHONE && resultCode == Activity
-                            .RESULT_CANCELED) {
+            } else if (requestCode == REQUEST_VERIFY_PHONE_REGISTER_PHONE && resultCode == Activity.RESULT_CANCELED) {
                 dismissProgressBar()
                 it.setResult(Activity.RESULT_CANCELED)
-            } else if (requestCode == REQUEST_ADD_NAME_REGISTER_PHONE && resultCode == Activity.RESULT_OK) {
+            } else if (requestCode == REQUEST_ADD_NAME_REGISTER_PHONE) {
                 processAfterAddNameRegisterPhone(data?.extras)
             } else if (requestCode == REQUEST_ADD_PIN) {
                 registerInitialViewModel.getUserInfoAfterAddPin()
-            } else if (requestCode == REQUEST_VERIFY_PHONE_TOKOCASH
-                    && resultCode == Activity.RESULT_OK
-                    && data != null
-                    && data.extras != null) {
+            } else if (requestCode == REQUEST_VERIFY_PHONE_TOKOCASH && resultCode == Activity.RESULT_OK && data != null && data.extras != null) {
                 val accessToken = data.extras?.getString(ApplinkConstInternalGlobal.PARAM_UUID, "") ?: ""
                 val phoneNumber = data.extras?.getString(ApplinkConstInternalGlobal.PARAM_MSISDN, "") ?: ""
                 goToChooseAccountPage(accessToken, phoneNumber)
-
             } else if (requestCode == REQUEST_CHOOSE_ACCOUNT && resultCode == Activity.RESULT_OK) {
                 it.setResult(Activity.RESULT_OK)
                 if (data != null) {
@@ -943,9 +917,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
                 dismissProgressBar()
                 it.setResult(Activity.RESULT_CANCELED)
                 it.finish()
-            } else if (requestCode == REQUEST_OTP_VALIDATE
-                    && resultCode == Activity.RESULT_OK
-                    && data != null) {
+            } else if (requestCode == REQUEST_OTP_VALIDATE && resultCode == Activity.RESULT_OK && data != null) {
                 data.extras?.let { bundle ->
                     val email = bundle.getString(ApplinkConstInternalGlobal.PARAM_EMAIL)
                     val token = bundle.getString(ApplinkConstInternalGlobal.PARAM_TOKEN)
@@ -957,9 +929,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
                 }
             } else if (requestCode == REQUEST_OTP_VALIDATE && resultCode == Activity.RESULT_CANCELED) {
                 it.setResult(Activity.RESULT_CANCELED)
-            } else if (requestCode == REQUEST_PENDING_OTP_VALIDATE
-                    && resultCode == Activity.RESULT_OK
-                    && data != null) {
+            } else if (requestCode == REQUEST_PENDING_OTP_VALIDATE && resultCode == Activity.RESULT_OK && data != null) {
                 data.extras?.let { bundle ->
                     val email = bundle.getString(ApplinkConstInternalGlobal.PARAM_EMAIL)
                     val token = bundle.getString(ApplinkConstInternalGlobal.PARAM_TOKEN)
@@ -1003,8 +973,14 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
 
     private fun processAfterAddNameRegisterPhone(data: Bundle?) {
         val enable2FA = data?.getBoolean(ApplinkConstInternalGlobal.PARAM_ENABLE_2FA) ?: false
-        val enableSkip2FA = data?.getBoolean(ApplinkConstInternalGlobal.PARAM_ENABLE_SKIP_2FA)
-                ?: false
+        val enableSkip2FA = data?.getBoolean(ApplinkConstInternalGlobal.PARAM_ENABLE_SKIP_2FA) ?: false
+        val isSuccessRegister = data?.getBoolean(PARAM_IS_SUCCESS_REGISTER) ?: false
+        val message = data?.getString(ApplinkConstInternalGlobal.PARAM_MESSAGE_BODY).orEmpty()
+
+        if (!isSuccessRegister && message.isNotEmpty()) {
+            showErrorToaster(message)
+            return
+        }
         if (enable2FA) {
             activityShouldEnd = false
             sendTrackingSuccessRegister()
@@ -1015,7 +991,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
     }
 
     private fun goToAddPin2FA(enableSkip2FA: Boolean) {
-        registerInitialRouter.goToAddPin2FA(this, enableSkip2FA)
+        registerInitialRouter.goToAddPin2FA(this, enableSkip2FA, validateToken)
     }
 
     private fun goToAddName(uuid: String) {
@@ -1096,13 +1072,13 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
     private fun showProgressBar() {
         progressBar.visibility = View.VISIBLE
         container.visibility = View.GONE
-        loginButton.visibility = View.GONE
+        textTermAndCondition?.visibility = View.GONE
     }
 
     private fun dismissProgressBar() {
         progressBar.visibility = View.GONE
         container.visibility = View.VISIBLE
-        loginButton.visibility = View.VISIBLE
+        textTermAndCondition?.visibility = View.VISIBLE
     }
 
     private fun onErrorRegister(errorMessage: String) {
@@ -1410,6 +1386,12 @@ val intent = Intent()
         PopupErrorDialog.showPopupErrorAkamai(context)
     }
 
+    private fun showErrorToaster(message: String) {
+        view?.let {
+            Toaster.build(it, message, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
+        }
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         registerInitialViewModel.getProviderResponse.removeObservers(this)
@@ -1429,6 +1411,35 @@ val intent = Intent()
         registerInitialViewModel.dynamicBannerResponse.removeObservers(this)
         combineLoginTokenAndValidateToken.removeObservers(this)
         registerInitialViewModel.flush()
+    }
+
+    private fun initTermPrivacyView() {
+        context?.let {
+            val termPrivacy = SpannableString(getString(R.string.detail_term_and_privacy))
+            termPrivacy.setSpan(clickableSpan(PAGE_TERM_AND_CONDITION), 34, 54, 0)
+            termPrivacy.setSpan(clickableSpan(PAGE_PRIVACY_POLICY), 61, 78, 0)
+            termPrivacy.setSpan(ForegroundColorSpan(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_G500)), 34, 54, 0)
+            termPrivacy.setSpan(ForegroundColorSpan(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_G500)), 61, 78, 0)
+
+            textTermAndCondition?.setText(termPrivacy, TextView.BufferType.SPANNABLE)
+            textTermAndCondition?.movementMethod = LinkMovementMethod.getInstance()
+            textTermAndCondition?.isSelected = false
+        }
+    }
+
+    private fun clickableSpan(page: String): ClickableSpan {
+        return object : ClickableSpan() {
+            override fun onClick(widget: View) {
+                context?.let {
+                    startActivity(RouteManager.getIntent(it, ApplinkConstInternalGlobal.TERM_PRIVACY, page))
+                }
+            }
+
+            override fun updateDrawState(ds: TextPaint) {
+                super.updateDrawState(ds)
+                ds.isUnderlineText = false
+            }
+        }
     }
 
     companion object {

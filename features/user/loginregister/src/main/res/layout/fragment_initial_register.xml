@@ -1,16 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+    
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/Unify_N0"
+    
     android:orientation="vertical">
 
     <ScrollView
         android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@color/Unify_N0"
         app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
@@ -33,7 +34,8 @@
                 android:layout_height="wrap_content"
                 android:adjustViewBounds="true"
                 android:scaleType="fitCenter"
-                android:visibility="gone" />
+                android:visibility="gone"
+                android:contentDescription="@string/desc_banner_register" />
 
             <com.tokopedia.loginregister.common.view.PartialRegisterInputView
                 android:id="@+id/register_input_view"
@@ -97,18 +99,16 @@
                 app:textColor="@color/Unify_N700_68" />
 
             <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/login_button"
+                android:id="@+id/text_term_privacy"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/login_register_52dp"
                 android:background="@color/Unify_N0"
                 android:contentDescription="@string/content_desc_login_button"
                 android:gravity="center"
-                android:padding="@dimen/spacing_lvl5"
+                android:padding="@dimen/layout_lvl2"
                 android:textColor="@color/Unify_N700_32"
-                app:typographyType="body_3"
-                app:typographyWeight="reguler"
-                tools:text="Sudah punya akun? Masuk" />
+                android:textSize="@dimen/fontSize_lvl2"
+                android:layout_marginBottom="@dimen/layout_lvl6"/>
 
         </LinearLayout>
     </ScrollView>
@@ -121,10 +121,9 @@
 
         <com.tokopedia.unifycomponents.LoaderUnify
             android:id="@+id/progress_login"
-            android:layout_width="@dimen/layout_lvl6"
-            android:layout_height="@dimen/layout_lvl6"
-            android:layout_centerInParent="true"
-            android:layout_marginBottom="@dimen/spacing_lvl3" />
+            android:layout_width="@dimen/layout_lvl5"
+            android:layout_height="@dimen/layout_lvl5"
+            android:layout_centerInParent="true" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/status_message"
