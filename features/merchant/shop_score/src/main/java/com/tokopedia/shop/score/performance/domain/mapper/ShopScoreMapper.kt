@@ -129,8 +129,9 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
         val isEligiblePM = shopScoreWrapperResponse.goldGetPMShopInfoResponse?.isEligiblePm
         val shopScoreResult = shopScoreWrapperResponse.shopScoreLevelResponse?.result
         val shopAge = shopScoreWrapperResponse.goldGetPMShopInfoResponse?.shopAge.orZero()
+        val isNewSeller = shopScoreWrapperResponse.goldGetPMShopInfoResponse?.isNewSeller ?: false
         shopScoreVisitableList.apply {
-            if (shopInfoPeriodUiModel.isNewSeller) {
+            if (isNewSeller) {
                 val mapTimerNewSeller = mapToTimerNewSellerUiModel(shopAge, shopInfoPeriodUiModel.isEndTenureNewSeller)
                 add(mapToTimerNewSellerUiModel(shopAge, shopInfoPeriodUiModel.isEndTenureNewSeller).first)
                 add(mapTimerNewSeller.first)
@@ -423,7 +424,7 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
         val statusPowerMerchant = goldGetPMStatusResponse?.data?.powerMerchant?.status
         val nextDate = goldPMGradeBenefitInfoResponse?.nextMonthlyRefreshDate.orEmpty()
         val titlePM =
-                when (shopInfoPeriodUiModel.isNewSeller) {
+                when (goldGetPMShopInfoResponse?.isNewSeller) {
                     true -> {
                         when (shopInfoPeriodUiModel.periodType) {
                             ShopScoreConstant.TRANSITION_PERIOD -> {
@@ -501,7 +502,7 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
         }
 
         val bgPowerMerchant =
-                when (shopInfoPeriodUiModel.isNewSeller) {
+                when (goldGetPMShopInfoResponse?.isNewSeller) {
                     true -> {
                         R.drawable.bg_header_new_seller
                     }
@@ -524,7 +525,7 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
                     }
                 }
 
-        val (descStatus, isShowCardBg) = when (shopInfoPeriodUiModel.isNewSeller) {
+        val (descStatus, isShowCardBg) = when (goldGetPMShopInfoResponse?.isNewSeller) {
             true -> {
                 when (statusPM) {
                     SUPPOSED_INACTIVE_TEXT -> {
