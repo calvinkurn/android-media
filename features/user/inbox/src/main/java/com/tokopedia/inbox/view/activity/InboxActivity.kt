@@ -461,6 +461,7 @@ class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentC
         bottomNav?.setBadgeCount(InboxFragmentType.NOTIFICATION, notificationRole.notifcenterInt)
         bottomNav?.setBadgeCount(InboxFragmentType.CHAT, notificationRole.chatInt)
         bottomNav?.setBadgeCount(InboxFragmentType.DISCUSSION, notificationRole.talkInt)
+        bottomNav?.setBadgeCount(InboxFragmentType.REVIEW, notificationRole.reviewInt)
         toolbar?.setBadgeCounter(IconList.ID_CART, InboxConfig.notifications.totalCart)
         oppositeRole?.let {
             navHeader.setBadgeCount(oppositeRole.totalInt)
