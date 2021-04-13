@@ -38,6 +38,7 @@ import com.tokopedia.hotel.R
 import com.tokopedia.hotel.booking.data.model.*
 import com.tokopedia.hotel.booking.di.HotelBookingComponent
 import com.tokopedia.hotel.booking.presentation.activity.HotelBookingActivity.Companion.HOTEL_BOOKING_SCREEN_NAME
+import com.tokopedia.hotel.booking.presentation.activity.HotelPayAtHotelPromoActivity
 import com.tokopedia.hotel.booking.presentation.viewmodel.HotelBookingViewModel
 import com.tokopedia.hotel.booking.presentation.widget.HotelBookingBottomSheets
 import com.tokopedia.hotel.common.analytics.TrackingHotelUtil
@@ -506,8 +507,6 @@ class HotelBookingFragment : HotelBaseFragment() {
 
     private fun setupPayNowPromoTicker(cart: HotelCart) {
         if (cart.property.rooms.isNotEmpty() && cart.property.isDirectPayment) {
-            booking_pay_now_promo_container.visibility = View.VISIBLE
-
             promoCode = cart.appliedVoucher.code
             if (promoCode.isNotEmpty()) {
                 setupPromoTicker(ButtonPromoCheckoutView.State.ACTIVE,
@@ -529,6 +528,10 @@ class HotelBookingFragment : HotelBaseFragment() {
                 } else {
                     onClickUsePromo(cart)
                 }
+            }
+        } else{
+            booking_pay_now_promo_ticker.setOnClickListener {
+                startActivity(HotelPayAtHotelPromoActivity.getCallingIntent(requireContext()))
             }
         }
     }

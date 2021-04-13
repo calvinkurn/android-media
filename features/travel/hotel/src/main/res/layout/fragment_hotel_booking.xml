@@ -355,8 +355,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:visibility="gone"
-                tools:visibility="visible">
+                android:visibility="visible">
 
                 <com.tokopedia.promocheckout.common.view.widget.ButtonPromoCheckoutView
                     android:id="@+id/booking_pay_now_promo_ticker"

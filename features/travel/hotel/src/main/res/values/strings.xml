@@ -288,4 +288,7 @@
 
     <string name="hotel_invoice_download_button">Unduh</string>
     <string name="hotel_promo_btn_default_title">Makin hemat dengan promo</string>
+    <string name="hotel_payathotel_header_title">Pakai Promo</string>
+    <string name="hotel_payathotel_promo_desc">Yaah, nggak ada promo yang bisa dipakai di transaksi ini</string>
+    <string name="hotel_payathotel_promo_button_title">Kembali ke Pemesanan</string>
 </resources>
