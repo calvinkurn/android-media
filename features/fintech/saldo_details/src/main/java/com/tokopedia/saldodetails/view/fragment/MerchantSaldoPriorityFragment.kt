@@ -273,13 +273,11 @@ class MerchantSaldoPriorityFragment : BaseDaggerFragment() {
                 spStatusInfoIcon!!.setImageDrawable(drawable)
                 spKYCStatusLayout!!.background = resources.getDrawable(com.tokopedia.saldodetails.R.drawable.sp_bg_rounded_corners_green)
             } else if (boxType.equals(WARNING, ignoreCase = true)) {
-                val color = Color.parseColor("#ffc107")
-                val drawable = getIconUnifyDrawable(context, com.tokopedia.iconunify.R.drawable.iconunify_information, color)
+                val drawable = getIconUnifyDrawable(context, com.tokopedia.iconunify.R.drawable.iconunify_information, com.tokopedia.unifyprinciples.R.color.Unify_Y300)
                 spStatusInfoIcon!!.setImageDrawable(drawable)
                 spKYCStatusLayout!!.background = resources.getDrawable(com.tokopedia.saldodetails.R.drawable.bg_rounded_corner_warning)
             } else if (boxType.equals(DANGER, ignoreCase = true)) {
-                val color = Color.parseColor("#f9bcc0")
-                val drawable = getIconUnifyDrawable(context, com.tokopedia.iconunify.R.drawable.iconunify_information, color)
+                val drawable = getIconUnifyDrawable(context, com.tokopedia.iconunify.R.drawable.iconunify_information, com.tokopedia.unifyprinciples.R.color.Unify_R200)
                 spStatusInfoIcon!!.setImageDrawable(drawable)
                 spKYCStatusLayout!!.background = resources.getDrawable(com.tokopedia.saldodetails.R.drawable.bg_rounded_corner_danger)
             }
