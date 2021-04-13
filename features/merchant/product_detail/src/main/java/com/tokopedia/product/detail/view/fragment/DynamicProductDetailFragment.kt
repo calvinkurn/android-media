@@ -1735,13 +1735,23 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
         actionButtonView.visibility = !isAffiliate
     }
 
+    private fun renderRestrictionBottomSheet(data: RestrictionInfoResponse) {
+        if (!data.restrictionExclusiveType() && viewModel.getReExclusiveData()?.restrictionShopFollowersType() == false) {
+            nplFollowersButton?.setupVisibility = false
+            return
+        }
+        updateNplButtonFollowers(data)
+        //Exclusive followers need bulk data
+        renderExclusiveBottomSheet(viewModel.getReExclusiveData())
+    }
+
     private fun onSuccessGetDataP2(it: ProductInfoP2UiData, boeData: BebasOngkirImage, ratesData: P2RatesEstimateData?) {
         val minimumShippingPriceP2 = ratesData?.cheapestShippingPrice?.toInt() ?: 0
         if (minimumShippingPriceP2 != 0) {
             viewModel.shippingMinimumPrice = minimumShippingPriceP2
         }
-        updateNplButtonFollowers(it.restrictionInfo)
-        renderExclusiveBottomSheet(viewModel.getReExclusiveData())
+
+        renderRestrictionBottomSheet(it.restrictionInfo)
         updateButtonState()
 
         if (it.helpfulReviews?.isEmpty() == true && viewModel.getDynamicProductInfoP1?.basic?.stats?.countReview.toIntOrZero() == 0) {
