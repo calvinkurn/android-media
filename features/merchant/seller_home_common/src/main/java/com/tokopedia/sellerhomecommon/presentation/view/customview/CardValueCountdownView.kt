@@ -23,7 +23,7 @@ class CardValueCountdownView: FrameLayout {
     }
 
     companion object {
-        private const val ANIM_DURATION: Long = 100
+        private const val ANIM_DURATION: Long = 200
     }
 
     private var previousTypography: Typography? = null
@@ -34,22 +34,25 @@ class CardValueCountdownView: FrameLayout {
 
         previousTypography = view.findViewById(R.id.tvCardFirstValue)
         nextTypography = view.findViewById(R.id.tvCardSecondValue)
-        nextTypography?.translationY = height.toFloat()
     }
 
     fun setValue(previousValue: String, nextValue: String) {
         if (previousValue != nextValue) {
+            nextTypography?.alpha = 0.2f
+            previousTypography?.alpha = 1f
             previousTypography?.text = previousValue
             nextTypography?.text = nextValue
 
-            previousTypography?.animate()?.translationY(-height.toFloat())?.duration = ANIM_DURATION
+            previousTypography
+                    ?.animate()
+                    ?.alpha(0f)
+                    ?.duration = ANIM_DURATION
             nextTypography?.run {
-                translationY = (nextTypography?.height?.toFloat() ?: height.toFloat()) * -1
-                animate()?.translationY(0f)?.setDuration(ANIM_DURATION)?.setListener(object : Animator.AnimatorListener {
+                animate()?.alpha(1f)?.setDuration(ANIM_DURATION)?.setListener(object : Animator.AnimatorListener {
                     override fun onAnimationStart(p0: Animator?) {}
 
                     override fun onAnimationEnd(p0: Animator?) {
-                        previousTypography?.translationY = -height.toFloat()
+                        previousTypography?.alpha = 0f
                     }
 
                     override fun onAnimationCancel(p0: Animator?) {}
