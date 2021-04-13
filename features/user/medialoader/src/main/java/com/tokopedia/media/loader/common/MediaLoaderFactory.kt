@@ -32,19 +32,19 @@ abstract class MediaLoaderFactory<T> {
         with(properties) {
             // built-in transformations
             if (properties.isCircular) {
-                request.circleCrop()
+                _transform.add(CircleCrop())
             }
 
             if (properties.centerCrop) {
-                request.centerCrop()
+                _transform.add(CenterCrop())
             }
 
             if (properties.fitCenter) {
-                request.fitCenter()
+                _transform.add(FitCenter())
             }
 
             if (properties.centerInside) {
-                request.centerInside()
+                _transform.add(CenterInside())
             }
 
             // store-bulk transformation into MultiTransformations()
@@ -73,6 +73,7 @@ abstract class MediaLoaderFactory<T> {
             * and then bulk it the transforms from transformList with MultiTransformation
             * */
             transformation(this, request)
+
             if (_transform.isNotEmpty()) {
                 request.transform(MultiTransformation(_transform))
             }
