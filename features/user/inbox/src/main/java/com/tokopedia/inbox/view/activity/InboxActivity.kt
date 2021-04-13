@@ -219,7 +219,11 @@ class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentC
     }
 
     override fun decreaseReviewUnreviewedCounter() {
-        // Decrease counter
+        val notificationRole = InboxConfig.inboxCounter.getByRole(
+                InboxConfig.role
+        ) ?: return
+        notificationRole.reviewInt -= 1
+        bottomNav?.setBadgeCount(InboxFragmentType.REVIEW, notificationRole.reviewInt)
     }
 
     override fun hideReviewCounter() {

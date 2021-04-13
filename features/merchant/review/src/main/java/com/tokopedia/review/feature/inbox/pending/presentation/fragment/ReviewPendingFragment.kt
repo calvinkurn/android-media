@@ -145,7 +145,7 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
             override fun onGlobalLayout() {
                 reviewPerformanceMonitoringListener?.stopRenderPerformanceMonitoring()
                 reviewPerformanceMonitoringListener?.stopPerformanceMonitoring()
-                reviewPendingRecyclerView.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                reviewPendingRecyclerView?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
             }
         })
     }
