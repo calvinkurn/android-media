@@ -32,7 +32,7 @@ class ShopProductSortFragment : BaseListFragment<ShopProductSortModel, ShopProdu
     override fun onDestroy() {
         super.onDestroy()
         if (shopProductFilterPresenter != null) {
-            shopProductFilterPresenter!!.detachView()
+            shopProductFilterPresenter?.detachView()
         }
     }
 
@@ -45,7 +45,7 @@ class ShopProductSortFragment : BaseListFragment<ShopProductSortModel, ShopProdu
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        shopProductFilterPresenter!!.attachView(this)
+        shopProductFilterPresenter?.attachView(this)
     }
 
     override fun renderList(list: List<ShopProductSortModel?>, hasNextPage: Boolean) {
@@ -68,13 +68,13 @@ class ShopProductSortFragment : BaseListFragment<ShopProductSortModel, ShopProdu
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        getRecyclerView(view)!!.setPadding(
+        getRecyclerView(view)?.setPadding(
                 0,
                 resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_16),
                 0,
                 0
         )
-        getRecyclerView(view)!!.clipToPadding = false
+        getRecyclerView(view)?.clipToPadding = false
     }
 
     override fun getAdapterTypeFactory(): ShopProductSortAdapterTypeFactory {
@@ -95,7 +95,7 @@ class ShopProductSortFragment : BaseListFragment<ShopProductSortModel, ShopProdu
     }
 
     override fun onItemClicked(filterModel: ShopProductSortModel?) {
-        shopFilterFragmentListener!!.select(filterModel?.key, filterModel?.value, filterModel?.name)
+        shopFilterFragmentListener?.select(filterModel?.key, filterModel?.value, filterModel?.name)
     }
 
     companion object {

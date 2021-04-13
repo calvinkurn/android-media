@@ -89,7 +89,7 @@ class NestedWebView @JvmOverloads constructor(context: Context?, attrs: Attribut
             MotionEvent.ACTION_UP -> {
                 if (mIsBeingDragged) {
                     val velocityTracker = mVelocityTracker
-                    velocityTracker!!.computeCurrentVelocity(1000, mMaximumVelocity.toFloat())
+                    velocityTracker?.computeCurrentVelocity(1000, mMaximumVelocity.toFloat())
                     val initialVelocity = VelocityTrackerCompat.getYVelocity(velocityTracker,
                             mActivePointerId).toInt()
                     if (Math.abs(initialVelocity) > mMinimumVelocity) {
@@ -112,7 +112,7 @@ class NestedWebView @JvmOverloads constructor(context: Context?, attrs: Attribut
             }
         }
         if (mVelocityTracker != null) {
-            mVelocityTracker!!.addMovement(event)
+            mVelocityTracker?.addMovement(event)
         }
         event.recycle()
         return returnValue
@@ -168,7 +168,7 @@ class NestedWebView @JvmOverloads constructor(context: Context?, attrs: Attribut
 
     private fun recycleVelocityTracker() {
         if (mVelocityTracker != null) {
-            mVelocityTracker!!.recycle()
+            mVelocityTracker?.recycle()
             mVelocityTracker = null
         }
     }

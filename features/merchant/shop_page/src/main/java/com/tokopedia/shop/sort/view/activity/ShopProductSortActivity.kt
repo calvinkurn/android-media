@@ -39,15 +39,15 @@ class ShopProductSortActivity : BaseSimpleActivity(), HasComponent<ShopComponent
         }
         super.onCreate(savedInstanceState)
         if (null != supportActionBar) {
-            supportActionBar!!.title = ""
+            supportActionBar?.title = ""
         }
     }
 
-    override fun getComponent(): ShopComponent {
+    override fun getComponent(): ShopComponent? {
         if (component == null) {
             component = ShopComponentHelper().getComponent(application, this)
         }
-        return component!!
+        return component
     }
 
     override fun select(sortId: String?, sortValue: String?, name: String?) {

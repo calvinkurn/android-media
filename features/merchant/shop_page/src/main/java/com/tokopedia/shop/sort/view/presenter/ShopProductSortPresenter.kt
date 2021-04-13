@@ -19,13 +19,13 @@ class ShopProductSortPresenter @Inject constructor(private val getShopProductFil
             override fun onCompleted() {}
             override fun onError(e: Throwable) {
                 if (isViewAttached) {
-                    view!!.showGetListError(e)
+                    view?.showGetListError(e)
                 }
             }
 
             override fun onNext(dataValue: List<ShopProductSort>) {
                 dataValue?.let {
-                    view!!.renderList(shopProductFilterMapper.convertSort(it))
+                    view?.renderList(shopProductFilterMapper.convertSort(it))
                 }
             }
         })
