@@ -495,7 +495,7 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
             bottomSheet.dismiss()
         }
         bottomSheet.setOnSecondaryCtaClickListener {
-            //todo : goto ss interrupt page
+            openInterruptPage()
         }
         bottomSheet.show(childFragmentManager)
     }
@@ -532,22 +532,22 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
             bottomSheet.dismiss()
         }
         bottomSheet.setOnSecondaryCtaClickListener {
-            //todo : goto ss interrupt page
+            openInterruptPage()
         }
         bottomSheet.show(childFragmentManager)
     }
 
     private fun showRegistrationSuccessBottomSheet() {
         val notifTitle = getString(R.string.pm_registration_success_title)
-        val notifDescription = getString(R.string.pm_registration_success_description)
+        val notifDescription = getString(R.string.pm_registration_success_description_end_game)
         val notifImage = PMConstant.Images.PM_REGISTRATION_SUCCESS
         showNotificationBottomSheet(notifTitle, notifDescription, notifImage) {
-            if (pmStatusAndShopInfo?.shopInfo?.isNewSeller.orFalse()) {
-                showNewSellerInterruptPopup()
-            } else {
-                showExistingSellerInterruptPopup()
-            }
+            openInterruptPage()
         }
+    }
+
+    private fun openInterruptPage() {
+        RouteManager.route(context, PMConstant.Urls.SHOP_SCORE_INTERRUPT_PAGE)
     }
 
     private fun showNotificationBottomSheet(title: String, description: String, imgUrl: String,

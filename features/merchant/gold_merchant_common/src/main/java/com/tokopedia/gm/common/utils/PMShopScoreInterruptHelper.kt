@@ -139,7 +139,7 @@ class PMShopScoreInterruptHelper @Inject constructor() {
             if (!hasOpenedInterruptPage()) {
                 pmCommonPreferenceManager?.putBoolean(PMCommonPreferenceManager.KEY_HAS_OPENED_COMMUNICATION_INTERRUPT_PAGE, true)
                 pmCommonPreferenceManager?.apply()
-                RouteManager.route(context, getInterruptPageUrl(0, false))
+                RouteManager.route(context, getInterruptPageUrl())
             }
         } else {
             val hasConsentChecked = hasConsentChecked()
@@ -148,15 +148,16 @@ class PMShopScoreInterruptHelper @Inject constructor() {
                 pmCommonPreferenceManager?.putBoolean(PMCommonPreferenceManager.KEY_HAS_OPENED_COMMUNICATION_INTERRUPT_PAGE, true)
                 pmCommonPreferenceManager?.putInt(PMCommonPreferenceManager.KEY_NUMBER_OF_INTERRUPT_PAGE_OPENED, numberOfPageOpened.plus(1))
                 pmCommonPreferenceManager?.apply()
-                val interruptPageUrl = getInterruptPageUrl(numberOfPageOpened, hasConsentChecked)
-                RouteManager.route(context, interruptPageUrl)
+                RouteManager.route(context, getInterruptPageUrl())
             }
         }
     }
 
-    private fun getInterruptPageUrl(numberOfPageOpened: Int, hasConsentChecked: Boolean): String {
+    private fun getInterruptPageUrl(): String {
+        val numberOfPageOpened = pmCommonPreferenceManager?.getInt(PMCommonPreferenceManager.KEY_NUMBER_OF_INTERRUPT_PAGE_OPENED, 0).orZero()
+        val hasConsentChecked = hasConsentChecked()
         val param = mapOf<String, Any>(
-                PARAM_OPEN to numberOfPageOpened,
+                PARAM_OPEN to numberOfPageOpened.plus(1),
                 PARAM_HAS_CLICKED to hasConsentChecked
         )
         return UriUtil.buildUriAppendParams(PMConstant.Urls.SHOP_SCORE_INTERRUPT_PAGE, param)
