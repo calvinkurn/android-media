@@ -1386,21 +1386,21 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         context?.let { context ->
             val minDate = GregorianCalendar()
             val resultMinDate = orderList.dateLimit.split('-')
-            if (resultMinDate.isNotEmpty() && resultMinDate.size == 3) {
+            if (resultMinDate.isNotEmpty()) {
                 minDate.set(resultMinDate[0].toInt(), resultMinDate[1].toInt(), resultMinDate[2].toInt())
             }
             val maxDate = GregorianCalendar()
             val isEndDateFilled = paramUohOrder.createTimeEnd.isNotEmpty()
             if (isEndDateFilled && flag.equals(START_DATE, true)) {
                 val splitEndDate = paramUohOrder.createTimeEnd.split('-')
-                if (splitEndDate.isNotEmpty() && splitEndDate.size == 3) {
+                if (splitEndDate.isNotEmpty()) {
                     maxDate.set(splitEndDate[0].toInt(), splitEndDate[1].toInt(), splitEndDate[2].toInt())
                 }
             }
             val isStartDateFilled = paramUohOrder.createTimeStart.isNotEmpty()
             if (isStartDateFilled && flag.equals(END_DATE, true)) {
                 val splitStartDate = paramUohOrder.createTimeStart.split('-')
-                if (splitStartDate.isNotEmpty() && splitStartDate.size == 3) {
+                if (splitStartDate.isNotEmpty()) {
                     minDate.set(splitStartDate[0].toInt(), splitStartDate[1].toInt(), splitStartDate[2].toInt())
                 }
             }
@@ -1456,7 +1456,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                         }
                         setCloseClickListener { dismiss() }
                     }
-                    datePicker.show(childFragmentManager, "")
+                    datePicker.show(parentFragmentManager, "")
                 }
             }
         }
