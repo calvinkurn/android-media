@@ -255,6 +255,8 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
     private var canDisplayOrderData = false
     private var canMultiAcceptOrder = false
     private var somListBulkProcessOrderBottomSheet: SomListBulkProcessOrderBottomSheet? = null
+    private var orderRequestCancelBottomSheet: SomOrderRequestCancelBottomSheet? = null
+    private var somOrderEditAwbBottomSheet: SomOrderEditAwbBottomSheet? = null
     private var bulkAcceptOrderDialog: SomListBulkAcceptOrderDialog? = null
     private var tickerPagerAdapter: TickerPagerAdapter? = null
     private var errorToaster: Snackbar? = null
@@ -345,9 +347,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
     }
 
     override fun onPause() {
-        childFragmentManager.fragments.forEach {
-            if (it is BottomSheetUnify && it !is SomFilterBottomSheet) it.dismiss()
-        }
+        dismissBottomSheets()
         dismissCoachMark()
         super.onPause()
         if (bulkAcceptButtonEnterAnimation?.isRunning == true) bulkAcceptButtonEnterAnimation?.end()
@@ -537,35 +537,43 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
         view?.let {
             if (it is ViewGroup) {
                 selectedOrderId = order.orderId
-                SomOrderRequestCancelBottomSheet(it.context).apply {
-                    setListener(object : SomOrderRequestCancelBottomSheet.SomOrderRequestCancelBottomSheetListener {
-                        override fun onAcceptOrder() {
-                            onAcceptOrderButtonClicked(selectedOrderId)
-                        }
-
-                        override fun onRejectOrder(reasonBuyer: String) {
-                            SomAnalytics.eventClickButtonTolakPesananPopup("${order.orderStatusId}", order.status)
-                            val orderRejectRequest = SomRejectRequestParam(
-                                    orderId = selectedOrderId,
-                                    rCode = "0",
-                                    reason = reasonBuyer
-                            )
-                            rejectOrder(orderRejectRequest)
-                        }
-
-                        override fun onRejectCancelRequest() {
-                            SomAnalytics.eventClickButtonTolakPesananPopup("${order.orderStatusId}", order.status)
-                            rejectCancelOrder(selectedOrderId)
-                        }
-                    })
-                    init(it, order.buttons.firstOrNull()?.popUp ?: PopUp(), order.cancelRequestOriginNote, order.orderStatusId)
-                    setTitle(it.context.getString(R.string.som_request_cancel_bottomsheet_title))
-                    show()
+                orderRequestCancelBottomSheet = orderRequestCancelBottomSheet?.apply {
+                    setupBuyerRequestCancelBottomSheet(this, it, order)
+                } ?: SomOrderRequestCancelBottomSheet(it.context).apply {
+                    setupBuyerRequestCancelBottomSheet(this, it, order)
                 }
+                orderRequestCancelBottomSheet?.show()
                 return
             }
         }
         showCommonToaster(view, "Terjadi kesalahan, silahkan coba lagi.")
+    }
+
+    private fun setupBuyerRequestCancelBottomSheet(somOrderRequestCancelBottomSheet: SomOrderRequestCancelBottomSheet, view: ViewGroup, order: SomListOrderUiModel) {
+        somOrderRequestCancelBottomSheet.apply {
+            setListener(object : SomOrderRequestCancelBottomSheet.SomOrderRequestCancelBottomSheetListener {
+                override fun onAcceptOrder() {
+                    onAcceptOrderButtonClicked(selectedOrderId)
+                }
+
+                override fun onRejectOrder(reasonBuyer: String) {
+                    SomAnalytics.eventClickButtonTolakPesananPopup("${order.orderStatusId}", order.status)
+                    val orderRejectRequest = SomRejectRequestParam(
+                            orderId = selectedOrderId,
+                            rCode = "0",
+                            reason = reasonBuyer
+                    )
+                    rejectOrder(orderRejectRequest)
+                }
+
+                override fun onRejectCancelRequest() {
+                    SomAnalytics.eventClickButtonTolakPesananPopup("${order.orderStatusId}", order.status)
+                    rejectCancelOrder(selectedOrderId)
+                }
+            })
+            init(view, order.buttons.firstOrNull()?.popUp ?: PopUp(), order.cancelRequestOriginNote, order.orderStatusId)
+            setTitle(view.context.getString(R.string.som_request_cancel_bottomsheet_title))
+        }
     }
 
     override fun onViewComplaintButtonClicked(order: SomListOrderUiModel) {
@@ -575,21 +583,29 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
     override fun onEditAwbButtonClicked(orderId: String) {
         view?.let {
             if (it is ViewGroup) {
-                SomOrderEditAwbBottomSheet(it.context).apply {
-                    setListener(object : SomOrderEditAwbBottomSheet.SomOrderEditAwbBottomSheetListener {
-                        override fun onEditAwbButtonClicked(cancelNotes: String) {
-                            val invoice = getOrderBy(orderId)
-                            viewModel.editAwb(orderId, cancelNotes, invoice)
-                        }
-                    })
-                    init(it)
-                    setTitle(SomConsts.TITLE_UBAH_RESI)
-                    show()
+                somOrderEditAwbBottomSheet = somOrderEditAwbBottomSheet?.apply {
+                    setupSomOrderEditAwbBottomSheet(this, it, orderId)
+                } ?: SomOrderEditAwbBottomSheet(it.context).apply {
+                    setupSomOrderEditAwbBottomSheet(this, it, orderId)
                 }
+                somOrderEditAwbBottomSheet?.show()
                 return
             }
         }
         showCommonToaster(view, "Terjadi kesalahan, silahkan coba lagi.")
+    }
+
+    private fun setupSomOrderEditAwbBottomSheet(somOrderEditAwbBottomSheet: SomOrderEditAwbBottomSheet, it: ViewGroup, orderId: String) {
+        somOrderEditAwbBottomSheet.apply {
+            setListener(object : SomOrderEditAwbBottomSheet.SomOrderEditAwbBottomSheetListener {
+                override fun onEditAwbButtonClicked(cancelNotes: String) {
+                    val invoice = getOrderBy(orderId)
+                    viewModel.editAwb(orderId, cancelNotes, invoice)
+                }
+            })
+            init(it)
+            setTitle(SomConsts.TITLE_UBAH_RESI)
+        }
     }
 
     override fun onChangeCourierClicked(orderId: String) {
@@ -2003,6 +2019,15 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                 commonToaster?.show()
             }
         }
+    }
+
+    protected fun dismissBottomSheets() {
+        childFragmentManager.fragments.forEach {
+            if (it is BottomSheetUnify && it !is SomFilterBottomSheet) it.dismiss()
+        }
+        somListBulkProcessOrderBottomSheet?.dismiss()
+        orderRequestCancelBottomSheet?.dismiss()
+        somOrderEditAwbBottomSheet?.dismiss()
     }
 
     protected fun loadTopAdsCategory() {

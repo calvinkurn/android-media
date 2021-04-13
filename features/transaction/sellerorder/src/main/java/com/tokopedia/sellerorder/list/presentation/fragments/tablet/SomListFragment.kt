@@ -149,6 +149,9 @@ class SomListFragment : com.tokopedia.sellerorder.list.presentation.fragments.So
             adapter.data.find { it is SomListOrderUiModel && it.orderId == openedOrderId }?.let {
                 result.order?.isChecked = (it as SomListOrderUiModel).isChecked
             }
+        } else {
+            updateOrderDetail = false
+            hideOrderDetail = false
         }
         super.onRefreshOrderSuccess(result)
         onOrderListChanged()
@@ -207,8 +210,7 @@ class SomListFragment : com.tokopedia.sellerorder.list.presentation.fragments.So
     }
 
     fun refreshSelectedOrder(orderId: String) {
-        updateOrderDetail = true
-        hideOrderDetail = true
+        dismissBottomSheets()
         super.onActionCompleted(true, orderId)
     }
 
