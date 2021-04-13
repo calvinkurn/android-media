@@ -4,7 +4,7 @@
 
     <application>
         <activity
-            android:name=".view.activity.PowerMerchantSubscribeActivity"
+            android:name=".view.activity.SubscriptionActivity"
             android:label="@string/pm_title_activity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
@@ -24,17 +24,25 @@
         </activity>
 
         <activity
-            android:name=".view.activity.TransitionPeriodPmActivity"
+            android:name=".view_old.activity.PowerMerchantSubscribeActivity"
+            android:label="@string/pm_title_activity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"
+            android:windowSoftInputMode="adjustPan"/>
+
+        <activity
+            android:name=".view_old.activity.TransitionPeriodPmActivity"
             android:label="@string/pm_title_activity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
         <activity
-            android:name=".view.activity.PowerMerchantTermsActivity"
+            android:name=".view_old.activity.PowerMerchantTermsActivity"
             android:label="@string/pm_title_tnc"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
         <activity
-            android:name=".view.activity.PMCancellationQuestionnaireActivity"
+            android:name=".view_old.activity.PMCancellationQuestionnaireActivity"
             android:label="@string/pm_title_cancellation_questionnaire"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />

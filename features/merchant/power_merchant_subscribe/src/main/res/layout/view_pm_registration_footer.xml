@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl1">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/Neutral_N0"
+            android:paddingStart="@dimen/layout_lvl2"
+            android:paddingTop="@dimen/layout_lvl1"
+            android:paddingEnd="@dimen/layout_lvl2"
+            android:paddingBottom="@dimen/unify_space_12">
+
+            <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
+                android:id="@+id/cbPmRegistrationTnC"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tvPmRegistrationTnC"
+                android:layout_width="@dimen/layout_lvl0"
+                android:layout_height="wrap_content"
+                android:text="@string/pm_tnc_agreement_text"
+                app:layout_constraintBottom_toBottomOf="@+id/cbPmRegistrationTnC"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/cbPmRegistrationTnC"
+                app:layout_constraintTop_toTopOf="@+id/cbPmRegistrationTnC" />
+
+            <com.tokopedia.unifycomponents.UnifyButton
+                android:id="@+id/btnPmRegister"
+                android:layout_width="@dimen/layout_lvl0"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/layout_lvl1"
+                android:text="@string/power_merchant_register_now"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/cbPmRegistrationTnC" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.google.android.material.appbar.AppBarLayout>
+</LinearLayout>

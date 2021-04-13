@@ -24,6 +24,8 @@ import retrofit2.Retrofit
 import javax.inject.Named
 import com.chuckerteam.chucker.api.RetentionManager
 import com.chuckerteam.chucker.api.ChuckerCollector
+import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 
 /**
  * @author by milhamj on 12/06/19.
@@ -123,4 +125,9 @@ class GmCommonModule {
         return GraphqlHelper.loadRawString(context.resources, R.raw.gold_merchant_status)
     }
 
+    @GmCommonQualifier
+    @Provides
+    fun provideGqlRepository(): GraphqlRepository {
+        return GraphqlInteractor.getInstance().graphqlRepository
+    }
 }

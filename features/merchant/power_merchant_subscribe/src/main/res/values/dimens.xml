@@ -1,5 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <dimen name="pm_spacing_18dp">18dp</dimen>
+    <dimen name="pm_spacing_28dp">28dp</dimen>
+    <dimen name="pm_spacing_36dp">36dp</dimen>
+    <dimen name="pm_spacing_88dp">88dp</dimen>
+    <dimen name="pm_spacing_100dp">100dp</dimen>
+    <dimen name="pm_spacing_128dp">128dp</dimen>
+    <dimen name="pm_spacing_140dp">140dp</dimen>
+    <dimen name="pm_spacing_180dp">180dp</dimen>
     <dimen name="power_merchant_horizontal_spacing">14dp</dimen>
     <dimen name="power_merchant_image_icon_small">20dp</dimen>
     <dimen name="power_merchant_image_icon_medium">24dp</dimen>

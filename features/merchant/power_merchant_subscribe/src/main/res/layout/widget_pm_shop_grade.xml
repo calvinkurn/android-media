@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/Unify_N0">
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelinePmShopGradeLeft"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="@dimen/layout_lvl2" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelinePmShopGradeRight"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_end="@dimen/layout_lvl2" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/imgPmShopGradeBackground"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="@dimen/layout_lvl0"
+        android:scaleType="fitXY"
+        app:layout_constraintBottom_toBottomOf="@+id/containerPmShopGrade"
+        app:layout_constraintEnd_toEndOf="@+id/containerPmShopGrade"
+        app:layout_constraintStart_toStartOf="@+id/containerPmShopGrade"
+        app:layout_constraintTop_toTopOf="@+id/containerPmShopGrade"
+        tools:src="@drawable/bg_pm_registration_header" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/containerPmShopGrade"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/layout_lvl2"
+        android:padding="@dimen/layout_lvl2"
+        app:layout_constraintEnd_toEndOf="@+id/guidelinePmShopGradeRight"
+        app:layout_constraintStart_toStartOf="@+id/guidelinePmShopGradeLeft"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvPmShopGradeStatusLbl"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/power_merchant_status_label"
+            android:textColor="@color/Unify_N0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="body_1" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvPmShopGradeStatus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_lvl2"
+            android:background="@drawable/bg_pm_status"
+            android:paddingStart="@dimen/spacing_lvl2"
+            android:paddingTop="@dimen/spacing_lvl1"
+            android:paddingEnd="@dimen/spacing_lvl2"
+            android:paddingBottom="@dimen/spacing_lvl1"
+            android:text="@string/pm_active"
+            android:textColor="@color/Unify_N0"
+            app:layout_constraintBottom_toBottomOf="@+id/tvPmShopGradeStatusLbl"
+            app:layout_constraintStart_toEndOf="@+id/tvPmShopGradeStatusLbl"
+            app:layout_constraintTop_toTopOf="@+id/tvPmShopGradeStatusLbl"
+            app:typographyType="heading_5" />
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/imgPmShopGrade"
+            android:layout_width="@dimen/layout_lvl5"
+            android:layout_height="@dimen/layout_lvl5"
+            android:layout_marginTop="@dimen/unify_space_12"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvPmShopGradeStatusLbl" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvPmShopGrade"
+            android:layout_width="@dimen/layout_lvl0"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/unify_space_12"
+            android:textColor="@color/Unify_N0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/imgPmShopGrade"
+            app:typographyType="heading_4"
+            tools:text="@string/pm_your_shop_grade" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvPmShopGradeMessage"
+            android:layout_width="@dimen/layout_lvl0"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_lvl2"
+            android:text="@string/pm_shop_grade_message"
+            android:textColor="@color/Unify_N0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvPmShopGrade"
+            app:typographyType="body_3" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvPmShopGradeScore"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/layout_lvl3"
+        android:textColor="@color/Unify_N700"
+        app:layout_constraintStart_toStartOf="@id/guidelinePmShopGradeLeft"
+        app:layout_constraintTop_toBottomOf="@+id/containerPmShopGrade"
+        app:typographyType="heading_3"
+        tools:text="Performa Toko : 75" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvPmShopGradeScoreTotal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/layout_lvl3"
+        android:layout_marginBottom="1dp"
+        android:textColor="@color/Unify_N400"
+        app:layout_constraintBottom_toBottomOf="@+id/tvPmShopGradeScore"
+        app:layout_constraintStart_toEndOf="@+id/tvPmShopGradeScore"
+        app:typographyType="body_3"
+        app:typographyWeight="bold"
+        tools:text="/100" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvPmShopGradeThreshold"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/layout_lvl1"
+        android:layout_marginBottom="@dimen/layout_lvl3"
+        android:textColor="@color/Unify_N700"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/guidelinePmShopGradeRight"
+        app:layout_constraintStart_toStartOf="@+id/guidelinePmShopGradeLeft"
+        app:layout_constraintTop_toBottomOf="@+id/tvPmShopGradeScore"
+        app:layout_constraintVertical_bias="0.0"
+        app:layout_goneMarginBottom="@dimen/layout_lvl3"
+        app:typographyType="body_3"
+        tools:text="Pertahankan skor min. 60 poin untuk tetap menjadi Power Merchant setelah 31 Mei 2021." />
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/icPmShopScoreTips"
+        android:layout_width="@dimen/layout_lvl3"
+        android:layout_height="@dimen/layout_lvl3"
+        android:layout_marginTop="@dimen/layout_lvl2"
+        android:layout_marginBottom="@dimen/layout_lvl3"
+        android:visibility="gone"
+        app:icon_color_light_enable="@color/Unify_G500"
+        app:icon_name="LIGHT_BULB"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/guidelinePmShopGradeLeft"
+        app:layout_constraintTop_toBottomOf="@+id/tvPmShopGradeThreshold"
+        tools:visibility="visible" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvPmShopScoreTips"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/layout_lvl1"
+        android:text="@string/power_merchant_performance_tips"
+        android:textColor="@color/Unify_G500"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/icPmShopScoreTips"
+        app:layout_constraintEnd_toEndOf="@+id/guidelinePmShopGradeRight"
+        app:layout_constraintStart_toEndOf="@+id/icPmShopScoreTips"
+        app:layout_constraintTop_toTopOf="@+id/icPmShopScoreTips"
+        app:typographyType="heading_5"
+        tools:visibility="visible" />
+</androidx.constraintlayout.widget.ConstraintLayout>
