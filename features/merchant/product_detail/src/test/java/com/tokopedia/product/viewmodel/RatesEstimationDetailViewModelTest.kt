@@ -10,6 +10,9 @@ import com.tokopedia.product.estimasiongkir.data.model.v3.ServiceProduct
 import com.tokopedia.product.estimasiongkir.view.viewmodel.RatesEstimationDetailViewModel
 import com.tokopedia.product.util.BaseProductViewModelTest
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
+import com.tokopedia.unit.test.ext.verifyErrorEquals
+import com.tokopedia.unit.test.ext.verifySuccessEquals
+import com.tokopedia.unit.test.ext.verifyValueEquals
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
@@ -72,9 +75,12 @@ class RatesEstimationDetailViewModelTest : BaseProductViewModelTest() {
 
     @Test
     fun `fail get rate estimate`() {
+
+        val throwable = Throwable()
+
         coEvery {
             graphqlRepository.getReseponse(any(), any())
-        } throws Throwable()
+        } throws throwable
 
         viewModel.getCostEstimation(
                 productWeight = anyFloat(),
@@ -84,6 +90,7 @@ class RatesEstimationDetailViewModelTest : BaseProductViewModelTest() {
         )
 
         Assert.assertTrue(viewModel.rateEstResp.value is Fail)
+        viewModel.rateEstResp.verifyErrorEquals(Fail(throwable))
     }
 
 }
