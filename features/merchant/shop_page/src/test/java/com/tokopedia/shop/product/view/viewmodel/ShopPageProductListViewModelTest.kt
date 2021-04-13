@@ -278,7 +278,6 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
             getShopEtalaseByShopUseCase.clearCache()
             getShopFeaturedProductUseCase.clearCache()
             getShopProductUseCase.clearCache()
-            deleteShopInfoUseCase.executeSync()
         }
     }
 

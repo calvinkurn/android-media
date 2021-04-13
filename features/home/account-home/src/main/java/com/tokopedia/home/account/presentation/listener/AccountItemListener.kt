@@ -83,4 +83,6 @@ interface AccountItemListener {
     fun getTrackingQueue(): TrackingQueue
 
     fun getRemoteConfig(): RemoteConfig
+
+    fun onIconWarningNameClick(element: BuyerCardViewModel)
 }
