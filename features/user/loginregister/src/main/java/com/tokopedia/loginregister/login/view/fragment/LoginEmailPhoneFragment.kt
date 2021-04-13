@@ -1342,7 +1342,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
                 onSuccessLogin()
             } else if (requestCode == REQUEST_COTP_PHONE_VERIFICATION && resultCode == Activity.RESULT_OK) {
                 onSuccessLogin()
-            } else if (requestCode == REQUEST_ADD_PIN_AFTER_REGISTER_PHONE && resultCode == Activity.RESULT_OK) {
+            } else if (requestCode == REQUEST_ADD_PIN_AFTER_REGISTER_PHONE) {
                 presenter.getUserInfo()
             } else if (requestCode == REQUEST_PENDING_OTP_VALIDATE && resultCode == Activity.RESULT_OK) {
                 data?.extras?.let { bundle ->
@@ -1386,7 +1386,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
     private fun isFromAtcPage(): Boolean = source == SOURCE_ATC
 
     override fun goToAddNameFromRegisterPhone(uuid: String, msisdn: String) {
-        val applink = ApplinkConstInternalGlobal.ADD_NAME_REGISTER
+        val applink = ApplinkConstInternalGlobal.ADD_NAME_REGISTER_CLEAN_VIEW
         val intent = RouteManager.getIntent(context, applink)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_PHONE, msisdn)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_UUID, uuid)
