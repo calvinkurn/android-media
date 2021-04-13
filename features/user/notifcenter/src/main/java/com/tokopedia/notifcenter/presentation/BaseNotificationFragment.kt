@@ -225,6 +225,8 @@ abstract class BaseNotificationFragment : BaseListFragment<Visitable<*>,
                 .inject(this)
     }
 
+    override fun onItemMultipleStockHandlerClick(notification: NotificationItemViewBean) {}
+
     companion object {
         private const val TAG_PRODUCT_STOCK = "Product Stock Handler"
         private const val TAG_PRODUCT_LIST = "Product List Card"

@@ -26,10 +26,12 @@ object MultipleProductCardMapper {
             products = listOf(notification.product)
             templateKey = notification.templateKey
             userInfo = notification.userInfo
+            title = notification.title
+            body = notification.body
         }
     }
 
-    fun sortMultipleProductCardBasedOnStock(multiProductCards: ArrayList<MultipleProductCardViewBean>): List<MultipleProductCardViewBean> {
+    private fun sortMultipleProductCardBasedOnStock(multiProductCards: ArrayList<MultipleProductCardViewBean>): List<MultipleProductCardViewBean> {
         val sortedMultiProductCards = arrayListOf<MultipleProductCardViewBean>()
         val emptyStockMultiProductCards = arrayListOf<MultipleProductCardViewBean>()
         multiProductCards.forEach { productCard ->

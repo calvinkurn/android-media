@@ -7,7 +7,9 @@ import com.tokopedia.abstraction.common.network.exception.HttpErrorException
 import com.tokopedia.abstraction.common.network.exception.ResponseDataNullException
 import com.tokopedia.abstraction.common.network.exception.ResponseErrorException
 import com.tokopedia.network.constant.ErrorNetMessage
+import com.tokopedia.notifcenter.data.entity.ProductData
 import com.tokopedia.notifcenter.data.mapper.GetNotificationUpdateMapper
+import com.tokopedia.notifcenter.data.mapper.ProductStockHandlerMapper
 import com.tokopedia.notifcenter.data.model.NotificationViewData
 import com.tokopedia.notifcenter.data.viewbean.NotificationItemViewBean
 import com.tokopedia.notifcenter.domain.ProductStockHandlerUseCase
@@ -58,6 +60,13 @@ class NotificationUpdateViewModel @Inject constructor(
         val params = stockHandlerParam(notificationId)
         productStockHandlerUseCase.get(params, {
             _productStockHandler.value = stockHandlerMap(it)
+        }, ::onErrorMessage)
+    }
+
+    fun isProductStockHandlerMultiple(notificationId: String, originData: ProductData) {
+        val params = stockHandlerParam(notificationId)
+        productStockHandlerUseCase.get(params, {
+            _productStockHandler.value = ProductStockHandlerMapper.mapEliminateMultipleProduct(it, originData)
         }, ::onErrorMessage)
     }
 

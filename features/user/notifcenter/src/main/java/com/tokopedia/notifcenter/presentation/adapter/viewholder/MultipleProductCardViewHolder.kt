@@ -178,7 +178,7 @@ class MultipleProductCardViewHolder(
 
         btnReminder.setOnClickListener {
             listener.itemClicked(notification, adapterPosition)
-            listener.onItemStockHandlerClick(notification)
+            listener.onItemMultipleStockHandlerClick(notification)
         }
     }
 
