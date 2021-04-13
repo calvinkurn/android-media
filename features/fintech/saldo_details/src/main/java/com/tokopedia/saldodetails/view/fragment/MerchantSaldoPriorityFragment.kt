@@ -2,7 +2,6 @@ package com.tokopedia.saldodetails.view.fragment
 
 import android.content.Context
 import android.graphics.Color
-import android.graphics.Typeface
 import android.os.Bundle
 import android.text.Html
 import android.text.TextUtils
@@ -19,7 +18,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
-import com.tokopedia.design.component.Dialog
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.saldodetails.commom.analytics.SaldoDetailsAnalytics
@@ -33,6 +32,8 @@ import com.tokopedia.saldodetails.view.activity.SaldoWebViewActivity
 import com.tokopedia.saldodetails.view.fragment.SaldoDepositFragment.Companion.BUNDLE_PARAM_SELLER_DETAILS
 import com.tokopedia.saldodetails.view.fragment.SaldoDepositFragment.Companion.BUNDLE_PARAM_SELLER_DETAILS_ID
 import com.tokopedia.saldodetails.viewmodels.MerchantSaldoPriorityViewModel
+import com.tokopedia.unifycomponents.Label
+import com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
 import javax.inject.Inject
 
 class MerchantSaldoPriorityFragment : BaseDaggerFragment() {
@@ -52,14 +53,14 @@ class MerchantSaldoPriorityFragment : BaseDaggerFragment() {
     }
 
     private var spTitle: TextView? = null
-    private var spNewTitle: TextView? = null
+    private var spNewTitle: Label? = null
     private var spDescription: TextView? = null
     private var spKYCStatusLayout: RelativeLayout? = null
     private var spKYCShortDesc: TextView? = null
     private var spKYCLongDesc: TextView? = null
     private var spDetailListLinearLayout: LinearLayout? = null
     private var spActionListLinearLayout: LinearLayout? = null
-    private var spEnableSwitchCompat: Switch? = null
+    private var spEnableSwitchCompat: SwitchUnify? = null
     private var spRightArrow: ImageView? = null
     private var spStatusInfoIcon: ImageView? = null
     private var interactionListener: InteractionListener? = null
@@ -69,12 +70,9 @@ class MerchantSaldoPriorityFragment : BaseDaggerFragment() {
     @Inject
     lateinit var saldoDetailsAnalytics: SaldoDetailsAnalytics
 
-//    @Inject
-//    lateinit var saldoDetailsPresenter: MerchantSaldoPriorityPresenter
-
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-    lateinit var merchantSaldoPriorityViewModel: MerchantSaldoPriorityViewModel
+    private lateinit var merchantSaldoPriorityViewModel: MerchantSaldoPriorityViewModel
 
     private var originalSwitchState: Boolean = false
 
@@ -84,7 +82,7 @@ class MerchantSaldoPriorityFragment : BaseDaggerFragment() {
         if (savedInstanceState == null) {
             val bundle = arguments
             val saveInstanceCacheManagerId = bundle?.getString(BUNDLE_PARAM_SELLER_DETAILS_ID) ?: ""
-            val saveInstanceCacheManager = SaveInstanceCacheManager(context!!, saveInstanceCacheManagerId)
+            val saveInstanceCacheManager = SaveInstanceCacheManager(requireContext(), saveInstanceCacheManagerId)
             sellerDetails = saveInstanceCacheManager.get(BUNDLE_PARAM_SELLER_DETAILS, GqlDetailsResponse::class.java)
             initViews(view)
             setViewModelObservers()
@@ -144,47 +142,11 @@ class MerchantSaldoPriorityFragment : BaseDaggerFragment() {
     }
 
     private fun initListeners() {
-
-        spEnableSwitchCompat!!.setOnCheckedChangeListener { buttonView, isChecked ->
-
+        spEnableSwitchCompat!!.setOnCheckedChangeListener { _, isChecked ->
             if (originalSwitchState == isChecked) {
                 return@setOnCheckedChangeListener
             }
-
-            // @TODO remove dialog
-            val dialog = Dialog(activity, Dialog.Type.PROMINANCE)
-            dialog.titleTextView.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
-            dialog.titleTextView.setTypeface(null, Typeface.BOLD)
-            if (isChecked) {
-                dialog.setTitle(resources.getString(com.tokopedia.saldodetails.R.string.sp_enable_title))
-                dialog.setDesc(resources.getString(com.tokopedia.saldodetails.R.string.sp_enable_desc))
-                dialog.setBtnOk(resources.getString(com.tokopedia.saldodetails.R.string.sp_btn_ok_enable))
-            } else {
-                dialog.setTitle(resources.getString(com.tokopedia.saldodetails.R.string.sp_disable_title))
-                if (sellerDetails!!.status == 5) {
-                    dialog.setDesc(resources.getString(com.tokopedia.saldodetails.R.string.sp_disable_desc_long))
-                } else {
-                    dialog.setDesc(Html.fromHtml(resources.getString(com.tokopedia.saldodetails.R.string.sp_disable_desc)))
-                }
-
-                dialog.setBtnOk(resources.getString(com.tokopedia.saldodetails.R.string.sp_btn_ok_disable))
-            }
-
-            dialog.setOnOkClickListener {
-                dialog.dismiss()
-                showProgressLoading()
-                merchantSaldoPriorityViewModel.updateSellerSaldoStatus(isChecked)
-            }
-
-            dialog.setBtnCancel(resources.getString(com.tokopedia.saldodetails.R.string.sp_btn_cancel))
-            dialog.setOnCancelClickListener {
-                dialog.dismiss()
-                spEnableSwitchCompat!!.isChecked = !isChecked
-            }
-
-            dialog.show()
-            dialog.btnCancel.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_32))
-            dialog.btnOk.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_G400))
+            showDialog(isChecked)
         }
 
         if (sellerDetails!!.isBoxShowPopup) {
@@ -198,6 +160,35 @@ class MerchantSaldoPriorityFragment : BaseDaggerFragment() {
         }
     }
 
+    private fun showDialog(isChecked: Boolean) {
+        DialogUnify(requireContext(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
+            if (isChecked) {
+                setTitle(resources.getString(com.tokopedia.saldodetails.R.string.sp_enable_title))
+                setDescription(resources.getString(com.tokopedia.saldodetails.R.string.sp_enable_desc))
+                setPrimaryCTAText(resources.getString(com.tokopedia.saldodetails.R.string.sp_btn_ok_enable))
+            } else {
+                setTitle(resources.getString(com.tokopedia.saldodetails.R.string.sp_disable_title))
+                if (sellerDetails!!.status == 5) {
+                    setDescription(resources.getString(com.tokopedia.saldodetails.R.string.sp_disable_desc_long))
+                } else {
+                    setDescription(Html.fromHtml(resources.getString(com.tokopedia.saldodetails.R.string.sp_disable_desc)))
+                }
+
+                setPrimaryCTAText(resources.getString(com.tokopedia.saldodetails.R.string.sp_btn_ok_disable))
+            }
+            setSecondaryCTAText(resources.getString(com.tokopedia.saldodetails.R.string.sp_btn_cancel))
+            setPrimaryCTAClickListener {
+                dismiss()
+                showProgressLoading()
+                merchantSaldoPriorityViewModel.updateSellerSaldoStatus(isChecked)
+            }
+            setSecondaryCTAClickListener {
+                dismiss()
+                spEnableSwitchCompat!!.isChecked = isChecked.not()
+            }
+            show()
+        }
+    }
 
     private fun populateData() {
         populateSellerDetail()
@@ -260,15 +251,16 @@ class MerchantSaldoPriorityFragment : BaseDaggerFragment() {
     }
 
     private fun populateAnchorList() {
-        if (sellerDetails!!.infoList != null && sellerDetails!!.infoList!!.size > 0) {
+        if (sellerDetails!!.infoList != null && sellerDetails!!.infoList!!.isNotEmpty()) {
             populateInfolistData(sellerDetails!!.infoList)
         }
 
-        if (sellerDetails!!.anchorList != null && sellerDetails!!.anchorList!!.size > 0) {
+        if (sellerDetails!!.anchorList != null && sellerDetails!!.anchorList!!.isNotEmpty()) {
             populateAnchorListData(sellerDetails!!.anchorList)
         }
     }
 
+    // @Todo remove drawables?
     private fun setBoxBackground() {
         val boxType = sellerDetails!!.boxType
         if (boxType!!.equals(NONE, ignoreCase = true)) {
@@ -313,7 +305,7 @@ class MerchantSaldoPriorityFragment : BaseDaggerFragment() {
                 anchorLabel.setOnClickListener { v ->
                     if (!TextUtils.isEmpty(gqlAnchorListResponse.url) && context != null) {
                         saldoDetailsAnalytics.eventAnchorLabelClick(anchorLabel.text.toString())
-                        startActivity(SaldoWebViewActivity.getWebViewIntent(context!!, gqlAnchorListResponse.url))
+                        startActivity(SaldoWebViewActivity.getWebViewIntent(requireContext(), gqlAnchorListResponse.url))
                     }
                 }
                 spActionListLinearLayout!!.addView(view)
@@ -342,7 +334,7 @@ class MerchantSaldoPriorityFragment : BaseDaggerFragment() {
     }
 
     override fun initInjector() {
-        activity?.let{
+        activity?.let {
             val saldoDetailsComponent = SaldoDetailsComponentInstance.getComponent(it)
             saldoDetailsComponent.inject(this)
         }

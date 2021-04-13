@@ -2,11 +2,12 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="horizontal"
     android:padding="@dimen/unify_space_2"
     android:weightSum="2">
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/info_label_text_view"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -14,11 +15,10 @@
         android:layout_weight="1.2"
         android:fontFamily="sans-serif"
         android:textColor="@color/Unify_N700_32"
-        android:textSize="12sp"
-        android:textStyle="normal" />
+        app:typographyType="body_3" />
 
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/info_value_text_view"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -27,7 +27,6 @@
         android:fontFamily="sans-serif"
         android:gravity="end"
         android:textColor="@color/Unify_N700_68"
-        android:textSize="@dimen/sp_12"
-        android:textStyle="normal" />
+        app:typographyType="body_3" />
 
 </LinearLayout>

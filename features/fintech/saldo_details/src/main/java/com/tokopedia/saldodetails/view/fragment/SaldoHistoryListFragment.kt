@@ -65,7 +65,7 @@ class SaldoHistoryListFragment : BaseListFragment<DepositHistoryList, SaldoDetai
         }
     }
 
-    private fun sellerObserver() = viewModel.sellerResponseLiveData.observe(this, Observer {
+    private fun sellerObserver() = viewModel.sellerResponseLiveData.observe(viewLifecycleOwner, Observer {
         it?.let {
             setData(it)
         }
@@ -106,9 +106,9 @@ class SaldoHistoryListFragment : BaseListFragment<DepositHistoryList, SaldoDetai
         }
     }
 
-    private fun buyerObserver() = viewModel.buyerResponseLiveData.observe(this, Observer { it?.let { setData(it) } })
+    private fun buyerObserver() = viewModel.buyerResponseLiveData.observe(viewLifecycleOwner, Observer { it?.let { setData(it) } })
 
-    private fun addAllTransactionObserver() = viewModel.allDepositResponseLiveData.observe(this, Observer { it?.let { setData(it) } })
+    private fun addAllTransactionObserver() = viewModel.allDepositResponseLiveData.observe(viewLifecycleOwner, Observer { it?.let { setData(it) } })
 
     private fun initViews(view: View) {
         recyclerView = view.findViewById(com.tokopedia.saldodetails.R.id.saldo_history_recycler_view)

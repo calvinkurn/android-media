@@ -500,18 +500,21 @@ class SaldoDepositFragment : BaseDaggerFragment() {
 
 
     private fun showMustVerify() {
-        activity?.let {
-            androidx.appcompat.app.AlertDialog.Builder(it)
-                    .setTitle(getString(com.tokopedia.saldodetails.R.string.sp_alert_not_verified_yet_title))
-                    .setMessage(getString(com.tokopedia.saldodetails.R.string.sp_alert_not_verified_yet_body))
-                    .setPositiveButton(getString(com.tokopedia.saldodetails.R.string.sp_alert_not_verified_yet_positive)) { dialog, which ->
-                        val intent = RouteManager.getIntent(getContext(), ApplinkConstInternalGlobal.SETTING_PROFILE)
-                        startActivity(intent)
-                        dialog.dismiss()
-                    }
-                    .setNegativeButton(getString(com.tokopedia.saldodetails.R.string.sp_alert_not_verified_yet_negative)) { dialog, which -> dialog.dismiss() }
-                    .setCancelable(false)
-                    .show()
+        context?.let { context ->
+            DialogUnify(context, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
+                setTitle(getString(com.tokopedia.saldodetails.R.string.sp_alert_not_verified_yet_title))
+                setDescription(getString(com.tokopedia.saldodetails.R.string.sp_alert_not_verified_yet_body))
+                setPrimaryCTAText(getString(com.tokopedia.saldodetails.R.string.sp_alert_not_verified_yet_positive))
+                setSecondaryCTAText(getString(com.tokopedia.saldodetails.R.string.sp_alert_not_verified_yet_negative))
+                setPrimaryCTAClickListener {
+                    val intent = RouteManager.getIntent(getContext(), ApplinkConstInternalGlobal.SETTING_PROFILE)
+                    startActivity(intent)
+                    dismiss()
+                }
+                setSecondaryCTAClickListener { dismiss() }
+                setOverlayClose(false)
+                show()
+            }
         }
     }
 
@@ -553,14 +556,18 @@ class SaldoDepositFragment : BaseDaggerFragment() {
     }
 
     private fun showSaldoWarningDialog() {
-        activity?.let {
-            androidx.appcompat.app.AlertDialog.Builder(it)
-                    .setTitle(getString(com.tokopedia.saldodetails.R.string.sp_saldo_withdraw_warning_title))
-                    .setMessage(getString(com.tokopedia.saldodetails.R.string.sp_saldo_withdraw_warning_desc))
-                    .setPositiveButton(getString(com.tokopedia.saldodetails.R.string.sp_saldo_withdraw_warning_positiv_button)
-                    ) { dialog, which -> goToWithdrawActivity() }
-                    .setCancelable(true)
-                    .show()
+        context?.let { context ->
+            DialogUnify(context, DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE).apply {
+                setTitle(getString(com.tokopedia.saldodetails.R.string.sp_saldo_withdraw_warning_title))
+                setDescription(getString(com.tokopedia.saldodetails.R.string.sp_saldo_withdraw_warning_desc))
+                setPrimaryCTAText(getString(com.tokopedia.saldodetails.R.string.sp_saldo_withdraw_warning_positiv_button))
+                setPrimaryCTAClickListener {
+                    goToWithdrawActivity()
+                    dismiss()
+                }
+                setOverlayClose(false)
+                show()
+            }
         }
     }
 
@@ -572,11 +579,7 @@ class SaldoDepositFragment : BaseDaggerFragment() {
         return saldoBalanceBuyer
     }
 
-    fun isUserSeller(): Boolean {
-        return isSellerEnabled
-    }
-
-    protected fun initialVar() {
+    private fun initialVar() {
         saldoDetailViewModel.isSeller = isSellerEnabled
         totalBalanceTitle!!.text = resources.getString(com.tokopedia.saldodetails.R.string.total_saldo_text)
         totalBalanceInfo!!.gone()

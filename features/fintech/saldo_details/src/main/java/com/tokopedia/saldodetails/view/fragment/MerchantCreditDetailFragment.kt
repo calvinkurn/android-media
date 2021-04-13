@@ -18,16 +18,16 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
-import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.saldodetails.commom.analytics.SaldoDetailsAnalytics
-import com.tokopedia.saldodetails.design.UserStatusInfoBottomSheet
 import com.tokopedia.saldodetails.di.SaldoDetailsComponentInstance
 import com.tokopedia.saldodetails.response.model.GqlMerchantCreditResponse
 import com.tokopedia.saldodetails.view.activity.SaldoWebViewActivity
 import com.tokopedia.saldodetails.view.fragment.SaldoDepositFragment.Companion.BUNDLE_PARAM_MERCHANT_CREDIT_DETAILS
 import com.tokopedia.saldodetails.view.fragment.SaldoDepositFragment.Companion.BUNDLE_PARAM_MERCHANT_CREDIT_DETAILS_ID
+import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifyprinciples.Typography
 import javax.inject.Inject
 
 
@@ -55,7 +55,8 @@ class MerchantCreditDetailFragment : BaseDaggerFragment() {
                               savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(com.tokopedia.saldodetails.R.layout.fragment_merchant_credit_details, container, false)
         val bundle = arguments
-        val saveInstanceCachemanagerId = bundle?.getString(BUNDLE_PARAM_MERCHANT_CREDIT_DETAILS_ID) ?: ""
+        val saveInstanceCachemanagerId = bundle?.getString(BUNDLE_PARAM_MERCHANT_CREDIT_DETAILS_ID)
+                ?: ""
         saveInstanceCacheManager = SaveInstanceCacheManager(requireContext(), saveInstanceCachemanagerId)
         merchantCreditDetails = saveInstanceCacheManager!!.get<GqlMerchantCreditResponse>(BUNDLE_PARAM_MERCHANT_CREDIT_DETAILS, GqlMerchantCreditResponse::class.java)
         initViews(view)
@@ -83,6 +84,7 @@ class MerchantCreditDetailFragment : BaseDaggerFragment() {
         populateData()
     }
 
+    // @Todo remove drawable ic_modal_toko
     private fun populateData() {
         if (merchantCreditDetails != null) {
 
@@ -193,7 +195,7 @@ class MerchantCreditDetailFragment : BaseDaggerFragment() {
     }
 
     private fun startWebView(linkUrl: String?) {
-        startActivity(SaldoWebViewActivity.getWebViewIntent(context!!, linkUrl!!))
+        context?.let { context -> startActivity(SaldoWebViewActivity.getWebViewIntent(context, linkUrl)) }
     }
 
     private fun populateInfolistData() {
@@ -213,6 +215,7 @@ class MerchantCreditDetailFragment : BaseDaggerFragment() {
         }
     }
 
+    // @Todo Bottom sheet Testing
     private fun populateAnchorListData() {
         val gqlAnchorListResponse = merchantCreditDetails!!.anchorList
         if (gqlAnchorListResponse != null) {
@@ -229,16 +232,7 @@ class MerchantCreditDetailFragment : BaseDaggerFragment() {
                         merchantCreditDetails!!.status.toString())
 
                 if (gqlAnchorListResponse.isShowDialog && gqlAnchorListResponse.dialogInfo != null) {
-
-                    //@Todo
-                    val closeableBottomSheetDialog = CloseableBottomSheetDialog.createInstanceRounded(context)
-                    val view = layoutInflater.inflate(com.tokopedia.saldodetails.R.layout.mcl_bottom_dialog, null)
-                    (view.findViewById<View>(com.tokopedia.saldodetails.R.id.mcl_bottom_sheet_title) as TextView).text = gqlAnchorListResponse.dialogInfo!!.dialogTitle
-                    (view.findViewById<View>(com.tokopedia.saldodetails.R.id.mcl_bottom_sheet_desc) as TextView).text = gqlAnchorListResponse.dialogInfo!!.dialogBody
-
-                    closeableBottomSheetDialog.setContentView(view)
-                    closeableBottomSheetDialog.show()
-                    closeableBottomSheetDialog.setCanceledOnTouchOutside(true)
+                    showCloseableBottomSheet(gqlAnchorListResponse.dialogInfo!!.dialogTitle, gqlAnchorListResponse.dialogInfo!!.dialogBody)
                 } else {
                     if (!TextUtils.isEmpty(gqlAnchorListResponse.link)) {
                         startWebView(gqlAnchorListResponse.link)
@@ -247,6 +241,23 @@ class MerchantCreditDetailFragment : BaseDaggerFragment() {
             }
         }
         mclActionItemTV!!.show()
+    }
+
+    private fun showCloseableBottomSheet(dialogTitle: String?, dialogBody: String?) {
+        val closeableBottomSheetDialog = BottomSheetUnify()
+        val childView = layoutInflater.inflate(com.tokopedia.saldodetails.R.layout.mcl_bottom_dialog, null)
+        childFragmentManager.let {
+            closeableBottomSheetDialog.apply {
+                showCloseIcon = true
+                setChild(childView)
+                setTitle(dialogTitle ?: "")
+                show(it, null)
+            }
+        }
+        childView.findViewById<Typography>(com.tokopedia.saldodetails.R.id.mcl_bottom_sheet_desc).text = dialogBody
+        closeableBottomSheetDialog.setCloseClickListener {
+            closeableBottomSheetDialog.dismiss()
+        }
     }
 
     override fun initInjector() {
