@@ -69,7 +69,7 @@ class CategoryWidgetViewHolder(val view: View, private val categoryListener: Hom
 
         override fun onBindViewHolder(holder: CategoryWidgetItemViewHolder, position: Int) {
             val grid = grids[position]
-            holder.categoryImageView.loadImageRounded(grid.imageUrl, 8, FPM_CATEGORY_WIDGET_ITEM)
+            holder.categoryImageView.loadImageRounded(grid.imageUrl, 80, FPM_CATEGORY_WIDGET_ITEM)
             holder.categoryName.text = grid.name
             holder.itemView.setOnClickListener {
                 listener?.sendEETracking(
