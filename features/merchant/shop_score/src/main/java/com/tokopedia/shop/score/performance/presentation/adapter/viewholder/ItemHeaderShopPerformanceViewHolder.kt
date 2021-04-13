@@ -5,6 +5,7 @@ import androidx.core.content.ContextCompat
 import com.google.android.material.shape.CornerFamily
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.common.ShopScoreUtils
 import com.tokopedia.shop.score.performance.presentation.adapter.ItemHeaderShopPerformanceListener
@@ -22,9 +23,13 @@ class ItemHeaderShopPerformanceViewHolder(view: View,
         val LAYOUT = R.layout.item_header_shop_performance
     }
 
+    private val impressHolder = ImpressHolder()
+
     override fun bind(element: HeaderShopPerformanceUiModel?) {
         with(itemView) {
-            itemHeaderShopPerformanceListener.onViewHeaderListener(this)
+            addOnImpressionListener(impressHolder) {
+                itemHeaderShopPerformanceListener.onViewHeaderListener(this)
+            }
 
             val roundedRadius = 16F
             containerHeaderShopPerformance.shapeAppearanceModel = containerHeaderShopPerformance.shapeAppearanceModel

@@ -33,7 +33,6 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.datepicker.range.view.listener.DatePickerResultListener;
-import com.tokopedia.design.component.ticker.TickerView;
 import com.tokopedia.iconunify.IconUnify;
 import com.tokopedia.review.R;
 import com.tokopedia.review.ReviewInstance;
@@ -75,7 +74,7 @@ import rx.schedulers.Schedulers;
  */
 public class SellerReputationFragment extends BaseDaggerFragment
         implements SellerReputationView, RetryDataBinder.OnRetryListener,
-        DefaultErrorSubscriber.ErrorNetworkListener, DatePickerResultListener.DatePickerResult, SellerReputationAdapter.ShopScoreReputationListener {
+        DefaultErrorSubscriber.ErrorNetworkListener, DatePickerResultListener.DatePickerResult {
 
     public static final String TAG = "SellerReputationFragmen";
 
@@ -735,10 +734,5 @@ public class SellerReputationFragment extends BaseDaggerFragment
     @Override
     protected String getScreenName() {
         return AppScreen.SCREEN_SELLER_REP_HISTORY;
-    }
-
-    @Override
-    public void onClickShowBottomSheetShopScore() {
-
     }
 }

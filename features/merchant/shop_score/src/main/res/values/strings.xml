@@ -162,6 +162,8 @@
     <string name="desc_level_4"><![CDATA[Mulai dari <b>Rp300juta</b> dan <b>1.500</b> produk terjual]]></string>
 
     <!-- Summary Shop Performance -->
+    <string name="title_new_seller_level_0">Belum ada level &amp; skor untuk tokomu</string>
+    <string name="desc_new_seller_level_0">Level &amp; skor Performa Tokomu akan ditampilkan jika sudah 90 hari bergabung. Kamu akan dapat proyeksi skor di hari ke-60, pada %s, ya.</string>
     <string name="title_keep_up_level_1">Tingkatkan terus kualitas tokomu, yuk!</string>
     <string name="desc_keep_up_level_1">Ayo tingkatkan terus kualitas layanan dan penjualan tokomu dengan menggunakan berbagai fitur dan promosi!</string>
     <string name="title_good_level_1">Kualitas layanan tokomu sudah bagus!</string>

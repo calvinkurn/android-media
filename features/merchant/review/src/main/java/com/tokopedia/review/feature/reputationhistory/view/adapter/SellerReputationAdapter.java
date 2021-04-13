@@ -361,8 +361,4 @@ public class SellerReputationAdapter extends BaseLinearRecyclerViewAdapter {
             });
         }
     }
-
-    public interface ShopScoreReputationListener {
-        void onClickShowBottomSheetShopScore();
-    }
 }

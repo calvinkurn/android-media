@@ -10,6 +10,7 @@ class ShopScoreCoachMarkPrefs(private val context: Context) {
         const val HAS_ITEM_PERFORMANCE_DETAIL = "isShownItemPerformanceDetail"
         const val HAS_ITEM_PM = "isShownItemPM"
         const val HAS_ITEM_RM = "isShownItemRM"
+        const val HAS_FINISH_COACH_MARK = "finishCoachMarkShopScore"
     }
 
     private val sharedPref by lazy {
@@ -42,6 +43,10 @@ class ShopScoreCoachMarkPrefs(private val context: Context) {
         putBoolean(HAS_ITEM_RM, value)
     }
 
+    fun setFinishCoachMark(value: Boolean) {
+        putBoolean(HAS_FINISH_COACH_MARK, value)
+    }
+
     fun getHasShownHeaderPerformanceDetail() = getBoolean(HAS_SHOP_HEADER)
 
     fun getHasShownItemPerformanceDetail() = getBoolean(HAS_ITEM_PERFORMANCE_DETAIL)
@@ -49,4 +54,6 @@ class ShopScoreCoachMarkPrefs(private val context: Context) {
     fun getHasShownItemPM() = getBoolean(HAS_ITEM_PM)
 
     fun getHasShownItemRM() = getBoolean(HAS_ITEM_RM)
+
+    fun getFinishCoachMark() = getBoolean(HAS_FINISH_COACH_MARK)
 }

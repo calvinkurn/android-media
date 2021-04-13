@@ -4,7 +4,9 @@ import android.graphics.Color
 import android.view.View
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.performance.presentation.adapter.ItemShopPerformanceListener
 import com.tokopedia.shop.score.performance.presentation.model.ItemDetailPerformanceUiModel
@@ -20,10 +22,14 @@ class ItemDetailPerformanceViewHolder(view: View,
         const val POSITION_ITEM_DETAIL_PERFORMANCE_COACH_MARK = 2
     }
 
+    private val impressHolder = ImpressHolder()
+
     override fun bind(element: ItemDetailPerformanceUiModel?) {
         with(itemView) {
             if (adapterPosition == POSITION_ITEM_DETAIL_PERFORMANCE_COACH_MARK) {
-                itemShopPerformanceListener.onViewItemDetailPerformanceListener(this)
+                addOnImpressionListener(impressHolder) {
+                    itemShopPerformanceListener.onViewItemDetailPerformanceListener(this)
+                }
             }
 
             setBackgroundColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))

@@ -32,7 +32,6 @@ object ShopScoreConstant {
     const val SPEED_SENDING_ORDERS_KEY = "median_verified_to_shipping_minute"
     const val PRODUCT_REVIEW_WITH_FOUR_STARS_KEY = "percent_good_rating"
 
-
     const val READ_TIPS_MORE_INFO_URL = "https://seller.tokopedia.com/edu/fitur-pengaturan-stok-produk-terbaru/"
     const val SET_OPERATIONAL_HOUR_SHOP_URL = "https://seller.tokopedia.com/edu/atur-jadwal-toko/"
     const val SPEED_SENDING_ORDERS_URL = "https://www.tokopedia.com/help/article/batas-waktu-respon-pesanan-dan-konfirmasi-pengiriman"
@@ -42,8 +41,6 @@ object ShopScoreConstant {
     const val IC_INCOME_PM_URL = "https://images.tokopedia.net/img/android/shop_score/ic_income_pm@3x.png"
 
     const val IC_SELLER_ANNOUNCE = "https://images.tokopedia.net/img/android/shop_score/ic_seller_announce@3x.png"
-    const val BG_HAS_PENALTY = "https://images.tokopedia.net/img/android/shop_score/bg_has_penalty@3x.png "
-    const val BG_NO_PENALTY = "https://images.tokopedia.net/img/android/shop_score/bg_no_penalty@3x.png"
     const val BG_GREEN_TIMER = "https://images.tokopedia.net/img/android/shop_score/bg_green_timer@3x.png"
     const val BG_ORANGE_TIMER = "https://images.tokopedia.net/img/android/shop_score/bg_orange_timer@3x.png"
 
@@ -99,4 +96,6 @@ object ShopScoreConstant {
     const val HELP_URL = "https://www.tokopedia.com/help"
 
     const val PATTER_DATE_TEXT = "dd MMM yyyy"
+
+    const val SHOP_INFO_URL = "https://seller.tokopedia.com/shop-score-info"
 }

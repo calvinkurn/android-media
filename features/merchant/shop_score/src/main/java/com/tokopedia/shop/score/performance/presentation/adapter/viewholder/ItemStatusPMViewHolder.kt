@@ -5,9 +5,11 @@ import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.gm.common.utils.getShopScoreDate
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.performance.presentation.adapter.ItemStatusPowerMerchantListener
 import com.tokopedia.shop.score.performance.presentation.model.ItemStatusPMUiModel
@@ -20,10 +22,14 @@ class ItemStatusPMViewHolder(view: View,
         val LAYOUT = R.layout.item_status_power_merchant
     }
 
+    private val impressHolder = ImpressHolder()
+
     override fun bind(element: ItemStatusPMUiModel?) {
         if (element == null) return
         with(itemView) {
-            itemStatusPowerMerchantListener.onViewItemPowerMerchantListener(itemView)
+            addOnImpressionListener(impressHolder) {
+                itemStatusPowerMerchantListener.onViewItemPowerMerchantListener(itemView)
+            }
             iv_pm_badge_current_status?.loadImage(element.badgePowerMerchant)
             potentialPowerMerchantWidget?.background = element.bgPowerMerchant?.let { ContextCompat.getDrawable(context, it) }
             tv_pm_reputation_value?.text = getString(R.string.title_pm_value,

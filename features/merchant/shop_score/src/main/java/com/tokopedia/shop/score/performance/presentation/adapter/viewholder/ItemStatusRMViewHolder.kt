@@ -6,7 +6,9 @@ import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.gm.common.utils.getShopScoreDate
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.loadImage
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.performance.presentation.adapter.ItemPotentialRegularMerchantListener
 import com.tokopedia.shop.score.performance.presentation.model.ItemStatusRMUiModel
@@ -20,10 +22,13 @@ class ItemStatusRMViewHolder(view: View,
         val LAYOUT = R.layout.item_potential_eligible_status_regular_merchant
     }
 
+    private val impressHolder = ImpressHolder()
     override fun bind(element: ItemStatusRMUiModel?) {
         if (element == null) return
         with(itemView) {
-            itemPotentialPowerMerchantListener.onViewRegularMerchantListener(this)
+            addOnImpressionListener(impressHolder) {
+                itemPotentialPowerMerchantListener.onViewRegularMerchantListener(this)
+            }
             tvTitleEligiblePowerMerchant?.text = getString(R.string.title_eligible_status_power_merchant,
                     element.statusGradePM)
             tvDescEligiblePowerMerchant?.text = getString(R.string.desc_potential_eligible_power_merchant,

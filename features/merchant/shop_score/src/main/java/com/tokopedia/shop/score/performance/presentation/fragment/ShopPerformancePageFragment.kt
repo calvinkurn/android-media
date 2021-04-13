@@ -14,10 +14,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.observe
-import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.common.ShopScoreCoachMarkPrefs
 import com.tokopedia.shop.score.common.ShopScoreConstant
@@ -106,7 +103,7 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             INFO_MENU_ID -> {
-
+                RouteManager.route(context, ShopScoreConstant.SHOP_INFO_URL)
             }
             PENALTY_WARNING_MENU_ID -> {
                 goToPenaltyPage()
@@ -164,7 +161,7 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
         val isShowCoachMarkTwoItem = shopPerformanceAdapter.list.find { it is ItemStatusPMUiModel }
         val itemStatusRMUiModel = shopPerformanceAdapter.list.find { it is ItemStatusRMUiModel }
         if (isShowCoachMarkTwoItem == null && itemStatusRMUiModel == null) {
-            //need adjust
+            showCoachMark()
         }
     }
 
@@ -195,6 +192,7 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
             ))
             shopScoreCoachMarkPrefs.setHasShownItemPM(true)
         }
+        showCoachMark()
     }
 
     /**
@@ -216,6 +214,7 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
             ))
             shopScoreCoachMarkPrefs.setHasShownItemRM(true)
         }
+        showCoachMark()
     }
 
     /**
@@ -272,7 +271,11 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
         Handler().postDelayed({
             context?.let {
                 val menuItem = menu?.findItem(PENALTY_WARNING_MENU_ID)
-                penaltyDotBadge?.showBadge(menuItem ?: return@let)
+                if (counterPenalty.isLessThanZero()) {
+                    penaltyDotBadge?.showBadge(menuItem ?: return@let)
+                } else {
+                    penaltyDotBadge?.removeBadge(menuItem ?: return@let)
+                }
             }
         }, PENALTY_BADGE_DELAY)
     }
@@ -288,8 +291,9 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
             }
         })
 
-        if (coachMarkItem.isNotEmpty()) {
+        if (coachMarkItem.isNotEmpty() && !shopScoreCoachMarkPrefs.getFinishCoachMark()) {
             coachMark?.showCoachMark(coachMarkItem)
+            shopScoreCoachMarkPrefs.setFinishCoachMark(true)
         }
     }
 
@@ -369,7 +373,7 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
         val PENALTY_WARNING_MENU_ID = R.id.menu_penalty_shop_performance
         val INFO_MENU_ID = R.id.menu_info_shop_performance
 
-        private const val PENALTY_BADGE_DELAY = 1000L
+        private const val PENALTY_BADGE_DELAY = 500L
 
         @JvmStatic
         fun newInstance(): ShopPerformancePageFragment {
