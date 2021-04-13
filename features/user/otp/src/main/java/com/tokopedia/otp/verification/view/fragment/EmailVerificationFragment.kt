@@ -3,11 +3,7 @@ package com.tokopedia.otp.verification.view.fragment
 import android.os.Bundle
 import android.text.Spannable
 import android.text.SpannableString
-import android.text.method.LinkMovementMethod
 import android.view.View
-import android.widget.TextView
-import androidx.fragment.app.Fragment
-import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.otp.R
 
 class EmailVerificationFragment : VerificationFragment() {

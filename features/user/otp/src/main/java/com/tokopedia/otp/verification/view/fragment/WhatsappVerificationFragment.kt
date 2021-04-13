@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.text.Spannable
 import android.text.SpannableString
 import android.view.View
-import androidx.fragment.app.Fragment
 import com.tokopedia.otp.R
 
 class WhatsappVerificationFragment : VerificationFragment() {

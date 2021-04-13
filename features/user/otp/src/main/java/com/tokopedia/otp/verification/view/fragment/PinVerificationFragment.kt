@@ -3,7 +3,6 @@ package com.tokopedia.otp.verification.view.fragment
 import android.os.Bundle
 import android.text.Spannable
 import android.text.SpannableString
-import androidx.fragment.app.Fragment
 import com.tokopedia.otp.R
 import com.tokopedia.pin.PinUnify
 

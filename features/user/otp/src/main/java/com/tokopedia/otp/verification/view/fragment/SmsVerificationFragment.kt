@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.text.Spannable
 import android.text.SpannableString
 import android.view.View
-import androidx.fragment.app.Fragment
 import com.google.android.gms.auth.api.phone.SmsRetrieverClient
 import com.tokopedia.otp.R
 import com.tokopedia.otp.common.di.OtpComponent
