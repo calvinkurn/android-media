@@ -24,7 +24,7 @@ class PowerMerchantActivateUseCase @Inject constructor(
                     ?: throw NullPointerException("returns null from backend")
             return data.isSuccess()
         } else {
-            throw MessageErrorException(gqlErrors.first().message)
+            throw MessageErrorException(gqlErrors.firstOrNull()?.message.orEmpty())
         }
     }
 
