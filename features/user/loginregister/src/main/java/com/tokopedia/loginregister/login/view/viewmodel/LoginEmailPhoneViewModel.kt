@@ -44,11 +44,8 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.SupervisorJob
 import javax.inject.Inject
 import javax.inject.Named
-import kotlin.coroutines.CoroutineContext
 
 class LoginEmailPhoneViewModel @Inject constructor(
         private val registerCheckUseCase: RegisterCheckUseCase,
@@ -67,11 +64,6 @@ class LoginEmailPhoneViewModel @Inject constructor(
         private val userSession: UserSessionInterface,
         private val dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.main) {
-
-    private var job: Job = SupervisorJob()
-
-    override val coroutineContext: CoroutineContext
-        get() = dispatchers.io + job
 
     private val mutableRegisterCheckResponse = MutableLiveData<Result<RegisterCheckData>>()
     val registerCheckResponse: LiveData<Result<RegisterCheckData>>
@@ -418,9 +410,6 @@ class LoginEmailPhoneViewModel @Inject constructor(
 
     override fun onCleared() {
         super.onCleared()
-        job.children.map {
-            it.cancel()
-        }
         tickerInfoUseCase.unsubscribe()
         discoverUseCase.unsubscribe()
         loginTokenUseCase.unsubscribe()
