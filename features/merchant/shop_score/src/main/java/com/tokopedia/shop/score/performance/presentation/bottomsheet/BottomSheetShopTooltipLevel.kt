@@ -130,7 +130,7 @@ class BottomSheetShopTooltipLevel: BaseBottomSheetShopScore() {
         const val SHOP_TOOLTIP_LEVEL_BOTTOM_SHEET_TAG = "ShopTooltipLevelBottomSheetTag"
         private const val SHOP_PERFORMANCE_LEVEL_KEY = "shop_performance_level_key"
         private const val SHOP_INCOME_KEY = "shop_income_key"
-        private const val PRODUCT_SOLD_KEY = "shop_income_key"
+        private const val PRODUCT_SOLD_KEY = "product_sold_key"
         private const val PERIOD_KEY = "period_key"
         private const val NEXT_UPDATE_KEY = "next_update_key"
 
