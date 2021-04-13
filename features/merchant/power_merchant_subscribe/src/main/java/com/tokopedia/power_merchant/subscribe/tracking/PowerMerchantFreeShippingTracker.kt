@@ -1,7 +1,7 @@
 package com.tokopedia.power_merchant.subscribe.tracking
 
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.power_merchant.subscribe.view.model.PowerMerchantFreeShippingStatus
+import com.tokopedia.power_merchant.subscribe.view_old.model.PowerMerchantFreeShippingStatus
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.user.session.UserSessionInterface

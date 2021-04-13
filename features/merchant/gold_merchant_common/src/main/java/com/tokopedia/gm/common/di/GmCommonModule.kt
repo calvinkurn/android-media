@@ -127,4 +127,9 @@ class GmCommonModule {
         return GraphqlHelper.loadRawString(context.resources, R.raw.gold_merchant_status)
     }
 
+    @GmCommonQualifier
+    @Provides
+    fun provideGqlRepository(): GraphqlRepository {
+        return GraphqlInteractor.getInstance().graphqlRepository
+    }
 }

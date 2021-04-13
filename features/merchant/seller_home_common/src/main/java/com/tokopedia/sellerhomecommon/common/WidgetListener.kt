@@ -10,4 +10,4 @@ interface WidgetListener : CardViewHolder.Listener, CarouselViewHolder.Listener,
         LineGraphViewHolder.Listener, ProgressViewHolder.Listener, PostListViewHolder.Listener,
         DescriptionViewHolder.Listener, TableViewHolder.Listener, PieChartViewHolder.Listener,
         BarChartViewHolder.Listener, TickerViewHolder.Listener, MultiLineGraphViewHolder.Listener,
-        AnnouncementViewHolder.Listener
+        AnnouncementViewHolder.Listener, RecommendationViewHolder.Listener

@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/containerPmDeactivation"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:background="@color/Unify_N0">
+
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/nestedScrollPmDeactivation"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/containerPmFooterDeactivation"
+        android:layout_alignParentTop="true"
+        android:fillViewport="true"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/pm_label_cancellation_questionnaire_intro_title"
+                android:textColor="@color/Unify_N700"
+                app:typographyType="heading_3" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tvPmDeactivationInfo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/layout_lvl1"
+                app:typographyType="body_3"
+                tools:text="Sebelum berhenti, yuk kasih masukan buat layanan ini! Fitur Power Merchant di tokomu akan dinonaktifkan pada 9 Januari 2021, 9:54 WIB" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="@dimen/layout_lvl2"
+                android:background="@color/Unify_N75" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvPmQuestionnaireList"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/layout_lvl2"
+                android:nestedScrollingEnabled="true"
+                tools:itemCount="2"
+                tools:listitem="@layout/item_pm_questionnaire_multiple_option" />
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+    <LinearLayout
+        android:id="@+id/containerPmFooterDeactivation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingTop="@dimen/layout_lvl2"
+        android:paddingBottom="@dimen/layout_lvl2"
+        android:visibility="invisible"
+        tools:visibility="visible">
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/btnPmDeactivationCancel"
+            android:layout_width="@dimen/layout_lvl0"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/layout_lvl1"
+            android:layout_weight="1"
+            android:text="@string/pm_later"
+            app:unifyButtonVariant="ghost" />
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/btnPmDeactivationSubmit"
+            android:layout_width="@dimen/layout_lvl0"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/layout_lvl2"
+            android:layout_weight="1"
+            android:text="@string/label_send_answer" />
+    </LinearLayout>
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/progressPmDeactivation"
+        android:layout_width="@dimen/layout_lvl3"
+        android:layout_height="@dimen/layout_lvl3"
+        android:layout_centerInParent="true"
+        android:visibility="gone"
+        tools:visibility="visible" />
+</RelativeLayout>
