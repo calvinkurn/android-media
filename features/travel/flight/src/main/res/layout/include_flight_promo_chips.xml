@@ -1,9 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.recyclerview.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="@drawable/bg_flight_promo_chips_container"
-    android:id="@+id/recycler_view_promo_chips"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    tools:listitem="@layout/item_flight_promo_chips"
-    android:clipToPadding="false" />
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:typographyType="heading_5"
+        android:text="@string/flight_promo_chips_title"
+        android:paddingBottom="@dimen/flight_dp_12"
+        android:paddingTop="@dimen/layout_lvl1"
+        android:paddingLeft="@dimen/layout_lvl2"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:background="@drawable/bg_flight_promo_chips_container"
+        android:id="@+id/recycler_view_promo_chips"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:listitem="@layout/item_flight_promo_chips"
+        android:clipToPadding="false"
+        android:paddingLeft="@dimen/layout_lvl1"/>
+</LinearLayout>

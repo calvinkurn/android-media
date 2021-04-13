@@ -45,4 +45,5 @@
     <dimen name="margin_top_flight_dashboard">60dp</dimen>
 
     <dimen name="flight_horizontal_height">3dp</dimen>
+    <dimen name="flight_promo_chips_price_translationY">-1.8sp</dimen>
 </resources>
