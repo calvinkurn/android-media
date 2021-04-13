@@ -90,6 +90,8 @@ abstract class MediaLoaderFactory<T> {
                 signatureKey?.let { key ->
                     it.signature(key)
                 }?: it.signature(ObjectKey(properties.urlHasQualityParam))
+            } else {
+                it.skipMemoryCache(true)
             }
 
             cacheStrategy?.let { cacheStrategy -> it.diskCacheStrategy(MediaCacheStrategy.mapTo(cacheStrategy)) }
