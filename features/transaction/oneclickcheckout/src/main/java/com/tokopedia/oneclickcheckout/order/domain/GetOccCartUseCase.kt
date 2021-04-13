@@ -130,10 +130,7 @@ class GetOccCartUseCase @Inject constructor(private val graphqlRepository: Graph
           product_invenage_value
           product_switch_invenage
           product_image {
-            image_src
             image_src_200_square
-            image_src_300
-            image_src_square
           }
           product_notes
           product_quantity

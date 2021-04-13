@@ -66,3 +66,13 @@ data class ProductDataResponse(
         @SerializedName("product_preorder")
         val productPreorder: ProductPreorderResponse = ProductPreorderResponse()
 )
+
+data class ProductImage(
+        @SerializedName("image_src_200_square")
+        val imageSrc200Square: String = ""
+)
+
+class ProductPreorderResponse(
+        @SerializedName("duration_day")
+        val durationDay: String = ""
+)
