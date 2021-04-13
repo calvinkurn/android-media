@@ -15,6 +15,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_16"
+        android:imeOptions="actionDone"
         android:layout_marginBottom="@dimen/dp_16"
         app:layout_constraintTop_toTopOf="parent"/>
 
@@ -23,7 +24,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:layout_marginTop="@dimen/dp_20"
-        android:layout_marginBottom="@dimen/dp_150"
+        android:layout_marginBottom="@dimen/layout_lvl2"
         app:layout_constraintTop_toBottomOf="@id/tf_cancel_notes"
         app:layout_constraintBottom_toBottomOf="parent">
 
