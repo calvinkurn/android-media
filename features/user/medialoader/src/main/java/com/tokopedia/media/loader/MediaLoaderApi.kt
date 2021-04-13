@@ -3,14 +3,18 @@ package com.tokopedia.media.loader
 import android.os.Handler
 import android.widget.ImageView
 import androidx.appcompat.content.res.AppCompatResources.getDrawable
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.media.common.Loader
 import com.tokopedia.media.loader.common.Properties
 import com.tokopedia.media.loader.common.factory.BitmapFactory
 import com.tokopedia.media.loader.common.factory.GifFactory
+import com.tokopedia.media.loader.data.ERROR_RES_UNIFY
+import com.tokopedia.media.loader.data.PLACEHOLDER_RES_UNIFY
 import com.tokopedia.media.loader.module.GlideApp
 import com.tokopedia.media.loader.tracker.PerformanceTracker
+import com.tokopedia.media.loader.transform.TopRightCrop
 
 internal object MediaLoaderApi {
 
@@ -93,14 +97,27 @@ internal object MediaLoaderApi {
         }
     }
 
+    // for custom transform
+    fun loadImage(imageView: ImageView, source: String?) {
+        if (source != null && source.isNotEmpty()) {
+            GlideApp.with(imageView.context)
+                    .load(source)
+                    .transform(TopRightCrop())
+                    .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+                    .placeholder(PLACEHOLDER_RES_UNIFY)
+                    .error(ERROR_RES_UNIFY)
+                    .into(imageView)
+        }
+    }
+
     // temporarily the GIF loader
-    fun loadGifImage(imageView: ImageView, data: String, properties: Properties) {
+    fun loadGifImage(imageView: ImageView, source: String, properties: Properties) {
         val context = imageView.context.applicationContext
 
         if (context.isValid()) {
             GlideApp.with(context)
                     .asGif()
-                    .load(data)
+                    .load(source)
                     .apply { gif.build(properties, this) }
                     .into(imageView)
         }

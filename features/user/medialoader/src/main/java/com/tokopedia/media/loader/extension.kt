@@ -94,6 +94,22 @@ inline fun ImageView.loadIcon(
     it.setPlaceHolder(-1)
 })
 
+fun ImageView.loadImageTopRightCrop(source: String) {
+    if (context.isValid()) {
+        try {
+            MediaLoaderApi.loadImage(this, source)
+        } catch (e: Exception) {
+            e.printStackTrace()
+
+            /*
+            * don't let the imageView haven't image
+            * render with error drawable
+            * */
+            this.loadImage(ERROR_RES_UNIFY)
+        }
+    }
+}
+
 @PublishedApi
 internal fun ImageView.call(source: Any?, properties: Properties) {
     if (context.isValid()) {

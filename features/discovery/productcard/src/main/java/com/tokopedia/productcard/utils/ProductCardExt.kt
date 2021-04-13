@@ -21,8 +21,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.clearImage
 import com.tokopedia.media.loader.loadImage
-import com.tokopedia.media.loader.transform.TopRightCrop
-import com.tokopedia.media.loader.wrapper.MediaCacheStrategy
+import com.tokopedia.media.loader.loadImageTopRightCrop
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.R
 import com.tokopedia.unifycomponents.Label
@@ -138,14 +137,6 @@ internal fun ImageView.loadImageRounded(url: String?) {
             centerCrop()
             setRoundedRadius(getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_6).toFloat())
         }
-    }
-}
-
-internal fun ImageView.loadImageTopRightCrop(url: String?) {
-    this.loadImage(url) {
-        useCache(false)
-        transform(TopRightCrop())
-        setErrorDrawable(R.drawable.product_card_placeholder_grey)
     }
 }
 
