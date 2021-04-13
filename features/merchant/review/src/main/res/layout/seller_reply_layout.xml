@@ -5,7 +5,6 @@
     android:id="@+id/seller_reply_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/Unify_N0"
     android:visibility="gone"
     tools:visibility="visible">
 
@@ -28,7 +27,7 @@
             tools:visibility="visible"/>
 
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/see_reply_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -39,9 +38,9 @@
             android:padding="@dimen/dp_10"
             android:text="@string/see_reply"
             android:textColor="@color/Unify_N700_44"
-            style="@style/TextView.Small.BlackDisabled.Bold"
             android:visibility="invisible"
             tools:visibility="visible"
+            app:typographyType="body_3"
             />
 
 
@@ -75,17 +74,17 @@
             android:contentDescription="@null"
             app:srcCompat="@drawable/ic_more_vert_black_24dp"/>
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/seller_reply_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:lineSpacingExtra="7sp"
             android:textColor="@color/Unify_N700_96"
-            style="@style/TextView.Small"
+            app:typographyType="body_3"
             tools:text="Oleh Pretty Sugar Shop"
             />
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/seller_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -100,12 +99,13 @@
             android:paddingLeft="@dimen/dp_10"
             android:text="@string/seller"
             android:textColor="@color/Unify_G400"
-            style="@style/TextView.Micro.Bold"
             android:textStyle="normal"
+            app:typographyWeight="bold"
+            app:typographyType="body_3"
             />
 
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/seller_reply_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -117,11 +117,11 @@
             android:paddingTop="@dimen/dp_2"
             android:paddingBottom="@dimen/dp_2"
             android:textColor="@color/Unify_N700_44"
-            style="@style/TextView.Micro.BlackDisabled"
             tools:text="31 Jul 2016, pukul 11:48"
+            app:typographyType="body_3"
             />
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/seller_reply"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -134,9 +134,9 @@
             android:textIsSelectable="true"
             android:focusable="true"
             android:longClickable="true"
-            android:textSize="@dimen/sp_12"
             android:fontFamily="sans-serif"
             android:textColor="@color/Unify_N700_96"
+            app:typographyType="body_3"
             tools:text="Terima kasih sudah mempercayai toko kami. Silahkan melihat-lihat produk” lainnya yang tersedia di toko kami."
             />
     </RelativeLayout>

@@ -17,7 +17,7 @@
         {
           "cart_id": "{{.+}}",
           "quantity": "{{\\d*.\\d*}}",
-          "category_id": "{{.*}}",
+          "category_id": "{{.+}}",
           "item_id": "{{.+}}",
           "item_name": "{{.+}}",
           "item_brand": "{{.+}}",
@@ -61,6 +61,20 @@
       "sessionIris": "{{.+}}"
     },
     {
+      "eventCategory": "digital - checkout",
+      "event": "clickCoupon",
+      "eventAction": "click gunakan kode promo atau kupon",
+      "sessionIris": "{{.+}}",
+      "eventLabel": "{{.+}}"
+    },
+    {
+      "eventCategory": "digital - checkout",
+      "event": "clickCoupon",
+      "eventAction": "click x on ticker",
+      "sessionIris": "{{.+}}",
+      "eventLabel": "{{.+ - .+}}"
+    },
+    {
       "event": "clickCheckout",
       "eventCategory": "digital - checkout page",
       "eventAction": "tick auto debit",
@@ -81,24 +95,79 @@
       "sessionIris": "{{.+}}"
     },
     {
-      "event":"clickCheckout",
-      "eventCategory":"digital - checkout page",
-      "eventAction":"tick cross sell",
-      "eventLabel":"{{.+ - .+}}",
-      "businessUnit":"recharge",
-      "currentSite":"tokopediadigital",
-      "userId":"{{.+}}",
+      "event": "clickCheckout",
+      "eventCategory": "digital - checkout page",
+      "eventAction": "tick cross sell",
+      "eventLabel": "{{.+ - .+}}",
+      "businessUnit": "recharge",
+      "currentSite": "tokopediadigital",
+      "userId": "{{.+}}",
       "sessionIris": "{{.+}}"
     },
     {
-      "event":"clickCheckout",
-      "eventCategory":"digital - checkout page",
-      "eventAction":"untick cross sell",
-      "eventLabel":"{{.+ - .+}}",
-      "businessUnit":"recharge",
-      "currentSite":"tokopediadigital",
-      "userId":"{{.+}}",
+      "event": "clickCheckout",
+      "eventCategory": "digital - checkout page",
+      "eventAction": "untick cross sell",
+      "eventLabel": "{{.+ - .+}}",
+      "businessUnit": "recharge",
+      "currentSite": "tokopediadigital",
+      "userId": "{{.+}}",
       "sessionIris": "{{.+}}"
+    },
+    {
+      "event": "view_item_list",
+      "eventCategory": "digital - checkout page",
+      "eventAction": "impression tebus murah icon",
+      "eventLabel": "",
+      "businessUnit": "recharge",
+      "currentSite": "tokopediadigitalRecharge",
+      "item_list": "{{/checkout - .+ - tebus murah}}",
+      "sessionIris": "{{.+}}",
+      "items": [
+        {
+          "index": "{{.+}}",
+          "item_brand": "{{.+}}",
+          "item_category": "{{.+}}",
+          "item_id": "{{.+}}",
+          "item_name": "{{.+}}",
+          "item_variant": "{{.+}}",
+          "price": "{{\\d*.\\d*|\\d.\\d+E\\d}}",
+          "dimension40": "{{/checkout - .+ - tebus murah}}"
+        }
+      ],
+      "userId": "{{.+}}"
+    },
+    {
+      "event": "select_content",
+      "eventCategory": "digital - checkout page",
+      "eventAction": "click tebus murah icon",
+      "eventLabel": "{{.+ - .+}}",
+      "businessUnit": "recharge",
+      "currentSite": "tokopediadigitalRecharge",
+      "item_list": "{{/checkout - .+ - tebus murah}}",
+      "sessionIris": "{{.+}}",
+      "items": [
+        {
+          "index": "{{.+}}",
+          "item_brand": "{{.+}}",
+          "item_category": "{{.+}}",
+          "item_id": "{{.+}}",
+          "item_name": "{{.+}}",
+          "item_variant": "{{.+}}",
+          "price": "{{\\d*.\\d*|\\d.\\d+E\\d}}"
+        }
+      ],
+      "userId": "{{.+}}"
+    },
+    {
+      "event": "digitalGeneralEvent",
+      "eventCategory": "digital - checkout page",
+      "eventAction": "uncheck tebus murah icon",
+      "eventLabel": "{{.+ - .+}}",
+      "businessUnit": "recharge",
+      "currentSite": "tokopediadigitalRecharge",
+      "sessionIris": "{{.+}}",
+      "userId": "{{.+}}"
     }
   ]
 }

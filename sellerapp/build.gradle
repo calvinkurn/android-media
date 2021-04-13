@@ -288,7 +288,6 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.akamaiBMP
     implementation project(rootProject.ext.libraries.akamaiBotLib)
 
-    implementation rootProject.ext.tkpdInternalLibDependencies.cacheapi
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation project(rootProject.ext.libraries.graphql)
