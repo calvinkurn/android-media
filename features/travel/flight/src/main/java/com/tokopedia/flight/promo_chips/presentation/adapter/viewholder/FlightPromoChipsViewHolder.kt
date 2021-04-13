@@ -6,7 +6,6 @@ import com.tokopedia.flight.R
 import com.tokopedia.flight.promo_chips.presentation.adapter.FlightPromoChipsAdapter
 import com.tokopedia.flight.promo_chips.data.model.AirlinePrice
 import com.tokopedia.unifycomponents.CardUnify
-import com.tokopedia.unifycomponents.Label
 import kotlinx.android.synthetic.main.item_flight_promo_chips.view.*
 
 /**
@@ -33,12 +32,13 @@ class FlightPromoChipsViewHolder (itemView: View, private val onFlightPromoChips
 
     private fun changePromoChipsState(selected: Boolean){
         with(itemView){
+            flight_promochips_side_line.unlockFeature = true
             if (selected){
                 card_promo_chips.changeTypeWithTransition(CardUnify.TYPE_BORDER_ACTIVE)
-                flight_promochips_side_line.setLabelType(com.tokopedia.unifyprinciples.R.color.Unify_G500)
+                flight_promochips_side_line.setLabelType(getString(R.string.flight_promochips_selected_labeltype))
             }else{
                 card_promo_chips.changeTypeWithTransition(CardUnify.TYPE_BORDER)
-                flight_promochips_side_line.setLabelType(Label.GENERAL_DARK_GREEN)
+                flight_promochips_side_line.setLabelType(getString(R.string.flight_promochips_default_labeltype))
             }
         }
     }

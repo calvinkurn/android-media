@@ -405,4 +405,6 @@ di tempatmu.</string>
     <string name="flight_srp_promo_chips_person">/orang</string>
     <string name="flight_booking_passport_number_min_length">Min. 6 karakter</string>
     <string name="flight_promo_chips_title">Sortir dari maskapai harga termurah</string>
+    <string name="flight_promochips_selected_labeltype">#03AC0E</string>
+    <string name="flight_promochips_default_labeltype">#82EF95</string>
 </resources>
