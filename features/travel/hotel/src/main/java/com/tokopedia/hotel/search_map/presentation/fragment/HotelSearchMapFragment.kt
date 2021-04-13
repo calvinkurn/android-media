@@ -37,6 +37,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
+import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHolder
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
@@ -539,6 +540,13 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                     0)
             containerEmptyResultState.setMargin(0,
                     resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4),
+                    0,
+                    0)
+        }
+
+        if (adapter.list.size > 0 && adapter.list[0] is ErrorNetworkModel) {
+            rvVerticalPropertiesHotelSearchMap.setMargin(0,
+                    resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl7),
                     0,
                     0)
         }
