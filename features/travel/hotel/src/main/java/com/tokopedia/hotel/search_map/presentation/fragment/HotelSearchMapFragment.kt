@@ -181,6 +181,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                     hideLoader()
                     hideCollapsingHeader()
                     hideSearchWithMap()
+                    hideQuickFilter()
                     expandBottomSheet()
                     showGetListError(it.throwable)
                 }
@@ -1008,6 +1009,11 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
             quickFilterSortHotelSearchMap.show()
         }
         quickFilterSortHotelSearchMap.indicatorCounter = hotelSearchMapViewModel.getFilterCount()
+    }
+
+    private fun hideQuickFilter() {
+        shimmeringQuickFilterHotelSearchMap.hide()
+        quickFilterSortHotelSearchMap.hide()
     }
 
     private fun initializeQuickFilter(quickFilters: List<QuickFilter>, filters: List<FilterV2>, sort: List<Sort>) {
