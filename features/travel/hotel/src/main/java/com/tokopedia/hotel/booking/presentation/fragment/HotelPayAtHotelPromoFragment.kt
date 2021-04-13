@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.booking.di.HotelBookingComponent
 import com.tokopedia.hotel.common.presentation.HotelBaseFragment
+import kotlinx.android.synthetic.main.fragment_hotel_pay_at_hotel_promo.*
 
 class HotelPayAtHotelPromoFragment : HotelBaseFragment() {
     override fun onErrorRetryClicked() {}
@@ -17,6 +18,14 @@ class HotelPayAtHotelPromoFragment : HotelBaseFragment() {
     override fun getScreenName(): String = getString(R.string.hotel_payathotel_header_title)
 
     override fun initInjector() = getComponent(HotelBookingComponent::class.java).inject(this)
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        btnHotelPayAtHotelPromo.setOnClickListener {
+            activity?.onBackPressed()
+        }
+    }
 
     companion object {
         fun newInstance() = HotelPayAtHotelPromoFragment()
