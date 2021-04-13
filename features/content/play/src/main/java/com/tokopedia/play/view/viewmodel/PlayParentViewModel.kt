@@ -16,6 +16,7 @@ import com.tokopedia.play_common.model.result.PageInfo
 import com.tokopedia.play_common.model.result.PageResult
 import com.tokopedia.play_common.model.result.PageResultState
 import com.tokopedia.play_common.util.coroutine.CoroutineDispatcherProvider
+import com.tokopedia.play_common.util.event.Event
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -64,6 +65,10 @@ class PlayParentViewModel constructor(
     val observableChannelIdsResult: LiveData<PageResult<List<String>>>
         get() = _observableChannelIdsResult
     private val _observableChannelIdsResult = MutableLiveData<PageResult<List<String>>>()
+
+    val observableFirstChannelEvent: LiveData<Event<Unit>>
+        get() = _observableFirstChannelEvent
+    private val _observableFirstChannelEvent = MutableLiveData<Event<Unit>>()
 
     val sourceType: String
         get() = handle[PLAY_KEY_SOURCE_TYPE] ?: ""
@@ -120,7 +125,10 @@ class PlayParentViewModel constructor(
     }
 
     private fun getChannelDetailsWithRecom(nextKey: GetChannelDetailsWithRecomUseCase.ChannelDetailNextKey) {
-        if (nextKey is GetChannelDetailsWithRecomUseCase.ChannelDetailNextKey.ChannelId) playChannelStateStorage.clearData()
+        if (nextKey is GetChannelDetailsWithRecomUseCase.ChannelDetailNextKey.ChannelId) {
+            _observableFirstChannelEvent.value = Event(Unit)
+            playChannelStateStorage.clearData()
+        }
 
         _observableChannelIdsResult.value = PageResult.Loading(playChannelStateStorage.getChannelList())
 
