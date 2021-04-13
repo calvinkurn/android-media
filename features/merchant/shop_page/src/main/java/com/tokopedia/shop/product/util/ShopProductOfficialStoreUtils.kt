@@ -33,7 +33,7 @@ object ShopProductOfficialStoreUtils {
         val uri = Uri.parse(url)
         if (uri.scheme == TOKOPEDIA_HOST) {
             processUriTokopedia(activity, shopId, uri)
-        } else if (uri.scheme!!.startsWith(HTTP)) {
+        } else if (uri.scheme?.startsWith(HTTP) == true) {
             if (isNeededToLogin(url) and !login) {
                 return false
             } else if (isNeededToLogin(url) and login) {

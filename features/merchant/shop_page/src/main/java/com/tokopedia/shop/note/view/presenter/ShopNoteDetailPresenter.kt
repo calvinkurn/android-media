@@ -14,18 +14,18 @@ import javax.inject.Inject
 class ShopNoteDetailPresenter @Inject constructor(private val getShopNoteDetailUseCase: GetShopNoteDetailUseCase) : BaseDaggerPresenter<ShopNoteDetailView?>() {
     fun getShopNoteList(shopId: String?, noteId: String?) {
         getShopNoteDetailUseCase.execute(createRequestParams(
-                shopId!!,
-                noteId!!
+                shopId.orEmpty(),
+                noteId.orEmpty()
         ), object : Subscriber<ShopNoteModel>() {
             override fun onCompleted() {}
             override fun onError(e: Throwable) {
                 if (isViewAttached) {
-                    view!!.onErrorGetShopNoteList(e)
+                    view?.onErrorGetShopNoteList(e)
                 }
             }
 
             override fun onNext(shopNoteModel: ShopNoteModel) {
-                view!!.onSuccessGetShopNoteList(shopNoteModel)
+                view?.onSuccessGetShopNoteList(shopNoteModel)
             }
         })
     }

@@ -41,14 +41,14 @@ class ShopFavouriteListFragment : BaseListFragment<ShopFollowerUiModel?, ShopFav
         shopPageTracking = OldShopPageTrackingBuyer(
                 TrackingQueue(requireContext()))
         shopId = requireArguments().getString(ShopParamConstant.EXTRA_SHOP_ID)
-        shopFavouriteListPresenter!!.attachView(this)
+        shopFavouriteListPresenter?.attachView(this)
     }
 
     override fun loadData(page: Int) {
         if (shopInfo == null) {
-            shopFavouriteListPresenter!!.getShopInfo(shopId!!)
+            shopFavouriteListPresenter?.getShopInfo(shopId.orEmpty())
         } else {
-            shopFavouriteListPresenter!!.getShopFavouriteList(shopId!!, page)
+            shopFavouriteListPresenter?.getShopFavouriteList(shopId.orEmpty(), page)
         }
     }
 
@@ -76,7 +76,7 @@ class ShopFavouriteListFragment : BaseListFragment<ShopFollowerUiModel?, ShopFav
     }
 
     override fun onErrorToggleFavourite(throwable: Throwable?) {
-        if (!shopFavouriteListPresenter!!.isLoggedIn) {
+        if (shopFavouriteListPresenter?.isLoggedIn == false) {
             val intent = RouteManager.getIntent(activity, ApplinkConst.LOGIN)
             startActivityForResult(intent, REQUEST_CODE_USER_LOGIN)
             return
@@ -88,7 +88,7 @@ class ShopFavouriteListFragment : BaseListFragment<ShopFollowerUiModel?, ShopFav
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_CODE_USER_LOGIN) {
             if (resultCode == Activity.RESULT_OK) {
-                shopFavouriteListPresenter!!.toggleFavouriteShop(shopId!!)
+                shopFavouriteListPresenter?.toggleFavouriteShop(shopId.orEmpty())
             }
         }
     }
@@ -101,16 +101,16 @@ class ShopFavouriteListFragment : BaseListFragment<ShopFollowerUiModel?, ShopFav
     override fun getEmptyDataViewModel(): Visitable<*> {
         val emptyModel = EmptyModel()
         emptyModel.iconRes = R.drawable.ic_empty_state
-        if (shopFavouriteListPresenter!!.isMyShop(shopId!!)) {
+        if (shopFavouriteListPresenter?.isMyShop(shopId.orEmpty()) == true) {
             emptyModel.title = getString(com.tokopedia.shop.R.string.shop_product_my_empty_follower_title)
             emptyModel.content = ""
             emptyModel.buttonTitle = ""
         } else {
             emptyModel.title = getString(com.tokopedia.shop.R.string.shop_product_empty_follower_title)
-            emptyModel.content = getString(com.tokopedia.shop.R.string.shop_product_empty_product_title_desc, shopInfo!!.shopCore.name)
+            emptyModel.content = getString(com.tokopedia.shop.R.string.shop_product_empty_product_title_desc, shopInfo?.shopCore?.name)
             emptyModel.buttonTitle = getString(com.tokopedia.shop.R.string.shop_page_label_follow)
-            if (shopInfo != null) {
-                shopPageTracking!!.impressionFollowFromZeroFollower(CustomDimensionShopPage.create(shopInfo!!))
+            shopInfo?.let{
+                shopPageTracking?.impressionFollowFromZeroFollower(CustomDimensionShopPage.create(it))
             }
         }
         return emptyModel
@@ -127,13 +127,13 @@ class ShopFavouriteListFragment : BaseListFragment<ShopFollowerUiModel?, ShopFav
     override fun onDestroy() {
         super.onDestroy()
         if (shopFavouriteListPresenter != null) {
-            shopFavouriteListPresenter!!.detachView()
+            shopFavouriteListPresenter?.detachView()
         }
     }
 
     override fun onPause() {
         super.onPause()
-        shopPageTracking!!.sendAllTrackingQueue()
+        shopPageTracking?.sendAllTrackingQueue()
     }
 
     override fun onEmptyContentItemTextClicked() {
@@ -141,9 +141,9 @@ class ShopFavouriteListFragment : BaseListFragment<ShopFollowerUiModel?, ShopFav
     }
 
     override fun onEmptyButtonClicked() {
-        if (shopInfo != null) {
-            shopPageTracking!!.followFromZeroFollower(CustomDimensionShopPage.create(shopInfo!!))
-            shopFavouriteListPresenter!!.toggleFavouriteShop(shopId!!)
+        shopInfo?.let {
+            shopPageTracking?.followFromZeroFollower(CustomDimensionShopPage.create(it))
+            shopFavouriteListPresenter?.toggleFavouriteShop(shopId.orEmpty())
         }
     }
 

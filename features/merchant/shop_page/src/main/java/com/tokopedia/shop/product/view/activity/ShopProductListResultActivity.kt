@@ -64,13 +64,13 @@ class ShopProductListResultActivity : BaseSimpleActivity(), HasComponent<ShopCom
         var data = intent.data
         if (null != data) {
             data = RouteManager.getIntent(this, intent.data.toString()).data
-            val pathSegments = data!!.pathSegments
+            val pathSegments = data?.pathSegments.orEmpty()
             getShopIdFromUri(data, pathSegments)
             getEtalaseIdFromUri(data, pathSegments)
-            shopRef = if (data.getQueryParameter(QUERY_SHOP_REF) == null) "" else data.getQueryParameter(QUERY_SHOP_REF)
-            sort = if (data.getQueryParameter(QUERY_SORT) == null) "" else data.getQueryParameter(QUERY_SORT)
-            attribution = if (data.getQueryParameter(QUERY_ATTRIBUTION) == null) "" else data.getQueryParameter(QUERY_ATTRIBUTION)
-            keyword = if (data.getQueryParameter(QUERY_SEARCH) == null) "" else data.getQueryParameter(QUERY_SEARCH)
+            shopRef = if (data?.getQueryParameter(QUERY_SHOP_REF) == null) "" else data.getQueryParameter(QUERY_SHOP_REF)
+            sort = if (data?.getQueryParameter(QUERY_SORT) == null) "" else data.getQueryParameter(QUERY_SORT)
+            attribution = if (data?.getQueryParameter(QUERY_ATTRIBUTION) == null) "" else data.getQueryParameter(QUERY_ATTRIBUTION)
+            keyword = if (data?.getQueryParameter(QUERY_SEARCH) == null) "" else data.getQueryParameter(QUERY_SEARCH)
         }
         if (shopRef == null) {
             shopRef = ""
@@ -83,7 +83,7 @@ class ShopProductListResultActivity : BaseSimpleActivity(), HasComponent<ShopCom
 
     private fun getShopIdFromUri(data: Uri?, pathSegments: List<String>) {
         shopId = if (pathSegments.size >= 2) {
-            data!!.pathSegments[1]
+            data?.pathSegments?.getOrNull(1).orEmpty()
         } else {
             "0"
         }
@@ -91,7 +91,7 @@ class ShopProductListResultActivity : BaseSimpleActivity(), HasComponent<ShopCom
 
     private fun getEtalaseIdFromUri(data: Uri?, pathSegments: List<String>) {
         etalaseId = if (pathSegments.size >= 4) {
-            data!!.pathSegments[3]
+            data?.pathSegments?.getOrNull(3).orEmpty()
         } else {
             "0"
         }
@@ -99,7 +99,7 @@ class ShopProductListResultActivity : BaseSimpleActivity(), HasComponent<ShopCom
 
     override fun onPause() {
         super.onPause()
-        shopPageTracking!!.sendAllTrackingQueue()
+        shopPageTracking?.sendAllTrackingQueue()
     }
 
     private fun initSearchInputView() {
@@ -109,33 +109,33 @@ class ShopProductListResultActivity : BaseSimpleActivity(), HasComponent<ShopCom
         editTextSearch?.setKeyListener(null)
         editTextSearch?.setMovementMethod(null)
         editTextSearch?.setOnClickListener(View.OnClickListener { view: View? ->
-            if (null != shopPageTracking) shopPageTracking!!.clickSearchBox(SCREEN_SHOP_PAGE)
+            if (null != shopPageTracking) shopPageTracking?.clickSearchBox(SCREEN_SHOP_PAGE)
             if (null != shopInfo) {
-                if (fragment is ShopPageProductListResultFragment) (fragment as ShopPageProductListResultFragment?)!!.onSearchBarClicked()
+                if (fragment is ShopPageProductListResultFragment) (fragment as ShopPageProductListResultFragment?)?.onSearchBarClicked()
             }
         })
         actionUpBtn?.setOnClickListener(View.OnClickListener { view: View? -> finish() })
     }
 
     override fun getNewFragment(): Fragment? {
-        return createInstance(shopId!!, shopRef, keyword, etalaseId, sort, attribution, isNeedToReloadData, sourceRedirection)
+        return createInstance(shopId.orEmpty(), shopRef, keyword, etalaseId, sort, attribution, isNeedToReloadData, sourceRedirection)
     }
 
-    override fun getComponent(): ShopComponent {
+    override fun getComponent(): ShopComponent? {
         if (component == null) {
             component = ShopComponentHelper().getComponent(application, this)
         }
-        return component!!
+        return component
     }
 
     override fun updateUIByShopName(shopName: String) {
-        if (null != editTextSearch) editTextSearch!!.hint = getString(R.string.shop_product_search_hint_2,
+        if (null != editTextSearch) editTextSearch?.hint = getString(R.string.shop_product_search_hint_2,
                 MethodChecker.fromHtml(shopName))
     }
 
     override fun updateUIByEtalaseName(etalaseName: String?) {
         if (null != editTextSearch) {
-            editTextSearch!!.hint = getString(R.string.shop_product_search_hint_3,
+            editTextSearch?.hint = getString(R.string.shop_product_search_hint_3,
                     MethodChecker.fromHtml(etalaseName))
         }
     }
