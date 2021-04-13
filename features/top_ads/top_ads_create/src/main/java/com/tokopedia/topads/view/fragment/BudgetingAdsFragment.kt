@@ -54,6 +54,7 @@ private const val CLICK_SETUP_KEY = "click - setup keyword"
 
 
 const val COUNT_TO_BE_SHOWN = 5
+
 class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
 
     @Inject
@@ -106,6 +107,10 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
     }
 
     private fun prepareView() {
+        if (stepperModel?.redirectionToSummary == true) {
+            btn_next?.text = getString(R.string.topads_common_save_butt)
+        }
+
         addKeyword?.setOnClickListener {
             val intent = Intent(context, KeywordSuggestionActivity::class.java)
             stepperModel?.selectedKeywordStage = getItemSelected()
@@ -229,7 +234,7 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
         val productId = list?.joinToString(",")
         if (stepperModel?.selectedKeywordStage?.isNotEmpty() != false) {
             setRestoreValue()
-        }else {
+        } else {
             viewModel.getSuggestionKeyword(productId
                     ?: "", 0, this::onSuccessSuggestionKeyword, this::onEmptySuggestion)
         }
@@ -240,11 +245,11 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
         val keyList: MutableList<KeywordDataItem> = mutableListOf()
         var count = 0
         keywords.forEach { key ->
-            if(count == COUNT_TO_BE_SHOWN)
+            if (count == COUNT_TO_BE_SHOWN)
                 return@forEach
-            key.keywordData.forEachIndexed {index, it->
+            key.keywordData.forEachIndexed { index, it ->
                 count++
-                if(count >= COUNT_TO_BE_SHOWN) {
+                if (count >= COUNT_TO_BE_SHOWN) {
                     return@forEachIndexed
                 }
                 bidInfoAdapter.items.add(BidInfoItemViewModel(it))
@@ -384,6 +389,14 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
         })
         bid_list.adapter = bidInfoAdapter
         bid_list.layoutManager = LinearLayoutManager(context)
+        tipView?.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
+        bottom?.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
+        if (tipView != null && bottom != null) {
+            val heightButton = tipView.measuredHeight
+            val bottomHeight = bottom.measuredHeight
+            val height = (heightButton + bottomHeight)
+            bid_list?.setPadding(0, 0, 0, height)
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
