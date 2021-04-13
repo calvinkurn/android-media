@@ -2985,9 +2985,12 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
             val desc = restrictionData.action.firstOrNull()?.description ?: ""
             val badgeUrl = restrictionData.action.firstOrNull()?.badgeURL ?: ""
             nplFollowersButton?.renderView(title = title,
+                    alreadyFollowShop = false,
                     desc = desc,
                     iconUrl = badgeUrl,
-                    hideButton = true)
+                    hideButton = true,
+                    maxLine = 2,
+                    centerImage = true)
         }
         setupExclusiveVisibility(restrictionData.isNotEligibleExclusive(), isExclusiveType)
     }
