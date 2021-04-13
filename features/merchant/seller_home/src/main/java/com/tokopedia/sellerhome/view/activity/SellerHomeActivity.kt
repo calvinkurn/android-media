@@ -9,6 +9,7 @@ import android.view.View
 import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -148,6 +149,11 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
         handleAppLink(intent)
+
+        val sellerHomeLifecycleState = navigator?.getHomeFragment()?.lifecycle?.currentState
+        if (sellerHomeLifecycleState?.isAtLeast(Lifecycle.State.CREATED) == true) {
+            navigator?.getHomeFragment()?.onNewIntent(intent?.data)
+        }
     }
 
     override fun onBackPressed() {

@@ -1,5 +1,6 @@
 package com.tokopedia.sellerhome.view.fragment
 
+import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.view.*
@@ -201,7 +202,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         observeTickerLiveData()
         context?.let { UpdateShopActiveService.startService(it) }
 
-        showInterruptPopup()
+        setupPMShopScoreInterrupt()
     }
 
     override fun onResume() {
@@ -265,6 +266,14 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                 }
             }
         }, NOTIFICATION_BADGE_DELAY)
+    }
+
+    fun onNewIntent(uri: Uri?) {
+        uri?.let {
+            activity?.let { activity ->
+                pmShopScoreInterruptHelper.setShopScoreInterruptConsent(activity, it)
+            }
+        }
     }
 
     private fun initPltPerformanceMonitoring() {
@@ -1086,9 +1095,9 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         }
     }
 
-    private fun showInterruptPopup() {
+    private fun setupPMShopScoreInterrupt() {
         activity?.let {
-            pmShopScoreInterruptHelper.showPopup(it, viewLifecycleOwner, childFragmentManager)
+            pmShopScoreInterruptHelper.showInterrupt(it, viewLifecycleOwner, childFragmentManager)
         }
     }
 

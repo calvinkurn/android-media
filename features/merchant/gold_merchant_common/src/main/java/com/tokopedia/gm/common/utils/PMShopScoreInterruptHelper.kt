@@ -1,6 +1,7 @@
 package com.tokopedia.gm.common.utils
 
 import android.content.Context
+import android.net.Uri
 import android.os.Handler
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleOwner
@@ -10,6 +11,7 @@ import com.google.gson.reflect.TypeToken
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
+import com.tokopedia.applink.shopscore.DeepLinkMapperShopScore
 import com.tokopedia.gm.common.constant.PMConstant
 import com.tokopedia.gm.common.constant.PeriodType
 import com.tokopedia.gm.common.data.source.local.PMCommonPreferenceManager
@@ -38,11 +40,20 @@ class PMShopScoreInterruptHelper @Inject constructor() {
     private var oneTimeWorkRequest: OneTimeWorkRequest? = null
     private var pmCommonPreferenceManager: PMCommonPreferenceManager? = null
 
-    fun showPopup(context: Context, owner: LifecycleOwner, fm: FragmentManager) {
+    fun showInterrupt(context: Context, owner: LifecycleOwner, fm: FragmentManager) {
         initVar(context)
 
         fetchInterruptDataWorker(context, owner) {
             showPmInterruptBottomSheet(context, it, fm)
+        }
+    }
+
+    fun setShopScoreInterruptConsent(context: Context, uri: Uri) {
+        initVar(context)
+        val isConsentApproved = uri.getBooleanQueryParameter(DeepLinkMapperShopScore.PARAM_IS_CONSENT, false)
+        if (isConsentApproved) {
+            pmCommonPreferenceManager?.putBoolean(PMCommonPreferenceManager.KEY_SHOP_SCORE_CONSENT_CHECKED, true)
+            pmCommonPreferenceManager?.apply()
         }
     }
 
