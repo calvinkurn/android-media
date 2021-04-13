@@ -24,6 +24,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresPermission;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.otaliastudios.cameraview.CameraListener;
 import com.otaliastudios.cameraview.CameraOptions;
@@ -280,12 +281,13 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment implements Ima
     }
 
     private void setUIFlashCamera(int flashEnum) {
+        int colorWhite = ContextCompat.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_Static_White);
         if (flashEnum == Flash.AUTO.ordinal()) {
             flashImageButton.setImageDrawable(MethodChecker.getDrawable(getActivity(), com.tokopedia.imagepicker.common.R.drawable.ic_auto_flash));
         } else if (flashEnum == Flash.ON.ordinal()) {
-            flashImageButton.setImage(IconUnify.FLASH_ON, null, null, null, null);
+            flashImageButton.setImage(IconUnify.FLASH_ON, colorWhite, colorWhite, colorWhite, colorWhite);
         } else if (flashEnum == Flash.OFF.ordinal()) {
-            flashImageButton.setImage(IconUnify.FLASH_OFF, null, null, null, null);
+            flashImageButton.setImage(IconUnify.FLASH_OFF, colorWhite, colorWhite, colorWhite, colorWhite);
         }
     }
 

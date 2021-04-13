@@ -7,7 +7,6 @@ import com.google.gson.GsonBuilder
 import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor
-import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor
 import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.converter.StringResponseConverter
 import com.tokopedia.network.interceptor.FingerprintInterceptor
@@ -67,11 +66,9 @@ class VideoUploaderModule constructor() {
     @Provides
     fun provideOkHttpClient(@VideoUploaderQualifier fingerprintInterceptor: FingerprintInterceptor,
                             @VideoUploaderQualifier retryPolicy: OkHttpRetryPolicy,
-                            @VideoUploaderQualifier errorHandlerInterceptor: ErrorResponseInterceptor,
-                            @VideoUploaderQualifier cacheApiInterceptor: CacheApiInterceptor): OkHttpClient {
+                            @VideoUploaderQualifier errorHandlerInterceptor: ErrorResponseInterceptor): OkHttpClient {
         val builder = OkHttpClient.Builder()
         builder.addInterceptor(fingerprintInterceptor)
-        builder.addInterceptor(cacheApiInterceptor)
         builder.addInterceptor(errorHandlerInterceptor)
 
         if (isNeedProgress) {
@@ -133,12 +130,6 @@ class VideoUploaderModule constructor() {
     @Provides
     fun provideErrorResponseInterceptor(): ErrorResponseInterceptor {
         return ErrorResponseInterceptor(VideoUploaderResponseError::class.java)
-    }
-
-    @VideoUploaderQualifier
-    @Provides
-    fun provideCacheApiInterceptor(@ApplicationContext context: Context): CacheApiInterceptor {
-        return CacheApiInterceptor(context)
     }
 
     @VideoUploaderQualifier
