@@ -112,6 +112,10 @@ data class SearchProductModel(
             @Expose
             val suggestion: Suggestion = Suggestion(),
 
+            @SerializedName("banner")
+            @Expose
+            val banner: Banner = Banner(),
+
             @SerializedName("products")
             @Expose
             val productList: List<Product> = listOf()
@@ -267,6 +271,24 @@ data class SearchProductModel(
             @SerializedName("text")
             @Expose
             val text: String = ""
+    )
+
+    data class Banner(
+            @SerializedName("position")
+            @Expose
+            val position: Int = -1,
+
+            @SerializedName("text")
+            @Expose
+            val text: String = "",
+
+            @SerializedName("applink")
+            @Expose
+            val applink: String = "",
+
+            @SerializedName("imageUrl")
+            @Expose
+            val imageUrl: String = "",
     )
 
     data class Product(
@@ -624,6 +646,10 @@ data class SearchProductModel(
             @SerializedName("banner_applink_url")
             @Expose
             val bannerApplinkUrl: String = "",
+
+            @SerializedName("identifier")
+            @Expose
+            val identifier: String = "",
 
             @SerializedName("product")
             @Expose

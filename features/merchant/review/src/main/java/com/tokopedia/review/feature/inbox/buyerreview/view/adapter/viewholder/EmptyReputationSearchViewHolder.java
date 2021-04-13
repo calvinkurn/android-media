@@ -1,13 +1,13 @@
 package com.tokopedia.review.feature.inbox.buyerreview.view.adapter.viewholder;
 
-import androidx.annotation.LayoutRes;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.TextView;
+import androidx.annotation.LayoutRes;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.review.R;
 import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.EmptySearchModel;
+import com.tokopedia.unifyprinciples.Typography;
 
 /**
  * @author by nisie on 9/13/17.
@@ -18,13 +18,13 @@ public class EmptyReputationSearchViewHolder extends AbstractViewHolder<EmptySea
     @LayoutRes
     public static final int LAYOUT = R.layout.list_empty_search_reputation;
 
-    TextView button;
-    TextView title;
+    Typography button;
+    Typography title;
 
     public EmptyReputationSearchViewHolder(View itemView) {
         super(itemView);
-        title = (TextView) itemView.findViewById(R.id.title);
-        button = (TextView) itemView.findViewById(R.id.button);
+        title = (Typography) itemView.findViewById(R.id.title);
+        button = (Typography) itemView.findViewById(R.id.button);
     }
 
     @Override

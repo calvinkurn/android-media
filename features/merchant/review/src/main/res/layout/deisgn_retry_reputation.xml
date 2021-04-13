@@ -14,9 +14,10 @@
         android:layout_marginTop="28dp"
         android:layout_marginBottom="20dp"
         android:scaleType="fitXY"
+        android:contentDescription="@null"
         app:srcCompat="@drawable/ic_empty_penalti_reputasi" />
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/good_job_reputation_retry"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -25,10 +26,10 @@
         android:text="@string/reputation_history_label_good_job"
         android:layout_marginBottom="2dp"
         android:textColor="@color/Unify_N700_32"
-        android:textSize="14sp"
-        android:textStyle="bold" />
+        app:typographyWeight="bold"
+        app:typographyType="heading_5"/>
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
         android:id="@+id/description_reputation_retry"
@@ -40,7 +41,8 @@
         android:text="@string/reputation_history_label_info_no_penalty"
         android:textAlignment="gravity"
         android:textColor="@color/Unify_N700_32"
-        android:textSize="12sp" />
+        app:typographyWeight="reguler"
+        app:typographyType="body_3" />
 
     <LinearLayout
         android:id="@+id/reputation_container_change_date"
@@ -52,14 +54,15 @@
         android:visibility="gone"
         android:orientation="horizontal">
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/change_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:text="@string/reputation_history_label_change_date"
             android:textColor="@color/Unify_G400"
-            android:textSize="14sp" />
+            app:typographyWeight="reguler"
+            app:typographyType="body_2"/>
     </LinearLayout>
 
 </RelativeLayout>

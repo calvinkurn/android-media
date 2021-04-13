@@ -130,6 +130,8 @@ class TelcoPostpaidInstrumentTest {
         onView(withId(R.id.searchbar_icon)).perform(click())
         onView(withId(R.id.searchbar_textfield)).check(matches(withText("")))
         onView(withId(R.id.searchbar_textfield)).perform(typeText(VALID_PHONE_NUMBER), pressImeActionButton())
+
+        Thread.sleep(2000)
         onView(withId(R.id.telco_ac_input_number)).check(matches(withText(VALID_PHONE_NUMBER)))
     }
 
