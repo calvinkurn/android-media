@@ -13,7 +13,6 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHold
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.date.util.SaldoDatePickerUtil
@@ -22,13 +21,13 @@ import com.tokopedia.saldodetails.adapter.SaldoDetailTransactionFactory
 import com.tokopedia.saldodetails.adapter.SaldoHistoryPagerAdapter
 import com.tokopedia.saldodetails.contract.SaldoHistoryContract
 import com.tokopedia.saldodetails.di.SaldoDetailsComponent
-import com.tokopedia.saldodetails.di.SaldoDetailsComponentInstance
-import com.tokopedia.saldodetails.viewmodels.SaldoHistoryViewModel
+import com.tokopedia.saldodetails.utils.DrawableUtils.setUnifyDrawableStart
 import com.tokopedia.saldodetails.utils.ErrorType
 import com.tokopedia.saldodetails.utils.IN_VALID_DATE_ERROR
 import com.tokopedia.saldodetails.utils.NORMAL
 import com.tokopedia.saldodetails.view.ui.HeightWrappingViewPager
 import com.tokopedia.saldodetails.view.ui.SaldoHistoryTabItem
+import com.tokopedia.saldodetails.viewmodels.SaldoHistoryViewModel
 import java.util.*
 import javax.inject.Inject
 
@@ -46,7 +45,7 @@ class SaldoTransactionHistoryFragment : BaseDaggerFragment(), SaldoHistoryContra
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
 
-    private val saldoHistoryViewModel: SaldoHistoryViewModel by  lazy { ViewModelProviders.of(this, viewModelFactory).get(SaldoHistoryViewModel::class.java) }
+    private val saldoHistoryViewModel: SaldoHistoryViewModel by lazy { ViewModelProviders.of(this, viewModelFactory).get(SaldoHistoryViewModel::class.java) }
 
     private var datePicker: SaldoDatePickerUtil? = null
 
@@ -71,11 +70,11 @@ class SaldoTransactionHistoryFragment : BaseDaggerFragment(), SaldoHistoryContra
     }
 
     private fun addObserver() {
-        saldoHistoryViewModel.errors.observe(this, androidx.lifecycle.Observer {
+        saldoHistoryViewModel.errors.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             it?.let {
-                if (it is ErrorType<*>){
+                if (it is ErrorType<*>) {
                     val message = if (it.data is Int) getString(it.data) else it.data.toString()
-                    when(it.type){
+                    when (it.type) {
                         NORMAL -> showErrorMessage(message)
                         IN_VALID_DATE_ERROR -> showInvalidDateError(message)
                     }
@@ -100,9 +99,9 @@ class SaldoTransactionHistoryFragment : BaseDaggerFragment(), SaldoHistoryContra
         startDateLayout = view.findViewById(com.tokopedia.saldodetails.R.id.start_date_layout)
         endDateLayout = view.findViewById(com.tokopedia.saldodetails.R.id.end_date_layout)
         startDateTV = view.findViewById(com.tokopedia.saldodetails.R.id.start_date_tv)
-        startDateTV!!.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable(context, com.tokopedia.design.R.drawable.ic_calendar_grey), null, null, null)
         endDateTV = view.findViewById(com.tokopedia.saldodetails.R.id.end_date_tv)
-        endDateTV!!.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable(context, com.tokopedia.design.R.drawable.ic_calendar_grey), null, null, null)
+        startDateTV!!.setUnifyDrawableStart(com.tokopedia.iconunify.R.drawable.iconunify_calendar, com.tokopedia.unifyprinciples.R.dimen.unify_font_24)
+        endDateTV!!.setUnifyDrawableStart(com.tokopedia.iconunify.R.drawable.iconunify_calendar, com.tokopedia.unifyprinciples.R.dimen.unify_font_24)
 
         depositHistoryViewPager = view.findViewById(com.tokopedia.saldodetails.R.id.transaction_history_view_pager)
         depositHistoryTabLayout = view.findViewById(com.tokopedia.saldodetails.R.id.transaction_history_tab_layout)
@@ -127,7 +126,7 @@ class SaldoTransactionHistoryFragment : BaseDaggerFragment(), SaldoHistoryContra
 
         allSaldoHistoryTabItem = SaldoHistoryTabItem()
         allSaldoHistoryTabItem!!.title = "Semua"
-        allSaldoHistoryTabItem!!.fragment = SaldoHistoryListFragment.createInstance(FOR_ALL, saldoHistoryViewModel,this)
+        allSaldoHistoryTabItem!!.fragment = SaldoHistoryListFragment.createInstance(FOR_ALL, saldoHistoryViewModel, this)
 
         saldoTabItems.add(allSaldoHistoryTabItem!!)
 
@@ -168,7 +167,7 @@ class SaldoTransactionHistoryFragment : BaseDaggerFragment(), SaldoHistoryContra
             }
         })
         startDateLayout!!.setOnClickListener {
-            saldoHistoryViewModel.onStartDateClicked(datePicker!!,this)
+            saldoHistoryViewModel.onStartDateClicked(datePicker!!, this)
         }
         endDateLayout!!.setOnClickListener {
             saldoHistoryViewModel.onEndDateClicked(datePicker!!, this)

@@ -19,6 +19,7 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.saldodetails.commom.analytics.SaldoDetailsAnalytics
@@ -160,6 +161,7 @@ class MerchantSaldoPriorityFragment : BaseDaggerFragment() {
         }
     }
 
+    // @Todo Horizontal/vertical??
     private fun showDialog(isChecked: Boolean) {
         DialogUnify(requireContext(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
             if (isChecked) {
@@ -262,19 +264,25 @@ class MerchantSaldoPriorityFragment : BaseDaggerFragment() {
 
     // @Todo remove drawables?
     private fun setBoxBackground() {
-        val boxType = sellerDetails!!.boxType
-        if (boxType!!.equals(NONE, ignoreCase = true)) {
-            spStatusInfoIcon!!.gone()
-        } else if (boxType.equals(DEFAULT, ignoreCase = true)) {
-
-            spStatusInfoIcon!!.setImageDrawable(MethodChecker.getDrawable(activity, com.tokopedia.design.R.drawable.ic_info_icon_green))
-            spKYCStatusLayout!!.background = resources.getDrawable(com.tokopedia.saldodetails.R.drawable.sp_bg_rounded_corners_green)
-        } else if (boxType.equals(WARNING, ignoreCase = true)) {
-            spStatusInfoIcon!!.setImageDrawable(MethodChecker.getDrawable(activity, com.tokopedia.design.R.drawable.ic_info_icon_yellow))
-            spKYCStatusLayout!!.background = resources.getDrawable(com.tokopedia.design.R.drawable.bg_rounded_corner_warning)
-        } else if (boxType.equals(DANGER, ignoreCase = true)) {
-            spStatusInfoIcon!!.setImageDrawable(MethodChecker.getDrawable(activity, com.tokopedia.design.R.drawable.ic_info_icon_red))
-            spKYCStatusLayout!!.background = resources.getDrawable(com.tokopedia.design.R.drawable.bg_rounded_corner_danger)
+        context?.let { context ->
+            val boxType = sellerDetails!!.boxType
+            if (boxType!!.equals(NONE, ignoreCase = true)) {
+                spStatusInfoIcon!!.gone()
+            } else if (boxType.equals(DEFAULT, ignoreCase = true)) {
+                val drawable = getIconUnifyDrawable(context, com.tokopedia.iconunify.R.drawable.iconunify_information, com.tokopedia.unifyprinciples.R.color.Unify_G400)
+                spStatusInfoIcon!!.setImageDrawable(drawable)
+                spKYCStatusLayout!!.background = resources.getDrawable(com.tokopedia.saldodetails.R.drawable.sp_bg_rounded_corners_green)
+            } else if (boxType.equals(WARNING, ignoreCase = true)) {
+                val color = Color.parseColor("#ffc107")
+                val drawable = getIconUnifyDrawable(context, com.tokopedia.iconunify.R.drawable.iconunify_information, color)
+                spStatusInfoIcon!!.setImageDrawable(drawable)
+                spKYCStatusLayout!!.background = resources.getDrawable(com.tokopedia.saldodetails.R.drawable.bg_rounded_corner_warning)
+            } else if (boxType.equals(DANGER, ignoreCase = true)) {
+                val color = Color.parseColor("#f9bcc0")
+                val drawable = getIconUnifyDrawable(context, com.tokopedia.iconunify.R.drawable.iconunify_information, color)
+                spStatusInfoIcon!!.setImageDrawable(drawable)
+                spKYCStatusLayout!!.background = resources.getDrawable(com.tokopedia.saldodetails.R.drawable.bg_rounded_corner_danger)
+            }
         }
     }
 

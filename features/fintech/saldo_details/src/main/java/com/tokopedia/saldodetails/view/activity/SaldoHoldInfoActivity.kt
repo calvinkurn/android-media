@@ -1,19 +1,27 @@
 package com.tokopedia.saldodetails.view.activity
 
+import android.graphics.BlendMode
+import android.graphics.BlendModeColorFilter
+import android.graphics.PorterDuff
+import android.graphics.drawable.ScaleDrawable
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.viewpager.widget.ViewPager
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
-import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
-import com.tokopedia.design.component.Tabs
+import com.tokopedia.iconunify.getIconUnifyDrawable
+import com.tokopedia.kotlin.extensions.view.dpToPx
+import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.saldodetails.R
 import com.tokopedia.saldodetails.adapter.SaldoInfoVIewPagerAdapter
 import com.tokopedia.saldodetails.commom.analytics.SaldoDetailsConstants
@@ -24,8 +32,11 @@ import com.tokopedia.saldodetails.presenter.SaldoHoldInfoPresenter
 import com.tokopedia.saldodetails.response.model.saldoholdinfo.response.SaldoHoldDepositHistory
 import com.tokopedia.saldodetails.response.model.saldoholdinfo.response.SaldoHoldInfoItem
 import com.tokopedia.saldodetails.utils.CurrencyUtils
+import com.tokopedia.saldodetails.utils.DrawableUtils.setUnifyDrawableEnd
 import com.tokopedia.saldodetails.view.fragment.SaldoHoldInfoFragment
 import com.tokopedia.saldodetails.view.ui.SaldoHistoryTabItem
+import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.TabsUnify
 import kotlinx.android.synthetic.main.saldo_hold_info_tabview.*
 import kotlinx.android.synthetic.main.saldo_info_help_bottomsheet.view.*
 import kotlinx.android.synthetic.main.saldo_info_toolbar.*
@@ -43,8 +54,7 @@ class SaldoHoldInfoActivity : BaseSimpleActivity(), HasComponent<SaldoDetailsCom
     var sellerAmount: Long = 0
     var buyerAmount: Long = 0
     var item: ArrayList<SaldoHistoryTabItem>? = null
-    lateinit var tabLayout: Tabs
-    lateinit var helpdialog: CloseableBottomSheetDialog
+    lateinit var tabLayout: TabsUnify
     val SALDO_SELLER_AMOUNT = "SALDO_SELLER_AMOUNT"
     val SALDO_BUYER_AMOUNT = "SALDO_BUYER_AMOUNT"
     val SAVE_INSTANCE_CACHEMANAGER_ID = "SAVE_INSTANCE_CACHEMANAGER_ID"
@@ -236,26 +246,34 @@ class SaldoHoldInfoActivity : BaseSimpleActivity(), HasComponent<SaldoDetailsCom
     private fun initViewPagerAdapter() {
         val adapter = item?.let { SaldoInfoVIewPagerAdapter(supportFragmentManager, it) }
         viewPager?.adapter = adapter
-        tabLayout.setupWithViewPager(viewPager)
+        viewPager?.let { tabLayout.setupWithViewPager(it) }
     }
 
+    // @Todo TEST
     private fun initBottomSheet() {
-        helpdialog = CloseableBottomSheetDialog.createInstanceRounded(this)
+        val bottomSheet = BottomSheetUnify()
         val view = LayoutInflater.from(this).inflate(R.layout.saldo_info_help_bottomsheet, null)
-        helpdialog.setCustomContentView(view, "", false)
-        view.btn1.setOnClickListener {
-            RouteManager.route(this, String.format("%s?url=%s",
-                    ApplinkConst.WEBVIEW, SaldoDetailsConstants.SALDO_HOLD_HELP_URL))
-            helpdialog.cancel()
+        view.apply {
+            btn1.setOnClickListener {
+                RouteManager.route(this@SaldoHoldInfoActivity, String.format("%s?url=%s",
+                        ApplinkConst.WEBVIEW, SaldoDetailsConstants.SALDO_HOLD_HELP_URL))
+                bottomSheet.dismiss()
+            }
+            btn2.setOnClickListener {
+                RouteManager.route(this@SaldoHoldInfoActivity, String.format("%s?url=%s",
+                        ApplinkConst.WEBVIEW, SaldoDetailsConstants.SALDO_HOLD_HELP_URL_TWO))
+                bottomSheet.dismiss()
+            }
+            tv1.setUnifyDrawableEnd(com.tokopedia.iconunify.R.drawable.iconunify_chevron_right)
+            tv2.setUnifyDrawableEnd(com.tokopedia.iconunify.R.drawable.iconunify_chevron_right)
         }
-        view.btn2.setOnClickListener {
-            RouteManager.route(this, String.format("%s?url=%s",
-                    ApplinkConst.WEBVIEW, SaldoDetailsConstants.SALDO_HOLD_HELP_URL_TWO))
-            helpdialog.cancel()
+        supportFragmentManager.let {
+            bottomSheet.apply {
+                setChild(view)
+                setTitle(resources.getString(com.tokopedia.saldodetails.R.string.saldo_info_btn_text))
+                show(it, null)
+            }
         }
-
-        helpdialog.show()
-
     }
 
     override fun showErrorView() {
@@ -282,5 +300,4 @@ class SaldoHoldInfoActivity : BaseSimpleActivity(), HasComponent<SaldoDetailsCom
         performanceInterface.stopMonitoring()
 
     }
-
 }

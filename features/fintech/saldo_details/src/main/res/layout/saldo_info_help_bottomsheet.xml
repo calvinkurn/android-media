@@ -4,64 +4,42 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/unify_space_16"
-        android:layout_marginLeft="@dimen/unify_space_16"
-        android:layout_marginTop="@dimen/unify_space_16"
-        android:drawableStart="@drawable/ic_close"
-        android:drawableLeft="@drawable/ic_close"
-        android:drawablePadding="@dimen/unify_space_16"
-        android:text="@string/saldo_info_btn_text"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="heading_3" />
-
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/unify_space_16"
+        android:layout_marginLeft="@dimen/unify_space_8"
+        android:layout_marginRight="@dimen/unify_space_8"
         android:layout_marginTop="@dimen/unify_space_16"
         android:text="@string/salso_info_bottomsheet_desc"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/title"
+        app:layout_constraintTop_toTopOf="parent"
         app:typographyType="body_2" />
 
-
-    <androidx.cardview.widget.CardView
+    <com.tokopedia.unifycomponents.CardUnify
         android:id="@+id/btn1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/unify_space_16"
         android:layout_marginTop="@dimen/unify_space_16"
-        android:layout_marginRight="@dimen/unify_space_16"
         android:elevation="@dimen/dp_0"
-        app:cardCornerRadius="@dimen/unify_space_8"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/content">
 
         <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:drawableEnd="@drawable/ic_arrow_right_grey"
-            android:drawableRight="@drawable/ic_arrow_right_grey"
             android:drawablePadding="@dimen/unify_space_16"
             android:padding="@dimen/unify_space_16"
             android:text="@string/saldo_saya_tidak_dapat_digunakan"
             app:typographyType="body_2" />
-    </androidx.cardview.widget.CardView>
+    </com.tokopedia.unifycomponents.CardUnify>
 
-    <androidx.cardview.widget.CardView
+    <com.tokopedia.unifycomponents.CardUnify
         android:id="@+id/btn2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/unify_space_16"
         android:layout_marginTop="@dimen/unify_space_16"
-        android:layout_marginRight="@dimen/unify_space_16"
         android:layout_marginBottom="@dimen/dp_22"
         android:elevation="@dimen/dp_0"
         app:cardCornerRadius="@dimen/unify_space_8"
@@ -70,14 +48,13 @@
         app:layout_constraintTop_toBottomOf="@+id/btn1">
 
         <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:drawableEnd="@drawable/ic_arrow_right_grey"
-            android:drawableRight="@drawable/ic_arrow_right_grey"
             android:drawablePadding="@dimen/unify_space_16"
             android:padding="@dimen/unify_space_16"
             android:text="@string/saldo_mengapa_saldo_saya_direview"
             app:typographyType="body_2" />
-    </androidx.cardview.widget.CardView>
+    </com.tokopedia.unifycomponents.CardUnify>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

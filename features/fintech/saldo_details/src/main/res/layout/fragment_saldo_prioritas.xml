@@ -80,13 +80,15 @@
                     android:orientation="horizontal">
 
 
-                    <ImageView
+                    <com.tokopedia.iconunify.IconUnify
                         android:id="@+id/sp_status_info_icon"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="@dimen/unify_space_16"
+                        android:layout_height="@dimen/unify_space_16"
                         android:layout_centerVertical="true"
                         android:contentDescription="Status Information Icon"
-                        android:src="@drawable/info_icon" />
+                        app:icon_color_light_enable="@color/Unify_N400"
+                        app:icon_color_night_enable="@color/Unify_N400"
+                        app:icon_name="INFORMATION" />
 
                     <com.tokopedia.unifyprinciples.Typography
                         android:id="@+id/sp_kyc_short_desc"
@@ -102,16 +104,17 @@
                         android:textColor="@color/Unify_N700_68"
                         app:typographyType="body_3" />
 
-                    <ImageView
+                    <com.tokopedia.iconunify.IconUnify
                         android:id="@+id/sp_right_arrow"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="@dimen/unify_space_16"
+                        android:layout_height="@dimen/unify_space_16"
                         android:layout_alignParentEnd="true"
                         android:layout_alignParentRight="true"
                         android:layout_centerVertical="true"
                         android:layout_gravity="end"
                         android:contentDescription="Arrow Icon"
                         android:foregroundGravity="right"
+                        app:icon_name="CHEVRON_RIGHT"
                         app:srcCompat="@drawable/ic_arrow_right_grey" />
 
                 </RelativeLayout>
