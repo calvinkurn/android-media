@@ -19,13 +19,11 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -96,7 +94,7 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
         }
     }
 
-    private val viewModel by lazy {
+    protected val viewModel by lazy {
         ViewModelProviders.of(this, viewModelFactory).get(VerificationViewModel::class.java)
     }
 
@@ -207,7 +205,7 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
         })
         viewModel.otpValidateResult.observe(viewLifecycleOwner, Observer {
             when (it) {
-                is Success -> onSuccessOtpValidate().invoke(it.data)
+                is Success -> onSuccessOtpValidate(it.data)
                 is Fail -> onFailedOtpValidate().invoke(it.throwable)
             }
         })
@@ -267,52 +265,45 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
         }
     }
 
-    private fun onSuccessOtpValidate(): (OtpValidateData) -> Unit {
-        return { otpValidateData ->
-            when {
-                otpValidateData.success -> {
-                    viewModel.done = true
-                    when (otpData.otpType) {
-                        OtpConstant.OtpType.REGISTER_PHONE_NUMBER -> {
-                            analytics.trackSuccessClickVerificationRegisterPhoneButton()
-                        }
-                        OtpConstant.OtpType.REGISTER_EMAIL -> {
-                            analytics.trackSuccessClickVerificationRegisterEmailButton()
-                        }
-                    }
-                    resetCountDown()
-
-                    activity?.let { activity ->
-                        val bundle = Bundle().apply {
-                            putString(ApplinkConstInternalGlobal.PARAM_UUID, otpValidateData.validateToken)
-                            putString(ApplinkConstInternalGlobal.PARAM_TOKEN, otpValidateData.validateToken)
-                            putString(ApplinkConstInternalGlobal.PARAM_MSISDN, otpData.msisdn)
-                            putString(ApplinkConstInternalGlobal.PARAM_EMAIL, otpData.email)
-                            putString(ApplinkConstInternalGlobal.PARAM_SOURCE, otpData.source)
-                            putString(ApplinkConstInternalGlobal.PARAM_OTP_CODE, viewBound.pin?.value.toString())
-                        }
-                        if ((activity as VerificationActivity).isResetPin2FA) {
-                            val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.CHANGE_PIN).apply {
-                                bundle.putBoolean(ApplinkConstInternalGlobal.PARAM_IS_RESET_PIN, true)
-                                bundle.putString(ApplinkConstInternalGlobal.PARAM_USER_ID, otpData.userId)
-                                putExtras(bundle)
-                            }
-                            intent.flags = Intent.FLAG_ACTIVITY_FORWARD_RESULT
-                            activity.startActivity(intent)
-                        } else {
-                            activity.setResult(Activity.RESULT_OK, Intent().putExtras(bundle))
-                        }
-                        activity.finish()
-                    }
+    private fun onSuccessOtpValidate(otpValidateData: OtpValidateData) {
+        when {
+            otpValidateData.success -> {
+                viewModel.done = true
+                trackSuccess()
+                resetCountDown()
+                val bundle = Bundle().apply {
+                    putString(ApplinkConstInternalGlobal.PARAM_UUID, otpValidateData.validateToken)
+                    putString(ApplinkConstInternalGlobal.PARAM_TOKEN, otpValidateData.validateToken)
+                    putString(ApplinkConstInternalGlobal.PARAM_MSISDN, otpData.msisdn)
+                    putString(ApplinkConstInternalGlobal.PARAM_EMAIL, otpData.email)
+                    putString(ApplinkConstInternalGlobal.PARAM_SOURCE, otpData.source)
+                    putString(ApplinkConstInternalGlobal.PARAM_OTP_CODE, viewBound.pin?.value.toString())
                 }
-                otpValidateData.errorMessage.isNotEmpty() -> {
-                    onFailedOtpValidate().invoke(MessageErrorException(otpValidateData.errorMessage))
-                }
-                else -> {
-                    onFailedOtpValidate().invoke(Throwable())
-                }
+                redirectAfterValidationSuccessful(bundle)
+            }
+            otpValidateData.errorMessage.isNotEmpty() -> {
+                onFailedOtpValidate().invoke(MessageErrorException(otpValidateData.errorMessage))
+            }
+            else -> {
+                onFailedOtpValidate().invoke(Throwable())
             }
         }
+    }
+
+    private fun trackSuccess() {
+        when (otpData.otpType) {
+            OtpConstant.OtpType.REGISTER_PHONE_NUMBER -> {
+                analytics.trackSuccessClickVerificationRegisterPhoneButton()
+            }
+            OtpConstant.OtpType.REGISTER_EMAIL -> {
+                analytics.trackSuccessClickVerificationRegisterEmailButton()
+            }
+        }
+    }
+
+    open fun redirectAfterValidationSuccessful(bundle: Bundle) {
+        activity?.setResult(Activity.RESULT_OK, Intent().putExtras(bundle))
+        activity?.finish()
     }
 
     private fun onFailedOtpValidate(): (Throwable) -> Unit {
@@ -371,7 +362,7 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
         }
     }
 
-    private fun resetCountDown() {
+    protected fun resetCountDown() {
         verificationPref.hasTimer = false
     }
 
@@ -436,15 +427,9 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
 
     open fun setFooterText(spannable: Spannable? = SpannableString("")) {
         context?.let {
-            var spannableChild: Spannable = spannable ?: SpannableString("")
-            if (otpData.otpType == OtpConstant.OtpType.AFTER_LOGIN_PHONE) {
-                val message = getString(R.string.forgot_pin)
-                spannableChild = SpannableString(message)
-                setForgotPinFooterSpan(message, spannableChild)
-            }
             viewBound.pin?.pinMessageView?.visible()
             viewBound.pin?.pinMessageView?.movementMethod = LinkMovementMethod.getInstance()
-            viewBound.pin?.pinMessageView?.setText(spannableChild, TextView.BufferType.SPANNABLE)
+            viewBound.pin?.pinMessageView?.setText(spannable, TextView.BufferType.SPANNABLE)
         }
     }
 
@@ -484,27 +469,6 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
                 },
                 start,
                 end,
-                0
-        )
-    }
-
-    private fun setForgotPinFooterSpan(message: String, spannable: Spannable) {
-        spannable.setSpan(
-                object : ClickableSpan() {
-                    override fun onClick(view: View) {
-                        viewModel.done = true
-                        val data = otpData
-                        data.otpType = OtpConstant.OtpType.RESET_PIN
-                        (activity as VerificationActivity).goToMethodPageResetPin(data)
-                    }
-
-                    override fun updateDrawState(ds: TextPaint) {
-                        ds.color = MethodChecker.getColor(context, R.color.Unify_G500)
-                        ds.typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
-                    }
-                },
-                message.indexOf(getString(R.string.forgot_pin)),
-                message.indexOf(getString(R.string.forgot_pin)) + getString(R.string.forgot_pin).length,
                 0
         )
     }
