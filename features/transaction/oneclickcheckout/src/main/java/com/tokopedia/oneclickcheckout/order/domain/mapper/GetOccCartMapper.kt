@@ -32,18 +32,6 @@ class GetOccCartMapper @Inject constructor() {
             shop = generateOrderShop(cart)
             kero = OrderKero(data.keroToken, data.keroDiscomToken, data.keroUnixTime)
         }
-//        val onboarding = data.occMainOnboarding.copy(
-//                isForceShowCoachMark = true,
-//                coachmarkType = OccMainOnboarding.COACHMARK_TYPE_NEW_BUYER_REMOVE_PROFILE,
-//                onboardingCoachMark = OccOnboardingCoachMark(
-//                        skipButtonText = "sekip",
-//                        details = listOf(
-//                                OccOnboardingCoachMarkDetail(0, "Tinggal cek, terus langsung bayar!", "Berikut rekomendasi alamat, pengiriman, dan pembayaran untukmu. Cek & ubah sesukamu, ya."),
-//                                OccOnboardingCoachMarkDetail(1, "Klik tanda panah buat ubah", "Ganti alamat, durasi pengiriman, atau metode\n" +
-//                                        "pembayaran? Tinggal klik tanda panahnya aja.")
-//                        )
-//                )
-//        )
         return OrderData(mapTicker(data.tickers),
                 data.occMainOnboarding,
                 orderCart,
@@ -308,7 +296,7 @@ class GetOccCartMapper @Inject constructor() {
     }
 
     private fun mapOccRemoveProfile(removeProfileResponse: OccRemoveProfileResponse): OccRemoveProfileData {
-        return OccRemoveProfileData(true, removeProfileResponse.type,
+        return OccRemoveProfileData(removeProfileResponse.enable, removeProfileResponse.type,
                 OccRemoveProfileMessageData(removeProfileResponse.message.title, removeProfileResponse.message.description))
     }
 }
