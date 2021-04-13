@@ -18,6 +18,8 @@
             android:id="@+id/tp_title"
             app:typographyType="heading_5"
             app:typographyWeight="bold"
+            android:ellipsize="end"
+            android:maxLines="1"
             android:layout_toStartOf="@id/iv_chevron"
             android:layout_alignParentStart="true"
             android:layout_marginTop="@dimen/dp_18"
