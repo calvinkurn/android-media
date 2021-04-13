@@ -2,8 +2,6 @@ package com.tokopedia.cassavatest
 
 import android.content.Context
 import androidx.test.platform.app.InstrumentationRegistry
-import com.tokopedia.analyticsdebugger.cassava.validator.Utils
-import com.tokopedia.analyticsdebugger.cassava.validator.core.*
 import com.google.gson.GsonBuilder
 import com.tokopedia.analyticsdebugger.cassava.data.CassavaRepository
 import com.tokopedia.analyticsdebugger.cassava.data.CassavaSource
@@ -13,7 +11,6 @@ import com.tokopedia.analyticsdebugger.cassava.data.request.ValidationResultData
 import com.tokopedia.analyticsdebugger.cassava.data.request.ValidationResultRequest
 import com.tokopedia.analyticsdebugger.cassava.domain.QueryListUseCase
 import com.tokopedia.analyticsdebugger.cassava.domain.ValidationResultUseCase
-import com.tokopedia.analyticsdebugger.cassava.validator.Utils
 import com.tokopedia.analyticsdebugger.cassava.validator.core.*
 import com.tokopedia.analyticsdebugger.database.TkpdAnalyticsDatabase
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
@@ -31,9 +28,10 @@ fun deleteCassavaDb(context: Context) =
 fun getAnalyticsWithQuery(gtmLogDBSource: GtmLogDBSource,
                           context: Context,
                           journeyId: Int): List<Validator> {
-    val testCases = getTestCases(context, journeyId)
+    val cassavaQuery = getQuery(context, journeyId)
+    val validators = cassavaQuery.query.map { it.toDefaultValidator() }
     val validationResult = ValidatorEngine(gtmLogDBSource)
-            .computeRx(testCases.first, testCases.second)
+            .computeRx(validators, cassavaQuery.mode.value)
             .toBlocking()
             .first()
     sendTestResult(journeyId, validationResult)
@@ -60,20 +58,16 @@ fun getAnalyticsWithQuery(gtmLogDBSource: GtmLogDBSource, queryString: String): 
             .first()
 }
 
-internal fun getQuery(context: Context, queryFileName: String): CassavaQuery {
-    val queryJson = Utils.getJsonDataFromAsset(context, queryFileName)
+internal fun getQuery(context: Context, queryFileName: String): CassavaQuery = runBlocking {
+    val useCase = QueryListUseCase(CassavaRepository(getCassavaApi()))
+    return@runBlocking useCase.execute(context, CassavaSource.LOCAL, 0, queryFileName)
             ?: throw AssertionError("Cassava query is not found: \"$queryFileName\"")
-    return queryJson.toCassavaQuery()
 }
 
-internal fun getTestCases(context: Context, journeyId: Int): Pair<List<Validator>, String> = runBlocking {
+internal fun getQuery(context: Context, journeyId: Int): CassavaQuery = runBlocking {
     val useCase = QueryListUseCase(CassavaRepository(getCassavaApi()))
-    val query: CassavaQuery = useCase.execute(context, CassavaSource.NETWORK,
+    return@runBlocking useCase.execute(context, CassavaSource.NETWORK,
             journeyId, "") ?: throw Throwable("Failed to get Query")
-
-    return@runBlocking query.query.map {
-        it.toDefaultValidator()
-    } to query.mode.value
 }
 
 internal fun sendTestResult(journeyId: Int, testResult: List<Validator>) {
@@ -94,11 +88,6 @@ internal fun sendTestResult(journeyId: Int, testResult: List<Validator>) {
                 )
         )
     }
-}
-
-private fun queryFormat(queryString: String): Pair<List<Validator>, String> {
-    val q = queryString.toCassavaQuery()
-    return q.query.map { it.toDefaultValidator() } to q.mode.value
 }
 
 private fun <T> Observable<T>.test(onNext: (T) -> Unit) {
