@@ -913,8 +913,17 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                         result.throwable.setOnErrorWidgetState<D, BaseWidgetUiModel<D>>(type)
                     }
                 }
+                loadNextUnloadedWidget()
             }
         })
+    }
+
+    private fun loadNextUnloadedWidget() {
+        if (isNewLazyLoad) {
+            adapter.data?.find { !it.isLoaded }?.let { newWidgets ->
+                getWidgetsData(listOf(newWidgets))
+            }
+        }
     }
 
     private fun stopSellerHomeFragmentWidgetPerformanceMonitoring(type: String, isFromCache: Boolean) {
