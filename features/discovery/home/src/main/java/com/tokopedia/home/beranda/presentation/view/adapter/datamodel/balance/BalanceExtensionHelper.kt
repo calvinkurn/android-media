@@ -67,7 +67,7 @@ fun HomeHeaderWalletAction.buildWalletSubTitleTextAttribute(): BalanceTextAttrib
     walletBalanceCondition (
             isLinkedCondition = {
                 text = labelActionButton
-                colourRef = R.color.Unify_G500
+                colourRef = R.color.Unify_N700_68
             },
             isNotLinkedCondition = {
                 text = labelActionButton
