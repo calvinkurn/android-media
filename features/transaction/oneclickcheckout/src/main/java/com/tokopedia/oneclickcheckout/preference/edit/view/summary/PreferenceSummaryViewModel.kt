@@ -34,12 +34,12 @@ class PreferenceSummaryViewModel @Inject constructor(private val getPreferenceBy
     val localCacheAddressResult: LiveData<AddressModel>
         get() = _localCacheAddressResult
 
-    private var profileAddressId: Int = 0
+    private var profileAddressId: Long = 0
     private var profileServiceId: Int = 0
     private var profileGatewayCode: String = ""
     private var profilePaymentMetadata: String = ""
 
-    fun setProfileAddressId(profileAddressId: Int) {
+    fun setProfileAddressId(profileAddressId: Long) {
         this.profileAddressId = profileAddressId
     }
 
@@ -69,7 +69,7 @@ class PreferenceSummaryViewModel @Inject constructor(private val getPreferenceBy
         return false
     }
 
-    fun getPreferenceDetail(profileId: Int, addressId: Int, serviceId: Int, gatewayCode: String, metadata: String, paymentProfile: String, fromFlow: String) {
+    fun getPreferenceDetail(profileId: Int, addressId: Long, serviceId: Int, gatewayCode: String, metadata: String, paymentProfile: String, fromFlow: String) {
         _preference.value = OccState.Loading
         OccIdlingResource.increment()
         getPreferenceByIdUseCase.execute(
@@ -101,7 +101,7 @@ class PreferenceSummaryViewModel @Inject constructor(private val getPreferenceBy
         }
     }
 
-    fun createPreference(addressId: Int, serviceId: Int, gatewayCode: String, paymentQuery: String, isDefaultProfileChecked: Boolean, fromFlow: Int, addressModel: AddressModel?, isSelectedPreference: Boolean) {
+    fun createPreference(addressId: Long, serviceId: Int, gatewayCode: String, paymentQuery: String, isDefaultProfileChecked: Boolean, fromFlow: Int, addressModel: AddressModel?, isSelectedPreference: Boolean) {
         _editResult.value = OccState.Loading
         OccIdlingResource.increment()
         var chosenAddress: ChosenAddress? = null
@@ -128,7 +128,7 @@ class PreferenceSummaryViewModel @Inject constructor(private val getPreferenceBy
                 })
     }
 
-    fun updatePreference(profileId: Int, addressId: Int, serviceId: Int, gatewayCode: String, paymentQuery: String, isDefaultProfileChecked: Boolean, fromFlow: Int, addressModel: AddressModel?, isSelectedPreference: Boolean) {
+    fun updatePreference(profileId: Int, addressId: Long, serviceId: Int, gatewayCode: String, paymentQuery: String, isDefaultProfileChecked: Boolean, fromFlow: Int, addressModel: AddressModel?, isSelectedPreference: Boolean) {
         _editResult.value = OccState.Loading
         OccIdlingResource.increment()
         updatePreferenceUseCase.execute(UpdatePreferenceRequest(profileId, addressId, serviceId, gatewayCode, paymentQuery, isDefaultProfileChecked, fromFlow),

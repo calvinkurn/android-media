@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName
 
 data class Address(
         @SerializedName("address_id")
-        val addressId: Int = 0,
+        val addressId: Long = 0,
         @SerializedName("receiver_name")
         val receiverName: String = "",
         @SerializedName("address_name")
@@ -12,15 +12,15 @@ data class Address(
         @SerializedName("address_street")
         val addressStreet: String = "",
         @SerializedName("district_id")
-        val districtId: Int = 0,
+        val districtId: Long = 0,
         @SerializedName("district_name")
         val districtName: String = "",
         @SerializedName("city_id")
-        val cityId: Int = 0,
+        val cityId: Long = 0,
         @SerializedName("city_name")
         val cityName: String = "",
         @SerializedName("province_id")
-        val provinceId: Int = 0,
+        val provinceId: Long = 0,
         @SerializedName("province_name")
         val provinceName: String = "",
         @SerializedName("phone")

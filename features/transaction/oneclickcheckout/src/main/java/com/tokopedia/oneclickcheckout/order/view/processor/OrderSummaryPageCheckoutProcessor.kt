@@ -65,7 +65,7 @@ class OrderSummaryPageCheckoutProcessor @Inject constructor(private val checkout
                     listOf(
                             ShopProduct(
                                     shopId = shop.shopId,
-                                    isPreorder = product.isPreorder,
+                                    isPreorder = product.isPreOrder,
                                     warehouseId = product.warehouseId,
                                     finsurance = if (orderShipment.isCheckInsurance) 1 else 0,
                                     productData = listOf(
@@ -98,7 +98,7 @@ class OrderSummaryPageCheckoutProcessor @Inject constructor(private val checkout
                         }
                         if (product.purchaseProtectionPlanData.isProtectionAvailable) {
                             orderSummaryAnalytics.eventPPClickBayar(userId,
-                                    product.categoryId.toString(),
+                                    product.categoryId,
                                     "",
                                     product.purchaseProtectionPlanData.protectionTitle,
                                     isPPPChecked,

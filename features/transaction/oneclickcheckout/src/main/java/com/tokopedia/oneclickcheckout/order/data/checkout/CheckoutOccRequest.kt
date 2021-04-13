@@ -32,7 +32,7 @@ data class ParamCart(
 
 data class ParamData(
         @SerializedName("address_id")
-        val addressId: Int = 0,
+        val addressId: Long = 0,
         @SerializedName("shop_products")
         val shopProducts: List<ShopProduct> = emptyList()
 )
@@ -41,13 +41,13 @@ data class ShopProduct(
         @SerializedName("promos")
         val promos: List<PromoRequest> = emptyList(),
         @SerializedName("shop_id")
-        val shopId: Int = 0,
+        val shopId: Long = 0,
         @SerializedName("product_data")
         val productData: List<ProductData> = emptyList(),
         @SerializedName("is_preorder")
         val isPreorder: Int = 0,
         @SerializedName("warehouse_id")
-        val warehouseId: Int = 0,
+        val warehouseId: Long = 0,
         @SerializedName("finsurance")
         val finsurance: Int = 0,
         @SerializedName("shipping_info")

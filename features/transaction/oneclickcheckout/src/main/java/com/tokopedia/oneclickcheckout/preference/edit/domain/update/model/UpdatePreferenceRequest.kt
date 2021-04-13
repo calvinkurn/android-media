@@ -6,7 +6,7 @@ data class UpdatePreferenceRequest (
         @SerializedName("profile_id")
         val profileId: Int,
         @SerializedName("address_id")
-        val addressId: Int,
+        val addressId: Long,
         @SerializedName("service_id")
         val serviceId: Int,
         @SerializedName("gateway_code")

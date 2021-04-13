@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.address.Token
 import com.tokopedia.logisticCommon.domain.model.AddressListModel
@@ -115,9 +116,9 @@ class AddressListViewModel @Inject constructor(private val useCase: GetAddressCo
                         destinationPostalCode = item.postalCode
 
                         selectedAddressModel = AddressModel(
-                                addressId = item.id?.toIntOrZero() ?: 0,
-                                cityId = item.cityId?.toIntOrZero() ?: 0,
-                                districtId = item.destinationDistrictId?.toIntOrZero() ?: 0,
+                                addressId = item.id.toLongOrZero(),
+                                cityId = item.cityId.toLongOrZero(),
+                                districtId = item.destinationDistrictId.toLongOrZero(),
                                 latitude = item.latitude,
                                 longitude = item.longitude,
                                 addressName = item.addressName,
@@ -150,9 +151,9 @@ class AddressListViewModel @Inject constructor(private val useCase: GetAddressCo
         if (addressModel != null && (_addressList.value is OccState.Success || _addressList.value is OccState.FirstLoad)) {
             selectedId = address.id
             selectedAddressModel = AddressModel(
-                    addressId = address.id?.toIntOrZero() ?: 0,
-                    cityId = address.cityId?.toIntOrZero() ?: 0,
-                    districtId = address.destinationDistrictId?.toIntOrZero() ?: 0,
+                    addressId = address.id.toLongOrZero(),
+                    cityId = address.cityId.toLongOrZero(),
+                    districtId = address.destinationDistrictId.toLongOrZero(),
                     latitude = address.latitude,
                     longitude = address.longitude,
                     addressName = address.addressName,

@@ -102,19 +102,12 @@ class GetOccCartMapper @Inject constructor() {
                 shop.isGoldBadge -> shop.goldMerchant.goldMerchantLogoUrl
                 else -> ""
             }
-            shopUrl = shop.shopUrl
             isGold = shop.isGold
             isOfficial = shop.isOfficial
-            addressId = shop.addressId
             postalCode = shop.postalCode
             latitude = shop.latitude
             longitude = shop.longitude
             districtId = shop.districtId
-            districtName = shop.districtName
-            origin = shop.origin
-            addressStreet = shop.addressStreet
-            provinceId = shop.provinceId
-            cityId = shop.cityId
             shopShipment = generateShopShipment(shop.shopShipments)
             errors = cart.errors
             isFulfillment = cart.warehouse.isFulfillment
@@ -126,7 +119,6 @@ class GetOccCartMapper @Inject constructor() {
     private fun generateOrderProduct(product: ProductDataResponse): OrderProduct {
         val orderProduct = OrderProduct()
         orderProduct.apply {
-            parentId = product.parentId
             productId = product.productId
             productName = product.productName
             productPrice = product.productPrice
@@ -150,14 +142,14 @@ class GetOccCartMapper @Inject constructor() {
             }
             cashback = if (product.productCashback.isNotBlank()) "Cashback ${product.productCashback}" else ""
             warehouseId = product.wareHouseId
-            isPreorder = product.isPreorder
+            isPreOrder = product.isPreOrder
             categoryId = product.categoryId
             category = product.category
             campaignId = product.campaignId
             productFinsurance = product.productFinsurance
             isSlashPrice = product.productOriginalPrice > product.productPrice
             productTrackerData = ProductTrackerData(product.productTrackerData.attribution, product.productTrackerData.trackerListName)
-            preorderDuration = product.productPreorder.durationDay.toIntOrZero()
+            preOrderDuration = product.productPreorder.durationDay.toIntOrZero()
         }
         return orderProduct
     }

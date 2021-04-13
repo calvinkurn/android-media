@@ -45,7 +45,7 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
             val orderProduct = orderCart.product
             val orderKero = orderCart.kero
 
-            originDistrictId = orderShop.districtId.toString()
+            originDistrictId = orderShop.districtId
             originPostalCode = orderShop.postalCode
             originLatitude = orderShop.latitude
             originLongitude = orderShop.longitude
@@ -57,8 +57,8 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
             token = orderKero.keroToken
             ut = orderKero.keroUT
             insurance = 1
-            isPreorder = orderProduct.isPreorder != 0
-            categoryIds = orderProduct.categoryId.toString()
+            isPreorder = orderProduct.isPreOrder != 0
+            categoryIds = orderProduct.categoryId
             uniqueId = orderCart.cartString
             addressId = address.addressId.toString()
             products = listOf(Product(orderProduct.productId, orderProduct.isFreeOngkir, orderProduct.isFreeOngkirExtra))
@@ -66,7 +66,7 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
             productInsurance = orderProduct.productFinsurance
             orderValue = orderProduct.quantity.orderQuantity * orderProduct.getPrice()
             isFulfillment = orderShop.isFulfillment
-            preOrderDuration = orderProduct.preorderDuration
+            preOrderDuration = orderProduct.preOrderDuration
         }
     }
 

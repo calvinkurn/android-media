@@ -2,7 +2,7 @@ package com.tokopedia.oneclickcheckout.order.view
 
 import com.google.gson.JsonParser
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ErrorProductData.ERROR_DISTANCE_LIMIT_EXCEEDED
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ErrorProductData.ERROR_WEIGHT_LIMIT_EXCEEDED
@@ -382,9 +382,9 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             val (isSuccess, newGlobalEvent) = cartProcessor.updatePreference(param)
             if (isSuccess) {
                 globalEvent.value = OccGlobalEvent.UpdateLocalCacheAddress(AddressModel(
-                        addressId = addressModel.id?.toIntOrZero() ?: 0,
-                        cityId = addressModel.cityId?.toIntOrZero() ?: 0,
-                        districtId = addressModel.destinationDistrictId?.toIntOrZero() ?: 0,
+                        addressId = addressModel.id.toLongOrZero(),
+                        cityId = addressModel.cityId.toLongOrZero(),
+                        districtId = addressModel.destinationDistrictId.toLongOrZero(),
                         latitude = addressModel.latitude,
                         longitude = addressModel.longitude,
                         addressName = addressModel.addressName,
@@ -696,7 +696,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         if (!hasSentViewOspEe) {
             orderSummaryAnalytics.eventViewOrderSummaryPage(userSession.userId, _orderPreference.preference.payment.gatewayName, generateOspEeBody().build(OrderSummaryPageEnhanceECommerce.STEP_1, OrderSummaryPageEnhanceECommerce.STEP_1_OPTION))
             if (orderProduct.purchaseProtectionPlanData.isProtectionAvailable) {
-                orderSummaryAnalytics.eventPPImpressionOnInsuranceSection(userSession.userId, orderProduct.categoryId.toString(), "", orderProduct.purchaseProtectionPlanData.protectionTitle)
+                orderSummaryAnalytics.eventPPImpressionOnInsuranceSection(userSession.userId, orderProduct.categoryId, "", orderProduct.purchaseProtectionPlanData.protectionTitle)
             }
             hasSentViewOspEe = true
         }
@@ -719,7 +719,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             setPromoCode(promoCodes)
             setPromoDetails("")
             setProductType("")
-            setCartId(orderCart.cartId.toString())
+            setCartId(orderCart.cartId)
             setBuyerAddressId(_orderPreference.preference.address.addressId.toString())
             setSpid(_orderShipment.getRealShipperProductId().toString())
             setCodFlag(false)
@@ -728,14 +728,14 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             setShopIdDimension(orderShop.shopId.toString())
             setShopNameDimension(orderShop.shopName)
             setShopTypeDimension(orderShop.isOfficial, orderShop.isGold)
-            setCategoryId(orderProduct.categoryId.toString())
+            setCategoryId(orderProduct.categoryId)
             if (_orderShipment.getRealShipperProductId() > 0) {
                 setShippingPrice(_orderShipment.getRealShippingPrice().toString())
             } else {
                 setShippingPrice("")
             }
             setShippingDuration(_orderShipment.serviceDuration)
-            setCampaignId(orderProduct.campaignId.toString())
+            setCampaignId(orderProduct.campaignId)
         }
     }
 

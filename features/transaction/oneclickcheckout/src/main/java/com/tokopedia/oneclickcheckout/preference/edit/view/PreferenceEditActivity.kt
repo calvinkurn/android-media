@@ -36,7 +36,7 @@ open class PreferenceEditActivity : BaseActivity(), HasComponent<PreferenceEditC
 
     private var _preferenceIndex = ""
     private var _profileId = 0
-    private var _addressId = 0
+    private var _addressId: Long = 0
     private var _addressModel: AddressModel? = null
     private var _shippingId = 0
     private var _gatewayCode = ""
@@ -161,11 +161,11 @@ open class PreferenceEditActivity : BaseActivity(), HasComponent<PreferenceEditC
         return _profileId
     }
 
-    override fun setAddressId(addressId: Int) {
+    override fun setAddressId(addressId: Long) {
         _addressId = addressId
     }
 
-    override fun getAddressId(): Int {
+    override fun getAddressId(): Long {
         return _addressId
     }
 

@@ -18,15 +18,15 @@ data class OrderProfile(
 )
 
 data class OrderProfileAddress(
-        val addressId: Int = 0,
+        val addressId: Long = 0,
         val receiverName: String = "",
         val addressName: String = "",
         val addressStreet: String = "",
-        val districtId: Int = 0,
+        val districtId: Long = 0,
         val districtName: String = "",
-        val cityId: Int = 0,
+        val cityId: Long = 0,
         val cityName: String = "",
-        val provinceId: Int = 0,
+        val provinceId: Long = 0,
         val provinceName: String = "",
         val phone: String = "",
         val longitude: String = "",

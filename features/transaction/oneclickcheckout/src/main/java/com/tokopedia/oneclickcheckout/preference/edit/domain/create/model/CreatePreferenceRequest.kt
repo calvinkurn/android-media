@@ -5,7 +5,7 @@ import com.tokopedia.purchase_platform.common.feature.localizationchooseaddress.
 
 data class CreatePreferenceRequest(
         @SerializedName("address_id")
-        val addressId: Int,
+        val addressId: Long,
         @SerializedName("service_id")
         val serviceId: Int,
         @SerializedName("gateway_code")

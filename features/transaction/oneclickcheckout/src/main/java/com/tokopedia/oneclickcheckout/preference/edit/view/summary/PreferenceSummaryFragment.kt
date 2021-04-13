@@ -475,7 +475,7 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
     private fun setDataToParent(data: ProfilesItemModel) {
         val parent = activity
         if (parent is PreferenceEditParent) {
-            if (parent.getAddressId() == 0) {
+            if (parent.getAddressId() == 0L) {
                 val addressId = data.addressModel.addressId
                 parent.setAddressId(addressId)
                 viewModel.setProfileAddressId(addressId)

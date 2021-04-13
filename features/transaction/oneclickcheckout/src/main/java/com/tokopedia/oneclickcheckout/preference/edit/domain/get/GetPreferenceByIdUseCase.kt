@@ -24,10 +24,10 @@ class GetPreferenceByIdUseCase @Inject constructor(private val graphqlUseCase: G
         throw MessageErrorException(result.getErrorMessage() ?: DEFAULT_ERROR_MESSAGE)
     }
 
-    fun generateRequestParams(profileId: Int, addressId: Int, serviceId: Int, gatewayCode: String, metadata: String, paymentProfile: String, fromFlow: String): RequestParams {
+    fun generateRequestParams(profileId: Int, addressId: Long, serviceId: Int, gatewayCode: String, metadata: String, paymentProfile: String, fromFlow: String): RequestParams {
         return RequestParams.create().apply {
             putInt(PARAM_PROFILE_ID, profileId)
-            putInt(PARAM_ADDRESS_ID, addressId)
+            putLong(PARAM_ADDRESS_ID, addressId)
             putInt(PARAM_SERVICE_ID, serviceId)
             putString(PARAM_GATEWAY_CODE, gatewayCode)
             putString(PARAM_METADATA, metadata)
