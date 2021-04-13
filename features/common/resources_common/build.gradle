@@ -10,10 +10,6 @@ android {
     }
 }
 
-dependencies { 
-	implementation rootProject.ext.unifyDependencies.principles
-}
-
 project.ext {
     artifactId = 'resources-common'
     groupId = 'com.tokopedia.common'
