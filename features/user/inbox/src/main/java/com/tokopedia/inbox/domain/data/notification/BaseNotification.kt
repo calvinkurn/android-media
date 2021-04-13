@@ -31,10 +31,20 @@ abstract class BaseNotification {
             updateTotal()
         }
 
+    @SerializedName("review_int")
+    var reviewInt: Int = 0
+        set(value) {
+            field = value
+            if (field < 0) {
+                field = 0
+            }
+            updateTotal()
+        }
+
     @SerializedName("total_int")
     var totalInt: Int = 0
 
     private fun updateTotal() {
-        totalInt = chatInt + notifcenterInt + talkInt
+        totalInt = chatInt + notifcenterInt + talkInt + reviewInt
     }
 }
