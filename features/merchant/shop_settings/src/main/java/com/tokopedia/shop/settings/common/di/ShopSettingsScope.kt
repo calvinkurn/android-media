@@ -1,15 +1,10 @@
-package com.tokopedia.shop.settings.common.di;
+package com.tokopedia.shop.settings.common.di
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-
-import javax.inject.Scope;
+import javax.inject.Scope
 
 /**
  * Created by zulfikarrahman on 6/21/18.
  */
-
-@Retention(RetentionPolicy.CLASS)
+@kotlin.annotation.Retention(AnnotationRetention.BINARY)
 @Scope
-public @interface ShopSettingsScope {
-}
+annotation class ShopSettingsScope 
