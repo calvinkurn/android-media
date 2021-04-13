@@ -8,7 +8,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.shop.R
-import com.tokopedia.shop.common.constant.ShopPageConstant.*
+import com.tokopedia.shop.common.constant.ShopPageConstant.URL_IMAGE_SELLER_PRODUCT_ALL_ETALASE_EMPTY_STATE_BACKGROUND
 import com.tokopedia.shop.product.view.datamodel.ShopSellerEmptyProductAllEtalaseUiModel
 import com.tokopedia.unifyprinciples.Typography
 

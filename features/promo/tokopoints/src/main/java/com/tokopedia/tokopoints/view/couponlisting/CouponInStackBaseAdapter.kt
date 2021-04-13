@@ -237,7 +237,10 @@ class CouponInStackBaseAdapter(callback: AdapterCallback, val data: TokoPointPro
                         val seconds = timeToExpire.third
                         holder.value.text = String.format(Locale.ENGLISH, "%02d : %02d : %02d", hours, minutes, seconds)
 
-                        holder.value.setTextColor(ContextCompat.getColor(holder.value.context, com.tokopedia.unifyprinciples.R.color.Unify_R500))
+                        try {
+                            holder.value.setTextColor(ContextCompat.getColor(holder.value.context, com.tokopedia.unifyprinciples.R.color.Unify_R500))
+                        } catch (e: Exception) {
+                        }
                         holder.progressTimer.progress = l.toInt() / 1000
                         holder.value.setPadding(holder.label.resources.getDimensionPixelSize(R.dimen.tp_padding_regular),
                                 holder.label.resources.getDimensionPixelSize(R.dimen.tp_padding_xsmall),

@@ -10,7 +10,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import androidx.appcompat.content.res.AppCompatResources;
 
@@ -18,6 +17,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.design.base.BaseCustomView;
 import com.tokopedia.review.R;
+import com.tokopedia.unifyprinciples.Typography;
 
 /**
  * @author by stevenfredian on 8/16/17.
@@ -25,7 +25,7 @@ import com.tokopedia.review.R;
 
 public class UserReputationView extends BaseCustomView {
 
-    private TextView percentageTextView;
+    private Typography percentageTextView;
     private ImageView imageViewIcon;
     private LinearLayout layout;
     private BottomSheetDialog dialog;
@@ -104,16 +104,16 @@ public class UserReputationView extends BaseCustomView {
             public void onClick(View v) {
                 dialog = new BottomSheetDialog(getContext());
                 dialog.setContentView(R.layout.buyer_reputation_bottom_sheet_dialog);
-                TextView positiveText = dialog.findViewById(R.id.score_good);
+                Typography positiveText = dialog.findViewById(R.id.score_good);
                 if (positiveText != null) {
                     positiveText.setText(String.valueOf(positiveValue));
                 }
-                TextView neutralText = dialog.findViewById(R.id
+                Typography neutralText = dialog.findViewById(R.id
                         .score_netral);
                 if (neutralText != null) {
                     neutralText.setText(String.valueOf(neutralValue));
                 }
-                TextView negativeText = dialog.findViewById(R.id.score_bad);
+                Typography negativeText = dialog.findViewById(R.id.score_bad);
                 if (negativeText != null) {
                     negativeText.setText(String.valueOf(negativeValue));
                 }

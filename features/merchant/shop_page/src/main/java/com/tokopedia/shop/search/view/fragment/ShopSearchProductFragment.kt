@@ -331,7 +331,7 @@ class ShopSearchProductFragment : BaseListFragment<ShopSearchProductDataModel, S
 
     private fun initViewNew(view: View) {
         hideClearButton()
-        with(getRecyclerView(view) as VerticalRecyclerView) {
+        (getRecyclerView(view) as? VerticalRecyclerView)?.run {
             clearItemDecoration()
             addItemDecoration(ShopSearchProductDividerItemDecoration(
                     view.context.resources.getDrawable(R.drawable.shop_page_bg_line_separator_thin)

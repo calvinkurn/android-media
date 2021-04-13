@@ -81,29 +81,29 @@ public class ShopPageLabelView extends ShopPageBaseCustomView {
     private void init(AttributeSet attrs) {
         TypedArray styledAttributes = getContext().obtainStyledAttributes(attrs, R.styleable.ShopPageLabelView);
         try {
-            final int drawableId = styledAttributes.getResourceId(R.styleable.LabelView_lv_image, -1);
+            final int drawableId = styledAttributes.getResourceId(R.styleable.ShopPageLabelView_lv_image, -1);
             if (drawableId >= 0) {
                 imageDrawable = AppCompatResources.getDrawable(getContext(), drawableId);
             }
-            imageWidth = (int) styledAttributes.getDimension(R.styleable.LabelView_lv_image_width, getResources().getDimension(R.dimen.dp_32));
-            imageHeight = (int) styledAttributes.getDimension(R.styleable.LabelView_lv_image_height, imageWidth);
-            imageMarginRight = (int) styledAttributes.getDimension(R.styleable.LabelView_lv_image_margin_right, getResources().getDimension(R.dimen.dp_8));
-            titleText = styledAttributes.getString(R.styleable.LabelView_lv_title);
-            titleColorValue = styledAttributes.getColor(R.styleable.LabelView_lv_title_color, ContextCompat.getColor(getContext(), R.color.font_black_primary_70));
-            subtitleColorValue = styledAttributes.getColor(R.styleable.LabelView_lv_sub_title_color, ContextCompat.getColor(getContext(), R.color.font_black_disabled_38));
-            subTitleText = styledAttributes.getString(R.styleable.LabelView_lv_sub_title);
-            contentText = styledAttributes.getString(R.styleable.LabelView_lv_content);
-            badgeCounter = styledAttributes.getInt(R.styleable.LabelView_lv_badge, 0);
-            contentColorValue = styledAttributes.getColor(R.styleable.LabelView_lv_content_color, ContextCompat.getColor(getContext(), R.color.font_black_secondary_54));
-            contentTextStyleValue = styledAttributes.getInt(R.styleable.LabelView_lv_content_text_style, Typeface.NORMAL);
-            titleTextStyleValue = styledAttributes.getInt(R.styleable.LabelView_lv_title_text_style, Typeface.NORMAL);
-            maxLines = styledAttributes.getInt(R.styleable.LabelView_lv_content_max_lines, 1);
-            contentTextSize = styledAttributes.getDimension(R.styleable.LabelView_lv_content_text_size, getResources().getDimension(R.dimen.sp_16));
-            contentMaxWidthPercentage = styledAttributes.getFloat(R.styleable.LabelView_lv_content_max_width_percentage, MAX_WIDTH_PERCENT_CONTENT);
-            titleTextSize = styledAttributes.getDimension(R.styleable.LabelView_lv_title_text_size, contentTextSize);
-            subTitleTextSize = styledAttributes.getDimension(R.styleable.LabelView_lv_sub_title_text_size, getResources().getDimension(R.dimen.sp_12));
-            minTitleWidth = styledAttributes.getDimensionPixelSize(R.styleable.LabelView_lv_title_min_width, 0);
-            isArrowShown = styledAttributes.getBoolean(R.styleable.LabelView_lv_show_arrow, false);
+            imageWidth = (int) styledAttributes.getDimension(R.styleable.ShopPageLabelView_lv_image_width, getResources().getDimension(R.dimen.dp_32));
+            imageHeight = (int) styledAttributes.getDimension(R.styleable.ShopPageLabelView_lv_image_height, imageWidth);
+            imageMarginRight = (int) styledAttributes.getDimension(R.styleable.ShopPageLabelView_lv_image_margin_right, getResources().getDimension(R.dimen.dp_8));
+            titleText = styledAttributes.getString(R.styleable.ShopPageLabelView_lv_title);
+            titleColorValue = styledAttributes.getColor(R.styleable.ShopPageLabelView_lv_title_color, ContextCompat.getColor(getContext(), R.color.font_black_primary_70));
+            subtitleColorValue = styledAttributes.getColor(R.styleable.ShopPageLabelView_lv_sub_title_color, ContextCompat.getColor(getContext(), R.color.font_black_disabled_38));
+            subTitleText = styledAttributes.getString(R.styleable.ShopPageLabelView_lv_sub_title);
+            contentText = styledAttributes.getString(R.styleable.ShopPageLabelView_lv_content);
+            badgeCounter = styledAttributes.getInt(R.styleable.ShopPageLabelView_lv_badge, 0);
+            contentColorValue = styledAttributes.getColor(R.styleable.ShopPageLabelView_lv_content_color, ContextCompat.getColor(getContext(), R.color.font_black_secondary_54));
+            contentTextStyleValue = styledAttributes.getInt(R.styleable.ShopPageLabelView_lv_content_text_style, Typeface.NORMAL);
+            titleTextStyleValue = styledAttributes.getInt(R.styleable.ShopPageLabelView_lv_title_text_style, Typeface.NORMAL);
+            maxLines = styledAttributes.getInt(R.styleable.ShopPageLabelView_lv_content_max_lines, 1);
+            contentTextSize = styledAttributes.getDimension(R.styleable.ShopPageLabelView_lv_content_text_size, getResources().getDimension(R.dimen.sp_16));
+            contentMaxWidthPercentage = styledAttributes.getFloat(R.styleable.ShopPageLabelView_lv_content_max_width_percentage, MAX_WIDTH_PERCENT_CONTENT);
+            titleTextSize = styledAttributes.getDimension(R.styleable.ShopPageLabelView_lv_title_text_size, contentTextSize);
+            subTitleTextSize = styledAttributes.getDimension(R.styleable.ShopPageLabelView_lv_sub_title_text_size, getResources().getDimension(R.dimen.sp_12));
+            minTitleWidth = styledAttributes.getDimensionPixelSize(R.styleable.ShopPageLabelView_lv_title_min_width, 0);
+            isArrowShown = styledAttributes.getBoolean(R.styleable.ShopPageLabelView_lv_show_arrow, false);
         } finally {
             styledAttributes.recycle();
         }

@@ -24,7 +24,6 @@ import com.tokopedia.shop.analytic.ShopPageTrackingSGCPlayWidget
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
 import com.tokopedia.shop.common.constant.ShopPageConstant
 import com.tokopedia.shop.common.constant.ShopStatusDef
-import com.tokopedia.shop.common.data.source.cloud.model.ShopModerateRequestResult
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopBadge
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.common.graphql.data.shopoperationalhourstatus.ShopOperationalHourStatus
@@ -81,6 +80,10 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
         chooseAddressWidget?.updateWidget()
     }
 
+    fun hideChooseAddressWidget(){
+        chooseAddressWidget?.hide()
+    }
+
     fun bind(shopPageHeaderDataModel: ShopPageHeaderDataModel, isMyShop: Boolean, remoteConfig: RemoteConfig) {
         view.shop_page_follow_unfollow_button?.hide()
         view.shop_page_follow_unfollow_button_old?.hide()
@@ -135,14 +138,14 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
         }
     }
 
-    fun setupChooseAddressWidget(remoteConfig: RemoteConfig) {
+    fun setupChooseAddressWidget(remoteConfig: RemoteConfig, isMyShop: Boolean) {
         chooseAddressWidget?.apply {
             val isRollOutUser = ChooseAddressUtils.isRollOutUser(view.context)
             val isRemoteConfigChooseAddressWidgetEnabled = remoteConfig.getBoolean(
                     ShopPageConstant.ENABLE_SHOP_PAGE_HEADER_CHOOSE_ADDRESS_WIDGET,
                     true
             )
-            if (isRollOutUser && isRemoteConfigChooseAddressWidgetEnabled) {
+            if (isRollOutUser && isRemoteConfigChooseAddressWidgetEnabled && !isMyShop) {
                 show()
                 bindChooseAddress(chooseAddressWidgetListener)
                 view.choosee_address_widget_bottom_shadow?.show()
@@ -341,7 +344,7 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
         view.tickerShopStatus.show()
         view.tickerShopStatus.tickerTitle = MethodChecker.fromHtml(shopPageHeaderDataModel.statusTitle).toString()
         view.tickerShopStatus.setHtmlDescription(
-                if(shopPageHeaderDataModel.shopStatus == ShopStatusDef.MODERATED) {
+                if(shopPageHeaderDataModel.shopStatus == ShopStatusDef.MODERATED && isMyShop) {
                     generateShopModerateTickerDescription(shopPageHeaderDataModel.statusMessage)
                 } else {
                     shopPageHeaderDataModel.statusMessage

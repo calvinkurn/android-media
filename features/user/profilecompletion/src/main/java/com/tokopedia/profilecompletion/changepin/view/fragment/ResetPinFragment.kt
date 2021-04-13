@@ -21,17 +21,19 @@ class ResetPinFragment : ChangePinFragment() {
 
     override fun handleConfirmState(input: String) {
         if (pin == input) {
-            changePinViewModel.resetPin2FA(arguments?.getString(ApplinkConstInternalGlobal.PARAM_USER_ID)
-                    ?: "", arguments?.getString(ApplinkConstInternalGlobal.PARAM_TOKEN) ?: "")
+            changePinViewModel.resetPin2FA(
+                    userId = arguments?.getString(ApplinkConstInternalGlobal.PARAM_USER_ID) ?: "",
+                    validateToken = arguments?.getString(ApplinkConstInternalGlobal.PARAM_TOKEN) ?: "")
         } else {
             super.handleConfirmState(input)
         }
     }
 
     override fun handleInputNewPinState(input: String) {
-        changePinViewModel.checkPin2FA(input, validateToken = arguments?.getString(ApplinkConstInternalGlobal.PARAM_TOKEN)
-                ?: "", userId = arguments?.getString(ApplinkConstInternalGlobal.PARAM_USER_ID)
-                ?: "")
+        changePinViewModel.checkPin2FA(
+                pin = input,
+                validateToken = arguments?.getString(ApplinkConstInternalGlobal.PARAM_TOKEN) ?: "",
+                userId = arguments?.getString(ApplinkConstInternalGlobal.PARAM_USER_ID) ?: "")
     }
 
     override fun goToSuccessPage() {
