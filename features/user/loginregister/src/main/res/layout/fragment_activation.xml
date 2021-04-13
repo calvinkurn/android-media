@@ -133,7 +133,7 @@
             android:layout_below="@id/verify_button"
             android:layout_marginTop="@dimen/dp_16"
             android:gravity="center"
-            android:text="@string/validation_resend_email"
+            android:text="@string/validation_resend"
             android:textColor="@color/Unify_N700_32"
             android:textSize="@dimen/sp_12"/>
 
