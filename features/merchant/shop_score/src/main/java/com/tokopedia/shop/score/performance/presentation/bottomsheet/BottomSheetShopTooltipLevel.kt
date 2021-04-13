@@ -7,10 +7,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.isZero
-import com.tokopedia.kotlin.extensions.view.observe
-import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.common.TooltipLevelItemDecoration
 import com.tokopedia.shop.score.common.presentation.BaseBottomSheetShopScore
@@ -119,7 +116,7 @@ class BottomSheetShopTooltipLevel: BaseBottomSheetShopScore() {
 
     private fun setShopLevelData(data: ShopInfoLevelUiModel) {
         tvPeriodInformationLevel?.text = data.periodDate
-        tvValueIncomeTooltip?.text = data.shopIncome
+        tvValueIncomeTooltip?.text = StringBuilder("Rp${data.shopIncome.toIntOrZero().getNumberFormatted()}")
         tvValueProductSoldTooltip?.text = data.productSold
         tvValueNextUpdate?.text = getString(R.string.title_update_date, data.nextUpdate)
         cardTooltipLevelAdapter.setCardToolTipLevelList(data.cardTooltipLevelList)

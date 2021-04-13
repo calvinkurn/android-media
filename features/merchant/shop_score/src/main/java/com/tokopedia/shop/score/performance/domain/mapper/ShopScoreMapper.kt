@@ -341,9 +341,12 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
 
     private fun mapToItemDetailPerformanceUiModel(shopScoreLevelList: List<ShopScoreLevelResponse.ShopScoreLevel.Result.ShopScoreDetail>?): List<ItemDetailPerformanceUiModel> {
         return mutableListOf<ItemDetailPerformanceUiModel>().apply {
-            val shopScoreLevelSize = shopScoreLevelList?.filter { it.identifier != PENALTY_IDENTIFIER }?.size.orZero()
-            shopScoreLevelList?.filter { it.identifier != PENALTY_IDENTIFIER }?.forEachIndexed { index, shopScoreDetail ->
 
+            val multipleFilterShopScore = listOf(CHAT_DISCUSSION_REPLY_SPEED_KEY, SPEED_SENDING_ORDERS_KEY,
+                    ORDER_SUCCESS_RATE_KEY, CHAT_DISCUSSION_SPEED_KEY, PRODUCT_REVIEW_WITH_FOUR_STARS_KEY, TOTAL_BUYER_KEY, OPEN_TOKOPEDIA_SELLER_KEY)
+
+            val shopScoreLevelSize = shopScoreLevelList?.filter { it.identifier in multipleFilterShopScore }?.size.orZero()
+            shopScoreLevelList?.filter { it.identifier in multipleFilterShopScore }?.forEachIndexed { index, shopScoreDetail ->
                 val targetDetailPerformanceText = when (shopScoreDetail.identifier) {
                     CHAT_DISCUSSION_REPLY_SPEED_KEY, SPEED_SENDING_ORDERS_KEY -> "${shopScoreDetail.nextMinValue} $minuteText"
                     ORDER_SUCCESS_RATE_KEY, CHAT_DISCUSSION_SPEED_KEY, PRODUCT_REVIEW_WITH_FOUR_STARS_KEY, TOTAL_BUYER_KEY ->
