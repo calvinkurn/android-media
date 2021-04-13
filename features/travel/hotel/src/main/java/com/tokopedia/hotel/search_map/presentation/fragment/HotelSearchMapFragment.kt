@@ -208,7 +208,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                     hotelSearchModel.apply {
                         searchType = HotelTypeEnum.COORDINATE.value
                         searchId = ""
-                        name = if (isSearchByMap) getString(R.string.hotel_header_title_nearby_area) else getString(R.string.hotel_header_title_nearby)
+                        name = if (isSearchByMap) getString(R.string.hotel_header_title_nearby) else getString(R.string.hotel_header_title_nearby_area)
                         radius = it.data
                     }
                     hotelSearchMapViewModel.initSearchParam(hotelSearchModel)
@@ -304,6 +304,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         setupToolbarAction()
         setUpTitleAndSubtitle()
         setupFindWithMapButton()
+        hideFindNearHereView()
         initGetMyLocation()
         setupPersistentBottomSheet()
         halfExpandBottomSheet()
@@ -954,7 +955,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
     }
 
     private fun changeHeaderTitle() {
-        headerHotelSearchMap.title = if (isSearchByMap) getString(R.string.hotel_header_title_nearby_area) else getString(R.string.hotel_header_title_nearby)
+        headerHotelSearchMap.title = if (isSearchByMap) getString(R.string.hotel_header_title_nearby) else getString(R.string.hotel_header_title_nearby_area)
     }
 
     private fun showFindNearHereView() {
