@@ -14,6 +14,7 @@ import com.tokopedia.analyticsdebugger.cassava.domain.ValidationResultUseCase
 import com.tokopedia.analyticsdebugger.cassava.validator.core.*
 import com.tokopedia.analyticsdebugger.database.TkpdAnalyticsDatabase
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
+import com.tokopedia.url.TokopediaUrl
 import kotlinx.coroutines.runBlocking
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -108,8 +109,7 @@ private fun getCassavaApi(): CassavaApi {
                     .serializeNulls()
                     .create()))
             .client(okHttpClient)
-//                    .baseUrl(TokopediaUrl.getInstance().API)
-            .baseUrl("https://api-staging.tokopedia.com/")
+            .baseUrl(TokopediaUrl.getInstance().API)
             .build()
 
     return retrofit.create(CassavaApi::class.java)

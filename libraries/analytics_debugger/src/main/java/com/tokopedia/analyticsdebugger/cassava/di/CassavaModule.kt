@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope
 import com.tokopedia.analyticsdebugger.cassava.data.api.CassavaApi
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.url.TokopediaUrl
 import dagger.Module
 import dagger.Provides
 import okhttp3.Interceptor
@@ -54,8 +55,7 @@ class CassavaModule {
                             .setPrettyPrinting()
                             .serializeNulls()
                             .create()))
-//                    .baseUrl(TokopediaUrl.getInstance().API)
-                    .baseUrl("https://api-staging.tokopedia.com/")
+                    .baseUrl(TokopediaUrl.getInstance().API)
                     .client(okHttpClient)
                     .build()
 
