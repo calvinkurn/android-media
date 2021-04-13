@@ -122,7 +122,7 @@ class PlayBroadcastViewModel @Inject constructor(
         override fun onStateChanged(state: PlayLivePusherState) {
             when (state) {
                 is PlayLivePusherState.Start -> startWebSocket()
-                is PlayLivePusherState.Resume -> resumeTimer()
+                is PlayLivePusherState.Resume -> if (state.isResumed) resumeTimer()
                 is PlayLivePusherState.Pause -> countDownTimer.pause()
                 else -> {}
             }

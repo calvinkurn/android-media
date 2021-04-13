@@ -9,6 +9,7 @@ import com.tokopedia.play.robot.play.givenPlayViewModelRobot
 import com.tokopedia.play.robot.play.thenVerify
 import com.tokopedia.play.view.type.PiPMode
 import com.tokopedia.play.view.type.PiPState
+import com.tokopedia.play.view.uimodel.OpenApplinkUiModel
 import com.tokopedia.play_common.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.remoteconfig.RemoteConfig
 import io.mockk.every
@@ -48,23 +49,24 @@ class PlayViewModelPiPTest {
     fun `when watch in pip mode, the mode field should also be watch in pip mode`() {
         givenPlayViewModelRobot(
         ) andWhen {
-            setPiPState(PiPState.InPiP(PiPMode.WatchInPip))
+            setPiPState(PiPState.InPiP(PiPMode.WatchInPiP))
         } thenVerify {
             pipStateFieldResult
                     .pipMode
-                    .isEqualTo(PiPMode.WatchInPip)
+                    .isEqualTo(PiPMode.WatchInPiP)
         }
     }
 
     @Test
     fun `when open browsing other page in pip mode, the mode field should also be open browsing other page in pip mode`() {
+        val mode = PiPMode.BrowsingOtherPage(OpenApplinkUiModel(""))
         givenPlayViewModelRobot(
         ) andWhen {
-            setPiPState(PiPState.InPiP(PiPMode.BrowsingOtherPage))
+            setPiPState(PiPState.InPiP(mode))
         } thenVerify {
             pipStateFieldResult
                     .pipMode
-                    .isEqualTo(PiPMode.BrowsingOtherPage)
+                    .isEqualTo(mode)
         }
     }
 

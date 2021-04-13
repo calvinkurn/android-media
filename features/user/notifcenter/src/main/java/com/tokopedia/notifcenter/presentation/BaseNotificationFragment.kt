@@ -79,7 +79,7 @@ abstract class BaseNotificationFragment : BaseListFragment<Visitable<*>,
     }
 
     protected fun onListLastScroll(view: View) {
-        super.getRecyclerView(view).endLess({
+        super.getRecyclerView(view)?.endLess({
             if (it < 0) { // going up
                 notifyBottomActionView()
             } else if (it > 0) { // going down
