@@ -922,7 +922,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                     val sortName = data.getStringExtra(ShopProductSortActivity.SORT_NAME) ?: ""
                     shopPageTracking?.sortProduct(sortName, isMyShop, customDimensionShopPage)
                     this.isLoadingInitialData = true
-                    shopProductAdapter.changeSelectedSortFilter(sortId, sortName)
+                    shopProductAdapter.changeSelectedSortFilter(sortId ?: "", sortName)
                     shopProductAdapter.changeSortFilterIndicatorCounter(getIndicatorCount(
                             shopProductFilterParameter?.getMapData()
                     ))
