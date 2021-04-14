@@ -1,5 +1,6 @@
 package com.tokopedia.tokopoints.view.adapter
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,13 +10,17 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.mvcwidget.views.activities.TransParentActivity
 import com.tokopedia.tokopoints.R
+import com.tokopedia.tokopoints.view.model.merchantcoupon.AdInfo
 import com.tokopedia.tokopoints.view.model.merchantcoupon.CatalogMVCWithProductsListItem
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil
+import com.tokopedia.tokopoints.view.util.PersistentAdsData
+import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.unifycomponents.ImageUnify
 import java.util.Arrays
 
 class SectionMerchantCouponAdapter(val arrayList: MutableList<CatalogMVCWithProductsListItem>) : RecyclerView.Adapter<SectionMerchantCouponAdapter.CouponListViewHolder>() {
 
+    val eventSet = HashSet<String?>()
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CouponListViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.tp_layout_mvc_item_section, parent, false)
         return CouponListViewHolder(view)
@@ -74,6 +79,7 @@ class SectionMerchantCouponAdapter(val arrayList: MutableList<CatalogMVCWithProd
         vh.tvDealsCouponTwo.text = item?.products?.get(1)?.benefitLabel
 
         vh.tvShopName.setOnClickListener {
+            sendTopadsClick(vh.itemView.context, item?.AdInfo)
             RouteManager.route(vh.itemView.context, item?.shopInfo?.appLink)
             sendCouponClickEvent(item?.shopInfo?.name, AnalyticsTrackerUtil.ActionKeys.CLICK_SHOP_NAME)
         }
@@ -93,7 +99,36 @@ class SectionMerchantCouponAdapter(val arrayList: MutableList<CatalogMVCWithProd
             sendCouponClickEvent(item?.shopInfo?.name, AnalyticsTrackerUtil.ActionKeys.CLICK_COUPON_TITLE)
 
         }
+    }
 
+    private fun sendTopadsClick(context: Context, adInfo: AdInfo?) {
+        eventSet.add(adInfo?.AdClickUrl)
+        setPersistentData(context,eventSet)
+        TopAdsUrlHitter(context).hitClickUrl(
+                this::class.java.simpleName,
+                adInfo?.AdClickUrl,
+                adInfo?.AdID,
+                "",
+                "",
+                ""
+        )
+    }
+
+    private fun sendTopadsImpression(context: Context, adInfo: AdInfo?) {
+        eventSet.add(adInfo?.AdViewUrl)
+        setPersistentData(context,eventSet)
+        TopAdsUrlHitter(packageName).hitImpressionUrl(
+                context,
+                adInfo?.AdViewUrl,
+                "",
+                "",
+                ""
+        )
+    }
+
+    fun setPersistentData(context: Context,eventSet : HashSet<String?>){
+        val persistentAdsData = PersistentAdsData(context)
+        persistentAdsData.setAdsSet(eventSet)
     }
 
     private fun sendCouponClickEvent(shopName: String?, eventAction: String) {
@@ -118,11 +153,16 @@ class SectionMerchantCouponAdapter(val arrayList: MutableList<CatalogMVCWithProd
 
         val promotions = HashMap<String, Any>()
         promotions["promotions"] = Arrays.asList<Map<String, Any?>>(item)
+        sendTopadsImpression(holder.itemView.context, arrayList[holder.adapterPosition].AdInfo)
         AnalyticsTrackerUtil.sendECommerceEvent(AnalyticsTrackerUtil.EventKeys.EVENT_VIEW_PROMO,
                 AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
                 AnalyticsTrackerUtil.ActionKeys.VIEW_MVC_COUPON_ON_REWARDS,
                 eventLabel,
                 AnalyticsTrackerUtil.EcommerceKeys.BUSINESSUNIT,
                 AnalyticsTrackerUtil.EcommerceKeys.CURRENTSITE, promotions)
+    }
+
+    companion object {
+        val packageName = SectionMerchantCouponAdapter::class.java.`package`.toString()
     }
 }

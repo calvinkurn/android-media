@@ -1,5 +1,6 @@
 package com.tokopedia.tokopoints.view.merchantcoupon
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,15 +12,23 @@ import com.tokopedia.library.baseadapter.AdapterCallback
 import com.tokopedia.library.baseadapter.BaseAdapter
 import com.tokopedia.mvcwidget.views.activities.TransParentActivity
 import com.tokopedia.tokopoints.R
+import com.tokopedia.tokopoints.view.adapter.SectionMerchantCouponAdapter
+import com.tokopedia.tokopoints.view.model.merchantcoupon.AdInfo
 import com.tokopedia.tokopoints.view.model.merchantcoupon.CatalogMVCWithProductsListItem
 import com.tokopedia.tokopoints.view.model.merchantcoupon.Productlist
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil
+import com.tokopedia.tokopoints.view.util.PersistentAdsData
+import com.tokopedia.topads.sdk.listener.TopAdsImageViewClickListener
+import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
+import com.tokopedia.topads.sdk.widget.TopAdsImageView
 import com.tokopedia.unifycomponents.ImageUnify
 import java.util.Arrays
 import kotlin.collections.HashMap
 
 class MerchantCouponListAdapter(val viewmodel: MerchantCouponViewModel, callback: AdapterCallback) : BaseAdapter<CatalogMVCWithProductsListItem>(callback) {
     private var mRecyclerView: RecyclerView? = null
+    private val adEventMap = mapOf<Int, String>()
+    private var adCount = 0
 
     inner class CouponListViewHolder(view: View) : BaseVH(view) {
 
@@ -76,6 +85,7 @@ class MerchantCouponListAdapter(val viewmodel: MerchantCouponViewModel, callback
 
 
         vh.tvShopName.setOnClickListener {
+            sendTopadsClick(vh.itemView.context, item?.AdInfo)
             RouteManager.route(vh.itemView.context, item?.shopInfo?.appLink)
             sendCouponClickEvent(item?.shopInfo?.name, AnalyticsTrackerUtil.ActionKeys.CLICK_SHOP_NAME)
         }
@@ -113,7 +123,7 @@ class MerchantCouponListAdapter(val viewmodel: MerchantCouponViewModel, callback
 
     fun sendCouponClickEvent(shopName: String?, eventAction: String) {
         AnalyticsTrackerUtil.sendEvent(
-                AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON ,
+                AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
                 AnalyticsTrackerUtil.CategoryKeys.KUPON_TOKO,
                 eventAction, "{$shopName}",
                 AnalyticsTrackerUtil.EcommerceKeys.BUSINESSUNIT,
@@ -124,6 +134,37 @@ class MerchantCouponListAdapter(val viewmodel: MerchantCouponViewModel, callback
     override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
         super.onAttachedToRecyclerView(recyclerView)
         mRecyclerView = recyclerView
+    }
+
+    private fun sendTopadsClick(context: Context, adInfo: AdInfo?) {
+        var check: Boolean? = false
+        val setData = PersistentAdsData(context).getAdsSet()
+        check = setData?.contains(adInfo?.AdViewUrl)
+        if (check != null && !check) {
+            TopAdsUrlHitter(context).hitClickUrl(
+                    this::class.java.simpleName,
+                    adInfo?.AdClickUrl,
+                    adInfo?.AdID,
+                    "",
+                    "",
+                    ""
+            )
+        }
+    }
+
+    private fun sendTopadsImpression(context: Context, adInfo: AdInfo?) {
+        var check: Boolean? = false
+        val setData = PersistentAdsData(context).getAdsSet()
+        check = setData?.contains(adInfo?.AdViewUrl)
+        if (check != null && !check) {
+            TopAdsUrlHitter(SectionMerchantCouponAdapter.packageName).hitImpressionUrl(
+                    context,
+                    adInfo?.AdViewUrl,
+                    "",
+                    "",
+                    ""
+            )
+        }
     }
 
     override fun onViewAttachedToWindow(holder: RecyclerView.ViewHolder) {
@@ -140,6 +181,7 @@ class MerchantCouponListAdapter(val viewmodel: MerchantCouponViewModel, callback
             item["item_id"] = shopInfo?.id
             val promotions = HashMap<String, Any>()
             promotions["promotions"] = Arrays.asList<Map<String, Any?>>(item)
+            sendTopadsImpression(holder.itemView.context, items[holder.adapterPosition].AdInfo)
             AnalyticsTrackerUtil.sendECommerceEvent(AnalyticsTrackerUtil.EventKeys.EVENT_VIEW_PROMO,
                     AnalyticsTrackerUtil.CategoryKeys.KUPON_TOKO,
                     AnalyticsTrackerUtil.ActionKeys.VIEW_MVC_COUPON,

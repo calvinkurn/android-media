@@ -16,6 +16,7 @@ interface CommonConstant {
             const val PAGE_SIZE = "limit"
             const val SORT_ID = "sortID"
             const val CATEGORY_ID = "categoryID"
+            const val CATEGORY_ROOTID = "categoryRootID"
             const val SUB_CATEGORY_ID = "subCategoryID"
             const val POINTS_RANGE = "pointRange"
             const val CATALOG_ID = "catalog_id"

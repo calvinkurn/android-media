@@ -2,7 +2,7 @@ package com.tokopedia.tokopoints.view.util
 
 const val TP_CATALOG_MVC_LIST_QUERY = """
     query tokopointsCatalogMVCWithProductsList(${'$'}page: Int!,${'$'}pageSize: Int!,${'$'}categoryRootID: String!) {
-  tokopointsCatalogMVCWithProductsList(page: ${'$'}page,pageSize: ${'$'}pageSize,categoryRootID: ${'$'}categoryRootID) {
+  productlist:tokopointsCatalogMVCWithProductsList(page: ${'$'}page,pageSize: ${'$'}pageSize,categoryRootID: ${'$'}categoryRootID) {
     resultStatus {
       code
       status
@@ -19,6 +19,11 @@ const val TP_CATALOG_MVC_LIST_QUERY = """
       title
       maximumBenefitAmountStr
       subtitle
+      adInfo {
+        AdID
+        AdViewUrl
+        AdClickUrl
+      }
       products {
         id
         name

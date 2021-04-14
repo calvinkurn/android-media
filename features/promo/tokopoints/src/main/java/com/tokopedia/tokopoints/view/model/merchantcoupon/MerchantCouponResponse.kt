@@ -23,6 +23,9 @@ data class CatalogMVCWithProductsListItem(
         @field:SerializedName("maximumBenefitAmountStr")
         val maximumBenefitAmountStr: String? = null,
 
+        @field:SerializedName("adInfo")
+        val AdInfo: AdInfo? = null,
+
         @field:SerializedName("products")
         val products: List<ProductsItem?>? = null
 ) : BaseItem()
@@ -124,4 +127,16 @@ data class TokopointsPaging(
 
         @field:SerializedName("hasNext")
         val hasNext: Boolean? = null
+)
+
+data class AdInfo(
+
+        @field:SerializedName("AdID")
+        val AdID: String? = null,
+
+        @field:SerializedName("AdViewUrl")
+        val AdViewUrl: String? = null,
+
+        @field:SerializedName("AdClickUrl")
+        val AdClickUrl: String? = null,
 )
