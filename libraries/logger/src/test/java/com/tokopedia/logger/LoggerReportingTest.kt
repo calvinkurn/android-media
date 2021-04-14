@@ -4,7 +4,11 @@ import com.tokopedia.logger.utils.DataLogConfig
 import com.tokopedia.logger.utils.LoggerReporting
 import com.tokopedia.logger.utils.Tag
 import com.tokopedia.logger.utils.TestUtilsHelper
+import io.mockk.MockKAnnotations
+import io.mockk.every
+import io.mockk.impl.annotations.RelaxedMockK
 import org.junit.Assert.*
+import org.junit.Before
 import org.junit.Test
 
 class LoggerReportingTest {
@@ -104,6 +108,60 @@ class LoggerReportingTest {
             assertTrue(keyActualResult != expectedTagMapsNewRelic.entries.firstOrNull { it.key == key }?.key)
             assertTrue(valueActualResult != expectedTagMapsNewRelic.getValue(key).postPriority)
         }
+    }
+
+    @Test
+    fun `set query limits of scalyr with value should return equal`() {
+        val mockScalyr = TestUtilsHelper.createSuccessResponse(SCALYR_SUCCESS_RESPONSE) as DataLogConfig
+        val mockQueryLimitsScalyr = mockScalyr.queryLimits
+        val expectedQueryLimitsScalyr = mutableListOf<Int>().apply {
+            add(50)
+            add(50)
+        }
+
+        LoggerReporting.getInstance().setQueryLimits(mockQueryLimitsScalyr)
+
+        LogManager.queryLimits.forEachIndexed { index, query ->
+            assertEquals(query, expectedQueryLimitsScalyr[index])
+        }
+    }
+
+
+    @Test
+    fun `set query limits of new relic with value should return equal`() {
+        val mockNewRelic = TestUtilsHelper.createSuccessResponse(NEW_RELIC_SUCCESS_RESPONSE) as DataLogConfig
+        val mockQueryLimitsNewRelic = mockNewRelic.queryLimits
+        val expectedQueryLimitsNewRelic = mutableListOf<Int>().apply {
+            add(50)
+            add(50)
+            add(50)
+        }
+
+        LoggerReporting.getInstance().setQueryLimits(mockQueryLimitsNewRelic)
+
+        LogManager.queryLimits.forEachIndexed { index, query ->
+            assertEquals(query, expectedQueryLimitsNewRelic[index])
+        }
+    }
+
+    @Test
+    fun `set query limits of scalyr with empty value should return empty`() {
+        val mockScalyr = TestUtilsHelper.createSuccessResponse(SCALYR_FAIL_RESPONSE) as DataLogConfig
+        val mockQueryLimitsScalyr = mockScalyr.queryLimits
+
+        LoggerReporting.getInstance().setQueryLimits(mockQueryLimitsScalyr)
+
+        assertTrue(LogManager.queryLimits.isEmpty())
+    }
+
+    @Test
+    fun `set query limits of new relic with empty value should return empty`() {
+        val mockNewRelic = TestUtilsHelper.createSuccessResponse(NEW_RELIC_FAIL_RESPONSE) as DataLogConfig
+        val mockQueryLimitsNewRelic = mockNewRelic.queryLimits
+
+        LoggerReporting.getInstance().setQueryLimits(mockQueryLimitsNewRelic)
+
+        assertTrue(LogManager.queryLimits.isEmpty())
     }
 
     companion object {
