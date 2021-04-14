@@ -17,6 +17,6 @@ object PMConstant {
     }
 
     object Urls {
-        const val SHOP_SCORE_INTERRUPT_PAGE = "https://178-beta-feature.tokopedia.com/score-interrupt"
+        const val SHOP_SCORE_INTERRUPT_PAGE = "https://165-staging-feature.tokopedia.com/score-interrupt"
     }
 }
