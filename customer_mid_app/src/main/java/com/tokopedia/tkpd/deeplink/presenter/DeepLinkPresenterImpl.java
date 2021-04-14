@@ -788,8 +788,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                 if (map.size() > 0) {
                     if (map.get("link") != null) {
                         String oriUri = map.get("link").toString();
-                        boolean isAmp = DeepLinkChecker.isAmpUrl(Uri.parse(oriUri));
-                        processDeepLinkAction(context, DeeplinkUTMUtils.simplifyUrl(oriUri), isAmp);
+                        processDeepLinkAction(context, DeeplinkUTMUtils.simplifyUrl(oriUri), false);
                     }
                 }
             }
