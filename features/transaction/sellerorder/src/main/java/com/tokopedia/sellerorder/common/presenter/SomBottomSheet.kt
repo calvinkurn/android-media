@@ -77,6 +77,7 @@ abstract class SomBottomSheet(context: Context) : View(context) {
                 ?: view.findViewById<ViewGroup>(com.tokopedia.unifycomponents.R.id.bottom_sheet_wrapper)?.parent as? View
                 ?: inflate(context, com.tokopedia.unifycomponents.R.layout.bottom_sheet_layout, view)
         val bottomSheetWrapper: ViewGroup? = bottomSheetLayout.findViewById<ViewGroup>(com.tokopedia.unifycomponents.R.id.bottom_sheet_wrapper)?.apply {
+            isClickable = true
             getChildAt(childCount - 1)?.let {
                 if (it.tag != null && it.tag != this::class.java.simpleName) {
                     removeView(it)
