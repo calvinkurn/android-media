@@ -659,11 +659,17 @@ class TopChatViewStateImpl constructor(
         userStatus?.hide()
         typingImage?.show()
         typingText?.show()
+        typingImage?.let {
+            ImageUtil.startAVDTypingAnimation(it)
+        }
     }
 
     override fun onShowStopTyping() {
         userStatus?.show()
         typingImage?.hide()
         typingText?.hide()
+        typingImage?.let {
+            ImageUtil.stopAVDTypingAnimation(it)
+        }
     }
 }

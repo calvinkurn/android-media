@@ -1,6 +1,10 @@
 package com.tokopedia.topchat.common.util
 
 import android.graphics.BitmapFactory
+import android.graphics.drawable.Drawable
+import android.os.Handler
+import android.os.Looper
+import androidx.vectordrawable.graphics.drawable.Animatable2Compat
 import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
@@ -63,7 +67,31 @@ object ImageUtil {
         val animatedVector = AnimatedVectorDrawableCompat.create(
                 imageUnify.context, com.tokopedia.chat_common.R.drawable.topchat_typing_motion
         )
+        animatedVector?.registerAnimationCallback(object : Animatable2Compat.AnimationCallback() {
+            private val animHandler = Handler(Looper.getMainLooper())
+            override fun onAnimationEnd(drawable: Drawable?) {
+                animHandler.post(animatedVector::start)
+            }
+        })
         imageUnify.setImageDrawable(animatedVector)
+    }
+
+    fun startAVDTypingAnimation(imageUnify: ImageUnify) {
+        val animationType = getAnimationType()
+        if(animationType == "avd") {
+            try {
+                (imageUnify.drawable as AnimatedVectorDrawableCompat).start()
+            } catch (ignored: Throwable) {}
+        }
+    }
+
+    fun stopAVDTypingAnimation(imageUnify: ImageUnify) {
+        val animationType = getAnimationType()
+        if(animationType == "avd") {
+            try {
+                (imageUnify.drawable as AnimatedVectorDrawableCompat).stop()
+            } catch (ignored: Throwable) {}
+        }
     }
 
     private fun setGifTypingAnimation(imageUnify: ImageUnify) {

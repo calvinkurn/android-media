@@ -277,6 +277,7 @@ class ChatItemListViewHolder constructor(
         typingImage.show()
         message.hide()
         typingText.show()
+        ImageUtil.startAVDTypingAnimation(typingImage)
     }
 
     private fun bindMessageState(chat: ItemChatListPojo) {
@@ -299,6 +300,7 @@ class ChatItemListViewHolder constructor(
         message.show()
         typingImage.hide()
         typingText.hide()
+        ImageUtil.stopAVDTypingAnimation(typingImage)
     }
 
     private fun createLabelSpan(chat: ItemChatListPojo): SpannableString {
