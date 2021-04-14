@@ -1,6 +1,7 @@
 package com.tokopedia.topchat.common.util
 
 import android.graphics.BitmapFactory
+import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.tokopedia.unifycomponents.ImageUnify
@@ -51,10 +52,29 @@ object ImageUtil {
     }
 
     fun setTypingAnimation(imageUnify: ImageUnify) {
+        val animationType = getAnimationType()
+        when(animationType) {
+            "avd" -> setAVDTypingAnimation(imageUnify)
+            "gif" -> setGifTypingAnimation(imageUnify)
+        }
+    }
+
+    private fun setAVDTypingAnimation(imageUnify: ImageUnify) {
+        val animatedVector = AnimatedVectorDrawableCompat.create(
+                imageUnify.context, com.tokopedia.chat_common.R.drawable.topchat_typing_motion
+        )
+        imageUnify.setImageDrawable(animatedVector)
+    }
+
+    private fun setGifTypingAnimation(imageUnify: ImageUnify) {
         if(imageUnify.context.isDarkMode()) {
             loadGif(imageUnify, TYPING_DARK_MODE)
         } else {
             loadGif(imageUnify, TYPING_LIGHT_MODE)
         }
+    }
+
+    private fun getAnimationType(): String {
+        return "gif";
     }
 }
