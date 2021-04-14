@@ -3,6 +3,7 @@ package com.tokopedia.topchat.chatroom.domain.usecase
 import com.tokopedia.chat_common.data.ImageUploadViewModel
 import com.tokopedia.mediauploader.data.state.UploadResult
 import com.tokopedia.mediauploader.domain.UploaderUseCase
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
@@ -12,7 +13,7 @@ import java.io.File
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
-class TopchatUploadImageUseCase @Inject constructor(
+open class TopchatUploadImageUseCase @Inject constructor(
         private var uploadImageUseCase: UploaderUseCase,
         private var chatImageServerUseCase: ChatImageServerUseCase,
         private var dispatchers: CoroutineDispatchers
@@ -26,7 +27,7 @@ class TopchatUploadImageUseCase @Inject constructor(
 
     override val coroutineContext: CoroutineContext get() = dispatchers.main + SupervisorJob()
 
-    fun upload(
+    open fun upload(
             image: ImageUploadViewModel,
             onSuccess: (String, ImageUploadViewModel) -> Unit,
             onError: (Throwable, ImageUploadViewModel) -> Unit
@@ -65,7 +66,7 @@ class TopchatUploadImageUseCase @Inject constructor(
     }
 
     private fun onErrorUploadImage(result: UploadResult.Error, image: ImageUploadViewModel) {
-        val error = Throwable(result.message)
+        val error = MessageErrorException(result.message)
         onError?.invoke(error, image)
     }
 

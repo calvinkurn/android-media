@@ -122,15 +122,15 @@ class PlayViewModelRobot(
 
     fun setPiPState(pipState: PiPState) {
         when(pipState) {
-            is PiPState.Requesting -> when (pipState.mode) {
-                PiPMode.WatchInPip -> viewModel.requestWatchInPiP()
-                PiPMode.BrowsingOtherPage -> viewModel.requestPiPBrowsingPage()
+            is PiPState.Requesting -> when (val mode = pipState.mode) {
+                PiPMode.WatchInPiP -> viewModel.requestWatchInPiP()
+                is PiPMode.BrowsingOtherPage -> viewModel.requestPiPBrowsingPage(mode.applinkModel)
                 else -> {}
             }
             is PiPState.InPiP -> {
-                when (pipState.mode) {
-                    PiPMode.WatchInPip -> viewModel.requestWatchInPiP()
-                    PiPMode.BrowsingOtherPage -> viewModel.requestPiPBrowsingPage()
+                when (val mode = pipState.mode) {
+                    PiPMode.WatchInPiP -> viewModel.requestWatchInPiP()
+                    is PiPMode.BrowsingOtherPage -> viewModel.requestPiPBrowsingPage(mode.applinkModel)
                     else -> {}
                 }
                 viewModel.goPiP()

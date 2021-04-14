@@ -59,6 +59,7 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(), UserIdentificationI
     private var title: TextView? = null
     private var text: TextView? = null
     private var progressBar: View? = null
+    private var containerMainView: View? = null
     private var mainView: View? = null
     private var button: UnifyButton? = null
     private var clReason: ConstraintLayout? = null
@@ -116,6 +117,7 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(), UserIdentificationI
 
     private fun initView(parentView: View) {
         globalErrorView = parentView.findViewById(R.id.fragment_user_identification_global_error)
+        containerMainView = parentView.findViewById(R.id.container_main_view)
         mainView = parentView.findViewById(R.id.main_view)
         image = parentView.findViewById(R.id.main_image)
         title = parentView.findViewById(R.id.title)
@@ -135,6 +137,7 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(), UserIdentificationI
         kycBenefitFintech = parentView.findViewById(R.id.image_fintech)
         kycBenefitShield = parentView.findViewById(R.id.image_shiled_star)
         setupKycBenefitImage()
+        containerMainView?.setBackgroundResource(com.tokopedia.unifyprinciples.R.color.Unify_N0)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -220,7 +223,7 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(), UserIdentificationI
     }
 
     private fun showStatusNotVerified() {
-        setStatusBar(R.color.kyc_centralized_D8F4F3)
+        setStatusBar(com.tokopedia.unifyprinciples.R.color.Unify_T200)
         mainView?.hide()
         kycBenefitLayout?.show()
         kycBenefitButton?.setOnClickListener(onGoToFormActivityButton(KYCConstant.STATUS_NOT_VERIFIED))

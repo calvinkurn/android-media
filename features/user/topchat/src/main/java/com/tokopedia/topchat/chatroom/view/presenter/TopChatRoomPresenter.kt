@@ -2,6 +2,7 @@ package com.tokopedia.topchat.chatroom.view.presenter
 
 import android.content.SharedPreferences
 import androidx.annotation.StringRes
+import androidx.annotation.VisibleForTesting
 import androidx.collection.ArrayMap
 import com.google.gson.JsonObject
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -30,11 +31,14 @@ import com.tokopedia.common.network.util.CommonUtil
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.seamless_login_common.domain.usecase.SeamlessLoginUsecase
 import com.tokopedia.seamless_login_common.subscriber.SeamlessLoginSubscriber
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.domain.usecase.DeleteMessageListUseCase
+import com.tokopedia.topchat.chatroom.data.UploadImageDummy
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.Attachment
 import com.tokopedia.topchat.chatroom.domain.pojo.chatroomsettings.ChatSettingsResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.orderprogress.OrderProgressResponse
@@ -43,6 +47,7 @@ import com.tokopedia.topchat.chatroom.domain.pojo.stickergroup.ChatListGroupStic
 import com.tokopedia.topchat.chatroom.domain.pojo.stickergroup.StickerGroup
 import com.tokopedia.topchat.chatroom.domain.subscriber.DeleteMessageAllSubscriber
 import com.tokopedia.topchat.chatroom.domain.usecase.*
+import com.tokopedia.topchat.chatroom.service.UploadImageChatService
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactory
 import com.tokopedia.topchat.chatroom.view.listener.TopChatContract
 import com.tokopedia.topchat.chatroom.view.uimodel.StickerUiModel
@@ -50,6 +55,7 @@ import com.tokopedia.topchat.chatroom.view.viewmodel.SendablePreview
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendableProductPreview
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.topchat.chattemplate.view.viewmodel.GetTemplateUiModel
+import com.tokopedia.topchat.common.mapper.ImageUploadMapper
 import com.tokopedia.topchat.common.util.ImageUtil
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
@@ -67,6 +73,7 @@ import okhttp3.Interceptor
 import okhttp3.WebSocket
 import rx.Subscriber
 import rx.subscriptions.CompositeSubscription
+import java.lang.Exception
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
@@ -100,7 +107,8 @@ open class TopChatRoomPresenter @Inject constructor(
         private val chatToggleBlockChat: ChatToggleBlockChatUseCase,
         private val chatBackgroundUseCase: ChatBackgroundUseCase,
         private val sharedPref: SharedPreferences,
-        private val dispatchers: CoroutineDispatchers
+        private val dispatchers: CoroutineDispatchers,
+        private val remoteConfig: RemoteConfig
 ) : BaseChatPresenter<TopChatContract.View>(userSession, topChatRoomWebSocketMessageMapper),
         TopChatContract.Presenter, CoroutineScope {
 
@@ -330,8 +338,23 @@ open class TopChatRoomPresenter @Inject constructor(
     }
 
     override fun startUploadImages(image: ImageUploadViewModel) {
-        processDummyMessage(image)
-        uploadImageUseCase.upload(image, ::onSuccessUploadImage, ::onErrorUploadImage)
+        if(isEnableUploadImageService()) {
+            addDummyToService(image)
+            startUploadImageWithService(image)
+        } else {
+            processDummyMessage(image)
+            uploadImageUseCase.upload(image, ::onSuccessUploadImage, ::onErrorUploadImage)
+        }
+    }
+
+    private fun addDummyToService(image: ImageUploadViewModel) {
+        view?.addDummyMessage(image)
+        val uploadImageDummy = UploadImageDummy(messageId = thisMessageId, visitable = image)
+        UploadImageChatService.dummyMap.add(uploadImageDummy)
+    }
+
+    private fun startUploadImageWithService(image: ImageUploadViewModel) {
+        UploadImageChatService.enqueueWork(view.context, ImageUploadMapper.mapToImageUploadServer(image), thisMessageId)
     }
 
     private fun onSuccessUploadImage(uploadId: String, image: ImageUploadViewModel) {
@@ -791,7 +814,19 @@ open class TopChatRoomPresenter @Inject constructor(
         view?.renderOrderProgress(orderProgressResponse.chatOrderProgress)
     }
 
+    private fun isEnableUploadImageService(): Boolean {
+        return try {
+            remoteConfig.getBoolean(ENABLE_UPLOAD_IMAGE_SERVICE, false)
+        } catch (ex: Exception) {
+            false
+        }
+    }
+
     private fun onErrorGetOrderProgress(throwable: Throwable) {}
 
     private fun onErrorGetStickerGroup(throwable: Throwable) {}
+
+    companion object {
+        const val ENABLE_UPLOAD_IMAGE_SERVICE = "android_enable_topchat_upload_image_service"
+    }
 }
