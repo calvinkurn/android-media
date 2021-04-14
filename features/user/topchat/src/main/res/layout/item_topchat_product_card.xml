@@ -13,6 +13,7 @@
         android:paddingStart="@dimen/dp_topchat_12"
         android:paddingTop="@dimen/dp_topchat_12"
         android:paddingEnd="@dimen/dp_topchat_12"
+        android:paddingBottom="@dimen/dp_topchat_12"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -328,7 +329,6 @@
             android:id="@+id/btn_update_stock"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_lvl3"
             android:layout_marginEnd="@dimen/spacing_lvl2"
             android:gravity="center"
             android:text="@string/title_topchat_update_stock"
@@ -352,7 +352,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/ll_seller_update_stock"
-        app:layout_constraintVertical_bias="1">
+        app:layout_constraintVertical_bias="1"
+        tools:visibility="visible">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -362,7 +363,6 @@
                 android:id="@+id/tv_atc"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/spacing_lvl3"
                 android:layout_marginEnd="@dimen/spacing_lvl2"
                 android:gravity="center"
                 android:text="@string/action_atc"
@@ -381,7 +381,6 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/spacing_lvl2"
-                android:layout_marginTop="@dimen/spacing_lvl3"
                 android:gravity="center"
                 android:text="@string/action_buy"
                 android:visibility="gone"

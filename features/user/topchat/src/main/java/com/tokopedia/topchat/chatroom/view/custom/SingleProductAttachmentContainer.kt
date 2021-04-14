@@ -22,10 +22,7 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.chat_common.data.ProductAttachmentViewModel
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.imagepreview.ImagePreviewActivity
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.setMargin
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.toPx
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ErrorAttachment
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.*
@@ -40,6 +37,7 @@ import kotlinx.android.synthetic.main.item_topchat_product_card.view.*
 
 class SingleProductAttachmentContainer : ConstraintLayout {
 
+    private var contentContainer: ConstraintLayout? = null
     private var btnWishList: UnifyButton? = null
     private var btnBuy: UnifyButton? = null
     private var btnAtc: UnifyButton? = null
@@ -127,6 +125,7 @@ class SingleProductAttachmentContainer : ConstraintLayout {
     }
 
     private fun initBindView() {
+        contentContainer = findViewById(R.id.cl_info)
         btnWishList = findViewById(R.id.tv_wishlist)
         btnBuy = findViewById(R.id.tv_buy)
         btnAtc = findViewById(R.id.tv_atc)
@@ -211,9 +210,10 @@ class SingleProductAttachmentContainer : ConstraintLayout {
             bindBackground(product)
             bindSellerRemainingStock(product)
             bindSellerFullfilment(product)
-            bindSellerUpdateStock(product)
+            bindSellerUpdateStockBtn(product)
             bindSellerUpdateStockClick(product)
             bindMargin(product)
+            bindContentPadding(product)
             listener.trackSeenProduct(product)
         }
     }
@@ -386,8 +386,9 @@ class SingleProductAttachmentContainer : ConstraintLayout {
         }
     }
 
-    private fun bindSellerUpdateStock(product: ProductAttachmentViewModel) {
-        if (product.canShowFooter || commonListener?.isSeller() == false) {
+    private fun bindSellerUpdateStockBtn(product: ProductAttachmentViewModel) {
+        if (product.canShowFooter || commonListener?.isSeller() == false ||
+                product.isProductCampaign()) {
             btnUpdateStockContainer?.hide()
         } else {
             btnUpdateStockContainer?.show()
@@ -408,6 +409,18 @@ class SingleProductAttachmentContainer : ConstraintLayout {
             } else {
                 setMargin(defaultMarginLeft, defaultMarginTop, defaultMarginRight, defaultMarginBottom)
             }
+        }
+    }
+
+    private fun bindContentPadding(product: ProductAttachmentViewModel) {
+        val newPaddingBottom = if (btnUpdateStockContainer?.isVisible == true ||
+                footerContainer?.isVisible == true) {
+            getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_8)
+        } else {
+            getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_12)
+        }
+        contentContainer?.apply {
+            setPadding(paddingLeft, paddingTop, paddingRight, newPaddingBottom)
         }
     }
 

@@ -254,4 +254,6 @@ class TopchatRoomSellerProductAttachmentTest : BaseSellerTopchatRoomTest() {
         // Then
         assertSrwContentIsHidden()
     }
+
+    // TODO: assert update stock is hidden if campaign stock
 }
