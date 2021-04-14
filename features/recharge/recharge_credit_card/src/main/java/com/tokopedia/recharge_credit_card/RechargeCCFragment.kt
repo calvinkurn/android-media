@@ -180,6 +180,7 @@ class RechargeCCFragment : BaseDaggerFragment() {
                     .isFromPDP(true)
                     .build()
             checkoutPassDataState = passData
+
             navigateToCart(passData)
         })
 
@@ -281,16 +282,19 @@ class RechargeCCFragment : BaseDaggerFragment() {
     }
 
     private fun navigateToCart(passData: DigitalCheckoutPassData) {
-        val creditCardSelected = rechargeCCViewModel.creditCardSelected.value
-                ?: RechargeCreditCard()
-        creditCardAnalytics.addToCart(userSession.userId, rechargeCCViewModel.categoryName, categoryId,
-                creditCardSelected.prefixName, creditCardSelected.operatorId.toString())
-
+        trackAddToCartEvent()
         context?.let {
             val intent = RouteManager.getIntent(activity, DigitalCheckoutUtil.getApplinkCartDigital(it))
             intent.putExtra(DigitalExtraParam.EXTRA_PASS_DIGITAL_CART_DATA, passData)
             startActivityForResult(intent, REQUEST_CODE_CART)
         }
+    }
+
+    private fun trackAddToCartEvent() {
+        val creditCardSelected = rechargeCCViewModel.creditCardSelected.value
+                ?: RechargeCreditCard()
+        creditCardAnalytics.addToCart(userSession.userId, rechargeCCViewModel.categoryName, categoryId,
+                creditCardSelected.prefixName, creditCardSelected.operatorId.toString())
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
