@@ -12,7 +12,6 @@ class Constants {
 
         const val MAX_BUFFER = 3900
         const val SCALYR_SERVER_URL = "https://app.scalyr.com/addEvents"
-        const val ENCRYPTION_KEY = "q(e#%Gf@oi>lkB~h"
         const val DATE_TIME_FORMAT = "dd/MM/yyyy HH:mm:ss:SSS"
 
         const val EVENT_TYPE_NEW_RELIC = "eventType"
