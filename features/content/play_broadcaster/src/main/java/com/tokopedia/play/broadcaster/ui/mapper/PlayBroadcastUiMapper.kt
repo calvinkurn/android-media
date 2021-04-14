@@ -99,13 +99,13 @@ class PlayBroadcastUiMapper(
                     streamUrl = media.streamUrl)
 
     override fun mapToLiveTrafficUiMetrics(metrics: LiveStats): List<TrafficMetricUiModel> = mutableListOf(
-                TrafficMetricUiModel(TrafficMetricsEnum.TotalViews, metrics.visitChannel),
-                TrafficMetricUiModel(TrafficMetricsEnum.VideoLikes, metrics.likeChannel),
-                TrafficMetricUiModel(TrafficMetricsEnum.NewFollowers, metrics.followShop),
-                TrafficMetricUiModel(TrafficMetricsEnum.ShopVisit, metrics.visitShop),
-                TrafficMetricUiModel(TrafficMetricsEnum.ProductVisit, metrics.visitPdp),
-                TrafficMetricUiModel(TrafficMetricsEnum.NumberOfAtc, metrics.addToCart),
-                TrafficMetricUiModel(TrafficMetricsEnum.NumberOfPaidOrders, metrics.paymentVerified)
+                TrafficMetricUiModel(TrafficMetricsEnum.TotalViews, metrics.visitChannelFmt),
+                TrafficMetricUiModel(TrafficMetricsEnum.VideoLikes, metrics.likeChannelFmt),
+                TrafficMetricUiModel(TrafficMetricsEnum.NewFollowers, metrics.followShopFmt),
+                TrafficMetricUiModel(TrafficMetricsEnum.ShopVisit, metrics.visitShopFmt),
+                TrafficMetricUiModel(TrafficMetricsEnum.ProductVisit, metrics.visitPdpFmt),
+                TrafficMetricUiModel(TrafficMetricsEnum.NumberOfAtc, metrics.addToCartFmt),
+                TrafficMetricUiModel(TrafficMetricsEnum.NumberOfPaidOrders, metrics.paymentVerifiedFmt)
         )
 
     override fun mapTotalView(totalView: TotalView): TotalViewUiModel = TotalViewUiModel(
