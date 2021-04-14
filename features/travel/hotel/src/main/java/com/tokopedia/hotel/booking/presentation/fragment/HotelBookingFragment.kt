@@ -171,6 +171,10 @@ class HotelBookingFragment : HotelBaseFragment() {
                 }
             }
         })
+
+        bookingViewModel.promoData.observe(viewLifecycleOwner, Observer {
+            setupPayNowPromoTicker(it)
+        })
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
@@ -190,7 +194,6 @@ class HotelBookingFragment : HotelBaseFragment() {
         bookingViewModel.fetchTickerData()
         bookingViewModel.getCartData(HotelGqlQuery.GET_CART, hotelBookingPageModel.cartId)
         bookingViewModel.getContactList(TravelPassengerGqlQuery.CONTACT_LIST)
-        bookingViewModel.getTokopointsSumCoupon(HotelGqlQuery.TOKOPOINTS_SUM_COUPON)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -229,35 +232,7 @@ class HotelBookingFragment : HotelBaseFragment() {
                     data?.let {
                         if (it.hasExtra(COUPON_EXTRA_PROMO_DATA)) {
                             it.getParcelableExtra<PromoData>(COUPON_EXTRA_PROMO_DATA)?.let { itemPromoData ->
-                                promoCode = itemPromoData.promoCode
-                                hotelCart.appliedVoucher.isCoupon = if (itemPromoData.typePromo == PromoData.TYPE_COUPON) 1 else 0
-
-                                when (itemPromoData.state) {
-                                    TickerCheckoutView.State.EMPTY -> {
-                                        promoCode = ""
-                                        setupPromoTicker(ButtonPromoCheckoutView.State.ACTIVE,
-                                                getString(R.string.hotel_promo_btn_default_title),
-                                                "")
-                                    }
-                                    TickerCheckoutView.State.FAILED -> {
-                                        promoCode = ""
-                                        setupPromoTicker(ButtonPromoCheckoutView.State.INACTIVE,
-                                                itemPromoData.title.toEmptyStringIfNull(),
-                                                itemPromoData.description.toEmptyStringIfNull())
-                                    }
-                                    TickerCheckoutView.State.ACTIVE -> {
-                                        trackingHotelUtil.hotelApplyPromo(context, promoCode, HOTEL_BOOKING_SCREEN_NAME)
-                                        setupPromoTicker(ButtonPromoCheckoutView.State.ACTIVE,
-                                                itemPromoData.title.toEmptyStringIfNull(),
-                                                itemPromoData.description.toEmptyStringIfNull())
-                                    }
-                                    else -> {
-                                        promoCode = ""
-                                        setupPromoTicker(ButtonPromoCheckoutView.State.ACTIVE,
-                                                getString(R.string.hotel_promo_btn_default_title),
-                                                "")
-                                    }
-                                }
+                               bookingViewModel.applyPromoData(itemPromoData)
                             }
                         }
                     }
@@ -279,7 +254,6 @@ class HotelBookingFragment : HotelBaseFragment() {
         setupRoomInfo(hotelCart.property, hotelCart.cart)
         setupRoomRequestForm(hotelCart.cart)
         setupContactDetail(hotelCart.cart)
-        setupPayNowPromoTicker(hotelCart)
         setupInvoiceSummary(hotelCart.cart, hotelCart.property)
         setupImportantNotes(hotelCart.property)
 
@@ -505,31 +479,31 @@ class HotelBookingFragment : HotelBaseFragment() {
         }
     }
 
-    private fun setupPayNowPromoTicker(cart: HotelCart) {
-        if (cart.property.rooms.isNotEmpty() && cart.property.isDirectPayment) {
-            promoCode = cart.appliedVoucher.code
-            if (promoCode.isNotEmpty()) {
-                setupPromoTicker(ButtonPromoCheckoutView.State.ACTIVE,
-                        cart.appliedVoucher.titleDescription,
-                        cart.appliedVoucher.message)
-                booking_pay_now_promo_ticker.chevronIcon = com.tokopedia.resources.common.R.drawable.ic_system_action_close_grayscale_24
-                trackingHotelUtil.hotelApplyPromo(context, promoCode, HOTEL_BOOKING_SCREEN_NAME)
-            } else {
-                setupPromoTicker(ButtonPromoCheckoutView.State.ACTIVE, getString(R.string.hotel_promo_btn_default_title), "")
-                booking_pay_now_promo_ticker.chevronIcon = com.tokopedia.resources.common.R.drawable.ic_system_action_arrow_right_grayscale_24
-            }
+    private fun setupPayNowPromoTicker(promoData: PromoData) {
+        if (promoData.promoCode.isEmpty()){
+            setupPromoTicker(ButtonPromoCheckoutView.State.ACTIVE, getString(R.string.hotel_promo_btn_default_title), "")
+            booking_pay_now_promo_ticker.chevronIcon = com.tokopedia.resources.common.R.drawable.ic_system_action_arrow_right_grayscale_24
+        }else if (promoData.promoCode.isNotEmpty() && hotelCart.property.isDirectPayment){
+            setupPromoTicker(ButtonPromoCheckoutView.State.ACTIVE,
+                    promoData.title,
+                    promoData.description)
+            booking_pay_now_promo_ticker.chevronIcon = com.tokopedia.resources.common.R.drawable.ic_system_action_close_grayscale_24
+            trackingHotelUtil.hotelApplyPromo(context, promoCode, HOTEL_BOOKING_SCREEN_NAME)
+        }
 
-            booking_pay_now_promo_ticker.setOnClickListener { onClickUsePromo(cart) }
+        if(hotelCart.property.isDirectPayment){
+             booking_pay_now_promo_ticker.setOnClickListener { onClickUsePromo(promoData) }
 
             booking_pay_now_promo_ticker.setListenerChevronIcon {
                 if (booking_pay_now_promo_ticker.desc.isNotEmpty()) {
                     booking_pay_now_promo_ticker.state = ButtonPromoCheckoutView.State.LOADING
                     onResetPromo()
                 } else {
-                    onClickUsePromo(cart)
+                    onClickUsePromo(promoData)
                 }
             }
-        } else{
+        }
+        else{
             booking_pay_now_promo_ticker.setOnClickListener {
                 startActivity(HotelPayAtHotelPromoActivity.getCallingIntent(requireContext()))
             }
@@ -547,16 +521,16 @@ class HotelBookingFragment : HotelBaseFragment() {
         }
     }
 
-    private fun onClickUsePromo(cart: HotelCart){
+    private fun onClickUsePromo(promoData: PromoData){
         val intent = RouteManager.getIntent(activity, ApplinkConstInternalPromo.PROMO_LIST_HOTEL)
-        intent.putExtra(COUPON_EXTRA_COUPON_ACTIVE, cart.appliedVoucher.isCoupon)
+        intent.putExtra(COUPON_EXTRA_COUPON_ACTIVE, promoData.isActive())
         intent.putExtra(COUPON_EXTRA_CART_ID, hotelCart.cartID)
         startActivityForResult(intent, COUPON_EXTRA_LIST_ACTIVITY_RESULT)
     }
 
     private fun onResetPromo(){
-        promoCode = ""
         setupPromoTicker(ButtonPromoCheckoutView.State.LOADING, "", "")
+        bookingViewModel.applyPromoData(PromoData())
         bookingViewModel.onCancelAppliedVoucher(getCancelVoucherQuery())
     }
 
