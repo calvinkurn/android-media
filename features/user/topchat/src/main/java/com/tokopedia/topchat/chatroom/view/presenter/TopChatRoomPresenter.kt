@@ -28,6 +28,7 @@ import com.tokopedia.chat_common.presenter.BaseChatPresenter
 import com.tokopedia.chatbot.domain.mapper.TopChatRoomWebSocketMessageMapper
 import com.tokopedia.common.network.util.CommonUtil
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
@@ -123,6 +124,7 @@ open class TopChatRoomPresenter @Inject constructor(
     var thisMessageId: String = ""
     val attachments: ArrayMap<String, Attachment> = ArrayMap()
     val onGoingStockUpdate: ArrayMap<String, UpdateProductStockResult> = ArrayMap()
+    private var userLocationInfo = LocalCacheModel()
 
     private lateinit var webSocketUrl: String
     private var attachmentsPreview: ArrayList<SendablePreview> = arrayListOf()
@@ -193,6 +195,11 @@ open class TopChatRoomPresenter @Inject constructor(
     override fun destroyWebSocket() {
         mSubscription.clear()
         mSubscription.unsubscribe()
+    }
+
+    override fun initUserLocation(userLocation: LocalCacheModel?) {
+        userLocation ?: return
+        this.userLocationInfo = userLocation
     }
 
     override fun mappingEvent(webSocketResponse: WebSocketResponse, messageId: String) {
@@ -768,7 +775,8 @@ open class TopChatRoomPresenter @Inject constructor(
     override fun loadAttachmentData(msgId: Long, chatRoom: ChatroomViewModel) {
         if (chatRoom.hasAttachment() && msgId != 0L) {
             chatAttachmentUseCase.getAttachments(
-                    msgId, chatRoom.attachmentIds, ::onSuccessGetAttachments, ::onErrorGetAttachments
+                    msgId, chatRoom.attachmentIds, userLocationInfo,
+                    ::onSuccessGetAttachments, ::onErrorGetAttachments
             )
         }
     }

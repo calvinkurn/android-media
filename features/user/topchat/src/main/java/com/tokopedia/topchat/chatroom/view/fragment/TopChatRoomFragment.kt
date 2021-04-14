@@ -65,6 +65,7 @@ import com.tokopedia.imagepreview.ImagePreviewActivity
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.kotlin.util.getParamBoolean
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.merchantvoucher.voucherDetail.MerchantVoucherDetailActivity
 import com.tokopedia.merchantvoucher.voucherList.MerchantVoucherListFragment
@@ -226,6 +227,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         return inflater.inflate(R.layout.fragment_topchat_chatroom, container, false).also {
             bindView(it)
             initSrw()
+            initUserLocation()
             initObserver()
             initReplyTextWatcher()
             initStickerView()
@@ -236,6 +238,13 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     private fun initSrw() {
         rvSrw?.initialize(this, this)
+    }
+
+    private fun initUserLocation() {
+        context?.let {
+            val userLocation = ChooseAddressUtils.getLocalizingAddressData(it) ?: return@let
+            presenter.initUserLocation(userLocation)
+        }
     }
 
     private fun initObserver() {
