@@ -5,11 +5,11 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.common.topupbills.data.prefix_select.RechargePrefix
 import com.tokopedia.common.topupbills.data.prefix_select.TelcoCatalogPrefixSelect
-import com.tokopedia.common.topupbills.data.prefix_select.TelcoOperator
 import com.tokopedia.common.topupbills.data.product.CatalogData
 import com.tokopedia.common.topupbills.data.product.CatalogProduct
 import com.tokopedia.common.topupbills.usecase.RechargeCatalogPrefixSelectUseCase
 import com.tokopedia.common.topupbills.usecase.RechargeCatalogProductInputUseCase
+import com.tokopedia.common.topupbills.utils.generateRechargeCheckoutToken
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -62,9 +62,8 @@ class EmoneyPdpViewModel @Inject constructor(private val dispatcher: CoroutineDi
     }
 
     fun getSelectedOperator(inputNumber: String) {
-        if (inputNumber.isEmpty()) {
-            return
-        }
+        if (inputNumber.isEmpty()) return
+
         try {
             if (catalogPrefixSelect.value is Success) {
                 val operatorSelected = (catalogPrefixSelect.value as Success).data.rechargeCatalogPrefixSelect.prefixes.single {
@@ -73,7 +72,7 @@ class EmoneyPdpViewModel @Inject constructor(private val dispatcher: CoroutineDi
                 _selectedOperator.postValue(operatorSelected)
             }
         } catch (e: Throwable) {
-            _selectedOperator.postValue(RechargePrefix(operator = TelcoOperator(id = "1015")))
+
         }
     }
 
@@ -93,7 +92,7 @@ class EmoneyPdpViewModel @Inject constructor(private val dispatcher: CoroutineDi
 
     fun generateCheckoutPassData(product: CatalogProduct, copiedPromoCode: String, clientNumber: String): DigitalCheckoutPassData {
         val checkoutPassData = DigitalCheckoutPassData()
-//        checkoutPassData.idemPotencyKey = userSession.userId.generateRechargeCheckoutToken()
+        checkoutPassData.idemPotencyKey = userSession.userId.generateRechargeCheckoutToken()
         checkoutPassData.voucherCodeCopied = copiedPromoCode
         checkoutPassData.clientNumber = clientNumber
         checkoutPassData.operatorId = product.id

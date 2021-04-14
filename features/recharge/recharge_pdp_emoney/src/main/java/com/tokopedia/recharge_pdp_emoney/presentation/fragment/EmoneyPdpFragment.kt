@@ -18,7 +18,6 @@ import com.tokopedia.common.topupbills.data.TopupBillsFavNumberItem
 import com.tokopedia.common.topupbills.data.TopupBillsPromo
 import com.tokopedia.common.topupbills.data.TopupBillsRecommendation
 import com.tokopedia.common.topupbills.data.prefix_select.RechargePrefix
-import com.tokopedia.common.topupbills.data.prefix_select.TelcoOperator
 import com.tokopedia.common.topupbills.data.product.CatalogProduct
 import com.tokopedia.common.topupbills.utils.CommonTopupBillsGqlMutation
 import com.tokopedia.common.topupbills.utils.CommonTopupBillsGqlQuery
@@ -113,7 +112,7 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
 
         emoneyPdpViewModel.selectedOperator.observe(viewLifecycleOwner, Observer {
             renderOperatorIcon(it)
-            loadProducts(it.operator)
+            loadProducts(it)
         })
 
         emoneyPdpViewModel.catalogData.observe(viewLifecycleOwner, Observer {
@@ -308,15 +307,18 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
     }
 
     private fun renderOperatorIcon(operator: RechargePrefix) {
-        emoneyPdpInputCardWidget.setOperator(operator.operator.attributes.imageUrl)
+        if (operator.operator != null) {
+            emoneyPdpInputCardWidget.setOperator(operator.operator.attributes.imageUrl)
+        }
     }
 
     private fun renderCardState(detailPassData: DigitalCategoryDetailPassData) {
         //
     }
 
-    private fun loadProducts(operator: TelcoOperator) {
-        emoneyPdpViewModel.getProductFromOperator(EmoneyPdpActivity.EMONEY_MENU_ID, operator.id)
+    private fun loadProducts(prefix: RechargePrefix) {
+        // to be changed to operator.id // NEED ACTION
+        emoneyPdpViewModel.getProductFromOperator(EmoneyPdpActivity.EMONEY_MENU_ID, prefix.key)
     }
 
     private fun renderProducts(productList: List<CatalogProduct>) {
@@ -328,12 +330,14 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
 
     private fun showProducts() {
         emoneyPdpProductWidget.show()
-        emoneyTabAndViewPagerLayout.hide()
+        emoneyPdpTab.hide()
+        emoneyPdpViewPager.hide()
     }
 
     private fun showRecentNumberAndPromo() {
         emoneyPdpProductWidget.hide()
-        emoneyTabAndViewPagerLayout.show()
+        emoneyPdpTab.show()
+        emoneyPdpViewPager.show()
     }
 
     override fun onClickProduct(product: CatalogProduct) {

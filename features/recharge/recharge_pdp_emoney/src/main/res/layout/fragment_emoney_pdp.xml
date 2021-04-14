@@ -1,74 +1,77 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools">
+    android:orientation="vertical">
 
-    <com.tokopedia.unifycomponents.ticker.Ticker
-        android:id="@+id/emoneyPdpTicker"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
-        app:tickerType="announcement"
-        android:visibility="gone" />
-
-    <LinearLayout
-        android:id="@+id/emoneyPdpHeaderLayout"
+    <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/bg_emoney_pdp_green_gradient"
+        android:descendantFocusability="blocksDescendants"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
         android:orientation="vertical"
-        android:paddingHorizontal="@dimen/unify_space_12"
-        android:paddingBottom="@dimen/spacing_lvl5"
-        app:layout_constraintTop_toBottomOf="@id/emoneyPdpTicker">
+        app:elevation="@dimen/spacing_lvl2">
+
+        <com.tokopedia.unifycomponents.ticker.Ticker
+            android:id="@+id/emoneyPdpTicker"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_scrollFlags="scroll"
+            app:tickerType="announcement" />
 
         <com.tokopedia.recharge_pdp_emoney.presentation.widget.EmoneyPdpHeaderViewWidget
             android:id="@+id/emoneyPdpHeaderView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_lvl3" />
+            android:layout_marginHorizontal="@dimen/unify_space_12"
+            android:layout_marginTop="@dimen/spacing_lvl3"
+            app:layout_constraintTop_toBottomOf="@id/emoneyPdpTicker"
+            app:layout_scrollFlags="scroll" />
 
         <com.tokopedia.recharge_pdp_emoney.presentation.widget.EmoneyPdpInputCardNumberWidget
             android:id="@+id/emoneyPdpInputCardWidget"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/unify_space_12" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/emoneyTabAndViewPagerLayout"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/layout_lvl0"
-        app:layout_constraintTop_toBottomOf="@id/emoneyPdpHeaderLayout"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:orientation="vertical"
-        tools:visibility="visible">
+            android:layout_marginHorizontal="@dimen/unify_space_12"
+            android:layout_marginTop="@dimen/unify_space_12"
+            app:layout_constraintTop_toBottomOf="@id/emoneyPdpHeaderView" />
 
         <com.tokopedia.unifycomponents.TabsUnify
             android:id="@+id/emoneyPdpTab"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:visibility="gone"
+            app:layout_constraintTop_toBottomOf="@id/emoneyPdpInputCardWidget"
             tools:visibility="visible" />
 
-        <androidx.viewpager2.widget.ViewPager2
-            android:id="@+id/emoneyPdpViewPager"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/Unify_N0"
-            android:visibility="gone"
-            tools:visibility="visible" />
-    </LinearLayout>
+    </com.google.android.material.appbar.AppBarLayout>
+
+
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/emoneyPdpViewPager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/Unify_N0"
+        android:visibility="gone"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        tools:visibility="gone" />
 
     <com.tokopedia.recharge_pdp_emoney.presentation.widget.EmoneyPdpProductWidget
         android:id="@+id/emoneyPdpProductWidget"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/layout_lvl0"
-        app:layout_constraintTop_toBottomOf="@id/emoneyPdpHeaderLayout"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_height="match_parent"
         android:background="@color/Unify_N0"
         android:visibility="gone"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        app:layout_constraintBottom_toBottomOf="parent"
         tools:visibility="gone" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
+
