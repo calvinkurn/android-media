@@ -31,21 +31,36 @@ class SomOrderEditAwbBottomSheet(context: Context) : SomBottomSheet(context) {
                 } else {
                     val parentView = childView?.parent as? View ?: return@setOnFocusChangeListener
                     parentView.setPadding(parentView.paddingLeft, parentView.paddingTop, parentView.paddingRight, PADDING_WHEN_KEYBOARD_CLOSED)
-                    hideKeyboard(context, tf_cancel_notes)
+                    hideKeyboard(context, tf_cancel_notes?.rootView)
                 }
             }
             tf_cancel_notes?.textFieldInput?.hint = context.getString(R.string.change_no_resi_hint)
-            btn_cancel_order_canceled?.setOnClickListener { dismiss() }
+            btn_cancel_order_canceled?.setOnClickListener {
+                hideKeyboard(context, tf_cancel_notes?.rootView)
+                dismiss()
+            }
             btn_cancel_order_confirmed?.text = context.getString(R.string.change_no_resi_btn_ubah)
             btn_cancel_order_confirmed?.setOnClickListener {
+                hideKeyboard(context, tf_cancel_notes?.rootView)
                 dismiss()
                 listener?.onEditAwbButtonClicked(tf_cancel_notes?.textFieldInput?.text.toString())
             }
         }
     }
 
+    private fun handleHideKeyboardWhenClickOnBottomSheet() {
+        childView?.parent?.let {
+            if (it is ViewGroup) {
+                it.findViewById<View>(com.tokopedia.unifycomponents.R.id.bottom_sheet_wrapper).setOnClickListener {
+                    childView?.tf_cancel_notes?.clearFocus()
+                }
+            }
+        }
+    }
+
     fun init(view: ViewGroup) {
         super.init(view, requireNotNull(childView), true)
+        handleHideKeyboardWhenClickOnBottomSheet()
     }
 
     fun setListener(listener: SomOrderEditAwbBottomSheetListener) {
