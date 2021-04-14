@@ -1,61 +1,45 @@
-package com.tokopedia.search.result.presentation.view.adapter;
+package com.tokopedia.search.result.presentation.view.adapter
 
-import android.content.Context;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
+import android.view.LayoutInflater
+import android.view.ViewGroup
+import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import java.util.*
 
-import androidx.recyclerview.widget.RecyclerView;
+class InspirationCarouselOptionAdapter(private val typeFactory: InspirationCarouselOptionAdapterTypeFactory)
+    : RecyclerView.Adapter<AbstractViewHolder<Visitable<*>>>() {
 
-import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
+    private val list = mutableListOf<Visitable<InspirationCarouselOptionTypeFactory>>()
 
-import org.jetbrains.annotations.NotNull;
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AbstractViewHolder<Visitable<*>> {
+        val context = parent.context
+        val view = LayoutInflater.from(context).inflate(viewType, parent, false)
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class InspirationCarouselOptionAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
-
-    private List<Visitable> list;
-    private final InspirationCarouselOptionAdapterTypeFactory typeFactory;
-
-    public InspirationCarouselOptionAdapter(InspirationCarouselOptionAdapterTypeFactory typeFactory) {
-        this.typeFactory = typeFactory;
-        this.list = new ArrayList<>();
+        return typeFactory.createViewHolder(view, viewType) as AbstractViewHolder<Visitable<*>>
     }
 
-    @NotNull
-    @Override
-    public AbstractViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        Context context = parent.getContext();
-        View view = LayoutInflater.from(context).inflate(viewType, parent, false);
-        return typeFactory.createViewHolder(view, viewType);
+    override fun onBindViewHolder(holder: AbstractViewHolder<Visitable<*>>, position: Int) {
+        holder.bind(list[position])
     }
 
-    @Override
-    public void onBindViewHolder(AbstractViewHolder holder, int position) {
-        holder.bind(list.get(position));
+    override fun getItemViewType(position: Int): Int {
+        return list[position].type(typeFactory)
     }
 
-    @Override
-    public int getItemViewType(int position) {
-        return list.get(position).type(typeFactory);
+    override fun getItemCount(): Int {
+        return list.size
     }
 
-    @Override
-    public int getItemCount() {
-        return list.size();
+    fun addAll(list: List<Visitable<InspirationCarouselOptionTypeFactory>>) {
+        this.list.addAll(list)
+
+        notifyDataSetChanged()
     }
 
-    public void addAll(List<Visitable> list) {
-        this.list.addAll(list);
-        notifyDataSetChanged();
-    }
-
-    public void clearData() {
-        int size = this.list.size();
-        this.list.clear();
-        notifyItemRangeRemoved(0, size);
+    fun clearData() {
+        val size = list.size
+        list.clear()
+        notifyItemRangeRemoved(0, size)
     }
 }

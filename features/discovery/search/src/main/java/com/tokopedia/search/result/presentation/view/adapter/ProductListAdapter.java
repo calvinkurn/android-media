@@ -172,18 +172,6 @@ public final class ProductListAdapter extends RecyclerView.Adapter<AbstractViewH
         notifyItemRangeInserted(start, list.size());
     }
 
-    public void setWishlistButtonEnabled(String productId, boolean isEnabled) {
-        for (int i = 0; i < list.size(); i++) {
-            if (list.get(i) instanceof ProductItemDataView) {
-                ProductItemDataView model = ((ProductItemDataView) list.get(i));
-                if (productId.equals(model.getProductID())) {
-                    model.setWishlistButtonEnabled(isEnabled);
-                    notifyItemChanged(i);
-                }
-            }
-        }
-    }
-
     public void updateWishlistStatus(String productId, boolean isWishlisted) {
         for (int i = 0; i < list.size(); i++) {
             if (list.get(i) instanceof ProductItemDataView) {

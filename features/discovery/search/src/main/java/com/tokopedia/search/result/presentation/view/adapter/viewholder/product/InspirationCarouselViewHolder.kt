@@ -22,6 +22,7 @@ import com.tokopedia.search.result.presentation.model.InspirationCarouselDataVie
 import com.tokopedia.search.result.presentation.view.adapter.InspirationCarouselChipsAdapter
 import com.tokopedia.search.result.presentation.view.adapter.InspirationCarouselOptionAdapter
 import com.tokopedia.search.result.presentation.view.adapter.InspirationCarouselOptionAdapterTypeFactory
+import com.tokopedia.search.result.presentation.view.adapter.InspirationCarouselOptionTypeFactory
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.decoration.InspirationCarouselChipsListItemDecoration
 import com.tokopedia.search.result.presentation.view.listener.InspirationCarouselListener
 import com.tokopedia.search.utils.addItemDecorationIfNotExists
@@ -196,8 +197,8 @@ class InspirationCarouselViewHolder(
         }
     }
 
-    private fun createGridProductList(option: InspirationCarouselDataView.Option): List<Visitable<*>> {
-        val list = mutableListOf<Visitable<*>>()
+    private fun createGridProductList(option: InspirationCarouselDataView.Option): List<Visitable<InspirationCarouselOptionTypeFactory>> {
+        val list = mutableListOf<Visitable<InspirationCarouselOptionTypeFactory>>()
         if(option.shouldAddBannerCard()) list.add(createBannerOption(option))
         list.addAll(option.product)
         return list
@@ -273,8 +274,8 @@ class InspirationCarouselViewHolder(
     }
 
     private fun createAdapter(
-            list: List<Visitable<*>>
-    ): RecyclerView.Adapter<AbstractViewHolder<*>> {
+            list: List<Visitable<InspirationCarouselOptionTypeFactory>>
+    ): RecyclerView.Adapter<AbstractViewHolder<Visitable<*>>> {
         val typeFactory = InspirationCarouselOptionAdapterTypeFactory(inspirationCarouselListener)
         val inspirationCarouselProductAdapter = InspirationCarouselOptionAdapter(typeFactory)
         inspirationCarouselProductAdapter.clearData()
