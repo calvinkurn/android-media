@@ -10,7 +10,6 @@ import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.recharge_credit_card.datamodel.*
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
@@ -110,7 +109,7 @@ class RechargeCCViewModel @Inject constructor(private val graphqlRepository: Gra
                         foundPrefix = true
                         return@map _rechargeCreditCard.postValue(RechargeCreditCard(
                                 it.operator.id,
-                                it.operator.attribute.defaultProductId.toIntOrZero(),
+                                it.operator.attribute.defaultProductId,
                                 it.operator.attribute.imageUrl,
                                 it.operator.attribute.name
                         ))

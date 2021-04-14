@@ -143,7 +143,7 @@ class RechargeCCFragment : BaseDaggerFragment() {
     private fun observeData() {
         rechargeCCViewModel.creditCardSelected.observe(viewLifecycleOwner, Observer {
             operatorIdSelected = it.operatorId.toString()
-            productIdSelected = it.defaultProductId.toString()
+            productIdSelected = it.defaultProductId
             cc_widget_client_number.setImageIcon(it.imageUrl)
         })
 
