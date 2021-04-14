@@ -202,48 +202,30 @@ open class Properties(
 
     override fun hashCode(): Int {
         var result = thumbnailUrl.hashCode()
-        result = 31 * result + isTrackable.hashCode()
-        result = 31 * result + imageViewSize.hashCode()
-        result = 31 * result + urlHasQualityParam.hashCode()
-        result = 31 * result + renderDelay.hashCode()
-        result = 31 * result + loadTime.hashCode()
-        result = 31 * result + isTrackable.hashCode()
-        result = 31 * result + blurHash.hashCode()
-        result = 31 * result + isAnimate.hashCode()
-        result = 31 * result + isCircular.hashCode()
-        result = 31 * result + roundedRadius.hashCode()
-        result = 31 * result + signatureKey.hashCode()
-        result = 31 * result + error.hashCode()
-        result = 31 * result + placeHolder.hashCode()
-        result = 31 * result + isCache.hashCode()
-        result = 31 * result + cacheStrategy.hashCode()
-        result = 31 * result + overrideSize.hashCode()
-        result = 31 * result + decodeFormat.hashCode()
-        result = 31 * result + loaderListener.hashCode()
-        result = 31 * result + transform.hashCode()
-        result = 31 * result + transforms.hashCode()
-        result = 31 * result + centerCrop.hashCode()
-        result = 31 * result + fitCenter.hashCode()
-        result = 31 * result + centerInside.hashCode()
+        result = 23 * result + isTrackable.hashCode()
+        result = 23 * result + imageViewSize.hashCode()
+        result = 23 * result + urlHasQualityParam.hashCode()
+        result = 23 * result + renderDelay.hashCode()
+        result = 23 * result + loadTime.hashCode()
+        result = 23 * result + isTrackable.hashCode()
+        result = 23 * result + blurHash.hashCode()
+        result = 23 * result + isAnimate.hashCode()
+        result = 23 * result + isCircular.hashCode()
+        result = 23 * result + roundedRadius.hashCode()
+        result = 23 * result + signatureKey.hashCode()
+        result = 23 * result + error.hashCode()
+        result = 23 * result + placeHolder.hashCode()
+        result = 23 * result + isCache.hashCode()
+        result = 23 * result + cacheStrategy.hashCode()
+        result = 23 * result + overrideSize.hashCode()
+        result = 23 * result + decodeFormat.hashCode()
+        result = 23 * result + loaderListener.hashCode()
+        result = 23 * result + transform.hashCode()
+        result = 23 * result + transforms.hashCode()
+        result = 23 * result + centerCrop.hashCode()
+        result = 23 * result + fitCenter.hashCode()
+        result = 23 * result + centerInside.hashCode()
         return result
-    }
-
-    override fun toString(): String {
-        val ratio = AspectRatio.calculate(imageViewSize.first, imageViewSize.second)
-        return "source: $data,\n" +
-                "is trackable: $isTrackable,\n" +
-                "url has ect: $urlHasQualityParam,\n" +
-                "imageview size: ${imageViewSize.first} * ${imageViewSize.second},\n" +
-                "imageview ratio: ${ratio.first} * ${ratio.second},\n" +
-                "load time: $loadTime,\n" +
-                "transform: ${transform?.javaClass?.name},\n" +
-                "transforms: ${transforms?.size},\n" +
-                "placeholder: $placeHolder,\n" +
-                "error: $error,\n" +
-                "blurhash: $blurHash,\n" +
-                "isAnimate: $isAnimate,\n" +
-                "isCircular: $isCircular,\n" +
-                "roundedRadius: $roundedRadius,\n"
     }
 
 }

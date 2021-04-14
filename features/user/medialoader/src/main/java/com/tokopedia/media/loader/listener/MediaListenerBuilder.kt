@@ -56,7 +56,6 @@ object MediaListenerBuilder {
             properties.loadTime = loadTime
 
             listener?.onLoaded(resource, dataSource(dataSource))
-            println("Medialoader => ${properties.toString().replace("\n", " ")}")
             return false
         }
     }

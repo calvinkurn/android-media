@@ -34,7 +34,7 @@ class BitmapFactory : MediaLoaderFactory<Bitmap>() {
             properties: Properties,
             performanceMonitoring: PerformanceMonitoring? = null,
             request: GlideRequest<Bitmap>
-    ) = setup(properties, request).also {
+    ) = setup(properties, request).apply {
         // startTimeRequest will use for performance tracking
         val startTimeRequest = System.currentTimeMillis()
 
@@ -42,14 +42,14 @@ class BitmapFactory : MediaLoaderFactory<Bitmap>() {
         * because the medialoader placeholder has a different behavior,
         * a builder is needed to handle it. the blurhash only work for URL
         * */
-        blurHashPlaceHolder(context, properties, it)
+        blurHashPlaceHolder(context, properties, this)
 
         with(properties) {
             if (thumbnailUrl.isNotEmpty()) {
-                it.thumbnail(thumbnailFrom(context, thumbnailUrl))
+                thumbnail(thumbnailFrom(context, thumbnailUrl))
             }
 
-            it.listener(callbackListener(
+            listener(callbackListener(
                     context,
                     properties,
                     startTimeRequest,

@@ -40,30 +40,28 @@ inline fun ImageView.loadImage(
 inline fun ImageView.loadImageFitCenter(
         url: String?,
         crossinline properties: Properties.() -> Unit = {}
-) = call(url, Properties().apply(properties).also {
-    it.fitCenter()
-})
+) = call(url, Properties().apply(properties).fitCenter())
 
 inline fun ImageView.loadImageWithoutPlaceholder(
         url: String?,
         crossinline properties: Properties.() -> Unit = {}
-) = call(url, Properties().apply(properties).also {
-    it.setPlaceHolder(-1)
-})
+) = call(url, Properties()
+        .apply(properties)
+        .setPlaceHolder(-1))
 
 inline fun ImageView.loadImageCircle(
         url: String?,
         crossinline properties: Properties.() -> Unit = {}
-) = call(url, Properties().apply(properties).also {
-    it.isCircular(true)
+) = call(url, Properties()
+        .apply(properties)
+        .isCircular(true)
 
-    /*
-    * loadImageCircle() extension must be haven't placeholder,
-    * the loader effect should be handled by team by
-    * using own shimmering.
-    * */
-    it.setPlaceHolder(-1)
-})
+        /*
+         * loadImageCircle() extension must be haven't placeholder,
+         * the loader effect should be handled by team by
+         * using own shimmering.
+         * */
+        .setPlaceHolder(-1))
 
 fun ImageView.loadImageRounded(
         resource: Int,
@@ -75,24 +73,22 @@ inline fun ImageView.loadImageRounded(
         rounded: Float = DEFAULT_ROUNDED,
         crossinline properties: Properties.() -> Unit = {}
 ) {
-    call(url, Properties().apply(properties).also {
-        it.setRoundedRadius(rounded)
-    })
+    call(url, Properties().apply(properties).setRoundedRadius(rounded))
 }
 
 inline fun ImageView.loadIcon(
         url: String?,
         crossinline properties: Properties.() -> Unit = {}
-) = call(url, Properties().apply(properties).also {
-    it.useBlurHash(false)
+) = call(url, Properties()
+        .apply(properties)
+        .useBlurHash(false)
 
-     /*
-     * loadIcon() extension must be haven't placeholder,
-     * the loader effect should be handled by team by
-     * using own shimmering.
-     * */
-    it.setPlaceHolder(-1)
-})
+        /*
+        * loadIcon() extension must be haven't placeholder,
+        * the loader effect should be handled by team by
+        * using own shimmering.
+        * */
+        .setPlaceHolder(-1))
 
 fun ImageView.loadImageTopRightCrop(source: String) {
     if (context.isValid()) {
@@ -116,11 +112,9 @@ internal fun ImageView.call(source: Any?, properties: Properties) {
         try {
             loadImageBuilder(
                     imageView = this,
-                    properties = properties.apply {
-                        // passing the image source (url, uri, etc.)
-                        useBlurHash(false)
-                        setSource(source)
-                    }
+                    properties = properties
+                            .useBlurHash(false)
+                            .setSource(source)
             )
         } catch (e: Exception) {
             e.printStackTrace()
@@ -142,9 +136,7 @@ fun <T: View> loadImageWithTarget(
 ) {
     loadImageWithTarget(
             context,
-            Properties().apply(properties).also {
-                it.setSource(url)
-            },
+            Properties().apply(properties).setSource(url),
             mediaTarget
     )
 }

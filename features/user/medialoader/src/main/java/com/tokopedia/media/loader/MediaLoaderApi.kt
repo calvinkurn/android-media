@@ -5,7 +5,6 @@ import android.widget.ImageView
 import androidx.appcompat.content.res.AppCompatResources.getDrawable
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.tokopedia.analytics.performance.PerformanceMonitoring
-import com.tokopedia.config.GlobalConfig
 import com.tokopedia.media.common.Loader
 import com.tokopedia.media.loader.common.Properties
 import com.tokopedia.media.loader.common.factory.BitmapFactory
@@ -64,16 +63,10 @@ internal object MediaLoaderApi {
                             height = imageView.measuredHeight
                     )
 
-                    if (GlobalConfig.isAllowDebuggingTools()) {
-                        println("Medialoader => $source")
-                    }
-
                     bitmap.build(
                             context = context,
                             performanceMonitoring = tracker,
-                            properties = properties.also {
-                                it.setUrlHasQuality(source)
-                            },
+                            properties = properties.setUrlHasQuality(source),
                             request = this
                     ).load(source)
                 }

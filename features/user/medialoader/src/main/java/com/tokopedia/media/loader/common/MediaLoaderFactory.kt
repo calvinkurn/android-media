@@ -8,6 +8,7 @@ import com.bumptech.glide.load.Transformation
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.bitmap.*
 import com.bumptech.glide.signature.ObjectKey
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.media.loader.module.GlideApp
 import com.tokopedia.media.loader.module.GlideRequest
 import com.tokopedia.media.loader.wrapper.MediaCacheStrategy
@@ -22,10 +23,7 @@ abstract class MediaLoaderFactory<T> {
     * */
     private val _transform = arrayListOf<Transformation<Bitmap>>()
 
-    private fun transformation(
-            properties: Properties,
-            request: GlideRequest<T>
-    ) {
+    private fun transformation(properties: Properties) {
         // clear before applying a transformations
         _transform.clear()
 
@@ -66,39 +64,46 @@ abstract class MediaLoaderFactory<T> {
     fun setup(
             properties: Properties,
             request: GlideRequest<T>
-    ) = request.also {
+    ) = request.apply {
         with(properties) {
             /*
             * set multiple transformation into list of transform (_transform)
             * and then bulk it the transforms from transformList with MultiTransformation
             * */
-            transformation(this, request)
+            transformation(this)
 
             if (_transform.isNotEmpty()) {
                 request.transform(MultiTransformation(_transform))
             }
 
             // set custom error drawable
-            it.error(error)
+            error(error)
 
             // disable animation (default)
             if (!isAnimate) {
-                it.dontAnimate()
+                dontAnimate()
             }
 
             // use custom signature for caching
-            if (isCache) {
-                signatureKey?.let { key ->
-                    it.signature(key)
-                }?: it.signature(ObjectKey(properties.urlHasQualityParam))
+            if (isCache && signatureKey != null) {
+                signature(signatureKey!!)
+            } else if (isCache && signatureKey == null) {
+                signature(ObjectKey(properties.urlHasQualityParam))
             } else {
-                it.skipMemoryCache(true)
+                skipMemoryCache(true)
             }
 
-            cacheStrategy?.let { cacheStrategy -> it.diskCacheStrategy(MediaCacheStrategy.mapTo(cacheStrategy)) }
-            decodeFormat?.let { format -> it.format(MediaDecodeFormat.mapTo(format)) }
-            overrideSize?.let { newSize -> it.override(newSize.width, newSize.height) }
-            signatureKey?.let { key -> it.signature(key) }
+            if (cacheStrategy != null) {
+                diskCacheStrategy(MediaCacheStrategy.mapTo(cacheStrategy!!))
+            }
+
+            if (decodeFormat != null) {
+                format(MediaDecodeFormat.mapTo(decodeFormat!!))
+            }
+
+            if (overrideSize != null && overrideSize?.width.isMoreThanZero()) {
+                override(overrideSize?.width?: 0, overrideSize?.height?: 0)
+            }
         }
     }
 
