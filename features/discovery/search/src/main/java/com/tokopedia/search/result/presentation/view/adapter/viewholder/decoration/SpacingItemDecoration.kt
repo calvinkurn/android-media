@@ -1,20 +1,15 @@
-package com.tokopedia.search.result.presentation.view.adapter.viewholder.decoration;
+package com.tokopedia.search.result.presentation.view.adapter.viewholder.decoration
 
-import android.graphics.Rect;
-import androidx.recyclerview.widget.RecyclerView;
-import android.view.View;
+import android.graphics.Rect
+import android.view.View
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.ItemDecoration
 
-public class SpacingItemDecoration extends RecyclerView.ItemDecoration {
+class SpacingItemDecoration(private val dimen: Int) : ItemDecoration() {
 
-    private final int dimen;
-
-    public SpacingItemDecoration(int dimen) {
-        this.dimen = dimen;
-    }
-
-    public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
-        outRect.right = this.dimen;
-        outRect.top = this.dimen / 2;
-        outRect.bottom = this.dimen / 2;
+    override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
+        outRect.right = dimen
+        outRect.top = dimen / 2
+        outRect.bottom = dimen / 2
     }
 }
