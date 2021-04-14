@@ -79,6 +79,10 @@
     
     <string name="new_home_account_finance_failed_to_load">Gagal Memuat</string>
     <string name="new_home_account_finance_try_again">Coba Lagi</string>
+  
+    <string name="text_description_add_name_bottom_sheet">Nama asli akan mempermudah proses verifikasi jika akunmu bermasalah. Akunmu jadi makin aman, deh!</string>
+    <string name="text_title_add_name_bottom_sheet">Ubah nama akun jadi nama asli</string>
+    <string name="text_button_add_name_bottom_sheet">Ubah Nama Akun</string>
 
     <string name="coachmark_title_account_info">Info tentang akunmu ada di sini</string>
     <string name="coachmark_desc_account_info">Kamu bisa ubah data diri, lihat saldo atau investasi, dan cek keuntungan dari promo Tokopedia, lho!</string>

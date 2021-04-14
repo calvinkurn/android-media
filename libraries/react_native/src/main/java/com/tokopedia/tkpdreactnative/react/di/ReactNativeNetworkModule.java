@@ -4,7 +4,6 @@ import android.content.Context;
 
 import com.google.gson.Gson;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
-import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor;
 import com.tokopedia.core.network.apiservices.transaction.CreditCardAuthService;
 import com.tokopedia.core.network.apiservices.user.PeopleService;
 import com.tokopedia.network.NetworkRouter;
@@ -93,7 +92,6 @@ public class ReactNativeNetworkModule {
                                           UserSessionInterface userSessionInterface) {
         return new TkpdOkHttpBuilder(context, new OkHttpClient.Builder())
                 .addInterceptor(new FingerprintInterceptor((NetworkRouter) context.getApplicationContext(), userSessionInterface))
-                .addInterceptor(new CacheApiInterceptor(context))
                 .addInterceptor(new TkpdAuthInterceptor(context,
                         (NetworkRouter)context.getApplicationContext(),
                         userSessionInterface))

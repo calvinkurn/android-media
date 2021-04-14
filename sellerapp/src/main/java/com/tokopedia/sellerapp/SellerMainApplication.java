@@ -19,8 +19,6 @@ import com.google.android.play.core.splitcompat.SplitCompat;
 import com.tokopedia.additional_check.subscriber.TwoFactorCheckerSubscriber;
 import com.tokopedia.analyticsdebugger.debugger.FpmLogger;
 import com.tokopedia.authentication.AuthHelper;
-import com.tokopedia.cacheapi.domain.interactor.CacheApiWhiteListUseCase;
-import com.tokopedia.cacheapi.util.CacheApiLoggingUtils;
 import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.common.network.util.NetworkClient;
 import com.tokopedia.config.GlobalConfig;
@@ -44,7 +42,6 @@ import com.tokopedia.remoteconfig.abtest.AbTestPlatform;
 import com.tokopedia.sellerapp.deeplink.DeepLinkActivity;
 import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
 import com.tokopedia.sellerapp.fcm.AppNotificationReceiver;
-import com.tokopedia.sellerapp.utils.CacheApiWhiteList;
 import com.tokopedia.sellerapp.utils.SessionActivityLifecycleCallbacks;
 import com.tokopedia.sellerapp.utils.timber.LoggerActivityLifecycleCallbacks;
 import com.tokopedia.sellerapp.utils.timber.TimberWrapper;
@@ -148,7 +145,6 @@ public class SellerMainApplication extends SellerRouterApplication implements
         super.onCreate();
         MoengageInteractor.INSTANCE.setPushListener(SellerMainApplication.this);
         MoengageInteractor.INSTANCE.setInAppListener(this);
-        initCacheApi();
         com.tokopedia.akamai_bot_lib.UtilsKt.initAkamaiBotManager(SellerMainApplication.this);
         GraphqlClient.setContextData(this);
         GraphqlClient.init(this, remoteConfig.getBoolean(ADD_BROTLI_INTERCEPTOR, false));
@@ -243,15 +239,6 @@ public class SellerMainApplication extends SellerRouterApplication implements
     private void generateSellerAppNetworkKeys() {
         AuthUtil.KEY.KEY_CREDIT_CARD_VAULT = SellerAppNetworkKeys.CREDIT_CARD_VAULT_AUTH_KEY;
         AuthUtil.KEY.ZEUS_WHITELIST = SellerAppNetworkKeys.ZEUS_WHITELIST;
-    }
-
-    private void initCacheApi() {
-        CacheApiLoggingUtils.setLogEnabled(GlobalConfig.isAllowDebuggingTools());
-        new CacheApiWhiteListUseCase(this).executeSync(
-                CacheApiWhiteListUseCase.createParams(
-                        CacheApiWhiteList.getWhiteList(),
-                        String.valueOf(getCurrentVersion(getApplicationContext())))
-        );
     }
 
     public int getCurrentVersion(Context context) {

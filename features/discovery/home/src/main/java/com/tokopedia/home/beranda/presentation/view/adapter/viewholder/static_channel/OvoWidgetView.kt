@@ -316,7 +316,6 @@ class OvoWidgetView: FrameLayout {
 
             tokoPointHolder.setOnClickListener {
                 if (element.tokopointsDrawerHomeData != null) {
-                    OvoWidgetTracking.eventUserProfileTokopoints()
                     element.tokopointsDrawerHomeData?.let {tokopointsDrawerHomeData->
                         listener?.actionTokoPointClicked(
                                 tokopointsDrawerHomeData.redirectAppLink,
@@ -326,12 +325,19 @@ class OvoWidgetView: FrameLayout {
                                 else
                                     tokopointsDrawerHomeData.mainPageTitle
                         )
-                        if(tokopointsDrawerHomeData.type == TYPE_BBO){
-                            OvoWidgetTracking.sendClickOnBBOBalanceWidgetTracker(true, listener?.userId ?: "0")
-                        } else if (tokopointsDrawerHomeData.type == TYPE_COUPON || tokopointsDrawerHomeData.type == TYPE_REWARDS) {
-                            OvoWidgetTracking.sendClickOnCouponBalanceWidgetTracker(true, listener?.userId?:"")
-                        } else if (tokopointsDrawerHomeData.type == TYPE_TOKOPOINTS) {
-                            OvoWidgetTracking.sendClickOnTokopointsBalanceWidgetTracker(true, listener?.userId?:"")
+                        when (tokopointsDrawerHomeData.type) {
+                            TYPE_BBO -> {
+                                OvoWidgetTracking.sendClickOnBBOBalanceWidgetTracker(true, listener?.userId ?: "0")
+                            }
+                            TYPE_COUPON -> {
+                                OvoWidgetTracking.sendClickOnCouponBalanceWidgetTracker(true, listener?.userId?:"")
+                            }
+                            TYPE_REWARDS -> {
+                                OvoWidgetTracking.sendClickOnRewardsBalanceWidgetTracker(true, listener?.userId?:"")
+                            }
+                            TYPE_TOKOPOINTS -> {
+                                OvoWidgetTracking.sendClickOnTokopointsBalanceWidgetTracker(true, listener?.userId?:"")
+                            }
                         }
                     }
                 }
@@ -400,7 +406,6 @@ class OvoWidgetView: FrameLayout {
 
             bebasOngkirContainer.setOnClickListener {
                 if (element.tokopointsDrawerBBOHomeData != null) {
-                    OvoWidgetTracking.eventUserProfileTokopoints()
                     element.tokopointsDrawerBBOHomeData?.let {tokopointsDrawerHomeData->
                         listener?.actionTokoPointClicked(
                                 tokopointsDrawerHomeData.redirectAppLink,

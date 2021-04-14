@@ -595,6 +595,14 @@ class GetOccCartUseCase @Inject constructor(private val graphqlRepository: Graph
         total_profile
         change_template_text
       }
+      occ_remove_profile {
+        enable
+        ui_type
+        message {
+          title
+          description
+        }
+      }
     }
   }
 }"""

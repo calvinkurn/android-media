@@ -4,12 +4,12 @@ import android.content.Context
 import android.content.SharedPreferences
 import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.network.exception.HeaderErrorListResponse
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor
 import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseInterceptor
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.atc_common.AtcConstant
-import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor
 import com.tokopedia.chat_common.network.ChatUrl
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
@@ -35,6 +35,7 @@ import com.tokopedia.topchat.common.network.TopchatCacheManager
 import com.tokopedia.topchat.common.network.TopchatCacheManagerImpl
 import com.tokopedia.topchat.common.network.XUserIdInterceptor
 import com.tokopedia.topchat.stub.chatroom.websocket.RxWebSocketUtilStub
+import com.tokopedia.topchat.stub.common.TestDispatcherProvider
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.websocket.RxWebSocketUtil
@@ -149,7 +150,6 @@ class ChatModuleStub {
             OkHttpClient {
         val builder = OkHttpClient.Builder()
                 .addInterceptor(fingerprintInterceptor)
-                .addInterceptor(CacheApiInterceptor(context))
                 .addInterceptor(xUserIdInterceptor)
                 .addInterceptor(errorResponseInterceptor)
                 .connectTimeout(retryPolicy.connectTimeout.toLong(), TimeUnit.SECONDS)
@@ -251,5 +251,11 @@ class ChatModuleStub {
     @Named(AtcConstant.MUTATION_ATC_OCC)
     fun provideAtcOccMutation(@ApplicationContext context: Context): String {
         return GraphqlHelper.loadRawString(context.resources, com.tokopedia.atc_common.R.raw.mutation_add_to_cart_one_click_checkout)
+    }
+
+    @ChatScope
+    @Provides
+    fun provideTestDispatcher(): CoroutineDispatchers {
+        return TestDispatcherProvider()
     }
 }

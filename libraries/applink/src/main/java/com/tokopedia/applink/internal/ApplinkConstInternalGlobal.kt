@@ -79,6 +79,8 @@ object ApplinkConstInternalGlobal {
     // tokopedia-android-internal://global/add-name-register
     @JvmField
     val ADD_NAME_REGISTER = "$INTERNAL_GLOBAL/add-name-register"
+    @JvmField
+    val ADD_NAME_REGISTER_CLEAN_VIEW = "$INTERNAL_GLOBAL/add-name-register/clean-view"
 
     /**
      * ForgotPasswordAcitivity

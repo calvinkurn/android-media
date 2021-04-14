@@ -109,7 +109,7 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
         if (id == R.id.action_menu_share) {
             val sharingIntent = Intent(Intent.ACTION_SEND)
             sharingIntent.type = "text/plain"
-            sharingIntent.putExtra(Intent.EXTRA_TEXT, CommonConstant.WebLink.DETAIL + arguments!!.getString(CommonConstant.EXTRA_CATALOG_CODE))
+            sharingIntent.putExtra(Intent.EXTRA_TEXT, CommonConstant.WebLink.DETAIL + requireArguments().getString(CommonConstant.EXTRA_CATALOG_CODE))
             startActivity(Intent.createChooser(sharingIntent, null))
             return true
         }
@@ -121,11 +121,11 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
         initListener()
         if (arguments == null) {
             if (activity != null) {
-                activity!!.finish()
+                requireActivity().finish()
             }
             return
         }
-        code = arguments!!.getString(CommonConstant.EXTRA_CATALOG_CODE)
+        code = requireArguments().getString(CommonConstant.EXTRA_CATALOG_CODE)
         stopPreparePagePerformanceMonitoring()
         startNetworkRequestPerformanceMonitoring()
         mViewModel.getCatalogDetail(code ?: "")
@@ -219,7 +219,7 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
     }
 
     override fun getAppContext(): Context {
-        return context!!
+        return requireContext()
     }
 
     override fun showLoader() {
@@ -254,7 +254,7 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
     }
 
     override fun getActivityContext(): Context {
-        return activity!!
+        return requireActivity()
     }
 
     override fun getScreenName(): String {
@@ -386,7 +386,7 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
         if (view == null || mSubscriptionCouponTimer == null) {
             return
         }
-        val btnAction2: Typography = view!!.findViewById(R.id.button_action_2)
+        val btnAction2: Typography = requireView().findViewById(R.id.button_action_2)
         if (realCode != null && !realCode.isEmpty()) {
             btnAction2.setText(R.string.tp_label_use)
             btnAction2.isEnabled = true
@@ -405,7 +405,7 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
         if (view == null || mSubscriptionCouponTimer == null) {
             return
         }
-        val btnAction2: Typography = view!!.findViewById(R.id.button_action_2)
+        val btnAction2: Typography = requireView().findViewById(R.id.button_action_2)
         btnAction2.setText(R.string.tp_label_refresh_repeat)
         btnAction2.isEnabled = true
         mSubscriptionCouponTimer.unsubscribe()
@@ -415,10 +415,10 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
         if (view == null) {
             return
         }
-        val quota: Typography = view!!.findViewById(R.id.text_quota_count)
+        val quota: Typography = requireView().findViewById(R.id.text_quota_count)
         val quotaContainer: LinearLayout? = view?.findViewById(R.id.quota_container)
-        val btnAction2: Typography = view!!.findViewById(R.id.button_action_2)
-        val imgBanner = view!!.findViewById<ImageView>(R.id.img_banner)
+        val btnAction2: Typography = requireView().findViewById(R.id.button_action_2)
+        val imgBanner = requireView().findViewById<ImageView>(R.id.img_banner)
         btnAction2.isEnabled = !data.isDisabledButton
         if (data.isDisabledButton) {
             btnAction2.setTextColor(ContextCompat.getColor(btnAction2.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_32))
@@ -490,26 +490,26 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
         val minUsageLabel = view?.findViewById<Typography>(R.id.tv_min_txn_label)
         val minUsageValue = view?.findViewById<Typography>(R.id.tv_min_txn_value)
         val transactionContainer = view?.findViewById<ConstraintLayout>(R.id.container_transaksi)
-        val quota: Typography = view!!.findViewById(R.id.text_quota_count)
-        val description: Typography = view!!.findViewById(R.id.text_description)
-        val disabledError: Typography = view!!.findViewById(R.id.text_disabled_error)
-        val giftSectionMainLayout: ConstraintLayout = view!!.findViewById(R.id.gift_section_main_layout)
-        val giftImage: Typography = view!!.findViewById(R.id.gift_image)
-        val giftButton: Typography = view!!.findViewById(R.id.gift_btn)
-        val bottomSeparator = view!!.findViewById<View>(R.id.tp_bottom_separator)
+        val quota: Typography = requireView().findViewById(R.id.text_quota_count)
+        val description: Typography = requireView().findViewById(R.id.text_description)
+        val disabledError: Typography = requireView().findViewById(R.id.text_disabled_error)
+        val giftSectionMainLayout: ConstraintLayout = requireView().findViewById(R.id.gift_section_main_layout)
+        val giftImage: Typography = requireView().findViewById(R.id.gift_image)
+        val giftButton: Typography = requireView().findViewById(R.id.gift_btn)
+        val bottomSeparator = requireView().findViewById<View>(R.id.tp_bottom_separator)
         giftImage.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable(activity, R.drawable.ic_catalog_gift_btn), null, null, null)
-        val btnAction2: Typography = view!!.findViewById(R.id.button_action_2)
-        val imgBanner = view!!.findViewById<ImageView>(R.id.img_banner)
-        val labelPoint: Typography = view!!.findViewById(R.id.text_point_label)
-        val textDiscount: Typography = view!!.findViewById(R.id.text_point_discount)
+        val btnAction2: Typography = requireView().findViewById(R.id.button_action_2)
+        val imgBanner = requireView().findViewById<ImageView>(R.id.img_banner)
+        val labelPoint: Typography = requireView().findViewById(R.id.text_point_label)
+        val textDiscount: Typography = requireView().findViewById(R.id.text_point_discount)
         btnAction2.visibility = View.VISIBLE
         btnAction2.isEnabled = !data.isDisabledButton
         description.text = data.title
         btnAction2.text = data.buttonStr
         btnAction2.setBackgroundResource(R.drawable.bg_button_buy_orange_tokopoints)
         ImageHandler.loadImageFitCenter(imgBanner.context, imgBanner, data.imageUrlMobile)
-        val tvHowToUse: TkpdWebView = view!!.findViewById(R.id.how_to_use_content)
-        val tvTnc: TkpdWebView = view!!.findViewById(R.id.tnc_content)
+        val tvHowToUse: TkpdWebView = requireView().findViewById(R.id.how_to_use_content)
+        val tvTnc: TkpdWebView = requireView().findViewById(R.id.tnc_content)
         if (!data.tnc.isNullOrEmpty() && data.tnc != "<br>") {
             tvTnc.loadData(data.tnc, CommonConstant.COUPON_MIME_TYPE, CommonConstant.UTF_ENCODING)
         } else {
@@ -523,7 +523,7 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
             view?.findViewById<Typography>(R.id.how_to_use)?.hide()
             tvHowToUse.hide()
         }
-        val pointValue: Typography = view!!.findViewById(R.id.text_point_value_coupon)
+        val pointValue: Typography = requireView().findViewById(R.id.text_point_value_coupon)
         pointValue.text = "Gratis"
         //Quota text handling
         if (data.upperTextDesc.isNullOrEmpty()) {
@@ -630,7 +630,7 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
                     AnalyticsTrackerUtil.ActionKeys.CLICK_TUKAR,
                     mCouponName)
         }
-        pointValueText = view!!.findViewById(R.id.text_point_value_label)
+        pointValueText = requireView().findViewById(R.id.text_point_value_label)
         if (!mUserSession!!.isLoggedIn) {
             pointValueText!!.setText("Masuk untuk tukar Points")
         }
