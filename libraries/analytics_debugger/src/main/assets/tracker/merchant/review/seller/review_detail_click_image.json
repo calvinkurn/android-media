@@ -3,24 +3,24 @@
   "mode": "exact",
   "query": [
     {
-      "networkSpeed": "{{.*}}",
-      "clientId": "{{.*}}",
-      "productId": "{{.*}}",
-      "isLoggedInStatus": "{{true|false}}",
-      "appsflyerId": "{{.*}}",
-      "shopId": "{{.*}}",
+      "networkSpeed": ".*",
+      "clientId": ".*",
+      "productId": ".*",
+      "isLoggedInStatus": "true|false",
+      "appsflyerId": ".*",
+      "shopId": ".*",
       "screenName": "review detail page",
       "event": "openScreen",
-      "userId": "{{.*}}",
-      "sessionIris": "{{.*}}"
+      "userId": ".*",
+      "sessionIris": ".*"
     },
     {
       "eventCategory": "review detail page",
       "screenName": "review detail page",
       "event": "clickReview",
       "eventAction": "click - image on product review",
-      "sessionIris": "{{.{1,}}}",
-      "eventLabel": "{{.*}}"
+      "sessionIris": ".{1,}",
+      "eventLabel": ".*"
     }
   ]
 }

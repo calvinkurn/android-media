@@ -3,43 +3,43 @@
   "mode": "exact",
   "query": [
     {
-      "networkSpeed": "{{.*}}",
-      "clientId": "{{.*}}",
-      "isLoggedInStatus": "{{true|false}}",
-      "appsflyerId": "{{.*}}",
-      "shopId": "{{.*}}",
+      "networkSpeed": ".*",
+      "clientId": ".*",
+      "isLoggedInStatus": "true|false",
+      "appsflyerId": ".*",
+      "shopId": ".*",
       "screenName": "rating produk",
       "event": "openScreen",
-      "userId": "{{.*}}",
-      "sessionIris": "{{.*}}"
+      "userId": ".*",
+      "sessionIris": ".*"
     },
     {
       "eventCategory": "ulasan - rating produk",
-      "shopId": "{{.+}}",
+      "shopId": ".+",
       "screenName": "rating produk",
       "event": "clickReview",
       "eventAction": "click - rating produk tab",
-      "sessionIris": "{{.*}}",
+      "sessionIris": ".*",
       "eventLabel": ""
     },
     {
       "eventCategory": "ulasan - rating produk",
-      "shopId": "{{.+}}",
+      "shopId": ".+",
       "screenName": "rating produk",
       "event": "clickReview",
       "eventAction": "scroll - rating product page",
-      "sessionIris": "{{.*}}",
+      "sessionIris": ".*",
       "eventLabel": ""
     },
     {
       "eventCategory": "ulasan - rating produk",
-      "shopId": "{{.+}}",
+      "shopId": ".+",
       "screenName": "rating produk",
-      "position": "{{.+}}",
+      "position": ".+",
       "event": "clickReview",
       "eventAction": "click - product on rating product",
-      "sessionIris": "{{.*}}",
-      "eventLabel": "{{.+}}"
+      "sessionIris": ".*",
+      "eventLabel": ".+"
     }
   ]
 }
