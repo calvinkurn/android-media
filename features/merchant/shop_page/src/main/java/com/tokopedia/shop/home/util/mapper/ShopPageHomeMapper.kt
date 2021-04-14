@@ -120,7 +120,7 @@ object ShopPageHomeMapper {
         }
     }
 
-    fun mapToProductCardModel(isHasAddToCartButton: Boolean, hasThreeDots: Boolean, shopHomeProductViewModel: ShopHomeProductUiModel, isWideContent: Boolean = false): ProductCardModel {
+    fun mapToProductCardModel(isHasAddToCartButton: Boolean, hasThreeDots: Boolean, shopHomeProductViewModel: ShopHomeProductUiModel, isWideContent: Boolean): ProductCardModel {
         val discountWithoutPercentageString = shopHomeProductViewModel.discountPercentage?.replace("%", "")
                 ?: ""
         val discountPercentage = if (discountWithoutPercentageString == "0") {
