@@ -87,7 +87,6 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.d("DigitalTelcoPostpaid", "${userSession.userId} ::: ${userSession.androidId} ::: ${userSession.deviceId}")
         activity?.let {
             performanceMonitoring = PerformanceMonitoring.start(DG_TELCO_POSTPAID_TRACE)
 
@@ -509,10 +508,6 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
         private const val CACHE_CLIENT_NUMBER = "cache_client_number"
         private const val EXTRA_PARAM = "extra_param"
         private const val DG_TELCO_POSTPAID_TRACE = "dg_telco_postpaid_pdp"
-//        const val KEY_CLIENT_NUMBER = "clientNumber"
-//        const val KEY_PRODUCT_ID = "productId"
-        const val KEY_CLIENT_NUMBER = "client_number"
-        const val KEY_PRODUCT_ID = "product_id"
         private const val TITLE_PAGE = "telco post paid"
 
 
