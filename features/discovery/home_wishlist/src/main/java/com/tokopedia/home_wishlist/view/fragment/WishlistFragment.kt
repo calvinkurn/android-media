@@ -210,7 +210,7 @@ open class WishlistFragment : Fragment(), WishlistListener, TopAdsListener {
     private fun showCartBadge(menu: Menu?) {
         context?.let {
             if (::cartLocalCacheHandler.isInitialized) {
-                val drawable = ContextCompat.getDrawable(it, R.drawable.ic_cart_menu)
+                val drawable = ContextCompat.getDrawable(it, R.drawable.ic_wishlist_cart_menu)
                 if (drawable is LayerDrawable) {
                     val cartCount = cartLocalCacheHandler.getInt(CACHE_KEY_TOTAL_CART, 0)
                     val countDrawable = CountDrawable(it)
