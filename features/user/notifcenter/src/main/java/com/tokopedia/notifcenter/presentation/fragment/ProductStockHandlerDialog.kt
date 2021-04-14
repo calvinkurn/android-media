@@ -142,7 +142,12 @@ class ProductStockHandlerDialog(
         element.getAtcProduct()?.let { product ->
             // set product card data
             productCard?.setOnClickListener { onProductCardClicked(product) }
-            buttonReminderValidation(product.typeButton)
+            val typeButton = if(product.hasReminder) {
+                TYPE_DELETE_REMINDER_BUTTON
+            } else {
+                product.typeButton
+            }
+            buttonReminderValidation(typeButton)
             setDataProductCard(product)
 
             // get product highlight

@@ -56,22 +56,27 @@ class MultipleProductCardViewHolder(
             productVariant.setupVariant(variant)
             productPrice.text = priceFormat
             productName.text = name
-            showRemindButtonIfEmptyStock(this.stock)
+            showRemindButtonIfEmptyStock(this.stock, this.hasReminder)
         }
     }
 
-    private fun showRemindButtonIfEmptyStock(stock: Int) {
+    private fun showRemindButtonIfEmptyStock(stock: Int, hasReminder: Boolean) {
         if(stock < MINIMUM_STOCK) {
-            showReminderButton()
+            showReminderButton(hasReminder)
         } else {
             hideReminderButton()
         }
     }
 
-    private fun showReminderButton() {
+    private fun showReminderButton(hasReminder: Boolean) {
         btnReminder.show()
         btnAtc.hide()
         btnCheckout.hide()
+        if(hasReminder) {
+            setReminderButton()
+        } else {
+            setDeleteReminderButton()
+        }
     }
 
     private fun hideReminderButton() {
@@ -180,6 +185,18 @@ class MultipleProductCardViewHolder(
             listener.itemClicked(notification, adapterPosition)
             listener.onItemMultipleStockHandlerClick(notification)
         }
+    }
+
+    private fun setReminderButton() {
+        btnReminder.text = context?.getString(R.string.notifcenter_btn_reminder)
+        btnReminder.buttonType = UnifyButton.Type.MAIN
+        btnReminder.buttonVariant = UnifyButton.Variant.FILLED
+    }
+
+    private fun setDeleteReminderButton() {
+        btnReminder.buttonType = UnifyButton.Type.ALTERNATE
+        btnReminder.buttonVariant = UnifyButton.Variant.GHOST
+        btnReminder.text = context?.getString(R.string.notifcenter_btn_delete_reminder)
     }
 
     private fun trackAddToCartClicked(

@@ -93,22 +93,27 @@ class ProductCheckoutViewHolder(
                     userId = element.userInfo.userId,
                     notification = element
             )
-            showRemindButtonIfEmptyStock(element.products[0].stock)
+            showRemindButtonIfEmptyStock(element.products[0].stock, element.products[0].hasReminder)
         }
     }
 
-    private fun showRemindButtonIfEmptyStock(stock: Int) {
+    private fun showRemindButtonIfEmptyStock(stock: Int, hasReminder: Boolean) {
         if(stock < SINGLE_PRODUCT) {
-            showReminderButton()
+            showReminderButton(hasReminder)
         } else {
             hideReminderButton()
         }
     }
 
-    private fun showReminderButton() {
+    private fun showReminderButton(hasReminder: Boolean) {
         btnReminder.show()
         btnAtc.hide()
         btnCheckout.hide()
+        if(hasReminder) {
+            setReminderButton()
+        } else {
+            setDeleteReminderButton()
+        }
     }
 
     private fun hideReminderButton() {
@@ -162,6 +167,18 @@ class ProductCheckoutViewHolder(
             notificationItemMarkedClick(element)
             listener.onItemStockHandlerClick(element)
         }
+    }
+
+    private fun setReminderButton() {
+        btnReminder.text = context?.getString(R.string.notifcenter_btn_reminder)
+        btnReminder.buttonType = UnifyButton.Type.MAIN
+        btnReminder.buttonVariant = UnifyButton.Variant.FILLED
+    }
+
+    private fun setDeleteReminderButton() {
+        btnReminder.buttonType = UnifyButton.Type.ALTERNATE
+        btnReminder.buttonVariant = UnifyButton.Variant.GHOST
+        btnReminder.text = context?.getString(R.string.notifcenter_btn_delete_reminder)
     }
 
     private fun trackAddToCartClicked(
