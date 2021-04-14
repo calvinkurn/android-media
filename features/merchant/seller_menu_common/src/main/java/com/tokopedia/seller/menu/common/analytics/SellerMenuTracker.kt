@@ -92,6 +92,13 @@ class SellerMenuTracker(
 
         // etc
         private const val UNDEFINED = "undefined"
+
+        //shop score revamp
+        const val MY_SHOP = "toko saya"
+        const val CLICK_SHOP_SCORE = "clickShopScore"
+        const val CLICK_SHOP_SCORE_PERFORMANCE = "click - skor performa toko"
+        const val IMPRESSION_SHOP_SCORE_PERFORMANCE = "impression - skor performa toko"
+
     }
 
     fun sendEventViewShopAccount(shopInfo: SettingShopInfoUiModel) {
