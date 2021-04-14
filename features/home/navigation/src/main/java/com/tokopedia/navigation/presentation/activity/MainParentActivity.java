@@ -685,7 +685,9 @@ public class MainParentActivity extends BaseActivity implements
             fragmentList.add(AccountHomeFragment.newInstance(getIntent().getExtras()));
         } else {
             fragmentList.add(WishlistFragment.Companion.newInstance());
-            fragmentList.add(UohListFragment.newInstance(getIntent().getExtras()));
+            Bundle bundle = new Bundle();
+            bundle.putString("source_filter", "");
+            fragmentList.add(UohListFragment.newInstance(bundle));
         }
 
         return fragmentList;
