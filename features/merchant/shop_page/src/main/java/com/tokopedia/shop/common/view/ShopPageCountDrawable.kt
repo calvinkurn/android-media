@@ -4,7 +4,7 @@ import android.content.Context
 import android.graphics.*
 import android.graphics.drawable.Drawable
 import androidx.core.content.ContextCompat
-import com.tokopedia.unifyprinciples.R
+import com.tokopedia.shop.R
 
 class ShopPageCountDrawable(context: Context) : Drawable() {
     private var badgePaint: Paint? = null
@@ -16,14 +16,14 @@ class ShopPageCountDrawable(context: Context) : Drawable() {
         textPaint = Paint()
         textPaint?.color = ContextCompat.getColor(context, R.color.Unify_N0)
         textPaint?.typeface = Typeface.DEFAULT
-        textPaint?.textSize = context.resources.getDimension(com.tokopedia.shop.R.dimen.sp_8)
+        textPaint?.textSize = context.resources.getDimension(R.dimen.sp_8)
         textPaint?.isAntiAlias = true
         textPaint?.textAlign = Paint.Align.CENTER
     }
 
     private fun createBadgePaint(context: Context) {
         badgePaint = Paint()
-        badgePaint?.color = ContextCompat.getColor(context.applicationContext, com.tokopedia.shop.R.color.clr_red_800)
+        badgePaint?.color = ContextCompat.getColor(context.applicationContext, R.color.clr_red_800)
         badgePaint?.isAntiAlias = true
         badgePaint?.style = Paint.Style.FILL
     }
