@@ -7,6 +7,8 @@ import com.tokopedia.autocomplete.initialstate.dynamic.DynamicInitialStateSearch
 import com.tokopedia.autocomplete.initialstate.dynamic.DynamicInitialStateTitleViewModel
 import com.tokopedia.autocomplete.initialstate.popularsearch.PopularSearchTitleViewModel
 import com.tokopedia.autocomplete.initialstate.popularsearch.PopularSearchViewModel
+import com.tokopedia.autocomplete.initialstate.productline.InitialStateProductListDataView
+import com.tokopedia.autocomplete.initialstate.productline.InitialStateProductLineTitleDataView
 import com.tokopedia.autocomplete.initialstate.recentsearch.RecentSearchSeeMoreViewModel
 import com.tokopedia.autocomplete.initialstate.recentsearch.RecentSearchTitleViewModel
 import com.tokopedia.autocomplete.initialstate.recentsearch.RecentSearchViewModel
@@ -34,6 +36,10 @@ interface InitialStateTypeFactory {
     fun type(viewModelInitialState: RecentSearchSeeMoreViewModel): Int
 
     fun type(curatedCampaignViewModel: CuratedCampaignViewModel): Int
+
+    fun type(initialStateProductListDataView: InitialStateProductListDataView): Int
+
+    fun type(initialStateProductLineTitleDataView: InitialStateProductLineTitleDataView): Int
 
     fun createViewHolder(view: View, viewType: Int): AbstractViewHolder<*>
 }
