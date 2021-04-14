@@ -133,8 +133,9 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
         shopScoreVisitableList.apply {
             if (isNewSeller) {
                 val mapTimerNewSeller = mapToTimerNewSellerUiModel(shopAge, shopInfoPeriodUiModel.isEndTenureNewSeller)
-                add(mapToTimerNewSellerUiModel(shopAge, shopInfoPeriodUiModel.isEndTenureNewSeller).first)
-                add(mapTimerNewSeller.first)
+                if(mapTimerNewSeller.second) {
+                    add(mapToTimerNewSellerUiModel(shopAge, shopInfoPeriodUiModel.isEndTenureNewSeller).first)
+                }
                 add(ItemLevelScoreProjectUiModel())
             }
 
