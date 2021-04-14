@@ -100,6 +100,8 @@ dependencies {
     androidTestImplementation rootProject.ext.testDependencies.espressoIntents
     androidTestImplementation project(rootProject.ext.libraries.cassavaTest)
     androidTestImplementation project(rootProject.ext.libraries.instrumentation_test)
+    androidTestImplementation project(rootProject.ext.libraries.imagePicker)
+    androidTestImplementation project(rootProject.ext.features.productManageList)
 
     implementation (rootProject.ext.firebase.crashlytics) {
         transitive = true

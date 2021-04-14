@@ -13,9 +13,6 @@ buildscript {
 }
 
 dependencies {
-    implementation(rootProject.ext.debugToolsDependencies.timber) {
-        exclude group: 'org.jetbrains', module: 'annotations'
-    }
 
     implementation rootProject.ext.miscDependencies.gson
     implementation rootProject.ext.miscDependencies.workManager
@@ -38,3 +35,4 @@ project.ext {
 }
 
 apply from: '../../publish_local.gradle'
+apply from: '../../jacoco_task.gradle'

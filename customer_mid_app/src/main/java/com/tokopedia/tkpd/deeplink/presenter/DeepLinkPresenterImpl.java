@@ -650,7 +650,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                 if (e instanceof ResponseV4ErrorException) {
                     Map<String, String> messageMap = new HashMap<>();
                     messageMap.put("type", "TwoSegments");
-                    messageMap.put("link_segment", linkSegment.get(0) + linkSegment.get(1));
+                    messageMap.put("link_segment", linkSegment.get(0) + "/" + linkSegment.get(1));
                     messageMap.put("uri", uriData.toString());
                     ServerLogger.log(Priority.P1, "DEEPLINK_OPEN_WEBVIEW", messageMap);
                 }
@@ -682,7 +682,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     } else {
                         Map<String, String> messageMap = new HashMap<>();
                         messageMap.put("type", "TwoSegments");
-                        messageMap.put("link_segment", linkSegment.get(0) + linkSegment.get(1));
+                        messageMap.put("link_segment", linkSegment.get(0) + "/" + linkSegment.get(1));
                         messageMap.put("uri", uriData.toString());
                         ServerLogger.log(Priority.P1, "DEEPLINK_OPEN_WEBVIEW", messageMap);
                         if (!GlobalConfig.DEBUG) {
