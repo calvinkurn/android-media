@@ -19,6 +19,9 @@ object ImageUtil {
     const val IMAGE_EXCEED_SIZE_LIMIT = 102
     const val IMAGE_VALID = 103
 
+    private const val TYPING_LIGHT_MODE = "https://images.tokopedia.net/img/android/user/typing_motion_lightmode.gif"
+    private const val TYPING_DARK_MODE = "https://images.tokopedia.net/img/android/user/typing_motion_darkmode.gif"
+
     fun validateImageAttachment(uri: String?): Pair<Boolean, Int> {
         if (uri == null) return Pair(false, IMAGE_NO_URI)
         val file = File(uri)
@@ -39,19 +42,19 @@ object ImageUtil {
         }
     }
 
-    fun loadGif(imageUnify: ImageUnify, imageResource: Int){
+    fun loadGif(imageUnify: ImageUnify, gifUrl: String){
         Glide.with(imageUnify.context)
                 .asGif()
-                .load(imageResource)
+                .load(gifUrl)
                 .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                 .into(imageUnify)
     }
 
     fun setTypingAnimation(imageUnify: ImageUnify) {
         if(imageUnify.context.isDarkMode()) {
-            loadGif(imageUnify, com.tokopedia.topchat.R.drawable.typing_motion_darkmode)
+            loadGif(imageUnify, TYPING_DARK_MODE)
         } else {
-            loadGif(imageUnify, com.tokopedia.topchat.R.drawable.typing_motion_lightmode)
+            loadGif(imageUnify, TYPING_LIGHT_MODE)
         }
     }
 }
