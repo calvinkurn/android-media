@@ -104,7 +104,7 @@ class PlayLiveStateProcessor(
             }
             ApsaraLivePusherState.Resume -> {
                 if (isLiveStarted) {
-                    if (mLiveState != null && mLiveState is PlayLivePusherState.Error) { // will fix this later
+                    if (mLiveState is PlayLivePusherState.Error) { // will fix this later
                         broadcastState(PlayLivePusherState.Recovered)
                     } else broadcastState(PlayLivePusherState.Resume(isResumed = true))
                 }
