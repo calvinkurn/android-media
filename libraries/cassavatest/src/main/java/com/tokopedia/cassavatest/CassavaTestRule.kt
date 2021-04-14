@@ -32,6 +32,14 @@ class CassavaTestRule : TestRule {
         }
     }
 
+    fun validate(journeyId: Int): List<Validator> {
+        val cassavaQuery = getQuery(context, journeyId)
+        val validators = cassavaQuery.query.map { it.toDefaultValidator() }
+        return runBlocking {
+            ValidatorEngine(daoSource).computeCo(validators, cassavaQuery.mode.value)
+        }
+    }
+
     fun validate(path: String): List<Validator> {
         val cassavaQuery = getQuery(context, path)
         val validators = cassavaQuery.query.map { it.toDefaultValidator() }
