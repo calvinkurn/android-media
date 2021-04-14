@@ -24,6 +24,7 @@ import com.tokopedia.common_digital.common.constant.DigitalExtraParam
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.recharge_credit_card.analytics.CreditCardAnalytics
 import com.tokopedia.recharge_credit_card.bottomsheet.CCBankListBottomSheet
+import com.tokopedia.recharge_credit_card.datamodel.RechargeCreditCard
 import com.tokopedia.recharge_credit_card.datamodel.TickerCreditCard
 import com.tokopedia.recharge_credit_card.di.RechargeCCInstance
 import com.tokopedia.recharge_credit_card.util.RechargeCCGqlQuery
@@ -280,6 +281,11 @@ class RechargeCCFragment : BaseDaggerFragment() {
     }
 
     private fun navigateToCart(passData: DigitalCheckoutPassData) {
+        val creditCardSelected = rechargeCCViewModel.creditCardSelected.value
+                ?: RechargeCreditCard()
+        creditCardAnalytics.addToCart(userSession.userId, rechargeCCViewModel.categoryName, categoryId,
+                creditCardSelected.prefixName, creditCardSelected.operatorId.toString())
+
         context?.let {
             val intent = RouteManager.getIntent(activity, DigitalCheckoutUtil.getApplinkCartDigital(it))
             intent.putExtra(DigitalExtraParam.EXTRA_PASS_DIGITAL_CART_DATA, passData)
