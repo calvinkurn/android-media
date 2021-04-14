@@ -1,5 +1,7 @@
 package com.tokopedia.seller.menu.presentation.util
 
+import com.tokopedia.gm.common.constant.COMMUNICATION_PERIOD
+import com.tokopedia.gm.common.presentation.model.ShopInfoPeriodUiModel
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.product.manage.common.feature.list.data.model.filter.Tab
 import com.tokopedia.seller.menu.common.view.uimodel.ShopOrderUiModel
@@ -37,5 +39,11 @@ object SellerUiModelMapper {
             shopOrderUiModel,
             response.notifications.sellerOrderStatus.inResolution
         )
+    }
+
+    fun mapToIsShowTickerShopAccount(shopInfoPeriodUiModel: ShopInfoPeriodUiModel): Boolean {
+        return !shopInfoPeriodUiModel.isNewSeller &&
+                !shopInfoPeriodUiModel.isOfficialStore &&
+                shopInfoPeriodUiModel.periodType == COMMUNICATION_PERIOD
     }
 }

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<com.tokopedia.unifycomponents.CardUnify xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/cardTransitionPeriodRelief"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/bg_transition_period_relief">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/icSellerTransitionPeriod"
+            android:layout_width="@dimen/height_seller_announce"
+            android:layout_height="@dimen/spacing_lvl5"
+            android:layout_marginTop="@dimen/dp_12"
+            android:layout_marginStart="@dimen/dp_12"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvTitleSellerTransitionPeriod"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_lvl3"
+            app:layout_constraintStart_toEndOf="@id/icSellerTransitionPeriod"
+            app:layout_constraintTop_toTopOf="@id/icSellerTransitionPeriod"
+            app:layout_constraintBottom_toBottomOf="@id/icSellerTransitionPeriod"
+            android:textColor="@color/Unify_N700_96"
+            app:typographyType="heading_5"
+            android:text="@string/title_transition_period_relief"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvDescSellerTransitionPeriod"
+            android:layout_width="@dimen/layout_lvl0"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_lvl4"
+            android:layout_marginStart="@dimen/dp_12"
+            android:layout_marginEnd="@dimen/dp_12"
+            android:layout_marginBottom="@dimen/dp_12"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvTitleSellerTransitionPeriod"
+            android:textColor="@color/Unify_N700_68"
+            app:typographyType="body_3"
+            tools:text="@string/desc_transition_period_relief"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</com.tokopedia.unifycomponents.CardUnify>
