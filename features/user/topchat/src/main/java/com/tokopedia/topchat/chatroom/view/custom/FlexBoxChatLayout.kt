@@ -174,7 +174,9 @@ class FlexBoxChatLayout : FrameLayout {
             infoLayout.width = newInfoWidth
             info?.layoutParams = infoLayout
         } else if ((infoWidth + messageWidth + statusWidth) > contentWidth) {
-            // TODO: adjust if msgLine count == 1
+            val newInfoWidth = contentWidth - statusWidth
+            infoLayout.width = newInfoWidth
+            info?.layoutParams = infoLayout
         }
 
         setMeasuredDimension(totalWidth, totalHeight)
