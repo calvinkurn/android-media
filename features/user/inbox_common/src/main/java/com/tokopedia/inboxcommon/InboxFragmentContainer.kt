@@ -15,4 +15,5 @@ interface InboxFragmentContainer {
     fun decreaseDiscussionUnreadCounter()
     fun decreaseReviewUnreviewedCounter()
     fun hideReviewCounter()
+    fun showReviewCounter()
 }

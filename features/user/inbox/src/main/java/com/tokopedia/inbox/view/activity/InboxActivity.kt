@@ -230,6 +230,11 @@ class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentC
         bottomNav?.setBadgeCount(InboxFragmentType.REVIEW, 0)
     }
 
+    override fun showReviewCounter() {
+        val notificationRole = InboxConfig.inboxCounter.getByRole(RoleType.BUYER) ?: return
+        bottomNav?.setBadgeCount(InboxFragmentType.REVIEW, notificationRole.reviewInt)
+    }
+
     private fun setupToolbar() {
         toolbar?.switchToLightToolbar()
         val view = View.inflate(
