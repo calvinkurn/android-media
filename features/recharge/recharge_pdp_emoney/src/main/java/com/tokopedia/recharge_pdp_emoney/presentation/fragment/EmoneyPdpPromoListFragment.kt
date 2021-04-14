@@ -46,6 +46,6 @@ class EmoneyPdpPromoListFragment : BaseDaggerFragment() {
         emoneyPdpPromoListWidget.setPromoList(promoData)
         emoneyPdpPromoListWidget.toggleTitle(false)
 
-        emoneyPdpPromoListWidget.recyclerView.addItemDecoration(EmoneyPdpPromoListSpaceID())
+        emoneyPdpPromoListWidget.getRecyclerView().addItemDecoration(EmoneyPdpPromoListSpaceID())
     }
 }

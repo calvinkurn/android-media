@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">tkpddigital</string>
-
     <string name="recharge_pdp_emoney_toolbar_title">E-money</string>
 
     <string name="recharge_pdp_emoney_check_saldo">Cek Saldo</string>

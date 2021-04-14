@@ -5,7 +5,6 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import com.tokopedia.recharge_pdp_emoney.R
 import com.tokopedia.unifycomponents.BaseCustomView
-import kotlinx.android.synthetic.main.widget_emoney_input_card_number.view.*
 import org.jetbrains.annotations.NotNull
 
 /**
@@ -21,9 +20,6 @@ class EmoneyPdpInputCardNumberWidget @JvmOverloads constructor(@NotNull context:
     }
 
     fun initView() {
-        emoneyPdpCardInputNumber.getSecondIcon().setPadding(resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2),
-                resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2),
-                resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2),
-                resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2))
+
     }
 }
