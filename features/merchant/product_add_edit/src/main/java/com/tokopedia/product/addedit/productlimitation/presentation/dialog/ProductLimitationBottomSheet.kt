@@ -4,10 +4,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.core.view.isVisible
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.common.util.HorizontalItemDecoration
 import com.tokopedia.product.addedit.productlimitation.presentation.adapter.ProductLimitationItemAdapter
@@ -70,6 +72,8 @@ class ProductLimitationBottomSheet(
                 R.layout.add_edit_product_product_limitation_bottom_sheet_content, null)
         val rvItems = contentView?.findViewById<RecyclerView>(R.id.rv_product_limitation)
         val ticker = contentView?.findViewById<Ticker>(R.id.ticker_product_limitation)
+        val iconTitle = contentView?.findViewById<IconUnify>(R.id.icon_product_limitation)
+        val tvTitle = contentView?.findViewById<TextView>(R.id.tv_title_product_limitation)
 
         rvItems?.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         rvItems?.addItemDecoration(HorizontalItemDecoration(resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3)))
@@ -90,6 +94,9 @@ class ProductLimitationBottomSheet(
             }
             setHtmlDescription(getString(R.string.label_product_limitation_bottomsheet_ticker))
         }
+
+        iconTitle?.isVisible = actionItems.isNotEmpty()
+        tvTitle?.isVisible = actionItems.isNotEmpty()
 
         setChild(contentView)
     }

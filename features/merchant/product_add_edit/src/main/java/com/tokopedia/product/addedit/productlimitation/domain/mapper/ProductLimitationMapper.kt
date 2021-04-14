@@ -82,6 +82,7 @@ class ProductLimitationMapper {
         fun mapToProductLimitationModel(context: Context, productLimitationData: ProductLimitationData) =
                 ProductLimitationModel(
                         productLimitationData.eligible?.value.orFalse(),
+                        productLimitationData.eligible?.isUnlimited.orFalse(),
                         productLimitationData.eligible?.limit.orZero(),
                         ProductLimitationMapper().mapToActionItems(context, productLimitationData))
     }
