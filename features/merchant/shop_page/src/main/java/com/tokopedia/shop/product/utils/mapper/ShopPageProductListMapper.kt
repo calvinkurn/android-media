@@ -158,7 +158,7 @@ object ShopPageProductListMapper {
         return merchantVoucherResponse.map { MerchantVoucherViewModel(it) }
     }
 
-    fun mapToProductCardModel(shopProductUiModel: ShopProductUiModel): ProductCardModel {
+    fun mapToProductCardModel(shopProductUiModel: ShopProductUiModel, isWideContent: Boolean): ProductCardModel {
         val totalReview = try {
             NumberFormat.getInstance().parse(shopProductUiModel.totalReview).toInt()
         } catch (ignored: Exception) {
@@ -187,7 +187,8 @@ object ShopPageProductListMapper {
                 hasThreeDots = true,
                 pdpViewCount = shopProductUiModel.pdpViewCount,
                 stockBarLabel = shopProductUiModel.stockLabel,
-                stockBarPercentage = shopProductUiModel.stockBarPercentage
+                stockBarPercentage = shopProductUiModel.stockBarPercentage,
+                isWideContent = isWideContent
         )
     }
 
