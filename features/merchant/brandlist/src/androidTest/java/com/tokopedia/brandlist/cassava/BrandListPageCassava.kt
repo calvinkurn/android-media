@@ -24,7 +24,6 @@ import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import org.hamcrest.CoreMatchers
 import org.hamcrest.MatcherAssert
-import org.hamcrest.Matchers
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -61,11 +60,8 @@ class BrandListPageCassava {
     @Test
     fun testBrandList() {
         initTest()
-
         doActivityTest()
-
-        doHomeCassavaTest()
-
+        doBrandlistCassavaTest()
         addDebugEnd()
     }
 
@@ -88,14 +84,15 @@ class BrandListPageCassava {
         Espresso.onView(withId(R.id.tablayout)).perform(selectTabAtPosition(0))
 
         // 2. scroll and click item at OS
-        // Scroll to bottom first and then back to top for load all data (recom case)
         val recyclerView = activityRule.activity.findViewById<RecyclerView>(R.id.recycler_view)
-        var itemCount = recyclerView.adapter?.itemCount ?: 0
-        recyclerView.layoutManager?.smoothScrollToPosition(recyclerView, null, itemCount - 1)
-        Thread.sleep(1000)
-        recyclerView.layoutManager?.smoothScrollToPosition(recyclerView, null, 0)
-        Thread.sleep(1000)
-        itemCount = recyclerView.adapter?.itemCount ?: 0
+        val itemCount = recyclerView.adapter?.itemCount ?: 0
+
+        waitForData()
+
+        InstrumentationRegistry.getInstrumentation().runOnMainSync {
+            recyclerView.scrollToPosition(0)
+        }
+
         for (i in 0 until itemCount) {
             scrollRecyclerViewToPosition(recyclerView, i)
             checkProductOnDynamicChannel(recyclerView, i)
@@ -108,7 +105,7 @@ class BrandListPageCassava {
         logTestMessage("Done UI Test")
     }
 
-    private fun doHomeCassavaTest() {
+    private fun doBrandlistCassavaTest() {
         waitForData()
         //worked
         MatcherAssert.assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME),
@@ -139,13 +136,7 @@ class BrandListPageCassava {
                 CommonActions.clickOnEachItemRecyclerView(viewHolder.itemView, R.id.rv_new_brand, 0)
             }
             is AllBrandGroupHeaderViewHolder -> {
-                val childRecyclerView: RecyclerView = viewHolder.itemView.findViewById(R.id.rv_groups_chip)
-                var childItemCount = childRecyclerView.adapter!!.itemCount
-                val tempStoreDesc = childRecyclerView.contentDescription
-                childRecyclerView.contentDescription = CommonActions.UNDER_TEST_TAG
-                Espresso.onView(Matchers.allOf(withId(R.id.rv_groups_chip), ViewMatchers.withContentDescription(CommonActions.UNDER_TEST_TAG)))
-                        .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(2, click()))
-                childRecyclerView.contentDescription = tempStoreDesc
+                CommonActions.clickOnEachItemRecyclerView(viewHolder.itemView, R.id.rv_groups_chip, 0)
             }
             is AllBrandViewHolder -> {
                 Espresso.onView(CoreMatchers.allOf(ViewMatchers.isDisplayed(), withId(R.id.recycler_view)))
