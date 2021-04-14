@@ -103,7 +103,7 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
 
     @Override
     protected void initView() {
-        View mainView = findViewById(R.id.main_view);
+        
     }
 
     @Override
