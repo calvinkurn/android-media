@@ -15,7 +15,7 @@
         <item name="android:paddingBottom">@dimen/common_travel_dp_10</item>
         <item name="android:includeFontPadding">false</item>
         <item name="android:minHeight">0dp</item>
-        <item name="android:textColor">@color/text_color_travel_trip_button</item>
+        <item name="android:textColor">@color/common_travel_dms_text_trip_button_color</item>
         <item name="android:background">@drawable/bg_travel_round_button</item>
     </style>
 
