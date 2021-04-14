@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.base.view.appupdate.ApplicationUpdate
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.domain.GraphqlUseCase
+import com.tokopedia.home_wishlist.di.WishlistModule
 import com.tokopedia.navigation.R
 import com.tokopedia.navigation.data.mapper.NotificationRequestMapper
 import com.tokopedia.navigation.domain.GetBottomNavNotificationUseCase
@@ -28,7 +29,7 @@ import javax.inject.Named
  * Created by Lukas on 2019-07-31
  */
 
-@Module(includes = [TopAdsWishlistModule::class, RecommendationModule::class])
+@Module(includes = [TopAdsWishlistModule::class, RecommendationModule::class, WishlistModule::class])
 class GlobalNavModule {
     @Provides
     fun provideMainParentPresenter(getNotificationUseCase: GetBottomNavNotificationUseCase, userSession: UserSessionInterface): MainParentPresenter {
