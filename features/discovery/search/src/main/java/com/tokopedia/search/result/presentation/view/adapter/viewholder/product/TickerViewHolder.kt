@@ -1,62 +1,58 @@
-package com.tokopedia.search.result.presentation.view.adapter.viewholder.product;
+package com.tokopedia.search.result.presentation.view.adapter.viewholder.product
 
-import android.text.TextUtils;
-import android.view.View;
+import android.view.View
+import androidx.annotation.LayoutRes
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
+import com.tokopedia.search.R
+import com.tokopedia.search.result.presentation.model.TickerDataView
+import com.tokopedia.search.result.presentation.view.listener.TickerListener
+import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifycomponents.ticker.TickerCallback
 
-import androidx.annotation.LayoutRes;
+class TickerViewHolder(
+        itemView: View,
+        private val tickerListener: TickerListener
+) : AbstractViewHolder<TickerDataView>(itemView) {
 
-import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.search.R;
-import com.tokopedia.search.result.presentation.model.TickerDataView;
-import com.tokopedia.search.result.presentation.view.listener.TickerListener;
-import com.tokopedia.unifycomponents.ticker.Ticker;
-import com.tokopedia.unifycomponents.ticker.TickerCallback;
-
-import org.jetbrains.annotations.NotNull;
-
-public class TickerViewHolder extends AbstractViewHolder<TickerDataView> {
-
-    @LayoutRes
-    public static final int LAYOUT = R.layout.search_result_product_ticker_layout;
-    private Ticker tickerView;
-    private TickerListener tickerListener;
-
-    public TickerViewHolder(View itemView,
-                            TickerListener tickerListener) {
-        super(itemView);
-        this.tickerListener = tickerListener;
-        tickerView = itemView.findViewById(R.id.tickerView);
+    companion object {
+        @JvmField
+        @LayoutRes
+        val LAYOUT = R.layout.search_result_product_ticker_layout
     }
 
-    @Override
-    public void bind(final TickerDataView element) {
-        bindTickerView(element);
+    private val tickerView: Ticker? = itemView.findViewById(R.id.tickerView)
+
+    override fun bind(element: TickerDataView) {
+        bindTickerView(element)
     }
 
-    private void bindTickerView(TickerDataView element) {
-        if (tickerListener == null || tickerListener.isTickerHasDismissed()
-                || TextUtils.isEmpty(element.getText())) {
-            itemView.setVisibility(View.GONE);
-            return;
+    private fun bindTickerView(element: TickerDataView) {
+        val shouldShowTicker = tickerListener.isTickerHasDismissed || element.text.isEmpty()
+
+        itemView.shouldShowWithAction(shouldShowTicker) {
+            tickerView?.setHtmlDescription(element.text)
+            tickerView?.setDescriptionClickEvent(object : TickerCallback {
+                override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                    onDescriptionViewClick(element)
+                }
+
+                override fun onDismiss() {
+                    onTickerDismissed()
+                }
+            })
         }
+    }
 
-        tickerView.setHtmlDescription(element.getText());
-        tickerView.setDescriptionClickEvent(new TickerCallback() {
-            @Override
-            public void onDescriptionViewClick(@NotNull CharSequence charSequence) {
-                if (tickerListener != null && !TextUtils.isEmpty(element.getQuery())) {
-                    tickerListener.onTickerClicked(element);
-                }
-            }
+    private fun onDescriptionViewClick(element: TickerDataView) {
+        if (element.query.isNotEmpty()) {
+            tickerListener.onTickerClicked(element)
+        }
+    }
 
-            @Override
-            public void onDismiss() {
-                itemView.setVisibility(View.GONE);
-                if (tickerListener != null) {
-                    tickerListener.onTickerDismissed();
-                }
-            }
-        });
-        itemView.setVisibility(View.VISIBLE);
+    private fun onTickerDismissed() {
+        itemView.gone()
+        tickerListener.onTickerDismissed()
     }
 }
