@@ -21,8 +21,7 @@ import javax.inject.Inject
  * Created by Yehezkiel on 13/10/20
  */
 class BsProductDetailInfoViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
-                                                       private val getProductDetailBottomSheetUseCase: GetProductDetailBottomSheetUseCase,
-                                                       val userSession: UserSessionInterface)
+                                                       private val getProductDetailBottomSheetUseCase: GetProductDetailBottomSheetUseCase)
     : BaseViewModel(dispatchers.io) {
 
     private val parcelData = MutableLiveData<ProductInfoParcelData>()

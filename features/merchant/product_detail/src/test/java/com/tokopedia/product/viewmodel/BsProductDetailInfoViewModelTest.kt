@@ -28,9 +28,6 @@ import org.junit.*
 class BsProductDetailInfoViewModelTest {
 
     @RelaxedMockK
-    lateinit var userSessionInterface: UserSessionInterface
-
-    @RelaxedMockK
     lateinit var getProductDetailBottomSheetUseCase: GetProductDetailBottomSheetUseCase
 
     @get:Rule
@@ -47,7 +44,7 @@ class BsProductDetailInfoViewModelTest {
     }
 
     private val viewModel by lazy {
-        BsProductDetailInfoViewModel(CoroutineTestDispatchersProvider, getProductDetailBottomSheetUseCase, userSessionInterface)
+        BsProductDetailInfoViewModel(CoroutineTestDispatchersProvider, getProductDetailBottomSheetUseCase)
     }
 
     private val bottomSheetOrderItem by lazy {
