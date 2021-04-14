@@ -58,7 +58,7 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
     private val shopPerformanceAdapter by lazy { ShopPerformanceAdapter(shopPerformanceAdapterTypeFactory) }
     private var shopScoreWrapperResponse: ShopScoreWrapperResponse? = null
 
-    private val coachMarkItem = ArrayList<CoachMark2Item>()
+    private val coachMarkItemList = ArrayList<CoachMark2Item>()
     private val coachMark by lazy { context?.let { CoachMark2(it) } }
     private val shopScoreCoachMarkPrefs by lazy { ShopScoreCoachMarkPrefs(requireContext()) }
 
@@ -151,7 +151,7 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
      **/
     override fun onViewItemDetailPerformanceListener(view: View) {
         if (!shopScoreCoachMarkPrefs.getHasShownItemPerformanceDetail()) {
-            coachMarkItem.add(CoachMark2Item(
+            coachMarkItemList.add(CoachMark2Item(
                     view.findViewById(R.id.cardItemDetailShopPerformance),
                     getString(R.string.title_coachmark_shop_score_2),
                     getString(R.string.desc_coachmark_shop_score_2),
@@ -185,7 +185,7 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
      **/
     override fun onViewItemPowerMerchantListener(view: View) {
         if (!shopScoreCoachMarkPrefs.getHasShownItemPM()) {
-            coachMarkItem.add(CoachMark2Item(
+            coachMarkItemList.add(CoachMark2Item(
                     view.findViewById(R.id.containerPowerMerchant),
                     getString(R.string.title_coachmark_shop_score_3),
                     getString(R.string.desc_coachmark_shop_score_3),
@@ -207,7 +207,7 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
      **/
     override fun onViewRegularMerchantListener(view: View) {
         if (!shopScoreCoachMarkPrefs.getHasShownItemRM()) {
-            coachMarkItem.add(CoachMark2Item(
+            coachMarkItemList.add(CoachMark2Item(
                     view.findViewById(R.id.containerRegularMerchantSection),
                     getString(R.string.title_coachmark_shop_score_3),
                     getString(R.string.desc_coachmark_shop_score_3),
@@ -222,7 +222,7 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
      **/
     override fun onViewHeaderListener(view: View) {
         if (!shopScoreCoachMarkPrefs.getHasShownHeaderPerformanceDetail()) {
-            coachMarkItem.add(CoachMark2Item(
+            coachMarkItemList.add(CoachMark2Item(
                     view.findViewById(R.id.containerCornerShopPerformance),
                     getString(R.string.title_coachmark_shop_score_1),
                     getString(R.string.desc_coachmark_shop_score_1),
@@ -288,12 +288,38 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
                 } else {
                     coachMark?.stepPagination?.show()
                 }
+
+                if (currentIndex == COACHMARK_THREE_POSITION) {
+                    scrollToLastItemCoachMark()
+                }
             }
         })
 
-        if (coachMarkItem.isNotEmpty() && !shopScoreCoachMarkPrefs.getFinishCoachMark()) {
-            coachMark?.showCoachMark(coachMarkItem)
+        if (coachMarkItemList.isNotEmpty() && !shopScoreCoachMarkPrefs.getFinishCoachMark()) {
+            coachMark?.showCoachMark(coachMarkItemList)
             shopScoreCoachMarkPrefs.setFinishCoachMark(true)
+        }
+    }
+
+    private fun scrollToLastItemCoachMark() {
+        val pmData = shopPerformanceAdapter.list.firstOrNull { it is ItemStatusPMUiModel }
+        var position = -1
+        if (pmData != null) {
+            position = shopPerformanceAdapter.list.indexOf(pmData)
+        } else {
+            val rmData = shopPerformanceAdapter.list.firstOrNull { it is ItemStatusRMUiModel }
+            if (rmData != null) {
+                position =shopPerformanceAdapter.list.indexOf(rmData)
+            }
+        }
+        if (position != -1) {
+            val smoothScroller: RecyclerView.SmoothScroller = object : LinearSmoothScroller(context) {
+                override fun getVerticalSnapPreference(): Int {
+                    return SNAP_TO_END
+                }
+            }
+            smoothScroller.targetPosition = position
+            rvShopPerformance?.layoutManager?.startSmoothScroll(smoothScroller)
         }
     }
 
@@ -374,6 +400,8 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
         val INFO_MENU_ID = R.id.menu_info_shop_performance
 
         private const val PENALTY_BADGE_DELAY = 500L
+
+        private const val COACHMARK_THREE_POSITION = 3
 
         @JvmStatic
         fun newInstance(): ShopPerformancePageFragment {
