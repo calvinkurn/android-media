@@ -126,6 +126,9 @@ class TopChatViewStateImpl constructor(
         typingImage = toolbar.findViewById(com.tokopedia.chat_common.R.id.iv_typing)
         typingText = toolbar.findViewById(com.tokopedia.chat_common.R.id.tv_typing)
 
+        typingImage?.let {
+            ImageUtil.setTypingAnimation(it)
+        }
         initProductPreviewLayout()
         initHeaderLayout()
         setupChatStickerMenu()
@@ -656,15 +659,11 @@ class TopChatViewStateImpl constructor(
         userStatus?.hide()
         typingImage?.show()
         typingText?.show()
-        typingImage?.let {
-            ImageUtil.setTypingAnimation(it)
-        }
     }
 
     override fun onShowStopTyping() {
         userStatus?.show()
         typingImage?.hide()
         typingText?.hide()
-        //stop rifqi's animation
     }
 }

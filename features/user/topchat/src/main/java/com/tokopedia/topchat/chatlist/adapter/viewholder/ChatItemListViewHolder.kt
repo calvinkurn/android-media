@@ -85,6 +85,7 @@ class ChatItemListViewHolder constructor(
         bindLabel(element)
         bindPin(element)
         bindSmartReplyIndicator(element)
+        ImageUtil.setTypingAnimation(typingImage)
     }
 
     private fun bindSmartReplyIndicator(element: ItemChatListPojo) {
@@ -274,11 +275,6 @@ class ChatItemListViewHolder constructor(
 
     private fun bindTypingState() {
         typingImage.show()
-        setMessageTyping()
-    }
-
-    private fun setMessageTyping() {
-        ImageUtil.setTypingAnimation(typingImage)
         message.hide()
         typingText.show()
     }
@@ -303,7 +299,6 @@ class ChatItemListViewHolder constructor(
         message.show()
         typingImage.hide()
         typingText.hide()
-        //stop rifqi's animation
     }
 
     private fun createLabelSpan(chat: ItemChatListPojo): SpannableString {

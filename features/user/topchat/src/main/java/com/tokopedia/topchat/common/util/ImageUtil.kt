@@ -1,11 +1,8 @@
 package com.tokopedia.topchat.common.util
 
 import android.graphics.BitmapFactory
-import androidx.annotation.DrawableRes
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.bumptech.glide.load.resource.bitmap.RoundedCorners
-import com.tokopedia.topchat.R
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import java.io.File
@@ -42,33 +39,19 @@ object ImageUtil {
         }
     }
 
-    fun loadGif(imageUnify: ImageUnify, @DrawableRes imageResource: Int){
+    fun loadGif(imageUnify: ImageUnify, imageResource: Int){
         Glide.with(imageUnify.context)
                 .asGif()
                 .load(imageResource)
                 .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-                .transform(RoundedCorners(10))
                 .into(imageUnify)
     }
 
-    private fun loadTypingGif(imageUnify: ImageUnify) {
-        if(imageUnify.context.isDarkMode()) {
-            loadGif(imageUnify, R.drawable.typing_motion_darkmode)
-        } else {
-            loadGif(imageUnify, R.drawable.typing_motion_lightmode)
-        }
-    }
-
     fun setTypingAnimation(imageUnify: ImageUnify) {
-        when(getAnimationType()) {
-            "avd" -> {
-                //change with rifqi's
-            }
-            "gif" -> loadTypingGif(imageUnify)
+        if(imageUnify.context.isDarkMode()) {
+            loadGif(imageUnify, com.tokopedia.topchat.R.drawable.typing_motion_darkmode)
+        } else {
+            loadGif(imageUnify, com.tokopedia.topchat.R.drawable.typing_motion_lightmode)
         }
-    }
-
-    private fun getAnimationType(): String {
-        return "gif"
     }
 }
