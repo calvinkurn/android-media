@@ -716,6 +716,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         hideSnackBarRetry()
         updateScrollListenerState(false)
 
+        var isWidgetHasError = false
         val newWidgetFromCache = widgets.first().isFromCache
         val newWidgets = if (adapter.data.isEmpty()) {
             widgets as List<BaseWidgetUiModel<BaseDataUiModel>>
@@ -727,8 +728,13 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                 val newWidgets = arrayListOf<BaseWidgetUiModel<*>>()
                 widgets.forEach { newWidget ->
                     oldWidgets.find { isTheSameWidget(it, newWidget) }.let { oldWidget ->
-                        if (newWidget is CardWidgetUiModel) {
-                            newWidget.data?.previousValue = (oldWidget as? CardWidgetUiModel)?.data?.previousValue
+                        if (isNewLazyLoad) {
+                            if (newWidget is CardWidgetUiModel) {
+                                newWidget.data?.previousValue = (oldWidget as? CardWidgetUiModel)?.data?.previousValue
+                            }
+                            if (!newWidget.data?.error.isNullOrBlank()) {
+                                isWidgetHasError = true
+                            }
                         }
                         if (oldWidget == null) {
                             newWidgets.add(newWidget)
@@ -768,6 +774,10 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         }
 
         setProgressBarVisibility(false)
+
+        if (isWidgetHasError) {
+            showErrorToaster()
+        }
     }
 
     private fun isTheSameWidget(oldWidget: BaseWidgetUiModel<*>, newWidget: BaseWidgetUiModel<*>): Boolean {
