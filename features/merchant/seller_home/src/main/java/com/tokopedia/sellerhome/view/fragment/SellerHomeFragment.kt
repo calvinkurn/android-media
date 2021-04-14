@@ -361,6 +361,13 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         if (visibleWidgets.isNotEmpty()) getWidgetsData(visibleWidgets)
     }
 
+    /**
+     * Get index of last widget which data will be loaded.
+     * This will be used to load widgets below the visible widgets for smooth scrolling
+     *
+     * @param   lastVisibleWidget   index of last visible widget on the screen
+     * @return  index of last widget that need its data to be loaded
+     */
     private fun getLastLoadingWidget(lastVisibleWidget: Int): Int {
         return if (lastVisibleWidget + HIDDEN_WIDGET_COUNT >= adapter.dataSize) {
             adapter.lastIndex
@@ -376,7 +383,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
         sahGlobalError.gone()
         val deviceHeight =
-                if (remoteConfig.isSellerHomeDashboardNewLazyLoad()) {
+                if (isNewLazyLoad) {
                     deviceDisplayHeight
                 } else {
                     null
@@ -729,9 +736,12 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                 widgets.forEach { newWidget ->
                     oldWidgets.find { isTheSameWidget(it, newWidget) }.let { oldWidget ->
                         if (isNewLazyLoad) {
+                            // If there are card widgets exist in adapter data, set the previous value in the latest widget
+                            // to enable animation after pull to refresh
                             if (newWidget is CardWidgetUiModel) {
                                 newWidget.data?.previousValue = (oldWidget as? CardWidgetUiModel)?.data?.previousValue
                             }
+                            // Set flag if initial widget layout list has error data to determine showing toaster or not
                             if (!newWidget.data?.error.isNullOrBlank()) {
                                 isWidgetHasError = true
                             }
@@ -927,6 +937,9 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         })
     }
 
+    /**
+     * Load next unloaded indexed widget in adapter after the previous one is complete
+     */
     private fun loadNextUnloadedWidget() {
         if (isNewLazyLoad) {
             adapter.data?.find { !it.isLoaded }?.let { newWidgets ->

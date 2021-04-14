@@ -208,6 +208,13 @@ class SellerHomeViewModel @Inject constructor(
         })
     }
 
+    /**
+     * Get widget layout for seller home. If screen height value is provided,
+     * that means we will also fetch widgets' data that expected to be shown first on the screen
+     * and combine those before showing the widgets to user.
+     *
+     * @param   heightDp    height of device screen in dp
+     */
     fun getWidgetLayout(heightDp: Float? = null) {
         launchCatchError(block = {
             val params = GetLayoutUseCase.getRequestParams(shopId, SELLER_HOME_PAGE_NAME)
@@ -426,6 +433,14 @@ class SellerHomeViewModel @Inject constructor(
         })
     }
 
+    /**
+     * Return flow that will get predicted widget that should be shown first in the screen and load the widgets's data
+     * After that, map the original widgets to initial loaded widgets by their ids
+     *
+     * @param   widgets         original widget list
+     * @param   deviceHeightDp  expected screen height to determine initial widgets to be loaded
+     * @return  flow that emit mapped/combined widget layouts
+     */
     private suspend fun getInitialWidget(widgets: List<BaseWidgetUiModel<*>>, deviceHeightDp: Float): Flow<List<BaseWidgetUiModel<*>>> {
         val widgetFlow = flow { emit(widgets) }
         val predictedInitialWidgetFlow = getPredictedInitialWidget(widgets, deviceHeightDp)
@@ -436,6 +451,13 @@ class SellerHomeViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Return flow that will calculate height to predict which widgets that will load their data initially
+     *
+     * @param   widgetList      original widget list
+     * @param   deviceHeightDp  expected screen height to determine initial widgets to be loaded
+     * @return  flow that will return initial widgets layout which has its data loaded
+     */
     private fun getPredictedInitialWidget(widgetList: List<BaseWidgetUiModel<*>>, deviceHeightDp: Float): Flow<List<BaseWidgetUiModel<*>>> {
         var remainingHeight = deviceHeightDp
         var hasCardCalculated = false
@@ -458,6 +480,12 @@ class SellerHomeViewModel @Inject constructor(
         return getLoadedInitialWidgetData(newWidgetList)
     }
 
+    /**
+     * Return flow that will get all required initial widget data by checking which widgets that still need their data loaded
+     *
+     * @param   widgetList  predicted initial widget list
+     * @return  flow that return list of all loaded widget
+     */
     private fun getLoadedInitialWidgetData(widgetList: List<BaseWidgetUiModel<*>>): Flow<List<BaseWidgetUiModel<*>>> {
         val loadedWidgetList = widgetList.filter { it.isLoading }
 
@@ -470,6 +498,12 @@ class SellerHomeViewModel @Inject constructor(
         return getWidgetsData(newWidgetList)
     }
 
+    /**
+     * Return flow that will load required data from each expected widget and combine those to single widget list
+     *
+     * @param   widgets     list of widgets which their data need to be loaded
+     * @return  flow that return list of combined widget list that has their data loaded
+     */
     private fun getWidgetsData(widgets: List<BaseWidgetUiModel<*>>): Flow<List<BaseWidgetUiModel<*>>> {
         val groupedWidgets = widgets.groupBy { it.widgetType } as MutableMap
         val lineGraphDataFlow = groupedWidgets.getWidgetDataByType<LineGraphDataUiModel>(WidgetType.LINE_GRAPH)
@@ -491,6 +525,14 @@ class SellerHomeViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Extension function for mapped initial widget list by type which will return flow that will get widget data by its type.
+     * If error, will instantiate new data ui model that will has the error message assigned to avoid throwing exception.
+     * Also, will stop network custom trace PLT for loaded widget data after completion.
+     *
+     * @param   widgetType  type of widget which data needed to be loaded
+     * @return  flow that will emit list of data for current widget type
+     */
     private inline fun <reified D : BaseDataUiModel> MutableMap<String, List<BaseWidgetUiModel<*>>>.getWidgetDataByType(widgetType: String): Flow<List<BaseDataUiModel>> {
         return flow {
             val widgetList = this@getWidgetDataByType[widgetType]
@@ -521,10 +563,18 @@ class SellerHomeViewModel @Inject constructor(
                     }
             emit(widgetDataList)
         }.onCompletion {
-            _stopWidgetType.value = widgetType
+            withContext(dispatcher.main) {
+                _stopWidgetType.value = widgetType
+            }
         }
     }
 
+    /**
+     * Extension function for list of widget data which will be mapped ot its original initial widget list
+     *
+     * @param   widgets     original initial widget list
+     * @return  list of mapped widgets with their data
+     */
     private inline fun <D : BaseDataUiModel, reified W : BaseWidgetUiModel<D>> List<D>.mapToWidgetModel(widgets: List<BaseWidgetUiModel<*>>): List<BaseWidgetUiModel<*>> {
         val newWidgetList = widgets.toMutableList()
         forEach{ widgetData ->
@@ -548,6 +598,14 @@ class SellerHomeViewModel @Inject constructor(
         return newWidgetList
     }
 
+    /**
+     * Determine whether the widget need to be removed from its original list, which depends on its data value.
+     * This will only take cloud values in consideration, not cache.
+     *
+     * @param   widget      widget to check
+     * @param   widgetData  the widget's data
+     * @return  is the widget should be removed
+     */
     private fun shouldRemoveWidgetInitially(widget: BaseWidgetUiModel<*>, widgetData: BaseDataUiModel): Boolean {
         return !widgetData.showWidget || (!widget.isShowEmpty && widgetData.shouldRemove())
     }
