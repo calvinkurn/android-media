@@ -5,11 +5,11 @@
     android:id="@+id/logisticLabelView"
     android:layout_width="match_parent"
     android:layout_height="@dimen/dp_64"
-    app:lv_title_color="@color/Unify_N600_96"
-    app:lv_sub_title_color="@color/Unify_N700_68"
-    app:lv_image="@drawable/ic_smiley_good"
-    app:lv_image_width="@dimen/dp_64"
-    app:lv_image_height="@dimen/dp_32"
-    app:lv_image_margin_right="@dimen/dp_16"
-    app:lv_title_text_size="@dimen/sp_14"/>
+    app:shop_lv_title_color="@color/Unify_N600_96"
+    app:shop_lv_sub_title_color="@color/Unify_N700_68"
+    app:shop_lv_image="@drawable/ic_smiley_good"
+    app:shop_lv_image_width="@dimen/dp_64"
+    app:shop_lv_image_height="@dimen/dp_32"
+    app:shop_lv_image_margin_right="@dimen/dp_16"
+    app:shop_lv_title_text_size="@dimen/sp_14"/>
 

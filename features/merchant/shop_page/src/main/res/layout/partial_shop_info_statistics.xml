@@ -81,11 +81,11 @@
         android:id="@+id/labelViewDiscussion"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_64"
-        app:lv_content="@string/see_label"
-        app:lv_title="@string/shop_info_title_tab_discussion"
-        app:lv_title_text_size="@dimen/sp_14"
-        app:lv_content_text_size="@dimen/sp_14"
-        app:lv_content_color="@color/Unify_G400"
+        app:shop_lv_content="@string/see_label"
+        app:shop_lv_title="@string/shop_info_title_tab_discussion"
+        app:shop_lv_title_text_size="@dimen/sp_14"
+        app:shop_lv_content_text_size="@dimen/sp_14"
+        app:shop_lv_content_color="@color/Unify_G400"
         android:foreground="?android:attr/selectableItemBackground"
         android:paddingLeft="@dimen/dp_16"
         android:paddingRight="@dimen/dp_16"/>
@@ -103,11 +103,11 @@
         android:layout_height="@dimen/dp_64"
         android:paddingLeft="@dimen/dp_16"
         android:paddingRight="@dimen/dp_16"
-        app:lv_content="@string/see_label"
-        app:lv_title="@string/shop_info_label_process_time"
-        app:lv_title_text_size="@dimen/sp_14"
-        app:lv_content_text_size="@dimen/sp_14"
-        app:lv_content_color="@color/Unify_N700_32"/>
+        app:shop_lv_content="@string/see_label"
+        app:shop_lv_title="@string/shop_info_label_process_time"
+        app:shop_lv_title_text_size="@dimen/sp_14"
+        app:shop_lv_content_text_size="@dimen/sp_14"
+        app:shop_lv_content_color="@color/Unify_N700_32"/>
 
     <View
         android:layout_width="match_parent"
