@@ -150,11 +150,30 @@ fun TokopointsDrawer.mapToHomeBalanceItemModel(drawerItemType: Int, defaultIconR
 }
 
 fun TextAttributes.mapToBalanceTextAttributes(): BalanceTextAttribute {
-    return BalanceTextAttribute(
-            colour = if (colour.contains("#adadad")) "" else colour,
-            text = text,
-            isBold = if (colour.contains("#adadad")) false else isBold
-    )
+    when {
+        //subtitle green color from backend
+        colour.contains("03AC0E") -> {
+            return BalanceTextAttribute(
+                    colour = colour,
+                    text = text,
+                    isBold = true)
+        }
+        //title color from backend
+        colour.contains("31353B") -> {
+            return BalanceTextAttribute(
+                    colour = colour,
+                    text = text,
+                    isBold = true)
+        }
+        //subtitle other than green color from backend (most likely adadad color)
+        else -> {
+            return BalanceTextAttribute(
+                    colour = "",
+                    colourRef = R.color.Unify_N700_96,
+                    text = text,
+                    isBold = false)
+        }
+    }
 }
 
 fun TagAttributes.mapToBalanceTagAttributes(): BalanceTagAttribute {
