@@ -13,7 +13,7 @@
             android:label="@string/title_dropoff_picker"
             android:screenOrientation="portrait"
             android:theme="@style/LogisticTheme">
-            <intent-filter android:autoVerify="true">
+            <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />

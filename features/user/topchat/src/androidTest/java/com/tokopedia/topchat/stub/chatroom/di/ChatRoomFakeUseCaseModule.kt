@@ -1,6 +1,8 @@
 package com.tokopedia.topchat.stub.chatroom.di
 
+import com.tokopedia.chat_common.domain.pojo.ChatReplyPojo
 import com.tokopedia.chat_common.domain.pojo.GetExistingChatPojo
+import com.tokopedia.mediauploader.domain.UploaderUseCase
 import com.tokopedia.topchat.TopchatAndroidTestCoroutineContextDispatcher
 import com.tokopedia.topchat.chatroom.data.api.ChatRoomApi
 import com.tokopedia.topchat.chatroom.di.ChatScope
@@ -131,5 +133,37 @@ class ChatRoomFakeUseCaseModule {
             dispatchers: TopchatCoroutineContextProvider
     ): GetShopFollowingUseCaseStub {
         return GetShopFollowingUseCaseStub(gqlUseCase, dispatchers)
+    }
+
+    // -- separator -- //
+
+    @Provides
+    @ChatScope
+    fun provideUploadImageUseCase(
+            stub: TopchatUploadImageUseCaseStub
+    ): TopchatUploadImageUseCase = stub
+
+    @Provides
+    @ChatScope
+    fun provideUploadImageUseCaseStub(
+            uploadImageUseCase: UploaderUseCase,
+            chatImageServerUseCase: ChatImageServerUseCase,
+            dispatchers: TopchatCoroutineContextProvider
+    ): TopchatUploadImageUseCaseStub {
+        return TopchatUploadImageUseCaseStub(uploadImageUseCase, chatImageServerUseCase, dispatchers)
+    }
+
+    // -- separator -- //
+
+    @Provides
+    @ChatScope
+    fun provideChatReplyGQLUseCase(stub: ReplyChatGQLUseCaseStub): ReplyChatGQLUseCase = stub
+
+    @Provides
+    @ChatScope
+    fun provideChatReplyGQLUseCaseStub(
+            gqlUseCase: GraphqlUseCaseStub<ChatReplyPojo>
+    ): ReplyChatGQLUseCaseStub {
+        return ReplyChatGQLUseCaseStub(gqlUseCase)
     }
 }

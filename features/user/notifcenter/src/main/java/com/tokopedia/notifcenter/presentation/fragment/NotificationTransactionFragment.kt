@@ -179,7 +179,7 @@ class NotificationTransactionFragment : BaseNotificationFragment(), TransactionM
     }
 
     override fun createEndlessRecyclerViewListener(): EndlessRecyclerViewScrollListener {
-        return object : EndlessRecyclerViewScrollListener(super.getRecyclerView(view).layoutManager) {
+        return object : EndlessRecyclerViewScrollListener(super.getRecyclerView(view)?.layoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
                 showLoading()
                 getNotification(cursor)

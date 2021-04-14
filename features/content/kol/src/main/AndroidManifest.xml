@@ -8,7 +8,7 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="stateAlwaysHidden">
-            <intent-filter android:autoVerify="true">
+            <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
@@ -27,7 +27,7 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="stateAlwaysHidden">
-            <intent-filter android:autoVerify="true">
+            <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
@@ -44,7 +44,7 @@
             android:name=".feature.post.view.activity.KolPostYouTubeActivity"
             android:label="@string/kol_title_post_youtube"
             android:screenOrientation="landscape">
-            <intent-filter android:autoVerify="true">
+            <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
@@ -62,7 +62,7 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="stateAlwaysHidden|adjustPan">
-            <intent-filter android:autoVerify="true">
+            <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
@@ -79,7 +79,7 @@
             android:name=".feature.video.view.activity.VideoDetailActivity"
             android:label="@string/kol_title_video_detail"
             android:screenOrientation="portrait">
-            <intent-filter android:autoVerify="true">
+            <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
@@ -95,7 +95,7 @@
             android:name=".feature.video.view.activity.MediaPreviewActivity"
             android:label="@string/kol_title_media_preview"
             android:screenOrientation="portrait">
-            <intent-filter android:autoVerify="true">
+            <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
