@@ -15,7 +15,7 @@ class HotelPayAtHotelPromoFragment : HotelBaseFragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
             inflater.inflate(R.layout.fragment_hotel_pay_at_hotel_promo, container, false)
 
-    override fun getScreenName(): String = getString(R.string.hotel_payathotel_header_title)
+    override fun getScreenName(): String = getString(R.string.hotel_pay_at_hotel_promo_header_title)
 
     override fun initInjector() = getComponent(HotelBookingComponent::class.java).inject(this)
 
