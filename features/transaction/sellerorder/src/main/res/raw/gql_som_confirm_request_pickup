@@ -24,6 +24,11 @@ mutation MpLogisticPreShipInfo($input: MpLogisticPreShipInfoInputs!)
         title
         list
       }
+      schedule_time{
+              key
+              start
+              end
+            }
     }
 
   }

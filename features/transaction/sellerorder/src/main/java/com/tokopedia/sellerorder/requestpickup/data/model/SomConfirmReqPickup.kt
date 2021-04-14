@@ -44,7 +44,11 @@ data class SomConfirmReqPickup (
 
                             @SerializedName("notes")
                             @Expose
-                            val notes: Notes = Notes()) : Parcelable {
+                            val notes: Notes = Notes(),
+
+                            @SerializedName("schedule_time")
+                            @Expose
+                            val schedule_time: ScheduleTime = ScheduleTime()) : Parcelable {
 
                             @Parcelize
                             data class PickupLocation(
@@ -107,6 +111,35 @@ data class SomConfirmReqPickup (
                                     @SerializedName("list")
                                     @Expose
                                     val listNotes: List<String> = listOf()) : Parcelable
+
+                            @Parcelize
+                            data class ScheduleTime(
+                                    @SerializedName("today")
+                                    val today: List<Today> = listOf(),
+                                    @SerializedName("tommorow")
+                                    val tommorow: List<Tommorow> = listOf()
+                            ) : Parcelable {
+
+                                @Parcelize
+                                data class Today(
+                                        @SerializedName("key")
+                                        val keyToday: String = "",
+                                        @SerializedName("start")
+                                        val startToday: String = "",
+                                        @SerializedName("end")
+                                        val endToday : String = ""
+                                ): Parcelable
+
+                                @Parcelize
+                                data class Tommorow(
+                                        @SerializedName("key")
+                                        val keyTommorow: String = "",
+                                        @SerializedName("start")
+                                        val startToday: String = "",
+                                        @SerializedName("end")
+                                        val endToday : String = ""
+                                ): Parcelable
+                            }
                     }
                 }
         }

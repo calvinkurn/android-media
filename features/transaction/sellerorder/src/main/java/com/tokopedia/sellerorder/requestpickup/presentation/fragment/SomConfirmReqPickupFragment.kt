@@ -26,6 +26,7 @@ import com.tokopedia.sellerorder.requestpickup.data.model.SomProcessReqPickupPar
 import com.tokopedia.sellerorder.requestpickup.di.SomConfirmReqPickupComponent
 import com.tokopedia.sellerorder.requestpickup.presentation.adapter.SomConfirmReqPickupCourierNotesAdapter
 import com.tokopedia.sellerorder.requestpickup.presentation.viewmodel.SomConfirmReqPickupViewModel
+import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -164,10 +165,39 @@ class SomConfirmReqPickupFragment : BaseDaggerFragment() {
             rv_courier_notes?.visibility = View.GONE
         }
 
+        if (confirmReqPickupResponse.dataSuccess.schedule_time.today.isNotEmpty() && confirmReqPickupResponse.dataSuccess.schedule_time.tommorow.isNotEmpty()) {
+            rl_schedule_pickup?.visibility = View.VISIBLE
+            pickup_now?.centerText = true
+            pickup_schedule?.centerText = true
+            setActiveChips(pickup_now, pickup_schedule)
+
+            pickup_now?.setOnClickListener {
+                setActiveChips(pickup_now, pickup_schedule)
+                btn_arrow?.visibility = View.GONE
+                divider_schedule?.visibility = View.GONE
+                tv_schedule?.text = confirmReqPickupResponse.dataSuccess.detail.listShippers[0].note
+            }
+
+            pickup_schedule?.setOnClickListener {
+                setActiveChips(pickup_schedule, pickup_now)
+                btn_arrow?.visibility = View.VISIBLE
+                divider_schedule?.visibility = View.VISIBLE
+            }
+
+
+        } else {
+            rl_schedule_pickup?.visibility = View.GONE
+        }
+
         btn_req_pickup?.setOnClickListener {
             SomAnalytics.eventClickRequestPickupPopup()
             processReqPickup()
             observingProcessReqPickup()
         }
+    }
+
+    private fun setActiveChips(selected: ChipsUnify?, deselected: ChipsUnify?) {
+        selected?.chipType = ChipsUnify.TYPE_SELECTED
+        deselected?.chipType = ChipsUnify.TYPE_NORMAL
     }
 }
