@@ -136,6 +136,7 @@ import com.tokopedia.user.session.UserSession
 import com.tokopedia.utils.permission.PermissionCheckerHelper
 import kotlinx.android.synthetic.main.new_shop_page_fragment_content_layout.*
 import kotlinx.android.synthetic.main.new_shop_page_main.*
+import kotlinx.android.synthetic.main.shop_page_tab_view.view.*
 import java.io.File
 import javax.inject.Inject
 
@@ -1256,7 +1257,12 @@ class NewShopPageFragment :
         viewPagerAdapter?.notifyDataSetChanged()
         tabLayout?.apply {
             for (i in 0 until tabCount) {
-                getTabAt(i)?.customView = viewPagerAdapter?.getTabView(i, selectedPosition)
+                getTabAt(i)?.customView = viewPagerAdapter?.getTabView(i, selectedPosition).apply {
+                    // temporary show label "BARU" for new showcase tab
+                    if (listShopPageTabModel[i].tabFragment is ShopPageShowcaseFragment && isFirstTimeVisit() == true) {
+                        icon_tab_label?.visible()
+                    }
+                }
             }
         }
         viewPager.setCurrentItem(selectedPosition, false)
