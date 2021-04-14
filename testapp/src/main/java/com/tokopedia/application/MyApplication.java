@@ -442,15 +442,7 @@ public class MyApplication extends BaseMainApplication
     public void initFileDirConfig(){
         GlobalConfig.INTERNAL_CACHE_DIR = this.getCacheDir().getAbsolutePath();
         GlobalConfig.INTERNAL_FILE_DIR = this.getFilesDir().getAbsolutePath();
-        if (this.getExternalCacheDir() == null) {
-            GlobalConfig.EXTERNAL_CACHE_DIR = "";
-        } else {
-            GlobalConfig.EXTERNAL_CACHE_DIR = this.getExternalCacheDir().getAbsolutePath();;
-        }
-        if (this.getExternalFilesDir(null) == null) {
-            GlobalConfig.EXTERNAL_FILE_DIR = "";
-        } else {
-            GlobalConfig.EXTERNAL_FILE_DIR = this.getExternalFilesDir(null).getAbsolutePath();
-        }
+        GlobalConfig.EXTERNAL_CACHE_DIR = this.getExternalCacheDir() != null ? this.getExternalCacheDir().getAbsolutePath() : "";
+        GlobalConfig.EXTERNAL_FILE_DIR = this.getExternalFilesDir(null) != null ? this.getExternalFilesDir(null).getAbsolutePath() : "";
     }
 }
