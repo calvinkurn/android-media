@@ -2,6 +2,7 @@ package com.tokopedia.sellerhome.view.fragment
 
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.view.*
@@ -15,6 +16,8 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.coachmark.CoachMark2
+import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.gm.common.utils.PMShopScoreInterruptHelper
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.kotlin.model.ImpressHolder
@@ -81,7 +84,7 @@ import kotlin.math.abs
  */
 
 class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFactoryImpl>(), WidgetListener,
-        CoroutineScope, KetupatLottieView.Listener{
+        CoroutineScope, KetupatLottieView.Listener {
 
     companion object {
         @JvmStatic
@@ -137,7 +140,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     }
 
     private val rvOnScrollListener by lazy {
-        object: RecyclerView.OnScrollListener(){
+        object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 val yDelta = abs(dy)
                 val animSpeed = getAnimationSpeedByVerticalDelta(yDelta.toFloat())
@@ -154,12 +157,22 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     private var performanceMonitoringSellerHomePltCompleted = false
     private var performanceMonitoringSellerHomePlt: HomeLayoutLoadTimeMonitoring? = null
-
     private var ketupatLottie: KetupatLottieView? = null
 
-    override fun getScreenName(): String = TrackingConstant.SCREEN_NAME_SELLER_HOME
+    private var navigationOtherMenuView: View? = null
+    private var isEligibleShowRecommendationCoachMark: Boolean = false
+    private val coachMark: CoachMark2? by lazy {
+        context?.let {
+            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
+                CoachMark2(it)
+            } else null
+        }
+    }
+
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main
+
+    override fun getScreenName(): String = TrackingConstant.SCREEN_NAME_SELLER_HOME
 
     override fun initInjector() {
         DaggerSellerHomeComponent.builder()
@@ -225,9 +238,20 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-
         pmShopScoreInterruptHelper.onActivityResult(requestCode) {
-            //todo : show coach mark
+            scrollToRecommendationWidget()
+            isEligibleShowRecommendationCoachMark = true
+        }
+    }
+
+    private fun scrollToRecommendationWidget() {
+        val widgetPosition = adapter.data.indexOfFirst { it is RecommendationWidgetUiModel }
+        if (widgetPosition != RecyclerView.NO_POSITION) {
+            val layoutManager = recyclerView?.layoutManager as? SellerHomeLayoutManager
+            layoutManager?.scrollToPositionWithOffset(widgetPosition, 0)
+            recyclerView?.post {
+                requestVisibleWidgetsData()
+            }
         }
     }
 
@@ -264,113 +288,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         return super.onOptionsItemSelected(item)
     }
 
-    fun showNotificationBadge() {
-        Handler().postDelayed({
-            context?.let {
-                val menuItem = menu?.findItem(NOTIFICATION_MENU_ID)
-                if (notifCenterCount > 0) {
-                    notificationDotBadge?.showBadge(menuItem ?: return@let)
-                } else {
-                    notificationDotBadge?.removeBadge(menuItem ?: return@let)
-                }
-            }
-        }, NOTIFICATION_BADGE_DELAY)
-    }
-
-    fun onNewIntent(uri: Uri?) {
-        uri?.let {
-            activity?.let { activity ->
-                pmShopScoreInterruptHelper.setShopScoreConsentStatus(activity, it)
-            }
-        }
-    }
-
-    private fun initPltPerformanceMonitoring() {
-        performanceMonitoringSellerHomePlt = (activity as? SellerHomeActivity)?.performanceMonitoringSellerHomeLayoutPlt
-    }
-
-    private fun hideTooltipIfExist() {
-        val bottomSheet = childFragmentManager.findFragmentByTag(TAG_TOOLTIP)
-        if (bottomSheet is BottomSheetUnify)
-            bottomSheet.dismiss()
-    }
-
-    private fun setupView() = view?.run {
-        ketupatLottie = findViewById<KetupatLottieView>(R.id.lottie_seller_home_ketupat)?.apply {
-            loadAnimationFromUrl()
-            setListener(this@SellerHomeFragment)
-        }
-
-        val sellerHomeLayoutManager = SellerHomeLayoutManager(context, 2).apply {
-            spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
-                override fun getSpanSize(position: Int): Int {
-                    return try {
-                        val isCardWidget = adapter.data[position].widgetType != WidgetType.CARD
-                        if (isCardWidget) spanCount else 1
-                    } catch (e: IndexOutOfBoundsException) {
-                        spanCount
-                    }
-                }
-            }
-
-            setOnVerticalScrollListener {
-                requestVisibleWidgetsData()
-            }
-        }
-        recyclerView?.run {
-            layoutManager = sellerHomeLayoutManager
-            (itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
-            canLoadLottieAnimation = true
-            addOnScrollListener(rvOnScrollListener)
-        }
-
-        swipeRefreshLayout.setOnRefreshListener {
-            reloadPage()
-            showNotificationBadge()
-            sellerHomeListener?.getShopInfo()
-        }
-
-        sahGlobalError.setActionClickListener {
-            reloadPage()
-        }
-
-        setViewBackground()
-    }
-
-    /**
-     * load only visible widget on screen, except card widget should load all directly
-     * */
-    private fun requestVisibleWidgetsData() {
-        val layoutManager = recyclerView?.layoutManager as? GridLayoutManager ?: return
-        val firstVisible = layoutManager.findFirstVisibleItemPosition()
-        val lastVisible = layoutManager.findLastVisibleItemPosition()
-
-        val visibleWidgets = mutableListOf<BaseWidgetUiModel<*>>()
-        adapter.data.forEachIndexed { index, widget ->
-            if (!widget.isLoaded) {
-                if (widget.widgetType == WidgetType.CARD) {
-                    visibleWidgets.add(widget)
-                } else {
-                    if (index in firstVisible..lastVisible) {
-                        visibleWidgets.add(widget)
-                    }
-                }
-            }
-        }
-
-        if (visibleWidgets.isNotEmpty()) getWidgetsData(visibleWidgets)
-    }
-
-    private fun reloadPage() = view?.run {
-        val isAdapterNotEmpty = adapter.data.isNotEmpty()
-        setProgressBarVisibility(!isAdapterNotEmpty)
-        swipeRefreshLayout.isRefreshing = isAdapterNotEmpty
-
-        sahGlobalError.gone()
-        sellerHomeViewModel.getWidgetLayout()
-        sellerHomeViewModel.getTicker()
-    }
-
     override fun getAdapterTypeFactory(): WidgetAdapterFactoryImpl {
         return WidgetAdapterFactoryImpl(this)
     }
@@ -381,93 +298,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     override fun loadData(page: Int) {
 
-    }
-
-    private fun List<BaseWidgetUiModel<*>>.setLoading() {
-        forEach {
-            it.isLoading = true
-            it.isLoaded = true
-        }
-    }
-
-    private fun getCardData(widgets: List<BaseWidgetUiModel<*>>) {
-        widgets.setLoading()
-        val dataKeys = Utils.getWidgetDataKeys<CardWidgetUiModel>(widgets)
-        startCustomMetric(SELLER_HOME_CARD_TRACE)
-        sellerHomeViewModel.getCardWidgetData(dataKeys)
-    }
-
-    private fun getLineGraphData(widgets: List<BaseWidgetUiModel<*>>) {
-        widgets.setLoading()
-        val dataKeys = Utils.getWidgetDataKeys<LineGraphWidgetUiModel>(widgets)
-        startCustomMetric(SELLER_HOME_LINE_GRAPH_TRACE)
-        sellerHomeViewModel.getLineGraphWidgetData(dataKeys)
-    }
-
-    private fun getProgressData(widgets: List<BaseWidgetUiModel<*>>) {
-        widgets.setLoading()
-        val dataKeys = Utils.getWidgetDataKeys<ProgressWidgetUiModel>(widgets)
-        startCustomMetric(SELLER_HOME_PROGRESS_TRACE)
-        sellerHomeViewModel.getProgressWidgetData(dataKeys)
-    }
-
-    private fun getPostData(widgets: List<BaseWidgetUiModel<*>>) {
-        widgets.setLoading()
-        val dataKeys: List<Pair<String, String>> = widgets.filterIsInstance<PostListWidgetUiModel>().map {
-            val postFilter = it.postFilter.find { filter -> filter.isSelected }?.value.orEmpty()
-            return@map Pair(it.dataKey, postFilter)
-        }
-        startCustomMetric(SELLER_HOME_POST_LIST_TRACE)
-        sellerHomeViewModel.getPostWidgetData(dataKeys)
-    }
-
-    private fun getCarouselData(widgets: List<BaseWidgetUiModel<*>>) {
-        widgets.setLoading()
-        val dataKeys = Utils.getWidgetDataKeys<CarouselWidgetUiModel>(widgets)
-        startCustomMetric(SELLER_HOME_CAROUSEL_TRACE)
-        sellerHomeViewModel.getCarouselWidgetData(dataKeys)
-    }
-
-    private fun getTableData(widgets: List<BaseWidgetUiModel<*>>) {
-        widgets.setLoading()
-        val dataKeys = Utils.getWidgetDataKeys<TableWidgetUiModel>(widgets)
-        startCustomMetric(SELLER_HOME_TABLE_TRACE)
-        sellerHomeViewModel.getTableWidgetData(dataKeys)
-    }
-
-    private fun getPieChartData(widgets: List<BaseWidgetUiModel<*>>) {
-        widgets.setLoading()
-        val dataKeys = Utils.getWidgetDataKeys<PieChartWidgetUiModel>(widgets)
-        startCustomMetric(SELLER_HOME_PIE_CHART_TRACE)
-        sellerHomeViewModel.getPieChartWidgetData(dataKeys)
-    }
-
-    private fun getBarChartData(widgets: List<BaseWidgetUiModel<*>>) {
-        widgets.setLoading()
-        val dataKeys = Utils.getWidgetDataKeys<BarChartWidgetUiModel>(widgets)
-        startCustomMetric(SELLER_HOME_BAR_CHART_TRACE)
-        sellerHomeViewModel.getBarChartWidgetData(dataKeys)
-    }
-
-    private fun getMultiLineGraphData(widgets: List<BaseWidgetUiModel<*>>) {
-        widgets.onEach { it.isLoaded = true }
-        val dataKeys = Utils.getWidgetDataKeys<MultiLineGraphWidgetUiModel>(widgets)
-        startCustomMetric(SELLER_HOME_MULTI_LINE_GRAPH_TRACE)
-        sellerHomeViewModel.getMultiLineGraphWidgetData(dataKeys)
-    }
-
-    private fun getRecommendationData(widgets: List<BaseWidgetUiModel<*>>) {
-        widgets.onEach { it.isLoaded = true }
-        val dataKeys = Utils.getWidgetDataKeys<RecommendationWidgetUiModel>(widgets)
-        startCustomMetric(SELLER_HOME_RECOMMENDATION_TRACE)
-        sellerHomeViewModel.getRecommendationWidgetData(dataKeys)
-    }
-
-    private fun getAnnouncementData(widgets: List<BaseWidgetUiModel<*>>) {
-        widgets.onEach { it.isLoaded = true }
-        val dataKeys = Utils.getWidgetDataKeys<AnnouncementWidgetUiModel>(widgets)
-        startCustomMetric(SELLER_HOME_ANNOUNCEMENT_TRACE)
-        sellerHomeViewModel.getAnnouncementWidgetData(dataKeys)
     }
 
     override fun onTooltipClicked(tooltip: TooltipUiModel) {
@@ -638,6 +468,234 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     override fun onDownloadAnimationFailed(ex: Throwable) {
         logToCrashlytics(ex, ERROR_THEMATIC)
+    }
+
+    override fun showRecommendationWidgetCoachMark(view: View) {
+        if (!isEligibleShowRecommendationCoachMark) return
+        isEligibleShowRecommendationCoachMark = false
+
+        val coachMarkItems = arrayListOf<CoachMark2Item>()
+        coachMarkItems.add(
+                CoachMark2Item(
+                        anchorView = view,
+                        title = "Lihat Performa Toko di Home",
+                        description = "Cek semua update dan kendala tokomu di sini dan baca tips untuk meningkatkan Performamu, ya!",
+                        position = CoachMark2.POSITION_BOTTOM
+                )
+        )
+        navigationOtherMenuView?.let {
+            coachMarkItems.add(
+                    CoachMark2Item(
+                            anchorView = it,
+                            title = "Lihat detail Performamu di sini, ya!",
+                            description = "Cek level, skor, dan grade tokomu lebih lanjut dari menu Lainnya lalu pilih Performa Toko.",
+                            position = CoachMark2.POSITION_TOP
+                    )
+            )
+        }
+        if (coachMarkItems.isNotEmpty()) {
+            coachMark?.showCoachMark(coachMarkItems)
+        }
+    }
+
+    fun setNavigationOtherMenuView(view: View?) {
+        if (navigationOtherMenuView == null) {
+            navigationOtherMenuView = view
+        }
+    }
+
+    fun showNotificationBadge() {
+        Handler().postDelayed({
+            context?.let {
+                val menuItem = menu?.findItem(NOTIFICATION_MENU_ID)
+                if (notifCenterCount > 0) {
+                    notificationDotBadge?.showBadge(menuItem ?: return@let)
+                } else {
+                    notificationDotBadge?.removeBadge(menuItem ?: return@let)
+                }
+            }
+        }, NOTIFICATION_BADGE_DELAY)
+    }
+
+    fun onNewIntent(uri: Uri?) {
+        uri?.let {
+            activity?.let { activity ->
+                pmShopScoreInterruptHelper.setShopScoreConsentStatus(activity, it)
+            }
+        }
+    }
+
+    private fun initPltPerformanceMonitoring() {
+        performanceMonitoringSellerHomePlt = (activity as? SellerHomeActivity)?.performanceMonitoringSellerHomeLayoutPlt
+    }
+
+    private fun hideTooltipIfExist() {
+        val bottomSheet = childFragmentManager.findFragmentByTag(TAG_TOOLTIP)
+        if (bottomSheet is BottomSheetUnify)
+            bottomSheet.dismiss()
+    }
+
+    private fun setupView() = view?.run {
+        ketupatLottie = findViewById<KetupatLottieView>(R.id.lottie_seller_home_ketupat)?.apply {
+            loadAnimationFromUrl()
+            setListener(this@SellerHomeFragment)
+        }
+
+        val sellerHomeLayoutManager = SellerHomeLayoutManager(context, 2).apply {
+            spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
+                override fun getSpanSize(position: Int): Int {
+                    return try {
+                        val isCardWidget = adapter.data[position].widgetType != WidgetType.CARD
+                        if (isCardWidget) spanCount else 1
+                    } catch (e: IndexOutOfBoundsException) {
+                        spanCount
+                    }
+                }
+            }
+
+            setOnVerticalScrollListener {
+                requestVisibleWidgetsData()
+            }
+        }
+        recyclerView?.run {
+            layoutManager = sellerHomeLayoutManager
+            (itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
+            canLoadLottieAnimation = true
+            addOnScrollListener(rvOnScrollListener)
+        }
+
+        swipeRefreshLayout.setOnRefreshListener {
+            reloadPage()
+            showNotificationBadge()
+            sellerHomeListener?.getShopInfo()
+        }
+
+        sahGlobalError.setActionClickListener {
+            reloadPage()
+        }
+
+        setViewBackground()
+    }
+
+    /**
+     * load only visible widget on screen, except card widget should load all directly
+     * */
+    private fun requestVisibleWidgetsData() {
+        val layoutManager = recyclerView?.layoutManager as? GridLayoutManager ?: return
+        val firstVisible = layoutManager.findFirstVisibleItemPosition()
+        val lastVisible = layoutManager.findLastVisibleItemPosition()
+
+        val visibleWidgets = mutableListOf<BaseWidgetUiModel<*>>()
+        adapter.data.forEachIndexed { index, widget ->
+            if (!widget.isLoaded) {
+                if (widget.widgetType == WidgetType.CARD) {
+                    visibleWidgets.add(widget)
+                } else {
+                    if (index in firstVisible..lastVisible) {
+                        visibleWidgets.add(widget)
+                    }
+                }
+            }
+        }
+
+        if (visibleWidgets.isNotEmpty()) getWidgetsData(visibleWidgets)
+    }
+
+    private fun reloadPage() = view?.run {
+        val isAdapterNotEmpty = adapter.data.isNotEmpty()
+        setProgressBarVisibility(!isAdapterNotEmpty)
+        swipeRefreshLayout.isRefreshing = isAdapterNotEmpty
+
+        sahGlobalError.gone()
+        sellerHomeViewModel.getWidgetLayout()
+        sellerHomeViewModel.getTicker()
+    }
+
+    private fun List<BaseWidgetUiModel<*>>.setLoading() {
+        forEach {
+            it.isLoading = true
+            it.isLoaded = true
+        }
+    }
+
+    private fun getCardData(widgets: List<BaseWidgetUiModel<*>>) {
+        widgets.setLoading()
+        val dataKeys = Utils.getWidgetDataKeys<CardWidgetUiModel>(widgets)
+        startCustomMetric(SELLER_HOME_CARD_TRACE)
+        sellerHomeViewModel.getCardWidgetData(dataKeys)
+    }
+
+    private fun getLineGraphData(widgets: List<BaseWidgetUiModel<*>>) {
+        widgets.setLoading()
+        val dataKeys = Utils.getWidgetDataKeys<LineGraphWidgetUiModel>(widgets)
+        startCustomMetric(SELLER_HOME_LINE_GRAPH_TRACE)
+        sellerHomeViewModel.getLineGraphWidgetData(dataKeys)
+    }
+
+    private fun getProgressData(widgets: List<BaseWidgetUiModel<*>>) {
+        widgets.setLoading()
+        val dataKeys = Utils.getWidgetDataKeys<ProgressWidgetUiModel>(widgets)
+        startCustomMetric(SELLER_HOME_PROGRESS_TRACE)
+        sellerHomeViewModel.getProgressWidgetData(dataKeys)
+    }
+
+    private fun getPostData(widgets: List<BaseWidgetUiModel<*>>) {
+        widgets.setLoading()
+        val dataKeys: List<Pair<String, String>> = widgets.filterIsInstance<PostListWidgetUiModel>().map {
+            val postFilter = it.postFilter.find { filter -> filter.isSelected }?.value.orEmpty()
+            return@map Pair(it.dataKey, postFilter)
+        }
+        startCustomMetric(SELLER_HOME_POST_LIST_TRACE)
+        sellerHomeViewModel.getPostWidgetData(dataKeys)
+    }
+
+    private fun getCarouselData(widgets: List<BaseWidgetUiModel<*>>) {
+        widgets.setLoading()
+        val dataKeys = Utils.getWidgetDataKeys<CarouselWidgetUiModel>(widgets)
+        startCustomMetric(SELLER_HOME_CAROUSEL_TRACE)
+        sellerHomeViewModel.getCarouselWidgetData(dataKeys)
+    }
+
+    private fun getTableData(widgets: List<BaseWidgetUiModel<*>>) {
+        widgets.setLoading()
+        val dataKeys = Utils.getWidgetDataKeys<TableWidgetUiModel>(widgets)
+        startCustomMetric(SELLER_HOME_TABLE_TRACE)
+        sellerHomeViewModel.getTableWidgetData(dataKeys)
+    }
+
+    private fun getPieChartData(widgets: List<BaseWidgetUiModel<*>>) {
+        widgets.setLoading()
+        val dataKeys = Utils.getWidgetDataKeys<PieChartWidgetUiModel>(widgets)
+        startCustomMetric(SELLER_HOME_PIE_CHART_TRACE)
+        sellerHomeViewModel.getPieChartWidgetData(dataKeys)
+    }
+
+    private fun getBarChartData(widgets: List<BaseWidgetUiModel<*>>) {
+        widgets.setLoading()
+        val dataKeys = Utils.getWidgetDataKeys<BarChartWidgetUiModel>(widgets)
+        startCustomMetric(SELLER_HOME_BAR_CHART_TRACE)
+        sellerHomeViewModel.getBarChartWidgetData(dataKeys)
+    }
+
+    private fun getMultiLineGraphData(widgets: List<BaseWidgetUiModel<*>>) {
+        widgets.onEach { it.isLoaded = true }
+        val dataKeys = Utils.getWidgetDataKeys<MultiLineGraphWidgetUiModel>(widgets)
+        startCustomMetric(SELLER_HOME_MULTI_LINE_GRAPH_TRACE)
+        sellerHomeViewModel.getMultiLineGraphWidgetData(dataKeys)
+    }
+
+    private fun getRecommendationData(widgets: List<BaseWidgetUiModel<*>>) {
+        widgets.onEach { it.isLoaded = true }
+        val dataKeys = Utils.getWidgetDataKeys<RecommendationWidgetUiModel>(widgets)
+        startCustomMetric(SELLER_HOME_RECOMMENDATION_TRACE)
+        sellerHomeViewModel.getRecommendationWidgetData(dataKeys)
+    }
+
+    private fun getAnnouncementData(widgets: List<BaseWidgetUiModel<*>>) {
+        widgets.onEach { it.isLoaded = true }
+        val dataKeys = Utils.getWidgetDataKeys<AnnouncementWidgetUiModel>(widgets)
+        startCustomMetric(SELLER_HOME_ANNOUNCEMENT_TRACE)
+        sellerHomeViewModel.getAnnouncementWidgetData(dataKeys)
     }
 
     private fun setProgressBarVisibility(isShown: Boolean) {

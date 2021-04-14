@@ -73,6 +73,7 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
 
         private const val LAST_FRAGMENT_TYPE_KEY = "last_fragment"
         private const val ACTION_GET_ALL_APP_WIDGET_DATA = "com.tokopedia.sellerappwidget.GET_ALL_APP_WIDGET_DATA"
+        private const val NAVIGATION_OTHER_MENU_POSITION = 4
     }
 
     @Inject lateinit var userSession: UserSessionInterface
@@ -486,6 +487,9 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
         sahBottomNav.setMenu(menu)
 
         sahBottomNav.setMenuClickListener(this)
+
+        val navigationOtherMenuView = sahBottomNav.getChildAt(NAVIGATION_OTHER_MENU_POSITION)
+        navigator?.getHomeFragment()?.setNavigationOtherMenuView(navigationOtherMenuView)
     }
 
     private fun initSellerHomePlt() {

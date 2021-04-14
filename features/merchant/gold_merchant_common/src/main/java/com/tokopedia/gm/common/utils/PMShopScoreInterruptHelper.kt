@@ -41,6 +41,7 @@ class PMShopScoreInterruptHelper @Inject constructor() {
         private const val REQUEST_CODE = 403
     }
 
+    private var data: PowerMerchantInterruptUiModel? = null
     private var oneTimeWorkRequest: OneTimeWorkRequest? = null
     private var pmCommonPreferenceManager: PMCommonPreferenceManager? = null
 
@@ -48,6 +49,7 @@ class PMShopScoreInterruptHelper @Inject constructor() {
         initVar(context)
 
         fetchInterruptDataWorker(context, owner) {
+            this.data = it
             showPmInterruptBottomSheet(context, it, fm)
         }
     }
@@ -62,14 +64,17 @@ class PMShopScoreInterruptHelper @Inject constructor() {
     }
 
     fun onActivityResult(requestCode: Int, callback: () -> Unit) {
-        if (requestCode == REQUEST_CODE) {
-            if (!hasOpenedInterruptPage()) {
+        if (requestCode == REQUEST_CODE && data?.periodType == PeriodType.TRANSITION_PERIOD) {
+            val numberOfPageOpened = pmCommonPreferenceManager?.getInt(PMCommonPreferenceManager.KEY_NUMBER_OF_INTERRUPT_PAGE_OPENED, 0).orZero()
+            val isFirstTimeOpenedInterruptPage = numberOfPageOpened == 1
+            if (isFirstTimeOpenedInterruptPage) {
                 callback()
             }
         }
     }
 
     fun destroy() {
+        data = null
         oneTimeWorkRequest = null
         pmCommonPreferenceManager = null
     }
@@ -167,9 +172,7 @@ class PMShopScoreInterruptHelper @Inject constructor() {
         } else {
             val hasConsentChecked = hasConsentChecked()
             if (!hasConsentChecked) {
-                val numberOfPageOpened = pmCommonPreferenceManager?.getInt(PMCommonPreferenceManager.KEY_NUMBER_OF_INTERRUPT_PAGE_OPENED, 0).orZero()
                 pmCommonPreferenceManager?.putBoolean(PMCommonPreferenceManager.KEY_HAS_OPENED_COMMUNICATION_INTERRUPT_PAGE, true)
-                pmCommonPreferenceManager?.putInt(PMCommonPreferenceManager.KEY_NUMBER_OF_INTERRUPT_PAGE_OPENED, numberOfPageOpened.plus(1))
                 pmCommonPreferenceManager?.apply()
                 openInterruptPage(context)
             }
@@ -179,6 +182,9 @@ class PMShopScoreInterruptHelper @Inject constructor() {
     private fun openInterruptPage(context: Context) {
         val intent = RouteManager.getIntent(context, getInterruptPageUrl())
         (context as? Activity)?.startActivityForResult(intent, REQUEST_CODE)
+        val numberOfPageOpened = pmCommonPreferenceManager?.getInt(PMCommonPreferenceManager.KEY_NUMBER_OF_INTERRUPT_PAGE_OPENED, 0).orZero()
+        pmCommonPreferenceManager?.putInt(PMCommonPreferenceManager.KEY_NUMBER_OF_INTERRUPT_PAGE_OPENED, numberOfPageOpened.plus(1))
+        pmCommonPreferenceManager?.apply()
     }
 
     private fun getInterruptPageUrl(): String {
