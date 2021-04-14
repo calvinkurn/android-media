@@ -7,6 +7,7 @@ import android.net.Uri
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.action.ViewActions.swipeUp
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
@@ -74,6 +75,7 @@ class DigitalCartActivityTest {
             passData.productId = "30"
             passData.isPromo = "0"
             passData.needGetCart = true
+            passData.isFromPDP = true
             passData.instantCheckout = "0"
             passData.idemPotencyKey = "17211378_d44feedc9f7138c1fd91015d5bd88810"
             putExtra(DigitalExtraParam.EXTRA_PASS_DIGITAL_CART_DATA, passData)
@@ -122,10 +124,19 @@ class DigitalCartActivityTest {
         onView(AllOf.allOf(withId(R.id.tvCheckoutDetailLabel), withText("Tagihan"))).check(matches(isDisplayed()))
         onView(AllOf.allOf(withId(R.id.tvCheckoutDetailValue), withText("Rp 10.000"))).check(matches(isDisplayed()))
 
+        onView(withId(R.id.contentCheckout)).perform(swipeUp())
+
+        // Checkout Summary
+        onView(withId(R.id.tvCheckoutSummaryTitle)).check(matches(isDisplayed()))
+        onView(AllOf.allOf(withId(R.id.tvCheckoutSummaryDetailLabel), withText("Subtotal Tagihan"))).check(matches(isDisplayed()))
+        onView(AllOf.allOf(withId(R.id.tvCheckoutSummaryDetailLabel), withText("egold"))).check(matches(isDisplayed()))
+        onView(AllOf.allOf(withId(R.id.tvCheckoutSummaryDetailValue), withText("Rp12.500"))).check(matches(isDisplayed()))
+        onView(AllOf.allOf(withId(R.id.tvCheckoutSummaryDetailValue), withText("Rp500"))).check(matches(isDisplayed()))
+
         onView(withId(R.id.tvTotalPaymentLabel)).check(matches(isDisplayed()))
         onView(withId(R.id.tvTotalPaymentLabel)).check(matches(withText("Total Tagihan")))
         onView(withId(R.id.tvTotalPayment)).check(matches(isDisplayed()))
-        onView(withId(R.id.tvTotalPayment)).check(matches(withText("Rp 13.000")))
+        onView(withId(R.id.tvTotalPayment)).check(matches(withText("Rp13.000")))
 
         Thread.sleep(1000)
     }

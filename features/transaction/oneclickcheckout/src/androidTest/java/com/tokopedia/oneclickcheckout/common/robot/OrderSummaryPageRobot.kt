@@ -1,12 +1,8 @@
 package com.tokopedia.oneclickcheckout.common.robot
 
 import android.view.View
-import android.view.ViewGroup
-import android.webkit.WebView
 import android.widget.TextView
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.UiController
-import androidx.test.espresso.ViewAction
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
@@ -18,9 +14,7 @@ import com.tokopedia.oneclickcheckout.common.action.scrollTo
 import com.tokopedia.oneclickcheckout.common.action.swipeUpTop
 import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageViewModel
 import com.tokopedia.unifycomponents.UnifyButton
-import com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
 import com.tokopedia.unifyprinciples.Typography
-import org.hamcrest.Matcher
 import org.junit.Assert.assertEquals
 
 fun orderSummaryPage(func: OrderSummaryPageRobot.() -> Unit) = OrderSummaryPageRobot().apply(func)
@@ -51,8 +45,11 @@ class OrderSummaryPageRobot {
         onView(withId(com.tokopedia.unifycomponents.R.id.quantity_editor_substract)).perform(scrollTo()).perform(click())
     }
 
-    fun clickEditPreference() {
-        onView(withId(R.id.iv_edit_preference)).perform(scrollTo()).check(matches(isDisplayed())).perform(click())
+    fun clickCloseProfileTicker() {
+        onView(withId(R.id.ticker_preference_info)).check { view, noViewFoundException ->
+            noViewFoundException?.printStackTrace()
+            view.findViewById<View>(com.tokopedia.unifycomponents.R.id.ticker_close_icon).performClick()
+        }
     }
 
     fun clickChangePreference(func: PreferenceListBottomSheetRobot.() -> Unit) {
@@ -69,8 +66,11 @@ class OrderSummaryPageRobot {
         }
     }
 
-    fun clickChangeAddressRevamp() {
+    fun clickChangeAddressRevamp(func: (AddressBottomSheetRobot.() -> Unit)? = null) {
         onView(withId(R.id.btn_new_change_address)).perform(scrollTo()).perform(click())
+        if (func != null) {
+            AddressBottomSheetRobot().apply(func)
+        }
     }
 
     fun clickChangeDurationRevamp(func: DurationBottomSheetRobot.() -> Unit) {
@@ -94,11 +94,6 @@ class OrderSummaryPageRobot {
 
     fun clickUbahDuration(func: DurationBottomSheetRobot.() -> Unit) {
         onView(withId(R.id.tv_shipping_change_duration)).perform(scrollTo()).perform(click())
-        DurationBottomSheetRobot().apply(func)
-    }
-
-    fun clickUbahDurationRevamp(func: DurationBottomSheetRobot.() -> Unit) {
-        onView(withId(R.id.btn_new_change_duration)).perform(scrollTo()).perform(click())
         DurationBottomSheetRobot().apply(func)
     }
 
@@ -139,8 +134,20 @@ class OrderSummaryPageRobot {
         InstallmentDetailBottomSheetRobot().apply(func)
     }
 
+    fun clickChangeInstallmentRevamp(func: InstallmentDetailBottomSheetRobot.() -> Unit) {
+        onView(withId(R.id.tv_new_installment_detail)).perform(scrollTo()).perform(click())
+        onView(withId(com.tokopedia.unifycomponents.R.id.bottom_sheet_header)).perform(swipeUpTop())
+        InstallmentDetailBottomSheetRobot().apply(func)
+    }
+
     fun clickInstallmentErrorAction(func: InstallmentDetailBottomSheetRobot.() -> Unit) {
         onView(withId(R.id.tv_installment_error_action)).perform(scrollTo()).perform(click())
+        onView(withId(com.tokopedia.unifycomponents.R.id.bottom_sheet_header)).perform(swipeUpTop())
+        InstallmentDetailBottomSheetRobot().apply(func)
+    }
+
+    fun clickInstallmentErrorActionRevamp(func: InstallmentDetailBottomSheetRobot.() -> Unit) {
+        onView(withId(R.id.tv_new_installment_error_action)).perform(scrollTo()).perform(click())
         onView(withId(com.tokopedia.unifycomponents.R.id.bottom_sheet_header)).perform(swipeUpTop())
         InstallmentDetailBottomSheetRobot().apply(func)
     }
@@ -173,6 +180,7 @@ class OrderSummaryPageRobot {
 
     fun assertProductCard(shopName: String,
                           shopLocation: String,
+                          hasShopLocationImg: Boolean,
                           hasShopBadge: Boolean,
                           productName: String,
                           productPrice: String,
@@ -181,6 +189,14 @@ class OrderSummaryPageRobot {
                           productQty: Int) {
         onView(withId(R.id.tv_shop_name)).perform(scrollTo()).check(matches(withText(shopName)))
         onView(withId(R.id.tv_shop_location)).check(matches(withText(shopLocation)))
+        onView(withId(R.id.iu_image_fulfill)).check { view, noViewFoundException ->
+            noViewFoundException?.printStackTrace()
+            if (hasShopLocationImg) {
+                assertEquals(View.VISIBLE, view.visibility)
+            } else {
+                assertEquals(View.GONE, view.visibility)
+            }
+        }
         onView(withId(R.id.iv_shop)).check { view, noViewFoundException ->
             noViewFoundException?.printStackTrace()
             if (hasShopBadge) {
@@ -200,7 +216,7 @@ class OrderSummaryPageRobot {
                 assertEquals(productSlashPrice, (view as Typography).text)
             }
         }
-        onView(withId(R.id.iv_free_shipping)).check { view, noViewFoundException ->
+        onView(withId(R.id.iu_free_shipping)).check { view, noViewFoundException ->
             noViewFoundException?.printStackTrace()
             if (isFreeShipping) {
                 assertEquals(View.VISIBLE, view.visibility)
@@ -230,6 +246,31 @@ class OrderSummaryPageRobot {
         onView(withId(R.id.tv_new_choose_preference)).perform(scrollTo()).check(matches(withText(actionWording)))
     }
 
+    fun assertProfileTicker(isShown: Boolean,
+                            title: String? = null,
+                            description: String? = null,
+                            closeButtonVisible: Boolean? = null) {
+        onView(withId(R.id.ticker_preference_info)).check { view, noViewFoundException ->
+            noViewFoundException?.printStackTrace()
+            if (isShown) {
+                assertEquals(View.VISIBLE, view.visibility)
+                if (title != null) {
+                    assertEquals(title, view.findViewById<TextView>(com.tokopedia.unifycomponents.R.id.ticker_title).text.toString())
+                }
+                if (description != null) {
+                    assertEquals(description, view.findViewById<TextView>(com.tokopedia.unifycomponents.R.id.ticker_description).text.toString())
+                }
+                if (closeButtonVisible == true) {
+                    assertEquals(View.VISIBLE, view.findViewById<View>(com.tokopedia.unifycomponents.R.id.ticker_close_icon).visibility)
+                } else {
+                    assertEquals(View.GONE, view.findViewById<View>(com.tokopedia.unifycomponents.R.id.ticker_close_icon).visibility)
+                }
+            } else {
+                assertEquals(View.GONE, view.visibility)
+            }
+        }
+    }
+
     fun assertProfileAddress(headerMessage: String,
                              addressName: String,
                              addressDetail: String,
@@ -245,6 +286,11 @@ class OrderSummaryPageRobot {
                 assertEquals(View.GONE, view.visibility)
             }
         }
+    }
+
+    fun assertAddressRevamp(addressName: String, addressDetail: String) {
+        onView(withId(R.id.tv_new_address_name)).check(matches(withText(addressName)))
+        onView(withId(R.id.tv_new_address_detail)).check(matches(withText(addressDetail)))
     }
 
     fun assertShipment(shippingName: String, shippingDuration: String, shippingPrice: String?, hasPromo: Boolean) {
@@ -361,6 +407,18 @@ class OrderSummaryPageRobot {
         onView(withId(R.id.tv_payment_detail)).perform(scrollTo()).check(matches(isDisplayed())).check(matches(withText(detail)))
     }
 
+    fun assertPaymentRevamp(paymentName: String, paymentDetail: String?) {
+        onView(withId(R.id.tv_new_payment_name)).perform(scrollTo()).check(matches(isDisplayed())).check(matches(withText(paymentName)))
+        if (paymentDetail != null) {
+            onView(withId(R.id.tv_new_payment_detail)).perform(scrollTo()).check(matches(isDisplayed())).check(matches(withText(paymentDetail)))
+        } else {
+            onView(withId(R.id.tv_new_payment_detail)).check { view, noViewFoundException ->
+                noViewFoundException?.printStackTrace()
+                assertEquals(View.GONE, view?.visibility)
+            }
+        }
+    }
+
     fun assertInstallment(detail: String?) {
         if (detail == null) {
             onView(withId(R.id.tv_installment_type)).check { view, noViewFoundException ->
@@ -377,9 +435,30 @@ class OrderSummaryPageRobot {
         }
     }
 
+    fun assertInstallmentRevamp(detail: String?) {
+        if (detail == null) {
+            onView(withId(R.id.tv_new_installment_type)).check { view, noViewFoundException ->
+                noViewFoundException?.printStackTrace()
+                assertEquals(View.GONE, view.visibility)
+            }
+            onView(withId(R.id.tv_new_installment_detail)).check { view, noViewFoundException ->
+                noViewFoundException?.printStackTrace()
+                assertEquals(View.GONE, view.visibility)
+            }
+        } else {
+            onView(withId(R.id.tv_new_installment_type)).perform(scrollTo()).check(matches(isDisplayed()))
+            onView(withId(R.id.tv_new_installment_detail)).perform(scrollTo()).check(matches(isDisplayed())).check(matches(withText(detail)))
+        }
+    }
+
     fun assertInstallmentError() {
         onView(withId(R.id.tv_installment_error_message)).perform(scrollTo()).check(matches(isDisplayed())).check(matches(withText("Cicilan tidak tersedia.")))
         onView(withId(R.id.tv_installment_error_action)).perform(scrollTo()).check(matches(isDisplayed())).check(matches(withText("Ubah")))
+    }
+
+    fun assertInstallmentErrorRevamp() {
+        onView(withId(R.id.tv_new_installment_error_message)).perform(scrollTo()).check(matches(isDisplayed())).check(matches(withText("Cicilan tidak tersedia.")))
+        onView(withId(R.id.tv_new_installment_error_action)).perform(scrollTo()).check(matches(isDisplayed())).check(matches(withText("Ubah")))
     }
 
     fun assertProfilePaymentError(message: String, buttonText: String) {
@@ -488,105 +567,5 @@ class OrderSummaryPageResultRobot {
         assertEquals(redirectUrl, paymentPassData.redirectUrl)
         assertEquals(queryString, paymentPassData.queryString)
         assertEquals(method, paymentPassData.method)
-    }
-}
-
-class OrderPriceSummaryBottomSheetRobot {
-
-    fun assertSummary(productPrice: String = "",
-                      productDiscount: String? = null,
-                      shippingPrice: String = "",
-                      shippingDiscount: String? = null,
-                      isBbo: Boolean = false,
-                      insurancePrice: String? = null,
-                      paymentFee: String? = null,
-                      totalPrice: String = "") {
-        onView(withId(R.id.tv_total_product_price_value)).check(matches(withText(productPrice)))
-        onView(withId(R.id.tv_total_product_discount_value)).check { view, noViewFoundException ->
-            noViewFoundException?.printStackTrace()
-            if (productDiscount == null) {
-                assertEquals(View.GONE, view.visibility)
-            } else {
-                assertEquals(View.VISIBLE, view.visibility)
-                assertEquals(productDiscount, (view as Typography).text)
-            }
-        }
-        onView(withId(R.id.tv_total_shipping_price_value)).check { view, noViewFoundException ->
-            noViewFoundException?.printStackTrace()
-            if (isBbo) {
-                assertEquals("Bebas Ongkir", (view as Typography).text)
-            } else {
-                assertEquals(shippingPrice, (view as Typography).text)
-            }
-        }
-        onView(withId(R.id.tv_total_shipping_discount_value)).check { view, noViewFoundException ->
-            noViewFoundException?.printStackTrace()
-            if (shippingDiscount == null) {
-                assertEquals(View.GONE, view.visibility)
-            } else {
-                assertEquals(View.VISIBLE, view.visibility)
-                assertEquals(shippingDiscount, (view as Typography).text)
-            }
-        }
-        onView(withId(R.id.tv_total_insurance_price_value)).check { view, noViewFoundException ->
-            noViewFoundException?.printStackTrace()
-            if (insurancePrice == null) {
-                assertEquals(View.GONE, view.visibility)
-            } else {
-                assertEquals(View.VISIBLE, view.visibility)
-                assertEquals(insurancePrice, (view as Typography).text)
-            }
-        }
-        onView(withId(R.id.tv_total_payment_fee_price_value)).check { view, noViewFoundException ->
-            noViewFoundException?.printStackTrace()
-            if (paymentFee == null) {
-                assertEquals(View.GONE, view.visibility)
-            } else {
-                assertEquals(View.VISIBLE, view.visibility)
-                assertEquals(paymentFee, (view as Typography).text)
-            }
-        }
-        onView(withId(R.id.tv_total_payment_price_value)).check(matches(withText(totalPrice)))
-    }
-
-    fun closeBottomSheet() {
-        onView(withId(com.tokopedia.unifycomponents.R.id.bottom_sheet_close)).perform(object : ViewAction {
-            override fun getConstraints(): Matcher<View> = isClickable()
-
-            override fun getDescription(): String = "Force click close bottom sheet"
-
-            override fun perform(uiController: UiController?, view: View?) {
-                view?.callOnClick()
-                // Wait for bottom sheet to close
-                Thread.sleep(1000)
-            }
-        })
-    }
-}
-
-class InstallmentDetailBottomSheetRobot {
-
-    fun chooseInstallment(term: Int) {
-        val installmentName = if (term == 0) "Bayar Penuh" else "${term}x Cicilan 0%"
-        onView(withText(installmentName)).perform(scrollTo()).check { view, noViewFoundException ->
-            noViewFoundException?.printStackTrace()
-            val parent = view.parent as ViewGroup
-            val radioButtonUnify = parent.findViewById<RadioButtonUnify>(R.id.rb_installment_detail)
-            radioButtonUnify.performClick()
-            // Wait for bottom sheet to close
-            Thread.sleep(1000)
-        }
-    }
-}
-
-class OvoActivationBottomSheetRobot {
-
-    fun performActivation(isSuccess: Boolean) {
-        onView(withId(R.id.web_view)).check { view, noViewFoundException ->
-            noViewFoundException?.printStackTrace()
-            (view as? WebView)?.loadUrl("https://api-staging.tokopedia.com/cart/v2/receiver/?is_success=${if (isSuccess) 1 else 0}")
-        }
-        //block main thread for webview processing
-        Thread.sleep(2000)
     }
 }

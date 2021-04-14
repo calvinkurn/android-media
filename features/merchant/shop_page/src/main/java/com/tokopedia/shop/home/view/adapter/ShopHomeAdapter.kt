@@ -38,6 +38,11 @@ class ShopHomeAdapter(
         private const val ALL_PRODUCT_STRING = "Semua Produk"
     }
 
+    override val stickyHeaderPosition: Int
+        get() = visitables.indexOfFirst {
+            it::class.java == ShopProductSortFilterUiModel::class.java
+        }
+
     private var onStickySingleHeaderViewListener: OnStickySingleHeaderListener? = null
     var isOwner: Boolean = false
     private var recyclerView: RecyclerView? = null
@@ -122,12 +127,14 @@ class ShopHomeAdapter(
 
     fun setHomeMerchantVoucherData(shopHomeVoucherUiModel: ShopHomeVoucherUiModel) {
         visitables.indexOfFirst { it is ShopHomeVoucherUiModel }.let { index ->
-            if((shopHomeVoucherUiModel.data == null && !shopHomeVoucherUiModel.isError) || shopHomeVoucherUiModel.data?.isShown == false){
-                visitables.removeAt(index)
-                notifyItemRemoved(index)
-            } else if(index != -1){
-                visitables[index] = shopHomeVoucherUiModel
-                notifyItemChanged(index)
+            if (index >= 0) {
+                if((shopHomeVoucherUiModel.data == null && !shopHomeVoucherUiModel.isError) || shopHomeVoucherUiModel.data?.isShown == false){
+                    visitables.removeAt(index)
+                    notifyItemRemoved(index)
+                } else {
+                    visitables[index] = shopHomeVoucherUiModel
+                    notifyItemChanged(index)
+                }
             }
         }
     }
@@ -200,12 +207,6 @@ class ShopHomeAdapter(
 
     override fun setListener(onStickySingleHeaderViewListener: OnStickySingleHeaderListener?) {
         this.onStickySingleHeaderViewListener = onStickySingleHeaderViewListener
-    }
-
-    override fun getStickyHeaderPosition(): Int {
-        return visitables.indexOfFirst {
-            it::class.java == ShopProductSortFilterUiModel::class.java
-        }
     }
 
     override fun bindSticky(viewHolder: RecyclerView.ViewHolder?) {

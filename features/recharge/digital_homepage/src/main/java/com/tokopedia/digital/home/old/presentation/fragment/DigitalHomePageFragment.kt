@@ -99,12 +99,14 @@ class DigitalHomePageFragment : BaseListFragment<DigitalHomePageItemModel, Digit
         digital_homepage_search_view.setFocusChangeListener(this)
         calculateToolbarView(0)
 
-        with(getRecyclerView(view)) {
+        getRecyclerView(view)?.run {
             while (itemDecorationCount > 0) removeItemDecorationAt(0)
             addOnScrollListener(object : RecyclerView.OnScrollListener() {
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                     super.onScrolled(recyclerView, dx, dy)
-                    calculateToolbarView(getRecyclerView(view).computeVerticalScrollOffset())
+                    getRecyclerView(view)?.computeVerticalScrollOffset()?.let {
+                        calculateToolbarView(it)
+                    }
                 }
             })
         }

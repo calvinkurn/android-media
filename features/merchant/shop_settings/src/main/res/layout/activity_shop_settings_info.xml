@@ -3,54 +3,17 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical">
 
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar"
+    <com.tokopedia.header.HeaderUnify
+        android:id="@+id/header"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:theme="?toolbarTheme"
-        app:contentInsetLeft="0dp"
-        app:contentInsetStart="0dp"
-        android:background="@android:color/transparent"
-        app:contentInsetStartWithNavigation="0dp"
-        app:subtitleTextAppearance="?subtitleTextAppearance"
-        app:titleTextAppearance="?titleTextAppearance"
-        tools:targetApi="lollipop">
-
-        <TextView
-            android:id="@+id/tvSave"
-            style="@style/TextView.Title.Green"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end"
-            android:layout_marginEnd="@dimen/dp_14"
-            android:background="?attr/selectableItemBackground"
-            android:clickable="true"
-            android:focusable="true"
-            android:paddingBottom="@dimen/dp_8"
-            android:paddingLeft="@dimen/dp_8"
-            android:paddingRight="@dimen/dp_8"
-            android:paddingTop="@dimen/dp_8"
-            android:text="@string/label_save"
-            android:visibility="gone"
-            tools:visibility="visible" />
-    </androidx.appcompat.widget.Toolbar>
-
-    <View
-        android:id="@+id/shadow"
-        android:layout_width="match_parent"
-        android:layout_height="5dp"
-        android:background="@drawable/bg_shadow"
-        android:layout_below="@id/toolbar"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_height="@dimen/dp_64"
+        app:unify_header_action_text="@string/label_save"/>
 
     <fragment
         android:id="@+id/parent_view"
-        android:layout_below="@id/toolbar"
+        android:layout_below="@id/header"
         android:name="androidx.navigation.fragment.NavHostFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

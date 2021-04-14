@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.graphics.Typeface.BOLD
 import android.text.Spannable
+import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
 import android.view.View
@@ -14,6 +15,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.homenav.R
@@ -26,8 +28,10 @@ import com.tokopedia.homenav.mainnav.view.interactor.MainNavListener
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.sessioncommon.view.admin.dialog.LocationAdminDialog
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.LoaderUnify
+import com.tokopedia.unifycomponents.NotificationUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
@@ -97,7 +101,7 @@ class AccountHeaderViewHolder(itemView: View,
         val usrOvoBadgeShimmer: View = layoutLogin.findViewById(R.id.usr_ovo_badge_shimmer)
         val tvShopInfo: Typography = layoutLogin.findViewById(R.id.usr_shop_info)
         val tvShopTitle: Typography = layoutLogin.findViewById(R.id.usr_shop_title)
-        val tvShopNotif: Typography = layoutLogin.findViewById(R.id.usr_shop_notif)
+        val tvShopNotif: NotificationUnify = layoutLogin.findViewById(R.id.usr_shop_notif)
         val shimmerShopInfo: LoaderUnify = layoutLogin.findViewById(R.id.shimmer_shop_info)
         val btnTryAgainShopInfo: ImageView = layoutLogin.findViewById(R.id.btn_try_again_shop_info)
 
@@ -147,12 +151,22 @@ class AccountHeaderViewHolder(itemView: View,
             usrOvoBadgeShimmer.gone()
             tvOvo.visible()
             usrOvoBadge.visible()
-            if (element.isGetOvoError && element.isGetSaldoError) {
+            if (element.isTokopointExternalAmountError){
+                tvOvo.text = AccountHeaderDataModel.ERROR_TEXT_TOKOPOINTS
+                usrOvoBadge.clearImage()
+            }else if (element.isGetOvoError && element.isGetSaldoError) {
                 tvOvo.text = AccountHeaderDataModel.ERROR_TEXT_OVO
                 usrOvoBadge.setImageResource(R.drawable.ic_nav_ovo)
             } else if (element.isGetOvoError && !element.isGetSaldoError) {
                 tvOvo.text = element.saldo
                 usrOvoBadge.setImageResource(R.drawable.ic_saldo)
+            } else if(element.tokopointExternalAmount.isNotEmpty() && element.tokopointPointAmount.isNotEmpty()){
+                val spanText = "${element.tokopointExternalAmount} (${element.tokopointPointAmount})"
+                val span = SpannableString(spanText)
+                span.setSpan(ForegroundColorSpan(ContextCompat.getColor(itemView.context, R.color.Unify_N700_96)), 0, element.tokopointExternalAmount.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                span.setSpan(ForegroundColorSpan(ContextCompat.getColor(itemView.context, R.color.Unify_N700_68)), element.tokopointExternalAmount.length + 1, spanText.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                tvOvo.setText(span, TextView.BufferType.SPANNABLE)
+                usrOvoBadge.setImageUrl(element.tokopointBadgeUrl)
             } else {
                 tvOvo.text = renderOvoText(element.ovoSaldo, element.ovoPoint, element.saldo)
                 if (element.ovoSaldo.isNotEmpty()) {
@@ -165,24 +179,56 @@ class AccountHeaderViewHolder(itemView: View,
         }
 
         //shop info error state
-        if (!element.isGetShopError && element.shopName.isNotEmpty()) {
-            tvShopInfo.visible()
-            tvShopTitle.visible()
-            tvShopInfo.setText(element.shopName, TextView.BufferType.SPANNABLE)
+        if (!element.isGetShopError) {
+            val shopTitle: String
+            val shopInfo: String
+            if (!element.hasShop){
+                shopTitle = itemView.context?.getString(R.string.account_header_store_empty_shop).orEmpty()
+                shopInfo = MethodChecker.fromHtml(element.shopName).toString()
+            } else if (!element.adminRoleText.isNullOrEmpty()) {
+                shopTitle = itemView.context?.getString(R.string.account_header_store_title_role).orEmpty()
+                shopInfo = element.adminRoleText.orEmpty()
+            } else {
+                shopTitle = itemView.context?.getString(R.string.account_header_store_title).orEmpty()
+                shopInfo = MethodChecker.fromHtml(element.shopName).toString()
+            }
+            tvShopTitle.run {
+                visible()
+                text = shopTitle
+            }
+            tvShopInfo.run {
+                visible()
+                setText(shopInfo, TextView.BufferType.SPANNABLE)
+                setOnClickListener {
+                    if (element.hasShop)
+                        onShopClicked(element.canGoToSellerAccount)
+                    else {
+                        RouteManager.route(context, ApplinkConst.CREATE_SHOP)
+                        TrackingProfileSection.onClickOpenShopSection(mainNavListener.getUserId())
+                    }
+                }
+            }
             val str = tvShopInfo.text as Spannable
-            str.setSpan(ForegroundColorSpan(itemView.context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_G500)), 0, element.shopName.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-            str.setSpan(StyleSpan(BOLD), 0, element.shopName.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-            tvShopInfo.setOnClickListener { onShopClicked() }
+            str.setSpan(ForegroundColorSpan(itemView.context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_G500)), 0, shopInfo.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+            str.setSpan(StyleSpan(BOLD), 0, shopInfo.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+            if (element.shopOrderCount > 0) {
+                tvShopNotif.visible()
+                tvShopNotif.setNotification(element.shopOrderCount.toString(), NotificationUnify.COUNTER_TYPE, NotificationUnify.COLOR_PRIMARY)
+            } else {
+                tvShopNotif.gone()
+            }
         } else if (element.isGetShopLoading) {
             tvShopInfo.gone()
             tvShopTitle.gone()
             btnTryAgainShopInfo.gone()
+            tvShopNotif.gone()
             shimmerShopInfo.visible()
         } else if (element.isGetShopError) {
             btnTryAgainShopInfo.visible()
             tvShopInfo.visible()
             tvShopTitle.visible()
             shimmerShopInfo.gone()
+            tvShopNotif.gone()
 
             tvShopInfo.text = getString(R.string.error_state_shop_info)
         }
@@ -268,9 +314,13 @@ class AccountHeaderViewHolder(itemView: View,
         }
     }
 
-    private fun onShopClicked() {
+    private fun onShopClicked(canGoToSellerMenu: Boolean) {
         TrackingProfileSection.onClickShopProfileSection(userSession.userId)
-        RouteManager.route(itemView.context, ApplinkConstInternalSellerapp.SELLER_MENU)
+        if (canGoToSellerMenu) {
+            RouteManager.route(itemView.context, ApplinkConstInternalSellerapp.SELLER_MENU)
+        } else {
+            LocationAdminDialog(itemView.context).show()
+        }
     }
 
     private var needToSwitchText: Boolean = isFirstTimeUserSeeNameAnimationOnSession()
@@ -296,12 +346,5 @@ class AccountHeaderViewHolder(itemView: View,
 
     private fun setFirstTimeUserSeeNameAnimationOnSession(value: Boolean) {
         MainNavConst.MainNavState.runAnimation = value
-    }
-
-    private fun setColor(view: TextView, fulltext: String, subtext: String, color: Int) {
-        view.setText(fulltext, TextView.BufferType.SPANNABLE)
-        val str = view.text as Spannable
-        val i = fulltext.indexOf(subtext)
-        str.setSpan(ForegroundColorSpan(color), i, i + subtext.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
     }
 }

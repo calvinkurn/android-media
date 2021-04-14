@@ -83,7 +83,7 @@ class KeywordTabFragment : BaseDaggerFragment() {
 
     private val groupFilterSheet: TopadsGroupFilterSheet by lazy {
         context.run {
-            TopadsGroupFilterSheet.newInstance(context!!)
+            TopadsGroupFilterSheet.newInstance(requireContext())
         }
     }
 
@@ -163,7 +163,7 @@ class KeywordTabFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         btnFilter.setOnClickListener {
-            groupFilterSheet.show()
+            groupFilterSheet.show(childFragmentManager, "")
             groupFilterSheet.onSubmitClick = { fetchData() }
         }
         fetchData()
@@ -172,7 +172,7 @@ class KeywordTabFragment : BaseDaggerFragment() {
         activate.setOnClickListener { performAction(TopAdsDashboardConstant.ACTION_ACTIVATE) }
         deactivate.setOnClickListener { performAction(TopAdsDashboardConstant.ACTION_DEACTIVATE) }
         delete.setOnClickListener {
-            showConfirmationDialog(context!!)
+            showConfirmationDialog(requireContext())
         }
         Utils.setSearchListener(context, view, ::fetchData)
         btnAddItem.setOnClickListener {

@@ -32,6 +32,10 @@ class CarouselPlayWidgetViewHolder(
         }
     }
 
+    override fun bind(element: CarouselPlayWidgetDataModel?, payloads: MutableList<Any>) {
+        bind(element)
+    }
+
     private fun setupAnalyticVariable(element: CarouselPlayWidgetDataModel) {
         if (element.widgetUiModel is PlayWidgetUiModel.Medium) {
             playWidgetAnalyticListener.widgetId = element.homeChannel.id

@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.appbar.AppBarLayout
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarRetry
@@ -47,6 +48,7 @@ import com.tokopedia.topads.dashboard.view.listener.TopAdsDashboardView
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDashboardPresenter
 import com.tokopedia.topads.dashboard.view.sheet.DatePickerSheet
 import com.tokopedia.topads.dashboard.view.sheet.TopadsGroupFilterSheet
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.setCounter
 import kotlinx.android.synthetic.main.partial_top_ads_dashboard_statistics.*
 import kotlinx.android.synthetic.main.topads_dash_auto_ads_onboarding_widget.*
@@ -148,7 +150,7 @@ class TopAdsProductIklanFragment : TopAdsBaseTabFragment(), TopAdsDashboardView 
         }
         loadData()
         btnFilter.setOnClickListener {
-            groupFilterSheet.show()
+            groupFilterSheet.show(childFragmentManager, "")
             groupFilterSheet.onSubmitClick = { fetchData() }
         }
         swipe_refresh_layout.setOnRefreshListener {
@@ -414,11 +416,6 @@ class TopAdsProductIklanFragment : TopAdsBaseTabFragment(), TopAdsDashboardView 
                 ?: Date(), selectedStatisticType, adType, ::onSuccesGetStatisticsInfo)
     }
 
-    override fun onLoadTopAdsShopDepositError(throwable: Throwable) {
-        if (isAttached())
-            snackbarRetry?.showRetrySnackbar()
-    }
-
     override fun onErrorGetShopInfo(throwable: Throwable) {
         if (isAttached()) {
             swipe_refresh_layout.isRefreshing = false
@@ -463,6 +460,16 @@ class TopAdsProductIklanFragment : TopAdsBaseTabFragment(), TopAdsDashboardView 
             else -> manualAds()
         }
         loadStatisticsData()
+    }
+
+    override fun onError(message: String) {
+        val errorMessage = com.tokopedia.topads.common.data.util.Utils.getErrorMessage(context, message)
+        view?.let {
+            Toaster.build(it, errorMessage,
+                    Snackbar.LENGTH_LONG,
+                    Toaster.TYPE_ERROR,
+                    getString(com.tokopedia.topads.common.R.string.topads_common_text_ok)).show()
+        }
     }
 
     override fun onDestroyView() {

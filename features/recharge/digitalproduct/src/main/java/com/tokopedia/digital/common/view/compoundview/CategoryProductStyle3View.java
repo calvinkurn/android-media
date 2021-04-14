@@ -4,7 +4,6 @@ import android.content.Context;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -142,6 +141,11 @@ public class CategoryProductStyle3View extends
     @Override
     public boolean isInstantCheckoutChecked() {
         return cbInstantCheckout.isChecked();
+    }
+
+    @Override
+    public void onBuyButtonLoading(Boolean showLoading) {
+        btnBuyDigital.setLoading(showLoading);
     }
 
     @Override

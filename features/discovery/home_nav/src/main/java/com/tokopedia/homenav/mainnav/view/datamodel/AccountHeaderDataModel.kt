@@ -12,10 +12,18 @@ data class AccountHeaderDataModel(
         var ovoSaldo: String = "",
         var ovoPoint: String = "",
         var saldo: String = "",
+        var tokopointPointAmount: String = "",
+        var tokopointExternalAmount: String = "",
+        var isTokopointExternalAmountError: Boolean = true,
+        var tokopointBadgeUrl: String = "",
+        var tierBadgeUrl: String = "",
+        var hasShop: Boolean = false,
         var shopName: String = "",
         var shopId: String = "",
+        var shopOrderCount: Int = 0,
         var shopNotifCount: String = "",
         var shopApplink: String = "",
+        var adminRoleText: String? = null,
         var isGetUserNameError: Boolean = true,
         var isGetOvoError: Boolean = true,
         var isGetSaldoError: Boolean = true,
@@ -23,7 +31,8 @@ data class AccountHeaderDataModel(
         var isGetShopError: Boolean = true,
         var isCacheData: Boolean = false,
         var isGetShopLoading: Boolean = false,
-        var isProfileLoading: Boolean = false
+        var isProfileLoading: Boolean = false,
+        var canGoToSellerAccount: Boolean = true
 ): MainNavVisitable, ImpressHolder() {
     override fun id(): Any = id
 
@@ -45,24 +54,29 @@ data class AccountHeaderDataModel(
 
         const val ERROR_TEXT_PROFILE = "Gagal memuat profil"
         const val ERROR_TEXT_OVO = "Gagal memuat saldo Ovo"
+        const val ERROR_TEXT_TOKOPOINTS = "Gagal memuat Tokopoints"
         const val ERROR_TEXT_SHOP = "Gagal Memuat Toko.  %s"
         const val ERROR_TEXT_SHOP_TRY = "Coba Lagi"
+
+        const val DEFAULT_SHOP_ID_NOT_OPEN = "-1"
+        const val DEFAULT_SHOP_ID_NOT_OPEN_TEXT = "Buka Toko Gratis"
     }
 
     fun copy(): AccountHeaderDataModel {
         return AccountHeaderDataModel(
-                id,
-                loginState,
-                userName,
-                userImage,
-                badge,
-                ovoSaldo,
-                ovoPoint,
-                saldo,
-                shopName,
-                shopId,
-                shopNotifCount,
-                shopApplink
+                id = id,
+                loginState = loginState,
+                userName = userName,
+                userImage = userImage,
+                badge = badge,
+                ovoSaldo = ovoSaldo,
+                ovoPoint = ovoPoint,
+                saldo = saldo,
+                shopName = shopName,
+                shopId = shopId,
+                shopOrderCount = shopOrderCount,
+                shopNotifCount = shopNotifCount,
+                shopApplink = shopApplink
         )
     }
 
@@ -77,11 +91,22 @@ data class AccountHeaderDataModel(
         this.ovoSaldo = ovo
         this.ovoPoint = point
         this.isGetOvoError = false
+        this.isTokopointExternalAmountError = false
     }
 
     fun setSaldoData(saldo: String) {
         this.saldo = saldo
         this.isGetSaldoError = false
+        this.isTokopointExternalAmountError = false
+    }
+
+    fun setTokopointData(amount: String, point: String, badge: String){
+        this.tokopointPointAmount = point
+        this.tokopointExternalAmount = amount
+        this.tokopointBadgeUrl = badge
+        this.isTokopointExternalAmountError = false
+        this.isGetSaldoError = false
+        this.isGetOvoError = false
     }
 
     fun setUserBadge(badge: String) {
@@ -89,11 +114,25 @@ data class AccountHeaderDataModel(
         this.isGetUserMembershipError = false
     }
 
-    fun setUserShopName(shopName: String = "", shopId: String = "", isError: Boolean = false, isLoading: Boolean = false) {
-        this.shopName = shopName
-        this.shopId = shopId
+    fun setUserShopName(shopName: String = "", shopId: String = "", shopOrderCount: Int, isError: Boolean = false, isLoading: Boolean = false) {
+        this.hasShop = shopId != DEFAULT_SHOP_ID_NOT_OPEN
         this.isGetShopError = isError
         this.isGetShopLoading = isLoading
+        if (hasShop) {
+            this.shopName =shopName
+            this.shopId = shopId
+            this.shopOrderCount = shopOrderCount
+        } else {
+            this.shopName = DEFAULT_SHOP_ID_NOT_OPEN_TEXT
+            this.shopId = DEFAULT_SHOP_ID_NOT_OPEN
+            this.shopOrderCount = 0
+        }
+
+    }
+
+    fun setAdminData(adminRoleText: String?, canGoToSellerAccount: Boolean) {
+        this.adminRoleText = adminRoleText
+        this.canGoToSellerAccount = canGoToSellerAccount
     }
 
 }

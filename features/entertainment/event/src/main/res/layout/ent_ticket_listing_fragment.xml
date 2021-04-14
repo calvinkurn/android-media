@@ -11,8 +11,9 @@
         android:layout_height="match_parent">
 
         <androidx.core.widget.NestedScrollView
+            android:id="@+id/scroll_ticket_pdp"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
+            android:layout_height="@dimen/layout_lvl0"
             app:layout_constraintBottom_toTopOf="@id/viewBottom"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
@@ -49,7 +50,7 @@
                     android:background="@color/Unify_N0"
                     android:padding="@dimen/spacing_lvl4"
                     android:text="@string/ent_event_pdp_ticket_recommendation_label"
-                    android:textColor="@color/Neutral_N700_68"
+                    android:textColor="@color/Unify_N700_68"
                     android:visibility="gone"
                     app:typographyType="heading_6"
                     tools:visibility="visible" />
@@ -80,7 +81,7 @@
             android:id="@+id/containerEventBottom"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/Neutral_N0"
+            android:background="@color/Unify_N0"
             android:paddingLeft="@dimen/spacing_lvl4"
             android:paddingTop="@dimen/spacing_lvl3"
             android:paddingRight="@dimen/spacing_lvl4"

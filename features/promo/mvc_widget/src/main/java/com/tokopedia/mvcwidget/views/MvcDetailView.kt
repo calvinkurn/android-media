@@ -226,7 +226,7 @@ class MvcDetailView @JvmOverloads constructor(
                 }
                 val spannableString2 = SpannableString(sb.toString())
 
-                spannableString2.setSpan(ForegroundColorSpan(ContextCompat.getColor(context, R.color.mvcw_red)), sb.toString().length - quotaTextLength, sb.toString().length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                spannableString2.setSpan(ForegroundColorSpan(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_R600)), sb.toString().length - quotaTextLength, sb.toString().length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                 val mvcListItem = MvcCouponListItem(it.tagImageURLs, it.title ?: "", it.minimumUsageLabel
                         ?: "", spannableString2)
                 tempCouponList.add(mvcListItem)

@@ -21,9 +21,11 @@ sealed class PlayProductTagsUiModel {
 data class PlayProductTagsBasicInfoUiModel(
         val bottomSheetTitle: String,
         val partnerId: Long,
+        val maxFeaturedProducts: Int
 )
 
 fun PlayProductTagsUiModel.setContent(
+        basicInfo: PlayProductTagsBasicInfoUiModel = this.basicInfo,
         productList: List<PlayProductUiModel> = emptyList(),
         voucherList: List<PlayVoucherUiModel> = emptyList()
 ) = PlayProductTagsUiModel.Complete(basicInfo, productList, voucherList)
