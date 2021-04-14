@@ -13,6 +13,10 @@ data class RechargeGetCart(
         @Expose
         val id: String = "",
 
+        @SerializedName("product_id")
+        @Expose
+        val productId: String = "",
+
         @SerializedName("user_id")
         @Expose
         val userId: String = "",

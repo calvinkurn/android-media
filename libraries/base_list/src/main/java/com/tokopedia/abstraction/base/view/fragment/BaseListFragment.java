@@ -123,7 +123,9 @@ public abstract class BaseListFragment<T extends Visitable, F extends AdapterTyp
         return false;
     }
 
+    @Nullable
     public RecyclerView getRecyclerView(View view) {
+        if (view == null) return null;
         return (RecyclerView) view.findViewById(getRecyclerViewResourceId());
     }
 

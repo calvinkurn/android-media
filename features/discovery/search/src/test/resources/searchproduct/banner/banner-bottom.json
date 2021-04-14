@@ -1,0 +1,603 @@
+{
+  "ace_search_product_v4": {
+    "header": {
+      "totalData": 8,
+      "totalDataText": "8",
+      "defaultView": 1,
+      "responseCode": 0,
+      "errorMessage": "",
+      "additionalParams": "",
+      "keywordProcess": "0"
+    },
+    "data": {
+      "isQuerySafe": true,
+      "autocompleteApplink": "tokopedia://search-autocomplete?navsource=thematic&q=hampers&srp_page_id=332&srp_page_title=",
+      "redirection": {
+        "redirectApplink": ""
+      },
+      "ticker": {
+        "text": "",
+        "query": "",
+        "typeId": 0
+      },
+      "related": {
+        "relatedKeyword": "",
+        "position": 0,
+        "otherRelated": []
+      },
+      "suggestion": {
+        "currentKeyword": "",
+        "suggestion": "",
+        "suggestionCount": 0,
+        "instead": "",
+        "insteadCount": 0,
+        "text": "",
+        "query": ""
+      },
+      "banner": {
+        "position": -1,
+        "text": "Parsel Ramadan",
+        "applink": "tokopedia://discovery/parsel",
+        "imageUrl": "https://images.tokopedia.net/img/QoeoWz/2021/3/29/6d474b47-5a6b-444c-a1d7-0861fe5ba911.png"
+      },
+      "products": [
+        {
+          "id": 1435343142,
+          "name": "KADO HADIAH HAMPERS PERNIKAHAN ANNIVERSARY WEDDING GIFT",
+          "ads": {
+            "id": "",
+            "productClickUrl": "",
+            "productWishlistUrl": "",
+            "productViewUrl": ""
+          },
+          "shop": {
+            "id": 2281114,
+            "name": "jaya hebat",
+            "city": "Bandung",
+            "url": "https://www.tokopedia.com/jayahebat",
+            "isOfficial": false,
+            "isPowerBadge": true
+          },
+          "freeOngkir": {
+            "isActive": false,
+            "imgUrl": ""
+          },
+          "imageUrl": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2020/12/22/9a6986db-4581-4e97-b8ef-d2cd82f2ae9f.jpg",
+          "imageUrl300": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2020/12/22/9a6986db-4581-4e97-b8ef-d2cd82f2ae9f.jpg",
+          "imageUrl700": "https://images.tokopedia.net/img/cache/700/VqbcmM/2020/12/22/9a6986db-4581-4e97-b8ef-d2cd82f2ae9f.jpg",
+          "price": "Rp95.000",
+          "priceInt": 95000,
+          "priceRange": "",
+          "categoryId": 54,
+          "categoryName": "Perlengkapan Pesta & Craft",
+          "categoryBreadcrumb": "perlengkapan-pesta-craft/hadiah/hampers",
+          "ratingAverage": "4.8",
+          "originalPrice": "",
+          "discountPercentage": 0,
+          "warehouseIdDefault": 0,
+          "boosterList": "-1",
+          "source_engine": "0",
+          "minOrder": 1,
+          "url": "https://www.tokopedia.com/jayahebat/kado-hadiah-hampers-pernikahan-anniversary-wedding-gift-mewah?whid=0",
+          "labelGroups": [
+            {
+              "title": "Cashback",
+              "position": "promo",
+              "type": "lightGreen",
+              "url": ""
+            },
+            {
+              "title": "Cashback",
+              "position": "price",
+              "type": "lightGreen",
+              "url": ""
+            },
+            {
+              "title": "Terjual 624",
+              "position": "integrity",
+              "type": "textDarkGrey",
+              "url": ""
+            }
+          ],
+          "labelGroupVariant": [],
+          "badges": [
+            {
+              "title": "Power Badge",
+              "imageUrl": "https://images.tokopedia.net/img/power_merchant_badge.png",
+              "show": true
+            }
+          ],
+          "wishlist": false
+        },
+        {
+          "id": 1446606972,
+          "name": "HAMPERS KADO ULANGTAHUN/PENGANTIN MUKENA SHABBY FREE TASBIH&GIFT CARD",
+          "ads": {
+            "id": "",
+            "productClickUrl": "",
+            "productWishlistUrl": "",
+            "productViewUrl": ""
+          },
+          "shop": {
+            "id": 1010876,
+            "name": "Mazaya Mukena",
+            "city": "Bekasi",
+            "url": "https://www.tokopedia.com/mazaya85",
+            "isOfficial": false,
+            "isPowerBadge": true
+          },
+          "freeOngkir": {
+            "isActive": false,
+            "imgUrl": ""
+          },
+          "imageUrl": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2021/1/4/74ee3ea8-fc89-44c6-8ebc-5d39da68ae6d.png",
+          "imageUrl300": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2021/1/4/74ee3ea8-fc89-44c6-8ebc-5d39da68ae6d.png",
+          "imageUrl700": "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/1/4/74ee3ea8-fc89-44c6-8ebc-5d39da68ae6d.png",
+          "price": "Rp124.000",
+          "priceInt": 124000,
+          "priceRange": "",
+          "categoryId": 54,
+          "categoryName": "Perlengkapan Pesta & Craft",
+          "categoryBreadcrumb": "perlengkapan-pesta-craft/hadiah/hampers",
+          "ratingAverage": "4.9",
+          "originalPrice": "",
+          "discountPercentage": 0,
+          "warehouseIdDefault": 0,
+          "boosterList": "-1",
+          "source_engine": "0",
+          "minOrder": 1,
+          "url": "https://www.tokopedia.com/mazaya85/hampers-kado-ulangtahun-pengantin-mukena-shabby-free-tasbih-gift-card?whid=0",
+          "labelGroups": [
+            {
+              "title": "Cashback",
+              "position": "promo",
+              "type": "lightGreen",
+              "url": ""
+            },
+            {
+              "title": "Grosir",
+              "position": "offers",
+              "type": "lightGrey",
+              "url": ""
+            },
+            {
+              "title": "Cashback",
+              "position": "price",
+              "type": "lightGreen",
+              "url": ""
+            },
+            {
+              "title": "Terjual 459",
+              "position": "integrity",
+              "type": "textDarkGrey",
+              "url": ""
+            }
+          ],
+          "labelGroupVariant": [],
+          "badges": [
+            {
+              "title": "Power Badge",
+              "imageUrl": "https://images.tokopedia.net/img/power_merchant_badge.png",
+              "show": true
+            }
+          ],
+          "wishlist": false
+        },
+        {
+          "id": 1442646699,
+          "name": "HAMPERS / BIRTHDAY GIFT / HAMPERS ULTAH / HAMPERS HIJAB / KADO PACAR",
+          "ads": {
+            "id": "",
+            "productClickUrl": "",
+            "productWishlistUrl": "",
+            "productViewUrl": ""
+          },
+          "shop": {
+            "id": 2281114,
+            "name": "jaya hebat",
+            "city": "Bandung",
+            "url": "https://www.tokopedia.com/jayahebat",
+            "isOfficial": false,
+            "isPowerBadge": true
+          },
+          "freeOngkir": {
+            "isActive": false,
+            "imgUrl": ""
+          },
+          "imageUrl": "https://images.tokopedia.net/img/cache/200-square/attachment/2021/4/5/74993926/74993926_b2ca612b-4008-4d7e-b6dd-16cede818da7.jpg",
+          "imageUrl300": "https://images.tokopedia.net/img/cache/300-square/attachment/2021/4/5/74993926/74993926_b2ca612b-4008-4d7e-b6dd-16cede818da7.jpg",
+          "imageUrl700": "https://images.tokopedia.net/img/cache/700/attachment/2021/4/5/74993926/74993926_b2ca612b-4008-4d7e-b6dd-16cede818da7.jpg",
+          "price": "Rp120.000",
+          "priceInt": 120000,
+          "priceRange": "",
+          "categoryId": 54,
+          "categoryName": "Perlengkapan Pesta & Craft",
+          "categoryBreadcrumb": "perlengkapan-pesta-craft/hadiah/hampers",
+          "ratingAverage": "4.8",
+          "originalPrice": "",
+          "discountPercentage": 0,
+          "warehouseIdDefault": 0,
+          "boosterList": "-1",
+          "source_engine": "0",
+          "minOrder": 1,
+          "url": "https://www.tokopedia.com/jayahebat/hampers-birthday-gift-hampers-ultah-hampers-hijab-kado-pacar-xl-d02b?whid=0",
+          "labelGroups": [
+            {
+              "title": "Cashback",
+              "position": "promo",
+              "type": "lightGreen",
+              "url": ""
+            },
+            {
+              "title": "Cashback",
+              "position": "price",
+              "type": "lightGreen",
+              "url": ""
+            },
+            {
+              "title": "Terjual 96",
+              "position": "integrity",
+              "type": "textDarkGrey",
+              "url": ""
+            }
+          ],
+          "labelGroupVariant": [],
+          "badges": [
+            {
+              "title": "Power Badge",
+              "imageUrl": "https://images.tokopedia.net/img/power_merchant_badge.png",
+              "show": true
+            }
+          ],
+          "wishlist": false
+        },
+        {
+          "id": 1274728471,
+          "name": "HAMPERS KADO PENGANTIN/WEDDING MUKENA SARUNG FREE TASBIH &KARTU UCAPAN",
+          "ads": {
+            "id": "",
+            "productClickUrl": "",
+            "productWishlistUrl": "",
+            "productViewUrl": ""
+          },
+          "shop": {
+            "id": 1010876,
+            "name": "Mazaya Mukena",
+            "city": "Bekasi",
+            "url": "https://www.tokopedia.com/mazaya85",
+            "isOfficial": false,
+            "isPowerBadge": true
+          },
+          "freeOngkir": {
+            "isActive": false,
+            "imgUrl": ""
+          },
+          "imageUrl": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2020/12/21/44e3a425-cba5-4cab-967c-f6004d0d174a.png",
+          "imageUrl300": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2020/12/21/44e3a425-cba5-4cab-967c-f6004d0d174a.png",
+          "imageUrl700": "https://images.tokopedia.net/img/cache/700/VqbcmM/2020/12/21/44e3a425-cba5-4cab-967c-f6004d0d174a.png",
+          "price": "Rp179.000",
+          "priceInt": 179000,
+          "priceRange": "",
+          "categoryId": 54,
+          "categoryName": "Perlengkapan Pesta & Craft",
+          "categoryBreadcrumb": "perlengkapan-pesta-craft/hadiah/hampers",
+          "ratingAverage": "4.9",
+          "originalPrice": "",
+          "discountPercentage": 0,
+          "warehouseIdDefault": 0,
+          "boosterList": "-1",
+          "source_engine": "0",
+          "minOrder": 1,
+          "url": "https://www.tokopedia.com/mazaya85/hampers-kado-pengantin-wedding-mukena-sarung-free-tasbih-kartu-ucapan?whid=0",
+          "labelGroups": [
+            {
+              "title": "Cashback",
+              "position": "promo",
+              "type": "lightGreen",
+              "url": ""
+            },
+            {
+              "title": "Cashback",
+              "position": "price",
+              "type": "lightGreen",
+              "url": ""
+            },
+            {
+              "title": "Terjual 42",
+              "position": "integrity",
+              "type": "textDarkGrey",
+              "url": ""
+            }
+          ],
+          "labelGroupVariant": [],
+          "badges": [
+            {
+              "title": "Power Badge",
+              "imageUrl": "https://images.tokopedia.net/img/power_merchant_badge.png",
+              "show": true
+            }
+          ],
+          "wishlist": false
+        },
+        {
+          "id": 1439979343,
+          "name": "HAMPERS KADO MUKENA KHADIJAH SERRIES FREE TASBIH&KARTU UCAPAN",
+          "ads": {
+            "id": "",
+            "productClickUrl": "",
+            "productWishlistUrl": "",
+            "productViewUrl": ""
+          },
+          "shop": {
+            "id": 1010876,
+            "name": "Mazaya Mukena",
+            "city": "Bekasi",
+            "url": "https://www.tokopedia.com/mazaya85",
+            "isOfficial": false,
+            "isPowerBadge": true
+          },
+          "freeOngkir": {
+            "isActive": false,
+            "imgUrl": ""
+          },
+          "imageUrl": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2020/12/22/a6abe4b2-a128-4197-9d27-55c7a7d17c61.jpg",
+          "imageUrl300": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2020/12/22/a6abe4b2-a128-4197-9d27-55c7a7d17c61.jpg",
+          "imageUrl700": "https://images.tokopedia.net/img/cache/700/VqbcmM/2020/12/22/a6abe4b2-a128-4197-9d27-55c7a7d17c61.jpg",
+          "price": "Rp215.000",
+          "priceInt": 215000,
+          "priceRange": "",
+          "categoryId": 54,
+          "categoryName": "Perlengkapan Pesta & Craft",
+          "categoryBreadcrumb": "perlengkapan-pesta-craft/hadiah/hampers",
+          "ratingAverage": "5.0",
+          "originalPrice": "",
+          "discountPercentage": 0,
+          "warehouseIdDefault": 0,
+          "boosterList": "-1",
+          "source_engine": "0",
+          "minOrder": 1,
+          "url": "https://www.tokopedia.com/mazaya85/hampers-kado-mukena-khadijah-serries-free-tasbih-kartu-ucapan?whid=0",
+          "labelGroups": [
+            {
+              "title": "Cashback",
+              "position": "promo",
+              "type": "lightGreen",
+              "url": ""
+            },
+            {
+              "title": "Cashback",
+              "position": "price",
+              "type": "lightGreen",
+              "url": ""
+            },
+            {
+              "title": "Terjual 23",
+              "position": "integrity",
+              "type": "textDarkGrey",
+              "url": ""
+            }
+          ],
+          "labelGroupVariant": [],
+          "badges": [
+            {
+              "title": "Power Badge",
+              "imageUrl": "https://images.tokopedia.net/img/power_merchant_badge.png",
+              "show": true
+            }
+          ],
+          "wishlist": false
+        },
+        {
+          "id": 1274008926,
+          "name": "Hampers Kayu Set / Kado Pernikahan / Hampers Set Alat Makan Kayu",
+          "ads": {
+            "id": "",
+            "productClickUrl": "",
+            "productWishlistUrl": "",
+            "productViewUrl": ""
+          },
+          "shop": {
+            "id": 9472759,
+            "name": "AishaWoodArt",
+            "city": "Kab. Malang",
+            "url": "https://www.tokopedia.com/aishawoodart",
+            "isOfficial": false,
+            "isPowerBadge": true
+          },
+          "freeOngkir": {
+            "isActive": false,
+            "imgUrl": ""
+          },
+          "imageUrl": "https://images.tokopedia.net/img/cache/200-square/attachment/2021/4/5/74993926/74993926_c0e393ff-ee0e-4b6d-929f-8d9a6a8c63e0.jpg",
+          "imageUrl300": "https://images.tokopedia.net/img/cache/300-square/attachment/2021/4/5/74993926/74993926_c0e393ff-ee0e-4b6d-929f-8d9a6a8c63e0.jpg",
+          "imageUrl700": "https://images.tokopedia.net/img/cache/700/attachment/2021/4/5/74993926/74993926_c0e393ff-ee0e-4b6d-929f-8d9a6a8c63e0.jpg",
+          "price": "Rp115.000",
+          "priceInt": 115000,
+          "priceRange": "",
+          "categoryId": 54,
+          "categoryName": "Perlengkapan Pesta & Craft",
+          "categoryBreadcrumb": "perlengkapan-pesta-craft/hadiah/hampers",
+          "ratingAverage": "5.0",
+          "originalPrice": "",
+          "discountPercentage": 0,
+          "warehouseIdDefault": 0,
+          "boosterList": "-1",
+          "source_engine": "0",
+          "minOrder": 1,
+          "url": "https://www.tokopedia.com/aishawoodart/hampers-kayu-set-kado-pernikahan-hampers-set-alat-makan-kayu?whid=0",
+          "labelGroups": [
+            {
+              "title": "Terjual 61",
+              "position": "integrity",
+              "type": "textDarkGrey",
+              "url": ""
+            }
+          ],
+          "labelGroupVariant": [],
+          "badges": [
+            {
+              "title": "Power Badge",
+              "imageUrl": "https://images.tokopedia.net/img/power_merchant_badge.png",
+              "show": true
+            }
+          ],
+          "wishlist": false
+        },
+        {
+          "id": 1208014976,
+          "name": "hampers new normal kit",
+          "ads": {
+            "id": "",
+            "productClickUrl": "",
+            "productWishlistUrl": "",
+            "productViewUrl": ""
+          },
+          "shop": {
+            "id": 1076498,
+            "name": "Surya Sinergy",
+            "city": "Semarang",
+            "url": "https://www.tokopedia.com/suryasinergy",
+            "isOfficial": false,
+            "isPowerBadge": true
+          },
+          "freeOngkir": {
+            "isActive": false,
+            "imgUrl": ""
+          },
+          "imageUrl": "https://images.tokopedia.net/img/cache/200-square/attachment/2021/4/5/74993926/74993926_a960907f-8b02-4607-821f-bb862ddf4e74.jpg",
+          "imageUrl300": "https://images.tokopedia.net/img/cache/300-square/attachment/2021/4/5/74993926/74993926_a960907f-8b02-4607-821f-bb862ddf4e74.jpg",
+          "imageUrl700": "https://images.tokopedia.net/img/cache/700/attachment/2021/4/5/74993926/74993926_a960907f-8b02-4607-821f-bb862ddf4e74.jpg",
+          "price": "Rp28.000",
+          "priceInt": 28000,
+          "priceRange": "",
+          "categoryId": 54,
+          "categoryName": "Perlengkapan Pesta & Craft",
+          "categoryBreadcrumb": "perlengkapan-pesta-craft/hadiah/hampers",
+          "ratingAverage": "5.0",
+          "originalPrice": "",
+          "discountPercentage": 0,
+          "warehouseIdDefault": 0,
+          "boosterList": "-1",
+          "source_engine": "0",
+          "minOrder": 1,
+          "url": "https://www.tokopedia.com/suryasinergy/hampers-new-normal-kit-paket-1?whid=0",
+          "labelGroups": [
+            {
+              "title": "Cashback",
+              "position": "promo",
+              "type": "lightGreen",
+              "url": ""
+            },
+            {
+              "title": "PO",
+              "position": "offers",
+              "type": "lightGrey",
+              "url": ""
+            },
+            {
+              "title": "Preorder",
+              "position": "status",
+              "type": "transparentBlack",
+              "url": ""
+            },
+            {
+              "title": "Cashback",
+              "position": "price",
+              "type": "lightGreen",
+              "url": ""
+            },
+            {
+              "title": "Terjual 783",
+              "position": "integrity",
+              "type": "textDarkGrey",
+              "url": ""
+            }
+          ],
+          "labelGroupVariant": [],
+          "badges": [
+            {
+              "title": "Power Badge",
+              "imageUrl": "https://images.tokopedia.net/img/power_merchant_badge.png",
+              "show": true
+            }
+          ],
+          "wishlist": false
+        },
+        {
+          "id": 846478974,
+          "name": "Hampers Lebaran Begreen Honey B",
+          "ads": {
+            "id": "",
+            "productClickUrl": "",
+            "productWishlistUrl": "",
+            "productViewUrl": ""
+          },
+          "shop": {
+            "id": 3368587,
+            "name": "Begreen Honey",
+            "city": "Kab. Sidoarjo",
+            "url": "https://www.tokopedia.com/begreenhoney",
+            "isOfficial": false,
+            "isPowerBadge": true
+          },
+          "freeOngkir": {
+            "isActive": false,
+            "imgUrl": ""
+          },
+          "imageUrl": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2020/5/21/1f8666b9-5220-4b4d-8837-1fe080f4c6f5.jpg",
+          "imageUrl300": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2020/5/21/1f8666b9-5220-4b4d-8837-1fe080f4c6f5.jpg",
+          "imageUrl700": "https://images.tokopedia.net/img/cache/700/VqbcmM/2020/5/21/1f8666b9-5220-4b4d-8837-1fe080f4c6f5.jpg",
+          "price": "Rp145.000",
+          "priceInt": 145000,
+          "priceRange": "",
+          "categoryId": 54,
+          "categoryName": "Perlengkapan Pesta & Craft",
+          "categoryBreadcrumb": "perlengkapan-pesta-craft/hadiah/hampers",
+          "ratingAverage": "4.9",
+          "originalPrice": "",
+          "discountPercentage": 0,
+          "warehouseIdDefault": 0,
+          "boosterList": "-1",
+          "source_engine": "0",
+          "minOrder": 1,
+          "url": "https://www.tokopedia.com/begreenhoney/hampers-lebaran-begreen-honey-b?whid=0",
+          "labelGroups": [
+            {
+              "title": "PO",
+              "position": "offers",
+              "type": "lightGrey",
+              "url": ""
+            },
+            {
+              "title": "Preorder",
+              "position": "status",
+              "type": "transparentBlack",
+              "url": ""
+            },
+            {
+              "title": "Grosir",
+              "position": "price",
+              "type": "lightGreen",
+              "url": ""
+            },
+            {
+              "title": "Terjual 56",
+              "position": "integrity",
+              "type": "textDarkGrey",
+              "url": ""
+            }
+          ],
+          "labelGroupVariant": [],
+          "badges": [
+            {
+              "title": "Power Badge",
+              "imageUrl": "https://images.tokopedia.net/img/power_merchant_badge.png",
+              "show": true
+            }
+          ],
+          "wishlist": false
+        }
+      ]
+    }
+  }
+}

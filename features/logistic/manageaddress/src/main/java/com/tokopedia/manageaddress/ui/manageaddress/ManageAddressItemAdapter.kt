@@ -57,6 +57,7 @@ class ManageAddressItemAdapter(private val listener: ManageAddressItemAdapterLis
     }
 
     fun clearData() {
+        selectedPos = RecyclerView.NO_POSITION
         addressList.clear()
         notifyDataSetChanged()
     }

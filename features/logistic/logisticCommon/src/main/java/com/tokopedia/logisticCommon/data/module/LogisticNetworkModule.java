@@ -3,15 +3,13 @@ package com.tokopedia.logisticCommon.data.module;
 import android.content.Context;
 
 import com.chuckerteam.chucker.api.ChuckerCollector;
+import com.chuckerteam.chucker.api.ChuckerInterceptor;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.chuckerteam.chucker.api.ChuckerInterceptor;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.network.converter.TokopediaWsV4ResponseConverter;
 import com.tokopedia.config.GlobalConfig;
-import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor;
-import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.logisticCommon.data.apiservice.InsuranceApi;
 import com.tokopedia.logisticCommon.data.apiservice.MyShopOrderActApi;
 import com.tokopedia.logisticCommon.data.apiservice.MyShopOrderApi;
@@ -19,7 +17,6 @@ import com.tokopedia.logisticCommon.data.apiservice.OrderDetailApi;
 import com.tokopedia.logisticCommon.data.apiservice.PeopleActApi;
 import com.tokopedia.logisticCommon.data.converter.GeneratedHostConverter;
 import com.tokopedia.logisticCommon.data.module.qualifier.LogisticAbstractionRouterQualifier;
-import com.tokopedia.logisticCommon.data.module.qualifier.LogisticCacheApiInterceptorQualifier;
 import com.tokopedia.logisticCommon.data.module.qualifier.LogisticChuckInterceptorQualifier;
 import com.tokopedia.logisticCommon.data.module.qualifier.LogisticContextQualifier;
 import com.tokopedia.logisticCommon.data.module.qualifier.LogisticDebugInterceptorQualifier;
@@ -44,6 +41,7 @@ import com.tokopedia.network.interceptor.DebugInterceptor;
 import com.tokopedia.network.interceptor.FingerprintInterceptor;
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor;
 import com.tokopedia.network.utils.OkHttpRetryPolicy;
+import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
@@ -142,12 +140,6 @@ public class LogisticNetworkModule {
     }
 
     @Provides
-    @LogisticCacheApiInterceptorQualifier
-    Interceptor provideCacheApiInterceptor(@ApplicationContext Context context) {
-        return new CacheApiInterceptor(context);
-    }
-
-    @Provides
     @LogisticChuckInterceptorQualifier
     Interceptor provideChuckerInterceptor(@LogisticContextQualifier Context context,
                                         @LogisticAbstractionRouterQualifier AbstractionRouter abstractionRouter) {
@@ -180,7 +172,6 @@ public class LogisticNetworkModule {
             @LogisticRxJavaCallAdapterFactoryQualifier CallAdapter.Factory rxJavaCallAdapterFactory,
             @LogisticFingerprintInterceptorQualifier Interceptor fingerPrintInterceptor,
             @LogisticTokopediaAuthInterceptorQualifier Interceptor tokopediaAuthInterceptor,
-            @LogisticCacheApiInterceptorQualifier Interceptor cacheApiInterceptor,
             @LogisticChuckInterceptorQualifier Interceptor chuckInterceptor,
             @LogisticDebugInterceptorQualifier Interceptor debugInterceptor
 
@@ -197,8 +188,7 @@ public class LogisticNetworkModule {
                 .writeTimeout(okHttpRetryPolicy.writeTimeout, TimeUnit.SECONDS)
                 .connectTimeout(okHttpRetryPolicy.connectTimeout, TimeUnit.SECONDS)
                 .addInterceptor(fingerPrintInterceptor)
-                .addInterceptor(tokopediaAuthInterceptor)
-                .addInterceptor(cacheApiInterceptor);
+                .addInterceptor(tokopediaAuthInterceptor);
 
         if (GlobalConfig.isAllowDebuggingTools()) {
             okHttpClientInsuranceApiBuilder.addInterceptor(chuckInterceptor);
@@ -219,7 +209,6 @@ public class LogisticNetworkModule {
             @LogisticRxJavaCallAdapterFactoryQualifier CallAdapter.Factory rxJavaCallAdapterFactory,
             @LogisticFingerprintInterceptorQualifier Interceptor fingerPrintInterceptor,
             @LogisticTokopediaAuthInterceptorQualifier Interceptor tokopediaAuthInterceptor,
-            @LogisticCacheApiInterceptorQualifier Interceptor cacheApiInterceptor,
             @LogisticChuckInterceptorQualifier Interceptor chuckInterceptor,
             @LogisticDebugInterceptorQualifier Interceptor debugInterceptor
 
@@ -230,8 +219,7 @@ public class LogisticNetworkModule {
                 .writeTimeout(okHttpRetryPolicy.writeTimeout, TimeUnit.SECONDS)
                 .connectTimeout(okHttpRetryPolicy.connectTimeout, TimeUnit.SECONDS)
                 .addInterceptor(fingerPrintInterceptor)
-                .addInterceptor(tokopediaAuthInterceptor)
-                .addInterceptor(cacheApiInterceptor);
+                .addInterceptor(tokopediaAuthInterceptor);
 
         if (GlobalConfig.isAllowDebuggingTools()) {
             okHttpPeopleActApiBuilder.addInterceptor(chuckInterceptor);
@@ -256,7 +244,6 @@ public class LogisticNetworkModule {
             @LogisticRxJavaCallAdapterFactoryQualifier CallAdapter.Factory rxJavaCallAdapterFactory,
             @LogisticFingerprintInterceptorQualifier Interceptor fingerPrintInterceptor,
             @LogisticTokopediaAuthInterceptorQualifier Interceptor tokopediaAuthInterceptor,
-            @LogisticCacheApiInterceptorQualifier Interceptor cacheApiInterceptor,
             @LogisticChuckInterceptorQualifier Interceptor chuckInterceptor,
             @LogisticDebugInterceptorQualifier Interceptor debugInterceptor
 
@@ -273,8 +260,7 @@ public class LogisticNetworkModule {
                 .writeTimeout(okHttpRetryPolicy.writeTimeout, TimeUnit.SECONDS)
                 .connectTimeout(okHttpRetryPolicy.connectTimeout, TimeUnit.SECONDS)
                 .addInterceptor(fingerPrintInterceptor)
-                .addInterceptor(tokopediaAuthInterceptor)
-                .addInterceptor(cacheApiInterceptor);
+                .addInterceptor(tokopediaAuthInterceptor);
         if (GlobalConfig.isAllowDebuggingTools()) {
             okHttpClientMyShopOrderApiBuilder.addInterceptor(chuckInterceptor);
             okHttpClientMyShopOrderApiBuilder.addInterceptor(debugInterceptor);
@@ -295,7 +281,6 @@ public class LogisticNetworkModule {
             @LogisticRxJavaCallAdapterFactoryQualifier CallAdapter.Factory rxJavaCallAdapterFactory,
             @LogisticFingerprintInterceptorQualifier Interceptor fingerPrintInterceptor,
             @LogisticTokopediaAuthInterceptorQualifier Interceptor tokopediaAuthInterceptor,
-            @LogisticCacheApiInterceptorQualifier Interceptor cacheApiInterceptor,
             @LogisticChuckInterceptorQualifier Interceptor chuckInterceptor,
             @LogisticDebugInterceptorQualifier Interceptor debugInterceptor
 
@@ -312,8 +297,7 @@ public class LogisticNetworkModule {
                 .writeTimeout(okHttpRetryPolicy.writeTimeout, TimeUnit.SECONDS)
                 .connectTimeout(okHttpRetryPolicy.connectTimeout, TimeUnit.SECONDS)
                 .addInterceptor(fingerPrintInterceptor)
-                .addInterceptor(tokopediaAuthInterceptor)
-                .addInterceptor(cacheApiInterceptor);
+                .addInterceptor(tokopediaAuthInterceptor);
         if (GlobalConfig.isAllowDebuggingTools()) {
             okHttpClientMyShopOrderActApiBuilder.addInterceptor(chuckInterceptor);
             okHttpClientMyShopOrderActApiBuilder.addInterceptor(debugInterceptor);
@@ -333,7 +317,6 @@ public class LogisticNetworkModule {
             @LogisticRxJavaCallAdapterFactoryQualifier CallAdapter.Factory rxJavaCallAdapterFactory,
             @LogisticFingerprintInterceptorQualifier Interceptor fingerPrintInterceptor,
             @LogisticTokopediaAuthInterceptorQualifier Interceptor tokopediaAuthInterceptor,
-            @LogisticCacheApiInterceptorQualifier Interceptor cacheApiInterceptor,
             @LogisticChuckInterceptorQualifier Interceptor chuckInterceptor,
             @LogisticDebugInterceptorQualifier Interceptor debugInterceptor
 
@@ -350,8 +333,7 @@ public class LogisticNetworkModule {
                 .writeTimeout(okHttpRetryPolicy.writeTimeout, TimeUnit.SECONDS)
                 .connectTimeout(okHttpRetryPolicy.connectTimeout, TimeUnit.SECONDS)
                 .addInterceptor(fingerPrintInterceptor)
-                .addInterceptor(tokopediaAuthInterceptor)
-                .addInterceptor(cacheApiInterceptor);
+                .addInterceptor(tokopediaAuthInterceptor);
         if (GlobalConfig.isAllowDebuggingTools()) {
             okHttpClientOrderDetailtApiBuilder.addInterceptor(chuckInterceptor);
             okHttpClientOrderDetailtApiBuilder.addInterceptor(debugInterceptor);
