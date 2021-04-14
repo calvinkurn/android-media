@@ -44,7 +44,7 @@ class CatalogPrefixAttributes(
         val imageUrl: String = "",
         @SerializedName("default_product_id")
         @Expose
-        val defaultProductId: Int = 0,
+        val defaultProductId: String = "",
         @SerializedName("name")
         @Expose
         val name: String = ""
