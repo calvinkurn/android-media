@@ -110,9 +110,9 @@ class ProductCheckoutViewHolder(
         btnAtc.hide()
         btnCheckout.hide()
         if(hasReminder) {
-            setReminderButton()
-        } else {
             setDeleteReminderButton()
+        } else {
+            setReminderButton()
         }
     }
 
