@@ -1,6 +1,7 @@
 package com.tokopedia.topupbills.telco.postpaid.fragment
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,6 +16,7 @@ import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.common.topupbills.data.TelcoEnquiryData
+import com.tokopedia.common.topupbills.data.TopupBillsEnquiryQuery
 import com.tokopedia.common.topupbills.data.TopupBillsFavNumber
 import com.tokopedia.common.topupbills.data.TopupBillsFavNumberItem
 import com.tokopedia.common.topupbills.data.TopupBillsRecommendation
@@ -85,6 +87,7 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Log.d("DigitalTelcoPostpaid", "${userSession.userId} ::: ${userSession.androidId} ::: ${userSession.deviceId}")
         activity?.let {
             performanceMonitoring = PerformanceMonitoring.start(DG_TELCO_POSTPAID_TRACE)
 
@@ -316,12 +319,13 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
     fun getEnquiryNumber() {
         operatorSelected?.let { selectedOperator ->
             topupAnalytics.eventClickCheckEnquiry(categoryId, operatorName, userSession.userId)
-            var mapParam = HashMap<String, Any>()
-            mapParam.put(KEY_CLIENT_NUMBER, postpaidClientNumberWidget.getInputNumber())
-            mapParam.put(KEY_PRODUCT_ID, selectedOperator.operator.attributes.defaultProductId.toString())
-
             postpaidClientNumberWidget.setLoadingButtonEnquiry(true)
-            enquiryViewModel.getEnquiry(CommonTopupBillsGqlQuery.enquiryDigital, mapParam)
+
+            enquiryViewModel.getEnquiry(
+                    CommonTopupBillsGqlQuery.rechargeInquiry,
+                    selectedOperator.operator.attributes.defaultProductId.toString(),
+                    postpaidClientNumberWidget.getInputNumber()
+            )
 
             enquiryViewModel.enquiryResult.observe(this, Observer {
                 when (it) {
@@ -505,8 +509,10 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
         private const val CACHE_CLIENT_NUMBER = "cache_client_number"
         private const val EXTRA_PARAM = "extra_param"
         private const val DG_TELCO_POSTPAID_TRACE = "dg_telco_postpaid_pdp"
-        const val KEY_CLIENT_NUMBER = "clientNumber"
-        const val KEY_PRODUCT_ID = "productId"
+//        const val KEY_CLIENT_NUMBER = "clientNumber"
+//        const val KEY_PRODUCT_ID = "productId"
+        const val KEY_CLIENT_NUMBER = "client_number"
+        const val KEY_PRODUCT_ID = "product_id"
         private const val TITLE_PAGE = "telco post paid"
 
 
