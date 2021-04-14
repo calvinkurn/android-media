@@ -7,5 +7,5 @@
     android:layout_width="match_parent"
     android:layout_height="?android:attr/listPreferredItemHeight"
     android:textSize="16sp"
-    android:textColor="@color/font_black_primary_70"
+    android:textColor="@color/Unify_N700_68"
     android:ellipsize="marquee" />

@@ -5,10 +5,6 @@ import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.os.Build;
-import androidx.annotation.Nullable;
-import com.google.android.material.textfield.TextInputLayout;
-import androidx.core.widget.TextViewCompat;
-import androidx.appcompat.widget.AppCompatTextView;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -18,6 +14,12 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatTextView;
+import androidx.core.content.ContextCompat;
+import androidx.core.widget.TextViewCompat;
+
+import com.google.android.material.textfield.TextInputLayout;
 import com.tokopedia.design.R;
 
 /**
@@ -55,7 +57,7 @@ public class TkpdTextInputLayout extends TextInputLayout implements TextWatcher 
     private String mPrefixString;
     private int mPrefixLength;
 
-    private int COLOR_GREEN = Color.parseColor("#42b549");
+    private int COLOR_GREEN = ContextCompat.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_G400);
     private TextView mCounterView;
     private boolean enabledPrefixCounter;
 

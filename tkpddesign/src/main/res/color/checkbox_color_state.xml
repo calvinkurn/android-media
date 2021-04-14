@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:state_checked="true" android:color="@color/tkpd_main_green" />
-    <item android:state_checked="false" android:color="@color/grey_400" />
+    <item android:state_checked="true" android:color="@color/Unify_G500" />
+    <item android:state_checked="false" android:color="@color/Unify_N150" />
 </selector>

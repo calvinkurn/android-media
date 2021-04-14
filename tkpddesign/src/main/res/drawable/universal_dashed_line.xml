@@ -15,7 +15,7 @@
                 android:dashGap="6px"
                 android:dashWidth="6px"
                 android:width="1dp"
-                android:color="#cccccc" />
+                android:color="@color/Unify_N150" />
         </shape>
     </item>
 

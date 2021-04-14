@@ -9,16 +9,16 @@
     </style>
 
     <style name="Toolbar.Green" parent="Base.Toolbar.Theme">
-        <item name="android:background">@color/tkpd_main_green</item>
-        <item name="actionModeBackground">@color/tkpd_main_green</item>
-        <item name="android:actionModeBackground">@color/tkpd_main_green</item>
+        <item name="android:background">@color/Unify_G500</item>
+        <item name="actionModeBackground">@color/Unify_G500</item>
+        <item name="android:actionModeBackground">@color/Unify_G500</item>
         <item name="android:textColorPrimary">@color/Unify_N0</item>
         <item name="android:actionMenuTextColor">@color/Unify_N0</item>
         <item name="android:textColorSecondary">@color/Unify_N0</item>
     </style>
 
     <style name="TabBar.Green" parent="BaseTabBar">
-        <item name="android:background">@color/tkpd_main_green</item>
+        <item name="android:background">@color/Unify_G500</item>
         <item name="tabTextColor">@color/Unify_N0</item>
         <item name="tabIndicatorColor">@color/Unify_N0</item>
         <item name="tabSelectedTextColor">@color/Unify_N0</item>

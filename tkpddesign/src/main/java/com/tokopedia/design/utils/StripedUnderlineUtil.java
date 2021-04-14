@@ -24,7 +24,7 @@ public class StripedUnderlineUtil {
             s.removeSpan(span);
             span = new URLSpanNoUnderline(span.getURL());
             s.setSpan(span, start, end, 0);
-            s.setSpan(new ForegroundColorSpan(textView.getContext().getResources().getColor(R.color.tkpd_main_green)),start, end, 0);
+            s.setSpan(new ForegroundColorSpan(textView.getContext().getResources().getColor(com.tokopedia.unifyprinciples.R.color.Unify_G500)),start, end, 0);
         }
         textView.setText(s);
     }

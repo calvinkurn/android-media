@@ -104,17 +104,17 @@ public class TextViewCompat extends AppCompatTextView {
     private void configTheme(Context context, TypedArray attributeArray) {
         int theme = attributeArray.getInteger(R.styleable.TextViewCompat_textViewTheme, 0);
         if (theme == LIGHT_PRIMARY) {
-            this.setTextColor(ContextCompat.getColor(context, R.color.light_primary));
+            this.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68));
         } else if (theme == LIGHT_SECONDARY) {
-            this.setTextColor(ContextCompat.getColor(context, R.color.light_secondary));
+            this.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_44));
         } else if (theme == LIGHT_DISABLED) {
-            this.setTextColor(ContextCompat.getColor(context, R.color.light_disabled));
+            this.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_32));
         } else if (theme == DARK_PRIMARY) {
-            this.setTextColor(ContextCompat.getColor(context, R.color.dark_primary));
+            this.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0));
         } else if (theme == DARK_SECONDARY) {
-            this.setTextColor(ContextCompat.getColor(context, R.color.dark_secondary));
+            this.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0_44));
         } else if (theme == DARK_DISABLED) {
-            this.setTextColor(ContextCompat.getColor(context, R.color.dark_disabled));
+            this.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0_32));
         }
     }
 

@@ -7,7 +7,7 @@
         android:top="@dimen/dp_6"
         android:bottom="@dimen/dp_6" />
 
-    <stroke android:color="@color/grey_300"
+    <stroke android:color="@color/Unify_N100"
         android:width="1dp"/>
     <corners android:radius="4dp"/>
     <solid android:color="@color/Unify_N0" />

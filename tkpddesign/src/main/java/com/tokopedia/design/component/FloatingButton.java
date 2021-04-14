@@ -129,23 +129,23 @@ public class FloatingButton extends BaseCustomView {
     private LayerDrawable createShadow() {
         ShapeDrawable shapeDrawable1 = new ShapeDrawable();
         shapeDrawable1.setPadding(paddingLeft, paddingTop, paddingRight, paddingBottom);
-        shapeDrawable1.getPaint().setColor(ContextCompat.getColor(getContext(), R.color.shadow_1));
+        shapeDrawable1.getPaint().setColor(ContextCompat.getColor(getContext(), R.color.shadow_dms_color_1));
 
         ShapeDrawable shapeDrawable2 = new ShapeDrawable();
         shapeDrawable2.setPadding(paddingLeft, paddingTop, paddingRight, paddingBottom);
-        shapeDrawable2.getPaint().setColor(ContextCompat.getColor(getContext(), R.color.shadow_2));
+        shapeDrawable2.getPaint().setColor(ContextCompat.getColor(getContext(), R.color.shadow_dms_color_2));
 
         ShapeDrawable shapeDrawable3 = new ShapeDrawable();
         shapeDrawable3.setPadding(paddingLeft, paddingTop, paddingRight, paddingBottom);
-        shapeDrawable3.getPaint().setColor(ContextCompat.getColor(getContext(), R.color.shadow_3));
+        shapeDrawable3.getPaint().setColor(ContextCompat.getColor(getContext(), R.color.shadow_dms_color_3));
 
         ShapeDrawable shapeDrawable4 = new ShapeDrawable();
         shapeDrawable4.setPadding(paddingLeft, paddingTop, paddingRight, paddingBottom);
-        shapeDrawable4.getPaint().setColor(ContextCompat.getColor(getContext(), R.color.shadow_4));
+        shapeDrawable4.getPaint().setColor(ContextCompat.getColor(getContext(), R.color.shadow_dms_color_4));
 
         ShapeDrawable shapeDrawable5 = new ShapeDrawable();
         shapeDrawable5.setPadding(1, 1, 1,1);
-        shapeDrawable5.getPaint().setColor(ContextCompat.getColor(getContext(), R.color.shadow_5));
+        shapeDrawable5.getPaint().setColor(ContextCompat.getColor(getContext(), R.color.shadow_dms_color_5));
 
         ShapeDrawable background = new ShapeDrawable();
         background.getPaint().setColor(ContextCompat.getColor(getContext(), R.color.Unify_N0));

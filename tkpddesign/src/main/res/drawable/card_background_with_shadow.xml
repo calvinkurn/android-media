@@ -10,7 +10,7 @@
                 android:right="1dp"
                 android:top="1dp" />
 
-            <solid android:color="@color/shadow_color_1" />
+            <solid android:color="@color/shadow_dms_color_1" />
 
             <corners android:radius="3dp" />
         </shape>
@@ -23,7 +23,7 @@
                 android:right="1dp"
                 android:top="1dp" />
 
-            <solid android:color="@color/shadow_color_2" />
+            <solid android:color="@color/shadow_dms_color_2" />
 
             <corners android:radius="3dp" />
         </shape>
@@ -36,7 +36,7 @@
                 android:right="1dp"
                 android:top="1dp" />
 
-            <solid android:color="@color/shadow_color_3" />
+            <solid android:color="@color/shadow_dms_color_3" />
 
             <corners android:radius="3dp" />
         </shape>
@@ -49,7 +49,7 @@
                 android:right="1dp"
                 android:top="1dp" />
 
-            <solid android:color="@color/shadow_color_4" />
+            <solid android:color="@color/shadow_dms_color_4" />
 
             <corners android:radius="3dp" />
         </shape>
@@ -62,7 +62,7 @@
                 android:right="1dp"
                 android:top="1dp" />
 
-            <solid android:color="@color/shadow_color_5" />
+            <solid android:color="@color/shadow_dms_color_5" />
 
             <corners android:radius="3dp" />
         </shape>

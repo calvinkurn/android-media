@@ -32,19 +32,19 @@ import java.util.List;
 public class TickerView extends BaseCustomView {
 
     @ColorRes
-    public static final int DEFAULT_COLOR_HIGHLIGHT_TICKER = R.color.tkpd_main_green;
+    public static final int DEFAULT_COLOR_HIGHLIGHT_TICKER = com.tokopedia.unifyprinciples.R.color.Unify_G500;
 
     @ColorRes
-    public static final int DEFAULT_COLOR_BACKGROUND_TICKER = R.color.font_white_primary_70;
+    public static final int DEFAULT_COLOR_BACKGROUND_TICKER = com.tokopedia.unifyprinciples.R.color.Unify_N0;
 
     @ColorRes
-    public static final int DEFAULT_COLOR_TEXT_TICKER = R.color.font_black_primary_70;
+    public static final int DEFAULT_COLOR_TEXT_TICKER = com.tokopedia.unifyprinciples.R.color.Unify_N700_68;
 
     @ColorRes
-    public static final int DEFAULT_COLOR_INDICATOR_ON = R.color.tkpd_main_green;
+    public static final int DEFAULT_COLOR_INDICATOR_ON = com.tokopedia.unifyprinciples.R.color.Unify_G400;
 
     @ColorRes
-    public static final int DEFAULT_COLOR_INDICATOR_OFF = R.color.font_white_disabled_38;
+    public static final int DEFAULT_COLOR_INDICATOR_OFF = com.tokopedia.unifyprinciples.R.color.Unify_N0_44;
 
     public static final float DEFAULT_CORNER_RADIUS = 4.0f;
     private static final long SLIDE_DELAY = 5000;
