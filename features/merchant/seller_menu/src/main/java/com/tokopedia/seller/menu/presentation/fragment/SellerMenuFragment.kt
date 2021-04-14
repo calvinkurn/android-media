@@ -1,5 +1,6 @@
 package com.tokopedia.seller.menu.presentation.fragment
 
+import android.net.Uri
 import android.os.Bundle
 import android.view.*
 import androidx.appcompat.app.AppCompatActivity
@@ -12,7 +13,9 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.kotlin.extensions.view.observe
+import com.tokopedia.gm.common.utils.PMShopScoreInterruptHelper
+import com.tokopedia.gm.common.utils.getShopScoreDate
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.seller.menu.R
@@ -20,6 +23,7 @@ import com.tokopedia.seller.menu.common.analytics.SellerMenuTracker
 import com.tokopedia.seller.menu.common.analytics.SettingTrackingListener
 import com.tokopedia.seller.menu.common.view.typefactory.OtherMenuAdapterTypeFactory
 import com.tokopedia.seller.menu.common.view.uimodel.SellerFeatureUiModel
+import com.tokopedia.seller.menu.common.view.uimodel.TickerShopScoreUiModel
 import com.tokopedia.seller.menu.common.view.uimodel.SellerMenuItemUiModel
 import com.tokopedia.seller.menu.common.view.uimodel.base.SettingResponseState
 import com.tokopedia.seller.menu.common.view.uimodel.base.SettingResponseState.SettingError
@@ -43,7 +47,7 @@ import kotlinx.android.synthetic.main.fragment_seller_menu.*
 import javax.inject.Inject
 
 class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHolder.ShopInfoListener,
-    ShopInfoErrorViewHolder.ShopInfoErrorListener {
+        ShopInfoErrorViewHolder.ShopInfoErrorListener {
 
     companion object {
         private const val SCREEN_NAME = "MA - Akun Toko"
@@ -51,14 +55,20 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
 
     @Inject
     lateinit var viewModel: SellerMenuViewModel
+
     @Inject
     lateinit var userSession: UserSessionInterface
+
     @Inject
     lateinit var remoteConfig: RemoteConfig
+
     @Inject
     lateinit var sellerMenuTracker: SellerMenuTracker
     @Inject
     lateinit var adminPermissionMapper: AdminPermissionMapper
+
+    @Inject
+    lateinit var pmShopScoreInterruptHelper: PMShopScoreInterruptHelper
 
     private var canShowErrorToaster = true
 
@@ -88,7 +98,9 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
         setupToolbar()
         setupMenuList()
         setupSwipeRefresh()
+        observeShopInfoPeriod()
         observeViewModel()
+        setupPMShopScoreInterrupt()
         setupScrollToShopSetting()
     }
 
@@ -100,6 +112,11 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
     override fun onResume() {
         super.onResume()
         sellerMenuTracker.sendEventOpenScreen(SCREEN_NAME)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        pmShopScoreInterruptHelper.destroy()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -134,9 +151,17 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
 
     private fun initInjector() {
         DaggerSellerMenuComponent.builder()
-            .baseAppComponent((requireContext().applicationContext as BaseMainApplication).baseAppComponent)
-            .build()
-            .inject(this)
+                .baseAppComponent((requireContext().applicationContext as BaseMainApplication).baseAppComponent)
+                .build()
+                .inject(this)
+    }
+
+    fun onNewIntent(uri: Uri?) {
+        uri?.let {
+            activity?.let { activity ->
+                pmShopScoreInterruptHelper.setShopScoreInterruptConsent(activity, it)
+            }
+        }
     }
 
     private fun setupSwipeRefresh() {
@@ -152,6 +177,23 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
         observeNotifications()
         observeErrorToaster()
         getAllShopInfo()
+    }
+
+    private fun observeShopInfoPeriod() {
+        observe(viewModel.shopAccountTickerPeriod) {
+            when (it) {
+                is Success -> {
+                    if (it.data) {
+                        val tickerShopInfoData = TickerShopScoreUiModel(
+                                tickerTitle = getString(R.string.seller_menu_ticker_title_shop_score,
+                                        getShopScoreDate(requireContext())),
+                                descTitle = getString(R.string.seller_menu_ticker_desc_shop_score))
+                        adapter.showShopScoreTicker(tickerShopInfoData)
+                    }
+                }
+            }
+        }
+        viewModel.getShopAccountTickerPeriod(userSession.shopId.toIntOrZero())
     }
 
     private fun observeShopInfo() {
@@ -236,13 +278,13 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
 
     private fun View.showToasterError(errorMessage: String) {
         Toaster.make(this,
-            errorMessage,
-            Snackbar.LENGTH_LONG,
-            Toaster.TYPE_ERROR,
-            resources.getString(com.tokopedia.seller.menu.common.R.string.setting_toaster_error_retry),
-            View.OnClickListener {
-                retryFetchAfterError()
-            })
+                errorMessage,
+                Snackbar.LENGTH_LONG,
+                Toaster.TYPE_ERROR,
+                resources.getString(com.tokopedia.seller.menu.common.R.string.setting_toaster_error_retry),
+                View.OnClickListener {
+                    retryFetchAfterError()
+                })
     }
 
     private fun retryFetchAfterError() {
@@ -255,8 +297,9 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
     }
 
     private fun setupScrollToShopSetting() {
-        val isAnchorToShopSetting = activity?.intent?.getBooleanExtra(SellerMigrationConstants.SELLER_MIGRATION_KEY_AUTO_ANCHOR_ACCOUNT_SHOP, false) ?: false
-        if(isAnchorToShopSetting) {
+        val isAnchorToShopSetting = activity?.intent?.getBooleanExtra(SellerMigrationConstants.SELLER_MIGRATION_KEY_AUTO_ANCHOR_ACCOUNT_SHOP, false)
+                ?: false
+        if (isAnchorToShopSetting) {
             val shopAccountData = adapter.data.firstOrNull { it is SellerFeatureUiModel }
             if (shopAccountData != null) {
                 val positionShopAccount = adapter.data.indexOf(shopAccountData)
@@ -278,6 +321,12 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
                 setSupportActionBar(seller_menu_toolbar)
                 seller_menu_toolbar?.title = getString(R.string.title_seller_menu)
             }
+        }
+    }
+
+    private fun setupPMShopScoreInterrupt() {
+        activity?.let {
+            pmShopScoreInterruptHelper.showInterrupt(it, viewLifecycleOwner, childFragmentManager)
         }
     }
 }
