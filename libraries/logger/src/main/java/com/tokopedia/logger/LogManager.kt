@@ -11,9 +11,7 @@ import com.tokopedia.logger.model.newrelic.NewRelicConfig
 import com.tokopedia.logger.model.scalyr.ScalyrConfig
 import com.tokopedia.logger.repository.LoggerRepository
 import com.tokopedia.logger.service.LogWorker
-import com.tokopedia.logger.utils.Constants
-import com.tokopedia.logger.utils.DataLogConfig
-import com.tokopedia.logger.utils.LoggerReporting
+import com.tokopedia.logger.utils.*
 import com.tokopedia.logger.utils.LoggerUtils.getLogSession
 import com.tokopedia.logger.utils.LoggerUtils.getPartDeviceId
 
@@ -35,7 +33,8 @@ class LogManager(val application: Application, val loggerProxy: LoggerProxy) {
             loggerReporting.partDeviceId = getPartDeviceId(application)
             loggerReporting.versionName = loggerProxy.versionName
             loggerReporting.versionCode = loggerProxy.versionCode
-            val installer: String = application.packageManager.getInstallerPackageName(application.packageName) ?: ""
+            val installer: String = application.packageManager.getInstallerPackageName(application.packageName)
+                    ?: ""
             loggerReporting.installer = installer
             loggerReporting.packageName = application.packageName
             loggerReporting.debug = loggerProxy.isDebug
@@ -45,7 +44,7 @@ class LogManager(val application: Application, val loggerProxy: LoggerProxy) {
         }
     }
 
-    fun refreshConfig(){
+    fun refreshConfig() {
         try {
             val loggerReporting = LoggerReporting.getInstance()
             val logScalyrConfigString: String = loggerProxy.scalyrConfig
@@ -53,7 +52,10 @@ class LogManager(val application: Application, val loggerProxy: LoggerProxy) {
             if (logScalyrConfigString.isNotEmpty()) {
                 val dataLogConfigScalyr = Gson().fromJson(logScalyrConfigString, DataLogConfig::class.java)
                 if (dataLogConfigScalyr != null && dataLogConfigScalyr.isEnabled && loggerProxy.versionCode >= dataLogConfigScalyr.appVersionMin && dataLogConfigScalyr.tags != null) {
-                    loggerReporting.setQueryLimits(dataLogConfigScalyr.queryLimits)
+                    val queryLimit = dataLogConfigScalyr.queryLimits
+                    if (queryLimit != null) {
+                        queryLimits = queryLimit
+                    }
                     loggerReporting.setPopulateTagMapsScalyr(dataLogConfigScalyr.tags)
                 }
             }
@@ -61,11 +63,14 @@ class LogManager(val application: Application, val loggerProxy: LoggerProxy) {
                 val dataLogConfigNewRelic = Gson().fromJson(logNewRelicConfigString, DataLogConfig::class.java)
                 if (dataLogConfigNewRelic != null && dataLogConfigNewRelic.tags != null &&
                         dataLogConfigNewRelic.isEnabled && loggerProxy.versionCode >= dataLogConfigNewRelic.appVersionMin) {
+                    val queryLimit = dataLogConfigNewRelic.queryLimits
+                    if (queryLimit != null) {
+                        queryLimits = queryLimit
+                    }
                     loggerReporting.setPopulateTagMapsNewRelic(dataLogConfigNewRelic.tags)
-                    loggerReporting.setQueryLimits(dataLogConfigNewRelic.queryLimits)
                 }
             }
-        } catch (e:Exception) {
+        } catch (e: Exception) {
 
         }
     }
@@ -122,23 +127,18 @@ class LogManager(val application: Application, val loggerProxy: LoggerProxy) {
             instance = LogManager(application, loggerProxy)
         }
 
-        /**
-         * To give message log to logging server
-         * logPriority to be handled are: Logger.ERROR, Logger.WARNING
-         */
-        suspend fun log(message: String, timeStamp: Long, priority: Int, serverChannel: String) {
-            instance?.getLogger()?.let { logger ->
-                val truncatedMessage: String = if (message.length > Constants.MAX_BUFFER) {
-                    message.substring(0, Constants.MAX_BUFFER)
-                } else {
-                    message
+        fun log(priority: Priority, tag: String, message: Map<String, String>) {
+            globalScopeLaunch({
+                val thisInstance = instance ?: return@globalScopeLaunch
+                val processedLogger = LoggerReporting.getInstance().getProcessedMessage(priority, tag, message,
+                        thisInstance.loggerProxy.userId)
+                if (processedLogger != null) {
+                    instance?.getLogger()?.insert(processedLogger)
+                    instance?.run {
+                        LogWorker.scheduleWorker(this.application)
+                    }
                 }
-                val log = Logger(timeStamp, serverChannel, priority, truncatedMessage)
-                logger.insert(log)
-                instance?.run {
-                    LogWorker.scheduleWorker(this.application)
-                }
-            }
+            })
         }
 
         suspend fun sendLogToServer() {

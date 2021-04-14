@@ -6,10 +6,6 @@ import com.tokopedia.logger.utils.LoggerReporting
 object ServerLogger {
     @JvmStatic
     fun log(priority: Priority, tag: String, message: Map<String, String>) {
-        val priorityText = when (priority) {
-            Priority.P1 -> "P1"
-            Priority.P2 -> "P2"
-        }
-        LoggerReporting.getInstance().log(priorityText, tag, message)
+        LogManager.log(priority, tag, message)
     }
 }
