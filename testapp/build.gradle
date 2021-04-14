@@ -3,6 +3,21 @@ apply plugin: 'com.android.application'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 //apply plugin: 'com.google.gms.google-services'
 apply from: '../tools/set_debug_tools.gradle'
+apply plugin: 'io.hansel.preprocessor'
+
+buildscript {
+    repositories {
+        jcenter()
+        mavenCentral()
+        maven { url 'https://maven.fabric.io/public' }
+        maven { url "https://maven.google.com" }
+        maven { url 'https://maven-hansel.tokopedia.com/maven' }
+    }
+    dependencies {
+        classpath rootProject.ext.miscDependencies.hansel
+        classpath rootProject.ext.miscDependencies.androidjunit5
+    }
+}
 
 kapt {
     correctErrorTypes = true
