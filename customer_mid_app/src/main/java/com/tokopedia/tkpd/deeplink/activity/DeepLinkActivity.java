@@ -41,6 +41,7 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
     private static final String EXTRA_STATE_APP_WEB_VIEW = "EXTRA_STATE_APP_WEB_VIEW";
     private static final String APPLINK_URL = "url";
     private Uri uriData;
+    private boolean isOriginalUrlAmp;
     private View mainView;
 
     @Override
@@ -54,7 +55,7 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
         TrackingUtils.sendAppsFlyerDeeplink(DeepLinkActivity.this);
 
         checkUrlMapToApplink();
-        sendCampaignTrack(uriData);
+        sendCampaignTrack(uriData, isOriginalUrlAmp);
 
 
         isAllowFetchDepartmentView = true;
@@ -76,13 +77,14 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
         }
     }
 
-    private void sendCampaignTrack(Uri uriData) {
-        Campaign campaign = DeeplinkUTMUtils.convertUrlCampaign(this, Uri.parse(uriData.toString()));
+    private void sendCampaignTrack(Uri uriData, boolean isOriginalUrlAmp) {
+        Campaign campaign = DeeplinkUTMUtils.convertUrlCampaign(this, Uri.parse(uriData.toString()), isOriginalUrlAmp);
         presenter.sendAuthenticatedEvent(uriData, campaign, getScreenName());
     }
 
     @Override
     protected void setupURIPass(Uri data) {
+        isOriginalUrlAmp = DeepLinkChecker.isAmpUrl(data);
         this.uriData = DeepLinkChecker.getRemoveAmpLink(this, data);
     }
 
@@ -166,7 +168,9 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
                 applinkUrl = bundle.getString(APPLINK_URL);
             }
             if (deeplink && !TextUtils.isEmpty(applinkUrl)) {
-                uriData = DeepLinkChecker.getRemoveAmpLink(this, Uri.parse(applinkUrl));
+                Uri uri = Uri.parse(applinkUrl);
+                isOriginalUrlAmp = DeepLinkChecker.isAmpUrl(uri);
+                uriData = DeepLinkChecker.getRemoveAmpLink(this, uri);
                 presenter.actionGotUrlFromApplink(uriData);
             } else {
                 presenter.checkUriLogin(uriData);
@@ -190,8 +194,10 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         Timber.d("FCM onNewIntent " + intent.getData());
-        if (intent.getData() != null) {
-            uriData = DeepLinkChecker.getRemoveAmpLink(this, intent.getData());
+        Uri data = intent.getData();
+        if (data != null) {
+            isOriginalUrlAmp = DeepLinkChecker.isAmpUrl(data);
+            uriData = DeepLinkChecker.getRemoveAmpLink(this, data);
         }
     }
 
