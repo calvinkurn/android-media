@@ -40,10 +40,7 @@ class RechargeHomepageToolbar @JvmOverloads constructor(context: Context, attrs:
         if(shadowApplied){
             shadowApplied = false
             val pL = this.paddingLeft
-            var pT = 0
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                pT = ViewHelper.getStatusBarHeight(context)
-            }
+            var pT = ViewHelper.getStatusBarHeight(context)
             val pR = this.paddingRight
             val pB = resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl4)
             this.background = ColorDrawable(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
@@ -55,10 +52,7 @@ class RechargeHomepageToolbar @JvmOverloads constructor(context: Context, attrs:
         if(!shadowApplied){
             shadowApplied = true
             val pL = this.paddingLeft
-            var pT = 0
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                pT = ViewHelper.getStatusBarHeight(context)
-            }
+            var pT = ViewHelper.getStatusBarHeight(context)
             val pR = this.paddingRight
             val pB = resources.getDimensionPixelSize(TOOLBAR_PADDING)
 
