@@ -68,11 +68,7 @@ class MainSliceProvider : SliceProvider() {
             userSession = UserSession(contextNonNull)
             sliceTracking = SliceTracking(userSession)
         }
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            createGetInvoiceSlice(sliceUri)
-        } else {
-            return null
-        }
+        return createGetInvoiceSlice(sliceUri)
     }
 
     private fun createPendingIntent(id: Int?, applink: String?, trackingClick: String): PendingIntent? {
