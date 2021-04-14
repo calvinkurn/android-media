@@ -111,7 +111,7 @@ ext {
     unifyCalendarVersion = '1.1.2'
     unifyBannerVersion = '1.0.4'
     unifyDialogVersion = '1.0.9'
-    unifyDatePickerVersion = '1.0.6'
+    unifyDatePickerVersion = '1.0.8'
     unifyPinVersion = '1.0.5'
     unifyEmptyStateVersion = '1.0.11.1'
     unifyGlobalErrorVersion = '1.0.12'
