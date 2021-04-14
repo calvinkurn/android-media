@@ -17,5 +17,11 @@ open class BaseSuggestionViewModel(
         var searchTerm: String = "",
         var position: Int = -1,
         var urlTracker: String = "",
-        var trackingCode: String = ""
-)
+        var trackingCode: String = "",
+        var discountPercentage: String = "",
+        var originalPrice: String = ""
+) {
+    fun hasSlashedPrice(): Boolean {
+        return discountPercentage.isNotEmpty() && originalPrice.isNotEmpty()
+    }
+}
