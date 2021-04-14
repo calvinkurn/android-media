@@ -72,6 +72,7 @@ import com.tokopedia.merchantvoucher.voucherList.MerchantVoucherListFragment
 import com.tokopedia.network.constant.TkpdBaseURL
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.manage.common.feature.list.constant.ProductManageCommonConstant
+import com.tokopedia.product.manage.common.feature.list.constant.ProductManageCommonConstant.EXTRA_UPDATE_MESSAGE
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
@@ -1068,6 +1069,9 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             showToasterMsgFromUpdateStock(productName, status)
             adapter.updateProductStock(updateProductResult, stockCount, status)
             presenter.onGoingStockUpdate.remove(productId)
+        } else {
+            val errorMsg = data?.extras?.getString(EXTRA_UPDATE_MESSAGE) ?: return
+            showToasterError(errorMsg)
         }
     }
 

@@ -256,4 +256,5 @@ class TopchatRoomSellerProductAttachmentTest : BaseSellerTopchatRoomTest() {
     }
 
     // TODO: assert update stock is hidden if campaign stock
+    // TODO: assert toaster error from update product
 }
