@@ -156,6 +156,11 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
         }
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        navigator?.getHomeFragment()?.onActivityResult(requestCode, resultCode, data)
+    }
+
     override fun onBackPressed() {
         doubleTapToExit()
     }

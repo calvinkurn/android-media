@@ -1,5 +1,6 @@
 package com.tokopedia.sellerhome.view.fragment
 
+import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
@@ -222,6 +223,14 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         pmShopScoreInterruptHelper.destroy()
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        pmShopScoreInterruptHelper.onActivityResult(requestCode) {
+            //todo : show coach mark
+        }
+    }
+
     override fun onHiddenChanged(hidden: Boolean) {
         super.onHiddenChanged(hidden)
 
@@ -271,7 +280,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     fun onNewIntent(uri: Uri?) {
         uri?.let {
             activity?.let { activity ->
-                pmShopScoreInterruptHelper.setShopScoreInterruptConsent(activity, it)
+                pmShopScoreInterruptHelper.setShopScoreConsentStatus(activity, it)
             }
         }
     }
@@ -591,6 +600,18 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     override fun sendAnnouncementClickEvent(element: AnnouncementWidgetUiModel) {
         SellerHomeTracking.sendAnnouncementClickEvent(element, userSession.userId)
+    }
+
+    override fun sendRecommendationCtaClickEvent(element: RecommendationWidgetUiModel) {
+        SellerHomeTracking.sendRecommendationCtaClickEvent(element)
+    }
+
+    override fun sendRecommendationImpressionEvent(element: RecommendationWidgetUiModel) {
+        SellerHomeTracking.sendRecommendationImpressionEvent(element)
+    }
+
+    override fun sendRecommendationItemClickEvent(element: RecommendationWidgetUiModel, item: RecommendationItemUiModel) {
+        SellerHomeTracking.sendRecommendationItemClickEvent(element.dataKey, item)
     }
 
     override fun showPostFilter(element: PostListWidgetUiModel, adapterPosition: Int) {

@@ -1,5 +1,6 @@
 package com.tokopedia.gm.common.utils
 
+import android.app.Activity
 import android.content.Context
 import android.net.Uri
 import android.os.Handler
@@ -21,6 +22,7 @@ import com.tokopedia.gm.common.view.model.PowerMerchantInterruptUiModel
 import com.tokopedia.gm.common.view.worker.GetPMInterruptDataWorker
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.orZero
+import java.net.URLEncoder
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -35,6 +37,8 @@ class PMShopScoreInterruptHelper @Inject constructor() {
 
         private const val PARAM_OPEN = "open"
         private const val PARAM_HAS_CLICKED = "has_clicked"
+
+        private const val REQUEST_CODE = 403
     }
 
     private var oneTimeWorkRequest: OneTimeWorkRequest? = null
@@ -48,12 +52,20 @@ class PMShopScoreInterruptHelper @Inject constructor() {
         }
     }
 
-    fun setShopScoreInterruptConsent(context: Context, uri: Uri) {
+    fun setShopScoreConsentStatus(context: Context, uri: Uri) {
         initVar(context)
         val isConsentApproved = uri.getBooleanQueryParameter(DeepLinkMapperShopScore.PARAM_IS_CONSENT, false)
         if (isConsentApproved) {
             pmCommonPreferenceManager?.putBoolean(PMCommonPreferenceManager.KEY_SHOP_SCORE_CONSENT_CHECKED, true)
             pmCommonPreferenceManager?.apply()
+        }
+    }
+
+    fun onActivityResult(requestCode: Int, callback: () -> Unit) {
+        if (requestCode == REQUEST_CODE) {
+            if (!hasOpenedInterruptPage()) {
+                callback()
+            }
         }
     }
 
@@ -150,7 +162,7 @@ class PMShopScoreInterruptHelper @Inject constructor() {
             if (!hasOpenedInterruptPage()) {
                 pmCommonPreferenceManager?.putBoolean(PMCommonPreferenceManager.KEY_HAS_OPENED_COMMUNICATION_INTERRUPT_PAGE, true)
                 pmCommonPreferenceManager?.apply()
-                RouteManager.route(context, getInterruptPageUrl())
+                openInterruptPage(context)
             }
         } else {
             val hasConsentChecked = hasConsentChecked()
@@ -159,9 +171,14 @@ class PMShopScoreInterruptHelper @Inject constructor() {
                 pmCommonPreferenceManager?.putBoolean(PMCommonPreferenceManager.KEY_HAS_OPENED_COMMUNICATION_INTERRUPT_PAGE, true)
                 pmCommonPreferenceManager?.putInt(PMCommonPreferenceManager.KEY_NUMBER_OF_INTERRUPT_PAGE_OPENED, numberOfPageOpened.plus(1))
                 pmCommonPreferenceManager?.apply()
-                RouteManager.route(context, getInterruptPageUrl())
+                openInterruptPage(context)
             }
         }
+    }
+
+    private fun openInterruptPage(context: Context) {
+        val intent = RouteManager.getIntent(context, getInterruptPageUrl())
+        (context as? Activity)?.startActivityForResult(intent, REQUEST_CODE)
     }
 
     private fun getInterruptPageUrl(): String {
@@ -171,7 +188,9 @@ class PMShopScoreInterruptHelper @Inject constructor() {
                 PARAM_OPEN to numberOfPageOpened.plus(1),
                 PARAM_HAS_CLICKED to hasConsentChecked
         )
-        return UriUtil.buildUriAppendParams(PMConstant.Urls.SHOP_SCORE_INTERRUPT_PAGE, param)
+        val url = UriUtil.buildUriAppendParams(PMConstant.Urls.SHOP_SCORE_INTERRUPT_PAGE, param)
+        val encodedUrl = URLEncoder.encode(url, "UTF-8")
+        return String.format("%s?url=%s", ApplinkConst.WEBVIEW, encodedUrl)
     }
 
     private fun hasConsentChecked(): Boolean {
