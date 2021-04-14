@@ -1,6 +1,5 @@
 package com.tokopedia.notifications.inApp.ruleEngine.storage
 
-import android.content.Context
 import com.tokopedia.notifications.inApp.ruleEngine.storage.dao.ElapsedTimeDao
 import com.tokopedia.notifications.inApp.ruleEngine.storage.dao.InAppDataDao
 import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.ElapsedTime
@@ -128,7 +127,7 @@ class StorageProviderTest {
         val completable = storageProvider.updateInAppDataFreq(id)
         completable.subscribe(testSubscriber)
 
-        every { inAppDataDao.updateFrequency(any()) } returns Unit
+        every { inAppDataDao.updateFrequencyWithShownTime(any(), any()) } returns Unit
 
         testSubscriber.assertCompleted()
     }

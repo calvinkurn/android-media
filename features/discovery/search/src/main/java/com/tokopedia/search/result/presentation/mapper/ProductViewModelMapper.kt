@@ -40,6 +40,7 @@ class ProductViewModelMapper {
         productDataView.additionalParams = searchProductHeader.additionalParams
         productDataView.autocompleteApplink = searchProductData.autocompleteApplink
         productDataView.defaultView = searchProductHeader.defaultView
+        productDataView.bannerDataView = convertToBannerDataView(searchProductData.banner)
 
         return productDataView
     }
@@ -333,4 +334,13 @@ class ProductViewModelMapper {
                     inspirationCardType,
             )
         }
+
+    private fun convertToBannerDataView(bannerModel: Banner): BannerDataView {
+        return BannerDataView(
+                bannerModel.position,
+                bannerModel.text,
+                bannerModel.applink,
+                bannerModel.imageUrl
+        )
+    }
 }

@@ -20,7 +20,7 @@ import javax.inject.Inject
 class PhoneCallBroadcastReceiver @Inject constructor(): BroadcastReceiver() {
 
     private var crashlytics: FirebaseCrashlytics = FirebaseCrashlytics.getInstance()
-    private lateinit var listener: OnCallStateChange
+    private var listener: OnCallStateChange? = null
 
     private var lastState = TelephonyManager.CALL_STATE_IDLE
     private var isIncomingCall = false
@@ -49,11 +49,7 @@ class PhoneCallBroadcastReceiver @Inject constructor(): BroadcastReceiver() {
             val telephony = context?.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
             telephony.listen(object : PhoneStateListener() {
                 override fun onCallStateChanged(state: Int, phoneNumber: String?) {
-                    if (::listener.isInitialized) {
-                        onStateChanged(state, phoneNumber ?: "")
-                    } else {
-                        sendLogTracker("PhoneCallBroadcastReceiver listener not initialized")
-                    }
+                    onStateChanged(state, phoneNumber.orEmpty())
                 }
             }, PhoneStateListener.LISTEN_CALL_STATE)
         } catch (e: Exception) {
@@ -68,13 +64,13 @@ class PhoneCallBroadcastReceiver @Inject constructor(): BroadcastReceiver() {
         when (state) {
             TelephonyManager.CALL_STATE_RINGING -> {
                 isIncomingCall = true
-                listener.onIncomingCallStart(number)
+                listener?.onIncomingCallStart(number)
             }
             TelephonyManager.CALL_STATE_IDLE -> {
                 if (lastState == TelephonyManager.CALL_STATE_RINGING) {
-                    listener.onIncomingCallEnded(number)
+                    listener?.onIncomingCallEnded(number)
                 } else if (isIncomingCall) {
-                    listener.onMissedCall(number)
+                    listener?.onMissedCall(number)
                 }
             }
         }
