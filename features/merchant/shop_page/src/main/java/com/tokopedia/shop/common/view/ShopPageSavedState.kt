@@ -1,54 +1,46 @@
-package com.tokopedia.shop.common.view;
+package com.tokopedia.shop.common.view
+
+import android.os.Parcel
+import android.os.Parcelable
+import android.os.Parcelable.ClassLoaderCreator
+import android.util.SparseArray
+import android.view.View
 
 /**
  * Created by nathan on 5/4/17.
  */
+class ShopPageSavedState : View.BaseSavedState {
+    var childrenStates: SparseArray<Parcelable>? = null
+        private set
 
-import android.os.Parcel;
-import android.os.Parcelable;
-import android.util.SparseArray;
-import android.view.View;
-
-public class ShopPageSavedState extends View.BaseSavedState {
-
-    private SparseArray childrenStates;
-
-    public SparseArray getChildrenStates() {
-        return childrenStates;
+    constructor(superState: Parcelable?) : super(superState) {}
+    private constructor(`in`: Parcel, classLoader: ClassLoader) : super(`in`) {
+        childrenStates = `in`.readSparseArray(classLoader)
     }
 
-    public ShopPageSavedState(Parcelable superState) {
-        super(superState);
+    fun initChildrenStates() {
+        childrenStates = SparseArray()
     }
 
-    private ShopPageSavedState(Parcel in, ClassLoader classLoader) {
-        super(in);
-        childrenStates = in.readSparseArray(classLoader);
+    override fun writeToParcel(out: Parcel, flags: Int) {
+        super.writeToParcel(out, flags)
+        out.writeSparseArray(childrenStates)
     }
 
-    public void initChildrenStates() {
-        childrenStates = new SparseArray();
-    }
+    companion object {
+        @JvmField
+        val CREATOR: ClassLoaderCreator<ShopPageSavedState> = object : ClassLoaderCreator<ShopPageSavedState> {
+            override fun createFromParcel(source: Parcel, loader: ClassLoader): ShopPageSavedState {
+                return ShopPageSavedState(source, loader)
+            }
 
-    @Override
-    public void writeToParcel(Parcel out, int flags) {
-        super.writeToParcel(out, flags);
-        out.writeSparseArray(childrenStates);
-    }
+            override fun createFromParcel(source: Parcel?): ShopPageSavedState {
+                return createFromParcel(null)
+            }
 
-    public static final ClassLoaderCreator<ShopPageSavedState> CREATOR = new ClassLoaderCreator<ShopPageSavedState>() {
-        @Override
-        public ShopPageSavedState createFromParcel(Parcel source, ClassLoader loader) {
-            return new ShopPageSavedState(source, loader);
+            override fun newArray(size: Int): Array<ShopPageSavedState?> {
+                return arrayOfNulls(size)
+            }
         }
-
-        @Override
-        public ShopPageSavedState createFromParcel(Parcel source) {
-            return createFromParcel(null);
-        }
-
-        public ShopPageSavedState[] newArray(int size) {
-            return new ShopPageSavedState[size];
-        }
-    };
+    }
 }

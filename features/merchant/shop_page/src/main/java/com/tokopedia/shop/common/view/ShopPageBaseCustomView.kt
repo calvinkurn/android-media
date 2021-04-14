@@ -1,64 +1,47 @@
-package com.tokopedia.shop.common.view;
+package com.tokopedia.shop.common.view
 
-import android.content.Context;
-import android.os.Parcelable;
-import android.util.AttributeSet;
-import android.util.SparseArray;
-import android.widget.FrameLayout;
-
-import androidx.annotation.AttrRes;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+import android.content.Context
+import android.os.Parcelable
+import android.util.AttributeSet
+import android.util.SparseArray
+import android.widget.FrameLayout
+import androidx.annotation.AttrRes
 
 /**
  * Created by nathan on 6/2/17.
  */
+open class ShopPageBaseCustomView : FrameLayout {
+    constructor(context: Context) : super(context) {}
+    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {}
+    constructor(context: Context, attrs: AttributeSet?, @AttrRes defStyleAttr: Int) : super(context, attrs, defStyleAttr) {}
 
-public class ShopPageBaseCustomView extends FrameLayout {
-
-    public ShopPageBaseCustomView(@NonNull Context context) {
-        super(context);
+    override fun dispatchSaveInstanceState(container: SparseArray<Parcelable>) {
+        dispatchFreezeSelfOnly(container)
     }
 
-    public ShopPageBaseCustomView(@NonNull Context context, @Nullable AttributeSet attrs) {
-        super(context, attrs);
+    override fun dispatchRestoreInstanceState(container: SparseArray<Parcelable>) {
+        dispatchThawSelfOnly(container)
     }
 
-    public ShopPageBaseCustomView(@NonNull Context context, @Nullable AttributeSet attrs, @AttrRes int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-    }
-
-    @Override
-    protected void dispatchSaveInstanceState(SparseArray<Parcelable> container) {
-        dispatchFreezeSelfOnly(container);
-    }
-
-    @Override
-    protected void dispatchRestoreInstanceState(SparseArray<Parcelable> container) {
-        dispatchThawSelfOnly(container);
-    }
-
-    @Override
-    protected Parcelable onSaveInstanceState() {
-        Parcelable superState = super.onSaveInstanceState();
-        ShopPageSavedState ss = new ShopPageSavedState(superState);
-        ss.initChildrenStates();
-        for (int i = 0; i < getChildCount(); i++) {
-            getChildAt(i).saveHierarchyState(ss.getChildrenStates());
+    override fun onSaveInstanceState(): Parcelable? {
+        val superState = super.onSaveInstanceState()
+        val ss = ShopPageSavedState(superState)
+        ss.initChildrenStates()
+        for (i in 0 until childCount) {
+            getChildAt(i).saveHierarchyState(ss.childrenStates)
         }
-        return ss;
+        return ss
     }
 
-    @Override
-    protected void onRestoreInstanceState(Parcelable state) {
-        if (state instanceof ShopPageSavedState) {
-            ShopPageSavedState ss = (ShopPageSavedState) state;
-            super.onRestoreInstanceState(ss.getSuperState());
-            for (int i = 0; i < getChildCount(); i++) {
-                getChildAt(i).restoreHierarchyState(ss.getChildrenStates());
+    override fun onRestoreInstanceState(state: Parcelable) {
+        if (state is ShopPageSavedState) {
+            val ss = state
+            super.onRestoreInstanceState(ss.superState)
+            for (i in 0 until childCount) {
+                getChildAt(i).restoreHierarchyState(ss.childrenStates)
             }
         } else {
-            super.onRestoreInstanceState(state);
+            super.onRestoreInstanceState(state)
         }
     }
 }

@@ -1,315 +1,288 @@
-package com.tokopedia.shop.common.view;
+package com.tokopedia.shop.common.view
 
-import android.app.Activity;
-import android.content.Context;
-import android.content.res.TypedArray;
-import android.graphics.Typeface;
-import android.graphics.drawable.Drawable;
-import android.text.SpannableString;
-import android.text.TextUtils;
-import android.util.AttributeSet;
-import android.util.DisplayMetrics;
-import android.util.TypedValue;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
-
-import androidx.annotation.ColorInt;
-import androidx.appcompat.content.res.AppCompatResources;
-import androidx.core.content.ContextCompat;
-
-import com.tokopedia.shop.R;
+import android.app.Activity
+import android.content.Context
+import android.graphics.Typeface
+import android.graphics.drawable.Drawable
+import android.text.SpannableString
+import android.text.TextUtils
+import android.util.AttributeSet
+import android.util.DisplayMetrics
+import android.util.TypedValue
+import android.widget.ImageView
+import android.widget.TextView
+import androidx.annotation.ColorInt
+import androidx.appcompat.content.res.AppCompatResources
+import androidx.core.content.ContextCompat
+import com.tokopedia.shop.R
 
 /**
  * Created by zulfikarrahman on 12/29/16.
  */
+class ShopPageLabelView : ShopPageBaseCustomView {
+    var imageView: ImageView? = null
+        private set
+    private var titleTextView: TextView? = null
+    private var subTitleTextView: TextView? = null
+    private var contentTextView: TextView? = null
+    private var badgeTextView: TextView? = null
+    private var rightArrow: ImageView? = null
+    private var imageDrawable: Drawable? = null
+    private var imageWidth = 0
+    private var imageHeight = 0
+    private var imageMarginRight = 0
+    private var titleText: String? = null
+    private var subTitleText: String? = null
 
-public class ShopPageLabelView extends ShopPageBaseCustomView {
-    private static final float MAX_WIDTH_PERCENT_CONTENT = 0.3f;
-
-    private ImageView imageView;
-    private TextView titleTextView;
-    private TextView subTitleTextView;
-    private TextView contentTextView;
-    private TextView badgeTextView;
-    private ImageView rightArrow;
-
-    private Drawable imageDrawable;
-    private int imageWidth;
-    private int imageHeight;
-    private int imageMarginRight;
-    private String titleText;
-    private String subTitleText;
     @ColorInt
-    private int titleColorValue;
+    private var titleColorValue = 0
+
     @ColorInt
-    private int subtitleColorValue;
-    private int contentTextStyleValue;
+    private var subtitleColorValue = 0
+    private var contentTextStyleValue = 0
+    private var badgeCounter = 0
+    private var contentText: String? = null
 
-    private int badgeCounter;
-    private String contentText;
     @ColorInt
-    private int contentColorValue;
-    private int titleTextStyleValue;
+    private var contentColorValue = 0
+    private var titleTextStyleValue = 0
+    private var maxLines = 0
+    private var titleTextSize = 0f
+    private var subTitleTextSize = 0f
+    private var contentTextSize = 0f
+    private var contentMaxWidthPercentage = 0f
+    private var minTitleWidth = 0
+    private var isArrowShown = false
+    private var enabled = false
 
-    private int maxLines;
-    private float titleTextSize;
-    private float subTitleTextSize;
-    private float contentTextSize;
-    private float contentMaxWidthPercentage;
-    private int minTitleWidth;
-
-    private boolean isArrowShown;
-    private boolean enabled;
-
-    public ShopPageLabelView(Context context) {
-        super(context);
-        init();
+    constructor(context: Context) : super(context) {
+        init()
     }
 
-    public ShopPageLabelView(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        init(attrs);
+    constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {
+        init(attrs)
     }
 
-    public ShopPageLabelView(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-        init(attrs);
+    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
+        init(attrs)
     }
 
-    private void init(AttributeSet attrs) {
-        TypedArray styledAttributes = getContext().obtainStyledAttributes(attrs, R.styleable.ShopPageLabelView);
+    private fun init(attrs: AttributeSet?) {
+        val styledAttributes = context.obtainStyledAttributes(attrs, R.styleable.ShopPageLabelView)
         try {
-            final int drawableId = styledAttributes.getResourceId(R.styleable.ShopPageLabelView_lv_image, -1);
+            val drawableId = styledAttributes.getResourceId(R.styleable.ShopPageLabelView_lv_image, -1)
             if (drawableId >= 0) {
-                imageDrawable = AppCompatResources.getDrawable(getContext(), drawableId);
+                imageDrawable = AppCompatResources.getDrawable(context, drawableId)
             }
-            imageWidth = (int) styledAttributes.getDimension(R.styleable.ShopPageLabelView_lv_image_width, getResources().getDimension(R.dimen.dp_32));
-            imageHeight = (int) styledAttributes.getDimension(R.styleable.ShopPageLabelView_lv_image_height, imageWidth);
-            imageMarginRight = (int) styledAttributes.getDimension(R.styleable.ShopPageLabelView_lv_image_margin_right, getResources().getDimension(R.dimen.dp_8));
-            titleText = styledAttributes.getString(R.styleable.ShopPageLabelView_lv_title);
-            titleColorValue = styledAttributes.getColor(R.styleable.ShopPageLabelView_lv_title_color, ContextCompat.getColor(getContext(), R.color.font_black_primary_70));
-            subtitleColorValue = styledAttributes.getColor(R.styleable.ShopPageLabelView_lv_sub_title_color, ContextCompat.getColor(getContext(), R.color.font_black_disabled_38));
-            subTitleText = styledAttributes.getString(R.styleable.ShopPageLabelView_lv_sub_title);
-            contentText = styledAttributes.getString(R.styleable.ShopPageLabelView_lv_content);
-            badgeCounter = styledAttributes.getInt(R.styleable.ShopPageLabelView_lv_badge, 0);
-            contentColorValue = styledAttributes.getColor(R.styleable.ShopPageLabelView_lv_content_color, ContextCompat.getColor(getContext(), R.color.font_black_secondary_54));
-            contentTextStyleValue = styledAttributes.getInt(R.styleable.ShopPageLabelView_lv_content_text_style, Typeface.NORMAL);
-            titleTextStyleValue = styledAttributes.getInt(R.styleable.ShopPageLabelView_lv_title_text_style, Typeface.NORMAL);
-            maxLines = styledAttributes.getInt(R.styleable.ShopPageLabelView_lv_content_max_lines, 1);
-            contentTextSize = styledAttributes.getDimension(R.styleable.ShopPageLabelView_lv_content_text_size, getResources().getDimension(R.dimen.sp_16));
-            contentMaxWidthPercentage = styledAttributes.getFloat(R.styleable.ShopPageLabelView_lv_content_max_width_percentage, MAX_WIDTH_PERCENT_CONTENT);
-            titleTextSize = styledAttributes.getDimension(R.styleable.ShopPageLabelView_lv_title_text_size, contentTextSize);
-            subTitleTextSize = styledAttributes.getDimension(R.styleable.ShopPageLabelView_lv_sub_title_text_size, getResources().getDimension(R.dimen.sp_12));
-            minTitleWidth = styledAttributes.getDimensionPixelSize(R.styleable.ShopPageLabelView_lv_title_min_width, 0);
-            isArrowShown = styledAttributes.getBoolean(R.styleable.ShopPageLabelView_lv_show_arrow, false);
+            imageWidth = styledAttributes.getDimension(R.styleable.ShopPageLabelView_lv_image_width, resources.getDimension(R.dimen.dp_32)).toInt()
+            imageHeight = styledAttributes.getDimension(R.styleable.ShopPageLabelView_lv_image_height, imageWidth.toFloat()).toInt()
+            imageMarginRight = styledAttributes.getDimension(R.styleable.ShopPageLabelView_lv_image_margin_right, resources.getDimension(R.dimen.dp_8)).toInt()
+            titleText = styledAttributes.getString(R.styleable.ShopPageLabelView_lv_title)
+            titleColorValue = styledAttributes.getColor(R.styleable.ShopPageLabelView_lv_title_color, ContextCompat.getColor(context, R.color.font_black_primary_70))
+            subtitleColorValue = styledAttributes.getColor(R.styleable.ShopPageLabelView_lv_sub_title_color, ContextCompat.getColor(context, R.color.font_black_disabled_38))
+            subTitleText = styledAttributes.getString(R.styleable.ShopPageLabelView_lv_sub_title)
+            contentText = styledAttributes.getString(R.styleable.ShopPageLabelView_lv_content)
+            badgeCounter = styledAttributes.getInt(R.styleable.ShopPageLabelView_lv_badge, 0)
+            contentColorValue = styledAttributes.getColor(R.styleable.ShopPageLabelView_lv_content_color, ContextCompat.getColor(context, R.color.font_black_secondary_54))
+            contentTextStyleValue = styledAttributes.getInt(R.styleable.ShopPageLabelView_lv_content_text_style, Typeface.NORMAL)
+            titleTextStyleValue = styledAttributes.getInt(R.styleable.ShopPageLabelView_lv_title_text_style, Typeface.NORMAL)
+            maxLines = styledAttributes.getInt(R.styleable.ShopPageLabelView_lv_content_max_lines, 1)
+            contentTextSize = styledAttributes.getDimension(R.styleable.ShopPageLabelView_lv_content_text_size, resources.getDimension(R.dimen.sp_16))
+            contentMaxWidthPercentage = styledAttributes.getFloat(R.styleable.ShopPageLabelView_lv_content_max_width_percentage, MAX_WIDTH_PERCENT_CONTENT)
+            titleTextSize = styledAttributes.getDimension(R.styleable.ShopPageLabelView_lv_title_text_size, contentTextSize)
+            subTitleTextSize = styledAttributes.getDimension(R.styleable.ShopPageLabelView_lv_sub_title_text_size, resources.getDimension(R.dimen.sp_12))
+            minTitleWidth = styledAttributes.getDimensionPixelSize(R.styleable.ShopPageLabelView_lv_title_min_width, 0)
+            isArrowShown = styledAttributes.getBoolean(R.styleable.ShopPageLabelView_lv_show_arrow, false)
         } finally {
-            styledAttributes.recycle();
+            styledAttributes.recycle()
         }
-        init();
+        init()
     }
 
-    private void init() {
-        View view = inflate(getContext(), R.layout.shop_page_widget_label_view, this);
-        imageView = view.findViewById(R.id.image_view);
-        titleTextView = view.findViewById(R.id.text_view_title);
-        subTitleTextView = view.findViewById(R.id.text_view_sub_title);
-        contentTextView = view.findViewById(R.id.text_view_content);
-        rightArrow = view.findViewById(R.id.image_arrow);
-        badgeTextView = view.findViewById(R.id.text_view_badge);
+    private fun init() {
+        val view = inflate(context, R.layout.shop_page_widget_label_view, this)
+        imageView = view.findViewById(R.id.image_view)
+        titleTextView = view.findViewById(R.id.text_view_title)
+        subTitleTextView = view.findViewById(R.id.text_view_sub_title)
+        contentTextView = view.findViewById(R.id.text_view_content)
+        rightArrow = view.findViewById(R.id.image_arrow)
+        badgeTextView = view.findViewById(R.id.text_view_badge)
     }
 
-    @Override
-    protected void onFinishInflate() {
-        super.onFinishInflate();
+    override fun onFinishInflate() {
+        super.onFinishInflate()
         if (imageDrawable != null) {
-            imageView.setImageDrawable(imageDrawable);
-            imageView.setVisibility(View.VISIBLE);
-            titleTextView.setPadding(imageMarginRight, 0, 0, 0);
-            subTitleTextView.setPadding(imageMarginRight, 0, 0, 0);
+            imageView?.setImageDrawable(imageDrawable)
+            imageView?.visibility = VISIBLE
+            titleTextView?.setPadding(imageMarginRight, 0, 0, 0)
+            subTitleTextView?.setPadding(imageMarginRight, 0, 0, 0)
         }
-        ViewGroup.LayoutParams layoutParams = imageView.getLayoutParams();
-        layoutParams.width = imageWidth;
-        layoutParams.height = imageHeight;
-        imageView.setLayoutParams(layoutParams);
-        titleTextView.setText(titleText);
-        titleTextView.setTypeface(null, titleTextStyleValue);
-        titleTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, titleTextSize);
-        titleTextView.setTextColor(titleColorValue);
-        titleTextView.setMinWidth(minTitleWidth);
-
-        subTitleTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, subTitleTextSize);
-        subTitleTextView.setTextColor(subtitleColorValue);
-
+        val layoutParams = imageView?.layoutParams
+        layoutParams?.width = imageWidth
+        layoutParams?.height = imageHeight
+        imageView?.layoutParams = layoutParams
+        titleTextView?.text = titleText
+        titleTextView?.setTypeface(null, titleTextStyleValue)
+        titleTextView?.setTextSize(TypedValue.COMPLEX_UNIT_PX, titleTextSize)
+        titleTextView?.setTextColor(titleColorValue)
+        titleTextView?.minWidth = minTitleWidth
+        subTitleTextView?.setTextSize(TypedValue.COMPLEX_UNIT_PX, subTitleTextSize)
+        subTitleTextView?.setTextColor(subtitleColorValue)
         if (!TextUtils.isEmpty(subTitleText)) {
-            subTitleTextView.setText(subTitleText);
-            subTitleTextView.setVisibility(View.VISIBLE);
+            subTitleTextView?.text = subTitleText
+            subTitleTextView?.visibility = VISIBLE
         } else {
-            subTitleTextView.setVisibility(View.GONE);
+            subTitleTextView?.visibility = GONE
         }
-
         if (badgeCounter > 0) {
-            badgeTextView.setText(badgeCounter(badgeCounter));
-            badgeTextView.setVisibility(View.VISIBLE);
+            badgeTextView?.text = badgeCounter(badgeCounter)
+            badgeTextView?.visibility = VISIBLE
         } else {
-            badgeTextView.setVisibility(View.GONE);
+            badgeTextView?.visibility = GONE
         }
-
-        contentTextView.setText(contentText);
-        contentTextView.setTextColor(contentColorValue);
-        contentTextView.setTypeface(null, contentTextStyleValue);
-        contentTextView.setMaxLines(maxLines);
-        contentTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, contentTextSize);
-
-        rightArrow.setVisibility(isArrowShown ? VISIBLE : GONE);
-
-        DisplayMetrics dm = new DisplayMetrics();
-        ((Activity)getContext()).getWindowManager().getDefaultDisplay().getMetrics(dm);
-
-        rightArrow.setVisibility(isArrowShown ? VISIBLE : GONE);
-        contentTextView.setMaxWidth((int)(dm.widthPixels * contentMaxWidthPercentage));
-
-        invalidate();
-        requestLayout();
+        contentTextView?.text = contentText
+        contentTextView?.setTextColor(contentColorValue)
+        contentTextView?.setTypeface(null, contentTextStyleValue)
+        contentTextView?.maxLines = maxLines
+        contentTextView?.setTextSize(TypedValue.COMPLEX_UNIT_PX, contentTextSize)
+        rightArrow?.visibility = if (isArrowShown) VISIBLE else GONE
+        val dm = DisplayMetrics()
+        (context as Activity).windowManager.defaultDisplay.getMetrics(dm)
+        rightArrow?.visibility = if (isArrowShown) VISIBLE else GONE
+        contentTextView?.maxWidth = (dm.widthPixels * contentMaxWidthPercentage).toInt()
+        invalidate()
+        requestLayout()
     }
 
-    public void resetContentText() {
-        setContent(contentText);
-        invalidate();
-        requestLayout();
+    fun resetContentText() {
+        content = contentText
+        invalidate()
+        requestLayout()
     }
 
-    public boolean isContentDefault() {
-        return contentTextView.getText().equals(contentText);
-    }
+    val isContentDefault: Boolean
+        get() = contentTextView?.text == contentText
 
-    @Override
-    public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
-        setClickable(enabled);
+    override fun setEnabled(enabled: Boolean) {
+        this.enabled = enabled
+        isClickable = enabled
         if (enabled) {
-            titleTextView.setTextColor(titleColorValue);
-            contentTextView.setTextColor(contentColorValue);
-            subTitleTextView.setTextColor(subtitleColorValue);
+            titleTextView?.setTextColor(titleColorValue)
+            contentTextView?.setTextColor(contentColorValue)
+            subTitleTextView?.setTextColor(subtitleColorValue)
         } else {
-            titleTextView.setTextColor(ContextCompat.getColor(getContext(), R.color.font_black_disabled_38));
-            contentTextView.setTextColor(ContextCompat.getColor(getContext(), R.color.font_black_disabled_38));
-            subTitleTextView.setTextColor(ContextCompat.getColor(getContext(), R.color.font_black_disabled_38));
+            titleTextView?.setTextColor(ContextCompat.getColor(context, R.color.font_black_disabled_38))
+            contentTextView?.setTextColor(ContextCompat.getColor(context, R.color.font_black_disabled_38))
+            subTitleTextView?.setTextColor(ContextCompat.getColor(context, R.color.font_black_disabled_38))
         }
     }
 
-    @Override
-    public boolean isEnabled() {
-        return enabled;
+    override fun isEnabled(): Boolean {
+        return enabled
     }
 
-    public String getTitle() {
-        return titleTextView.getText().toString();
-    }
-
-    public void setTitle(String textTitle) {
-        titleTextView.setText(textTitle);
-        invalidate();
-        requestLayout();
-    }
-
-    public void setTitle(SpannableString spannableString){
-        titleTextView.setText(spannableString);
-        invalidate();
-        requestLayout();
-    }
-
-    public void setSubTitle(String text) {
-        subTitleTextView.setText(text);
-        subTitleTextView.setVisibility(TextUtils.isEmpty(text) ? View.GONE : View.VISIBLE);
-        invalidate();
-        requestLayout();
-    }
-
-    public void setTitleContentTypeFace(int typeFace) {
-        titleTextView.setTypeface(null, typeFace);
-        invalidate();
-        requestLayout();
-    }
-
-    public void setContent(CharSequence textValue) {
-        contentTextView.setText(textValue);
-        invalidate();
-        requestLayout();
-    }
-
-    public String getContent() {
-        return contentTextView.getText().toString();
-    }
-
-    public void setContentTypeface(int typefaceType) {
-        contentTextView.setTypeface(null, typefaceType);
-        invalidate();
-        requestLayout();
-    }
-
-    public void setContentColorValue(@ColorInt int colorValue) {
-        contentColorValue = colorValue;
-        contentTextView.setTextColor(colorValue);
-        invalidate();
-        requestLayout();
-    }
-
-    public ImageView getImageView() {
-        return imageView;
-    }
-
-    public void showRightArrow(boolean hideArrow) {
-        rightArrow.setVisibility(hideArrow ? GONE : VISIBLE);
-        invalidate();
-        requestLayout();
-    }
-
-    public void setImageResource(int imageResource) {
-        if (imageResource >= 0){
-            imageDrawable = AppCompatResources.getDrawable(getContext(), imageResource);
-            imageView.setImageDrawable(imageDrawable);
-            imageView.setVisibility(VISIBLE);
-            titleTextView.setPadding(imageMarginRight, 0, 0, 0);
-            subTitleTextView.setPadding(imageMarginRight, 0, 0, 0);
-        } else {
-            imageView.setVisibility(GONE);
-            titleTextView.setPadding(0, 0, 0, 0);
-            subTitleTextView.setPadding(0, 0, 0, 0);
+    var title: String?
+        get() = titleTextView?.text.toString()
+        set(textTitle) {
+            titleTextView?.text = textTitle
+            invalidate()
+            requestLayout()
         }
-        invalidate();
-        requestLayout();
+
+    fun setTitle(spannableString: SpannableString?) {
+        titleTextView?.text = spannableString
+        invalidate()
+        requestLayout()
     }
 
-    public void setBadgeCounter(int badge){
-        badgeTextView.setText(badgeCounter(badge));
-        badgeTextView.setVisibility(badge > 0 ? View.VISIBLE : View.GONE);
-        invalidate();
-        requestLayout();
+    fun setSubTitle(text: String?) {
+        subTitleTextView?.text = text
+        subTitleTextView?.visibility = if (TextUtils.isEmpty(text)) GONE else VISIBLE
+        invalidate()
+        requestLayout()
     }
 
-    private String badgeCounter(int badge) {
-        String counter = String.valueOf(badge);
+    fun setTitleContentTypeFace(typeFace: Int) {
+        titleTextView?.setTypeface(null, typeFace)
+        invalidate()
+        requestLayout()
+    }
+
+    var content: CharSequence?
+        get() = contentTextView?.text.toString()
+        set(textValue) {
+            contentTextView?.text = textValue
+            invalidate()
+            requestLayout()
+        }
+
+    fun setContentTypeface(typefaceType: Int) {
+        contentTextView?.setTypeface(null, typefaceType)
+        invalidate()
+        requestLayout()
+    }
+
+    fun setContentColorValue(@ColorInt colorValue: Int) {
+        contentColorValue = colorValue
+        contentTextView?.setTextColor(colorValue)
+        invalidate()
+        requestLayout()
+    }
+
+    fun showRightArrow(hideArrow: Boolean) {
+        rightArrow?.visibility = if (hideArrow) GONE else VISIBLE
+        invalidate()
+        requestLayout()
+    }
+
+    fun setImageResource(imageResource: Int) {
+        if (imageResource >= 0) {
+            imageDrawable = AppCompatResources.getDrawable(context, imageResource)
+            imageView?.setImageDrawable(imageDrawable)
+            imageView?.visibility = VISIBLE
+            titleTextView?.setPadding(imageMarginRight, 0, 0, 0)
+            subTitleTextView?.setPadding(imageMarginRight, 0, 0, 0)
+        } else {
+            imageView?.visibility = GONE
+            titleTextView?.setPadding(0, 0, 0, 0)
+            subTitleTextView?.setPadding(0, 0, 0, 0)
+        }
+        invalidate()
+        requestLayout()
+    }
+
+    fun setBadgeCounter(badge: Int) {
+        badgeTextView?.text = badgeCounter(badge)
+        badgeTextView?.visibility = if (badge > 0) VISIBLE else GONE
+        invalidate()
+        requestLayout()
+    }
+
+    private fun badgeCounter(badge: Int): String {
+        var counter = badge.toString()
         if (badge > 99) {
-            counter = "99+";
+            counter = "99+"
         }
-        return counter;
+        return counter
     }
 
-    public void setContentClick(OnClickListener onClickListener){
-        if (onClickListener == null){
-            this.contentTextView.setClickable(false);
+    fun setContentClick(onClickListener: OnClickListener?) {
+        if (onClickListener == null) {
+            contentTextView?.isClickable = false
         } else {
-            this.contentTextView.setClickable(true);
-            this.contentTextView.setOnClickListener(onClickListener);
+            contentTextView?.isClickable = true
+            contentTextView?.setOnClickListener(onClickListener)
         }
     }
 
-    public void setSubTitle(SpannableString subtitle) {
-        subTitleTextView.setText(subtitle);
-        subTitleTextView.setVisibility(TextUtils.isEmpty(subtitle) ? View.GONE : View.VISIBLE);
-        invalidate();
-        requestLayout();
+    fun setSubTitle(subtitle: SpannableString?) {
+        subTitleTextView?.text = subtitle
+        subTitleTextView?.visibility = if (TextUtils.isEmpty(subtitle)) GONE else VISIBLE
+        invalidate()
+        requestLayout()
+    }
+
+    companion object {
+        private const val MAX_WIDTH_PERCENT_CONTENT = 0.3f
     }
 }
