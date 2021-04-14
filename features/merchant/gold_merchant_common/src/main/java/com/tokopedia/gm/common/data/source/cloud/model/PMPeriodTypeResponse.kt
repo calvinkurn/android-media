@@ -14,10 +14,10 @@ data class PMPeriodTypeResponse(
             @SerializedName("period_type")
             val periodType: String = "",
             @Expose
-            @SerializedName("period_start_date")
+            @SerializedName("period_start_date_time")
             val periodStartDate: String? = "",
             @Expose
-            @SerializedName("period_end_date")
+            @SerializedName("period_end_date_time")
             val periodEndDate: String? = "",
     )
 }
