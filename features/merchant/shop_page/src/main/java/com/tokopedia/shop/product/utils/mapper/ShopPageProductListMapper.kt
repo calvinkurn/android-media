@@ -187,7 +187,8 @@ object ShopPageProductListMapper {
                 hasThreeDots = true,
                 pdpViewCount = shopProductUiModel.pdpViewCount,
                 stockBarLabel = shopProductUiModel.stockLabel,
-                stockBarPercentage = shopProductUiModel.stockBarPercentage
+                stockBarPercentage = shopProductUiModel.stockBarPercentage,
+                isWideContent = shopProductUiModel.isWideContent
         )
     }
 

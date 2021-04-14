@@ -25,6 +25,7 @@ class ShopProductItemBigGridViewHolder(
     }
 
     override fun bind(shopProductUiModel: ShopProductUiModel) {
+        shopProductUiModel.isWideContent = true
         itemView.product_card?.setProductModel(
                 ShopPageProductListMapper.mapToProductCardModel(shopProductUiModel)
         )
