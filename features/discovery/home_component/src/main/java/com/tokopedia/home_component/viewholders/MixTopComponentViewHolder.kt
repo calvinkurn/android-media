@@ -19,6 +19,7 @@ import com.tokopedia.home_component.customview.HeaderListener
 import com.tokopedia.home_component.decoration.SimpleHorizontalLinearLayoutDecoration
 import com.tokopedia.home_component.listener.HomeComponentListener
 import com.tokopedia.home_component.listener.MixTopComponentListener
+import com.tokopedia.home_component.mapper.ChannelModelMapper
 import com.tokopedia.home_component.model.ChannelCtaData
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
@@ -213,9 +214,9 @@ class MixTopComponentViewHolder(
         val clipData = ClipData.newPlainText("Coupon Code", cta.couponCode)
         clipboard.setPrimaryClip(clipData)
 
-        Toaster.make(view.parent as ViewGroup,
+        Toaster.build(view.parent as ViewGroup,
                 getString(R.string.discovery_home_toaster_coupon_copied),
-                Snackbar.LENGTH_LONG)
+                Snackbar.LENGTH_LONG).show()
     }
 
     private fun valuateRecyclerViewDecoration() {
@@ -245,32 +246,7 @@ class MixTopComponentViewHolder(
         val list :MutableList<CarouselProductCardDataModel> = mutableListOf()
         for (element in channel.channelGrids) {
             list.add(CarouselProductCardDataModel(
-                    ProductCardModel(
-                            slashedPrice = element.slashedPrice,
-                            productName = element.name,
-                            formattedPrice = element.price,
-                            productImageUrl = element.imageUrl,
-                            discountPercentage = element.discount,
-                            pdpViewCount = element.productViewCountFormatted,
-                            stockBarLabel = element.label,
-                            isTopAds = element.isTopads,
-                            stockBarPercentage = element.soldPercentage,
-                            labelGroupList = element.labelGroup.map {
-                                ProductCardModel.LabelGroup(
-                                        position = it.position,
-                                        title = it.title,
-                                        type = it.type
-                                )
-                            },
-                            freeOngkir = ProductCardModel.FreeOngkir(
-                                    element.isFreeOngkirActive,
-                                    element.freeOngkirImageUrl
-                            ),
-                            isOutOfStock = element.isOutOfStock,
-                            ratingCount = element.rating,
-                            reviewCount = element.countReview,
-                            countSoldRating = element.ratingFloat
-                    ),
+                    ChannelModelMapper.mapToProductCardModel(element),
                     blankSpaceConfig = BlankSpaceConfig(),
                     grid = element,
                     applink = element.applink,

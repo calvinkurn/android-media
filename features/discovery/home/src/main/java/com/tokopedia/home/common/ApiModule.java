@@ -7,7 +7,6 @@ import com.google.gson.GsonBuilder;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.network.converter.TokopediaWsV4ResponseConverter;
 import com.tokopedia.config.GlobalConfig;
-import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor;
 import com.tokopedia.core.network.core.OkHttpFactory;
 import com.tokopedia.core.network.retrofit.coverters.GeneratedHostConverter;
 import com.tokopedia.core.network.retrofit.coverters.StringResponseConverter;
@@ -58,11 +57,6 @@ public class ApiModule {
     }
 
     @Provides
-    public CacheApiInterceptor provideCacheApiInterceptor(@ApplicationContext Context context) {
-        return new CacheApiInterceptor(context);
-    }
-
-    @Provides
     public FingerprintInterceptor provideFingerprintInterceptor(@ApplicationContext Context context, UserSessionInterface userSession) {
         return new FingerprintInterceptor((NetworkRouter) context, userSession);
     }
@@ -81,7 +75,6 @@ public class ApiModule {
     @HomeAceQualifier
     OkHttpClient provideOkHttpClientAceQualifier(@ApplicationContext Context context,
                                                  FingerprintInterceptor fingerprintInterceptor,
-                                                 CacheApiInterceptor cacheApiInterceptor,
                                                  TkpdBaseInterceptor tkpdBaseInterceptor,
                                                  DebugInterceptor debugInterceptor,
                                                  HttpLoggingInterceptor httpLoggingInterceptor) {
@@ -90,8 +83,7 @@ public class ApiModule {
                 .build();
         TkpdOkHttpBuilder tkpdOkHttpBuilder = new TkpdOkHttpBuilder(context, client.newBuilder())
                 .addInterceptor(fingerprintInterceptor)
-                .addInterceptor(tkpdBaseInterceptor)
-                .addInterceptor(cacheApiInterceptor);
+                .addInterceptor(tkpdBaseInterceptor);
 
         if(GlobalConfig.isAllowDebuggingTools()) {
             tkpdOkHttpBuilder.addInterceptor(debugInterceptor);

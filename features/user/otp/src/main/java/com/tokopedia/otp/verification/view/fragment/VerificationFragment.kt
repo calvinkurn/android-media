@@ -94,6 +94,7 @@ class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed, PhoneCall
 
     private var isRunningCountDown = false
     private var isFirstSendOtp = true
+    private var isMoreThanOneMethod = true
 
     private var tempOtp: CharSequence? = null
     private var indexTempOtp = 0
@@ -135,6 +136,7 @@ class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed, PhoneCall
         otpData = arguments?.getParcelable(OtpConstant.OTP_DATA_EXTRA) ?: OtpData()
         modeListData = arguments?.getParcelable(OtpConstant.OTP_MODE_EXTRA) ?: ModeListData()
         viewModel.isLoginRegisterFlow = arguments?.getBoolean(ApplinkConstInternalGlobal.PARAM_IS_LOGIN_REGISTER_FLOW)?: false
+        isMoreThanOneMethod = arguments?.getBoolean(OtpConstant.IS_MORE_THAN_ONE_EXTRA, true) ?: true
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -173,7 +175,7 @@ class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed, PhoneCall
         if (permissionCheckerHelper.hasPermission(it, getPermissions())) {
             phoneCallBroadcastReceiver.registerReceiver(it, this)
         } else {
-            sendLogTracker("PhoneCallBroadcastReceiver not registered")
+            sendLogTracker("PhoneCallBroadcastReceiver not registered; permission=${permissionCheckerHelper.hasPermission(it, getPermissions())}")
         }
     }
 
@@ -351,7 +353,7 @@ class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed, PhoneCall
                         }
                         if ((activity as VerificationActivity).isResetPin2FA) {
                             val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.CHANGE_PIN).apply {
-                                bundle.putBoolean(ApplinkConstInternalGlobal.PARAM_IS_FROM_2FA, true)
+                                bundle.putBoolean(ApplinkConstInternalGlobal.PARAM_IS_RESET_PIN, true)
                                 bundle.putString(ApplinkConstInternalGlobal.PARAM_USER_ID, otpData.userId)
                                 putExtras(bundle)
                             }
@@ -522,17 +524,19 @@ class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed, PhoneCall
 
     private fun setFooterText() {
         context?.let {
-            val spannable: Spannable
+            var spannable: Spannable = SpannableString("")
             if (otpData.otpType == OtpConstant.OtpType.AFTER_LOGIN_PHONE) {
                 val message = getString(R.string.forgot_pin)
                 spannable = SpannableString(message)
                 setForgotPinFooterSpan(message, spannable)
             } else if (modeListData.modeText == OtpConstant.OtpMode.PIN ||
                     modeListData.modeText == OtpConstant.OtpMode.GOOGLE_AUTH) {
-                val message = it.getString(R.string.login_with_other_method)
-                spannable = SpannableString(message)
-                setOtherMethodPinFooterSpan(message, spannable)
-            } else if (otpData.canUseOtherMethod) {
+                if (otpData.canUseOtherMethod && isMoreThanOneMethod) {
+                    val message = it.getString(R.string.login_with_other_method)
+                    spannable = SpannableString(message)
+                    setOtherMethodPinFooterSpan(message, spannable)
+                }
+            } else if (otpData.canUseOtherMethod && isMoreThanOneMethod) {
                 val message = it.getString(R.string.validation_resend_email_or_with_other_method)
                 spannable = SpannableString(message)
                 setResendOtpFooterSpan(message, spannable)

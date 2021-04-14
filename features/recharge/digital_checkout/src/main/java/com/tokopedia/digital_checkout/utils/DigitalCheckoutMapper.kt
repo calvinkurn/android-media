@@ -1,6 +1,7 @@
 package com.tokopedia.digital_checkout.utils
 
 import com.tokopedia.common.payment.model.PaymentPassData
+import com.tokopedia.common_digital.atc.data.response.FintechProduct
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier
 import com.tokopedia.digital_checkout.data.DigitalCartCrossSellingType
 import com.tokopedia.digital_checkout.data.DigitalCheckoutConst
@@ -13,8 +14,6 @@ import com.tokopedia.digital_checkout.data.request.CheckoutRelationships
 import com.tokopedia.digital_checkout.data.request.DigitalCheckoutDataParameter
 import com.tokopedia.digital_checkout.data.request.RequestBodyCheckout
 import com.tokopedia.digital_checkout.data.response.ResponseCheckout
-import com.tokopedia.digital_checkout.data.response.atc.ResponseCartData
-import com.tokopedia.digital_checkout.data.response.getcart.FintechProduct
 import com.tokopedia.digital_checkout.data.response.getcart.RechargeGetCart
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
@@ -41,137 +40,6 @@ object DigitalCheckoutMapper {
             }
         }
         return promoData
-    }
-
-    fun mapToCartDigitalInfoData(responseCartData: ResponseCartData): CartDigitalInfoData {
-        try {
-            val cartDigitalInfoData = CartDigitalInfoData()
-
-            responseCartData.attributes?.mainInfo?.let { mainInfos ->
-                cartDigitalInfoData.mainInfo = mainInfos.map {
-                    CartItemDigital(it.label ?: "", it.value ?: "")
-                }
-            }
-
-            responseCartData.attributes?.additionalInfo?.let { additionalInfos ->
-                cartDigitalInfoData.additionalInfos = additionalInfos.map {
-                    CartItemDigitalWithTitle(it.title ?: "",
-                            it.detail?.map { detail ->
-                                CartItemDigital(detail.label ?: "", detail.value ?: "")
-                            } ?: listOf())
-                }
-            }
-
-            val attributesDigital = AttributesDigitalData()
-            responseCartData.attributes?.let { attributes ->
-                attributesDigital.categoryName = attributes.categoryName ?: ""
-                attributesDigital.operatorName = attributes.operatorName ?: ""
-                attributesDigital.clientNumber = attributes.clientNumber ?: ""
-                attributesDigital.icon = attributes.icon ?: ""
-                attributesDigital.isInstantCheckout = attributes.isInstantCheckout
-                attributesDigital.isNeedOtp = attributes.isNeedOtp
-                attributesDigital.smsState = attributes.smsState ?: ""
-                attributesDigital.price = attributes.price ?: ""
-                attributesDigital.pricePlain = attributes.pricePlain
-                attributesDigital.isEnableVoucher = attributes.isEnableVoucher
-                attributesDigital.isCouponActive = attributes.isCouponActive
-                attributesDigital.voucherAutoCode = attributes.voucherAutoCode ?: ""
-
-                if (attributes.userInputPrice != null) {
-                    val userInputPriceDigital = AttributesDigitalData.UserInputPriceDigital()
-                    userInputPriceDigital.maxPaymentPlain = attributes.userInputPrice?.maxPaymentPlain
-                            ?: 0.0
-                    userInputPriceDigital.minPaymentPlain = attributes.userInputPrice?.minPaymentPlain
-                            ?: 0.0
-                    userInputPriceDigital.minPayment = attributes.userInputPrice?.minPayment
-                    userInputPriceDigital.maxPayment = attributes.userInputPrice?.maxPayment
-                    attributesDigital.userInputPrice = userInputPriceDigital
-                }
-
-                if (attributes.autoApply != null) {
-                    val entity = attributes.autoApply
-                    val applyVoucher = AttributesDigitalData.CartAutoApplyVoucher()
-                    applyVoucher.code = entity!!.code ?: ""
-                    applyVoucher.isSuccess = entity.isSuccess
-                    applyVoucher.discountAmount = entity.discountAmount
-                    applyVoucher.isCoupon = entity.isCoupon
-                    applyVoucher.promoId = entity.promoId.toLongOrNull() ?: 0
-                    applyVoucher.title = entity.title ?: ""
-                    applyVoucher.messageSuccess = entity.messageSuccess ?: ""
-                    attributesDigital.autoApplyVoucher = applyVoucher
-                }
-
-                if (attributes.postPaidPopUp != null &&
-                        attributes.postPaidPopUp!!.action != null &&
-                        attributes.postPaidPopUp!!.action!!.confirmAction != null) {
-                    val postPaidPopup = responseCartData.attributes?.postPaidPopUp
-                    val postPaidPopupAttribute = PostPaidPopupAttribute()
-                    postPaidPopupAttribute.title = postPaidPopup?.title ?: ""
-                    postPaidPopupAttribute.content = postPaidPopup?.content ?: ""
-                    postPaidPopupAttribute.imageUrl = postPaidPopup?.imageUrl ?: ""
-                    postPaidPopupAttribute.confirmButtonTitle = postPaidPopup?.action?.confirmAction?.title
-                            ?: ""
-                    attributesDigital.postPaidPopupAttribute = postPaidPopupAttribute
-                }
-
-                attributesDigital.defaultPromoTab = attributes.defaultPromoTab ?: ""
-                attributesDigital.userId = attributes.userId ?: ""
-            }
-
-            responseCartData.relationships?.let { relationship ->
-                cartDigitalInfoData.relationProduct = CartDigitalInfoData.RelationshipData(
-                        relationship.product?.data?.type ?: "", relationship.product?.data?.id ?: ""
-                )
-
-                cartDigitalInfoData.relationCategory = CartDigitalInfoData.RelationshipData(
-                        relationship.category?.data?.type ?: "", relationship.category?.data?.id ?: ""
-                )
-
-                cartDigitalInfoData.relationOperator = CartDigitalInfoData.RelationshipData(
-                        relationship.operator?.data?.type ?: "", relationship.operator?.data?.id ?: ""
-                )
-            }
-
-            responseCartData.attributes?.run {
-                cartDigitalInfoData.crossSellingType = crossSellingType
-                cartDigitalInfoData.showSubscriptionsView = crossSellingType == DigitalCartCrossSellingType.MYBILLS.id ||
-                        crossSellingType == DigitalCartCrossSellingType.SUBSCRIBED.id
-                crossSellingConfig?.run {
-                    val crossSellingConfig = CartDigitalInfoData.CrossSellingConfig()
-                    crossSellingConfig.isSkipAble = isSkipAble
-                    crossSellingConfig.isChecked = isChecked
-
-                    val crossSellingWording = if (cartDigitalInfoData.crossSellingType
-                            == DigitalCartCrossSellingType.SUBSCRIBED.id) {
-                        wordingIsSubscribed
-                    } else {
-                        wording
-                    }
-                    crossSellingWording?.run {
-                        crossSellingConfig.headerTitle = headerTitle ?: ""
-                        crossSellingConfig.bodyTitle = bodyTitle ?: ""
-                        crossSellingConfig.bodyContentBefore = bodyContentBefore ?: ""
-                        crossSellingConfig.bodyContentAfter = bodyContentAfter ?: ""
-                        crossSellingConfig.checkoutButtonText = checkoutButtonText ?: ""
-                        cartDigitalInfoData.crossSellingConfig = crossSellingConfig
-                    }
-                }
-                attributesDigital.fintechProduct = fintechProduct ?: listOf()
-            }
-
-            cartDigitalInfoData.attributes = attributesDigital
-            cartDigitalInfoData.id = responseCartData.id ?: ""
-            cartDigitalInfoData.isInstantCheckout = responseCartData.attributes!!.isInstantCheckout
-            cartDigitalInfoData.isNeedOtp = responseCartData.attributes!!.isNeedOtp
-            cartDigitalInfoData.smsState = responseCartData.attributes!!.smsState ?: ""
-            cartDigitalInfoData.title = responseCartData.attributes!!.title ?: ""
-            cartDigitalInfoData.type = responseCartData.type ?: ""
-
-            return cartDigitalInfoData
-
-        } catch (e: Exception) {
-            throw Throwable(e.message, e)
-        }
     }
 
     fun mapGetCartToCartDigitalInfoData(responseRechargeGetCart: RechargeGetCart.Response): CartDigitalInfoData {
@@ -218,16 +86,16 @@ object DigitalCheckoutMapper {
                     attributesDigital.userInputPrice = userInputPriceDigital
                 }
 
-                    val entity = attributes.autoApply
-                    val applyVoucher = AttributesDigitalData.CartAutoApplyVoucher()
-                    applyVoucher.code = entity.code
-                    applyVoucher.isSuccess = entity.success
-                    applyVoucher.discountAmount = entity.discountAmount
+                val entity = attributes.autoApply
+                val applyVoucher = AttributesDigitalData.CartAutoApplyVoucher()
+                applyVoucher.code = entity.code
+                applyVoucher.isSuccess = entity.success
+                applyVoucher.discountAmount = entity.discountAmount
                 applyVoucher.isCoupon = entity.isCoupon
                 applyVoucher.promoId = entity.promoId.toLongOrZero()
                 applyVoucher.title = entity.titleDescription
-                    applyVoucher.messageSuccess = entity.messageSuccess
-                    attributesDigital.autoApplyVoucher = applyVoucher
+                applyVoucher.messageSuccess = entity.messageSuccess
+                attributesDigital.autoApplyVoucher = applyVoucher
 
                 if (responseRechargeGetCart.response.popUp.content.isNotEmpty() &&
                         responseRechargeGetCart.response.popUp.action.yesButtonTitle.isNotEmpty()) {
@@ -273,6 +141,7 @@ object DigitalCheckoutMapper {
 
             cartDigitalInfoData.attributes = attributesDigital
             cartDigitalInfoData.id = responseRechargeGetCart.response.id
+            cartDigitalInfoData.productId = responseRechargeGetCart.response.productId
             cartDigitalInfoData.isInstantCheckout = responseRechargeGetCart.response.isInstantCheckout
             cartDigitalInfoData.isNeedOtp = responseRechargeGetCart.response.isOtpRequired
             cartDigitalInfoData.smsState = responseRechargeGetCart.response.sms_state
@@ -299,21 +168,18 @@ object DigitalCheckoutMapper {
 
     fun buildCheckoutData(cartDigitalInfoData: CartDigitalInfoData, accessToken: String?,
                           requestCheckoutDataParameter: DigitalCheckoutDataParameter): DigitalCheckoutDataParameter {
-        val digitalCheckoutDataParameter = DigitalCheckoutDataParameter()
-        digitalCheckoutDataParameter.cartId = cartDigitalInfoData.id
-        digitalCheckoutDataParameter.accessToken = accessToken ?: ""
-        digitalCheckoutDataParameter.walletRefreshToken = ""
-        digitalCheckoutDataParameter.ipAddress = DeviceUtil.localIpAddress
-        digitalCheckoutDataParameter.relationId = cartDigitalInfoData.id
-        digitalCheckoutDataParameter.relationType = cartDigitalInfoData.type
-        digitalCheckoutDataParameter.transactionAmount = cartDigitalInfoData.attributes.pricePlain
-        digitalCheckoutDataParameter.userAgent = DeviceUtil.userAgentForApiCall
-        digitalCheckoutDataParameter.isNeedOtp = cartDigitalInfoData.isNeedOtp
+        //not override digitalCheckoutDataParameter's fintechproduct, subscription check and input price (for keeping don't keep state)
+        requestCheckoutDataParameter.cartId = cartDigitalInfoData.id
+        requestCheckoutDataParameter.accessToken = accessToken ?: ""
+        requestCheckoutDataParameter.walletRefreshToken = ""
+        requestCheckoutDataParameter.ipAddress = DeviceUtil.localIpAddress
+        requestCheckoutDataParameter.relationId = cartDigitalInfoData.id
+        requestCheckoutDataParameter.relationType = cartDigitalInfoData.type
+        requestCheckoutDataParameter.transactionAmount = cartDigitalInfoData.attributes.pricePlain
+        requestCheckoutDataParameter.userAgent = DeviceUtil.userAgentForApiCall
+        requestCheckoutDataParameter.isNeedOtp = cartDigitalInfoData.isNeedOtp
 
-        if (requestCheckoutDataParameter.isFintechProductChecked) digitalCheckoutDataParameter.isFintechProductChecked = true
-        if (requestCheckoutDataParameter.isSubscriptionChecked) digitalCheckoutDataParameter.isSubscriptionChecked = true
-
-        return digitalCheckoutDataParameter
+        return requestCheckoutDataParameter
     }
 
     fun getRequestBodyCheckout(checkoutData: DigitalCheckoutDataParameter,
@@ -341,18 +207,18 @@ object DigitalCheckoutMapper {
 
         attributes.subscribe = checkoutData.isSubscriptionChecked
 
-        if (checkoutData.isFintechProductChecked) {
-            fintechProduct?.run {
-                attributes.fintechProduct = listOf(RequestBodyCheckout.FintechProductCheckout(
-                        transactionType = transactionType,
-                        tierId = tierId.toIntOrZero(),
-                        userId = attributes.identifier.userId?.toLongOrNull() ?: 0,
-                        fintechAmount = fintechAmount.toLong(),
-                        fintechPartnerAmount = fintechPartnerAmount.toLong(),
-                        productName = info.title
-                ))
-            }
+        val fintechProductsCheckout = mutableListOf<RequestBodyCheckout.FintechProductCheckout>()
+        checkoutData.fintechProducts.values.forEach { fintech ->
+            fintechProductsCheckout.add(RequestBodyCheckout.FintechProductCheckout(
+                    transactionType = fintech.transactionType,
+                    tierId = fintech.tierId.toIntOrZero(),
+                    userId = attributes.identifier.userId?.toLongOrNull() ?: 0,
+                    fintechAmount = fintech.fintechAmount.toLong(),
+                    fintechPartnerAmount = fintech.fintechPartnerAmount.toLong(),
+                    productName = fintech.info.title
+            ))
         }
+        attributes.fintechProduct = fintechProductsCheckout
 
         requestBodyCheckout.attributes = attributes
         requestBodyCheckout.relationships = CheckoutRelationships(

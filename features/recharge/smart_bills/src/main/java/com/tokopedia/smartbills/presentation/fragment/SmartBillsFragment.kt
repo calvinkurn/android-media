@@ -1,9 +1,7 @@
 package com.tokopedia.smartbills.presentation.fragment
 
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -37,12 +35,14 @@ import com.tokopedia.smartbills.R
 import com.tokopedia.smartbills.analytics.SmartBillsAnalytics
 import com.tokopedia.smartbills.data.RechargeBills
 import com.tokopedia.smartbills.di.SmartBillsComponent
+import com.tokopedia.smartbills.presentation.activity.SmartBillsActivity
 import com.tokopedia.smartbills.presentation.activity.SmartBillsOnboardingActivity
 import com.tokopedia.smartbills.presentation.adapter.SmartBillsAdapter
 import com.tokopedia.smartbills.presentation.adapter.SmartBillsAdapterFactory
 import com.tokopedia.smartbills.presentation.adapter.viewholder.SmartBillsViewHolder
 import com.tokopedia.smartbills.presentation.viewmodel.SmartBillsViewModel
 import com.tokopedia.smartbills.presentation.widget.SmartBillsItemDetailBottomSheet
+import com.tokopedia.smartbills.presentation.widget.SmartBillsToolTipBottomSheet
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.usecase.coroutines.Fail
@@ -61,7 +61,9 @@ class SmartBillsFragment : BaseListFragment<RechargeBills, SmartBillsAdapterFact
         BaseCheckableViewHolder.CheckableInteractionListener,
         BaseListCheckableAdapter.OnCheckableAdapterListener<RechargeBills>,
         SmartBillsViewHolder.DetailListener,
-        TopupBillsCheckoutWidget.ActionListener {
+        TopupBillsCheckoutWidget.ActionListener,
+        SmartBillsActivity.SbmActivityListener,
+        SmartBillsToolTipBottomSheet.Listener{
 
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -314,6 +316,7 @@ class SmartBillsFragment : BaseListFragment<RechargeBills, SmartBillsAdapterFact
 
     override fun onSwipeRefresh() {
         toggleAllItems(false)
+        updateCheckAll()
         super.onSwipeRefresh()
     }
 
@@ -376,6 +379,7 @@ class SmartBillsFragment : BaseListFragment<RechargeBills, SmartBillsAdapterFact
     }
 
     override fun updateListByCheck(isChecked: Boolean, position: Int) {
+        if(position>=0)
         adapter.updateListByCheck(isChecked, position)
     }
 
@@ -389,8 +393,7 @@ class SmartBillsFragment : BaseListFragment<RechargeBills, SmartBillsAdapterFact
             totalPrice -= item.amount.toInt()
         }
         updateCheckoutView()
-
-        cb_smart_bills_select_all.isChecked = adapter.totalChecked == adapter.dataSize
+        updateCheckAll()
     }
 
     private fun toggleAllItems(value: Boolean, triggerTracking: Boolean = false) {
@@ -501,8 +504,29 @@ class SmartBillsFragment : BaseListFragment<RechargeBills, SmartBillsAdapterFact
         super.onDestroy()
     }
 
+    override fun clickToolTip() {
+        context?.let {
+            smartBillsAnalytics.clickToolTip()
+            val tooltipBottomSheet = SmartBillsToolTipBottomSheet.newInstance(it, this)
+            fragmentManager?.run {
+                tooltipBottomSheet.show(this)
+            }
+        }
+    }
+
+    override fun onClickMoreLearn() {
+        context?.let {
+            smartBillsAnalytics.clickMoreLearn()
+            RouteManager.route(context, HELP_SBM_URL)
+        }
+    }
+
     private fun getDataErrorException(): Throwable {
         return MessageErrorException(getString(R.string.smart_bills_data_error))
+    }
+
+    private fun updateCheckAll(){
+        cb_smart_bills_select_all.isChecked = adapter.totalChecked == adapter.dataSize
     }
 
     companion object {
@@ -518,6 +542,7 @@ class SmartBillsFragment : BaseListFragment<RechargeBills, SmartBillsAdapterFact
         const val REQUEST_CODE_SMART_BILLS_ONBOARDING = 1700
 
         const val LANGGANAN_URL = "https://www.tokopedia.com/langganan"
+        const val HELP_SBM_URL = "https://www.tokopedia.com/help/article/bayar-sekaligus"
 
         fun newInstance(sourceType: String = ""): SmartBillsFragment {
             val fragment = SmartBillsFragment()

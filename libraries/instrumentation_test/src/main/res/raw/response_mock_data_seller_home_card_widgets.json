@@ -9,7 +9,8 @@
             "state": "GOOD",
             "description": "",
             "error": false,
-            "errorMsg": ""
+            "errorMsg": "",
+            "showWidget": true
           },
           {
             "dataKey": "readyToShipOrder",
@@ -17,7 +18,8 @@
             "state": "GOOD",
             "description": "",
             "error": false,
-            "errorMsg": ""
+            "errorMsg": "",
+            "showWidget": true
           },
           {
             "dataKey": "complaint",
@@ -25,7 +27,8 @@
             "state": "GOOD",
             "description": "",
             "error": false,
-            "errorMsg": ""
+            "errorMsg": "",
+            "showWidget": true
           },
           {
             "dataKey": "unreadChat",
@@ -33,7 +36,8 @@
             "state": "GOOD",
             "description": "",
             "error": false,
-            "errorMsg": ""
+            "errorMsg": "",
+            "showWidget": true
           },
           {
             "dataKey": "discussion",
@@ -41,7 +45,8 @@
             "state": "GOOD",
             "description": "",
             "error": false,
-            "errorMsg": ""
+            "errorMsg": "",
+            "showWidget": true
           },
           {
             "dataKey": "unrepliedReview",
@@ -49,7 +54,8 @@
             "state": "GOOD",
             "description": "",
             "error": false,
-            "errorMsg": ""
+            "errorMsg": "",
+            "showWidget": true
           },
           {
             "dataKey": "productViewStatistic",
@@ -57,7 +63,8 @@
             "state": "GOOD",
             "description": "\u003cspan style\u003dcolor:#EF144A;\u003e\u003cb\u003e-9.09%\u003c/b\u003e\u003c/span\u003e dari 7 hari lalu",
             "error": false,
-            "errorMsg": ""
+            "errorMsg": "",
+            "showWidget": true
           },
           {
             "dataKey": "productSoldVerified",
@@ -65,7 +72,8 @@
             "state": "GOOD",
             "description": "\u003cspan style\u003dcolor:#31353B;\u003e\u003cb\u003e0%\u003c/b\u003e\u003c/span\u003e dari 7 hari lalu",
             "error": false,
-            "errorMsg": ""
+            "errorMsg": "",
+            "showWidget": true
           }
         ]
       }

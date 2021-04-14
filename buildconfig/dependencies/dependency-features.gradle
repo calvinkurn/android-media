@@ -10,13 +10,13 @@ ext {
             developerOptionsNoop            : ":features:common:developer_options_noop",
             nps                             : ":features:common:nps",
             feedbackForm                    : ":features:common:feedback_form",
+            internalReview                  : ":features:common:internal_review",
 
             catalog                         : ":features:category:catalog",
             commonTradein                   : ":features:category:common_tradein",
             commonCategory                  : ":features:category:common_category",
             kategori                        : ":features:category:kategori",
             categoryLevels                  : ":features:category:category_levels",
-            hotlist                         : ":features:discovery2:hotlist",
             agerestriction                  : ":features:category:age_restriction",
             findNative                      : ":features:category:find_native",
             tradeIn                         : ":features:category:tradein",
@@ -68,7 +68,6 @@ ext {
             deals                           : ":features:entertainment:deals",
             digitalDeals                    : ":features:entertainment:digital_deals",
             event                           : ":features:entertainment:event",
-            digitalBrowse                   : ":features:digital:digital_browse",
             instantDebitBca                 : ":features:digital:instant_debit_bca",
 
             umrah                           : ":features:salam:umrah",
@@ -102,6 +101,7 @@ ext {
             wallet                          : ":features:fintech:wallet",
             ovoPayWithQr                    : ":features:fintech:ovo_pay_with_qr",
             layanan                         : ":features:fintech:layanan_finansial",
+            paylater                        : ":features:fintech:paylater",
 
             accountHome                     : ":features:home:account-home",
             dynamicBanner                   : ":features:home:dynamicbanner",
@@ -117,6 +117,9 @@ ext {
             manageaddress                   : ":features:logistic:manageaddress",
             editshipping                    : ":features:logistic:editshipping",
             activation                      : ":features:logistic:activation",
+            localizationchooseaddress       : ":features:logistic:localizationchooseaddress",
+            
+            mediauploader                   : ":features:media:mediauploader",
 
             goldMerchantCommon              : ":features:merchant:gold_merchant_common",
             powerMerchantSubscribe          : ":features:merchant:power_merchant_subscribe",
@@ -124,7 +127,6 @@ ext {
             productDetailCommon             : ":features:merchant:product_detail_common",
             variantCommon                   : ":features:merchant:variant_common",
             productDetail                   : ":features:merchant:product_detail",
-            atc_variant                     : ":features:merchant:atc_variant",
             kyc                             : ":features:kyc",
             ovop2p                          : ":features:ovop2p",
             productAddEdit                  : ":features:merchant:product_add_edit",
@@ -136,6 +138,8 @@ ext {
             common_promo                    : ":features:im:common_promo",
             referral                        : ":features:im:referral",
             install_referral                : ":features:im:install_referral",
+            moengageWrapper                 : ":features:im:moengage_wrapper",
+
 
             reviewProduct                   : ":features:merchant:review_product",
             reputationCommon                : ":features:merchant:reputation_common",
@@ -211,6 +215,7 @@ ext {
             buyerorder                      : ":features:transaction:buyerorder",
             oneclickcheckout                : ":features:transaction:oneclickcheckout",
             snapshot                        : ":features:ordermanagement:snapshot",
+            ordermanagementhistory          : ":features:ordermanagement:orderhistory",
 
             pushNotificationCommon          : ":features:communication:push-notification-common",
 
@@ -250,7 +255,6 @@ ext {
             fcm_common                      : ":features:user:fcm_common",
             homeAccountUser                 : ":features:user:home_account",
             tkpdcore                        : ":tkpdcore",
-            tkpdseller                      : ":tkpdseller",
             tkpdsession                     : ":tkpdsession",
             promotionsTarget                : ":features:promo:promotions_target",
             recharge_slice                  : ":features:recharge:recharge_slice",

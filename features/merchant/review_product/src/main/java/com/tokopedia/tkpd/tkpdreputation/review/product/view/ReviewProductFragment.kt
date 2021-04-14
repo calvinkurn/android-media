@@ -57,7 +57,6 @@ class ReviewProductFragment : BaseListFragment<ReviewProductModel, ReviewProduct
         const val EXTRA_PRODUCT_ID = "product_id"
         private const val EXTRA_IMAGE_URL_LIST = "EXTRA_IMAGE_URL_LIST"
         private const val EXTRA_DEFAULT_POSITION = "EXTRA_DEFAULT_POSITION"
-        private const val EXTRA_PRODUCT_ID_IMAGE = "EXTRA_PRODUCT_ID"
 
         fun getInstance(productId: String): ReviewProductFragment {
             val reviewProductFragment = ReviewProductFragment()
@@ -121,7 +120,7 @@ class ReviewProductFragment : BaseListFragment<ReviewProductModel, ReviewProduct
         ContextCompat.getDrawable(requireContext(), R.drawable.divider_vertical_product_review)?.let {
             dividerItemDecoration.setDrawable(it)
         }
-        getRecyclerView(view).addItemDecoration(dividerItemDecoration)
+        getRecyclerView(view)?.addItemDecoration(dividerItemDecoration)
         observeViewModel()
     }
 
@@ -179,7 +178,7 @@ class ReviewProductFragment : BaseListFragment<ReviewProductModel, ReviewProduct
     }
 
     override fun goToPreviewImage(position: Int, list: ArrayList<ImageUpload>?, element: ReviewProductModelContent?) {
-        val listLocation = mutableListOf<String>()
+        val listLocation = ArrayList<String>()
         val listDesc = mutableListOf<String>()
         if (list != null) {
             for (image in list) {
@@ -191,9 +190,9 @@ class ReviewProductFragment : BaseListFragment<ReviewProductModel, ReviewProduct
         val elementProductId = element?.productId
 
         val bundle = Bundle()
-        bundle.putStringArray(EXTRA_IMAGE_URL_LIST, listLocation.toTypedArray())
+        bundle.putStringArrayList(EXTRA_IMAGE_URL_LIST, listLocation)
         bundle.putInt(EXTRA_DEFAULT_POSITION, position)
-        bundle.putString(EXTRA_PRODUCT_ID_IMAGE, elementProductId)
+        bundle.putString(EXTRA_PRODUCT_ID, elementProductId)
         RouteManager.route(
                 context,
                 bundle,
@@ -209,7 +208,6 @@ class ReviewProductFragment : BaseListFragment<ReviewProductModel, ReviewProduct
 
     override fun onGoToProfile(reviewerId: String?, adapterPosition: Int) {
         RouteManager.route(context, ApplinkConst.PROFILE, reviewerId)
-//        startActivity(RouteManager.getIntent(activity, ApplinkConst.PROFILE, reviewerId))
     }
 
     override fun onGoToShopInfo(shopId: String?) {
@@ -219,7 +217,7 @@ class ReviewProductFragment : BaseListFragment<ReviewProductModel, ReviewProduct
 
     override fun onSmoothScrollToReplyView(adapterPosition: Int) {
         if (adapterPosition != RecyclerView.NO_POSITION) {
-            getRecyclerView(view).smoothScrollToPosition(adapterPosition)
+            getRecyclerView(view)?.smoothScrollToPosition(adapterPosition)
         }
     }
 
@@ -271,7 +269,7 @@ class ReviewProductFragment : BaseListFragment<ReviewProductModel, ReviewProduct
         ratingProduct?.text = dataResponseReviewStarCount.ratingScore
         ratingProductStar?.rating = dataResponseReviewStarCount.ratingScore.toFloat()
         counterReview?.text = getString(R.string.product_review_counter_review_formatted, dataResponseReviewStarCount.getTotalReview())
-        for (detailReviewStarCount in dataResponseReviewStarCount.detail) {
+        for (detailReviewStarCount in dataResponseReviewStarCount.detail ?: emptyList()) {
             val percentageFloatReview = detailReviewStarCount.percentage.replace("%", "").replace(",", ".").toFloat()
             when (detailReviewStarCount.rate) {
                 RATING_5 -> {

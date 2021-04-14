@@ -154,7 +154,7 @@ public class ShippingDurationConverter {
                 promo.getShipperProductId(), promo.getShipperDesc(), promo.getShipperDisableText(),
                 promo.getPromoTncHtml(), applied, promo.getImageUrl(), promo.getDiscontedRate(),
                 promo.getShippingRate(), promo.getBenefitAmount(), promo.isDisabled(), promo.isHideShipperName(),
-                promo.getCod(), promo.getEta());
+                promo.getCod(), promo.getEta(), promo.isBebasOngkirExtra());
     }
 
     private boolean isPromoStackingApplied(RatesDetailData ratesDetailData) {

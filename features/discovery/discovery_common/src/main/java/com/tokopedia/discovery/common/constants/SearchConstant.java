@@ -82,6 +82,7 @@ public interface SearchConstant {
         String SEARCH_PRODUCT_LOAD_MORE_USE_CASE = "search_product_load_more_use_case";
         String GET_PRODUCT_COUNT_USE_CASE = "get_product_count_use_case";
         String GET_LOCAL_SEARCH_RECOMMENDATION_USE_CASE = "get_local_search_recommendation_use_case";
+        String SEARCH_PRODUCT_GET_INSPIRATION_CAROUSEL_CHIPS_PRODUCTS_USE_CASE = "search_product_inspiration_carousel_chips_use_case";
         String HEADLINE = "headline";
         String HEADLINE_TEMPLATE_VALUE = "3,4";
         String HEADLINE_ITEM_VALUE = "1";
@@ -151,6 +152,7 @@ public interface SearchConstant {
     }
 
     interface ProductCardLabel {
+        String LABEL_FULFILLMENT = "fulfillment";
         String LABEL_INTEGRITY = "integrity";
         String LABEL_INTEGRITY_TYPE = "textDarkGrey";
         String TEXT_DARK_ORANGE = "textDarkOrange";
@@ -161,13 +163,13 @@ public interface SearchConstant {
     interface OnBoarding {
         String LOCAL_CACHE_NAME = "SEARCH_PRODUCT_ON_BOARDING";
         String FILTER_ONBOARDING_SHOWN = "FILTER_ONBOARDING_SHOWN";
-        String THREE_DOTS_ONBOARDING_SHOWN = "THREE_DOTS_ONBOARDING_SHOWN";
     }
 
     interface InspirationCarousel {
         String LAYOUT_INSPIRATION_CAROUSEL_LIST = "list";
         String LAYOUT_INSPIRATION_CAROUSEL_INFO = "info";
         String LAYOUT_INSPIRATION_CAROUSEL_GRID = "grid";
+        String LAYOUT_INSPIRATION_CAROUSEL_CHIPS = "chips";
         String LAYOUT_INSPIRATION_CAROUSEL_GRID_BANNER = "gridBanner";
     }
 

@@ -1,0 +1,17 @@
+{
+  "readme": "Talk - switch to another tab",
+  "mode": "exact",
+  "query": [
+    {
+      "eventAction": "{{click - .* tab}}",
+      "eventCategory": "{{inbox talk - .*}}",
+      "currentSite": "tokopediamarketplace",
+      "event": "clickPDP",
+      "userId": "{{\\d{1,}}}",
+      "screenName": "/inbox - talk",
+      "sessionIris": "{{.{1,}}}",
+      "eventLabel": "{{shop id:.*;count unread messages:.*;}}",
+      "businessUnit": "physical goods"
+    }
+  ]
+}

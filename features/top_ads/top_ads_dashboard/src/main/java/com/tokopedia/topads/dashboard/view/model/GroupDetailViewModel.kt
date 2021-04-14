@@ -8,8 +8,10 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.common.network.data.model.RestResponse
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.network.data.model.response.DataResponse
+import com.tokopedia.topads.common.data.model.DashGroupListResponse
 import com.tokopedia.topads.common.data.model.GroupListDataItem
 import com.tokopedia.topads.common.data.response.GroupInfoResponse
+import com.tokopedia.topads.common.data.response.ProductActionResponse
 import com.tokopedia.topads.common.data.response.nongroupItem.GetDashboardProductStatistics
 import com.tokopedia.topads.common.data.response.nongroupItem.NonGroupResponse
 import com.tokopedia.topads.common.domain.interactor.TopAdsGetGroupProductDataUseCase
@@ -155,27 +157,43 @@ class GroupDetailViewModel @Inject constructor(
     }
 
     fun getGroupList(search: String, onSuccess: (List<GroupListDataItem>) -> Unit) {
-        topAdsGetGroupListUseCase.setParamsForKeyWord(search)
-        topAdsGetGroupListUseCase.executeQuerySafeMode(
-                {
-                    onSuccess(it.getTopadsDashboardGroups.data)
-                },
-                {
-                    it.printStackTrace()
-                })
+        val params = topAdsGetGroupListUseCase.setParamsForKeyWord(search)
+        topAdsGetGroupListUseCase.execute(params, object : Subscriber<Map<Type, RestResponse>>() {
+            override fun onCompleted() {
+            }
+
+            override fun onNext(typeResponse: Map<Type, RestResponse>) {
+                val token = object : TypeToken<DataResponse<DashGroupListResponse?>>() {}.type
+                val restResponse: RestResponse? = typeResponse[token]
+                val response = restResponse?.getData() as DataResponse<DashGroupListResponse>
+                val nonGroupResponse = response.data.getTopadsDashboardGroups
+                onSuccess(nonGroupResponse.data)
+            }
+
+            override fun onError(e: Throwable?) {
+                e?.printStackTrace()
+            }
+        })
     }
 
     fun setProductAction(onSuccess: (() -> Unit), action: String, adIds: List<String>, resources: Resources, selectedFilter: String?) {
-        topAdsProductActionUseCase.setGraphqlQuery(GraphqlHelper.loadRawString(resources,
-                com.tokopedia.topads.common.R.raw.gql_query_product_action))
-        topAdsProductActionUseCase.setParams(action, adIds, selectedFilter)
-        topAdsProductActionUseCase.executeQuerySafeMode(
-                {
-                    onSuccess()
-                },
-                {
-                    it.printStackTrace()
-                })
+        val params = topAdsProductActionUseCase.setParams(action, adIds, selectedFilter)
+        topAdsProductActionUseCase.execute(params, object : Subscriber<Map<Type, RestResponse>>() {
+            override fun onCompleted() {
+            }
+
+            override fun onNext(typeResponse: Map<Type, RestResponse>) {
+                val token = object : TypeToken<DataResponse<ProductActionResponse?>>() {}.type
+                val restResponse: RestResponse? = typeResponse[token]
+                val response = restResponse?.getData() as DataResponse<ProductActionResponse>
+                val nonGroupResponse = response.data.topadsUpdateSingleAds
+                nonGroupResponse.let { onSuccess }
+            }
+
+            override fun onError(e: Throwable?) {
+                e?.printStackTrace()
+            }
+        })
     }
 
     fun setGroupAction(action: String, groupIds: List<String>, resources: Resources) {
@@ -211,8 +229,8 @@ class GroupDetailViewModel @Inject constructor(
         topAdsGetAdKeywordUseCase.cancelJobs()
         topAdsGetGroupProductDataUseCase.unsubscribe()
         topAdsKeywordsActionUseCase.cancelJobs()
-        topAdsProductActionUseCase.cancelJobs()
-        topAdsGetGroupListUseCase.cancelJobs()
+        topAdsProductActionUseCase.unsubscribe()
+        topAdsGetGroupListUseCase.unsubscribe()
         topAdsGroupActionUseCase.unsubscribe()
         topAdsGetProductStatisticsUseCase.cancelJobs()
         topAdsGetProductKeyCountUseCase.cancelJobs()

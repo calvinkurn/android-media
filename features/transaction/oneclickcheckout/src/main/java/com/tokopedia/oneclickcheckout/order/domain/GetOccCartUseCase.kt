@@ -9,15 +9,21 @@ import com.tokopedia.oneclickcheckout.common.STATUS_OK
 import com.tokopedia.oneclickcheckout.order.data.get.GetOccCartGqlResponse
 import com.tokopedia.oneclickcheckout.order.domain.mapper.GetOccCartMapper
 import com.tokopedia.oneclickcheckout.order.view.model.OrderData
+import com.tokopedia.purchase_platform.common.feature.localizationchooseaddress.request.ChosenAddressRequestHelper
 import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 
-class GetOccCartUseCase @Inject constructor(private val graphqlRepository: GraphqlRepository, private val mapper: GetOccCartMapper) {
+class GetOccCartUseCase @Inject constructor(private val graphqlRepository: GraphqlRepository,
+                                            private val mapper: GetOccCartMapper,
+                                            private val chosenAddressRequestHelper: ChosenAddressRequestHelper) {
 
     fun createRequestParams(source: String): RequestParams {
-        return RequestParams.create().apply {
+        val params = RequestParams.create().apply {
             putString(PARAM_SOURCE, source)
         }
+        chosenAddressRequestHelper.addChosenAddressParam(params)
+
+        return params
     }
 
     suspend fun executeSuspend(params: RequestParams): OrderData {
@@ -40,11 +46,13 @@ class GetOccCartUseCase @Inject constructor(private val graphqlRepository: Graph
     companion object {
         private const val PARAM_SOURCE = "source"
 
-        private const val GET_OCC_CART_PAGE_QUERY = """query get_occ_cart_page(${"$"}source: String) {
-  get_occ_cart_page(source: ${"$"}source) {
+        private const val GET_OCC_CART_PAGE_QUERY = """query get_occ_cart_page(${"$"}source: String, ${"$"}chosen_address: ChosenAddressParam) {
+  get_occ_cart_page(source: ${"$"}source, chosen_address: ${"$"}chosen_address) {
     error_message
     status
     data {
+      error_code
+      pop_up_message
       max_quantity
       max_char_note
       messages {
@@ -192,6 +200,10 @@ class GetOccCartUseCase @Inject constructor(private val graphqlRepository: Graph
             eligible
             badge_url
           }
+          free_shipping_extra {
+            eligible
+            badge_url
+          }
           booking_stock
           product_preorder {
             duration_day
@@ -212,6 +224,10 @@ class GetOccCartUseCase @Inject constructor(private val graphqlRepository: Graph
           protection_checkbox_disabled
           unit
           source
+        }
+        toko_cabang {
+          message
+          badge_url
         }
         shop {
           shop_id
@@ -305,6 +321,8 @@ class GetOccCartUseCase @Inject constructor(private val graphqlRepository: Graph
           latitude
           postal_code
           geolocation
+          state
+          state_detail
         }
         payment {
           enable
@@ -535,6 +553,7 @@ class GetOccCartUseCase @Inject constructor(private val graphqlRepository: Graph
                 type
                 amount_str
                 amount
+                currency_details_str
               }
               sp_ids
             }
@@ -575,6 +594,14 @@ class GetOccCartUseCase @Inject constructor(private val graphqlRepository: Graph
         enable
         total_profile
         change_template_text
+      }
+      occ_remove_profile {
+        enable
+        ui_type
+        message {
+          title
+          description
+        }
       }
     }
   }
