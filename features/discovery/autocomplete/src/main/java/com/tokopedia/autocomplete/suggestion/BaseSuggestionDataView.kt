@@ -1,6 +1,6 @@
 package com.tokopedia.autocomplete.suggestion
 
-open class BaseSuggestionViewModel(
+open class BaseSuggestionDataView(
         var template: String = "",
         var type: String = "",
         var applink: String = "",
