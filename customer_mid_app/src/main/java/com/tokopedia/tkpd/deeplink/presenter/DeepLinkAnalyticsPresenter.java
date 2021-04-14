@@ -10,6 +10,6 @@ public interface DeepLinkAnalyticsPresenter {
 
     void processAFlistener();
 
-    void sendCampaignGTM(Activity activity, String campaignUri, String screenName);
+    void sendCampaignGTM(Activity activity, String campaignUri, String screenName, boolean isAmp);
 
 }

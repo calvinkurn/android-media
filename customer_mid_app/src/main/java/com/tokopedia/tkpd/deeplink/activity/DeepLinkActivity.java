@@ -42,7 +42,6 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
     private static final String APPLINK_URL = "url";
     private Uri uriData;
     private boolean isOriginalUrlAmp;
-    private View mainView;
 
     @Override
     public String getScreenName() {
@@ -69,7 +68,7 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
         String applink = DeeplinkMapper.getRegisteredNavigation(this, uriData.toString());
         if (!TextUtils.isEmpty(applink) && RouteManager.isSupportApplink(this, applink)) {
             String screenName = AppScreen.SCREEN_NATIVE_RECHARGE;
-            presenter.sendCampaignGTM(this, applink, screenName);
+            presenter.sendCampaignGTM(this, applink, screenName, isOriginalUrlAmp);
             RouteManager.route(this, applink);
             finish();
         } else {
@@ -104,7 +103,7 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
 
     @Override
     protected void initView() {
-        mainView = findViewById(R.id.main_view);
+        View mainView = findViewById(R.id.main_view);
     }
 
     @Override
@@ -131,16 +130,6 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
         taskStackBuilder.addNextIntent(destination);
         taskStackBuilder.startActivities();
         finish();
-    }
-
-    @Override
-    public void networkError(final Uri uriData) {
-        NetworkErrorHelper.showEmptyState(this, mainView, new NetworkErrorHelper.RetryClickedListener() {
-            @Override
-            public void onRetryClicked() {
-                presenter.processDeepLinkAction(DeepLinkActivity.this, uriData);
-            }
-        });
     }
 
     @Override
@@ -174,7 +163,7 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
                 presenter.actionGotUrlFromApplink(uriData);
             } else {
                 presenter.checkUriLogin(uriData);
-                presenter.processDeepLinkAction(DeepLinkActivity.this, uriData);
+                presenter.processDeepLinkAction(DeepLinkActivity.this, uriData, isOriginalUrlAmp);
             }
         }
     }
