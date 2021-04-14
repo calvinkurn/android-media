@@ -110,6 +110,6 @@ object ImageUtil {
     }
 
     private fun getAnimationType(): String {
-        return "gif";
+        return "avd"
     }
 }
