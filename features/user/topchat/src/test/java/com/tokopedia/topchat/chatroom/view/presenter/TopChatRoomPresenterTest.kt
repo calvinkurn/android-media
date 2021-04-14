@@ -1182,7 +1182,8 @@ class TopChatRoomPresenterTest {
         }
         every {
             chatAttachmentUseCase.getAttachments(
-                    exMessageId.toLongOrZero(), roomModel.attachmentIds, captureLambda(), any()
+                    exMessageId.toLongOrZero(), roomModel.attachmentIds,
+                    any(), captureLambda(), any()
             )
         } answers {
             val onSuccess = lambda<(ArrayMap<String, Attachment>) -> Unit>()
@@ -1208,7 +1209,8 @@ class TopChatRoomPresenterTest {
         val throwable = Throwable()
         every {
             chatAttachmentUseCase.getAttachments(
-                    exMessageId.toLongOrZero(), roomModel.attachmentIds, any(), captureLambda()
+                    exMessageId.toLongOrZero(), roomModel.attachmentIds, any(),
+                    any(), captureLambda()
             )
         } answers {
             val onError = lambda<(Throwable, ArrayMap<String, Attachment>) -> Unit>()
