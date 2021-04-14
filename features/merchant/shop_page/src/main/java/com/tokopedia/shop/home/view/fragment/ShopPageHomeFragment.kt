@@ -1332,7 +1332,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                 widgetId = shopHomeCarouselProductUiModel?.widgetId.toString(),
                 appLink = shopHomeCarouselProductUiModel?.header?.ctaLink.toString(),
                 shopId = shopId,
-                shopType = customDimensionShopPage.shopType,
+                shopType = customDimensionShopPage.shopType.orEmpty(),
                 isOwner = isOwner
         )
 

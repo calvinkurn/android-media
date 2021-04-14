@@ -93,7 +93,7 @@ class HomeProductFragment : BaseDaggerFragment() {
         }
         clearCache(shopPageNestedWebView)
         if (shopProductPromoUiModel.isLogin) {
-            shopPageNestedWebView.loadAuthUrl(shopProductPromoUiModel.url, userSession)
+            shopPageNestedWebView.loadAuthUrl(shopProductPromoUiModel.url.orEmpty(), userSession)
         } else {
             shopPageNestedWebView.loadUrl(shopProductPromoUiModel.url)
         }
@@ -124,7 +124,6 @@ class HomeProductFragment : BaseDaggerFragment() {
 
     private fun getOfficialWebViewUrl(): String {
         var officialWebViewUrl = arguments?.getString(SHOP_TOP_CONTENT_URL, "") ?: ""
-        officialWebViewUrl = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) officialWebViewUrl else ""
         officialWebViewUrl = if (TextApiUtils.isTextEmpty(officialWebViewUrl)) "" else officialWebViewUrl
         return officialWebViewUrl
     }
@@ -144,16 +143,12 @@ class HomeProductFragment : BaseDaggerFragment() {
     }
 
     private fun optimizeWebView() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            shopPageNestedWebView.setLayerType(View.LAYER_TYPE_HARDWARE, null)
-        } else {
-            shopPageNestedWebView.setLayerType(View.LAYER_TYPE_SOFTWARE, null)
-        }
+        shopPageNestedWebView.setLayerType(View.LAYER_TYPE_HARDWARE, null)
     }
 
     fun promoClicked(url: String?) {
         activity?.let {
-            val urlProceed = ShopProductOfficialStoreUtils.proceedUrl(it, url, shopId,
+            val urlProceed = ShopProductOfficialStoreUtils.proceedUrl(it, url.orEmpty(), shopId,
                     userSession.isLoggedIn,
                     userSession.deviceId,
                     userSession.userId)
