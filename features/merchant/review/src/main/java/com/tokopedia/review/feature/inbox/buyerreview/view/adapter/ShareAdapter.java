@@ -6,11 +6,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.tokopedia.kotlin.extensions.view.ImageViewExtKt;
 import com.tokopedia.review.R;
 import com.tokopedia.review.feature.inbox.buyerreview.view.widgets.ShareItem;
+import com.tokopedia.unifyprinciples.Typography;
 
 import java.util.ArrayList;
 
@@ -74,11 +74,11 @@ public class ShareAdapter extends BaseAdapter {
 
     class ViewHolder {
         final ImageView icon;
-        final TextView label;
+        final Typography label;
 
         ViewHolder(View root) {
             icon = (ImageView) root.findViewById(R.id.icon);
-            label = (TextView) root.findViewById(R.id.label);
+            label = (Typography) root.findViewById(R.id.label);
         }
     }
 
