@@ -55,7 +55,7 @@ public class TkpdTextInputLayout extends TextInputLayout implements TextWatcher 
     private String mPrefixString;
     private int mPrefixLength;
 
-    private int COLOR_GREEN = Color.parseColor("#42b549");
+    private int COLOR_GREEN = Color.parseColor(""com.tokopedia.unifyprinciples.R.color."Unify_G400");
     private TextView mCounterView;
     private boolean enabledPrefixCounter;
 
