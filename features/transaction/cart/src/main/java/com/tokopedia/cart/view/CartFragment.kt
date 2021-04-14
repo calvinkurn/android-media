@@ -470,7 +470,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                     .build()
                     .inject(this)
         }
-        cartAdapter = CartAdapter(this, this, this, this)
+        cartAdapter = CartAdapter(this, this, this, this, userSession)
     }
 
     private fun initRemoteConfig() {
@@ -1791,8 +1791,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     private fun loadRecommendation() {
-        // Todo : load TopAdsBannerView
-        dPresenter.processGetTopAdsBannerData()
         dPresenter.processGetRecommendationData(recommendationPage, cartAdapter.allCartItemProductId)
     }
 
@@ -3207,17 +3205,12 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         }
 
         if (cartRecommendationItemHolderDataList.size > 0) {
-            cartAdapter.addCartRecommendationData(cartSectionHeaderHolderData, cartRecommendationItemHolderDataList)
-            if (recommendationList.isNullOrEmpty()) {
-                recommendationList = cartRecommendationItemHolderDataList
-            }
+            cartAdapter.addCartRecommendationData(cartSectionHeaderHolderData, cartRecommendationItemHolderDataList, recommendationPage)
+        } else {
+            cartAdapter.addCartTopAdsHeadlineData(cartSectionHeaderHolderData, recommendationPage)
         }
 
         recommendationPage++
-    }
-
-    override fun renderTopAdsBannerView() {
-
     }
 
     override fun showItemLoading() {

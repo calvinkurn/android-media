@@ -1075,10 +1075,6 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
                 ?.subscribe(GetRecommendationSubscriber(view))
     }
 
-    override fun processGetTopAdsBannerData() {
-
-    }
-
     override fun processAddToCart(productModel: Any) {
         view?.showProgressLoading()
 
