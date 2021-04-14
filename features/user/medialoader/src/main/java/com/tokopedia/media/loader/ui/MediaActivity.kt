@@ -189,9 +189,9 @@ class MediaActivity : AppCompatActivity() {
     }
 
     private fun status(methodNme: String, properties: Properties) {
-        txtStatus?.text = "method = $methodNme \n" +
+        println("method = $methodNme \n" +
                 "url = $url \n" +
-                "$properties"
+                "$properties")
     }
 
 }

@@ -12,18 +12,22 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/unify_space_8"
-        android:hint="URL"/>
+        android:inputType="textUri"
+        android:autofillHints=""
+        android:hint="@string/hint_medialoader_url"/>
 
     <ImageView
         android:id="@+id/imgTest"
         android:layout_width="match_parent"
         android:layout_height="200dp"
+        android:contentDescription="@string/desc_medialoader_image_test"
         android:src="@drawable/imagestate_placeholder"/>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:baselineAligned="false">
 
         <LinearLayout
             android:layout_width="0dp"
@@ -37,56 +41,56 @@
                 android:layout_marginTop="@dimen/unify_space_8"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="blurhash loader"/>
+                android:text="@string/btn_medialoader_blurhash_loader"/>
 
             <com.tokopedia.unifycomponents.UnifyButton
                 android:id="@+id/btnBlurHashFromLoader2"
                 android:layout_marginTop="@dimen/unify_space_8"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="blurhash loader (ratio)"/>
+                android:text="@string/btn_medialoader_blurhash_loader_ratio"/>
 
             <com.tokopedia.unifycomponents.UnifyButton
                 android:id="@+id/btnNormal"
                 android:layout_marginTop="@dimen/unify_space_8"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="loadImage()"/>
+                android:text="@string/btn_medialoader_loadimage"/>
 
             <com.tokopedia.unifycomponents.UnifyButton
                 android:id="@+id/btnRoundedProperties"
                 android:layout_marginTop="@dimen/unify_space_8"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="loadImage(rounded)"/>
+                android:text="@string/btn_medialoader_loadimage_rounded"/>
 
             <com.tokopedia.unifycomponents.UnifyButton
                 android:id="@+id/btnFitCenterProperties"
                 android:layout_marginTop="@dimen/unify_space_8"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="loadImage(fit_center)"/>
+                android:text="@string/btn_medialoader_loadimage_fit_center"/>
 
             <com.tokopedia.unifycomponents.UnifyButton
                 android:id="@+id/btnCenterCropProperties"
                 android:layout_marginTop="@dimen/unify_space_8"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="loadImage(center_crop)"/>
+                android:text="@string/btn_medialoader_loadimage_center_crop"/>
 
             <com.tokopedia.unifycomponents.UnifyButton
                 android:id="@+id/btnCircle"
                 android:layout_marginTop="@dimen/unify_space_8"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="loadImageCircle"/>
+                android:text="@string/btn_medialoader_loadimagecircle"/>
 
             <com.tokopedia.unifycomponents.UnifyButton
                 android:id="@+id/btnTopRightCrop"
                 android:layout_marginTop="@dimen/unify_space_8"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="TopRightCrop"/>
+                android:text="@string/btn_medialoader_toprightcrop"/>
 
         </LinearLayout>
 
@@ -102,14 +106,14 @@
                 android:layout_marginTop="@dimen/unify_space_8"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="blurhash native"/>
+                android:text="@string/btn_medialoader_blurhash_native"/>
 
             <com.tokopedia.unifycomponents.UnifyButton
                 android:id="@+id/btnBlurHashFromNative2"
                 android:layout_marginTop="@dimen/unify_space_8"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="blurhash native (ratio)"/>
+                android:text="@string/btn_medialoader_blurhash_native_ratio"/>
 
             <com.tokopedia.unifycomponents.UnifyButton
                 android:id="@+id/btnError"
@@ -117,7 +121,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:unifyButtonType="transaction"
-                android:text="loadImage(invalid url)"/>
+                android:text="@string/btn_medialoader_loadimage_invalid_url"/>
 
             <com.tokopedia.unifycomponents.UnifyButton
                 android:id="@+id/btnCustomError"
@@ -125,7 +129,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:unifyButtonType="transaction"
-                android:text="loadImage(custom_error)"/>
+                android:text="@string/btn_medialoader_loadimage_custom_error"/>
 
             <com.tokopedia.unifycomponents.UnifyButton
                 android:id="@+id/btnWithoutPlaceHolder"
@@ -133,7 +137,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:unifyButtonType="transaction"
-                android:text="loadImageWithoutPlaceholder"/>
+                android:text="@string/btn_medialoader_loadimagewithoutplaceholder"/>
 
             <com.tokopedia.unifycomponents.UnifyButton
                 android:id="@+id/btnCustomTarget"
@@ -141,7 +145,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:unifyButtonType="transaction"
-                android:text="loadImageWithTarget"/>
+                android:text="@string/btn_medialoader_loadimagewithtarget"/>
 
             <com.tokopedia.unifycomponents.UnifyButton
                 android:id="@+id/btnBlurHash"
@@ -149,7 +153,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:unifyButtonType="transaction"
-                android:text="loadImage blurhash"/>
+                android:text="@string/btn_medialoader_loadimage_blurhash"/>
 
             <com.tokopedia.unifycomponents.UnifyButton
                 android:id="@+id/btnLoadIcon"
@@ -157,18 +161,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:unifyButtonType="transaction"
-                android:text="loadIcon"/>
+                android:text="@string/btn_medialoader_loadicon"/>
 
         </LinearLayout>
 
     </LinearLayout>
-
-    <TextView
-        android:id="@+id/txtStatus"
-        android:textSize="@dimen/unify_font_14"
-        android:layout_marginTop="@dimen/unify_space_8"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        tools:text="Status"/>
 
 </LinearLayout>
