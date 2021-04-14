@@ -148,7 +148,7 @@ public class TkpdHintTextInputLayout extends LinearLayout {
                         androidx.appcompat.R.styleable.TextAppearance_android_textSize,
                         (int) mHintTextSize);
             }
-            if (Build.VERSION.SDK_INT >= 16) {
+            if (Build.VERSION.SDK_INT >= 21) {
                 mHintTypeface = readFontFamilyTypeface(mHintAppearance);
             }
             hintArr.recycle();
