@@ -45,8 +45,6 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
-    implementation rootProject.ext.tkpdInternalLibDependencies.cacheapi
-
     implementation rootProject.ext.supportLibDependencies.constraintLayout
 
     testImplementation rootProject.ext.testDependencies.mockk

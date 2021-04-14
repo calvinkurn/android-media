@@ -1,10 +1,8 @@
 package com.tokopedia.smartbills.presentation.fragment
 
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
-import android.graphics.Rect
 import android.os.Bundle
 import android.os.Handler
 import android.view.LayoutInflater
@@ -61,7 +59,6 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.currency.CurrencyFormatUtil
-import kotlinx.android.synthetic.main.bottomsheet_smartbills_tooltip.*
 import kotlinx.android.synthetic.main.fragment_smart_bills.*
 import java.util.*
 import javax.inject.Inject
@@ -345,6 +342,7 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
 
     override fun onSwipeRefresh() {
         toggleAllItems(false)
+        updateCheckAll()
         super.onSwipeRefresh()
     }
 
@@ -416,8 +414,7 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
             totalPrice -= item.amount.toInt()
         }
         updateCheckoutView()
-
-        cb_smart_bills_select_all.isChecked = adapter.totalChecked == adapter.dataSize
+        updateCheckAll()
     }
 
     private fun toggleAllItems(value: Boolean, triggerTracking: Boolean = false) {
@@ -580,6 +577,10 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
 
     private fun getDataErrorException(): Throwable {
         return MessageErrorException(getString(R.string.smart_bills_data_error))
+    }
+
+    private fun updateCheckAll(){
+        cb_smart_bills_select_all.isChecked = adapter.totalChecked == adapter.dataSize
     }
 
     companion object {
