@@ -677,7 +677,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             }
         })
 
-        view?.swipeRefreshLayout?.isRefreshing = true
         setProgressBarVisibility(true)
     }
 
