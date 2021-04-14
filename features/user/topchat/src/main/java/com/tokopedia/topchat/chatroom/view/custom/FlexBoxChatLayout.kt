@@ -109,7 +109,7 @@ class FlexBoxChatLayout : FrameLayout {
         var totalWidth = MeasureSpec.getSize(widthMeasureSpec)
         var totalHeight = MeasureSpec.getSize(heightMeasureSpec)
 
-        if (message == null || status == null || totalWidth <= 0) {
+        if (message == null || status == null || info == null || totalWidth <= 0) {
             super.onMeasure(widthMeasureSpec, heightMeasureSpec)
             return
         }
@@ -138,9 +138,9 @@ class FlexBoxChatLayout : FrameLayout {
         val infoHeight =
                 info!!.measuredHeight + infoLayout.topMargin + infoLayout.bottomMargin
 
-        val messageLineCount = message!!.lineCount
-        val lastLineWidth: Float = if (messageLineCount > 0) {
-            message!!.layout.getLineWidth(messageLineCount - 1)
+        val msgLineCount = message!!.lineCount
+        val msgLastLineWidth: Float = if (msgLineCount > 0) {
+            message!!.layout.getLineWidth(msgLineCount - 1)
         } else {
             0f
         }
@@ -151,7 +151,7 @@ class FlexBoxChatLayout : FrameLayout {
 
         if (messageWidth + statusWidth <= availableWidth) {
             totalWidth += statusWidth
-        } else if (lastLineWidth + statusWidth > availableWidth) {
+        } else if (msgLastLineWidth + statusWidth > availableWidth) {
             totalHeight += statusHeight
             isAddStatusHeight = true
         }
@@ -166,6 +166,15 @@ class FlexBoxChatLayout : FrameLayout {
 
         if (totalWidth > maxWidth || useMaxWidth) {
             totalWidth = maxWidth
+        }
+
+        val contentWidth = totalWidth - paddingLeft - paddingRight
+        if ((infoWidth + statusWidth) > 0 && msgLineCount > 1) {
+            val newInfoWidth = messageWidth - statusWidth
+            infoLayout.width = newInfoWidth
+            info?.layoutParams = infoLayout
+        } else if ((infoWidth + messageWidth + statusWidth) > contentWidth) {
+            // TODO: adjust if msgLine count == 1
         }
 
         setMeasuredDimension(totalWidth, totalHeight)
@@ -202,7 +211,8 @@ class FlexBoxChatLayout : FrameLayout {
         info?.hide()
     }
 
-    fun showInfo() {
+    fun showInfo(label: String) {
+        info?.text = label
         info?.show()
     }
 

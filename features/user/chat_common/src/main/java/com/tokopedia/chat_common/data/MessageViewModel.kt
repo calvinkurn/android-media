@@ -11,6 +11,7 @@ open class MessageViewModel : SendableViewModel, Visitable<BaseChatTypeFactory> 
 
     var blastId: Long = 0
     var fraudStatus = 0
+    var label: String = ""
 
     constructor(
             reply: Reply
@@ -31,6 +32,7 @@ open class MessageViewModel : SendableViewModel, Visitable<BaseChatTypeFactory> 
     ) {
         blastId = reply.blastId
         fraudStatus = reply.fraudStatus
+        label = reply.label
     }
 
     constructor(
@@ -116,5 +118,9 @@ open class MessageViewModel : SendableViewModel, Visitable<BaseChatTypeFactory> 
 
     fun isBanned(): Boolean {
         return fraudStatus == 1
+    }
+
+    fun hasLabel(): Boolean {
+        return label.isNotEmpty()
     }
 }
