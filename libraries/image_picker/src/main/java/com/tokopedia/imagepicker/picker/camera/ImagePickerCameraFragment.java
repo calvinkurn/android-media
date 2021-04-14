@@ -281,13 +281,15 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment implements Ima
     }
 
     private void setUIFlashCamera(int flashEnum) {
-        int colorWhite = ContextCompat.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_Static_White);
-        if (flashEnum == Flash.AUTO.ordinal()) {
-            flashImageButton.setImageDrawable(MethodChecker.getDrawable(getActivity(), com.tokopedia.imagepicker.common.R.drawable.ic_auto_flash));
-        } else if (flashEnum == Flash.ON.ordinal()) {
-            flashImageButton.setImage(IconUnify.FLASH_ON, colorWhite, colorWhite, colorWhite, colorWhite);
-        } else if (flashEnum == Flash.OFF.ordinal()) {
-            flashImageButton.setImage(IconUnify.FLASH_OFF, colorWhite, colorWhite, colorWhite, colorWhite);
+        if (getContext() != null) {
+            int colorWhite = ContextCompat.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_Static_White);
+            if (flashEnum == Flash.AUTO.ordinal() && getActivity() != null) {
+                flashImageButton.setImageDrawable(MethodChecker.getDrawable(getActivity(), com.tokopedia.imagepicker.common.R.drawable.ic_auto_flash));
+            } else if (flashEnum == Flash.ON.ordinal()) {
+                flashImageButton.setImage(IconUnify.FLASH_ON, colorWhite, colorWhite, colorWhite, colorWhite);
+            } else if (flashEnum == Flash.OFF.ordinal()) {
+                flashImageButton.setImage(IconUnify.FLASH_OFF, colorWhite, colorWhite, colorWhite, colorWhite);
+            }
         }
     }
 
