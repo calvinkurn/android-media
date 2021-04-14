@@ -29,7 +29,7 @@ import javax.inject.Named
  * Created by Lukas on 2019-07-31
  */
 
-@Module(includes = [TopAdsWishlistModule::class, RecommendationModule::class, WishlistModule::class])
+@Module(includes = [TopAdsWishlistModule::class, RecommendationModule::class])
 class GlobalNavModule {
     @Provides
     fun provideMainParentPresenter(getNotificationUseCase: GetBottomNavNotificationUseCase, userSession: UserSessionInterface): MainParentPresenter {
