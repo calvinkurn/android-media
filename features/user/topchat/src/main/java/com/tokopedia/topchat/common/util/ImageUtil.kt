@@ -67,12 +67,6 @@ object ImageUtil {
         val animatedVector = AnimatedVectorDrawableCompat.create(
                 imageUnify.context, com.tokopedia.chat_common.R.drawable.topchat_typing_motion
         )
-        animatedVector?.registerAnimationCallback(object : Animatable2Compat.AnimationCallback() {
-            private val animHandler = Handler(Looper.getMainLooper())
-            override fun onAnimationEnd(drawable: Drawable?) {
-                animHandler.post(animatedVector::start)
-            }
-        })
         imageUnify.setImageDrawable(animatedVector)
     }
 
@@ -80,16 +74,29 @@ object ImageUtil {
         val animationType = getAnimationType()
         if(animationType == "avd") {
             try {
-                (imageUnify.drawable as AnimatedVectorDrawableCompat).start()
+                val animatedVector = imageUnify.drawable as AnimatedVectorDrawableCompat
+                setAnimationCallback(animatedVector)
+                animatedVector.start()
             } catch (ignored: Throwable) {}
         }
+    }
+
+    private fun setAnimationCallback(animatedVector: AnimatedVectorDrawableCompat) {
+        animatedVector.registerAnimationCallback(object : Animatable2Compat.AnimationCallback() {
+            private val animHandler = Handler(Looper.getMainLooper())
+            override fun onAnimationEnd(drawable: Drawable?) {
+                animHandler.post(animatedVector::start)
+            }
+        })
     }
 
     fun stopAVDTypingAnimation(imageUnify: ImageUnify) {
         val animationType = getAnimationType()
         if(animationType == "avd") {
             try {
-                (imageUnify.drawable as AnimatedVectorDrawableCompat).stop()
+                val animatedVector = (imageUnify.drawable as AnimatedVectorDrawableCompat)
+                animatedVector.clearAnimationCallbacks()
+                animatedVector.stop()
             } catch (ignored: Throwable) {}
         }
     }
