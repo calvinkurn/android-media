@@ -26,7 +26,7 @@ class LoggerRepository(private val logDao: LoggerDao,
 
     override suspend fun insert(logger: Logger) {
         var encryptedLogger = logger
-        if (encrypt!= null) {
+        if (encrypt != null) {
             encryptedLogger = logger.copy(message = encrypt.invoke(logger.message))
         }
         logDao.insert(encryptedLogger)

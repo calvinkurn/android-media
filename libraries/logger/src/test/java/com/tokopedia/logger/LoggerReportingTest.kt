@@ -4,11 +4,7 @@ import com.tokopedia.logger.utils.DataLogConfig
 import com.tokopedia.logger.utils.LoggerReporting
 import com.tokopedia.logger.utils.Tag
 import com.tokopedia.logger.utils.TestUtilsHelper
-import io.mockk.MockKAnnotations
-import io.mockk.every
-import io.mockk.impl.annotations.RelaxedMockK
 import org.junit.Assert.*
-import org.junit.Before
 import org.junit.Test
 
 class LoggerReportingTest {
@@ -119,7 +115,7 @@ class LoggerReportingTest {
             add(50)
         }
 
-        LoggerReporting.getInstance().setQueryLimits(mockQueryLimitsScalyr)
+        LogManager.queryLimits = mockQueryLimitsScalyr?.toList() ?: listOf()
 
         LogManager.queryLimits.forEachIndexed { index, query ->
             assertEquals(query, expectedQueryLimitsScalyr[index])
@@ -137,7 +133,7 @@ class LoggerReportingTest {
             add(50)
         }
 
-        LoggerReporting.getInstance().setQueryLimits(mockQueryLimitsNewRelic)
+        LogManager.queryLimits = mockQueryLimitsNewRelic?.toList() ?: listOf()
 
         LogManager.queryLimits.forEachIndexed { index, query ->
             assertEquals(query, expectedQueryLimitsNewRelic[index])
@@ -149,7 +145,7 @@ class LoggerReportingTest {
         val mockScalyr = TestUtilsHelper.createSuccessResponse(SCALYR_FAIL_RESPONSE) as DataLogConfig
         val mockQueryLimitsScalyr = mockScalyr.queryLimits
 
-        LoggerReporting.getInstance().setQueryLimits(mockQueryLimitsScalyr)
+        LogManager.queryLimits = mockQueryLimitsScalyr?.toList() ?: listOf()
 
         assertTrue(LogManager.queryLimits.isEmpty())
     }
@@ -159,7 +155,7 @@ class LoggerReportingTest {
         val mockNewRelic = TestUtilsHelper.createSuccessResponse(NEW_RELIC_FAIL_RESPONSE) as DataLogConfig
         val mockQueryLimitsNewRelic = mockNewRelic.queryLimits
 
-        LoggerReporting.getInstance().setQueryLimits(mockQueryLimitsNewRelic)
+        LogManager.queryLimits = mockQueryLimitsNewRelic?.toList() ?: listOf()
 
         assertTrue(LogManager.queryLimits.isEmpty())
     }

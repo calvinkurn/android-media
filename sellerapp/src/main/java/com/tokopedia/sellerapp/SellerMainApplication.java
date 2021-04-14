@@ -181,7 +181,7 @@ public class SellerMainApplication extends SellerRouterApplication implements
                 return new Function1<String, String>() {
                     @Override
                     public String invoke(String s) {
-                        return encryptor.encrypt(s, secretKey);
+                        return encryptor.decrypt(s, secretKey);
                     }
                 };
             }
@@ -191,7 +191,7 @@ public class SellerMainApplication extends SellerRouterApplication implements
                 return new Function1<String, String>() {
                     @Override
                     public String invoke(String s) {
-                        return encryptor.decrypt(s, secretKey);
+                        return encryptor.encrypt(s, secretKey);
                     }
                 };
             }

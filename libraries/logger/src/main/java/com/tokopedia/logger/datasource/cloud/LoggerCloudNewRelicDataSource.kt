@@ -1,13 +1,11 @@
 package com.tokopedia.logger.datasource.cloud
 
 import com.google.gson.Gson
-import com.tokopedia.keys.Keys
 import com.tokopedia.logger.model.newrelic.NewRelicConfig
 import com.tokopedia.logger.utils.Constants
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.ByteArrayOutputStream
-import java.io.DataOutputStream
 import java.net.HttpURLConnection
 import java.net.URL
 import java.util.zip.GZIPOutputStream

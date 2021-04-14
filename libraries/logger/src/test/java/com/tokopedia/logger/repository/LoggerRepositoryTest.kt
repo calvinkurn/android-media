@@ -1,10 +1,7 @@
 package com.tokopedia.logger.repository
 
 import com.tokopedia.logger.datasource.db.Logger
-import io.mockk.Runs
-import io.mockk.coEvery
-import io.mockk.coVerify
-import io.mockk.just
+import io.mockk.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import org.junit.Test
@@ -24,9 +21,15 @@ class LoggerRepositoryTest : LoggerRepositoryTestFixture() {
             }
 
             loggerList.forEach {
-                coEvery { loggerDao.insert(it) } just Runs
+                coEvery {
+                    loggerDao.insert(it)
+                } just Runs
                 loggerRepository.insert(it)
-                coVerify { loggerDao.insert(it.copy(message = encrpytor.encrypt(it.message, secretKey))) }
+                encrypt?.let { encrypt ->
+                    coVerify {
+                        loggerDao.insert(it.copy(message = encrypt.invoke(it.message)))
+                    }
+                }
             }
         }
     }
