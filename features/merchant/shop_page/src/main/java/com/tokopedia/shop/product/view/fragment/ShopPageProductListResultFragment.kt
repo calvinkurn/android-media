@@ -1167,7 +1167,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                 customDimensionShopPage
         )
         sortId = ""
-        shopProductAdapter.changeSelectedSortFilter(sortId, sortName)
+        shopProductAdapter.changeSelectedSortFilter(sortId ?: "", sortName)
         shopProductAdapter.changeSortFilterIndicatorCounter(getIndicatorCount(
                 shopProductFilterParameter?.getMapData()
         ))
@@ -1215,7 +1215,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
             shopProductFilterParameter?.getSortId().orEmpty()
         }
         val sortName = viewModel.getSortNameById(sortId)
-        shopProductAdapter.changeSelectedSortFilter(sortId, sortName)
+        shopProductAdapter.changeSelectedSortFilter(sortId ?: "", sortName)
         shopProductAdapter.changeSortFilterIndicatorCounter(getIndicatorCount(
                 shopProductFilterParameter?.getMapData()
         ))
