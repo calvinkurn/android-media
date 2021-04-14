@@ -137,7 +137,6 @@ class ReviewInboxContainerFragment : BaseDaggerFragment(), HasComponent<ReviewIn
         setupTabLayout()
         if(InboxUnifiedRemoteConfig.isInboxUnified()) {
             adjustViewBasedOnRole()
-            attachBuyerReviewFragment()
         }
     }
 
@@ -291,6 +290,7 @@ class ReviewInboxContainerFragment : BaseDaggerFragment(), HasComponent<ReviewIn
 
     private fun updateInboxUnifiedSellerView() {
         setBuyerReviewFragment()
+        attachBuyerReviewFragment()
         reviewInboxTabs?.hide()
         reviewSellerInboxFragment?.show()
         reviewInboxViewPager?.hide()

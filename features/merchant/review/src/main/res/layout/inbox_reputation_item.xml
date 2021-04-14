@@ -71,14 +71,15 @@
                 tools:text="INV/20170116/XVII/65862137"
                 />
 
-            <ImageView
+            <com.tokopedia.unifycomponents.NotificationUnify
                 android:id="@+id/unread_notif"
-                android:layout_width="8dp"
-                android:layout_height="8dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:layout_marginLeft="@dimen/dp_5"
-                android:layout_toRightOf="@id/invoice"
-                app:srcCompat="@drawable/reputation_red_circle" />
+                android:layout_marginStart="@dimen/dp_5"
+                android:layout_toEndOf="@id/invoice"
+                app:notificationType="none_type"
+                app:notificationColor="color_primary" />
 
             <TextView
                 android:id="@+id/label_deadline"
