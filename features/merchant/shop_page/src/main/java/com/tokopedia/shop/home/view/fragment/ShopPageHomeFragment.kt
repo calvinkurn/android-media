@@ -1327,7 +1327,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                 widgetId = shopHomeCarouselProductUiModel?.widgetId.toString(),
                 appLink = shopHomeCarouselProductUiModel?.header?.ctaLink.toString(),
                 shopId = shopId,
-                shopType = customDimensionShopPage.shopType,
+                shopType = customDimensionShopPage.shopType.orEmpty(),
                 isOwner = isOwner
         )
 
@@ -1859,7 +1859,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
 
                     if (parent.isNewlyBroadcastSaved() == true) {
                         parent.clearIsNewlyBroadcastSaved()
-                        recyclerView.addOneTimeGlobalLayoutListener {
+                        recyclerView?.addOneTimeGlobalLayoutListener {
                             viewScope.launch {
                                 parent.collapseAppBar()
                                 val widgetPosition = shopHomeAdapter.list.indexOfFirst { it is CarouselPlayWidgetUiModel }

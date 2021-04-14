@@ -7,10 +7,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.ordermanagement.orderhistory.R
 import com.tokopedia.ordermanagement.orderhistory.purchase.detail.model.history.viewmodel.OrderHistoryListData
+import com.tokopedia.unifyprinciples.Typography
 
 /**
  * Created by kris on 11/8/17. Tokopedia
@@ -33,26 +33,28 @@ class OrderHistoryAdapter(private val historyListDatas: List<OrderHistoryListDat
                         .orderHistoryComment == "") View.GONE else View.VISIBLE
         holder.orderHistoryDescription.text = Html.fromHtml(historyListDatas[position].orderHistoryTitle)
         holder.orderHistoryTime.text = historyListDatas[position].orderHistoryTime
-        holder.dot.setColorFilter(Color.parseColor(historyListDatas[position].color))
+        val color = historyListDatas.getOrNull(position)?.color ?: ""
+        val previousColor = historyListDatas.getOrNull(position - 1)?.color ?: ""
+        holder.dot.setColorFilter(Color.parseColor(color))
         when (position) {
             0 -> {
                 holder.dotTraiTop.visibility = View.GONE
                 holder.dotTrailBot.setBackgroundColor(
-                        Color.parseColor(historyListDatas[position].color)
+                        Color.parseColor(color)
                 )
             }
             historyListDatas.size - 1 -> {
                 holder.dotTrailBot.visibility = View.GONE
                 holder.dotTraiTop.setBackgroundColor(
-                        Color.parseColor(historyListDatas[position - 1].color)
+                        Color.parseColor(previousColor)
                 )
             }
             else -> {
                 holder.dotTrailBot.setBackgroundColor(
-                        Color.parseColor(historyListDatas[position].color)
+                        Color.parseColor(color)
                 )
                 holder.dotTraiTop.setBackgroundColor(
-                        Color.parseColor(historyListDatas[position - 1].color)
+                        Color.parseColor(previousColor)
                 )
             }
         }
@@ -60,9 +62,9 @@ class OrderHistoryAdapter(private val historyListDatas: List<OrderHistoryListDat
 
     private fun setTitleColor(holder: OrderHistoryViewHolder, position: Int) {
         if (position == 0) {
-            holder.orderHistoryTitle.setTextColor(Color.parseColor(
-                    historyListDatas[position].color
-            ))
+            historyListDatas.getOrNull(position)?.color?.let {
+                holder.orderHistoryTitle.setTextColor(Color.parseColor(it))
+            }
         } else holder.orderHistoryTitle.setTextColor(
                 holder.context.resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
     }
@@ -72,13 +74,13 @@ class OrderHistoryAdapter(private val historyListDatas: List<OrderHistoryListDat
     }
 
     inner class OrderHistoryViewHolder(val context: Context, itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val orderHistoryTitle: TextView = itemView.findViewById(R.id.history_title)
-        val orderHistoryDescription: TextView = itemView.findViewById(R.id.history_description)
-        val orderHistoryTime: TextView = itemView.findViewById(R.id.history_date)
+        val orderHistoryTitle: Typography = itemView.findViewById(R.id.history_title)
+        val orderHistoryDescription: Typography = itemView.findViewById(R.id.history_description)
+        val orderHistoryTime: Typography = itemView.findViewById(R.id.history_date)
         val dot: ImageView = itemView.findViewById(R.id.dot_image)
         val dotTrailBot: View = itemView.findViewById(R.id.dot_trail_bottom)
         val dotTraiTop: View = itemView.findViewById(R.id.dot_trail_top)
-        val orderHistoryComment: TextView = itemView.findViewById(R.id.history_comment)
+        val orderHistoryComment: Typography = itemView.findViewById(R.id.history_comment)
     }
 
 }

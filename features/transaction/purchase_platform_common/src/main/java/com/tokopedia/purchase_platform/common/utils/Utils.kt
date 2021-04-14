@@ -9,7 +9,6 @@ import android.text.TextUtils
 import android.util.DisplayMetrics
 import android.view.View
 import android.widget.CompoundButton
-import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.unifycomponents.Toaster
 import rx.Emitter
@@ -22,12 +21,6 @@ import kotlin.math.roundToInt
  * Created by fwidjaja on 2019-04-25.
  */
 object Utils {
-    @JvmStatic
-    fun getFormattedCurrency(price: Int): String {
-        return if (price == 0) "" else CurrencyFormatUtil.getThousandSeparatorString(price.toDouble(), false, 0).formattedString
-
-    }
-
     @JvmStatic
     fun getHtmlFormat(text: String?): String {
         if (text == null) return ""

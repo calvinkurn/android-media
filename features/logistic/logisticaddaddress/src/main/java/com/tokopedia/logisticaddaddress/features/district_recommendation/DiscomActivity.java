@@ -1,13 +1,9 @@
 package com.tokopedia.logisticaddaddress.features.district_recommendation;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.location.Location;
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -21,19 +17,8 @@ import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsChangeA
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
-import java.util.ArrayList;
-
 import static com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomContract.Constant.ARGUMENT_DATA_TOKEN;
 import static com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomContract.Constant.IS_LOCALIZATION;
-import static com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomFragment.INTENT_DISTRICT_RECOMMENDATION_ADDRESS_CITY_ID;
-import static com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomFragment.INTENT_DISTRICT_RECOMMENDATION_ADDRESS_CITY_NAME;
-import static com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomFragment.INTENT_DISTRICT_RECOMMENDATION_ADDRESS_DISTRICT_ID;
-import static com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomFragment.INTENT_DISTRICT_RECOMMENDATION_ADDRESS_DISTRICT_NAME;
-import static com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomFragment.INTENT_DISTRICT_RECOMMENDATION_ADDRESS_LATITUDE;
-import static com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomFragment.INTENT_DISTRICT_RECOMMENDATION_ADDRESS_LONGITUDE;
-import static com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomFragment.INTENT_DISTRICT_RECOMMENDATION_ADDRESS_PROVINCE_ID;
-import static com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomFragment.INTENT_DISTRICT_RECOMMENDATION_ADDRESS_PROVINCE_NAME;
-import static com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomFragment.INTENT_DISTRICT_RECOMMENDATION_ADDRESS_ZIPCODES;
 
 /**
  * Created by Irfan Khoirul on 17/11/18.

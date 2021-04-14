@@ -37,6 +37,7 @@ import com.tokopedia.hotel.R
 import com.tokopedia.hotel.booking.presentation.fragment.HotelBookingFragment
 import com.tokopedia.hotel.booking.presentation.widget.HotelBookingBottomSheets
 import com.tokopedia.hotel.common.presentation.HotelBaseFragment
+import com.tokopedia.hotel.common.util.HotelGqlQuery
 import com.tokopedia.hotel.common.util.TRACKING_HOTEL_ORDER_DETAIL
 import com.tokopedia.hotel.evoucher.presentation.activity.HotelEVoucherActivity
 import com.tokopedia.hotel.orderdetail.data.model.HotelOrderDetail
@@ -176,12 +177,12 @@ class HotelOrderDetailFragment : HotelBaseFragment(), ContactAdapter.OnClickCall
         if (userSessionInterface.isLoggedIn) {
             if (remoteConfig.getBoolean(RemoteConfigKey.ANDROID_CUSTOMER_TRAVEL_ENABLE_CROSS_SELL)) {
                 orderDetailViewModel.getOrderDetail(
-                        GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_order_list_detail),
+                        HotelGqlQuery.ORDER_DETAILS,
                         TravelCrossSellingGQLQuery.QUERY_CROSS_SELLING,
                         orderId, orderCategory)
             } else {
                 orderDetailViewModel.getOrderDetail(
-                        GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_order_list_detail),
+                        HotelGqlQuery.ORDER_DETAILS,
                         null,
                         orderId, orderCategory)
             }
@@ -226,8 +227,11 @@ class HotelOrderDetailFragment : HotelBaseFragment(), ContactAdapter.OnClickCall
     private fun renderTransactionDetail(orderDetail: HotelOrderDetail) {
 
         transaction_status.text = orderDetail.status.statusText
-        if (orderDetail.status.textColor.isNotEmpty())
+        if (orderDetail.status.textColor.isNotEmpty()){
             transaction_status.setTextColor(Color.parseColor(orderDetail.status.textColor))
+        }else{
+            transaction_status.setTextColor(ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_G400_96))
+        }
 
         var transactionDetailAdapter = TitleTextAdapter(TitleTextAdapter.HORIZONTAL_LAYOUT)
         transaction_detail_title_recycler_view.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)

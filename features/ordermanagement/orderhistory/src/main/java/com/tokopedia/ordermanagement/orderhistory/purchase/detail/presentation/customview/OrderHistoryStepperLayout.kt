@@ -7,10 +7,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
-import android.widget.TextView
 import com.tkpd.library.utils.ImageHandler
 import com.tokopedia.ordermanagement.orderhistory.R
 import com.tokopedia.ordermanagement.orderhistory.purchase.detail.model.history.viewmodel.OrderHistoryData
+import com.tokopedia.unifyprinciples.Typography
 
 /**
  * Created by kris on 11/7/17. Tokopedia
@@ -35,7 +35,7 @@ class OrderHistoryStepperLayout : LinearLayout {
     }
 
     fun setStepperStatus(model: OrderHistoryData) {
-        val title = findViewById<TextView>(R.id.stepper_title)
+        val title = findViewById<Typography>(R.id.stepper_title)
         val stepperImage = findViewById<ImageView>(R.id.stepper_image)
         title.text = model.stepperStatusTitle
         model.orderListData.firstOrNull()?.color?.let {

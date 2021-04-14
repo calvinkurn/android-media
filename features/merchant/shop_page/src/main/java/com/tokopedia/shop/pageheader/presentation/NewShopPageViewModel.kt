@@ -45,7 +45,6 @@ import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.common.graphql.data.shopoperationalhourstatus.ShopOperationalHourStatus
 import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.GetShopReputationUseCase
 import com.tokopedia.shop.common.view.model.ShopProductFilterParameter
-import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderContentData
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderLayoutResponse
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderP1
 import com.tokopedia.shop.pageheader.data.model.ShopRequestUnmoderateSuccessResponse
@@ -76,7 +75,6 @@ class NewShopPageViewModel @Inject constructor(
         private val getBroadcasterShopConfigUseCase: Lazy<GetBroadcasterShopConfigUseCase>,
         @GqlGetShopInfoUseCaseCoreAndAssetsQualifier
         private val gqlGetShopInfobUseCaseCoreAndAssets: Lazy<GQLGetShopInfoUseCase>,
-        private val toggleFavouriteShopUseCase: Lazy<ToggleFavouriteShopUseCase>,
         private val shopQuestGeneralTrackerUseCase: Lazy<ShopQuestGeneralTrackerUseCase>,
         private val getShopPageP1DataUseCase: Lazy<GetShopPageP1DataUseCase>,
         private val getShopProductListUseCase: Lazy<GqlGetShopProductUseCase>,
@@ -108,7 +106,6 @@ class NewShopPageViewModel @Inject constructor(
 
     val shopPageP1Data = MutableLiveData<Result<NewShopPageP1HeaderData>>()
     val shopIdFromDomainData = MutableLiveData<Result<String>>()
-    val shopPageHeaderContentData = MutableLiveData<Result<ShopPageHeaderContentData>>()
     var productListData: ShopProduct.GetShopProduct = ShopProduct.GetShopProduct()
     val shopImagePath = MutableLiveData<String>()
 
@@ -135,6 +132,10 @@ class NewShopPageViewModel @Inject constructor(
     private val _shopPageTickerData = MutableLiveData<Result<ShopInfo.StatusInfo>>()
     val shopPageTickerData : LiveData<Result<ShopInfo.StatusInfo>>
         get() = _shopPageTickerData
+
+    private val _shopPageShopShareData = MutableLiveData<Result<ShopInfo>>()
+    val shopPageShopShareData: LiveData<Result<ShopInfo>>
+        get() = _shopPageShopShareData
 
     fun getShopPageTabData(
             shopId: Int,
@@ -331,11 +332,6 @@ class NewShopPageViewModel @Inject constructor(
         return broadcasterConfig
     }
 
-    override fun flush() {
-        super.flush()
-        toggleFavouriteShopUseCase.get().unsubscribe()
-    }
-
     fun getFollowStatusData(shopId: String) {
         launchCatchError(dispatcherProvider.io, block = {
             getFollowStatusUseCase.get().params = GetFollowStatusUseCase.createParams(shopId, SOURCE_SHOP_PAGE)
@@ -359,7 +355,7 @@ class NewShopPageViewModel @Inject constructor(
         })
     }
 
-    fun getShopTickerData(shopId: String, shopDomain: String, isRefresh: Boolean){
+    fun getShopInfoData(shopId: String, shopDomain: String, isRefresh: Boolean){
         launchCatchError(dispatcherProvider.io ,block = {
             val shopInfoForHeaderResponse = getShopInfoHeader(
                     shopId.toIntOrZero(),
@@ -367,9 +363,8 @@ class NewShopPageViewModel @Inject constructor(
                     isRefresh
             )
             _shopPageTickerData.postValue(Success(shopInfoForHeaderResponse.statusInfo))
-        }) {
-            _shopPageTickerData.postValue(Fail(it))
-        }
+            _shopPageShopShareData.postValue(Success(shopInfoForHeaderResponse))
+        }) {}
     }
 
     fun getSellerPlayWidgetData(shopId: String){

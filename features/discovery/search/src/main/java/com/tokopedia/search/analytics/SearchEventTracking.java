@@ -76,6 +76,10 @@ public interface SearchEventTracking {
         String CLICK_INSPIRATION_CARD = "click inspiration card";
         String CLICK_ADD_TO_CART_ON_PRODUCT_OPTIONS = "click add to cart on product options";
         String CLICK_SHARE_PRODUCT_OPTIONS = "click - share - product options";
+        String IMPRESSION_INSPIRATION_CAROUSEL_CHIPS_PRODUCT = "impression - inspiration carousel chips product";
+        String CLICK_INSPIRATION_CAROUSEL_CHIPS_PRODUCT = "click - inspiration carousel chips product";
+        String CLICK_INSPIRATION_CAROUSEL_CHIPS_LIHAT_SEMUA = "click - inspiration carousel chips lihat semua";
+        String CLICK_INSPIRATION_CAROUSEL_CHIPS_VARIANT = "click - inspiration carousel chips variant";
     }
 
     interface Label {

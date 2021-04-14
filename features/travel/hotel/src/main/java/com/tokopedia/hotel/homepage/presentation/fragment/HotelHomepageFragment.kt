@@ -31,6 +31,8 @@ import com.tokopedia.hotel.common.analytics.TrackingHotelUtil
 import com.tokopedia.hotel.common.data.HotelSourceEnum
 import com.tokopedia.hotel.common.data.HotelTypeEnum
 import com.tokopedia.hotel.common.presentation.HotelBaseFragment
+import com.tokopedia.hotel.common.util.HotelGqlMutation
+import com.tokopedia.hotel.common.util.HotelGqlQuery
 import com.tokopedia.hotel.common.util.HotelUtils
 import com.tokopedia.hotel.common.util.TRACKING_HOTEL_HOMEPAGE
 import com.tokopedia.hotel.destination.data.model.PopularSearch
@@ -156,7 +158,7 @@ class HotelHomepageFragment : HotelBaseFragment(),
         loadTickerData()
 
         if (hotelHomepageModel.locName.isEmpty()) {
-            homepageViewModel.getDefaultHomepageParameter(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_get_default_homepage_parameter))
+            homepageViewModel.getDefaultHomepageParameter(HotelGqlQuery.DEFAULT_HOMEPAGE_PARAMETER)
         }
     }
 
@@ -608,7 +610,7 @@ class HotelHomepageFragment : HotelBaseFragment(),
     }
 
     private fun loadRecentSearchData() {
-        homepageViewModel.getRecentSearch(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_recent_search))
+        homepageViewModel.getRecentSearch(HotelGqlQuery.RECENT_SEARCH_DATA)
     }
 
     val bannerImpressionIndex: HashSet<Int> = hashSetOf()
@@ -676,7 +678,7 @@ class HotelHomepageFragment : HotelBaseFragment(),
 
         tv_hotel_last_search_title.text = data.title
         tv_hotel_homepage_delete_last_search.setOnClickListener {
-            homepageViewModel.deleteRecentSearch(GraphqlHelper.loadRawString(resources, R.raw.gql_mutation_hotel_delete_recent_search))
+            homepageViewModel.deleteRecentSearch(HotelGqlMutation.DELETE_RECENT_SEARCH)
         }
         rv_hotel_homepage_last_search.layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
         rv_hotel_homepage_last_search.adapter = HotelLastSearchAdapter(data.items, this)

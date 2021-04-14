@@ -8,14 +8,12 @@
     android:background="@color/white"
     android:orientation="vertical">
 
-
     <com.tokopedia.unifycomponents.SearchBarUnify
         android:id="@+id/searchInputView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_16"
         app:layout_constraintEnd_toStartOf="@+id/btn_sort"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintHorizontal_chainStyle="packed"
@@ -43,7 +41,7 @@
     <View
         android:id="@+id/view3"
         android:layout_width="1dp"
-        android:layout_height="50dp"
+        android:layout_height="@dimen/dp_50"
         android:background="#E5E7E9"
         app:layout_constraintBottom_toBottomOf="@+id/btn_sort"
         app:layout_constraintEnd_toStartOf="@+id/btn_filter"
@@ -55,8 +53,7 @@
         android:id="@+id/btn_filter"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:layout_marginRight="16dp"
+        android:layout_marginEnd="@dimen/dp_16"
         android:padding="@dimen/dp_10"
         app:layout_constraintBottom_toBottomOf="@+id/view3"
         app:layout_constraintEnd_toEndOf="parent"
@@ -71,11 +68,9 @@
         android:id="@+id/promotedGroup"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginLeft="16dp"
+        android:layout_marginStart="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_16"
-        android:layout_marginEnd="16dp"
-        android:layout_marginRight="16dp"
+        android:layout_marginEnd="@dimen/dp_16"
         android:orientation="horizontal"
         android:weightSum="1"
         app:layout_constraintEnd_toEndOf="parent"
@@ -87,8 +82,8 @@
             android:id="@+id/not_promoted"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dp_8"
-            android:layout_marginRight="@dimen/dp_16"
+            android:layout_marginStart="@dimen/dp_8"
+            android:layout_marginEnd="@dimen/dp_16"
             android:layout_weight="0.5"
             app:centerText="true"
             app:chipSize="medium"
@@ -101,7 +96,7 @@
             android:id="@+id/promoted"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginStart="@dimen/dp_16"
             android:layout_weight="0.5"
             app:centerText="true"
             app:chipSize="medium"
@@ -114,8 +109,8 @@
 
     <View
         android:id="@+id/view5"
-        android:layout_width="0dp"
-        android:layout_height="6dp"
+        android:layout_width="@dimen/dp_0"
+        android:layout_height="@dimen/dp_6"
         android:layout_marginTop="@dimen/dp_8"
         android:background="@drawable/topads_bg_shader_gray"
         android:rotation="180"
@@ -125,8 +120,8 @@
 
     <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
         android:id="@+id/swipe_refresh_layout"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_width="@dimen/dp_0"
+        android:layout_height="@dimen/dp_0"
         app:layout_constraintBottom_toTopOf="@+id/shadow_bottom"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -154,8 +149,8 @@
 
     <View
         android:id="@+id/shadow_bottom"
-        android:layout_width="0dp"
-        android:layout_height="6dp"
+        android:layout_width="@dimen/dp_0"
+        android:layout_height="@dimen/dp_6"
         android:layout_marginBottom="@dimen/dp_8"
         android:background="@drawable/topads_bg_shader_gray"
         app:layout_constraintBottom_toTopOf="@+id/btn_next"
@@ -165,11 +160,10 @@
 
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/btn_next"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/dp_0"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginBottom="@dimen/dp_8"
         android:layout_weight="1"
         android:enabled="false"
         android:text="@string/lanjutkan"
@@ -183,10 +177,9 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/select_product_info"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/dp_0"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginLeft="16dp"
+        android:layout_marginStart="@dimen/dp_16"
         android:layout_weight="1"
         android:padding="@dimen/dp_16"
         android:text="@string/_0_produk"
