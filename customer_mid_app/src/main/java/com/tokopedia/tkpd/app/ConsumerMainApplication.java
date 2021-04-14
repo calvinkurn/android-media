@@ -45,11 +45,13 @@ import com.tokopedia.dev_monitoring_tools.session.SessionActivityLifecycleCallba
 import com.tokopedia.dev_monitoring_tools.ui.JankyFrameActivityLifecycleCallbacks;
 import com.tokopedia.developer_options.DevOptsSubscriber;
 import com.tokopedia.developer_options.stetho.StethoUtil;
+import com.tokopedia.encryption.security.AESEncryptorECB;
+import com.tokopedia.keys.Keys;
 import com.tokopedia.logger.LogManager;
 import com.tokopedia.logger.LoggerProxy;
-import com.tokopedia.moengage_wrapper.MoengageInteractor;
 import com.tokopedia.logger.ServerLogger;
 import com.tokopedia.logger.utils.Priority;
+import com.tokopedia.moengage_wrapper.MoengageInteractor;
 import com.tokopedia.moengage_wrapper.interfaces.CustomPushDataListener;
 import com.tokopedia.moengage_wrapper.interfaces.MoengageInAppListener;
 import com.tokopedia.moengage_wrapper.interfaces.MoengagePushListener;
@@ -89,7 +91,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import javax.crypto.SecretKey;
+
 import kotlin.Pair;
+import kotlin.jvm.functions.Function1;
 import timber.log.Timber;
 
 import static android.os.Process.killProcess;
@@ -146,7 +151,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         checkAppSignatureAsync();
     }
 
-    private void checkAppSignatureAsync(){
+    private void checkAppSignatureAsync() {
         WeaveInterface checkAppSignatureWeave = new WeaveInterface() {
             @NotNull
             @Override
@@ -154,7 +159,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
                 if (!checkAppSignature()) {
                     killProcess(android.os.Process.myPid());
                 }
-                if (!checkPackageName()){
+                if (!checkPackageName()) {
                     killProcess(android.os.Process.myPid());
                 }
                 return true;
@@ -163,7 +168,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         Weaver.Companion.executeWeaveCoRoutineWithFirebase(checkAppSignatureWeave, RemoteConfigKey.ENABLE_ASYNC_CHECKAPPSIGNATURE, this);
     }
 
-    private boolean checkPackageName(){
+    private boolean checkPackageName() {
         boolean packageNameValid = this.getPackageName().equals(getOriginalPackageApp());
         if (!packageNameValid) {
             Map<String, String> messageMap = new HashMap<>();
@@ -384,6 +389,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
 
     /**
      * cannot reference BuildConfig of an app.
+     *
      * @return
      */
     @NonNull
@@ -416,8 +422,66 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         return true;
     }
 
-    private void initLogManager(){
+    private void initLogManager() {
         LogManager.init(ConsumerMainApplication.this, new LoggerProxy() {
+            final AESEncryptorECB encryptor = new AESEncryptorECB();
+            private final String ENCRYPTION_KEY = new String(new char[]{113, 40, 101, 35, 37, 71, 102, 64, 111, 105, 62, 108, 107, 66, 126, 104});
+            final SecretKey secretKey = encryptor.generateKey(ENCRYPTION_KEY);
+
+            @Override
+            public Function1<String, String> getDecrypt() {
+                return new Function1<String, String>() {
+                    @Override
+                    public String invoke(String s) {
+                        return encryptor.encrypt(s, secretKey);
+                    }
+                };
+            }
+
+            @Override
+            public Function1<String, String> getEncrypt() {
+                return new Function1<String, String>() {
+                    @Override
+                    public String invoke(String s) {
+                        return encryptor.decrypt(s, secretKey);
+                    }
+                };
+            }
+
+            @NotNull
+            @Override
+            public String getVersionName() {
+                return GlobalConfig.RAW_VERSION_NAME;
+            }
+
+            @Override
+            public int getVersionCode() {
+                return GlobalConfig.VERSION_CODE;
+            }
+
+            @NotNull
+            @Override
+            public String getScalyrToken() {
+                return Keys.getAUTH_SCALYR_API_KEY();
+            }
+
+            @NotNull
+            @Override
+            public String getNewRelicToken() {
+                return Keys.getAUTH_NEW_RELIC_API_KEY();
+            }
+
+            @NotNull
+            @Override
+            public String getNewRelicUserId() {
+                return Keys.getAUTH_NEW_RELIC_USER_ID();
+            }
+
+            @Override
+            public boolean isDebug() {
+                return GlobalConfig.DEBUG;
+            }
+
             @NotNull
             @Override
             public String getUserId() {

@@ -2,7 +2,6 @@ package com.tokopedia.logger.repository
 
 import com.google.gson.Gson
 import com.google.gson.JsonObject
-import com.tokopedia.encryption.security.BaseEncryptor
 import com.tokopedia.logger.datasource.cloud.LoggerCloudDataSource
 import com.tokopedia.logger.datasource.cloud.LoggerCloudNewRelicImpl
 import com.tokopedia.logger.datasource.db.Logger
@@ -15,7 +14,6 @@ import com.tokopedia.logger.utils.Constants
 import com.tokopedia.logger.utils.LoggerReporting
 import kotlinx.coroutines.*
 import org.json.JSONObject
-import javax.crypto.SecretKey
 import kotlin.coroutines.CoroutineContext
 
 class LoggerRepository(private val logDao: LoggerDao,
@@ -23,11 +21,14 @@ class LoggerRepository(private val logDao: LoggerDao,
                        private val loggerCloudNewRelicImpl: LoggerCloudNewRelicImpl,
                        private val scalyrConfigs: List<ScalyrConfig>,
                        private val newRelicConfig: NewRelicConfig,
-                       private val encryptor: BaseEncryptor,
-                       private val secretKey: SecretKey) : LoggerRepositoryContract, CoroutineScope {
+                       private val encrypt: ((String) -> (String))? = null,
+                       private val decrypt: ((String) -> (String))? = null) : LoggerRepositoryContract, CoroutineScope {
 
     override suspend fun insert(logger: Logger) {
-        val encryptedLogger = logger.copy(message = encryptor.encrypt(logger.message, secretKey))
+        var encryptedLogger = logger
+        if (encrypt!= null) {
+            encryptedLogger = logger.copy(message = encrypt.invoke(logger.message))
+        }
         logDao.insert(encryptedLogger)
     }
 
@@ -103,7 +104,10 @@ class LoggerRepository(private val logDao: LoggerDao,
             ts = log.timeStamp * 1000000
             ts += counter
             counter++
-            val message = encryptor.decrypt(log.message, secretKey)
+            var message = log.message
+            if (decrypt!= null) {
+                message = decrypt.invoke(message)
+            }
             val obj = JSONObject(message)
             val tagValue = obj.getString (Constants.TAG_LOG) ?: ""
             val priorityValue = obj.getString(Constants.PRIORITY_LOG).toIntOrNull()

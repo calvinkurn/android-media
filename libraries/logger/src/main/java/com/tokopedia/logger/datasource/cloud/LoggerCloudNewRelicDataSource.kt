@@ -38,7 +38,7 @@ class LoggerCloudNewRelicDataSource : LoggerCloudNewRelicImpl {
 
         try {
             val requestBody = compressRequestBody(message)
-            url = URL(Constants.getNewRelicEventURL(Keys.AUTH_NEW_RELIC_USER_ID))
+            url = URL(Constants.getNewRelicEventURL(newRelicConfig.userId))
             urlConnection = url.openConnection() as HttpURLConnection
             urlConnection = urlConnection.setRequestProperty(requestBody.size, newRelicConfig)
             urlConnection.outputStream.use { outputStream ->

@@ -29,7 +29,9 @@ import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.developer_options.DevOptsSubscriber;
 import com.tokopedia.device.info.DeviceInfo;
+import com.tokopedia.encryption.security.AESEncryptorECB;
 import com.tokopedia.graphql.data.GraphqlClient;
+import com.tokopedia.keys.Keys;
 import com.tokopedia.logger.LogManager;
 import com.tokopedia.logger.LoggerProxy;
 import com.tokopedia.moengage_wrapper.MoengageInteractor;
@@ -55,7 +57,10 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
+import javax.crypto.SecretKey;
+
 import kotlin.Pair;
+import kotlin.jvm.functions.Function1;
 import timber.log.Timber;
 
 import static com.tokopedia.utils.permission.SlicePermission.SELLER_ORDER_AUTHORITY;
@@ -167,6 +172,64 @@ public class SellerMainApplication extends SellerRouterApplication implements
 
     private void initLogManager(){
         LogManager.init(SellerMainApplication.this, new LoggerProxy() {
+            final AESEncryptorECB encryptor = new AESEncryptorECB();
+            private final String ENCRYPTION_KEY = new String(new char[]{113, 40, 101, 35, 37, 71, 102, 64, 111, 105, 62, 108, 107, 66, 126, 104});
+            final SecretKey secretKey = encryptor.generateKey(ENCRYPTION_KEY);
+
+            @Override
+            public Function1<String, String> getDecrypt() {
+                return new Function1<String, String>() {
+                    @Override
+                    public String invoke(String s) {
+                        return encryptor.encrypt(s, secretKey);
+                    }
+                };
+            }
+
+            @Override
+            public Function1<String, String> getEncrypt() {
+                return new Function1<String, String>() {
+                    @Override
+                    public String invoke(String s) {
+                        return encryptor.decrypt(s, secretKey);
+                    }
+                };
+            }
+
+            @NotNull
+            @Override
+            public String getVersionName() {
+                return GlobalConfig.RAW_VERSION_NAME;
+            }
+
+            @Override
+            public int getVersionCode() {
+                return GlobalConfig.VERSION_CODE;
+            }
+
+            @NotNull
+            @Override
+            public String getScalyrToken() {
+                return Keys.getAUTH_SCALYR_API_KEY();
+            }
+
+            @NotNull
+            @Override
+            public String getNewRelicToken() {
+                return Keys.getAUTH_NEW_RELIC_API_KEY();
+            }
+
+            @NotNull
+            @Override
+            public String getNewRelicUserId() {
+                return Keys.getAUTH_NEW_RELIC_USER_ID();
+            }
+
+            @Override
+            public boolean isDebug() {
+                return GlobalConfig.DEBUG;
+            }
+
             @NotNull
             @Override
             public String getUserId() {

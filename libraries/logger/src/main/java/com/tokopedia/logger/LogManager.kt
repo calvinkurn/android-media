@@ -3,10 +3,6 @@ package com.tokopedia.logger
 import android.app.Application
 import android.content.Context
 import com.google.gson.Gson
-import com.tokopedia.config.GlobalConfig
-import com.tokopedia.encryption.security.AESEncryptorECB
-import com.tokopedia.keys.Keys.AUTH_NEW_RELIC_API_KEY
-import com.tokopedia.keys.Keys.AUTH_SCALYR_API_KEY
 import com.tokopedia.logger.datasource.cloud.LoggerCloudNewRelicDataSource
 import com.tokopedia.logger.datasource.cloud.LoggerCloudScalyrDataSource
 import com.tokopedia.logger.datasource.db.Logger
@@ -37,12 +33,12 @@ class LogManager(val application: Application, val loggerProxy: LoggerProxy) {
         try {
             val loggerReporting = LoggerReporting.getInstance()
             loggerReporting.partDeviceId = getPartDeviceId(application)
-            loggerReporting.versionName = GlobalConfig.RAW_VERSION_NAME
-            loggerReporting.versionCode = GlobalConfig.VERSION_CODE
+            loggerReporting.versionName = loggerProxy.versionName
+            loggerReporting.versionCode = loggerProxy.versionCode
             val installer: String = application.packageManager.getInstallerPackageName(application.packageName) ?: ""
             loggerReporting.installer = installer
             loggerReporting.packageName = application.packageName
-            loggerReporting.debug = GlobalConfig.DEBUG
+            loggerReporting.debug = loggerProxy.isDebug
             refreshConfig()
         } catch (throwable: Throwable) {
             // do nothing
@@ -56,7 +52,7 @@ class LogManager(val application: Application, val loggerProxy: LoggerProxy) {
             val logNewRelicConfigString: String = loggerProxy.newRelicConfig
             if (logScalyrConfigString.isNotEmpty()) {
                 val dataLogConfigScalyr = Gson().fromJson(logScalyrConfigString, DataLogConfig::class.java)
-                if (dataLogConfigScalyr != null && dataLogConfigScalyr.isEnabled && GlobalConfig.VERSION_CODE >= dataLogConfigScalyr.appVersionMin && dataLogConfigScalyr.tags != null) {
+                if (dataLogConfigScalyr != null && dataLogConfigScalyr.isEnabled && loggerProxy.versionCode >= dataLogConfigScalyr.appVersionMin && dataLogConfigScalyr.tags != null) {
                     loggerReporting.setQueryLimits(dataLogConfigScalyr.queryLimits)
                     loggerReporting.setPopulateTagMapsScalyr(dataLogConfigScalyr.tags)
                 }
@@ -64,7 +60,7 @@ class LogManager(val application: Application, val loggerProxy: LoggerProxy) {
             if (logNewRelicConfigString.isNotEmpty()) {
                 val dataLogConfigNewRelic = Gson().fromJson(logNewRelicConfigString, DataLogConfig::class.java)
                 if (dataLogConfigNewRelic != null && dataLogConfigNewRelic.tags != null &&
-                        dataLogConfigNewRelic.isEnabled && GlobalConfig.VERSION_CODE >= dataLogConfigNewRelic.appVersionMin) {
+                        dataLogConfigNewRelic.isEnabled && loggerProxy.versionCode >= dataLogConfigNewRelic.appVersionMin) {
                     loggerReporting.setPopulateTagMapsNewRelic(dataLogConfigNewRelic.tags)
                     loggerReporting.setQueryLimits(dataLogConfigNewRelic.queryLimits)
                 }
@@ -83,14 +79,12 @@ class LogManager(val application: Application, val loggerProxy: LoggerProxy) {
             val logsDao = LoggerRoomDatabase.getDatabase(context).logDao()
             val loggerCloudScalyrDataSource = LoggerCloudScalyrDataSource()
             val loggerCloudNewRelicDataSource = LoggerCloudNewRelicDataSource()
-            val encryptor = AESEncryptorECB()
-            val secretKey = encryptor.generateKey(Constants.ENCRYPTION_KEY)
             val loggerRepoNew = LoggerRepository(logsDao,
                     loggerCloudScalyrDataSource,
                     loggerCloudNewRelicDataSource,
                     getScalyrConfigList(context),
-                    NewRelicConfig(AUTH_NEW_RELIC_API_KEY),
-                    encryptor, secretKey)
+                    NewRelicConfig(loggerProxy.newRelicUserId, loggerProxy.newRelicToken),
+                    loggerProxy.encrypt, loggerProxy.decrypt)
             loggerRepository = loggerRepoNew
             return loggerRepoNew
         } else {
@@ -111,7 +105,7 @@ class LogManager(val application: Application, val loggerProxy: LoggerProxy) {
         val session = getLogSession(context)
         val serverHost = String.format("android-main-app-p%s", priority)
         val parser = "android-parser"
-        return ScalyrConfig(AUTH_SCALYR_API_KEY, session, serverHost, parser)
+        return ScalyrConfig(loggerProxy.scalyrToken, session, serverHost, parser)
     }
 
     companion object {
@@ -161,4 +155,12 @@ interface LoggerProxy {
     val userId: String
     val scalyrConfig: String
     val newRelicConfig: String
+    val isDebug: Boolean
+    val newRelicToken: String
+    val newRelicUserId: String
+    val scalyrToken: String
+    val versionCode: Int
+    val versionName: String
+    val encrypt: ((String) -> (String))?
+    val decrypt: ((String) -> (String))?
 }
