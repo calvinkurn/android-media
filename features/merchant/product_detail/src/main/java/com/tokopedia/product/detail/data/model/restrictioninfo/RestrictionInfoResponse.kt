@@ -16,7 +16,7 @@ data class RestrictionInfoResponse(
         val restrictionData: List<RestrictionData> = listOf()
 ) {
     companion object {
-        const val SHOP_FOLLOWERS_TYPE = "shop_followers"
+        const val SHOP_FOLLOWERS_TYPE = "shop_follower"
         const val SHOP_EXCLUSIVE_TYPE = "exclusive_discount"
     }
 
