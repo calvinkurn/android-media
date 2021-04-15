@@ -20,7 +20,8 @@ import dagger.Component
             ChatNotificationsQueryModule::class,
             ChatListViewsModelModule::class,
             ChatNotificationsViewsModelModule::class,
-            ChatListContextModule::class
+            ChatListContextModule::class,
+            ChatListDispatcherModule::class
         ],
         dependencies = [BaseAppComponent::class]
 )
