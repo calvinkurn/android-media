@@ -10,10 +10,6 @@ import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.attachcommon.data.ResultProduct
-import com.tokopedia.chat_common.data.ChatroomViewModel
-import com.tokopedia.chat_common.data.ImageUploadViewModel
-import com.tokopedia.chat_common.data.MessageViewModel
-import com.tokopedia.chat_common.data.ReplyChatViewModel
 import com.tokopedia.chat_common.data.preview.ProductPreview
 import com.tokopedia.chat_common.domain.pojo.ChatReplies
 import com.tokopedia.chat_common.domain.pojo.ChatReplyPojo
@@ -69,6 +65,7 @@ import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenterTest.Du
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendablePreview
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendableProductPreview
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.chat_common.data.*
 import com.tokopedia.topchat.chatroom.domain.pojo.srw.ChatSmartReplyQuestionResponse
 import com.tokopedia.topchat.chattemplate.view.viewmodel.GetTemplateUiModel
 import com.tokopedia.topchat.common.data.Resource
@@ -91,6 +88,7 @@ import junit.framework.Assert.assertTrue
 import kotlinx.coroutines.flow.flow
 import okhttp3.Interceptor
 import okhttp3.WebSocket
+import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Before
@@ -1458,6 +1456,24 @@ class TopChatRoomPresenterTest {
         verify(exactly = 1) {
             observer.onChanged(expectedValue)
         }
+    }
+
+    @Test
+    fun `onGoingStockUpdate added`() {
+        // Given
+        val productId = "123"
+        val product = ProductAttachmentViewModel(
+                "", productId, "",
+                "", "", "",
+                "", false, 1
+        )
+
+        // When
+        presenter.addOngoingUpdateProductStock(product, 0, null)
+
+        // Then
+        assertThat(presenter.onGoingStockUpdate.containsKey(productId), `is`(true))
+        assertThat(presenter.onGoingStockUpdate.size, `is`(1))
     }
 
     private fun getErrorAtcModel(): AddToCartDataModel {
