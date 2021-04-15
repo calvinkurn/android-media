@@ -8,7 +8,6 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.loginfingerprint.utils.crypto.Cryptography
 import com.tokopedia.loginfingerprint.utils.crypto.CryptographyUtils
-import com.tokopedia.loginregister.common.DispatcherProvider
 import com.tokopedia.loginregister.common.analytics.RegisterAnalytics
 import com.tokopedia.loginregister.common.analytics.ShopCreationAnalytics
 import com.tokopedia.user.session.UserSession
@@ -25,13 +24,6 @@ import kotlinx.coroutines.Dispatchers
 
 @Module
 class ShopCreationModule {
-
-    @ShopCreationScope
-    @Provides
-    fun provideDispatcherProvider(): DispatcherProvider = object : DispatcherProvider {
-        override fun ui(): CoroutineDispatcher = Dispatchers.Main
-        override fun io(): CoroutineDispatcher = Dispatchers.IO
-    }
 
     @ShopCreationScope
     @Provides
