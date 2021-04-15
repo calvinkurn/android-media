@@ -13,7 +13,7 @@ import com.tokopedia.play.broadcaster.ui.model.TrafficMetricUiModel
 import com.tokopedia.play_common.domain.UpdateChannelUseCase
 import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.types.PlayChannelStatusType
-import com.tokopedia.play_common.util.coroutine.CoroutineDispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.*
 import javax.inject.Inject
@@ -24,7 +24,7 @@ import javax.inject.Inject
 
 class PlayBroadcastSummaryViewModel @Inject constructor(
         private val channelConfigStore: ChannelConfigStore,
-        private val dispatcher: CoroutineDispatcherProvider,
+        private val dispatcher: CoroutineDispatchers,
         private val getLiveStatisticsUseCase: GetLiveStatisticsUseCase,
         private val updateChannelUseCase: PlayBroadcastUpdateChannelUseCase,
         private val userSession: UserSessionInterface,

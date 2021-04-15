@@ -264,7 +264,7 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
             spannableString.setSpan(StyleSpan(Typeface.BOLD), 1, 1 + hotelRoom.creditCardInfo.header.length,
                     Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
             spannableString.setSpan(LeadingMarginSpan.Standard(50, 0), 0, 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-            pay_at_hotel_title.text = getString(R.string.hotel_room_detail_pay_at_hotel)
+            pay_at_hotel_title.text = hotelRoom.isDirectPaymentString
             pay_at_hotel_desc.text = spannableString
         }
     }

@@ -10,7 +10,7 @@ import com.tokopedia.common.travel.ticker.TravelTickerFlightPage
 import com.tokopedia.common.travel.ticker.TravelTickerInstanceId
 import com.tokopedia.common.travel.ticker.domain.TravelTickerCoroutineUseCase
 import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerModel
-import com.tokopedia.common.travel.utils.TravelDispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.flight.R
 import com.tokopedia.flight.airport.view.model.FlightAirportModel
 import com.tokopedia.flight.common.util.FlightAnalytics
@@ -41,8 +41,8 @@ class FlightHomepageViewModel @Inject constructor(
         private val deleteAllFlightSearchDataUseCase: FlightSearchDeleteAllDataUseCase,
         private val passengerValidator: FlightSelectPassengerValidator,
         private val userSessionInterface: UserSessionInterface,
-        private val dispatcherProvider: TravelDispatcherProvider)
-    : BaseViewModel(dispatcherProvider.io()) {
+        private val dispatcherProvider: CoroutineDispatchers)
+    : BaseViewModel(dispatcherProvider.io) {
 
     private val mutableBannerList = MutableLiveData<Result<TravelCollectiveBannerModel>>()
     val bannerList: LiveData<Result<TravelCollectiveBannerModel>>
@@ -65,26 +65,26 @@ class FlightHomepageViewModel @Inject constructor(
         get() = mutableAutoSearch
 
     fun init() {
-        mutableDashboardData.value = FlightHomepageModel()
-        mutableAutoSearch.value = false
+        mutableDashboardData.postValue(FlightHomepageModel())
+        mutableAutoSearch.postValue (false)
     }
 
     fun fetchBannerData(isFromCloud: Boolean) {
-        launch(dispatcherProvider.ui()) {
+        launch(dispatcherProvider.main) {
             val bannerList = getTravelCollectiveBannerUseCase.execute(TravelType.FLIGHT, isFromCloud)
             mutableBannerList.postValue(bannerList)
         }
     }
 
     fun fetchTickerData() {
-        launch(dispatcherProvider.ui()) {
+        launch(dispatcherProvider.main) {
             val tickerData = travelTickerUseCase.execute(TravelTickerInstanceId.FLIGHT, TravelTickerFlightPage.HOME)
             mutableTickerData.postValue(tickerData)
         }
     }
 
     fun fetchVideoBannerData() {
-        launch(dispatcherProvider.ui()) {
+        launch(dispatcherProvider.main) {
             val bannerList = getTravelCollectiveBannerUseCase.execute(TravelType.FLIGHT_VIDEO_BANNER, true)
             mutableVideoBanner.postValue(bannerList)
         }
@@ -135,7 +135,7 @@ class FlightHomepageViewModel @Inject constructor(
             dashboardCache.putClassCache(extrasClass.toInt())
 
             if (extrasAutoSearch.toInt() == 1) {
-                mutableAutoSearch.value = true
+                mutableAutoSearch.postValue(true)
             }
         } catch (t: Throwable) {
             t.printStackTrace()
@@ -163,7 +163,7 @@ class FlightHomepageViewModel @Inject constructor(
         homepageData.value?.let {
             val newDashboardData = cloneViewModel(it)
             newDashboardData.departureAirport = departureAirport
-            mutableDashboardData.value = newDashboardData
+            mutableDashboardData.postValue(newDashboardData)
         }
     }
 
@@ -172,7 +172,7 @@ class FlightHomepageViewModel @Inject constructor(
         homepageData.value?.let {
             val newDashboardData = cloneViewModel(it)
             newDashboardData.arrivalAirport = arrivalAirport
-            mutableDashboardData.value = newDashboardData
+            mutableDashboardData.postValue(newDashboardData)
         }
     }
 
@@ -181,7 +181,7 @@ class FlightHomepageViewModel @Inject constructor(
         homepageData.value?.let {
             val newDashboardData = cloneViewModel(it)
             newDashboardData.flightClass = classModel
-            mutableDashboardData.value = newDashboardData
+            mutableDashboardData.postValue(newDashboardData)
         }
     }
 
@@ -190,7 +190,7 @@ class FlightHomepageViewModel @Inject constructor(
         homepageData.value?.let {
             val newDashboardData = cloneViewModel(it)
             newDashboardData.flightPassengerViewModel = passengerModel
-            mutableDashboardData.value = newDashboardData
+            mutableDashboardData.postValue(newDashboardData)
         }
     }
 
@@ -254,7 +254,7 @@ class FlightHomepageViewModel @Inject constructor(
     }
 
     fun onSearchTicket(flightSearchData: FlightSearchPassDataModel) {
-        launch(dispatcherProvider.ui()) {
+        launch(dispatcherProvider.main) {
             flightAnalytics.eventSearchClick(mapSearchPassDataToDashboardModel(flightSearchData),
                     FlightAnalytics.Screen.HOMEPAGE,
                     if (userSessionInterface.isLoggedIn) userSessionInterface.userId else "")
