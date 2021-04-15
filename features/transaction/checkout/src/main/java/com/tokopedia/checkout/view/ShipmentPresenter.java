@@ -588,6 +588,10 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         isIneligiblePromoDialogEnabled = cartShipmentAddressFormData.isIneligiblePromoDialogEnabled();
     }
 
+    public void setPurchaseProtection(boolean isPurchaseProtectionPage) {
+        this.isPurchaseProtectionPage = isPurchaseProtectionPage;
+    }
+
     @Override
     public void processCheckout(boolean isOneClickShipment,
                                 boolean isTradeIn,

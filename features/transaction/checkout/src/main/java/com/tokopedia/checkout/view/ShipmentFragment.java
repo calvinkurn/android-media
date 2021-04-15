@@ -1638,7 +1638,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     private void doCheckout() {
         shipmentPresenter.processSaveShipmentState();
         shipmentPresenter.processCheckout(isOneClickShipment(), isTradeIn(), isTradeInByDropOff(), getDeviceId(), getCornerId(), getCheckoutLeasingId());
-
     }
 
     @Override

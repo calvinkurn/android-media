@@ -116,12 +116,71 @@ class ShipmentPresenterEnhancedEcommerceTest {
     }
 
     @Test
-    fun `WHEN generate enhanced ecommerce data THEN enhanced ecommerce data should not be null`() {
+    fun `WHEN generate enhanced ecommerce data step 2 THEN enhanced ecommerce data should not be null`() {
         // Given
         val dataCheckoutRequest = DataProvider.provideSingleDataCheckoutRequest()
         presenter.dataCheckoutRequestList = listOf(dataCheckoutRequest)
         presenter.shipmentCartItemModelList = listOf(ShipmentCartItemModel().apply {
             cartItemModels = listOf(CartItemModel())
+        })
+        val checkoutRequest = presenter.generateCheckoutRequest(null, 0, "")
+
+        every { clearCacheAutoApplyStackUseCase.setParams(any(), any()) } just Runs
+
+        // When
+        val enhancedEcommerceData = presenter.generateCheckoutAnalyticsDataLayer(checkoutRequest, "2")
+
+        // Then
+        assert(enhancedEcommerceData != null)
+    }
+
+    @Test
+    fun `WHEN generate enhanced ecommerce data step 3 THEN enhanced ecommerce data should not be null`() {
+        // Given
+        val dataCheckoutRequest = DataProvider.provideSingleDataCheckoutRequest()
+        presenter.dataCheckoutRequestList = listOf(dataCheckoutRequest)
+        presenter.shipmentCartItemModelList = listOf(ShipmentCartItemModel().apply {
+            cartItemModels = listOf(CartItemModel())
+        })
+        val checkoutRequest = presenter.generateCheckoutRequest(null, 0, "")
+
+        every { clearCacheAutoApplyStackUseCase.setParams(any(), any()) } just Runs
+
+        // When
+        val enhancedEcommerceData = presenter.generateCheckoutAnalyticsDataLayer(checkoutRequest, "3")
+
+        // Then
+        assert(enhancedEcommerceData != null)
+    }
+
+    @Test
+    fun `WHEN generate enhanced ecommerce data step 4 THEN enhanced ecommerce data should not be null`() {
+        // Given
+        val dataCheckoutRequest = DataProvider.provideSingleDataCheckoutRequest()
+        presenter.dataCheckoutRequestList = listOf(dataCheckoutRequest)
+        presenter.shipmentCartItemModelList = listOf(ShipmentCartItemModel().apply {
+            cartItemModels = listOf(CartItemModel())
+        })
+        val checkoutRequest = presenter.generateCheckoutRequest(null, 0, "")
+
+        every { clearCacheAutoApplyStackUseCase.setParams(any(), any()) } just Runs
+
+        // When
+        val enhancedEcommerceData = presenter.generateCheckoutAnalyticsDataLayer(checkoutRequest, "4")
+
+        // Then
+        assert(enhancedEcommerceData != null)
+    }
+
+    @Test
+    fun `WHEN generate enhanced ecommerce with fulfilment THEN enhanced ecommerce data should not be null`() {
+        // Given
+        val dataCheckoutRequest = DataProvider.provideSingleDataCheckoutRequest()
+        val shopId = 652660
+        presenter.dataCheckoutRequestList = listOf(dataCheckoutRequest)
+        presenter.shipmentCartItemModelList = listOf(ShipmentCartItemModel().apply {
+            cartItemModels = listOf(CartItemModel())
+            this.shopId = shopId
         })
         val checkoutRequest = presenter.generateCheckoutRequest(null, 0, "")
 

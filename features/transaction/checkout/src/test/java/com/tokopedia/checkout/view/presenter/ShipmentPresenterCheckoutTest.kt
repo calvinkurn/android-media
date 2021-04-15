@@ -253,7 +253,64 @@ class ShipmentPresenterCheckoutTest {
     }
 
     @Test
-    fun checkoutFailed_ShouldShowErrorAndReloadPage() {
+    fun `WHEN checkout failed with error message from backend THEN should show error and reload page`() {
+        // Given
+        val errorMessage = "backend error message"
+        presenter.shipmentCartItemModelList = listOf(ShipmentCartItemModel().apply {
+            cartItemModels = listOf(CartItemModel())
+        })
+        presenter.dataCheckoutRequestList = listOf(DataCheckoutRequest())
+
+        every { view.activityContext } returns null
+        every { checkoutUseCase.createObservable(any()) } returns Observable.just(CheckoutData().apply {
+            isError = true
+            this.errorMessage = errorMessage
+        })
+
+        // When
+        presenter.processCheckout(false, false, false, "0", "0", "0")
+
+        // Then
+        verifyOrder {
+            view.setHasRunningApiCall(false)
+            shipmentAnalyticsActionListener.sendAnalyticsChoosePaymentMethodFailed(errorMessage)
+            view.hideLoading()
+            view.renderCheckoutCartError(errorMessage)
+            getShipmentAddressFormGqlUseCase.createObservable(any())
+        }
+    }
+
+    @Test
+    fun `WHEN checkout failed without error message from backend THEN should show error and reload page`() {
+        // Given
+        presenter.shipmentCartItemModelList = listOf(ShipmentCartItemModel().apply {
+            cartItemModels = listOf(CartItemModel())
+        })
+        presenter.dataCheckoutRequestList = listOf(DataCheckoutRequest())
+
+        val mockContext = mockk<Activity>()
+        every { view.activityContext } returns mockContext
+        every { checkoutUseCase.createObservable(any()) } returns Observable.just(CheckoutData().apply {
+            isError = true
+        })
+        val errorMessage = "error"
+        every { mockContext.getString(com.tokopedia.abstraction.R.string.default_request_error_unknown) } returns errorMessage
+
+        // When
+        presenter.processCheckout(false, false, false, "0", "0", "0")
+
+        // Then
+        verifyOrder {
+            view.setHasRunningApiCall(false)
+            shipmentAnalyticsActionListener.sendAnalyticsChoosePaymentMethodFailed(any())
+            view.hideLoading()
+            view.renderCheckoutCartError(any())
+            getShipmentAddressFormGqlUseCase.createObservable(any())
+        }
+    }
+
+    @Test
+    fun `WHEN checkout failed with exception THEN should show error and reload page`() {
         // Given
         presenter.shipmentCartItemModelList = listOf(ShipmentCartItemModel().apply {
             cartItemModels = listOf(CartItemModel())
@@ -534,6 +591,32 @@ class ShipmentPresenterCheckoutTest {
         verifyOrder {
             view.setHasRunningApiCall(false)
             view.triggerSendEnhancedEcommerceCheckoutAnalyticAfterCheckoutSuccess(transactionId, "", 0, "")
+            view.renderCheckoutCartSuccess(any())
+        }
+    }
+
+    @Test
+    fun `WHEN checkout with purchase protection checked is success THEN should go to payment page`() {
+        // Given
+        presenter.shipmentCartItemModelList = listOf(ShipmentCartItemModel().apply {
+            cartItemModels = listOf(CartItemModel())
+        })
+        presenter.dataCheckoutRequestList = listOf(DataCheckoutRequest())
+        presenter.setPurchaseProtection(true)
+
+        val transactionId = "1234"
+        every { checkoutUseCase.createObservable(any()) } returns Observable.just(CheckoutData().apply {
+            this.transactionId = transactionId
+        })
+
+        // When
+        presenter.processCheckout(false, false, false, "", "", "")
+
+        // Then
+        verifyOrder {
+            view.setHasRunningApiCall(false)
+            view.triggerSendEnhancedEcommerceCheckoutAnalyticAfterCheckoutSuccess(transactionId, "", 0, "")
+            analyticsPurchaseProtection.eventClickOnBuy(any())
             view.renderCheckoutCartSuccess(any())
         }
     }
