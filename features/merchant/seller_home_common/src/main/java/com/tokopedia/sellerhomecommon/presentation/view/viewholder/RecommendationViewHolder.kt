@@ -17,6 +17,7 @@ import com.tokopedia.sellerhomecommon.presentation.view.customview.ShopScorePMWi
 import com.tokopedia.sellerhomecommon.utils.clearUnifyDrawableEnd
 import com.tokopedia.sellerhomecommon.utils.setUnifyDrawableEnd
 import kotlinx.android.synthetic.main.shc_partial_common_widget_state_error.view.*
+import kotlinx.android.synthetic.main.shc_recommendation_widget.view.*
 import kotlinx.android.synthetic.main.shc_recommendation_widget_error.view.*
 import kotlinx.android.synthetic.main.shc_recommendation_widget_loading.view.*
 import kotlinx.android.synthetic.main.shc_recommendation_widget_success.view.*
@@ -91,7 +92,7 @@ class RecommendationViewHolder(
             itemView.addOnImpressionListener(element.impressHolder) {
                 listener.sendRecommendationImpressionEvent(element)
             }
-            listener.showRecommendationWidgetCoachMark(containerShcRecommendationSuccess)
+            listener.showRecommendationWidgetCoachMark(itemView.containerShcRecommendation)
         }
     }
 

@@ -50,7 +50,7 @@ class PMShopScoreInterruptHelper @Inject constructor() {
 
         fetchInterruptDataWorker(context, owner) {
             this.data = it
-            showPmInterruptBottomSheet(context, it, fm)
+            showPmShopScoreInterrupt(context, it, fm)
         }
     }
 
@@ -65,12 +65,22 @@ class PMShopScoreInterruptHelper @Inject constructor() {
 
     fun onActivityResult(requestCode: Int, callback: () -> Unit) {
         if (requestCode == REQUEST_CODE && data?.periodType == PeriodType.TRANSITION_PERIOD) {
-            val numberOfPageOpened = pmCommonPreferenceManager?.getInt(PMCommonPreferenceManager.KEY_NUMBER_OF_INTERRUPT_PAGE_OPENED, 0).orZero()
-            val isFirstTimeOpenedInterruptPage = numberOfPageOpened == 1
-            if (isFirstTimeOpenedInterruptPage) {
+            val hasShownCoachMark = pmCommonPreferenceManager?.getBoolean(PMCommonPreferenceManager.KEY_RECOMMENDATION_COACH_MARK, false).orFalse()
+            if (!hasShownCoachMark) {
                 callback()
             }
         }
+    }
+
+    fun saveRecommendationCoachMarkFlag() {
+        pmCommonPreferenceManager?.putBoolean(PMCommonPreferenceManager.KEY_RECOMMENDATION_COACH_MARK, true)
+        pmCommonPreferenceManager?.apply()
+    }
+
+    fun getRecommendationCoachMarkStatus(): Boolean {
+        val hasShownCoachMark = pmCommonPreferenceManager?.getBoolean(PMCommonPreferenceManager.KEY_RECOMMENDATION_COACH_MARK, false).orFalse()
+        val isTransitionPeriod = data?.periodType == PeriodType.TRANSITION_PERIOD
+        return !hasShownCoachMark && hasOpenedInterruptPage() && isTransitionPeriod
     }
 
     fun destroy() {
@@ -120,11 +130,11 @@ class PMShopScoreInterruptHelper @Inject constructor() {
         }
     }
 
-    private fun showPmInterruptBottomSheet(context: Context, data: PowerMerchantInterruptUiModel, fm: FragmentManager) {
+    private fun showPmShopScoreInterrupt(context: Context, data: PowerMerchantInterruptUiModel, fm: FragmentManager) {
         when (data.periodType) {
             PeriodType.FINAL_PERIOD -> setupInterruptFinalPeriod(data, fm)
             PeriodType.TRANSITION_PERIOD -> setupInterruptTransitionPeriod(context, data, fm)
-            else -> showInterruptPage(context, data)
+            PeriodType.COMMUNICATION_PERIOD -> showInterruptPage(context, data)
         }
     }
 

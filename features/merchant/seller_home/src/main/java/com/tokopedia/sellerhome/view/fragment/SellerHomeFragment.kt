@@ -244,17 +244,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         }
     }
 
-    private fun scrollToRecommendationWidget() {
-        val widgetPosition = adapter.data.indexOfFirst { it is RecommendationWidgetUiModel }
-        if (widgetPosition != RecyclerView.NO_POSITION) {
-            val layoutManager = recyclerView?.layoutManager as? SellerHomeLayoutManager
-            layoutManager?.scrollToPositionWithOffset(widgetPosition, 0)
-            recyclerView?.post {
-                requestVisibleWidgetsData()
-            }
-        }
-    }
-
     override fun onHiddenChanged(hidden: Boolean) {
         super.onHiddenChanged(hidden)
 
@@ -478,8 +467,8 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         coachMarkItems.add(
                 CoachMark2Item(
                         anchorView = view,
-                        title = "Lihat Performa Toko di Home",
-                        description = "Cek semua update dan kendala tokomu di sini dan baca tips untuk meningkatkan Performamu, ya!",
+                        title = getString(R.string.sah_recommendation_coach_mark_title),
+                        description = getString(R.string.sah_recommendation_coach_mark_description),
                         position = CoachMark2.POSITION_BOTTOM
                 )
         )
@@ -487,13 +476,14 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             coachMarkItems.add(
                     CoachMark2Item(
                             anchorView = it,
-                            title = "Lihat detail Performamu di sini, ya!",
-                            description = "Cek level, skor, dan grade tokomu lebih lanjut dari menu Lainnya lalu pilih Performa Toko.",
+                            title = getString(R.string.sah_other_menu_coach_mark_title),
+                            description = getString(R.string.sah_other_menu_coach_mark_description),
                             position = CoachMark2.POSITION_TOP
                     )
             )
         }
         if (coachMarkItems.isNotEmpty()) {
+            pmShopScoreInterruptHelper.saveRecommendationCoachMarkFlag()
             coachMark?.showCoachMark(coachMarkItems)
         }
     }
@@ -733,6 +723,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                     is Success -> {
                         stopLayoutCustomMetric(result.data)
                         setOnSuccessGetLayout(result.data)
+                        showRecommendationWidgetCoachMark()
                     }
                     is Fail -> {
                         stopCustomMetric(SellerHomePerformanceMonitoringConstant.SELLER_HOME_LAYOUT_TRACE, true)
@@ -1177,6 +1168,24 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     private fun setupPMShopScoreInterrupt() {
         activity?.let {
             pmShopScoreInterruptHelper.showInterrupt(it, viewLifecycleOwner, childFragmentManager)
+        }
+    }
+
+    private fun showRecommendationWidgetCoachMark() {
+        isEligibleShowRecommendationCoachMark = pmShopScoreInterruptHelper.getRecommendationCoachMarkStatus()
+        if (isEligibleShowRecommendationCoachMark) {
+            scrollToRecommendationWidget()
+        }
+    }
+
+    private fun scrollToRecommendationWidget() {
+        val widgetPosition = adapter.data.indexOfFirst { it is RecommendationWidgetUiModel }
+        if (widgetPosition != RecyclerView.NO_POSITION) {
+            val layoutManager = recyclerView?.layoutManager as? SellerHomeLayoutManager
+            layoutManager?.scrollToPositionWithOffset(widgetPosition, 0)
+            recyclerView?.post {
+                requestVisibleWidgetsData()
+            }
         }
     }
 

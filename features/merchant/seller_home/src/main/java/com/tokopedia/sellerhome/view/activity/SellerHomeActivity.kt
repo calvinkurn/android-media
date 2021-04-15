@@ -317,6 +317,13 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
 
     private fun setupNavigator() {
         navigator = SellerHomeNavigator(this, supportFragmentManager, sellerHomeRouter, userSession)
+
+        setNavigationOtherMenuView()
+    }
+
+    private fun setNavigationOtherMenuView() {
+        val navigationOtherMenuView = sahBottomNav.getMenuViewByIndex(NAVIGATION_OTHER_MENU_POSITION)
+        navigator?.getHomeFragment()?.setNavigationOtherMenuView(navigationOtherMenuView)
     }
 
     private fun setupShadow() {
@@ -487,9 +494,6 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
         sahBottomNav.setMenu(menu)
 
         sahBottomNav.setMenuClickListener(this)
-
-        val navigationOtherMenuView = sahBottomNav.getChildAt(NAVIGATION_OTHER_MENU_POSITION)
-        navigator?.getHomeFragment()?.setNavigationOtherMenuView(navigationOtherMenuView)
     }
 
     private fun initSellerHomePlt() {
