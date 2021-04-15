@@ -21,6 +21,7 @@ import com.tokopedia.topchat.chatroom.view.activity.base.BaseBuyerTopchatRoomTes
 import com.tokopedia.topchat.chatroom.view.activity.base.hasQuestion
 import com.tokopedia.topchat.common.TopChatInternalRouter.Companion.SOURCE_TOPCHAT
 import com.tokopedia.topchat.matchers.isExpanded
+import com.tokopedia.topchat.matchers.withRecyclerView
 import com.tokopedia.topchat.matchers.withTotalItem
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.hamcrest.Matchers.not
@@ -255,7 +256,6 @@ class TopchatRoomBuyerAttachProductTest : BaseBuyerTopchatRoomTest() {
         inflateTestFragment()
 
         // Then
-        assertTemplateChatVisibility(isDisplayed())
         assertSrwContentIsHidden()
     }
 
@@ -274,7 +274,6 @@ class TopchatRoomBuyerAttachProductTest : BaseBuyerTopchatRoomTest() {
         clickAttachProductMenu()
 
         // Then
-        assertTemplateChatVisibility(isDisplayed())
         assertSrwContentIsHidden()
     }
 
@@ -362,7 +361,27 @@ class TopchatRoomBuyerAttachProductTest : BaseBuyerTopchatRoomTest() {
                 .check(matches(isExpanded()))
     }
 
-    // TODO: test srw interaction click and send msg
+    @Test
+    fun srw_content_hidden_if_content_is_clicked() {
+        // Given
+        setupChatRoomActivity {
+            putProductAttachmentIntent(it)
+        }
+        getChatUseCase.response = firstPageChatAsBuyer
+        chatAttachmentUseCase.response = chatAttachmentResponse
+        chatSrwUseCase.response = chatSrwResponse
+        inflateTestFragment()
+
+        // When
+        onView(
+                withRecyclerView(R.id.rv_srw_partial).atPositionOnView(
+                        0, R.id.tp_srw_title
+                )
+        ).perform(click())
+
+        // Then
+        assertSrwContentIsHidden()
+    }
 
     private fun putProductAttachmentIntent(intent: Intent) {
         val productPreviews = listOf(productPreview)
