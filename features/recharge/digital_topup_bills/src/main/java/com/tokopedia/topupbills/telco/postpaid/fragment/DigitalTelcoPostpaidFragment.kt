@@ -304,6 +304,16 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
                         REQUEST_CODE_DIGITAL_SEARCH_NUMBER)
             }
         })
+
+        enquiryViewModel.enquiryResult.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Success -> enquirySuccess(it.data)
+                is Fail -> {
+                    enquiryFailed(it.throwable)
+                }
+            }
+        })
+
         postpaidClientNumberWidget.setPostpaidListener(object : ClientNumberPostpaidListener {
             override fun enquiryNumber() {
                 if (userSession.isLoggedIn) {
@@ -319,21 +329,11 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
         operatorSelected?.let { selectedOperator ->
             topupAnalytics.eventClickCheckEnquiry(categoryId, operatorName, userSession.userId)
             postpaidClientNumberWidget.setLoadingButtonEnquiry(true)
-
             enquiryViewModel.getEnquiry(
                     CommonTopupBillsGqlQuery.rechargeInquiry,
                     selectedOperator.operator.attributes.defaultProductId.toString(),
                     postpaidClientNumberWidget.getInputNumber()
             )
-
-            enquiryViewModel.enquiryResult.observe(this, Observer {
-                when (it) {
-                    is Success -> enquirySuccess(it.data)
-                    is Fail -> {
-                        enquiryFailed(it.throwable)
-                    }
-                }
-            })
         }
     }
 
@@ -362,6 +362,14 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
         view?.run {
             Toaster.build(this, ErrorHandler.getErrorMessage(context, error), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
         }
+    }
+
+    private fun onInputNewNumberUpdateLayout() {
+        tabLayout.show()
+        separator.show()
+        viewPager.show()
+        buyWidget.setVisibilityLayout(false)
+        postpaidClientNumberWidget.resetEnquiryResult()
     }
 
     private fun setCheckoutPassData(telcoEnquiryData: TelcoEnquiryData) {
@@ -407,6 +415,7 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
                     }
                     postpaidClientNumberWidget.setIconOperator(operator.attributes.imageUrl)
                     if (postpaidClientNumberWidget.getInputNumber().length in 10..14) {
+                        onInputNewNumberUpdateLayout()
                         postpaidClientNumberWidget.setButtonEnquiry(true)
                     } else {
                         postpaidClientNumberWidget.setButtonEnquiry(false)

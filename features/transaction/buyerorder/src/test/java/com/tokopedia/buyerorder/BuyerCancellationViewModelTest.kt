@@ -8,6 +8,7 @@ import com.tokopedia.buyerorder.detail.domain.BuyerGetCancellationReasonUseCase
 import com.tokopedia.buyerorder.detail.domain.BuyerInstantCancelUseCase
 import com.tokopedia.buyerorder.detail.domain.BuyerRequestCancelUseCase
 import com.tokopedia.buyerorder.detail.view.viewmodel.BuyerCancellationViewModel
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.MockKAnnotations
@@ -28,7 +29,7 @@ class BuyerCancellationViewModelTest {
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
-    private val dispatcher = BuyerTestDispatcherProvider()
+    private val dispatcher = CoroutineTestDispatchersProvider
     private lateinit var buyerCancellationViewModel: BuyerCancellationViewModel
     private var listReason =
             arrayListOf<BuyerGetCancellationReasonData.Data.GetCancellationReason.ReasonsItem>()

@@ -1,9 +1,8 @@
 package com.tokopedia.home.viewModel.homepage
 
 import android.app.Activity
-import android.app.Application
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.atc_common.domain.usecase.AddToCartOccUseCase
-import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.home.beranda.data.model.HomeWidget
 import com.tokopedia.home.beranda.data.model.PlayChannel
 import com.tokopedia.home.beranda.data.model.PlayData
@@ -17,7 +16,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDataMo
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.BusinessUnitItemDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelDataModel
 import com.tokopedia.home.beranda.presentation.viewModel.HomeViewModel
-import com.tokopedia.home.rules.TestDispatcherProvider
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.home.util.HomeCommandProcessor
 import com.tokopedia.play.widget.data.PlayWidget
 import com.tokopedia.play.widget.domain.PlayWidgetUseCase
@@ -26,7 +25,6 @@ import com.tokopedia.recharge_component.model.RechargePerso
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationFilterChips
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.widget.bestseller.mapper.BestSellerMapper
-import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
@@ -71,7 +69,7 @@ fun createHomeViewModel(
         getDisplayHeadlineAds: GetDisplayHeadlineAds = mockk(relaxed = true),
         playWidgetTools: PlayWidgetTools = mockk(relaxed = true),
         bestSellerMapper: BestSellerMapper = mockk(relaxed = true),
-        dispatchers: TestDispatcherProvider = TestDispatcherProvider(),
+        dispatchers: CoroutineDispatchers = CoroutineTestDispatchersProvider,
         homeProcessor: HomeCommandProcessor = HomeCommandProcessor(Dispatchers.Unconfined)
 ): HomeViewModel{
     val context: Activity = mockk(relaxed = true)
@@ -117,8 +115,8 @@ fun GetPlayLiveDynamicUseCase.givenGetPlayLiveDynamicUseCaseReturn(channel: Play
     )
 }
 
-fun PlayWidgetTools.givenPlayWidgetToolsReturn(playWidget: PlayWidget, dispatchers: TestDispatcherProvider) {
-    coEvery { getWidgetFromNetwork(PlayWidgetUseCase.WidgetType.Home, dispatchers.io()) } returns playWidget
+fun PlayWidgetTools.givenPlayWidgetToolsReturn(playWidget: PlayWidget, dispatchers: CoroutineDispatchers) {
+    coEvery { getWidgetFromNetwork(PlayWidgetUseCase.WidgetType.Home, dispatchers.io) } returns playWidget
 }
 
 fun GetBusinessWidgetTab.givenGetBusinessWidgetTabUseCaseReturn(homeWidget: HomeWidget) {
