@@ -93,6 +93,29 @@ open class BaseSellerTopchatRoomTest : TopchatRoomTest() {
         ).check(matches(withText("$stockCount")))
     }
 
+    protected fun assertStockCountBtnVisibilityAt(
+            recyclerViewId: Int,
+            productCardPosition: Int,
+            viewMatcher: Matcher<in View>
+    ) {
+        onView(
+                withRecyclerView(recyclerViewId).atPositionOnView(
+                        productCardPosition, R.id.btn_update_stock
+                )
+        ).check(matches(viewMatcher))
+    }
+
+    protected fun clickChangeStockBtn(
+            recyclerViewId: Int,
+            atPosition: Int
+    ) {
+        onView(
+                withRecyclerView(recyclerViewId).atPositionOnView(
+                        atPosition, R.id.btn_update_stock
+                )
+        ).perform(ViewActions.click())
+    }
+
     protected fun createSuccessUpdateStockIntentResult(
             productId: String,
             stock: Int,
@@ -127,16 +150,5 @@ open class BaseSellerTopchatRoomTest : TopchatRoomTest() {
         }
         attachment.attributes = gson.toJson(product)
         return this
-    }
-
-    protected fun clickChangeStockBtn(
-            recyclerViewId: Int,
-            atPosition: Int
-    ) {
-        onView(
-                withRecyclerView(recyclerViewId).atPositionOnView(
-                        atPosition, R.id.btn_update_stock
-                )
-        ).perform(ViewActions.click())
     }
 }

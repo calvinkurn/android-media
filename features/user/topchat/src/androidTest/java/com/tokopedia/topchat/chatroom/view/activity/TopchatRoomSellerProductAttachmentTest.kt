@@ -255,6 +255,21 @@ class TopchatRoomSellerProductAttachmentTest : BaseSellerTopchatRoomTest() {
         assertSrwContentIsHidden()
     }
 
-    // TODO: assert update stock is hidden if campaign stock
+    @Test
+    fun update_stock_btn_is_hidden_if_stock_campaign() {
+        // Given
+        setupChatRoomActivity()
+        getChatUseCase.response = sellerBroadcastProductCarouselChatReplies
+        chatAttachmentUseCase.response = sellerProductAttachment.setCampaignStock(
+                0, true
+        )
+        inflateTestFragment()
+
+        // Then
+        assertStockCountBtnVisibilityAt(
+                R.id.rv_product_carousel, 0, not(isDisplayed())
+        )
+    }
+
     // TODO: assert toaster error from update product
 }
