@@ -30,7 +30,7 @@
 
     <!--Charge BO-->
     <string name="charge_bo_ticker_title">Bebas Ongkir untuk PM akan dikenai biaya</string>
-    <string name="charge_bo_ticker_content">Power Merchant (PM) bisa nonaktifkan Bebas Ongkir saja tanpa harus nonaktifkan SiCepat &amp; AntarAja &lt;a href="#"&gt;di sini.&lt;/a&gt;</string>
+    <string name="charge_bo_ticker_content">Power Merchant (PM) bisa nonaktifkan Bebas Ongkir saja tanpa harus nonaktifkan Kurir Rekomendasi, SiCepat, &amp; AntarAja &lt;a href="#"&gt;di sini.&lt;/a&gt;</string>
 
 
     <!--Shop Edit Address-->
