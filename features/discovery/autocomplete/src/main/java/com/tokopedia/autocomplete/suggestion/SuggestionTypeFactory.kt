@@ -2,6 +2,7 @@ package com.tokopedia.autocomplete.suggestion
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.autocomplete.suggestion.productline.SuggestionProductLineDataView
 import com.tokopedia.autocomplete.suggestion.doubleline.SuggestionDoubleLineViewModel
 import com.tokopedia.autocomplete.suggestion.doubleline.SuggestionDoubleLineWithoutImageViewModel
 import com.tokopedia.autocomplete.suggestion.singleline.SuggestionSingleLineViewModel
@@ -21,6 +22,8 @@ interface SuggestionTypeFactory {
     fun type(viewModel: SuggestionDoubleLineWithoutImageViewModel): Int
 
     fun type(viewModel: SuggestionSeparatorViewModel): Int
+
+    fun type(dataView: SuggestionProductLineDataView): Int
 
     fun createViewHolder(view: View, viewType: Int): AbstractViewHolder<*>
 }

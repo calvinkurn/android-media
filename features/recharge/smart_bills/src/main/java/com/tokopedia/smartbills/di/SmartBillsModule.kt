@@ -2,7 +2,6 @@ package com.tokopedia.smartbills.di
 
 import android.content.Context
 import com.google.gson.Gson
-import com.tokopedia.abstraction.AbstractionRouter
 import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.common_digital.common.constant.DigitalUrl
@@ -17,7 +16,8 @@ import com.tokopedia.smartbills.analytics.SmartBillsAnalytics
 import com.tokopedia.smartbills.data.api.SmartBillsApi
 import com.tokopedia.smartbills.data.api.SmartBillsRepository
 import com.tokopedia.smartbills.data.api.SmartBillsRepositoryImpl
-import com.tokopedia.smartbills.util.SmartBillsDispatchersProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -33,7 +33,7 @@ class SmartBillsModule {
 
     @SmartBillsScope
     @Provides
-    fun provideDispatcher(): SmartBillsDispatchersProvider = SmartBillsDispatchersProvider()
+    fun provideDispatcher(): CoroutineDispatchers = CoroutineDispatchersProvider
 
     @SmartBillsScope
     @Provides

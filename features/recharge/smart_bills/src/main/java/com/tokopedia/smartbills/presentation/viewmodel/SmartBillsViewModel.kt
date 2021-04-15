@@ -16,7 +16,7 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.smartbills.data.*
 import com.tokopedia.smartbills.data.api.SmartBillsRepository
 import com.tokopedia.smartbills.util.RechargeSmartBillsMapper.mapActiontoStatement
-import com.tokopedia.smartbills.util.SmartBillsDispatchersProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -27,8 +27,8 @@ import javax.inject.Inject
 class SmartBillsViewModel @Inject constructor(
         private val graphqlRepository: GraphqlRepository,
         private val smartBillsRepository: SmartBillsRepository,
-        private val dispatcher: SmartBillsDispatchersProvider)
-    : BaseViewModel(dispatcher.IO) {
+        private val dispatcher: CoroutineDispatchers)
+    : BaseViewModel(dispatcher.io) {
 
     private val mutableStatementMonths = MutableLiveData<Result<List<RechargeStatementMonths>>>()
     val statementMonths: LiveData<Result<List<RechargeStatementMonths>>>
@@ -51,7 +51,7 @@ class SmartBillsViewModel @Inject constructor(
             val graphqlCacheStrategy = GraphqlCacheStrategy.Builder(
                     if (isLoadFromCloud) CacheType.CLOUD_THEN_CACHE else CacheType.CACHE_FIRST
             ).setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * 5).build()
-            val data = withContext(dispatcher.IO) {
+            val data = withContext(dispatcher.io) {
                 graphqlRepository.getReseponse(listOf(graphqlRequest), graphqlCacheStrategy)
             }.getSuccessData<RechargeStatementMonths.Response>()
 
@@ -74,7 +74,7 @@ class SmartBillsViewModel @Inject constructor(
             val graphqlCacheStrategy = GraphqlCacheStrategy.Builder(
                     if (isLoadFromCloud) CacheType.CLOUD_THEN_CACHE else CacheType.CACHE_FIRST
             ).setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * 5).build()
-            val data = withContext(dispatcher.IO) {
+            val data = withContext(dispatcher.io) {
                 graphqlRepository.getReseponse(listOf(graphqlRequest), graphqlCacheStrategy)
             }.getSuccessData<RechargeListSmartBills.Response>()
 
@@ -112,7 +112,7 @@ class SmartBillsViewModel @Inject constructor(
     fun runMultiCheckout(request: MultiCheckoutRequest?) {
         if (request != null) {
             launchCatchError(block = {
-                val data = withContext(dispatcher.IO) {
+                val data = withContext(dispatcher.io) {
                     smartBillsRepository.postMultiCheckout(request)
                 }
 

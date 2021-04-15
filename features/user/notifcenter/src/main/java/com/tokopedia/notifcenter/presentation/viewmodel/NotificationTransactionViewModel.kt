@@ -17,7 +17,7 @@ import com.tokopedia.notifcenter.data.viewbean.NotificationFilterSectionViewBean
 import com.tokopedia.notifcenter.domain.*
 import com.tokopedia.notifcenter.presentation.subscriber.GetNotificationTotalUnreadSubscriber
 import com.tokopedia.notifcenter.presentation.subscriber.NotificationUpdateActionSubscriber
-import com.tokopedia.notifcenter.util.coroutines.DispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
@@ -47,8 +47,8 @@ class NotificationTransactionViewModel @Inject constructor(
         private var notificationFilterMapper: GetNotificationUpdateFilterMapper,
         private var notificationFilterUseCase: NotificationFilterUseCase,
         private var notificationMapper: GetNotificationUpdateMapper,
-        dispatcher: DispatcherProvider
-): BaseViewModel(dispatcher.io()), NotificationTransactionContract {
+        dispatcher: CoroutineDispatchers
+): BaseViewModel(dispatcher.io), NotificationTransactionContract {
 
     private val _notification = MediatorLiveData<NotificationViewData>()
     val notification: LiveData<NotificationViewData> get() = _notification
