@@ -20,7 +20,7 @@ import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.FavoriteShopView
 import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.TrackAffiliateViewModel
 import com.tokopedia.feedplus.domain.model.DynamicFeedFirstPageDomainModel
 import com.tokopedia.feedplus.view.constants.Constants.FeedConstants.NON_LOGIN_USER_ID
-import com.tokopedia.feedplus.view.di.FeedDispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.feedplus.view.viewmodel.FeedPromotedShopViewModel
 import com.tokopedia.feedplus.view.viewmodel.onboarding.OnboardingViewModel
 import com.tokopedia.interest_pick_common.data.DataItem
@@ -58,7 +58,7 @@ private const val PARAM_AD_KEY = "ad_key"
 private const val DEFAULT_VALUE_SRC = "fav_shop"
 
 class FeedViewModel @Inject constructor(
-        private val baseDispatcher: FeedDispatcherProvider,
+        private val baseDispatcher: CoroutineDispatchers,
         private val userSession: UserSessionInterface,
         private val getInterestPickUseCase: GetInterestPickUseCase,
         private val submitInterestPickUseCase: SubmitInterestPickUseCase,
@@ -72,7 +72,7 @@ class FeedViewModel @Inject constructor(
         private val playWidgetTools: PlayWidgetTools,
         private val getDynamicFeedNewUseCase: GetDynamicFeedNewUseCase,
         private val getWhitelistNewUseCase: GetWhitelistNewUseCase
-) : BaseViewModel(baseDispatcher.ui()) {
+) : BaseViewModel(baseDispatcher.main) {
 
     companion object {
         const val PARAM_SOURCE_RECOM_PROFILE_CLICK = "click_recom_profile"
@@ -135,7 +135,7 @@ class FeedViewModel @Inject constructor(
         pagingHandler.resetPage()
         currentCursor = ""
         launchCatchError(block = {
-            val results = withContext(baseDispatcher.io()) {
+            val results = withContext(baseDispatcher.io) {
                 getFeedFirstDataResult()
             }
             currentCursor = results.dynamicFeedDomainModel.cursor
@@ -160,7 +160,7 @@ class FeedViewModel @Inject constructor(
             return
         }
         launchCatchError(block = {
-            val results = withContext(baseDispatcher.io()) {
+            val results = withContext(baseDispatcher.io) {
                 getFeedDataResult()
             }
             if (results.hasNext) {
@@ -183,7 +183,7 @@ class FeedViewModel @Inject constructor(
 
     fun doFavoriteShop(promotedShopViewModel: Data, adapterPosition: Int) {
         launchCatchError(block = {
-            val results = withContext(baseDispatcher.io()) {
+            val results = withContext(baseDispatcher.io) {
                 doFavoriteShopResult(promotedShopViewModel)
             }
             results.adapterPosition = adapterPosition
@@ -195,7 +195,7 @@ class FeedViewModel @Inject constructor(
 
     fun doFollowKol(id: Int, rowNumber: Int) {
         launchCatchError(block = {
-            val results = withContext(baseDispatcher.io()) {
+            val results = withContext(baseDispatcher.io) {
                 followKol(id, rowNumber)
             }
             followKolResp.value = Success(results)
@@ -206,7 +206,7 @@ class FeedViewModel @Inject constructor(
 
     fun doUnfollowKol(id: Int, rowNumber: Int) {
         launchCatchError(block = {
-            val results = withContext(baseDispatcher.io()) {
+            val results = withContext(baseDispatcher.io) {
                 unfollowKol(id, rowNumber)
             }
             followKolResp.value = Success(results)
@@ -217,7 +217,7 @@ class FeedViewModel @Inject constructor(
 
     fun doLikeKol(id: Int, rowNumber: Int) {
         launchCatchError(block = {
-            val results = withContext(baseDispatcher.io()) {
+            val results = withContext(baseDispatcher.io) {
                 likeKol(id, rowNumber)
             }
             likeKolResp.value = Success(results)
@@ -228,7 +228,7 @@ class FeedViewModel @Inject constructor(
 
     fun doUnlikeKol(id: Int, rowNumber: Int) {
         launchCatchError(block = {
-            val results = withContext(baseDispatcher.io()) {
+            val results = withContext(baseDispatcher.io) {
                 unlikeKol(id, rowNumber)
             }
             likeKolResp.value = Success(results)
@@ -239,7 +239,7 @@ class FeedViewModel @Inject constructor(
 
     fun doFollowKolFromRecommendation(id: Int, rowNumber: Int, position: Int) {
         launchCatchError(block = {
-            val results = withContext(baseDispatcher.io()) {
+            val results = withContext(baseDispatcher.io) {
                 followKolFromRecom(id, rowNumber, position)
             }
             followKolRecomResp.value = Success(results)
@@ -250,7 +250,7 @@ class FeedViewModel @Inject constructor(
 
     fun doUnfollowKolFromRecommendation(id: Int, rowNumber: Int, position: Int) {
         launchCatchError(block = {
-            val results = withContext(baseDispatcher.io()) {
+            val results = withContext(baseDispatcher.io) {
                 unfollowKolFromRecom(id, rowNumber, position)
             }
             followKolRecomResp.value = Success(results)
@@ -261,7 +261,7 @@ class FeedViewModel @Inject constructor(
 
     fun doDeletePost(id: Int, rowNumber: Int) {
         launchCatchError(block = {
-            val results = withContext(baseDispatcher.io()) {
+            val results = withContext(baseDispatcher.io) {
                 deletePost(id, rowNumber)
             }
             deletePostResp.value = Success(results)
@@ -272,7 +272,7 @@ class FeedViewModel @Inject constructor(
 
     fun doAtc(postTagItem: PostTagItem) {
         launchCatchError(block = {
-            val results = withContext(baseDispatcher.io()) {
+            val results = withContext(baseDispatcher.io) {
                 atc(postTagItem)
             }
             atcResp.value = Success(results)
@@ -283,7 +283,7 @@ class FeedViewModel @Inject constructor(
 
     fun doTrackAffiliate(url: String) {
         launchCatchError(block = {
-            val results = withContext(baseDispatcher.io()) {
+            val results = withContext(baseDispatcher.io) {
                 trackAffiliate(url)
             }
             trackAffiliateResp.value = Success(results)
@@ -293,7 +293,7 @@ class FeedViewModel @Inject constructor(
 
     fun doToggleFavoriteShop(rowNumber: Int, adapterPosition: Int, shopId: String) {
         launchCatchError(block = {
-            val results = withContext(baseDispatcher.io()) {
+            val results = withContext(baseDispatcher.io) {
                 toggleFavoriteShop(rowNumber, adapterPosition, shopId)
             }
             toggleFavoriteShopResp.value = Success(results)
@@ -595,7 +595,7 @@ class FeedViewModel @Inject constructor(
     }
 
     private suspend fun processPlayWidget(isAutoRefresh: Boolean = false): CarouselPlayCardViewModel {
-        val response = playWidgetTools.getWidgetFromNetwork(widgetType = PlayWidgetUseCase.WidgetType.Feeds, coroutineContext = baseDispatcher.io())
+        val response = playWidgetTools.getWidgetFromNetwork(widgetType = PlayWidgetUseCase.WidgetType.Feeds, coroutineContext = baseDispatcher.io)
         val uiModel = playWidgetTools.mapWidgetToModel(response)
         return CarouselPlayCardViewModel(uiModel, isAutoRefresh)
     }

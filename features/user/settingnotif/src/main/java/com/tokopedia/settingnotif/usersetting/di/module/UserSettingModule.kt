@@ -4,7 +4,6 @@ import android.content.Context
 import androidx.annotation.RawRes
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
-import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.settingnotif.R
 import com.tokopedia.settingnotif.usersetting.base.BaseSettingRepository
@@ -12,8 +11,8 @@ import com.tokopedia.settingnotif.usersetting.base.SettingRepository
 import com.tokopedia.settingnotif.usersetting.di.UserSettingScope
 import com.tokopedia.settingnotif.usersetting.domain.GetUserSettingUseCase
 import com.tokopedia.settingnotif.usersetting.domain.SetUserSettingUseCase
-import com.tokopedia.settingnotif.usersetting.util.dispatcher.AppDispatcherProvider
-import com.tokopedia.settingnotif.usersetting.util.dispatcher.DispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -78,8 +77,8 @@ import dagger.Provides
 
     @Provides
     @UserSettingScope
-    fun provideDispatcherProvider(): DispatcherProvider {
-        return AppDispatcherProvider()
+    fun provideCoroutineDispatchers(): CoroutineDispatchers {
+        return CoroutineDispatchersProvider
     }
 
 }

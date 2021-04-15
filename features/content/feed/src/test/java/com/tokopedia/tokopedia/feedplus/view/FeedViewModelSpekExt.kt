@@ -23,6 +23,7 @@ import com.tokopedia.kolcommon.domain.usecase.FollowKolPostGqlUseCase
 import com.tokopedia.kolcommon.domain.usecase.LikeKolPostUseCase
 import com.tokopedia.play.widget.util.PlayWidgetTools
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
@@ -49,7 +50,7 @@ fun TestBody.createFeedViewModel(): FeedViewModel{
     val getWhitelistNewUseCase by memoized<GetWhitelistNewUseCase>()
 
     return FeedViewModel(
-            FeedTestDispatcherProvider(),
+            CoroutineTestDispatchersProvider,
             userSession,
             getInterestPickUseCase,
             submitInterestPickUseCase,

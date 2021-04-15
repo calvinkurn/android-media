@@ -27,6 +27,7 @@ import com.tokopedia.travel.country_code.presentation.fragment.PhoneCodePickerFr
 import com.tokopedia.travel.country_code.presentation.model.TravelCountryPhoneCode
 import com.tokopedia.travel.passenger.data.entity.TravelContactListModel
 import com.tokopedia.travel.passenger.presentation.adapter.TravelContactArrayAdapter
+import com.tokopedia.travel.passenger.util.TravelPassengerGqlQuery
 import kotlinx.android.synthetic.main.fragment_umrah_checkout_contact_data.*
 import kotlinx.android.synthetic.main.widget_umrah_autocomplete_edit_text.view.*
 import javax.inject.Inject
@@ -62,7 +63,7 @@ class UmrahCheckoutContactDataFragment : BaseDaggerFragment(), TravelContactArra
 
         initView()
 
-        umrahCheckoutPilgrimsViewModel.getContactList(GraphqlHelper.loadRawString(resources, com.tokopedia.travel.passenger.R.raw.query_get_travel_contact_list))
+        umrahCheckoutPilgrimsViewModel.getContactList(TravelPassengerGqlQuery.CONTACT_LIST)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -199,7 +200,7 @@ class UmrahCheckoutContactDataFragment : BaseDaggerFragment(), TravelContactArra
         sp_umrah_checkout_contact_phone_code.setSelection(0)
         sp_umrah_checkout_contact_phone_code.setOnTouchListener { _, event ->
             if (event.action == MotionEvent.ACTION_UP) {
-                startActivityForResult(PhoneCodePickerActivity.getCallingIntent(context!!), REQUEST_CODE_PHONE_CODE)
+                startActivityForResult(PhoneCodePickerActivity.getCallingIntent(requireContext()), REQUEST_CODE_PHONE_CODE)
             }
             true
         }

@@ -852,10 +852,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 if (!isLoadedOnce) {
                     feedViewModel.getOnboardingData(GetDynamicFeedUseCase.SOURCE_FEEDS)
                     isLoadedOnce = !isLoadedOnce
-                } else {
-                    onRefresh()
                 }
-
                 if (afterPost) {
                     showAfterPostToaster()
                     afterPost = false

@@ -5,7 +5,7 @@ import com.tokopedia.checkout.UnitTestFileUtils
 import com.tokopedia.checkout.data.model.response.shipment_address_form.ShipmentAddressFormGqlResponse
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.RatesApiGqlResponse
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.RatesGqlResponse
-import com.tokopedia.purchase_platform.common.feature.checkout.request.DataCheckoutRequest
+import com.tokopedia.checkout.data.model.request.checkout.DataCheckoutRequest
 import com.tokopedia.purchase_platform.common.feature.promo.data.response.validateuse.ValidateUseResponse
 
 object DataProvider {

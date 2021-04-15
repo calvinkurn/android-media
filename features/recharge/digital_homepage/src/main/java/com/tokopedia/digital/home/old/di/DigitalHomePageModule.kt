@@ -4,7 +4,8 @@ import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.digital.home.old.domain.DigitalHomePageUseCase
 import com.tokopedia.digital.home.old.domain.SearchCategoryHomePageUseCase
-import com.tokopedia.digital.home.old.presentation.util.DigitalHomePageDispatchersProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.digital.home.old.presentation.util.DigitalHomeTrackingUtil
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
@@ -30,7 +31,7 @@ class DigitalHomePageModule {
 
     @DigitalHomePageScope
     @Provides
-    fun provideDispatcher(): DigitalHomePageDispatchersProvider = DigitalHomePageDispatchersProvider()
+    fun provideDispatcher(): CoroutineDispatchers = CoroutineDispatchersProvider
 
     @DigitalHomePageScope
     @Provides
