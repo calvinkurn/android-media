@@ -19,7 +19,7 @@ class FlightSearchMockResponse : MockModelConfig() {
         addMockResponse(
                 KEY_CONTAINS_PROMO_CHIPS,
                 getRawString(context, R.raw.response_mock_data_flight_promo_chips),
-                FIND_BY_CONTAINS
+                FIND_BY_QUERY_NAME
         )
 
         return this

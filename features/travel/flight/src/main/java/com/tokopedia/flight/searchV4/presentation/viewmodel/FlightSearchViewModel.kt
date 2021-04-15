@@ -491,7 +491,7 @@ class FlightSearchViewModel @Inject constructor(
 
     fun onPromotionChipsClicked(position: Int, airlinePrice: AirlinePrice, isReturnTrip: Boolean) {
         flightAnalytics.eventFlightPromotionClick(position + 1, airlinePrice,flightSearchPassData,
-                FlightAnalytics.Screen.HOMEPAGE,
+                FlightAnalytics.Screen.SEARCH,
                 if (userSessionInterface.isLoggedIn) userSessionInterface.userId else "", isReturnTrip)
     }
 

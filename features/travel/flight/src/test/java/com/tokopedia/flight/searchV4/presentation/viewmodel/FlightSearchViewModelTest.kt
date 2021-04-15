@@ -1198,7 +1198,7 @@ class FlightSearchViewModelTest {
 
         // then
         verify { flightAnalytics.eventFlightPromotionClick(position + 1, airlinePrice, flightSearchViewModel.flightSearchPassData,
-                FlightAnalytics.Screen.HOMEPAGE, any(), isReturn) }
+                FlightAnalytics.Screen.SEARCH, any(), isReturn) }
     }
 
     @Test
@@ -1216,7 +1216,7 @@ class FlightSearchViewModelTest {
 
         // then
         verify { flightAnalytics.eventFlightPromotionClick(position + 1, airlinePrice, flightSearchViewModel.flightSearchPassData,
-                FlightAnalytics.Screen.HOMEPAGE, any(), isReturn) }
+                FlightAnalytics.Screen.SEARCH, any(), isReturn) }
     }
 
     @Test
@@ -1232,6 +1232,6 @@ class FlightSearchViewModelTest {
 
         // then
         verify { flightAnalytics.eventFlightPromotionClick(position + 1, airlinePrice, flightSearchViewModel.flightSearchPassData,
-                FlightAnalytics.Screen.HOMEPAGE, any(), isReturn) }
+                FlightAnalytics.Screen.SEARCH, any(), isReturn) }
     }
 }
