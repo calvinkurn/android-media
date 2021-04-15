@@ -8,11 +8,14 @@ import android.os.Build;
 import android.text.TextUtils;
 
 import com.google.firebase.appindexing.AndroidAppUri;
+import com.tokopedia.analyticsdebugger.AnalyticsSource;
+import com.tokopedia.analyticsdebugger.debugger.GtmLogger;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.nishikino.model.Campaign;
 
-import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -94,7 +97,6 @@ public class DeeplinkUTMUtils {
     public static Campaign convertUrlCampaign(Activity activity, Uri uri1, boolean isOriginalUrlAmp) {
         Map<String, String> maps = splitQuery(uri1);
         Campaign campaign = new Campaign();
-
 
         Uri referrerUri = getReferrer(activity);
 
@@ -246,7 +248,16 @@ public class DeeplinkUTMUtils {
                 }
             }
         }
-
+        if (GlobalConfig.isAllowDebuggingTools() && activity != null) {
+            Map<String, Object> map = new HashMap<>(campaign.getCampaign());
+            map.put("url", uri1);
+            map.put("has_amp_in_original_url", isOriginalUrlAmp);
+            if (referrerUri!= null) {
+                map.put("referrer", referrerUri.toString());
+                map.put("referrer_host", referrerUri.getHost());
+            }
+            GtmLogger.getInstance(activity).save("campaignTrack (not sent, Detail only)", map, AnalyticsSource.GTM);
+        }
         return campaign;
     }
 
@@ -271,7 +282,7 @@ public class DeeplinkUTMUtils {
         return campaign;
     }
 
-    private static Campaign createAmpOrganicCampaign(Map<String, String> maps){
+    private static Campaign createAmpOrganicCampaign(Map<String, String> maps) {
         Campaign campaign = new Campaign();
         campaign.setUtmSource("amp");
         campaign.setUtmMedium("organic");
