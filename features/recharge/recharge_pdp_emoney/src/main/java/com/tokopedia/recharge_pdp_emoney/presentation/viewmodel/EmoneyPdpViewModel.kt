@@ -39,6 +39,10 @@ class EmoneyPdpViewModel @Inject constructor(private val dispatcher: CoroutineDi
     val selectedOperator: LiveData<RechargePrefix>
         get() = _selectedOperator
 
+    private val _selectedProduct = MutableLiveData<CatalogProduct>()
+    val selectedProduct: LiveData<CatalogProduct>
+        get() = _selectedProduct
+
     private val _catalogData = MutableLiveData<Result<CatalogData>>()
     val catalogData: LiveData<Result<CatalogData>>
         get() = _catalogData
@@ -72,7 +76,7 @@ class EmoneyPdpViewModel @Inject constructor(private val dispatcher: CoroutineDi
                 _selectedOperator.postValue(operatorSelected)
             }
         } catch (e: Throwable) {
-
+            _selectedOperator.postValue(RechargePrefix(key = "578"))
         }
     }
 
@@ -90,12 +94,17 @@ class EmoneyPdpViewModel @Inject constructor(private val dispatcher: CoroutineDi
         )
     }
 
-    fun generateCheckoutPassData(product: CatalogProduct, copiedPromoCode: String, clientNumber: String): DigitalCheckoutPassData {
+    fun setSelectedProduct(product: CatalogProduct) {
+        _selectedProduct.postValue(product)
+    }
+
+    fun generateCheckoutPassData(copiedPromoCode: String, clientNumber: String): DigitalCheckoutPassData {
         val checkoutPassData = DigitalCheckoutPassData()
         checkoutPassData.idemPotencyKey = userSession.userId.generateRechargeCheckoutToken()
         checkoutPassData.voucherCodeCopied = copiedPromoCode
         checkoutPassData.clientNumber = clientNumber
-        checkoutPassData.operatorId = product.id
+        checkoutPassData.productId = selectedProduct.value?.id
+        checkoutPassData.operatorId = selectedOperator.value?.key
         return checkoutPassData
     }
 

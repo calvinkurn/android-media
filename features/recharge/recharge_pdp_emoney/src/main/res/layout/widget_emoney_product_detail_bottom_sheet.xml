@@ -36,6 +36,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:typographyType="body_2"
-        app:typographyWeight="bold" />
+        app:typographyWeight="bold"
+        android:layout_marginBottom="@dimen/spacing_lvl4" />
 
 </LinearLayout>

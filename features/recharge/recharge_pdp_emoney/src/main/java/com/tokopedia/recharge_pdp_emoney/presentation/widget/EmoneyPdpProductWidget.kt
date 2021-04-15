@@ -5,6 +5,8 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.common.topupbills.data.product.CatalogProduct
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.recharge_pdp_emoney.R
 import com.tokopedia.recharge_pdp_emoney.presentation.adapter.EmoneyPdpProductAdapter
 import com.tokopedia.recharge_pdp_emoney.presentation.adapter.viewholder.EmoneyPdpProductViewHolder
@@ -40,9 +42,28 @@ class EmoneyPdpProductWidget @JvmOverloads constructor(@NotNull context: Context
 
     fun setProducts(products: List<CatalogProduct>) {
         adapter.products = products
+        showContent()
     }
 
     fun setListener(listener: EmoneyPdpProductViewHolder.ActionListener) {
         adapter.listener = listener
+    }
+
+    fun showShimmering() {
+        emoneyProductShimmering.show()
+        emoneyProductWidgetTitle.hide()
+        emoneyProductListRecyclerView.hide()
+    }
+
+    private fun showContent() {
+        emoneyProductShimmering.hide()
+        emoneyProductWidgetTitle.show()
+        emoneyProductListRecyclerView.show()
+    }
+
+    fun showPaddingBottom(isShow: Boolean) {
+        emoneyProductListRecyclerView.setPadding(0, 0, 0,
+                if (isShow) resources.getDimensionPixelOffset(com.tokopedia.unifycomponents.R.dimen.layout_lvl9)
+                else resources.getDimensionPixelOffset(com.tokopedia.unifycomponents.R.dimen.spacing_lvl6))
     }
 }

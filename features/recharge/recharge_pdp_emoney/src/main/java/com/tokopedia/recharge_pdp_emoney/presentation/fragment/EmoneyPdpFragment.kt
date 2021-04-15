@@ -23,14 +23,17 @@ import com.tokopedia.common.topupbills.utils.CommonTopupBillsGqlMutation
 import com.tokopedia.common.topupbills.utils.CommonTopupBillsGqlQuery
 import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActivity
 import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsViewModel
+import com.tokopedia.common.topupbills.widget.TopupBillsCheckoutWidget
 import com.tokopedia.common_digital.atc.DigitalAddToCartViewModel
 import com.tokopedia.common_digital.atc.data.response.DigitalSubscriptionParams
 import com.tokopedia.common_digital.atc.utils.DeviceUtil
+import com.tokopedia.common_digital.cart.DigitalCheckoutUtil
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam
 import com.tokopedia.common_digital.common.presentation.model.DigitalCategoryDetailPassData
 import com.tokopedia.common_digital.product.presentation.model.ClientNumberType
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.recharge_pdp_emoney.R
 import com.tokopedia.recharge_pdp_emoney.di.EmoneyPdpComponent
 import com.tokopedia.recharge_pdp_emoney.presentation.activity.EmoneyPdpActivity
@@ -48,6 +51,7 @@ import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
 import com.tokopedia.unifycomponents.ticker.TickerPagerCallback
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.utils.currency.CurrencyFormatUtil
 import kotlinx.android.synthetic.main.fragment_emoney_pdp.*
 import javax.inject.Inject
 
@@ -56,7 +60,8 @@ import javax.inject.Inject
  */
 
 class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.ActionListener,
-        EmoneyPdpInputCardNumberWidget.ActionListener, EmoneyPdpProductViewHolder.ActionListener {
+        EmoneyPdpInputCardNumberWidget.ActionListener, EmoneyPdpProductViewHolder.ActionListener,
+        TopupBillsCheckoutWidget.ActionListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -85,6 +90,7 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
         emoneyPdpHeaderView.configureCheckBalanceView()
         emoneyPdpHeaderView.actionListener = this
         emoneyPdpInputCardWidget.initView(this)
+        emoneyBuyWidget.listener = this
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -128,7 +134,7 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
         addToCartViewModel.addToCartResult.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
-
+                    navigateToCart()
                 }
                 is Fail -> emoneyPdpViewModel.setErrorMessage(it.throwable)
             }
@@ -318,11 +324,12 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
 
     private fun loadProducts(prefix: RechargePrefix) {
         // to be changed to operator.id // NEED ACTION
+        showProducts()
+        emoneyPdpProductWidget.showShimmering()
         emoneyPdpViewModel.getProductFromOperator(EmoneyPdpActivity.EMONEY_MENU_ID, prefix.key)
     }
 
     private fun renderProducts(productList: List<CatalogProduct>) {
-        showProducts()
         emoneyPdpProductWidget.titleText = "Pilih Nominal"
         emoneyPdpProductWidget.setProducts(productList)
         emoneyPdpProductWidget.setListener(this)
@@ -336,28 +343,50 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
 
     private fun showRecentNumberAndPromo() {
         emoneyPdpProductWidget.hide()
-        emoneyPdpTab.show()
+        if ((emoneyPdpViewPager.adapter as EmoneyPdpFragmentPagerAdapter).itemCount > 1) emoneyPdpTab.show()
         emoneyPdpViewPager.show()
+        emoneyPdpProductWidget.showPaddingBottom(false)
+        emoneyBuyWidgetLayout.hide()
     }
 
-    override fun onClickProduct(product: CatalogProduct) {
+    override fun onClickProduct(product: CatalogProduct, position: Int) {
         //atc
-        addToCartViewModel.addToCart(emoneyPdpViewModel.generateCheckoutPassData(product,
-                (requireActivity() as EmoneyPdpActivity).promoCode,
-                emoneyPdpInputCardWidget.getNumber()),
-                DeviceUtil.getDigitalIdentifierParam(requireActivity()),
-                DigitalSubscriptionParams())
+        emoneyPdpViewModel.setSelectedProduct(product)
+        emoneyBuyWidget.setTotalPrice(CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(product.attributes.pricePlain.toIntOrZero()))
+        emoneyBuyWidgetLayout.show()
+        emoneyPdpProductWidget.showPaddingBottom(true)
+        emoneyBuyWidget.setVisibilityLayout(true)
     }
-
 
     override fun onClickSeeDetailProduct(product: CatalogProduct) {
         val bottomSheet = EmoneyProductDetailBottomSheet(product)
         bottomSheet.show(childFragmentManager, "")
     }
 
+    override fun onClickNextBuyButton() {
+        addToCartViewModel.addToCart(emoneyPdpViewModel.generateCheckoutPassData(
+                (requireActivity() as EmoneyPdpActivity).promoCode,
+                emoneyPdpInputCardWidget.getNumber()),
+                DeviceUtil.getDigitalIdentifierParam(requireActivity()),
+                DigitalSubscriptionParams())
+    }
+
+    private fun navigateToCart() {
+        context?.let { context ->
+            val intent = RouteManager.getIntent(context, DigitalCheckoutUtil.getApplinkCartDigital(context))
+            val gdata = emoneyPdpViewModel.generateCheckoutPassData(
+                    (requireActivity() as EmoneyPdpActivity).promoCode,
+                    emoneyPdpInputCardWidget.getNumber())
+            intent.putExtra(DigitalExtraParam.EXTRA_PASS_DIGITAL_CART_DATA, gdata)
+            startActivityForResult(intent, REQUEST_CODE_CART_DIGITAL)
+        }
+    }
+
     companion object {
         private const val REQUEST_CODE_EMONEY_PDP_CHECK_SALDO = 1007
         private const val REQUEST_CODE_EMONEY_PDP_CAMERA_OCR = 1008
+        private const val REQUEST_CODE_CART_DIGITAL = 1090
         private const val REQUEST_CODE_EMONEY_PDP_DIGITAL_SEARCH_NUMBER = 1004
     }
+
 }
