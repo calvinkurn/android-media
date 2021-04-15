@@ -232,7 +232,7 @@ class HotelBookingFragment : HotelBaseFragment() {
                     data?.let {
                         if (it.hasExtra(COUPON_EXTRA_PROMO_DATA)) {
                             it.getParcelableExtra<PromoData>(COUPON_EXTRA_PROMO_DATA)?.let { itemPromoData ->
-                               bookingViewModel.applyPromoData(itemPromoData)
+                                bookingViewModel.applyPromoData(itemPromoData)
                             }
                         }
                     }
@@ -478,10 +478,10 @@ class HotelBookingFragment : HotelBaseFragment() {
 
     private fun setupPayNowPromoTicker(promoData: PromoData) {
         if (promoData.promoCode.isEmpty()){
-            setupPromoTicker(ButtonPromoCheckoutView.State.ACTIVE, getString(R.string.hotel_promo_btn_default_title), "")
+            setupPromoTicker(TickerCheckoutView.State.ACTIVE, getString(R.string.hotel_promo_btn_default_title), "")
             booking_pay_now_promo_ticker.chevronIcon = com.tokopedia.resources.common.R.drawable.ic_system_action_arrow_right_grayscale_24
         }else if (promoData.promoCode.isNotEmpty() && hotelCart.property.isDirectPayment){
-            setupPromoTicker(ButtonPromoCheckoutView.State.ACTIVE,
+            setupPromoTicker(TickerCheckoutView.State.ACTIVE,
                     promoData.title,
                     promoData.description)
             booking_pay_now_promo_ticker.chevronIcon = com.tokopedia.resources.common.R.drawable.ic_system_action_close_grayscale_24
@@ -489,7 +489,7 @@ class HotelBookingFragment : HotelBaseFragment() {
         }
 
         if(hotelCart.property.isDirectPayment){
-             booking_pay_now_promo_ticker.setOnClickListener { onClickUsePromo(promoData) }
+            booking_pay_now_promo_ticker.setOnClickListener { onClickUsePromo(promoData) }
 
             booking_pay_now_promo_ticker.setListenerChevronIcon {
                 if (booking_pay_now_promo_ticker.desc.isNotEmpty()) {
@@ -507,14 +507,16 @@ class HotelBookingFragment : HotelBaseFragment() {
         }
     }
 
-    private fun setupPromoTicker(state: ButtonPromoCheckoutView.State,
-                                 title: String,
-                                 description: String) {
+    private fun setupPromoTicker(state: TickerCheckoutView.State,
+                                 title: String = "",
+                                 description: String = "") {
 
-        if (state == ButtonPromoCheckoutView.State.ACTIVE) {
+        if (state == TickerCheckoutView.State.ACTIVE) {
             booking_pay_now_promo_ticker.title = title
             booking_pay_now_promo_ticker.desc = description
             booking_pay_now_promo_ticker.state = ButtonPromoCheckoutView.State.ACTIVE
+        }else if(state == TickerCheckoutView.State.EMPTY){
+            booking_pay_now_promo_ticker.state = ButtonPromoCheckoutView.State.LOADING
         }
     }
 
@@ -526,7 +528,7 @@ class HotelBookingFragment : HotelBaseFragment() {
     }
 
     private fun onResetPromo(){
-        setupPromoTicker(ButtonPromoCheckoutView.State.LOADING, "", "")
+        setupPromoTicker(TickerCheckoutView.State.EMPTY)
         bookingViewModel.applyPromoData(PromoData())
         bookingViewModel.onCancelAppliedVoucher(getCancelVoucherQuery())
     }
