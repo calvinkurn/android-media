@@ -15,7 +15,7 @@ class GoogleAuthVerificationFragment : VerificationFragment() {
                 spannableChild = SpannableString(message)
                 setOtherMethodPinFooterSpan(message, spannableChild)
             }
-            setFooterText(spannableChild)
+            super.setFooterText(spannableChild)
         }
     }
 
