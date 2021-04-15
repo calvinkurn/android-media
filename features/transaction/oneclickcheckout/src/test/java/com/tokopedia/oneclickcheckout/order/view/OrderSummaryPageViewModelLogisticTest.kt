@@ -18,7 +18,6 @@ import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateu
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
 import io.mockk.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import rx.Observable
@@ -55,6 +54,73 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
         // Then
         coVerify(inverse = true) { updateCartOccUseCase.executeSuspend(any()) }
         verify(inverse = true) { ratesUseCase.execute(any()) }
+    }
+
+    @Test
+    fun `Reload Rates On Invalid Preference`() {
+        // Given
+        orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.LOADING)
+        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = false)
+        coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
+        every { ratesUseCase.execute(any()) } returns Observable.error(Throwable())
+
+        // When
+        orderSummaryPageViewModel.reloadRates()
+
+        // Then
+        coVerify(inverse = true) { updateCartOccUseCase.executeSuspend(any()) }
+        verify(inverse = true) { ratesUseCase.execute(any()) }
+    }
+
+    @Test
+    fun `Reload Rates On Invalid Shipment`() {
+        // Given
+        orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.LOADING)
+        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference.copy(shipment = OrderProfileShipment()), isValid = true)
+        coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
+        every { ratesUseCase.execute(any()) } returns Observable.error(Throwable())
+
+        // When
+        orderSummaryPageViewModel.reloadRates()
+
+        // Then
+        coVerify(inverse = true) { updateCartOccUseCase.executeSuspend(any()) }
+        verify(inverse = true) { ratesUseCase.execute(any()) }
+    }
+
+    @Test
+    fun `Reload Rates While Debounce`() {
+        // Given
+        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
+        coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
+        every { ratesUseCase.execute(any()) } returns Observable.error(Throwable())
+
+        // When
+        orderSummaryPageViewModel.updateProduct(OrderProduct(quantity = QuantityUiModel(orderQuantity = 10)))
+        testDispatchers.main.advanceTimeBy(100)
+        orderSummaryPageViewModel.reloadRates()
+        testDispatchers.main.advanceUntilIdle()
+
+        // Then
+        coVerify(exactly = 2) { updateCartOccUseCase.executeSuspend(any()) }
+        verify(exactly = 1) { ratesUseCase.execute(any()) }
+    }
+
+    @Test
+    fun `Reload Rates After Debounce`() {
+        // Given
+        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
+        coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
+        every { ratesUseCase.execute(any()) } returns Observable.error(Throwable())
+
+        // When
+        orderSummaryPageViewModel.updateProduct(OrderProduct(quantity = QuantityUiModel(orderQuantity = 10)))
+        testDispatchers.main.advanceUntilIdle()
+        orderSummaryPageViewModel.reloadRates()
+
+        // Then
+        coVerify(exactly = 4) { updateCartOccUseCase.executeSuspend(any()) }
+        verify(exactly = 2) { ratesUseCase.execute(any()) }
     }
 
     @Test

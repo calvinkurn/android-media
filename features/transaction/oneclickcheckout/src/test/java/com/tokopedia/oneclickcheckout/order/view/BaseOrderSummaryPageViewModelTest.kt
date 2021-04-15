@@ -15,7 +15,6 @@ import com.tokopedia.oneclickcheckout.order.view.processor.*
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ValidateUsePromoRevampUseCase
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
-import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
 import io.mockk.MockKAnnotations
@@ -30,8 +29,8 @@ open class BaseOrderSummaryPageViewModelTest {
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
-    @get:Rule
-    val coroutineTestRule = CoroutineTestRule()
+//    @get:Rule
+//    val coroutineTestRule = CoroutineTestRule()
 
     @MockK
     lateinit var addToCartOccExternalUseCase: Lazy<AddToCartOccExternalUseCase>
@@ -71,7 +70,7 @@ open class BaseOrderSummaryPageViewModelTest {
     @MockK(relaxed = true)
     lateinit var orderSummaryAnalytics: OrderSummaryAnalytics
 
-    val testDispatchers: CoroutineTestDispatchers = coroutineTestRule.dispatchers
+    val testDispatchers: CoroutineTestDispatchers = CoroutineTestDispatchers
 
     lateinit var helper: OrderSummaryPageViewModelTestHelper
 

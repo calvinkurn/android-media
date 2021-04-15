@@ -24,13 +24,13 @@ import com.tokopedia.oneclickcheckout.order.view.model.*
 import com.tokopedia.oneclickcheckout.order.view.model.OccPrompt.Companion.TYPE_DIALOG
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
+import com.tokopedia.purchase_platform.common.feature.purchaseprotection.domain.PurchaseProtectionPlanData
 import com.tokopedia.usecase.RequestParams
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import rx.Observable
@@ -111,6 +111,30 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         // Then
         verify(exactly = 1) {
             orderSummaryAnalytics.eventViewOrderSummaryPage(any(), any(), any())
+        }
+    }
+
+    @Test
+    fun `Get Occ Cart Success With PPP Twice Should Trigger PPP Analytics Once`() {
+        // Given
+        val response = helper.orderData.copy(
+                cart = helper.orderData.cart.copy(
+                        product = helper.orderData.cart.product.copy(
+                                purchaseProtectionPlanData = PurchaseProtectionPlanData(isProtectionAvailable = true)
+                        )
+                )
+        )
+        every { getOccCartUseCase.createRequestParams(any()) } returns RequestParams.EMPTY
+        coEvery { getOccCartUseCase.executeSuspend(any()) } returns response
+
+        // When
+        orderSummaryPageViewModel.getOccCart(true, "")
+        orderSummaryPageViewModel.getOccCart(true, "")
+
+        // Then
+        verify(exactly = 1) {
+            orderSummaryAnalytics.eventViewOrderSummaryPage(any(), any(), any())
+            orderSummaryAnalytics.eventPPImpressionOnInsuranceSection(any(), any(), any(), any())
         }
     }
 

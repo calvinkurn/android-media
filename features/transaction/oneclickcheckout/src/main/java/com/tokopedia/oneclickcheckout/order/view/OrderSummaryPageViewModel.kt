@@ -2,6 +2,7 @@ package com.tokopedia.oneclickcheckout.order.view
 
 import com.google.gson.JsonParser
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ErrorProductData.ERROR_DISTANCE_LIMIT_EXCEEDED
@@ -11,8 +12,6 @@ import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingParam
 import com.tokopedia.logisticcart.shipping.model.ShopShipment
 import com.tokopedia.oneclickcheckout.common.DEFAULT_LOCAL_ERROR_MESSAGE
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.oneclickcheckout.common.domain.GetPreferenceListUseCase
 import com.tokopedia.oneclickcheckout.common.view.model.Failure
 import com.tokopedia.oneclickcheckout.common.view.model.OccGlobalEvent
 import com.tokopedia.oneclickcheckout.common.view.model.OccMutableLiveData
@@ -38,9 +37,10 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import javax.annotation.Generated
 import javax.inject.Inject
 
-class OrderSummaryPageViewModel @Inject constructor(private val executorDispatchers: ExecutorDispatchers,
+class OrderSummaryPageViewModel @Inject constructor(private val executorDispatchers: CoroutineDispatchers,
                                                     private val cartProcessor: OrderSummaryPageCartProcessor,
                                                     private val logisticProcessor: OrderSummaryPageLogisticProcessor,
                                                     private val checkoutProcessor: OrderSummaryPageCheckoutProcessor,
@@ -103,7 +103,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
 
     fun getOccCart(isFullRefresh: Boolean, source: String) {
         getCartJob?.cancel()
-        getCartJob = launch(executorDispatchers.main) {
+        getCartJob = launch(executorDispatchers.immediate) {
             globalEvent.value = OccGlobalEvent.Normal
             val result = cartProcessor.getOccCart(source)
             addressState.value = result.addressState
@@ -168,7 +168,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
     }
 
     fun getRates() {
-        launch(executorDispatchers.main) {
+        launch(executorDispatchers.immediate) {
             getRatesSuspend()
         }
     }
@@ -313,7 +313,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
     }
 
     fun savePinpoint(longitude: String, latitude: String) {
-        launch(executorDispatchers.main) {
+        launch(executorDispatchers.immediate) {
             if (getCartJob?.isCompleted == false) {
                 getCartJob?.join()
                 if (orderPreference.value !is OccState.FirstLoad) {
@@ -647,7 +647,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
     }
 
     fun choosePayment(gatewayCode: String, metadata: String) {
-        launch(executorDispatchers.main) {
+        launch(executorDispatchers.immediate) {
             if (getCartJob?.isCompleted == false) {
                 getCartJob?.join()
                 if (orderPreference.value !is OccState.FirstLoad) {
