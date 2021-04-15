@@ -3,7 +3,17 @@ apply plugin: 'com.android.application'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 //apply plugin: 'com.google.gms.google-services'
 apply from: '../tools/set_debug_tools.gradle'
+apply plugin: 'io.hansel.preprocessor'
 
+buildscript {
+    repositories {
+        mavenCentral()
+        maven { url 'https://maven-hansel.tokopedia.com/maven' }
+    }
+    dependencies {
+        classpath rootProject.ext.miscDependencies.hansel
+    }
+}
 kapt {
     correctErrorTypes = true
     generateStubs = false
@@ -13,11 +23,6 @@ android {
         exclude 'META-INF/**'
     }
 
-    project.ext {
-        react = [
-                nodeExecutableAndArgs: ["${nodeExecutableAndArgs}"]
-        ]
-    }
     compileSdkVersion rootProject.ext.compileSdkVersion
     useLibrary 'org.apache.http.legacy'
     lintOptions {
@@ -88,7 +93,6 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.authentication
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
-    implementation rootProject.ext.tkpdInternalLibDependencies.cacheapi
     implementation rootProject.ext.tkpdInternalLibDependencies.betaNotif
     implementation rootProject.ext.tkpdInternalLibDependencies.akamaiBMP
 

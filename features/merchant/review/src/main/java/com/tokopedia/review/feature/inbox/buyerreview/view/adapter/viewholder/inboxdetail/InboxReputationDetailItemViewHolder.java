@@ -9,7 +9,6 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RatingBar;
-import android.widget.TextView;
 
 import androidx.annotation.LayoutRes;
 import androidx.appcompat.widget.PopupMenu;
@@ -31,6 +30,7 @@ import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.inboxdetail.I
 import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.inboxdetail.ReviewResponseUiModel;
 import com.tokopedia.review.feature.inbox.common.ReviewInboxConstants;
 import com.tokopedia.unifycomponents.HtmlLinkHelper;
+import com.tokopedia.unifyprinciples.Typography;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,15 +57,15 @@ public class InboxReputationDetailItemViewHolder extends
     private final InboxReputationDetail.View viewListener;
     boolean isReplyOpened = false;
 
-    TextView productName;
+    Typography productName;
     ImageView productAvatar;
-    TextView emptyReviewText;
+    Typography emptyReviewText;
     View viewReview;
-    TextView reviewerName;
-    TextView reviewTime;
+    Typography reviewerName;
+    Typography reviewTime;
     RecyclerView reviewAttachment;
     ImageView reviewOverflow;
-    TextView review;
+    Typography review;
     RatingBar reviewStar;
     View giveReview;
     Context context;
@@ -73,13 +73,13 @@ public class InboxReputationDetailItemViewHolder extends
 
     View replyReviewLayout;
     View seeReplyLayout;
-    TextView seeReplyText;
+    Typography seeReplyText;
     ImageView replyArrow;
 
     View sellerReplyLayout;
-    TextView sellerName;
-    TextView sellerReplyTime;
-    TextView sellerReply;
+    Typography sellerName;
+    Typography sellerReplyTime;
+    Typography sellerReply;
     ImageView replyOverflow;
 
     View sellerAddReplyLayout;
@@ -91,15 +91,15 @@ public class InboxReputationDetailItemViewHolder extends
         super(itemView);
         context = itemView.getContext();
         this.viewListener = viewListener;
-        productName = (TextView) itemView.findViewById(R.id.product_name);
+        productName = (Typography) itemView.findViewById(R.id.product_name);
         productAvatar = (ImageView) itemView.findViewById(R.id.product_image);
-        emptyReviewText = (TextView) itemView.findViewById(R.id.empty_review_text);
+        emptyReviewText = (Typography) itemView.findViewById(R.id.empty_review_text);
         viewReview = itemView.findViewById(R.id.review_layout);
-        reviewerName = (TextView) itemView.findViewById(R.id.reviewer_name);
-        reviewTime = (TextView) itemView.findViewById(R.id.review_time);
+        reviewerName = (Typography) itemView.findViewById(R.id.reviewer_name);
+        reviewTime = (Typography) itemView.findViewById(R.id.review_time);
         reviewAttachment = (RecyclerView) itemView.findViewById(R.id.product_review_image);
         reviewOverflow = (ImageView) itemView.findViewById(R.id.review_overflow);
-        review = (TextView) itemView.findViewById(R.id.review);
+        review = (Typography) itemView.findViewById(R.id.review);
         reviewStar = (RatingBar) itemView.findViewById(R.id.product_rating);
         giveReview = itemView.findViewById(R.id.add_review_layout);
         adapter = ImageUploadAdapter.createAdapter(itemView.getContext());
@@ -111,13 +111,13 @@ public class InboxReputationDetailItemViewHolder extends
 
         sellerReplyLayout = itemView.findViewById(R.id.seller_reply_layout);
         seeReplyLayout = itemView.findViewById(R.id.see_reply_layout);
-        seeReplyText = (TextView) seeReplyLayout.findViewById(R.id.see_reply_button);
+        seeReplyText = (Typography) seeReplyLayout.findViewById(R.id.see_reply_button);
         replyArrow = (ImageView) seeReplyLayout.findViewById(R.id.reply_chevron);
 
         replyReviewLayout = itemView.findViewById(R.id.reply_review_layout);
-        sellerName = (TextView) itemView.findViewById(R.id.seller_reply_name);
-        sellerReplyTime = (TextView) itemView.findViewById(R.id.seller_reply_time);
-        sellerReply = (TextView) itemView.findViewById(R.id.seller_reply);
+        sellerName = (Typography) itemView.findViewById(R.id.seller_reply_name);
+        sellerReplyTime = (Typography) itemView.findViewById(R.id.seller_reply_time);
+        sellerReply = (Typography) itemView.findViewById(R.id.seller_reply);
         replyOverflow = (ImageView) itemView.findViewById(R.id.reply_overflow);
 
         sellerAddReplyLayout = itemView.findViewById(R.id.seller_add_reply_layout);

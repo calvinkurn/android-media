@@ -24,6 +24,7 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.shop.R
 import com.tokopedia.shop.analyticvalidator.util.ShopUiTestUtil
 import com.tokopedia.shop.analyticvalidator.util.ViewActionUtil
+import com.tokopedia.shop.analyticvalidator.util.ViewActionUtil.clickTabLayoutPosition
 import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant
 import com.tokopedia.shop.mock.ShopPageAnalyticValidatorHomeTabMockResponseConfig
 import com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity
@@ -244,13 +245,13 @@ class ShopPageBuyerAnalyticTest {
 
     private fun testClickTabs() {
         Espresso.onView(firstView(withId(R.id.tabLayout)))
-                .perform(CommonActions.selectTabLayoutPosition(0))
+                .perform(clickTabLayoutPosition(0))
         Espresso.onView(firstView(withId(R.id.tabLayout)))
-                .perform(CommonActions.selectTabLayoutPosition(1))
+                .perform(clickTabLayoutPosition(1))
         Espresso.onView(firstView(withId(R.id.tabLayout)))
-                .perform(CommonActions.selectTabLayoutPosition(2))
+                .perform(clickTabLayoutPosition(2))
         Espresso.onView(firstView(withId(R.id.tabLayout)))
-                .perform(CommonActions.selectTabLayoutPosition(3))
+                .perform(clickTabLayoutPosition(3))
     }
 
     private fun testSelectSortOption() {

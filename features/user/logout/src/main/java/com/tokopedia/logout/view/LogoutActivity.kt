@@ -1,5 +1,6 @@
 package com.tokopedia.logout.view
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
@@ -26,7 +27,6 @@ import com.tokopedia.analyticsdebugger.debugger.TetraDebugger.Companion.instance
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.cacheapi.domain.interactor.CacheApiClearAllUseCase
 import com.tokopedia.cachemanager.PersistentCacheManager
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.core.gcm.FCMCacheManager
@@ -164,17 +164,17 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
         PersistentCacheManager.instance.delete()
         AppWidgetUtil.sendBroadcastToAppWidget(applicationContext)
         NotificationModHandler.clearCacheAllNotification(applicationContext)
-        CacheApiClearAllUseCase(applicationContext).executeSync()
-        RemoteConfigInstance.getInstance().abTestPlatform.fetchByType(null)
         NotificationModHandler(applicationContext).dismissAllActivedNotifications()
         clearWebView()
         clearLocalChooseAddress()
+        clearOccData()
 
         instance.refreshFCMTokenFromForeground(FCMCacheManager.getRegistrationId(applicationContext), true)
 
         tetraDebugger?.setUserId("")
         userSession.clearToken()
         userSession.logoutSession()
+        RemoteConfigInstance.getInstance().abTestPlatform.fetchByType(null)
 
         if (isReturnToHome) {
             if (GlobalConfig.isSellerApp()) {
@@ -230,17 +230,25 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
         logoutLoading?.visibility = View.GONE
     }
 
+    @SuppressLint("ObsoleteSdkInt")
     private fun clearWebView() {
-        WebView(applicationContext).clearCache(true)
-        val cookieManager: CookieManager
-        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            CookieSyncManager.createInstance(this)
-            cookieManager = CookieManager.getInstance()
-            cookieManager.removeAllCookie()
-        } else {
-            cookieManager = CookieManager.getInstance()
-            cookieManager.removeAllCookies {}
-        }
+        try {
+            WebView(applicationContext).clearCache(true)
+            val cookieManager: CookieManager
+            if(Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+                CookieSyncManager.createInstance(this)
+                cookieManager = CookieManager.getInstance()
+                cookieManager.removeAllCookie()
+            } else {
+                cookieManager = CookieManager.getInstance()
+                cookieManager.removeAllCookies {}
+            }
+        } catch (ignored: Exception) {}
+    }
+
+    private fun clearOccData() {
+        val occDataPref = applicationContext.getSharedPreferences(OCC_DATA_PREF, Context.MODE_PRIVATE)
+        occDataPref.edit().clear().apply()
     }
 
     companion object {
@@ -249,5 +257,6 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
         private const val KEY_USER_NAME = "user_name"
         private const val KEY_PROFILE_PICTURE = "profile_picture"
         private const val CHOOSE_ADDRESS_PREF = "local_choose_address"
+        private const val OCC_DATA_PREF = "occ_remove_profile_ticker"
     }
 }

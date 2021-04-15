@@ -1,0 +1,38 @@
+{
+  "readme": "Fintech Pay Later Click Tracker",
+  "mode": "subset",
+  "query": [
+    {
+      "sessionIris": "{{.*}}",
+      "userId": "{{.*}}",
+      "eventCategory": "fin - info page",
+      "eventAction": "sim vcc - click daftar paylater",
+      "event": "clickFintechMicrosite",
+      "eventLabel": "{{.*}}"
+    },
+    {
+      "sessionIris": "{{.*}}",
+      "userId": "{{.*}}",
+      "eventCategory": "fin - info page",
+      "eventAction": "sim vcc - click tab",
+      "event": "clickFintechMicrosite",
+      "eventLabel": "{{.*}}"
+    },
+    {
+      "sessionIris": "{{.*}}",
+      "userId": "{{.*}}",
+      "eventCategory": "fin - info page",
+      "eventAction": "sim vcc - click pilih paylater",
+      "event": "clickFintechMicrosite",
+      "eventLabel": "{{.*}}"
+    },
+    {
+      "sessionIris": "{{.*}}",
+      "userId": "{{.*}}",
+      "eventCategory": "fin - info page",
+      "eventAction": "sim vcc - click daftar sekarang",
+      "event": "clickFintechMicrosite",
+      "eventLabel": "{{.*}}"
+    }
+  ]
+}

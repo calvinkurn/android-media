@@ -1,17 +1,17 @@
 package com.tokopedia.review.feature.reputationhistory.view.helper;
 
 import android.view.View;
-import android.widget.TextView;
 
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.review.R;
+import com.tokopedia.unifyprinciples.Typography;
 
 /**
  * @author normansyahputa on 3/17/17.
  */
 public class ReputationViewHelper {
 
-    private TextView textHeaderReputation;
+    private Typography textHeaderReputation;
     private ReputationView sellerReputationHeaderView;
 
     public ReputationViewHelper(View itemView) {

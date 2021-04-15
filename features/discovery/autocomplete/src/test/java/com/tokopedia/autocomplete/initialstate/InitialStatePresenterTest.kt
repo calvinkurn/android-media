@@ -6,6 +6,8 @@ import com.tokopedia.autocomplete.initialstate.dynamic.DynamicInitialStateSearch
 import com.tokopedia.autocomplete.initialstate.dynamic.DynamicInitialStateTitleViewModel
 import com.tokopedia.autocomplete.initialstate.popularsearch.PopularSearchTitleViewModel
 import com.tokopedia.autocomplete.initialstate.popularsearch.PopularSearchViewModel
+import com.tokopedia.autocomplete.initialstate.productline.InitialStateProductListDataView
+import com.tokopedia.autocomplete.initialstate.productline.InitialStateProductLineTitleDataView
 import com.tokopedia.autocomplete.initialstate.recentsearch.RecentSearchSeeMoreViewModel
 import com.tokopedia.autocomplete.initialstate.recentsearch.RecentSearchTitleViewModel
 import com.tokopedia.autocomplete.initialstate.recentsearch.RecentSearchViewModel
@@ -94,6 +96,12 @@ internal class InitialStatePresenterTest: InitialStatePresenterTestFixtures() {
         Assert.assertTrue(visitableList[7] is PopularSearchViewModel)
         Assert.assertTrue(visitableList[8] is DynamicInitialStateTitleViewModel)
         Assert.assertTrue(visitableList[9] is DynamicInitialStateSearchViewModel)
+        /*
+            Backend not ready, will be implemented after the new field is already in production.
+            Estimated release on 3.124
+        */
+//        Assert.assertTrue(visitableList[10] is InitialStateProductLineTitleDataView)
+//        Assert.assertTrue(visitableList[11] is InitialStateProductListDataView)
         Assert.assertTrue(visitableList.size == 10)
 
         `Then verify RecentSearchViewModel only have n items`(3, visitableList[4] as RecentSearchViewModel)
