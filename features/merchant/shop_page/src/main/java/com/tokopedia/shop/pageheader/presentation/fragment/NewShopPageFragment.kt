@@ -208,6 +208,7 @@ class NewShopPageFragment :
     var isFirstCreateShop: Boolean = false
     var isShowFeed: Boolean = false
     var createPostUrl: String = ""
+    private var isTabClickByUser = false
     private var isFollowing: Boolean = false
     private var tabPosition = TAB_POSITION_HOME
     private var stickyLoginView: StickyLoginView? = null
@@ -304,7 +305,6 @@ class NewShopPageFragment :
 
     override fun onDestroy() {
         shopViewModel?.shopPageP1Data?.removeObservers(this)
-        shopViewModel?.shopPageHeaderContentData?.removeObservers(this)
         shopViewModel?.shopImagePath?.removeObservers(this)
         shopViewModel?.shopUnmoderateData?.removeObservers(this)
         shopViewModel?.shopModerateRequestStatus?.removeObservers(this)
@@ -313,6 +313,7 @@ class NewShopPageFragment :
         shopViewModel?.followShopData?.removeObservers(this)
         shopViewModel?.shopSellerPLayWidgetData?.removeObservers(this)
         shopViewModel?.shopPageTickerData?.removeObservers(this)
+        shopViewModel?.shopPageShopShareData?.removeObservers(this)
         shopProductFilterParameterSharedViewModel?.sharedShopProductFilterParameter?.removeObservers(this)
         shopPageFollowingStatusSharedViewModel?.shopPageFollowingStatusLiveData?.removeObservers(this)
         shopViewModel?.flush()
@@ -577,6 +578,15 @@ class NewShopPageFragment :
             }
         })
 
+        shopViewModel?.shopPageShopShareData?.observe(owner, Observer { result ->
+            if(result is Success){
+                shopPageHeaderDataModel?.let {
+                    it.shopSnippetUrl = result.data.shopSnippetUrl
+                    it.shopCoreUrl = result.data.shopCore.url
+                }
+            }
+        })
+
         shopViewModel?.shopSellerPLayWidgetData?.observe(owner, Observer { result ->
             if (result is Success) {
                 shopPageHeaderDataModel?.let {
@@ -699,13 +709,13 @@ class NewShopPageFragment :
     }
 
     private fun getShopPageP2Data() {
-        getShopTickerStatus()
+        getShopInfoData()
         getFollowStatus()
         getSellerPlayWidget()
     }
 
-    private fun getShopTickerStatus() {
-        shopViewModel?.getShopTickerData(shopId, shopDomain ?: "", isRefresh)
+    private fun getShopInfoData() {
+        shopViewModel?.getShopInfoData(shopId, shopDomain ?: "", isRefresh)
     }
 
     private fun getSellerPlayWidget() {
@@ -1201,7 +1211,7 @@ class NewShopPageFragment :
         swipeToRefresh.isRefreshing = false
         shopPageFragmentHeaderViewHolder?.setShopHeaderWidgetData(shopPageP1Data.listShopHeaderWidget)
         remoteConfig?.let{
-            shopPageFragmentHeaderViewHolder?.setupChooseAddressWidget(it)
+            shopPageFragmentHeaderViewHolder?.setupChooseAddressWidget(it, isMyShop)
         }
         getShopPageP2Data()
         setupTabs()
@@ -1226,7 +1236,13 @@ class NewShopPageFragment :
         val selectedPosition = getSelectedTabPosition()
         tabLayout.removeAllTabs()
         listShopPageTabModel.forEach {
-            tabLayout.addTab(tabLayout.newTab().setIcon(it.tabIconInactive),false)
+            val tab = tabLayout.newTab().apply {
+                view.setOnClickListener {
+                    isTabClickByUser = true
+                }
+                setIcon(it.tabIconInactive)
+            }
+            tabLayout.addTab(tab,false)
         }
         viewPagerAdapter?.notifyDataSetChanged()
         tabLayout?.apply {
@@ -1251,15 +1267,17 @@ class NewShopPageFragment :
                     tabLayout.getTabAt(position)?.let{
                         viewPagerAdapter?.handleSelectedTab(it, true)
                     }
-                    shopPageTracking?.clickTab(
-                            shopViewModel?.isMyShop(shopId) == true,
-                            listShopPageTabModel[position].tabTitle,
-                            CustomDimensionShopPage.create(
-                                    shopId,
-                                    shopPageHeaderDataModel?.isOfficial ?: false,
-                                    shopPageHeaderDataModel?.isGoldMerchant ?: false
-                            )
-                    )
+                    if(isTabClickByUser) {
+                        shopPageTracking?.clickTab(
+                                shopViewModel?.isMyShop(shopId) == true,
+                                listShopPageTabModel[position].tabTitle,
+                                CustomDimensionShopPage.create(
+                                        shopId,
+                                        shopPageHeaderDataModel?.isOfficial ?: false,
+                                        shopPageHeaderDataModel?.isGoldMerchant ?: false
+                                )
+                        )
+                    }
                     if (isSellerMigrationEnabled(context)) {
                         if(isMyShop && viewPagerAdapter?.isFragmentObjectExists(FeedShopFragment::class.java) == true){
                             val tabFeedPosition = viewPagerAdapter?.getFragmentPosition(FeedShopFragment::class.java)
@@ -1275,6 +1293,7 @@ class NewShopPageFragment :
                     viewPager?.post {
                         checkIfShouldShowOrHideScrollToTopButton(position)
                     }
+                    isTabClickByUser = false
                 }
         })
     }
@@ -2044,6 +2063,7 @@ class NewShopPageFragment :
     }
 
     override fun onLocalizingAddressServerDown() {
+        shopPageFragmentHeaderViewHolder?.hideChooseAddressWidget()
     }
 
     override fun onLocalizingAddressRollOutUser(isRollOutUser: Boolean) { }

@@ -416,4 +416,5 @@
     <string name="ovo_register_account_title">Mau sekalian daftar OVO?</string>
     <string name="content_desc_ovo_success">OvoSuccess</string>
     <string name="external_account_success_btn_text">Mulai Belanja</string>
+  <string name="desc_banner_register">banner_register</string>
 </resources>

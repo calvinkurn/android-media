@@ -1,24 +1,20 @@
 package com.tokopedia.play.robot.parent
 
 import androidx.lifecycle.SavedStateHandle
-import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.play.data.detail.recom.ChannelDetailsWithRecomResponse
 import com.tokopedia.play.domain.GetChannelDetailsWithRecomUseCase
 import com.tokopedia.play.helper.ClassBuilder
-import com.tokopedia.play.helper.TestCoroutineDispatchersProvider
-import com.tokopedia.play.helper.getOrAwaitValue
 import com.tokopedia.play.view.monitoring.PlayPltPerformanceCallback
 import com.tokopedia.play.view.storage.PlayChannelData
 import com.tokopedia.play.view.storage.PlayChannelStateStorage
 import com.tokopedia.play.view.uimodel.mapper.PlayChannelDetailsWithRecomMapper
 import com.tokopedia.play.view.viewmodel.PlayParentViewModel
-import com.tokopedia.play_common.model.result.PageResult
-import com.tokopedia.play_common.model.result.PageResultState
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
-import org.assertj.core.api.Assertions
 
 /**
  * Created by jegul on 10/02/21
@@ -28,7 +24,7 @@ class PlayParentViewModelRobot(
         private val channelStateStorage: PlayChannelStateStorage,
         private val getChannelDetailsWithRecomUseCase: GetChannelDetailsWithRecomUseCase,
         private val playChannelMapper: PlayChannelDetailsWithRecomMapper,
-        private val dispatchers: TestCoroutineDispatchersProvider,
+        private val dispatchers: CoroutineDispatchers,
         private val userSession: UserSessionInterface,
         pageMonitoring: PlayPltPerformanceCallback,
 ) {
@@ -36,8 +32,8 @@ class PlayParentViewModelRobot(
     val viewModel: PlayParentViewModel
 
     init {
-        every { savedStateHandle.get<String>(any()) } returns "123"
-        every { savedStateHandle.get<Long>("start_vod_millis") } returns 123L
+        every { savedStateHandle.get<Any>(any()) } returns "123"
+        every { savedStateHandle.get<Any>("start_vod_millis") } returns 123L
 
         viewModel = PlayParentViewModel(
                 handle = savedStateHandle,
@@ -62,7 +58,7 @@ fun givenParentViewModelRobot(
         channelStateStorage: PlayChannelStateStorage = PlayChannelStateStorage(),
         getChannelDetailsWithRecomUseCase: GetChannelDetailsWithRecomUseCase = mockk(relaxed = true),
         playChannelMapper: PlayChannelDetailsWithRecomMapper = ClassBuilder().getPlayChannelDetailsRecomMapper(),
-        dispatchers: TestCoroutineDispatchersProvider = TestCoroutineDispatchersProvider,
+        dispatchers: CoroutineDispatchers = CoroutineTestDispatchersProvider,
         userSession: UserSessionInterface = mockk(relaxed = true),
         pageMonitoring: PlayPltPerformanceCallback = mockk(relaxed = true),
         fn: PlayParentViewModelRobot.() -> Unit = {}

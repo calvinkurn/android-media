@@ -10,6 +10,8 @@
         android:id="@+id/txt_bottomsheet_localization"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_18"
+        android:layout_marginEnd="@dimen/dp_18"
         app:typographyType="body_3"
         android:text="@string/txt_bottomshoot_localization"
         app:layout_constraintTop_toTopOf="parent"
@@ -48,6 +50,8 @@
             android:id="@+id/no_address_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginStart="@dimen/dp_18"
+            android:layout_marginEnd="@dimen/dp_18"
             android:paddingTop="@dimen/dp_14"
             android:visibility="gone">
 
@@ -106,6 +110,8 @@
             android:id="@+id/login_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginStart="@dimen/dp_18"
+            android:layout_marginEnd="@dimen/dp_18"
             android:paddingTop="@dimen/dp_14"
             android:visibility="gone">
 
@@ -166,7 +172,7 @@
         android:id="@+id/divider"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_2"
-        android:background="@color/Unify_N75"
+        android:background="@color/Unify_N50"
         android:layout_marginTop="@dimen/dp_14"
         app:layout_constraintTop_toBottomOf="@id/frame_content_layout"
         app:layout_constraintStart_toStartOf="parent"
@@ -177,6 +183,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/unify_space_16"
+        android:layout_marginStart="@dimen/dp_18"
+        android:layout_marginEnd="@dimen/dp_18"
         app:typographyType="heading_4"
         app:typographyWeight="bold"
         android:text="@string/txt_snippet_loc"
@@ -188,6 +196,8 @@
         android:id="@+id/pilih_kota_kecamatan_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_18"
+        android:layout_marginEnd="@dimen/dp_18"
         app:layout_constraintTop_toBottomOf="@id/txt_snippet_location"
         app:layout_constraintStart_toStartOf="parent"
         android:visibility="gone">

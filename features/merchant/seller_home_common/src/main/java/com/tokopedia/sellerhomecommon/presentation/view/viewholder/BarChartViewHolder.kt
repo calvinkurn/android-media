@@ -122,7 +122,7 @@ class BarChartViewHolder(
     }
 
     private fun getBarChartConfig(element: BarChartWidgetUiModel): BarChartConfigModel {
-        val labelTextColor = itemView.context.getResColor(com.tokopedia.unifyprinciples.R.color.Neutral_N700_96)
+        val labelTextColor = itemView.context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_96)
         val data = getBarChartData(element.data?.chartData)
         return BarChartConfig.create {
             xAnimationDuration { 200 }

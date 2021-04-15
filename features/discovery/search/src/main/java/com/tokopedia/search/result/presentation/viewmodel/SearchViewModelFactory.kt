@@ -2,10 +2,10 @@ package com.tokopedia.search.result.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.tokopedia.discovery.common.DispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 
 internal class SearchViewModelFactory(
-        private val coroutineDispatcher: DispatcherProvider
+        private val coroutineDispatcher: CoroutineDispatchers
 ): ViewModelProvider.Factory {
 
     @Suppress("UNCHECKED_CAST")
