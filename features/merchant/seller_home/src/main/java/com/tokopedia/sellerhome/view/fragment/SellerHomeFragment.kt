@@ -159,6 +159,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     private var performanceMonitoringSellerHomePlt: HomeLayoutLoadTimeMonitoring? = null
     private var ketupatLottie: KetupatLottieView? = null
 
+    private var recommendationWidgetView: View? = null
     private var navigationOtherMenuView: View? = null
     private var isEligibleShowRecommendationCoachMark: Boolean = false
     private val coachMark: CoachMark2? by lazy {
@@ -460,28 +461,12 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     }
 
     override fun showRecommendationWidgetCoachMark(view: View) {
+        this.recommendationWidgetView = view
         if (!isEligibleShowRecommendationCoachMark) return
         isEligibleShowRecommendationCoachMark = false
 
-        val coachMarkItems = arrayListOf<CoachMark2Item>()
-        coachMarkItems.add(
-                CoachMark2Item(
-                        anchorView = view,
-                        title = getString(R.string.sah_recommendation_coach_mark_title),
-                        description = getString(R.string.sah_recommendation_coach_mark_description),
-                        position = CoachMark2.POSITION_BOTTOM
-                )
-        )
-        navigationOtherMenuView?.let {
-            coachMarkItems.add(
-                    CoachMark2Item(
-                            anchorView = it,
-                            title = getString(R.string.sah_other_menu_coach_mark_title),
-                            description = getString(R.string.sah_other_menu_coach_mark_description),
-                            position = CoachMark2.POSITION_TOP
-                    )
-            )
-        }
+        val coachMarkItems by getCoachMarkItems()
+
         if (coachMarkItems.isNotEmpty()) {
             pmShopScoreInterruptHelper.saveRecommendationCoachMarkFlag()
             coachMark?.showCoachMark(coachMarkItems)
@@ -545,6 +530,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
             setOnVerticalScrollListener {
                 requestVisibleWidgetsData()
+                handleCoachMarkVisibility()
             }
         }
         recyclerView?.run {
@@ -723,7 +709,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                     is Success -> {
                         stopLayoutCustomMetric(result.data)
                         setOnSuccessGetLayout(result.data)
-                        showRecommendationWidgetCoachMark()
+                        setRecommendationCoachMarkEligibility()
                     }
                     is Fail -> {
                         stopCustomMetric(SellerHomePerformanceMonitoringConstant.SELLER_HOME_LAYOUT_TRACE, true)
@@ -1171,7 +1157,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         }
     }
 
-    private fun showRecommendationWidgetCoachMark() {
+    private fun setRecommendationCoachMarkEligibility() {
         isEligibleShowRecommendationCoachMark = pmShopScoreInterruptHelper.getRecommendationCoachMarkStatus()
         if (isEligibleShowRecommendationCoachMark) {
             scrollToRecommendationWidget()
@@ -1186,6 +1172,64 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             recyclerView?.post {
                 requestVisibleWidgetsData()
             }
+        }
+    }
+
+    private fun handleCoachMarkVisibility() {
+        val recommendationWidgetCoachMarkIndex = 0
+        if (coachMark?.currentIndex != recommendationWidgetCoachMarkIndex) return
+
+        val layoutManager = recyclerView?.layoutManager as? SellerHomeLayoutManager
+        layoutManager?.let {
+            if (coachMark?.isDismissed == true) {
+                val firstRecommendationWidget = adapter.data.indexOfFirst { it is RecommendationWidgetUiModel }
+                val firstVisibleIndex = layoutManager.findFirstVisibleItemPosition()
+                val lastVisibleIndex = layoutManager.findLastCompletelyVisibleItemPosition()
+                if ((lastVisibleIndex != RecyclerView.NO_POSITION && lastVisibleIndex == firstRecommendationWidget)
+                        || firstVisibleIndex >= firstRecommendationWidget) {
+                    val coachMarkItems by getCoachMarkItems()
+                    if (coachMarkItems.isNotEmpty()) {
+                        coachMark?.isDismissed = false
+                        coachMark?.showCoachMark(coachMarkItems)
+                    }
+                }
+            } else {
+                val firstRecommendationWidget = adapter.data.indexOfFirst { it is RecommendationWidgetUiModel }
+                if (firstRecommendationWidget != RecyclerView.NO_POSITION) {
+                    val firstVisibleIndex = layoutManager.findFirstVisibleItemPosition()
+                    val lastVisibleIndex = layoutManager.findLastVisibleItemPosition()
+                    if (firstRecommendationWidget !in firstVisibleIndex..lastVisibleIndex.minus(1)) {
+                        coachMark?.dismissCoachMark()
+                    }
+                }
+            }
+        }
+    }
+
+    private fun getCoachMarkItems(): Lazy<ArrayList<CoachMark2Item>> {
+        return lazy {
+            val coachMarkItems = arrayListOf<CoachMark2Item>()
+            recommendationWidgetView?.let {
+                coachMarkItems.add(
+                        CoachMark2Item(
+                                anchorView = it,
+                                title = getString(R.string.sah_recommendation_coach_mark_title),
+                                description = getString(R.string.sah_recommendation_coach_mark_description),
+                                position = CoachMark2.POSITION_BOTTOM
+                        )
+                )
+            }
+            navigationOtherMenuView?.let {
+                coachMarkItems.add(
+                        CoachMark2Item(
+                                anchorView = it,
+                                title = getString(R.string.sah_other_menu_coach_mark_title),
+                                description = getString(R.string.sah_other_menu_coach_mark_description),
+                                position = CoachMark2.POSITION_TOP
+                        )
+                )
+            }
+            return@lazy coachMarkItems
         }
     }
 
