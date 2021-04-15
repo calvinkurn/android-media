@@ -277,16 +277,16 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
         // If user is not logged in, redirect to onboarding page;
         // Add sharedpref to make sure onboarding page is not visited more than once in each session
         // (support for phones with don't keep activities)
-//        if (!userSession.isLoggedIn && !localCacheHandler.getBoolean(SMART_BILLS_VISITED_ONBOARDING_PAGE, false)) {
-//            localCacheHandler.apply {
-//                putBoolean(SMART_BILLS_VISITED_ONBOARDING_PAGE, true)
-//                applyEditor()
-//            }
-//            startActivityForResult(Intent(context,
-//                    SmartBillsOnboardingActivity::class.java),
-//                    REQUEST_CODE_SMART_BILLS_ONBOARDING
-//            )
-//        } else {
+        if (!userSession.isLoggedIn && !localCacheHandler.getBoolean(SMART_BILLS_VISITED_ONBOARDING_PAGE, false)) {
+            localCacheHandler.apply {
+                putBoolean(SMART_BILLS_VISITED_ONBOARDING_PAGE, true)
+                applyEditor()
+            }
+            startActivityForResult(Intent(context,
+                    SmartBillsOnboardingActivity::class.java),
+                    REQUEST_CODE_SMART_BILLS_ONBOARDING
+            )
+        } else {
             smartBillsAnalytics.userId = userSession.userId
             smartBillsAnalytics.eventOpenScreen()
 
