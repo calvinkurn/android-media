@@ -68,6 +68,7 @@ public class MyApplication extends BaseMainApplication
     public void onCreate() {
 
         setVersionCode();
+        initFileDirConfig();
 
         TokopediaUrl.Companion.init(this); // generate base url
 
@@ -436,5 +437,12 @@ public class MyApplication extends BaseMainApplication
             GlobalConfig.VERSION_CODE = BuildConfig.VERSION_CODE;
             com.tokopedia.config.GlobalConfig.VERSION_CODE = BuildConfig.VERSION_CODE;
         }
+    }
+
+    public void initFileDirConfig(){
+        GlobalConfig.INTERNAL_CACHE_DIR = this.getCacheDir().getAbsolutePath();
+        GlobalConfig.INTERNAL_FILE_DIR = this.getFilesDir().getAbsolutePath();
+        GlobalConfig.EXTERNAL_CACHE_DIR = this.getExternalCacheDir() != null ? this.getExternalCacheDir().getAbsolutePath() : "";
+        GlobalConfig.EXTERNAL_FILE_DIR = this.getExternalFilesDir(null) != null ? this.getExternalFilesDir(null).getAbsolutePath() : "";
     }
 }

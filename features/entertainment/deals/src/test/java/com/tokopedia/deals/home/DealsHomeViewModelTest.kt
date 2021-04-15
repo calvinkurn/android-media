@@ -8,7 +8,7 @@ import com.tokopedia.deals.common.domain.GetNearestLocationUseCase
 import com.tokopedia.deals.common.model.response.Brand
 import com.tokopedia.deals.common.model.response.SearchData
 import com.tokopedia.deals.common.ui.dataview.DealsBrandsDataView
-import com.tokopedia.deals.common.utils.DealsTestDispatcherProvider
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.deals.home.data.DealsEventHome
 import com.tokopedia.deals.home.domain.GetEventHomeBrandPopularUseCase
 import com.tokopedia.deals.home.domain.GetEventHomeLayoutUseCase
@@ -33,7 +33,7 @@ class DealsHomeViewModelTest {
 
     @get:Rule
     val rule = InstantTaskExecutorRule()
-    private val dispatcher = DealsTestDispatcherProvider()
+    private val dispatcher = CoroutineTestDispatchersProvider
 
     private val getHomeLayoutUseCase: GetEventHomeLayoutUseCase = mockk()
     private val getBrandPopularUseCase: GetEventHomeBrandPopularUseCase = mockk()
