@@ -5,6 +5,7 @@ import android.app.Instrumentation
 import android.content.Intent
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.intent.Intents.intending
@@ -305,13 +306,30 @@ class TopchatRoomBuyerAttachProductTest : BaseBuyerTopchatRoomTest() {
         chatSrwUseCase.isError = true
         inflateTestFragment()
 
-        waitForIt(5000)
-
         // Then
         assertSrwContentIsError()
     }
 
-    // TODO: test srw error state if clicked
+    @Test
+    fun load_srw_from_error_state_if_buyer_attach_from_start_intent() {
+        // Given
+        setupChatRoomActivity {
+            putProductAttachmentIntent(it)
+        }
+        getChatUseCase.response = firstPageChatAsBuyer
+        chatAttachmentUseCase.response = chatAttachmentResponse
+        chatSrwUseCase.isError = true
+        inflateTestFragment()
+
+        // When
+        chatSrwUseCase.isError = false
+        chatSrwUseCase.response = chatSrwResponse
+        onView(withId(com.tokopedia.unifycomponents.R.id.refreshID))
+                .perform(click())
+
+        // Then
+        assertSrwContentIsVisible()
+    }
 
     // TODO: test srw interaction expand and collapse
     // TODO: test srw interaction click and send msg
