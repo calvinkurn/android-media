@@ -1,6 +1,7 @@
 package com.tokopedia.product.detail.data.util
 
 import android.net.Uri
+import android.os.Bundle
 import android.text.TextUtils
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.atc_common.domain.analytics.AddToCartBaseAnalytics
@@ -19,6 +20,15 @@ import org.json.JSONObject
  * Created by Yehezkiel on 2020-02-11
  */
 object TrackingUtil {
+
+    fun sendTrackingBundle(key: String, bundle: Bundle) {
+        TrackApp
+                .getInstance()
+                .gtm
+                .sendEnhanceEcommerceEvent(
+                        key, bundle
+                )
+    }
 
     fun createMvcListMap(viewModelList: List<MerchantVoucherViewModel>, shopId: Int, startIndex: Int): List<Any> {
         val list = mutableListOf<Any>()

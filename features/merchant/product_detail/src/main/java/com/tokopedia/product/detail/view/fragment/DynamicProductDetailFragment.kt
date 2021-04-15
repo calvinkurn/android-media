@@ -2401,7 +2401,7 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
     private fun trackProductView(isElligible: Boolean, isFreeOngkir: Boolean) {
         viewModel.getDynamicProductInfoP1?.let { productInfo ->
             if (viewModel.getShopInfo().isShopInfoNotEmpty()) {
-                val sentBundle = DynamicProductDetailTracking.Impression.eventEnhanceEcommerceProductDetail(
+                DynamicProductDetailTracking.Impression.eventEnhanceEcommerceProductDetail(
                         irisSessionId,
                         trackerListNamePdp,
                         productInfo,
@@ -2414,7 +2414,6 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
                         viewModel.getDynamicProductInfoP1?.getFinalStock() ?: "0",
                         isFreeOngkir
                 )
-                return
             }
         }
     }

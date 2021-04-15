@@ -1,6 +1,5 @@
 package com.tokopedia.product.detail.data.util
 
-import android.os.Bundle
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.iris.util.KEY_SESSION_IRIS
 import com.tokopedia.kotlin.extensions.view.orZero
@@ -15,6 +14,7 @@ import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
 import com.tokopedia.product.detail.data.model.datamodel.VariantDataModel
 import com.tokopedia.product.detail.data.util.ProductTrackingConstant.Action.CLICK_ANNOTATION_RECOM_CHIP
 import com.tokopedia.product.detail.data.util.TrackingUtil.removeCurrencyPrice
+import com.tokopedia.product.detail.data.util.TrackingUtil.sendTrackingBundle
 import com.tokopedia.product.util.processor.Product
 import com.tokopedia.product.util.processor.ProductDetailViewsBundler
 import com.tokopedia.recommendation_widget_common.extension.hasLabelGroupFulfillment
@@ -1489,30 +1489,21 @@ object DynamicProductDetailTracking {
                 ProductTrackingConstant.Tracking.VALUE_NONE_OTHER
 
             arrayListOf(Product(
-                    productInfo?.getProductName ?: "",
-                    productInfo?.basic?.productID ?: "",
-                    productInfo?.data?.price?.value?.toDouble() ?: 0.0,
-                    productInfo?.getProductName,
-                    ProductTrackingConstant.Tracking.DEFAULT_VALUE,
-                    TrackingUtil.getEnhanceCategoryFormatted(productInfo?.basic?.category?.detail),
-                    null,
-                    trackerAttribution ?: ProductTrackingConstant.Tracking.DEFAULT_VALUE,
-                    dimension55,
-                    TrackingUtil.getMultiOriginAttribution(multiOrigin),
-                    dimension83 ?: "",
-                    productInfo?.shopTypeString ?: "",
-                    if (isStockAvailable == "0") "not available" else "available",
-                    1
+                    name = productInfo?.getProductName ?: "",
+                    id = productInfo?.basic?.productID ?: "",
+                    price = productInfo?.data?.price?.value?.toDouble() ?: 0.0,
+                    brand = productInfo?.getProductName,
+                    variant = ProductTrackingConstant.Tracking.DEFAULT_VALUE,
+                    category = TrackingUtil.getEnhanceCategoryFormatted(productInfo?.basic?.category?.detail),
+                    currency = null,
+                    dimension38 = trackerAttribution ?: ProductTrackingConstant.Tracking.DEFAULT_VALUE,
+                    dimension55 = dimension55,
+                    dimension54 = TrackingUtil.getMultiOriginAttribution(multiOrigin),
+                    dimension83 = dimension83,
+                    dimension81 = productInfo?.shopTypeString ?: "",
+                    dimension98 = if (isStockAvailable == "0") "not available" else "available",
+                    index = 1
             ))
-        }
-
-        fun sendTrackingBundle(key: String, bundle: Bundle) {
-            TrackApp
-                    .getInstance()
-                    .gtm
-                    .sendEnhanceEcommerceEvent(
-                            key, bundle
-                    )
         }
 
         val generateProductViewBundle = { irisSessionId: String, trackerListName: String?, productInfo: DynamicProductInfoP1?,
@@ -1585,7 +1576,7 @@ object DynamicProductDetailTracking {
                             productInfo?.isProductVariant().toString(),
                             productInfo?.data?.campaign?.campaignID,
                             "product status:${productInfo?.basic?.status?.toLowerCase()};" + "shop status:${shopInfo?.statusInfo?.shopStatus};",
-                            productInfo?.getFinalStock()?.toString()
+                            productInfo?.getFinalStock()
                     )
         }
 
@@ -1599,7 +1590,7 @@ object DynamicProductDetailTracking {
                                                multiOrigin: Boolean,
                                                deeplinkUrl: String,
                                                isStockAvailable: String,
-                                               isFreeOngkir: Boolean): Bundle {
+                                               isFreeOngkir: Boolean) {
 
             val sentBundle = generateProductViewBundle(
                     irisSessionId, trackerListName, productInfo, shopInfo,
@@ -1610,8 +1601,6 @@ object DynamicProductDetailTracking {
                     ProductDetailViewsBundler.KEY,
                     sentBundle
             )
-
-            return sentBundle
         }
 
         fun eventRecommendationImpression(trackingQueue: TrackingQueue?, position: Int, product: RecommendationItem, chipValue: String, isComparison: Boolean, isSessionActive: Boolean, pageName: String, pageTitle: String,
