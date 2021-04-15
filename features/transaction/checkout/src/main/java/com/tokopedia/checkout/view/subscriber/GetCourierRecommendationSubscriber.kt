@@ -39,7 +39,7 @@ class GetCourierRecommendationSubscriber(private val view: ShipmentContract.View
                         for (shippingCourierUiModel in shippingDurationUiModel.shippingCourierViewModelList) {
                             if (isTradeInDropOff || shippingCourierUiModel.productData.shipperProductId == spId &&
                                     shippingCourierUiModel.productData.shipperId == shipperId) {
-                                if (shippingCourierUiModel.productData.error?.errorMessage.isNullOrEmpty()) {
+                                if (!shippingCourierUiModel.productData.error?.errorMessage.isNullOrEmpty()) {
                                     view.renderCourierStateFailed(itemPosition, isTradeInDropOff)
                                     return
                                 } else {
