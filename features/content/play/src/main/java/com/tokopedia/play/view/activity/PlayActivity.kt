@@ -214,12 +214,7 @@ class PlayActivity : BaseActivity(),
     }
 
     private fun setupViewModel() {
-        val viewModelFactory = object : AbstractSavedStateViewModelFactory(this, intent?.extras ?: Bundle()) {
-            override fun <T : ViewModel?> create(key: String, modelClass: Class<T>, handle: SavedStateHandle): T {
-                return playParentViewModelFactory.create(handle) as T
-            }
-        }
-        viewModel = ViewModelProvider(this, viewModelFactory).get(PlayParentViewModel::class.java)
+        viewModel = ViewModelProvider(this, getViewModelFactory()).get(PlayParentViewModel::class.java)
     }
 
     private fun setupPage() {
@@ -300,6 +295,14 @@ class PlayActivity : BaseActivity(),
 
     override fun canNavigateNextPage(): Boolean {
         return swipeContainerView.hasNextPage()
+    }
+
+    fun getViewModelFactory(): ViewModelProvider.Factory {
+        return object : AbstractSavedStateViewModelFactory(this, intent?.extras ?: Bundle()) {
+            override fun <T : ViewModel?> create(key: String, modelClass: Class<T>, handle: SavedStateHandle): T {
+                return playParentViewModelFactory.create(handle) as T
+            }
+        }
     }
 
     fun getPerformanceMonitoring(): PlayPltPerformanceCallback = pageMonitoring
