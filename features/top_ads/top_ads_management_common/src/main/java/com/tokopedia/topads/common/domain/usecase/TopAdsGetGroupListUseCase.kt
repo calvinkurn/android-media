@@ -21,7 +21,6 @@ import com.tokopedia.user.session.UserSessionInterface
 import java.util.*
 import javax.inject.Inject
 import kotlin.collections.HashMap
-import kotlin.collections.MutableList
 import kotlin.collections.set
 
 /**
@@ -53,7 +52,7 @@ const val GROUP_LIST_QUERY = """
 class TopAdsGetGroupListUseCase @Inject constructor(val userSession: UserSessionInterface) : RestRequestUseCase() {
 
 
-    fun setParamsForKeyWord(search: String): RequestParams{
+    fun setParamsForKeyWord(search: String): RequestParams {
         val requestParams = RequestParams.create()
         val queryMap = HashMap<String, Any?>()
         queryMap[ParamObject.SHOP_id] = userSession.shopId.toIntOrZero()
@@ -61,7 +60,7 @@ class TopAdsGetGroupListUseCase @Inject constructor(val userSession: UserSession
         queryMap[KEYWORD] = search
         queryMap[GROUP_TYPE] = 1
         queryMap[SINGLE_ROW] = "1"/*keywords*/
-        requestParams.putAll(queryMap)
+        requestParams.putAll(mapOf(ParamObject.QUERY_INPUT to queryMap))
         return requestParams
     }
 
