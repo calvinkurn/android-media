@@ -52,7 +52,7 @@ class MerchantRewardToolbar @JvmOverloads constructor(
 
     private fun initDrawableResources() {
         backArrowWhite = getBitmapDrawableFromVectorDrawable(mContext, R.drawable.ic_new_action_back_tokopoints)
-        backArrowWhite?.setColorFilter(context.resources.getColor(R.color.tp_toolbar_navigation_grey_color), PorterDuff.Mode.SRC_ATOP)
+        backArrowWhite?.setColorFilter(context.resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N400), PorterDuff.Mode.SRC_ATOP)
         navigationIcon = backArrowWhite
     }
 

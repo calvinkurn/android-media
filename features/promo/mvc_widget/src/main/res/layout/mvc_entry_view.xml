@@ -55,7 +55,7 @@
             android:layout_marginStart="@dimen/dp_12"
             android:layout_marginTop="@dimen/dp_6"
             android:lines="1"
-            android:textColor="@color/mvcw_31353B"
+            android:textColor="@color/Unify_N700"
             app:layout_constraintLeft_toRightOf="@id/image_coupon"
             app:layout_constraintRight_toLeftOf="@+id/image_chevron"
             app:layout_constraintTop_toTopOf="parent"
@@ -72,7 +72,7 @@
             app:layout_constraintLeft_toLeftOf="@+id/tvTitle"
             app:layout_constraintTop_toBottomOf="@+id/tvTitle"
             app:typographyType="body_3"
-            android:textColor="@color/mvcw_31353B"
+            android:textColor="@color/Unify_N700"
             tools:text="Masih ada 6 Kupon Toko lainnya!" />
 
         <androidx.appcompat.widget.AppCompatImageView
