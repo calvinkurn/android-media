@@ -109,4 +109,9 @@ fun String.asLowerCase(): String {
     return this.toLowerCase(locale)
 }
 
+fun String.asCamelCase(): String {
+    val locale = Locale.getDefault()
+    return this.capitalize(locale)
+}
+
 fun String?.toEmpty(): String = ""

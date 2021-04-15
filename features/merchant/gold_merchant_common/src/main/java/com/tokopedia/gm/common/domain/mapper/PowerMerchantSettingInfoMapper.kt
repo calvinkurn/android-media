@@ -21,9 +21,8 @@ class PowerMerchantSettingInfoMapper @Inject constructor() {
     fun mapRemoteModelToUiModel(response: PMSettingInfoModel?): PowerMerchantSettingInfoUiModel {
         return PowerMerchantSettingInfoUiModel(
                 shopId = response?.shopId.orZero().toString(),
-                isNewPmContent = response?.isNewPmContent ?: false,
-                isFinalSuccessPopup = response?.isFinalSuccessPopup ?: false,
                 periodeType = response?.periodeType ?: PeriodType.TRANSITION_PERIOD,
+                periodeEndDateMillis = response?.periodEndDateMillis ?: System.currentTimeMillis(),
                 tickers = response?.tickers?.map {
                     TickerUiModel(
                             title = it.title.orEmpty(),
