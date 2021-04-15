@@ -9,6 +9,7 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.gm.common.domain.interactor.GetShopInfoPeriodUseCase
 import com.tokopedia.sellerhome.common.viewmodel.NonNullLiveData
 import com.tokopedia.seller.menu.common.domain.usecase.GetAllShopInfoUseCase
 import com.tokopedia.seller.menu.common.view.uimodel.base.partialresponse.PartialSettingSuccessInfoType
@@ -26,6 +27,7 @@ class OtherMenuViewModel @Inject constructor(
     private val dispatcher: CoroutineDispatchers,
     private val getAllShopInfoUseCase: GetAllShopInfoUseCase,
     private val getShopFreeShippingInfoUseCase: GetShopFreeShippingInfoUseCase,
+    private val getShopInfoPeriodUseCase: GetShopInfoPeriodUseCase,
     private val userSession: UserSessionInterface,
     private val remoteConfig: FirebaseRemoteConfigImpl
 ): BaseViewModel(dispatcher.main) {

@@ -137,6 +137,8 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
         }
     }
 
+    private val settUiModelList = mutableListOf<SettingUiModel>()
+
     override fun onResume() {
         super.onResume()
         getAllShopInfoData()
@@ -319,87 +321,87 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
     }
 
     private fun populateAdapterData() {
-        val settingList = mutableListOf(
-                SettingTitleUiModel(resources.getString(R.string.setting_menu_improve_sales)),
-                StatisticMenuItemUiModel(
-                        title = resources.getString(R.string.setting_menu_statistic),
-                        clickApplink = ApplinkConstInternalMechant.MERCHANT_STATISTIC_DASHBOARD,
-                        iconUnify = IconUnify.GRAPH),
-                MenuItemUiModel(
-                        resources.getString(R.string.setting_menu_ads_and_shop_promotion),
-                        null,
-                        ApplinkConstInternalSellerapp.CENTRALIZED_PROMO,
-                        eventActionSuffix = SettingTrackingConstant.SHOP_ADS_AND_PROMOTION,
-                        iconUnify = IconUnify.PROMO_ADS),
-                MenuItemUiModel(
-                        resources.getString(R.string.setting_menu_performance),
-                        null,
-                        ApplinkConst.SHOP_PERFORMANCE,
-                        eventActionSuffix = SettingTrackingConstant.SHOP_PERFORMANCE,
-                        iconUnify = IconUnify.GRAPH),
-                SettingTitleUiModel(resources.getString(R.string.setting_menu_buyer_info)),
-                MenuItemUiModel(
-                        resources.getString(R.string.setting_menu_discussion),
-                        null,
-                        ApplinkConst.TALK,
-                        eventActionSuffix = SettingTrackingConstant.DISCUSSION,
-                        iconUnify = IconUnify.DISCUSSION),
-                MenuItemUiModel(
-                        resources.getString(R.string.setting_menu_review),
-                        null,
-                        ApplinkConst.REPUTATION,
-                        eventActionSuffix = SettingTrackingConstant.REVIEW,
-                        iconUnify = IconUnify.STAR),
-                MenuItemUiModel(
-                        resources.getString(R.string.setting_menu_complaint),
-                        null,
-                        null,
-                        eventActionSuffix = SettingTrackingConstant.COMPLAINT,
-                        iconUnify = IconUnify.PRODUCT_INFO
-                ) {
-                    val applink = String.format(APPLINK_FORMAT, ApplinkConst.WEBVIEW, SellerBaseUrl.HOSTNAME, SellerBaseUrl.RESO_INBOX_SELLER)
-                    val intent = RouteManager.getIntent(context, applink)
-                    context?.startActivity(intent)
-                },
-                DividerUiModel(),
-                MenuItemUiModel(
-                        resources.getString(R.string.setting_menu_finance_service),
-                        null,
-                        eventActionSuffix = SettingTrackingConstant.FINANCIAL_SERVICE,
-                        iconUnify = IconUnify.FINANCE
-                ) {
-                    RouteManager.route(context, ApplinkConst.LAYANAN_FINANSIAL)
-                },
-                MenuItemUiModel(
-                        resources.getString(R.string.setting_menu_seller_education_center),
-                        null,
-                        eventActionSuffix = SettingTrackingConstant.SELLER_CENTER,
-                        iconUnify = IconUnify.SHOP_INFO
-                ) {
-                    val applink = String.format(APPLINK_FORMAT, ApplinkConst.WEBVIEW, SellerBaseUrl.SELLER_HOSTNAME, SellerBaseUrl.SELLER_EDU)
-                    val intent = RouteManager.getIntent(context, applink)
-                    context?.startActivity(intent)
-                },
-                MenuItemUiModel(
-                        resources.getString(R.string.setting_menu_tokopedia_care),
-                        null,
-                        ApplinkConst.CONTACT_US_NATIVE,
-                        eventActionSuffix = SettingTrackingConstant.TOKOPEDIA_CARE,
-                        iconUnify = IconUnify.CALL_CENTER),
-                DividerUiModel(DividerType.THIN_PARTIAL),
-                MenuItemUiModel(
-                        resources.getString(R.string.setting_menu_setting),
-                        null,
-                        null,
-                        eventActionSuffix = SettingTrackingConstant.SETTINGS,
-                        iconUnify = IconUnify.SETTING
-                ) {
-                    startActivity(Intent(context, MenuSettingActivity::class.java))
-                }
-        )
-        adapter.data.addAll(settingList)
+        settUiModelList.apply {
+            add(SettingTitleUiModel(resources.getString(R.string.setting_menu_improve_sales)))
+            add(StatisticMenuItemUiModel(
+                    title = resources.getString(R.string.setting_menu_statistic),
+                    clickApplink = ApplinkConstInternalMechant.MERCHANT_STATISTIC_DASHBOARD,
+                    iconUnify = IconUnify.GRAPH))
+            add(MenuItemUiModel(
+                    resources.getString(R.string.setting_menu_ads_and_shop_promotion),
+                    null,
+                    ApplinkConstInternalSellerapp.CENTRALIZED_PROMO,
+                    eventActionSuffix = SettingTrackingConstant.SHOP_ADS_AND_PROMOTION,
+                    iconUnify = IconUnify.PROMO_ADS))
+            add(MenuItemUiModel(
+                    resources.getString(R.string.setting_menu_performance),
+                    null,
+                    ApplinkConst.SHOP_PERFORMANCE,
+                    eventActionSuffix = SettingTrackingConstant.SHOP_PERFORMANCE,
+                    iconUnify = IconUnify.GRAPH))
+            add(SettingTitleUiModel(resources.getString(R.string.setting_menu_buyer_info)))
+            add(MenuItemUiModel(
+                    resources.getString(R.string.setting_menu_discussion),
+                    null,
+                    ApplinkConst.TALK,
+                    eventActionSuffix = SettingTrackingConstant.DISCUSSION,
+                    iconUnify = IconUnify.DISCUSSION))
+            add(MenuItemUiModel(
+                    resources.getString(R.string.setting_menu_review),
+                    null,
+                    ApplinkConst.REPUTATION,
+                    eventActionSuffix = SettingTrackingConstant.REVIEW,
+                    iconUnify = IconUnify.STAR))
+            add(MenuItemUiModel(
+                    resources.getString(R.string.setting_menu_complaint),
+                    null,
+                    null,
+                    eventActionSuffix = SettingTrackingConstant.COMPLAINT,
+                    iconUnify = IconUnify.PRODUCT_INFO
+            ) {
+                val applink = String.format(APPLINK_FORMAT, ApplinkConst.WEBVIEW, SellerBaseUrl.HOSTNAME, SellerBaseUrl.RESO_INBOX_SELLER)
+                val intent = RouteManager.getIntent(context, applink)
+                context?.startActivity(intent)
+            })
+            add(DividerUiModel())
+            add(MenuItemUiModel(
+                    resources.getString(R.string.setting_menu_finance_service),
+                    null,
+                    eventActionSuffix = SettingTrackingConstant.FINANCIAL_SERVICE,
+                    iconUnify = IconUnify.FINANCE
+            ) {
+                RouteManager.route(context, ApplinkConst.LAYANAN_FINANSIAL)
+            })
+            add(MenuItemUiModel(
+                    resources.getString(R.string.setting_menu_seller_education_center),
+                    null,
+                    eventActionSuffix = SettingTrackingConstant.SELLER_CENTER,
+                    iconUnify = IconUnify.SHOP_INFO
+            ) {
+                val applink = String.format(APPLINK_FORMAT, ApplinkConst.WEBVIEW, SellerBaseUrl.SELLER_HOSTNAME, SellerBaseUrl.SELLER_EDU)
+                val intent = RouteManager.getIntent(context, applink)
+                context?.startActivity(intent)
+            })
+            add(MenuItemUiModel(
+                    resources.getString(R.string.setting_menu_tokopedia_care),
+                    null,
+                    ApplinkConst.CONTACT_US_NATIVE,
+                    eventActionSuffix = SettingTrackingConstant.TOKOPEDIA_CARE,
+                    iconUnify = IconUnify.CALL_CENTER))
+            add(DividerUiModel(DividerType.THIN_PARTIAL))
+            add(MenuItemUiModel(
+                    resources.getString(R.string.setting_menu_setting),
+                    null,
+                    null,
+                    eventActionSuffix = SettingTrackingConstant.SETTINGS,
+                    iconUnify = IconUnify.SETTING
+            ) {
+                startActivity(Intent(context, MenuSettingActivity::class.java))
+            })
+        }
+        adapter.data.addAll(settUiModelList)
         adapter.notifyDataSetChanged()
-        renderList(settingList)
+        renderList(settUiModelList)
     }
 
     private fun getAllShopInfoData() {
