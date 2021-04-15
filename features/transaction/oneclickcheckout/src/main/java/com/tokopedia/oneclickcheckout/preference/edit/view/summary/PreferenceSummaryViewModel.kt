@@ -116,7 +116,7 @@ class PreferenceSummaryViewModel @Inject constructor(private val getPreferenceBy
         }
         createPreferenceUseCase.execute(CreatePreferenceRequest(addressId, serviceId, gatewayCode, paymentQuery, isDefaultProfileChecked, fromFlow, chosenAddress),
                 { message: String ->
-                    if (addressModel != null && (isSelectedPreference || isDefaultProfileChecked)) {
+                    if (addressModel != null && isSelectedPreference) {
                         _localCacheAddressResult.value = addressModel
                     }
                     _editResult.value = OccState.Success(message)
@@ -133,7 +133,7 @@ class PreferenceSummaryViewModel @Inject constructor(private val getPreferenceBy
         OccIdlingResource.increment()
         updatePreferenceUseCase.execute(UpdatePreferenceRequest(profileId, addressId, serviceId, gatewayCode, paymentQuery, isDefaultProfileChecked, fromFlow),
                 { message: String ->
-                    if (addressModel != null && (isSelectedPreference || isDefaultProfileChecked)) {
+                    if (addressModel != null && isSelectedPreference) {
                         _localCacheAddressResult.value = addressModel
                     }
                     _editResult.value = OccState.Success(message)
