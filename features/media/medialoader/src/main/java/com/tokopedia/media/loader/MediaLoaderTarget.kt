@@ -33,7 +33,7 @@ object MediaLoaderTarget {
         if (properties.data is String) {
             GlideApp.with(context).asBitmap().also {
                 // url builder
-                val source = Loader.instance.urlBuilder(properties.data.toString())
+                val source = Loader.urlBuilder(properties.data.toString())
 
                 /*
                 * only track the performance monitoring for a new domain,

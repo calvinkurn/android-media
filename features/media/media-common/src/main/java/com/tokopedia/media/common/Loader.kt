@@ -7,7 +7,7 @@ import com.tokopedia.media.common.data.MediaSettingPreferences
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.media.common.util.NetworkManager.state as networkManagerState
 
-class Loader {
+object Loader {
 
     private var context: Context? = null
 
@@ -17,6 +17,9 @@ class Loader {
     // reducing fetch time of remote config
     private var isAdaptiveImage: Boolean = false
 
+    private const val KEY_ADAPTIVE_IMAGE = "is_adaptive_image_status"
+
+    @JvmStatic
     fun init(application: Application) {
         this.context = application.applicationContext
 
@@ -30,12 +33,6 @@ class Loader {
         return if (isAdaptiveImage) {
             urlBuilder(networkState, settings.qualitySettings(), url)
         } else url
-    }
-
-    companion object {
-        private const val KEY_ADAPTIVE_IMAGE = "is_adaptive_image_status"
-
-        @JvmStatic val instance = Loader()
     }
 
 }
