@@ -2,7 +2,7 @@ package com.tokopedia.hotel.hoteldetail.presentation.model.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.common.travel.utils.TravelDispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
@@ -17,15 +17,15 @@ import javax.inject.Inject
 /**
  * @author by furqan on 22/04/19
  */
-class HotelReviewViewModel @Inject constructor(private val dispatcher: TravelDispatcherProvider,
-                                               val graphqlRepository: GraphqlRepository) : BaseViewModel(dispatcher.io()) {
+class HotelReviewViewModel @Inject constructor(private val dispatcher: CoroutineDispatchers,
+                                               val graphqlRepository: GraphqlRepository) : BaseViewModel(dispatcher.io) {
 
     val reviewResult = MutableLiveData<Result<HotelReview.ReviewData>>()
 
     fun getReview(query: String, hotelReviewParam: HotelReviewParam) {
         val dataParams = mapOf(PARAM_REVIEW_KEY to hotelReviewParam)
         launchCatchError(block = {
-            val data = withContext(dispatcher.ui()) {
+            val data = withContext(dispatcher.main) {
                 val graphqlRequest = GraphqlRequest(query, HotelReview.Response::class.java, dataParams, false)
                 graphqlRepository.getReseponse(listOf(graphqlRequest))
             }.getSuccessData<HotelReview.Response>()
