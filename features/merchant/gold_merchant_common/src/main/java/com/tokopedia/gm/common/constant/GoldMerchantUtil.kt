@@ -8,6 +8,7 @@ import kotlin.math.abs
 import kotlin.math.roundToInt
 
 object GoldMerchantUtil {
+
     infix fun String.diffDays(days: Int): Boolean {
         val simpleDateFormat = SimpleDateFormat(PATTERN_DATE_SHOP_INFO, Locale.getDefault())
         val joinDate = simpleDateFormat.parse(this)

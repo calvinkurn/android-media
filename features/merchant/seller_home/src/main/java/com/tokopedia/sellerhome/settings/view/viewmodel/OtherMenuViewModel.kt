@@ -42,7 +42,10 @@ class OtherMenuViewModel @Inject constructor(
     private val _isToasterAlreadyShown = NonNullLiveData(false)
     private val _isStatusBarInitialState = MutableLiveData<Boolean>().apply { value = true }
     private val _isFreeShippingActive = MutableLiveData<Boolean>()
+    private val _shopPeriodType = MutableLiveData<Result<String>>()
 
+    val shopPeriodType: LiveData<Result<String>>
+        get() = _shopPeriodType
     val settingShopInfoLiveData: LiveData<Result<SettingShopInfoUiModel>>
         get() = _settingShopInfoLiveData
     val isStatusBarInitialState: LiveData<Boolean>
@@ -63,6 +66,18 @@ class OtherMenuViewModel @Inject constructor(
 
     fun setIsStatusBarInitialState(isInitialState: Boolean) {
         _isStatusBarInitialState.value = isInitialState
+    }
+
+    fun getShopPeriodType() {
+        launchCatchError(block = {
+            val periodData = withContext(dispatcher.io) {
+                getShopInfoPeriodUseCase.requestParams = GetShopInfoPeriodUseCase.createParams(userSession.shopId.toIntOrZero())
+                getShopInfoPeriodUseCase.executeOnBackground()
+            }
+            _shopPeriodType.value = Success(periodData.periodType)
+        }, onError = {
+            _shopPeriodType.value = Fail(it)
+        })
     }
 
     fun getFreeShippingStatus() {

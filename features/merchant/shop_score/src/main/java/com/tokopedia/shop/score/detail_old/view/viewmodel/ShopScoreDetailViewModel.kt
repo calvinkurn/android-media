@@ -24,7 +24,7 @@ class ShopScoreDetailViewModel @Inject constructor(
         val userSession: UserSessionInterface,
         private val mapper: ShopScoreDetailMapper,
         private val dispatchers: CoroutineDispatchers
-): BaseViewModel(dispatchers.main){
+) : BaseViewModel(dispatchers.main) {
 
     val shopScoreData: LiveData<Result<Pair<ShopScoreDetailData, String>>>
         get() = _shopScoreData
@@ -33,18 +33,15 @@ class ShopScoreDetailViewModel @Inject constructor(
 
     fun getShopScoreDetail() {
         launchCatchError(block = {
-            withContext(dispatchers.io) {
-                val shopScoreDetailData = async { getShopScoreUseCase.execute(userSession.shopId) }
-                mapper.mapToShopScoreDetailData(shopScoreDetailData.await().result)
-
-                val shopInfoPeriodData = async {
-                    getShopInfoPeriodUseCase.requestParams = GetShopInfoPeriodUseCase.createParams(userSession.shopId.toIntOrZero())
-                    getShopInfoPeriodUseCase.executeOnBackground()
-                }
-
-                _shopScoreData.postValue(Success(Pair(mapper.mapToShopScoreDetailData(shopScoreDetailData.await().result),
-                        shopInfoPeriodData.await().periodType)))
+            val shopScoreDetailData = async {
+                getShopScoreUseCase.execute(userSession.shopId)
             }
+            val shopInfoPeriodData = async {
+                getShopInfoPeriodUseCase.requestParams = GetShopInfoPeriodUseCase.createParams(userSession.shopId.toIntOrZero())
+                getShopInfoPeriodUseCase.executeOnBackground()
+            }
+            _shopScoreData.postValue(Success(Pair(mapper.mapToShopScoreDetailData(shopScoreDetailData.await().result),
+                    shopInfoPeriodData.await().periodType)))
         }) {
             _shopScoreData.postValue(Fail(it))
         }

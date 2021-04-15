@@ -221,12 +221,12 @@ class ShopScoreDetailFragment : Fragment() {
 
             when (result) {
                 is Success -> {
+                    setupTickerShopScore(result.data.second)
                     result.data.first.run {
                         renderShopScoreDetail(items)
                         renderShopScoreSummary(summary)
                         renderShopScoreState(shopType)
                     }
-                    setupTickerShopScore(result.data.second)
                 }
                 is Fail -> emptyState()
             }

@@ -59,7 +59,6 @@ class GetShopInfoPeriodUseCase @Inject constructor(
 
     override suspend fun executeOnBackground(): ShopInfoPeriodUiModel {
         val shopInfoPeriodWrapperResponse = ShopInfoPeriodWrapperResponse()
-        var shopInfoPeriodUiModel = ShopInfoPeriodUiModel()
         val shopId = requestParams.getInt(SHOP_ID, 0)
 
         val shopInfoParam = mapOf(SHOP_INFO_INPUT to ParamShopInfoByID(shopIDs = listOf(shopId)))
@@ -71,24 +70,22 @@ class GetShopInfoPeriodUseCase @Inject constructor(
         val requests = mutableListOf(shopInfoRequest, periodTypeRequest)
         try {
             val gqlResponse = graphqlRepository.getReseponse(requests)
-            if (!gqlResponse.getError(ShopInfoByIDResponse::class.java).isNullOrEmpty()) {
+            if (gqlResponse.getError(ShopInfoByIDResponse::class.java).isNullOrEmpty()) {
                 shopInfoPeriodWrapperResponse.shopInfoByIDResponse = gqlResponse.getData<ShopInfoByIDResponse>(ShopInfoByIDResponse::class.java).shopInfoByID
             } else {
                 val dataError = gqlResponse.getError(ShopInfoByIDResponse::class.java).joinToString { it.message }
                 throw MessageErrorException(dataError)
             }
 
-            if (!gqlResponse.getError(PMPeriodTypeResponse::class.java).isNullOrEmpty()) {
+            if (gqlResponse.getError(PMPeriodTypeResponse::class.java).isNullOrEmpty()) {
                 shopInfoPeriodWrapperResponse.goldGetPMSettingInfo = gqlResponse.getData<PMPeriodTypeResponse>(PMPeriodTypeResponse::class.java).goldGetPMSettingInfo
             } else {
                 val dataError = gqlResponse.getError(PMPeriodTypeResponse::class.java).joinToString { it.message }
                 throw MessageErrorException(dataError)
             }
-            shopInfoPeriodUiModel = shopScoreCommonMapper.mapToGetShopInfo(shopInfoPeriodWrapperResponse)
+            return shopScoreCommonMapper.mapToGetShopInfo(shopInfoPeriodWrapperResponse)
         } catch (e: Throwable) {
-
+            throw MessageErrorException(e.message)
         }
-
-        return shopInfoPeriodUiModel
     }
 }

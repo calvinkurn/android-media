@@ -6,6 +6,7 @@ import com.tokopedia.gm.common.constant.GoldMerchantUtil.totalDays
 import com.tokopedia.gm.common.constant.GoldMerchantUtil.totalMonths
 import com.tokopedia.gm.common.constant.NEW_SELLER_DAYS
 import com.tokopedia.gm.common.constant.PATTERN_DATE_PARAM
+import com.tokopedia.gm.common.constant.PATTERN_DATE_SHOP_INFO
 import com.tokopedia.gm.common.data.source.cloud.model.ShopInfoPeriodWrapperResponse
 import com.tokopedia.gm.common.presentation.model.ShopInfoPeriodUiModel
 import com.tokopedia.kotlin.extensions.view.orZero
@@ -19,8 +20,6 @@ class ShopScoreCommonMapper @Inject constructor(private val userSession: UserSes
     fun mapToGetShopInfo(shopInfoPeriodWrapperResponse: ShopInfoPeriodWrapperResponse): ShopInfoPeriodUiModel {
         return ShopInfoPeriodUiModel(
                 isOfficialStore = userSession.isShopOfficialStore,
-                joinDate = shopInfoPeriodWrapperResponse.shopInfoByIDResponse?.result?.firstOrNull()?.createInfo?.shopCreated.orEmpty()
-                        joinDateFormatted (PATTERN_DATE_PARAM),
                 periodType = shopInfoPeriodWrapperResponse.goldGetPMSettingInfo?.periodType ?: "",
                 isNewSeller = shopInfoPeriodWrapperResponse.shopInfoByIDResponse?.result?.firstOrNull()?.createInfo?.shopCreated.orEmpty()
                         isNewSeller (NEW_SELLER_DAYS),
@@ -31,11 +30,6 @@ class ShopScoreCommonMapper @Inject constructor(private val userSession: UserSes
                 periodEndDate = shopInfoPeriodWrapperResponse.goldGetPMSettingInfo?.periodEndDate.orEmpty(),
                 numberMonth = shopInfoPeriodWrapperResponse.goldGetPMSettingInfo?.periodStartDate?.totalMonths().orZero()
         )
-    }
-
-    private infix fun String.joinDateFormatted(pattern: String): String {
-        val simpleDateFormat = SimpleDateFormat(pattern, Locale.getDefault())
-        return simpleDateFormat.format(this)
     }
 
     private infix fun String.isNewSeller(days: Int) = diffDays(days)

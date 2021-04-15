@@ -2,6 +2,7 @@ package com.tokopedia.shop.score.performance.domain.mapper
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.gm.common.constant.TRANSITION_PERIOD
 import com.tokopedia.gm.common.presentation.model.ShopInfoPeriodUiModel
 import com.tokopedia.gm.common.utils.getShopScoreDate
 import com.tokopedia.kotlin.extensions.view.isZero
@@ -28,6 +29,7 @@ import com.tokopedia.shop.score.common.ShopScoreConstant.NO_GRADE_SCORE
 import com.tokopedia.shop.score.common.ShopScoreConstant.OPEN_TOKOPEDIA_SELLER_KEY
 import com.tokopedia.shop.score.common.ShopScoreConstant.ORDER_SUCCESS_RATE_KEY
 import com.tokopedia.shop.score.common.ShopScoreConstant.PATTERN_DATE_NEW_SELLER
+import com.tokopedia.shop.score.common.ShopScoreConstant.PATTER_DATE_TEXT
 import com.tokopedia.shop.score.common.ShopScoreConstant.PENALTY_IDENTIFIER
 import com.tokopedia.shop.score.common.ShopScoreConstant.PRODUCT_REVIEW_WITH_FOUR_STARS_KEY
 import com.tokopedia.shop.score.common.ShopScoreConstant.READ_TIPS_MORE_INFO_URL
@@ -59,6 +61,7 @@ import com.tokopedia.shop.score.common.ShopScoreConstant.UP_POTENTIAL_PM
 import com.tokopedia.shop.score.common.ShopScoreConstant.dayText
 import com.tokopedia.shop.score.common.ShopScoreConstant.minuteText
 import com.tokopedia.shop.score.common.ShopScoreConstant.percentText
+import com.tokopedia.shop.score.common.formatDate
 import com.tokopedia.shop.score.performance.domain.model.*
 import com.tokopedia.shop.score.performance.presentation.model.*
 import com.tokopedia.user.session.UserSessionInterface
@@ -133,7 +136,7 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
         shopScoreVisitableList.apply {
             if (isNewSeller) {
                 val mapTimerNewSeller = mapToTimerNewSellerUiModel(shopAge, shopInfoPeriodUiModel.isEndTenureNewSeller)
-                if(mapTimerNewSeller.second) {
+                if (mapTimerNewSeller.second) {
                     add(mapToTimerNewSellerUiModel(shopAge, shopInfoPeriodUiModel.isEndTenureNewSeller).first)
                 }
                 add(ItemLevelScoreProjectUiModel())
@@ -159,7 +162,9 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
                     if (shopScoreWrapperResponse.goldPMGradeBenefitInfoResponse != null &&
                             shopScoreWrapperResponse.goldGetPMStatusResponse != null) {
                         if (shopAge >= SHOP_AGE_SIXTY) {
-                            add(mapToTransitionPeriodReliefUiModel())
+                            if (shopInfoPeriodUiModel.periodType == TRANSITION_PERIOD) {
+                                add(mapToTransitionPeriodReliefUiModel(shopInfoPeriodUiModel.periodEndDate))
+                            }
                             add(mapToItemPotentialStatusPMUiModel(
                                     shopScoreWrapperResponse.goldPMGradeBenefitInfoResponse,
                                     shopScoreWrapperResponse.goldGetPMStatusResponse,
@@ -325,15 +330,14 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
                     }
                 }
             }
-            this.shopLevel = shopScoreLevelResponse?.shopLevel?.toString() ?: "-"
-            this.shopScore = shopScoreLevelResponse?.shopScore?.toString() ?: "-"
+            this.shopLevel = if (shopScoreLevelResponse?.shopLevel?.isZero() == true) "-" else shopScoreLevelResponse?.shopLevel?.toString().orEmpty()
+            this.shopScore = if (shopScoreLevelResponse?.shopScore?.isZero() == true) "-" else shopScoreLevelResponse?.shopScore?.toString().orEmpty()
             this.scorePenalty = shopScoreLevelResponse?.shopScoreDetail?.firstOrNull { it.identifier == PENALTY_IDENTIFIER }?.rawValue
         }
         return headerShopPerformanceUiModel
     }
 
-    //if ready staging
-    fun mapToShoInfoLevelUiModel(shopLevel: Int): ShopInfoLevelUiModel {
+    fun mapToShopInfoLevelUiModel(shopLevel: Int): ShopInfoLevelUiModel {
         val shopInfoLevelUiModel = ShopInfoLevelUiModel()
 
         shopInfoLevelUiModel.cardTooltipLevelList = mapToCardTooltipLevel(shopLevel)
@@ -344,7 +348,8 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
         return mutableListOf<ItemDetailPerformanceUiModel>().apply {
 
             val multipleFilterShopScore = listOf(CHAT_DISCUSSION_REPLY_SPEED_KEY, SPEED_SENDING_ORDERS_KEY,
-                    ORDER_SUCCESS_RATE_KEY, CHAT_DISCUSSION_SPEED_KEY, PRODUCT_REVIEW_WITH_FOUR_STARS_KEY, TOTAL_BUYER_KEY, OPEN_TOKOPEDIA_SELLER_KEY)
+                    ORDER_SUCCESS_RATE_KEY, CHAT_DISCUSSION_SPEED_KEY, PRODUCT_REVIEW_WITH_FOUR_STARS_KEY,
+                    TOTAL_BUYER_KEY, OPEN_TOKOPEDIA_SELLER_KEY)
 
             val shopScoreLevelSize = shopScoreLevelList?.filter { it.identifier in multipleFilterShopScore }?.size.orZero()
             shopScoreLevelList?.filter { it.identifier in multipleFilterShopScore }?.forEachIndexed { index, shopScoreDetail ->
@@ -377,8 +382,8 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
                 ?: "-", nextUpdate = shopScoreTooltipResponse?.nextUpdate ?: "-")
     }
 
-    private fun mapToTransitionPeriodReliefUiModel(): TransitionPeriodReliefUiModel {
-        return TransitionPeriodReliefUiModel(dateTransitionPeriodRelief = getShopScoreDate(context), iconTransitionPeriodRelief = IC_SELLER_ANNOUNCE)
+    private fun mapToTransitionPeriodReliefUiModel(endDate: String): TransitionPeriodReliefUiModel {
+        return TransitionPeriodReliefUiModel(dateTransitionPeriodRelief = endDate.formatDate(PATTER_DATE_TEXT), iconTransitionPeriodRelief = IC_SELLER_ANNOUNCE)
     }
 
     private fun mapToItemRecommendationPMUiModel(recommendationTools: List<GetRecommendationToolsResponse.ValuePropositionGetRecommendationTools.RecommendationTool>?): SectionShopRecommendationUiModel {
@@ -430,55 +435,20 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
         val titlePM =
                 when (goldGetPMShopInfoResponse?.isNewSeller) {
                     true -> {
-                        when (shopInfoPeriodUiModel.periodType) {
-                            ShopScoreConstant.TRANSITION_PERIOD -> {
-                                context?.getString(R.string.score_performance_pm_new_seller_label).orEmpty()
-                            }
-                            else -> ""
-                        }
+                        getTitlePMNewSellerSection(shopInfoPeriodUiModel)
                     }
                     else ->
                         when (shopInfoPeriodUiModel.periodType) {
                             ShopScoreConstant.TRANSITION_PERIOD -> {
-                                when (shopInfoPeriodUiModel.numberMonth) {
-                                    ShopScoreConstant.ONE_MONTH -> {
-                                        context?.getString(R.string.current_regarding_penalty_pm_label).orEmpty()
-                                    }
-                                    ShopScoreConstant.TWO_MONTH, ShopScoreConstant.THREE_MONTH -> {
-                                        context?.getString(R.string.performance_regarding_pm_label, currentPMGrade?.lastUpdateDate.orEmpty()).orEmpty()
-                                    }
-                                    else -> ""
-                                }
+                                getTitlePMExistingSellerTransitionPeriod(shopInfoPeriodUiModel, currentPMGrade)
                             }
                             ShopScoreConstant.END_PERIOD -> {
                                 when (shopInfoPeriodUiModel.numberMonth) {
                                     ShopScoreConstant.ONE_MONTH, ShopScoreConstant.TWO_MONTH -> {
-                                        when (shopScore) {
-                                            in goldGetPMShopInfoResponse?.shopScoreThreshold.orZero()..SHOP_SCORE_SIXTY_NINE -> {
-                                                context?.getString(R.string.regarding_performance_reputation_pm_label).orEmpty()
-                                            }
-                                            else -> {
-                                                if (goldGetPMShopInfoResponse?.shopScoreSum.orZero() < goldGetPMShopInfoResponse?.shopScoreThreshold.orZero()) {
-                                                    context?.getString(R.string.score_performance_pm_less_than_sixty_label).orEmpty()
-                                                } else {
-                                                    context?.getString(R.string.performance_regarding_pm_label, currentPMGrade?.lastUpdateDate.orEmpty()).orEmpty()
-                                                }
-                                            }
-                                        }
+                                        getTitlePMExistingSellerFirstMonthEndPeriod(shopScore, goldGetPMShopInfoResponse, currentPMGrade)
                                     }
                                     ShopScoreConstant.THREE_MONTH -> {
-                                        when (shopScore) {
-                                            in SHOP_SCORE_SIXTY..SHOP_SCORE_SIXTY_NINE -> {
-                                                context?.getString(R.string.regarding_performance_reputation_pm_label).orEmpty()
-                                            }
-                                            else -> {
-                                                if (goldGetPMShopInfoResponse?.shopScoreSum.orZero() < goldGetPMShopInfoResponse?.shopScoreThreshold.orZero()) {
-                                                    context?.getString(R.string.score_performance_pm_less_than_sixty_label).orEmpty()
-                                                } else {
-                                                    context?.getString(R.string.performance_regarding_pm_label, currentPMGrade?.lastUpdateDate.orEmpty()).orEmpty()
-                                                }
-                                            }
-                                        }
+                                        getTitlePMExistingSellerThreeMonthEndPeriod(shopScore, goldGetPMShopInfoResponse, currentPMGrade)
                                     }
                                     else -> ""
                                 }
@@ -489,45 +459,9 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
                         }
                 }
 
-        val statusPM = when {
-            currentPMGrade?.gradeName?.mapToGradeNameToInt().orZero() > potentialPMGrade?.gradeName?.mapToGradeNameToInt().orZero() -> {
-                UP_POTENTIAL_PM
-            }
-            currentPMGrade?.gradeName?.mapToGradeNameToInt() == potentialPMGrade?.gradeName?.mapToGradeNameToInt() -> {
-                STILL_POTENTIAL_PM
-            }
-            currentPMGrade?.gradeName?.mapToGradeNameToInt().orZero() < potentialPMGrade?.gradeName?.mapToGradeNameToInt().orZero() -> {
-                DOWN_POTENTIAL_PM
-            }
-            goldGetPMShopInfoResponse?.shopScoreSum.orZero() < goldGetPMShopInfoResponse?.shopScoreThreshold.orZero() -> {
-                SUPPOSED_INACTIVE_TEXT
-            }
-            else -> ""
-        }
+        val statusPM = getStatusPowerMerchant(currentPMGrade, potentialPMGrade, goldGetPMShopInfoResponse)
 
-        val bgPowerMerchant =
-                when (goldGetPMShopInfoResponse?.isNewSeller) {
-                    true -> {
-                        R.drawable.bg_header_new_seller
-                    }
-                    else -> {
-                        when (currentPMGrade?.gradeName?.toLowerCase(Locale.getDefault())) {
-                            GRADE_BRONZE_PM -> {
-                                R.drawable.bg_header_bronze
-                            }
-                            GRADE_SILVER_PM -> {
-                                R.drawable.bg_header_silver
-                            }
-                            GRADE_GOLD_PM -> {
-                                R.drawable.bg_header_gold
-                            }
-                            GRADE_DIAMOND_PM -> {
-                                R.drawable.bg_header_diamond
-                            }
-                            else -> null
-                        }
-                    }
-                }
+        val bgPowerMerchant = getBackgroundPowerMerchant(shopInfoPeriodUiModel.isNewSeller, currentPMGrade)
 
         val (descStatus, isShowCardBg) = when (goldGetPMShopInfoResponse?.isNewSeller) {
             true -> {
@@ -549,7 +483,6 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
                             Pair(context?.getString(R.string.desc_new_seller_no_reputation_pm_status).orEmpty(), false)
                         }
                     }
-
                 }
             }
             else -> {
@@ -668,6 +601,110 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
                 isCardBgColor = isShowCardBg,
                 isInActivePM = statusPM == ShopScoreConstant.PM_IDLE
         )
+    }
+
+    private fun getStatusPowerMerchant(currentPMGrade: GoldPMGradeBenefitInfoResponse.GoldGetPMGradeBenefitInfo.CurrentPmGrade?,
+                                       potentialPMGrade: GoldPMGradeBenefitInfoResponse.GoldGetPMGradeBenefitInfo.PotentialPmGrade?,
+                                       goldGetPMShopInfoResponse: GoldGetPMShopInfoResponse.GoldGetPMShopInfo?): String {
+        return when {
+            currentPMGrade?.gradeName?.mapToGradeNameToInt().orZero() > potentialPMGrade?.gradeName?.mapToGradeNameToInt().orZero() -> {
+                UP_POTENTIAL_PM
+            }
+            currentPMGrade?.gradeName?.mapToGradeNameToInt() == potentialPMGrade?.gradeName?.mapToGradeNameToInt() -> {
+                STILL_POTENTIAL_PM
+            }
+            currentPMGrade?.gradeName?.mapToGradeNameToInt().orZero() < potentialPMGrade?.gradeName?.mapToGradeNameToInt().orZero() -> {
+                DOWN_POTENTIAL_PM
+            }
+            goldGetPMShopInfoResponse?.shopScoreSum.orZero() < goldGetPMShopInfoResponse?.shopScoreThreshold.orZero() -> {
+                SUPPOSED_INACTIVE_TEXT
+            }
+            else -> ""
+        }
+    }
+
+    private fun getBackgroundPowerMerchant(isNewSeller: Boolean, currentPMGrade: GoldPMGradeBenefitInfoResponse.GoldGetPMGradeBenefitInfo.CurrentPmGrade?): Int? {
+        return when (isNewSeller) {
+            true -> {
+                R.drawable.bg_header_new_seller
+            }
+            else -> {
+                when (currentPMGrade?.gradeName?.toLowerCase(Locale.getDefault())) {
+                    GRADE_BRONZE_PM -> {
+                        R.drawable.bg_header_bronze
+                    }
+                    GRADE_SILVER_PM -> {
+                        R.drawable.bg_header_silver
+                    }
+                    GRADE_GOLD_PM -> {
+                        R.drawable.bg_header_gold
+                    }
+                    GRADE_DIAMOND_PM -> {
+                        R.drawable.bg_header_diamond
+                    }
+                    else -> null
+                }
+            }
+        }
+    }
+
+    private fun getTitlePMExistingSellerFirstMonthEndPeriod(shopScore: Int,
+                                                            goldGetPMShopInfoResponse: GoldGetPMShopInfoResponse.GoldGetPMShopInfo?,
+                                                            currentPMGrade: GoldPMGradeBenefitInfoResponse.GoldGetPMGradeBenefitInfo.CurrentPmGrade?
+    ): String {
+        return when (shopScore) {
+            in goldGetPMShopInfoResponse?.shopScoreThreshold.orZero()..SHOP_SCORE_SIXTY_NINE -> {
+                context?.getString(R.string.regarding_performance_reputation_pm_label).orEmpty()
+            }
+            else -> {
+                if (goldGetPMShopInfoResponse?.shopScoreSum.orZero() < goldGetPMShopInfoResponse?.shopScoreThreshold.orZero()) {
+                    context?.getString(R.string.score_performance_pm_less_than_sixty_label).orEmpty()
+                } else {
+                    context?.getString(R.string.performance_regarding_pm_label, currentPMGrade?.lastUpdateDate.orEmpty()).orEmpty()
+                }
+            }
+        }
+    }
+
+    private fun getTitlePMExistingSellerThreeMonthEndPeriod(shopScore: Int,
+                                                            goldGetPMShopInfoResponse: GoldGetPMShopInfoResponse.GoldGetPMShopInfo?,
+                                                            currentPMGrade: GoldPMGradeBenefitInfoResponse.GoldGetPMGradeBenefitInfo.CurrentPmGrade?
+    ): String {
+        return when (shopScore) {
+            in SHOP_SCORE_SIXTY..SHOP_SCORE_SIXTY_NINE -> {
+                context?.getString(R.string.regarding_performance_reputation_pm_label).orEmpty()
+            }
+            else -> {
+                if (goldGetPMShopInfoResponse?.shopScoreSum.orZero() < goldGetPMShopInfoResponse?.shopScoreThreshold.orZero()) {
+                    context?.getString(R.string.score_performance_pm_less_than_sixty_label).orEmpty()
+                } else {
+                    context?.getString(R.string.performance_regarding_pm_label, currentPMGrade?.lastUpdateDate.orEmpty()).orEmpty()
+                }
+            }
+        }
+    }
+
+    private fun getTitlePMExistingSellerTransitionPeriod(shopInfoPeriodUiModel: ShopInfoPeriodUiModel,
+                                                         currentPMGrade: GoldPMGradeBenefitInfoResponse.GoldGetPMGradeBenefitInfo.CurrentPmGrade?
+    ): String {
+        return when (shopInfoPeriodUiModel.numberMonth) {
+            ShopScoreConstant.ONE_MONTH -> {
+                context?.getString(R.string.current_regarding_penalty_pm_label).orEmpty()
+            }
+            ShopScoreConstant.TWO_MONTH, ShopScoreConstant.THREE_MONTH -> {
+                context?.getString(R.string.performance_regarding_pm_label, currentPMGrade?.lastUpdateDate).orEmpty()
+            }
+            else -> ""
+        }
+    }
+
+    private fun getTitlePMNewSellerSection(shopInfoPeriodUiModel: ShopInfoPeriodUiModel): String {
+        return when (shopInfoPeriodUiModel.periodType) {
+            ShopScoreConstant.TRANSITION_PERIOD -> {
+                context?.getString(R.string.score_performance_pm_new_seller_label).orEmpty()
+            }
+            else -> ""
+        }
     }
 
     private fun String?.mapToGradeNameToInt()
@@ -792,8 +829,7 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
         return date
     }
 
-    private fun format(timeMillis: Long, pattern: String, locale: Locale = Locale.getDefault())
-            : String {
+    private fun format(timeMillis: Long, pattern: String, locale: Locale = Locale.getDefault()): String {
         val sdf = SimpleDateFormat(pattern, locale)
         return sdf.format(timeMillis)
     }
