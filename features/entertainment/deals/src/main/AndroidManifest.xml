@@ -9,7 +9,7 @@
         android:screenOrientation="portrait"
         android:theme="@style/Theme.WhiteUnify"
         android:windowSoftInputMode="adjustResize">
-        <intent-filter android:autoVerify="true">
+        <intent-filter>
             <action android:name="com.tokopedia.internal.VIEW" />
             <category android:name="android.intent.category.DEFAULT" />
             <category android:name="android.intent.category.BROWSABLE" />
@@ -25,7 +25,7 @@
         android:name="com.tokopedia.deals.search.ui.activity.DealsSearchActivity"
         android:screenOrientation="portrait"
         android:theme="@style/Theme.WhiteUnify">
-        <intent-filter android:autoVerify="true">
+        <intent-filter>
             <action android:name="com.tokopedia.internal.VIEW" />
 
             <category android:name="android.intent.category.DEFAULT" />
@@ -43,7 +43,7 @@
         android:screenOrientation="portrait"
         android:theme="@style/Theme.WhiteUnify"
         android:windowSoftInputMode="adjustPan">
-        <intent-filter android:autoVerify="true">
+        <intent-filter>
             <action android:name="com.tokopedia.internal.VIEW" />
 
             <category android:name="android.intent.category.DEFAULT" />
@@ -59,7 +59,7 @@
         android:screenOrientation="portrait"
         android:windowSoftInputMode="adjustPan"
         android:theme="@style/Theme.WhiteUnify">
-        <intent-filter android:autoVerify="true">
+        <intent-filter>
             <action android:name="com.tokopedia.internal.VIEW" />
 
             <category android:name="android.intent.category.DEFAULT" />

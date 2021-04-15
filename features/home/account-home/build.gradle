@@ -86,6 +86,7 @@ dependencies {
     implementation project(rootProject.ext.features.sellerMigrationCommon)
     implementation project(rootProject.ext.features.sellerMenuCommon)
     implementation project(rootProject.ext.features.homeAccountUser)
+    implementation project(rootProject.ext.features.internalReview)
     implementation project(rootProject.ext.libraries.coreNetwork)
     implementation project(rootProject.ext.libraries.cmPushNotifications)
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
@@ -112,6 +113,7 @@ dependencies {
     kapt rootProject.ext.miscDependencies.daggerCompiler
 
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
+    implementation rootProject.ext.miscDependencies.lifecycleRuntimeKtx
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     implementation rootProject.ext.playServicesDependencies.base
     implementation rootProject.ext.playServicesDependencies.auth
@@ -168,6 +170,7 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.json
     testImplementation rootProject.ext.miscDependencies.coroutineCore
     testImplementation rootProject.ext.miscDependencies.coroutineTest
+    testImplementation project(rootProject.ext.libraries.unitTest)
 }
 
 project.ext {

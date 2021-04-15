@@ -27,6 +27,8 @@ import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.common.presentation.HotelBaseFragment
 import com.tokopedia.hotel.common.presentation.widget.RatingStarView
+import com.tokopedia.hotel.common.util.HotelGqlMutation
+import com.tokopedia.hotel.common.util.HotelGqlQuery
 import com.tokopedia.hotel.evoucher.di.HotelEVoucherComponent
 import com.tokopedia.hotel.evoucher.presentation.adapter.HotelEVoucherCancellationPoliciesAdapter
 import com.tokopedia.hotel.evoucher.presentation.viewmodel.HotelEVoucherViewModel
@@ -113,8 +115,7 @@ class HotelEVoucherFragment : HotelBaseFragment(), HotelSharePdfBottomSheets.Sha
 
         val args = savedInstanceState ?: arguments
         orderId = args?.getString(EXTRA_ORDER_ID) ?: ""
-        eVoucherViewModel.getOrderDetail(GraphqlHelper.loadRawString(resources,
-                R.raw.gql_query_hotel_order_list_detail), orderId)
+        eVoucherViewModel.getOrderDetail(HotelGqlQuery.ORDER_DETAILS, orderId)
 
     }
 
@@ -215,7 +216,7 @@ class HotelEVoucherFragment : HotelBaseFragment(), HotelSharePdfBottomSheets.Sha
     private fun contentValues(filename: String) : ContentValues {
         val values = ContentValues()
         values.put(MediaStore.Images.Media.DISPLAY_NAME, filename)
-        values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg")
+        values.put(MediaStore.Images.Media.MIME_TYPE, "image/png")
         values.put(MediaStore.Images.Media.DATE_ADDED, System.currentTimeMillis() / 1000);
         values.put(MediaStore.Images.Media.DATE_TAKEN, System.currentTimeMillis());
         return values
@@ -343,14 +344,12 @@ class HotelEVoucherFragment : HotelBaseFragment(), HotelSharePdfBottomSheets.Sha
     }
 
     override fun onErrorRetryClicked() {
-        eVoucherViewModel.getOrderDetail(GraphqlHelper.loadRawString(resources,
-                R.raw.gql_query_hotel_order_list_detail), orderId)
+        eVoucherViewModel.getOrderDetail(HotelGqlQuery.ORDER_DETAILS, orderId)
     }
 
     override fun sendPdf(emailList: MutableList<String>) {
         progressDialog.show()
-        eVoucherViewModel.sendPdf(GraphqlHelper.loadRawString(resources,
-                R.raw.gql_mutation_hotel_share_pdf), emailList, orderId)
+        eVoucherViewModel.sendPdf(HotelGqlMutation.SHARE_PDF_NOTIFICATION, emailList, orderId)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

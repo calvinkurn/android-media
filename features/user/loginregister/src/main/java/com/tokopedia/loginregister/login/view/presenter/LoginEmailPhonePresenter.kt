@@ -13,7 +13,7 @@ import com.tokopedia.loginfingerprint.data.preference.FingerprintSetting
 import com.tokopedia.loginfingerprint.utils.crypto.Cryptography
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.TkpdIdlingResourceProvider
-import com.tokopedia.loginregister.common.DispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.loginregister.common.domain.pojo.ActivateUserData
 import com.tokopedia.loginregister.common.domain.usecase.ActivateUserUseCase
 import com.tokopedia.loginregister.common.domain.usecase.DynamicBannerUseCase
@@ -73,7 +73,7 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
                                                    private var cryptographyUtils: Cryptography?,
                                                    @Named(SESSION_MODULE)
                                                    private val userSession: UserSessionInterface,
-                                                   private val dispatcherProvider: DispatcherProvider
+                                                   private val dispatcherProvider: CoroutineDispatchers
 )
     : BaseDaggerPresenter<LoginEmailPhoneContract.View>(),
         LoginEmailPhoneContract.Presenter, CoroutineScope {
@@ -81,7 +81,7 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
     private var job: Job = SupervisorJob()
 
     override val coroutineContext: CoroutineContext
-        get() = dispatcherProvider.io() + job
+        get() = dispatcherProvider.io + job
 
     private lateinit var viewEmailPhone: LoginEmailPhoneContract.View
     var idlingResourceProvider = TkpdIdlingResourceProvider.provideIdlingResource("LOGIN")

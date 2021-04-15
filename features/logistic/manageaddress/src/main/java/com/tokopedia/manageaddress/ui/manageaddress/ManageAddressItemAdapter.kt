@@ -11,16 +11,15 @@ import android.widget.ImageView
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.inflateLayout
-import com.tokopedia.kotlin.extensions.view.toBitmap
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.address.Token
 import com.tokopedia.manageaddress.R
 import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.toDp
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.item_manage_people_address.view.*
 
@@ -57,13 +56,14 @@ class ManageAddressItemAdapter(private val listener: ManageAddressItemAdapterLis
     }
 
     fun clearData() {
+        selectedPos = RecyclerView.NO_POSITION
         addressList.clear()
         notifyDataSetChanged()
     }
 
     inner class ManageAddressViewHolder(itemView: View, private val listener: ManageAddressItemAdapterListener) : RecyclerView.ViewHolder(itemView) {
         val pinpointText = itemView.findViewById<Typography>(R.id.tv_pinpoint_state)
-        val imageLocation = itemView.findViewById<ImageView>(R.id.img_location_state)
+        val imageLocation = itemView.findViewById<IconUnify>(R.id.img_location_state)
         val btnPrimary = itemView.findViewById<UnifyButton>(R.id.btn_primary)
         val btnSecondary = itemView.findViewById<UnifyButton>(R.id.btn_secondary)
         val cardAddress = itemView.findViewById<CardUnify>(R.id.card_address)
@@ -90,8 +90,8 @@ class ManageAddressItemAdapter(private val listener: ManageAddressItemAdapterLis
                     tokopedia_note.gone()
                     address_detail.text = data.street + ", " + data.postalCode
                 }
-                val bitmap = (assetMoreBtn as VectorDrawable).toBitmap()
-                val d: Drawable = BitmapDrawable(resources, Bitmap.createScaledBitmap(bitmap, 80.toDp(), 80.toDp(), true))
+                val bitmap = assetMoreBtn?.toBitmap()
+                val d: Drawable = BitmapDrawable(resources, bitmap?.let { Bitmap.createScaledBitmap(it, 80.toDp(), 80.toDp(), true) })
                 btnSecondary.setCompoundDrawablesWithIntrinsicBounds(d, null, null, null)
 
                 val cardSelected: Boolean
@@ -102,12 +102,13 @@ class ManageAddressItemAdapter(private val listener: ManageAddressItemAdapterLis
                     cardSelected = selectedPos == layoutPosition
                 }
                 cardAddress.hasCheckIcon = cardSelected
+                cardAddress.setPadding(6.toPx(), 6.toPx(), 22.toPx(), 6.toPx())
                 if (cardSelected) {
                     cardAddress.cardType = CardUnify.TYPE_BORDER_ACTIVE
+                    cardAddress.setPadding(6.toPx(), 6.toPx(), 16.toPx(), 6.toPx())
                 } else {
                     cardAddress.cardType = CardUnify.TYPE_BORDER
                 }
-
                 setListener(itemView, data)
             }
         }
@@ -124,15 +125,13 @@ class ManageAddressItemAdapter(private val listener: ManageAddressItemAdapterLis
 
         private fun setVisibility(peopleAddress: RecipientAddressModel) {
             if(peopleAddress.latitude.isNullOrEmpty()|| peopleAddress.longitude.isNullOrEmpty()) {
-                val icon = ContextCompat.getDrawable(itemView.context, R.drawable.ic_no_pinpoint)
-                imageLocation.setImageDrawable(icon)
+                val colorGrey = ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96)
+                imageLocation.setImage(IconUnify.LOCATION_OFF, colorGrey, colorGrey)
                 pinpointText.text = itemView.context.getString(R.string.no_pinpoint)
-                pinpointText.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
             } else {
-                val icon = ContextCompat.getDrawable(itemView.context, R.drawable.ic_pinpoint_green)
-                imageLocation.setImageDrawable(icon)
+                val colorGreen = ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_G500)
+                imageLocation.setImage(IconUnify.LOCATION, colorGreen, colorGreen)
                 pinpointText.text = itemView.context.getString(R.string.pinpoint)
-                pinpointText.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
             }
         }
 

@@ -70,9 +70,7 @@ public class DigitalDealCheckoutPresenter extends DigitalBaseCartPresenter<Digit
             getView().updateToolbarTitle(R.string.digital_deal_toolbar_title);
         }
 
-        if (getView().isAlreadyShowOnBoard()) {
-            autoCollapseCheckoutView();
-        }
+        autoCollapseCheckoutView();
     }
 
     @Override

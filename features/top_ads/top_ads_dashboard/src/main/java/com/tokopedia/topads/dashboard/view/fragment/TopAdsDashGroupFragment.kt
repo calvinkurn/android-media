@@ -41,6 +41,7 @@ import com.tokopedia.topads.dashboard.view.adapter.group_item.viewmodel.GroupIte
 import com.tokopedia.topads.dashboard.view.adapter.group_item.viewmodel.GroupItemsItemModel
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDashboardPresenter
 import com.tokopedia.topads.dashboard.view.sheet.TopadsGroupFilterSheet
+import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.topads_dash_fragment_group_list.*
 import kotlinx.android.synthetic.main.topads_dash_layout_common_action_bar.*
@@ -73,6 +74,8 @@ class TopAdsDashGroupFragment : BaseDaggerFragment() {
     private var totalPage = 0
     private var currentPageNum = 1
     val groupIds: MutableList<String> = mutableListOf()
+    private lateinit var loader: LoaderUnify
+
 
     override fun getScreenName(): String {
         return TopAdsDashGroupFragment::class.java.name
@@ -89,6 +92,7 @@ class TopAdsDashGroupFragment : BaseDaggerFragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(resources.getLayout(R.layout.topads_dash_fragment_group_list), container, false)
         recyclerView = view.findViewById(R.id.group_list)
+        loader = view.findViewById(R.id.loader)
         initAdapter()
         return view
     }
@@ -192,7 +196,7 @@ class TopAdsDashGroupFragment : BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         fetchData()
         btnFilter.setOnClickListener {
-            groupFilterSheet.show()
+            groupFilterSheet.show(childFragmentManager, "")
             groupFilterSheet.onSubmitClick = { fetchData() }
         }
         close_butt.setOnClickListener {
@@ -215,19 +219,22 @@ class TopAdsDashGroupFragment : BaseDaggerFragment() {
     }
 
     private fun showConfirmationDialog() {
-        val dialog = DialogUnify(context!!, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
-        dialog.setTitle(String.format(getString(R.string.topads_dash_confirm_delete_group_title), adapter.getSelectedItems().size))
-        dialog.setDescription(getString(R.string.topads_dash_confirm_delete_group_desc))
-        dialog.setPrimaryCTAText(getString(com.tokopedia.topads.common.R.string.topads_common_cancel_btn))
-        dialog.setSecondaryCTAText(getString(R.string.topads_dash_ya_hapus))
-        dialog.setPrimaryCTAClickListener {
-            dialog.dismiss()
+        context?.let {
+            val dialog = DialogUnify(it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
+            dialog.setTitle(String.format(getString(R.string.topads_dash_confirm_delete_group_title), adapter.getSelectedItems().size))
+            dialog.setDescription(getString(R.string.topads_dash_confirm_delete_group_desc))
+            dialog.setPrimaryCTAText(getString(com.tokopedia.topads.common.R.string.topads_common_cancel_btn))
+            dialog.setSecondaryCTAText(getString(R.string.topads_dash_ya_hapus))
+            dialog.setPrimaryCTAClickListener {
+                dialog.dismiss()
+            }
+            dialog.setSecondaryCTAClickListener {
+                dialog.dismiss()
+                performAction(TopAdsDashboardConstant.ACTION_DELETE)
+            }
+            dialog.show()
         }
-        dialog.setSecondaryCTAClickListener {
-            dialog.dismiss()
-            performAction(TopAdsDashboardConstant.ACTION_DELETE)
-        }
-        dialog.show()
+
     }
 
     private fun onEmptyResult() {

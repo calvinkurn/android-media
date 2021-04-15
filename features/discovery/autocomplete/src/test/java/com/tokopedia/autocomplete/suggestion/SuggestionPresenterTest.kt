@@ -9,6 +9,7 @@ import com.tokopedia.autocomplete.suggestion.domain.model.SuggestionTopShop
 import com.tokopedia.autocomplete.suggestion.domain.model.SuggestionUniverse
 import com.tokopedia.autocomplete.suggestion.doubleline.SuggestionDoubleLineViewModel
 import com.tokopedia.autocomplete.suggestion.doubleline.SuggestionDoubleLineWithoutImageViewModel
+import com.tokopedia.autocomplete.suggestion.productline.SuggestionProductLineDataView
 import com.tokopedia.autocomplete.suggestion.singleline.SuggestionSingleLineViewModel
 import com.tokopedia.autocomplete.suggestion.title.SuggestionTitleViewModel
 import com.tokopedia.autocomplete.suggestion.topshop.SuggestionTopShopCardViewModel
@@ -64,12 +65,13 @@ internal class SuggestionPresenterTest: SuggestionPresenterTestFixtures() {
 
         visitableList[0].shouldBeInstanceOf<SuggestionSingleLineViewModel>()
         visitableList[1].shouldBeInstanceOf<SuggestionSingleLineViewModel>()
-        visitableList[2].shouldBeInstanceOf<SuggestionTitleViewModel>()
-        visitableList[3].shouldBeInstanceOf<SuggestionDoubleLineViewModel>()
+        visitableList[2].shouldBeInstanceOf<SuggestionSingleLineViewModel>()
+        visitableList[3].shouldBeInstanceOf<SuggestionTitleViewModel>()
         visitableList[4].shouldBeInstanceOf<SuggestionDoubleLineViewModel>()
-        visitableList[5].shouldBeInstanceOf<SuggestionTitleViewModel>()
-        visitableList[6].shouldBeInstanceOf<SuggestionDoubleLineViewModel>()
+        visitableList[5].shouldBeInstanceOf<SuggestionDoubleLineViewModel>()
+        visitableList[6].shouldBeInstanceOf<SuggestionTitleViewModel>()
         visitableList[7].shouldBeInstanceOf<SuggestionDoubleLineViewModel>()
+        visitableList[8].shouldBeInstanceOf<SuggestionDoubleLineViewModel>()
         visitableList.size shouldBe suggestionUniverse.data.items.size
 
         assertVisitableListData(visitableList, suggestionUniverse)
@@ -221,8 +223,8 @@ internal class SuggestionPresenterTest: SuggestionPresenterTestFixtures() {
         visitableList[3].shouldBeInstanceOf<SuggestionDoubleLineViewModel>()
         visitableList[4].shouldBeInstanceOf<SuggestionDoubleLineViewModel>()
         visitableList[5].shouldBeInstanceOf<SuggestionTitleViewModel>()
-        visitableList[6].shouldBeInstanceOf<SuggestionDoubleLineViewModel>()
-        visitableList[7].shouldBeInstanceOf<SuggestionDoubleLineViewModel>()
+        visitableList[6].shouldBeInstanceOf<SuggestionProductLineDataView>()
+        visitableList[7].shouldBeInstanceOf<SuggestionProductLineDataView>()
         visitableList[8].shouldBeInstanceOf<SuggestionSeparatorViewModel>()
         visitableList[9].shouldBeInstanceOf<SuggestionDoubleLineWithoutImageViewModel>()
         visitableList[10].shouldBeInstanceOf<SuggestionDoubleLineWithoutImageViewModel>()

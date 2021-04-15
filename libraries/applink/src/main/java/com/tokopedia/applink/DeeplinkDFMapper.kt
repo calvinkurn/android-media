@@ -50,6 +50,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalEntertainment.EVENT_PD
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.ADD_BOD
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.ADD_EMAIL
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.ADD_NAME_REGISTER
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.ADD_NAME_REGISTER_CLEAN_VIEW
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.ADD_PHONE
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.ADD_PIN
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.ADD_PIN_COMPLETE
@@ -427,6 +428,7 @@ object DeeplinkDFMapper : CoroutineScope {
                         || it.startsWithPattern(CHANGE_NAME)
                         || it.startsWith(CHANGE_GENDER)
                         || it.startsWith(ADD_NAME_REGISTER)
+                        || it.startsWith(ADD_NAME_REGISTER_CLEAN_VIEW)
                         || it.startsWith(CHANGE_PIN)
                         || it.startsWith(ADD_PIN_ONBOARDING)
                         || it.startsWith(ADD_PIN)
@@ -584,6 +586,9 @@ object DeeplinkDFMapper : CoroutineScope {
 
             // Order History
             add(DFP({ it.startsWith(TRACK)}, DF_BASE_SELLER_APP, R.string.title_order_management_history))
+
+            // Review Reminder
+            add(DFP({ it.startsWith(REVIEW_REMINDER) }, DF_BASE_SELLER_APP, R.string.title_review_reminder))
         }
     }
 

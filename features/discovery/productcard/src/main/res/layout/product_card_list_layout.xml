@@ -107,7 +107,7 @@
             android:layout_width="wrap_content"
             android:layout_height="@dimen/dp_20"
             android:background="@drawable/product_card_best_seller_background"
-            android:paddingTop="@dimen/dp_3"
+            android:paddingTop="@dimen/product_card_label_best_seller_paddingtop"
             android:paddingStart="@dimen/dp_8"
             android:paddingEnd="@dimen/dp_8"
             android:layout_marginStart="@dimen/dp_8"

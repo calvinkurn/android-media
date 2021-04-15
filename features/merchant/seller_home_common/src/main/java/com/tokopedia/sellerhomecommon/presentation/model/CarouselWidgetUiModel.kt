@@ -32,4 +32,8 @@ class CarouselWidgetUiModel(
     override fun copy(): BaseWidgetUiModel<CarouselDataUiModel> {
         return CarouselWidgetUiModel(id, widgetType, title, subtitle, tooltip, appLink, dataKey, ctaText, isShowEmpty, data, impressHolder, isLoaded, isLoading, isFromCache, emptyState)
     }
+
+    override fun needToRefreshData(other: BaseWidgetUiModel<CarouselDataUiModel>): Boolean {
+        return dataKey != other.dataKey
+    }
 }

@@ -69,13 +69,20 @@ class ArmyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         ImageHandler.LoadImage(imgLogo, data.imageUrl)
 
         val fontColor = if (data.disabled) {
-            ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_20)
+            ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_32)
         } else {
             ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68)
         }
+        val boldFontColor = if (data.disabled) {
+            ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_44)
+        } else {
+            ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96)
+        }
 
-        tvTitle.setTextColor(fontColor)
+        tvTitle.setTextColor(boldFontColor)
+        tvTitleExtra.setTextColor(boldFontColor)
         tvInfo.setTextColor(fontColor)
+        tvEta.setTextColor(fontColor)
 
         if (!data.disabled) {
             itemView.setOnClickListener {

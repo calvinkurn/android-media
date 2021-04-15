@@ -175,7 +175,7 @@ class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed, PhoneCall
         if (permissionCheckerHelper.hasPermission(it, getPermissions())) {
             phoneCallBroadcastReceiver.registerReceiver(it, this)
         } else {
-            sendLogTracker("PhoneCallBroadcastReceiver not registered")
+            sendLogTracker("PhoneCallBroadcastReceiver not registered; permission=${permissionCheckerHelper.hasPermission(it, getPermissions())}")
         }
     }
 
@@ -353,7 +353,7 @@ class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed, PhoneCall
                         }
                         if ((activity as VerificationActivity).isResetPin2FA) {
                             val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.CHANGE_PIN).apply {
-                                bundle.putBoolean(ApplinkConstInternalGlobal.PARAM_IS_FROM_2FA, true)
+                                bundle.putBoolean(ApplinkConstInternalGlobal.PARAM_IS_RESET_PIN, true)
                                 bundle.putString(ApplinkConstInternalGlobal.PARAM_USER_ID, otpData.userId)
                                 putExtras(bundle)
                             }
