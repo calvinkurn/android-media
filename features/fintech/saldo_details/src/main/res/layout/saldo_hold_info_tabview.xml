@@ -12,9 +12,11 @@
         android:layout_height="match_parent"
         android:visibility="gone">
 
-        <include
-            android:id="@+id/toolbar_saldo_info"
-            layout="@layout/saldo_info_toolbar"
+        <com.tokopedia.header.HeaderUnify
+            android:id="@+id/toolbar_saldo_info_first_child"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:title="@string/saldo_info_toolbar_title"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -25,7 +27,7 @@
             app:closeButtonVisibility="gone"
             app:descriptionText="@string/saldo_info_ticker"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/toolbar_saldo_info"
+            app:layout_constraintTop_toBottomOf="@id/toolbar_saldo_info_first_child"
             app:tickerShapeType="full"
             app:tickerType="announcement" />
 
@@ -132,9 +134,11 @@
         android:orientation="vertical"
         android:visibility="gone">
 
-        <include
+        <com.tokopedia.header.HeaderUnify
             android:id="@+id/toolbar_saldo_info"
-            layout="@layout/saldo_info_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:title="@string/saldo_info_toolbar_title"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 

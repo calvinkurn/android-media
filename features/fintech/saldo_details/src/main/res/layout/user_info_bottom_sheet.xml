@@ -16,7 +16,6 @@
         android:textColor="@color/Unify_N700_44"
         app:typographyType="body_2" />
 
-
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/action_button_text_view"
         android:layout_width="match_parent"

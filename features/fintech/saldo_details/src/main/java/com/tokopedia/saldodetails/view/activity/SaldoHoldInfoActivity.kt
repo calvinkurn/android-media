@@ -1,27 +1,17 @@
 package com.tokopedia.saldodetails.view.activity
 
-import android.graphics.BlendMode
-import android.graphics.BlendModeColorFilter
-import android.graphics.PorterDuff
-import android.graphics.drawable.ScaleDrawable
-import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
-import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.viewpager.widget.ViewPager
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
-import com.tokopedia.iconunify.getIconUnifyDrawable
-import com.tokopedia.kotlin.extensions.view.dpToPx
-import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.saldodetails.R
 import com.tokopedia.saldodetails.adapter.SaldoInfoVIewPagerAdapter
 import com.tokopedia.saldodetails.commom.analytics.SaldoDetailsConstants
@@ -39,7 +29,6 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.TabsUnify
 import kotlinx.android.synthetic.main.saldo_hold_info_tabview.*
 import kotlinx.android.synthetic.main.saldo_info_help_bottomsheet.view.*
-import kotlinx.android.synthetic.main.saldo_info_toolbar.*
 import javax.inject.Inject
 
 class SaldoHoldInfoActivity : BaseSimpleActivity(), HasComponent<SaldoDetailsComponent>, SaldoHoldInfoContract.View {
@@ -85,10 +74,7 @@ class SaldoHoldInfoActivity : BaseSimpleActivity(), HasComponent<SaldoDetailsCom
         tabLayout = findViewById(R.id.tabs_saldo_info_type)
         viewPager = findViewById(R.id.view_pager_saldo_info_type)
         saldoInfoPresenter.attachView(this)
-        clearFrgmentManger()
-        top_bar_close_button.setOnClickListener {
-            onBackPressed()
-        }
+        clearFragmentManger()
 
         btn_bantuan.setOnClickListener {
             initBottomSheet()
@@ -98,7 +84,7 @@ class SaldoHoldInfoActivity : BaseSimpleActivity(), HasComponent<SaldoDetailsCom
         saldoInfoPresenter.getSaldoHoldInfo()
     }
 
-    private fun clearFrgmentManger() {
+    private fun clearFragmentManger() {
         supportFragmentManager.fragments.forEach {
             supportFragmentManager.beginTransaction().remove(it).commit()
         }
@@ -289,9 +275,6 @@ class SaldoHoldInfoActivity : BaseSimpleActivity(), HasComponent<SaldoDetailsCom
     private fun showLayout() {
         container_cl.visibility = View.VISIBLE
         viewflipper_container.displayedChild = 0
-        top_bar_close_button.setOnClickListener {
-            onBackPressed()
-        }
     }
 
     override fun onDestroy() {

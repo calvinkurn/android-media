@@ -114,8 +114,7 @@
                         android:layout_gravity="end"
                         android:contentDescription="Arrow Icon"
                         android:foregroundGravity="right"
-                        app:icon_name="CHEVRON_RIGHT"
-                        app:srcCompat="@drawable/ic_arrow_right_grey" />
+                        app:icon_name="CHEVRON_RIGHT" />
 
                 </RelativeLayout>
 

@@ -13,7 +13,6 @@
         android:layout_height="wrap_content"
         android:layout_gravity="start|left"
         android:layout_weight="1.2"
-        android:fontFamily="sans-serif"
         android:textColor="@color/Unify_N700_32"
         app:typographyType="body_3" />
 
@@ -24,7 +23,6 @@
         android:layout_height="wrap_content"
         android:layout_gravity="end|right"
         android:layout_weight="0.8"
-        android:fontFamily="sans-serif"
         android:gravity="end"
         android:textColor="@color/Unify_N700_68"
         app:typographyType="body_3" />
