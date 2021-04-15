@@ -5,4 +5,4 @@ import com.google.gson.annotations.SerializedName
 
 data class SomValidateOrderRequest(@SerializedName("list_order_id")
                                          @Expose
-                                         val orderIds: List<Long>)
+                                         val orderIds: List<String>)

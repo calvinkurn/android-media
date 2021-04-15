@@ -589,7 +589,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
                 selectedOrderId = orderId
                 goToConfirmShippingPage(this, orderId)
             }
-            viewModel.validateOrders(listOf(orderId.toLong()))
+            viewModel.validateOrders(listOf(orderId))
         } else {
             selectedOrderId = orderId
             goToConfirmShippingPage(this, orderId)
@@ -603,7 +603,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
                 val invoice = getOrderBy(orderId)
                 viewModel.acceptOrder(orderId, invoice)
             }
-            viewModel.validateOrders(listOf(orderId.toLong()))
+            viewModel.validateOrders(listOf(orderId))
         } else {
             val invoice = getOrderBy(orderId)
             viewModel.acceptOrder(orderId, invoice)
@@ -617,7 +617,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
                 selectedOrderId = orderId
                 goToRequestPickupPage(this, orderId)
             }
-            viewModel.validateOrders(listOf(orderId.toLong()))
+            viewModel.validateOrders(listOf(orderId))
         } else {
             selectedOrderId = orderId
             goToRequestPickupPage(this, orderId)

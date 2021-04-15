@@ -11,6 +11,6 @@ data class SomValidateOrderResponse(@SerializedName("data")
                     val result: ValidateAcceptOrder) {
         data class ValidateAcceptOrder(@SerializedName("list_order_id")
                                        @Expose
-                                       val orderIds: List<Long>)
+                                       val orderIds: List<String>)
     }
 }

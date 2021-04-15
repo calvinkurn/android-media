@@ -712,7 +712,7 @@ class SomDetailFragment : BaseDaggerFragment(),
                     somDetailViewModel.acceptOrder(orderId)
                 }
             }
-            somDetailViewModel.validateOrders(listOf(orderId.toLong()))
+            somDetailViewModel.validateOrders(listOf(orderId))
         } else {
             btn_primary?.isLoading = true
             if (orderId.isNotBlank()) {
@@ -816,7 +816,7 @@ class SomDetailFragment : BaseDaggerFragment(),
             pendingAction = SomPendingAction(actionName, orderId) {
                 requestPickUp()
             }
-            somDetailViewModel.validateOrders(listOf(orderId.toLong()))
+            somDetailViewModel.validateOrders(listOf(orderId))
         } else {
             requestPickUp()
         }
@@ -835,7 +835,7 @@ class SomDetailFragment : BaseDaggerFragment(),
             pendingAction = SomPendingAction(actionName, orderId) {
                 confirmShipping()
             }
-            somDetailViewModel.validateOrders(listOf(orderId.toLong()))
+            somDetailViewModel.validateOrders(listOf(orderId))
         } else {
             confirmShipping()
         }
