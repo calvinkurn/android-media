@@ -686,6 +686,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
 
         btnGetRadiusHotelSearchMap.addItem(wrapper)
         btnGetRadiusHotelSearchMap.setMargins(0, resources.getDimensionPixelSize(R.dimen.hotel_70dp), 0, 0)
+        btnGetRadiusHotelSearchMap.gone()
     }
 
     private fun addMyLocation(latLong: LatLng) {
@@ -960,13 +961,17 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
     }
 
     private fun showFindNearHereView() {
-        btnGetRadiusHotelSearchMap.visible()
+        view?.let {
+            btnGetRadiusHotelSearchMap.visible()
+        }
         animatebtnGetRadiusHotelSearchMap(BUTTON_RADIUS_SHOW_VALUE)
     }
 
     private fun hideFindNearHereView() {
         animatebtnGetRadiusHotelSearchMap(BUTTON_RADIUS_HIDE_VALUE)
-        btnGetRadiusHotelSearchMap.gone()
+        view?.let {
+            btnGetRadiusHotelSearchMap.gone()
+        }
     }
 
     private fun animatebtnGetRadiusHotelSearchMap(value: Float) {
