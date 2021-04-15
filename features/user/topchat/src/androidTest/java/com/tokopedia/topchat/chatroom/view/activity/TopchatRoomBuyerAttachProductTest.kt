@@ -20,6 +20,7 @@ import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.view.activity.base.BaseBuyerTopchatRoomTest
 import com.tokopedia.topchat.chatroom.view.activity.base.hasQuestion
 import com.tokopedia.topchat.common.TopChatInternalRouter.Companion.SOURCE_TOPCHAT
+import com.tokopedia.topchat.matchers.isExpanded
 import com.tokopedia.topchat.matchers.withTotalItem
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.hamcrest.Matchers.not
@@ -331,7 +332,38 @@ class TopchatRoomBuyerAttachProductTest : BaseBuyerTopchatRoomTest() {
         assertSrwContentIsVisible()
     }
 
+
     // TODO: test srw interaction expand and collapse
+    @Test
+    fun assert_srw_expand_collapse_interaction() {
+        // Given
+        setupChatRoomActivity {
+            putProductAttachmentIntent(it)
+        }
+        getChatUseCase.response = firstPageChatAsBuyer
+        chatAttachmentUseCase.response = chatAttachmentResponse
+        chatSrwUseCase.response = chatSrwResponse
+        inflateTestFragment()
+
+        // Then
+        onView(withId(R.id.rv_srw))
+                .check(matches(isExpanded()))
+
+        // When
+        onView(withId(R.id.tp_srw_container_partial)).perform(click())
+
+        // Then
+        onView(withId(R.id.rv_srw))
+                .check(matches(not(isExpanded())))
+
+        // When
+        onView(withId(R.id.tp_srw_container_partial)).perform(click())
+
+        // Then
+        onView(withId(R.id.rv_srw))
+                .check(matches(isExpanded()))
+    }
+
     // TODO: test srw interaction click and send msg
 
     private fun putProductAttachmentIntent(intent: Intent) {

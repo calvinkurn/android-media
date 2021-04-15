@@ -36,10 +36,12 @@ class SrwLinearLayout : FrameLayout {
     private val typeFactory = SrwTypeFactoryImpl()
     private val rvAdapter = SrwAdapter(typeFactory)
 
+    var rvSrw: RecyclerView? = null
+        private set
+
     private var title: Typography? = null
     private var titleContainer: LinearLayout? = null
     private var titleIcon: IconUnify? = null
-    private var rvSrw: RecyclerView? = null
     private var srwContentContainer: LinearLayout? = null
     private var errorState: LocalLoad? = null
     private var loadingState: LoaderUnify? = null
@@ -49,7 +51,8 @@ class SrwLinearLayout : FrameLayout {
     /**
      * Default state would be expanded
      */
-    private var isExpanded = true
+    var isExpanded = true
+        private set
     private var listener: Listener? = null
     private var latestState: Resource<ChatSmartReplyQuestionResponse>? = null
 
