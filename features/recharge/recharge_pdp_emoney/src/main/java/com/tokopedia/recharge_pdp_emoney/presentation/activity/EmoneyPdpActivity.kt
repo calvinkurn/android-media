@@ -28,7 +28,15 @@ class EmoneyPdpActivity : BaseSimpleActivity(), HasComponent<EmoneyPdpComponent>
 
     lateinit var menuEmoney: Menu
 
-    override fun getNewFragment(): Fragment = EmoneyPdpFragment()
+    override fun getNewFragment(): Fragment {
+        val bundle = intent.extras
+        val categoryId = bundle?.getString(PARAM_CATEGORY_ID)?.toIntOrNull() ?: 0
+        val menuId = bundle?.getString(PARAM_MENU_ID)?.toIntOrNull() ?: 0
+        val operatorId = bundle?.getString(PARAM_OPERATOR_ID)?.toIntOrNull() ?: 0
+        val productId = bundle?.getString(PARAM_PRODUCT_ID)?.toIntOrNull() ?: 0
+        val clientNumber = bundle?.getString(PARAM_CLIENT_NUMBER) ?: ""
+        return EmoneyPdpFragment.newInstance(categoryId, menuId, operatorId, productId, clientNumber)
+    }
 
     override fun getComponent(): EmoneyPdpComponent {
         return DaggerEmoneyPdpComponent.builder()
@@ -90,8 +98,11 @@ class EmoneyPdpActivity : BaseSimpleActivity(), HasComponent<EmoneyPdpComponent>
     }
 
     companion object {
-        const val EMONEY_MENU_ID = 267
-        const val EMONEY_CATEGORY_ID = 34
+        val PARAM_CATEGORY_ID = "category_id"
+        val PARAM_MENU_ID = "menu_id"
+        val PARAM_OPERATOR_ID = "operator_id"
+        val PARAM_PRODUCT_ID = "product_id"
+        val PARAM_CLIENT_NUMBER = "client_number"
 
         const val REQUEST_CODE_LOGIN_EMONEY = 10000
 

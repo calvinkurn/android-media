@@ -70,7 +70,24 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
     private val emoneyPdpViewModel by lazy { viewModelFragmentProvider.get(EmoneyPdpViewModel::class.java) }
     private val addToCartViewModel by lazy { viewModelFragmentProvider.get(DigitalAddToCartViewModel::class.java) }
 
+    private var categoryId: Int = 0
+    private var menuId: Int = 0
+    private var operatorId: Int = 0
+    private var productId: Int = 0
+    private var clientNumber: String = ""
+
     override fun getScreenName(): String = ""
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        arguments?.let {
+            categoryId = it.getInt(EXTRA_PARAM_CATEGORY_ID, 0)
+            menuId = it.getInt(EXTRA_PARAM_MENU_ID, 0)
+            operatorId = it.getInt(EXTRA_PARAM_OPERATOR_ID, 0)
+            productId = it.getInt(EXTRA_PARAM_PRODUCT_ID, 0)
+            clientNumber = it.getString(EXTRA_PARAM_CLIENT_NUMBER, "")
+        }
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_emoney_pdp, container, false)
@@ -121,6 +138,10 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
             loadProducts(it)
         })
 
+        emoneyPdpViewModel.selectedRecentNumber.observe(viewLifecycleOwner, Observer {
+            addToCart(it)
+        })
+
         emoneyPdpViewModel.catalogData.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
@@ -134,7 +155,7 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
         addToCartViewModel.addToCartResult.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
-                    navigateToCart()
+                    navigateToCart(it.data)
                 }
                 is Fail -> emoneyPdpViewModel.setErrorMessage(it.throwable)
             }
@@ -143,13 +164,13 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
 
     private fun loadData() {
         topUpBillsViewModel.getMenuDetail(CommonTopupBillsGqlQuery.catalogMenuDetail,
-                topUpBillsViewModel.createMenuDetailParams(EmoneyPdpActivity.EMONEY_MENU_ID))
+                topUpBillsViewModel.createMenuDetailParams(menuId))
 
         topUpBillsViewModel.getFavoriteNumbers(
                 CommonTopupBillsGqlMutation.favoriteNumber,
-                topUpBillsViewModel.createFavoriteNumbersParams(EmoneyPdpActivity.EMONEY_CATEGORY_ID))
+                topUpBillsViewModel.createFavoriteNumbersParams(categoryId))
 
-        emoneyPdpViewModel.getPrefixOperator(EmoneyPdpActivity.EMONEY_MENU_ID)
+        emoneyPdpViewModel.getPrefixOperator(menuId)
     }
 
     private fun renderRecommendationsAndPromoList(recommendations: List<TopupBillsRecommendation>,
@@ -326,7 +347,7 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
         // to be changed to operator.id // NEED ACTION
         showProducts()
         emoneyPdpProductWidget.showShimmering()
-        emoneyPdpViewModel.getProductFromOperator(EmoneyPdpActivity.EMONEY_MENU_ID, prefix.key)
+        emoneyPdpViewModel.getProductFromOperator(menuId, prefix.key)
     }
 
     private fun renderProducts(productList: List<CatalogProduct>) {
@@ -364,20 +385,33 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
     }
 
     override fun onClickNextBuyButton() {
-        addToCartViewModel.addToCart(emoneyPdpViewModel.generateCheckoutPassData(
+        addToCart()
+    }
+
+    private fun addToCart() {
+        val digitalCheckoutPassData = emoneyPdpViewModel.generateCheckoutPassData(
                 (requireActivity() as EmoneyPdpActivity).promoCode,
-                emoneyPdpInputCardWidget.getNumber()),
+                emoneyPdpInputCardWidget.getNumber())
+        addToCartViewModel.addToCart(digitalCheckoutPassData, DeviceUtil.getDigitalIdentifierParam(requireActivity()),
+                DigitalSubscriptionParams())
+    }
+
+    private fun addToCart(recentNumber: TopupBillsRecommendation) {
+        val digitalCheckoutPassData = emoneyPdpViewModel.generateCheckoutPassData(
+                (requireActivity() as EmoneyPdpActivity).promoCode,
+                recentNumber.clientNumber,
+                recentNumber.productId.toString(),
+                recentNumber.operatorId.toString())
+        addToCartViewModel.addToCart(digitalCheckoutPassData,
                 DeviceUtil.getDigitalIdentifierParam(requireActivity()),
                 DigitalSubscriptionParams())
     }
 
-    private fun navigateToCart() {
+    private fun navigateToCart(categoryId: String) {
         context?.let { context ->
             val intent = RouteManager.getIntent(context, DigitalCheckoutUtil.getApplinkCartDigital(context))
-            val gdata = emoneyPdpViewModel.generateCheckoutPassData(
-                    (requireActivity() as EmoneyPdpActivity).promoCode,
-                    emoneyPdpInputCardWidget.getNumber())
-            intent.putExtra(DigitalExtraParam.EXTRA_PASS_DIGITAL_CART_DATA, gdata)
+            emoneyPdpViewModel.digitalCheckoutPassData.categoryId = categoryId
+            intent.putExtra(DigitalExtraParam.EXTRA_PASS_DIGITAL_CART_DATA, emoneyPdpViewModel.digitalCheckoutPassData)
             startActivityForResult(intent, REQUEST_CODE_CART_DIGITAL)
         }
     }
@@ -387,6 +421,28 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
         private const val REQUEST_CODE_EMONEY_PDP_CAMERA_OCR = 1008
         private const val REQUEST_CODE_CART_DIGITAL = 1090
         private const val REQUEST_CODE_EMONEY_PDP_DIGITAL_SEARCH_NUMBER = 1004
+
+        const val EXTRA_PARAM_MENU_ID = "EXTRA_PARAM_MENU_ID"
+        const val EXTRA_PARAM_CATEGORY_ID = "EXTRA_PARAM_CATEGORY_ID"
+        const val EXTRA_PARAM_OPERATOR_ID = "EXTRA_PARAM_OPERATOR_ID"
+        const val EXTRA_PARAM_PRODUCT_ID = "EXTRA_PARAM_PRODUCT_ID"
+        const val EXTRA_PARAM_CLIENT_NUMBER = "EXTRA_PARAM_CLIENT_NUMBER"
+
+        fun newInstance(categoryId: Int,
+                        menuId: Int,
+                        operatorId: Int = 0,
+                        productId: Int = 0,
+                        clientNumber: String): EmoneyPdpFragment {
+            val fragment = EmoneyPdpFragment()
+            val bundle = Bundle()
+            bundle.putInt(EXTRA_PARAM_CATEGORY_ID, categoryId)
+            bundle.putInt(EXTRA_PARAM_MENU_ID, menuId)
+            bundle.putInt(EXTRA_PARAM_OPERATOR_ID, operatorId)
+            bundle.putInt(EXTRA_PARAM_PRODUCT_ID, productId)
+            bundle.putString(EXTRA_PARAM_CLIENT_NUMBER, clientNumber)
+            fragment.arguments = bundle
+            return fragment
+        }
     }
 
 }

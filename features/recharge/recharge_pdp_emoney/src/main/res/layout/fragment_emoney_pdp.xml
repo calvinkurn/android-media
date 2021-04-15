@@ -16,10 +16,10 @@
         <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_scrollFlags="scroll|exitUntilCollapsed"
-            android:orientation="vertical"
             android:background="@drawable/bg_emoney_pdp_green_gradient"
-            app:elevation="@dimen/spacing_lvl2">
+            android:orientation="vertical"
+            app:elevation="@dimen/spacing_lvl2"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
             <com.tokopedia.unifycomponents.ticker.Ticker
                 android:id="@+id/emoneyPdpTicker"
@@ -45,6 +45,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="@dimen/unify_space_12"
                 android:layout_marginTop="@dimen/unify_space_12"
+                android:layout_marginBottom="@dimen/spacing_lvl5"
                 app:layout_constraintTop_toBottomOf="@id/emoneyPdpHeaderView" />
 
             <com.tokopedia.unifycomponents.TabsUnify
@@ -54,7 +55,9 @@
                 android:visibility="gone"
                 app:layout_constraintTop_toBottomOf="@id/emoneyPdpInputCardWidget"
                 tools:visibility="visible" />
+
         </com.google.android.material.appbar.AppBarLayout>
+
 
         <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/emoneyPdpViewPager"

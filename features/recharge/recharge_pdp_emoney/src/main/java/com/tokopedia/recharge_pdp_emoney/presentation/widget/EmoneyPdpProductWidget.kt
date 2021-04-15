@@ -42,6 +42,7 @@ class EmoneyPdpProductWidget @JvmOverloads constructor(@NotNull context: Context
 
     fun setProducts(products: List<CatalogProduct>) {
         adapter.products = products
+        adapter.selectedProductIndex = null
         showContent()
     }
 

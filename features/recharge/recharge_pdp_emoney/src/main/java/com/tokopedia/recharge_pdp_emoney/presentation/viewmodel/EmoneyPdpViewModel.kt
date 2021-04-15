@@ -3,6 +3,7 @@ package com.tokopedia.recharge_pdp_emoney.presentation.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.common.topupbills.data.TopupBillsRecommendation
 import com.tokopedia.common.topupbills.data.prefix_select.RechargePrefix
 import com.tokopedia.common.topupbills.data.prefix_select.TelcoCatalogPrefixSelect
 import com.tokopedia.common.topupbills.data.product.CatalogData
@@ -39,6 +40,10 @@ class EmoneyPdpViewModel @Inject constructor(private val dispatcher: CoroutineDi
     val selectedOperator: LiveData<RechargePrefix>
         get() = _selectedOperator
 
+    private val _selectedRecentNumber = MutableLiveData<TopupBillsRecommendation>()
+    val selectedRecentNumber: LiveData<TopupBillsRecommendation>
+        get() = _selectedRecentNumber
+
     private val _selectedProduct = MutableLiveData<CatalogProduct>()
     val selectedProduct: LiveData<CatalogProduct>
         get() = _selectedProduct
@@ -46,6 +51,8 @@ class EmoneyPdpViewModel @Inject constructor(private val dispatcher: CoroutineDi
     private val _catalogData = MutableLiveData<Result<CatalogData>>()
     val catalogData: LiveData<Result<CatalogData>>
         get() = _catalogData
+
+    var digitalCheckoutPassData = DigitalCheckoutPassData()
 
     fun setErrorMessage(e: Throwable) {
         _errorMessage.postValue(e.message)
@@ -98,14 +105,25 @@ class EmoneyPdpViewModel @Inject constructor(private val dispatcher: CoroutineDi
         _selectedProduct.postValue(product)
     }
 
-    fun generateCheckoutPassData(copiedPromoCode: String, clientNumber: String): DigitalCheckoutPassData {
+    fun setSelectedOperator(operator: RechargePrefix) {
+        _selectedOperator.postValue(operator)
+    }
+
+    fun setSelectedRecentNumber(topupBillsRecommendation: TopupBillsRecommendation) {
+        _selectedRecentNumber.postValue(topupBillsRecommendation)
+    }
+
+    fun generateCheckoutPassData(copiedPromoCode: String, clientNumber: String,
+                                 selectedProductId: String? = null,
+                                 selectedOperatorId: String? = null): DigitalCheckoutPassData {
         val checkoutPassData = DigitalCheckoutPassData()
         checkoutPassData.idemPotencyKey = userSession.userId.generateRechargeCheckoutToken()
         checkoutPassData.voucherCodeCopied = copiedPromoCode
         checkoutPassData.clientNumber = clientNumber
-        checkoutPassData.productId = selectedProduct.value?.id
-        checkoutPassData.operatorId = selectedOperator.value?.key
-        return checkoutPassData
+        checkoutPassData.productId = selectedProductId ?: selectedProduct.value?.id
+        checkoutPassData.operatorId = selectedOperatorId ?: selectedOperator.value?.key
+        checkoutPassData.isFromPDP = true
+        digitalCheckoutPassData = checkoutPassData
+        return digitalCheckoutPassData
     }
-
 }
