@@ -354,7 +354,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
 
     private void initMedialoader() {
         this.registerActivityLifecycleCallbacks(new ToasterActivityLifecycle(this));
-        Loader.initialize(getApplicationContext());
+        Loader.getInstance().init(this);
     }
 
     protected void setVersionName() {

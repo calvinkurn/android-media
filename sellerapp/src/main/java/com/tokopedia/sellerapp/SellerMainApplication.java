@@ -165,7 +165,7 @@ public class SellerMainApplication extends SellerRouterApplication implements
 
     private void initMedialoader() {
         this.registerActivityLifecycleCallbacks(new ToasterActivityLifecycle(this));
-        Loader.initialize(getApplicationContext());
+        Loader.getInstance().init(this);
     }
 
     private void setVersionName() {

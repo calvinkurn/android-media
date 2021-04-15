@@ -47,9 +47,7 @@ internal object MediaLoaderApi {
                 * */
                 is String -> {
                     // url builder
-                    val source = Loader
-                            .initialize(context)
-                            .urlBuilder(properties.data.toString())
+                    val source = Loader.instance.urlBuilder(properties.data.toString())
 
                     /*
                     * only track the performance monitoring for a new domain,
