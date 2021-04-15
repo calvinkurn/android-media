@@ -45,7 +45,7 @@ dependencies {
 
 project.ext {
     artifactId = 'media-common'
-    groupId = 'com.tokopedia.user'
+    groupId = 'com.tokopedia.media'
     versionName = "0.0.1"
     artifactName = "media-common-release"
 }

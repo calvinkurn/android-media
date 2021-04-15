@@ -120,6 +120,8 @@ ext {
             localizationchooseaddress       : ":features:logistic:localizationchooseaddress",
             
             mediauploader                   : ":features:media:mediauploader",
+            mediaCommon                     : ":features:media:media-common",
+            medialoader                     : ":features:media:medialoader",
 
             goldMerchantCommon              : ":features:merchant:gold_merchant_common",
             powerMerchantSubscribe          : ":features:merchant:power_merchant_subscribe",
@@ -239,8 +241,6 @@ ext {
             loginfingerprint                : ":features:user:loginfingerprint",
             managename                      : ":features:user:managename",
             managepassword                  : ":features:user:managepassword",
-            mediaCommon                     : ":features:user:media-common",
-            medialoader                     : ":features:user:medialoader",
             notifTroubleshooter             : ":features:user:notif-troubleshooter",
             notifCenter                     : ":features:user:notifcenter",
             orderhistory                    : ":features:user:orderhistory",
