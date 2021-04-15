@@ -24,12 +24,12 @@ class CpmViewHolder(
     private val adsBannerView: TopAdsBannerView = itemView.findViewById(R.id.ads_banner)
 
     init {
-        adsBannerView.setTopAdsBannerClickListener { position, applink: String?, data ->
+        adsBannerView.setTopAdsBannerClickListener { position, applink: String?, data: CpmData? ->
             bannerAdsListener?.onBannerAdsClicked(position, applink, data)
         }
 
         adsBannerView.setTopAdsImpressionListener(object : TopAdsItemImpressionListener() {
-            override fun onImpressionHeadlineAdsItem(position: Int, data: CpmData) {
+            override fun onImpressionHeadlineAdsItem(position: Int, data: CpmData?) {
                 bannerAdsListener?.onBannerAdsImpressionListener(position, data)
             }
         })

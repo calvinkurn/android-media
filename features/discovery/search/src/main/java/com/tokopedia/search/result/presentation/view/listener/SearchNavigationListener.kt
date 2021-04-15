@@ -1,14 +1,10 @@
-package com.tokopedia.search.result.presentation.view.listener;
+package com.tokopedia.search.result.presentation.view.listener
 
-public interface SearchNavigationListener {
-
-    void setupSearchNavigation(ClickListener clickListener, boolean isSortEnabled);
-
-    void refreshMenuItemGridIcon(int titleResId, int iconResId);
-
-    void removeSearchPageLoading();
-
+interface SearchNavigationListener {
+    fun setupSearchNavigation(clickListener: ClickListener?, isSortEnabled: Boolean)
+    fun refreshMenuItemGridIcon(titleResId: Int, iconResId: Int)
+    fun removeSearchPageLoading()
     interface ClickListener {
-        void onChangeGridClick();
+        fun onChangeGridClick()
     }
 }

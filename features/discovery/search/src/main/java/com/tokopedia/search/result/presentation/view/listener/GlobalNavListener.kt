@@ -1,10 +1,10 @@
-package com.tokopedia.search.result.presentation.view.listener;
+package com.tokopedia.search.result.presentation.view.listener
 
-import com.tokopedia.search.result.presentation.model.GlobalNavDataView;
+import com.tokopedia.search.result.presentation.model.GlobalNavDataView
 
-public interface GlobalNavListener {
+interface GlobalNavListener {
 
-    void onGlobalNavWidgetClicked(GlobalNavDataView.Item item, String keyword);
+    fun onGlobalNavWidgetClicked(item: GlobalNavDataView.Item?, keyword: String?)
 
-    void onGlobalNavWidgetClickSeeAll(GlobalNavDataView globalNavDataView);
+    fun onGlobalNavWidgetClickSeeAll(globalNavDataView: GlobalNavDataView?)
 }

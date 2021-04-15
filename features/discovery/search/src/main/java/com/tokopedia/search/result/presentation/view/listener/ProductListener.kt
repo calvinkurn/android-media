@@ -1,11 +1,9 @@
-package com.tokopedia.search.result.presentation.view.listener;
+package com.tokopedia.search.result.presentation.view.listener
 
-import com.tokopedia.search.result.presentation.model.ProductItemDataView;
+import com.tokopedia.search.result.presentation.model.ProductItemDataView
 
-public interface ProductListener {
-    void onItemClicked(ProductItemDataView item, int adapterPosition);
-
-    void onThreeDotsClick(ProductItemDataView item, int adapterPosition);
-
-    void onProductImpressed(ProductItemDataView item, int adapterPosition);
+interface ProductListener {
+    fun onItemClicked(item: ProductItemDataView?, adapterPosition: Int)
+    fun onThreeDotsClick(item: ProductItemDataView?, adapterPosition: Int)
+    fun onProductImpressed(item: ProductItemDataView?, adapterPosition: Int)
 }

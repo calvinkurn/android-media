@@ -1,10 +1,10 @@
-package com.tokopedia.search.result.presentation.view.listener;
+package com.tokopedia.search.result.presentation.view.listener
 
-import com.tokopedia.topads.sdk.domain.model.CpmData;
+import com.tokopedia.topads.sdk.domain.model.CpmData
 
-public interface BannerAdsListener {
+interface BannerAdsListener {
 
-    void onBannerAdsClicked(int position, String applink, CpmData data);
+    fun onBannerAdsClicked(position: Int, applink: String?, data: CpmData?)
 
-    void onBannerAdsImpressionListener(int position, CpmData data);
+    fun onBannerAdsImpressionListener(position: Int, data: CpmData?)
 }

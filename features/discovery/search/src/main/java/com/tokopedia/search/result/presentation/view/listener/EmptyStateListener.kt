@@ -1,17 +1,12 @@
-package com.tokopedia.search.result.presentation.view.listener;
+package com.tokopedia.search.result.presentation.view.listener
 
-import androidx.annotation.Nullable;
+import com.tokopedia.filter.common.data.Option
 
-import com.tokopedia.filter.common.data.Option;
-
-import java.util.List;
-
-public interface EmptyStateListener {
-    void onEmptyButtonClicked();
-    void onSelectedFilterRemoved(String uniqueId);
-    String getRegistrationId();
-    String getUserId();
-    @Nullable
-    List<Option> getSelectedFilterAsOptionList();
-    void onEmptySearchToGlobalSearchClicked(String applink);
+interface EmptyStateListener {
+    fun onEmptyButtonClicked()
+    fun onSelectedFilterRemoved(uniqueId: String?)
+    fun getRegistrationId(): String
+    fun getUserId(): String
+    fun getSelectedFilterAsOptionList(): List<Option>?
+    fun onEmptySearchToGlobalSearchClicked(applink: String?)
 }

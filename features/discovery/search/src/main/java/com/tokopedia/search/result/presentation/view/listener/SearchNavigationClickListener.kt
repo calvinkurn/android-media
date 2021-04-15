@@ -1,5 +1,5 @@
-package com.tokopedia.search.result.presentation.view.listener;
+package com.tokopedia.search.result.presentation.view.listener
 
-public interface SearchNavigationClickListener {
-    void onChangeViewClicked(int position);
+interface SearchNavigationClickListener {
+    fun onChangeViewClicked(position: Int)
 }

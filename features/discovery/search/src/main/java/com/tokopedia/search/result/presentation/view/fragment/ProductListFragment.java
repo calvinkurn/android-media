@@ -752,6 +752,8 @@ public class ProductListFragment
 
     @Override
     public void onGlobalNavWidgetClicked(GlobalNavDataView.Item item, String keyword) {
+        if (item == null) return;
+
         redirectionStartActivity(item.getApplink(), item.getUrl());
 
         SearchTracking.trackEventClickGlobalNavWidgetItem(item.getGlobalNavItemAsObjectDataLayer(item.getName()),
@@ -760,6 +762,8 @@ public class ProductListFragment
 
     @Override
     public void onGlobalNavWidgetClickSeeAll(GlobalNavDataView model) {
+        if (model == null) return;
+
         redirectionStartActivity(model.getSeeAllApplink(), model.getSeeAllUrl());
 
         SearchTracking.eventUserClickSeeAllGlobalNavWidget(model.getKeyword(),
@@ -894,7 +898,7 @@ public class ProductListFragment
     }
 
     @Override
-    public void onTickerClicked(TickerDataView tickerDataView) {
+    public void onTickerClicked(@NotNull TickerDataView tickerDataView) {
         SearchTracking.trackEventClickTicker(getQueryKey(), tickerDataView.getTypeId());
         applyParamsFromTicker(UrlParamUtils.getParamMap(tickerDataView.getQuery()));
     }
@@ -941,6 +945,8 @@ public class ProductListFragment
 
     @Override
     public void onSuggestionClicked(SuggestionDataView suggestionDataView) {
+        if (suggestionDataView == null) return;
+
         SearchTracking.eventClickSuggestedSearch(getQueryKey(), suggestionDataView.getSuggestion());
         performNewProductSearch(suggestionDataView.getSuggestedQuery());
     }
@@ -1335,7 +1341,10 @@ public class ProductListFragment
 
     @Override
     public void onBannerAdsClicked(int position, String applink, CpmData cpmData) {
-        if (getActivity() == null || redirectionListener == null) return;
+        if (getActivity() == null
+                || redirectionListener == null
+                || applink == null
+                || cpmData == null) return;
 
         redirectionListener.startActivityWithApplink(applink);
 
@@ -1354,6 +1363,8 @@ public class ProductListFragment
 
     @Override
     public void onBannerAdsImpressionListener(int position, CpmData data) {
+        if (data == null) return;
+
         TopAdsGtmTracker.eventTopAdsHeadlineShopView(position, data, getQueryKey(), getUserId());
         TopAdsGtmTracker.eventSearchResultPromoView(getActivity(), data, position);
     }

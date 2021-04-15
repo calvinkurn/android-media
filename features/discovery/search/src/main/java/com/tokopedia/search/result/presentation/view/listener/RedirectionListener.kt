@@ -1,8 +1,8 @@
-package com.tokopedia.search.result.presentation.view.listener;
+package com.tokopedia.search.result.presentation.view.listener
 
-public interface RedirectionListener {
-    void showSearchInputView();
-    void setAutocompleteApplink(String autocompleteApplink);
-    void startActivityWithApplink(String applink, String... parameter);
-    void startActivityWithUrl(String url, String... parameter);
+interface RedirectionListener {
+    fun showSearchInputView()
+    fun setAutocompleteApplink(autocompleteApplink: String?)
+    fun startActivityWithApplink(applink: String?, vararg parameter: String?)
+    fun startActivityWithUrl(url: String?, vararg parameter: String?)
 }

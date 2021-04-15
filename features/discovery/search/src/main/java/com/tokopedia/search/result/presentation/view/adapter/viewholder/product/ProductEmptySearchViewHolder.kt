@@ -159,7 +159,7 @@ class ProductEmptySearchViewHolder(
     }
 
     private fun bindRecyclerView() {
-        val selectedFilterFromEmptyStateListener = emptyStateListener.selectedFilterAsOptionList ?: return
+        val selectedFilterFromEmptyStateListener = emptyStateListener.getSelectedFilterAsOptionList() ?: return
         val shouldShowSelectedFilterList = selectedFilterFromEmptyStateListener.isNotEmpty()
 
         selectedFilterRecyclerView?.shouldShowWithAction(shouldShowSelectedFilterList) {
@@ -182,8 +182,8 @@ class ProductEmptySearchViewHolder(
         if (!emptySearchModel.isBannerAdsAllowed) return
 
         val bannerAdsConfig = Config.Builder()
-                .setSessionId(emptyStateListener.registrationId)
-                .setUserId(emptyStateListener.userId)
+                .setSessionId(emptyStateListener.getRegistrationId())
+                .setUserId(emptyStateListener.getUserId())
                 .withMerlinCategory()
                 .topAdsParams(topAdsParams)
                 .setEndpoint(Endpoint.CPM)
