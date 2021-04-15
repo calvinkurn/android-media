@@ -8,14 +8,10 @@ import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUse
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.product.detail.di.RawQueryKeyConstant.QUERY_DISCUSSION_MOST_HELPFUL
-import com.tokopedia.product.detail.di.RawQueryKeyConstant.QUERY_RECOMMEN_PRODUCT
 import com.tokopedia.product.detail.usecase.DiscussionMostHelpfulUseCase
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChipsEntity
 import com.tokopedia.recommendation_widget_common.di.RecommendationModule
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationFilterChips
-import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
 import com.tokopedia.topads.sdk.repository.TopAdsRepository
 import com.tokopedia.trackingoptimizer.TrackingQueue
@@ -37,10 +33,6 @@ class ProductDetailModule {
     @Provides
     fun provideDiscussionMostHelpfulUseCase(rawQueries: Map<String, String>, graphqlRepository: GraphqlRepository): DiscussionMostHelpfulUseCase =
             DiscussionMostHelpfulUseCase(rawQueries[QUERY_DISCUSSION_MOST_HELPFUL]?:"", graphqlRepository)
-
-    @ProductDetailScope
-    @Provides
-    fun provideDispatcherProvider(): CoroutineDispatchers = CoroutineDispatchersProvider
 
     @ProductDetailScope
     @Provides

@@ -7,8 +7,6 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers;
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.loginfingerprint.data.preference.FingerprintPreferenceHelper;
 import com.tokopedia.loginfingerprint.data.preference.FingerprintSetting;
@@ -58,11 +56,5 @@ public class LoginModule {
     @Provides
     FingerprintSetting provideFingerprintSetting(@ApplicationContext Context context){
         return new FingerprintPreferenceHelper(context);
-    }
-
-    @LoginScope
-    @Provides
-    CoroutineDispatchers provideCoroutineDispatchers() {
-        return CoroutineDispatchersProvider.INSTANCE;
     }
 }

@@ -2,8 +2,6 @@ package com.tokopedia.shop.pageheader.di.module;
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
@@ -93,12 +91,6 @@ class ShopPageModule {
                 GQLQueryNamedConstant.SHOP_INFO_FOR_CORE_AND_ASSETS to queryShopInfoCoreAssets,
                 ShopPageHeaderConstant.SHOP_PAGE_FEED_WHITELIST to queryShopFeedWhitelist
         )
-    }
-
-    @ShopPageScope
-    @Provides
-    fun getCoroutineDispatcherProvider(): CoroutineDispatchers {
-        return CoroutineDispatchersProvider
     }
 
     @ShopPageScope

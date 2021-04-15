@@ -9,5 +9,4 @@ import dagger.Component
 @Component(modules = [BrandlistPageModule::class], dependencies = [BrandlistComponent::class])
 interface BrandlistPageComponent {
     fun inject(view: BrandlistPageFragment)
-    fun getDispatcherProvider(): CoroutineDispatchers
 }

@@ -40,7 +40,6 @@ import javax.inject.Named
  */
 
 class GroupDetailViewModel @Inject constructor(
-        @Named("Main")
         private val dispatcher: CoroutineDispatchers,
         private val topAdsGetGroupProductDataUseCase: TopAdsGetGroupProductDataUseCase,
         private val topAdsGetAdKeywordUseCase: TopAdsGetAdKeywordUseCase,

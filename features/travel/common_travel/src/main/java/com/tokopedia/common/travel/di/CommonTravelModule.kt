@@ -1,7 +1,5 @@
 package com.tokopedia.common.travel.di
 
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor.Companion.getInstance
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -26,8 +24,4 @@ class CommonTravelModule {
     @CommonTravelScope
     @Provides
     fun provideMainDispatcher(): CoroutineDispatcher = Main
-
-    @CommonTravelScope
-    @Provides
-    fun provideTravelDispatcher(): CoroutineDispatchers = CoroutineDispatchersProvider
 }

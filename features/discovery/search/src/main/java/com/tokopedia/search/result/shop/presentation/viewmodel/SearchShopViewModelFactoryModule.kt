@@ -1,6 +1,7 @@
 package com.tokopedia.search.result.shop.presentation.viewmodel
 
 import androidx.lifecycle.ViewModelProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.discovery.common.Mapper
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
@@ -42,10 +43,11 @@ internal class SearchShopViewModelFactoryModule(
             getShopCountUseCase: daggerLazy<UseCase<Int>>,
             shopCpmDataViewMapper: daggerLazy<Mapper<SearchShopModel, ShopCpmDataView>>,
             shopDataViewMapper: daggerLazy<Mapper<SearchShopModel, ShopDataView>>,
-            userSession: daggerLazy<UserSessionInterface>
+            userSession: daggerLazy<UserSessionInterface>,
+            coroutineDispatchers: CoroutineDispatchers
     ): ViewModelProvider.Factory {
         return SearchShopViewModelFactory(
-                CoroutineDispatchersProvider,
+                coroutineDispatchers,
                 searchParameter,
                 searchShopFirstPageUseCase,
                 searchShopLoadMoreUseCase,

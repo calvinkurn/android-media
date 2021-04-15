@@ -29,7 +29,6 @@ import com.tokopedia.brandlist.analytic.BrandlistTracking
 import com.tokopedia.brandlist.brandlist_category.data.model.BrandlistCategories
 import com.tokopedia.brandlist.brandlist_category.data.model.Category
 import com.tokopedia.brandlist.brandlist_category.di.BrandlistCategoryComponent
-import com.tokopedia.brandlist.brandlist_category.di.BrandlistCategoryModule
 import com.tokopedia.brandlist.brandlist_category.di.DaggerBrandlistCategoryComponent
 import com.tokopedia.brandlist.brandlist_category.presentation.activity.BrandlistActivity.Companion.CATEGORY_EXTRA_APPLINK
 import com.tokopedia.brandlist.brandlist_category.presentation.adapter.BrandlistContainerAdapter
@@ -122,7 +121,6 @@ class BrandlistContainerFragment : BaseDaggerFragment(),
         return activity?.run {
             DaggerBrandlistCategoryComponent
                     .builder()
-                    .brandlistCategoryModule(BrandlistCategoryModule())
                     .brandlistComponent(BrandlistInstance.getComponent(application))
                     .build()
         }

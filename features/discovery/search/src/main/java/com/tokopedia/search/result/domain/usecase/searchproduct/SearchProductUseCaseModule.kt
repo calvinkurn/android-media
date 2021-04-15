@@ -1,6 +1,6 @@
 package com.tokopedia.search.result.domain.usecase.searchproduct
 
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
@@ -27,7 +27,8 @@ class SearchProductUseCaseModule {
     fun provideSearchProductFirstPageUseCase(
             searchProductModelMapper: Func1<GraphqlResponse?, SearchProductModel?>,
             remoteConfig: RemoteConfig,
-            userSession: UserSessionInterface
+            userSession: UserSessionInterface,
+            coroutineDispatchers: CoroutineDispatchers
     ): UseCase<SearchProductModel> {
         // Temporarily keep 2 search use case for TDN and without TDN
         if (remoteConfig.getBoolean(RemoteConfigKey.ENABLE_SEARCH_TDN)) {
@@ -39,7 +40,7 @@ class SearchProductUseCaseModule {
                     GraphqlUseCase(),
                     searchProductModelMapper,
                     topAdsImageViewUseCase,
-                    CoroutineDispatchersProvider,
+                    coroutineDispatchers,
                     SearchLogger()
             )
         }

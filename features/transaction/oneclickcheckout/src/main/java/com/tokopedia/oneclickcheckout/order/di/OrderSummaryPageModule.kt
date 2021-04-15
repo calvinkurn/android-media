@@ -15,8 +15,6 @@ import com.tokopedia.logisticcart.domain.executor.SchedulerProvider
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.ShippingDurationConverter
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
 import com.tokopedia.oneclickcheckout.common.OVO_ACTIVATION_URL
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.oneclickcheckout.common.domain.GetPreferenceListUseCase
 import com.tokopedia.oneclickcheckout.common.domain.GetPreferenceListUseCaseImpl
 import com.tokopedia.oneclickcheckout.common.domain.mapper.PreferenceModelMapper
@@ -42,10 +40,6 @@ open class OrderSummaryPageModule(private val activity: Activity) {
     @OrderSummaryPageScope
     @Provides
     fun provideContext(): Context = activity
-
-    @OrderSummaryPageScope
-    @Provides
-    fun provideExecutorDispatchers(): CoroutineDispatchers = CoroutineDispatchersProvider
 
     @OrderSummaryPageScope
     @Provides

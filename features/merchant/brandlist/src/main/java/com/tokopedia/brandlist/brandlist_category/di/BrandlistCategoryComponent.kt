@@ -6,7 +6,7 @@ import com.tokopedia.brandlist.common.di.BrandlistComponent
 import dagger.Component
 
 @BrandlistCategoryScope
-@Component(modules = [BrandlistCategoryModule::class], dependencies = [BrandlistComponent::class])
+@Component(modules = [BrandlistCategoryViewModelModule::class], dependencies = [BrandlistComponent::class])
 interface BrandlistCategoryComponent {
     fun inject(view: BrandlistContainerFragment)
     fun getDispatcherProvider(): CoroutineDispatchers

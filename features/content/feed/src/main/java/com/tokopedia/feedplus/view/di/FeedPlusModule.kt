@@ -5,8 +5,6 @@ import com.chuckerteam.chucker.api.ChuckerCollector
 import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.affiliatecommon.data.network.TopAdsApi
 import com.tokopedia.affiliatecommon.domain.TrackAffiliateClickUseCase
@@ -192,12 +190,6 @@ class FeedPlusModule {
     @FeedPlusScope
     fun provideMainDispatcher(): CoroutineDispatcher {
         return Main
-    }
-
-    @Provides
-    @FeedPlusScope
-    fun provideCoroutineDispatchers(): CoroutineDispatchers {
-        return CoroutineDispatchersProvider
     }
 
     @FeedPlusScope
