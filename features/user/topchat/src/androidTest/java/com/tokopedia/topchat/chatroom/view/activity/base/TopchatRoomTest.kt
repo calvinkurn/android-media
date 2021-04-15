@@ -7,6 +7,7 @@ import android.content.Intent
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
@@ -39,6 +40,7 @@ import com.tokopedia.topchat.chatroom.domain.pojo.stickergroup.ChatListGroupStic
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.TopchatProductAttachmentViewHolder
 import com.tokopedia.topchat.chattemplate.domain.pojo.TemplateData
 import com.tokopedia.topchat.common.TopChatInternalRouter
+import com.tokopedia.topchat.idling.FragmentTransactionIdle
 import com.tokopedia.topchat.matchers.withRecyclerView
 import com.tokopedia.topchat.matchers.withTotalItem
 import com.tokopedia.topchat.stub.chatroom.di.ChatComponentStub
@@ -100,6 +102,7 @@ abstract class TopchatRoomTest {
     protected lateinit var websocket: RxWebSocketUtilStub
 
     protected open lateinit var activity: TopChatRoomActivityStub
+    protected open lateinit var fragmentTransactionIdling: FragmentTransactionIdle
 
     protected open val exMessageId = "66961"
 
@@ -183,13 +186,25 @@ abstract class TopchatRoomTest {
         intentModifier(intent)
         activityTestRule.launchActivity(intent)
         activity = activityTestRule.activity
+        fragmentTransactionIdling = FragmentTransactionIdle(
+                activity.supportFragmentManager,
+                TopChatRoomActivityStub.TAG
+        )
         if (isSellerApp) {
             GlobalConfig.APPLICATION_TYPE = GlobalConfig.SELLER_APPLICATION
         }
     }
 
+    protected fun waitForFragmentResumed() {
+        IdlingRegistry.getInstance().register(fragmentTransactionIdling)
+        onView(withId(R.id.recycler_view))
+                .check(matches(isDisplayed()))
+        IdlingRegistry.getInstance().unregister(fragmentTransactionIdling)
+    }
+
     protected fun inflateTestFragment() {
         activity.setupTestFragment(chatComponentStub)
+        waitForFragmentResumed()
     }
 
     protected fun changeResponseStartTime(
