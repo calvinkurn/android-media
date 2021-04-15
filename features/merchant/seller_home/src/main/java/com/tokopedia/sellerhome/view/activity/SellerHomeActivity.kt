@@ -73,6 +73,7 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
 
         private const val LAST_FRAGMENT_TYPE_KEY = "last_fragment"
         private const val ACTION_GET_ALL_APP_WIDGET_DATA = "com.tokopedia.sellerappwidget.GET_ALL_APP_WIDGET_DATA"
+        private const val NAVIGATION_OTHER_MENU_POSITION = 4
     }
 
     @Inject lateinit var userSession: UserSessionInterface
@@ -154,6 +155,11 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
         if (sellerHomeLifecycleState?.isAtLeast(Lifecycle.State.CREATED) == true) {
             navigator?.getHomeFragment()?.onNewIntent(intent?.data)
         }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        navigator?.getHomeFragment()?.onActivityResult(requestCode, resultCode, data)
     }
 
     override fun onBackPressed() {
@@ -311,6 +317,13 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
 
     private fun setupNavigator() {
         navigator = SellerHomeNavigator(this, supportFragmentManager, sellerHomeRouter, userSession)
+
+        setNavigationOtherMenuView()
+    }
+
+    private fun setNavigationOtherMenuView() {
+        val navigationOtherMenuView = sahBottomNav.getMenuViewByIndex(NAVIGATION_OTHER_MENU_POSITION)
+        navigator?.getHomeFragment()?.setNavigationOtherMenuView(navigationOtherMenuView)
     }
 
     private fun setupShadow() {

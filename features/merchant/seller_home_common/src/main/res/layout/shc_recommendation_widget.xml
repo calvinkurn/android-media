@@ -6,6 +6,7 @@
     app:cardCornerRadius="@dimen/layout_lvl1">
 
     <RelativeLayout
+        android:id="@+id/containerShcRecommendation"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 

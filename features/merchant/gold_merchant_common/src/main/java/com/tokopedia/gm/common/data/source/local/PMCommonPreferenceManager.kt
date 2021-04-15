@@ -18,6 +18,7 @@ class PMCommonPreferenceManager(
 
         const val KEY_SHOP_SCORE_CONSENT_CHECKED = "key_shop_score_consent_checked"
         const val KEY_NUMBER_OF_INTERRUPT_PAGE_OPENED = "key_number_of_interrupt_page_opened"
+        const val KEY_RECOMMENDATION_COACH_MARK = "key_recommendation_coach_mark"
     }
 
     private val sp: SharedPreferences by lazy {

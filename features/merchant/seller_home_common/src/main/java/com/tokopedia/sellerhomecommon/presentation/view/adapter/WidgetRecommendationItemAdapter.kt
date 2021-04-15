@@ -19,7 +19,8 @@ import kotlinx.android.synthetic.main.shc_item_recommendation.view.*
  */
 
 class WidgetRecommendationItemAdapter(
-        private val items: List<RecommendationItemUiModel>
+        private val items: List<RecommendationItemUiModel>,
+        private val onItemClick: (RecommendationItemUiModel) -> Unit
 ) : RecyclerView.Adapter<WidgetRecommendationItemAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -30,14 +31,14 @@ class WidgetRecommendationItemAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = items[position]
-        holder.bind(item)
+        holder.bind(item, onItemClick)
     }
 
     override fun getItemCount(): Int = items.size
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-        fun bind(item: RecommendationItemUiModel) {
+        fun bind(item: RecommendationItemUiModel, onItemClick: (RecommendationItemUiModel) -> Unit) {
             with(itemView) {
                 tvShcRecommendationItem.text = item.text.parseAsHtml()
                 setupIconType(item)
@@ -49,6 +50,7 @@ class WidgetRecommendationItemAdapter(
                     tvShcRecommendationItem.setUnifyDrawableEnd(IconUnify.CHEVRON_RIGHT, width = dp24, height = dp24)
                     setOnClickListener {
                         RouteManager.route(context, item.appLink)
+                        onItemClick(item)
                     }
                 }
             }

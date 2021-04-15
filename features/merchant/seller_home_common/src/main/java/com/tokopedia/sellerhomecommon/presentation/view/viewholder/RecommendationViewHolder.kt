@@ -10,13 +10,14 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.sellerhomecommon.R
-import com.tokopedia.sellerhomecommon.presentation.model.RecommendationUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.RecommendationItemUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.RecommendationWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.view.adapter.WidgetRecommendationItemAdapter
 import com.tokopedia.sellerhomecommon.presentation.view.customview.ShopScorePMWidget
 import com.tokopedia.sellerhomecommon.utils.clearUnifyDrawableEnd
 import com.tokopedia.sellerhomecommon.utils.setUnifyDrawableEnd
 import kotlinx.android.synthetic.main.shc_partial_common_widget_state_error.view.*
+import kotlinx.android.synthetic.main.shc_recommendation_widget.view.*
 import kotlinx.android.synthetic.main.shc_recommendation_widget_error.view.*
 import kotlinx.android.synthetic.main.shc_recommendation_widget_loading.view.*
 import kotlinx.android.synthetic.main.shc_recommendation_widget_success.view.*
@@ -74,7 +75,7 @@ class RecommendationViewHolder(
             val level = element.data?.progressLevel?.bar?.value.orZero()
             slvShcShopLevel.show(level)
 
-            setupRecommendations(element.data?.recommendation)
+            setupRecommendations(element)
 
             val progressBar = element.data?.progressBar
             val progressTitle = progressBar?.text.orEmpty()
@@ -87,6 +88,11 @@ class RecommendationViewHolder(
 
             setupCta(element)
             setupTooltip(tvShcRecommendationTitle, element)
+
+            itemView.addOnImpressionListener(element.impressHolder) {
+                listener.sendRecommendationImpressionEvent(element)
+            }
+            listener.showRecommendationWidgetCoachMark(itemView.containerShcRecommendation)
         }
     }
 
@@ -99,11 +105,17 @@ class RecommendationViewHolder(
             if (isCtaVisible) {
                 tvShcRecommendationCta.text = element.ctaText
                 tvShcRecommendationCta.setOnClickListener {
-                    RouteManager.route(context, element.appLink)
+                    openApplink(element)
                 }
                 val iconColor = context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_G400)
                 tvShcRecommendationCta.setUnifyDrawableEnd(IconUnify.CHEVRON_RIGHT, iconColor)
             }
+        }
+    }
+
+    private fun openApplink(element: RecommendationWidgetUiModel) {
+        if (RouteManager.route(itemView.context, element.appLink)) {
+            listener.sendRecommendationCtaClickEvent(element)
         }
     }
 
@@ -120,8 +132,9 @@ class RecommendationViewHolder(
         }
     }
 
-    private fun setupRecommendations(data: RecommendationUiModel?) = with(onSuccessView) {
-        data?.let { data ->
+    private fun setupRecommendations(element: RecommendationWidgetUiModel) = with(onSuccessView) {
+        val recommendation = element.data?.recommendation
+        recommendation?.let { data ->
             val dp24 = context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.layout_lvl3)
             tvShcRecommendationHeaderItem.setUnifyDrawableEnd(IconUnify.CHEVRON_UP, width = dp24, height = dp24)
             tvShcRecommendationHeaderItem.text = data.title
@@ -138,7 +151,9 @@ class RecommendationViewHolder(
                 }
             }
 
-            val adapter = WidgetRecommendationItemAdapter(data.recommendations)
+            val adapter = WidgetRecommendationItemAdapter(data.recommendations) {
+                listener.sendRecommendationItemClickEvent(element, it)
+            }
             rvShcRecommendationList.layoutManager = object : LinearLayoutManager(context) {
                 override fun canScrollVertically(): Boolean = false
             }
@@ -180,5 +195,13 @@ class RecommendationViewHolder(
         }
     }
 
-    interface Listener : BaseViewHolderListener
+    interface Listener : BaseViewHolderListener {
+        fun showRecommendationWidgetCoachMark(view: View) {}
+
+        fun sendRecommendationImpressionEvent(element: RecommendationWidgetUiModel) {}
+
+        fun sendRecommendationCtaClickEvent(element: RecommendationWidgetUiModel) {}
+
+        fun sendRecommendationItemClickEvent(element: RecommendationWidgetUiModel, item: RecommendationItemUiModel) {}
+    }
 }
