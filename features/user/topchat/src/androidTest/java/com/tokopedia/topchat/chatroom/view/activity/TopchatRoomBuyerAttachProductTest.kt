@@ -332,8 +332,6 @@ class TopchatRoomBuyerAttachProductTest : BaseBuyerTopchatRoomTest() {
         assertSrwContentIsVisible()
     }
 
-
-    // TODO: test srw interaction expand and collapse
     @Test
     fun assert_srw_expand_collapse_interaction() {
         // Given
