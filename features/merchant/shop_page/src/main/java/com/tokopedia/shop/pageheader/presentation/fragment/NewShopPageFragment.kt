@@ -1257,12 +1257,13 @@ class NewShopPageFragment :
         viewPagerAdapter?.notifyDataSetChanged()
         tabLayout?.apply {
             for (i in 0 until tabCount) {
-                getTabAt(i)?.customView = viewPagerAdapter?.getTabView(i, selectedPosition).apply {
+                val tabCustomView = viewPagerAdapter?.getTabView(i, selectedPosition)
+                if (listShopPageTabModel[i].tabFragment is ShopPageShowcaseFragment && isFirstTimeVisit() == false) {
                     // temporary show label "BARU" for new showcase tab
-                    if (listShopPageTabModel[i].tabFragment is ShopPageShowcaseFragment && isFirstTimeVisit() == true) {
-                        icon_tab_label?.visible()
-                    }
+                    tabCustomView?.icon_tab_label?.visible()
+                    saveFirstTimeVisit()
                 }
+                getTabAt(i)?.customView = tabCustomView
             }
         }
         viewPager.setCurrentItem(selectedPosition, false)

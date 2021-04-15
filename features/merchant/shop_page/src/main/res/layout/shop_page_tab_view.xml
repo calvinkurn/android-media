@@ -29,7 +29,7 @@
             android:id="@+id/icon_tab_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_10"
+            android:layout_marginTop="@dimen/dp_11"
             android:text="@string/shop_page_label_new_icon_tab"
             android:textSize="@dimen/sp_8"
             android:textStyle="bold"
