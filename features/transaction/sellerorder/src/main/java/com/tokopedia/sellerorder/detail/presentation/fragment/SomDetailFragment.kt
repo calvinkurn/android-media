@@ -30,7 +30,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
-import com.tokopedia.datepicker.DatePickerUnify
+import com.tokopedia.datepicker.datetimepicker.DateTimePickerUnify
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.dialog.DialogUnify.Companion.HORIZONTAL_ACTION
 import com.tokopedia.dialog.DialogUnify.Companion.NO_IMAGE
@@ -38,11 +38,7 @@ import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.convertFormatDate
 import com.tokopedia.kotlin.extensions.convertMonth
 import com.tokopedia.kotlin.extensions.toFormattedString
-import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.analytics.SomAnalytics
 import com.tokopedia.sellerorder.analytics.SomAnalytics.eventClickCtaActionInOrderDetail
@@ -100,6 +96,7 @@ import com.tokopedia.sellerorder.common.util.SomConsts.VALUE_COURIER_PROBLEM_OTH
 import com.tokopedia.sellerorder.common.util.SomConsts.VALUE_REASON_BUYER_NO_RESPONSE
 import com.tokopedia.sellerorder.common.util.SomConsts.VALUE_REASON_OTHER
 import com.tokopedia.sellerorder.common.util.Utils
+import com.tokopedia.sellerorder.common.util.Utils.setUserNotAllowedToViewSom
 import com.tokopedia.sellerorder.confirmshipping.presentation.activity.SomConfirmShippingActivity
 import com.tokopedia.sellerorder.detail.analytic.performance.SomDetailLoadTimeMonitoring
 import com.tokopedia.sellerorder.detail.data.model.*
@@ -116,7 +113,6 @@ import com.tokopedia.sellerorder.detail.presentation.bottomsheet.SomBottomSheetS
 import com.tokopedia.sellerorder.detail.presentation.fragment.SomDetailLogisticInfoFragment.Companion.KEY_ID_CACHE_MANAGER_INFO_ALL
 import com.tokopedia.sellerorder.detail.presentation.model.LogisticInfoAllWrapper
 import com.tokopedia.sellerorder.detail.presentation.viewmodel.SomDetailViewModel
-import com.tokopedia.sellerorder.common.util.Utils.setUserNotAllowedToViewSom
 import com.tokopedia.sellerorder.requestpickup.data.model.SomProcessReqPickup
 import com.tokopedia.sellerorder.requestpickup.presentation.activity.SomConfirmReqPickupActivity
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -1387,7 +1383,12 @@ class SomDetailFragment : BaseDaggerFragment(),
             maxDate.add(Calendar.YEAR, 100)
 
             fragmentManager?.let {
-                val datePicker = DatePickerUnify(context, dateNow, dateNow, maxDate)
+                val datePicker = DateTimePickerUnify(
+                        context = context,
+                        minDate = dateNow,
+                        defaultDate = dateNow,
+                        maxDate = maxDate,
+                        type = DateTimePickerUnify.TYPE_DATEPICKER)
                 datePicker.setTitle(getString(R.string.end_shop_closed_label))
                 datePicker.show(it, "")
                 datePicker.datePickerButton.setOnClickListener {

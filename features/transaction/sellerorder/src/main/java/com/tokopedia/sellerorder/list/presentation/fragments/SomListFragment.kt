@@ -2126,7 +2126,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
     }
 
     private fun onFailedValidateOrder() {
-        showToasterError(view, getString(R.string.som_error_validate_order), getString(R.string.oke), canRetry = false)
+        showToasterError(view, getString(R.string.som_error_validate_order), SomConsts.ACTION_OK, canRetry = false)
     }
 
     private fun onSuccessValidateOrder(valid: Boolean) {
