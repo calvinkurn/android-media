@@ -302,7 +302,6 @@
 /libraries/pre_release_inspector_no_op/					@tokopedia/android-core-dev
 /libraries/product_photo_adapter/                       @tokopedia/android-minionken-dev
 /libraries/push_notification/							@tokopedia/android-core-dev
-/libraries/react_native/								@tokopedia/android-core-dev
 /libraries/remote_config/								@tokopedia/android-core-dev
 /libraries/remoteresourcerequest/						@tokopedia/android-core-dev
 /libraries/shake_detect/					            @tokopedia/android-core-dev
