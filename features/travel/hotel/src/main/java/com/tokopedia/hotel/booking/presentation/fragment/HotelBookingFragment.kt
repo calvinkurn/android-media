@@ -478,7 +478,7 @@ class HotelBookingFragment : HotelBaseFragment() {
 
     private fun setupPayNowPromoTicker(promoData: PromoData) {
         if (promoData.promoCode.isEmpty()){
-            setupPromoTicker(TickerCheckoutView.State.ACTIVE, getString(R.string.hotel_promo_btn_default_title), "")
+            setupPromoTicker(TickerCheckoutView.State.ACTIVE, getString(R.string.hotel_promo_btn_default_title))
             booking_pay_now_promo_ticker.chevronIcon = com.tokopedia.resources.common.R.drawable.ic_system_action_arrow_right_grayscale_24
         }else if (promoData.promoCode.isNotEmpty() && hotelCart.property.isDirectPayment){
             setupPromoTicker(TickerCheckoutView.State.ACTIVE,
@@ -528,8 +528,7 @@ class HotelBookingFragment : HotelBaseFragment() {
     }
 
     private fun onResetPromo(){
-        setupPromoTicker(TickerCheckoutView.State.EMPTY)
-        bookingViewModel.applyPromoData(PromoData())
+        bookingViewModel.applyPromoData(PromoData(state = TickerCheckoutView.State.ACTIVE))
         bookingViewModel.onCancelAppliedVoucher(getCancelVoucherQuery())
     }
 
