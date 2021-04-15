@@ -6,14 +6,14 @@ import com.tokopedia.play.broadcaster.data.datastore.CoverDataStoreImpl
 import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
 import com.tokopedia.play.broadcaster.view.state.CoverSetupState
 import com.tokopedia.play_common.model.result.NetworkResult
-import com.tokopedia.play_common.util.coroutine.CoroutineDispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import io.mockk.mockk
 
 /**
  * Created by jegul on 25/09/20
  */
 class MockCoverDataStore(
-        dispatcherProvider: CoroutineDispatcherProvider,
+        dispatcherProvider: CoroutineDispatchers,
         private val uploadCoverTitleException: Throwable = IllegalStateException()
 ) : CoverDataStore {
 

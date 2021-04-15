@@ -83,6 +83,24 @@ public class DeveloperOptionActivity extends BaseActivity {
     public static final String STAGING = "staging";
     public static final String LIVE = "live";
     public static final String CHANGEURL = "changeurl";
+    public static final String URI_COACHMARK = "coachmark";
+    public static final String URI_COACHMARK_ENABLE = "enable";
+    public static final String URI_COACHMARK_DISABLE = "disable";
+
+    String KEY_FIRST_VIEW_NAVIGATION = "KEY_FIRST_VIEW_NAVIGATION";
+    String KEY_FIRST_VIEW_NAVIGATION_ONBOARDING = "KEY_FIRST_VIEW_NAVIGATION_ONBOARDING";
+    String KEY_FIRST_VIEW_NAVIGATION_ONBOARDING_NAV_P1 = "KEY_FIRST_VIEW_NAVIGATION_ONBOARDING_NAV_P1";
+    String KEY_FIRST_VIEW_NAVIGATION_ONBOARDING_NAV_P2 = "KEY_FIRST_VIEW_NAVIGATION_ONBOARDING_NAV_P2";
+    String KEY_P1_DONE_AS_NON_LOGIN = "KEY_P1_DONE_AS_NON_LOGIN";
+
+
+    String PREF_KEY_HOME_COACHMARK = "PREF_KEY_HOME_COACHMARK";
+    String PREF_KEY_HOME_COACHMARK_NAV = "PREF_KEY_HOME_COACHMARK_NAV";
+    String PREF_KEY_HOME_COACHMARK_INBOX = "PREF_KEY_HOME_COACHMARK_INBOX";
+    String PREF_KEY_HOME_COACHMARK_BALANCE = "PREF_KEY_HOME_COACHMARK_BALANCE";
+
+    String PREFERENCE_NAME = "coahmark_choose_address";
+    String EXTRA_IS_COACHMARK = "EXTRA_IS_COACHMARK";
 
     private String CACHE_FREE_RETURN = "CACHE_FREE_RETURN";
     private String API_KEY_TRANSLATOR = "trnsl.1.1.20190508T115205Z.10630ca1780c554e.a7a33e218b8e806e8d38cb32f0ef91ae07d7ae49";
@@ -158,15 +176,20 @@ public class DeveloperOptionActivity extends BaseActivity {
             Intent intent = getIntent();
             Uri uri = null;
             boolean isChangeUrlApplink = false;
+            boolean isCoachmarkApplink = false;
             if (intent != null) {
                 uri = intent.getData();
                 if (uri!= null) {
                     isChangeUrlApplink = (uri.getPathSegments().size() == 3) &&
                             uri.getPathSegments().get(1).equals(CHANGEURL);
+                    isCoachmarkApplink = (uri.getPathSegments().size() == 3) &&
+                            uri.getPathSegments().get(1).equals(URI_COACHMARK);
                 }
             }
             if (isChangeUrlApplink) {
                 handleUri(uri);
+            }else if (isCoachmarkApplink) {
+                handleCoachmarkUri(uri);
             } else {
                 setContentView(R.layout.activity_developer_options);
                 setupView();
@@ -188,6 +211,31 @@ public class DeveloperOptionActivity extends BaseActivity {
         TokopediaUrl.Companion.init(DeveloperOptionActivity.this);
         userSession.logoutSession();
         new Handler().postDelayed(() -> restart(DeveloperOptionActivity.this), 500);
+    }
+
+    private void handleCoachmarkUri(Uri uri) {
+        if (uri.getLastPathSegment().startsWith(URI_COACHMARK_DISABLE)) {
+            //soon will be replaced with global coachmark disable provided by unify team
+            SharedPreferences sharedPrefs = getSharedPreferences(
+                    KEY_FIRST_VIEW_NAVIGATION, Context.MODE_PRIVATE);
+            sharedPrefs.edit().putBoolean(KEY_FIRST_VIEW_NAVIGATION_ONBOARDING, false)
+                    .putBoolean(KEY_FIRST_VIEW_NAVIGATION_ONBOARDING_NAV_P1, false)
+                    .putBoolean(KEY_FIRST_VIEW_NAVIGATION_ONBOARDING_NAV_P2, false)
+                    .putBoolean(KEY_P1_DONE_AS_NON_LOGIN, true).apply();
+
+
+            SharedPreferences homePref = getSharedPreferences(
+                    PREF_KEY_HOME_COACHMARK, Context.MODE_PRIVATE);
+            homePref.edit().putBoolean(PREF_KEY_HOME_COACHMARK_NAV, true)
+                    .putBoolean(PREF_KEY_HOME_COACHMARK_INBOX, true)
+                    .putBoolean(PREF_KEY_HOME_COACHMARK_BALANCE, true).apply();
+
+
+            SharedPreferences chooseAddressPref = getSharedPreferences(
+                    PREFERENCE_NAME, Context.MODE_PRIVATE);
+            chooseAddressPref.edit().putBoolean(EXTRA_IS_COACHMARK, false).apply();
+        }
+        finish();
     }
 
     /**
@@ -285,21 +333,6 @@ public class DeveloperOptionActivity extends BaseActivity {
         TextInputEditText inputRollenceKey = findViewById(R.id.input_rollence_key);
         TextInputEditText inputRollenceVariant = findViewById(R.id.input_rollence_variant);
         Button btnApplyRollence = findViewById(R.id.btn_apply_rollence);
-
-        String KEY_FIRST_VIEW_NAVIGATION = "KEY_FIRST_VIEW_NAVIGATION";
-        String KEY_FIRST_VIEW_NAVIGATION_ONBOARDING = "KEY_FIRST_VIEW_NAVIGATION_ONBOARDING";
-        String KEY_FIRST_VIEW_NAVIGATION_ONBOARDING_NAV_P1 = "KEY_FIRST_VIEW_NAVIGATION_ONBOARDING_NAV_P1";
-        String KEY_FIRST_VIEW_NAVIGATION_ONBOARDING_NAV_P2 = "KEY_FIRST_VIEW_NAVIGATION_ONBOARDING_NAV_P2";
-        String KEY_P1_DONE_AS_NON_LOGIN = "KEY_P1_DONE_AS_NON_LOGIN";
-
-
-        String PREF_KEY_HOME_COACHMARK = "PREF_KEY_HOME_COACHMARK";
-        String PREF_KEY_HOME_COACHMARK_NAV = "PREF_KEY_HOME_COACHMARK_NAV";
-        String PREF_KEY_HOME_COACHMARK_INBOX = "PREF_KEY_HOME_COACHMARK_INBOX";
-        String PREF_KEY_HOME_COACHMARK_BALANCE = "PREF_KEY_HOME_COACHMARK_BALANCE";
-
-        String PREFERENCE_NAME = "coahmark_choose_address";
-        String EXTRA_IS_COACHMARK = "EXTRA_IS_COACHMARK";
 
         buttonResetOnboardingNavigation.setOnClickListener(new View.OnClickListener() {
             @Override

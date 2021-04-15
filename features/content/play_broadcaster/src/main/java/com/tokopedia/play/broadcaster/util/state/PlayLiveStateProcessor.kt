@@ -108,7 +108,7 @@ class PlayLiveStateProcessor(
             }
             ApsaraLivePusherState.Pause -> broadcastState(PlayLivePusherState.Pause)
             ApsaraLivePusherState.Restart -> broadcastState(PlayLivePusherState.Resume(isResumed = true))
-            ApsaraLivePusherState.Recovered -> broadcastState(PlayLivePusherState.Resume(isResumed = true))
+            ApsaraLivePusherState.Recovered -> broadcastState(PlayLivePusherState.Recovered)
             ApsaraLivePusherState.Stop -> broadcastState(PlayLivePusherState.Stop(isStopped = true, shouldNavigate = false))
             else -> {}
         }

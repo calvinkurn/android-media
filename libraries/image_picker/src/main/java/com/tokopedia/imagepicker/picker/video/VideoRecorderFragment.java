@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 
 import com.otaliastudios.cameraview.CameraListener;
 import com.otaliastudios.cameraview.CameraOptions;
@@ -26,9 +27,9 @@ import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.iconunify.IconUnify;
-import com.tokopedia.imagepicker.R;
 import com.tokopedia.imagepicker.picker.main.builder.StateRecorderType;
 import com.tokopedia.imagepicker.picker.widget.VideoPlayerView;
+import com.tokopedia.imagepicker.R;
 import com.tokopedia.utils.file.FileUtil;
 
 import java.io.File;
@@ -292,12 +293,13 @@ public class VideoRecorderFragment extends TkpdBaseV4Fragment {
     }
 
     private void setUIFlashCamera(int flashEnum) {
+        int colorWhite = ContextCompat.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_Static_White);
         if (flashEnum == Flash.AUTO.ordinal()) {
             btnFlash.setImageDrawable(MethodChecker.getDrawable(getActivity(), com.tokopedia.imagepicker.common.R.drawable.ic_auto_flash));
         } else if (flashEnum == Flash.ON.ordinal()) {
-            btnFlash.setImage(IconUnify.FLASH_ON, null, null, null, null);
+            btnFlash.setImage(IconUnify.FLASH_ON, colorWhite, colorWhite, colorWhite, colorWhite);
         } else if (flashEnum == Flash.OFF.ordinal()) {
-            btnFlash.setImage(IconUnify.FLASH_OFF, null, null, null, null);
+            btnFlash.setImage(IconUnify.FLASH_OFF, colorWhite, colorWhite, colorWhite, colorWhite);
         }
     }
 

@@ -6,7 +6,6 @@ import android.graphics.PorterDuffColorFilter;
 import android.graphics.drawable.Drawable;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import androidx.annotation.LayoutRes;
 
@@ -21,6 +20,7 @@ import com.tokopedia.review.feature.inbox.buyerreview.view.listener.InboxReputat
 import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.InboxReputationItemUiModel;
 import com.tokopedia.review.feature.inbox.common.presentation.InboxUnifiedRemoteConfig;
 import com.tokopedia.unifycomponents.NotificationUnify;
+import com.tokopedia.unifyprinciples.Typography;
 
 /**
  * @author by nisie on 8/19/17.
@@ -33,15 +33,15 @@ public class InboxReputationViewHolder extends AbstractViewHolder<InboxReputatio
     private final InboxReputation.View viewListener;
 
     private View mainView;
-    private TextView textDeadline;
-    private TextView deadline;
-    private TextView invoice;
+    private Typography textDeadline;
+    private Typography deadline;
+    private Typography invoice;
     private ImageView avatar;
-    private TextView name;
+    private Typography name;
     private UserReputationView userReputationView;
     private ShopReputationView shopReputationView;
-    private TextView date;
-    private TextView action;
+    private Typography date;
+    private Typography action;
     private NotificationUnify unreadNotification;
     private Context context;
 
@@ -170,7 +170,7 @@ public class InboxReputationViewHolder extends AbstractViewHolder<InboxReputatio
                 context.getString(R.string.deadline_suffix);
     }
 
-    private void setIconDeadline(TextView deadline, String reputationDaysLeft) {
+    private void setIconDeadline(Typography deadline, String reputationDaysLeft) {
         deadline.setText(reputationDaysLeft + " " + context.getString(R.string.deadline_suffix));
 
         Drawable background = MethodChecker.getDrawable(context, R.drawable.custom_label);
