@@ -1,6 +1,31 @@
 package com.tokopedia.shop.analytic
 
-import com.tokopedia.shop.analytic.ShopPageTrackingConstant.*
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.ALL_SHOWCASE_LIST
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.BUSINESS_UNIT
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_SEARCH_ETALASE
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_SHOP_PAGE
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CREATIVE
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CURRENT_SITE
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.ECOMMERCE
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EVENT
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EVENT_ACTION
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EVENT_CATEGORY
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EVENT_LABEL
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.FEATURED_ETALASE
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.ID
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.IMPRESSION
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.NAME
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.PAGE_TYPE
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.PHYSICAL_GOODS
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.POSITION
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.PROMOTIONS
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.PROMO_CLICK
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.PROMO_VIEW
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_ID
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_TYPE
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TOKOPEDIA_MARKETPLACE
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.USER_ID
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
 import com.tokopedia.shop.common.view.model.ShopEtalaseUiModel
 import com.tokopedia.shop.showcase.presentation.model.FeaturedShowcaseUiModel
@@ -83,7 +108,7 @@ class ShopPageShowcaseTracking(
                 eventName = CLICK_SHOP_PAGE,
                 eventCategory = getShopPageCategory(isOwner),
                 eventAction = CLICK_SEARCH_ETALASE,
-                eventLabel = customDimensionShopPage.shopId,
+                eventLabel = customDimensionShopPage.shopId.orEmpty(),
                 userId = userId,
                 customDimensionShopPage = customDimensionShopPage
         ))
@@ -166,8 +191,8 @@ class ShopPageShowcaseTracking(
                 BUSINESS_UNIT to PHYSICAL_GOODS,
                 CURRENT_SITE to TOKOPEDIA_MARKETPLACE,
                 PAGE_TYPE to SHOPPAGE,
-                SHOP_ID to customDimensionShopPage.shopId,
-                SHOP_TYPE to customDimensionShopPage.shopType,
+                SHOP_ID to customDimensionShopPage.shopId.orEmpty(),
+                SHOP_TYPE to customDimensionShopPage.shopType.orEmpty(),
                 USER_ID to userId
         )
         ecommerceMap?.let {

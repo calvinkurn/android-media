@@ -1,7 +1,7 @@
 package com.tokopedia.seller.action.common.presentation.presenter
 
 import android.net.Uri
-import com.tokopedia.seller.action.common.dispatcher.SellerActionDispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.seller.action.common.interfaces.SellerActionContract
 import com.tokopedia.seller.action.common.presentation.slices.SellerSlice
 import com.tokopedia.seller.action.common.provider.SellerActionProvider
@@ -14,7 +14,7 @@ import javax.inject.Inject
 
 class SellerActionPresenter @Inject constructor(
         private val sliceMainOrderListUseCase: SliceMainOrderListUseCase,
-        private val dispatcher: SellerActionDispatcherProvider,
+        private val dispatcher: CoroutineDispatchers,
         private val provider: SellerActionProvider
 ): SellerActionContract.Presenter {
 
@@ -25,7 +25,7 @@ class SellerActionPresenter @Inject constructor(
     }
 
     override fun getOrderList(sliceUri: Uri, date: String?, sliceHashMap: HashMap<Uri, SellerSlice?>) {
-        GlobalScope.launch(dispatcher.io()) {
+        GlobalScope.launch(dispatcher.io) {
             if (sliceHashMap[sliceUri] == null) {
                 try {
                     getSliceMainOrderList(sliceUri, date)

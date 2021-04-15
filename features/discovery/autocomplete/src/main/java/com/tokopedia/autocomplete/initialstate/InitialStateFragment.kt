@@ -219,7 +219,7 @@ class InitialStateFragment : BaseDaggerFragment(), InitialStateContract.View, In
         AutocompleteTracking.impressedSeeMoreRecentSearch(iris, userId)
     }
 
-    override fun trackEventClickRecentSearch(label: String, adapterPosition: Int) {
+    override fun trackEventClickRecentSearch(label: String) {
         AutocompleteTracking.eventClickRecentSearch(label)
     }
 

@@ -10,7 +10,10 @@ import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.shop.common.constant.IGNORED_FILTER_KONDISI
 import com.tokopedia.shop.common.constant.IGNORED_FILTER_PENAWARAN
 import com.tokopedia.shop.common.constant.IGNORED_FILTER_PENGIRIMAN
-import com.tokopedia.shop.common.constant.ShopPageConstant.*
+import com.tokopedia.shop.common.constant.ShopPageConstant.AB_TEST_NEW_SHOP_HEADER_KEY
+import com.tokopedia.shop.common.constant.ShopPageConstant.AB_TEST_NEW_SHOP_HEADER_NEW_VALUE
+import com.tokopedia.shop.common.constant.ShopPageConstant.AB_TEST_ROLLOUT_NEW_SHOP_ETALASE
+import com.tokopedia.shop.common.constant.ShopPageConstant.REMOTE_CONFIG_ENABLE_NEW_SHOP_PAGE_HEADER
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderDataModel
 import timber.log.Timber
 

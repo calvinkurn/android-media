@@ -653,7 +653,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                     ),
                     shopProductUiModel,
                     productPosition + 1,
-                    shopId,
+                    shopId.orEmpty(),
                     isEtalaseCampaign,
                     shopProductUiModel.isUpcoming,
                     keyword,
@@ -672,7 +672,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                     ),
                     shopProductUiModel,
                     productPosition + 1,
-                    shopId
+                    shopId.orEmpty()
             )
         }
         startActivity(getProductIntent(shopProductUiModel.id ?: "", attribution,
@@ -699,7 +699,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                     ),
                     shopProductUiModel,
                     productPosition + 1,
-                    shopId,
+                    shopId.orEmpty(),
                     isEtalaseCampaign,
                     shopProductUiModel.isUpcoming,
                     keyword,
@@ -718,7 +718,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                     ),
                     shopProductUiModel,
                     productPosition + 1,
-                    shopId
+                    shopId.orEmpty()
             )
         }
     }

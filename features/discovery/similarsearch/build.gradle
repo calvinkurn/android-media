@@ -84,6 +84,7 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.spek2Dsl
     testImplementation rootProject.ext.supportLibDependencies.kotlinReflection
     testImplementation rootProject.ext.testDependencies.junitJupiterApi
+    testImplementation project(rootProject.ext.libraries.unitTest)
 
     // instrumentation test - disabled for now
 //    implementation 'com.android.support:multidex:1.0.3'
