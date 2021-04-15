@@ -22,7 +22,7 @@ import javax.inject.Inject
 /**
  * @author by jessica on 01/04/21
  */
-class EmoneyPdpViewModel @Inject constructor(private val dispatcher: CoroutineDispatcher,
+class EmoneyPdpViewModel @Inject constructor(dispatcher: CoroutineDispatcher,
                                              private val userSession: UserSessionInterface,
                                              private val rechargeCatalogPrefixSelectUseCase: RechargeCatalogPrefixSelectUseCase,
                                              private val rechargeCatalogProductInputUseCase: RechargeCatalogProductInputUseCase)
@@ -83,6 +83,7 @@ class EmoneyPdpViewModel @Inject constructor(private val dispatcher: CoroutineDi
                 _selectedOperator.postValue(operatorSelected)
             }
         } catch (e: Throwable) {
+//            _errorMessage.postValue()
             _selectedOperator.postValue(RechargePrefix(key = "578"))
         }
     }
@@ -103,10 +104,6 @@ class EmoneyPdpViewModel @Inject constructor(private val dispatcher: CoroutineDi
 
     fun setSelectedProduct(product: CatalogProduct) {
         _selectedProduct.postValue(product)
-    }
-
-    fun setSelectedOperator(operator: RechargePrefix) {
-        _selectedOperator.postValue(operator)
     }
 
     fun setSelectedRecentNumber(topupBillsRecommendation: TopupBillsRecommendation) {
