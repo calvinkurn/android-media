@@ -806,7 +806,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         showGetMylocation()
         context?.let {
             val searchParam = hotelSearchMapViewModel.searchParam
-            trackingHotelUtil.hotelViewHotelListImpression(it,
+            trackingHotelUtil.hotelViewHotelListMapImpression(it,
                     searchDestinationName,
                     searchDestinationType,
                     searchParam,
