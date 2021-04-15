@@ -3,7 +3,7 @@ package com.tokopedia.play.data.websocket.revamp
 import com.google.gson.Gson
 import com.tokopedia.authentication.HEADER_RELEASE_TRACK
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.play_common.util.coroutine.CoroutineDispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.trackingoptimizer.gson.GsonSingleton
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSessionInterface
@@ -20,7 +20,7 @@ import java.util.concurrent.TimeUnit
 class PlayWebSocketImpl(
         clientBuilder: OkHttpClient.Builder,
         private val userSession: UserSessionInterface,
-        private val dispatchers: CoroutineDispatcherProvider,
+        private val dispatchers: CoroutineDispatchers,
 ) : PlayWebSocket {
 
     private val client: OkHttpClient

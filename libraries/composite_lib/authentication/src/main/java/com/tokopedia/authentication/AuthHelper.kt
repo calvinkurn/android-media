@@ -210,68 +210,6 @@ class AuthHelper {
         }
 
         @JvmStatic
-        fun getHeaderRequestReactNative(userSession: UserSessionInterface): String {
-            val header = HashMap<String, String>()
-            header[HEADER_SESSION_ID] = userSession.deviceId
-            header[HEADER_TKPD_USER_ID] = if (userSession.isLoggedIn) userSession.userId else "0"
-            header[HEADER_AUTHORIZATION] = "Bearer ${userSession.accessToken}"
-
-            header.remove(HEADER_ACCOUNT_AUTHORIZATION)
-            header.remove(HEADER_RELEASE_TRACK)
-
-            header[HEADER_RELEASE_TRACK] = GlobalConfig.VERSION_NAME_SUFFIX
-            header[HEADER_ACCOUNT_AUTHORIZATION] = "$HEADER_PARAM_BEARER ${userSession.accessToken}"
-            header[PARAM_OS_TYPE] = "1"
-            header[HEADER_DEVICE] = "android-${GlobalConfig.VERSION_NAME}"
-            header[HEADER_USER_ID] = if (userSession.isLoggedIn) userSession.userId else "0"
-            header[HEADER_X_APP_VERSION] = GlobalConfig.VERSION_CODE.toString()
-            header[HEADER_X_TKPD_USER_ID] = if (userSession.isLoggedIn) userSession.userId else "0"
-            header[HEADER_X_TKPD_APP_NAME] = GlobalConfig.getPackageApplicationName()
-            header[HEADER_X_TKPD_APP_VERSION] = "android-${GlobalConfig.VERSION_NAME}"
-
-            return Gson().toJson(header)
-        }
-
-        @JvmStatic
-        fun getAuthHeaderReact(
-                userSession: UserSessionInterface,
-                path: String,
-                strParam: String,
-                method: String,
-                contentType: String,
-                fingerprintHash: String
-        ): MutableMap<String, String> {
-            val headers = getDefaultHeaderMap(
-                    path,
-                    strParam,
-                    method,
-                    contentType,
-                    AuthKey.KEY_WSV4_NEW,
-                    DATE_FORMAT,
-                    userSession
-            ) as ArrayMap<String, String>
-
-            headers[HEADER_SESSION_ID] = userSession.deviceId
-            headers[HEADER_TKPD_USER_ID] = if (userSession.isLoggedIn) userSession.userId else "0"
-
-            headers.remove(HEADER_ACCOUNT_AUTHORIZATION)
-
-            headers.remove(HEADER_RELEASE_TRACK)
-            headers[HEADER_RELEASE_TRACK] = GlobalConfig.VERSION_NAME_SUFFIX
-            headers[HEADER_ACCOUNT_AUTHORIZATION] = "$HEADER_PARAM_BEARER ${userSession.accessToken}"
-            headers[PARAM_OS_TYPE] = "1"
-            headers[HEADER_DEVICE] = "android-${GlobalConfig.VERSION_NAME}"
-            headers[HEADER_X_TKPD_USER_ID] = if (userSession.isLoggedIn) userSession.userId else "0"
-
-            if (fingerprintHash.isNotEmpty()) {
-                headers[KEY_FINGERPRINT_HASH] = getMD5Hash("${fingerprintHash}+${userSession.userId}")
-                headers[KEY_FINGERPRINT_DATA] = fingerprintHash
-            }
-
-            return headers
-        }
-
-        @JvmStatic
         fun calculateRFC2104HMAC(authString: String, authKey: String): String {
             try {
                 val signingKey = SecretKeySpec(authKey.toByteArray(), MAC_ALGORITHM)

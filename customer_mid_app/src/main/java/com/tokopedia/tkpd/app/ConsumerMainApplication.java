@@ -23,7 +23,6 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import com.chuckerteam.chucker.api.Chucker;
 import com.chuckerteam.chucker.api.ChuckerCollector;
 import com.facebook.FacebookSdk;
-import com.facebook.soloader.SoLoader;
 import com.google.firebase.FirebaseApp;
 import com.tokopedia.additional_check.subscriber.TwoFactorCheckerSubscriber;
 import com.tokopedia.analytics.performance.util.SplashScreenPerformanceTracker;
@@ -364,7 +363,6 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
 
     @NotNull
     private Boolean executePreCreateSequence() {
-        initReact();
 
         Chucker.registerDefaultCrashHandler(new ChuckerCollector(ConsumerMainApplication.this, false));
         FpmLogger.init(ConsumerMainApplication.this);
@@ -665,10 +663,6 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         } else {
             return false;
         }
-    }
-
-    private void initReact() {
-        SoLoader.init(ConsumerMainApplication.this, false);
     }
 
     public int getCurrentVersion(Context context) {

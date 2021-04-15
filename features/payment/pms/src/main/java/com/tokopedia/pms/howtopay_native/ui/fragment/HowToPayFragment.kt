@@ -37,6 +37,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.pms_hwp_info.*
 import timber.log.Timber
+import java.lang.Exception
 import javax.inject.Inject
 
 
@@ -323,12 +324,14 @@ class HowToPayFragment : BaseDaggerFragment() {
 
     private fun copyTOClipBoard(context: Context?, dataStr: String) {
         context?.let {
-            val extraSpaceRegexStr = "\\s+".toRegex()
-            val clipboard = context.getSystemService(Activity.CLIPBOARD_SERVICE)
-                    as ClipboardManager
-            val clip = ClipData.newPlainText(COPY_BOARD_LABEL,
-                    dataStr.replace(extraSpaceRegexStr, ""))
-            clipboard.setPrimaryClip(clip)
+            try {
+                val extraSpaceRegexStr = "\\s+".toRegex()
+                val clipboard = context.getSystemService(Activity.CLIPBOARD_SERVICE)
+                        as ClipboardManager
+                val clip = ClipData.newPlainText(COPY_BOARD_LABEL,
+                        dataStr.replace(extraSpaceRegexStr, ""))
+                clipboard.setPrimaryClip(clip)
+            }catch (e : Exception){}
             if (::appLinkPaymentInfo.isInitialized)
                 howToPayAnalytics.get().eventOnCopyCodeClick(appLinkPaymentInfo.payment_type)
         }
