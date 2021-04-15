@@ -38,11 +38,11 @@ data class FeedXCard(
         var title: String = "",
         @SerializedName("like")
         var like: FeedXLike = FeedXLike(),
-        @SerializedName("comments")
+        @SerializedName("comments", alternate = ["comm"])
         var comments: FeedXComments = FeedXComments(),
-        @SerializedName("share")
+        @SerializedName("share", alternate = ["sh"])
         var share: FeedXShare = FeedXShare(),
-        @SerializedName("followers")
+        @SerializedName("followers", alternate = ["fol"])
         var followers: FeedXFollowers = FeedXFollowers(),
 
         //FeedXCardPost Data Type

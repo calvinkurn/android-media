@@ -187,21 +187,21 @@ class FeedPlusTypeFactoryImpl(
             viewHolder = TopadsShopViewHolder(view, topadsShopListener, cardTitleListener)
         } else if (type == TopAdsHeadlineViewHolder.LAYOUT) {
             viewHolder = TopAdsHeadlineViewHolder(view, userSession, topAdsHeadlineListener)
-        } else if (type == OnboardingViewHolder.LAYOUT){
+        } else if (type == OnboardingViewHolder.LAYOUT) {
             viewHolder = OnboardingViewHolder(view, userSession, interestPickItemListener)
-        } else if (type == TopAdsBannerViewHolder.LAYOUT){
+        } else if (type == TopAdsBannerViewHolder.LAYOUT) {
             viewHolder = TopAdsBannerViewHolder(view, topAdsBannerListener, cardTitleListener)
-        } else if (type == CarouselPlayCardViewHolder.LAYOUT){
+        } else if (type == CarouselPlayCardViewHolder.LAYOUT) {
             viewHolder = CarouselPlayCardViewHolder(
                     PlayWidgetViewHolder(
                             itemView = view,
                             coordinator = playWidgetCoordinator
                     )
             )
-        } else if (type == ShimmerViewHolder.LAYOUT){
+        } else if (type == ShimmerViewHolder.LAYOUT) {
             viewHolder = ShimmerViewHolder(view)
-        } else if (type == DynamicPostNewViewHolder.LAYOUT){
-            viewHolder = DynamicPostNewViewHolder(view)
+        } else if (type == DynamicPostNewViewHolder.LAYOUT) {
+            viewHolder = DynamicPostNewViewHolder(view, userSession, dynamicPostListener)
         } else
             viewHolder = super.createViewHolder(view, type)
         return viewHolder

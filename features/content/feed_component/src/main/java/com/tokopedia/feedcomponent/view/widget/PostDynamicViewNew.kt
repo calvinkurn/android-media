@@ -17,20 +17,18 @@ import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.carousel.CarouselUnify
 import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.data.feedrevamp.*
+import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.FollowCta
+import com.tokopedia.feedcomponent.domain.mapper.TYPE_IMAGE
 import com.tokopedia.feedcomponent.util.TagConverter
 import com.tokopedia.feedcomponent.util.TimeConverter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder
 import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.PageControl
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.user.session.UserSessionInterface
 import java.net.URLEncoder
-
-private const val TYPE_IMAGE = "image"
 
 class PostDynamicViewNew @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0)
     : ConstraintLayout(context, attrs, defStyleAttr) {
@@ -58,6 +56,9 @@ class PostDynamicViewNew @JvmOverloads constructor(context: Context, attrs: Attr
     private var seeAllCommentText: Typography
     private var userImage: ImageUnify
     private var addCommentHint: Typography
+
+    private var listener: DynamicPostViewHolder.DynamicPostListener? = null
+    private var positionInFeed: Int = 0
 
     init {
         val view = LayoutInflater.from(context).inflate(R.layout.item_post_dynamic_new_content, this, true)
@@ -88,17 +89,46 @@ class PostDynamicViewNew @JvmOverloads constructor(context: Context, attrs: Attr
         }
     }
 
-    fun bindHeader(author: FeedXAuthor, isFollowed: Boolean) {
+    fun bindData(dynamicPostListener: DynamicPostViewHolder.DynamicPostListener, adapterPosition: Int,
+                 userSession: UserSessionInterface, feedXCard: FeedXCard) {
+        this.listener = dynamicPostListener
+        this.positionInFeed = adapterPosition
+        bindHeader(feedXCard.id.toIntOrZero(), feedXCard.author, feedXCard.followers.isFollowed)
+        bindItems(feedXCard.media)
+        bindCaption(feedXCard)
+        bindPublishedAt(feedXCard.publishedAt, feedXCard.subTitle)
+        bindLike(feedXCard.like, feedXCard.id.toIntOrZero())
+        bindComment(feedXCard.comments, userSession.profilePicture, userSession.name, feedXCard.id.toIntOrZero())
+        shareButton.setOnClickListener {
+            //please confirm for the values passed as function params
+            listener?.onShareClick(positionInFeed, feedXCard.id.toIntOrZero(), feedXCard.share.label, "", feedXCard.share.operation, "")
+        }
+    }
+
+    private fun bindHeader(activityId: Int, author: FeedXAuthor, isFollowed: Boolean) {
         shopImage.setImageUrl(author.logoURL)
         shopBadge.setImageUrl(author.badgeURL)
         shopBadge.showWithCondition(author.badgeURL.isNotEmpty())
         shopName.text = author.name
         followText.showWithCondition(!isFollowed)
-        //handle follow click listener here
+        //as activityName is unclear since in new gql we aint getting responses on the basis of activity like kolpost or others
+        val activityName = ""
+        val authorType = if (author.type == 1) FollowCta.AUTHOR_USER else FollowCta.AUTHOR_SHOP
+        val followCta = FollowCta(authorID = author.id, authorType, isFollowed)
+        shopImage.setOnClickListener {
+            listener?.onAvatarClick(positionInFeed, author.appLink, activityId, activityName, followCta)
+        }
+        shopName.setOnClickListener {
+            listener?.onAvatarClick(positionInFeed, author.appLink, activityId, activityName, followCta)
+        }
+        followText.setOnClickListener {
+            listener?.onHeaderActionClick(positionInFeed, author.id,
+                    authorType, isFollowed)
+        }
         //handle 3 dots click listener here
     }
 
-    fun bindLike(like: FeedXLike) {
+    private fun bindLike(like: FeedXLike, id: Int) {
         if (like.isLiked) {
             likeButton.setImage(IconUnify.THUMB_FILLED)
         } else {
@@ -114,7 +144,9 @@ class PostDynamicViewNew @JvmOverloads constructor(context: Context, attrs: Attr
         } else {
             likedText.hide()
         }
-        //handle like click listener
+        likeButton.setOnClickListener {
+            listener?.onLikeClick(positionInFeed, id, like.isLiked)
+        }
     }
 
     private fun getLikedByText(likedBy: List<String>): String {
@@ -129,7 +161,7 @@ class PostDynamicViewNew @JvmOverloads constructor(context: Context, attrs: Attr
         return text
     }
 
-    fun bindCaption(caption: FeedXCard) {
+    private fun bindCaption(caption: FeedXCard) {
         val tagConverter = TagConverter()
         captionText.shouldShowWithAction(caption.text.isNotEmpty()) {
             if (caption.text.length > DynamicPostViewHolder.MAX_CHAR ||
@@ -150,7 +182,7 @@ class PostDynamicViewNew @JvmOverloads constructor(context: Context, attrs: Attr
                         SpannableString(MethodChecker.fromHtml(captionTxt)), colorLinkHashtag) { hashtag -> onHashtagClicked(hashtag) }
                 captionText.setOnClickListener {
                     if (caption.appLink.isNotEmpty()) {
-//                        handle caption click here
+                        listener?.onCaptionClick(positionInFeed, caption.appLink)
                     } else {
                         captionText.text = tagConverter.convertToLinkifyHashtag(SpannableString(caption.text),
                                 colorLinkHashtag) { hashtag -> onHashtagClicked(hashtag) }
@@ -185,7 +217,7 @@ class PostDynamicViewNew @JvmOverloads constructor(context: Context, attrs: Attr
                 firstIndex + 1) else caption.length
     }
 
-    fun bindComment(comments: FeedXComments, profilePicture: String, name: String) {
+    private fun bindComment(comments: FeedXComments, profilePicture: String, name: String, id: Int) {
         seeAllCommentText.showWithCondition(comments.count != 0)
         seeAllCommentText.text = context.getString(R.string.feed_component_see_all_comments, comments.countFmt)
         comments.commentItems.firstOrNull()?.let {
@@ -213,9 +245,13 @@ class PostDynamicViewNew @JvmOverloads constructor(context: Context, attrs: Attr
         userImage.setImageUrl(profilePicture)
         addCommentHint.hint = context.getString(R.string.feed_component_add_comment, name)
         //find out how to show whether the comment is liked or not and handle click event for see all comment
+
+        commentButton.setOnClickListener {
+            listener?.onCommentClick(positionInFeed, id)
+        }
     }
 
-    fun bindItems(media: List<FeedXMedia>) {
+    private fun bindItems(media: List<FeedXMedia>) {
         carouselView.apply {
             stage.removeAllViews()
             indicatorPosition = CarouselUnify.INDICATOR_HIDDEN
@@ -247,7 +283,7 @@ class PostDynamicViewNew @JvmOverloads constructor(context: Context, attrs: Attr
         }
     }
 
-    fun bindPublishedAt(publishedAt: String, subTitle: String) {
+    private fun bindPublishedAt(publishedAt: String, subTitle: String) {
         val avatarDate = TimeConverter.generateTime(context, publishedAt)
         val spannableString: SpannableString =
                 if (subTitle.isNotEmpty()) {
