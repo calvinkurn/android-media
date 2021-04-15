@@ -125,7 +125,7 @@ object CurrencyFormatHelper {
                     et.setSelection(et.length())
                 LockTextWatcher = false
             }
-        } catch (e: NumberFormatException) {
+        } catch (e: Exception) {
             LockTextWatcher = false
             e.printStackTrace()
         }
