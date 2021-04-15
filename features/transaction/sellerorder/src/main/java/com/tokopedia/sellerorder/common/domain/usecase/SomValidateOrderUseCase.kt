@@ -16,7 +16,6 @@ class SomValidateOrderUseCase @Inject constructor(private val useCase: GraphqlUs
 
     suspend fun execute(param: SomValidateOrderRequest): Boolean {
         useCase.setRequestParams(composeParam(param).parameters)
-        delay(5000)
         return useCase.executeOnBackground().result.orderIds.isNullOrEmpty()
     }
 
