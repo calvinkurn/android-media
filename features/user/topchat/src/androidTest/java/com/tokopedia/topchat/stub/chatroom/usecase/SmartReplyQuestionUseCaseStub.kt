@@ -8,6 +8,11 @@ class SmartReplyQuestionUseCaseStub(
         private val gqlUseCase: GraphqlUseCaseStub<ChatSmartReplyQuestionResponse>
 ) : SmartReplyQuestionUseCase(gqlUseCase) {
 
+    var isError = false
+        set(value) {
+            gqlUseCase.isError = value
+            field = value
+        }
     var response = ChatSmartReplyQuestionResponse()
         set(value) {
             gqlUseCase.response = value

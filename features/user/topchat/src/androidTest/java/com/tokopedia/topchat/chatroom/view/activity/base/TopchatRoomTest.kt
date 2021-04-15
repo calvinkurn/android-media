@@ -359,6 +359,13 @@ abstract class TopchatRoomTest {
         assertSrwErrorVisibility(not(isDisplayed()))
     }
 
+    protected fun assertSrwContentIsError() {
+        assertSrwErrorVisibility(isDisplayed())
+        assertSrwLoadingVisibility(not(isDisplayed()))
+        assertSrwContentContainerVisibility(not(isDisplayed()))
+        assertTemplateChatVisibility(not(isDisplayed()))
+    }
+
     protected fun assertSrwContentIsHidden() {
         assertTemplateChatVisibility(isDisplayed())
         assertSrwContentContainerVisibility(not(isDisplayed()))

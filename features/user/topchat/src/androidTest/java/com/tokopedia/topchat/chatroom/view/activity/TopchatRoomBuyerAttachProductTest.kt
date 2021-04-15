@@ -294,10 +294,27 @@ class TopchatRoomBuyerAttachProductTest : BaseBuyerTopchatRoomTest() {
         assertSrwContentIsLoading()
     }
 
-    // TODO: test srw error state
+    @Test
+    fun srw_error_state_displayed_if_buyer_attach_from_start_intent() {
+        // Given
+        setupChatRoomActivity {
+            putProductAttachmentIntent(it)
+        }
+        getChatUseCase.response = firstPageChatAsBuyer
+        chatAttachmentUseCase.response = chatAttachmentResponse
+        chatSrwUseCase.isError = true
+        inflateTestFragment()
+
+        waitForIt(5000)
+
+        // Then
+        assertSrwContentIsError()
+    }
+
+    // TODO: test srw error state if clicked
+
     // TODO: test srw interaction expand and collapse
     // TODO: test srw interaction click and send msg
-    // TODO: test srw seller side
 
     private fun putProductAttachmentIntent(intent: Intent) {
         val productPreviews = listOf(productPreview)
