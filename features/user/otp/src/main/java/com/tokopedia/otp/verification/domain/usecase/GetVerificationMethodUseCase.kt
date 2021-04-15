@@ -5,7 +5,7 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.otp.common.DispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.otp.common.abstraction.BaseOtpUseCase
 import com.tokopedia.otp.verification.domain.pojo.OtpModeListPojo
 import com.tokopedia.otp.verification.domain.query.OtpModeListQuery
@@ -18,7 +18,7 @@ import javax.inject.Inject
 
 class GetVerificationMethodUseCase @Inject constructor(
         private val graphqlRepository: GraphqlRepository,
-        dispatcher: DispatcherProvider
+        dispatcher: CoroutineDispatchers
 ) : BaseOtpUseCase<OtpModeListPojo>(dispatcher) {
 
     @JvmOverloads

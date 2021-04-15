@@ -57,7 +57,7 @@ import com.tokopedia.topchat.chatroom.view.listener.TopChatContract
 import com.tokopedia.topchat.chatroom.view.uimodel.StickerUiModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendablePreview
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendableProductPreview
-import com.tokopedia.topchat.chatroom.view.viewmodel.TopchatCoroutineContextProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.topchat.chattemplate.view.viewmodel.GetTemplateUiModel
 import com.tokopedia.topchat.common.mapper.ImageUploadMapper
 import com.tokopedia.topchat.common.data.Resource
@@ -114,7 +114,7 @@ open class TopChatRoomPresenter @Inject constructor(
         private val chatBackgroundUseCase: ChatBackgroundUseCase,
         private val chatSrwUseCase: SmartReplyQuestionUseCase,
         private val sharedPref: SharedPreferences,
-        private val dispatchers: TopchatCoroutineContextProvider,
+        private val dispatchers: CoroutineDispatchers,
         private val remoteConfig: RemoteConfig
 ) : BaseChatPresenter<TopChatContract.View>(userSession, topChatRoomWebSocketMessageMapper),
         TopChatContract.Presenter, CoroutineScope {
@@ -144,7 +144,7 @@ open class TopChatRoomPresenter @Inject constructor(
         dummyList = arrayListOf()
     }
 
-    override val coroutineContext: CoroutineContext get() = dispatchers.Main + SupervisorJob()
+    override val coroutineContext: CoroutineContext get() = dispatchers.main + SupervisorJob()
 
     override fun connectWebSocket(messageId: String) {
         thisMessageId = messageId
@@ -825,12 +825,12 @@ open class TopChatRoomPresenter @Inject constructor(
             onError: (msg: String) -> Unit
     ) {
         launchCatchError(
-                dispatchers.IO,
+                dispatchers.io,
                 block = {
                     val atcResponse = addToCartUseCase.createObservable(requestParams)
                             .toBlocking()
                             .single().data
-                    withContext(dispatchers.Main) {
+                    withContext(dispatchers.main) {
                         if (atcResponse.success == 1) {
                             onSuccessAddToCart(atcResponse)
                         } else {
@@ -839,7 +839,7 @@ open class TopChatRoomPresenter @Inject constructor(
                     }
                 },
                 onError = {
-                    withContext(dispatchers.Main) {
+                    withContext(dispatchers.main) {
                         it.message?.let { errorMsg ->
                             onError(errorMsg)
                         }
@@ -857,7 +857,7 @@ open class TopChatRoomPresenter @Inject constructor(
     }
 
     override fun getSmartReplyWidget(msgId: String) {
-        launchCatchError(dispatchers.IO,
+        launchCatchError(dispatchers.io,
                 {
                     chatSrwUseCase.getSrwList(msgId).collect {
                         _srw.postValue(it)

@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.otp.common.DispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.otp.notif.domain.pojo.ChangeStatusPushNotifData
 import com.tokopedia.otp.notif.domain.pojo.DeviceStatusPushNotifData
 import com.tokopedia.otp.notif.domain.pojo.VerifyPushNotifData
@@ -24,8 +24,8 @@ class NotifViewModel @Inject constructor(
         private val deviceStatusPushNotifUseCase: DeviceStatusPushNotifUseCase,
         private val verifyPushNotifUseCase: VerifyPushNotifUseCase,
         private val verifyPushNotifExpUseCase: VerifyPushNotifExpUseCase,
-        dispatcherProvider: DispatcherProvider
-) : BaseViewModel(dispatcherProvider.ui()) {
+        dispatcherProvider: CoroutineDispatchers
+) : BaseViewModel(dispatcherProvider.main) {
 
     private val _changeStatusPushNotifResult = MutableLiveData<Result<ChangeStatusPushNotifData>>()
     val changeStatusPushNotifResult: LiveData<Result<ChangeStatusPushNotifData>>

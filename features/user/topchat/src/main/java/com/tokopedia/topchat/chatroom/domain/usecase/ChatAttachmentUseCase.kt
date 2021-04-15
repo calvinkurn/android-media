@@ -8,7 +8,7 @@ import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.topchat.chatroom.domain.mapper.ChatAttachmentMapper
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.Attachment
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ChatAttachmentResponse
-import com.tokopedia.topchat.chatroom.view.viewmodel.TopchatCoroutineContextProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import kotlinx.coroutines.*
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
@@ -16,10 +16,10 @@ import kotlin.coroutines.CoroutineContext
 open class ChatAttachmentUseCase @Inject constructor(
         private val gqlUseCase: GraphqlUseCase<ChatAttachmentResponse>,
         private val mapper: ChatAttachmentMapper,
-        private var dispatchers: TopchatCoroutineContextProvider
+        private var dispatchers: CoroutineDispatchers
 ) : CoroutineScope {
 
-    override val coroutineContext: CoroutineContext get() = dispatchers.Main + SupervisorJob()
+    override val coroutineContext: CoroutineContext get() = dispatchers.main + SupervisorJob()
 
     fun safeCancel() {
         if (coroutineContext.isActive) {
@@ -35,7 +35,7 @@ open class ChatAttachmentUseCase @Inject constructor(
             onSuccess: (ArrayMap<String, Attachment>) -> Unit,
             onError: (Throwable, ArrayMap<String, Attachment>) -> Unit
     ) {
-        launchCatchError(dispatchers.IO,
+        launchCatchError(dispatchers.io,
                 {
                     val params = generateParams(msgId, attachmentId, userLocation)
                     val response = gqlUseCase.apply {
@@ -44,13 +44,13 @@ open class ChatAttachmentUseCase @Inject constructor(
                         setGraphqlQuery(query)
                     }.executeOnBackground()
                     val mapAttachment = mapper.map(response)
-                    withContext(dispatchers.Main) {
+                    withContext(dispatchers.main) {
                         onSuccess(mapAttachment)
                     }
                 },
                 {
                     val mapErrorAttachment = mapper.mapError(attachmentId)
-                    withContext(dispatchers.Main) {
+                    withContext(dispatchers.main) {
                         onError(it, mapErrorAttachment)
                     }
                 }

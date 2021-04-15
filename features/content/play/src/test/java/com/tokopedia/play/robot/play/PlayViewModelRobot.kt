@@ -6,7 +6,6 @@ import com.tokopedia.play.data.websocket.PlayChannelWebSocket
 import com.tokopedia.play.data.websocket.PlaySocket
 import com.tokopedia.play.domain.*
 import com.tokopedia.play.helper.ClassBuilder
-import com.tokopedia.play.helper.TestCoroutineDispatchersProvider
 import com.tokopedia.play.model.PlayProductTagsModelBuilder
 import com.tokopedia.play.robot.play.result.PlayViewModelRobotResult
 import com.tokopedia.play.util.channel.state.PlayViewerChannelStateProcessor
@@ -23,9 +22,10 @@ import com.tokopedia.play.view.uimodel.mapper.PlayUiModelMapper
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play_common.player.PlayVideoWrapper
 import com.tokopedia.play_common.util.PlayPreference
-import com.tokopedia.play_common.util.coroutine.CoroutineDispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.play_common.util.extension.exhaustive
 import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
 import io.mockk.every
@@ -54,7 +54,7 @@ class PlayViewModelRobot(
         playSocketToModelMapper: PlaySocketToModelMapper,
         playUiModelMapper: PlayUiModelMapper,
         private val userSession: UserSessionInterface,
-        dispatchers: CoroutineDispatcherProvider,
+        dispatchers: CoroutineDispatchers,
         remoteConfig: RemoteConfig,
         playPreference: PlayPreference,
         videoLatencyPerformanceMonitoring: PlayVideoLatencyPerformanceMonitoring,
@@ -122,15 +122,15 @@ class PlayViewModelRobot(
 
     fun setPiPState(pipState: PiPState) {
         when(pipState) {
-            is PiPState.Requesting -> when (pipState.mode) {
-                PiPMode.WatchInPip -> viewModel.requestWatchInPiP()
-                PiPMode.BrowsingOtherPage -> viewModel.requestPiPBrowsingPage()
+            is PiPState.Requesting -> when (val mode = pipState.mode) {
+                PiPMode.WatchInPiP -> viewModel.requestWatchInPiP()
+                is PiPMode.BrowsingOtherPage -> viewModel.requestPiPBrowsingPage(mode.applinkModel)
                 else -> {}
             }
             is PiPState.InPiP -> {
-                when (pipState.mode) {
-                    PiPMode.WatchInPip -> viewModel.requestWatchInPiP()
-                    PiPMode.BrowsingOtherPage -> viewModel.requestPiPBrowsingPage()
+                when (val mode = pipState.mode) {
+                    PiPMode.WatchInPiP -> viewModel.requestWatchInPiP()
+                    is PiPMode.BrowsingOtherPage -> viewModel.requestPiPBrowsingPage(mode.applinkModel)
                     else -> {}
                 }
                 viewModel.goPiP()
@@ -220,7 +220,7 @@ fun givenPlayViewModelRobot(
         playSocketToModelMapper: PlaySocketToModelMapper = mockk(relaxed = true),
         playUiModelMapper: PlayUiModelMapper = ClassBuilder().getPlayUiModelMapper(),
         userSession: UserSessionInterface = mockk(relaxed = true),
-        dispatchers: CoroutineDispatcherProvider = TestCoroutineDispatchersProvider,
+        dispatchers: CoroutineDispatchers = CoroutineTestDispatchers,
         remoteConfig: RemoteConfig = mockk(relaxed = true),
         playPreference: PlayPreference = mockk(relaxed = true),
         videoLatencyPerformanceMonitoring: PlayVideoLatencyPerformanceMonitoring = mockk(relaxed = true),

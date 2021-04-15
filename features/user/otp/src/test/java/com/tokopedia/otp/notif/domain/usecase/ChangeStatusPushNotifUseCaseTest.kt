@@ -5,7 +5,7 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.otp.notif.domain.pojo.ChangeStatusPushNotifPojo
-import com.tokopedia.otp.verification.DispatcherProviderTest
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.impl.annotations.RelaxedMockK
@@ -28,7 +28,7 @@ class ChangeStatusPushNotifUseCaseTest {
     @RelaxedMockK
     lateinit var graphqlRepository: GraphqlRepository
 
-    private val dispatcherProviderTest = DispatcherProviderTest()
+    private val dispatcherProviderTest = CoroutineTestDispatchersProvider
 
     private lateinit var useCase: ChangeStatusPushNotifUseCase
 
@@ -46,7 +46,7 @@ class ChangeStatusPushNotifUseCaseTest {
 
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
 
-        runBlocking(dispatcherProviderTest.io()) {
+        runBlocking(dispatcherProviderTest.io) {
             val data = useCase.getData(mapOf())
             Assert.assertNotNull(data)
             assertEquals(successResponse, data)
@@ -61,7 +61,7 @@ class ChangeStatusPushNotifUseCaseTest {
 
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
 
-        runBlocking(dispatcherProviderTest.io()) {
+        runBlocking(dispatcherProviderTest.io) {
             val data = useCase.getData(mapOf())
             Assert.assertNotNull(data)
             assertEquals(successResponse, data)
@@ -77,7 +77,7 @@ class ChangeStatusPushNotifUseCaseTest {
 
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
 
-        runBlocking(dispatcherProviderTest.io()) {
+        runBlocking(dispatcherProviderTest.io) {
             val data = useCase.getData(mapOf())
             Assert.assertNotNull(data)
             assertEquals(failedResponse, data)
@@ -89,7 +89,7 @@ class ChangeStatusPushNotifUseCaseTest {
     fun `on failed change otp push notif`() {
         coEvery { graphqlRepository.getReseponse(any(), any()) } coAnswers { throw Throwable() }
 
-        runBlocking(dispatcherProviderTest.io()) {
+        runBlocking(dispatcherProviderTest.io) {
             assertFails { useCase.getData(mapOf()) }
         }
     }
@@ -98,7 +98,7 @@ class ChangeStatusPushNotifUseCaseTest {
     fun `on failed runtime exception change otp push notif`() {
         coEvery { graphqlRepository.getReseponse(any(), any()) } coAnswers { throw RuntimeException() }
 
-        runBlocking(dispatcherProviderTest.io()) {
+        runBlocking(dispatcherProviderTest.io) {
             assertFailsWith<RuntimeException> { useCase.getData(mapOf()) }
         }
     }
@@ -107,7 +107,7 @@ class ChangeStatusPushNotifUseCaseTest {
     fun `on failed null pointer exception change otp push notif`() {
         coEvery { graphqlRepository.getReseponse(any(), any()) } coAnswers { throw NullPointerException() }
 
-        runBlocking(dispatcherProviderTest.io()) {
+        runBlocking(dispatcherProviderTest.io) {
             assertFailsWith<NullPointerException> { useCase.getData(mapOf()) }
         }
     }
