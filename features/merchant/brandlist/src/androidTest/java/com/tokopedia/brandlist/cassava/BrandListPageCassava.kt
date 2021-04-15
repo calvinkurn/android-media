@@ -15,13 +15,17 @@ import androidx.test.rule.ActivityTestRule
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.brandlist.R
 import com.tokopedia.brandlist.brandlist_category.presentation.activity.BrandlistActivity
+import com.tokopedia.brandlist.brandlist_category.presentation.adapter.BrandlistContainerAdapter
+import com.tokopedia.brandlist.brandlist_page.presentation.adapter.BrandlistPageAdapter
 import com.tokopedia.brandlist.brandlist_page.presentation.adapter.viewholder.*
+import com.tokopedia.brandlist.brandlist_page.presentation.adapter.viewmodel.*
 import com.tokopedia.cassavatest.getAnalyticsWithQuery
 import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.officialstore.extension.selectTabAtPosition
 import com.tokopedia.test.application.assertion.topads.TopAdsVerificationTestReportUtil
 import com.tokopedia.test.application.espresso_component.CommonActions
 import com.tokopedia.test.application.espresso_component.CommonMatcher
+import com.tokopedia.test.application.espresso_component.CommonMatcher.firstView
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import org.hamcrest.CoreMatchers
@@ -30,6 +34,7 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import kotlin.reflect.KClass
 
 /**
  * Created by Lukas on 1/28/21.
@@ -62,7 +67,39 @@ class BrandListPageCassava {
     @Test
     fun testBrandList() {
         initTest()
-        doActivityTest()
+        // 1. click category OS
+        Espresso.onView(withId(R.id.tablayout)).perform(selectTabAtPosition(0))
+
+        Espresso.onView(CommonMatcher.firstView(withId(R.id.recycler_view))).perform(ViewActions.swipeDown())
+
+        doActivityTestByModelClass(dataModelClass = FeaturedBrandUiModel::class) { holder, position ->
+            logTestMessage("Captured is FeaturedBrandViewHolder")
+            Espresso.onView(withId(R.id.tv_expand_button)).perform(click())
+            Thread.sleep(5000)
+            CommonActions.clickOnEachItemRecyclerView(holder.itemView, R.id.rv_featured_brand, 2)
+        }
+        doActivityTestByModelClass(dataModelClass = PopularBrandUiModel::class) { holder, position ->
+            logTestMessage("Captured is PopularBrandViewHolder")
+            CommonActions.clickOnEachItemRecyclerView(holder.itemView, R.id.rv_popular_brand, 2)
+        }
+        doActivityTestByModelClass(dataModelClass = NewBrandUiModel::class) { holder, position ->
+            logTestMessage("Captured is NewBrandViewHolder")
+            CommonActions.clickOnEachItemRecyclerView(holder.itemView, R.id.rv_new_brand, 2)
+        }
+        doActivityTestByModelClass(dataModelClass = AllBrandGroupHeaderUiModel::class) { holder, position ->
+            logTestMessage("Captured is AllBrandGroupHeaderViewHolder")
+//            Espresso.onView(firstView(withId(R.id.chip_alphabet_header))).perform(click())
+            CommonActions.clickOnEachItemRecyclerView(holder.itemView, R.id.rv_groups_chip, 4)
+        }
+        doActivityTestByModelClass(dataModelClass = AllBrandUiModel::class) { holder, position ->
+            logTestMessage("Captured is AllBrandViewHolder")
+            InstrumentationRegistry.getInstrumentation().runOnMainSync {
+                holder.itemView.performClick()
+            }
+        }
+        // 3. Click Searchbar
+        Espresso.onView(withId(R.id.layout_search)).perform(click())
+
         doBrandlistCassavaTest()
         addDebugEnd()
     }
@@ -109,6 +146,22 @@ class BrandListPageCassava {
         logTestMessage("Done UI Test")
     }
 
+    private fun <T: Any> doActivityTestByModelClass(delayBeforeRender: Long = 2000L, dataModelClass : KClass<T>, isTypeClass: (viewHolder: RecyclerView.ViewHolder, itemClickLimit: Int)-> Unit) {
+        val brandListRecyclerView = activityRule.activity.findViewById<RecyclerView>(R.id.recycler_view)
+        val brandListAdapter = brandListRecyclerView.adapter as? BrandlistPageAdapter
+
+        val visitableList = brandListAdapter?.list?: listOf()
+        val targetModel = visitableList.find { it.javaClass.simpleName == dataModelClass.simpleName }
+        val targetModelIndex = visitableList.indexOf(targetModel)
+
+        targetModelIndex.let { targetModelIndex->
+            scrollRecyclerViewToPosition(brandListRecyclerView, targetModelIndex)
+            if (delayBeforeRender > 0) Thread.sleep(delayBeforeRender)
+            val targetModelViewHolder = brandListRecyclerView.findViewHolderForAdapterPosition(targetModelIndex)
+            targetModelViewHolder?.let { targetModelViewHolder-> isTypeClass.invoke(targetModelViewHolder, targetModelIndex) }
+        }
+    }
+
     private fun doBrandlistCassavaTest() {
         waitForData()
         //worked
@@ -118,7 +171,7 @@ class BrandListPageCassava {
 
     private fun scrollRecyclerViewToPosition(homeRecyclerView: RecyclerView, position: Int) {
         val layoutManager = homeRecyclerView.layoutManager as GridLayoutManager
-        activityRule.runOnUiThread { layoutManager.scrollToPositionWithOffset   (position, 400) }
+        activityRule.runOnUiThread { layoutManager.scrollToPositionWithOffset   (position,0) }
     }
 
     private fun logTestMessage(message: String) {
