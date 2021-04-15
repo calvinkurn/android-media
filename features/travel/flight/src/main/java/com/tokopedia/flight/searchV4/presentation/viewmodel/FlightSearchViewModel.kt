@@ -478,7 +478,7 @@ class FlightSearchViewModel @Inject constructor(
         val dataParam = FlightLowestPriceArgs(
                 departureAirport, arrivalAirport, departureDate, returnDate, classId)
 
-        launchCatchError(dispatcherProvider.ui(), {
+        launchCatchError(dispatcherProvider.main, {
             val data = flightLowestPriceUseCase.execute(FlightLowestPriceQuery.flightLowestPriceInput, dataParam)
             mutablePromoData.postValue(data)
         }) {
