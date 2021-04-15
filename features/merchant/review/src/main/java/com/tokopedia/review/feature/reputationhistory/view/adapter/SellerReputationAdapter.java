@@ -35,7 +35,7 @@ import java.util.List;
 
 /**
  * @author vishal.gupta on 20/02/2017.
- *         modify by normansyahputra 16-03-2017
+ * modify by normansyahputra 16-03-2017
  */
 public class SellerReputationAdapter extends BaseLinearRecyclerViewAdapter {
     public static final int SET_DATE_MODEL_POSITION = 0;
@@ -345,7 +345,7 @@ public class SellerReputationAdapter extends BaseLinearRecyclerViewAdapter {
 
             dateUtilHelper.setsDate(emptyListModel.getSetDateHeaderModel().getsDate());
             dateUtilHelper.seteDate(emptyListModel.getSetDateHeaderModel().geteDate());
-            if(emptyListModel.isEmptyShop()){
+            if (emptyListModel.isEmptyShop()) {
                 imageEmptyReputation.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_penalti_reputasi_zero));
                 reputationInfo.setText(context.getString(R.string.reputation_history_label_congrats_no_penalty));
                 descReputationInfo.setText(context.getString(R.string.reputation_history_label_improve_selling_get_badge));
@@ -361,5 +361,4 @@ public class SellerReputationAdapter extends BaseLinearRecyclerViewAdapter {
             });
         }
     }
-
 }

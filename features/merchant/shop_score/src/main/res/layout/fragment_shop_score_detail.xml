@@ -26,6 +26,14 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
+            <com.tokopedia.unifycomponents.ticker.Ticker
+                android:id="@+id/ticker_info_shop_score"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:tickerType="information"
+                app:tickerShapeType="full"
+                app:closeButtonVisibility="gone" />
+
             <TextView
                 android:id="@+id/text_view_shop_score_summary_detail_tittle"
                 android:layout_width="match_parent"

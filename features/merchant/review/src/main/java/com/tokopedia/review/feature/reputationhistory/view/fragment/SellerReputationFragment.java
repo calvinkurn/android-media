@@ -23,6 +23,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.appbar.AppBarLayout;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.base.list.seller.common.util.ItemType;
 import com.tokopedia.base.list.seller.view.adapter.BaseRetryDataBinder;
 import com.tokopedia.base.list.seller.view.old.RetryDataBinder;
@@ -32,8 +33,10 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.datepicker.range.view.listener.DatePickerResultListener;
+import com.tokopedia.iconunify.IconUnify;
 import com.tokopedia.review.R;
 import com.tokopedia.review.ReviewInstance;
+import com.tokopedia.review.common.util.ReviewUtil;
 import com.tokopedia.review.feature.reputationhistory.di.DaggerSellerReputationComponent;
 import com.tokopedia.review.feature.reputationhistory.di.SellerReputationModule;
 import com.tokopedia.review.feature.reputationhistory.domain.interactor.ReviewReputationMergeUseCase;
@@ -44,11 +47,15 @@ import com.tokopedia.review.feature.reputationhistory.view.SellerReputationView;
 import com.tokopedia.review.feature.reputationhistory.view.activity.SellerReputationInfoActivity;
 import com.tokopedia.review.feature.reputationhistory.view.adapter.SellerReputationAdapter;
 import com.tokopedia.review.feature.reputationhistory.view.adapter.SimpleDividerItemDecoration;
+import com.tokopedia.review.feature.reputationhistory.view.bottomsheet.ShopScoreReputationBottomSheet;
 import com.tokopedia.review.feature.reputationhistory.view.helper.GMStatHeaderViewHelper;
 import com.tokopedia.review.feature.reputationhistory.view.helper.RefreshHandler;
 import com.tokopedia.review.feature.reputationhistory.view.helper.ReputationViewHelper;
 import com.tokopedia.review.feature.reputationhistory.view.model.SetDateHeaderModel;
 import com.tokopedia.review.feature.reputationhistory.view.presenter.SellerReputationFragmentPresenter;
+import com.tokopedia.unifycomponents.CardUnify;
+import com.tokopedia.unifycomponents.ticker.Ticker;
+import com.tokopedia.unifyprinciples.Typography;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
@@ -105,6 +112,11 @@ public class SellerReputationFragment extends BaseDaggerFragment
     private CoordinatorLayout.LayoutParams orignalLp;
 
     private ArrayList<Parcelable> tempParcelables;
+
+    private IconUnify iconChevronRightReputationDetail;
+    private Typography tvInfoMigrateReputation;
+    private CardUnify cardReputationShopScore;
+    private Ticker tickerShopScore;
 
     public static SellerReputationFragment createInstance() {
         SellerReputationFragment fragment = new SellerReputationFragment();
@@ -197,18 +209,48 @@ public class SellerReputationFragment extends BaseDaggerFragment
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initView(view);
+        shopScorePeriodToggle();
+        initCardShopScore();
         initialVar();
         setViewListener();
         setActionVar();
     }
 
+    private void shopScorePeriodToggle() {
+        UserSessionInterface userSession = new UserSession(getActivity());
+        if (userSession.isShopOfficialStore()) {
+            tickerShopScore.setVisibility(View.VISIBLE);
+            cardReputationShopScore.setVisibility(View.GONE);
+        } else {
+            cardReputationShopScore.setVisibility(View.VISIBLE);
+            tickerShopScore.setVisibility(View.GONE);
+        }
+    }
+
+    private void initCardShopScore() {
+        String date = ReviewUtil.INSTANCE.getShopScoreDate(requireContext());
+        tvInfoMigrateReputation.setText(MethodChecker.fromHtml(getString(R.string.desc_title_card_shop_score, date)));
+        iconChevronRightReputationDetail.setOnClickListener(view -> showBottomSheetMoveShopScore());
+
+        cardReputationShopScore.setOnClickListener(view -> showBottomSheetMoveShopScore());
+    }
+
+    private void showBottomSheetMoveShopScore() {
+        ShopScoreReputationBottomSheet shopScoreReputationBottomSheet = new ShopScoreReputationBottomSheet();
+        shopScoreReputationBottomSheet.show(getChildFragmentManager());
+    }
+
     protected void initView(View view) {
         this.rootView = view;
-        listViewBalance = (RecyclerView) view.findViewById(R.id.balance_list);
+        listViewBalance = view.findViewById(R.id.balance_list);
         mainView = view.findViewById(R.id.main_view);
-        topSlideOffBar = (RelativeLayout) view.findViewById(R.id.seller_reputation_header);
-        swipeToRefresh = (SwipeToRefresh) view.findViewById(R.id.swipe_refresh_layout);
-        appBarLayout = (AppBarLayout) view.findViewById(R.id.seller_reputation_app_bar_layout);
+        topSlideOffBar = view.findViewById(R.id.seller_reputation_header);
+        swipeToRefresh = view.findViewById(R.id.swipe_refresh_layout);
+        appBarLayout = view.findViewById(R.id.seller_reputation_app_bar_layout);
+        tvInfoMigrateReputation = view.findViewById(R.id.tv_info_migrate_reputation);
+        iconChevronRightReputationDetail = view.findViewById(R.id.icon_chevron_reputation_detail);
+        cardReputationShopScore = view.findViewById(R.id.cardReputationShopScore);
+        tickerShopScore = view.findViewById(R.id.tickerShopScore);
         appBarLayout.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
