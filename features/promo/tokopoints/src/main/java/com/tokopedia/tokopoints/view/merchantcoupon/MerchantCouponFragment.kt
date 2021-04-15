@@ -70,9 +70,6 @@ class MerchantCouponFragment : BaseDaggerFragment(), TokopointPerformanceMonitor
         appBarLayout = view.findViewById(R.id.app_bar_layout)
         merchantRewardToolbar = view.findViewById(R.id.toolbar_merchant)
         statusBarBgView = view.findViewById(R.id.status_bar_bg)
-
-        //  setStatusBarViewHeight()
-        //  setLayoutParams()
         (activity as BaseSimpleActivity).setSupportActionBar(merchantRewardToolbar)
 
         return view
@@ -207,17 +204,6 @@ class MerchantCouponFragment : BaseDaggerFragment(), TokopointPerformanceMonitor
     fun hideLoader() {
         container?.displayedChild = CONTAINER_DATA
         swipe_refresh_layout?.isRefreshing = false
-    }
-
-    private fun setLayoutParams() {
-        val statusBarHeight = getStatusBarHeight(activity)
-        val layoutParams = merchantRewardToolbar?.layoutParams as FrameLayout.LayoutParams
-        layoutParams.topMargin = statusBarHeight
-        merchantRewardToolbar?.layoutParams = layoutParams
-    }
-
-    private fun setStatusBarViewHeight() {
-        if (activity != null) statusBarBgView?.layoutParams?.height = TokoPointsHomeFragmentNew.getStatusBarHeight(activity)
     }
 
     fun getStatusBarHeight(context: Context?): Int {

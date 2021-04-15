@@ -155,7 +155,6 @@
                 android:paddingTop="@dimen/dp_2"
                 android:paddingRight="@dimen/dp_6"
                 android:paddingBottom="@dimen/dp_2"
-                android:text="50%"
                 android:textColor="@color/Neutral_N0"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
