@@ -5,7 +5,7 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.loginregister.common.DispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.loginregister.common.domain.pojo.ActivateUserPojo
 import com.tokopedia.loginregister.common.domain.query.QueryActivateUser
 import kotlinx.coroutines.withContext
@@ -17,7 +17,7 @@ import javax.inject.Inject
 
 class ActivateUserUseCase @Inject constructor(
         private val graphqlRepository: GraphqlRepository,
-        dispatcher: DispatcherProvider
+        dispatcher: CoroutineDispatchers
 ) : BaseLoginRegisterUseCase<ActivateUserPojo>(dispatcher) {
 
     @JvmOverloads
