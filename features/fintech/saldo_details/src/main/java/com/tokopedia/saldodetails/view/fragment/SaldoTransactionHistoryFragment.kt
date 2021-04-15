@@ -4,8 +4,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.RelativeLayout
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.ViewModelProviders
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
@@ -21,7 +21,6 @@ import com.tokopedia.saldodetails.adapter.SaldoDetailTransactionFactory
 import com.tokopedia.saldodetails.adapter.SaldoHistoryPagerAdapter
 import com.tokopedia.saldodetails.contract.SaldoHistoryContract
 import com.tokopedia.saldodetails.di.SaldoDetailsComponent
-import com.tokopedia.saldodetails.utils.DrawableUtils.setUnifyDrawableStart
 import com.tokopedia.saldodetails.utils.ErrorType
 import com.tokopedia.saldodetails.utils.IN_VALID_DATE_ERROR
 import com.tokopedia.saldodetails.utils.NORMAL
@@ -33,8 +32,8 @@ import javax.inject.Inject
 
 class SaldoTransactionHistoryFragment : BaseDaggerFragment(), SaldoHistoryContract.View, BaseEmptyViewHolder.Callback {
 
-    private var startDateLayout: RelativeLayout? = null
-    private var endDateLayout: RelativeLayout? = null
+    private var startDateLayout: ConstraintLayout? = null
+    private var endDateLayout: ConstraintLayout? = null
     private var tabSeparator: View? = null
     private var depositHistoryViewPager: HeightWrappingViewPager? = null
     private var depositHistoryTabLayout: TabLayout? = null
@@ -85,10 +84,10 @@ class SaldoTransactionHistoryFragment : BaseDaggerFragment(), SaldoHistoryContra
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        getInitialdata()
+        getInitialData()
     }
 
-    private fun getInitialdata() {
+    private fun getInitialData() {
         setActionsEnabled(false)
         saldoHistoryViewModel.setFirstDateParameter(this)
         saldoHistoryViewModel.getSummaryDeposit()
@@ -100,9 +99,6 @@ class SaldoTransactionHistoryFragment : BaseDaggerFragment(), SaldoHistoryContra
         endDateLayout = view.findViewById(com.tokopedia.saldodetails.R.id.end_date_layout)
         startDateTV = view.findViewById(com.tokopedia.saldodetails.R.id.start_date_tv)
         endDateTV = view.findViewById(com.tokopedia.saldodetails.R.id.end_date_tv)
-        startDateTV!!.setUnifyDrawableStart(com.tokopedia.iconunify.R.drawable.iconunify_calendar, com.tokopedia.unifyprinciples.R.dimen.unify_font_24)
-        endDateTV!!.setUnifyDrawableStart(com.tokopedia.iconunify.R.drawable.iconunify_calendar, com.tokopedia.unifyprinciples.R.dimen.unify_font_24)
-
         depositHistoryViewPager = view.findViewById(com.tokopedia.saldodetails.R.id.transaction_history_view_pager)
         depositHistoryTabLayout = view.findViewById(com.tokopedia.saldodetails.R.id.transaction_history_tab_layout)
         tabSeparator = view.findViewById(com.tokopedia.saldodetails.R.id.transaction_history_tab_view_separator)

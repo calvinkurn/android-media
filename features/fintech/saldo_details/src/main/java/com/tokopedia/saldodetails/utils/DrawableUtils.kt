@@ -15,12 +15,4 @@ object DrawableUtils {
         drawable?.setBounds(0, 0, dp16.toInt(), dp16.toInt())
         this.setCompoundDrawables(null, null, drawable, null)
     }
-
-    fun TextView.setUnifyDrawableStart(iconId: Int, drawablePadding: Int = 16) {
-        val icon = getIconUnifyDrawable(context, iconId, context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_N500))
-        val padding = context.dpToPx(drawablePadding)
-        val drawable = ScaleDrawable(icon, 0, padding, padding).drawable
-        drawable?.setBounds(0, 0, padding.toInt(), padding.toInt())
-        this.setCompoundDrawables(drawable, null, null, null)
-    }
 }
