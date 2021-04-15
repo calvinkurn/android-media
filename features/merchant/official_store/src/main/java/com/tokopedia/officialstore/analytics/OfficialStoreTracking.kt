@@ -93,6 +93,7 @@ class OfficialStoreTracking(context: Context) {
 
     private val EVENT_CATEGORY_RECOMMENDATION_PAGE_WITH_PRODUCT_ID = "recommendation page with product id"
     private val SLASH_OFFICIAL_STORE = "/official-store"
+    private val SLASH_OFFICIAL_STORE_WITHCATEGORY = "/official-store/%s"
     private val SKEL_APPLINK = "{&data}"
     private val SKEL_APPLINK_DATA = "&data"
 
@@ -466,7 +467,7 @@ class OfficialStoreTracking(context: Context) {
         ) as HashMap<String, Any>)
     }
 
-    fun dynamicChannelMixCardClick(categoryName: String, headerName: String, position: String, gridData: Grid, campaignCode: String) {
+    fun dynamicChannelMixCardClick(categoryName: String, headerName: String, position: String, gridData: Grid, campaignCode: String, campaignId: String) {
         val ecommerceBody = DataLayer.mapOf(
                 "click", DataLayer.mapOf(
                     "actionField", DataLayer.mapOf("list", "/official-store/$categoryName - dynamic channel mix - $headerName"),
@@ -477,7 +478,7 @@ class OfficialStoreTracking(context: Context) {
                         "brand", "none",
                         "category", "",
                         "variant", "none",
-                        "list", "/official-store/$categoryName - dynamic channel mix - $headerName",
+                        "list", "/official-store/$categoryName - dynamic channel mix - ${gridData.id} - $campaignId - $headerName",
                         "position", position,
                         "attribution", gridData.attribution
                 ))
@@ -752,10 +753,14 @@ class OfficialStoreTracking(context: Context) {
                 ECOMMERCE_CURRENCY_CODE, VALUE_IDR,
                 ECOMMERCE_IMPRESSIONS, DataLayer.listOf(
                 createFlashSaleCardProductItemMapComponent(
-                        productItem,
-                        productPosition,
-                        isLogin,
-                        valueDynamicMix
+                        gridData = productItem,
+                        position = productPosition,
+                        isLogin = isLogin,
+                        valueDynamicMix = valueDynamicMix,
+                        headerName = channel.channelHeader.name,
+                        campaignId = channel.trackingAttributionModel.campaignId,
+                        categoryName = categoryName,
+                        gridId = productItem.id
                 )
         )
         )
@@ -791,13 +796,18 @@ class OfficialStoreTracking(context: Context) {
             gridData: ChannelGrid,
             position: String,
             isLogin: Boolean,
-            valueDynamicMix: String
+            valueDynamicMix: String,
+            categoryName: String = "",
+            gridId: String = "",
+            campaignId: String = "",
+            headerName: String = ""
     ): MutableMap<String, Any> {
-        val list = mutableListOf(SLASH_OFFICIAL_STORE)
-        if (!isLogin)
-            list.add(VALUE_NON_LOGIN)
+        val list = mutableListOf(String().replace(SLASH_OFFICIAL_STORE_WITHCATEGORY, categoryName))
         if (valueDynamicMix.isNotEmpty())
             list.add(valueDynamicMix)
+        list.add(campaignId)
+        if (!isLogin)
+            list.add(VALUE_NON_LOGIN)
         val listKeyValue = TextUtils.join(" - ", list)
         return DataLayer.mapOf(
                 FIELD_PRODUCT_NAME, gridData.name,
@@ -883,10 +893,14 @@ class OfficialStoreTracking(context: Context) {
                 FIELD_ACTION_FIELD , DataLayer.mapOf( FIELD_PRODUCT_LIST , listKeyValue),
                 FIELD_PRODUCTS, DataLayer.listOf(
                 createFlashSaleCardProductItemMapComponent(
-                        productItem,
-                        productPosition,
-                        isLogin,
-                        valueDynamicMix
+                        gridData = productItem,
+                        position = productPosition,
+                        isLogin = isLogin,
+                        valueDynamicMix = valueDynamicMix,
+                        headerName = channel.channelHeader.name,
+                        campaignId = channel.trackingAttributionModel.campaignId,
+                        categoryName = categoryName,
+                        gridId = productItem.id
                 )
         )
         )

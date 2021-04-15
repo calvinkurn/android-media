@@ -675,7 +675,8 @@ class OfficialHomeFragment :
                         channelData.header?.name ?: "",
                         (position + 1).toString(10),
                         gridData,
-                        channelData.campaignCode
+                        channelData.campaignCode,
+                        channelData.campaignID.toString()
                 )
 
                 RouteManager.route(context, applink)
