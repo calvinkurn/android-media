@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import com.facebook.AccessToken
 import com.facebook.CallbackManager
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.encryption.security.RsaUtils
 import com.tokopedia.encryption.security.decodeBase64
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -13,7 +14,6 @@ import com.tokopedia.loginfingerprint.data.preference.FingerprintSetting
 import com.tokopedia.loginfingerprint.utils.crypto.Cryptography
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.TkpdIdlingResourceProvider
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.loginregister.common.domain.pojo.ActivateUserData
 import com.tokopedia.loginregister.common.domain.usecase.ActivateUserUseCase
 import com.tokopedia.loginregister.common.view.banner.domain.usecase.DynamicBannerUseCase
@@ -416,8 +416,8 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
             validateToken: String
     ) {
         launchCatchError(coroutineContext, {
-            val params = activateUserUseCase.getParams(email, validateToken)
-            val data: ActivateUserData? = activateUserUseCase.getData(params).data
+            activateUserUseCase.setParams(email, validateToken)
+            val data: ActivateUserData? = activateUserUseCase.executeOnBackground().data
             if (data != null) {
                 when {
                     data.isSuccess == 1 -> {
