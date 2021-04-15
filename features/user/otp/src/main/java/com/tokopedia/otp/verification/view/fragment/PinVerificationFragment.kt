@@ -18,6 +18,11 @@ import com.tokopedia.pin.PinUnify
 
 class PinVerificationFragment : VerificationFragment() {
 
+    override fun onStart() {
+        super.onStart()
+        analytics.trackViewChooseOtpPage()
+    }
+
     override fun initView() {
         super.initView()
         viewBound.pin?.type = PinUnify.TYPE_HIDDEN
@@ -73,6 +78,21 @@ class PinVerificationFragment : VerificationFragment() {
                 message.indexOf(getString(R.string.forgot_pin)) + getString(R.string.forgot_pin).length,
                 0
         )
+    }
+
+    override fun trackSuccess() {
+        super.trackSuccess()
+        analytics.trackClickAutoSubmitOtpPageSuccess()
+    }
+
+    override fun onFailedOtpValidate(throwable: Throwable) {
+        super.onFailedOtpValidate(throwable)
+        analytics.trackClickAutoSubmitOtpPageFiled(throwable.message ?: "")
+    }
+
+    override fun onFailedSendOtp(throwable: Throwable) {
+        super.onFailedSendOtp(throwable)
+        analytics.trackClickAutoSubmitOtpPageFiled(throwable.message ?: "")
     }
 
     companion object {
