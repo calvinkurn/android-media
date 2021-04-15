@@ -13,6 +13,10 @@ import com.tokopedia.autocomplete.initialstate.popularsearch.PopularSearchTitleV
 import com.tokopedia.autocomplete.initialstate.popularsearch.PopularSearchTitleViewModel
 import com.tokopedia.autocomplete.initialstate.popularsearch.PopularSearchViewHolder
 import com.tokopedia.autocomplete.initialstate.popularsearch.PopularSearchViewModel
+import com.tokopedia.autocomplete.initialstate.productline.InitialStateProductListDataView
+import com.tokopedia.autocomplete.initialstate.productline.InitialStateProductLineTitleDataView
+import com.tokopedia.autocomplete.initialstate.productline.InitialStateProductListTitleViewHolder
+import com.tokopedia.autocomplete.initialstate.productline.InitialStateProductListViewHolder
 import com.tokopedia.autocomplete.initialstate.recentsearch.*
 import com.tokopedia.autocomplete.initialstate.recentview.RecentViewViewModel
 import com.tokopedia.autocomplete.initialstate.recentview.RecentViewTitleViewHolder
@@ -62,6 +66,14 @@ class InitialStateAdapterTypeFactory(
         return CuratedCampaignViewHolder.LAYOUT
     }
 
+    override fun type(initialStateProductListDataView: InitialStateProductListDataView): Int {
+        return InitialStateProductListViewHolder.LAYOUT
+    }
+
+    override fun type(initialStateProductLineTitleDataView: InitialStateProductLineTitleDataView): Int {
+        return InitialStateProductListTitleViewHolder.LAYOUT
+    }
+
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
             PopularSearchViewHolder.LAYOUT -> PopularSearchViewHolder(parent, clickListener)
@@ -74,6 +86,8 @@ class InitialStateAdapterTypeFactory(
             DynamicInitialStateTitleViewHolder.LAYOUT -> DynamicInitialStateTitleViewHolder(parent, clickListener)
             DynamicInitialStateViewHolder.LAYOUT -> DynamicInitialStateViewHolder(parent, clickListener)
             CuratedCampaignViewHolder.LAYOUT -> CuratedCampaignViewHolder(parent, clickListener)
+            InitialStateProductListViewHolder.LAYOUT -> InitialStateProductListViewHolder(parent, clickListener)
+            InitialStateProductListTitleViewHolder.LAYOUT -> InitialStateProductListTitleViewHolder(parent)
             else -> super.createViewHolder(parent, type)
         }
     }

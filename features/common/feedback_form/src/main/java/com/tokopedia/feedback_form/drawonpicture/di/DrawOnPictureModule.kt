@@ -1,7 +1,7 @@
 package com.tokopedia.feedback_form.drawonpicture.di
 
-import com.tokopedia.feedback_form.drawonpicture.ProdDispatcherProvider
-import com.tokopedia.feedback_form.drawonpicture.DispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import dagger.Module
 import dagger.Provides
 
@@ -11,5 +11,5 @@ import dagger.Provides
 @Module
 class DrawOnPictureModule {
     @Provides
-    fun provideDispatcherProvider(): DispatcherProvider = ProdDispatcherProvider()
+    fun provideCoroutineDispatchers(): CoroutineDispatchers = CoroutineDispatchersProvider
 }

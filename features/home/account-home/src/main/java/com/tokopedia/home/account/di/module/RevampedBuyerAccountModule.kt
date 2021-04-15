@@ -8,14 +8,12 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.home.account.AccountConstants
 import com.tokopedia.home.account.R
 import com.tokopedia.home.account.di.scope.BuyerAccountScope
-import com.tokopedia.home.account.presentation.util.dispatchers.AppDispatcherProvider
-import com.tokopedia.home.account.presentation.util.dispatchers.DispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import dagger.Module
 import dagger.Provides
 import dagger.multibindings.IntoMap
 import dagger.multibindings.StringKey
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 
 @Module
 class RevampedBuyerAccountModule {
@@ -26,8 +24,8 @@ class RevampedBuyerAccountModule {
 
     @BuyerAccountScope
     @Provides
-    fun provideMainDispatcher(): DispatcherProvider {
-        return AppDispatcherProvider()
+    fun provideMainDispatcher(): CoroutineDispatchers {
+        return CoroutineDispatchersProvider
     }
 
     @BuyerAccountScope

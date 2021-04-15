@@ -10,7 +10,7 @@ import com.tokopedia.encryption.security.decodeBase64
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.loginregister.TkpdIdlingResourceProvider
-import com.tokopedia.loginregister.common.DispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.loginregister.common.data.ResponseConverter.resultUsecaseCoroutineToFacebookCredentialListener
 import com.tokopedia.loginregister.common.data.ResponseConverter.resultUsecaseCoroutineToSubscriber
 import com.tokopedia.loginregister.common.data.model.DynamicBannerDataModel
@@ -72,7 +72,7 @@ class RegisterInitialViewModel @Inject constructor(
         @Named(SessionModule.SESSION_MODULE)
         private val userSession: UserSessionInterface,
         private val rawQueries: Map<String, String>,
-        dispatcherProvider: DispatcherProvider) : BaseViewModel(dispatcherProvider.ui()) {
+        dispatcherProvider: CoroutineDispatchers) : BaseViewModel(dispatcherProvider.main) {
 
     private val mutableGetProviderResponse = MutableLiveData<Result<ArrayList<DiscoverItemViewModel>>>()
     val getProviderResponse: LiveData<Result<ArrayList<DiscoverItemViewModel>>>
