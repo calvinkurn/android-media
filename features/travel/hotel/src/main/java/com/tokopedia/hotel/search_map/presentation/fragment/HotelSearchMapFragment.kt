@@ -1107,31 +1107,31 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
     private fun getCurrentLocation() {
         val locationManager = context?.getSystemService(Context.LOCATION_SERVICE) as LocationManager
 
+        val locationDetectorHelper = LocationDetectorHelper(
+                permissionCheckerHelper,
+                fusedLocationClient,
+                requireActivity().applicationContext)
+
+        permissionCheckerHelper.checkPermission(this, requireActivity().getString(R.string.hotel_destination_need_permission),
+                object : PermissionCheckerHelper.PermissionCheckListener {
+                    override fun onNeverAskAgain(permissionText: String) {}
+
+                    override fun onPermissionDenied(permissionText: String) {
+                        locationDetectorHelper.getLocation(hotelSearchMapViewModel.onGetLocation(), requireActivity(),
+                                LocationDetectorHelper.TYPE_DEFAULT_FROM_CLOUD,
+                                requireActivity().getString(R.string.hotel_destination_need_permission))
+                    }
+
+                    override fun onPermissionGranted() {
+                        locationDetectorHelper.getLocation(hotelSearchMapViewModel.onGetLocation(), requireActivity(),
+                                LocationDetectorHelper.TYPE_DEFAULT_FROM_CLOUD,
+                                requireActivity().getString(R.string.hotel_destination_need_permission))
+                    }
+
+                })
+
         if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
             showDialogEnableGPS()
-        } else {
-            val locationDetectorHelper = LocationDetectorHelper(
-                    permissionCheckerHelper,
-                    fusedLocationClient,
-                    requireActivity().applicationContext)
-
-            permissionCheckerHelper.checkPermission(this, PermissionCheckerHelper.Companion.PERMISSION_ACCESS_FINE_LOCATION,
-                    object : PermissionCheckerHelper.PermissionCheckListener {
-                        override fun onNeverAskAgain(permissionText: String) {}
-
-                        override fun onPermissionDenied(permissionText: String) {
-                            locationDetectorHelper.getLocation(hotelSearchMapViewModel.onGetLocation(), requireActivity(),
-                                    LocationDetectorHelper.TYPE_DEFAULT_FROM_CLOUD,
-                                    requireActivity().getString(R.string.hotel_destination_need_permission))
-                        }
-
-                        override fun onPermissionGranted() {
-                            locationDetectorHelper.getLocation(hotelSearchMapViewModel.onGetLocation(), requireActivity(),
-                                    LocationDetectorHelper.TYPE_DEFAULT_FROM_CLOUD,
-                                    requireActivity().getString(R.string.hotel_destination_need_permission))
-                        }
-
-                    })
         }
     }
 
