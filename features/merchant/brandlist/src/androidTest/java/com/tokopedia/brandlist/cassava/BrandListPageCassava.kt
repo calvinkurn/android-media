@@ -94,10 +94,13 @@ class BrandListPageCassava {
         Espresso.onView(CommonMatcher.firstView(withId(R.id.recycler_view))).perform(ViewActions.swipeDown())
 
         for (i in 0 until itemCount) {
+            logTestMessage("Scolled to "+i)
             scrollRecyclerViewToPosition(recyclerView, i)
             checkProductOnDynamicChannel(recyclerView, i)
+            Thread.sleep(5000)
         }
 
+        logTestMessage("Done iterating dynamic channel")
         // 3. Click Searchbar
         Espresso.onView(withId(R.id.layout_search)).perform(click())
 
@@ -123,22 +126,30 @@ class BrandListPageCassava {
     }
 
     private fun checkProductOnDynamicChannel(officialStoreRecyclerView: RecyclerView, i: Int) {
-        when (val viewHolder = officialStoreRecyclerView.findViewHolderForAdapterPosition(i)) {
+        logTestMessage("Check dynamic channel")
+
+        val viewHolder = officialStoreRecyclerView.findViewHolderForAdapterPosition(i)
+        when (viewHolder) {
             is FeaturedBrandViewHolder -> {
+                logTestMessage("Captured is FeaturedBrandViewHolder")
                 Espresso.onView(withId(R.id.tv_expand_button)).perform(click())
                 Thread.sleep(2000)
-                CommonActions.clickOnEachItemRecyclerView(viewHolder.itemView, R.id.rv_featured_brand, 0)
+                CommonActions.clickOnEachItemRecyclerView(viewHolder.itemView, R.id.rv_featured_brand, 2)
             }
             is PopularBrandViewHolder -> {
-                CommonActions.clickOnEachItemRecyclerView(viewHolder.itemView, R.id.rv_popular_brand, 0)
+                logTestMessage("Captured is PopularBrandViewHolder")
+                CommonActions.clickOnEachItemRecyclerView(viewHolder.itemView, R.id.rv_popular_brand, 2)
             }
             is NewBrandViewHolder -> {
-                CommonActions.clickOnEachItemRecyclerView(viewHolder.itemView, R.id.rv_new_brand, 0)
+                logTestMessage("Captured is NewBrandViewHolder")
+                CommonActions.clickOnEachItemRecyclerView(viewHolder.itemView, R.id.rv_new_brand, 2)
             }
             is AllBrandGroupHeaderViewHolder -> {
+                logTestMessage("Captured is AllBrandGroupHeaderViewHolder")
                 CommonActions.clickOnEachItemRecyclerView(viewHolder.itemView, R.id.rv_groups_chip, 0)
             }
             is AllBrandViewHolder -> {
+                logTestMessage("Captured is AllBrandViewHolder")
                 Espresso.onView(CoreMatchers.allOf(ViewMatchers.isDisplayed(), withId(R.id.recycler_view)))
                         .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(i, click()))
             }
