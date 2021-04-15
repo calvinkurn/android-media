@@ -143,7 +143,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     @NonNull
     protected String getUrl() {
         String env = TokopediaUrl.Companion.getInstance().getTYPE().getValue();
-        if (url.contains(JS_TOKOPEDIA)  || (url.contains(JS_STAGING_TOKOPEDIA) && env.equalsIgnoreCase(STAGING))) {
+        if (url.contains(JS_TOKOPEDIA) || (url.contains(JS_STAGING_TOKOPEDIA) && env.equalsIgnoreCase(STAGING))) {
             return url;
         } else if (isTokopediaUrl) {
             String gcmId = userSession.getDeviceId();
@@ -638,7 +638,9 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
                 }
             });
             globalError.setVisibility(View.VISIBLE);
-            swipeRefreshLayout.setVisibility(View.GONE);
+            if (swipeRefreshLayout!= null) {
+                swipeRefreshLayout.setVisibility(View.GONE);
+            }
         }
     }
 
@@ -856,12 +858,16 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     }
 
     public void reloadPage() {
-        BaseSimpleWebViewActivity activity = (BaseSimpleWebViewActivity) getActivity();
-        if (activity!= null) {
-            activity.setWebViewTitle("");
+        Activity activity = getActivity();
+        if (activity instanceof BaseSimpleWebViewActivity) {
+            ((BaseSimpleWebViewActivity) activity).setWebViewTitle("");
         }
-        swipeRefreshLayout.setVisibility(View.VISIBLE);
-        globalError.setVisibility(View.GONE);
+        if (swipeRefreshLayout!= null) {
+            swipeRefreshLayout.setVisibility(View.VISIBLE);
+        }
+        if (globalError!= null) {
+            globalError.setVisibility(View.GONE);
+        }
         webView.reload();
     }
 

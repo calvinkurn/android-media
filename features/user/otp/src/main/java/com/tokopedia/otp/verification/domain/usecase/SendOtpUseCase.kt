@@ -5,7 +5,7 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.otp.common.DispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.otp.common.abstraction.BaseOtpUseCase
 import com.tokopedia.otp.verification.domain.data.OtpRequestPojo
 import com.tokopedia.otp.verification.domain.query.OtpRequestQuery
@@ -18,7 +18,7 @@ import javax.inject.Inject
 
 class SendOtpUseCase @Inject constructor(
         private val graphqlRepository: GraphqlRepository,
-        dispatcher: DispatcherProvider
+        dispatcher: CoroutineDispatchers
 ) : BaseOtpUseCase<OtpRequestPojo>(dispatcher) {
 
     @JvmOverloads
@@ -27,7 +27,7 @@ class SendOtpUseCase @Inject constructor(
             mode: String,
             msisdn: String = "",
             email: String = "",
-            otpDigit: Int = 6
+            otpDigit: Int = 4
     ): Map<String, Any> = mapOf(
         PARAM_OTP_TYPE to otpType,
         PARAM_MODE to mode,

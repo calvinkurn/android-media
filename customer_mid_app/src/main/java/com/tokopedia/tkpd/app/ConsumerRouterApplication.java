@@ -147,6 +147,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     private static final String ENABLE_ASYNC_CMPUSHNOTIF_INIT = "android_async_cmpushnotif_init";
     private static final String ENABLE_ASYNC_IRIS_INIT = "android_async_iris_init";
+    private static final String ENABLE_ASYNC_GCM_LEGACY = "android_async_gcm_legacy";
     private static final String ADD_BROTLI_INTERCEPTOR = "android_add_brotli_interceptor";
     protected CacheManager cacheManager;
     @Inject
@@ -543,14 +544,26 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
             @Override
             public void onComplete(@NonNull Task<InstanceIdResult> task) {
                 if (!task.isSuccessful() || task.getResult() == null) {
-                    try {
-                        sessionRefresh.gcmUpdate();
-                    } catch (IOException e) {}
+                    gcmUpdateLegacy(sessionRefresh);
                 } else {
                     fcmManager.onNewToken(task.getResult().getToken());
                 }
             }
         });
+    }
+
+    private void gcmUpdateLegacy(SessionRefresh sessionRefresh) {
+        WeaveInterface weave = new WeaveInterface() {
+            @NotNull
+            @Override
+            public Boolean execute() {
+                try {
+                    sessionRefresh.gcmUpdate();
+                } catch (Throwable ignored) {}
+                return true;
+            }
+        };
+        Weaver.Companion.executeWeaveCoRoutineWithFirebase(weave, ENABLE_ASYNC_GCM_LEGACY, getApplicationContext());
     }
 
     @Override
