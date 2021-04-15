@@ -2,7 +2,7 @@ package com.tokopedia.flight.homepage.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.common.travel.utils.TravelDateUtil
-import com.tokopedia.common.travel.utils.TravelTestDispatcherProvider
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.flight.dummy.HOLIDAY_EMPTY_DATA
 import com.tokopedia.flight.dummy.HOLIDAY_WITH_DATA
 import com.tokopedia.flight.shouldBe
@@ -29,7 +29,7 @@ class FlightHolidayCalendarViewModelTest {
 
     @Before
     fun setUp() {
-        viewModel = FlightHolidayCalendarViewModel(useCase, TravelTestDispatcherProvider())
+        viewModel = FlightHolidayCalendarViewModel(useCase, CoroutineTestDispatchersProvider)
     }
 
     @Test

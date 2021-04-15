@@ -1,7 +1,7 @@
 package com.tokopedia.flight.searchV4.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.common.travel.utils.TravelTestDispatcherProvider
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.flight.airport.view.model.FlightAirportModel
 import com.tokopedia.flight.common.util.FlightAnalytics
 import com.tokopedia.flight.dummy.*
@@ -32,7 +32,7 @@ class FlightSearchReturnViewModelTest {
 
     private val flightSearchJourneyByIdUseCase = mockk<FlightSearchJouneyByIdUseCase>()
     private val flightComboKeyUseCase = mockk<FlightComboKeyUseCase>()
-    private val testDispatcherProvider = TravelTestDispatcherProvider()
+    private val testDispatcherProvider = CoroutineTestDispatchersProvider
     private val userSession = mockk<UserSessionInterface>()
 
     private lateinit var flightSearchReturnViewModel: FlightSearchReturnViewModel

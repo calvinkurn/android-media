@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.otp.common.DispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.otp.common.idling_resource.TkpdIdlingResource
 import com.tokopedia.otp.verification.domain.data.OtpConstant
 import com.tokopedia.otp.verification.domain.pojo.OtpModeListData
@@ -33,8 +33,8 @@ class VerificationViewModel @Inject constructor(
         private val sendOtpUseCase2FA: SendOtp2FAUseCase,
         private val userSession: UserSessionInterface,
         private val remoteConfig: RemoteConfig,
-        dispatcherProvider: DispatcherProvider
-) : BaseViewModel(dispatcherProvider.ui()) {
+        dispatcherProvider: CoroutineDispatchers
+) : BaseViewModel(dispatcherProvider.main) {
 
     private val _getVerificationMethodResult = MutableLiveData<Result<OtpModeListData>>()
     val getVerificationMethodResult: LiveData<Result<OtpModeListData>>

@@ -16,7 +16,7 @@ import com.tokopedia.homenav.mainnav.view.presenter.MainNavViewModel
 import com.tokopedia.homenav.common.util.ClientMenuGenerator
 import com.tokopedia.homenav.mainnav.domain.usecases.*
 import com.tokopedia.homenav.mainnav.view.datamodel.*
-import com.tokopedia.homenav.rule.CoroutinesTestRule
+import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.sessioncommon.data.admin.AdminData
 import com.tokopedia.sessioncommon.data.admin.AdminDataResponse
@@ -24,7 +24,6 @@ import com.tokopedia.sessioncommon.data.admin.AdminDetailInformation
 import com.tokopedia.sessioncommon.data.admin.AdminRoleType
 import com.tokopedia.sessioncommon.domain.usecase.AccountAdminInfoUseCase
 import com.tokopedia.sessioncommon.domain.usecase.RefreshShopBasicDataUseCase
-import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.*
@@ -40,7 +39,7 @@ class TestMainNavViewModel {
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
     @get:Rule
-    val rule = CoroutinesTestRule()
+    val rule = CoroutineTestRule()
 
     @ApplicationContext
     lateinit var context: Context

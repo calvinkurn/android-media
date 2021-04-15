@@ -7,7 +7,6 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor.Companion.getInstance
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.loginregister.common.DispatcherProvider
 import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
@@ -38,13 +37,6 @@ class RegisterInitialModule {
     @Provides
     fun provideMainDispatcher(): CoroutineDispatcher {
         return Main
-    }
-
-    @RegisterInitialScope
-    @Provides
-    fun provideDispatcherProvider(): DispatcherProvider = object : DispatcherProvider {
-        override fun ui(): CoroutineDispatcher = Dispatchers.Main
-        override fun io(): CoroutineDispatcher = Dispatchers.IO
     }
 
     @RegisterInitialScope

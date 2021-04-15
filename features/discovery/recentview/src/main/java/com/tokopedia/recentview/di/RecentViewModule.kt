@@ -5,6 +5,8 @@ import com.chuckerteam.chucker.api.ChuckerCollector
 import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseInterceptor
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor.Companion.getInstance
@@ -132,8 +134,8 @@ class RecentViewModule {
 
     @Provides
     @RecentViewScope
-    fun provideRecentViewDispatcherProvider(): RecentViewDispatcherProvider {
-        return RecentViewProductionDispatcherProvider()
+    fun provideCoroutineDispatchers(): CoroutineDispatchers {
+        return CoroutineDispatchersProvider
     }
 
     @Provides
