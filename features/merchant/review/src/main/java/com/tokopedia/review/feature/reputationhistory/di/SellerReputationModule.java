@@ -24,6 +24,7 @@ import com.tokopedia.review.feature.reputationhistory.data.source.cloud.apiservi
 import com.tokopedia.review.feature.reputationhistory.data.source.cloud.apiservice.api.ShopApi;
 import com.tokopedia.review.feature.reputationhistory.domain.ReputationRepository;
 import com.tokopedia.review.feature.reputationhistory.domain.ReputationReviewRepository;
+import com.tokopedia.review.feature.reputationhistory.view.viewmodel.ShopScoreReputationViewModel;
 import com.tokopedia.shop.common.constant.ShopCommonUrl;
 import com.tokopedia.user.session.UserSession;
 
@@ -36,7 +37,7 @@ import retrofit2.Retrofit;
  * Created by normansyahputa on 2/13/18.
  */
 
-@Module
+@Module(includes = {ShopScoreReputationViewModel.class})
 public class SellerReputationModule {
 
     @SellerReputationScope

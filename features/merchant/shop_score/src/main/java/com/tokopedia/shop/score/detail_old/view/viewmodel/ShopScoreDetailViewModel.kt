@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.gm.common.domain.interactor.GetShopInfoPeriodUseCase
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.shop.score.detail_old.domain.usecase.GetShopScoreUseCase
 import com.tokopedia.shop.score.detail_old.view.mapper.ShopScoreDetailMapper
 import com.tokopedia.shop.score.detail_old.view.model.ShopScoreDetailData
@@ -13,6 +14,7 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -24,38 +26,27 @@ class ShopScoreDetailViewModel @Inject constructor(
         private val dispatchers: CoroutineDispatchers
 ): BaseViewModel(dispatchers.main){
 
-    val shopScoreData: LiveData<Result<ShopScoreDetailData>>
+    val shopScoreData: LiveData<Result<Pair<ShopScoreDetailData, String>>>
         get() = _shopScoreData
 
-    private val _shopScoreData = MutableLiveData<Result<ShopScoreDetailData>>()
-
-    val tickerShopInfoPeriod: LiveData<Result<Boolean>>
-        get() = _tickerShopInfoPeriod
-
-    private val _tickerShopInfoPeriod = MutableLiveData<Result<Boolean>>()
+    private val _shopScoreData = MutableLiveData<Result<Pair<ShopScoreDetailData, String>>>()
 
     fun getShopScoreDetail() {
         launchCatchError(block = {
-            val data = withContext(dispatchers.io) {
-                val response = getShopScoreUseCase.execute(userSession.shopId)
-                mapper.mapToShopScoreDetailData(response.result)
-            }
+            withContext(dispatchers.io) {
+                val shopScoreDetailData = async { getShopScoreUseCase.execute(userSession.shopId) }
+                mapper.mapToShopScoreDetailData(shopScoreDetailData.await().result)
 
-            _shopScoreData.value = Success(data)
-        }) {
-            _shopScoreData.value = Fail(it)
-        }
-    }
+                val shopInfoPeriodData = async {
+                    getShopInfoPeriodUseCase.requestParams = GetShopInfoPeriodUseCase.createParams(userSession.shopId.toIntOrZero())
+                    getShopInfoPeriodUseCase.executeOnBackground()
+                }
 
-    fun getShopInfoPeriod(shopId: Int) {
-        launchCatchError(block = {
-            val data = with(dispatchers.io) {
-                getShopInfoPeriodUseCase.requestParams = GetShopInfoPeriodUseCase.createParams(shopId)
-                mapper.mapToIsShowTickerShopInfo(getShopInfoPeriodUseCase.executeOnBackground())
+                _shopScoreData.postValue(Success(Pair(mapper.mapToShopScoreDetailData(shopScoreDetailData.await().result),
+                        shopInfoPeriodData.await().periodType)))
             }
-            _tickerShopInfoPeriod.postValue(Success(data))
         }) {
-            _tickerShopInfoPeriod.postValue(Fail(it))
+            _shopScoreData.postValue(Fail(it))
         }
     }
 }

@@ -22,12 +22,6 @@ class ShopScoreDetailMapper @Inject constructor(
         return ShopScoreDetailData(shopType, summary, items)
     }
 
-    fun mapToIsShowTickerShopInfo(shopInfoPeriodUiModel: ShopInfoPeriodUiModel): Boolean {
-        return !shopInfoPeriodUiModel.isNewSeller &&
-                !shopInfoPeriodUiModel.isOfficialStore &&
-                shopInfoPeriodUiModel.periodType == COMMUNICATION_PERIOD
-    }
-
     private fun getShopType(): ShopType {
         return when {
             userSession.isShopOfficialStore -> ShopType.OFFICIAL_STORE

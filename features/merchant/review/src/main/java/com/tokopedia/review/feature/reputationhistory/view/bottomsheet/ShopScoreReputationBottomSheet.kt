@@ -1,27 +1,32 @@
 package com.tokopedia.review.feature.reputationhistory.view.bottomsheet
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.gm.common.constant.PeriodType.COMMUNICATION_PERIOD
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
+import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.review.R
 import com.tokopedia.review.common.util.ReviewConstants
 import com.tokopedia.review.common.util.setTextMakeHyperlink
-import com.tokopedia.unifycomponents.BottomSheetUnify
-import com.tokopedia.unifycomponents.HtmlLinkHelper
+import com.tokopedia.review.feature.reputationhistory.di.SellerReputationComponent
+import com.tokopedia.review.feature.reputationhistory.view.viewmodel.ShopScoreReputationViewModel
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.bottomsheet_reputation_join_shop_score.*
+import kotlinx.android.synthetic.main.fragment_seller_review_reply.*
+import javax.inject.Inject
 
-class ShopScoreReputationBottomSheet: BottomSheetUnify() {
+class ShopScoreReputationBottomSheet : BaseBottomSheetShopScoreReputation() {
 
     private var tvDatePerformancePage: Typography? = null
     private var tvMoreInterestBuyer: Typography? = null
@@ -32,33 +37,59 @@ class ShopScoreReputationBottomSheet: BottomSheetUnify() {
 
     private var userSession: UserSessionInterface? = null
 
+    @Inject lateinit var viewModel: ShopScoreReputationViewModel
+
+    override fun getLayoutResId(): Int = R.layout.bottomsheet_reputation_join_shop_score
+
+    override fun getTitleBottomSheet(): String = ""
+
+    override fun show(fragmentManager: FragmentManager?) {
+        fragmentManager?.let {
+            if (!isVisible) {
+                show(it, TAG_BOTTOM_SHEET_REPUTATION_HISTORY)
+            }
+        }
+    }
+
+    override fun initInjector() {
+        getComponent(SellerReputationComponent::class.java)?.inject(this)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         userSession = UserSession(requireContext())
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        setChildView(inflater, container)
-        return super.onCreateView(inflater, container, savedInstanceState)
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setupView()
-    }
-
-    private fun setChildView(inflater: LayoutInflater, container: ViewGroup?) {
-        val view = inflater.inflate(R.layout.bottomsheet_reputation_join_shop_score, container, false)
-        tvDatePerformancePage = view.findViewById(R.id.tv_date_performance_page)
-        tvMoreInterestBuyer = view.findViewById(R.id.tv_more_interest_buyer)
-        tvDescGetBenefitPerformance = view.findViewById(R.id.tv_desc_get_benefit_performance)
-        ivMoreFocusService = view.findViewById(R.id.iv_more_focus_shop_service)
-        ivMoreInterestBuyer = view.findViewById(R.id.iv_more_interest_buyer)
-        setChild(view)
+        initView(view)
         isFullpage = true
+        observePeriodType()
     }
 
-    private fun setupView() {
+    private fun initView(view: View?) = view?.run {
+        tvDatePerformancePage = findViewById(R.id.tv_date_performance_page)
+        tvMoreInterestBuyer = findViewById(R.id.tv_more_interest_buyer)
+        tvDescGetBenefitPerformance = findViewById(R.id.tv_desc_get_benefit_performance)
+        ivMoreFocusService = findViewById(R.id.iv_more_focus_shop_service)
+        ivMoreInterestBuyer = findViewById(R.id.iv_more_interest_buyer)
+    }
+
+    private fun observePeriodType() {
+        observe(viewModel.shopPeriod) {
+            loaderReviewReply.hide()
+            when (it) {
+                is Success -> {
+                    setupView(it.data)
+                }
+                is Fail -> {
+                    setupView("")
+                }
+            }
+        }
+    }
+
+    private fun setupView(periodType: String) {
         tvDatePerformancePage?.text = MethodChecker.fromHtml(getString(R.string.desc_info_reputation_migrate_shop_score, "1 Juni 2021"))
         tvMoreInterestBuyer?.text = MethodChecker.fromHtml(getString(R.string.more_interest_candidate_buyer))
 
@@ -76,14 +107,13 @@ class ShopScoreReputationBottomSheet: BottomSheetUnify() {
         }
 
         btnShopPerformance?.setOnClickListener {
-            //TODO
-        }
-    }
-
-    fun show(fragmentManager: FragmentManager?) {
-        fragmentManager?.let {
-            if(!isVisible) {
-                show(it, TAG_BOTTOM_SHEET_REPUTATION_HISTORY)
+            when (periodType) {
+                COMMUNICATION_PERIOD -> {
+                    //go to info page
+                }
+                else -> {
+                    RouteManager.route(context, ApplinkConstInternalMarketplace.SHOP_PERFORMANCE)
+                }
             }
         }
     }
