@@ -25,55 +25,34 @@ import com.tokopedia.webview.BaseWebViewFragment;
 public class ContactUsHomeActivity extends BaseSimpleActivity {
 
     public static final String URL_HELP = TokopediaUrl.Companion.getInstance().getWEB() + "help?utm_source=android";
-    private RemoteConfig remoteConfig;
 
     @Override
     protected Fragment getNewFragment() {
-        if (!isNative()) {
-            String url = getIntent().getStringExtra(ContactUsConstant.EXTRAS_PARAM_URL);
-            if (url != null && url.length() > 0) {
-                return BaseSessionWebViewFragment.newInstance(url);
-            } else {
-                return BaseSessionWebViewFragment.newInstance(URL_HELP);
-            }
-        }
-        else {
+        String url = getIntent().getStringExtra(ContactUsConstant.EXTRAS_PARAM_URL);
+        if (url != null && url.length() > 0) {
+            return BaseSessionWebViewFragment.newInstance(url);
+        } else {
             return BaseSessionWebViewFragment.newInstance(URL_HELP);
         }
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        initRemoteConfig();
         super.onCreate(savedInstanceState);
-    }
-
-    private boolean isNative() {
-        if (remoteConfig == null) {
-            initRemoteConfig();
-        }
-        return remoteConfig.getBoolean(ContactUsHomeContract.CONTACT_US_WEB, false);
-    }
-
-    private void initRemoteConfig() {
-        remoteConfig = new FirebaseRemoteConfigImpl(this);
     }
 
     @Override
     public void onBackPressed() {
-        if (!isNative()) {
-            try {
-                BaseWebViewFragment webViewFragment = (BaseWebViewFragment) getFragment();
-                if (webViewFragment != null && webViewFragment.getWebView().canGoBack()) {
-                    webViewFragment.getWebView().goBack();
-                } else {
-                    super.onBackPressed();
-                }
-            } catch (Exception e) {
+        try {
+            BaseWebViewFragment webViewFragment = (BaseWebViewFragment) getFragment();
+            if (webViewFragment != null && webViewFragment.getWebView().canGoBack()) {
+                webViewFragment.getWebView().goBack();
+            } else {
                 super.onBackPressed();
             }
-        } else
+        } catch (Exception e) {
             super.onBackPressed();
+        }
     }
 
     @Override
