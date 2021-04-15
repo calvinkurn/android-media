@@ -54,7 +54,7 @@ class FlightSearchActivityTest {
                 FlightSearchActivity.getCallingIntent(
                         context,
                         FlightSearchPassDataModel(
-                                "2020-11-11",
+                                "2021-11-11",
                                 "",
                                 true,
                                 FlightPassengerModel(1, 0, 0),
@@ -65,7 +65,7 @@ class FlightSearchActivityTest {
                                     cityAirports = arrayListOf("CGK", "HLP")
                                     countryName = "Indonesia"
                                     airportName = ""
-                                    airportCode = ""
+                                    airportCode = "CGK"
                                 },
                                 FlightAirportModel().apply {
                                     cityCode = ""
