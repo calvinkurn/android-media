@@ -64,7 +64,6 @@ class DigitalPostpaidClientNumberWidget : DigitalClientNumberWidget {
         btnEnquiry.show()
         titleEnquiryResult.gone()
         enquiryResult.gone()
-
     }
 
     fun setButtonEnquiry(enable: Boolean) {

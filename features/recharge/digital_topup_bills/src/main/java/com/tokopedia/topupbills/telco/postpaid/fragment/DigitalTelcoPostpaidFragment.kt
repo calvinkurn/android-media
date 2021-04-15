@@ -302,6 +302,16 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
                         REQUEST_CODE_DIGITAL_SEARCH_NUMBER)
             }
         })
+
+        enquiryViewModel.enquiryResult.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Success -> enquirySuccess(it.data)
+                is Fail -> {
+                    enquiryFailed(it.throwable)
+                }
+            }
+        })
+
         postpaidClientNumberWidget.setPostpaidListener(object : ClientNumberPostpaidListener {
             override fun enquiryNumber() {
                 if (userSession.isLoggedIn) {
@@ -322,15 +332,6 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
 
             postpaidClientNumberWidget.setLoadingButtonEnquiry(true)
             enquiryViewModel.getEnquiry(CommonTopupBillsGqlQuery.enquiryDigital, mapParam)
-
-            enquiryViewModel.enquiryResult.observe(this, Observer {
-                when (it) {
-                    is Success -> enquirySuccess(it.data)
-                    is Fail -> {
-                        enquiryFailed(it.throwable)
-                    }
-                }
-            })
         }
     }
 
