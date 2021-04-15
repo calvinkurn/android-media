@@ -12,10 +12,10 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.chat_common.BaseChatToolbarActivity
-import com.tokopedia.chat_common.R
 import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderViewModel
+import com.tokopedia.chatbot.R
+import com.tokopedia.chatbot.data.toolbarpojo.ToolbarAttributes
 import com.tokopedia.chatbot.view.fragment.ChatbotFragment
-import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.pushnotif.data.constant.Constant
 import com.tokopedia.pushnotif.PushNotification
 
@@ -82,17 +82,20 @@ class ChatbotActivity : BaseChatToolbarActivity() {
         PushNotification.setIsChatBotWindowOpen(false)
     }
 
+    override fun getChatHeaderLayout() :Int = R.layout.chatbot_header_layout
+
     override fun setupToolbar() {
         super.setupToolbar()
-        findViewById<ImageView>(R.id.user_avatar).setImageResource(com.tokopedia.chatbot.R.drawable.chatbot_avatar)
-        (findViewById<TextView>(R.id.title)).text = getString(com.tokopedia.chatbot.R.string.cb_bot_toolbar_title)
-        (findViewById<TextView>(R.id.label)).hide()
-        (findViewById<TextView>(R.id.subtitle)).hide()
+        findViewById<ImageView>(R.id.user_avatar).setImageResource(R.drawable.chatbot_avatar)
+        (findViewById<TextView>(R.id.title)).text = getString(R.string.cb_bot_toolbar_title)
     }
 
-    fun upadateToolbar(profileName: String?, profileImage: String?) {
-        ImageHandler.loadImageCircle2(this, findViewById<ImageView>(R.id.user_avatar), profileImage)
+    fun upadateToolbar(profileName: String?, profileImage: String?, badgeImage: ToolbarAttributes.BadgeImage?) {
+        profileImage?.let { ImageHandler.loadImageCircle2(this, findViewById<ImageView>(R.id.user_avatar), it) }
         (findViewById<TextView>(R.id.title)).text = profileName
+        badgeImage?.light?.let { ImageHandler.loadImageFitCenter(this, findViewById<ImageView>(R.id.chatbotHeaderBadge), it) }
+
+
     }
 
     override fun onNewIntent(intent: Intent) {
