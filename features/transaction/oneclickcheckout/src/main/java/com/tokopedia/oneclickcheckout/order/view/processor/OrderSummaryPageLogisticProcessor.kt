@@ -14,7 +14,7 @@ import com.tokopedia.logisticcart.shipping.model.*
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
 import com.tokopedia.network.utils.TKPDMapParam
 import com.tokopedia.oneclickcheckout.common.DEFAULT_ERROR_MESSAGE
-import com.tokopedia.oneclickcheckout.common.dispatchers.ExecutorDispatchers
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.oneclickcheckout.common.idling.OccIdlingResource
 import com.tokopedia.oneclickcheckout.common.view.model.OccGlobalEvent
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
@@ -30,7 +30,7 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
                                                             private val ratesResponseStateConverter: RatesResponseStateConverter,
                                                             private val editAddressUseCase: Lazy<EditAddressUseCase>,
                                                             private val orderSummaryAnalytics: OrderSummaryAnalytics,
-                                                            private val executorDispatchers: ExecutorDispatchers) {
+                                                            private val executorDispatchers: CoroutineDispatchers) {
 
     private fun generateRatesParam(orderCart: OrderCart, orderPreference: OrderPreference, listShopShipment: List<ShopShipment>): RatesParam {
         return RatesParam.Builder(listShopShipment, generateShippingParam(orderCart, orderPreference)).build().apply {

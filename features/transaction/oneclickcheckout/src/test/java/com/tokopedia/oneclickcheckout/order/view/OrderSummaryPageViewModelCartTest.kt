@@ -245,7 +245,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         // When
         orderSummaryPageViewModel.updateProduct(OrderProduct(quantity = QuantityUiModel(orderQuantity = 10)))
         assertEquals(OccButtonState.LOADING, orderSummaryPageViewModel.orderTotal.value.buttonState)
-        (testDispatchers.main as TestCoroutineDispatcher).advanceUntilIdle()
+        testDispatchers.main.advanceUntilIdle()
 
         // Then
         assertEquals(10, orderSummaryPageViewModel.orderProduct.quantity.orderQuantity)
@@ -262,7 +262,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
 
         // When
         orderSummaryPageViewModel.updateProduct(OrderProduct(quantity = QuantityUiModel(orderQuantity = 10)), false)
-        (testDispatchers.main as TestCoroutineDispatcher).advanceUntilIdle()
+        testDispatchers.main.advanceUntilIdle()
 
         // Then
         verify(inverse = true) { ratesUseCase.execute(any()) }
@@ -278,7 +278,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
 
         // When
         orderSummaryPageViewModel.updateProduct(OrderProduct(quantity = QuantityUiModel(orderQuantity = 10, isStateError = true)))
-        (testDispatchers.main as TestCoroutineDispatcher).advanceUntilIdle()
+        testDispatchers.main.advanceUntilIdle()
 
         // Then
         verify(inverse = true) { ratesUseCase.execute(any()) }
@@ -294,9 +294,9 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
 
         // When
         orderSummaryPageViewModel.updateProduct(OrderProduct(quantity = QuantityUiModel(orderQuantity = 10)))
-        (testDispatchers.main as TestCoroutineDispatcher).advanceTimeBy(500)
+        testDispatchers.main.advanceTimeBy(500)
         orderSummaryPageViewModel.updateProduct(OrderProduct(quantity = QuantityUiModel(orderQuantity = 20)))
-        (testDispatchers.main as TestCoroutineDispatcher).advanceUntilIdle()
+        testDispatchers.main.advanceUntilIdle()
 
         // Then
         verify(exactly = 1) { ratesUseCase.execute(any()) }

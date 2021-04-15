@@ -1044,7 +1044,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
 
         // When
         orderSummaryPageViewModel.updateProduct(OrderProduct(quantity = QuantityUiModel(orderQuantity = 10)))
-        (testDispatchers.main as TestCoroutineDispatcher).advanceUntilIdle()
+        testDispatchers.main.advanceUntilIdle()
 
         // Then
         val shipping = orderSummaryPageViewModel.orderShipment.value
@@ -1076,7 +1076,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
 
         // When
         orderSummaryPageViewModel.updateProduct(OrderProduct(quantity = QuantityUiModel(orderQuantity = 10)))
-        (testDispatchers.main as TestCoroutineDispatcher).advanceUntilIdle()
+        testDispatchers.main.advanceUntilIdle()
 
         // Then
         val shipping = orderSummaryPageViewModel.orderShipment.value
@@ -1104,7 +1104,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
 
         // When
         orderSummaryPageViewModel.updateProduct(OrderProduct(quantity = QuantityUiModel(orderQuantity = 10)))
-        (testDispatchers.main as TestCoroutineDispatcher).advanceUntilIdle()
+        testDispatchers.main.advanceUntilIdle()
 
         // Then
         val shipping = orderSummaryPageViewModel.orderShipment.value
@@ -1131,7 +1131,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
 
         // When
         orderSummaryPageViewModel.updateProduct(OrderProduct(quantity = QuantityUiModel(orderQuantity = 10)))
-        (testDispatchers.main as TestCoroutineDispatcher).advanceUntilIdle()
+        testDispatchers.main.advanceUntilIdle()
 
         // Then
         val shipping = orderSummaryPageViewModel.orderShipment.value
@@ -1159,7 +1159,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
 
         // When
         orderSummaryPageViewModel.updateProduct(OrderProduct(quantity = QuantityUiModel(orderQuantity = 10)))
-        (testDispatchers.main as TestCoroutineDispatcher).advanceUntilIdle()
+        testDispatchers.main.advanceUntilIdle()
 
         // Then
         val shipping = orderSummaryPageViewModel.orderShipment.value

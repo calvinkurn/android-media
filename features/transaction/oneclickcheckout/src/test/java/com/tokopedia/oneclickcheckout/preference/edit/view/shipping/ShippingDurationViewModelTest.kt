@@ -8,7 +8,7 @@ import com.tokopedia.logisticcart.shipping.model.ShippingDurationUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingParam
 import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
-import com.tokopedia.oneclickcheckout.common.dispatchers.TestDispatchers
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.oneclickcheckout.common.view.model.Failure
 import com.tokopedia.oneclickcheckout.common.view.model.OccState
 import com.tokopedia.oneclickcheckout.preference.edit.domain.shipping.GetShippingDurationUseCase
@@ -51,7 +51,7 @@ class ShippingDurationViewModelTest {
 
     @Before
     fun setUp() {
-        shippingDurationViewModel = ShippingDurationViewModel(useCase, useCaseRates, mapperPrice, TestDispatchers)
+        shippingDurationViewModel = ShippingDurationViewModel(useCase, useCaseRates, mapperPrice, CoroutineTestDispatchersProvider)
     }
 
     @Test
