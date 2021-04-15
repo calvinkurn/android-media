@@ -387,16 +387,13 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment implements Ima
                 return;
             }
         }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            String permission = Manifest.permission.CAMERA;
-            if (getContext() != null) {
-                if (ActivityCompat.checkSelfPermission(getContext(), permission) == PackageManager.PERMISSION_GRANTED) {
-                    startCamera();
-                }
+        String permission = Manifest.permission.CAMERA;
+        if (getContext() != null) {
+            if (ActivityCompat.checkSelfPermission(getContext(), permission) == PackageManager.PERMISSION_GRANTED) {
+                startCamera();
             }
-        } else {
-            startCamera();
         }
+
     }
 
     public void onInvisible(){
