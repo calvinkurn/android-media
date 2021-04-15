@@ -133,6 +133,17 @@ open class BaseSellerTopchatRoomTest : TopchatRoomTest() {
         )
     }
 
+    protected fun createErrorUpdateStockIntentResult(
+            errorMsg: String
+    ) {
+        val intent = Intent().apply {
+            putExtra(ProductManageCommonConstant.EXTRA_UPDATE_MESSAGE, errorMsg)
+        }
+        intending(anyIntent()).respondWith(
+                Instrumentation.ActivityResult(Activity.RESULT_CANCELED, intent)
+        )
+    }
+
     protected fun ChatAttachmentResponse.setCampaignStock(
             attachmentIndex: Int,
             isCampaign: Boolean

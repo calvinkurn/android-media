@@ -259,7 +259,7 @@ class TopchatRoomSellerProductAttachmentTest : BaseSellerTopchatRoomTest() {
     fun update_stock_btn_is_hidden_if_stock_campaign() {
         // Given
         setupChatRoomActivity()
-        getChatUseCase.response = sellerBroadcastProductCarouselChatReplies
+        getChatUseCase.response = sellerProductChatReplies
         chatAttachmentUseCase.response = sellerProductAttachment.setCampaignStock(
                 0, true
         )
@@ -267,9 +267,25 @@ class TopchatRoomSellerProductAttachmentTest : BaseSellerTopchatRoomTest() {
 
         // Then
         assertStockCountBtnVisibilityAt(
-                R.id.rv_product_carousel, 0, not(isDisplayed())
+                R.id.recycler_view, 1, not(isDisplayed())
         )
     }
 
-    // TODO: assert toaster error from update product
+    @Test
+    fun fail_update_stock_show_error_toaster() {
+        // Given
+        val errorMsg = "Gagal update stok."
+        setupChatRoomActivity()
+        getChatUseCase.response = sellerProductChatReplies
+        chatAttachmentUseCase.response = sellerProductAttachment
+        createErrorUpdateStockIntentResult(errorMsg)
+        inflateTestFragment()
+
+        // When
+        clickChangeStockBtn(R.id.recycler_view, 1)
+
+        // Then
+        assertSnackbarText(errorMsg)
+    }
+
 }
