@@ -28,6 +28,10 @@ class TopChatRoomWebSocketMessageMapper @Inject constructor(
 
 ) : WebsocketMessageMapper() {
 
+    override fun convertToMessageViewModel(pojo: ChatSocketPojo): Visitable<*> {
+        return MessageViewModel(pojo)
+    }
+
     override fun mapAttachmentMessage(pojo: ChatSocketPojo, jsonAttributes: JsonObject): Visitable<*> {
         return when (pojo.attachment!!.type) {
             TYPE_VOUCHER -> convertToVoucher(pojo, jsonAttributes)

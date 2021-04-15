@@ -1,6 +1,7 @@
 package com.tokopedia.chat_common.data
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.chat_common.domain.pojo.ChatSocketPojo
 import com.tokopedia.chat_common.domain.pojo.Reply
 import com.tokopedia.chat_common.view.adapter.BaseChatTypeFactory
 
@@ -13,6 +14,9 @@ open class MessageViewModel : SendableViewModel, Visitable<BaseChatTypeFactory> 
     var fraudStatus = 0
     var label: String = ""
 
+    /**
+     * constructor for GQL response
+     */
     constructor(
             reply: Reply
     ) : super(
@@ -34,6 +38,25 @@ open class MessageViewModel : SendableViewModel, Visitable<BaseChatTypeFactory> 
         fraudStatus = reply.fraudStatus
         label = reply.label
     }
+
+    /**
+     * constructor for GQL response
+     */
+    constructor(pojo: ChatSocketPojo) : super(
+            messageId = pojo.msgId.toString(),
+            fromUid = pojo.fromUid,
+            from = pojo.from,
+            fromRole = pojo.fromRole,
+            attachmentId = "",
+            attachmentType = "",
+            replyTime = pojo.message.timeStampUnixNano,
+            startTime = pojo.startTime,
+            isRead = false,
+            isDummy = false,
+            isSender = !pojo.isOpposite,
+            message = pojo.message.censoredReply,
+            source = pojo.source
+    )
 
     constructor(
             messageId: String, fromUid: String, from: String, fromRole: String,
