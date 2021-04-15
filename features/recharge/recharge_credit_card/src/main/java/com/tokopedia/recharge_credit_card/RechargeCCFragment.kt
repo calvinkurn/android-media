@@ -142,7 +142,7 @@ class RechargeCCFragment : BaseDaggerFragment() {
 
     private fun observeData() {
         rechargeCCViewModel.creditCardSelected.observe(viewLifecycleOwner, Observer {
-            operatorIdSelected = it.operatorId.toString()
+            operatorIdSelected = it.operatorId
             productIdSelected = it.defaultProductId
             cc_widget_client_number.setImageIcon(it.imageUrl)
         })
@@ -294,7 +294,7 @@ class RechargeCCFragment : BaseDaggerFragment() {
         val creditCardSelected = rechargeCCViewModel.creditCardSelected.value
                 ?: RechargeCreditCard()
         creditCardAnalytics.addToCart(userSession.userId, rechargeCCViewModel.categoryName, categoryId,
-                creditCardSelected.prefixName, creditCardSelected.operatorId.toString())
+                creditCardSelected.prefixName, creditCardSelected.operatorId)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
