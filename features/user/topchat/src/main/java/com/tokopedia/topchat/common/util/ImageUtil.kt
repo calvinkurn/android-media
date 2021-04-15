@@ -1,6 +1,7 @@
 package com.tokopedia.topchat.common.util
 
 import android.graphics.BitmapFactory
+import android.graphics.drawable.Animatable
 import android.graphics.drawable.Drawable
 import android.os.Handler
 import android.os.Looper
@@ -74,9 +75,8 @@ object ImageUtil {
         val animationType = getAnimationType()
         if(animationType == "avd") {
             try {
-                val animatedVector = imageUnify.drawable as AnimatedVectorDrawableCompat
-                setAnimationCallback(animatedVector)
-                animatedVector.start()
+                setAnimationCallback(imageUnify.drawable as AnimatedVectorDrawableCompat)
+                (imageUnify.drawable as Animatable).start()
             } catch (ignored: Throwable) {}
         }
     }
@@ -94,9 +94,8 @@ object ImageUtil {
         val animationType = getAnimationType()
         if(animationType == "avd") {
             try {
-                val animatedVector = (imageUnify.drawable as AnimatedVectorDrawableCompat)
-                animatedVector.clearAnimationCallbacks()
-                animatedVector.stop()
+                (imageUnify.drawable as AnimatedVectorDrawableCompat).clearAnimationCallbacks()
+                (imageUnify.drawable as Animatable).stop()
             } catch (ignored: Throwable) {}
         }
     }
@@ -110,6 +109,6 @@ object ImageUtil {
     }
 
     private fun getAnimationType(): String {
-        return "gif";
+        return "avd"
     }
 }
