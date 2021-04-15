@@ -14,21 +14,27 @@ class Loader {
     private val remoteConfig by lazy { FirebaseRemoteConfigImpl(context) }
     private val settings by lazy { MediaSettingPreferences(context) }
 
+    // reducing fetch time of remote config
+    private var isAdaptiveImage: Boolean = false
+
     fun init(application: Application) {
         this.context = application.applicationContext
+
+        isAdaptiveImage = remoteConfig.getBoolean(KEY_ADAPTIVE_IMAGE)
     }
 
     fun urlBuilder(url: String): String {
         if (context == null) return url
 
         val networkState = networkManagerState(context)
-        return if (remoteConfig.getBoolean(KEY_ADAPTIVE_IMAGE)) {
+        return if (isAdaptiveImage) {
             urlBuilder(networkState, settings.qualitySettings(), url)
         } else url
     }
 
     companion object {
         private const val KEY_ADAPTIVE_IMAGE = "is_adaptive_image_status"
+
         @JvmStatic val instance = Loader()
     }
 
