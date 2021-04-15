@@ -92,6 +92,7 @@ class BrandListPageCassava {
         Espresso.onView(withId(R.id.tablayout)).perform(selectTabAtPosition(0))
 
         Espresso.onView(CommonMatcher.firstView(withId(R.id.recycler_view))).perform(ViewActions.swipeDown())
+        Thread.sleep(5000)
 
         for (i in 0 until itemCount) {
             logTestMessage("Scolled to "+i)
@@ -133,7 +134,7 @@ class BrandListPageCassava {
             is FeaturedBrandViewHolder -> {
                 logTestMessage("Captured is FeaturedBrandViewHolder")
                 Espresso.onView(withId(R.id.tv_expand_button)).perform(click())
-                Thread.sleep(2000)
+                Thread.sleep(5000)
                 CommonActions.clickOnEachItemRecyclerView(viewHolder.itemView, R.id.rv_featured_brand, 2)
             }
             is PopularBrandViewHolder -> {
