@@ -20,6 +20,8 @@ query universe_suggestion($params: String!) {
         tracking {
           code
         }
+        discount_percentage
+        original_price
       }
     }
     top_shops{

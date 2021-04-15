@@ -10,8 +10,8 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.loginfingerprint.data.model.RegisterFingerprintPojo
 import com.tokopedia.loginfingerprint.data.preference.FingerprintPreferenceHelper
 import com.tokopedia.loginfingerprint.data.preference.FingerprintSetting
-import com.tokopedia.loginfingerprint.utils.AppDispatcherProvider
-import com.tokopedia.loginfingerprint.utils.DispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.loginfingerprint.utils.crypto.Cryptography
 import com.tokopedia.loginfingerprint.utils.crypto.CryptographyUtils
 import com.tokopedia.user.session.UserSession
@@ -62,5 +62,5 @@ class LoginFingerprintSettingModule(val context: Context) {
 
     @LoginFingerprintSettingScope
     @Provides
-    fun provideDispatchers(): DispatcherProvider = AppDispatcherProvider()
+    fun provideDispatchers(): CoroutineDispatchers = CoroutineDispatchersProvider
 }

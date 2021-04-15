@@ -1,6 +1,7 @@
 package com.tokopedia.home.viewModel.homepageRevamp
 
 import android.app.Activity
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.atc_common.domain.usecase.AddToCartOccUseCase
 import com.tokopedia.home.beranda.data.usecase.HomeRevampUseCase
@@ -8,7 +9,7 @@ import com.tokopedia.home.beranda.domain.interactor.*
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelDataModel
 import com.tokopedia.home.beranda.presentation.viewModel.HomeRevampViewModel
-import com.tokopedia.home.rules.TestDispatcherProvider
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.home.util.HomeCommandProcessor
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.visitable.DynamicLegoBannerDataModel
@@ -58,7 +59,7 @@ fun createHomeViewModel(
         getDisplayHeadlineAds: GetDisplayHeadlineAds = mockk(relaxed = true),
         playWidgetTools: PlayWidgetTools = mockk(relaxed = true),
         bestSellerMapper: BestSellerMapper = mockk(relaxed = true),
-        dispatchers: TestDispatcherProvider = TestDispatcherProvider(),
+        dispatchers: CoroutineDispatchers = CoroutineTestDispatchersProvider,
         homeProcessor: HomeCommandProcessor = HomeCommandProcessor(Dispatchers.Unconfined)
 ): HomeRevampViewModel{
     val context: Activity = mockk(relaxed = true)

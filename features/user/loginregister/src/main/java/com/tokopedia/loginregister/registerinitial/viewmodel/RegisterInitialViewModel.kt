@@ -72,8 +72,7 @@ class RegisterInitialViewModel @Inject constructor(
         @Named(SessionModule.SESSION_MODULE)
         private val userSession: UserSessionInterface,
         private val rawQueries: Map<String, String>,
-        private val dispatchers: CoroutineDispatchers
-) : BaseViewModel(dispatchers.main) {
+        dispatcherProvider: CoroutineDispatchers) : BaseViewModel(dispatcherProvider.main) {
 
     private val mutableGetProviderResponse = MutableLiveData<Result<ArrayList<DiscoverItemDataModel>>>()
     val getProviderResponse: LiveData<Result<ArrayList<DiscoverItemDataModel>>>

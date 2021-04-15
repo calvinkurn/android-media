@@ -11,12 +11,10 @@ import com.tokopedia.loginfingerprint.data.preference.FingerprintPreferenceHelpe
 import com.tokopedia.loginfingerprint.data.preference.FingerprintSetting
 import com.tokopedia.loginfingerprint.utils.crypto.Cryptography
 import com.tokopedia.loginfingerprint.utils.crypto.CryptographyUtils
-import com.tokopedia.loginregister.common.DispatcherProvider
 import com.tokopedia.loginregister.common.view.bottomsheet.SocmedBottomSheet
 import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Dispatchers.Main
 import javax.inject.Named
 
@@ -36,13 +34,6 @@ open class LoginModule {
     @Provides
     fun provideMainDispatcher(): CoroutineDispatcher {
         return Main
-    }
-
-    @LoginScope
-    @Provides
-    fun provideDispatcherProvider(): DispatcherProvider = object : DispatcherProvider {
-        override fun ui(): CoroutineDispatcher = Dispatchers.Main
-        override fun io(): CoroutineDispatcher = Dispatchers.IO
     }
 
     @LoginScope
