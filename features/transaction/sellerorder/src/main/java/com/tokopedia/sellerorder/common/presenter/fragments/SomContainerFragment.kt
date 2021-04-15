@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import androidx.fragment.app.Fragment
 import com.tokopedia.applink.order.DeeplinkMapperOrder
 import com.tokopedia.applink.sellerhome.AppLinkMapperSellerHome
@@ -74,13 +75,24 @@ class SomContainerFragment : Fragment(), SomListFragment.SomListClickListener, S
         somListFragment?.applySearchParam(invoice)
     }
 
+    private fun setupSomListWidth(fragmentList: FrameLayout?) {
+        fragmentList?.let {
+            val layoutParamCopy = it.layoutParams
+            layoutParamCopy.width = it.width
+            it.layoutParams = layoutParamCopy
+        }
+    }
+
     private fun attachFragments() {
-        initiateListFragment()
-        attachListFragment()
-        arguments?.let {
-            it.getString(DeeplinkMapperOrder.QUERY_PARAM_ORDER_ID).let { orderId ->
-                if (!orderId.isNullOrEmpty()) {
-                    attachDetailFragment(orderId, true)
+        fragmentList.post {
+            setupSomListWidth(fragmentList)
+            initiateListFragment()
+            attachListFragment()
+            arguments?.let {
+                it.getString(DeeplinkMapperOrder.QUERY_PARAM_ORDER_ID).let { orderId ->
+                    if (!orderId.isNullOrEmpty()) {
+                        attachDetailFragment(orderId, true)
+                    }
                 }
             }
         }
