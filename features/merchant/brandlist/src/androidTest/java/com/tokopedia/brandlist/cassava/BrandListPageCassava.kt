@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso
+import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.matcher.ViewMatchers
@@ -20,6 +21,7 @@ import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.officialstore.extension.selectTabAtPosition
 import com.tokopedia.test.application.assertion.topads.TopAdsVerificationTestReportUtil
 import com.tokopedia.test.application.espresso_component.CommonActions
+import com.tokopedia.test.application.espresso_component.CommonMatcher
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import org.hamcrest.CoreMatchers
@@ -80,18 +82,16 @@ class BrandListPageCassava {
     }
 
     private fun doActivityTest() {
-        // 1. click category OS
-        Espresso.onView(withId(R.id.tablayout)).perform(selectTabAtPosition(0))
-
         // 2. scroll and click item at OS
         val recyclerView = activityRule.activity.findViewById<RecyclerView>(R.id.recycler_view)
         val itemCount = recyclerView.adapter?.itemCount ?: 0
 
         waitForData()
 
-        InstrumentationRegistry.getInstrumentation().runOnMainSync {
-            recyclerView.scrollToPosition(0)
-        }
+        // 1. click category OS
+        Espresso.onView(withId(R.id.tablayout)).perform(selectTabAtPosition(0))
+
+        Espresso.onView(CommonMatcher.firstView(withId(R.id.recycler_view))).perform(ViewActions.swipeDown())
 
         for (i in 0 until itemCount) {
             scrollRecyclerViewToPosition(recyclerView, i)
@@ -126,7 +126,7 @@ class BrandListPageCassava {
         when (val viewHolder = officialStoreRecyclerView.findViewHolderForAdapterPosition(i)) {
             is FeaturedBrandViewHolder -> {
                 Espresso.onView(withId(R.id.tv_expand_button)).perform(click())
-                Thread.sleep(1000)
+                Thread.sleep(2000)
                 CommonActions.clickOnEachItemRecyclerView(viewHolder.itemView, R.id.rv_featured_brand, 0)
             }
             is PopularBrandViewHolder -> {
