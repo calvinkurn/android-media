@@ -1,7 +1,5 @@
 package com.tokopedia.checkout.view;
 
-import android.os.Build;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
@@ -1432,11 +1430,11 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             ShipmentStateShopProductData shipmentStateShopProductData = new ShipmentStateShopProductData();
             shipmentStateShopProductData.setShopId(shipmentCartItemModel.getShopId());
             shipmentStateShopProductData.setFinsurance((shipmentCartItemModel.getSelectedShipmentDetailData().getUseInsurance() != null &&
-                            shipmentCartItemModel.getSelectedShipmentDetailData().getUseInsurance()) ? 1 : 0);
+                    shipmentCartItemModel.getSelectedShipmentDetailData().getUseInsurance()) ? 1 : 0);
             shipmentStateShopProductData.setDropship((shipmentCartItemModel.getSelectedShipmentDetailData().getUseDropshipper() != null &&
-                            shipmentCartItemModel.getSelectedShipmentDetailData().getUseDropshipper()) ? 1 : 0);
+                    shipmentCartItemModel.getSelectedShipmentDetailData().getUseDropshipper()) ? 1 : 0);
             shipmentStateShopProductData.setOrderPriority((shipmentCartItemModel.getSelectedShipmentDetailData().isOrderPriority() != null &&
-                            shipmentCartItemModel.getSelectedShipmentDetailData().isOrderPriority()) ? 1 : 0);
+                    shipmentCartItemModel.getSelectedShipmentDetailData().isOrderPriority()) ? 1 : 0);
             shipmentStateShopProductData.setPreorder(shipmentCartItemModel.isProductIsPreorder() ? 1 : 0);
             shipmentStateShopProductData.setWarehouseId(shipmentCartItemModel.getFulfillmentId());
             shipmentStateShopProductData.setDropshipData(shipmentStateDropshipData);

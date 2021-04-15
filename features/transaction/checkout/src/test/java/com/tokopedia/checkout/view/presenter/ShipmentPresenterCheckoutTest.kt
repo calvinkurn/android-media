@@ -4,15 +4,21 @@ import android.app.Activity
 import com.google.gson.Gson
 import com.tokopedia.checkout.R
 import com.tokopedia.checkout.analytics.CheckoutAnalyticsPurchaseProtection
+import com.tokopedia.checkout.data.model.request.checkout.DataCheckoutRequest
 import com.tokopedia.checkout.domain.model.checkout.CheckoutData
 import com.tokopedia.checkout.domain.model.checkout.ErrorReporter
 import com.tokopedia.checkout.domain.model.checkout.MessageData
 import com.tokopedia.checkout.domain.model.checkout.PriceValidationData
 import com.tokopedia.checkout.domain.usecase.*
+import com.tokopedia.checkout.utils.CheckoutFingerprintUtil
+import com.tokopedia.checkout.view.DataProvider
 import com.tokopedia.checkout.view.ShipmentContract
 import com.tokopedia.checkout.view.ShipmentPresenter
 import com.tokopedia.checkout.view.converter.ShipmentDataConverter
 import com.tokopedia.checkout.view.uimodel.EgoldAttributeModel
+import com.tokopedia.checkout.view.uimodel.ShipmentDonationModel
+import com.tokopedia.fingerprint.util.FingerPrintUtil
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.domain.usecase.EditAddressUseCase
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter
@@ -23,23 +29,19 @@ import com.tokopedia.logisticcart.shipping.usecase.GetRatesApiUseCase
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
-import com.tokopedia.checkout.data.model.request.checkout.DataCheckoutRequest
-import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.purchase_platform.common.feature.helpticket.domain.usecase.SubmitHelpTicketUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ValidateUsePromoRevampUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.view.mapper.ValidateUsePromoCheckoutMapper
 import com.tokopedia.purchase_platform.common.schedulers.TestSchedulers
 import com.tokopedia.user.session.UserSessionInterface
-import io.mockk.MockKAnnotations
-import io.mockk.every
+import io.mockk.*
 import io.mockk.impl.annotations.MockK
-import io.mockk.mockk
-import io.mockk.verifyOrder
 import org.junit.Before
 import org.junit.Test
 import rx.Observable
 import rx.subscriptions.CompositeSubscription
 import java.io.IOException
+import java.security.PublicKey
 
 class ShipmentPresenterCheckoutTest {
 
@@ -139,7 +141,7 @@ class ShipmentPresenterCheckoutTest {
         // Then
         verifyOrder {
             view.setHasRunningApiCall(false)
-            view.triggerSendEnhancedEcommerceCheckoutAnalyticAfterCheckoutSuccess(transactionId, null, 0, null)
+            view.triggerSendEnhancedEcommerceCheckoutAnalyticAfterCheckoutSuccess(transactionId, "", 0, "")
             view.renderCheckoutCartSuccess(any())
         }
     }
@@ -380,6 +382,68 @@ class ShipmentPresenterCheckoutTest {
     }
 
     @Test
+    fun `WHEN generate checkout params with fingerprint supported and fingerprint enabled THEN request should contains fingerprint data`() {
+        // Given
+        val dataCheckoutRequest = DataProvider.provideSingleDataCheckoutRequest()
+        presenter.dataCheckoutRequestList = listOf(dataCheckoutRequest)
+        val deviceId = "12345"
+        val checkoutRequest = presenter.generateCheckoutRequest(null, 0, "")
+
+        val mockContext = mockk<Activity>()
+        mockkObject(FingerPrintUtil)
+        mockkObject(CheckoutFingerprintUtil)
+        val fingerprintString = "abc"
+        val publicKey = object : PublicKey {
+            override fun getAlgorithm(): String {
+                return ""
+            }
+
+            override fun getFormat(): String {
+                return ""
+            }
+
+            override fun getEncoded(): ByteArray {
+                return ByteArray(0)
+            }
+        }
+        every { view.activityContext } returns mockContext
+        every { CheckoutFingerprintUtil.getEnableFingerprintPayment(mockContext) } returns true
+        every { CheckoutFingerprintUtil.getFingerprintPublicKey(mockContext) } returns publicKey
+        every { FingerPrintUtil.getPublicKey(publicKey) } returns fingerprintString
+
+        // When
+        val checkoutParams = presenter.generateCheckoutParams(true, true, false, deviceId, checkoutRequest)
+
+        // Then
+        assert(checkoutParams[CheckoutGqlUseCase.PARAM_FINGERPRINT_PUBLICKEY] == fingerprintString )
+        assert(checkoutParams[CheckoutGqlUseCase.PARAM_FINGERPRINT_SUPPORT] == "true")
+    }
+
+    @Test
+    fun `WHEN generate checkout params with fingerprint supported and fingerprint disabled THEN request should contains fingerprint data`() {
+        // Given
+        val dataCheckoutRequest = DataProvider.provideSingleDataCheckoutRequest()
+        presenter.dataCheckoutRequestList = listOf(dataCheckoutRequest)
+        val deviceId = "12345"
+        val checkoutRequest = presenter.generateCheckoutRequest(null, 0, "")
+
+        val mockContext = mockk<Activity>()
+        mockkObject(FingerPrintUtil)
+        mockkObject(CheckoutFingerprintUtil)
+        val fingerprintString = "abc"
+        val publicKey = null
+        every { view.activityContext } returns mockContext
+        every { CheckoutFingerprintUtil.getEnableFingerprintPayment(mockContext) } returns true
+        every { CheckoutFingerprintUtil.getFingerprintPublicKey(mockContext) } returns publicKey
+
+        // When
+        val checkoutParams = presenter.generateCheckoutParams(true, true, false, deviceId, checkoutRequest)
+
+        // Then
+        assert(checkoutParams[CheckoutGqlUseCase.PARAM_FINGERPRINT_SUPPORT] == "false")
+    }
+
+    @Test
     fun `WHEN checkout multiple product with one error product THEN should checkout success`() {
         // Given
         val shipmentCartItemModelList = ArrayList<ShipmentCartItemModel>()
@@ -419,7 +483,57 @@ class ShipmentPresenterCheckoutTest {
         // Then
         verifyOrder {
             view.setHasRunningApiCall(false)
-            view.triggerSendEnhancedEcommerceCheckoutAnalyticAfterCheckoutSuccess(transactionId, null, 0, null)
+            view.triggerSendEnhancedEcommerceCheckoutAnalyticAfterCheckoutSuccess(transactionId, "", 0, "")
+            view.renderCheckoutCartSuccess(any())
+        }
+    }
+
+    @Test
+    fun `WHEN checkout with donation checked success THEN should go to payment page`() {
+        // Given
+        presenter.shipmentDonationModel = ShipmentDonationModel(isChecked = true)
+        presenter.shipmentCartItemModelList = listOf(ShipmentCartItemModel().apply {
+            cartItemModels = listOf(CartItemModel())
+        })
+        presenter.dataCheckoutRequestList = listOf(DataCheckoutRequest())
+
+        val transactionId = "1234"
+        every { checkoutUseCase.createObservable(any()) } returns Observable.just(CheckoutData().apply {
+            this.transactionId = transactionId
+        })
+
+        // When
+        presenter.processCheckout(false, false, false, "", "", "")
+
+        // Then
+        verifyOrder {
+            view.setHasRunningApiCall(false)
+            view.triggerSendEnhancedEcommerceCheckoutAnalyticAfterCheckoutSuccess(transactionId, "", 0, "")
+            view.renderCheckoutCartSuccess(any())
+        }
+    }
+
+    @Test
+    fun `WHEN checkout with donation unchecked success THEN should go to payment page`() {
+        // Given
+        presenter.shipmentDonationModel = ShipmentDonationModel(isChecked = false)
+        presenter.shipmentCartItemModelList = listOf(ShipmentCartItemModel().apply {
+            cartItemModels = listOf(CartItemModel())
+        })
+        presenter.dataCheckoutRequestList = listOf(DataCheckoutRequest())
+
+        val transactionId = "1234"
+        every { checkoutUseCase.createObservable(any()) } returns Observable.just(CheckoutData().apply {
+            this.transactionId = transactionId
+        })
+
+        // When
+        presenter.processCheckout(false, false, false, "", "", "")
+
+        // Then
+        verifyOrder {
+            view.setHasRunningApiCall(false)
+            view.triggerSendEnhancedEcommerceCheckoutAnalyticAfterCheckoutSuccess(transactionId, "", 0, "")
             view.renderCheckoutCartSuccess(any())
         }
     }
