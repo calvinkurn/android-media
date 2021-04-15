@@ -3,6 +3,7 @@ package com.tokopedia.topchat.chatroom.view.presenter
 import android.content.SharedPreferences
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.collection.ArrayMap
+import androidx.lifecycle.Observer
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
@@ -68,7 +69,9 @@ import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenterTest.Du
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendablePreview
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendableProductPreview
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.topchat.chatroom.domain.pojo.srw.ChatSmartReplyQuestionResponse
 import com.tokopedia.topchat.chattemplate.view.viewmodel.GetTemplateUiModel
+import com.tokopedia.topchat.common.data.Resource
 import com.tokopedia.topchat.common.util.ImageUtil
 import com.tokopedia.topchat.common.util.ImageUtil.IMAGE_EXCEED_SIZE_LIMIT
 import com.tokopedia.topchat.common.util.ImageUtil.IMAGE_UNDERSIZE
@@ -85,6 +88,7 @@ import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.impl.annotations.SpyK
 import junit.framework.Assert.assertTrue
+import kotlinx.coroutines.flow.flow
 import okhttp3.Interceptor
 import okhttp3.WebSocket
 import org.hamcrest.CoreMatchers.equalTo
@@ -1409,6 +1413,50 @@ class TopChatRoomPresenterTest {
         // Then
         verify(exactly = 1) {
             onError.invoke(errorMsg)
+        }
+    }
+
+    @Test
+    fun `success load srw`() {
+        // Given
+        val observer: Observer<Resource<ChatSmartReplyQuestionResponse>> = mockk()
+        val expectedValue: Resource<ChatSmartReplyQuestionResponse> = Resource.success(
+                ChatSmartReplyQuestionResponse()
+        )
+        val successFlow = flow { emit(expectedValue) }
+        every {
+            chatSrwUseCase.getSrwList(exMessageId)
+        } returns successFlow
+
+        // When
+        presenter.srw.observeForever(observer)
+        presenter.getSmartReplyWidget(exMessageId)
+
+        // Then
+        verify(exactly = 1) {
+            observer.onChanged(expectedValue)
+        }
+    }
+
+    @Test
+    fun `error load srw`() {
+        // Given
+        val observer: Observer<Resource<ChatSmartReplyQuestionResponse>> = mockk()
+        val throwable = IllegalStateException()
+        val expectedValue: Resource<ChatSmartReplyQuestionResponse> = Resource.error(
+                throwable, null
+        )
+        every {
+            chatSrwUseCase.getSrwList(exMessageId)
+        } throws throwable
+
+        // When
+        presenter.srw.observeForever(observer)
+        presenter.getSmartReplyWidget(exMessageId)
+
+        // Then
+        verify(exactly = 1) {
+            observer.onChanged(expectedValue)
         }
     }
 

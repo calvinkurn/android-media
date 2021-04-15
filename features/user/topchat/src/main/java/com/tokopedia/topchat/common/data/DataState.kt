@@ -7,7 +7,7 @@ enum class Status {
     EMPTY
 }
 
-class Resource<out T> private constructor(
+data class Resource<out T> private constructor(
         val status: Status,
         val data: T?,
         val throwable: Throwable?,
