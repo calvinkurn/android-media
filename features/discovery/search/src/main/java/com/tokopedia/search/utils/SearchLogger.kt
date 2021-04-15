@@ -10,6 +10,12 @@ import java.net.UnknownHostException
 
 open class SearchLogger {
 
+    companion object {
+        private const val DISCOVERY_SEARCH_ERROR_TAG = "DISCOVERY_SEARCH_ERROR"
+        private const val DISCOVERY_SEARCH_TDN_ERROR_TAG = "DISCOVERY_SEARCH_TDN_ERROR"
+        private const val DISCOVERY_SEARCH_ANOMALY_TAG = "DISCOVERY_SEARCH_ANOMALY"
+    }
+
     fun logWarning(message: String?, throwable: Throwable?) {
         if (message == null || throwable == null || isExceptionExcluded(throwable)) return
 
@@ -26,18 +32,18 @@ open class SearchLogger {
     }
 
     protected open fun timberLogWarning(message: String, stackTrace: String) {
-        ServerLogger.log(Priority.P2, "DISCOVERY_SEARCH_ERROR", mapOf("type" to message, "error" to stackTrace))
+        ServerLogger.log(Priority.P2, DISCOVERY_SEARCH_ERROR_TAG, mapOf("type" to message, "error" to stackTrace))
     }
 
     fun logTDNError(throwable: Throwable?) {
         if (throwable == null) return
 
-        ServerLogger.log(Priority.P2, "DISCOVERY_SEARCH_TDN_ERROR", mapOf("error" to ExceptionUtils.getStackTrace(throwable)))
+        ServerLogger.log(Priority.P2, DISCOVERY_SEARCH_TDN_ERROR_TAG, mapOf("error" to ExceptionUtils.getStackTrace(throwable)))
     }
 
     fun logAnomalyNoKeyword(message: String?) {
         if (message == null) return
 
-        ServerLogger.log(Priority.P2, "DISCOVERY_SEARCH_ANOMALY", mapOf("type" to "No keyword to search result. $message"))
+        ServerLogger.log(Priority.P2, DISCOVERY_SEARCH_ANOMALY_TAG, mapOf("type" to "No keyword to search result. $message"))
     }
 }
