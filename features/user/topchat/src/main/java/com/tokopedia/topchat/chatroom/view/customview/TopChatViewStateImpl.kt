@@ -95,7 +95,10 @@ class TopChatViewStateImpl constructor(
     override fun getSendButtonId() = R.id.send_but
     override fun getNotifierId() = R.id.notifier
     override fun getChatMenuId() = R.id.iv_chat_menu
+    override fun getAttachmentMenuId(): Int = View.NO_ID
+    override fun getAttachmentMenuContainer(): Int = View.NO_ID
     override fun getRootViewId() = R.id.main
+
     override fun shouldShowSellerLabel(): Boolean = false
 
     init {
