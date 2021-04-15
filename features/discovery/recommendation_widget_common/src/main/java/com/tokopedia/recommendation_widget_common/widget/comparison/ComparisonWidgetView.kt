@@ -62,19 +62,19 @@ class ComparisonWidgetView: FrameLayout, CoroutineScope, ComparisonWidgetScrollI
             stickyTitleInterface: StickyTitleInterface,
             trackingQueue: TrackingQueue?
     ) {
-        rootView.tv_header_title.text = comparisonListModel?.recommendationWidget?.title
-        if (comparisonListModel?.recommendationWidget?.seeMoreAppLink?.isNotEmpty() == true) {
-            rootView.btn_see_more.visible()
-        } else {
-            rootView.btn_see_more.gone()
-        }
-
         launch {
             try {
                 val comparisonListModel =
                         ComparisonWidgetMapper.mapToComparisonWidgetModel(recommendationWidget, context)
                 if (this@ComparisonWidgetView.adapter == null) {
                     launch(Dispatchers.Main) {
+                        rootView.tv_header_title.text = comparisonListModel?.recommendationWidget?.title
+                        if (comparisonListModel?.recommendationWidget?.seeMoreAppLink?.isNotEmpty() == true) {
+                            rootView.btn_see_more.visible()
+                        } else {
+                            rootView.btn_see_more.gone()
+                        }
+
                         this@ComparisonWidgetView.comparisonListModel = comparisonListModel
                         this@ComparisonWidgetView.adapter = ComparisonWidgetAdapter(
                                 comparisonListModel = comparisonListModel,
