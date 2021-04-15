@@ -51,5 +51,4 @@ class CommonTopchatModule {
 
         return TopChatWebSocket(client, webSocketUrl, userSession.accessToken)
     }
-
 }

@@ -52,10 +52,13 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.travel.country_code.presentation.activity.PhoneCodePickerActivity
 import com.tokopedia.travel.country_code.presentation.fragment.PhoneCodePickerFragment
 import com.tokopedia.travel.country_code.presentation.model.TravelCountryPhoneCode
+import com.tokopedia.travel.country_code.util.TravelCountryCodeGqlQuery
 import com.tokopedia.travel.passenger.data.entity.TravelContactIdCard
 import com.tokopedia.travel.passenger.data.entity.TravelContactListModel
 import com.tokopedia.travel.passenger.data.entity.TravelUpsertContactModel
 import com.tokopedia.travel.passenger.presentation.adapter.TravelContactArrayAdapter
+import com.tokopedia.travel.passenger.util.TravelPassengerGqlMutation
+import com.tokopedia.travel.passenger.util.TravelPassengerGqlQuery
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.fragment_flight_booking_passenger.*
 import java.util.*
@@ -120,7 +123,7 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         if (autofillName.isNotEmpty()) loading_screen.show() else loading_screen.hide()
-        passengerViewModel.getContactList(GraphqlHelper.loadRawString(resources, com.tokopedia.travel.passenger.R.raw.query_get_travel_contact_list),
+        passengerViewModel.getContactList(TravelPassengerGqlQuery.CONTACT_LIST,
                 getPassengerTypeString(passengerModel.type))
         initView()
     }
@@ -217,11 +220,10 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
                 })
         (et_first_name as AutoCompleteTextView).setAdapter(travelContactArrayAdapter)
         (et_first_name as AutoCompleteTextView).onItemClickListener = AdapterView.OnItemClickListener { _, _, position, _ -> autofillPassengerContact(travelContactArrayAdapter.getItem(position)) }
-
     }
 
     private fun onSubmitData() {
-        if (validateAllFields()) {
+        if(validateAllFields()) {
             passengerModel.passengerTitle = getPassengerTitle()
             passengerModel.passengerTitleId = getPassengerTitleId(getPassengerTitle())
             passengerModel.passengerFirstName = getFirstName()
@@ -250,9 +252,7 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
                     expiry = FlightDateUtil.formatDate(FlightDateUtil.DEFAULT_VIEW_FORMAT, FlightDateUtil.DEFAULT_FORMAT, getPassportExpiryDate())))
         }
 
-        passengerViewModel.updateContactList(GraphqlHelper.loadRawString(resources,
-                com.tokopedia.travel.passenger.R.raw.query_upsert_travel_contact_list),
-                contact)
+        passengerViewModel.updateContactList(TravelPassengerGqlMutation.UPSERT_CONTACT, contact)
     }
 
     private fun finishActivityWithData() {
@@ -339,6 +339,7 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
             passengerModel.passportExpiredDate = FlightDateUtil.formatDate(FlightDateUtil.DEFAULT_VIEW_FORMAT,
                     FlightDateUtil.DEFAULT_FORMAT, passportExpiryDateStr)
             til_passport_expiration_date.textFieldInput.setText(passportExpiryDateStr)
+            validatePassportExpiredDate(true)
         })
     }
 
@@ -572,7 +573,7 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
     private fun showCalendarPickerDialog(selectedDate: Date, minDate: Date? = null, maxDate: Date, onDateSetListener: DatePickerDialog.OnDateSetListener) {
         val calendar = Calendar.getInstance()
         calendar.time = selectedDate
-        val datePicker = DatePickerDialog(activity!!, onDateSetListener, calendar.get(Calendar.YEAR),
+        val datePicker = DatePickerDialog(requireActivity(), onDateSetListener, calendar.get(Calendar.YEAR),
                 calendar.get(Calendar.MONTH), calendar.get(Calendar.DATE))
         val datePicker1 = datePicker.datePicker
         if (minDate != null) datePicker1.minDate = minDate.time
@@ -621,8 +622,8 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
                         til_passport_no.textFieldInput.setText(id.number)
                         til_passport_expiration_date.textFieldInput.setText(FlightDateUtil.formatDate(FlightDateUtil.DEFAULT_FORMAT,
                                 FlightDateUtil.DEFAULT_VIEW_FORMAT, id.expiry))
-                        passengerViewModel.getNationalityById(GraphqlHelper.loadRawString(resources, com.tokopedia.travel.country_code.R.raw.query_travel_get_all_country), contact.nationality)
-                        passengerViewModel.getPassportIssuerCountryById(GraphqlHelper.loadRawString(resources, com.tokopedia.travel.country_code.R.raw.query_travel_get_all_country), id.country)
+                        passengerViewModel.getNationalityById(TravelCountryCodeGqlQuery.ALL_COUNTRY, contact.nationality)
+                        passengerViewModel.getPassportIssuerCountryById(TravelCountryCodeGqlQuery.ALL_COUNTRY, id.country)
                         break
                     }
                 }
@@ -820,6 +821,10 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
                 til_passport_no.setMessage(getString(R.string.flight_booking_passport_number_not_valid))
                 til_passport_no.setError(true)
                 false
+            } else if (isNeedPassport && getPassportNumber().length < 6) {
+                til_passport_no.setMessage(getString(R.string.flight_booking_passport_number_min_length))
+                til_passport_no.setError(true)
+                false
             } else {
                 true
             }
@@ -836,8 +841,7 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
             false
         } else if (isNeedPassport && !flightPassengerInfoValidator.validateExpiredDateOfPassportAtLeast6Month(
                         getPassportExpiryDate(), sixMonthFromDeparture)) {
-            til_passport_expiration_date.setMessage(getString(R.string.flight_passenger_passport_expired_date_less_than_6_month_error,
-                    FlightDateUtil.dateToString(sixMonthFromDeparture, FlightDateUtil.DEFAULT_VIEW_FORMAT)))
+            til_passport_expiration_date.setMessage(getString(R.string.flight_passenger_passport_expired_date_less_than_6_month_error))
             til_passport_expiration_date.setError(true)
             false
         } else if (isNeedPassport && !flightPassengerInfoValidator.validateExpiredDateOfPassportMax20Years(
@@ -848,6 +852,7 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
             til_passport_expiration_date.setError(true)
             false
         } else {
+            til_passport_expiration_date.setError(false)
             true
         }
     }

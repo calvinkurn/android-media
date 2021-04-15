@@ -46,6 +46,7 @@ dependencies {
     implementation project(rootProject.ext.features.resourcesCommon)
     implementation project(rootProject.ext.features.topAdsSdk)
     implementation project(rootProject.ext.features.wishlistCommon)
+    implementation project(rootProject.ext.features.sessioncommon)
 
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.baseList)
@@ -91,6 +92,7 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.miscDependencies.coroutineCore
     testImplementation rootProject.ext.miscDependencies.coroutineTest
+    testImplementation project(rootProject.ext.libraries.unitTest)
 
     androidTestImplementation project(rootProject.ext.libraries.instrumentation_test)
 

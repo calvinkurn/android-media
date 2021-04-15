@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.AppCompatImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.widget.NestedScrollView
 import androidx.lifecycle.Lifecycle
@@ -108,6 +109,8 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
     private var isDefaultDarkStatusBar = true
 
     private var canShowErrorToaster = true
+
+    private var thematicIllustration: AppCompatImageView? = null
 
     @FragmentType
     private var currentFragmentType: Int = FragmentType.OTHER
@@ -426,20 +429,21 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
     }
 
     private fun View.showToasterError(errorMessage: String) {
-        Toaster.make(this,
+        Toaster.build(this,
                 errorMessage,
                 Snackbar.LENGTH_LONG,
                 Toaster.TYPE_ERROR,
-                resources.getString(R.string.setting_toaster_error_retry),
-                View.OnClickListener {
-                    retryFetchAfterError()
-                })
+                resources.getString(R.string.setting_toaster_error_retry)
+        ) {
+            retryFetchAfterError()
+        }.show()
     }
 
     private fun setupView(view: View) {
         view.run {
             statusBarBackground?.layoutParams = ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.MATCH_PARENT, statusBarHeight ?: HEIGHT_OFFSET)
         }
+        thematicIllustration = view.findViewById(R.id.iv_other_menu_thematic)
         populateAdapterData()
         recycler_view.layoutManager = LinearLayoutManager(context)
         context?.let { otherMenuViewHolder = OtherMenuViewHolder(view, it, this, this, freeShippingTracker, userSession) }
@@ -482,7 +486,7 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
                 otherMenuViewModel.setIsStatusBarInitialState(false)
             }
             shopStatusHeader?.gone()
-            shopStatusHeaderIcon?.gone()
+            thematicIllustration?.gone()
             bg_white_other_menu?.gone()
         } else {
             if (!isInitialStatusBar) {
@@ -490,7 +494,7 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
                 otherMenuViewModel.setIsStatusBarInitialState(true)
             }
             shopStatusHeader?.visible()
-            shopStatusHeaderIcon?.visible()
+            thematicIllustration?.visible()
             bg_white_other_menu?.visible()
         }
     }

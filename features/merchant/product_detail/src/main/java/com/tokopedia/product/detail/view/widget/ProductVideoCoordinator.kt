@@ -121,7 +121,6 @@ class ProductVideoCoordinator(
     fun onDestroy() {
         resetVideoCoordinator()
         scope.coroutineContext.cancelChildren()
-        videoPlayer?.destroy()
     }
 
     fun onStopAndSaveLastPosition() {
@@ -136,6 +135,7 @@ class ProductVideoCoordinator(
 
     private fun resetVideoCoordinator() {
         onPause()
+        videoPlayer?.destroy()
         currentVideoId = ""
         productVideoDataModel = mutableListOf()
         videoPlayer = null

@@ -1,8 +1,0 @@
-<resources>
-    <string name="hotlist_result_count_template_text">%s Produk</string>
-    <string name="hotlist_nav_product_no_data_description">Coba kurangi salah satu filter yang kamu gunakan :</string>
-    <string name="hotlist_nav_product_no_data_title">Oops, Produk Nggak Ditemukan</string>
-    <string name="hotlist_message_share_catalog">Klik link ini untuk menemukan catalog dari Tokopedia. </string>
-    <string name="hotlist_label">hotlist</string>
-
-</resources>

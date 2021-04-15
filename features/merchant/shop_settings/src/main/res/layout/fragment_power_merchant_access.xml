@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="@dimen/dp_20"
+    android:gravity="center_horizontal"
+    android:layout_marginBottom="@dimen/dp_10">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/text_view_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="Yaah, Fitur [Fitur] hanya dapat diakses Power Merchant aktif"
+        android:textColor="@color/Unify_N700"
+        app:typographyType="heading_2"
+        app:typographyWeight="bold"
+        android:gravity="center"
+        android:layout_marginBottom="@dimen/dp_16" />
+
+    <ImageView
+        android:adjustViewBounds="true"
+        android:id="@+id/image_view_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/dp_200"
+        android:layout_marginBottom="@dimen/dp_20"
+        android:contentDescription="@string/power_merchant" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/text_view_description"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="Skor performa tokomu kurang dari 65 poin. Segera tingkatkan performa toko untuk menggunakan [Fitur] dan fitur eksklusif Power Merchant lainnya kembali."
+        android:gravity="center"
+        app:typographyType="body_2"
+        app:typographyWeight="reguler"
+        android:layout_marginBottom="@dimen/dp_20"/>
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/button_redirect_to"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:text="Button Text"/>
+
+</LinearLayout>

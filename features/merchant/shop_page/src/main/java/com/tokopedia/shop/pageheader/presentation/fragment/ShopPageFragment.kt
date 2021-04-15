@@ -50,6 +50,9 @@ import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.linker.share.DataMapper
 import com.tokopedia.mvcwidget.MvcSource
 import com.tokopedia.mvcwidget.views.activities.TransParentActivity
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.network.exception.UserNotLoginException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
@@ -82,6 +85,7 @@ import com.tokopedia.shop.common.data.source.cloud.model.ShopModerateRequestResu
 import com.tokopedia.shop.common.util.ShopPageExceptionHandler.ERROR_WHEN_UPDATE_FOLLOW_SHOP_DATA
 import com.tokopedia.shop.common.util.ShopPageExceptionHandler.logExceptionToCrashlytics
 import com.tokopedia.shop.common.util.ShopUtil
+import com.tokopedia.shop.common.util.ShopUtil.getShopPageWidgetUserAddressLocalData
 import com.tokopedia.shop.common.util.ShopUtil.isUsingNewNavigation
 import com.tokopedia.shop.common.view.bottomsheet.ShopShareBottomSheet
 import com.tokopedia.shop.common.view.bottomsheet.listener.ShopShareBottomsheetListener
@@ -101,12 +105,12 @@ import com.tokopedia.shop.pageheader.di.component.ShopPageComponent
 import com.tokopedia.shop.pageheader.di.module.ShopPageModule
 import com.tokopedia.shop.common.domain.interactor.UpdateFollowStatusUseCase.Companion.ACTION_FOLLOW
 import com.tokopedia.shop.common.domain.interactor.UpdateFollowStatusUseCase.Companion.ACTION_UNFOLLOW
-import com.tokopedia.shop.common.util.EspressoIdlingResource
 import com.tokopedia.shop.pageheader.presentation.ShopPageViewModel
 import com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity
 import com.tokopedia.shop.pageheader.presentation.adapter.ShopPageFragmentPagerAdapter
 import com.tokopedia.shop.pageheader.presentation.bottomsheet.ShopRequestUnmoderateBottomSheet
 import com.tokopedia.shop.pageheader.presentation.holder.ShopPageFragmentHeaderViewHolder
+import com.tokopedia.shop.pageheader.presentation.holder.ShopPageFragmentViewHolderListener
 import com.tokopedia.shop.pageheader.presentation.listener.ShopPagePerformanceMonitoringListener
 import com.tokopedia.shop.pageheader.presentation.uimodel.ShopPageP1HeaderData
 import com.tokopedia.shop.product.view.fragment.HomeProductFragment
@@ -135,8 +139,10 @@ import javax.inject.Inject
 class ShopPageFragment :
         BaseDaggerFragment(),
         HasComponent<ShopPageComponent>,
-        ShopPageFragmentHeaderViewHolder.ShopPageFragmentViewHolderListener,
-        ShopShareBottomsheetListener {
+        ShopPageFragmentViewHolderListener,
+        ShopShareBottomsheetListener,
+        ChooseAddressWidget.ChooseAddressWidgetListener,
+        InterfaceShopPageHeader {
 
     companion object {
         const val SHOP_ID = "EXTRA_SHOP_ID"
@@ -170,6 +176,7 @@ class ShopPageFragment :
         private const val QUERY_SHOP_ATTRIBUTION = "tracker_attribution"
         private const val START_PAGE = 1
         private const val IS_FIRST_TIME_VISIT = "isFirstTimeVisit"
+        private const val SOURCE = "shop page"
 
         private const val REQUEST_CODE_START_LIVE_STREAMING = 7621
 
@@ -271,6 +278,7 @@ class ShopPageFragment :
     var selectedPosition = -1
     val isMyShop: Boolean
         get() =shopViewModel?.isMyShop(shopId) == true
+    var localCacheModel: LocalCacheModel? = null
 
     override fun getComponent() = activity?.run {
         DaggerShopPageComponent.builder().shopPageModule(ShopPageModule())
@@ -317,8 +325,13 @@ class ShopPageFragment :
         errorButton = view.findViewById(com.tokopedia.abstraction.R.id.button_retry)
         shopPageHeaderContentConstraintLayout = view.findViewById(R.id.shop_page_header_content)
         swipeToRefresh = view.findViewById(R.id.swipeToRefresh)
+        swipeToRefresh?.apply {
+            if (!isRefreshing) {
+                setViewState(VIEW_LOADING)
+            }
+        }
         setupBottomSheetSellerMigration(view)
-        shopPageFragmentHeaderViewHolder = ShopPageFragmentHeaderViewHolder(view, this, shopPageTracking, shopPageTrackingSGCPlay, view.context)
+        shopPageFragmentHeaderViewHolder = ShopPageFragmentHeaderViewHolder(view, this, shopPageTracking, shopPageTrackingSGCPlay, view.context, this)
         initToolbar()
         initAdapter()
         appBarLayout.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { _, verticalOffset ->
@@ -392,7 +405,6 @@ class ShopPageFragment :
 
     private fun observeLiveData(owner: LifecycleOwner) {
         shopViewModel?.shopPageP1Data?.observe(owner, Observer { result ->
-            EspressoIdlingResource.decrement()
             stopMonitoringPltCustomMetric(SHOP_TRACE_P1_MIDDLE)
             startMonitoringPltCustomMetric(SHOP_TRACE_HEADER_SHOP_NAME_AND_PICTURE_RENDER)
             when (result) {
@@ -522,8 +534,8 @@ class ShopPageFragment :
             }
         })
 
-        shopViewModel?.followStatusData?.observe(owner) {
-            when(it) {
+        shopViewModel?.followStatusData?.observe(owner, Observer {
+            when (it) {
                 is Success -> {
                     it.data.followStatus.apply {
                         shopPageFragmentHeaderViewHolder?.setFollowStatus(
@@ -538,7 +550,13 @@ class ShopPageFragment :
                     shopPageFragmentHeaderViewHolder?.setLoadingFollowButton(false)
                 }
             }
-        }
+            val followStatusData = (it as? Success)?.data?.followStatus
+            shopPageFragmentHeaderViewHolder?.showCoachMark(
+                    followStatusData,
+                    shopId,
+                    shopViewModel?.userId.orEmpty()
+            )
+        })
 
         shopViewModel?.followShopData?.observe(owner) {
             when(it) {
@@ -639,11 +657,6 @@ class ShopPageFragment :
             observeShopPageFollowingStatusSharedViewModel()
             getInitialData()
             view.findViewById<ViewStub>(R.id.view_stub_content_layout).inflate()
-            swipeToRefresh?.apply {
-                if (!isRefreshing) {
-                    setViewState(VIEW_LOADING)
-                }
-            }
             initViews(view)
         }
     }
@@ -726,6 +739,7 @@ class ShopPageFragment :
     }
 
     private fun getInitialData() {
+        updateCurrentPageLocalCacheModelData()
         startMonitoringPltNetworkRequest()
         startMonitoringPltCustomMetric(SHOP_TRACE_P1_MIDDLE)
         if (shopId.isEmpty()) {
@@ -737,7 +751,6 @@ class ShopPageFragment :
 
     private  fun getShopPageP1Data(){
         if (shopId.toIntOrZero() == 0 && shopDomain.orEmpty().isEmpty()) return
-        EspressoIdlingResource.increment()
         shopViewModel?.getShopPageTabData(
                 shopId.toIntOrZero(),
                 shopDomain.orEmpty(),
@@ -746,7 +759,8 @@ class ShopPageFragment :
                 initialProductFilterParameter ?: ShopProductFilterParameter(),
                 "",
                 "",
-                isRefresh
+                isRefresh,
+                localCacheModel ?: LocalCacheModel()
         )
     }
 
@@ -842,6 +856,20 @@ class ShopPageFragment :
         super.onResume()
         removeTemporaryShopImage(shopImageFilePath)
         setShopName()
+        checkIfChooseAddressWidgetDataUpdated()
+    }
+
+    private fun checkIfChooseAddressWidgetDataUpdated() {
+        context?.let{context ->
+            localCacheModel?.let{
+                val isUpdated = ChooseAddressUtils.isLocalizingAddressHasUpdated(
+                        context,
+                        it
+                )
+                if(isUpdated)
+                    refreshData()
+            }
+        }
     }
 
     private fun setViewState(viewState: Int) {
@@ -1053,6 +1081,7 @@ class ShopPageFragment :
         swipeToRefresh?.isRefreshing = false
         shopPageHeaderDataModel?.let {
             remoteConfig?.let { nonNullableRemoteConfig ->
+                shopPageFragmentHeaderViewHolder?.setupChooseAddressWidget(nonNullableRemoteConfig, isMyShop)
                 shopPageFragmentHeaderViewHolder?.bind(it, isMyShop, nonNullableRemoteConfig)
             }
         }
@@ -1099,7 +1128,7 @@ class ShopPageFragment :
         }
     }
 
-    fun onBackPressed() {
+    override fun onBackPressed() {
         shopPageTracking?.clickBackArrow(isMyShop, customDimensionShopPage)
         removeTemporaryShopImage(shopImageFilePath)
     }
@@ -1456,7 +1485,7 @@ class ShopPageFragment :
         }
     }
 
-    fun refreshData() {
+    override fun refreshData() {
         button_chat?.hide()
         button_chat_old?.hide()
         val shopProductListFragment: Fragment? = viewPagerAdapter?.getRegisteredFragment(if (shopPageHeaderDataModel?.isOfficial == true) TAB_POSITION_HOME + 1 else TAB_POSITION_HOME)
@@ -1483,20 +1512,20 @@ class ShopPageFragment :
         stickyLoginView?.loadContent()
     }
 
-    fun collapseAppBar() {
+    override fun collapseAppBar() {
         appBarLayout.post {
             appBarLayout.setExpanded(false)
         }
     }
 
-    fun isNewlyBroadcastSaved(): Boolean? {
+    override fun isNewlyBroadcastSaved(): Boolean? {
         val args = arguments
         return args?.containsKey(NEWLY_BROADCAST_CHANNEL_SAVED)?.let {
             args.getBoolean(NEWLY_BROADCAST_CHANNEL_SAVED)
         }
     }
 
-    fun clearIsNewlyBroadcastSaved() {
+    override fun clearIsNewlyBroadcastSaved() {
         arguments?.remove(NEWLY_BROADCAST_CHANNEL_SAVED)
     }
 
@@ -1814,12 +1843,48 @@ class ShopPageFragment :
         ).show()
     }
 
-    fun isTabSelected(tabFragmentClass: Class<out Any>): Boolean {
+    override fun isTabSelected(tabFragmentClass: Class<out Any>): Boolean {
         return if (viewPagerAdapter?.isFragmentObjectExists(tabFragmentClass) == true) {
             viewPagerAdapter?.getFragmentPosition(tabFragmentClass) == selectedPosition
         } else {
             false
         }
+    }
+
+    private fun updateCurrentPageLocalCacheModelData() {
+        localCacheModel = getShopPageWidgetUserAddressLocalData(context)
+    }
+
+    override fun onLocalizingAddressUpdatedFromWidget() {
+        context?.let {
+            shopPageFragmentHeaderViewHolder?.updateChooseAddressWidget()
+            refreshData()
+        }
+    }
+
+    override fun onLocalizingAddressUpdatedFromBackground() {
+    }
+
+    override fun onLocalizingAddressServerDown() {
+        shopPageFragmentHeaderViewHolder?.hideChooseAddressWidget()
+    }
+
+    override fun onLocalizingAddressRollOutUser(isRollOutUser: Boolean) { }
+
+    override fun getLocalizingAddressHostFragment(): Fragment {
+        return this
+    }
+
+    override fun getLocalizingAddressHostSourceData(): String {
+        return "shop"
+    }
+
+    override fun getLocalizingAddressHostSourceTrackingData(): String {
+        return SOURCE
+    }
+
+    override fun onLocalizingAddressLoginSuccess() {
+        refreshData()
     }
 
 }

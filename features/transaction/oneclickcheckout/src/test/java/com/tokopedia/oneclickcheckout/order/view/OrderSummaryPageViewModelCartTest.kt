@@ -2,6 +2,7 @@ package com.tokopedia.oneclickcheckout.order.view
 
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.model.response.DataModel
+import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.InsuranceData
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.PriceData
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ProductData
@@ -241,7 +242,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         // When
         orderSummaryPageViewModel.updateProduct(OrderProduct(quantity = QuantityUiModel(orderQuantity = 10)))
         assertEquals(OccButtonState.LOADING, orderSummaryPageViewModel.orderTotal.value.buttonState)
-        (testDispatchers.main as TestCoroutineDispatcher).advanceUntilIdle()
+        testDispatchers.main.advanceUntilIdle()
 
         // Then
         assertEquals(10, orderSummaryPageViewModel.orderProduct.quantity.orderQuantity)
@@ -258,7 +259,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
 
         // When
         orderSummaryPageViewModel.updateProduct(OrderProduct(quantity = QuantityUiModel(orderQuantity = 10)), false)
-        (testDispatchers.main as TestCoroutineDispatcher).advanceUntilIdle()
+        testDispatchers.main.advanceUntilIdle()
 
         // Then
         verify(inverse = true) { ratesUseCase.execute(any()) }
@@ -274,7 +275,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
 
         // When
         orderSummaryPageViewModel.updateProduct(OrderProduct(quantity = QuantityUiModel(orderQuantity = 10, isStateError = true)))
-        (testDispatchers.main as TestCoroutineDispatcher).advanceUntilIdle()
+        testDispatchers.main.advanceUntilIdle()
 
         // Then
         verify(inverse = true) { ratesUseCase.execute(any()) }
@@ -290,9 +291,9 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
 
         // When
         orderSummaryPageViewModel.updateProduct(OrderProduct(quantity = QuantityUiModel(orderQuantity = 10)))
-        (testDispatchers.main as TestCoroutineDispatcher).advanceTimeBy(500)
+        testDispatchers.main.advanceTimeBy(500)
         orderSummaryPageViewModel.updateProduct(OrderProduct(quantity = QuantityUiModel(orderQuantity = 20)))
-        (testDispatchers.main as TestCoroutineDispatcher).advanceUntilIdle()
+        testDispatchers.main.advanceUntilIdle()
 
         // Then
         verify(exactly = 1) { ratesUseCase.execute(any()) }
@@ -641,11 +642,19 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
     fun `Update Address Success`() {
         // Given
         orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
-        val addressId = "address1"
-        coEvery { updateCartOccUseCase.executeSuspend(match { it.profile.addressId == addressId }) } returns null
+        val addressModel = RecipientAddressModel().apply {
+            id = "address1"
+            destinationDistrictId = "districtId1"
+            postalCode = "postalcode1"
+            latitude = "lat1"
+            longitude = "lon1"
+            addressName = "addressname1"
+            recipientName = "recipientname1"
+        }
+        coEvery { updateCartOccUseCase.executeSuspend(match { it.profile.addressId == addressModel.id }) } returns null
 
         // When
-        orderSummaryPageViewModel.chooseAddress(addressId)
+        orderSummaryPageViewModel.chooseAddress(addressModel)
 
         // Then
         assertEquals(OccGlobalEvent.TriggerRefresh(), orderSummaryPageViewModel.globalEvent.value)
@@ -655,13 +664,19 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
     fun `Update Address Failed`() {
         // Given
         orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
-        val addressId = "address1"
+        val addressModel = RecipientAddressModel().apply {
+            id = "address1"
+            destinationDistrictId = "districtId1"
+            postalCode = "postalcode1"
+            latitude = "lat1"
+            longitude = "lon1"
+        }
         val responseMessage = "message"
         val response = MessageErrorException(responseMessage)
-        coEvery { updateCartOccUseCase.executeSuspend(match { it.profile.addressId == addressId }) } throws response
+        coEvery { updateCartOccUseCase.executeSuspend(match { it.profile.addressId == addressModel.id }) } throws response
 
         // When
-        orderSummaryPageViewModel.chooseAddress(addressId)
+        orderSummaryPageViewModel.chooseAddress(addressModel)
 
         // Then
         assertEquals(OccGlobalEvent.Error(errorMessage = responseMessage), orderSummaryPageViewModel.globalEvent.value)
@@ -671,12 +686,18 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
     fun `Update Address Error`() {
         // Given
         orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
-        val addressId = "address1"
+        val addressModel = RecipientAddressModel().apply {
+            id = "address1"
+            destinationDistrictId = "districtId1"
+            postalCode = "postalcode1"
+            latitude = "lat1"
+            longitude = "lon1"
+        }
         val response = Exception()
-        coEvery { updateCartOccUseCase.executeSuspend(match { it.profile.addressId == addressId }) } throws response
+        coEvery { updateCartOccUseCase.executeSuspend(match { it.profile.addressId == addressModel.id }) } throws response
 
         // When
-        orderSummaryPageViewModel.chooseAddress(addressId)
+        orderSummaryPageViewModel.chooseAddress(addressModel)
 
         // Then
         assertEquals(OccGlobalEvent.Error(response), orderSummaryPageViewModel.globalEvent.value)
@@ -688,7 +709,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = false)
 
         // When
-        orderSummaryPageViewModel.chooseAddress("")
+        orderSummaryPageViewModel.chooseAddress(RecipientAddressModel())
 
         // Then
         coVerify(inverse = true) { updateCartOccUseCase.executeSuspend(any()) }
@@ -699,12 +720,18 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
     fun `Update Address Got Prompt`() {
         // Given
         orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
-        val addressId = "address1"
+        val addressModel = RecipientAddressModel().apply {
+            id = "address1"
+            destinationDistrictId = "districtId1"
+            postalCode = "postalcode1"
+            latitude = "lat1"
+            longitude = "lon1"
+        }
         val occPrompt = OccPrompt()
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns occPrompt
 
         // When
-        orderSummaryPageViewModel.chooseAddress(addressId)
+        orderSummaryPageViewModel.chooseAddress(addressModel)
 
         // Then
         assertEquals(OccGlobalEvent.Prompt(occPrompt), orderSummaryPageViewModel.globalEvent.value)

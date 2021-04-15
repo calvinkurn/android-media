@@ -15,6 +15,12 @@ import com.tokopedia.logisticcart.shipping.usecase.GetRatesApiUseCase
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
+import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceCheckout
+import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceCheckout.KEY_PRODUCT
+import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceProductCartMapData.Companion.DEFAULT_VALUE_NONE_OTHER
+import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceProductCartMapData.Companion.VALUE_BEBAS_ONGKIR
+import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceProductCartMapData.Companion.VALUE_BEBAS_ONGKIR_EXTRA
+import com.tokopedia.checkout.data.model.request.checkout.ProductDataCheckoutRequest
 import com.tokopedia.purchase_platform.common.feature.helpticket.domain.usecase.SubmitHelpTicketUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ValidateUsePromoRevampUseCase
 import com.tokopedia.purchase_platform.common.schedulers.TestSchedulers
@@ -24,6 +30,7 @@ import io.mockk.Runs
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import io.mockk.just
+import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 import rx.subscriptions.CompositeSubscription
@@ -124,6 +131,88 @@ class ShipmentPresenterEnhancedEcommerceTest {
 
         // Then
         assert(enhancedEcommerceData != null)
+    }
+
+    @Test
+    fun `WHEN generate enhanced ecommerce data with no Bebas Ongkir THEN enhanced ecommerce product data dimension83 should be none other`() {
+        // Given
+        val dataCheckoutRequest = DataProvider.provideSingleDataCheckoutRequest()
+        presenter.dataCheckoutRequestList = listOf(dataCheckoutRequest)
+        presenter.shipmentCartItemModelList = listOf(ShipmentCartItemModel().apply {
+            cartItemModels = listOf(CartItemModel())
+        })
+        val checkoutRequest = presenter.generateCheckoutRequest(null, 0, "")
+
+        every { clearCacheAutoApplyStackUseCase.setParams(any(), any()) } just Runs
+
+        // When
+        val enhancedEcommerceData = presenter.generateCheckoutAnalyticsDataLayer(checkoutRequest, "2")
+
+        // Then
+        val checkoutData = enhancedEcommerceData[EnhancedECommerceCheckout.KEY_CHECKOUT] as Map<*, *>
+        val products = checkoutData[KEY_PRODUCT] as List<*>
+        val product = products.first() as MutableMap<*, *>
+        assertEquals(DEFAULT_VALUE_NONE_OTHER, product["dimension83"])
+    }
+
+    @Test
+    fun `WHEN generate enhanced ecommerce data with Bebas Ongkir THEN enhanced ecommerce product data dimension83 should be bebas ongkir`() {
+        // Given
+        val dataCheckoutRequest = DataProvider.provideSingleDataCheckoutRequest()
+        val productData = dataCheckoutRequest.shopProducts.first().productData
+        productData.apply {
+            clear()
+            add(ProductDataCheckoutRequest.Builder()
+                    .isFreeShipping(true)
+                    .build())
+        }
+        dataCheckoutRequest.shopProducts.first().productData = productData
+        presenter.dataCheckoutRequestList = listOf(dataCheckoutRequest)
+        presenter.shipmentCartItemModelList = listOf(ShipmentCartItemModel().apply {
+            cartItemModels = listOf(CartItemModel())
+        })
+        val checkoutRequest = presenter.generateCheckoutRequest(null, 0, "")
+
+        every { clearCacheAutoApplyStackUseCase.setParams(any(), any()) } just Runs
+
+        // When
+        val enhancedEcommerceData = presenter.generateCheckoutAnalyticsDataLayer(checkoutRequest, "2")
+
+        // Then
+        val checkoutData = enhancedEcommerceData[EnhancedECommerceCheckout.KEY_CHECKOUT] as Map<*, *>
+        val products = checkoutData[KEY_PRODUCT] as List<*>
+        val product = products.first() as MutableMap<*, *>
+        assertEquals(VALUE_BEBAS_ONGKIR, product["dimension83"])
+    }
+
+    @Test
+    fun `WHEN generate enhanced ecommerce data with Bebas Ongkir Extra THEN enhanced ecommerce product data dimension83 should be bebas ongkir ekstra`() {
+        // Given
+        val dataCheckoutRequest = DataProvider.provideSingleDataCheckoutRequest()
+        val productData = dataCheckoutRequest.shopProducts.first().productData
+        productData.apply {
+            clear()
+            add(ProductDataCheckoutRequest.Builder()
+                    .isFreeShippingExtra(true)
+                    .build())
+        }
+        dataCheckoutRequest.shopProducts.first().productData = productData
+        presenter.dataCheckoutRequestList = listOf(dataCheckoutRequest)
+        presenter.shipmentCartItemModelList = listOf(ShipmentCartItemModel().apply {
+            cartItemModels = listOf(CartItemModel())
+        })
+        val checkoutRequest = presenter.generateCheckoutRequest(null, 0, "")
+
+        every { clearCacheAutoApplyStackUseCase.setParams(any(), any()) } just Runs
+
+        // When
+        val enhancedEcommerceData = presenter.generateCheckoutAnalyticsDataLayer(checkoutRequest, "2")
+
+        // Then
+        val checkoutData = enhancedEcommerceData[EnhancedECommerceCheckout.KEY_CHECKOUT] as Map<*, *>
+        val products = checkoutData[KEY_PRODUCT] as List<*>
+        val product = products.first() as MutableMap<*, *>
+        assertEquals(VALUE_BEBAS_ONGKIR_EXTRA, product["dimension83"])
     }
 
 }

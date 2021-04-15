@@ -2,6 +2,8 @@ package com.tokopedia.orderhistory.di
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -46,4 +48,8 @@ class OrderHistoryModule {
                 context.resources, com.tokopedia.atc_common.R.raw.mutation_add_to_cart
         )
     }
+
+    @OrderHistoryScope
+    @Provides
+    fun provideCoroutineDispatchers(): CoroutineDispatchers = CoroutineDispatchersProvider
 }

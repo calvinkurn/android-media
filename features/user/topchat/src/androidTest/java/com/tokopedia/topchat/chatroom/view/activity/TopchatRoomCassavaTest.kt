@@ -32,11 +32,6 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4ClassRunner::class)
 class TopchatRoomCassavaTest : TopchatRoomTest() {
 
-    private var firstPageChatBroadcastAsBuyer: GetExistingChatPojo = AndroidFileUtil.parse(
-            "success_get_chat_broadcast.json",
-            GetExistingChatPojo::class.java
-    )
-
     private val cassavaDirTopchat = "tracker/user/topchat"
     private val cassavaProduct = "$cassavaDirTopchat/product_card_p0.json"
     private val cassavaBroadcastProduct = "$cassavaDirTopchat/product_card_from_broadcast_p0.json"
@@ -60,9 +55,9 @@ class TopchatRoomCassavaTest : TopchatRoomTest() {
         intending(anyIntent()).respondWith(
                 Instrumentation.ActivityResult(Activity.RESULT_OK, null)
         )
+        inflateTestFragment()
 
         // When
-        inflateTestFragment()
         performClickOnProductCard(R.id.recycler_view)
         performClickAtcButton(R.id.recycler_view)
         performClickBuyButton(R.id.recycler_view)
@@ -84,9 +79,9 @@ class TopchatRoomCassavaTest : TopchatRoomTest() {
         intending(anyIntent()).respondWith(
                 Instrumentation.ActivityResult(Activity.RESULT_OK, null)
         )
+        inflateTestFragment()
 
         // When
-        inflateTestFragment()
         performClickOnProductCard(R.id.rv_product_carousel)
         performClickAtcButton(R.id.rv_product_carousel)
         performClickBuyButton(R.id.rv_product_carousel)
@@ -110,9 +105,9 @@ class TopchatRoomCassavaTest : TopchatRoomTest() {
         intending(anyIntent()).respondWith(
                 Instrumentation.ActivityResult(Activity.RESULT_OK, null)
         )
+        inflateTestFragment()
 
         // When
-        inflateTestFragment()
         performClickOnProductCard(R.id.recycler_view)
         performClickAtcButton(R.id.recycler_view)
         performClickBuyButton(R.id.recycler_view)

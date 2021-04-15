@@ -6,12 +6,14 @@ import androidx.fragment.app.Fragment
 import com.facebook.AccessToken
 import com.facebook.CallbackManager
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
+import com.tokopedia.encryption.security.RsaUtils
+import com.tokopedia.encryption.security.decodeBase64
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.loginfingerprint.data.preference.FingerprintSetting
 import com.tokopedia.loginfingerprint.utils.crypto.Cryptography
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.TkpdIdlingResourceProvider
-import com.tokopedia.loginregister.common.DispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.loginregister.common.domain.pojo.ActivateUserData
 import com.tokopedia.loginregister.common.domain.usecase.ActivateUserUseCase
 import com.tokopedia.loginregister.common.domain.usecase.DynamicBannerUseCase
@@ -30,11 +32,15 @@ import com.tokopedia.loginregister.ticker.domain.usecase.TickerInfoUseCase
 import com.tokopedia.loginregister.ticker.subscriber.TickerInfoLoginSubscriber
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.sessioncommon.di.SessionModule.SESSION_MODULE
+import com.tokopedia.sessioncommon.domain.mapper.LoginV2Mapper
 import com.tokopedia.sessioncommon.domain.subscriber.GetProfileSubscriber
 import com.tokopedia.sessioncommon.domain.subscriber.LoginTokenFacebookSubscriber
 import com.tokopedia.sessioncommon.domain.subscriber.LoginTokenSubscriber
+import com.tokopedia.sessioncommon.domain.usecase.GeneratePublicKeyUseCase
+import com.tokopedia.sessioncommon.domain.usecase.GetAdminTypeUseCase
 import com.tokopedia.sessioncommon.domain.usecase.GetProfileUseCase
 import com.tokopedia.sessioncommon.domain.usecase.LoginTokenUseCase
+import com.tokopedia.sessioncommon.domain.usecase.LoginTokenV2UseCase
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineScope
@@ -55,16 +61,19 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
                                                    GetFacebookCredentialUseCase,
                                                    private val loginTokenUseCase:
                                                    LoginTokenUseCase,
+                                                   private val loginTokenV2UseCase: LoginTokenV2UseCase,
+                                                   private val generatePublicKeyUseCase: GeneratePublicKeyUseCase,
                                                    private val getProfileUseCase: GetProfileUseCase,
                                                    private val tickerInfoUseCase: TickerInfoUseCase,
                                                    private val statusPinUseCase: StatusPinUseCase,
                                                    private val dynamicBannerUseCase: DynamicBannerUseCase,
                                                    private val statusFingerprintUseCase: StatusFingerprintUseCase,
+                                                   private val getAdminTypeUseCase: GetAdminTypeUseCase,
                                                    private val fingerprintPreferenceHelper: FingerprintSetting,
                                                    private var cryptographyUtils: Cryptography?,
                                                    @Named(SESSION_MODULE)
                                                    private val userSession: UserSessionInterface,
-                                                   private val dispatcherProvider: DispatcherProvider
+                                                   private val dispatcherProvider: CoroutineDispatchers
 )
     : BaseDaggerPresenter<LoginEmailPhoneContract.View>(),
         LoginEmailPhoneContract.Presenter, CoroutineScope {
@@ -72,7 +81,7 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
     private var job: Job = SupervisorJob()
 
     override val coroutineContext: CoroutineContext
-        get() = dispatcherProvider.io() + job
+        get() = dispatcherProvider.io + job
 
     private lateinit var viewEmailPhone: LoginEmailPhoneContract.View
     var idlingResourceProvider = TkpdIdlingResourceProvider.provideIdlingResource("LOGIN")
@@ -189,13 +198,57 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
      * Step 4 : If name contains blocked word, go to add name
      * Step 5 : Proceed to home
      */
+
+    override fun loginEmailV2(email: String, password: String, isSmartLock : Boolean, useHash: Boolean) {
+        setSmartLock(isSmartLock)
+        launchCatchError(coroutineContext, {
+            val keyData = generatePublicKeyUseCase.executeOnBackground().keyData
+            if(keyData.key.isNotEmpty()) {
+                var finalPassword = password
+                if(useHash) {
+                    finalPassword = RsaUtils.encrypt(password, keyData.key.decodeBase64(), useHash)
+                }
+                loginTokenV2UseCase.setParams(email, finalPassword, keyData.hash)
+                val tokenResult = loginTokenV2UseCase.executeOnBackground()
+                view?.run {
+                    LoginV2Mapper(userSession).map(tokenResult,
+                            onSuccessLoginToken = {
+                                onSuccessLoginEmail()
+                            },
+                            onErrorLoginToken = {
+                                onErrorLoginEmail(email).invoke(it)
+                            },
+                            onShowPopupError = {
+                                showPopup().invoke(it.loginToken.popupError)
+                            },
+                            onGoToActivationPage = {
+                                onGoToActivationPage(email).invoke(it)
+                            },
+                            onGoToSecurityQuestion = {
+                                onGoToSecurityQuestion(email).invoke()
+                            }
+                    )
+                }
+            }
+            else {
+                view?.onErrorLoginEmail(email)
+            }
+        }, {
+            view?.onErrorLoginEmail(email)
+        })
+    }
+
+    private fun setSmartLock(isSmartLock: Boolean){
+        if (isSmartLock) {
+            userSession.loginMethod = UserSessionInterface.LOGIN_METHOD_EMAIL_SMART_LOCK
+        } else {
+            userSession.loginMethod = UserSessionInterface.LOGIN_METHOD_EMAIL
+        }
+    }
+
     override fun loginEmail(email: String, password: String, isSmartLock: Boolean) {
         view?.let { view ->
-            if (isSmartLock) {
-                userSession.loginMethod = UserSessionInterface.LOGIN_METHOD_EMAIL_SMART_LOCK
-            } else {
-                userSession.loginMethod = UserSessionInterface.LOGIN_METHOD_EMAIL
-            }
+            setSmartLock(isSmartLock)
             idlingResourceProvider?.increment()
             view.resetError()
             if (isValid(email, password)) {
@@ -259,7 +312,10 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
             idlingResourceProvider?.increment()
             getProfileUseCase.execute(GetProfileSubscriber(userSession,
                     view.onSuccessGetUserInfo(),
-                    view.onErrorGetUserInfo()
+                    view.onErrorGetUserInfo(),
+                    getAdminTypeUseCase,
+                    view.showLocationAdminPopUp(),
+                    view.showGetAdminTypeError()
                     , onFinished = {
                 idlingResourceProvider?.decrement()
             }))
@@ -273,6 +329,9 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
                 getProfileUseCase.execute(GetProfileSubscriber(userSession,
                         { checkStatusFingerprint() },
                         view.onErrorGetUserInfo(),
+                        getAdminTypeUseCase,
+                        view.showLocationAdminPopUp(),
+                        view.showGetAdminTypeError(),
                         onFinished = { idlingResourceProvider?.decrement() })
                 )
             }

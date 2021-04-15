@@ -5,7 +5,6 @@ import android.app.Instrumentation
 import android.content.Intent
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso
-import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.contrib.RecyclerViewActions
@@ -25,8 +24,8 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.shop.R
 import com.tokopedia.shop.analyticvalidator.util.ShopUiTestUtil
 import com.tokopedia.shop.analyticvalidator.util.ViewActionUtil
+import com.tokopedia.shop.analyticvalidator.util.ViewActionUtil.clickTabLayoutPosition
 import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant
-import com.tokopedia.shop.common.util.EspressoIdlingResource
 import com.tokopedia.shop.mock.ShopPageAnalyticValidatorHomeTabMockResponseConfig
 import com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity
 import com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity.Companion.SHOP_ID
@@ -80,7 +79,6 @@ class ShopPageBuyerAnalyticTest {
             putExtra(SHOP_ID, SAMPLE_SHOP_ID)
         }
         activityRule.launchActivity(intent)
-        IdlingRegistry.getInstance().register(EspressoIdlingResource.idlingResource)
     }
 
     @Test
@@ -138,13 +136,13 @@ class ShopPageBuyerAnalyticTest {
                 withId(R.id.layout_remind_me))
         )).perform(click())
         Espresso.onView(firstView(AllOf.allOf(
+                withId(R.id.snackbar_btn))
+        )).perform(click())
+        Espresso.onView(firstView(AllOf.allOf(
                 withId(R.id.image_tnc))
         )).perform(click())
         Espresso.onView(firstView(AllOf.allOf(
                 withId(R.id.bottom_sheet_close))
-        )).perform(click())
-        Espresso.onView(firstView(AllOf.allOf(
-                withId(R.id.snackbar_btn))
         )).perform(click())
     }
 
@@ -193,6 +191,12 @@ class ShopPageBuyerAnalyticTest {
     }
 
     private fun testHeader() {
+        ViewActionUtil.waitUntilViewIsDisplayed((AllOf.allOf(
+                withId(R.id.searchBarText)
+        )))
+        ViewActionUtil.waitUntilViewIsDisplayed((AllOf.allOf(
+                withId(R.id.tabLayout)
+        )))
         testClickSearchBar()
         testClickTabs()
     }
@@ -241,13 +245,13 @@ class ShopPageBuyerAnalyticTest {
 
     private fun testClickTabs() {
         Espresso.onView(firstView(withId(R.id.tabLayout)))
-                .perform(CommonActions.selectTabLayoutPosition(0))
+                .perform(clickTabLayoutPosition(0))
         Espresso.onView(firstView(withId(R.id.tabLayout)))
-                .perform(CommonActions.selectTabLayoutPosition(1))
+                .perform(clickTabLayoutPosition(1))
         Espresso.onView(firstView(withId(R.id.tabLayout)))
-                .perform(CommonActions.selectTabLayoutPosition(2))
+                .perform(clickTabLayoutPosition(2))
         Espresso.onView(firstView(withId(R.id.tabLayout)))
-                .perform(CommonActions.selectTabLayoutPosition(3))
+                .perform(clickTabLayoutPosition(3))
     }
 
     private fun testSelectSortOption() {

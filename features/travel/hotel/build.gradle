@@ -59,6 +59,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.irisSession)
     implementation project(rootProject.ext.libraries.mapviewer)
     implementation project(rootProject.ext.libraries.remoteResourceRequest)
+    implementation project(rootProject.ext.libraries.webview)
 
     implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.principles
@@ -117,6 +118,7 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.miscDependencies.coroutineCore
     testImplementation rootProject.ext.miscDependencies.coroutineTest
+    testImplementation project(rootProject.ext.libraries.unitTest)
 
     androidTestUtil rootProject.ext.testDependencies.orchestrator
 }

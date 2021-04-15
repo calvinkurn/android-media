@@ -81,13 +81,15 @@ internal class SearchProductLocalSearchTest: ProductListPresenterTestFixtures() 
 
     private fun `Then verify visitable list contains title`() {
         val searchProductTitle = visitableList[0]
-        searchProductTitle.shouldBeInstanceOf<SearchProductTitleViewModel>()
+        searchProductTitle.shouldBeInstanceOf<SearchProductTitleDataView>()
 
-        (searchProductTitle as SearchProductTitleViewModel).title shouldBe searchProductPageTitle
+        val searchProductTitleViewModel = searchProductTitle as SearchProductTitleDataView
+        searchProductTitleViewModel.title shouldBe searchProductPageTitle
+        searchProductTitleViewModel.isRecommendationTitle shouldBe false
     }
 
     private fun `Then verify visitable list does not contain CPM`() {
-        visitableList.filterIsInstance<CpmViewModel>().size.shouldBe(
+        visitableList.filterIsInstance<CpmDataView>().size.shouldBe(
                 0,
                 "Visitable list should not contain CPM."
         )
@@ -96,17 +98,17 @@ internal class SearchProductLocalSearchTest: ProductListPresenterTestFixtures() 
     private fun `Then verify visitable list does not contain top ads`(
             searchProductModel: SearchProductModel
     ) {
-        visitableList.filterIsInstance<ProductItemViewModel>().size shouldBe searchProductModel.searchProduct.data.productList.size
+        visitableList.filterIsInstance<ProductItemDataView>().size shouldBe searchProductModel.searchProduct.data.productList.size
 
         visitableList.forEach {
-            if (it is ProductItemViewModel) {
+            if (it is ProductItemDataView) {
                 it.isTopAds shouldBe false
             }
         }
     }
 
     private fun `Then verify product item contains page title`() {
-        visitableList.filterIsInstance<ProductItemViewModel>().all {
+        visitableList.filterIsInstance<ProductItemDataView>().all {
             it.pageTitle == searchProductPageTitle
         } shouldBe true
     }
@@ -157,6 +159,7 @@ internal class SearchProductLocalSearchTest: ProductListPresenterTestFixtures() 
 
         `Then verify recommendation use case not called`()
         `Then verify empty search view model during local search`()
+        `Then verify view added broad match`(searchProductModel)
         `Then verify local search recommendation use case is called`()
     }
 
@@ -171,7 +174,7 @@ internal class SearchProductLocalSearchTest: ProductListPresenterTestFixtures() 
     }
 
     private fun `Then verify empty search view model during local search`() {
-        val emptySearchViewModelSlot = slot<EmptySearchProductViewModel>()
+        val emptySearchViewModelSlot = slot<EmptySearchProductDataView>()
         verify {
             productListView.setEmptyProduct(null, capture(emptySearchViewModelSlot))
         }
@@ -182,6 +185,31 @@ internal class SearchProductLocalSearchTest: ProductListPresenterTestFixtures() 
         emptySearchViewModel.globalSearchApplink shouldBe "${ApplinkConstInternalDiscovery.SEARCH_RESULT}?q=asus"
         emptySearchViewModel.keyword shouldBe keyword
         emptySearchViewModel.pageTitle shouldBe searchProductPageTitle
+    }
+
+    private fun `Then verify view added broad match`(searchProductModel: SearchProductModel) {
+        verify {
+            productListView.addProductList(capture(visitableListSlot))
+        }
+
+        val visitableList = visitableListSlot.captured
+        visitableList[0].shouldBeInstanceOf<SuggestionDataView>()
+
+        val otherRelated = searchProductModel.searchProduct.data.related.otherRelatedList
+        visitableList.filterIsInstance<BroadMatchDataView>().size shouldBe otherRelated.size
+
+        var index = visitableList.indexOfFirst { it is BroadMatchDataView }
+        index shouldBe 1
+
+        repeat(otherRelated.size) {
+            val visitable = visitableList[index]
+            visitable.shouldBeInstanceOf<BroadMatchDataView>()
+
+            val broadMatchViewModel = visitable as BroadMatchDataView
+            broadMatchViewModel.isAppendTitleInTokopedia shouldBe true
+
+            index++
+        }
     }
 
     private fun `Then verify local search recommendation use case is called`() {
@@ -206,7 +234,7 @@ internal class SearchProductLocalSearchTest: ProductListPresenterTestFixtures() 
     }
 
     private fun `Then verify empty search view model by filter`() {
-        val emptySearchViewModelSlot = slot<EmptySearchProductViewModel>()
+        val emptySearchViewModelSlot = slot<EmptySearchProductDataView>()
         verify {
             productListView.setEmptyProduct(null, capture(emptySearchViewModelSlot))
         }
@@ -240,7 +268,7 @@ internal class SearchProductLocalSearchTest: ProductListPresenterTestFixtures() 
     }
 
     private fun `Then verify empty search view model for non local search`() {
-        val emptySearchViewModelSlot = slot<EmptySearchProductViewModel>()
+        val emptySearchViewModelSlot = slot<EmptySearchProductDataView>()
 
         verify {
             productListView.setEmptyProduct(null, capture(emptySearchViewModelSlot))
@@ -273,8 +301,8 @@ internal class SearchProductLocalSearchTest: ProductListPresenterTestFixtures() 
     }
 
     private fun `Then verify visitable list have search in tokopedia at bottom`() {
-        visitableList.last().shouldBeInstanceOf<SearchInTokopediaViewModel>()
-        (visitableList.last() as SearchInTokopediaViewModel).applink shouldBe "${ApplinkConstInternalDiscovery.SEARCH_RESULT}?q=asus"
+        visitableList.last().shouldBeInstanceOf<SearchInTokopediaDataView>()
+        (visitableList.last() as SearchInTokopediaDataView).applink shouldBe "${ApplinkConstInternalDiscovery.SEARCH_RESULT}?q=asus"
     }
 
     @Test

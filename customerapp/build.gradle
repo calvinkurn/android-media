@@ -284,7 +284,6 @@ dependencies {
     implementation project(rootProject.ext.libraries.cmPushNotifications)
     implementation project(rootProject.ext.features.kyc)
     implementation project(rootProject.ext.libraries.applink)
-    implementation project(rootProject.ext.libraries.imagePicker)
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation project(rootProject.ext.libraries.utils)
     implementation rootProject.ext.tkpdInternalLibDependencies.network
@@ -317,7 +316,7 @@ dependencies {
     implementation rootProject.ext.networkDependencies.loggingInterceptor
     implementation rootProject.ext.networkDependencies.glide
     implementation rootProject.ext.analyticsDependencies.appsflyer
-    implementation project(rootProject.ext.libraries.moengageWrapper)
+    implementation project(rootProject.ext.features.moengageWrapper)
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar

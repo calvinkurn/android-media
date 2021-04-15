@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">tkpddigital</string>
+
+    <string name="digital_cart_toolbar_title">Checkout</string>
+
+    <string name="digital_cart_detail_see_detail_label">Lihat Detail</string>
+    <string name="digital_cart_detail_close_label">Tutup</string>
+
+    <string name="digital_checkout_total_payment_label">Total Tagihan</string>
+    <string name="digital_cart_checkout_pay_label_cta">Pilih Pembayaran</string>
+    <string name="digital_cart_hint_input_price">Nominal Pembayaran</string>
+    <string name="digital_cart_prepend_text_input_price">Rp</string>
+
+    <string name="digital_cart_login_message">Silakan login terlebih dahulu</string>
+    <string name="digital_cart_default_error_img_url">https://images.tokopedia.net/img/android/res/singleDpi/ic_digital_checkout_failed_transaction.png</string>
+
+    <string name="digital_cart_generate_token_checkout">%1$s_%2$s</string>
+
+    <string name="digital_cart_user_price_info">Jumlah yang akan dibayar</string>
+    <string name="digital_cart_error_input_price_less_than_min">Min. pembayaran %1$s</string>
+    <string name="digital_cart_error_input_price_more_than_max">Maks. pembayaran %1$s</string>
+
+    <string name="digital_cart_additional_payment_cost_label">Harga</string>
+    <string name="digital_cart_additional_payment_promo_label">Promo</string>
+    <string name="digital_cart_additional_payment_total_cost_label">Total Bayar</string>
+    <string name="digital_cart_additional_payment_label">Pembayaran</string>
+
+    <string name="digital_cart_alert_payment_canceled_or_failed">Pembayaran tidak berhasil atau dibatalkan</string>
+    <string name="digital_cart_alert_payment_canceled">Pembayaran dibatalkan</string>
+
+    <string name="digital_checkout_empty_state_title">Oops, gagal melanjutkan pembayaran</string>
+    <string name="digital_checkout_empty_state_btn">Coba Lagi</string>
+    <string name="digital_checkout_promo_title">Makin hemat pakai promo</string>
+    <string name="digital_checkout_summary_title">Ringkasan Pembayaran</string>
+</resources>

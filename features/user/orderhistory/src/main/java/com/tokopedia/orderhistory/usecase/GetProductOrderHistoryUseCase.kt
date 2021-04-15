@@ -1,13 +1,21 @@
 package com.tokopedia.orderhistory.usecase
 
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.orderhistory.data.ChatHistoryProductResponse
-import com.tokopedia.orderhistory.data.Product
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
+import kotlin.coroutines.CoroutineContext
 
-class GetProductOrderHistoryUseCase @Inject constructor(
-        private val gqlUseCase: GraphqlUseCase<ChatHistoryProductResponse>
-) {
+open class GetProductOrderHistoryUseCase @Inject constructor(
+        private val gqlUseCase: GraphqlUseCase<ChatHistoryProductResponse>,
+        private val dispatchers: CoroutineDispatchers
+) : CoroutineScope {
+
+    override val coroutineContext: CoroutineContext get() = dispatchers.main + SupervisorJob()
 
     private val paramShopId = "shopID"
     private val paramMinOrderTime = "minOrderTime"
@@ -18,18 +26,25 @@ class GetProductOrderHistoryUseCase @Inject constructor(
             onSuccess: (ChatHistoryProductResponse) -> Unit,
             onError: (Throwable) -> Unit
     ) {
-        val params = generateParams(shopId)
-        gqlUseCase.apply {
-            setTypeClass(ChatHistoryProductResponse::class.java)
-            setRequestParams(params)
-            setGraphqlQuery(query)
-            execute({ result ->
-                onSuccess(result)
-                updateMinOrderTime(result)
-            }, { error ->
-                onError(error)
-            })
-        }
+        launchCatchError(dispatchers.io,
+                {
+                    val params = generateParams(shopId)
+                    val response = gqlUseCase.apply {
+                        setTypeClass(ChatHistoryProductResponse::class.java)
+                        setRequestParams(params)
+                        setGraphqlQuery(query)
+                    }.executeOnBackground()
+                    withContext(dispatchers.main) {
+                        onSuccess(response)
+                        updateMinOrderTime(response)
+                    }
+                },
+                {
+                    withContext(dispatchers.main) {
+                        onError(it)
+                    }
+                }
+        )
     }
 
     private fun updateMinOrderTime(result: ChatHistoryProductResponse) {

@@ -3,8 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/widget_header_reputation_container"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@color/Unify_N0">
+    android:layout_height="wrap_content">
 
     <View
         android:layout_width="match_parent"
@@ -24,16 +23,16 @@
 
         <ImageView
             android:id="@+id/calendar_icon"
+            android:contentDescription="@null"
             android:layout_width="19.5dp"
-            android:layout_height="19.5dp"
-            app:srcCompat="@mipmap/ic_icon_calendar_02" />
+            android:layout_height="19.5dp" />
 
         <View
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_weight="1" />
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/calendar_range"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -41,7 +40,8 @@
             android:layout_marginEnd="6dp"
             android:gravity="end"
             android:textColor="@color/Unify_G400"
-            android:textSize="14sp"
+            app:typographyWeight="reguler"
+            app:typographyType="body_2"
             tools:text="26 Jul 2016 - 25 Des 2016" />
 
     </LinearLayout>

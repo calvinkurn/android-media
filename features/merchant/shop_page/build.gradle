@@ -75,7 +75,6 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.coach_mark
     implementation rootProject.ext.unifyDependencies.empty_state
 
-    implementation rootProject.ext.tkpdInternalLibDependencies.cacheapi
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation project(rootProject.ext.libraries.graphql)
@@ -121,6 +120,8 @@ dependencies {
     implementation rootProject.ext.networkDependencies.glide
     implementation project(rootProject.ext.features.filter)
     implementation project(rootProject.ext.features.searchbar)
+    implementation project(rootProject.ext.features.localizationchooseaddress)
+    implementation rootProject.ext.unifyDependencies.coach_mark
 
     // UI Test
     androidTestImplementation rootProject.ext.testDependencies.androidTestRunner

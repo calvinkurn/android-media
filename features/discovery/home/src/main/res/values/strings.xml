@@ -113,7 +113,14 @@
 
     <string name="onboarding_coachmark_title">Halo, ini Menu Utama yang baru!</string>
     <string name="onboarding_coachmark_description">Lihat Semua Kategori, Daftar Transaksi, Wishlist, tulis Ulasan Produk, kini semuanya bisa dari sini!</string>
-  
+
+    <string name="onboarding_coachmark_inbox_title">Temukan Inbox &amp; Notifikasi di sini!</string>
+    <string name="onboarding_coachmark_inbox_description">Sekarang kamu bisa cek chat, diskusi &amp; notifikasi dengan lebih mudah di halaman ini.</string>
+
+    <string name="onboarding_coachmark_wallet_title">Kenalan sama TokoPoints, yuk! </string>
+    <string name="onboarding_coachmark_wallet_description">Points ini bisa ditukar buat belanja. Transaksi pakai kupon cashback buat nambah points-mu, ya!</string>
+
+
     <string name="text_dialog_success_reset_password">Masuk lagi ke Tokopedia dengan kata sandimu yang baru, ya!</string>
     <string name="cta_dialog_success_reset_password">Masuk</string>
 

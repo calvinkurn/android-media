@@ -1,14 +1,18 @@
 package com.tokopedia.home.viewModel.homepageRevamp
 
 import android.app.Activity
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.atc_common.domain.usecase.AddToCartOccUseCase
 import com.tokopedia.home.beranda.data.usecase.HomeRevampUseCase
 import com.tokopedia.home.beranda.domain.interactor.*
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelDataModel
 import com.tokopedia.home.beranda.presentation.viewModel.HomeRevampViewModel
-import com.tokopedia.home.rules.TestDispatcherProvider
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.home.util.HomeCommandProcessor
+import com.tokopedia.home_component.model.ChannelModel
+import com.tokopedia.home_component.visitable.DynamicLegoBannerDataModel
 import com.tokopedia.play.widget.util.PlayWidgetTools
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationFilterChips
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
@@ -55,7 +59,7 @@ fun createHomeViewModel(
         getDisplayHeadlineAds: GetDisplayHeadlineAds = mockk(relaxed = true),
         playWidgetTools: PlayWidgetTools = mockk(relaxed = true),
         bestSellerMapper: BestSellerMapper = mockk(relaxed = true),
-        dispatchers: TestDispatcherProvider = TestDispatcherProvider(),
+        dispatchers: CoroutineDispatchers = CoroutineTestDispatchersProvider,
         homeProcessor: HomeCommandProcessor = HomeCommandProcessor(Dispatchers.Unconfined)
 ): HomeRevampViewModel{
     val context: Activity = mockk(relaxed = true)
@@ -94,7 +98,7 @@ fun createHomeViewModel(
     )
 }
 
-fun HomeRevampUseCase.givenGetHomeDataReturn(homeDataModel: HomeDataModel) {
+fun HomeRevampUseCase.givenGetHomeDataReturn(homeDataModel: HomeDataModel? = createDefaultHomeDataModel()) {
     coEvery { getHomeData() } returns flow{
         emit(homeDataModel)
     }
@@ -109,4 +113,16 @@ fun HomeRevampUseCase.givenGetHomeDataReturn(homeDataModel: HomeDataModel, newHo
 
 fun HomeRevampUseCase.givenGetDynamicChannelsUseCase(dynamicChannelDataModels: List<DynamicChannelDataModel>) {
     coEvery { onDynamicChannelExpired(any()) } returns dynamicChannelDataModels
+}
+
+fun createDefaultHomeDataModel(): HomeDataModel {
+    return HomeDataModel(
+            list = listOf<Visitable<*>>(
+                    DynamicLegoBannerDataModel(ChannelModel(id = "1", groupId = "1")),
+                    DynamicLegoBannerDataModel(ChannelModel(id = "2", groupId = "1")),
+                    DynamicLegoBannerDataModel(ChannelModel(id = "3", groupId = "1")),
+                    DynamicLegoBannerDataModel(ChannelModel(id = "4", groupId = "1")),
+                    DynamicLegoBannerDataModel(ChannelModel(id = "5", groupId = "1"))
+            )
+    )
 }

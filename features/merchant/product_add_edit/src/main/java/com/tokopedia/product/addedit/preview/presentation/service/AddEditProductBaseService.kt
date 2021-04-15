@@ -29,6 +29,8 @@ import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProduc
 import com.tokopedia.product.addedit.variant.presentation.model.PictureVariantInputModel
 import com.tokopedia.product.addedit.variant.presentation.model.ProductVariantInputModel
 import com.tokopedia.product.addedit.variant.presentation.model.VariantInputModel
+import com.tokopedia.shop.common.domain.interactor.GetAdminInfoShopLocationUseCase
+import com.tokopedia.shop.common.domain.interactor.UpdateProductStockWarehouseUseCase
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineScope
@@ -56,6 +58,10 @@ abstract class AddEditProductBaseService : JobIntentService(), CoroutineScope {
     lateinit var saveProductDraftUseCase: SaveProductDraftUseCase
     @Inject
     lateinit var deleteProductDraftUseCase: DeleteProductDraftUseCase
+    @Inject
+    lateinit var getAdminInfoShopLocationUseCase: GetAdminInfoShopLocationUseCase
+    @Inject
+    lateinit var updateProductStockWarehouseUseCase: UpdateProductStockWarehouseUseCase
     @Inject
     lateinit var resourceProvider: ResourceProvider
     @Inject

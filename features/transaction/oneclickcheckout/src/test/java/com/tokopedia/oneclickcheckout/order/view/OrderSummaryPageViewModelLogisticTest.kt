@@ -1,5 +1,6 @@
 package com.tokopedia.oneclickcheckout.order.view
 
+import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ErrorProductData
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ErrorServiceData
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.InsuranceData
@@ -1184,6 +1185,28 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
     }
 
     @Test
+    fun `Choose Logistic Promo Error Akamai`() {
+        // Given
+        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
+        every { ratesUseCase.execute(any()) } returns Observable.just(helper.shippingRecommendationData)
+        orderSummaryPageViewModel.getRates()
+        val response = AkamaiErrorException("")
+        every { validateUsePromoRevampUseCase.get().createObservable(any()) } returns Observable.error(response)
+        every { clearCacheAutoApplyStackUseCase.get().setParams(any(), any(), any()) } just Runs
+        every { clearCacheAutoApplyStackUseCase.get().createObservable(any()) } returns Observable.just(ClearPromoUiModel())
+
+        // When
+        orderSummaryPageViewModel.chooseLogisticPromo(helper.logisticPromo)
+
+        // Then
+        val shipping = orderSummaryPageViewModel.orderShipment.value
+        assertEquals(false, shipping.isApplyLogisticPromo)
+        assertEquals(helper.firstCourierFirstDuration.productData.shipperProductId, shipping.getRealShipperProductId())
+        assertEquals(OrderPromo(state = OccButtonState.NORMAL), orderSummaryPageViewModel.orderPromo.value)
+        assertEquals(OccGlobalEvent.Error(response), orderSummaryPageViewModel.globalEvent.value)
+    }
+
+    @Test
     fun `Auto Apply Logistic Promo Success`() {
         // Given
         orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
@@ -1199,7 +1222,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
 
         // When
         orderSummaryPageViewModel.updateProduct(OrderProduct(quantity = QuantityUiModel(orderQuantity = 10)))
-        (testDispatchers.main as TestCoroutineDispatcher).advanceUntilIdle()
+        testDispatchers.main.advanceUntilIdle()
 
         // Then
         val shipping = orderSummaryPageViewModel.orderShipment.value
@@ -1231,7 +1254,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
 
         // When
         orderSummaryPageViewModel.updateProduct(OrderProduct(quantity = QuantityUiModel(orderQuantity = 10)))
-        (testDispatchers.main as TestCoroutineDispatcher).advanceUntilIdle()
+        testDispatchers.main.advanceUntilIdle()
 
         // Then
         val shipping = orderSummaryPageViewModel.orderShipment.value
@@ -1259,7 +1282,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
 
         // When
         orderSummaryPageViewModel.updateProduct(OrderProduct(quantity = QuantityUiModel(orderQuantity = 10)))
-        (testDispatchers.main as TestCoroutineDispatcher).advanceUntilIdle()
+        testDispatchers.main.advanceUntilIdle()
 
         // Then
         val shipping = orderSummaryPageViewModel.orderShipment.value
@@ -1286,12 +1309,41 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
 
         // When
         orderSummaryPageViewModel.updateProduct(OrderProduct(quantity = QuantityUiModel(orderQuantity = 10)))
-        (testDispatchers.main as TestCoroutineDispatcher).advanceUntilIdle()
+        testDispatchers.main.advanceUntilIdle()
 
         // Then
         val shipping = orderSummaryPageViewModel.orderShipment.value
         assertEquals(false, shipping.isApplyLogisticPromo)
         assertEquals(helper.firstCourierFirstDuration.productData.shipperProductId, shipping.getRealShipperProductId())
+        assertEquals(OccGlobalEvent.Error(throwable), orderSummaryPageViewModel.globalEvent.value)
+    }
+
+    @Test
+    fun `Auto Apply Logistic Promo Error Akamai`() {
+        // Given
+        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
+        orderSummaryPageViewModel._orderShipment = helper.orderShipment
+        every { ratesUseCase.execute(any()) } returns Observable.just(helper.shippingRecommendationData)
+        orderSummaryPageViewModel.getRates()
+        every { validateUsePromoRevampUseCase.get().createObservable(any()) } returns Observable.just(ValidateUsePromoRevampUiModel(PromoUiModel(voucherOrderUiModels = listOf(
+                PromoCheckoutVoucherOrdersItemUiModel(code = "bbo", messageUiModel = MessageUiModel(state = "green"))
+        )), status = "OK"))
+        orderSummaryPageViewModel.chooseLogisticPromo(helper.logisticPromo)
+        coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
+        val throwable = AkamaiErrorException("")
+        every { validateUsePromoRevampUseCase.get().createObservable(any()) } returns Observable.error(throwable)
+        every { clearCacheAutoApplyStackUseCase.get().setParams(any(), any(), any()) } just Runs
+        every { clearCacheAutoApplyStackUseCase.get().createObservable(any()) } returns Observable.just(ClearPromoUiModel())
+
+        // When
+        orderSummaryPageViewModel.updateProduct(OrderProduct(quantity = QuantityUiModel(orderQuantity = 10)))
+        testDispatchers.main.advanceUntilIdle()
+
+        // Then
+        val shipping = orderSummaryPageViewModel.orderShipment.value
+        assertEquals(false, shipping.isApplyLogisticPromo)
+        assertEquals(helper.firstCourierFirstDuration.productData.shipperProductId, shipping.getRealShipperProductId())
+        assertEquals(OrderPromo(state = OccButtonState.NORMAL), orderSummaryPageViewModel.orderPromo.value)
         assertEquals(OccGlobalEvent.Error(throwable), orderSummaryPageViewModel.globalEvent.value)
     }
 

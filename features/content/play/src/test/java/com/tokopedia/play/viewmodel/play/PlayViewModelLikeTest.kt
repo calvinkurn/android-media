@@ -1,19 +1,12 @@
 package com.tokopedia.play.viewmodel.play
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.play.helper.TestCoroutineDispatchersProvider
 import com.tokopedia.play.model.PlayChannelDataModelBuilder
 import com.tokopedia.play.model.PlayLikeModelBuilder
 import com.tokopedia.play.robot.play.andWhen
 import com.tokopedia.play.robot.play.givenPlayViewModelRobot
 import com.tokopedia.play.robot.play.thenVerify
 import com.tokopedia.play.view.uimodel.recom.LikeSource
-import com.tokopedia.play_common.util.coroutine.CoroutineDispatcherProvider
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.test.resetMain
-import kotlinx.coroutines.test.setMain
-import org.junit.After
-import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
@@ -27,18 +20,6 @@ class PlayViewModelLikeTest {
 
     private val likeModelBuilder = PlayLikeModelBuilder()
     private val channelDataBuilder = PlayChannelDataModelBuilder()
-
-    private val dispatchers: CoroutineDispatcherProvider = TestCoroutineDispatchersProvider
-
-    @Before
-    fun setUp() {
-        Dispatchers.setMain(dispatchers.main)
-    }
-
-    @After
-    fun tearDown() {
-        Dispatchers.resetMain()
-    }
 
     @Test
     fun `given like info is not set, when change like count, then it should not be updated`() {
@@ -64,7 +45,7 @@ class PlayViewModelLikeTest {
                 likeInfo = likeModelBuilder.buildCompleteData(
                         param = likeModelBuilder.buildParam(),
                         status = likeModelBuilder.buildStatus(
-                                totalLike = initialTotalLike,
+                                totalLike = initialTotalLike.toLong(),
                                 totalLikeFormatted = initialTotalLike.toString(),
                                 isLiked = false
                         )
@@ -82,7 +63,7 @@ class PlayViewModelLikeTest {
                     .isAvailable()
                     .isEqualTo(
                             likeModelBuilder.buildStatus(
-                                    totalLike = newLikeCount,
+                                    totalLike = newLikeCount.toLong(),
                                     totalLikeFormatted = newLikeCount.toString(),
                                     isLiked = true,
                                     source = LikeSource.UserAction
@@ -99,7 +80,7 @@ class PlayViewModelLikeTest {
                 likeInfo = likeModelBuilder.buildCompleteData(
                         param = likeModelBuilder.buildParam(),
                         status = likeModelBuilder.buildStatus(
-                                totalLike = initialTotalLike,
+                                totalLike = initialTotalLike.toLong(),
                                 totalLikeFormatted = initialTotalLike.toString(),
                                 isLiked = false
                         )
@@ -117,7 +98,7 @@ class PlayViewModelLikeTest {
                     .isAvailable()
                     .isEqualTo(
                             likeModelBuilder.buildStatus(
-                                    totalLike = newLikeCount,
+                                    totalLike = newLikeCount.toLong(),
                                     totalLikeFormatted = newLikeCount.toString(),
                                     isLiked = false,
                                     source = LikeSource.UserAction

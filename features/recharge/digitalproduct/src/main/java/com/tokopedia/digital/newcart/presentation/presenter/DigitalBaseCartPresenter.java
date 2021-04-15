@@ -107,22 +107,30 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
 
     @Override
     public void onViewCreated() {
+        if (getView().getCartPassData() == null) {
+            getView().closeViewWithMessageAlert(getView().getString(R.string.digital_transaction_failed_title));
+            return;
+        }
+
         if (!userSession.isLoggedIn()) {
             getView().closeViewWithMessageAlert(getView().getString(R.string.digital_cart_login_message));
         } else {
             getView().hideCartView();
             getView().showFullPageLoading();
             getView().startPerfomanceMonitoringTrace();
-            if (getView().getCartPassData().getNeedGetCart()) {
-                RequestParams requestParams = digitalGetCartUseCase.createRequestParams(
-                        getView().getCartPassData().getCategoryId(),
-                        userSession.getUserId(),
-                        userSession.getDeviceId());
-                digitalGetCartUseCase.execute(requestParams, getSubscriberCart());
+            if (getView().getCartPassData().isFromPDP() || getView().getCartPassData().getNeedGetCart()) {
+                if (getView().getCartPassData().getCategoryId() != null) {
+                    RequestParams requestParams = digitalGetCartUseCase.createRequestParams(
+                            getView().getCartPassData().getCategoryId(),
+                            userSession.getUserId(),
+                            userSession.getDeviceId());
+                    digitalGetCartUseCase.execute(requestParams, getSubscriberCart(false));
+                } else
+                    getView().closeViewWithMessageAlert(getView().getString(R.string.digital_transaction_failed_title));
             } else {
                 RequestParams requestParams = digitalAddToCartUseCase.createRequestParams(
                         getRequestBodyAtcDigital(), getView().getIdemPotencyKey());
-                digitalAddToCartUseCase.execute(requestParams, getSubscriberCart());
+                digitalAddToCartUseCase.execute(requestParams, getSubscriberCart(true));
             }
         }
     }
@@ -185,7 +193,7 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
         return requestBodyAtcDigital;
     }
 
-    private Subscriber<Map<Type, RestResponse>> getSubscriberCart() {
+    private Subscriber<Map<Type, RestResponse>> getSubscriberCart(Boolean isAddToCart) {
         return new Subscriber<Map<Type, RestResponse>>() {
             @Override
             public void onCompleted() {
@@ -215,7 +223,10 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
                 getView().setCartDigitalInfo(cartDigitalInfoData);
                 getView().setCheckoutParameter(buildCheckoutData(cartDigitalInfoData, userSession.getAccessToken()));
 
-                digitalAnalytics.eventAddToCart(cartDigitalInfoData, getView().getCartPassData().getSource());
+                if (isAddToCart) {
+                    digitalAnalytics.eventAddToCart(cartDigitalInfoData, getView().getCartPassData().getSource(),
+                            userSession.getUserId());
+                }
                 digitalAnalytics.eventCheckout(cartDigitalInfoData);
 
                 if (cartDigitalInfoData.getAttributes().isNeedOtp()) {

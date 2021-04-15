@@ -7,14 +7,14 @@ import com.tokopedia.play.broadcaster.domain.usecase.GetLiveStatisticsUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.PlayBroadcastUpdateChannelUseCase
 import com.tokopedia.play.broadcaster.model.ModelBuilder
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastUiMapper
-import com.tokopedia.play.broadcaster.util.TestCoroutineDispatcherProvider
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
+import com.tokopedia.play.broadcaster.util.TestHtmlTextTransformer
 import com.tokopedia.play.broadcaster.util.getOrAwaitValue
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastSummaryViewModel
 import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
 import io.mockk.mockk
-import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.assertj.core.api.Assertions
 import org.junit.Before
 import org.junit.Rule
@@ -28,10 +28,7 @@ class PlayBroadcastSummaryViewModelTest {
     @get:Rule
     val instantTaskExecutorRule: InstantTaskExecutorRule = InstantTaskExecutorRule()
 
-    private val testDispatcher = TestCoroutineDispatcher()
-    private val dispatcherProvider = TestCoroutineDispatcherProvider(testDispatcher)
-
-    private val playBroadcastMapper = PlayBroadcastUiMapper()
+    private val playBroadcastMapper = PlayBroadcastUiMapper(TestHtmlTextTransformer())
 
     private lateinit var channelConfigStore: ChannelConfigStore
 
@@ -50,7 +47,7 @@ class PlayBroadcastSummaryViewModelTest {
 
         viewModel = PlayBroadcastSummaryViewModel(
                 channelConfigStore,
-                dispatcherProvider,
+                CoroutineTestDispatchersProvider,
                 liveStatisticsUseCase,
                 broadcastUpdateChannelUseCase,
                 userSession,

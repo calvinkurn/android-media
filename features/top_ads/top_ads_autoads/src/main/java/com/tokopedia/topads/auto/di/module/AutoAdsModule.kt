@@ -7,8 +7,6 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.GraphqlUseCase
-import com.tokopedia.topads.auto.di.AutoAdsDispatcherProvider
-import com.tokopedia.topads.auto.di.AutoAdsDispatcherProviderImpl
 import com.tokopedia.topads.auto.di.AutoAdsScope
 import com.tokopedia.topads.auto.view.factory.DailyBudgetViewModelFactory
 import com.tokopedia.topads.common.domain.interactor.BidInfoUseCase
@@ -23,10 +21,6 @@ import dagger.Provides
  */
 @Module
 class AutoAdsModule {
-
-    @AutoAdsScope
-    @Provides
-    fun provideAutoAdsDispatcher(): AutoAdsDispatcherProvider = AutoAdsDispatcherProviderImpl()
 
     @AutoAdsScope
     @Provides

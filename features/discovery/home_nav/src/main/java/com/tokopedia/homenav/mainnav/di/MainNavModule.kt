@@ -2,8 +2,8 @@ package com.tokopedia.homenav.mainnav.di
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.homenav.common.dispatcher.NavDispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.homenav.common.util.ClientMenuGenerator
 import com.tokopedia.homenav.mainnav.data.factory.MainNavDataFactory
 import com.tokopedia.homenav.mainnav.data.factory.MainNavDataFactoryImpl
@@ -20,8 +20,8 @@ class MainNavModule {
 
     @MainNavScope
     @Provides
-    fun provideMainNavDispatcher(): NavDispatcherProvider {
-        return MainNavDispatcherProviderImpl()
+    fun provideMainNavDispatcher(): CoroutineDispatchers {
+        return CoroutineDispatchersProvider
     }
 
     @MainNavScope
@@ -39,7 +39,7 @@ class MainNavModule {
     fun provideAccountHeaderMapper(@ApplicationContext context: Context,
                                    userSession: UserSessionInterface
     ) = AccountHeaderMapper(
-            context, userSession
+            userSession
     )
 
     @MainNavScope

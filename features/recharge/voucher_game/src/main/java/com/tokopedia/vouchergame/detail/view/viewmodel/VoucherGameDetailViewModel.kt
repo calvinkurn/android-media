@@ -12,7 +12,7 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.vouchergame.common.util.VoucherGameDispatchersProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.vouchergame.detail.data.VoucherGameDetailData
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -21,14 +21,14 @@ import javax.inject.Inject
  * Created by resakemal on 16/08/19.
  */
 class VoucherGameDetailViewModel @Inject constructor(private val graphqlRepository: GraphqlRepository,
-                                                     private val dispatcher: VoucherGameDispatchersProvider)
-    : BaseViewModel(dispatcher.Main) {
+                                                     private val dispatcher: CoroutineDispatchers)
+    : BaseViewModel(dispatcher.main) {
 
     val voucherGameProducts = MutableLiveData<Result<VoucherGameDetailData>>()
 
     fun getVoucherGameProducts(rawQuery: String, mapParam: Map<String, Any>) {
         launchCatchError(block = {
-            val data = withContext(dispatcher.IO) {
+            val data = withContext(dispatcher.io) {
                 val graphqlRequest = GraphqlRequest(rawQuery, VoucherGameDetailData.Response::class.java, mapParam)
                 graphqlRepository.getReseponse(listOf(graphqlRequest), GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST)
                         .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * 5).build())

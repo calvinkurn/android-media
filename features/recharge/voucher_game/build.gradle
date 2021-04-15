@@ -32,6 +32,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.baseList)
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.kotlinExtensions)
+    implementation project(rootProject.ext.libraries.commonNetwork)
     implementation project(rootProject.ext.features.commonDigital)
     implementation project(rootProject.ext.features.commonTopupBills)
     implementation project(rootProject.ext.features.promoCheckoutCommon)
@@ -60,6 +61,7 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.mockitorCore
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.archCoreTesting
+    testImplementation project(rootProject.ext.libraries.unitTest)
 
     //    UI Test
     androidTestImplementation rootProject.ext.testDependencies.espressoCore

@@ -15,8 +15,8 @@ import com.tokopedia.logisticcart.domain.executor.SchedulerProvider
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.ShippingDurationConverter
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
 import com.tokopedia.oneclickcheckout.common.OVO_ACTIVATION_URL
-import com.tokopedia.oneclickcheckout.common.dispatchers.DefaultDispatchers
-import com.tokopedia.oneclickcheckout.common.dispatchers.ExecutorDispatchers
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.oneclickcheckout.common.domain.GetPreferenceListUseCase
 import com.tokopedia.oneclickcheckout.common.domain.GetPreferenceListUseCaseImpl
 import com.tokopedia.oneclickcheckout.common.domain.mapper.PreferenceModelMapper
@@ -27,6 +27,7 @@ import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccGqlResponse
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.di.PurchasePlatformNetworkModule
 import com.tokopedia.purchase_platform.common.feature.editaddress.di.PeopleAddressNetworkModule
+import com.tokopedia.purchase_platform.common.feature.localizationchooseaddress.request.ChosenAddressRequestHelper
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ValidateUsePromoRevampUseCase
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSession
@@ -44,7 +45,7 @@ open class OrderSummaryPageModule(private val activity: Activity) {
 
     @OrderSummaryPageScope
     @Provides
-    fun provideExecutorDispatchers(): ExecutorDispatchers = DefaultDispatchers
+    fun provideExecutorDispatchers(): CoroutineDispatchers = CoroutineDispatchersProvider
 
     @OrderSummaryPageScope
     @Provides
@@ -100,8 +101,10 @@ open class OrderSummaryPageModule(private val activity: Activity) {
 
     @OrderSummaryPageScope
     @Provides
-    fun provideValidateUsePromoRevampUseCase(context: Context, graphqlUseCase: com.tokopedia.graphql.domain.GraphqlUseCase): ValidateUsePromoRevampUseCase {
-        return ValidateUsePromoRevampUseCase(context, graphqlUseCase)
+    fun provideValidateUsePromoRevampUseCase(context: Context,
+                                             graphqlUseCase: com.tokopedia.graphql.domain.GraphqlUseCase,
+                                             chosenAddressRequestHelper: ChosenAddressRequestHelper): ValidateUsePromoRevampUseCase {
+        return ValidateUsePromoRevampUseCase(context, graphqlUseCase, chosenAddressRequestHelper)
     }
 
     @OrderSummaryPageScope
@@ -124,4 +127,5 @@ open class OrderSummaryPageModule(private val activity: Activity) {
     open fun provideOvoActivationLink(): String {
         return "${TokopediaUrl.getInstance().WEB}ovo/api/v2/activate"
     }
+
 }

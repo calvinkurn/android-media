@@ -14,12 +14,12 @@ import com.tokopedia.play.view.type.DiscountedPrice
 import com.tokopedia.play.view.type.OriginalPrice
 import com.tokopedia.play.view.type.ProductAction
 import com.tokopedia.play.view.uimodel.CartFeedbackUiModel
-import com.tokopedia.play.view.uimodel.ProductLineUiModel
+import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.VariantSheetUiModel
 import com.tokopedia.play.view.wrapper.InteractionEvent
 import com.tokopedia.play.view.wrapper.LoginStateEvent
 import com.tokopedia.play.view.wrapper.PlayResult
-import com.tokopedia.play_common.util.coroutine.CoroutineDispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.play_common.util.event.Event
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.variant_common.use_case.GetProductVariantUseCase
@@ -35,7 +35,7 @@ class PlayBottomSheetViewModel @Inject constructor(
         private val getProductVariantUseCase: GetProductVariantUseCase,
         private val postAddToCartUseCase: PostAddToCartUseCase,
         private val userSession: UserSessionInterface,
-        private val dispatchers: CoroutineDispatcherProvider
+        private val dispatchers: CoroutineDispatchers
 ) : ViewModel() {
 
     private val _observableAddToCart = MutableLiveData<PlayResult<Event<CartFeedbackUiModel>>>()
@@ -47,7 +47,7 @@ class PlayBottomSheetViewModel @Inject constructor(
     val observableAddToCart: LiveData<PlayResult<Event<CartFeedbackUiModel>>> = _observableAddToCart
     val observableProductVariant: LiveData<PlayResult<VariantSheetUiModel>> = _observableProductVariant
 
-    fun getProductVariant(product: ProductLineUiModel, action: ProductAction) {
+    fun getProductVariant(product: PlayProductUiModel.Product, action: ProductAction) {
         _observableProductVariant.value = PlayResult.Loading(true)
 
         viewModelScope.launchCatchError(block = {
@@ -80,7 +80,7 @@ class PlayBottomSheetViewModel @Inject constructor(
         )
     }
 
-    fun addToCart(product: ProductLineUiModel, notes: String = "", action: ProductAction, type: BottomInsetsType) {
+    fun addToCart(product: PlayProductUiModel.Product, notes: String = "", action: ProductAction, type: BottomInsetsType) {
         _observableAddToCart.value = PlayResult.Loading(showPlaceholder = false)
 
         //TODO(If isSuccess = false, treat that as Failure instead of Success(isSuccess=true))
@@ -122,7 +122,7 @@ class PlayBottomSheetViewModel @Inject constructor(
     }
 
     private fun mappingResponseCart(addToCartDataModel: AddToCartDataModel,
-                                    product: ProductLineUiModel,
+                                    product: PlayProductUiModel.Product,
                                     action: ProductAction,
                                     bottomInsetsType: BottomInsetsType) =
             CartFeedbackUiModel(

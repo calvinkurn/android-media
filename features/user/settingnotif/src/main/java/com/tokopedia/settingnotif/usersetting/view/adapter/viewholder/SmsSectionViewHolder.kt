@@ -11,7 +11,7 @@ import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.settingnotif.R
-import com.tokopedia.settingnotif.usersetting.const.Unify.Green_G500
+import com.tokopedia.settingnotif.usersetting.const.Unify.Unify_G500
 import com.tokopedia.settingnotif.usersetting.data.pojo.SmsSection
 import com.tokopedia.unifycomponents.ticker.Ticker
 
@@ -26,7 +26,7 @@ class SmsSectionViewHolder(itemView: View?): AbstractViewHolder<SmsSection>(item
         val inFull = itemView.context.getString(R.string.settingnotif_ticker_sms_more)
         val shorten = "$content\n$inFull"
         val spannable = SpannableString(shorten)
-        val color = ContextCompat.getColor(itemView.context, Green_G500)
+        val color = ContextCompat.getColor(itemView.context, Unify_G500)
         spannable.setSpan(
                 ForegroundColorSpan(color),
                 shorten.indexOf(inFull),

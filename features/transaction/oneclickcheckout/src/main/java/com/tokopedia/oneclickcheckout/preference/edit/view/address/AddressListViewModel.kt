@@ -3,22 +3,26 @@ package com.tokopedia.oneclickcheckout.preference.edit.view.address
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.address.Token
 import com.tokopedia.logisticCommon.domain.model.AddressListModel
 import com.tokopedia.logisticCommon.domain.usecase.GetAddressCornerUseCase
-import com.tokopedia.oneclickcheckout.common.dispatchers.ExecutorDispatchers
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.oneclickcheckout.common.idling.OccIdlingResource
 import com.tokopedia.oneclickcheckout.common.view.model.Failure
 import com.tokopedia.oneclickcheckout.common.view.model.OccState
+import com.tokopedia.oneclickcheckout.common.view.model.preference.AddressModel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import rx.subscriptions.CompositeSubscription
 import javax.inject.Inject
 
-class AddressListViewModel @Inject constructor(private val useCase: GetAddressCornerUseCase, private val dispatcher: ExecutorDispatchers) : BaseViewModel(dispatcher.main) {
+class AddressListViewModel @Inject constructor(private val useCase: GetAddressCornerUseCase, private val dispatcher: CoroutineDispatchers) : BaseViewModel(dispatcher.immediate) {
 
     var savedQuery: String = ""
-    var selectedId = "-1"
+    var selectedId: String = DEFAULT_SELECTED_ID
+    var selectedAddressModel: AddressModel? = null
     var destinationLatitude: String = ""
     var destinationLongitude: String = ""
     var destinationDistrict: String = ""
@@ -35,11 +39,15 @@ class AddressListViewModel @Inject constructor(private val useCase: GetAddressCo
 
     private val compositeSubscription = CompositeSubscription()
 
-    fun searchAddress(query: String) {
+    companion object {
+        private const val DEFAULT_SELECTED_ID = "-1"
+    }
+
+    fun searchAddress(query: String, addressState: Int, localCacheAddressId: String, isWhitelistChosenAddress: Boolean) {
         _addressList.value = OccState.Loading
         OccIdlingResource.increment()
         compositeSubscription.add(
-                useCase.execute(query)
+                useCase.execute(query, addressState, localCacheAddressId.toIntOrZero(), isWhitelistChosenAddress)
                         .subscribe(object : rx.Observer<AddressListModel> {
                             override fun onError(e: Throwable?) {
                                 _addressList.value = OccState.Failed(Failure(e))
@@ -62,12 +70,12 @@ class AddressListViewModel @Inject constructor(private val useCase: GetAddressCo
         )
     }
 
-    fun loadMore() {
+    fun loadMore(addressState: Int, localCacheAddressId: String, isWhitelistChosenAddress: Boolean) {
         if (_addressList.value !is OccState.Loading && !isLoadingMore) {
             isLoadingMore = true
             OccIdlingResource.increment()
             compositeSubscription.add(
-                    useCase.loadMore(savedQuery, ++this.page)
+                    useCase.loadMore(savedQuery, ++this.page, addressState, localCacheAddressId.toIntOrZero(), isWhitelistChosenAddress)
                             .subscribe(object : rx.Observer<AddressListModel> {
                                 override fun onError(e: Throwable?) {
                                     _addressList.value = OccState.Failed(Failure(e))
@@ -93,6 +101,11 @@ class AddressListViewModel @Inject constructor(private val useCase: GetAddressCo
             OccIdlingResource.increment()
             withContext(dispatcher.default) {
                 val addressList = addressListModel.listAddress
+                if (selectedId == DEFAULT_SELECTED_ID && !isLoadMore) {
+                    addressList.firstOrNull { it.isStateChosenAddress }?.run {
+                        selectedId = id
+                    }
+                }
                 for (item in addressList) {
                     item.isSelected = item.id == selectedId
                     if (item.id == selectedId) {
@@ -100,6 +113,16 @@ class AddressListViewModel @Inject constructor(private val useCase: GetAddressCo
                         destinationLatitude = item.latitude
                         destinationLongitude = item.longitude
                         destinationPostalCode = item.postalCode
+
+                        selectedAddressModel = AddressModel(
+                                addressId = item.id?.toIntOrZero() ?: 0,
+                                cityId = item.cityId?.toIntOrZero() ?: 0,
+                                districtId = item.destinationDistrictId?.toIntOrZero() ?: 0,
+                                latitude = item.latitude,
+                                longitude = item.longitude,
+                                addressName = item.addressName,
+                                receiverName = item.recipientName,
+                                postalCode = item.postalCode)
                     }
                 }
                 addressListModel.listAddress = if (isLoadMore) {
@@ -122,10 +145,19 @@ class AddressListViewModel @Inject constructor(private val useCase: GetAddressCo
         }
     }
 
-    fun setSelectedAddress(addressId: String) {
+    fun setSelectedAddress(address: RecipientAddressModel) {
         val addressModel = addressListModel
         if (addressModel != null && (_addressList.value is OccState.Success || _addressList.value is OccState.FirstLoad)) {
-            selectedId = addressId
+            selectedId = address.id
+            selectedAddressModel = AddressModel(
+                    addressId = address.id?.toIntOrZero() ?: 0,
+                    cityId = address.cityId?.toIntOrZero() ?: 0,
+                    districtId = address.destinationDistrictId?.toIntOrZero() ?: 0,
+                    latitude = address.latitude,
+                    longitude = address.longitude,
+                    addressName = address.addressName,
+                    receiverName = address.recipientName,
+                    postalCode = address.postalCode)
             logicSelection(addressModel, isChangeSelection = true)
         }
     }

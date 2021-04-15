@@ -22,7 +22,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.onboarding.R
 import com.tokopedia.onboarding.analytics.OnboardingAnalytics
 import com.tokopedia.onboarding.common.IOnBackPressed
-import com.tokopedia.onboarding.common.OnboardingIoDispatcher
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.onboarding.data.OnboardingConstant.PARAM_SOURCE_ONBOARDING
 import com.tokopedia.onboarding.data.OnboardingScreenItem
 import com.tokopedia.onboarding.di.OnboardingComponent
@@ -70,7 +70,7 @@ class OnboardingFragment : BaseDaggerFragment(), CoroutineScope, IOnBackPressed 
     lateinit var remoteConfig: RemoteConfig
 
     @Inject
-    lateinit var dispatcher: OnboardingIoDispatcher
+    lateinit var dispatcher: CoroutineDispatchers
 
     override val coroutineContext: CoroutineContext
         get() = job + dispatcher.main

@@ -2,11 +2,13 @@ package com.tokopedia.home.beranda.presentation.viewModel
 
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.home.beranda.common.HomeDispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.home.beranda.domain.interactor.GetHomeRecommendationUseCase
 import com.tokopedia.home.beranda.helper.copy
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.*
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils.convertToLocationParams
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import javax.inject.Inject
@@ -14,8 +16,8 @@ import javax.inject.Inject
 class HomeRecommendationViewModel @Inject constructor(
         private val getHomeRecommendationUseCase: GetHomeRecommendationUseCase,
         private val topAdsImageViewUseCase: TopAdsImageViewUseCase,
-        homeDispatcher: HomeDispatcherProvider
-) : BaseViewModel(homeDispatcher.io()){
+        homeDispatcher: CoroutineDispatchers
+) : BaseViewModel(homeDispatcher.io){
     val homeRecommendationLiveData get() = _homeRecommendationLiveData
     private val _homeRecommendationLiveData: MutableLiveData<HomeRecommendationDataModel> = MutableLiveData()
     val homeRecommendationNetworkLiveData get() = _homeRecommendationNetworkLiveData
@@ -25,10 +27,10 @@ class HomeRecommendationViewModel @Inject constructor(
 
     var topAdsBannerNextPageToken = ""
 
-    fun loadInitialPage(tabName: String, recommendationId: Int,count: Int){
+    fun loadInitialPage(tabName: String, recommendationId: Int,count: Int, locationParam: String = ""){
         _homeRecommendationLiveData.postValue(HomeRecommendationDataModel(homeRecommendations = listOf(loadingModel)))
         launchCatchError(coroutineContext, block = {
-            getHomeRecommendationUseCase.setParams(tabName, recommendationId, count, 1)
+            getHomeRecommendationUseCase.setParams(tabName, recommendationId, count, 1, locationParam)
             val data = getHomeRecommendationUseCase.executeOnBackground()
             if(data.homeRecommendations.isEmpty()){
                 _homeRecommendationLiveData.postValue(data.copy(homeRecommendations = listOf(HomeRecommendationEmpty())))
@@ -74,14 +76,14 @@ class HomeRecommendationViewModel @Inject constructor(
         }
     }
 
-    fun loadNextData(tabName: String, recomId: Int, count: Int, page: Int) {
+    fun loadNextData(tabName: String, recomId: Int, count: Int, page: Int, locationParam: String = "") {
         val list = _homeRecommendationLiveData.value?.homeRecommendations?.toMutableList() ?: mutableListOf()
         list.add(loadMoreModel)
         _homeRecommendationLiveData.postValue(_homeRecommendationLiveData.value?.copy(
                 homeRecommendations = list.copy()
         ))
         launchCatchError(coroutineContext, block = {
-            getHomeRecommendationUseCase.setParams(tabName, recomId, count, page)
+            getHomeRecommendationUseCase.setParams(tabName, recomId, count, page, locationParam)
             val data = getHomeRecommendationUseCase.executeOnBackground()
             list.remove(loadMoreModel)
             try{

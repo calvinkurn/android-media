@@ -17,7 +17,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.digital.home.R
@@ -27,6 +26,7 @@ import com.tokopedia.digital.home.old.model.DigitalHomePageSearchCategoryModel
 import com.tokopedia.digital.home.presentation.adapter.DigitalHomePageSearchTypeFactory
 import com.tokopedia.digital.home.presentation.adapter.viewholder.DigitalHomePageSearchViewHolder
 import com.tokopedia.digital.home.presentation.viewmodel.DigitalHomePageSearchViewModel
+import com.tokopedia.digital.home.util.DigitalHomepageGqlQuery
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -84,9 +84,9 @@ open class DigitalHomePageSearchFragment: BaseListFragment<DigitalHomePageSearch
             inputMethodManager.showSoftInput(digital_homepage_search_view_search_bar.searchBarTextField, InputMethod.SHOW_FORCED)
         }
 
-        val recyclerView = getRecyclerView(view) as VerticalRecyclerView
-        recyclerView.clearItemDecoration()
-        recyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+        val recyclerView = getRecyclerView(view) as? VerticalRecyclerView
+        recyclerView?.clearItemDecoration()
+        recyclerView?.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
     }
 
     open fun onSearchBarTextChanged(text: String) { searchCategory(text) }
@@ -159,7 +159,7 @@ open class DigitalHomePageSearchFragment: BaseListFragment<DigitalHomePageSearch
     }
 
     open fun searchCategory(searchQuery: String) {
-        viewModel.searchCategoryList(GraphqlHelper.loadRawString(resources, R.raw.query_digital_home_category), searchQuery)
+        viewModel.searchCategoryList(DigitalHomepageGqlQuery.digitalHomeCategory, searchQuery)
     }
 
     companion object {
