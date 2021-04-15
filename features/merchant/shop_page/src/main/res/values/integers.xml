@@ -3,5 +3,7 @@
 
     <integer name="shop_page_collapsing_toolbar_hide_time">50</integer>
     <integer name="radius_40">40</integer>
-    <integer name="span_count">2</integer>
+    <integer name="span_count_big_grid">1</integer>
+    <integer name="span_count_small_grid">2</integer>
+    <integer name="span_count_list">1</integer>
 </resources>

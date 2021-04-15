@@ -12,6 +12,7 @@ import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.base.view.adapter.viewholders.LoadingMoreViewHolder
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.shop.R
 import com.tokopedia.shop.analytic.OldShopPageTrackingConstant.ALL_ETALASE
 import com.tokopedia.shop.common.constant.ShopPageConstant.KEY_ETALASE_HIGHLIGHT_DATA_MODEL
 import com.tokopedia.shop.common.constant.ShopPageConstant.KEY_ETALASE_TITLE_DATA_MODEL
@@ -112,13 +113,13 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
     private fun setLayoutManagerSpanCount() {
         (recyclerView?.layoutManager as? StaggeredGridLayoutManager)?.spanCount = when (shopProductAdapterTypeFactory.productCardType) {
             ShopProductViewGridType.BIG_GRID -> {
-                1
+                recyclerView?.context?.resources?.getInteger(R.integer.span_count_big_grid) ?: 1
             }
             ShopProductViewGridType.SMALL_GRID -> {
-                2
+                recyclerView?.context?.resources?.getInteger(R.integer.span_count_small_grid) ?: 2
             }
             ShopProductViewGridType.LIST -> {
-                1
+                recyclerView?.context?.resources?.getInteger(R.integer.span_count_list) ?: 1
             }
         }
     }

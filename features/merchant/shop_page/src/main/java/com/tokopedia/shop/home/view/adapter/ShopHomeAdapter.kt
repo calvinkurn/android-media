@@ -11,6 +11,7 @@ import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.base.view.adapter.viewholders.LoadingMoreViewHolder
 import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
+import com.tokopedia.shop.R
 import com.tokopedia.shop.common.util.ShopProductViewGridType
 import com.tokopedia.shop.home.WidgetName
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeProductItemBigGridViewHolder
@@ -350,13 +351,13 @@ class ShopHomeAdapter(
     private fun setLayoutManagerSpanCount() {
         (recyclerView?.layoutManager as? StaggeredGridLayoutManager)?.spanCount = when (shopHomeAdapterTypeFactory.productCardType) {
             ShopProductViewGridType.BIG_GRID -> {
-                1
+                recyclerView?.context?.resources?.getInteger(R.integer.span_count_big_grid) ?: 1
             }
             ShopProductViewGridType.SMALL_GRID -> {
-                2
+                recyclerView?.context?.resources?.getInteger(R.integer.span_count_small_grid) ?: 2
             }
             ShopProductViewGridType.LIST -> {
-                1
+                recyclerView?.context?.resources?.getInteger(R.integer.span_count_list) ?: 1
             }
         }
     }
