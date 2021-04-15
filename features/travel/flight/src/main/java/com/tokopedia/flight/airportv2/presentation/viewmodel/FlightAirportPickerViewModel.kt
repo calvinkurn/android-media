@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.common.travel.utils.TravelDispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.flight.airportv2.domain.FlightAirportPopularCityUseCase
 import com.tokopedia.flight.airportv2.domain.FlightAirportSuggestionUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -19,8 +19,8 @@ import javax.inject.Inject
 class FlightAirportPickerViewModel @Inject constructor(
         private val flightPopularAirportUseCase: FlightAirportPopularCityUseCase,
         private val flightAirportSuggestionUseCase: FlightAirportSuggestionUseCase,
-        private val dispatcherProvider: TravelDispatcherProvider)
-    : BaseViewModel(dispatcherProvider.io()) {
+        private val dispatcherProvider: CoroutineDispatchers)
+    : BaseViewModel(dispatcherProvider.io) {
 
     private val mutableAirportList = MutableLiveData<Result<List<Visitable<*>>>>()
     val airportList: LiveData<Result<List<Visitable<*>>>>
@@ -35,7 +35,7 @@ class FlightAirportPickerViewModel @Inject constructor(
     }
 
     private fun fetchPopularCity() {
-        launchCatchError(context = dispatcherProvider.ui(), block = {
+        launchCatchError(context = dispatcherProvider.main, block = {
             mutableAirportList.postValue(Success(flightPopularAirportUseCase.fetchAirportPopularCity()))
         }) {
             mutableAirportList.postValue(Fail(it))
@@ -44,7 +44,7 @@ class FlightAirportPickerViewModel @Inject constructor(
     }
 
     private fun fetchSuggestionAirport(keyword: String) {
-        launchCatchError(context = dispatcherProvider.ui(), block = {
+        launchCatchError(context = dispatcherProvider.main, block = {
             mutableAirportList.postValue(Success(flightAirportSuggestionUseCase.fetchAirportSuggestion(keyword)))
         }) {
             mutableAirportList.postValue(Fail(it))

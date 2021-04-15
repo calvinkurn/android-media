@@ -12,7 +12,7 @@ import com.tokopedia.play.broadcaster.ui.model.LiveStreamInfoUiModel
 import com.tokopedia.play.broadcaster.view.state.CoverSetupState
 import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.model.result.map
-import com.tokopedia.play_common.util.coroutine.CoroutineDispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.*
 import javax.inject.Inject
@@ -23,7 +23,7 @@ import javax.inject.Inject
 class PlayBroadcastPrepareViewModel @Inject constructor(
         private val mDataStore: PlayBroadcastDataStore,
         private val channelConfigStore: ChannelConfigStore,
-        private val dispatcher: CoroutineDispatcherProvider,
+        private val dispatcher: CoroutineDispatchers,
         private val getLiveFollowersDataUseCase: GetLiveFollowersDataUseCase,
         private val createLiveStreamChannelUseCase: CreateLiveStreamChannelUseCase,
         private val userSession: UserSessionInterface,

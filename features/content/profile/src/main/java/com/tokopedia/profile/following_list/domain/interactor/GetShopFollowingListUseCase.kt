@@ -1,20 +1,19 @@
 package com.tokopedia.profile.following_list.domain.interactor
 
-import com.tokopedia.feedcomponent.util.coroutine.CoroutineDispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.profile.following_list.data.pojo.usershopfollow.GetShopFollowingData
 import com.tokopedia.usecase.coroutines.UseCase
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
-import javax.inject.Named
 
 /**
  * Created by jegul on 2019-10-22
  */
 class GetShopFollowingListUseCase @Inject constructor(
         private val graphqlUseCase: MultiRequestGraphqlUseCase,
-        private val dispatchers: CoroutineDispatcherProvider
+        private val dispatchers: CoroutineDispatchers
 ) : UseCase<GetShopFollowingData>() {
 
     companion object {

@@ -12,7 +12,6 @@ import com.tokopedia.home.beranda.data.mapper.factory.HomeVisitableFactoryImpl
 import com.tokopedia.home.beranda.data.usecase.HomeUseCase
 import com.tokopedia.home.beranda.domain.interactor.*
 import com.tokopedia.home.beranda.presentation.viewModel.HomeViewModel
-import com.tokopedia.home.test.rules.TestDispatcherProvider
 import com.tokopedia.play.widget.util.PlayWidgetTools
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationFilterChips
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
@@ -20,6 +19,7 @@ import com.tokopedia.recommendation_widget_common.widget.bestseller.mapper.BestS
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
 import com.tokopedia.trackingoptimizer.TrackingQueue
+import com.tokopedia.test.application.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
 import io.mockk.mockk
@@ -71,7 +71,7 @@ abstract class BaseWidgetUiTest{
             getPlayCardHomeUseCase = getPlayLiveDynamicUseCase,
             getRecommendationTabUseCase = getRecommendationTabUseCase,
             getWalletBalanceUseCase = getCoroutineWalletBalanceUseCase,
-            homeDispatcher = TestDispatcherProvider(),
+            homeDispatcher = Lazy { CoroutineTestDispatchersProvider },
             homeUseCase = getHomeUseCase,
             popularKeywordUseCase = getPopularKeywordUseCase,
             sendGeolocationInfoUseCase = getSendGeolocationInfoUseCase,

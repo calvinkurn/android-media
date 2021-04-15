@@ -1,7 +1,7 @@
 package com.tokopedia.flight.cancellationV2.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.common.travel.utils.TravelTestDispatcherProvider
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.flight.cancellationV2.domain.FlightCancellationEstimateRefundUseCase
 import com.tokopedia.flight.cancellationV2.domain.FlightCancellationRequestCancelUseCase
 import com.tokopedia.flight.common.util.FlightAnalytics
@@ -26,7 +26,7 @@ class FlightCancellationReviewViewModelTest {
 
     @get:Rule
     val rule = InstantTaskExecutorRule()
-    private val testDispatcherProvider = TravelTestDispatcherProvider()
+    private val testDispatcherProvider = CoroutineTestDispatchersProvider
 
     @RelaxedMockK
     private lateinit var flightAnalytics: FlightAnalytics

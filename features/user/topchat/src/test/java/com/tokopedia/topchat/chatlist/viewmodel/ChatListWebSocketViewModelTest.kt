@@ -4,7 +4,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.tokopedia.inboxcommon.RoleType
 import com.tokopedia.inboxcommon.util.FileUtil
-import com.tokopedia.topchat.TopchatTestCoroutineContextDispatcher
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.topchat.chatlist.data.mapper.WebSocketMapper.mapToIncomingChat
 import com.tokopedia.topchat.chatlist.data.mapper.WebSocketMapper.mapToIncomingTypeState
 import com.tokopedia.topchat.chatlist.domain.websocket.PendingMessageHandler
@@ -27,7 +27,7 @@ class ChatListWebSocketViewModelTest {
     @get:Rule val rule = InstantTaskExecutorRule()
 
     private val webSocket: TopChatWebSocket = mockk(relaxed = true)
-    private val dispatchers = TopchatTestCoroutineContextDispatcher()
+    private val dispatchers = CoroutineTestDispatchersProvider
     private val userSession: UserSessionInterface = mockk(relaxed = true)
     private val pendingMessageHandler: PendingMessageHandler = mockk(relaxed = true)
 

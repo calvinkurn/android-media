@@ -2,7 +2,7 @@ package com.tokopedia.travelhomepage.destination.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.common.travel.data.entity.TravelMetaModel
-import com.tokopedia.common.travel.utils.TravelTestDispatcherProvider
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
@@ -41,7 +41,7 @@ class TravelDestinationViewModelTest {
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-        viewModel = TravelDestinationViewModel(graphqlRepository, getEmptyModelsUseCase, TravelTestDispatcherProvider())
+        viewModel = TravelDestinationViewModel(graphqlRepository, getEmptyModelsUseCase, CoroutineTestDispatchersProvider)
     }
 
     @Test
