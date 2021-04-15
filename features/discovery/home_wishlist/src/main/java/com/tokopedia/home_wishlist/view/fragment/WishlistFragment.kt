@@ -21,6 +21,8 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.appbar.AppBarLayout
+import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -33,6 +35,7 @@ import com.tokopedia.home_wishlist.analytics.WishlistTracking
 import com.tokopedia.home_wishlist.common.EndlessRecyclerViewScrollListener
 import com.tokopedia.home_wishlist.common.ToolbarElevationOffsetListener
 import com.tokopedia.home_wishlist.component.HasComponent
+import com.tokopedia.home_wishlist.di.DaggerWishlistComponent
 import com.tokopedia.home_wishlist.di.WishlistComponent
 import com.tokopedia.home_wishlist.model.action.*
 import com.tokopedia.home_wishlist.model.datamodel.*
@@ -87,7 +90,7 @@ import javax.inject.Inject
  * @constructor Creates an empty recommendation.
  */
 @SuppressLint("SyntheticAccessor")
-open class WishlistFragment : Fragment(), WishlistListener, TopAdsListener {
+open class WishlistFragment : BaseDaggerFragment(), WishlistListener, TopAdsListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -139,7 +142,6 @@ open class WishlistFragment : Fragment(), WishlistListener, TopAdsListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        initInjector()
         activity?.let {
             trackingQueue = TrackingQueue(it)
         }
@@ -187,13 +189,16 @@ open class WishlistFragment : Fragment(), WishlistListener, TopAdsListener {
         if (this::trackingQueue.isInitialized) trackingQueue.sendAll()
     }
 
-
-    private fun initInjector() {
-        getComponent(WishlistComponent::class.java)?.inject(this)
+    override fun getScreenName(): String {
+        return this::class.java.simpleName
     }
 
-    private fun <C> getComponent(componentType: Class<C>): C? {
-        return componentType.cast((activity as HasComponent<C>?)?.getComponent())
+    override fun initInjector() {
+        DaggerWishlistComponent.builder()
+                .baseAppComponent((requireContext().applicationContext as BaseMainApplication).baseAppComponent)
+                .build()
+                .inject(this)
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

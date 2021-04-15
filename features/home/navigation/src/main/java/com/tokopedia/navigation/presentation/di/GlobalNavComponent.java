@@ -11,7 +11,7 @@ import dagger.Component;
 /**
  * Created by meta on 25/07/18.
  */
-@Component(modules = {GlobalNavModule.class, WishlistModule.class}, dependencies = BaseAppComponent.class)
+@Component(modules = GlobalNavModule.class, dependencies = BaseAppComponent.class)
 @GlobalNavScope
 public interface GlobalNavComponent {
 
