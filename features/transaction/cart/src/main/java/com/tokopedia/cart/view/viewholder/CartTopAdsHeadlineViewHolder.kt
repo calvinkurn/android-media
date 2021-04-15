@@ -1,13 +1,18 @@
 package com.tokopedia.cart.view.viewholder
 
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.cart.R
 import com.tokopedia.cart.databinding.ItemCartTopAdsHeadlineBinding
 import com.tokopedia.cart.view.ActionListener
 import com.tokopedia.cart.view.uimodel.CartTopAdsHeadlineData
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker
+import com.tokopedia.topads.sdk.domain.model.CpmData
 import com.tokopedia.topads.sdk.domain.model.CpmModel
+import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener
+import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener
 import com.tokopedia.topads.sdk.utils.*
 import com.tokopedia.topads.sdk.widget.TopAdsHeadlineView
 import com.tokopedia.user.session.UserSessionInterface
@@ -16,7 +21,7 @@ class CartTopAdsHeadlineViewHolder(private val binding: ItemCartTopAdsHeadlineBi
                                    val listener: ActionListener?,
                                    val userSession: UserSessionInterface) : RecyclerView.ViewHolder(binding.root) {
 
-    private val data: CartTopAdsHeadlineData? = null
+    private var data: CartTopAdsHeadlineData? = null
 
     companion object {
         val LAYOUT = R.layout.item_cart_top_ads_headline
@@ -24,6 +29,7 @@ class CartTopAdsHeadlineViewHolder(private val binding: ItemCartTopAdsHeadlineBi
     }
 
     fun bind(data: CartTopAdsHeadlineData) {
+        this.data = data
         bindTopAdsHeadlineView(data)
     }
 
@@ -38,10 +44,9 @@ class CartTopAdsHeadlineViewHolder(private val binding: ItemCartTopAdsHeadlineBi
                 PARAM_EP to VALUE_EP,
                 PARAM_HEADLINE_PRODUCT_COUNT to VALUE_HEADLINE_PRODUCT_COUNT,
                 PARAM_ITEM to VALUE_ITEM,
-                PARAM_SRC to VALUE_SRC_CART,
+                PARAM_SRC to "fav_product",
                 PARAM_TEMPLATE_ID to VALUE_TEMPLATE_ID,
-                PARAM_USER_ID to userSession.userId,
-                PARAM_PRODUCT_ID to data.productIds.joinToString(",")
+                PARAM_USER_ID to userSession.userId
         ))
     }
 
@@ -77,6 +82,24 @@ class CartTopAdsHeadlineViewHolder(private val binding: ItemCartTopAdsHeadlineBi
                 show()
                 displayAds(it)
             }
+
+            topadsBannerView.setTopAdsBannerClickListener(TopAdsBannerClickListener { position: Int, applink: String?, data: CpmData? ->
+                applink?.let {
+                    RouteManager.route(itemView.context, applink)
+                    if (it.contains("shop")) {
+                        TopAdsGtmTracker.eventTopAdsHeadlineShopClick(position, "", data, userSession.userId)
+                    } else {
+                        TopAdsGtmTracker.eventTopAdsHeadlineProductClick(position, "", data, userSession.userId)
+                    }
+                }
+            })
+
+            topadsBannerView.setTopAdsImpressionListener(object : TopAdsItemImpressionListener() {
+                override fun onImpressionHeadlineAdsItem(position: Int, data: CpmData) {
+                    TopAdsGtmTracker.eventTopAdsHeadlineShopView(position, data, "", userSession.userId)
+                }
+            })
+
         }
     }
 }
