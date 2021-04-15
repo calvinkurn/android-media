@@ -321,7 +321,7 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
                 updateCheckoutView()
 
                 loadInitialData()
- //           }
+            }
         }
     }
 
