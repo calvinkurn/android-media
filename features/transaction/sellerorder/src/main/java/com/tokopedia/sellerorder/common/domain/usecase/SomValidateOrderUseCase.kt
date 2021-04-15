@@ -4,7 +4,6 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.sellerorder.common.domain.model.SomValidateOrderRequest
 import com.tokopedia.sellerorder.common.domain.model.SomValidateOrderResponse
 import com.tokopedia.usecase.RequestParams
-import kotlinx.coroutines.delay
 import javax.inject.Inject
 
 class SomValidateOrderUseCase @Inject constructor(private val useCase: GraphqlUseCase<SomValidateOrderResponse.Data>) {
