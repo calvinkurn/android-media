@@ -33,7 +33,7 @@ import com.tokopedia.checkout.domain.usecase.CheckoutGqlUseCase;
 import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormGqlUseCase;
 import com.tokopedia.checkout.domain.usecase.ReleaseBookingUseCase;
 import com.tokopedia.checkout.domain.usecase.SaveShipmentStateGqlUseCase;
-import com.tokopedia.checkout.utils.FingerprintUtil;
+import com.tokopedia.checkout.utils.CheckoutFingerprintUtil;
 import com.tokopedia.checkout.view.converter.RatesDataConverter;
 import com.tokopedia.checkout.view.converter.ShipmentDataConverter;
 import com.tokopedia.checkout.view.converter.ShipmentDataRequestConverter;
@@ -48,7 +48,7 @@ import com.tokopedia.checkout.view.uimodel.EgoldTieringModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentButtonPaymentModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentCostModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentDonationModel;
-import com.tokopedia.fingerprint.util.FingerPrintUtilKt;
+import com.tokopedia.fingerprint.util.FingerPrintUtil;
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel;
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel;
 import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass;
@@ -667,10 +667,10 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         params.put(CheckoutGqlUseCase.PARAM_IS_THANKYOU_NATIVE_NEW, true);
         params.put(CheckoutGqlUseCase.PARAM_IS_EXPRESS, false);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && FingerprintUtil.getEnableFingerprintPayment(getView().getActivityContext())) {
-            PublicKey publicKey = FingerPrintUtilKt.generatePublicKey(getView().getActivityContext());
+        if (CheckoutFingerprintUtil.INSTANCE.getEnableFingerprintPayment(getView().getActivityContext())) {
+            PublicKey publicKey = CheckoutFingerprintUtil.INSTANCE.getFingerprintPublicKey(getView().getActivityContext());
             if (publicKey != null) {
-                params.put(CheckoutGqlUseCase.PARAM_FINGERPRINT_PUBLICKEY, FingerPrintUtilKt.getPublicKey(publicKey));
+                params.put(CheckoutGqlUseCase.PARAM_FINGERPRINT_PUBLICKEY, FingerPrintUtil.INSTANCE.getPublicKey(publicKey));
                 params.put(CheckoutGqlUseCase.PARAM_FINGERPRINT_SUPPORT, String.valueOf(true));
             } else {
                 params.put(CheckoutGqlUseCase.PARAM_FINGERPRINT_SUPPORT, String.valueOf(false));
