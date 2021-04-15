@@ -250,7 +250,7 @@ public class DeeplinkUTMUtils {
         }
         if (GlobalConfig.isAllowDebuggingTools() && activity != null) {
             Map<String, Object> map = new HashMap<>(campaign.getCampaign());
-            map.put("url", uri1);
+            map.put("url", uri1.toString());
             map.put("has_amp_in_original_url", isOriginalUrlAmp);
             if (referrerUri!= null) {
                 map.put("referrer", referrerUri.toString());
