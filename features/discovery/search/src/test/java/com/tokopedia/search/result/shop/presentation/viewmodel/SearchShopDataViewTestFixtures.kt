@@ -1,11 +1,10 @@
 package com.tokopedia.search.result.shop.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.discovery.common.State
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Filter
-import com.tokopedia.search.result.TestDispatcherProvider
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.search.result.isExecuted
 import com.tokopedia.search.result.shop.domain.model.SearchShopModel
 import com.tokopedia.search.result.shop.presentation.mapper.ShopViewModelMapperModule
@@ -50,7 +49,7 @@ internal open class SearchShopDataViewTestFixtures {
 
     protected open fun createSearchShopViewModel(parameter: Map<String, Any> = searchShopParameterCommon): SearchShopViewModel {
         return SearchShopViewModel(
-                TestDispatcherProvider(),
+                CoroutineTestDispatchersProvider,
                 parameter,
                 daggerLazy { searchShopFirstPageUseCase },
                 daggerLazy { searchShopLoadMoreUseCase },

@@ -4,7 +4,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.topchat.FileUtil
 import com.tokopedia.topchat.TopchatCacheManagerStub
-import com.tokopedia.topchat.TopchatTestCoroutineContextDispatcher
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.topchat.chatroom.domain.pojo.sticker.Sticker
 import com.tokopedia.topchat.chatroom.domain.pojo.sticker.StickerResponse
 import io.mockk.MockKAnnotations
@@ -31,7 +31,7 @@ class ChatListStickerUseCaseTest {
     @RelaxedMockK
     private lateinit var onError: (Throwable) -> Unit
     private lateinit var cacheManager: TopchatCacheManagerStub
-    private val testDispatcher: TopchatTestCoroutineContextDispatcher = TopchatTestCoroutineContextDispatcher()
+    private val testDispatcher = CoroutineTestDispatchersProvider
 
     private lateinit var chatListStickerUseCase: ChatListStickerUseCase
 

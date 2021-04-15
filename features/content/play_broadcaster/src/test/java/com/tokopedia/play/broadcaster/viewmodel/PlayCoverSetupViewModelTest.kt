@@ -19,13 +19,12 @@ import com.tokopedia.play.broadcaster.ui.model.CarouselCoverUiModel
 import com.tokopedia.play.broadcaster.ui.model.CoverSource
 import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
 import com.tokopedia.play.broadcaster.ui.model.ProductContentUiModel
-import com.tokopedia.play.broadcaster.util.TestCoroutineDispatcherProvider
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.play.broadcaster.util.getOrAwaitValue
 import com.tokopedia.play.broadcaster.view.state.CoverSetupState
 import com.tokopedia.play.broadcaster.view.state.SetupDataState
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayCoverSetupViewModel
 import io.mockk.mockk
-import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.assertj.core.api.Assertions
 import org.junit.Before
 import org.junit.Rule
@@ -39,8 +38,7 @@ class PlayCoverSetupViewModelTest {
     @get:Rule
     val instantTaskExecutorRule: InstantTaskExecutorRule = InstantTaskExecutorRule()
 
-    private val testDispatcher = TestCoroutineDispatcher()
-    private val dispatcherProvider = TestCoroutineDispatcherProvider(testDispatcher)
+    private val dispatcherProvider = CoroutineTestDispatchersProvider
 
     private lateinit var productDataStore: ProductDataStore
     private lateinit var coverDataStore: MockCoverDataStore

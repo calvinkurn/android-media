@@ -4,7 +4,7 @@ import android.util.Patterns
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.common.travel.utils.TravelDispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.flight.resend_email.domain.FlightOrderResendEmailUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -17,8 +17,8 @@ import javax.inject.Inject
  */
 class FlightResendETicketViewModel @Inject constructor(
         private val eticketUseCase: FlightOrderResendEmailUseCase,
-        private val dispatcherProvider: TravelDispatcherProvider)
-    : BaseViewModel(dispatcherProvider.io()) {
+        private val dispatcherProvider: CoroutineDispatchers)
+    : BaseViewModel(dispatcherProvider.io) {
 
     var userEmail: String = ""
     var invoiceId: String = ""
@@ -34,7 +34,7 @@ class FlightResendETicketViewModel @Inject constructor(
     fun sendEticket(email: String?) {
         userEmail = email ?: userEmail
         if (isValidEmailInput(userEmail)) {
-            launchCatchError(dispatcherProvider.ui(), block = {
+            launchCatchError(dispatcherProvider.main, block = {
                 val status = eticketUseCase.executeResendETicket(invoiceId, userEmail)
                 mutableResendETicketStatus.postValue(Success(status))
             }) {

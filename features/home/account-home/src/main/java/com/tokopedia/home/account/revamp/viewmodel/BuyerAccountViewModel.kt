@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.affiliatecommon.domain.CheckAffiliateUseCase
 import com.tokopedia.home.account.domain.GetBuyerWalletBalanceUseCase
-import com.tokopedia.home.account.presentation.util.dispatchers.DispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.home.account.revamp.domain.usecase.GetBuyerAccountDataUseCase
 import com.tokopedia.home.account.revamp.domain.data.model.AccountDataModel
 import com.tokopedia.home.account.revamp.domain.usecase.GetShortcutDataUseCase
@@ -16,7 +16,6 @@ import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCas
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.sessioncommon.domain.usecase.AccountAdminInfoUseCase
-import com.tokopedia.sessioncommon.domain.usecase.GetAdminTypeUseCase
 import com.tokopedia.sessioncommon.util.AdminUserSessionUtil.refreshUserSessionAdminData
 import com.tokopedia.sessioncommon.util.AdminUserSessionUtil.refreshUserSessionShopData
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsWishlishedUseCase
@@ -43,8 +42,8 @@ class BuyerAccountViewModel @Inject constructor (
         private val accountAdminInfoUseCase: AccountAdminInfoUseCase,
         private val userSession: UserSessionInterface,
         private val walletPref: WalletPref,
-        private val dispatcher: DispatcherProvider
-): BaseViewModel(dispatcher.io()) {
+        private val dispatcher: CoroutineDispatchers
+): BaseViewModel(dispatcher.io) {
 
     private val _buyerAccountData = MutableLiveData<Result<AccountDataModel>>()
     val buyerAccountDataData: LiveData<Result<AccountDataModel>>
@@ -87,7 +86,7 @@ class BuyerAccountViewModel @Inject constructor (
                             executeOnBackground()
                         }
                     }
-            withContext(dispatcher.main()) {
+            withContext(dispatcher.main) {
                 val isShopActive = adminDataResponse?.data?.isShopActive() == true
                 accountModel.wallet = walletModel
                 accountModel.isAffiliate = isAffiliate
