@@ -24,7 +24,7 @@ class TopAdsHeadlineView @JvmOverloads constructor(context: Context, attrs: Attr
         ViewModelProvider(context as AppCompatActivity).get(TopAdsHeadlineViewModel::class.java)
     }
 
-    private var topadsBannerView: TopAdsBannerView
+    var topadsBannerView: TopAdsBannerView
     private val shimmerView: LoaderUnify
 
     init {
