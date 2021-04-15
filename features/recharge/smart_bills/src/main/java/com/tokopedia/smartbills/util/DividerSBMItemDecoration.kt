@@ -27,10 +27,9 @@ class DividerSBMItemDecoration(context: Context) : RecyclerView.ItemDecoration()
     private fun drawVertical(c: Canvas, parent: RecyclerView) {
         var left =  parent.context.resources.getDimensionPixelOffset(dimenPaddingLeft)
         val right = parent.width - parent.paddingRight
-        val childCount = parent.childCount
 
         val listItem = (parent.adapter as BaseListAdapter<RechargeBillsModel, SmartBillsAdapterFactory>).data
-        for (i in 0 until childCount - 1) {
+        for (i in 0 until listItem.size - 1) {
             if (!listItem.isNullOrEmpty()) {
                 val item = (parent.adapter as BaseListAdapter<RechargeBillsModel, SmartBillsAdapterFactory>).data.get(i)
                 if (item is Section) left = parent.context.resources.getDimensionPixelOffset(dimenPaddingLeftAccordion)

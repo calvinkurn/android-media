@@ -97,6 +97,7 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
     private var maximumPrice = 0
     private var ongoingMonth: RechargeStatementMonths? = RechargeStatementMonths()
     private var listAccordion: List<Section> = listOf()
+    private var listBills: List<RechargeBills> = listOf()
     private var rechargeStatement: RechargeListSmartBills = RechargeListSmartBills()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -164,6 +165,7 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
                     rechargeStatement = it.data
                     val bills = getNotAccordionSection(it.data.sections)?.bills
                     if (!bills.isNullOrEmpty()) {
+                        listBills = bills
                         view_smart_bills_select_all_checkbox_container.show()
 
                         if(!getNotAccordionSection(it.data.sections)?.title.isNullOrEmpty())
@@ -275,16 +277,16 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
         // If user is not logged in, redirect to onboarding page;
         // Add sharedpref to make sure onboarding page is not visited more than once in each session
         // (support for phones with don't keep activities)
-        if (!userSession.isLoggedIn && !localCacheHandler.getBoolean(SMART_BILLS_VISITED_ONBOARDING_PAGE, false)) {
-            localCacheHandler.apply {
-                putBoolean(SMART_BILLS_VISITED_ONBOARDING_PAGE, true)
-                applyEditor()
-            }
-            startActivityForResult(Intent(context,
-                    SmartBillsOnboardingActivity::class.java),
-                    REQUEST_CODE_SMART_BILLS_ONBOARDING
-            )
-        } else {
+//        if (!userSession.isLoggedIn && !localCacheHandler.getBoolean(SMART_BILLS_VISITED_ONBOARDING_PAGE, false)) {
+//            localCacheHandler.apply {
+//                putBoolean(SMART_BILLS_VISITED_ONBOARDING_PAGE, true)
+//                applyEditor()
+//            }
+//            startActivityForResult(Intent(context,
+//                    SmartBillsOnboardingActivity::class.java),
+//                    REQUEST_CODE_SMART_BILLS_ONBOARDING
+//            )
+//        } else {
             smartBillsAnalytics.userId = userSession.userId
             smartBillsAnalytics.eventOpenScreen()
 
@@ -319,7 +321,7 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
                 updateCheckoutView()
 
                 loadInitialData()
-            }
+ //           }
         }
     }
 
@@ -419,7 +421,7 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
 
     private fun toggleAllItems(value: Boolean, triggerTracking: Boolean = false) {
         if (triggerTracking) smartBillsAnalytics.clickAllBills(value)
-        adapter.toggleAllItems(value)
+        adapter.toggleAllItems(value, listBills)
 
         totalPrice = if (value) maximumPrice else 0
         updateCheckoutView()
@@ -580,7 +582,7 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
     }
 
     private fun updateCheckAll(){
-        cb_smart_bills_select_all.isChecked = adapter.totalChecked == adapter.dataSize
+        cb_smart_bills_select_all.isChecked = adapter.totalChecked == listBills.size
     }
 
     companion object {

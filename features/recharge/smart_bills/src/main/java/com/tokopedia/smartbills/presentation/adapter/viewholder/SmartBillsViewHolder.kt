@@ -55,6 +55,8 @@ class SmartBillsViewHolder(val view: View,
                 tv_due_message.disableView()
                 tv_due_date_label.disableView()
                 tv_smart_bills_item_detail.disableView()
+                cb_smart_bills_item.gone()
+                cb_smart_bills_item_accordion.show()
             } else if(accordionType == PAID_TYPE){
                 //remove checkbox in paid type
                 cb_smart_bills_item.gone()
