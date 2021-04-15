@@ -1194,9 +1194,11 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
 
     private fun showSearchWithMap() {
         btnHotelSearchWithMap.visible()
+        btnHotelSearchWithMap.show()
     }
 
     private fun hideSearchWithMap() {
+        btnHotelSearchWithMap.hide()
         btnHotelSearchWithMap.gone()
     }
 
