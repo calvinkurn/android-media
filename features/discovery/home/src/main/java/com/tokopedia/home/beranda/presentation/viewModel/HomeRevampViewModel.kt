@@ -13,7 +13,7 @@ import com.tokopedia.common_wallet.balance.view.WalletBalanceModel
 import com.tokopedia.common_wallet.pendingcashback.view.PendingCashback
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.home.beranda.common.BaseCoRoutineScope
-import com.tokopedia.home.beranda.common.HomeDispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.home.beranda.data.mapper.ReminderWidgetMapper.isSalamWidgetAvailable
 import com.tokopedia.home.beranda.data.mapper.ReminderWidgetMapper.mapperRechargetoReminder
 import com.tokopedia.home.beranda.data.mapper.ReminderWidgetMapper.mapperSalamtoReminder
@@ -40,6 +40,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.Ba
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.CashBackData
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeNotifModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.HomeBalanceModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.PendingCashbackModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.*
@@ -122,10 +123,10 @@ open class HomeRevampViewModel @Inject constructor(
         private val getRechargeBUWidgetUseCase: Lazy<GetRechargeBUWidgetUseCase>,
         private val topAdsImageViewUseCase: Lazy<TopAdsImageViewUseCase>,
         private val bestSellerMapper: Lazy<BestSellerMapper>,
-        private val homeDispatcher: Lazy<HomeDispatcherProvider>,
+        private val homeDispatcher: Lazy<CoroutineDispatchers>,
         private val homeProcessor: Lazy<HomeCommandProcessor>,
         private val playWidgetTools: Lazy<PlayWidgetTools>
-) : BaseCoRoutineScope(homeDispatcher.get().io()), ResultCommandProcessor {
+) : BaseCoRoutineScope(homeDispatcher.get().io), ResultCommandProcessor {
 
     companion object {
         private const val HOME_LIMITER_KEY = "HOME_LIMITER_KEY"
@@ -143,7 +144,7 @@ open class HomeRevampViewModel @Inject constructor(
     private var useNewBalanceWidget: Boolean = true
 
     var currentTopAdsBannerToken: String = ""
-    private val homeFlowData: Flow<HomeDataModel?> = homeUseCase.get().getHomeData().flowOn(homeDispatcher.get().ui())
+    private val homeFlowData: Flow<HomeDataModel?> = homeUseCase.get().getHomeData().flowOn(homeDispatcher.get().main)
     private lateinit var initialShimmerData: HomeInitialShimmerDataModel
 
 // ============================================================================================
@@ -1808,7 +1809,7 @@ open class HomeRevampViewModel @Inject constructor(
         launchCatchError(block = {
             val response = playWidgetTools.get().getWidgetFromNetwork(
                     PlayWidgetUseCase.WidgetType.Home,
-                    homeDispatcher.get().io()
+                    homeDispatcher.get().io
             )
             val uiModel = playWidgetTools.get().mapWidgetToModel(response)
             homeProcessor.get().sendWithQueueMethod(UpdateWidgetCommand(dataModel.copy(
@@ -1840,7 +1841,7 @@ open class HomeRevampViewModel @Inject constructor(
             val response = playWidgetTools.get().updateToggleReminder(
                     channelId,
                     reminderType,
-                    homeDispatcher.get().io()
+                    homeDispatcher.get().io
             )
 
             when (val success = playWidgetTools.get().mapWidgetToggleReminder(response)) {

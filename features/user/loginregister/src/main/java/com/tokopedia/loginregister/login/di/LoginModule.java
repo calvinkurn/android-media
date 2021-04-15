@@ -7,15 +7,13 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers;
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.loginfingerprint.data.preference.FingerprintPreferenceHelper;
 import com.tokopedia.loginfingerprint.data.preference.FingerprintSetting;
 import com.tokopedia.loginfingerprint.utils.crypto.Cryptography;
 import com.tokopedia.loginfingerprint.utils.crypto.CryptographyUtils;
-import com.tokopedia.loginregister.common.DispatcherProvider;
-import com.tokopedia.loginregister.registerinitial.di.RegisterInitialScope;
-
-import org.jetbrains.annotations.NotNull;
 
 import javax.inject.Named;
 
@@ -64,19 +62,7 @@ public class LoginModule {
 
     @LoginScope
     @Provides
-    DispatcherProvider provideDispatcherProvider() {
-        return new DispatcherProvider() {
-            @NotNull
-            @Override
-            public CoroutineDispatcher io() {
-                return Dispatchers.getIO();
-            }
-
-            @NotNull
-            @Override
-            public CoroutineDispatcher ui() {
-                return Dispatchers.getMain();
-            }
-        };
+    CoroutineDispatchers provideCoroutineDispatchers() {
+        return CoroutineDispatchersProvider.INSTANCE;
     }
 }

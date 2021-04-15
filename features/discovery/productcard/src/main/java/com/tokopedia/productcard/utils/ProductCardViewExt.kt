@@ -367,6 +367,7 @@ internal fun renderStockBar(progressBarStock: ProgressBarUnify?, textViewStock: 
 
 private fun renderStockPercentage(progressBarStock: ProgressBarUnify?, productCardModel: ProductCardModel) {
     progressBarStock?.shouldShowWithAction(productCardModel.stockBarLabel.isNotEmpty()) {
+        progressBarStock.setProgressIcon(icon = null)
         if (productCardModel.stockBarLabel.equals(WORDING_SEGERA_HABIS, ignoreCase = true)) {
             it.setProgressIcon(
                     icon = ContextCompat.getDrawable(it.context, R.drawable.product_card_ic_fire_filled),
@@ -383,8 +384,6 @@ private fun renderStockLabel(textViewStockLabel: Typography?, productCardModel: 
         it.text = productCardModel.stockBarLabel
 
         val color = when {
-            productCardModel.stockBarLabel.equals(WORDING_SEGERA_HABIS, ignoreCase = true) ->
-                MethodChecker.getColor(it.context, com.tokopedia.unifyprinciples.R.color.Unify_R600)
             productCardModel.stockBarLabelColor.isNotEmpty() ->
                 safeParseColor(
                         productCardModel.stockBarLabelColor,

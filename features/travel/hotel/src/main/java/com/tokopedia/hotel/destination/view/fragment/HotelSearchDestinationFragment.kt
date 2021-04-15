@@ -14,6 +14,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.common.util.ErrorHandlerHotel
+import com.tokopedia.hotel.common.util.HotelGqlQuery
 import com.tokopedia.hotel.destination.data.model.SearchDestination
 import com.tokopedia.hotel.destination.di.HotelDestinationComponent
 import com.tokopedia.hotel.destination.view.activity.HotelDestinationActivity
@@ -52,7 +53,7 @@ class HotelSearchDestinationFragment : BaseListFragment<SearchDestination, Searc
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        destinationViewModel.searchDestination.observe(this, androidx.lifecycle.Observer {
+        destinationViewModel.searchDestination.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             when (it) {
                 is Loaded -> {
                     when (it.data) {
@@ -111,7 +112,7 @@ class HotelSearchDestinationFragment : BaseListFragment<SearchDestination, Searc
     }
 
     fun onSearchQueryChange(keyword: String) {
-        destinationViewModel.getHotelSearchDestination(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_destination_search), keyword)
+        destinationViewModel.getHotelSearchDestination(HotelGqlQuery.DESTINATION_SEARCH, keyword)
     }
 
     override fun getEmptyDataViewModel(): Visitable<*> {

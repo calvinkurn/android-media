@@ -26,6 +26,8 @@ import com.tokopedia.travel.passenger.presentation.activity.TravelContactDataAct
 import com.tokopedia.travel.passenger.presentation.adapter.TravelContactArrayAdapter
 import com.tokopedia.travel.passenger.presentation.model.TravelContactData
 import com.tokopedia.travel.passenger.presentation.viewmodel.TravelContactDataViewModel
+import com.tokopedia.travel.passenger.util.TravelPassengerGqlMutation
+import com.tokopedia.travel.passenger.util.TravelPassengerGqlQuery
 import kotlinx.android.synthetic.main.fragment_travel_contact_data.*
 import javax.inject.Inject
 
@@ -69,7 +71,7 @@ class TravelContactDataFragment : BaseDaggerFragment(), TravelContactArrayAdapte
 
         initView()
 
-        contactViewModel.getContactList(GraphqlHelper.loadRawString(resources, R.raw.query_get_travel_contact_list), travelProduct)
+        contactViewModel.getContactList(TravelPassengerGqlQuery.CONTACT_LIST, travelProduct)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -168,7 +170,7 @@ class TravelContactDataFragment : BaseDaggerFragment(), TravelContactArrayAdapte
             contactData.phone = til_contact_phone_number.textFieldInput.text.toString()
             contactData.phoneCode = (sp_contact_phone_code.selectedItem as String).toInt()
 
-            contactViewModel.updateContactList(GraphqlHelper.loadRawString(resources, R.raw.query_upsert_travel_contact_list),
+            contactViewModel.updateContactList(TravelPassengerGqlMutation.UPSERT_CONTACT,
                     TravelUpsertContactModel.Contact(fullName = contactData.name, email = contactData.email, phoneNumber = contactData.phone,
                             phoneCountryCode = contactData.phoneCode))
 
