@@ -35,14 +35,17 @@ class PopularCityAdapter(context: Context?, private var actionListener: ActionLi
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val res = holder.itemView.context.resources
         holder.itemView.tv_chips_item.apply {
-            background = drawableDefault
             text = cityList[position]
-            setTextColor(res.getColor(com.tokopedia.unifyprinciples.R.color.Unify_Static_Black_32))
-            setOnClickListener {
-                notifyItemChanged(lastIndex)
-                lastIndex = position
-                background = drawablePressed
+            background = if (position == lastIndex) {
                 setTextColor(res.getColor(com.tokopedia.unifyprinciples.R.color.Unify_G300))
+                drawablePressed
+            } else {
+                setTextColor(res.getColor(com.tokopedia.unifyprinciples.R.color.Unify_Static_Black_32))
+                drawableDefault
+            }
+            setOnClickListener {
+                lastIndex = position
+                notifyItemChanged(lastIndex)
                 actionListener.onCityChipClicked(cityList[position])
             }
         }
