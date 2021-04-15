@@ -21,7 +21,6 @@ dependencies {
     kapt rootProject.ext.dbDependencies.dbRoomCompiler
 
     androidTestImplementation rootProject.ext.dbDependencies.dbRoomTesting
-    testImplementation project(rootProject.ext.libraries.encryption)
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.junit
     testImplementation rootProject.ext.testDependencies.mockitorCore
