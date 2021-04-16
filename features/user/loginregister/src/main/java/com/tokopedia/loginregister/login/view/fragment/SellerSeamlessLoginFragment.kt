@@ -31,7 +31,6 @@ import com.tokopedia.loginregister.common.di.LoginRegisterComponent
 import com.tokopedia.loginregister.common.utils.SellerAppWidgetHelper
 import com.tokopedia.loginregister.login.di.DaggerLoginComponent
 import com.tokopedia.loginregister.login.router.LoginRouter
-import com.tokopedia.loginregister.login.view.activity.LoginActivity
 import com.tokopedia.loginregister.login.view.constant.SeamlessSellerConstant
 import com.tokopedia.loginregister.login.view.viewmodel.SellerSeamlessViewModel
 import com.tokopedia.network.utils.ErrorHandler
@@ -73,7 +72,7 @@ class SellerSeamlessLoginFragment : BaseDaggerFragment() {
 
     override fun onStart() {
         super.onStart()
-        activity?.run {
+        activity?.let {
             analytics.trackScreen(screenName)
         }
     }
@@ -202,7 +201,7 @@ class SellerSeamlessLoginFragment : BaseDaggerFragment() {
     private fun onNegativeBtnClick(){
         analytics.eventClickLoginWithOtherAcc()
         context?.run {
-            val i =LoginActivity.DeepLinkIntents.getCallingIntent(this)
+            val i = RouteManager.getIntent(this, ApplinkConst.LOGIN)
             startActivity(i)
         }
     }

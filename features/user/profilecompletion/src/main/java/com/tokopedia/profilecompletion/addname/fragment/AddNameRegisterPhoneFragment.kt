@@ -3,10 +3,7 @@ package com.tokopedia.profilecompletion.addname.fragment
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.text.Editable
-import android.text.SpannableString
-import android.text.TextPaint
-import android.text.TextWatcher
+import android.text.*
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.text.style.ForegroundColorSpan
@@ -205,6 +202,7 @@ open class AddNameRegisterPhoneFragment : BaseDaggerFragment(), AddNameListener.
             override fun updateDrawState(ds: TextPaint) {
                 super.updateDrawState(ds)
                 ds.isUnderlineText = false
+                ds.color = ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_G400)
             }
         }
     }
