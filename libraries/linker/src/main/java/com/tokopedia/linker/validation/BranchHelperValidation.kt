@@ -38,7 +38,7 @@ class BranchHelperValidation {
 
         }catch (e: Exception){
             e.printStackTrace()
-            logging("error;reason=exception_validatePURCHASE;data='$PURCHASE'ex='${Log.getStackTraceString(e)}'")
+            logging("error;reason=exception_validatePURCHASE;data='$PURCHASE';ex='${Log.getStackTraceString(e)}'")
         }
 
     }
@@ -58,7 +58,7 @@ class BranchHelperValidation {
 
         }catch (e: Exception){
             e.printStackTrace()
-            logging("error;reason=exception_validateADD_TO_CART;data='$ADD_TO_CART'ex='${Log.getStackTraceString(e)}'")
+            logging("error;reason=exception_validateADD_TO_CART;data='$ADD_TO_CART';ex='${Log.getStackTraceString(e)}'")
         }
     }
 
@@ -76,22 +76,28 @@ class BranchHelperValidation {
             validateContent(VIEW_ITEM,linkerData.content)
         }catch (e: Exception){
             e.printStackTrace()
-            logging("error;reason=exception_validateVIEW_ITEM;data='$VIEW_ITEM'ex='${Log.getStackTraceString(e)}'")
+            logging("error;reason=exception_validateVIEW_ITEM;data='$VIEW_ITEM';ex='${Log.getStackTraceString(e)}'")
         }
     }
 
     fun logSkipDeeplinkNonBranchLink(referringParams: JSONObject, isFirstOpen:Boolean){
-        val clickTime = referringParams.optString("+click_timestamp")
-        val utm_medium = referringParams.optString("utm_medium")
-        val utm_source = referringParams.optString("utm_source")
-        val campaign = referringParams.optString("~campaign")
-        val android_deeplink_path = referringParams.optString("\$android_deeplink_path")
-        val clicked_branch_link = referringParams.optString("+clicked_branch_link")
-        val is_first_session = referringParams.optString("+is_first_session")
-        val clientId = TrackApp.getInstance().gtm.clientIDString
-        logging("validation;reason=SkipDeeplinkNonBranchLink;click_time='$clickTime'; utm_medium='$utm_medium';utm_source='$utm_source';" +
-                "campaign='$campaign';android_deeplink_path='$android_deeplink_path'; clicked_branch_link='$clicked_branch_link'; is_first_session='$is_first_session';" +
-                "client_id='$clientId'; first_open='$isFirstOpen'")
+        try {
+            val clickTime = referringParams.optString("+click_timestamp")
+            val utm_medium = referringParams.optString("utm_medium")
+            val utm_source = referringParams.optString("utm_source")
+            val campaign = referringParams.optString("~campaign")
+            val android_deeplink_path = referringParams.optString("\$android_deeplink_path")
+            val clicked_branch_link = referringParams.optString("+clicked_branch_link")
+            val is_first_session = referringParams.optString("+is_first_session")
+            val clientId = TrackApp.getInstance().gtm.clientIDString
+            logging("validation;reason=SkipDeeplinkNonBranchLink;click_time='$clickTime'; utm_medium='$utm_medium';utm_source='$utm_source';" +
+                    "campaign='$campaign';android_deeplink_path='$android_deeplink_path'; clicked_branch_link='$clicked_branch_link'; is_first_session='$is_first_session';" +
+                    "client_id='$clientId'; first_open='$isFirstOpen'")
+        }catch (e: Exception){
+            e.printStackTrace()
+            logging("error;reason=exception_skipDeeplink;data=logSkipDeeplinkNonBranchLink;ex='${Log.getStackTraceString(e)}'")
+        }
+
 
     }
 
