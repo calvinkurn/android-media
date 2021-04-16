@@ -619,9 +619,12 @@ class TopChatViewStateImpl constructor(
         templateRecyclerView.visibility = View.GONE
         listTemplate?.let {
             templateAdapter.list = listTemplate
-            if (templateAdapter.hasTemplateChat() &&
+            if (
+                    templateAdapter.hasTemplateChat() &&
                     !isLastMsgFromBroadcastAndIamBuyer &&
-                    fragmentView?.hasProductPreviewShown() == false) {
+                    (fragmentView?.hasProductPreviewShown() == false ||
+                            fragmentView?.hasNoSrw() == true)
+            ) {
                 showTemplateChat()
             } else {
                 hideTemplateChat()

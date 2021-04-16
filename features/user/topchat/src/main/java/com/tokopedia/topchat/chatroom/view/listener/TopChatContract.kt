@@ -72,6 +72,7 @@ interface TopChatContract {
         fun updateSrwState()
         fun shouldShowSrw(): Boolean
         fun hasProductPreviewShown(): Boolean
+        fun hasNoSrw(): Boolean
     }
 
     interface Presenter : BaseChatContract.Presenter<View> {

@@ -271,6 +271,10 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         return getViewState().hasProductPreviewShown()
     }
 
+    override fun hasNoSrw(): Boolean {
+        return rvSrw?.isAllowToShow() == false && rvSrw?.isSuccessState() == true
+    }
+
     override fun shouldShowSrw(): Boolean {
         return !isSeller() && hasProductPreviewShown() &&
                 rvSrw?.isAllowToShow() == true ||
