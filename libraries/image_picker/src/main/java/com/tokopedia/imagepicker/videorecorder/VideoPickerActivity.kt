@@ -21,11 +21,12 @@ import com.tokopedia.imagepicker.picker.gallery.ImagePickerGalleryFragment
 import com.tokopedia.imagepicker.common.model.MediaItem
 import com.tokopedia.utils.permission.PermissionCheckerHelper
 import com.tokopedia.utils.permission.request
-import com.tokopedia.videorecorder.main.adapter.ViewPagerAdapter
+import com.tokopedia.imagepicker.videorecorder.adapter.ViewPagerAdapter
 import com.tokopedia.imagepicker.videorecorder.recorder.VideoRecorderFragment
 import com.tokopedia.imagepicker.common.state.StateRecorder
-import com.tokopedia.videorecorder.utils.*
-import com.tokopedia.videorecorder.utils.show
+import com.tokopedia.imagepicker.videorecorder.utils.*
+import com.tokopedia.imagepicker.videorecorder.utils.hide
+import com.tokopedia.imagepicker.videorecorder.utils.show
 import kotlinx.android.synthetic.main.activity_video_picker.*
 import java.io.File
 import java.util.*
@@ -88,7 +89,7 @@ open class VideoPickerActivity : BaseSimpleActivity(),
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item?.itemId) {
+        when (item.itemId) {
             android.R.id.home -> {
                 onBackPressed()
                 finish()

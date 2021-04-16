@@ -1,4 +1,4 @@
-package com.tokopedia.videorecorder.utils
+package com.tokopedia.imagepicker.videorecorder.utils
 
 import android.view.View
 
@@ -15,7 +15,7 @@ internal fun View.hide() {
     visibility = View.GONE
 }
 
-internal fun String.clear(): String {
+internal fun clear(): String {
     return ""
 }
 

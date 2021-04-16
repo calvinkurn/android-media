@@ -71,7 +71,6 @@ public class ImagePickerGalleryFragment extends TkpdBaseV4Fragment
 
     private OnImagePickerGalleryFragmentListener onImagePickerGalleryFragmentListener;
     private View loadingView;
-    private RecyclerView recyclerView;
     private AlbumMediaAdapter albumMediaAdapter;
 
     private AlbumItem selectedAlbumItem;
@@ -121,7 +120,6 @@ public class ImagePickerGalleryFragment extends TkpdBaseV4Fragment
         return newInstance(galleryType, supportMultipleSelection, minImageResolution, "", "");
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -152,7 +150,7 @@ public class ImagePickerGalleryFragment extends TkpdBaseV4Fragment
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_image_picker_gallery, container, false);
         loadingView = view.findViewById(R.id.loading);
-        recyclerView = view.findViewById(R.id.recycler_view);
+        RecyclerView recyclerView = view.findViewById(R.id.recycler_view);
         recyclerView.setHasFixedSize(true);
         int spanCount = getContext().getResources().getInteger(R.integer.gallery_span_count);
         recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), spanCount));
@@ -306,10 +304,7 @@ public class ImagePickerGalleryFragment extends TkpdBaseV4Fragment
     @Override
     public boolean canAddMoreMedia() {
         //check the image number allowed.
-        if (onImagePickerGalleryFragmentListener.isMaxImageReached()) {
-            return false;
-        }
-        return true;
+        return !onImagePickerGalleryFragmentListener.isMaxImageReached();
     }
 
     @Override

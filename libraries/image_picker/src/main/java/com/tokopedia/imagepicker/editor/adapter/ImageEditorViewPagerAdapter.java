@@ -22,7 +22,6 @@ public class ImageEditorViewPagerAdapter extends FragmentStatePagerAdapter {
 
     private ArrayList<Integer> currentEditStepIndexList;
     private int minResolution;
-    private ArrayList<ArrayList<ImageRatioType>> ratioTypeList;
     private boolean isCirclePreview;
 
     public ImageEditorViewPagerAdapter(FragmentManager fm,
@@ -35,7 +34,6 @@ public class ImageEditorViewPagerAdapter extends FragmentStatePagerAdapter {
         this.edittedImagePaths = edittedImagePaths;
         this.currentEditStepIndexList = currentEditStepIndexList;
         this.minResolution = minResolution;
-        this.ratioTypeList = ratioTypeList;
         this.isCirclePreview = isCirclePreview;
     }
 

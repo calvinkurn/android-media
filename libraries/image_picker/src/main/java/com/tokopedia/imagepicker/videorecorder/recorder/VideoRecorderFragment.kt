@@ -20,9 +20,11 @@ import com.tokopedia.imagepicker.R
 import com.tokopedia.utils.permission.PermissionCheckerHelper
 import com.tokopedia.imagepicker.common.listener.VideoPickerCallback
 import com.tokopedia.imagepicker.common.state.StateRecorder
-import com.tokopedia.videorecorder.utils.*
-import com.tokopedia.videorecorder.utils.hide
-import com.tokopedia.videorecorder.utils.show
+import com.tokopedia.imagepicker.videorecorder.utils.*
+import com.tokopedia.imagepicker.videorecorder.utils.formatter
+import com.tokopedia.imagepicker.videorecorder.utils.hide
+import com.tokopedia.imagepicker.videorecorder.utils.show
+import com.tokopedia.imagepicker.videorecorder.utils.visible
 import kotlinx.android.synthetic.main.fragment_recorder.*
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -49,9 +51,6 @@ class VideoRecorderFragment: TkpdBaseV4Fragment() {
 
     //for progress loader
     private lateinit var timer: Timer
-
-    //runtime permission handle
-    private lateinit var permissionHelper: PermissionCheckerHelper
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

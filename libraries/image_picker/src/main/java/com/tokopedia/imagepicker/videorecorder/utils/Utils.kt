@@ -1,9 +1,8 @@
-package com.tokopedia.videorecorder.utils
+package com.tokopedia.imagepicker.videorecorder.utils
 
 import android.content.Context
 import com.google.android.material.tabs.TabLayout
 import android.view.ViewGroup
-import android.widget.LinearLayout
 import android.widget.Toast
 import com.tokopedia.config.GlobalConfig
 
