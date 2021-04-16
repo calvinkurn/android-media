@@ -17,7 +17,6 @@
         android:paddingLeft="@dimen/layout_lvl2"/>
 
     <androidx.recyclerview.widget.RecyclerView
-        android:background="@drawable/bg_flight_promo_chips_container"
         android:id="@+id/recycler_view_promo_chips"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
