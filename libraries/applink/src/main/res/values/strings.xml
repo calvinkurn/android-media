@@ -128,4 +128,6 @@
     <!--Order Management History-->
     <string name="title_order_management_history">Detail Status</string>
 
+    <string name="title_image_picker">Image Picker</string>
+
 </resources>

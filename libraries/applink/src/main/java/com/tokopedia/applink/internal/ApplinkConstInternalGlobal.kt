@@ -313,6 +313,9 @@ object ApplinkConstInternalGlobal {
     val IMAGE_EDITOR = "$INTERNAL_GLOBAL/image-editor"
 
     @JvmField
+    val VIDEO_PICKER = "$INTERNAL_GLOBAL/video-picker"
+
+    @JvmField
     val WEBVIEW_TITLE = "$INTERNAL_GLOBAL/webview?title={title}&url={url}"
 
     // PhoneVerificationProfileActivity
