@@ -16,16 +16,16 @@ import org.junit.Test
 
 class TopchatRoomBuyerWebSocketTest : BaseBuyerTopchatRoomTest() {
 
-    private var wsResponseText: WebSocketResponse = WebSocketResponse()
-    private var oppositeTextWithLabel: WebSocketResponse = WebSocketResponse()
+    private var wsMineResponseText: WebSocketResponse = WebSocketResponse()
+    private var wsSellerResponseText: WebSocketResponse = WebSocketResponse()
 
     override fun setupResponse() {
         super.setupResponse()
-        wsResponseText = AndroidFileUtil.parse(
+        wsMineResponseText = AndroidFileUtil.parse(
                 "ws_response_text.json",
                 WebSocketResponse::class.java
         )
-        oppositeTextWithLabel = AndroidFileUtil.parse(
+        wsSellerResponseText = AndroidFileUtil.parse(
                 "buyer/ws_opposite_with_label.json",
                 WebSocketResponse::class.java
         )
@@ -39,7 +39,7 @@ class TopchatRoomBuyerWebSocketTest : BaseBuyerTopchatRoomTest() {
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         changeResponseStartTime(
-                wsResponseText, TopChatRoomPresenterStub.exStartTime
+                wsMineResponseText, TopChatRoomPresenterStub.exStartTime
         )
         inflateTestFragment()
 
@@ -49,7 +49,7 @@ class TopchatRoomBuyerWebSocketTest : BaseBuyerTopchatRoomTest() {
                 .perform(typeText(myMsg))
         onView(withId(R.id.send_but))
                 .perform(click())
-        websocket.simulateResponse(wsResponseText)
+        websocket.simulateResponse(wsMineResponseText)
 
         // Then
         onView(withRecyclerView(R.id.recycler_view).atPositionOnView(
@@ -64,15 +64,15 @@ class TopchatRoomBuyerWebSocketTest : BaseBuyerTopchatRoomTest() {
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         changeResponseStartTime(
-                wsResponseText, TopChatRoomPresenterStub.exStartTime
+                wsMineResponseText, TopChatRoomPresenterStub.exStartTime
         )
         inflateTestFragment()
 
         // When
-        websocket.simulateResponse(oppositeTextWithLabel)
+        websocket.simulateResponse(wsSellerResponseText)
 
         // Then
-        val label = oppositeTextWithLabel.jsonObject
+        val label = wsSellerResponseText.jsonObject
                 ?.get("label")?.asString
         onView(withRecyclerView(R.id.recycler_view).atPositionOnView(
                 0, R.id.txt_info
@@ -86,12 +86,12 @@ class TopchatRoomBuyerWebSocketTest : BaseBuyerTopchatRoomTest() {
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         changeResponseStartTime(
-                wsResponseText, TopChatRoomPresenterStub.exStartTime
+                wsMineResponseText, TopChatRoomPresenterStub.exStartTime
         )
         inflateTestFragment()
 
         // When
-        websocket.simulateResponse(oppositeTextWithLabel.setLabel(""))
+        websocket.simulateResponse(wsSellerResponseText.setLabel(""))
 
         // Then
         onView(withRecyclerView(R.id.recycler_view).atPositionOnView(
