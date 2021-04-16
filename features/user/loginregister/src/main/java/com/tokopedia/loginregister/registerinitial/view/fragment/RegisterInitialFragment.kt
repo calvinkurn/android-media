@@ -16,7 +16,6 @@ import android.text.style.ForegroundColorSpan
 import android.util.Patterns
 import android.view.*
 import android.widget.*
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.*
 import com.facebook.CallbackManager
@@ -711,24 +710,24 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
 
                 })
                 tickerAnnouncement.addPagerView(adapter, mockData)
-            }
-        } else {
-            listTickerInfo.first().let {
-                tickerAnnouncement.tickerTitle = it.title
-                tickerAnnouncement.setHtmlDescription(it.message)
-                tickerAnnouncement.tickerShape = getTickerType(it.color)
-            }
-            tickerAnnouncement.setDescriptionClickEvent(object : TickerCallback {
-                override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                    registerAnalytics.trackClickLinkTicker(linkUrl.toString())
-                    RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, linkUrl))
+            } else {
+                listTickerInfo.first().let {
+                    tickerAnnouncement.tickerTitle = it.title
+                    tickerAnnouncement.setHtmlDescription(it.message)
+                    tickerAnnouncement.tickerShape = getTickerType(it.color)
                 }
+                tickerAnnouncement.setDescriptionClickEvent(object : TickerCallback {
+                    override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                        registerAnalytics.trackClickLinkTicker(linkUrl.toString())
+                        RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, linkUrl))
+                    }
 
-                override fun onDismiss() {
-                    registerAnalytics.trackClickCloseTickerButton()
-                }
+                    override fun onDismiss() {
+                        registerAnalytics.trackClickCloseTickerButton()
+                    }
 
-            })
+                })
+            }
         }
         tickerAnnouncement.setOnClickListener {
             registerAnalytics.trackClickTicker()
