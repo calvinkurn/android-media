@@ -83,15 +83,15 @@ inline fun ImageView.loadIcon(
         url: String?,
         crossinline properties: Properties.() -> Unit = {}
 ) = call(url, Properties().apply {
-    it.apply(properties)
-    it.useBlurHash(false)
+    apply(properties)
+    useBlurHash(false)
 
     /*
     * loadIcon() extension must be haven't placeholder,
     * the loader effect should be handled by team by
     * using own shimmering.
     * */
-    it.setPlaceHolder(-1)
+    setPlaceHolder(-1)
 })
 
 fun ImageView.loadImageTopRightCrop(source: String) {
