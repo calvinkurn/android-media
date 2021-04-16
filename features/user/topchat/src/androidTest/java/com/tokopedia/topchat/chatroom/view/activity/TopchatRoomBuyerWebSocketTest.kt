@@ -16,14 +16,20 @@ import org.junit.Test
 
 class TopchatRoomBuyerWebSocketTest : BaseBuyerTopchatRoomTest() {
 
-    private var wsResponseText: WebSocketResponse = AndroidFileUtil.parse(
-            "ws_response_text.json",
-            WebSocketResponse::class.java
-    )
-    private var oppositeTextWithLabel: WebSocketResponse = AndroidFileUtil.parse(
-            "buyer/ws_opposite_with_label.json",
-            WebSocketResponse::class.java
-    )
+    private var wsResponseText: WebSocketResponse = WebSocketResponse()
+    private var oppositeTextWithLabel: WebSocketResponse = WebSocketResponse()
+
+    override fun setupResponse() {
+        super.setupResponse()
+        wsResponseText = AndroidFileUtil.parse(
+                "ws_response_text.json",
+                WebSocketResponse::class.java
+        )
+        oppositeTextWithLabel = AndroidFileUtil.parse(
+                "buyer/ws_opposite_with_label.json",
+                WebSocketResponse::class.java
+        )
+    }
 
     @Test
     fun sent_text_to_ws_and_got_response_from_ws() {
