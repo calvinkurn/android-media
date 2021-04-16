@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
@@ -118,7 +119,10 @@ class SaldoHistoryListFragment : BaseListFragment<DepositHistoryList, SaldoDetai
 
     override fun getAdapter() = adapter
 
-    override fun createAdapterInstance() = SaldoDepositAdapter(adapterTypeFactory)
+    override fun createAdapterInstance(): BaseListAdapter<DepositHistoryList, SaldoDetailTransactionFactory> {
+        adapter = SaldoDepositAdapter(adapterTypeFactory)
+        return adapter as SaldoDepositAdapter
+    }
 
     private fun initialVar() {
         transactionType = arguments?.getString(TRANSACTION_TYPE)
