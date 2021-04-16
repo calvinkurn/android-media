@@ -21,6 +21,8 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.common.data.model.carttype.CartTypeData
@@ -106,6 +108,11 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                                                              private val discussionMostHelpfulUseCase: Lazy<DiscussionMostHelpfulUseCase>,
                                                              private val topAdsImageViewUseCase: Lazy<TopAdsImageViewUseCase>,
                                                              val userSessionInterface: UserSessionInterface) : BaseViewModel(dispatcher.main) {
+
+    companion object {
+        private const val LOG_TAG_ATC = "BUYER_FLOW_PDP_ATC"
+        private const val LOG_TAG_WISHLIST = "BUYER_FLOW_PDP_WISHLIST"
+    }
 
     private val _productLayout = MutableLiveData<Result<List<DynamicPdpDataModel>>>()
     val productLayout: LiveData<Result<List<DynamicPdpDataModel>>>
@@ -418,6 +425,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         withContext(dispatcher.io) {
             val result = addToCartUseCase.get().createObservable(requestParams).toBlocking().single()
             if (result.isDataError()) {
+                ServerLogger.log(Priority.P2, LOG_TAG_ATC, mapOf())
                 _addToCartLiveData.postValue(MessageErrorException(result.errorMessage.firstOrNull()
                         ?: "").asFail())
             } else {
@@ -569,6 +577,11 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
             }
 
             override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {
+                ServerLogger.log(Priority.P2, LOG_TAG_WISHLIST, mapOf(
+                        Pair(ProductDetailConstant.PRODUCT_ID_KEY, productId ?: ""),
+                        ProductDetailConstant.USER_ID_KEY to userId,
+                        ProductDetailConstant.DEVICE_ID_KEY to deviceId
+                ))
                 onErrorRemoveWishList?.invoke(errorMessage)
             }
 
@@ -584,6 +597,11 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         addWishListUseCase.get().createObservable(productId,
                 userSessionInterface.userId, object : WishListActionListener {
             override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
+                ServerLogger.log(Priority.P2, LOG_TAG_WISHLIST, mapOf(
+                        Pair(ProductDetailConstant.PRODUCT_ID_KEY, productId ?: ""),
+                        ProductDetailConstant.USER_ID_KEY to userId,
+                        ProductDetailConstant.DEVICE_ID_KEY to deviceId
+                ))
                 onErrorAddWishList?.invoke(errorMessage)
             }
 
@@ -849,12 +867,14 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     private fun getProductInfoP2LoginAsync(shopId: Int, productId: String): Deferred<ProductInfoP2Login> {
         return async(dispatcher.io) {
             getProductInfoP2LoginUseCase.get().requestParams = GetProductInfoP2LoginUseCase.createParams(shopId, productId, isShopOwner())
+            getProductInfoP2LoginUseCase.get().setUserIdAndDeviceId(userId, deviceId)
             getProductInfoP2LoginUseCase.get().executeOnBackground()
         }
     }
 
     private fun getProductInfoP2DataAsync(productId: String, pdpSession: String): Deferred<ProductInfoP2UiData> {
         return async(dispatcher.io) {
+            getProductInfoP2DataUseCase.get().setUserId(userId)
             getProductInfoP2DataUseCase.get().executeOnBackground(
                     GetProductInfoP2DataUseCase.createParams(
                             productId,

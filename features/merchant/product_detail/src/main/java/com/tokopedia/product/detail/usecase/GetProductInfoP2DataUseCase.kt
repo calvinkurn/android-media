@@ -9,6 +9,8 @@ import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
 import com.tokopedia.merchantvoucher.common.constant.MerchantVoucherStatusTypeDef
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
@@ -16,13 +18,13 @@ import com.tokopedia.product.detail.data.model.ProductInfoP2Data
 import com.tokopedia.product.detail.data.model.ProductInfoP2UiData
 import com.tokopedia.product.detail.data.model.ratesestimate.UserLocationRequest
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper
+import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.view.util.CacheStrategyUtil
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
-import timber.log.Timber
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
@@ -34,6 +36,8 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
     override val coroutineContext: CoroutineContext get() = Dispatchers.Main + SupervisorJob()
 
     companion object {
+        private const val LOG_TAG = "BUYER_FLOW_PDP_P2_DATA"
+
         fun createParams(productId: String, pdpSession: String, deviceId: String, userLocationRequest: UserLocationRequest): RequestParams =
                 RequestParams.create().apply {
                     putString(ProductDetailCommonConstant.PARAM_PRODUCT_ID, productId)
@@ -461,6 +465,8 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
     private var requestParams: RequestParams = RequestParams.EMPTY
     private var forceRefresh: Boolean = false
 
+    private var userId: String = ""
+
     suspend fun executeOnBackground(requestParams: RequestParams, forceRefresh: Boolean): ProductInfoP2UiData {
         this.requestParams = requestParams
         this.forceRefresh = forceRefresh
@@ -484,7 +490,12 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
 
             p2UiData = mapIntoUiData(successData.response)
         } catch (t: Throwable) {
-            Timber.d(t)
+            ServerLogger.log(Priority.P1, LOG_TAG, mapOf(
+                    ProductDetailConstant.PRODUCT_ID_KEY to requestParams.getString(ProductDetailCommonConstant.PARAM_PRODUCT_ID, ""),
+                    ProductDetailConstant.SESSION_KEY to requestParams.getString(ProductDetailCommonConstant.PARAM_PDP_SESSION, ""),
+                    ProductDetailConstant.DEVICE_ID_KEY to requestParams.getString(ProductDetailCommonConstant.PARAM_DEVICE_ID, ""),
+                    ProductDetailConstant.USER_ID_KEY to userId
+            ))
         }
         return p2UiData
     }
@@ -519,6 +530,10 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
             p2UiData.imageReviews = DynamicProductDetailMapper.generateImageReviewUiData(reviewImage)
         }
         return p2UiData
+    }
+
+    fun setUserId(userId: String) {
+        this.userId = userId
     }
 
     fun clearCache() {

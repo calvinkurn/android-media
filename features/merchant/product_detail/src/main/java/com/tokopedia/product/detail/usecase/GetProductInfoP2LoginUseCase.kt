@@ -6,6 +6,8 @@ import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.common.data.model.product.TopAdsGetProductManage
 import com.tokopedia.product.detail.common.data.model.product.TopAdsGetProductManageResponse
@@ -13,11 +15,11 @@ import com.tokopedia.product.detail.common.data.model.product.WishlistStatus
 import com.tokopedia.product.detail.data.model.ProductInfoP2Login
 import com.tokopedia.product.detail.data.model.shop.ProductShopFollowResponse
 import com.tokopedia.product.detail.data.model.topads.TopAdsGetShopInfo
+import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.di.RawQueryKeyConstant
 import com.tokopedia.product.detail.view.util.doActionIfNotNull
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
-import timber.log.Timber
 import javax.inject.Inject
 
 class GetProductInfoP2LoginUseCase @Inject constructor(private val rawQueries: Map<String, String>,
@@ -25,6 +27,8 @@ class GetProductInfoP2LoginUseCase @Inject constructor(private val rawQueries: M
 ) : UseCase<ProductInfoP2Login>() {
 
     companion object {
+        private const val LOG_TAG = "BUYER_FLOW_PDP_P2_LOGIN"
+
         val QUERY_SHOP_FOLLOW_STATUS = """
             query getShopInfo(${'$'}shopIds : [Int!]!, ${'$'}fields : [String!]!){
                 shopInfoByID(input: {shopIDs: ${'$'}shopIds, fields: ${'$'}fields}){
@@ -56,6 +60,8 @@ class GetProductInfoP2LoginUseCase @Inject constructor(private val rawQueries: M
     }
 
     var requestParams = RequestParams.EMPTY
+    private var userId: String = ""
+    private var deviceId: String = ""
 
     override suspend fun executeOnBackground(): ProductInfoP2Login {
         val p2Login = ProductInfoP2Login()
@@ -128,9 +134,18 @@ class GetProductInfoP2LoginUseCase @Inject constructor(private val rawQueries: M
                 }
             }
         } catch (t: Throwable) {
-            Timber.d(t)
+            ServerLogger.log(Priority.P1, LOG_TAG, mapOf(
+                    ProductDetailConstant.PRODUCT_ID_KEY to requestParams.getString(ProductDetailCommonConstant.PARAM_PRODUCT_ID, ""),
+                    ProductDetailConstant.USER_ID_KEY to userId
+            ))
         }
 
         return p2Login
     }
+
+    fun setUserIdAndDeviceId(userId: String, deviceId: String) {
+        this.userId = userId
+        this.deviceId = deviceId
+    }
+
 }
