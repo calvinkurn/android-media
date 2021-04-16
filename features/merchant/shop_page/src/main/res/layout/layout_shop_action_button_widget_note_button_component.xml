@@ -5,7 +5,7 @@
     android:id="@+id/image_button_shop_note"
     android:gravity="left"
     android:layout_width="@dimen/dp_24"
-    app:unifyButtonSize="small"
+    app:unifyButtonSize="@integer/header_button_height"
     android:layout_height="@dimen/dp_24"
     app:unifyButtonType="alternate"
     app:unifyButtonVariant="ghost"

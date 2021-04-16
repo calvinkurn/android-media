@@ -6,4 +6,7 @@
     <integer name="span_count_big_grid">1</integer>
     <integer name="span_count_small_grid">2</integer>
     <integer name="span_count_list">1</integer>
+    <integer name="header_button_height">4</integer>
+    <integer name="header_text_first_line_size">8</integer>
+    <integer name="header_text_second_line_size">9</integer>
 </resources>
