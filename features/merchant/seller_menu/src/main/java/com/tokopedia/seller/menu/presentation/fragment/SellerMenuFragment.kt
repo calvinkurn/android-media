@@ -159,7 +159,7 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
     fun onNewIntent(uri: Uri?) {
         uri?.let {
             activity?.let { activity ->
-                pmShopScoreInterruptHelper.setShopScoreInterruptConsent(activity, it)
+                pmShopScoreInterruptHelper.setShopScoreConsentStatus(activity, it)
             }
         }
     }
