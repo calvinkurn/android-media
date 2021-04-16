@@ -155,7 +155,9 @@ public class BranchWrapper implements WrapperInterface {
                         }
                     }
                     checkAndSendUtmParams(context, referringParams);
-                    logNonBranchLinkData(referringParams);
+                    if (!TextUtils.isEmpty(deeplink)) {
+                        logNonBranchLinkData(referringParams);
+                    }
                 } else {
                     if (linkerDeeplinkRequest.getDefferedDeeplinkCallback() != null) {
                         linkerDeeplinkRequest.getDefferedDeeplinkCallback().onError(
