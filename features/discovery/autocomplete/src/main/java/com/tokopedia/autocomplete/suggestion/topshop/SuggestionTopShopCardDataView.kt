@@ -2,7 +2,7 @@ package com.tokopedia.autocomplete.suggestion.topshop
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 
-class SuggestionTopShopCardViewModel(
+class SuggestionTopShopCardDataView(
         val type: String = "",
         val id: String = "",
         val applink: String = "",
@@ -13,9 +13,9 @@ class SuggestionTopShopCardViewModel(
         val iconSubtitle: String = "",
         val urlTracker: String = "",
         val imageUrl: String = "",
-        val products: List<SuggestionTopShopProductViewModel> = listOf()
+        val productData: List<SuggestionTopShopProductDataView> = listOf()
 ): Visitable<SuggestionTopShopAdapterTypeFactory> {
-    data class SuggestionTopShopProductViewModel(
+    data class SuggestionTopShopProductDataView(
         val imageUrl: String = ""
     )
 

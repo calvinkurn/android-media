@@ -1,8 +1,8 @@
 package com.tokopedia.autocomplete.suggestion
 
 import com.tokopedia.autocomplete.suggestion.domain.usecase.SuggestionTrackerUseCase
-import com.tokopedia.autocomplete.suggestion.doubleline.SuggestionDoubleLineViewModel
-import com.tokopedia.autocomplete.suggestion.singleline.SuggestionSingleLineViewModel
+import com.tokopedia.autocomplete.suggestion.doubleline.SuggestionDoubleLineDataDataView
+import com.tokopedia.autocomplete.suggestion.singleline.SuggestionSingleLineDataDataView
 import com.tokopedia.autocomplete.util.getShopIdFromApplink
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.usecase.RequestParams
@@ -29,7 +29,7 @@ internal class OnSuggestionItemClickTest: SuggestionPresenterTestFixtures() {
         `given suggestion tracker use case capture request params`()
         `Given View already load data`(suggestionCommonResponse, searchParameter as HashMap<String, String>)
 
-        val item = findDataView<SuggestionDoubleLineViewModel>(TYPE_SHOP)
+        val item = findDataView<SuggestionDoubleLineDataDataView>(TYPE_SHOP)
 
         `when suggestion item clicked` (item)
         `then verify view interaction is correct`(item)
@@ -40,17 +40,17 @@ internal class OnSuggestionItemClickTest: SuggestionPresenterTestFixtures() {
         every { suggestionTrackerUseCase.execute(capture(capturedUrlTrackerParams), any()) } just runs
     }
 
-    private fun `when suggestion item clicked`(item: BaseSuggestionViewModel) {
+    private fun `when suggestion item clicked`(item: BaseSuggestionDataView) {
         suggestionPresenter.onSuggestionItemClicked(item)
     }
 
-    private fun `then verify view interaction is correct`(item: BaseSuggestionViewModel) {
+    private fun `then verify view interaction is correct`(item: BaseSuggestionDataView) {
         verifyOrder {
             suggestionView.onClickSuggestion(item.applink)
         }
     }
 
-    private fun `then verify url tracker is hit`(item: BaseSuggestionViewModel) {
+    private fun `then verify url tracker is hit`(item: BaseSuggestionDataView) {
         val requestParams = capturedUrlTrackerParams.captured
 
         val actualUrlTracker = requestParams.getString(SuggestionTrackerUseCase.URL_TRACKER, "")
@@ -65,7 +65,7 @@ internal class OnSuggestionItemClickTest: SuggestionPresenterTestFixtures() {
         `given suggestion tracker use case capture request params`()
         `Given View already load data`(suggestionCommonResponse, searchParameter as HashMap<String, String>)
 
-        val item = findDataView<SuggestionSingleLineViewModel>(TYPE_KEYWORD)
+        val item = findDataView<SuggestionSingleLineDataDataView>(TYPE_KEYWORD)
 
         `when suggestion item clicked` (item)
         `then verify view interaction is correct`(item)
@@ -81,13 +81,13 @@ internal class OnSuggestionItemClickTest: SuggestionPresenterTestFixtures() {
         `given suggestion tracker use case capture request params`()
         `Given View already load data`(suggestionCommonResponse, searchParameter as HashMap<String, String>)
 
-        val item = findDataView<SuggestionSingleLineViewModel>(TYPE_KEYWORD)
+        val item = findDataView<SuggestionSingleLineDataDataView>(TYPE_KEYWORD)
 
         `when suggestion item clicked`(item)
         `then verify view tracking click item keyword is correct`(item)
     }
 
-    private fun `then verify view tracking click item keyword is correct`(item: BaseSuggestionViewModel) {
+    private fun `then verify view tracking click item keyword is correct`(item: BaseSuggestionDataView) {
         val expectedEventLabel =
                 "keyword: ${item.title} " + // in item type keyword, event label `keyword` is the item title
                         "- value: $keywordTypedByUser " + // and event label `value` is the keyword typed by user
@@ -108,13 +108,13 @@ internal class OnSuggestionItemClickTest: SuggestionPresenterTestFixtures() {
         `given suggestion tracker use case capture request params`()
         `Given View already load data`(suggestionCommonResponse, searchParameter as HashMap<String, String>)
 
-        val item = findDataView<SuggestionSingleLineViewModel>(TYPE_CURATED)
+        val item = findDataView<SuggestionSingleLineDataDataView>(TYPE_CURATED)
 
         `when suggestion item clicked`(item)
         `then verify view tracking click item curated is correct`(item)
     }
 
-    private fun `then verify view tracking click item curated is correct`(item: BaseSuggestionViewModel) {
+    private fun `then verify view tracking click item curated is correct`(item: BaseSuggestionDataView) {
         val expectedEventLabel =
                 "keyword: $keywordTypedByUser " +
                         "- product: ${item.title} " +
@@ -135,13 +135,13 @@ internal class OnSuggestionItemClickTest: SuggestionPresenterTestFixtures() {
         `given suggestion tracker use case capture request params`()
         `Given View already load data`(suggestionCommonResponse, searchParameter as HashMap<String, String>)
 
-        val item = findDataView<SuggestionDoubleLineViewModel>(TYPE_SHOP)
+        val item = findDataView<SuggestionDoubleLineDataDataView>(TYPE_SHOP)
 
         `when suggestion item clicked`(item)
         `then verify view tracking click item shop is correct`(item)
     }
 
-    private fun `then verify view tracking click item shop is correct`(item: BaseSuggestionViewModel) {
+    private fun `then verify view tracking click item shop is correct`(item: BaseSuggestionDataView) {
         val expectedEventLabel =
                 getShopIdFromApplink(item.applink) +
                         " - keyword: $keywordTypedByUser" +
@@ -158,7 +158,7 @@ internal class OnSuggestionItemClickTest: SuggestionPresenterTestFixtures() {
 
     @Test
     fun `test tracking click suggestion item profile using applink with query params`() {
-        val item = BaseSuggestionViewModel(
+        val item = BaseSuggestionDataView(
                 applink = applinkProfileWithQueryParams,
                 type = TYPE_PROFILE,
                 searchTerm = keywordTypedByUser,
@@ -170,7 +170,7 @@ internal class OnSuggestionItemClickTest: SuggestionPresenterTestFixtures() {
         `then verify view tracking click item profile is correct`(item)
     }
 
-    private fun `then verify view tracking click item profile is correct`(item: BaseSuggestionViewModel) {
+    private fun `then verify view tracking click item profile is correct`(item: BaseSuggestionDataView) {
         val expectedEventLabel =
                 "keyword: $keywordTypedByUser " +
                         "- profile: ${item.title} " +
@@ -187,7 +187,7 @@ internal class OnSuggestionItemClickTest: SuggestionPresenterTestFixtures() {
 
     @Test
     fun `test tracking click suggestion item profile using applink without query params`() {
-        val item = BaseSuggestionViewModel(
+        val item = BaseSuggestionDataView(
                 applink = applinkProfileWithoutQueryParams,
                 type = TYPE_PROFILE,
                 searchTerm = keywordTypedByUser,
@@ -204,13 +204,13 @@ internal class OnSuggestionItemClickTest: SuggestionPresenterTestFixtures() {
         `given suggestion tracker use case capture request params`()
         `Given View already load data`(suggestionCommonResponse, searchParameter as HashMap<String, String>)
 
-        val item = findDataView<SuggestionSingleLineViewModel>(TYPE_RECENT_KEYWORD)
+        val item = findDataView<SuggestionSingleLineDataDataView>(TYPE_RECENT_KEYWORD)
 
         `when suggestion item clicked`(item)
         `then verify view tracking click item recent keyword is correct`(item)
     }
 
-    private fun `then verify view tracking click item recent keyword is correct`(item: BaseSuggestionViewModel) {
+    private fun `then verify view tracking click item recent keyword is correct`(item: BaseSuggestionDataView) {
         val expectedEventLabel = item.title
 
         verify {

@@ -12,7 +12,7 @@ import kotlinx.android.synthetic.main.layout_recyclerview_autocomplete.view.*
 class RecentSearchViewHolder(
         itemView: View,
         clickListener: InitialStateItemClickListener
-): AbstractViewHolder<RecentSearchViewModel>(itemView) {
+): AbstractViewHolder<RecentSearchDataView>(itemView) {
 
     companion object {
         @LayoutRes
@@ -29,7 +29,7 @@ class RecentSearchViewHolder(
         itemView.recyclerView?.adapter = adapter
     }
 
-    override fun bind(element: RecentSearchViewModel) {
+    override fun bind(element: RecentSearchDataView) {
         adapter.setData(element.list)
     }
 }
