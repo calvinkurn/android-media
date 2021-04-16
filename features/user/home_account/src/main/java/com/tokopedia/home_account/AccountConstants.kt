@@ -107,6 +107,7 @@ object AccountConstants {
             const val LABEL_GET_TO_KNOW_TOKOPEDIA = "Kenali Tokopedia"
             const val LABEL_TERMS_AND_CONDITIONS = "Syarat dan Ketentuan"
             const val LABEL_PRIVACY_POLICY = "Kebijakan Privasi"
+            const val LABEL_IP = "Hak Kekayaan Intelektual"
             const val LABEL_REVIEW_THIS_APP = "Ulas Aplikasi Ini"
         }
 
