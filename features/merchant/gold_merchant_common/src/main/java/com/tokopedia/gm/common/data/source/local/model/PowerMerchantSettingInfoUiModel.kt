@@ -8,8 +8,7 @@ import com.tokopedia.gm.common.constant.PeriodType
 
 data class PowerMerchantSettingInfoUiModel(
         val shopId: String,
-        val isNewPmContent: Boolean,
-        val isFinalSuccessPopup: Boolean,
         val periodeType: String = PeriodType.COMMUNICATION_PERIOD,
+        val periodeEndDateMillis: Long,
         val tickers: List<TickerUiModel> = emptyList()
 )

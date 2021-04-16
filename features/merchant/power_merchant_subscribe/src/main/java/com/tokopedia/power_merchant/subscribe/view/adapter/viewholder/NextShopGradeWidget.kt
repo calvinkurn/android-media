@@ -5,6 +5,7 @@ import androidx.annotation.DrawableRes
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.gm.common.constant.PMShopGrade
+import com.tokopedia.kotlin.extensions.view.asCamelCase
 import com.tokopedia.kotlin.extensions.view.asLowerCase
 import com.tokopedia.kotlin.extensions.view.loadImageWithoutPlaceholder
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
@@ -28,7 +29,7 @@ class NextShopGradeWidget(itemView: View) : AbstractViewHolder<WidgetNextShopGra
         setupBenefitList(element)
         with(itemView) {
             layoutPmNextGradeInfo.setBackgroundResource(getBackgroundResByGrade(element.gradeName))
-            val nextGradeInfo = context.getString(R.string.pm_next_pm_grade_info, element.shopLevel, element.shopScoreMin, element.gradeName)
+            val nextGradeInfo = context.getString(R.string.pm_next_pm_grade_info, element.shopLevel, element.shopScoreMin, element.gradeName.asCamelCase())
             tvPmNextGradeInfo.text = nextGradeInfo.parseAsHtml()
             imgPmNextGradeShopBadge.loadImageWithoutPlaceholder(element.gradeBadgeUrl)
         }

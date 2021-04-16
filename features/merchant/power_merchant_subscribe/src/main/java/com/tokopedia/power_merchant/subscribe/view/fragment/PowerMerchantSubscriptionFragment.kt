@@ -38,6 +38,8 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_pm_power_merchant_subscription.view.*
 import java.net.UnknownHostException
+import java.util.*
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 /**
@@ -535,12 +537,14 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
         widgets.add(WidgetDividerUiModel)
         widgets.add(getCurrentShopGradeBenefit(data))
         widgets.add(WidgetDividerUiModel)
-        val shouldShowNextGradeWidget = data.nextPMGrade != null && isAutoExtendEnabled && data.currentPMGrade?.gradeName != PMShopGrade.DIAMOND
+        val shouldShowNextGradeWidget = data.nextPMGrade != null && isAutoExtendEnabled
+                && data.currentPMGrade?.gradeName != PMShopGrade.DIAMOND
+                && !pmStatusAndShopInfo?.shopInfo?.isNewSeller.orTrue()
         if (shouldShowNextGradeWidget) {
             widgets.add(getNextShopGradeWidgetData(data))
             widgets.add(WidgetDividerUiModel)
         }
-        if (isAutoExtendEnabled) {
+        if (isAutoExtendEnabled && !pmStatusAndShopInfo?.shopInfo?.isNewSeller.orTrue()) {
             widgets.add(WidgetNextUpdateUiModel(data.nextQuarterlyCalibrationRefreshDate))
         }
         widgets.add(WidgetSingleCtaUiModel(getString(R.string.pm_pm_transition_period_learnmore), Constant.Url.POWER_MERCHANT_EDU))
@@ -589,15 +593,45 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
         val shopGrade = data.currentPMGrade
         val shopScoreThreshold = pmStatusAndShopInfo?.shopInfo?.shopScoreThreshold.orZero()
         return WidgetShopGradeUiModel(
+                isNewSeller = pmStatusAndShopInfo?.shopInfo?.isNewSeller.orTrue(),
                 shopGrade = shopGrade?.gradeName.orEmpty(),
                 shopScore = shopGrade?.shopScore.orZero(),
+                shopAge = pmStatusAndShopInfo?.shopInfo?.shopAge ?: 1,
                 threshold = shopScoreThreshold,
-                shopLevel = shopGrade?.shopLevel ?: ShopLevel.NO_LEVEL,
                 gradeBadgeImgUrl = shopGrade?.imgBadgeUrl.orEmpty(),
                 gradeBackgroundUrl = shopGrade?.backgroundUrl.orEmpty(),
-                nextPmCalculationDate = data.nextMonthlyRefreshDate,
+                nextPmCalculationDate = getPmNextCalculationDate(),
+                newSellerTenure = getNewSellerTenure(),
                 pmStatus = data.pmStatus
         )
+    }
+
+    private fun getNewSellerTenure(): String {
+        val daysBecomeExisting = 90
+        val shopAge = pmStatusAndShopInfo?.shopInfo?.shopAge ?: 1
+        val remainingDays = daysBecomeExisting.minus(shopAge)
+        val remainingDaysMillis = TimeUnit.DAYS.toMillis(remainingDays.toLong())
+        val endOfTenureMillis = Date().time.plus(remainingDaysMillis)
+        val dateFormat = "dd MMMM yyyy"
+        return DateFormatUtils.getFormattedDate(endOfTenureMillis, dateFormat)
+    }
+
+    private fun getPmNextCalculationDate(): String {
+        val shopInfo = pmStatusAndShopInfo?.shopInfo
+        val dateFormat = "dd MMMM yyyy"
+        return if (shopInfo?.isNewSeller.orTrue()) {
+            val day60ofTenure = 60
+            val shopAge = shopInfo?.shopAge ?: 1
+            return if (shopAge < day60ofTenure) {
+                getNewSellerTenure()
+            } else {
+                val endOfPeriodMillis = pmSettingInfo?.periodeEndDateMillis ?: Date().time
+                DateFormatUtils.getFormattedDate(endOfPeriodMillis, dateFormat)
+            }
+        } else {
+            val endOfPeriodMillis = pmSettingInfo?.periodeEndDateMillis ?: Date().time
+            DateFormatUtils.getFormattedDate(endOfPeriodMillis, dateFormat)
+        }
     }
 
     private fun getHeaderWidgetData(shopInfo: PMShopInfoUiModel): WidgetRegistrationHeaderUiModel {
