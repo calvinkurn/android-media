@@ -24,6 +24,7 @@ import com.tokopedia.common_digital.common.constant.DigitalExtraParam
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.recharge_credit_card.analytics.CreditCardAnalytics
 import com.tokopedia.recharge_credit_card.bottomsheet.CCBankListBottomSheet
+import com.tokopedia.recharge_credit_card.datamodel.RechargeCreditCard
 import com.tokopedia.recharge_credit_card.datamodel.TickerCreditCard
 import com.tokopedia.recharge_credit_card.di.RechargeCCInstance
 import com.tokopedia.recharge_credit_card.util.RechargeCCGqlQuery
@@ -141,8 +142,8 @@ class RechargeCCFragment : BaseDaggerFragment() {
 
     private fun observeData() {
         rechargeCCViewModel.creditCardSelected.observe(viewLifecycleOwner, Observer {
-            operatorIdSelected = it.operatorId.toString()
-            productIdSelected = it.defaultProductId.toString()
+            operatorIdSelected = it.operatorId
+            productIdSelected = it.defaultProductId
             cc_widget_client_number.setImageIcon(it.imageUrl)
         })
 
@@ -179,6 +180,7 @@ class RechargeCCFragment : BaseDaggerFragment() {
                     .isFromPDP(true)
                     .build()
             checkoutPassDataState = passData
+
             navigateToCart(passData)
         })
 
@@ -280,11 +282,19 @@ class RechargeCCFragment : BaseDaggerFragment() {
     }
 
     private fun navigateToCart(passData: DigitalCheckoutPassData) {
+        trackAddToCartEvent()
         context?.let {
             val intent = RouteManager.getIntent(activity, DigitalCheckoutUtil.getApplinkCartDigital(it))
             intent.putExtra(DigitalExtraParam.EXTRA_PASS_DIGITAL_CART_DATA, passData)
             startActivityForResult(intent, REQUEST_CODE_CART)
         }
+    }
+
+    private fun trackAddToCartEvent() {
+        val creditCardSelected = rechargeCCViewModel.creditCardSelected.value
+                ?: RechargeCreditCard()
+        creditCardAnalytics.addToCart(userSession.userId, rechargeCCViewModel.categoryName, categoryId,
+                creditCardSelected.prefixName, creditCardSelected.operatorId)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
