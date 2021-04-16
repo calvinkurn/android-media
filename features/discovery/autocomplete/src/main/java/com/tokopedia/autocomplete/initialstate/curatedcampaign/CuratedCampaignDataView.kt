@@ -3,7 +3,7 @@ package com.tokopedia.autocomplete.initialstate.curatedcampaign
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.autocomplete.initialstate.InitialStateTypeFactory
 
-data class CuratedCampaignViewModel(
+data class CuratedCampaignDataView(
         val template: String = "",
         val imageUrl: String = "",
         val applink: String = "",

@@ -24,7 +24,7 @@ import kotlinx.android.synthetic.main.layout_recyclerview_autocomplete.view.*
 class RecentViewViewHolder(
         itemView: View,
         listener: InitialStateItemClickListener
-) : AbstractViewHolder<RecentViewViewModel>(itemView) {
+) : AbstractViewHolder<RecentViewDataView>(itemView) {
 
     companion object {
         @LayoutRes
@@ -42,7 +42,7 @@ class RecentViewViewHolder(
         itemView.recyclerView?.adapter = adapter
     }
 
-    override fun bind(element: RecentViewViewModel) {
+    override fun bind(element: RecentViewDataView) {
         adapter.setData(element.list)
     }
 
