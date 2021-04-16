@@ -1,0 +1,43 @@
+[
+  {
+    "data": {
+      "OTPModeList": {
+        "success": true,
+        "message": "OTP Mode Found",
+        "errorMessage": "",
+        "otpDigit": 4,
+        "linkType": 0,
+        "enableTicker": false,
+        "tickerTrouble": "",
+        "modeLists": [
+          {
+            "modeCode": 12,
+            "modeText": "misscall",
+            "otpListText": "\u003cb\u003eMissed Call ke\u003c/b\u003e \u003cbr\u003e0900-0123",
+            "afterOtpListText": "Masukkan 6 Digit Terakhir Nomor Telepon Missed Call",
+            "afterOtpListTextHtml": "Misscall telah dilakukan ke 0900-0123.",
+            "otpListImgUrl": "https://ecs7.tokopedia.net/otp/cotp/ICON_MISSCALL_NEW.png",
+            "usingPopUp": false,
+            "popUpHeader": "",
+            "popUpBody": "",
+            "countdown": true,
+            "otpDigit": 4
+          },
+          {
+            "modeCode": 1,
+            "modeText": "sms",
+            "otpListText": "\u003cb\u003eSMS ke\u003c/b\u003e \u003cbr\u003e0900-0123",
+            "afterOtpListText": "Kode verifikasi telah dikirim melalui SMS ke 0900-0123.",
+            "afterOtpListTextHtml": "Kode verifikasi telah dikirim melalui SMS ke 0900-0123.",
+            "otpListImgUrl": "https://ecs7.tokopedia.net/otp/cotp/ICON_SMS_NEW.png",
+            "usingPopUp": false,
+            "popUpHeader": "",
+            "popUpBody": "",
+            "countdown": true,
+            "otpDigit": 4
+          }
+        ]
+      }
+    }
+  }
+]

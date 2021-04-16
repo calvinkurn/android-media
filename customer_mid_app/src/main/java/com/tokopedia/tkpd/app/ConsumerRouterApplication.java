@@ -63,6 +63,8 @@ import com.tokopedia.iris.Iris;
 import com.tokopedia.iris.IrisAnalytics;
 import com.tokopedia.kyc.KYCRouter;
 import com.tokopedia.linker.interfaces.LinkerRouter;
+import com.tokopedia.logger.ServerLogger;
+import com.tokopedia.logger.utils.Priority;
 import com.tokopedia.loyalty.di.component.TokopointComponent;
 import com.tokopedia.loyalty.router.LoyaltyModuleRouter;
 import com.tokopedia.loyalty.view.data.VoucherViewModel;
@@ -103,6 +105,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import io.hansel.hanselsdk.Hansel;
 import okhttp3.Interceptor;
@@ -353,9 +356,14 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public void sendAnalyticsAnomalyResponse(String title,
                                              String accessToken, String refreshToken,
                                              String response, String request) {
-        Timber.w("P2#USER_ANOMALY_REPONSE#AnomalyResponse;title=" + title +
-                ";accessToken=" + accessToken + ";refreshToken=" + refreshToken +
-                ";response=" + response + ";request=" + request);
+        Map<String, String> messageMap = new HashMap<>();
+        messageMap.put("type", "USER_ANOMALY_REPONSE");
+        messageMap.put("title", title);
+        messageMap.put("accessToken", accessToken);
+        messageMap.put("refreshToken", refreshToken);
+        messageMap.put("response", refreshToken);
+        messageMap.put("request", request);
+        ServerLogger.log(Priority.P2, "USER_ANOMALY_REPONSE", messageMap);
     }
 
     @Override

@@ -154,6 +154,15 @@ class TrackingOtpUtil @Inject constructor() {
         ))
     }
 
+    fun trackClickBackRegisterEmailOtp() {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                Event.EVENT_CLICK_ACTIVATION,
+                Category.CATEGORY_ACTIVATION_PAGE,
+                Action.ACTION_CLICK_ON_BUTTON_BACK,
+                Label.LABEL_EMPTY
+        ))
+    }
+
     fun trackSuccessClickResendRegisterEmailOtpButton() {
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                 Event.EVENT_CLICK_ACTIVATION,

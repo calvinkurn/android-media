@@ -1,0 +1,38 @@
+{
+  "readme": "P1#OTP - OTP EMAIL REGISTER",
+  "mode": "subset",
+  "query": [
+    {
+      "networkSpeed": "{{.+}}",
+      "clientId": "{{.+}}",
+      "isLoggedInStatus": "{{.+}}",
+      "appsflyerId": "{{.+}}",
+      "shopId": "{{.*}}",
+      "screenName": "Account Activation Page",
+      "event": "openScreen",
+      "userId": "{{.*}}",
+      "sessionIris": "{{.+}}"
+    },
+    {
+      "event": "clickActivation",
+      "eventCategory": "activation page",
+      "eventAction": "click kirim ulang",
+      "eventLabel": "click",
+      "sessionIris": "{{.*}}"
+    },
+    {
+      "event": "clickActivation",
+      "eventCategory": "activation page",
+      "eventAction": "click on button aktivasi",
+      "eventLabel": "click",
+      "sessionIris": "{{.*}}"
+    },
+    {
+      "event": "clickActivation",
+      "eventCategory": "activation page",
+      "eventAction": "click on button back",
+      "eventLabel": "",
+      "sessionIris": "{{.*}}"
+    }
+  ]
+}
