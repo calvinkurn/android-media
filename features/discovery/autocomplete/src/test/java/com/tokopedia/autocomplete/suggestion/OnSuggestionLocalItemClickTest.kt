@@ -1,7 +1,7 @@
 package com.tokopedia.autocomplete.suggestion
 
-import com.tokopedia.autocomplete.suggestion.doubleline.SuggestionDoubleLineWithoutImageViewModel
-import com.tokopedia.autocomplete.suggestion.productline.SuggestionProductLineDataView
+import com.tokopedia.autocomplete.suggestion.doubleline.SuggestionDoubleLineWithoutImageDataDataView
+import com.tokopedia.autocomplete.suggestion.productline.SuggestionProductLineDataDataView
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import io.mockk.verify
 import org.junit.Test
@@ -21,17 +21,17 @@ internal class OnSuggestionLocalItemClickTest: SuggestionPresenterTestFixtures()
     fun `Test tracking click suggestion item local keyword`() {
         `Given View already load data`(suggestionCampaignResponse, searchParameter as HashMap<String, String>)
 
-        val item = findDataView<SuggestionDoubleLineWithoutImageViewModel>(TYPE_LOCAL)
+        val item = findDataView<SuggestionDoubleLineWithoutImageDataDataView>(TYPE_LOCAL)
 
         `when suggestion item clicked`(item)
         `then verify view tracking click item local keyword is correct`(item)
     }
 
-    private fun `when suggestion item clicked`(item: BaseSuggestionViewModel) {
+    private fun `when suggestion item clicked`(item: BaseSuggestionDataView) {
         suggestionPresenter.onSuggestionItemClicked(item)
     }
 
-    private fun `then verify view tracking click item local keyword is correct`(item: BaseSuggestionViewModel) {
+    private fun `then verify view tracking click item local keyword is correct`(item: BaseSuggestionDataView) {
         val expectedEventLabel =
                 "keyword: ${item.title} " +
                         "- value: $keywordLocalGlobalTypedByUser " +
@@ -49,13 +49,13 @@ internal class OnSuggestionLocalItemClickTest: SuggestionPresenterTestFixtures()
     fun `Test tracking click suggestion item global keyword`() {
         `Given View already load data`(suggestionCampaignResponse, searchParameter as HashMap<String, String>)
 
-        val item = findDataView<SuggestionDoubleLineWithoutImageViewModel>(TYPE_GLOBAL)
+        val item = findDataView<SuggestionDoubleLineWithoutImageDataDataView>(TYPE_GLOBAL)
 
         `when suggestion item clicked`(item)
         `then verify view tracking click item global keyword is correct`(item)
     }
 
-    private fun `then verify view tracking click item global keyword is correct`(item: BaseSuggestionViewModel) {
+    private fun `then verify view tracking click item global keyword is correct`(item: BaseSuggestionDataView) {
         val expectedEventLabel =
                 "keyword: ${item.title} " +
                         "- value: $keywordLocalGlobalTypedByUser " +
@@ -72,13 +72,13 @@ internal class OnSuggestionLocalItemClickTest: SuggestionPresenterTestFixtures()
     fun `Test tracking click suggestion item product line`() {
         `Given View already load data`(suggestionCampaignResponse, searchParameter as HashMap<String, String>)
 
-        val item = findDataView<SuggestionProductLineDataView>(TYPE_PRODUCT)
+        val item = findDataView<SuggestionProductLineDataDataView>(TYPE_PRODUCT)
 
         `when suggestion item clicked`(item)
         `then verify view tracking click item product line is correct`(item)
     }
 
-    private fun `then verify view tracking click item product line is correct`(item: BaseSuggestionViewModel) {
+    private fun `then verify view tracking click item product line is correct`(item: BaseSuggestionDataView) {
         verify {
             suggestionView.onClickSuggestion(item.applink)
         }

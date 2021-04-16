@@ -249,6 +249,12 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
         if (orderShop.shopBadge.isNotEmpty()) {
             ivShop?.setImageUrl(orderShop.shopBadge)
             ivShop?.visible()
+            val shopType = if (orderShop.isOfficial == 1) {
+                view.context.getString(com.tokopedia.purchase_platform.common.R.string.pp_cd_shop_type_official_store)
+            } else {
+                view.context.getString(com.tokopedia.purchase_platform.common.R.string.pp_cd_shop_type_power_merchant)
+            }
+            ivShop?.contentDescription = view.context.getString(com.tokopedia.purchase_platform.common.R.string.pp_cd_image_shop_badge_with_shop_type, shopType)
         } else {
             ivShop?.gone()
         }
