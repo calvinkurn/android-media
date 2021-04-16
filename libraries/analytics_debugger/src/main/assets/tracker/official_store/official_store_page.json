@@ -135,15 +135,6 @@
       "eventLabel": "{{.*}}"
     },
     {
-      "eventCategory": "{{.*}}",
-      "event": "select_content",
-      "eventAction": "click banner dynamic channel left carousel",
-      "sessionIris" : "{{.*}}",
-      "attribution" : "{{.*}}",
-      "affinityLabel" : "{{.*}}",
-      "shopId" : "{{.*}}",
-      "campaignCode" : "{{.*}}",
-      "categoryId" : "{{.*}}",
       "promotions": [{
         "item_id": "{{.*}}",
         "creative_slot": "{{.*}}",
@@ -151,7 +142,16 @@
         "creative_url": "{{.*}}",
         "item_name": "{{.*}}"
       }],
-      "eventLabel": "{{.*}}"
+      "eventCategory": "{{.*}}",
+      "affinityLabel" : "{{.*}}",
+      "attribution" : "{{.*}}",
+      "shopId" : "{{.*}}",
+      "event": "select_content",
+      "eventAction": "click banner dynamic channel left carousel",
+      "sessionIris" : "{{.*}}",
+      "eventLabel": "{{.*}}",,
+      "campaignCode" : "{{.*}}",
+      "categoryId" : "{{.*}}"
     },
     {
       "eventCategory": "{{.*}}",

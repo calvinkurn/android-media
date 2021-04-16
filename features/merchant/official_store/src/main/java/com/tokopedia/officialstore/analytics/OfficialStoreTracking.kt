@@ -975,15 +975,6 @@ class OfficialStoreTracking(context: Context) {
     // No 31
     fun eventClickMixLeftImageBanner(channel: Channel, categoryName: String, bannerPosition: Int) {
         val eventDataLayer = Bundle()
-        eventDataLayer.putString(EVENT, PROMO_CLICK)
-        eventDataLayer.putString(EVENT_CATEGORY, "${OS_MICROSITE}$categoryName")
-        eventDataLayer.putString(EVENT_ACTION, "$CLICK banner $VALUE_DYNAMIC_MIX_LEFT_CAROUSEL")
-        eventDataLayer.putString(EVENT_LABEL, channel.id)
-        eventDataLayer.putString(ATTRIBUTION, channel.galaxyAttribution)
-        eventDataLayer.putString(AFFINITY_LABEL, channel.persona)
-        eventDataLayer.putString(CATEGORY_ID, channel.categoryPersona)
-        eventDataLayer.putString(SHOP_ID, channel.brandId)
-        eventDataLayer.putString(CAMPAIGN_CODE, "${channel.campaignCode.orEmpty()}")
         eventDataLayer.putParcelableArrayList("promotions", createMixLeftEcommerceDataLayer(
                 channelId = channel.id,
                 categoryName = categoryName.toLowerCase(),
@@ -992,6 +983,15 @@ class OfficialStoreTracking(context: Context) {
                 creative = channel.name,
                 creativeUrl = channel.banner?.applink.orEmpty()
         ))
+        eventDataLayer.putString(EVENT_CATEGORY, "${OS_MICROSITE}$categoryName")
+        eventDataLayer.putString(AFFINITY_LABEL, channel.persona)
+        eventDataLayer.putString(ATTRIBUTION, channel.galaxyAttribution)
+        eventDataLayer.putString(SHOP_ID, channel.brandId)
+        eventDataLayer.putString(EVENT, PROMO_CLICK)
+        eventDataLayer.putString(EVENT_ACTION, "$CLICK banner $VALUE_DYNAMIC_MIX_LEFT_CAROUSEL")
+        eventDataLayer.putString(EVENT_LABEL, channel.id)
+        eventDataLayer.putString(CATEGORY_ID, channel.categoryPersona)
+        eventDataLayer.putString(CAMPAIGN_CODE, "${channel.campaignCode.orEmpty()}")
 
         tracker.sendEnhanceEcommerceEvent("select_content", eventDataLayer)
     }
