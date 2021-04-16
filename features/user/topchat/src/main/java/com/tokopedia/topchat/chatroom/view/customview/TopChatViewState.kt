@@ -36,8 +36,6 @@ interface TopChatViewState : BaseChatViewState {
 
     fun showConfirmationBlockChat()
 
-    fun updateTemplateState()
-
     fun hasProductPreviewShown(): Boolean
     fun showTemplateChatIfReady(lastMessageBroadcast: Boolean, amIBuyer: Boolean)
     fun attachFragmentView(fragmentView: TopChatContract.View)

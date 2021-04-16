@@ -813,7 +813,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     override fun onSendAndReceiveMessage() {
         adapter.removeBroadcastHandler()
-        getViewState().updateTemplateState()
+        updateSrwState()
     }
 
     override fun renderBackground(url: String) {

@@ -587,22 +587,16 @@ class TopChatViewStateImpl constructor(
         }
     }
 
-    override fun updateTemplateState() {
-        if (!templateRecyclerView.isVisible && templateAdapter.hasTemplateChat()) {
-            showTemplateChat()
-        }
-    }
-
     override fun hasProductPreviewShown(): Boolean {
         return attachmentPreviewContainer.isVisible && attachmentPreviewAdapter.isShowingProduct()
     }
 
     override fun showTemplateChatIfReady(lastMessageBroadcast: Boolean, amIBuyer: Boolean) {
         val isLastMsgFromBroadcastAndIamBuyer = lastMessageBroadcast && amIBuyer
-        if (templateAdapter.hasTemplateChat() &&
+        if (!templateRecyclerView.isVisible &&
+                templateAdapter.hasTemplateChat() &&
                 !isLastMsgFromBroadcastAndIamBuyer &&
-                fragmentView?.shouldShowSrw() == false &&
-                !templateRecyclerView.isVisible) {
+                fragmentView?.shouldShowSrw() == false) {
             showTemplateChat()
         }
     }
