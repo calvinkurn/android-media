@@ -58,6 +58,7 @@
     <string name="menu_account_old_account">Switch to old Fragment</string>
 
     <!-- Menu Setting Item Description -->
+    <string name="menu_account_desc_icon">Atur alamat pengiriman belanjaan</string>
     <string name="menu_account_desc_address">Atur alamat pengiriman belanjaan</string>
     <string name="menu_account_desc_bank">Tarik Saldo Tokopedia ke rekening tujuan</string>
     <string name="menu_account_desc_instant_payment">OVO, kartu kredit, &amp; debit instan terdaftar</string>

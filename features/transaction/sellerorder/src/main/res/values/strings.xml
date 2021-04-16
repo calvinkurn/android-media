@@ -43,7 +43,10 @@
     <string name="detail_product">Detail Produk</string>
     <string name="see_invoice">Lihat Invoice</string>
     <string name="awb_label">awb</string>
-    <string name="resi_tersalin">Nomor resi sudah tersalin</string>
+    <string name="readable_awb_label">Nomor resi</string>
+    <string name="booking_code_label">bookingcode</string>
+    <string name="readable_booking_code_label">Kode booking</string>
+    <string name="message_success_copy">%1$s sudah tersalin</string>
     <string name="invoice_label">invoice</string>
     <string name="sudah_dicetak">Sudah dicetak</string>
     <string name="invoice_tersalin">Invoice sudah tersalin</string>

@@ -440,10 +440,9 @@ object ApplinkConstInternalGlobal {
      **/
     @JvmField
     val LOGOUT = "$INTERNAL_GLOBAL/logout"
-    @JvmField
-    val PARAM_IS_RETURN_HOME = "return_to_home"
-    @JvmField
-    val PARAM_IS_CLEAR_DATA_ONLY = "is_clear_data_only"
+    /** for param logout */
+    const val PARAM_IS_RETURN_HOME = "return_to_home"
+    const val PARAM_IS_CLEAR_DATA_ONLY = "is_clear_data_only"
 
     /**
      * TermPrivacyActivity

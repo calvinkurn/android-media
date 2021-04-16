@@ -97,6 +97,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.traceroute)
     implementation project(rootProject.ext.libraries.deviceInfo)
     implementation project(rootProject.ext.libraries.remoteResourceRequest)
+    implementation project(rootProject.ext.libraries.logger)
 
     // Room
     implementation rootProject.ext.dbDependencies.dbRoomRuntime

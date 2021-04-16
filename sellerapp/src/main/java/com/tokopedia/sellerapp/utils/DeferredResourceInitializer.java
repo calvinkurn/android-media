@@ -4,9 +4,14 @@ import android.content.Context;
 
 import com.tkpd.remoteresourcerequest.callback.DeferredCallback;
 import com.tkpd.remoteresourcerequest.task.ResourceDownloadManager;
+import com.tokopedia.logger.ServerLogger;
+import com.tokopedia.logger.utils.Priority;
 import com.tokopedia.sellerapp.R;
 
 import org.jetbrains.annotations.NotNull;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -34,10 +39,20 @@ public class DeferredResourceInitializer implements DeferredCallback {
     @Override
     public void logDeferred(@NotNull String message) {
         String[] msg = message.split(",");
-        if (msg.length > 2)
-            Timber.w("P1%s#%s;worker=%s;url=%s", MANAGER_TAG, msg[0], msg[1], msg[2]);
-        else
-            Timber.w("P1%s#%s;worker=%s;url=%s", MANAGER_TAG, message, null, null);
+        if (msg.length > 2) {
+            Map<String, String> messageMap = new HashMap<>();
+            messageMap.put("type", msg[0]);
+            messageMap.put("worker", msg[1]);
+            messageMap.put("url", msg[2]);
+            ServerLogger.log(Priority.P1, MANAGER_TAG, messageMap);
+        }
+        else {
+            Map<String, String> messageMap = new HashMap<>();
+            messageMap.put("type", message);
+            messageMap.put("worker", "null");
+            messageMap.put("url", "null");
+            ServerLogger.log(Priority.P1, MANAGER_TAG, messageMap);
+        }
 
     }
 

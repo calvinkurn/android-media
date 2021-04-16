@@ -31,6 +31,8 @@ import com.tokopedia.liveness.view.BackgroundOverlay
 import com.tokopedia.liveness.view.OnBackListener
 import com.tokopedia.liveness.view.activity.LivenessActivity
 import com.tokopedia.liveness.view.activity.LivenessFailedActivity
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
 import com.tokopedia.utils.file.FileUtil
 import com.tokopedia.utils.image.ImageProcessingUtil
 import timber.log.Timber
@@ -301,13 +303,13 @@ class LivenessFragment : BaseDaggerFragment(), Detector.DetectorInitCallback, Li
                 if (cameraResultFile.exists()) {
                     return cameraResultFile.absolutePath
                 } else {
-                    Timber.w("P2#LIVENESS_IMAGE_ERROR#'FailedImageFileNotFound';absolutePath='${cameraResultFile.absolutePath}'")
+                    ServerLogger.log(Priority.P2, "LIVENESS_IMAGE_ERROR", mapOf("type" to "FailedImageFileNotFound", "absolutePath" to cameraResultFile.absolutePath))
                 }
             } else {
-                Timber.w("P2#LIVENESS_IMAGE_ERROR#'FailedImageNull'")
+                ServerLogger.log(Priority.P2, "LIVENESS_IMAGE_ERROR", mapOf("type" to "FailedImageNull"))
             }
         } catch (error: Throwable) {
-            Timber.w("P2#LIVENESS_IMAGE_ERROR#'TryCatchSaveToFile';stack_trace='$error'")
+            ServerLogger.log(Priority.P2, "LIVENESS_IMAGE_ERROR", mapOf("type" to "TryCatchSaveToFile", "stack_trace" to "$error"))
         }
         return ""
     }
@@ -331,7 +333,8 @@ class LivenessFragment : BaseDaggerFragment(), Detector.DetectorInitCallback, Li
             out.close()
         } catch (e: Throwable) {
             e.printStackTrace()
-            Timber.w("P2#LIVENESS_IMAGE_ERROR#'TryCatchWriteImageToTkpdPath';cacheDir='$cacheDir;cachePath'=$cachePath;fileExists='${file.exists()}';stack_trace='$e'")
+            ServerLogger.log(Priority.P2, "LIVENESS_IMAGE_ERROR",
+                    mapOf("type" to "TryCatchWriteImageToTkpdPath", "cacheDir" to "$cacheDir", "cachePath" to cachePath, "fileExists" to "${file.exists()}", "stack_trace" to "$e"))
         }
         return file
     }
