@@ -284,7 +284,6 @@ class TopchatRoomBuyerAttachProductTest : BaseBuyerTopchatRoomTest() {
         assertSrwContentIsHidden()
     }
 
-    // TODO: template chat remind hidden if use click send button
     @Test
     fun template_chat_shown_if_product_preview_is_closed() {
         // Given
@@ -301,6 +300,24 @@ class TopchatRoomBuyerAttachProductTest : BaseBuyerTopchatRoomTest() {
 
         // Then
         assertSrwContentIsHidden()
+    }
+
+    @Test
+    fun template_chat_remain_hidden_if_user_click_send_btn_when_srw_shown() {
+        // Given
+        setupChatRoomActivity {
+            putProductAttachmentIntent(it)
+        }
+        getChatUseCase.response = firstPageChatAsBuyer
+        chatAttachmentUseCase.response = chatAttachmentResponse
+        chatSrwUseCase.response = chatSrwResponse
+        inflateTestFragment()
+
+        // Then
+        clickSendBtn()
+
+        // Then
+        assertSrwContentIsVisible()
     }
 
     @Test
