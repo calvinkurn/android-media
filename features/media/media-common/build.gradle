@@ -21,25 +21,17 @@ buildscript {
 dependencies {
     implementation rootProject.ext.unifyDependencies.components
 
-    implementation project(rootProject.ext.libraries.track)
     implementation project(rootProject.ext.libraries.remoteConfig)
     implementation project(rootProject.ext.libraries.applink)
 
-    kapt rootProject.ext.networkDependencies.glideProcessor
-    implementation rootProject.ext.networkDependencies.glide
-    implementation rootProject.ext.networkDependencies.glideOkhttp
-
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
-
-    testImplementation rootProject.ext.testDependencies.mockk
-    testImplementation rootProject.ext.supportLibDependencies.kotlinReflection
 }
 
 project.ext {
     artifactId = 'media-common'
     groupId = 'com.tokopedia.media'
-    versionName = "0.0.1"
+    versionName = "0.0.3"
     artifactName = "media-common-release"
 }
 

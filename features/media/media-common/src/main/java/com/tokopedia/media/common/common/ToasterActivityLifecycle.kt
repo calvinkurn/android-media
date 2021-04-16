@@ -10,7 +10,7 @@ import android.view.ViewGroup
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.MEDIA_QUALITY_SETTING
 import com.tokopedia.media.common.R
-import com.tokopedia.media.common.data.LOW_QUALITY
+import com.tokopedia.media.common.data.HIGH_QUALITY
 import com.tokopedia.media.common.data.MediaSettingPreferences
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.media.common.util.NetworkManager.state as networkManagerState
@@ -26,7 +26,7 @@ class ToasterActivityLifecycle(
                     it == activity.javaClass.canonicalName
                 }.isNullOrEmpty()
                 && !preferences.toasterVisibility()
-                && networkManagerState(context) == LOW_QUALITY) {
+                && networkManagerState(context) != HIGH_QUALITY) {
             try {
                 showToaster(activity)
             } catch (ignored: Exception) {}
