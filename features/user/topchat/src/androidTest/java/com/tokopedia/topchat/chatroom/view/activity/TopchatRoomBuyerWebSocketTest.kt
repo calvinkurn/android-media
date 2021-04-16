@@ -4,14 +4,14 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.typeText
 import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.matcher.ViewMatchers.withId
-import androidx.test.espresso.matcher.ViewMatchers.withText
+import androidx.test.espresso.matcher.ViewMatchers.*
 import com.tokopedia.topchat.AndroidFileUtil
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.view.activity.base.BaseBuyerTopchatRoomTest
 import com.tokopedia.topchat.matchers.withRecyclerView
 import com.tokopedia.topchat.stub.chatroom.view.presenter.TopChatRoomPresenterStub
 import com.tokopedia.websocket.WebSocketResponse
+import org.hamcrest.CoreMatchers.not
 import org.junit.Test
 
 class TopchatRoomBuyerWebSocketTest : BaseBuyerTopchatRoomTest() {
@@ -77,6 +77,32 @@ class TopchatRoomBuyerWebSocketTest : BaseBuyerTopchatRoomTest() {
         onView(withRecyclerView(R.id.recycler_view).atPositionOnView(
                 0, R.id.txt_info
         )).check(matches(withText(label)))
+    }
+
+    @Test
+    fun received_normal_text_without_label_from_seller() {
+        // Given
+        setupChatRoomActivity()
+        getChatUseCase.response = firstPageChatAsBuyer
+        chatAttachmentUseCase.response = chatAttachmentResponse
+        changeResponseStartTime(
+                wsResponseText, TopChatRoomPresenterStub.exStartTime
+        )
+        inflateTestFragment()
+
+        // When
+        websocket.simulateResponse(oppositeTextWithLabel.setLabel(""))
+
+        // Then
+        onView(withRecyclerView(R.id.recycler_view).atPositionOnView(
+                0, R.id.txt_info
+        )).check(matches(not(isDisplayed())))
+    }
+
+    protected fun WebSocketResponse.setLabel(label: String): WebSocketResponse {
+        jsonObject?.remove("label")
+        jsonObject?.addProperty("label", label)
+        return this
     }
 
 }
