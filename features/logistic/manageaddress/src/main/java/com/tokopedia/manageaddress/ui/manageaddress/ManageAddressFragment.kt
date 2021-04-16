@@ -283,6 +283,10 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
                         }
                         ChooseAddressUtils.updateLocalizingAddressDataFromOther(context, data.addressId.toString(), data.cityId.toString(),
                                 data.districtId.toString(), data.latitude, data.longitude, ChooseAddressUtils.setLabel(data), data.postalCode)
+
+                        context?.let {
+                            viewModel.searchAddress("", prevState, getChosenAddrId(), ChooseAddressUtils.isRollOutUser(it))
+                        }
                     }
                 }
 
@@ -481,6 +485,9 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
                 }
             }
             btn_alamat_utama?.setOnClickListener {
+                if (isFromCheckoutChangeAddress == true) {
+                    _selectedAddressItem = data
+                }
                 viewModel.setDefaultPeopleAddress(data.id, false, prevState, getChosenAddrId(), ChooseAddressUtils.isRollOutUser(context))
                 bottomSheetLainnya?.dismiss()
             }
