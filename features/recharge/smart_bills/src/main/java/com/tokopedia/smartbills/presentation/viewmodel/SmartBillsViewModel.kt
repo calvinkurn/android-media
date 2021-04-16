@@ -95,7 +95,7 @@ class SmartBillsViewModel @Inject constructor(
                     RechargeMultipleSBMBill.Response::class.java, mapParams
             )
 
-            val data = withContext(dispatcher.IO) {
+            val data = withContext(dispatcher.io) {
                 graphqlRepository.getReseponse(listOf(graphqlRequest), GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
             }.getSuccessData<RechargeMultipleSBMBill.Response>()
 
