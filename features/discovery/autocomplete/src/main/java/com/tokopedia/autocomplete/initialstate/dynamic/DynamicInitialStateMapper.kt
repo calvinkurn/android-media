@@ -27,5 +27,5 @@ fun InitialStateData.convertDynamicInitialStateSearchToVisitableList(): MutableL
         )
         childList.add(model)
     }
-    return arrayListOf(DynamicInitialStateSearchViewModel(this.featureId, childList))
+    return arrayListOf(DynamicInitialStateSearchDataView(this.featureId, childList))
 }
