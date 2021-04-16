@@ -193,7 +193,6 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
                 }
             }
         }
-        viewModel.getShopAccountTickerPeriod(userSession.shopId.toIntOrZero())
     }
 
     private fun observeShopInfo() {
@@ -257,6 +256,7 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
     }
 
     private fun getAllShopInfo() {
+        viewModel.getShopAccountTickerPeriod()
         viewModel.getAllSettingShopInfo()
         viewModel.getProductCount()
         viewModel.getNotifications()
@@ -289,6 +289,7 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
 
     private fun retryFetchAfterError() {
         showShopInfoLoading()
+        viewModel.getShopAccountTickerPeriod()
         viewModel.getAllSettingShopInfo(isToasterRetry = true)
     }
 

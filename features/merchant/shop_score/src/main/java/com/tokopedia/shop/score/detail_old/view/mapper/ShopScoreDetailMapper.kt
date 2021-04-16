@@ -1,7 +1,5 @@
 package com.tokopedia.shop.score.detail_old.view.mapper
 
-import com.tokopedia.gm.common.constant.COMMUNICATION_PERIOD
-import com.tokopedia.gm.common.presentation.model.ShopInfoPeriodUiModel
 import com.tokopedia.shop.score.detail_old.domain.model.ShopScoreResult
 import com.tokopedia.shop.score.detail_old.view.model.ShopScoreDetailData
 import com.tokopedia.shop.score.detail_old.view.model.ShopScoreDetailItem
@@ -20,12 +18,6 @@ class ShopScoreDetailMapper @Inject constructor(
         val items = getShopScoreItems(result)
 
         return ShopScoreDetailData(shopType, summary, items)
-    }
-
-    fun mapToIsShowTickerShopInfo(shopInfoPeriodUiModel: ShopInfoPeriodUiModel): Boolean {
-        return !shopInfoPeriodUiModel.isNewSeller &&
-                !shopInfoPeriodUiModel.isOfficialStore &&
-                shopInfoPeriodUiModel.periodType == COMMUNICATION_PERIOD
     }
 
     private fun getShopType(): ShopType {

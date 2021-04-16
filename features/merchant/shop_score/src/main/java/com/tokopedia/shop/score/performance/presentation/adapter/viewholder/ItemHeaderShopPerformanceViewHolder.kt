@@ -31,12 +31,7 @@ class ItemHeaderShopPerformanceViewHolder(view: View,
                 itemHeaderShopPerformanceListener.onViewHeaderListener(this)
             }
 
-            val roundedRadius = 16F
-            containerHeaderShopPerformance.shapeAppearanceModel = containerHeaderShopPerformance.shapeAppearanceModel
-                    .toBuilder()
-                    .setTopRightCorner(CornerFamily.ROUNDED, roundedRadius)
-                    .setTopLeftCorner(CornerFamily.ROUNDED, roundedRadius)
-                    .build()
+            setBackgroundHeaderRadius()
 
             tvPerformanceLevel?.text = getString(R.string.shop_performance_level_header, element?.shopLevel)
 
@@ -56,6 +51,17 @@ class ItemHeaderShopPerformanceViewHolder(view: View,
         }
         setupDescHeaderShopPerformance(element)
         setupTicker(element)
+    }
+
+    private fun setBackgroundHeaderRadius() {
+        with(itemView) {
+            val roundedRadius = 16F
+            containerHeaderShopPerformance.shapeAppearanceModel = containerHeaderShopPerformance.shapeAppearanceModel
+                    .toBuilder()
+                    .setTopRightCorner(CornerFamily.ROUNDED, roundedRadius)
+                    .setTopLeftCorner(CornerFamily.ROUNDED, roundedRadius)
+                    .build()
+        }
     }
 
     private fun setupTicker(element: HeaderShopPerformanceUiModel?) {
@@ -82,8 +88,8 @@ class ItemHeaderShopPerformanceViewHolder(view: View,
                 tvHeaderShopService?.hide()
                 tvDescShopService?.hide()
                 cardDescNewSeller?.show()
-                tvHeaderShopService?.text = element.titleHeaderShopService ?: "-"
-                tvDescShopService?.text = element.descHeaderShopService ?: "-"
+                tvHeaderShopServiceNewSeller?.text = element.titleHeaderShopService ?: "-"
+                tvDescShopServiceNewSeller?.text = element.descHeaderShopService ?: "-"
             } else {
                 tvHeaderShopService?.show()
                 tvDescShopService?.show()

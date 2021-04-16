@@ -1,6 +1,7 @@
 package com.tokopedia.review.feature.reputationhistory.di;
 
 import com.tokopedia.review.common.di.ReviewComponent;
+import com.tokopedia.review.feature.reputationhistory.view.bottomsheet.ShopScoreReputationBottomSheet;
 import com.tokopedia.review.feature.reputationhistory.view.fragment.SellerReputationFragment;
 
 import dagger.Component;
@@ -11,7 +12,6 @@ import dagger.Component;
 @SellerReputationScope
 @Component(modules = {SellerReputationModule.class}, dependencies = {ReviewComponent.class})
 public interface SellerReputationComponent {
-
     void inject(SellerReputationFragment sellerReputationFragment);
-
+    void inject(ShopScoreReputationBottomSheet shopScoreReputationBottomSheet);
 }

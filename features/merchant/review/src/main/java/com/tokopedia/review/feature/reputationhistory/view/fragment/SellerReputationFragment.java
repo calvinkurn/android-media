@@ -33,6 +33,8 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.datepicker.range.view.listener.DatePickerResultListener;
+import com.tokopedia.gm.common.constant.GMCommonConstantKt;
+import com.tokopedia.gm.common.presentation.model.ShopInfoPeriodUiModel;
 import com.tokopedia.iconunify.IconUnify;
 import com.tokopedia.review.R;
 import com.tokopedia.review.ReviewInstance;
@@ -53,9 +55,11 @@ import com.tokopedia.review.feature.reputationhistory.view.helper.RefreshHandler
 import com.tokopedia.review.feature.reputationhistory.view.helper.ReputationViewHelper;
 import com.tokopedia.review.feature.reputationhistory.view.model.SetDateHeaderModel;
 import com.tokopedia.review.feature.reputationhistory.view.presenter.SellerReputationFragmentPresenter;
+import com.tokopedia.review.feature.reputationhistory.view.viewmodel.ShopScoreReputationViewModel;
 import com.tokopedia.unifycomponents.CardUnify;
 import com.tokopedia.unifycomponents.ticker.Ticker;
 import com.tokopedia.unifyprinciples.Typography;
+import com.tokopedia.usecase.coroutines.Success;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
@@ -98,6 +102,12 @@ public class SellerReputationFragment extends BaseDaggerFragment
     ReviewReputationMergeUseCase reviewReputationMergeUseCase;
 
     SellerReputationFragmentPresenter presenter;
+
+    @Inject
+    ShopScoreReputationViewModel shopScoreReputationViewModel;
+
+    @Inject
+    UserSessionInterface userSession;
 
     private SnackbarRetry snackbarRetry;
     private View rootView;
@@ -149,6 +159,7 @@ public class SellerReputationFragment extends BaseDaggerFragment
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        inject();
         setRetainInstance(isRetainInstance());
         Log.d(TAG, "ON CREATE");
         if (getArguments() != null) {
@@ -209,15 +220,36 @@ public class SellerReputationFragment extends BaseDaggerFragment
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initView(view);
+        if (getActivity() != null) {
+            appBarLayout.setBackgroundColor(ContextCompat.getColor(getActivity(), com.tokopedia.unifyprinciples.R.color.Unify_N0));
+        }
+        observeShopInfoPeriod();
         shopScorePeriodToggle();
-        initCardShopScore();
         initialVar();
         setViewListener();
         setActionVar();
     }
 
+    private void observeShopInfoPeriod() {
+        shopScoreReputationViewModel.getShopPeriod().observe(getViewLifecycleOwner(), result -> {
+            ShopInfoPeriodUiModel shopInfoPeriodUiModel = (ShopInfoPeriodUiModel) ((Success) result).getData();
+            toggleShopScorePeriodView(shopInfoPeriodUiModel.getPeriodType(), shopInfoPeriodUiModel.isNewSeller());
+            initCardShopScore(shopInfoPeriodUiModel.getPeriodType());
+        });
+        shopScoreReputationViewModel.getShopScorePeriod(Integer.parseInt(userSession.getShopId()));
+    }
+
+    private void toggleShopScorePeriodView(String periodType, boolean isNewSeller) {
+        if ((periodType.equals(GMCommonConstantKt.COMMUNICATION_PERIOD)
+                || periodType.equals(GMCommonConstantKt.TRANSITION_PERIOD)) && !isNewSeller) {
+            shopScorePeriodToggle();
+        } else {
+            tickerShopScore.setVisibility(View.GONE);
+            cardReputationShopScore.setVisibility(View.GONE);
+        }
+    }
+
     private void shopScorePeriodToggle() {
-        UserSessionInterface userSession = new UserSession(getActivity());
         if (userSession.isShopOfficialStore()) {
             tickerShopScore.setVisibility(View.VISIBLE);
             cardReputationShopScore.setVisibility(View.GONE);
@@ -227,16 +259,17 @@ public class SellerReputationFragment extends BaseDaggerFragment
         }
     }
 
-    private void initCardShopScore() {
+    private void initCardShopScore(String periodType) {
         String date = ReviewUtil.INSTANCE.getShopScoreDate(requireContext());
         tvInfoMigrateReputation.setText(MethodChecker.fromHtml(getString(R.string.desc_title_card_shop_score, date)));
-        iconChevronRightReputationDetail.setOnClickListener(view -> showBottomSheetMoveShopScore());
+        iconChevronRightReputationDetail.setOnClickListener(view -> showBottomSheetMoveShopScore(periodType));
 
-        cardReputationShopScore.setOnClickListener(view -> showBottomSheetMoveShopScore());
+        cardReputationShopScore.setOnClickListener(view -> showBottomSheetMoveShopScore(periodType));
     }
 
-    private void showBottomSheetMoveShopScore() {
-        ShopScoreReputationBottomSheet shopScoreReputationBottomSheet = new ShopScoreReputationBottomSheet();
+    private void showBottomSheetMoveShopScore(String periodType) {
+        ShopScoreReputationBottomSheet shopScoreReputationBottomSheet =
+                ShopScoreReputationBottomSheet.newInstance(periodType);
         shopScoreReputationBottomSheet.show(getChildFragmentManager());
     }
 
@@ -271,7 +304,6 @@ public class SellerReputationFragment extends BaseDaggerFragment
     public void onResume() {
         super.onResume();
         if (isFirstTime) {
-            inject();
             UserSessionInterface userSession = new UserSession(getActivity());
             presenter.setUserSession(userSession);
             presenter.setReviewReputationUseCase(reviewReputationUseCase);

@@ -8,8 +8,9 @@ import kotlin.math.abs
 import kotlin.math.roundToInt
 
 object GoldMerchantUtil {
+
     infix fun String.diffDays(days: Int): Boolean {
-        val simpleDateFormat = SimpleDateFormat(PATTERN_DATE_SHOP_INFO, Locale.getDefault())
+        val simpleDateFormat = SimpleDateFormat(PATTERN_DATE_SHOP_INFO, Locale("id"))
         val joinDate = simpleDateFormat.parse(this)
         val diffInMs: Long = abs(System.currentTimeMillis() - joinDate?.time.orZero())
         val diff = TimeUnit.DAYS.convert(diffInMs, TimeUnit.MILLISECONDS)
@@ -24,7 +25,7 @@ object GoldMerchantUtil {
     }
 
     fun String.totalMonths(): Int {
-        val simpleDateFormat = SimpleDateFormat(PATTERN_DATE_SHOP_INFO, Locale.getDefault())
+        val simpleDateFormat = SimpleDateFormat(PATTERN_DATE_SHOP_INFO, Locale("id"))
         val startDate = simpleDateFormat.parse(this)
         val diffInMs: Long = abs(System.currentTimeMillis() - startDate?.time.orZero())
         val diff = TimeUnit.DAYS.convert(diffInMs, TimeUnit.MILLISECONDS)
@@ -32,7 +33,7 @@ object GoldMerchantUtil {
     }
 
     fun String.isTenureNewSeller(): Boolean {
-        val simpleDateFormat = SimpleDateFormat(PATTERN_DATE_SHOP_INFO, Locale.getDefault())
+        val simpleDateFormat = SimpleDateFormat(PATTERN_DATE_SHOP_INFO, Locale("id"))
         val joinDate = simpleDateFormat.parse(this)
         val diffInMs: Long = abs(System.currentTimeMillis() - joinDate?.time.orZero())
         val diff = TimeUnit.DAYS.convert(diffInMs, TimeUnit.MILLISECONDS)

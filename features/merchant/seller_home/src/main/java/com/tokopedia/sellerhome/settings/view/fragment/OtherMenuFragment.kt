@@ -28,6 +28,9 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
+import com.tokopedia.gm.common.constant.COMMUNICATION_PERIOD
+import com.tokopedia.gm.common.constant.END_PERIOD
+import com.tokopedia.gm.common.constant.TRANSITION_PERIOD
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
@@ -156,6 +159,7 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
         setupOffset()
         setupView(view)
         observeLiveData()
+        observeShopPeriod()
         observeFreeShippingStatus()
         context?.let { UpdateShopActiveService.startService(it) }
     }
@@ -318,6 +322,48 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
         }
     }
 
+    private fun observeShopPeriod() {
+        observe(otherMenuViewModel.shopPeriodType) {
+            when (it) {
+                is Success -> {
+                    setPerformanceMenu(it.data)
+                }
+                is Fail -> {}
+            }
+        }
+        otherMenuViewModel.getShopPeriodType()
+    }
+
+    private fun setPerformanceMenu(periodType: String) {
+        if (periodType.isNotBlank()) {
+            if (periodType == TRANSITION_PERIOD || periodType == END_PERIOD) {
+                val shopPerformanceData = adapter.list.filterIsInstance<MenuItemUiModel>().find {
+                    it.onClickApplink == ApplinkConstInternalMarketplace.SHOP_PERFORMANCE
+                }
+
+                if (shopPerformanceData != null) {
+                    return
+                } else {
+                    val promotionItem = adapter.list.filterIsInstance<MenuItemUiModel>().find {
+                        it.onClickApplink == ApplinkConstInternalSellerapp.CENTRALIZED_PROMO
+                    }
+                    val promotionIndex = adapter.list.indexOfFirst { it == promotionItem }
+                    val performanceData = MenuItemUiModel(
+                            resources.getString(R.string.setting_menu_performance),
+                            null,
+                            ApplinkConstInternalMarketplace.SHOP_PERFORMANCE,
+                            eventActionSuffix = SettingTrackingConstant.SHOP_PERFORMANCE,
+                            iconUnify = IconUnify.PERFORMANCE)
+
+                    if (promotionIndex != -1) {
+                        adapter.addElement(promotionIndex + 1, performanceData)
+                        adapter.notifyItemRangeInserted(promotionIndex, 1)
+                    }
+                }
+            }
+        } else return
+    }
+
     private fun populateAdapterData() {
         val settingList = mutableListOf(
                 SettingTitleUiModel(resources.getString(R.string.setting_menu_improve_sales)),
@@ -331,12 +377,6 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
                         ApplinkConstInternalSellerapp.CENTRALIZED_PROMO,
                         eventActionSuffix = SettingTrackingConstant.SHOP_ADS_AND_PROMOTION,
                         iconUnify = IconUnify.PROMO_ADS),
-                MenuItemUiModel(
-                        resources.getString(R.string.setting_menu_performance),
-                        null,
-                        ApplinkConst.SHOP_PERFORMANCE,
-                        eventActionSuffix = SettingTrackingConstant.SHOP_PERFORMANCE,
-                        iconUnify = IconUnify.GRAPH),
                 SettingTitleUiModel(resources.getString(R.string.setting_menu_buyer_info)),
                 MenuItemUiModel(
                         resources.getString(R.string.setting_menu_discussion),

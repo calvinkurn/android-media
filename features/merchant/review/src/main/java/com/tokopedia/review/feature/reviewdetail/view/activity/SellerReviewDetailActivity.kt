@@ -5,6 +5,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
@@ -25,7 +26,6 @@ import com.tokopedia.review.feature.reviewdetail.di.component.ReviewProductDetai
 import com.tokopedia.review.feature.reviewdetail.di.module.ReviewProductDetailModule
 import com.tokopedia.review.feature.reviewdetail.view.fragment.SellerReviewDetailFragment
 import com.tokopedia.seller_migration_common.constants.SellerMigrationConstants
-import com.tokopedia.seller_migration_common.presentation.util.getRegisteredMigrationApplinks
 
 /**
  * @author by milhamj on 2020-02-14.

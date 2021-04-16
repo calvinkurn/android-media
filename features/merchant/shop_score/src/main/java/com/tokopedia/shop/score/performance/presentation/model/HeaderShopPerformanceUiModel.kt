@@ -7,8 +7,7 @@ data class HeaderShopPerformanceUiModel(var shopLevel: String = "-",
                                         var scorePenalty: Int? = 0,
                                         var titleHeaderShopService: String? = "",
                                         var descHeaderShopService: String? = "",
-                                        var showCardNewSeller: Boolean = false,
-
+                                        var showCardNewSeller: Boolean = false
 ) : BaseShopPerformance {
     override fun type(typeFactory: ShopPerformanceAdapterTypeFactory): Int {
         return typeFactory.type(this)

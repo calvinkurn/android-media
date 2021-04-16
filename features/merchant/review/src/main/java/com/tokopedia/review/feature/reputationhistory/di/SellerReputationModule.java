@@ -36,7 +36,7 @@ import retrofit2.Retrofit;
  * Created by normansyahputa on 2/13/18.
  */
 
-@Module
+@Module(includes = {SellerReputationViewModelModule.class})
 public class SellerReputationModule {
 
     @SellerReputationScope

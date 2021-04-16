@@ -60,6 +60,10 @@ fun format(timeMillis: Long, pattern: String, locale: Locale = getLocale()): Str
     return sdf.format(timeMillis)
 }
 
+fun String.formatDate(pattern: String, locale: Locale = getLocale()): String {
+    return SimpleDateFormat(pattern, locale).format(this)
+}
+
 fun getLocale(): Locale {
     return Locale("id")
 }

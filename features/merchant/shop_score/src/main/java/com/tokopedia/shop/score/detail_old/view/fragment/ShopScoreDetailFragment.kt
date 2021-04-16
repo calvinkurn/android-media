@@ -20,7 +20,11 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.gm.common.constant.COMMUNICATION_PERIOD
 import com.tokopedia.gm.common.constant.GM_BADGE_TITLE
+import com.tokopedia.gm.common.constant.TRANSITION_PERIOD
+import com.tokopedia.gm.common.presentation.model.ShopInfoPeriodUiModel
 import com.tokopedia.gm.common.utils.getShopScoreDate
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.shop.score.R
@@ -62,12 +66,10 @@ class ShopScoreDetailFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         showLoading()
 
-        setupTickerShopScore()
         setupRecyclerView()
         setDescriptionText()
         setupClickListeners()
 
-//        observeShopScorePeriod()
         observeShopScoreDetail()
     }
 
@@ -78,12 +80,21 @@ class ShopScoreDetailFragment : Fragment() {
             .inject(this)
     }
 
-    private fun setupTickerShopScore() {
+    private fun setupTickerShopScore(shopInfoPeriodUiModel: ShopInfoPeriodUiModel) {
         ticker_info_shop_score?.apply {
+            showWithCondition((shopInfoPeriodUiModel.periodType == COMMUNICATION_PERIOD ||
+                    shopInfoPeriodUiModel.periodType == TRANSITION_PERIOD) && !shopInfoPeriodUiModel.isNewSeller)
             setHtmlDescription(getString(R.string.ticker_info_shop_score, getShopScoreDate(requireContext())))
             setDescriptionClickEvent(object : TickerCallback {
                 override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                    //TODO
+                    when (shopInfoPeriodUiModel.periodType) {
+                        COMMUNICATION_PERIOD -> {
+
+                        }
+                        else -> {
+                            RouteManager.route(context, ApplinkConstInternalMarketplace.SHOP_PERFORMANCE)
+                        }
+                    }
                 }
 
                 override fun onDismiss() {}
@@ -212,7 +223,8 @@ class ShopScoreDetailFragment : Fragment() {
 
             when (result) {
                 is Success -> {
-                    result.data.run {
+                    setupTickerShopScore(result.data.second)
+                    result.data.first.run {
                         renderShopScoreDetail(items)
                         renderShopScoreSummary(summary)
                         renderShopScoreState(shopType)
@@ -223,18 +235,6 @@ class ShopScoreDetailFragment : Fragment() {
         }
         viewModel.getShopScoreDetail()
     }
-
-//    private fun observeShopScorePeriod() {
-//        observe(viewModel.tickerShopInfoPeriod) {
-//            when (it) {
-//                is Success -> {
-//                    ticker_info_shop_score.showWithCondition(it.data)
-//                }
-//                is Fail -> ticker_info_shop_score.hide()
-//            }
-//        }
-//        viewModel.getShopInfoPeriod(viewModel.userSession.shopId.toIntOrZero())
-//    }
 
     private fun goToSellerCenter() {
         openUrlWebView(SELLER_CENTER_LINK)

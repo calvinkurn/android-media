@@ -9,6 +9,7 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.gm.common.domain.interactor.GetShopInfoPeriodUseCase
 import com.tokopedia.sellerhome.common.viewmodel.NonNullLiveData
 import com.tokopedia.seller.menu.common.domain.usecase.GetAllShopInfoUseCase
 import com.tokopedia.seller.menu.common.view.uimodel.base.partialresponse.PartialSettingSuccessInfoType
@@ -26,6 +27,7 @@ class OtherMenuViewModel @Inject constructor(
     private val dispatcher: CoroutineDispatchers,
     private val getAllShopInfoUseCase: GetAllShopInfoUseCase,
     private val getShopFreeShippingInfoUseCase: GetShopFreeShippingInfoUseCase,
+    private val getShopInfoPeriodUseCase: GetShopInfoPeriodUseCase,
     private val userSession: UserSessionInterface,
     private val remoteConfig: FirebaseRemoteConfigImpl
 ): BaseViewModel(dispatcher.main) {
@@ -40,7 +42,10 @@ class OtherMenuViewModel @Inject constructor(
     private val _isToasterAlreadyShown = NonNullLiveData(false)
     private val _isStatusBarInitialState = MutableLiveData<Boolean>().apply { value = true }
     private val _isFreeShippingActive = MutableLiveData<Boolean>()
+    private val _shopPeriodType = MutableLiveData<Result<String>>()
 
+    val shopPeriodType: LiveData<Result<String>>
+        get() = _shopPeriodType
     val settingShopInfoLiveData: LiveData<Result<SettingShopInfoUiModel>>
         get() = _settingShopInfoLiveData
     val isStatusBarInitialState: LiveData<Boolean>
@@ -61,6 +66,18 @@ class OtherMenuViewModel @Inject constructor(
 
     fun setIsStatusBarInitialState(isInitialState: Boolean) {
         _isStatusBarInitialState.value = isInitialState
+    }
+
+    fun getShopPeriodType() {
+        launchCatchError(block = {
+            val periodData = withContext(dispatcher.io) {
+                getShopInfoPeriodUseCase.requestParams = GetShopInfoPeriodUseCase.createParams(userSession.shopId.toIntOrZero())
+                getShopInfoPeriodUseCase.executeOnBackground()
+            }
+            _shopPeriodType.value = Success(periodData.periodType)
+        }, onError = {
+            _shopPeriodType.value = Fail(it)
+        })
     }
 
     fun getFreeShippingStatus() {
