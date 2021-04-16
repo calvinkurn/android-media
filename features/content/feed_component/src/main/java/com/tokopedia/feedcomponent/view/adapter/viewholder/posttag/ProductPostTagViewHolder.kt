@@ -115,7 +115,7 @@ class ProductPostTagViewHolder(val mainView: View,
         if (tag.textColor.hex.isEmpty() || tag.textColor.opacity.isEmpty()) {
             tag.textColor = getDefaultTextColor()
         }
-        val textColor = if(tag.textColor.hex.isEmpty()) getString(R.string.color_pojo_dms_hex_black_value) else tag.textColor.hex
+        val textColor = if(tag.textColor.hex.isEmpty()) getString(R.string.feed_color_pojo_dms_hex_black_value) else tag.textColor.hex
         textView.setTextColor(Color.parseColor(textColor))
         textView.background = renderDrawable(tag.bgColor.hex, OPACITY_70)
     }
@@ -135,11 +135,11 @@ class ProductPostTagViewHolder(val mainView: View,
     }
 
     private fun getDefaultBackgroundColor(): ColorPojo {
-        return ColorPojo(getString(R.string.color_pojo_dms_hex_black_value), OPACITY_70)
+        return ColorPojo(getString(R.string.feed_color_pojo_dms_hex_black_value), OPACITY_70)
     }
 
     private fun getDefaultTextColor(): ColorPojo {
-        return ColorPojo(getString(R.string.color_pojo_dms_hex_white_value), OPACITY_100)
+        return ColorPojo(getString(R.string.feed_color_pojo_dms_hex_white_value), OPACITY_100)
     }
 
     private fun getItemClickNavigationListener(listener: DynamicPostViewHolder.DynamicPostListener,
