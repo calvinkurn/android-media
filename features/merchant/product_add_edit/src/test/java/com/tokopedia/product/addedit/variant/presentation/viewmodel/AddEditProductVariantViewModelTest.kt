@@ -379,12 +379,12 @@ class AddEditProductVariantViewModelTest : AddEditProductVariantViewModelTestFix
         } returns GetVariantCategoryCombinationResponse()
 
         viewModel.getVariantCategoryCombination(1, listOf())
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
 
         coVerify {
             getVariantCategoryCombinationUseCase.executeOnBackground()
         }
 
-        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
         assert(viewModel.getVariantCategoryCombinationResult.getOrAwaitValue() is Success)
     }
 
@@ -402,12 +402,12 @@ class AddEditProductVariantViewModelTest : AddEditProductVariantViewModelTestFix
         } returns GetVariantCategoryCombinationResponse()
 
         viewModel.getVariantCategoryCombination(1, selections)
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
 
         coVerify {
             getVariantCategoryCombinationUseCase.executeOnBackground()
         }
 
-        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
         assert(viewModel.getVariantCategoryCombinationResult.getOrAwaitValue() is Success)
     }
 
