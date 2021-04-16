@@ -132,7 +132,6 @@ public class SellerMainApplication extends SellerRouterApplication implements
         generateSellerAppNetworkKeys();
         initRemoteConfig();
         initCacheManager();
-        initMedialoader();
 
         TrackApp.initTrackApp(this);
 
@@ -156,16 +155,13 @@ public class SellerMainApplication extends SellerRouterApplication implements
         initBlockCanary();
         TokoPatch.init(this);
         initSlicePermission();
+
+        Loader.init(this);
     }
 
     private void initCacheManager() {
         PersistentCacheManager.init(this);
         cacheManager = PersistentCacheManager.instance;
-    }
-
-    private void initMedialoader() {
-        this.registerActivityLifecycleCallbacks(new ToasterActivityLifecycle(this));
-        Loader.init(this);
     }
 
     private void setVersionName() {
@@ -201,6 +197,7 @@ public class SellerMainApplication extends SellerRouterApplication implements
             registerActivityLifecycleCallbacks(new DevOptsSubscriber());
         }
         registerActivityLifecycleCallbacks(new TwoFactorCheckerSubscriber());
+        registerActivityLifecycleCallbacks(new ToasterActivityLifecycle(this));
     }
 
     @Override
