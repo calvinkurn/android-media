@@ -228,6 +228,7 @@ open class GetChatUseCase @Inject constructor(
                   isRead
                   blastId
                   source
+                  label
                   attachment {
                     id
                     type
