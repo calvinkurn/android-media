@@ -50,6 +50,7 @@
     <string name="menu_account_title_about_us">Kenali Tokopedia</string>
     <string name="menu_account_title_terms">Syarat dan Ketentuan</string>
     <string name="menu_account_title_privacy_policy">Kebijakan Privasi</string>
+    <string name="menu_account_title_intellectual_property">Hak Kekayaan Intelektual</string>
     <string name="menu_account_title_review">Ulas Aplikasi Ini</string>
     <string name="menu_account_title_sign_out">Keluar Akun</string>
     <string name="menu_account_title_dev_options">Developer Options</string>
