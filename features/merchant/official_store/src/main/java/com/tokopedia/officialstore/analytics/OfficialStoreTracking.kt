@@ -888,7 +888,7 @@ class OfficialStoreTracking(context: Context) {
                 EVENT, EVENT_PRODUCT_CLICK,
                 EVENT_CATEGORY, OS_MICROSITE_SINGLE,
                 EVENT_ACTION, eventAction,
-                EVENT_LABEL, channel.id,
+                EVENT_LABEL, channel.id + " - " + categoryName,
                 FIELD_BUSINESS_UNIT, VALUE_BUSINESS_UNIT_DEFAULT,
                 FIELD_CURRENT_SITE, VALUE_CURRENT_SITE_DEFAULT,
                 USER_ID, userId,
