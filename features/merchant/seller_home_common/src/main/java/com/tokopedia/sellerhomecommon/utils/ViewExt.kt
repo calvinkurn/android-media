@@ -12,7 +12,7 @@ import com.tokopedia.sellerhomecommon.R
  */
 
 fun TextView.setUnifyDrawableEnd(iconId: Int) {
-    val icon = getIconUnifyDrawable(context, iconId, context.getResColor(R.color.shc_icon_color))
+    val icon = getIconUnifyDrawable(context, iconId, context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_N500))
     val dp16 = context.dpToPx(16)
     val drawable = ScaleDrawable(icon, 0, dp16, dp16).drawable
     drawable?.setBounds(0, 0, dp16.toInt(), dp16.toInt())

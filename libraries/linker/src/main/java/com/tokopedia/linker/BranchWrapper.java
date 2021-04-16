@@ -28,6 +28,7 @@ import com.tokopedia.track.TrackApp;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Method;
 import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
@@ -37,6 +38,7 @@ import io.branch.referral.Branch;
 import io.branch.referral.BranchError;
 import io.branch.referral.ServerRequestGetLATD;
 import io.branch.referral.util.LinkProperties;
+import timber.log.Timber;
 
 
 public class BranchWrapper implements WrapperInterface {
@@ -54,6 +56,26 @@ public class BranchWrapper implements WrapperInterface {
             if (GlobalConfig.isAllowDebuggingTools()) {
                 Branch.enableLogging();
             }
+            sendPreInstallData(context);
+        }
+    }
+
+    private boolean isXiaomiPreInstallApp(String pkgName){
+        try{
+            Class<?> miui = Class.forName("miui.os.MiuiInit");
+            Method method = miui.getMethod("isPreinstalledPAIPackage", String.class);
+            return (Boolean) method.invoke(null, pkgName);
+        }catch(Exception ex){
+            Timber.w("P2#PRE_INSTALL_XIAOMI#error;error='%s'", ex.getMessage());
+        }
+        return false;
+    }
+
+    private void sendPreInstallData(Context context){
+        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(context);
+        if(remoteConfig.getBoolean(LinkerConstants.ENABLE_XIAOMI_PAI_TRACKING) && isXiaomiPreInstallApp(context.getPackageName())) {
+            Branch.getInstance().setPreinstallCampaign("xiaomipreinstallol-dp_int-tp-10001511-0000-alon-alon");
+            Branch.getInstance().setPreinstallPartner("a_custom_885438735322423255");
         }
     }
 

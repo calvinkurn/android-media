@@ -9,9 +9,10 @@ import com.tokopedia.autocomplete.suggestion.domain.usecase.SuggestionTrackerUse
 import com.tokopedia.autocomplete.suggestion.domain.usecase.SuggestionUseCase
 import com.tokopedia.autocomplete.suggestion.doubleline.convertToDoubleLineVisitableList
 import com.tokopedia.autocomplete.suggestion.doubleline.convertToDoubleLineWithoutImageVisitableList
+import com.tokopedia.autocomplete.suggestion.productline.convertToSuggestionProductLineDataView
 import com.tokopedia.autocomplete.suggestion.singleline.convertToSingleLineVisitableList
 import com.tokopedia.autocomplete.suggestion.title.convertToTitleHeader
-import com.tokopedia.autocomplete.suggestion.topshop.SuggestionTopShopCardViewModel
+import com.tokopedia.autocomplete.suggestion.topshop.SuggestionTopShopCardDataView
 import com.tokopedia.autocomplete.suggestion.topshop.convertToTopShopWidgetVisitableList
 import com.tokopedia.autocomplete.util.getProfileIdFromApplink
 import com.tokopedia.autocomplete.util.getShopIdFromApplink
@@ -98,6 +99,7 @@ class SuggestionPresenter @Inject constructor() : BaseDaggerPresenter<Suggestion
 
     private fun updateListVisitable(suggestionUniverse: SuggestionUniverse) {
         val typePosition = HashMap<String, Int?>()
+        shouldAddSeparator = true
         for (item in suggestionUniverse.data.items) {
             if (suggestionUniverse.data.items.isNotEmpty()) {
                 when (item.template) {
@@ -106,7 +108,7 @@ class SuggestionPresenter @Inject constructor() : BaseDaggerPresenter<Suggestion
                     SUGGESTION_DOUBLE_LINE -> addDoubleLineToVisitable(typePosition, item)
                     SUGGESTION_TOP_SHOP_WIDGET -> addTopShopWidgetToVisitable(typePosition, item, suggestionUniverse.topShop)
                     SUGGESTION_DOUBLE_LINE_WITHOUT_IMAGE -> addDoubleLineWithoutImageToVisitable(typePosition, item)
-                    else -> addSingleLineToVisitable(typePosition, item)
+                    SUGGESTION_PRODUCT_LINE -> addProductLineToVisitable(typePosition, item)
                 }
             }
         }
@@ -168,7 +170,7 @@ class SuggestionPresenter @Inject constructor() : BaseDaggerPresenter<Suggestion
 
     private fun addSuggestionSeparator() {
         if (shouldAddSeparator) {
-            listVisitable.add(SuggestionSeparatorViewModel())
+            listVisitable.add(SuggestionSeparatorDataView())
         }
     }
 
@@ -180,6 +182,17 @@ class SuggestionPresenter @Inject constructor() : BaseDaggerPresenter<Suggestion
             )
         }
         shouldAddSeparator = false
+    }
+
+    private fun addProductLineToVisitable(typePosition: HashMap<String, Int?>, item: SuggestionItem) {
+        typePosition.incrementPosition(item.type)
+        typePosition[item.type]?.let {
+            item.convertToSuggestionProductLineDataView(getQueryKey(), position = it)
+        }?.let {
+            listVisitable.add(
+                    it
+            )
+        }
     }
 
     private fun notifyView() {
@@ -194,7 +207,7 @@ class SuggestionPresenter @Inject constructor() : BaseDaggerPresenter<Suggestion
         }
     }
 
-    override fun onSuggestionItemClicked(item: BaseSuggestionViewModel) {
+    override fun onSuggestionItemClicked(item: BaseSuggestionDataView) {
         trackSuggestionItemWithUrl(item.urlTracker)
         trackEventItemClicked(item)
 
@@ -231,7 +244,7 @@ class SuggestionPresenter @Inject constructor() : BaseDaggerPresenter<Suggestion
         }
     }
 
-    private fun trackEventItemClicked(item: BaseSuggestionViewModel) {
+    private fun trackEventItemClicked(item: BaseSuggestionDataView) {
         when (item.type) {
             TYPE_KEYWORD -> {
                 view?.trackEventClickKeyword(getKeywordEventLabelForTracking(item))
@@ -257,7 +270,7 @@ class SuggestionPresenter @Inject constructor() : BaseDaggerPresenter<Suggestion
         }
     }
 
-    private fun getKeywordEventLabelForTracking(item: BaseSuggestionViewModel): String {
+    private fun getKeywordEventLabelForTracking(item: BaseSuggestionDataView): String {
         return String.format(
                 "keyword: %s - value: %s - po: %s - applink: %s",
                 item.title,
@@ -267,7 +280,7 @@ class SuggestionPresenter @Inject constructor() : BaseDaggerPresenter<Suggestion
         )
     }
 
-    private fun getCuratedEventLabelForTracking(item: BaseSuggestionViewModel): String {
+    private fun getCuratedEventLabelForTracking(item: BaseSuggestionDataView): String {
         return String.format(
                 "keyword: %s - product: %s - po: %s - page: %s",
                 item.searchTerm,
@@ -277,7 +290,7 @@ class SuggestionPresenter @Inject constructor() : BaseDaggerPresenter<Suggestion
         )
     }
 
-    private fun getShopEventLabelForTracking(item: BaseSuggestionViewModel): String {
+    private fun getShopEventLabelForTracking(item: BaseSuggestionDataView): String {
         return String.format(
                 "%s - keyword: %s - shop: %s",
                 getShopIdFromApplink(item.applink),
@@ -286,7 +299,7 @@ class SuggestionPresenter @Inject constructor() : BaseDaggerPresenter<Suggestion
         )
     }
 
-    private fun getProfileEventLabelForTracking(item: BaseSuggestionViewModel): String {
+    private fun getProfileEventLabelForTracking(item: BaseSuggestionDataView): String {
         return String.format(
                 "keyword: %s - profile: %s - profile id: %s - po: %s",
                 item.searchTerm,
@@ -296,7 +309,7 @@ class SuggestionPresenter @Inject constructor() : BaseDaggerPresenter<Suggestion
         )
     }
 
-    private fun getLocalEventLabelForTracking(item: BaseSuggestionViewModel): String {
+    private fun getLocalEventLabelForTracking(item: BaseSuggestionDataView): String {
         return String.format(
                 "keyword: %s - value: %s - applink: %s - campaign: %s",
                 item.title,
@@ -310,7 +323,7 @@ class SuggestionPresenter @Inject constructor() : BaseDaggerPresenter<Suggestion
         return searchParameter[SearchApiConst.SRP_PAGE_TITLE] ?: ""
     }
 
-    private fun getGlobalEventLabelForTracking(item: BaseSuggestionViewModel): String {
+    private fun getGlobalEventLabelForTracking(item: BaseSuggestionDataView): String {
         return String.format(
                 "keyword: %s - value: %s - applink: %s",
                 item.title,
@@ -319,19 +332,19 @@ class SuggestionPresenter @Inject constructor() : BaseDaggerPresenter<Suggestion
         )
     }
 
-    override fun onTopShopCardClicked(card: SuggestionTopShopCardViewModel) {
-        trackSuggestionItemWithUrl(card.urlTracker)
-        trackEventTopShopClicked(card)
+    override fun onTopShopCardClicked(cardData: SuggestionTopShopCardDataView) {
+        trackSuggestionItemWithUrl(cardData.urlTracker)
+        trackEventTopShopClicked(cardData)
 
         view?.dropKeyBoard()
-        view?.route(card.applink, searchParameter)
+        view?.route(cardData.applink, searchParameter)
         view?.finish()
     }
 
-    private fun trackEventTopShopClicked(card: SuggestionTopShopCardViewModel) {
-        when (card.type) {
+    private fun trackEventTopShopClicked(cardData: SuggestionTopShopCardDataView) {
+        when (cardData.type) {
             SUGGESTION_TOP_SHOP -> {
-                view?.trackEventClickTopShopCard(getEventLabelForTopShop(card))
+                view?.trackEventClickTopShopCard(getEventLabelForTopShop(cardData))
             }
             SUGGESTION_TOP_SHOP_SEE_MORE -> {
                 view?.trackEventClickTopShopSeeMore(getEventLabelForTopShopSeeMore())
@@ -339,8 +352,8 @@ class SuggestionPresenter @Inject constructor() : BaseDaggerPresenter<Suggestion
         }
     }
 
-    private fun getEventLabelForTopShop(card: SuggestionTopShopCardViewModel): String {
-        return "${card.id} - keyword: ${getQueryKey()}"
+    private fun getEventLabelForTopShop(cardData: SuggestionTopShopCardDataView): String {
+        return "${cardData.id} - keyword: ${getQueryKey()}"
     }
 
     private fun getEventLabelForTopShopSeeMore(): String {

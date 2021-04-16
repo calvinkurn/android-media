@@ -19,7 +19,7 @@ import com.tokopedia.notifcenter.data.viewbean.ProductHighlightViewBean
 import com.tokopedia.notifcenter.domain.ProductHighlightUseCase
 import com.tokopedia.notifcenter.domain.ProductStockReminderUseCase
 import com.tokopedia.notifcenter.util.SingleLiveEvent
-import com.tokopedia.notifcenter.util.coroutines.DispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.usecase.RequestParams
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
@@ -41,8 +41,8 @@ class ProductStockHandlerViewModel @Inject constructor(
         private val stockReminderUseCase: ProductStockReminderUseCase,
         private val productHighlightUseCase: ProductHighlightUseCase,
         private var addToCartUseCase: AddToCartUseCase,
-        dispatcher: DispatcherProvider
-): BaseViewModel(dispatcher.io()), ProductStockHandlerContract {
+        dispatcher: CoroutineDispatchers
+): BaseViewModel(dispatcher.io), ProductStockHandlerContract {
 
     private val _productStockReminder = SingleLiveEvent<ProductStockReminder>()
     val productStockReminder: LiveData<ProductStockReminder> get() = _productStockReminder

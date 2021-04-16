@@ -81,7 +81,6 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_4"
             android:orientation="horizontal"
-            android:paddingStart="@dimen/dp_8"
             tools:listitem="@layout/content_featured_shop_big_content"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintBottom_toBottomOf="parent"

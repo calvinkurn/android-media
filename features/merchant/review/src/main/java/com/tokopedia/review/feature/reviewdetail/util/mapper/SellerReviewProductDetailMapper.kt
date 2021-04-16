@@ -81,7 +81,8 @@ object SellerReviewProductDetailMapper {
                             reviewTime = it.reviewTime,
                             reviewerName = it.reviewerName,
                             variantName = it.variantName,
-                            sellerUser = userSession.name
+                            sellerUser = userSession.name,
+                            isKejarUlasan = it.isKejarUlasan
                     )
             )
         }

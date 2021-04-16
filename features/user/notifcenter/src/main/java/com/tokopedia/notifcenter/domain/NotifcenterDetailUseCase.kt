@@ -8,7 +8,7 @@ import com.tokopedia.notifcenter.data.entity.notification.NotifcenterDetailRespo
 import com.tokopedia.notifcenter.data.entity.notification.NotificationDetailResponseModel
 import com.tokopedia.notifcenter.data.entity.notification.Paging
 import com.tokopedia.notifcenter.data.mapper.NotifcenterDetailMapper
-import com.tokopedia.notifcenter.util.coroutines.DispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.cancelChildren
@@ -22,7 +22,7 @@ class NotifcenterDetailUseCase @Inject constructor(
         private val query: String,
         private val gqlUseCase: GraphqlUseCase<NotifcenterDetailResponse>,
         private val mapper: NotifcenterDetailMapper,
-        private var dispatchers: DispatcherProvider
+        private var dispatchers: CoroutineDispatchers
 ) : CoroutineScope by MainScope() {
 
     var timeZone = TimeZone.getDefault().id
@@ -114,7 +114,7 @@ class NotifcenterDetailUseCase @Inject constructor(
             onResponseReady: (response: NotifcenterDetailResponse) -> Unit
     ) {
         launchCatchError(
-                dispatchers.io(),
+                dispatchers.io,
                 {
                     val response = gqlUseCase.apply {
                         setTypeClass(NotifcenterDetailResponse::class.java)
@@ -122,13 +122,13 @@ class NotifcenterDetailUseCase @Inject constructor(
                         setGraphqlQuery(query)
                     }.executeOnBackground()
                     val items = mapping(response)
-                    withContext(dispatchers.ui()) {
+                    withContext(dispatchers.main) {
                         onResponseReady(response)
                         onSuccess(items)
                     }
                 },
                 {
-                    withContext(dispatchers.ui()) {
+                    withContext(dispatchers.main) {
                         onError(it)
                     }
                 }

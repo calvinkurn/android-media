@@ -4,21 +4,23 @@ import android.annotation.SuppressLint
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
-import android.graphics.drawable.VectorDrawable
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.inflateLayout
+import com.tokopedia.kotlin.extensions.view.toBitmap
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.address.Token
 import com.tokopedia.manageaddress.R
 import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.toDp
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.item_manage_people_address.view.*
 
@@ -55,6 +57,7 @@ class ManageAddressItemAdapter(private val listener: ManageAddressItemAdapterLis
     }
 
     fun clearData() {
+        selectedPos = RecyclerView.NO_POSITION
         addressList.clear()
         notifyDataSetChanged()
     }
@@ -100,9 +103,10 @@ class ManageAddressItemAdapter(private val listener: ManageAddressItemAdapterLis
                     cardSelected = selectedPos == layoutPosition
                 }
                 cardAddress.hasCheckIcon = cardSelected
+                cardAddress.setPadding(0, 0, 16.toPx(), 0)
                 if (cardSelected) {
                     cardAddress.cardType = CardUnify.TYPE_BORDER_ACTIVE
-                    cardAddress.setPadding(itemView.getDimens(R.dimen.dp_6), itemView.getDimens(R.dimen.dp_6), itemView.getDimens(com.tokopedia.abstraction.R.dimen.dp_16), itemView.getDimens(R.dimen.dp_6))
+                    cardAddress.setPadding(0, 0, 10.toPx(), 0)
                 } else {
                     cardAddress.cardType = CardUnify.TYPE_BORDER
                 }
