@@ -34,15 +34,13 @@ class EmoneyPdpProductWidget @JvmOverloads constructor(@NotNull context: Context
         emoneyProductListRecyclerView.adapter = adapter
     }
 
-    var titleText: String = ""
-        set(title) {
-            field = title
-            emoneyProductWidgetTitle.text = title
-        }
+    fun setTitle(title: String) {
+        emoneyProductWidgetTitle.text = title
+    }
 
     fun setProducts(products: List<CatalogProduct>) {
-        adapter.products = products
         adapter.selectedProductIndex = null
+        adapter.updateProducts(products)
         showContent()
     }
 
@@ -51,15 +49,15 @@ class EmoneyPdpProductWidget @JvmOverloads constructor(@NotNull context: Context
     }
 
     fun showShimmering() {
-        emoneyProductShimmering.show()
-        emoneyProductWidgetTitle.hide()
-        emoneyProductListRecyclerView.hide()
+        if (!emoneyProductShimmering.isShown) emoneyProductShimmering.show()
+        if (emoneyProductWidgetTitle.isShown) emoneyProductWidgetTitle.hide()
+        if (emoneyProductListRecyclerView.isShown) emoneyProductListRecyclerView.hide()
     }
 
     private fun showContent() {
-        emoneyProductShimmering.hide()
-        emoneyProductWidgetTitle.show()
-        emoneyProductListRecyclerView.show()
+        if (emoneyProductShimmering.isShown) emoneyProductShimmering.hide()
+        if (!emoneyProductWidgetTitle.isShown) emoneyProductWidgetTitle.show()
+        if (!emoneyProductListRecyclerView.isShown) emoneyProductListRecyclerView.show()
     }
 
     fun showPaddingBottom(isShow: Boolean) {

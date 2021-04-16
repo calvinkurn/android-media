@@ -58,7 +58,6 @@
 
         </com.google.android.material.appbar.AppBarLayout>
 
-
         <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/emoneyPdpViewPager"
             android:layout_width="match_parent"
@@ -75,7 +74,6 @@
             android:background="@color/Unify_N0"
             android:visibility="gone"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
-            app:layout_constraintBottom_toBottomOf="parent"
             tools:visibility="gone" />
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>

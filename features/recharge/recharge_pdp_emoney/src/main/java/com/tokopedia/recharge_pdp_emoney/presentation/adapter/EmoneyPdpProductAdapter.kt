@@ -12,11 +12,7 @@ import com.tokopedia.recharge_pdp_emoney.presentation.adapter.viewholder.EmoneyP
 class EmoneyPdpProductAdapter : RecyclerView.Adapter<EmoneyPdpProductViewHolder>(),
         EmoneyPdpProductViewHolder.ActionListener {
 
-    var products = listOf<CatalogProduct>()
-        set(list) {
-            field = list
-            notifyDataSetChanged()
-        }
+    private var products = listOf<CatalogProduct>()
 
     var listener: EmoneyPdpProductViewHolder.ActionListener? = null
 
@@ -25,6 +21,11 @@ class EmoneyPdpProductAdapter : RecyclerView.Adapter<EmoneyPdpProductViewHolder>
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EmoneyPdpProductViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(EmoneyPdpProductViewHolder.LAYOUT, parent, false)
         return EmoneyPdpProductViewHolder(view, this)
+    }
+
+    fun updateProducts(productList: List<CatalogProduct>) {
+        products = productList
+        notifyDataSetChanged()
     }
 
     override fun getItemCount(): Int = products.size

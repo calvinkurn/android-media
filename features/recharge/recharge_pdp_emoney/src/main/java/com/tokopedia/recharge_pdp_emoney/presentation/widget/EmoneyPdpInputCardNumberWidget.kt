@@ -68,7 +68,7 @@ class EmoneyPdpInputCardNumberWidget @JvmOverloads constructor(@NotNull context:
 
     private fun getInputString() = emoneyPdpCardInputNumber.textFieldInput.text.toString()
 
-    private fun clearNumberAndOperator() {
+    fun clearNumberAndOperator() {
         emoneyPdpCardInputNumber.textFieldInput.setText("")
         emoneyPdpCardInputNumber.getSecondIcon().clearImage()
         emoneyPdpCardInputNumber.getFirstIcon().clearImage()

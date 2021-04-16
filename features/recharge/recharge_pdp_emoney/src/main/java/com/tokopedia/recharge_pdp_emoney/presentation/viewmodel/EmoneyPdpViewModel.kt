@@ -55,7 +55,7 @@ class EmoneyPdpViewModel @Inject constructor(dispatcher: CoroutineDispatcher,
     var digitalCheckoutPassData = DigitalCheckoutPassData()
 
     fun setErrorMessage(e: Throwable) {
-        _errorMessage.postValue(e.message)
+        _errorMessage.value = e.message
     }
 
     fun getPrefixOperator(menuId: Int) {
@@ -63,28 +63,26 @@ class EmoneyPdpViewModel @Inject constructor(dispatcher: CoroutineDispatcher,
                 RechargeCatalogPrefixSelectUseCase.createParams(menuId),
                 {
                     //on success get prefix
-                    _catalogPrefixSelect.postValue(Success(it))
+                    _catalogPrefixSelect.value = Success(it)
                 },
                 {
                     //on fail get prefix
-                    _catalogPrefixSelect.postValue(Fail(it))
+                    _catalogPrefixSelect.value = Fail(it)
                 }
         )
     }
 
     fun getSelectedOperator(inputNumber: String) {
-        if (inputNumber.isEmpty()) return
-
         try {
             if (catalogPrefixSelect.value is Success) {
                 val operatorSelected = (catalogPrefixSelect.value as Success).data.rechargeCatalogPrefixSelect.prefixes.single {
                     inputNumber.startsWith(it.value)
                 }
-                _selectedOperator.postValue(operatorSelected)
+                _selectedOperator.value = operatorSelected
             }
         } catch (e: Throwable) {
 //            _errorMessage.postValue()
-            _selectedOperator.postValue(RechargePrefix(key = "578"))
+            _selectedOperator.value = RechargePrefix(key = "578")
         }
     }
 
@@ -93,21 +91,21 @@ class EmoneyPdpViewModel @Inject constructor(dispatcher: CoroutineDispatcher,
                 RechargeCatalogProductInputUseCase.createProductListParams(menuId, operatorId),
                 {
                     //on success get prefix
-                    _catalogData.postValue(Success(it.response))
+                    _catalogData.value = Success(it.response)
                 },
                 {
                     //on fail get prefix
-                    _catalogData.postValue(Fail(it))
+                    _catalogData.value = Fail(it)
                 }
         )
     }
 
     fun setSelectedProduct(product: CatalogProduct) {
-        _selectedProduct.postValue(product)
+        _selectedProduct.value = product
     }
 
     fun setSelectedRecentNumber(topupBillsRecommendation: TopupBillsRecommendation) {
-        _selectedRecentNumber.postValue(topupBillsRecommendation)
+        _selectedRecentNumber.value = topupBillsRecommendation
     }
 
     fun generateCheckoutPassData(copiedPromoCode: String, clientNumber: String,

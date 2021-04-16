@@ -1,6 +1,10 @@
 package com.tokopedia.recharge_pdp_emoney.presentation.activity
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
+import android.os.Parcelable
+import android.text.TextUtils
 import android.view.Menu
 import android.view.MenuItem
 import androidx.fragment.app.Fragment
@@ -10,6 +14,8 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.common.topupbills.CommonTopupBillsComponentInstance
+import com.tokopedia.common_digital.common.constant.DigitalExtraParam
+import com.tokopedia.common_digital.common.presentation.model.DigitalCategoryDetailPassData
 import com.tokopedia.recharge_pdp_emoney.R
 import com.tokopedia.recharge_pdp_emoney.di.DaggerEmoneyPdpComponent
 import com.tokopedia.recharge_pdp_emoney.di.EmoneyPdpComponent
@@ -17,6 +23,7 @@ import com.tokopedia.recharge_pdp_emoney.presentation.bottomsheet.EmoneyMenuBott
 import com.tokopedia.recharge_pdp_emoney.presentation.fragment.EmoneyPdpFragment
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSessionInterface
+import java.util.*
 import javax.inject.Inject
 
 class EmoneyPdpActivity : BaseSimpleActivity(), HasComponent<EmoneyPdpComponent>,
@@ -25,28 +32,54 @@ class EmoneyPdpActivity : BaseSimpleActivity(), HasComponent<EmoneyPdpComponent>
     @Inject
     lateinit var userSession: UserSessionInterface
     var promoCode = ""
+    private var rechargeParamFromSlice = ""
+
+    private var passData: DigitalCategoryDetailPassData? = null
 
     lateinit var menuEmoney: Menu
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        val uriData = intent.data
+        if (intent.extras != null && intent.extras?.getParcelable<Parcelable>(DigitalExtraParam.EXTRA_CATEGORY_PASS_DATA) != null) {
+            passData = intent.extras?.getParcelable(DigitalExtraParam.EXTRA_CATEGORY_PASS_DATA)
+        } else {
+            var isFromWidget = false
+            if (!TextUtils.isEmpty(uriData!!.getQueryParameter(DigitalCategoryDetailPassData.PARAM_IS_FROM_WIDGET))) {
+                isFromWidget = java.lang.Boolean.valueOf(uriData.getQueryParameter(DigitalCategoryDetailPassData.PARAM_IS_FROM_WIDGET))
+            }
+            var isCouponApplied = false
+            if (!TextUtils.isEmpty(uriData.getQueryParameter(KEY_IS_COUPON_APPLIED_APPLINK))) {
+                isCouponApplied = Objects.requireNonNull(uriData.getQueryParameter(KEY_IS_COUPON_APPLIED_APPLINK)) == "1"
+            }
+            val passData = DigitalCategoryDetailPassData.Builder()
+                    .appLinks(uriData.toString())
+                    .categoryId(uriData.getQueryParameter(DigitalCategoryDetailPassData.PARAM_CATEGORY_ID))
+                    .operatorId(uriData.getQueryParameter(DigitalCategoryDetailPassData.PARAM_OPERATOR_ID))
+                    .productId(uriData.getQueryParameter(DigitalCategoryDetailPassData.PARAM_PRODUCT_ID))
+                    .clientNumber(uriData.getQueryParameter(DigitalCategoryDetailPassData.PARAM_CLIENT_NUMBER))
+                    .menuId(uriData.getQueryParameter(DigitalCategoryDetailPassData.PARAM_MENU_ID))
+                    .isFromWidget(isFromWidget)
+                    .isCouponApplied(isCouponApplied)
+                    .build()
+            this.passData = passData
+        }
+        if (intent.data != null) {
+            rechargeParamFromSlice = intent.getStringExtra(EXTRA_RECHARGE_SLICE) ?: ""
+        }
+        super.onCreate(savedInstanceState)
+
+        toolbar.elevation = 0f
+    }
+
     override fun getNewFragment(): Fragment {
-        val bundle = intent.extras
-        val categoryId = bundle?.getString(PARAM_CATEGORY_ID)?.toIntOrNull() ?: 0
-        val menuId = bundle?.getString(PARAM_MENU_ID)?.toIntOrNull() ?: 0
-        val operatorId = bundle?.getString(PARAM_OPERATOR_ID)?.toIntOrNull() ?: 0
-        val productId = bundle?.getString(PARAM_PRODUCT_ID)?.toIntOrNull() ?: 0
-        val clientNumber = bundle?.getString(PARAM_CLIENT_NUMBER) ?: ""
-        return EmoneyPdpFragment.newInstance(categoryId, menuId, operatorId, productId, clientNumber)
+        passData?.let { return EmoneyPdpFragment.newInstance(it) }
+        return EmoneyPdpFragment()
     }
 
     override fun getComponent(): EmoneyPdpComponent {
         return DaggerEmoneyPdpComponent.builder()
                 .commonTopupBillsComponent(CommonTopupBillsComponentInstance.getCommonTopupBillsComponent(application))
                 .build()
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        toolbar.elevation = 0f
     }
 
     private fun showBottomMenus() {
@@ -108,5 +141,14 @@ class EmoneyPdpActivity : BaseSimpleActivity(), HasComponent<EmoneyPdpComponent>
 
         const val TAG_EMONEY_MENU = "menu_emoney"
         const val PATH_SUBSCRIPTIONS = "subscribe/"
+
+        private val KEY_IS_COUPON_APPLIED_APPLINK = "is_coupon_applied"
+        private val EXTRA_STATE_TITLE_TOOLBAR = "EXTRA_STATE_TITLE_TOOLBAR"
+        private val EXTRA_RECHARGE_SLICE = "RECHARGE_PRODUCT_EXTRA"
+
+        fun newInstance(context: Context, passData: DigitalCategoryDetailPassData): Intent {
+            return Intent(context, EmoneyPdpActivity::class.java)
+                    .putExtra(DigitalExtraParam.EXTRA_CATEGORY_PASS_DATA, passData)
+        }
     }
 }
