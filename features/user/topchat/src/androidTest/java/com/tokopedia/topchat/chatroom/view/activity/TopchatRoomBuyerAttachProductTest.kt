@@ -288,17 +288,12 @@ class TopchatRoomBuyerAttachProductTest : BaseBuyerTopchatRoomTest() {
     @Test
     fun template_chat_shown_if_product_preview_is_closed() {
         // Given
-        val templateChats = listOf(
-                "Hi barang ini ready gk?", "Lorem Ipsum"
-        )
-        val templateResponse = generateTemplateResponse(templates = templateChats)
         setupChatRoomActivity {
             putProductAttachmentIntent(it)
         }
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         chatSrwUseCase.response = chatSrwResponse
-        getTemplateChatRoomUseCase.response = templateResponse
         inflateTestFragment()
 
         // Then
