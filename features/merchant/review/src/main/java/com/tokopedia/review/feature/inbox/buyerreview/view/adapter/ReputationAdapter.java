@@ -5,7 +5,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -13,6 +12,7 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.review.R;
 import com.tokopedia.review.feature.inbox.buyerreview.view.adapter.viewholder.inboxdetail.InboxReputationDetailHeaderViewHolder;
 import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.SmileyModel;
+import com.tokopedia.unifyprinciples.Typography;
 
 import java.util.ArrayList;
 
@@ -61,13 +61,13 @@ public class ReputationAdapter extends RecyclerView.Adapter<ReputationAdapter.Vi
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         ImageView smiley;
-        TextView smileyText;
+        Typography smileyText;
         View main;
 
         public ViewHolder(View itemView) {
             super(itemView);
             smiley = (ImageView) itemView.findViewById(R.id.smiley);
-            smileyText = (TextView) itemView.findViewById(R.id.smiley_name);
+            smileyText = (Typography) itemView.findViewById(R.id.smiley_name);
             main = itemView.findViewById(R.id.main);
             main.setOnClickListener(new View.OnClickListener() {
                 @Override

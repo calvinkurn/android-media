@@ -1,7 +1,124 @@
 package com.tokopedia.shop.analytic
 
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
-import com.tokopedia.shop.analytic.ShopPageTrackingConstant.*
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.ACTION_FIELD
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.ADD
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.ADD_TO_CART
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.ALL_PRODUCT
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.BOE
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.BO_PRODUCT
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.BRAND
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.BUSINESS_UNIT
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.BUYER_RECOMMENDATION
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CAMPAIGN_SEGMENTATION
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CATEGORY
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CATEGORY_ID
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_ACTIVATE_REMINDER
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_ADD_TO_CART
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_ATC_RECOMMENDATION
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_CLOSE_FILTER
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_CLOSE_TNC
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_DEACTIVATE_REMINDER
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_FILTER_CHIP
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_FILTER_PRICE
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_FILTER_RATING
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_FILTER_SHORT_BY
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_FOLLOW_UNFOLLOW_TNC_PAGE
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_OCC_RECOMMENDATION
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_OK_TOASTER_NOTIFY_ME
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_PRODUCT
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_PRODUCT_LIST_TOGGLE
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_PRODUCT_RECOMMENDATION
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_SEE_ALL_CAMPAIGN_NPL_WIDGET
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_SHOP_PAGE
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_SHOWCASE_LIST
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_TNC
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_VIEW_ALL_PRODUCT
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_WISHLIST
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CREATIVE
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CREATIVE_URL
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CURRENCY_CODE
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CURRENT_SITE
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.DIMENSION_38
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.DIMENSION_40
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.DIMENSION_45
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.DIMENSION_79
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.DIMENSION_80
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.DIMENSION_81
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.DIMENSION_82
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.DIMENSION_83
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.DISPLAY_WIDGET
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.ECOMMERCE
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.ETALASE_X
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EVENT
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EVENT_ACTION
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EVENT_CATEGORY
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EVENT_LABEL
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.FOLLOW
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.GENERAL
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.HOME_AND_BROWSE
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.HOME_DISPLAY_WIDGET
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.HOME_FEATURED_PRODUCT
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.HOME_TAB
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.ID
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.IDR
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.IMPRESSION
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.IMPRESSIONS
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.IMPRESSION_PRODUCT_RECOMMENDATION
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.IMPRESSION_TNC
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.IMPRESSION_TOASTER_NOTIFY_ME
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.LIST
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.LOGIN
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.MERCHANT_VOUCHER
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.NAME
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.NONE
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.NON_BO_PRODUCT
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.NON_LOGIN
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.PAGE_SOURCE
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.PAGE_TYPE
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.PHYSICAL_GOODS
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.POSITION
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.PRICE
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.PRODUCTS
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.PRODUCT_CLICK
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.PRODUCT_LIST_IMPRESSION
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.PRODUCT_VIEW
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.PROMOTIONS
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.PROMO_CLICK
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.PROMO_CODE
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.PROMO_ID
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.PROMO_VIEW
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.QUANTITY
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.REMOVE
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SCREEN_SHOP_PAGE
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SEE_ENTRY_POINT
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_ID
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_NAME
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_PAGE_BUYER
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_PAGE_LABEL
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_REF
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_TYPE
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TOKOPEDIA_MARKETPLACE
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.UNFOLLOW
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.USER_ID
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.VALUE_FINISHED_BANNER
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.VALUE_FINISHED_CAMPAIGN
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.VALUE_HOME
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.VALUE_NO_SEE_CAMPAIGN
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.VALUE_ONGOING_BANNER
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.VALUE_ONGOING_CAMPAIGN
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.VALUE_SEE_CAMPAIGN
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.VALUE_UPCOMING_BANNER
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.VALUE_UPCOMING_CAMPAIGN
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.VARIANT
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.VERTICAL_POSITION
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.VIEW_SHOP_PAGE_IRIS
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.WIDGET_TYPE_BUY_AGAIN
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.WIDGET_TYPE_CAROUSELL
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.WISHLIST
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.WITHOUT_CART
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.WITH_CART
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPageAttribution
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPageProduct
@@ -54,7 +171,7 @@ class ShopPageHomeTracking(
                                 destinationLink,
                                 assetUrl,
                                 positionHorizontal,
-                                customDimensionShopPage.shopType,
+                                customDimensionShopPage.shopType.orEmpty(),
                                 shopId
                         ))))
         sendDataLayerEvent(eventMap)
@@ -91,7 +208,7 @@ class ShopPageHomeTracking(
                                 destinationLink,
                                 assetUrl,
                                 positionHorizontal,
-                                customDimensionShopPage.shopType,
+                                customDimensionShopPage.shopType.orEmpty(),
                                 shopId
                         ))))
         sendDataLayerEvent(eventMap)
@@ -156,8 +273,8 @@ class ShopPageHomeTracking(
                 EVENT_LABEL to eventLabel,
                 BUSINESS_UNIT to HOME_AND_BROWSE,
                 CURRENT_SITE to TOKOPEDIA_MARKETPLACE,
-                SHOP_ID to customDimensionShopPage.shopId,
-                SHOP_TYPE to customDimensionShopPage.shopType,
+                SHOP_ID to customDimensionShopPage.shopId.orEmpty(),
+                SHOP_TYPE to customDimensionShopPage.shopType.orEmpty(),
                 USER_ID to userId
         )
         eventMap[ECOMMERCE] = mutableMapOf(
@@ -320,8 +437,8 @@ class ShopPageHomeTracking(
                 BUSINESS_UNIT to HOME_AND_BROWSE,
                 CURRENT_SITE to TOKOPEDIA_MARKETPLACE,
                 PAGE_SOURCE to SCREEN_SHOP_PAGE,
-                SHOP_ID to customDimensionShopPage.shopId,
-                SHOP_TYPE to customDimensionShopPage.shopType,
+                SHOP_ID to customDimensionShopPage.shopId.orEmpty(),
+                SHOP_TYPE to customDimensionShopPage.shopType.orEmpty(),
                 USER_ID to userId
         )
         eventMap[ECOMMERCE] = mutableMapOf(
@@ -436,9 +553,9 @@ class ShopPageHomeTracking(
                                 productId,
                                 productDisplayedPrice,
                                 productQuantity,
-                                customDimensionShopPage.shopId,
+                                customDimensionShopPage.shopId.orEmpty(),
                                 shopName,
-                                customDimensionShopPage.shopType
+                                customDimensionShopPage.shopType.orEmpty()
                         ))
                 )
         )
@@ -590,9 +707,9 @@ class ShopPageHomeTracking(
                 widgetOption,
                 customDimensionShopPage
         )
-        val boe = if (customDimensionShopPage.isFulfillmentExist && customDimensionShopPage.isFreeOngkirActive) {
+        val boe = if (customDimensionShopPage.isFulfillmentExist == true && customDimensionShopPage.isFreeOngkirActive == true) {
             BOE
-        } else if (!customDimensionShopPage.isFulfillmentExist && customDimensionShopPage.isFreeOngkirActive) {
+        } else if (customDimensionShopPage.isFulfillmentExist != true && customDimensionShopPage.isFreeOngkirActive == true) {
             BO_PRODUCT
         } else {
             NON_BO_PRODUCT
@@ -606,9 +723,9 @@ class ShopPageHomeTracking(
                 VARIANT to NONE,
                 LIST to listEventValue,
                 POSITION to horizontalPosition,
-                DIMENSION_81 to customDimensionShopPage.shopType,
-                DIMENSION_79 to customDimensionShopPage.shopId,
-                SHOP_REF to customDimensionShopPage.shopRef,
+                DIMENSION_81 to customDimensionShopPage.shopType.orEmpty(),
+                DIMENSION_79 to customDimensionShopPage.shopId.orEmpty(),
+                SHOP_REF to customDimensionShopPage.shopRef.orEmpty(),
                 DIMENSION_83 to boe
         )
     }
@@ -702,8 +819,8 @@ class ShopPageHomeTracking(
                 DIMENSION_45 to cartId,
                 DIMENSION_38 to attribution,
                 DIMENSION_40 to dimension40Value,
-                DIMENSION_81 to customDimensionShopPage.shopType,
-                DIMENSION_79 to customDimensionShopPage.shopId
+                DIMENSION_81 to customDimensionShopPage.shopType.orEmpty(),
+                DIMENSION_79 to customDimensionShopPage.shopId.orEmpty()
         )
     }
 
@@ -932,7 +1049,7 @@ class ShopPageHomeTracking(
         val listEventValue = createCampaignNplProductListValue(
                 verticalPosition,
                 statusCampaign,
-                customDimensionShopPage.shopId,
+                customDimensionShopPage.shopId.orEmpty(),
                 isLogin
         )
         eventMap[ECOMMERCE] = mutableMapOf(
@@ -978,8 +1095,8 @@ class ShopPageHomeTracking(
                 VARIANT to NONE,
                 LIST to listEventValue,
                 POSITION to horizontalPosition,
-                DIMENSION_81 to customDimensionShopPage.shopType,
-                DIMENSION_79 to customDimensionShopPage.shopId,
+                DIMENSION_81 to customDimensionShopPage.shopType.orEmpty(),
+                DIMENSION_79 to customDimensionShopPage.shopId.orEmpty(),
                 DIMENSION_40 to listEventValue
         )
     }
@@ -1006,7 +1123,7 @@ class ShopPageHomeTracking(
         val listEventValue = createCampaignNplProductListValue(
                 verticalPosition,
                 statusCampaign,
-                customDimensionShopPage.shopId,
+                customDimensionShopPage.shopId.orEmpty(),
                 isLogin
         )
         eventMap[ECOMMERCE] = mutableMapOf(

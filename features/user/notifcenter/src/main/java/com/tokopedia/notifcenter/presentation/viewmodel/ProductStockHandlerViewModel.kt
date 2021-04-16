@@ -21,7 +21,7 @@ import com.tokopedia.notifcenter.domain.ProductHighlightUseCase
 import com.tokopedia.notifcenter.domain.ProductStockReminderDeleteUseCase
 import com.tokopedia.notifcenter.domain.ProductStockReminderUseCase
 import com.tokopedia.notifcenter.util.SingleLiveEvent
-import com.tokopedia.notifcenter.util.coroutines.DispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -48,8 +48,8 @@ class ProductStockHandlerViewModel @Inject constructor(
         private val productHighlightUseCase: ProductHighlightUseCase,
         private var addToCartUseCase: AddToCartUseCase,
         private val deleteReminderUseCase: ProductStockReminderDeleteUseCase,
-        dispatcher: DispatcherProvider
-): BaseViewModel(dispatcher.io()), ProductStockHandlerContract {
+        dispatcher: CoroutineDispatchers
+): BaseViewModel(dispatcher.io), ProductStockHandlerContract {
 
     private val _productStockReminder = SingleLiveEvent<ProductStockReminder>()
     val productStockReminder: LiveData<ProductStockReminder> get() = _productStockReminder
