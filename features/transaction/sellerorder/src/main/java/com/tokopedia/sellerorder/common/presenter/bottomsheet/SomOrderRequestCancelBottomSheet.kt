@@ -62,7 +62,7 @@ class SomOrderRequestCancelBottomSheet : BottomSheetUnify() {
                                     dismiss()
                                     when (statusCode) {
                                         SomConsts.STATUS_CODE_ORDER_CREATED -> {
-                                            listener?.onAcceptOrder()
+                                            listener?.onAcceptOrder(primaryButtonText)
                                         }
                                         SomConsts.STATUS_CODE_ORDER_ORDER_CONFIRMED -> {
                                             listener?.onRejectCancelRequest()
@@ -150,7 +150,7 @@ class SomOrderRequestCancelBottomSheet : BottomSheetUnify() {
     }
 
     interface SomOrderRequestCancelBottomSheetListener {
-        fun onAcceptOrder()
+        fun onAcceptOrder(actionName: String)
         fun onRejectOrder(reasonBuyer: String)
         fun onRejectCancelRequest()
     }
