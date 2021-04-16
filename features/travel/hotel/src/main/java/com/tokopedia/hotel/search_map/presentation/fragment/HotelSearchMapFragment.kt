@@ -335,14 +335,25 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
 
     override fun onItemClicked(property: Property, position: Int) {
         with(hotelSearchMapViewModel.searchParam) {
-            trackingHotelUtil.chooseHotel(
-                    context,
-                    searchDestinationName,
-                    searchDestinationType,
-                    this,
-                    property,
-                    position,
-                    SEARCH_SCREEN_NAME)
+            if (bottomSheetBehavior.state == BottomSheetBehavior.STATE_COLLAPSED) {
+                trackingHotelUtil.chooseHotelFromMap(
+                        context,
+                        searchDestinationName,
+                        searchDestinationType,
+                        this,
+                        property,
+                        position,
+                        SEARCH_SCREEN_NAME)
+            } else {
+                trackingHotelUtil.chooseHotel(
+                        context,
+                        searchDestinationName,
+                        searchDestinationType,
+                        this,
+                        property,
+                        position,
+                        SEARCH_SCREEN_NAME)
+            }
 
             context?.run {
                 startActivityForResult(HotelDetailActivity.getCallingIntent(this,
@@ -484,16 +495,27 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                         btnHotelSearchWithMap.startAnimation(bounceAnim)
                         setupContentMargin(true)
                         googleMap.uiSettings.setAllGesturesEnabled(false)
+
+                        trackingHotelUtil.searchCloseMap(context,
+                                searchDestinationName,
+                                searchDestinationType,
+                                SEARCH_SCREEN_NAME)
                     }
                     BottomSheetBehavior.STATE_HALF_EXPANDED -> {
                         googleMap.animateCamera(CameraUpdateFactory.zoomTo(MAPS_ZOOM_OUT))
                         setupContentMargin(false)
                         googleMap.uiSettings.setAllGesturesEnabled(false)
+
                     }
                     BottomSheetBehavior.STATE_COLLAPSED -> {
                         googleMap.animateCamera(CameraUpdateFactory.zoomTo(MAPS_ZOOM_IN))
                         setupContentMargin(false)
                         googleMap.uiSettings.setAllGesturesEnabled(true)
+
+                        trackingHotelUtil.searchViewFullMap(context,
+                                searchDestinationName,
+                                searchDestinationType,
+                                SEARCH_SCREEN_NAME)
                     }
                     else -> {
                         setupContentMargin(false)
@@ -676,17 +698,26 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         }
         wrapper.addView(textView)
         wrapper.setOnClickListener {
-            removeAllMarker()
-            showCardListView()
-            hideFindNearHereView()
-            changeHeaderTitle()
-            hotelSearchMapViewModel.getMidPoint(googleMap.cameraPosition.target)
-            hotelSearchMapViewModel.getVisibleRadius(googleMap)
+            trackingHotelUtil.searchNearLocation(context,
+                    searchDestinationName,
+                    searchDestinationType,
+                    SEARCH_SCREEN_NAME)
+
+            onSearchByMap()
         }
 
         btnGetRadiusHotelSearchMap.addItem(wrapper)
         btnGetRadiusHotelSearchMap.setMargins(0, resources.getDimensionPixelSize(R.dimen.hotel_70dp), 0, 0)
         btnGetRadiusHotelSearchMap.gone()
+    }
+
+    private fun onSearchByMap() {
+        removeAllMarker()
+        showCardListView()
+        hideFindNearHereView()
+        changeHeaderTitle()
+        hotelSearchMapViewModel.getMidPoint(googleMap.cameraPosition.target)
+        hotelSearchMapViewModel.getVisibleRadius(googleMap)
     }
 
     private fun addMyLocation(latLong: LatLng) {
@@ -751,10 +782,14 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
     /** Location permission is handled by LocationDetector */
     private fun initGetMyLocation() {
         ivGetLocationHotelSearchMap.setOnClickListener {
+            trackingHotelUtil.searchClickMyLocation(context,
+                    searchDestinationName,
+                    searchDestinationType,
+                    SEARCH_SCREEN_NAME)
+
             isSearchByMap = true
-            showFindNearHereView()
             getCurrentLocation()
-            changeHeaderTitle()
+            onSearchByMap()
         }
     }
 
@@ -1206,6 +1241,11 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
     }
 
     private fun showErrorNoResult() {
+        trackingHotelUtil.searchHotelNotFound(context,
+                searchDestinationName,
+                searchDestinationType,
+                SEARCH_SCREEN_NAME)
+
         containerEmptyResultState.visible()
         val viewTree = containerEmptyResultState.viewTreeObserver
         viewTree.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
