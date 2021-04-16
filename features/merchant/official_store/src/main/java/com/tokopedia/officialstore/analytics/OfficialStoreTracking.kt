@@ -761,14 +761,10 @@ class OfficialStoreTracking(context: Context) {
                 ECOMMERCE_CURRENCY_CODE, VALUE_IDR,
                 ECOMMERCE_IMPRESSIONS, DataLayer.listOf(
                 createFlashSaleCardProductItemMapComponent(
-                        gridData = productItem,
-                        position = productPosition,
-                        isLogin = isLogin,
-                        valueDynamicMix = valueDynamicMix,
-                        headerName = channel.channelHeader.name,
-                        campaignId = channel.trackingAttributionModel.campaignId,
-                        categoryName = categoryName,
-                        gridId = productItem.id
+                        productItem,
+                        productPosition,
+                        isLogin,
+                        valueDynamicMix
                 )
         )
         )
@@ -804,18 +800,13 @@ class OfficialStoreTracking(context: Context) {
             gridData: ChannelGrid,
             position: String,
             isLogin: Boolean,
-            valueDynamicMix: String,
-            categoryName: String = "",
-            gridId: String = "",
-            campaignId: String = "",
-            headerName: String = ""
+            valueDynamicMix: String
     ): MutableMap<String, Any> {
-        val list = mutableListOf(String().replace(SLASH_OFFICIAL_STORE_WITHCATEGORY, categoryName))
-        if (valueDynamicMix.isNotEmpty())
-            list.add(valueDynamicMix)
-        list.add(campaignId)
+        val list = mutableListOf(SLASH_OFFICIAL_STORE)
         if (!isLogin)
             list.add(VALUE_NON_LOGIN)
+        if (valueDynamicMix.isNotEmpty())
+            list.add(valueDynamicMix)
         val listKeyValue = TextUtils.join(" - ", list)
         return DataLayer.mapOf(
                 FIELD_PRODUCT_NAME, gridData.name,
@@ -875,7 +866,7 @@ class OfficialStoreTracking(context: Context) {
             categoryName: String,
             channel: ChannelModel,
             productItem: ChannelGrid,
-            productPosition: String,
+            productPosition: Int,
             isLogin: Boolean,
             userId: String
     ) {
@@ -884,10 +875,10 @@ class OfficialStoreTracking(context: Context) {
             DynamicChannelIdentifiers.LAYOUT_MIX_LEFT -> VALUE_DYNAMIC_MIX_LEFT_CAROUSEL
             else -> ""
         }
-        val list = mutableListOf(String().format(SLASH_OFFICIAL_STORE_WITHCATEGORY, categoryName))
-        list.add(channel.trackingAttributionModel.campaignId)
+        val list = mutableListOf(String.format(SLASH_OFFICIAL_STORE_WITHCATEGORY, categoryName))
         if (valueDynamicMix.isNotEmpty())
             list.add(valueDynamicMix)
+        list.add(channel.trackingAttributionModel.campaignId)
         if (!isLogin)
             list.add(VALUE_NON_LOGIN_NEW)
         else list.add(VALUE_LOGIN_NEW)
@@ -898,27 +889,22 @@ class OfficialStoreTracking(context: Context) {
                 EVENT_CATEGORY, OS_MICROSITE_SINGLE,
                 EVENT_ACTION, eventAction,
                 EVENT_LABEL, channel.id,
-                CAMPAIGN_CODE, channel.trackingAttributionModel.campaignCode,
-                ECOMMERCE, DataLayer.mapOf(
-                CLICK , DataLayer.mapOf(
-                FIELD_ACTION_FIELD , DataLayer.mapOf( FIELD_PRODUCT_LIST , listKeyValue),
                 FIELD_BUSINESS_UNIT, VALUE_BUSINESS_UNIT_DEFAULT,
                 FIELD_CURRENT_SITE, VALUE_CURRENT_SITE_DEFAULT,
                 USER_ID, userId,
-                FIELD_PRODUCTS, DataLayer.listOf(
-                createFlashSaleCardProductItemMapComponent(
-                        gridData = productItem,
-                        position = productPosition,
-                        isLogin = isLogin,
-                        valueDynamicMix = valueDynamicMix,
-                        headerName = channel.channelHeader.name,
-                        campaignId = channel.trackingAttributionModel.campaignId,
-                        categoryName = categoryName,
-                        gridId = productItem.id
+                CAMPAIGN_CODE, channel.trackingAttributionModel.campaignCode,
+                ECOMMERCE, DataLayer.mapOf(
+                    CLICK , DataLayer.mapOf(
+                        FIELD_ACTION_FIELD , DataLayer.mapOf( FIELD_PRODUCT_LIST , listKeyValue),
+                        FIELD_PRODUCTS, DataLayer.listOf(
+                            createFlashSaleCardProductItemMapComponent(productItem,
+                                    (productPosition +1).toString(),
+                                    isLogin,
+                                    valueDynamicMix
+                            )
+                        )
+                    )
                 )
-        )
-        )
-        )
         )
         tracker.sendEnhanceEcommerceEvent(data as HashMap<String, Any>)
     }

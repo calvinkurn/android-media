@@ -832,7 +832,7 @@ class OfficialHomeFragment :
                 viewModel.currentSlugDC,
                 channel,
                 grid,
-                position.toString(),
+                position,
                 viewModel.isLoggedIn(),
                 viewModel.getUserId()
         )
