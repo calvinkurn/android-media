@@ -27,31 +27,17 @@ class ShipmentMapperTest {
     @Test
     fun convertToShipmentAddressFormDataWithContractPurchaseProtectionNoException() {
         // given
-        val response = gson!!.fromJson(unitTestFileUtils!!.getJsonFromAsset(PATH_CONTRACT_PURCHASE_PROTECTION),
-                ShipmentAddressFormDataResponse::class.java)
+        val response = gson?.fromJson(unitTestFileUtils?.getJsonFromAsset(PATH_CONTRACT_PURCHASE_PROTECTION),
+                ShipmentAddressFormDataResponse::class.java) ?: ShipmentAddressFormDataResponse()
 
         // when
-        val (_, _, _, _, _, _, _, groupAddress) = shipmentMapper!!.convertToShipmentAddressFormData(response)
+        val cartShipmentAddressFormData = shipmentMapper?.convertToShipmentAddressFormData(response)
 
         // verify
-        assertNotNull(groupAddress!![0].groupShop[0].products[0].purchaseProtectionPlanData)
-    }
-
-    @Test
-    fun convertToShipmentAddressFormDataWithContractNullPurchaseProtectionNoException() {
-        // given
-        val response = gson!!.fromJson(unitTestFileUtils!!.getJsonFromAsset(PATH_CONTRACT_NULL_PURCHASE_PROTECTION),
-                ShipmentAddressFormDataResponse::class.java)
-
-        // when
-        val (_, _, _, _, _, _, _, groupAddress) = shipmentMapper!!.convertToShipmentAddressFormData(response)
-
-        // verify
-        assertNull(groupAddress!![0].groupShop[0].products[0].purchaseProtectionPlanData)
+        assertNotNull(cartShipmentAddressFormData?.groupAddress?.get(0)?.groupShop?.get(0)?.products?.get(0)?.purchaseProtectionPlanData)
     }
 
     companion object {
         private const val PATH_CONTRACT_PURCHASE_PROTECTION = "assets/contract_purchase_protection.json"
-        private const val PATH_CONTRACT_NULL_PURCHASE_PROTECTION = "assets/contract_purchase_protection_null.json"
     }
 }
