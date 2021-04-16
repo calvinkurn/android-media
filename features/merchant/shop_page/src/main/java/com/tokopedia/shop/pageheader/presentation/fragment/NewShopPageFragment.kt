@@ -186,6 +186,7 @@ class NewShopPageFragment :
         private const val QUERY_SHOP_ATTRIBUTION = "tracker_attribution"
         private const val START_PAGE = 1
         private const val IS_FIRST_TIME_VISIT = "isFirstTimeVisit"
+        private const val IS_FIRST_TIME_SHOW_TAB_LABEL = "isFirstTimeShowTabLabel"
         private const val SOURCE = "shop page"
 
         private const val REQUEST_CODE_START_LIVE_STREAMING = 7621
@@ -1240,6 +1241,16 @@ class NewShopPageFragment :
         shopShareBottomSheet?.dismiss()
     }
 
+    private fun saveFirstShowTabLabel() {
+        sharedPreferences?.edit()?.run {
+            putBoolean(IS_FIRST_TIME_SHOW_TAB_LABEL, true)
+        }?.apply()
+    }
+
+    private fun isFirstTimeShowTabLabel(): Boolean? {
+        return sharedPreferences?.getBoolean(IS_FIRST_TIME_SHOW_TAB_LABEL, false)
+    }
+
     private fun setupTabs() {
         listShopPageTabModel = createListShopPageTabModel()
         viewPagerAdapter?.setTabData(listShopPageTabModel)
@@ -1258,10 +1269,10 @@ class NewShopPageFragment :
         tabLayout?.apply {
             for (i in 0 until tabCount) {
                 val tabCustomView = viewPagerAdapter?.getTabView(i, selectedPosition)
-                if (listShopPageTabModel[i].tabFragment is ShopPageShowcaseFragment && isFirstTimeVisit() == false) {
+                if (listShopPageTabModel[i].tabFragment is ShopPageShowcaseFragment && isFirstTimeShowTabLabel() == false) {
                     // temporary show label "BARU" for new showcase tab
                     tabCustomView?.icon_tab_label?.visible()
-                    saveFirstTimeVisit()
+                    saveFirstShowTabLabel()
                 }
                 getTabAt(i)?.customView = tabCustomView
             }

@@ -236,7 +236,7 @@ class NewShopPageFragmentHeaderViewHolder(private val view: View, private val li
                 override fun onStep(currentIndex: Int, coachMarkItem: CoachMark2Item) {
                     checkCoachMarkImpression(
                             onCoachMarkFollowButtonImpressed = {
-//                                listener.saveFirstTimeVisit()
+                                listener.saveFirstTimeVisit()
                                 shopPageTracking?.impressionCoachMarkFollowUnfollowShop(shopId, userId)
                             },
                             onCoachMarkChooseAddressWidgetImpressed = {
@@ -248,7 +248,7 @@ class NewShopPageFragmentHeaderViewHolder(private val view: View, private val li
             coachMark?.showCoachMark(coachMarkList)
             checkCoachMarkImpression(
                     onCoachMarkFollowButtonImpressed = {
-//                        listener.saveFirstTimeVisit()
+                        listener.saveFirstTimeVisit()
                         shopPageTracking?.impressionCoachMarkFollowUnfollowShop(shopId, userId)
                     },
                     onCoachMarkChooseAddressWidgetImpressed = {
