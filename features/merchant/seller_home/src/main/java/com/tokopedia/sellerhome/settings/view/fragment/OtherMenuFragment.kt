@@ -351,9 +351,9 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
                     val performanceData = MenuItemUiModel(
                             resources.getString(R.string.setting_menu_performance),
                             null,
-                            ApplinkConst.SHOP_PERFORMANCE,
+                            ApplinkConstInternalMarketplace.SHOP_PERFORMANCE,
                             eventActionSuffix = SettingTrackingConstant.SHOP_PERFORMANCE,
-                            iconUnify = IconUnify.GRAPH)
+                            iconUnify = IconUnify.PERFORMANCE)
 
                     adapter.addElement(promotionIndex+1, performanceData)
                     adapter.notifyItemRangeInserted(promotionIndex, 1)
