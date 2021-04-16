@@ -71,6 +71,7 @@ import com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity;
 import com.tokopedia.tkpd.fcm.ApplinkResetReceiver;
 import com.tokopedia.tkpd.nfc.NFCSubscriber;
 import com.tokopedia.tkpd.timber.LoggerActivityLifecycleCallbacks;
+import com.tokopedia.tkpd.utils.NewRelicConstants;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.weaver.WeaveInterface;
@@ -423,8 +424,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
     private void initLogManager() {
         LogManager.init(ConsumerMainApplication.this, new LoggerProxy() {
             final AESEncryptorECB encryptor = new AESEncryptorECB();
-            private final String ENCRYPTION_KEY = new String(new char[]{113, 40, 101, 35, 37, 71, 102, 64, 111, 105, 62, 108, 107, 66, 126, 104});
-            final SecretKey secretKey = encryptor.generateKey(ENCRYPTION_KEY);
+            final SecretKey secretKey = encryptor.generateKey(NewRelicConstants.ENCRYPTION_KEY);
 
             @Override
             public Function1<String, String> getDecrypt() {

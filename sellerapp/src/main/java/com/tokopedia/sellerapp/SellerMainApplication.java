@@ -173,8 +173,7 @@ public class SellerMainApplication extends SellerRouterApplication implements
     private void initLogManager(){
         LogManager.init(SellerMainApplication.this, new LoggerProxy() {
             final AESEncryptorECB encryptor = new AESEncryptorECB();
-            private final String ENCRYPTION_KEY = new String(new char[]{113, 40, 101, 35, 37, 71, 102, 64, 111, 105, 62, 108, 107, 66, 126, 104});
-            final SecretKey secretKey = encryptor.generateKey(ENCRYPTION_KEY);
+            final SecretKey secretKey = encryptor.generateKey(com.tokopedia.sellerapp.utils.constants.Constants.ENCRYPTION_KEY);
 
             @Override
             public Function1<String, String> getDecrypt() {
