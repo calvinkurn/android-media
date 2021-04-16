@@ -390,8 +390,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
 
         super.showLoading()
 
-        if ((adapter.list.size > 0 && adapter.list[0] is LoadingModel) ||
-                isHotelListShowingError()) {
+        if (adapter.list.size > 0 && adapter.list[0] is LoadingModel) {
             hideSearchWithMap()
         }
     }
@@ -441,10 +440,12 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
     override fun onGetListErrorWithEmptyData(throwable: Throwable?) {
         super.onGetListErrorWithEmptyData(throwable)
         bottomSheetBehavior.peekHeight = hotel_search_map_bottom_sheet.measuredHeight
+        hideSearchWithMap()
     }
 
     override fun getEmptyDataViewModel(): Visitable<*> {
         bottomSheetBehavior.peekHeight = hotel_search_map_bottom_sheet.measuredHeight
+        hideSearchWithMap()
         return super.getEmptyDataViewModel()
     }
 
