@@ -41,7 +41,8 @@
         android:layout_marginStart="@dimen/spacing_lvl2"
         app:layout_constraintBottom_toBottomOf="@id/title"
         app:layout_constraintLeft_toRightOf="@id/title"
-        app:layout_constraintTop_toTopOf="@id/title"></ImageView>
+        app:layout_constraintTop_toTopOf="@id/title"
+        android:contentDescription="@null"/>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
