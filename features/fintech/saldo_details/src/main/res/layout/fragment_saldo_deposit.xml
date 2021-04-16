@@ -8,7 +8,7 @@
         android:id="@+id/sp_app_bar_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:elevation="@dimen/dp_0">
+        app:elevation="@dimen/unify_space_0">
 
         <com.tokopedia.unifycomponents.ticker.Ticker
             android:id="@+id/layout_holdwithdrawl_dialog"
@@ -33,9 +33,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginStart="@dimen/sd_dp_1"
-        android:layout_marginLeft="@dimen/sd_dp_1"
         android:layout_marginEnd="@dimen/sd_dp_1"
-        android:layout_marginRight="@dimen/sd_dp_1"
         android:layout_marginBottom="@dimen/unify_space_4"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 

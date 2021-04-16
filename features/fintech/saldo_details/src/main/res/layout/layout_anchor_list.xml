@@ -9,7 +9,6 @@
         android:id="@+id/anchor_label"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginLeft="@dimen/unify_space_24"
         android:layout_marginStart="@dimen/unify_space_24"
         android:textColor="@color/Unify_G500"
         app:typographyType="body_3" />

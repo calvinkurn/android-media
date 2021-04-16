@@ -4,19 +4,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/Unify_N0"
     android:orientation="horizontal"
     android:paddingTop="@dimen/unify_space_8">
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/transaction_image_view"
-        android:layout_width="@dimen/dp_26"
-        android:layout_height="@dimen/dp_26"
+        android:layout_width="@dimen/sd_dp_26"
+        android:layout_height="@dimen/sd_dp_26"
         android:layout_alignParentStart="true"
-        android:layout_alignParentLeft="true"
-        android:layout_marginStart="@dimen/dp_14"
-        android:layout_marginLeft="@dimen/dp_14"
-        android:layout_marginTop="@dimen/dp_10"
+        android:layout_marginStart="@dimen/sd_dp_14"
+        android:layout_marginTop="@dimen/sd_dp_10"
         app:unify_image_corner_radius="0" />
 
     <RelativeLayout
@@ -24,8 +21,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_toEndOf="@+id/transaction_image_view"
-        android:layout_toRightOf="@+id/transaction_image_view"
-        android:padding="@dimen/dp_10">
+        android:padding="@dimen/sd_dp_10">
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/transaction_heading"
@@ -42,7 +38,7 @@
             android:layout_below="@+id/transaction_heading"
             android:layout_alignParentStart="true"
             android:layout_alignParentLeft="true"
-            android:layout_marginTop="@dimen/dp_10"
+            android:layout_marginTop="@dimen/sd_dp_10"
             android:textColor="@color/Unify_N700_32"
             app:typographyType="body_3"
             tools:text="13 Apr 2021"/>
@@ -52,7 +48,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/saldo_transaction_date"
-            android:layout_marginTop="@dimen/dp_10"
+            android:layout_marginTop="@dimen/sd_dp_10"
             app:typographyType="body_2"
             tools:text="- Rp5.000"/>
 
@@ -62,7 +58,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/nominal"
-            android:layout_marginTop="@dimen/dp_7"
+            android:layout_marginTop="@dimen/unify_space_8"
             android:background="@android:drawable/list_selector_background"
             android:textColor="@color/Unify_N700_32"
             app:typographyType="body_2" />

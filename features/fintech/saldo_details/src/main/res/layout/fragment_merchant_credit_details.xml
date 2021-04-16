@@ -8,13 +8,6 @@
     android:layout_margin="@dimen/unify_space_4"
     app:card_type="shadow">
 
-    <ViewFlipper
-        android:id="@+id/container_main"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:animateLayoutChanges="true"
-        android:measureAllChildren="false">
-
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -27,17 +20,16 @@
                 android:layout_height="@dimen/unify_space_24"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentLeft="true"
-                app:srcCompat="@drawable/ic_refund_disbursement" />
+                app:srcCompat="@drawable/ic_refund_disbursement"
+                android:contentDescription="MCl Logo" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/mcl_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/unify_space_8"
-                android:layout_marginLeft="@dimen/unify_space_8"
                 android:layout_marginTop="@dimen/unify_space_2"
                 android:layout_toEndOf="@+id/mcl_logo"
-                android:layout_toRightOf="@+id/mcl_logo"
                 android:text="@string/modal_toko"
                 android:textColor="@color/Unify_N700_68"
                 app:typographyType="heading_5"
@@ -48,16 +40,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/unify_space_8"
-                android:layout_marginLeft="@dimen/unify_space_8"
                 android:layout_marginTop="@dimen/unify_space_2"
                 android:layout_toEndOf="@+id/mcl_title"
-                android:layout_toRightOf="@+id/mcl_title"
                 android:paddingStart="@dimen/unify_space_8"
                 android:paddingLeft="@dimen/unify_space_8"
-                android:paddingTop="@dimen/dp_3"
+                android:paddingTop="@dimen/sd_dp_3"
                 android:paddingEnd="@dimen/unify_space_8"
                 android:paddingRight="@dimen/unify_space_8"
-                android:paddingBottom="@dimen/dp_3"
+                android:paddingBottom="@dimen/sd_dp_3"
                 android:textSize="@dimen/sp_10"
                 android:visibility="gone"
                 app:labelTitle="Terblokir"
@@ -69,10 +59,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
-                android:layout_alignParentRight="true"
                 android:layout_marginTop="@dimen/unify_space_4"
                 android:layout_toEndOf="@+id/mcl_blocked_status"
-                android:layout_toRightOf="@+id/mcl_blocked_status"
                 android:gravity="end"
                 android:textColor="@color/Unify_N700_68"
                 app:typographyType="small"
@@ -100,7 +88,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignWithParentIfMissing="true"
                 android:layout_below="@+id/mcl_description"
-                android:layout_marginTop="@dimen/dp_6"
+                android:layout_marginTop="@dimen/sd_dp_6"
                 android:divider="@android:color/transparent"
                 android:orientation="vertical"
                 android:scrollbars="vertical"
@@ -123,7 +111,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/unify_space_4"
-                    android:layout_marginLeft="@dimen/unify_space_4"
                     android:lineSpacingExtra="@dimen/sp_4"
                     android:textColor="@color/Unify_N700_68"
                     app:typographyType="body_3"
@@ -135,7 +122,6 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/mcl_box_title"
                     android:layout_marginStart="@dimen/unify_space_4"
-                    android:layout_marginLeft="@dimen/unify_space_4"
                     android:layout_marginTop="@dimen/unify_space_4"
                     android:lineSpacingExtra="@dimen/sp_4"
                     android:textColor="@color/Unify_N700_44"
@@ -143,6 +129,5 @@
                     tools:text="Status: Menunggu Verifikasi Aplikasi" />
             </RelativeLayout>
         </RelativeLayout>
-    </ViewFlipper>
 
 </com.tokopedia.unifycomponents.CardUnify>
