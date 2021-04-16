@@ -472,13 +472,13 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
             title = getString(R.string.pm_bottom_sheet_active_product_title)
             description = getString(R.string.pm_bottom_sheet_active_product_description)
             ctaText = getString(R.string.pm_add_product)
-            illustrationUrl = Constant.ImageUrl.ADD_PRODUCT_BOTTOM_SHEET
+            illustrationUrl = PMConstant.Images.PM_ADD_PRODUCT_BOTTOM_SHEET
             appLink = ApplinkConst.SellerApp.PRODUCT_ADD
         } else {
             title = getString(R.string.pm_bottom_sheet_shop_score_title)
             description = getString(R.string.pm_bottom_sheet_shop_score_description)
             ctaText = getString(R.string.pm_learn_shop_performance)
-            illustrationUrl = Constant.ImageUrl.SHOP_SCORE_BOTTOM_SHEET
+            illustrationUrl = PMConstant.Images.PM_SHOP_SCORE_NOT_ELIGIBLE_BOTTOM_SHEET
             appLink = ApplinkConst.SHOP_SCORE_DETAIL
         }
 
