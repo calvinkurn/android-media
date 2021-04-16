@@ -26,13 +26,15 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:ellipsize="end"
+                android:maxLines="1"
                 android:paddingVertical="@dimen/unify_space_12"
                 android:paddingStart="@dimen/unify_space_16"
                 android:textColor="@color/Unify_N700_96"
                 app:typographyType="body_2"
                 app:typographyWeight="bold"
                 tools:ignore="RtlSymmetry"
-                tools:text="Srw Title" />
+                tools:text="@tools:sample/lorem/random" />
 
             <com.tokopedia.iconunify.IconUnify
                 android:id="@+id/ic_header_state_partial"
