@@ -3,6 +3,7 @@
     <string name="choose_image">Pilih Gambar</string>
     <string name="gallery">Gallery</string>
     <string name="camera">Camera</string>
+    <string name="ip_label_cancel">Batal</string>
     <string name="album_name_all">Semua Media</string>
     <string name="label_primary">Utama</string>
     <string name="image_under_x_resolution">Gambar di bawah %1$d pixel</string>
@@ -54,6 +55,6 @@
     <string name="vidpick_btn_back">Kembali</string>
     <string name="vidpick_btn_delete">Hapus Rekaman</string>
 
-    <string name="cp_title_update_post">Update Post</string>
-    <string name="cp_message_update_choosen_video">Video sebelumnya akan diganti dengan video yang dipilih</string>
+    <string name="ip_title_update_post">Update Post</string>
+    <string name="ip_message_update_choosen_video">Video sebelumnya akan diganti dengan video yang dipilih</string>
 </resources>

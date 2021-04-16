@@ -230,11 +230,11 @@ open class VideoPickerActivity : BaseSimpleActivity(),
 
         if (isImageExist) {
             val dialog = Dialog(this, Dialog.Type.PROMINANCE)
-            dialog.setTitle(getString(R.string.cp_title_update_post))
+            dialog.setTitle(getString(R.string.ip_title_update_post))
             dialog.setDesc(
-                    getString(R.string.cp_message_update_choosen_video))
-            dialog.setBtnCancel(getString(com.tokopedia.resources.common.R.string.general_label_cancel))
-            dialog.setBtnOk(getString(com.tokopedia.imagepicker.common.R.string.cp_continue))
+                    getString(R.string.ip_message_update_choosen_video))
+            dialog.setBtnCancel(getString(R.string.ip_label_cancel))
+            dialog.setBtnOk(getString(com.tokopedia.imagepicker.common.R.string.ip_continue))
             dialog.setOnOkClickListener{
                 dialog.dismiss()
                 onFinishPicked(videoPath)

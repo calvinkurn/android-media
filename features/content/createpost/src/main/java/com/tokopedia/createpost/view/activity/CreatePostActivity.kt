@@ -127,7 +127,7 @@ class CreatePostActivity : BaseSimpleActivity(), CreatePostActivityListener {
         dialog.setTitle(getString(R.string.cp_leave_warning))
         dialog.setDesc(getString(R.string.cp_leave_warning_desc))
         dialog.setBtnOk(getString(R.string.cp_leave_title))
-        dialog.setBtnCancel(getString(com.tokopedia.imagepicker.common.R.string.cp_continue))
+        dialog.setBtnCancel(getString(com.tokopedia.imagepicker.common.R.string.ip_continue))
         dialog.setOnOkClickListener {
             KeyboardHandler.hideSoftKeyboard(this)
             (fragment as? AffiliateCreatePostFragment)?.clearCache()
