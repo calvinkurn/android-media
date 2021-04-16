@@ -216,8 +216,7 @@ class RegisterInitialViewModelTest {
         val responseData = ActivateUserData(isSuccess = 1, accessToken = "asd", refreshToken = "fffaa", tokenType = "Bearer")
         val response = ActivateUserPojo(data = responseData)
 
-        coEvery { activateUserUseCase.getParams(any(), any()) } returns params
-        coEvery { activateUserUseCase.getData(any()) } returns response
+        coEvery { activateUserUseCase.executeOnBackground() } returns response
 
         viewModel.activateUser("", "")
 
@@ -227,7 +226,7 @@ class RegisterInitialViewModelTest {
 
     @Test
     fun `on Exception Throw during Activate User`() {
-        coEvery { activateUserUseCase.getData(any()) } throws throwable
+        coEvery { activateUserUseCase.executeOnBackground() } throws throwable
 
         viewModel.activateUser("", "")
 
@@ -246,8 +245,7 @@ class RegisterInitialViewModelTest {
         val responseData = ActivateUserData(message = "error happen!")
         val response = ActivateUserPojo(data = responseData)
 
-        coEvery { activateUserUseCase.getParams(any(), any()) } returns params
-        coEvery { activateUserUseCase.getData(any()) } returns response
+        coEvery { activateUserUseCase.executeOnBackground() } returns response
 
         viewModel.activateUser("", "")
 

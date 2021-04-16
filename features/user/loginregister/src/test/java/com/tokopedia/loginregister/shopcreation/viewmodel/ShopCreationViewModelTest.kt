@@ -3,7 +3,6 @@ package com.tokopedia.loginregister.shopcreation.viewmodel
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.loginregister.DispatcherProviderTest
 import com.tokopedia.loginregister.FileUtil
 import com.tokopedia.loginregister.shopcreation.domain.pojo.RegisterCheckData
 import com.tokopedia.loginregister.shopcreation.domain.pojo.RegisterCheckPojo
@@ -99,8 +98,6 @@ class ShopCreationViewModelTest {
 
     @RelaxedMockK
     lateinit var graphqlResponse: GraphqlResponse
-
-    private val dispatcherProviderTest = DispatcherProviderTest()
 
     private lateinit var viewmodel: ShopCreationViewModel
 
