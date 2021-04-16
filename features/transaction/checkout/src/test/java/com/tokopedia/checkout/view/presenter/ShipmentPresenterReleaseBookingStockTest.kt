@@ -1,4 +1,4 @@
-package com.tokopedia.checkout.view.presenters
+package com.tokopedia.checkout.view.presenter
 
 import com.google.gson.Gson
 import com.tokopedia.checkout.analytics.CheckoutAnalyticsPurchaseProtection
@@ -6,12 +6,9 @@ import com.tokopedia.checkout.domain.usecase.*
 import com.tokopedia.checkout.view.ShipmentContract
 import com.tokopedia.checkout.view.ShipmentPresenter
 import com.tokopedia.checkout.view.converter.ShipmentDataConverter
-import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
-import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass
 import com.tokopedia.logisticCommon.domain.usecase.EditAddressUseCase
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesResponseStateConverter
-import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesApiUseCase
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
@@ -21,15 +18,12 @@ import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.Valid
 import com.tokopedia.purchase_platform.common.schedulers.TestSchedulers
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.MockKAnnotations
-import io.mockk.every
 import io.mockk.impl.annotations.MockK
-import io.mockk.verifyOrder
 import org.junit.Before
 import org.junit.Test
-import rx.Observable
 import rx.subscriptions.CompositeSubscription
 
-class ShipmentPresenterEditAddressPinpointTest {
+class ShipmentPresenterReleaseBookingStockTest {
 
     @MockK
     private lateinit var validateUsePromoRevampUseCase: ValidateUsePromoRevampUseCase
@@ -76,7 +70,7 @@ class ShipmentPresenterEditAddressPinpointTest {
     @MockK
     private lateinit var checkoutAnalytics: CheckoutAnalyticsCourierSelection
 
-    @MockK(relaxed = true)
+    @MockK
     private lateinit var shipmentAnalyticsActionListener: ShipmentContract.AnalyticsActionListener
 
     @MockK
@@ -90,9 +84,9 @@ class ShipmentPresenterEditAddressPinpointTest {
 
     private var shipmentDataConverter = ShipmentDataConverter()
 
-    private lateinit var presenter: ShipmentPresenter
+    private val gson = Gson()
 
-    private var gson = Gson()
+    private lateinit var presenter: ShipmentPresenter
 
     @Before
     fun before() {
@@ -109,117 +103,11 @@ class ShipmentPresenterEditAddressPinpointTest {
     }
 
     @Test
-    fun pinpointSuccess_ShouldRenderEditAddressSuccess() {
+    fun `WHEN release booking stock success THEN should log success`() {
         // Given
-        presenter.recipientAddressModel = RecipientAddressModel().apply {
-            id = "1"
-            addressName = "address 1"
-            street = "street 1"
-            postalCode = "12345"
-            destinationDistrictId = "1"
-            cityId = "1"
-            provinceId = "1"
-            recipientName = "user 1"
-            recipientPhoneNumber = "1234567890"
-        }
-
-        val latitude = "123"
-        val longitude = "456"
-
-        every { editAddressUseCase.createObservable(any()) } returns Observable.just("""
-            {
-                "data": {
-                    "is_success": 1
-                }
-            }
-        """.trimIndent())
 
         // When
-        presenter.editAddressPinpoint(latitude, longitude, ShipmentCartItemModel(), LocationPass())
 
         // Then
-        verifyOrder {
-            view.showLoading()
-            view.setHasRunningApiCall(true)
-            view.setHasRunningApiCall(false)
-            view.hideLoading()
-            view.renderEditAddressSuccess(latitude, longitude)
-        }
-    }
-
-    @Test
-    fun pinpointFailed_ShouldNavigateToSetPinpointWithErrorMessage() {
-        // Given
-        presenter.recipientAddressModel = RecipientAddressModel().apply {
-            id = "1"
-            addressName = "address 1"
-            street = "street 1"
-            postalCode = "12345"
-            destinationDistrictId = "1"
-            cityId = "1"
-            provinceId = "1"
-            recipientName = "user 1"
-            recipientPhoneNumber = "1234567890"
-        }
-
-        val latitude = "123"
-        val longitude = "456"
-        val locationPass = LocationPass()
-
-        val errorMessage = "error"
-
-        every { editAddressUseCase.createObservable(any()) } returns Observable.just("""
-            {
-                "data": {
-                    "is_success": 0
-                },
-                "message_error": ["$errorMessage"]
-            }
-        """.trimIndent())
-
-        // When
-        presenter.editAddressPinpoint(latitude, longitude, ShipmentCartItemModel(), locationPass)
-
-        // Then
-        verifyOrder {
-            view.showLoading()
-            view.setHasRunningApiCall(true)
-            view.setHasRunningApiCall(false)
-            view.hideLoading()
-            view.navigateToSetPinpoint(errorMessage, locationPass)
-        }
-    }
-
-    @Test
-    fun pinpointError_ShouldShowToastError() {
-        // Given
-        presenter.recipientAddressModel = RecipientAddressModel().apply {
-            id = "1"
-            addressName = "address 1"
-            street = "street 1"
-            postalCode = "12345"
-            destinationDistrictId = "1"
-            cityId = "1"
-            provinceId = "1"
-            recipientName = "user 1"
-            recipientPhoneNumber = "1234567890"
-        }
-
-        val latitude = "123"
-        val longitude = "456"
-
-        every { editAddressUseCase.createObservable(any()) } returns Observable.error(Throwable())
-
-        // When
-        presenter.editAddressPinpoint(latitude, longitude, ShipmentCartItemModel(), LocationPass())
-
-        // Then
-        verifyOrder {
-            view.showLoading()
-            view.setHasRunningApiCall(true)
-            view.setHasRunningApiCall(false)
-            view.hideLoading()
-            view.showToastError(any())
-        }
     }
 }

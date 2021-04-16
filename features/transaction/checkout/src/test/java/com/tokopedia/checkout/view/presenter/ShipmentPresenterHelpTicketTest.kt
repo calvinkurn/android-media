@@ -1,8 +1,10 @@
-package com.tokopedia.checkout.view.presenters
+package com.tokopedia.checkout.view.presenter
 
 import com.google.gson.Gson
-import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.checkout.analytics.CheckoutAnalyticsPurchaseProtection
+import com.tokopedia.checkout.data.api.CommonPurchaseApiUrl
+import com.tokopedia.checkout.domain.model.checkout.CheckoutData
+import com.tokopedia.checkout.domain.model.checkout.ErrorReporter
 import com.tokopedia.checkout.domain.usecase.*
 import com.tokopedia.checkout.view.ShipmentContract
 import com.tokopedia.checkout.view.ShipmentPresenter
@@ -10,31 +12,27 @@ import com.tokopedia.checkout.view.converter.ShipmentDataConverter
 import com.tokopedia.logisticCommon.domain.usecase.EditAddressUseCase
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesResponseStateConverter
-import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesApiUseCase
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
+import com.tokopedia.checkout.data.model.request.checkout.DataCheckoutRequest
+import com.tokopedia.purchase_platform.common.feature.helpticket.data.request.SubmitHelpTicketRequest
+import com.tokopedia.purchase_platform.common.feature.helpticket.domain.model.SubmitTicketResult
 import com.tokopedia.purchase_platform.common.feature.helpticket.domain.usecase.SubmitHelpTicketUseCase
-import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ValidateUsePromoRevampUseCase
-import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.MessageUiModel
-import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoCheckoutVoucherOrdersItemUiModel
-import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel
-import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
 import com.tokopedia.purchase_platform.common.schedulers.TestSchedulers
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.MockKAnnotations
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import io.mockk.verify
-import io.mockk.verifySequence
 import org.junit.Before
 import org.junit.Test
 import rx.Observable
 import rx.subscriptions.CompositeSubscription
 
-class ShipmentPresenterValidateUseLogisticPromoTest {
+class ShipmentPresenterHelpTicketTest {
 
     @MockK
     private lateinit var validateUsePromoRevampUseCase: ValidateUsePromoRevampUseCase
@@ -78,10 +76,10 @@ class ShipmentPresenterValidateUseLogisticPromoTest {
     @MockK(relaxed = true)
     private lateinit var analyticsPurchaseProtection: CheckoutAnalyticsPurchaseProtection
 
-    @MockK(relaxed = true)
+    @MockK
     private lateinit var checkoutAnalytics: CheckoutAnalyticsCourierSelection
 
-    @MockK(relaxed = true)
+    @MockK
     private lateinit var shipmentAnalyticsActionListener: ShipmentContract.AnalyticsActionListener
 
     @MockK
@@ -95,9 +93,9 @@ class ShipmentPresenterValidateUseLogisticPromoTest {
 
     private var shipmentDataConverter = ShipmentDataConverter()
 
-    private lateinit var presenter: ShipmentPresenter
+    private val gson = Gson()
 
-    private var gson = Gson()
+    private lateinit var presenter: ShipmentPresenter
 
     @Before
     fun before() {
@@ -114,98 +112,93 @@ class ShipmentPresenterValidateUseLogisticPromoTest {
     }
 
     @Test
-    fun validateUseSuccess_ShouldUpdateTickerAndButtonPromo() {
+    fun show_error_reporter_dialog() {
         // Given
-        val promoUiModel = PromoUiModel(
-                voucherOrderUiModels = listOf(
-                        PromoCheckoutVoucherOrdersItemUiModel(type = "logistic", messageUiModel = MessageUiModel(state = "green"))
-                )
-        )
-        every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(
-                ValidateUsePromoRevampUiModel(
-                        status = "OK",
-                        promoUiModel = promoUiModel
-                )
-        )
+        val data = CheckoutData().apply {
+            isError = true
+            errorReporter = ErrorReporter(eligible = true)
+        }
+        every { checkoutUseCase.createObservable(any()) } returns Observable.just(data)
+        presenter.shipmentCartItemModelList = emptyList()
+        presenter.setDataCheckoutRequestList(listOf(DataCheckoutRequest()))
 
         // When
-        presenter.doValidateuseLogisticPromo(0, "", ValidateUsePromoRequest())
+        presenter.processCheckout(false, false, false, "", "", "")
 
         // Then
-        verify {
-            view.updateButtonPromoCheckout(promoUiModel, true)
+        verify(exactly = 1) {
+            view.renderCheckoutCartErrorReporter(data)
         }
     }
 
     @Test
-    fun validateUseRedState_ShouldShowErrorAndResetCourier() {
+    fun submitHelpTicketSuccess() {
         // Given
-        val errorMessage = "error"
-        val cartString = "cart123"
-        val promoUiModel = PromoUiModel(
-                voucherOrderUiModels = listOf(
-                        PromoCheckoutVoucherOrdersItemUiModel(type = "logistic", uniqueId = cartString, messageUiModel = MessageUiModel(state = "red", text = errorMessage))
-                )
-        )
-        every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(
-                ValidateUsePromoRevampUiModel(
-                        status = "OK",
-                        promoUiModel = promoUiModel
-                )
-        )
-
-        val shipmentCartItemModel = ShipmentCartItemModel().apply {
-            this.cartString = cartString
-        }
-        presenter.shipmentCartItemModelList = listOf(shipmentCartItemModel)
+        val result = SubmitTicketResult(status = true)
+        every {
+            submitHelpTicketUseCase.createObservable(match {
+                val request = it.getObject(SubmitHelpTicketUseCase.PARAM) as SubmitHelpTicketRequest
+                request.page == SubmitHelpTicketUseCase.PAGE_CHECKOUT && request.requestUrl == CommonPurchaseApiUrl.PATH_CHECKOUT
+            })
+        } returns Observable.just(result)
 
         // When
-        val cartPosition = 0
-        presenter.doValidateuseLogisticPromo(cartPosition, "", ValidateUsePromoRequest())
+        presenter.processSubmitHelpTicket(CheckoutData().apply {
+            jsonResponse = ""
+            errorMessage = ""
+            errorReporter = ErrorReporter()
+        })
 
         // Then
-        verifySequence {
-            view.showToastError(errorMessage)
-            view.resetCourier(shipmentCartItemModel)
-            view.updateButtonPromoCheckout(promoUiModel, true)
+        verify(exactly = 1) {
+            view.renderSubmitHelpTicketSuccess(result)
         }
     }
 
     @Test
-    fun validateUseError_ShouldShowErrorAndResetCourier() {
+    fun submitHelpTicketError() {
         // Given
-        val errorMessage = "error"
-        every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.error(Throwable(errorMessage))
+        val responseErrorMessage = "something wrong"
+        every {
+            submitHelpTicketUseCase.createObservable(match {
+                val request = it.getObject(SubmitHelpTicketUseCase.PARAM) as SubmitHelpTicketRequest
+                request.page == SubmitHelpTicketUseCase.PAGE_CHECKOUT && request.requestUrl == CommonPurchaseApiUrl.PATH_CHECKOUT
+            })
+        } returns Observable.just(SubmitTicketResult(status = false, message = responseErrorMessage))
 
         // When
-        val cartPosition = 0
-        presenter.doValidateuseLogisticPromo(cartPosition, "", ValidateUsePromoRequest())
+        presenter.processSubmitHelpTicket(CheckoutData().apply {
+            jsonResponse = ""
+            errorMessage = ""
+            errorReporter = ErrorReporter()
+        })
 
         // Then
-        verifySequence {
-            checkoutAnalytics.eventClickLanjutkanTerapkanPromoError(errorMessage)
-            view.showToastError(errorMessage)
-            view.resetCourier(cartPosition)
+        verify(exactly = 1) {
+            view.showToastError(responseErrorMessage)
         }
     }
 
     @Test
-    fun validateUseErrorAkamai_ShouldShowErrorAndResetCourierAndClearPromo() {
+    fun submitHelpTicketFailed() {
         // Given
-        val errorMessage = "error"
-        every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.error(AkamaiErrorException(errorMessage))
+        every {
+            submitHelpTicketUseCase.createObservable(match {
+                val request = it.getObject(SubmitHelpTicketUseCase.PARAM) as SubmitHelpTicketRequest
+                request.page == SubmitHelpTicketUseCase.PAGE_CHECKOUT && request.requestUrl == CommonPurchaseApiUrl.PATH_CHECKOUT
+            })
+        } returns Observable.error(Exception())
 
         // When
-        val cartPosition = 0
-        presenter.doValidateuseLogisticPromo(cartPosition, "", ValidateUsePromoRequest())
+        presenter.processSubmitHelpTicket(CheckoutData().apply {
+            jsonResponse = ""
+            errorMessage = ""
+            errorReporter = ErrorReporter()
+        })
 
         // Then
-        verifySequence {
-            checkoutAnalytics.eventClickLanjutkanTerapkanPromoError(errorMessage)
-            view.showToastError(errorMessage)
-            view.resetAllCourier()
-            view.cancelAllCourierPromo()
-            view.doResetButtonPromoCheckout()
+        verify(exactly = 1) {
+            view.showToastError(any())
         }
     }
 }

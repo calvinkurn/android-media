@@ -1,24 +1,21 @@
-package com.tokopedia.checkout.view.presenters
+package com.tokopedia.checkout.view.presenter
 
 import com.google.gson.Gson
 import com.tokopedia.checkout.analytics.CheckoutAnalyticsPurchaseProtection
-import com.tokopedia.checkout.data.api.CommonPurchaseApiUrl
-import com.tokopedia.checkout.domain.model.checkout.CheckoutData
-import com.tokopedia.checkout.domain.model.checkout.ErrorReporter
 import com.tokopedia.checkout.domain.usecase.*
 import com.tokopedia.checkout.view.ShipmentContract
 import com.tokopedia.checkout.view.ShipmentPresenter
 import com.tokopedia.checkout.view.converter.ShipmentDataConverter
+import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
+import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass
 import com.tokopedia.logisticCommon.domain.usecase.EditAddressUseCase
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesResponseStateConverter
+import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesApiUseCase
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
-import com.tokopedia.checkout.data.model.request.checkout.DataCheckoutRequest
-import com.tokopedia.purchase_platform.common.feature.helpticket.data.request.SubmitHelpTicketRequest
-import com.tokopedia.purchase_platform.common.feature.helpticket.domain.model.SubmitTicketResult
 import com.tokopedia.purchase_platform.common.feature.helpticket.domain.usecase.SubmitHelpTicketUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ValidateUsePromoRevampUseCase
 import com.tokopedia.purchase_platform.common.schedulers.TestSchedulers
@@ -26,13 +23,13 @@ import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.MockKAnnotations
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
-import io.mockk.verify
+import io.mockk.verifyOrder
 import org.junit.Before
 import org.junit.Test
 import rx.Observable
 import rx.subscriptions.CompositeSubscription
 
-class ShipmentPresenterHelpTicketTest {
+class ShipmentPresenterEditAddressPinpointTest {
 
     @MockK
     private lateinit var validateUsePromoRevampUseCase: ValidateUsePromoRevampUseCase
@@ -79,7 +76,7 @@ class ShipmentPresenterHelpTicketTest {
     @MockK
     private lateinit var checkoutAnalytics: CheckoutAnalyticsCourierSelection
 
-    @MockK
+    @MockK(relaxed = true)
     private lateinit var shipmentAnalyticsActionListener: ShipmentContract.AnalyticsActionListener
 
     @MockK
@@ -93,9 +90,9 @@ class ShipmentPresenterHelpTicketTest {
 
     private var shipmentDataConverter = ShipmentDataConverter()
 
-    private val gson = Gson()
-
     private lateinit var presenter: ShipmentPresenter
+
+    private var gson = Gson()
 
     @Before
     fun before() {
@@ -112,92 +109,116 @@ class ShipmentPresenterHelpTicketTest {
     }
 
     @Test
-    fun show_error_reporter_dialog() {
+    fun pinpointSuccess_ShouldRenderEditAddressSuccess() {
         // Given
-        val data = CheckoutData().apply {
-            isError = true
-            errorReporter = ErrorReporter(eligible = true)
+        presenter.recipientAddressModel = RecipientAddressModel().apply {
+            id = "1"
+            addressName = "address 1"
+            street = "street 1"
+            postalCode = "12345"
+            destinationDistrictId = "1"
+            cityId = "1"
+            provinceId = "1"
+            recipientName = "user 1"
+            recipientPhoneNumber = "1234567890"
         }
-        every { checkoutUseCase.createObservable(any()) } returns Observable.just(data)
-        presenter.shipmentCartItemModelList = emptyList()
-        presenter.setDataCheckoutRequestList(listOf(DataCheckoutRequest()))
+
+        val latitude = "123"
+        val longitude = "456"
+
+        every { editAddressUseCase.createObservable(any()) } returns Observable.just("""
+            {
+                "data": {
+                    "is_success": 1
+                }
+            }
+        """.trimIndent())
 
         // When
-        presenter.processCheckout(false, false, false, "", "", "")
+        presenter.editAddressPinpoint(latitude, longitude, ShipmentCartItemModel(), LocationPass())
 
         // Then
-        verify(exactly = 1) {
-            view.renderCheckoutCartErrorReporter(data)
-        }
-    }
-
-    @Test
-    fun submitHelpTicketSuccess() {
-        // Given
-        val result = SubmitTicketResult(status = true)
-        every {
-            submitHelpTicketUseCase.createObservable(match {
-                val request = it.getObject(SubmitHelpTicketUseCase.PARAM) as SubmitHelpTicketRequest
-                request.page == SubmitHelpTicketUseCase.PAGE_CHECKOUT && request.requestUrl == CommonPurchaseApiUrl.PATH_CHECKOUT
-            })
-        } returns Observable.just(result)
-
-        // When
-        presenter.processSubmitHelpTicket(CheckoutData().apply {
-            jsonResponse = ""
-            errorMessage = ""
-            errorReporter = ErrorReporter()
-        })
-
-        // Then
-        verify(exactly = 1) {
-            view.renderSubmitHelpTicketSuccess(result)
+        verifyOrder {
+            view.showLoading()
+            view.setHasRunningApiCall(true)
+            view.setHasRunningApiCall(false)
+            view.hideLoading()
+            view.renderEditAddressSuccess(latitude, longitude)
         }
     }
 
     @Test
-    fun submitHelpTicketError() {
+    fun pinpointFailed_ShouldNavigateToSetPinpointWithErrorMessage() {
         // Given
-        val responseErrorMessage = "something wrong"
-        every {
-            submitHelpTicketUseCase.createObservable(match {
-                val request = it.getObject(SubmitHelpTicketUseCase.PARAM) as SubmitHelpTicketRequest
-                request.page == SubmitHelpTicketUseCase.PAGE_CHECKOUT && request.requestUrl == CommonPurchaseApiUrl.PATH_CHECKOUT
-            })
-        } returns Observable.just(SubmitTicketResult(status = false, message = responseErrorMessage))
+        presenter.recipientAddressModel = RecipientAddressModel().apply {
+            id = "1"
+            addressName = "address 1"
+            street = "street 1"
+            postalCode = "12345"
+            destinationDistrictId = "1"
+            cityId = "1"
+            provinceId = "1"
+            recipientName = "user 1"
+            recipientPhoneNumber = "1234567890"
+        }
+
+        val latitude = "123"
+        val longitude = "456"
+        val locationPass = LocationPass()
+
+        val errorMessage = "error"
+
+        every { editAddressUseCase.createObservable(any()) } returns Observable.just("""
+            {
+                "data": {
+                    "is_success": 0
+                },
+                "message_error": ["$errorMessage"]
+            }
+        """.trimIndent())
 
         // When
-        presenter.processSubmitHelpTicket(CheckoutData().apply {
-            jsonResponse = ""
-            errorMessage = ""
-            errorReporter = ErrorReporter()
-        })
+        presenter.editAddressPinpoint(latitude, longitude, ShipmentCartItemModel(), locationPass)
 
         // Then
-        verify(exactly = 1) {
-            view.showToastError(responseErrorMessage)
+        verifyOrder {
+            view.showLoading()
+            view.setHasRunningApiCall(true)
+            view.setHasRunningApiCall(false)
+            view.hideLoading()
+            view.navigateToSetPinpoint(errorMessage, locationPass)
         }
     }
 
     @Test
-    fun submitHelpTicketFailed() {
+    fun pinpointError_ShouldShowToastError() {
         // Given
-        every {
-            submitHelpTicketUseCase.createObservable(match {
-                val request = it.getObject(SubmitHelpTicketUseCase.PARAM) as SubmitHelpTicketRequest
-                request.page == SubmitHelpTicketUseCase.PAGE_CHECKOUT && request.requestUrl == CommonPurchaseApiUrl.PATH_CHECKOUT
-            })
-        } returns Observable.error(Exception())
+        presenter.recipientAddressModel = RecipientAddressModel().apply {
+            id = "1"
+            addressName = "address 1"
+            street = "street 1"
+            postalCode = "12345"
+            destinationDistrictId = "1"
+            cityId = "1"
+            provinceId = "1"
+            recipientName = "user 1"
+            recipientPhoneNumber = "1234567890"
+        }
+
+        val latitude = "123"
+        val longitude = "456"
+
+        every { editAddressUseCase.createObservable(any()) } returns Observable.error(Throwable())
 
         // When
-        presenter.processSubmitHelpTicket(CheckoutData().apply {
-            jsonResponse = ""
-            errorMessage = ""
-            errorReporter = ErrorReporter()
-        })
+        presenter.editAddressPinpoint(latitude, longitude, ShipmentCartItemModel(), LocationPass())
 
         // Then
-        verify(exactly = 1) {
+        verifyOrder {
+            view.showLoading()
+            view.setHasRunningApiCall(true)
+            view.setHasRunningApiCall(false)
+            view.hideLoading()
             view.showToastError(any())
         }
     }

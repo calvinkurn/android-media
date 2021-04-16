@@ -1,9 +1,6 @@
-package com.tokopedia.checkout.view.presenters
+package com.tokopedia.checkout.view.presenter
 
-import android.app.Activity
 import com.google.gson.Gson
-import com.tokopedia.abstraction.common.network.exception.ResponseErrorException
-import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.checkout.analytics.CheckoutAnalyticsPurchaseProtection
 import com.tokopedia.checkout.domain.usecase.*
@@ -27,14 +24,17 @@ import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateu
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
 import com.tokopedia.purchase_platform.common.schedulers.TestSchedulers
 import com.tokopedia.user.session.UserSessionInterface
-import io.mockk.*
+import io.mockk.MockKAnnotations
+import io.mockk.every
 import io.mockk.impl.annotations.MockK
+import io.mockk.verify
+import io.mockk.verifySequence
 import org.junit.Before
 import org.junit.Test
 import rx.Observable
 import rx.subscriptions.CompositeSubscription
 
-class ShipmentPresenterValidateUseCourierPromoTest {
+class ShipmentPresenterValidateUseLogisticPromoTest {
 
     @MockK
     private lateinit var validateUsePromoRevampUseCase: ValidateUsePromoRevampUseCase
@@ -114,130 +114,98 @@ class ShipmentPresenterValidateUseCourierPromoTest {
     }
 
     @Test
-    fun `WHEN validate use success THEN should render promo from courier`() {
+    fun validateUseSuccess_ShouldUpdateTickerAndButtonPromo() {
         // Given
-        val validateUseModel = ValidateUsePromoRevampUiModel(
-                status = "OK",
-                promoUiModel = PromoUiModel(
-                        voucherOrderUiModels = listOf(
-                                PromoCheckoutVoucherOrdersItemUiModel(type = "logistic", messageUiModel = MessageUiModel(state = "green"))
-                        )
+        val promoUiModel = PromoUiModel(
+                voucherOrderUiModels = listOf(
+                        PromoCheckoutVoucherOrdersItemUiModel(type = "logistic", messageUiModel = MessageUiModel(state = "green"))
                 )
         )
-        val position = 0
-        val noToast = true
-        every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(validateUseModel)
+        every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(
+                ValidateUsePromoRevampUiModel(
+                        status = "OK",
+                        promoUiModel = promoUiModel
+                )
+        )
 
         // When
-        presenter.processCheckPromoCheckoutCodeFromSelectedCourier("code", position, noToast)
+        presenter.doValidateuseLogisticPromo(0, "", ValidateUsePromoRequest())
 
         // Then
         verify {
-            view.renderPromoCheckoutFromCourierSuccess(validateUseModel, position, noToast)
+            view.updateButtonPromoCheckout(promoUiModel, true)
         }
     }
 
     @Test
-    fun `WHEN validate use get red state THEN should  show error and reset courier`() {
+    fun validateUseRedState_ShouldShowErrorAndResetCourier() {
         // Given
         val errorMessage = "error"
         val cartString = "cart123"
-        val validateUseModel = ValidateUsePromoRevampUiModel(
-                status = "OK",
-                promoUiModel = PromoUiModel(
-                        voucherOrderUiModels = listOf(
-                                PromoCheckoutVoucherOrdersItemUiModel(type = "logistic", uniqueId = cartString, messageUiModel = MessageUiModel(state = "red", text = errorMessage))
-                        )
+        val promoUiModel = PromoUiModel(
+                voucherOrderUiModels = listOf(
+                        PromoCheckoutVoucherOrdersItemUiModel(type = "logistic", uniqueId = cartString, messageUiModel = MessageUiModel(state = "red", text = errorMessage))
                 )
         )
-        val position = 0
-        val noToast = true
+        every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(
+                ValidateUsePromoRevampUiModel(
+                        status = "OK",
+                        promoUiModel = promoUiModel
+                )
+        )
 
         val shipmentCartItemModel = ShipmentCartItemModel().apply {
             this.cartString = cartString
         }
         presenter.shipmentCartItemModelList = listOf(shipmentCartItemModel)
-        every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(validateUseModel)
-        every { view.generateValidateUsePromoRequest() } returns ValidateUsePromoRequest()
 
         // When
-        presenter.processCheckPromoCheckoutCodeFromSelectedCourier("code", position, noToast)
+        val cartPosition = 0
+        presenter.doValidateuseLogisticPromo(cartPosition, "", ValidateUsePromoRequest())
 
         // Then
         verifySequence {
-            view.generateValidateUsePromoRequest()
             view.showToastError(errorMessage)
             view.resetCourier(shipmentCartItemModel)
-            view.renderPromoCheckoutFromCourierSuccess(validateUseModel, position, noToast)
+            view.updateButtonPromoCheckout(promoUiModel, true)
         }
     }
 
     @Test
-    fun `WHEN validate use failed THEN should render error`() {
+    fun validateUseError_ShouldShowErrorAndResetCourier() {
         // Given
         val errorMessage = "error"
-        val validateUseModel = ValidateUsePromoRevampUiModel(
-                status = "ERROR",
-                message = listOf(errorMessage)
-        )
-        val position = 0
-        val noToast = true
-        every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(validateUseModel)
+        every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.error(Throwable(errorMessage))
 
         // When
-        presenter.processCheckPromoCheckoutCodeFromSelectedCourier("code", position, noToast)
-
-        // Then
-        verify {
-            view.renderErrorCheckPromoShipmentData(errorMessage)
-        }
-    }
-
-    @Test
-    fun `WHEN validate use failed with exception THEN should show error`() {
-        // Given
-        val errorMessage = "error"
-        val position = 0
-        val noToast = true
-
-        val exception = ResponseErrorException()
-        val mockContext = mockk<Activity>()
-        mockkStatic(ErrorHandler::class)
-        every { view.activityContext } returns mockContext
-        every { ErrorHandler.getErrorMessage(mockContext, exception) } returns errorMessage
-        every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.error(exception)
-
-        // When
-        presenter.processCheckPromoCheckoutCodeFromSelectedCourier("code", position, noToast)
-
-        // Then
-        verify {
-            view.showToastError(errorMessage)
-        }
-    }
-
-    @Test
-    fun `WHEN validate use failed with akamai exception THEN should show error`() {
-        // Given
-        val errorMessage = "error"
-        val position = 0
-        val noToast = true
-
-        val exception = AkamaiErrorException(errorMessage)
-        every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.error(exception)
-        every { view.generateValidateUsePromoRequest() } returns ValidateUsePromoRequest()
-
-        // When
-        presenter.processCheckPromoCheckoutCodeFromSelectedCourier("code", position, noToast)
+        val cartPosition = 0
+        presenter.doValidateuseLogisticPromo(cartPosition, "", ValidateUsePromoRequest())
 
         // Then
         verifySequence {
-            view.generateValidateUsePromoRequest()
+            checkoutAnalytics.eventClickLanjutkanTerapkanPromoError(errorMessage)
+            view.showToastError(errorMessage)
+            view.resetCourier(cartPosition)
+        }
+    }
+
+    @Test
+    fun validateUseErrorAkamai_ShouldShowErrorAndResetCourierAndClearPromo() {
+        // Given
+        val errorMessage = "error"
+        every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.error(AkamaiErrorException(errorMessage))
+
+        // When
+        val cartPosition = 0
+        presenter.doValidateuseLogisticPromo(cartPosition, "", ValidateUsePromoRequest())
+
+        // Then
+        verifySequence {
+            checkoutAnalytics.eventClickLanjutkanTerapkanPromoError(errorMessage)
             view.showToastError(errorMessage)
             view.resetAllCourier()
             view.cancelAllCourierPromo()
             view.doResetButtonPromoCheckout()
         }
     }
-
 }

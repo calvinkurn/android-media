@@ -1,4 +1,4 @@
-package com.tokopedia.checkout.view.presenters
+package com.tokopedia.checkout.view.presenter
 
 import android.app.Activity
 import com.google.gson.Gson

@@ -1,4 +1,4 @@
-package com.tokopedia.checkout.view.presenters
+package com.tokopedia.checkout.view.presenter
 
 import com.google.gson.Gson
 import com.tokopedia.abstraction.common.network.exception.ResponseErrorException
