@@ -155,17 +155,13 @@ class FlightSearchActivityTest {
     @Test
     fun promoChipsOnClicked(){
         Thread.sleep(2000)
-        if (getPromoChipsItemCount() > 0) {
-            onView(withId(R.id.recycler_view_promo_chips)).perform(RecyclerViewActions
-                    .actionOnItemAtPosition<FlightPromoChipsViewHolder>(0, click()))
-            assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_PROMO_CHIPS),
-                    hasAllSuccess())
-        }
-    }
-
-    private fun getPromoChipsItemCount(): Int {
-        val recyclerView: RecyclerView = activityRule.activity.findViewById(R.id.recycler_view_promo_chips) as RecyclerView
-        return recyclerView.adapter?.itemCount ?: 0
+        val viewInteraction = onView(AllOf.allOf(
+                AllOf.allOf(withId(R.id.recycler_view_promo_chips), withParent(withId(R.id.widget_flight_promo_chips)),
+                        isDisplayed()))).check(matches(isDisplayed()))
+        viewInteraction.perform(RecyclerViewActions
+                .actionOnItemAtPosition<FlightPromoChipsViewHolder>(0, click()))
+        assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_PROMO_CHIPS),
+                hasAllSuccess())
     }
 
     private fun getJourneyItemCount(): Int {
