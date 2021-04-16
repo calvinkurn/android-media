@@ -259,6 +259,34 @@ class TopchatRoomBuyerAttachProductTest : BaseBuyerTopchatRoomTest() {
         assertSrwContentIsHidden()
     }
 
+    // TODO: show template chat if product attachment srw closed
+    // TODO: template chat remind hidden if use click send button
+
+    @Test
+    fun template_chat_shown_if_srw_load_finish_first_with_no_question() {
+        // Given
+        val templateChats = listOf(
+                "Hi barang ini ready gk?", "Lorem Ipsum"
+        )
+        val templateResponse = generateTemplateResponse(templates = templateChats)
+        val templateDelay = 500L
+        setupChatRoomActivity {
+            putProductAttachmentIntent(it)
+        }
+        getChatUseCase.response = firstPageChatAsBuyer
+        chatAttachmentUseCase.response = chatAttachmentResponse
+        chatSrwUseCase.response = chatSrwResponse.hasQuestion(false)
+        getTemplateChatRoomUseCase.setResponse(templateResponse, templateDelay)
+        inflateTestFragment()
+
+        // Then
+        // Simulate template chat load last after SRW
+        waitForIt(templateDelay + 10)
+
+        // Then
+        assertSrwContentIsHidden()
+    }
+
     @Test
     fun srw_no_question_not_displayed_if_buyer_attach_from_attach_product() {
         // Given
@@ -382,8 +410,6 @@ class TopchatRoomBuyerAttachProductTest : BaseBuyerTopchatRoomTest() {
         // Then
         assertSrwContentIsHidden()
     }
-
-    // TODO: add test if srw load success first then template
 
     private fun putProductAttachmentIntent(intent: Intent) {
         val productPreviews = listOf(productPreview)
