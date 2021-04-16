@@ -21,7 +21,7 @@
         android:id="@+id/info_value_text_view"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_gravity="end|right"
+        android:layout_gravity="end"
         android:layout_weight="0.8"
         android:gravity="end"
         android:textColor="@color/Unify_N700_68"

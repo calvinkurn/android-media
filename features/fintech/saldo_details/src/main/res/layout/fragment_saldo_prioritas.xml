@@ -41,7 +41,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
             android:padding="@dimen/unify_space_4" />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -98,7 +97,6 @@
                     android:layout_width="@dimen/unify_space_16"
                     android:layout_height="@dimen/unify_space_16"
                     android:layout_alignParentEnd="true"
-                    android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
                     android:layout_gravity="end"
                     android:contentDescription="Arrow Icon"
@@ -150,7 +148,7 @@
             android:layout_below="@+id/sp_list_separator"
             android:clipToPadding="false"
             android:divider="@android:color/transparent"
-            android:gravity="end|right"
+            android:gravity="end"
             android:longClickable="false"
             android:orientation="horizontal"
             android:padding="@dimen/unify_space_4"

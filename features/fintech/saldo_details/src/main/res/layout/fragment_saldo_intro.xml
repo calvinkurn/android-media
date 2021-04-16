@@ -21,7 +21,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/sd_dp_20"
-                android:gravity="left|start"
+                android:gravity="start"
                 android:text="@string/saldo_intro_title_refund"
                 android:textColor="@color/Unify_N700_68"
                 app:typographyWeight="bold"
@@ -33,7 +33,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/sd_dp_10"
-                android:gravity="left|start"
+                android:gravity="start"
                 app:typographyType="body_2"
                 android:textColor="@color/Unify_N700_68"
                 android:text="@string/saldo_intro_description_refund" />
@@ -64,7 +64,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/sd_dp_10"
                 android:drawablePadding="@dimen/unify_space_8"
-                android:gravity="left|start"
+                android:gravity="start"
                 android:text="@string/disbursement_fund"
                 app:typographyType="body_2"
                 android:textColor="@color/Unify_N700_68"/>
@@ -78,7 +78,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/sd_dp_20"
-                android:gravity="left|start"
+                android:gravity="start"
                 android:text="@string/saldo_intro_title_seller"
                 android:textColor="@color/Unify_N700_68"
                 app:typographyWeight="bold"
@@ -88,7 +88,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/sd_dp_10"
-                android:gravity="left|start"
+                android:gravity="start"
                 android:text="@string/saldo_intro_description_seller"
                 app:typographyType="body_2"
                 android:textColor="@color/Unify_N700_68"/>
@@ -119,7 +119,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/sd_dp_14"
                 android:drawablePadding="@dimen/unify_space_8"
-                android:gravity="left|start"
+                android:gravity="start"
                 android:text="@string/disbursement_priority_balance"
                 app:typographyType="body_2"
                 android:textColor="@color/Unify_N700_68"/>

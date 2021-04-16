@@ -37,7 +37,6 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/transaction_heading"
             android:layout_alignParentStart="true"
-            android:layout_alignParentLeft="true"
             android:layout_marginTop="@dimen/sd_dp_10"
             android:textColor="@color/Unify_N700_32"
             app:typographyType="body_3"

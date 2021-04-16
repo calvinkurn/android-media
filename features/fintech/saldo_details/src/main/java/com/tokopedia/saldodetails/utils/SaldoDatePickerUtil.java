@@ -6,9 +6,7 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.view.Window;
 import android.widget.DatePicker;
-
 import com.tokopedia.saldodetails.R;
-
 import java.util.Calendar;
 
 public class SaldoDatePickerUtil {
