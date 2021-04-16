@@ -149,7 +149,7 @@
       "event": "select_content",
       "eventAction": "click banner dynamic channel left carousel",
       "sessionIris" : "{{.*}}",
-      "eventLabel": "{{.*}}",,
+      "eventLabel": "{{.*}}",
       "campaignCode" : "{{.*}}",
       "categoryId" : "{{.*}}"
     },
