@@ -13,6 +13,9 @@ import com.tokopedia.sellerhome.common.viewmodel.NonNullLiveData
 import com.tokopedia.seller.menu.common.domain.usecase.GetAllShopInfoUseCase
 import com.tokopedia.seller.menu.common.view.uimodel.base.partialresponse.PartialSettingSuccessInfoType
 import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.SettingShopInfoUiModel
+import com.tokopedia.sellerhome.domain.mapper.ShopOperationalHourMapper
+import com.tokopedia.sellerhome.domain.usecase.GetShopOperationalHourUseCase
+import com.tokopedia.sellerhome.settings.view.uimodel.menusetting.ShopOperationalHourUiModel
 import com.tokopedia.shop.common.domain.interactor.GetShopFreeShippingInfoUseCase
 import com.tokopedia.shop.common.domain.interactor.GetShopFreeShippingStatusUseCase
 import com.tokopedia.usecase.coroutines.Fail
@@ -26,6 +29,7 @@ class OtherMenuViewModel @Inject constructor(
     private val dispatcher: CoroutineDispatchers,
     private val getAllShopInfoUseCase: GetAllShopInfoUseCase,
     private val getShopFreeShippingInfoUseCase: GetShopFreeShippingInfoUseCase,
+    private val getShopOperationalHourUseCase: GetShopOperationalHourUseCase,
     private val userSession: UserSessionInterface,
     private val remoteConfig: FirebaseRemoteConfigImpl
 ): BaseViewModel(dispatcher.main) {
@@ -40,6 +44,7 @@ class OtherMenuViewModel @Inject constructor(
     private val _isToasterAlreadyShown = NonNullLiveData(false)
     private val _isStatusBarInitialState = MutableLiveData<Boolean>().apply { value = true }
     private val _isFreeShippingActive = MutableLiveData<Boolean>()
+    private val _operationalHour = MutableLiveData<Result<ShopOperationalHourUiModel>>()
 
     val settingShopInfoLiveData: LiveData<Result<SettingShopInfoUiModel>>
         get() = _settingShopInfoLiveData
@@ -49,6 +54,8 @@ class OtherMenuViewModel @Inject constructor(
         get() = _isToasterAlreadyShown
     val isFreeShippingActive: LiveData<Boolean>
         get() = _isFreeShippingActive
+    val operationalHour: LiveData<Result<ShopOperationalHourUiModel>>
+        get() = _operationalHour
 
     fun getAllSettingShopInfo(isToasterRetry: Boolean = false) {
         if (isToasterRetry) {
@@ -78,6 +85,18 @@ class OtherMenuViewModel @Inject constructor(
 
             _isFreeShippingActive.value = isFreeShippingActive
         }){}
+    }
+
+    fun getOperationalHour() {
+        launchCatchError(block = {
+            val data = withContext(dispatcher.io) {
+                val response = getShopOperationalHourUseCase.execute(userSession.shopId)
+                ShopOperationalHourMapper.mapTopShopOperationalHour(response)
+            }
+            _operationalHour.value = Success(data)
+        }) {
+            _operationalHour.value = Fail(it)
+        }
     }
 
     private fun getAllShopInfoData() {

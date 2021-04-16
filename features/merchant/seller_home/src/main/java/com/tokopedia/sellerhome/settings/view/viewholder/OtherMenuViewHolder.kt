@@ -26,7 +26,9 @@ import com.tokopedia.seller.menu.common.view.uimodel.base.ShopType
 import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.*
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.settings.analytics.SettingFreeShippingTracker
+import com.tokopedia.sellerhome.settings.view.uimodel.menusetting.ShopOperationalHourUiModel
 import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.LocalLoad
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
@@ -169,6 +171,21 @@ class OtherMenuViewHolder(private val itemView: View,
 
     fun hideFreeShippingLayout() {
         itemView.shopInfoLayout.findViewById<FrameLayout>(R.id.freeShippingLayout)?.hide()
+    }
+
+    fun showOperationalHourLayout(data: ShopOperationalHourUiModel) {
+        itemView.findViewById<View>(R.id.shopOperationalHour).run {
+            val shopStatus = itemView.context.getString(data.status)
+            val operationalHour = itemView.context.getString(
+                R.string.settings_operational_hour_format, data.startTime, data.endTime)
+
+            findViewById<Typography>(R.id.textOperationalHour).text = operationalHour
+            findViewById<Label>(R.id.labelShopStatus).apply {
+                text = shopStatus
+                setLabelType(data.labelType)
+            }
+            visibility = View.VISIBLE
+        }
     }
 
     private fun setDotVisibility(shopFollowers: Long) {

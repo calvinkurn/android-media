@@ -156,7 +156,6 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
         setupOffset()
         setupView(view)
         observeLiveData()
-        observeFreeShippingStatus()
         context?.let { UpdateShopActiveService.startService(it) }
     }
 
@@ -295,6 +294,7 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
                     is Success -> {
                         showSettingShopInfoState(result.data)
                         otherMenuViewModel.getFreeShippingStatus()
+                        otherMenuViewModel.getOperationalHour()
                     }
                     is Fail -> {
                         SellerHomeErrorHandler.logExceptionToCrashlytics(result.throwable, ERROR_GET_SETTING_SHOP_INFO)
@@ -306,6 +306,8 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
                 canShowErrorToaster = !isToasterAlreadyShown
             })
         }
+        observeFreeShippingStatus()
+        observeShopOperationalHour()
     }
 
     private fun observeFreeShippingStatus() {
@@ -316,6 +318,14 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
                 otherMenuViewHolder?.hideFreeShippingLayout()
             }
         }
+    }
+
+    private fun observeShopOperationalHour() {
+        otherMenuViewModel.operationalHour.observe(viewLifecycleOwner, Observer {
+            if(it is Success) {
+                otherMenuViewHolder?.showOperationalHourLayout(it.data)
+            }
+        })
     }
 
     private fun populateAdapterData() {
