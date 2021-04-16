@@ -154,7 +154,7 @@ class FlightSearchActivityTest {
 
     @Test
     fun promoChipsOnClicked(){
-        Thread.sleep(2000)
+        Thread.sleep(5000)
         val viewInteraction = onView(AllOf.allOf(
                 AllOf.allOf(withId(R.id.recycler_view_promo_chips), withParent(withId(R.id.widget_flight_promo_chips)),
                         isDisplayed()))).check(matches(isDisplayed()))
