@@ -16,7 +16,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.saldodetails.R
 import com.tokopedia.saldodetails.di.SaldoDetailsComponent
 import com.tokopedia.saldodetails.di.SaldoDetailsComponentInstance
 import com.tokopedia.saldodetails.view.fragment.SaldoDepositFragment
@@ -108,11 +107,11 @@ class SaldoDepositActivity : BaseSimpleActivity(), HasComponent<SaldoDetailsComp
         addAutoWithdrawalSettingIcon(isSeller)
     }
 
-    private fun addAutoWithdrawalSettingIcon(isSeller: Boolean) {
+    private fun addAutoWithdrawalSettingIcon(isSeller : Boolean){
         if (isSeller) {
             val isAutoWithdrawalPageEnable = FirebaseRemoteConfigImpl(this)
                     .getBoolean(FLAG_APP_SALDO_AUTO_WITHDRAWAL, false)
-            if(isAutoWithdrawalPageEnable && isAutoWithRollenceActive()) {
+            if (isAutoWithdrawalPageEnable && isAutoWithRollenceActive()) {
                 saldoToolbar.apply {
                     addRightIcon(com.tokopedia.saldodetails.R.drawable.saldo_ic_setting)
                     rightIcons?.let {

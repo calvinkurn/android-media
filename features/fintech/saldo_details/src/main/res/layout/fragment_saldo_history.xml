@@ -51,6 +51,8 @@
                 android:layout_width="@dimen/unify_space_24"
                 android:layout_height="@dimen/unify_space_24"
                 android:layout_marginTop="@dimen/unify_space_8"
+                app:icon_color_light_enable="@color/Unify_N200"
+                app:icon_color_light_disabled="@color/Unify_N200"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/start_date_heading_tv"
                 app:icon_name="CALENDAR"/>
@@ -111,6 +113,8 @@
                 android:layout_width="@dimen/unify_space_24"
                 android:layout_height="@dimen/unify_space_24"
                 android:layout_marginTop="@dimen/unify_space_8"
+                app:icon_color_light_enable="@color/Unify_N200"
+                app:icon_color_light_disabled="@color/Unify_N200"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/end_date_heading_tv"
                 app:icon_name="CALENDAR"/>
@@ -135,7 +139,7 @@
                 android:layout_marginTop="@dimen/unify_space_8"
                 app:layout_constraintTop_toBottomOf="@+id/end_date_calendar_icon"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="@+id/start_date_tv"/>
+                app:layout_constraintEnd_toEndOf="@+id/end_date_tv"/>
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

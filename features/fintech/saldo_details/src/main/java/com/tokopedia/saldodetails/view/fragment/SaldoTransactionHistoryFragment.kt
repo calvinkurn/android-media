@@ -15,7 +15,6 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.date.util.SaldoDatePickerUtil
 import com.tokopedia.saldodetails.adapter.SaldoDepositAdapter
 import com.tokopedia.saldodetails.adapter.SaldoDetailTransactionFactory
 import com.tokopedia.saldodetails.adapter.SaldoHistoryPagerAdapter
@@ -24,6 +23,7 @@ import com.tokopedia.saldodetails.di.SaldoDetailsComponent
 import com.tokopedia.saldodetails.utils.ErrorType
 import com.tokopedia.saldodetails.utils.IN_VALID_DATE_ERROR
 import com.tokopedia.saldodetails.utils.NORMAL
+import com.tokopedia.saldodetails.utils.SaldoDatePickerUtil
 import com.tokopedia.saldodetails.view.ui.HeightWrappingViewPager
 import com.tokopedia.saldodetails.view.ui.SaldoHistoryTabItem
 import com.tokopedia.saldodetails.viewmodels.SaldoHistoryViewModel
