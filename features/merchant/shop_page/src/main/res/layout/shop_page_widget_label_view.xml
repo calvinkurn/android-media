@@ -6,7 +6,7 @@
     android:layout_height="wrap_content"
     android:layout_gravity="center_vertical">
 
-    <ImageView
+    <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/image_view"
         android:layout_width="@dimen/dp_24"
         android:layout_height="@dimen/dp_24"
@@ -18,7 +18,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/text_view_title"/>
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/text_view_title"
         style="@style/TextView.Title"
         android:layout_width="0dp"
@@ -36,7 +36,7 @@
         app:layout_constraintBottom_toTopOf="@+id/text_view_sub_title"
         app:layout_constraintEnd_toStartOf="@+id/text_view_content"/>
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/text_view_sub_title"
         style="@style/TextView.Micro.BlackDisabled"
         android:layout_width="0dp"
@@ -49,7 +49,7 @@
         app:layout_constraintEnd_toEndOf="@+id/text_view_title"
         app:layout_constraintBottom_toBottomOf="parent"/>
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/text_view_content"
         style="@style/TextView.Title.BlackSecondary"
         android:maxLines="1"
@@ -64,7 +64,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"/>
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/text_view_badge"
         android:layout_width="@dimen/dp_24"
         android:layout_height="@dimen/dp_24"
@@ -84,7 +84,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"/>
 
-    <ImageView
+    <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/image_arrow"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
