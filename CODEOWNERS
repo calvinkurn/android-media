@@ -163,6 +163,8 @@
 /features/ordermanagement/snapshot/                     @tokopedia/android-minionbob-dev
 
 /features/media/mediauploader/			                @tokopedia/android-minionkevin-dev
+/features/media/media-common/			                @tokopedia/android-minionkevin-dev
+/features/media/medialoader/                            @tokopedia/android-minionkevin-dev
 
 /features/user/chatbot/                         		@tokopedia/android-minionskywalker-dev
 /features/user/chatbot_no_op/                   		@tokopedia/android-minionkevin-dev
@@ -208,8 +210,6 @@
 /features/user/profilecommon/                           @tokopedia/android-minionkevin-dev
 /features/user/additional_check/                        @tokopedia/android-minionkevin-dev
 /features/user/home_account/                            @tokopedia/android-minionkevin-dev
-/features/user/media-common/			                @tokopedia/android-minionkevin-dev
-/features/user/medialoader/			                    @tokopedia/android-minionkevin-dev
 
 /features/operational/contact_us        				@tokopedia/android-minionskywalker-dev
 /features/operational/csat_rating        				@tokopedia/android-minionskywalker-dev
