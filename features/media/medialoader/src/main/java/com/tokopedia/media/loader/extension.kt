@@ -52,16 +52,16 @@ inline fun ImageView.loadImageWithoutPlaceholder(
 inline fun ImageView.loadImageCircle(
         url: String?,
         crossinline properties: Properties.() -> Unit = {}
-) = call(url, Properties()
-        .apply(properties)
-        .isCircular(true)
+) = call(url, Properties().apply(properties).also {
+    it.isCircular(true)
 
-        /*
-         * loadImageCircle() extension must be haven't placeholder,
-         * the loader effect should be handled by team by
-         * using own shimmering.
-         * */
-        .setPlaceHolder(-1))
+    /*
+     * loadImageCircle() extension must be haven't placeholder,
+     * the loader effect should be handled by team by
+     * using own shimmering.
+     * */
+    it.setPlaceHolder(-1)
+})
 
 fun ImageView.loadImageRounded(
         resource: Int,
