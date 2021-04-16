@@ -2,8 +2,6 @@ package com.tokopedia.review.common.util
 
 import android.content.Context
 import android.graphics.Color
-import android.os.Build
-import android.text.Spanned
 import android.text.method.LinkMovementMethod
 import android.util.TypedValue
 import android.widget.ListView
