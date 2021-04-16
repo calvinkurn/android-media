@@ -1,10 +1,7 @@
 package com.tokopedia.loginregister.seamlesslogin.di
 
-import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.loginregister.common.di.LoginRegisterComponent
 import com.tokopedia.loginregister.seamlesslogin.RemoteService
-import com.tokopedia.sessioncommon.di.SessionCommonScope
-import com.tokopedia.sessioncommon.di.SessionModule
 import dagger.Component
 
 /**

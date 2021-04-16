@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.discovery.common.Mapper
 import com.tokopedia.discovery.common.constants.SearchConstant
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.search.di.scope.SearchScope
 import com.tokopedia.search.result.domain.usecase.getdynamicfilter.GetDynamicFilterCoroutineUseCaseModule
