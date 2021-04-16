@@ -66,6 +66,7 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.junit
     testImplementation rootProject.ext.miscDependencies.coroutineTest
     testImplementation rootProject.ext.miscDependencies.coroutineCore
+    testImplementation project(rootProject.ext.libraries.unitTest)
 
 }
 
