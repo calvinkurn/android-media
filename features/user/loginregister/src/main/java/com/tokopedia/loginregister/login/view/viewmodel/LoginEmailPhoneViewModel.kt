@@ -173,8 +173,9 @@ class LoginEmailPhoneViewModel @Inject constructor(
 
     fun activateUser(email: String, validateToken: String) {
         launchCatchError(coroutineContext, {
-            val params = activateUserUseCase.getParams(email, validateToken)
-            mutableActivateResponse.value = Success(activateUserUseCase.getData(params).data)
+            activateUserUseCase.setParams(email, validateToken)
+            val result = activateUserUseCase.executeOnBackground()
+            mutableActivateResponse.value = Success(result.data)
         }, {
             mutableActivateResponse.value = Fail(it)
         })

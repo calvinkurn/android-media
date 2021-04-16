@@ -204,16 +204,13 @@ class LoginEmailPhoneViewModelTest {
 
     @Test
     fun `on Success Activate User`() {
-        val params = mapOf("email" to "asd")
-
         /* When */
         val responseData = ActivateUserData(isSuccess = 1, accessToken = "asd", refreshToken = "fffaa", tokenType = "Bearer")
         val response = ActivateUserPojo(data = responseData)
 
-        coEvery { activateUserUseCase.getParams(any(), any()) } returns params
-        coEvery { activateUserUseCase.getData(any()) } returns response
+        coEvery { activateUserUseCase.executeOnBackground() } returns response
 
-        viewModel.activateUser("", "")
+        viewModel.activateUser(email, "asd")
 
         /* Then */
         verify { activateUserObserver.onChanged(Success(responseData)) }
@@ -221,7 +218,7 @@ class LoginEmailPhoneViewModelTest {
 
     @Test
     fun `on Exception Throw during Activate User`() {
-        coEvery { activateUserUseCase.getData(any()) } throws throwable
+        coEvery { activateUserUseCase.executeOnBackground() } throws throwable
 
         viewModel.activateUser("", "")
 
@@ -457,7 +454,9 @@ class LoginEmailPhoneViewModelTest {
         viewModel.loginEmail(email, password)
 
         /* Then */
-        verify { goToActivationPage.onChanged(email) }
+        verify {
+            goToActivationPage.onChanged(email)
+        }
     }
 
     @Test
