@@ -383,6 +383,8 @@ class TopchatRoomBuyerAttachProductTest : BaseBuyerTopchatRoomTest() {
         assertSrwContentIsHidden()
     }
 
+    // TODO: add test if srw load success first then template
+
     private fun putProductAttachmentIntent(intent: Intent) {
         val productPreviews = listOf(productPreview)
         val stringProductPreviews = CommonUtil.toJson(productPreviews)
