@@ -8,13 +8,13 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import com.tokopedia.topchat.AndroidFileUtil
 import com.tokopedia.topchat.R
-import com.tokopedia.topchat.chatroom.view.activity.base.TopchatRoomTest
+import com.tokopedia.topchat.chatroom.view.activity.base.BaseBuyerTopchatRoomTest
 import com.tokopedia.topchat.matchers.withRecyclerView
 import com.tokopedia.topchat.stub.chatroom.view.presenter.TopChatRoomPresenterStub
 import com.tokopedia.websocket.WebSocketResponse
 import org.junit.Test
 
-class TopchatRoomBuyerWebSocketTest : TopchatRoomTest() {
+class TopchatRoomBuyerWebSocketTest : BaseBuyerTopchatRoomTest() {
 
     private var wsResponseText: WebSocketResponse = AndroidFileUtil.parse(
             "ws_response_text.json",
