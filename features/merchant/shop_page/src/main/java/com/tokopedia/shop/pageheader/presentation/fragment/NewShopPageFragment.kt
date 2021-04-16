@@ -1864,11 +1864,19 @@ class NewShopPageFragment :
     ) {
         val appLink = componentModel.text.getOrNull(0)?.textLink.orEmpty()
         val valueDisplayed = componentModel.text.getOrNull(0)?.textHtml?.trim().orEmpty()
+        val componentName = componentModel.name
         sendClickShopHeaderComponentTracking(
                 shopHeaderWidgetUiModel,
                 componentModel,
                 valueDisplayed
         )
+
+        // check type for non applink component
+        if (componentName == BaseShopHeaderComponentUiModel.ComponentName.SHOP_OPERATIONAL_HOUR) {
+            // show shop operational hour bottomsheet
+            shopViewModel?.getShopOperationalHoursList(shopId)
+        }
+
         if (isShopReviewAppLink(appLink)) {
             val reviewTabPosition = viewPagerAdapter?.getFragmentPosition(ReviewShopFragment::class.java).orZero()
             viewPager.setCurrentItem(reviewTabPosition, false)

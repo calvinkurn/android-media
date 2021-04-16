@@ -11,12 +11,11 @@ import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.shop.common.data.model.ShopQuestGeneralTracker
 import com.tokopedia.shop.common.data.source.cloud.model.ShopModerateRequestData
 import com.tokopedia.shop.common.data.source.cloud.model.ShopModerateRequestStatus
-import com.tokopedia.shop.common.domain.interactor.*
 import com.tokopedia.shop.common.data.source.cloud.model.followshop.FollowShopResponse
 import com.tokopedia.shop.common.data.source.cloud.model.followstatus.FollowStatusResponse
+import com.tokopedia.shop.common.domain.interactor.*
 import com.tokopedia.shop.common.graphql.data.shopinfo.Broadcaster
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
-import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.GetShopReputationUseCase
 import com.tokopedia.shop.common.view.model.ShopProductFilterParameter
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderLayoutResponse
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderP1
@@ -79,6 +78,9 @@ class NewShopPageViewModelTest {
     @RelaxedMockK
     lateinit var getShopPageHeaderLayoutUseCase: Lazy<GetShopPageHeaderLayoutUseCase>
 
+    @RelaxedMockK
+    lateinit var getShopOperationalHoursListUseCase: Lazy<GqlGetShopOperationalHoursListUseCase>
+
 
     @RelaxedMockK
     lateinit var context: Context
@@ -109,6 +111,7 @@ class NewShopPageViewModelTest {
                 getShopPageHeaderLayoutUseCase,
                 getFollowStatusUseCase,
                 updateFollowStatusUseCase,
+                getShopOperationalHoursListUseCase,
                 testCoroutineDispatcherProvider
         )
     }
