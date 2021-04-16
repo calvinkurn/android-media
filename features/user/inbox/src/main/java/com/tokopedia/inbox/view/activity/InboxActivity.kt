@@ -176,10 +176,7 @@ class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentC
     }
 
     private fun trackOpenInbox() {
-        if (!viewModel.hasBeenVisited()) {
-            analytic.trackOpenInbox(InboxConfig.page, InboxConfig.role)
-            viewModel.markAsVisited()
-        }
+        analytic.trackOpenInbox(InboxConfig.page, InboxConfig.role)
     }
 
     override fun clearNotificationCounter() {
