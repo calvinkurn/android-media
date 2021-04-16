@@ -139,6 +139,8 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
 
         registerActivityLifecycleCallbacks();
         checkAppSignatureAsync();
+
+        Loader.init(this);
     }
 
     private void checkAppSignatureAsync(){
@@ -293,7 +295,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
             registerActivityLifecycleCallbacks(new DevOptsSubscriber());
         }
         registerActivityLifecycleCallbacks(new TwoFactorCheckerSubscriber());
-
+        registerActivityLifecycleCallbacks(new ToasterActivityLifecycle(this));
     }
 
 
@@ -344,16 +346,9 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
 
     @NotNull
     private Boolean executePreCreateSequence() {
-        initMedialoader();
-
         Chucker.registerDefaultCrashHandler(new ChuckerCollector(ConsumerMainApplication.this, false));
         FpmLogger.init(ConsumerMainApplication.this);
         return true;
-    }
-
-    private void initMedialoader() {
-        this.registerActivityLifecycleCallbacks(new ToasterActivityLifecycle(this));
-        Loader.init(this);
     }
 
     protected void setVersionName() {
