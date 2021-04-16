@@ -1003,10 +1003,10 @@ class SomDetailFragment : BaseDaggerFragment(),
         }
     }
 
-    override fun onTextCopied(label: String, str: String) {
+    override fun onTextCopied(label: String, str: String, readableDataName: String) {
         val clipboardManager = context?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
         clipboardManager.setPrimaryClip(ClipData.newPlainText(label, str))
-        showCommonToaster(getString(R.string.resi_tersalin))
+        showCommonToaster(getString(R.string.message_success_copy, readableDataName))
     }
 
     override fun onInvalidResiUpload(awbUploadUrl: String) {
