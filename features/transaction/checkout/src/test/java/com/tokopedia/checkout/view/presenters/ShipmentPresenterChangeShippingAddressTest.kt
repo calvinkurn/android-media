@@ -1,4 +1,4 @@
-package com.tokopedia.checkout.view.presenter
+package com.tokopedia.checkout.view.presenters
 
 import com.google.gson.Gson
 import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
