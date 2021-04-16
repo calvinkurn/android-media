@@ -1,0 +1,28 @@
+{
+  "code": 103,
+  "data": {
+    "msg_id": 66961,
+    "from": "Seller Testing",
+    "from_uid": 17235411,
+    "from_user_name": "Seller Testing",
+    "from_role": "Shop Owner",
+    "thumbnail": "https://imagerouter.tokopedia.com/image/v1/s/3987128/shop_xs_thumbnail/desktop",
+    "is_opposite": true,
+    "is_auto_reply": true,
+    "to_uid": 19016250,
+    "message": {
+      "censored_reply": "Stok “iPhone 12 64GB Or...” ada 11 ya kak. Bisa langsung pesan, ya! 😄",
+      "original_reply": "Stok “iPhone 12 64GB Or...” ada 11 ya kak. Bisa langsung pesan, ya! 😄",
+      "timestamp": "2021-04-16T11:51:51.951956815+07:00",
+      "timestamp_fmt": "16 April 2021, 11:51 WIB",
+      "timestamp_unix": 1618548711951,
+      "timestamp_unix_nano": 1618548711951957000
+    },
+    "start_time": "2021-04-16 11:51:51.951956815 +0700 WIB m=+2031.811197213",
+    "show_rating": false,
+    "rating_status": 0,
+    "client_connect_time": "0001-01-01T00:00:00Z",
+    "source": "topbot",
+    "label": "Dikirim otomatis sesuai stok terbaru"
+  }
+}

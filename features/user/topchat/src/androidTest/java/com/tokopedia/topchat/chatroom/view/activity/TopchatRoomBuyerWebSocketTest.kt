@@ -20,6 +20,10 @@ class TopchatRoomBuyerWebSocketTest : BaseBuyerTopchatRoomTest() {
             "ws_response_text.json",
             WebSocketResponse::class.java
     )
+    private var oppositeTextWithLabel: WebSocketResponse = AndroidFileUtil.parse(
+            "buyer/ws_opposite_with_label.json",
+            WebSocketResponse::class.java
+    )
 
     @Test
     fun sent_text_to_ws_and_got_response_from_ws() {
@@ -45,6 +49,28 @@ class TopchatRoomBuyerWebSocketTest : BaseBuyerTopchatRoomTest() {
         onView(withRecyclerView(R.id.recycler_view).atPositionOnView(
                 0, R.id.tvMessage
         )).check(matches(withText(myMsg)))
+    }
+
+    @Test
+    fun received_normal_text_with_label_from_seller() {
+        // Given
+        setupChatRoomActivity()
+        getChatUseCase.response = firstPageChatAsBuyer
+        chatAttachmentUseCase.response = chatAttachmentResponse
+        changeResponseStartTime(
+                wsResponseText, TopChatRoomPresenterStub.exStartTime
+        )
+        inflateTestFragment()
+
+        // When
+        websocket.simulateResponse(oppositeTextWithLabel)
+
+        // Then
+        val label = oppositeTextWithLabel.jsonObject
+                ?.get("label")?.asString
+        onView(withRecyclerView(R.id.recycler_view).atPositionOnView(
+                0, R.id.txt_info
+        )).check(matches(withText(label)))
     }
 
 }
