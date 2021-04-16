@@ -125,12 +125,14 @@ class SaldoHistoryViewModel @Inject constructor(val getDepositSummaryUseCase: Ge
         val date = dateFormatter(view.getEndDate())
         date?.let {
             datePicker.setDate(getDay(date), getStartMonth(date), getStartYear(date))
-            datePicker.DatePickerCalendar { year, month, day ->
-                val selectedDate = this@SaldoHistoryViewModel.getDate(year, month, day)
-                view.setEndDate(selectedDate)
-                val startDate = view.getStartDate()
-                android.os.Handler().postDelayed({ this@SaldoHistoryViewModel.onSearchClicked(startDate, selectedDate) }, SEARCH_DELAY)
-            }
+            datePicker.datePickerCalendar(object : SaldoDatePickerUtil.OnDateSelectedListener {
+                override fun onDateSelected(year: Int, month: Int, dayOfMonth: Int) {
+                    val selectedDate = this@SaldoHistoryViewModel.getDate(year, month, dayOfMonth)
+                    view.setEndDate(selectedDate)
+                    val startDate = view.getStartDate()
+                    android.os.Handler().postDelayed({ this@SaldoHistoryViewModel.onSearchClicked(startDate, selectedDate) }, SEARCH_DELAY)
+                }
+            })
         }
     }
 
@@ -138,12 +140,14 @@ class SaldoHistoryViewModel @Inject constructor(val getDepositSummaryUseCase: Ge
         val date = dateFormatter(view.getStartDate())
         date?.let {
             datePicker.setDate(getDay(date), getStartMonth(date), getStartYear(date))
-            datePicker.DatePickerCalendar { year, month, day ->
-                val selectedDate = getDate(year, month, day)
-                view.setStartDate(selectedDate)
-                val endDate = view.getEndDate()
-                android.os.Handler().postDelayed({ this.onSearchClicked(selectedDate, endDate) }, SEARCH_DELAY)
-            }
+            datePicker.datePickerCalendar(object : SaldoDatePickerUtil.OnDateSelectedListener {
+                override fun onDateSelected(year: Int, month: Int, dayOfMonth: Int) {
+                    val selectedDate = getDate(year, month, dayOfMonth)
+                    view.setStartDate(selectedDate)
+                    val endDate = view.getEndDate()
+                    android.os.Handler().postDelayed({ this@SaldoHistoryViewModel.onSearchClicked(selectedDate, endDate) }, SEARCH_DELAY)
+                }
+            })
         }
     }
 

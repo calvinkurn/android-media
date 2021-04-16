@@ -113,7 +113,7 @@ class SaldoTransactionHistoryFragment : BaseDaggerFragment(), SaldoHistoryContra
         depositHistoryViewPager!!.adapter = saldoHistoryPagerAdapter
         depositHistoryTabLayout!!.setupWithViewPager(depositHistoryViewPager)
 
-        datePicker = SaldoDatePickerUtil(activity)
+        datePicker = activity?.let { SaldoDatePickerUtil(it) }
     }
 
     private fun loadMultipleTabItem() {
