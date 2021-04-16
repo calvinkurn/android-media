@@ -249,9 +249,9 @@ class FlightSearchReturnFragment : FlightSearchFragment() {
 
     private fun showReturnTimeShouldGreaterThanArrivalDeparture() {
         if (isAdded) {
-            val dialog = AlertDialog.Builder(requireActivity())
+            val dialog = AlertDialog.Builder(activity)
             dialog.setMessage(R.string.flight_search_return_departure_should_greater_message)
-            dialog.setPositiveButton(activity!!.getString(com.tokopedia.abstraction.R.string.title_ok)
+            dialog.setPositiveButton(requireActivity().getString(com.tokopedia.abstraction.R.string.title_ok)
             ) { dialog, which ->
                 dialog.dismiss()
             }
