@@ -33,7 +33,7 @@ import com.tokopedia.feedcomponent.view.viewmodel.recommendation.FeedRecommendat
 import com.tokopedia.feedcomponent.view.viewmodel.recommendation.RecommendationCardViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.recommendation.TrackingRecommendationModel
 import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsHeadlineUiModel
-import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsShopViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsShopUiModel
 import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -221,7 +221,7 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
             }
 
             posts.add(
-                    TopadsShopViewModel(
+                    TopadsShopUiModel(
                             feed.content.cardRecommendation.title,
                             topAdsShopList,
                             template,

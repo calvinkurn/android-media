@@ -83,7 +83,7 @@ class DataFavoriteMapperTest {
         assertTrue(favoriteShopList.size == numOfItems)
 
         for (i in 0 until numOfItems) {
-            assertTrue((favoriteShopList[i] as FavoriteShopViewModel).isFavoriteShop)
+            assertTrue((favoriteShopList[i] as FavoriteShopUiModel).isFavoriteShop)
         }
     }
 

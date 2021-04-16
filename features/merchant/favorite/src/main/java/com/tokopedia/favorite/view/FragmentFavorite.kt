@@ -31,7 +31,7 @@ import com.tokopedia.favorite.view.adapter.FavoriteAdapter
 import com.tokopedia.favorite.view.adapter.FavoriteAdapterTypeFactory
 import com.tokopedia.favorite.view.adapter.TopAdsShopAdapter
 import com.tokopedia.favorite.view.viewlistener.FavoriteClickListener
-import com.tokopedia.favorite.view.viewmodel.FavoriteShopViewModel
+import com.tokopedia.favorite.view.viewmodel.FavoriteShopUiModel
 import com.tokopedia.favorite.view.viewmodel.TopAdsShopItem
 import com.tokopedia.topads.sdk.utils.ImpresionTask
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
@@ -163,7 +163,7 @@ class FragmentFavorite() : BaseDaggerFragment(), FavoriteClickListener, OnRefres
                 showErrorAddFavoriteShop()
             }
         })
-        viewModel!!.addedFavoriteShop.observe(this, Observer { favoriteShop: FavoriteShopViewModel -> addFavoriteShop(favoriteShop) })
+        viewModel!!.addedFavoriteShop.observe(this, Observer { favoriteShop: FavoriteShopUiModel -> addFavoriteShop(favoriteShop) })
         viewModel!!.isErrorLoadMore.observe(this, Observer { isError: Boolean ->
             if (isError) {
                 showErrorLoadMore()
@@ -317,9 +317,9 @@ class FragmentFavorite() : BaseDaggerFragment(), FavoriteClickListener, OnRefres
         favoriteAdapter!!.showLoading()
     }
 
-    private fun addFavoriteShop(shopViewModel: FavoriteShopViewModel) {
+    private fun addFavoriteShop(shopUiModel: FavoriteShopUiModel) {
         val favoriteShopPosition = 2
-        favoriteAdapter!!.addElement(favoriteShopPosition, shopViewModel)
+        favoriteAdapter!!.addElement(favoriteShopPosition, shopUiModel)
     }
 
     private fun sendFavoriteShopImpression(clickUrl: String) {

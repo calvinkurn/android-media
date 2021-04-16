@@ -50,7 +50,7 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopadsShopView
 import com.tokopedia.feedcomponent.view.viewmodel.highlight.HighlightCardViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.TrackingPostModel
-import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsShopViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsShopUiModel
 import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
 import com.tokopedia.feedcomponent.view.widget.CardTitleView
 import com.tokopedia.feedcomponent.view.widget.FeedMultipleImageView
@@ -689,8 +689,8 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     }
 
     override fun onShopItemClicked(positionInFeed: Int, adapterPosition: Int, shop: com.tokopedia.topads.sdk.domain.model.Shop) {
-        if (adapter.list[positionInFeed] is TopadsShopViewModel) {
-            val (_, dataList, _, _) = adapter.list[positionInFeed] as TopadsShopViewModel
+        if (adapter.list[positionInFeed] is TopadsShopUiModel) {
+            val (_, dataList, _, _) = adapter.list[positionInFeed] as TopadsShopUiModel
             if (adapterPosition != RecyclerView.NO_POSITION) {
                 presenter.doTopAdsTracker(dataList[adapterPosition].shopClickUrl, shop.id, shop.name, dataList[adapterPosition].shop.imageShop.xsEcs, true)
             }

@@ -7,7 +7,7 @@ import com.tokopedia.favorite.view.adapter.FavoriteTypeFactory
  *
  * @author kulomady on 1/24/17.
  */
-class FavoriteShopViewModel : Visitable<FavoriteTypeFactory> {
+class FavoriteShopUiModel : Visitable<FavoriteTypeFactory> {
     var shopId: String? = null
     var shopAvatarImageUrl: String? = null
     var shopName: String? = null

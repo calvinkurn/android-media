@@ -25,7 +25,7 @@ import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.recommendation.FeedRecommendationViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.relatedpost.RelatedPostViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsHeadlineUiModel;
-import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsShopViewModel;
+import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsShopUiModel;
 import com.tokopedia.feedcomponent.view.widget.CardTitleView;
 import com.tokopedia.feedcomponent.view.widget.FeedMultipleImageView;
 import com.tokopedia.kol.feature.comment.view.adapter.typefactory.KolCommentTypeFactory;
@@ -169,7 +169,7 @@ public class KolPostDetailTypeFactoryImpl extends BaseAdapterTypeFactory
     }
 
     @Override
-    public int type(@NotNull TopadsShopViewModel topadsShopViewModel) {
+    public int type(@NotNull TopadsShopUiModel topadsShopUIModel) {
         return 0;
     }
 

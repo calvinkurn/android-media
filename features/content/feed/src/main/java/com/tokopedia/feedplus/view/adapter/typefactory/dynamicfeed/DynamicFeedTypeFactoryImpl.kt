@@ -15,7 +15,7 @@ import com.tokopedia.feedcomponent.view.viewmodel.highlight.HighlightViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.recommendation.FeedRecommendationViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsHeadlineUiModel
-import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsShopViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsShopUiModel
 import com.tokopedia.feedcomponent.view.widget.CardTitleView
 
 /**
@@ -36,7 +36,7 @@ class DynamicFeedTypeFactoryImpl(val highlightListener: HighlightAdapter.Highlig
         return 0
     }
 
-    override fun type(topadsShopViewModel: TopadsShopViewModel): Int {
+    override fun type(topadsShopUiModel: TopadsShopUiModel): Int {
         return 0
     }
 
