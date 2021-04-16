@@ -66,6 +66,7 @@ import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import java.util.*
 import javax.inject.Inject
 
@@ -98,6 +99,8 @@ class OfficialHomeFragment :
     lateinit var viewModel: OfficialStoreHomeViewModel
     @Inject
     lateinit var officialHomeMapper: OfficialHomeMapper
+
+    lateinit var userSession: UserSessionInterface
 
     private var tracking: OfficialStoreTracking? = null
     private var swipeRefreshLayout: SwipeRefreshLayout? = null
@@ -830,7 +833,8 @@ class OfficialHomeFragment :
                 channel,
                 grid,
                 position.toString(),
-                viewModel.isLoggedIn()
+                viewModel.isLoggedIn(),
+                viewModel.getUserId()
         )
         RouteManager.route(context, applink)
     }

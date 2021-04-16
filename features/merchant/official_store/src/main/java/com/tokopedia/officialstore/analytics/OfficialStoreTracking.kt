@@ -50,6 +50,9 @@ class OfficialStoreTracking(context: Context) {
     private val IMPRESSION = "impression"
     private val ECOMMERCE_IMPRESSIONS = "impressions"
     private val ECOMMERCE_CURRENCY_CODE = "currencyCode"
+    private val FIELD_BUSINESS_UNIT = "businessUnit"
+    private val FIELD_CURRENT_SITE = "currentSite"
+    private val USER_ID = "userId"
 
     private val CLICK_OS_MICROSITE = "clickOSMicrosite"
     private val PROMO_CLICK = "promoClick"
@@ -59,6 +62,7 @@ class OfficialStoreTracking(context: Context) {
     private val CAMPAIGN_CODE = "campaignCode"
 
     private val OS_MICROSITE = "os microsite - "
+    private val OS_MICROSITE_SINGLE = "os microsite"
 
     private val FIELD_PRODUCTS = "products"
     private val FIELD_PRODUCT_NAME = "name"
@@ -81,8 +85,12 @@ class OfficialStoreTracking(context: Context) {
     private val VALUE_IDR = "IDR"
     private val VALUE_EMPTY = ""
     private val VALUE_NON_LOGIN = ""
+    private val VALUE_NON_LOGIN_NEW = "non login"
+    private val VALUE_LOGIN_NEW = "login"
     private val VALUE_DYNAMIC_MIX_TOP_CAROUSEL = "dynamic channel top carousel"
     private val VALUE_DYNAMIC_MIX_LEFT_CAROUSEL = "dynamic channel left carousel"
+    private val VALUE_BUSINESS_UNIT_DEFAULT = "home & browse"
+    private val VALUE_CURRENT_SITE_DEFAULT = "tokopediamarketplace"
 
 
     private val EVENT_PRODUCT_VIEW = "productView"
@@ -590,7 +598,7 @@ class OfficialStoreTracking(context: Context) {
                 ECOMMERCE, DataLayer.mapOf(
                 CLICK, DataLayer.mapOf(
                 FIELD_ACTION_FIELD, DataLayer.mapOf(
-                    FIELD_PRODUCT_LIST, getListProductClickInsideActionField(categoryName, item.recommendationType),
+                    FIELD_PRODUCT_LIST, getListProductClickInsideActionField(categoryName, item.recommendationType)
                 ),
                 FIELD_PRODUCTS, DataLayer.listOf(
                 convertRecommendationItemToDataImpressionObject(item, isLogin, position)
@@ -868,29 +876,35 @@ class OfficialStoreTracking(context: Context) {
             channel: ChannelModel,
             productItem: ChannelGrid,
             productPosition: String,
-            isLogin: Boolean
+            isLogin: Boolean,
+            userId: String
     ) {
         val valueDynamicMix = when (channel.layout) {
             DynamicChannelIdentifiers.LAYOUT_MIX_TOP -> VALUE_DYNAMIC_MIX_TOP_CAROUSEL
             DynamicChannelIdentifiers.LAYOUT_MIX_LEFT -> VALUE_DYNAMIC_MIX_LEFT_CAROUSEL
             else -> ""
         }
-        val list = mutableListOf(SLASH_OFFICIAL_STORE)
-        if (!isLogin)
-            list.add(VALUE_NON_LOGIN)
+        val list = mutableListOf(String().format(SLASH_OFFICIAL_STORE_WITHCATEGORY, categoryName))
+        list.add(channel.trackingAttributionModel.campaignId)
         if (valueDynamicMix.isNotEmpty())
             list.add(valueDynamicMix)
+        if (!isLogin)
+            list.add(VALUE_NON_LOGIN_NEW)
+        else list.add(VALUE_LOGIN_NEW)
         val listKeyValue = TextUtils.join(" - ", list)
         val eventAction = "$CLICK on product $valueDynamicMix"
         val data = DataLayer.mapOf(
                 EVENT, EVENT_PRODUCT_CLICK,
-                EVENT_CATEGORY, "$OS_MICROSITE$categoryName",
+                EVENT_CATEGORY, OS_MICROSITE_SINGLE,
                 EVENT_ACTION, eventAction,
                 EVENT_LABEL, channel.id,
                 CAMPAIGN_CODE, channel.trackingAttributionModel.campaignCode,
                 ECOMMERCE, DataLayer.mapOf(
                 CLICK , DataLayer.mapOf(
                 FIELD_ACTION_FIELD , DataLayer.mapOf( FIELD_PRODUCT_LIST , listKeyValue),
+                FIELD_BUSINESS_UNIT, VALUE_BUSINESS_UNIT_DEFAULT,
+                FIELD_CURRENT_SITE, VALUE_CURRENT_SITE_DEFAULT,
+                USER_ID, userId,
                 FIELD_PRODUCTS, DataLayer.listOf(
                 createFlashSaleCardProductItemMapComponent(
                         gridData = productItem,
