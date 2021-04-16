@@ -255,7 +255,7 @@ open class DynamicPostViewHolder(v: View,
                         .replace("\n","<br/>")
                         .replace(NEWLINE, "<br/>")
                         .plus("... ")
-                        .plus("<font color='${ColorUtil.getColorFromResToString(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_Y400)}'>" + "</font>")
+                        .plus("<font color='${ColorUtil.getColorFromResToString(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_G400)}'>" + "<b>")
                         .plus(caption.buttonName)
                         .plus("</b></font>")
 
