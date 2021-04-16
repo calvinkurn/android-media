@@ -34,6 +34,7 @@ import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.datepicker.range.view.listener.DatePickerResultListener;
 import com.tokopedia.gm.common.constant.GMCommonConstantKt;
+import com.tokopedia.gm.common.presentation.model.ShopInfoPeriodUiModel;
 import com.tokopedia.iconunify.IconUnify;
 import com.tokopedia.review.R;
 import com.tokopedia.review.ReviewInstance;
@@ -230,16 +231,17 @@ public class SellerReputationFragment extends BaseDaggerFragment
     }
 
     private void observeShopInfoPeriod() {
-        shopScoreReputationViewModel.getShopPeriod().observe(getViewLifecycleOwner(), stringResult -> {
-            String periodType = ((Success) stringResult).getData().toString();
-            toggleShopScorePeriodView(periodType);
-            initCardShopScore(periodType);
+        shopScoreReputationViewModel.getShopPeriod().observe(getViewLifecycleOwner(), result -> {
+            ShopInfoPeriodUiModel shopInfoPeriodUiModel = (ShopInfoPeriodUiModel) ((Success) result).getData();
+            toggleShopScorePeriodView(shopInfoPeriodUiModel.getPeriodType(), shopInfoPeriodUiModel.isNewSeller());
+            initCardShopScore(shopInfoPeriodUiModel.getPeriodType());
         });
         shopScoreReputationViewModel.getShopScorePeriod(Integer.parseInt(userSession.getShopId()));
     }
 
-    private void toggleShopScorePeriodView(String periodType) {
-        if (periodType.equals(GMCommonConstantKt.COMMUNICATION_PERIOD) || periodType.equals(GMCommonConstantKt.TRANSITION_PERIOD)) {
+    private void toggleShopScorePeriodView(String periodType, boolean isNewSeller) {
+        if ((periodType.equals(GMCommonConstantKt.COMMUNICATION_PERIOD)
+                || periodType.equals(GMCommonConstantKt.TRANSITION_PERIOD)) && !isNewSeller) {
             shopScorePeriodToggle();
         } else {
             tickerShopScore.setVisibility(View.GONE);

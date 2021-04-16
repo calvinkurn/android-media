@@ -24,6 +24,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.gm.common.constant.COMMUNICATION_PERIOD
 import com.tokopedia.gm.common.constant.GM_BADGE_TITLE
 import com.tokopedia.gm.common.constant.TRANSITION_PERIOD
+import com.tokopedia.gm.common.presentation.model.ShopInfoPeriodUiModel
 import com.tokopedia.gm.common.utils.getShopScoreDate
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.shop.score.R
@@ -79,13 +80,14 @@ class ShopScoreDetailFragment : Fragment() {
             .inject(this)
     }
 
-    private fun setupTickerShopScore(periodType: String) {
+    private fun setupTickerShopScore(shopInfoPeriodUiModel: ShopInfoPeriodUiModel) {
         ticker_info_shop_score?.apply {
-            showWithCondition(periodType == COMMUNICATION_PERIOD || periodType == TRANSITION_PERIOD)
+            showWithCondition((shopInfoPeriodUiModel.periodType == COMMUNICATION_PERIOD ||
+                    shopInfoPeriodUiModel.periodType == TRANSITION_PERIOD) && !shopInfoPeriodUiModel.isNewSeller)
             setHtmlDescription(getString(R.string.ticker_info_shop_score, getShopScoreDate(requireContext())))
             setDescriptionClickEvent(object : TickerCallback {
                 override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                    when (periodType) {
+                    when (shopInfoPeriodUiModel.periodType) {
                         COMMUNICATION_PERIOD -> {
 
                         }

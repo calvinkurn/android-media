@@ -43,7 +43,6 @@ object SellerUiModelMapper {
 
     fun mapToIsShowTickerShopAccount(shopInfoPeriodUiModel: ShopInfoPeriodUiModel): Boolean {
         return !shopInfoPeriodUiModel.isNewSeller &&
-                !shopInfoPeriodUiModel.isOfficialStore &&
                 shopInfoPeriodUiModel.periodType == COMMUNICATION_PERIOD
     }
 }

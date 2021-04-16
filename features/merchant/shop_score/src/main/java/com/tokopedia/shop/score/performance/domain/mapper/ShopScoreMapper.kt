@@ -62,6 +62,7 @@ import com.tokopedia.shop.score.common.ShopScoreConstant.dayText
 import com.tokopedia.shop.score.common.ShopScoreConstant.minuteText
 import com.tokopedia.shop.score.common.ShopScoreConstant.percentText
 import com.tokopedia.shop.score.common.formatDate
+import com.tokopedia.shop.score.common.getLocale
 import com.tokopedia.shop.score.performance.domain.model.*
 import com.tokopedia.shop.score.performance.presentation.model.*
 import com.tokopedia.user.session.UserSessionInterface
@@ -138,8 +139,8 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
                 val mapTimerNewSeller = mapToTimerNewSellerUiModel(shopAge, shopInfoPeriodUiModel.isEndTenureNewSeller)
                 if (mapTimerNewSeller.second) {
                     add(mapToTimerNewSellerUiModel(shopAge, shopInfoPeriodUiModel.isEndTenureNewSeller).first)
+                    add(ItemLevelScoreProjectUiModel())
                 }
-                add(ItemLevelScoreProjectUiModel())
             }
 
             add(mapToHeaderShopPerformance(shopScoreWrapperResponse.shopScoreLevelResponse?.result, shopAge))
@@ -153,10 +154,8 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
             }
 
             when {
-                userSession.isShopOfficialStore -> {
-                    if (shopAge < SHOP_AGE_SIXTY) {
-                        add(SectionFaqUiModel(mapToItemFaqUiModel()))
-                    }
+                userSession.isShopOfficialStore || shopAge < SHOP_AGE_SIXTY -> {
+                    add(SectionFaqUiModel(mapToItemFaqUiModel()))
                 }
                 userSession.isGoldMerchant && !userSession.isShopOfficialStore -> {
                     if (shopScoreWrapperResponse.goldPMGradeBenefitInfoResponse != null &&
@@ -197,9 +196,12 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
                 shopAge < SHOP_AGE_SIXTY -> {
                     titleHeaderShopService = context?.getString(R.string.title_new_seller_level_0)
                             ?: ""
-                    descHeaderShopService = context?.getString(R.string.desc_new_seller_level_0)
-                            ?: ""
                     this.showCardNewSeller = true
+                    val nextSellerDays = SHOP_AGE_SIXTY - shopAge
+                    val effectiveDate = getNNextDaysTimeCalendar(nextSellerDays)
+                    val dateNewSellerProjection = format(effectiveDate.timeInMillis, PATTERN_DATE_NEW_SELLER)
+                    descHeaderShopService = context?.getString(R.string.desc_new_seller_level_0, dateNewSellerProjection)
+                            ?: ""
                 }
                 else -> {
                     when (shopScoreLevelResponse?.shopScore) {
@@ -351,8 +353,10 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
                     ORDER_SUCCESS_RATE_KEY, CHAT_DISCUSSION_SPEED_KEY, PRODUCT_REVIEW_WITH_FOUR_STARS_KEY,
                     TOTAL_BUYER_KEY, OPEN_TOKOPEDIA_SELLER_KEY)
 
-            val shopScoreLevelSize = shopScoreLevelList?.filter { it.identifier in multipleFilterShopScore }?.size.orZero()
-            shopScoreLevelList?.filter { it.identifier in multipleFilterShopScore }?.forEachIndexed { index, shopScoreDetail ->
+            val shopScoreLevelFilter = shopScoreLevelList?.filter { it.identifier in multipleFilterShopScore }
+            val shopScoreLevelSize = shopScoreLevelFilter?.size.orZero()
+            val sortShopScoreLevelParam = sortItemDetailPerformanceFormatted(shopScoreLevelFilter)
+            sortShopScoreLevelParam.forEachIndexed { index, shopScoreDetail ->
                 val targetDetailPerformanceText = when (shopScoreDetail.identifier) {
                     CHAT_DISCUSSION_REPLY_SPEED_KEY, SPEED_SENDING_ORDERS_KEY -> "${shopScoreDetail.nextMinValue} $minuteText"
                     ORDER_SUCCESS_RATE_KEY, CHAT_DISCUSSION_SPEED_KEY, PRODUCT_REVIEW_WITH_FOUR_STARS_KEY, TOTAL_BUYER_KEY ->
@@ -371,6 +375,29 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
                 ))
             }
         }
+    }
+
+    private fun sortItemDetailPerformanceFormatted(shopScoreLevelList: List<ShopScoreLevelResponse.ShopScoreLevel.Result.ShopScoreDetail>?): List<ShopScoreLevelResponse.ShopScoreLevel.Result.ShopScoreDetail> {
+        val identifierFilter = hashMapOf(
+                ORDER_SUCCESS_RATE_KEY to 0,
+                CHAT_DISCUSSION_REPLY_SPEED_KEY to 1,
+                SPEED_SENDING_ORDERS_KEY to 2,
+                CHAT_DISCUSSION_SPEED_KEY to 3,
+                PRODUCT_REVIEW_WITH_FOUR_STARS_KEY to 4,
+                TOTAL_BUYER_KEY to 5,
+                OPEN_TOKOPEDIA_SELLER_KEY to 6
+        )
+
+        val compareIdentifier = Comparator { item1: ShopScoreLevelResponse.ShopScoreLevel.Result.ShopScoreDetail,
+                                             item2: ShopScoreLevelResponse.ShopScoreLevel.Result.ShopScoreDetail ->
+            return@Comparator identifierFilter[item1.identifier].orZero() - identifierFilter[item2.identifier].orZero()
+        }
+
+        val copyItemDetail = mutableListOf<ShopScoreLevelResponse.ShopScoreLevel.Result.ShopScoreDetail>().apply {
+            shopScoreLevelList?.let { addAll(it) }
+        }
+        copyItemDetail.sortWith(compareIdentifier)
+        return copyItemDetail
     }
 
     private fun mapToCardPotentialBenefitNonEligible(): SectionPotentialPMBenefitUiModel {
@@ -588,7 +615,6 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
                 }
             }
         }
-
 
         return ItemStatusPMUiModel(
                 statusPowerMerchant = currentPMGrade?.gradeName ?: "",
@@ -821,7 +847,7 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
     }
 
     private fun getNNextDaysTimeCalendar(nextDays: Int): Calendar {
-        val date = Calendar.getInstance(Locale.getDefault())
+        val date = Calendar.getInstance(getLocale())
         date.add(Calendar.DATE, nextDays + 1)
         date.set(Calendar.HOUR_OF_DAY, 0)
         date.set(Calendar.MINUTE, 0)
@@ -829,7 +855,7 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
         return date
     }
 
-    private fun format(timeMillis: Long, pattern: String, locale: Locale = Locale.getDefault()): String {
+    private fun format(timeMillis: Long, pattern: String, locale: Locale = getLocale()): String {
         val sdf = SimpleDateFormat(pattern, locale)
         return sdf.format(timeMillis)
     }

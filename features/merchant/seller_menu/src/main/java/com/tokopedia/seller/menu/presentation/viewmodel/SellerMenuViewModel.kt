@@ -14,6 +14,7 @@ import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.SettingShopInfoUiM
 import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.ShopInfoUiModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.gm.common.domain.interactor.GetShopInfoPeriodUseCase
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.seller.menu.common.view.uimodel.TickerShopScoreUiModel
 import com.tokopedia.seller.menu.domain.usecase.GetSellerNotificationUseCase
 import com.tokopedia.seller.menu.presentation.uimodel.NotificationUiModel
@@ -66,15 +67,15 @@ class SellerMenuViewModel @Inject constructor(
     private val _isToasterAlreadyShown = MutableLiveData(false)
     private val _shopAccountTickerPeriod = MutableLiveData<Result<Boolean>>()
 
-    fun getShopAccountTickerPeriod(shopID: Int) {
+    fun getShopAccountTickerPeriod() {
         launchCatchError(block = {
             val data = withContext(dispatchers.io) {
-                getShopInfoPeriodUseCase.requestParams = GetShopInfoPeriodUseCase.createParams(shopID)
+                getShopInfoPeriodUseCase.requestParams = GetShopInfoPeriodUseCase.createParams(userSession.shopId.toIntOrZero())
                 SellerUiModelMapper.mapToIsShowTickerShopAccount(getShopInfoPeriodUseCase.executeOnBackground())
             }
-            _shopAccountTickerPeriod.postValue(Success(data))
+            _shopAccountTickerPeriod.value = Success(data)
         }, onError = {
-            _shopAccountTickerPeriod.postValue(Fail(it))
+            _shopAccountTickerPeriod.value = Fail(it)
         })
     }
 

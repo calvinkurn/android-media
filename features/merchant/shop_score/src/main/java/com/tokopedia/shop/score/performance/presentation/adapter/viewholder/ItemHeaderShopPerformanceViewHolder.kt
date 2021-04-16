@@ -31,7 +31,7 @@ class ItemHeaderShopPerformanceViewHolder(view: View,
                 itemHeaderShopPerformanceListener.onViewHeaderListener(this)
             }
 
-            setBackgroundHeaderRadius(element)
+            setBackgroundHeaderRadius()
 
             tvPerformanceLevel?.text = getString(R.string.shop_performance_level_header, element?.shopLevel)
 
@@ -53,7 +53,7 @@ class ItemHeaderShopPerformanceViewHolder(view: View,
         setupTicker(element)
     }
 
-    private fun setBackgroundHeaderRadius(element: HeaderShopPerformanceUiModel?) {
+    private fun setBackgroundHeaderRadius() {
         with(itemView) {
             val roundedRadius = 16F
             containerHeaderShopPerformance.shapeAppearanceModel = containerHeaderShopPerformance.shapeAppearanceModel
