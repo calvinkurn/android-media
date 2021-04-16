@@ -2598,12 +2598,17 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     private void checkCampaignTimer() {
         if (shipmentPresenter.getCampaignTimer() != null && shipmentPresenter.getCampaignTimer().getShowTimer()) {
             CampaignTimerUi timer = shipmentPresenter.getCampaignTimer();
-
             long diff = TimeHelper.timeSinceNow(timer.getTimerExpired());
+            showCampaignTimerExpiredDialog(timer, diff, checkoutAnalyticsCourierSelection);
+        }
+    }
 
-            if (diff <= 0 && getFragmentManager() != null) {
+    private void showCampaignTimerExpiredDialog(CampaignTimerUi timer, long diff, CheckoutAnalyticsCourierSelection checkoutAnalyticsCourierSelection) {
+        if (isAdded()) {
+            FragmentManager fragmentManager = getParentFragmentManager();
+            if (diff <= 0 && fragmentManager != null) {
                 ExpiredTimeDialog dialog = ExpiredTimeDialog.newInstance(timer, checkoutAnalyticsCourierSelection, this);
-                dialog.show(getFragmentManager(), "expired dialog");
+                dialog.show(fragmentManager, "expired dialog");
             }
         }
     }
