@@ -27,6 +27,7 @@ import com.tokopedia.hotel.common.data.HotelTypeEnum
 import com.tokopedia.hotel.common.presentation.HotelBaseFragment
 import com.tokopedia.hotel.common.presentation.widget.RatingStarView
 import com.tokopedia.hotel.common.util.ErrorHandlerHotel
+import com.tokopedia.hotel.common.util.HotelGqlQuery
 import com.tokopedia.hotel.common.util.HotelStringUtils
 import com.tokopedia.hotel.common.util.TRACKING_HOTEL_PDP
 import com.tokopedia.hotel.globalsearch.presentation.activity.HotelGlobalSearchActivity
@@ -159,15 +160,15 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
 
         if (isButtonEnabled) {
             detailViewModel.getHotelDetailData(
-                    GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_info),
-                    GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_room_list),
-                    GraphqlHelper.loadRawString(resources, R.raw.gql_get_hotel_review),
+                    HotelGqlQuery.PROPERTY_DETAIL,
+                    HotelGqlQuery.PROPERTY_ROOM_LIST,
+                    HotelGqlQuery.PROPERTY_REVIEW,
                     hotelHomepageModel.locId,
                     hotelHomepageModel, source)
         } else {
             detailViewModel.getHotelDetailDataWithoutRoom(
-                    GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_info),
-                    GraphqlHelper.loadRawString(resources, R.raw.gql_get_hotel_review),
+                    HotelGqlQuery.PROPERTY_DETAIL,
+                    HotelGqlQuery.PROPERTY_REVIEW,
                     hotelHomepageModel.locId, source)
         }
 
@@ -305,7 +306,7 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
                     hideRoomAvailableContainerBottom()
                     hideRoomNotAvailableContainerBottom()
                     detailViewModel.getRoomWithoutHotelData(
-                            GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_room_list),
+                            HotelGqlQuery.PROPERTY_ROOM_LIST,
                             hotelHomepageModel)
                 }
             }
@@ -694,15 +695,15 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
     override fun onErrorRetryClicked() {
         if (isButtonEnabled) {
             detailViewModel.getHotelDetailData(
-                    GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_info),
-                    GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_room_list),
-                    GraphqlHelper.loadRawString(resources, R.raw.gql_get_hotel_review),
+                    HotelGqlQuery.PROPERTY_DETAIL,
+                    HotelGqlQuery.PROPERTY_ROOM_LIST,
+                    HotelGqlQuery.PROPERTY_REVIEW,
                     hotelHomepageModel.locId,
                     hotelHomepageModel, source)
         } else {
             detailViewModel.getHotelDetailDataWithoutRoom(
-                    GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_info),
-                    GraphqlHelper.loadRawString(resources, R.raw.gql_get_hotel_review),
+                    HotelGqlQuery.PROPERTY_DETAIL,
+                    HotelGqlQuery.PROPERTY_REVIEW,
                     hotelHomepageModel.locId, source)
         }
     }

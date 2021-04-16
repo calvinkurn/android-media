@@ -427,16 +427,19 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
 
     @Override
     public String getIdemPotencyKey() {
+        if (cartPassData.getIdemPotencyKey() == null) return "";
         return cartPassData.getIdemPotencyKey();
     }
 
     @Override
     public String getClientNumber() {
+        if (cartPassData.getClientNumber() == null) return "";
         return cartPassData.getClientNumber();
     }
 
     @Override
     public long getOrderId() {
+        if (cartPassData.getOrderId() == null) return 0L;
         String orderIdString = cartPassData.getOrderId();
         try {
             return TextUtils.isEmpty(orderIdString) ? 0L : Long.parseLong(orderIdString);
@@ -447,21 +450,25 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
 
     @Override
     public String getZoneId() {
+        if (cartPassData.getZoneId() == null) return "";
         return cartPassData.getZoneId();
     }
 
     @Override
     public HashMap<String, String> getFields() {
+        if (cartPassData.getFields() == null) return new HashMap<>();
         return cartPassData.getFields();
     }
 
     @Override
     public boolean isInstantCheckout() {
+        if (cartPassData.getInstantCheckout() == null) return false;
         return cartPassData.getInstantCheckout().equals("1");
     }
 
     @Override
     public int getProductId() {
+        if (cartPassData.getProductId() == null) return 0;
         String productIdString = cartPassData.getProductId();
         try {
             return TextUtils.isEmpty(productIdString) ? 0 : Integer.parseInt(productIdString);
@@ -472,7 +479,7 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
 
     @Override
     public void closeViewWithMessageAlert(String message) {
-        if (cartPassData.isFromPDP()) {
+        if (cartPassData == null || cartPassData.isFromPDP()) {
             Intent intent = new Intent();
             intent.putExtra(DigitalExtraParam.EXTRA_MESSAGE, message);
             getActivity().setResult(Activity.RESULT_OK, intent);

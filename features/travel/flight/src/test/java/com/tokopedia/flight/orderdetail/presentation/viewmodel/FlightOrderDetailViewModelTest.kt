@@ -2,7 +2,7 @@ package com.tokopedia.flight.orderdetail.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.common.travel.domain.TravelCrossSellingUseCase
-import com.tokopedia.common.travel.utils.TravelTestDispatcherProvider
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.flight.common.util.FlightAnalytics
 import com.tokopedia.flight.common.util.FlightDateUtil
 import com.tokopedia.flight.dummy.DUMMY_CROSS_SELL
@@ -41,7 +41,7 @@ class FlightOrderDetailViewModelTest {
     private val getInvoiceEticketUseCase: FlightOrderDetailGetInvoiceEticketUseCase = mockk()
     private val crossSellUseCase: TravelCrossSellingUseCase = mockk()
     private val mapper: FlightOrderDetailCancellationMapper = FlightOrderDetailCancellationMapper()
-    private val testDispatcherProvider = TravelTestDispatcherProvider()
+    private val testDispatcherProvider = CoroutineTestDispatchersProvider
 
     private lateinit var viewModel: FlightOrderDetailViewModel
 

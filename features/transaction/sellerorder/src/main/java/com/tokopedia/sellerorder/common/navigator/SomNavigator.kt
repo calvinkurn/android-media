@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.view.View
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -31,10 +32,10 @@ object SomNavigator {
     const val REQUEST_CONFIRM_REQUEST_PICKUP = 996
     const val REQUEST_CHANGE_COURIER = 995
 
-    fun goToSomOrderDetail(fragment: SomListFragment, item: SomListOrderUiModel) {
+    fun goToSomOrderDetail(fragment: Fragment, orderId: String) {
         fragment.run {
             Intent(context, SomDetailActivity::class.java).apply {
-                putExtra(SomConsts.PARAM_ORDER_ID, item.orderId)
+                putExtra(SomConsts.PARAM_ORDER_ID, orderId)
                 startActivityForResult(this, REQUEST_DETAIL)
             }
         }

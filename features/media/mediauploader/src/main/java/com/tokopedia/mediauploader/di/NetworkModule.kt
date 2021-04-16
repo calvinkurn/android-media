@@ -7,6 +7,10 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.mediauploader.util.NetworkTimeOutInterceptor
 import com.tokopedia.mediauploader.util.NetworkTimeOutInterceptor.Companion.DEFAULT_TIMEOUT
+import com.tokopedia.network.NetworkRouter
+import com.tokopedia.network.interceptor.FingerprintInterceptor
+import com.tokopedia.network.interceptor.TkpdAuthInterceptor
+import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
@@ -19,7 +23,8 @@ import java.util.concurrent.TimeUnit
     @Provides
     @MediaUploaderQualifier
     fun provideOkHttpClientBuilder(
-            @ApplicationContext context: Context
+            @ApplicationContext context: Context,
+            @MediaUploaderQualifier userSession: UserSessionInterface
     ): OkHttpClient.Builder {
         return OkHttpClient.Builder()
                 .connectTimeout(DEFAULT_TIMEOUT.toLong(), TimeUnit.SECONDS)
@@ -29,6 +34,12 @@ import java.util.concurrent.TimeUnit
                 .retryOnConnectionFailure(false)
                 .addInterceptor(NetworkTimeOutInterceptor())
                 .also {
+                    // adding tkpdAuth and fingerprint interceptor
+                    (context as? NetworkRouter?)?.let { router ->
+                        it.addInterceptor(FingerprintInterceptor(router, userSession))
+                        it.addInterceptor(TkpdAuthInterceptor(context, router, userSession))
+                    }
+
                     if (GlobalConfig.isAllowDebuggingTools()) {
                         it.addInterceptor(ChuckerInterceptor(context))
                     }
@@ -41,7 +52,7 @@ import java.util.concurrent.TimeUnit
         return Retrofit.Builder()
                 .baseUrl(BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create(Gson())
-        )
+                )
     }
 
     companion object {
