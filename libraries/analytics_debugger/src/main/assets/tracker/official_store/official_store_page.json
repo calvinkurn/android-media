@@ -119,7 +119,7 @@
       "eventAction": "{{click on product dynamic channel top carousel|click on product dynamic channel left carousel}}",
       "sessionIris" : "{{.*}}",
       "campaignCode" : "{{.*}}",
-      "bussinesUnit" : "{{.*}}",
+      "businessUnit" : "{{.*}}",
       "userId" : "{{.*}}",
       "currentSite" : "{{.*}}",
       "items": [{
