@@ -2,15 +2,13 @@ package com.tokopedia.review.common.util
 
 import android.content.Context
 import android.graphics.Color
-import android.os.Build
-import android.text.Spanned
 import android.text.method.LinkMovementMethod
 import android.util.TypedValue
 import android.widget.ListView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.gm.common.constant.APP_DATE_SHOP_SCORE
+import com.tokopedia.gm.common.constant.START_DATE_TRANSITION_SHOP_SCORE
 import com.tokopedia.kotlin.extensions.relativeDate
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
@@ -64,7 +62,7 @@ object ReviewUtil {
         return if(context == null) {
             ""
         } else {
-            FirebaseRemoteConfigImpl(context).getString(APP_DATE_SHOP_SCORE, "")
+            FirebaseRemoteConfigImpl(context).getString(START_DATE_TRANSITION_SHOP_SCORE, "")
         }
     }
 }
