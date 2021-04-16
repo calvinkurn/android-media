@@ -2,7 +2,7 @@ package com.tokopedia.autocomplete.initialstate
 
 import java.util.*
 
-class InitialStateViewModel{
+class InitialStateDataView{
 
     val list = ArrayList<InitialStateData>()
 
