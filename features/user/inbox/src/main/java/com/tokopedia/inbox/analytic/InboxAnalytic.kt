@@ -174,7 +174,7 @@ class InboxAnalytic @Inject constructor(
             InboxFragmentType.NOTIFICATION -> "/new-inbox/notif"
             InboxFragmentType.CHAT -> "/new-inbox/chat"
             InboxFragmentType.DISCUSSION -> "/new-inbox/diskusi"
-            InboxFragmentType.REVIEW -> "/new-inbox/ulasan"
+            InboxFragmentType.REVIEW -> "/new-inbox/review"
             else -> ""
         }
     }
