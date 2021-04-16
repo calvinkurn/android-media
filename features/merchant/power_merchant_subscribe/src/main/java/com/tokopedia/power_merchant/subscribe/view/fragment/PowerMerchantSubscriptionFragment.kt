@@ -618,19 +618,16 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
 
     private fun getPmNextCalculationDate(): String {
         val shopInfo = pmStatusAndShopInfo?.shopInfo
-        val dateFormat = "dd MMMM yyyy"
         return if (shopInfo?.isNewSeller.orTrue()) {
             val day60ofTenure = 60
             val shopAge = shopInfo?.shopAge ?: 1
             return if (shopAge < day60ofTenure) {
                 getNewSellerTenure()
             } else {
-                val endOfPeriodMillis = pmSettingInfo?.periodeEndDateMillis ?: Date().time
-                DateFormatUtils.getFormattedDate(endOfPeriodMillis, dateFormat)
+                pmSettingInfo?.periodeEndDate.orEmpty()
             }
         } else {
-            val endOfPeriodMillis = pmSettingInfo?.periodeEndDateMillis ?: Date().time
-            DateFormatUtils.getFormattedDate(endOfPeriodMillis, dateFormat)
+            pmSettingInfo?.periodeEndDate.orEmpty()
         }
     }
 

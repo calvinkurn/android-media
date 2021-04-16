@@ -17,8 +17,8 @@ data class PMSettingInfoModel(
         val shopId: Long? = 0,
         @SerializedName("period_type")
         val periodeType: String? = PeriodType.COMMUNICATION_PERIOD,
-        @SerializedName("period_end_date_time_unix")
-        val periodEndDateMillis: Long? = null,
+        @SerializedName("period_end_date_time")
+        val periodEndDateMillis: String? = "",
         @SerializedName("ticker_list")
         val tickers: List<PmTickerModel>? = emptyList()
 )

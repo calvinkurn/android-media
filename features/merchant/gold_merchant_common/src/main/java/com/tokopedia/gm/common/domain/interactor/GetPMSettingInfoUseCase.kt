@@ -42,7 +42,7 @@ class GetPMSettingInfoUseCase @Inject constructor(
              goldGetPMSettingInfo(shopID: ${'$'}shopID, source:${'$'}source) {
                shop_id
                period_type
-               period_end_date_time_unix
+               period_end_date_time
                ticker_list {
                  title
                  text
