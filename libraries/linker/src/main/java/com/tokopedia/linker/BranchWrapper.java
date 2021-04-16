@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.text.TextUtils;
 
 import com.tokopedia.config.GlobalConfig;
+import com.tokopedia.core.deprecated.LocalCacheHandler;
 import com.tokopedia.linker.helper.BranchHelper;
 import com.tokopedia.linker.helper.RechargeBranchHelper;
 import com.tokopedia.linker.interfaces.LinkerRouter;
@@ -20,6 +21,7 @@ import com.tokopedia.linker.model.UserData;
 import com.tokopedia.linker.requests.LinkerDeeplinkRequest;
 import com.tokopedia.linker.requests.LinkerGenericRequest;
 import com.tokopedia.linker.requests.LinkerShareRequest;
+import com.tokopedia.linker.validation.BranchHelperValidation;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
@@ -48,6 +50,8 @@ public class BranchWrapper implements WrapperInterface {
     private static boolean isBranchInitialized = false;
     private RemoteConfig remoteConfig;
     private static Boolean APP_OPEN_FROM_BRANCH_LINK = false;
+    private String KEY_BRANCH_IO_PREF_FILE_NAME ="branch_io_pref";
+    private String KEY_APP_FIRST_OPEN="app_first_open";
 
     @Override
     public void init(Context context) {
@@ -142,17 +146,24 @@ public class BranchWrapper implements WrapperInterface {
                         deferredDeeplinkPath = LinkerConstants.APPLINKS + "://" + deeplink;
                     }
                     if (linkerDeeplinkRequest.getDefferedDeeplinkCallback() != null) {
-                        linkerDeeplinkRequest.getDefferedDeeplinkCallback().onDeeplinkSuccess(
-                                LinkerUtils.createDeeplinkData(deeplink, promoCode));
+                        if(needSkipDeeplinkFromNonBranch(context)){
+                            linkerDeeplinkRequest.getDefferedDeeplinkCallback().onError(
+                                    LinkerUtils.createLinkerError(BranchError.ERR_BRANCH_NO_SHARE_OPTION, null));
+                        }else {
+                            linkerDeeplinkRequest.getDefferedDeeplinkCallback().onDeeplinkSuccess(
+                                    LinkerUtils.createDeeplinkData(deeplink, promoCode));
+                        }
                     }
-
                     checkAndSendUtmParams(context, referringParams);
+                    logNonBranchLinkData(referringParams);
                 } else {
                     if (linkerDeeplinkRequest.getDefferedDeeplinkCallback() != null) {
                         linkerDeeplinkRequest.getDefferedDeeplinkCallback().onError(
                                 LinkerUtils.createLinkerError(BranchError.ERR_BRANCH_NO_SHARE_OPTION, null));
                     }
                 }
+                //this method always call after needSkipDeeplinkFromNonBranch()
+                checkAndUpdateFirstOpenCache(context);
             }
         };
     }
@@ -521,6 +532,10 @@ public class BranchWrapper implements WrapperInterface {
         return getBooleanValue(context,RemoteConfigKey.ENABLE_BRANCH_UTM_ONLY_BRANCH_LINK);
     }
 
+    private Boolean isSkipDeeplinkNonBranchLinkActivated(Context context) {
+        return getBooleanValue(context,RemoteConfigKey.ENABLE_SKIP_DEEPLINK_FRON_NON_BRANCH_LINK);
+    }
+
     private Boolean getBooleanValue(Context context, String key){
         if(remoteConfig == null)
             remoteConfig = new FirebaseRemoteConfigImpl(context);
@@ -533,6 +548,31 @@ public class BranchWrapper implements WrapperInterface {
             return true;
         }
         return false;
+    }
+
+    private Boolean needSkipDeeplinkFromNonBranch(Context context){// need to add first app open
+        if(!APP_OPEN_FROM_BRANCH_LINK && !checkAndUpdateFirstOpenCache(context) && isSkipDeeplinkNonBranchLinkActivated(context)){
+            return true;
+        }
+        return false;
+    }
+
+    private void logNonBranchLinkData(JSONObject referringParams){
+        if(!APP_OPEN_FROM_BRANCH_LINK){
+            new BranchHelperValidation().logSkipDeeplinkNonBranchLink(referringParams,false);
+        }
+
+    }
+
+    private boolean checkAndUpdateFirstOpenCache(Context context) {
+        LocalCacheHandler localCacheHandler = new LocalCacheHandler(context, KEY_BRANCH_IO_PREF_FILE_NAME);
+        Boolean isNotFirstOpen = localCacheHandler.getBoolean(KEY_APP_FIRST_OPEN);
+
+        if (!isNotFirstOpen) {
+            localCacheHandler.putBoolean(KEY_APP_FIRST_OPEN, true);
+            localCacheHandler.applyEditor();
+        }
+        return isNotFirstOpen;
     }
 
 }

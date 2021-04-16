@@ -6,8 +6,10 @@ import com.tokopedia.linker.LinkerConstants
 import com.tokopedia.linker.LinkerUtils
 import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.linker.model.PaymentData
+import com.tokopedia.track.TrackApp
 import org.json.JSONArray
 import org.json.JSONException
+import org.json.JSONObject
 import timber.log.Timber
 
 class BranchHelperValidation {
@@ -76,6 +78,21 @@ class BranchHelperValidation {
             e.printStackTrace()
             logging("error;reason=exception_validateVIEW_ITEM;data='$VIEW_ITEM'ex='${Log.getStackTraceString(e)}'")
         }
+    }
+
+    fun logSkipDeeplinkNonBranchLink(referringParams: JSONObject, isFirstOpen:Boolean){
+        val clickTime = referringParams.optString("+click_timestamp")
+        val utm_medium = referringParams.optString("utm_medium")
+        val utm_source = referringParams.optString("utm_source")
+        val campaign = referringParams.optString("~campaign")
+        val android_deeplink_path = referringParams.optString("\$android_deeplink_path")
+        val clicked_branch_link = referringParams.optString("+clicked_branch_link")
+        val is_first_session = referringParams.optString("+is_first_session")
+        val clientId = TrackApp.getInstance().gtm.clientIDString
+        logging("validation;reason=SkipDeeplinkNonBranchLink;click_time='$clickTime'; utm_medium='$utm_medium';utm_source='$utm_source';" +
+                "campaign='$campaign';android_deeplink_path='$android_deeplink_path'; clicked_branch_link='$clicked_branch_link'; is_first_session='$is_first_session';" +
+                "client_id='$clientId'; first_open='$isFirstOpen'")
+
     }
 
     private fun validatePaymentId(paymentId: String) {
