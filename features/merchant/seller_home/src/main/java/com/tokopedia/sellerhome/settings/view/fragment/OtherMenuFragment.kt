@@ -355,8 +355,10 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
                             eventActionSuffix = SettingTrackingConstant.SHOP_PERFORMANCE,
                             iconUnify = IconUnify.PERFORMANCE)
 
-                    adapter.addElement(promotionIndex+1, performanceData)
-                    adapter.notifyItemRangeInserted(promotionIndex, 1)
+                    if (promotionIndex != -1) {
+                        adapter.addElement(promotionIndex + 1, performanceData)
+                        adapter.notifyItemRangeInserted(promotionIndex, 1)
+                    }
                 }
             }
         } else return
