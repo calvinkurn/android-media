@@ -56,7 +56,9 @@ open class MessageViewModel : SendableViewModel, Visitable<BaseChatTypeFactory> 
             isSender = !pojo.isOpposite,
             message = pojo.message.censoredReply,
             source = pojo.source
-    )
+    ) {
+        label = pojo.label
+    }
 
     constructor(
             messageId: String, fromUid: String, from: String, fromRole: String,
