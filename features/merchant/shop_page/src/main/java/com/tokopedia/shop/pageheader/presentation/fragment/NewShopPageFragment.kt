@@ -105,6 +105,7 @@ import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.component.S
 import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.component.ShopPerformanceWidgetImageOnlyComponentViewHolder
 import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.widget.ShopHeaderBasicInfoWidgetViewHolder
 import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.widget.ShopHeaderPlayWidgetViewHolder
+import com.tokopedia.shop.pageheader.presentation.bottomsheet.ShopOperationalHoursListBottomSheet
 import com.tokopedia.shop.pageheader.presentation.bottomsheet.ShopRequestUnmoderateBottomSheet
 import com.tokopedia.shop.pageheader.presentation.holder.NewShopPageFragmentHeaderViewHolder
 import com.tokopedia.shop.pageheader.presentation.holder.ShopPageFragmentViewHolderListener
@@ -274,6 +275,7 @@ class NewShopPageFragment :
     private var initialProductFilterParameter: ShopProductFilterParameter? = ShopProductFilterParameter()
     private var shopShareBottomSheet: ShopShareBottomSheet? = null
     private var shopUnmoderateBottomSheet: ShopRequestUnmoderateBottomSheet? = null
+    private var shopOperationalHoursListBottomSheet: ShopOperationalHoursListBottomSheet? = null
     private var shopImageFilePath: String = ""
     private var shopProductFilterParameterSharedViewModel: ShopProductFilterParameterSharedViewModel? = null
     private var shopPageFollowingStatusSharedViewModel: ShopPageFollowingStatusSharedViewModel? = null
@@ -314,6 +316,7 @@ class NewShopPageFragment :
         shopViewModel?.shopSellerPLayWidgetData?.removeObservers(this)
         shopViewModel?.shopPageTickerData?.removeObservers(this)
         shopViewModel?.shopPageShopShareData?.removeObservers(this)
+        shopViewModel?.shopOperationalHoursListData?.removeObservers(this)
         shopProductFilterParameterSharedViewModel?.sharedShopProductFilterParameter?.removeObservers(this)
         shopPageFollowingStatusSharedViewModel?.shopPageFollowingStatusLiveData?.removeObservers(this)
         shopViewModel?.flush()
@@ -593,6 +596,21 @@ class NewShopPageFragment :
                     it.broadcaster = result.data
                     shopPageFragmentHeaderViewHolder?.setupSgcPlayWidget(it)
                 }
+            }
+        })
+
+        shopViewModel?.shopOperationalHoursListData?.observe(owner, Observer { result ->
+            when(result) {
+                is Success -> {
+                    val opsHoursList = result.data.getShopOperationalHoursList?.data
+                    opsHoursList?.let { hourList ->
+                        if (hourList.isNotEmpty()) {
+                            shopOperationalHoursListBottomSheet?.hideLoader()
+                            shopOperationalHoursListBottomSheet?.updateShopHoursDataSet(hourList)
+                        }
+                    }
+                }
+                is Fail -> {}
             }
         })
 
@@ -1874,6 +1892,9 @@ class NewShopPageFragment :
         // check type for non applink component
         if (componentName == BaseShopHeaderComponentUiModel.ComponentName.SHOP_OPERATIONAL_HOUR) {
             // show shop operational hour bottomsheet
+            shopOperationalHoursListBottomSheet = ShopOperationalHoursListBottomSheet()
+            shopOperationalHoursListBottomSheet?.show(fragmentManager)
+            shopOperationalHoursListBottomSheet?.showLoader()
             shopViewModel?.getShopOperationalHoursList(shopId)
         }
 
