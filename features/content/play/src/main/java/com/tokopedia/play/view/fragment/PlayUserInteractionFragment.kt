@@ -868,7 +868,7 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     private fun openProfilePage(partnerId: Long) {
-        openPageByApplink(ApplinkConst.PROFILE, partnerId.toString())
+        openPageByApplink(ApplinkConst.PROFILE, partnerId.toString(), pipMode = true)
     }
 
     private fun doClickChatBox() {
@@ -930,7 +930,7 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     private fun openPageByApplink(applink: String, vararg params: String, requestCode: Int? = null, shouldFinish: Boolean = false, pipMode: Boolean = false) {
-        if (pipMode) {
+        if (pipMode && playViewModel.isPiPAllowed) {
             playViewModel.requestPiPBrowsingPage(
                     OpenApplinkUiModel(applink = applink, params = params.toList(), requestCode, shouldFinish)
             )
