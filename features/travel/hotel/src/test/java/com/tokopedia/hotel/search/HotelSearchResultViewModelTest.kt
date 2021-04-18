@@ -43,7 +43,6 @@ class HotelSearchResultViewModelTest {
             get() = Dispatchers.Unconfined
         override val computation: CoroutineDispatcher
             get() = Dispatchers.Unconfined
-
     }
     private lateinit var hotelSearchResultViewModel: HotelSearchResultViewModel
 
