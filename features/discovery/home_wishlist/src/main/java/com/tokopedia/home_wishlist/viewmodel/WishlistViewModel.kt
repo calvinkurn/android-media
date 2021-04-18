@@ -398,62 +398,6 @@ open class WishlistViewModel @Inject constructor(
                 }
             }
 
-    private suspend fun getTopadsAndRecommendationSeparatedWishlist(wishlistVisitable: List<WishlistDataModel>, page: Int, productIds: List<String>, recomIndex: Int): List<WishlistDataModel> =
-            withContext(wishlistCoroutineDispatcherProvider.io){
-                try{
-                    if (wishlistVisitable.isNotEmpty()) {
-                        val recommendationPositionInPreviousPage = ((currentPage - 3) * maxItemInPage) + recommendationPositionInPage
-                        var pageToken = ""
-                        if(recommendationPositionInPreviousPage >= 0 && wishlistVisitable.getOrNull(recommendationPositionInPreviousPage) is BannerTopAdsDataModel){
-                            pageToken = (wishlistVisitable[recommendationPositionInPreviousPage] as BannerTopAdsDataModel).topAdsDataModel.nextPageToken ?: ""
-                        }
-                        val topadsResult = topAdsImageViewUseCase.getImageData(
-                                topAdsImageViewUseCase.getQueryMap(
-                                        "",
-                                        "6",
-                                        pageToken,
-                                        1,
-                                        3,
-                                        ""
-                                )
-                        )
-
-                        val recommendationResult = getRecommendationUseCase.getData(
-                                GetRecommendationRequestParam(
-                                        pageNumber = page,
-                                        productIds = productIds,
-                                        pageName = WISHLIST_PAGE_NAME
-                                )
-                        )
-
-                        if (topadsResult.isNotEmpty()) {
-                            return@withContext wishlistVisitable.mappingTopadsBannerToWishlist(
-                                    topadsBanner = topadsResult.first(),
-                                    recommendationPositionInPage= recommendationPositionInPage,
-                                    currentPage = currentPage,
-                                    isInBulkMode = isInBulkMode.value ?: false,
-                                    listRecommendationCarouselOnMarked = listRecommendationCarouselOnMarked,
-                                    maxItemInPage = maxItemInPage
-                            )
-                        }
-
-                        if (recommendationResult.isNotEmpty()) {
-                            return@withContext recommendationResult.mappingRecommendationToWishlist(
-                                    currentPage = page,
-                                    wishlistVisitable = wishlistVisitable,
-                                    recommendationPositionInPage = recomIndex,
-                                    maxItemInPage = maxItemInPage,
-                                    isInBulkMode = isInBulkMode.value ?: false,
-                                    listRecommendationCarouselOnMarked = listRecommendationCarouselOnMarked
-                            )
-                        }
-                    }
-                    return@withContext wishlistVisitable
-                } catch (e: Throwable){
-                    return@withContext wishlistVisitable
-                }
-            }
-
     /**
      * Void [getRecommendationWishlist]
      * @param page pageNumber
