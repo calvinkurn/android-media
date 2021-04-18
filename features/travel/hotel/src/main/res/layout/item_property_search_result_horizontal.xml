@@ -154,7 +154,6 @@
                     android:id="@+id/price"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/spacing_lvl2"
                     android:layout_marginBottom="@dimen/spacing_lvl3"
                     android:ellipsize="end"
                     android:singleLine="true"
