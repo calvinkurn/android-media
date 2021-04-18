@@ -101,7 +101,7 @@ class BranchHelperValidation {
 
             val messageMap = mapOf("type" to "validation", "reason" to "SkipDeeplinkNonBranchLink", "click_time" to clickTime, "utm_medium" to utm_medium,
                     "utm_source" to utm_source, "campaign" to campaign, "android_deeplink_path" to android_deeplink_path, "clicked_branch_link" to clicked_branch_link,
-                    "is_first_session" to is_first_session, "client_id" to clientId,"is_first_open" to isFirstOpen?.toString(),"feature" to feature,"channel" to channel)
+                    "is_first_session" to is_first_session, "client_id" to clientId,"is_first_open" to (isFirstOpen?:false).toString(),"feature" to feature,"channel" to channel)
             logging(messageMap)
         }catch (e: Exception){
             e.printStackTrace()
