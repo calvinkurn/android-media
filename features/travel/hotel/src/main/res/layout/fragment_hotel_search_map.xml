@@ -151,7 +151,7 @@
                 android:id="@+id/rvVerticalPropertiesHotelSearchMap"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/spacing_lvl5"
+                android:layout_marginTop="@dimen/hotel_20dp"
                 android:clipToPadding="false"
                 android:paddingTop="@dimen/hotel_12dp"
                 android:paddingBottom="@dimen/hotel_140dp"
