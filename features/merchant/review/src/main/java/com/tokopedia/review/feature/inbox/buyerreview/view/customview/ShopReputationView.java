@@ -11,7 +11,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import androidx.annotation.DrawableRes;
 import androidx.appcompat.content.res.AppCompatResources;
@@ -19,6 +18,7 @@ import androidx.appcompat.content.res.AppCompatResources;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.tokopedia.design.base.BaseCustomView;
 import com.tokopedia.review.R;
+import com.tokopedia.unifyprinciples.Typography;
 
 /**
  * @author by stevenfredian on 8/16/17.
@@ -117,7 +117,7 @@ public class ShopReputationView extends BaseCustomView {
 
                 dialog = new BottomSheetDialog(getContext());
                 dialog.setContentView(com.tokopedia.design.R.layout.seller_reputation_bottom_sheet_dialog);
-                TextView point = dialog.findViewById(com.tokopedia.design.R.id.reputation_point);
+                Typography point = dialog.findViewById(com.tokopedia.design.R.id.reputation_point);
 
                 String pointText = TextUtils.isEmpty(pointValue) || pointValue.equals("0") ?
                         getContext().getString(com.tokopedia.design.R.string.no_reputation_yet) :

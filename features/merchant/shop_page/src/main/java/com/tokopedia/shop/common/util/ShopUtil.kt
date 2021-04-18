@@ -4,14 +4,17 @@ import android.content.Context
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.shop.common.constant.IGNORED_FILTER_KONDISI
 import com.tokopedia.shop.common.constant.IGNORED_FILTER_PENAWARAN
 import com.tokopedia.shop.common.constant.IGNORED_FILTER_PENGIRIMAN
-import com.tokopedia.shop.common.constant.ShopPageConstant
-import com.tokopedia.shop.common.constant.ShopPageConstant.*
+import com.tokopedia.shop.common.constant.ShopPageConstant.AB_TEST_NEW_SHOP_HEADER_KEY
+import com.tokopedia.shop.common.constant.ShopPageConstant.AB_TEST_NEW_SHOP_HEADER_NEW_VALUE
+import com.tokopedia.shop.common.constant.ShopPageConstant.REMOTE_CONFIG_ENABLE_NEW_SHOP_PAGE_HEADER
 import timber.log.Timber
 
 object ShopUtil {
@@ -19,8 +22,8 @@ object ShopUtil {
 
     fun isMyShop(shopId: String, userSessionShopId: String)  = shopId == userSessionShopId
 
-    fun logTimberWarning(errorTag: String, errorData: String) {
-        Timber.w("P2#${errorTag}#${errorData}'")
+    fun logTimberWarning(errorTag: String, errorData: Map<String, String>) {
+        ServerLogger.log(Priority.P2, errorTag, errorData)
     }
 
     fun isFilterNotIgnored(title: String): Boolean {
