@@ -124,7 +124,7 @@ class TrackingHotelUtil {
     fun searchViewFullMap(context: Context?, destType: String, destination: String, screenName: String) {
         val map = getTrackingMapWithHeader(context, screenName) as MutableMap<String, Any>
         val eventLabel = "$HOTEL_LABEL - $destType - $destination"
-        map.addGeneralEvent("", VIEW_FULL_MAP, eventLabel)
+        map.addGeneralEvent(CLICK_HOTEL, VIEW_FULL_MAP, eventLabel)
         TrackApp.getInstance().gtm.sendGeneralEvent(map)
     }
 
