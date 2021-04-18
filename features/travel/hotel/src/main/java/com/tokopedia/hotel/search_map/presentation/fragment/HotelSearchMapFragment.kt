@@ -538,6 +538,8 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                 bottomSheetHeaderHeight = bottomSheetHeaderHeight.plus(resources.getDimensionPixelSize(
                         com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3)) // knob top margin
                 bottomSheetHeaderHeight = bottomSheetHeaderHeight.plus(titleLayoutParam.topMargin) // title top margin
+                bottomSheetHeaderHeight = bottomSheetHeaderHeight.plus(resources.getDimensionPixelSize(
+                        com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4)) // add margin
 
                 bottomSheetBehavior.peekHeight = bottomSheetHeaderHeight
             }
