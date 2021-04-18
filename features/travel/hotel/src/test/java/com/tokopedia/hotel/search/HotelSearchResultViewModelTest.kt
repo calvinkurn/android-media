@@ -30,7 +30,7 @@ class HotelSearchResultViewModelTest {
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
-    private val dispatcher = TravelTestDispatcherProvider()
+    private val dispatcher = CoroutineTestDispatchersProvider
     private lateinit var hotelSearchResultViewModel: HotelSearchResultViewModel
 
     private val travelTickerCoroutineUseCase = mockk<TravelTickerCoroutineUseCase>()

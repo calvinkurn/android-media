@@ -11,7 +11,7 @@ import com.tokopedia.salam.umrah.common.data.UmrahValueLabelEntity
 import com.tokopedia.salam.umrah.common.presentation.model.UmrahMyUmrahWidgetModel
 import com.tokopedia.salam.umrah.common.presentation.model.UmrahSimpleDetailModel
 import com.tokopedia.salam.umrah.common.presentation.model.UmrahSimpleModel
-import com.tokopedia.salam.umrah.common.util.UmrahDispatchersProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.salam.umrah.orderdetail.data.UmrahOrderDetailButtonModel
 import com.tokopedia.salam.umrah.orderdetail.data.UmrahOrderDetailsEntity
 import com.tokopedia.usecase.coroutines.Fail
@@ -25,8 +25,8 @@ import javax.inject.Inject
  * @author by furqan on 08/10/2019
  */
 class UmrahOrderDetailViewModel @Inject constructor(private val graphqlRepository: GraphqlRepository,
-                                                    private val dispatcher: UmrahDispatchersProvider)
-    : BaseViewModel(dispatcher.Main) {
+                                                    private val dispatcher: CoroutineDispatchers)
+    : BaseViewModel(dispatcher.main) {
 
     val orderDetailData = MutableLiveData<Result<UmrahOrderDetailsEntity>>()
     val myWidgetData = MutableLiveData<Result<UmrahMyUmrahWidgetModel>>()
@@ -36,7 +36,7 @@ class UmrahOrderDetailViewModel @Inject constructor(private val graphqlRepositor
                 PARAM_ORDER_CATEGORY_STR to UMRAH_CATEGORY)
 
         launchCatchError(block = {
-            val data = withContext(dispatcher.Main) {
+            val data = withContext(dispatcher.main) {
                 val graphqlRequest = GraphqlRequest(rawQuery, UmrahOrderDetailsEntity.Response::class.java, params)
                 graphqlRepository.getReseponse(listOf(graphqlRequest))
             }.getSuccessData<UmrahOrderDetailsEntity.Response>()
@@ -50,7 +50,7 @@ class UmrahOrderDetailViewModel @Inject constructor(private val graphqlRepositor
         val params = mapOf(PARAM_ORDER_ID to orderId)
 
         launchCatchError(block = {
-            val data = withContext(dispatcher.Main) {
+            val data = withContext(dispatcher.main) {
                 val graphqlRequest = GraphqlRequest(rawQuery, MyUmrahEntity.Response::class.java, params)
                 graphqlRepository.getReseponse(listOf(graphqlRequest))
             }.getSuccessData<MyUmrahEntity.Response>()

@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.officialstore.OfficialStoreDispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.officialstore.category.data.model.OfficialStoreCategories
 import com.tokopedia.officialstore.category.domain.GetOfficialStoreCategoriesUseCase
 import com.tokopedia.usecase.coroutines.Fail
@@ -15,8 +15,8 @@ import javax.inject.Inject
 
 class OfficialStoreCategoryViewModel @Inject constructor(
         private val getOfficialStoreCategoriesUseCase: GetOfficialStoreCategoriesUseCase,
-        private val dispatchers: OfficialStoreDispatcherProvider
-) : BaseViewModel(dispatchers.ui()) {
+        private val dispatchers: CoroutineDispatchers
+) : BaseViewModel(dispatchers.main) {
 
     val officialStoreCategoriesResult: LiveData<Result<OfficialStoreCategories>>
         get() = _officialStoreCategoriesResult
@@ -27,13 +27,13 @@ class OfficialStoreCategoryViewModel @Inject constructor(
 
     fun getOfficialStoreCategories(doQueryHashing : Boolean) {
         launchCatchError(block = {
-            val cacheResponse = withContext(dispatchers.io()) {
+            val cacheResponse = withContext(dispatchers.io) {
                 getOfficialStoreCategoriesUseCase.executeOnBackground(true, doQueryHashing)
             }
             cacheResponse.isCache = true
             _officialStoreCategoriesResult.value = Success(cacheResponse)
 
-            val cloudResponse = withContext(dispatchers.io()) {
+            val cloudResponse = withContext(dispatchers.io) {
                 getOfficialStoreCategoriesUseCase.executeOnBackground(false, doQueryHashing)
             }
             _officialStoreCategoriesResult.value = Success(cloudResponse)

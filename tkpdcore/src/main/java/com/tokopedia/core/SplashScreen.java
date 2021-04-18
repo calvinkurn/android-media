@@ -25,6 +25,8 @@ import com.tokopedia.linker.interfaces.DefferedDeeplinkCallback;
 import com.tokopedia.linker.model.LinkerDeeplinkData;
 import com.tokopedia.linker.model.LinkerDeeplinkResult;
 import com.tokopedia.linker.model.LinkerError;
+import com.tokopedia.logger.ServerLogger;
+import com.tokopedia.logger.utils.Priority;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
@@ -32,6 +34,9 @@ import com.tokopedia.weaver.WeaveInterface;
 import com.tokopedia.weaver.Weaver;
 
 import org.jetbrains.annotations.NotNull;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import timber.log.Timber;
 
@@ -103,7 +108,10 @@ public class SplashScreen extends AppCompatActivity {
     @NotNull
     private boolean executeMoveToHomeFlow(boolean status){
         if(!status){
-            Timber.w("P1#PLAY_SERVICE_ERROR#splash_screen;fingerprint='%s'", Build.FINGERPRINT);
+            Map<String, String> messageMap = new HashMap<>();
+            messageMap.put("type", "splash_screen");
+            messageMap.put("fingerprint", Build.FINGERPRINT);
+            ServerLogger.log(Priority.P1, "PLAY_SERVICE_ERROR", messageMap);
         }
         Pgenerator = new PasswordGenerator(SplashScreen.this);
         InitNew();
@@ -194,7 +202,10 @@ public class SplashScreen extends AppCompatActivity {
                                 intent.setClassName(SplashScreen.this.getPackageName(),
                                         com.tokopedia.config.GlobalConfig.DEEPLINK_HANDLER_ACTIVITY_CLASS_NAME);
                             }
-                            Timber.w("P2#LINKER#splash_screen;deeplink='%s'", tokopediaDeeplink);
+                            Map<String, String> messageMap = new HashMap<>();
+                            messageMap.put("type", "splash_screen");
+                            messageMap.put("deeplink", tokopediaDeeplink);
+                            ServerLogger.log(Priority.P2, "LINKER", messageMap);
                             intent.setData(Uri.parse(tokopediaDeeplink));
                             startActivity(intent);
                             finish();
