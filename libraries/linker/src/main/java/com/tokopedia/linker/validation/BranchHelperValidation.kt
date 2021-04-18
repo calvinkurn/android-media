@@ -89,10 +89,12 @@ class BranchHelperValidation {
             val android_deeplink_path = referringParams.optString(LinkerConstants.KEY_ANDROID_DEEPLINK_PATH)
             val clicked_branch_link = referringParams.optString("+clicked_branch_link")
             val is_first_session = referringParams.optString("+is_first_session")
+            val feature = referringParams.optString("~feature")
+            val channel = referringParams.optString("~channel")
             val clientId = TrackApp.getInstance().gtm.clientIDString
             logging("validation;reason=SkipDeeplinkNonBranchLink;click_time='$clickTime'; utm_medium='$utm_medium';utm_source='$utm_source';" +
                     "campaign='$campaign';android_deeplink_path='$android_deeplink_path'; clicked_branch_link='$clicked_branch_link'; is_first_session='$is_first_session';" +
-                    "client_id='$clientId'; first_open='$isFirstOpen'")
+                    "client_id='$clientId'; first_open='$isFirstOpen'; feature='$feature'; channel='$channel'")
         }catch (e: Exception){
             e.printStackTrace()
             logging("error;reason=exception_skipDeeplink;data=logSkipDeeplinkNonBranchLink;ex='${Log.getStackTraceString(e)}'")
