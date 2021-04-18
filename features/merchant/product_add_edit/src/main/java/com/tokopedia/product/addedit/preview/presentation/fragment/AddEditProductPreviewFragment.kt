@@ -162,6 +162,7 @@ class AddEditProductPreviewFragment :
     private var formattedAddress: String = ""
     private var productInputModel: ProductInputModel? = null
     private var isFragmentVisible = false
+    private var isFragmentFirstTimeLoaded = true
     private var isAdminEligible = true
     private var isProductLimitEligible: Boolean = true
 
@@ -406,10 +407,11 @@ class AddEditProductPreviewFragment :
 
             val validateMessage = viewModel.validateProductInput(viewModel.productInputModel.value?.detailInputModel
                     ?: DetailInputModel())
+            val isAddingOrDuplicating = isAdding() || viewModel.isDuplicate
 
             if (validateMessage.isNotEmpty()) {
                 Toaster.make(view, validateMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
-            } else if (isAdding() && !isProductLimitEligible) {
+            } else if (isAddingOrDuplicating && !isProductLimitEligible) {
                 productLimitationBottomSheet?.setSubmitButtonText(getString(R.string.label_product_limitation_bottomsheet_button_draft))
                 productLimitationBottomSheet?.setIsSavingToDraft(true)
                 productLimitationBottomSheet?.show(childFragmentManager)
@@ -554,6 +556,7 @@ class AddEditProductPreviewFragment :
     override fun onDestroyView() {
         super.onDestroyView()
         isFragmentVisible = false
+        isFragmentFirstTimeLoaded = false
         removeObservers()
     }
 
@@ -1168,7 +1171,7 @@ class AddEditProductPreviewFragment :
 
     private fun observeProductLimitationData() {
         if (isAdding() || viewModel.isDuplicate) {
-            viewModel.getProductLimitation()
+            if (isFragmentFirstTimeLoaded) viewModel.getProductLimitation()
             viewModel.productLimitationData.observe(viewLifecycleOwner) {
                 when(it) {
                     is Success -> {
@@ -1679,10 +1682,9 @@ class AddEditProductPreviewFragment :
             productLimitationBottomSheet?.show(childFragmentManager)
         }
 
-        if (!isProductLimitEligible && dataBackPressed == null) {
-            productLimitationBottomSheet?.setSubmitButtonText(getString(R.string.label_product_limitation_bottomsheet_button))
-            productLimitationBottomSheet?.setIsSavingToDraft(false)
-            productLimitationBottomSheet?.show(childFragmentManager)
+        // launch bottomsheet automatically when fragment loaded
+        if (!isProductLimitEligible && isFragmentFirstTimeLoaded) {
+            productLimitationTicker?.performClick()
         }
     }
 }
