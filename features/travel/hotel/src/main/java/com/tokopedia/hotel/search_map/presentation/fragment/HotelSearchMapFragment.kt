@@ -1256,7 +1256,8 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         viewTree.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
                 viewTree.removeOnGlobalLayoutListener(this)
-                bottomSheetBehavior.peekHeight = containerEmptyResultState.measuredHeight
+                bottomSheetBehavior.peekHeight = containerEmptyResultState.measuredHeight +
+                        resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4)
 
                 collapseBottomSheet()
             }
