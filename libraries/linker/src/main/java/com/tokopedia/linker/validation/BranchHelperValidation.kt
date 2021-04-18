@@ -108,8 +108,6 @@ class BranchHelperValidation {
             val messageMap = mapOf("type" to "error", "reason" to "exception_skipDeeplink", "data" to "logSkipDeeplinkNonBranchLink", "ex" to Log.getStackTraceString(e))
             logging(messageMap)
         }
-
-
     }
 
     private fun validatePaymentId(paymentId: String) {
