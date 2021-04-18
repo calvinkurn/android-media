@@ -13,31 +13,28 @@ import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.RootMatchers
 import androidx.test.espresso.matcher.ViewMatchers
-import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
 import androidx.test.uiautomator.UiDevice
 import androidx.test.uiautomator.UiSelector
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
-import com.tokopedia.cassavatest.getAnalyticsWithQuery
-import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.destination.view.activity.HotelDestinationActivity
 import com.tokopedia.hotel.search.data.model.HotelSearchModel
 import com.tokopedia.hotel.search.presentation.activity.mock.HotelSearchMockResponseConfig
 import com.tokopedia.hotel.search.presentation.adapter.viewholder.SearchPropertyViewHolder
 import com.tokopedia.hotel.search.presentation.fragment.HotelSearchResultFragment
+import com.tokopedia.hotel.search_map.presentation.adapter.viewholder.HotelSearchMapItemViewHolder
 import com.tokopedia.hotel.search_map.presentation.fragment.HotelSearchMapFragment
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import org.hamcrest.core.AllOf
 import org.junit.After
-import org.junit.Assert.assertThat
 import org.junit.Rule
 import org.junit.Test
 
 class HotelSearchMapActivityTest {
 
-    private val targetContext = InstrumentationRegistry.getInstrumentation().targetContext
+    private val targetContext = getInstrumentation().targetContext
     private val gtmLogDBSource = GtmLogDBSource(targetContext)
     private val uiDevice = UiDevice.getInstance(getInstrumentation())
 
@@ -75,15 +72,19 @@ class HotelSearchMapActivityTest {
         clickQuickFilterChips()
         clickOnSortAndFilter()
         clickOnChangeDestination()
+        actionViewFullMap()
+        actionCloseMap()
 
         Intents.intending(IntentMatchers.anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
+
+        clickHotelFromHorizontalItems()
         validateHotelSearchPageTracking()
 
-        assertThat(getAnalyticsWithQuery(gtmLogDBSource, targetContext, ANALYTIC_VALIDATOR_QUERY_HOTEL_DISCO), hasAllSuccess())
+//        assertThat(getAnalyticsWithQuery(gtmLogDBSource, targetContext, ANALYTIC_VALIDATOR_QUERY_HOTEL_DISCO), hasAllSuccess())
     }
 
     private fun clickCoachMark() {
-        Thread.sleep(3000)
+        Thread.sleep(2000)
 
         try {
             // if coachmark show, it will have 3 items
@@ -98,44 +99,44 @@ class HotelSearchMapActivityTest {
                     .perform(ViewActions.click())
         } catch (t: Throwable) {
             // do nothing because no more coachmark shown
-            t.printStackTrace()
         }
     }
 
     private fun validateHotelSearchPageTracking() {
         Thread.sleep(2000)
         assert(getHotelResultCount() > 1)
+        actionCloseMap()
 
-        Thread.sleep(3000)
+        Thread.sleep(2000)
         if (getHotelResultCount() > 0) {
             Espresso.onView(ViewMatchers.withId(R.id.rvVerticalPropertiesHotelSearchMap)).perform(RecyclerViewActions
                     .actionOnItemAtPosition<SearchPropertyViewHolder>(0, ViewActions.click()))
         }
 
-        Thread.sleep(3000)
+        Thread.sleep(2000)
     }
 
     private fun clickQuickFilterChips() {
-        Thread.sleep(4000)
+        Thread.sleep(2000)
         Espresso.onView(AllOf.allOf(ViewMatchers.withText("Hygiene Verified"))).perform(ViewActions.click())
     }
 
     private fun clickOnSortAndFilter() {
-        Thread.sleep(3000)
+        Thread.sleep(2000)
 
-        Espresso.onView(AllOf.allOf(ViewMatchers.withText("Filters"))).perform(ViewActions.click())
+        Espresso.onView(AllOf.allOf(ViewMatchers.withText("Filter"))).perform(ViewActions.click())
         Espresso.onView(AllOf.allOf(ViewMatchers.withId(R.id.hotel_selection_chip_title), ViewMatchers.withText("3"))).perform(ViewActions.click())
         Thread.sleep(2000)
         Espresso.onView(ViewMatchers.withId(R.id.hotel_filter_submit_button)).perform(ViewActions.click())
 
-        Thread.sleep(3000)
+        Thread.sleep(2000)
     }
 
     private fun clickOnChangeDestination() {
-        Thread.sleep(3000)
+        Thread.sleep(2000)
         Espresso.onView(ViewMatchers.withId(R.id.rightContentID)).perform(ViewActions.click())
 
-        Thread.sleep(4000)
+        Thread.sleep(2000)
         Intents.intending(IntentMatchers.hasComponent(HotelDestinationActivity::class.java.name)).respondWith(createDummyDestination())
         Espresso.onView(ViewMatchers.withId(R.id.tv_hotel_homepage_destination)).perform(ViewActions.click())
         Intents.intended(AllOf.allOf(IntentMatchers.hasComponent(HotelDestinationActivity::class.java.name)))
@@ -145,6 +146,46 @@ class HotelSearchMapActivityTest {
         Thread.sleep(2000)
         Espresso.onView(ViewMatchers.withId(R.id.tv_hotel_homepage_destination)).perform(ViewActions.click())
         Espresso.onView(ViewMatchers.withId(R.id.btn_hotel_homepage_search)).perform(ViewActions.click())
+    }
+
+    private fun actionViewFullMap() {
+        Thread.sleep(2000)
+
+        Espresso.onView(ViewMatchers.withId(R.id.topHotelSearchMapListKnob))
+                .perform(ViewActions.swipeDown())
+        Espresso.onView(ViewMatchers.withId(R.id.topHotelSearchMapListKnob))
+                .perform(ViewActions.swipeDown())
+
+        Thread.sleep(2000)
+    }
+
+    private fun actionCloseMap() {
+        Thread.sleep(2000)
+
+        try {
+            Espresso.onView(ViewMatchers.withId(R.id.topHotelSearchMapListKnob))
+                    .perform(ViewActions.swipeUp())
+            Espresso.onView(ViewMatchers.withId(R.id.topHotelSearchMapListKnob))
+                    .perform(ViewActions.swipeUp())
+        } catch (t: Throwable) {
+            // do nothing, the knob is not visible anymore
+        }
+
+        Thread.sleep(2000)
+    }
+
+    private fun clickHotelFromHorizontalItems() {
+        Thread.sleep(2000)
+        assert(getHotelResultCount() > 1)
+        actionViewFullMap()
+
+        Thread.sleep(2000)
+        if (getHotelResultCount() > 0) {
+            Espresso.onView(ViewMatchers.withId(R.id.rvHorizontalPropertiesHotelSearchMap)).perform(RecyclerViewActions
+                    .actionOnItemAtPosition<HotelSearchMapItemViewHolder>(0, ViewActions.click()))
+        }
+
+        Thread.sleep(2000)
     }
 
     private fun createDummyDestination(): Instrumentation.ActivityResult {
@@ -183,6 +224,6 @@ class HotelSearchMapActivityTest {
     }
 
     companion object {
-        private const val ANALYTIC_VALIDATOR_QUERY_HOTEL_DISCO = "tracker/travel/hotel/hotel_search_result_page.json"
+        private const val ANALYTIC_VALIDATOR_QUERY_HOTEL_DISCO = "tracker/travel/hotel/hotel_search_map_page.json"
     }
 }
