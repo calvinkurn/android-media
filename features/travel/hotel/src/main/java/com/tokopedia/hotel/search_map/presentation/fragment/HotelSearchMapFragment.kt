@@ -944,7 +944,9 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                 val coachmark = CoachMark2(it)
                 coachmark.setStepListener(object : CoachMark2.OnStepListener {
                     override fun onStep(currentIndex: Int, coachMarkItem: CoachMark2Item) {
-                        if (currentIndex == COACHMARK_LIST_STEP_POSITION) {
+                        if (currentIndex == COACHMARK_MAP_STEP_POSITION) {
+                            halfExpandBottomSheet()
+                        } else if (currentIndex == COACHMARK_LIST_STEP_POSITION) {
                             collapseBottomSheet()
                         } else if (currentIndex == COACHMARK_FILTER_STEP_POSITION) {
                             halfExpandBottomSheet()
@@ -1281,6 +1283,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
             adapter.list.size > 0 && adapter.list[0] is ErrorNetworkModel
 
     companion object {
+        private const val COACHMARK_MAP_STEP_POSITION = 0
         private const val COACHMARK_LIST_STEP_POSITION = 1
         private const val COACHMARK_FILTER_STEP_POSITION = 2
 
