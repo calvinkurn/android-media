@@ -105,7 +105,7 @@
             android:id="@+id/hotel_search_map_bottom_sheet"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@drawable/bg_hotel_search_map_bottom_sheet_rounded"
+            android:background="@drawable/bottomsheet_background_and_shadow"
             android:elevation="@dimen/spacing_lvl2"
             android:focusable="true"
             android:focusableInTouchMode="true"
