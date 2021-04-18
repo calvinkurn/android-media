@@ -532,50 +532,6 @@ open class WishlistViewModel @Inject constructor(
         }
     }
 
-    private suspend fun getTopAdsBannerAndRecommendationData(wishlistVisitable: List<WishlistDataModel>, currentPage: Int, productIds: List<String>, topAdsIndex: Int): List<WishlistDataModel>{
-        return withContext(wishlistCoroutineDispatcherProvider.io){
-            try{
-                if(wishlistVisitable.isNotEmpty()) {
-                    val recommendationPositionInPreviousPage = ((currentPage - 3) * maxItemInPage) + recommendationPositionInPage
-                    var pageToken = ""
-                    if(recommendationPositionInPreviousPage >= 0 && wishlistVisitable.getOrNull(recommendationPositionInPreviousPage) is BannerTopAdsDataModel){
-                        pageToken = (wishlistVisitable[recommendationPositionInPreviousPage] as BannerTopAdsDataModel).topAdsDataModel.nextPageToken ?: ""
-                    }
-                    val results = topAdsImageViewUseCase.getImageData(
-                            topAdsImageViewUseCase.getQueryMap(
-                                    "",
-                                    "6",
-                                    pageToken,
-                                    1,
-                                    3,
-                                    ""
-                            )
-                    )
-                    if (results.isNotEmpty()) {
-                        return@withContext wishlistVisitable.mappingTopadsBannerToWishlist(
-                                topadsBanner = results.first(),
-                                recommendationPositionInPage= recommendationPositionInPage,
-                                currentPage = currentPage,
-                                isInBulkMode = isInBulkMode.value ?: false,
-                                listRecommendationCarouselOnMarked = listRecommendationCarouselOnMarked,
-                                maxItemInPage = maxItemInPage
-                        )
-                    } else {
-                        return@withContext getRecommendationWishlist(
-                                wishlistVisitable = wishlistVisitable,
-                                page = currentPage,
-                                productIds = productIds,
-                                recomIndex = topAdsIndex
-                        )
-                    }
-                }
-                return@withContext wishlistVisitable
-            } catch (e: Throwable){
-                return@withContext wishlistVisitable
-            }
-        }
-    }
-
     /**
      * Void [updateRecommendationItemWishlist]
      * @param parentPosition recommendation carousel data position in root recyclerView
