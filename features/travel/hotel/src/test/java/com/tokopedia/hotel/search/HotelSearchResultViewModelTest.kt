@@ -1,9 +1,9 @@
 package com.tokopedia.hotel.search
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.common.travel.ticker.domain.TravelTickerCoroutineUseCase
 import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerModel
-import com.tokopedia.common.travel.utils.TravelTestDispatcherProvider
 import com.tokopedia.hotel.common.data.HotelTypeEnum
 import com.tokopedia.hotel.search.data.model.*
 import com.tokopedia.hotel.search.data.model.params.ParamFilterV2
@@ -15,6 +15,8 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
 import io.mockk.mockk
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -30,7 +32,19 @@ class HotelSearchResultViewModelTest {
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
-    private val dispatcher = CoroutineTestDispatchersProvider
+    private val dispatcher = object: CoroutineDispatchers {
+        override val main: CoroutineDispatcher
+            get() = Dispatchers.Unconfined
+        override val io: CoroutineDispatcher
+            get() = Dispatchers.Unconfined
+        override val default: CoroutineDispatcher
+            get() = Dispatchers.Unconfined
+        override val immediate: CoroutineDispatcher
+            get() = Dispatchers.Unconfined
+        override val computation: CoroutineDispatcher
+            get() = Dispatchers.Unconfined
+
+    }
     private lateinit var hotelSearchResultViewModel: HotelSearchResultViewModel
 
     private val travelTickerCoroutineUseCase = mockk<TravelTickerCoroutineUseCase>()
