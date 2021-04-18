@@ -4,6 +4,8 @@ import android.content.Context
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
@@ -22,8 +24,8 @@ object ShopUtil {
 
     fun isMyShop(shopId: String, userSessionShopId: String)  = shopId == userSessionShopId
 
-    fun logTimberWarning(errorTag: String, errorData: String) {
-        Timber.w("P2#${errorTag}#${errorData}'")
+    fun logTimberWarning(errorTag: String, errorData: Map<String, String>) {
+        ServerLogger.log(Priority.P2, errorTag, errorData)
     }
 
     fun isFilterNotIgnored(title: String): Boolean {

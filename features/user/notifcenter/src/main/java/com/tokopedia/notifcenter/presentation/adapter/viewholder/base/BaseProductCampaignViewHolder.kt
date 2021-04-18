@@ -7,6 +7,8 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
 import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.data.entity.ProductData
 import com.tokopedia.notifcenter.data.state.BottomSheetType
@@ -81,7 +83,10 @@ abstract class BaseProductCampaignViewHolder(
                     if(bottomSheetType != null) {
                         listener.showNotificationDetail(bottomSheetType, element)
                     } else {
-                        Timber.w("P2#ACCOUNT_HOME_ERROR#'NotifCenter';'bottomSheetType is Null';'${element}'")
+                        ServerLogger.log(Priority.P2, "ACCOUNT_HOME_ERROR", mapOf("type" to "NotifCenter",
+                                "bottomSheetType" to "bottomSheetType is Null",
+                                "element" to element.toString()
+                        ))
                     }
                 }
             }
