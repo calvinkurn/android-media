@@ -112,6 +112,8 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
     private var searchPropertiesMap: ArrayList<LatLng> = arrayListOf()
     private var isSearchByMap: Boolean = false
 
+    private var isViewFullMap: Boolean = false
+
     private lateinit var filterBottomSheet: HotelFilterBottomSheets
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<ConstraintLayout>
     private lateinit var bounceAnim: Animation
@@ -497,10 +499,13 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                         setupContentMargin(true)
                         googleMap.uiSettings.setAllGesturesEnabled(false)
 
-                        trackingHotelUtil.searchCloseMap(context,
-                                searchDestinationName,
-                                searchDestinationType,
-                                SEARCH_SCREEN_NAME)
+                        if (isViewFullMap) {
+                            trackingHotelUtil.searchCloseMap(context,
+                                    searchDestinationName,
+                                    searchDestinationType,
+                                    SEARCH_SCREEN_NAME)
+                            isViewFullMap = false
+                        }
                     }
                     BottomSheetBehavior.STATE_HALF_EXPANDED -> {
                         googleMap.animateCamera(CameraUpdateFactory.zoomTo(MAPS_ZOOM_OUT))
@@ -513,10 +518,13 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                         setupContentMargin(false)
                         googleMap.uiSettings.setAllGesturesEnabled(true)
 
-                        trackingHotelUtil.searchViewFullMap(context,
-                                searchDestinationName,
-                                searchDestinationType,
-                                SEARCH_SCREEN_NAME)
+                        if (!isViewFullMap) {
+                            trackingHotelUtil.searchViewFullMap(context,
+                                    searchDestinationName,
+                                    searchDestinationType,
+                                    SEARCH_SCREEN_NAME)
+                            isViewFullMap = true
+                        }
                     }
                     else -> {
                         setupContentMargin(false)
