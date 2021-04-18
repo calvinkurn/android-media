@@ -131,28 +131,28 @@ class TrackingHotelUtil {
     fun searchCloseMap(context: Context?, destType: String, destination: String, screenName: String) {
         val map = getTrackingMapWithHeader(context, screenName) as MutableMap<String, Any>
         val eventLabel = "$HOTEL_LABEL - $destType - $destination"
-        map.addGeneralEvent("", VIEW_CLOSE_MAP, eventLabel)
+        map.addGeneralEvent(CLICK_HOTEL, VIEW_CLOSE_MAP, eventLabel)
         TrackApp.getInstance().gtm.sendGeneralEvent(map)
     }
 
     fun searchClickMyLocation(context: Context?, destType: String, destination: String, screenName: String) {
         val map = getTrackingMapWithHeader(context, screenName) as MutableMap<String, Any>
         val eventLabel = "$HOTEL_LABEL - $LABEL_HOTEL_SEARCH_MAP - $destType - $destination"
-        map.addGeneralEvent("", CLICK_MY_LOCATION, eventLabel)
+        map.addGeneralEvent(CLICK_HOTEL, CLICK_MY_LOCATION, eventLabel)
         TrackApp.getInstance().gtm.sendGeneralEvent(map)
     }
 
     fun searchNearLocation(context: Context?, destType: String, destination: String, screenName: String) {
         val map = getTrackingMapWithHeader(context, screenName) as MutableMap<String, Any>
         val eventLabel = "$HOTEL_LABEL - $LABEL_HOTEL_SEARCH_MAP - $destType - $destination"
-        map.addGeneralEvent("", CLICK_SEARCH_NEAR_LOCATION, eventLabel)
+        map.addGeneralEvent(CLICK_HOTEL, CLICK_SEARCH_NEAR_LOCATION, eventLabel)
         TrackApp.getInstance().gtm.sendGeneralEvent(map)
     }
 
     fun searchHotelNotFound(context: Context?, destType: String, destination: String, screenName: String) {
         val map = getTrackingMapWithHeader(context, screenName) as MutableMap<String, Any>
         val eventLabel = "$HOTEL_LABEL - $LABEL_HOTEL_SEARCH_MAP - $destType - $destination"
-        map.addGeneralEvent("", SEE_HOTEL_NOT_FOUND, eventLabel)
+        map.addGeneralEvent(CLICK_HOTEL, SEE_HOTEL_NOT_FOUND, eventLabel)
         TrackApp.getInstance().gtm.sendGeneralEvent(map)
     }
 
