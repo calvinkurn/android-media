@@ -167,7 +167,7 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
                 }
             } else {
                 cbSelectShop.isEnabled = true
-                flShopItemContainer.foreground = ContextCompat.getDrawable(flShopItemContainer.context, R.drawable.fg_enabled_item)
+                flShopItemContainer.foreground = ContextCompat.getDrawable(flShopItemContainer.context, com.tokopedia.purchase_platform.common.R.drawable.fg_enabled_item)
                 llShopContainer.setBackgroundColor(llShopContainer.context.resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N0))
                 llWarningAndError.layoutError.gone()
             }
