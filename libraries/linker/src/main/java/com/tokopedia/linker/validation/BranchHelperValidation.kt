@@ -86,7 +86,7 @@ class BranchHelperValidation {
             val utm_medium = referringParams.optString("utm_medium")
             val utm_source = referringParams.optString("utm_source")
             val campaign = referringParams.optString("~campaign")
-            val android_deeplink_path = referringParams.optString("\$android_deeplink_path")
+            val android_deeplink_path = referringParams.optString(LinkerConstants.KEY_ANDROID_DEEPLINK_PATH)
             val clicked_branch_link = referringParams.optString("+clicked_branch_link")
             val is_first_session = referringParams.optString("+is_first_session")
             val clientId = TrackApp.getInstance().gtm.clientIDString
