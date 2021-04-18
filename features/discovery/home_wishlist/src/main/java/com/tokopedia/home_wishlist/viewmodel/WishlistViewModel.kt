@@ -162,14 +162,10 @@ open class WishlistViewModel @Inject constructor(
 
                     // if user has > 4 products, banner ads is after 4th of products, while recom widget is always at the bottom of the page
                 } else if (data.items.size > recommendationPositionInPage) {
-                    wishlistData.value = getTopadsAndRecommendationSeparatedWishlist(visitableWishlist, currentPage, data.items.map { it.id }, data.items.size)
-
-                    // ff user has >24 products → follow normal rules, banner ads is after 4th products, recom widget after 24th product
-                } else {
-                    if (data.items.size >= recommendationPositionInPage ) {
-                        wishlistData.value = getTopAdsBannerData(visitableWishlist, currentPage, data.items.map { it.id }, recommendationPositionInPage)
+                    if (data.items.size == 20 && !data.hasNextPage){
+                        wishlistData.value = getRecommendationWishlist(visitableWishlist, currentPage, data.items.map { it.id }, maxItemInPage)
                     } else {
-                        wishlistData.value = visitableWishlist
+                        wishlistData.value = getTopAdsBannerData(visitableWishlist, currentPage, data.items.map { it.id }, recommendationPositionInPage)
                     }
                 }
             }
@@ -202,10 +198,9 @@ open class WishlistViewModel @Inject constructor(
             } else {
                 val newPageVisitableData = removeLoadMore().combineVisitable(data.items.mappingWishlistToVisitable(isInBulkMode.value ?: false))
 
-                if (data.items.size >= recommendationPositionInPage && currentPage % 2 == 0) {
-                    wishlistData.value = getRecommendationWishlist(newPageVisitableData, currentPage, data.items.map { it.id }, recommendationPositionInPage)
-                } else {
-                    wishlistData.value = getTopAdsBannerData(newPageVisitableData, currentPage, data.items.map { it.id }, recommendationPositionInPage)
+                if (!data.hasNextPage) {
+                    wishlistState.value = Status.DONE
+                    wishlistData.value = getRecommendationWishlist(newPageVisitableData, currentPage, data.items.map { it.id }, data.items.size)
                 }
 
                 loadMoreWishlistAction.value = Event(LoadMoreWishlistActionData(
