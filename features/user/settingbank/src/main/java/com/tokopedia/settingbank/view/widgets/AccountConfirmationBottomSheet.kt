@@ -45,7 +45,7 @@ class AccountConfirmationBottomSheet : BottomSheetUnify() {
         context?.run {
             val child = LayoutInflater.from(this)
                     .inflate(R.layout.bottom_sheet_confirm_account, ConstraintLayout(this), false)
-            setTitle(getString(R.string.sbank_confirm_bank_account))
+            setTitle(TITLE)
             setChild(child)
         }
     }
@@ -99,6 +99,7 @@ class AccountConfirmationBottomSheet : BottomSheetUnify() {
     }
 
     companion object {
+        private val TITLE = "Konfirmasi rekening bank"
         private val BANK_ACCOUNT = "bank_account"
         private val KYC_INFO = "kyc_info"
         private val TAG = "AccountConfirmationBottomSheet"
