@@ -455,7 +455,7 @@ public class ProductListFragment
     public void setupSearchNavigation() {
         if (searchNavigationListener == null) return;
 
-        searchNavigationListener.setupSearchNavigation(this::switchLayoutType, true);
+        searchNavigationListener.setupSearchNavigation(this::switchLayoutType);
         refreshMenuItemGridIcon();
     }
 

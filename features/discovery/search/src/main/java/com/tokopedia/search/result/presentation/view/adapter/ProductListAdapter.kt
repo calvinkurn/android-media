@@ -25,6 +25,8 @@ class ProductListAdapter(
     private val list = mutableListOf<Visitable<*>>()
     private val loadingMoreModel = LoadingMoreModel()
 
+    val itemList get() = list
+
     fun changeSearchNavigationListView(position: Int) {
         if (position !in list.indices) return
 
@@ -228,8 +230,6 @@ class ProductListAdapter(
 
         notifyItemChanged(index)
     }
-
-    fun getItemList() = list
 
     interface OnItemChangeView {
         fun onChangeList()
