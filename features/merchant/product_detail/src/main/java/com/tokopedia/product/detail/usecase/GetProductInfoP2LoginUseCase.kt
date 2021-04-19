@@ -4,10 +4,10 @@ import com.tokopedia.affiliatecommon.data.pojo.productaffiliate.TopAdsPdpAffilia
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
+import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
-import com.tokopedia.logger.ServerLogger
-import com.tokopedia.logger.utils.Priority
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.common.data.model.product.TopAdsGetProductManage
 import com.tokopedia.product.detail.common.data.model.product.TopAdsGetProductManageResponse
@@ -15,11 +15,12 @@ import com.tokopedia.product.detail.common.data.model.product.WishlistStatus
 import com.tokopedia.product.detail.data.model.ProductInfoP2Login
 import com.tokopedia.product.detail.data.model.shop.ProductShopFollowResponse
 import com.tokopedia.product.detail.data.model.topads.TopAdsGetShopInfo
-import com.tokopedia.product.detail.data.util.ProductDetailConstant
+import com.tokopedia.product.detail.data.util.OnErrorLog
 import com.tokopedia.product.detail.di.RawQueryKeyConstant
 import com.tokopedia.product.detail.view.util.doActionIfNotNull
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
+import timber.log.Timber
 import javax.inject.Inject
 
 class GetProductInfoP2LoginUseCase @Inject constructor(private val rawQueries: Map<String, String>,
@@ -27,8 +28,6 @@ class GetProductInfoP2LoginUseCase @Inject constructor(private val rawQueries: M
 ) : UseCase<ProductInfoP2Login>() {
 
     companion object {
-        private const val LOG_TAG = "BUYER_FLOW_PDP_P2_LOGIN"
-
         val QUERY_SHOP_FOLLOW_STATUS = """
             query getShopInfo(${'$'}shopIds : [Int!]!, ${'$'}fields : [String!]!){
                 shopInfoByID(input: {shopIDs: ${'$'}shopIds, fields: ${'$'}fields}){
@@ -60,8 +59,7 @@ class GetProductInfoP2LoginUseCase @Inject constructor(private val rawQueries: M
     }
 
     var requestParams = RequestParams.EMPTY
-    private var userId: String = ""
-    private var deviceId: String = ""
+    private var errorLogListener: OnErrorLog? = null
 
     override suspend fun executeOnBackground(): ProductInfoP2Login {
         val p2Login = ProductInfoP2Login()
@@ -102,11 +100,14 @@ class GetProductInfoP2LoginUseCase @Inject constructor(private val rawQueries: M
         try {
             val gqlResponse = graphqlRepository.getReseponse(requests, cacheStrategy)
 
-            if (gqlResponse.getError(WishlistStatus::class.java)?.isNotEmpty() != true)
+            if (gqlResponse.getError(WishlistStatus::class.java)?.isNotEmpty() != true) {
                 p2Login.isWishlisted = gqlResponse.getData<WishlistStatus>(WishlistStatus::class.java)
                         .isWishlisted == true
-            else
+            } else {
                 p2Login.isWishlisted = true
+                val error: List<GraphqlError>?  = gqlResponse.getError(ProductShopFollowResponse::class.java)
+                errorLogListener?.invoke(MessageErrorException(error?.mapNotNull { it.message }?.joinToString(separator = ", ")))
+            }
 
             if (gqlResponse.getError(TopAdsPdpAffiliateResponse::class.java)?.isNotEmpty() != true) {
                 p2Login.pdpAffiliate = gqlResponse
@@ -132,20 +133,19 @@ class GetProductInfoP2LoginUseCase @Inject constructor(private val rawQueries: M
                     p2Login.isFollow = gqlResponse.getData<ProductShopFollowResponse>(ProductShopFollowResponse::class.java).shopInfoByID.result.firstOrNull()?.favoriteData?.alreadyFavorited
                             ?: 0
                 }
+            } else {
+                val error: List<GraphqlError>?  = gqlResponse.getError(ProductShopFollowResponse::class.java)
+                errorLogListener?.invoke(MessageErrorException(error?.mapNotNull { it.message }?.joinToString(separator = ", ")))
             }
         } catch (t: Throwable) {
-            ServerLogger.log(Priority.P1, LOG_TAG, mapOf(
-                    ProductDetailConstant.PRODUCT_ID_KEY to requestParams.getString(ProductDetailCommonConstant.PARAM_PRODUCT_ID, ""),
-                    ProductDetailConstant.USER_ID_KEY to userId
-            ))
+            errorLogListener?.invoke(t)
+            Timber.d(t)
         }
 
         return p2Login
     }
 
-    fun setUserIdAndDeviceId(userId: String, deviceId: String) {
-        this.userId = userId
-        this.deviceId = deviceId
+    fun setErrorLogListener(setErrorLogListener: OnErrorLog) {
+        this.errorLogListener = setErrorLogListener
     }
-
 }

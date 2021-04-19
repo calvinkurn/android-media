@@ -872,8 +872,9 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     private fun getProductInfoP2LoginAsync(shopId: Int, productId: String): Deferred<ProductInfoP2Login> {
         return async(dispatcher.io) {
             getProductInfoP2LoginUseCase.get().requestParams = GetProductInfoP2LoginUseCase.createParams(shopId, productId, isShopOwner())
-            getProductInfoP2LoginUseCase.get().setUserIdAndDeviceId(userId, deviceId)
+            getProductInfoP2LoginUseCase.get().setErrorLogListener { logP2Login(it, productId) }
             getProductInfoP2LoginUseCase.get().executeOnBackground()
+
         }
     }
 
@@ -909,5 +910,13 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     private suspend fun getPdpLayout(productId: String, shopDomain: String, productKey: String, whId: String, layoutId: String): ProductDetailDataModel {
         getPdpLayoutUseCase.get().requestParams = GetPdpLayoutUseCase.createParams(productId, shopDomain, productKey, whId, layoutId, generateUserLocationRequest(userLocationCache))
         return getPdpLayoutUseCase.get().executeOnBackground()
+    }
+
+    private fun logP2Login(throwable: Throwable, productId: String) {
+        ServerLogger.log(Priority.P1, ProductDetailConstant.P2_LOGIN_LOG_TAG, mapOf(
+                ProductDetailConstant.PRODUCT_ID_KEY to productId,
+                ProductDetailConstant.USER_ID_KEY to userId,
+                "err" to throwable.stackTrace.toString().substring(0, 50)
+        ))
     }
 }
