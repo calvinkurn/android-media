@@ -41,7 +41,7 @@ class FollowShopUseCase @Inject constructor(@Named(MUTATION_NAME) private val mu
                 .map {
                     val followShopResponse = it.getData<DataFollowShop>(DataFollowShop::class.java)
                             ?: throw ResponseErrorException()
-                    if (followShopResponse.followShop?.isSuccess != null) {
+                    if (followShopResponse.followShop?.isSuccess != true) {
                         throw ResponseErrorException(followShopResponse.followShop?.message)
                     }
                     followShopResponse
