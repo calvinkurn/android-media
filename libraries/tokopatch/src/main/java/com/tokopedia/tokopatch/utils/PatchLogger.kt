@@ -4,6 +4,8 @@ import android.content.Context
 import android.os.Handler
 import android.os.Looper
 import android.widget.Toast
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
 import com.tokopedia.tokopatch.model.Patch
 import com.tokopedia.tokopatch.patch.PatchCallBack
 import timber.log.Timber
@@ -37,12 +39,12 @@ class PatchLogger : PatchCallBack {
             patches: List<Patch>
     ) {
         for (patch in patches) {
-            Timber.w("P1#ROBUST#onPatchListFetched patch: %s", patch.name)
+            ServerLogger.log(Priority.P1, "ROBUST", mapOf("type" to "onPatchListFetched patch: ${patch.name}"))
         }
     }
 
     override fun onPatchFetched(context: Context, result: Boolean, isNet: Boolean) {
-        Timber.w("P1#ROBUST#onPatchFetched isNet: $isNet result: $result")
+        ServerLogger.log(Priority.P1, "ROBUST", mapOf("type" to "onPatchFetched isNet: $isNet result: $result"))
     }
 
     override fun onPatchApplied(context: Context, result: Boolean, patch: Patch) {
@@ -51,12 +53,12 @@ class PatchLogger : PatchCallBack {
                 Toast.makeText(context, "Applied patch" + patch.name, Toast.LENGTH_LONG).show()
             }
         } else {
-            Timber.w("P1#ROBUST#onPatchApplied patch name: ${patch.name} result: $result")
+            ServerLogger.log(Priority.P1, "ROBUST", mapOf("type" to "onPatchApplied patch name: ${patch.name} result: $result"))
         }
     }
 
     override fun logNotify(context: Context, log: String, where: String) {
-        Timber.w("P1#ROBUST#logNotify log: $log where: $where")
+        ServerLogger.log(Priority.P1, "ROBUST", mapOf("type" to "logNotify log: $log where: $where"))
     }
 
     override fun logMessage(context: Context, log: String) {
@@ -64,7 +66,7 @@ class PatchLogger : PatchCallBack {
     }
 
     override fun exceptionNotify(context: Context, throwable: Throwable, where: String) {
-        Timber.e(throwable, "P1#ROBUST#exceptionNotify where: $where")
+        ServerLogger.log(Priority.P1, "ROBUST", mapOf("type" to "exceptionNotify where: $where"))
     }
 
     companion object {

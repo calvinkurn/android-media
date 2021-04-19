@@ -22,6 +22,7 @@ import com.tokopedia.flight.R
 import com.tokopedia.flight.airport.view.model.FlightAirportModel
 import com.tokopedia.flight.homepage.presentation.model.FlightClassModel
 import com.tokopedia.flight.homepage.presentation.model.FlightPassengerModel
+import com.tokopedia.flight.promo_chips.presentation.adapter.viewholder.FlightPromoChipsViewHolder
 import com.tokopedia.flight.searchV4.presentation.adapter.viewholder.FlightSearchViewHolder
 import com.tokopedia.flight.searchV4.presentation.model.FlightSearchPassDataModel
 import com.tokopedia.test.application.espresso_component.CommonMatcher
@@ -53,7 +54,7 @@ class FlightSearchActivityTest {
                 FlightSearchActivity.getCallingIntent(
                         context,
                         FlightSearchPassDataModel(
-                                "2020-11-11",
+                                "2021-11-11",
                                 "",
                                 true,
                                 FlightPassengerModel(1, 0, 0),
@@ -64,7 +65,7 @@ class FlightSearchActivityTest {
                                     cityAirports = arrayListOf("CGK", "HLP")
                                     countryName = "Indonesia"
                                     airportName = ""
-                                    airportCode = ""
+                                    airportCode = "CGK"
                                 },
                                 FlightAirportModel().apply {
                                     cityCode = ""
@@ -151,6 +152,18 @@ class FlightSearchActivityTest {
                 hasAllSuccess())
     }
 
+    @Test
+    fun promoChipsOnClicked(){
+        Thread.sleep(5000)
+        val viewInteraction = onView(AllOf.allOf(
+                AllOf.allOf(withId(R.id.recycler_view_promo_chips), withParent(withId(R.id.widget_flight_promo_chips)),
+                        isDisplayed()))).check(matches(isDisplayed()))
+        viewInteraction.perform(RecyclerViewActions
+                .actionOnItemAtPosition<FlightPromoChipsViewHolder>(0, click()))
+        assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_PROMO_CHIPS),
+                hasAllSuccess())
+    }
+
     private fun getJourneyItemCount(): Int {
         val recyclerView: RecyclerView = activityRule.activity.findViewById(R.id.recycler_view) as RecyclerView
         return recyclerView.adapter?.itemCount ?: 0
@@ -159,5 +172,6 @@ class FlightSearchActivityTest {
     companion object {
         private const val ANALYTIC_VALIDATOR_QUERY_P1 = "tracker/travel/flight/flight_search_p1.json"
         private const val ANALYTIC_VALIDATOR_QUERY_ALL = "tracker/travel/flight/flight_search_all.json"
+        private const val ANALYTIC_VALIDATOR_PROMO_CHIPS = "tracker/travel/flight/flight_srp_promochips.json"
     }
 }

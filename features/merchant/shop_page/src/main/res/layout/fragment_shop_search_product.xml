@@ -5,7 +5,6 @@
     android:id="@+id/ly_parent"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/Unify_N0"
     android:orientation="vertical">
 
     <androidx.appcompat.widget.Toolbar
@@ -26,15 +25,6 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:orientation="horizontal">
-
-            <com.tokopedia.design.text.SearchInputView
-                android:id="@+id/search_input_view"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:visibility="gone"
-                android:layout_weight="1"
-                android:clickable="true"
-                app:siv_search_hint="@string/shop_product_search_hint" />
 
             <androidx.appcompat.widget.LinearLayoutCompat
                 android:id="@+id/linearLayoutNewDesign"

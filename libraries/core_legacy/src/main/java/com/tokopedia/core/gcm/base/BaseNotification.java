@@ -9,6 +9,11 @@ import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.core.gcm.NotificationConfiguration;
 import com.tokopedia.core.gcm.Visitable;
 import com.tokopedia.core.gcm.model.NotificationPass;
+import com.tokopedia.logger.ServerLogger;
+import com.tokopedia.logger.utils.Priority;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import timber.log.Timber;
 
@@ -18,7 +23,7 @@ import timber.log.Timber;
 
 public abstract class BaseNotification implements Visitable {
     protected final Context mContext;
-    private FCMCacheManager mFCMCacheManager;
+    private final FCMCacheManager mFCMCacheManager;
     protected NotificationConfiguration configuration;
     protected NotificationPass mNotificationPass;
     protected BuildAndShowNotification mBuildAndShowNotification;
@@ -30,7 +35,9 @@ public abstract class BaseNotification implements Visitable {
         mFCMCacheManager = new FCMCacheManager(mContext);
         configuration = new NotificationConfiguration();
 
-        Timber.w("P2#PUSH_NOTIF_UNUSED#'BaseNotification'");
+        Map<String, String> messageMap = new HashMap<>();
+        messageMap.put("type", "BaseNotification");
+        ServerLogger.log(Priority.P2, "PUSH_NOTIF_UNUSED", messageMap);
     }
 
     @Override

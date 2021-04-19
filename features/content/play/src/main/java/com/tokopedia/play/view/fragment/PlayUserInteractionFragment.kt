@@ -61,7 +61,7 @@ import com.tokopedia.play.view.wrapper.InteractionEvent
 import com.tokopedia.play.view.wrapper.LoginStateEvent
 import com.tokopedia.play.view.wrapper.PlayResult
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
-import com.tokopedia.play_common.util.coroutine.CoroutineDispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.play_common.util.event.EventObserver
 import com.tokopedia.play_common.util.extension.awaitMeasured
 import com.tokopedia.play_common.util.extension.changeConstraint
@@ -80,7 +80,7 @@ import javax.inject.Inject
  */
 class PlayUserInteractionFragment @Inject constructor(
         private val viewModelFactory: ViewModelProvider.Factory,
-        private val dispatchers: CoroutineDispatcherProvider,
+        private val dispatchers: CoroutineDispatchers,
         private val pipAnalytic: PlayPiPAnalytic,
         private val analytic: PlayAnalytic
 ) :
@@ -375,6 +375,10 @@ class PlayUserInteractionFragment @Inject constructor(
     /**
      * Product Featured View Component Listener
      */
+    override fun onProductFeaturedImpressed(view: ProductFeaturedViewComponent, product: PlayProductUiModel.Product, position: Int) {
+        analytic.impressionFeaturedProduct(product, position)
+    }
+
     override fun onProductFeaturedClicked(view: ProductFeaturedViewComponent, product: PlayProductUiModel.Product, position: Int) {
         viewModel.doInteractionEvent(InteractionEvent.OpenProductDetail(product, position))
         analytic.clickFeaturedProduct(product, position)
@@ -388,6 +392,10 @@ class PlayUserInteractionFragment @Inject constructor(
     /**
      * Pinned Voucher View Component Listener
      */
+    override fun onVoucherImpressed(view: PinnedVoucherViewComponent, voucher: MerchantVoucherUiModel, position: Int) {
+        analytic.impressionHighlightedVoucher(voucher)
+    }
+
     override fun onVoucherClicked(view: PinnedVoucherViewComponent, voucher: MerchantVoucherUiModel) {
         if (voucher.code.isBlank() || voucher.code.isEmpty()) return
 
@@ -634,10 +642,6 @@ class PlayUserInteractionFragment @Inject constructor(
             pinnedViewOnStateChanged(pinnedModel = it)
             productFeaturedViewOnStateChanged(pinnedModel = it)
             quickReplyViewOnStateChanged(pinnedModel = it)
-            if (it is PlayPinnedUiModel.PinnedProduct
-                    && it.productTags is PlayProductTagsUiModel.Complete) {
-                sendTrackerImpressionPinnedProduct(it.productTags)
-            }
         })
     }
 
@@ -930,7 +934,7 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     private fun openPageByApplink(applink: String, vararg params: String, requestCode: Int? = null, shouldFinish: Boolean = false, pipMode: Boolean = false) {
-        if (pipMode) {
+        if (pipMode && !playViewModel.isFreezeOrBanned) {
             playViewModel.requestPiPBrowsingPage(
                     OpenApplinkUiModel(applink = applink, params = params.toList(), requestCode, shouldFinish)
             )
@@ -1067,13 +1071,6 @@ class PlayUserInteractionFragment @Inject constructor(
             delay(AUTO_SWIPE_DELAY)
             playNavigation.navigateToNextPage()
         }
-    }
-
-    private fun sendTrackerImpressionPinnedProduct(productTags: PlayProductTagsUiModel.Complete) {
-        val highlightedVouchers = productTags.voucherList.filterIsInstance<MerchantVoucherUiModel>()
-        val featuredProducts = productTags.productList.filterIsInstance<PlayProductUiModel.Product>()
-        analytic.impressionHighlightedVoucher(highlightedVouchers)
-        analytic.impressionFeaturedProduct(featuredProducts, productTags.basicInfo.maxFeaturedProducts)
     }
 
     private fun sendTrackerImpressionBottomSheetProduct() {

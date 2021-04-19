@@ -38,8 +38,7 @@
         "item_brand":  "none / other",
         "item_variant": "{{.+}}",
         "item_category": "Hotel"
-      }
-      ]
+      }]
     }, {
       "event": "clickHotel",
       "eventCategory": "digital - native",

@@ -9,14 +9,14 @@ import com.tokopedia.hotel.search.data.model.Property
  * @author by jessica on 2019-07-26
  */
 
-class HotelSearchResultAdapter(val onClickListener: OnClickListener, propertyAdapterTypeFactory: PropertyAdapterTypeFactory) :
+class HotelSearchResultAdapter(private val onClickListener: OnClickListener, propertyAdapterTypeFactory: PropertyAdapterTypeFactory) :
         BaseListAdapter<Property, PropertyAdapterTypeFactory>(propertyAdapterTypeFactory) {
 
     override fun onBindViewHolder(holder: AbstractViewHolder<out Visitable<*>>, position: Int) {
         holder.itemView.setOnClickListener {
             if (onClickListener != null) {
                 try {
-                    val property: Property = visitables.get(holder.adapterPosition) as Property
+                    val property: Property = visitables[holder.adapterPosition] as Property
                     onClickListener.onItemClicked(property, position)
                 } catch (e: Exception) {
                     //

@@ -6,7 +6,6 @@ import android.widget.TextView
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.home.R
@@ -15,6 +14,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_ch
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.model.ImpressHolder
+import com.tokopedia.media.loader.loadImage
 import kotlinx.android.synthetic.main.layout_template_footer_business.view.*
 import kotlinx.android.synthetic.main.layout_template_icon_business_widget.view.*
 import kotlinx.android.synthetic.main.layout_template_small_business.view.*
@@ -69,7 +69,7 @@ open class SizeSmallBusinessViewHolder (
     }
 
     open fun renderImage(element: HomeWidget.ContentItemTab?) {
-        ImageHandler.loadImageThumbs(itemView.context, itemView.icon, element?.imageUrl)
+        element?.imageUrl?.let { itemView.icon.loadImage(it) }
     }
 
     open fun renderProduct(element: HomeWidget.ContentItemTab?) {
