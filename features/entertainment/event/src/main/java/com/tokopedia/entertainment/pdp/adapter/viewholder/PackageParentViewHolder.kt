@@ -1,5 +1,7 @@
 package com.tokopedia.entertainment.pdp.adapter.viewholder
 
+import android.text.Html
+import android.text.SpannableStringBuilder
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -77,11 +79,11 @@ class PackageParentViewHolder(
             eventPDPTicketAdapter.eventPDPTracking = eventPDPTracking
         }
 
-        val subtitle: String = when (isRecommendation) {
+        val subtitle = when (isRecommendation) {
             true -> "${getString(R.string.ent_pdp_available_date_label)} " +
-                        DateUtils.dateToString(Date(value.dates[0].toLong() * SECOND_IN_MILIS),
-                        DateUtils.DEFAULT_VIEW_FORMAT)
-            false -> "${getString(R.string.ent_checkout_price_expand)} $salesPrice"
+                        "<b>${DateUtils.dateToString(Date(value.dates[0].toLong() * SECOND_IN_MILIS),
+                        DateUtils.DEFAULT_VIEW_FORMAT)}</b>"
+            false -> Html.fromHtml("${getString(R.string.ent_checkout_price_expand)}  <b> $salesPrice </b>")
         }
 
         return AccordionDataUnify(
