@@ -369,12 +369,12 @@ class SingleProductAttachmentContainer : ConstraintLayout {
     }
 
     private fun bindSellerStockType(product: ProductAttachmentViewModel) {
-        val stockCategory = if (product.isProductCampaign()) {
-            "Stok campaign:"
+        val stockCategoryRes = if (product.isProductCampaign()) {
+            R.string.title_campaign_stock
         } else {
-            "Stok:"
+            R.string.title_regular_stock
         }
-        sellerStockType?.text = stockCategory
+        sellerStockType?.setText(stockCategoryRes)
     }
 
     private fun bindSellerFullfilment(product: ProductAttachmentViewModel) {

@@ -209,4 +209,7 @@ yang ditemukan</string>
     <string name="title_topchat_srw_load_failed">Oops, konten gagal ditampilkan</string>
     <string name="desc_topchat_srw_load_failed">Yuk, klik ikon disamping untuk coba lagi!</string>
     <string name="content_desc_close_voucher_btn">Close Voucher Button</string>
+
+    <string name="title_regular_stock">Stok:</string>
+    <string name="title_campaign_stock">Stok campaign:</string>
 </resources>
