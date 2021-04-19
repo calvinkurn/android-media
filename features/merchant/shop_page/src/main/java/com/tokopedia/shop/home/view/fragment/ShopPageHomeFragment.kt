@@ -1541,6 +1541,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     private fun refreshProductList() {
         shopHomeAdapter.removeProductList()
         shopHomeAdapter.showLoading()
+        endlessRecyclerViewScrollListener.resetState()
         getProductList(1)
     }
 
