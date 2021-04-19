@@ -28,6 +28,7 @@ import com.tokopedia.common_digital.atc.DigitalAddToCartViewModel
 import com.tokopedia.common_digital.atc.data.response.DigitalSubscriptionParams
 import com.tokopedia.common_digital.atc.utils.DeviceUtil
 import com.tokopedia.common_digital.cart.DigitalCheckoutUtil
+import com.tokopedia.common_digital.common.RechargeAnalytics
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam
 import com.tokopedia.common_digital.common.presentation.model.DigitalCategoryDetailPassData
 import com.tokopedia.common_digital.product.presentation.model.ClientNumberType
@@ -51,6 +52,7 @@ import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
 import com.tokopedia.unifycomponents.ticker.TickerPagerCallback
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import kotlinx.android.synthetic.main.fragment_emoney_pdp.*
 import javax.inject.Inject
@@ -69,6 +71,12 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
     private val topUpBillsViewModel by lazy { viewModelFragmentProvider.get(TopupBillsViewModel::class.java) }
     private val emoneyPdpViewModel by lazy { viewModelFragmentProvider.get(EmoneyPdpViewModel::class.java) }
     private val addToCartViewModel by lazy { viewModelFragmentProvider.get(DigitalAddToCartViewModel::class.java) }
+
+    @Inject
+    lateinit var rechargeAnalytics: RechargeAnalytics
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
     lateinit var detailPassData: DigitalCategoryDetailPassData
 
@@ -95,8 +103,6 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
 
         loadData()
 
-        // dummy
-        // will replace this
         renderCardState(detailPassData)
         emoneyPdpHeaderView.configureCheckBalanceView()
         emoneyPdpHeaderView.actionListener = this
@@ -111,6 +117,7 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
         topUpBillsViewModel.menuDetailData.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
+                    trackEventViewPdp(it.data.catalog.label)
                     renderRecommendationsAndPromoList(it.data.recommendations, it.data.promos)
                     renderTicker(EmoneyPdpMapper.mapTopUpBillsTickersToTickersData(it.data.tickers))
                 }
@@ -167,6 +174,10 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
                 topUpBillsViewModel.createFavoriteNumbersParams(detailPassData.categoryId.toIntOrZero()))
 
         emoneyPdpViewModel.getPrefixOperator(detailPassData.menuId.toIntOrZero())
+    }
+
+    private fun trackEventViewPdp(categoryName: String) {
+        rechargeAnalytics.eventViewPdpPage(categoryName, userSession.userId)
     }
 
     private fun renderRecommendationsAndPromoList(recommendations: List<TopupBillsRecommendation>,
@@ -310,7 +321,9 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
     }
 
     override fun onClickInputView(inputNumber: String) {
-        showFavoriteNumbersPage((topUpBillsViewModel.favNumberData.value as Success).data.favNumberList)
+        if (topUpBillsViewModel.favNumberData.value is Success) {
+            showFavoriteNumbersPage((topUpBillsViewModel.favNumberData.value as Success).data.favNumberList)
+        } else showFavoriteNumbersPage(arrayListOf())
     }
 
     override fun onRemoveNumberIconClick() {
@@ -366,7 +379,11 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
 
     private fun showRecentNumberAndPromo() {
         emoneyPdpProductWidget.hide()
-        if ((emoneyPdpViewPager.adapter as EmoneyPdpFragmentPagerAdapter).itemCount > 1) emoneyPdpTab.show()
+        (emoneyPdpViewPager.adapter)?.let {
+            if ((it as EmoneyPdpFragmentPagerAdapter).itemCount > 1) {
+                emoneyPdpTab.show()
+            }
+        }
         emoneyPdpViewPager.show()
         emoneyPdpProductWidget.showPaddingBottom(false)
         emoneyBuyWidgetLayout.hide()

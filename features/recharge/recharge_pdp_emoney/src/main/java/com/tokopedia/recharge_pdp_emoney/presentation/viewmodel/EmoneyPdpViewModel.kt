@@ -12,11 +12,16 @@ import com.tokopedia.common.topupbills.usecase.RechargeCatalogPrefixSelectUseCas
 import com.tokopedia.common.topupbills.usecase.RechargeCatalogProductInputUseCase
 import com.tokopedia.common.topupbills.utils.generateRechargeCheckoutToken
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
+import com.tokopedia.network.constant.ErrorNetMessage
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineDispatcher
+import java.net.ConnectException
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 import javax.inject.Inject
 
 /**
@@ -55,7 +60,14 @@ class EmoneyPdpViewModel @Inject constructor(dispatcher: CoroutineDispatcher,
     var digitalCheckoutPassData = DigitalCheckoutPassData()
 
     fun setErrorMessage(e: Throwable) {
-        _errorMessage.value = e.message
+        val errorMsg: String = when {
+            e is UnknownHostException || e is ConnectException -> ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL
+            e is SocketTimeoutException -> ErrorNetMessage.MESSAGE_ERROR_TIMEOUT
+            e.message.isNullOrEmpty() -> ErrorNetMessage.MESSAGE_ERROR_DEFAULT
+            (e.message ?: "").contains("grpc timeout", true) -> ""
+            else -> e.message ?: ""
+        }
+        _errorMessage.value = errorMsg
     }
 
     fun getPrefixOperator(menuId: Int) {
@@ -79,6 +91,8 @@ class EmoneyPdpViewModel @Inject constructor(dispatcher: CoroutineDispatcher,
                     inputNumber.startsWith(it.value)
                 }
                 _selectedOperator.value = operatorSelected
+            } else {
+                setErrorMessage(MessageErrorException(ErrorNetMessage.MESSAGE_ERROR_DEFAULT))
             }
         } catch (e: Throwable) {
 //            _errorMessage.postValue()
