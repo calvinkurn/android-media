@@ -370,10 +370,7 @@ class HotelBookingFragment : HotelBaseFragment() {
 
             if (!property.isDirectPayment) {
                 tv_booking_room_info_pay_at_hotel.visibility = View.VISIBLE
-                var payAtHotelString = if (property.rooms.first().isCCRequired) SpannableString(getString(R.string.hotel_booking_pay_at_hotel_cc_required_label))
-                else SpannableString(getString(R.string.hotel_booking_pay_at_hotel_label))
-                payAtHotelString.setSpan(StyleSpan(Typeface.BOLD), 1, 15, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-                tv_booking_room_info_pay_at_hotel.text = payAtHotelString
+                tv_booking_room_info_pay_at_hotel.text = property.isDirectPaymentString
             }
 
             tv_booking_room_info_occupancy.text = cart.roomContent

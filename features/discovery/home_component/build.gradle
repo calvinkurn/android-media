@@ -38,6 +38,7 @@ android {
 }
 
 dependencies {
+    implementation project(rootProject.ext.features.medialoader)
     implementation project(rootProject.ext.features.topAdsSdk)
     implementation project(rootProject.ext.libraries.baseList)
     // Unify
@@ -55,6 +56,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.traceroute)
     implementation project(rootProject.ext.libraries.remoteConfig)
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
+    implementation project(rootProject.ext.libraries.logger)
 
     implementation rootProject.ext.networkDependencies.glide
     implementation project(rootProject.ext.features.productCard)

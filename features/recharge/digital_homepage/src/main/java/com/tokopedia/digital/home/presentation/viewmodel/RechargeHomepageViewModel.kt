@@ -7,7 +7,7 @@ import com.tokopedia.digital.home.model.RechargeHomepageSectionAction
 import com.tokopedia.digital.home.model.RechargeHomepageSectionSkeleton
 import com.tokopedia.digital.home.model.RechargeHomepageSections
 import com.tokopedia.digital.home.model.RechargeTickerHomepageModel
-import com.tokopedia.digital.home.presentation.util.RechargeHomepageDispatchersProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.digital.home.presentation.util.RechargeHomepageSectionMapper
 import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
@@ -24,8 +24,8 @@ import javax.inject.Inject
 
 class RechargeHomepageViewModel @Inject constructor(
         private val graphqlRepository: GraphqlRepository,
-        private val dispatcher: RechargeHomepageDispatchersProvider)
-    : BaseViewModel(dispatcher.IO) {
+        private val dispatcher: CoroutineDispatchers)
+    : BaseViewModel(dispatcher.io) {
 
     private val mutableRechargeHomepageSectionSkeleton = MutableLiveData<Result<RechargeHomepageSectionSkeleton>>()
     val rechargeHomepageSectionSkeleton: LiveData<Result<RechargeHomepageSectionSkeleton>>
@@ -53,7 +53,7 @@ class RechargeHomepageViewModel @Inject constructor(
             )
             val graphqlCacheStrategy = GraphqlCacheStrategy.Builder(if (isLoadFromCloud) CacheType.CLOUD_THEN_CACHE else CacheType.CACHE_FIRST)
                     .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * 5).build()
-            val data = withContext(dispatcher.IO) {
+            val data = withContext(dispatcher.io) {
                 graphqlRepository.getReseponse(listOf(graphqlRequest), graphqlCacheStrategy)
             }.getSuccessData<RechargeHomepageSectionSkeleton.Response>().response
 
@@ -75,7 +75,7 @@ class RechargeHomepageViewModel @Inject constructor(
             )
             val graphqlCacheStrategy = GraphqlCacheStrategy.Builder(if (isLoadFromCloud) CacheType.CLOUD_THEN_CACHE else CacheType.CACHE_FIRST)
                     .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * 5).build()
-            val data = withContext(dispatcher.IO) {
+            val data = withContext(dispatcher.io) {
                 graphqlRepository.getReseponse(listOf(graphqlRequest), graphqlCacheStrategy)
             }.getSuccessData<RechargeHomepageSections.Response>().response
             data.requestIDs = requestIDs
@@ -84,13 +84,13 @@ class RechargeHomepageViewModel @Inject constructor(
                 Update local (viewmodel) section then update LiveData in order to
                 prevent missing section updates caused by postValue override
              */
-            withContext(dispatcher.Main) {
+            withContext(dispatcher.main) {
                 localRechargeHomepageSections = RechargeHomepageSectionMapper.updateSectionsData(localRechargeHomepageSections, data)
                 mutableRechargeHomepageSections.value = localRechargeHomepageSections
             }
         }) {
             // Because error occured, remove sections
-            withContext(dispatcher.Main) {
+            withContext(dispatcher.main) {
                 localRechargeHomepageSections = RechargeHomepageSectionMapper.updateSectionsData(
                         localRechargeHomepageSections,
                         RechargeHomepageSections(requestIDs = requestIDs)
@@ -106,7 +106,7 @@ class RechargeHomepageViewModel @Inject constructor(
                     RechargeHomepageQueries.ACTION_QUERY,
                     RechargeHomepageSectionAction.Response::class.java, mapParams
             )
-            val data = withContext(dispatcher.IO) {
+            val data = withContext(dispatcher.io) {
                 graphqlRepository.getReseponse(listOf(graphqlRequest))
             }.getSuccessData<RechargeHomepageSectionAction.Response>().response
 
@@ -122,7 +122,7 @@ class RechargeHomepageViewModel @Inject constructor(
                     RechargeHomepageQueries.TICKER_QUERY,
                     RechargeTickerHomepageModel::class.java, mapParams
             )
-            val data = withContext(dispatcher.IO) {
+            val data = withContext(dispatcher.io) {
                 graphqlRepository.getReseponse(listOf(graphqlRequest))
             }.getSuccessData<RechargeTickerHomepageModel>()
 

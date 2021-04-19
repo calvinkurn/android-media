@@ -3,7 +3,7 @@ package com.tokopedia.hotel.orderdetail
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.common.travel.data.entity.TravelCrossSelling
 import com.tokopedia.common.travel.domain.TravelCrossSellingUseCase
-import com.tokopedia.common.travel.utils.TravelTestDispatcherProvider
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.hotel.orderdetail.data.model.HotelOrderDetail
 import com.tokopedia.hotel.orderdetail.presentation.viewmodel.HotelOrderDetailViewModel
 import com.tokopedia.hotel.orderdetail.usecase.GetHotelOrderDetailUseCase
@@ -27,7 +27,7 @@ class HotelOrderDetailViewModelTest {
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
-    private val dispatcher = TravelTestDispatcherProvider()
+    private val dispatcher = CoroutineTestDispatchersProvider
     private lateinit var hotelOrderDetailViewModel: HotelOrderDetailViewModel
 
     @RelaxedMockK

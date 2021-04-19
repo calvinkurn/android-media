@@ -9,7 +9,8 @@ import android.view.ViewGroup
 import android.widget.TextView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
-import com.tokopedia.design.loading.LoadingStateView
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.shop.R
 import com.tokopedia.shop.ShopComponentHelper
@@ -31,6 +32,9 @@ class ShopNoteDetailFragment: BaseDaggerFragment(), ShopNoteDetailView {
     private var shopId: String = ""
 
     companion object {
+        private const val VIEW_CONTENT = 1
+        private const val VIEW_LOADING = 2
+        private const val VIEW_ERROR = 3
         @JvmStatic
         fun newInstance(shopId: String, noteId: String): Fragment = ShopNoteDetailFragment().apply {
             arguments = Bundle().apply {
@@ -63,8 +67,40 @@ class ShopNoteDetailFragment: BaseDaggerFragment(), ShopNoteDetailView {
     override fun getScreenName(): String? = null
 
     private fun getShopDetail(){
-        loadingStateView.setViewState(LoadingStateView.VIEW_LOADING)
+        setViewState(VIEW_LOADING)
         shopNoteDetailPresenter.getShopNoteList(shopId,shopNoteId)
+    }
+
+    private fun setViewState(viewState: Int) {
+        when(viewState){
+            VIEW_LOADING -> {
+                showLoadingView()
+            }
+            VIEW_ERROR -> {
+                showErrorView()
+            }
+            VIEW_CONTENT -> {
+                showContentView()
+            }
+        }
+    }
+
+    private fun showLoadingView() {
+        view_error_state?.hide()
+        main_container?.hide()
+        view_loading_state?.show()
+    }
+
+    private fun showContentView() {
+        view_loading_state?.hide()
+        view_error_state?.hide()
+        main_container?.show()
+    }
+
+    private fun showErrorView() {
+        view_loading_state?.hide()
+        main_container?.hide()
+        view_error_state?.show()
     }
 
     override fun initInjector() {
@@ -79,14 +115,15 @@ class ShopNoteDetailFragment: BaseDaggerFragment(), ShopNoteDetailView {
     }
 
     override fun onErrorGetShopNoteList(e: Throwable?) {
-        loadingStateView.setViewState(LoadingStateView.VIEW_ERROR)
-        val textRetryError = loadingStateView.errorView.findViewById<TextView>(com.tokopedia.abstraction.R.id.message_retry)
-        val buttonRetryError = loadingStateView.errorView.findViewById<TextView>(com.tokopedia.abstraction.R.id.button_retry)
+        setViewState(VIEW_ERROR)
+        val textRetryError = view_error_state.findViewById<TextView>(com.tokopedia.abstraction.R.id.message_retry)
+        val buttonRetryError = view_error_state.findViewById<TextView>(com.tokopedia.abstraction.R.id.button_retry)
         textRetryError.text = ErrorHandler.getErrorMessage(activity, e)
         buttonRetryError.setOnClickListener { getShopDetail() }
     }
 
     override fun onSuccessGetShopNoteList(shopNoteDetail: ShopNoteModel?) {
+        setViewState(VIEW_CONTENT)
         shopNoteDetail?.run {
             (activity as AppCompatActivity).supportActionBar?.title = shopNoteDetail.title
             val latestUpdate  = shopNoteDetail.updateTimeUtc.toIntOrZero()
@@ -97,6 +134,5 @@ class ShopNoteDetailFragment: BaseDaggerFragment(), ShopNoteDetailView {
             )
             textViewDesc.text = TextHtmlUtils.getTextFromHtml(shopNoteDetail.content)
         }
-        loadingStateView.setViewState(LoadingStateView.VIEW_CONTENT)
     }
 }

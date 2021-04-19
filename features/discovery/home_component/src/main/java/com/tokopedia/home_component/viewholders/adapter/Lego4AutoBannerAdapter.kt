@@ -15,12 +15,11 @@ import com.tokopedia.home_component.R
 import com.tokopedia.home_component.listener.Lego4AutoBannerListener
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
-import com.tokopedia.home_component.util.loadImage
 import com.tokopedia.home_component.util.setGradientBackground
 import com.tokopedia.home_component.visitable.Lego4AutoDataModel
 import com.tokopedia.home_component.visitable.Lego4AutoItem
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
-import com.tokopedia.kotlin.extensions.view.loadImageRounded
+import com.tokopedia.media.loader.loadImageRounded
 import com.tokopedia.unifyprinciples.Typography
 
 /**

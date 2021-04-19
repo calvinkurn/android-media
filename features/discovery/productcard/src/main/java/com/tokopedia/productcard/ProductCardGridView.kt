@@ -103,9 +103,9 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
     }
 
     override fun recycle() {
-        imageProduct?.glideClear(context)
-        imageFreeOngkirPromo?.glideClear(context)
-        labelCampaignBackground?.glideClear(context)
+        imageProduct?.glideClear()
+        imageFreeOngkirPromo?.glideClear()
+        labelCampaignBackground?.glideClear()
     }
 
     private fun View.renderStockPercentage(productCardModel: ProductCardModel) {

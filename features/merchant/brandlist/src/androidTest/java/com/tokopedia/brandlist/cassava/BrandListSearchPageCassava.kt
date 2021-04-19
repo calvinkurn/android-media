@@ -89,7 +89,7 @@ class BrandListSearchPageCassava {
 
     private fun doActivityTest() {
         // 1. type something at search
-        Espresso.onView(withId(R.id.edit_text_search)).perform(typeText("Coba"))
+        Espresso.onView(withId(R.id.searchbar_textfield)).perform(typeText("Coba"))
         Thread.sleep(1000)
 
         // 2. scroll and click item at OS
