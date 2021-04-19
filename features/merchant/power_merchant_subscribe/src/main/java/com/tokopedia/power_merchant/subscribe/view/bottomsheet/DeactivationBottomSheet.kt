@@ -88,6 +88,10 @@ class DeactivationBottomSheet : BaseBottomSheet() {
         btnPmDeactivationSubmit.setOnClickListener {
             submitDeactivationPm()
         }
+
+        btnPmDeactivationCancel.setOnClickListener {
+            dismiss()
+        }
     }
 
     fun setOnDeactivationSuccess(callback: () -> Unit) {

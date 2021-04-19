@@ -251,7 +251,7 @@ class PMShopScoreInterruptHelper @Inject constructor() {
             showInterruptEndOfTenureNewSeller(context, data, fm)
         } else {
             if (hasOpenedInterruptPage()) {
-                showTransitionPmInterruptPopup(context, data, fm)
+                //showTransitionPmInterruptPopup(context, data, fm)
             } else {
                 showInterruptPage(context, data)
             }
