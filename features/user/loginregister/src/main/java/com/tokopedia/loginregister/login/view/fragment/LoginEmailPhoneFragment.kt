@@ -67,6 +67,8 @@ import com.tokopedia.linker.LinkerConstants
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.LinkerUtils
 import com.tokopedia.linker.model.UserData
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
 import com.tokopedia.loginfingerprint.data.preference.FingerprintSetting
 import com.tokopedia.loginfingerprint.listener.ScanFingerprintInterface
 import com.tokopedia.loginfingerprint.view.ScanFingerprintDialog
@@ -75,6 +77,7 @@ import com.tokopedia.loginregister.common.analytics.LoginRegisterAnalytics
 import com.tokopedia.loginregister.common.analytics.RegisterAnalytics
 import com.tokopedia.loginregister.common.analytics.SeamlessLoginAnalytics
 import com.tokopedia.loginregister.common.domain.pojo.ActivateUserData
+import com.tokopedia.loginregister.common.error.LoginErrorCode
 import com.tokopedia.loginregister.common.utils.SellerAppWidgetHelper
 import com.tokopedia.loginregister.common.view.LoginTextView
 import com.tokopedia.loginregister.common.view.PartialRegisterInputView
@@ -826,14 +829,15 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
                 )
             }
         } catch (e: Exception) {
-            e.message?.let { onErrorLogin(it) }
+            e.message?.let { onErrorLogin(it, LoginErrorCode.ERROR_ON_FACEBOOK_CATCH_SUCCESS) }
         }
     }
 
     private fun onErrorGetFacebookCredential(errorMessage: Throwable?){
         dismissLoadingLogin()
         if (isAdded && activity != null) {
-            onErrorLogin(ErrorHandler.getErrorMessage(context, errorMessage))
+            val msg = ErrorHandler.getErrorMessage(context, errorMessage)
+            onErrorLogin(msg, LoginErrorCode.ERROR_ON_FACEBOOK)
         }
     }
 
@@ -868,7 +872,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
             override fun onErrorGetFacebookCredential(errorMessage: Exception?) {
                 dismissLoadingLogin()
                 if (isAdded && activity != null) {
-                    onErrorLogin(ErrorHandler.getErrorMessage(context, errorMessage))
+                    onErrorLogin(ErrorHandler.getErrorMessage(context, errorMessage), LoginErrorCode.ERROR_ON_FACEBOOK_CREDENTIAL)
                 }
             }
 
@@ -1100,11 +1104,12 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
         TrackApp.getInstance().appsFlyer.sendTrackEvent("Login Successful", dataMap)
     }
 
-    fun onErrorLogin(errorMessage: String?) {
+    fun onErrorLogin(errorMessage: String?, flow: String) {
         analytics.eventFailedLogin(userSession.loginMethod, errorMessage)
 
         dismissLoadingLogin()
         NetworkErrorHelper.showSnackbar(activity, errorMessage)
+        loggingError(flow, errorMessage)
     }
 
     override fun isFromRegister(): Boolean {
@@ -1268,7 +1273,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
                 dismissLoadingLogin()
                 showPopupErrorAkamai()
             } else if (it is TokenErrorException && !it.errorDescription.isEmpty()) {
-                onErrorLogin(it.errorDescription)
+                onErrorLogin(it.errorDescription, LoginErrorCode.ERROR_EMAIL_TOKEN_EXCEPTION)
             } else {
                 val forbiddenMessage = context?.getString(
                         com.tokopedia.sessioncommon.R.string.default_request_error_forbidden_auth)
@@ -1276,7 +1281,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
                 if (errorMessage == forbiddenMessage) {
                     onGoToForbiddenPage()
                 } else {
-                    onErrorLogin(errorMessage)
+                    onErrorLogin(errorMessage, LoginErrorCode.ERROR_EMAIL_UNKNOWN)
 
                     context?.run {
                         if (!TextUtils.isEmpty(it.message)
@@ -1308,7 +1313,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
     override fun onErrorGetUserInfo(): (Throwable) -> Unit {
         return {
             dismissLoadingLogin()
-            onErrorLogin(ErrorHandler.getErrorMessage(context, it))
+            onErrorLogin(ErrorHandler.getErrorMessage(context, it), LoginErrorCode.ERROR_GET_USER_INFO)
         }
     }
 
@@ -1345,7 +1350,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
     override fun onGoToActivationPageAfterRelogin(): (MessageErrorException) -> Unit {
         return {
             dismissLoadingLogin()
-            onErrorLogin(ErrorHandler.getErrorMessage(context, it))
+            onErrorLogin(ErrorHandler.getErrorMessage(context, it), LoginErrorCode.ERROR_ACTIVATION_AFTER_RELOGIN)
         }
     }
 
@@ -1353,7 +1358,8 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
     override fun onGoToSecurityQuestionAfterRelogin(): () -> Unit {
         return {
             dismissLoadingLogin()
-            onErrorLogin(ErrorHandlerSession.getDefaultErrorCodeMessage(ErrorHandlerSession.ErrorCode.UNSUPPORTED_FLOW, context))
+            onErrorLogin(ErrorHandlerSession.getDefaultErrorCodeMessage(ErrorHandlerSession.ErrorCode.UNSUPPORTED_FLOW, context)
+                            , LoginErrorCode.ERROR_SQ_AFTER_RELOGIN)
         }
     }
 
@@ -1379,7 +1385,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
             if (it is AkamaiErrorException) {
                 showPopupErrorAkamai()
             } else {
-                onErrorLogin(ErrorHandler.getErrorMessage(context, it))
+                onErrorLogin(ErrorHandler.getErrorMessage(context, it), LoginErrorCode.ERROR_FACEBOOK)
             }
         }
     }
@@ -1400,7 +1406,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
             if (it is AkamaiErrorException) {
                 showPopupErrorAkamai()
             } else {
-                onErrorLogin(ErrorHandler.getErrorMessage(context, it))
+                onErrorLogin(ErrorHandler.getErrorMessage(context, it), LoginErrorCode.ERROR_FACEBOOK_PHONE)
             }
         }
     }
@@ -1412,7 +1418,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
                 dismissLoadingLogin()
                 showPopupErrorAkamai()
             } else {
-                onErrorLogin(ErrorHandler.getErrorMessage(context, it))
+                onErrorLogin(ErrorHandler.getErrorMessage(context, it), LoginErrorCode.ERROR_GMAIL)
             }
         }
     }
@@ -1426,7 +1432,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
 
     override fun onFailedActivateUser(throwable: Throwable) {
         dismissLoadingLogin()
-        onErrorLogin(ErrorHandler.getErrorMessage(context, throwable))
+        onErrorLogin(ErrorHandler.getErrorMessage(context, throwable), LoginErrorCode.ERROR_ACTIVATE_USER)
     }
 
     protected fun isEmailNotActive(e: Throwable, email: String): Boolean {
@@ -1627,15 +1633,14 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
                     showLoadingLogin()
                     viewModel.loginGoogle(accessToken, email)
                 } else {
-                    onErrorLogin(ErrorHandlerSession.getDefaultErrorCodeMessage(ErrorHandlerSession.ErrorCode.EMPTY_EMAIL, context))
+                    onErrorLogin(ErrorHandlerSession.getDefaultErrorCodeMessage(ErrorHandlerSession.ErrorCode.EMPTY_EMAIL, context), LoginErrorCode.ERROR_ON_GMAIL_NULL_EMAIL)
                 }
             } else {
-                onErrorLogin(ErrorHandlerSession.getDefaultErrorCodeMessage(ErrorHandlerSession.ErrorCode.EMPTY_ACCESS_TOKEN, context))
+                onErrorLogin(ErrorHandlerSession.getDefaultErrorCodeMessage(ErrorHandlerSession.ErrorCode.EMPTY_ACCESS_TOKEN, context), LoginErrorCode.ERROR_ON_GMAIL_NULL_ACCOUNT)
             }
         } catch (e: ApiException) {
             onErrorLogin(String.format(getString(R.string.loginregister_failed_login_google),
-                    e.statusCode.toString())
-            )
+                    e.statusCode.toString()), LoginErrorCode.ERROR_ON_GMAIL_CATCH)
         }
 
     }
@@ -1915,6 +1920,12 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
         fingerprintPreferenceHelper.unregisterFingerprint()
     }
 
+    private fun loggingError(flow: String, errorMessage: String?) {
+        ServerLogger.log(Priority.P2, "BUYER_FLOW_LOGIN"
+                , mapOf("type" to flow
+                        , "error" to errorMessage.orEmpty()))
+    }
+
     companion object {
 
         const val IS_AUTO_LOGIN = "auto_login"
@@ -1964,6 +1975,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
         private const val SOURCE_ATC = "atc"
 
         private const val FACEBOOK_LOGIN_TYPE = "fb"
+        private const val GMAIL_LOGIN_TYPE = "fb"
 
         private const val CHARACTER_NOT_ALLOWED = "CHARACTER_NOT_ALLOWED"
 
