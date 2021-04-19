@@ -18,23 +18,23 @@ object RechargeSmartBillsMapper {
                 expandableView = content
         )
 
-        accordion.setContentPadding(0,0,0,0)
+        accordion.setContentPadding(0, 0, 0, 0)
         accordion.setBorder(false, false)
 
         return accordion
     }
 
 
-    fun getAccordionSection(listSection: List<Section>): List<Section>{
-        return listSection.filterNot { it.type == MAIN_TYPE || it.bills.isNullOrEmpty()}.sortedByDescending { it.type }
+    fun getAccordionSection(listSection: List<Section>): List<Section> {
+        return listSection.filterNot { it.type == MAIN_TYPE || it.bills.isNullOrEmpty() }.sortedByDescending { it.type }
                 .mapIndexed { index, it ->
-                        Section(title = it.title, type = it.type,
-                                text = it.text, bills = it.bills, positionAccordion = index)
-        }
+                    Section(title = it.title, type = it.type,
+                            text = it.text, bills = it.bills, positionAccordion = index)
+                }
     }
 
-    fun getNotAccordionSection(listSection: List<Section>): Section?{
-        val listMainSection = listSection.filter { it.type == MAIN_TYPE}
+    fun getNotAccordionSection(listSection: List<Section>): Section? {
+        val listMainSection = listSection.filter { it.type == MAIN_TYPE }
         return listMainSection.firstOrNull()
     }
 
@@ -49,37 +49,61 @@ object RechargeSmartBillsMapper {
 
     fun mapActiontoStatement(action: RechargeMultipleSBMBill, statement: RechargeListSmartBills): RechargeListSmartBills {
         val resultStateMent = RechargeListSmartBills(
-                    statement.userID, statement.total, statement.totalText, statement.month,
-                    statement.monthText, statement.dateRangeText, statement.isOngoing, statement.summaries,
-                    mapActionSectiontoStatementSection(action, statement.sections)
-            )
+                statement.userID, statement.total, statement.totalText, statement.month,
+                statement.monthText, statement.dateRangeText, statement.isOngoing, statement.summaries,
+                mapActionSectiontoStatementSection(action, statement.sections)
+        )
 
         return resultStateMent
     }
 
     fun mapActionSectiontoStatementSection(action: RechargeMultipleSBMBill, listSection: List<Section>): ArrayList<Section> {
         val sections = arrayListOf<Section>()
-        sections.add(mapSections(MAIN_TYPE, listSection.filter { it.type == MAIN_TYPE }.firstOrNull(), action) ?: Section())
-        sections.add(mapSections(ACTION_TYPE, listSection.filter { it.type == ACTION_TYPE }.firstOrNull(), action)  ?: Section())
-        sections.add(mapSections(PAID_TYPE, listSection.filter { it.type == PAID_TYPE }.firstOrNull(), action)  ?: Section())
+        sections.add(mapSections(MAIN_TYPE, listSection.filter { it.type == MAIN_TYPE }.firstOrNull(), action)
+                ?: Section())
+        sections.add(mapSections(ACTION_TYPE, listSection.filter { it.type == ACTION_TYPE }.firstOrNull(), action)
+                ?: Section())
+        sections.add(mapSections(PAID_TYPE, listSection.filter { it.type == PAID_TYPE }.firstOrNull(), action)
+                ?: Section())
         return sections
     }
 
-    fun mapSections(type:Int, statementSection: Section?, action: RechargeMultipleSBMBill): Section? {
-      val section =  statementSection?.let {
-           val bills: ArrayList<RechargeBills> = arrayListOf()
-           bills.addAll(it.bills)
-           action.bills.forEach {
-               if (it.section.type == type) bills.add(it)
-           }
-           Section(
-                   it.title,
-                   it.type,
-                   it.text,
-                   bills,
-                   it.positionAccordion
-           )
-       }
+    fun mapSections(type: Int, statementSection: Section?, action: RechargeMultipleSBMBill): Section? {
+        var section = Section()
+        val bills: ArrayList<RechargeBills> = arrayListOf()
+
+        if(statementSection != null) {
+            if(type != ACTION_TYPE) {
+                bills.addAll(statementSection.bills)
+            }
+            action.bills.forEach {
+                if (it.section.type == type) bills.add(it)
+            }
+            section = Section(
+                   statementSection.title,
+                   statementSection.type,
+                   statementSection.text,
+                    bills,
+                   statementSection.positionAccordion
+            )
+        } else {
+            var title = ""
+            var text = ""
+            action.bills.forEach {
+                if (it.section.type == type) {
+                    bills.add(it)
+                    title = it.section.title
+                    text = it.section.text
+                }
+            }
+            section = Section(
+                    title,
+                    type,
+                    text,
+                    bills,
+                    0
+            )
+        }
 
         return section
     }

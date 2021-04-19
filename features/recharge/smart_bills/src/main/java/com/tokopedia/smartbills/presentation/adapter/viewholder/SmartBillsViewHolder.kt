@@ -57,6 +57,7 @@ class SmartBillsViewHolder(val view: View,
                 tv_smart_bills_item_detail.disableView()
                 cb_smart_bills_item.gone()
                 cb_smart_bills_item_accordion.show()
+                cb_smart_bills_item_accordion.disableView()
             } else if(accordionType == PAID_TYPE){
                 //remove checkbox in paid type
                 cb_smart_bills_item.gone()
@@ -103,7 +104,9 @@ class SmartBillsViewHolder(val view: View,
                 } else this.gone()
             }
 
-            tv_smart_bills_item_price.text = element.amountText
+            tv_smart_bills_item_price.text = if(accordionType != ACTION_TYPE)
+                element.amountText else getString(R.string.smart_bills_clustering_price)
+
             ImageHandler.LoadImage(iv_smart_bills_item_icon, element.iconURL)
 
             setOnClickListener {
