@@ -9,12 +9,12 @@ import rx.Observable
 /**
  * Created by User on 9/8/2017.
  */
-class GetShopInfoUseCase(private val shopRepository: ShopCommonRepository) : UseCase<ShopInfo?>() {
-    override fun createObservable(requestParams: RequestParams): Observable<ShopInfo?> {
+class GetShopInfoUseCase(private val shopRepository: ShopCommonRepository) : UseCase<ShopInfo>() {
+    override fun createObservable(requestParams: RequestParams): Observable<ShopInfo> {
         val shopId = requestParams.getString(SHOP_ID, "0")
         val userId = requestParams.getString(USER_ID, "0")
         val deviceId = requestParams.getString(DEVICE_ID, "")
-        return shopRepository.getShopInfo(shopId, userId, deviceId)!!
+        return shopRepository.getShopInfo(shopId, userId, deviceId)
     }
 
     companion object {

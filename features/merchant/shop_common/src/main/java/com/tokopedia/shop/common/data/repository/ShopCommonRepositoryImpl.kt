@@ -10,11 +10,11 @@ import rx.Observable
  */
 class ShopCommonRepositoryImpl(private val shopInfoDataSource: ShopCommonDataSource) : ShopCommonRepository {
 
-    override fun getShopInfo(shopId: String?, userId: String?, deviceId: String?): Observable<ShopInfo>? {
-        return shopInfoDataSource.getShopInfo(shopId, userId, deviceId)
+    override fun getShopInfo(shopId: String?, userId: String?, deviceId: String?): Observable<ShopInfo> {
+        return shopInfoDataSource.getShopInfo(shopId, userId, deviceId) ?: Observable.just(ShopInfo())
     }
 
-    override fun getShopInfoByDomain(shopDomain: String?, userId: String?, deviceId: String?): Observable<ShopInfo>? {
-        return shopInfoDataSource.getShopInfoByDomain(shopDomain, userId, deviceId)
+    override fun getShopInfoByDomain(shopDomain: String?, userId: String?, deviceId: String?): Observable<ShopInfo> {
+        return shopInfoDataSource.getShopInfoByDomain(shopDomain, userId, deviceId) ?: Observable.just(ShopInfo())
     }
 }

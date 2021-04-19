@@ -7,6 +7,6 @@ import rx.Observable
  * Created by sebastianuskh on 3/8/17.
  */
 interface ShopCommonRepository {
-    fun getShopInfo(shopId: String?, userId: String?, deviceId: String?): Observable<ShopInfo>?
-    fun getShopInfoByDomain(shopDomain: String?, userId: String?, deviceId: String?): Observable<ShopInfo>?
+    fun getShopInfo(shopId: String?, userId: String?, deviceId: String?): Observable<ShopInfo>
+    fun getShopInfoByDomain(shopDomain: String?, userId: String?, deviceId: String?): Observable<ShopInfo>
 }
