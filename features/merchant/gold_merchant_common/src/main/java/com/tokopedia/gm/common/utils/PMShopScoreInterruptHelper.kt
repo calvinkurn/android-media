@@ -149,7 +149,7 @@ class PMShopScoreInterruptHelper @Inject constructor() {
 
     private fun setupInterruptTransitionPeriod(context: Context, data: PowerMerchantInterruptUiModel, fm: FragmentManager) {
         if (hasOpenedInterruptPage()) {
-            showTransitionPmInterruptPopup(context, data, fm)
+            //showTransitionPmInterruptPopup(context, data, fm)
         } else {
             showInterruptPage(context, data)
         }
