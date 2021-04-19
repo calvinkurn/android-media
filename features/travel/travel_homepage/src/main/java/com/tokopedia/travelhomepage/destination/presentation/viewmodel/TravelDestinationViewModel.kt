@@ -3,7 +3,7 @@ package com.tokopedia.travelhomepage.destination.presentation.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.common.travel.utils.TravelDispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
@@ -28,8 +28,8 @@ import javax.inject.Inject
 class TravelDestinationViewModel  @Inject constructor(
         private val graphqlRepository: GraphqlRepository,
         private val getEmptyModelsUseCase: GetEmptyModelsUseCase,
-        private val dispatcherProvider: TravelDispatcherProvider)
-    : BaseViewModel(dispatcherProvider.io()) {
+        private val dispatcherProvider: CoroutineDispatchers)
+    : BaseViewModel(dispatcherProvider.io) {
 
     private val travelDestinationItemListMutable = MutableLiveData<List<TravelDestinationItemModel>>()
     val travelDestinationItemList: LiveData<List<TravelDestinationItemModel>>
@@ -46,7 +46,7 @@ class TravelDestinationViewModel  @Inject constructor(
     private val mapper = TravelDestinationMapper()
 
     fun getInitialList() {
-        travelDestinationItemListMutable.value = getEmptyModelsUseCase.requestEmptyViewModels()
+        travelDestinationItemListMutable.postValue(getEmptyModelsUseCase.requestEmptyViewModels())
     }
 
     fun getAllContent(summaryQuery: String, recommQuery: String, orderQuery: String, articleQuery: String, cityId: String) {
@@ -96,7 +96,7 @@ class TravelDestinationViewModel  @Inject constructor(
 
     fun getDestinationCityData(query: String, webUrl: String) {
         launchCatchError( block = {
-            val data = withContext(dispatcherProvider.ui()) {
+            val data = withContext(dispatcherProvider.main) {
                 val param = mapOf(PARAM_WEBURLS to webUrl)
                 val graphqlRequest = GraphqlRequest(query, TravelDestinationCityModel.Response::class.java, param)
                 graphqlRepository.getReseponse(listOf(graphqlRequest))
@@ -111,7 +111,7 @@ class TravelDestinationViewModel  @Inject constructor(
     suspend fun getDestinationSummaryData(query: String, cityId: String): TravelDestinationSummaryModel? {
         return try {
             val summaryData = async {
-                val data = withContext(dispatcherProvider.ui()) {
+                val data = withContext(dispatcherProvider.main) {
                     val param = mapOf(PARAM_CITY_ID to cityId)
                     val graphqlRequest = GraphqlRequest(query, TravelDestinationSummaryModel.Response::class.java, param)
                     graphqlRepository.getReseponse(listOf(graphqlRequest))
@@ -128,7 +128,7 @@ class TravelDestinationViewModel  @Inject constructor(
     suspend fun getCityRecommendationData(query: String, cityId: String, product: String, order: Int): TravelDestinationSectionModel? {
         return try {
             val recommendationData = async {
-                val data = withContext(dispatcherProvider.ui()) {
+                val data = withContext(dispatcherProvider.main) {
                     val param = mapOf(PARAM_PRODUCT to product, PARAM_CITY_ID to cityId.toInt())
                     val graphqlRequest = GraphqlRequest(query, TravelHomepageRecommendationModel.Response::class.java, param)
                     graphqlRepository.getReseponse(listOf(graphqlRequest))
@@ -145,7 +145,7 @@ class TravelDestinationViewModel  @Inject constructor(
     suspend fun getOrderList(query: String, cityId: String): TravelDestinationSectionModel? {
         return try {
             val orderData = async {
-                val data = withContext(dispatcherProvider.ui()) {
+                val data = withContext(dispatcherProvider.main) {
                     val param = mapOf(PARAM_PAGE to 1, PARAM_PER_PAGE to 10, PARAM_FILTER_STATUS to "success", PARAM_CITY_ID to cityId.toInt())
                     val graphqlRequest = GraphqlRequest(query, TravelHomepageOrderListModel.Response::class.java, param)
                     graphqlRepository.getReseponse(listOf(graphqlRequest))
@@ -162,7 +162,7 @@ class TravelDestinationViewModel  @Inject constructor(
     suspend fun getCityArticles(query: String, cityId: String): TravelArticleModel? {
         return try {
             val articlesData = async {
-                val data = withContext(dispatcherProvider.ui()) {
+                val data = withContext(dispatcherProvider.main) {
                     val param = mapOf(PARAM_CITY_ID to cityId.toInt())
                     val graphqlRequest = GraphqlRequest(query, TravelArticleModel.Response::class.java, param)
                     graphqlRepository.getReseponse(listOf(graphqlRequest))

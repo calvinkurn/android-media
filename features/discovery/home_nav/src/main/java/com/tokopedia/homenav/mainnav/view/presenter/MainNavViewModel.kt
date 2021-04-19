@@ -8,7 +8,7 @@ import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.homenav.base.datamodel.HomeNavMenuDataModel
 import com.tokopedia.homenav.base.datamodel.HomeNavTitleDataModel
 import com.tokopedia.homenav.base.diffutil.HomeNavVisitable
-import com.tokopedia.homenav.common.dispatcher.NavDispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.homenav.common.util.ClientMenuGenerator
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.IDENTIFIER_TITLE_ALL_CATEGORIES
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.IDENTIFIER_TITLE_HELP_CENTER
@@ -48,7 +48,7 @@ import javax.inject.Inject
 
 class MainNavViewModel @Inject constructor(
         private val userSession: Lazy<UserSessionInterface>,
-        private val baseDispatcher: Lazy<NavDispatcherProvider>,
+        private val baseDispatcher: Lazy<CoroutineDispatchers>,
         private val getCategoryGroupUseCase: Lazy<GetCategoryGroupUseCase>,
         private val clientMenuGenerator: Lazy<ClientMenuGenerator>,
         private val getNavNotification: Lazy<GetNavNotification>,
@@ -58,7 +58,7 @@ class MainNavViewModel @Inject constructor(
         private val getProfileDataCacheUseCase: Lazy<GetProfileDataCacheUseCase>,
         private val getShopInfoUseCase: Lazy<GetShopInfoUseCase>,
         private val accountAdminInfoUseCase: Lazy<AccountAdminInfoUseCase>
-): BaseViewModel(baseDispatcher.get().io()) {
+): BaseViewModel(baseDispatcher.get().io) {
 
     companion object {
         private const val INDEX_MODEL_ACCOUNT = 0
@@ -491,12 +491,12 @@ class MainNavViewModel @Inject constructor(
 
             launchCatchError(coroutineContext, block = {
                 val call = async {
-                    withContext(baseDispatcher.get().io()) {
+                    withContext(baseDispatcher.get().io) {
                         getShopInfoUseCase.get().executeOnBackground()
                     }
                 }
                 val adminDataCall = async {
-                    withContext(baseDispatcher.get().io()) {
+                    withContext(baseDispatcher.get().io) {
                         getAdminData()
                     }
                 }

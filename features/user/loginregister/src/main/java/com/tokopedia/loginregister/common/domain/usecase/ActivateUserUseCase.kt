@@ -1,14 +1,12 @@
 package com.tokopedia.loginregister.common.domain.usecase
 
-import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
-import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
-import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.loginregister.common.DispatcherProvider
 import com.tokopedia.loginregister.common.domain.pojo.ActivateUserPojo
 import com.tokopedia.loginregister.common.domain.query.QueryActivateUser
-import kotlinx.coroutines.withContext
+import com.tokopedia.usecase.RequestParams
+import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
 /**
@@ -16,30 +14,30 @@ import javax.inject.Inject
  */
 
 class ActivateUserUseCase @Inject constructor(
-        private val graphqlRepository: GraphqlRepository,
-        dispatcher: DispatcherProvider
-) : BaseLoginRegisterUseCase<ActivateUserPojo>(dispatcher) {
+        private val graphqlUseCase: GraphqlUseCase<ActivateUserPojo>
+) : UseCase<ActivateUserPojo>() {
 
-    @JvmOverloads
-    fun getParams(
+    private val params = RequestParams.create()
+
+    init {
+        graphqlUseCase.setGraphqlQuery(QueryActivateUser.query)
+        graphqlUseCase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
+        graphqlUseCase.setTypeClass(ActivateUserPojo::class.java)
+    }
+
+    override suspend fun executeOnBackground(): ActivateUserPojo {
+        graphqlUseCase.clearCache()
+        graphqlUseCase.setRequestParams(params.parameters)
+        return graphqlUseCase.executeOnBackground()
+    }
+
+    fun setParams(
             email: String = "",
             validateToken: String = ""
-    ): Map<String, Any> = mapOf(
-            PARAM_EMAIL to email,
-            PARAM_VALIDATE_TOKEN to validateToken
-
-    )
-
-    override suspend fun getData(parameter: Map<String, Any>): ActivateUserPojo = withContext(coroutineContext) {
-        val cacheStrategy =
-                GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
-        val request = GraphqlRequest(
-                QueryActivateUser.query,
-                ActivateUserPojo::class.java,
-                parameter
-        )
-        return@withContext graphqlRepository.getReseponse(listOf(request), cacheStrategy)
-    }.getSuccessData()
+    ) {
+        params.putString(PARAM_EMAIL, email)
+        params.putString(PARAM_VALIDATE_TOKEN, validateToken)
+    }
 
     companion object {
         const val PARAM_EMAIL = "email"

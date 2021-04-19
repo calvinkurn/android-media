@@ -119,6 +119,8 @@ include "features:logistic:editshipping"
 include "features:logistic:localizationchooseaddress"
 
 include "features:media:mediauploader"
+include "features:media:media-common"
+include "features:media:medialoader"
 
 include "features:merchant:gold_merchant_common"
 include "features:merchant:power_merchant_subscribe"
@@ -213,7 +215,7 @@ include "features:user:loginregister"
 include "features:user:logout"
 include "features:user:managename"
 include "features:user:managepassword"
-include 'features:user:notif-troubleshooter'
+include "features:user:notif-troubleshooter"
 include "features:user:notifcenter"
 include "features:user:onboarding"
 include "features:user:otp"

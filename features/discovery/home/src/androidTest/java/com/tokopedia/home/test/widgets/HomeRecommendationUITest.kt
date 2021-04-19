@@ -22,7 +22,7 @@ import com.tokopedia.home.test.activity.HomeActivityTest
 import com.tokopedia.home.test.fragment.HomeRecommendationFragmentTest
 import com.tokopedia.home.test.json.HomeRecommendationJson
 import com.tokopedia.home.test.matchers.CustomAssertions.Companion.hasItemCount
-import com.tokopedia.home.test.rules.TestDispatcherProvider
+import com.tokopedia.test.application.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -57,7 +57,7 @@ class HomeRecommendationUITest{
         Log.d("testHomeRecom", mockData.toString())
         coEvery { getHomeRecommendationUseCase.executeOnBackground() } returns mockData
         Log.d("testHomeRecom", "success")
-        viewModel = HomeRecommendationViewModel(getHomeRecommendationUseCase, topAdsImageViewUseCase, TestDispatcherProvider())
+        viewModel = HomeRecommendationViewModel(getHomeRecommendationUseCase, topAdsImageViewUseCase, CoroutineTestDispatchersProvider)
         val homeRecommendationTest = HomeRecommendationFragmentTest(createViewModelFactory(viewModel))
         activityRule.activity.setupFragment(homeRecommendationTest)
         Log.d("testHomeRecom", "Activity set fragment")
@@ -71,7 +71,7 @@ class HomeRecommendationUITest{
         Log.d("testHomeRecom", "start test")
         coEvery { getHomeRecommendationUseCase.executeOnBackground() } throws TimeoutException()
         Log.d("testHomeRecom", "success")
-        viewModel = HomeRecommendationViewModel(getHomeRecommendationUseCase, topAdsImageViewUseCase, TestDispatcherProvider())
+        viewModel = HomeRecommendationViewModel(getHomeRecommendationUseCase, topAdsImageViewUseCase, CoroutineTestDispatchersProvider)
         val homeRecommendationTest = HomeRecommendationFragmentTest(createViewModelFactory(viewModel))
         activityRule.activity.setupFragment(homeRecommendationTest)
         Log.d("testHomeRecom", "Activity set fragment")
@@ -89,7 +89,7 @@ class HomeRecommendationUITest{
             HomeRecommendationDataModel()
         }
         Log.d("testHomeRecom", "success")
-        viewModel = HomeRecommendationViewModel(getHomeRecommendationUseCase, topAdsImageViewUseCase, TestDispatcherProvider())
+        viewModel = HomeRecommendationViewModel(getHomeRecommendationUseCase, topAdsImageViewUseCase, CoroutineTestDispatchersProvider)
         val homeRecommendationTest = HomeRecommendationFragmentTest(createViewModelFactory(viewModel))
         activityRule.activity.setupFragment(homeRecommendationTest)
         Log.d("testHomeRecom", "Activity set fragment")
@@ -112,7 +112,7 @@ class HomeRecommendationUITest{
         Log.d("testHomeRecom", mockData.toString())
         coEvery { getHomeRecommendationUseCase.executeOnBackground() } returns mockData
         Log.d("testHomeRecom", "success")
-        viewModel = HomeRecommendationViewModel(getHomeRecommendationUseCase, topAdsImageViewUseCase, TestDispatcherProvider())
+        viewModel = HomeRecommendationViewModel(getHomeRecommendationUseCase, topAdsImageViewUseCase, CoroutineTestDispatchersProvider)
         val homeRecommendationTest = HomeRecommendationFragmentTest(createViewModelFactory(viewModel))
         activityRule.activity.setupFragment(homeRecommendationTest)
         Log.d("testHomeRecom", "Activity set fragment")
@@ -137,7 +137,7 @@ class HomeRecommendationUITest{
         Log.d("testHomeRecom", mockData.toString())
         coEvery { getHomeRecommendationUseCase.executeOnBackground() } returns mockData
         Log.d("testHomeRecom", "success")
-        viewModel = HomeRecommendationViewModel(getHomeRecommendationUseCase, topAdsImageViewUseCase, TestDispatcherProvider())
+        viewModel = HomeRecommendationViewModel(getHomeRecommendationUseCase, topAdsImageViewUseCase, CoroutineTestDispatchersProvider)
         val homeRecommendationTest = HomeRecommendationFragmentTest(createViewModelFactory(viewModel))
         activityRule.activity.setupFragment(homeRecommendationTest)
         Log.d("testHomeRecom", "Activity set fragment")

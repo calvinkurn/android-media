@@ -46,29 +46,6 @@ object CommonTopupBillsGqlQuery {
         }
     """.trimIndent()
 
-    val enquiryDigital = """
-        query enquiry (${'$'}clientNumber: String!,${'$'}productId: String!) {
-          status
-          enquiry(
-            clientNumber:${'$'}clientNumber,
-            productId:${'$'}productId,
-            requestType: NEW) {
-            attributes: Attributes {
-              UserID
-              ProductID
-              ClientNumber
-              Title
-              Price
-              PricePlain
-              mainInfo: MainInfo {
-                label: Label
-                value: Value
-              }
-            }
-          }
-        }
-    """.trimIndent()
-
     val catalogMenuDetail = """
         query catalogMenuDetail(${'$'}menuID: Int!){
           rechargeCatalogMenuDetail(menuID:${'$'}menuID, platformID: 5) {

@@ -28,6 +28,11 @@ import com.tokopedia.imagepicker.picker.instagram.di.DaggerInstagramComponent;
 import com.tokopedia.imagepicker.picker.instagram.di.InstagramModule;
 import com.tokopedia.imagepicker.picker.instagram.util.InstagramConstant;
 import com.tokopedia.imagepicker.picker.instagram.view.presenter.InstagramLoginPresenter;
+import com.tokopedia.logger.ServerLogger;
+import com.tokopedia.logger.utils.Priority;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -169,7 +174,11 @@ public class InstagramLoginFragment extends BaseDaggerFragment{
         public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
             super.onReceivedError(view, errorCode, description, failingUrl);
             progressBar.setVisibility(View.GONE);
-            Timber.w("P1#WEBVIEW_ERROR#'%s';error_code=%s;desc='%s'",failingUrl, errorCode, description);
+            Map<String, String> messageMap = new HashMap<>();
+            messageMap.put("type", failingUrl);
+            messageMap.put("error_code", String.valueOf(errorCode));
+            messageMap.put("desc", description);
+            ServerLogger.log(Priority.P1, "WEBVIEW_ERROR", messageMap);
         }
 
     }

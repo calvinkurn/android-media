@@ -61,7 +61,7 @@ import com.tokopedia.play.view.wrapper.InteractionEvent
 import com.tokopedia.play.view.wrapper.LoginStateEvent
 import com.tokopedia.play.view.wrapper.PlayResult
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
-import com.tokopedia.play_common.util.coroutine.CoroutineDispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.play_common.util.event.EventObserver
 import com.tokopedia.play_common.util.extension.awaitMeasured
 import com.tokopedia.play_common.util.extension.changeConstraint
@@ -80,7 +80,7 @@ import javax.inject.Inject
  */
 class PlayUserInteractionFragment @Inject constructor(
         private val viewModelFactory: ViewModelProvider.Factory,
-        private val dispatchers: CoroutineDispatcherProvider,
+        private val dispatchers: CoroutineDispatchers,
         private val pipAnalytic: PlayPiPAnalytic,
         private val analytic: PlayAnalytic
 ) :

@@ -1,7 +1,7 @@
 package com.tokopedia.rechargegeneral.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.rechargegeneral.RechargeGeneralTestDispatchersProvider
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.common.topupbills.data.product.CatalogOperator
 import com.tokopedia.common.topupbills.data.product.CatalogProduct
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -47,7 +47,7 @@ class RechargeGeneralViewModelTest {
         gqlResponseFail = GraphqlResponse(result, errors, false)
 
         rechargeGeneralViewModel =
-                RechargeGeneralViewModel(graphqlRepository, RechargeGeneralTestDispatchersProvider())
+                RechargeGeneralViewModel(graphqlRepository, CoroutineTestDispatchersProvider)
     }
 
     @Test

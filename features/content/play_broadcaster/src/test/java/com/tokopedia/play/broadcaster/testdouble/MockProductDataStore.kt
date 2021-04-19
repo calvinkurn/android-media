@@ -5,14 +5,14 @@ import com.tokopedia.play.broadcaster.data.datastore.ProductDataStore
 import com.tokopedia.play.broadcaster.data.datastore.ProductDataStoreImpl
 import com.tokopedia.play.broadcaster.data.model.ProductData
 import com.tokopedia.play_common.model.result.NetworkResult
-import com.tokopedia.play_common.util.coroutine.CoroutineDispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import io.mockk.mockk
 
 /**
  * Created by jegul on 25/09/20
  */
 class MockProductDataStore(
-        dispatcherProvider: CoroutineDispatcherProvider
+        dispatcherProvider: CoroutineDispatchers
 ) : ProductDataStore {
 
     val selectedProductsId: List<Long>
