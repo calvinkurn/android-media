@@ -52,6 +52,7 @@ class StaticMenuGenerator @Inject constructor(val context: Context) {
                 CommonDataView(title = context?.getString(R.string.menu_account_title_about_us), body = "", type = CommonViewHolder.TYPE_WITHOUT_BODY, icon = IconUnify.TOPED, id = AccountConstants.SettingCode.SETTING_ABOUT_US),
                 CommonDataView(title = context?.getString(R.string.menu_account_title_terms), body = "", type = CommonViewHolder.TYPE_WITHOUT_BODY, icon = IconUnify.CLIPBOARD, id = AccountConstants.SettingCode.SETTING_TNC_ID),
                 CommonDataView(title = context?.getString(R.string.menu_account_title_privacy_policy), body = "", type = CommonViewHolder.TYPE_WITHOUT_BODY, icon = IconUnify.POLICY_PRIVACY, id = AccountConstants.SettingCode.SETTING_PRIVACY_ID),
+                CommonDataView(title = context?.getString(R.string.menu_account_title_intellectual_property), body = "", type = CommonViewHolder.TYPE_WITHOUT_BODY, icon = IconUnify.IP, id = AccountConstants.SettingCode.SETTING_IP),
                 CommonDataView(title = context?.getString(R.string.menu_account_title_review), body = "", type = CommonViewHolder.TYPE_WITHOUT_BODY, icon = IconUnify.RATING, id = AccountConstants.SettingCode.SETTING_APP_REVIEW_ID))
                 , showArrowDown = true)
     }

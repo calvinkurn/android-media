@@ -93,8 +93,6 @@ ext {
     androidxFragment = '1.2.4'
     debugToolsEnabled = true
 
-    debugToolsEnabled = true
-
     // Sort and categorize alphabetically by folder name
     app = [
             customerapp: ":customerapp",
@@ -103,7 +101,7 @@ ext {
     ]
 
     unifyIconVersion = '0.0.4'
-    unifyIconsVersion = '1.0.6'
+    unifyIconsVersion = '1.0.7'
     unifyPrinciplesVersion = '1.3.5'
     unifyComponentsVersion = '1.1.63'
     unifyCoachMarkVersion = '1.2.10'

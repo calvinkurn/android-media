@@ -245,6 +245,7 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
 
     private fun refreshData() {
         showLoadingSwipeToRefresh(true)
+        showLoading(true)
         loadData()
     }
 
@@ -392,7 +393,8 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
                                         useAce = showcaseItem.useAce,
                                         aceDefaultSort = showcaseItem.aceDefaultSort,
                                         uri = showcaseItem.uri,
-                                        badge = showcaseItem.badge
+                                        badge = showcaseItem.badge,
+                                        imageUrl = showcaseItem.imageUrl
                                 ))
                             }
 
