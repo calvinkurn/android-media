@@ -16,7 +16,6 @@ import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.ImageView
 import android.widget.LinearLayout
-import android.widget.TextView
 import androidx.annotation.DrawableRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -1219,15 +1218,15 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
 
     private fun setupFindWithMapButton() {
         context?.let {
-            val wrapper = LinearLayout(context)
+            val wrapper = LinearLayout(it)
             wrapper.gravity = Gravity.CENTER
 
-            val imageView = ImageView(context)
+            val imageView = ImageView(it)
             imageView.setPadding(BUTTON_RADIUS_PADDING_ALL, BUTTON_RADIUS_PADDING_ALL, BUTTON_RADIUS_PADDING_RIGHT, BUTTON_RADIUS_PADDING_ALL)
             imageView.setImageResource(R.drawable.ic_hotel_search_maps)
             wrapper.addView(imageView)
 
-            val textView = TextView(context)
+            val textView = Typography(it)
             textView.apply {
                 setHeadingText(BUTTON_RADIUS_HEADING_SIZE)
                 setTextColor(ContextCompat.getColor(context, R.color.hotel_color_active_price_marker))
