@@ -9,6 +9,7 @@ import com.tokopedia.hotel.search.presentation.adapter.PropertyAdapterTypeFactor
 
 @SuppressLint("")
 data class Property(
+        @SuppressLint("Invalid Data Type")
         @SerializedName("id")
         @Expose
         val id: Long = 0,
