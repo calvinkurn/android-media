@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <com.tokopedia.design.image.RoundedCornerImageView
+        <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/image_view_background"
             android:layout_width="match_parent"
             android:layout_height="0dp"

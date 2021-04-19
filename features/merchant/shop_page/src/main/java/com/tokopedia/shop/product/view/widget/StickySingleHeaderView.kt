@@ -8,8 +8,8 @@ import android.widget.FrameLayout
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.design.R
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.shop.R
 
 /**
  * Created by tlh on 2017/1/21 :)
@@ -61,13 +61,13 @@ class StickySingleHeaderView : FrameLayout, OnStickySingleHeaderListener {
         mRecyclerView = view
         recyclerViewPaddingTop = mRecyclerView?.paddingTop.orZero()
         mHeaderContainer = FrameLayout(context)
-        mHeaderContainer?.background = MethodChecker.getDrawable(context, R.drawable.card_shadow_bottom)
+        mHeaderContainer?.background = MethodChecker.getDrawable(context, R.drawable.shop_page_card_shadow_bottom)
         mHeaderContainer?.clipToPadding = false
         mHeaderContainer?.clipChildren = false
         mHeaderContainer?.isClickable = true
         mHeaderContainer?.layoutParams = LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
         mHeaderContainer?.visibility = GONE
-        mHeaderContainer?.background = MethodChecker.getDrawable(context, R.drawable.card_shadow_bottom)
+        mHeaderContainer?.background = MethodChecker.getDrawable(context, R.drawable.shop_page_card_shadow_bottom)
         addView(mHeaderContainer)
         val onScrollListener: RecyclerView.OnScrollListener = object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {

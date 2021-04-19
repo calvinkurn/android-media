@@ -20,6 +20,8 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
 import com.tokopedia.pms.R
 import com.tokopedia.pms.howtopay_native.analytics.HowToPayAnalytics
 import com.tokopedia.pms.howtopay_native.data.model.*
@@ -35,6 +37,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.pms_hwp_info.*
 import timber.log.Timber
+import java.lang.Exception
 import javax.inject.Inject
 
 
@@ -44,7 +47,7 @@ class HowToPayFragment : BaseDaggerFragment() {
     private val HIGHLIGHT_DIGIT_COUNT = 3
 
     private val TIMBER_TAG = "P2#HOW_TO_PAY#"
-    private val TIMBER_CHAR_MAX_LIMIT = 1000;
+    private val TIMBER_CHAR_MAX_LIMIT = 1000
 
 
     @Inject
@@ -111,7 +114,10 @@ class HowToPayFragment : BaseDaggerFragment() {
     private fun onAppLinkParsingError() {
         loaderViewHowToPay.gone()
         activity?.finish()
-        Timber.w("${TIMBER_TAG}validation;reason='bundle_app_link_parsing_error';data='${arguments.toString().take(TIMBER_CHAR_MAX_LIMIT)}'")
+        ServerLogger.log(Priority.P2, "HOW_TO_PAY", mapOf("type" to "validation",
+                "reason" to "bundle_app_link_parsing_error",
+                "data" to arguments.toString().take(TIMBER_CHAR_MAX_LIMIT)
+        ))
     }
 
     private fun onAppLinkPaymentInfoLoaded(appLinkPaymentInfo: AppLinkPaymentInfo) {
@@ -124,7 +130,10 @@ class HowToPayFragment : BaseDaggerFragment() {
         loaderViewHowToPay.gone()
         globalErrorHowToPay.visible()
         globalErrorHowToPay.errorAction.setOnClickListener { activity?.finish() }
-        Timber.w("${TIMBER_TAG}validation;reason='page_not_found';data='${appLinkPaymentInfo.toString().take(TIMBER_CHAR_MAX_LIMIT)}'")
+        ServerLogger.log(Priority.P2, "HOW_TO_PAY", mapOf("type" to "validation",
+                "reason" to "page_not_found",
+                "data" to appLinkPaymentInfo.toString().take(TIMBER_CHAR_MAX_LIMIT)
+        ))
     }
 
     private fun onInstructionLoaded(data: HowToPayInstruction) {
@@ -315,12 +324,14 @@ class HowToPayFragment : BaseDaggerFragment() {
 
     private fun copyTOClipBoard(context: Context?, dataStr: String) {
         context?.let {
-            val extraSpaceRegexStr = "\\s+".toRegex()
-            val clipboard = context.getSystemService(Activity.CLIPBOARD_SERVICE)
-                    as ClipboardManager
-            val clip = ClipData.newPlainText(COPY_BOARD_LABEL,
-                    dataStr.replace(extraSpaceRegexStr, ""))
-            clipboard.setPrimaryClip(clip)
+            try {
+                val extraSpaceRegexStr = "\\s+".toRegex()
+                val clipboard = context.getSystemService(Activity.CLIPBOARD_SERVICE)
+                        as ClipboardManager
+                val clip = ClipData.newPlainText(COPY_BOARD_LABEL,
+                        dataStr.replace(extraSpaceRegexStr, ""))
+                clipboard.setPrimaryClip(clip)
+            }catch (e : Exception){}
             if (::appLinkPaymentInfo.isInitialized)
                 howToPayAnalytics.get().eventOnCopyCodeClick(appLinkPaymentInfo.payment_type)
         }

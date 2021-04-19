@@ -1,0 +1,25 @@
+{
+  "profile": {
+    "user_id": "",
+    "full_name": "",
+    "first_name": "",
+    "email": "",
+    "bday": "",
+    "gender": "",
+    "phone": "",
+    "phone_masked": "",
+    "phone_verified": true,
+    "profile_picture": "",
+    "created_password": true,
+    "isLoggedIn": true
+  },
+  "shopBasicData": {
+    "result": {
+      "shopID": "",
+      "domain": "",
+      "name": "",
+      "logo": "",
+      "level": 1
+    }
+  }
+}
