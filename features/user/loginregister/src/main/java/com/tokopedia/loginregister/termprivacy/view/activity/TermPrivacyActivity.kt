@@ -21,7 +21,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PAGE_TERM_AND_C
  * [com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PAGE_PRIVACY_POLICY]
  * @example :
  * RouteManager.getIntent(getActivity(), TERM_PRIVACY, PAGE_TERM_AND_CONDITION)
- */
+ * */
 
 class TermPrivacyActivity : BaseSimpleActivity() {
 
@@ -37,7 +37,7 @@ class TermPrivacyActivity : BaseSimpleActivity() {
     private fun loadPage() {
         intent.data?.let {
             if (it.scheme == DeeplinkConstant.SCHEME_INTERNAL && it.pathSegments.size > 0) {
-                when (it.lastPathSegment) {
+                when(it.lastPathSegment) {
                     PAGE_TERM_AND_CONDITION -> openTermPage()
                     PAGE_PRIVACY_POLICY -> openPrivacyPage()
                     else -> finish()

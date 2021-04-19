@@ -34,6 +34,7 @@ dependencies {
     implementation project(rootProject.ext.features.inboxCommon)
     implementation project(rootProject.ext.features.topAdsSdk)
     implementation project(rootProject.ext.features.productCard)
+    implementation project(rootProject.ext.features.medialoader)
 
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.components
@@ -46,6 +47,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.commonNetwork)
     implementation project(rootProject.ext.libraries.graphql)
     implementation project(rootProject.ext.libraries.utils)
+    implementation project(rootProject.ext.libraries.logger)
 
     implementation rootProject.ext.playServicesDependencies.analytics
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants

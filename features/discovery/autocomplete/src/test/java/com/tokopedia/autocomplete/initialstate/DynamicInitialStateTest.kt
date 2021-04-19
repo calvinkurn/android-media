@@ -1,8 +1,8 @@
 package com.tokopedia.autocomplete.initialstate
 
 import com.tokopedia.autocomplete.initialstate.data.InitialStateUniverse
-import com.tokopedia.autocomplete.initialstate.dynamic.DynamicInitialStateSearchViewModel
-import com.tokopedia.autocomplete.initialstate.dynamic.DynamicInitialStateTitleViewModel
+import com.tokopedia.autocomplete.initialstate.dynamic.DynamicInitialStateSearchDataView
+import com.tokopedia.autocomplete.initialstate.dynamic.DynamicInitialStateTitleDataView
 import com.tokopedia.autocomplete.jsonToObject
 import com.tokopedia.autocomplete.shouldBe
 import io.mockk.every
@@ -44,23 +44,23 @@ internal class DynamicInitialStateTest: InitialStatePresenterTestFixtures() {
         val visitableList = slotVisitableList.captured
 
         val refreshedDynamicInitialStateDataNewSection = refreshedDynamicInitialStateData.find { it.featureId == ID_NEW_SECTION }!!
-        val refreshedDynamicInitialStateViewModel = visitableList[8] as DynamicInitialStateSearchViewModel
+        val refreshedDynamicInitialStateDataView = visitableList[8] as DynamicInitialStateSearchDataView
 
-        refreshedDynamicInitialStateViewModel.verifyDynamicInitialState(refreshedDynamicInitialStateDataNewSection)
+        refreshedDynamicInitialStateDataView.verifyDynamicInitialState(refreshedDynamicInitialStateDataNewSection)
 
-        val dynamicInitialStateTitle = visitableList[9] as DynamicInitialStateTitleViewModel
-        val dynamicInitialStateViewModel = visitableList[10] as DynamicInitialStateSearchViewModel
+        val dynamicInitialStateTitle = visitableList[9] as DynamicInitialStateTitleDataView
+        val dynamicInitialStateDataView = visitableList[10] as DynamicInitialStateSearchDataView
         val dynamicInitialStateDataNewSection = dynamicInitialStateData.find { it.featureId == dynamicInitialStateTitle.featureId }!!
 
-        dynamicInitialStateViewModel.verifyDynamicInitialState(dynamicInitialStateDataNewSection)
+        dynamicInitialStateDataView.verifyDynamicInitialState(dynamicInitialStateDataNewSection)
     }
 
-    private fun DynamicInitialStateSearchViewModel.verifyDynamicInitialState(dynamicInitialStateData: InitialStateData) {
+    private fun DynamicInitialStateSearchDataView.verifyDynamicInitialState(dynamicInitialStateData: InitialStateData) {
         list.size shouldBe dynamicInitialStateData.items.size
 
-        list.forEachIndexed { index, dynamicInitialStateItemViewModel ->
-            dynamicInitialStateItemViewModel.title shouldBe dynamicInitialStateData.items[index].title
-            dynamicInitialStateItemViewModel.subtitle shouldBe dynamicInitialStateData.items[index].subtitle
+        list.forEachIndexed { index, dynamicInitialStateItemDataView ->
+            dynamicInitialStateItemDataView.title shouldBe dynamicInitialStateData.items[index].title
+            dynamicInitialStateItemDataView.subtitle shouldBe dynamicInitialStateData.items[index].subtitle
         }
     }
 

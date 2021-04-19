@@ -1,12 +1,10 @@
 package com.tokopedia.logisticaddaddress.features.pinpoint
 
-import android.content.Context
 import com.google.android.gms.maps.model.LatLng
+import com.tokopedia.logisticCommon.data.entity.geolocation.coordinate.uimodel.CoordinateUiModel
 import com.tokopedia.logisticaddaddress.data.RetrofitInteractor
 import com.tokopedia.logisticaddaddress.data.RetrofitInteractorImpl
 import com.tokopedia.logisticaddaddress.domain.mapper.GeolocationMapper
-import com.tokopedia.logisticCommon.data.entity.geolocation.coordinate.CoordinateModel
-import com.tokopedia.logisticCommon.data.entity.geolocation.coordinate.viewmodel.CoordinateViewModel
 import com.tokopedia.logisticCommon.data.entity.response.Data
 import com.tokopedia.logisticCommon.data.entity.response.KeroMapsAutofill
 import com.tokopedia.logisticCommon.domain.usecase.RevGeocodeUseCase
@@ -14,7 +12,6 @@ import com.tokopedia.user.session.UserSession
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
-import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.gherkin.Feature
@@ -44,7 +41,7 @@ object GeolocationPresenterTest : Spek({
 
     Feature("geocoding") {
         Scenario("success") {
-            val res = CoordinateViewModel().apply {
+            val res = CoordinateUiModel().apply {
                 coordinate = LatLng(12.0, 12.0)
             }
             Given("success response") {

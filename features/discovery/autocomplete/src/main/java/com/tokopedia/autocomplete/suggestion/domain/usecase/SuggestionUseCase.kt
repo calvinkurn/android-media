@@ -2,25 +2,67 @@ package com.tokopedia.autocomplete.suggestion.domain.usecase
 
 import android.text.TextUtils
 import com.tokopedia.authentication.AuthHelper
+import com.tokopedia.autocomplete.suggestion.domain.model.SuggestionResponse
 import com.tokopedia.autocomplete.suggestion.domain.model.SuggestionUniverse
 import com.tokopedia.autocomplete.util.UrlParamHelper
+import com.tokopedia.discovery.common.constants.SearchConstant.GQL
+import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 import rx.Observable
-import rx.functions.Func1
-import java.util.HashMap
-import com.tokopedia.discovery.common.constants.SearchConstant.GQL
 
 class SuggestionUseCase(
-        private val graphqlRequest: GraphqlRequest,
-        private val graphqlUseCase: GraphqlUseCase,
-        private val suggestionDataModelMapper: Func1<GraphqlResponse, SuggestionUniverse>
+        private val graphqlUseCase: GraphqlUseCase
 ) : UseCase<SuggestionUniverse>() {
 
     companion object {
+        internal const val GQL_QUERY = """
+            query universe_suggestion(${'$'}params: String!) {
+              universe_suggestion(param: ${'$'}params) {
+                data {
+                  id
+                  name
+                  items {
+                    template
+                    type
+                    applink
+                    url
+                    title
+                    subtitle
+                    icon_title
+                    icon_subtitle
+                    shortcut_image
+                    image_url
+                    url_tracker
+                    label
+                    label_type
+                    tracking {
+                      code
+                    }
+                    discount_percentage
+                    original_price
+                  }
+                }
+                top_shops{
+                  type
+                  id
+                  applink
+                  url
+                  title
+                  subtitle
+                  icon_title
+                  icon_subtitle
+                  url_tracker
+                  image_url
+                  products{
+                    image_url
+                  }
+                }
+              }
+            }
+        """
 
         private const val KEY_DEVICE = "device"
         private const val KEY_SOURCE = "source"
@@ -54,19 +96,22 @@ class SuggestionUseCase(
         }
     }
 
+    @GqlQuery("SuggestionUseCaseQuery", GQL_QUERY)
     override fun createObservable(requestParams: RequestParams): Observable<SuggestionUniverse> {
-        val variables = createParametersForQuery(requestParams.parameters)
-        graphqlRequest.variables = variables
+        val params = UrlParamHelper.generateUrlParamString(requestParams.parameters)
+        val graphqlRequest = GraphqlRequest(
+                SuggestionUseCaseQuery.GQL_QUERY,
+                SuggestionResponse::class.java,
+                mapOf(GQL.KEY_PARAMS to params)
+        )
+
         graphqlUseCase.clearRequest()
-        graphqlUseCase.addRequest(graphqlRequest)
+        graphqlUseCase.addRequests(listOf(graphqlRequest))
+
         return graphqlUseCase
                 .createObservable(RequestParams.EMPTY)
-                .map(suggestionDataModelMapper)
-    }
-
-    private fun createParametersForQuery(parameters: Map<String, Any>): Map<String, Any> {
-        val variables: MutableMap<String, Any> = HashMap()
-        variables[GQL.KEY_PARAMS] = UrlParamHelper.generateUrlParamString(parameters)
-        return variables
+                .map {
+                    it.getData<SuggestionResponse>(SuggestionResponse::class.java)?.suggestionUniverse ?: SuggestionUniverse()
+                }
     }
 }

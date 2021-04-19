@@ -21,7 +21,6 @@ allprojects {
             credentials { username authToken }
         }
         maven { url "https://www.jitpack.io" }
-        maven { url "$rootDir/node_modules/react-native/android" }
         flatDir {
             dirs '../aars'
         }
@@ -86,7 +85,6 @@ subprojects {
                 substitute module('com.google.firebase:firebase-config') with module("com.google.firebase:firebase-config:${playServiceFirebaseRemoteConfig}")
                 substitute module('com.google.android.gms:play-services-measurement-base') with module("com.google.android.gms:play-services-measurement-base:${playServiceMeasurementBase}")
                 substitute module('com.google.android.gms:play-services-base') with module("com.google.android.gms:play-services-base:${playServiceBase}")
-                substitute module('com.facebook.soloader:soloader') with module("com.facebook.soloader:soloader:0.8.0")
                 substitute module('org.jetbrains.kotlin:kotlin-reflect') with module("org.jetbrains.kotlin:kotlin-reflect:${kotlinVersion}")
                 substitute module('androidx.sqlite:sqlite-framework') with module("androidx.sqlite:sqlite-framework:${sqliteFrameworkVersion}")
                 substitute module('com.google.android.gms:play-services-ads-identifier') with module("com.google.android.gms:play-services-ads-identifier:${playServiceAds}")

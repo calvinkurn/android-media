@@ -34,6 +34,7 @@ public class ShipmentCartItemModel implements Parcelable {
     private String shopBadge;
     private int orderNumber;
     private String preOrderInfo;
+    private boolean isFreeShippingExtra;
     private String freeShippingBadgeUrl;
     private String shopLocation;
     private String shopAlertMessage;
@@ -110,6 +111,7 @@ public class ShipmentCartItemModel implements Parcelable {
         shopId = in.readInt();
         shopName = in.readString();
         preOrderInfo = in.readString();
+        isFreeShippingExtra = in.readByte() != 0;
         freeShippingBadgeUrl = in.readString();
         shopLocation = in.readString();
         shopAlertMessage = in.readString();
@@ -165,6 +167,7 @@ public class ShipmentCartItemModel implements Parcelable {
         dest.writeInt(shopId);
         dest.writeString(shopName);
         dest.writeString(preOrderInfo);
+        dest.writeByte((byte) (isFreeShippingExtra ? 1 : 0));
         dest.writeString(freeShippingBadgeUrl);
         dest.writeString(shopLocation);
         dest.writeString(shopAlertMessage);
@@ -685,6 +688,14 @@ public class ShipmentCartItemModel implements Parcelable {
 
     public void setPreOrderInfo(String preOrderInfo) {
         this.preOrderInfo = preOrderInfo;
+    }
+
+    public boolean isFreeShippingExtra() {
+        return isFreeShippingExtra;
+    }
+
+    public void setFreeShippingExtra(boolean freeShippingExtra) {
+        isFreeShippingExtra = freeShippingExtra;
     }
 
     public String getFreeShippingBadgeUrl() {
