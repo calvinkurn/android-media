@@ -6,7 +6,6 @@ import com.tokopedia.home.analytics.v2.SalamWidgetTracking
 import com.tokopedia.home.beranda.domain.interactor.DeclineSalamWIdgetUseCase
 import com.tokopedia.home.beranda.domain.model.salam_widget.SalamWidgetData
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
-import com.tokopedia.home.beranda.presentation.viewModel.HomeViewModel
 import com.tokopedia.home_component.listener.SalamWidgetListener
 import com.tokopedia.home_component.model.ReminderData
 import com.tokopedia.user.session.UserSessionInterface

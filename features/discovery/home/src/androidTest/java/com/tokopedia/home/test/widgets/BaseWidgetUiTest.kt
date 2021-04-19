@@ -9,9 +9,9 @@ import com.tokopedia.home.beranda.data.mapper.HomeDataMapper
 import com.tokopedia.home.beranda.data.mapper.HomeDynamicChannelDataMapper
 import com.tokopedia.home.beranda.data.mapper.factory.HomeDynamicChannelVisitableFactoryImpl
 import com.tokopedia.home.beranda.data.mapper.factory.HomeVisitableFactoryImpl
-import com.tokopedia.home.beranda.data.usecase.HomeUseCase
+import com.tokopedia.home.beranda.data.usecase.HomeRevampUseCase
 import com.tokopedia.home.beranda.domain.interactor.*
-import com.tokopedia.home.beranda.presentation.viewModel.HomeViewModel
+import com.tokopedia.home.beranda.presentation.viewModel.HomeRevampViewModel
 import com.tokopedia.play.widget.util.PlayWidgetTools
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationFilterChips
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
@@ -34,7 +34,7 @@ abstract class BaseWidgetUiTest{
     open val getCoroutinePendingCashbackUseCase = mockk<Lazy<GetCoroutinePendingCashbackUseCase>> (relaxed = true)
     open val getPlayLiveDynamicUseCase = mockk<Lazy<GetPlayLiveDynamicUseCase>> (relaxed = true)
     open val getCoroutineWalletBalanceUseCase = mockk<Lazy<GetCoroutineWalletBalanceUseCase>> (relaxed = true)
-    open val getHomeUseCase = mockk<dagger.Lazy<HomeUseCase>> (relaxed = true)
+    open val getHomeUseCase = mockk<dagger.Lazy<HomeRevampUseCase>> (relaxed = true)
     open val getSendGeolocationInfoUseCase = mockk<dagger.Lazy<SendGeolocationInfoUseCase>> (relaxed = true)
     open val getBusinessWidgetTab = mockk<Lazy<GetBusinessWidgetTab>> (relaxed = true)
     open val getBusinessUnitDataUseCase = mockk<Lazy<GetBusinessUnitDataUseCase>> (relaxed = true)
@@ -61,7 +61,7 @@ abstract class BaseWidgetUiTest{
     open val getRecommendationFilterChips = mockk<Lazy<GetRecommendationFilterChips>>(relaxed = true)
     open val getRecommendationUseCase = mockk<Lazy<GetRecommendationUseCase>>(relaxed = true)
 
-    open fun reInitViewModel() = HomeViewModel(
+    open fun reInitViewModel() = HomeRevampViewModel(
             dismissHomeReviewUseCase = dismissHomeReviewUseCase,
             getBusinessUnitDataUseCase = getBusinessUnitDataUseCase,
             getBusinessWidgetTab = getBusinessWidgetTab,

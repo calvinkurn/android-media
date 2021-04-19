@@ -10,9 +10,9 @@ import com.google.gson.Gson
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.home.R
 import com.tokopedia.home.beranda.domain.model.HomeData
-import com.tokopedia.home.beranda.presentation.viewModel.HomeViewModel
+import com.tokopedia.home.beranda.presentation.viewModel.HomeRevampViewModel
 import com.tokopedia.home.test.activity.HomeActivityTest
-import com.tokopedia.home.test.fragment.HomeFragmentTest
+import com.tokopedia.home.test.fragment.HomeRevampFragmentTest
 import io.mockk.coEvery
 import io.mockk.every
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -36,7 +36,7 @@ class BannerUITest : BaseWidgetUiTest(){
     val taskExecutorRule = InstantTaskExecutorRule()
 
     private val context = InstrumentationRegistry.getInstrumentation().context
-    private lateinit var viewModel: HomeViewModel
+    private lateinit var viewModel: HomeRevampViewModel
 
     @Before
     fun setup(){
@@ -49,10 +49,10 @@ class BannerUITest : BaseWidgetUiTest(){
         val homeData = Gson().fromJson<HomeData>(json, HomeData::class.java)
         coEvery { getHomeUseCase.get().updateHomeData() } returns flow {  }
         coEvery { getHomeUseCase.get().getHomeData() } returns flow {
-            emit(homeDataMapper.mapToHomeViewModel(homeData, false))
+            emit(homeDataMapper.mapToHomeRevampViewModel(homeData, false))
         }
         viewModel = reInitViewModel()
-        val homeFragment = HomeFragmentTest()
+        val homeFragment = HomeRevampFragmentTest()
 
         activityRule.activity.setupFragment(homeFragment)
         Thread.sleep(5000)
@@ -66,12 +66,12 @@ class BannerUITest : BaseWidgetUiTest(){
         val homeData2 = Gson().fromJson(json2, HomeData::class.java)
         coEvery { getHomeUseCase.get().updateHomeData() } returns flow {  }
         coEvery { getHomeUseCase.get().getHomeData() } returns flow {
-            emit(homeDataMapper.mapToHomeViewModel(homeData, false))
+            emit(homeDataMapper.mapToHomeRevampViewModel(homeData, false))
             delay(4000)
-            emit(homeDataMapper.mapToHomeViewModel(homeData2, false))
+            emit(homeDataMapper.mapToHomeRevampViewModel(homeData2, false))
         }
         viewModel = reInitViewModel()
-        val homeFragment = HomeFragmentTest()
+        val homeFragment = HomeRevampFragmentTest()
 
         activityRule.activity.setupFragment(homeFragment)
         Thread.sleep(1000)

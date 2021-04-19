@@ -16,16 +16,15 @@ import com.tokopedia.home.beranda.domain.model.HomeData
 import com.tokopedia.home.beranda.domain.model.review.SuggestedProductReview
 import com.tokopedia.home.beranda.domain.model.review.SuggestedProductReviewResponse
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PopularKeywordListDataModel
-import com.tokopedia.home.beranda.presentation.viewModel.HomeViewModel
+import com.tokopedia.home.beranda.presentation.viewModel.HomeRevampViewModel
 import com.tokopedia.home.test.R
 import com.tokopedia.home.test.activity.HomeActivityTest
-import com.tokopedia.home.test.fragment.HomeFragmentTest
+import com.tokopedia.home.test.fragment.HomeRevampFragmentTest
 import io.mockk.coEvery
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.flow
 import org.hamcrest.CoreMatchers
-import org.hamcrest.CoreMatchers.not
 import org.junit.Rule
 import org.junit.Test
 
@@ -40,7 +39,7 @@ class PopularUITest : BaseWidgetUiTest(){
     val taskExecutorRule = InstantTaskExecutorRule()
 
     private val context = InstrumentationRegistry.getInstrumentation().context
-    private lateinit var viewModel: HomeViewModel
+    private lateinit var viewModel: HomeRevampViewModel
 
     companion object{
         private val TITLE = R.id.channel_title
@@ -63,7 +62,7 @@ class PopularUITest : BaseWidgetUiTest(){
             emit(data.copy(list = newList))
         }
         viewModel = reInitViewModel()
-        val homeFragment = HomeFragmentTest()
+        val homeFragment = HomeRevampFragmentTest()
 
         activityRule.activity.setupFragment(homeFragment)
         Thread.sleep(5000)
@@ -83,7 +82,7 @@ class PopularUITest : BaseWidgetUiTest(){
             emit(data)
         }
         viewModel = reInitViewModel()
-        val homeFragment = HomeFragmentTest()
+        val homeFragment = HomeRevampFragmentTest()
 
         activityRule.activity.setupFragment(homeFragment)
         Thread.sleep(5000)
@@ -101,7 +100,7 @@ class PopularUITest : BaseWidgetUiTest(){
             emit(data)
         }
         viewModel = reInitViewModel()
-        val homeFragment = HomeFragmentTest()
+        val homeFragment = HomeRevampFragmentTest()
 
         activityRule.activity.setupFragment(homeFragment)
         Thread.sleep(5000)
@@ -124,7 +123,7 @@ class PopularUITest : BaseWidgetUiTest(){
             emit(data)
         }
         viewModel = reInitViewModel()
-        val homeFragment = HomeFragmentTest()
+        val homeFragment = HomeRevampFragmentTest()
 
         activityRule.activity.setupFragment(homeFragment)
         Thread.sleep(5000)

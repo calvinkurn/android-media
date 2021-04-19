@@ -9,9 +9,6 @@ import com.tokopedia.home.beranda.domain.model.salam_widget.SalamWidgetData
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDataModel
 import com.tokopedia.home.beranda.presentation.viewModel.HomeRevampViewModel
 import com.tokopedia.home.ext.observeOnce
-import com.tokopedia.home.viewModel.homepage.givenDeclineSalamWidgetUseCase
-import com.tokopedia.home.viewModel.homepage.givenGetSalamWidgetThrowReturn
-import com.tokopedia.home.viewModel.homepage.givenGetSalamWidgetUseCase
 import com.tokopedia.home_component.model.ReminderData
 import com.tokopedia.home_component.model.ReminderEnum
 import com.tokopedia.home_component.model.ReminderWidget

@@ -8,7 +8,6 @@ import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelDataModel
 import com.tokopedia.home.beranda.presentation.viewModel.HomeRevampViewModel
-import com.tokopedia.home.viewModel.homepage.givenGetDynamicChannelsUseCaseThrowReturn
 import com.tokopedia.home_component.model.ChannelModel
 import io.mockk.confirmVerified
 import io.mockk.mockk

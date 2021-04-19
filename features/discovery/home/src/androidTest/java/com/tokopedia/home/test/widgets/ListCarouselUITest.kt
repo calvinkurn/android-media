@@ -13,9 +13,9 @@ import com.tokopedia.home.R
 import com.tokopedia.home.beranda.domain.model.HomeData
 import com.tokopedia.home.beranda.domain.model.review.SuggestedProductReview
 import com.tokopedia.home.beranda.domain.model.review.SuggestedProductReviewResponse
-import com.tokopedia.home.beranda.presentation.viewModel.HomeViewModel
+import com.tokopedia.home.beranda.presentation.viewModel.HomeRevampViewModel
 import com.tokopedia.home.test.activity.HomeActivityTest
-import com.tokopedia.home.test.fragment.HomeFragmentTest
+import com.tokopedia.home.test.fragment.HomeRevampFragmentTest
 import io.mockk.coEvery
 import io.mockk.every
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -38,7 +38,7 @@ class ListCarouselUITest : BaseWidgetUiTest(){
     val taskExecutorRule = InstantTaskExecutorRule()
 
     private val context = InstrumentationRegistry.getInstrumentation().context
-    private lateinit var viewModel: HomeViewModel
+    private lateinit var viewModel: HomeRevampViewModel
 
     companion object{
         private val CONTAINER = R.id.list_carousel_view
@@ -63,7 +63,7 @@ class ListCarouselUITest : BaseWidgetUiTest(){
             emit(data)
         }
         viewModel = reInitViewModel()
-        val homeFragment = HomeFragmentTest()
+        val homeFragment = HomeRevampFragmentTest()
 
         activityRule.activity.setupFragment(homeFragment)
         Thread.sleep(5000)
@@ -83,7 +83,7 @@ class ListCarouselUITest : BaseWidgetUiTest(){
             emit(data)
         }
         viewModel = reInitViewModel()
-        val homeFragment = HomeFragmentTest()
+        val homeFragment = HomeRevampFragmentTest()
 
         activityRule.activity.setupFragment(homeFragment)
         Thread.sleep(5000)
@@ -106,7 +106,7 @@ class ListCarouselUITest : BaseWidgetUiTest(){
             emit(data)
         }
         viewModel = reInitViewModel()
-        val homeFragment = HomeFragmentTest()
+        val homeFragment = HomeRevampFragmentTest()
 
         activityRule.activity.setupFragment(homeFragment)
         Thread.sleep(5000)

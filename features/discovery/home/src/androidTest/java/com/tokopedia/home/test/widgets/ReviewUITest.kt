@@ -1,37 +1,26 @@
 package com.tokopedia.home.test.widgets
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import com.google.gson.Gson
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.atc_common.domain.usecase.AddToCartOccUseCase
 import com.tokopedia.home.R
-import com.tokopedia.home.beranda.data.mapper.HomeDataMapper
-import com.tokopedia.home.beranda.data.mapper.factory.HomeVisitableFactoryImpl
-import com.tokopedia.home.beranda.data.usecase.HomeUseCase
-import com.tokopedia.home.beranda.domain.interactor.*
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.domain.model.HomeData
 import com.tokopedia.home.beranda.domain.model.review.SuggestedProductReview
 import com.tokopedia.home.beranda.domain.model.review.SuggestedProductReviewResponse
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.ReviewDataModel
-import com.tokopedia.home.beranda.presentation.viewModel.HomeViewModel
+import com.tokopedia.home.beranda.presentation.viewModel.HomeRevampViewModel
 import com.tokopedia.home.test.activity.HomeActivityTest
-import com.tokopedia.home.test.fragment.HomeFragmentTest
-import com.tokopedia.test.application.dispatcher.CoroutineTestDispatchersProvider
-import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.home.test.fragment.HomeRevampFragmentTest
 import io.mockk.coEvery
 import io.mockk.every
-import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flow
 import org.hamcrest.CoreMatchers.allOf
@@ -50,7 +39,7 @@ class ReviewUITest : BaseWidgetUiTest(){
     val taskExecutorRule = InstantTaskExecutorRule()
 
     private val context = InstrumentationRegistry.getInstrumentation().context
-    private lateinit var viewModel: HomeViewModel
+    private lateinit var viewModel: HomeRevampViewModel
 
     companion object{
         private val CONTAINER = R.id.review_card_bg
@@ -76,7 +65,7 @@ class ReviewUITest : BaseWidgetUiTest(){
             emit(data.copy(list = newList))
         }
         viewModel = reInitViewModel()
-        val homeFragment = HomeFragmentTest()
+        val homeFragment = HomeRevampFragmentTest()
 
         activityRule.activity.setupFragment(homeFragment)
         Thread.sleep(5000)
@@ -96,7 +85,7 @@ class ReviewUITest : BaseWidgetUiTest(){
             emit(data.copy(list = newList))
         }
         viewModel = reInitViewModel()
-        val homeFragment = HomeFragmentTest()
+        val homeFragment = HomeRevampFragmentTest()
 
         activityRule.activity.setupFragment(homeFragment)
         Thread.sleep(5000)
@@ -129,7 +118,7 @@ class ReviewUITest : BaseWidgetUiTest(){
         }
 
         viewModel = reInitViewModel()
-        val homeFragment = HomeFragmentTest()
+        val homeFragment = HomeRevampFragmentTest()
 
         activityRule.activity.setupFragment(homeFragment)
         Thread.sleep(5000)

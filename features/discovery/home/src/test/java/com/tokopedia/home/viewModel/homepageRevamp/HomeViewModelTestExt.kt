@@ -4,16 +4,28 @@ import android.app.Activity
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.atc_common.domain.usecase.AddToCartOccUseCase
+import com.tokopedia.home.beranda.data.model.HomeWidget
+import com.tokopedia.home.beranda.data.model.PlayChannel
+import com.tokopedia.home.beranda.data.model.PlayData
 import com.tokopedia.home.beranda.data.usecase.HomeRevampUseCase
+import com.tokopedia.home.beranda.data.usecase.HomeUseCase
 import com.tokopedia.home.beranda.domain.interactor.*
+import com.tokopedia.home.beranda.domain.model.SetInjectCouponTimeBased
+import com.tokopedia.home.beranda.domain.model.recharge_recommendation.DeclineRechargeRecommendation
+import com.tokopedia.home.beranda.domain.model.recharge_recommendation.RechargeRecommendation
+import com.tokopedia.home.beranda.domain.model.salam_widget.SalamWidget
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.BusinessUnitItemDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelDataModel
 import com.tokopedia.home.beranda.presentation.viewModel.HomeRevampViewModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.home.util.HomeCommandProcessor
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.visitable.DynamicLegoBannerDataModel
+import com.tokopedia.play.widget.data.PlayWidget
+import com.tokopedia.play.widget.domain.PlayWidgetUseCase
 import com.tokopedia.play.widget.util.PlayWidgetTools
+import com.tokopedia.recharge_component.model.RechargePerso
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationFilterChips
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.widget.bestseller.mapper.BestSellerMapper
@@ -24,6 +36,7 @@ import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flow
+import java.util.concurrent.TimeoutException
 
 /**
  * Created by Lukas on 14/05/20.
@@ -125,4 +138,94 @@ fun createDefaultHomeDataModel(): HomeDataModel {
                     DynamicLegoBannerDataModel(ChannelModel(id = "5", groupId = "1"))
             )
     )
+}
+
+fun GetPlayLiveDynamicUseCase.givenGetPlayLiveDynamicUseCaseReturn(channel: PlayChannel) {
+    setParams()
+    coEvery { executeOnBackground() } returns PlayData(
+            playChannels = listOf(channel)
+    )
+}
+
+fun PlayWidgetTools.givenPlayWidgetToolsReturn(playWidget: PlayWidget, dispatchers: CoroutineDispatchers) {
+    coEvery { getWidgetFromNetwork(PlayWidgetUseCase.WidgetType.Home, dispatchers.io) } returns playWidget
+}
+
+fun GetBusinessWidgetTab.givenGetBusinessWidgetTabUseCaseReturn(homeWidget: HomeWidget) {
+    coEvery { executeOnBackground() } returns homeWidget
+}
+
+fun GetDynamicChannelsUseCase.givenGetDynamicChannelsUseCaseThrowReturn() {
+    coEvery { executeOnBackground() } throws TimeoutException()
+}
+
+fun GetBusinessUnitDataUseCase.givenGetBusinessUnitDataUseCaseReturn(businessList: List<BusinessUnitItemDataModel>){
+    coEvery{ executeOnBackground() } returns businessList
+}
+fun GetBusinessUnitDataUseCase.givenGetBusinessUnitDataUseCaseThrowReturn(){
+    coEvery{ executeOnBackground() } throws Exception()
+}
+
+fun GetRechargeRecommendationUseCase.givenGetRechargeRecommendationUseCase(rechargeRecommendation: RechargeRecommendation){
+    coEvery { executeOnBackground() } returns rechargeRecommendation
+}
+
+fun GetRechargeRecommendationUseCase.givenGetRechargeRecommendationThrowReturn(){
+    coEvery { executeOnBackground() } throws Exception()
+}
+
+fun DeclineRechargeRecommendationUseCase.givenDeclineRechargeRecommendationUseCase(declineRechargeRecommendation: DeclineRechargeRecommendation){
+    coEvery { executeOnBackground() } returns declineRechargeRecommendation
+}
+
+fun GetSalamWidgetUseCase.givenGetSalamWidgetUseCase(salamWidget : SalamWidget){
+    coEvery { executeOnBackground() } returns salamWidget
+}
+
+fun GetSalamWidgetUseCase.givenGetSalamWidgetThrowReturn(){
+    coEvery { executeOnBackground() } throws Exception()
+}
+
+fun DeclineSalamWIdgetUseCase.givenDeclineSalamWidgetUseCase(salamWidget: SalamWidget){
+    coEvery { executeOnBackground() } returns salamWidget
+}
+
+fun GetRechargeBUWidgetUseCase.givenGetRechargeBUWidgetUseCase(rechargePerso: RechargePerso){
+    coEvery { executeOnBackground() } returns rechargePerso
+}
+
+fun GetRechargeBUWidgetUseCase.givenGetRechargeBUWidgetThrowReturn(){
+    coEvery { executeOnBackground() } throws Exception()
+}
+
+fun HomeUseCase.givenGetHomeDataReturn(homeDataModel: HomeDataModel) {
+    coEvery { getHomeData() } returns flow{
+        emit(homeDataModel)
+    }
+}
+
+fun HomeUseCase.givenGetHomeDataReturn(homeDataModel: HomeDataModel, newHomeDataModel: HomeDataModel) {
+    coEvery { getHomeData() } returns flow{
+        emit(homeDataModel)
+        emit(newHomeDataModel)
+    }
+}
+
+fun HomeUseCase.givenGetDynamicChannelsUseCase(dynamicChannelDataModels: List<DynamicChannelDataModel>) {
+    coEvery { onDynamicChannelExpired(any()) } returns dynamicChannelDataModels
+}
+
+fun InjectCouponTimeBasedUseCase.givenInjectCouponTimeBasedUseCaseReturn(setInjectCouponTimeBased: SetInjectCouponTimeBased) {
+    coEvery { executeOnBackground() } returns setInjectCouponTimeBased
+}
+
+fun InjectCouponTimeBasedUseCase.givenInjectCouponTimeBasedUseCaseThrowReturn() {
+    coEvery { executeOnBackground() } throws Exception()
+}
+
+fun areEqualKeyValues(first: Map<String, Any>, second: Map<String,Any>): Boolean{
+    first.forEach{
+        if(it.value != second[it.key]) return false
+    }
+    return true
 }

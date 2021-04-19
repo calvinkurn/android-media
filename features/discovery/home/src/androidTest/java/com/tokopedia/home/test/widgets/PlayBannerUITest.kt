@@ -21,9 +21,9 @@ import com.tokopedia.home.beranda.data.model.PlayData
 import com.tokopedia.home.beranda.data.model.VideoStream
 import com.tokopedia.home.beranda.domain.model.HomeData
 import com.tokopedia.home.beranda.helper.Result
-import com.tokopedia.home.beranda.presentation.viewModel.HomeViewModel
+import com.tokopedia.home.beranda.presentation.viewModel.HomeRevampViewModel
 import com.tokopedia.home.test.activity.HomeActivityTest
-import com.tokopedia.home.test.fragment.HomeFragmentTest
+import com.tokopedia.home.test.fragment.HomeRevampFragmentTest
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -50,7 +50,7 @@ class PlayBannerUITest : BaseWidgetUiTest(){
     override val homeDataMapper = HomeDataMapper(instrumentationContext, homeVisitableFactory, mockk(relaxed = true),
             HomeDynamicChannelDataMapper(instrumentationContext, homeDynamicChannelVisitableFactory, TrackingQueue(instrumentationContext)))
     val context = InstrumentationRegistry.getInstrumentation().context
-    private lateinit var viewModel: HomeViewModel
+    private lateinit var viewModel: HomeRevampViewModel
 
     companion object{
         private val CONTAINER = R.id.play_frame_layout
@@ -67,7 +67,7 @@ class PlayBannerUITest : BaseWidgetUiTest(){
             emit(homeDataMapper.mapToHomeViewModel(homeData, false))
         }
         viewModel = reInitViewModel()
-        val homeFragment = HomeFragmentTest()
+        val homeFragment = HomeRevampFragmentTest()
 
         activityRule.activity.setupFragment(homeFragment)
         Thread.sleep(5000)
@@ -101,7 +101,7 @@ class PlayBannerUITest : BaseWidgetUiTest(){
             emit(homeDataMapper.mapToHomeViewModel(homeData, false))
         }
         viewModel = reInitViewModel()
-        val homeFragment = HomeFragmentTest()
+        val homeFragment = HomeRevampFragmentTest()
 
         activityRule.activity.setupFragment(homeFragment)
         Thread.sleep(1000)
@@ -141,7 +141,7 @@ class PlayBannerUITest : BaseWidgetUiTest(){
                 )
         )
         viewModel = reInitViewModel()
-        val homeFragment = HomeFragmentTest()
+        val homeFragment = HomeRevampFragmentTest()
 
         activityRule.activity.setupFragment(homeFragment)
         Thread.sleep(5000)
@@ -161,7 +161,7 @@ class PlayBannerUITest : BaseWidgetUiTest(){
                 listOf()
         )
         viewModel = reInitViewModel()
-        val homeFragment = HomeFragmentTest()
+        val homeFragment = HomeRevampFragmentTest()
 
         activityRule.activity.setupFragment(homeFragment)
         Thread.sleep(5000)
@@ -179,7 +179,7 @@ class PlayBannerUITest : BaseWidgetUiTest(){
         }
         coEvery { getPlayLiveDynamicUseCase.get().executeOnBackground() } throws RuntimeException()
         viewModel = reInitViewModel()
-        val homeFragment = HomeFragmentTest()
+        val homeFragment = HomeRevampFragmentTest()
 
         activityRule.activity.setupFragment(homeFragment)
         Thread.sleep(5000)
@@ -220,7 +220,7 @@ class PlayBannerUITest : BaseWidgetUiTest(){
                 )
         )
         viewModel = reInitViewModel()
-        val homeFragment = HomeFragmentTest()
+        val homeFragment = HomeRevampFragmentTest()
 
         activityRule.activity.setupFragment(homeFragment)
         Thread.sleep(3000)
@@ -283,7 +283,7 @@ class PlayBannerUITest : BaseWidgetUiTest(){
                 )
         )
         viewModel = reInitViewModel()
-        val homeFragment = HomeFragmentTest()
+        val homeFragment = HomeRevampFragmentTest()
 
         activityRule.activity.setupFragment(homeFragment)
         Thread.sleep(2000)
