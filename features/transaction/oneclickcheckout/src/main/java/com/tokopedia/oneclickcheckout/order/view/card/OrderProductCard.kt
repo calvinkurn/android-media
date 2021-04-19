@@ -237,6 +237,12 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
                 it.setImageUrl(product.freeOngkirImg)
                 it.visible()
             }
+            val contentDescriptionStringResource = if (product.isFreeOngkirExtra) {
+                com.tokopedia.purchase_platform.common.R.string.pp_cd_image_badge_boe
+            } else {
+                com.tokopedia.purchase_platform.common.R.string.pp_cd_image_badge_bo
+            }
+            iuFreeShipping?.contentDescription = view.context.getString(contentDescriptionStringResource)
             separatorFreeShipping?.visible()
         } else {
             iuFreeShipping?.gone()
