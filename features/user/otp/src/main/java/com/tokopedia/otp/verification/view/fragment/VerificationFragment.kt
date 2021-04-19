@@ -80,15 +80,14 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
     private var indexTempOtp = 0
     private val delayAnimateText: Long = 350
 
-    private val handler: Handler = Handler()
-
+    private var handler: Handler = Handler()
 
     private val characterAdder: Runnable = object : Runnable {
         override fun run() {
             tempOtp?.let {
                 viewBound.pin?.value = it.subSequence(0, indexTempOtp++)
                 if (indexTempOtp <= it.length) {
-                    handler.postDelayed(this, delayAnimateText)
+                    handler?.postDelayed(this, delayAnimateText)
                 }
             }
         }
@@ -118,6 +117,9 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
                 ?: false
         isMoreThanOneMethod = arguments?.getBoolean(OtpConstant.IS_MORE_THAN_ONE_EXTRA, true)
                 ?: true
+        activity?.runOnUiThread {
+            handler = Handler()
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -152,6 +154,8 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
         analytics.trackClickBackOtpPage(otpData.otpType)
         if (otpData.otpType == OtpConstant.OtpType.REGISTER_PHONE_NUMBER) {
             analytics.trackClickBackRegisterPhoneOtp()
+        } else if (otpData.otpType == OtpConstant.OtpType.REGISTER_EMAIL) {
+            analytics.trackClickBackRegisterEmailOtp()
         }
         return true
     }
@@ -326,8 +330,8 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
         tempOtp = txt
         indexTempOtp = 0
         viewBound.pin?.value = ""
-        handler.removeCallbacks(characterAdder)
-        handler.postDelayed(characterAdder, delayAnimateText)
+        handler?.removeCallbacks(characterAdder)
+        handler?.postDelayed(characterAdder, delayAnimateText)
     }
 
     private fun isCountdownFinished(): Boolean {

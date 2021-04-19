@@ -371,7 +371,7 @@ class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : Abstra
     }
 
     private fun sentNotifyButtonEvent() {
-        (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackNotifyClick(productCardItemViewModel.components, productCardItemViewModel.isUserLoggedIn())
+        (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackNotifyClick(productCardItemViewModel.components, productCardItemViewModel.isUserLoggedIn(),productCardItemViewModel.getUserID())
     }
 
     private fun showNotifyResultToast(toastData: Triple<Boolean, String?, Int?>) {

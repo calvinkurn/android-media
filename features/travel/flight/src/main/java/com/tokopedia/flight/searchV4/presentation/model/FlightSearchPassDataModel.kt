@@ -23,4 +23,9 @@ data class FlightSearchPassDataModel(var departureDate: String = "",
     fun getDate(isReturning: Boolean): String =
             if (isReturning) returnDate else departureDate
 
+    fun getDepartureAirport(isReturning: Boolean): String =
+            if(isReturning) arrivalAirport.airportCode else departureAirport.airportCode
+
+    fun getArrivalAirport(isReturning: Boolean): String =
+            if(isReturning) departureAirport.airportCode else arrivalAirport.airportCode
 }

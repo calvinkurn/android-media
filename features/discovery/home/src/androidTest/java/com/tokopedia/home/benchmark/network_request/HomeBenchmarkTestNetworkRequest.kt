@@ -10,7 +10,7 @@ import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.home.benchmark.network_request.HomeMockResponseList.getDynamicHomeChannel
 import com.tokopedia.home.benchmark.prepare_page.TestQuery.dynamicChannelQuery
 import com.tokopedia.home.benchmark.prepare_page.TestQuery.homeQuery
-import com.tokopedia.home.beranda.common.HomeDispatcherProviderImpl
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.home.beranda.data.datasource.default_data_source.HomeDefaultDataSource
 import com.tokopedia.home.beranda.data.datasource.local.HomeCachedDataSource
 import com.tokopedia.home.beranda.data.datasource.local.HomeDatabase
@@ -119,7 +119,7 @@ class HomeBenchmarkTestNetworkRequest: CoroutineScope {
             val getHomeBannerUseCase = GetHomePageBannerUseCase(homeBannerData)
 
             val homeRemoteDataSource = HomeRemoteDataSource(
-                    dispatchers = HomeDispatcherProviderImpl(),
+                    dispatchers = CoroutineDispatchersProvider,
                     getHomeDynamicChannelsRepository = getDynamicChannelRepository,
                     getHomeDataUseCase = getHomeDataUseCase,
                     getAtfDataUseCase = getAtfUseCase,

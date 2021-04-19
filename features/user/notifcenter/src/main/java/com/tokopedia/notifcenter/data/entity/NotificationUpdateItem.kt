@@ -57,7 +57,8 @@ data class ProductData(
         @Expose @SerializedName("shop") val shop: Shop? = null,
         @Expose @SerializedName("stock") var stock: Int = 0,
         @Expose @SerializedName("type_button") var typeButton: Int = 0,
-        @Expose @SerializedName("is_show") var isShow: Boolean = false
+        @Expose @SerializedName("is_show") var isShow: Boolean = false,
+        @Expose @SerializedName("has_reminder") var hasReminder: Boolean = false
 )
 
 data class Label (

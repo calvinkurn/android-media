@@ -2,7 +2,8 @@ package com.tokopedia.applink
 
 import android.content.Context
 import android.net.Uri
-import timber.log.Timber
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
 
 /**
  * Author errysuprayogi on 11,September,2019
@@ -33,7 +34,7 @@ object AppUtil {
             val hostAndPath = uri.host + uri.path
             if (!alreadyLoggedList.contains(hostAndPath)) {
                 alreadyLoggedList.add(hostAndPath)
-                Timber.w("P1#AIRBNB_OPEN#%s", hostAndPath)
+                ServerLogger.log(Priority.P1, "AIRBNB_OPEN", mapOf("type" to hostAndPath))
             }
         } catch (e:Exception) {
 

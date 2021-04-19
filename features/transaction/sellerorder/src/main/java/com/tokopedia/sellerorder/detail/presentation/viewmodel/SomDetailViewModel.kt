@@ -15,7 +15,6 @@ import com.tokopedia.shop.common.constant.AccessId
 import com.tokopedia.shop.common.domain.interactor.AuthorizeAccessUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
-import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
@@ -27,6 +26,7 @@ class SomDetailViewModel @Inject constructor(
         somRejectOrderUseCase: SomRejectOrderUseCase,
         somEditRefNumUseCase: SomEditRefNumUseCase,
         somRejectCancelOrderRequest: SomRejectCancelOrderUseCase,
+        somValidateOrderUseCase: SomValidateOrderUseCase,
         userSession: UserSessionInterface,
         dispatcher: CoroutineDispatchers,
         private val somGetOrderDetailUseCase: SomGetOrderDetailUseCase,
@@ -35,7 +35,8 @@ class SomDetailViewModel @Inject constructor(
         authorizeSomDetailAccessUseCase: AuthorizeAccessUseCase,
         authorizeReplyChatAccessUseCase: AuthorizeAccessUseCase
 ) : SomOrderBaseViewModel(dispatcher, userSession, somAcceptOrderUseCase, somRejectOrderUseCase,
-        somEditRefNumUseCase, somRejectCancelOrderRequest, authorizeSomDetailAccessUseCase, authorizeReplyChatAccessUseCase) {
+        somEditRefNumUseCase, somRejectCancelOrderRequest, somValidateOrderUseCase,
+        authorizeSomDetailAccessUseCase, authorizeReplyChatAccessUseCase) {
 
     private val _orderDetailResult = MutableLiveData<Result<GetSomDetailResponse>>()
     val orderDetailResult: LiveData<Result<GetSomDetailResponse>>

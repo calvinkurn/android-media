@@ -2,7 +2,7 @@ package com.tokopedia.productcard.options
 
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
-import com.tokopedia.discovery.common.coroutines.ProductionDispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.productcard.options.di.AddToCartUseCaseModule
 import com.tokopedia.productcard.options.di.ProductCardOptionsScope
@@ -38,7 +38,7 @@ internal class ProductCardOptionsViewModelFactoryModule(
             userSession: UserSessionInterface
     ): ViewModelProvider.Factory {
         return ProductCardOptionsViewModelFactory(
-                ProductionDispatcherProvider(),
+                CoroutineDispatchersProvider,
                 productCardOptionsModel,
                 addWishListUseCase,
                 removeWishListUseCase,
