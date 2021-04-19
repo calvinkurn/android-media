@@ -538,7 +538,7 @@ open class TopChatRoomPresenter @Inject constructor(
     }
 
     /**
-     * @deprecated use [topchatSendMessageWithWebsocket] instead
+     * recommended to use [topchatSendMessageWithWebsocket] instead
      */
     override fun sendMessageWithWebsocket(
             messageId: String, sendMessage: String,
