@@ -438,6 +438,7 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
         }
     }
 
+    @SuppressLint("SetTextI18n")
     private fun setupPaymentInstallment(creditCard: OrderPaymentCreditCard) {
         val selectedTerm = creditCard.selectedTerm
         if (!creditCard.isDebit && selectedTerm != null) {

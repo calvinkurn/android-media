@@ -47,6 +47,7 @@ import com.tokopedia.unifyprinciples.Typography
 import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
+import java.util.*
 import javax.inject.Inject
 
 class PreferenceSummaryFragment : BaseDaggerFragment() {
@@ -272,10 +273,10 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
 
         val shipmentModel = data.shipmentModel
         if (shipmentModel.estimation.isNotEmpty()) {
-            tvShippingName?.text = getString(R.string.lbl_shipping_with_name, shipmentModel.serviceName.capitalize())
+            tvShippingName?.text = getString(R.string.lbl_shipping_with_name, shipmentModel.serviceName.capitalize(Locale.ROOT))
             tvShippingDuration?.text = shipmentModel.estimation
         } else {
-            tvShippingName?.text = getString(R.string.lbl_shipping_with_name, shipmentModel.serviceName.capitalize())
+            tvShippingName?.text = getString(R.string.lbl_shipping_with_name, shipmentModel.serviceName.capitalize(Locale.ROOT))
             tvShippingDuration?.text = getString(R.string.lbl_shipping_duration_prefix, shipmentModel.serviceDuration)
         }
 
