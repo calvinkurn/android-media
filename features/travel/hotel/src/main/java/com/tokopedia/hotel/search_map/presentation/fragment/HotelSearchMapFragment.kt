@@ -669,14 +669,16 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
             googleMap.setOnCameraMoveListener(this)
 
             mapHotelSearchMap.setOnTouchListener(object : View.OnTouchListener {
-                override fun onTouch(p0: View, motionEvent: MotionEvent): Boolean {
+                override fun onTouch(v: View, motionEvent: MotionEvent): Boolean {
                     when (motionEvent.action) {
-                        MotionEvent.ACTION_DOWN -> collapseBottomSheet()
+                        MotionEvent.ACTION_DOWN -> v.performClick()
                     }
                     return true
                 }
-
             })
+            mapHotelSearchMap.setOnClickListener {
+                collapseBottomSheet()
+            }
             googleMap.setOnMapClickListener {
                 collapseBottomSheet()
             }
@@ -693,31 +695,33 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
     }
 
     private fun initFloatingButton() {
-        val wrapper = LinearLayout(context)
-        wrapper.gravity = Gravity.CENTER
+        context?.let {
+            val wrapper = LinearLayout(it)
+            wrapper.gravity = Gravity.CENTER
 
-        val imageView = ImageView(context)
-        imageView.setPadding(BUTTON_RADIUS_PADDING_ALL, BUTTON_RADIUS_PADDING_ALL, BUTTON_RADIUS_PADDING_RIGHT, BUTTON_RADIUS_PADDING_ALL)
-        imageView.setImageResource(R.drawable.ic_hotel_search_map_search)
-        wrapper.addView(imageView)
+            val imageView = ImageView(it)
+            imageView.setPadding(BUTTON_RADIUS_PADDING_ALL, BUTTON_RADIUS_PADDING_ALL, BUTTON_RADIUS_PADDING_RIGHT, BUTTON_RADIUS_PADDING_ALL)
+            imageView.setImageResource(R.drawable.ic_hotel_search_map_search)
+            wrapper.addView(imageView)
 
-        val textView = TextView(context)
-        textView.apply {
-            setHeadingText(BUTTON_RADIUS_HEADING_SIZE)
-            setTextColor(ContextCompat.getColor(context, R.color.hotel_color_active_price_marker))
-            text = getString(R.string.hotel_search_map_around_here)
+            val textView = Typography(it)
+            textView.apply {
+                setHeadingText(BUTTON_RADIUS_HEADING_SIZE)
+                setTextColor(ContextCompat.getColor(context, R.color.hotel_color_active_price_marker))
+                text = getString(R.string.hotel_search_map_around_here)
+            }
+            wrapper.addView(textView)
+            wrapper.setOnClickListener {
+                trackingHotelUtil.searchNearLocation(context,
+                        searchDestinationName,
+                        searchDestinationType,
+                        SEARCH_SCREEN_NAME)
+
+                onSearchByMap()
+            }
+
+            btnGetRadiusHotelSearchMap.addItem(wrapper)
         }
-        wrapper.addView(textView)
-        wrapper.setOnClickListener {
-            trackingHotelUtil.searchNearLocation(context,
-                    searchDestinationName,
-                    searchDestinationType,
-                    SEARCH_SCREEN_NAME)
-
-            onSearchByMap()
-        }
-
-        btnGetRadiusHotelSearchMap.addItem(wrapper)
         btnGetRadiusHotelSearchMap.setMargins(0, resources.getDimensionPixelSize(R.dimen.hotel_70dp), 0, 0)
         btnGetRadiusHotelSearchMap.gone()
     }
@@ -1214,23 +1218,25 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
     }
 
     private fun setupFindWithMapButton() {
-        val wrapper = LinearLayout(context)
-        wrapper.gravity = Gravity.CENTER
+        context?.let {
+            val wrapper = LinearLayout(context)
+            wrapper.gravity = Gravity.CENTER
 
-        val imageView = ImageView(context)
-        imageView.setPadding(BUTTON_RADIUS_PADDING_ALL, BUTTON_RADIUS_PADDING_ALL, BUTTON_RADIUS_PADDING_RIGHT, BUTTON_RADIUS_PADDING_ALL)
-        imageView.setImageResource(R.drawable.ic_hotel_search_maps)
-        wrapper.addView(imageView)
+            val imageView = ImageView(context)
+            imageView.setPadding(BUTTON_RADIUS_PADDING_ALL, BUTTON_RADIUS_PADDING_ALL, BUTTON_RADIUS_PADDING_RIGHT, BUTTON_RADIUS_PADDING_ALL)
+            imageView.setImageResource(R.drawable.ic_hotel_search_maps)
+            wrapper.addView(imageView)
 
-        val textView = TextView(context)
-        textView.apply {
-            setHeadingText(BUTTON_RADIUS_HEADING_SIZE)
-            setTextColor(ContextCompat.getColor(context, R.color.hotel_color_active_price_marker))
-            text = getString(R.string.hotel_search_map_search_with_map)
+            val textView = TextView(context)
+            textView.apply {
+                setHeadingText(BUTTON_RADIUS_HEADING_SIZE)
+                setTextColor(ContextCompat.getColor(context, R.color.hotel_color_active_price_marker))
+                text = getString(R.string.hotel_search_map_search_with_map)
+            }
+            wrapper.addView(textView)
+
+            btnHotelSearchWithMap.addItem(wrapper)
         }
-        wrapper.addView(textView)
-
-        btnHotelSearchWithMap.addItem(wrapper)
         btnHotelSearchWithMap.setOnClickListener {
             rvVerticalPropertiesHotelSearchMap.scrollTo(0, 0)
             collapseBottomSheet()
