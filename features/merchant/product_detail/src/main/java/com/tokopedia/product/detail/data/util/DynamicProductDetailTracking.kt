@@ -13,6 +13,7 @@ import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
 import com.tokopedia.product.detail.data.model.datamodel.VariantDataModel
 import com.tokopedia.product.detail.data.util.ProductTrackingConstant.Action.CLICK_ANNOTATION_RECOM_CHIP
+import com.tokopedia.product.detail.data.util.TrackingUtil.getCategoryIdAndNameLevel
 import com.tokopedia.product.detail.data.util.TrackingUtil.removeCurrencyPrice
 import com.tokopedia.product.detail.data.util.TrackingUtil.sendTrackingBundle
 import com.tokopedia.product.util.processor.Product
@@ -1470,23 +1471,14 @@ object DynamicProductDetailTracking {
             trackingQueue?.putEETracking(mapEvent as HashMap<String, Any>?)
         }
 
-        val generateProduct = { irisSessionId: String, trackerListName: String?, productInfo: DynamicProductInfoP1?,
-                                trackerAttribution: String?,
-                                isTradeIn: Boolean, isDiagnosed: Boolean,
-                                multiOrigin: Boolean, deeplinkUrl: String,
-                                isStockAvailable: String, isFreeOngkir: Boolean ->
+        private val generateProduct = { irisSessionId: String, trackerListName: String?, productInfo: DynamicProductInfoP1?,
+                                        trackerAttribution: String?,
+                                        isTradeIn: Boolean, isDiagnosed: Boolean,
+                                        multiOrigin: Boolean, deeplinkUrl: String,
+                                        isStockAvailable: String, boType: Int ->
 
-            val dimension55 = if (isTradeIn && isDiagnosed)
-                "true diagnostic"
-            else if (isTradeIn && !isDiagnosed)
-                "true non diagnostic"
-            else
-                "false"
-
-            val dimension83 = if (isFreeOngkir)
-                ProductTrackingConstant.Tracking.VALUE_BEBAS_ONGKIR
-            else
-                ProductTrackingConstant.Tracking.VALUE_NONE_OTHER
+            val dimension55 = TrackingUtil.getTradeInString(isTradeIn, isDiagnosed)
+            val dimension83 = TrackingUtil.getBoTypeString(boType)
 
             arrayListOf(Product(
                     name = productInfo?.getProductName ?: "",
@@ -1506,10 +1498,10 @@ object DynamicProductDetailTracking {
             ))
         }
 
-        val generateProductViewBundle = { irisSessionId: String, trackerListName: String?, productInfo: DynamicProductInfoP1?,
-                                          shopInfo: ShopInfo?, trackerAttribution: String?,
-                                          isTradeIn: Boolean, isDiagnosed: Boolean,
-                                          multiOrigin: Boolean, deeplinkUrl: String, isStockAvailable: String, isFreeOngkir: Boolean ->
+        private val generateProductViewBundle = { irisSessionId: String, trackerListName: String?, productInfo: DynamicProductInfoP1?,
+                                                  shopInfo: ShopInfo?, trackerAttribution: String?,
+                                                  isTradeIn: Boolean, isDiagnosed: Boolean,
+                                                  multiOrigin: Boolean, deeplinkUrl: String, isStockAvailable: String, boType: Int ->
 
             val categoryIdLevel1 = productInfo?.basic?.category?.detail?.firstOrNull()?.id ?: ""
             val categoryNameLevel1 = productInfo?.basic?.category?.detail?.firstOrNull()?.name ?: ""
@@ -1524,14 +1516,11 @@ object DynamicProductDetailTracking {
             val isPmInt = if (productInfo?.data?.isPowerMerchant == true) 1 else 0
             val isOsInt = if (productInfo?.data?.isOS == true) 1 else 0
 
-            val productImageUrl = productInfo?.data?.media?.filter {
-                it.type == "image"
-            }?.firstOrNull()?.uRLOriginal ?: ""
+            val productImageUrl = TrackingUtil.getProductFirstImageUrl(productInfo)
+            val label = TrackingUtil.getProductViewLabel(productInfo)
 
             val products = generateProduct(irisSessionId, trackerListName, productInfo,
-                    trackerAttribution, isTradeIn, isDiagnosed, multiOrigin, deeplinkUrl, isStockAvailable, isFreeOngkir)
-
-            val label = "${productInfo?.shopTypeString ?: ""} - ${productInfo?.basic?.shopName ?: ""} - ${productInfo?.data?.name ?: ""}"
+                    trackerAttribution, isTradeIn, isDiagnosed, multiOrigin, deeplinkUrl, isStockAvailable, boType)
 
             ProductDetailViewsBundler
                     .getBundle(
@@ -1580,27 +1569,30 @@ object DynamicProductDetailTracking {
                     )
         }
 
-        fun eventEnhanceEcommerceProductDetail(irisSessionId: String,
-                                               trackerListName: String?,
-                                               productInfo: DynamicProductInfoP1?,
-                                               shopInfo: ShopInfo?,
-                                               trackerAttribution: String?,
-                                               isTradeIn: Boolean,
-                                               isDiagnosed: Boolean,
-                                               multiOrigin: Boolean,
-                                               deeplinkUrl: String,
-                                               isStockAvailable: String,
-                                               isFreeOngkir: Boolean) {
-
-            val sentBundle = generateProductViewBundle(
-                    irisSessionId, trackerListName, productInfo, shopInfo,
-                    trackerAttribution, isTradeIn, isDiagnosed, multiOrigin, deeplinkUrl,
-                    isStockAvailable, isFreeOngkir
-            )
-            sendTrackingBundle(
-                    ProductDetailViewsBundler.KEY,
-                    sentBundle
-            )
+        fun eventProductView(productInfo: DynamicProductInfoP1?,
+                             shopInfo: ShopInfo?,
+                             irisSessionId: String,
+                             trackerListName: String?,
+                             trackerAttribution: String?,
+                             isTradeIn: Boolean,
+                             isDiagnosed: Boolean,
+                             multiOrigin: Boolean,
+                             deeplinkUrl: String,
+                             isStockAvailable: String,
+                             boType: Int) {
+            productInfo?.let {
+                if (shopInfo?.isShopInfoNotEmpty() == true) {
+                    val sentBundle = generateProductViewBundle(
+                            irisSessionId, trackerListName, it, shopInfo,
+                            trackerAttribution, isTradeIn, isDiagnosed, multiOrigin, deeplinkUrl,
+                            isStockAvailable, boType
+                    )
+                    sendTrackingBundle(
+                            ProductDetailViewsBundler.KEY,
+                            sentBundle
+                    )
+                }
+            }
         }
 
         fun eventRecommendationImpression(trackingQueue: TrackingQueue?, position: Int, product: RecommendationItem, chipValue: String, isComparison: Boolean, isSessionActive: Boolean, pageName: String, pageTitle: String,

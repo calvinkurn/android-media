@@ -4,7 +4,6 @@ import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
 import com.tokopedia.analyticconstant.DataLayer
-import com.tokopedia.atc_common.domain.analytics.AddToCartBaseAnalytics
 import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
@@ -28,6 +27,33 @@ object TrackingUtil {
                 .sendEnhanceEcommerceEvent(
                         key, bundle
                 )
+    }
+
+    fun getBoTypeString(boType: Int): String {
+        return when (boType) {
+            ProductDetailConstant.BEBAS_ONGKIR_EXTRA -> ProductTrackingConstant.Tracking.VALUE_BEBAS_ONGKIR_EXTRA
+            ProductDetailConstant.BEBAS_ONGKIR_NORMAL -> ProductTrackingConstant.Tracking.VALUE_BEBAS_ONGKIR
+            else -> ProductTrackingConstant.Tracking.VALUE_NONE_OTHER
+        }
+    }
+
+    fun getTradeInString(isTradein: Boolean, isDiagnosed: Boolean): String {
+        return if (isTradein && isDiagnosed)
+            ProductTrackingConstant.Tracking.TRADEIN_TRUE_DIAGNOSTIC
+        else if (isTradein && !isDiagnosed)
+            ProductTrackingConstant.Tracking.TRADEIN_TRUE_NON_DIAGNOSTIC
+        else
+            ProductTrackingConstant.Tracking.VALUE_FALSE
+    }
+
+    fun getProductFirstImageUrl(productInfo: DynamicProductInfoP1?) : String {
+        return productInfo?.data?.media?.filter {
+            it.type == "image"
+        }?.firstOrNull()?.uRLOriginal ?: ""
+    }
+
+    fun getProductViewLabel(productInfo: DynamicProductInfoP1?):String {
+        return "${productInfo?.shopTypeString ?: ""} - ${productInfo?.basic?.shopName ?: ""} - ${productInfo?.data?.name ?: ""}"
     }
 
     fun createMvcListMap(viewModelList: List<MerchantVoucherViewModel>, shopId: Int, startIndex: Int): List<Any> {
