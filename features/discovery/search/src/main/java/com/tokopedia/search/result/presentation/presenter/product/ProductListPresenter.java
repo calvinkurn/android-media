@@ -180,7 +180,7 @@ public final class ProductListPresenter
     private boolean isGlobalNavWidgetAvailable = false;
     private boolean isShowHeadlineAdsBasedOnGlobalNav = false;
 
-    private List<Visitable> productList;
+    private List<Visitable<?>> productList;
     private List<InspirationCarouselDataView> inspirationCarouselDataView = new ArrayList<>();
     private List<InspirationCardDataView> inspirationCardDataView = new ArrayList<>();
     private List<TopAdsImageViewModel> topAdsImageViewModelList = new ArrayList<>();
@@ -545,7 +545,7 @@ public final class ProductListPresenter
     }
 
     private void getViewToProcessEmptyResultDuringLoadMore(SearchProductModel.SearchProduct searchProduct) {
-        List<Visitable> list = new ArrayList<>();
+        List<Visitable<?>> list = new ArrayList<>();
         processBroadMatch(searchProduct, list);
 
         addSearchInTokopedia(searchProduct, list);
@@ -555,7 +555,7 @@ public final class ProductListPresenter
     }
 
     private void getViewToShowMoreData(Map<String, Object> searchParameter, SearchProductModel searchProductModel, ProductDataView productDataView) {
-        List<Visitable> list = new ArrayList<>(createProductItemVisitableList(productDataView));
+        List<Visitable<?>> list = new ArrayList<>(createProductItemVisitableList(productDataView));
         productList.addAll(list);
 
         SearchProductModel.SearchProduct searchProduct = searchProductModel.getSearchProduct();
@@ -575,8 +575,8 @@ public final class ProductListPresenter
         getView().updateScrollListener();
     }
 
-    private List<Visitable> createProductItemVisitableList(ProductDataView productDataView) {
-        List<Visitable> list = new ArrayList<>(productDataView.getProductList());
+    private List<Visitable<?>> createProductItemVisitableList(ProductDataView productDataView) {
+        List<Visitable<?>> list = new ArrayList<>(productDataView.getProductList());
 
         if (isLocalSearch()) return list;
 
@@ -904,7 +904,7 @@ public final class ProductListPresenter
                 getViewToShowEmptySearch(productDataView);
 
                 if (isShowBroadMatchWithEmptyLocalSearch()) {
-                    List<Visitable> visitableList = new ArrayList<>();
+                    List<Visitable<?>> visitableList = new ArrayList<>();
                     addBroadMatchToVisitableList(visitableList);
 
                     getView().addProductList(visitableList);
@@ -922,7 +922,7 @@ public final class ProductListPresenter
     }
 
     private void getViewToShowBroadMatchToReplaceEmptySearch() {
-        List<Visitable> visitableList = new ArrayList<>();
+        List<Visitable<?>> visitableList = new ArrayList<>();
 
         addBroadMatchToVisitableList(visitableList);
 
@@ -931,7 +931,7 @@ public final class ProductListPresenter
         getView().backToTop();
     }
 
-    private void addBroadMatchToVisitableList(List<Visitable> visitableList) {
+    private void addBroadMatchToVisitableList(List<Visitable<?>> visitableList) {
         if (suggestionDataView != null && !textIsEmpty(suggestionDataView.getSuggestionText())) {
             visitableList.add(suggestionDataView);
 
@@ -951,8 +951,8 @@ public final class ProductListPresenter
         getView().trackEventImpressionBannedProducts(true);
     }
 
-    private List<Visitable> createBannedProductsErrorMessageAsList(SearchProductModel.SearchProduct searchProduct) {
-        List<Visitable> bannedProductsErrorMessageAsList = new ArrayList<>();
+    private List<Visitable<?>> createBannedProductsErrorMessageAsList(SearchProductModel.SearchProduct searchProduct) {
+        List<Visitable<?>> bannedProductsErrorMessageAsList = new ArrayList<>();
         bannedProductsErrorMessageAsList.add(new BannedProductsEmptySearchDataView(searchProduct.getHeader().getErrorMessage()));
         return bannedProductsErrorMessageAsList;
     }
@@ -1054,7 +1054,7 @@ public final class ProductListPresenter
 
         ProductDataView productDataView = createProductViewModelMapperLocalSearchRecommendation(searchProductModel);
 
-        List<Visitable> visitableList = new ArrayList<>();
+        List<Visitable<?>> visitableList = new ArrayList<>();
 
         if (startFrom == 0) visitableList.add(new SearchProductTitleDataView(pageTitle, true));
 
@@ -1103,7 +1103,7 @@ public final class ProductListPresenter
                     public void onNext(List<? extends RecommendationWidget> recommendationWidgets) {
                         if (!recommendationWidgets.isEmpty() && recommendationWidgets.get(0) != null) {
                             List<RecommendationItemDataView> recommendationItemDataView = new RecommendationViewModelMapper().convertToRecommendationItemViewModel(recommendationWidgets.get(0));
-                            List<Visitable> items = new ArrayList<>();
+                            List<Visitable<?>> items = new ArrayList<>();
                             RecommendationWidget recommendationWidget = recommendationWidgets.get(0);
                             RecommendationTitleDataView recommendationTitleDataView = new RecommendationTitleDataView(
                                     recommendationWidget.getTitle().isEmpty() ? DEFAULT_PAGE_TITLE_RECOMMENDATION : recommendationWidget.getTitle(),
@@ -1121,7 +1121,7 @@ public final class ProductListPresenter
     private void getViewToShowProductList(Map<String, Object> searchParameter, SearchProductModel searchProductModel, ProductDataView productDataView) {
         SearchProductModel.SearchProduct searchProduct = searchProductModel.getSearchProduct();
 
-        List<Visitable> list = new ArrayList<>();
+        List<Visitable<?>> list = new ArrayList<>();
 
         if (!productDataView.isQuerySafe()) {
             getView().showAdultRestriction();
@@ -1204,7 +1204,7 @@ public final class ProductListPresenter
         getView().stopTracePerformanceMonitoring();
     }
 
-    private int getFirstProductPositionWithBOELabel(List<Visitable> list) {
+    private int getFirstProductPositionWithBOELabel(List<Visitable<?>> list) {
         if (productList.isEmpty()) return -1;
 
         ProductItemDataView product = (ProductItemDataView) CollectionsKt.firstOrNull(productList, prod -> ((ProductItemDataView) prod).hasLabelGroupFulfillment());
@@ -1216,7 +1216,7 @@ public final class ProductListPresenter
         return Math.max(firstProductPositionWithBOELabel, -1);
     }
 
-    private void addPageTitle(List<Visitable> list) {
+    private void addPageTitle(List<Visitable<?>> list) {
         if (pageTitle == null || pageTitle.isEmpty()) return;
 
         list.add(new SearchProductTitleDataView(pageTitle, false));
@@ -1229,7 +1229,7 @@ public final class ProductListPresenter
                 && !getView().isAnySortActive();
     }
 
-    private void addSearchInTokopedia(SearchProductModel.SearchProduct searchProduct, List<Visitable> list) {
+    private void addSearchInTokopedia(SearchProductModel.SearchProduct searchProduct, List<Visitable<?>> list) {
         if (isLastPage(searchProduct) && isLocalSearch()) {
             String globalSearchApplink = constructGlobalSearchApplink();
             SearchInTokopediaDataView searchInTokopediaDataView = new SearchInTokopediaDataView(globalSearchApplink);
@@ -1255,7 +1255,7 @@ public final class ProductListPresenter
                 && !textIsEmpty(productDataView.getSuggestionModel().getSuggestionText());
     }
 
-    private void processHeadlineAds(Map<String, Object> searchParameter, List<Visitable> visitableList) {
+    private void processHeadlineAds(Map<String, Object> searchParameter, List<Visitable<?>> visitableList) {
         boolean canProcessHeadlineAds = isHeadlineAdsAllowed() && cpmDataList != null && cpmDataList.size() > 0;
 
         if (!canProcessHeadlineAds) return;
@@ -1347,18 +1347,18 @@ public final class ProductListPresenter
         return cpmForViewModel;
     }
 
-    private void processHeadlineAdsAtTop(List<Visitable> visitableList, CpmDataView cpmDataView) {
-        Visitable product = productList.get(0);
+    private void processHeadlineAdsAtTop(List<Visitable<?>> visitableList, CpmDataView cpmDataView) {
+        Visitable<?> product = productList.get(0);
         visitableList.add(visitableList.indexOf(product), cpmDataView);
     }
 
-    private void processHeadlineAdsAtPosition(List<Visitable> visitableList, int position, CpmDataView cpmDataView) {
-        List<Visitable> headlineAdsVisitableList = new ArrayList<>();
+    private void processHeadlineAdsAtPosition(List<Visitable<?>> visitableList, int position, CpmDataView cpmDataView) {
+        List<Visitable<?>> headlineAdsVisitableList = new ArrayList<>();
         headlineAdsVisitableList.add(new SeparatorDataView());
         headlineAdsVisitableList.add(cpmDataView);
         headlineAdsVisitableList.add(new SeparatorDataView());
 
-        Visitable product = productList.get(position - 1);
+        Visitable<?> product = productList.get(position - 1);
         visitableList.addAll(visitableList.indexOf(product) + 1, headlineAdsVisitableList);
     }
 
@@ -1368,7 +1368,7 @@ public final class ProductListPresenter
         return new BannedProductsTickerDataView(htmlErrorMessage);
     }
 
-    private void processInspirationCardPosition(Map<String, Object> searchParameter, List<Visitable> list) {
+    private void processInspirationCardPosition(Map<String, Object> searchParameter, List<Visitable<?>> list) {
         if (inspirationCardDataView.size() > 0) {
             Iterator<InspirationCardDataView> inspirationCardViewModelIterator = inspirationCardDataView.iterator();
 
@@ -1382,7 +1382,7 @@ public final class ProductListPresenter
 
                 if (data.getPosition() <= productList.size() && shouldShowInspirationCard(data.getType())) {
                     try {
-                        Visitable product = productList.get(data.getPosition() - 1);
+                        Visitable<?> product = productList.get(data.getPosition() - 1);
                         list.add(list.indexOf(product) + 1, data);
                         inspirationCardViewModelIterator.remove();
                     }
@@ -1399,7 +1399,7 @@ public final class ProductListPresenter
         return showInspirationCardType.contains(type);
     }
 
-    private void processInspirationCarouselPosition(Map<String, Object> searchParameter, List<Visitable> list) {
+    private void processInspirationCarouselPosition(Map<String, Object> searchParameter, List<Visitable<?>> list) {
         if (inspirationCarouselDataView.size() > 0) {
             Iterator<InspirationCarouselDataView> inspirationCarouselViewModelIterator = inspirationCarouselDataView.iterator();
 
@@ -1413,7 +1413,7 @@ public final class ProductListPresenter
 
                 if (data.getPosition() <= productList.size() && shouldShowInspirationCarousel(data.getLayout())) {
                     try {
-                        Visitable product = productList.get(data.getPosition() - 1);
+                        Visitable<?> product = productList.get(data.getPosition() - 1);
                         list.add(list.indexOf(product) + 1, data);
                         inspirationCarouselViewModelIterator.remove();
                     }
@@ -1439,7 +1439,7 @@ public final class ProductListPresenter
         return showInspirationCarouselLayout.contains(layout);
     }
 
-    private void processBannerAndBroadmatchInSamePosition(SearchProductModel.SearchProduct searchProduct, List<Visitable> list) {
+    private void processBannerAndBroadmatchInSamePosition(SearchProductModel.SearchProduct searchProduct, List<Visitable<?>> list) {
         if (isShowBanner() && isShowBroadMatch()) {
             if (bannerDataView.getPosition() == -1 && relatedDataView.getPosition() == 0) {
                 processBroadMatchAtBottom(searchProduct, list);
@@ -1455,19 +1455,19 @@ public final class ProductListPresenter
         return bannerDataView != null && !bannerDataView.getImageUrl().isEmpty();
     }
 
-    private void processBannerAtBottom(SearchProductModel.SearchProduct searchProduct, List<Visitable> list) {
+    private void processBannerAtBottom(SearchProductModel.SearchProduct searchProduct, List<Visitable<?>> list) {
         if (isLastPage(searchProduct)) {
             list.add(bannerDataView);
             bannerDataView = null;
         }
     }
 
-    private void processBannerAtTop(List<Visitable> list) {
+    private void processBannerAtTop(List<Visitable<?>> list) {
         list.add(list.indexOf(productList.get(0)), bannerDataView);
         bannerDataView = null;
     }
 
-    private void processBanner(SearchProductModel.SearchProduct searchProduct, List<Visitable> list) {
+    private void processBanner(SearchProductModel.SearchProduct searchProduct, List<Visitable<?>> list) {
         if (isShowBanner()) {
             if (bannerDataView.getPosition() == -1) processBannerAtBottom(searchProduct, list);
             else if (bannerDataView.getPosition() == 0) processBannerAtTop(list);
@@ -1475,18 +1475,18 @@ public final class ProductListPresenter
         }
     }
 
-    private void processBannerAtPosition(List<Visitable> list) {
+    private void processBannerAtPosition(List<Visitable<?>> list) {
         if (productList.size() < bannerDataView.getPosition()) return;
 
         int productItemVisitableIndex = bannerDataView.getPosition() - 1;
-        Visitable productItemVisitable = productList.get(productItemVisitableIndex);
+        Visitable<?> productItemVisitable = productList.get(productItemVisitableIndex);
         int bannerVisitableIndex = list.indexOf(productItemVisitable) + 1;
 
         list.add(bannerVisitableIndex, bannerDataView);
         bannerDataView = null;
     }
 
-    private void processBroadMatch(SearchProductModel.SearchProduct searchProduct, List<Visitable> list) {
+    private void processBroadMatch(SearchProductModel.SearchProduct searchProduct, List<Visitable<?>> list) {
         try {
             if (isShowBroadMatch()) {
                 int broadMatchPosition = relatedDataView.getPosition();
@@ -1501,7 +1501,7 @@ public final class ProductListPresenter
         }
     }
 
-    private void processBroadMatchAtBottom(@NotNull SearchProductModel.SearchProduct searchProduct, List<Visitable> list) {
+    private void processBroadMatchAtBottom(@NotNull SearchProductModel.SearchProduct searchProduct, List<Visitable<?>> list) {
         if (isLastPage(searchProduct)) {
             list.add(new SeparatorDataView());
             addBroadMatchToVisitableList(list);
@@ -1514,8 +1514,8 @@ public final class ProductListPresenter
         return !hasNextPage;
     }
 
-    private void processBroadMatchAtTop(List<Visitable> list) {
-        List<Visitable> broadMatchVisitableList = new ArrayList<>();
+    private void processBroadMatchAtTop(List<Visitable<?>> list) {
+        List<Visitable<?>> broadMatchVisitableList = new ArrayList<>();
 
         addBroadMatchToVisitableList(broadMatchVisitableList);
         broadMatchVisitableList.add(new SeparatorDataView());
@@ -1523,22 +1523,22 @@ public final class ProductListPresenter
         list.addAll(list.indexOf(productList.get(0)), broadMatchVisitableList);
     }
 
-    private void processBroadMatchAtPosition(List<Visitable> list, int broadMatchPosition) {
+    private void processBroadMatchAtPosition(List<Visitable<?>> list, int broadMatchPosition) {
         if (productList.size() < broadMatchPosition) return;
 
-        List<Visitable> broadMatchVisitableList = new ArrayList<>();
+        List<Visitable<?>> broadMatchVisitableList = new ArrayList<>();
 
         broadMatchVisitableList.add(new SeparatorDataView());
         addBroadMatchToVisitableList(broadMatchVisitableList);
         broadMatchVisitableList.add(new SeparatorDataView());
 
-        Visitable productItemAtBroadMatchPosition = productList.get(broadMatchPosition - 1);
+        Visitable<?> productItemAtBroadMatchPosition = productList.get(broadMatchPosition - 1);
         int broadMatchIndex = list.indexOf(productItemAtBroadMatchPosition) + 1;
 
         list.addAll(broadMatchIndex, broadMatchVisitableList);
     }
 
-    private void processTopAdsImageViewModel(Map<String, Object> searchParameter, List<Visitable> list) {
+    private void processTopAdsImageViewModel(Map<String, Object> searchParameter, List<Visitable<?>> list) {
         if (topAdsImageViewModelList.size() == 0) return;
 
         Iterator<TopAdsImageViewModel> topAdsImageViewModelIterator = topAdsImageViewModelList.iterator();
@@ -1564,7 +1564,7 @@ public final class ProductListPresenter
         }
     }
 
-    private void processTopAdsImageViewModelInPosition(List<Visitable> list, TopAdsImageViewModel data) {
+    private void processTopAdsImageViewModelInPosition(List<Visitable<?>> list, TopAdsImageViewModel data) {
         boolean isTopPosition = data.getPosition() == 1;
         SearchProductTopAdsImageDataView searchProductTopAdsImageDataView = new SearchProductTopAdsImageDataView(data);
 
@@ -1573,12 +1573,12 @@ public final class ProductListPresenter
             list.add(index, searchProductTopAdsImageDataView);
         }
         else {
-            Visitable product = productList.get(data.getPosition() - 1);
+            Visitable<?> product = productList.get(data.getPosition() - 1);
             list.add(list.indexOf(product) + 1, searchProductTopAdsImageDataView);
         }
     }
 
-    private int getIndexOfTopAdsImageViewModelAtTop(List<Visitable> list) {
+    private int getIndexOfTopAdsImageViewModelAtTop(List<Visitable<?>> list) {
         int index = 0;
 
         while (shouldIncrementIndexForTopAdsImageViewModel(index, list))
@@ -1587,7 +1587,7 @@ public final class ProductListPresenter
         return index;
     }
 
-    private boolean shouldIncrementIndexForTopAdsImageViewModel(int index, List<Visitable> list) {
+    private boolean shouldIncrementIndexForTopAdsImageViewModel(int index, List<Visitable<?>> list) {
         if (index >= list.size()) return false;
 
         boolean isCPMOrProductItem = list.get(index) instanceof CpmDataView || list.get(index) instanceof ProductItemDataView;

@@ -104,7 +104,11 @@ internal fun createBannerAdsListener(): BannerAdsListener {
 }
 
 internal fun createSuggestionListener(): SuggestionListener {
-    return SuggestionListener { }
+    return object : SuggestionListener {
+        override fun onSuggestionClicked(suggestionDataView: SuggestionDataView?) {
+
+        }
+    }
 }
 
 internal fun createEmptyStateListener(): EmptyStateListener {

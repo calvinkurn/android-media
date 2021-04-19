@@ -35,11 +35,11 @@ public interface ProductListSectionContract {
     interface View extends CustomerView {
         String getUserId();
 
-        void addProductList(List<Visitable> list);
+        void addProductList(List<Visitable<?>> list);
 
-        void setProductList(List<Visitable> list);
+        void setProductList(List<Visitable<?>> list);
 
-        void addRecommendationList(List<Visitable> list);
+        void addRecommendationList(List<Visitable<?>> list);
 
         void showNetworkError(int startRow);
 
@@ -47,7 +47,7 @@ public interface ProductListSectionContract {
 
         void setEmptyProduct(GlobalNavDataView globalNavDataView, EmptySearchProductDataView emptySearchProductDataView);
 
-        void setBannedProductsErrorMessage(List<Visitable> bannedProductsErrorMessageAsList);
+        void setBannedProductsErrorMessage(List<Visitable<?>> bannedProductsErrorMessageAsList);
 
         void trackEventImpressionBannedProducts(boolean isEmptySearch);
 
@@ -187,7 +187,7 @@ public interface ProductListSectionContract {
 
         void trackEventGoToShopPage(Object dataLayer);
 
-        void addLocalSearchRecommendation(List<Visitable> visitableList);
+        void addLocalSearchRecommendation(List<Visitable<?>> visitableList);
 
         void trackEventSearchResultChangeView(String viewType);
 

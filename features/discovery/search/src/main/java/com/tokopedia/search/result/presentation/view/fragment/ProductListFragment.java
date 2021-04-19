@@ -535,18 +535,18 @@ public class ProductListFragment
     }
 
     @Override
-    public void addProductList(List<Visitable> list) {
+    public void addProductList(List<Visitable<?>> list) {
         adapter.appendItems(list);
     }
 
-    public void setProductList(List<Visitable> list) {
+    public void setProductList(List<Visitable<?>> list) {
         adapter.clearData();
 
         stopSearchResultPagePerformanceMonitoring();
         addProductList(list);
     }
 
-    public void addRecommendationList(List<Visitable> list) {
+    public void addRecommendationList(List<Visitable<?>> list) {
         adapter.appendItems(list);
     }
 
@@ -1112,7 +1112,7 @@ public class ProductListFragment
     }
 
     @Override
-    public void setBannedProductsErrorMessage(List<Visitable> bannedProductsErrorMessageAsList) {
+    public void setBannedProductsErrorMessage(List<Visitable<?>> bannedProductsErrorMessageAsList) {
         adapter.appendItems(bannedProductsErrorMessageAsList);
     }
 
@@ -1908,7 +1908,7 @@ public class ProductListFragment
     }
 
     @Override
-    public void addLocalSearchRecommendation(List<Visitable> visitableList) {
+    public void addLocalSearchRecommendation(List<Visitable<?>> visitableList) {
         adapter.appendItems(visitableList);
     }
 
