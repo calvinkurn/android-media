@@ -1,7 +1,6 @@
 package com.tokopedia.shop.score.performance.presentation.adapter.viewholder
 
 import android.view.View
-import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -29,6 +28,12 @@ class ItemStatusRMViewHolder(view: View,
             addOnImpressionListener(impressHolder) {
                 itemPotentialPowerMerchantListener.onViewRegularMerchantListener(this)
             }
+        }
+        setItemRegularMerchant(element)
+    }
+
+    private fun setItemRegularMerchant(element: ItemStatusRMUiModel) {
+        with(itemView) {
             tvTitleEligiblePowerMerchant?.text = getString(R.string.title_eligible_status_power_merchant,
                     element.statusGradePM)
             tvDescEligiblePowerMerchant?.text = getString(R.string.desc_potential_eligible_power_merchant,

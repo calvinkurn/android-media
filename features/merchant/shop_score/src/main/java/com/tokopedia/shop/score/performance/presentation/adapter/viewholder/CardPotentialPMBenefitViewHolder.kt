@@ -23,6 +23,12 @@ class CardPotentialPMBenefitViewHolder(view: View):
         with(itemView) {
             tvDescNonEligiblePowerMerchant.text = getString(R.string.desc_non_eligible_power_merchant,
                     getShopScoreDate(context))
+            setPotentialPMBenefitAdapter(element)
+        }
+    }
+
+    private fun setPotentialPMBenefitAdapter(element: SectionPotentialPMBenefitUiModel?) {
+        with(itemView) {
             rv_shop_pm_potential_benefit?.apply {
                 layoutManager = LinearLayoutManager(context)
                 adapter = itemPotentialPMBenefitAdapter

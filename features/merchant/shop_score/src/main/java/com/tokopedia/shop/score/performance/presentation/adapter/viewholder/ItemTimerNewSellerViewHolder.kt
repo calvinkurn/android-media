@@ -27,15 +27,14 @@ class ItemTimerNewSellerViewHolder(view: View,
 
             tv_shop_performance_new_seller?.text = getString(R.string.title_shop_performance_become_existing_seller,
                     element?.effectiveDateText.orEmpty())
+        }
 
-            ic_video_shop_performance_learn?.setOnClickListener {
-                itemTimerNewSellerListener.onWatchVideoClicked(ShopScoreConstant.VIDEO_YOUTUBE_ID)
-            }
+        setIconVideoClickListener()
+        setBtnPerformanceClickListener(element)
+    }
 
-            tv_watch_video?.setOnClickListener {
-                itemTimerNewSellerListener.onWatchVideoClicked(ShopScoreConstant.VIDEO_YOUTUBE_ID)
-            }
-
+    private fun setBtnPerformanceClickListener(element: ItemTimerNewSellerUiModel?) {
+        with(itemView) {
             btn_shop_performance_learn?.setOnClickListener {
                 if(element?.shopAge.orZero() < ShopScoreConstant.SHOP_AGE_SIXTY) {
                     itemTimerNewSellerListener.onBtnShopPerformanceToInterruptClicked(GMCommonUrl.SHOP_INTERRUPT_PAGE)
@@ -46,6 +45,18 @@ class ItemTimerNewSellerViewHolder(view: View,
                         itemTimerNewSellerListener.onBtnShopPerformanceToFaqClicked()
                     }
                 }
+            }
+        }
+    }
+
+    private fun setIconVideoClickListener() {
+        with(itemView) {
+            ic_video_shop_performance_learn?.setOnClickListener {
+                itemTimerNewSellerListener.onWatchVideoClicked(ShopScoreConstant.VIDEO_YOUTUBE_ID)
+            }
+
+            tv_watch_video?.setOnClickListener {
+                itemTimerNewSellerListener.onWatchVideoClicked(ShopScoreConstant.VIDEO_YOUTUBE_ID)
             }
         }
     }

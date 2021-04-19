@@ -32,6 +32,25 @@ class ItemDetailPerformanceViewHolder(view: View,
                 }
             }
 
+            setupItemDetailPerformance(element)
+
+            setOnClickListener {
+                itemShopPerformanceListener.onItemClickedToDetailBottomSheet(
+                        element?.titleDetailPerformance.orEmpty(),
+                        element?.identifierDetailPerformance.orEmpty()
+                )
+            }
+            ic_item_performance_right?.setOnClickListener {
+                itemShopPerformanceListener.onItemClickedToDetailBottomSheet(
+                        element?.titleDetailPerformance.orEmpty(),
+                        element?.identifierDetailPerformance.orEmpty()
+                )
+            }
+        }
+    }
+
+    private fun setupItemDetailPerformance(element: ItemDetailPerformanceUiModel?) {
+        with(itemView) {
             setBackgroundColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
             separatorItemDetail?.showWithCondition(element?.isDividerHide == false)
 
@@ -45,18 +64,6 @@ class ItemDetailPerformanceViewHolder(view: View,
                 tvPerformanceValue.setTextColor(Color.parseColor(element.colorValueDetailPerformance))
             }
             tvPerformanceTarget?.text = getString(R.string.item_detail_performance_target, element?.targetDetailPerformance.orEmpty())
-            setOnClickListener {
-                itemShopPerformanceListener.onItemClickedToDetailBottomSheet(
-                        element?.titleDetailPerformance.orEmpty(),
-                        element?.identifierDetailPerformance.orEmpty()
-                )
-            }
-            ic_item_performance_right?.setOnClickListener {
-                itemShopPerformanceListener.onItemClickedToDetailBottomSheet(
-                        element?.titleDetailPerformance.orEmpty(),
-                        element?.identifierDetailPerformance.orEmpty()
-                )
-            }
         }
     }
 }
