@@ -33,8 +33,12 @@ public class WalletPref {
     }
 
     public WalletModel retrieveWallet() {
-        String jsonWallet = preferences.getString(WALLET_PREF, null);
-        return gson.fromJson(jsonWallet, WalletModel.class);
+        try {
+            String jsonWallet = preferences.getString(WALLET_PREF, null);
+            return gson.fromJson(jsonWallet, WalletModel.class);
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     public void clear() {
