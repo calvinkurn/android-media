@@ -416,9 +416,10 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                     val throwable = it.throwable
                     ShopUtil.logTimberWarning(
                             "SHOP_PAGE_PRODUCT_RESULT_SHOP_INFO_ERROR",
-                            "shop_id='${shopId}';" +
-                                    "error_message='${com.tokopedia.network.utils.ErrorHandler.getErrorMessage(context, throwable)}'" +
-                                    ";error_trace='${Log.getStackTraceString(throwable)}'"
+                            mapOf("shop_id" to shopId.orEmpty(),
+                                    "error_message" to com.tokopedia.network.utils.ErrorHandler.getErrorMessage(context, throwable),
+                                    "error_trace" to Log.getStackTraceString(it.throwable)
+                            )
                     )
                 }
             }
@@ -432,9 +433,10 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                     val throwable = it.throwable
                     ShopUtil.logTimberWarning(
                             "SHOP_PAGE_PRODUCT_RESULT_SHOP_FILTER_DATA_ERROR",
-                            "shop_id='${shopId}';" +
-                                    "error_message='${com.tokopedia.network.utils.ErrorHandler.getErrorMessage(context, throwable)}'" +
-                                    ";error_trace='${Log.getStackTraceString(throwable)}'"
+                            mapOf("shop_id" to shopId.orEmpty(),
+                                    "error_message" to com.tokopedia.network.utils.ErrorHandler.getErrorMessage(context, throwable),
+                                    "error_trace" to Log.getStackTraceString(it.throwable)
+                            )
                     )
                 }
             }
@@ -778,21 +780,19 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
     private fun showToastSuccess(message: String, ctaText: String = "", ctaAction: View.OnClickListener? = null) {
         activity?.run {
             ctaAction?.let { ctaClickListener ->
-                Toaster.make(
-                        findViewById(android.R.id.content),
+                Toaster.build(findViewById(android.R.id.content),
                         message,
                         Snackbar.LENGTH_LONG,
                         Toaster.TYPE_NORMAL,
                         ctaText,
                         ctaClickListener
-                )
-            } ?: Toaster.make(
-                        findViewById(android.R.id.content),
-                        message,
-                        Snackbar.LENGTH_LONG,
-                        Toaster.TYPE_NORMAL,
-                        ctaText
-            )
+                ).show()
+            } ?: Toaster.build(findViewById(android.R.id.content),
+                    message,
+                    Snackbar.LENGTH_LONG,
+                    Toaster.TYPE_NORMAL,
+                    ctaText
+            ).show()
         }
     }
 
@@ -1080,6 +1080,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
             bundle.putBoolean(ShopShowcaseParamConstant.EXTRA_IS_SHOW_DEFAULT, true)
             bundle.putBoolean(ShopShowcaseParamConstant.EXTRA_IS_SHOW_ZERO_PRODUCT, false)
             bundle.putString(ShopShowcaseParamConstant.EXTRA_SHOP_ID, shopInfo!!.shopCore.shopID)
+            bundle.putString(ShopShowcaseParamConstant.EXTRA_SHOP_TYPE, customDimensionShopPage.shopType)
 
             val intent = RouteManager.getIntent(context, ApplinkConstInternalMechant.MERCHANT_SHOP_SHOWCASE_LIST)
             intent.putExtra(EXTRA_BUNDLE, bundle)

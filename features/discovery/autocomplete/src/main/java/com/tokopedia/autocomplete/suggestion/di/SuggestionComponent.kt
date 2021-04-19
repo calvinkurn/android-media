@@ -12,7 +12,6 @@ import dagger.Component
     SuggestionRepositoryModule::class,
     SuggestionNetModule::class,
     SuggestionUserSessionInterfaceModule::class,
-    SuggestionDataMapperModule::class,
     SuggestionContextModule::class
 ], dependencies = [BaseAppComponent::class])
 interface SuggestionComponent {

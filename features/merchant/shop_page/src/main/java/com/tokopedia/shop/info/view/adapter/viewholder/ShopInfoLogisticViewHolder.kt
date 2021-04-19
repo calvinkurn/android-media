@@ -17,7 +17,7 @@ class ShopInfoLogisticViewHolder(val view: View):
         itemView.logisticLabelView.run {
             title = element.shipmentName
             setSubTitle(element.shipmentPackage)
-            imageView.adjustViewBounds = true
+            imageView?.adjustViewBounds = true
             ImageHandler.loadImageRounded2(context, imageView, element.shipmentImage)
         }
     }

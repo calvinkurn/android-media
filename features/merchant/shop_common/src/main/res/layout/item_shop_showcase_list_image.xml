@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/Unify_N0"
+    android:id="@+id/parent_layout"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/ivShowcaseImage"
+        android:layout_width="55dp"
+        android:layout_height="55dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvShowcaseName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="@id/ivShowcaseImage"
+        app:layout_constraintBottom_toBottomOf="@id/ivShowcaseImage"
+        app:layout_constraintLeft_toRightOf="@id/ivShowcaseImage"
+        app:layout_constraintRight_toLeftOf="@id/showcaseCampaignLabel"
+        app:typographyType="body_1"
+        app:typographyWeight="bold"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginEnd="@dimen/dp_2"
+        android:ellipsize="end"
+        android:singleLine="true"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        tools:text="Bicycle Bag Rockbros Official Store Jakarta Timur"
+        />
+
+    <com.tokopedia.unifycomponents.Label
+        android:id="@+id/showcaseCampaignLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="@id/tvShowcaseName"
+        app:layout_constraintBottom_toBottomOf="@id/tvShowcaseName"
+        app:layout_constraintLeft_toRightOf="@id/tvShowcaseName"
+        app:layout_constraintRight_toLeftOf="@id/guideline_action_picker"
+        app:layout_constraintHorizontal_chainStyle="spread"
+        android:layout_marginStart="@dimen/dp_8"
+        android:layout_marginEnd="@dimen/dp_8"
+        app:labelType="general_dark_red"
+        app:labelTitle="@string/shop_page_showcase_npl_text"
+        android:visibility="gone"
+        tools:visibility="visible"
+        />
+
+    <ImageView
+        android:id="@+id/img_menu_more"
+        android:layout_width="@dimen/dp_24"
+        android:layout_height="@dimen/dp_24"
+        app:layout_constraintRight_toRightOf="@id/guideline_action_picker"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_chainStyle="spread"
+        app:srcCompat="@drawable/ic_three_dots_more_menu"
+        android:contentDescription="@string/shop_page_showcase_setting_text"
+        android:visibility="gone"
+        tools:visibility="visible"
+        />
+
+    <ImageView
+        android:id="@+id/img_move_showcase"
+        android:layout_width="@dimen/dp_24"
+        android:layout_height="@dimen/dp_24"
+        app:layout_constraintRight_toRightOf="@id/guideline_action_picker"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_chainStyle="spread"
+        app:srcCompat="@drawable/ic_material"
+        android:contentDescription="@string/shop_page_showcase_reorder_text"
+        android:visibility="gone"
+        tools:visibility="visible"
+        />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_action_picker2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintHorizontal_chainStyle="spread"
+        app:layout_constraintGuide_end="@dimen/dp_32"
+        />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_action_picker"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_end="@dimen/dp_10"
+        />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvShowcaseCount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/tvShowcaseName"
+        app:layout_constraintLeft_toRightOf="@id/ivShowcaseImage"
+        app:typographyType="body_2"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_4"
+        android:textColor="@color/Unify_N300"
+        android:visibility="gone"
+        tools:text="85 Produk"
+        />
+
+    <View
+        android:id="@+id/item_separator"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:layout_marginTop="@dimen/dp_12"
+        app:layout_constraintTop_toBottomOf="@id/ivShowcaseImage"
+        app:layout_constraintLeft_toLeftOf="@id/tvShowcaseName"
+        app:layout_constraintRight_toRightOf="parent"
+        android:background="@color/Unify_N100"
+        />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

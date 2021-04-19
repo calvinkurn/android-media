@@ -49,6 +49,7 @@ dependencies {
     implementation project(rootProject.ext.features.wishlistCommon)
     implementation project(rootProject.ext.features.discoveryCommon)
     implementation project(rootProject.ext.features.internalReview)
+    implementation project(rootProject.ext.libraries.logger)
 
     implementation project(rootProject.ext.libraries.analytics)
     implementation project(rootProject.ext.features.topAdsSdk)

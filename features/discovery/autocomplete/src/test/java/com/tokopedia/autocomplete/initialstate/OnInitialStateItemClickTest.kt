@@ -1,10 +1,10 @@
 package com.tokopedia.autocomplete.initialstate
 
-import com.tokopedia.autocomplete.initialstate.curatedcampaign.CuratedCampaignViewModel
+import com.tokopedia.autocomplete.initialstate.curatedcampaign.CuratedCampaignDataView
 import com.tokopedia.autocomplete.initialstate.data.InitialStateUniverse
-import com.tokopedia.autocomplete.initialstate.dynamic.DynamicInitialStateSearchViewModel
-import com.tokopedia.autocomplete.initialstate.recentsearch.RecentSearchSeeMoreViewModel
-import com.tokopedia.autocomplete.initialstate.recentsearch.RecentSearchViewModel
+import com.tokopedia.autocomplete.initialstate.dynamic.DynamicInitialStateSearchDataView
+import com.tokopedia.autocomplete.initialstate.recentsearch.RecentSearchSeeMoreDataView
+import com.tokopedia.autocomplete.initialstate.recentsearch.RecentSearchDataView
 import com.tokopedia.autocomplete.jsonToObject
 import com.tokopedia.autocomplete.shouldBe
 import io.mockk.*
@@ -19,13 +19,13 @@ internal class OnInitialStateItemClickTest: InitialStatePresenterTestFixtures(){
     private val shopId = "8384142"
     private val shopName = "MizanBookCorner"
     private val applinkShop = "tokopedia://shop/$shopId?source=universe&st=product"
-    private val slotRecentSearchViewModel = slot<RecentSearchViewModel>()
+    private val slotRecentSearchDataView = slot<RecentSearchDataView>()
 
     @Test
     fun `test click recent search item`() {
         `Given view already get initial state`(initialStateCommonResponse)
 
-        val data = findDataView<RecentSearchViewModel>()
+        val data = findDataView<RecentSearchDataView>()
         val item = data.list.findByType(TYPE_KEYWORD)
         val position = data.list.indexOf(item)
 
@@ -69,7 +69,7 @@ internal class OnInitialStateItemClickTest: InitialStatePresenterTestFixtures(){
     fun `test click recent shop item`() {
         `Given view already get initial state`(initialStateCommonResponse)
 
-        val data = findDataView<RecentSearchViewModel>()
+        val data = findDataView<RecentSearchDataView>()
         val item = data.list.findByType(TYPE_SHOP)
         val position = data.list.indexOf(item)
 
@@ -99,7 +99,7 @@ internal class OnInitialStateItemClickTest: InitialStatePresenterTestFixtures(){
 
         `When recent search see more button is clicked`()
 
-        `Then verify RecentSearchSeeMoreViewModel has been removed`()
+        `Then verify RecentSearchSeeMoreDataView has been removed`()
         `Then verify renderRecentSearch is called`()
 
         val initialStateData = initialStateWithSeeMoreRecentSearch.jsonToObject<InitialStateUniverse>().data
@@ -110,10 +110,10 @@ internal class OnInitialStateItemClickTest: InitialStatePresenterTestFixtures(){
         initialStatePresenter.recentSearchSeeMoreClicked()
     }
 
-    private fun `Then verify RecentSearchSeeMoreViewModel has been removed`() {
-        val recentSearchSeeMoreViewModel = slotVisitableList.captured.find { it is RecentSearchSeeMoreViewModel }
-        assert(recentSearchSeeMoreViewModel == null) {
-            "There should be no RecentSearchSeeMoreViewModel in visitable list"
+    private fun `Then verify RecentSearchSeeMoreDataView has been removed`() {
+        val recentSearchSeeMoreDataView = slotVisitableList.captured.find { it is RecentSearchSeeMoreDataView }
+        assert(recentSearchSeeMoreDataView == null) {
+            "There should be no RecentSearchSeeMoreDataView in visitable list"
         }
     }
 
@@ -121,23 +121,23 @@ internal class OnInitialStateItemClickTest: InitialStatePresenterTestFixtures(){
         verifyOrder {
             initialStateView.trackEventClickSeeMoreRecentSearch("0")
             initialStateView.dropKeyBoard()
-            initialStateView.renderCompleteRecentSearch(capture(slotRecentSearchViewModel))
+            initialStateView.renderCompleteRecentSearch(capture(slotRecentSearchDataView))
         }
     }
 
     private fun `Then verify initial state show all recent search`(initialStateData: List<InitialStateData>) {
 
-        val recentSearchViewModel = slotRecentSearchViewModel.captured
+        val recentSearchDataView = slotRecentSearchDataView.captured
         val recentSearchResponse = initialStateData.find { it.featureId == "recent_search" }
 
-        recentSearchViewModel.list.size shouldBe recentSearchResponse?.items?.size
+        recentSearchDataView.list.size shouldBe recentSearchResponse?.items?.size
     }
 
     @Test
     fun `Test click Dynamic Section Search`() {
         `Given view already get initial state`(initialStateCommonResponse)
 
-        val data = findDataView<DynamicInitialStateSearchViewModel>()
+        val data = findDataView<DynamicInitialStateSearchDataView>()
         val item = data.list.findByType()
         val position = data.list.indexOf(item)
 
@@ -167,21 +167,21 @@ internal class OnInitialStateItemClickTest: InitialStatePresenterTestFixtures(){
     fun `Test click Curated Campaign Card`() {
         `Given view already get initial state`(initialStateWithSeeMoreRecentSearch)
 
-        val item = findDataView<CuratedCampaignViewModel>()
+        val item = findDataView<CuratedCampaignDataView>()
 
         `When recent dynamic section item is clicked`(item)
         `Then verify view interaction is correct for dynamic section`(item)
     }
 
-    private fun `When recent dynamic section item is clicked`(item: CuratedCampaignViewModel) {
+    private fun `When recent dynamic section item is clicked`(item: CuratedCampaignDataView) {
         initialStatePresenter.onCuratedCampaignCardClicked(item)
     }
 
-    private fun `Then verify view interaction is correct for dynamic section`(item: CuratedCampaignViewModel) {
+    private fun `Then verify view interaction is correct for dynamic section`(item: CuratedCampaignDataView) {
         initialStateView.onClickCuratedCampaignCard(item)
     }
 
-    private fun InitialStateContract.View.onClickCuratedCampaignCard(item: CuratedCampaignViewModel) {
+    private fun InitialStateContract.View.onClickCuratedCampaignCard(item: CuratedCampaignDataView) {
         val expectedLabel = "${item.title} - ${item.applink}"
 
         verifyOrder {

@@ -10,6 +10,8 @@ import android.telephony.TelephonyManager
 import androidx.core.content.ContextCompat
 import com.google.android.gms.ads.identifier.AdvertisingIdClient
 import com.tokopedia.device.info.cache.DeviceInfoCache
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
 import kotlinx.coroutines.*
 import timber.log.Timber
 import java.io.BufferedReader
@@ -148,7 +150,7 @@ object DeviceInfo {
             adInfo.id
         } catch (e: Exception) {
             e.printStackTrace()
-            Timber.w("""P2#FINGERPRINT#$e | ${Build.FINGERPRINT} | ${Build.MANUFACTURER} | ${Build.BRAND} | ${Build.DEVICE} | ${Build.PRODUCT} | ${Build.MODEL} | ${Build.TAGS}""")
+            ServerLogger.log(Priority.P2, "FINGERPRINT", mapOf("type" to "$e | ${Build.FINGERPRINT} | ${Build.MANUFACTURER} | ${Build.BRAND} | ${Build.DEVICE} | ${Build.PRODUCT} | ${Build.MODEL} | ${Build.TAGS}"))
             ""
         }
     }
