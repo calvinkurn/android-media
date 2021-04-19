@@ -168,6 +168,10 @@ class FlexBoxChatLayout : FrameLayout {
             totalWidth = maxWidth
         }
 
+        /**
+         * Calculate the info footer width to prevent overlap
+         * with [status]
+         */
         val contentWidth = totalWidth - paddingLeft - paddingRight
         if ((infoWidth + statusWidth) > 0 && msgLineCount > 1) {
             val newInfoWidth = messageWidth - statusWidth
