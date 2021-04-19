@@ -11,16 +11,16 @@ import retrofit2.http.*
 interface CassavaApi {
 
     @GET(CassavaUrl.GET_QUERY_LIST)
+    @Headers("Content-Type: application/json")
     suspend fun getQueryList(
-            @Header("Content-Type") contentType: String = "application/json",
             @Query("token") token: String,
             @Query("journey_id") journeyId: Int
     ): QueryListEntity.DataResponse
 
     @POST(CassavaUrl.POST_VALIDATION_RESULT)
+    @Headers("Content-Type: application/json")
     suspend fun postValidationResult(
             @Path("journeyId") journeyId: String,
-            @Header("Content-Type") contentType: String = "application/json",
             @Body validationRequest: ValidationResultRequest
     ): ValidationResultEntity
 
