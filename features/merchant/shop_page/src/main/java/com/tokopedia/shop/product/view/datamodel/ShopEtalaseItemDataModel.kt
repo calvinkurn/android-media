@@ -1,9 +1,7 @@
 package com.tokopedia.shop.product.view.datamodel
 
-import android.os.Parcel
 import android.os.Parcelable
 import com.tokopedia.shop.common.constant.ShopEtalaseTypeDef
-import com.tokopedia.shop.common.constant.ShopEtalaseTypeDef.ETALASE_DEFAULT
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseRules
 import kotlinx.android.parcel.Parcelize
 
@@ -16,7 +14,7 @@ data class ShopEtalaseItemDataModel(
         val etalaseId: String = "",
         val alias: String = "",
         val etalaseName: String = "",
-        @ShopEtalaseTypeDef val type: Int = ETALASE_DEFAULT,
+        @ShopEtalaseTypeDef val type: Int = ShopEtalaseTypeDef.ETALASE_DEFAULT,
         val etalaseBadge: String = "",
         val etalaseCount: Long = 0,
         val highlighted: Boolean = false,
