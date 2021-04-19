@@ -71,7 +71,7 @@ public class BranchWrapper implements WrapperInterface {
             Class<?> miui = Class.forName("miui.os.MiuiInit");
             Method method = miui.getMethod("isPreinstalledPAIPackage", String.class);
             return (Boolean) method.invoke(null, pkgName);
-        } catch (Exception ex) {
+        }catch(Exception ex){
             Timber.w("P2#PRE_INSTALL_XIAOMI#error;error='%s'", ex.getMessage());
         }
         return false;
