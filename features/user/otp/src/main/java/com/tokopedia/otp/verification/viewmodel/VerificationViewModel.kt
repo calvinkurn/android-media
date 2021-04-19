@@ -5,7 +5,8 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.otp.common.DispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.otp.common.idling_resource.TkpdIdlingResource
 import com.tokopedia.otp.verification.domain.data.OtpConstant
 import com.tokopedia.otp.verification.domain.pojo.OtpModeListData
 import com.tokopedia.otp.verification.domain.data.OtpRequestData
@@ -32,8 +33,8 @@ class VerificationViewModel @Inject constructor(
         private val sendOtpUseCase2FA: SendOtp2FAUseCase,
         private val userSession: UserSessionInterface,
         private val remoteConfig: RemoteConfig,
-        dispatcherProvider: DispatcherProvider
-) : BaseViewModel(dispatcherProvider.ui()) {
+        dispatcherProvider: CoroutineDispatchers
+) : BaseViewModel(dispatcherProvider.main) {
 
     private val _getVerificationMethodResult = MutableLiveData<Result<OtpModeListData>>()
     val getVerificationMethodResult: LiveData<Result<OtpModeListData>>
@@ -56,22 +57,26 @@ class VerificationViewModel @Inject constructor(
             userIdEnc: String
     ) {
         launchCatchError(coroutineContext, {
+            TkpdIdlingResource.increment()
             val params = getVerificationMethodUseCase2FA.getParams2FA(otpType, validateToken, userIdEnc)
-
             val data = getVerificationMethodUseCase2FA.getData(params).data
             when {
                 data.success -> {
                     _getVerificationMethodResult.value = Success(data)
+                    TkpdIdlingResource.decrement()
                 }
                 data.errorMessage.isNotEmpty() -> {
                     _getVerificationMethodResult.postValue(Fail(MessageErrorException(data.errorMessage)))
+                    TkpdIdlingResource.decrement()
                 }
                 else -> {
                     _getVerificationMethodResult.postValue(Fail(Throwable()))
+                    TkpdIdlingResource.decrement()
                 }
             }
         }, {
             _getVerificationMethodResult.postValue(Fail(it))
+            TkpdIdlingResource.decrement()
         })
     }
 
@@ -82,23 +87,27 @@ class VerificationViewModel @Inject constructor(
             msisdn: String = "",
             email: String = ""
     ) {
-        launchCatchError(coroutineContext, {
+        launchCatchError(block = {
+            TkpdIdlingResource.increment()
             val params = getVerificationMethodUseCase.getParams(otpType, userId, msisdn, email)
-
             val data = getVerificationMethodUseCase.getData(params).data
             when {
                 data.success -> {
                     _getVerificationMethodResult.value = Success(data)
+                    TkpdIdlingResource.decrement()
                 }
                 data.errorMessage.isNotEmpty() -> {
-                    _getVerificationMethodResult.postValue(Fail(MessageErrorException(data.errorMessage)))
+                    _getVerificationMethodResult.value = Fail(MessageErrorException(data.errorMessage))
+                    TkpdIdlingResource.decrement()
                 }
                 else -> {
-                    _getVerificationMethodResult.postValue(Fail(Throwable()))
+                    _getVerificationMethodResult.value = Fail(Throwable())
+                    TkpdIdlingResource.decrement()
                 }
             }
-        }, {
-            _getVerificationMethodResult.postValue(Fail(it))
+        }, onError = {
+            _getVerificationMethodResult.value = Fail(it)
+            TkpdIdlingResource.decrement()
         })
     }
 
@@ -113,21 +122,26 @@ class VerificationViewModel @Inject constructor(
             userIdEnc: String
     ) {
         launchCatchError(coroutineContext, {
+            TkpdIdlingResource.increment()
             val params = sendOtpUseCase2FA.getParams(otpType, mode, msisdn, email, otpDigit, userIdEnc = userIdEnc, validateToken = validateToken)
             val data = sendOtpUseCase2FA.getData(params).data
             when {
                 data.success -> {
                     _sendOtpResult.value = Success(data)
+                    TkpdIdlingResource.decrement()
                 }
                 data.errorMessage.isNotEmpty() -> {
                     _sendOtpResult.postValue(Fail(MessageErrorException(data.errorMessage)))
+                    TkpdIdlingResource.decrement()
                 }
                 else -> {
                     _sendOtpResult.postValue(Fail(Throwable()))
+                    TkpdIdlingResource.decrement()
                 }
             }
         }, {
             _sendOtpResult.postValue(Fail(it))
+            TkpdIdlingResource.decrement()
         })
     }
 
@@ -145,21 +159,26 @@ class VerificationViewModel @Inject constructor(
             sendOtp2FA(otpType, mode, msisdn, email, otpDigit, validateToken, userIdEnc)
         } else {
             launchCatchError(coroutineContext, {
+                TkpdIdlingResource.increment()
                 val params = sendOtpUseCase.getParams(otpType, mode, msisdn, email, otpDigit)
                 val data = sendOtpUseCase.getData(params).data
                 when {
                     data.success -> {
                         _sendOtpResult.value = Success(data)
+                        TkpdIdlingResource.decrement()
                     }
                     data.errorMessage.isNotEmpty() -> {
                         _sendOtpResult.postValue(Fail(MessageErrorException(data.errorMessage)))
+                        TkpdIdlingResource.decrement()
                     }
                     else -> {
                         _sendOtpResult.postValue(Fail(Throwable()))
+                        TkpdIdlingResource.decrement()
                     }
                 }
             }, {
                 _sendOtpResult.postValue(Fail(it))
+                TkpdIdlingResource.decrement()
             })
         }
     }
@@ -172,21 +191,26 @@ class VerificationViewModel @Inject constructor(
             code: String
     ) {
         launchCatchError(coroutineContext, {
+            TkpdIdlingResource.increment()
             val params = otpValidateUseCase2FA.getParams(otpType = otpType, validateToken = validateToken, userIdEnc = userIdEnc, mode = mode, code = code)
             val data = otpValidateUseCase2FA.getData(params).data
             when {
                 data.success -> {
                     _otpValidateResult.value = Success(data)
+                    TkpdIdlingResource.decrement()
                 }
                 data.errorMessage.isNotEmpty() -> {
                     _otpValidateResult.postValue(Fail(MessageErrorException(data.errorMessage)))
+                    TkpdIdlingResource.decrement()
                 }
                 else -> {
                     _otpValidateResult.postValue(Fail(Throwable()))
+                    TkpdIdlingResource.decrement()
                 }
             }
         }, {
             _otpValidateResult.postValue(Fail(it))
+            TkpdIdlingResource.decrement()
         })
     }
 
@@ -209,21 +233,26 @@ class VerificationViewModel @Inject constructor(
             otpValidate2FA(otpType, validateToken, userIdEnc, mode, code)
         } else {
             launchCatchError(coroutineContext, {
+                TkpdIdlingResource.increment()
                 val params = otpValidateUseCase.getParams(code, otpType, msisdn, fpData, getSL, email, mode, signature, timeUnix, userId)
                 val data = otpValidateUseCase.getData(params).data
                 when {
                     data.success -> {
                         _otpValidateResult.value = Success(data)
+                        TkpdIdlingResource.decrement()
                     }
                     data.errorMessage.isNotEmpty() -> {
                         _otpValidateResult.postValue(Fail(MessageErrorException(data.errorMessage)))
+                        TkpdIdlingResource.decrement()
                     }
                     else -> {
                         _otpValidateResult.postValue(Fail(Throwable()))
+                        TkpdIdlingResource.decrement()
                     }
                 }
             }, {
                 _otpValidateResult.postValue(Fail(it))
+                TkpdIdlingResource.decrement()
             })
         }
     }

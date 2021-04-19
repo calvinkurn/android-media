@@ -125,7 +125,7 @@ class ProductCardListView: BaseCustomView, IProductCardView {
                         height = context.resources.getDimension(FIRE_HEIGHT).toInt())
             }
             progressBarStock.progressBarColorType = ProgressBarUnify.COLOR_RED
-            progressBarStock.setValue(productCardModel.stockBarPercentage, true)
+            progressBarStock.setValue(productCardModel.stockBarPercentage, false)
         }
     }
 
@@ -168,10 +168,9 @@ class ProductCardListView: BaseCustomView, IProductCardView {
         imageProduct?.layoutParams = layoutParams
     }
 
-
     override fun recycle() {
-        imageProduct?.glideClear(context)
-        imageFreeOngkirPromo?.glideClear(context)
+        imageProduct?.glideClear()
+        imageFreeOngkirPromo?.glideClear()
     }
 
     override fun getThreeDotsButton(): View? = imageThreeDots

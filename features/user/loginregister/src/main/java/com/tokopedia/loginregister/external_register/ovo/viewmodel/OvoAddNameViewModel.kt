@@ -3,6 +3,7 @@ package com.tokopedia.loginregister.external_register.ovo.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.loginregister.external_register.base.constant.ExternalRegisterConstants
 import com.tokopedia.loginregister.external_register.base.data.ExternalRegisterPreference
 import com.tokopedia.loginregister.external_register.ovo.data.ActivateOvoResponse
@@ -11,7 +12,6 @@ import com.tokopedia.notifications.common.launchCatchError
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject
 
 /**
@@ -22,7 +22,8 @@ import javax.inject.Inject
 open class OvoAddNameViewModel @Inject constructor(
         private val activateOvoUseCase: ActivateOvoUseCase,
         private val externalRegisterPreference: ExternalRegisterPreference,
-        dispatcher: CoroutineDispatcher): BaseViewModel(dispatcher) {
+        private val dispatchers: CoroutineDispatchers
+): BaseViewModel(dispatchers.main) {
 
     private val mutableActivateOvoResponse = MutableLiveData<Result<ActivateOvoResponse>>()
     val activateOvoResponse: LiveData<Result<ActivateOvoResponse>>

@@ -47,6 +47,10 @@ public abstract class MainApplication extends CoreNetworkApplication {
         remoteConfig = new FirebaseRemoteConfigImpl(MainApplication.this);
     }
 
+    public UserSession getUserSession() {
+        return userSession;
+    }
+
     public void initFileDirConfig(){
         GlobalConfig.INTERNAL_CACHE_DIR = this.getCacheDir().getAbsolutePath();
         GlobalConfig.INTERNAL_FILE_DIR = this.getFilesDir().getAbsolutePath();

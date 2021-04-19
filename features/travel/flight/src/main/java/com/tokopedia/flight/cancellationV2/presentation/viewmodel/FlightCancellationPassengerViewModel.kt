@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.common.travel.utils.TravelDateUtil
-import com.tokopedia.common.travel.utils.TravelDispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.flight.cancellationV2.domain.FlightCancellationGetPassengerUseCase
 import com.tokopedia.flight.cancellationV2.presentation.model.FlightCancellationModel
 import com.tokopedia.flight.cancellationV2.presentation.model.FlightCancellationPassengerModel
@@ -22,8 +22,8 @@ class FlightCancellationPassengerViewModel @Inject constructor(
         private val getCancellablePassengerUseCase: FlightCancellationGetPassengerUseCase,
         private val flightAnalytics: FlightAnalytics,
         private val userSession: UserSessionInterface,
-        private val dispatcherProvider: TravelDispatcherProvider)
-    : BaseViewModel(dispatcherProvider.io()) {
+        private val dispatcherProvider: CoroutineDispatchers)
+    : BaseViewModel(dispatcherProvider.io) {
 
     var invoiceId: String = ""
 
@@ -60,7 +60,7 @@ class FlightCancellationPassengerViewModel @Inject constructor(
 
     fun getCancellablePassenger(invoiceId: String, flightCancellationJourneyList: List<FlightCancellationJourney>) {
         this.invoiceId = invoiceId
-        launchCatchError(dispatcherProvider.ui(), block = {
+        launchCatchError(dispatcherProvider.main, block = {
             val cancellationPassengers = getCancellablePassengerUseCase.fetchCancellablePassenger(invoiceId)
 
             val selectedList = arrayListOf<FlightCancellationModel>()

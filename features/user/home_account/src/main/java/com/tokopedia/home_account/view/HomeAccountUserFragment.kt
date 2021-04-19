@@ -798,6 +798,11 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
                 }
             }
 
+            AccountConstants.SettingCode.SETTING_IP -> {
+                homeAccountAnalytic.eventClickIpAboutTokopedia()
+                RouteManager.route(activity, AccountConstants.Url.BASE_WEBVIEW_APPLINK + AccountConstants.Url.BASE_MOBILE + AccountConstants.Url.PATH_IP)
+            }
+
             AccountConstants.SettingCode.SETTING_PRIVACY_ID -> {
                 homeAccountAnalytic.eventClickSetting(PRIVACY_POLICY)
                 homeAccountAnalytic.eventClickPrivacyPolicyAboutTokopedia()
@@ -824,6 +829,9 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
                 homeAccountAnalytic.eventClickSetting(LOGOUT)
                 homeAccountAnalytic.eventClickLogout()
                 showDialogLogout()
+            }
+            AccountConstants.SettingCode.SETTING_QUALITY_SETTING -> {
+                RouteManager.route(context, ApplinkConstInternalGlobal.MEDIA_QUALITY_SETTING)
             }
             AccountConstants.SettingCode.SETTING_APP_ADVANCED_CLEAR_CACHE -> {
                 homeAccountAnalytic.eventClickAppSettingCleanCache()

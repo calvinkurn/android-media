@@ -30,6 +30,7 @@ import com.tokopedia.play.extensions.isAnyShown
 import com.tokopedia.play.extensions.isKeyboardShown
 import com.tokopedia.play_common.util.KeyboardWatcher
 import com.tokopedia.play.util.observer.DistinctObserver
+import com.tokopedia.play.view.activity.PlayActivity
 import com.tokopedia.play.view.contract.PlayFragmentContract
 import com.tokopedia.play.view.contract.PlayNavigation
 import com.tokopedia.play.view.measurement.ScreenOrientationDataSource
@@ -49,7 +50,7 @@ import com.tokopedia.play.view.viewcomponent.FragmentVideoViewComponent
 import com.tokopedia.play.view.viewcomponent.FragmentYouTubeViewComponent
 import com.tokopedia.play.view.viewmodel.PlayParentViewModel
 import com.tokopedia.play.view.viewmodel.PlayViewModel
-import com.tokopedia.play_common.util.coroutine.CoroutineDispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.play_common.util.event.EventObserver
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
 import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
@@ -64,7 +65,7 @@ import javax.inject.Inject
 class PlayFragment @Inject constructor(
         private val viewModelFactory: ViewModelProvider.Factory,
         private val pageMonitoring: PlayPltPerformanceCallback,
-        private val dispatchers: CoroutineDispatcherProvider,
+        private val dispatchers: CoroutineDispatchers,
         private val analytic: PlayAnalytic,
 ) :
         TkpdBaseV4Fragment(),
@@ -111,9 +112,13 @@ class PlayFragment @Inject constructor(
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        playParentViewModel = ViewModelProvider(requireActivity(), viewModelFactory).get(PlayParentViewModel::class.java)
         playViewModel = ViewModelProvider(this, viewModelFactory).get(PlayViewModel::class.java)
-        processChannelInfo()
+
+        val theActivity = requireActivity()
+        if (theActivity is PlayActivity) {
+            playParentViewModel = ViewModelProvider(theActivity, theActivity.getViewModelFactory()).get(PlayParentViewModel::class.java)
+            processChannelInfo()
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -259,7 +264,9 @@ class PlayFragment @Inject constructor(
     }
 
     private fun processChannelInfo() {
-        playViewModel.createPage(playParentViewModel.getLatestChannelStorageData(channelId))
+        try {
+            playViewModel.createPage(playParentViewModel.getLatestChannelStorageData(channelId))
+        } catch (e: Throwable) {}
     }
 
     //TODO("Somehow when clearing viewpager, onResume is called, and when it happens, channel id is already empty so this might cause crash")

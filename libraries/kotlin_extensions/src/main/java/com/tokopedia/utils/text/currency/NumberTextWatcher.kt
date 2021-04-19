@@ -37,7 +37,11 @@ open class NumberTextWatcher : AfterTextWatcher {
             editText.setSelection(editText.text.length)
             return
         }
-        val value = valueString?.toDouble() ?: 0.0
+        val value = try {
+            valueString?.toDouble() ?: 0.0
+        } catch (e: NumberFormatException) {
+            0.0
+        }
         onNumberChanged(value)
     }
 

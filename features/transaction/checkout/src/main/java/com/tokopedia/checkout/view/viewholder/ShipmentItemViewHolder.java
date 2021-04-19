@@ -480,6 +480,11 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             ImageHandler.loadImageWithoutPlaceholderAndError(
                     imgFreeShipping, shipmentCartItemModel.getFreeShippingBadgeUrl()
             );
+            if (shipmentCartItemModel.isFreeShippingExtra()) {
+                imgFreeShipping.setContentDescription(itemView.getContext().getString(com.tokopedia.purchase_platform.common.R.string.pp_cd_image_badge_boe));
+            } else {
+                imgFreeShipping.setContentDescription(itemView.getContext().getString(com.tokopedia.purchase_platform.common.R.string.pp_cd_image_badge_bo));
+            }
             imgFreeShipping.setVisibility(View.VISIBLE);
             separatorFreeShipping.setVisibility(View.VISIBLE);
         } else {
@@ -512,6 +517,11 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             if (!shipmentCartItemModel.getShopBadge().isEmpty()) {
                 ImageHandler.loadImageWithoutPlaceholder(imgShopBadge, shipmentCartItemModel.getShopBadge());
                 imgShopBadge.setVisibility(View.VISIBLE);
+                String shopType = itemView.getContext().getString(com.tokopedia.purchase_platform.common.R.string.pp_cd_shop_type_power_merchant);
+                if (shipmentCartItemModel.isOfficialStore()) {
+                    shopType = itemView.getContext().getString(com.tokopedia.purchase_platform.common.R.string.pp_cd_shop_type_official_store);
+                }
+                imgShopBadge.setContentDescription(itemView.getContext().getString(com.tokopedia.purchase_platform.common.R.string.pp_cd_image_shop_badge_with_shop_type, shopType));
             }
         } else {
             imgShopBadge.setVisibility(View.GONE);

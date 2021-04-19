@@ -1,8 +1,12 @@
 package com.tokopedia.recharge_credit_card.analytics
 
+import com.tokopedia.analyticconstant.DataLayer
+import com.tokopedia.common_digital.common.constant.DigitalTrackingConst
 import com.tokopedia.iris.Iris
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
+import com.tokopedia.track.builder.util.BaseTrackerConst
+import java.util.*
 
 class CreditCardAnalytics(val iris: Iris) {
 
@@ -59,6 +63,44 @@ class CreditCardAnalytics(val iris: Iris) {
                 "$categoryId - $operatorId")
         map[KEY_USER_ID] = userId
         TrackApp.getInstance().gtm.sendGeneralEvent(map)
+    }
+
+    fun addToCart(userId: String, categoryName: String, categoryId: String, prefixName: String, prefixId: String) {
+        val products: MutableList<Any> = ArrayList()
+        products.add(constructProductEnhanceEcommerce(prefixName, prefixId, categoryName, categoryId))
+
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
+                DataLayer.mapOf(TrackAppUtils.EVENT, DigitalTrackingConst.Event.ADD_TO_CART,
+                        TrackAppUtils.EVENT_CATEGORY, DigitalTrackingConst.Category.DIGITAL_NATIVE,
+                        TrackAppUtils.EVENT_ACTION, DigitalTrackingConst.Action.CLICK_BELI,
+                        TrackAppUtils.EVENT_LABEL, "$categoryName - $prefixName",
+                        DigitalTrackingConst.Label.BUSINESS_UNIT, DigitalTrackingConst.Value.RECHARGE_BU,
+                        DigitalTrackingConst.Label.USER_ID, userId,
+                        BaseTrackerConst.Ecommerce.KEY, DataLayer.mapOf(
+                        DigitalTrackingConst.CurrencyCode.KEY, DigitalTrackingConst.CurrencyCode.IDR,
+                        DigitalTrackingConst.Label.ADD,
+                        DataLayer.mapOf(DigitalTrackingConst.Label.PRODUCTS, DataLayer.listOf(*products.toTypedArray()))),
+                        DigitalTrackingConst.Label.CURRENTSITE, DigitalTrackingConst.Value.RECHARGE_SITE
+                )
+        )
+    }
+
+    private fun constructProductEnhanceEcommerce(prefixName: String, prefixId: String,
+                                                 categoryName: String, categoryId: String)
+            : Map<String?, Any?> {
+        return DataLayer.mapOf(
+                DigitalTrackingConst.Product.KEY_NAME, prefixName,
+                DigitalTrackingConst.Product.KEY_ID, prefixId,
+                DigitalTrackingConst.Product.KEY_PRICE, 0,
+                DigitalTrackingConst.Product.KEY_BRAND, prefixName,
+                DigitalTrackingConst.Product.KEY_CATEGORY, categoryName,
+                DigitalTrackingConst.Product.KEY_VARIANT, DigitalTrackingConst.Value.NONE,
+                DigitalTrackingConst.Product.KEY_QUANTITY, "1",
+                DigitalTrackingConst.Product.KEY_CATEGORY_ID, categoryId,
+                DigitalTrackingConst.Product.KEY_SHOP_ID, DigitalTrackingConst.Value.NONE,
+                DigitalTrackingConst.Product.KEY_SHOP_NAME, DigitalTrackingConst.Value.NONE,
+                DigitalTrackingConst.Product.KEY_SHOP_TYPE, DigitalTrackingConst.Value.NONE
+        )
     }
 
     companion object {

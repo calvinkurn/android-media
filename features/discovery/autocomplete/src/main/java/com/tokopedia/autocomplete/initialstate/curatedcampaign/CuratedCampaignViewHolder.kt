@@ -14,35 +14,35 @@ import kotlinx.android.synthetic.main.layout_autocomplete_curated_campaign_card.
 class CuratedCampaignViewHolder(
         itemView: View,
         private val clickListener: InitialStateItemClickListener
-): AbstractViewHolder<CuratedCampaignViewModel>(itemView) {
+): AbstractViewHolder<CuratedCampaignDataView>(itemView) {
 
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.layout_autocomplete_curated_campaign_card
     }
 
-    override fun bind(element: CuratedCampaignViewModel) {
+    override fun bind(element: CuratedCampaignDataView) {
         bindImage(element)
         bindTitle(element)
         bindSubtitle(element)
         bindListener(element)
     }
 
-    private fun bindImage(element: CuratedCampaignViewModel) {
+    private fun bindImage(element: CuratedCampaignDataView) {
         itemView.autocompleteCuratedCampaignImage?.shouldShowWithAction(element.imageUrl.isNotEmpty()) {
             ImageHandler.loadImageFitCenter(itemView.context, itemView.autocompleteCuratedCampaignImage, element.imageUrl)
         }
     }
 
-    private fun bindTitle(element: CuratedCampaignViewModel) {
+    private fun bindTitle(element: CuratedCampaignDataView) {
         itemView.autocompleteCuratedCampaignTitle?.setTextAndCheckShow(MethodChecker.fromHtml(element.title).toString())
     }
 
-    private fun bindSubtitle(element: CuratedCampaignViewModel) {
+    private fun bindSubtitle(element: CuratedCampaignDataView) {
         itemView.autocompleteCuratedCampaignSubtitle?.setTextAndCheckShow(MethodChecker.fromHtml(element.subtitle).toString())
     }
 
-    private fun bindListener(element: CuratedCampaignViewModel) {
+    private fun bindListener(element: CuratedCampaignDataView) {
         itemView.autocompleteCuratedCampaignCard?.setOnClickListener {
             clickListener.onCuratedCampaignCardClicked(element)
         }
