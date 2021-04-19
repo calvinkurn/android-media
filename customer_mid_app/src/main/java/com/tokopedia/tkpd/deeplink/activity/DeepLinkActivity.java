@@ -24,10 +24,15 @@ import com.tokopedia.core.analytics.nishikino.model.Campaign;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.customer_mid_app.R;
+import com.tokopedia.logger.ServerLogger;
+import com.tokopedia.logger.utils.Priority;
 import com.tokopedia.tkpd.deeplink.listener.DeepLinkView;
 import com.tokopedia.tkpd.deeplink.presenter.DeepLinkPresenter;
 import com.tokopedia.tkpd.deeplink.presenter.DeepLinkPresenterImpl;
 import com.tokopedia.utils.uri.DeeplinkUtils;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import timber.log.Timber;
 
@@ -199,7 +204,11 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
         String referrer = DeeplinkUtils.INSTANCE.getReferrerCompatible(this);
         Uri extraReferrer = DeeplinkUtils.INSTANCE.getExtraReferrer(this);
         Uri uri = DeeplinkUtils.INSTANCE.getDataUri(this);
-        Timber.w("P1#DEEPLINK_OPEN_APP#%s;referrer='%s';extra_referrer='%s';uri='%s'",
-                getClass().getSimpleName(), referrer, extraReferrer.toString(), uri.toString());
+        Map<String, String> messageMap = new HashMap<>();
+        messageMap.put("type", getClass().getSimpleName());
+        messageMap.put("referrer", referrer);
+        messageMap.put("extra_referrer", extraReferrer.toString());
+        messageMap.put("uri", uri.toString());
+        ServerLogger.log(Priority.P1, "DEEPLINK_OPEN_APP", messageMap);
     }
 }

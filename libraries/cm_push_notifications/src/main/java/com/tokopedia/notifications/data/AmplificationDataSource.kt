@@ -5,6 +5,8 @@ import android.util.Log
 import com.google.gson.Gson
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
 import com.tokopedia.notifications.PushController
 import com.tokopedia.notifications.R
 import com.tokopedia.notifications.common.CMConstant
@@ -17,7 +19,6 @@ import com.tokopedia.notifications.inApp.ruleEngine.repository.RepositoryManager
 import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.inappdata.CMInApp
 import com.tokopedia.notifications.utils.NextFetchCacheManager
 import com.tokopedia.user.session.UserSession
-import timber.log.Timber
 import java.util.concurrent.TimeUnit
 import com.tokopedia.abstraction.common.utils.GraphqlHelper.loadRawString as loadRaw
 
@@ -90,8 +91,11 @@ object AmplificationDataSource {
                     // send amplification tracker
                     sendAmplificationInAppEvent(application, INAPP_DELIVERED, cmInApp)
                 } catch (e: Exception) {
-                    Timber.w("${CMConstant.TimberTags.TAG}exception;err='${Log.getStackTraceString(e)
-                            .take(CMConstant.TimberTags.MAX_LIMIT)}';data=''")
+                    ServerLogger.log(Priority.P2, "CM_VALIDATION",
+                            mapOf("type" to "exception",
+                                    "err" to Log.getStackTraceString(e)
+                                            .take(CMConstant.TimberTags.MAX_LIMIT),
+                                    "data" to ""))
                 }
             }
         }

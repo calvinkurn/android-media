@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import com.facebook.AccessToken
 import com.facebook.CallbackManager
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.encryption.security.RsaUtils
 import com.tokopedia.encryption.security.decodeBase64
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -13,10 +14,11 @@ import com.tokopedia.loginfingerprint.data.preference.FingerprintSetting
 import com.tokopedia.loginfingerprint.utils.crypto.Cryptography
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.TkpdIdlingResourceProvider
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.loginregister.common.domain.pojo.ActivateUserData
 import com.tokopedia.loginregister.common.domain.usecase.ActivateUserUseCase
-import com.tokopedia.loginregister.common.domain.usecase.DynamicBannerUseCase
+import com.tokopedia.loginregister.common.view.banner.domain.usecase.DynamicBannerUseCase
+import com.tokopedia.loginregister.common.view.ticker.domain.usecase.TickerInfoUseCase
+import com.tokopedia.loginregister.common.view.ticker.subscriber.TickerInfoLoginSubscriber
 import com.tokopedia.loginregister.discover.usecase.DiscoverUseCase
 import com.tokopedia.loginregister.login.domain.RegisterCheckUseCase
 import com.tokopedia.loginregister.login.domain.StatusFingerprint
@@ -25,22 +27,16 @@ import com.tokopedia.loginregister.login.domain.StatusPinUseCase
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckData
 import com.tokopedia.loginregister.login.domain.pojo.StatusPinData
 import com.tokopedia.loginregister.login.view.listener.LoginEmailPhoneContract
-import com.tokopedia.loginregister.login.view.model.DiscoverViewModel
+import com.tokopedia.loginregister.login.view.model.DiscoverDataModel
 import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentialSubscriber
 import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentialUseCase
-import com.tokopedia.loginregister.ticker.domain.usecase.TickerInfoUseCase
-import com.tokopedia.loginregister.ticker.subscriber.TickerInfoLoginSubscriber
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.sessioncommon.di.SessionModule.SESSION_MODULE
 import com.tokopedia.sessioncommon.domain.mapper.LoginV2Mapper
 import com.tokopedia.sessioncommon.domain.subscriber.GetProfileSubscriber
 import com.tokopedia.sessioncommon.domain.subscriber.LoginTokenFacebookSubscriber
 import com.tokopedia.sessioncommon.domain.subscriber.LoginTokenSubscriber
-import com.tokopedia.sessioncommon.domain.usecase.GeneratePublicKeyUseCase
-import com.tokopedia.sessioncommon.domain.usecase.GetAdminTypeUseCase
-import com.tokopedia.sessioncommon.domain.usecase.GetProfileUseCase
-import com.tokopedia.sessioncommon.domain.usecase.LoginTokenUseCase
-import com.tokopedia.sessioncommon.domain.usecase.LoginTokenV2UseCase
+import com.tokopedia.sessioncommon.domain.usecase.*
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineScope
@@ -95,7 +91,7 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
 
     override fun discoverLogin(context: Context) {
         view?.let { view ->
-            discoverUseCase.execute(RequestParams.EMPTY, object : Subscriber<DiscoverViewModel>() {
+            discoverUseCase.execute(RequestParams.EMPTY, object : Subscriber<DiscoverDataModel>() {
                 override fun onCompleted() {
 
                 }
@@ -106,7 +102,7 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
                     view.onErrorDiscoverLogin(e)
                 }
 
-                override fun onNext(discoverViewModel: DiscoverViewModel) {
+                override fun onNext(discoverViewModel: DiscoverDataModel) {
                     view.stopTrace()
                     view.dismissLoadingDiscover()
                     view.onSuccessDiscoverLogin(discoverViewModel.providers)
@@ -145,7 +141,7 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
                             { getUserInfo() },
                             view.onErrorLoginFacebook(email),
                             { view.showPopup().invoke(it.loginToken.popupError) },
-                            view.onGoToActivationPage(email),
+                            { view.onGoToActivationPage(email) },
                             view.onGoToSecurityQuestion(email)))
         }
     }
@@ -159,7 +155,8 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
                         view.onSuccessLoginFacebookPhone(),
                         view.onErrorLoginFacebookPhone(),
                         { view.showPopup().invoke(it.loginToken.popupError) },
-                        view.onGoToSecurityQuestion(""))
+                        view.onGoToSecurityQuestion("")
+                )
         )
     }
 
@@ -184,7 +181,7 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
                             { getUserInfo() },
                             view.onErrorLoginGoogle(email),
                             { view.showPopup().invoke(it.loginToken.popupError) },
-                            view.onGoToActivationPage(email),
+                            { view.onGoToActivationPage(email) },
                             view.onGoToSecurityQuestion(email)))
         }
     }
@@ -222,7 +219,7 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
                                 showPopup().invoke(it.loginToken.popupError)
                             },
                             onGoToActivationPage = {
-                                onGoToActivationPage(email).invoke(it)
+                                onGoToActivationPage(email)
                             },
                             onGoToSecurityQuestion = {
                                 onGoToSecurityQuestion(email).invoke()
@@ -258,7 +255,7 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
                         { view.onSuccessLoginEmail(it) },
                         view.onErrorLoginEmail(email),
                         { view.showPopup().invoke(it.loginToken.popupError) },
-                        view.onGoToActivationPage(email),
+                        { view.onGoToActivationPage(email) },
                         view.onGoToSecurityQuestion(email),
                         onFinished = {
                             idlingResourceProvider?.decrement()
@@ -275,7 +272,7 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
             loginTokenUseCase.executeLoginAfterSQ(LoginTokenUseCase.generateParamLoginAfterSQ(
                     userSession, validateToken), LoginTokenSubscriber(userSession,
                     { view.onSuccessReloginAfterSQ(it) },
-                    view.onErrorReloginAfterSQ(validateToken),
+                    { view.onErrorReloginAfterSQ().invoke(it) },
                     { view.showPopup().invoke(it.loginToken.popupError) },
                     view.onGoToActivationPageAfterRelogin(),
                     view.onGoToSecurityQuestionAfterRelogin()))
@@ -314,8 +311,8 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
                     view.onSuccessGetUserInfo(),
                     view.onErrorGetUserInfo(),
                     getAdminTypeUseCase,
-                    view.showLocationAdminPopUp(),
-                    view.showGetAdminTypeError()
+                    { view.showLocationAdminPopUp() },
+                    { view.showGetAdminTypeError(it) }
                     , onFinished = {
                 idlingResourceProvider?.decrement()
             }))
@@ -330,8 +327,8 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
                         { checkStatusFingerprint() },
                         view.onErrorGetUserInfo(),
                         getAdminTypeUseCase,
-                        view.showLocationAdminPopUp(),
-                        view.showGetAdminTypeError(),
+                        { view.showLocationAdminPopUp() },
+                        { view.showGetAdminTypeError(it) },
                         onFinished = { idlingResourceProvider?.decrement() })
                 )
             }
@@ -419,8 +416,8 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
             validateToken: String
     ) {
         launchCatchError(coroutineContext, {
-            val params = activateUserUseCase.getParams(email, validateToken)
-            val data: ActivateUserData? = activateUserUseCase.getData(params).data
+            activateUserUseCase.setParams(email, validateToken)
+            val data: ActivateUserData? = activateUserUseCase.executeOnBackground().data
             if (data != null) {
                 when {
                     data.isSuccess == 1 -> {

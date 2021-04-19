@@ -18,12 +18,12 @@ import com.tokopedia.fcmcommon.service.SyncFcmTokenService;
 import com.tokopedia.graphql.util.LoggingUtils;
 import com.tokopedia.installreferral.InstallReferral;
 import com.tokopedia.installreferral.InstallReferralKt;
+import com.tokopedia.logger.LogManager;
 import com.tokopedia.loginregister.login.service.RegisterPushNotifService;
 import com.tokopedia.navigation.presentation.activity.MainParentActivity;
 import com.tokopedia.notifications.CMPushNotificationManager;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
-import com.tokopedia.tkpd.timber.TimberWrapper;
 import com.tokopedia.weaver.WeaveInterface;
 import com.tokopedia.weaver.Weaver;
 
@@ -159,7 +159,10 @@ public class ConsumerSplashScreen extends SplashScreen {
         return new RemoteConfig.Listener() {
             @Override
             public void onComplete(RemoteConfig remoteConfig) {
-                TimberWrapper.initByRemoteConfig(getApplication(), remoteConfig);
+                LogManager logManager = LogManager.instance;
+                if (logManager!= null) {
+                    logManager.refreshConfig();
+                }
                 LoggingUtils.setResponseSize(remoteConfig.getLong(KEY_CONFIG_RESPONSE_SIZE_LOG));
             }
 

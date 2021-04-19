@@ -12,6 +12,8 @@ import com.google.gson.JsonSyntaxException;
 import com.tokopedia.abstraction.common.network.exception.HttpErrorException;
 import com.tokopedia.abstraction.constant.IRouterConstant;
 import com.tokopedia.authentication.AuthHelper;
+import com.tokopedia.logger.ServerLogger;
+import com.tokopedia.logger.utils.Priority;
 import com.tokopedia.loyalty.domain.usecase.TrainCheckVoucherUseCase;
 import com.tokopedia.loyalty.exception.LoyaltyErrorException;
 import com.tokopedia.loyalty.exception.TokoPointResponseErrorException;
@@ -21,7 +23,6 @@ import com.tokopedia.loyalty.view.data.CouponViewModel;
 import com.tokopedia.loyalty.view.data.CouponsDataWrapper;
 import com.tokopedia.loyalty.view.data.VoucherViewModel;
 import com.tokopedia.loyalty.view.interactor.IPromoCouponInteractor;
-import com.tokopedia.loyalty.view.util.CommonConstant;
 import com.tokopedia.loyalty.view.view.IPromoCouponView;
 import com.tokopedia.network.constant.ErrorNetMessage;
 import com.tokopedia.network.exception.ResponseErrorException;
@@ -32,11 +33,12 @@ import com.tokopedia.user.session.UserSession;
 import java.net.ConnectException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.inject.Inject;
 
 import rx.Subscriber;
-import timber.log.Timber;
 
 /**
  * @author anggaprasetiyo on 29/11/17.
@@ -50,8 +52,8 @@ public class PromoCouponPresenter implements IPromoCouponPresenter {
     private static final String PARAM_LANG = "lang";
     private final IPromoCouponInteractor promoCouponInteractor;
     private final IPromoCouponView view;
-    private TrainCheckVoucherUseCase trainCheckVoucherUseCase;
-    private UserSession userSession;
+    private final TrainCheckVoucherUseCase trainCheckVoucherUseCase;
+    private final UserSession userSession;
 
     @Inject
     public PromoCouponPresenter(IPromoCouponView view, IPromoCouponInteractor promoCouponInteractor,
@@ -89,7 +91,11 @@ public class PromoCouponPresenter implements IPromoCouponPresenter {
                     @Override
                     public void onError(Throwable e) {
                         if (e instanceof JsonSyntaxException) {
-                            Timber.w(CommonConstant.LOYALTY_JSON_PARSE_TAG, Log.getStackTraceString(e), PromoCodePresenter.class.getCanonicalName());
+                            Map<String, String> messageMap = new HashMap<>();
+                            messageMap.put("type", "json");
+                            messageMap.put("err", Log.getStackTraceString(e));
+                            messageMap.put("req", PromoCodePresenter.class.getCanonicalName());
+                            ServerLogger.log(Priority.P2, "LOYALTY_PARSE_ERROR", messageMap);
                         }
 
                         if (e instanceof TokoPointResponseErrorException) {
