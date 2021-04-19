@@ -11,14 +11,11 @@ import com.tokopedia.oneclickcheckout.common.view.model.OccGlobalEvent
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
 import com.tokopedia.oneclickcheckout.order.view.model.*
 import com.tokopedia.promocheckout.common.view.model.clearpromo.ClearPromoUiModel
+import com.tokopedia.promocheckout.common.view.uimodel.SummariesUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
-import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.MessageUiModel
-import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoCheckoutVoucherOrdersItemUiModel
-import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel
-import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.*
 import io.mockk.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import rx.Observable
@@ -1207,6 +1204,52 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
     }
 
     @Test
+    fun `Unchoose Logistic Promo Success`() {
+        // Given
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
+        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
+        orderSummaryPageViewModel._orderShipment = helper.orderShipment.copy(serviceErrorMessage = "")
+
+        val discountAmount = 100
+        every { validateUsePromoRevampUseCase.get().createObservable(any()) } returns Observable.just(ValidateUsePromoRevampUiModel(PromoUiModel(voucherOrderUiModels = listOf(
+                PromoCheckoutVoucherOrdersItemUiModel(code = "bbo", messageUiModel = MessageUiModel(state = "green"))
+        ), benefitSummaryInfoUiModel = BenefitSummaryInfoUiModel(summaries = listOf(
+                SummariesItemUiModel(type = SummariesUiModel.TYPE_DISCOUNT, details = listOf(
+                        DetailsItemUiModel(amount = discountAmount, type = SummariesUiModel.TYPE_SHIPPING_DISCOUNT)
+                ))
+        ))), status = "OK"))
+        every { clearCacheAutoApplyStackUseCase.get().setParams(any(), any(), any()) } just Runs
+        every { clearCacheAutoApplyStackUseCase.get().createObservable(any()) } returns Observable.just(ClearPromoUiModel())
+
+        // When Choose Logistic Promo
+        orderSummaryPageViewModel.chooseLogisticPromo(helper.logisticPromo)
+
+        // Then Have Logistic Discount
+        val firstShipping = orderSummaryPageViewModel.orderShipment.value
+        assertEquals(true, firstShipping.isApplyLogisticPromo)
+
+        val firstTotal = orderSummaryPageViewModel.orderTotal.value
+        assertEquals(discountAmount, firstTotal.orderCost.shippingDiscountAmount)
+        assertEquals(2000.0, firstTotal.orderCost.shippingFee, 0.0)
+
+        // When Unchoose Logistic Promo
+        orderSummaryPageViewModel.chooseDuration(helper.firstDuration.serviceData.serviceId, helper.secondCourierFirstDuration, false)
+
+        // Then Have No Logistic Discount
+        val secondShipping = orderSummaryPageViewModel.orderShipment.value
+        assertEquals(false, secondShipping.isApplyLogisticPromo)
+        assertEquals(true, secondShipping.isServicePickerEnable)
+        assertEquals(null, secondShipping.logisticPromoShipping)
+        assertEquals(helper.secondCourierFirstDuration.productData.insurance, secondShipping.insuranceData)
+        assertEquals(helper.secondCourierFirstDuration.productData.shipperProductId, secondShipping.getRealShipperProductId())
+        assertEquals(OccGlobalEvent.Normal, orderSummaryPageViewModel.globalEvent.value)
+
+        val secondTotal = orderSummaryPageViewModel.orderTotal.value
+        assertEquals(0, secondTotal.orderCost.shippingDiscountAmount)
+        assertEquals(1500.0, secondTotal.orderCost.shippingFee, 0.0)
+    }
+
+    @Test
     fun `Auto Apply Logistic Promo Success`() {
         // Given
         orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
@@ -1230,6 +1273,63 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
         assertEquals(helper.firstCourierSecondDuration, shipping.logisticPromoShipping)
         assertEquals(helper.firstCourierSecondDuration.productData.insurance, shipping.insuranceData)
         assertEquals(helper.firstCourierSecondDuration.productData.shipperProductId, shipping.getRealShipperProductId())
+        assertEquals(OccGlobalEvent.Normal, orderSummaryPageViewModel.globalEvent.value)
+    }
+
+    @Test
+    fun `Auto Apply Logistic Promo Success With Different Benefit`() {
+        // Given
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
+        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
+        orderSummaryPageViewModel._orderShipment = helper.orderShipment
+
+        every { ratesUseCase.execute(any()) } returns Observable.just(helper.shippingRecommendationData)
+        coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
+
+        val firstDiscountAmount = 100
+        every { validateUsePromoRevampUseCase.get().createObservable(any()) } returns Observable.just(ValidateUsePromoRevampUiModel(PromoUiModel(voucherOrderUiModels = listOf(
+                PromoCheckoutVoucherOrdersItemUiModel(code = "bbo", messageUiModel = MessageUiModel(state = "green"))
+        ), benefitSummaryInfoUiModel = BenefitSummaryInfoUiModel(summaries = listOf(
+                SummariesItemUiModel(type = SummariesUiModel.TYPE_DISCOUNT, details = listOf(
+                        DetailsItemUiModel(amount = firstDiscountAmount, type = SummariesUiModel.TYPE_SHIPPING_DISCOUNT)
+                ))
+        ))), status = "OK"))
+
+        // When Choose Logistic Promo
+        orderSummaryPageViewModel.chooseLogisticPromo(helper.logisticPromo)
+
+        // Then Have First Discount Amount
+        val firstShipping = orderSummaryPageViewModel.orderShipment.value
+        assertEquals(true, firstShipping.isApplyLogisticPromo)
+
+        val firstTotal = orderSummaryPageViewModel.orderTotal.value
+        assertEquals(firstDiscountAmount, firstTotal.orderCost.shippingDiscountAmount)
+        assertEquals(2000.0, firstTotal.orderCost.shippingFee, 0.0)
+
+        // Given Second Discount Amount
+        val secondDiscountAmount = 50
+        every { validateUsePromoRevampUseCase.get().createObservable(any()) } returns Observable.just(ValidateUsePromoRevampUiModel(PromoUiModel(voucherOrderUiModels = listOf(
+                PromoCheckoutVoucherOrdersItemUiModel(code = "bbo", messageUiModel = MessageUiModel(state = "green"))
+        ), benefitSummaryInfoUiModel = BenefitSummaryInfoUiModel(summaries = listOf(
+                SummariesItemUiModel(type = SummariesUiModel.TYPE_DISCOUNT, details = listOf(
+                        DetailsItemUiModel(amount = secondDiscountAmount, type = SummariesUiModel.TYPE_SHIPPING_DISCOUNT)
+                ))
+        ))), status = "OK"))
+
+        // When Update Quantity
+        orderSummaryPageViewModel.updateProduct(OrderProduct(quantity = QuantityUiModel(orderQuantity = 10)))
+        testDispatchers.main.advanceUntilIdle()
+
+        // Then
+        val secondShipping = orderSummaryPageViewModel.orderShipment.value
+        assertEquals(true, secondShipping.isApplyLogisticPromo)
+        assertEquals(helper.firstCourierSecondDuration, secondShipping.logisticPromoShipping)
+        assertEquals(helper.firstCourierSecondDuration.productData.insurance, secondShipping.insuranceData)
+        assertEquals(helper.firstCourierSecondDuration.productData.shipperProductId, secondShipping.getRealShipperProductId())
+
+        val secondTotal = orderSummaryPageViewModel.orderTotal.value
+        assertEquals(secondDiscountAmount, secondTotal.orderCost.shippingDiscountAmount)
+        assertEquals(2000.0, secondTotal.orderCost.shippingFee, 0.0)
         assertEquals(OccGlobalEvent.Normal, orderSummaryPageViewModel.globalEvent.value)
     }
 
@@ -1358,6 +1458,19 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
 
         // Then
         assertEquals(true, orderSummaryPageViewModel._orderShipment.isCheckInsurance)
+    }
+
+    @Test
+    fun `Set Insurance Uncheck`() {
+        // Given
+        orderSummaryPageViewModel._orderShipment = OrderShipment(isCheckInsurance = true, insuranceData = InsuranceData(),
+                shipperProductId = 1, serviceName = "service")
+
+        // When
+        orderSummaryPageViewModel.setInsuranceCheck(false)
+
+        // Then
+        assertEquals(false, orderSummaryPageViewModel._orderShipment.isCheckInsurance)
     }
 
     @Test
