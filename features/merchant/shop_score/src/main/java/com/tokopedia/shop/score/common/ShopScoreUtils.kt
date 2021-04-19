@@ -61,7 +61,11 @@ fun format(timeMillis: Long, pattern: String, locale: Locale = getLocale()): Str
 }
 
 fun String.formatDate(pattern: String, locale: Locale = getLocale()): String {
-    return SimpleDateFormat(pattern, locale).format(this)
+    val fromSimpleDateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", locale)
+    val parseDate = fromSimpleDateFormat.parse(this)
+    val convertFormatDate = SimpleDateFormat(pattern, locale)
+    val formatDateText = parseDate?.let { convertFormatDate.format(it) } ?: ""
+    return formatDateText
 }
 
 fun getLocale(): Locale {

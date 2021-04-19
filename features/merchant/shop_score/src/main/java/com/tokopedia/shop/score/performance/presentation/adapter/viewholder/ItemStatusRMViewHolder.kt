@@ -37,7 +37,7 @@ class ItemStatusRMViewHolder(view: View,
             tvTitleEligiblePowerMerchant?.text = getString(R.string.title_eligible_status_power_merchant,
                     element.statusGradePM)
             tvDescEligiblePowerMerchant?.text = getString(R.string.desc_potential_eligible_power_merchant,
-                    getShopScoreDate(context))
+                    element.updateDatePotential)
             containerEligiblePowerMerchant?.background = element.bgGradePM?.let { ContextCompat.getDrawable(context, it) }
 
             iv_pm_badge_eligible_status?.loadImage(element.badgeGradePM)

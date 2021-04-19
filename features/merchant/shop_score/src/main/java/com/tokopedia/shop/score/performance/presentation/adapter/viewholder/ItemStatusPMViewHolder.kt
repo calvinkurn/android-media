@@ -40,7 +40,7 @@ class ItemStatusPMViewHolder(view: View,
             potentialPowerMerchantWidget?.background = element?.bgPowerMerchant?.let { ContextCompat.getDrawable(context, it) }
             tv_pm_reputation_value?.text = getString(R.string.title_pm_value,
                     element?.statusPowerMerchant)
-            tv_update_date_potential_pm?.text = getString(R.string.next_update_date_pm_status, getShopScoreDate(context)).orEmpty()
+            tv_update_date_potential_pm?.text = getString(R.string.next_update_date_pm_status, element?.updateDatePotential).orEmpty()
             tv_desc_potential_pm?.text = MethodChecker.fromHtml(element?.descPotentialPM)
         }
     }

@@ -23,7 +23,6 @@ class ItemDetailPerformanceViewHolder(view: View,
     }
 
     private val impressHolder = ImpressHolder()
-
     override fun bind(element: ItemDetailPerformanceUiModel?) {
         with(itemView) {
             if (adapterPosition == POSITION_ITEM_DETAIL_PERFORMANCE_COACH_MARK) {

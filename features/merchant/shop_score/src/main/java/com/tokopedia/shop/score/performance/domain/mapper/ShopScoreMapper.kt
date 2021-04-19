@@ -178,10 +178,10 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
                 else -> {
                     if (isEligiblePM == true) {
                         if (shopScoreWrapperResponse.goldPMGradeBenefitInfoResponse != null) {
-                            add(mapToItemCurrentStatusRMUiModel(shopScoreWrapperResponse.goldPMGradeBenefitInfoResponse?.potentialPmGrade))
+                            add(mapToItemCurrentStatusRMUiModel(shopScoreWrapperResponse.goldPMGradeBenefitInfoResponse?.potentialPmGrade, shopInfoPeriodUiModel))
                         }
                     } else {
-                        add(mapToCardPotentialBenefitNonEligible())
+                        add(mapToCardPotentialBenefitNonEligible(shopInfoPeriodUiModel))
                     }
                 }
             }
@@ -399,8 +399,8 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
         return copyItemDetail
     }
 
-    private fun mapToCardPotentialBenefitNonEligible(): SectionPotentialPMBenefitUiModel {
-        return SectionPotentialPMBenefitUiModel(potentialPMBenefitList = mapToItemPotentialBenefit())
+    private fun mapToCardPotentialBenefitNonEligible(shopInfoPeriodUiModel: ShopInfoPeriodUiModel): SectionPotentialPMBenefitUiModel {
+        return SectionPotentialPMBenefitUiModel(potentialPMBenefitList = mapToItemPotentialBenefit(), transitionEndDate = shopInfoPeriodUiModel.periodEndDate.formatDate(PATTER_DATE_TEXT))
     }
 
     private fun mapToSectionPeriodDetailPerformanceUiModel(shopScoreTooltipResponse: ShopLevelTooltipResponse.ShopLevel.Result?): PeriodDetailPerformanceUiModel {
@@ -778,10 +778,10 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
         }
     }
 
-    private fun mapToItemCurrentStatusRMUiModel(potentialPmGrade: GoldPMGradeBenefitInfoResponse.GoldGetPMGradeBenefitInfo.PotentialPmGrade?)
+    private fun mapToItemCurrentStatusRMUiModel(potentialPmGrade: GoldPMGradeBenefitInfoResponse.GoldGetPMGradeBenefitInfo.PotentialPmGrade?, shopInfoPeriodUiModel: ShopInfoPeriodUiModel)
             : ItemStatusRMUiModel {
         //only regular merchant & eligible
-        val updateDate = getShopScoreDate(context)
+        val updateDate = shopInfoPeriodUiModel.periodEndDate.formatDate(PATTER_DATE_TEXT)
         val statusPM = potentialPmGrade?.gradeName.orEmpty()
         val badgePM = potentialPmGrade?.imageBadgeUrl.orEmpty()
         val backgroundPM = when (statusPM.toLowerCase(Locale.getDefault())) {

@@ -22,7 +22,7 @@ class CardPotentialPMBenefitViewHolder(view: View):
         itemPotentialPMBenefitAdapter = ItemPotentialPMBenefitAdapter()
         with(itemView) {
             tvDescNonEligiblePowerMerchant.text = getString(R.string.desc_non_eligible_power_merchant,
-                    getShopScoreDate(context))
+                    element?.transitionEndDate)
             setPotentialPMBenefitAdapter(element)
         }
     }
