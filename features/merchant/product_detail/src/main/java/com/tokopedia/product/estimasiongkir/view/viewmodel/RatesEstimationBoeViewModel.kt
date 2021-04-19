@@ -29,6 +29,7 @@ class RatesEstimationBoeViewModel @Inject constructor(private val ratesUseCase: 
 
     companion object {
         private const val LOG_TAG = "BUYER_FLOW_PDP_RATE_ESTIMATE"
+        private const val LOCALIZATION_DATA_KEY = "localization_data"
     }
 
     private val _ratesRequest = MutableLiveData<RatesEstimateRequest>()
@@ -47,7 +48,8 @@ class RatesEstimationBoeViewModel @Inject constructor(private val ratesUseCase: 
             ServerLogger.log(Priority.P2, LOG_TAG, mapOf(
                     ProductDetailConstant.USER_ID_KEY to userSession.userId,
                     Pair(ProductDetailConstant.PRODUCT_ID_KEY, _ratesRequest.value?.productId ?: ""),
-                    ProductDetailConstant.DEVICE_ID_KEY to userSession.deviceId
+                    ProductDetailConstant.DEVICE_ID_KEY to userSession.deviceId,
+                    Pair(LOCALIZATION_DATA_KEY, _ratesRequest.value?.destination ?: "")
             ))
             result.postValue(it.asFail())
         }

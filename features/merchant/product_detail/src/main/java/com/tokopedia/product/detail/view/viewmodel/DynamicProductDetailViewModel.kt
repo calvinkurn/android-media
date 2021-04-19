@@ -112,6 +112,9 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     companion object {
         private const val LOG_TAG_ATC = "BUYER_FLOW_PDP_ATC"
         private const val LOG_TAG_WISHLIST = "BUYER_FLOW_PDP_WISHLIST"
+        private const val WISHLIST_STATUS_KEY = "wishlist_status"
+        private const val ADD_WISHLIST = "true"
+        private const val REMOVE_WISHLIST = "false"
     }
 
     private val _productLayout = MutableLiveData<Result<List<DynamicPdpDataModel>>>()
@@ -580,7 +583,8 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                 ServerLogger.log(Priority.P2, LOG_TAG_WISHLIST, mapOf(
                         Pair(ProductDetailConstant.PRODUCT_ID_KEY, productId ?: ""),
                         ProductDetailConstant.USER_ID_KEY to userId,
-                        ProductDetailConstant.DEVICE_ID_KEY to deviceId
+                        ProductDetailConstant.DEVICE_ID_KEY to deviceId,
+                        WISHLIST_STATUS_KEY to REMOVE_WISHLIST
                 ))
                 onErrorRemoveWishList?.invoke(errorMessage)
             }
@@ -600,7 +604,8 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                 ServerLogger.log(Priority.P2, LOG_TAG_WISHLIST, mapOf(
                         Pair(ProductDetailConstant.PRODUCT_ID_KEY, productId ?: ""),
                         ProductDetailConstant.USER_ID_KEY to userId,
-                        ProductDetailConstant.DEVICE_ID_KEY to deviceId
+                        ProductDetailConstant.DEVICE_ID_KEY to deviceId,
+                        WISHLIST_STATUS_KEY to ADD_WISHLIST
                 ))
                 onErrorAddWishList?.invoke(errorMessage)
             }
