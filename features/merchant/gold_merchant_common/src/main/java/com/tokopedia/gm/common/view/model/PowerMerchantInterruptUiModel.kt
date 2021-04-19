@@ -8,6 +8,8 @@ data class PowerMerchantInterruptUiModel(
         val shopScore: Int,
         val shopScoreThreshold: Int,
         val shopLevel: Int,
+        val isNewSeller: Boolean,
+        val shopAge: Int,
         val isEligiblePm: Boolean,
         val pmStatus: String,
         val pmGrade: String,

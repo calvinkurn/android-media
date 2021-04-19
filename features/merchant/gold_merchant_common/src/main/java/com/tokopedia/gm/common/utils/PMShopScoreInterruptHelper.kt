@@ -9,20 +9,25 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.work.*
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.shopscore.DeepLinkMapperShopScore
+import com.tokopedia.gm.common.R
 import com.tokopedia.gm.common.constant.PMConstant
+import com.tokopedia.gm.common.constant.PMStatusConst
 import com.tokopedia.gm.common.constant.PeriodType
 import com.tokopedia.gm.common.data.source.local.PMCommonPreferenceManager
 import com.tokopedia.gm.common.view.bottomsheet.PMFinalInterruptBottomSheet
 import com.tokopedia.gm.common.view.bottomsheet.PMTransitionInterruptBottomSheet
+import com.tokopedia.gm.common.view.bottomsheet.SimpleInterruptBottomSheet
 import com.tokopedia.gm.common.view.model.PowerMerchantInterruptUiModel
 import com.tokopedia.gm.common.view.worker.GetPMInterruptDataWorker
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.orZero
 import java.net.URLEncoder
+import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -134,8 +139,101 @@ class PMShopScoreInterruptHelper @Inject constructor() {
         when (data.periodType) {
             PeriodType.FINAL_PERIOD -> setupInterruptFinalPeriod(data, fm)
             PeriodType.TRANSITION_PERIOD -> setupInterruptTransitionPeriod(context, data, fm)
-            PeriodType.COMMUNICATION_PERIOD -> showInterruptPage(context, data)
+            PeriodType.COMMUNICATION_PERIOD -> setupInterruptCommunicationPeriod(context, data, fm)
         }
+    }
+
+    private fun setupInterruptCommunicationPeriod(context: Context, data: PowerMerchantInterruptUiModel, fm: FragmentManager) {
+        if (data.isNewSeller && data.pmStatus == PMStatusConst.IDLE) {
+            showInterruptNewSellerPmIdle(context, fm)
+        } else {
+            showInterruptPage(context, data)
+        }
+    }
+
+    private fun showInterruptEndOfTenureNewSeller(context: Context, data: PowerMerchantInterruptUiModel, fm: FragmentManager) {
+        val bottomSheet = SimpleInterruptBottomSheet.createInstance(true)
+        val isBottomSheetEverSeen = pmCommonPreferenceManager?.getBoolean(PMCommonPreferenceManager.KEY_HAS_OPENED_NEW_SELLER_END_OF_TENURE_POPUP, false).orFalse()
+        if (fm.isStateSaved || bottomSheet.isAdded || isBottomSheetEverSeen) return
+
+        val now = Date().time
+        val shopAge = data.shopAge
+        val endOfTenureDays = 90
+        val remainingDays = endOfTenureDays.minus(shopAge)
+        val canShopInterruptPopup = remainingDays in 0..7
+
+        if (!(remainingDays in 1..endOfTenureDays && canShopInterruptPopup)) return
+
+        val remainingDaysMillis = TimeUnit.DAYS.toMillis(remainingDays.toLong())
+        val endOfTenureMillis = now.plus(remainingDaysMillis)
+
+        val endOfTenureCal = Calendar.getInstance().apply {
+            timeInMillis = endOfTenureMillis
+            set(Calendar.HOUR_OF_DAY, 0)
+            set(Calendar.MINUTE, 0)
+            set(Calendar.SECOND, 0)
+            set(Calendar.MILLISECOND, 0)
+        }
+
+        val endOfTenureFirstMondayCal = Calendar.getInstance().apply {
+            timeInMillis = endOfTenureMillis
+            firstDayOfWeek = Calendar.MONDAY
+            set(Calendar.DAY_OF_WEEK, Calendar.MONDAY)
+            set(Calendar.HOUR_OF_DAY, 0)
+            set(Calendar.MINUTE, 0)
+            set(Calendar.SECOND, 0)
+            set(Calendar.MILLISECOND, 0)
+        }
+
+        val dateFormat = "dd MMMM yyyy"
+        val endOfTenureFirstMondayStr = when {
+            endOfTenureFirstMondayCal < endOfTenureCal -> {
+                val days7Millis = TimeUnit.DAYS.toMillis(7)
+                DateFormatUtils.getFormattedDate(endOfTenureFirstMondayCal.timeInMillis.plus(days7Millis), dateFormat)
+            }
+            else -> DateFormatUtils.getFormattedDate(endOfTenureFirstMondayCal.timeInMillis, dateFormat)
+        }
+
+        val title = context.getString(R.string.gmc_new_seller_end_of_tenure_interrupt_title, endOfTenureFirstMondayStr)
+        val description = context.getString(R.string.gmc_new_seller_end_of_tenure_interrupt_description)
+        val ctaText = context.getString(R.string.gmc_check_your_shop_performance)
+
+        bottomSheet.setContent(title, description)
+                .setOnCtaClickListener(ctaText) {
+                    RouteManager.route(context, ApplinkConst.SHOP_SCORE_DETAIL)
+                }
+                .setOnDismissListener {
+                    pmCommonPreferenceManager?.putBoolean(PMCommonPreferenceManager.KEY_HAS_OPENED_NEW_SELLER_END_OF_TENURE_POPUP, true)
+                    pmCommonPreferenceManager?.apply()
+                }
+        bottomSheet.show(fm)
+    }
+
+    private fun showInterruptNewSellerPmIdle(context: Context, fm: FragmentManager) {
+        val bottomSheet = SimpleInterruptBottomSheet.createInstance(false)
+        val isBottomSheetEverSeen = pmCommonPreferenceManager?.getBoolean(PMCommonPreferenceManager.KEY_HAS_OPENED_NEW_SELLER_PM_IDLE_POPUP, false).orFalse()
+        if (fm.isStateSaved || bottomSheet.isAdded || isBottomSheetEverSeen) return
+
+        val endOfCommPeriod = PMConstant.NEW_PM_CALCULATION_DATE
+
+        val currentFormat = "dd MMMM yyyy"
+        val simpleFormat = "dd MMMM"
+        val endOfCommPeriodDayMonth = DateFormatUtils.formatDate(currentFormat, simpleFormat, endOfCommPeriod)
+
+        val title = context.getString(R.string.gmc_new_seller_potential_inactive_interrupt_title, endOfCommPeriod)
+        val description = context.getString(R.string.gmc_new_seller_potential_inactive_interrupt_description, endOfCommPeriodDayMonth)
+        val ctaText = context.getString(R.string.gmc_check_your_shop_performance)
+        val imgIllustration = PMConstant.Images.PM_INACTIVE
+
+        bottomSheet.setContent(title, description, imgIllustration)
+                .setOnCtaClickListener(ctaText) {
+                    RouteManager.route(context, ApplinkConst.SHOP_SCORE_DETAIL)
+                }
+                .setOnDismissListener {
+                    pmCommonPreferenceManager?.putBoolean(PMCommonPreferenceManager.KEY_HAS_OPENED_NEW_SELLER_PM_IDLE_POPUP, true)
+                    pmCommonPreferenceManager?.apply()
+                }
+        bottomSheet.show(fm)
     }
 
     private fun setupInterruptFinalPeriod(data: PowerMerchantInterruptUiModel, fm: FragmentManager) {
@@ -148,10 +246,15 @@ class PMShopScoreInterruptHelper @Inject constructor() {
     }
 
     private fun setupInterruptTransitionPeriod(context: Context, data: PowerMerchantInterruptUiModel, fm: FragmentManager) {
-        if (hasOpenedInterruptPage()) {
-            showTransitionPmInterruptPopup(context, data, fm)
+        val hasOpenedEndOfTenurePopup = pmCommonPreferenceManager?.getBoolean(PMCommonPreferenceManager.KEY_HAS_OPENED_NEW_SELLER_END_OF_TENURE_POPUP, false).orFalse()
+        if (data.isNewSeller && !hasOpenedEndOfTenurePopup) {
+            showInterruptEndOfTenureNewSeller(context, data, fm)
         } else {
-            showInterruptPage(context, data)
+            if (hasOpenedInterruptPage()) {
+                showTransitionPmInterruptPopup(context, data, fm)
+            } else {
+                showInterruptPage(context, data)
+            }
         }
     }
 

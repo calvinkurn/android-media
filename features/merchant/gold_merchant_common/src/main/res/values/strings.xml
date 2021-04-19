@@ -18,4 +18,8 @@
     <string name="gmc_pm_potential_grade_no_reputation_description">Daftar Power Merchant dan kamu bisa dapat keuntungan Power Merchant %1$s!</string>
     <string name="gmc_pm_regular_merchant_registration">Mau meningkatkan kepuasan pembeli dan dapat berbagai keuntungan menarik Tokopedia? Pelajari skema barunya, yuk!</string>
     <string name="gmc_level">Level %1$s</string>
+    <string name="gmc_new_seller_potential_inactive_interrupt_title">Mulai %1$s kamu berpotensi kehilangan Power Merchant</string>
+    <string name="gmc_new_seller_potential_inactive_interrupt_description">Jika Power Merchant kamu tetap nonaktif di %1$s, kamu akan kembali jadi Regular Merchant. Tingkatkan Performa untuk tetap dapat keuntungan Power Merchant, ya!</string>
+    <string name="gmc_new_seller_end_of_tenure_interrupt_title">Mulai %1$s, tokomu akan dinilai dari Performa Toko!</string>
+    <string name="gmc_new_seller_end_of_tenure_interrupt_description">Pelajari dan tingkatkan Performa supaya menarik banyak calon pembeli, yuk!</string>
 </resources>

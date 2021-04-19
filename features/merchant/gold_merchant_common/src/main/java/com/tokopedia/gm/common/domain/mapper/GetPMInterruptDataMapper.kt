@@ -26,6 +26,8 @@ class GetPMInterruptDataMapper @Inject constructor() {
                 shopScoreThreshold = data.shopInfo?.shopScoreThreshold.orZero(),
                 shopLevel = data.shopInfo?.shopLevel.orZero(),
                 isEligiblePm = data.shopInfo?.isEligiblePm ?: true,
+                isNewSeller = data.shopInfo?.isNewSeller ?: true,
+                shopAge = data.shopInfo?.shopAge ?: 1,
                 pmStatus = data.pmStatus?.data?.powerMerchant?.status.orEmpty(),
                 pmGrade = data.gradeBenefitInfo?.currentPMGrade?.gradeName.orEmpty(),
                 pmGradeBadge = data.gradeBenefitInfo?.currentPMGrade?.imgBadgeUrl.orEmpty(),
