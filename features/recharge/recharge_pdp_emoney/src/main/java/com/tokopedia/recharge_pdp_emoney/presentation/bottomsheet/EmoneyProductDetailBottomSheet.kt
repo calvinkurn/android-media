@@ -1,4 +1,4 @@
-package com.tokopedia.recharge_pdp_emoney.presentation.widget
+package com.tokopedia.recharge_pdp_emoney.presentation.bottomsheet
 
 import android.os.Bundle
 import android.view.LayoutInflater

@@ -65,6 +65,21 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.mockitorCore
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.archCoreTesting
+
+    androidTestImplementation project(rootProject.ext.libraries.cassavaTest)
+    androidTestImplementation rootProject.ext.testDependencies.androidTestRunner
+    androidTestImplementation rootProject.ext.testDependencies.androidRulesVersion
+    androidTestImplementation rootProject.ext.testDependencies.espressoCore
+    androidTestImplementation rootProject.ext.testDependencies.espressoContrib
+    androidTestImplementation project(rootProject.ext.libraries.instrumentation_test)
+    androidTestImplementation(rootProject.ext.testDependencies.androidRulesVersion) {
+        exclude module: 'support-annotations'
+    }
+    androidTestImplementation(rootProject.ext.testDependencies.espressoIntents) {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    }
+
+    androidTestUtil rootProject.ext.testDependencies.orchestrator
 }
 
 project.ext {

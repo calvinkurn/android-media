@@ -131,19 +131,12 @@ class EmoneyPdpActivity : BaseSimpleActivity(), HasComponent<EmoneyPdpComponent>
     }
 
     companion object {
-        val PARAM_CATEGORY_ID = "category_id"
-        val PARAM_MENU_ID = "menu_id"
-        val PARAM_OPERATOR_ID = "operator_id"
-        val PARAM_PRODUCT_ID = "product_id"
-        val PARAM_CLIENT_NUMBER = "client_number"
-
         const val REQUEST_CODE_LOGIN_EMONEY = 10000
 
         const val TAG_EMONEY_MENU = "menu_emoney"
         const val PATH_SUBSCRIPTIONS = "subscribe/"
 
         private val KEY_IS_COUPON_APPLIED_APPLINK = "is_coupon_applied"
-        private val EXTRA_STATE_TITLE_TOOLBAR = "EXTRA_STATE_TITLE_TOOLBAR"
         private val EXTRA_RECHARGE_SLICE = "RECHARGE_PRODUCT_EXTRA"
 
         fun newInstance(context: Context, passData: DigitalCategoryDetailPassData): Intent {

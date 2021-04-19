@@ -40,10 +40,10 @@ import com.tokopedia.recharge_pdp_emoney.di.EmoneyPdpComponent
 import com.tokopedia.recharge_pdp_emoney.presentation.activity.EmoneyPdpActivity
 import com.tokopedia.recharge_pdp_emoney.presentation.adapter.EmoneyPdpFragmentPagerAdapter
 import com.tokopedia.recharge_pdp_emoney.presentation.adapter.viewholder.EmoneyPdpProductViewHolder
+import com.tokopedia.recharge_pdp_emoney.presentation.bottomsheet.EmoneyProductDetailBottomSheet
 import com.tokopedia.recharge_pdp_emoney.presentation.viewmodel.EmoneyPdpViewModel
 import com.tokopedia.recharge_pdp_emoney.presentation.widget.EmoneyPdpHeaderViewWidget
 import com.tokopedia.recharge_pdp_emoney.presentation.widget.EmoneyPdpInputCardNumberWidget
-import com.tokopedia.recharge_pdp_emoney.presentation.widget.EmoneyProductDetailBottomSheet
 import com.tokopedia.recharge_pdp_emoney.utils.EmoneyPdpMapper
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.TickerCallback
@@ -141,6 +141,7 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
         })
 
         emoneyPdpViewModel.selectedRecentNumber.observe(viewLifecycleOwner, Observer {
+            emoneyFullPageLoadingLayout.show()
             addToCart(it)
         })
 
@@ -161,6 +162,7 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
                 }
                 is Fail -> emoneyPdpViewModel.setErrorMessage(it.throwable)
             }
+            emoneyFullPageLoadingLayout.hide()
             emoneyBuyWidget.onBuyButtonLoading(false)
         })
     }
