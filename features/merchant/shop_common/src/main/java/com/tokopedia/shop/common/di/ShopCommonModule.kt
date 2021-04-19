@@ -166,8 +166,8 @@ class ShopCommonModule {
     }
 
     @Provides
-    fun provideNetworkRouter(@ApplicationContext context: Context?): NetworkRouter? {
-        return context as NetworkRouter?
+    fun provideNetworkRouter(@ApplicationContext context: Context): NetworkRouter {
+        return context as NetworkRouter
     }
 
     @Provides
