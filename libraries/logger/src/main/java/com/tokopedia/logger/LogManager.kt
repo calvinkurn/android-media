@@ -107,7 +107,7 @@ class LogManager(val application: Application, val loggerProxy: LoggerProxy) {
 
     private fun getScalyrConfig(context: Context, priority: Int): ScalyrConfig {
         val session = getLogSession(context)
-        val serverHost = String.format("android-main-app-p%s", priority)
+        val serverHost = String.format(loggerProxy.parserScalyr, priority)
         val parser = "android-parser"
         return ScalyrConfig(loggerProxy.scalyrToken, session, serverHost, parser)
     }
@@ -153,6 +153,7 @@ class LogManager(val application: Application, val loggerProxy: LoggerProxy) {
 
 interface LoggerProxy {
     val userId: String
+    val parserScalyr: String
     val scalyrConfig: String
     val newRelicConfig: String
     val isDebug: Boolean
