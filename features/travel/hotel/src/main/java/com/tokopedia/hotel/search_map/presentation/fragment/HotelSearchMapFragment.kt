@@ -13,7 +13,6 @@ import android.provider.Settings
 import android.util.DisplayMetrics
 import android.view.*
 import android.view.animation.Animation
-import android.view.animation.AnimationUtils
 import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.annotation.DrawableRes
@@ -491,10 +490,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
             override fun onStateChanged(bottomSheet: View, newState: Int) {
                 when (newState) {
                     BottomSheetBehavior.STATE_EXPANDED -> {
-                        context?.let {
-                            bounceAnim = AnimationUtils.loadAnimation(it, R.anim.bounce_anim)
-                        }
-                        btnHotelSearchWithMap.startAnimation(bounceAnim)
+                        showSearchWithMap()
                         setupContentMargin(true)
                         googleMap.uiSettings.setAllGesturesEnabled(false)
 
@@ -1028,6 +1024,13 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
     private fun animatebtnGetRadiusHotelSearchMap(value: Float) {
         ObjectAnimator.ofFloat(btnGetRadiusHotelSearchMap, BUTTON_RADIUS_ANIMATION_Y, value).apply {
             duration = DELAY_BUTTON_RADIUS
+            start()
+        }
+    }
+
+    private fun animatebtnHotelSearchWithMap() {
+        ObjectAnimator.ofFloat(btnHotelSearchWithMap, BUTTON_RADIUS_ANIMATION_Y, 100f).apply {
+            duration = 3000
             start()
         }
     }
