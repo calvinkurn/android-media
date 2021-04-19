@@ -18,27 +18,27 @@ import java.util.*
 class SuggestionSingleLineViewHolder(
         itemView: View,
         private val clickListener: SuggestionClickListener
-): AbstractViewHolder<SuggestionSingleLineViewModel>(itemView) {
+): AbstractViewHolder<SuggestionSingleLineDataDataView>(itemView) {
 
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.layout_autocomplete_single_line_item
     }
 
-    override fun bind(item: SuggestionSingleLineViewModel) {
+    override fun bind(item: SuggestionSingleLineDataDataView) {
         bindIconImage(item)
         bindTextTitle(item)
         bindShortcutButton(item)
         bindListener(item)
     }
 
-    private fun bindIconImage(item: SuggestionSingleLineViewModel){
+    private fun bindIconImage(item: SuggestionSingleLineDataDataView){
         itemView.iconImage?.let {
             ImageHandler.loadImage2(it, item.imageUrl, R.drawable.autocomplete_ic_time)
         }
     }
 
-    private fun bindTextTitle(item: SuggestionSingleLineViewModel){
+    private fun bindTextTitle(item: SuggestionSingleLineDataDataView){
         val startIndex = indexOfSearchQuery(item.title, item.searchTerm)
         if (startIndex == -1) {
             itemView.singleLineTitle?.text = item.title
@@ -59,13 +59,13 @@ class SuggestionSingleLineViewHolder(
         } else -1
     }
 
-    private fun bindShortcutButton(item: SuggestionSingleLineViewModel){
+    private fun bindShortcutButton(item: SuggestionSingleLineDataDataView){
         itemView.actionShortcutButton?.shouldShowWithAction(item.shortcutImage.isNotEmpty()) {
             ImageHandler.loadImage2(itemView.actionShortcutButton, item.shortcutImage, R.drawable.autocomplete_ic_copy_to_search_bar)
         }
     }
 
-    private fun bindListener(item: SuggestionSingleLineViewModel){
+    private fun bindListener(item: SuggestionSingleLineDataDataView){
         itemView.autocompleteSingleLineItem?.setOnClickListener {
             clickListener.onItemClicked(item)
         }

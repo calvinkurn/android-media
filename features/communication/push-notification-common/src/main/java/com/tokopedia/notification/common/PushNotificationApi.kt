@@ -3,6 +3,8 @@ package com.tokopedia.notification.common
 import android.content.Context
 import android.os.Bundle
 import com.tokopedia.appaidl.AidlApi
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
 import com.tokopedia.notification.common.data.TIMBER_MAX_CHAR_LIMIT
 import com.tokopedia.notification.common.data.TIMBER_TAG
 import com.tokopedia.notification.common.service.PushNotificationService
@@ -20,8 +22,8 @@ open class PushNotificationApi(
                     serviceName = PushNotificationService::class.java.name
             )
         } catch (ignored: Exception) {
-            Timber.w("${TIMBER_TAG}bind;reason='cannot_bind_service';data='${ignored.toString().
-            take(TIMBER_MAX_CHAR_LIMIT)}'")
+            ServerLogger.log(Priority.P2, "AIDL",
+                    mapOf("type" to "AIDL", "reason" to "cannot_bind_service", "data" to ignored.toString().take(TIMBER_MAX_CHAR_LIMIT)))
         }
     }
 
@@ -32,8 +34,9 @@ open class PushNotificationApi(
         fun bindService(
                 context: Context,
                 onAidlReceive: (tag: String, bundle: Bundle?) -> Unit = { _, _bundle ->
-                    Timber.w("${TIMBER_TAG}receive;reason='onAidlReceive';data='${_bundle.toString().
-                    take(TIMBER_MAX_CHAR_LIMIT)}'")
+                    ServerLogger.log(Priority.P2, "AIDL",
+                            mapOf("type" to "receive", "reason" to "onAidlReceive", "data" to _bundle.toString().
+                            take(TIMBER_MAX_CHAR_LIMIT)))
                 },
                 onAidlError: () -> Unit = {}
         ) {

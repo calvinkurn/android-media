@@ -34,8 +34,8 @@ import com.tokopedia.linker.LinkerManager;
 import com.tokopedia.linker.interfaces.DefferedDeeplinkCallback;
 import com.tokopedia.linker.model.LinkerDeeplinkResult;
 import com.tokopedia.linker.model.LinkerError;
-import com.tokopedia.loginregister.common.applink.LoginRegisterApplinkModule;
-import com.tokopedia.loginregister.common.applink.LoginRegisterApplinkModuleLoader;
+import com.tokopedia.logger.ServerLogger;
+import com.tokopedia.logger.utils.Priority;
 import com.tokopedia.loyalty.applink.LoyaltyAppLinkModule;
 import com.tokopedia.loyalty.applink.LoyaltyAppLinkModuleLoader;
 import com.tokopedia.promotionstarget.presentation.subscriber.GratificationSubscriber;
@@ -55,6 +55,9 @@ import com.tokopedia.webview.WebViewApplinkModuleLoader;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
@@ -67,7 +70,6 @@ import timber.log.Timber;
         OvoUpgradeDeeplinkModule.class,
         LoyaltyAppLinkModule.class,
         ExploreApplinkModule.class,
-        LoginRegisterApplinkModule.class,
         HomeCreditAppLinkModule.class,
         WebViewApplinkModule.class,
 })
@@ -88,7 +90,6 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
                     new OvoUpgradeDeeplinkModuleLoader(),
                     new LoyaltyAppLinkModuleLoader(),
                     new ExploreApplinkModuleLoader(),
-                    new LoginRegisterApplinkModuleLoader(),
                     new HomeCreditAppLinkModuleLoader(),
                     new WebViewApplinkModuleLoader()
             );
@@ -303,8 +304,12 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
         String referrer = DeeplinkUtils.INSTANCE.getReferrerCompatible(this);
         Uri extraReferrer = DeeplinkUtils.INSTANCE.getExtraReferrer(this);
         Uri uri = DeeplinkUtils.INSTANCE.getDataUri(this);
-        Timber.w("P1#DEEPLINK_OPEN_APP#%s;referrer='%s';extra_referrer='%s';uri='%s'",
-                getClass().getSimpleName(), referrer, extraReferrer.toString(), uri.toString());
+        Map<String, String> messageMap = new HashMap<>();
+        messageMap.put("type", getClass().getSimpleName());
+        messageMap.put("referrer", referrer);
+        messageMap.put("extra_referrer", extraReferrer.toString());
+        messageMap.put("uri", uri.toString());
+        ServerLogger.log(Priority.P1, "DEEPLINK_OPEN_APP", messageMap);
     }
 
     private void logWebViewApplink() {
@@ -315,7 +320,11 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
                 String domain = urlToLoad.getHost();
                 if(domain != null) {
                     if (!getBaseDomain(domain).equalsIgnoreCase(TOKOPEDIA_DOMAIN)) {
-                        Timber.w(APPLINK_LOG_FORMAT, domain, uri);
+                        Map<String, String> messageMap = new HashMap<>();
+                        messageMap.put("type", "applink");
+                        messageMap.put("domain", domain);
+                        messageMap.put("url", uri.toString());
+                        ServerLogger.log(Priority.P1, "WEBVIEW_OPENED", messageMap);
                     }
                 }
             }
