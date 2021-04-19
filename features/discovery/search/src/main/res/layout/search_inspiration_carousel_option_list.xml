@@ -80,7 +80,7 @@
                 android:id="@+id/productImage"
                 android:layout_width="@dimen/dp_80"
                 android:layout_height="@dimen/dp_80"
-                android:scaleType="fitXY"
+                android:scaleType="fitCenter"
                 app:srcCompat="@drawable/search_inspiration_carousel_error_product_image"/>
 
         </androidx.cardview.widget.CardView>

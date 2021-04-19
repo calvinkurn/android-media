@@ -3,6 +3,7 @@ package com.tokopedia.abstraction.base.view.activity;
 import android.os.Build;
 import android.os.Bundle;
 import androidx.annotation.LayoutRes;
+import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.widget.Toolbar;

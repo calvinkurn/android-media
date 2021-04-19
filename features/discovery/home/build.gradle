@@ -59,6 +59,7 @@ dependencies {
     implementation project(rootProject.ext.features.loyalty)
     implementation project(rootProject.ext.features.loyaltyCommon)
     implementation project(rootProject.ext.features.navigationCommon)
+    implementation project(rootProject.ext.features.medialoader)
     implementation project(rootProject.ext.features.productCard)
     implementation project(rootProject.ext.features.promoGamificationCommon)
     implementation project(rootProject.ext.features.reputationCommon)
@@ -96,6 +97,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.traceroute)
     implementation project(rootProject.ext.libraries.deviceInfo)
     implementation project(rootProject.ext.libraries.remoteResourceRequest)
+    implementation project(rootProject.ext.libraries.logger)
 
     // Room
     implementation rootProject.ext.dbDependencies.dbRoomRuntime
@@ -173,6 +175,7 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.miscDependencies.coroutineCore
     testImplementation rootProject.ext.miscDependencies.coroutineTest
+    testImplementation project(rootProject.ext.libraries.unitTest)
 }
 
 project.ext {

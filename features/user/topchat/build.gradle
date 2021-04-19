@@ -67,6 +67,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.utils)
     implementation project(rootProject.ext.libraries.commonNetwork)
     implementation project(rootProject.ext.features.mediauploader)
+    implementation project(rootProject.ext.libraries.logger)
 
     implementation project(rootProject.ext.libraries.deviceInfo)
 
@@ -118,6 +119,7 @@ dependencies {
 
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.archCoreTesting
+    testImplementation project(rootProject.ext.libraries.unitTest)
 }
 
 project.ext {

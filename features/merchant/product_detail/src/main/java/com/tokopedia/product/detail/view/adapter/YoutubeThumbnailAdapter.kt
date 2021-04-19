@@ -3,8 +3,8 @@ package com.tokopedia.product.detail.view.adapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.tokopedia.media.loader.loadImage
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.product.YoutubeVideo
 import com.tokopedia.product.detail.data.util.thumbnailUrl
@@ -28,7 +28,7 @@ class YoutubeThumbnailAdapter(private val youtubeVideos: MutableList<YoutubeVide
             if (youtubeVideos.isEmpty()) {
                 recyclerView.visibility = View.GONE
             } else {
-                ImageHandler.LoadImage(video_thumbnail, youtubeVideos[position].thumbnailUrl)
+                video_thumbnail.loadImage(youtubeVideos[position].thumbnailUrl)
                 recyclerView.visibility = View.VISIBLE
             }
         }

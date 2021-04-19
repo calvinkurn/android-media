@@ -10,7 +10,7 @@ import com.tokopedia.topchat.chatlist.data.ChatListWebSocketConstant.EVENT_TOPCH
 import com.tokopedia.topchat.chatlist.data.mapper.WebSocketMapper.mapToIncomingChat
 import com.tokopedia.topchat.chatlist.data.mapper.WebSocketMapper.mapToIncomingTypeState
 import com.tokopedia.topchat.chatlist.model.BaseIncomingItemWebSocketModel
-import com.tokopedia.topchat.chatroom.view.viewmodel.TopchatCoroutineContextProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.launch
@@ -23,8 +23,8 @@ import javax.inject.Inject
 
 open class WebSocketViewModel @Inject constructor(
         protected val webSocket: TopChatWebSocket,
-        dispatchers: TopchatCoroutineContextProvider
-) : BaseViewModel(dispatchers.ioDispatcher), LifecycleObserver {
+        dispatchers: CoroutineDispatchers
+) : BaseViewModel(dispatchers.io), LifecycleObserver {
 
     protected val _itemChat = MutableLiveData<Result<BaseIncomingItemWebSocketModel>>()
     val itemChat: LiveData<Result<BaseIncomingItemWebSocketModel>>

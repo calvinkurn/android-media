@@ -50,7 +50,7 @@ import com.tokopedia.play.view.viewcomponent.FragmentVideoViewComponent
 import com.tokopedia.play.view.viewcomponent.FragmentYouTubeViewComponent
 import com.tokopedia.play.view.viewmodel.PlayParentViewModel
 import com.tokopedia.play.view.viewmodel.PlayViewModel
-import com.tokopedia.play_common.util.coroutine.CoroutineDispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.play_common.util.event.EventObserver
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
 import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
@@ -65,7 +65,7 @@ import javax.inject.Inject
 class PlayFragment @Inject constructor(
         private val viewModelFactory: ViewModelProvider.Factory,
         private val pageMonitoring: PlayPltPerformanceCallback,
-        private val dispatchers: CoroutineDispatcherProvider,
+        private val dispatchers: CoroutineDispatchers,
         private val analytic: PlayAnalytic,
 ) :
         TkpdBaseV4Fragment(),
