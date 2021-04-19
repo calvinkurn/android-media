@@ -145,7 +145,8 @@ class SellerHomeViewModel @Inject constructor(
             useCase.isFirstLoad = false
             try {
                 useCase.setUseCache(true)
-                getTransformerFlow(useCase.executeOnBackground()).collect {
+                val useCaseResult = useCase.executeOnBackground()
+                getTransformerFlow(useCaseResult).collect {
                     liveData.value = Success(it)
                 }
             } catch (_: Exception) {
@@ -153,7 +154,8 @@ class SellerHomeViewModel @Inject constructor(
             }
         }
         useCase.setUseCache(false)
-        getTransformerFlow(useCase.executeOnBackground()).collect {
+        val useCaseResult = useCase.executeOnBackground()
+        getTransformerFlow(useCaseResult).collect {
             liveData.value = Success(it)
         }
     }
@@ -224,7 +226,7 @@ class SellerHomeViewModel @Inject constructor(
                         startCollectingResult(_widgetLayout)
                     } else {
                         startCollectingResult(_widgetLayout) {
-                            getInitialWidget(it, heightDp)
+                            getInitialWidget(it, heightDp).flowOn(dispatcher.io)
                         }
                     }
                     executeOnBackground(params, isFirstLoad && remoteConfig.isSellerHomeDashboardCachingEnabled())
@@ -491,7 +493,7 @@ class SellerHomeViewModel @Inject constructor(
 
         val newWidgetList = loadedWidgetList.toMutableList()
         loadedWidgetList.filter { it.widgetType == WidgetType.SECTION }.forEach { section ->
-            newWidgetList.indexOf(section).takeIf { it > -1 }?.let { index ->
+            newWidgetList.indexOf(section).let { index ->
                 newWidgetList[index] = section.copy().apply { isLoaded = true }
             }
         }
@@ -561,11 +563,10 @@ class SellerHomeViewModel @Inject constructor(
                             }
                         }.orEmpty()
                     }
-            emit(widgetDataList)
-        }.onCompletion {
             withContext(dispatcher.main) {
                 _stopWidgetType.value = widgetType
             }
+            emit(widgetDataList)
         }
     }
 
@@ -611,10 +612,12 @@ class SellerHomeViewModel @Inject constructor(
     }
 
     private fun removeEmptySections(newWidgetList: MutableList<BaseWidgetUiModel<*>>, removedWidgetIndex: Int) {
-        val previousWidget = newWidgetList.getOrNull(removedWidgetIndex - 1)
-        val widgetReplacement = newWidgetList.getOrNull(removedWidgetIndex)
+        val previousWidgetIndex = newWidgetList.take(removedWidgetIndex).indexOfLast { !it.isNeedToBeRemoved }
+        val previousWidget = newWidgetList.getOrNull(previousWidgetIndex)
+        val widgetReplacement = newWidgetList.getOrNull(removedWidgetIndex + 1)
         if ((widgetReplacement == null || widgetReplacement is SectionWidgetUiModel) && previousWidget is SectionWidgetUiModel) {
-            newWidgetList.removeAt(removedWidgetIndex - 1)
+            previousWidget.isNeedToBeRemoved = true
+            newWidgetList[previousWidgetIndex] = previousWidget
         }
     }
 
@@ -655,8 +658,9 @@ class SellerHomeViewModel @Inject constructor(
     private suspend fun getPostData(widgets: List<BaseWidgetUiModel<*>>): List<PostListDataUiModel> {
         widgets.setLoading()
         val dataKeys: List<Pair<String, String>> = widgets.filterIsInstance<PostListWidgetUiModel>().map {
-            val postFilter = it.postFilter.find { filter -> filter.isSelected }?.value.orEmpty()
-            return@map Pair(it.dataKey, postFilter)
+            val postFilter = it.postFilter.find { filter -> filter.isSelected }
+            val postFilters = postFilter?.value.orEmpty()
+            return@map Pair(it.dataKey, postFilters)
         }
         val params = GetPostDataUseCase.getRequestParams(dataKeys, dynamicParameter)
         getPostDataUseCase.get().params = params
