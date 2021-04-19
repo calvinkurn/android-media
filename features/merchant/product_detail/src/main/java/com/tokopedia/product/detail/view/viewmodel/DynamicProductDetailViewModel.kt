@@ -916,7 +916,8 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         ServerLogger.log(Priority.P1, ProductDetailConstant.P2_LOGIN_LOG_TAG, mapOf(
                 ProductDetailConstant.PRODUCT_ID_KEY to productId,
                 ProductDetailConstant.USER_ID_KEY to userId,
-                "err" to throwable.stackTrace.toString().substring(0, 50)
+                "message" to throwable.localizedMessage,
+                "stacktrace" to throwable.stackTrace.toString().substring(0, 50)
         ))
     }
 }
