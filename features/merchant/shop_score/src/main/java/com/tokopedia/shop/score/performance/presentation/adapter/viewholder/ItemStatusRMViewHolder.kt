@@ -22,11 +22,16 @@ class ItemStatusRMViewHolder(view: View,
     }
 
     private val impressHolder = ImpressHolder()
+    private val impressHolderBenefitPM = ImpressHolder()
+
     override fun bind(element: ItemStatusRMUiModel?) {
         if (element == null) return
         with(itemView) {
             addOnImpressionListener(impressHolder) {
                 itemPotentialPowerMerchantListener.onViewRegularMerchantListener(this)
+            }
+            tv_see_all_benefit_pm.addOnImpressionListener(impressHolderBenefitPM) {
+                itemPotentialPowerMerchantListener.onImpressBenefitSeeAll()
             }
         }
         setItemRegularMerchant(element)

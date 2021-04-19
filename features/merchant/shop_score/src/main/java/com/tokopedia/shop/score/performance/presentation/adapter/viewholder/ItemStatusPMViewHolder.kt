@@ -21,6 +21,8 @@ class ItemStatusPMViewHolder(view: View,
 
     private val impressHolder = ImpressHolder()
 
+    private val impressHolderPowerMerchantHeader = ImpressHolder()
+
     override fun bind(element: ItemStatusPMUiModel?) {
         if (element == null) return
         with(itemView) {
@@ -28,6 +30,10 @@ class ItemStatusPMViewHolder(view: View,
                 itemStatusPowerMerchantListener.onViewItemPowerMerchantListener(itemView)
             }
             containerDescPmSection?.showWithCondition(element.isInActivePM)
+
+            potentialPowerMerchantWidget.addOnImpressionListener(impressHolderPowerMerchantHeader) {
+                itemStatusPowerMerchantListener.onImpressHeaderPowerMerchantSection()
+            }
         }
         setupIconClickListener()
         setupItemPowerMerchant(element)

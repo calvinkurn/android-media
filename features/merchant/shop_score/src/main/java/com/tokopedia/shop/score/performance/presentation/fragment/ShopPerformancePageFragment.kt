@@ -18,6 +18,7 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.common.ShopScoreCoachMarkPrefs
 import com.tokopedia.shop.score.common.ShopScoreConstant
+import com.tokopedia.shop.score.common.analytics.ShopPerformanceTracking
 import com.tokopedia.shop.score.performance.di.component.ShopPerformanceComponent
 import com.tokopedia.shop.score.performance.domain.model.ShopScoreWrapperResponse
 import com.tokopedia.shop.score.performance.presentation.activity.ShopPerformanceYoutubeActivity
@@ -43,6 +44,8 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
+
+    @Inject lateinit var shopPerformanceTracking: ShopPerformanceTracking
 
     private val viewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(ShopPerformanceViewModel::class.java)
@@ -105,9 +108,11 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
         when (item.itemId) {
             INFO_MENU_ID -> {
                 RouteManager.route(context, ShopScoreConstant.SHOP_INFO_URL)
+                shopPerformanceTracking.clickMenuCompleteInfo()
             }
             PENALTY_WARNING_MENU_ID -> {
                 goToPenaltyPage()
+                shopPerformanceTracking.clickMenuPenalty()
             }
         }
         return super.onOptionsItemSelected(item)
@@ -137,6 +142,11 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
 
     override fun onTickerClickedToPenaltyPage() {
         goToPenaltyPage()
+        shopPerformanceTracking.clickHereTickerPenalty()
+    }
+
+    override fun onTickerImpressionToPenaltyPage() {
+        shopPerformanceTracking.impressTickerPenaltyShopScore()
     }
 
     /**
@@ -180,6 +190,7 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
      */
     override fun onItemClickedGoToPMActivation() {
         goToPowerMerchantSubscribe()
+        shopPerformanceTracking.clickPowerMerchantSection()
     }
 
     /**
@@ -195,6 +206,10 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
             ))
             shopScoreCoachMarkPrefs.setHasShownItemPM(true)
         }
+    }
+
+    override fun onImpressHeaderPowerMerchantSection() {
+        shopPerformanceTracking.impressPotentialPowerMerchant()
     }
 
     /**
@@ -218,6 +233,10 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
             shopScoreCoachMarkPrefs.setHasShownItemRM(true)
         }
         showCoachMark()
+    }
+
+    override fun onImpressBenefitSeeAll() {
+        shopPerformanceTracking.impressSeeAllBenefitPowerMerchant()
     }
 
     /**

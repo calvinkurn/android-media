@@ -6,6 +6,7 @@ interface ShopPerformanceListener {
     fun onTooltipLevelClicked(level: Int)
     fun onTooltipScoreClicked()
     fun onTickerClickedToPenaltyPage()
+    fun onTickerImpressionToPenaltyPage()
 }
 
 interface ItemShopPerformanceListener {
@@ -21,6 +22,7 @@ interface ItemHeaderShopPerformanceListener {
 interface ItemPotentialRegularMerchantListener {
     fun onItemClickedBenefitPotentialRM()
     fun onViewRegularMerchantListener(view: View)
+    fun onImpressBenefitSeeAll()
 }
 
 interface ItemRecommendationFeatureListener {
@@ -31,6 +33,7 @@ interface ItemStatusPowerMerchantListener {
     fun onItemClickedNextUpdatePM()
     fun onItemClickedGoToPMActivation()
     fun onViewItemPowerMerchantListener(view: View)
+    fun onImpressHeaderPowerMerchantSection()
 }
 
 interface SectionFaqListener {
