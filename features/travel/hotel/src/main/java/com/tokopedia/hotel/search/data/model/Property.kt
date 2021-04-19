@@ -1,11 +1,13 @@
 package com.tokopedia.hotel.search.data.model
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.hotel.hoteldetail.data.entity.PropertySafetyBadge
 import com.tokopedia.hotel.search.presentation.adapter.PropertyAdapterTypeFactory
 
+@SuppressLint("")
 data class Property(
         @SerializedName("id")
         @Expose
