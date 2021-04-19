@@ -63,6 +63,12 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
         if (cartShopHolderData.shopGroupAvailableData.isOfficialStore || cartShopHolderData.shopGroupAvailableData.isGoldMerchant) {
             if (cartShopHolderData.shopGroupAvailableData.shopBadge?.isNotEmpty() == true) {
                 ImageHandler.loadImageWithoutPlaceholder(binding.imgShopBadge, cartShopHolderData.shopGroupAvailableData.shopBadge)
+                val shopType = if (cartShopHolderData.shopGroupAvailableData.isOfficialStore) {
+                    itemView.context.getString(com.tokopedia.purchase_platform.common.R.string.pp_cd_shop_type_official_store)
+                } else {
+                    itemView.context.getString(com.tokopedia.purchase_platform.common.R.string.pp_cd_shop_type_power_merchant)
+                }
+                binding.imgShopBadge.contentDescription = itemView.context.getString(com.tokopedia.purchase_platform.common.R.string.pp_cd_image_shop_badge_with_shop_type, shopType)
                 binding.imgShopBadge.show()
             }
         } else {
@@ -259,6 +265,12 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
                 ImageHandler.loadImageWithoutPlaceholderAndError(
                         imgFreeShipping, cartShopHolderData.shopGroupAvailableData.freeShippingBadgeUrl
                 )
+                val contentDescriptionStringResource = if (cartShopHolderData.shopGroupAvailableData.isFreeShippingExtra) {
+                    com.tokopedia.purchase_platform.common.R.string.pp_cd_image_badge_boe
+                } else {
+                    com.tokopedia.purchase_platform.common.R.string.pp_cd_image_badge_bo
+                }
+                imgFreeShipping.contentDescription = itemView.context.getString(contentDescriptionStringResource)
                 imgFreeShipping.show()
                 separatorFreeShipping.show()
             } else {

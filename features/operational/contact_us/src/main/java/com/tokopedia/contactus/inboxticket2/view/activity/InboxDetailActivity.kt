@@ -250,10 +250,6 @@ class InboxDetailActivity : InboxBaseActivity(), InboxDetailView, ImageUploadAda
         return R.menu.contactus_menu_details
     }
 
-    override fun getBottomSheetLayoutRes(): Int {
-        return R.layout.layout_bad_csat
-    }
-
     override fun doNeedReattach(): Boolean {
         return false
     }

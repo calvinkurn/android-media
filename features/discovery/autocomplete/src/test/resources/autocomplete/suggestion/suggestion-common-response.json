@@ -18,6 +18,24 @@
         "label": "",
         "label_type": "",
         "tracking": {
+          "code": "123"
+        }
+      },
+      {
+        "template": "list_single_line",
+        "type": "recent_keyword",
+        "applink": "tokopedia://search?q=samsung&source=universe&st=product",
+        "url": "/search?q=samsung&source=universe&st=product",
+        "title": "samsung",
+        "subtitle": "",
+        "icon_title": "",
+        "icon_subtitle": "",
+        "shortcut_image": "https://ecs7.tokopedia.net/img/autocomplete/ic_to_top_big.png",
+        "image_url": "https://ecs7.tokopedia.net/img/autocomplete/search-icon-3x.png",
+        "url_tracker": "",
+        "label": "",
+        "label_type": "",
+        "tracking": {
           "code": ""
         }
       },
@@ -26,7 +44,7 @@
         "type": "keyword",
         "applink": "tokopedia://search?q=samsung&source=universe&st=product",
         "url": "/search?q=samsung&source=universe&st=product",
-        "title": "samsung",
+        "title": "samsung A51",
         "subtitle": "",
         "icon_title": "",
         "icon_subtitle": "",

@@ -23,6 +23,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.remoteConfig)
     implementation project(rootProject.ext.libraries.remoteResourceRequest)
     implementation project(rootProject.ext.libraries.track)
+    implementation project(rootProject.ext.libraries.logger)
     implementation rootProject.ext.playServicesDependencies.core
 
     implementation rootProject.ext.unifyDependencies.principles

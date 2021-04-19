@@ -18,13 +18,11 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.annotation.LayoutRes
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.tokopedia.abstraction.common.utils.HexValidator
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
@@ -40,6 +38,7 @@ import com.tokopedia.home.util.ViewUtils
 import com.tokopedia.home_component.util.invertIfDarkMode
 import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.media.loader.loadIcon
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import kotlin.math.roundToInt
@@ -299,7 +298,7 @@ class OvoWidgetView: FrameLayout {
             tvBalanceTokoPoint.visibility = View.VISIBLE
             mTextCouponCount.visibility = View.VISIBLE
 
-            ImageHandler.loadImageAndCache(ivLogoTokoPoint, element.tokopointsDrawerHomeData?.iconImageURL)
+            ivLogoTokoPoint.loadIcon(element.tokopointsDrawerHomeData?.iconImageURL)
             mTextCouponCount.setTypeface(mTextCouponCount.typeface, Typeface.BOLD)
             element.tokopointsDrawerHomeData?.sectionContent?.let { sectionContent ->
                 if (sectionContent.isNotEmpty()) {
@@ -389,7 +388,7 @@ class OvoWidgetView: FrameLayout {
             tvBalanceTokoPoint.visibility = View.VISIBLE
             mTextCouponCount.visibility = View.VISIBLE
 
-            ImageHandler.loadImageAndCache(ivLogoTokoPoint, element.tokopointsDrawerBBOHomeData?.iconImageURL)
+            ivLogoTokoPoint.loadIcon(element.tokopointsDrawerBBOHomeData?.iconImageURL)
             mTextCouponCount.setTypeface(mTextCouponCount.typeface, Typeface.BOLD)
             element.tokopointsDrawerBBOHomeData?.sectionContent?.let { sectionContent ->
                 if (sectionContent.isNotEmpty()) {

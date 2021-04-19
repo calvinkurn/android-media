@@ -15,7 +15,7 @@ import com.tokopedia.play.view.uimodel.mapper.PlayChannelDetailsWithRecomMapper
 import com.tokopedia.play_common.model.result.PageInfo
 import com.tokopedia.play_common.model.result.PageResult
 import com.tokopedia.play_common.model.result.PageResultState
-import com.tokopedia.play_common.util.coroutine.CoroutineDispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.play_common.util.event.Event
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.withContext
@@ -29,7 +29,7 @@ class PlayParentViewModel constructor(
         private val playChannelStateStorage: PlayChannelStateStorage,
         private val getChannelDetailsWithRecomUseCase: GetChannelDetailsWithRecomUseCase,
         private val playChannelMapper: PlayChannelDetailsWithRecomMapper,
-        private val dispatchers: CoroutineDispatcherProvider,
+        private val dispatchers: CoroutineDispatchers,
         private val userSession: UserSessionInterface,
         private val pageMonitoring: PlayPltPerformanceCallback,
 ) : ViewModel() {
@@ -38,7 +38,7 @@ class PlayParentViewModel constructor(
             private val playChannelStateStorage: PlayChannelStateStorage,
             private val getChannelDetailsWithRecomUseCase: GetChannelDetailsWithRecomUseCase,
             private val playChannelMapper: PlayChannelDetailsWithRecomMapper,
-            private val dispatchers: CoroutineDispatcherProvider,
+            private val dispatchers: CoroutineDispatchers,
             private val userSession: UserSessionInterface,
             private val pageMonitoring: PlayPltPerformanceCallback,
     ) {

@@ -7,10 +7,10 @@ import android.widget.TextView
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.carouselproductcard.CarouselProductCardListener
 import com.tokopedia.carouselproductcard.CarouselProductCardView
 import com.tokopedia.kotlin.model.ImpressHolder
+import com.tokopedia.media.loader.loadIcon
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.shop.R
 import com.tokopedia.shop.analytic.model.ShopTrackProductTypeDef
@@ -45,22 +45,26 @@ class ShopProductCarouselViewHolder(itemView: View, deviceWidth: Int,
 
     override fun bind(visitable: Visitable<*>) {
         if (visitable is ShopProductFeaturedUiModel) {
-            bindShopProductCarousel(visitable.shopProductFeaturedViewModelList)
-
+            visitable.shopProductFeaturedViewModelList?.let{
+                bindShopProductCarousel(it)
+            }
             tvSeeAll!!.visibility = View.GONE
         } else if (visitable is EtalaseHighlightCarouselUiModel) {
-            bindShopProductCarousel(visitable.shopProductUiModelList)
-
+            visitable.shopProductUiModelList?.let{
+                bindShopProductCarousel(it)
+            }
             val shopEtalaseViewModel = visitable.shopEtalaseViewModel
-            tvTitle!!.text = shopEtalaseViewModel.etalaseName
-            if (!TextUtils.isEmpty(shopEtalaseViewModel.etalaseBadge)) {
-                ImageHandler.LoadImage(ivBadge!!, shopEtalaseViewModel.etalaseBadge)
+            tvTitle!!.text = shopEtalaseViewModel?.etalaseName.orEmpty()
+            if (!TextUtils.isEmpty(shopEtalaseViewModel?.etalaseBadge.orEmpty())) {
+                ivBadge?.loadIcon(shopEtalaseViewModel?.etalaseBadge)
                 ivBadge!!.visibility = View.VISIBLE
             } else {
                 ivBadge!!.visibility = View.GONE
             }
             tvSeeAll!!.setOnClickListener {
-                shopCarouselSeeAllClickedListener?.onSeeAllClicked(shopEtalaseViewModel)
+                shopEtalaseViewModel?.let{
+                    shopCarouselSeeAllClickedListener?.onSeeAllClicked(shopEtalaseViewModel)
+                }
             }
             tvSeeAll!!.visibility = View.VISIBLE
         }
@@ -107,7 +111,7 @@ class ShopProductCarouselViewHolder(itemView: View, deviceWidth: Int,
         recyclerView?.setCarouselProductCardListeners(
                 carouselProductCardOnItemThreeDotsClickListener = object: CarouselProductCardListener.OnItemThreeDotsClickListener {
                     override fun onItemThreeDotsClick(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
-                        val shopProductViewModel = shopProductViewModelList.getOrNull(carouselProductCardPosition) ?: return
+                        val shopProductViewModel = shopProductViewModelList?.getOrNull(carouselProductCardPosition) ?: return
 
                         shopProductClickedListener?.onThreeDotsClicked(shopProductViewModel, shopTrackType)
                     }
@@ -115,7 +119,7 @@ class ShopProductCarouselViewHolder(itemView: View, deviceWidth: Int,
         )
     }
 
-    private fun getShopProductViewModelListFromVisitable(visitable: Visitable<*>): List<ShopProductUiModel> {
+    private fun getShopProductViewModelListFromVisitable(visitable: Visitable<*>): List<ShopProductUiModel>? {
         return when (visitable) {
             is ShopProductFeaturedUiModel -> visitable.shopProductFeaturedViewModelList
             is EtalaseHighlightCarouselUiModel -> visitable.shopProductUiModelList

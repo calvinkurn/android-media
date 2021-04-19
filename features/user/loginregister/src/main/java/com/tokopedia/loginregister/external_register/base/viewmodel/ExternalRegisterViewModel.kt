@@ -3,6 +3,7 @@ package com.tokopedia.loginregister.external_register.base.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.loginregister.external_register.base.data.ExternalRegisterPreference
 import com.tokopedia.loginregister.external_register.base.domain.usecase.ExternalRegisterUseCase
 import com.tokopedia.loginregister.registerinitial.domain.data.ProfileInfoData
@@ -17,7 +18,6 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -32,8 +32,8 @@ class ExternalRegisterViewModel @Inject constructor(
         private val getProfileUseCase: GetProfileUseCase,
         @Named(SessionModule.SESSION_MODULE)
         private val userSession: UserSessionInterface,
-        dispatcher: CoroutineDispatcher
-): BaseViewModel(dispatcher) {
+        private val dispatchers: CoroutineDispatchers
+): BaseViewModel(dispatchers.main) {
 
     private val mutableRegisterRequestResponse = MutableLiveData<Result<RegisterPojo>>()
     val registerRequestResponse: LiveData<Result<RegisterPojo>>
