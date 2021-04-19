@@ -136,6 +136,11 @@
         title
         maximumBenefitAmountStr
         subtitle
+        adInfo {
+            AdID
+            AdViewUrl
+            AdClickUrl
+           }
         products {
         id
         imageURL

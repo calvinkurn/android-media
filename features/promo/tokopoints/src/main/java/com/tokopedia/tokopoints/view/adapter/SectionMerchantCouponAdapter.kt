@@ -14,6 +14,7 @@ import com.tokopedia.tokopoints.view.model.merchantcoupon.AdInfo
 import com.tokopedia.tokopoints.view.model.merchantcoupon.CatalogMVCWithProductsListItem
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil
 import com.tokopedia.tokopoints.view.util.PersistentAdsData
+import com.tokopedia.tokopoints.view.util.isEventTriggered
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.unifycomponents.ImageUnify
 import java.util.Arrays
@@ -102,28 +103,34 @@ class SectionMerchantCouponAdapter(val arrayList: MutableList<CatalogMVCWithProd
     }
 
     private fun sendTopadsClick(context: Context, adInfo: AdInfo?) {
-        eventSet.add(adInfo?.AdClickUrl)
-        setPersistentData(context,eventSet)
-        TopAdsUrlHitter(context).hitClickUrl(
-                this::class.java.simpleName,
-                adInfo?.AdClickUrl,
-                adInfo?.AdID,
-                "",
-                "",
-                ""
-        )
+        val check = adInfo?.let { isEventTriggered(context, 1, it) }
+        if (check != null && !check) {
+            eventSet.add(adInfo?.AdClickUrl)
+            setPersistentData(context, eventSet)
+            TopAdsUrlHitter(context).hitClickUrl(
+                    this::class.java.simpleName,
+                    adInfo?.AdClickUrl,
+                    adInfo?.AdID,
+                    "",
+                    "",
+                    ""
+            )
+        }
     }
 
     private fun sendTopadsImpression(context: Context, adInfo: AdInfo?) {
-        eventSet.add(adInfo?.AdViewUrl)
-        setPersistentData(context,eventSet)
-        TopAdsUrlHitter(packageName).hitImpressionUrl(
-                context,
-                adInfo?.AdViewUrl,
-                "",
-                "",
-                ""
-        )
+        val check = adInfo?.let { isEventTriggered(context,0, it) }
+        if (check!=null && !check) {
+            eventSet.add(adInfo?.AdViewUrl)
+            setPersistentData(context, eventSet)
+            TopAdsUrlHitter(packageName).hitImpressionUrl(
+                    context,
+                    adInfo?.AdViewUrl,
+                    "",
+                    "",
+                    ""
+            )
+        }
     }
 
     fun setPersistentData(context: Context,eventSet : HashSet<String?>){

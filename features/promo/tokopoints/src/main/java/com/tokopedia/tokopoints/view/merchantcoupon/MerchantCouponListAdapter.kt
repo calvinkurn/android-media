@@ -17,12 +17,10 @@ import com.tokopedia.tokopoints.view.model.merchantcoupon.AdInfo
 import com.tokopedia.tokopoints.view.model.merchantcoupon.CatalogMVCWithProductsListItem
 import com.tokopedia.tokopoints.view.model.merchantcoupon.Productlist
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil
-import com.tokopedia.tokopoints.view.util.PersistentAdsData
-import com.tokopedia.topads.sdk.listener.TopAdsImageViewClickListener
+import com.tokopedia.tokopoints.view.util.isEventTriggered
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
-import com.tokopedia.topads.sdk.widget.TopAdsImageView
 import com.tokopedia.unifycomponents.ImageUnify
-import java.util.Arrays
+import java.util.*
 import kotlin.collections.HashMap
 
 class MerchantCouponListAdapter(val viewmodel: MerchantCouponViewModel, callback: AdapterCallback) : BaseAdapter<CatalogMVCWithProductsListItem>(callback) {
@@ -137,9 +135,7 @@ class MerchantCouponListAdapter(val viewmodel: MerchantCouponViewModel, callback
     }
 
     private fun sendTopadsClick(context: Context, adInfo: AdInfo?) {
-        var check: Boolean? = false
-        val setData = PersistentAdsData(context).getAdsSet()
-        check = setData?.contains(adInfo?.AdViewUrl)
+        val check = adInfo?.let { isEventTriggered(context,1, it) }
         if (check != null && !check) {
             TopAdsUrlHitter(context).hitClickUrl(
                     this::class.java.simpleName,
@@ -153,9 +149,7 @@ class MerchantCouponListAdapter(val viewmodel: MerchantCouponViewModel, callback
     }
 
     private fun sendTopadsImpression(context: Context, adInfo: AdInfo?) {
-        var check: Boolean? = false
-        val setData = PersistentAdsData(context).getAdsSet()
-        check = setData?.contains(adInfo?.AdViewUrl)
+        val check = adInfo?.let { isEventTriggered(context,0, it) }
         if (check != null && !check) {
             TopAdsUrlHitter(SectionMerchantCouponAdapter.packageName).hitImpressionUrl(
                     context,
