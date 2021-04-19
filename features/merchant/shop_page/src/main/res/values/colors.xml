@@ -31,4 +31,8 @@
     <color name="clr_transparent_black">#8000</color>
     <color name="clr_transparent">#00000000</color>
     <color name="clr_5231353B">#5231353B</color>
+    <color name="clr_red_800">#ff5722</color>
+    <color name="font_black_primary_70">#B3000000</color>
+    <color name="font_black_secondary_54">#8a000000</color>
+    <color name="font_black_disabled_38">#61000000</color>
 </resources>

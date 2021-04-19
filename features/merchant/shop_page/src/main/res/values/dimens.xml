@@ -32,10 +32,15 @@
 
     <dimen name="shop_product_item_badge_deprecated_font">9sp</dimen>
     <dimen name="size_labelview">56sp</dimen>
+    <dimen name="dp_8">8dp</dimen>
+    <dimen name="dp_32">32dp</dimen>
     <dimen name="dp_18">18dp</dimen>
     <dimen name="dp_64">64dp</dimen>
     <dimen name="sp_4">4sp</dimen>
     <dimen name="sp_6">6sp</dimen>
+    <dimen name="sp_8">8sp</dimen>
+    <dimen name="sp_16">16sp</dimen>
+    <dimen name="sp_12">12sp</dimen>
     <dimen name="width_product_empty_state_buyer">133dp</dimen>
     <dimen name="max_width_etalase_chip">180dp</dimen>
     <dimen name="min_add_product_card_height">198dp</dimen>
