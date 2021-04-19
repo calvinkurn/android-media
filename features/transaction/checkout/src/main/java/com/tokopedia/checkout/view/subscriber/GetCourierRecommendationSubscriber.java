@@ -1,6 +1,7 @@
 package com.tokopedia.checkout.view.subscriber;
 
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel;
+import com.tokopedia.logisticcart.shipping.model.PreOrderModel;
 import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData;
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter;
 import com.tokopedia.logisticcart.shipping.model.CourierItemData;

@@ -13,6 +13,7 @@ public class ShippingRecommendationData implements Parcelable {
 
     private List<ShippingDurationUiModel> shippingDurationUiModels;
     private LogisticPromoUiModel logisticPromo;
+    private PreOrderModel preOrderModel;
     private String errorMessage;
     private String errorId;
     private String blackboxInfo;
@@ -52,6 +53,14 @@ public class ShippingRecommendationData implements Parcelable {
         this.logisticPromo = logisticPromo;
     }
 
+    public PreOrderModel getPreOrderModel() {
+        return preOrderModel;
+    }
+
+    public void setPreOrderModel(PreOrderModel preOrderModel) {
+        this.preOrderModel = preOrderModel;
+    }
+
     public String getBlackboxInfo() { return blackboxInfo; }
 
     public void setBlackboxInfo(String blackboxInfo) { this.blackboxInfo = blackboxInfo; }
@@ -65,6 +74,7 @@ public class ShippingRecommendationData implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeTypedList(this.shippingDurationUiModels);
         dest.writeParcelable(this.logisticPromo, flags);
+        dest.writeParcelable(this.preOrderModel, flags);
         dest.writeString(this.errorMessage);
         dest.writeString(this.errorId);
         dest.writeString(this.blackboxInfo);
@@ -73,6 +83,7 @@ public class ShippingRecommendationData implements Parcelable {
     protected ShippingRecommendationData(Parcel in) {
         this.shippingDurationUiModels = in.createTypedArrayList(ShippingDurationUiModel.CREATOR);
         this.logisticPromo = in.readParcelable(LogisticPromoUiModel.class.getClassLoader());
+        this.preOrderModel = in.readParcelable(PreOrderModel.class.getClassLoader());
         this.errorMessage = in.readString();
         this.errorId = in.readString();
         this.blackboxInfo = in.readString();

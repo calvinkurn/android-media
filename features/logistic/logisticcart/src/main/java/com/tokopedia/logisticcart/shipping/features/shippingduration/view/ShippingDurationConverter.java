@@ -1,7 +1,9 @@
 package com.tokopedia.logisticcart.shipping.features.shippingduration.view;
 
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.PreOrder;
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel;
 import com.tokopedia.logisticcart.shipping.model.MerchantVoucherModel;
+import com.tokopedia.logisticcart.shipping.model.PreOrderModel;
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel;
 import com.tokopedia.logisticcart.shipping.model.ShippingDurationUiModel;
 import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData;
@@ -52,6 +54,10 @@ public class ShippingDurationConverter {
                 // Setting up for Logistic Promo
                 shippingRecommendationData.setLogisticPromo(
                         convertToPromoModel(ratesData.getRatesDetailData().getPromoStacking()));
+
+                // Setting up for Logistic Pre Order
+                shippingRecommendationData.setPreOrderModel(
+                        convertToPreOrderModel(ratesData.getRatesDetailData().getPreOrder()));
 
                 // Has service / duration list
                 shippingRecommendationData.setShippingDurationViewModels(
@@ -155,6 +161,15 @@ public class ShippingDurationConverter {
                 promo.getPromoTncHtml(), applied, promo.getImageUrl(), promo.getDiscontedRate(),
                 promo.getShippingRate(), promo.getBenefitAmount(), promo.isDisabled(), promo.isHideShipperName(),
                 promo.getCod(), promo.getEta(), promo.isBebasOngkirExtra());
+    }
+
+    private PreOrderModel convertToPreOrderModel(PreOrder preOrder) {
+        if (preOrder == null) return null;
+        return new PreOrderModel(
+                preOrder.getHeader(),
+                preOrder.getLabel(),
+                preOrder.getDisplay()
+        );
     }
 
     private boolean isPromoStackingApplied(RatesDetailData ratesDetailData) {
