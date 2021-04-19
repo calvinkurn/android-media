@@ -246,16 +246,7 @@ class PMShopScoreInterruptHelper @Inject constructor() {
     }
 
     private fun setupInterruptTransitionPeriod(context: Context, data: PowerMerchantInterruptUiModel, fm: FragmentManager) {
-        val hasOpenedEndOfTenurePopup = pmCommonPreferenceManager?.getBoolean(PMCommonPreferenceManager.KEY_HAS_OPENED_NEW_SELLER_END_OF_TENURE_POPUP, false).orFalse()
-        if (data.isNewSeller && !hasOpenedEndOfTenurePopup) {
-            showInterruptEndOfTenureNewSeller(context, data, fm)
-        } else {
-            if (hasOpenedInterruptPage()) {
-                //showTransitionPmInterruptPopup(context, data, fm)
-            } else {
-                showInterruptPage(context, data)
-            }
-        }
+        showInterruptPage(context, data)
     }
 
     private fun showTransitionPmInterruptPopup(context: Context, data: PowerMerchantInterruptUiModel, fm: FragmentManager) {
