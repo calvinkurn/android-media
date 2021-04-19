@@ -22,6 +22,8 @@ import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.RemoteApi
 import com.tokopedia.loginregister.common.analytics.SeamlessLoginAnalytics
@@ -29,7 +31,6 @@ import com.tokopedia.loginregister.common.di.LoginRegisterComponent
 import com.tokopedia.loginregister.common.utils.SellerAppWidgetHelper
 import com.tokopedia.loginregister.login.di.DaggerLoginComponent
 import com.tokopedia.loginregister.login.router.LoginRouter
-import com.tokopedia.loginregister.login.view.activity.LoginActivity
 import com.tokopedia.loginregister.login.view.constant.SeamlessSellerConstant
 import com.tokopedia.loginregister.login.view.viewmodel.SellerSeamlessViewModel
 import com.tokopedia.network.utils.ErrorHandler
@@ -71,7 +72,7 @@ class SellerSeamlessLoginFragment : BaseDaggerFragment() {
 
     override fun onStart() {
         super.onStart()
-        activity?.run {
+        activity?.let {
             analytics.trackScreen(screenName)
         }
     }
@@ -200,7 +201,7 @@ class SellerSeamlessLoginFragment : BaseDaggerFragment() {
     private fun onNegativeBtnClick(){
         analytics.eventClickLoginWithOtherAcc()
         context?.run {
-            val i =LoginActivity.DeepLinkIntents.getCallingIntent(this)
+            val i = RouteManager.getIntent(this, ApplinkConst.LOGIN)
             startActivity(i)
         }
     }
@@ -266,7 +267,8 @@ class SellerSeamlessLoginFragment : BaseDaggerFragment() {
             }
             val success = activity?.bindService(i, serviceConnection!!, Context.BIND_AUTO_CREATE)
             if(success == false)  {
-                Timber.w("P2#SEAMLESS_SELLER#'ErrorBindingService';reason='Connect Service Failed';detail='Bind Service: $success'")
+                ServerLogger.log(Priority.P2, "SEAMLESS_SELLER",
+                        mapOf("type" to "ErrorBindingService", "reason" to "Connect Service Failed", "detail" to "Bind Service: $success"))
                 moveToNormalLogin()
             }
         }
@@ -311,7 +313,8 @@ class SellerSeamlessLoginFragment : BaseDaggerFragment() {
         }
 
         override fun onServiceDisconnected(name: ComponentName) {
-            Timber.w("P2#SEAMLESS_SELLER#'ErrorBindingService';reason='Service Disconnected';detail='$name'")
+            ServerLogger.log(Priority.P2, "SEAMLESS_SELLER",
+                    mapOf("type" to "ErrorBindingService", "reason" to "Service Disconnected", "detail" to name.toString()))
             service = null
             activity?.finish()
         }

@@ -145,10 +145,16 @@ public class GeneralSettingAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                     .getContext()
                     .getResources()
                     .getString(R.string.title_notification_setting);
+            String mediaTitle = itemView
+                    .getContext()
+                    .getResources()
+                    .getString(R.string.image_quality_setting_screen);
             int boxColor = -1;
 
             if (title.equals(notificationTitle)) {
                 boxColor = com.tokopedia.unifyprinciples.R.color.Unify_R400;
+            } else if (title.equals(mediaTitle)) {
+                boxColor = com.tokopedia.unifyprinciples.R.color.Unify_R500;
             }
 
             if (boxColor > -1 && !hasBeenOneMonth(title)) {

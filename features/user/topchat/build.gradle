@@ -67,6 +67,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.utils)
     implementation project(rootProject.ext.libraries.commonNetwork)
     implementation project(rootProject.ext.features.mediauploader)
+    implementation project(rootProject.ext.libraries.logger)
 
     implementation project(rootProject.ext.libraries.deviceInfo)
 

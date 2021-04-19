@@ -37,7 +37,6 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
-import javax.annotation.Generated
 import javax.inject.Inject
 
 class OrderSummaryPageViewModel @Inject constructor(private val executorDispatchers: CoroutineDispatchers,
@@ -575,6 +574,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                     updatePromoState(resultValidateUse.promoUiModel)
                 }
                 else -> {
+                    validateUsePromoRevampUiModel = null
                     orderPromo.value = orderPromo.value.copy(state = OccButtonState.NORMAL)
                     calculateTotal(forceButtonState = OccButtonState.NORMAL)
                 }

@@ -30,8 +30,10 @@ class ShopHomeItemImageColumnViewHolder(
         performanceMonitoring = PerformanceMonitoring.start(SHOP_HOME_IMAGE_MULTIPLE_COLUMN_TRACE)
         //avoid crash in ShopCarouselBannerImageUnify when image url is returned as base64
         try {
-            if(ivMultipleColumn.context.isValidGlideContext())
+            if(ivMultipleColumn.context.isValidGlideContext()) {
+                ivMultipleColumn.heightRatio = heightRatio
                 ivMultipleColumn.setImageUrl(data.imageUrl, heightRatio = heightRatio)
+            }
         } catch (e: Exception) {
             e.printStackTrace()
         }

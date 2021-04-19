@@ -28,6 +28,7 @@ class PlayLiveStateProcessor(
     }
 
     private val mListeners = mutableListOf<PlayLiveStateListener>()
+    private var mLiveState: PlayLivePusherState? = null
 
     private val localStorage: SharedPreferences
         get() = livePusherWrapper.context.getSharedPreferences(PlayCountDownTimer.PLAY_BROADCAST_PREFERENCE, Context.MODE_PRIVATE)
@@ -103,7 +104,9 @@ class PlayLiveStateProcessor(
             }
             ApsaraLivePusherState.Resume -> {
                 if (isLiveStarted) {
-                    broadcastState(PlayLivePusherState.Resume(isResumed = true))
+                    if (mLiveState is PlayLivePusherState.Error) { // will fix this later
+                        broadcastState(PlayLivePusherState.Recovered)
+                    } else broadcastState(PlayLivePusherState.Resume(isResumed = true))
                 }
             }
             ApsaraLivePusherState.Pause -> broadcastState(PlayLivePusherState.Pause)
@@ -129,6 +132,7 @@ class PlayLiveStateProcessor(
     }
 
     private fun broadcastState(state: PlayLivePusherState) {
+        mLiveState = state
         mListeners.forEach { it.onStateChanged(state) }
     }
 

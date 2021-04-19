@@ -36,6 +36,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.cmPushNotifications)
     implementation project(rootProject.ext.features.sessioncommon)
     implementation project(rootProject.ext.libraries.commonNetwork)
+    implementation project(rootProject.ext.libraries.logger)
 
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.components

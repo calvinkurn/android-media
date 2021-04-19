@@ -1,0 +1,12 @@
+[
+  {
+    "data": {
+      "OTPRequest": {
+        "success": true,
+        "message": "SMS telah dikirim.",
+        "errorMessage": "",
+        "prefixMisscall": ""
+      }
+    }
+  }
+]

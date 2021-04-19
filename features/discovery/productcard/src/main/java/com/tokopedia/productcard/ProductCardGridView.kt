@@ -103,9 +103,9 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
     }
 
     override fun recycle() {
-        imageProduct?.glideClear(context)
-        imageFreeOngkirPromo?.glideClear(context)
-        labelCampaignBackground?.glideClear(context)
+        imageProduct?.glideClear()
+        imageFreeOngkirPromo?.glideClear()
+        labelCampaignBackground?.glideClear()
     }
 
     private fun View.renderStockPercentage(productCardModel: ProductCardModel) {
@@ -118,7 +118,7 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
                         height = context.resources.getDimension(FIRE_HEIGHT).toInt())
             }
             progressBarStock.progressBarColorType = ProgressBarUnify.COLOR_RED
-            progressBarStock.setValue(productCardModel.stockBarPercentage, true)
+            progressBarStock.setValue(productCardModel.stockBarPercentage, false)
         }
     }
 

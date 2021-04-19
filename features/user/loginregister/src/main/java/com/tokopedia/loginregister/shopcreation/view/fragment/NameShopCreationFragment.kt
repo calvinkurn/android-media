@@ -270,7 +270,7 @@ class NameShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
     private fun successRegisterTracking() {
         registerAnalytics.trackSuccessRegister(
                 userSession.loginMethod,
-                userSession.userId.toIntOrZero(),
+                userSession.userId,
                 userSession.name,
                 userSession.email,
                 userSession.phoneNumber,

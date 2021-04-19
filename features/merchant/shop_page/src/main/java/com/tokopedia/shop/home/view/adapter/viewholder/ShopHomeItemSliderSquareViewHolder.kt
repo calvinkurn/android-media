@@ -35,8 +35,10 @@ class ShopHomeItemSliderSquareViewHolder(
         performanceMonitoring = PerformanceMonitoring.start(SHOP_HOME_IMAGE_SLIDER_SQUARE_TRACE)
         //avoid crash in ShopCarouselBannerImageUnify when image url is returned as base64
         try {
-            if(ivSliderSquare.context.isValidGlideContext())
+            if(ivSliderSquare.context.isValidGlideContext()) {
+                ivSliderSquare.heightRatio = heightRatio
                 ivSliderSquare.setImageUrl(data.imageUrl, heightRatio = heightRatio)
+            }
         } catch (e: Exception) {
             e.printStackTrace()
         }
