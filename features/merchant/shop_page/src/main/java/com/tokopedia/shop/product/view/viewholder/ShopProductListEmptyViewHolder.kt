@@ -19,7 +19,9 @@ class ShopProductListEmptyViewHolder(
 
     override fun bind(element: EmptyModel) {
         with(view) {
-            no_result_image.loadImage(com.tokopedia.design.R.drawable.ic_loading_image)
+            no_result_image.loadImage(element.urlRes) {
+                setPlaceHolder(R.drawable.ic_shop_page_loading_image)
+            }
             text_view_empty_title_text.text = element.title
             text_view_empty_content_text.text = element.content
             btn_result_empty.run {

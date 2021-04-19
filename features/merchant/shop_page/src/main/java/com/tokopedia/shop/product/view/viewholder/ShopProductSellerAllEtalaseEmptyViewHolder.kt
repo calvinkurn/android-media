@@ -36,7 +36,7 @@ class ShopProductSellerAllEtalaseEmptyViewHolder(
                 view.resources.getString(R.string.shop_product_seller_empty_state_label)
         )
         imageViewBackgroundPattern.loadImage(URL_IMAGE_SELLER_PRODUCT_ALL_ETALASE_EMPTY_STATE_BACKGROUND) {
-            setPlaceHolder(com.tokopedia.design.R.drawable.ic_loading_image)
+            setPlaceHolder(R.drawable.ic_shop_page_loading_image)
         }
     }
 

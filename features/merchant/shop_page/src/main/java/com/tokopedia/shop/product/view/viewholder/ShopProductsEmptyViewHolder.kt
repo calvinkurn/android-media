@@ -44,7 +44,7 @@ class ShopProductsEmptyViewHolder(
 
     override fun bind(element: ShopEmptyProductUiModel) {
         imageViewEmptyImage.loadImage(URL_IMAGE_BUYER_EMPTY_STATE_TOKOPEDIA_IMAGE) {
-            setPlaceHolder(com.tokopedia.design.R.drawable.ic_loading_image)
+            setPlaceHolder(R.drawable.ic_shop_page_loading_image)
         }
         textTitle.text = element.title
         textDescription.text = element.description
