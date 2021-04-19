@@ -27,8 +27,7 @@ class SellerHomeRemoteConfig @Inject constructor(
     }
 
     fun isSellerHomeDashboardNewLazyLoad(): Boolean {
-        // TODO: change default value to false
-        return remoteConfig.getBoolean(SELLER_HOME_DASHBOARD_NEW_LAZY_LOAD, true)
+        return remoteConfig.getBoolean(SELLER_HOME_DASHBOARD_NEW_LAZY_LOAD, false)
     }
 
 }

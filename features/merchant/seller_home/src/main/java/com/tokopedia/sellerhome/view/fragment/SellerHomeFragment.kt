@@ -186,7 +186,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         startHomeLayoutNetworkMonitoring()
         startHomeLayoutCustomMetric()
         val deviceHeight =
-                if (remoteConfig.isSellerHomeDashboardNewLazyLoad()) {
+                if (isNewLazyLoad) {
                     deviceDisplayHeight
                 } else {
                     null

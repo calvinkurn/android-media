@@ -24,6 +24,9 @@ class CardValueCountdownView: FrameLayout {
 
     companion object {
         private const val ANIM_DURATION: Long = 200
+
+        private const val START_ALPHA: Float = 0.2f
+        private const val MAX_ALPHA: Float = 1f
     }
 
     private var previousTypography: Typography? = null
@@ -38,8 +41,8 @@ class CardValueCountdownView: FrameLayout {
 
     fun setValue(previousValue: String, nextValue: String) {
         if (previousValue != nextValue) {
-            nextTypography?.alpha = 0.2f
-            previousTypography?.alpha = 1f
+            nextTypography?.alpha = START_ALPHA
+            previousTypography?.alpha = MAX_ALPHA
             previousTypography?.text = previousValue
             nextTypography?.text = nextValue
 
@@ -48,7 +51,7 @@ class CardValueCountdownView: FrameLayout {
                     ?.alpha(0f)
                     ?.duration = ANIM_DURATION
             nextTypography?.run {
-                animate()?.alpha(1f)?.setDuration(ANIM_DURATION)?.setListener(object : Animator.AnimatorListener {
+                animate()?.alpha(MAX_ALPHA)?.setDuration(ANIM_DURATION)?.setListener(object : Animator.AnimatorListener {
                     override fun onAnimationStart(p0: Animator?) {}
 
                     override fun onAnimationEnd(p0: Animator?) {
