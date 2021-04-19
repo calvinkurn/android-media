@@ -1,11 +1,17 @@
 package com.tokopedia.product.addedit.productlimitation.domain.mapper
 
 import android.content.Context
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.product.addedit.R
+import com.tokopedia.product.addedit.productlimitation.domain.constant.AddEditProductUrlConstants.Companion.ACTION_URL_DELETE_PRODUCTS
+import com.tokopedia.product.addedit.productlimitation.domain.constant.AddEditProductUrlConstants.Companion.ACTION_URL_UPGRADE_TO_PM
+import com.tokopedia.product.addedit.productlimitation.domain.constant.AddEditProductUrlConstants.Companion.ACTION_URL_USE_PROMOTION
+import com.tokopedia.product.addedit.productlimitation.domain.constant.AddEditProductUrlConstants.Companion.ACTION_URL_USE_VARIANT
+import com.tokopedia.product.addedit.productlimitation.domain.constant.AddEditProductUrlConstants.Companion.IMAGE_URL_DELETE_PRODUCTS
+import com.tokopedia.product.addedit.productlimitation.domain.constant.AddEditProductUrlConstants.Companion.IMAGE_URL_UPGRADE_TO_PM
+import com.tokopedia.product.addedit.productlimitation.domain.constant.AddEditProductUrlConstants.Companion.IMAGE_URL_USE_PROMOTION
+import com.tokopedia.product.addedit.productlimitation.domain.constant.AddEditProductUrlConstants.Companion.IMAGE_URL_USE_VARIANT
 import com.tokopedia.product.addedit.productlimitation.domain.model.ProductLimitationData
 import com.tokopedia.product.addedit.productlimitation.presentation.model.ProductLimitationActionItemModel
 import com.tokopedia.product.addedit.productlimitation.presentation.model.ProductLimitationModel
@@ -68,16 +74,6 @@ class ProductLimitationMapper {
         private const val USE_VARIANT = "Variant"
         private const val DELETE_PRODUCTS = "Delete"
         private const val USE_PROMOTION = "Promotion"
-
-        private const val IMAGE_URL_UPGRADE_TO_PM = "https://images.tokopedia.net/img/android/merchant/add-edit-product/product_limitation_pm.png"
-        private const val IMAGE_URL_USE_VARIANT = "https://images.tokopedia.net/img/android/merchant/add-edit-product/product_limitation_variant.png"
-        private const val IMAGE_URL_DELETE_PRODUCTS = "https://images.tokopedia.net/img/android/merchant/add-edit-product/product_limitation_deleting.png"
-        private const val IMAGE_URL_USE_PROMOTION = "https://images.tokopedia.net/img/android/merchant/add-edit-product/product_limitation_ads.png"
-
-        private val ACTION_URL_UPGRADE_TO_PM = ApplinkConstInternalMarketplace.POWER_MERCHANT_SUBSCRIBE
-        private const val ACTION_URL_USE_VARIANT = "https://seller.tokopedia.com/edu/fitur-varian"
-        private val ACTION_URL_DELETE_PRODUCTS = ApplinkConstInternalMarketplace.PRODUCT_MANAGE_LIST
-        private val ACTION_URL_USE_PROMOTION = ApplinkConstInternalSellerapp.CENTRALIZED_PROMO
 
         fun mapToProductLimitationModel(context: Context, productLimitationData: ProductLimitationData) =
                 ProductLimitationModel(

@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.common.util.HorizontalItemDecoration
+import com.tokopedia.product.addedit.productlimitation.domain.constant.AddEditProductUrlConstants.Companion.URL_PRODUCT_LIMITATION_EDU
 import com.tokopedia.product.addedit.productlimitation.presentation.adapter.ProductLimitationItemAdapter
 import com.tokopedia.product.addedit.productlimitation.presentation.model.ProductLimitationActionItemModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -93,6 +94,9 @@ class ProductLimitationBottomSheet(
                 tickerTitle = ""
             }
             setHtmlDescription(getString(R.string.label_product_limitation_bottomsheet_ticker))
+            setOnClickListener {
+                onBottomSheetResult.invoke(URL_PRODUCT_LIMITATION_EDU)
+            }
         }
 
         iconTitle?.isVisible = actionItems.isNotEmpty()
