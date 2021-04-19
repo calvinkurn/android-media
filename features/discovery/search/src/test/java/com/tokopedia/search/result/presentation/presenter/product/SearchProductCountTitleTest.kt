@@ -37,7 +37,7 @@ internal class SearchProductCountTitleTest: ProductListPresenterTestFixtures() {
 
     private fun `Given AB Test return navigation revamp`() {
         every {
-            productListView.abTestRemoteConfig.getString(AbTestPlatform.NAVIGATION_EXP_TOP_NAV, AbTestPlatform.NAVIGATION_VARIANT_OLD)
+            productListView.abTestRemoteConfig?.getString(AbTestPlatform.NAVIGATION_EXP_TOP_NAV, AbTestPlatform.NAVIGATION_VARIANT_OLD)
         }.answers { AbTestPlatform.NAVIGATION_VARIANT_REVAMP }
     }
 

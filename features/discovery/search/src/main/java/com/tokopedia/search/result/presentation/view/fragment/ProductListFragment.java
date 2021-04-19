@@ -535,18 +535,18 @@ public class ProductListFragment
     }
 
     @Override
-    public void addProductList(List<Visitable<?>> list) {
+    public void addProductList(List<? extends Visitable<?>> list) {
         adapter.appendItems(list);
     }
 
-    public void setProductList(List<Visitable<?>> list) {
+    public void setProductList(List<? extends Visitable<?>> list) {
         adapter.clearData();
 
         stopSearchResultPagePerformanceMonitoring();
         addProductList(list);
     }
 
-    public void addRecommendationList(List<Visitable<?>> list) {
+    public void addRecommendationList(List<? extends Visitable<?>> list) {
         adapter.appendItems(list);
     }
 
@@ -566,7 +566,7 @@ public class ProductListFragment
     }
 
     @Override
-    public void sendProductImpressionTrackingEvent(ProductItemDataView item, String suggestedRelatedKeyword, String dimension90) {
+    public void sendProductImpressionTrackingEvent(@NotNull ProductItemDataView item, @NotNull String suggestedRelatedKeyword, @NotNull String dimension90) {
         String userId = getUserId();
         String eventLabel = getSearchProductTrackingEventLabel(item, suggestedRelatedKeyword);
         List<Object> dataLayerList = new ArrayList<>();
@@ -625,7 +625,6 @@ public class ProductListFragment
         }).showRetrySnackbar();
     }
 
-    @Override
     public String getScreenNameId() {
         return SCREEN_SEARCH_PAGE_PRODUCT_TAB;
     }
@@ -668,7 +667,7 @@ public class ProductListFragment
     }
 
     @Override
-    public void trackSuccessAddToCartEvent(boolean isAds, Object addToCartDataLayer) {
+    public void trackSuccessAddToCartEvent(boolean isAds, @NotNull Object addToCartDataLayer) {
         SearchTracking.trackEventAddToCart(getQueryKey(), isAds, addToCartDataLayer);
     }
 
@@ -679,7 +678,7 @@ public class ProductListFragment
     }
 
     @Override
-    public void showAddToCartFailedMessage(String errorMessage) {
+    public void showAddToCartFailedMessage(@NotNull String errorMessage) {
         if (getView() == null) return;
         Toaster.make(getView(), errorMessage, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR);
     }
@@ -694,7 +693,7 @@ public class ProductListFragment
     }
 
     @Override
-    public void trackEventGoToShopPage(Object dataLayer) {
+    public void trackEventGoToShopPage(@NotNull Object dataLayer) {
         SearchTracking.trackEventGoToShopPage(getQueryKey(), dataLayer);
     }
 
@@ -721,7 +720,7 @@ public class ProductListFragment
     }
 
     @Override
-    public void sendTopAdsGTMTrackingProductImpression(ProductItemDataView item) {
+    public void sendTopAdsGTMTrackingProductImpression(@NotNull ProductItemDataView item) {
         Product product = createTopAdsProductForTracking(item);
 
         TopAdsGtmTracker.getInstance().addSearchResultProductViewImpressions(product, item.getPosition());
@@ -789,14 +788,14 @@ public class ProductListFragment
     }
 
     @Override
-    public void sendTopAdsGTMTrackingProductClick(ProductItemDataView item) {
+    public void sendTopAdsGTMTrackingProductClick(@NotNull ProductItemDataView item) {
         Product product = createTopAdsProductForTracking(item);
 
         TopAdsGtmTracker.eventSearchResultProductClick(getContext(), getQueryKey(), product, item.getPosition(), SCREEN_SEARCH_PAGE_PRODUCT_TAB);
     }
 
     @Override
-    public void sendGTMTrackingProductClick(ProductItemDataView item, String userId, String suggestedRelatedKeyword, String dimension90) {
+    public void sendGTMTrackingProductClick(@NotNull ProductItemDataView item, @NotNull String userId, @NotNull String suggestedRelatedKeyword, @NotNull String dimension90) {
         String eventLabel = getSearchProductTrackingEventLabel(item, suggestedRelatedKeyword);
         String filterSortParams = searchParameter == null ? "" :
                 SearchFilterUtilsKt.getSortFilterParamsString(searchParameter.getSearchParameterMap());
@@ -888,12 +887,12 @@ public class ProductListFragment
     }
 
     @Override
-    public void trackEventLongPress(String productID) {
+    public void trackEventLongPress(@NotNull String productID) {
         SearchTracking.trackEventProductLongPress(getSearchParameter().getSearchQuery(), productID);
     }
 
     @Override
-    public void showProductCardOptions(ProductCardOptionsModel productCardOptionsModel) {
+    public void showProductCardOptions(@NotNull ProductCardOptionsModel productCardOptionsModel) {
         ProductCardOptionsManager.showProductCardOptions(this, productCardOptionsModel);
     }
 
@@ -940,7 +939,7 @@ public class ProductListFragment
 
     @Override
     public boolean isTickerHasDismissed() {
-        return presenter != null && presenter.getIsTickerHasDismissed();
+        return presenter != null && presenter.isTickerHasDismissed();
     }
 
     @Override
@@ -975,7 +974,7 @@ public class ProductListFragment
     }
 
     @Override
-    public void onQuickFilterSelected(Option option) {
+    public void onQuickFilterSelected(@NotNull Option option) {
         if (filterController == null) return;
 
         boolean isQuickFilterSelectedReversed = !isQuickFilterSelected(option);
@@ -1079,13 +1078,14 @@ public class ProductListFragment
         }
     }
 
-    @Override
+    @NotNull
     public String getUserId() {
         if (presenter == null) return "0";
 
         return presenter.getUserId();
     }
 
+    @NotNull
     @Override
     public String getQueryKey() {
         return searchParameter == null ? "" : searchParameter.getSearchQuery();
@@ -1097,7 +1097,7 @@ public class ProductListFragment
     }
 
     @Override
-    public void setEmptyProduct(GlobalNavDataView globalNavDataView, EmptySearchProductDataView emptySearchProductDataView) {
+    public void setEmptyProduct(GlobalNavDataView globalNavDataView, @NotNull EmptySearchProductDataView emptySearchProductDataView) {
         adapter.showEmptyState(globalNavDataView, emptySearchProductDataView);
     }
 
@@ -1112,7 +1112,7 @@ public class ProductListFragment
     }
 
     @Override
-    public void setBannedProductsErrorMessage(List<Visitable<?>> bannedProductsErrorMessageAsList) {
+    public void setBannedProductsErrorMessage(List<? extends Visitable<?>> bannedProductsErrorMessageAsList) {
         adapter.appendItems(bannedProductsErrorMessageAsList);
     }
 
@@ -1522,7 +1522,7 @@ public class ProductListFragment
     }
 
     @Override
-    public RemoteConfig getABTestRemoteConfig() {
+    public RemoteConfig getAbTestRemoteConfig() {
         return RemoteConfigInstance.getInstance().getABTestPlatform();
     }
 
@@ -1537,7 +1537,7 @@ public class ProductListFragment
     }
 
     @Override
-    public void trackWishlistProduct(WishlistTrackingModel wishlistTrackingModel) {
+    public void trackWishlistProduct(@NotNull WishlistTrackingModel wishlistTrackingModel) {
         SearchTracking.eventSuccessWishlistSearchResultProduct(wishlistTrackingModel);
     }
 
@@ -1663,7 +1663,7 @@ public class ProductListFragment
     }
 
     @Override
-    public void trackBroadMatchImpression(BroadMatchItemDataView broadMatchItemDataView) {
+    public void trackBroadMatchImpression(@NotNull BroadMatchItemDataView broadMatchItemDataView) {
         List<Object> broadMatchItemAsObjectDataLayer = new ArrayList<>();
         broadMatchItemAsObjectDataLayer.add(broadMatchItemDataView.asImpressionObjectDataLayer());
 
@@ -1683,7 +1683,7 @@ public class ProductListFragment
     }
 
     @Override
-    public void initFilterControllerForQuickFilter(List<Filter> quickFilterList) {
+    public void initFilterControllerForQuickFilter(@NotNull List<Filter> quickFilterList) {
         filterController.initFilterController(searchParameter.getSearchParameterHashMap(), quickFilterList);
     }
 
@@ -1693,7 +1693,7 @@ public class ProductListFragment
     }
 
     @Override
-    public void setQuickFilter(List<SortFilterItem> items) {
+    public void setQuickFilter(@NotNull List<SortFilterItem> items) {
         searchSortFilter.getSortFilterItems().removeAllViews();
         searchSortFilter.setVisibility(View.VISIBLE);
         searchSortFilter.getSortFilterHorizontalScrollView().setScrollX(0);
@@ -1703,7 +1703,7 @@ public class ProductListFragment
         setSortFilterNewNotification(items);
     }
 
-    private void setSortFilterNewNotification(List<SortFilterItem> items) {
+    private void setSortFilterNewNotification(@NotNull List<SortFilterItem> items) {
         if (presenter == null) return;
 
         List<Option> quickFilterOptionList = presenter.getQuickFilterOptionList();
@@ -1887,6 +1887,7 @@ public class ProductListFragment
         sortFilterBottomSheet.setResultCountText(String.format(getString(com.tokopedia.filter.R.string.bottom_sheet_filter_finish_button_template_text), productCountText));
     }
 
+    @NotNull
     @Override
     public String getClassName() {
         if (getActivity() == null) return "";
@@ -1908,7 +1909,7 @@ public class ProductListFragment
     }
 
     @Override
-    public void addLocalSearchRecommendation(List<Visitable<?>> visitableList) {
+    public void addLocalSearchRecommendation(@NotNull List<? extends Visitable<?>> visitableList) {
         adapter.appendItems(visitableList);
     }
 
@@ -1920,7 +1921,7 @@ public class ProductListFragment
     }
 
     @Override
-    public void trackEventSearchResultChangeView(String viewType) {
+    public void trackEventSearchResultChangeView(@NotNull String viewType) {
         SearchTracking.eventSearchResultChangeGrid(getActivity(), viewType, getScreenName());
     }
 
@@ -2006,7 +2007,7 @@ public class ProductListFragment
     }
 
     @Override
-    public boolean getIsLocalizingAddressHasUpdated(LocalCacheModel currentChooseAddressData) {
+    public boolean getIsLocalizingAddressHasUpdated(@NotNull LocalCacheModel currentChooseAddressData) {
         if (getContext() == null) return false;
 
         try {

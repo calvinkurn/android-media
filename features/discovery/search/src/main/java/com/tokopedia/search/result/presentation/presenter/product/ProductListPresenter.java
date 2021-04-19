@@ -247,7 +247,7 @@ public final class ProductListPresenter
 
     private boolean isABTestNavigationRevamp() {
         try {
-            return getView().getABTestRemoteConfig()
+            return getView().getAbTestRemoteConfig()
                     .getString(AbTestPlatform.NAVIGATION_EXP_TOP_NAV, AbTestPlatform.NAVIGATION_VARIANT_OLD)
                     .equals(AbTestPlatform.NAVIGATION_VARIANT_REVAMP);
         }
@@ -259,7 +259,7 @@ public final class ProductListPresenter
 
     private boolean getHasFullThreeDotsOptions() {
         try {
-            return getView().getABTestRemoteConfig()
+            return getView().getAbTestRemoteConfig()
                     .getString(AB_TEST_KEY_THREE_DOTS_SEARCH)
                     .equals(AB_TEST_THREE_DOTS_SEARCH_FULL_OPTIONS);
         }
@@ -269,6 +269,7 @@ public final class ProductListPresenter
         }
     }
 
+    @NotNull
     @Override
     public String getUserId() {
         return userSession.isLoggedIn() ? userSession.getUserId() : DEFAULT_USER_ID;
@@ -279,6 +280,7 @@ public final class ProductListPresenter
         return userSession.isLoggedIn();
     }
 
+    @NotNull
     @Override
     public String getDeviceId() {
         return userSession.getDeviceId();
@@ -290,7 +292,7 @@ public final class ProductListPresenter
     }
 
     @Override
-    public boolean getIsTickerHasDismissed() {
+    public boolean isTickerHasDismissed() {
         return isTickerHasDismissed;
     }
 
@@ -343,9 +345,9 @@ public final class ProductListPresenter
     }
 
     @Override
-    public void loadMoreData(Map<String, Object> searchParameter) {
+    public void loadMoreData(Map<String, ?> searchParameter) {
         if (isShowLocalSearchRecommendation()) getLocalSearchRecommendation();
-        else searchProductLoadMore(searchParameter);
+        else searchProductLoadMore((Map<String, Object>) searchParameter);
     }
 
     private void searchProductLoadMore(Map<String, Object> searchParameter) {
@@ -682,7 +684,7 @@ public final class ProductListPresenter
     }
 
     @Override
-    public void loadData(Map<String, Object> searchParameter) {
+    public void loadData(Map<String, ?> searchParameter) {
         checkViewAttached();
 
         setNavSource(SearchKotlinExtKt.getValueString(searchParameter, SearchApiConst.NAVSOURCE));
@@ -693,7 +695,7 @@ public final class ProductListPresenter
 
         if (searchParameter == null) return;
 
-        RequestParams requestParams = createInitializeSearchParam(searchParameter);
+        RequestParams requestParams = createInitializeSearchParam((Map<String, Object>) searchParameter);
         enrichWithRelatedSearchParam(requestParams);
 
         RequestParams useCaseRequestParams = createSearchProductRequestParams(requestParams);
@@ -2080,7 +2082,7 @@ public final class ProductListPresenter
     }
 
     @Override
-    public void openFilterPage(Map<String, Object> searchParameter) {
+    public void openFilterPage(Map<String, ?> searchParameter) {
         if (getView() == null || searchParameter == null) return;
 
         if (!isBottomSheetFilterEnabled()) return;
@@ -2092,7 +2094,7 @@ public final class ProductListPresenter
 
         if (this.dynamicFilterModel == null) {
             getDynamicFilterUseCase.get().
-                    execute(createRequestDynamicFilterParams(searchParameter), createGetDynamicFilterModelSubscriber());
+                    execute(createRequestDynamicFilterParams((Map<String, Object>) searchParameter), createGetDynamicFilterModelSubscriber());
         }
     }
 
@@ -2311,7 +2313,7 @@ public final class ProductListPresenter
     }
 
     @Override
-    public void handleChangeView(int position, SearchConstant.ViewType currentLayoutType) {
+    public void handleChangeView(int position, @NotNull SearchConstant.ViewType currentLayoutType) {
         if (getView() == null) return;
 
         switch(currentLayoutType) {
@@ -2343,7 +2345,7 @@ public final class ProductListPresenter
     public void onViewResumed() {
         if (getView() == null) return;
 
-        if (getView().getIsLocalizingAddressHasUpdated(chooseAddressData))
+        if (chooseAddressData != null && getView().getIsLocalizingAddressHasUpdated(chooseAddressData))
             onLocalizingAddressSelected();
     }
 
@@ -2352,7 +2354,7 @@ public final class ProductListPresenter
             int adapterPosition,
             InspirationCarouselDataView inspirationCarouselViewModel,
             InspirationCarouselDataView.Option clickedInspirationCarouselOption,
-            Map<String, Object> searchParameter
+            Map<String, ?> searchParameter
     ) {
         if (getView() == null) return;
 
@@ -2364,7 +2366,7 @@ public final class ProductListPresenter
         if (clickedInspirationCarouselOption.hasProducts()) return;
 
         getInspirationCarouselChipProducts(
-                adapterPosition, clickedInspirationCarouselOption, searchParameter
+                adapterPosition, clickedInspirationCarouselOption, (Map<String, Object>) searchParameter
         );
     }
 
