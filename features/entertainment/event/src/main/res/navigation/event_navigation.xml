@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/event_navigation"
+    app:startDestination="@id/homeEvenFragment"
+    >
+
+    <fragment
+        android:id="@+id/homeEvenFragment"
+        android:name="com.tokopedia.entertainment.home.fragment.EventHomeFragment"
+        tools:layout="@layout/ent_home_activity"
+        >
+    </fragment>
+</navigation>

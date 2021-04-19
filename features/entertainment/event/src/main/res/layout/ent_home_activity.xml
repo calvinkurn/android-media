@@ -36,10 +36,14 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <FrameLayout
-        android:id="@+id/parent_view"
+    <fragment
+        android:layout_marginTop="@dimen/layout_lvl9"
+        android:id="@+id/navHostFragment"
+        android:name="androidx.navigation.fragment.NavHostFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+        app:navGraph="@navigation/event_navigation"
+        app:defaultNavHost="true"
+        />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
