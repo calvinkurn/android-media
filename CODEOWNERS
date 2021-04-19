@@ -163,6 +163,8 @@
 /features/ordermanagement/snapshot/                     @tokopedia/android-minionbob-dev
 
 /features/media/mediauploader/			                @tokopedia/android-minionkevin-dev
+/features/media/media-common/			                @tokopedia/android-minionkevin-dev
+/features/media/medialoader/                            @tokopedia/android-minionkevin-dev
 
 /features/user/chatbot/                         		@tokopedia/android-minionskywalker-dev
 /features/user/chatbot_no_op/                   		@tokopedia/android-minionkevin-dev
@@ -300,7 +302,6 @@
 /libraries/pre_release_inspector_no_op/					@tokopedia/android-core-dev
 /libraries/product_photo_adapter/                       @tokopedia/android-minionken-dev
 /libraries/push_notification/							@tokopedia/android-core-dev
-/libraries/react_native/								@tokopedia/android-core-dev
 /libraries/remote_config/								@tokopedia/android-core-dev
 /libraries/remoteresourcerequest/						@tokopedia/android-core-dev
 /libraries/shake_detect/					            @tokopedia/android-core-dev
@@ -312,7 +313,6 @@
 /libraries/twitter_share/								@tokopedia/android-core-dev
 /libraries/unit_test                                    @tokopedia/android-core-dev
 /libraries/utils                                        @tokopedia/android-core-dev
-/libraries/video_recorder/								@tokopedia/android-core-dev
 /libraries/videoplayer/									@tokopedia/android-core-dev
 /libraries/videouploader/								@tokopedia/android-core-dev
 /libraries/weaver/									    @tokopedia/android-core-dev

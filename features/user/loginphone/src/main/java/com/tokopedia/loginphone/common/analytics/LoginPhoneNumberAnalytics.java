@@ -5,10 +5,14 @@ import android.os.Build;
 
 import javax.inject.Inject;
 
+import com.tokopedia.logger.ServerLogger;
+import com.tokopedia.logger.utils.Priority;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
 
-import timber.log.Timber;
+import java.util.HashMap;
+import java.util.Map;
+
 
 /**
  * @author by nisie on 1/5/18.
@@ -60,9 +64,12 @@ public class LoginPhoneNumberAnalytics {
     }
 
     public void sendScreen(Activity activity, String screenName) {
-        Timber.w("P2#FINGERPRINT#screenName = " + screenName + " | " + Build.FINGERPRINT + " | " + Build.MANUFACTURER + " | "
+        String screenNameMessage = screenName + " | " + Build.FINGERPRINT + " | " + Build.MANUFACTURER + " | "
                 + Build.BRAND + " | " + Build.DEVICE + " | " + Build.PRODUCT + " | " + Build.MODEL
-                + " | " + Build.TAGS);
+                + " | " + Build.TAGS;
+        Map<String, String> screenNameMap = new HashMap<>();
+        screenNameMap.put("screenName", screenNameMessage);
+        ServerLogger.log(Priority.P2, "FINGERPRINT", screenNameMap);
         TrackApp.getInstance().getGTM().sendScreenAuthenticated(screenName);
     }
 

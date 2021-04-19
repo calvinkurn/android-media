@@ -11,7 +11,6 @@ import com.tokopedia.network.data.model.response.DataResponse
 import com.tokopedia.topads.common.data.model.DashGroupListResponse
 import com.tokopedia.topads.common.data.model.GroupListDataItem
 import com.tokopedia.topads.common.data.response.GroupInfoResponse
-import com.tokopedia.topads.common.data.response.ProductActionResponse
 import com.tokopedia.topads.common.data.response.nongroupItem.GetDashboardProductStatistics
 import com.tokopedia.topads.common.data.response.nongroupItem.NonGroupResponse
 import com.tokopedia.topads.common.domain.interactor.TopAdsGetGroupProductDataUseCase
@@ -179,15 +178,10 @@ class GroupDetailViewModel @Inject constructor(
     fun setProductAction(onSuccess: (() -> Unit), action: String, adIds: List<String>, resources: Resources, selectedFilter: String?) {
         val params = topAdsProductActionUseCase.setParams(action, adIds, selectedFilter)
         topAdsProductActionUseCase.execute(params, object : Subscriber<Map<Type, RestResponse>>() {
-            override fun onCompleted() {
-            }
+            override fun onCompleted() {}
 
             override fun onNext(typeResponse: Map<Type, RestResponse>) {
-                val token = object : TypeToken<DataResponse<ProductActionResponse?>>() {}.type
-                val restResponse: RestResponse? = typeResponse[token]
-                val response = restResponse?.getData() as DataResponse<ProductActionResponse>
-                val nonGroupResponse = response.data.topadsUpdateSingleAds
-                nonGroupResponse.let { onSuccess }
+                onSuccess()
             }
 
             override fun onError(e: Throwable?) {

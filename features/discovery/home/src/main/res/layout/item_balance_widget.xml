@@ -14,15 +14,16 @@
     <ImageView
         android:id="@+id/home_iv_logo_balance"
         android:contentDescription="@string/content_desc_tokopoint"
-        android:layout_width="@dimen/dp_16"
-        android:layout_height="@dimen/dp_16"
+        android:layout_width="@dimen/dp_20"
+        android:layout_height="@dimen/dp_20"
         android:layout_margin="@dimen/dp_4"
         android:layout_centerVertical="true"
+        android:clickable="false"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"/>
     <include
-        layout="@layout/layout_item_shimmering_ovo"
+        layout="@layout/layout_item_shimmering_balance"
         android:id="@+id/home_progress_bar_balance_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

@@ -50,6 +50,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalEntertainment.EVENT_PD
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.ADD_BOD
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.ADD_EMAIL
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.ADD_NAME_REGISTER
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.ADD_NAME_REGISTER_CLEAN_VIEW
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.ADD_PHONE
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.ADD_PIN
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.ADD_PIN_COMPLETE
@@ -150,11 +151,12 @@ import com.tokopedia.applink.internal.ApplinkConstInternalTopAds.TOPADS_DASHBOAR
 import com.tokopedia.applink.internal.ApplinkConstInternalTravel.INTERNAL_FLIGHT
 import com.tokopedia.applink.review.ReviewApplinkConst
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import tokopedia.applink.R
 import java.io.BufferedReader
 import java.io.FileNotFoundException
@@ -427,6 +429,7 @@ object DeeplinkDFMapper : CoroutineScope {
                         || it.startsWithPattern(CHANGE_NAME)
                         || it.startsWith(CHANGE_GENDER)
                         || it.startsWith(ADD_NAME_REGISTER)
+                        || it.startsWith(ADD_NAME_REGISTER_CLEAN_VIEW)
                         || it.startsWith(CHANGE_PIN)
                         || it.startsWith(ADD_PIN_ONBOARDING)
                         || it.startsWith(ADD_PIN)
@@ -669,7 +672,7 @@ object DeeplinkDFMapper : CoroutineScope {
                 val sp = context.getSharedPreferences(SHARED_PREF_TRACK_DF_USAGE, Context.MODE_PRIVATE)
                 val hasAccessedModule = sp.getBoolean(moduleId, false)
                 if (!hasAccessedModule) {
-                    Timber.w("P1#DFM_OPENED#%s;deeplink='%s'", moduleId, deeplink)
+                    ServerLogger.log(Priority.P1, "DFM_OPENED", mapOf("type" to moduleId, "deeplink" to deeplink))
                     sp.edit().putBoolean(moduleId, true).apply()
                 }
                 dfUsageList.add(moduleId)

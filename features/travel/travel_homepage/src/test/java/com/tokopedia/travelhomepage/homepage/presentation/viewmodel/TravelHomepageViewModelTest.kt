@@ -1,7 +1,7 @@
 package com.tokopedia.travelhomepage.homepage.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.common.travel.utils.TravelTestDispatcherProvider
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
@@ -31,7 +31,7 @@ class TravelHomepageViewModelTest {
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
-    private val travelDispatcherProvider = TravelTestDispatcherProvider()
+    private val travelDispatcherProvider = CoroutineTestDispatchersProvider
 
     private lateinit var viewModel: TravelHomepageViewModel
 

@@ -237,6 +237,12 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
                 it.setImageUrl(product.freeOngkirImg)
                 it.visible()
             }
+            val contentDescriptionStringResource = if (product.isFreeOngkirExtra) {
+                com.tokopedia.purchase_platform.common.R.string.pp_cd_image_badge_boe
+            } else {
+                com.tokopedia.purchase_platform.common.R.string.pp_cd_image_badge_bo
+            }
+            iuFreeShipping?.contentDescription = view.context.getString(contentDescriptionStringResource)
             separatorFreeShipping?.visible()
         } else {
             iuFreeShipping?.gone()
@@ -249,6 +255,12 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
         if (orderShop.shopBadge.isNotEmpty()) {
             ivShop?.setImageUrl(orderShop.shopBadge)
             ivShop?.visible()
+            val shopType = if (orderShop.isOfficial == 1) {
+                view.context.getString(com.tokopedia.purchase_platform.common.R.string.pp_cd_shop_type_official_store)
+            } else {
+                view.context.getString(com.tokopedia.purchase_platform.common.R.string.pp_cd_shop_type_power_merchant)
+            }
+            ivShop?.contentDescription = view.context.getString(com.tokopedia.purchase_platform.common.R.string.pp_cd_image_shop_badge_with_shop_type, shopType)
         } else {
             ivShop?.gone()
         }

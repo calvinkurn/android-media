@@ -11,9 +11,11 @@ import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.shop.R
 import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.pageheader.data.model.ShopPageTabModel
+import com.tokopedia.shop.showcase.presentation.fragment.ShopPageShowcaseFragment
 import kotlinx.android.synthetic.main.shop_page_tab_view.view.*
 import java.lang.ref.WeakReference
 
@@ -37,6 +39,9 @@ internal class ShopPageFragmentPagerAdapter(
 
     fun handleSelectedTab(tab: TabLayout.Tab, isActive: Boolean) {
         tab.customView?.apply {
+            if (listShopPageTabModel[tab.position].tabFragment is ShopPageShowcaseFragment) {
+                icon_tab_label?.gone()
+            }
             shop_page_tab_view_icon.setImageDrawable(getTabIconDrawable(tab.position, isActive))
         }
     }
@@ -67,14 +72,14 @@ internal class ShopPageFragmentPagerAdapter(
 
     private fun getTabInactiveColor(): Int {
         return if (ShopUtil.isUsingNewNavigation())
-            R.color.color_gray_shop_tab_new
+            com.tokopedia.unifyprinciples.R.color.Unify_N500
         else
             com.tokopedia.unifyprinciples.R.color.Unify_N200
     }
 
     private fun getTabActivateColor(): Int {
         return if (ShopUtil.isUsingNewNavigation())
-            R.color.color_green_shop_tab_new
+            com.tokopedia.unifyprinciples.R.color.Unify_G600
         else
             com.tokopedia.unifyprinciples.R.color.Unify_G500
     }

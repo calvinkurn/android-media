@@ -7,7 +7,7 @@
             android:name=".homepage.presentation.activity.TravelHomepageActivity"
             android:label="@string/travel_title_subhomepage"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White.StatusBarTransparent">
+            android:theme="@style/Theme.WhiteUnify">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
@@ -25,7 +25,7 @@
             android:name=".destination.presentation.activity.TravelDestinationActivity"
             android:label=""
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White.NoActionBar" >
+            android:theme="@style/Theme.WhiteUnify" >
 
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />

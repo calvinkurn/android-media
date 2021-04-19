@@ -5,9 +5,9 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.play.broadcaster.data.model.ProductData
 import com.tokopedia.play.broadcaster.domain.usecase.AddProductTagUseCase
 import com.tokopedia.play_common.model.result.NetworkResult
-import com.tokopedia.play_common.util.coroutine.CoroutineDispatcherProvider
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -15,7 +15,7 @@ import javax.inject.Inject
  * Created by jegul on 23/06/20
  */
 class ProductDataStoreImpl @Inject constructor(
-        private val dispatcher: CoroutineDispatcherProvider,
+        private val dispatcher: CoroutineDispatchers,
         private val addProductTagUseCase: AddProductTagUseCase
 ) : ProductDataStore {
 
