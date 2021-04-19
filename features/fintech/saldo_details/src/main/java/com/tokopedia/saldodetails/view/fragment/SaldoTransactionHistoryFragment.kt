@@ -27,6 +27,7 @@ import com.tokopedia.saldodetails.utils.SaldoDatePickerUtil
 import com.tokopedia.saldodetails.view.ui.HeightWrappingViewPager
 import com.tokopedia.saldodetails.view.ui.SaldoHistoryTabItem
 import com.tokopedia.saldodetails.viewmodels.SaldoHistoryViewModel
+import com.tokopedia.unifycomponents.TabsUnify
 import java.util.*
 import javax.inject.Inject
 
@@ -36,7 +37,7 @@ class SaldoTransactionHistoryFragment : BaseDaggerFragment(), SaldoHistoryContra
     private var endDateLayout: ConstraintLayout? = null
     private var tabSeparator: View? = null
     private var depositHistoryViewPager: HeightWrappingViewPager? = null
-    private var depositHistoryTabLayout: TabLayout? = null
+    private var depositHistoryTabLayout: TabsUnify? = null
 
     private var startDateTV: TextView? = null
     private var endDateTV: TextView? = null
@@ -93,7 +94,6 @@ class SaldoTransactionHistoryFragment : BaseDaggerFragment(), SaldoHistoryContra
         saldoHistoryViewModel.getSummaryDeposit()
     }
 
-    // @Todo remove calendar approach
     private fun initViews(view: View) {
         startDateLayout = view.findViewById(com.tokopedia.saldodetails.R.id.start_date_layout)
         endDateLayout = view.findViewById(com.tokopedia.saldodetails.R.id.end_date_layout)
@@ -111,7 +111,7 @@ class SaldoTransactionHistoryFragment : BaseDaggerFragment(), SaldoHistoryContra
         saldoHistoryPagerAdapter.setItems(saldoTabItems)
         depositHistoryViewPager!!.offscreenPageLimit = 2
         depositHistoryViewPager!!.adapter = saldoHistoryPagerAdapter
-        depositHistoryTabLayout!!.setupWithViewPager(depositHistoryViewPager)
+        depositHistoryTabLayout!!.setupWithViewPager(depositHistoryViewPager!!)
 
         datePicker = activity?.let { SaldoDatePickerUtil(it) }
     }
@@ -137,7 +137,11 @@ class SaldoTransactionHistoryFragment : BaseDaggerFragment(), SaldoHistoryContra
         sellerSaldoHistoryTabItem!!.fragment = SaldoHistoryListFragment.createInstance(FOR_SELLER, saldoHistoryViewModel, this)
 
         saldoTabItems.add(sellerSaldoHistoryTabItem!!)
-
+        depositHistoryTabLayout?.run {
+            getUnifyTabLayout().removeAllTabs()
+            for(tabItem in saldoTabItems)
+                addNewTab(tabItem.title!!)
+        }
         depositHistoryTabLayout!!.visibility = View.VISIBLE
         tabSeparator!!.visibility = View.VISIBLE
 

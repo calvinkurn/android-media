@@ -146,8 +146,6 @@ class SaldoDepositFragment : BaseDaggerFragment() {
     private val CHECK_VISIBILITY_DELAY: Long = 700
 
     private var saldoLockTicker: Ticker? = null
-    private var tvTickerMessage: TextView? = null
-    private var ivDismissTicker: ImageView? = null
     private var mclLateCount = 0
     private var statusWithDrawLock = -1
     private var showMclBlockTickerFirebaseFlag = false

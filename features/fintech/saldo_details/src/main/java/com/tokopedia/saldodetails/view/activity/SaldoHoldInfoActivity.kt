@@ -22,7 +22,6 @@ import com.tokopedia.saldodetails.presenter.SaldoHoldInfoPresenter
 import com.tokopedia.saldodetails.response.model.saldoholdinfo.response.SaldoHoldDepositHistory
 import com.tokopedia.saldodetails.response.model.saldoholdinfo.response.SaldoHoldInfoItem
 import com.tokopedia.saldodetails.utils.CurrencyUtils
-import com.tokopedia.saldodetails.utils.DrawableUtils.setUnifyDrawableEnd
 import com.tokopedia.saldodetails.view.fragment.SaldoHoldInfoFragment
 import com.tokopedia.saldodetails.view.ui.SaldoHistoryTabItem
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -53,7 +52,6 @@ class SaldoHoldInfoActivity : BaseSimpleActivity(), HasComponent<SaldoDetailsCom
 
     companion object {
         val TAG: String = SaldoHoldInfoItem::class.java.simpleName
-        val SALDOHOLD_FINTECH_PLT = "saldoholdfintech_plt"
         val SALDOHOLD_FINTECH_PLT_PREPARE_METRICS = "saldoholdfintech_plt_prepare_metrics"
         val SALDOHOLD_FINTECH_PLT_NETWORK_METRICS = "saldoholdfintech_plt_network_metrics"
         val SALDOHOLD_FINTECH_PLT_RENDER_METRICS = "saldoholdfintech_plt_render_metrics"
@@ -235,7 +233,6 @@ class SaldoHoldInfoActivity : BaseSimpleActivity(), HasComponent<SaldoDetailsCom
         viewPager?.let { tabLayout.setupWithViewPager(it) }
     }
 
-    // @Todo TEST
     private fun initBottomSheet() {
         val bottomSheet = BottomSheetUnify()
         val view = LayoutInflater.from(this).inflate(R.layout.saldo_info_help_bottomsheet, null)
@@ -250,13 +247,11 @@ class SaldoHoldInfoActivity : BaseSimpleActivity(), HasComponent<SaldoDetailsCom
                         ApplinkConst.WEBVIEW, SaldoDetailsConstants.SALDO_HOLD_HELP_URL_TWO))
                 bottomSheet.dismiss()
             }
-            tv1.setUnifyDrawableEnd(com.tokopedia.iconunify.R.drawable.iconunify_chevron_right)
-            tv2.setUnifyDrawableEnd(com.tokopedia.iconunify.R.drawable.iconunify_chevron_right)
         }
         supportFragmentManager.let {
             bottomSheet.apply {
                 setChild(view)
-                setTitle(resources.getString(com.tokopedia.saldodetails.R.string.saldo_info_btn_text))
+                setTitle(this@SaldoHoldInfoActivity.getString(com.tokopedia.saldodetails.R.string.saldo_info_btn_text))
                 show(it, null)
             }
         }

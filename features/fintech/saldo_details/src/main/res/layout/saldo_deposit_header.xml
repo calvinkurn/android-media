@@ -122,7 +122,6 @@
                         app:icon_color_night_enable="@color/Unify_N400"
                         app:icon_name="INFORMATION" />
 
-                    <!--@Todo Test color-->
                     <com.tokopedia.unifyprinciples.Typography
                         android:id="@+id/total_balance"
                         android:layout_width="wrap_content"
