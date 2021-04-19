@@ -23,8 +23,8 @@ data class ComponentData(
         val videoId : String?,
         @SerializedName("title")
         val title : String?,
-        @SerializedName("channelName")
-        val channelName : String?
+        @SerializedName("author")
+        val author : String?
 
 ){
     @Parcelize
@@ -56,7 +56,7 @@ data class VideoComponentData(
         val type : String?,
         val videoId : String?,
         val title : String?,
-        val channelName : String?) : Parcelable {
+        val author : String?) : Parcelable {
 
     val thumbnailUrl: String
         get() = "https://img.youtube.com/vi/$videoId/1.jpg"

@@ -25,7 +25,7 @@ class CatalogVideosAdapter (val list : ArrayList<VideoComponentData>, private va
     class ViewHolder(v: View) : RecyclerView.ViewHolder(v) {
         fun bind(model: VideoComponentData, catalogDetailListener: CatalogDetailListener) {
             itemView.video_title_tv.text = model.title
-            itemView.channel_name.text = model.channelName
+            itemView.channel_name.text = model.author
             itemView.video_thumbnail_iv.setOnClickListener {
                 catalogDetailListener.playVideo(model,adapterPosition)
             }

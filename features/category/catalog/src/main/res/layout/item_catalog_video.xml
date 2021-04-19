@@ -36,6 +36,7 @@
         android:layout_marginTop="@dimen/layout_lvl1"
         tools:text="Review iPhone 11 - Ga bikin sirik lagi."
         android:lines="2"
+        android:ellipsize="end"
         />
 
     <com.tokopedia.unifyprinciples.Typography
