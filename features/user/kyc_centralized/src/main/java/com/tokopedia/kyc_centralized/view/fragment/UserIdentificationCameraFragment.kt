@@ -8,8 +8,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageButton
-import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
@@ -19,7 +17,9 @@ import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.kyc_centralized.R
+import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifycomponents.UnifyImageButton
 import com.tokopedia.user_identification_common.KYCConstant
 import com.tokopedia.user_identification_common.analytics.UserIdentificationCommonAnalytics
 import com.tokopedia.utils.image.ImageProcessingUtil
@@ -31,8 +31,9 @@ import java.io.File
  * @author by alvinatin on 12/11/18.
  */
 class UserIdentificationCameraFragment : TkpdBaseV4Fragment() {
+    private var container: View? = null
     private var cameraView: CameraView? = null
-    private var closeButton: ImageButton? = null
+    private var closeButton: UnifyImageButton? = null
     private var title: TextView? = null
     private var subtitle: TextView? = null
     private var focusedFaceView: View? = null
@@ -40,7 +41,7 @@ class UserIdentificationCameraFragment : TkpdBaseV4Fragment() {
     private var shutterButton: View? = null
     private var loading: View? = null
     private var switchCamera: View? = null
-    private var imagePreview: ImageView? = null
+    private var imagePreview: ImageUnify? = null
     private var buttonLayout: View? = null
     private var reCaptureButton: View? = null
     private var nextButton: UnifyButton? = null
@@ -78,6 +79,7 @@ class UserIdentificationCameraFragment : TkpdBaseV4Fragment() {
     }
 
     private fun initView(view: View) {
+        container = view.findViewById(R.id.container)
         cameraView = view.findViewById(R.id.full_camera_view)
         closeButton = view.findViewById(R.id.close_button)
         title = view.findViewById(R.id.title)
@@ -99,6 +101,7 @@ class UserIdentificationCameraFragment : TkpdBaseV4Fragment() {
     }
 
     private fun populateView() {
+        container?.setBackgroundResource(com.tokopedia.unifyprinciples.R.color.Unify_N700)
         shutterButton?.setOnClickListener { v: View? ->
             sendAnalyticClickShutter()
             val fragment: Fragment = this@UserIdentificationCameraFragment

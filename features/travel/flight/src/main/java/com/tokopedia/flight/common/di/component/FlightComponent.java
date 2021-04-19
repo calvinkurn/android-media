@@ -6,7 +6,7 @@ import android.content.res.Resources;
 import com.google.gson.Gson;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
-import com.tokopedia.common.travel.utils.TravelDispatcherProvider;
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers;
 import com.tokopedia.flight.common.data.source.cloud.api.FlightApi;
 import com.tokopedia.flight.common.di.module.FlightModule;
 import com.tokopedia.flight.common.di.qualifier.FlightQualifier;
@@ -64,7 +64,7 @@ public interface FlightComponent {
 
     MultiRequestGraphqlUseCase multiRequestGraphqlUseCase();
 
-    TravelDispatcherProvider dispatcherProvider();
+    CoroutineDispatchers dispatcherProvider();
 
     void inject(BaseFlightActivity baseFlightActivity);
 

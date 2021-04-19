@@ -1,9 +1,7 @@
 package com.tokopedia.autocomplete.suggestion.topshop
 
-import com.tokopedia.autocomplete.suggestion.topshop.SuggestionTopShopCardViewModel
-
 interface SuggestionTopShopListener {
-    fun onTopShopCardClicked(topShop: SuggestionTopShopCardViewModel)
+    fun onTopShopCardClicked(topShopData: SuggestionTopShopCardDataView)
 
-    fun onTopShopSeeMoreClicked(topShop: SuggestionTopShopCardViewModel)
+    fun onTopShopSeeMoreClicked(topShopData: SuggestionTopShopCardDataView)
 }
