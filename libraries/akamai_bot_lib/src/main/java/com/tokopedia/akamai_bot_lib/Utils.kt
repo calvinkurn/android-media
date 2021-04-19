@@ -33,6 +33,7 @@ val registeredGqlFunctions = mapOf(
         "OTPRequest" to "otp",
         "richieSubmitWithdrawal" to "ttwdl",
         "pdpGetLayout" to "pdpGetLayout",
+        "pdpGetData" to "pdpGetData",
         "atcOCS" to "atconeclickshipment",
         "getPDPInfo" to "product_info",
         "shopInfoByID" to "shop_info",
