@@ -196,8 +196,7 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
      * Step 5 : Proceed to home
      */
 
-    override fun loginEmailV2(email: String, password: String, isSmartLock : Boolean, useHash: Boolean) {
-        setSmartLock(isSmartLock)
+    override fun loginEmailV2(email: String, password: String, useHash: Boolean) {
         launchCatchError(coroutineContext, {
             val keyData = generatePublicKeyUseCase.executeOnBackground().keyData
             if(keyData.key.isNotEmpty()) {
@@ -235,17 +234,8 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
         })
     }
 
-    private fun setSmartLock(isSmartLock: Boolean){
-        if (isSmartLock) {
-            userSession.loginMethod = UserSessionInterface.LOGIN_METHOD_EMAIL_SMART_LOCK
-        } else {
-            userSession.loginMethod = UserSessionInterface.LOGIN_METHOD_EMAIL
-        }
-    }
-
-    override fun loginEmail(email: String, password: String, isSmartLock: Boolean) {
+    override fun loginEmail(email: String, password: String) {
         view?.let { view ->
-            setSmartLock(isSmartLock)
             idlingResourceProvider?.increment()
             view.resetError()
             if (isValid(email, password)) {
