@@ -11,6 +11,7 @@
     android:textSize="@dimen/sp_12"
     android:lines="1"
     android:ellipsize="end"
+    android:textColor="@color/Unify_N700_68"
     app:typographyType="body_3"
     tools:text="Berakhir dalam"
     android:textIsSelectable="false" />

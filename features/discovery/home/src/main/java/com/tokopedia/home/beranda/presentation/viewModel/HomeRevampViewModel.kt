@@ -1460,8 +1460,7 @@ open class HomeRevampViewModel @Inject constructor(
                 homeVisitableListData.withIndex().find { it.value is PopularKeywordListDataModel }?.let { indexedData ->
                     val oldData = indexedData.value
                     if (oldData is PopularKeywordListDataModel) {
-                        homeProcessor.get().sendWithQueueMethod(
-                                DeleteWidgetCommand(oldData, indexedData.index, this@HomeRevampViewModel))
+                        homeProcessor.get().sendWithQueueMethod(UpdateWidgetCommand(oldData.copy(isErrorLoad = true), indexedData.index, this@HomeRevampViewModel))
                     }
                 }
             }
