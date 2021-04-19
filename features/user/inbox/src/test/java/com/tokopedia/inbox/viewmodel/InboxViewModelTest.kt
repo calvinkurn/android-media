@@ -229,54 +229,6 @@ class InboxViewModelTest {
         verify(exactly = 1) { cacheManager.saveCacheBoolean(any(), any()) }
     }
 
-    @Test
-    fun `hasBeenVisited should save as true the state of page visited`() {
-        // given
-        every { cacheManager.loadCacheBoolean(any()) } returns true
-
-        // when
-        val actualValue = viewModel.hasBeenVisited()
-
-        // then
-        assertEquals(true, actualValue)
-    }
-
-    @Test
-    fun `hasBeenVisited should save as false the state of page visited`() {
-        // given
-        every { cacheManager.loadCacheBoolean(any()) } returns false
-
-        // when
-        val actualValue = viewModel.hasBeenVisited()
-
-        // then
-        assertEquals(false, actualValue)
-    }
-
-    @Test
-    fun `hasBeenVisited return false if null`() {
-        // given
-        every { cacheManager.loadCacheBoolean(any()) } returns null
-
-        // when
-        val actualValue = viewModel.hasBeenVisited()
-
-        // then
-        assertEquals(false, actualValue)
-    }
-
-    @Test
-    fun `markAsVisited should marking the page as visited`() {
-        // given
-        every { cacheManager.saveCacheBoolean(any(), true) } just runs
-
-        // when
-        viewModel.markAsVisited()
-
-        // then
-        verify(exactly = 1) { cacheManager.saveCacheBoolean(any(), any()) }
-    }
-
     private fun hasShownGivenHelper(
             hashShop: Boolean,
             cacheOnBoardingSeller: Boolean?,
