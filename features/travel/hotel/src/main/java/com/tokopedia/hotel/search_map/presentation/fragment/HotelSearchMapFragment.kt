@@ -217,7 +217,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                     loadInitialData()
                 }
                 is Fail -> {
-                    Toaster.make(requireView(), it.throwable.message.toString(), Snackbar.LENGTH_SHORT, Toaster.TYPE_NORMAL)
+                    Toaster.build(requireView(), it.throwable.message.toString(), Snackbar.LENGTH_SHORT, Toaster.TYPE_NORMAL)
                 }
             }
         })

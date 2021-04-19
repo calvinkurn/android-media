@@ -200,7 +200,7 @@ class HotelSearchMapViewModel @Inject constructor(
     }
 
     fun getVisibleRadius(googleMap: GoogleMap){
-        launch (dispatcher.io){
+        launch (dispatcher.main){
             try {
                 val visibleRegion: VisibleRegion = googleMap.projection.visibleRegion
                 val diagonalDistance = FloatArray(1)
