@@ -444,6 +444,9 @@ class TopchatRoomBuyerAttachProductTest : BaseBuyerTopchatRoomTest() {
         assertSrwContentIsHidden()
     }
 
+    // TODO: test expand collapse srw when open/hide keyboard
+    // TODO test expand collapse srw when keyboard opened
+
     private fun putProductAttachmentIntent(intent: Intent) {
         val productPreviews = listOf(productPreview)
         val stringProductPreviews = CommonUtil.toJson(productPreviews)

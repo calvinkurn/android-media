@@ -16,6 +16,7 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.domain.pojo.srw.ChatSmartReplyQuestion
@@ -52,7 +53,10 @@ class SrwLinearLayout : FrameLayout {
      * Default state would be expanded
      */
     var isExpanded = true
-        private set
+        set(value) {
+            field = value
+            updateState()
+        }
     private var listener: Listener? = null
     private var latestState: Resource<ChatSmartReplyQuestionResponse>? = null
 
@@ -161,6 +165,7 @@ class SrwLinearLayout : FrameLayout {
     }
 
     private fun updateState() {
+        if (!isVisible) return
         if (isExpanded) {
             rvSrw?.show()
             titleIcon?.setImage(IconUnify.CHEVRON_UP)

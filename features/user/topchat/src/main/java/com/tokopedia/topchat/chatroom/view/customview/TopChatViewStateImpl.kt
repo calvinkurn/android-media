@@ -179,13 +179,19 @@ class TopChatViewStateImpl constructor(
     }
 
     override fun onKeyboardOpened() {
-        chatMenu?.isKeyboardOpened = true
-        hideChatMenu()
+        if (chatMenu?.isKeyboardOpened == false) {
+            chatMenu?.isKeyboardOpened = true
+            hideChatMenu()
+            fragmentView?.collapseSrw()
+        }
     }
 
     override fun onKeyboardClosed() {
-        chatMenu?.isKeyboardOpened = false
-        showChatMenu()
+        if (chatMenu?.isKeyboardOpened == true) {
+            chatMenu?.isKeyboardOpened = false
+            showChatMenu()
+            fragmentView?.expandSrw()
+        }
     }
 
     override fun hideChatMenu() {

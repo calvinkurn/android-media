@@ -275,6 +275,14 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         return rvSrw?.isAllowToShow() == false && rvSrw?.isSuccessState() == true
     }
 
+    override fun collapseSrw() {
+        rvSrw?.isExpanded = false
+    }
+
+    override fun expandSrw() {
+        rvSrw?.isExpanded = true
+    }
+
     override fun shouldShowSrw(): Boolean {
         return !isSeller() && hasProductPreviewShown() &&
                 rvSrw?.isAllowToShow() == true ||
