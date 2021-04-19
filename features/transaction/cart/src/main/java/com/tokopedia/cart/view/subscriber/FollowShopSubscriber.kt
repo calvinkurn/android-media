@@ -23,7 +23,7 @@ class FollowShopSubscriber(private val view: ICartListView?, private val present
     override fun onNext(data: DataFollowShop) {
         view?.let {
             it.hideProgressLoading()
-            it.showToastMessageGreen(data.followShop.message)
+            it.showToastMessageGreen(data.followShop?.message ?: "")
             presenter.processInitialGetCartData("0", false, false)
         }
     }
