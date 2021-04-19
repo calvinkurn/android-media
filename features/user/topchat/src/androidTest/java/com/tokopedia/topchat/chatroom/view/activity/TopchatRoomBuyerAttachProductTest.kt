@@ -470,7 +470,38 @@ class TopchatRoomBuyerAttachProductTest : BaseBuyerTopchatRoomTest() {
         assertSrwExpanded()
     }
 
-    // TODO test expand collapse srw when keyboard opened
+    @Test
+    fun expand_collapse_srw_when_keyboard_opened() {
+        // Given
+        setupChatRoomActivity {
+            putProductAttachmentIntent(it)
+        }
+        getChatUseCase.response = firstPageChatAsBuyer
+        chatAttachmentUseCase.response = chatAttachmentResponse
+        chatSrwUseCase.response = chatSrwResponse
+        inflateTestFragment()
+
+        // When
+        clickComposeArea()
+
+        // Then
+        assertSrwContentIsVisible()
+        assertSrwCollapsed()
+
+        // When
+        onView(withId(R.id.tp_srw_container_partial)).perform(click())
+
+        // Then
+        assertSrwContentIsVisible()
+        assertSrwExpanded()
+
+        // When
+        onView(withId(R.id.tp_srw_container_partial)).perform(click())
+
+        // Then
+        assertSrwContentIsVisible()
+        assertSrwCollapsed()
+    }
 
     private fun putProductAttachmentIntent(intent: Intent) {
         val productPreviews = listOf(productPreview)
