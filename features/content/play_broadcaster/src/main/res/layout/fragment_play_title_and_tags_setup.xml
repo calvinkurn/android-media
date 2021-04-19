@@ -47,42 +47,15 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_tags_recommendation"
         android:layout_width="@dimen/layout_lvl0"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/layout_lvl0"
         android:layout_marginStart="@dimen/spacing_lvl4"
         android:layout_marginTop="@dimen/spacing_lvl3"
         android:layout_marginEnd="@dimen/spacing_lvl4"
         android:orientation="vertical"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layoutManager="com.google.android.flexbox.FlexboxLayoutManager"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_tags_instruction"
-        />
-
-    <com.tokopedia.unifycomponents.TextFieldUnify
-        android:id="@+id/text_field_tag"
-        android:layout_width="@dimen/layout_lvl0"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/spacing_lvl4"
-        android:layout_marginEnd="@dimen/spacing_lvl4"
-        android:layout_marginTop="@dimen/play_dp_30"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/rv_tags_recommendation"
-        app:text_field_counter="32"
-        app:text_field_label="@string/play_add_tag_hint"
-        app:text_field_label_static="true"
-        />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_tags_added"
-        android:layout_width="@dimen/layout_lvl0"
-        android:layout_height="@dimen/layout_lvl0"
-        android:layout_marginStart="@dimen/spacing_lvl4"
-        android:layout_marginTop="@dimen/play_dp_22"
-        android:layout_marginEnd="@dimen/spacing_lvl4"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/text_field_tag"
         app:layout_constraintBottom_toTopOf="@id/bottom_action_next"
         />
 

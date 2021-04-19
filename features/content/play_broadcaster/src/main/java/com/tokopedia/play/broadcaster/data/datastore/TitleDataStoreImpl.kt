@@ -1,9 +1,9 @@
 package com.tokopedia.play.broadcaster.data.datastore
 
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.play.broadcaster.domain.usecase.PlayBroadcastUpdateChannelUseCase
 import com.tokopedia.play.broadcaster.ui.model.title.PlayTitleUiModel
 import com.tokopedia.play_common.model.result.NetworkResult
-import com.tokopedia.play_common.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -14,7 +14,7 @@ import javax.inject.Inject
  * Created by jegul on 29/03/21
  */
 class TitleDataStoreImpl @Inject constructor(
-        private val dispatcher: CoroutineDispatcherProvider,
+        private val dispatcher: CoroutineDispatchers,
         private val updateChannelUseCase: PlayBroadcastUpdateChannelUseCase,
         private val userSession: UserSessionInterface,
 ) : TitleDataStore {

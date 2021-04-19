@@ -368,7 +368,7 @@ class PlayBroadcastViewModel @Inject constructor(
     }
 
     private fun sendLivePusherState(state: PlayLivePusherState) {
-        scope.launch(dispatcher.io) {
+        viewModelScope.launch(dispatcher.io) {
             onLivePusherStateChanged(state)
         }
     }
@@ -478,7 +478,7 @@ class PlayBroadcastViewModel @Inject constructor(
     }
 
     private fun resumeTimer() {
-        scope.launchCatchError(block = {
+        viewModelScope.launchCatchError(block = {
             countDownTimer.resume()
         }) { }
     }

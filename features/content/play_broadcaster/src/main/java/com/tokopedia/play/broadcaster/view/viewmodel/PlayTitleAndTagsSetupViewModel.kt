@@ -1,12 +1,12 @@
 package com.tokopedia.play.broadcaster.view.viewmodel
 
 import androidx.lifecycle.*
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.play.broadcaster.data.config.HydraConfigStore
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
 import com.tokopedia.play.broadcaster.ui.validator.tag.TagSetupValidator
 import com.tokopedia.play.broadcaster.ui.validator.title.TitleSetupValidator
 import com.tokopedia.play_common.model.result.NetworkResult
-import com.tokopedia.play_common.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play_common.util.event.Event
 import kotlinx.coroutines.*
 import javax.inject.Inject
@@ -16,7 +16,7 @@ import javax.inject.Inject
  */
 class PlayTitleAndTagsSetupViewModel @Inject constructor(
         private val hydraConfigStore: HydraConfigStore,
-        private val dispatcher: CoroutineDispatcherProvider,
+        private val dispatcher: CoroutineDispatchers,
         private val setupDataStore: PlayBroadcastSetupDataStore,
 ) : ViewModel(), TitleSetupValidator, TagSetupValidator {
 

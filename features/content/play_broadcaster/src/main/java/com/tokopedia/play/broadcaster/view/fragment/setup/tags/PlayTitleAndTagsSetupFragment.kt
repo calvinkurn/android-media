@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.transition.*
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
 import com.tokopedia.play.broadcaster.util.extension.showToaster
@@ -19,8 +20,6 @@ import com.tokopedia.play.broadcaster.view.partial.*
 import com.tokopedia.play.broadcaster.view.viewmodel.DataStoreViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayTitleAndTagsSetupViewModel
 import com.tokopedia.play_common.model.result.NetworkResult
-import com.tokopedia.play_common.util.coroutine.CoroutineDispatcherProvider
-import com.tokopedia.play_common.util.event.EventObserver
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.launch
@@ -32,7 +31,7 @@ import javax.inject.Inject
  */
 class PlayTitleAndTagsSetupFragment @Inject constructor(
         private val viewModelFactory: ViewModelFactory,
-        private val dispatcher: CoroutineDispatcherProvider,
+        private val dispatcher: CoroutineDispatchers,
 ) : PlayBaseSetupFragment(),
         TagAddedListViewComponent.Listener,
         TextFieldAddTagViewComponent.Listener,
@@ -51,8 +50,6 @@ class PlayTitleAndTagsSetupFragment @Inject constructor(
     private lateinit var bottomSheetHeader: PlayBottomSheetHeader
     private val titleFieldView by viewComponent(isEagerInit = true) { TextFieldTitleViewComponent(it, R.id.text_field_title, this) }
     private val tagRecommendationListView by viewComponent { TagRecommendationListViewComponent(it, R.id.rv_tags_recommendation, this) }
-    private val addTagFieldView by viewComponent(isEagerInit = true) { TextFieldAddTagViewComponent(it, R.id.text_field_tag, this) }
-    private val tagAddedListView by viewComponent { TagAddedListViewComponent(it, R.id.rv_tags_added, this) }
     private val bottomActionNextView by viewComponent { BottomActionNextViewComponent(it, this) }
 
     private var toasterBottomMargin = 0
@@ -155,7 +152,7 @@ class PlayTitleAndTagsSetupFragment @Inject constructor(
 
     private fun observeAddedTags() {
         viewModel.observableAddedTags.observe(viewLifecycleOwner, Observer {
-            tagAddedListView.setTags(it.toList())
+//            tagAddedListView.setTags(it.toList())
         })
     }
 
