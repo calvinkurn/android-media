@@ -23,9 +23,7 @@ import com.tokopedia.product.share.ekstensions.getShareContent
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.utils.image.ImageProcessingUtil
-import timber.log.Timber
 import java.io.File
-import java.util.concurrent.TimeUnit
 
 class ProductShare(private val activity: Activity, private val mode: Int = MODE_TEXT) {
 
@@ -36,8 +34,12 @@ class ProductShare(private val activity: Activity, private val mode: Int = MODE_
         this.cancelShare = cancelShare
         if (cancelShare && isLog) {
             val timeEnd = System.currentTimeMillis()
-            if (timeEnd - timeStartShare > TIMEOUT_BRANCH) {
-                log(mode,imageProcess, resourceReady, branchTime, err, null)
+            val duration = timeEnd - timeStartShare
+            if (duration > TIMEOUT_LOG) {
+                if (branchTime == 0L) {
+                    branchTime = duration
+                }
+                log(mode, imageProcess, resourceReady, branchTime, err, null)
             }
         }
     }
@@ -62,10 +64,10 @@ class ProductShare(private val activity: Activity, private val mode: Int = MODE_
         cancelShare = false
         resetLog()
         this.isLog = isLog
+        timeStartShare = System.currentTimeMillis()
 
         if (mode == MODE_IMAGE) {
             preBuildImage()
-            timeStartShare = System.currentTimeMillis()
             val target = object : CustomTarget<Bitmap>(DEFAULT_IMAGE_WIDTH, DEFAULT_IMAGE_HEIGHT) {
                 override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
                     val timeResourceEnd = System.currentTimeMillis()
@@ -105,20 +107,27 @@ class ProductShare(private val activity: Activity, private val mode: Int = MODE_
             ImageHandler.loadImageWithTargetCenterCrop(activity, data.productImageUrl, target)
         } else {
             preBuildImage.invoke()
-            generateBranchLink(null, data, postBuildImage)
+            generateBranchLink(null, data, postBuildImage, isLog = isLog)
         }
     }
 
     @SuppressLint("BinaryOperationInTimber")
     fun log(mode: Int, imageReady: Long, imageProcess: Long, branchTime: Long, error: List<Throwable>, linkerError: LinkerError?) {
-        ServerLogger.log(Priority.P2, log_tag, mapOf("type" to "log",
-                "mode" to mode.toString(),
-                "img_ready" to imageReady.toString(),
-                "img_process" to imageProcess.toString(),
-                "branch_time" to branchTime.toString(),
-                "err" to error.map { it.stackTrace.toString().substring(0, 50) }.joinToString(","),
-                "linker_err" to linkerError?.errorCode.toString()
-        ))
+        // only log fail or long timeout
+        if (imageReady > TIMEOUT_LOG ||
+                imageProcess > TIMEOUT_LOG ||
+                branchTime > TIMEOUT_LOG ||
+                linkerError != null ||
+                error.isNotEmpty()) {
+            ServerLogger.log(Priority.P2, log_tag, mapOf("type" to "log",
+                    "mode" to mode.toString(),
+                    "img_ready" to imageReady.toString(),
+                    "img_process" to imageProcess.toString(),
+                    "branch_time" to branchTime.toString(),
+                    "err" to error.map { it.stackTrace.toString().substring(0, 50) }.joinToString(","),
+                    "linker_err" to linkerError?.errorCode.toString()
+            ))
+        }
     }
 
     fun logExceptionToFirebase(e: Throwable) {
@@ -215,7 +224,7 @@ class ProductShare(private val activity: Activity, private val mode: Int = MODE_
         const val MODE_IMAGE = 1
 
         const val log_tag = "BRANCH_GENERATE"
-        const val TIMEOUT_BRANCH = 10_000L // 10seconds
+        const val TIMEOUT_LOG = 5_000L // seconds
     }
 }
 
