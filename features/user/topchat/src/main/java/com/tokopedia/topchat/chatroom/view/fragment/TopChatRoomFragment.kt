@@ -1092,9 +1092,9 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             ProductStatus.ACTIVE.name -> {
                 view?.let {
                     val name = productName?.ellipsize(20) ?: return
+                    val msg = it.context.getString(R.string.title_success_update_stock, name)
                     Toaster.build(
-                            it, "Stok produk \"$name\" berhasil diubah.",
-                            Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL
+                            it, msg, Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL
                     ).show()
                 }
             }

@@ -212,4 +212,5 @@ yang ditemukan</string>
 
     <string name="title_regular_stock">Stok:</string>
     <string name="title_campaign_stock">Stok campaign:</string>
+    <string name="title_success_update_stock">Stok produk \"%1$s\" berhasil diubah.</string>
 </resources>
