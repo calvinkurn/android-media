@@ -14,7 +14,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.DeeplinkMapper.getRegisteredNavigation
 import com.tokopedia.applink.RouteManager
@@ -57,7 +56,9 @@ import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RemoteConfigKey
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.travelcalendar.selectionrangecalendar.SelectionRangeCalendarWidget
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.ticker.Ticker
@@ -590,7 +591,7 @@ class HotelHomepageFragment : HotelBaseFragment(),
                             adult = hotelHomepageModel.adultCount,
                             searchType = hotelHomepageModel.searchType,
                             searchId = hotelHomepageModel.searchId)
-                    if (remoteConfig.getBoolean(RemoteConfigKey.CUSTOMER_HOTEL_SEARCH_WITH_MAP, true)) {
+                    if (remoteConfig.getBoolean(RemoteConfigKey.CUSTOMER_HOTEL_SEARCH_WITH_MAP, true) && isABTestHotelRevamp()) {
                         startActivityForResult(HotelSearchMapActivity.createIntent(this, hotelSearchModel), REQUEST_CODE_SEARCH)
                     } else {
                         startActivityForResult(HotelSearchResultActivity.createIntent(this, hotelSearchModel), REQUEST_CODE_SEARCH)
@@ -748,6 +749,10 @@ class HotelHomepageFragment : HotelBaseFragment(),
         hotel_container_last_search.visibility = View.GONE
     }
 
+    private fun isABTestHotelRevamp(): Boolean = (RemoteConfigInstance.getInstance().abTestPlatform
+            .getString(HOTEL_AB_TEST_KEY, HOTEL_AB_TEST_NEW_VARIANT)
+            == HOTEL_AB_TEST_NEW_VARIANT)
+
     companion object {
         const val REQUEST_CODE_DESTINATION = 101
         const val REQUEST_CODE_SEARCH = 102
@@ -773,6 +778,9 @@ class HotelHomepageFragment : HotelBaseFragment(),
         const val TAG_GUEST_INFO = "guestHotelInfo"
 
         const val HOMEPAGE_BG_IMAGE_URL = "https://ecs7.tokopedia.net/img/android/res/singleDpi/bg_hotel_homepage_background.png"
+        private const val HOTEL_AB_TEST_KEY = "Hotel_SearchByMap_An"
+        private const val HOTEL_AB_TEST_NEW_VARIANT = "new_map"
+        private const val HOTEL_AB_TEST_OLD_VARIANT = "old_map"
 
         fun getInstance(): HotelHomepageFragment = HotelHomepageFragment()
 
