@@ -887,7 +887,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                                          int saveStateType) {
         ShipmentDetailData shipmentDetailData = shipmentCartItemModel.getSelectedShipmentDetailData();
         if (shipmentCartItemModel.isStateLoadingCourierState()) {
-            renderLoadingCourierState(saveStateType);
+            renderLoadingCourierState();
         } else {
             boolean hasLoadCourier = false;
             llShippingExperienceStateLoading.setVisibility(View.GONE);
@@ -934,6 +934,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                 saveStateType == SHIPPING_SAVE_STATE_TYPE_TRADE_IN_DROP_OFF);
         shipmentCartItemModel.setStateLoadingCourierState(true);
         llShippingExperienceStateLoading.setVisibility(View.VISIBLE);
+        containerShippingExperience.setVisibility(View.GONE);
         switch (saveStateType) {
             case SHIPPING_SAVE_STATE_TYPE_TRADE_IN_DROP_OFF:
                 shipmentCartItemModel.setStateHasLoadCourierTradeInDropOffState(true);
@@ -942,7 +943,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                 break;
             case SHIPPING_SAVE_STATE_TYPE_SHIPPING_EXPERIENCE:
                 shipmentCartItemModel.setStateHasLoadCourierState(true);
-                containerShippingExperience.setVisibility(View.GONE);
                 break;
         }
     }
@@ -954,17 +954,11 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         tvTradeInShippingPriceDetail.setVisibility(View.GONE);
     }
 
-    private void renderLoadingCourierState(int saveStateType) {
+    private void renderLoadingCourierState() {
         llShippingExperienceStateLoading.setVisibility(View.VISIBLE);
-        switch (saveStateType) {
-            case SHIPPING_SAVE_STATE_TYPE_TRADE_IN_DROP_OFF:
-                tvTradeInShippingPriceTitle.setVisibility(View.GONE);
-                tvTradeInShippingPriceDetail.setVisibility(View.GONE);
-                break;
-            case SHIPPING_SAVE_STATE_TYPE_SHIPPING_EXPERIENCE:
-                containerShippingExperience.setVisibility(View.GONE);
-                break;
-        }
+        containerShippingExperience.setVisibility(View.GONE);
+        tvTradeInShippingPriceTitle.setVisibility(View.GONE);
+        tvTradeInShippingPriceDetail.setVisibility(View.GONE);
     }
 
     private void renderCostDetail(ShipmentCartItemModel shipmentCartItemModel) {
