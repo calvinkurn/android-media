@@ -29,10 +29,9 @@ open class TopchatProductAttachmentViewHolder constructor(
 
     override fun bind(element: ProductAttachmentViewModel, payloads: MutableList<Any>) {
         if (payloads.isEmpty()) return
-        val payload = payloads[0]
-        when {
-            payload == DeferredAttachment.PAYLOAD_DEFERRED -> bind(element)
-            payload is SingleProductAttachmentContainer.PayloadUpdateStock -> bindStock(element)
+        when (payloads.first()) {
+            DeferredAttachment.PAYLOAD_DEFERRED -> bind(element)
+            is SingleProductAttachmentContainer.PayloadUpdateStock -> bindStock(element)
         }
     }
 
