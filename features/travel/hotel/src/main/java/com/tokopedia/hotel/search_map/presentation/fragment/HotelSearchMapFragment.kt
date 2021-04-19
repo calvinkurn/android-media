@@ -12,7 +12,6 @@ import android.os.Bundle
 import android.provider.Settings
 import android.util.DisplayMetrics
 import android.view.*
-import android.view.animation.Animation
 import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.annotation.DrawableRes
@@ -114,7 +113,6 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
 
     private lateinit var filterBottomSheet: HotelFilterBottomSheets
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<ConstraintLayout>
-    private lateinit var bounceAnim: Animation
     private val snapHelper: SnapHelper = LinearSnapHelper()
 
     override fun getScreenName(): String = SEARCH_SCREEN_NAME
@@ -199,6 +197,13 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                         lat = it.data.second
                         long = it.data.first
                     }
+                    loadInitialData()
+                    onSearchByMap()
+                }
+                is Fail -> {
+                    if (it.throwable.message.isNullOrEmpty()) {
+                        checkGps()
+                    }
                 }
             }
         })
@@ -269,6 +274,8 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                 hotelSearchMapViewModel.addFilter(listOf())
                 isSearchByMap = false
             }
+        } else if (resultCode == REQUEST_CODE_GPS) {
+            getCurrentLocation()
         }
     }
 
@@ -799,7 +806,6 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
 
             isSearchByMap = true
             getCurrentLocation()
-            onSearchByMap()
         }
     }
 
@@ -1163,35 +1169,24 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                 sortOption.firstOrNull { it.displayName == filter.values.firstOrNull() }
             } else null
 
-    private fun getCurrentLocation() {
+    private fun checkGps() {
         val locationManager = context?.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            showDialogEnableGPS()
+        } else {
+            getCurrentLocation()
+        }
+    }
 
+    private fun getCurrentLocation() {
         val locationDetectorHelper = LocationDetectorHelper(
                 permissionCheckerHelper,
                 fusedLocationClient,
                 requireActivity().applicationContext)
 
-        permissionCheckerHelper.checkPermission(this, requireActivity().getString(R.string.hotel_destination_need_permission),
-                object : PermissionCheckerHelper.PermissionCheckListener {
-                    override fun onNeverAskAgain(permissionText: String) {}
-
-                    override fun onPermissionDenied(permissionText: String) {
-                        locationDetectorHelper.getLocation(hotelSearchMapViewModel.onGetLocation(), requireActivity(),
-                                LocationDetectorHelper.TYPE_DEFAULT_FROM_CLOUD,
-                                requireActivity().getString(R.string.hotel_destination_need_permission))
-                    }
-
-                    override fun onPermissionGranted() {
-                        locationDetectorHelper.getLocation(hotelSearchMapViewModel.onGetLocation(), requireActivity(),
-                                LocationDetectorHelper.TYPE_DEFAULT_FROM_CLOUD,
-                                requireActivity().getString(R.string.hotel_destination_need_permission))
-                    }
-
-                })
-
-        if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-            showDialogEnableGPS()
-        }
+        locationDetectorHelper.getLocation(hotelSearchMapViewModel.onGetLocation(), requireActivity(),
+                LocationDetectorHelper.TYPE_DEFAULT_FROM_CLOUD,
+                requireActivity().getString(R.string.hotel_destination_need_permission))
     }
 
     private fun showDialogEnableGPS() {
