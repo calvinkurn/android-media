@@ -50,7 +50,7 @@ class BankTNCBottomSheet : BottomSheetUnify() {
         context?.run {
             val child = LayoutInflater.from(this)
                     .inflate(R.layout.bottom_sheets_tnc, ConstraintLayout(this), false)
-            setTitle(getString(R.string.sbank_terms_and_condition) )
+            setTitle(TITLE)
             setChild(child)
         }
     }
@@ -73,6 +73,7 @@ class BankTNCBottomSheet : BottomSheetUnify() {
     }
 
     companion object{
+        private val TITLE = "Syarat dan Ketentuan"
         private val TEMPLATE_DATA = "template_data"
         private val TAG = "BankTNCBottomSheet"
         fun showBankTNCBottomSheet(templateData: TemplateData, activity: FragmentActivity?){
