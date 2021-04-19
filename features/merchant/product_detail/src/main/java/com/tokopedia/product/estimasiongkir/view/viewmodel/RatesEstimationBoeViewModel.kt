@@ -45,12 +45,7 @@ class RatesEstimationBoeViewModel @Inject constructor(private val ratesUseCase: 
             val ratesData = getRatesEstimate(it)
             result.postValue(RatesMapper.mapToVisitable(ratesData, it).asSuccess())
         }) {
-            ServerLogger.log(Priority.P2, LOG_TAG, mapOf(
-                    ProductDetailConstant.USER_ID_KEY to userSession.userId,
-                    Pair(ProductDetailConstant.PRODUCT_ID_KEY, _ratesRequest.value?.productId ?: ""),
-                    ProductDetailConstant.DEVICE_ID_KEY to userSession.deviceId,
-                    Pair(LOCALIZATION_DATA_KEY, _ratesRequest.value?.destination ?: "")
-            ))
+            logRateEstimate(it)
             result.postValue(it.asFail())
         }
         result
@@ -64,6 +59,17 @@ class RatesEstimationBoeViewModel @Inject constructor(private val ratesUseCase: 
                         request.destination, request.boType,
                         request.poTime),
                 request.forceRefresh)
+    }
+
+    private fun logRateEstimate(throwable: Throwable) {
+        ServerLogger.log(Priority.P2, LOG_TAG, mapOf(
+                ProductDetailConstant.USER_ID_KEY to userSession.userId,
+                Pair(ProductDetailConstant.PRODUCT_ID_KEY, _ratesRequest.value?.productId ?: ""),
+                ProductDetailConstant.DEVICE_ID_KEY to userSession.deviceId,
+                Pair(LOCALIZATION_DATA_KEY, _ratesRequest.value?.destination ?: ""),
+                ProductDetailConstant.MESSAGE_KEY to throwable.localizedMessage,
+                ProductDetailConstant.STACK_TRACE_KEY to throwable.stackTrace.toString().substring(0, 50)
+        ))
     }
 
 }

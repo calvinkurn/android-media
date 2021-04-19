@@ -204,6 +204,6 @@ object ProductDetailConstant {
     const val USER_ID_KEY = "user_id"
     const val DEVICE_ID_KEY = "device_id"
     const val SESSION_KEY = "param_session"
-
-    const val P2_LOGIN_LOG_TAG = "BUYER_FLOW_PDP_P2_LOGIN"
+    const val MESSAGE_KEY = "message"
+    const val STACK_TRACE_KEY = "stacktrace"
 }

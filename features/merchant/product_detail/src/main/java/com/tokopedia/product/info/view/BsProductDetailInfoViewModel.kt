@@ -43,11 +43,7 @@ class BsProductDetailInfoViewModel @Inject constructor(dispatchers: CoroutineDis
 
             bottomSheetData.postValue(visitableData.asSuccess())
         }) {
-            ServerLogger.log(Priority.P2, LOG_TAG, mapOf(
-                    ProductDetailConstant.USER_ID_KEY to userSession.userId,
-                    Pair(ProductDetailConstant.PRODUCT_ID_KEY, parcelData.value?.productId ?: ""),
-                    ProductDetailConstant.DEVICE_ID_KEY to userSession.deviceId
-            ))
+            logProductDetailBottomSheet(it)
             bottomSheetData.postValue(it.asFail())
         }
         bottomSheetData
@@ -55,5 +51,15 @@ class BsProductDetailInfoViewModel @Inject constructor(dispatchers: CoroutineDis
 
     fun setParams(parcelData: ProductInfoParcelData) {
         this.parcelData.value = parcelData
+    }
+
+    private fun logProductDetailBottomSheet(throwable: Throwable) {
+        ServerLogger.log(Priority.P2, LOG_TAG, mapOf(
+                ProductDetailConstant.USER_ID_KEY to userSession.userId,
+                Pair(ProductDetailConstant.PRODUCT_ID_KEY, parcelData.value?.productId ?: ""),
+                ProductDetailConstant.DEVICE_ID_KEY to userSession.deviceId,
+                ProductDetailConstant.MESSAGE_KEY to throwable.localizedMessage,
+                ProductDetailConstant.STACK_TRACE_KEY to throwable.stackTrace.toString().substring(0, 50)
+        ))
     }
 }

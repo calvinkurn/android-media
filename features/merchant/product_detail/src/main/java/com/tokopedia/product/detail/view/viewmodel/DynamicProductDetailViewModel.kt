@@ -115,6 +115,8 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         private const val WISHLIST_STATUS_KEY = "wishlist_status"
         private const val ADD_WISHLIST = "true"
         private const val REMOVE_WISHLIST = "false"
+        private const val P2_LOGIN_LOG_TAG = "BUYER_FLOW_PDP_P2_LOGIN"
+        private const val P2_DATA_LOG_TAG = "BUYER_FLOW_PDP_P2_DATA"
     }
 
     private val _productLayout = MutableLiveData<Result<List<DynamicPdpDataModel>>>()
@@ -584,7 +586,8 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                         Pair(ProductDetailConstant.PRODUCT_ID_KEY, productId ?: ""),
                         ProductDetailConstant.USER_ID_KEY to userId,
                         ProductDetailConstant.DEVICE_ID_KEY to deviceId,
-                        WISHLIST_STATUS_KEY to REMOVE_WISHLIST
+                        WISHLIST_STATUS_KEY to REMOVE_WISHLIST,
+                        Pair(ProductDetailConstant.MESSAGE_KEY, errorMessage ?: "")
                 ))
                 onErrorRemoveWishList?.invoke(errorMessage)
             }
@@ -605,7 +608,8 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                         Pair(ProductDetailConstant.PRODUCT_ID_KEY, productId ?: ""),
                         ProductDetailConstant.USER_ID_KEY to userId,
                         ProductDetailConstant.DEVICE_ID_KEY to deviceId,
-                        WISHLIST_STATUS_KEY to ADD_WISHLIST
+                        WISHLIST_STATUS_KEY to ADD_WISHLIST,
+                        Pair(ProductDetailConstant.MESSAGE_KEY, errorMessage ?: "")
                 ))
                 onErrorAddWishList?.invoke(errorMessage)
             }
@@ -880,7 +884,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
 
     private fun getProductInfoP2DataAsync(productId: String, pdpSession: String): Deferred<ProductInfoP2UiData> {
         return async(dispatcher.io) {
-            getProductInfoP2DataUseCase.get().setUserId(userId)
+            getProductInfoP2DataUseCase.get().setErrorLogListener { logP2Data(it, productId, pdpSession) }
             getProductInfoP2DataUseCase.get().executeOnBackground(
                     GetProductInfoP2DataUseCase.createParams(
                             productId,
@@ -913,11 +917,22 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     }
 
     private fun logP2Login(throwable: Throwable, productId: String) {
-        ServerLogger.log(Priority.P1, ProductDetailConstant.P2_LOGIN_LOG_TAG, mapOf(
+        ServerLogger.log(Priority.P1, P2_LOGIN_LOG_TAG, mapOf(
                 ProductDetailConstant.PRODUCT_ID_KEY to productId,
                 ProductDetailConstant.USER_ID_KEY to userId,
-                "message" to throwable.localizedMessage,
-                "stacktrace" to throwable.stackTrace.toString().substring(0, 50)
+                ProductDetailConstant.MESSAGE_KEY to throwable.localizedMessage,
+                ProductDetailConstant.STACK_TRACE_KEY to throwable.stackTrace.toString().substring(0, 50)
+        ))
+    }
+
+    private fun logP2Data(throwable: Throwable, productId: String, pdpSession: String) {
+        ServerLogger.log(Priority.P1, P2_DATA_LOG_TAG, mapOf(
+                ProductDetailConstant.PRODUCT_ID_KEY to productId,
+                ProductDetailConstant.SESSION_KEY to pdpSession,
+                ProductDetailConstant.DEVICE_ID_KEY to deviceId,
+                ProductDetailConstant.USER_ID_KEY to userId,
+                ProductDetailConstant.MESSAGE_KEY to throwable.localizedMessage,
+                ProductDetailConstant.STACK_TRACE_KEY to throwable.stackTrace.toString().substring(0, 50)
         ))
     }
 }
