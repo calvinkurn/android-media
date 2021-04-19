@@ -4,6 +4,12 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
+import com.tokopedia.logger.ServerLogger;
+import com.tokopedia.logger.utils.Priority;
+
+import java.util.HashMap;
+import java.util.Map;
+
 import timber.log.Timber;
 
 /**
@@ -27,7 +33,12 @@ public class ErrorNetworkReceiver extends BroadcastReceiver {
             if(intent.getStringExtra(PATH) != null) {
                 path = intent.getStringExtra(PATH);
             }
-            Timber.w("P1#BROADCAST_RECEIVER#ErrorNetworkReceiver;action='%s';accessToken='%s';path='%s'", action, accessToken, path);
+            Map<String, String> messageMap = new HashMap<>();
+            messageMap.put("type", "ErrorNetworkReceiver");
+            messageMap.put("action", action);
+            messageMap.put("accessToken", accessToken);
+            messageMap.put("path", path);
+            ServerLogger.log(Priority.P1, "BROADCAST_RECEIVER", messageMap);
             if (action == null) {
                 return;
             }

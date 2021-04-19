@@ -2,12 +2,13 @@ package com.tokopedia.product.detail.view.viewholder
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.media.loader.loadImage
+import com.tokopedia.media.loader.loadImageRounded
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.addtocartrecommendation.AddToCartDoneAddedProductDataModel
 import com.tokopedia.product.detail.data.model.addtocartrecommendation.AddToCartDoneRecommendationItemDataModel
-import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import kotlinx.android.synthetic.main.add_to_cart_done_added_product_layout.view.*
 
 class AddToCartDoneAddedProductViewHolder(
@@ -31,7 +32,7 @@ class AddToCartDoneAddedProductViewHolder(
             element.bebasOngkirUrl?.let {
                 if(it.isNotEmpty()) {
                     free_ongkir_image.show()
-                    free_ongkir_image?.setImageUrl(it)
+                    free_ongkir_image?.loadImage(it)
                 }
             }
         }

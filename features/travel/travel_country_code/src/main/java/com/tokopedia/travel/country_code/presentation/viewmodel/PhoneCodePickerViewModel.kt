@@ -41,6 +41,8 @@ class PhoneCodePickerViewModel @Inject constructor(
                 }
                 _filteredCountryList.value = Success(filteredData)
             }
+        }else{
+            _filteredCountryList.value = _countryList.value
         }
     }
 

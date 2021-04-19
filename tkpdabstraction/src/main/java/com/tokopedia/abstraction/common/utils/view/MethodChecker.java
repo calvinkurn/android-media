@@ -1,7 +1,6 @@
 package com.tokopedia.abstraction.common.utils.view;
 
 import android.content.Context;
-import android.graphics.drawable.AnimatedVectorDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
@@ -12,13 +11,9 @@ import android.text.TextUtils;
 import android.view.View;
 import android.webkit.WebSettings;
 
-import androidx.annotation.Nullable;
 import androidx.appcompat.content.res.AppCompatResources;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
-import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat;
-
-import com.tokopedia.unifycomponents.ImageUnify;
 
 import java.io.File;
 
@@ -113,21 +108,5 @@ public class MethodChecker {
                     context.getContentResolver(),
                     android.provider.Settings.System.AUTO_TIME, 0) == 0;
         }
-    }
-
-    public static void animateVectorDrawable(Boolean start, Drawable drawable, Context context, @Nullable ImageUnify view, @Nullable Integer animationResource) {
-        try {
-            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && drawable instanceof AnimatedVectorDrawable) {
-                AnimationUtil.INSTANCE.animateImage(start, (AnimatedVectorDrawable) drawable);
-            } else if(Build.VERSION.SDK_INT < Build.VERSION_CODES.M && drawable instanceof AnimatedVectorDrawable) { //lollipop device (API 21 & 22)
-                if(view != null && animationResource != null) {
-                    AnimatedVectorDrawableCompat animatedVector = AnimatedVectorDrawableCompat.create(context, animationResource);
-                    view.setImageDrawable(animatedVector);
-                    AnimationUtil.INSTANCE.animateImageCompat(start, animatedVector);
-                }
-            } else if(drawable instanceof AnimatedVectorDrawableCompat) {
-                AnimationUtil.INSTANCE.animateImageCompat(start, (AnimatedVectorDrawableCompat) drawable);
-            }
-        } catch (Exception ignored) {}
     }
 }

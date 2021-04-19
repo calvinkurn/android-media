@@ -5,11 +5,11 @@ import android.graphics.Color
 import android.view.View
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.search.R
@@ -82,7 +82,7 @@ class InspirationCarouselOptionListViewHolder(
 
     private fun bindProductImage(imgUrl: String) {
         itemView.productImage?.shouldShowWithAction(imgUrl.isNotEmpty()) {
-            ImageHandler.loadImageFitCenter(itemView.context, it, imgUrl)
+            it.loadImage(imgUrl)
         }
     }
 

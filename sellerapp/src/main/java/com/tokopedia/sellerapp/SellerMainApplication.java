@@ -29,10 +29,16 @@ import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.developer_options.DevOptsSubscriber;
 import com.tokopedia.device.info.DeviceInfo;
+import com.tokopedia.encryption.security.AESEncryptorECB;
 import com.tokopedia.graphql.data.GraphqlClient;
+import com.tokopedia.keys.Keys;
+import com.tokopedia.logger.LogManager;
+import com.tokopedia.logger.LoggerProxy;
 import com.tokopedia.moengage_wrapper.MoengageInteractor;
 import com.tokopedia.moengage_wrapper.interfaces.MoengageInAppListener;
 import com.tokopedia.moengage_wrapper.interfaces.MoengagePushListener;
+import com.tokopedia.media.common.Loader;
+import com.tokopedia.media.common.common.ToasterActivityLifecycle;
 import com.tokopedia.prereleaseinspector.ViewInspectorSubscriber;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
@@ -42,17 +48,21 @@ import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
 import com.tokopedia.sellerapp.fcm.AppNotificationReceiver;
 import com.tokopedia.sellerapp.utils.SessionActivityLifecycleCallbacks;
 import com.tokopedia.sellerapp.utils.timber.LoggerActivityLifecycleCallbacks;
-import com.tokopedia.sellerapp.utils.timber.TimberWrapper;
 import com.tokopedia.sellerhome.view.activity.SellerHomeActivity;
 import com.tokopedia.tokopatch.TokoPatch;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.utils.permission.SlicePermission;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
+import javax.crypto.SecretKey;
+
 import kotlin.Pair;
+import kotlin.jvm.functions.Function1;
 import timber.log.Timber;
 
 import static com.tokopedia.utils.permission.SlicePermission.SELLER_ORDER_AUTHORITY;
@@ -66,6 +76,8 @@ public class SellerMainApplication extends SellerRouterApplication implements
 
     public static final String ANDROID_ROBUST_ENABLE = "android_sellerapp_robust_enable";
     private static final String ADD_BROTLI_INTERCEPTOR = "android_add_brotli_interceptor";
+    private static final String REMOTE_CONFIG_SCALYR_KEY_LOG = "android_sellerapp_log_config_scalyr";
+    private static final String REMOTE_CONFIG_NEW_RELIC_KEY_LOG = "android_sellerapp_log_config_new_relic";
 
     static {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
@@ -138,8 +150,8 @@ public class SellerMainApplication extends SellerRouterApplication implements
         TrackApp.getInstance().registerImplementation(TrackApp.MOENGAGE, MoengageAnalytics.class);
         TrackApp.getInstance().initializeAllApis();
 
-        TimberWrapper.init(this);
         super.onCreate();
+        initLogManager();
         MoengageInteractor.INSTANCE.setPushListener(SellerMainApplication.this);
         MoengageInteractor.INSTANCE.setInAppListener(this);
         com.tokopedia.akamai_bot_lib.UtilsKt.initAkamaiBotManager(SellerMainApplication.this);
@@ -153,11 +165,92 @@ public class SellerMainApplication extends SellerRouterApplication implements
         initBlockCanary();
         TokoPatch.init(this);
         initSlicePermission();
+
+        Loader.init(this);
     }
 
     private void initCacheManager() {
         PersistentCacheManager.init(this);
         cacheManager = PersistentCacheManager.instance;
+    }
+
+    private void initLogManager(){
+        LogManager.init(SellerMainApplication.this, new LoggerProxy() {
+            final AESEncryptorECB encryptor = new AESEncryptorECB();
+            final SecretKey secretKey = encryptor.generateKey(com.tokopedia.sellerapp.utils.constants.Constants.ENCRYPTION_KEY);
+
+            @Override
+            public Function1<String, String> getDecrypt() {
+                return new Function1<String, String>() {
+                    @Override
+                    public String invoke(String s) {
+                        return encryptor.decrypt(s, secretKey);
+                    }
+                };
+            }
+
+            @Override
+            public Function1<String, String> getEncrypt() {
+                return new Function1<String, String>() {
+                    @Override
+                    public String invoke(String s) {
+                        return encryptor.encrypt(s, secretKey);
+                    }
+                };
+            }
+
+            @NotNull
+            @Override
+            public String getVersionName() {
+                return GlobalConfig.RAW_VERSION_NAME;
+            }
+
+            @Override
+            public int getVersionCode() {
+                return GlobalConfig.VERSION_CODE;
+            }
+
+            @NotNull
+            @Override
+            public String getScalyrToken() {
+                return Keys.getAUTH_SCALYR_API_KEY();
+            }
+
+            @NotNull
+            @Override
+            public String getNewRelicToken() {
+                return Keys.getAUTH_NEW_RELIC_API_KEY();
+            }
+
+            @NotNull
+            @Override
+            public String getNewRelicUserId() {
+                return Keys.getAUTH_NEW_RELIC_USER_ID();
+            }
+
+            @Override
+            public boolean isDebug() {
+                return GlobalConfig.DEBUG;
+            }
+
+            @NotNull
+            @Override
+            public String getUserId() {
+                return getUserSession().getUserId();
+            }
+
+            @NotNull
+            @Override
+            public String getScalyrConfig() {
+                return remoteConfig.getString(REMOTE_CONFIG_SCALYR_KEY_LOG);
+            }
+
+            @NotNull
+            @Override
+            public String getNewRelicConfig() {
+                return remoteConfig.getString(REMOTE_CONFIG_NEW_RELIC_KEY_LOG);
+            }
+        });
     }
 
     private void setVersionName() {
@@ -193,6 +286,7 @@ public class SellerMainApplication extends SellerRouterApplication implements
             registerActivityLifecycleCallbacks(new DevOptsSubscriber());
         }
         registerActivityLifecycleCallbacks(new TwoFactorCheckerSubscriber());
+        registerActivityLifecycleCallbacks(new ToasterActivityLifecycle(this));
     }
 
     @Override

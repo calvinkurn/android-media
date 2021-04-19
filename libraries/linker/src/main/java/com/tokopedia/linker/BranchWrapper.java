@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.text.TextUtils;
 
 import com.tokopedia.config.GlobalConfig;
+import com.tokopedia.core.deprecated.LocalCacheHandler;
 import com.tokopedia.linker.helper.BranchHelper;
 import com.tokopedia.linker.helper.RechargeBranchHelper;
 import com.tokopedia.linker.interfaces.LinkerRouter;
@@ -20,6 +21,7 @@ import com.tokopedia.linker.model.UserData;
 import com.tokopedia.linker.requests.LinkerDeeplinkRequest;
 import com.tokopedia.linker.requests.LinkerGenericRequest;
 import com.tokopedia.linker.requests.LinkerShareRequest;
+import com.tokopedia.linker.validation.BranchHelperValidation;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
@@ -48,6 +50,10 @@ public class BranchWrapper implements WrapperInterface {
     private static boolean isBranchInitialized = false;
     private RemoteConfig remoteConfig;
     private static Boolean APP_OPEN_FROM_BRANCH_LINK = false;
+    private String KEY_BRANCH_IO_PREF_FILE_NAME = "branch_io_pref";
+    private String KEY_APP_FIRST_OPEN = "app_first_open";
+    private LocalCacheHandler localCacheHandler;
+    private boolean lastFirstOpenUpdatedValue;
 
     @Override
     public void init(Context context) {
@@ -60,8 +66,8 @@ public class BranchWrapper implements WrapperInterface {
         }
     }
 
-    private boolean isXiaomiPreInstallApp(String pkgName){
-        try{
+    private boolean isXiaomiPreInstallApp(String pkgName) {
+        try {
             Class<?> miui = Class.forName("miui.os.MiuiInit");
             Method method = miui.getMethod("isPreinstalledPAIPackage", String.class);
             return (Boolean) method.invoke(null, pkgName);
@@ -71,9 +77,9 @@ public class BranchWrapper implements WrapperInterface {
         return false;
     }
 
-    private void sendPreInstallData(Context context){
+    private void sendPreInstallData(Context context) {
         RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(context);
-        if(remoteConfig.getBoolean(LinkerConstants.ENABLE_XIAOMI_PAI_TRACKING) && isXiaomiPreInstallApp(context.getPackageName())) {
+        if (remoteConfig.getBoolean(LinkerConstants.ENABLE_XIAOMI_PAI_TRACKING) && isXiaomiPreInstallApp(context.getPackageName())) {
             Branch.getInstance().setPreinstallCampaign("xiaomipreinstallol-dp_int-tp-10001511-0000-alon-alon");
             Branch.getInstance().setPreinstallPartner("a_custom_885438735322423255");
         }
@@ -113,7 +119,7 @@ public class BranchWrapper implements WrapperInterface {
                                 .reInit();
                     } else {
                         RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(context);
-                        if(remoteConfig.getBoolean(LinkerConstants.enableBranchReinitFlow)) {
+                        if (remoteConfig.getBoolean(LinkerConstants.enableBranchReinitFlow)) {
                             isBranchInitialized = true;
                         }
                         Branch.sessionBuilder(((LinkerDeeplinkData) linkerDeeplinkRequest.getDataObj()).getActivity()).withCallback(getBranchCallback(linkerDeeplinkRequest, context)).
@@ -142,17 +148,26 @@ public class BranchWrapper implements WrapperInterface {
                         deferredDeeplinkPath = LinkerConstants.APPLINKS + "://" + deeplink;
                     }
                     if (linkerDeeplinkRequest.getDefferedDeeplinkCallback() != null) {
-                        linkerDeeplinkRequest.getDefferedDeeplinkCallback().onDeeplinkSuccess(
-                                LinkerUtils.createDeeplinkData(deeplink, promoCode));
+                        if (isSkipDeeplink(context)) {
+                            linkerDeeplinkRequest.getDefferedDeeplinkCallback().onError(
+                                    LinkerUtils.createLinkerError(BranchError.ERR_BRANCH_NO_SHARE_OPTION, null));
+                        } else {
+                            linkerDeeplinkRequest.getDefferedDeeplinkCallback().onDeeplinkSuccess(
+                                    LinkerUtils.createDeeplinkData(deeplink, promoCode));
+                        }
                     }
-
                     checkAndSendUtmParams(context, referringParams);
+                    if (!TextUtils.isEmpty(deeplink)) {
+                        logNonBranchLinkData(context, referringParams);
+                    }
                 } else {
                     if (linkerDeeplinkRequest.getDefferedDeeplinkCallback() != null) {
                         linkerDeeplinkRequest.getDefferedDeeplinkCallback().onError(
                                 LinkerUtils.createLinkerError(BranchError.ERR_BRANCH_NO_SHARE_OPTION, null));
                     }
                 }
+                //this method always call after needSkipDeeplinkFromNonBranch()
+                updateFirstOpenCache(context);
             }
         };
     }
@@ -464,7 +479,7 @@ public class BranchWrapper implements WrapperInterface {
 
     private void checkAndSendUtmParams(Context context, JSONObject referringParams) {
         if (context == null) return;
-        if(needSkipEvent(context)) return;
+        if (isSkipUtmEvent(context)) return;
 
         String utmSource;
         String utmCampaign;
@@ -494,45 +509,86 @@ public class BranchWrapper implements WrapperInterface {
                 param.put(LinkerConstants.UTM_TERM, utmTerm);
             }
 
-            sendCampaignToTrackApp( context, param);
+            sendCampaignToTrackApp(context, param);
         }
     }
 
-    private void sendCampaignToTrackApp(Context context, Map<String,Object> param) {
+    private void sendCampaignToTrackApp(Context context, Map<String, Object> param) {
         if (isBranchUtmSupportActivated(context)) {
             TrackApp.getInstance().getGTM().sendCampaign(param);
         }
     }
 
-    private void checkBranchLinkUTMParams(LinkerDeeplinkRequest linkerDeeplinkRequest){
+    private void checkBranchLinkUTMParams(LinkerDeeplinkRequest linkerDeeplinkRequest) {
         APP_OPEN_FROM_BRANCH_LINK = false;
-        Activity activity= ((LinkerDeeplinkData) linkerDeeplinkRequest.getDataObj()).getActivity();
-        if(activity != null && activity.getIntent().getData()!= null && activity.getIntent().getData().toString().contains(LinkerConstants.BRANCH_LINK_DOMAIN)){
+        Activity activity = ((LinkerDeeplinkData) linkerDeeplinkRequest.getDataObj()).getActivity();
+        if (activity != null && activity.getIntent().getData() != null && activity.getIntent().getData().toString().contains(LinkerConstants.BRANCH_LINK_DOMAIN)) {
             APP_OPEN_FROM_BRANCH_LINK = true;
         }
     }
 
 
     private Boolean isBranchUtmSupportActivated(Context context) {
-        return getBooleanValue(context,RemoteConfigKey.ENABLE_BRANCH_UTM_SUPPORT);
+        return getBooleanValue(context, RemoteConfigKey.ENABLE_BRANCH_UTM_SUPPORT);
     }
 
     private Boolean isBranchUtmOnlyBranchLinkActivated(Context context) {
-        return getBooleanValue(context,RemoteConfigKey.ENABLE_BRANCH_UTM_ONLY_BRANCH_LINK);
+        return getBooleanValue(context, RemoteConfigKey.ENABLE_BRANCH_UTM_ONLY_BRANCH_LINK);
     }
 
-    private Boolean getBooleanValue(Context context, String key){
-        if(remoteConfig == null)
+    private Boolean isSkipDeeplinkNonBranchLinkActivated(Context context) {
+        return getBooleanValue(context, RemoteConfigKey.ENABLE_SKIP_DEEPLINK_FRON_NON_BRANCH_LINK);
+    }
+
+    private Boolean getBooleanValue(Context context, String key) {
+        if (remoteConfig == null)
             remoteConfig = new FirebaseRemoteConfigImpl(context);
         return remoteConfig.getBoolean(key);
 
     }
 
-    private Boolean needSkipEvent(Context context){
-        if(isBranchUtmOnlyBranchLinkActivated(context) && !APP_OPEN_FROM_BRANCH_LINK){
+    private boolean isSkipUtmEvent(Context context) {
+        if (isBranchUtmOnlyBranchLinkActivated(context) && !APP_OPEN_FROM_BRANCH_LINK) {
             return true;
         }
         return false;
+    }
+
+
+    private boolean isSkipDeeplink(Context context) {
+        if (APP_OPEN_FROM_BRANCH_LINK || isFirstOpen(context)) {
+            return false;
+        }
+        return isSkipDeeplinkNonBranchLinkActivated(context);
+
+    }
+
+    private void logNonBranchLinkData(Context context, JSONObject referringParams) {
+        if (!APP_OPEN_FROM_BRANCH_LINK) {
+            new BranchHelperValidation().logSkipDeeplinkNonBranchLink(referringParams, isFirstOpen(context));
+        }
+
+    }
+
+    private void updateFirstOpenCache(Context context) {
+        if (isFirstOpen(context)) {
+            getLocalCacheHandler(context).putBoolean(KEY_APP_FIRST_OPEN, true);
+            getLocalCacheHandler(context).applyEditor();
+        }
+    }
+
+    private boolean isFirstOpen(Context context) {
+        if (!lastFirstOpenUpdatedValue) {
+            lastFirstOpenUpdatedValue = getLocalCacheHandler(context).getBoolean(KEY_APP_FIRST_OPEN);
+        }
+        return !lastFirstOpenUpdatedValue;
+    }
+
+    private LocalCacheHandler getLocalCacheHandler(Context context) {
+        if (localCacheHandler == null) {
+            localCacheHandler = new LocalCacheHandler(context, KEY_BRANCH_IO_PREF_FILE_NAME);
+        }
+        return localCacheHandler;
     }
 
 }
