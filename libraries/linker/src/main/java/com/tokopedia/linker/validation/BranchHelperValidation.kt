@@ -8,8 +8,10 @@ import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.linker.model.PaymentData
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
+import com.tokopedia.track.TrackApp
 import org.json.JSONArray
 import org.json.JSONException
+import org.json.JSONObject
 import timber.log.Timber
 import kotlin.math.log
 
@@ -80,6 +82,30 @@ class BranchHelperValidation {
         }catch (e: Exception){
             e.printStackTrace()
             val messageMap = mapOf("type" to "error", "reason" to "exception_validateVIEW_ITEM", "data" to VIEW_ITEM, "ex" to Log.getStackTraceString(e))
+            logging(messageMap)
+        }
+    }
+
+    fun logSkipDeeplinkNonBranchLink(referringParams: JSONObject, isFirstOpen:Boolean){
+        try {
+            val clickTime = referringParams.optString("+click_timestamp")
+            val utm_medium = referringParams.optString("utm_medium")
+            val utm_source = referringParams.optString("utm_source")
+            val campaign = referringParams.optString("~campaign")
+            val android_deeplink_path = referringParams.optString(LinkerConstants.KEY_ANDROID_DEEPLINK_PATH)
+            val clicked_branch_link = referringParams.optString("+clicked_branch_link")
+            val is_first_session = referringParams.optString("+is_first_session").toString()
+            val feature = referringParams.optString("~feature")
+            val channel = referringParams.optString("~channel")
+            val clientId = TrackApp.getInstance().gtm.clientIDString
+
+            val messageMap = mapOf("type" to "validation", "reason" to "SkipDeeplinkNonBranchLink", "click_time" to clickTime, "utm_medium" to utm_medium,
+                    "utm_source" to utm_source, "campaign" to campaign, "android_deeplink_path" to android_deeplink_path, "clicked_branch_link" to clicked_branch_link,
+                    "is_first_session" to is_first_session, "client_id" to clientId,"is_first_open" to (isFirstOpen?:false).toString(),"feature" to feature,"channel" to channel)
+            logging(messageMap)
+        }catch (e: Exception){
+            e.printStackTrace()
+            val messageMap = mapOf("type" to "error", "reason" to "exception_skipDeeplink", "data" to "logSkipDeeplinkNonBranchLink", "ex" to Log.getStackTraceString(e))
             logging(messageMap)
         }
     }
