@@ -43,7 +43,7 @@ class OSMixTopComponentCallback (private val dcEventHandler: DynamicChannelEvent
     }
 
     override fun onProductCardClicked(channel: ChannelModel, channelGrid: ChannelGrid, adapterPosition: Int, position: Int, applink: String) {
-        dcEventHandler.onFlashSaleCardClickedComponent(position, channel, channelGrid, applink)
+        dcEventHandler.onFlashSaleCardClickedComponent(position + 1, channel, channelGrid, applink)
     }
 
     override fun onSeeMoreCardClicked(channel: ChannelModel, applink: String) {
