@@ -13,7 +13,6 @@ import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
 import com.tokopedia.product.detail.data.model.datamodel.VariantDataModel
 import com.tokopedia.product.detail.data.util.ProductTrackingConstant.Action.CLICK_ANNOTATION_RECOM_CHIP
-import com.tokopedia.product.detail.data.util.TrackingUtil.getCategoryIdAndNameLevel
 import com.tokopedia.product.detail.data.util.TrackingUtil.removeCurrencyPrice
 import com.tokopedia.product.detail.data.util.TrackingUtil.sendTrackingBundle
 import com.tokopedia.product.util.processor.Product
@@ -1471,7 +1470,8 @@ object DynamicProductDetailTracking {
             trackingQueue?.putEETracking(mapEvent as HashMap<String, Any>?)
         }
 
-        private val generateProduct = { irisSessionId: String, trackerListName: String?, productInfo: DynamicProductInfoP1?,
+        private val generateProduct = { irisSessionId: String, trackerListName: String?,
+                                        productInfo: DynamicProductInfoP1?,
                                         trackerAttribution: String?,
                                         isTradeIn: Boolean, isDiagnosed: Boolean,
                                         multiOrigin: Boolean, deeplinkUrl: String,
@@ -1479,6 +1479,11 @@ object DynamicProductDetailTracking {
 
             val dimension55 = TrackingUtil.getTradeInString(isTradeIn, isDiagnosed)
             val dimension83 = TrackingUtil.getBoTypeString(boType)
+            val dimension54 = TrackingUtil.getMultiOriginAttribution(multiOrigin)
+            val dimension38 = trackerAttribution ?: ProductTrackingConstant.Tracking.DEFAULT_VALUE
+            val dimension98 = if (isStockAvailable == "0") "not available" else "available"
+
+            val categoryFormatted = TrackingUtil.getEnhanceCategoryFormatted(productInfo?.basic?.category?.detail)
 
             arrayListOf(Product(
                     name = productInfo?.getProductName ?: "",
@@ -1486,14 +1491,14 @@ object DynamicProductDetailTracking {
                     price = productInfo?.data?.price?.value?.toDouble() ?: 0.0,
                     brand = productInfo?.getProductName,
                     variant = ProductTrackingConstant.Tracking.DEFAULT_VALUE,
-                    category = TrackingUtil.getEnhanceCategoryFormatted(productInfo?.basic?.category?.detail),
+                    category = categoryFormatted,
                     currency = null,
-                    dimension38 = trackerAttribution ?: ProductTrackingConstant.Tracking.DEFAULT_VALUE,
+                    dimension38 = dimension38,
                     dimension55 = dimension55,
-                    dimension54 = TrackingUtil.getMultiOriginAttribution(multiOrigin),
+                    dimension54 = dimension54,
                     dimension83 = dimension83,
                     dimension81 = productInfo?.shopTypeString ?: "",
-                    dimension98 = if (isStockAvailable == "0") "not available" else "available",
+                    dimension98 = dimension98,
                     index = 1
             ))
         }
