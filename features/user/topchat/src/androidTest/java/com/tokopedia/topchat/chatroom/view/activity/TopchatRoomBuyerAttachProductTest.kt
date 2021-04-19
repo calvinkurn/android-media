@@ -5,6 +5,7 @@ import android.app.Instrumentation
 import android.content.Intent
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.Espresso.pressBack
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
@@ -20,7 +21,6 @@ import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.view.activity.base.BaseBuyerTopchatRoomTest
 import com.tokopedia.topchat.chatroom.view.activity.base.hasQuestion
 import com.tokopedia.topchat.common.TopChatInternalRouter.Companion.SOURCE_TOPCHAT
-import com.tokopedia.topchat.matchers.isExpanded
 import com.tokopedia.topchat.matchers.withRecyclerView
 import com.tokopedia.topchat.matchers.withTotalItem
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -404,22 +404,22 @@ class TopchatRoomBuyerAttachProductTest : BaseBuyerTopchatRoomTest() {
         inflateTestFragment()
 
         // Then
-        onView(withId(R.id.rv_srw))
-                .check(matches(isExpanded()))
+        assertSrwContentIsVisible()
+        assertSrwExpanded()
 
         // When
         onView(withId(R.id.tp_srw_container_partial)).perform(click())
 
         // Then
-        onView(withId(R.id.rv_srw))
-                .check(matches(not(isExpanded())))
+        assertSrwContentIsVisible()
+        assertSrwCollapsed()
 
         // When
         onView(withId(R.id.tp_srw_container_partial)).perform(click())
 
         // Then
-        onView(withId(R.id.rv_srw))
-                .check(matches(isExpanded()))
+        assertSrwContentIsVisible()
+        assertSrwExpanded()
     }
 
     @Test
@@ -444,7 +444,32 @@ class TopchatRoomBuyerAttachProductTest : BaseBuyerTopchatRoomTest() {
         assertSrwContentIsHidden()
     }
 
-    // TODO: test expand collapse srw when open/hide keyboard
+    @Test
+    fun expand_collapse_srw_when_user_open_or_hide_keyboard() {
+        // Given
+        setupChatRoomActivity {
+            putProductAttachmentIntent(it)
+        }
+        getChatUseCase.response = firstPageChatAsBuyer
+        chatAttachmentUseCase.response = chatAttachmentResponse
+        chatSrwUseCase.response = chatSrwResponse
+        inflateTestFragment()
+
+        // When
+        clickComposeArea()
+
+        // Then
+        assertSrwContentIsVisible()
+        assertSrwCollapsed()
+
+        // When
+        pressBack()
+
+        // Then
+        assertSrwContentIsVisible()
+        assertSrwExpanded()
+    }
+
     // TODO test expand collapse srw when keyboard opened
 
     private fun putProductAttachmentIntent(intent: Intent) {

@@ -1,8 +1,14 @@
 package com.tokopedia.topchat.chatroom.view.activity.base
 
+import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.matcher.ViewMatchers.withId
 import com.tokopedia.topchat.AndroidFileUtil
+import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.domain.pojo.srw.ChatSmartReplyQuestionResponse
+import com.tokopedia.topchat.matchers.isExpanded
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import org.hamcrest.CoreMatchers.not
 
 open class BaseBuyerTopchatRoomTest : TopchatRoomTest() {
 
@@ -29,6 +35,16 @@ open class BaseBuyerTopchatRoomTest : TopchatRoomTest() {
         getTemplateChatRoomUseCase.response = generateTemplateResponse(
                 templates = templateChats
         )
+    }
+
+    protected fun assertSrwExpanded() {
+        onView(withId(R.id.rv_srw))
+                .check(matches(isExpanded()))
+    }
+
+    protected fun assertSrwCollapsed() {
+        onView(withId(R.id.rv_srw))
+                .check(matches(not(isExpanded())))
     }
 
 }
