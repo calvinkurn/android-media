@@ -11,7 +11,6 @@ import androidx.appcompat.widget.AppCompatImageView
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.home.R
 import com.tokopedia.home.analytics.HomePageTracking
 import com.tokopedia.home.beranda.domain.model.DynamicHomeIcon
@@ -72,14 +71,10 @@ class DynamicIconTwoRowsSectionViewHolder(val view: View,
 
         override fun onBindViewHolder(holder: DynamicIconViewHolder, position: Int) {
             holder.title.text = sectionViewModel.itemList[position].name
-            holder.icon.loadMiniImage(sectionViewModel.itemList[position].imageUrl, 150, 150, FPM_USE_CASE_ICON, object : ImageHandler.ImageLoaderStateListener{
-                override fun successLoad() {
-                    holder.shimmeringIcon.hide()
-                }
-
-                override fun failedLoad() {
-                    holder.shimmeringIcon.show()
-                }
+            holder.icon.loadMiniImage(sectionViewModel.itemList[position].imageUrl, 150, 150, FPM_USE_CASE_ICON, {
+                holder.shimmeringIcon.hide()
+            }, onFailed = {
+                holder.shimmeringIcon.show()
             })
             holder.container.setOnClickListener { view ->
                 eventClickDynamicIcon(view.context, sectionViewModel.itemList[position], position)

@@ -830,6 +830,9 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
                 homeAccountAnalytic.eventClickLogout()
                 showDialogLogout()
             }
+            AccountConstants.SettingCode.SETTING_QUALITY_SETTING -> {
+                RouteManager.route(context, ApplinkConstInternalGlobal.MEDIA_QUALITY_SETTING)
+            }
             AccountConstants.SettingCode.SETTING_APP_ADVANCED_CLEAR_CACHE -> {
                 homeAccountAnalytic.eventClickAppSettingCleanCache()
                 showDialogClearCache()

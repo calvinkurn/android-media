@@ -13,10 +13,10 @@ import android.widget.FrameLayout
 import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.media.loader.loadImageCircle
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 
@@ -81,7 +81,7 @@ class CustomTopChatView @JvmOverloads constructor(context: Context, attrs: Attri
     }
 
     fun showImageOnFab(context: Context, thumbnailUrlMobile: String) {
-        ImageHandler.loadImageCircle2(context, topChatFabButton, thumbnailUrlMobile)
+        topChatFabButton.loadImageCircle(thumbnailUrlMobile)
         topChatFabButtonParent.show()
     }
 

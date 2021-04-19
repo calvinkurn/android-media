@@ -263,6 +263,7 @@ dependencies {
     implementation project(rootProject.ext.features.shopCommon)
     implementation project(rootProject.ext.features.shopOpen)
     implementation project(rootProject.ext.features.withdraw)
+    implementation project(rootProject.ext.features.mediaCommon)
 
     implementation project(rootProject.ext.features.changePhoneNumber)
     implementation project(rootProject.ext.features.loginregister)

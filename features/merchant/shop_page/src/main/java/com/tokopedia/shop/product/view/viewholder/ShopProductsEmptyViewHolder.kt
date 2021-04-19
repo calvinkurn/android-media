@@ -3,7 +3,7 @@ package com.tokopedia.shop.product.view.viewholder
 import android.view.View
 import android.widget.ImageView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.shop.R
 import com.tokopedia.shop.common.constant.ShopPageConstant.URL_IMAGE_BUYER_EMPTY_STATE_TOKOPEDIA_IMAGE
 import com.tokopedia.shop.product.view.datamodel.ShopEmptyProductUiModel
@@ -43,12 +43,9 @@ class ShopProductsEmptyViewHolder(
 
 
     override fun bind(element: ShopEmptyProductUiModel) {
-        ImageHandler.loadImage(
-                view.context,
-                imageViewEmptyImage,
-                URL_IMAGE_BUYER_EMPTY_STATE_TOKOPEDIA_IMAGE,
-                R.drawable.ic_shop_page_loading_image
-        )
+        imageViewEmptyImage.loadImage(URL_IMAGE_BUYER_EMPTY_STATE_TOKOPEDIA_IMAGE) {
+            setPlaceHolder(R.drawable.ic_shop_page_loading_image)
+        }
         textTitle.text = element.title
         textDescription.text = element.description
     }

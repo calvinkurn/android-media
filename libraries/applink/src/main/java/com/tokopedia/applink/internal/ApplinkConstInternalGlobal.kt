@@ -536,6 +536,11 @@ object ApplinkConstInternalGlobal {
     @JvmField
     val SEAMLESS_LOGIN = "${INTERNAL_GLOBAL}/login-seamless"
 
+    //Image Quality Setting Activity
+    // tokopedia-android-internal://global/media-quality-setting
+    @JvmField
+    val MEDIA_QUALITY_SETTING = "${INTERNAL_GLOBAL}/media-quality-setting"
+
     //FeedbackPageActivity
     @JvmField
     val FEEDBACK_FORM = "$INTERNAL_GLOBAL/internal-feedback"

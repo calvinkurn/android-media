@@ -6,11 +6,12 @@ import androidx.appcompat.widget.AppCompatImageView
 import androidx.cardview.widget.CardView
 import com.airbnb.lottie.LottieAnimationView
 import com.airbnb.lottie.LottieCompositionFactory
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.media.loader.loadIcon
+import com.tokopedia.media.loader.loadImageCircle
 import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.remoteconfig.RemoteConfig
@@ -99,7 +100,7 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
             view.shop_page_main_profile_location.hide()
             view.shop_page_main_profile_location.text = shopLocation
         }
-        ImageHandler.loadImageCircle2(view.context, view.shop_page_main_profile_image, shopPageHeaderDataModel.avatar)
+        view.shop_page_main_profile_image.loadImageCircle(shopPageHeaderDataModel.avatar)
         if (isMyShop) {
             view.shop_page_main_profile_background.setOnClickListener {
                 listener.onShopCoverClicked(
@@ -464,7 +465,7 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
 
     fun showShopReputationBadges(shopBadge: ShopBadge) {
         view.image_view_shop_reputation_badge.show()
-        ImageHandler.LoadImage(view.image_view_shop_reputation_badge, shopBadge.badgeHD)
+        view.image_view_shop_reputation_badge.loadIcon(shopBadge.badgeHD)
     }
 
     private fun displayGoldenShop() {

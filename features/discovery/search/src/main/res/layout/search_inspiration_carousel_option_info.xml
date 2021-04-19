@@ -19,7 +19,7 @@
             android:id="@+id/optionInfoImage"
             android:layout_width="132dp"
             android:layout_height="132dp"
-            android:scaleType="fitXY"
+            android:scaleType="fitCenter"
             app:srcCompat="@drawable/search_inspiration_carousel_error_product_image"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"/>

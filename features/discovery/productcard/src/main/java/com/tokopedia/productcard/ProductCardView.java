@@ -4,22 +4,20 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Paint;
 import android.util.AttributeSet;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.widget.AppCompatImageView;
-
-import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.design.base.BaseCustomView;
 import com.tokopedia.unifyprinciples.Typography;
 
-import java.util.List;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatImageView;
+
+import static com.tokopedia.media.loader.JvmMediaLoader.loadImageFitCenter;
 
 public class ProductCardView extends BaseCustomView {
     protected TextView textName;
@@ -130,7 +128,7 @@ public class ProductCardView extends BaseCustomView {
     }
 
     public void setImageUrl(String imageUrl) {
-        ImageHandler.loadImageFitCenter(getContext(), imageView, imageUrl);
+        loadImageFitCenter(imageView, imageUrl);
     }
 
     public void setTopAdsVisible(boolean isVisible) {
