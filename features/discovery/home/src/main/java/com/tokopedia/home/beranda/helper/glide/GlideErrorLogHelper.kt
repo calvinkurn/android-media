@@ -4,8 +4,8 @@ import android.content.Context
 import android.net.ConnectivityManager
 import android.net.Uri
 import android.text.TextUtils
-import com.bumptech.glide.load.engine.GlideException
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.media.loader.utils.MediaException
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
@@ -15,7 +15,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import kotlin.coroutines.CoroutineContext
 
 class GlideErrorLogHelper : CoroutineScope {
@@ -25,13 +24,13 @@ class GlideErrorLogHelper : CoroutineScope {
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Default + masterJob
 
-    fun logError(context: Context, e: GlideException?, url: String) {
+    fun logError(context: Context, e: MediaException?, url: String) {
         launch {
             logErrorSync(context, e, url)
         }
     }
 
-    private fun logErrorSync(context: Context, e: GlideException?, url: String) {
+    private fun logErrorSync(context: Context, e: MediaException?, url: String) {
         val remoteConfig = FirebaseRemoteConfigImpl(context)
         val traceRouteMinVersion = remoteConfig.getLong(RemoteConfigKey.ENABLE_TRACEROUTE_MIN_VERSION, 999999999)
         if (GlobalConfig.VERSION_CODE < traceRouteMinVersion) {

@@ -1,7 +1,6 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
-apply plugin: "de.mannodermaus.android-junit5"
 
 buildscript {
     repositories {
@@ -11,7 +10,6 @@ buildscript {
     }
     dependencies {
         classpath rootProject.ext.miscDependencies.hansel
-        classpath rootProject.ext.miscDependencies.androidjunit5
     }
 }
 
@@ -22,19 +20,6 @@ android {
     sourceSets {
         test {
             resources.srcDirs += ['src/test/resources']
-        }
-    }
-
-    testOptions {
-        junitPlatform {
-            filters {
-                engines {
-                    include 'spek2'
-                }
-            }
-        }
-        unitTests.all {
-            testLogging.events = ["passed", "skipped", "failed"]
         }
     }
 }
@@ -79,9 +64,11 @@ dependencies {
 
 project.ext {
     artifactId = 'media-uploader'
-    groupId = 'com.tokopedia.library'
-    versionName = "0.0.2"
+    groupId = 'com.tokopedia.media'
+    versionName = "0.0.1"
     artifactName = "mediauploader-release"
 }
 
 apply from: '../../../publish_local.gradle'
+apply from: '../../../jacoco_task.gradle'
+apply from: '../../../sonar_config.gradle'

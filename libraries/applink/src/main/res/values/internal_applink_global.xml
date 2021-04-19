@@ -68,6 +68,7 @@
     <string name="path_user_login" translatable="false">/login</string>
     <string name="path_init_register">/init-register</string>
     <string name="path_manage_name">/manage-name</string>
+    <string name="path_image_quality_setting" translatable="false">/media-quality-setting</string>
 
     <string name="path_email_register">/email-register</string>
     <string name="path_ovo_pay_with_qr">/ovo-pay-with-qr</string>
