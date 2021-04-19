@@ -104,7 +104,8 @@ class PopularKeywordViewHolder (val view: View,
             }
 
             channelTitleStub?.let {
-                if (element.title.isNotEmpty()) {
+                val title = if (element.title.isNotEmpty()) element.title else element.channel.header.name
+                if (title.isNotEmpty()) {
                     it.visibility = View.VISIBLE
                     channelTitle = if (channelTitleStub is ViewStub &&
                             !isViewStubHasBeenInflated(channelTitleStub)) {
@@ -113,7 +114,7 @@ class PopularKeywordViewHolder (val view: View,
                     } else {
                         itemView.findViewById(R.id.channel_title)
                     }
-                    channelTitle?.text = element.title
+                    channelTitle?.text = title
                     channelTitle?.visibility = View.VISIBLE
                     channelTitle?.setTextColor(
                             if(element.channel.header.textColor.isNotEmpty()) Color.parseColor(element.channel.header.textColor).invertIfDarkMode(itemView.context)
