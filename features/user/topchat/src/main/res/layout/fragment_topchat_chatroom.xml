@@ -207,8 +207,8 @@
                     android:paddingTop="@dimen/dp_topchat_10"
                     android:paddingEnd="@dimen/dp_topchat_9"
                     android:paddingBottom="@dimen/dp_topchat_10"
-                    app:icon_color_light_enable="@color/Unify_N0"
-                    app:icon_color_night_enable="@color/Unify_N0"
+                    app:icon_color_light_enable="@color/Unify_Static_White"
+                    app:icon_color_night_enable="@color/Unify_Static_White"
                     app:icon_name="SEND_TEXT"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent" />
