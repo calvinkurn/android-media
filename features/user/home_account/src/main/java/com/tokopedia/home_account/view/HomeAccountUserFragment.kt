@@ -798,6 +798,11 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
                 }
             }
 
+            AccountConstants.SettingCode.SETTING_IP -> {
+                homeAccountAnalytic.eventClickIpAboutTokopedia()
+                RouteManager.route(activity, AccountConstants.Url.BASE_WEBVIEW_APPLINK + AccountConstants.Url.BASE_MOBILE + AccountConstants.Url.PATH_IP)
+            }
+
             AccountConstants.SettingCode.SETTING_PRIVACY_ID -> {
                 homeAccountAnalytic.eventClickSetting(PRIVACY_POLICY)
                 homeAccountAnalytic.eventClickPrivacyPolicyAboutTokopedia()
