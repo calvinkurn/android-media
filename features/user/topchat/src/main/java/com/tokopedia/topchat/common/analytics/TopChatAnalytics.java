@@ -370,7 +370,8 @@ public class TopChatAnalytics {
     public void eventSeenProductAttachment(
             Context context,
             @NotNull ProductAttachmentViewModel product,
-            @NotNull UserSessionInterface user
+            @NotNull UserSessionInterface user,
+            Boolean amISeller
     ) {
         ArrayList<com.tokopedia.abstraction.processor.beta.ProductListImpressionProduct> products = new ArrayList<>();
         com.tokopedia.abstraction.processor.beta.ProductListImpressionProduct product1 = new com.tokopedia.abstraction.processor.beta.ProductListImpressionProduct(
@@ -390,6 +391,9 @@ public class TopChatAnalytics {
         );
         products.add(product1);
 
+        ArrayMap<String, String> additionalData = new ArrayMap<String, String>();
+        String eventLabel = product.getEventLabelImpression(amISeller);
+        additionalData.put(EVENT_LABEL, eventLabel);
         Bundle bundle = com.tokopedia.abstraction.processor.beta.ProductListImpressionBundler.getBundle(
                 getFrom(product),
                 products,
@@ -397,9 +401,9 @@ public class TopChatAnalytics {
                 ProductListImpressionBundler.KEY,
                 Category.CHAT_DETAIL,
                 Action.VIEW_PRODUCT_PREVIEW,
+                BusinessUnit.Communication,
                 null,
-                null,
-                new ArrayMap<>()
+                additionalData
         );
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                 ProductListImpressionBundler.KEY, bundle
