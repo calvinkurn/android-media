@@ -16,6 +16,7 @@ import com.tokopedia.gm.common.constant.*
 import com.tokopedia.gm.common.data.source.local.model.PMShopInfoUiModel
 import com.tokopedia.gm.common.data.source.local.model.PMStatusAndShopInfoUiModel
 import com.tokopedia.gm.common.data.source.local.model.PowerMerchantSettingInfoUiModel
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.orTrue
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.orZero
@@ -94,7 +95,7 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
     override fun loadData(page: Int) {}
 
     override fun setOnDeactivatePMClickListener() {
-        val bottomSheet = PowerMerchantCancelBottomSheet.newInstance(getExpiredTimeFmt(), true)
+        val bottomSheet = PowerMerchantCancelBottomSheet.newInstance(getExpiredTimeFmt(), pmStatusAndShopInfo?.isFreeShippingEnabled.orFalse())
         if (bottomSheet.isAdded || childFragmentManager.isStateSaved) return
 
         bottomSheet.setListener(object : PowerMerchantCancelBottomSheet.BottomSheetCancelListener {

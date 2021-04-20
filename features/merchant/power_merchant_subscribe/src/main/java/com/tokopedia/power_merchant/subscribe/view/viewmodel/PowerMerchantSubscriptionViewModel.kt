@@ -11,6 +11,7 @@ import com.tokopedia.power_merchant.subscribe.domain.interactor.GetPMActiveDataU
 import com.tokopedia.power_merchant.subscribe.domain.interactor.GetPMGradeBenefitAndShopInfoUseCase
 import com.tokopedia.power_merchant.subscribe.view.model.PMActiveDataUiModel
 import com.tokopedia.power_merchant.subscribe.view.model.PMGradeBenefitAndShopInfoUiModel
+import com.tokopedia.power_merchant.subscribe.view_old.util.PowerMerchantRemoteConfig
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -28,6 +29,7 @@ class PowerMerchantSubscriptionViewModel @Inject constructor(
         private val getPMGradeWithBenefitAndShopInfoUseCase: Lazy<GetPMGradeBenefitAndShopInfoUseCase>,
         private val getPMActiveDataUseCase: Lazy<GetPMActiveDataUseCase>,
         private val activatePMUseCase: Lazy<PowerMerchantActivateUseCase>,
+        private val remoteConfig: Lazy<PowerMerchantRemoteConfig>,
         private val dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.main) {
 
@@ -51,7 +53,9 @@ class PowerMerchantSubscriptionViewModel @Inject constructor(
     fun getPmStatusAndShopInfo() {
         launchCatchError(block = {
             val result = withContext(dispatchers.io) {
-                getPMStatusAndShopInfo.get().executeOnBackground()
+                val isFreeShippingEnabled = remoteConfig.get().isFreeShippingEnabled()
+                val data = getPMStatusAndShopInfo.get().executeOnBackground()
+                return@withContext data.copy(isFreeShippingEnabled = isFreeShippingEnabled)
             }
             _pmStatusAndShopInfo.value = Success(result)
         }, onError = {
