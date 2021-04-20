@@ -176,8 +176,10 @@ object CatalogDetailAnalytics {
     }
 
     private fun getCatalogTrackingUrl(catalogUrl : String?) : String {
-        catalogUrl?.split(CATALOG_URL_KEY)?.last()?.let {
-            return "${CATALOG_URL_KEY}$it"
+        if (!catalogUrl.isNullOrEmpty()){
+            catalogUrl.split(CATALOG_URL_KEY).last().let {
+                return "${CATALOG_URL_KEY}$it"
+            }
         }
         return ""
     }
