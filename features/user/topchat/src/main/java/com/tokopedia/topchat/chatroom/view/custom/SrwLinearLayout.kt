@@ -62,6 +62,7 @@ class SrwLinearLayout : FrameLayout {
 
     interface Listener {
         fun onRetrySrw()
+        fun trackViewSrw()
     }
 
     constructor(context: Context) : super(context)
@@ -245,6 +246,10 @@ class SrwLinearLayout : FrameLayout {
     }
 
     private fun showSrwContent() {
+        val isPreviouslyVisible = srwContentContainer?.isVisible == true
+        if (!isPreviouslyVisible) {
+            listener?.trackViewSrw()
+        }
         srwContentContainer?.show()
     }
 
