@@ -40,11 +40,9 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.Ba
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.CashBackData
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeNotifModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.HomeBalanceModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.PendingCashbackModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.*
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.GeoLocationPromptDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderDataModel
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeHeaderWalletAction
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeInitialShimmerDataModel
@@ -85,10 +83,6 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flowOn
-import retrofit2.Response
-import rx.Subscriber
-import rx.android.schedulers.AndroidSchedulers
-import rx.schedulers.Schedulers
 import rx.subscriptions.CompositeSubscription
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
@@ -136,9 +130,6 @@ open class HomeRevampViewModel @Inject constructor(
         const val GRID = "grid"
         const val QUANTITY = "quantity"
         const val POSITION = "position"
-        private var lastRequestTimeHomeData: Long = 0
-        private var lastRequestTimeSendGeolocation: Long = 0
-        private val REQUEST_DELAY_SEND_GEOLOCATION = TimeUnit.HOURS.toMillis(1) // 1 hour
     }
 
     private var navRollanceType: String = ""
@@ -266,8 +257,6 @@ open class HomeRevampViewModel @Inject constructor(
 
     private var fetchFirstData = false
     private var compositeSubscription: CompositeSubscription = CompositeSubscription()
-    private var hasGeoLocationPermission = false
-    private var isNeedShowGeoLocation = false
     private var headerDataModel: HeaderDataModel? = null
 
     private var homeFlowDataCancelled = false
@@ -303,13 +292,9 @@ open class HomeRevampViewModel @Inject constructor(
     }
 
     fun refresh(isFirstInstall: Boolean, forceRefresh: Boolean = false){
-        val needSendGeolocationRequest = lastRequestTimeHomeData + REQUEST_DELAY_SEND_GEOLOCATION < System.currentTimeMillis()
         if ((forceRefresh && getHomeDataJob?.isActive == false) || (!fetchFirstData && homeRateLimit.shouldFetch(HOME_LIMITER_KEY))) {
             refreshHomeData()
             _isNeedRefresh.value = Event(true)
-        }
-        if (needSendGeolocationRequest && hasGeoLocationPermission) {
-            _sendLocationLiveData.postValue(Event(needSendGeolocationRequest))
         }
         balanceRemoteConfigCondition(
                 isNewBalanceWidget = {
@@ -424,20 +409,6 @@ open class HomeRevampViewModel @Inject constructor(
                 ))
             }
         }
-    }
-
-    fun sendGeolocationData() {
-        sendGeolocationInfoUseCase.get().createObservable(RequestParams.EMPTY)
-                .subscribeOn(Schedulers.io())
-                .unsubscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(object : Subscriber<Response<String>>() {
-                    override fun onCompleted() {}
-                    override fun onError(e: Throwable) {}
-                    override fun onNext(s: Response<String>?) {
-                        lastRequestTimeSendGeolocation = System.currentTimeMillis()
-                    }
-                })
     }
 
     override fun onCleared() {
@@ -614,25 +585,6 @@ open class HomeRevampViewModel @Inject constructor(
         return homeDataModel
     }
 
-    private fun evaluateGeolocationComponent(homeDataModel: HomeDataModel?): HomeDataModel? {
-        homeDataModel?.let {
-            if (!isNeedShowGeoLocation) {
-                val currentList = homeDataModel.list.toMutableList()
-                currentList.let {
-                    val mutableIterator = currentList.iterator()
-                    for (e in mutableIterator) {
-                        if(e is GeoLocationPromptDataModel){
-                            mutableIterator.remove()
-                            break
-                        }
-                    }
-                    return homeDataModel.copy(list = it)
-                }
-            }
-        }
-        return homeDataModel
-    }
-
     fun getPlayBanner(position: Int){
         val playBanner =
                 if (position < homeVisitableListData.size
@@ -667,16 +619,6 @@ open class HomeRevampViewModel @Inject constructor(
             homeProcessor.get().sendWithQueueMethod(DeleteWidgetCommand(it.value, it.index, this))
         }
     }
-
-    fun setNeedToShowGeolocationComponent(needToShowGeolocation: Boolean){
-        this.isNeedShowGeoLocation = needToShowGeolocation
-    }
-
-    fun setGeolocationPermission(hasGeolocationPermission: Boolean){
-        this.hasGeoLocationPermission = hasGeolocationPermission
-    }
-
-    fun hasGeolocationPermission() = hasGeoLocationPermission
 
 // =================================================================================
 // ================================ View Controller ================================
@@ -788,14 +730,6 @@ open class HomeRevampViewModel @Inject constructor(
                 homeProcessor.get().sendWithQueueMethod(DeleteWidgetCommand(it, position, this))
             }
         }
-    }
-
-    fun onCloseGeolocation() {
-        val detectGeolocation = homeVisitableListData.find { visitable -> visitable is GeoLocationPromptDataModel }
-        (detectGeolocation as? GeoLocationPromptDataModel)?.let {
-            homeProcessor.get().sendWithQueueMethod(DeleteWidgetCommand(it, -1, this))
-        }
-        setNeedToShowGeolocationComponent(false)
     }
 
     fun onCloseTicker() {
