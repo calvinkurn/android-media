@@ -1,6 +1,5 @@
 package com.tokopedia.shop.review.shop.domain
 
-import com.tokopedia.design.utils.StringUtils
 import com.tokopedia.shop.review.product.data.model.reviewlist.DataResponseReviewShop
 import com.tokopedia.shop.review.shop.domain.model.GetLikeDislikeReviewDomain
 import com.tokopedia.shop.review.shop.domain.repository.ReputationRepository
@@ -47,7 +46,7 @@ class ReviewShopUseCase @Inject constructor(private val reputationRepository: Re
         for (review in dataResponseReviewShop!!.list!!) {
             listIds.add(java.lang.String.valueOf(review.reviewId))
         }
-        return StringUtils.convertListToStringDelimiter(listIds, "~")
+        return listIds.joinToString("~")
     }
 
     fun createRequestParams(shopDomain: String?, shopId: String?, page: String?, userId: String?): RequestParams {

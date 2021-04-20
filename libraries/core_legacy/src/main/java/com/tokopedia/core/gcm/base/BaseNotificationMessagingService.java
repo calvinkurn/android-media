@@ -17,6 +17,8 @@ import com.tokopedia.fcmcommon.FirebaseMessagingManager;
 import com.tokopedia.fcmcommon.di.DaggerFcmComponent;
 import com.tokopedia.fcmcommon.di.FcmComponent;
 import com.tokopedia.fcmcommon.di.FcmModule;
+import com.tokopedia.logger.ServerLogger;
+import com.tokopedia.logger.utils.Priority;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.moengage_wrapper.MoengageInteractor;
@@ -24,6 +26,7 @@ import com.tokopedia.track.TrackApp;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -90,11 +93,14 @@ public abstract class BaseNotificationMessagingService extends FirebaseMessaging
         updateApsFlyerToken(newToken);
         ((TkpdCoreRouter) this.getApplicationContext()).refreshFCMFromInstantIdService(newToken);
         try {
-            Timber.w("P2#TOKEN_REFRESH#Notification New Token - " + newToken + " | "
+            String messageType = "Notification New Token - " + newToken + " | "
                     + userSession.getUserId() + " | " + userSession.getAccessToken() + " | "
                     + Build.FINGERPRINT + " | " + Build.MANUFACTURER + " | "
                     + Build.BRAND + " | " + Build.DEVICE + " | " + Build.PRODUCT + " | " + Build.MODEL
-                    + " | " + Build.TAGS);
+                    + " | " + Build.TAGS;
+            Map<String, String> messageMap = new HashMap<>();
+            messageMap.put("type", messageType);
+            ServerLogger.log(Priority.P2, "TOKEN_REFRESH", messageMap);
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -301,7 +301,7 @@ class PlayBottomSheetFragment @Inject constructor(
     }
 
     private fun openPageByApplink(applink: String, vararg params: String, requestCode: Int? = null, shouldFinish: Boolean = false, pipMode: Boolean = false) {
-        if (pipMode) {
+        if (pipMode && !playViewModel.isFreezeOrBanned) {
             playViewModel.requestPiPBrowsingPage(
                     OpenApplinkUiModel(applink = applink, params = params.toList(), requestCode, shouldFinish)
             )

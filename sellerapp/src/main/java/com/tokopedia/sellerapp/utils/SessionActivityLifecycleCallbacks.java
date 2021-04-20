@@ -4,9 +4,13 @@ import android.app.Activity;
 import android.app.Application;
 import android.os.Bundle;
 
+import com.tokopedia.logger.ServerLogger;
+import com.tokopedia.logger.utils.Priority;
 import com.tokopedia.utils.network.NetworkTrafficUtils;
 
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import timber.log.Timber;
@@ -83,8 +87,13 @@ public class SessionActivityLifecycleCallbacks implements Application.ActivityLi
     }
 
     private void logSession(String activityName, long currentMillis) {
-        Timber.w("P1#ACTIVE_SESSION#%s;count=%s;open_page_total=%s;open_page=%s;diff_time=%s",
-                activityName, sessionCount, openedPageCountTotal, openedPageCount, getDiffDuration(lastSessionMillis, currentMillis));
+        Map<String, String> messageMap = new HashMap<>();
+        messageMap.put("type", activityName);
+        messageMap.put("count", String.valueOf(sessionCount));
+        messageMap.put("open_page_total", String.valueOf(openedPageCountTotal));
+        messageMap.put("open_page", String.valueOf(openedPageCount));
+        messageMap.put("diff_time", getDiffDuration(lastSessionMillis, currentMillis));
+        ServerLogger.log(Priority.P1, "ACTIVE_SESSION", messageMap);
     }
 
     private String getDiffDuration(long startDuration, long stopDuration) {
@@ -120,11 +129,22 @@ public class SessionActivityLifecycleCallbacks implements Application.ActivityLi
         long sumNetwork = sumDiffTx + sumDiffRx;
 
         updateLastSumTraffic(bootTx, bootRx);
-        Timber.w("P1#DATA_USAGE#%s;count=%s;open_page_total=%s;open_page=%s;diff_time=%s;net=%s;tx=%s;rx=%s;sum_net=%s;sum_tx=%s;sum_rx=%s;boot_net=%s;boot_tx=%s;boot_rx=%s",
-                activityName, sessionCount, openedPageCountTotal, openedPageCount, getDiffDuration(lastSessionMillis, currentMillis),
-                getFormattedMBSize(network), getFormattedMBSize(diffTx), getFormattedMBSize(diffRx),
-                getFormattedMBSize(sumNetwork), getFormattedMBSize(sumDiffTx), getFormattedMBSize(sumDiffRx),
-                getFormattedMBSize(bootNetwork), getFormattedMBSize(bootTx), getFormattedMBSize(bootRx));
+        Map<String, String> messageMap = new HashMap<>();
+        messageMap.put("type", activityName);
+        messageMap.put("count", String.valueOf(sessionCount));
+        messageMap.put("open_page_total", String.valueOf(openedPageCountTotal));
+        messageMap.put("open_page", String.valueOf(openedPageCount));
+        messageMap.put("diff_time", getDiffDuration(lastSessionMillis, currentMillis));
+        messageMap.put("net", getFormattedMBSize(network));
+        messageMap.put("tx", getFormattedMBSize(diffTx));
+        messageMap.put("rx", getFormattedMBSize(diffRx));
+        messageMap.put("sum_net", getFormattedMBSize(sumNetwork));
+        messageMap.put("sum_tx", getFormattedMBSize(sumDiffTx));
+        messageMap.put("sum_rx", getFormattedMBSize(sumDiffRx));
+        messageMap.put("boot_net", getFormattedMBSize(bootNetwork));
+        messageMap.put("boot_tx", getFormattedMBSize(bootTx));
+        messageMap.put("boot_rx", getFormattedMBSize(bootRx));
+        ServerLogger.log(Priority.P1, "DATA_USAGE", messageMap);
     }
 
     private void updateLastSumTraffic(long currentSumTx, long currentSumRx) {
