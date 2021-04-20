@@ -6,10 +6,12 @@ import android.content.Intent
 import android.graphics.PorterDuff
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import android.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.lifecycle.Observer
@@ -76,8 +78,8 @@ import kotlinx.android.synthetic.main.widget_event_pdp_calendar.view.*
 import java.util.*
 import javax.inject.Inject
 
-class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(), OnBindItemListener,
-        EventNavigationActivity.PDPListener, AppBarLayout.OnOffsetChangedListener {
+class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(), OnBindItemListener
+        ,AppBarLayout.OnOffsetChangedListener {
 
     lateinit var performanceMonitoring: PerformanceMonitoring
 
@@ -118,6 +120,7 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
         arguments?.let {
             urlPDP= EventPDPFragmentArgs.fromBundle(it).seo
         }
+        setHasOptionsMenu(true)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -483,7 +486,7 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
         }
     }
 
-    override fun shareLink() {
+    fun shareLink() {
         share(productDetailData)
     }
 
@@ -509,6 +512,14 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
                 }
             }
         }
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item?.itemId ?: "" == R.id.action_overflow_menu) {
+            shareLink()
+            return true
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     fun hideShareLoading() {

@@ -27,23 +27,6 @@ class EventNavigationActivity : BaseSimpleActivity(), HasComponent<EventHomeComp
         return true
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        if (item?.itemId ?: "" == R.id.action_overflow_menu) {
-            onClickShare()
-            return true
-        }
-        return super.onOptionsItemSelected(item)
-    }
-
-    interface PDPListener {
-        fun shareLink()
-    }
-
-    fun onClickShare() {
-        if (fragment is PDPListener) {
-            (fragment as PDPListener).shareLink()
-        }
-    }
 
     override fun getParentViewResourceID(): Int {
         return R.id.parent_view
