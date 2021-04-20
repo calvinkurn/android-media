@@ -1722,8 +1722,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                         getView().showToastNormal(getView().getActivityContext().getString(R.string.label_change_address_success));
                                         getView().renderChangeAddressSuccess(reloadCheckoutPage);
                                     } else {
-                                        if (setShippingAddressData.getMessages() != null &&
-                                                setShippingAddressData.getMessages().size() > 0) {
+                                        if (setShippingAddressData.getMessages().size() > 0) {
                                             StringBuilder stringBuilder = new StringBuilder();
                                             for (String errorMessage : setShippingAddressData.getMessages()) {
                                                 stringBuilder.append(errorMessage).append(" ");
@@ -2022,4 +2021,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         return true;
     }
 
+    @Override
+    public void setCheckoutData(CheckoutData checkoutData) {
+        this.checkoutData = checkoutData;
+    }
 }
