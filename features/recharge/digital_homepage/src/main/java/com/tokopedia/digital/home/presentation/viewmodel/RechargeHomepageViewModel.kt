@@ -11,8 +11,6 @@ import com.tokopedia.digital.home.presentation.util.RechargeHomepageDispatchersP
 import com.tokopedia.digital.home.presentation.util.RechargeHomepageSectionMapper
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.graphql.data.model.CacheType
-import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.usecase.coroutines.Fail
@@ -44,7 +42,10 @@ class RechargeHomepageViewModel @Inject constructor(
     val rechargeTickerHomepageModel: LiveData<Result<RechargeTickerHomepageModel>>
         get() = mutableRechargeTickerHomepageModel
 
+    private val calledSectionIds = hashMapOf<Int, Int>()
+
     fun getRechargeHomepageSectionSkeleton(mapParams: Map<String, Any>) {
+        onRefreshData()
         launchCatchError(block = {
             val graphqlRequest = GraphqlRequest(
                     RechargeHomepageQueries.SKELETON_QUERY,
@@ -66,15 +67,15 @@ class RechargeHomepageViewModel @Inject constructor(
     fun getRechargeHomepageSections(mapParams: Map<String, Any>) {
         val requestIDs = (mapParams[PARAM_RECHARGE_HOMEPAGE_SECTIONS_SECTION_IDS] as? List<Int>)
                 ?: listOf()
+
+        if (calledSectionIds.containsKey(requestIDs.firstOrNull() ?: 0)) return
         launchCatchError(block = {
             val graphqlRequest = GraphqlRequest(
                     RechargeHomepageQueries.SECTION_QUERY,
                     RechargeHomepageSections.Response::class.java, mapParams
             )
-            val graphqlCacheStrategy = GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST)
-                    .setExpiryTime(SUBHOMEPAGE_CACHE_500MS).build()
             val data = withContext(dispatcher.IO) {
-                graphqlRepository.getReseponse(listOf(graphqlRequest), graphqlCacheStrategy)
+                graphqlRepository.getReseponse(listOf(graphqlRequest))
             }.getSuccessData<RechargeHomepageSections.Response>().response
             data.requestIDs = requestIDs
 
@@ -86,6 +87,7 @@ class RechargeHomepageViewModel @Inject constructor(
                 localRechargeHomepageSections = RechargeHomepageSectionMapper.updateSectionsData(localRechargeHomepageSections, data)
                 mutableRechargeHomepageSections.value = localRechargeHomepageSections
             }
+            calledSectionIds.put(requestIDs.firstOrNull() ?: 0, requestIDs.firstOrNull() ?: 0)
         }) {
             // Because error occured, remove sections
             withContext(dispatcher.Main) {
@@ -95,7 +97,12 @@ class RechargeHomepageViewModel @Inject constructor(
                 )
                 mutableRechargeHomepageSections.value = localRechargeHomepageSections
             }
+            calledSectionIds.put(requestIDs.firstOrNull() ?: 0, requestIDs.firstOrNull() ?: 0)
         }
+    }
+
+    private fun onRefreshData() {
+        calledSectionIds.clear()
     }
 
     fun triggerRechargeSectionAction(mapParams: Map<String, Any>) {
