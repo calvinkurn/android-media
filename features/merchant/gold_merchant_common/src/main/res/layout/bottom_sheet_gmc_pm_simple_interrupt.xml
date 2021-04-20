@@ -1,6 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
 
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/imgGmcSimpleInterrupt"
+        android:layout_width="@dimen/gmc_dimen_176dp"
+        android:layout_height="@dimen/gmc_dimen_162dp"
+        android:layout_marginTop="@dimen/layout_lvl2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvGmcSimpleInterruptTitle"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/layout_lvl6"
+        android:layout_marginTop="@dimen/layout_lvl2"
+        android:layout_marginEnd="@dimen/layout_lvl6"
+        android:gravity="center"
+        android:textColor="@color/Unify_N700_96"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imgGmcSimpleInterrupt"
+        app:typographyType="heading_3"
+        tools:text="Mulai [DD Month YYYY] kamu berpotensi kehilangan Power Merchant" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvGmcSimpleInterruptDescription"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/layout_lvl2"
+        app:typographyType="body_2"
+        android:layout_marginTop="@dimen/unify_space_12"
+        android:layout_marginEnd="@dimen/layout_lvl2"
+        android:gravity="center"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvGmcSimpleInterruptTitle"
+        tools:text="Jika Power Merchant kamu tetap nonaktif di [DD Month], kamu akan kembali jadi Regular Merchant. Tingkatkan Performa untuk tetap dapat keuntungan Power Merchant, ya! " />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btnGmcSimpleInterrupt"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/layout_lvl2"
+        android:layout_marginTop="@dimen/layout_lvl2"
+        android:layout_marginEnd="@dimen/layout_lvl2"
+        android:layout_marginBottom="@dimen/layout_lvl2"
+        android:gravity="center"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvGmcSimpleInterruptDescription"
+        tools:text="Cek Performa Tokomu" />
 </androidx.constraintlayout.widget.ConstraintLayout>

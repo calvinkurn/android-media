@@ -67,11 +67,15 @@ class WidgetRecommendationItemAdapter(
                     val iconColor = context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_R500)
                     icShcRecommendationItemType.setImage(newIconId = IconUnify.WARNING, newLightEnable = iconColor)
                     icShcRecommendationItemType.setBackgroundResource(R.drawable.bg_recommendation_negative)
+                    val padding = context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2)
+                    icShcRecommendationItemType.setPadding(padding, padding, padding, padding)
                 }
                 else -> {
                     val iconColor = context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_68)
                     icShcRecommendationItemType.setImage(newIconId = IconUnify.INFORMATION, newLightEnable = iconColor)
                     icShcRecommendationItemType.setBackgroundResource(R.drawable.bg_recommendation_no_data)
+                    val padding = context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2)
+                    icShcRecommendationItemType.setPadding(padding, padding, padding, padding)
                 }
             }
         }

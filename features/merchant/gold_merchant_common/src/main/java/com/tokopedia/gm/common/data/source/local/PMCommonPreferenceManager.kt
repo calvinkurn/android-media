@@ -14,6 +14,8 @@ class PMCommonPreferenceManager(
         private const val PREF_NAME = "pm_common_shared_preferences"
 
         const val KEY_HAS_OPENED_TRANSITION_INTERRUPT_POPUP = "key_has_opened_transition_interrupt_popup"
+        const val KEY_HAS_OPENED_NEW_SELLER_PM_IDLE_POPUP = "key_has_opened_communication_new_seller_pm_idle_popup"
+        const val KEY_HAS_OPENED_NEW_SELLER_END_OF_TENURE_POPUP = "key_has_opened_communication_new_end_of_tenure_popup"
         const val KEY_HAS_OPENED_COMMUNICATION_INTERRUPT_PAGE = "key_has_opened_communication_interrupt_page"
 
         const val KEY_SHOP_SCORE_CONSENT_CHECKED = "key_shop_score_consent_checked"

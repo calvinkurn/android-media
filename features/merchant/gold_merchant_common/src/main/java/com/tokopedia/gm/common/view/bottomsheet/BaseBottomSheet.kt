@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import androidx.fragment.app.DialogFragment
 import com.tokopedia.unifycomponents.BottomSheetUnify
 
@@ -39,5 +40,9 @@ abstract class BaseBottomSheet : BottomSheetUnify() {
         val view = inflater.inflate(getResLayout(), container, false)
         childView = view
         setChild(view)
+        if (showKnob) {
+            view.measure(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+            customPeekHeight = view.measuredHeight
+        }
     }
 }

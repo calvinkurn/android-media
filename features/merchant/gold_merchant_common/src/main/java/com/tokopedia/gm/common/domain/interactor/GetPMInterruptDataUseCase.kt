@@ -53,6 +53,8 @@ class GetPMInterruptDataUseCase @Inject constructor(
                 shop_score_threshold
                 shop_level
                 is_eligible_pm
+                is_new_seller
+                shop_age
               }
               goldGetPMOSStatus(shopID: ${'$'}shopId, includeOS: false) {
                 data {
