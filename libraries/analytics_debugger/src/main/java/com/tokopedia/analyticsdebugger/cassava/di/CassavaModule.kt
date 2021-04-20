@@ -1,10 +1,10 @@
 package com.tokopedia.analyticsdebugger.cassava.di
 
+import android.app.Activity
 import android.app.Application
 import android.content.Context
 import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.google.gson.GsonBuilder
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope
 import com.tokopedia.analyticsdebugger.cassava.data.api.CassavaApi
 import com.tokopedia.config.GlobalConfig
@@ -21,17 +21,22 @@ import retrofit2.converter.gson.GsonConverterFactory
  * @author by furqan on 07/04/2021
  */
 @Module
-class CassavaModule {
-
-    @CassavaScope
-    @Provides
-    fun provideApplication(@ApplicationContext context: Context): Application =
-            context as Application
+class CassavaModule(private val context: Context) {
 
     @CassavaScope
     @Provides
     @CassavaQualifier
-    fun provideChuckInterceptor(@ApplicationContext context: Context): Interceptor =
+    fun provideContext(): Context = context
+
+    @CassavaScope
+    @Provides
+    fun provideApplication(@CassavaQualifier context: Context): Application =
+            (context as Activity).application
+
+    @CassavaScope
+    @Provides
+    @CassavaQualifier
+    fun provideChuckInterceptor(@CassavaQualifier context: Context): Interceptor =
             ChuckerInterceptor(context)
 
     @CassavaScope

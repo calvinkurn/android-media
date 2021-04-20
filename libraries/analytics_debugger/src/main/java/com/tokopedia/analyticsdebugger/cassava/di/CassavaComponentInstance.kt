@@ -1,6 +1,6 @@
 package com.tokopedia.analyticsdebugger.cassava.di
 
-import android.app.Application
+import android.app.Activity
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 
 /**
@@ -10,13 +10,14 @@ object CassavaComponentInstance {
 
     private var cassavaComponent: CassavaComponent? = null
 
-    fun getInstance(application: Application): CassavaComponent {
+    fun getInstance(activity: Activity): CassavaComponent {
         cassavaComponent?.let {
             return it
         }
 
         cassavaComponent = DaggerCassavaComponent.builder()
-                .baseAppComponent((application as BaseMainApplication).baseAppComponent)
+                .baseAppComponent((activity.application as BaseMainApplication).baseAppComponent)
+                .cassavaModule(CassavaModule(activity))
                 .build()
 
         return cassavaComponent!!
