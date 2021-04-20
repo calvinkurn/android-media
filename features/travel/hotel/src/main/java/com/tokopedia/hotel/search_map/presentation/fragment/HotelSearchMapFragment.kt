@@ -198,8 +198,11 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                         long = it.data.first
                     }
                     hotelSearchMapViewModel.initSearchParam(hotelSearchModel)
+                    removeAllMarker()
+                    showCardListView()
+                    hideFindNearHereView()
+                    changeHeaderTitle()
                     loadInitialData()
-                    onSearchByMap()
                 }
                 is Fail -> {
                     if (it.throwable.message.isNullOrEmpty()) {
