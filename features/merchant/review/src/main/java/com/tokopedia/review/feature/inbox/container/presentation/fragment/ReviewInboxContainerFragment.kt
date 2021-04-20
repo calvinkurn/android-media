@@ -272,6 +272,9 @@ class ReviewInboxContainerFragment : BaseDaggerFragment(), HasComponent<ReviewIn
     private fun getDataFromArguments() {
         tab = arguments?.getString(ReviewInboxConstants.PARAM_TAB, "") ?: ""
         source = arguments?.getString(ReviewInboxConstants.PARAM_SOURCE, ReviewInboxConstants.DEFAULT_SOURCE) ?: ReviewInboxConstants.DEFAULT_SOURCE
+        if(source.isEmpty()) {
+            source = ReviewInboxConstants.DEFAULT_SOURCE
+        }
     }
 
     private fun getSourceBundle(): Bundle {
