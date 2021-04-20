@@ -415,6 +415,25 @@ open class ProductAttachmentViewModel : SendableViewModel,
         }
     }
 
+    fun getEventLabelImpression(amISeller: Boolean): String {
+        val role = if (amISeller) {
+            "seller"
+        } else {
+            "buyer"
+        }
+        val isWarehouse = if (isFullfilment) {
+            "warehouse"
+        } else {
+            "notwarehouse"
+        }
+        val isCampaign = if (isProductCampaign()) {
+            "campaign"
+        } else {
+            "notcampaign"
+        }
+        return "$role - $productId - $isWarehouse - $isCampaign"
+    }
+
     companion object {
         const val statusDeleted = 0
         const val statusActive = 1
