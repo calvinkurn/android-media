@@ -146,6 +146,9 @@ object ApplinkConstInternalMarketplace {
     val SHOP_PAGE_FEED = "$SHOP_PAGE_BASE/{shop_id}/feed"
 
     @JvmField
+    val SHOP_PAGE_NOTE = "$SHOP_PAGE_BASE/{shop_id}/note"
+
+    @JvmField
     val SHOP_PAGE_PRODUCT_LIST = "$SHOP_PAGE_BASE-product-list/{shop_id}/etalase/{etalase_id}/"
 
     // GmSubscribeHomeActivity

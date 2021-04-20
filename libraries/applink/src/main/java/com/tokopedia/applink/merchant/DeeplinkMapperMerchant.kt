@@ -231,7 +231,7 @@ object DeeplinkMapperMerchant {
             val pathSegment = uri.pathSegments ?: return it.toString()
             return if (pathSegment.size == 2) {
                 val shopId = pathSegment[0]
-                UriUtil.buildUri(ApplinkConstInternalMarketplace.SHOP_SETTINGS_NOTES_BUYER_VIEW, shopId)
+                UriUtil.buildUri(ApplinkConstInternalMarketplace.SHOP_PAGE_NOTE, shopId)
             } else it.toString()
         } ?: ""
     }

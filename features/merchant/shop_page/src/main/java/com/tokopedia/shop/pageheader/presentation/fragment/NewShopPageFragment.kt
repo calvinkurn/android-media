@@ -181,6 +181,7 @@ class NewShopPageFragment :
         private const val PATH_REVIEW = "review"
         private const val PATH_PRODUCT = "product"
         private const val PATH_FEED = "feed"
+        private const val PATH_NOTE = "note"
         private const val QUERY_SHOP_REF = "shop_ref"
         private const val QUERY_SHOP_ATTRIBUTION = "tracker_attribution"
         private const val START_PAGE = 1
@@ -272,6 +273,7 @@ class NewShopPageFragment :
     private var shouldOverrideTabToReview: Boolean = false
     private var shouldOverrideTabToProduct: Boolean = false
     private var shouldOverrideTabToFeed: Boolean = false
+    private var shouldOpenShopNoteBottomSheet: Boolean = false
     private var listShopPageTabModel = listOf<ShopPageTabModel>()
     private val customDimensionShopPage: CustomDimensionShopPage by lazy {
         CustomDimensionShopPage.create(
@@ -789,6 +791,9 @@ class NewShopPageFragment :
                     if (lastPathSegment.orEmpty() == PATH_FEED) {
                         shouldOverrideTabToFeed = true
                     }
+                    if (lastPathSegment.orEmpty() == PATH_NOTE) {
+                        shouldOpenShopNoteBottomSheet = true
+                    }
                     shopRef = getQueryParameter(QUERY_SHOP_REF) ?: ""
                     shopAttribution = getQueryParameter(QUERY_SHOP_ATTRIBUTION) ?: ""
                 }
@@ -1230,6 +1235,9 @@ class NewShopPageFragment :
         }
         getShopPageP2Data()
         setupTabs()
+        if (shouldOpenShopNoteBottomSheet) {
+            showShopNoteBottomSheet()
+        }
         view?.let { onToasterNoUploadProduct(it, getString(R.string.shop_page_product_no_upload_product), isFirstCreateShop) }
         stickyLoginView?.loadContent()
     }
@@ -2025,8 +2033,12 @@ class NewShopPageFragment :
         )
     }
 
-    override fun onClickNoteButton(link: String) {
+    private fun showShopNoteBottomSheet() {
         ShopNoteBottomSheet.createInstance(shopId).show(childFragmentManager, ShopNoteBottomSheet.TAG)
+    }
+
+    override fun onClickNoteButton(link: String) {
+        showShopNoteBottomSheet()
     }
 
     override fun setFollowStatus(isFollowing: Boolean) {
