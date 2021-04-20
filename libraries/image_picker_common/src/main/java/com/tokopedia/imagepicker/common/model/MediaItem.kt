@@ -3,11 +3,10 @@ package com.tokopedia.imagepicker.common.model
 import android.content.ContentUris
 import android.content.Context
 import android.database.Cursor
-import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
-import java.io.File
+import com.tokopedia.imagepicker.common.PhotoMetadataUtils.getPath
 import com.tokopedia.utils.image.ImageProcessingUtil
 
 
@@ -35,7 +34,8 @@ class MediaItem(val id: Long,
     @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
     private fun calculateWidthAndHeight(context: Context) {
         if (_width == 0L || _height == 0L) {
-            val widthHeight: Pair<Int, Int> = ImageProcessingUtil.getWidthAndHeight(contentUri.path.toString())
+            val imagePath = getPath(context.contentResolver, contentUri)
+            val widthHeight: Pair<Int, Int> = ImageProcessingUtil.getWidthAndHeight(imagePath)
             _width = widthHeight.first.toLong()
             _height = widthHeight.second.toLong()
         }
