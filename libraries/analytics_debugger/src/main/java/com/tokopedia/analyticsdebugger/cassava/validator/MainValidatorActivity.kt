@@ -10,9 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.snackbar.Snackbar
-import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.analyticsdebugger.R
-import com.tokopedia.analyticsdebugger.cassava.di.CassavaComponent
 import com.tokopedia.analyticsdebugger.cassava.di.CassavaComponentInstance
 import com.tokopedia.analyticsdebugger.cassava.validator.core.GtmLogUi
 import com.tokopedia.analyticsdebugger.cassava.validator.detail.ValidatorDetailFragment
@@ -23,8 +21,7 @@ import javax.inject.Inject
 
 class MainValidatorActivity : AppCompatActivity(),
         MainValidatorFragment.Listener,
-        ValidatorListFragment.Listener,
-        HasComponent<CassavaComponent> {
+        ValidatorListFragment.Listener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -85,10 +82,7 @@ class MainValidatorActivity : AppCompatActivity(),
     }
 
     private fun initInjector() {
-        component.inject(this)
+        CassavaComponentInstance.getInstance(application).inject(this)
     }
-
-    override fun getComponent(): CassavaComponent =
-            CassavaComponentInstance.getInstance(application)
 
 }

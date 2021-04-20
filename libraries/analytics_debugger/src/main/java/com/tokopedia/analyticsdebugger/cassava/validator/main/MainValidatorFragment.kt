@@ -11,9 +11,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.analyticsdebugger.R
-import com.tokopedia.analyticsdebugger.cassava.di.CassavaComponent
+import com.tokopedia.analyticsdebugger.cassava.di.CassavaComponentInstance
 import com.tokopedia.analyticsdebugger.cassava.validator.core.GtmLogUi
 import com.tokopedia.analyticsdebugger.cassava.validator.core.Validator
 import com.tokopedia.analyticsdebugger.cassava.validator.core.toJson
@@ -94,7 +93,9 @@ class MainValidatorFragment : Fragment() {
     }
 
     private fun initInjector() {
-        (activity as HasComponent<CassavaComponent>).component.inject(this)
+        activity?.let {
+            CassavaComponentInstance.getInstance(it.application).inject(this)
+        }
     }
 
     interface Listener {
