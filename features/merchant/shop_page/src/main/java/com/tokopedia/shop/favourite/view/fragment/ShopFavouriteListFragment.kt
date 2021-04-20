@@ -11,7 +11,7 @@ import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.design.R
+import com.tokopedia.shop.R
 import com.tokopedia.shop.analytic.OldShopPageTrackingBuyer
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
 import com.tokopedia.shop.common.constant.ShopParamConstant
@@ -100,7 +100,7 @@ class ShopFavouriteListFragment : BaseListFragment<ShopFollowerUiModel?, ShopFav
 
     override fun getEmptyDataViewModel(): Visitable<*> {
         val emptyModel = EmptyModel()
-        emptyModel.iconRes = R.drawable.ic_empty_state
+        emptyModel.iconRes = R.drawable.ic_shop_page_tree_empty_state
         if (shopFavouriteListPresenter?.isMyShop(shopId.orEmpty()) == true) {
             emptyModel.title = getString(com.tokopedia.shop.R.string.shop_product_my_empty_follower_title)
             emptyModel.content = ""

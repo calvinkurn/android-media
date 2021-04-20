@@ -2,8 +2,8 @@ package com.tokopedia.autocomplete.suggestion.productline
 
 import com.tokopedia.autocomplete.suggestion.domain.model.SuggestionItem
 
-fun SuggestionItem.convertToSuggestionProductLineDataView(searchTerm: String, position: Int): SuggestionProductLineDataView {
-    val item = SuggestionProductLineDataView()
+fun SuggestionItem.convertToSuggestionProductLineDataView(searchTerm: String, position: Int): SuggestionProductLineDataDataView {
+    val item = SuggestionProductLineDataDataView()
     item.template = this.template
     item.type = this.type
     item.applink = this.applink

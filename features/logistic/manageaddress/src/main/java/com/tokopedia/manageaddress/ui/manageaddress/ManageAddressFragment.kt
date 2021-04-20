@@ -104,6 +104,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
     private var prevState: Int = -1
     private var localChosenAddr: LocalCacheModel? = null
     private var isFromEditAddress: Boolean? = false
+    private var isFromDeleteAddress: Boolean? = false
 
     override fun getScreenName(): String = ""
 
@@ -283,6 +284,12 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
                         }
                         ChooseAddressUtils.updateLocalizingAddressDataFromOther(context, data.addressId.toString(), data.cityId.toString(),
                                 data.districtId.toString(), data.latitude, data.longitude, ChooseAddressUtils.setLabel(data), data.postalCode)
+
+                        if (isFromDeleteAddress == true) {
+                            context?.let {
+                                viewModel.searchAddress("", prevState, data.addressId, ChooseAddressUtils.isRollOutUser(it))
+                            }
+                        }
                     }
                 }
 
@@ -481,12 +488,16 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
                 }
             }
             btn_alamat_utama?.setOnClickListener {
+                if (isFromCheckoutChangeAddress == true) {
+                    _selectedAddressItem = data
+                }
                 viewModel.setDefaultPeopleAddress(data.id, false, prevState, getChosenAddrId(), ChooseAddressUtils.isRollOutUser(context))
                 bottomSheetLainnya?.dismiss()
             }
             btn_hapus_alamat?.setOnClickListener {
                 viewModel.deletePeopleAddress(data.id, prevState, getChosenAddrId(), ChooseAddressUtils.isRollOutUser(context))
                 bottomSheetLainnya?.dismiss()
+                isFromDeleteAddress = true
             }
             btn_alamat_utama_choose?.setOnClickListener {
                 context?.let {
