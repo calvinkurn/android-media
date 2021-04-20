@@ -14,16 +14,21 @@
         <action
             android:id="@+id/action_homeEventFragment_to_pdpEventFragment"
             app:destination="@id/pdpEventFragment" />
+        <deepLink
+            android:id="@+id/deepLinkHome"
+            app:uri="tokopedia-android-internal://event" />
     </fragment>
 
     <fragment
         android:id="@+id/pdpEventFragment"
         android:name="com.tokopedia.entertainment.pdp.fragment.EventPDPFragment"
-        tools:layout="@layout/fragment_event_pdp"
-        >
+        tools:layout="@layout/fragment_event_pdp">
         <argument
             android:name="seo"
-            app:argType="string"
-            android:defaultValue='""' />
+            android:defaultValue='""'
+            app:argType="string" />
+        <deepLink
+            android:id="@+id/deepLinkPDP"
+            app:uri="tokopedia-android-internal://event/detail/{seo}" />
     </fragment>
 </navigation>

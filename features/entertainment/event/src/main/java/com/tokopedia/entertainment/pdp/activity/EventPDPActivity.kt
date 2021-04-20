@@ -20,7 +20,7 @@ class EventPDPActivity : BaseSimpleActivity(), HasComponent<EventPDPComponent> {
 
     private var urlPDP: String = ""
 
-    override fun getNewFragment(): Fragment? = EventPDPFragment.newInstance(urlPDP)
+    override fun getNewFragment(): Fragment? = null
 
     override fun getComponent(): EventPDPComponent = DaggerEventPDPComponent.builder()
             .baseAppComponent((applicationContext as BaseMainApplication).baseAppComponent).build()
