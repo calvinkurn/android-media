@@ -58,7 +58,7 @@ class ItemDetailPerformanceViewHolder(view: View,
                 cardItemDetailShopPerformance?.setPadding(16.toPx(), 0.toPx(), 16.toPx(), 8.toPx())
             }
             tvTitlePerformanceProgress?.text = element?.titleDetailPerformance.orEmpty()
-            tvPerformanceValue?.text = element?.valueDetailPerformance ?: "-"
+            tvPerformanceValue?.text = StringBuilder("${element?.valueDetailPerformance} ${element?.targetDetailPerformance}")
             if (element?.colorValueDetailPerformance?.isNotBlank() == true) {
                 tvPerformanceValue.setTextColor(Color.parseColor(element.colorValueDetailPerformance))
             }
