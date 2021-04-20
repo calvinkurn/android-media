@@ -77,7 +77,7 @@ import java.util.*
 import javax.inject.Inject
 
 class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(), OnBindItemListener,
-        EventPDPActivity.PDPListener, AppBarLayout.OnOffsetChangedListener {
+        EventNavigationActivity.PDPListener, AppBarLayout.OnOffsetChangedListener {
 
     lateinit var performanceMonitoring: PerformanceMonitoring
 

@@ -2,9 +2,11 @@ package com.tokopedia.entertainment.home.fragment
 
 import android.content.Intent
 import android.content.res.Resources
+import android.graphics.PorterDuff
 import android.os.Bundle
 import android.view.*
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -34,11 +36,14 @@ import com.tokopedia.entertainment.home.viewmodel.FragmentView
 import com.tokopedia.entertainment.home.viewmodel.HomeEventViewModel
 import com.tokopedia.entertainment.home.viewmodel.HomeEventViewModelFactory
 import com.tokopedia.entertainment.home.widget.MenuSheet
+import com.tokopedia.entertainment.navigation.EventNavigationActivity
 import com.tokopedia.entertainment.pdp.fragment.EventPDPTicketFragment
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.android.synthetic.main.ent_home_activity.*
 import kotlinx.android.synthetic.main.ent_home_fragment.*
 import kotlinx.android.synthetic.main.ent_layout_shimering_home.*
+import kotlinx.android.synthetic.main.fragment_event_pdp.*
 import javax.inject.Inject
 
 /**
@@ -120,6 +125,30 @@ class EventHomeFragment : BaseDaggerFragment(), FragmentView, MenuSheet.ItemClic
         swipe_refresh_layout.setOnRefreshListener {
             initializePerformance()
             viewModel.getHomeData(EventQuery.getEventHomeQuery(), ::onSuccessGetData, ::onErrorGetData, CacheType.CLOUD_THEN_CACHE)
+        }
+
+        renderToolbar()
+    }
+
+    private fun renderToolbar(){
+        (activity as EventNavigationActivity).setSupportActionBar(toolbar_home)
+        (activity as EventNavigationActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        (activity as EventNavigationActivity).supportActionBar?.title =
+                getString(R.string.ent_home_page_event_hiburan)
+
+        val navIcon = toolbar_home.navigationIcon
+
+        context?.let { ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N700_96) }?.let {
+            navIcon?.setColorFilter(it, PorterDuff.Mode.SRC_ATOP)
+        }
+        (activity as EventNavigationActivity).supportActionBar?.setHomeAsUpIndicator(navIcon)
+
+        txt_search_home.searchBarTextField.inputType = 0
+        txt_search_home.searchBarTextField.setOnTouchListener { v, event ->
+            when(event.action){
+                MotionEvent.ACTION_DOWN -> openEventSearch()
+            }
+            return@setOnTouchListener true
         }
     }
 
@@ -272,5 +301,10 @@ class EventHomeFragment : BaseDaggerFragment(), FragmentView, MenuSheet.ItemClic
         val destination = EventHomeFragmentDirections.
         actionHomeEventFragmentToPdpEventFragment(applink)
         NavigationEventController.navigate(this@EventHomeFragment, destination)
+    }
+
+    private fun openEventSearch(): Boolean {
+        RouteManager.route(context, ApplinkConstInternalEntertainment.EVENT_SEARCH)
+        return true
     }
 }

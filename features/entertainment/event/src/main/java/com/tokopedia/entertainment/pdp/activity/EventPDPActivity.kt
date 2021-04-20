@@ -39,9 +39,7 @@ class EventPDPActivity : BaseSimpleActivity(), HasComponent<EventPDPComponent> {
     }
 
     fun onClickShare() {
-        if (fragment is PDPListener) {
-            (fragment as PDPListener).shareLink()
-        }
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -62,7 +60,4 @@ class EventPDPActivity : BaseSimpleActivity(), HasComponent<EventPDPComponent> {
         const val EXTRA_URL_PDP = "EXTRA_URL_PDP"
     }
 
-    interface PDPListener {
-        fun shareLink()
-    }
 }
