@@ -9,7 +9,6 @@ import com.tokopedia.digital.home.model.RechargeHomepageSections
 import com.tokopedia.digital.home.model.RechargeTickerHomepageModel
 import com.tokopedia.digital.home.presentation.util.RechargeHomepageDispatchersProvider
 import com.tokopedia.digital.home.presentation.util.RechargeHomepageSectionMapper
-import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
@@ -45,16 +44,14 @@ class RechargeHomepageViewModel @Inject constructor(
     val rechargeTickerHomepageModel: LiveData<Result<RechargeTickerHomepageModel>>
         get() = mutableRechargeTickerHomepageModel
 
-    fun getRechargeHomepageSectionSkeleton(mapParams: Map<String, Any>, isLoadFromCloud: Boolean = false) {
+    fun getRechargeHomepageSectionSkeleton(mapParams: Map<String, Any>) {
         launchCatchError(block = {
             val graphqlRequest = GraphqlRequest(
                     RechargeHomepageQueries.SKELETON_QUERY,
                     RechargeHomepageSectionSkeleton.Response::class.java, mapParams
             )
-            val graphqlCacheStrategy = GraphqlCacheStrategy.Builder(if (isLoadFromCloud) CacheType.CLOUD_THEN_CACHE else CacheType.CACHE_FIRST)
-                    .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * 5).build()
             val data = withContext(dispatcher.IO) {
-                graphqlRepository.getReseponse(listOf(graphqlRequest), graphqlCacheStrategy)
+                graphqlRepository.getReseponse(listOf(graphqlRequest))
             }.getSuccessData<RechargeHomepageSectionSkeleton.Response>().response
 
             mutableRechargeHomepageSectionSkeleton.postValue(Success(data))
@@ -66,15 +63,16 @@ class RechargeHomepageViewModel @Inject constructor(
         }
     }
 
-    fun getRechargeHomepageSections(mapParams: Map<String, Any>, isLoadFromCloud: Boolean = false) {
-        val requestIDs = (mapParams[PARAM_RECHARGE_HOMEPAGE_SECTIONS_SECTION_IDS] as? List<Int>) ?: listOf()
+    fun getRechargeHomepageSections(mapParams: Map<String, Any>) {
+        val requestIDs = (mapParams[PARAM_RECHARGE_HOMEPAGE_SECTIONS_SECTION_IDS] as? List<Int>)
+                ?: listOf()
         launchCatchError(block = {
             val graphqlRequest = GraphqlRequest(
                     RechargeHomepageQueries.SECTION_QUERY,
                     RechargeHomepageSections.Response::class.java, mapParams
             )
-            val graphqlCacheStrategy = GraphqlCacheStrategy.Builder(if (isLoadFromCloud) CacheType.CLOUD_THEN_CACHE else CacheType.CACHE_FIRST)
-                    .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * 5).build()
+            val graphqlCacheStrategy = GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST)
+                    .setExpiryTime(SUBHOMEPAGE_CACHE_500MS).build()
             val data = withContext(dispatcher.IO) {
                 graphqlRepository.getReseponse(listOf(graphqlRequest), graphqlCacheStrategy)
             }.getSuccessData<RechargeHomepageSections.Response>().response
@@ -182,6 +180,7 @@ class RechargeHomepageViewModel @Inject constructor(
     }
 
     companion object {
+        const val SUBHOMEPAGE_CACHE_500MS = 500L
         const val ID_TICKER = "0"
 
         const val PARAM_RECHARGE_HOMEPAGE_SECTION_ID = "sectionID"

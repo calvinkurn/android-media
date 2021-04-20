@@ -15,7 +15,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
@@ -240,8 +239,7 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
         adapter.showLoading()
         digital_homepage_toolbar.hide()
         viewModel.getRechargeHomepageSectionSkeleton(
-                viewModel.createRechargeHomepageSectionSkeletonParams(platformId, enablePersonalize),
-                swipe_refresh_layout.isRefreshing
+                viewModel.createRechargeHomepageSectionSkeletonParams(platformId, enablePersonalize)
         )
 
         viewModel.getTickerHomepageSection(
@@ -249,11 +247,10 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
         )
     }
 
-    override fun loadRechargeSectionData(sectionID: String, isLoadFromCloud: Boolean) {
+    override fun loadRechargeSectionData(sectionID: String) {
         if (sectionID.isNotEmpty()) {
             viewModel.getRechargeHomepageSections(
-                    viewModel.createRechargeHomepageSectionsParams(platformId, listOf(sectionID.toIntOrZero()), enablePersonalize),
-                    isLoadFromCloud
+                    viewModel.createRechargeHomepageSectionsParams(platformId, listOf(sectionID.toIntOrZero()), enablePersonalize)
             )
         }
     }
