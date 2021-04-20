@@ -16,6 +16,7 @@ import com.tokopedia.gm.common.constant.*
 import com.tokopedia.gm.common.data.source.local.model.PMShopInfoUiModel
 import com.tokopedia.gm.common.data.source.local.model.PMStatusAndShopInfoUiModel
 import com.tokopedia.gm.common.data.source.local.model.PowerMerchantSettingInfoUiModel
+import com.tokopedia.gm.common.utils.PMShopScoreInterruptHelper
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.orTrue
 import com.tokopedia.kotlin.extensions.view.gone
@@ -59,6 +60,9 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
 
+    @Inject
+    lateinit var interruptHelper: PMShopScoreInterruptHelper
+
     private val mViewModel: PowerMerchantSubscriptionViewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(PowerMerchantSubscriptionViewModel::class.java)
     }
@@ -85,7 +89,10 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
         super.onViewCreated(view, savedInstanceState)
 
         setupView()
+
         observePmStatusAndShopInfo()
+        observePmActiveState()
+        observePmRegistrationPage()
         observePmActivationStatus()
         observePmCancelDeactivationSubmission()
     }
@@ -236,23 +243,12 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
         }
 
         when (pmStatusAndShopInfo?.pmStatus?.status) {
-            PMStatusConst.INACTIVE -> observePmRegistrationPage()
-            else -> observePmActiveState()
+            PMStatusConst.INACTIVE -> fetchPmRegistrationData()
+            else -> fetchPmActiveState()
         }
     }
 
-    private fun observePmRegistrationPage() {
-        mViewModel.shopInfoAndPMGradeBenefits.observe(viewLifecycleOwner, Observer {
-            hideSwipeRefreshLoading()
-            when (it) {
-                is Success -> renderRegistrationPM(it.data)
-                is Fail -> {
-                    showErrorState()
-                    logToCrashlytic(PowerMerchantErrorLogger.REGISTRATION_PAGE_ERROR, it.throwable)
-                }
-            }
-        })
-
+    private fun fetchPmRegistrationData() {
         mViewModel.getPmRegistrationData()
     }
 
@@ -268,7 +264,9 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
         view?.pmRegistrationFooterView?.gone()
     }
 
-    private fun renderRegistrationPM(data: PMGradeBenefitAndShopInfoUiModel) {
+    private fun renderPmRegistrationPM(data: PMGradeBenefitAndShopInfoUiModel) {
+        if (pmStatusAndShopInfo?.pmStatus?.status != PMStatusConst.INACTIVE) return
+
         val widgets = listOf(
                 getHeaderWidgetData(data.shopInfo),
                 getPotentialBenefitWidgetData(),
@@ -299,7 +297,7 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
 
     private fun showSuccessRegistrationPopupTransitionPeriod() {
         val title = getString(R.string.pm_registration_success_title)
-        val description = getString(R.string.pm_registration_success_description)
+        val description = getString(R.string.pm_registration_success_description, PMConstant.TRANSITION_PERIOD_START_DATE)
         val ctaText = getString(R.string.pm_learn_new_pm)
         val illustrationUrl = PMConstant.Images.PM_REGISTRATION_SUCCESS
         var reloadPageOnDismiss = true
@@ -359,7 +357,7 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
                 dismiss()
             }
             setOnSecondaryCtaClickListener {
-                //todo : goto ss interrupt page
+                openShopScoreInterruptPage()
                 dismiss()
             }
             setOnDismissListener {
@@ -377,12 +375,12 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
         val slideItems = listOf(
                 ContentSliderUiModel(
                         title = getString(R.string.pm_power_merchant_new_term_title),
-                        description = getString(R.string.pm_power_merchant_new_term_description),
+                        description = getString(R.string.pm_power_merchant_new_term_description, PMConstant.TRANSITION_PERIOD_START_DATE),
                         imgUrl = PMConstant.Images.PM_NEW_REQUIREMENT
                 ),
                 ContentSliderUiModel(
                         title = getString(R.string.pm_integrated_with_reputation_title),
-                        description = getString(R.string.pm_integrated_with_reputation_description),
+                        description = getString(R.string.pm_integrated_with_reputation_description, PMConstant.TRANSITION_PERIOD_START_DATE),
                         imgUrl = PMConstant.Images.PM_INTEGRATED_WITH_REPUTATION
                 ),
                 ContentSliderUiModel(
@@ -392,7 +390,7 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
                 ),
                 ContentSliderUiModel(
                         title = getString(R.string.pm_new_benefits_title),
-                        description = getString(R.string.pm_new_schema_description),
+                        description = getString(R.string.pm_new_schema_description, PMConstant.TRANSITION_PERIOD_START_DATE),
                         imgUrl = PMConstant.Images.PM_NEW_SCHEMA
                 )
         )
@@ -403,13 +401,19 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
                 dismiss()
             }
             setOnSecondaryCtaClickListener {
-                //todo : goto ss interrupt page
+                openShopScoreInterruptPage()
                 bottomSheet.dismiss()
             }
             setOnDismissListener {
                 fetchPmStatusAndShopInfo()
             }
             show(this@PowerMerchantSubscriptionFragment.childFragmentManager)
+        }
+    }
+
+    private fun openShopScoreInterruptPage() {
+        activity?.let {
+            interruptHelper.openInterruptPage(it)
         }
     }
 
@@ -510,22 +514,26 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
     }
 
     private fun observePmActiveState() {
-        view?.pmRegistrationFooterView?.gone()
         mViewModel.pmPmActiveData.observe(viewLifecycleOwner, Observer {
             hideSwipeRefreshLoading()
             when (it) {
-                is Success -> renderPMActiveState(it.data)
+                is Success -> renderPmActiveState(it.data)
                 is Fail -> {
                     showErrorState()
                     logToCrashlytic(PowerMerchantErrorLogger.PM_ACTIVE_IDLE_PAGE_ERROR, it.throwable)
                 }
             }
         })
+    }
 
+    private fun fetchPmActiveState() {
         mViewModel.getPmActiveData()
     }
 
-    private fun renderPMActiveState(data: PMActiveDataUiModel) {
+    private fun renderPmActiveState(data: PMActiveDataUiModel) {
+        if(pmStatusAndShopInfo?.pmStatus?.status == PMStatusConst.INACTIVE) return
+
+        view?.pmRegistrationFooterView?.gone()
         val isAutoExtendEnabled = getAutoExtendEnabled()
         val widgets = mutableListOf<BaseWidgetUiModel>()
         if (!pmSettingInfo?.tickers.isNullOrEmpty() && isAutoExtendEnabled) {
@@ -554,6 +562,19 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
         }
         adapter.data.clear()
         renderList(widgets)
+    }
+
+    private fun observePmRegistrationPage() {
+        mViewModel.shopInfoAndPMGradeBenefits.observe(viewLifecycleOwner, Observer {
+            hideSwipeRefreshLoading()
+            when (it) {
+                is Success -> renderPmRegistrationPM(it.data)
+                is Fail -> {
+                    showErrorState()
+                    logToCrashlytic(PowerMerchantErrorLogger.REGISTRATION_PAGE_ERROR, it.throwable)
+                }
+            }
+        })
     }
 
     private fun getAutoExtendEnabled(): Boolean {
