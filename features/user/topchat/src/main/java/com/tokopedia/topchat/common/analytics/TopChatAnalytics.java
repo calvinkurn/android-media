@@ -18,6 +18,7 @@ import com.tokopedia.chat_common.data.AttachInvoiceSentViewModel;
 import com.tokopedia.chat_common.data.BannedProductAttachmentViewModel;
 import com.tokopedia.chat_common.data.ProductAttachmentViewModel;
 import com.tokopedia.topchat.chatroom.domain.pojo.orderprogress.ChatOrderProgress;
+import com.tokopedia.topchat.chatroom.domain.pojo.srw.QuestionUiModel;
 import com.tokopedia.topchat.chatroom.view.uimodel.ReviewUiModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.InvoicePreviewUiModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.QuotationUiModel;
@@ -159,6 +160,7 @@ public class TopChatAnalytics {
         String VIEW_REVIEW_REMINDER_WIDGET = "view on review reminder widget";
         String CLICK_REVIEW_REMINDER_WIDGET = "click on review reminder widget";
         String VIEW_SRW = "view smart reply widget";
+        String CLICK_SRW = "click smart reply widget";
     }
 
     public interface Label {
@@ -725,6 +727,25 @@ public class TopChatAnalytics {
                         Category.CHAT_DETAIL,
                         Action.VIEW_SRW,
                         "buyer - " + shopId + " - " + userId,
+                        BusinessUnit.Communication,
+                        CurrentSite.TokopediaMarketplace,
+                        userId
+                )
+        );
+    }
+
+    public void eventClickSrw(
+            long shopId, String userId, String productIds, QuestionUiModel element
+    ) {
+        String eventLabel = "buyer - " +
+                shopId + " - " + userId + " - " +
+                productIds + " - " + element.getContent();
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                createGeneralEvent(
+                        Name.CHAT_DETAIL,
+                        Category.CHAT_DETAIL,
+                        Action.CLICK_SRW,
+                        eventLabel,
                         BusinessUnit.Communication,
                         CurrentSite.TokopediaMarketplace,
                         userId

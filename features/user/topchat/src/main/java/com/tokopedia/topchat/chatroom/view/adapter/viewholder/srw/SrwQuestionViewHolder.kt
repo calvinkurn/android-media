@@ -13,6 +13,7 @@ class SrwQuestionViewHolder constructor(
 
     interface Listener {
         fun onClickSrwQuestion(question: QuestionUiModel)
+        fun trackClickSrwQuestion(element: QuestionUiModel)
     }
 
     private val title: Typography? = itemView?.findViewById(R.id.tp_srw_title)
@@ -28,6 +29,7 @@ class SrwQuestionViewHolder constructor(
 
     private fun bindClick(element: QuestionUiModel) {
         itemView.setOnClickListener {
+            listener?.trackClickSrwQuestion(element)
             listener?.onClickSrwQuestion(element)
         }
     }

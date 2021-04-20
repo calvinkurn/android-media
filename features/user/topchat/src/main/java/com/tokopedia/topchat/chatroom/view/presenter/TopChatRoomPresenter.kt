@@ -202,6 +202,11 @@ open class TopChatRoomPresenter @Inject constructor(
         this.userLocationInfo = userLocation
     }
 
+    override fun getProductIdPreview(): List<String> {
+        return attachmentsPreview.filterIsInstance<SendableProductPreview>()
+                .map { it.productId }
+    }
+
     override fun mappingEvent(webSocketResponse: WebSocketResponse, messageId: String) {
         val pojo: ChatSocketPojo = topChatRoomWebSocketMessageMapper.parseResponse(webSocketResponse)
         if (pojo.msgId.toString() != messageId) return

@@ -1947,6 +1947,12 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         }
     }
 
+    override fun trackClickSrwQuestion(element: QuestionUiModel) {
+        val productIds = presenter.getProductIdPreview()
+        val trackProductIds = productIds.joinToString(separator = ", ")
+        analytics.eventClickSrw(shopId, session.userId, trackProductIds, element)
+    }
+
     private fun delaySendSrwQuestion(question: QuestionUiModel) {
         delaySendSrw = question
     }
