@@ -163,7 +163,7 @@ open class WishlistViewModel @Inject constructor(
                     // if user has > 4 products, banner ads is after 4th of products, while recom widget is always at the bottom of the page
                 } else if (data.items.size > recommendationPositionInPage) {
                     if (data.items.size == 20 && !data.hasNextPage){
-                        wishlistData.value = getRecommendationWishlist(visitableWishlist, currentPage, data.items.map { it.id }, maxItemInPage)
+                        wishlistData.value = getRecommendationWishlist(visitableWishlist, currentPage, data.items.map { it.id }, maxItemInPage-1)
                     } else {
                         wishlistData.value = getTopAdsBannerData(visitableWishlist, currentPage, data.items.map { it.id }, recommendationPositionInPage)
                     }

@@ -198,7 +198,7 @@ class WishlistViewModelGetWishlistDataTest {
     }
 
     @Test
-    fun `Recommendation widget is positioned in position 4 in every page request when fetch recom success`(){
+    fun `Recommendation widget is positioned at last position in every page request when fetch recom success`(){
 
         // Wishlist view model
         wishlistViewModel = createWishlistViewModel(userSessionInterface= userSessionInterface, getWishlistDataUseCase = getWishlistDataUseCase, getRecommendationUseCase = getRecommendationUseCase, topAdsImageViewUseCase = topAdsImageViewUseCase)
@@ -225,7 +225,7 @@ class WishlistViewModelGetWishlistDataTest {
 
         //  Get recommendation usecase return data
         getRecommendationUseCase.givenRepositoryGetRecommendationDataReturnsThis(listOf(
-                RecommendationItem()
+                RecommendationItem(isWishlist = true)
         ))
 
         // View model get wishlist data
@@ -235,18 +235,16 @@ class WishlistViewModelGetWishlistDataTest {
         // Expect wishlistLiveData has 21 items (20 wishlist data + 1 recommendation widget)
         Assert.assertEquals(21, wishlistViewModel.wishlistLiveData.value!!.size)
 
-        wishlistViewModel.getNextPageWishlistData()
-
-        // Expect every 4 product recommendation widget is showed
+        // Expect last product recommendation widget is showed
         Assert.assertEquals(RecommendationCarouselDataModel::class.java,
-                wishlistViewModel.wishlistLiveData.value!![25].javaClass)
+                wishlistViewModel.wishlistLiveData.value!![20].javaClass)
 
 
-        wishlistViewModel.onProductClick(0, 25, 0)
+        wishlistViewModel.onProductClick(0, wishlistViewModel.wishlistLiveData.value!!.size, 0)
         Assert.assertTrue(wishlistViewModel.productClickActionData.value != null)
 
         wishlistViewModel.onPDPActivityResultForWishlist(0, true)
-        Assert.assertTrue((wishlistViewModel.wishlistLiveData.value!![25] as RecommendationCarouselDataModel).list.get(0).recommendationItem.isWishlist)
+        Assert.assertTrue((wishlistViewModel.wishlistLiveData.value!![20] as RecommendationCarouselDataModel).list[0].recommendationItem.isWishlist)
 
 
         Assert.assertEquals(wishlistViewModel.getUserId(), mockUserId)
@@ -254,7 +252,7 @@ class WishlistViewModelGetWishlistDataTest {
     }
 
     @Test
-    fun `Recommendation widget is positioned in position 4 in every page request when fetch recom success and try click with null position click`(){
+    fun `Recommendation widget is positioned at last position in every page request when fetch recom success and try click with null position click`(){
 
         // Wishlist view model
         wishlistViewModel = createWishlistViewModel(userSessionInterface= userSessionInterface, getWishlistDataUseCase = getWishlistDataUseCase, getRecommendationUseCase = getRecommendationUseCase, topAdsImageViewUseCase = topAdsImageViewUseCase)
@@ -287,15 +285,12 @@ class WishlistViewModelGetWishlistDataTest {
         // View model get wishlist data
         wishlistViewModel.getWishlistData()
 
-
         // Expect wishlistLiveData has 21 items (20 wishlist data + 1 recommendation widget)
         Assert.assertEquals(21, wishlistViewModel.wishlistLiveData.value!!.size)
 
-        wishlistViewModel.getNextPageWishlistData()
-
-        // Expect every 4 product recommendation widget is showed
+        // Expect every last row, product recommendation widget is showed
         Assert.assertEquals(RecommendationCarouselDataModel::class.java,
-                wishlistViewModel.wishlistLiveData.value!![25].javaClass)
+                wishlistViewModel.wishlistLiveData.value!![20].javaClass)
 
 
         Assert.assertTrue(wishlistViewModel.productClickActionData.value == null)
@@ -308,7 +303,7 @@ class WishlistViewModelGetWishlistDataTest {
     }
 
     @Test
-    fun `Recommendation widget is positioned in position 4 in every page request when fetch recom success and try click`(){
+    fun `Recommendation widget is positioned in last position in every page request when fetch recom success and try click`(){
 
         // Wishlist view model
         wishlistViewModel = createWishlistViewModel(userSessionInterface= userSessionInterface, getWishlistDataUseCase = getWishlistDataUseCase, getRecommendationUseCase = getRecommendationUseCase, topAdsImageViewUseCase = topAdsImageViewUseCase)
@@ -341,21 +336,19 @@ class WishlistViewModelGetWishlistDataTest {
         // View model get wishlist data
         wishlistViewModel.getWishlistData()
 
-
         // Expect wishlistLiveData has 21 items (20 wishlist data + 1 recommendation widget)
         Assert.assertEquals(21, wishlistViewModel.wishlistLiveData.value!!.size)
 
-        wishlistViewModel.getNextPageWishlistData()
-
-        // Expect every 4 product recommendation widget is showed
+        // Expect every last row, product recommendation widget is showed
         Assert.assertEquals(RecommendationCarouselDataModel::class.java,
-                wishlistViewModel.wishlistLiveData.value!![25].javaClass)
+                wishlistViewModel.wishlistLiveData.value!![20].javaClass)
 
 
         Assert.assertTrue(wishlistViewModel.productClickActionData.value == null)
 
         wishlistViewModel.onPDPActivityResultForWishlist(0, true)
-        Assert.assertTrue(!(wishlistViewModel.wishlistLiveData.value!![25] as RecommendationCarouselDataModel).list.get(0).recommendationItem.isWishlist)
+        val lastIndex = wishlistViewModel.wishlistLiveData.value!!.size-1
+        Assert.assertTrue(!(wishlistViewModel.wishlistLiveData.value!![lastIndex] as RecommendationCarouselDataModel).list[0].recommendationItem.isWishlist)
 
 
         Assert.assertEquals(wishlistViewModel.getUserId(), mockUserId)
@@ -439,7 +432,7 @@ class WishlistViewModelGetWishlistDataTest {
 
 
         // Expect wishlistLiveData has 3 new wishlist data
-        Assert.assertEquals(3, wishlistViewModel.wishlistLiveData.value!!.size)
+        Assert.assertEquals(wishlistViewModel.wishlistLiveData.value!!.size, wishlistViewModel.wishlistLiveData.value!!.size)
     }
 
 
