@@ -758,7 +758,11 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     }
 
     private void renderFreeShippingCourier(ShipmentCartItemModel shipmentCartItemModel, RecipientAddressModel currentAddress, CourierItemData selectedCourierItemData) {
-        renderNoSelectedCourierNormalShipping(shipmentCartItemModel, currentAddress);
+        layoutStateHasSelectedNormalShipping.setVisibility(View.GONE);
+        layoutStateHasSelectedFreeShipping.setVisibility(View.VISIBLE);
+        layoutStateHasSelectedFreeShipping.setOnClickListener(
+                getOnChangeDurationClickListener(shipmentCartItemModel, currentAddress)
+        );
 
         if (shipmentCartItemModel.isError()) {
             mActionListener.onCancelVoucherLogisticClicked(
