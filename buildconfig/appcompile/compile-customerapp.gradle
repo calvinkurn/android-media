@@ -52,6 +52,7 @@ include "features:recharge:recharge_credit_card"
 include "features:recharge:recharge_slice"
 include "features:recharge:smart_bills"
 include "features:recharge:recharge_component"
+include "features:recharge:recharge_pdp_emoney"
 
 include "features:travel:travel_homepage"
 include "features:travel:travel_country_code"

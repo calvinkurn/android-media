@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <com.tokopedia.unifycomponents.ticker.Ticker
+        android:id="@+id/emoneyPdpTicker"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:tickerType="announcement" />
+
+    <LinearLayout
+        android:id="@+id/emoneyPdpHeaderLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_emoney_pdp_green_gradient"
+        android:orientation="vertical"
+        android:paddingHorizontal="@dimen/unify_space_12"
+        android:paddingBottom="@dimen/spacing_lvl5"
+        app:layout_constraintTop_toBottomOf="@id/emoneyPdpTicker">
+
+        <com.tokopedia.recharge_pdp_emoney.presentation.widget.EmoneyPdpHeaderViewWidget
+            android:id="@+id/emoneyPdpHeaderView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_lvl3" />
+
+        <com.tokopedia.recharge_pdp_emoney.presentation.widget.EmoneyPdpInputCardNumberWidget
+            android:id="@+id/emoneyPdpInputCardWidget"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/unify_space_12" />
+    </LinearLayout>
+
+    <com.tokopedia.unifycomponents.TabsUnify
+        android:id="@+id/emoneyPdpTab"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/emoneyPdpHeaderLayout" />
+
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/emoneyPdpViewPager"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_0"
+        app:layout_constraintTop_toBottomOf="@id/emoneyPdpTab"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:background="@color/Unify_N0" />
+
+    <com.tokopedia.recharge_pdp_emoney.presentation.widget.EmoneyPdpProductWidget
+        android:id="@+id/emoneyPdpProductWidget"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/layout_lvl0"
+        app:layout_constraintTop_toBottomOf="@id/emoneyPdpHeaderLayout"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:background="@color/Unify_N0"
+        android:visibility="gone"
+        tools:visibility="visible" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

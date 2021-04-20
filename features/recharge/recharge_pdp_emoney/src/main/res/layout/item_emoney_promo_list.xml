@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.unifycomponents.CardUnify xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/Unify_N700_68"
+    android:padding="@dimen/spacing_lvl4">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/emoneyPromoItemTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="body_3"
+            tools:text="Cashback hingga Rp400.000 (khusus pengguna baru). SK lengkap klik di sini." />
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/emoneyPromoIcon"
+            android:layout_width="@dimen/layout_lvl2"
+            android:layout_height="@dimen/layout_lvl2"
+            android:layout_marginTop="@dimen/spacing_lvl3"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/emoneyPromoItemTitle" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/emoneyPromoCodeLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_lvl2"
+            app:layout_constraintBottom_toBottomOf="@id/emoneyPromoIcon"
+            app:layout_constraintStart_toEndOf="@id/emoneyPromoIcon"
+            app:layout_constraintTop_toTopOf="@id/emoneyPromoIcon"
+            app:typographyType="body_3"
+            tools:text="Kode Promo:" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/emoneyPromoCodeValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_lvl2"
+            android:textColor="@color/Unify_Y500"
+            app:layout_constraintBottom_toBottomOf="@id/emoneyPromoCodeLabel"
+            app:layout_constraintStart_toEndOf="@id/emoneyPromoCodeLabel"
+            app:layout_constraintTop_toTopOf="@id/emoneyPromoCodeLabel"
+            app:typographyType="body_3"
+            app:typographyWeight="bold"
+            tools:text="TOPED" />
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_lvl2"
+            app:layout_constraintStart_toEndOf="@id/emoneyPromoCodeValue"
+            app:layout_constraintTop_toBottomOf="@id/emoneyPromoItemTitle"
+            app:unifyButtonSize="micro"
+            app:unifyButtonVariant="ghost"
+            tools:text="Salin"
+            app:layout_constraintBottom_toBottomOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</com.tokopedia.unifycomponents.CardUnify>

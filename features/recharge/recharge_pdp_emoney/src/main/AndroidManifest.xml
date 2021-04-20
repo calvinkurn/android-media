@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.tokopedia.recharge_pdp_emoney">
+
+    <application>
+        <activity
+            android:name=".presentation.activity.EmoneyPdpActivity"
+            android:screenOrientation="portrait"
+            android:label="@string/recharge_pdp_emoney_toolbar_title"
+            android:theme="@style/Theme.WhiteUnify" />
+    </application>
+
+</manifest>
