@@ -29,9 +29,9 @@ class MainValidatorFragment : Fragment() {
                 ?: throw IllegalArgumentException("Path not found!!")
     }
 
-    private val journeyId: Int by lazy {
-        arguments?.getInt(ARGUMENT_JOURNEY_ID)
-                ?: 0
+    private val isFromNetwork: Boolean by lazy {
+        arguments?.getBoolean(ARGUMENT_IS_NETWORK)
+                ?: true
     }
 
     val viewModel: ValidatorViewModel by lazy {
@@ -49,7 +49,7 @@ class MainValidatorFragment : Fragment() {
         super.onCreate(savedInstanceState)
 
         initInjector()
-        viewModel.fetchQueryFromAsset(testPath, journeyId)
+        viewModel.fetchQueryFromAsset(testPath, isFromNetwork)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -94,7 +94,7 @@ class MainValidatorFragment : Fragment() {
 
     private fun initInjector() {
         activity?.let {
-            CassavaComponentInstance.getInstance(it.application).inject(this)
+            CassavaComponentInstance.getInstance(it).inject(this)
         }
     }
 
@@ -105,14 +105,15 @@ class MainValidatorFragment : Fragment() {
     companion object {
 
         private const val ARGUMENT_TEST_PATH = "ARGUMENT_TEST_PATH"
-        private const val ARGUMENT_JOURNEY_ID = "ARGUMENT_JOURNEY_ID"
+        private const val ARGUMENT_IS_NETWORK = "ARGUMENT_IS_NETWORK"
 
-        fun newInstance(path: String, journeyId: Int): MainValidatorFragment = MainValidatorFragment().apply {
-            arguments = Bundle().apply {
-                putString(ARGUMENT_TEST_PATH, path)
-                putInt(ARGUMENT_JOURNEY_ID, journeyId)
-            }
-        }
+        fun newInstance(path: String, isFromNetwork: Boolean): MainValidatorFragment =
+                MainValidatorFragment().apply {
+                    arguments = Bundle().apply {
+                        putString(ARGUMENT_TEST_PATH, path)
+                        putBoolean(ARGUMENT_IS_NETWORK, isFromNetwork)
+                    }
+                }
     }
 
 }

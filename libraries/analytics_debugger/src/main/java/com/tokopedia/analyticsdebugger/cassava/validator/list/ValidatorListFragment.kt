@@ -45,7 +45,7 @@ class ValidatorListFragment : Fragment() {
 
         initInjector()
         viewModel.changeSource(true)
-        viewModel.fetchJourneyQueriesList()
+        viewModel.fetchJourneyQueriesList(true)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -58,7 +58,9 @@ class ValidatorListFragment : Fragment() {
         observeLiveData()
 
         listingAdapter = FileListingAdapter().also { adapter ->
-            adapter.setOnItemClickListener { listener?.goToTestPage(it) }
+            adapter.setOnItemClickListener {
+                listener?.goToTestPage(it.first, viewModel.getCassavaSource() == CassavaSource.NETWORK)
+            }
         }
 
         view.findViewById<ImageView>(R.id.iv_delete).setOnClickListener {
@@ -92,7 +94,7 @@ class ValidatorListFragment : Fragment() {
                     s?.run {
                         searchBarClearButton.visibility = if (s.isNotEmpty()) View.VISIBLE else View.GONE
                         // Filter test cases based on search query
-                        val filteredListTests = viewModel.getListFiles().filter { it.contains(s.toString(), true) }
+                        val filteredListTests = viewModel.getListFiles().filter { it.second.contains(s.toString(), true) }
                         listingAdapter.setItems(filteredListTests)
                     }
                 }
@@ -132,7 +134,7 @@ class ValidatorListFragment : Fragment() {
                         toggleButton.isChecked = false
                     }
                 }
-                viewModel.fetchJourneyQueriesList()
+                viewModel.fetchJourneyQueriesList(toggleButton.isChecked)
             }
         })
     }
@@ -149,12 +151,12 @@ class ValidatorListFragment : Fragment() {
 
     private fun initInjector() {
         activity?.let {
-            CassavaComponentInstance.getInstance(it.application).inject(this)
+            CassavaComponentInstance.getInstance(it).inject(this)
         }
     }
 
     interface Listener {
-        fun goToTestPage(filepath: String)
+        fun goToTestPage(filepath: String, isFromNetwork: Boolean)
     }
 
     companion object {

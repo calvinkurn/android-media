@@ -10,11 +10,10 @@ import com.tokopedia.analyticsdebugger.cassava.data.CassavaSource
 import com.tokopedia.analyticsdebugger.cassava.data.api.CassavaUrl
 import com.tokopedia.analyticsdebugger.cassava.data.request.ValidationResultData
 import com.tokopedia.analyticsdebugger.cassava.data.request.ValidationResultRequest
+import com.tokopedia.analyticsdebugger.cassava.domain.JourneyListUseCase
 import com.tokopedia.analyticsdebugger.cassava.domain.QueryListUseCase
 import com.tokopedia.analyticsdebugger.cassava.domain.ValidationResultUseCase
-import com.tokopedia.analyticsdebugger.cassava.validator.Utils
 import com.tokopedia.analyticsdebugger.cassava.validator.core.*
-import com.tokopedia.analyticsdebugger.cassava.validator.list.ValidatorListFragment
 import com.tokopedia.analyticsdebugger.database.TkpdAnalyticsDatabase
 import com.tokopedia.analyticsdebugger.debugger.data.repository.GtmRepo
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
@@ -25,7 +24,8 @@ import javax.inject.Inject
 
 class ValidatorViewModel @Inject constructor(private val context: Application,
                                              private val queryListUseCase: QueryListUseCase,
-                                             private val validationResultUseCase: ValidationResultUseCase)
+                                             private val validationResultUseCase: ValidationResultUseCase,
+                                             private val journeyListUseCase: JourneyListUseCase)
     : AndroidViewModel(context) {
 
     private val dao: GtmLogDBSource by lazy { GtmLogDBSource(context) }
@@ -42,8 +42,8 @@ class ValidatorViewModel @Inject constructor(private val context: Application,
     val snackBarMessage: LiveData<String>
         get() = _snackBarMessage
 
-    private val _listFiles = MutableLiveData<List<String>>()
-    val listFiles: LiveData<List<String>>
+    private val _listFiles = MutableLiveData<List<Pair<String, String>>>()
+    val listFiles: LiveData<List<Pair<String, String>>>
         get() = _listFiles
 
     private val _cassavaQuery = MutableLiveData<CassavaQuery>()
@@ -61,6 +61,9 @@ class ValidatorViewModel @Inject constructor(private val context: Application,
     fun changeSource(isFromNetwork: Boolean) {
         _cassavaSource.value = if (isFromNetwork) CassavaSource.NETWORK else CassavaSource.LOCAL
     }
+
+    fun getCassavaSource(): CassavaSource =
+        cassavaSource.value ?: CassavaSource.NETWORK
 
     fun run(queries: List<Pair<Int, Map<String, Any>>>, mode: String) {
         val v = queries.map { it.toDefaultValidator() }
@@ -89,27 +92,28 @@ class ValidatorViewModel @Inject constructor(private val context: Application,
         }
     }
 
-    fun fetchJourneyQueriesList() {
+    fun fetchJourneyQueriesList(isFromNetwork: Boolean) {
         viewModelScope.launch {
             try {
-                _listFiles.postValue(Utils.listAssetFiles(context, ValidatorListFragment.TRACKER_ROOT_PATH))
+                _listFiles.postValue(journeyListUseCase.execute(isFromNetwork))
             } catch (e: Exception) {
                 _snackBarMessage.postValue(e.message ?: "")
             }
         }
     }
 
-    fun getListFiles(): List<String> = listFiles.value ?: arrayListOf()
+    fun getListFiles(): List<Pair<String, String>> = listFiles.value ?: arrayListOf()
 
     fun fetchQueryFromAsset(filePath: String, isFromNetwork: Boolean) {
-        if (isFromNetwork) this.journeyId = filePath
+        changeSource(isFromNetwork)
+        if (isFromNetwork) {
+            this.journeyId = filePath
+        }
 
         viewModelScope.launch(CoroutineDispatchersProvider.io) {
             try {
                 _cassavaQuery.postValue(queryListUseCase.execute(
-                        context,
-                        cassavaSource.value ?: CassavaSource.NETWORK,
-                        journeyId,
+                        getCassavaSource(),
                         filePath))
             } catch (t: Throwable) {
                 t.printStackTrace()

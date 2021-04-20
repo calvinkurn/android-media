@@ -74,15 +74,15 @@ class MainValidatorActivity : AppCompatActivity(),
         }
     }
 
-    override fun goToTestPage(filepath: String) {
+    override fun goToTestPage(filepath: String, isFromNetwork: Boolean) {
         supportFragmentManager.beginTransaction()
                 .addToBackStack("runner")
-                .replace(R.id.container, MainValidatorFragment.newInstance(filepath, 1)) // dummy journey id
+                .replace(R.id.container, MainValidatorFragment.newInstance(filepath, isFromNetwork))
                 .commit()
     }
 
     private fun initInjector() {
-        CassavaComponentInstance.getInstance(application).inject(this)
+        CassavaComponentInstance.getInstance(this).inject(this)
     }
 
 }
