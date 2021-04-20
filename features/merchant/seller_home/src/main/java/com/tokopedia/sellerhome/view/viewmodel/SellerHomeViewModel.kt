@@ -465,18 +465,19 @@ class SellerHomeViewModel @Inject constructor(
         var hasCardCalculated = false
         val newWidgetList = widgetList.map { widget ->
             val requestedHeight = WidgetHeight.getWidgetHeight(widget.widgetType)
-            if (widget.widgetType == WidgetType.CARD) {
-                if (!hasCardCalculated) {
-                    remainingHeight -= requestedHeight
-                }
-                hasCardCalculated = !hasCardCalculated
-            } else {
-                remainingHeight -= requestedHeight
-            }
             if (remainingHeight > 0f) {
                 widget.apply { isLoading = true }
             } else {
                 widget
+            }.also {
+                if (widget.widgetType == WidgetType.CARD) {
+                    if (!hasCardCalculated) {
+                        remainingHeight -= requestedHeight
+                    }
+                    hasCardCalculated = !hasCardCalculated
+                } else {
+                    remainingHeight -= requestedHeight
+                }
             }
         }
         return getLoadedInitialWidgetData(newWidgetList)
