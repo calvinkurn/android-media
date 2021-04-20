@@ -42,7 +42,7 @@ class RechargeHomepageViewModel @Inject constructor(
     val rechargeTickerHomepageModel: LiveData<Result<RechargeTickerHomepageModel>>
         get() = mutableRechargeTickerHomepageModel
 
-    private val calledSectionIds = hashSetOf<Int>()
+    val calledSectionIds = hashSetOf<Int>()
 
     fun getRechargeHomepageSectionSkeleton(mapParams: Map<String, Any>) {
         onRefreshData()
