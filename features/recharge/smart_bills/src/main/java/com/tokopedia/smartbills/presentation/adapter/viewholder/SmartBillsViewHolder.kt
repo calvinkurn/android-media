@@ -46,7 +46,7 @@ class SmartBillsViewHolder(val view: View,
 
                 //disabling view to cannot clicked
                 disableView()
-                tv_smart_bills_item_detail.disableView()
+                tv_smart_bills_item_detail.gone()
                 cb_smart_bills_item.disableView()
                 tv_smart_bills_item_title.disableView()
                 tv_smart_bills_item_description_bill_name.disableView()
