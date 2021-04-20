@@ -14,7 +14,7 @@
         android:layout_height="@dimen/layout_lvl2"
         android:layout_gravity="center"
         app:icon_color_light_enable="@color/Unify_Static_White"
-        app:icon_color_night_enable="@color/Unify_G500"
+        app:icon_color_night_enable="@color/Unify_Static_White"
         app:icon_name="BELL"
         />
 
