@@ -5,7 +5,14 @@ object ShopScoreTrackingConstant {
     const val SHOP_TYPE_PM = "PM"
     const val SHOP_TYPE_OS = "OS"
 
+    const val PHYSICAL_GOODS = "physical goods"
+    const val TOKOPEDIA_SELLER = "tokopediaseller"
+    const val BUSSINESS_UNIT = "businessUnit"
+    const val CURRENT_SITE = "currentSite"
+    const val USER_ID = "userId"
+
     const val TRANSITION_PERIOD_SHOP_SCORE = "transition period - shop score page"
+    const val TRANSITION_PERIOD_PENALTY_PAGE = "transition period - penalty page"
     const val CLICK_SHOP_SCORE = "clickShopScore"
     const val CLICK_SEE_DETAIL_PENALTY = "click - lihat detail penalti disini"
     const val CLICK_CHECK_PENALTY = "click - cek penalti"
@@ -21,6 +28,7 @@ object ShopScoreTrackingConstant {
     const val SPECIAL_RELEASE = "rilisan spesial"
     const val BROADCAST_CHAT = "broadcast chat"
 
+    const val OLD_PERFORMA_TOKO_PAGE = "old performa toko page"
     const val CLICK_LEARN_MORE = "click - pelajari selengkapnya"
     const val CLICK_CONTACT_HELP_CENTER = "click - hubungi pusat bantuan"
     const val VIEW_SHOP_SCORE_IRIS = "viewShopScoreIris"
@@ -29,6 +37,7 @@ object ShopScoreTrackingConstant {
     const val IMPRESSION_CHECK_PENALTY = "impression - cek penalti"
     const val IMPRESSION_COMPLETE_INFO = "impression - info lengkap"
     const val IMPRESSION_GET_PM = "impression - tokomu dapat power merchant"
+    const val IMPRESSION_SEE_ALL_BENEFIT = "impression - lihat semua keuntungannya"
     const val IMPRESSION_MERCHANT_TOOLS = "impression - merchant tools"
     const val IMPRESSION_HELP_CENTER = "impression - hubungi pusat bantuan"
 

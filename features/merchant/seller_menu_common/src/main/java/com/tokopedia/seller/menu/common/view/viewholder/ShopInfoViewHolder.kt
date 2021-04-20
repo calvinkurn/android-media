@@ -13,8 +13,10 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.seller.menu.common.R
 import com.tokopedia.seller.menu.common.analytics.SellerMenuTracker
 import com.tokopedia.seller.menu.common.analytics.SettingTrackingListener
@@ -58,6 +60,8 @@ class ShopInfoViewHolder(
     }
 
     private val context by lazy { itemView.context }
+
+    private val shopScoreImpressHolder = ImpressHolder()
 
     override fun bind(uiModel: ShopInfoUiModel) {
         with(uiModel.shopInfo) {
@@ -135,7 +139,10 @@ class ShopInfoViewHolder(
         itemView.shopScore.text = uiModel.shopScore.toString()
         itemView.shopScoreLayout.setOnClickListener {
             RouteManager.route(context, ApplinkConstInternalMarketplace.SHOP_SCORE_DETAIL, userSession?.shopId)
-            sellerMenuTracker?.sendEventClickShopScore()
+            sellerMenuTracker?.sendShopScoreEntryPoint()
+        }
+        itemView.shopScoreLayout.addOnImpressionListener(shopScoreImpressHolder) {
+            sellerMenuTracker?.impressShopScoreEntryPoint()
         }
     }
 

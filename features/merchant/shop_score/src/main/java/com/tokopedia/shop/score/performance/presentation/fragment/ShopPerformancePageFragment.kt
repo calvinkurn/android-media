@@ -15,9 +15,11 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.common.ShopScoreCoachMarkPrefs
 import com.tokopedia.shop.score.common.ShopScoreConstant
+import com.tokopedia.shop.score.common.analytics.ShopScorePenaltyTracking
 import com.tokopedia.shop.score.performance.di.component.ShopPerformanceComponent
 import com.tokopedia.shop.score.performance.domain.model.ShopScoreWrapperResponse
 import com.tokopedia.shop.score.performance.presentation.activity.ShopPerformanceYoutubeActivity
@@ -44,6 +46,8 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
 
+    @Inject lateinit var shopScorePenaltyTracking: ShopScorePenaltyTracking
+
     private val viewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(ShopPerformanceViewModel::class.java)
     }
@@ -61,6 +65,9 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
     private val coachMarkItemList = ArrayList<CoachMark2Item>()
     private val coachMark by lazy { context?.let { CoachMark2(it) } }
     private val shopScoreCoachMarkPrefs by lazy { ShopScoreCoachMarkPrefs(requireContext()) }
+
+    private val impressHolderMenuPenalty = ImpressHolder()
+    private val impressHolderMenuShopInfo = ImpressHolder()
 
     private val penaltyDotBadge: PenaltyDotBadge? by lazy {
         context?.let { PenaltyDotBadge(it) }
@@ -84,6 +91,7 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
         onSwipeRefreshShopPerformance()
         observeShopPeriod()
         observeShopPerformancePage()
+        recyclerViewScrollListenerCoachMark()
     }
 
     override fun onDestroy() {
@@ -94,19 +102,22 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
         inflater.inflate(R.menu.menu_shop_score, menu)
         this.menu = menu
         showPenaltyBadge()
-        super.onCreateOptionsMenu(menu, inflater)
+        impressMenuShopPerformance()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             INFO_MENU_ID -> {
                 RouteManager.route(context, ShopScoreConstant.SHOP_INFO_URL)
+                shopScorePenaltyTracking.clickMenuCompleteInfo()
             }
             PENALTY_WARNING_MENU_ID -> {
                 goToPenaltyPage()
+                shopScorePenaltyTracking.clickMenuPenalty()
             }
         }
         return super.onOptionsItemSelected(item)
@@ -136,6 +147,11 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
 
     override fun onTickerClickedToPenaltyPage() {
         goToPenaltyPage()
+        shopScorePenaltyTracking.clickHereTickerPenalty()
+    }
+
+    override fun onTickerImpressionToPenaltyPage() {
+        shopScorePenaltyTracking.impressTickerPenaltyShopScore()
     }
 
     /**
@@ -155,6 +171,7 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
                     view.findViewById(R.id.cardItemDetailShopPerformance),
                     getString(R.string.title_coachmark_shop_score_2),
                     getString(R.string.desc_coachmark_shop_score_2),
+                    position = CoachMark2.POSITION_TOP
             ))
             shopScoreCoachMarkPrefs.setHasShownItemPerformanceDetail(true)
         }
@@ -178,6 +195,7 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
      */
     override fun onItemClickedGoToPMActivation() {
         goToPowerMerchantSubscribe()
+        shopScorePenaltyTracking.clickPowerMerchantSection()
     }
 
     /**
@@ -189,10 +207,14 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
                     view.findViewById(R.id.containerPowerMerchant),
                     getString(R.string.title_coachmark_shop_score_3),
                     getString(R.string.desc_coachmark_shop_score_3),
+                    position = CoachMark2.POSITION_TOP
             ))
             shopScoreCoachMarkPrefs.setHasShownItemPM(true)
         }
-        showCoachMark()
+    }
+
+    override fun onImpressHeaderPowerMerchantSection() {
+        shopScorePenaltyTracking.impressPotentialPowerMerchant()
     }
 
     /**
@@ -200,6 +222,7 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
      */
     override fun onItemClickedBenefitPotentialRM() {
         goToPowerMerchantSubscribe()
+        shopScorePenaltyTracking.clickSeeAllBenefitInRM()
     }
 
     /**
@@ -211,10 +234,15 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
                     view.findViewById(R.id.containerRegularMerchantSection),
                     getString(R.string.title_coachmark_shop_score_3),
                     getString(R.string.desc_coachmark_shop_score_3),
+                    position = CoachMark2.POSITION_TOP
             ))
             shopScoreCoachMarkPrefs.setHasShownItemRM(true)
         }
         showCoachMark()
+    }
+
+    override fun onImpressBenefitSeeAll() {
+        shopScorePenaltyTracking.impressSeeAllBenefitPowerMerchant()
     }
 
     /**
@@ -226,23 +254,33 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
                     view.findViewById(R.id.containerCornerShopPerformance),
                     getString(R.string.title_coachmark_shop_score_1),
                     getString(R.string.desc_coachmark_shop_score_1),
+                    position = CoachMark2.POSITION_BOTTOM
             ))
             shopScoreCoachMarkPrefs.setHasShownHeaderPerformanceDetail(true)
         }
+    }
+
+    override fun onImpressHeaderTicker() {
+        shopScorePenaltyTracking.impressTickerPenaltyShopScore()
     }
 
     /**
      * ItemTimerNewSellerListener
      */
     override fun onItemClickedRecommendationFeature(appLink: String) {
+        shopScorePenaltyTracking.clickMerchantToolsRecommendation()
         RouteManager.route(requireContext(), appLink)
+    }
+
+    override fun onItemImpressRecommendationFeature() {
+        shopScorePenaltyTracking.impressMerchantToolsRecommendation()
     }
 
     /**
      * ItemTimerNewSellerListener
      */
     override fun onBtnShopPerformanceToFaqClicked() {
-        val faqData = shopPerformanceAdapter.list.firstOrNull { it is SectionFaqUiModel }
+        val faqData = shopPerformanceAdapter.list.find { it is SectionFaqUiModel }
         if (faqData != null) {
             val positionFaqSection = shopPerformanceAdapter.list.indexOf(faqData)
             val smoothScroller: RecyclerView.SmoothScroller = object : LinearSmoothScroller(context) {
@@ -267,6 +305,15 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
         RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, ShopScoreConstant.HELP_URL)
     }
 
+    private fun impressMenuShopPerformance() {
+        menu?.findItem(PENALTY_WARNING_MENU_ID)?.actionView?.addOnImpressionListener(impressHolderMenuPenalty) {
+            shopScorePenaltyTracking.impressMenuPenalty()
+        }
+        menu?.findItem(INFO_MENU_ID)?.actionView?.addOnImpressionListener(impressHolderMenuShopInfo) {
+            shopScorePenaltyTracking.impressMenuInfoPage()
+        }
+    }
+
     private fun showPenaltyBadge() {
         Handler().postDelayed({
             context?.let {
@@ -280,36 +327,87 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
         }, PENALTY_BADGE_DELAY)
     }
 
+    private fun recyclerViewScrollListenerCoachMark() {
+        rvShopPerformance?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+                val performanceLayoutManager = rvShopPerformance.layoutManager as? LinearLayoutManager
+                performanceLayoutManager?.let { layoutManager ->
+                    val firstVisiblePosition = layoutManager.findFirstVisibleItemPosition()
+                    val lastVisiblePosition = layoutManager.findLastVisibleItemPosition()
+
+                    val itemHeaderIndex = shopPerformanceAdapter.list.indexOfFirst { it is HeaderShopPerformanceUiModel }
+                    val itemDetailPerformanceIndex = shopPerformanceAdapter.list.indexOfFirst { it is ItemDetailPerformanceUiModel }
+                    val itemPMIndex = shopPerformanceAdapter.list.indexOfFirst { it is ItemStatusPMUiModel }
+                    val itemRMIndex = shopPerformanceAdapter.list.indexOfFirst { it is ItemStatusRMUiModel }
+
+                    if (coachMark?.isShowing == true) {
+                        when (coachMark?.currentIndex) {
+                            COACHMARK_HEADER_POSITION -> {
+                                if (itemHeaderIndex in firstVisiblePosition..lastVisiblePosition) {
+                                    coachMark?.animateShow()
+                                } else {
+                                    coachMark?.animateHide()
+                                }
+                            }
+                            COACHMARK_ITEM_DETAIL_POSITION -> {
+                                if (itemDetailPerformanceIndex in firstVisiblePosition..lastVisiblePosition) {
+                                    coachMark?.animateShow()
+                                } else {
+                                    coachMark?.animateHide()
+                                }
+                            }
+                            COACHMARK_LAST_POSITION_PM_RM -> {
+                                if (itemPMIndex in firstVisiblePosition..lastVisiblePosition || itemRMIndex in firstVisiblePosition..lastVisiblePosition) {
+                                    coachMark?.animateShow()
+                                } else {
+                                    coachMark?.animateHide()
+                                }
+                            }
+                            else -> { }
+                        }
+                    }
+                }
+            }
+        })
+    }
+
     private fun showCoachMark() {
         coachMark?.setStepListener(object : CoachMark2.OnStepListener {
             override fun onStep(currentIndex: Int, coachMarkItem: CoachMark2Item) {
                 if (currentIndex == 1) {
                     coachMark?.stepPagination?.hide()
+                    scrollToItemHeaderCoachMark()
                 } else {
                     coachMark?.stepPagination?.show()
                 }
 
-                if (currentIndex == COACHMARK_THREE_POSITION) {
-                    scrollToLastItemCoachMark()
+                when (currentIndex) {
+                    COACHMARK_ITEM_DETAIL_POSITION -> scrollToItemDetailCoachMark()
+                    COACHMARK_LAST_POSITION_PM_RM -> scrollToLastItemCoachMark()
+                    else -> {}
                 }
             }
         })
 
         if (coachMarkItemList.isNotEmpty() && !shopScoreCoachMarkPrefs.getFinishCoachMark()) {
             coachMark?.showCoachMark(coachMarkItemList)
+        }
+
+        coachMark?.onFinishListener = {
             shopScoreCoachMarkPrefs.setFinishCoachMark(true)
         }
     }
 
     private fun scrollToLastItemCoachMark() {
-        val pmData = shopPerformanceAdapter.list.firstOrNull { it is ItemStatusPMUiModel }
+        val positionPM = shopPerformanceAdapter.list.firstOrNull { it is ItemStatusPMUiModel }
         var position = -1
-        if (pmData != null) {
-            position = shopPerformanceAdapter.list.indexOf(pmData)
+        if (positionPM != null) {
+            position = shopPerformanceAdapter.list.indexOfFirst { it is ItemStatusPMUiModel }
         } else {
             val rmData = shopPerformanceAdapter.list.firstOrNull { it is ItemStatusRMUiModel }
             if (rmData != null) {
-                position =shopPerformanceAdapter.list.indexOf(rmData)
+                position = shopPerformanceAdapter.list.indexOf(rmData)
             }
         }
         if (position != -1) {
@@ -319,6 +417,32 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
                 }
             }
             smoothScroller.targetPosition = position
+            rvShopPerformance?.layoutManager?.startSmoothScroll(smoothScroller)
+        }
+    }
+
+    private fun scrollToItemHeaderCoachMark() {
+        val positionItemHeader = shopPerformanceAdapter.list.indexOfFirst { it is HeaderShopPerformanceUiModel }
+        if (positionItemHeader != -1) {
+            val smoothScroller: RecyclerView.SmoothScroller = object : LinearSmoothScroller(context) {
+                override fun getVerticalSnapPreference(): Int {
+                    return SNAP_TO_START
+                }
+            }
+            smoothScroller.targetPosition = positionItemHeader
+            rvShopPerformance?.layoutManager?.startSmoothScroll(smoothScroller)
+        }
+    }
+
+    private fun scrollToItemDetailCoachMark() {
+        val positionItemDetail = shopPerformanceAdapter.list.indexOfFirst { it is ItemDetailPerformanceUiModel }
+        if (positionItemDetail != -1) {
+            val smoothScroller: RecyclerView.SmoothScroller = object : LinearSmoothScroller(context) {
+                override fun getVerticalSnapPreference(): Int {
+                    return SNAP_TO_START
+                }
+            }
+            smoothScroller.targetPosition = positionItemDetail
             rvShopPerformance?.layoutManager?.startSmoothScroll(smoothScroller)
         }
     }
@@ -363,6 +487,7 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
                     this.shopScoreWrapperResponse = it.data.second
                     counterPenalty = it.data.first.filterIsInstance<HeaderShopPerformanceUiModel>().firstOrNull()?.scorePenalty.orZero()
                     showPenaltyBadge()
+                    scrollToItemHeaderCoachMark()
                 }
                 is Fail -> {
                     shopPerformanceAdapter.hideLoading()
@@ -401,7 +526,9 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
 
         private const val PENALTY_BADGE_DELAY = 500L
 
-        private const val COACHMARK_THREE_POSITION = 3
+        private const val COACHMARK_LAST_POSITION_PM_RM = 2
+        private const val COACHMARK_HEADER_POSITION = 0
+        private const val COACHMARK_ITEM_DETAIL_POSITION = 1
 
         @JvmStatic
         fun newInstance(): ShopPerformancePageFragment {

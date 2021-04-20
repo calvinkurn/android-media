@@ -21,8 +21,10 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.common.ShopScoreConstant
+import com.tokopedia.shop.score.common.analytics.ShopScorePenaltyTracking
 import com.tokopedia.shop.score.common.setTextMakeHyperlink
 import com.tokopedia.shop.score.common.toggle
 import com.tokopedia.shop.score.penalty.di.component.PenaltyComponent
@@ -50,6 +52,9 @@ class ShopPenaltyPageFragment : BaseListFragment<Visitable<*>, PenaltyPageAdapte
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
 
+    @Inject
+    lateinit var shopScorePenaltyTracking: ShopScorePenaltyTracking
+
     private val viewModelShopPenalty by lazy {
         ViewModelProvider(this, viewModelFactory).get(ShopPenaltyViewModel::class.java)
     }
@@ -57,6 +62,7 @@ class ShopPenaltyPageFragment : BaseListFragment<Visitable<*>, PenaltyPageAdapte
     private val penaltyPageAdapterFactory by lazy { PenaltyPageAdapterFactory(this) }
     private val penaltyPageAdapter by lazy { PenaltyPageAdapter(penaltyPageAdapterFactory) }
 
+    private val impressHolderLearnMore = ImpressHolder()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_penalty_page, container, false)
@@ -170,8 +176,12 @@ class ShopPenaltyPageFragment : BaseListFragment<Visitable<*>, PenaltyPageAdapte
     }
 
     private fun setupCardPenalty(element: ItemCardShopPenaltyUiModel?) {
+        tvContentPenalty?.addOnImpressionListener(impressHolderLearnMore) {
+            shopScorePenaltyTracking.impressLearnMorePenaltyPage()
+        }
         tvContentPenalty?.setTextMakeHyperlink(getString(R.string.content_penalty_label)) {
             onMoreInfoHelpPenaltyClicked()
+            shopScorePenaltyTracking.clickLearMorePenaltyPage()
         }
         bgTotalPenalty?.background = context?.let {
             ContextCompat.getDrawable(it, if (element?.hasPenalty == true) R.drawable.ic_has_penalty else R.drawable.ic_no_penalty)

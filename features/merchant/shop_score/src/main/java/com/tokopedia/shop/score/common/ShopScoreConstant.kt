@@ -95,7 +95,7 @@ object ShopScoreConstant {
     const val SYSTEM_PENALTY_HELP_URL = "https://www.tokopedia.com/help/article/bagaimana-sistem-penalti-pengurangan-reputasi-toko"
     const val HELP_URL = "https://www.tokopedia.com/help"
 
-    const val PATTER_DATE_TEXT = "dd MMM yyyy"
+    const val PATTER_DATE_TEXT = "dd MMMM yyyy"
 
     const val SHOP_INFO_URL = "https://seller.tokopedia.com/shop-score-info"
 }

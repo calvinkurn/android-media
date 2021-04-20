@@ -27,7 +27,12 @@ import com.tokopedia.gm.common.constant.TRANSITION_PERIOD
 import com.tokopedia.gm.common.presentation.model.ShopInfoPeriodUiModel
 import com.tokopedia.gm.common.utils.getShopScoreDate
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.shop.score.R
+import com.tokopedia.shop.score.common.analytics.ShopScoreTrackingConstant.SHOP_TYPE_OS
+import com.tokopedia.shop.score.common.analytics.ShopScoreTrackingConstant.SHOP_TYPE_PM
+import com.tokopedia.shop.score.common.analytics.ShopScoreTrackingConstant.SHOP_TYPE_RM
+import com.tokopedia.shop.score.detail_old.analytics.ShopScoreDetailTracking
 import com.tokopedia.shop.score.detail_old.di.component.DaggerShopScoreComponent
 import com.tokopedia.shop.score.detail_old.view.model.ShopScoreDetailItem
 import com.tokopedia.shop.score.detail_old.view.model.ShopScoreDetailSummary
@@ -47,6 +52,8 @@ class ShopScoreDetailFragment : Fragment() {
     lateinit var viewModel: ShopScoreDetailViewModel
 
     private var adapter: ShopScoreDetailAdapter? = null
+
+    private val tickerImpressHolder = ImpressHolder()
 
     override fun onAttach(context: Context) {
         SplitCompat.install(context)
@@ -84,6 +91,9 @@ class ShopScoreDetailFragment : Fragment() {
         ticker_info_shop_score?.apply {
             showWithCondition((shopInfoPeriodUiModel.periodType == COMMUNICATION_PERIOD ||
                     shopInfoPeriodUiModel.periodType == TRANSITION_PERIOD) && !shopInfoPeriodUiModel.isNewSeller)
+            addOnImpressionListener(tickerImpressHolder) {
+                ShopScoreDetailTracking.clickHereTickerOldShopScoreDetail(viewModel.userSession.userId, getTypeShop)
+            }
             setHtmlDescription(getString(R.string.ticker_info_shop_score, getShopScoreDate(requireContext())))
             setDescriptionClickEvent(object : TickerCallback {
                 override fun onDescriptionViewClick(linkUrl: CharSequence) {
@@ -96,10 +106,20 @@ class ShopScoreDetailFragment : Fragment() {
                         }
                     }
                 }
-
                 override fun onDismiss() {}
-
             })
+        }
+    }
+
+    private val getTypeShop = when {
+        viewModel.userSession.isShopOfficialStore -> {
+            SHOP_TYPE_OS
+        }
+        viewModel.userSession.isGoldMerchant -> {
+            SHOP_TYPE_PM
+        }
+        else -> {
+            SHOP_TYPE_RM
         }
     }
 

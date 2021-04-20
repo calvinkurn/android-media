@@ -4,7 +4,8 @@ import androidx.annotation.StringRes
 import com.tokopedia.shop.score.performance.presentation.adapter.ShopPerformanceAdapterTypeFactory
 
 data class SectionPotentialPMBenefitUiModel(
-        val potentialPMBenefitList: List<ItemPotentialPMBenefitUIModel> = listOf()
+        val potentialPMBenefitList: List<ItemPotentialPMBenefitUIModel> = listOf(),
+        val transitionEndDate: String = ""
 ): BaseShopPerformance {
 
     override fun type(typeFactory: ShopPerformanceAdapterTypeFactory): Int {
