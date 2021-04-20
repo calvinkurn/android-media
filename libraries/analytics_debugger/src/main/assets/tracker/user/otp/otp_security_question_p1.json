@@ -1,0 +1,34 @@
+{
+  "readme": "P1#OTP - OTP METHOD PHONE",
+  "mode": "subset",
+  "query": [
+    {
+      "event": "clickOtp",
+      "eventCategory": "choose otp page",
+      "eventAction": "click on otp method",
+      "eventLabel": "134 - sms",
+      "sessionIris": "{{.*}}"
+    },
+    {
+      "event": "clickBack",
+      "eventCategory": "input otp page",
+      "eventAction": "click back button",
+      "eventLabel": "134",
+      "sessionIris": "{{.*}}"
+    },
+    {
+      "event": "clickConfirm",
+      "eventCategory": "input otp page",
+      "eventAction": "click on verifikasi",
+      "eventLabel": "134",
+      "sessionIris": "{{.*}}"
+    },
+    {
+      "event": "clickOtp",
+      "eventCategory": "input otp page",
+      "eventAction": "click on kirim ulang",
+      "eventLabel": "134",
+      "sessionIris": "{{.*}}"
+    }
+  ]
+}

@@ -5,6 +5,8 @@ import android.app.Application
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
 import com.tokopedia.notifications.common.CMConstant
 import timber.log.Timber
 import java.lang.ref.WeakReference
@@ -25,7 +27,11 @@ class CmActivityLifecycleHandler(val applicationCallback: CmActivityApplicationC
                 pushIntentHandler.isHandledByPush = pushIntentHandler.processPushIntent(activity, intent.extras)
             }
         } catch (t: Throwable) {
-            Timber.w("${CMConstant.TimberTags.TAG}exception;err='${Log.getStackTraceString(t).take(CMConstant.TimberTags.MAX_LIMIT)}';data=''")
+            ServerLogger.log(Priority.P2, "CM_VALIDATION",
+                    mapOf("type" to "exception",
+                            "err" to Log.getStackTraceString(t).take(CMConstant.TimberTags.MAX_LIMIT),
+                            "data" to ""
+                    ))
         }
     }
 
@@ -42,7 +48,11 @@ class CmActivityLifecycleHandler(val applicationCallback: CmActivityApplicationC
             }
             pushIntentHandler.isHandledByPush = pushIntentHandler.processPushIntent(activity, finalBundle)
         } catch (t: Throwable) {
-            Timber.w("${CMConstant.TimberTags.TAG}exception;err='${Log.getStackTraceString(t).take(CMConstant.TimberTags.MAX_LIMIT)}';data=''")
+            ServerLogger.log(Priority.P2, "CM_VALIDATION",
+                    mapOf("type" to "exception",
+                            "err" to Log.getStackTraceString(t).take(CMConstant.TimberTags.MAX_LIMIT),
+                            "data" to ""
+                    ))
         }
     }
 

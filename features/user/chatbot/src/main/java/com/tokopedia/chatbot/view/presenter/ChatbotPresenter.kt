@@ -184,7 +184,7 @@ class ChatbotPresenter @Inject constructor(
 
                     if (attachmentType== UPDATE_TOOLBAR){
                         val tool = Gson().fromJson(chatResponse.attachment?.attributes, ToolbarAttributes::class.java)
-                        view.updateToolbar(tool.profileName,tool.profileImage)
+                        view.updateToolbar(tool.profileName,tool.profileImage, tool.badgeImage)
                     }
 
                     val liveChatDividerAttribute = Gson().fromJson(chatResponse.attachment?.attributes, LiveChatDividerAttributes::class.java)
