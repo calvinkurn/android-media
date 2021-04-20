@@ -69,7 +69,6 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
     @Inject
     lateinit var powerMerchantTracking: PowerMerchantTracking
 
-    private var pmStatusAndShopInfo: PMStatusAndShopInfoUiModel? = null
     private var bottomSheetCancel: PowerMerchantCancelBottomSheet? = null
 
     override fun getScreenName(): String = GMParamTracker.ScreenName.PM_UPGRADE_SHOP
