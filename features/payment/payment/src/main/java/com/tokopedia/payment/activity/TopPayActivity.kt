@@ -415,7 +415,7 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
             if (url != null) {
                 val uri = Uri.parse(url)
                 if (uri.isOpaque) {
-                    return false
+                    return super.shouldOverrideUrlLoading(view, url)
                 }
                 // fingerprint
                 if (url.isNotEmpty() && url.contains(PaymentFingerprintConstant.APP_LINK_FINGERPRINT) &&
