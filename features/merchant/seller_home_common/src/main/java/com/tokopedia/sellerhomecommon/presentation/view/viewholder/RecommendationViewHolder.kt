@@ -108,7 +108,9 @@ class RecommendationViewHolder(
                     openApplink(element)
                 }
                 val iconColor = context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_G400)
-                tvShcRecommendationCta.setUnifyDrawableEnd(IconUnify.CHEVRON_RIGHT, iconColor)
+                val iconWidth = context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.layout_lvl3)
+                val iconHeight = context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.layout_lvl3)
+                tvShcRecommendationCta.setUnifyDrawableEnd(IconUnify.CHEVRON_RIGHT, iconColor, iconWidth, iconHeight)
             }
         }
     }
