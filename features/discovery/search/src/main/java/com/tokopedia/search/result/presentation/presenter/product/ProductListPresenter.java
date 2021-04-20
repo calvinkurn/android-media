@@ -1209,7 +1209,7 @@ public final class ProductListPresenter
     private int getFirstProductPositionWithBOELabel(List<Visitable<?>> list) {
         if (productList.isEmpty()) return -1;
 
-        ProductItemDataView product = (ProductItemDataView) CollectionsKt.firstOrNull(productList, prod -> ((ProductItemDataView) prod).hasLabelGroupFulfillment());
+        ProductItemDataView product = (ProductItemDataView) CollectionsKt.firstOrNull(productList, prod -> ((ProductItemDataView) prod).getHasLabelGroupFulfillment());
 
         if (product == null) return -1;
 
