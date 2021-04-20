@@ -60,8 +60,8 @@ class EmoneyPdpActivityNonLoginTest {
 
 
         Espresso.onView(withId(R.id.emoneyPdpTicker)).check(matches(not(isDisplayed())))
-//        scanEmoneyCard()
         clickPromoTabAndSalinPromo()
+        scanEmoneyCard()
         clickOnFavNumberOnInputView()
         clickProductAndSeeProductDetail()
 
@@ -80,9 +80,7 @@ class EmoneyPdpActivityNonLoginTest {
     }
 
     private fun scanEmoneyCard() {
-        Intents.intending(IntentMatchers.hasComponent(
-                ComponentNameMatchers.hasShortClassName(".EmoneyCheckBalanceActivity")))
-                .respondWith(createDummyCardResponse())
+        Intents.intending(IntentMatchers.anyIntent()).respondWith(createDummyCardResponse())
         Thread.sleep(2000)
 
         Espresso.onView(withId(R.id.emoneyHeaderViewCtaButton)).perform(click())
@@ -127,7 +125,8 @@ class EmoneyPdpActivityNonLoginTest {
         Espresso.onView(withId(R.id.text_field_input)).perform(click())
         Thread.sleep(2000)
 
-        Espresso.onView(withText("12345678910")).check(matches(isDisplayed()))
+        Espresso.onView(withId(R.id.emoneyHeaderViewCardNumber)).check(matches(withText("12345678910")))
+        Espresso.onView(AllOf.allOf(withText("99999999"), withId(R.id.text_field_input))).check(matches(isDisplayed()))
         Espresso.onView(withId(R.id.text_field_icon_2)).check(matches(isDisplayed()))
         Espresso.onView(withId(R.id.text_field_icon_2)).perform(click())
         Thread.sleep(1000)
@@ -140,7 +139,7 @@ class EmoneyPdpActivityNonLoginTest {
     }
 
     private fun createOrderNumberTypeManual(): Instrumentation.ActivityResult {
-        val orderClientNumber = TopupBillsFavNumberItem(clientNumber = "12345678910")
+        val orderClientNumber = TopupBillsFavNumberItem(clientNumber = "99999999")
         val resultData = Intent()
         resultData.putExtra(TopupBillsSearchNumberActivity.EXTRA_CALLBACK_CLIENT_NUMBER, orderClientNumber)
         resultData.putExtra(TopupBillsSearchNumberActivity.EXTRA_CALLBACK_INPUT_NUMBER_ACTION_TYPE,
