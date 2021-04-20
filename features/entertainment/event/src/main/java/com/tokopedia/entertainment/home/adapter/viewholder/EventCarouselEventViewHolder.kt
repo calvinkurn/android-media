@@ -26,10 +26,12 @@ import java.util.*
 class EventCarouselEventViewHolder(itemView: View, action: ((data: EventItemModel,
                                                              onSuccess: (EventItemModel) -> Unit,
                                                              onError: (Throwable) -> Unit) -> Unit),
-                                   val carouselListener: TrackingListener)
+                                   val carouselListener: TrackingListener,
+                                   val clickCarouselListener: ClickCarouselListener
+)
     : HomeEventViewHolder<EventCarouselModel>(itemView) {
 
-    var itemAdapter = InnerItemAdapter(action, carouselListener)
+    var itemAdapter = InnerItemAdapter(action, carouselListener, clickCarouselListener)
 
     init {
         itemView.ent_recycle_view_carousel.apply {
@@ -59,7 +61,10 @@ class EventCarouselEventViewHolder(itemView: View, action: ((data: EventItemMode
 
     class InnerItemAdapter(val action: (data: EventItemModel,
                                         onSuccess: (EventItemModel) -> Unit,
-                                        onError: (Throwable) -> Unit) -> Unit, val carouselListener: TrackingListener)
+                                        onError: (Throwable) -> Unit) -> Unit,
+                           val carouselListener: TrackingListener,
+                           val clickCarouselListener: ClickCarouselListener
+    )
         : RecyclerView.Adapter<InnerViewHolder>() {
 
         lateinit var items: List<EventItemModel>
@@ -91,7 +96,7 @@ class EventCarouselEventViewHolder(itemView: View, action: ((data: EventItemMode
             holder.view.setOnClickListener {
                 carouselListener.clickTopEventProduct(item, productNames,
                         position + 1)
-                RouteManager.route(holder.view.context, item.appUrl)
+                clickCarouselListener.redirectCarouselToPDPEvent(item.seoURL)
             }
             holder.view.addOnImpressionListener(item, {
                 carouselListener.impressionTopEventProduct(item, productNames,
@@ -131,5 +136,7 @@ class EventCarouselEventViewHolder(itemView: View, action: ((data: EventItemMode
 
     class InnerViewHolder(val view: View) : RecyclerView.ViewHolder(view)
 
-
+    interface ClickCarouselListener{
+        fun redirectCarouselToPDPEvent(applink: String)
+    }
 }

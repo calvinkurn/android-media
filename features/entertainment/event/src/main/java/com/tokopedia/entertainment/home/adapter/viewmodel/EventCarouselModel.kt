@@ -22,7 +22,8 @@ class EventCarouselModel(var layout: EventHomeDataResponse.Data.EventHome.Layout
                     it.price,
                     it.schedule,
                     it.isLiked,
-                    it.appUrl
+                    it.appUrl,
+                    it.seoUrl
             ))
         }
     }

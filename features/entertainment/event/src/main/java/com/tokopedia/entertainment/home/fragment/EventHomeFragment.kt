@@ -22,11 +22,14 @@ import com.tokopedia.entertainment.home.adapter.HomeEventItem
 import com.tokopedia.entertainment.home.adapter.factory.HomeTypeFactoryImpl
 import com.tokopedia.entertainment.home.adapter.listener.TrackingListener
 import com.tokopedia.entertainment.home.adapter.viewholder.CategoryEventViewHolder
+import com.tokopedia.entertainment.home.adapter.viewholder.EventCarouselEventViewHolder
+import com.tokopedia.entertainment.home.adapter.viewholder.EventGridEventViewHolder
 import com.tokopedia.entertainment.home.adapter.viewmodel.EventItemLocationModel
 import com.tokopedia.entertainment.home.adapter.viewmodel.EventItemModel
 import com.tokopedia.entertainment.home.analytics.EventHomePageTracking
 import com.tokopedia.entertainment.home.data.EventHomeDataResponse
 import com.tokopedia.entertainment.home.di.EventHomeComponent
+import com.tokopedia.entertainment.home.utils.NavigationEventController
 import com.tokopedia.entertainment.home.viewmodel.FragmentView
 import com.tokopedia.entertainment.home.viewmodel.HomeEventViewModel
 import com.tokopedia.entertainment.home.viewmodel.HomeEventViewModelFactory
@@ -43,7 +46,8 @@ import javax.inject.Inject
  */
 
 class EventHomeFragment : BaseDaggerFragment(), FragmentView, MenuSheet.ItemClickListener,
-        TrackingListener {
+        TrackingListener, EventGridEventViewHolder.ClickGridListener,
+        EventCarouselEventViewHolder.ClickCarouselListener{
 
     companion object {
         fun getInstance(): EventHomeFragment = EventHomeFragment()
@@ -108,7 +112,8 @@ class EventHomeFragment : BaseDaggerFragment(), FragmentView, MenuSheet.ItemClic
         recycler_view.apply {
             setHasFixedSize(true)
             layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
-            homeAdapter = HomeEventAdapter(HomeTypeFactoryImpl(::actionItemAdapter, this@EventHomeFragment))
+            homeAdapter = HomeEventAdapter(HomeTypeFactoryImpl(::actionItemAdapter, this@EventHomeFragment,
+                    this@EventHomeFragment, this@EventHomeFragment))
             adapter = homeAdapter
         }
 
@@ -253,5 +258,19 @@ class EventHomeFragment : BaseDaggerFragment(), FragmentView, MenuSheet.ItemClic
 
     override fun impressionTopEventProduct(item: EventItemModel, listItems: List<String>, position: Int) {
         analytics.impressionTopEventProduct(item, listItems, position)
+    }
+
+    override fun redirectToPDPEvent(applink: String) {
+        redirectPdp(applink)
+    }
+
+    override fun redirectCarouselToPDPEvent(applink: String) {
+        redirectPdp(applink)
+    }
+
+    private fun redirectPdp(applink: String){
+        val destination = EventHomeFragmentDirections.
+        actionHomeEventFragmentToPdpEventFragment(applink)
+        NavigationEventController.navigate(this@EventHomeFragment, destination)
     }
 }

@@ -14,7 +14,10 @@ import com.tokopedia.entertainment.home.analytics.EventHomePageTracking
 class HomeTypeFactoryImpl(val action: ((data: EventItemModel,
                                         onSuccess: (EventItemModel) -> Unit,
                                         onError: (Throwable) -> Unit) -> Unit),
-                          val trackingListener: TrackingListener) : HomeTypeFactory {
+                          val trackingListener: TrackingListener,
+                          val clickGridListener: EventGridEventViewHolder.ClickGridListener,
+                          val clickCarouselListener: EventCarouselEventViewHolder.ClickCarouselListener
+) : HomeTypeFactory {
 
     override fun type(model: BannerModel): Int {
         return BannerEventViewHolder.LAYOUT
@@ -43,9 +46,9 @@ class HomeTypeFactoryImpl(val action: ((data: EventItemModel,
         } else if (type == CategoryEventViewHolder.LAYOUT) {
             CategoryEventViewHolder(view, trackingListener)
         } else if (type == EventGridEventViewHolder.LAYOUT) {
-            EventGridEventViewHolder(view, action, trackingListener)
+            EventGridEventViewHolder(view, action, trackingListener, clickGridListener)
         } else if (type == EventCarouselEventViewHolder.LAYOUT) {
-            EventCarouselEventViewHolder(view, action, trackingListener)
+            EventCarouselEventViewHolder(view, action, trackingListener, clickCarouselListener)
         } else if (type == EventLocationEventViewHolder.LAYOUT) {
             EventLocationEventViewHolder(view, trackingListener)
         } else {

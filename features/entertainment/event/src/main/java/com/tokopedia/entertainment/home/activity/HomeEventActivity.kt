@@ -18,7 +18,7 @@ import kotlinx.android.synthetic.main.ent_home_activity.*
  * Author errysuprayogi on 27,January,2020
  */
 class HomeEventActivity : BaseSimpleActivity(), HasComponent<EventHomeComponent> {
-    override fun getNewFragment(): Fragment? = null
+    override fun getNewFragment(): Fragment? = EventHomeFragment.getInstance()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

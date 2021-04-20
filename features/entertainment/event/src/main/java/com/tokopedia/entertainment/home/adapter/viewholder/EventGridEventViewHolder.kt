@@ -27,10 +27,12 @@ import kotlinx.android.synthetic.main.ent_layout_viewholder_event_grid_adapter_i
 class EventGridEventViewHolder(itemView: View, action: ((data: EventItemModel,
                                                          onSuccess: (EventItemModel) -> Unit,
                                                          onError: (Throwable) -> Unit) -> Unit),
-                               val gridlistener: TrackingListener)
+                               val gridlistener: TrackingListener,
+                               val clickGridListener: ClickGridListener
+)
     : HomeEventViewHolder<EventGridModel>(itemView) {
 
-    var itemAdapter = InnerItemAdapter(action, gridlistener)
+    var itemAdapter = InnerItemAdapter(action, gridlistener, clickGridListener)
 
     init {
         itemView.ent_recycle_view_grid.apply {
@@ -65,7 +67,10 @@ class EventGridEventViewHolder(itemView: View, action: ((data: EventItemModel,
 
     class InnerItemAdapter(val action: (data: EventItemModel,
                                         onSuccess: (EventItemModel) -> Unit,
-                                        onError: (Throwable) -> Unit) -> Unit, val gridlistener: TrackingListener)
+                                        onError: (Throwable) -> Unit) -> Unit,
+                           val gridlistener: TrackingListener,
+                           val clickGridListener: ClickGridListener
+    )
         : RecyclerView.Adapter<InnerViewHolder>() {
 
         lateinit var items: List<EventItemModel>
@@ -94,7 +99,8 @@ class EventGridEventViewHolder(itemView: View, action: ((data: EventItemModel,
             holder.view.setOnClickListener {
                 gridlistener.clickSectionEventProduct(item, items, titleGrid,
                         position + 1)
-                RouteManager.route(holder.view.context, item.appUrl)
+                //todo navcontroller pdp
+                clickGridListener.redirectToPDPEvent(item.seoURL)
             }
             holder.view.addOnImpressionListener(item, {
                 gridlistener.impressionSectionEventProduct(item, items, titleGrid,
@@ -123,5 +129,9 @@ class EventGridEventViewHolder(itemView: View, action: ((data: EventItemModel,
     }
 
     class InnerViewHolder(val view: View) : RecyclerView.ViewHolder(view)
+
+    interface ClickGridListener{
+        fun redirectToPDPEvent(applink: String)
+    }
 
 }

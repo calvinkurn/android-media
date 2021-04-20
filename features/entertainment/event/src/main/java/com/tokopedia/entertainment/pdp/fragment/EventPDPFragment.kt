@@ -16,6 +16,7 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.AppBarLayout
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.analytics.performance.PerformanceMonitoring
@@ -28,6 +29,7 @@ import com.tokopedia.calendar.Legend
 import com.tokopedia.entertainment.R
 import com.tokopedia.entertainment.common.util.EventQuery
 import com.tokopedia.entertainment.common.util.EventQuery.eventContentById
+import com.tokopedia.entertainment.navigation.EventNavigationActivity
 import com.tokopedia.entertainment.pdp.activity.EventPDPActivity
 import com.tokopedia.entertainment.pdp.activity.EventPDPActivity.Companion.EXTRA_URL_PDP
 import com.tokopedia.entertainment.pdp.adapter.EventPDPFacilitiesBottomSheetAdapter
@@ -51,6 +53,7 @@ import com.tokopedia.entertainment.pdp.data.pdp.mapper.EventDateMapper.isSchedul
 import com.tokopedia.entertainment.pdp.data.pdp.mapper.EventLocationMapper.getLatitude
 import com.tokopedia.entertainment.pdp.data.pdp.mapper.EventLocationMapper.getLongitude
 import com.tokopedia.entertainment.pdp.data.pdp.mapper.EventMediaMapper.mapperMediaPDP
+import com.tokopedia.entertainment.pdp.di.DaggerEventPDPComponent
 import com.tokopedia.entertainment.pdp.di.EventPDPComponent
 import com.tokopedia.entertainment.pdp.listener.OnBindItemListener
 import com.tokopedia.entertainment.pdp.viewmodel.EventPDPViewModel
@@ -96,7 +99,10 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
     override fun getScreenName(): String = ""
 
     override fun initInjector() {
-        getComponent(EventPDPComponent::class.java).inject(this)
+        DaggerEventPDPComponent.builder()
+                .baseAppComponent((requireContext().applicationContext as BaseMainApplication).baseAppComponent)
+                .build()
+                .inject(this)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -108,6 +114,10 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
         initializePerformance()
         TimeZone.setDefault(TimeZone.getTimeZone(GMT));
         urlPDP = arguments?.getString(EXTRA_URL_PDP, "")
+
+        arguments?.let {
+            urlPDP= EventPDPFragmentArgs.fromBundle(it).seo
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -284,16 +294,16 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
 
         container_price.show()
         shimmering_price.gone()
-        (activity as EventPDPActivity).setSupportActionBar(event_pdp_toolbar)
-        (activity as EventPDPActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        (activity as EventPDPActivity).supportActionBar?.title = ""
+        (activity as EventNavigationActivity).setSupportActionBar(event_pdp_toolbar)
+        (activity as EventNavigationActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        (activity as EventNavigationActivity).supportActionBar?.title = ""
 
         val navIcon = event_pdp_toolbar.navigationIcon
 
         context?.let { ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0) }?.let {
             navIcon?.setColorFilter(it, PorterDuff.Mode.SRC_ATOP)
         }
-        (activity as EventPDPActivity).supportActionBar?.setHomeAsUpIndicator(navIcon)
+        (activity as EventNavigationActivity).supportActionBar?.setHomeAsUpIndicator(navIcon)
 
         event_pdp_collapsing_toolbar.title = ""
         event_pdp_app_bar_layout.addOnOffsetChangedListener(object : AppBarLayout.OnOffsetChangedListener {

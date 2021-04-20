@@ -3,13 +3,27 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/event_navigation"
-    app:startDestination="@id/homeEvenFragment"
+    app:startDestination="@id/homeEventFragment"
     >
 
     <fragment
-        android:id="@+id/homeEvenFragment"
+        android:id="@+id/homeEventFragment"
         android:name="com.tokopedia.entertainment.home.fragment.EventHomeFragment"
         tools:layout="@layout/ent_home_activity"
         >
+        <action
+            android:id="@+id/action_homeEventFragment_to_pdpEventFragment"
+            app:destination="@id/pdpEventFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/pdpEventFragment"
+        android:name="com.tokopedia.entertainment.pdp.fragment.EventPDPFragment"
+        tools:layout="@layout/fragment_event_pdp"
+        >
+        <argument
+            android:name="seo"
+            app:argType="string"
+            android:defaultValue='""' />
     </fragment>
 </navigation>
