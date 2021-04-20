@@ -73,7 +73,7 @@ open class BaseDiscoveryAnalytics(val pageType: String = DISCOVERY_DEFAULT_PAGE_
     open fun trackClickExpandNavigationAccordion(categoryId: String?) {}
     open fun trackClickCollapseNavigationAccordion(categoryId: String?) {}
     open fun trackClickCategoryOption(categoryId: String?) {}
-    open fun trackNotifyClick(componentsItems: ComponentsItem, isLogin: Boolean) {}
+    open fun trackNotifyClick(componentsItems: ComponentsItem, isLogin: Boolean, userID: String?) {}
     open fun trackCategoryTreeDropDownClick(userLoggedIn: Boolean) {}
     open fun trackCategoryOptionClick(userLoggedIn: Boolean, childCatID: String, applink: String?, catDepth: Int, childCatName: String) {}
     open fun trackCategoryTreeCloseClick(userLoggedIn: Boolean) {}
