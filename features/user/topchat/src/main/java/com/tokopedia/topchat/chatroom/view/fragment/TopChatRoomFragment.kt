@@ -583,6 +583,10 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         presenter.getSmartReplyWidget(messageId)
     }
 
+    override fun trackViewSrw() {
+        analytics.eventViewSrw(shopId, session.userId)
+    }
+
     private fun setupFirstPage(chatRoom: ChatroomViewModel, chat: ChatReplies) {
         adapter.setLatestHeaderDate(chatRoom.latestHeaderDate)
         renderList(chatRoom.listChat)

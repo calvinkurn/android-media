@@ -158,6 +158,7 @@ public class TopChatAnalytics {
         String CLICK_PRODUCT_REAL_IMAGE = "click on product image";
         String VIEW_REVIEW_REMINDER_WIDGET = "view on review reminder widget";
         String CLICK_REVIEW_REMINDER_WIDGET = "click on review reminder widget";
+        String VIEW_SRW = "view smart reply widget";
     }
 
     public interface Label {
@@ -710,6 +711,20 @@ public class TopChatAnalytics {
                         Category.INBOX_CHAT_2,
                         Action.CLICK_REVIEW_REMINDER_WIDGET,
                         element.getEventLabel(isSeller),
+                        BusinessUnit.Communication,
+                        CurrentSite.TokopediaMarketplace,
+                        userId
+                )
+        );
+    }
+
+    public void eventViewSrw(long shopId, String userId) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                createGeneralEvent(
+                        Name.VIEW_CHAT_DETAIL,
+                        Category.CHAT_DETAIL,
+                        Action.VIEW_SRW,
+                        "buyer - " + shopId + " - " + userId,
                         BusinessUnit.Communication,
                         CurrentSite.TokopediaMarketplace,
                         userId
