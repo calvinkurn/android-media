@@ -68,7 +68,10 @@ object DeeplinkMapperMerchant {
                     AbTestPlatform.NAVIGATION_EXP_TOP_NAV, AbTestPlatform.NAVIGATION_VARIANT_OLD
             ) == AbTestPlatform.NAVIGATION_VARIANT_REVAMP
             return if (useNewInbox && useNewNav) {
-                ApplinkConstInternalMarketplace.INBOX
+                Uri.parse(ApplinkConst.INBOX).buildUpon().apply {
+                    appendQueryParameter(ApplinkConst.Inbox.PARAM_PAGE, ApplinkConst.Inbox.VALUE_PAGE_REVIEW)
+                    appendQueryParameter(ApplinkConst.Inbox.PARAM_ROLE, ApplinkConst.Inbox.VALUE_ROLE_BUYER)
+                }.build().toString()
             } else {
                 return ApplinkConstInternalMarketplace.INBOX_REPUTATION
             }
