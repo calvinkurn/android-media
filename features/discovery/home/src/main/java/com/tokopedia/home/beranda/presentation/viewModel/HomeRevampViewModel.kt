@@ -116,7 +116,6 @@ open class HomeRevampViewModel @Inject constructor(
         private val getRecommendationFilterChips: Lazy<GetRecommendationFilterChips>,
         private val getWalletBalanceUseCase: Lazy<GetCoroutineWalletBalanceUseCase>,
         private val popularKeywordUseCase: Lazy<GetPopularKeywordUseCase>,
-        private val sendGeolocationInfoUseCase: Lazy<SendGeolocationInfoUseCase>,
         private val injectCouponTimeBasedUseCase: Lazy<InjectCouponTimeBasedUseCase>,
         private val getRechargeRecommendationUseCase: Lazy<GetRechargeRecommendationUseCase>,
         private val declineRechargeRecommendationUseCase: Lazy<DeclineRechargeRecommendationUseCase>,

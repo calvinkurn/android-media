@@ -8,7 +8,6 @@ import com.tokopedia.home.beranda.data.model.HomeWidget
 import com.tokopedia.home.beranda.data.model.PlayChannel
 import com.tokopedia.home.beranda.data.model.PlayData
 import com.tokopedia.home.beranda.data.usecase.HomeRevampUseCase
-import com.tokopedia.home.beranda.data.usecase.HomeUseCase
 import com.tokopedia.home.beranda.domain.interactor.*
 import com.tokopedia.home.beranda.domain.model.SetInjectCouponTimeBased
 import com.tokopedia.home.beranda.domain.model.recharge_recommendation.DeclineRechargeRecommendation
@@ -57,7 +56,6 @@ fun createHomeViewModel(
         getCoroutinePendingCashbackUseCase: GetCoroutinePendingCashbackUseCase = mockk(relaxed = true),
         getPlayLiveDynamicUseCase: GetPlayLiveDynamicUseCase = mockk(relaxed = true),
         getCoroutineWalletBalanceUseCase: GetCoroutineWalletBalanceUseCase = mockk(relaxed = true),
-        getSendGeolocationInfoUseCase: SendGeolocationInfoUseCase = mockk(relaxed = true),
         getPopularKeywordUseCase: GetPopularKeywordUseCase = mockk(relaxed = true),
         getRecommendationUseCase: GetRecommendationUseCase = mockk(relaxed = true),
         getRecommendationFilterChips: GetRecommendationFilterChips = mockk(relaxed = true),
@@ -90,7 +88,6 @@ fun createHomeViewModel(
             homeDispatcher = Lazy{ dispatchers },
             homeUseCase = Lazy{ getHomeUseCase },
             popularKeywordUseCase = Lazy{getPopularKeywordUseCase},
-            sendGeolocationInfoUseCase = Lazy{getSendGeolocationInfoUseCase},
             injectCouponTimeBasedUseCase = Lazy{injectCouponTimeBasedUseCase},
             getAtcUseCase = Lazy{getAtcUseCase},
             userSession = Lazy{userSessionInterface},
@@ -196,23 +193,6 @@ fun GetRechargeBUWidgetUseCase.givenGetRechargeBUWidgetUseCase(rechargePerso: Re
 
 fun GetRechargeBUWidgetUseCase.givenGetRechargeBUWidgetThrowReturn(){
     coEvery { executeOnBackground() } throws Exception()
-}
-
-fun HomeUseCase.givenGetHomeDataReturn(homeDataModel: HomeDataModel) {
-    coEvery { getHomeData() } returns flow{
-        emit(homeDataModel)
-    }
-}
-
-fun HomeUseCase.givenGetHomeDataReturn(homeDataModel: HomeDataModel, newHomeDataModel: HomeDataModel) {
-    coEvery { getHomeData() } returns flow{
-        emit(homeDataModel)
-        emit(newHomeDataModel)
-    }
-}
-
-fun HomeUseCase.givenGetDynamicChannelsUseCase(dynamicChannelDataModels: List<DynamicChannelDataModel>) {
-    coEvery { onDynamicChannelExpired(any()) } returns dynamicChannelDataModels
 }
 
 fun InjectCouponTimeBasedUseCase.givenInjectCouponTimeBasedUseCaseReturn(setInjectCouponTimeBased: SetInjectCouponTimeBased) {
