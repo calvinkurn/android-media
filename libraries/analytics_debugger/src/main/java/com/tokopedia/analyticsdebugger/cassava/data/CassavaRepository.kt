@@ -12,7 +12,7 @@ import javax.inject.Inject
  */
 class CassavaRepository @Inject constructor(private val cassavaApi: CassavaApi) {
 
-    suspend fun getNetworkQueryList(journeyId: Int): QueryListEntity =
+    suspend fun getNetworkQueryList(journeyId: String): QueryListEntity =
             cassavaApi.getQueryList(
                     token = CassavaUrl.TOKEN,
                     journeyId = journeyId

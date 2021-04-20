@@ -14,7 +14,7 @@ interface CassavaApi {
     @Headers("Content-Type: application/json")
     suspend fun getQueryList(
             @Query("token") token: String,
-            @Query("journey_id") journeyId: Int
+            @Query("journey_id") journeyId: String
     ): QueryListEntity.DataResponse
 
     @POST(CassavaUrl.POST_VALIDATION_RESULT)

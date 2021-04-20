@@ -9,10 +9,10 @@ import javax.inject.Inject
  */
 class ValidationResultUseCase @Inject constructor(private val repository: CassavaRepository) {
 
-    suspend fun execute(journeyId: Int,
+    suspend fun execute(journeyId: String,
                         validationResult: ValidationResultRequest) {
         repository.sendValidationResult(
-                journeyId = journeyId.toString(),
+                journeyId = journeyId,
                 validationResult = validationResult
         )
     }

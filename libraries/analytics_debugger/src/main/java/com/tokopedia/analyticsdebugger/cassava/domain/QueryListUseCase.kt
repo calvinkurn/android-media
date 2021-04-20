@@ -16,13 +16,12 @@ class QueryListUseCase @Inject constructor(private val repository: CassavaReposi
 
     suspend fun execute(context: Context,
                         source: CassavaSource,
-                        journeyId: Int,
                         filePath: String)
             : CassavaQuery? {
         return if (source == CassavaSource.LOCAL) {
             Utils.getJsonDataFromAsset(context, filePath)?.toCassavaQuery()
         } else {
-            repository.getNetworkQueryList(journeyId).let {
+            repository.getNetworkQueryList(filePath).let {
                 val cassavaRegexList: MutableList<Pair<Int, Map<String, Any>>> = arrayListOf()
 
                 it.regexData.map { regex ->
