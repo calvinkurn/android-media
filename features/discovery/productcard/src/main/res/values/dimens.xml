@@ -83,7 +83,7 @@
     <dimen name="product_card_button_notify_me_height">32dp</dimen>
 
 
-    <dimen name="product_card_flashsale_width">136dp</dimen>
+    <dimen name="product_card_flashsale_width">148dp</dimen>
 
     <dimen name="product_card_flashsale_pdpcount_height">16dp</dimen>
     <dimen name="product_card_flashsale_pdpcount_margintop">2dp</dimen>

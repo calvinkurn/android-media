@@ -71,6 +71,11 @@ public class RepositoryManager implements StorageProvider.StorageProviderListene
         IrisAnalyticsEvents.INSTANCE.sendInAppEvent(application.getApplicationContext(), IrisAnalyticsEvents.INAPP_CANCELLED, cmInApp);
     }
 
+    public void onInappExpired(CMInApp cmInApp) {
+        IrisAnalyticsEvents.INSTANCE.sendInAppEvent(application.getApplicationContext(), IrisAnalyticsEvents.INAPP_EXPIRED, cmInApp);
+
+    }
+
     @Override
     public void onInappFreqUpdated() {
         if (cacheHandler == null)

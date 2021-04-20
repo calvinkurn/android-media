@@ -1,8 +1,6 @@
 package com.tokopedia.autocomplete.initialstate.di
 
 import com.chuckerteam.chucker.api.ChuckerInterceptor
-import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor
-import com.tokopedia.cacheapi.util.CacheApiResponseValidator
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.network.interceptor.DebugInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
@@ -22,13 +20,10 @@ class InitialStateOkHttpClientModule {
     fun provideOkHttpClientNoAuth(okHttpRetryPolicy: OkHttpRetryPolicy,
                                   chuckInterceptor: ChuckerInterceptor,
                                   debugInterceptor: DebugInterceptor,
-                                  cacheApiInterceptor: CacheApiInterceptor,
                                   tkpdAuthInterceptor: TkpdAuthInterceptor): OkHttpClient {
 
-        cacheApiInterceptor.setResponseValidator(CacheApiResponseValidator())
         val clientBuilder = OkHttpClient.Builder()
                 .addInterceptor(tkpdAuthInterceptor)
-                .addInterceptor(cacheApiInterceptor)
                 .readTimeout(okHttpRetryPolicy.readTimeout.toLong(), TimeUnit.SECONDS)
                 .connectTimeout(okHttpRetryPolicy.connectTimeout.toLong(), TimeUnit.SECONDS)
                 .writeTimeout(okHttpRetryPolicy.writeTimeout.toLong(), TimeUnit.SECONDS)

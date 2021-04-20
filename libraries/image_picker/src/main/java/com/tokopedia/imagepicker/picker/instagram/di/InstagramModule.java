@@ -4,12 +4,10 @@ import android.content.Context;
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
-import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor;
 import com.tokopedia.imagepicker.picker.instagram.data.InstagramRepositoryImpl;
 import com.tokopedia.imagepicker.picker.instagram.data.source.InstagramDataSourceFactory;
 import com.tokopedia.imagepicker.picker.instagram.data.source.cloud.InstagramApi;
 import com.tokopedia.imagepicker.picker.instagram.domain.InstagramRepository;
-import com.tokopedia.imagepicker.picker.instagram.domain.interactor.ClearCacheMediaInstagramUseCase;
 import com.tokopedia.imagepicker.picker.instagram.domain.interactor.GetListMediaInstagramUseCase;
 import com.tokopedia.imagepicker.picker.instagram.domain.interactor.SaveCookiesInstagramUseCase;
 import com.tokopedia.imagepicker.picker.instagram.util.InstagramConstant;
@@ -34,9 +32,8 @@ public class InstagramModule {
 
     @InstagramScope
     @Provides
-    ImagePickerInstagramPresenter provideImagePickerInstagramPresenter(GetListMediaInstagramUseCase getListMediaInstagramUseCase,
-                                                                       ClearCacheMediaInstagramUseCase clearCacheMediaInstagramUseCase) {
-        return new ImagePickerInstagramPresenter(getListMediaInstagramUseCase, clearCacheMediaInstagramUseCase);
+    ImagePickerInstagramPresenter provideImagePickerInstagramPresenter(GetListMediaInstagramUseCase getListMediaInstagramUseCase) {
+        return new ImagePickerInstagramPresenter(getListMediaInstagramUseCase);
     }
 
     @InstagramScope
@@ -61,7 +58,6 @@ public class InstagramModule {
     @Provides
     InstagramApi provideInstagramApi(@ApplicationContext Context context, Retrofit.Builder retrofit) {
         return retrofit.client(new OkHttpClient.Builder()
-                .addInterceptor(new CacheApiInterceptor(context))
                 .writeTimeout(TIMEOUT, TimeUnit.SECONDS)
                 .readTimeout(TIMEOUT, TimeUnit.SECONDS)
                 .connectTimeout(TIMEOUT, TimeUnit.SECONDS)

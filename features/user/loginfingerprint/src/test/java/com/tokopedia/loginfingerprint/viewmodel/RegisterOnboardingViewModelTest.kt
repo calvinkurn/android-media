@@ -6,7 +6,7 @@ import com.tokopedia.loginfingerprint.data.model.RegisterFingerprintResult
 import com.tokopedia.loginfingerprint.data.preference.FingerprintSetting
 import com.tokopedia.loginfingerprint.domain.usecase.RegisterFingerprintUseCase
 import com.tokopedia.loginfingerprint.util.InstantTaskExecutorRule
-import com.tokopedia.loginfingerprint.utils.TestDispatcherProvider
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.loginfingerprint.utils.crypto.Cryptography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -26,7 +26,7 @@ class RegisterOnboardingViewModelTest : Spek({
     val fingerprintSetting = mockk<FingerprintSetting>(relaxed = true)
     val cryptographyUtils = mockk<Cryptography>(relaxed = true)
 
-    val dispatcher = TestDispatcherProvider()
+    val dispatcher = CoroutineTestDispatchersProvider
 
     val viewModel = RegisterOnboardingViewModel(
             dispatcher = dispatcher,

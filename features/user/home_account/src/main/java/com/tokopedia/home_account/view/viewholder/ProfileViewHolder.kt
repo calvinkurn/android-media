@@ -21,6 +21,7 @@ import com.tokopedia.home_account.view.adapter.HomeAccountFinancialAdapter
 import com.tokopedia.home_account.view.adapter.HomeAccountMemberAdapter
 import com.tokopedia.home_account.view.listener.HomeAccountUserListener
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.util.LetUtil
 import com.tokopedia.utils.image.ImageUtils
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
@@ -53,7 +54,15 @@ class ProfileViewHolder(
                     account_user_item_profile_name?.setPadding(paddingLeft, 8, paddingRight, paddingBottom)
                 }
             }
-            account_user_item_profile_email?.text = profile.email
+
+            if (profile.name.toLowerCase().contains(DEFAULT_NAME)) {
+                account_user_item_profile_icon_warning_name?.show()
+                account_user_item_profile_icon_warning_name?.setOnClickListener { listener.onIconWarningClicked(profile) }
+            } else account_user_item_profile_icon_warning_name?.hide()
+
+            if (profile.phone != profile.email) {
+                account_user_item_profile_email?.text = profile.email
+            }
             account_user_item_profile_edit?.setOnClickListener { listener.onEditProfileClicked() }
             home_account_profile_section?.setOnClickListener { listener.onProfileClicked() }
 
@@ -134,5 +143,6 @@ class ProfileViewHolder(
 
     companion object {
         val LAYOUT = R.layout.home_account_item_profile
+        private const val DEFAULT_NAME = "toppers-"
     }
 }

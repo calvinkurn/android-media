@@ -113,7 +113,7 @@ object SellerMenuList {
                 if (isShopOwner) {
                     mapper.mapFeatureToDestination(context, feature)
                 } else {
-                    AdminRoleAuthorizeActivity.createIntent(context, AdminFeature.REVIEW)
+                    AdminRoleAuthorizeActivity.createIntent(context, feature)
                 }
         context.startActivity(intent)
     }

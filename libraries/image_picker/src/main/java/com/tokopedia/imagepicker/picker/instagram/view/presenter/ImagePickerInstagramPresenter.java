@@ -3,7 +3,6 @@ package com.tokopedia.imagepicker.picker.instagram.view.presenter;
 import android.text.TextUtils;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.imagepicker.picker.instagram.domain.interactor.ClearCacheMediaInstagramUseCase;
 import com.tokopedia.imagepicker.picker.instagram.domain.interactor.GetListMediaInstagramUseCase;
 import com.tokopedia.imagepicker.picker.instagram.view.model.InstagramMediaResponse;
 
@@ -16,12 +15,9 @@ import rx.Subscriber;
 public class ImagePickerInstagramPresenter extends BaseDaggerPresenter<ImagePickerInstagramContract.View> implements ImagePickerInstagramContract.Presenter {
 
     private GetListMediaInstagramUseCase getListMediaInstagramUseCase;
-    private ClearCacheMediaInstagramUseCase clearCacheMediaInstagramUseCase;
 
-    public ImagePickerInstagramPresenter(GetListMediaInstagramUseCase getListMediaInstagramUseCase,
-                                         ClearCacheMediaInstagramUseCase clearCacheMediaInstagramUseCase) {
+    public ImagePickerInstagramPresenter(GetListMediaInstagramUseCase getListMediaInstagramUseCase) {
         this.getListMediaInstagramUseCase = getListMediaInstagramUseCase;
-        this.clearCacheMediaInstagramUseCase = clearCacheMediaInstagramUseCase;
     }
 
     @Override
@@ -57,7 +53,4 @@ public class ImagePickerInstagramPresenter extends BaseDaggerPresenter<ImagePick
         getListMediaInstagramUseCase.unsubscribe();
     }
 
-    public void clearCacheInstagramMedia() {
-        clearCacheMediaInstagramUseCase.executeSync();
-    }
 }

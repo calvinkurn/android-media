@@ -5,7 +5,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -13,6 +12,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.review.R;
 import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.filter.HeaderOptionUiModel;
 import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.filter.OptionUiModel;
+import com.tokopedia.unifyprinciples.Typography;
 
 import java.util.ArrayList;
 
@@ -33,23 +33,23 @@ public class InboxReputationFilterAdapter
 
     public class HeaderViewHolder extends RecyclerView.ViewHolder {
 
-        TextView title;
+        Typography title;
 
         public HeaderViewHolder(View itemView) {
             super(itemView);
-            this.title = (TextView) itemView.findViewById(R.id.title);
+            this.title = (Typography) itemView.findViewById(R.id.title);
         }
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        TextView filter;
+        Typography filter;
         ImageView check;
         View mainView;
 
         public ViewHolder(View itemView) {
             super(itemView);
-            this.filter = (TextView) itemView.findViewById(R.id.filter);
+            this.filter = (Typography) itemView.findViewById(R.id.filter);
             this.check = (ImageView) itemView.findViewById(R.id.check);
             this.mainView = itemView.findViewById(R.id.main_view);
             mainView.setOnClickListener(new View.OnClickListener() {

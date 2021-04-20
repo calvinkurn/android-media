@@ -1,6 +1,9 @@
 package com.tokopedia.flight.dummy
 
 import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerModel
+import com.tokopedia.flight.promo_chips.data.model.AirlinePrice
+import com.tokopedia.flight.promo_chips.data.model.DataPromoChips
+import com.tokopedia.flight.promo_chips.data.model.FlightLowestPrice
 import com.tokopedia.flight.searchV4.data.cloud.single.Route
 import com.tokopedia.flight.searchV4.presentation.model.FlightAirlineModel
 import com.tokopedia.flight.searchV4.presentation.model.FlightFareModel
@@ -151,3 +154,8 @@ val NOT_VALID_RETURN_JOURNEY = FlightJourneyModel(
 )
 
 val COMBO_KEY = "DUMMY_COMBOKEY"
+
+val PROMO_CHIPS = FlightLowestPrice(listOf(DataPromoChips(
+        "20210305", listOf(AirlinePrice("QZ","https://ecs7.tokopedia.net/img/attachment/2017/12/20/5512496/5512496_6367d556-f391-4270-9444-8e740fb2f2a4.png","Indonesia AirAsia", "Rp 471.901", 471901),
+        AirlinePrice("QG","https://ecs7.tokopedia.net/img/attachment/2017/12/20/5512496/5512496_7f755496-e7cd-480d-bcc0-081c84828d37.png","Citilink Indonesia", "Rp 471.920", 471920)))))
+val PROMO_CHIPS_EMPTY = FlightLowestPrice()

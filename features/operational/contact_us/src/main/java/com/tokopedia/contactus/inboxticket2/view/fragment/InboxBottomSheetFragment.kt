@@ -65,9 +65,6 @@ abstract class InboxBottomSheetFragment : BottomSheetDialogFragment() {
                 R.layout.layout_bottom_sheet_fragment -> {
                     BottomSheetListFragment()
                 }
-                R.layout.layout_bad_csat -> {
-                    BottomSheetButtonsFragment()
-                }
                 else -> {
                     return null
                 }
