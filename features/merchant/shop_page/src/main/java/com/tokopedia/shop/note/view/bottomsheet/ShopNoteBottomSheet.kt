@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.globalerror.ReponseStatus
+import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.shop.R
@@ -21,6 +22,7 @@ import com.tokopedia.shop.note.view.adapter.ShopNoteBottomSheetAdapter
 import com.tokopedia.shop.note.view.viewmodel.ShopNoteBottomSheetViewModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.LoaderUnify
+import com.tokopedia.unifycomponents.toDp
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import java.net.ConnectException
@@ -89,8 +91,12 @@ class ShopNoteBottomSheet : BottomSheetUnify() {
         rvNote?.adapter = adapter
         rvNote?.layoutManager = LinearLayoutManager(context)
 
-        clearContentPadding = true
-        isDragable = true
+        showKnob = true
+        showCloseIcon = !showKnob
+        isDragable = showKnob
+        isHideable = showKnob
+        clearContentPadding = showKnob
+        customPeekHeight = (getScreenHeight() / 2).toDp()
     }
 
     private fun initInjector() {
