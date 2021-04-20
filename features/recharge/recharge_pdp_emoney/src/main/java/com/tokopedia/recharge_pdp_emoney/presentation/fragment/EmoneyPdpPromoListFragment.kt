@@ -56,7 +56,7 @@ class EmoneyPdpPromoListFragment : BaseDaggerFragment(), TopupBillsPromoListWidg
         val showTitle = arguments?.getBoolean(EXTRA_SHOW_TITLE) ?: false
         emoneyPdpPromoListWidget.toggleTitle(showTitle)
 
-        emoneyPdpPromoListWidget.recyclerView.addItemDecoration(EmoneyPdpPromoListSpaceID())
+        emoneyPdpPromoListWidget.getRecyclerView().addItemDecoration(EmoneyPdpPromoListSpaceID())
         emoneyPdpPromoListWidget.setListener(this)
     }
 

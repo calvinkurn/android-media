@@ -25,7 +25,7 @@
             app:text_field_label="@string/recharge_pdp_emoney_input_card_no_label"
             tools:layout_height="@dimen/spacing_lvl4" />
 
-        <com.tokopedia.unifycomponents.ImageUnify
+        <com.tokopedia.iconunify.IconUnify
             android:id="@+id/emoneyPdpCardCameraIcon"
             android:layout_width="@dimen/layout_lvl3"
             android:layout_height="@dimen/layout_lvl3"
@@ -33,6 +33,6 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_camera_outline_24" />
+            app:icon_name="CAMERA" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </com.tokopedia.unifycomponents.CardUnify>
