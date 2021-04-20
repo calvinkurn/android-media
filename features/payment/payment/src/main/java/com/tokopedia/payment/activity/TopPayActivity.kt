@@ -63,7 +63,6 @@ import rx.Observable
 import rx.Subscriber
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
-import timber.log.Timber
 import java.io.ByteArrayOutputStream
 import java.io.UnsupportedEncodingException
 import java.net.URLDecoder
@@ -414,6 +413,10 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
 
         override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
             if (url != null) {
+                val uri = Uri.parse(url)
+                if (uri.isOpaque) {
+                    return super.shouldOverrideUrlLoading(view, url)
+                }
                 // fingerprint
                 if (url.isNotEmpty() && url.contains(PaymentFingerprintConstant.APP_LINK_FINGERPRINT) &&
                         getEnableFingerprintPayment()) {
@@ -540,9 +543,9 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
             super.onReceivedError(view, request, error)
             ServerLogger.log(Priority.P1, "WEBVIEW_ERROR",
                     mapOf("type" to request?.url.toString(),
-                    "error_code" to error?.errorCode.toString(),
-                    "desc" to error?.description?.toString().orEmpty()
-            ))
+                            "error_code" to error?.errorCode.toString(),
+                            "desc" to error?.description?.toString().orEmpty()
+                    ))
         }
 
         override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
