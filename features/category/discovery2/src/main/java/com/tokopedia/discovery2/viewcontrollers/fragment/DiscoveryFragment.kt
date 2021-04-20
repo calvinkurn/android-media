@@ -114,6 +114,7 @@ class DiscoveryFragment :
     private lateinit var discoveryAdapter: DiscoveryRecycleAdapter
     private var chooseAddressWidget: ChooseAddressWidget? = null
     private var chooseAddressWidgetDivider: View? = null
+    private var shouldShowChooseAddressWidget:Boolean = true
 
     private val analytics: BaseDiscoveryAnalytics by lazy {
         (context as DiscoveryActivity).getAnalytics()
@@ -227,6 +228,8 @@ class DiscoveryFragment :
         mSwipeRefreshLayout.setOnRefreshListener(this)
         ivToTop.setOnClickListener(this)
         recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            var scrollDist = 0
+            val MINIMUM = 25
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 if (dy > 0) {
@@ -234,6 +237,7 @@ class DiscoveryFragment :
                 } else if (dy < 0) {
                     ivToTop.show()
                 }
+                scrollDist += dy
             }
 
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
@@ -241,6 +245,19 @@ class DiscoveryFragment :
                 if (!recyclerView.canScrollVertically(SCROLL_TOP_DIRECTION)
                         && newState == RecyclerView.SCROLL_STATE_IDLE) {
                     ivToTop.hide()
+                }
+                if (scrollDist > MINIMUM) {
+                    chooseAddressWidget?.hide()
+                    chooseAddressWidgetDivider?.hide()
+                    shouldShowChooseAddressWidget = false
+                    scrollDist = 0
+                } else if (scrollDist < -MINIMUM) {
+                    if (discoveryViewModel.getAddressVisibilityValue() && ChooseAddressUtils.isRollOutUser(context)) {
+                        chooseAddressWidget?.show()
+                        chooseAddressWidgetDivider?.show()
+                        shouldShowChooseAddressWidget = true
+                    }
+                    scrollDist = 0
                 }
             }
         })
@@ -346,9 +363,11 @@ class DiscoveryFragment :
 
         discoveryViewModel.checkAddressVisibility().observe(viewLifecycleOwner, { widgetVisibilityStatus ->
             context?.let {
-                if (ChooseAddressUtils.isRollOutUser(it) && widgetVisibilityStatus) {
-                    chooseAddressWidget?.show()
-                    chooseAddressWidgetDivider?.show()
+                if (widgetVisibilityStatus && ChooseAddressUtils.isRollOutUser(it)) {
+                    if(shouldShowChooseAddressWidget) {
+                        chooseAddressWidget?.show()
+                        chooseAddressWidgetDivider?.show()
+                    }
                     if(ChooseAddressUtils.isLocalizingAddressNeedShowCoachMark(it) == true){
                         ChooseAddressUtils.coachMarkLocalizingAddressAlreadyShown(it)
                         showLocalizingAddressCoachMark()
