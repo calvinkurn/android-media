@@ -24,4 +24,7 @@ class CassavaRepository @Inject constructor(private val cassavaApi: CassavaApi) 
                     validationRequest = validationResult
             )
 
+    fun getNetworkJourneyList(): List<Pair<String, String>> =
+            ThanosJourneyList.journeyList
+
 }
