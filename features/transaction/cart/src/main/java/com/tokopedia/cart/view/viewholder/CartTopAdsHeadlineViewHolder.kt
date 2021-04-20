@@ -44,9 +44,10 @@ class CartTopAdsHeadlineViewHolder(private val binding: ItemCartTopAdsHeadlineBi
                 PARAM_EP to VALUE_EP,
                 PARAM_HEADLINE_PRODUCT_COUNT to VALUE_HEADLINE_PRODUCT_COUNT,
                 PARAM_ITEM to VALUE_ITEM,
-                PARAM_SRC to "fav_product",
+                PARAM_SRC to VALUE_SRC_CART,
                 PARAM_TEMPLATE_ID to VALUE_TEMPLATE_ID,
-                PARAM_USER_ID to userSession.userId
+                PARAM_USER_ID to userSession.userId,
+                PARAM_PRODUCT_ID to data.productIds.joinToString(",")
         ))
     }
 
