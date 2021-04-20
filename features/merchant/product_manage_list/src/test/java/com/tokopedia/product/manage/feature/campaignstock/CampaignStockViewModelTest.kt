@@ -7,10 +7,6 @@ import com.tokopedia.product.manage.data.createGetVariantResponse
 import com.tokopedia.product.manage.feature.campaignstock.domain.model.response.GetStockAllocationData
 import com.tokopedia.product.manage.feature.campaignstock.domain.model.response.GetStockAllocationSummary
 import com.tokopedia.product.manage.feature.campaignstock.domain.model.response.OtherCampaignStockData
-import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.result.NonVariantStockAllocationResult
-import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.result.StockAllocationResult
-import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.result.UpdateCampaignStockResult
-import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.result.VariantStockAllocationResult
 import com.tokopedia.product.manage.common.feature.variant.data.mapper.ProductManageVariantMapper
 import com.tokopedia.product.manage.common.feature.variant.data.model.Product
 import com.tokopedia.product.manage.common.feature.variant.data.model.response.GetProductVariantResponse
@@ -22,6 +18,7 @@ import com.tokopedia.product.manage.feature.campaignstock.CampaignStockViewModel
 import com.tokopedia.product.manage.feature.campaignstock.CampaignStockViewModelTest.ProductStatusConstant.STATUS_CODE_INACTIVE
 import com.tokopedia.product.manage.feature.campaignstock.domain.model.response.GetStockAllocationDetail
 import com.tokopedia.product.manage.feature.campaignstock.domain.model.response.GetStockAllocationDetailSellable
+import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.result.*
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 import com.tokopedia.shop.common.domain.interactor.model.adminrevamp.ProductStockWarehouse
 import com.tokopedia.shop.common.domain.interactor.model.adminrevamp.ShopLocationResponse
@@ -263,7 +260,10 @@ class CampaignStockViewModelTest: CampaignStockViewModelTestFixture() {
                 totalStock,
                 ProductStatus.INACTIVE,
                 editVariantResponse.productUpdateV3Data.isSuccess,
-                editVariantResponse.productUpdateV3Data.header.errorMessage.firstOrNull()
+                editVariantResponse.productUpdateV3Data.header.errorMessage.firstOrNull(),
+                hashMapOf(
+                        Pair(productId, UpdateCampaignVariantResult(ProductStatus.INACTIVE, 2, ""))
+                )
         ))
         verifyProductUpdateResponseResult(expectedResult)
     }
@@ -319,7 +319,8 @@ class CampaignStockViewModelTest: CampaignStockViewModelTestFixture() {
             totalStock,
             ProductStatus.INACTIVE,
             editVariantResponse.productUpdateV3Data.isSuccess,
-            editVariantResponse.productUpdateV3Data.header.errorMessage.firstOrNull()
+            editVariantResponse.productUpdateV3Data.header.errorMessage.firstOrNull(),
+            hashMapOf()
         ))
         verifyProductUpdateResponseResult(expectedResult)
     }
@@ -378,7 +379,11 @@ class CampaignStockViewModelTest: CampaignStockViewModelTestFixture() {
             totalStock,
             ProductStatus.INACTIVE,
             editVariantResponse.productUpdateV3Data.isSuccess,
-            editVariantResponse.productUpdateV3Data.header.errorMessage.firstOrNull()
+            editVariantResponse.productUpdateV3Data.header.errorMessage.firstOrNull(),
+            hashMapOf(
+                    Pair("1", UpdateCampaignVariantResult(ProductStatus.INACTIVE, 1, "")),
+                    Pair("2", UpdateCampaignVariantResult(ProductStatus.INACTIVE, 0, ""))
+            )
         ))
         verifyProductUpdateResponseResult(expectedResult)
     }
@@ -450,7 +455,11 @@ class CampaignStockViewModelTest: CampaignStockViewModelTestFixture() {
             totalStock,
             ProductStatus.ACTIVE,
             editVariantResponse.productUpdateV3Data.isSuccess,
-            editVariantResponse.productUpdateV3Data.header.errorMessage.firstOrNull()
+            editVariantResponse.productUpdateV3Data.header.errorMessage.firstOrNull(),
+            hashMapOf(
+                    Pair("1", UpdateCampaignVariantResult(ProductStatus.ACTIVE, 1, "")),
+                    Pair("2", UpdateCampaignVariantResult(ProductStatus.INACTIVE, 2, ""))
+            )
         ))
         verifyProductUpdateResponseResult(expectedResult)
     }
