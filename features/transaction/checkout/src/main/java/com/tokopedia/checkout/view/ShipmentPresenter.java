@@ -40,6 +40,7 @@ import com.tokopedia.checkout.view.subscriber.ClearNotEligiblePromoSubscriber;
 import com.tokopedia.checkout.view.subscriber.ClearShipmentCacheAutoApplyAfterClashSubscriber;
 import com.tokopedia.checkout.view.subscriber.GetCourierRecommendationSubscriber;
 import com.tokopedia.checkout.view.subscriber.GetShipmentAddressFormSubscriber;
+import com.tokopedia.checkout.view.subscriber.ReleaseBookingStockSubscriber;
 import com.tokopedia.checkout.view.subscriber.SaveShipmentStateSubscriber;
 import com.tokopedia.checkout.view.uimodel.EgoldAttributeModel;
 import com.tokopedia.checkout.view.uimodel.EgoldTieringModel;
@@ -1926,24 +1927,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         if (productId != 0) {
             compositeSubscription.add(releaseBookingUseCase
                     .execute(productId)
-                    .subscribe(new Subscriber<ReleaseBookingResponse>() {
-                        @Override
-                        public void onCompleted() {
-                            // no op
-                        }
-
-                        @Override
-                        public void onError(Throwable e) {
-                            Timber.d(e);
-                        }
-
-                        @Override
-                        public void onNext(ReleaseBookingResponse releaseBookingResponse) {
-                            Timber.d("Release Booking Success %s", releaseBookingResponse.getData());
-                        }
-                    }));
+                    .subscribe(new ReleaseBookingStockSubscriber()));
         }
-
     }
 
     @Override
