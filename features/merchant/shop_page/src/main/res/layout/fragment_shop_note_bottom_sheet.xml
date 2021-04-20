@@ -11,6 +11,7 @@
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loader"
+        android:layout_margin="@dimen/unify_space_16"
         android:layout_width="@dimen/dp_25"
         android:layout_height="@dimen/dp_25"
         android:layout_centerVertical="true"
@@ -19,6 +20,7 @@
 
     <com.tokopedia.globalerror.GlobalError
         android:id="@+id/global_error"
+        android:layout_margin="@dimen/unify_space_16"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
