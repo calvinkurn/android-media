@@ -8,10 +8,9 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="match_parent">
 
-        <com.tokopedia.design.text.SearchInputView
+        <com.tokopedia.unifycomponents.SearchBarUnify
             android:id="@+id/search_input_view"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -21,14 +20,18 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:siv_search_hint="@string/label_hint_search_address" />
+            app:search_bar_clearable="true"
+            app:search_bar_enable="true"
+            app:search_bar_placeholder="@string/label_hint_search_address"
+            app:search_bar_show_icon="false" />
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/text_search_error"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dp_25"
+            android:layout_marginStart="@dimen/dp_25"
             android:text="@string/search_not_found"
+            android:textColor="@color/Unify_N700_96"
             android:visibility="gone"
             app:layout_constraintTop_toBottomOf="@id/search_input_view" />
 

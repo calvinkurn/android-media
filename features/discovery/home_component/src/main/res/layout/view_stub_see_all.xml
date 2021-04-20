@@ -11,7 +11,7 @@
     android:gravity="end"
     android:lineSpacingExtra="3sp"
     android:text="@string/lihat_semua"
-    android:textColor="@color/medium_green"
+    android:textColor="@color/Unify_G500"
     android:textSize="13sp"
     android:textStyle="bold"
     app:layout_constraintBottom_toBottomOf="parent"

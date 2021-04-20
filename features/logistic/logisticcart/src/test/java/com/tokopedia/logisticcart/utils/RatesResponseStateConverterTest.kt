@@ -4,7 +4,7 @@ import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesR
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingDurationUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData
-import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ProductData
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ProductData
 import junit.framework.Assert.*
 import org.junit.Test
 

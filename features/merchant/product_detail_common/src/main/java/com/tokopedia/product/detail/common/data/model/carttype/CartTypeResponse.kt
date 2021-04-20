@@ -11,7 +11,9 @@ data class CartTypeData(
         @SerializedName("config_name")
         val configName: String = "",
         @SerializedName("unavailable_buttons")
-        val unavailableButtons: List<String> = listOf()
+        val unavailableButtons: List<String> = listOf(),
+        @SerializedName("hide_floating_button")
+        val hideFloatingButton: Boolean = false
 )
 
 data class CartRedirection(
@@ -21,12 +23,7 @@ data class CartRedirection(
         val errorMessage: List<Any> = listOf(),
         @SerializedName("status")
         val status: String = ""
-) {
-
-    fun getCartTypeAtPosition(position: Int): CartTypeData? {
-        return data.getOrNull(position)
-    }
-}
+)
 
 data class AvailableButton(
         @SerializedName("cart_type")

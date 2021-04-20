@@ -26,6 +26,15 @@
     <string name="play_product_empty_desc">Wah, barang &amp; promo pilihan sudah habis, Yuk\n cek barang menarik lainnya dari toko ini!</string>
     <string name="play_product_empty_action">Ke Halaman Toko</string>
     <string name="play_product_updated">Produk telah diupdate</string>
+    <string name="play_link_copied">Link berhasil disalin</string>
+
+    <string name="play_live_ended_subtitle">Swipe ke kiri buat nonton video lainnya!</string>
+
+    <!--Floating Window / PiP-->
+    <string name="play_pip_permission_rationale_title">Aktifkan akses Draw over other apps</string>
+    <string name="play_pip_permission_rationale_desc">Akses ini dibutuhkan untuk dapat membuka Tokopedia Play dalam mode Picture-in-Picture</string>
+    <string name="play_pip_activate">Aktifkan</string>
+    <string name="play_pip_cancel">Abaikan</string>
 
     <!--mock-->
     <string name="play_mock_cart">99+</string>
@@ -33,10 +42,20 @@
     <string name="play_mock_like">0 Likes</string>
     <string name="play_mock_pinned_message">Yoenik Apparel Visit my collections here!</string>
     <string name="play_mock_shop_name">Yoenik Apparel</string>
+    <string name="play_mock_shop_name_long">Yoenik Apparel yang suka jual baju2 keren nan indah wow</string>
     <string name="play_transition_video">video_play</string>
 
     <string name="play_general_err_message">Tunggu sebentar, biar Toped bereskan. Coba lagi atau kembali nanti.</string>
 
     <string name="play_error_image_edit_text">Gambar/GIF tidak diperbolehkan</string>
+
+    <string name="play_buffer_reason_seller_side">Siarannya sedang berkendala, nih.\nTunggu sebentar, ya!</string>
+    <string name="play_buffer_reason_waiting">Live streaming akan segera mulai sesaat lagi, ya!</string>
+
+    <string name="play_action_copy">Salin</string>
+    <string name="play_voucher_code_copied">Kode kupon berhasil disalin, gunakan saat transaksi</string>
+
+    <string name="play_action_ok">Oke</string>
+    <string name="play_out_of_stock">Stok habis</string>
 
 </resources>

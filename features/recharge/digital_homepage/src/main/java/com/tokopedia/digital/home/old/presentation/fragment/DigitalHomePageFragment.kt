@@ -1,6 +1,7 @@
-package com.tokopedia.digital.home.presentation.fragment
+package com.tokopedia.digital.home.old.presentation.fragment
 
 import android.graphics.Color
+import android.graphics.PorterDuff
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,59 +9,68 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.LinearLayout
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.common_digital.common.presentation.model.RecommendationItemEntity
-import com.tokopedia.design.text.SearchInputView
+import com.tokopedia.common_digital.common.util.CommonDigitalGqlQuery
 import com.tokopedia.digital.home.APPLINK_HOME_FAV_LIST
 import com.tokopedia.digital.home.APPLINK_HOME_MYBILLS
 import com.tokopedia.digital.home.R
-import com.tokopedia.digital.home.di.DigitalHomePageComponent
-import com.tokopedia.digital.home.domain.DigitalHomePageUseCase.Companion.QUERY_BANNER
-import com.tokopedia.digital.home.domain.DigitalHomePageUseCase.Companion.QUERY_CATEGORY
-import com.tokopedia.digital.home.domain.DigitalHomePageUseCase.Companion.QUERY_RECOMMENDATION
-import com.tokopedia.digital.home.domain.DigitalHomePageUseCase.Companion.QUERY_SECTIONS
-import com.tokopedia.digital.home.model.DigitalHomePageBannerModel
-import com.tokopedia.digital.home.model.DigitalHomePageCategoryModel
-import com.tokopedia.digital.home.model.DigitalHomePageItemModel
-import com.tokopedia.digital.home.model.DigitalHomePageSectionModel
-import com.tokopedia.digital.home.presentation.util.DigitalHomePageCategoryDataMapper
-import com.tokopedia.digital.home.presentation.util.DigitalHomeTrackingUtil
-import com.tokopedia.digital.home.presentation.util.DigitalHomepageTrackingActionConstant.BANNER_IMPRESSION
-import com.tokopedia.digital.home.presentation.util.DigitalHomepageTrackingActionConstant.BEHAVIORAL_CATEGORY_IMPRESSION
-import com.tokopedia.digital.home.presentation.util.DigitalHomepageTrackingActionConstant.DYNAMIC_ICON_IMPRESSION
-import com.tokopedia.digital.home.presentation.util.DigitalHomepageTrackingActionConstant.NEW_USER_IMPRESSION
-import com.tokopedia.digital.home.presentation.util.DigitalHomepageTrackingActionConstant.SPOTLIGHT_IMPRESSION
-import com.tokopedia.digital.home.presentation.util.DigitalHomepageTrackingActionConstant.SUBHOME_WIDGET_IMPRESSION
-import com.tokopedia.digital.home.presentation.util.DigitalHomepageTrackingActionConstant.SUBSCRIPTION_GUIDE_CLICK
+import com.tokopedia.digital.home.old.di.DigitalHomePageComponent
+import com.tokopedia.digital.home.old.domain.DigitalHomePageUseCase.Companion.QUERY_BANNER
+import com.tokopedia.digital.home.old.domain.DigitalHomePageUseCase.Companion.QUERY_CATEGORY
+import com.tokopedia.digital.home.old.domain.DigitalHomePageUseCase.Companion.QUERY_RECOMMENDATION
+import com.tokopedia.digital.home.old.domain.DigitalHomePageUseCase.Companion.QUERY_SECTIONS
+import com.tokopedia.digital.home.old.model.DigitalHomePageBannerModel
+import com.tokopedia.digital.home.old.model.DigitalHomePageCategoryModel
+import com.tokopedia.digital.home.old.model.DigitalHomePageItemModel
+import com.tokopedia.digital.home.old.model.DigitalHomePageSectionModel
+import com.tokopedia.digital.home.old.presentation.adapter.DigitalHomePageTypeFactory
+import com.tokopedia.digital.home.old.presentation.adapter.viewholder.DigitalHomePageTransactionViewHolder
+import com.tokopedia.digital.home.old.presentation.listener.OnItemBindListener
+import com.tokopedia.digital.home.old.presentation.util.DigitalHomePageCategoryDataMapper
+import com.tokopedia.digital.home.old.presentation.util.DigitalHomeTrackingUtil
+import com.tokopedia.digital.home.old.presentation.util.DigitalHomepageTrackingActionConstant.BANNER_IMPRESSION
+import com.tokopedia.digital.home.old.presentation.util.DigitalHomepageTrackingActionConstant.BEHAVIORAL_CATEGORY_IMPRESSION
+import com.tokopedia.digital.home.old.presentation.util.DigitalHomepageTrackingActionConstant.DYNAMIC_ICON_IMPRESSION
+import com.tokopedia.digital.home.old.presentation.util.DigitalHomepageTrackingActionConstant.NEW_USER_IMPRESSION
+import com.tokopedia.digital.home.old.presentation.util.DigitalHomepageTrackingActionConstant.SPOTLIGHT_IMPRESSION
+import com.tokopedia.digital.home.old.presentation.util.DigitalHomepageTrackingActionConstant.SUBHOME_WIDGET_IMPRESSION
+import com.tokopedia.digital.home.old.presentation.util.DigitalHomepageTrackingActionConstant.SUBSCRIPTION_GUIDE_CLICK
+import com.tokopedia.digital.home.old.presentation.viewmodel.DigitalHomePageViewModel
 import com.tokopedia.digital.home.presentation.activity.DigitalHomePageSearchActivity
-import com.tokopedia.digital.home.presentation.adapter.DigitalHomePageTypeFactory
-import com.tokopedia.digital.home.presentation.adapter.viewholder.DigitalHomePageTransactionViewHolder
-import com.tokopedia.digital.home.presentation.listener.OnItemBindListener
-import com.tokopedia.digital.home.presentation.viewmodel.DigitalHomePageViewModel
+import com.tokopedia.digital.home.presentation.fragment.RechargeHomepageFragment
+import com.tokopedia.digital.home.widget.RechargeSearchBarWidget
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.view_recharge_home.*
 import javax.inject.Inject
 
 class DigitalHomePageFragment : BaseListFragment<DigitalHomePageItemModel, DigitalHomePageTypeFactory>(),
         OnItemBindListener,
         DigitalHomePageTransactionViewHolder.TransactionListener,
-        SearchInputView.FocusChangeListener {
+        RechargeSearchBarWidget.FocusChangeListener {
 
     @Inject
     lateinit var trackingUtil: DigitalHomeTrackingUtil
+
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
+
     @Inject
     lateinit var viewModel: DigitalHomePageViewModel
     private var searchBarTransitionRange = 0
+    private var sliceOpenApp: Boolean = false
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.view_recharge_home, container, false)
@@ -75,6 +85,10 @@ class DigitalHomePageFragment : BaseListFragment<DigitalHomePageItemModel, Digit
             viewModel = viewModelProvider.get(DigitalHomePageViewModel::class.java)
         }
 
+        arguments?.let {
+            sliceOpenApp = it.getBoolean(RechargeHomepageFragment.RECHARGE_HOME_PAGE_EXTRA, false)
+        }
+
         searchBarTransitionRange = resources.getDimensionPixelSize(TOOLBAR_TRANSITION_RANGE)
     }
 
@@ -85,18 +99,25 @@ class DigitalHomePageFragment : BaseListFragment<DigitalHomePageItemModel, Digit
         digital_homepage_search_view.setFocusChangeListener(this)
         calculateToolbarView(0)
 
-        with (getRecyclerView(view)) {
+        getRecyclerView(view)?.run {
             while (itemDecorationCount > 0) removeItemDecorationAt(0)
             addOnScrollListener(object : RecyclerView.OnScrollListener() {
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                     super.onScrolled(recyclerView, dx, dy)
-                    calculateToolbarView(getRecyclerView(view).computeVerticalScrollOffset())
+                    getRecyclerView(view)?.computeVerticalScrollOffset()?.let {
+                        calculateToolbarView(it)
+                    }
                 }
             })
         }
 
         digital_homepage_order_list.setOnClickListener {
             onClickOrderList()
+        }
+
+        if(sliceOpenApp){
+            trackingUtil.sliceOpenApp(userSession.userId)
+            trackingUtil.onOpenPageFromSlice()
         }
     }
 
@@ -110,7 +131,10 @@ class DigitalHomePageFragment : BaseListFragment<DigitalHomePageItemModel, Digit
             var flags = digital_homepage_container.systemUiVisibility
             flags = flags or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
             digital_homepage_container.systemUiVisibility = flags
-            activity?.window?.statusBarColor = Color.WHITE
+            context?.run {
+                activity?.window?.statusBarColor =
+                        androidx.core.content.ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N0)
+            }
         }
 
         if (Build.VERSION.SDK_INT in 19..20) {
@@ -138,19 +162,25 @@ class DigitalHomePageFragment : BaseListFragment<DigitalHomePageItemModel, Digit
             offsetAlpha = 0f
         }
 
-        val searchBarContainer = digital_homepage_search_view.findViewById<LinearLayout>(com.tokopedia.common_digital.R.id.search_input_view_container)
+        val searchBarContainer = digital_homepage_search_view.findViewById<LinearLayout>(R.id.search_input_view_container)
         if (offsetAlpha >= 255) {
             activity?.window?.decorView?.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
             digital_homepage_toolbar.toOnScrolledMode()
-            digital_homepage_order_list.setColorFilter(com.tokopedia.unifyprinciples.R.color.Neutral_N200)
-            context?.run { searchBarContainer.background =
-                        MethodChecker.getDrawable(this, R.drawable.bg_digital_homepage_search_view_background_gray) }
+            context?.run {
+                digital_homepage_order_list.setColorFilter(
+                        ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N200), PorterDuff.Mode.MULTIPLY
+                )
+                searchBarContainer.background =
+                        MethodChecker.getDrawable(this, R.drawable.bg_digital_homepage_search_view_background_gray)
+            }
         } else {
             activity?.window?.decorView?.systemUiVisibility = View.SYSTEM_UI_FLAG_VISIBLE
             digital_homepage_toolbar.toInitialMode()
             digital_homepage_order_list.clearColorFilter()
-            context?.run { searchBarContainer.background =
-                        MethodChecker.getDrawable(this, R.drawable.bg_digital_homepage_search_view_background) }
+            context?.run {
+                searchBarContainer.background =
+                        MethodChecker.getDrawable(this, R.drawable.bg_digital_homepage_search_view_background)
+            }
         }
     }
 
@@ -201,10 +231,10 @@ class DigitalHomePageFragment : BaseListFragment<DigitalHomePageItemModel, Digit
         showLoading()
 
         val queryList = mapOf(
-                QUERY_BANNER to GraphqlHelper.loadRawString(resources, R.raw.query_digital_home_banner),
-                QUERY_CATEGORY to GraphqlHelper.loadRawString(resources, R.raw.query_digital_home_category),
-                QUERY_SECTIONS to GraphqlHelper.loadRawString(resources, R.raw.query_digital_home_section),
-                QUERY_RECOMMENDATION to GraphqlHelper.loadRawString(resources, com.tokopedia.common_digital.R.raw.digital_recommendation_list)
+                QUERY_BANNER to com.tokopedia.digital.home.util.DigitalHomepageGqlQuery.digitalHomeBanner,
+                QUERY_CATEGORY to com.tokopedia.digital.home.util.DigitalHomepageGqlQuery.digitalHomeCategory,
+                QUERY_SECTIONS to com.tokopedia.digital.home.util.DigitalHomepageGqlQuery.digitalHomeSection,
+                QUERY_RECOMMENDATION to CommonDigitalGqlQuery.rechargeFavoriteRecommendationList
         )
         viewModel.initialize(queryList)
         viewModel.getData(swipeToRefresh?.isRefreshing ?: false)
@@ -285,9 +315,9 @@ class DigitalHomePageFragment : BaseListFragment<DigitalHomePageItemModel, Digit
 
     override fun onFocusChanged(hasFocus: Boolean) {
         if (hasFocus) {
-            digital_homepage_search_view.searchTextView.clearFocus()
+            digital_homepage_search_view.getSearchTextView()?.let { it.clearFocus() }
             trackingUtil.eventClickSearchBox()
-            context?.let{ context -> startActivity(DigitalHomePageSearchActivity.getCallingIntent(context)) }
+            context?.let { context -> startActivity(DigitalHomePageSearchActivity.getCallingIntent(context)) }
         }
     }
 
@@ -296,7 +326,8 @@ class DigitalHomePageFragment : BaseListFragment<DigitalHomePageItemModel, Digit
     }
 
     companion object {
-        val TOOLBAR_TRANSITION_RANGE = com.tokopedia.design.R.dimen.dp_8
+        val TOOLBAR_TRANSITION_RANGE = com.tokopedia.unifyprinciples.R.dimen.layout_lvl1
+        const val RECHARGE_HOME_PAGE_EXTRA = "RECHARGE_HOME_PAGE_EXTRA"
 
         val initialImpressionTrackingConst = mapOf(
                 DYNAMIC_ICON_IMPRESSION to true,
@@ -307,6 +338,12 @@ class DigitalHomePageFragment : BaseListFragment<DigitalHomePageItemModel, Digit
                 SUBHOME_WIDGET_IMPRESSION to true
         )
 
-        fun getInstance() = DigitalHomePageFragment()
+        fun getInstance(sliceOpenApp: Boolean = false): DigitalHomePageFragment {
+            val bundle = Bundle()
+            val fragment = DigitalHomePageFragment()
+            bundle.putBoolean(RECHARGE_HOME_PAGE_EXTRA, sliceOpenApp)
+            fragment.arguments = bundle
+            return fragment
+        }
     }
 }

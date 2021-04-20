@@ -12,5 +12,7 @@ data class AddShopShowcaseResponse(
         @Expose
         @SerializedName("success") val success: Boolean = false,
         @Expose
-        @SerializedName("message") val message: String = ""
+        @SerializedName("message") val message: String = "",
+        @Expose
+        @SerializedName("createdId") val createdId: String = ""
 )

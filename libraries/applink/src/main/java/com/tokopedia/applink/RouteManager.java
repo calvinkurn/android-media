@@ -14,12 +14,17 @@ import android.webkit.URLUtil;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 
 import com.tokopedia.analyticsdebugger.debugger.ApplinkLogger;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.dev_monitoring_tools.userjourney.UserJourney;
+import com.tokopedia.logger.ServerLogger;
+import com.tokopedia.logger.utils.Priority;
 import com.tokopedia.utils.uri.DeeplinkUtils;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -43,13 +48,16 @@ public class RouteManager {
     public static final String KEY_REDIRECT_TO_SELLER_APP = "redirect_to_sellerapp";
     private static final String SELLER_APP_PACKAGE_NAME = "com.tokopedia.sellerapp";
 
+    public static final String INTERNAL_VIEW = "com.tokopedia.internal.VIEW";
+    public static final String DEFAULT_VIEW = "android.intent.action.VIEW";
+
     /**
      * will create implicit internal Intent ACTION_VIEW correspond to deeplink
      */
-    private static Intent buildInternalImplicitIntent(@NonNull Context context, @NonNull String deeplink) {
+    private static Intent buildInternalImplicitIntent(@NonNull Context context, @NonNull String deeplink, String action) {
         ApplinkLogger.getInstance(context).appendTrace("Building implicit intent...");
         Uri uri = Uri.parse(deeplink);
-        Intent intent = new Intent(Intent.ACTION_VIEW);
+        Intent intent = new Intent(action);
         intent.setData(uri);
         intent.setPackage(context.getPackageName());
         intent.addCategory(Intent.CATEGORY_DEFAULT);
@@ -85,7 +93,7 @@ public class RouteManager {
     private static @Nullable
     Intent buildInternalExplicitIntent(@NonNull Context context, @NonNull String deeplink) {
         ApplinkLogger.getInstance(context).appendTrace("Building explicit intent...");
-        Intent intent = buildInternalImplicitIntent(context, deeplink);
+        Intent intent = buildInternalImplicitIntent(context, deeplink, INTERNAL_VIEW);
         List<ResolveInfo> resolveInfos = context.getPackageManager().queryIntentActivities(intent, 0);
 
         Uri uri = Uri.parse(deeplink);
@@ -134,7 +142,7 @@ public class RouteManager {
     /**
      * Create intent redirect to sellerapp
      * If sellerapp not installed yet then open sellerapp on google playstore
-     * */
+     */
     private static Intent getIntentRedirectSellerApp(Context context, Uri uri) {
         Intent intent = context.getPackageManager().getLaunchIntentForPackage(SELLER_APP_PACKAGE_NAME);
         if (null != intent) {
@@ -150,6 +158,34 @@ public class RouteManager {
             return new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + packageName));
         } catch (ActivityNotFoundException e) {
             return new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + packageName));
+        }
+    }
+
+    /**
+     * Create a new instance of a Fragment with the given class name.
+     *
+     * @param activity
+     * @param className
+     * @return
+     */
+    public static Fragment instantiateFragment(@NonNull AppCompatActivity activity, @NonNull String className, @Nullable Bundle extras) {
+        if(isClassExist(className)) {
+            Fragment fragment = activity.getSupportFragmentManager().getFragmentFactory().instantiate(ClassLoader.getSystemClassLoader(), className);
+            if (extras != null) {
+                fragment.setArguments(extras);
+            }
+            return fragment;
+        } else {
+            return null;
+        }
+    }
+
+    private static boolean isClassExist(String className) {
+        try  {
+            Class.forName(className);
+            return true;
+        }  catch (ClassNotFoundException e) {
+            return false;
         }
     }
 
@@ -208,7 +244,7 @@ public class RouteManager {
             }
         } else if (URLUtil.isNetworkUrl(mappedDeeplink)) {
             ApplinkLogger.getInstance(context).appendTrace("Network url detected");
-            intent = buildInternalImplicitIntent(context, mappedDeeplink);
+            intent = buildInternalImplicitIntent(context, mappedDeeplink, DEFAULT_VIEW);
             if (intent.resolveActivity(context.getPackageManager()) == null) {
                 intent = new Intent();
                 intent.setClassName(context.getPackageName(), GlobalConfig.DEEPLINK_ACTIVITY_CLASS_NAME);
@@ -250,7 +286,7 @@ public class RouteManager {
         return false;
     }
 
-    private static void logErrorOpenDeeplink(Context context, String uriString){
+    private static void logErrorOpenDeeplink(Context context, String uriString) {
         try {
             String sourceClass = "";
             String referrer = "";
@@ -260,8 +296,13 @@ public class RouteManager {
             } else if (context instanceof Service) {
                 sourceClass = ((Service) context).getClass().getCanonicalName();
             }
-            Timber.w("P1#APPLINK_OPEN_ERROR#Router;source='%s';referrer='%s';uri='%s';journey='%s'",
-                    sourceClass, referrer, uriString, UserJourney.INSTANCE.getReadableJourneyActivity(5));
+            Map<String, String> messageMap = new HashMap<>();
+            messageMap.put("type", "Router");
+            messageMap.put("source", sourceClass);
+            messageMap.put("referrer", referrer);
+            messageMap.put("uri", uriString);
+            messageMap.put("journey", UserJourney.INSTANCE.getReadableJourneyActivity(5));
+            ServerLogger.log(Priority.P1, "APPLINK_OPEN_ERROR", messageMap);
         } catch (Exception e) {
             Timber.e(e);
         }
@@ -375,7 +416,7 @@ public class RouteManager {
         }
         if (URLUtil.isNetworkUrl(mappedDeeplink)) {
             ApplinkLogger.getInstance(context).appendTrace("Network url detected");
-            Intent intent = buildInternalImplicitIntent(context, mappedDeeplink);
+            Intent intent = buildInternalImplicitIntent(context, mappedDeeplink, DEFAULT_VIEW);
             Intent webIntent;
             if (intent.resolveActivity(context.getPackageManager()) == null) {
                 webIntent = null;

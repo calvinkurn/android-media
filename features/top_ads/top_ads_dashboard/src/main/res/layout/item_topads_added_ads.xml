@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.unifycomponents.CardUnify xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="@dimen/spacing_lvl4"
+    android:layout_marginTop="@dimen/spacing_lvl3"
+    android:layout_marginEnd="@dimen/spacing_lvl4"
+    android:layout_marginBottom="@dimen/spacing_lvl3"
+    app:cardCornerRadius="@dimen/dp_8">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <View
+            android:id="@+id/card_bg"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_180"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:background="@drawable/ic_topads_added_ads_bg" />
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/card_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="@id/card_bg"
+            app:layout_constraintEnd_toEndOf="@id/card_bg"
+            app:layout_constraintStart_toStartOf="@id/card_bg"
+            app:layout_constraintTop_toTopOf="@id/card_bg"
+            app:layout_constraintVertical_bias="1"
+            tools:srcCompat="@drawable/ic_topads_added_ads_produk" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/card_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_lvl3"
+            android:layout_marginBottom="@dimen/spacing_lvl3"
+            android:gravity="center"
+            android:textColor="@color/black"
+            app:layout_constraintBottom_toTopOf="@id/card_subtitle"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/card_bg"
+            app:typographyType="heading_4"
+            app:typographyWeight="bold"
+            tools:text="Iklan Produk" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/card_subtitle"
+            android:layout_width="@dimen/dp_0"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_lvl4"
+            android:layout_marginEnd="@dimen/spacing_lvl4"
+            android:layout_marginBottom="@dimen/spacing_lvl4"
+            android:paddingStart="@dimen/spacing_lvl4"
+            android:paddingEnd="@dimen/spacing_lvl4"
+            android:textAlignment="center"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/card_title"
+            app:typographyType="body_3"
+            tools:text="Produk pilihanmu akan tampil di halaman strategis Tokopedia." />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</com.tokopedia.unifycomponents.CardUnify>

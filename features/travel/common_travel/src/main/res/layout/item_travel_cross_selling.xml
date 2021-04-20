@@ -2,9 +2,9 @@
 <com.tokopedia.unifycomponents.CardUnify xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="@dimen/dp_300"
+    android:layout_width="@dimen/cross_selling_item_width"
     android:layout_height="wrap_content"
-    android:layout_marginRight="@dimen/dp_8">
+    android:layout_marginRight="@dimen/spacing_lvl3">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -12,8 +12,8 @@
         android:orientation="horizontal">
 
         <androidx.appcompat.widget.AppCompatImageView
-            android:layout_width="@dimen/dp_56"
-            android:layout_height="@dimen/dp_56"
+            android:layout_width="@dimen/cross_selling_item_background_width"
+            android:layout_height="@dimen/cross_selling_item_background_width"
             app:srcCompat="@drawable/bg_cross_sell_category"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
@@ -21,11 +21,11 @@
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/item_image"
-            android:layout_width="@dimen/dp_24"
-            android:layout_height="@dimen/dp_24"
-            android:layout_marginStart="@dimen/dp_12"
-            android:layout_marginLeft="@dimen/dp_12"
-            android:layout_marginTop="@dimen/dp_12"
+            android:layout_width="@dimen/spacing_lvl5"
+            android:layout_height="@dimen/spacing_lvl5"
+            android:layout_marginStart="@dimen/unify_space_12"
+            android:layout_marginLeft="@dimen/unify_space_12"
+            android:layout_marginTop="@dimen/unify_space_12"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -33,15 +33,15 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/item_title"
-            android:layout_width="@dimen/dp_0"
+            android:layout_width="@dimen/layout_lvl0"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_20"
-            android:layout_marginLeft="@dimen/dp_20"
-            android:layout_marginTop="@dimen/dp_12"
+            android:layout_marginStart="@dimen/common_travel_dp_20"
+            android:layout_marginLeft="@dimen/common_travel_dp_20"
+            android:layout_marginTop="@dimen/unify_space_12"
             android:ellipsize="end"
             android:lines="1"
             android:maxLines="1"
-            android:textColor="@color/Neutral_N700_96"
+            android:textColor="@color/Unify_N700_96"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintLeft_toRightOf="@id/item_image"
             app:layout_constraintRight_toRightOf="parent"
@@ -50,20 +50,20 @@
             app:typographyType="body_2"
             app:typographyWeight="bold"
             tools:text="Sudah Punya tiket balik?"
-            android:layout_marginEnd="@dimen/dp_16"
-            android:layout_marginRight="@dimen/dp_12"/>
+            android:layout_marginEnd="@dimen/spacing_lvl4"
+            android:layout_marginRight="@dimen/unify_space_12"/>
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/item_subtitle"
-            android:layout_width="@dimen/dp_0"
+            android:layout_width="@dimen/layout_lvl0"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_8"
-            android:layout_marginBottom="@dimen/dp_16"
+            android:layout_marginTop="@dimen/spacing_lvl3"
+            android:layout_marginBottom="@dimen/spacing_lvl4"
             android:ellipsize="end"
             android:lines="2"
             android:maxLines="2"
             android:lineSpacingExtra="@dimen/sp_4"
-            android:textColor="@color/Neutral_N700_96"
+            android:textColor="@color/Unify_N700_96"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@id/item_title"
             app:layout_constraintRight_toRightOf="parent"

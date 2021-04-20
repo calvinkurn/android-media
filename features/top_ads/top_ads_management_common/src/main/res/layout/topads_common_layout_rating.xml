@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/linearLayoutImageRating"
+    android:layout_width="wrap_content"
+    android:layout_height="@dimen/dp_18"
+    android:gravity="center"
+    android:orientation="horizontal">
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/imageViewRating1"
+        android:layout_width="@dimen/dp_12"
+        android:layout_height="@dimen/dp_12"
+        android:adjustViewBounds="true"
+        android:gravity="center"
+        android:scaleType="centerCrop" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/imageViewRating2"
+        android:layout_width="@dimen/dp_12"
+        android:layout_height="@dimen/dp_12"
+        android:adjustViewBounds="true"
+        android:gravity="center"
+        android:scaleType="centerCrop" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/imageViewRating3"
+        android:layout_width="@dimen/dp_12"
+        android:layout_height="@dimen/dp_12"
+        android:adjustViewBounds="true"
+        android:gravity="center"
+        android:scaleType="centerCrop" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/imageViewRating4"
+        android:layout_width="@dimen/dp_12"
+        android:layout_height="@dimen/dp_12"
+        android:adjustViewBounds="true"
+        android:gravity="center"
+        android:scaleType="centerCrop" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/imageViewRating5"
+        android:layout_width="@dimen/dp_12"
+        android:layout_height="@dimen/dp_12"
+        android:adjustViewBounds="true"
+        android:gravity="center"
+        android:scaleType="centerCrop" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/txt_rating_count"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:typographyType="body_3"
+        android:layout_marginStart="@dimen/dp_4"
+        tools:text="(999)" />
+</LinearLayout>
+
+

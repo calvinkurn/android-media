@@ -1,8 +1,10 @@
 package com.tokopedia.atc_common.domain.usecase
 
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
+import com.tokopedia.atc_common.data.model.request.chosenaddress.ChosenAddressAddToCartRequestHelper
+import com.tokopedia.atc_common.data.model.request.chosenaddress.ChosenAddressAddToCartRequestHelper.Companion.PARAM_KEY_CHOSEN_ADDRESS
 import com.tokopedia.atc_common.data.model.response.AddToCartGqlResponse
-import com.tokopedia.atc_common.domain.AddToCartAnalytics
+import com.tokopedia.atc_common.domain.analytics.AddToCartBaseAnalytics
 import com.tokopedia.atc_common.domain.mapper.AddToCartDataMapper
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.graphql.data.model.GraphqlRequest
@@ -20,11 +22,12 @@ import javax.inject.Named
 class AddToCartUseCase @Inject constructor(@Named("atcMutation") private val queryString: String,
                                            private val graphqlUseCase: GraphqlUseCase,
                                            private val addToCartDataMapper: AddToCartDataMapper,
-                                           private val analytics: AddToCartAnalytics) : UseCase<AddToCartDataModel>() {
+                                           private val chosenAddressAddToCartRequestHelper: ChosenAddressAddToCartRequestHelper) : UseCase<AddToCartDataModel>() {
 
     companion object {
         const val REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST = "REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST"
 
+        private const val PARAM_ATC = "param"
         private const val PARAM_PRODUCT_ID = "productID"
         private const val PARAM_SHOP_ID = "shopID"
         private const val PARAM_QUANTITY = "quantity"
@@ -40,7 +43,7 @@ class AddToCartUseCase @Inject constructor(@Named("atcMutation") private val que
         @JvmStatic
         @JvmOverloads
         fun getMinimumParams(productId: String, shopId: String, quantity: Int = 1, notes: String = "", atcExternalSource: String = AddToCartRequestParams.ATC_FROM_OTHERS,
-                /*tracking data*/ productName: String = "", category: String = "", price: String = ""): RequestParams {
+                /*tracking data*/ productName: String = "", category: String = "", price: String = "", userId: String = ""): RequestParams {
             return RequestParams.create()
                     .apply {
                         putObject(
@@ -53,26 +56,30 @@ class AddToCartUseCase @Inject constructor(@Named("atcMutation") private val que
                                         atcFromExternalSource = atcExternalSource,
                                         productName = productName,
                                         category = category,
-                                        price = price
+                                        price = price,
+                                        userId = userId
                                 )
                         )
                     }
         }
     }
 
-    private fun getParams(addToCartRequestParams: AddToCartRequestParams): Map<String, Any> {
+    private fun getParams(addToCartRequestParams: AddToCartRequestParams): Map<String, Any?> {
         return mapOf(
-                PARAM_PRODUCT_ID to addToCartRequestParams.productId,
-                PARAM_SHOP_ID to addToCartRequestParams.shopId,
-                PARAM_QUANTITY to addToCartRequestParams.quantity,
-                PARAM_NOTES to addToCartRequestParams.notes,
-                PARAM_LANG to addToCartRequestParams.lang,
-                PARAM_ATTRIBUTION to addToCartRequestParams.attribution,
-                PARAM_LIST_TRACKER to addToCartRequestParams.listTracker,
-                PARAM_UC_PARAMS to addToCartRequestParams.ucParams,
-                PARAM_WAREHOUSE_ID to addToCartRequestParams.warehouseId,
-                PARAM_ATC_FROM_EXTERNAL_SOURCE to addToCartRequestParams.atcFromExternalSource,
-                PARAM_IS_SCP to addToCartRequestParams.isSCP
+                PARAM_ATC to mapOf(
+                        PARAM_PRODUCT_ID to addToCartRequestParams.productId,
+                        PARAM_SHOP_ID to addToCartRequestParams.shopId,
+                        PARAM_QUANTITY to addToCartRequestParams.quantity,
+                        PARAM_NOTES to addToCartRequestParams.notes,
+                        PARAM_LANG to addToCartRequestParams.lang,
+                        PARAM_ATTRIBUTION to addToCartRequestParams.attribution,
+                        PARAM_LIST_TRACKER to addToCartRequestParams.listTracker,
+                        PARAM_UC_PARAMS to addToCartRequestParams.ucParams,
+                        PARAM_WAREHOUSE_ID to addToCartRequestParams.warehouseId,
+                        PARAM_ATC_FROM_EXTERNAL_SOURCE to addToCartRequestParams.atcFromExternalSource,
+                        PARAM_IS_SCP to addToCartRequestParams.isSCP,
+                        PARAM_KEY_CHOSEN_ADDRESS to chosenAddressAddToCartRequestHelper.getChosenAddress()
+                )
         )
     }
 
@@ -85,10 +92,15 @@ class AddToCartUseCase @Inject constructor(@Named("atcMutation") private val que
         return graphqlUseCase.createObservable(RequestParams.EMPTY).map {
             val addToCartGqlResponse = it.getData<AddToCartGqlResponse>(AddToCartGqlResponse::class.java)
             val result = addToCartDataMapper.mapAddToCartResponse(addToCartGqlResponse)
-            analytics.sendAppsFlyerTracking(result, addToCartRequest)
+            if (!result.isStatusError()) {
+                AddToCartBaseAnalytics.sendAppsFlyerTracking(addToCartRequest.productId.toString(), addToCartRequest.productName, addToCartRequest.price,
+                        addToCartRequest.quantity.toString(), addToCartRequest.category)
+                AddToCartBaseAnalytics.sendBranchIoTracking(addToCartRequest.productId.toString(), addToCartRequest.productName, addToCartRequest.price,
+                        addToCartRequest.quantity.toString(), addToCartRequest.category, addToCartRequest.categoryLevel1Id,
+                        addToCartRequest.categoryLevel1Name, addToCartRequest.categoryLevel2Id, addToCartRequest.categoryLevel2Name,
+                        addToCartRequest.categoryLevel3Id, addToCartRequest.categoryLevel3Name, addToCartRequest.userId)
+            }
             result
         }
-
     }
-
 }

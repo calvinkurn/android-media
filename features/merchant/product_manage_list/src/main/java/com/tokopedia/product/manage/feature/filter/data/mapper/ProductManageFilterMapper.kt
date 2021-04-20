@@ -3,7 +3,7 @@ package com.tokopedia.product.manage.feature.filter.data.mapper
 import com.tokopedia.core.common.category.domain.model.CategoriesResponse
 import com.tokopedia.product.manage.feature.filter.data.model.FilterOptionWrapper
 import com.tokopedia.product.manage.feature.filter.data.model.FilterOptionsResponse
-import com.tokopedia.product.manage.feature.filter.data.model.ProductListMetaData
+import com.tokopedia.product.manage.common.feature.list.data.model.filter.ProductListMetaData
 import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmodel.ChecklistUiModel
 import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmodel.FilterDataUiModel
 import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmodel.FilterUiModel
@@ -207,6 +207,7 @@ class ProductManageFilterMapper {
                         FilterOption.FilterByCondition.CashBackOnly.id -> FilterOption.FilterByCondition.CashBackOnly
                         FilterOption.FilterByCondition.WholesaleOnly.id -> FilterOption.FilterByCondition.WholesaleOnly
                         FilterOption.FilterByCondition.PreorderOnly.id -> FilterOption.FilterByCondition.PreorderOnly
+                        FilterOption.FilterByCondition.CampaignOnly.id -> FilterOption.FilterByCondition.CampaignOnly
                         else -> FilterOption.FilterByCondition.FeaturedOnly
                     }
                     selectedData.add(mappedData)

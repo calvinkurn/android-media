@@ -10,13 +10,14 @@
         android:id="@+id/border_left"
         android:layout_width="@dimen/dp_1"
         android:layout_height="@dimen/dp_0"
-        android:background="@color/category_border_color"
+        android:background="@color/Unify_N50"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
         android:id="@+id/category_product_image"
+        android:contentDescription="@string/content_desc_category_product_image"
         android:layout_width="@dimen/dp_56"
         android:layout_height="@dimen/dp_56"
         android:layout_margin="@dimen/dp_6"
@@ -35,7 +36,7 @@
         android:ellipsize="end"
         android:gravity="center"
         android:lines="2"
-        android:textColor="@color/grey_150"
+        android:textColor="@color/Unify_N600"
         app:layout_constrainedWidth="true"
         app:layout_constraintBottom_toTopOf="@+id/border_bottom"
         app:layout_constraintEnd_toEndOf="@id/border_right"
@@ -51,7 +52,7 @@
         android:id="@+id/border_right"
         android:layout_width="@dimen/dp_1"
         android:layout_height="@dimen/dp_0"
-        android:background="@color/category_border_color"
+        android:background="@color/Unify_N50"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -60,7 +61,7 @@
         android:id="@+id/border_bottom"
         android:layout_width="@dimen/dp_0"
         android:layout_height="@dimen/dp_1"
-        android:background="@color/category_border_color"
+        android:background="@color/Unify_N50"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintLeft_toRightOf="@+id/category_product_image"

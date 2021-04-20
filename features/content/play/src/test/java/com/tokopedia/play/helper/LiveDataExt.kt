@@ -27,7 +27,7 @@ fun <T> LiveData<T>.getOrAwaitValue(
 
     // Don't wait indefinitely if the LiveData is not set.
     if (!latch.await(time, timeUnit)) {
-        throw TimeoutException("LiveData value was never set.")
+        throw NoValueException()
     }
 
     @Suppress("UNCHECKED_CAST")

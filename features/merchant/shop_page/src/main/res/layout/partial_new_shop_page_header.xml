@@ -6,80 +6,41 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
-        android:id="@+id/loader_profile_image"
-        android:layout_width="@dimen/shop_page_logo_width"
-        android:layout_height="@dimen/shop_page_logo_width"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginTop="@dimen/dp_16"
-        android:visibility="gone"
-        app:corners="@integer/radius_40"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:visibility="visible"
-        android:layout_marginStart="@dimen/dp_16" />
-
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
-        android:id="@+id/first_rect_loader_view"
-        android:layout_width="0dp"
-        android:layout_height="@dimen/dp_8"
-        android:layout_marginStart="@dimen/dp_16"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginTop="@dimen/dp_24"
+    <com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
+        android:id="@+id/choose_address_widget"
+        android:layout_marginTop="@dimen/dp_10"
         android:layout_marginBottom="@dimen/dp_10"
+        android:layout_marginLeft="@dimen/dp_18"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
         android:visibility="gone"
-        app:corners="@integer/corner_radius_shimmering"
-        app:layout_constraintLeft_toRightOf="@id/loader_profile_image"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:width_weight="0.7"
-        tools:visibility="visible" />
+        app:layout_constraintBottom_toTopOf="@id/choosee_address_widget_bottom_shadow"
+        app:layout_constraintTop_toTopOf="parent"/>
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
-        android:id="@+id/second_rect_loader_view"
-        android:layout_width="0dp"
-        android:layout_height="@dimen/dp_8"
-        android:layout_marginStart="@dimen/dp_16"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginTop="@dimen/dp_10"
-        android:visibility="gone"
-        app:corners="@integer/corner_radius_shimmering"
-        app:layout_constraintLeft_toRightOf="@id/loader_profile_image"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/first_rect_loader_view"
-        app:width_weight="0.8"
-        tools:visibility="visible" />
-
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
-        android:id="@+id/third_rect_loader_view"
-        android:layout_width="0dp"
-        android:layout_height="@dimen/dp_8"
-        android:layout_marginStart="@dimen/dp_16"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginTop="@dimen/dp_10"
-        android:visibility="gone"
-        app:corners="@integer/corner_radius_shimmering"
-        app:layout_constraintLeft_toRightOf="@id/loader_profile_image"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/second_rect_loader_view"
-        app:width_weight="0.4"
-        tools:visibility="visible" />
+    <View
+        android:id="@+id/choosee_address_widget_bottom_shadow"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_1"
+        android:background="@color/Unify_N75"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/shop_page_header_content" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/shop_page_header_content"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_140"
-        app:layout_constraintBottom_toTopOf="@id/tickerShopStatus"
+        android:layout_height="wrap_content"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/choosee_address_widget_bottom_shadow"
         app:layout_constraintVertical_bias="0"
+        android:paddingBottom="@dimen/dp_16"
         app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/shop_page_main_profile_background"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_140"
+            android:layout_height="0dp"
             android:adjustViewBounds="true"
             android:scaleType="centerCrop"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -90,6 +51,7 @@
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/shop_page_main_profile_image"
+            android:contentDescription="@string/content_desc_shop_page_main_profile_image"
             android:layout_width="@dimen/layout_lvl7"
             android:layout_height="@dimen/layout_lvl7"
             android:layout_marginStart="@dimen/spacing_lvl4"
@@ -101,32 +63,57 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/shop_page_main_profile_badge"
+            android:id="@+id/shop_page_main_profile_badge_old"
+            android:contentDescription="@string/content_desc_shop_page_main_profile_badge"
             android:layout_width="@dimen/layout_lvl3"
             android:layout_height="@dimen/layout_lvl3"
             android:adjustViewBounds="true"
             app:layout_constraintBottom_toBottomOf="@id/shop_page_main_profile_image"
             app:layout_constraintEnd_toEndOf="@id/shop_page_main_profile_image" />
 
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/shop_page_main_profile_badge"
+            android:layout_width="@dimen/dp_16"
+            android:layout_height="@dimen/dp_16"
+            android:layout_marginStart="@dimen/dp_12"
+            android:layout_marginLeft="@dimen/dp_12"
+            android:layout_marginTop="@dimen/dp_2"
+            app:layout_constraintStart_toEndOf="@id/shop_page_main_profile_image"
+            app:layout_constraintTop_toTopOf="@id/shop_page_main_profile_name"
+            app:layout_constraintBottom_toBottomOf="@id/shop_page_main_profile_name"
+            android:visibility="gone"
+            tools:visibility="visible"
+            tools:srcCompat="@drawable/ic_badge_shop_official"
+            />
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/shop_page_main_profile_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_12"
-            android:layout_marginLeft="@dimen/dp_12"
-            android:layout_marginTop="@dimen/spacing_lvl4"
-            android:layout_marginEnd="@dimen/spacing_lvl3"
-            android:layout_marginRight="@dimen/spacing_lvl3"
+            android:layout_marginLeft="@dimen/dp_4"
+            app:layout_goneMarginLeft="@dimen/dp_12"
+            android:layout_marginTop="@dimen/dp_16"
             android:ellipsize="end"
             android:lines="1"
-            android:textColor="@color/clr_f531353b"
+            android:textColor="@color/Unify_N700_96"
             app:layout_constrainedWidth="true"
-            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0"
-            app:layout_constraintStart_toEndOf="@id/shop_page_main_profile_image"
+            app:layout_constraintStart_toEndOf="@id/shop_page_main_profile_badge"
             app:layout_constraintTop_toTopOf="parent"
-            app:typographyType="heading_4" />
-
+            app:typographyType="heading_4"
+            tools:text="Shop name"
+            />
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/shop_page_chevron_shop_info"
+            android:layout_width="@dimen/dp_20"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toEndOf="@id/shop_page_main_profile_name"
+            app:layout_constraintTop_toTopOf="@id/shop_page_main_profile_name"
+            android:layout_marginTop="@dimen/dp_2"
+            app:layout_constraintBottom_toBottomOf="@id/shop_page_main_profile_name"
+            android:visibility="gone"
+            app:srcCompat="@drawable/ic_shop_page_chevron_shop_info"
+            tools:visibility="visible"
+            />
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/shop_page_main_profile_location_icon"
             android:layout_width="wrap_content"
@@ -136,8 +123,9 @@
             android:layout_marginTop="@dimen/dp_6"
             app:layout_constraintStart_toEndOf="@id/shop_page_main_profile_image"
             app:layout_constraintTop_toBottomOf="@id/shop_page_main_profile_name"
-            app:srcCompat="@drawable/ic_shop_location"
+            app:srcCompat="@drawable/ic_shop_location_old"
             android:visibility="gone"
+            tools:visibility="visible"
             />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -149,16 +137,18 @@
             android:layout_marginEnd="@dimen/spacing_lvl3"
             android:layout_marginRight="@dimen/spacing_lvl3"
             android:ellipsize="end"
+            android:singleLine="true"
             android:lines="1"
             app:layout_constrainedWidth="true"
             app:layout_constraintBottom_toBottomOf="@id/shop_page_main_profile_location_icon"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/shop_page_follow_unfollow_button"
             app:layout_constraintHorizontal_bias="0"
             app:layout_constraintStart_toEndOf="@id/shop_page_main_profile_location_icon"
             app:layout_constraintTop_toTopOf="@id/shop_page_main_profile_location_icon"
             app:typographyType="small"
             tools:text="Kab. Aceh Barat Daya"
             android:visibility="gone"
+            tools:visibility="visible"
             />
 
         <androidx.appcompat.widget.AppCompatImageView
@@ -171,7 +161,8 @@
             app:layout_constraintStart_toEndOf="@id/shop_page_main_profile_image"
             app:layout_constraintTop_toBottomOf="@id/shop_page_main_profile_location_icon"
             android:visibility="gone"
-            app:srcCompat="@drawable/ic_shop_follower" />
+            tools:visibility="visible"
+            app:srcCompat="@drawable/ic_shop_follower_old" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/shop_page_main_profile_follower"
@@ -182,6 +173,7 @@
             android:layout_marginEnd="@dimen/spacing_lvl3"
             android:layout_marginRight="@dimen/spacing_lvl3"
             android:ellipsize="end"
+            android:singleLine="true"
             android:lines="1"
             app:layout_constrainedWidth="true"
             app:layout_constraintBottom_toBottomOf="@id/shop_page_main_profile_follower_icon"
@@ -192,10 +184,12 @@
             app:typographyType="small"
             tools:text="100rb Followers"
             android:visibility="gone"
+            tools:visibility="visible"
             />
 
         <com.tokopedia.unifycomponents.Label
             android:id="@+id/shop_page_main_profile_free_ongkir"
+            android:contentDescription="@string/content_desc_shop_page_main_profile_free_ongkir"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="12dp"
@@ -210,12 +204,13 @@
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/image_view_shop_reputation_badge"
+            android:contentDescription="@string/content_desc_image_view_shop_reputation_badge"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/dp_16"
             android:layout_marginStart="@dimen/dp_12"
             android:layout_marginLeft="@dimen/dp_12"
             android:layout_marginTop="@dimen/dp_4"
-            android:layout_marginBottom="@dimen/dp_30"
+            android:layout_marginBottom="@dimen/dp_14"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toRightOf="@id/shop_page_main_profile_image"
@@ -225,18 +220,35 @@
 
 
         <com.tokopedia.unifycomponents.UnifyButton
-            android:id="@+id/shop_page_follow_unfollow_button"
+            android:id="@+id/shop_page_follow_unfollow_button_old"
             android:layout_width="@dimen/dp_80"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/spacing_lvl4"
             android:layout_marginRight="@dimen/spacing_lvl4"
-            android:layout_marginBottom="@dimen/dp_16"
             android:gravity="center_vertical"
             android:minWidth="@dimen/dp_80"
             android:visibility="gone"
+            android:text="@string/follow_button_label"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/image_view_shop_reputation_badge"
+            app:layout_constraintVertical_bias="0"
             app:layout_constraintLeft_toRightOf="@id/image_view_shop_reputation_badge"
+            app:unifyButtonSize="micro"
+            app:unifyButtonType="main"
+            tools:visibility="visible" />
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/shop_page_follow_unfollow_button"
+            android:layout_width="@dimen/dp_80"
+            android:layout_height="@dimen/dp_26"
+            android:layout_marginRight="@dimen/spacing_lvl4"
+            android:gravity="center_vertical"
+            android:minWidth="@dimen/dp_80"
+            android:visibility="gone"
+            android:text="@string/follow_button_label"
+            app:layout_constraintBottom_toBottomOf="@id/shop_page_main_profile_follower_icon"
+            app:layout_constraintEnd_toEndOf="parent"
             app:unifyButtonSize="micro"
             app:unifyButtonType="main"
             tools:visibility="visible" />
@@ -244,66 +256,75 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.cardview.widget.CardView
-        android:id="@+id/play_seller_widget_container"
+        android:id="@+id/play_sgc_widget_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:visibility="gone"
-        android:layout_marginTop="@dimen/spacing_lvl2"
-        android:layout_marginBottom="@dimen/spacing_lvl3"
         android:layout_marginLeft="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/spacing_lvl2"
         android:layout_marginRight="@dimen/spacing_lvl4"
+        android:layout_marginBottom="@dimen/spacing_lvl3"
+        app:layout_constraintTop_toBottomOf="@id/shop_page_header_content"
+        app:layout_constraintBottom_toTopOf="@id/tickerShopStatus"
+        app:layout_constraintVertical_chainStyle="packed"
+        android:visibility="gone"
+        app:layout_constraintVertical_bias="0"
         app:cardCornerRadius="@dimen/spacing_lvl3"
-        app:contentPadding="@dimen/dp_12"
-        app:layout_constraintBottom_toTopOf="@+id/tickerShopStatus"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/shop_page_header_content"
         tools:visibility="visible">
+
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:padding="@dimen/spacing_lvl3"
+            android:background="@color/Unify_N0">
+
             <com.tokopedia.topads.sdk.view.FlowLayout
-                android:id="@+id/container_text"
+                android:id="@+id/play_sgc_container_desc"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/play_sgc_btn_start_live"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/container_lottie">
+                app:layout_constraintTop_toTopOf="parent">
+
                 <com.tokopedia.unifyprinciples.Typography
-                    android:id="@+id/shop_page_sgc_title"
+                    android:id="@+id/play_sgc_lets_try_live"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    tools:text="Ayo cobain live streaming"
-                    app:typographyType="body_2" />
+                    app:typographyType="body_2"
+                    android:textColor="@color/Unify_N700_96"
+                    tools:text="Ayo cobain live streaming" />
+
                 <androidx.appcompat.widget.AppCompatImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingTop="@dimen/spacing_lvl2"
-                    android:layout_marginLeft="@dimen/spacing_lvl2"
                     android:layout_marginStart="@dimen/spacing_lvl2"
-                    app:srcCompat="@drawable/ic_play_beta_badge"/>
+                    android:paddingTop="@dimen/spacing_lvl2"
+                    app:srcCompat="@drawable/ic_play_beta_badge" />
+
                 <com.tokopedia.unifyprinciples.Typography
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:textColor="@color/Unify_N700_96"
                     android:text="@string/shop_page_play_widget_sgc_content"
                     app:typographyType="body_2" />
+
             </com.tokopedia.topads.sdk.view.FlowLayout>
-            <FrameLayout
-                android:id="@+id/container_lottie"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:layout_constraintTop_toTopOf="parent"
+
+            <com.airbnb.lottie.LottieAnimationView
+                android:id="@+id/play_sgc_btn_start_live"
+                android:layout_width="@dimen/play_sgc_btn_start_live_width"
+                android:layout_height="@dimen/play_sgc_btn_start_live_height"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/container_text">
-                <com.airbnb.lottie.LottieAnimationView
-                    android:id="@+id/lottie"
-                    android:layout_width="120dp"
-                    android:layout_height="36dp"
-                    app:lottie_autoPlay="true"
-                    app:lottie_loop="false" />
-            </FrameLayout>
+                app:layout_constraintStart_toEndOf="@+id/play_sgc_container_desc"
+                app:layout_constraintTop_toTopOf="parent"
+                app:lottie_autoPlay="true"
+                app:lottie_loop="false" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
+
     </androidx.cardview.widget.CardView>
 
     <com.tokopedia.unifycomponents.ticker.Ticker
@@ -311,10 +332,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:visibility="gone"
+        app:layout_constraintVertical_bias="0"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/play_seller_widget_container"
+        app:layout_constraintTop_toBottomOf="@id/play_sgc_widget_container"
         app:tickerType="warning"
         tools:visibility="visible" />
 

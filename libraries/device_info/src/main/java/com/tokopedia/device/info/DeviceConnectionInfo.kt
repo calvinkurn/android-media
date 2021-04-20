@@ -64,7 +64,7 @@ object DeviceConnectionInfo {
             return ""
         }
 
-        return ssid
+        return ssid.replace("\"", "")
     }
 
     @JvmStatic

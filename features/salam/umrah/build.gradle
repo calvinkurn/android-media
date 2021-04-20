@@ -5,7 +5,7 @@ apply plugin: 'io.hansel.preprocessor.module'
 buildscript {
     repositories {
         mavenCentral()
-        maven { url 'https://hansel.io/maven' }
+        maven { url 'https://maven-hansel.tokopedia.com/maven' }
     }
     dependencies {
         classpath rootProject.ext.miscDependencies.hansel
@@ -13,8 +13,6 @@ buildscript {
 }
 
 dependencies {
-    implementation project(rootProject.ext.features.resourcesCommon)
-    implementation project(rootProject.ext.libraries.tkpddesign)
     implementation project(rootProject.ext.features.commonTravel)
     implementation project(rootProject.ext.features.commonPayment)
     implementation project(rootProject.ext.libraries.imagePreviewSlider)
@@ -25,6 +23,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.track)
     implementation project(rootProject.ext.libraries.linker)
+    implementation project(rootProject.ext.libraries.keys)
     implementation project(rootProject.ext.libraries.remoteConfig)
     implementation project(rootProject.ext.features.travelCountryCode)
     implementation project(rootProject.ext.features.travelPassenger)
@@ -32,9 +31,7 @@ dependencies {
 
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.components
-    implementation rootProject.ext.unifyDependencies.global_error
     implementation rootProject.ext.unifyDependencies.datepicker
-    implementation rootProject.ext.unifyDependencies.icon
     implementation rootProject.ext.unifyDependencies.dialog
     implementation rootProject.ext.unifyDependencies.banner
     implementation rootProject.ext.unifyDependencies.empty_state
@@ -47,19 +44,16 @@ dependencies {
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.playServicesDependencies.core
-    implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
-    implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.miscDependencies.dagger
     kapt rootProject.ext.miscDependencies.daggerCompiler
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
-    kapt rootProject.ext.miscDependencies.lifeCycleRuntime
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
 
     testImplementation rootProject.ext.testDependencies.junit
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.archCoreTesting
-
+    testImplementation project(rootProject.ext.libraries.unitTest)
 }
 
 project.ext {

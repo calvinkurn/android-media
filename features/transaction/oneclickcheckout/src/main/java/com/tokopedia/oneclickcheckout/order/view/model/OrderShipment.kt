@@ -1,15 +1,17 @@
 package com.tokopedia.oneclickcheckout.order.view.model
 
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.InsuranceData
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData
-import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.InsuranceData
 
 data class OrderShipment(
         val serviceName: String? = null,
         val serviceId: Int? = null,
         val serviceDuration: String? = null,
+        val serviceEta: String? = null,
+        val shippingEta: String? = null,
         val serviceErrorMessage: String? = null,
         val isServicePickerEnable: Boolean = false,
         val needPinpoint: Boolean = false,
@@ -30,6 +32,11 @@ data class OrderShipment(
 ) {
     fun isValid(): Boolean {
         return getRealShipperProductId() > 0 && !serviceName.isNullOrEmpty()
+    }
+
+    fun getRealServiceId(): Int {
+        return logisticPromoShipping?.serviceData?.serviceId
+                ?: serviceId.toZeroIfNull()
     }
 
     fun getRealShipperProductId(): Int {
@@ -56,6 +63,12 @@ data class OrderShipment(
     fun getRealOriginalPrice(): Int {
         return if (isApplyLogisticPromo && logisticPromoShipping != null && logisticPromoViewModel != null) {
             logisticPromoViewModel.shippingRate
+        } else shippingPrice ?: 0
+    }
+
+    fun getRealShippingPrice(): Int {
+        return if (isApplyLogisticPromo && logisticPromoShipping != null && logisticPromoViewModel != null) {
+            logisticPromoViewModel.discountedRate
         } else shippingPrice ?: 0
     }
 

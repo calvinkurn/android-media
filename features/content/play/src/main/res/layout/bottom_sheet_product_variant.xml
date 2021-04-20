@@ -5,13 +5,14 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/cl_product_variant"
-        app:layout_constraintTop_toBottomOf="@id/ll_header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="@dimen/spacing_lvl5"
-        android:paddingBottom="@dimen/spacing_lvl4"
         android:paddingStart="@dimen/spacing_lvl4"
-        android:paddingEnd="@dimen/spacing_lvl4">
+        android:paddingTop="@dimen/spacing_lvl5"
+        android:paddingEnd="@dimen/spacing_lvl4"
+        android:paddingBottom="@dimen/spacing_lvl4"
+        app:layout_constraintTop_toBottomOf="@id/ll_header"
+        >
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/iv_product_image"
@@ -32,7 +33,7 @@
             android:layout_marginEnd="@dimen/play_product_line_title_image_margin"
             android:ellipsize="end"
             android:maxLines="1"
-            android:textColor="@color/Neutral_N700_96"
+            android:textColor="@color/Unify_N700_96"
             app:layout_constraintVertical_chainStyle="packed"
             app:layout_constraintStart_toEndOf="@id/iv_product_image"
             app:layout_constraintTop_toTopOf="@id/iv_product_image"
@@ -64,7 +65,7 @@
                 android:paddingTop="@dimen/spacing_lvl1"
                 android:paddingBottom="@dimen/spacing_lvl1"
                 android:background="@drawable/bg_play_discount_badge"
-                android:textColor="@color/Red_R400"
+                android:textColor="@color/play_dms_discount_price"
                 app:typographyType="small"
                 app:typographyWeight="bold"
                 tools:text="57%"
@@ -76,7 +77,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/spacing_lvl2"
                 android:layout_marginLeft="@dimen/spacing_lvl2"
-                android:textColor="@color/Neutral_N700_44"
+                android:textColor="@color/Unify_N700_44"
                 app:typographyType="small"
                 tools:text="Rp349.000"
                 />
@@ -89,7 +90,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_lvl1"
             android:layout_marginBottom="@dimen/spacing_lvl1"
-            android:textColor="@color/Neutral_N700_96"
+            android:textColor="@color/Unify_N700_96"
             app:layout_constraintStart_toStartOf="@id/ll_product_discount"
             app:layout_constraintTop_toBottomOf="@id/ll_product_discount"
             app:typographyType="body_2"

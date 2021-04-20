@@ -7,6 +7,8 @@ import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.play.broadcaster.domain.model.Config
 import com.tokopedia.play.broadcaster.domain.model.GetBroadcasterShopConfigResponse
 import com.tokopedia.play.broadcaster.util.extension.sendCrashlyticsLog
+import com.tokopedia.play.broadcaster.util.handler.DefaultUseCaseHandler
+import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
 /**
@@ -14,7 +16,7 @@ import javax.inject.Inject
  */
 class GetConfigurationUseCase @Inject constructor(
         private val graphqlRepository: GraphqlRepository
-) : BaseUseCase<Config>() {
+) : UseCase<Config>() {
 
     private val query = """
             query getConfig(${'$'}shopId: String!) {
@@ -29,8 +31,14 @@ class GetConfigurationUseCase @Inject constructor(
     var params: Map<String, Any> = emptyMap()
 
     override suspend fun executeOnBackground(): Config {
-        val gqlResponse = configureGqlResponse(graphqlRepository, query, GetBroadcasterShopConfigResponse::class.java, params, GraphqlCacheStrategy
-                .Builder(CacheType.ALWAYS_CLOUD).build())
+        val gqlResponse = DefaultUseCaseHandler(
+                gqlRepository = graphqlRepository,
+                query = query,
+                typeOfT = GetBroadcasterShopConfigResponse::class.java,
+                params = params,
+                gqlCacheStrategy = GraphqlCacheStrategy
+                        .Builder(CacheType.ALWAYS_CLOUD).build()
+        ).executeWithRetry()
         val response = gqlResponse.getData<GetBroadcasterShopConfigResponse>(GetBroadcasterShopConfigResponse::class.java)
         return mapConfiguration(response.shopConfig.config)
                 .copy(streamAllowed = response.shopConfig.streamAllowed)
@@ -47,7 +55,6 @@ class GetConfigurationUseCase @Inject constructor(
 
     companion object {
 
-        private const val TAG = "Play-GetConfigurationUseCase"
         private const val PARAMS_SHOP_ID = "shopId"
 
         fun createParams(

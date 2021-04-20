@@ -1,8 +1,13 @@
 package com.tokopedia.hotel.hoteldetail.presentation.model.viewmodel
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.common.travel.utils.TravelDispatcherProvider
+import com.tokopedia.common.travel.ticker.TravelTickerHotelPage
+import com.tokopedia.common.travel.ticker.TravelTickerInstanceId
+import com.tokopedia.common.travel.ticker.domain.TravelTickerCoroutineUseCase
+import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerModel
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
@@ -25,13 +30,25 @@ import javax.inject.Inject
  * @author by furqan on 22/04/19
  */
 class HotelDetailViewModel @Inject constructor(private val graphqlRepository: GraphqlRepository,
-                                               private val dispatcher: TravelDispatcherProvider,
-                                               private val useCase: GetHotelRoomListUseCase)
-    : BaseViewModel(dispatcher.io()) {
+                                               private val dispatcher: CoroutineDispatchers,
+                                               private val useCase: GetHotelRoomListUseCase,
+                                               private val travelTickerUseCase: TravelTickerCoroutineUseCase)
+    : BaseViewModel(dispatcher.io) {
 
     val hotelInfoResult = MutableLiveData<Result<PropertyDetailData>>()
     val hotelReviewResult = MutableLiveData<Result<HotelReview.ReviewData>>()
     val roomListResult = MutableLiveData<Result<MutableList<HotelRoom>>>()
+
+    private val mutableTickerData = MutableLiveData<Result<TravelTickerModel>>()
+    val tickerData: LiveData<Result<TravelTickerModel>>
+        get() = mutableTickerData
+
+    fun fetchTickerData() {
+        launch(dispatcher.main) {
+            val tickerData = travelTickerUseCase.execute(TravelTickerInstanceId.HOTEL, TravelTickerHotelPage.SEARCH_DETAIL)
+            mutableTickerData.postValue(tickerData)
+        }
+    }
 
     fun getHotelDetailData(hotelInfoQuery: String, roomListQuery: String, hotelReviewQuery: String,
                            propertyId: Long, searchParam: HotelHomepageModel, source: String) {
@@ -62,7 +79,7 @@ class HotelDetailViewModel @Inject constructor(private val graphqlRepository: Gr
 
         try {
             val hotelInfoData = async {
-                val response = withContext(dispatcher.ui()) {
+                val response = withContext(dispatcher.main) {
                     val detailRequest = GraphqlRequest(rawQuery, TYPE_HOTEL_INFO, detailParams)
                     graphqlRepository.getReseponse(listOf(detailRequest))
                             .getSuccessData<PropertyDetailData.Response>()
@@ -89,7 +106,7 @@ class HotelDetailViewModel @Inject constructor(private val graphqlRepository: Gr
 
         try {
             val hotelReviewData = async {
-                val response = withContext(dispatcher.ui()) {
+                val response = withContext(dispatcher.main) {
                     val reviewRequest = GraphqlRequest(rawQuery, TYPE_HOTEL_REVIEW, reviewParams)
                     graphqlRepository.getReseponse(listOf(reviewRequest))
                             .getSuccessData<HotelReview.Response>()

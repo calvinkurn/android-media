@@ -1,47 +1,59 @@
 package com.tokopedia.product.addedit.preview.presentation.fragment
 
-import android.annotation.SuppressLint
-import android.app.Activity
 import android.app.Activity.RESULT_OK
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.appcompat.widget.Toolbar
+import androidx.constraintlayout.motion.widget.MotionLayout
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
+import androidx.lifecycle.observe
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
+import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
+import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
-import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst
+import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.dialog.DialogUnify
-import com.tokopedia.imagepicker.editor.main.view.ImageEditorActivity
-import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
-import com.tokopedia.imagepicker.picker.main.builder.*
-import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
+import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.imagepicker.common.ImagePickerResultExtractor
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.addedit.R
+import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitoringConstants.ADD_EDIT_PRODUCT_PREVIEW_PLT_NETWORK_METRICS
+import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitoringConstants.ADD_EDIT_PRODUCT_PREVIEW_PLT_PREPARE_METRICS
+import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitoringConstants.ADD_EDIT_PRODUCT_PREVIEW_PLT_RENDER_METRICS
+import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitoringConstants.ADD_EDIT_PRODUCT_PREVIEW_TRACE
+import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitoringListener
 import com.tokopedia.product.addedit.common.AddEditProductComponentBuilder
-import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.EXTRA_CACHE_MANAGER_ID
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.HTTP_PREFIX
+import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.KEY_SAVE_INSTANCE_ISDRAFTING
+import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.KEY_SAVE_INSTANCE_ISEDITING
+import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.KEY_SAVE_INSTANCE_PREVIEW
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.PHOTO_TIPS_URL_1
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.PHOTO_TIPS_URL_2
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.PHOTO_TIPS_URL_3
@@ -50,11 +62,13 @@ import com.tokopedia.product.addedit.common.util.*
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.BUNDLE_CACHE_MANAGER_ID
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.EXTRA_CASHBACK_IS_DRAFTING
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.EXTRA_CASHBACK_SHOP_ID
+import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.EXTRA_RESULT_STATUS
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_PRODUCT_PHOTOS
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.PARAM_SET_CASHBACK_PRODUCT_NAME
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.PARAM_SET_CASHBACK_PRODUCT_PRICE
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.PARAM_SET_CASHBACK_VALUE
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.REQUEST_CODE_IMAGE
+import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.REQUEST_CODE_SHOP_LOCATION
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.REQUEST_CODE_VARIANT_DIALOG_EDIT
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.REQUEST_KEY_ADD_MODE
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.REQUEST_KEY_DESCRIPTION
@@ -66,22 +80,35 @@ import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProduct
 import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.PictureInputModel
 import com.tokopedia.product.addedit.draft.mapper.AddEditProductMapper
-import com.tokopedia.product.addedit.imagepicker.view.activity.ImagePickerAddProductActivity
+import com.tokopedia.product.addedit.draft.mapper.AddEditProductMapper.mapJsonToObject
+import com.tokopedia.product.addedit.draft.mapper.AddEditProductMapper.mapObjectToJson
+import com.tokopedia.product.addedit.imagepicker.ImagePickerAddEditNavigation
 import com.tokopedia.product.addedit.preview.data.source.api.response.Cashback
 import com.tokopedia.product.addedit.preview.data.source.api.response.Product
 import com.tokopedia.product.addedit.preview.di.AddEditProductPreviewModule
 import com.tokopedia.product.addedit.preview.di.DaggerAddEditProductPreviewComponent
+import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.ADDRESS_STREET
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.BUNDLE_BACK_PRESSED
+import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.COURIER_ORIGIN
+import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.DELAY_CLOSE_ACTIVITY
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.DESCRIPTION_DATA
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.DETAIL_DATA
+import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_ADDRESS_MODEL
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_IS_ADDING_PRODUCT
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_IS_DRAFTING_PRODUCT
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_IS_EDITING_PRODUCT
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_IS_FIRST_MOVED
+import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_IS_FULL_FLOW
+import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_IS_LOGISTIC_LABEL
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_PRODUCT_INPUT_MODEL
+import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.LATITUDE
+import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.LONGITUDE
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.NO_DATA
+import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.POSTAL_CODE
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.PRODUCT_STATUS_ACTIVE
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.SHIPMENT_DATA
+import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.SHOP_ID
+import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.TIMBER_PREFIX_LOCATION_VALIDATION
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.preview.presentation.model.SetCashbackResult
 import com.tokopedia.product.addedit.preview.presentation.service.AddEditProductAddService
@@ -93,6 +120,7 @@ import com.tokopedia.product.addedit.tooltip.presentation.TooltipBottomSheet
 import com.tokopedia.product.addedit.tracking.ProductAddStepperTracking
 import com.tokopedia.product.addedit.tracking.ProductEditStepperTracking
 import com.tokopedia.product.addedit.variant.presentation.activity.AddEditProductVariantActivity
+import com.tokopedia.product.addedit.variant.presentation.model.ValidationResultModel
 import com.tokopedia.product_photo_adapter.PhotoItemTouchHelperCallback
 import com.tokopedia.product_photo_adapter.ProductPhotoAdapter
 import com.tokopedia.product_photo_adapter.ProductPhotoViewHolder
@@ -100,20 +128,37 @@ import com.tokopedia.seller.active.common.service.UpdateShopActiveService
 import com.tokopedia.seller_migration_common.presentation.activity.SellerMigrationActivity
 import com.tokopedia.seller_migration_common.presentation.model.SellerFeatureUiModel
 import com.tokopedia.seller_migration_common.presentation.widget.SellerFeatureCarousel
+import com.tokopedia.shop.common.constant.SellerHomePermissionGroup
+import com.tokopedia.shop.common.constant.admin_roles.AdminPermissionUrl
 import com.tokopedia.unifycomponents.DividerUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
+import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
+import java.util.*
 import javax.inject.Inject
+import kotlin.collections.ArrayList
 
-class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHolder.OnPhotoChangeListener {
+class AddEditProductPreviewFragment :
+        BaseDaggerFragment(),
+        ProductPhotoViewHolder.OnPhotoChangeListener,
+        AddEditProductPerformanceMonitoringListener {
 
     private var countTouchPhoto = 0
     private var dataBackPressed: Int? = null
+    private var hasLocation: Boolean = false
+    private var isStartButtonClicked: Boolean = false
+    private var latitude: String = ""
+    private var longitude: String = ""
+    private var postalCode: String = ""
+    private var districtId: Int = 0
+    private var formattedAddress: String = ""
+    private var productInputModel: ProductInputModel? = null
+    private var isFragmentVisible = false
 
     private var toolbar: Toolbar? = null
 
@@ -159,21 +204,32 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
     private var productStatusSwitch: SwitchUnify? = null
 
     //loading
-    private var loadingLayout: View? = null
+    private var loadingLayout: MotionLayout? = null
+
+    // admin revamp
+    private var multiLocationTicker: Ticker? = null
+    private var adminRevampErrorLayout: FrameLayout? = null
+    private var adminRevampGlobalError: GlobalError? = null
 
     private lateinit var userSession: UserSessionInterface
     private lateinit var shopId: String
 
+    private var isAdminEligible = true
+
     @Inject
     lateinit var viewModel: AddEditProductPreviewViewModel
 
-    private var shouldGoToSetCashback: Boolean = false
+    private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        // start PLT monitoring
+        startPerformanceMonitoring()
+
         userSession = UserSession(requireContext())
         shopId = userSession.shopId
+
         super.onCreate(savedInstanceState)
-        shouldGoToSetCashback = activity?.intent?.getStringExtra(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME).orEmpty() == SellerMigrationFeatureName.FEATURE_EDIT_PRODUCT_CASHBACK
+
         arguments?.let {
             val previewFragmentArgs = AddEditProductPreviewFragmentArgs.fromBundle(it)
             val draftId = previewFragmentArgs.draftId
@@ -223,7 +279,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
     private fun dataBackPressedLoss(): Boolean {
         // when stepper page has no data, dataBackPressed is null but if stepper page has data, dataBackPressed has data too
         // dataBackPressed is a sign of activity where data is obtained
-        if(dataBackPressed == null) {
+        if (dataBackPressed == null) {
             return true
         }
         return false
@@ -236,9 +292,15 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        // set bg color programatically, to reduce overdraw
+        context?.let { activity?.window?.decorView?.setBackgroundColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0)) }
+
         // activity toolbar
         toolbar = activity?.findViewById(R.id.toolbar)
         toolbar?.title = getString(com.tokopedia.product.addedit.R.string.label_title_add_product)
+
+        // to check whether current fragment is visible or not
+        isFragmentVisible = true
 
         // action button
         doneButton = activity?.findViewById(R.id.tv_done)
@@ -290,34 +352,36 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
         //loading
         loadingLayout = view.findViewById(R.id.loading_layout)
 
+        // admin revamp
+        multiLocationTicker = view.findViewById(R.id.ticker_add_edit_multi_location)
+        adminRevampErrorLayout = view.findViewById(R.id.add_edit_error_layout)
+        adminRevampGlobalError = view.findViewById(R.id.add_edit_admin_global_error)
+
         addEditProductPhotoButton?.setOnClickListener {
+            val ctx = context ?: return@setOnClickListener
             // tracking
             val buttonTextStart: String = getString(R.string.action_start)
             if (isEditing()) {
                 ProductEditStepperTracking.trackClickChangeProductPic(shopId)
-            } else if (addEditProductPhotoButton?.text == buttonTextStart){
+                moveToImagePicker()
+            } else if (addEditProductPhotoButton?.text == buttonTextStart) {
                 ProductAddStepperTracking.trackStart(shopId)
-            }
-
-            productPhotoAdapter?.run {
-                // show error message when maximum product image is reached
-                val productPhotoSize = this.getProductPhotoPaths().size
-                if (productPhotoSize == MAX_PRODUCT_PHOTOS) showMaxProductImageErrorToast(getString(R.string.error_max_product_photo))
-                else {
-                    val imageUrlOrPathList = productPhotoAdapter?.getProductPhotoPaths()?.map { urlOrPath ->
-                        if (urlOrPath.startsWith(HTTP_PREFIX)) viewModel.productInputModel.value?.detailInputModel?.pictureList?.find { it.urlThumbnail == urlOrPath }?.urlOriginal
-                                ?: urlOrPath
-                        else urlOrPath
-                    }.orEmpty()
-                    val intent = ImagePickerAddProductActivity.getIntent(context, createImagePickerBuilder(ArrayList(imageUrlOrPathList)), isEditing(), viewModel.isAdding)
-                    startActivityForResult(intent, REQUEST_CODE_IMAGE)
+                // validate whether shop has location
+                isStartButtonClicked = true
+                if (hasLocation) {
+                    moveToImagePicker()
+                } else {
+                    validateShopLocation()
                 }
+            } else {
+                moveToImagePicker()
             }
         }
 
         productStatusSwitch?.setOnClickListener {
             val isChecked = productStatusSwitch?.isChecked ?: false
             viewModel.updateProductStatus(isChecked)
+            viewModel.setIsDataChanged(true)
             // track switch status on click
             if (isChecked && isEditing()) {
                 ProductEditStepperTracking.trackChangeProductStatus(shopId)
@@ -329,32 +393,15 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
             if (isEditing()) {
                 ProductEditStepperTracking.trackFinishButton(shopId)
             }
-            val validateMessage = viewModel.validateProductInput(viewModel.productInputModel.value?.detailInputModel ?: DetailInputModel())
+            val validateMessage = viewModel.validateProductInput(viewModel.productInputModel.value?.detailInputModel
+                    ?: DetailInputModel())
             if (validateMessage.isNotEmpty()) {
                 Toaster.make(view, validateMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
             } else {
-                // when we perform add product, the productId will be 0
-                // when we perform edit product, the productId will be provided from the getProductV3 response
-                // when we perform open draft, previous state before we save the product to draft will be the same
-                if (viewModel.productInputModel.value?.productId.orZero() != 0L) {
-                    viewModel.productInputModel.value?.apply {
-                        startProductEditService(this)
-                        activity?.finish()
-                    }
-                } else {
-                    if (isDrafting()) {
-                        productStatusSwitch?.isChecked?.let {
-                            viewModel.updateProductStatus(it)
-                        }
-                    }
-                    viewModel.productInputModel.value?.let { productInputModel ->
-                        startProductAddService(productInputModel)
-                        activity?.setResult(RESULT_OK)
-                        activity?.finish()
-                    }
+                viewModel.productInputModel.value?.detailInputModel?.productName?.let {
+                    viewModel.validateProductNameInput(it)
                 }
             }
-
         }
 
         addProductPhotoTipsLayout?.setOnClickListener {
@@ -415,7 +462,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
 
         if (!GlobalConfig.isSellerApp()) {
             sellerFeatureCarousel?.apply {
-                setListener(object: SellerFeatureCarousel.SellerFeatureClickListener {
+                setListener(object : SellerFeatureCarousel.SellerFeatureClickListener {
                     override fun onSellerFeatureClicked(item: SellerFeatureUiModel) {
                         if (!isDrafting()) {
                             when (item) {
@@ -437,10 +484,12 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
         setupBackPressed()
 
         // check it has ever backed from detail for the first time
-        if(viewModel.productInputModel.value?.requestCode != null) {
+        if (viewModel.productInputModel.value?.requestCode != null) {
             viewModel.productInputModel.value?.let { displayAddModeDetail(it) }
             checkEnableOrNot()
         }
+
+        multiLocationTicker?.showWithCondition(viewModel.shouldShowMultiLocationTicker)
 
         context?.let { UpdateShopActiveService.startService(it) }
         //If you add another observe, don't forget to remove observers at removeObservers()
@@ -450,23 +499,54 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
         observeProductVariant()
         observeImageUrlOrPathList()
         observeIsLoading()
+        observeValidationMessage()
         observeSaveProductDraft()
+        observeGetShopInfoLocation()
+        observeSaveShipmentLocationData()
+        observeAdminPermission()
+
+        // validate whether shop has location
+        validateShopLocationWhenPageOpened()
+        // stop prepare page PLT monitoring
+        stopPreparePagePerformanceMonitoring()
+    }
+
+    override fun onViewStateRestored(savedInstanceState: Bundle?) {
+        if (savedInstanceState != null) {
+            val productInputModelJson = savedInstanceState.getString(KEY_SAVE_INSTANCE_PREVIEW)
+            if (!productInputModelJson.isNullOrBlank()) {
+                //set product input model
+                mapJsonToObject(productInputModelJson, ProductInputModel::class.java).apply {
+                    productInputModel = this
+                }
+            }
+        }
+        super.onViewStateRestored(savedInstanceState)
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        if (isFragmentVisible) {
+            outState.putString(KEY_SAVE_INSTANCE_PREVIEW, mapObjectToJson(viewModel.productInputModel.value))
+        }
+        super.onSaveInstanceState(outState)
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
+        isFragmentVisible = false
         removeObservers()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == Activity.RESULT_OK && data != null) {
+        if (resultCode == RESULT_OK && data != null) {
             when (requestCode) {
                 REQUEST_CODE_IMAGE -> {
-                    val imagePickerResult = data.getStringArrayListExtra(ImagePickerActivity.PICKER_RESULT_PATHS)
-                    val originalImageUrl = data.getStringArrayListExtra(ImageEditorActivity.RESULT_PREVIOUS_IMAGE)
-                    val isEditted = data.getSerializableExtra(ImageEditorActivity.RESULT_IS_EDITTED) as ArrayList<Boolean>
-                    if (imagePickerResult != null && imagePickerResult.size > 0) {
+                    val result = ImagePickerResultExtractor.extract(data)
+                    val imagePickerResult = result.imageUrlOrPathList as ArrayList
+                    val originalImageUrl = result.originalImageUrl as ArrayList
+                    val isEditted = result.isEditted as ArrayList
+                    if (imagePickerResult.size > 0) {
                         val shouldUpdatePhotosInsteadMoveToDetail = isEditing() ||
                                 viewModel.isDuplicate ||
                                 viewModel.productInputModel.value != null
@@ -480,6 +560,9 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
                             moveToDetailFragment(newProductInputModel, true)
                         }
                     }
+                    if (isEditted.any { true }) {
+                        viewModel.setIsDataChanged(true)
+                    }
                 }
                 REQUEST_CODE_VARIANT_DIALOG_EDIT -> {
                     val cacheManagerId = data.getStringExtra(EXTRA_CACHE_MANAGER_ID) ?: ""
@@ -488,24 +571,28 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
                         viewModel.productInputModel.value?.let {
                             updateProductStatusSwitch(it)
                         }
+                        viewModel.setIsDataChanged(true)
                     }
                 }
                 SET_CASHBACK_REQUEST_CODE -> {
                     val cacheManagerId = data.getStringExtra(SET_CASHBACK_CACHE_MANAGER_KEY) ?: ""
                     val cacheManager = context?.let { context -> SaveInstanceCacheManager(context, cacheManagerId) }
-                    val setCashbackResult: SetCashbackResult? = cacheManager?.get(SET_CASHBACK_RESULT, SetCashbackResult::class.java)
-                    if(setCashbackResult == null) {
-                        onFailedSetCashback()
-                        return
-                    }
-                    setCashbackResult.let { cashbackResult ->
-                        if(!cashbackResult.limitExceeded) {
-                            val cashbackProduct = Cashback(cashbackResult.cashback)
-                            viewModel.productDomain = viewModel.productDomain.copy(cashback = cashbackProduct)
-                            onSuccessSetCashback()
-                        } else {
-                            onFailedSetCashback()
+                    onSetCashbackResult(cacheManager)
+                }
+                REQUEST_CODE_SHOP_LOCATION -> {
+                    showLoading()
+                    data.let { intent ->
+                        val saveAddressDataModel = intent.getParcelableExtra<SaveAddressDataModel>(EXTRA_ADDRESS_MODEL)
+
+                        saveAddressDataModel?.let { model ->
+                            latitude = model.latitude
+                            longitude = model.longitude
+                            postalCode = model.postalCode
+                            districtId = model.districtId
+                            formattedAddress = model.formattedAddress
                         }
+
+                        saveShippingLocation()
                     }
                 }
             }
@@ -520,13 +607,13 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
         //countTouchPhoto can increment 1 every time we come or back to this page
         //if we back from ActivityOnResult countTouchPhoto still increment
         //to avoid that we have to make sure the value of countTouchPhoto must be 1
-        if(countTouchPhoto > 2) {
+        if (countTouchPhoto > 2) {
             countTouchPhoto = 1
         }
         // tracker only hit when there are two images of product
-        if(productPhotoAdapter?.itemCount ?: 0 > 1) {
+        if (productPhotoAdapter?.itemCount ?: 0 > 1) {
             // to avoid double hit tracker when dragging or touching image product, we have to put if here
-            if(countTouchPhoto == 2) {
+            if (countTouchPhoto == 2) {
                 if (isAdding()) {
                     ProductAddStepperTracking.trackDragPhoto(shopId)
                 } else {
@@ -537,11 +624,53 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
     }
 
     override fun onRemovePhoto(viewHolder: RecyclerView.ViewHolder) {
+        viewModel.setIsDataChanged(true)
         if (isAdding()) {
             ProductAddStepperTracking.trackRemoveProductImage(shopId)
         } else {
             ProductEditStepperTracking.trackRemoveProductImage(shopId)
         }
+    }
+
+    override fun startPerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring = PageLoadTimePerformanceCallback(
+                ADD_EDIT_PRODUCT_PREVIEW_PLT_PREPARE_METRICS,
+                ADD_EDIT_PRODUCT_PREVIEW_PLT_NETWORK_METRICS,
+                ADD_EDIT_PRODUCT_PREVIEW_PLT_RENDER_METRICS,
+                0,
+                0,
+                0,
+                0,
+                null
+        )
+
+        pageLoadTimePerformanceMonitoring?.startMonitoring(ADD_EDIT_PRODUCT_PREVIEW_TRACE)
+        pageLoadTimePerformanceMonitoring?.startPreparePagePerformanceMonitoring()
+    }
+
+    override fun stopPerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring?.stopMonitoring()
+        pageLoadTimePerformanceMonitoring = null
+    }
+
+    override fun stopPreparePagePerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring?.stopPreparePagePerformanceMonitoring()
+    }
+
+    override fun startNetworkRequestPerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring?.startNetworkRequestPerformanceMonitoring()
+    }
+
+    override fun stopNetworkRequestPerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring?.stopNetworkRequestPerformanceMonitoring()
+    }
+
+    override fun startRenderPerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring?.startRenderPerformanceMonitoring()
+    }
+
+    override fun stopRenderPerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring?.stopRenderPerformanceMonitoring()
     }
 
     private fun onSuccessSetCashback() {
@@ -574,37 +703,45 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
     }
 
     private fun setupBackPressed() {
-        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object: OnBackPressedCallback(true) {
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                DialogUnify(requireContext(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
-                    setTitle(getString(R.string.label_title_on_dialog))
-                    setPrimaryCTAText(getString(R.string.label_cta_primary_button_on_dialog))
-                    setSecondaryCTAText(getString(R.string.label_cta_secondary_button_on_dialog))
-                    if((isEditing()  || dataBackPressedLoss()) && !isDrafting()) {
-                        setDescription(getString(R.string.label_description_on_dialog_edit))
-                        setSecondaryCTAClickListener {
-                            activity?.finish()
-                        }
-                        setPrimaryCTAClickListener {
-                            this.dismiss()
-                        }
-                    } else {
-                        setDescription(getString(R.string.label_description_on_dialog))
-                        setSecondaryCTAClickListener {
-                            saveProductToDraft()
-                            moveToManageProduct()
-                            ProductAddStepperTracking.trackDraftYes(shopId)
-                        }
-                        setPrimaryCTAClickListener {
-                            this.dismiss()
-                            ProductAddStepperTracking.trackDraftCancel(shopId)
-                        }
-                    }
-                }.show()
+                // send tracker
                 if (isEditing()) {
                     ProductEditStepperTracking.trackBack(shopId)
                 } else {
                     ProductAddStepperTracking.trackBack(shopId)
+                }
+
+                if (!viewModel.getIsDataChanged()) {
+                    // finish activity if there is no data changes
+                    activity?.finish()
+                } else {
+                    // show dialog
+                    DialogUnify(requireContext(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
+                        setTitle(getString(R.string.label_title_on_dialog))
+                        setPrimaryCTAText(getString(R.string.label_cta_primary_button_on_dialog))
+                        setSecondaryCTAText(getString(R.string.label_cta_secondary_button_on_dialog))
+                        if ((isEditing() || dataBackPressedLoss()) && !isDrafting()) {
+                            setDescription(getString(R.string.label_description_on_dialog_edit))
+                            setSecondaryCTAClickListener {
+                                activity?.finish()
+                            }
+                            setPrimaryCTAClickListener {
+                                this.dismiss()
+                            }
+                        } else {
+                            setDescription(getString(R.string.label_description_on_dialog))
+                            setSecondaryCTAClickListener {
+                                saveProductToDraft()
+                                moveToManageProduct()
+                                ProductAddStepperTracking.trackDraftYes(shopId)
+                            }
+                            setPrimaryCTAClickListener {
+                                this.dismiss()
+                                ProductAddStepperTracking.trackDraftCancel(shopId)
+                            }
+                        }
+                    }.show()
                 }
             }
         })
@@ -647,7 +784,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
                     val validateMessage = viewModel.validateProductInput(productInputModel.detailInputModel)
                     if (validateMessage.isEmpty()) {
                         startProductAddService(productInputModel)
-                        activity?.finish()
+                        Handler().postDelayed({ activity?.finish() }, DELAY_CLOSE_ACTIVITY)
                     } else {
                         view?.let { Toaster.make(it, validateMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR) }
                     }
@@ -680,13 +817,13 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
             val isDetailData = this[0] == DETAIL_DATA
             val isDescriptionData = this[1] == DESCRIPTION_DATA
             val isShipmentData = this[2] == SHIPMENT_DATA
-            if(isDetailData && isDescriptionData && isShipmentData) {
+            if (isDetailData && isDescriptionData && isShipmentData) {
                 enableDescriptionEdit()
                 enableShipmentEdit()
-            } else if(isDetailData && isShipmentData) {
+            } else if (isDetailData && isShipmentData) {
                 disableDescriptionEdit()
                 enableShipmentEdit()
-            } else if(isDetailData && isDescriptionData) {
+            } else if (isDetailData && isDescriptionData) {
                 enableDescriptionEdit()
                 disableShipmentEdit()
             } else {
@@ -699,7 +836,12 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
     private fun updateProductInputModelOfCacheManagerId(bundle: Bundle) {
         val cacheManagerId = bundle.getString(BUNDLE_CACHE_MANAGER_ID) ?: ""
         SaveInstanceCacheManager(requireContext(), cacheManagerId).run {
-            viewModel.productInputModel.value = get(EXTRA_PRODUCT_INPUT_MODEL, ProductInputModel::class.java) ?: ProductInputModel()
+            viewModel.productInputModel.value = get(EXTRA_PRODUCT_INPUT_MODEL, ProductInputModel::class.java)
+                    ?: ProductInputModel()
+            // set data only in draft or edit mode to make dynamic ui preview
+            if (isDrafting() || viewModel.productInputModel.value?.productId != 0L) {
+                productInputModel = viewModel.productInputModel.value
+            }
         }
     }
 
@@ -714,6 +856,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
     private fun displayEditMode() {
         toolbar?.title = getString(R.string.label_title_edit_product)
         doneButton?.show()
+
         enablePhotoEdit()
         enableDetailEdit()
         enableDescriptionEdit()
@@ -731,7 +874,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
 
     private fun enableDetailEdit() {
         context?.let {
-            addEditProductDetailTitle?.setTextColor(ContextCompat.getColor(it, android.R.color.black))
+            addEditProductDetailTitle?.setTextColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N700))
             addEditProductDetailButton?.text = getString(R.string.action_change)
             addEditProductDetailButton?.show()
             dividerDetail?.hide()
@@ -740,7 +883,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
 
     private fun enableDescriptionEdit() {
         context?.let {
-            addEditProductDescriptionTitle?.setTextColor(ContextCompat.getColor(it, android.R.color.black))
+            addEditProductDescriptionTitle?.setTextColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N700))
             addEditProductDescriptionButton?.text = getString(R.string.action_change)
             addEditProductDescriptionButton?.show()
         }
@@ -753,7 +896,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
 
     private fun enableShipmentEdit() {
         context?.let {
-            addEditProductShipmentTitle?.setTextColor(ContextCompat.getColor(it, android.R.color.black))
+            addEditProductShipmentTitle?.setTextColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N700))
             addEditProductShipmentButton?.text = getString(R.string.action_change)
             addEditProductShipmentButton?.show()
         }
@@ -769,7 +912,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
 
     private fun disableShipmentEdit() {
         context?.let {
-            if(addEditProductShipmentButton?.text != getString(R.string.action_change)) {
+            if (addEditProductShipmentButton?.text != getString(R.string.action_change)) {
                 addEditProductShipmentButton?.text = getString(R.string.action_add)
                 addEditProductShipmentButton?.show()
             }
@@ -778,7 +921,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
 
     private fun disableDescriptionEdit() {
         context?.let {
-            if(addEditProductDescriptionButton?.text != getString(R.string.action_change)) {
+            if (addEditProductDescriptionButton?.text != getString(R.string.action_change)) {
                 addEditProductDescriptionButton?.text = getString(R.string.action_add)
                 addEditProductDescriptionButton?.show()
             }
@@ -787,33 +930,45 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
 
     private fun observeIsEditingStatus() {
         viewModel.isEditing.observe(viewLifecycleOwner, Observer {
-            if (it) displayEditMode()
+            if (it) {
+                displayEditMode()
+            } else {
+                stopPerformanceMonitoring()
+            }
         })
     }
 
     private fun observeProductData() {
+        // start PLT monitoring network
+        startNetworkRequestPerformanceMonitoring()
         viewModel.getProductResult.observe(viewLifecycleOwner, Observer { result ->
             when (result) {
                 is Success -> {
                     val isVariantEmpty = result.data.variant.products.isEmpty()
                     showEmptyVariantState(isVariantEmpty)
                     showProductStatus(result.data)
-                    if (shouldGoToSetCashback) {
-                        val appLinkToOpen = activity?.intent?.getStringArrayListExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA)?.firstOrNull().orEmpty()
-                        if (appLinkToOpen.isNotBlank()) {
-                            shouldGoToSetCashback = false
-                            context?.run {
-                                activity?.intent?.extras?.clear()
-                                RouteManager.getIntent(this, appLinkToOpen).apply {
-                                    addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
-                                    startActivityForResult(this, SET_CASHBACK_REQUEST_CODE)
-                                }
-                            }
-                        }
-                    }
+                    handleSetCashBackResult()
+
+                    // set temporary price when first loaded
+                    SharedPreferencesUtil.setPriceWhenLoaded(requireActivity(), result.data.price)
+
+                    // continue to PLT monitoring render
+                    stopNetworkRequestPerformanceMonitoring()
+                    startRenderPerformanceMonitoring()
                 }
                 is Fail -> {
+                    // stop PLT if failed getting result
+                    stopPerformanceMonitoring()
                     context?.let {
+                        val isEditing = viewModel.isEditing.value ?: false
+                        val errorMessage = ErrorHandler.getErrorMessage(context, result.throwable)
+                        val errorName = AddEditProductUploadErrorHandler.getErrorName(result.throwable)
+                        if (isEditing) {
+                            ProductEditStepperTracking.oopsConnectionPageScreen(
+                                    userSession.userId,
+                                    errorMessage,
+                                    errorName)
+                        }
                         showGetProductErrorToast(ErrorHandler.getErrorMessage(it, result.throwable))
                         AddEditProductErrorHandler.logExceptionToCrashlytics(result.throwable)
                     }
@@ -822,13 +977,34 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
         })
     }
 
+    private fun handleSetCashBackResult() {
+        activity?.intent?.data?.getQueryParameter(ApplinkConstInternalMarketplace.ARGS_CACHE_MANAGER_ID)?.let {
+            if (it.isNotBlank()) {
+                val cacheManager = context?.let { context -> SaveInstanceCacheManager(context, it) }
+                val resultStatus = cacheManager?.get(EXTRA_RESULT_STATUS, Int::class.java) ?: 0
+                if (resultStatus == RESULT_OK) {
+                    onSetCashbackResult(cacheManager)
+                }
+            }
+        }
+    }
+
     private fun observeProductInputModel() {
         viewModel.productInputModel.observe(viewLifecycleOwner, Observer {
             showProductPhotoPreview(it)
             showProductDetailPreview(it)
+            updateProductStatusSwitch(it)
             showEmptyVariantState(viewModel.productInputModel.value?.variantInputModel?.products?.size == 0)
             if (viewModel.getDraftId() != 0L || it.productId != 0L || viewModel.getProductId().isNotBlank()) {
                 displayEditMode()
+            }
+            stopRenderPerformanceMonitoring()
+            stopPerformanceMonitoring()
+            //check whether productInputModel has value from savedInstanceState
+            if (productInputModel != null) {
+                viewModel.productInputModel.value = productInputModel
+                checkEnableOrNot()
+                productInputModel = null
             }
         })
     }
@@ -839,7 +1015,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
 
     private fun observeProductVariant() {
         viewModel.isVariantEmpty.observe(viewLifecycleOwner, Observer {
-            if((isEditing() || isDrafting()) && it) {
+            if ((isEditing() || isDrafting()) && it) {
                 showEmptyVariantState(viewModel.productInputModel.value?.variantInputModel?.products?.size == 0)
             }
         })
@@ -861,6 +1037,38 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
         })
     }
 
+    private fun observeValidationMessage() {
+        viewModel.resetValidateResult() // reset old result when re-observe
+        viewModel.validationResult.observe(viewLifecycleOwner, Observer { result ->
+            when (result.result) {
+                // when we perform add product, the productId will be 0
+                // when we perform edit product, the productId will be provided from the getProductV3 response
+                // when we perform open draft, previous state before we save the product to draft will be the same
+                ValidationResultModel.Result.VALIDATION_SUCCESS -> {
+                    if (viewModel.productInputModel.value?.productId.orZero() != 0L) {
+                        viewModel.productInputModel.value?.apply {
+                            startProductEditService(this)
+                        }
+                    } else {
+                        viewModel.productInputModel.value?.let { productInputModel ->
+                            startProductAddService(productInputModel)
+                            activity?.setResult(RESULT_OK)
+                        }
+                    }
+                    showLoading()
+                    Handler().postDelayed( { activity?.finish() }, DELAY_CLOSE_ACTIVITY)
+                }
+                ValidationResultModel.Result.VALIDATION_ERROR -> {
+                    val errorMessage = ErrorHandler.getErrorMessage(activity, result.exception)
+                    Toaster.build(requireView(), errorMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR).show()
+                }
+                else -> {
+                    // no-op
+                }
+            }
+        })
+    }
+
     private fun observeSaveProductDraft() {
         viewModel.saveProductDraftResultLiveData.observe(viewLifecycleOwner, Observer {
             when (it) {
@@ -872,6 +1080,72 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
         })
     }
 
+    private fun observeGetShopInfoLocation() {
+        viewModel.locationValidation.observe(viewLifecycleOwner) {
+            when (it) {
+                is Success -> {
+                    if (!it.data && dataBackPressedLoss()) {
+                        showDialogLocationValidation()
+                    }
+                    hasLocation = it.data
+                    if (isStartButtonClicked && hasLocation) {
+                        moveToImagePicker()
+                    }
+                }
+                is Fail -> {
+                    AddEditProductErrorHandler.logExceptionToCrashlytics(it.throwable)
+                    AddEditProductErrorHandler.logMessage("$TIMBER_PREFIX_LOCATION_VALIDATION: ${it.throwable.message}")
+                    if (isStartButtonClicked) {
+                        showToasterFailSetLocation()
+                    }
+                }
+            }
+        }
+    }
+
+    private fun observeSaveShipmentLocationData() {
+        viewModel.saveShopShipmentLocationResponse.observe(viewLifecycleOwner) {
+            when (it) {
+                is Success -> {
+                    val isSuccess = it.data.ongkirOpenShopShipmentLocation.dataSuccessResponse.success
+                    if (isSuccess && dataBackPressedLoss()) {
+                        showToasterSuccessSetLocation()
+                    } else if (dataBackPressedLoss()) {
+                        moveToLocationPicker()
+                    }
+                    hasLocation = isSuccess
+                }
+                is Fail -> {
+                    saveShippingLocation()
+                    AddEditProductErrorHandler.logExceptionToCrashlytics(it.throwable)
+                    AddEditProductErrorHandler.logMessage("$TIMBER_PREFIX_LOCATION_VALIDATION: ${it.throwable.message}")
+                }
+            }
+        }
+    }
+
+    private fun observeAdminPermission() {
+        viewModel.isProductManageAuthorized.observe(viewLifecycleOwner) { result ->
+            when(result) {
+                is Success -> {
+                    result.data.let { isEligible ->
+                        isAdminEligible = isEligible
+                        doneButton?.showWithCondition(isAdminEligible)
+                        if (isEligible) {
+                            adminRevampErrorLayout?.hide()
+                        } else {
+                            showAdminNotEligibleView()
+                        }
+                    }
+                }
+                is Fail -> {
+                    showGetProductErrorToast(viewModel.getProductId())
+                }
+            }
+
+        }
+    }
+
     private fun removeObservers() {
         viewModel.isEditing.removeObservers(this)
         viewModel.getProductResult.removeObservers(this)
@@ -880,6 +1154,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
         viewModel.imageUrlOrPathList.removeObservers(this)
         viewModel.isLoading.removeObservers(this)
         viewModel.saveProductDraftResultLiveData.removeObservers(this)
+        viewModel.validationResult.removeObservers(this)
         getNavigationResult(REQUEST_KEY_ADD_MODE)?.removeObservers(this)
         getNavigationResult(REQUEST_KEY_DETAIL)?.removeObservers(this)
         getNavigationResult(REQUEST_KEY_DESCRIPTION)?.removeObservers(this)
@@ -976,7 +1251,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
         view?.let {
             Toaster.make(it, errorMessage,
                     type = Toaster.TYPE_ERROR,
-                    actionText = getString(com.tokopedia.imagepicker.R.string.title_try_again),
+                    actionText = getString(com.tokopedia.abstraction.R.string.title_try_again),
                     duration = Snackbar.LENGTH_INDEFINITE,
                     clickListener = View.OnClickListener {
                         viewModel.getProductData(viewModel.getProductId())
@@ -990,46 +1265,20 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
         }
     }
 
-    @SuppressLint("WrongConstant")
-    private fun createImagePickerBuilder(selectedImagePathList: ArrayList<String>?): ImagePickerBuilder {
-
-        val title = getString(R.string.action_pick_photo)
-
-        val placeholderDrawableRes = arrayListOf(
-                com.tokopedia.product.addedit.R.drawable.ic_utama,
-                com.tokopedia.product.addedit.R.drawable.ic_depan,
-                com.tokopedia.product.addedit.R.drawable.ic_samping,
-                com.tokopedia.product.addedit.R.drawable.ic_atas,
-                com.tokopedia.product.addedit.R.drawable.ic_detail
-        )
-
-        val imagePickerPickerTabTypeDef = intArrayOf(
-                ImagePickerTabTypeDef.TYPE_GALLERY,
-                ImagePickerTabTypeDef.TYPE_CAMERA
-        )
-
-        val imagePickerEditorBuilder = ImagePickerEditorBuilder.getDefaultBuilder().apply {
-            this.belowMinResolutionErrorMessage = getString(R.string.error_image_under_x_resolution, ImagePickerBuilder.DEFAULT_MIN_RESOLUTION, ImagePickerBuilder.DEFAULT_MIN_RESOLUTION)
-            this.imageTooLargeErrorMessage = getString(R.string.error_image_too_large, (AddEditProductConstants.MAX_PRODUCT_IMAGE_SIZE_IN_KB / 1024))
-            this.isRecheckSizeAfterResize = false
+    private fun moveToImagePicker() {
+        val adapter = productPhotoAdapter ?: return
+        // show error message when maximum product image is reached
+        val productPhotoSize = adapter.getProductPhotoPaths().size
+        if (productPhotoSize == MAX_PRODUCT_PHOTOS) showMaxProductImageErrorToast(getString(R.string.error_max_product_photo))
+        else {
+            val imageUrlOrPathList = productPhotoAdapter?.getProductPhotoPaths()?.map { urlOrPath ->
+                if (urlOrPath.startsWith(HTTP_PREFIX)) viewModel.productInputModel.value?.detailInputModel?.pictureList?.find { it.urlThumbnail == urlOrPath }?.urlOriginal
+                        ?: urlOrPath
+                else urlOrPath
+            }.orEmpty()
+            val intent = ImagePickerAddEditNavigation.getIntent(requireContext(), ArrayList(imageUrlOrPathList), viewModel.isAdding || !isEditing())
+            startActivityForResult(intent, REQUEST_CODE_IMAGE)
         }
-
-        val imagePickerMultipleSelectionBuilder = ImagePickerMultipleSelectionBuilder(
-                selectedImagePathList,
-                placeholderDrawableRes,
-                R.string.label_primary,
-                MAX_PRODUCT_PHOTOS, false)
-
-        return ImagePickerBuilder(
-                title,
-                imagePickerPickerTabTypeDef,
-                GalleryType.IMAGE_ONLY,
-                AddEditProductConstants.MAX_PRODUCT_IMAGE_SIZE_IN_KB,
-                ImagePickerBuilder.DEFAULT_MIN_RESOLUTION,
-                ImageRatioTypeDef.RATIO_1_1,
-                true,
-                imagePickerEditorBuilder,
-                imagePickerMultipleSelectionBuilder)
     }
 
     private fun moveToDetailFragment(productInputModel: ProductInputModel, isFirstMoved: Boolean) {
@@ -1138,23 +1387,42 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
     }
 
     private fun showLoading() {
+        loadingLayout?.progress = 0.0f
         loadingLayout?.show()
+        doneButton?.hide()
     }
 
     private fun hideLoading() {
-        loadingLayout?.hide()
+        doneButton?.showWithCondition(isAdminEligible)
+        loadingLayout?.transitionToEnd()
+        loadingLayout?.setTransitionListener(object : MotionLayout.TransitionListener {
+            override fun onTransitionTrigger(p0: MotionLayout?, p1: Int, p2: Boolean, p3: Float) {
+                // no-op
+            }
+
+            override fun onTransitionStarted(p0: MotionLayout?, p1: Int, p2: Int) {
+                // no-op
+            }
+
+            override fun onTransitionChange(p0: MotionLayout?, p1: Int, p2: Int, p3: Float) {
+                // no-op
+            }
+
+            override fun onTransitionCompleted(p0: MotionLayout?, p1: Int) {
+                loadingLayout?.hide()
+                loadingLayout?.progress = 0.0f
+            }
+        })
     }
 
     private fun goToSellerAppProductManageThenSetCashback() {
         viewModel.productInputModel.value?.let { productInputModel ->
-            val firstAppLink = Uri.parse(ApplinkConst.PRODUCT_MANAGE)
-                    .buildUpon()
-                    .build()
-                    .toString()
+            val cacheManagerId = UUID.randomUUID().toString()
             val secondApplink = Uri.parse(ApplinkConstInternalMechant.MERCHANT_OPEN_PRODUCT_PREVIEW)
                     .buildUpon()
                     .appendQueryParameter(ApplinkConstInternalMechant.QUERY_PARAM_ID, viewModel.getProductId())
                     .appendQueryParameter(ApplinkConstInternalMechant.QUERY_PARAM_MODE, ApplinkConstInternalMechant.MODE_EDIT_PRODUCT)
+                    .appendQueryParameter(ApplinkConstInternalMarketplace.ARGS_CACHE_MANAGER_ID, cacheManagerId)
                     .build()
                     .toString()
             val thirdAppLink = Uri.parse(UriUtil.buildUri(ApplinkConstInternalMarketplace.SET_CASHBACK, viewModel.getProductId()))
@@ -1163,9 +1431,10 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
                     .appendQueryParameter(PARAM_SET_CASHBACK_VALUE, viewModel.productDomain.cashback.percentage.toString())
                     .appendQueryParameter(PARAM_SET_CASHBACK_PRODUCT_PRICE, productInputModel.detailInputModel.price.toString())
                     .appendQueryParameter(EXTRA_CASHBACK_SHOP_ID, userSession.shopId)
+                    .appendQueryParameter(ApplinkConstInternalMarketplace.ARGS_CACHE_MANAGER_ID, cacheManagerId)
                     .build()
                     .toString()
-            goToSellerMigrationPage(SellerMigrationFeatureName.FEATURE_EDIT_PRODUCT_CASHBACK, arrayListOf(firstAppLink, secondApplink, thirdAppLink))
+            goToSellerMigrationPage(SellerMigrationFeatureName.FEATURE_EDIT_PRODUCT_CASHBACK, arrayListOf(ApplinkConst.PRODUCT_MANAGE, secondApplink, thirdAppLink))
         }
     }
 
@@ -1185,5 +1454,142 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
             startActivity(intent)
             activity?.finish()
         }
+    }
+
+    private fun showDialogLocationValidation() {
+        DialogUnify(
+                requireContext(),
+                DialogUnify.SINGLE_ACTION,
+                DialogUnify.NO_IMAGE
+        ).apply {
+            setTitle(getString(R.string.label_for_dialog_title_that_shop_has_no_location))
+            setDescription(getString(R.string.label_for_dialog_desc_that_shop_has_no_location))
+            setPrimaryCTAText(getString(R.string.label_for_dialog_primary_cta_that_shop_has_no_location))
+            setPrimaryCTAClickListener {
+                moveToLocationPicker()
+                dismiss()
+            }
+        }.show()
+    }
+
+    private fun moveToLocationPicker() {
+        RouteManager.getIntent(activity, ApplinkConstInternalLogistic.ADD_ADDRESS_V2).apply {
+            putExtra(EXTRA_IS_FULL_FLOW, false)
+            putExtra(EXTRA_IS_LOGISTIC_LABEL, false)
+            startActivityForResult(this, REQUEST_CODE_SHOP_LOCATION)
+        }
+    }
+
+    private fun showToasterSuccessSetLocation() {
+        view?.let {
+            Toaster.build(
+                    it,
+                    getString(R.string.label_for_toaster_success_set_shop_location),
+                    Snackbar.LENGTH_LONG,
+                    Toaster.TYPE_NORMAL,
+                    getString(R.string.label_for_action_text_toaster_success_set_shop_location)
+            ).show()
+        }
+    }
+
+    private fun showToasterFailSetLocation() {
+        view?.let {
+            Toaster.build(
+                    it,
+                    getString(R.string.label_for_toaster_fail_set_shop_location),
+                    Snackbar.LENGTH_LONG,
+                    Toaster.TYPE_ERROR
+            ).show()
+        }
+    }
+
+    private fun getSaveShopShippingLocationData(
+            shopId: Int,
+            postCode: String,
+            courierOrigin: Int,
+            addrStreet: String,
+            lat: String,
+            long: String
+    ): MutableMap<String, Any> {
+        val shipmentPayload = mutableMapOf<String, Any>()
+        shipmentPayload[SHOP_ID] = shopId
+        shipmentPayload[POSTAL_CODE] = postCode
+        shipmentPayload[COURIER_ORIGIN] = courierOrigin
+        shipmentPayload[ADDRESS_STREET] = addrStreet
+        shipmentPayload[LATITUDE] = lat
+        shipmentPayload[LONGITUDE] = long
+        return shipmentPayload
+    }
+
+    private fun validateShopLocationWhenPageOpened() {
+        if (!isStartButtonClicked && !isDrafting()) {
+            validateShopLocation()
+        } else {
+            // reset the value when on view created
+            isStartButtonClicked = false
+        }
+    }
+
+    private fun validateShopLocation() {
+        if (isAdding()) {
+            viewModel.validateShopLocation(userSession.shopId.toIntOrZero())
+        }
+    }
+
+    private fun saveShippingLocation() {
+        val shopId = userSession.shopId.toIntOrZero()
+        if (shopId != 0 &&
+                postalCode.isNotBlank() &&
+                latitude.isNotBlank() &&
+                longitude.isNotBlank() &&
+                districtId != 0 &&
+                formattedAddress.isNotBlank()) {
+
+            val params = getSaveShopShippingLocationData(
+                    shopId = shopId,
+                    postCode = postalCode,
+                    courierOrigin = districtId,
+                    addrStreet = formattedAddress,
+                    lat = latitude,
+                    long = longitude
+            )
+            viewModel.saveShippingLocation(params)
+        }
+    }
+
+    private fun onSetCashbackResult(cacheManager: SaveInstanceCacheManager?) {
+        val setCashbackResult: SetCashbackResult? = cacheManager?.get(SET_CASHBACK_RESULT, SetCashbackResult::class.java)
+        if (setCashbackResult == null) {
+            onFailedSetCashback()
+            return
+        }
+        setCashbackResult.let { cashbackResult ->
+            if (!cashbackResult.limitExceeded) {
+                val cashbackProduct = Cashback(cashbackResult.cashback)
+                viewModel.productDomain = viewModel.productDomain.copy(cashback = cashbackProduct)
+                onSuccessSetCashback()
+            } else {
+                onFailedSetCashback()
+            }
+        }
+    }
+
+    private fun showAdminNotEligibleView() {
+        adminRevampGlobalError?.run {
+            val permissionGroup = SellerHomePermissionGroup.PRODUCT
+            ImageHandler.loadImageAndCache(errorIllustration, AdminPermissionUrl.ERROR_ILLUSTRATION)
+            errorTitle.text = context?.getString(com.tokopedia.shop.common.R.string.admin_no_permission_title, permissionGroup)
+            errorDescription.text = context?.getString(com.tokopedia.shop.common.R.string.admin_no_permission_desc, permissionGroup)
+            errorAction.text = context?.getString(com.tokopedia.shop.common.R.string.admin_no_permission_action)
+            setButtonFull(true)
+
+            setActionClickListener {
+                activity?.finish()
+                if (GlobalConfig.isSellerApp()) {
+                    RouteManager.route(context, ApplinkConstInternalSellerapp.SELLER_HOME)
+                }
+            }
+        }
+        adminRevampErrorLayout?.show()
     }
 }

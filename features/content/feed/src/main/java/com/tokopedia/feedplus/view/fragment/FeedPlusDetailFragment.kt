@@ -329,7 +329,7 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
             shopName.movementMethod = LinkMovementMethod.getInstance()
             if (header.actionText.isNotEmpty()) {
                 shopSlogan.text = String.format(
-                        getString(R.string.feed_header_time_format),
+                        getString(com.tokopedia.feedcomponent.R.string.feed_header_time_format),
                         TimeConverter.generateTime(shopSlogan.context, header.time),
                         header.actionText)
             } else {

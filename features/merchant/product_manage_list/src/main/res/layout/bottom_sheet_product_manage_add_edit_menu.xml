@@ -32,7 +32,7 @@
             android:layout_marginStart="@dimen/layout_lvl2"
             android:layout_marginLeft="@dimen/layout_lvl2"
             android:text="@string/seller_migration_add_product_in_mainapp_title"
-            android:textColor="@color/light_N700_96"
+            android:textColor="@color/Unify_N700_96"
             app:layout_constraintStart_toEndOf="@id/iv_add_product"
             app:layout_constraintTop_toTopOf="parent"
             app:typographyType="heading_5" />
@@ -45,7 +45,7 @@
             android:layout_marginLeft="@dimen/layout_lvl2"
             android:layout_marginTop="@dimen/dp_4"
             android:text="@string/seller_migration_add_product_in_mainapp_desc"
-            android:textColor="@color/Neutral_N700_68"
+            android:textColor="@color/Unify_N700_68"
             app:layout_constraintStart_toEndOf="@id/iv_add_product"
             app:layout_constraintTop_toBottomOf="@id/tv_add_product_title"
             app:typographyType="body_3" />

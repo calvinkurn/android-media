@@ -28,14 +28,14 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_lvl3"
         android:text="@string/play_watch_again"
-        android:textColor="@color/Neutral_N0"
+        android:textColor="@color/Unify_Static_White"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/iv_play"
         app:typographyType="body_2"
         app:typographyWeight="bold"
-        tools:textColor="@color/black"
+        tools:textColor="@color/Unify_Static_Black"
         />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

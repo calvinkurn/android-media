@@ -2,7 +2,6 @@ package com.tokopedia.product.detail.view.viewholder
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.kotlin.extensions.view.isVisibleOnTheScreen
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductMediaDataModel
@@ -26,23 +25,14 @@ class ProductMediaViewHolder(private val view: View,
     override fun bind(element: ProductMediaDataModel) {
         with(view) {
             viewMediaPager.shouldRenderViewPager = element.shouldRefreshViewPagger
-            viewMediaPager.renderData(element.listOfMedia, listener::onImageClicked, listener::onSwipePicture, listener.getProductFragmentManager(), getComponentTrackData(element),
-                    listener::onImageClickedTrack, listener.getLifecycleFragment())
-
-            element.shouldRefreshViewPagger = false
+            viewMediaPager.setup(element.listOfMedia, listener, getComponentTrackData(element))
 
             if (element.shouldRenderImageVariant) {
-                viewMediaPager.updateImage(element.listOfMedia)
+                viewMediaPager.updateImage(element.listOfMedia, listener)
                 element.shouldRenderImageVariant = false
             }
 
-            view.viewMediaPager?.showImageReview(element.shouldShowImageReview) {
-                listener.onImageReviewMediaClicked(getComponentTrackData(element))
-            }
-
-            viewMediaPager?.isVisibleOnTheScreen({},{
-                viewMediaPager?.stopVideo()
-            })
+            element.shouldRefreshViewPagger = false
         }
     }
 
@@ -54,15 +44,14 @@ class ProductMediaViewHolder(private val view: View,
 
         when (payloads[0] as Int) {
             ProductDetailConstant.PAYLOAD_UPDATE_IMAGE -> {
-                view.viewMediaPager.updateImage(element.listOfMedia)
+                view.viewMediaPager.updateImage(element.listOfMedia, listener)
                 element.shouldRenderImageVariant = false
             }
-            ProductDetailConstant.PAYLOAD_MEDIA_UPDATE_IMAGE_REVIEW -> {
-                view.viewMediaPager?.showImageReview(element.shouldShowImageReview) {
-                    listener.onImageReviewMediaClicked(getComponentTrackData(element))
-                }
-            }
         }
+    }
+
+    fun detachView(){
+        listener.getProductVideoCoordinator()?.onPause()
     }
 
     private fun measureScreenHeight() = with(view) {

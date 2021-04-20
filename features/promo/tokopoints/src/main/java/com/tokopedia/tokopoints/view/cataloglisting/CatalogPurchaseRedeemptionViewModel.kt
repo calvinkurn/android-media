@@ -32,19 +32,45 @@ open class CatalogPurchaseRedeemptionViewModel(private val repository: CatalogPu
         }) {
             if (it is MessageErrorException) {
                 val errorsMessage = it.message?.split(",")?.get(0)?.split("|")?.toTypedArray()
-                if (errorsMessage != null && errorsMessage.size >= 3) {
-                    val title = errorsMessage[0]
-                    val message = errorsMessage[1]
-                    val validateResponseCode = errorsMessage[2].toInt()
-                    startValidateCouponLiveData.value = ValidateMessageDialog(item, title, message, validateResponseCode)
+                if (errorsMessage != null && errorsMessage.isNotEmpty()) {
+                    var desc: String? = null
+                    var title: String? = errorsMessage[0]
+                    var validateResponseCode = 0
+                    if (errorsMessage.size == 1) {
+                        val rawString = errorsMessage[0].split(".").toTypedArray()
+                        if (rawString.size >= 2) {
+                            val rawTitle = rawString[0]
+                            val rawDesc = rawString[1]
+
+                            if (rawTitle.length > 0) {
+                                title = rawTitle
+                            }
+                            if (rawDesc.length > 0) {
+                                desc = rawDesc
+                            }
+                        }
+                    }
+                    if (errorsMessage.size == 2) {
+                        title = ""
+                        desc = errorsMessage[0]
+                        validateResponseCode = Integer.parseInt(errorsMessage[1])
+                    }
+                    if (errorsMessage.size == 3) {
+                        desc=errorsMessage[1]
+                        validateResponseCode = Integer.parseInt(errorsMessage[2])
+                    }
+                    startValidateCouponLiveData.value = ValidateMessageDialog(item, title, desc
+                            ?: "", validateResponseCode)
                 }
             }
         }
     }
 
-    override fun redeemCoupon(promoCode: String, cta: String) {
+    override fun redeemCoupon(promoCode: String?, cta: String?) {
         launchCatchError(block = {
-            repository.redeemCoupon(promoCode)
+            if (promoCode != null) {
+                repository.redeemCoupon(promoCode)
+            }
             onRedeemCouponLiveData.value = cta
         }) {
             onRedeemCouponLiveData.value = cta
@@ -55,10 +81,12 @@ open class CatalogPurchaseRedeemptionViewModel(private val repository: CatalogPu
         launchCatchError(block = {
             val redeemCouponBaseEntity = repository.startSaveCoupon(item.id)
             if (redeemCouponBaseEntity != null && redeemCouponBaseEntity.hachikoRedeem != null) {
-                startSaveCouponLiveData.value = Success(ConfirmRedeemDialog(redeemCouponBaseEntity.hachikoRedeem.coupons[0].cta,
-                        redeemCouponBaseEntity.hachikoRedeem.coupons[0].code,
-                        redeemCouponBaseEntity.hachikoRedeem.coupons[0].title,
-                        redeemCouponBaseEntity.hachikoRedeem.coupons[0].description
+                startSaveCouponLiveData.value = Success(ConfirmRedeemDialog(redeemCouponBaseEntity.hachikoRedeem?.coupons?.get(0)?.cta,
+                        redeemCouponBaseEntity.hachikoRedeem.coupons?.get(0)?.code,
+                        redeemCouponBaseEntity.hachikoRedeem.coupons?.get(0)?.title,
+                        redeemCouponBaseEntity.hachikoRedeem.coupons?.get(0)?.description,
+                        redeemCouponBaseEntity.hachikoRedeem.redeemMessage
+
                 ))
             }
         }) {
@@ -97,5 +125,5 @@ open class CatalogPurchaseRedeemptionViewModel(private val repository: CatalogPu
     }
 }
 
-data class ValidateMessageDialog(val item: CatalogsValueEntity, val title: String, val desc: String, val messageCode: Int)
-data class ConfirmRedeemDialog(val cta: String, val code: String, val title: String, val description: String)
+data class ValidateMessageDialog(val item: CatalogsValueEntity, val title: String?, val desc: String, val messageCode: Int)
+data class ConfirmRedeemDialog(val cta: String?, val code: String?, val title: String?, val description: String ?, val redeemMessage:String?)

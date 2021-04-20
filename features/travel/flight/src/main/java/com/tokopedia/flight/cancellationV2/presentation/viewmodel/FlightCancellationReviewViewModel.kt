@@ -3,11 +3,12 @@ package com.tokopedia.flight.cancellationV2.presentation.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.common.travel.utils.TravelDispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.flight.cancellationV2.data.FlightCancellationEstimateEntity
 import com.tokopedia.flight.cancellationV2.domain.FlightCancellationEstimateRefundUseCase
 import com.tokopedia.flight.cancellationV2.domain.FlightCancellationRequestCancelUseCase
 import com.tokopedia.flight.cancellationV2.presentation.model.FlightCancellationWrapperModel
+import com.tokopedia.flight.common.util.FlightAnalytics
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -21,9 +22,10 @@ import javax.inject.Inject
 class FlightCancellationReviewViewModel @Inject constructor(
         private val estimateUseCase: FlightCancellationEstimateRefundUseCase,
         private val requestUseCase: FlightCancellationRequestCancelUseCase,
+        private val flightAnalytics: FlightAnalytics,
         private val userSession: UserSessionInterface,
-        private val dispatcherProvider: TravelDispatcherProvider)
-    : BaseViewModel(dispatcherProvider.io()) {
+        private val dispatcherProvider: CoroutineDispatchers)
+    : BaseViewModel(dispatcherProvider.io) {
 
     var invoiceId: String = ""
     lateinit var cancellationWrapperModel: FlightCancellationWrapperModel
@@ -52,8 +54,15 @@ class FlightCancellationReviewViewModel @Inject constructor(
         fetchRefundEstimation()
     }
 
+    fun trackOnSubmit() {
+        flightAnalytics.eventClickNextOnCancellationSubmit(
+                "${cancellationWrapperModel.cancellationReasonAndAttachmentModel.estimateRefund} - ${cancellationWrapperModel.invoiceId}",
+                userSession.userId
+        )
+    }
+
     fun fetchRefundEstimation() {
-        launchCatchError(dispatcherProvider.ui(), block = {
+        launchCatchError(dispatcherProvider.main, block = {
             val estimateRefundData = estimateUseCase.execute(
                     estimateUseCase.createRequestParams(
                             invoiceId,
@@ -88,7 +97,7 @@ class FlightCancellationReviewViewModel @Inject constructor(
     }
 
     fun requestCancellation() {
-        launchCatchError(dispatcherProvider.ui(), block = {
+        launchCatchError(dispatcherProvider.main, block = {
             requestUseCase.execute(requestUseCase.createRequestParams(
                     cancellationWrapperModel.invoiceId,
                     cancellationWrapperModel.cancellationReasonAndAttachmentModel.reason,

@@ -8,5 +8,10 @@ import javax.inject.Inject
 class HydraConfigStoreImpl @Inject constructor(
         private val channelConfigStore: ChannelConfigStore,
         private val productConfigStore: ProductConfigStore,
-        private val coverConfigStore: CoverConfigStore
-) : HydraConfigStore, ChannelConfigStore by channelConfigStore, ProductConfigStore by productConfigStore, CoverConfigStore by coverConfigStore
+        private val coverConfigStore: CoverConfigStore,
+        private val broadcastScheduleConfigStore: BroadcastScheduleConfigStore
+) : HydraConfigStore,
+        ChannelConfigStore by channelConfigStore,
+        ProductConfigStore by productConfigStore,
+        CoverConfigStore by coverConfigStore,
+        BroadcastScheduleConfigStore by broadcastScheduleConfigStore

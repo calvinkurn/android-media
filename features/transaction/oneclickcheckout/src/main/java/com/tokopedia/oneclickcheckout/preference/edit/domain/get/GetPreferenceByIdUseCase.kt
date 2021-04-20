@@ -15,13 +15,7 @@ class GetPreferenceByIdUseCase @Inject constructor(private val graphqlUseCase: G
 
     override suspend fun executeOnBackground(): ProfilesItemModel {
         graphqlUseCase.setGraphqlQuery(QUERY)
-        graphqlUseCase.setRequestParams(mapOf(
-                PARAM_PROFILE_ID to useCaseRequestParams.getInt(PARAM_PROFILE_ID, 0),
-                PARAM_ADDRESS_ID to useCaseRequestParams.getInt(PARAM_ADDRESS_ID, 0),
-                PARAM_SERVICE_ID to useCaseRequestParams.getInt(PARAM_SERVICE_ID, 0),
-                PARAM_GATEWAY_CODE to useCaseRequestParams.getString(PARAM_GATEWAY_CODE, ""),
-                PARAM_METADATA to useCaseRequestParams.getString(PARAM_METADATA, "")
-        ))
+        graphqlUseCase.setRequestParams(useCaseRequestParams.parameters)
         graphqlUseCase.setTypeClass(GetPreferenceByIdGqlResponse::class.java)
         val result = graphqlUseCase.executeOnBackground()
         if (result.response.status.equals(STATUS_OK, true) && result.response.data.success == 1) {
@@ -30,25 +24,29 @@ class GetPreferenceByIdUseCase @Inject constructor(private val graphqlUseCase: G
         throw MessageErrorException(result.getErrorMessage() ?: DEFAULT_ERROR_MESSAGE)
     }
 
-    fun generateRequestParams(profileId: Int, addressId: Int, serviceId: Int, gatewayCode: String, metadata: String): RequestParams {
+    fun generateRequestParams(profileId: Int, addressId: Int, serviceId: Int, gatewayCode: String, metadata: String, paymentProfile: String, fromFlow: String): RequestParams {
         return RequestParams.create().apply {
             putInt(PARAM_PROFILE_ID, profileId)
             putInt(PARAM_ADDRESS_ID, addressId)
             putInt(PARAM_SERVICE_ID, serviceId)
             putString(PARAM_GATEWAY_CODE, gatewayCode)
             putString(PARAM_METADATA, metadata)
+            putString(PARAM_PAYMENT_PROFILE, paymentProfile)
+            putString(PARAM_FROM_FLOW, fromFlow)
         }
     }
 
     companion object {
-        const val PARAM_PROFILE_ID = "profileId"
-        const val PARAM_ADDRESS_ID = "addressId"
-        const val PARAM_SERVICE_ID = "serviceId"
-        const val PARAM_GATEWAY_CODE = "gatewayCode"
-        const val PARAM_METADATA = "metadata"
-        val QUERY = """
-        query get_profile_by_id_occ(${"$"}profileId: Int, ${"$"}addressId: Int, ${"$"}serviceId: Int, ${"$"}gatewayCode: String, ${"$"}metadata: String) {
-          get_profile_by_id_occ(profile_id: ${"$"}profileId, address_id: ${"$"}addressId, service_id: ${"$"}serviceId, gateway_code: ${"$"}gatewayCode, metadata: ${"$"}metadata){
+        private const val PARAM_PROFILE_ID = "profileId"
+        private const val PARAM_ADDRESS_ID = "addressId"
+        private const val PARAM_SERVICE_ID = "serviceId"
+        private const val PARAM_GATEWAY_CODE = "gatewayCode"
+        private const val PARAM_METADATA = "metadata"
+        private const val PARAM_PAYMENT_PROFILE = "paymentProfile"
+        private const val PARAM_FROM_FLOW = "fromFlow"
+        private val QUERY = """
+        query get_profile_by_id_occ(${"$"}profileId: Int, ${"$"}addressId: Int, ${"$"}serviceId: Int, ${"$"}gatewayCode: String, ${"$"}metadata: String, ${"$"}paymentProfile: String, ${"$"}fromFlow: String) {
+          get_profile_by_id_occ(profile_id: ${"$"}profileId, address_id: ${"$"}addressId, service_id: ${"$"}serviceId, gateway_code: ${"$"}gatewayCode, metadata: ${"$"}metadata, payment_profile: ${"$"}paymentProfile, from_flow:  ${"$"}fromFlow){
                 error_message
                 status
                 data {
@@ -89,11 +87,13 @@ class GetPreferenceByIdUseCase @Inject constructor(private val graphqlUseCase: G
                                     pin
                                 }
                                 metadata
+                                ticker_message
                         }
                         shipment {
                                 service_id
                                 service_duration
                                 service_name
+                                estimation
                         }
                     }
                 }

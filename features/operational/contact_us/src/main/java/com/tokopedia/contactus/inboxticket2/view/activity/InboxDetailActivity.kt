@@ -17,7 +17,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.contactus.R
 import com.tokopedia.contactus.common.analytics.ContactUsTracking
 import com.tokopedia.contactus.common.analytics.InboxTicketTracking
@@ -28,7 +30,7 @@ import com.tokopedia.contactus.inboxticket2.view.adapter.ImageUploadAdapter
 import com.tokopedia.contactus.inboxticket2.view.adapter.InboxDetailAdapter
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxBaseContract.InboxBasePresenter
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxBaseContract.InboxBaseView
-import com.tokopedia.contactus.inboxticket2.view.contract.InboxDetailContract.InboxDetailPresenter
+import com.tokopedia.contactus.inboxticket2.view.contract.InboxDetailContract
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxDetailContract.InboxDetailView
 import com.tokopedia.contactus.inboxticket2.view.customview.CustomEditText
 import com.tokopedia.contactus.inboxticket2.view.fragment.CloseComplainBottomSheet
@@ -41,10 +43,9 @@ import com.tokopedia.contactus.inboxticket2.view.fragment.ServicePrioritiesBotto
 import com.tokopedia.contactus.inboxticket2.view.fragment.ServicePrioritiesBottomSheet.CloseServicePrioritiesBottomSheet
 import com.tokopedia.contactus.inboxticket2.view.listeners.InboxDetailListener
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
-import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
-import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder
-import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef
-import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
+import com.tokopedia.imagepicker.common.ImagePickerBuilder
+import com.tokopedia.imagepicker.common.ImagePickerResultExtractor
+import com.tokopedia.imagepicker.common.putImagePickerBuilder
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
@@ -122,8 +123,10 @@ class InboxDetailActivity : InboxBaseActivity(), InboxDetailView, ImageUploadAda
             detailAdapter = InboxDetailAdapter(this,
                     commentsItems,
                     ticketDetail.isNeedAttachment,
-                    (mPresenter as InboxDetailPresenter),
-                    this)
+                    (mPresenter as InboxDetailContract.Presenter),
+                    this,
+                    (mPresenter as? InboxDetailContract.Presenter)?.getUserId() ?: "",
+                    (mPresenter as? InboxDetailContract.Presenter)?.getTicketId() ?: "")
             rvMessageList.adapter = detailAdapter
             rvMessageList.show()
             scrollTo(detailAdapter.itemCount - 1)
@@ -193,9 +196,9 @@ class InboxDetailActivity : InboxBaseActivity(), InboxDetailView, ImageUploadAda
     override fun initView() {
         layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         findingViewsId()
-        (mPresenter as InboxDetailPresenter).getTicketDetails((mPresenter as InboxDetailPresenter).getTicketId())
+        (mPresenter as InboxDetailContract.Presenter).getTicketDetails((mPresenter as InboxDetailContract.Presenter).getTicketId())
         rvMessageList.layoutManager = layoutManager
-        editText.setListener((mPresenter as InboxDetailPresenter).getSearchListener())
+        editText.setListener((mPresenter as InboxDetailContract.Presenter).getSearchListener())
         settingClickListner()
     }
 
@@ -247,10 +250,6 @@ class InboxDetailActivity : InboxBaseActivity(), InboxDetailView, ImageUploadAda
         return R.menu.contactus_menu_details
     }
 
-    override fun getBottomSheetLayoutRes(): Int {
-        return R.layout.layout_bad_csat
-    }
-
     override fun doNeedReattach(): Boolean {
         return false
     }
@@ -268,7 +267,7 @@ class InboxDetailActivity : InboxBaseActivity(), InboxDetailView, ImageUploadAda
         imageUploadAdapter = ImageUploadAdapter(this, this, onClickCross)
         rvSelectedImages.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
         rvSelectedImages.adapter = imageUploadAdapter
-        edMessage.addTextChangedListener((mPresenter as InboxDetailPresenter).watcher())
+        edMessage.addTextChangedListener((mPresenter as InboxDetailContract.Presenter).watcher())
     }
 
     private val onClickCross = {
@@ -277,12 +276,9 @@ class InboxDetailActivity : InboxBaseActivity(), InboxDetailView, ImageUploadAda
     }
 
     private fun showImagePickerDialog() {
-        val builder = ImagePickerBuilder(getString(com.tokopedia.imagepicker.R.string.choose_image),
-                intArrayOf(ImagePickerTabTypeDef.TYPE_GALLERY, ImagePickerTabTypeDef.TYPE_CAMERA),
-                GalleryType.IMAGE_ONLY, ImagePickerBuilder.DEFAULT_MAX_IMAGE_SIZE_IN_KB,
-                ImagePickerBuilder.DEFAULT_MIN_RESOLUTION, null, true,
-                null, null)
-        val intent = ImagePickerActivity.getIntent(getActivity(), builder)
+        val builder = ImagePickerBuilder.getOriginalImageBuilder(this);
+        val intent = RouteManager.getIntent(this, ApplinkConstInternalGlobal.IMAGE_PICKER)
+        intent.putImagePickerBuilder(builder)
         startActivityForResult(intent, InboxBaseView.REQUEST_IMAGE_PICKER)
     }
 
@@ -290,8 +286,8 @@ class InboxDetailActivity : InboxBaseActivity(), InboxDetailView, ImageUploadAda
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == InboxBaseView.REQUEST_IMAGE_PICKER
                 && resultCode == Activity.RESULT_OK) {
-            val imagePathList = data?.getStringArrayListExtra(ImagePickerActivity.PICKER_RESULT_PATHS)
-            if (imagePathList == null || imagePathList.size <= 0) {
+            val imagePathList = ImagePickerResultExtractor.extract(data).imageUrlOrPathList
+            if (imagePathList.size <= 0) {
                 return
             }
             val imagePath = imagePathList[0]
@@ -301,7 +297,7 @@ class InboxDetailActivity : InboxBaseActivity(), InboxDetailView, ImageUploadAda
                 image.position = position
                 image.imageId = "image" + UUID.randomUUID().toString()
                 image.fileLoc = imagePath
-                (mPresenter as InboxDetailPresenter).onImageSelect(image)
+                (mPresenter as InboxDetailContract.Presenter).onImageSelect(image)
             }
         }
     }
@@ -316,7 +312,7 @@ class InboxDetailActivity : InboxBaseActivity(), InboxDetailView, ImageUploadAda
 
     private fun onEmojiClick(v: View) {
         val id = v.id
-        val presenter = mPresenter as InboxDetailPresenter
+        val presenter = mPresenter as InboxDetailContract.Presenter
         when (id) {
             R.id.btn_inactive_1 -> presenter.onClickEmoji(1)
             R.id.btn_inactive_2 -> presenter.onClickEmoji(2)
@@ -338,7 +334,7 @@ class InboxDetailActivity : InboxBaseActivity(), InboxDetailView, ImageUploadAda
     }
 
     private fun sendMessage() {
-        (mPresenter as InboxDetailPresenter).sendMessage()
+        (mPresenter as InboxDetailContract.Presenter).sendMessage()
         edMessage.setHint(R.string.contact_us_type_here)
         ContactUsTracking.sendGTMInboxTicket(this, "",
                 InboxTicketTracking.Category.EventInboxTicket,
@@ -362,9 +358,9 @@ class InboxDetailActivity : InboxBaseActivity(), InboxDetailView, ImageUploadAda
         val id = v?.id
         val index: Int
         index = if (id == R.id.iv_next_down) {
-            (mPresenter as InboxDetailPresenter).getNextResult()
+            (mPresenter as InboxDetailContract.Presenter).getNextResult()
         } else {
-            (mPresenter as InboxDetailPresenter).getPreviousResult()
+            (mPresenter as InboxDetailContract.Presenter).getPreviousResult()
         }
         scrollToResult(index)
     }
@@ -584,7 +580,7 @@ class InboxDetailActivity : InboxBaseActivity(), InboxDetailView, ImageUploadAda
         }
         if (agreed) {
             viewReplyButton.hide()
-            (mPresenter as InboxDetailPresenter).onClick(true, commentPosition, item?.id ?: "")
+            (mPresenter as InboxDetailContract.Presenter).onClick(true, commentPosition, item?.id ?: "")
             helpFullBottomSheet?.dismiss()
             if (iscloseAllow) {
                 sendGTmEvent(InboxTicketTracking.Label.EventHelpful,
@@ -598,7 +594,7 @@ class InboxDetailActivity : InboxBaseActivity(), InboxDetailView, ImageUploadAda
         } else {
             sendGTmEvent(InboxTicketTracking.Label.EventNotHelpful,
                     InboxTicketTracking.Action.EventRatingCsatOnSlider)
-            (mPresenter as InboxDetailPresenter).onClick(false, commentPosition, item?.id ?: "")
+            (mPresenter as InboxDetailContract.Presenter).onClick(false, commentPosition, item?.id ?: "")
             textToolbar.show()
             helpFullBottomSheet?.dismiss()
         }
@@ -615,7 +611,7 @@ class InboxDetailActivity : InboxBaseActivity(), InboxDetailView, ImageUploadAda
         if (agreed) {
             sendGTmEvent(InboxTicketTracking.Label.EventYes,
                     InboxTicketTracking.Action.EventClickCloseTicket)
-            (mPresenter as InboxDetailPresenter).closeTicket()
+            (mPresenter as InboxDetailContract.Presenter).closeTicket()
             closeComplainBottomSheet?.dismiss()
         } else {
             sendGTmEvent(InboxTicketTracking.Label.EventNo,
@@ -638,7 +634,7 @@ class InboxDetailActivity : InboxBaseActivity(), InboxDetailView, ImageUploadAda
                         mPresenter?.refreshLayout()
                     }
                 })
-        (mPresenter as InboxDetailPresenter).onClickEmoji(0)
+        (mPresenter as InboxDetailContract.Presenter).onClickEmoji(0)
     }
 
     override fun showMessage(message: String) {

@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.tokopedia.unifycomponents.ContainerUnify xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/ll_shipping_experience_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/checkout_module_bg_shipping_container"
-    android:orientation="horizontal">
+    android:orientation="horizontal"
+    app:container_color="GREEN">
 
     <include
         android:id="@+id/ll_shipping_experience_state_loading"
@@ -30,6 +29,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
+            <!--Shipping: Trade In Pickup-->
+            <include
+                layout="@layout/item_shipment_trade_in_pickup"
+                tools:visibility="gone" />
+
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/layout_state_no_selected_shipping"
                 android:layout_width="match_parent"
@@ -41,22 +45,24 @@
                 app:layout_constraintCircleRadius="@dimen/dp_4"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                tools:visibility="gone">
+                tools:visibility="visible">
 
-                <ImageView
+                <com.tokopedia.iconunify.IconUnify
                     android:id="@+id/icon_shipping_logo"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="@dimen/layout_lvl3"
+                    android:layout_height="@dimen/layout_lvl3"
+                    app:icon_color_night_enable="@color/Unify_G500"
+                    app:icon_color_light_enable="@color/Unify_G500"
+                    app:icon_name="COURIER"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/checkout_module_ic_shipping_logo" />
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/label_choose_shipping"
-                    android:contentDescription="@string/content_desc_label_choose_shipping"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:contentDescription="@string/content_desc_label_choose_shipping"
                     android:paddingLeft="@dimen/dp_9"
                     android:paddingRight="@dimen/dp_9"
                     android:text="@string/label_choose_shipping"
@@ -68,9 +74,9 @@
 
                 <ImageView
                     android:id="@+id/icon_chevron_choose_shipping"
-                    android:contentDescription="@string/content_desc_icon_chevron_choose_shipping"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:contentDescription="@string/content_desc_icon_chevron_choose_shipping"
                     android:rotation="270"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
@@ -86,11 +92,10 @@
                 app:layout_constraintCircleRadius="@dimen/dp_4"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                tools:visibility="gone">
+                tools:visibility="visible">
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/label_selected_shipping_duration"
-                    android:contentDescription="@string/content_desc_label_selected_shipping_duration"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     app:layout_constraintBottom_toBottomOf="@+id/icon_chevron_choose_duration"
@@ -103,9 +108,9 @@
 
                 <ImageView
                     android:id="@+id/icon_chevron_choose_duration"
-                    android:contentDescription="@string/content_desc_icon_chevron_choose_duration"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:contentDescription="@string/content_desc_icon_chevron_choose_duration"
                     android:rotation="270"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
@@ -116,31 +121,55 @@
                     android:layout_width="match_parent"
                     android:layout_height="0.5dp"
                     android:layout_marginTop="@dimen/dp_13"
-                    android:background="@color/color_e5e7e9"
+                    android:background="@color/Unify_N75"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/icon_chevron_choose_duration" />
 
-                <com.tokopedia.unifyprinciples.Typography
-                    android:id="@+id/label_selected_shipping_courier"
-                    android:contentDescription="@string/content_desc_label_selected_shipping_courier"
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/layout_mvc"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dp_13"
-                    app:layout_constraintEnd_toStartOf="@+id/icon_chevron_choose_courier"
+                    app:layout_constraintEnd_toStartOf="@id/icon_chevron_choose_courier"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/divider"
-                    app:typographyType="heading_6"
-                    app:typographyWeight="bold"
-                    tools:text="Grab" />
+                    app:layout_constraintTop_toBottomOf="@id/divider">
 
+                    <ImageView
+                        android:id="@+id/img_mvc"
+                        android:layout_width="@dimen/dp_14"
+                        android:layout_height="@dimen/dp_14"
+                        android:layout_marginEnd="@dimen/dp_4"
+                        android:foregroundGravity="center_vertical"
+                        android:visibility="visible"
+                        app:layout_constraintBottom_toBottomOf="@id/label_selected_shipping_courier"
+                        app:layout_constraintEnd_toStartOf="@id/label_selected_shipping_courier"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="@id/label_selected_shipping_courier"
+                        tools:ignore="ContentDescription" />
+
+                    <com.tokopedia.unifyprinciples.Typography
+                        android:id="@+id/label_selected_shipping_courier"
+                        android:layout_width="0dp"
+                        android:layout_height="@dimen/dp_18"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/img_mvc"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:typographyType="heading_6"
+                        app:typographyWeight="bold"
+                        tools:text="Grab" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+                <!--duration in eta, price in old view-->
                 <com.tokopedia.unifyprinciples.Typography
-                    android:id="@+id/label_selected_shipping_price"
+                    android:id="@+id/label_selected_shipping_price_or_duration"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/color_AD31353B"
+                    android:textColor="@color/Unify_N700_68"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/label_selected_shipping_courier"
+                    app:layout_constraintTop_toBottomOf="@+id/layout_mvc"
                     app:typographyType="body_3"
                     app:typographyWeight="reguler"
                     tools:text="Rp999.000" />
@@ -149,12 +178,9 @@
                     android:id="@+id/label_description_courier"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/dp_3"
-                    android:layout_marginLeft="@dimen/dp_3"
-                    android:textColor="@color/color_F531353B"
-                    app:layout_constraintBaseline_toBaselineOf="@+id/label_selected_shipping_price"
-                    app:layout_constraintStart_toEndOf="@+id/label_selected_shipping_price"
-                    app:layout_constraintTop_toBottomOf="@+id/label_selected_shipping_courier"
+                    android:textColor="@color/Unify_N700_96"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/label_selected_shipping_price_or_duration"
                     app:typographyType="small"
                     app:typographyWeight="reguler"
                     tools:text="Jaminan tepat waktu." />
@@ -165,20 +191,20 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/dp_3"
                     android:text="@string/label_otdg_tnc"
-                    android:textColor="@color/color_03AC0E"
-                    app:layout_constraintBaseline_toBaselineOf="@+id/label_selected_shipping_price"
+                    android:textColor="@color/Unify_G500"
+                    app:layout_constraintBaseline_toBaselineOf="@+id/label_description_courier"
                     app:layout_constraintStart_toEndOf="@+id/label_description_courier"
-                    app:layout_constraintTop_toBottomOf="@+id/label_selected_shipping_courier"
+                    app:layout_constraintTop_toBottomOf="@+id/layout_mvc"
                     app:typographyType="small"
                     app:typographyWeight="reguler"
                     tools:text="S&amp;K Berlaku" />
 
                 <ImageView
                     android:id="@+id/icon_chevron_choose_courier"
-                    android:contentDescription="@string/content_desc_icon_chevron_choose_courier"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dp_13"
+                    android:contentDescription="@string/content_desc_icon_chevron_choose_courier"
                     android:rotation="270"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -195,7 +221,7 @@
                 app:layout_constraintCircleRadius="@dimen/dp_4"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                tools:visibility="visible">
+                tools:visibility="gone">
 
                 <RelativeLayout
                     android:layout_width="0dp"
@@ -214,11 +240,44 @@
                         tools:text="Pengiriman Bebas Ongkir (2-3 Hari)" />
 
                     <com.tokopedia.unifyprinciples.Typography
-                        android:id="@+id/label_free_shipping_courier_name"
+                        android:id="@+id/label_free_shipping_original_price_eta_partial"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/dp_4"
+                        android:layout_toEndOf="@id/label_selected_free_shipping"
+                        app:typographyType="body_3"
+                        app:typographyWeight="reguler"
+                        tools:text="Rp40.000"
+                        tools:visibility="gone" />
+
+                    <com.tokopedia.unifyprinciples.Typography
+                        android:id="@+id/label_free_shipping_discounted_price_eta_partial"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/dp_4"
+                        android:layout_toEndOf="@+id/label_free_shipping_original_price_eta_partial"
+                        app:typographyType="heading_6"
+                        app:typographyWeight="bold"
+                        tools:text="Rp20.000"
+                        tools:visibility="gone" />
+
+                    <com.tokopedia.unifyprinciples.Typography
+                        android:id="@+id/label_free_shipping_eta"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_below="@+id/label_selected_free_shipping"
-                        android:textColor="@color/color_AD31353B"
+                        android:textColor="@color/Unify_N700_68"
+                        app:typographyType="body_3"
+                        app:typographyWeight="reguler"
+                        tools:text="Estimasi tiba"
+                        tools:visibility="gone" />
+
+                    <com.tokopedia.unifyprinciples.Typography
+                        android:id="@+id/label_free_shipping_courier_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/label_free_shipping_eta"
+                        android:textColor="@color/Unify_N700_68"
                         app:typographyType="body_3"
                         app:typographyWeight="reguler"
                         tools:text="SiCepat"
@@ -229,7 +288,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_below="@+id/label_free_shipping_courier_name"
-                        android:textColor="@color/color_AD31353B"
+                        android:textColor="@color/Unify_N700_68"
                         app:typographyType="body_3"
                         app:typographyWeight="reguler"
                         tools:text="Rp40.000"
@@ -244,7 +303,7 @@
                         android:layout_marginLeft="@dimen/dp_8"
                         android:layout_toEndOf="@+id/label_free_shipping_original_price"
                         android:layout_toRightOf="@+id/label_free_shipping_original_price"
-                        android:textColor="@color/color_AD31353B"
+                        android:textColor="@color/Unify_N700_68"
                         app:typographyType="body_3"
                         app:typographyWeight="reguler"
                         tools:text="Rp20.000"
@@ -260,7 +319,8 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/unify_chips_ic_chevron_normal" />
+                    app:srcCompat="@drawable/unify_chips_ic_chevron_normal"
+                    tools:ignore="ContentDescription" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -268,4 +328,4 @@
 
     </FrameLayout>
 
-</LinearLayout>
+</com.tokopedia.unifycomponents.ContainerUnify>

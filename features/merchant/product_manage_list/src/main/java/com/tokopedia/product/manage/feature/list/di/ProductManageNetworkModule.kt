@@ -3,16 +3,15 @@ package com.tokopedia.product.manage.feature.list.di
 import android.content.Context
 import com.chuckerteam.chucker.api.ChuckerCollector
 import com.chuckerteam.chucker.api.ChuckerInterceptor
-import com.chuckerteam.chucker.api.RetentionManager
-import com.tokopedia.abstraction.AbstractionRouter
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.network.exception.HeaderErrorListResponse
 import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseInterceptor
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor
 import com.tokopedia.gm.common.constant.GMCommonUrl
 import com.tokopedia.gm.common.data.interceptor.GMAuthInterceptor
 import com.tokopedia.gm.common.data.source.cloud.api.GMCommonApi
+import com.tokopedia.network.NetworkRouter
+import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
@@ -47,19 +46,18 @@ class ProductManageNetworkModule {
     @ProductManageListScope
     @Provides
     fun provideGMAuthInterceptor(@ApplicationContext context: Context,
-                                 abstractionRouter: AbstractionRouter): GMAuthInterceptor {
-        return GMAuthInterceptor(context, abstractionRouter)
+                                 userSession: UserSessionInterface,
+                                 abstractionRouter: NetworkRouter): GMAuthInterceptor {
+        return GMAuthInterceptor(context, userSession, abstractionRouter)
     }
 
     @GMProductManageQualifier
     @Provides
     fun provideGMOkHttpClient(gmAuthInterceptor: GMAuthInterceptor,
                               chuckInterceptor: ChuckerInterceptor,
-                              httpLoggingInterceptor: HttpLoggingInterceptor,
-                              cacheApiInterceptor: CacheApiInterceptor): OkHttpClient {
+                              httpLoggingInterceptor: HttpLoggingInterceptor): OkHttpClient {
         val builder = OkHttpClient.Builder()
                 .addInterceptor(gmAuthInterceptor)
-                .addInterceptor(cacheApiInterceptor)
                 .addInterceptor(HeaderErrorResponseInterceptor(HeaderErrorListResponse::class.java))
                 .addInterceptor(httpLoggingInterceptor)
 
@@ -77,12 +75,6 @@ class ProductManageNetworkModule {
     @ProductManageListScope
     fun provideGmCommonApi(@GMProductManageQualifier retrofit: Retrofit): GMCommonApi {
         return retrofit.create(GMCommonApi::class.java)
-    }
-
-    @ProductManageListScope
-    @Provides
-    fun provideApiCacheInterceptor(@ApplicationContext context: Context): CacheApiInterceptor {
-        return CacheApiInterceptor(context)
     }
 
 }

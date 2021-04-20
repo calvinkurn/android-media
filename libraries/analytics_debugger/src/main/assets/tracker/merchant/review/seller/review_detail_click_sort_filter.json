@@ -1,0 +1,59 @@
+{
+  "readme": "Review Detail - click dot then click edit product",
+  "mode": "exact",
+  "query": [
+    {
+      "networkSpeed": "{{.*}}",
+      "clientId": "{{.*}}",
+      "productId": "{{.*}}",
+      "isLoggedInStatus": "{{true|false}}",
+      "appsflyerId": "{{.*}}",
+      "shopId": "{{.*}}",
+      "screenName": "review detail page",
+      "event": "openScreen",
+      "userId": "{{.*}}",
+      "sessionIris": "{{.*}}"
+    },
+    {
+      "event" : "clickReview",
+      "eventCategory" : "review detail page",
+      "eventAction" : "click - sort or filter button",
+      "eventLabel" : "{{.*}}",
+      "shopId": "{{\\d{1,}}}",
+      "productId" : "{{\\d{1,}}}",
+      "sessionIris": "{{.{1,}}}",
+      "screenName" : "review detail page"
+    },
+    {
+      "event" : "clickReview",
+      "eventCategory" : "review detail page",
+      "eventAction" : "click - select sort options on bottomsheet",
+      "eventLabel" : "sortBy:{{.*}}",
+      "shopId": "{{\\d{1,}}}",
+      "productId" : "{{\\d{1,}}}",
+      "sessionIris": "{{.{1,}}}",
+      "screenName" : "review detail page"
+    },
+    {
+      "eventCategory": "review detail page",
+      "productId" : "{{\\d{1,}}}",
+      "shopId": "{{\\d{1,}}}",
+      "screenName": "review detail page",
+      "isActive": "{{true|false}}",
+      "event": "clickReview",
+      "eventAction": "click - select filter options on bottomsheet",
+      "sessionIris": "{{.{1,}}}",
+      "eventLabel" : "filterBy:{{.*}}"
+    },
+    {
+      "event" : "clickReview",
+      "eventCategory" : "review detail page",
+      "eventAction" : "click - close bottomsheet",
+      "eventLabel" : "{{.*}}",
+      "shopId": "{{\\d{1,}}}",
+      "productId" : "{{\\d{1,}}}",
+      "sessionIris": "{{.{1,}}}",
+      "screenName" : "review detail page"
+    }
+  ]
+}

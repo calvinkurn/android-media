@@ -19,16 +19,18 @@ import com.tokopedia.power_merchant.subscribe.domain.interactor.GetGoldCancellat
 import com.tokopedia.power_merchant.subscribe.domain.interactor.GetPMCancellationQuestionnaireDataUseCase
 import com.tokopedia.power_merchant.subscribe.view.model.PMCancellationQuestionnaireData
 import com.tokopedia.power_merchant.subscribe.view.model.PMCancellationQuestionnaireMultipleOptionModel
-import com.tokopedia.power_merchant.subscribe.view.model.PMCancellationQuestionnaireMultipleOptionModel.*
+import com.tokopedia.power_merchant.subscribe.view.model.PMCancellationQuestionnaireMultipleOptionModel.OptionModel
 import com.tokopedia.power_merchant.subscribe.view.model.PMCancellationQuestionnaireQuestionModel
 import com.tokopedia.power_merchant.subscribe.view.model.PMCancellationQuestionnaireQuestionModel.Companion.TYPE_MULTIPLE_OPTION
 import com.tokopedia.power_merchant.subscribe.view.model.PMCancellationQuestionnaireQuestionModel.Companion.TYPE_RATE
 import com.tokopedia.power_merchant.subscribe.view.model.PMCancellationQuestionnaireRateModel
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import io.mockk.*
+import io.mockk.MockKAnnotations
+import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
-import kotlinx.coroutines.Dispatchers
+import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.After
 import org.junit.Assert.assertEquals
@@ -40,6 +42,8 @@ import rx.Observable
 import rx.Scheduler
 import rx.android.plugins.RxAndroidPlugins
 import rx.android.plugins.RxAndroidSchedulersHook
+import rx.plugins.RxJavaPlugins
+import rx.plugins.RxJavaSchedulersHook
 import rx.schedulers.Schedulers
 import java.lang.reflect.Type
 import java.util.concurrent.CountDownLatch
@@ -82,18 +86,19 @@ class PMCancellationQuestionnaireViewModelTest {
         PMCancellationQuestionnaireViewModel(
                 getPMCancellationQuestionnaireDataUseCase,
                 deactivatePowerMerchantUseCase,
-                Dispatchers.Main
+                CoroutineTestDispatchersProvider
         )
     }
 
     @Before
     fun setup() {
-        RxAndroidPlugins.getInstance().registerSchedulersHook(object : RxAndroidSchedulersHook() {
-            override fun getMainThreadScheduler(): Scheduler {
-                return Schedulers.immediate()
-            }
-        })
+        registerRxPlugins()
         MockKAnnotations.init(this)
+    }
+
+    @After
+    fun tearDown() {
+        resetRxPlugins()
     }
 
     @Test
@@ -267,4 +272,27 @@ class PMCancellationQuestionnaireViewModelTest {
         }
     }
 
+    private fun registerRxPlugins() {
+        RxJavaPlugins.getInstance().reset()
+        RxAndroidPlugins.getInstance().registerSchedulersHook(object : RxAndroidSchedulersHook() {
+            override fun getMainThreadScheduler(): Scheduler {
+                return Schedulers.immediate()
+            }
+        })
+        RxJavaPlugins.getInstance().registerSchedulersHook(object : RxJavaSchedulersHook() {
+            override fun getIOScheduler(): Scheduler {
+                return Schedulers.immediate()
+            }
+
+            override fun getNewThreadScheduler(): Scheduler {
+                return Schedulers.immediate()
+            }
+        })
+    }
+
+    private fun resetRxPlugins() {
+        @Suppress("UnstableApiUsage")
+        RxAndroidPlugins.getInstance().reset()
+        RxJavaPlugins.getInstance().reset()
+    }
 }

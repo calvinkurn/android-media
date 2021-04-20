@@ -131,10 +131,12 @@ internal class OnSortItemClickTest: SortFilterBottomSheetViewModelTestFixtures()
     fun `onSortItemClicked to default sort should not show reset button`() {
         val mapParameter = mapOf(SearchApiConst.OB to "3")
         val dynamicFilterModel = "dynamic-filter-model-common.json".jsonToObject<DynamicFilterModel>()
+                .apply { defaultSortValue = "9" }
+
         `Given SortFilterBottomSheet view is already created`(mapParameter, dynamicFilterModel)
 
         val clickedDefaultSortViewModel = this.sortFilterList!!.findAndReturn<SortViewModel>()!!.sortItemViewModelList.find {
-            it.sort.value == SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_SORT
+            it.sort.value == dynamicFilterModel.defaultSortValue
         }!!
 
         sortFilterBottomSheetViewModel.onSortItemClick(clickedDefaultSortViewModel)
@@ -157,7 +159,7 @@ internal class OnSortItemClickTest: SortFilterBottomSheetViewModelTestFixtures()
     @Test
     fun `onSortItemClicked to return to initial sort value should not show button apply`() {
         val dynamicFilterModel = "dynamic-filter-model-common.json".jsonToObject<DynamicFilterModel>()
-        val originalSortValue = dynamicFilterModel.data.sort.find { it.value != SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_SORT }!!.value
+        val originalSortValue = dynamicFilterModel.data.sort.find { it.value != dynamicFilterModel.defaultSortValue }!!.value
         val mapParameter = mapOf(SearchApiConst.Q to "samsung", SearchApiConst.OB to originalSortValue)
         `Given SortFilterBottomSheet view is already created`(mapParameter, dynamicFilterModel)
 
@@ -188,12 +190,14 @@ internal class OnSortItemClickTest: SortFilterBottomSheetViewModelTestFixtures()
     fun `onSortItemClicked twice with same SortItemViewModel should revert to default sort`() {
         val mapParameter = mapOf(SearchApiConst.Q to "samsung")
         val dynamicFilterModel = "dynamic-filter-model-common.json".jsonToObject<DynamicFilterModel>()
+                .apply { defaultSortValue = "9" }
+
         `Given SortFilterBottomSheet view is already created`(mapParameter, dynamicFilterModel)
 
         `When click same sort item twice`()
 
         val defaultSortItemViewModel = this.sortFilterList!!.findAndReturn<SortViewModel>()!!.sortItemViewModelList.find {
-            it.sort.value == SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_SORT
+            it.sort.value == dynamicFilterModel.defaultSortValue
         }!!
 
         val expectedMapParameter = mapParameter.toMutableMap().also {

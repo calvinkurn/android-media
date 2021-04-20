@@ -28,16 +28,9 @@ class TokopointsViewModel(val application: Application, val component: Component
 
 
     init {
-        initDaggerInject()
         tokopointsComponentData.value = component
     }
 
-    override fun initDaggerInject() {
-        DaggerDiscoveryComponent.builder()
-                .baseAppComponent((application.applicationContext as BaseMainApplication).baseAppComponent)
-                .build()
-                .inject(this)
-    }
 
     fun getTokopointsComponentData() = tokopointsComponentData
     fun getTokopointsItemsListData() = tokopointsList

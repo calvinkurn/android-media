@@ -32,13 +32,13 @@ abstract class BaseChatToolbarActivity : BaseChatActivity() {
 
     protected open fun setupToolbar() {
         val mInflater = LayoutInflater.from(this)
-        val mCustomView = mInflater.inflate(R.layout.header_chat, null)
+        val mCustomView = mInflater.inflate(getChatHeaderLayout(), null)
         toolbar.removeAllViews()
         toolbar.addView(mCustomView)
         setSupportActionBar(toolbar)
 
         supportActionBar?.run {
-            setBackgroundDrawable(ColorDrawable(resources.getColor(R.color.white)))
+            setBackgroundDrawable(ColorDrawable(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N0)))
             setDisplayHomeAsUpEnabled(true)
             setDisplayShowHomeEnabled(true)
             setHomeButtonEnabled(true)
@@ -46,7 +46,7 @@ abstract class BaseChatToolbarActivity : BaseChatActivity() {
             val upArrow = MethodChecker.getDrawable(applicationContext, R.drawable.ic_action_back)
             if (upArrow != null) {
                 upArrow.setColorFilter(
-                        MethodChecker.getColor(this@BaseChatToolbarActivity, R.color.grey_700),
+                        MethodChecker.getColor(this@BaseChatToolbarActivity, com.tokopedia.unifyprinciples.R.color.Unify_N500),
                         PorterDuff.Mode.SRC_ATOP
                 )
                 this.setHomeAsUpIndicator(upArrow)
@@ -68,6 +68,8 @@ abstract class BaseChatToolbarActivity : BaseChatActivity() {
             (findViewById<TextView>(R.id.subtitle)).visibility = View.GONE
         }
     }
+
+    open fun getChatHeaderLayout(): Int = R.layout.header_chat
 
     override fun getNewFragment(): Fragment {
         return Fragment()

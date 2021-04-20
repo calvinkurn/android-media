@@ -3,6 +3,7 @@ package com.tokopedia.topchat.chatlist.di
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.topchat.chatlist.activity.ChatListActivity
 import com.tokopedia.topchat.chatlist.fragment.ChatListFragment
+import com.tokopedia.topchat.chatlist.fragment.ChatListInboxFragment
 import com.tokopedia.topchat.chatlist.fragment.ChatTabListFragment
 import dagger.Component
 
@@ -19,7 +20,8 @@ import dagger.Component
             ChatNotificationsQueryModule::class,
             ChatListViewsModelModule::class,
             ChatNotificationsViewsModelModule::class,
-            ChatListContextModule::class
+            ChatListContextModule::class,
+            ChatListDispatcherModule::class
         ],
         dependencies = [BaseAppComponent::class]
 )
@@ -28,4 +30,5 @@ interface ChatListComponent {
     fun inject(fragment: ChatListFragment)
     fun inject(activity: ChatListActivity)
     fun inject(chatTabListFragment: ChatTabListFragment)
+    fun inject(chatListInbox: ChatListInboxFragment)
 }

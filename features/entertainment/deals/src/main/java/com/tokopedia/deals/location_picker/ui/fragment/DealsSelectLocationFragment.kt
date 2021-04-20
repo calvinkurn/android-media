@@ -29,7 +29,7 @@ import com.tokopedia.deals.location_picker.mapper.DealsLocationMapper
 import com.tokopedia.deals.location_picker.model.response.Location
 import com.tokopedia.deals.location_picker.ui.typefactory.DealsSelectLocationTypeFactory
 import com.tokopedia.deals.location_picker.ui.typefactory.DealsSelectLocationTypeFactoryImpl
-import com.tokopedia.permissionchecker.PermissionCheckerHelper
+import com.tokopedia.utils.permission.PermissionCheckerHelper
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.layout_deals_search_location_bottomsheet.*
@@ -243,7 +243,7 @@ class DealsSelectLocationFragment(
     }
 
     override fun createEndlessRecyclerViewListener(): EndlessRecyclerViewScrollListener {
-        return object : EndlessRecyclerViewScrollListener(getRecyclerView(view).layoutManager) {
+        return object : EndlessRecyclerViewScrollListener(getRecyclerView(view)?.layoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
                 loadData(page)
             }

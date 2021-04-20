@@ -17,7 +17,7 @@
         android:layout_height="wrap_content"
         android:ellipsize="end"
         android:singleLine="true"
-        android:textColor="@color/clr_31353B"
+        android:textColor="@color/Unify_N700"
         app:layout_constrainedWidth="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHorizontal_bias="0"
@@ -46,6 +46,7 @@
 
     <TextView
         android:id="@+id/tvSeeAll"
+        android:contentDescription="@string/content_desc_tvSeeAll"
         style="@style/TextView.Title.Green"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"

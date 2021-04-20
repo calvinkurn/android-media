@@ -4,6 +4,7 @@ import android.app.Notification
 import android.app.PendingIntent
 import android.content.Context
 import android.graphics.Bitmap
+import android.os.Build
 import android.text.TextUtils
 import android.view.View
 import android.widget.RemoteViews
@@ -27,14 +28,9 @@ internal class ActionNotification internal constructor(context: Context, baseNot
 
     override fun createNotification(): Notification {
         val builder = notificationBuilder
-        val collapsedView = RemoteViews(context.applicationContext.packageName, R.layout.cm_layout_collapsed)
+        val collapsedView = getCollapsedView()
         setCollapseData(collapsedView, baseNotificationModel, true)
-        var expandedView = RemoteViews(context.applicationContext.packageName,
-                R.layout.cm_layout_big_image)
-        if (baseNotificationModel.media == null) {
-            expandedView = RemoteViews(context.applicationContext.packageName,
-                    R.layout.cm_layout_action_button)
-        }
+        var expandedView = getExpandedView()
         collapsedView.setOnClickPendingIntent(R.id.collapseMainView,
                 createMainPendingIntent(baseNotificationModel, requestCode))
         builder.setStyle(NotificationCompat.DecoratedCustomViewStyle())
@@ -71,6 +67,31 @@ internal class ActionNotification internal constructor(context: Context, baseNot
                 .build()
     }
 
+    private fun getExpandedView(): RemoteViews {
+        var expandedView: RemoteViews
+        expandedView = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
+            RemoteViews(context.applicationContext.packageName,
+                    R.layout.cm_layout_big_image)
+        else RemoteViews(context.applicationContext.packageName,
+                R.layout.cm_layout_big_image_pre_dark_mode)
+        if (baseNotificationModel.media == null) {
+            expandedView = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
+                RemoteViews(context.applicationContext.packageName,
+                        R.layout.cm_layout_action_button)
+            else RemoteViews(context.applicationContext.packageName,
+                    R.layout.cm_layout_action_button_pre_dark_mode)
+
+        }
+        return expandedView
+    }
+
+    private fun getCollapsedView(): RemoteViews {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
+            RemoteViews(context.applicationContext.packageName, R.layout.cm_layout_collapsed)
+        else
+            RemoteViews(context.applicationContext.packageName, R.layout.cm_layout_collapsed_pre_dark_mode)
+    }
+
     private fun setCollapseData(remoteView: RemoteViews, baseNotificationModel: BaseNotificationModel, isCollapsed: Boolean) {
         if (isCollapsed) {
             when {
@@ -99,7 +120,7 @@ internal class ActionNotification internal constructor(context: Context, baseNot
             remoteView.setViewVisibility(if (isCollapsed) R.id.tv_expanded_message else R.id.tv_collapsed_message, View.GONE)
             remoteView.setTextViewText(if (isCollapsed) R.id.tv_collapsed_message else R.id.tv_expanded_message,
                     CMNotificationUtils.getSpannedTextFromStr(if (isCollapsed) baseNotificationModel.message
-                    else if(!TextUtils.isEmpty(baseNotificationModel.detailMessage)) baseNotificationModel.detailMessage
+                    else if (!TextUtils.isEmpty(baseNotificationModel.detailMessage)) baseNotificationModel.detailMessage
                     else baseNotificationModel.message))
         }
     }

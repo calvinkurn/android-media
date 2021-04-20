@@ -100,6 +100,8 @@ class WishlistViewModelOnRecommendationTest {
 
         // View model add a recommendation product
         wishlistViewModel.setRecommendationItemWishlist(parentPositionCandidate, childPositionCandidate, wishlistedInitialState)
+        wishlistViewModel.setRecommendationItemWishlist(-1, childPositionCandidate, wishlistedInitialState)
+        wishlistViewModel.setRecommendationItemWishlist(-1, 25, wishlistedInitialState)
 
         // Expect that recommendation item wishlist status is updated to true on wishlist data
         val recommendationCarouselDataModel =

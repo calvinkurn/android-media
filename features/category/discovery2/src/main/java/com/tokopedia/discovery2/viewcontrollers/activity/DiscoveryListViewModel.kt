@@ -2,7 +2,9 @@ package com.tokopedia.discovery2.viewcontrollers.activity
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.discovery2.data.ComponentsItem
+import com.tokopedia.discovery2.di.DaggerDiscoveryComponent
 
 
 class DiscoveryListViewModel(private val applicationContext: Application) : AndroidViewModel(applicationContext) {
@@ -12,6 +14,7 @@ class DiscoveryListViewModel(private val applicationContext: Application) : Andr
 
         if (mapOfViewModels[position] == null) {
             val viewModelObject = viewModel(applicationContext, componentItem, position)
+
             mapOfViewModels[position] = viewModelObject
         }
         return mapOfViewModels[position]!!

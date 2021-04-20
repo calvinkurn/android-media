@@ -1,0 +1,108 @@
+{
+  "readme": "Shop page tracker",
+  "mode": "exact",
+  "query": [
+    {
+      "pageType": "/shoppage",
+      "eventCategory": "{{shop page - (buyer|seller)}}",
+      "productId": "{{.+}}",
+      "item_list": "{{.+}}",
+      "dimension90": "{{.*}}",
+      "shopId": "{{.+}}",
+      "shopType": "{{.+}}",
+      "event": "view_item_list",
+      "eventAction": "{{product list impression - home - (.+) - (.+)}}",
+      "sessionIris": "{{.+}}",
+      "items": [{
+        "item_id": "{{.+}}",
+        "price": "{{^\\d+(.\\d+)*$}}",
+        "dimension40": "{{.+}}",
+        "dimension90": "{{.*}}",
+        "dimension83": "{{.*}}",
+        "index": "{{\\d*.\\d*}}",
+        "item_name": "{{.+}}",
+        "dimension81": "{{.+}}",
+        "item_brand": "{{.+}}",
+        "dimension79": "{{.+}}",
+        "item_variant": "{{.+}}",
+        "item_category": "{{.+}}"
+      }],
+      "eventLabel":""
+    },
+    {
+      "pageType": "/shoppage",
+      "eventCategory": "{{shop page - (buyer|seller)}}",
+      "productId": "{{.+}}",
+      "item_list": "{{.+}}",
+      "dimension90": "{{.*}}",
+      "shopId": "{{.+}}",
+      "shopType": "{{.+}}",
+      "event": "select_content",
+      "eventAction": "{{click product - home - (.+) - (.+)}}",
+      "sessionIris": "{{.+}}",
+      "items": [{
+        "item_id": "{{.+}}",
+        "price": "{{^\\d+(.\\d+)*$}}",
+        "dimension40": "{{.+}}",
+        "dimension90": "{{.*}}",
+        "dimension83": "{{.*}}",
+        "index": "{{\\d*.\\d*}}",
+        "item_name": "{{.+}}",
+        "dimension81": "{{.+}}",
+        "item_brand": "{{.+}}",
+        "dimension79": "{{.+}}",
+        "item_variant": "{{.+}}",
+        "item_category": "{{.+}}"
+      }],
+      "eventLabel":"{{.+}}"
+    },
+    {
+      "pageType": "/shoppage",
+      "eventCategory": "{{shop page - (buyer|seller)}}",
+      "shopId": "{{.+}}",
+      "shopType": "{{.+}}",
+      "event": "add_to_cart",
+      "eventAction": "{{click add to cart - home - (.+) - (.+)}}",
+      "sessionIris": "{{.+}}",
+      "items": [{
+        "quantity": "{{\\d*.\\d*}}",
+        "item_id": "{{.+}}",
+        "item_name": "{{.+}}",
+        "dimension81": "{{.+}}",
+        "dimension80": "{{.+}}",
+        "item_brand": "{{.+}}",
+        "item_category": "{{.+}}",
+        "dimension45": "{{.+}}",
+        "dimension82": "{{.*}}",
+        "price": "{{^\\d+(.\\d+)*$}}",
+        "dimension40": "{{.+}}",
+        "dimension79": "{{.+}}",
+        "item_variant": "{{.+}}",
+        "dimension38": "{{.*}}"
+      }],
+      "eventLabel":"{{.+}}"
+    },
+    {
+      "pageType": "/shoppage",
+      "eventCategory": "{{shop page - (buyer|seller)}}",
+      "productId": "{{.+}}",
+      "dimension90": "{{.*}}",
+      "shopId": "{{.+}}",
+      "shopType": "{{.+}}",
+      "event": "clickWishlist",
+      "eventAction": "{{(add|remove) wishlist - (.+) - (.+) - (.+)}}",
+      "sessionIris": "{{.+}}",
+      "eventLabel":"{{(.+) - general - (.+)}}"
+    },
+    {
+      "pageType": "/shoppage",
+      "eventCategory": "{{shop page - (buyer|seller)}}",
+      "shopId": "{{.+}}",
+      "shopType": "{{.+}}",
+      "event": "clickShopPage",
+      "eventAction": "{{click lihat semua produk - (.+) - (.+)}}",
+      "sessionIris": "{{.+}}",
+      "eventLabel":"{{(.+) - (.+)}}"
+    }
+  ]
+}

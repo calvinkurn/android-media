@@ -1,16 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="checkout_module_title_activity_checkout">Pengiriman</string>
-    <string name="checkout_module_title_activity_shipping_address">Alamat Pengiriman</string>
-    <string name="checkout_module_title_activity_multiple_address">Kirim ke Banyak Alamat</string>
-    <string name="button_change_corner">Ubah Lokasi Tokopedia Corner</string>
-    <string name="button_choose_corner">Pilih Lokasi Tokopedia Corner</string>
-    <string name="brand_tokopedia_corner">Tokopedia Corner</string>
-    <string name="tooltip_corner_info">Pesanan akan dikirim ke Tokopedia Corner yang ada di kampus</string>
-    <string name="button_mengerti">Mengerti</string>
-    <string name="hint_search_corner">Cari kampus mu</string>
-    <string name="cart_error_message">Ada %1d barang yang tidak dapat dibeli</string>
-    <string name="cart_error_action">Hapus Produk Bermasalah</string>
     <string name="show_case_finish">Mengerti</string>
     <string name="show_case_prev">Sebelumnya</string>
     <string name="iotem_count_and_weight_format" formatted="false">%s barang (%s)</string>
@@ -21,12 +11,9 @@
     <string name="emas_checkout_desc" formatted="false"><![CDATA[%s <b>%s</b>]]></string>
     <string name="text_tos_agreement">syarat dan ketentuan asuransi</string>
     <string name="message_tos_agreement">Dengan membayar, saya menyetujui syarat dan ketentuan asuransi</string>
-    <string name="label_title_showcase_shipment_courier_recommendation">Pilih Durasi Pengiriman</string>
-    <string name="label_message_showcase_shipment_courier_recommendation">Pilih jangka waktu pengiriman yang didukung oleh toko ini.</string>
     <string name="label_hide_other_item_new">Sembunyikan list</string>
     <string name="label_other_item_count_format" formatted="false">+%s Produk Lainnya</string>
     <string name="label_hardcoded_courier_ticker">Pembelian dengan Instan dan Same Day diatas pk 14:00 berpotensi dikirim hari berikutnya.</string>
-    <string name="label_hardcoded_courier_ticker_bold_part">pk 14:00</string>
     <string name="label_trade_in_shipping_price">Pilih lokasi untuk menampilkan harga</string>
     <string name="label_item_count_with_format">Harga (%d Barang)</string>
     <string name="title_dropshipper_army">Dropshipper tidak tersedia</string>
@@ -42,20 +29,16 @@
     <string name="message_error_dropshipper_phone_max_length">Nomor telepon terlalu panjang</string>
     <string name="message_error_dropshipper_phone_empty">Mohon isi nomor telepon Anda</string>
     <string name="message_error_dropshipper_phone_invalid">Nomor telepon yang dimasukkan tidak sesuai</string>
-    <string name="label_hardcoded_courier_blackbox_ticker">Pembelian diatas pk 14:00 berpotensi dikirim hari berikutnya.</string>
     <string name="label_showcase_address_title">Alamat Pengiriman</string>
     <string name="label_showcase_address_message">Pastikan alamat pengiriman sudah sesuai dengan yang kamu inginkan</string>
-    <string name="lebal_trade_in_address_mode">Pilih Metode Pengambilan</string>
+    <string name="lebal_trade_in_address_mode">Opsi Penukaran</string>
     <string name="label_tab_trade_in_address_deliver">Antar</string>
     <string name="label_tab_trade_in_address_pickup">Titik Ambil</string>
     <string name="label_button_change_pickup_point">Ubah Titik Ambil</string>
-    <string name="message_trade_in_checkout_pickup_info">Barang akan dikirim ke titik ambil dan dilakukan penukaran dengan HP lama</string>
-    <string name="message_trade_in_checkout_delivery_info" formatted="false">Kurir akan menelfon %s untuk tukar HP di tujuan pengiriman. Ganti nomor</string>
     <string name="recipient_name_format">%1$s (%2$s)</string>
     <string name="message_error_checkout_empty">Barangmu lagi nggak bisa dibeli. Silakan balik ke keranjang untuk cek belanjaanmu.</string>
     <string name="label_change_address_failed">Gagal mengubah alamat</string>
     <string name="label_change_address_success">Berhasil mengubah alamat</string>
-    <string name="label_action_snackbar_close">Tutup</string>
     <string name="otdg_gtm_label">Jaminan Pengiriman Tepat Waktu</string>
     <string name="title_activity_checkout_tnc_webview">Syarat dan Ketentuan</string>
     <string name="corner_error_stub">Penjual tidak melayani pengiriman dengan SiCepat</string>
@@ -63,30 +46,10 @@
     <string name="label_no_courier_bottomsheet_button">Saya Mengerti</string>
     <string name="error_dropshipper">Fitur dropshipper tidak dapat digunakan ketika menggunakan Proteksi Produk</string>
     <string name="title_activity_checkout_webview">Proteksi Produk</string>
-    <string name="lebel_understood">Mengerti</string>
-    <string name="ticker_corner_list_info">- Wajib membawa kartu mahasiswa / staff saat pengambilan pesanan \n- Pesanan dikirim dengan siCepat Regular</string>
-    <string name="label_oops">Oopppsss..</string>
-    <string name="message_address_not_found">Kami tidak dapat menemukan alamat yang Anda cari.</string>
     <string name="emas_checkout_title">Bulatkan Tagihan dengan Nabung Emas</string>
-    <string name="label_button_change_search">Ganti Pencarian</string>
     <string name="checkout_module_message_cart_error">Terjadi kendala pada pesanan Anda, lihat di bawah untuk info lebih lengkap.</string>
     <string name="ppp_more">Pelajari</string>
-    <string name="shipping_address">Alamat Pengiriman</string>
-    <string name="change_address">Ubah Alamat</string>
-    <string name="add_address">Tambah Alamat Baru</string>
-    <string name="corner_info_ticker">Hanya berlaku untuk mahasiswa / staf terdaftar di kampus yang dipilih</string>
-    <string name="gratis_ongkir">Gratis Ongkir</string>
-    <string name="information_icon">Information Icon</string>
     <string name="label_payment_total">Total Tagihan</string>
-    <string name="label_pay_cod">Bayar di Tempat</string>
-    <string name="label_shipping">Pengiriman</string>
-    <string name="label_button_choose_courier_blackbox">Pilih Pengiriman</string>
-    <string name="label_button_change_shipping">Ubah Pengiriman</string>
-    <string name="label_shipping_duration">Durasi Pengiriman</string>
-    <string name="label_button_choose_courier_recommendation">Pilih</string>
-    <string name="label_button_change_shipping_duration">Ubah Durasi</string>
-    <string name="label_button_change_courier_recommendation">Ubah Kurir</string>
-    <string name="label_seller">Penjual:</string>
     <string name="label_hint_cart_item_dropshipper_phone_number">Nomor Telepon</string>
     <string name="label_hint_cart_item_dropshipper_name">Nama Pengirim</string>
     <string name="label_hardcoded_prioritas_ticker">Hanya berlaku untuk pembelian pada pukul 09.00 – 21.00 WIB.</string>
@@ -97,29 +60,14 @@
     <string name="label_seller_additional_cost">Biaya Tambahan Penjual</string>
     <string name="label_order_priority_cost">Biaya Order Prioritas</string>
     <string name="label_promo">Promo</string>
-    <string name="label_add_new_shipment_new">Tambah Alamat Pengiriman</string>
-    <string name="label_button_choose_shipment_courier">Pilih Kurir Pengiriman</string>
-    <string name="label_change_address">Ganti Alamat</string>
-    <string name="label_shipment_counter">Pengiriman #</string>
-    <string name="label_total">Jumlah Barang</string>
     <string name="label_shop_summary">Ringkasan belanja</string>
     <string name="booking_fee_label">Biaya Layanan Kredit</string>
     <string name="checkout_module_label_asuransi">Asuransi</string>
-    <string name="checkout_module_label_macro_insurance">Macro Insurance</string>
     <string name="checkout_module_label_trade_in">Tukar Tambah</string>
     <string name="label_donation">Donasi</string>
     <string name="label_emas">Pembulatan Emas</string>
     <string name="order_prioritas_label">Biaya Order Prioritas</string>
     <string name="label_button_change_address">Pilih Alamat Lain</string>
-    <string name="label_button_change_address_new">Ganti Alamat</string>
-    <string name="label_button_send_to_multiple_address">Kirim ke Banyak Alamat</string>
-    <string name="hyperlink_learn_more">Pelajari selengkapnya</string>
-    <string name="dialog_title_back_to_cart">Kembali Ke Keranjang?</string>
-    <string name="dialog_message_back_to_cart">Perubahan yang Anda lakukan di halaman ini tidak akan disimpan</string>
-    <string name="label_dialog_back_to_cart_button_positive"><![CDATA[Kembali & Hapus Perubahan]]></string>
-    <string name="label_dialog_back_to_cart_button_negative">Tetap di Halaman Ini</string>
-    <string name="label_showcase_multiple_address_title">Kirim Barang Sama ke Beberapa Alamat.</string>
-    <string name="label_showcase_multiple_address_message">Klik tombol untuk mengirim barang yang sama ke beda alamat.</string>
     <string name="message_error_courier_not_selected">Pilih pengiriman dulu yuk sebelum lanjut bayar.</string>
     <string name="message_error_multiple_courier_not_selected">Pilih pengiriman untuk %d pesananmu dulu yuk sebelum lanjut bayar.</string>
     <string name="message_error_dropshipper_empty">Pastikan Anda telah melengkapi informasi tambahan.</string>
@@ -128,19 +76,51 @@
     <string name="label_check">Cek</string>
     <string name="content_desc_label_choose_shipping">text pilih pengiriman</string>
     <string name="content_desc_icon_chevron_choose_shipping">image pilih pengiriman</string>
-    <string name="content_desc_label_selected_shipping_duration">text durasi pengiriman terpilih</string>
+    <string name="content_desc_label_selected_shipping_duration">text durasi pengiriman</string>
     <string name="content_desc_icon_chevron_choose_duration">image pilih durasi</string>
-    <string name="content_desc_label_selected_shipping_courier">text kurir pengiriman terpilih</string>
+    <string name="content_desc_label_selected_shipping_courier">text kurir pengiriman</string>
     <string name="content_desc_icon_chevron_choose_courier">image pilih kurir</string>
     <string name="content_desc_iv_detail_option_chevron">image detail subtotal</string>
-    <string name="content_desc_tv_total_item_price_subtotal">text total harga subtotal</string>
-    <string name="content_desc_tv_shipping_fee_price_subtotal">text ongkos kirim subtotal</string>
-    <string name="content_desc_tv_insurance_fee_price_subtotal">text biaya asuransi subtotal</string>
-    <string name="content_desc_tv_total_item_price_summary">text total harga ringkasan</string>
-    <string name="content_desc_tv_insurance_fee_summary">text biaya asuransi ringkasan</string>
-    <string name="content_desc_tv_shipping_fee_summary">text ongkos kirim ringkasan</string>
+    <string name="content_desc_tv_sub_total_price">text subtotal harga keseluruhan</string>
+    <string name="content_desc_tv_total_item_price_subtotal">text subtotal harga barang</string>
+    <string name="content_desc_tv_shipping_fee_price_subtotal">text subtotal ongkir</string>
+    <string name="content_desc_tv_insurance_fee_price_subtotal">text subtotal asuransi</string>
+    <string name="content_desc_tv_total_item_price_summary">text ringkasan harga barang</string>
+    <string name="content_desc_tv_insurance_fee_summary">text ringkasan asuransi</string>
+    <string name="content_desc_tv_shipping_fee_summary">text ringkasan ongkir</string>
+    <string name="content_desc_tv_total_payment">text total tagihan</string>
     <string name="content_desc_tv_select_payment_method">button pilih pembayaran</string>
     <string name="content_desc_img_insurance_info">image info asuransi</string>
     <string name="content_desc_cb_insurance">checkbox asuransi</string>
-    <string name="content_desc_cb_insurance_disabled">checkbox asuransi disabled</string>
+    <string name="content_desc_tv_change_address_top">text pilih alamat lain</string>
+    <string name="label_fulfilment">Dilayani Tokopedia</string>
+    <string name="label_order_counter">Pesanan %d</string>
+    <string name="estimasi_tidak_tersedia">Estimasi tidak tersedia</string>
+    <string name="checkout_trade_in_default_address_info_description">
+        <![CDATA[
+        1. Tunggu pesananmu diproses oleh toko.<br/><br/>
+        2. Kurir akan mengantarkan pesanan ke alamatmu <b>1 hari setelah</b> pesanan diambil dari toko.<br/><br/>
+        3. Ketika sampai, kurir akan memeriksa IMEI HP lamamu untuk verifikasi.<br/><br/>
+        4. Jika IMEI sesuai dengan data Tokopedia, Tukar Tambah dinyatakan berhasil.<br/><br/>
+        5. Yay, saat itu juga kamu bisa langsung gunakan gadget barumu!<br/><br/>
+        <b>Catatan:</b> Tidak semua toko mengaktifkan dua opsi pengiriman. Gunakan opsi yang tersedia jika salah satu opsi tidak bisa dipilih.
+        ]]>
+    </string>
+    <string name="checkout_trade_in_drop_off_address_info_description">
+        <![CDATA[
+        1. Tunggu pesananmu diproses oleh toko.<br/><br/>
+        2. Kurir IndoPaket akan <b>mengantarkan pesananmu ke Indomaret</b> yang kamu pilih<br/><br/>
+        3. Kamu akan menerima pesan notifikasi dan email saat pesanan tiba di Indomaret. Kamu punya waktu 2 hari untuk proses tukar tambah.<br/><br/>
+        4. Di Indomaret, kasir akan memeriksa IMEI HP lamamu untuk verifikasi.<br/><br/>
+        5. Jika IMEI sesuai dengan data Tokopedia, Tukar Tambah dinyatakan berhasil.<br/><br/>
+        6. Yay, saat itu juga kamu bisa langsung gunakan gadget barumu!<br/><br/>
+        <b>Catatan:</b> Tidak semua toko mengaktifkan dua opsi pengiriman. Gunakan opsi yang tersedia jika salah satu opsi tidak bisa dipilih.
+        ]]>
+    </string>
+    <string name="title_trade_in_default_address">Ditukar di Alamatmu</string>
+    <string name="title_trade_in_drop_off_address">Ditukar di Indomaret</string>
+    <string name="label_drop_off_empty_title">Cari Indomaret, yuk!</string>
+    <string name="label_drop_off_empty_description">Aktifkan dulu lokasimu untuk bisa cari Indomaret terdekat</string>
+    <string name="label_drop_off_cta">Cari Indomaret</string>
+    <string name="checkout_label_per_insurance_price">per barang</string>
 </resources>

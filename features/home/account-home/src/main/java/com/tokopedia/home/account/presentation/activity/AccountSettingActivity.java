@@ -2,6 +2,7 @@ package com.tokopedia.home.account.presentation.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
@@ -38,6 +39,10 @@ public class AccountSettingActivity extends BaseSimpleActivity {
 
     @Override
     protected Fragment getNewFragment() {
-        return AccountSettingFragment.createInstance();
+        Bundle bundle = new Bundle();
+        if(getIntent().getExtras()!= null){
+            bundle.putAll(getIntent().getExtras());
+        }
+        return AccountSettingFragment.createInstance(bundle);
     }
 }

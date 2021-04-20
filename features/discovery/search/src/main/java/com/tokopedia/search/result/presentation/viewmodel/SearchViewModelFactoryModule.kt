@@ -2,13 +2,12 @@ package com.tokopedia.search.result.presentation.viewmodel
 
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.discovery.common.constants.SearchConstant
-import com.tokopedia.discovery.common.coroutines.ProductionDispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.search.di.scope.SearchScope
 import dagger.Module
 import dagger.Provides
 import javax.inject.Named
 
-@SearchScope
 @Module
 internal class SearchViewModelFactoryModule {
 
@@ -16,6 +15,6 @@ internal class SearchViewModelFactoryModule {
     @Provides
     @Named(SearchConstant.SEARCH_VIEW_MODEL_FACTORY)
     fun provideSearchViewModelFactory(): ViewModelProvider.Factory {
-        return SearchViewModelFactory(ProductionDispatcherProvider())
+        return SearchViewModelFactory(CoroutineDispatchersProvider)
     }
 }

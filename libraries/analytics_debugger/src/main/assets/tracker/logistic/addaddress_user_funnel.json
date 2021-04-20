@@ -1,0 +1,41 @@
+{
+  "mode": "subset",
+  "query": [
+    {
+      "screenName": "/user/address/create"
+    },
+    {
+      "eventCategory": "cart change address",
+      "eventAction": "click address suggestion from suggestion list",
+      "eventLabel": "logistic"
+    },
+    {
+      "eventCategory": "cart change address",
+      "eventAction": "click button pilih lokasi ini",
+      "eventLabel": "success - logistic"
+    },
+    {
+      "eventCategory": "cart change address",
+      "eventAction": "click button pilih lokasi",
+      "eventLabel": "logistic"
+    },
+    {
+      "eventCategory": "cart change address positive",
+      "event": "clickAddress",
+      "eventAction": "click field nama penerima",
+      "eventLabel": "logistic"
+    },
+    {
+      "eventCategory": "cart change address positive",
+      "event": "clickAddress",
+      "eventAction": "click field no ponsel",
+      "eventLabel": "logistic"
+    },
+    {
+      "eventCategory": "cart change address",
+      "eventAction": "click button simpan",
+      "eventLabel": "positive success - logistic"
+    }
+  ],
+  "readme": "Logistic Add Address user funnel, also verifies CVR. STR: Create New Address from User Settings"
+}

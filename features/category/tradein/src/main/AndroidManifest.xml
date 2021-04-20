@@ -5,39 +5,65 @@
     <application
         android:usesCleartextTraffic="true">
         <activity
-            android:name=".view.viewcontrollers.TradeInHomeActivity"
+            android:name=".view.viewcontrollers.activity.MoneyInHomeActivity"
             android:label="@string/tukar_tambah">
-            <intent-filter android:autoVerify="true">
-                <action android:name="android.intent.action.VIEW" />
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data
                     android:scheme="@string/internal_scheme"
                     android:host="@string/host_moneyin"
                     android:pathPattern="@string/path_device_validation"/>
-                <data
-                    android:scheme="@string/internal_scheme"
-                    android:host="@string/host_category"
-                    android:path="@string/path_tradein"/>
-
             </intent-filter>
         </activity>
         <activity
-            android:name=".view.viewcontrollers.FinalPriceActivity"
+            android:name=".view.viewcontrollers.activity.FinalPriceActivity"
             android:label="@string/harga_final" >
-            <intent-filter android:autoVerify="true">
-                <action android:name="android.intent.action.VIEW" />
+        </activity>
+        <activity
+            android:name=".view.viewcontrollers.activity.MoneyInCheckoutActivity"
+            android:label="@string/checkout" />
+        <activity android:name=".view.viewcontrollers.activity.TradeInInfoActivity"
+            android:launchMode="singleTop"
+            android:theme="@style/Theme.AppCompat.Translucent">
+
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data
                     android:scheme="@string/internal_scheme"
                     android:host="@string/host_category"
-                    android:path="@string/path_final_price"/>
-
+                    android:pathPattern="@string/applink_path_tradein_tnc"/>
+                <data
+                    android:scheme="@string/internal_scheme"
+                    android:host="@string/host_category"
+                    android:pathPattern="@string/applink_path_tradein_black_market"/>
             </intent-filter>
+
         </activity>
         <activity
-            android:name=".view.viewcontrollers.MoneyInCheckoutActivity"
-            android:label="@string/checkout" />
+            android:name=".view.viewcontrollers.activity.TradeInHomeActivity"
+            android:label="@string/tukar_tambah"
+            android:launchMode="singleTask">
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:scheme="@string/internal_scheme"
+                    android:host="@string/host_category"
+                    android:path="@string/path_tradein"/>
+                <data
+                    android:scheme="@string/internal_scheme"
+                    android:host="@string/host_category"
+                    android:pathPattern="@string/path_pattern_tradein"/>
+                <data
+                    android:scheme="@string/internal_scheme"
+                    android:host="@string/host_category"
+                    android:path="@string/path_final_price"/>
+            </intent-filter>
+        </activity>
     </application>
 </manifest>

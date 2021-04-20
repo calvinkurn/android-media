@@ -9,16 +9,18 @@
     android:gravity="center_vertical"
     android:padding="@dimen/dp_8">
 
-    <ImageView
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/img_top_ads_announcement"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:srcCompat="@drawable/ic_top_ads_announcement"
-        android:layout_marginRight="@dimen/dp_8"
         android:layout_marginEnd="@dimen/dp_8"/>
 
-    <TextView style="@style/TextView.Small.BlackSecondary"
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/content_text"
         android:layout_width="match_parent"
-        android:textColorLink="@color/tkpd_main_green"/>
+        android:layout_height="wrap_content"
+        android:textColorLink="@color/tkpd_main_green"
+        android:textColor="@color/font_black_secondary_54" />
 
 </LinearLayout>

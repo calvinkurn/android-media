@@ -5,14 +5,13 @@
     android:id="@+id/ly_parent"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
     android:orientation="vertical">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white"
+        android:background="@color/Unify_N0"
         android:gravity="center_vertical"
         app:contentInsetLeft="0dp"
         app:contentInsetStart="0dp"
@@ -26,15 +25,6 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:orientation="horizontal">
-
-            <com.tokopedia.design.text.SearchInputView
-                android:id="@+id/search_input_view"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:visibility="gone"
-                android:layout_weight="1"
-                android:clickable="true"
-                app:siv_search_hint="@string/shop_product_search_hint" />
 
             <androidx.appcompat.widget.LinearLayoutCompat
                 android:id="@+id/linearLayoutNewDesign"
@@ -75,7 +65,7 @@
                     android:imeOptions="actionSearch"
                     android:inputType="text"
                     android:maxLines="1"
-                    android:textColor="@color/clr_ae31353b"
+                    android:textColor="@color/Unify_N700_68"
                     android:textSize="@dimen/sp_14" />
 
                 <androidx.appcompat.widget.AppCompatImageView
@@ -94,7 +84,7 @@
                 android:layout_marginEnd="@dimen/dp_16"
                 android:layout_marginRight="@dimen/dp_16"
                 android:text="@string/button_cancel"
-                android:textColor="@color/bg_button_green_border_outline"
+                android:textColor="@color/Unify_G500"
                 app:typographyType="body_2" />
 
         </androidx.appcompat.widget.LinearLayoutCompat>

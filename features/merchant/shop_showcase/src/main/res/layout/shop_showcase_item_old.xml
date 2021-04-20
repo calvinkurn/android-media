@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingStart="@dimen/dp_16"
+    android:paddingEnd="@dimen/dp_10"
+    android:paddingTop="@dimen/dp_16">
+
+    <TextView
+        android:id="@+id/tv_showcase_name"
+        style="@style/TextView.Title"
+        android:layout_width="wrap_content"
+        android:ellipsize="end"
+        android:lineSpacingExtra="@dimen/sp_6"
+        android:singleLine="true"
+        android:textColor="@color/Unify_N700_96"
+        android:textStyle="bold"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintBottom_toTopOf="@id/view_line_separator"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/tv_campaign_label"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0"
+        tools:text="@string/batik_solo" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_campaign_label"
+        android:layout_width="wrap_content"
+        android:layout_height="20dp"
+        android:layout_marginStart="@dimen/dp_8"
+        android:background="@drawable/bg_rect_campaign_label"
+        android:gravity="center"
+        android:textColor="@color/Unify_N0"
+        android:visibility="gone"
+        android:paddingLeft="@dimen/dp_4"
+        android:paddingRight="@dimen/dp_4"
+        app:layout_constraintBottom_toTopOf="@id/view_line_separator"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintLeft_toRightOf="@id/tv_showcase_name"
+        app:layout_constraintRight_toLeftOf="@id/img_menu_more"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0"
+        app:typographyType="small"
+        app:typographyWeight="bold"
+        android:text="@string/text_label_campaign"
+        tools:visibility="visible" />
+
+    <ImageView
+        android:id="@+id/img_menu_more"
+        android:layout_width="@dimen/dp_24"
+        android:layout_height="@dimen/dp_24"
+        android:layout_gravity="center_vertical"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0"
+        app:srcCompat="@drawable/ic_three_dots_more_menu"
+        android:contentDescription="@string/setting_showcase"/>
+
+    <View
+        android:id="@+id/view_line_separator"
+        android:layout_width="fill_parent"
+        android:layout_height="@dimen/dp_1"
+        android:layout_marginTop="@dimen/dp_16"
+        android:background="@color/Unify_N75"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_showcase_name" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Figma link: https://www.figma.com/file/B7tp3GEFdIHCbKM1B004EE/%5BUX-M(SA)-OM%5D-Google-Assistant?node-id=14%3A422 -->
+    <string name="seller_action_open_app">Buka Tokopedia Seller</string>
+    <string name="seller_action_loading_title">Tunggu sebentar, ya…</string>
+    <string name="seller_action_not_login_title">Kamu belum login, nih</string>
+    <string name="seller_action_error_title">Oops, data kamu nggak ketemu</string>
+    <string name="seller_action_error_desc_short">Cek internet atau coba kembali lagi, ya.</string>
+
+    //Order Slice
+    <string name="seller_action_order_empty_title">Belum ada pesanan, nih</string>
+    <string name="seller_action_order_empty_desc">Tetap semangat, rejeki nggak akan pergi asal kamu pantang menyerah.</string>
+    <string name="seller_action_order_empty_desc_short">Tetap semangat, ya.</string>
+    <string name="seller_action_order_not_login_desc">Login terlebih dulu untuk lihat pesanan kamu.</string>
+    <string name="seller_action_order_not_login_desc_short">Login dulu untuk lihat pesananmu.</string>
+    <string name="seller_action_order_loading_desc">Nggak pakai lama, Toped sedang mencari pesanan kamu.</string>
+    <string name="seller_action_order_loading_desc_short">Toped sedang mencari pesananmu.</string>
+    <string name="seller_action_order_success_title_today">Pesanan hari ini</string>
+    <string name="seller_action_order_success_title_specific_date">Pesanan %s</string>
+    <string name="seller_action_order_success_item_multiple_title">%s <![CDATA[<font color=#a0a0a0>+%1d Produk</font>]]></string>
+    <string name="seller_action_order_success_item_desc">%s&#160;&#160;|&#160;&#160;Batas Respons %s</string>
+    <string name="seller_action_order_status_new_order">Pesanan Baru</string>
+    <string name="seller_action_order_status_ready_to_ship">Siap Dikirim</string>
+
+    <string name="seller_action_triple_dot">…</string>
+</resources>

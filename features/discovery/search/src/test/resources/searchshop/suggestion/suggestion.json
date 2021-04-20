@@ -1,0 +1,340 @@
+{
+  "aceSearchShop": {
+    "source": "solr",
+    "total_shop": 24,
+    "search_url": "https://ace-staging.tokopedia.com/search/v1/shop?device=android&q=baju+batik&rows=20",
+    "paging": {
+      "uri_next": "https://ace-staging.tokopedia.com/search/v1/shop?device=android&q=baju+batik&rows=20&start=20",
+      "uri_previous": ""
+    },
+    "tab_name": "shop",
+    "suggestion": {
+      "query": "q=baju batik&rf=true",
+      "currentKeyword": "bjju batik",
+      "text": "Tidak dapat menemukan hasil untuk <strong>\"bjju batik\"</strong>. Menampilkan hasil untuk <strong>\"baju batik\"</strong>"
+    },
+    "shops": [
+      {
+        "shop_id": 117599,
+        "shop_name": "Agrasandhya Boutique",
+        "shop_domain": "agrasandhya",
+        "shop_url": "https://staging.tokopedia.com/agrasandhya",
+        "shop_applink": "tokopedia://shop/117599",
+        "shop_image": "https://images.tokopedia.net/img/cache/215-square/shops-1/2014/7/24/117599/117599_16765500-12bc-11e4-bd7d-699c2523fab8.jpg",
+        "shop_image_300": "https://images.tokopedia.net/img/cache/300/shops-1/2014/7/24/117599/117599_16765500-12bc-11e4-bd7d-699c2523fab8.jpg",
+        "shop_description": "semua ready, mohon konfirmasi setelah brg diterima ya.. TQ\r\nSebelum order, mohon baca rules toko kami. pin bb : 542B4F73",
+        "shop_tag_line": "Tampilkan Aura Cantik mu",
+        "shop_location": "Jakarta",
+        "shop_total_transaction": "1,5rb",
+        "shop_total_favorite": "0",
+        "shop_gold_shop": 0,
+        "shop_is_owner": 467564,
+        "shop_rate_speed": 4,
+        "shop_rate_accuracy": 4,
+        "shop_rate_service": 4,
+        "shop_status": 1,
+        "products": [
+          {
+            "id": 31596354,
+            "name": "Couple batik queena baju muslim pasangan queen sarimbit murah",
+            "url": "https://staging.tokopedia.com/agrasandhya/couple-batik-queena-baju-muslim-pasangan-queen-sarimbit-murah",
+            "applink": "tokopedia://product/31596354",
+            "price": 135000,
+            "price_format": "Rp 135.000",
+            "image_url": "https://images.tokopedia.net/img/cache/200-square/product-1/2018/5/4/31596354/31596354_ed989e6f-14d8-400c-8a75-457911110e3b_1024_1024.jpg"
+          },
+          {
+            "id": 430775042,
+            "name": "couple brukat elin abu baju pasangan pesta lebaran bagus murah vt",
+            "url": "https://staging.tokopedia.com/agrasandhya/couple-brukat-elin-abu-baju-pasangan-pesta-lebaran-bagus-murah-vt",
+            "applink": "tokopedia://product/430775042",
+            "price": 165000,
+            "price_format": "Rp 165.000",
+            "image_url": "https://images.tokopedia.net/img/cache/200-square/product-1/2019/3/20/117599/117599_d9c53c33-805b-42ad-984c-e302522ced7d_1080_1080.jpg"
+          },
+          {
+            "id": 556744853,
+            "name": "couple Ramona premium baju muslim pasangan sarimbit cp ram vt",
+            "url": "https://staging.tokopedia.com/agrasandhya/couple-ramona-premium-baju-muslim-pasangan-sarimbit-cp-ram-vt",
+            "applink": "tokopedia://product/556744853",
+            "price": 195000,
+            "price_format": "Rp 195.000",
+            "image_url": "https://images.tokopedia.net/img/cache/200-square/product-1/2020/5/11/556744853/556744853_e1992f82-5a6e-4a8f-a918-88b49ef012c2_621_621.jpg"
+          }
+        ],
+        "voucher": {
+          "free_shipping": false,
+          "cashback": {
+            "cashback_value": 0,
+            "is_percentage": false
+          }
+        },
+        "shop_lucky": "https://clover-staging.tokopedia.com/badges/merchant/v1?shop_id=117599",
+        "reputation_image_uri": "https://images.tokopedia.net/img/repsys/silver-4-hd.gif",
+        "reputation_score": 1741,
+        "is_official": false,
+        "ga_key": "/searchshop/baju+batik/agrasandhya"
+      },
+      {
+        "shop_id": 294725,
+        "shop_name": "Lina Batik Distro",
+        "shop_domain": "linabatikdistro",
+        "shop_url": "https://staging.tokopedia.com/linabatikdistro",
+        "shop_applink": "tokopedia://shop/294725",
+        "shop_image": "https://images.tokopedia.net/img/cache/215-square/shops-1/2015/1/12/294725/294725_56c6510e-9a44-11e4-bb06-774a2523fab8.jpg",
+        "shop_image_300": "https://images.tokopedia.net/img/cache/300/shops-1/2015/1/12/294725/294725_56c6510e-9a44-11e4-bb06-774a2523fab8.jpg",
+        "shop_description": "Grosir boleh campur model \r\nAda Bonus untuk Reseller \r\nAdd Pin 53D24218 \r\nJoin Group With Us for the earlier update ",
+        "shop_tag_line": "BAJU BATIK PRIA HIGH QUALITY, ECER & GROSIR",
+        "shop_location": "Jakarta",
+        "shop_total_transaction": "230",
+        "shop_total_favorite": "0",
+        "shop_gold_shop": 0,
+        "shop_is_owner": 2163029,
+        "shop_rate_speed": 5,
+        "shop_rate_accuracy": 5,
+        "shop_rate_service": 5,
+        "shop_status": 1,
+        "products": [
+          {
+            "id": 272194455,
+            "name": "KEMEJA BATIK WANITA BLOUSE BATIK BAJU BATIK BW30",
+            "url": "https://staging.tokopedia.com/linabatikdistro/kemeja-batik-wanita-blouse-batik-baju-batik-bw30",
+            "applink": "tokopedia://product/272194455",
+            "price": 150000,
+            "price_format": "Rp 150.000",
+            "image_url": "https://images.tokopedia.net/img/cache/200-square/product-1/2020/2/22/272194455/272194455_0e9570fb-8ac4-4f6b-9f81-fa31c3cd624e_640_640.jpg"
+          },
+          {
+            "id": 160826932,
+            "name": "BAJU KEMEJA BATIK SLIM FIT PRIA LENGAN PANJANG KUALITAS MALL LB88",
+            "url": "https://staging.tokopedia.com/linabatikdistro/baju-kemeja-batik-slim-fit-pria-lengan-panjang-kualitas-mall-lb88",
+            "applink": "tokopedia://product/160826932",
+            "price": 130000,
+            "price_format": "Rp 130.000",
+            "image_url": "https://images.tokopedia.net/img/cache/200-square/product-1/2020/5/5/160826932/160826932_8391e6dc-916f-4faa-bcb4-5cd34ca03a8d_1280_1280.jpg"
+          },
+          {
+            "id": 175676066,
+            "name": "BAJU KEMEJA BATIK PRIA SLIM FIT MODERN LENGAN PENDEK OB400",
+            "url": "https://staging.tokopedia.com/linabatikdistro/baju-kemeja-batik-pria-slim-fit-modern-lengan-pendek-ob400",
+            "applink": "tokopedia://product/175676066",
+            "price": 125000,
+            "price_format": "Rp 125.000",
+            "image_url": "https://images.tokopedia.net/img/cache/200-square/product-1/2020/4/28/175676066/175676066_693fdb5b-8b39-4c2b-b0b1-376e2b783f92_1280_1280.jpg"
+          }
+        ],
+        "voucher": {
+          "free_shipping": false,
+          "cashback": {
+            "cashback_value": 0,
+            "is_percentage": false
+          }
+        },
+        "shop_lucky": "https://clover-staging.tokopedia.com/badges/merchant/v1?shop_id=294725",
+        "reputation_image_uri": "https://images.tokopedia.net/img/repsys/silver-1-hd.gif",
+        "reputation_score": 363,
+        "is_official": false,
+        "ga_key": "/searchshop/baju+batik/linabatikdistro"
+      },
+      {
+        "shop_id": 162512,
+        "shop_name": "grosir baju batik",
+        "shop_domain": "grosirbatiktulis",
+        "shop_url": "https://staging.tokopedia.com/grosirbatiktulis",
+        "shop_applink": "tokopedia://shop/162512",
+        "shop_image": "https://images.tokopedia.net/img/cache/215-square/shops-1/2014/8/4/162512/162512_30a86a0e-1b80-11e4-b3ab-05bf4908a8c2.jpg",
+        "shop_image_300": "https://images.tokopedia.net/img/cache/300/shops-1/2014/8/4/162512/162512_30a86a0e-1b80-11e4-b3ab-05bf4908a8c2.jpg",
+        "shop_description": "sebaiknya tanyakan stok barang dulu ya...^^\nadd pin admin 54ce78c2\nNo hpe 081554224499",
+        "shop_tag_line": "one stop shopping batik & casual murah :-)",
+        "shop_location": "Solo",
+        "shop_total_transaction": "142",
+        "shop_total_favorite": "0",
+        "shop_gold_shop": 0,
+        "shop_is_owner": 925067,
+        "shop_rate_speed": 4,
+        "shop_rate_accuracy": 4,
+        "shop_rate_service": 4,
+        "shop_status": 1,
+        "products": [],
+        "voucher": {
+          "free_shipping": false,
+          "cashback": {
+            "cashback_value": 0,
+            "is_percentage": false
+          }
+        },
+        "shop_lucky": "https://clover-staging.tokopedia.com/badges/merchant/v1?shop_id=162512",
+        "reputation_image_uri": "https://images.tokopedia.net/img/repsys/bronze-5-hd.gif",
+        "reputation_score": 172,
+        "is_official": false,
+        "ga_key": "/searchshop/baju+batik/grosirbatiktulis"
+      },
+      {
+        "shop_id": 207135,
+        "shop_name": "baju batik",
+        "shop_domain": "bajubatik123",
+        "shop_url": "https://staging.tokopedia.com/bajubatik123",
+        "shop_applink": "tokopedia://shop/207135",
+        "shop_image": "https://images.tokopedia.net/img/cache/215-square/shops-1/2014/12/3/207135/207135_9a92f94c-7afe-11e4-96c1-8fa52523fab8.jpg",
+        "shop_image_300": "https://images.tokopedia.net/img/cache/300/shops-1/2014/12/3/207135/207135_9a92f94c-7afe-11e4-96c1-8fa52523fab8.jpg",
+        "shop_description": "menyediakan berbagai pakaian batik\r\n\r\npin: 2a3002e2",
+        "shop_tag_line": "batik berkualitas",
+        "shop_location": "Solo",
+        "shop_total_transaction": "108",
+        "shop_total_favorite": "0",
+        "shop_gold_shop": 0,
+        "shop_is_owner": 1289192,
+        "shop_rate_speed": 4,
+        "shop_rate_accuracy": 4,
+        "shop_rate_service": 5,
+        "shop_status": 1,
+        "products": [],
+        "voucher": {
+          "free_shipping": false,
+          "cashback": {
+            "cashback_value": 0,
+            "is_percentage": false
+          }
+        },
+        "shop_lucky": "https://clover-staging.tokopedia.com/badges/merchant/v1?shop_id=207135",
+        "reputation_image_uri": "https://images.tokopedia.net/img/repsys/bronze-5-hd.gif",
+        "reputation_score": 157,
+        "is_official": false,
+        "ga_key": "/searchshop/baju+batik/bajubatik123"
+      },
+      {
+        "shop_id": 232328,
+        "shop_name": "baju batik kerja",
+        "shop_domain": "bajuseragambatik",
+        "shop_url": "https://staging.tokopedia.com/bajuseragambatik",
+        "shop_applink": "tokopedia://shop/232328",
+        "shop_image": "https://images.tokopedia.net/img/cache/215-square/shops-1/2015/4/1/232328/232328_41439466-d7f4-11e4-a0bd-05944908a8c2.jpg",
+        "shop_image_300": "https://images.tokopedia.net/img/cache/300/shops-1/2015/4/1/232328/232328_41439466-d7f4-11e4-a0bd-05944908a8c2.jpg",
+        "shop_description": "khusus grosir \nmin pembelian 3 pcs\ntidak melayani ecer dan akan langsung dicancel apabila pembelian kurang dr 3 ",
+        "shop_tag_line": "batik murah",
+        "shop_location": "Solo",
+        "shop_total_transaction": "26",
+        "shop_total_favorite": "0",
+        "shop_gold_shop": 0,
+        "shop_is_owner": 1519710,
+        "shop_rate_speed": 4,
+        "shop_rate_accuracy": 4,
+        "shop_rate_service": 4,
+        "shop_status": 1,
+        "products": [],
+        "voucher": {
+          "free_shipping": false,
+          "cashback": {
+            "cashback_value": 0,
+            "is_percentage": false
+          }
+        },
+        "shop_lucky": "https://clover-staging.tokopedia.com/badges/merchant/v1?shop_id=232328",
+        "reputation_image_uri": "https://images.tokopedia.net/img/repsys/bronze-2-hd.gif",
+        "reputation_score": 18,
+        "is_official": false,
+        "ga_key": "/searchshop/baju+batik/bajuseragambatik"
+      },
+      {
+        "shop_id": 123911,
+        "shop_name": "Baju Batik Modern Online",
+        "shop_domain": "bajubatikmodern",
+        "shop_url": "https://staging.tokopedia.com/bajubatikmodern",
+        "shop_applink": "tokopedia://shop/123911",
+        "shop_image": "https://images.tokopedia.net/img/cache/215-square/shops-1/2013/11/16/123911/123911_f185915a-4e3c-11e3-bc8b-57f84908a8c2.jpg",
+        "shop_image_300": "https://images.tokopedia.net/img/cache/300/shops-1/2013/11/16/123911/123911_f185915a-4e3c-11e3-bc8b-57f84908a8c2.jpg",
+        "shop_description": "Toko batik online yang menyediakan aneka baju batik wanita, pria dan sarimbit atau batik couple dengan berbagai model baju batik modern",
+        "shop_tag_line": "Toko Baju Batik Modern Terbaru Solo Online",
+        "shop_location": "Solo",
+        "shop_total_transaction": "12",
+        "shop_total_favorite": "0",
+        "shop_gold_shop": 0,
+        "shop_is_owner": 561438,
+        "shop_rate_speed": 4,
+        "shop_rate_accuracy": 3,
+        "shop_rate_service": 4,
+        "shop_status": 1,
+        "products": [],
+        "voucher": {
+          "free_shipping": false,
+          "cashback": {
+            "cashback_value": 0,
+            "is_percentage": false
+          }
+        },
+        "shop_lucky": "https://clover-staging.tokopedia.com/badges/merchant/v1?shop_id=123911",
+        "reputation_image_uri": "https://images.tokopedia.net/img/repsys/bronze-1-hd.gif",
+        "reputation_score": 8,
+        "is_official": false,
+        "ga_key": "/searchshop/baju+batik/bajubatikmodern"
+      },
+      {
+        "shop_id": 161311,
+        "shop_name": "BAJU BATIK MURAH",
+        "shop_domain": "bajubatikmurah",
+        "shop_url": "https://staging.tokopedia.com/bajubatikmurah",
+        "shop_applink": "tokopedia://shop/161311",
+        "shop_image": "https://images.tokopedia.net/img/cache/215-square/shops-1/2014/4/14/161311/161311_91fc221c-c3df-11e3-bd7d-93ce4908a8c2.jpg",
+        "shop_image_300": "https://images.tokopedia.net/img/cache/300/shops-1/2014/4/14/161311/161311_91fc221c-c3df-11e3-bd7d-93ce4908a8c2.jpg",
+        "shop_description": "TOKO BAJU BATIK MURAH pria wanita maupun sarimbit / couple, HARGA MURAH namun tetap BERKUALITAS. Belanja CEPAT - AMAN - TERJAMIN.",
+        "shop_tag_line": "Toko Batik Modern Pria Wanita dg harga Murah",
+        "shop_location": "Yogyakarta",
+        "shop_total_transaction": "2",
+        "shop_total_favorite": "0",
+        "shop_gold_shop": 0,
+        "shop_is_owner": 913192,
+        "shop_rate_speed": 4,
+        "shop_rate_accuracy": 5,
+        "shop_rate_service": 4,
+        "shop_status": 1,
+        "products": [],
+        "voucher": {
+          "free_shipping": false,
+          "cashback": {
+            "cashback_value": 0,
+            "is_percentage": false
+          }
+        },
+        "shop_lucky": "https://clover-staging.tokopedia.com/badges/merchant/v1?shop_id=161311",
+        "reputation_image_uri": "https://images.tokopedia.net/img/repsys/badges-off.jpg",
+        "reputation_score": 2,
+        "is_official": false,
+        "ga_key": "/searchshop/baju+batik/bajubatikmurah"
+      },
+      {
+        "shop_id": 250700,
+        "shop_name": "Baju Batik Muslim",
+        "shop_domain": "bajubatikmuslim",
+        "shop_url": "https://staging.tokopedia.com/bajubatikmuslim",
+        "shop_applink": "tokopedia://shop/250700",
+        "shop_image": "https://images.tokopedia.net/img/cache/215-square/shops-1/2014/10/31/1714901/1714901_29562584-60b3-11e4-a146-d6ec4908a8c2.jpg",
+        "shop_image_300": "https://images.tokopedia.net/img/cache/300/shops-1/2014/10/31/1714901/1714901_29562584-60b3-11e4-a146-d6ec4908a8c2.jpg",
+        "shop_description": "Pilihan lengkap semua model baju batik muslim modern yang penuh gaya dan sangat eklusif untuk pria & wanita muslim",
+        "shop_tag_line": "Tetap Berkualitas Dengan Harga Terjangkau",
+        "shop_location": "Solo",
+        "shop_total_transaction": "2",
+        "shop_total_favorite": "0",
+        "shop_gold_shop": 0,
+        "shop_is_owner": 1714901,
+        "shop_rate_speed": 2,
+        "shop_rate_accuracy": 5,
+        "shop_rate_service": 4,
+        "shop_status": 1,
+        "products": [],
+        "voucher": {
+          "free_shipping": false,
+          "cashback": {
+            "cashback_value": 0,
+            "is_percentage": false
+          }
+        },
+        "shop_lucky": "https://clover-staging.tokopedia.com/badges/merchant/v1?shop_id=250700",
+        "reputation_image_uri": "https://images.tokopedia.net/img/repsys/badges-off.jpg",
+        "reputation_score": 2,
+        "is_official": false,
+        "ga_key": "/searchshop/baju+batik/bajubatikmuslim"
+      }
+    ],
+    "top_shop": []
+  }
+}

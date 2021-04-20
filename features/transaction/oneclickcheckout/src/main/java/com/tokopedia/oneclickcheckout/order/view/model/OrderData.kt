@@ -11,5 +11,10 @@ data class OrderData(
         var profileRecommendation: String = "",
         var preference: OrderProfile = OrderProfile(),
         var promo: OrderPromo = OrderPromo(),
-        var payment: OrderPayment = OrderPayment()
+        var payment: OrderPayment = OrderPayment(),
+        var prompt: OccPrompt = OccPrompt(),
+        val revampData: OccRevampData = OccRevampData(),
+        val errorCode: String = "",
+        val popUpMessage: String = "",
+        val removeProfileData: OccRemoveProfileData = OccRemoveProfileData()
 )

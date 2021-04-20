@@ -1,0 +1,93 @@
+<resources>
+    <string name="tokopedia_scheme" translatable="false">tokopedia</string>
+    <string name="sellerapp_scheme" translatable="false">sellerapp</string>
+    <string name="internal_scheme" translatable="false">tokopedia-android-internal</string>
+
+    <string name="main_nav_args_source_key">pageSource</string>
+
+    <string name="search_tokopedia">Cari di Tokopedia</string>
+    <string name="search_title_feed">Feed</string>
+    <string name="content_desc_et_search">input search</string>
+    <string name="content_desc_btn_wishlist">button wishlist</string>
+    <string name="content_desc_btn_inbox">button inbox</string>
+    <string name="content_desc_btn_notification">button notification</string>
+
+    <string name="title_category">Kategori</string>
+    <string name="title_main_nav">Menu Utama</string>
+
+    <string name="btn_login">Masuk</string>
+    <string name="btn_register">Daftar</string>
+    <string name="text_ovo_saldo">%s &#8226; %s Points</string>
+
+    <string name="btn_try_again">Coba Lagi</string>
+
+
+    <string name="host_navigation">navigation</string>
+
+    <string name="menu_home_back_to_home">Kembali ke Home</string>
+
+    <string name="menu_user_menu_wishlist">Wishlist</string>
+    <string name="menu_user_menu_favorite_shop">Toko Favorit</string>
+    <string name="menu_user_menu_recent_view">Terakhir Dilihat</string>
+    <string name="menu_user_menu_subscription">Langganan</string>
+    <string name="menu_user_menu_complain">Pesanan Dikomplain</string>
+    <string name="menu_user_menu_tokopedia_care">Bantuan Tokopedia Care</string>
+    <string name="menu_user_menu_qr_code">QR Code</string>
+
+    <string name="menu_user_menu_wishlist_tracker_name">Wishlist</string>
+    <string name="menu_user_menu_favorite_shop_tracker_name">Favorite Shop</string>
+    <string name="menu_user_menu_recent_view_tracker_name">Recent View</string>
+    <string name="menu_user_menu_subscription_tracker_name">Subscription</string>
+    <string name="menu_user_menu_complain_tracker_name">Complain</string>
+    <string name="menu_user_menu_tokopedia_care_tracker_name">Bantuan Tokopedia Care</string>
+    <string name="menu_user_menu_qr_code_tracker_name">Scan QR Code</string>
+
+    <string name="title_transaction_section">Aktivitas Saya</string>
+    <string name="title_category_section">Semua Kategori</string>
+    <string name="title_helpcenter_section">Pusat Bantuan</string>
+    <string name="menu_transaction_menu_all_transaction">Semua Transaksi</string>
+    <string name="menu_transaction_menu_ticket">E-tiket &#38; E-voucher Aktif</string>
+    <string name="menu_transaction_menu_review">Ulasan</string>
+
+    <string name="transaction_item_default_status">Menunggu pembayaran</string>
+    <string name="transaction_item_total_product">%s\nBarang</string>
+    <string name="transaction_others_count">Transaksi\nLainnya</string>
+    <string name="transaction_rupiah_value">Rp%s</string>
+
+    <string name="menu_user_menu_shop_ticker_title">Mulai kembangkan bisnismu!</string>
+    <string name="menu_user_menu_shop_ticker_description">Yuk, jemput suksesmu dengan buka toko di Tokopedia. &lt;a href="#"&gt;Buka Toko Gratis&lt;/a&gt;</string>
+
+    <string name="category_back_menu">Kembali</string>
+
+    <string name="onboarding_login_p1_s1_title">Halo, sekarang Akunmu di sini~</string>
+    <string name="onboarding_login_p1_s1_description">Kamu bisa atur Akun, atau cek TokoPoints &#38; saldo lainnya. Buat kamu yang punya toko bisa akses di sini.</string>
+
+    <string name="onboarding_login_p1_s2_title">Bayar tagihan &#38; cek transaksi bisa di sini!</string>
+    <string name="onboarding_login_p1_s2_description">Kamu juga bisa top up &#38; beli tiket. Kalau transaksi sudah selesai, jangan lupa tulis ulasan, ya.</string>
+
+    <string name="onboarding_login_p1_s3_title">Ada yang mau kamu tanyakan?</string>
+    <string name="onboarding_login_p1_s3_description">Hubungi Tokopedia Care saja kalau kamu butuh bantuan atau curhat lagi ada kendala!</string>
+
+    <string name="onboarding_login_p2_s1_title">Halo, sekarang Akunmu di sini~</string>
+    <string name="onboarding_login_p2_s1_description">Kamu bisa atur Akun, atau cek TokoPoints &#38; saldo lainnya. Buat kamu yang punya toko bisa akses di sini.</string>
+
+    <string name="onboarding_nonlogin_p1_s1_title">Bayar tagihan &#38; cek transaksi bisa di sini!</string>
+    <string name="onboarding_nonlogin_p1_s1_description">Kamu juga bisa top up &#38; beli tiket. Kalau transaksi sudah selesai, jangan lupa tulis ulasan, ya.</string>
+
+    <string name="onboarding_nonlogin_p1_s2_title">Ada yang mau kamu tanyakan?</string>
+    <string name="onboarding_nonlogin_p1_s2_description">Hubungi Tokopedia Care saja kalau kamu butuh bantuan atau curhat lagi ada kendala!</string>
+
+    <string name="error_state_bu_title">Gagal memuat menu ini</string>
+    <string name="error_state_bu_description">Klik untuk coba lagi.</string>
+
+    <string name="error_state_transaction_title">Gagal memuat transaksi</string>
+    <string name="error_state_transaction_description">Klik untuk coba lagi.</string>
+
+    <string name="error_state_shop_info">Gagal memuat toko</string>
+
+    <string name="content_desc_image_transaction">image transaction</string>
+    <string name="content_desc_image_payment">image payment</string>
+    <string name="account_header_store_empty_shop">Pengen buka toko?</string>
+    <string name="account_header_store_title">Toko saya:</string>
+    <string name="account_header_store_title_role">Peran saya:</string>
+</resources>

@@ -1,5 +1,7 @@
 package com.tokopedia.purchase_platform.common.feature.promo.view.mapper
 
+import com.tokopedia.purchase_platform.common.feature.promo.data.response.validateuse.BenefitSummaryInfo
+import com.tokopedia.purchase_platform.common.feature.promo.data.response.validateuse.SummariesItem
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.*
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.*
 
@@ -16,8 +18,41 @@ object LastApplyUiMapper {
                 voucherOrders = mapVoucherOrders(promoUiModel.voucherOrderUiModels),
                 additionalInfo = mapAdditionalInfo(promoUiModel.additionalInfoUiModel),
                 message = mapMessageUiModel(promoUiModel.messageUiModel),
-                defaultEmptyPromoMessage = if (promoUiModel.titleDescription.isNotBlank()) promoUiModel.titleDescription else ""
+                defaultEmptyPromoMessage = if (promoUiModel.titleDescription.isNotBlank()) promoUiModel.titleDescription else "",
+                benefitSummaryInfo = promoUiModel.benefitSummaryInfoUiModel
         )
+    }
+
+    private fun mapBenefitSummaryInfo(benefitSummaryInfoList: List<BenefitSummaryInfo>): List<BenefitSummaryInfoUiModel> {
+        val benefitSummaryInfoUiModelList = ArrayList<BenefitSummaryInfoUiModel>()
+        benefitSummaryInfoList.forEach { benefitSummaryInfo ->
+            val benefitSummaryInfoUiModel = BenefitSummaryInfoUiModel().apply {
+                finalBenefitAmountStr = benefitSummaryInfo.finalBenefitAmountStr
+                finalBenefitAmount = benefitSummaryInfo.finalBenefitAmount
+                finalBenefitText = benefitSummaryInfo.finalBenefitText
+                summaries = mapSummariesItemUiModel(benefitSummaryInfo.summaries)
+            }
+            benefitSummaryInfoUiModelList.add(benefitSummaryInfoUiModel)
+        }
+
+        return benefitSummaryInfoUiModelList
+    }
+
+    private fun mapSummariesItemUiModel(summariesItemList: List<SummariesItem>): List<SummariesItemUiModel> {
+        val summariesItemUiModelList = ArrayList<SummariesItemUiModel>()
+        summariesItemList.forEach { summariesItem ->
+            val summariesItemUiModel = SummariesItemUiModel().apply {
+                amount = summariesItem.amount
+                sectionName = summariesItem.sectionName
+                description = summariesItem.description
+                sectionDescription = summariesItem.sectionDescription
+                type = summariesItem.type
+                amountStr = summariesItem.amountStr
+            }
+            summariesItemUiModelList.add(summariesItemUiModel)
+        }
+
+        return summariesItemUiModelList
     }
 
     private fun mapVoucherOrders(voucherOrderUiModels: List<PromoCheckoutVoucherOrdersItemUiModel?>): List<LastApplyVoucherOrdersItemUiModel> {
@@ -92,6 +127,7 @@ object LastApplyUiMapper {
                 description = usageSummariesUiModel.desc,
                 type = usageSummariesUiModel.type,
                 amountStr = usageSummariesUiModel.amountStr,
-                amount = usageSummariesUiModel.amount)
+                amount = usageSummariesUiModel.amount,
+                currencyDetailsStr = usageSummariesUiModel.currencyDetailStr)
     }
 }

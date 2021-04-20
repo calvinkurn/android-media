@@ -3,23 +3,20 @@ package com.tokopedia.shop.open.domain
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
-import com.tokopedia.shop.open.common.GQLQueryConstant
 import com.tokopedia.shop.open.data.model.CreateShop
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 
 import javax.inject.Inject
-import javax.inject.Named
 
 class ShopOpenRevampCreateShopUseCase @Inject constructor(
-        private val graphqlUseCase: MultiRequestGraphqlUseCase,
-        @Named(GQLQueryConstant.QUERY_SHOP_OPEN_REVAMP_CREATE_SHOP) val queryCreateShop: String
+        private val graphqlUseCase: MultiRequestGraphqlUseCase
 ): UseCase<CreateShop>() {
 
     var params: RequestParams = RequestParams.EMPTY
 
     override suspend fun executeOnBackground(): CreateShop {
-        val createShop = GraphqlRequest(queryCreateShop, CreateShop::class.java, params.parameters)
+        val createShop = GraphqlRequest(QUERY, CreateShop::class.java, params.parameters)
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(createShop)
         val gqlResponse = graphqlUseCase.executeOnBackground()
@@ -41,6 +38,21 @@ class ShopOpenRevampCreateShopUseCase @Inject constructor(
         private const val DISTRICT_ID = "districtID"
         private const val POSTAL_CODE = "postalCode"
         private const val SKIP_LOCATION  = "skipLocation"
+        private const val QUERY = "mutation CreateShop(\$name:String!, \$domain: String!, \$postalCode: Int!, \$districtID: Int!) {\n" +
+                "    createShop(\n" +
+                "        input: {\n" +
+                "            name: \$name,\n" +
+                "            domain: \$domain,\n" +
+                "            postalCode: \$postalCode,\n" +
+                "            districtID: \$districtID,\n" +
+                "            skipLocation: true\n" +
+                "        }\n" +
+                "    ){\n" +
+                "        success\n" +
+                "        message\n" +
+                "        createdId\n" +
+                "    }\n" +
+                "}"
 
         fun createRequestParams(domainName: String, shopName: String): RequestParams = RequestParams.create().apply {
             putString(SHOP_NAME, shopName)

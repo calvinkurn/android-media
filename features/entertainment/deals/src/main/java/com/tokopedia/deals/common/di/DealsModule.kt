@@ -6,14 +6,13 @@ import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.deals.common.analytics.DealsAnalytics
-import com.tokopedia.deals.common.utils.DealsDispatcherProductionProvider
-import com.tokopedia.deals.common.utils.DealsDispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.deals.common.utils.DealsLocationUtils
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.iris.util.IrisSession
-import com.tokopedia.network.CoroutineCallAdapterFactory
 import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.converter.StringResponseConverter
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
@@ -35,7 +34,6 @@ import java.util.concurrent.TimeUnit
  * @author by jessica on 11/06/20
  */
 
-@DealsScope
 @Module
 class DealsModule(val context: Context) {
 
@@ -123,7 +121,6 @@ class DealsModule(val context: Context) {
         return Retrofit.Builder()
                 .addConverterFactory(StringResponseConverter())
                 .addConverterFactory(GsonConverterFactory.create(gson))
-                .addCallAdapterFactory(CoroutineCallAdapterFactory())
     }
 
     @DealsScope
@@ -151,5 +148,5 @@ class DealsModule(val context: Context) {
 
     @DealsScope
     @Provides
-    fun provideDealsDispatcherProvider(): DealsDispatcherProvider = DealsDispatcherProductionProvider()
+    fun provideCoroutineDispatchers(): CoroutineDispatchers = CoroutineDispatchersProvider
 }

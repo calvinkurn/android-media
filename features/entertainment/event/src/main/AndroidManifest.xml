@@ -1,16 +1,18 @@
-    <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.tokopedia.entertainment">
 
     <application
+        tools:replace="android:allowBackup"
         android:allowBackup="true"
         android:supportsRtl="true">
         <activity android:name=".home.activity.HomeEventActivity"
             android:label="@string/ent_home_page_event_hiburan"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White" >
+            android:theme="@style/Theme.WhiteUnify" >
 
-            <intent-filter android:autoVerify="true">
-                <action android:name="android.intent.action.VIEW" />
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
@@ -25,9 +27,9 @@
         <activity android:name=".search.activity.EventSearchActivity"
             android:label="@string/ent_search_title"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White">
-            <intent-filter android:autoVerify="true">
-                <action android:name="android.intent.action.VIEW" />
+            android:theme="@style/Theme.WhiteUnify">
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
@@ -42,9 +44,9 @@
         <activity android:name=".search.activity.EventCategoryActivity"
             android:label="@string/ent_search_title"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White">
-            <intent-filter android:autoVerify="true">
-                <action android:name="android.intent.action.VIEW" />
+            android:theme="@style/Theme.WhiteUnify">
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
@@ -59,9 +61,9 @@
         <activity android:name=".search.activity.EventLocationActivity"
             android:label="@string/ent_search_event_location"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White">
-            <intent-filter android:autoVerify="true">
-                <action android:name="android.intent.action.VIEW" />
+            android:theme="@style/Theme.WhiteUnify">
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
@@ -76,10 +78,10 @@
         <activity
             android:name=".pdp.activity.EventPDPActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White"
+            android:theme="@style/Theme.WhiteUnify"
             >
-            <intent-filter android:autoVerify="true">
-                <action android:name="android.intent.action.VIEW" />
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
@@ -94,10 +96,10 @@
         <activity
             android:name=".pdp.activity.EventPDPTicketActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White"
+            android:theme="@style/Theme.WhiteUnify"
             >
-            <intent-filter android:autoVerify="true">
-                <action android:name="android.intent.action.VIEW" />
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
@@ -112,11 +114,11 @@
         <activity
             android:name=".pdp.activity.EventCheckoutActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White"
+            android:theme="@style/Theme.WhiteUnify"
             android:label="@string/ent_event_checkout_title_page"
             >
-            <intent-filter android:autoVerify="true">
-                <action android:name="android.intent.action.VIEW" />
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
@@ -131,11 +133,10 @@
         <activity
             android:name=".pdp.activity.EventPDPFormActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White"
-            android:label="@string/ent_pdp_title_form"
+            android:theme="@style/Theme.WhiteUnify"
             >
-            <intent-filter android:autoVerify="true">
-                <action android:name="android.intent.action.VIEW" />
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
@@ -143,6 +144,23 @@
                 <data
                     android:host="@string/host_event"
                     android:pathPattern="@string/path_event_form"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
+        </activity>
+
+        <activity android:name=".pdp.activity.EventRedeemActivity"
+            android:label="@string/ent_redeem_title"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.WhiteUnify">
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_event"
+                    android:path="@string/path_event_redeem"
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>

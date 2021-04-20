@@ -8,6 +8,6 @@
         />
 
     <solid
-        android:color="@color/Neutral_N0"
+        android:color="@color/Unify_Static_White"
         />
 </shape>

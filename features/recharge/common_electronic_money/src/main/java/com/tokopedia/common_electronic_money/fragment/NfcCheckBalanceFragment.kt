@@ -12,9 +12,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.annotation.RequiresApi
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital
@@ -25,14 +23,14 @@ import com.tokopedia.common_electronic_money.compoundview.ETollUpdateBalanceResu
 import com.tokopedia.common_electronic_money.compoundview.NFCDisabledView
 import com.tokopedia.common_electronic_money.compoundview.TapETollCardView
 import com.tokopedia.common_electronic_money.data.EmoneyInquiry
-import com.tokopedia.common_electronic_money.di.DaggerNfcCheckBalanceComponent
 import com.tokopedia.common_electronic_money.di.NfcCheckBalanceInstance
 import com.tokopedia.common_electronic_money.util.EmoneyAnalytics
 import com.tokopedia.iris.util.IrisSession
-import com.tokopedia.permissionchecker.PermissionCheckerHelper
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.permission.PermissionCheckerHelper
 import javax.inject.Inject
 
 open abstract class NfcCheckBalanceFragment : BaseDaggerFragment() {
@@ -178,12 +176,17 @@ open abstract class NfcCheckBalanceFragment : BaseDaggerFragment() {
     protected fun showError(errorMessage: String) {
         statusCloseBtn = FAILED_CLOSE_BTN
         emoneyAnalytics.onShowErrorTracking()
+
+        val updatedErrorMessage = if (errorMessage.contains(getString(R.string.emoney_nfc_grpc_timeout), true)) {
+            getString(R.string.emoney_nfc_grpc_label_error)
+        } else errorMessage
+
         if (eTollUpdateBalanceResultView.visibility == View.VISIBLE) {
-            eTollUpdateBalanceResultView.showError(errorMessage)
+            eTollUpdateBalanceResultView.showError(updatedErrorMessage)
         } else {
             tapETollCardView.visibility = View.VISIBLE
             tapETollCardView.showInitialState()
-            tapETollCardView.showErrorState(errorMessage)
+            tapETollCardView.showErrorState(updatedErrorMessage)
         }
         emoneyAnalytics.openScreenFailedReadCardNFC(userSession.userId, irisSessionId)
     }
@@ -205,9 +208,9 @@ open abstract class NfcCheckBalanceFragment : BaseDaggerFragment() {
         emoneyAnalytics.onShowLastBalance()
         emoneyAnalytics.openScreenSuccessReadCardNFC(operatorName, userSession.userId, irisSessionId)
 
-        activity?.let { activity ->
-            emoneyInquiry.error?.let {
-                NetworkErrorHelper.showGreenCloseSnackbar(activity, it.title)
+        emoneyInquiry.error?.let { eMoneyInquiryError ->
+            view?.let {
+                Toaster.build(it, eMoneyInquiryError.title, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL).show()
             }
         }
     }
@@ -296,9 +299,9 @@ open abstract class NfcCheckBalanceFragment : BaseDaggerFragment() {
 
         const val ETOLL_CATEGORY_ID = "34"
 
-        private const val INITIAL_CLOSE_BTN = "initial";
-        private const val SUCCESS_CLOSE_BTN = "success";
-        private const val FAILED_CLOSE_BTN = "failed";
+        private const val INITIAL_CLOSE_BTN = "initial"
+        private const val SUCCESS_CLOSE_BTN = "success"
+        private const val FAILED_CLOSE_BTN = "failed"
 
     }
 }

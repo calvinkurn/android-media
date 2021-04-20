@@ -131,7 +131,7 @@ class DynamicFeedShopAdapter(private val itemClickListener: LocalAdsClickListene
                 imageLoader.loadImage(imageUrl, imageView)
             } else {
                 imageView.setBackgroundColor(
-                        ContextCompat.getColor(imageView.context, R.color.topads_gray_default_bg)
+                        ContextCompat.getColor(imageView.context, com.tokopedia.unifyprinciples.R.color.Unify_N50)
                 )
             }
         }

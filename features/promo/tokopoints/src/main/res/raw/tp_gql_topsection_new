@@ -24,10 +24,17 @@
         counter
         counterStr
       }
+      counterTotal {
+        isShowCounter
+        counter
+        counterStr
+      }
       iconImageURL
       iconImageURLScrolled
     }
     backgroundImageURLMobileV2
     isShowIntroPage
+    isShowSavingPage
+
   }
 }

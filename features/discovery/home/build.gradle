@@ -4,14 +4,14 @@ apply from: "../../../compile-instrument-test.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 
 repositories {
-    maven { url 'https://hansel.io/maven' }
+    maven { url 'https://maven-hansel.tokopedia.com/maven' }
 }
 buildscript {
     repositories {
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         mavenCentral()
         jcenter()
-        maven { url 'https://hansel.io/maven' }
+        maven { url 'https://maven-hansel.tokopedia.com/maven' }
         google()
     }
     dependencies {
@@ -51,15 +51,15 @@ dependencies {
     implementation project(rootProject.ext.features.commonDigital)
     implementation project(rootProject.ext.features.commonWallet)
     implementation project(rootProject.ext.features.discoveryCommon)
+    implementation project(rootProject.ext.features.recommendationWidgetCommon)
     implementation project(rootProject.ext.features.dynamicBanner)
-    implementation project(rootProject.ext.features.feed)
     implementation project(rootProject.ext.features.homeComponent)
     implementation project(rootProject.ext.features.goldMerchantCommon)
     implementation project(rootProject.ext.features.kolCommon)
     implementation project(rootProject.ext.features.loyalty)
     implementation project(rootProject.ext.features.loyaltyCommon)
     implementation project(rootProject.ext.features.navigationCommon)
-    implementation project(rootProject.ext.features.playCommon)
+    implementation project(rootProject.ext.features.medialoader)
     implementation project(rootProject.ext.features.productCard)
     implementation project(rootProject.ext.features.promoGamificationCommon)
     implementation project(rootProject.ext.features.reputationCommon)
@@ -70,6 +70,10 @@ dependencies {
     implementation project(rootProject.ext.features.tokopointsNotification)
     implementation project(rootProject.ext.features.topAdsSdk)
     implementation project(rootProject.ext.features.wishlistCommon)
+    implementation project(rootProject.ext.features.homeNav)
+    implementation project(rootProject.ext.features.playCommon)
+    implementation project(rootProject.ext.features.playWidget)
+    implementation project(rootProject.ext.features.rechargeComponent)
 
     // Library
     implementation project(rootProject.ext.libraries.analytics)
@@ -79,14 +83,13 @@ dependencies {
     implementation project(rootProject.ext.libraries.coreNetwork)
     implementation project(rootProject.ext.libraries.core_legacy)
     implementation project(rootProject.ext.libraries.diffUtilRecycler)
-    implementation project(rootProject.ext.libraries.imagePicker)
+    implementation project(rootProject.ext.libraries.imagePickerCommon)
     implementation project(rootProject.ext.libraries.iris)
     implementation project(rootProject.ext.libraries.irisSession)
     implementation project(rootProject.ext.libraries.kotlinExtensions)
     implementation project(rootProject.ext.libraries.locationmanager)
-    implementation project(rootProject.ext.libraries.permissionchecker)
+    implementation project(rootProject.ext.libraries.utils)
     implementation project(rootProject.ext.libraries.remoteConfig)
-    implementation project(rootProject.ext.libraries.tkpddesign)
     implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.libraries.baseList)
     implementation project(rootProject.ext.libraries.track)
@@ -94,6 +97,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.traceroute)
     implementation project(rootProject.ext.libraries.deviceInfo)
     implementation project(rootProject.ext.libraries.remoteResourceRequest)
+    implementation project(rootProject.ext.libraries.logger)
 
     // Room
     implementation rootProject.ext.dbDependencies.dbRoomRuntime
@@ -102,35 +106,32 @@ dependencies {
 
     // Unify
     implementation rootProject.ext.unifyDependencies.components
+    implementation rootProject.ext.unifyDependencies.icons
+    implementation rootProject.ext.unifyDependencies.coach_mark
     implementation rootProject.ext.unifyDependencies.global_error
     implementation rootProject.ext.unifyDependencies.principles
 
     // Tkpd internal
-    implementation rootProject.ext.tkpdInternalLibDependencies.cacheapi
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
+    implementation rootProject.ext.tkpdInternalLibDependencies.authentication
     implementation project(rootProject.ext.libraries.graphql)
     implementation rootProject.ext.tkpdInternalLibDependencies.network
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation rootProject.ext.tkpdInternalLibDependencies.akamaiBMP
     implementation rootProject.ext.supportLibDependencies.constraintLayout
+    implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
 
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
-    implementation rootProject.ext.miscDependencies.cameraView
-    implementation (rootProject.ext.miscDependencies.ucrop){
-        exclude group: 'com.android.support'
-    }
     implementation(rootProject.ext.miscDependencies.viewPager2) {
         ['androidx.collection', 'androidx.fragment'].each {
             exclude group: it
         }
     }
 
-    implementation(rootProject.ext.serviceDependencies.crashlytics) {
-        transitive = true
-    }
+    implementation rootProject.ext.firebase.crashlytics
     implementation rootProject.ext.miscDependencies.dagger
     kapt rootProject.ext.miscDependencies.daggerCompiler
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
@@ -153,6 +154,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.weaver)
 
     implementation rootProject.ext.miscDependencies.exoPlayer
+    implementation project(rootProject.ext.features.localizationchooseaddress)
 
     // UI Test
     androidTestImplementation rootProject.ext.testDependencies.androidTestRunner
@@ -166,18 +168,14 @@ dependencies {
     androidTestImplementation rootProject.ext.testDependencies.archCoreTesting
     androidTestImplementation rootProject.ext.testDependencies.benchmark
     androidTestImplementation rootProject.ext.testDependencies.testCore
-    androidTestImplementation project(rootProject.ext.libraries.analyticsDebugger)
-
+    androidTestImplementation project(rootProject.ext.libraries.cassavaTest)
 
     // Unit test
     testImplementation rootProject.ext.testDependencies.archCoreTesting
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.miscDependencies.coroutineCore
     testImplementation rootProject.ext.miscDependencies.coroutineTest
-
-    debugImplementation (rootProject.ext.testDependencies.fragmentTest, {
-        exclude group: 'androidx.test', module: 'core'
-    })
+    testImplementation project(rootProject.ext.libraries.unitTest)
 }
 
 project.ext {

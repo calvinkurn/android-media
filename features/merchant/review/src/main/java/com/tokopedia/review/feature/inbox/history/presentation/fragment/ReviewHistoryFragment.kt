@@ -163,6 +163,7 @@ class ReviewHistoryFragment : BaseListFragment<ReviewHistoryUiModel, ReviewHisto
         viewModel.reviewList.observe(viewLifecycleOwner, Observer {
             when(it) {
                 is Success -> {
+                    hideLoading()
                     hidePageLoading()
                     hideError()
                     if(it.page == ReviewInboxConstants.REVIEW_INBOX_INITIAL_PAGE && it.data.list.isEmpty() && it.search.isNotBlank()) {
@@ -198,7 +199,7 @@ class ReviewHistoryFragment : BaseListFragment<ReviewHistoryUiModel, ReviewHisto
     private fun goToReviewDetails(reputationId: Int, feedbackId: Int) {
         RouteManager.route(context,
                 Uri.parse(
-                        UriUtil.buildUri(ApplinkConstInternalMarketplace.INBOX_REPUTATION_DETAIL, reputationId.toString()))
+                        UriUtil.buildUri(ApplinkConstInternalMarketplace.REVIEW_DETAIL, reputationId.toString()))
                         .buildUpon()
                         .appendQueryParameter(ReviewConstants.PARAM_FEEDBACK_ID, feedbackId.toString()).toString()
         )
@@ -245,6 +246,7 @@ class ReviewHistoryFragment : BaseListFragment<ReviewHistoryUiModel, ReviewHisto
             reviewEmptyImage.loadImage(ReviewInboxConstants.REVIEW_INBOX_NO_PRODUCTS_SEARCH_IMAGE)
             reviewEmptyTitle.text = getString(R.string.review_history_no_product_search_result_title)
             reviewEmptySubtitle.text = getString(R.string.review_history_no_product_search_content)
+            reviewEmptyButton.hide()
             show()
         }
         reviewHistorySwipeRefresh.hide()
@@ -255,6 +257,7 @@ class ReviewHistoryFragment : BaseListFragment<ReviewHistoryUiModel, ReviewHisto
             reviewEmptyImage.loadImage(ReviewInboxConstants.REVIEW_INBOX_NO_PRODUCTS_BOUGHT_IMAGE)
             reviewEmptyTitle.text = getString(R.string.review_history_no_review_history_title)
             reviewEmptySubtitle.text = getString(R.string.review_history_no_review_history_content)
+            reviewEmptyButton.hide()
             show()
         }
         reviewHistorySearchBar.hide()

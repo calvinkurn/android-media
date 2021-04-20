@@ -2,6 +2,7 @@ package com.tokopedia.officialstore.official.presentation.dynamic_channel
 
 import android.view.View
 import com.tokopedia.design.countdown.CountDownView
+import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.officialstore.official.data.model.dynamic_channel.Channel
 import com.tokopedia.officialstore.official.data.model.dynamic_channel.Cta
@@ -39,5 +40,13 @@ interface DynamicChannelEventHandler : CountDownView.CountDownListener {
 
     fun onClickMixLeftBannerImage(channel: Channel, position: Int)
     fun onMixLeftBannerImpressed(channel: Channel, position: Int)
+
+    //mixleft global component
+    fun onClickMixLeftBannerImage(channel: ChannelModel, position: Int)
+    fun onMixLeftBannerImpressed(channel: ChannelModel, position: Int)
+    fun onFlashSaleCardImpressedComponent(position: Int,grid: ChannelGrid, channel: ChannelModel)
+    fun onMixFlashSaleSeeAllClickedComponent(channel: ChannelModel, applink: String)
+    fun onFlashSaleCardClickedComponent(position: Int, channel: ChannelModel, grid: ChannelGrid, applink: String)
+    fun onSeeAllBannerClickedComponent(channel: ChannelModel, applink: String)
 
 }

@@ -42,12 +42,12 @@ import com.tokopedia.editshipping.ui.customview.CourierView
 import com.tokopedia.editshipping.ui.customview.ShippingAddressLayout
 import com.tokopedia.editshipping.ui.customview.ShippingHeaderLayout
 import com.tokopedia.editshipping.ui.customview.ShippingInfoBottomSheet
-import com.tokopedia.editshipping.util.ARGUMENT_DATA_TOKEN
-import com.tokopedia.editshipping.util.LABEL_VALIDATION_BO
-import com.tokopedia.logisticdata.data.constant.LogisticConstant
-import com.tokopedia.logisticdata.data.entity.address.DistrictRecommendationAddress
-import com.tokopedia.logisticdata.data.entity.address.Token
-import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass
+import com.tokopedia.editshipping.util.EditShippingConstant.ARGUMENT_DATA_TOKEN
+import com.tokopedia.editshipping.util.EditShippingConstant.LABEL_VALIDATION_BO
+import com.tokopedia.logisticCommon.data.constant.LogisticConstant
+import com.tokopedia.logisticCommon.data.entity.address.DistrictRecommendationAddress
+import com.tokopedia.logisticCommon.data.entity.address.Token
+import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
@@ -110,6 +110,13 @@ class EditShippingFragment : Fragment(), EditShippingViewListener {
         } else if (editShippingPresenter?.shopModel != null) {
             editShippingPresenter?.bindDataToView(editShippingPresenter?.shopModel)
         } else data
+    }
+
+    override fun onPause() {
+        super.onPause()
+        if (bottomSheetValidation?.isVisible == true) {
+            bottomSheetValidation?.dismiss()
+        }
     }
 
     private fun hideAllView() {

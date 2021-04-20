@@ -15,7 +15,7 @@ import com.tokopedia.power_merchant.subscribe.URL_LEARN_MORE_BENEFIT
 import com.tokopedia.power_merchant.subscribe.view.activity.PowerMerchantTermsActivity
 import com.tokopedia.power_merchant.subscribe.view.fragment.PowerMerchantSubscribeFragment.Companion.MINIMUM_SCORE_ACTIVATE_REGULAR
 import com.tokopedia.power_merchant.subscribe.view.util.PowerMerchantSpannableUtil.createSpannableString
-import com.tokopedia.user_identification_common.KYCConstant.STATUS_VERIFIED
+import com.tokopedia.user_identification_common.KYCConstant
 import kotlinx.android.synthetic.main.layout_power_merchant_registration.view.*
 
 class PowerMerchantRegistrationView : ConstraintLayout {
@@ -36,7 +36,7 @@ class PowerMerchantRegistrationView : ConstraintLayout {
         val shopStatus = powerMerchantStatus.kycUserProjectInfoPojo.kycProjectInfo
         val shopScore = powerMerchantStatus.shopScore.data.value
 
-        val kycVerified = shopStatus.status == STATUS_VERIFIED
+        val kycVerified = shopStatus.status == KYCConstant.STATUS_VERIFIED
         val shopScoreEligible = shopScore >= MINIMUM_SCORE_ACTIVATE_REGULAR
 
         setTracker(tracker)
@@ -56,7 +56,7 @@ class PowerMerchantRegistrationView : ConstraintLayout {
             kycVerified && shopScoreEligible -> {
                 val text = context.getString(R.string.power_merchant_full_eligibility_description)
                 val clickableText = context.getString(R.string.power_merchant_register_text)
-                val clickableTextColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.light_N700)
+                val clickableTextColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700)
 
                 createSpannableString(text, clickableText, clickableTextColor, true) {
                     goToTermsAndConditionPage(shopScore)
@@ -68,7 +68,7 @@ class PowerMerchantRegistrationView : ConstraintLayout {
             else -> {
                 val text = context.getString(R.string.power_merchant_shop_score_description)
                 val clickableText = context.getString(R.string.power_merchant_see_tips)
-                val clickableTextColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.light_G500)
+                val clickableTextColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500)
 
                 createSpannableString(text, clickableText, clickableTextColor) { goToLearMorePage() }
             }

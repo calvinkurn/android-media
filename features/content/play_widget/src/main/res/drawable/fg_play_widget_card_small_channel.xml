@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ripple xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:color="@color/Unify_N700_20"
+    tools:targetApi="lollipop"
+    >
+    <item
+        android:id="@android:id/mask"
+        android:bottom="@dimen/play_widget_dp_6"
+        >
+        <shape android:shape="rectangle">
+            <corners android:radius="@dimen/play_widget_small_radius"/>
+            <solid android:color="@color/Unify_N0" />
+        </shape>
+    </item>
+</ripple>

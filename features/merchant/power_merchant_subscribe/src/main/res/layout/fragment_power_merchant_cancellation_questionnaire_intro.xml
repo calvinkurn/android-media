@@ -27,7 +27,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:text="@string/pm_label_cancellation_questionnaire_intro_title"
-                android:textColor="@color/clr_f531353b"
+                android:textColor="@color/Unify_N700_96"
                 app:typographyType="heading_3" />
 
             <com.tokopedia.unifyprinciples.Typography
@@ -36,7 +36,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_8"
                 android:gravity="center"
-                android:textColor="@color/clr_f531353b"
+                android:textColor="@color/Unify_N700_96"
                 app:typographyType="body_3"
                 tools:text="@string/pm_label_cancellation_questionnaire_intro_desc" />
 
@@ -44,7 +44,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_2"
                 android:layout_marginTop="@dimen/dp_32"
-                android:background="#e5e7e9" />
+                android:background="@color/Unify_N75" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_question"
@@ -53,7 +53,7 @@
                 android:layout_marginTop="@dimen/dp_24"
                 android:gravity="center"
                 android:text="@string/pm_label_cancellation_questionnaire_intro_rating_title"
-                android:textColor="@color/clr_f531353b"
+                android:textColor="@color/Unify_N700_96"
                 app:typographyType="heading_4" />
 
             <RatingBar
@@ -73,7 +73,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_24"
                 android:gravity="center"
-                android:textColor="@color/clr_f531353b"
+                android:textColor="@color/Unify_N700_96"
                 app:typographyType="heading_5"
                 tools:text="@string/pm_cancellation_questionnaire_intro_rating_1_star" />
 

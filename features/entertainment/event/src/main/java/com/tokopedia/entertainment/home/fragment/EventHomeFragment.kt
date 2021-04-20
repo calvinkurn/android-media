@@ -8,6 +8,7 @@ import android.widget.Toast
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -19,13 +20,18 @@ import com.tokopedia.entertainment.common.util.EventQuery
 import com.tokopedia.entertainment.home.adapter.HomeEventAdapter
 import com.tokopedia.entertainment.home.adapter.HomeEventItem
 import com.tokopedia.entertainment.home.adapter.factory.HomeTypeFactoryImpl
+import com.tokopedia.entertainment.home.adapter.listener.TrackingListener
+import com.tokopedia.entertainment.home.adapter.viewholder.CategoryEventViewHolder
+import com.tokopedia.entertainment.home.adapter.viewmodel.EventItemLocationModel
 import com.tokopedia.entertainment.home.adapter.viewmodel.EventItemModel
 import com.tokopedia.entertainment.home.analytics.EventHomePageTracking
+import com.tokopedia.entertainment.home.data.EventHomeDataResponse
 import com.tokopedia.entertainment.home.di.EventHomeComponent
 import com.tokopedia.entertainment.home.viewmodel.FragmentView
 import com.tokopedia.entertainment.home.viewmodel.HomeEventViewModel
 import com.tokopedia.entertainment.home.viewmodel.HomeEventViewModelFactory
 import com.tokopedia.entertainment.home.widget.MenuSheet
+import com.tokopedia.entertainment.pdp.fragment.EventPDPTicketFragment
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.ent_home_fragment.*
@@ -36,7 +42,8 @@ import javax.inject.Inject
  * Author errysuprayogi on 27,January,2020
  */
 
-class EventHomeFragment : BaseDaggerFragment(), FragmentView, MenuSheet.ItemClickListener {
+class EventHomeFragment : BaseDaggerFragment(), FragmentView, MenuSheet.ItemClickListener,
+        TrackingListener {
 
     companion object {
         fun getInstance(): EventHomeFragment = EventHomeFragment()
@@ -46,20 +53,29 @@ class EventHomeFragment : BaseDaggerFragment(), FragmentView, MenuSheet.ItemClic
         const val REQUEST_LOGIN_FAVORITE = 213
         const val REQUEST_LOGIN_TRANSACTION = 214
         const val REQUEST_LOGIN_POST_LIKES = 215
-        private const val COACH_MARK_TAG = "event_home"
+        const val COACH_MARK_TAG = "event_home"
         const val ENT_HOME_PAGE_PERFORMANCE = "et_event_homepage"
+
+        const val PREFERENCES_NAME = "event_home_preferences"
+        const val SHOW_COACH_MARK_KEY = "show_coach_mark_key_home"
     }
 
     @Inject
     lateinit var factory: HomeEventViewModelFactory
+
     @Inject
     lateinit var userSession: UserSessionInterface
     lateinit var viewModel: HomeEventViewModel
     lateinit var homeAdapter: HomeEventAdapter
     lateinit var performanceMonitoring: PerformanceMonitoring
-    var favMenuItem : View? = null
+    private lateinit var localCacheHandler: LocalCacheHandler
 
-    private fun initializePerformance(){
+    @Inject
+    lateinit var analytics: EventHomePageTracking
+
+    var favMenuItem: View? = null
+
+    private fun initializePerformance() {
         performanceMonitoring = PerformanceMonitoring.start(ENT_HOME_PAGE_PERFORMANCE)
     }
 
@@ -78,11 +94,11 @@ class EventHomeFragment : BaseDaggerFragment(), FragmentView, MenuSheet.ItemClic
         activity?.run {
             viewModel = ViewModelProviders.of(this, factory).get(HomeEventViewModel::class.java)
         }
+        localCacheHandler = LocalCacheHandler(context, PREFERENCES_NAME)
     }
 
     override fun onResume() {
         super.onResume()
-        EventHomePageTracking.getInstance().openHomeEvent()
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -92,7 +108,7 @@ class EventHomeFragment : BaseDaggerFragment(), FragmentView, MenuSheet.ItemClic
         recycler_view.apply {
             setHasFixedSize(true)
             layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
-            homeAdapter = HomeEventAdapter(HomeTypeFactoryImpl(::actionItemAdapter))
+            homeAdapter = HomeEventAdapter(HomeTypeFactoryImpl(::actionItemAdapter, this@EventHomeFragment))
             adapter = homeAdapter
         }
 
@@ -125,6 +141,7 @@ class EventHomeFragment : BaseDaggerFragment(), FragmentView, MenuSheet.ItemClic
 
     private fun onSuccessGetData(data: List<HomeEventItem<*>>) {
         shimering_layout.visibility = View.GONE
+        analytics.openHomeEvent()
         homeAdapter.setItems(data)
         performanceMonitoring.stopTrace()
         swipe_refresh_layout?.isRefreshing = false
@@ -163,11 +180,16 @@ class EventHomeFragment : BaseDaggerFragment(), FragmentView, MenuSheet.ItemClic
     }
 
     private fun startShowCase() {
+        val coachMarkShown = localCacheHandler.getBoolean(SHOW_COACH_MARK_KEY, false)
+        if (coachMarkShown) return
+
+        var coachItems = ArrayList<CoachMarkItem>()
+        coachItems.add(CoachMarkItem(view?.rootView?.findViewById(R.id.txt_search), getString(R.string.ent_home_page_coach_mark_title_1), getString(R.string.ent_home_page_coach_mark_desc_1)))
         val coachMark = CoachMarkBuilder().build()
-        if (!coachMark.hasShown(activity, COACH_MARK_TAG)) {
-            var coachItems = ArrayList<CoachMarkItem>()
-            coachItems.add(CoachMarkItem(view?.rootView?.findViewById(R.id.txt_search), getString(R.string.ent_home_page_coach_mark_title_1), getString(R.string.ent_home_page_coach_mark_desc_1)))
-            coachMark.show(activity, COACH_MARK_TAG, coachItems)
+        coachMark.show(activity, COACH_MARK_TAG, coachItems)
+        localCacheHandler.apply {
+            putBoolean(SHOW_COACH_MARK_KEY, true)
+            applyEditor()
         }
     }
 
@@ -188,4 +210,48 @@ class EventHomeFragment : BaseDaggerFragment(), FragmentView, MenuSheet.ItemClic
     }
 
     override fun getRes(): Resources = resources
+
+    override fun clickBanner(item: EventHomeDataResponse.Data.EventHome.Layout.Item, position: Int) {
+        analytics.clickBanner(item, position)
+    }
+
+    override fun impressionBanner(item: EventHomeDataResponse.Data.EventHome.Layout.Item, position: Int) {
+        analytics.impressionBanner(item, position)
+    }
+
+    override fun clickCategoryIcon(item: CategoryEventViewHolder.CategoryItemModel, position: Int) {
+        analytics.clickCategoryIcon(item, position)
+    }
+
+    override fun clickLocationEvent(item: EventItemLocationModel, listItems: List<EventItemLocationModel>, position: Int) {
+        analytics.clickLocationEvent(item, listItems, position)
+    }
+
+    override fun clickSectionEventProduct(item: EventItemModel, listItems: List<EventItemModel>, title: String, position: Int) {
+        analytics.clickSectionEventProduct(item, listItems, title, position)
+    }
+
+    override fun clickSeeAllCuratedEventProduct(title: String, position: Int) {
+        analytics.clickSeeAllCuratedEventProduct(title, position)
+    }
+
+    override fun clickSeeAllTopEventProduct() {
+        analytics.clickSeeAllTopEventProduct()
+    }
+
+    override fun clickTopEventProduct(item: EventItemModel, listItems: List<String>, position: Int) {
+        analytics.clickTopEventProduct(item, listItems, position)
+    }
+
+    override fun impressionLocationEvent(item: EventItemLocationModel, listItems: List<EventItemLocationModel>, position: Int) {
+        analytics.impressionLocationEvent(item, listItems, position)
+    }
+
+    override fun impressionSectionEventProduct(item: EventItemModel, listItems: List<EventItemModel>, title: String, position: Int) {
+        analytics.impressionSectionEventProduct(item, listItems, title, position)
+    }
+
+    override fun impressionTopEventProduct(item: EventItemModel, listItems: List<String>, position: Int) {
+        analytics.impressionTopEventProduct(item, listItems, position)
+    }
 }

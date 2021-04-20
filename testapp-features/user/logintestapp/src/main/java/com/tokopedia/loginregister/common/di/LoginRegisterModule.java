@@ -13,8 +13,7 @@ import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.loginregister.common.data.LoginRegisterUrl;
 import com.tokopedia.network.interceptor.DebugInterceptor;
 import com.tokopedia.network.interceptor.FingerprintInterceptor;
-import com.tokopedia.network.interceptor.RiskAnalyticsInterceptor;
-import com.tokopedia.permissionchecker.PermissionCheckerHelper;
+import com.tokopedia.utils.permission.PermissionCheckerHelper;
 import com.tokopedia.sessioncommon.network.TkpdOldAuthInterceptor;
 
 import dagger.Module;
@@ -50,7 +49,6 @@ public class LoginRegisterModule {
         });
         builder.addInterceptor(new HeaderErrorResponseInterceptor(HeaderErrorListResponse.class));
         builder.addInterceptor(new ErrorResponseInterceptor(TkpdV4ResponseError.class));
-        builder.addInterceptor(new RiskAnalyticsInterceptor(context));
         builder.addInterceptor(new AkamaiBotInterceptor(context));
 
         if (GlobalConfig.isAllowDebuggingTools()) {

@@ -14,8 +14,8 @@
             android:id="@+id/layout_ticker"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toTopOf="parent"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            app:layout_constraintTop_toTopOf="parent">
 
             <com.tokopedia.unifycomponents.ticker.Ticker
                 android:id="@+id/ticker_ban_status"
@@ -27,21 +27,26 @@
                 app:titleText="@string/title_topchat_chat_banned_seller"
                 tools:visibility="visible" />
 
-            <com.tokopedia.unifycomponents.ticker.Ticker
-                android:id="@+id/ticker_seller_migration_topchat"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:visibility="gone"
-                app:tickerType="announcement"/>
-
         </LinearLayout>
+
+        <com.tokopedia.topchat.chatroom.view.custom.ChatFilterView
+            android:id="@+id/cf_chat_list"
+            android:layout_width="@dimen/unify_space_0"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/layout_ticker"
+            tools:layout_height="70dp"
+            tools:visibility="visible" />
+
 
         <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
             android:id="@+id/swipe_refresh_layout"
             android:layout_width="match_parent"
             android:layout_height="@dimen/layout_lvl0"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/layout_ticker">
+            app:layout_constraintTop_toBottomOf="@+id/cf_chat_list">
 
             <com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
                 android:id="@+id/recycler_view"
@@ -62,7 +67,7 @@
         android:layout_marginRight="@dimen/spacing_lvl4"
         android:layout_marginBottom="@dimen/spacing_lvl5"
         android:visibility="gone"
-        app:backgroundTint="@color/Yellow_Y400"
+        app:backgroundTint="@color/Unify_Y400"
         app:fabCustomSize="@dimen/dp_topchat_56"
         app:layout_anchorGravity="bottom|center"
         app:maxImageSize="33dp"

@@ -1,5 +1,6 @@
 {
   "readme": "Search Product Ticker Tracking",
+  "mode": "exact",
   "query": [
     {
       "event": "viewSearchResultIris",

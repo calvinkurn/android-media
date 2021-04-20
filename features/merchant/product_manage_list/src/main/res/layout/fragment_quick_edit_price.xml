@@ -6,6 +6,7 @@
 
     <com.tokopedia.unifycomponents.TextFieldUnify
         android:id="@+id/quickEditPriceTextField"
+        android:contentDescription="@string/content_desc_quickEditPriceTextField"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"/>
@@ -14,13 +15,13 @@
         android:id="@+id/btn_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@android:color/white"
         android:paddingTop="@dimen/layout_lvl4"
         android:paddingBottom="@dimen/layout_lvl3"
         app:layout_constraintTop_toBottomOf="@id/quickEditPriceTextField">
 
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/quickEditPriceSaveButton"
+            android:contentDescription="@string/content_desc_quickEditPriceSaveButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/filter_expand_save_button"

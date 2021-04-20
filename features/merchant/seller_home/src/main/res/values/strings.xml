@@ -1,12 +1,11 @@
 <resources>
+    <string name="tag_lottie_animation_view">lottieAnimationView</string>
+    <string name="tag_title_textview">titleTextView</string>
+    <string name="tag_badge_textview">badgeTextView</string>
+
     <string name="app_name">Seller Home</string>
     <string name="sah_more">Selengkapnya</string>
-    <string name="sah_description_error">Oops, informasi gagal ditampilkan</string>
-    <string name="sah_card_on_error">Gagal memuat</string>
     <string name="sah_line_graph_error_message">Oops, informasi gagal ditampilkan</string>
-    <string name="sah_widget_error_message">Oops, informasi gagal ditampilkan</string>
-    <string name="sah_score">Skor</string>
-    <string name="sah_max_progress">/100</string>
     <string name="sah_failed_to_get_information">Informasi gagal dimuat</string>
     <string name="sah_reload">Muat ulang</string>
     <string name="sah_exit_message">Tekan sekali lagi untuk keluar</string>
@@ -27,46 +26,18 @@
     <string name="sah_ticker_warning">#ecdb77</string>
 
     <string name="menu_setting_title">Pengaturan</string>
-    <string name="dot_string">&#160;\u2022&#160;</string>
-    <string name="official_store">Official Store</string>
-    <string name="power_merchant_status">Power Merchant:&#160;</string>
-    <string name="regular_merchant">Regular Merchant</string>
-    <string name="setting_followers">Followers</string>
-    <string name="setting_upgrade">Upgrade</string>
-    <string name="setting_verifikasi">Verifikasi</string>
-    <string name="setting_active">Aktif</string>
-    <string name="setting_not_active">Tidak Aktif</string>
-    <string name="setting_on_verification">Sedang Diverifikasi</string>
-    <string name="setting_balance">Saldo</string>
-    <string name="setting_topads_credits">Kredit TopAds</string>
     <string name="setting_logout">Logout</string>
     <string name="setting_application_version">Versi %1$s</string>
     <string name="setting_tc_divider">|</string>
     <string name="setting_terms_and_condition">Syarat dan Ketentuan</string>
     <string name="setting_privacy_terms">Kebijakan Privasi</string>
-    <string name="setting_toaster_error_retry">Muat Ulang</string>
-    <string name="setting_toaster_error_message">Oops, informasi gagal ditampilkan</string>
     <string name="msg_share_apps">Sudah punya aplikasi Tokopedia belum? cek disini </string>
     <string name="title_share">Bagikan</string>
-    <string name="setting_menu_setting">Pengaturan</string>
     <string name="setting_menu_improve_sales">TINGKATKAN PENJUALAN</string>
-    <string name="setting_menu_shop_statistic">Statistik Toko</string>
+    <string name="setting_menu_statistic">Statistik</string>
     <string name="setting_menu_ads_and_shop_promotion">Iklan &amp; Promosi Toko</string>
-    <string name="setting_menu_buyer_info">KATA PEMBELI</string>
-    <string name="setting_menu_review">Ulasan</string>
-    <string name="setting_menu_discussion">Diskusi</string>
-    <string name="setting_menu_complaint">Komplain</string>
     <string name="setting_menu_finance_service">Layanan Keuangan</string>
-    <string name="setting_menu_seller_education_center">Pusat Edukasi Seller</string>
-    <string name="setting_menu_tokopedia_care">Tokopedia Care</string>
-    <string name="setting_menu_shop_setting">Pengaturan toko</string>
-    <string name="setting_menu_shop_profile">PROFIL TOKO</string>
-    <string name="setting_menu_basic_info">Informasi Dasar</string>
-    <string name="setting_menu_shop_notes">Catatan Toko</string>
-    <string name="setting_menu_shop_working_hours">Jam Buka Tutup Toko</string>
-    <string name="setting_menu_location_and_shipment">LOKASI DAN PENGIRIMAN</string>
-    <string name="setting_menu_add_and_shop_location">Tambah dan Ubah Lokasi Toko</string>
-    <string name="setting_menu_set_shipment_method">Atur Layanan Pengiriman</string>
+    <string name="setting_menu_set_activation_page_cod">Layanan Bayar di Tempat</string>
     <string name="setting_menu_exclusive_feature">FITUR EKSKLUSIF</string>
     <string name="setting_menu_account_setting">Pengaturan akun</string>
     <string name="setting_menu_self_profile">Profil Diri</string>
@@ -78,14 +49,12 @@
     <string name="setting_menu_share_app">Bagikan Aplikasi</string>
     <string name="setting_menu_review_app">Review Aplikasi</string>
     <string name="setting_menu_developer_options">Developer Options</string>
-    <string name="setting_error_message">Data tidak dapat ditampilkan</string>
-    <string name="setting_error_description">Ketuk icon untuk memuat ulang</string>
+    <string name="setting_topads_next">Atur</string>
     <string name="setting_topads_status">Tambah Kredit Otomatis kamu %1$s aktif</string>
     <string name="setting_topads_status_active">sedang</string>
     <string name="setting_topads_status_inactive">belum</string>
     <string name="setting_topads_description_active">Nggak perlu khawatir kehabisan, kredit TopAds akan otomatis ditambahkan dari Saldo Penghasilan setiap kreditmu menipis.</string>
     <string name="setting_topads_description_inactive">Dengan mengaktifkan, kredit TopAds akan otomatis ditambahkan dari Saldo Penghasilan setiap kreditmu menipis.</string>
-    <string name="setting_topads_next">Atur</string>
 
     <!--  Centralized Promo  -->
     <string name="centralized_promo_toolbar_title">Iklan dan Promosi</string>
@@ -104,7 +73,6 @@
     <string name="centralized_promo_promo_creation_topads_description">Iklankan produkmu untuk menjangkau lebih banyak pembeli</string>
     <string name="centralized_promo_promo_creation_broadcast_chat_title">Broadcast Chat</string>
     <string name="centralized_promo_promo_creation_broadcast_chat_description">Tingkatkan penjualan dengan kirim pesan promosi ke pembeli</string>
-    <string name="centralized_promo_promo_creation_merchant_voucher_title">Voucher Toko</string>
     <string name="centralized_promo_promo_creation_merchant_voucher_cashback_title">Voucher Cashback</string>
     <string name="centralized_promo_promo_creation_merchant_voucher_description">Tambah minat pembeli untuk berbelanja lebih di tokomu dengan cashback</string>
 
@@ -125,11 +93,12 @@
     <string name="seller_home_logout_button">Keluar</string>
     <string name="seller_home_cancel">Batal</string>
     <string name="seller_home_loading">Loading...</string>
-    <string name="sah_free_ongkir_title">Tokomu Bebas Ongkir</string>
     <string name="centralized_promo_promo_creation_free_shipping_title">Bebas Ongkir</string>
     <string name="centralized_promo_promo_creation_free_shipping_description">Fitur Bebas Ongkir dapat meningkatkan penjualan dan menarik calon pembeli.</string>
-
-    <string name="settings_free_shipping_title">Bebas Ongkir Aktif</string>
-    <string name="settings_free_shipping_detail">Detail Bebas Ongkir</string>
-    <string name="settings_free_shipping_description">Status Bebas Ongkir aktif untuk kurir **SiCepat** dan **Anteraja**</string>
+    <string name="sah_stock_location_ticker_title">Hanya menampilkan stok lokasi utama</string>
+    <string name="sah_stock_location_ticker_description">Untuk lihat jumlah dan alokasi stok produk di tiap lokasi, akses Seller Dashboard di desktopmu, ya.</string>
+    <string name="centralized_promo_content_desc_image_promo_post">image promo post</string>
+    <string name="centralized_promo_content_desc_image_recommended_promo">image recommended promo</string>
+    <string name="centralized_promo_content_desc_button_lihat_detail_promo">button lihat detail promo</string>
+    <string name="sah_content_desc_image_widget_error">image widget error</string>
 </resources>

@@ -299,7 +299,8 @@ class FeedShopPresenter @Inject constructor(
     override fun addPostTagItemToCart(postTagItem: PostTagItem) {
         if (postTagItem.shop.isNotEmpty()) {
             atcUseCase.execute(
-                    AddToCartUseCase.getMinimumParams(postTagItem.id, postTagItem.shop.first().shopId, productName = postTagItem.text, price = postTagItem.price),
+                    AddToCartUseCase.getMinimumParams(postTagItem.id, postTagItem.shop.first().shopId, productName = postTagItem.text,
+                            price = postTagItem.price, userId = getUserId()),
                     object : Subscriber<AddToCartDataModel>() {
                         override fun onNext(model: AddToCartDataModel?) {
                             if (model?.data?.success != 1) {

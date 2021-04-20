@@ -6,7 +6,7 @@ import com.tokopedia.digital.product.view.model.OrderClientNumber;
 import com.tokopedia.digital.product.view.model.ProductDigitalData;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
-import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import rx.Observable;
 
@@ -25,9 +25,9 @@ public class GetDigitalCategoryByIdUseCase extends UseCase<ProductDigitalData> {
     private final String DEFAULT_EMPTY_FIELD = "";
 
     private IDigitalCategoryRepository digitalCategoryRepository;
-    private UserSession userSession;
+    private UserSessionInterface userSession;
 
-    public GetDigitalCategoryByIdUseCase(IDigitalCategoryRepository digitalCategoryRepository, UserSession userSession) {
+    public GetDigitalCategoryByIdUseCase(IDigitalCategoryRepository digitalCategoryRepository, UserSessionInterface userSession) {
         this.digitalCategoryRepository = digitalCategoryRepository;
         this.userSession = userSession;
     }

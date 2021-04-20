@@ -29,7 +29,7 @@ buildscript {
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         mavenCentral()
         jcenter()
-        maven { url 'https://hansel.io/maven' }
+        maven { url 'https://maven-hansel.tokopedia.com/maven' }
         google()
     }
     dependencies {
@@ -51,16 +51,18 @@ dependencies {
     implementation project(rootProject.ext.libraries.analytics)
     implementation project(rootProject.ext.libraries.remoteConfig)
     implementation project(rootProject.ext.libraries.track)
-    implementation project(rootProject.ext.libraries.permissionchecker)
+    implementation project(rootProject.ext.libraries.utils)
     implementation project(rootProject.ext.libraries.deviceInfo)
+    implementation project(rootProject.ext.libraries.logger)
 
     implementation project(rootProject.ext.features.affiliateCommon)
     implementation project(rootProject.ext.features.gallery)
     implementation project(rootProject.ext.features.goldMerchantCommon)
+    implementation project(rootProject.ext.features.medialoader)
     implementation project(rootProject.ext.features.merchantVoucher)
     implementation project(rootProject.ext.features.productShare)
     implementation project(rootProject.ext.features.productDetailCommon)
-    implementation project(rootProject.ext.features.shopEtalasePicker)
+    implementation project(rootProject.ext.features.searchbar)
     implementation project(rootProject.ext.features.shopCommon)
     implementation project(rootProject.ext.features.topAdsSdk)
     implementation project(rootProject.ext.features.topAdsManagementSourceTagging)
@@ -77,19 +79,23 @@ dependencies {
     implementation project(rootProject.ext.features.stickyLogin)
     implementation project(rootProject.ext.libraries.trackingOptimizer)
     implementation project(rootProject.ext.libraries.linker)
+    implementation project(rootProject.ext.libraries.keys)
     implementation project(rootProject.ext.features.atc_common)
-    implementation project(rootProject.ext.libraries.videoplayer)
+    implementation project(rootProject.ext.libraries.webview)
     implementation project(rootProject.ext.features.carouselProductCard)
     implementation project(rootProject.ext.features.chatcommon)
-    implementation project(rootProject.ext.features.attachproduct)
     implementation project(rootProject.ext.features.variantCommon)
     implementation rootProject.ext.miscDependencies.viewPager2
     implementation project(rootProject.ext.libraries.analyticAnnotationCentral)
+    implementation project(rootProject.ext.features.localizationchooseaddress)
 
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.components
+    implementation rootProject.ext.unifyDependencies.icons
     implementation rootProject.ext.unifyDependencies.dialog
     implementation rootProject.ext.unifyDependencies.global_error
+    implementation rootProject.ext.unifyDependencies.icons
+    implementation rootProject.ext.unifyDependencies.coach_mark
 
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
@@ -110,14 +116,15 @@ dependencies {
     implementation(rootProject.ext.tkpdLibDependencies.showcase) {
         exclude group: "com.android.support"
     }
-    implementation (rootProject.ext.serviceDependencies.crashlytics) {
+    implementation (rootProject.ext.firebase.crashlytics) {
         transitive = true
     }
+    implementation project(rootProject.ext.features.promoMvcWidget)
 
     //video player
     implementation rootProject.ext.miscDependencies.exoPlayerCore
     implementation rootProject.ext.miscDependencies.exoPlayerUi
-    implementation rootProject.ext.miscDependencies.exoPlayerRtmp
+    implementation rootProject.ext.miscDependencies.exoPlayer
     implementation rootProject.ext.tkpdLibDependencies.youtubePlayer
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
     implementation rootProject.ext.debugToolsDependencies.chuck
@@ -135,6 +142,7 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.json
     testImplementation rootProject.ext.miscDependencies.coroutineCore
     testImplementation rootProject.ext.miscDependencies.coroutineTest
+    testImplementation project(rootProject.ext.libraries.unitTest)
 
     // UI Test
     androidTestImplementation rootProject.ext.testDependencies.androidTestRunner
@@ -143,6 +151,8 @@ dependencies {
     androidTestImplementation rootProject.ext.testDependencies.espressoIntents
     androidTestImplementation rootProject.ext.testDependencies.espressoContrib
     androidTestImplementation project(rootProject.ext.libraries.instrumentation_test)
+    androidTestImplementation project(rootProject.ext.libraries.analyticsDebugger)
+    androidTestImplementation project(rootProject.ext.libraries.cassavaTest)
 }
 
 project.ext {

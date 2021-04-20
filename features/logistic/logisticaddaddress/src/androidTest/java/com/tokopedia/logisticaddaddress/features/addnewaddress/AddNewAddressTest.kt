@@ -56,7 +56,7 @@ class AddNewAddressTest {
 
     @Test
     fun addAddressUserFunnel_PassedAnalyticsTest() {
-        val query = getJsonDataFromAsset(context, "tracker/logistic/cvr_user_funnel.json")
+        val query = getJsonDataFromAsset(context, "tracker/logistic/addaddress_user_funnel.json")
                 ?: throw AssertionError("Validator Query not found")
         val screenName = "/user/address/create"
         addAddress {
@@ -73,7 +73,7 @@ class AddNewAddressTest {
 
     @Test
     fun addAddressCartFunnel_PassedAnalyticsTest() {
-        val query = getJsonDataFromAsset(context, "tracker/logistic/cvr_cart_funnel.json")
+        val query = getJsonDataFromAsset(context, "tracker/logistic/addaddress_cart_funnel.json")
                 ?: throw AssertionError("Validator Query not found")
         val screenName = "/cart/address/create"
         addAddress {
@@ -90,7 +90,7 @@ class AddNewAddressTest {
 
     @Test
     fun addAddressNewUserFunnel_PassedAnalyticsTest() {
-        val query = getJsonDataFromAsset(context, "tracker/logistic/cvr_new_user_funnel.json")
+        val query = getJsonDataFromAsset(context, "tracker/logistic/addaddress_new_user_funnel.json")
                 ?: throw AssertionError("Validator Query not found")
         val screenName = "/user/address/create/cart"
         addAddress {

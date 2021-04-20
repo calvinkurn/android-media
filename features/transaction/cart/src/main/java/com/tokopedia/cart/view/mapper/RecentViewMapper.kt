@@ -1,7 +1,8 @@
 package com.tokopedia.cart.view.mapper
 
-import com.tokopedia.cart.data.model.response.recentview.RecentView
 import com.tokopedia.cart.view.uimodel.CartRecentViewItemHolderData
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import javax.inject.Inject
 
 /**
@@ -10,37 +11,46 @@ import javax.inject.Inject
 
 class RecentViewMapper @Inject constructor() {
 
-    fun convertToViewHolderModelList(recentViews: List<RecentView>): ArrayList<CartRecentViewItemHolderData> {
-        val cartRecentViewItemHolderDataList = ArrayList<CartRecentViewItemHolderData>()
-        recentViews.forEach {
-            cartRecentViewItemHolderDataList.add(convertToViewHolderModel(it))
-        }
-
-        return cartRecentViewItemHolderDataList
-    }
-
-    private fun convertToViewHolderModel(recentView: RecentView): CartRecentViewItemHolderData {
+    private fun convertToViewHolderModel(recentView: RecommendationItem): CartRecentViewItemHolderData {
         val cartRecentViewItemHolderData = CartRecentViewItemHolderData()
-        cartRecentViewItemHolderData.id = recentView.productId ?: ""
-        cartRecentViewItemHolderData.name = recentView.productName ?: ""
-        cartRecentViewItemHolderData.price = recentView.productPrice ?: ""
-        cartRecentViewItemHolderData.imageUrl = recentView.productImage ?: ""
+        cartRecentViewItemHolderData.id = recentView.productId.toString() ?: ""
+        cartRecentViewItemHolderData.name = recentView.name ?: ""
+        cartRecentViewItemHolderData.price = recentView.price ?: ""
+        cartRecentViewItemHolderData.imageUrl = recentView.imageUrl ?: ""
         cartRecentViewItemHolderData.isWishlist = recentView.isWishlist
-        cartRecentViewItemHolderData.rating = recentView.productRating
-        cartRecentViewItemHolderData.reviewCount = recentView.productReviewCount
-        cartRecentViewItemHolderData.shopLocation = recentView.shopLocation ?: ""
-        cartRecentViewItemHolderData.shopId = recentView.shopId ?: ""
+        cartRecentViewItemHolderData.rating = recentView.rating
+        cartRecentViewItemHolderData.reviewCount = recentView.countReview
+        cartRecentViewItemHolderData.shopLocation = recentView.location ?: ""
+        cartRecentViewItemHolderData.shopId = recentView.shopId.toString() ?: ""
         cartRecentViewItemHolderData.shopName = recentView.shopName ?: ""
         cartRecentViewItemHolderData.minOrder = 1
-        if (recentView.badges.size > 0) {
-            cartRecentViewItemHolderData.badgeUrl = recentView.badges.get(0).imageUrl
-            if (recentView.badges[0].title.equals("Official Store", ignoreCase = true)) {
+        cartRecentViewItemHolderData.isTopAds = recentView.isTopAds
+        cartRecentViewItemHolderData.discountPercentage = recentView.discountPercentage
+        cartRecentViewItemHolderData.freeOngkirImageUrl = recentView.freeOngkirImageUrl
+        cartRecentViewItemHolderData.isFreeOngkirActive = recentView.isFreeOngkirActive
+        cartRecentViewItemHolderData.labelGroupList = recentView.labelGroupList
+        cartRecentViewItemHolderData.slashedPrice = recentView.slashedPrice
+        cartRecentViewItemHolderData.clickUrl = recentView.clickUrl
+        cartRecentViewItemHolderData.trackerImageUrl = recentView.trackerImageUrl
+
+        if (recentView.badgesUrl.isNotEmpty()) {
+            cartRecentViewItemHolderData.badgesUrl = recentView.badgesUrl
+            if (recentView.badgesUrl[0].equals("Official Store", ignoreCase = true)) {
                 cartRecentViewItemHolderData.shopType = "official_store"
-            } else if (recentView.badges[0].title.equals("Power Badge", ignoreCase = true)) {
+            } else if (recentView.badgesUrl[0].equals("Power Badge", ignoreCase = true)) {
                 cartRecentViewItemHolderData.shopType = "power_badge"
             }
         }
 
         return cartRecentViewItemHolderData
+    }
+
+    fun convertToViewHolderModelList(recentViews: RecommendationWidget?): ArrayList<CartRecentViewItemHolderData> {
+        val cartRecentViewItemHolderDataList = ArrayList<CartRecentViewItemHolderData>()
+        recentViews?.recommendationItemList?.forEach {
+            cartRecentViewItemHolderDataList.add(convertToViewHolderModel(it))
+        }
+
+        return cartRecentViewItemHolderDataList
     }
 }

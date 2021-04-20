@@ -5,9 +5,8 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.shop.R
-import com.tokopedia.shop.analytic.model.ShopTrackProductTypeDef
 import com.tokopedia.shop.product.utils.mapper.ShopPageProductListMapper
-import com.tokopedia.shop.product.view.datamodel.ShopProductViewModel
+import com.tokopedia.shop.product.view.datamodel.ShopProductUiModel
 import com.tokopedia.shop.product.view.listener.ShopProductClickedListener
 import com.tokopedia.shop.product.view.listener.ShopProductImpressionListener
 import kotlinx.android.synthetic.main.item_shop_product_card_list.view.*
@@ -17,7 +16,7 @@ class ShopProductItemListViewHolder(
         private val shopProductClickedListener: ShopProductClickedListener?,
         private val shopProductImpressionListener: ShopProductImpressionListener?,
         private val shopTrackType: Int
-) : AbstractViewHolder<ShopProductViewModel>(itemView) {
+) : AbstractViewHolder<ShopProductUiModel>(itemView) {
 
     companion object {
         @LayoutRes
@@ -25,21 +24,21 @@ class ShopProductItemListViewHolder(
         val LAYOUT = R.layout.item_shop_product_card_list
     }
 
-    override fun bind(shopProductViewModel: ShopProductViewModel) {
+    override fun bind(shopProductUiModel: ShopProductUiModel) {
         itemView.productCardView?.setProductModel(
-                ShopPageProductListMapper.mapToProductCardModel(shopProductViewModel)
+                ShopPageProductListMapper.mapToProductCardModel(shopProductUiModel)
         )
         itemView.productCardView?.setThreeDotsOnClickListener {
-            shopProductClickedListener?.onThreeDotsClicked(shopProductViewModel, adapterPosition)
+            shopProductClickedListener?.onThreeDotsClicked(shopProductUiModel, adapterPosition)
         }
 
         itemView.productCardView?.setOnClickListener {
-            shopProductClickedListener?.onProductClicked(shopProductViewModel, shopTrackType, adapterPosition)
+            shopProductClickedListener?.onProductClicked(shopProductUiModel, shopTrackType, adapterPosition)
         }
 
-        itemView.productCardView?.setImageProductViewHintListener(shopProductViewModel, object : ViewHintListener {
+        itemView.productCardView?.setImageProductViewHintListener(shopProductUiModel, object : ViewHintListener {
             override fun onViewHint() {
-                shopProductImpressionListener?.onProductImpression(shopProductViewModel, shopTrackType, adapterPosition)
+                shopProductImpressionListener?.onProductImpression(shopProductUiModel, shopTrackType, adapterPosition)
             }
         })
     }

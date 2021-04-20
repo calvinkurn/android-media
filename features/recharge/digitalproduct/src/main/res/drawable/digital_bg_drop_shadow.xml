@@ -4,8 +4,8 @@
         <shape
             android:shape="rectangle">
             <gradient
-                android:startColor="@color/tkpd_dark_gray"
-                android:endColor="@color/digital_drop_shadow_light"
+                android:startColor="@color/Unify_N200"
+                android:endColor="@color/Unify_N75"
                 android:type="linear"
                 android:angle="270">
             </gradient>
@@ -13,10 +13,10 @@
         </shape>
     </item>
 
-    <item android:bottom="@dimen/dp_1">
+    <item android:bottom="@dimen/spacing_lvl1">
         <shape>
-            <solid android:color="@color/white" />
-            <corners android:radius="@dimen/dp_1" />
+            <solid android:color="@color/Unify_N0" />
+            <corners android:radius="@dimen/spacing_lvl1" />
         </shape>
     </item>
 </layer-list>

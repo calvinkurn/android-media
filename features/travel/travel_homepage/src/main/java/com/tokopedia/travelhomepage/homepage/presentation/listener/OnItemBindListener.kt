@@ -13,5 +13,4 @@ interface OnItemBindListener {
     fun onLegoBannerItemBind(travelLayoutSubhomepage: TravelLayoutSubhomepage.Data, isFromCloud: Boolean)
     fun onProductCardItemBind(travelLayoutSubhomepage: TravelLayoutSubhomepage.Data, isFromCloud: Boolean)
     fun onHomepageSectionItemBind(travelLayoutSubhomepage: TravelLayoutSubhomepage.Data, isFromCloud: Boolean)
-    fun onItemBindViewHolder(travelLayoutSubhomepage: TravelLayoutSubhomepage.Data, isFromCloud: Boolean)
 }

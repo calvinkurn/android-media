@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/Unify_N0"
+    >
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/loader_title"
+        android:layout_width="@dimen/play_widget_placeholder_title_width"
+        android:layout_height="@dimen/layout_lvl1"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:loader_type="line"
+        />
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/loader_action"
+        android:layout_width="@dimen/play_widget_placeholder_action_width"
+        android:layout_height="@dimen/layout_lvl1"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        app:layout_constraintBottom_toBottomOf="@id/loader_title"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:loader_type="line"
+        />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_widget_card_placeholder"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/play_widget_dp_20"
+        android:background="@color/Unify_N75"
+        android:orientation="horizontal"
+        android:paddingTop="@dimen/spacing_lvl3"
+        android:paddingBottom="@dimen/play_widget_dp_12"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/loader_title"
+        tools:listitem="@layout/item_play_widget_card_placeholder"
+        />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

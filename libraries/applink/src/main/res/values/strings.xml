@@ -15,6 +15,9 @@
     <string name="host_setting" translatable="false">setting</string>
     <string name="path_dev_opt" translatable="false">/dev-opts</string>
 
+    <!--Feedback Form-->
+    <string name="internal_feedback" translatable="false">internal-feedback</string>
+
     <!--Shop Settings-->
     <string name="shop_settings_title">Pengaturan Toko</string>
 
@@ -45,6 +48,7 @@
 
     <string name="title_module_attachinvoice">Lampirkan Invoice</string>
     <string name="title_module_attachvoucher">Lampirkan Voucher</string>
+    <string name="title_module_attachproduct">Lampirkan Product</string>
 
     <!--Seller Order Management-->
     <string name="som_title">Seller Order Management</string>
@@ -53,16 +57,21 @@
     <string name="talk_title">Diskusi Produk</string>
 
     <string name="title_topchat">Chat</string>
-
+    <string name="title_inbox">Inbox</string>
 
     <string name="fingerprint_onboarding">Daftar Fingerprint</string>
     <string name="title_otp">Verifikasi</string>
+    <string name="title_loginphone">Login Phone</string>
 
     <!--Transaction-->
     <string name="title_one_click_checkout">Beli Langsung</string>
     <string name="checkout_module_title_activity_checkout">Pengiriman</string>
     <string name="checkout_module_title_activity_shipping_address">Alamat Pengiriman</string>
     <string name="promo_checkout_marketplace_module_title_activity_promo_list">Pakai Promo</string>
+    <string name="title_buyerorder">Daftar Transaksi</string>
+
+    <!--Snapshot-->
+    <string name="title_snapshot">Riwayat Detail Produk</string>
 
     <!--Official Store -->
     <string name="title_brandlist">Brand List</string>
@@ -79,10 +88,6 @@
     <!-- Seller Search -->
     <string name="title_global_search_seller">Seller Search</string>
 
-    <!-- ATC Variant -->
-    <string name="title_normal_checkout">Detail Produk</string>
-
-
     <!-- Seller Onboarding -->
     <string name="title_seller_onboarding">Seller Onboarding</string>
 
@@ -92,5 +97,35 @@
 
     <!-- Statistic -->
     <string name="title_statistic">Statistic</string>
+
+<!--    pms-->
+    <string name="payment_title_payment_status">Menunggu Pembayaran</string>
+    <string name="payment_title_activity_howtopay">Cara Pembayaran</string>
+    <string name="payment_title_activity_change_clik_bca">Ubah KlikBCA User ID</string>
+    <string name="payment_title_activity_change_detail_account">Ubah Detail Rekening</string>
+    <string name="payment_title_activity_dest_bank">Pilih Bank Tujuan</string>
+    <string name="payment_title_upload_proof">Unggah Bukti Pembayaran</string>
+
+
+    <!-- Seller Menu -->
+    <string name="title_seller_menu">Toko Saya</string>
+
+    <!-- Product Review -->
+    <string name="title_product_review">Product Review</string>
+
+    <!-- Review -->
+    <string name="title_review_inbox">Review Inbox</string>
+    <string name="title_review_detail">Review Detail</string>
+    <string name="title_create_review">Create Review</string>
+    <string name="title_review_reminder">Review Reminder</string>
+  
+    <!-- Inactive Phone -->
+    <string name="title_update_inactive_phone">Inactive Phone</string>
+
+    <!-- Product Detail -->
+    <string name="title_product_detail">Product Detail</string>
+
+    <!--Order Management History-->
+    <string name="title_order_management_history">Detail Status</string>
 
 </resources>

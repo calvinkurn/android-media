@@ -3,7 +3,7 @@ package com.tokopedia.fcmcommon.service
 import android.content.Context
 import android.content.Intent
 import androidx.core.app.JobIntentService
-import com.crashlytics.android.Crashlytics
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.fcmcommon.BuildConfig
 import com.tokopedia.fcmcommon.FirebaseMessagingManager
 import com.tokopedia.fcmcommon.di.DaggerFcmComponent
@@ -41,7 +41,8 @@ class SyncFcmTokenService : JobIntentService(), FirebaseMessagingManager.SyncLis
     override fun onError(exception: Exception?) {}
 
     companion object {
-        const val JOB_ID = 91219
+        private const val JOB_ID = 91219
+
         fun startService(context: Context) {
             // https://issuetracker.google.com/issues/112157099
             try {
@@ -56,7 +57,7 @@ class SyncFcmTokenService : JobIntentService(), FirebaseMessagingManager.SyncLis
         private fun logExceptionToCrashlytic(exception: Exception) {
             try {
                 if (!BuildConfig.DEBUG) {
-                    Crashlytics.logException(exception)
+                    FirebaseCrashlytics.getInstance().recordException(exception)
                 }
             } catch (e: Exception) {
                 e.printStackTrace()

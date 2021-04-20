@@ -8,11 +8,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loader1"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
+        android:layout_width="@dimen/dp_16"
+        android:layout_height="@dimen/dp_16"
         app:loader_type="circle"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loader2"
@@ -31,7 +32,7 @@
         android:layout_height="@dimen/dp_8"
         android:layout_marginStart="@dimen/dp_8"
         android:layout_marginLeft="@dimen/dp_8"
-        android:layout_marginTop="@dimen/dp_8"
+        android:layout_marginTop="@dimen/dp_6"
         app:loader_type="line"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"

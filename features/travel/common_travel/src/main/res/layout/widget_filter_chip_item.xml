@@ -4,14 +4,14 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
 
-    <com.tokopedia.design.text.Chips
+    <com.tokopedia.unifycomponents.ChipsUnify
         android:id="@+id/chips"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dp_4"
-        android:layout_marginStart="@dimen/dp_4"
-        android:layout_marginRight="@dimen/dp_4"
-        android:layout_marginEnd="@dimen/dp_4"
+        android:layout_marginLeft="@dimen/spacing_lvl2"
+        android:layout_marginStart="@dimen/spacing_lvl2"
+        android:layout_marginRight="@dimen/spacing_lvl2"
+        android:layout_marginEnd="@dimen/spacing_lvl2"
         />
 
 </FrameLayout>

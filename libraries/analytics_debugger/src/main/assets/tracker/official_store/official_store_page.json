@@ -1,0 +1,281 @@
+{
+  "readme": "Official store page impression and click",
+  "mode": "exact",
+  "query": [
+    {
+      "eventCategory": "{{.*}}",
+      "event": "view_item",
+      "eventAction": "category - impression",
+      "sessionIris" : "{{.*}}",
+      "promotions": [{
+        "creative_name": "{{.*}}",
+        "creative_slot": "{{.*}}",
+        "item_id": "{{.*}}",
+        "item_name": "{{.*}}",
+        "creative_url": "{{.*}}"
+      }],
+      "eventLabel": "{{.*}}"
+    },
+    {
+      "eventCategory": "{{.*}}",
+      "event": "select_content",
+      "eventAction": "category - click",
+      "sessionIris" : "{{.*}}",
+      "promotions": [{
+        "creative_name": "{{.*}}",
+        "creative_slot": "{{.*}}",
+        "item_id": "{{.*}}",
+        "item_name": "{{.*}}",
+        "creative_url": "{{.*}}"
+      }],
+      "eventLabel": "{{.*}}"
+    },
+    {
+      "eventCategory": "{{.*}}",
+      "event": "view_item",
+      "eventAction": "banner - impression",
+      "sessionIris" : "{{.*}}",
+      "promotions": [{
+        "creative_name": "{{.*}}",
+        "creative_slot": "{{.*}}",
+        "item_id": "{{.*}}",
+        "item_name": "{{.*}}",
+        "creative_url": "{{.*}}"
+      }],
+      "eventLabel": "{{.*}}"
+    },
+    {
+      "eventCategory": "{{.*}}",
+      "affinityLabel": "{{.*}}",
+      "attribution": "{{.*}}",
+      "shopId": "{{.*}}",
+      "categoryId": "{{.*}}",
+      "campaignCode": "{{.*}}",
+      "event": "select_content",
+      "eventAction": "banner - click",
+      "sessionIris" : "{{.*}}",
+      "promotions": [{
+        "creative_name": "{{.*}}",
+        "creative_slot": "{{.*}}",
+        "item_id": "{{.*}}",
+        "item_name": "{{.*}}",
+        "creative_url": "{{.*}}"
+      }],
+      "eventLabel": "{{.*}}"
+    },
+    {
+      "eventCategory": "{{.*}}",
+      "event": "select_content",
+      "eventAction": "{{click - shop - all brands - login|click - shop - all brands - nonlogin}}",
+      "sessionIris" : "{{.*}}",
+      "campaignCode" : "{{.*}}",
+      "promotions": [{
+        "creative_name": "{{.*}}",
+        "creative_slot": "{{.*}}",
+        "item_id": "{{.*}}",
+        "item_name": "{{.*}}",
+        "creative_url": "{{.*}}"
+      }],
+      "eventLabel": "{{.*}}"
+    },
+    {
+      "eventCategory": "{{.*}}",
+      "event": "view_item",
+      "eventAction": "{{all brands - impression - login|all brands - impression - nonlogin}}",
+      "sessionIris" : "{{.*}}",
+      "promotions": [{
+        "creative_name": "{{.*}}",
+        "creative_slot": "{{.*}}",
+        "item_id": "{{.*}}",
+        "item_name": "{{.*}}",
+        "creative_url": "{{.*}}",
+        "promo_code": "{{.*}}",
+        "promo_id": "{{.*}}"
+      }],
+      "eventLabel": "{{.*}}"
+    },
+    {
+      "eventCategory": "{{.*}}",
+      "item_list": "{{.*}}",
+      "event": "view_item_list",
+      "eventAction": "{{impression on product dynamic channel top carousel|impression on product dynamic channel left carousel}}",
+      "sessionIris" : "{{.*}}",
+      "items": [{
+        "item_id": "{{.*}}",
+        "price": "{{\\d*.\\d*|\\d.\\d+E\\d}}",
+        "dimension40": "{{.*}}",
+        "index": "{{\\d*.\\d*}}",
+        "item_name": "{{.*}}",
+        "item_brand": "{{.*}}",
+        "item_variant": "{{.*}}",
+        "item_category": "{{.*}}"
+      }],
+      "eventLabel": "{{.*}}"
+    },
+    {
+      "eventCategory": "{{.*}}",
+      "item_list": "{{.*}}",
+      "event": "select_content",
+      "eventAction": "{{click on product dynamic channel top carousel|click on product dynamic channel left carousel}}",
+      "sessionIris" : "{{.*}}",
+      "campaignCode" : "{{.*}}",
+      "businessUnit" : "{{.*}}",
+      "userId" : "{{.*}}",
+      "currentSite" : "{{.*}}",
+      "items": [{
+        "item_id": "{{.*}}",
+        "price": "{{\\d*.\\d*|\\d.\\d+E\\d}}",
+        "dimension40": "{{.*}}",
+        "index": "{{\\d*.\\d*}}",
+        "item_name": "{{.*}}",
+        "item_brand": "{{.*}}",
+        "item_variant": "{{.*}}",
+        "item_category": "{{.*}}"
+      }],
+      "eventLabel": "{{.*}}"
+    },
+    {
+      "promotions": [{
+        "item_id": "{{.*}}",
+        "creative_slot": "{{.*}}",
+        "creative_name": "{{.*}}",
+        "creative_url": "{{.*}}",
+        "item_name": "{{.*}}"
+      }],
+      "eventCategory": "{{.*}}",
+      "affinityLabel" : "{{.*}}",
+      "attribution" : "{{.*}}",
+      "shopId" : "{{.*}}",
+      "event": "select_content",
+      "eventAction": "click banner dynamic channel left carousel",
+      "sessionIris" : "{{.*}}",
+      "eventLabel": "{{.*}}",
+      "campaignCode" : "{{.*}}",
+      "categoryId" : "{{.*}}"
+    },
+    {
+      "eventCategory": "{{.*}}",
+      "event": "view_item",
+      "eventAction": "impression banner dynamic channel left carousel",
+      "sessionIris" : "{{.*}}",
+      "promotions": [{
+        "item_id": "{{.*}}",
+        "creative_slot": "{{.*}}",
+        "creative_name": "{{.*}}",
+        "creative_url": "{{.*}}",
+        "item_name": "{{.*}}"
+      }],
+      "eventLabel": "{{.*}}"
+    },
+    {
+      "eventCategory": "{{.*}}",
+      "item_list": "{{.*}}",
+      "event": "select_content",
+      "eventAction": "click - product recommendation",
+      "sessionIris" : "{{.*}}",
+      "items": [{
+        "item_id": "{{.*}}",
+        "price": "{{\\d*.\\d*|\\d.\\d+E\\d}}",
+        "dimension40": "{{.*}}",
+        "attribution": "{{.*}}",
+        "index": "{{\\d*.\\d*}}",
+        "item_name": "{{.*}}",
+        "item_brand": "{{.*}}",
+        "item_variant": "{{.*}}",
+        "item_category": "{{.*}}"
+      }],
+      "eventLabel": "{{.*}}"
+    },
+    {
+      "eventCategory": "{{.*}}",
+      "item_list": "{{.*}}",
+      "event": "view_item_list",
+      "eventAction": "impression - product recommendation",
+      "sessionIris" : "{{.*}}",
+      "items": [{
+        "item_id": "{{.*}}",
+        "price": "{{\\d*.\\d*|\\d.\\d+E\\d}}",
+        "dimension40": "{{.*}}",
+        "attribution": "{{.*}}",
+        "index": "{{\\d*.\\d*}}",
+        "item_name": "{{.*}}",
+        "item_brand": "{{.*}}",
+        "item_variant": "{{.*}}",
+        "item_category": "{{.*}}"
+      }],
+      "eventLabel": "{{.*}}"
+    },
+    {
+      "eventCategory": "{{.*}}",
+      "affinityLabel" : "{{.*}}",
+      "attribution" : "{{.*}}",
+      "shopId" : "{{.*}}",
+      "event": "select_content",
+      "eventAction": "dynamic channel - click",
+      "sessionIris" : "{{.*}}",
+      "categoryId" : "{{.*}}",
+      "campaignCode" : "{{.*}}",
+      "promotions": [{
+        "item_id": "{{.*}}",
+        "creative_slot": "{{.*}}",
+        "creative_name": "{{.*}}",
+        "creative_url": "{{.*}}",
+        "item_name": "{{.*}}"
+      }],
+      "eventLabel": "{{.*}}"
+    },
+    {
+      "eventCategory": "{{.*}}",
+      "event": "view_item",
+      "eventAction": "dynamic channel - impression",
+      "sessionIris" : "{{.*}}",
+      "promotions": [{
+        "item_id": "{{.*}}",
+        "creative_slot": "{{.*}}",
+        "creative_name": "{{.*}}",
+        "creative_url": "{{.*}}",
+        "item_name": "{{.*}}"
+      }],
+      "eventLabel": "{{.*}}"
+    },
+    {
+      "eventCategory": "{{.*}}",
+      "item_list": "{{.*}}",
+      "event": "select_content",
+      "eventAction": "flash sale - product click",
+      "sessionIris" : "{{.*}}",
+      "campaignCode" : "{{.*}}",
+      "items": [{
+        "item_id": "{{.*}}",
+        "price": "{{\\d*.\\d*|\\d.\\d+E\\d}}",
+        "dimension40": "{{.*}}",
+        "attribution": "{{.*}}",
+        "index": "{{\\d*.\\d*}}",
+        "item_name": "{{.*}}",
+        "item_brand": "{{.*}}",
+        "item_variant": "{{.*}}",
+        "item_category": "{{.*}}"
+      }],
+      "eventLabel": "{{.*}}"
+    },
+    {
+      "eventCategory": "{{.*}}",
+      "item_list": "{{.*}}",
+      "event": "view_item_list",
+      "eventAction": "flash sale - product impression",
+      "sessionIris" : "{{.*}}",
+      "items": [{
+        "item_id": "{{.*}}",
+        "price": "{{\\d*.\\d*|\\d.\\d+E\\d}}",
+        "dimension40": "{{.*}}",
+        "attribution": "{{.*}}",
+        "index": "{{\\d*.\\d*}}",
+        "item_name": "{{.*}}",
+        "item_brand": "{{.*}}",
+        "item_variant": "{{.*}}",
+        "item_category": "{{.*}}"
+      }],
+      "eventLabel": "{{.*}}"
+    }
+  ]
+}

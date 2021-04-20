@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/cl_attachment_preview"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:animateLayoutChanges="true"
-    android:background="@color/Neutral_N50"
+    android:background="@color/Unify_N50"
     android:visibility="gone"
     tools:visibility="visible">
 
@@ -17,8 +18,8 @@
         android:layout_gravity="start"
         android:clipToPadding="false"
         android:orientation="horizontal"
-        android:paddingStart="@dimen/dp_12"
-        android:paddingEnd="@dimen/dp_12"
+        android:paddingStart="@dimen/chatcommon_12dp"
+        android:paddingEnd="@dimen/chatcommon_12dp"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
 </FrameLayout>

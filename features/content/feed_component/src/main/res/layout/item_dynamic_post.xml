@@ -42,10 +42,10 @@
 
                 <ImageView
                     android:id="@+id/authorImage"
-                    android:contentDescription="@string/content_desc_authorImage"
                     android:layout_width="@dimen/dp_32"
                     android:layout_height="@dimen/dp_32"
                     android:background="@drawable/bg_circle_gray_border"
+                    android:contentDescription="@string/content_desc_authorImage"
                     android:visibility="visible"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -56,21 +56,20 @@
 
                 <ImageView
                     android:id="@+id/authorBadge"
-                    android:contentDescription="@string/content_desc_authorBadge"
                     android:layout_width="@dimen/dp_14"
                     android:layout_height="@dimen/dp_14"
                     android:layout_marginStart="@dimen/dp_8"
                     android:layout_marginLeft="@dimen/dp_8"
+                    android:contentDescription="@string/content_desc_authorBadge"
                     android:visibility="visible"
+                    app:layout_constraintBottom_toBottomOf="@+id/authorTitle"
                     app:layout_constraintStart_toEndOf="@+id/authorImage"
                     app:layout_constraintTop_toTopOf="@+id/authorTitle"
-                    app:layout_constraintBottom_toBottomOf="@+id/authorTitle"
                     tools:src="@tools:sample/avatars"
                     tools:visibility="visible" />
 
-                <TextView
+                <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/authorTitle"
-                    android:contentDescription="@string/content_desc_authorTitle"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/dp_8"
@@ -80,9 +79,7 @@
                     android:ellipsize="end"
                     android:fontFamily="sans-serif"
                     android:lines="1"
-                    android:textColor="@color/black_70"
-                    android:textSize="@dimen/sp_12"
-                    android:textStyle="bold"
+                    android:textColor="@color/Unify_N700_68"
                     android:visibility="visible"
                     app:layout_constraintBottom_toTopOf="@+id/authorSubtitile"
                     app:layout_constraintEnd_toStartOf="@+id/headerAction"
@@ -90,10 +87,11 @@
                     app:layout_constraintStart_toEndOf="@+id/authorBadge"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintVertical_chainStyle="packed"
+                    app:typographyType="heading_6"
                     tools:text="Febrian Putra Muhammad Ilham Jamaludin Andhika Kuma Djaffri Febby Mulia"
                     tools:visibility="visible" />
 
-                <TextView
+                <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/authorSubtitile"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -104,24 +102,24 @@
                     android:ellipsize="end"
                     android:fontFamily="sans-serif"
                     android:lines="1"
-                    android:textColor="@color/black_38"
+                    android:textColor="@color/Unify_N700_32"
                     android:textSize="@dimen/sp_10"
-                    android:textStyle="normal"
                     android:visibility="visible"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/headerAction"
                     app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toEndOf="@+id/authorImage"
                     app:layout_constraintTop_toBottomOf="@+id/authorTitle"
+                    app:typographyWeight="reguler"
                     tools:text="12 October pukul 13.55 2018 akhir kiamat semua dunia akan musnah"
                     tools:visibility="visible" />
 
                 <com.tokopedia.design.component.ButtonCompat
                     android:id="@+id/headerAction"
-                    android:contentDescription="@string/content_desc_headerAction"
                     style="?android:attr/borderlessButtonStyle"
                     android:layout_width="@dimen/dp_72"
                     android:layout_height="wrap_content"
+                    android:contentDescription="@string/content_desc_headerAction"
                     android:elevation="@dimen/dp_0"
                     android:text="@string/kol_action_follow"
                     android:textAllCaps="false"
@@ -136,32 +134,30 @@
 
                 <ImageView
                     android:id="@+id/menu"
-                    android:contentDescription="@string/content_desc_menu"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:contentDescription="@string/content_desc_menu"
                     android:paddingStart="@dimen/dp_16"
                     android:paddingLeft="@dimen/dp_16"
-                    app:srcCompat="@drawable/ic_kebab"
                     android:visibility="visible"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/ic_kebab"
                     tools:ignore="ContentDescription,RtlSymmetry"
                     tools:visibility="visible" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/caption"
-                android:contentDescription="@string/content_desc_caption"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif"
                 android:lineSpacingExtra="@dimen/sp_5"
                 android:paddingLeft="@dimen/dp_16"
                 android:paddingRight="@dimen/dp_16"
-                android:textColor="@color/black_54"
-                android:textSize="@dimen/sp_12"
-                android:textStyle="normal"
+                android:textColor="@color/Unify_N700_44"
+                app:typographyType="body_3"
                 tools:text="Welcoming October, road to hari batik nasional, you can wear batik and be stylish as well hey?" />
 
             <RelativeLayout
@@ -179,7 +175,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
 
-                <com.google.android.material.tabs.TabLayout
+                <com.tokopedia.unifycomponents.TabsUnify
                     android:id="@+id/tabLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -192,7 +188,7 @@
 
             <include
                 android:id="@+id/layoutPostTag"
-                layout="@layout/item_posttag"/>
+                layout="@layout/item_posttag" />
 
             <LinearLayout
                 android:id="@+id/footer"
@@ -212,22 +208,21 @@
                         android:id="@+id/footerBackground"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:background="@color/background_footer_green"
-                        android:visibility="visible"/>
+                        android:background="@color/Unify_G100"
+                        android:visibility="visible" />
 
-                    <TextView
+                    <com.tokopedia.unifyprinciples.Typography
                         android:id="@+id/footerAction"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_gravity="center|left"
+                        android:layout_marginStart="@dimen/dp_16"
+                        android:layout_marginLeft="@dimen/dp_16"
                         android:layout_marginEnd="@dimen/dp_16"
                         android:layout_marginRight="@dimen/dp_16"
-                        android:layout_marginLeft="@dimen/dp_16"
-                        android:layout_marginStart="@dimen/dp_16"
                         android:fontFamily="sans-serif-medium"
-                        android:textColor="@color/medium_green"
-                        android:textSize="@dimen/sp_12"
-                        android:textStyle="normal"
-                        android:layout_gravity="center|left"
+                        android:textColor="@color/Unify_G400"
+                        app:typographyType="body_3"
                         tools:text="Info Vote Atau Enggak, Terserah dong"
                         tools:visibility="visible" />
                 </FrameLayout>
@@ -235,18 +230,16 @@
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingTop="@dimen/dp_8"
-                    android:paddingBottom="@dimen/dp_16"
                     android:layout_marginStart="@dimen/dp_16"
                     android:layout_marginEnd="@dimen/dp_16"
-                    >
+                    android:paddingTop="@dimen/dp_8"
+                    android:paddingBottom="@dimen/dp_16">
 
                     <androidx.constraintlayout.widget.Group
                         android:id="@+id/likeGroup"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        app:constraint_referenced_ids="likeIcon,likeText"
-                        />
+                        app:constraint_referenced_ids="likeIcon,likeText" />
 
                     <androidx.appcompat.widget.AppCompatImageView
                         android:id="@+id/likeIcon"
@@ -256,88 +249,81 @@
                         android:contentDescription="@string/kol_action_like"
                         android:scaleType="fitCenter"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:srcCompat="@drawable/ic_thumb"
-                        />
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:srcCompat="@drawable/ic_thumb" />
 
                     <com.tokopedia.unifyprinciples.Typography
                         android:id="@+id/likeText"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:fontFamily="sans-serif"
                         android:layout_marginStart="@dimen/dp_4"
                         android:layout_marginLeft="@dimen/dp_4"
+                        android:fontFamily="sans-serif"
                         android:text="@string/kol_action_like"
-                        android:textColor="@color/color_like_comment_share"
+                        android:textColor="@color/Unify_N700_68"
                         app:layout_constraintBottom_toBottomOf="@id/likeIcon"
                         app:layout_constraintStart_toEndOf="@id/likeIcon"
                         app:layout_constraintTop_toTopOf="@id/likeIcon"
                         app:typographyType="heading_5"
-                        tools:ignore="RtlSymmetry"
-                        />
+                        tools:ignore="RtlSymmetry" />
 
                     <androidx.constraintlayout.widget.Group
                         android:id="@+id/commentGroup"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        app:constraint_referenced_ids="commentIcon,commentText"
-                        />
+                        app:constraint_referenced_ids="commentIcon,commentText" />
 
                     <androidx.appcompat.widget.AppCompatImageView
                         android:id="@+id/commentIcon"
                         android:layout_width="@dimen/dp_18"
                         android:layout_height="@dimen/dp_18"
                         android:layout_gravity="center"
-                        android:contentDescription="@string/kol_action_comment"
-                        android:scaleType="fitCenter"
                         android:layout_marginStart="@dimen/dp_16"
                         android:layout_marginLeft="@dimen/dp_16"
-                        app:layout_constraintTop_toTopOf="@id/likeText"
+                        android:contentDescription="@string/kol_action_comment"
+                        android:scaleType="fitCenter"
                         app:layout_constraintBottom_toBottomOf="@id/likeText"
                         app:layout_constraintStart_toEndOf="@id/likeText"
+                        app:layout_constraintTop_toTopOf="@id/likeText"
                         app:srcCompat="@drawable/ic_feed_comment"
-                        tools:ignore="RtlSymmetry"
-                        />
+                        tools:ignore="RtlSymmetry" />
 
                     <com.tokopedia.unifyprinciples.Typography
                         android:id="@+id/commentText"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:fontFamily="sans-serif"
                         android:layout_marginStart="@dimen/dp_4"
                         android:layout_marginLeft="@dimen/dp_4"
+                        android:fontFamily="sans-serif"
                         android:text="@string/kol_action_comment"
-                        android:textColor="@color/color_like_comment_share"
+                        android:textColor="@color/Unify_N700_68"
                         app:layout_constraintBottom_toBottomOf="@id/commentIcon"
                         app:layout_constraintStart_toEndOf="@id/commentIcon"
                         app:layout_constraintTop_toTopOf="@id/commentIcon"
                         app:typographyType="heading_5"
-                        tools:ignore="RtlSymmetry"
-                        />
+                        tools:ignore="RtlSymmetry" />
 
                     <androidx.constraintlayout.widget.Group
                         android:id="@+id/shareGroup"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        app:constraint_referenced_ids="shareIcon,shareText"
-                        />
+                        app:constraint_referenced_ids="shareIcon,shareText" />
 
                     <androidx.appcompat.widget.AppCompatImageView
                         android:id="@+id/shareIcon"
                         android:layout_width="@dimen/dp_18"
                         android:layout_height="@dimen/dp_18"
-                        android:contentDescription="@string/kol_action_share"
-                        android:scaleType="fitCenter"
                         android:layout_marginStart="@dimen/dp_16"
                         android:layout_marginLeft="@dimen/dp_16"
+                        android:contentDescription="@string/kol_action_share"
+                        android:scaleType="fitCenter"
                         app:layout_constraintBottom_toBottomOf="@id/commentText"
                         app:layout_constraintStart_toEndOf="@id/commentText"
                         app:layout_constraintTop_toTopOf="@id/commentText"
-                        app:srcCompat="@drawable/ic_share_grey_profile"
-                        />
+                        app:srcCompat="@drawable/ic_share_grey_profile" />
 
                     <com.tokopedia.unifyprinciples.Typography
                         android:id="@+id/shareText"
@@ -347,23 +333,21 @@
                         android:paddingStart="@dimen/dp_4"
                         android:paddingLeft="@dimen/dp_4"
                         android:text="@string/kol_action_share"
-                        android:textColor="@color/color_like_comment_share"
+                        android:textColor="@color/Unify_N700_68"
                         app:layout_constraintBottom_toBottomOf="@id/shareIcon"
                         app:layout_constraintStart_toEndOf="@id/shareIcon"
                         app:layout_constraintTop_toTopOf="@id/shareIcon"
                         app:typographyType="heading_5"
-                        tools:ignore="RtlSymmetry"
-                        />
+                        tools:ignore="RtlSymmetry" />
 
                     <androidx.appcompat.widget.AppCompatImageView
                         android:id="@+id/statsIcon"
                         android:layout_width="@dimen/dp_18"
                         android:layout_height="@dimen/dp_18"
-                        app:srcCompat="@drawable/ic_graph_grey"
-                        app:layout_constraintTop_toTopOf="@id/shareText"
                         app:layout_constraintBottom_toBottomOf="@id/shareText"
                         app:layout_constraintEnd_toEndOf="parent"
-                        />
+                        app:layout_constraintTop_toTopOf="@id/shareText"
+                        app:srcCompat="@drawable/ic_graph_grey" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 

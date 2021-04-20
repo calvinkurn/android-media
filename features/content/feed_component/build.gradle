@@ -3,17 +3,36 @@ apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 
 repositories {
-    maven { url 'https://hansel.io/maven' }
+    maven { url 'https://maven-hansel.tokopedia.com/maven' }
     mavenCentral()
 }
 
 buildscript {
     repositories {
         mavenCentral()
-        maven { url 'https://hansel.io/maven' }
+        maven { url 'https://maven-hansel.tokopedia.com/maven' }
     }
     dependencies {
         classpath rootProject.ext.miscDependencies.hansel
+    }
+}
+
+android {
+    packagingOptions {
+        exclude 'META-INF/**'
+    }
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_1_8
+    }
+    defaultConfig {
+        multiDexEnabled true
+    }
+    defaultConfig {
+        if (project.hasProperty("benchmark")) {
+            testInstrumentationRunner 'com.tokopedia.test.application.environment.TkpdAndroidBenchmarkTestRunner'
+        } else {
+            testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
+        }
     }
 }
 
@@ -35,9 +54,11 @@ dependencies {
 
     implementation project(rootProject.ext.features.topAdsSdk)
     implementation project(rootProject.ext.features.resourcesCommon)
+    implementation project(rootProject.ext.features.playWidget)
 
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.components
+    implementation rootProject.ext.unifyDependencies.icons
     implementation rootProject.ext.unifyDependencies.global_error
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
     implementation project(rootProject.ext.libraries.graphql)
@@ -45,7 +66,6 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
-    implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
     implementation rootProject.ext.tkpdLibDependencies.youtubePlayer
@@ -56,9 +76,15 @@ dependencies {
     implementation rootProject.ext.miscDependencies.exoPlayerRtmp
     implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk7
     implementation rootProject.ext.miscDependencies.rxKotlin
-    implementation (rootProject.ext.serviceDependencies.crashlytics) {
+    implementation (rootProject.ext.firebase.crashlytics) {
         transitive = true
     }
+    implementation rootProject.ext.miscDependencies.viewModelKtx
+
+
+    androidTestImplementation project(rootProject.ext.libraries.instrumentation_test)
+    androidTestImplementation rootProject.ext.testDependencies.benchmark
+    androidTestImplementation rootProject.ext.testDependencies.testCoreKtx
 }
 
 project.ext {

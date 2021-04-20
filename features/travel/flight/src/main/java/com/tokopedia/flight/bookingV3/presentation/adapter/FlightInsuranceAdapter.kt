@@ -78,7 +78,7 @@ class FlightInsuranceAdapter: RecyclerView.Adapter<FlightInsuranceAdapter.ViewHo
         }
 
         private fun setUpTncText(description: String, tncUrl: String, title: String, listener: ActionListener?, context: Context): SpannableStringBuilder{
-            val color = itemView.resources.getColor(com.tokopedia.unifyprinciples.R.color.Green_G500)
+            val color = itemView.resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_G500)
             var fullText = String.format("%s. ", description)
             if (tncUrl != null && tncUrl.isNotEmpty()) {
                 fullText += context.getString(R.string.flight_booking_insurance_see_detail)

@@ -1,12 +1,13 @@
 package com.tokopedia.cart.view
 
+import android.view.View
 import com.tokopedia.abstraction.base.view.listener.CustomerView
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
-import com.tokopedia.purchase_platform.common.feature.insurance.response.InsuranceCartDigitalProduct
-import com.tokopedia.purchase_platform.common.feature.insurance.response.InsuranceCartResponse
-import com.tokopedia.cart.data.model.response.recentview.RecentView
 import com.tokopedia.cart.domain.model.cartlist.CartItemData
 import com.tokopedia.cart.domain.model.cartlist.CartListData
+import com.tokopedia.cart.domain.model.cartlist.OutOfServiceData
+import com.tokopedia.cart.domain.model.cartlist.UndoDeleteCartData
+import com.tokopedia.cart.view.uimodel.CartRecentViewItemHolderData
 import com.tokopedia.cart.view.uimodel.CartShopHolderData
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel
@@ -34,8 +35,6 @@ interface ICartListView : CustomerView {
 
     fun getCartId(): String
 
-    fun getInsuranceCartShopData(): ArrayList<InsuranceCartDigitalProduct>?
-
     fun showProgressLoading()
 
     fun hideProgressLoading()
@@ -49,33 +48,39 @@ interface ICartListView : CustomerView {
                                     checkoutProductEligibleForCashOnDelivery: Boolean,
                                     condition: Int)
 
-    fun renderErrorToShipmentForm(message: String)
+    fun renderErrorToShipmentForm(message: String, ctaText: String = "")
 
     fun renderErrorToShipmentForm(throwable: Throwable)
 
-    fun renderDetailInfoSubTotal(qty: String, subtotalPrice: String, selectAllItem: Boolean, unselectAllItem: Boolean, noAvailableItems: Boolean)
+    fun renderErrorToShipmentForm(outOfServiceData: OutOfServiceData)
+
+    fun renderDetailInfoSubTotal(qty: String, subtotalBeforeSlashedPrice: Double, subtotalPrice: Double, selectAllItem: Boolean, unselectAllItem: Boolean, noAvailableItems: Boolean)
 
     fun updateCashback(cashback: Double)
 
-    fun showToastMessageRed(message: String)
+    fun showToastMessageRed(message: String, actionText: String = "", ctaClickListener: View.OnClickListener? = null)
 
     fun showToastMessageRed(throwable: Throwable)
 
-    fun showToastMessageGreen(message: String)
+    fun showToastMessageGreen(message: String, actionText: String = "", onClickListener: View.OnClickListener? = null)
 
     fun renderLoadGetCartData()
 
     fun renderLoadGetCartDataFinish()
 
-    fun onDeleteCartDataSuccess(deletedCartIds: List<String>)
+    fun onDeleteCartDataSuccess(deletedCartIds: List<String>, removeAllItems: Boolean, forceExpandCollapsedUnavailableItems: Boolean, isMoveToWishlist: Boolean, isFromGlobalCheckbox: Boolean)
+
+    fun onUndoDeleteCartDataSuccess(undoDeleteCartData: UndoDeleteCartData)
+
+    fun onAddCartToWishlistSuccess(message: String, productId: String, cartId: String, isLastItem: Boolean, source: String, forceExpandCollapsedUnavailableItems: Boolean)
 
     fun stopCartPerformanceTrace()
 
     fun stopAllCartPerformanceTrace()
 
-    fun renderRecentView(recentViewList: List<RecentView>?)
+    fun renderRecentView(recommendationWidget: RecommendationWidget?)
 
-    fun renderWishlist(wishlists: List<Wishlist>?)
+    fun renderWishlist(wishlists: List<Wishlist>?, forceReload: Boolean)
 
     fun renderRecommendation(recommendationWidget: RecommendationWidget?)
 
@@ -92,14 +97,6 @@ interface ICartListView : CustomerView {
     fun setHasTriedToLoadRecommendation()
 
     fun triggerSendEnhancedEcommerceAddToCartSuccess(addToCartDataResponseModel: AddToCartDataModel, productModel: Any)
-
-    fun renderInsuranceCartData(insuranceCartResponse: InsuranceCartResponse?, isRecommendation: Boolean)
-
-    fun removeInsuranceProductItem(productId: List<Long>)
-
-    fun showMessageRemoveInsuranceProductSuccess()
-
-    fun showMessageUpdateInsuranceProductSuccess()
 
     fun getAdsId(): String?
 
@@ -128,4 +125,10 @@ interface ICartListView : CustomerView {
     fun resetRecentViewList()
 
     fun sendATCTrackingURL(recommendationItem: RecommendationItem)
+
+    fun reCollapseExpandedDeletedUnavailableItems()
+
+    fun sendATCTrackingURLRecent(productModel: CartRecentViewItemHolderData)
+
+
 }

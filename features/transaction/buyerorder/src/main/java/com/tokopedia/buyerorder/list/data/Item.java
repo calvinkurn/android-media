@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName;
 public class Item {
     @SerializedName("id")
     @Expose
-    private int id;
+    private long id;
     @SerializedName("imageUrl")
     @Expose
     private String imageUrl;
@@ -20,7 +20,7 @@ public class Item {
         this.name = name;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 

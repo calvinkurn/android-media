@@ -46,7 +46,7 @@
     <!-- Background -->
     <item>
         <shape>
-            <solid android:color="@android:color/white" />
+            <solid android:color="@color/Unify_N0" />
         </shape>
     </item>
 

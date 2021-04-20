@@ -6,6 +6,8 @@ import android.os.Bundle
 import android.os.Process
 import com.tokopedia.dev_monitoring_tools.userjourney.UserJourney
 import com.tokopedia.device.info.DeviceConnectionInfo.getConnectionType
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
 import com.tokopedia.utils.network.NetworkTrafficUtils.getUidRxBytes
 import com.tokopedia.utils.network.NetworkTrafficUtils.getUidTxBytes
 import timber.log.Timber
@@ -59,8 +61,12 @@ class SessionActivityLifecycleCallbacks : Application.ActivityLifecycleCallbacks
 
     private fun addJourney(activity: Activity) {
         var bundle = Bundle()
-        activity.intent.extras?.let {
-            bundle = it
+        try {
+            activity.intent.extras?.let {
+                bundle = it
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
         UserJourney.addJourneyActivity(activity.javaClass.simpleName, bundle)
     }
@@ -80,8 +86,13 @@ class SessionActivityLifecycleCallbacks : Application.ActivityLifecycleCallbacks
     }
 
     private fun logSession(activityName: String, currentMillis: Long) {
-        Timber.w("P1#ACTIVE_SESSION#%s;count=%s;open_page_total=%s;open_page=%s;diff_time=%s",
-                activityName, sessionCount, openedPageCountTotal, openedPageCount, getDiffDuration(lastSessionMillis, currentMillis))
+        ServerLogger.log(Priority.P1, "ACTIVE_SESSION", mapOf(
+                "type" to activityName,
+                "count" to sessionCount.toString(),
+                "open_page_total" to openedPageCountTotal.toString(),
+                "open_page" to openedPageCount.toString(),
+                "diff_time" to getDiffDuration(lastSessionMillis, currentMillis)
+        ))
     }
 
     private fun getDiffDuration(startDuration: Long, stopDuration: Long): String {
@@ -115,12 +126,23 @@ class SessionActivityLifecycleCallbacks : Application.ActivityLifecycleCallbacks
         val sumDiffRx = bootRx - firstSumRx
         val sumNetwork = sumDiffTx + sumDiffRx
         updateLastSumTraffic(bootTx, bootRx)
-        Timber.w("P1#DATA_USAGE#%s;count=%s;open_page_total=%s;open_page=%s;diff_time=%s;conn_info='%s';net=%s;tx=%s;rx=%s;sum_net=%s;sum_tx=%s;sum_rx=%s;boot_net=%s;boot_tx=%s;boot_rx=%s",
-                activityName, sessionCount, openedPageCountTotal, openedPageCount, getDiffDuration(lastSessionMillis, currentMillis),
-                connectionType,
-                getFormattedMBSize(network), getFormattedMBSize(diffTx), getFormattedMBSize(diffRx),
-                getFormattedMBSize(sumNetwork), getFormattedMBSize(sumDiffTx), getFormattedMBSize(sumDiffRx),
-                getFormattedMBSize(bootNetwork), getFormattedMBSize(bootTx), getFormattedMBSize(bootRx))
+        ServerLogger.log(Priority.P1, "DATA_USAGE",
+                mapOf("type" to activityName,
+                        "count" to sessionCount.toString(),
+                        "open_page_total" to openedPageCountTotal.toString(),
+                        "open_page" to openedPageCount.toString(),
+                        "diff_time" to getDiffDuration(lastSessionMillis, currentMillis),
+                        "conn_info" to connectionType.orEmpty(),
+                        "net" to getFormattedMBSize(network),
+                        "tx" to getFormattedMBSize(diffTx),
+                        "rx" to getFormattedMBSize(diffRx),
+                        "sum_net" to getFormattedMBSize(sumNetwork),
+                        "sum_tx" to getFormattedMBSize(sumDiffTx),
+                        "sum_rx" to getFormattedMBSize(sumDiffRx),
+                        "boot_net" to getFormattedMBSize(bootNetwork),
+                        "boot_tx" to getFormattedMBSize(bootTx),
+                        "boot_rx" to getFormattedMBSize(bootRx)
+                ))
     }
 
     private fun updateLastSumTraffic(currentSumTx: Long, currentSumRx: Long) {

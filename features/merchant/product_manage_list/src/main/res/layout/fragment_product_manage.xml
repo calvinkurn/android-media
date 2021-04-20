@@ -6,13 +6,19 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <include
+        android:id="@+id/stockTicker"
+        layout="@layout/layout_stock_location_closable_ticker"
+        android:visibility="gone"
+        tools:visibility="visible" />
+
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:id="@+id/mainContainer"
         android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@id/btnMultiEdit"
-        android:layout_alignParentTop="true">
+        android:layout_below="@id/stockTicker">
 
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/app_bar_layout"
@@ -34,7 +40,7 @@
                 android:clickable="true"
                 android:focusable="true"
                 android:textSize="@dimen/fontSize_lvl2"
-                android:textColorHint="@android:color/darker_gray"
+                android:textColorHint="@color/Unify_N200"
                 android:layout_marginLeft="@dimen/spacing_lvl2"
                 android:layout_marginRight="@dimen/spacing_lvl2"
                 android:layout_marginTop="@dimen/spacing_lvl3"
@@ -93,12 +99,14 @@
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/textMultipleSelect"
-                    android:textColor="@color/g_500"
+                    android:contentDescription="@string/content_desc_textMultipleSelect"
+                    android:textColor="@color/Unify_G500"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:gravity="center_vertical"
                     app:typographyType="heading_6"
                     app:typographyWeight="bold"
+                    android:visibility="gone"
                     android:text="@string/product_manage_multiple_select" />
             </LinearLayout>
 
@@ -133,10 +141,11 @@
 
     <androidx.cardview.widget.CardView
         android:id="@+id/btnMultiEdit"
+        android:contentDescription="@string/content_desc_btnMultiEdit"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:background="@android:color/white"
+        app:cardBackgroundColor="@color/Unify_N0"
         android:visibility="gone"
         app:cardElevation="@dimen/layout_lvl2"
         app:contentPaddingBottom="@dimen/spacing_lvl3"
@@ -156,6 +165,24 @@
         android:id="@+id/pageLoading"
         layout="@layout/layout_product_manage_shimmer"
         tools:visibility="gone" />
+
+    <com.tokopedia.globalerror.GlobalError
+        android:id="@+id/errorPage"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/Unify_N0"
+        android:gravity="center"
+        android:visibility="gone"
+        app:globalerrors_type="SERVER_ERROR" />
+
+    <com.tokopedia.globalerror.GlobalError
+        android:id="@+id/noAccessPage"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/Unify_N0"
+        android:gravity="center"
+        android:visibility="gone"
+        app:globalerrors_type="PAGE_NOT_FOUND"/>
 
     <FrameLayout
         android:id="@+id/interceptor"

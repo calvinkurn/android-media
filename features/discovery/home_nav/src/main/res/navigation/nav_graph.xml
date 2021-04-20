@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/mainNavFragment">
+
+    <fragment
+        android:id="@+id/mainNavFragment"
+        android:name="com.tokopedia.homenav.mainnav.view.fragment.MainNavFragment"
+        android:label="" >
+        <action
+            android:id="@+id/action_fragmentMain_to_fragmentCategory"
+            app:destination="@id/categoryFragment"
+            app:enterAnim="@anim/nav_slide_in_right"
+            app:exitAnim="@anim/nav_slide_out_left"
+            app:popExitAnim="@anim/slide_right_out_medium"
+            app:popEnterAnim="@anim/slide_left_in_medium"/>
+        <argument
+            android:name="@string/main_nav_args_source_key"
+            app:argType="string"
+            android:defaultValue=""/>
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/categoryFragment"
+        android:name="com.tokopedia.homenav.category.view.fragment.CategoryListFragment"
+        android:label="{title}">
+        <argument
+            android:name="title"
+            app:argType="string"
+            app:nullable="true" />
+    </fragment>
+</navigation>

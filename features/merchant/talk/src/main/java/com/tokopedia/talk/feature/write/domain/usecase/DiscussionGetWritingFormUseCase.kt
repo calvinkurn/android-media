@@ -1,5 +1,6 @@
 package com.tokopedia.talk.feature.write.domain.usecase
 
+import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.talk.feature.write.data.model.DiscussionGetWritingFormResponseWrapper
@@ -10,8 +11,8 @@ class DiscussionGetWritingFormUseCase @Inject constructor(graphqlRepository: Gra
 
     companion object {
         const val PARAM_PRODUCT_ID = "productID"
-
-        private val query by lazy {
+        private const val DISCUSSION_GET_WRITING_FORM_QUERY_CLASS_NAME = "DiscussionGetWritingForm"
+        private const val query =
             """
                 query discussionGetWritingForm(${'$'}productID: String!) {
                   discussionGetWritingForm(productID:${'$'}productID) {
@@ -28,18 +29,22 @@ class DiscussionGetWritingFormUseCase @Inject constructor(graphqlRepository: Gra
                     }
                   }
                 }
-            """.trimIndent()
-        }
+            """
     }
 
     init {
-        setGraphqlQuery(query)
+        setupUseCase()
+    }
+
+    @GqlQuery(DISCUSSION_GET_WRITING_FORM_QUERY_CLASS_NAME, query)
+    private fun setupUseCase() {
+        setGraphqlQuery(DiscussionGetWritingForm.GQL_QUERY)
         setTypeClass(DiscussionGetWritingFormResponseWrapper::class.java)
     }
 
-    fun setParams(productId: Int) {
+    fun setParams(productId: String) {
         setRequestParams(RequestParams.create().apply {
-            putString(PARAM_PRODUCT_ID, productId.toString())
+            putString(PARAM_PRODUCT_ID, productId)
         }.parameters)
     }
 }

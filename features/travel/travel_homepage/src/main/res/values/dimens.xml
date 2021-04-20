@@ -12,15 +12,25 @@
 
     <dimen name="homepage_product_card_picture_height">140dp</dimen>
     <dimen name="travel_homepage_dp_2">2dp</dimen>
+    <dimen name="travel_homepage_dp_3">3dp</dimen>
     <dimen name="travel_homepage_dp_4">4dp</dimen>
     <dimen name="travel_homepage_dp_6">6dp</dimen>
     <dimen name="travel_homepage_dp_10">10dp</dimen>
     <dimen name="travel_homepage_dp_12">12dp</dimen>
+    <dimen name="travel_homepage_dp_20">20dp</dimen>
     <dimen name="travel_homepage_dp_22">22dp</dimen>
+    <dimen name="travel_homepage_dp_30">30dp</dimen>
+    <dimen name="travel_homepage_dp_36">36dp</dimen>
     <dimen name="travel_homepage_dp_40">40dp</dimen>
+    <dimen name="travel_homepage_dp_72">72dp</dimen>
+    <dimen name="travel_homepage_dp_76">76dp</dimen>
     <dimen name="travel_homepage_dp_100">100dp</dimen>
+    <dimen name="travel_homepage_dp_110">110dp</dimen>
+    <dimen name="travel_homepage_dp_121">121dp</dimen>
+    <dimen name="travel_homepage_dp_140">140dp</dimen>
     <dimen name="travel_homepage_dp_145">145dp</dimen>
     <dimen name="travel_homepage_dp_168">168dp</dimen>
+    <dimen name="travel_homepage_dp_180">180dp</dimen>
     <dimen name="travel_homepage_dp_200">200dp</dimen>
     <dimen name="travel_homepage_section_width_260">260dp</dimen>
     <dimen name="travel_homepage_section_height_76">76dp</dimen>

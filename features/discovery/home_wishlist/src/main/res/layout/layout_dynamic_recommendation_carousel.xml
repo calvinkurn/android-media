@@ -10,7 +10,7 @@
     <View
         android:layout_width="0dp"
         android:layout_height="@dimen/dp_8"
-        android:background="@color/Neutral_N50"
+        android:background="@color/Unify_N50"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
@@ -46,7 +46,7 @@
             android:layout_marginEnd="@dimen/dp_16"
             android:layout_marginRight="@dimen/dp_16"
             android:text="@string/wishlist_see_more_title"
-            android:textColor="@color/green_500"
+            android:textColor="@color/Unify_G500"
             android:background="?attr/selectableItemBackgroundBorderless"
             app:typographyType="heading_5"
             app:layout_constraintEnd_toEndOf="parent"
@@ -68,7 +68,7 @@
         android:layout_height="0dp"
         android:focusable="true"
         android:clickable="true"
-        android:background="@color/Neutral_N700_32"
+        android:background="@color/Unify_N700_44"
         android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -77,7 +77,7 @@
     <View
         android:layout_width="0dp"
         android:layout_height="@dimen/dp_8"
-        android:background="@color/Neutral_N50"
+        android:background="@color/Unify_N50"
         android:layout_marginTop="@dimen/dp_10"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"

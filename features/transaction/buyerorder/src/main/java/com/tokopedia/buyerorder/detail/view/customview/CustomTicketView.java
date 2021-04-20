@@ -14,6 +14,8 @@ import android.renderscript.Element;
 import android.renderscript.RenderScript;
 import android.renderscript.ScriptIntrinsicBlur;
 import androidx.annotation.IntDef;
+import androidx.core.content.ContextCompat;
+
 import android.util.AttributeSet;
 import android.util.Log;
 import android.util.TypedValue;
@@ -26,7 +28,6 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 import static android.graphics.Bitmap.Config.ALPHA_8;
-import static android.graphics.Color.BLACK;
 import static android.graphics.Color.TRANSPARENT;
 import static android.graphics.Paint.ANTI_ALIAS_FLAG;
 import static android.graphics.PorterDuff.Mode.SRC_IN;
@@ -211,11 +212,11 @@ public class CustomTicketView extends View {
     private void init(AttributeSet attrs) {
         if (attrs != null) {
             TypedArray typedArray = getContext().obtainStyledAttributes(attrs, R.styleable.CustomTicketView);
-            mBackgroundColor = typedArray.getColor(R.styleable.CustomTicketView_backgroundColor, getResources().getColor(android.R.color.white));
+            mBackgroundColor = typedArray.getColor(R.styleable.CustomTicketView_backgroundColor, getResources().getColor(com.tokopedia.unifyprinciples.R.color.Unify_N0));
             mScallopRadius = typedArray.getDimensionPixelSize(R.styleable.CustomTicketView_scallopRadius, dpToPx(20f, getContext()));
             mShowBorder = typedArray.getBoolean(R.styleable.CustomTicketView_showBorder, false);
             mBorderWidth = typedArray.getDimensionPixelSize(R.styleable.CustomTicketView_borderWidth, dpToPx(2f, getContext()));
-            mBorderColor = typedArray.getColor(R.styleable.CustomTicketView_borderColor, getResources().getColor(android.R.color.black));
+            mBorderColor = typedArray.getColor(R.styleable.CustomTicketView_borderColor, getResources().getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700));
             mCornerType = typedArray.getInt(R.styleable.CustomTicketView_cornerType, CornerType.NORMAL);
             mCornerRadius = typedArray.getDimensionPixelSize(R.styleable.CustomTicketView_cornerRadius, dpToPx(4f, getContext()));
             mShowTopShadow = typedArray.getBoolean(R.styleable.CustomTicketView_showTopShadow, false);
@@ -234,7 +235,7 @@ public class CustomTicketView extends View {
             typedArray.recycle();
         }
 
-        mShadowPaint.setColorFilter(new PorterDuffColorFilter(BLACK, SRC_IN));
+        mShadowPaint.setColorFilter(new PorterDuffColorFilter(ContextCompat.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_G900), SRC_IN));
         mShadowPaint.setAlpha(51); // 20%
 
         initElements();

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout android:layout_height="wrap_content"
+    android:id="@+id/wishlist_card"
     android:layout_width="match_parent"
     android:orientation="horizontal"
     android:layout_marginLeft="@dimen/dp_8"
@@ -8,6 +9,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
     <CheckBox
         android:id="@+id/wishlist_checkbox"
+        android:contentDescription="@string/content_desc_wishlist_checkbox"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_8"

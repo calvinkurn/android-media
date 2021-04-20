@@ -35,7 +35,7 @@ import com.tokopedia.buyerorder.common.util.BuyerConsts.RESULT_POPUP_BODY_INSTAN
 import com.tokopedia.buyerorder.common.util.BuyerConsts.RESULT_POPUP_TITLE_INSTANT_CANCEL
 import com.tokopedia.buyerorder.common.util.BuyerConsts.TICKER_LABEL
 import com.tokopedia.buyerorder.common.util.BuyerConsts.TICKER_URL
-import com.tokopedia.buyerorder.common.util.Utils
+import com.tokopedia.buyerorder.common.util.BuyerUtils
 import com.tokopedia.buyerorder.detail.analytics.BuyerAnalytics
 import com.tokopedia.buyerorder.detail.data.Items
 import com.tokopedia.buyerorder.detail.data.getcancellationreason.BuyerGetCancellationReasonData
@@ -382,7 +382,7 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
     }
 
     private fun observingCancelReasons() {
-        buyerCancellationViewModel.cancelReasonResult.observe(this, Observer {
+        buyerCancellationViewModel.cancelReasonResult.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     empty_state_cancellation?.gone()
@@ -454,9 +454,9 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
                     showToaster(getString(R.string.toaster_manual_max), Toaster.TYPE_ERROR)
                 }
                 else -> {
-                    val subReasonLainnya = tf_choose_sub_reason_editable.textFieldInput.text.trimStart()
+                    val subReasonLainnya = tf_choose_sub_reason_editable.textFieldInput.text.toString().trimStart()
                     if (subReasonLainnya.isNotEmpty() && !isCancelAlreadyClicked) {
-                        reasonCancel = java.lang.String.valueOf(subReasonLainnya)
+                        reasonCancel = subReasonLainnya
                         isCancelAlreadyClicked = true
                     }
                     if (isEligibleInstantCancel) submitInstantCancel()
@@ -580,16 +580,6 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
         }
     }
 
-    private fun submitResultReason() {
-        // old submit cancel
-        val intent = Intent()
-        intent.putExtra(OrderListContants.REASON, reasonCancel)
-        intent.putExtra(OrderListContants.REASON_CODE, reasonCode)
-        intent.putExtra(MarketPlaceDetailFragment.ACTION_BUTTON_URL, uri)
-        activity?.setResult(MarketPlaceDetailFragment.CANCEL_BUYER_REQUEST, intent)
-        activity?.finish()
-    }
-
     private fun submitRequestCancel() {
         userSession?.let {
             buyerCancellationViewModel.requestCancel(
@@ -598,14 +588,18 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
     }
     
     private fun observingRequestCancel() {
-        buyerCancellationViewModel.requestCancelResult.observe(this, Observer {
+        buyerCancellationViewModel.requestCancelResult.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     buyerRequestCancelResponse = it.data.buyerRequestCancel
                     if (buyerRequestCancelResponse.success == 1 && buyerRequestCancelResponse.message.isNotEmpty()) {
                         backToDetailPage(1, buyerRequestCancelResponse.message.first(), "", "")
-                    } else if (buyerRequestCancelResponse.success == 0 && buyerRequestCancelResponse.message.isNotEmpty()) {
-                        showToaster(buyerRequestCancelResponse.message.first(), Toaster.TYPE_ERROR)
+                    } else if (buyerRequestCancelResponse.success == 0) {
+                        if (buyerRequestCancelResponse.popup.title.isNotEmpty() && buyerRequestCancelResponse.popup.body.isNotEmpty()) {
+                            showPopup(buyerRequestCancelResponse.popup)
+                        } else if (buyerRequestCancelResponse.message.isNotEmpty()) {
+                            showToaster(buyerRequestCancelResponse.message.first(), Toaster.TYPE_ERROR)
+                        }
                     }
                 }
                 is Fail -> {
@@ -621,7 +615,7 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
     }
 
     private fun observingInstantCancel() {
-        buyerCancellationViewModel.buyerInstantCancelResult.observe(this, Observer {
+        buyerCancellationViewModel.buyerInstantCancelResult.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     instantCancelResponse = it.data.buyerInstantCancel
@@ -711,16 +705,30 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
     private fun showToaster(msg: String, type: Int) {
         val toaster = Toaster
         view?.let { v ->
-            toaster.make(v, msg, Toaster.LENGTH_SHORT, type, BuyerConsts.ACTION_OK)
+            toaster.build(v, msg, Toaster.LENGTH_SHORT, type, BuyerConsts.ACTION_OK).show()
         }
+    }
+
+    private fun showPopup(dataPopup: BuyerRequestCancelData.Data.BuyerRequestCancel.Popup) {
+        val dialog = context?.let { DialogUnify(it, DialogUnify.SINGLE_ACTION, DialogUnify.WITH_ILLUSTRATION) }
+        dialog?.setTitle(dataPopup.title)
+        dialog?.setDescription(dataPopup.body)
+        dialog?.setImageDrawable(R.drawable.ic_terkirim)
+        dialog?.setPrimaryCTAText(getString(R.string.mengerti_button))
+        dialog?.setPrimaryCTAClickListener {
+                dialog.dismiss()
+                activity?.setResult(MarketPlaceDetailFragment.CANCEL_ORDER_DISABLE)
+                activity?.finish()
+        }
+        dialog?.show()
     }
 
     private fun renderTicker(tickerInfo: TickerInfo) {
         buyer_ticker_info?.apply {
             visible()
-            tickerType = Utils.getTickerType(tickerInfo.type)
+            tickerType = BuyerUtils.getTickerType(tickerInfo.type)
             tickerShape = Ticker.SHAPE_LOOSE
-            setHtmlDescription(tickerInfo.text + " ${getString(R.string.ticker_info_selengkapnya)
+            setHtmlDescription(tickerInfo.text + " ${getString(R.string.buyer_ticker_info_selengkapnya)
                     .replace(TICKER_URL, tickerInfo.actionUrl)
                     .replace(TICKER_LABEL, tickerInfo.actionText)}")
             setDescriptionClickEvent(object : TickerCallback {

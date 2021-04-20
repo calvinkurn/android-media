@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/imgShcTooltipDot"
+        android:layout_width="@dimen/layout_lvl1"
+        android:layout_height="@dimen/layout_lvl1"
+        app:layout_constraintBottom_toBottomOf="@+id/tvShcTooltipTitle"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tvShcTooltipTitle"
+        android:contentDescription="@string/shc_content_desc_image_dot" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvShcTooltipTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/layout_lvl1"
+        android:textColor="@color/Unify_N700_44"
+        app:layout_constraintStart_toEndOf="@+id/imgShcTooltipDot"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="body_3"
+        tools:text="Senin, 2 Des 2020" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvShcTooltipValue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Unify_N700_96"
+        app:layout_constraintStart_toStartOf="@+id/tvShcTooltipTitle"
+        app:layout_constraintTop_toBottomOf="@+id/tvShcTooltipTitle"
+        app:typographyType="body_3"
+        app:typographyWeight="bold"
+        tools:text="Senin, 2 Des 2020" />
+</androidx.constraintlayout.widget.ConstraintLayout>

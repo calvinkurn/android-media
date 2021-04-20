@@ -4,7 +4,7 @@ import com.tokopedia.core.common.category.domain.model.CategoriesResponse
 import com.tokopedia.product.manage.data.*
 import com.tokopedia.product.manage.feature.filter.data.mapper.ProductManageFilterMapper
 import com.tokopedia.product.manage.feature.filter.data.model.FilterOptionsResponse
-import com.tokopedia.product.manage.feature.filter.data.model.ProductListMetaResponse
+import com.tokopedia.product.manage.common.feature.list.data.model.filter.ProductListMetaResponse
 import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmodel.FilterDataUiModel
 import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmodel.FilterUiModel
 import com.tokopedia.product.manage.feature.filter.presentation.fragment.ProductManageFilterFragment

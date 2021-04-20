@@ -1,0 +1,46 @@
+[
+  {
+    "data": {
+      "flightVerify": {
+        "data": {
+          "cartItems": [
+            {
+              "productID": 27,
+              "quantity": 1,
+              "metaData": {
+                "cartID": "5987896955006d26e35dd6a56cb08e82d9adc56",
+                "invoiceID": "QGU-FOZB8-LH5R"
+              },
+              "configuration": {
+                "price": 3999600
+              },
+              "newPrice": [],
+              "oldPrice": "",
+              "oldPriceNumeric": 0,
+              "priceDetail": [
+                {
+                  "label": "KNO - MKQ (x1 Dewasa)",
+                  "price": "Rp 3.999.600",
+                  "priceNumeric": 3999600
+                }
+              ]
+            }
+          ],
+          "promo": {
+            "code": "",
+            "discount": "",
+            "discountNumeric": 0,
+            "cashback": "",
+            "cashbackNumeric": 0,
+            "message": ""
+          }
+        },
+        "meta": {
+          "needRefresh": false,
+          "refreshTime": 7,
+          "maxRetry": 13
+        }
+      }
+    }
+  }
+]

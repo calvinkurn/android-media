@@ -108,7 +108,6 @@
     <string name="filter_button">Tampilkan Produk</string>
     <string name="filter_search_bar">Cari Kategori</string>
     <string name="filter_expand_activity">Expand</string>
-    <string name="filter_expand_save_button">Simpan</string>
     <string name="filter_expand_reset">Reset</string>
     <string name="filter_expand_category_not_found">Oops, kategori yang kamu cari tidak ditemukan.</string>
     <string name="product_manage_filter_sort_select_title">Urutkan</string>
@@ -124,7 +123,6 @@
     <string name="product_manage_variant">Varian</string>
     <string name="product_manage_banned">Pelanggaran</string>
     <string name="product_manage_draft">Draf</string>
-    <string name="product_manage_inactive">Nonaktif</string>
     <string name="product_manage_campaign">Campaign</string>
     <string name="product_manage_count_format">%d Produk</string>
     <string name="product_manage_multiple_select">Pilih Sekaligus</string>
@@ -141,11 +139,12 @@
     <string name="product_manage_stock_reminder_menu">Pengingat Stok</string>
     <string name="product_manage_set_featured_menu">Jadikan Produk Unggulan</string>
     <string name="product_manage_remove_featured_menu">Hapus dari Produk Unggulan</string>
-    <string name="product_manage_set_promo_ads_menu">TopAds</string>
+    <string name="product_manage_set_promo_ads_menu">Iklankan Produk</string>
+    <string name="product_manage_see_promo_ads_menu">Lihat Performa Iklan</string>
+    <string name="product_manage_create_broadcast_chat">Buat Broadcast Chat</string>
 
     <string name="product_stock_reminder_toaster_success_desc">Pengingat stok \"%1$s\" berhasil dipasang.</string>
     <string name="product_stock_reminder_toaster_success_remove_desc">Pengingat stok \"%1$s\" berhasil dinonaktifkan.</string>
-    <string name="product_stock_reminder_toaster_failed_desc">Oops, permintaan kamu tidak dapat diproses.</string>
     <string name="product_stock_reminder_toaster_action_text">Coba Lagi</string>
     <string name="product_stock_reminder_loading_content_desc">Loading Stock Reminder</string>
     <string name="product_stock_reminder_header_title">Pasang Pengingat Stok</string>
@@ -177,11 +176,6 @@
     <string name="product_manage_quick_edit_max_price_error">Maks. Rp100.000.000</string>
     <string name="product_manage_quick_edit_price_success">Harga produk \"%1$s\" berhasil diubah.</string>
 
-    <string name="product_manage_quick_edit_stock_title">Atur Stok</string>
-    <string name="product_manage_quick_edit_stock_active_product">Produk Aktif</string>
-    <string name="product_manage_quick_edit_stock_total_stock">Jumlah Stok</string>
-    <string name="product_manage_quick_edit_stock_success">Ketersediaan produk \"%1$s\" berhasil diubah.</string>
-
     <string name="product_manage_delete_product_title">Hapus Produk?</string>
     <string name="product_manage_delete_product_description">Penghapusan produk tidak dapat dibatalkan.</string>
     <string name="product_manage_delete_product_delete_button">Ya, Hapus</string>
@@ -189,8 +183,6 @@
     <string name="product_manage_delete_product_success">\"%1$s\" berhasil dihapus</string>
     <string name="product_manage_delete_product_fail">Produk gagal dihapus.\nSilakan coba lagi, ya!</string>
 
-    <string name="product_manage_snack_bar_retry">Coba lagi</string>
-    <string name="product_manage_snack_bar_fail">Oops, permintaan kamu tidak dapat diproses.</string>
     <string name="product_manage_button_multi_edit">Atur Sekaligus</string>
     <string name="product_manage_dialog_delete_products_title">Hapus %d Produk?</string>
     <string name="product_manage_dialog_edit_products_inactive_title">Nonaktifkan %d Produk?</string>
@@ -219,12 +211,10 @@
     <string name="product_manage_etalase_picker_title">Pindah Etalase</string>
     <string name="product_manage_edit_products_etalase_retry">%1$d produk berhasil dipindahkan, %2$d gagal dipindahkan.</string>
     <string name="product_manage_edit_products_etalase_success">%1$d produk berhasil dipindahkan.</string>
-    <string name="product_manage_save">Simpan</string>
     <string name="product_manage_etalase_picker_empty_title">Etalase belum tersedia</string>
     <string name="product_manage_etalase_picker_empty_description">Masukkan produk sesuai kategori ke dalam etalase agar mudah dicari calon pembeli</string>
     <string name="product_manage_add_etalase">Tambah Etalase</string>
     <string name="product_manage_etalase_search_hint">Cari nama etalase</string>
-    <string name="product_manage_stock_info_description">Produk ini tidak bisa dilihat calon pembeli karena stok 0.</string>
     <string name="product_manage_stock_information">Informasi Stok</string>
 
     <string name="add_product_text_description">Tambah Produk</string>
@@ -239,11 +229,8 @@
     <string name="product_manage_list_empty_product">Kata orang, jutaan mimpi berawal dari satu langkah kecil. Tambah produk pertamamu.</string>
 
     <string name="product_manage_close">>Tutup</string>
-    <string name="product_manage_error_description">Oops, ada gangguan yang perlu kami bereskan.</string>
     <string name="product_manage_more_menu">Lainnya</string>
     <string name="product_manage_shop_showcase_more_menu_text">Etalase Toko</string>
-    <string name="power_merchant_variant_stock_description">Varian ini tidak bisa dilihat calon pembeli karena stok 0.</string>
-    <string name="power_merchant_stock_warning_ticker_description">Produk ini tidak bisa dilihat calon pembeli karena stok 0.</string>
 
     <string name="product_manage_campaign_stock_total_stock">Total Stok: &#160;</string>
     <string name="product_manage_campaign_stock_allocation">Alokasi Stok</string>
@@ -254,9 +241,6 @@
     <string name="product_manage_campaign_stock_campaign_stock">Stok Campaign (%s)</string>
     <string name="product_manage_campaign_stock_event_action">Lihat varian produk</string>
     <string name="product_manage_campaign_stock_variant_zero_desc">Varian produk yang memiliki jumlah stok 0 tidak akan ditampilkan di tokomu.</string>
-    <string name="product_manage_campaign_stock_open_campaign">Buka halaman Campaign lewat laptop atau komputer untuk ubah detail stok campaign.</string>
-    <string name="product_manage_campaign_stock_success_toast">Jumlah stok \"%1$s\" berhasil diubah.</string>
-    <string name="product_manage_campaign_stock_error_toast">Oops, permintaan kamu tidak dapat diproses,\nSilakan coba lagi, ya!</string>
     <string name="product_manage_campaign_stock_redirection_title">Pantau pergerakan stok campaign \ndi manapun, kapanpun</string>
     <string name="product_manage_campaign_stock_redirection_desc">Gunakan aplikasi Tokopedia Seller untuk lihat alokasi stok produk untuk campaign di tokomu.</string>
 
@@ -286,17 +270,39 @@
 
     <string name="courier_option">Atur Layanan Kurir</string>
 
-    //content desc
-    <string name="content_desc_btnEditPrice">button edit price</string>
-    <string name="content_desc_btnEditStock">button edit stock</string>
+    <!--broadcast chat-->
+    <string name="broadcast_chat_error_state_message_empty_stock">Broadcast Chat hanya bisa dibuat untuk produk yang masih tersedia.</string>
+    <string name="broadcast_chat_error_state_message_empty_variant">Oops, Broadcast Chat gagal dibuat. Yuk, coba lagi!</string>
+    <string name="broadcast_chat_error_state_action_oke">Oke</string>
+    <string name="broadcast_chat_error_state_action_retry">Ulangi</string>
+
+    <!--content desc-->
+    <string name="content_desc_btnEditPrice">button ubah harga</string>
+    <string name="content_desc_btnEditStock">button ubah stok</string>
     <string name="content_desc_btnMoreOptions">button three dots more options</string>
     <string name="content_desc_textMenu">text menu atur</string>
-    <string name="content_desc_textTitle">text title</string>
-    <string name="content_desc_textPrice">text price</string>
-    <string name="content_desc_textStockCount">text stock</string>
+    <string name="content_desc_textTitle">text judul produk</string>
+    <string name="content_desc_textPrice">text harga</string>
+    <string name="content_desc_textStockCount">text stok</string>
     <string name="content_desc_labelActive">text status active</string>
     <string name="content_desc_labelInactive">text status inactive</string>
-    <string name="content_desc_labelVariant">text product variant</string>
-    <string name="content_desc_add_product_menu">text add new product</string>
-    <string name="content_desc_tv_add_product_title">text add new product without variant</string>
+    <string name="content_desc_labelVariant">text varian</string>
+    <string name="content_desc_add_product_menu">text tambah produk</string>
+    <string name="content_desc_tv_add_product_title">text tambah produk tanpa varian</string>
+    <string name="content_desc_textMultipleSelect">text pilih sekaligus</string>
+    <string name="content_desc_quickEditPriceTextField">input harga</string>
+    <string name="content_desc_quickEditPriceSaveButton">button simpan harga</string>
+    <string name="content_desc_checkBoxSelect">checkbox produk</string>
+    <string name="content_desc_btnMultiEdit">button atur sekaligus</string>
+    <string name="message_loading_progress_dialog">Loading</string>
+    <string name="checklist_filter_see_all_product_manage">Checklist Filter</string>
+    <string name="bottom_sheet_stock_location_title">Untuk lihat jumlah dan alokasi stok produk di tiap lokasi, akses Seller Dashboard di desktopmu, ya.</string>
+    <string name="bottom_sheet_stock_location_description">Halaman ini menampilkan stok di lokasi utama saja</string>
+    <string name="bottom_sheet_stock_location_primary_cta">Saya Mengerti</string>
+    <string name="product_manage_multi_location_delete_product_description">Produk akan dihapus di semua lokasi dan  kamu harus mendaftarkannya lagi jika ingin  ditampilkan kembali.</string>
+    <string name="product_manage_multi_location_delete_product_title">Yakin hapus produk?</string>
+    <string name="product_manage_no_access_title">Kamu tidak punya izin untuk mengakses halaman Produk</string>
+    <string name="product_manage_back_to_home">Kembali ke Home</string>
+    <string name="product_manage_no_access_description">Hubungi pemilik toko untuk bisa mengakses halaman ini, ya.</string>
+    <string name="product_manage_refresh_page">Refresh Halaman</string>
 </resources>

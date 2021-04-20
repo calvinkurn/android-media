@@ -1,7 +1,6 @@
 package com.tokopedia.checkout.view.subscriber;
 
-import android.text.TextUtils;
-
+import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel;
 import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData;
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter;
 import com.tokopedia.logisticcart.shipping.model.CourierItemData;
@@ -10,7 +9,8 @@ import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel;
 import com.tokopedia.logisticcart.shipping.model.ShippingDurationUiModel;
 import com.tokopedia.logisticcart.shipping.model.ShopShipment;
 import com.tokopedia.checkout.view.ShipmentContract;
-import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ProductData;
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ProductData;
+import com.tokopedia.purchase_platform.common.utils.UtilsKt;
 
 import java.util.List;
 
@@ -29,16 +29,16 @@ public class GetCourierRecommendationSubscriber extends Subscriber<ShippingRecom
     private final int itemPosition;
     private final ShippingCourierConverter shippingCourierConverter;
     private final ShipmentCartItemModel shipmentCartItemModel;
-    private final List<ShopShipment> shopShipmentList;
     private final boolean isInitialLoad;
     private final boolean isTradeInDropOff;
+    private final boolean isForceReloadRates;
 
     public GetCourierRecommendationSubscriber(ShipmentContract.View view, ShipmentContract.Presenter presenter,
                                               int shipperId, int spId, int itemPosition,
                                               ShippingCourierConverter shippingCourierConverter,
                                               ShipmentCartItemModel shipmentCartItemModel,
-                                              List<ShopShipment> shopShipmentList,
-                                              boolean isInitialLoad, boolean isTradeInDropOff) {
+                                              boolean isInitialLoad, boolean isTradeInDropOff,
+                                              boolean isForceReloadRates) {
         this.view = view;
         this.presenter = presenter;
         this.shipperId = shipperId;
@@ -46,9 +46,9 @@ public class GetCourierRecommendationSubscriber extends Subscriber<ShippingRecom
         this.itemPosition = itemPosition;
         this.shippingCourierConverter = shippingCourierConverter;
         this.shipmentCartItemModel = shipmentCartItemModel;
-        this.shopShipmentList = shopShipmentList;
         this.isInitialLoad = isInitialLoad;
         this.isTradeInDropOff = isTradeInDropOff;
+        this.isForceReloadRates = isForceReloadRates;
     }
 
     @Override
@@ -62,13 +62,13 @@ public class GetCourierRecommendationSubscriber extends Subscriber<ShippingRecom
         if (isInitialLoad) {
             view.renderCourierStateFailed(itemPosition, isTradeInDropOff);
         } else {
-            view.updateCourierBottomsheetHasNoData(itemPosition, shipmentCartItemModel, shopShipmentList);
+            view.updateCourierBottomsheetHasNoData(itemPosition, shipmentCartItemModel);
         }
     }
 
     @Override
     public void onNext(ShippingRecommendationData shippingRecommendationData) {
-        if (isInitialLoad) {
+        if (isInitialLoad || isForceReloadRates) {
             if (shippingRecommendationData != null &&
                     shippingRecommendationData.getShippingDurationViewModels() != null &&
                     shippingRecommendationData.getShippingDurationViewModels().size() > 0) {
@@ -82,31 +82,35 @@ public class GetCourierRecommendationSubscriber extends Subscriber<ShippingRecom
                             if (isTradeInDropOff || (shippingCourierUiModel.getProductData().getShipperProductId() == spId &&
                                     shippingCourierUiModel.getProductData().getShipperId() == shipperId)) {
                                 if (shippingCourierUiModel.getProductData().getError() != null &&
-                                        !TextUtils.isEmpty(shippingCourierUiModel.getProductData().getError().getErrorMessage())) {
+                                        !UtilsKt.isNullOrEmpty(shippingCourierUiModel.getProductData().getError().getErrorMessage())) {
                                     view.renderCourierStateFailed(itemPosition, isTradeInDropOff);
                                     return;
                                 } else {
                                     shippingCourierUiModel.setSelected(true);
                                     presenter.setShippingCourierViewModelsState(shippingDurationUiModel.getShippingCourierViewModelList(), itemPosition);
                                     CourierItemData courierItemData = shippingCourierConverter.convertToCourierItemData(shippingCourierUiModel);
-                                    if (shippingRecommendationData.getLogisticPromo() != null) {
-                                        String disableMsg = shippingRecommendationData.getLogisticPromo().getDisableText();
+                                    LogisticPromoUiModel logisticPromo = shippingRecommendationData.getLogisticPromo();
+                                    if (logisticPromo != null) {
+                                        String disableMsg = logisticPromo.getDisableText();
                                         courierItemData.setLogPromoMsg(disableMsg);
 
                                         // Auto apply Promo Stacking Logistic
-                                        if (shippingRecommendationData.getLogisticPromo().getShipperId() == shipperId
-                                                && shippingRecommendationData.getLogisticPromo().getShipperProductId() == spId
-                                                && !shippingRecommendationData.getLogisticPromo().getPromoCode().isEmpty()
-                                                && !shippingRecommendationData.getLogisticPromo().getDisabled()) {
-                                            courierItemData.setLogPromoCode(shippingRecommendationData.getLogisticPromo().getPromoCode());
-                                            courierItemData.setDiscountedRate(shippingRecommendationData.getLogisticPromo().getDiscountedRate());
-                                            courierItemData.setShippingRate(shippingRecommendationData.getLogisticPromo().getShippingRate());
-                                            courierItemData.setBenefitAmount(shippingRecommendationData.getLogisticPromo().getBenefitAmount());
-                                            courierItemData.setPromoTitle(shippingRecommendationData.getLogisticPromo().getTitle());
-                                            courierItemData.setHideShipperName(shippingRecommendationData.getLogisticPromo().getHideShipperName());
+                                        if (logisticPromo.getShipperId() == shipperId
+                                                && logisticPromo.getShipperProductId() == spId
+                                                && !logisticPromo.getPromoCode().isEmpty()
+                                                && !logisticPromo.getDisabled()) {
+                                            courierItemData.setLogPromoCode(logisticPromo.getPromoCode());
+                                            courierItemData.setDiscountedRate(logisticPromo.getDiscountedRate());
+                                            courierItemData.setShippingRate(logisticPromo.getShippingRate());
+                                            courierItemData.setBenefitAmount(logisticPromo.getBenefitAmount());
+                                            courierItemData.setPromoTitle(logisticPromo.getTitle());
+                                            courierItemData.setHideShipperName(logisticPromo.getHideShipperName());
+                                            courierItemData.setShipperName(logisticPromo.getShipperName());
+                                            courierItemData.setEtaText(logisticPromo.getEtaData().getTextEta());
+                                            courierItemData.setEtaErrorCode(logisticPromo.getEtaData().getErrorCode());
                                         }
                                     }
-                                    view.renderCourierStateSuccess(courierItemData, itemPosition, isTradeInDropOff);
+                                    view.renderCourierStateSuccess(courierItemData, itemPosition, isTradeInDropOff, isForceReloadRates);
                                     return;
                                 }
                             }
@@ -124,14 +128,14 @@ public class GetCourierRecommendationSubscriber extends Subscriber<ShippingRecom
                         if (productData.getShipperId() == shipperId && productData.getShipperProductId() == spId) {
                             view.updateCourierBottomssheetHasData(
                                     shippingDurationUiModel.getShippingCourierViewModelList(),
-                                    itemPosition, shipmentCartItemModel, shopShipmentList
+                                    itemPosition, shipmentCartItemModel
                             );
                             return;
                         }
                     }
                 }
             }
-            view.updateCourierBottomsheetHasNoData(itemPosition, shipmentCartItemModel, shopShipmentList);
+            view.updateCourierBottomsheetHasNoData(itemPosition, shipmentCartItemModel);
         }
     }
 

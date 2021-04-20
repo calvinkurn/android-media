@@ -30,7 +30,6 @@ class TickerViewHolder(
 
     override fun bind(element: TickerWidgetUiModel) {
         val tickerData = element.data
-
         with(itemView.tickerViewShc) {
             val tickers = tickerData?.tickers.orEmpty().map {
                 TickerData(it.title, it.message, Ticker.TYPE_ANNOUNCEMENT, true, it)

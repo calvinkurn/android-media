@@ -25,7 +25,6 @@ class HomeViewModelGetTopadsTest {
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
-    private val getRecommendationTabUseCase: GetRecommendationTabUseCase = mockk(relaxed = true)
     private val getHomeUseCase = mockk<HomeUseCase> (relaxed = true)
     private val topadsImageViewUseCase: TopAdsImageViewUseCase = mockk(relaxed = true)
     private lateinit var homeViewModel: HomeViewModel

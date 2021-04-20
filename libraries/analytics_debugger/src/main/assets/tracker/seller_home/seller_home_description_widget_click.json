@@ -1,0 +1,13 @@
+{
+  "readme": "Seller Home Dashboard - description widget click",
+  "mode": "exact",
+  "query": [
+    {
+      "event": "clickSellerWidget",
+      "eventCategory": "seller app - home",
+      "eventAction": "{{click widget description - .{1,} - see more}}",
+      "eventLabel": "",
+      "sessionIris": "{{.{1,}}}"
+    }
+  ]
+}

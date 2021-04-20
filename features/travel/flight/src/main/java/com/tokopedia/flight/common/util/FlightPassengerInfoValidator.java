@@ -17,6 +17,7 @@ public class FlightPassengerInfoValidator {
     private static final int MIN_PASSENGER_LAST_NAME = 2;
     private static final String REGEX_IS_ALPHABET_AND_SPACE_ONLY = "^[a-zA-Z\\s]*$";
     private static final String REGEX_IS_ALPHANUMERIC_ONLY = "^[a-zA-Z0-9]*$";
+    private static final String REGEX_IS_ALPHA_AND_NUMERIC = "^(?=.*[a-zA-Z])(?=.*[0-9])[a-zA-Z0-9]+$";
 
     @Inject
     public FlightPassengerInfoValidator() {
@@ -86,7 +87,7 @@ public class FlightPassengerInfoValidator {
 
     public boolean validateExpiredDateOfPassportAtLeast6Month(String expiredDateString, Date lastFlightDate) {
         Date expiredDate = FlightDateUtil.stringToDate(FlightDateUtil.DEFAULT_VIEW_FORMAT, expiredDateString);
-        Date lastFlightDateUsed = FlightDateUtil.addTimeToSpesificDate(lastFlightDate, Calendar.DATE, -2);
+        Date lastFlightDateUsed = FlightDateUtil.addTimeToSpesificDate(lastFlightDate, Calendar.DATE, 0);
 
         return expiredDate.after(lastFlightDateUsed);
     }
@@ -105,12 +106,20 @@ public class FlightPassengerInfoValidator {
         return isSingleWord(passportNumber) && isAplhaNumeric(passportNumber);
     }
 
+    public boolean validatePassportNumberAlphaAndNumeric(String passportNumber) {
+        return isSingleWord(passportNumber) && isAlphaAndNumeric(passportNumber);
+    }
+
     private boolean isAlphabetAndSpaceOnly(String expression) {
         return expression.matches(new String(REGEX_IS_ALPHABET_AND_SPACE_ONLY));
     }
 
     private boolean isAplhaNumeric(String expression) {
         return expression.matches(new String(REGEX_IS_ALPHANUMERIC_ONLY));
+    }
+
+    private boolean isAlphaAndNumeric(String expression) {
+        return expression.matches(new String(REGEX_IS_ALPHA_AND_NUMERIC));
     }
 
     private boolean isSingleWord(String passengerLastName) {

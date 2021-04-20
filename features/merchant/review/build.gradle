@@ -1,11 +1,14 @@
 apply plugin: 'com.android.library'
-apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
+apply from: "$rootProject.projectDir/buildconfig/kotlin/core-module.gradle"
+apply from: "../../../compile-instrument-test.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
 
 buildscript {
     repositories {
         mavenCentral()
-        maven { url 'https://hansel.io/maven' }
+        maven { url 'https://maven-hansel.tokopedia.com/maven' }
         jcenter()
         google()
     }
@@ -30,14 +33,14 @@ android {
     androidExtensions {
         experimental = true
     }
+    defaultConfig {
+        multiDexEnabled true
+    }
 }
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    implementation project(rootProject.ext.features.resourcesCommon)
-    implementation project(rootProject.ext.features.productManageItem)
-    implementation project(rootProject.ext.features.reputation)
     implementation project(rootProject.ext.features.reputationCommon)
     implementation project(rootProject.ext.features.shopCommon)
 
@@ -50,58 +53,87 @@ dependencies {
     implementation project(rootProject.ext.libraries.datePickerRange)
     implementation project(rootProject.ext.libraries.deviceInfo)
     implementation project(rootProject.ext.libraries.graphql)
-    implementation project(rootProject.ext.libraries.imagePicker)
+    implementation project(rootProject.ext.libraries.imagePickerCommon)
     implementation project(rootProject.ext.libraries.imagePreviewSlider)
+    implementation project(rootProject.ext.libraries.imagePreview)
     implementation project(rootProject.ext.libraries.kotlinExtensions)
-    implementation project(rootProject.ext.libraries.mediauploader)
-    implementation project(rootProject.ext.libraries.remoteConfig)
+    implementation project(rootProject.ext.features.mediauploader)
+    implementation project(rootProject.ext.features.sellerMigrationCommon)
     implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.libraries.tkpddesign)
     implementation project(rootProject.ext.libraries.track)
+    implementation rootProject.ext.miscDependencies.coroutineCore
+    implementation rootProject.ext.miscDependencies.coroutineAndroid
 
     implementation rootProject.ext.debugToolsDependencies.chuck
 
     implementation rootProject.ext.miscDependencies.chips
     implementation rootProject.ext.miscDependencies.dagger
-    implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.miscDependencies.lottie
-    implementation rootProject.ext.miscDependencies.multiDex
-    implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     implementation rootProject.ext.miscDependencies.viewPager2
 
     implementation rootProject.ext.networkDependencies.glide
 
+    implementation rootProject.ext.miscDependencies.rxAndroid
+    implementation rootProject.ext.miscDependencies.rxJava
+
+    implementation rootProject.ext.networkDependencies.retrofit
+    implementation rootProject.ext.networkDependencies.converterGson
+    implementation rootProject.ext.networkDependencies.adapterRxJava
+    implementation rootProject.ext.miscDependencies.gson
+
+    implementation rootProject.ext.supportLibDependencies.recyclerViewV7
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.supportLibDependencies.design
-    implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk8
+    implementation rootProject.ext.supportLibDependencies.swipeRefresh
+
+    implementation (rootProject.ext.firebase.crashlytics) {
+        transitive = true
+    }
+
+    implementation(rootProject.ext.miscDependencies.facebook) {
+        exclude group: 'com.android.support'
+    }
 
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
+    implementation rootProject.ext.tkpdInternalLibDependencies.authentication
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation rootProject.ext.tkpdInternalLibDependencies.network
+    implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
-    implementation rootProject.ext.tkpdInternalLibDependencies.williamchart
+    compileOnly rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation
 
-    implementation rootProject.ext.unifyDependencies.carousel
     implementation rootProject.ext.unifyDependencies.coach_mark
     implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.dialog
     implementation rootProject.ext.unifyDependencies.global_error
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.header
+    implementation rootProject.ext.unifyDependencies.icons
     implementation rootProject.ext.unifyDependencies.list
     implementation rootProject.ext.unifyDependencies.sortFilter
-
-    implementation(rootProject.ext.tkpdLibDependencies.showcase) {
-        exclude group: "com.android.support"
-    }
+    implementation rootProject.ext.unifyDependencies.icons
 
     kapt rootProject.ext.miscDependencies.daggerCompiler
+    kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
 
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.archCoreTesting
+    testImplementation project(rootProject.ext.libraries.unitTest)
+
+    //Ui Test
+    androidTestImplementation rootProject.ext.testDependencies.androidTestRunner
+    androidTestImplementation rootProject.ext.testDependencies.androidRulesVersion
+    androidTestImplementation rootProject.ext.testDependencies.espressoCore
+    androidTestImplementation rootProject.ext.testDependencies.espressoIntents
+    androidTestImplementation rootProject.ext.testDependencies.espressoContrib
+    androidTestImplementation project(rootProject.ext.libraries.instrumentation_test)
+    androidTestImplementation project(rootProject.ext.libraries.analyticsDebugger)
+    androidTestImplementation project(rootProject.ext.libraries.cassavaTest)
+    androidTestImplementation project(rootProject.ext.features.loginregister)
 }
 
 project.ext {

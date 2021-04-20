@@ -14,7 +14,6 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentStatePagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT
-import androidx.lifecycle.Observer
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.tabs.TabLayout
@@ -158,7 +157,7 @@ class BrandlistContainerFragment : BaseDaggerFragment(),
     }
 
     private fun observeBrandListCategoriesData() {
-        viewModel.brandlistCategoriesResponse.observe(this, Observer {
+        viewModel.brandlistCategoriesResponse.observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> {
                     val brandListCategories: BrandlistCategories = it.data
@@ -190,8 +189,6 @@ class BrandlistContainerFragment : BaseDaggerFragment(),
 
         tabLayout?.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabReselected(tab: TabLayout.Tab?) {
-                val _categoryReselected = tabAdapter.categories.getOrNull(tab?.position.toZeroIfNull())
-                _categoryReselected?.let { }
             }
 
             override fun onTabUnselected(tab: TabLayout.Tab?) {
@@ -201,8 +198,7 @@ class BrandlistContainerFragment : BaseDaggerFragment(),
             }
 
             override fun onTabSelected(tab: TabLayout.Tab?) {
-                val _categorySelected = tabAdapter.categories.getOrNull(tab?.position.toZeroIfNull())
-                _categorySelected?.let {
+                tabAdapter.categories.getOrNull(tab?.position.toZeroIfNull())?.let {
                     targetCategoryName = it.title
                     categoryData = it
                     brandlistTracking?.clickCategory(targetCategoryName, currentCategoryName)
@@ -235,7 +231,10 @@ class BrandlistContainerFragment : BaseDaggerFragment(),
             var flags: Int? = rootView?.systemUiVisibility
             flags = flags?.or(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR)
             flags?.let { rootView?.setSystemUiVisibility(it) }
-            activity?.window?.statusBarColor = Color.WHITE
+            context?.let {
+                activity?.window?.statusBarColor = androidx.core.content.ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0)
+            }
+
         }
 
         if (Build.VERSION.SDK_INT in 19..20) {
@@ -283,10 +282,6 @@ class BrandlistContainerFragment : BaseDaggerFragment(),
                 activity?.supportFragmentManager?.beginTransaction()?.setCustomAnimations(R.anim.slide_up, R.anim.no_change)?.commit()
             }
         }
-        appBarLayout?.addOnOffsetChangedListener(object : AppBarLayout.OnOffsetChangedListener {
-            override fun onOffsetChanged(appBarLayout: AppBarLayout, p1: Int) {
-                ViewCompat.setElevation(appBarLayout, resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.layout_lvl1))
-            }
-        })
+        appBarLayout?.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { appBarLayout, _ -> ViewCompat.setElevation(appBarLayout, resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.layout_lvl1)) })
     }
 }

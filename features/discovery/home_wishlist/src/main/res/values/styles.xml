@@ -1,17 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <style name="Wishlist.Theme.White" parent="Theme.AppCompat">
         <item name="toolbarTheme">@style/Toolbar.Wishlist</item>
     </style>
 
-    <style name="Toolbar.Wishlist" parent="Toolbar.White">
-        <item name="android:background">@android:color/white</item>
+    <style name="Toolbar.Wishlist" parent="Theme.AppCompat.DayNight.DarkActionBar">
+        <item name="android:statusBarColor" tools:targetApi="lollipop">@color/Unify_G600</item>
+        <item name="android:background">@color/Unify_N0</item>
         <item name="textAllCaps">false</item>
-        <item name="android:actionMenuTextColor">#03AC0E</item>
+        <item name="android:actionMenuTextColor">@color/Unify_G500</item>
         <item name="android:textSize">14sp</item>
     </style>
     <style name="CheckBox.Wishlist" parent="@style/Widget.AppCompat.CompoundButton.CheckBox">
-        <item name="colorAccent">#03AC0E</item>
+        <item name="colorAccent">@color/Unify_G500</item>
     </style>
     <style name="Wishlist.TextAppearance" parent="android:TextAppearance">
         <item name="android:textSize">16dp</item>

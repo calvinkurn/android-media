@@ -1,8 +1,0 @@
-mutation reorderShopLocation($ids:[String!]!){
-  reorderShopLocation(input: {
-      ids: $ids
-    }) {
-      success
-      message
-    }
-}

@@ -95,7 +95,7 @@ class HotelCancellationReasonAdapter: RecyclerView.Adapter<RecyclerView.ViewHold
         private fun setUpFreeTextTextField(listener: OnClickItemListener?, id: String) {
             with(itemView) {
                 hotel_cancellation_reason_free_text_tf.textFieldInput.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_MULTI_LINE
-                hotel_cancellation_reason_free_text_tf.textFiedlLabelText.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Neutral_N700_68))
+                hotel_cancellation_reason_free_text_tf.textFiedlLabelText.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
                 hotel_cancellation_reason_free_text_tf.textFieldInput.addTextChangedListener(object : TextWatcher{
                     override fun afterTextChanged(s: Editable?) {
                         CoroutineScope(Dispatchers.Main).launch {

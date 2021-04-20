@@ -7,13 +7,30 @@
     android:layout_height="match_parent"
     android:descendantFocusability="beforeDescendants">
 
-    <include layout="@layout/layout_telco_shimmering_product_telco" />
+    <ImageView
+        android:id="@+id/telco_bg_img_banner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:scaleType="centerCrop"
+        app:srcCompat="@drawable/digital_common_ic_bg_header"
+        tools:ignore="contentDescription"/>
 
-    <com.tokopedia.topupbills.telco.prepaid.widget.TelcoNestedCoordinatorLayout
+    <View
+        android:id="@+id/digital_telco_action_bar_spacer"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"/>
+
+    <include layout="@layout/layout_telco_shimmering_product_telco"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/telco_banner_space"
+        android:layout_below="@+id/digital_telco_action_bar_spacer"/>
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:id="@+id/telco_main_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="@dimen/layout_lvl1"
+        android:layout_below="@+id/digital_telco_action_bar_spacer"
         android:orientation="vertical">
 
         <com.google.android.material.appbar.AppBarLayout
@@ -25,21 +42,30 @@
             app:elevation="@dimen/spacing_lvl2">
 
             <View
+                android:id="@+id/digital_telco_banner_spacer"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/layout_lvl1"
+                android:layout_height="@dimen/telco_banner_space"
+                app:layout_scrollFlags="scroll"/>
+
+            <View
+                android:id="@+id/digital_telco_dynamic_banner_spacer"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_below="@+id/digital_telco_banner_spacer"
                 app:layout_scrollFlags="scroll"/>
 
             <com.tokopedia.unifycomponents.ticker.Ticker
                 android:id="@+id/telco_ticker_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_below="@+id/digital_telco_dynamic_banner_spacer"
                 android:layout_marginLeft="@dimen/layout_lvl2"
                 android:layout_marginRight="@dimen/layout_lvl2"
                 android:visibility="gone"
-                app:tickerShapeType="loose"
                 app:closeButtonVisibility="visible"
                 app:enableAutoSlide="true"
                 app:layout_scrollFlags="scroll"
+                app:tickerShapeType="loose"
                 tools:visibility="gone" />
 
             <androidx.cardview.widget.CardView
@@ -75,7 +101,8 @@
                 android:id="@+id/separator"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/telco_space_1"
-                android:background="@color/Neutral_N75" />
+                android:layout_below="@+id/telco_tab_layout"
+                android:background="@color/Unify_N75" />
 
         </com.google.android.material.appbar.AppBarLayout>
 
@@ -89,13 +116,14 @@
             android:orientation="horizontal"
             app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
-    </com.tokopedia.topupbills.telco.prepaid.widget.TelcoNestedCoordinatorLayout>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_marginTop="@dimen/spacing_lvl1"
+        app:cardBackgroundColor="@color/Unify_N0"
         app:cardElevation="@dimen/spacing_lvl2">
 
         <com.tokopedia.common.topupbills.widget.TopupBillsCheckoutWidget

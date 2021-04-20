@@ -26,7 +26,9 @@
     <string name="suggestion_top_shop_card_subtitle">Bandung</string>
     <string name="suggestion_top_shop_card_all">Lihat Toko Lainnya</string>
     <string name="search_title_popular_search">Pencarian populer</string>
-    <string name="content_desc_searchTextView">input search</string>
+    <string name="content_desc_actionUpButton">button back search</string>
+    <string name="content_desc_autocompleteIconSearch">image search icon</string>
+    <string name="content_desc_actionVoiceButton">voice button</string>
     <string name="content_desc_actionEmptyButton">button hapus search</string>
     <string name="content_desc_titleTextView">text title autocomplete</string>
     <string name="content_desc_actionDeleteButton">button hapus semua</string>
@@ -38,5 +40,9 @@
     <string name="content_desc_doubleLineTitle">text title double line</string>
     <string name="content_desc_doubleLineSubtitle">text subtitle double line</string>
     <string name="content_desc_dl_iconImage">image double line</string>
-
+    <string name="autocomplete_see_more_recent_search">Lihat Lebih Banyak</string>
+    <string name="autocomplete_see_less_recent_search">Tampilkan Sedikit</string>
+    <string name="autocomplete_suggestion_double_line_without_image_title">Cari \"keyword\"</string>
+    <string name="autocomplete_suggestion_double_line_without_image_subtitle">di Tokopedia</string>
+    <string name="content_desc_curated_campaign_image">image curated campaign</string>
 </resources>

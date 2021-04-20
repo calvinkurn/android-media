@@ -13,23 +13,64 @@
         app:layout_constraintStart_toStartOf="parent"
         app:typographyType="heading_5"
         app:typographyWeight="bold"
-        android:layout_marginTop="@dimen/layout_lvl1"
-        tools:text="Daftar Produk"
-        android:text="@string/daftar_produk"
-        android:textColor="@color/Neutral_N700_96"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginStart="@dimen/dp_16"
-        android:layout_marginRight="@dimen/dp_16"
-        android:layout_marginEnd="@dimen/dp_16"/>
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        tools:text="@string/detail_product"
+        android:text="@string/detail_product"
+        android:textColor="@color/Unify_N700_96"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginEnd="@dimen/spacing_lvl4"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/topads_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/products_title"
+        app:typographyType="body_3"
+        app:typographyWeight="reguler"
+        android:textColor="@color/Unify_N700_68"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        tools:text="@string/sale_from_top_ads"
+        android:text="@string/sale_from_top_ads"
+        android:layout_marginEnd="@dimen/spacing_lvl4"/>
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/ic_topads_detail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:layout_marginEnd="@dimen/spacing_lvl2"
+        app:layout_constraintEnd_toStartOf="@id/topads_title"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/products_title"
+        app:srcCompat="@drawable/ic_som_topads"/>
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/group_top_ads"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:visibility="gone"
+        app:constraint_referenced_ids="topads_title, ic_topads_detail"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_products"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_8"
+        android:layout_marginTop="@dimen/spacing_lvl2"
         app:layout_constraintTop_toBottomOf="@id/products_title"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/dividerDetailProductsItem"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/layout_lvl1"
+        android:layout_marginTop="@dimen/dp_12"
+        app:layout_constraintTop_toBottomOf="@id/rv_products"
+        app:layout_constraintStart_toStartOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

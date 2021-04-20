@@ -15,7 +15,7 @@ public class WalletModel {
     private boolean linked = false;
     @SerializedName("rawBalance")
     @Expose
-    private Double rawBalance = 0.0;
+    private Long rawBalance = 0L;
     @SerializedName("balance")
     @Expose
     private String balance = "";
@@ -81,11 +81,11 @@ public class WalletModel {
         this.applink = applink;
     }
 
-    public Double getRawBalance() {
+    public Long getRawBalance() {
         return rawBalance;
     }
 
-    public void setRawBalance(Double rawBalance) {
+    public void setRawBalance(Long rawBalance) {
         this.rawBalance = rawBalance;
     }
 

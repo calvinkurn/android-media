@@ -44,6 +44,10 @@ interface BuyerCardContract {
         void setEggImage(String eggImageUrl);
 
         void setMemberStatus(String status);
+
+        void showSellerAccountCard(String shopName, String roleName);
+
+        void showShopOpenCard();
     }
 
     interface Presenter {

@@ -2,16 +2,13 @@ package com.tokopedia.tokopoints.view.cataloglisting
 
 import android.content.Context
 import android.content.DialogInterface
-import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewTreeObserver
 import android.widget.Button
-import android.widget.ImageView
 import android.widget.TextView
 import android.widget.ViewFlipper
 import androidx.appcompat.app.AlertDialog
@@ -27,7 +24,6 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.library.baseadapter.AdapterCallback
 import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.di.TokopointBundleComponent
 import com.tokopedia.tokopoints.view.adapter.CatalogListAdapter
@@ -39,16 +35,17 @@ import com.tokopedia.tokopoints.view.firebaseAnalytics.TokopointPerformanceConst
 import com.tokopedia.tokopoints.view.firebaseAnalytics.TokopointPerformanceConstant.CataloglistItemPlt.Companion.CATALOGLISTITEM_TOKOPOINT_PLT_PREPARE_METRICS
 import com.tokopedia.tokopoints.view.firebaseAnalytics.TokopointPerformanceConstant.CataloglistItemPlt.Companion.CATALOGLISTITEM_TOKOPOINT_PLT_RENDER_METRICS
 import com.tokopedia.tokopoints.view.firebaseAnalytics.TokopointPerformanceMonitoringListener
-import com.tokopedia.tokopoints.view.sendgift.SendGiftFragment
+import com.tokopedia.tokopoints.view.model.CatalogEntity
 import com.tokopedia.tokopoints.view.model.CatalogStatusItem
+import com.tokopedia.tokopoints.view.sendgift.SendGiftFragment
 import com.tokopedia.tokopoints.view.model.CatalogsValueEntity
 import com.tokopedia.tokopoints.view.util.*
 import com.tokopedia.tokopoints.view.util.TokoPointsRemoteConfig.Companion.instance
-import java.lang.Exception
 import java.util.*
 import javax.inject.Inject
+import kotlin.collections.ArrayList
 
-class CatalogListItemFragment : BaseDaggerFragment(), CatalogListItemContract.View, View.OnClickListener, AdapterCallback, TokopointPerformanceMonitoringListener {
+class CatalogListItemFragment : BaseDaggerFragment(), CatalogListItemContract.View, View.OnClickListener, TokopointPerformanceMonitoringListener {
     private var mContainer: ViewFlipper? = null
     private var serverErrorView: ServerErrorView? = null
     private var mRecyclerViewCatalog: RecyclerView? = null
@@ -56,13 +53,14 @@ class CatalogListItemFragment : BaseDaggerFragment(), CatalogListItemContract.Vi
     private var mRefreshTime: Long = 0
     private var mTimer: Timer? = null
     private var mHandler: Handler? = Handler()
+    var finalCatalogList: ArrayList<Any> = ArrayList()
+
     private var mRunnableUpdateCatalogStatus: Runnable? = Runnable {
         val items: MutableList<Int> = ArrayList()
-        for (each in mAdapter!!.items) {
+        for (each in finalCatalogList) {
             if (each is CatalogsValueEntity) {
-                val entity = each
-                if (entity.catalogType == CommonConstant.CATALOG_TYPE_FLASH_SALE) {
-                    items.add(entity.id)
+                if (each.catalogType == CommonConstant.CATALOG_TYPE_FLASH_SALE) {
+                    items.add(each.id)
                 }
             }
         }
@@ -72,7 +70,6 @@ class CatalogListItemFragment : BaseDaggerFragment(), CatalogListItemContract.Vi
     @Inject
     lateinit var viewModel: CatalogListItemViewModel
     private var mSwipeToRefresh: SwipeToRefresh? = null
-    private var showFirstTimeLoader = true
     private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -100,7 +97,9 @@ class CatalogListItemFragment : BaseDaggerFragment(), CatalogListItemContract.Vi
         super.onViewCreated(view, savedInstanceState)
         view.findViewById<View>(R.id.text_failed_action).setOnClickListener(this)
         view.findViewById<View>(R.id.text_empty_action).setOnClickListener(this)
-        mSwipeToRefresh!!.setOnRefreshListener { getCatalog(currentCategoryId, currentSubCategoryId, false) }
+        mSwipeToRefresh?.setOnRefreshListener {
+            getCatalogList(currentCategoryId, currentSubCategoryId)
+        }
         stopPreparePagePerformanceMonitoring()
         startNetworkRequestPerformanceMonitoring()
         initObserver()
@@ -111,9 +110,23 @@ class CatalogListItemFragment : BaseDaggerFragment(), CatalogListItemContract.Vi
         addStartSaveCouponObserver()
         addRedeemCouponObserver()
         addLatestStatusObserver()
+        addCatalogListObserver()
     }
 
-    private fun addLatestStatusObserver() = viewModel.latestStatusLiveData.observe(this, androidx.lifecycle.Observer {
+    private fun addCatalogListObserver() = viewModel.listCatalogItem.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+        it.let {
+            when (it) {
+                is Loading -> showLoader()
+                is ErrorMessage -> showError()
+                is Success -> {
+                    hideLoader()
+                    populateCatalog(it.data)
+                }
+            }
+        }
+    })
+
+    private fun addLatestStatusObserver() = viewModel.latestStatusLiveData.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
         it?.let {
             stopNetworkRequestPerformanceMonitoring()
             startRenderPerformanceMonitoring()
@@ -123,11 +136,11 @@ class CatalogListItemFragment : BaseDaggerFragment(), CatalogListItemContract.Vi
         }
     })
 
-    private fun addRedeemCouponObserver() = viewModel.onRedeemCouponLiveData.observe(this, androidx.lifecycle.Observer {
+    private fun addRedeemCouponObserver() = viewModel.onRedeemCouponLiveData.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
         it?.let { RouteManager.route(context, it) }
     })
 
-    private fun addStartSaveCouponObserver() = viewModel.startSaveCouponLiveData.observe(this, androidx.lifecycle.Observer {
+    private fun addStartSaveCouponObserver() = viewModel.startSaveCouponLiveData.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
         it?.let {
             when (it) {
                 is Success -> showConfirmRedeemDialog(it.data.cta, it.data.code, it.data.title)
@@ -140,7 +153,7 @@ class CatalogListItemFragment : BaseDaggerFragment(), CatalogListItemContract.Vi
         }
     })
 
-    private fun addStartValidateObserver() = viewModel.startValidateCouponLiveData.observe(this, androidx.lifecycle.Observer {
+    private fun addStartValidateObserver() = viewModel.startValidateCouponLiveData.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
         it?.let {
             showValidationMessageDialog(it.item, it.title, it.desc, it.messageCode)
         }
@@ -148,7 +161,7 @@ class CatalogListItemFragment : BaseDaggerFragment(), CatalogListItemContract.Vi
 
     override fun onClick(view: View) {
         if (view.id == R.id.text_failed_action) {
-            getCatalog(currentCategoryId, currentSubCategoryId, true)
+            getCatalogList(currentCategoryId, currentSubCategoryId)
         } else if (view.id == R.id.text_empty_action) {
             openWebView(CommonConstant.WebLink.INFO)
         }
@@ -223,7 +236,7 @@ class CatalogListItemFragment : BaseDaggerFragment(), CatalogListItemContract.Vi
             arguments!!.getBoolean(CommonConstant.ARGS_POINTS_AVAILABILITY, false)
         } else false
 
-    override fun showRedeemCouponDialog(cta: String, code: String, title: String) {
+    override fun showRedeemCouponDialog(cta: String?, code: String?, title: String?) {
         val adb = AlertDialog.Builder(activityContext)
         adb.setTitle(R.string.tp_label_use_coupon)
         val messageBuilder = StringBuilder()
@@ -256,7 +269,7 @@ class CatalogListItemFragment : BaseDaggerFragment(), CatalogListItemContract.Vi
         decorateDialog(dialog)
     }
 
-    override fun showConfirmRedeemDialog(cta: String, code: String, title: String) {
+    override fun showConfirmRedeemDialog(cta: String?, code: String?, title: String?) {
         val adb = AlertDialog.Builder(activityContext)
         adb.setNegativeButton(R.string.tp_label_use) { dialogInterface: DialogInterface?, i: Int ->
             showRedeemCouponDialog(cta, code, title)
@@ -285,7 +298,7 @@ class CatalogListItemFragment : BaseDaggerFragment(), CatalogListItemContract.Vi
                 title)
     }
 
-    override fun showValidationMessageDialog(item: CatalogsValueEntity, title: String, message: String, resCode: Int) {
+    override fun showValidationMessageDialog(item: CatalogsValueEntity, title: String?, message: String, resCode: Int) {
         val adb = AlertDialog.Builder(activityContext)
         val labelPositive: String
         var labelNegative: String? = null
@@ -369,7 +382,11 @@ class CatalogListItemFragment : BaseDaggerFragment(), CatalogListItemContract.Vi
         decorateDialog(dialog)
     }
 
-    override fun refreshCatalog(items: List<CatalogStatusItem>) {
+    fun getCatalogList(currentCategoryId: Int, currentSubCategoryId: Int) {
+        viewModel.getCataloglistItem(currentCategoryId, currentSubCategoryId, viewModel.pointRange)
+    }
+
+    private fun refreshCatalog(items: List<CatalogStatusItem>) {
         if (items == null || items.isEmpty()) {
             return
         }
@@ -377,14 +394,18 @@ class CatalogListItemFragment : BaseDaggerFragment(), CatalogListItemContract.Vi
             if (each == null) {
                 continue
             }
-            for (i in 0 until mAdapter!!.itemCount) {
-                val item = mAdapter!!.items[i]
-                item?.let {
-                    if (each.catalogID == item.id) {
-                        item.isDisabled = each.isDisabled
-                        item.isDisabledButton = each.isDisabledButton
-                        item.upperTextDesc = each.upperTextDesc
-                        item.quota = each.quota
+            if (mAdapter?.itemCount != null) {
+                for (i in 0 until mAdapter?.itemCount!!) {
+                    val item = finalCatalogList[i]
+                    if (item is CatalogsValueEntity) {
+                        item?.let {
+                            if (each.catalogID == item.id) {
+                                item.isDisabled = each.isDisabled
+                                item.isDisabledButton = each.isDisabledButton
+                                item.upperTextDesc = each.upperTextDesc
+                                item.quota = each.quota
+                            }
+                        }
                     }
                 }
             }
@@ -397,13 +418,13 @@ class CatalogListItemFragment : BaseDaggerFragment(), CatalogListItemContract.Vi
     private fun decorateDialog(dialog: AlertDialog) {
         if (dialog.getButton(AlertDialog.BUTTON_POSITIVE) != null) {
             dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(ContextCompat.getColor(activityContext,
-                    com.tokopedia.design.R.color.tkpd_main_green))
+                    com.tokopedia.unifyprinciples.R.color.Unify_G400))
             dialog.getButton(AlertDialog.BUTTON_POSITIVE).isAllCaps = false
         }
         if (dialog.getButton(AlertDialog.BUTTON_NEGATIVE) != null) {
             dialog.getButton(AlertDialog.BUTTON_NEGATIVE).isAllCaps = false
             dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(ContextCompat.getColor(activityContext,
-                    com.tokopedia.design.R.color.grey_warm))
+                    com.tokopedia.unifyprinciples.R.color.Unify_N200))
         }
     }
 
@@ -418,6 +439,7 @@ class CatalogListItemFragment : BaseDaggerFragment(), CatalogListItemContract.Vi
             }
         }, 0, if (mRefreshTime > 0) mRefreshTime else CommonConstant.DEFAULT_AUTO_REFRESH_S.toLong())
     }
+
 
     private fun fetchRemoteConfig() {
         mRefreshTime = instance(context!!).getLongRemoteConfig(CommonConstant.TOKOPOINTS_CATALOG_STATUS_AUTO_REFRESH_S, CommonConstant.DEFAULT_AUTO_REFRESH_S.toLong())
@@ -434,29 +456,6 @@ class CatalogListItemFragment : BaseDaggerFragment(), CatalogListItemContract.Vi
             mHandler = null
         }
         mRunnableUpdateCatalogStatus = null
-    }
-
-    override fun showRedeemFullError(item: CatalogsValueEntity, title: String, desc: String) {
-        if (activity == null || !isAdded) {
-            return
-        }
-        val adb = AlertDialog.Builder(activityContext)
-        val view = LayoutInflater.from(context)
-                .inflate(R.layout.layout_tp_network_error_large, null, false)
-        val img = view.findViewById<ImageView>(R.id.img_error)
-        val titleText = view.findViewById<TextView>(R.id.text_title_error)
-        if (title == null || title.isEmpty()) {
-            titleText.setText(R.string.tp_label_too_many_access)
-        } else {
-            titleText.text = title
-        }
-        val label = view.findViewById<TextView>(R.id.text_label_error)
-        label.text = desc
-        view.findViewById<View>(R.id.text_failed_action).setOnClickListener { view1: View? -> viewModel.startSaveCoupon(item) }
-        adb.setView(view)
-        val dialog = adb.create()
-        dialog.show()
-        decorateDialog(dialog)
     }
 
     override fun onPreValidateError(title: String, message: String) {
@@ -480,57 +479,28 @@ class CatalogListItemFragment : BaseDaggerFragment(), CatalogListItemContract.Vi
         sendGiftFragment.show(childFragmentManager, CommonConstant.FRAGMENT_DETAIL_TOKOPOINT)
     }
 
-    override fun populateCatalog(categoryId: Int, subCategoryId: Int, pointRange: Int, showLoader: Boolean) {
-        showFirstTimeLoader = showLoader
-        mAdapter = CatalogListAdapter(viewModel, context, this, categoryId, subCategoryId, pointRange, false)
-        if (mRecyclerViewCatalog!!.itemDecorationCount == 0) {
-            mRecyclerViewCatalog!!.addItemDecoration(SpacesItemDecoration(activityContext.resources.getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_10),
-                    activityContext.resources.getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_14),
-                    activityContext.resources.getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_14)))
-        }
-        mRecyclerViewCatalog!!.adapter = mAdapter
-        //   setOnRecyclerViewLayoutReady()
-        mAdapter!!.startDataLoading()
-    }
+    private fun populateCatalog(catalogEntity: CatalogEntity) {
 
-    override fun onRetryPageLoad(pageNumber: Int) {}
-    override fun onEmptyList(rawObject: Any) {
-        onEmptyCatalog()
-    }
-
-    override fun onStartFirstPageLoad() {
-        if (showFirstTimeLoader) {
-            showLoader()
-        }
-    }
-
-    override fun onFinishFirstPageLoad(itemCount: Int, rawObject: Any?) {
-        hideLoader()
-        if (itemCount == -1) {
-            try {
-                showError()
-            } catch (exception: Exception) {
-            }
+        if (catalogEntity.catalogs.isNullOrEmpty()) {
+            onEmptyCatalog()
         } else {
+            finalCatalogList.clear()
+            catalogEntity.catalogs?.let { finalCatalogList.addAll(it) }
+            if (catalogEntity.countDownInfo?.isShown != null && catalogEntity.countDownInfo.isShown) {
+                catalogEntity.countDownInfo.let { finalCatalogList.add(0, it) }
+            }
+            mAdapter = CatalogListAdapter(finalCatalogList)
+            if (mRecyclerViewCatalog?.itemDecorationCount == 0) {
+                mRecyclerViewCatalog?.addItemDecoration(SpacesItemDecoration(activityContext.resources.getDimensionPixelOffset(R.dimen.dp_10),
+                        activityContext.resources.getDimensionPixelOffset(R.dimen.dp_14),
+                        activityContext.resources.getDimensionPixelOffset(R.dimen.dp_14)))
+            }
+            mRecyclerViewCatalog?.adapter = mAdapter
+            mAdapter?.notifyDataSetChanged()
             if (mTimer == null) {
                 startUpdateCatalogStatusTimer()
             }
         }
-    }
-
-    override fun onStartPageLoad(pageNumber: Int) {}
-    override fun onFinishPageLoad(itemCount: Int, pageNumber: Int, rawObject: Any?) {}
-    override fun onError(pageNumber: Int) {
-        if (pageNumber == 1) {
-            try {
-                showError()
-            } catch (exception: Exception) {
-            }
-        }
-    }
-
-    fun getCatalog(categoryId: Int, subCategoryId: Int, showLoader: Boolean) {
-        populateCatalog(categoryId, subCategoryId, viewModel.pointRange, showLoader)
     }
 
     companion object {

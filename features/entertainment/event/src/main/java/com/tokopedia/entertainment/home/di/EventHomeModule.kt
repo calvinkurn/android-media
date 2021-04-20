@@ -4,6 +4,7 @@ import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.common.network.coroutines.RestRequestInteractor
 import com.tokopedia.common.network.coroutines.repository.RestRepository
+import com.tokopedia.entertainment.home.analytics.EventHomePageTracking
 import com.tokopedia.entertainment.home.viewmodel.HomeEventViewModelFactory
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -24,7 +25,6 @@ import okhttp3.logging.HttpLoggingInterceptor
  * Author errysuprayogi on 06,February,2020
  */
 
-@EventHomeScope
 @Module
 class EventHomeModule {
 
@@ -81,4 +81,9 @@ class EventHomeModule {
             HomeEventViewModelFactory = HomeEventViewModelFactory(dispatcher,
             gqlRepository, restRepository, userSession)
 
+    @EventHomeScope
+    @Provides
+    fun provideTracking(): EventHomePageTracking {
+        return EventHomePageTracking()
+    }
 }

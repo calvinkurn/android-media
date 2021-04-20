@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.topchat.chatlist.viewmodel.ChatItemListViewModel
+import com.tokopedia.topchat.chatlist.viewmodel.ChatListWebSocketViewModel
 import com.tokopedia.topchat.chatlist.viewmodel.WebSocketViewModel
 import dagger.Binds
 import dagger.Module
@@ -15,7 +16,6 @@ import dagger.multibindings.IntoMap
  */
 
 @Module
-@ChatListScope
 abstract class ChatListViewsModelModule {
 
     @Binds
@@ -31,5 +31,12 @@ abstract class ChatListViewsModelModule {
     @IntoMap
     @ViewModelKey(WebSocketViewModel::class)
     internal abstract fun provideWebsocket(viewModel: WebSocketViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(ChatListWebSocketViewModel::class)
+    internal abstract fun provideChatListWebsocket(
+            viewModel: ChatListWebSocketViewModel
+    ): ViewModel
 
 }

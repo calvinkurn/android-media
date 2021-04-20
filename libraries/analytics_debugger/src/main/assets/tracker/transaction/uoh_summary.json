@@ -1,0 +1,182 @@
+{
+  "mode": "exact",
+  "query": [
+    {
+      "businessUnit": "order management",
+      "eventCategory": "{{.*}}",
+      "currentSite": "tokopediamarketplace",
+      "isLoggedInStatus": "{{.*}}",
+      "screenName": "order-list",
+      "event": "openScreen",
+      "userId": "{{.*}}",
+      "eventAction": "{{.*}}",
+      "eventLabel": "{{.*}}",
+      "sessionIris": "{{.*}}"
+    },
+    {
+      "businessUnit": "order management",
+      "clientId": "{{.*}}",
+      "eventCategory": "order list",
+      "currentSite": "tokopediamarketplace",
+      "item_list": "/order list - marketplace",
+      "event": "view_item_list",
+      "userId": "{{.*}}",
+      "eventAction": "view order card marketplace",
+      "sessionIris": "{{.*}}",
+      "items": [
+        {
+          "price": "{{\\d*.\\d*|\\d.\\d+E\\d}}",
+          "index": "{{\\d+}}",
+          "item_name": "{{.*}}",
+          "id": "{{\\d*.\\d*|\\d.\\d+E\\d}}",
+          "item_brand": "{{.*}}",
+          "item_variant": "{{.*}}",
+          "item_category": "{{.*}}"
+        }
+      ],
+      "eventLabel": ""
+    },
+    {
+      "businessUnit": "order management",
+      "clientId": "{{.*}}",
+      "eventCategory": "order list",
+      "currentSite": "tokopediamarketplace",
+      "item_list": "/order list - marketplace",
+      "event": "select_content",
+      "userId": "{{.*}}",
+      "eventAction": "click order card marketplace",
+      "sessionIris": "{{.*}}",
+      "items": [
+        {
+          "price": "{{\\d*.\\d*|\\d.\\d+E\\d}}",
+          "index": "{{\\d+}}",
+          "item_name": "{{.*}}",
+          "id": "{{\\d*.\\d*|\\d.\\d+E\\d}}",
+          "item_brand": "{{.*}}",
+          "item_variant": "{{.*}}",
+          "item_category": "{{.*}}"
+        }
+      ],
+      "eventLabel": ""
+    },
+    {
+      "businessUnit": "order management",
+      "eventCategory": "order list",
+      "currentSite": "tokopediamarketplace",
+      "event": "clickOrderList",
+      "userId": "{{.*}}",
+      "eventAction": "submit search from cari transaksi",
+      "eventLabel": "{{.*}}",
+      "sessionIris": "{{.*}}"
+    },
+    {
+      "businessUnit": "order management",
+      "eventCategory": "order list",
+      "currentSite": "tokopediamarketplace",
+      "event": "clickOrderList",
+      "userId": "{{.*}}",
+      "eventAction": "click primary button on order card marketplace",
+      "eventLabel": "{{.*}}",
+      "sessionIris": "{{.*}}"
+    },
+    {
+      "businessUnit": "order management",
+      "eventCategory": "order list",
+      "currentSite": "tokopediamarketplace",
+      "event": "clickOrderList",
+      "userId": "{{.*}}",
+      "eventAction": "click three dot menu marketplace",
+      "eventLabel": "{{.*}}",
+      "sessionIris": "{{.*}}"
+    },
+    {
+      "businessUnit": "order management",
+      "clientId": "{{.*}}",
+      "eventCategory": "order list",
+      "currentSite": "tokopediamarketplace",
+      "screenName": "{{.*}}",
+      "event": "add_to_cart",
+      "userId": "{{.*}}",
+      "eventAction": "click beli lagi on order card marketplace",
+      "sessionIris": "{{.*}}",
+      "items": [
+        {
+          "dimension45": "{{.*}}",
+          "quantity": "{{\\d*.\\d*|\\d.\\d+E\\d}}",
+          "price": "{{\\d*.\\d*|\\d.\\d+E\\d}}",
+          "dimension40": "/order list - marketplace",
+          "item_name": "{{.*}}",
+          "dimension81": "{{.*}}",
+          "dimension80": "{{.*}}",
+          "id": "{{\\d*.\\d*|\\d.\\d+E\\d}}",
+          "item_brand": "{{.*}}",
+          "dimension79": "{{\\d*.\\d*|\\d.\\d+E\\d}}",
+          "item_variant": "{{.*}}",
+          "item_category": "{{.*}}"
+        }
+      ],
+      "eventLabel": "{{.*}}"
+    },
+    {
+      "businessUnit": "order management",
+      "eventCategory": "order list",
+      "currentSite": "tokopediamarketplace",
+      "event": "clickOrderList",
+      "userId": "{{.*}}",
+      "eventAction": "click date filter chips",
+      "eventLabel": "{{.*}}",
+      "sessionIris": "{{.*}}"
+    },
+    {
+      "businessUnit": "order management",
+      "eventCategory": "order list",
+      "currentSite": "tokopediamarketplace",
+      "event": "clickOrderList",
+      "userId": "{{.*}}",
+      "eventAction": "click terapkan on date filter chips",
+      "eventLabel": "{{.*}}",
+      "sessionIris": "{{.*}}"
+    },
+    {
+      "businessUnit": "order management",
+      "eventCategory": "order list",
+      "currentSite": "tokopediamarketplace",
+      "event": "clickOrderList",
+      "userId": "{{.*}}",
+      "eventAction": "click status filter chips",
+      "eventLabel": "{{.*}}",
+      "sessionIris": "{{.*}}"
+    },
+    {
+      "businessUnit": "order management",
+      "eventCategory": "order list",
+      "currentSite": "tokopediamarketplace",
+      "event": "clickOrderList",
+      "userId": "{{.*}}",
+      "eventAction": "click terapkan on status filter chips",
+      "eventLabel": "{{.*}}",
+      "sessionIris": "{{.*}}"
+    },
+    {
+      "businessUnit": "order management",
+      "eventCategory": "order list",
+      "currentSite": "tokopediamarketplace",
+      "event": "clickOrderList",
+      "userId": "{{.*}}",
+      "eventAction": "click category filter chips",
+      "eventLabel": "{{.*}}",
+      "sessionIris": "{{.*}}"
+    },
+    {
+      "businessUnit": "order management",
+      "eventCategory": "order list",
+      "currentSite": "tokopediamarketplace",
+      "event": "clickOrderList",
+      "userId": "{{.*}}",
+      "eventAction": "click terapkan on category filter chips",
+      "eventLabel": "{{.*}}",
+      "sessionIris": "{{.*}}"
+    }
+  ],
+  "readme": "UOH Summary"
+}

@@ -1,7 +1,6 @@
 package com.tokopedia.shop.home.view.model
 
-import com.tokopedia.kotlin.model.ImpressHolder
-import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
+import com.tokopedia.shop.common.data.model.MerchantVoucherCouponUiModel
 import com.tokopedia.shop.home.view.adapter.ShopHomeAdapterTypeFactory
 
 /**
@@ -13,7 +12,8 @@ data class ShopHomeVoucherUiModel(
         override val name: String = "",
         override val type: String = "",
         override val header: BaseShopHomeWidgetUiModel.Header = BaseShopHomeWidgetUiModel.Header(),
-        val data: List<MerchantVoucherViewModel>? = null
+        val data: MerchantVoucherCouponUiModel? = null,
+        val isError: Boolean = false
 ) : BaseShopHomeWidgetUiModel {
 
     override fun type(typeFactory: ShopHomeAdapterTypeFactory): Int {

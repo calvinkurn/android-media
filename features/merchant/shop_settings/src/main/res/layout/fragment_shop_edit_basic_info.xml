@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <ScrollView
+        android:id="@+id/container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <RelativeLayout
+                android:id="@+id/containerProfilePicture"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_header_shop_info">
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cardView"
+                    android:layout_width="@dimen/shop_edit_image_size"
+                    android:layout_height="@dimen/shop_edit_image_size"
+                    android:layout_marginStart="@dimen/spacing_lvl4"
+                    android:layout_marginTop="@dimen/spacing_lvl4"
+                    app:cardCornerRadius="@dimen/dp_60"
+                    app:cardElevation="@dimen/dp_4">
+
+                    <com.tokopedia.unifycomponents.ImageUnify
+                        android:id="@+id/imageAvatar"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
+
+                </androidx.cardview.widget.CardView>
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/labelAvatar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/spacing_lvl4"
+                    android:layout_marginTop="@dimen/spacing_lvl4"
+                    android:layout_toEndOf="@id/cardView"
+                    android:text="@string/shop_edit_avatar_label"
+                    android:textColor="@color/Unify_N700_96" />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/labelAvatarDesc"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/labelAvatar"
+                    android:layout_marginStart="@dimen/spacing_lvl4"
+                    android:layout_marginTop="@dimen/spacing_lvl2"
+                    android:layout_marginEnd="@dimen/spacing_lvl4"
+                    android:layout_toEndOf="@id/cardView"
+                    android:text="@string/shop_edit_avatar_description"
+                    android:textColor="@color/Unify_N700_68"
+                    app:typographyType="body_3" />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/textChangeAvatar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/labelAvatarDesc"
+                    android:layout_marginStart="@dimen/spacing_lvl4"
+                    android:layout_marginTop="@dimen/spacing_lvl3"
+                    android:layout_toEndOf="@id/cardView"
+                    android:text="@string/shop_edit_change_avatar"
+                    android:textColor="@color/Unify_G500"
+                    app:typographyType="body_3"
+                    app:typographyWeight="bold" />
+            </RelativeLayout>
+
+            <com.tokopedia.unifycomponents.ticker.Ticker
+                android:id="@+id/shopEditTicker"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_lvl4"
+                android:paddingLeft="@dimen/spacing_lvl3"
+                android:paddingRight="@dimen/spacing_lvl3"
+                android:visibility="gone"
+                app:descriptionText="@string/ticker_warning_can_only_change_shopname_once"
+                app:tckv_content_text_size="@dimen/dp_12"
+                app:tickerShapeType="loose"
+                app:tickerType="warning"
+                tools:visibility="visible" />
+
+            <com.tokopedia.unifycomponents.TextFieldUnify
+                android:id="@+id/shopNameTextField"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_lvl4"
+                android:paddingLeft="@dimen/spacing_lvl4"
+                android:paddingRight="@dimen/spacing_lvl4"
+                android:theme="@style/TextDarkMode"
+                app:text_field_counter="60"
+                app:text_field_input_type="text"
+                app:text_field_label="@string/shop_edit_name_input_label" />
+
+            <com.tokopedia.unifycomponents.TextFieldUnify
+                android:id="@+id/shopDomainTextField"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_lvl4"
+                android:paddingLeft="@dimen/spacing_lvl4"
+                android:paddingRight="@dimen/spacing_lvl4"
+                android:theme="@style/TextDarkMode"
+                app:text_field_counter="24"
+                app:text_field_input_type="text"
+                app:text_field_label="@string/shop_edit_domain_input_label"
+                app:text_field_prepend_text="www.tokopedia.com/" />
+
+            <com.tokopedia.shop.settings.basicinfo.view.widget.ShopDomainSuggestionView
+                android:id="@+id/shopDomainSuggestions"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_lvl3"
+                android:paddingLeft="@dimen/spacing_lvl4"
+                android:paddingRight="@dimen/spacing_lvl4"
+                android:visibility="gone"
+                tools:visibility="visible" />
+
+            <View
+                android:id="@+id/divider"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_8"
+                android:layout_marginTop="@dimen/spacing_lvl4"
+                android:background="@color/Unify_N50"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/shopDomainSuggestions" />
+
+            <com.tokopedia.unifycomponents.TextFieldUnify
+                android:id="@+id/shopTagLineTextField"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_lvl4"
+                android:paddingLeft="@dimen/spacing_lvl4"
+                android:paddingRight="@dimen/spacing_lvl4"
+                android:theme="@style/TextDarkMode"
+                app:text_field_counter="48"
+                app:text_field_input_type="text"
+                app:text_field_label="@string/shop_slogan_label" />
+
+            <com.tokopedia.unifycomponents.TextFieldUnify
+                android:id="@+id/shopDescriptionTextField"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_lvl4"
+                android:paddingLeft="@dimen/spacing_lvl4"
+                android:paddingRight="@dimen/spacing_lvl4"
+                android:theme="@style/TextDarkMode"
+                app:text_field_counter="140"
+                app:text_field_input_type="text"
+                app:text_field_label="@string/shop_description_label" />
+        </LinearLayout>
+    </ScrollView>
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/loader"
+        android:layout_width="@dimen/dp_50"
+        android:layout_height="@dimen/dp_50"
+        android:layout_centerVertical="true"
+        android:layout_centerInParent="true"
+        android:visibility="gone"/>
+</RelativeLayout>

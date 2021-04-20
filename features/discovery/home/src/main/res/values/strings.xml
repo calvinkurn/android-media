@@ -33,6 +33,7 @@
     <string name="home_header_tokopoint_no_coupons">Cari Kupon</string>
     <string name="home_header_tokopoint_no_tokopoints">TokoPoints</string>
     <string name="home_header_tokopoint_refresh_label">Coba Lagi</string>
+    <string name="home_header_tokopoint_bebasongkir">Bebas Ongkir</string>
     <string name="home_header_tokopoint_coupon_count_text">%1$d Kupon</string>
     <string name="home_header_tokocash_unable_to_load_label">Gagal Memuat</string>
     <string name="home_header_tokocash_refresh_label">Coba Lagi</string>
@@ -41,6 +42,7 @@
     <string name="hampir_habis">Hampir Habis</string>
     <string name="home_header_fintech_scan">Scan</string>
     <string name="home_header_fintech_points">Points %1$s</string>
+    <string name="home_header_fintech_points_new">%1$s Points</string>
     <string name="home_header_topup_ovo"><b>Top-up OVO</b></string>
     <string name="home_header_fintech_cek_sekarang">Cek Sekarang</string>
 
@@ -99,7 +101,41 @@
 
     <string name="content_desc_title">text title kategori</string>
     <string name="content_desc_channel_title">text dynamic channel title</string>
-    <string name="content_desc_see_all_button">text dynamic channel lihat semua</string>
+    <string name="content_desc_see_all_button">text lihat semua</string>
     <string name="content_desc_count_down">text dynamic channel count down</string>
     <string name="content_desc_channel_subtitle">text dynamic channel subtitle</string>
+
+    <string name="home_page_retry_dynamic_channel">Coba Lagi</string>
+
+    <string name="onboarding_navigation_title">Wow, ada yang baru di Toped!</string>
+    <string name="onboarding_navigation_description">Ayo kenalan dengan tampilan &#38; navigasi baru untuk menjelajahi aplikasi Tokopedia!</string>
+    <string name="onboarding_navigation_button">Yuk, Kenalan!</string>
+
+    <string name="onboarding_coachmark_title">Halo, ini Menu Utama yang baru!</string>
+    <string name="onboarding_coachmark_description">Lihat Semua Kategori, Daftar Transaksi, Wishlist, tulis Ulasan Produk, kini semuanya bisa dari sini!</string>
+
+    <string name="onboarding_coachmark_inbox_title">Temukan Inbox &amp; Notifikasi di sini!</string>
+    <string name="onboarding_coachmark_inbox_description">Sekarang kamu bisa cek chat, diskusi &amp; notifikasi dengan lebih mudah di halaman ini.</string>
+
+    <string name="onboarding_coachmark_wallet_title">Kenalan sama TokoPoints, yuk! </string>
+    <string name="onboarding_coachmark_wallet_description">Points ini bisa ditukar buat belanja. Transaksi pakai kupon cashback buat nambah points-mu, ya!</string>
+
+
+    <string name="text_dialog_success_reset_password">Masuk lagi ke Tokopedia dengan kata sandimu yang baru, ya!</string>
+    <string name="cta_dialog_success_reset_password">Masuk</string>
+
+    <string name="error_state_atf_localload_title">Bagian ini gagal ditampilkan</string>
+    <string name="error_state_atf_localload_description">Klik ikon sebelah untuk coba lagi</string>
+
+    <string name="content_desc_image_scan">Scan QR Code</string>
+    <string name="content_desc_tokocash">Tokocash</string>
+    <string name="content_desc_tokopoint">Tokopoint</string>
+    <string name="content_desc_free_ongkir">Bebas Ongkir</string>
+    <string name="content_desc_error_state_icon">Image error</string>
+    <string name="content_desc_error_state_channel">Content error</string>
+    <string name="content_desc_home_background">Home background</string>
+
+    <string name="popular_keyword_error_title">Bagian ini gagal ditampilkan</string>
+    <string name="sprint_card_item">Sprint Card Item</string>
+    <string name="sprint_product_item">Sprint Product Item</string>
 </resources>

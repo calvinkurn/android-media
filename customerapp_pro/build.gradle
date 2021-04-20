@@ -1,0 +1,457 @@
+apply plugin: 'com.android.application'
+apply plugin: 'com.google.firebase.crashlytics'
+apply plugin: 'kotlin-android'
+if (project.hasProperty("enable-shrinkresource")) {
+    apply from: "$rootProject.projectDir/buildconfig/appcompile/enable-shrinkresource.gradle"
+}
+apply plugin: 'com.google.firebase.firebase-perf'
+apply plugin: 'io.hansel.preprocessor'
+
+apply from: '../tools/dynamic_feature_inclusion.gradle'
+apply from: '../tools/set_debug_tools.gradle'
+
+def isProduction() {
+    return project.hasProperty('tkpdBuildType') && tkpdBuildType == "production";
+}
+
+def allowDistribution() {
+    if (project.hasProperty('tkpdBuildType') && tkpdBuildType == "hockeyapp") {
+        return "true";
+    }
+    return "false";
+}
+
+def isDebugTraceEnabled() {
+    if (project.hasProperty('debugTrace') && debugTrace == "true") {
+        return "true";
+    }
+    return "false";
+}
+
+def isPreInstall() {
+    if (project.hasProperty('isPreInstall') && isPreInstall == "true") {
+        return "true"
+    }
+    return "false"
+}
+
+def getDynamicProperty(param) {
+    if (project.hasProperty(param)) {
+        return project.property(param)
+    }
+    return ""
+}
+
+def devMode() {
+    return !project.hasProperty('tkpdBuildType')
+}
+
+def getTkpdVersionCode() {
+    return project.hasProperty('versionCode') ? Integer.parseInt(versionCode) : project.defaultVersionCode;
+}
+
+def getTkpdVersionName() {
+    return project.hasProperty('versionName') ? versionName : project.defaultVersionName;
+}
+
+def isFirebasePerformanceLogEnabled() {
+    if (project.hasProperty('firebasePerformanceLogEnabled') && firebasePerformanceLogEnabled == "true") {
+        return "true"
+    }
+    return "false"
+}
+
+android.applicationVariants.all { variant ->
+    def variantNameCap = variant.name.capitalize()
+    task ("generateBundledResourcesHash${variantNameCap}")
+    task ("bundle${variantNameCap}JsAndAssets")
+}
+
+project.ext {
+    defaultVersionCode = 418001101;
+    defaultVersionName = "3.80";
+}
+
+
+buildscript {
+    repositories {
+        google()
+        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+        mavenCentral()
+        jcenter()
+        maven { url 'https://maven-hansel.tokopedia.com/maven' }
+        maven {
+            url 'https://www.jitpack.io'
+        }
+    }
+    dependencies {
+        classpath rootProject.ext.gradlePlugin.crashlytics
+        classpath rootProject.ext.miscDependencies.hansel
+        classpath rootProject.ext.gradlePlugin.googleServices
+    }
+}
+ext.lintchecks = [
+        'SetColourUsageError',
+        'CoreResourcesUsageError',
+        'VectorDrawableCompat',
+        'TypographyOverTextViewUsage'
+] as String[]
+
+
+android {
+
+    packagingOptions {
+        exclude 'META-INF/**'
+        pickFirst '**/armeabi-v7a/libc++_shared.so'
+        pickFirst '**/x86/libc++_shared.so'
+        pickFirst '**/arm64-v8a/libc++_shared.so'
+        pickFirst '**/x86_64/libc++_shared.so'
+        pickFirst '**/x86/libjsc.so'
+        pickFirst '**/armeabi-v7a/libjsc.so'
+    }
+
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
+    useLibrary 'org.apache.http.legacy'
+    sourceSets {
+
+        main {
+            java.srcDirs = ['src/main/java']
+            resources.srcDirs = ['src/main/java']
+            aidl.srcDirs = ['src/main/java']
+            renderscript.srcDirs = ['src/main/java']
+            res.srcDirs = ['src/main/res']
+            assets.srcDirs = ['assets', 'src/main/assets', 'src/main/assets/']
+            jniLibs.srcDirs = ["jniLibs"]
+        }
+
+        String sharedTestDir = 'src/sharedTest/java'
+        test {
+            java.srcDir sharedTestDir
+        }
+        androidTest {
+            java.srcDir sharedTestDir
+        }
+        debug.setRoot('build-types/debug')
+        release.setRoot('build-types/release')
+    }
+
+    lintOptions {
+        checkReleaseBuilds false
+        checkDependencies true
+        htmlReport false
+        warningsAsErrors false
+        abortOnError false
+        check lintchecks
+    }
+
+    signingConfigs {
+        debug {
+            storeFile file("debug.keystore")
+        }
+    }
+
+    buildTypes {
+        debug {
+            defaultConfig.minSdkVersion project.property("minSdkVersionDebug")
+            signingConfig signingConfigs.debug
+            minifyEnabled false
+            zipAlignEnabled false
+            buildConfigField "boolean", "ENABLE_DISTRIBUTION", allowDistribution()
+            proguardFiles 'proguard-rules.txt'
+            buildConfigField "boolean", "IS_PREINSTALL", "false"
+            buildConfigField "String", "PREINSTALL_NAME", "\"\""
+            buildConfigField "String", "PREINSTALL_DESC", "\"\""
+            buildConfigField "String", "PREINSTALL_SITE", "\"\""
+            buildConfigField "boolean", "ENABLE_DEBUG_TRACE", isDebugTraceEnabled()
+            buildConfigField "String", "DEBUG_TRACE_NAME", "\"${getDynamicProperty("debugTraceName")}\""
+            ext.enableHansel = project.hasProperty('hanselEnableDebug')
+            FirebasePerformance {
+                // Set this flag to 'false' to disable @AddTrace annotation processing and
+                // automatic HTTP/S network request monitoring
+                // for a specific build variant at compile time.
+                instrumentationEnabled project.property("firebasePerformanceDebug").toBoolean()
+            }
+        }
+        release {
+            if (devMode()) {
+                signingConfig signingConfigs.debug
+            }
+            debuggable = project.hasProperty('enableDebug') && enableDebug == "true"
+            ext.enableHansel = !project.hasProperty('hanselDisableRelease')
+
+            if (isFirebasePerformanceLogEnabled().toBoolean()) {
+                minifyEnabled false
+            } else {
+                minifyEnabled true
+            }
+
+            zipAlignEnabled true
+            if (project.hasProperty("enable-shrinkresource")) {
+                shrinkResources true
+            }
+            buildConfigField "boolean", "ENABLE_DISTRIBUTION", allowDistribution()
+            buildConfigField "boolean", "IS_PREINSTALL", isPreInstall()
+            buildConfigField "String", "PREINSTALL_NAME", "\"${getDynamicProperty("preInstallName")}\""
+            buildConfigField "String", "PREINSTALL_DESC", "\"${getDynamicProperty("preInstallDesc")}\""
+            buildConfigField "String", "PREINSTALL_SITE", "\"${getDynamicProperty("preInstallSite")}\""
+            buildConfigField "boolean", "ENABLE_DEBUG_TRACE", isDebugTraceEnabled()
+            buildConfigField "String", "DEBUG_TRACE_NAME", "\"${getDynamicProperty("debugTraceName")}\""
+            multiDexKeepFile file('multidex-config.txt')
+            multiDexKeepProguard file('multidex-config.pro')
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+            ext.betaDistributionReleaseNotesFilePath = 'release_notes.txt'
+            ext.betaDistributionGroupAliasesFilePath = 'group_beta.txt'
+        }
+    }
+
+    defaultConfig {
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        multiDexEnabled = true
+        applicationId "com.tokopedia.intl"
+        versionCode getTkpdVersionCode()
+        versionName getTkpdVersionName()
+        vectorDrawables.useSupportLibrary = vectorDrawable
+        testInstrumentationRunner 'com.tokopedia.tkpd.MyRunner'
+        resConfigs "en", "id"
+        ndk {
+            abiFilters "armeabi-v7a", "x86", "arm64-v8a", "x86_64"
+        }
+        manifestPlaceholders = [firebasePerformanceLogEnabled: isFirebasePerformanceLogEnabled()]
+    }
+
+    dexOptions {
+        javaMaxHeapSize "8g"
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    configurations.all {
+        resolutionStrategy.force 'androidx.multidex:multidex:2.0.0'
+        resolutionStrategy.force 'com.google.code.findbugs:jsr305:1.3.9'
+        resolutionStrategy.force 'com.squareup.okio:okio:2.2.2'
+    }
+
+    // Specifies 4 flavor dimensions.
+    flavorDimensions "tier", "client"
+
+    productFlavors {
+        live {
+            dimension "tier"
+        }
+        staging {
+            dimension "tier"
+        }
+        dev {
+            dimension "client"
+        }
+        prod {
+            dimension "client"
+        }
+    }
+
+    // put Dynamic Feature Modules in dynamic-feature-customerapp.cfg
+    // to disable dynamic feature, use command option -Pdisable-dynamic-feature
+    if (!project.hasProperty("enable-shrinkresource")) {
+        dynamicFeatures = getDynamicFeatureIfEnabled(project)
+        generateAssetFile(project, dynamicFeatures)
+    }
+}
+
+dependencies {
+
+    implementation project(rootProject.ext.features.customer_mid_app)
+    implementation project(rootProject.ext.features.tkpdcore)
+    implementation project(rootProject.ext.libraries.coreNetwork)
+    implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
+    implementation project(rootProject.ext.libraries.deviceInfo)
+    implementation project(rootProject.ext.features.navigation)
+    implementation project(rootProject.ext.libraries.tkpdabstraction)
+    implementation project(rootProject.ext.libraries.core_legacy)
+    implementation project(rootProject.ext.features.loyalty)
+    implementation project(rootProject.ext.features.promoGamificationCommon)
+    implementation project(rootProject.ext.libraries.oms)
+    implementation project(rootProject.ext.libraries.analytics)
+    implementation project(rootProject.ext.libraries.linker)
+    implementation project(rootProject.ext.features.commonDigital)
+    implementation project(rootProject.ext.features.pushNotificationCommon)
+    implementation project(rootProject.ext.libraries.cmPushNotifications)
+    implementation project(rootProject.ext.features.kyc)
+    implementation project(rootProject.ext.features.feedbackForm)
+    implementation project(rootProject.ext.libraries.applink)
+    implementation project(rootProject.ext.libraries.screenshot_observer)
+    implementation project(rootProject.ext.libraries.imagePicker)
+
+    implementation rootProject.ext.unifyDependencies.principles
+    implementation rootProject.ext.unifyDependencies.components
+    implementation rootProject.ext.unifyDependencies.icons
+    implementation rootProject.ext.unifyDependencies.global_error
+    implementation rootProject.ext.unifyDependencies.coach_mark
+    implementation rootProject.ext.unifyDependencies.banner
+    implementation rootProject.ext.unifyDependencies.datepicker
+    implementation rootProject.ext.unifyDependencies.header
+    implementation rootProject.ext.unifyDependencies.iconNotification
+    implementation rootProject.ext.unifyDependencies.sortFilter
+    implementation rootProject.ext.unifyDependencies.pin
+    implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
+
+    implementation rootProject.ext.tkpdInternalLibDependencies.usersession
+    implementation rootProject.ext.tkpdInternalLibDependencies.usecase
+    implementation rootProject.ext.tkpdInternalLibDependencies.network
+    implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
+    implementation rootProject.ext.tkpdInternalLibDependencies.url
+    implementation rootProject.ext.tkpdInternalLibDependencies.usecase
+
+    implementation rootProject.ext.tkpdInternalLibDependencies.williamchart
+    implementation rootProject.ext.playServicesDependencies.measurementApi
+
+    if (rootProject.ext.debugToolsEnabled) {
+        implementation rootProject.ext.tkpdInternalLibDependencies.fakeresponse
+    } else {
+        implementation rootProject.ext.tkpdInternalLibDependencies.fakeresponseNoOp
+    }
+    implementation rootProject.ext.tkpdInternalLibDependencies.authentication
+    implementation rootProject.ext.playServicesDependencies.maps
+    implementation rootProject.ext.playServicesDependencies.core
+    implementation rootProject.ext.playServicesDependencies.auth
+    implementation rootProject.ext.supportLibDependencies.kotlinSupport
+    implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk7
+    implementation rootProject.ext.supportLibDependencies.supportV13
+    implementation rootProject.ext.tkpdLibDependencies.youtubePlayer
+    implementation rootProject.ext.miscDependencies.lottie
+
+
+    implementation rootProject.ext.firebase.config
+    implementation rootProject.ext.firebase.messaging
+    implementation rootProject.ext.firebase.auth
+    implementation rootProject.ext.playServicesDependencies.analytics
+    implementation rootProject.ext.firebase.fireStore
+    implementation(rootProject.ext.firebase.crashlytics) {
+        transitive = true
+    }
+    implementation rootProject.ext.playServicesDependencies.location
+    implementation rootProject.ext.debugToolsDependencies.chuck
+    implementation rootProject.ext.supportLibDependencies.design
+    implementation rootProject.ext.supportLibDependencies.cardViewV7
+    implementation rootProject.ext.networkDependencies.retrofit
+    implementation rootProject.ext.networkDependencies.converterGson
+    implementation rootProject.ext.networkDependencies.adapterRxJava
+    implementation rootProject.ext.networkDependencies.okHttp
+    implementation rootProject.ext.networkDependencies.loggingInterceptor
+    implementation rootProject.ext.networkDependencies.glide
+    implementation rootProject.ext.analyticsDependencies.appsflyer
+    implementation project(rootProject.ext.features.moengageWrapper)
+    implementation rootProject.ext.supportLibDependencies.constraintLayout
+    implementation rootProject.ext.miscDependencies.loaderviewlibrary
+    implementation rootProject.ext.miscDependencies.roundCornerProgressBar
+    implementation rootProject.ext.miscDependencies.apacheLang
+
+    implementation(rootProject.ext.miscDependencies.flexBoxLayout) {
+        exclude group: 'com.android.support'
+    }
+    // Warning: removing imageCropper lib might cause youtube library crash
+    // when load recommendation at the end of video
+    // Need to recheck
+    implementation(rootProject.ext.miscDependencies.imagecropper) {
+        exclude group: "com.android.support"
+    }
+    implementation rootProject.ext.miscDependencies.exoPlayerCore
+    implementation rootProject.ext.miscDependencies.exoPlayerUi
+    implementation rootProject.ext.miscDependencies.exoPlayerRtmp
+
+    implementation rootProject.ext.firebase.appIndexing
+    implementation(rootProject.ext.tkpdLibDependencies.expandableOption) {
+        exclude group: "com.android.support"
+    }
+    implementation(rootProject.ext.tkpdLibDependencies.showcase) {
+        exclude group: "com.android.support"
+    }
+    implementation(rootProject.ext.analyticsDependencies.branch) {
+        exclude module: 'answers-shim'
+    }
+    implementation rootProject.ext.supportLibDependencies.preferenceV7
+    implementation rootProject.ext.miscDependencies.lifeCycleExtentions
+    implementation 'com.facebook.fresco:fresco:1.10.0'
+    implementation 'com.facebook.fresco:imagepipeline-okhttp3:1.10.0'
+    implementation rootProject.ext.dbDependencies.dbRoomRuntime
+    annotationProcessor rootProject.ext.dbDependencies.dbRoomCompiler
+    implementation rootProject.ext.miscDependencies.coroutineCore
+    implementation rootProject.ext.miscDependencies.coroutineAndroid
+    implementation rootProject.ext.miscDependencies.chips
+    implementation rootProject.ext.miscDependencies.gson
+    implementation rootProject.ext.miscDependencies.parcelerApi
+    annotationProcessor rootProject.ext.miscDependencies.parceler
+    implementation rootProject.ext.miscDependencies.rxAndroid
+    implementation rootProject.ext.miscDependencies.rxJava
+    compileOnly rootProject.ext.miscDependencies.javaxAnnotation
+    implementation rootProject.ext.miscDependencies.dagger
+    annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
+    implementation rootProject.ext.miscDependencies.multiDex
+    implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
+    annotationProcessor rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
+    implementation(rootProject.ext.miscDependencies.facebook) {
+        exclude group: 'com.android.support'
+    }
+
+    implementation 'com.facebook.infer.annotation:infer-annotation:0.11.2'
+    implementation(rootProject.ext.debugToolsDependencies.timber) {
+        exclude group: 'org.jetbrains', module: 'annotations'
+    }
+
+    //[START] test and androidTest dependencies
+    androidTestImplementation(rootProject.ext.testDependencies.espressoCore, {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+    testImplementation rootProject.ext.testDependencies.junit
+    testImplementation rootProject.ext.testDependencies.mockitorCore
+    testImplementation rootProject.ext.miscDependencies.rxJava
+    androidTestImplementation rootProject.ext.miscDependencies.rxJava
+    androidTestImplementation rootProject.ext.testDependencies.uiautomator
+    androidTestImplementation rootProject.ext.testDependencies.spoon
+    androidTestImplementation rootProject.ext.testDependencies.androidAnnotation
+    androidTestImplementation(rootProject.ext.testDependencies.espressoCore, {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+    androidTestImplementation(rootProject.ext.testDependencies.androidTestRunner) {
+        exclude module: 'support-annotations'
+    }
+    androidTestImplementation(rootProject.ext.testDependencies.androidRulesVersion) {
+        exclude module: 'support-annotations'
+    }
+    androidTestImplementation(rootProject.ext.testDependencies.espressoIntents) {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    }
+    androidTestImplementation(rootProject.ext.testDependencies.espressoContrib, {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+    androidTestImplementation rootProject.ext.testDependencies.retrofitMock
+    androidTestImplementation rootProject.ext.testDependencies.retrofitMockWebser
+    androidTestAnnotationProcessor rootProject.ext.miscDependencies.daggerCompiler
+    androidTestImplementation rootProject.ext.miscDependencies.dagger
+    androidTestImplementation rootProject.ext.miscDependencies.gson
+    androidTestImplementation rootProject.ext.miscDependencies.parcelerApi
+    androidTestAnnotationProcessor rootProject.ext.miscDependencies.parceler
+    androidTestImplementation rootProject.ext.testDependencies.dexMaker
+    androidTestImplementation(rootProject.ext.testDependencies.dexMakerMockito) {
+        exclude group: 'org.hamcrest', module: 'hamcrest-core, mockito-core'
+        exclude group: 'org.mockito'
+    }
+    implementation rootProject.ext.testDependencies.espressoIdlingResource
+    // Cloud testing
+    androidTestImplementation(name: 'cloudtestingscreenshotter_lib', ext: 'aar')
+    androidTestImplementation(rootProject.ext.miscDependencies.facebook) {
+        exclude group: 'com.android.support'
+    }
+    androidTestImplementation rootProject.ext.supportLibDependencies.appCompactV7
+    androidTestImplementation rootProject.ext.supportLibDependencies.cardViewV7
+    lintChecks rootProject.ext.tkpdInternalLibDependencies.lint
+    implementation rootProject.ext.tkpdInternalLibDependencies.analyticAnnotation
+    implementation rootProject.ext.tkpdInternalLibDependencies.analyticFirebaseRules
+    implementation rootProject.ext.tkpdInternalLibDependencies.analyticParam
+}
+
+apply plugin: 'com.google.gms.google-services'

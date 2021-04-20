@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/Unify_N0">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:textColor="@color/Unify_N700_96"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="heading_4"
+        app:typographyWeight="bold"
+        tools:text="Yuk nonton sekarang!"
+        />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_see_all"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:textColor="@color/Unify_G500"
+        app:layout_constraintBottom_toBottomOf="@id/tv_title"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:text="Lihat semua"
+        />
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/barrier_header"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:constraint_referenced_ids="tv_title, tv_see_all"
+        app:barrierDirection="bottom"
+        />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_widget_card_small"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingTop="@dimen/play_widget_dp_12"
+        android:paddingBottom="@dimen/play_widget_dp_18"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/barrier_header"
+        tools:listitem="@layout/item_play_widget_card_banner_small"
+        />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

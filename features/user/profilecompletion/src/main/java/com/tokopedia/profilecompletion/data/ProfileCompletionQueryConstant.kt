@@ -32,7 +32,11 @@ object ProfileCompletionQueryConstant {
     const val PARAM_TOKEN = "token"
     const val PARAM_PIN = "pin"
     const val PARAM_VALIDATE_TOKEN = "validate_token"
+    const val PARAM_VALIDATE_TOKEN_SKIP_OTP = "validateToken"
+    const val PARAM_GRANT_TYPE = "grant_type"
+    const val PARAM_USER_ID = "user_id"
     const val PARAM_PIN_CONFIRM = "pinConfirm"
     const val PARAM_PIN_OLD = "pinOld"
     const val PARAM_OTP_TYPE = "otpType"
+    const val PARAM_ACTION = "action"
 }

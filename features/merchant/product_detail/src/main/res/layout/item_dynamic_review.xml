@@ -1,23 +1,149 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingBottom="@dimen/dp_16"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:paddingBottom="@dimen/layout_lvl2"
     android:orientation="vertical">
 
     <View
         android:id="@+id/review_separator"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_8"
-        android:background="@color/grey_separator" />
+        android:background="@color/Unify_N50"
+        app:layout_constraintTop_toTopOf="parent"/>
 
-    <include
-        android:id="@+id/container_image_review"
-        layout="@layout/item_dynamic_image_review" />
-
-    <include
-        android:id="@+id/container_most_helpful_review"
-        layout="@layout/item_dynamic_mosthelpful_review"
+    <include layout="@layout/partial_review_shimmering"
+        android:id="@+id/review_shimmering"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
-</LinearLayout>
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/review_separator"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/txt_review_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/layout_lvl2"
+        android:layout_marginTop="@dimen/layout_lvl2"
+        android:text="@string/title_buyer_review"
+        android:visibility="gone"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/review_separator"
+        app:typographyType="heading_4"
+        app:typographyWeight="bold"
+        tools:visibility="visible"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/txt_see_all_partial"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/layout_lvl1"
+        android:layout_marginEnd="@dimen/layout_lvl3"
+        android:text="@string/label_see_all"
+        android:textColor="@color/Unify_G500"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/txt_review_title"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/txt_review_title"
+        app:typographyType="body_3"
+        app:typographyWeight="bold"
+        tools:visibility="visible"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/review_rating"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_4"
+        android:drawablePadding="@dimen/dp_4"
+        android:visibility="gone"
+        app:typographyWeight="bold"
+        app:typographyType="body_1"
+        app:layout_constraintStart_toStartOf="@id/txt_review_title"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txt_review_title"
+        tools:text="2.7"
+        tools:visibility="visible"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/review_count"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_4"
+        android:textColor="@color/Unify_N700_68"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/review_rating"
+        app:layout_constraintLeft_toRightOf="@+id/review_rating"
+        app:layout_constraintTop_toTopOf="@+id/review_rating"
+        app:typographyType="body_3"
+        tools:visibility="visible"
+        tools:text="dari 1205 ulasan" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/image_review_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:paddingStart="@dimen/layout_lvl2"
+        android:paddingEnd="@dimen/layout_lvl2"
+        android:layout_marginTop="@dimen/dp_10"
+        app:layout_constraintTop_toBottomOf="@+id/review_rating"
+        tools:visibility="visible"/>
+
+    <ImageView
+        android:id="@+id/rating_review_pdp"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/layout_lvl2"
+        android:layout_marginStart="@dimen/layout_lvl2"
+        android:layout_marginTop="@dimen/dp_12"
+        android:visibility="gone"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/image_review_list"
+        tools:srcCompat="@drawable/ic_rating_star_five"
+        tools:visibility="visible" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/txt_date_user_pdp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_5"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/rating_review_pdp"
+        app:layout_constraintStart_toEndOf="@+id/rating_review_pdp"
+        app:layout_constraintTop_toTopOf="@id/rating_review_pdp"
+        android:gravity="center"
+        app:typographyType="body_3"
+        tools:text="oleh Karinananana von Ziegezar"
+        tools:visibility="visible" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/txt_variant_review_pdp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/layout_lvl2"
+        android:layout_marginTop="@dimen/spacing_lvl2"
+        android:visibility="gone"
+        android:textColor="@color/Unify_N700_68"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/rating_review_pdp"
+        app:typographyType="body_3"
+        tools:visibility="gone"
+        tools:text="Variant: Maroon pad with headrest 256 kilobyte" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/txt_desc_review_pdp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/layout_lvl2"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginTop="@dimen/spacing_lvl2"
+        android:visibility="gone"
+        app:layout_goneMarginTop="@dimen/dp_8"
+        app:layout_constraintTop_toBottomOf="@+id/txt_variant_review_pdp"
+        app:typographyType="body_2"
+        android:textColor="@color/Unify_N700_96"
+        tools:visibility="visible"
+        tools:text="Saya sangat puas sekali!! Awalnya saya gak percaya. Dengan memakai headphone ini, saya dapat mendengarkan percakapan tetangga sebelah rumah.. Selengkapnya" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

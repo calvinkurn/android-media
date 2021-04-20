@@ -1,14 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <dimen name="dp_320">320dp</dimen>
-    <dimen name="dp_360">360dp</dimen>
-    <dimen name="dp_140">140dp</dimen>
     <dimen name="dp_55">55dp</dimen>
     <dimen name="dp_110">110dp</dimen>
     <dimen name="dp_114">114dp</dimen>
     <dimen name="dp_160">160dp</dimen>
     <dimen name="dp_10">10dp</dimen>
     <dimen name="dp_204">204dp</dimen>
+    <dimen name="product_detail_dp_88">88dp</dimen>
+    <dimen name="pdp_dp_1">1dp</dimen>
+    <dimen name="pdp_dp_2">1dp</dimen>
+    <dimen name="pdp_dp_3">3dp</dimen>
+    <dimen name="pdp_dp_6">6dp</dimen>
+    <dimen name="pdp_dp_7">7dp</dimen>
+    <dimen name="pdp_dp_9">9dp</dimen>
+    <dimen name="pdp_dp_10">10dp</dimen>
+    <dimen name="pdp_dp_24">24dp</dimen>
+    <dimen name="pdp_dp_40">40dp</dimen>
+    <dimen name="pdp_dp_50">50dp</dimen>
+    <dimen name="pdp_dp_96">96dp</dimen>
 
     <dimen name="design_fab_image_size" tools:override="true">32dp</dimen>
     <dimen name="viewpager_next_item_visible">78dp</dimen>

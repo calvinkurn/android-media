@@ -31,10 +31,12 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/hotel_order_detail_hotel_detail"
+                    android:textColor="@color/Unify_N700_96"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
                     app:typographyType="body_2"
                     app:typographyWeight="bold"
-                    android:textColor="@color/Neutral_N700_96"
-                    tools:textColor="@color/light_primary"
+                    tools:textColor="@color/Unify_N700_68"
                     tools:textSize="@dimen/sp_14"
                     tools:textStyle="bold" />
 
@@ -44,9 +46,10 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/layout_lvl3"
                     android:text="@string/hotel_order_detail_booking_code"
-                    app:typographyType="body_3"
-                    android:textColor="@color/Neutral_N700_68"
-                    app:layout_constraintTop_toBottomOf="@+id/detail_hotel_text" />
+                    android:textColor="@color/Unify_N700_68"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/detail_hotel_text"
+                    app:typographyType="body_3" />
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/booking_code"
@@ -54,15 +57,15 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/spacing_lvl2"
                     android:layout_marginLeft="@dimen/spacing_lvl2"
-                    app:typographyType="body_3"
-                    android:textColor="@color/Neutral_N700_96"
-                    app:typographyWeight="bold"
+                    android:textColor="@color/Unify_N700_96"
                     app:layout_constraintBottom_toBottomOf="@+id/booking_code_hint"
                     app:layout_constraintLeft_toRightOf="@+id/booking_code_hint"
                     app:layout_constraintStart_toEndOf="@+id/booking_code_hint"
                     app:layout_constraintTop_toTopOf="@+id/booking_code_hint"
+                    app:typographyType="body_3"
+                    app:typographyWeight="bold"
                     tools:text="XYZABABA110"
-                    tools:textColor="@color/light_primary"
+                    tools:textColor="@color/Unify_N700_68"
                     tools:textSize="@dimen/sp_12"
                     tools:textStyle="bold" />
             </androidx.constraintlayout.widget.ConstraintLayout>
@@ -72,7 +75,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/hotel_1dp"
                 android:layout_marginTop="@dimen/layout_lvl2"
-                android:background="@color/hotel_grey_300"
+                android:background="@color/Unify_N100"
                 app:layout_constraintTop_toBottomOf="@+id/transaction_status" />
 
             <com.tokopedia.hotel.common.presentation.widget.RoomDurationView
@@ -84,7 +87,7 @@
                 android:id="@+id/seperator_3"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/hotel_1dp"
-                android:background="@color/hotel_grey_300"
+                android:background="@color/Unify_N100"
                 app:layout_constraintTop_toBottomOf="@+id/checkin_checkout_date" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -96,9 +99,10 @@
                     android:id="@+id/hotel_name_hint"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/layout_lvl1"
                     android:text="@string/hotel_order_detail_hotel_name"
-                    android:textColor="@color/Neutral_N700_68"
+                    android:textColor="@color/Unify_N700_68"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
                     app:typographyType="body_2"
                     tools:textSize="@dimen/sp_12" />
 
@@ -107,10 +111,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/hotel_order_detail_see_hotel_detail"
-                    android:textColor="@color/Green_G500"
-                    app:typographyType="body_3"
+                    android:textColor="@color/Unify_G500"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="@+id/hotel_name_hint"
+                    app:typographyType="body_3"
                     tools:textSize="@dimen/sp_12" />
 
                 <com.tokopedia.unifyprinciples.Typography
@@ -118,9 +122,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/layout_lvl1"
-                    android:textColor="@color/Neutral_N700_96"
-                    app:typographyType="heading_4"
+                    android:textColor="@color/Unify_N700_96"
                     app:layout_constraintTop_toBottomOf="@+id/hotel_name_hint"
+                    app:typographyType="heading_4"
                     tools:text="Avissa Suites"
                     tools:textSize="@dimen/sp_17"
                     tools:textStyle="bold" />
@@ -130,9 +134,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/layout_lvl1"
-                    app:typographyType="body_3"
-                    android:textColor="@color/Neutral_N700_68"
+                    android:textColor="@color/Unify_N700_68"
                     app:layout_constraintTop_toBottomOf="@+id/hotel_name"
+                    app:typographyType="body_3"
                     tools:text="Jalan Cihampelas No 211-217 Bandung 40131, Cihampelas, Bandung, Jawa Barat, Indonesia, 40131"
                     tools:textSize="@dimen/sp_12" />
 
@@ -141,12 +145,12 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/layout_lvl2"
-                    app:typographyType="body_2"
-                    android:textColor="@color/Neutral_N700_96"
-                    app:typographyWeight="bold"
+                    android:textColor="@color/Unify_N700_96"
                     app:layout_constraintTop_toBottomOf="@+id/hotel_address"
+                    app:typographyType="body_2"
+                    app:typographyWeight="bold"
                     tools:text="Kamar Deluxe Double"
-                    tools:textColor="@color/light_primary"
+                    tools:textColor="@color/Unify_N700_68"
                     tools:textSize="@dimen/sp_14"
                     tools:textStyle="bold" />
 
@@ -155,9 +159,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/spacing_lvl2"
-                    app:typographyType="body_3"
-                    android:textColor="@color/Neutral_N700_68"
+                    android:textColor="@color/Unify_N700_68"
                     app:layout_constraintTop_toBottomOf="@+id/room_name"
+                    app:typographyType="body_3"
                     tools:text="2 Kamar • 2 Tamu"
                     tools:textSize="@dimen/sp_12" />
 
@@ -190,18 +194,19 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/layout_lvl2"
-                    app:typographyType="body_3"
-                    android:textColor="@color/Neutral_N700_68"
+                    android:textColor="@color/Unify_N700_68"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/special_request_recycler_view"
+                    app:typographyType="body_3"
                     tools:text="Dana deposit, pajak wisata, dan biaya lainnya mungkin akan ditagihkan saat check-in. "
                     tools:textSize="@dimen/sp_12" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <View android:layout_width="match_parent"
+            <View
+                android:layout_width="match_parent"
                 android:layout_height="@dimen/hotel_1dp"
-                android:background="@color/hotel_divider_color_gray" />
+                android:background="@color/Unify_N75" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/call_hotel_layout"
@@ -228,12 +233,12 @@
                     android:layout_marginStart="@dimen/layout_lvl1"
                     android:layout_marginLeft="@dimen/layout_lvl1"
                     android:text="@string/hotel_order_detail_contact_hotel"
-                    android:textColor="@color/Green_G500"
-                    app:typographyType="body_2"
+                    android:textColor="@color/Unify_G500"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/call_icon"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:typographyType="body_2" />
             </androidx.constraintlayout.widget.ConstraintLayout>
         </LinearLayout>
     </androidx.cardview.widget.CardView>
@@ -249,10 +254,10 @@
             android:layout_height="wrap_content"
             android:paddingStart="@dimen/layout_lvl2"
             android:paddingLeft="@dimen/layout_lvl2"
-            android:paddingTop="@dimen/dp_25"
+            android:paddingTop="@dimen/spacing_lvl5"
             android:paddingEnd="@dimen/layout_lvl2"
             android:paddingRight="@dimen/layout_lvl2"
-            android:paddingBottom="@dimen/dp_25">
+            android:paddingBottom="@dimen/spacing_lvl5">
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/guest_detail_hint"
@@ -260,10 +265,10 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/layout_lvl2"
                 android:text="@string/hotel_order_detail_guest_detail"
-                android:textColor="@color/Neutral_N700_96"
+                android:textColor="@color/Unify_N700_96"
                 app:typographyType="body_2"
                 app:typographyWeight="bold"
-                tools:textColor="@color/Neutral_N700_96"
+                tools:textColor="@color/Unify_N700_96"
                 tools:textSize="@dimen/sp_14"
                 tools:textStyle="bold" />
 
@@ -273,9 +278,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/layout_lvl3"
                 android:text="@string/hotel_order_detail_guest_name"
-                android:textColor="@color/Neutral_N700_68"
-                app:typographyType="body_2"
+                android:textColor="@color/Unify_N700_68"
                 app:layout_constraintTop_toBottomOf="@+id/guest_detail_hint"
+                app:typographyType="body_2"
                 tools:textSize="@dimen/sp_14" />
 
             <com.tokopedia.unifyprinciples.Typography
@@ -286,14 +291,14 @@
                 android:layout_marginLeft="@dimen/hotel_20dp"
                 android:layout_marginTop="@dimen/layout_lvl3"
                 android:gravity="end"
-                app:typographyType="body_2"
-                android:textColor="@color/Neutral_N700_96"
-                app:typographyWeight="bold"
+                android:textColor="@color/Unify_N700_96"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/guest_detail_name_hint"
                 app:layout_constraintTop_toBottomOf="@+id/guest_detail_hint"
+                app:typographyType="body_2"
+                app:typographyWeight="bold"
                 tools:text="Stevanus Kurniawan Suharyanto"
-                tools:textColor="@color/Neutral_N700_96"
+                tools:textColor="@color/Unify_N700_96"
                 tools:textSize="@dimen/sp_14"
                 tools:textStyle="bold" />
         </androidx.constraintlayout.widget.ConstraintLayout>

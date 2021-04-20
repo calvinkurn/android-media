@@ -10,10 +10,12 @@ import com.tokopedia.additional_check.di.AdditionalCheckUseCaseModules
 import com.tokopedia.additional_check.di.DaggerAdditionalCheckComponents
 import com.tokopedia.additional_check.internal.AdditionalCheckConstants
 import com.tokopedia.additional_check.internal.AdditionalCheckConstants.REMOTE_CONFIG_2FA
+import com.tokopedia.additional_check.internal.AdditionalCheckConstants.REMOTE_CONFIG_2FA_SELLER_APP
 import com.tokopedia.additional_check.view.TwoFactorViewModel
 import com.tokopedia.additional_check.view.TwoFactorFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import javax.inject.Inject
 
@@ -30,35 +32,71 @@ class TwoFactorCheckerSubscriber: Application.ActivityLifecycleCallbacks {
     var remoteConfig: FirebaseRemoteConfigImpl? = null
 
     private val exceptionPage = listOf(
-            "ConsumerSplashScreen", "AddPinActivity", "AddPhoneActivity", "TwoFactorActivity",
+            "ConsumerSplashScreen", "AddPinActivity", "AddPinFrom2FAActivity", "AddPhoneActivity", "TwoFactorActivity",
             "RegisterFingerprintOnboardingActivity", "VerificationActivity", "PinOnboardingActivity",
-            "LogoutActivity", "LoginActivity","GiftBoxTapTapActivity", "GiftBoxDailyActivity"
+            "LogoutActivity", "LoginActivity","GiftBoxTapTapActivity", "GiftBoxDailyActivity", "RegisterInitialActivity",
+            "RegisterEmailActivity", "AddNameRegisterPhoneActivity", "SmartLockActivity", "OvoRegisterInitialActivity", "OvoFinalPageActivity"
+    )
+
+    private val exceptionPageSeller = listOf(
+            "SplashScreenActivity", "AddPinActivity", "AddPinFrom2FAActivity", "AddPhoneActivity", "TwoFactorActivity",
+            "RegisterFingerprintOnboardingActivity", "VerificationActivity", "PinOnboardingActivity",
+            "LogoutActivity", "LoginActivity","GiftBoxTapTapActivity", "GiftBoxDailyActivity", "RegisterInitialActivity",
+            "RegisterEmailActivity", "ChooseAccountActivity", "SmartLockActivity" , "ShopOpenRevampActivity" , "PinpointMapActivity"
     )
 
     override fun onActivityCreated(activity: Activity?, savedInstanceState: Bundle?) {
-        DaggerAdditionalCheckComponents
-                .builder()
-                .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
-                .additionalCheckModules(AdditionalCheckModules(activity))
-                .additionalCheckUseCaseModules(AdditionalCheckUseCaseModules())
-                .build()
-                .inject(this)
-        remoteConfig = FirebaseRemoteConfigImpl(activity)
-        doChecking(activity)
+        if (activity != null) {
+            if(!exceptionPage.contains(activity.javaClass.simpleName)) {
+                DaggerAdditionalCheckComponents
+                        .builder()
+                        .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
+                        .additionalCheckModules(AdditionalCheckModules())
+                        .additionalCheckUseCaseModules(AdditionalCheckUseCaseModules())
+                        .build()
+                        .inject(this)
+                doChecking(activity)
+            }
+        }
     }
 
-    private fun getTwoFactorRemoteConfig(): Boolean? {
+    private fun getTwoFactorRemoteConfig(activity: Activity?): Boolean? {
+        if(remoteConfig == null) {
+            remoteConfig = FirebaseRemoteConfigImpl(activity)
+        }
         return remoteConfig?.getBoolean(REMOTE_CONFIG_2FA, false)
     }
 
+    private fun getTwoFactorRemoteConfigSellerApp(): Boolean? {
+        return remoteConfig?.getBoolean(REMOTE_CONFIG_2FA_SELLER_APP, false)
+    }
+
     private fun doChecking(activity: Activity){
-        if(!exceptionPage.contains(activity.javaClass.simpleName.toString()) && getTwoFactorRemoteConfig() == true) {
-            viewModel.check(onSuccess = {
-                handleResponse(activity, twoFactorResult = it)
-            }, onError = {
-                it.printStackTrace()
-            })
+        if (GlobalConfig.isSellerApp()) {
+            checkSellerApp(activity)
+        } else {
+            checkMainApp(activity)
         }
+    }
+
+    private fun checkMainApp(activity: Activity) {
+        if(!exceptionPage.contains(activity.javaClass.simpleName) && getTwoFactorRemoteConfig(activity) == true) {
+            checking(activity)
+        }
+    }
+
+    private fun checkSellerApp(activity: Activity) {
+        if(!exceptionPageSeller.contains(activity.javaClass.simpleName) && getTwoFactorRemoteConfigSellerApp() == true) {
+            checking(activity)
+        }
+    }
+
+    private fun checking(activity: Activity) {
+        viewModel.check(onSuccess = {
+            handleResponse(activity, twoFactorResult = it)
+        }, onError = {
+            it.printStackTrace()
+        })
     }
 
     override fun onActivityDestroyed(activity: Activity?) {}

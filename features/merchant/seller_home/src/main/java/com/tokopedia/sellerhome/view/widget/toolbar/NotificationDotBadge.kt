@@ -23,7 +23,7 @@ class NotificationDotBadge(private val context: Context) : Drawable() {
     private var willDraw = false
 
     init {
-        mBadgePaint.color = ContextCompat.getColor(context.applicationContext, R.color.green_500)
+        mBadgePaint.color = ContextCompat.getColor(context.applicationContext, com.tokopedia.unifyprinciples.R.color.Unify_G500)
         mBadgePaint.isAntiAlias = true
         mBadgePaint.style = Paint.Style.FILL
     }
@@ -36,8 +36,8 @@ class NotificationDotBadge(private val context: Context) : Drawable() {
         val height: Float = dp16
 
         val radius = max(width, height) / 2 / 2
-        val centerX = (bounds.right - bounds.left).minus(2f)
-        val centerY = radius.minus(2)
+        val centerX = (bounds.right - bounds.left).minus(12f)
+        val centerY = radius.plus(10)
         canvas.drawCircle(centerX, centerY, radius, mBadgePaint)
     }
 

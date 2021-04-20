@@ -1,0 +1,151 @@
+<resources>
+    <string name="topads_headline_app_name">top_ads_headline</string>
+    <string name="topads_headline_ad_detail_fragment_label">Isi Detail Iklan</string>
+    <string name="topads_headline_ad_content_fragment_label">Isi Konten Iklan</string>
+    <string name="topads_headline_ad_schedule_and_budget_fragment_label">Atur Jadwal &amp; Anggaran</string>
+    <string name="topads_headline_ad_detail_name_header">Nama Iklan Toko</string>
+    <string name="topads_headline_ad_detail_name_message">Contoh: Headline Sepatu Lari, Headline Bando Wanita, Headline Gaun Pesta</string>
+    <string name="topads_headline_ad_detail_name_hint">Masukkan nama iklan</string>
+    <string name="topads_headline_continue">Lanjutkan</string>
+    <string name="topads_headline_ad_name_required">Nama iklan harus diisi</string>
+    <string name="topads_headline_ad_content_name_header">Produk yang ditampilkan</string>
+    <string name="topads_headline_as_recommended_text">(sesuai rekomendasi)</string>
+    <string name="topads_headline_product_not_selected">Produk belum dipilih</string>
+    <string name="topads_headline_product_selected">%s/10 produk dipilih</string>
+    <string name="topads_headline_promotional_message">Pesan Promosi</string>
+    <string name="topads_headline_promotional_message_hint">Mau beli [ProductName] kualitas terbaik? Cek toko [ShopName] sekarang!</string>
+    <string name="topads_headline_promotional_message_summary">Pesan promosimu sempurna!</string>
+    <string name="topads_headline_ad_preview_text">Preview Iklan Toko</string>
+    <string name="topads_headline_ad_disclaimer">Iklan Toko akan menampilkan 2-3 produkmu secara bergantian sesuai dengan kata kunci yang dicari.</string>
+    <string name="topads_headline_product_list_label">Pilih Produk</string>
+    <string name="topads_headline_cari_produk">Cari Produk</string>
+    <string name="topads_headline_recommendasi">Rekomendasi</string>
+    <string name="topads_headline_recommendasi_price">%s •</string>
+    <string name="topads_headline_recommendasi_price_apply">Terapkan</string>
+    <string name="topads_headline_over_product_selection">Kamu telah memilih maksimum 10 produk.</string>
+    <string name="topads_headline_tooltip_text">Tips memilih produk.</string>
+    <string name="topads_headline_select_all_recommendation">Pilih semua rekomendasi</string>
+    <string name="topads_headline_select_first_n_recommendation">Pilih %s produk pertama</string>
+    <string name="topads_headline_search_result_with_keyword">Kami tidak dapat menemukan produk “%s”</string>
+    <string name="topads_headline_submit_ad_detail_error">Lengkapi informasi iklan produkmu.</string>
+    <string name="topads_headline_recommended_template">Rekomendasi Template:</string>
+    <string name="topads_headline_recommended_template_1">Penawaran terbatas! Produk ori asli Indonesia.</string>
+    <string name="topads_headline_recommended_template_2">Belanja di %s, diskon hingga 50%%!</string>
+    <string name="topads_headline_recommended_template_3">Cari produk lokal kualitas terbaik? Cek %s yuk!</string>
+    <string name="topads_headline_recommended_template_4">Harga termurah, hanya di %s!</string>
+    <string name="topads_headline_promotional_message_length_error">Minimum 20 karakter. Lengkapi pesan promosi agar iklanmu lebih menarik.</string>
+    <string name="topads_headline_promotional_message_empty_error">Pesan promosimu masih kosong</string>
+    <string name="topads_headline_promotional_message_success">Sedikit lagi! Lengkapi pesan agar promosimu lebih menarik</string>
+    <string name="topads_headline_promotional_dummy_message">Ada promo menarik untuk produk ori buatan Indonesia.</string>
+    <string name="topads_headline_promotional_ticker_message">Minimum 2 produk per kategori</string>
+    <string name="topads_headline_recommendation_category">Rekomendasi</string>
+    <string name="topads_headline_all_products_category">Semua produk</string>
+    <string name="topads_headline_category_count_error">dan %d lainnya</string>
+
+    <!--cpmModel constants-->
+    <string name="topads_headline_check_now">Cek Sekarang</string>
+    <string name="topads_headline_promoted_by">Dipromosikan oleh</string>
+
+    <!--tips for choosing product-->
+    <string name="topads_headline_tips_choosing_product">Tips memilih produk</string>
+    <string name="topads_headline_tips_choose_product_with_most_reviews">Pilih produk dengan ulasan terbanyak.</string>
+    <string name="topads_headline_tips_choose_product_with_most_popularity">Pilih produk terpopuler.</string>
+    <string name="topads_headline_tips_choose_product_with_same_category">Pilih 2-10 produk di kategori yang sama.</string>
+    <string name="topads_headline_tips_name_and_photo_correct">Pastikan nama dan foto produk sudah sesuai.</string>
+
+    <!--tips for creating promotional messages-->
+    <string name="topads_headline_promotional_tooltip_text">Tips buat pesan promosi</string>
+    <string name="topads_headline_promotional_message_header">Tips membuat pesan promosi</string>
+    <string name="topads_headline_promotional_message_1">Ceritakan keunggulan toko, produk atau promo yang berlangsung ke calon pembeli.</string>
+    <string name="topads_headline_promotional_message_2">Gunakan kata-kata promosi, seperti “Diskon hingga 50%”, “Ekstra cashback 30%”, “Bebas ongkir”, dan lainnya.</string>
+    <string name="topads_headline_promotional_message_3">Tuliskan keunggulan produkmu, seperti “Produk original”, “Produk lokal”, “Handmade”, dan lainnya.</string>
+    <string name="topads_headline_promotional_message_4">Gunakan slogan tokomu.</string>
+    <string name="topads_headline_promotional_message_5">Hindari penggunaan huruf kapital yang berlebih.</string>
+
+    <!--keyword-->
+    <string name="topads_headline_keywrod_title">Pilih Kata Kunci</string>
+    <string name="topads_headline_keyword_page_title">Iklanmu akan tampil saat pembeli mencari produk menggunakan kata kunci yang kamu pilih.</string>
+    <string name="topads_headline_enter_keyword_hint">Ketik kata kunci</string>
+    <string name="topads_headline_add_button">Tambah</string>
+    <string name="topads_headline_oke_button">Oke</string>
+    <string name="topads_headline_keyword_already_exist">Kata Kunci sudah dipilih, silahkan coba kata kunci lainnya.</string>
+    <string name="topads_headline_keyword_desc">%s orang mencari ini /bulan</string>
+    <string name="topads_headline_keyword_recommended_keyword">REKOMENDASI KATA KUNCI</string>
+    <string name="topads_headline_keyword_bottomsheet_desc1">Kata kunci akan menentukan di halaman pencarian kata kunci mana saja iklan </string>
+    <string name="topads_headline_keyword_bottomsheet_desc2">Sesuaikan kata kunci dengan nama produk.</string>
+    <string name="topads_headline_keyword_bottomsheet_desc3">Gunakan kata kunci spesifik untuk lebih efisien beriklan</string>
+    <string name="topads_headline_keyword_bottomsheet_desc4">Gunakan kata kunci umum untuk meningkatkan frekuensi produk tampil.</string>
+    <string name="topads_headline_keyword_bottomsheet_desc5">Biaya rekomendasi merupakan rata-rata biaya iklan yang digunakan kompetitormu</string>
+    <string name="topads_headline_keyword_bottomsheet_desc6">Gunakan biaya rekomendasi atau lebih besar agar iklanmu terus tampil</string>
+    <string name="topads_headline_keyword_bottomsheet_desc7">Biaya ini hanya dikenakan setiap kali iklan headline diklik calon pembeli</string>
+    <string name="topads_headline_keyword_bottomsheet_title1">Tips memilih kata kunci</string>
+    <string name="topads_headline_keyword_bottomsheet_title2">Tips mengatur biaya kata kunci</string>
+
+    <!--ad schedule and budget-->
+    <string name="topads_headline_schedule_advertising_cost_header">Biaya Iklan</string>
+    <string name="topads_headline_schedule_advertising_cost_text">Biaya ini akan dikenakan bila iklanmu tampil di halaman kategori, feed, dan toko favorit.</string>
+    <string name="topads_headline_schedule_tooltip_text">Tips atur jadwal dan anggaran</string>
+    <string name="topads_headline_schedule_header">Tetapkan jadwal iklan</string>
+    <string name="topads_headline_daily_budget_header">Batasi Anggaran Iklan</string>
+    <string name="topads_headline_schedule_warning_text">Tanpa jadwal, iklan akan ditampilkan terus menerus tanpa batasan waktu.</string>
+    <string name="topads_headline_schedule_start_date">Mulai</string>
+    <string name="topads_headline_schedule_end_date">Selesai</string>
+    <string name="topads_headline_schedule_add_appearance_message">Iklan akan tampil selama %d hari</string>
+    <string name="topads_headline_schedule_budget_cost_message">Iklan akan tampil seharian sampai biaya iklan yang dikeluarkan mencapai Rp%s per harinya.</string>
+    <string name="topads_headline_hari">/hari</string>
+    <string name="topads_headline_start_date_header">Pilih tanggal dan jam mulai</string>
+    <string name="topads_headline_end_date_header">Pilih tanggal dan jam selesai</string>
+    <string name="topads_headline_end_date_info">Iklan akan tampil selama 30 hari</string>
+    <string name="topads_headline_advertise_btn">Iklankan</string>
+    <string name="topads_headline_preview_btn">Preview</string>
+    <string name="topads_headline_budget_warning_text">Tanpa anggaran iklan, iklan akan tampil sesuai sisa kredit TopAds-mu.</string>
+    <string name="topads_headline_preview_bottomsheet_header">Preview %s</string>
+    <string name="topads_headline_min_budget_cost_error">Batas minimum Rp%s</string>
+    <string name="topads_headline_max_budget_cost_error">Batas maksimum Rp%s</string>
+    <string name="topads_headline_success_title_message">Yay, %s berhasil diiklankan!</string>
+    <string name="topads_headline_success_subtitle_message">Performa iklanmu dapat dilihat lebih efektif setelah 7 hari iklan berjalan di Dashboard TopAds </string>
+    <string name="topads_headline_success_button_message">Kembali ke Dashboard</string>
+    <string name="topads_headline_date_picker_calendar_button">Pilih</string>
+
+    <!--tips for setting a schedule and budget-->
+    <string name="topads_headline_tips_schedule_header">Tips mengatur jadwal iklan</string>
+    <string name="topads_headline_tips_schedule_row1">Atur jadwal iklan sesuai dengan batas waktu promosi kamu.</string>
+    <string name="topads_headline_tips_budget_header">Tips mengatur anggaran </string>
+    <string name="topads_headline_tips_budget_row1">Semakin tinggi anggaran harian, semakin besar potensi produkmu jangkau lebih banyak pembeli.</string>
+    <string name="topads_headline_tips_budget_row2">Anggaran harian hanya akan mengiklankan produk-produkmu yang berpotensi laku.</string>
+    <string name="topads_headline_tips_budget_row3">Kamu dapat atur atau hentikan anggaran harian kapan saja!</string>
+
+    <!--topads headline edit-->
+    <string name="topads_headline_edit_form_label">Isi Konten Iklan</string>
+    <string name="topads_headline_edit_ad_cost_header">Biaya Iklan di halaman lainnya</string>
+    <string name="topads_headline_edit_ad_cost_sub_header">Biaya ini akan dikenakan bila iklanmu tampil di halaman kategori, feed, dan toko favorit. </string>
+    <string name="topads_headline_edit_keyword_cost_header">Biaya kata kunci di halaman pencarian</string>
+    <string name="topads_headline_edit_keyword_cost_sub_header">Biaya ini akan dikenakan bila iklanmu diklik di hasil pencarian kata kunci pilihanmu.</string>
+    <string name="topads_headline_edit_kata_kunci">Kata Kunci</string>
+    <string name="topads_headline_edit_kata_kunci_neg">Kata Kunci Negatif</string>
+    <string name="topads_headline_edit_keyword_empty_kata_kunci_header">Belum ada kata kunci dipilih</string>
+    <string name="topads_headline_edit_keyword_empty_kata_kunci_negatif_header">Belum ada kata kunci negatif</string>
+    <string name="topads_headline_edit_keyword_empty_kata_kunci_subheader">Tambahkan kata kunci agar produkmu lebih mudah ditemukan calon pembeli.</string>
+    <string name="topads_headline_edit_keyword_empty_kata_kunci_negatif_subheader">Tambahkan kata kunci negatif agar produkmu tidak tampil di hasil pencarian yang tidak relevan</string>
+    <string name="topads_headline_edit_keyword_empty_kata_kunci_cta">Tambah Kata Kunci</string>
+    <string name="topads_headline_edit_keyword_empty_kata_kunci_negatif_cta">Tambah Kata Kunci Negatif</string>
+    <string name="topads_headline_edit_keyword_delete_kata_kunci_title">Hapus Kata Kunci?</string>
+    <string name="topads_headline_edit_keyword_delete_kata_kunci_description">Apakah kamu yakin untuk menghapus kata kunci %s?</string>
+    <string name="topads_headline_edit_keyword_delete_kata_kunci_negatif_title">Hapus Kata Kunci Negatif?</string>
+    <string name="topads_headline_edit_keyword_delete_kata_kunci_negatif_description">Apakah kamu yakin untuk menghapus kata kunci negatif %s?</string>
+
+    <!--tips for setting a sort type-->
+    <string name="topads_headline_sort_type_title">Tips Pencarian</string>
+    <string name="topads_headline_broad_sort_type_header">Pencarian Luas</string>
+    <string name="topads_headline_broad_sort_type_subheader">Pencarian dengan kata kunci luas dapat meningkatkan frekuensi produkmu tampil.</string>
+    <string name="topads_headline_specific_sort_type_header">Pencarian Spesifik</string>
+    <string name="topads_headline_specific_sort_type_subheader">Gunakan pencarian dengan kata kunci spesifik untuk beriklan lebih efektif dan produkmu lebih mudah ditemukan pembeli.</string>
+
+    <!--tips for managing advertising costs on search pages-->
+    <string name="topads_headline_ad_cost_tip">Tips atur biaya Iklan</string>
+    <string name="topads_headline_ad_cost_title">Tips mengatur biaya iklan di halaman pencarian</string>
+    <string name="topads_headline_ad_cost_row1">Biaya rekomendasi merupakan rata-rata biaya kata kunci dari kompetitormu</string>
+    <string name="topads_headline_ad_cost_row2">Gunakan biaya rekomendasi atau lebih besar agar iklanmu terus tampil.</string>
+    <string name="topads_headline_ad_cost_row3">Biaya ini hanya dikenakan setiap kali iklan headline diklik calon pembeli</string>
+
+</resources>

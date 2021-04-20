@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/status_bar_latest_event_content"
     android:layout_width="match_parent"
@@ -23,7 +24,6 @@
                 android:layout_height="match_parent"
                 android:layout_gravity="center_vertical"
                 android:layout_marginEnd="@dimen/spacing_lvl7"
-                android:layout_marginRight="@dimen/spacing_lvl7"
                 android:minHeight="@dimen/cm_dp_45"
                 android:orientation="vertical">
 
@@ -34,9 +34,9 @@
                     android:ellipsize="marquee"
                     android:fadingEdge="horizontal"
                     android:singleLine="true"
-                    android:textColor="#de000000"
-                    android:textSize="15sp" />
-
+                    android:textColor="@color/Unify_N700_96"
+                    android:textSize="15sp"
+                    tools:title="Tokopedia"/>
 
                 <TextView
                     android:id="@+id/tv_collapsed_message"
@@ -45,8 +45,8 @@
                     android:ellipsize="marquee"
                     android:fadingEdge="horizontal"
                     android:singleLine="true"
-                    android:textColor="@color/secondary_text_default_material_light"
-                    android:textSize="@dimen/notification_subtext_size" />
+                    android:textColor="@color/Unify_N700_68"
+                    android:textSize="@dimen/cm_sp_13" />
 
                 <TextView
                     android:id="@+id/tv_expanded_message"
@@ -54,19 +54,18 @@
                     android:layout_height="wrap_content"
                     android:fadingEdge="horizontal"
                     android:visibility="gone"
-                    android:textColor="@color/secondary_text_default_material_light"
-                    android:textSize="@dimen/notification_subtext_size" />
+                    android:textColor="@color/Unify_N700_68"
+                    android:textSize="@dimen/cm_sp_13" />
             </LinearLayout>
 
             <ImageView
                 android:id="@+id/iv_icon_collapsed"
                 android:layout_width="@dimen/cm_dp_38"
                 android:layout_height="@dimen/cm_dp_38"
-                android:layout_gravity="end|right"
+                android:layout_gravity="end"
                 android:src="@drawable/ic_big_notif_customerapp" />
 
         </FrameLayout>
-
 
         <ImageView
             android:id="@+id/img_big"
@@ -87,20 +86,17 @@
             android:id="@+id/ll_action"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
             android:layout_gravity="center_vertical"
-            android:layout_marginRight="@dimen/dp_10"
-            android:gravity="right"
+            android:layout_marginEnd="@dimen/dp_10"
+            android:gravity="end"
             android:orientation="horizontal"
             android:paddingTop="@dimen/dp_8">
-
 
             <LinearLayout
                 android:id="@+id/ll_button3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/dp_16"
-                android:layout_marginRight="@dimen/dp_16"
                 android:orientation="horizontal">
 
                 <ImageView
@@ -109,7 +105,6 @@
                     android:layout_height="@dimen/dp_16"
                     android:layout_gravity="center_vertical"
                     android:layout_marginEnd="@dimen/dp_8"
-                    android:layout_marginRight="@dimen/dp_8"
                     android:visibility="gone" />
 
                 <TextView
@@ -121,8 +116,8 @@
                     android:fadingEdge="horizontal"
                     android:singleLine="true"
                     android:textAllCaps="true"
-                    android:textColor="#de000000"
-                    android:textSize="13sp"
+                    android:textColor="@color/Unify_N700_96"
+                    android:textSize="@dimen/cm_sp_13"
                     tools:text="Title" />
             </LinearLayout>
 
@@ -131,7 +126,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/dp_16"
-                android:layout_marginRight="@dimen/dp_16"
                 android:orientation="horizontal">
 
                 <ImageView
@@ -140,7 +134,6 @@
                     android:layout_height="@dimen/dp_16"
                     android:layout_gravity="center_vertical"
                     android:layout_marginEnd="@dimen/dp_8"
-                    android:layout_marginRight="@dimen/dp_8"
                     android:visibility="gone" />
 
                 <TextView
@@ -152,11 +145,10 @@
                     android:fadingEdge="horizontal"
                     android:singleLine="true"
                     android:textAllCaps="true"
-                    android:textColor="#de000000"
-                    android:textSize="13sp"
+                    android:textColor="@color/Unify_N700_96"
+                    android:textSize="@dimen/cm_sp_13"
                     tools:text="Title" />
             </LinearLayout>
-
 
             <LinearLayout
                 android:id="@+id/ll_button1"
@@ -170,7 +162,6 @@
                     android:layout_height="@dimen/dp_16"
                     android:layout_gravity="center_vertical"
                     android:layout_marginEnd="@dimen/dp_8"
-                    android:layout_marginRight="@dimen/dp_8"
                     android:visibility="gone"
                     tools:srcCompat="@tools:sample/avatars" />
 
@@ -183,12 +174,13 @@
                     android:fadingEdge="horizontal"
                     android:singleLine="true"
                     android:textAllCaps="true"
-                    android:textColor="#de000000"
-                    android:textSize="13sp"
+                    android:textColor="@color/Unify_N700_96"
+                    android:textSize="@dimen/cm_sp_13"
                     tools:text="Title" />
             </LinearLayout>
 
-
         </LinearLayout>
+
     </LinearLayout>
+
 </FrameLayout>

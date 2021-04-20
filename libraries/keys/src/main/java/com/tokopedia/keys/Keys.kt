@@ -1,6 +1,7 @@
 package com.tokopedia.keys
 
 import android.content.Context
+import android.provider.Settings.Global.getString
 import com.tokopedia.config.GlobalConfig
 
 object Keys {

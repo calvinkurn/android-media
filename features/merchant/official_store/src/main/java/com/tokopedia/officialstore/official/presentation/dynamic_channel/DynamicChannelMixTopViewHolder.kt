@@ -10,7 +10,6 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.design.countdown.CountDownView
 import com.tokopedia.officialstore.DynamicChannelIdentifiers.CTA_MODE_ALTERNATE
 import com.tokopedia.officialstore.DynamicChannelIdentifiers.CTA_MODE_DISABLED
@@ -21,7 +20,9 @@ import com.tokopedia.officialstore.DynamicChannelIdentifiers.CTA_TYPE_FILLED
 import com.tokopedia.officialstore.DynamicChannelIdentifiers.CTA_TYPE_GHOST
 import com.tokopedia.officialstore.DynamicChannelIdentifiers.CTA_TYPE_TEXT
 import com.tokopedia.officialstore.R
-import com.tokopedia.officialstore.official.data.model.dynamic_channel.*
+import com.tokopedia.officialstore.official.data.model.OfficialStoreChannel
+import com.tokopedia.officialstore.official.data.model.dynamic_channel.Banner
+import com.tokopedia.officialstore.official.data.model.dynamic_channel.Channel
 import com.tokopedia.officialstore.official.presentation.viewmodel.ProductFlashSaleDataModel
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.utils.getMaxHeightForGridView
@@ -35,7 +36,7 @@ import kotlinx.coroutines.launch
 class DynamicChannelMixTopViewHolder(
         view: View?,
         private val dcEventHandler: DynamicChannelEventHandler
-) : AbstractViewHolder<DynamicChannelViewModel>(view), CoroutineScope {
+) : AbstractViewHolder<DynamicChannelDataModel>(view), CoroutineScope {
 
     companion object {
         @LayoutRes
@@ -44,7 +45,7 @@ class DynamicChannelMixTopViewHolder(
 
     private val masterJob = SupervisorJob()
 
-    override val coroutineContext = masterJob + Dispatchers.Main
+    override val coroutineContext = masterJob + Dispatchers.IO
     private val headerContainer = itemView.findViewById<ConstraintLayout>(R.id.dc_header_main_container)
     private val headerTitle = itemView.findViewById<Typography>(R.id.dc_header_title)
     private val headerCountDown = itemView.findViewById<CountDownView>(R.id.dc_header_count_down)
@@ -58,9 +59,9 @@ class DynamicChannelMixTopViewHolder(
     private var adapter: MixWidgetAdapter? = null
 
 
-    override fun bind(element: DynamicChannelViewModel?) {
+    override fun bind(element: DynamicChannelDataModel?) {
         element?.run {
-            setupHeader(dynamicChannelData)
+            setupHeader(dynamicChannelData.channel)
             setupContent(dynamicChannelData)
         }
     }
@@ -100,15 +101,15 @@ class DynamicChannelMixTopViewHolder(
         }
     }
 
-    private fun setupContent(channelData: Channel) {
-        setupBanner(channelData)
-        setupList(channelData)
+    private fun setupContent(dynamicChannelData: OfficialStoreChannel) {
+        setupBanner(dynamicChannelData.channel)
+        setupList(dynamicChannelData)
     }
 
     private fun setupBanner(channel: Channel) {
         channel.banner?.let{banner ->
             val ctaData = banner.cta
-            var textColor = ContextCompat.getColor(bannerTitle.context, R.color.Neutral_N50)
+            var textColor = ContextCompat.getColor(bannerTitle.context, R.color.Unify_N50)
             if(banner.textColor.isNotEmpty()){
                 try {
                     textColor = Color.parseColor(banner.textColor)
@@ -171,18 +172,22 @@ class DynamicChannelMixTopViewHolder(
         }
     }
 
-    private fun setupList(channel: Channel) {
+    private fun setupList(dynamicChannelData: OfficialStoreChannel) {
+        val channel = dynamicChannelData.channel
         recyclerViewProductList.resetLayout()
         layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
         recyclerViewProductList.layoutManager = layoutManager
         val typeFactoryImpl = OfficialStoreFlashSaleCardViewTypeFactoryImpl(dcEventHandler, null, channel)
-        val productDataList = convertDataToProductData(channel)
-        adapter = MixWidgetAdapter(typeFactoryImpl)
+        val productDataList = convertDataToProductData(dynamicChannelData)
+        if(adapter == null){
+            adapter = MixWidgetAdapter(typeFactoryImpl)
+            recyclerViewProductList.adapter = adapter
+        }
+        adapter?.clearAllElements()
         adapter?.addElement(productDataList)
-        recyclerViewProductList.adapter = adapter
         launch {
             try {
-                recyclerViewProductList.setHeightBasedOnProductCardMaxHeight(productDataList.map {it.productModel})
+                recyclerViewProductList.setHeightBasedOnProductCardMaxHeight(dynamicChannelData)
             }
             catch (throwable: Throwable) {
                 throwable.printStackTrace()
@@ -190,10 +195,8 @@ class DynamicChannelMixTopViewHolder(
         }
     }
 
-    private suspend fun RecyclerView.setHeightBasedOnProductCardMaxHeight(
-            productCardModelList: List<ProductCardModel>
-    ) {
-        val productCardHeight = getProductCardMaxHeight(productCardModelList)
+    private fun View.setHeightBasedOnProductCardMaxHeight(officialStoreChannel: OfficialStoreChannel) {
+        val productCardHeight = officialStoreChannel.height
 
         val carouselLayoutParams = this.layoutParams
         carouselLayoutParams?.height = productCardHeight
@@ -202,38 +205,17 @@ class DynamicChannelMixTopViewHolder(
 
     private suspend fun getProductCardMaxHeight(productCardModelList: List<ProductCardModel>): Int {
         val productCardWidth = itemView.context.resources.getDimensionPixelSize(R.dimen.product_card_carousel_item_width)
-        return productCardModelList.getMaxHeightForGridView(itemView.context, Dispatchers.Default, productCardWidth)
+        return productCardModelList.getMaxHeightForGridView(itemView.context, Dispatchers.IO, productCardWidth)
     }
 
-    private fun convertDataToProductData(channel: Channel): List<ProductFlashSaleDataModel> {
-        return channel.grids?.let { listGridData ->
-            val list: MutableList<ProductFlashSaleDataModel> = mutableListOf()
-            listGridData.onEach { gridData ->
-                gridData?.let { grid ->
-                    list.add(ProductFlashSaleDataModel(
-                            ProductCardModel(
-                                    slashedPrice = grid.slashedPrice,
-                                    productName = grid.name,
-                                    formattedPrice = grid.price,
-                                    productImageUrl = grid.imageUrl,
-                                    discountPercentage = grid.discount,
-                                    freeOngkir = ProductCardModel.FreeOngkir(grid.freeOngkir?.isActive ?: false, grid.freeOngkir?.imageUrl ?: ""),
-                                    labelGroupList = grid.labelGroup.map {
-                                        ProductCardModel.LabelGroup(
-                                                position = it.position,
-                                                title = it.title,
-                                                type = it.type
-                                        )
-                                    },
-                                    hasThreeDots = false
-                            ),
-                            gridData,
-                            grid.applink
-                    ))
-                }
-            }
-            return list
-        } ?: mutableListOf()
+    private fun convertDataToProductData(officialStoreChannel: OfficialStoreChannel): List<ProductFlashSaleDataModel> {
+        return officialStoreChannel.productCardModels.withIndex().map {
+            ProductFlashSaleDataModel(
+                    it.value,
+                    officialStoreChannel.channel.grids[it.index],
+                    officialStoreChannel.channel.grids[it.index].applink
+            )
+        }
     }
 
     private fun RecyclerView.resetLayout() {
@@ -252,7 +234,8 @@ class DynamicChannelMixTopViewHolder(
             gradient.cornerRadius = 0f
             view.background = gradient
         } else {
-            view.setBackgroundColor(Color.parseColor(colorArray.getOrNull(0) ?: "#ffffff"))
+            val defaultColorString = "#${Integer.toHexString(ContextCompat.getColor(itemView.context, R.color.Unify_N0))}"
+            view.setBackgroundColor(Color.parseColor(colorArray.getOrNull(0) ?: defaultColorString))
         }
     }
 }

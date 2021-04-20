@@ -1,0 +1,84 @@
+[{
+  "data": {
+    "getIsOfficial": {
+      "data": {
+        "is_official": false,
+        "expired_date": ""
+      },
+      "message_error": ""
+    }
+  }
+}, {
+  "data": {
+    "goldGetPMOSStatus": {
+      "header": {
+        "process_time": 0.002397777,
+        "messages": [],
+        "reason": "",
+        "error_code": ""
+      },
+      "data": {
+        "shopID": 1154916,
+        "power_merchant": {
+          "status": "active",
+          "auto_extend": {
+            "status": "on",
+            "tkpd_product_id": 114
+          },
+          "expired_time": "2020-09-19 16:24:56",
+          "shop_popup": false
+        }
+      }
+    }
+  }
+}, {
+  "data": {
+    "shopInfoByID": {
+      "result": [{
+        "topContent": {
+          "topURL": "https://ws.tokopedia.com/ssi/shop-static/psegameshop/_apps/top"
+        }
+      }]
+    }
+  }
+}, {
+  "data": {
+    "shopPageGetHomeType": {
+      "shopHomeType": "none"
+    }
+  }
+}, {
+  "data": {
+    "shopInfoByID": {
+      "result": [{
+        "shopCore": {
+          "shopID": "1154916",
+          "description": "Indonesia\u0026#39;s No.1 Gaming Store",
+          "domain": "psegameshop",
+          "name": "Psegameshop Mock",
+          "tagLine": "Gaming is awesome with PSe",
+          "url": "https://www.tokopedia.com/psegameshop"
+        },
+        "shopAssets": {
+          "avatar": "https://ecs7-p.tokopedia.net/img/cache/215-square/shops-1/2020/6/28/1154916/1154916_bcba5d72-786d-4208-9bba-8885b87df9b8.png",
+          "cover": "https://ecs7-p.tokopedia.net/img/cache/1190/shops-1/2020/8/2/9544841/9544841_175de731-4168-46ca-8fa0-54605b4dca9c"
+        }
+      }]
+    }
+  }
+}, {
+  "data": {
+    "feed_check_whitelist": {
+      "__typename": "FeedCheckWhitelist",
+      "iswhitelist": true,
+      "url": "https://m.tokopedia.com/content/new?image=",
+      "title": "",
+      "title_identifier": "",
+      "description": "",
+      "post_success": "Create Post Success",
+      "image_url": "",
+      "authors": [],
+      "error": ""
+    }
+  }
+}]

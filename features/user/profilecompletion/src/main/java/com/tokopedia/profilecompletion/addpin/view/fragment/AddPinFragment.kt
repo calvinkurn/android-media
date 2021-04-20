@@ -14,12 +14,10 @@ import android.widget.ImageView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
-import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.pin.PinUnify
 import com.tokopedia.profilecompletion.R
 import com.tokopedia.profilecompletion.addpin.data.AddChangePinData
@@ -44,7 +42,7 @@ import javax.inject.Inject
  * ade.hadian@tokopedia.com
  */
 
-class AddPinFragment : BaseDaggerFragment() {
+open class AddPinFragment : BaseDaggerFragment() {
 
     @Inject
     lateinit var trackingPinUtil: TrackingPinUtil
@@ -60,6 +58,7 @@ class AddPinFragment : BaseDaggerFragment() {
 
     private var isConfirmPin = false
     private var isSkipOtp: Boolean = false
+    private var validateToken: String = ""
     private var pin = ""
 
     private var inputPin: PinUnify? = null
@@ -94,7 +93,7 @@ class AddPinFragment : BaseDaggerFragment() {
                     if (isConfirmPin) {
                         if (s.toString() == pin) {
                             if (isSkipOtp) {
-                                addChangePinViewModel.checkSkipOtpPin()
+                                addChangePinViewModel.checkSkipOtpPin(validateToken)
                             } else {
                                 goToVerificationActivity()
                             }
@@ -162,9 +161,8 @@ class AddPinFragment : BaseDaggerFragment() {
     }
 
     private fun initVar() {
-        val isSkipOtp = arguments?.getBoolean(ApplinkConstInternalGlobal.PARAM_IS_SKIP_OTP, false)
-        if (isSkipOtp != null)
-            this.isSkipOtp = isSkipOtp
+        isSkipOtp = arguments?.getBoolean(ApplinkConstInternalGlobal.PARAM_IS_SKIP_OTP, false) ?: false
+        validateToken = arguments?.getString(ApplinkConstInternalGlobal.PARAM_TOKEN, "").toString()
     }
 
     private fun goToVerificationActivity() {
@@ -180,20 +178,15 @@ class AddPinFragment : BaseDaggerFragment() {
         startActivityForResult(intent, REQUEST_CODE_COTP_PHONE_VERIFICATION)
     }
 
-    private fun onSuccessAddPin(addChangePinData: AddChangePinData) {
+    open fun onSuccessAddPin(addChangePinData: AddChangePinData) {
         dismissLoading()
         if (addChangePinData.success) {
             trackingPinUtil.trackSuccessInputConfirmationPin()
-            if (arguments?.getBoolean(ApplinkConstInternalGlobal.PARAM_IS_FROM_2FA) == true) {
-                activity?.setResult(Activity.RESULT_OK)
-                activity?.finish()
-            } else {
-                val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_PIN_COMPLETE)
-                intent.flags = Intent.FLAG_ACTIVITY_FORWARD_RESULT
-                intent.putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, PinCompleteFragment.SOURCE_ADD_PIN)
-                startActivity(intent)
-                activity?.finish()
-            }
+            val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_PIN_COMPLETE)
+            intent.flags = Intent.FLAG_ACTIVITY_FORWARD_RESULT
+            intent.putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, PinCompleteFragment.SOURCE_ADD_PIN)
+            startActivity(intent)
+            activity?.finish()
         }
     }
 
@@ -304,7 +297,7 @@ class AddPinFragment : BaseDaggerFragment() {
         hideKeyboard()
     }
 
-    private fun dismissLoading() {
+    protected fun dismissLoading() {
         loadingDialog.dismiss()
         showKeyboard()
     }
@@ -324,7 +317,7 @@ class AddPinFragment : BaseDaggerFragment() {
         KeyboardHandler.hideSoftKeyboard(activity)
     }
 
-    fun onBackPressedFromConfirm(): Boolean {
+    open fun onBackPressedFromConfirm(): Boolean {
         return if (isConfirmPin) {
             trackingPinUtil.trackClickBackButtonConfirmation()
             displayInitPin()

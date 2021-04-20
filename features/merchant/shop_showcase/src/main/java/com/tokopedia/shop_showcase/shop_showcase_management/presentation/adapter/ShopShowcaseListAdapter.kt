@@ -1,36 +1,30 @@
 package com.tokopedia.shop_showcase.shop_showcase_management.presentation.adapter
 
-import android.content.Context
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.inflateLayout
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.shop_showcase.R
+import com.tokopedia.shop.common.R
+import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
+import com.tokopedia.shop.common.view.viewholder.ShopShowcaseListImageBaseViewHolder
 import com.tokopedia.shop_showcase.common.ShopShowcaseManagementListener
-import com.tokopedia.shop_showcase.common.ShowcaseType
-import com.tokopedia.shop_showcase.common.TOTAL_GENERATED_ID
-import com.tokopedia.shop_showcase.shop_showcase_management.data.model.ShowcaseList.ShowcaseItem
-import com.tokopedia.unifyprinciples.Typography
 
-class ShopShowcaseListAdapter (
+class ShopShowcaseListAdapter(
         val listener: ShopShowcaseManagementListener,
         val isMyShop: Boolean
-): RecyclerView.Adapter<ShopShowcaseListAdapter.ViewHolder>() {
+) : RecyclerView.Adapter<ShopShowcaseListAdapter.ViewHolder>() {
 
-    private var showcaseList: MutableList<ShowcaseItem> = mutableListOf()
+    private var showcaseList: MutableList<ShopEtalaseModel> = mutableListOf()
 
-    fun updateDataShowcaseList(showcaseListData: List<ShowcaseItem>) {
+    fun updateDataShowcaseList(showcaseListData: List<ShopEtalaseModel>) {
         showcaseList = showcaseListData.toMutableList()
         notifyDataSetChanged()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder(parent.inflateLayout(R.layout.shop_showcase_item))
+        return ViewHolder(parent.inflateLayout(
+                ShopShowcaseListImageBaseViewHolder.LAYOUT
+        ))
     }
 
     override fun getItemCount(): Int {
@@ -38,47 +32,34 @@ class ShopShowcaseListAdapter (
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bindData(showcaseList[position], position)
+        holder.bind(showcaseList[position])
     }
 
-
-    inner class ViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
-        val context: Context
-        private var titleShowcase: TextView? = null
-        private var buttonMenuMore: ImageView? = null
-        private var campaignLabel: Typography? = null
+    inner class ViewHolder(itemView: View) : ShopShowcaseListImageBaseViewHolder(itemView) {
 
         init {
-            context = itemView.context
-            titleShowcase = itemView.findViewById(R.id.tv_showcase_name)
-            buttonMenuMore = itemView.findViewById(R.id.img_menu_more)
-            campaignLabel = itemView.findViewById(R.id.tv_campaign_label)
+            showcaseActionButton = itemView.findViewById(R.id.img_menu_more)
         }
 
-        fun bindData(dataShowcase: ShowcaseItem, position: Int) {
-            titleShowcase?.text = dataShowcase.name
+        override fun bind(element: Any) {
+            // cast to actual ui model
+            val elementUiModel = element as ShopEtalaseModel
 
-            if (dataShowcase.type == ShowcaseType.GENERATED || !isMyShop) {
-                buttonMenuMore?.visibility = View.INVISIBLE
-            } else {
-                buttonMenuMore?.visibility = View.VISIBLE
+            // render showcase info
+            renderShowcaseMainInfo(elementUiModel, isMyShop)
+
+            // handle item view showcase click
+            setItemShowcaseClickListener {
+                listener.sendClickShowcase(elementUiModel, adapterPosition)
             }
 
-            if(dataShowcase.type ==  ShowcaseType.CAMPAIGN){
-                campaignLabel?.show()
-            }else{
-                campaignLabel?.hide()
-            }
-
-            itemView.setOnClickListener {
-                listener.sendClickShowcase(dataShowcase, position)
-            }
-
-            buttonMenuMore?.setOnClickListener {
-                listener.sendClickShowcaseMenuMore(dataShowcase, position)
+            // set listener for showcase action button
+            showcaseActionButton?.apply {
+                // action button click listener
+                setOnClickListener {
+                    listener.sendClickShowcaseMenuMore(elementUiModel, adapterPosition)
+                }
             }
         }
-
     }
-
 }

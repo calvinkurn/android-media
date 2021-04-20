@@ -14,11 +14,13 @@ import com.tokopedia.loginphone.chooseaccount.domain.subscriber.LoginFacebookSub
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.sessioncommon.data.LoginToken
 import com.tokopedia.sessioncommon.data.LoginTokenPojo
+import com.tokopedia.sessioncommon.data.PopupError
 import com.tokopedia.sessioncommon.data.profile.ProfileInfo
 import com.tokopedia.sessioncommon.data.profile.ProfilePojo
 import com.tokopedia.sessioncommon.di.SessionModule
 import com.tokopedia.sessioncommon.domain.subscriber.GetProfileSubscriber
 import com.tokopedia.sessioncommon.domain.subscriber.LoginTokenSubscriber
+import com.tokopedia.sessioncommon.domain.usecase.GetAdminTypeUseCase
 import com.tokopedia.sessioncommon.domain.usecase.GetProfileUseCase
 import com.tokopedia.sessioncommon.domain.usecase.LoginTokenUseCase
 import com.tokopedia.usecase.coroutines.Fail
@@ -39,6 +41,7 @@ class ChooseAccountViewModel @Inject constructor(
         @param:Named(SessionModule.SESSION_MODULE) private val userSessionInterface: UserSessionInterface,
         private val loginTokenUseCase: LoginTokenUseCase,
         private val getProfileUseCase: GetProfileUseCase,
+        private val getAdminTypeUseCase: GetAdminTypeUseCase,
         private val rawQueries: Map<String, String>,
         dispatcher: CoroutineDispatcher
 ) : BaseViewModel(dispatcher) {
@@ -59,6 +62,10 @@ class ChooseAccountViewModel @Inject constructor(
     val getUserInfoResponse: LiveData<Result<ProfileInfo>>
         get() = mutableGetUserInfoResponse
 
+    private val mutableShowPopup = MutableLiveData<PopupError>()
+    val showPopup: LiveData<PopupError>
+        get() = mutableShowPopup
+
     private val mutableGoToActivationPage = MutableLiveData<MessageErrorException>()
     val goToActivationPage: LiveData<MessageErrorException>
         get() = mutableGoToActivationPage
@@ -66,6 +73,10 @@ class ChooseAccountViewModel @Inject constructor(
     private val mutableGoToSecurityQuestion = MutableLiveData<String>()
     val goToSecurityQuestion: LiveData<String>
         get() = mutableGoToSecurityQuestion
+
+    private val mutableShowAdminLocationPopUp = MutableLiveData<Result<Boolean>>()
+    val showAdminLocationPopUp: LiveData<Result<Boolean>>
+        get() = mutableShowAdminLocationPopUp
 
     fun loginTokenPhone(key: String, email: String, phoneNumber: String) {
         loginTokenUseCase.executeLoginPhoneNumber(LoginTokenUseCase.generateParamLoginPhone(
@@ -76,6 +87,7 @@ class ChooseAccountViewModel @Inject constructor(
                         userSessionInterface,
                         onSuccessLoginToken(),
                         onFailedLoginToken(),
+                        { showPopup().invoke(it.loginToken.popupError) },
                         onGoToActivationPage(),
                         onGoToSecurityQuestion(phoneNumber)
                 )
@@ -139,7 +151,18 @@ class ChooseAccountViewModel @Inject constructor(
     fun getUserInfo() {
         getProfileUseCase.execute(GetProfileSubscriber(userSessionInterface,
                 onSuccessGetUserInfo(),
-                onFailedGetUserInfo()))
+                onFailedGetUserInfo(),
+                getAdminTypeUseCase,
+                showLocationAdminPopUp(),
+                showGetAdminTypeError()))
+    }
+
+    private fun showLocationAdminPopUp(): (() -> Unit) = {
+        mutableShowAdminLocationPopUp.value = Success(true)
+    }
+
+    private fun showGetAdminTypeError(): ((e: Throwable) -> Unit) = {
+        mutableShowAdminLocationPopUp.value = Fail(it)
     }
 
     private fun onSuccessLoginToken(): (LoginTokenPojo) -> Unit {
@@ -211,6 +234,12 @@ class ChooseAccountViewModel @Inject constructor(
     private fun onFailedGetUserInfo(): (Throwable) -> Unit {
         return {
             mutableGetUserInfoResponse.value = Fail(it)
+        }
+    }
+
+    private fun showPopup(): (PopupError) -> Unit {
+        return {
+            mutableShowPopup.value = it
         }
     }
 

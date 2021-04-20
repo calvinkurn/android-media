@@ -1,11 +1,11 @@
 package com.tokopedia.review.feature.reviewdetail.domain
 
+import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.review.feature.reviewdetail.data.ProductFeedbackDetailResponse
-import com.tokopedia.review.feature.reviewdetail.util.GqlQueryDetail
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
@@ -20,6 +20,44 @@ class GetProductFeedbackDetailListUseCase @Inject constructor(
         private const val LIMIT = "limit"
         private const val PAGE = "page"
 
+        const val GET_PRODUCT_FEEDBACK_LIST_DETAIL_QUERY_CLASS_NAME = "FeedbackDetailList"
+        const val GET_PRODUCT_FEEDBACK_LIST_DETAIL_QUERY = """
+        query get_product_feedback_detail(${'$'}productID: Int!, ${'$'}sortBy: String!, ${'$'}filterBy: String!, ${'$'}limit: Int!, ${'$'}page: Int!) {
+            productrevFeedbackDataPerProduct(productID: ${'$'}productID, sortBy: ${'$'}sortBy, filterBy: ${'$'}filterBy, limit: ${'$'}limit, page: ${'$'}page) {
+                list {
+                    feedbackID
+                    rating
+                    reviewText
+                    reviewTime
+                    autoReply
+                    replyText
+                    replyTime
+                    attachments {
+                        thumbnailURL
+                        fullsizeURL
+                    }
+                    variantName
+                    reviewerName
+                    isKejarUlasan
+                }
+                topics {
+                    title
+                    count
+                    formatted
+                }
+                aggregatedRating {
+                    rating
+                    ratingCount
+                }
+                sortBy
+                filterBy
+                limit
+                page
+                hasNext
+                reviewCount
+            }
+        }
+        """
 
         @JvmStatic
         fun createParams(productID: Int, sortBy: String, filterBy: String, limit: Int, page: Int): Map<String, Any> =
@@ -32,8 +70,9 @@ class GetProductFeedbackDetailListUseCase @Inject constructor(
 
     var params = mapOf<String, Any>()
 
+    @GqlQuery(GET_PRODUCT_FEEDBACK_LIST_DETAIL_QUERY_CLASS_NAME, GET_PRODUCT_FEEDBACK_LIST_DETAIL_QUERY)
     override suspend fun executeOnBackground(): ProductFeedbackDetailResponse.ProductFeedbackDataPerProduct {
-        val gqlRequest = GraphqlRequest(GqlQueryDetail.GET_PRODUCT_FEEDBACK_LIST_DETAIL, ProductFeedbackDetailResponse::class.java, params)
+        val gqlRequest = GraphqlRequest(FeedbackDetailList.GQL_QUERY, ProductFeedbackDetailResponse::class.java, params)
         val gqlResponse = graphQlRepository.getReseponse(listOf(gqlRequest))
         val error = gqlResponse.getError(GraphqlError::class.java)
         if (error == null || error.isEmpty()) {

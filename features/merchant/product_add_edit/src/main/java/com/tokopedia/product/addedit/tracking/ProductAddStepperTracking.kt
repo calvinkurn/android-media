@@ -1,6 +1,7 @@
 package com.tokopedia.product.addedit.tracking
 
 import com.tokopedia.product.addedit.tracking.ProductAddEditTracking.sendAddProductClick
+import com.tokopedia.product.addedit.tracking.ProductAddEditTracking.sendAddProductImpression
 
 
 object ProductAddStepperTracking {
@@ -36,6 +37,10 @@ object ProductAddStepperTracking {
 
     fun trackDragPhoto(shopId: String) {
         sendAddProductClick(SCREEN, shopId, "click drag product image")
+    }
+
+    fun oopsConnectionPageScreen(userId: String, serverStatus: String, errorName: String) {
+        sendAddProductImpression(userId, "impression add product error", "server error - $serverStatus - $errorName")
     }
 
 }

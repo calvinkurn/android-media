@@ -164,9 +164,13 @@ class OnboardingActivity : BaseSimpleActivity(), HasComponent<OnboardingComponen
     }
 
     private fun fetchAbTesting() {
-        RemoteConfigInstance.getInstance().abTestPlatform.fetch(object : RemoteConfig.Listener{
-            override fun onComplete(remoteConfig: RemoteConfig?) {}
-            override fun onError(e: Exception?) {}
-        })
+        try {
+            RemoteConfigInstance.getInstance().abTestPlatform.fetch(object : RemoteConfig.Listener{
+                override fun onComplete(remoteConfig: RemoteConfig?) {}
+                override fun onError(e: Exception?) {}
+            })
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 }

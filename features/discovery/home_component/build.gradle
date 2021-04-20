@@ -4,14 +4,14 @@ apply plugin: 'io.hansel.preprocessor.module'
 apply plugin: 'androidx.benchmark'
 
 repositories {
-    maven { url 'https://hansel.io/maven' }
+    maven { url 'https://maven-hansel.tokopedia.com/maven' }
     mavenCentral()
 }
 
 buildscript {
     repositories {
         mavenCentral()
-        maven { url 'https://hansel.io/maven' }
+        maven { url 'https://maven-hansel.tokopedia.com/maven' }
     }
     dependencies {
         classpath rootProject.ext.miscDependencies.hansel
@@ -38,17 +38,16 @@ android {
 }
 
 dependencies {
+    implementation project(rootProject.ext.features.medialoader)
     implementation project(rootProject.ext.features.topAdsSdk)
     implementation project(rootProject.ext.libraries.baseList)
     // Unify
     implementation rootProject.ext.unifyDependencies.components
+    implementation rootProject.ext.unifyDependencies.icons
     implementation rootProject.ext.unifyDependencies.global_error
     implementation rootProject.ext.unifyDependencies.principles
 
-    implementation project(rootProject.ext.libraries.tkpddesign)
-
     implementation rootProject.ext.supportLibDependencies.constraintLayout
-
     implementation project(rootProject.ext.libraries.kotlinExtensions)
 
     implementation project(rootProject.ext.features.resourcesCommon)
@@ -57,6 +56,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.traceroute)
     implementation project(rootProject.ext.libraries.remoteConfig)
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
+    implementation project(rootProject.ext.libraries.logger)
 
     implementation rootProject.ext.networkDependencies.glide
     implementation project(rootProject.ext.features.productCard)
@@ -78,5 +78,6 @@ dependencies {
     androidTestImplementation rootProject.ext.testDependencies.testCoreKtx
     androidTestImplementation rootProject.ext.playServicesDependencies.analytics
     androidTestImplementation rootProject.ext.firebase.core
-    androidTestImplementation project(rootProject.ext.libraries.analyticsDebugger)
+
+    implementation project(rootProject.ext.libraries.circularViewPager)
 }

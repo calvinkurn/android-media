@@ -1,31 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:paddingRight="@dimen/dp_8"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_marginEnd="@dimen/dp_8"
+    android:id="@+id/chip_container_domain_suggestion"
+    android:background="@drawable/unify_chip_normal_small"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    tools:ignore="RtlSymmetry">
 
-    <LinearLayout
-        android:id="@+id/chip_container_domain_suggestion"
-        android:orientation="vertical"
-        android:background="@drawable/unify_chip_normal_small"
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/chip_textview"
+        android:background="@drawable/unify_chips_bg_img_rounded_corner"
+        android:textSize="@dimen/sp_14"
+        android:gravity="center"
+        android:layout_marginTop="@dimen/dp_6"
+        android:layout_marginBottom="@dimen/dp_6"
+        android:layout_marginRight="@dimen/dp_12"
+        android:layout_marginLeft="@dimen/dp_12"
+        android:textColor="@color/Unify_N200"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
-
-        <TextView
-            android:id="@+id/chip_textview"
-            android:background="@drawable/unify_chips_bg_img_rounded_corner"
-            android:textSize="@dimen/sp_14"
-            android:layout_marginTop="@dimen/dp_6"
-            android:layout_marginBottom="@dimen/dp_6"
-            android:layout_marginRight="@dimen/dp_12"
-            android:layout_marginLeft="@dimen/dp_12"
-            android:text="Test chips"
-            android:textColor="@color/grey_500"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-
-    </LinearLayout>
+        android:layout_height="wrap_content" />
 
 </LinearLayout>

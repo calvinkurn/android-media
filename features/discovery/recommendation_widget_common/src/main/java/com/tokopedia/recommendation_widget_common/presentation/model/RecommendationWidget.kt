@@ -1,6 +1,8 @@
 package com.tokopedia.recommendation_widget_common.presentation.model
 
-open class RecommendationWidget(
+import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChipsEntity
+
+data class RecommendationWidget(
         val recommendationItemList: List<RecommendationItem> = listOf(),
         val title: String = "",
         val foreignTitle: String = "",
@@ -13,5 +15,6 @@ open class RecommendationWidget(
         val nextPage: Int = 0,
         val prevPage: Int = 0,
         val hasNext: Boolean = false,
-        val pageName: String = "") {
-}
+        val pageName: String = "",
+        val recommendationFilterChips: List<RecommendationFilterChipsEntity.RecommendationFilterChip> = listOf()
+)

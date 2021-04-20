@@ -16,9 +16,10 @@
     <string name="logistic_promo_serviceid_mismatch_message">Tidak tersedia kurir untuk promo tersebut</string>
     <string name="order_prioritas">Tersedia Layanan Order Prioritas</string>
     <string name="title_term_and_condition">Syarat dan Ketentuan</string>
-    <string name="cod_brand_tag">Bayar di Tempat</string>
     <string name="duration_header_ticker">Perkiraan tiba dihitung sejak pesanan dikirim</string>
     <string name="label_hardcoded_courier_ticker_logistic">Pembelian di atas 14:00 WIB berpotensi dikirim besok</string>
+    <string name="label_hardcoded_courier_ticker_instant">Barang tiba maks. 3 jam sejak penjual menyerahkan ke kurir</string>
+    <string name="label_hardcoded_courier_ticker_same_day">Barang tiba maks. 8 jam sejak penjual menyerahkan ke kurir</string>
     <string name="title_shipment_courier_bottomsheet_occ">Pilih Kurir</string>
     <string name="label_shipping_information">Pembelian di atas 14:00 WIB berpotensi dikirim besok.</string>
     <string name="tersedia_bayar_di_tempat">Tersedia Bayar di tempat</string>
@@ -28,7 +29,12 @@
     <string name="tv_error">Jarak melebihi batas maksimum kurir</string>
     <string name="tv_text_desc">(Direkomendasikan untuk berat di atas 5kg)</string>
     <string name="tv_duration">4 Jam</string>
+    <string name="tv_mvc_text">Promo yang dipakai</string>
     <string name="content_img_check">image check</string>
     <string name="content_desc_tv_duration">text durasi</string>
     <string name="content_desc_tv_courier">text kurir</string>
+    <string name="estimasi_tidak_tersedia">Estimasi tidak tersedia</string>
+    <string name="bracket_container">(%1$s)</string>
+    <string name="content_description_img_logo_rates_promo_prefix">image %1$s</string>
+    <string name="message_error_shipping_general">Terjadi kesalahan</string>
 </resources>

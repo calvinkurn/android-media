@@ -21,7 +21,7 @@
             android:layout_marginTop="@dimen/layout_lvl2"
             android:layout_marginEnd="@dimen/layout_lvl2"
             android:layout_marginRight="@dimen/layout_lvl2"
-            android:textColor="@color/Neutral_N700_96"
+            android:textColor="@color/Unify_N700_96"
             app:typographyType="heading_2"
             tools:text="Travel Activity" />
 
@@ -34,7 +34,7 @@
             android:layout_marginTop="@dimen/travel_homepage_dp_4"
             android:layout_marginEnd="@dimen/layout_lvl2"
             android:layout_marginRight="@dimen/layout_lvl2"
-            android:textColor="@color/Neutral_N700_96"
+            android:textColor="@color/Unify_N700_96"
             app:typographyType="body_2"
             tools:text="Akhir pekan? Waktunya makan-makan!" />
 

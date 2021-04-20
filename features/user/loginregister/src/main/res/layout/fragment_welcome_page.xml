@@ -4,7 +4,7 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white">
+    android:background="@color/Unify_N0">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -37,7 +37,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textSize="@dimen/sp_16"
-                    android:textColor="@color/black_70"
+                    android:textColor="@color/Unify_N700_68"
                     android:text="@string/title_welcome"
                     android:layout_gravity="center"
                     android:gravity="center"
@@ -48,7 +48,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textSize="@dimen/sp_14"
-                    android:textColor="@color/black_54"
+                    android:textColor="@color/Unify_N700_44"
                     android:text="@string/sub_title_welcome"
                     android:layout_gravity="center"
                     android:lineSpacingExtra="@dimen/dp_3"
@@ -61,7 +61,7 @@
                     android:layout_height="@dimen/dp_48"
                     android:textSize="@dimen/sp_14"
                     android:background="@drawable/bg_button_enable"
-                    android:textColor="@color/white"
+                    android:textColor="@color/Unify_N0"
                     android:textAllCaps="false"
                     android:text="@string/welcome_button_continue"
                     android:gravity="center"
@@ -71,7 +71,7 @@
                     android:id="@+id/btn_profile_completion"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/tkpd_main_green"
+                    android:textColor="@color/Unify_G400"
                     android:layout_gravity="center"
                     android:gravity="center"
                     android:textSize="@dimen/sp_14"

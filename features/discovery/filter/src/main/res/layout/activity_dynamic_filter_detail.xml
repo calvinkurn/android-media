@@ -21,19 +21,19 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="@dimen/dynamic_filter_item_padding"
-                android:background="@color/grey_200">
+                android:background="@color/Unify_N50">
 
                 <com.tokopedia.design.component.EditTextCompat
                     android:id="@+id/filter_detail_search"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     style="@style/TextView.Small"
-                    android:textColorHint="@color/font_black_disabled_38"
+                    android:textColorHint="@color/Unify_N700_32"
                     android:paddingTop="@dimen/filter_detail_search_padding_top_bottom"
                     android:paddingBottom="@dimen/filter_detail_search_padding_top_bottom"
                     android:paddingStart="@dimen/filter_detail_search_padding_side"
                     android:paddingEnd="@dimen/filter_detail_search_padding_side"
-                    android:background="@color/white"
+                    android:background="@color/Unify_N0"
                     app:drawableLeftCompat="@drawable/ic_search_icon"
                     android:drawablePadding="16dp"
                     android:maxLines="1"
@@ -78,7 +78,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/dynamic_filter_apply_button_height"
             android:gravity="center"
-            android:background="@color/medium_green"
+            android:background="@color/Unify_G400"
             style="@style/TextView.Small.WhitePrimary"
             android:text="@string/dynamic_filter_apply_button_text"/>
 
@@ -89,7 +89,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="gone"
-        android:background="@color/vpi__background_holo_light">
+        android:background="@color/Unify_N50">
 
         <ProgressBar android:layout_width="wrap_content"
             android:layout_height="wrap_content"

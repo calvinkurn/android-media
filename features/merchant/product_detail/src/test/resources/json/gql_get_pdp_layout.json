@@ -288,11 +288,6 @@
             "type": "social_proof_mini"
           },
           {
-            "data": [],
-            "name": "shop_info_mini",
-            "type": "shop_info_mini"
-          },
-          {
             "data": [
               {
                 "children": [
@@ -531,16 +526,6 @@
           },
           {
             "data": [],
-            "name": "social_proof",
-            "type": "social_proof"
-          },
-          {
-            "data": [],
-            "name": "value_prop",
-            "type": "value_prop"
-          },
-          {
-            "data": [],
             "name": "separator",
             "type": "separator"
           },
@@ -708,11 +693,6 @@
           },
           {
             "data": [],
-            "name": "shop_info",
-            "type": "shop_info"
-          },
-          {
-            "data": [],
             "name": "separator",
             "type": "separator"
           },
@@ -720,11 +700,6 @@
             "data": [],
             "name": "pdp_2",
             "type": "product_list"
-          },
-          {
-            "data": [],
-            "name": "most_helpful_review",
-            "type": "most_helpful_review"
           },
           {
             "data": [],
@@ -749,6 +724,14 @@
             "data": [],
             "name": "byme",
             "type": "info"
+          },{
+            "data": [],
+            "name": "report",
+            "type": "report"
+          },{
+            "data": [],
+            "name": "shipment",
+            "type": "shipment"
           }
         ],
         "name": "Default Layout",

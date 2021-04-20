@@ -21,7 +21,6 @@ class FilterOpenRangeViewHolder(view: View, val onSelectedFilterChangedListener:
 
     override fun bind(filter: FilterV2) {
         filterName = filter.name
-        onSelectedFilterChangedListener.onSelectedFilterChanged(filterName, filter.optionSelected)
 
         if (filter.options.isEmpty()) filter.options = listOf(MIN_PRICE, MAX_PRICE)
         initialMaxPrice = filter.options.lastOrNull().toIntOrZero()
@@ -46,11 +45,6 @@ class FilterOpenRangeViewHolder(view: View, val onSelectedFilterChangedListener:
                 }
             }
         }
-    }
-
-    override fun resetSelection() {
-        onSelectedFilterChangedListener.onSelectedFilterChanged(filterName)
-        itemView.hotel_filter_open_range_slider.initView(0, initialMaxPrice, initialMaxPrice)
     }
 
     companion object {

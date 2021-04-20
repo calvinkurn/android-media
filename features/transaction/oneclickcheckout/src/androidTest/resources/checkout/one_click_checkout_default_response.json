@@ -39,6 +39,13 @@
               "method": "POST",
               "form": "transaction_id=123"
             }
+          },
+          "prompt": {
+            "type": "",
+            "title": "",
+            "description": "",
+            "image_url": "",
+            "buttons": []
           }
         },
         "status": "OK"

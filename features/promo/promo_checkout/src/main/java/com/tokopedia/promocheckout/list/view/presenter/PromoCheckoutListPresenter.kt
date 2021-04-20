@@ -10,9 +10,10 @@ import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.promocheckout.R
 import com.tokopedia.promocheckout.list.model.listcoupon.DataPromoCheckoutList
 import com.tokopedia.promocheckout.list.model.listlastseen.PromoCheckoutLastSeenModel
+import com.tokopedia.promocheckout.util.PromoCheckoutQuery
 import com.tokopedia.usecase.RequestParams
 import rx.Subscriber
-import java.util.HashMap
+import java.util.*
 import kotlin.collections.ArrayList
 
 class PromoCheckoutListPresenter(private val graphqlUseCase: GraphqlUseCase,
@@ -22,8 +23,7 @@ class PromoCheckoutListPresenter(private val graphqlUseCase: GraphqlUseCase,
     override fun getListPromo(serviceId: String, categoryId: Int, page: Int, resources: Resources) {
         val variables = HashMap<String, Any>()
         variables.put(INPUT_GQL, generateInputList(page, serviceId, categoryId))
-        val graphqlRequest = GraphqlRequest(GraphqlHelper.loadRawString(resources,
-                R.raw.promo_checkout_list), DataPromoCheckoutList::class.java, variables, false)
+        val graphqlRequest = GraphqlRequest(PromoCheckoutQuery.promoCheckoutList(), DataPromoCheckoutList::class.java, variables, false)
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(graphqlRequest)
         graphqlUseCase.execute(RequestParams.create(), object : Subscriber<GraphqlResponse>() {
@@ -62,8 +62,7 @@ class PromoCheckoutListPresenter(private val graphqlUseCase: GraphqlUseCase,
     override fun getListLastSeen(categoryIDs: List<Int>, resources: Resources) {
         val variables = HashMap<String, Any>()
         variables.put(CATEGORY_IDS, categoryIDs)
-        val graphqlRequest = GraphqlRequest(GraphqlHelper.loadRawString(resources,
-                R.raw.promo_checkout_last_seen), PromoCheckoutLastSeenModel.Response::class.java, variables, false)
+        val graphqlRequest = GraphqlRequest(PromoCheckoutQuery.promoCheckoutLastSeen(), PromoCheckoutLastSeenModel.Response::class.java, variables, false)
         lastSeenPromoUseCase.clearRequest()
         lastSeenPromoUseCase.addRequest(graphqlRequest)
         lastSeenPromoUseCase.execute(RequestParams.create(), object : Subscriber<GraphqlResponse>() {
@@ -79,7 +78,8 @@ class PromoCheckoutListPresenter(private val graphqlUseCase: GraphqlUseCase,
 
             override fun onNext(objects: GraphqlResponse) {
                 val lastSeenPromoData = objects.getData<PromoCheckoutLastSeenModel.Response>(PromoCheckoutLastSeenModel.Response::class.java)
-                view.renderListLastSeen(lastSeenPromoData.promoModels)
+                val promos = lastSeenPromoData.promoModels.filter { it.promoCode.isNotEmpty() && it.title.isNotEmpty() }
+                view.renderListLastSeen(promos, false)
             }
         })
     }
@@ -100,6 +100,6 @@ class PromoCheckoutListPresenter(private val graphqlUseCase: GraphqlUseCase,
         private val PAGE = "page"
         private val LIMIT = "limit"
         private val INCLUDE_EXTRA_INFO = "includeExtraInfo"
-        private val API_VERSION_VALUE= "2.0.0"
+        private val API_VERSION_VALUE = "2.0.0"
     }
 }

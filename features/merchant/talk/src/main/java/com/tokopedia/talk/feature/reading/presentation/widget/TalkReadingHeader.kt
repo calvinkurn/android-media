@@ -8,7 +8,7 @@ import com.tokopedia.sortfilter.SortFilter.Companion.RELATIONSHIP_AND
 import com.tokopedia.sortfilter.SortFilter.Companion.TYPE_QUICK
 import com.tokopedia.talk.feature.reading.data.mapper.TalkReadingMapper.SORT_LATEST
 import com.tokopedia.talk.feature.reading.presentation.adapter.uimodel.TalkReadingHeaderModel
-import com.tokopedia.talk_old.R
+import com.tokopedia.talk.R
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.ChipsUnify
 import kotlinx.android.synthetic.main.widget_talk_reading_header.view.*
@@ -37,12 +37,12 @@ class TalkReadingHeader : BaseCustomView {
     }
 
     fun updateSelectedSort(chipText: String) {
-        val sortChip = this.readingHeaderChips.chipItems.first()
+        val sortChip = this.readingHeaderChips.chipItems?.first()
         if(chipText != SORT_LATEST) {
-            sortChip.type = ChipsUnify.TYPE_SELECTED
-            sortChip.selectedItem = arrayListOf(chipText)
+            sortChip?.type = ChipsUnify.TYPE_SELECTED
+            sortChip?.selectedItem = arrayListOf(chipText)
         } else {
-            sortChip.type = ChipsUnify.TYPE_NORMAL
+            sortChip?.type = ChipsUnify.TYPE_NORMAL
         }
     }
 
@@ -54,7 +54,7 @@ class TalkReadingHeader : BaseCustomView {
         this.readingHeaderChips.apply {
             sortFilterItems.removeAllViews()
             addItem(talkReadingHeaderModel.categories)
-            chipItems.first().refChipUnify.setChevronClickListener {
+            chipItems?.first()?.refChipUnify?.setChevronClickListener {
                 showBottomSheet()
             }
             filterRelationship = RELATIONSHIP_AND

@@ -7,13 +7,13 @@ import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.flight.detail.view.model.SimpleModel
-import com.tokopedia.flight.orderlist.data.cloud.entity.CancellationTitleContentEntity
-import com.tokopedia.flight.orderlist.data.cloud.entity.KeyValueEntity
+import com.tokopedia.flight.orderdetail.data.OrderDetailCancellation
 
 /**
  * @author by furqan on 02/09/2019
  */
-class FlightCancellationRefundDetailMiddleAdapter(var items: MutableList<CancellationTitleContentEntity>) : RecyclerView.Adapter<FlightCancellationRefundDetailMiddleAdapter.CancellationRefundDetailMiddleViewHolder>() {
+class FlightCancellationRefundDetailMiddleAdapter(var items: List<OrderDetailCancellation.OrderDetailRefundTitleContent>)
+    : RecyclerView.Adapter<FlightCancellationRefundDetailMiddleAdapter.CancellationRefundDetailMiddleViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CancellationRefundDetailMiddleViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(com.tokopedia.flight.R.layout.item_flight_cancellation_refund_detail_middle, parent, false)
@@ -34,7 +34,7 @@ class FlightCancellationRefundDetailMiddleAdapter(var items: MutableList<Cancell
         private val title: TextView = itemView.findViewById(com.tokopedia.flight.R.id.tv_title)
         private val rvItems: RecyclerView = itemView.findViewById(com.tokopedia.flight.R.id.rv_item)
 
-        fun bindData(info: CancellationTitleContentEntity) {
+        fun bindData(info: OrderDetailCancellation.OrderDetailRefundTitleContent) {
             title.text = info.title
 
             val refundMiddleAdapter = FlightCancellationRefundBottomAdapter(FlightCancellationRefundBottomAdapter.TYPE_NORMAL)
@@ -43,7 +43,7 @@ class FlightCancellationRefundDetailMiddleAdapter(var items: MutableList<Cancell
             rvItems.adapter = refundMiddleAdapter
         }
 
-        private fun generateSimpleViewModel(items: List<KeyValueEntity>): List<SimpleModel> {
+        private fun generateSimpleViewModel(items: List<OrderDetailCancellation.OrderDetailRefundKeyValue>): List<SimpleModel> {
             val datas = arrayListOf<SimpleModel>()
 
             for (item in items) {

@@ -40,7 +40,6 @@ public class TalkNotificationFactory extends BaseNotificationFactory {
             if (isAllowVibrate()) builder.setVibrate(getVibratePattern());
         }
 
-
         return builder.build();
     }
 }

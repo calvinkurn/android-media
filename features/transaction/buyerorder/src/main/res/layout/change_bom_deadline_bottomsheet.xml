@@ -29,7 +29,7 @@
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="@dimen/dp_32"
             android:text="@string/tkpdtransaction_filter_title"
-            android:textColor="@color/clr_f531353b"
+            android:textColor="@color/Unify_N700_96"
             android:textSize="@dimen/sp_18"
             android:textStyle="bold" />
 
@@ -42,7 +42,7 @@
             android:layout_gravity="right"
             android:layout_marginRight="@dimen/dp_16"
             android:text="@string/reset"
-            android:textColor="@color/tkpd_main_green"
+            android:textColor="@color/Unify_G400"
             android:textSize="@dimen/sp_14"
             android:textStyle="bold" />
 
@@ -67,7 +67,7 @@
             android:layoutDirection="rtl"
             android:text="@string/tkpdtransaction_filter_90_days"
             android:textAlignment="textStart"
-            android:textColor="@color/clr_f531353b"
+            android:textColor="@color/Unify_N700_96"
             android:textSize="@dimen/sp_14"
             android:textStyle="bold" />
 
@@ -76,7 +76,7 @@
             android:layout_height="@dimen/dp_1"
             android:layout_marginLeft="@dimen/dp_24"
             android:layout_marginTop="@dimen/dp_16"
-            android:background="@color/grey_300" />
+            android:background="@color/Unify_N100" />
 
         <com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
             android:id="@+id/radio2"
@@ -89,7 +89,7 @@
             android:layoutDirection="rtl"
             android:text="@string/tkpdtransaction_filter_custom_date"
             android:textAlignment="textStart"
-            android:textColor="@color/clr_f531353b"
+            android:textColor="@color/Unify_N700_96"
             android:textSize="@dimen/sp_14"
             android:textStyle="bold" />
     </RadioGroup>
@@ -118,7 +118,7 @@
                 android:layout_marginStart="@dimen/dp_16"
                 android:layout_marginLeft="@dimen/dp_16"
                 android:hint="@string/tkpdtransaction_filter_mulai"
-                android:textColorHint="@color/Neutral_N700_68">
+                android:textColorHint="@color/Unify_N700_68">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/et_start_date"
@@ -131,7 +131,7 @@
                     android:scrollbarStyle="insideInset"
                     android:scrollbars="vertical"
                     android:text="18 Des 2018"
-                    android:textColor="@color/Neutral_N700_96"
+                    android:textColor="@color/Unify_N700_96"
                     android:textSize="@dimen/sp_14" />
 
             </com.google.android.material.textfield.TextInputLayout>
@@ -155,7 +155,7 @@
                 android:layout_marginStart="@dimen/dp_24"
                 android:layout_marginLeft="@dimen/dp_24"
                 android:hint="@string/tkpdtransaction_filter_sampai"
-                android:textColorHint="@color/Neutral_N700_68">
+                android:textColorHint="@color/Unify_N700_68">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/et_end_date"
@@ -168,7 +168,7 @@
                     android:scrollbarStyle="insideInset"
                     android:scrollbars="vertical"
                     android:text="18 Des 2018"
-                    android:textColor="@color/Neutral_N700_96"
+                    android:textColor="@color/Unify_N700_96"
                     android:textSize="@dimen/sp_14" />
 
             </com.google.android.material.textfield.TextInputLayout>

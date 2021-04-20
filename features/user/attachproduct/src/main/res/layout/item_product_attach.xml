@@ -17,30 +17,31 @@
         android:layout_alignParentStart="true"
         android:layout_centerVertical="true"
         android:layout_gravity="center_vertical"
-        android:layout_marginLeft="8dp"
-        android:layout_marginStart="8dp"
+        android:layout_marginLeft="@dimen/spacing_lvl3"
+        android:layout_marginStart="@dimen/spacing_lvl3"
         android:theme="@style/checkBoxStyle"/>
 
-    <com.tokopedia.design.image.SquareImageView
+    <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/attach_product_item_image"
-        android:layout_width="54dp"
-        android:layout_height="54dp"
+        android:layout_width="@dimen/attachproduct_54dp"
+        android:layout_height="@dimen/attachproduct_54dp"
         android:layout_centerVertical="true"
-        android:layout_marginLeft="6dp"
-        android:layout_marginStart="6dp"
+        android:layout_marginLeft="@dimen/attachproduct_6dp"
+        android:layout_marginStart="@dimen/attachproduct_6dp"
         android:layout_toRightOf="@id/attach_product_item_checkbox"
         android:adjustViewBounds="true"
         android:gravity="center"
-        app:srcCompat="@drawable/ic_loading_toped"/>
+        app:srcCompat="@drawable/ic_loading_toped"
+        app:unify_image_type="rect"/>
 
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:layout_marginEnd="16dp"
-        android:layout_marginLeft="14dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginStart="14dp"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:layout_marginLeft="@dimen/attachproduct_14dp"
+        android:layout_marginRight="@dimen/spacing_lvl4"
+        android:layout_marginStart="@dimen/attachproduct_14dp"
         android:layout_toEndOf="@id/attach_product_item_image"
         android:layout_toRightOf="@id/attach_product_item_image">
 
@@ -51,11 +52,13 @@
             android:layout_height="wrap_content"
             android:maxLines="2"
             android:text="@string/string_attach_product_name_field"
-            android:textColor="@color/black_70"/>
+            android:textColor="@color/Unify_N700_68"/>
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/attach_product_item_price"
-            style="@style/TextView.Small.OrangeRed.Bold"
+            app:typographyType="body_2"
+            app:typographyWeight="bold"
+            android:textColor="@color/Unify_Y500"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/attach_product_item_name"

@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/layout_lvl2"
         android:layout_marginRight="@dimen/layout_lvl2"
-        android:textColor="@color/Neutral_N700_96"
+        android:textColor="@color/Unify_N700_96"
         app:typographyType="heading_4"
         tools:text="Detail Refund"
         android:layout_marginTop="@dimen/hotel_20dp" />
@@ -37,7 +37,7 @@
         android:layout_marginTop="@dimen/layout_lvl2"
         android:layout_marginEnd="@dimen/layout_lvl2"
         android:orientation="vertical"
-        tools:background="@color/Neutral_N700_96"
+        tools:background="@color/Unify_N700_96"
         tools:layout_height="@dimen/layout_lvl2" />
 
     <View
@@ -55,7 +55,7 @@
         android:layout_marginTop="@dimen/layout_lvl2"
         android:layout_marginEnd="@dimen/layout_lvl2"
         android:orientation="vertical"
-        tools:background="@color/Neutral_N700_96"
+        tools:background="@color/Unify_N700_96"
         tools:layout_height="@dimen/layout_lvl2" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -65,7 +65,7 @@
         android:layout_marginLeft="@dimen/layout_lvl2"
         android:layout_marginTop="@dimen/layout_lvl1"
         android:layout_marginRight="@dimen/layout_lvl2"
-        android:textColor="@color/Neutral_N700_68"
+        android:textColor="@color/Unify_N700_68"
         app:typographyType="body_3"
         tools:text="Refund tidak tersedia untuk pesanan ini" />
 </LinearLayout>

@@ -5,7 +5,7 @@ apply plugin: 'io.hansel.preprocessor.module'
 buildscript {
     repositories {
         mavenCentral()
-        maven { url 'https://hansel.io/maven' }
+        maven { url 'https://maven-hansel.tokopedia.com/maven' }
         jcenter()
         google()
     }
@@ -25,9 +25,10 @@ dependencies {
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.charts)
 
-    implementation rootProject.ext.unifyDependencies.icon
+    implementation rootProject.ext.unifyDependencies.icons
     implementation rootProject.ext.unifyDependencies.banner
     implementation rootProject.ext.unifyDependencies.components
+    implementation rootProject.ext.unifyDependencies.icons
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.global_error
 
@@ -47,7 +48,7 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.platformEngine
     testImplementation rootProject.ext.testDependencies.junitJupiterApi
     testImplementation rootProject.ext.testDependencies.junitPlatformRunner
-    testImplementation rootProject.ext.testDependencies.couroutinesTest
+    testImplementation project(rootProject.ext.libraries.unitTest)
 }
 
 project.ext {

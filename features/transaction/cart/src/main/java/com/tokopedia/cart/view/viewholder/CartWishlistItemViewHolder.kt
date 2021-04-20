@@ -1,88 +1,123 @@
 package com.tokopedia.cart.view.viewholder
 
-import android.text.TextUtils
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.cart.R
+import com.tokopedia.cart.databinding.ItemProductWishlistBinding
 import com.tokopedia.cart.view.ActionListener
 import com.tokopedia.cart.view.uimodel.CartWishlistItemHolderData
-import kotlinx.android.synthetic.main.item_product_cart_additional.view.*
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.loadImage
+import com.tokopedia.kotlin.extensions.view.setMargin
+import com.tokopedia.kotlin.extensions.view.show
 
 /**
  * Created by Irfan Khoirul on 2019-06-15.
  */
 
-class CartWishlistItemViewHolder(val view: View, val actionListener: ActionListener?, val itemWidth: Int) : RecyclerView.ViewHolder(view) {
+class CartWishlistItemViewHolder(private val binding: ItemProductWishlistBinding, val actionListener: ActionListener?, val itemWidth: Int) : RecyclerView.ViewHolder(binding.root) {
 
     companion object {
-        val LAYOUT = R.layout.item_product_cart_additional
+        val LAYOUT = R.layout.item_product_wishlist
     }
 
     fun bind(element: CartWishlistItemHolderData) {
-        if (element.isWishlist) {
-            itemView.img_wishlist.setImageResource(R.drawable.ic_wishlist_checkout_on)
-        } else {
-            itemView.img_wishlist.setImageResource(R.drawable.ic_wishlist_checkout_off)
-        }
-
-        itemView.tv_product_name.text = element.name
-        itemView.tv_product_price.text = element.price
-        itemView.tv_shop_location.text = element.shopLocation
-
-        if (element.rating > 0) {
-            itemView.img_rating.setImageResource(getRatingImageResource(element.rating))
-            itemView.tv_review_count.text = "(${element.reviewCount})"
-            itemView.img_rating.visibility = View.VISIBLE
-            itemView.tv_review_count.visibility = View.VISIBLE
-        } else {
-            itemView.img_rating.visibility = View.INVISIBLE
-            itemView.tv_review_count.visibility = View.INVISIBLE
-        }
-
-        if (!TextUtils.isEmpty(element.badgeUrl)) {
-            ImageHandler.loadImage(itemView.context, itemView.img_badge,
-                    element.badgeUrl, R.drawable.loading_page
-            )
-            itemView.img_badge.visibility = View.VISIBLE
-            itemView.tv_badge_dot_separator.visibility = View.VISIBLE
-        } else {
-            itemView.img_badge.visibility = View.GONE
-            itemView.tv_badge_dot_separator.visibility = View.GONE
-        }
-
-        ImageHandler.loadImage(itemView.context, itemView.img_product,
-                element.imageUrl, R.drawable.loading_page
-        )
-
-        itemView.img_product.layoutParams.width = itemWidth
-        itemView.img_product.requestLayout()
-
-        itemView.img_wishlist.setOnClickListener {
-            if (element.isWishlist) {
-                actionListener?.onRemoveWishlistFromWishlist(element.id)
-            } else {
-                actionListener?.onAddWishlistToWishlist(element.id)
-            }
-        }
-
-        itemView.tv_atc.setOnClickListener {
-            actionListener?.onButtonAddToCartClicked(element)
-        }
-
         itemView.setOnClickListener {
             actionListener?.onWishlistProductClicked(element.id)
         }
+
+        renderProductImage(element)
+        renderProductName(element)
+        renderProductVariant(element)
+        renderProductPrice(element)
+        renderShopBadge(element)
+        renderShopName(element)
+        renderFreeShipping(element)
+        renderButtonDelete(element)
+        renderButtonAddToCart(element)
     }
 
-    private fun getRatingImageResource(rating: Int): Int {
-        when (rating) {
-            1 -> return R.drawable.ic_star_one
-            2 -> return R.drawable.ic_star_two
-            3 -> return R.drawable.ic_star_three
-            4 -> return R.drawable.ic_star_four
-            5 -> return R.drawable.ic_star_five
-            else -> return 0
+    private fun renderButtonAddToCart(element: CartWishlistItemHolderData) {
+        binding.btnAddToCart.apply {
+            setOnClickListener {
+                actionListener?.onButtonAddToCartClicked(element)
+            }
         }
     }
+
+    private fun renderButtonDelete(element: CartWishlistItemHolderData) {
+        binding.btnDeleteWishlist.apply {
+            setOnClickListener {
+                actionListener?.onRemoveWishlistFromWishlist(element.id)
+            }
+        }
+    }
+
+    private fun renderFreeShipping(element: CartWishlistItemHolderData) {
+        binding.imgFreeShipping.apply {
+            if (element.freeShippingUrl.isNotBlank()) {
+                loadImage(element.freeShippingUrl)
+                show()
+            } else {
+                gone()
+            }
+        }
+    }
+
+    private fun renderShopName(element: CartWishlistItemHolderData) {
+        binding.textShopName.apply {
+            text = element.shopName
+            val marginFour = itemView.context.resources.getDimension(R.dimen.dp_4).toInt()
+            val marginNine = itemView.context.resources.getDimension(R.dimen.dp_9).toInt()
+            if (binding.imgShopBadge.visibility == View.VISIBLE) {
+                setMargin(marginFour, marginFour, 0, 0)
+            } else {
+                setMargin(marginNine, marginFour, 0, 0)
+            }
+        }
+    }
+
+    private fun renderShopBadge(element: CartWishlistItemHolderData) {
+        binding.imgShopBadge.apply {
+            if (element.badgeUrl.isNotBlank()) {
+                loadImage(element.badgeUrl)
+                show()
+            } else {
+                gone()
+            }
+        }
+    }
+
+    private fun renderProductPrice(element: CartWishlistItemHolderData) {
+        binding.textProductPrice.apply {
+            text = element.price
+        }
+    }
+
+    private fun renderProductVariant(element: CartWishlistItemHolderData) {
+        binding.textProductVariant.apply {
+            if (element.variant.isNotBlank()) {
+                text = element.variant
+                show()
+            } else {
+                gone()
+            }
+        }
+    }
+
+    private fun renderProductName(element: CartWishlistItemHolderData) {
+        binding.textProductName.apply {
+            text = element.name
+        }
+    }
+
+    private fun renderProductImage(element: CartWishlistItemHolderData) {
+        binding.imgProduct.apply {
+            if (element.imageUrl.isNotBlank()) {
+                loadImage(element.imageUrl)
+                show()
+            }
+        }
+    }
+
 }

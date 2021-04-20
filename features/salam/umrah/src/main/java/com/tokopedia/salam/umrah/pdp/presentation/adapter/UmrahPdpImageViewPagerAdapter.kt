@@ -36,7 +36,7 @@ class UmrahPdpImageViewPagerAdapter : PagerAdapter() {
     }
 
     private fun bind(imageUrl: String, view: View) {
-        view.image_banner.loadImage(imageUrl, com.tokopedia.design.R.drawable.ic_loading_image)
+        view.image_banner.loadImage(imageUrl, R.drawable.umrah_loading_image)
     }
 
     override fun destroyItem(container: View, position: Int, `object`: Any) {

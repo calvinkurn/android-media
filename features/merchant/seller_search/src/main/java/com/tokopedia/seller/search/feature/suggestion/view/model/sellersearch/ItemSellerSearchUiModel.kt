@@ -1,12 +1,12 @@
 package com.tokopedia.seller.search.feature.suggestion.view.model.sellersearch
 
-data class ItemSellerSearchUiModel(
-        val id: String? = "",
-        val title: String? = "",
-        val desc: String? = "",
-        val imageUrl: String? = "",
-        val appUrl: String? = "",
-        val url: String? = "",
-        val keyword: String? = "",
-        val section: String? = ""
-)
+abstract class ItemSellerSearchUiModel {
+    open val id: String? = ""
+    open val title: String? = ""
+    open val desc: String? = ""
+    open val imageUrl: String? = ""
+    open val appUrl: String? = ""
+    open val url: String? = ""
+    open val keyword: String? = ""
+    open val section: String? = ""
+}

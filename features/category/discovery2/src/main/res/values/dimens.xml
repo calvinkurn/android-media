@@ -13,7 +13,17 @@
     <dimen name="dp_16">16dp</dimen>
     <dimen name="dp_90">90dp</dimen>
     <dimen name="dp_4">4dp</dimen>
+    <dimen name="dp_50">50dp</dimen>
+    <dimen name="dp_10">10dp</dimen>
+    <dimen name="dp_200">200dp</dimen>
     <dimen name="discovery_banner_width">800dp</dimen>
     <dimen name="discovery_banner_height">150dp</dimen>
+    <dimen name="carousel_gap">36dp</dimen>
+    <dimen name="brand_recom_carousel_gap">40dp</dimen>
+    <dimen name="disco_product_card_width">165dp</dimen>
+    <dimen name="dp_34">34dp</dimen>
+    <dimen name="dp_19">19dp</dimen>
+    <dimen name="dp_40">40dp</dimen>
+    <dimen name="dp_13">13dp</dimen>
 
 </resources>

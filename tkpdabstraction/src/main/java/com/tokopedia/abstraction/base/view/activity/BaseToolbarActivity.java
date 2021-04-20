@@ -3,16 +3,19 @@ package com.tokopedia.abstraction.base.view.activity;
 import android.os.Build;
 import android.os.Bundle;
 import androidx.annotation.LayoutRes;
+import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.WindowManager;
 
 import com.tokopedia.abstraction.R;
 import com.tokopedia.abstraction.common.utils.view.MenuTintUtils;
+import static com.tokopedia.utils.view.DarkModeUtil.isDarkMode;
 
 /**
  * Created by nathan on 7/11/17.
@@ -38,9 +41,16 @@ abstract class BaseToolbarActivity extends BaseActivity {
     }
 
     protected void setupStatusBar() {
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if(!isDarkMode(this)) {
+                getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+            }
+        }
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.tkpdabstraction_green_600));
+            getWindow().setStatusBarColor(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N0));
         }
     }
 

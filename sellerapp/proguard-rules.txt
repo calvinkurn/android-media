@@ -3,106 +3,25 @@
 -dontwarn java.nio.file.Path
 -dontwarn java.nio.file.OpenOption
 -dontwarn org.codehaus.mojo.animal_sniffer.IgnoreJRERequirement
+-dontwarn module-info
 
 -useuniqueclassmembernames
 -keepattributes Signature, SourceFile, LineNumberTable, JavascriptInterface
+-keepattributes *Annotation*, EnclosingMethod
+-keepattributes Exceptions
+-keepattributes InnerClasses
 -allowaccessmodification
 
 -dontwarn com.comscore.instrumentation.**
 -dontwarn twitter4j.**
 -dontwarn oauth.signpost.signature.**
 -dontwarn com.squareup.picasso.**
+-dontwarn com.squareup.javapoet.**
+-dontwarn com.squareup.okhttp.**
 -dontwarn com.facebook.**
--dontwarn com.tokopedia.tkpd.analytics.**
 -dontwarn okio.**
 -dontwarn com.viewpagerindicator.LinePageIndicator
-
--keep class com.android.support.** { *; }
--keepclasseswithmembers class * {
-    @com.android.support.** *;
-}
--keepclassmembers class * {
-    @com.android.support.** *;
-}
-
--keep class com.google.android.gms.** { *; }
--keepclasseswithmembers class * {
-    @com.google.android.gms.** *;
-}
--keepclassmembers class * {
-    @com.google.android.gms.** *;
-}
-
--keep class com.viewpagerindicator.** { *; }
--keepclasseswithmembers class * {
-    @com.viewpagerindicator.** *;
-}
--keepclassmembers class * {
-    @com.viewpagerindicator.** *;
-}
-
--keep class com.squareup.picasso.** { *; }
--keepclasseswithmembers class * {
-    @com.squareup.picasso.** *;
-}
--keepclassmembers class * {
-    @com.squareup.picasso.** *;
-}
-
--keep class com.sociomantic.sociomanticandroidsdk.** { *; }
--keepclasseswithmembers class * {
-    @com.sociomantic.sociomanticandroidsdk.** *;
-}
--keepclassmembers class * {
-    @com.sociomantic.sociomanticandroidsdk.** *;
-}
-
--keep class com.mcxiaoke.volley.** { *; }
--keepclasseswithmembers class * {
-    @com.mcxiaoke.volley.** *;
-}
--keepclassmembers class * {
-    @com.mcxiaoke.volley.** *;
-}
-
--keep class info.vividcode.android.zxing.** { *; }
--keepclasseswithmembers class * {
-    @info.vividcode.android.zxing.** *;
-}
--keepclassmembers class * {
-    @info.vividcode.android.zxing.** *;
-}
-
--keep class com.github.asne.facebook.** { *; }
--keepclasseswithmembers class * {
-    @com.github.asne.facebook.** *;
-}
--keepclassmembers class * {
-    @com.github.asne.facebook.** *;
-}
-
--keep class com.newrelic.agent.android.** { *; }
--keepclasseswithmembers class * {
-    @com.newrelic.agent.android.** *;
-}
--keepclassmembers class * {
-    @com.newrelic.agent.android.** *;
-}
-
--keep class com.crashlytics.sdk.android.** { *; }
--keepclasseswithmembers class * {
-    @com.crashlytics.sdk.android.** *;
-}
--keepclassmembers class * {
-    @com.crashlytics.sdk.android.** *;
-}
--keep class com.facebook.** { *; }
--keepclasseswithmembers class * {
-    @com.facebook.** *;
-}
--keepclassmembers class * {
-    @com.facebook.** *;
-}
+-dontwarn sun.misc.Unsafe
 
 -keep class id.co.veritrans.android.api.**{ *;}
 -keepclassmembers class id.co.veritrans.android.api.**{
@@ -110,57 +29,24 @@
 }
 -keepclasseswithmembers class id.co.veritrans.android.api.**{
  @id.co.veritrans.android.api.** *;
- }
+}
 
-#Localytics setting
--keep class com.localytics.android.** { *; }
-
--keep class com.google.android.gms.ads.** { *; }
-
-# Required for Google Play Services (see http://developer.android.com/google/play-services/setup.html)
+#com.google.android.gms
+#https://stackoverflow.com/questions/18646899/proguard-cant-find-referenced-class-com-google-android-gms-r
 -keep class * extends java.util.ListResourceBundle {
     protected Object[][] getContents();
 }
--keep class com.google.android.gms.gcm.**{ *; }
-
-
 -keep public class com.google.android.gms.common.internal.safeparcel.SafeParcelable {
     public static final *** NULL;
 }
-
 -keepnames @com.google.android.gms.common.annotation.KeepName class *
 -keepclassmembernames class * {
     @com.google.android.gms.common.annotation.KeepName *;
 }
-
 -keepnames class * implements android.os.Parcelable {
     public static final ** CREATOR;
 }
-
-#---------- End of Localytics
-
--keepname class com.android.volley.*
-
--keep class com.tokopedia.tkpd.analytics.** { *; }
--keepclasseswithmembers class * {
-    @com.tokopedia.tkpd.analytics.** *;
-}
--keepclassmembers class * {
-    @com.tokopedia.tkpd.analytics.** *;
-}
-
--keep class android.support.design.widget.** { *; }
--keep interface android.support.design.widget.** { *; }
-
-#--------- Parecler exception
-#---- To configure Proguard, add the following lines to your proguard configuration file.
-#---- These will keep files related to the Parcels utilty class and the Parcelable CREATOR instance:
-# Parcel library
--keep class * implements android.os.Parcelable {
-  public static final android.os.Parcelable$Creator *;
-}
-
--keep class org.parceler.Parceler$$Parcels
+#end com.google.android.gms
 
 -keep class twitter4j.** { *; }
 -keepclasseswithmembers class * {
@@ -170,30 +56,20 @@
     @twitter4j.** *;
 }
 
-#recharge
--keep class com.tokopedia.core.recharge.model.** { *; }
-
-
--keepattributes *Annotation*,EnclosingMethod,Signature
-
--dontwarn com.squareup.okhttp.**
-
-# this is retrofit
--dontwarn retrofit2.**
--keep class retrofit2.** { *; }
--keepattributes Signature,SourceFile,LineNumberTable
--keepattributes Exceptions
-# this is retrofit
-
-# Retain service method parameters.
--keepclassmembernames,allowobfuscation interface * {
+# start retrofit
+# https://github.com/square/retrofit/blob/master/retrofit/src/main/resources/META-INF/proguard/retrofit2.pro
+-keepattributes RuntimeVisibleAnnotations, RuntimeVisibleParameterAnnotations
+-keepclassmembers,allowshrinking,allowobfuscation interface * {
     @retrofit2.http.* <methods>;
 }
-
-# Ignore annotation used for build tooling.
 -dontwarn org.codehaus.mojo.animal_sniffer.IgnoreJRERequirement
-
--dontwarn sun.misc.Unsafe
+-dontwarn javax.annotation.**
+-dontwarn kotlin.Unit
+-dontwarn retrofit2.KotlinExtensions
+-dontwarn retrofit2.KotlinExtensions$*
+-if interface * { @retrofit2.http.* <methods>; }
+-keep,allowobfuscation interface <1>
+# end retrofit
 
 -keepclassmembers class rx.internal.util.unsafe.*ArrayQueue*Field* {
     long producerIndex;
@@ -206,106 +82,49 @@
     rx.internal.util.atomic.LinkedQueueNode consumerNode;
 }
 
+#traceroute
+#https://github.com/wangjing53406/traceroute-for-android
 -keepclassmembers class com.wandroid.traceroute.TraceRoute {
     void clearResult();
     void appendResult(***);
     int execute(***);
 }
 
-# InAppReview
--keep class com.google.android.play.core.inappreview.InAppReviewManager {
-  public com.google.android.play.core.tasks.Task requestInAppReviewFlow();
-  public com.google.android.play.core.tasks.Task launchInAppReviewFlow(android.app.Activity, com.google.android.play.core.inappreview.InAppReviewInfo);
-}
-
--keepnames class com.google.android.play.core.inappreview.InAppReviewInfo
-
--keep class com.google.android.play.core.inappreview.InAppReviewManagerFactory {
-  <init>();
-
-  public static com.google.android.play.core.inappreview.InAppReviewManager create(android.content.Context);
-}
-
--keep class com.google.android.play.core.inappreview.testing.FakeInAppReviewManager {
-  public <init>(android.content.Context);
-  public com.google.android.play.core.tasks.Task requestInAppReviewFlow();
-  public com.google.android.play.core.tasks.Task launchInAppReviewFlow(android.app.Activity, com.google.android.play.core.inappreview.InAppReviewInfo);
-}
-
-# Gson specific classes
--keep class sun.misc.Unsafe { *; }
-#-keep class com.google.gson.stream.** { *; }
-
-# Application classes that will be serialized/deserialized over Gson
--keep class com.google.gson.examples.android.model.** { *; }
-
--keepattributes *Annotation*
-
--keepattributes Signature
-
--keepattributes InnerClasses
-
--keep class com.activeandroid.**{ *; }
-
--keep class org.parceler.**{ *; }
-
--keep class com.bumptech.glide.**{ *; }
-
+#GLIDE
+#https://github.com/bumptech/glide/blob/master/library/proguard-rules.txt
 -keep public class * implements com.bumptech.glide.module.GlideModule
+-keep class * extends com.bumptech.glide.module.AppGlideModule {
+ <init>(...);
+}
+-keep public enum com.bumptech.glide.load.ImageHeaderParser$** {
+  **[] $VALUES;
+  public *;
+}
+#END GLIDE
 
--keep class com.tokopedia.core.recharge.**{ *; }
-
--keep class com.tokopedia.core.discovery.model.**{ *; }
--keep class com.tokopedia.core.dynamicfilter.model.** { *; }
--keep class com.tokopedia.core.dynamicfilter.adapter.** { *; }
--keep class com.tokopedia.core.database.model.** { *; }
--keep class com.tokopedia.core.database.recharge.** { *; }
-
-
-
-#selling
--keep class com.tokopedia.seller.selling.model.** { *; }
-
--keep class com.tokopedia.tkpd.fcm.** { *; }
--keep class com.tokopedia.sellerapp.fcm.** { *; }
-
+#https://github.com/airbnb/DeepLinkDispatch/issues/44
 -keep class com.airbnb.deeplinkdispatch.** { *; }
 -keepclasseswithmembers class * {
      @com.airbnb.deeplinkdispatch.DeepLink <methods>;
 }
 
--keep class com.tokopedia.ride.common.animator.RouteMapAnimator
--keepclasseswithmembers class com.tokopedia.ride.common.animator.RouteMapAnimator {
-   public <methods>;
-   public <fields>;
-}
-
 # Parceler configuration
+# http://parceler.org/
 -keep interface org.parceler.Parcel
 -keep @org.parceler.Parcel class * { *; }
 -keep class **$$Parcelable { *; }
--keep class org.parceler.Parceler$$Parcels
-
--keep class com.tokopedia.core.home.model.** { *; }
 
 -keep class com.tokopedia.config.GlobalConfig
--keep class com.tokopedia.tkpdpdp.fragment.ProductDetailFragment
--keep class com.tokopedia.core.network.entity.** { *; }
 -dontwarn com.akexorcist.roundcornerprogressbar.TextRoundCornerProgressBar
 
 -keep class com.beloo.widget.* { *; }
- -keep interface com.beloo.widget.io.**
- -keep enum com.beloo.widget.**
+-keep interface com.beloo.widget.io.**
+-keep enum com.beloo.widget.**
 -dontwarn com.beloo.widget.**
 
-
 # -- Feeds --
--keep class com.tkpdfeed.feeds.** { *; }
 -keep class com.tokopedia.feedplus.data.pojo.** { *; }
 # -- End of Feeds --
-
-# Fingerprint
--keep class com.tokopedia.core.analytics.fingerprint.domain.model.** { *; }
 
 -dontwarn android.content.pm.PackageManager
 -dontwarn com.crashlytics.android.answers.shim.**
@@ -316,37 +135,14 @@
 -keep public class com.google.firebase.iid.FirebaseInstanceId {
     public *;
 }
--keep public class com.google.android.gms.iid.InstanceID {
-    public *;
-}
 
 -keep public class com.tokopedia.design.component.BottomNavigation { *; }
--keep public class android.support.design.widget.BottomNavigationView { *; }
--keep public class android.support.design.internal.BottomNavigationMenuView { *; }
--keep public class android.support.design.internal.BottomNavigationPresenter { *; }
--keep public class android.support.design.internal.BottomNavigationItemView { *; }
-#-keep public class com.tokopedia.design.text.SpinnerCounterInputView { *; }
 -keep class * extends com.tokopedia.design.base.BaseCustomView { *; }
 
 -dontwarn android.net.http.**
 -dontwarn org.apache.http.impl.auth.NegotiateScheme
 -dontwarn com.android.internal.http.multipart.MultipartEntity
 -dontwarn org.xbill.DNS.spi.DNSJavaNameServiceDescriptor
-
-#events
--keep class com.tokopedia.events.domain.model.** { *; }
--keep class com.tokopedia.events.view.viewmodel.** { *; }
--keep class com.tokopedia.core.network.exception.model.** { *; }
--keep class com.tokopedia.events.data.entity.response.** { *; }
-
-#tradein
--keep class com.tokopedia.tradein.viewmodel.** { *; }
-
-#agerestriction
--keep class com.tokopedia.age_restriction.viewmodel.** { *; }
-
-#image search
--keep class com.tokopedia.discovery.imagesearch.domain.model.** { *; }
 
 #Sendbird
 -dontwarn com.sendbird.android.shadow.**
@@ -365,13 +161,14 @@
     volatile <fields>;
 }
 -dontwarn kotlinx.coroutines.flow.**inlined**
+-dontwarn kotlinx.coroutines.flow.**
+-dontwarn kotlinx.coroutines.reactive.**
 
 -keepnames class kotlinx.coroutines.internal.MainDispatcherFactory {}
 -keepnames class kotlinx.coroutines.CoroutineExceptionHandler {}
 
 # -- App indexing
 -dontwarn com.google.firebase.appindexing.**
-
 
 -dontwarn androidx.appcompat.widget.RebindReportingHolder
 
@@ -382,14 +179,12 @@
 -dontwarn kotlinx.coroutines.flow.**inlined**
 
 # -- Unit Test
--keep class junit.framework.** { *; }
--keep class android.test.** { *; }
--keep class org.mockito.** { *; }
--keep class org.junit.** { *; }
--dontwarn junit.framework.**
+-dontnote junit.framework.**
+-dontnote junit.runner.**
+-dontwarn org.junit.**
 -dontwarn android.test.**
 -dontwarn org.mockito.**
--dontwarn org.junit.**
+-dontwarn org.hamcrest.**
 
 -keep public class com.google.android.material.bottomnavigation.** { *; }
 -keep class com.google.android.material.bottomsheet.BottomSheetBehavior { *** findScrollingChild(...); }
@@ -398,42 +193,74 @@
     private <fields>;
 }
 
--keepclassmembers enum com.tokopedia.purchase_platform.features.checkout.data.model.response.shipment_address_form.** { *; }
-
--dontwarn com.tokopedia.graphql.coroutines.domain.interactor.**
-
--keep class com.google.errorprone.annotations.** { *; }
--keep class com.google.j2objc.annotations.** { *; }
--keep class java.lang.ClassValue
--dontwarn com.google.j2objc.annotations.**
--dontwarn com.google.errorprone.annotations.**
--dontwarn java.lang.ClassValue
-
-# -- product manage
- -keep class com.tokopedia.product.manage.feature.cashback.data.** { *; }
- -keep class com.tokopedia.product.manage.feature.filter.data.** { *; }
- -keep class com.tokopedia.product.manage.feature.multiedit.data.** { *; }
- -keep class com.tokopedia.product.manage.feature.quickedit.common.data.** { *; }
- -keep class com.tokopedia.product.manage.feature.quickedit.delete.data.** { *; }
- -keep class com.tokopedia.product.manage.feature.quickedit.price.data.** { *; }
- -keep class com.tokopedia.product.manage.feature.quickedit.stock.data.** { *; }
- -keep class com.tokopedia.shop.common.data.source.cloud.model.productlist.** { *; }
- -keep class com.tokopedia.product.manage.feature.stockreminder.data.** { *; }
-
-# -- annotation analytic
--keep class com.analytic.paramchecker.** { *; }
--keep class com.analytic.util.** { *; }
--keep class com.tokopedia.abstraction.processor.** { *; }
--keep class com.tokopedia.product.util.processor.** { *; }
--dontwarn com.squareup.javapoet.**
-
--dontwarn com.tokopedia.empty_state.**
--dontwarn com.tokopedia.topads.dashboard.view.sheet.**
--optimizations !class/unboxing/enum,!code/simplification/arithmetic
-
 -dontwarn com.google.android.exoplayer2.audio.AudioAttributes
 -dontwarn com.google.android.exoplayer2.mediacodec.MediaCodecUtil
 -dontwarn com.google.android.exoplayer2.ui.DefaultTimeBar
 
+#fix textfieldunify get field by reflection
+-keepclassmembers class com.google.android.material.textfield.TextInputLayout {
+    final com.google.android.material.internal.CollapsingTextHelper collapsingTextHelper;
+}
+-keepclassmembers class com.google.android.material.internal.CollapsingTextHelper {
+    private final android.graphics.Rect collapsedBounds;
+}
+-keep class com.google.android.material.internal.CollapsingTextHelper {
+    public void recalculate();
+}
+#endfix textfieldunify
+
+-keep public class com.android.installreferrer.** { *; }
+
+#keep for security purposes. This library has already been obfuscated.
+-keep class com.tkpd.util.Base64.** { *; }
+
+
+
+# Keep Class com.tokopedia
+-keep public class com.tokopedia.design.component.BottomNavigation { *; }
+#-keep public class com.tokopedia.design.text.SpinnerCounterInputView { *; }
+-keep class * extends com.tokopedia.design.base.BaseCustomView { *; }
+#discovery
+-keep class com.tokopedia.discovery2.data.ComponentsItem { *; }
+#agerestriction
+-keep class com.tokopedia.age_restriction.viewmodel.** { *; }
+
+#topads
+-keep class com.tokopedia.topads.dashboard.view.fragment.** extends androidx.fragment.app.Fragment{}
+
+
+#dontwarn com.tokopedia
+-dontwarn com.tokopedia.topads.dashboard.view.sheet.**
+-dontwarn com.tokopedia.tkpd.analytics.**
+#home
+-dontwarn com.tokopedia.home.beranda.data.datasource.**inlined**
+-dontwarn com.tokopedia.home.beranda.data.usecase.**inlined**
+-dontwarn com.tokopedia.home.beranda.data.repository.**inlined**
+-dontwarn com.tokopedia.home.beranda.presentation.viewModel.**inlined**
+-dontwarn com.tokopedia.home.beranda.presentation.view.**
+-dontwarn com.tokopedia.graphql.coroutines.domain.interactor.**
+
+-dontwarn com.tokopedia.sortfilter.SortFilter*
+
+
+#SELLERAPP ONLY:
+#from Apsara broadcaster 29/11/2019 document
 -keep class com.alibaba.livecloud.** { *; }
 -keep class com.alivc.** { *; }
+
+#robust
+#https://github.com/Meituan-Dianping/Robust/blob/master/app/proguard-rules.pro
+-optimizations !class/unboxing/enum,!code/simplification/arithmetic
+
+-keep class com.google.errorprone.annotations.** { *; }
+-keep class com.google.j2objc.annotations.** { *; }
+-dontwarn com.google.j2objc.annotations.**
+-dontwarn com.google.errorprone.annotations.**
+-dontwarn com.tokopedia.empty_state.**
+-dontwarn com.tokopedia.searchbar.**
+
+-dontwarn io.hansel.**
+-keep class io.hansel.**{*;}
+-keep class **.HanselDialog.*{*;}
+-keep class * implements io.hansel.**.* {*;}
+-keep class * extends io.hansel.**.* {*;}

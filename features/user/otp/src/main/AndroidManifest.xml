@@ -1,6 +1,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-  package="com.tokopedia.otp">
-
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.tokopedia.otp">
+  
+    <uses-permission android:name="android.permission.READ_CALL_LOG" tools:node="merge"/>
+    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
+    <uses-permission android:name="android.permission.CALL_PHONE"/>
 
     <application
         android:allowBackup="true"
@@ -11,23 +15,75 @@
             android:name=".verification.view.activity.VerificationActivity"
             android:label="@string/title_activity_activation"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White">
-            <intent-filter android:autoVerify="true">
-                <action android:name="android.intent.action.VIEW" />
+            android:theme="@style/Theme.White"
+            android:windowSoftInputMode="adjustResize">
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+
                 <data
-                    android:scheme="@string/internal_scheme"
                     android:host="@string/host_global"
-                    android:pathPattern="@string/path_cotp"/>
+                    android:pathPattern="@string/path_cotp"
+                    android:scheme="@string/internal_scheme" />
             </intent-filter>
 
         </activity>
 
-        <receiver android:name=".common.util.SmsBroadcastReceiver" android:exported="true">
+        <activity
+            android:name=".notif.view.activity.ReceiverNotifActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White">
             <intent-filter>
-                <action android:name="com.google.android.gms.auth.api.phone.SMS_RETRIEVED"/>
+                <action android:name="com.tokopedia.internal.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_global"
+                    android:pathPattern="@string/path_otp_push_notif_receiver"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
+
+        </activity>
+
+        <activity
+            android:name=".notif.view.activity.SettingNotifActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White">
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_global"
+                    android:pathPattern="@string/path_otp_push_notif_setting"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".notif.view.activity.ResultNotifActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White" />
+
+        <receiver
+            android:name=".verification.common.util.SmsBroadcastReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.google.android.gms.auth.api.phone.SMS_RETRIEVED" />
+            </intent-filter>
+        </receiver>
+
+        <receiver
+            android:name=".verification.common.util.PhoneCallBroadcastReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.PHONE_STATE" />
             </intent-filter>
         </receiver>
 

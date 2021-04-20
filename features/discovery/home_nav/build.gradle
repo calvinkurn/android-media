@@ -1,0 +1,123 @@
+apply plugin: 'com.android.library'
+apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
+apply plugin: 'io.hansel.preprocessor.module'
+apply plugin: 'androidx.navigation.safeargs.kotlin'
+
+android{
+    testOptions {
+        unitTests {
+            includeAndroidResources = true
+        }
+    }
+    packagingOptions {
+        exclude 'META-INF/**'
+    }
+
+    defaultConfig {
+        multiDexEnabled true
+        testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
+    }
+
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+}
+
+buildscript {
+    repositories {
+        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+        mavenCentral()
+        jcenter()
+        maven { url 'https://maven-hansel.tokopedia.com/maven' }
+        google()
+    }
+    dependencies {
+        classpath rootProject.ext.miscDependencies.hansel
+        classpath rootProject.ext.miscDependencies.navigationSafeArgs
+    }
+}
+
+dependencies {
+
+    implementation project(rootProject.ext.features.atc_common)
+    implementation project(rootProject.ext.features.commonWallet)
+    implementation project(rootProject.ext.features.carouselProductCard)
+    implementation project(rootProject.ext.features.discoveryCommon)
+    implementation project(rootProject.ext.features.resourcesCommon)
+    implementation project(rootProject.ext.features.topAdsSdk)
+    implementation project(rootProject.ext.features.wishlistCommon)
+    implementation project(rootProject.ext.features.sessioncommon)
+
+    implementation project(rootProject.ext.libraries.applink)
+    implementation project(rootProject.ext.libraries.baseList)
+    implementation project(rootProject.ext.libraries.commonNetwork)
+    implementation project(rootProject.ext.libraries.kotlinExtensions)
+    implementation project(rootProject.ext.libraries.linker)
+    implementation project(rootProject.ext.libraries.remoteConfig)
+    implementation project(rootProject.ext.libraries.tkpdabstraction)
+    implementation project(rootProject.ext.libraries.tkpddesign)
+    implementation project(rootProject.ext.libraries.trackingOptimizer)
+    implementation project(rootProject.ext.libraries.track)
+    implementation project(rootProject.ext.features.searchbar)
+    implementation project(rootProject.ext.libraries.analytics)
+
+    implementation rootProject.ext.unifyDependencies.icon
+    implementation rootProject.ext.unifyDependencies.icons
+    implementation rootProject.ext.unifyDependencies.principles
+    implementation rootProject.ext.unifyDependencies.components
+    implementation rootProject.ext.unifyDependencies.icons
+    implementation rootProject.ext.unifyDependencies.global_error
+    implementation rootProject.ext.unifyDependencies.coach_mark
+
+    implementation project(rootProject.ext.libraries.graphql)
+    implementation rootProject.ext.tkpdInternalLibDependencies.network
+    implementation rootProject.ext.tkpdInternalLibDependencies.usecase
+    implementation rootProject.ext.tkpdInternalLibDependencies.usersession
+    implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
+
+    implementation rootProject.ext.supportLibDependencies.constraintLayout
+    implementation rootProject.ext.miscDependencies.loaderviewlibrary
+    implementation rootProject.ext.miscDependencies.roundCornerProgressBar
+    implementation rootProject.ext.miscDependencies.multiDex
+    implementation rootProject.ext.miscDependencies.lifeCycleExtentions
+    implementation rootProject.ext.miscDependencies.dagger
+    implementation rootProject.ext.supportLibDependencies.constraintLayout
+    implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
+    implementation project(rootProject.ext.libraries.analytics)
+
+    kapt rootProject.ext.miscDependencies.lifeCycleRuntime
+    kapt rootProject.ext.miscDependencies.daggerCompiler
+
+    testImplementation rootProject.ext.testDependencies.archCoreTesting
+    testImplementation rootProject.ext.testDependencies.mockk
+    testImplementation rootProject.ext.miscDependencies.coroutineCore
+    testImplementation rootProject.ext.miscDependencies.coroutineTest
+    testImplementation project(rootProject.ext.libraries.unitTest)
+
+    androidTestImplementation project(rootProject.ext.libraries.instrumentation_test)
+
+    androidTestImplementation rootProject.ext.testDependencies.androidTestRunner
+    androidTestImplementation rootProject.ext.testDependencies.androidRulesVersion
+    androidTestImplementation rootProject.ext.testDependencies.junit
+    androidTestImplementation rootProject.ext.testDependencies.espressoCore
+    androidTestImplementation rootProject.ext.testDependencies.espressoContrib
+    androidTestImplementation rootProject.ext.testDependencies.archCoreTesting
+    androidTestImplementation rootProject.ext.testDependencies.testCore
+
+    implementation rootProject.ext.miscDependencies.navigationFragmentKtx
+    implementation rootProject.ext.miscDependencies.navigationUiKtx
+    implementation project(rootProject.ext.libraries.iris)
+    implementation project(rootProject.ext.libraries.irisSession)
+    implementation project(rootProject.ext.libraries.remoteConfig)
+    implementation rootProject.ext.networkDependencies.glide
+}
+
+project.ext {
+    artifactId = 'home-nav'
+    groupId = 'com.tokopedia.discovery'
+    versionName = "0.0.1"
+    artifactName ="home-nav-release"
+}
+
+apply from: '../../../publish_local.gradle'
+apply from: '../../../sonar_config.gradle'

@@ -2,15 +2,14 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@android:color/white">
+    android:layout_height="match_parent">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_product_category_header"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/add_product_category_header"
-        android:textColor="@android:color/black"
+        android:textColor="@color/Unify_N700"
         android:textSize="@dimen/fontSize_lvl3"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -19,32 +18,23 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/label_asterisk"
-        android:textColor="@color/Red_R600_96"
+        android:textColor="@color/Unify_R600_96"
         app:layout_constraintLeft_toRightOf="@id/tv_product_category_header"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="heading_4"
         app:typographyWeight="bold" />
 
-    <!--Layout for eliminating additional ListUnify margin from unify-->
-    <LinearLayout
-        android:id="@+id/ll_product_category_rec"
+    <com.tokopedia.unifycomponents.list.ListUnify
+        android:id="@+id/lvu_product_category_rec"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingLeft="-16dp"
-        android:paddingStart="-16dp"
-        android:paddingRight="-16dp"
-        android:paddingEnd="-16dp"
+        android:theme="@style/TextDarkMode"
+        android:layout_marginStart="-16dp"
+        android:layout_marginEnd="-16dp"
+        android:choiceMode="singleChoice"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_product_category_header">
-
-        <com.tokopedia.unifycomponents.list.ListUnify
-            android:id="@+id/lvu_product_category_rec"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:choiceMode="singleChoice" />
-
-    </LinearLayout>
+        app:layout_constraintTop_toBottomOf="@id/tv_product_category_header"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_category_picker_button"
@@ -53,9 +43,9 @@
         android:layout_marginTop="@dimen/spacing_lvl3"
         android:layout_marginBottom="@dimen/spacing_lvl3"
         android:text="@string/action_choose_other_category"
-        android:textColor="@color/Green_G500"
+        android:textColor="@color/Unify_G500"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/ll_product_category_rec"
+        app:layout_constraintTop_toBottomOf="@id/lvu_product_category_rec"
         app:typographyType="body_2"
         app:typographyWeight="reguler" />
 

@@ -4,7 +4,6 @@ import android.content.Context;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
-import com.tokopedia.home.account.AccountConstants;
 import com.tokopedia.home.account.R;
 import com.tokopedia.home.account.analytics.AccountAnalytics;
 import com.tokopedia.home.account.analytics.data.model.UserAttributeData;
@@ -62,10 +61,5 @@ public class AccountHomePresenter extends BaseDaggerPresenter<AccountHome.View> 
                 accountAnalytics.setUserAttributes(data);
             }
         });
-    }
-
-    @Override
-    public void openTabByParam(String param) {
-        if (param.equals(AccountConstants.ACCOUNT_TAB_SELLER)) view.openSellerTab();
     }
 }

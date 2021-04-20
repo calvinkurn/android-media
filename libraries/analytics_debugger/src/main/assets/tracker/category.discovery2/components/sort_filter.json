@@ -1,0 +1,27 @@
+{
+  "readme": "Discovery Sort & Filter impression and click Tracker",
+  "mode": "exact",
+  "query": [
+    {
+      "sessionIris": "{{.*}}",
+      "eventCategory": "{{.*}}",
+      "eventAction": "click on detailed filter",
+      "event": "clickDiscovery",
+      "eventLabel": "{{.*}}"
+    },
+    {
+      "sessionIris": "{{.*}}",
+      "eventCategory": "{{.*}}",
+      "eventAction": "click quick filter",
+      "event": "clickDiscovery",
+      "eventLabel": "{{.*}}"
+    },
+    {
+      "sessionIris": "{{.*}}",
+      "eventCategory": "{{.*}}",
+      "eventAction": "click on apply filter",
+      "event": "clickDiscovery",
+      "eventLabel": "{{.*}}"
+    }
+  ]
+}

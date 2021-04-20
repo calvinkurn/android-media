@@ -1,12 +1,14 @@
 package com.tokopedia.sellerhomecommon.domain.usecase
 
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.sellerhomecommon.domain.mapper.ProgressMapper
 import com.tokopedia.sellerhomecommon.domain.model.DataKeyModel
-import com.tokopedia.sellerhomecommon.domain.model.GetProgressDataResponse
 import com.tokopedia.sellerhomecommon.domain.model.DynamicParameterModel
+import com.tokopedia.sellerhomecommon.domain.model.GetProgressDataResponse
 import com.tokopedia.sellerhomecommon.presentation.model.ProgressDataUiModel
 import com.tokopedia.usecase.RequestParams
 
@@ -15,19 +17,24 @@ import com.tokopedia.usecase.RequestParams
  */
 
 class GetProgressDataUseCase constructor(
-        private val graphqlRepository: GraphqlRepository,
-        private val progressMapper: ProgressMapper
-) : BaseGqlUseCase<List<ProgressDataUiModel>>() {
+        graphqlRepository: GraphqlRepository,
+        progressMapper: ProgressMapper,
+        dispatchers: CoroutineDispatchers
+) : CloudAndCacheGraphqlUseCase<GetProgressDataResponse, List<ProgressDataUiModel>>(
+        graphqlRepository, progressMapper, dispatchers, GetProgressDataResponse::class.java, QUERY, false) {
+
+    override suspend fun executeOnBackground(requestParams: RequestParams, includeCache: Boolean) {
+        super.executeOnBackground(requestParams, includeCache).also { isFirstLoad = false }
+    }
 
     override suspend fun executeOnBackground(): List<ProgressDataUiModel> {
         val gqlRequest = GraphqlRequest(QUERY, GetProgressDataResponse::class.java, params.parameters)
-        val gqlResponse = graphqlRepository.getReseponse(listOf(gqlRequest))
+        val gqlResponse = graphqlRepository.getReseponse(listOf(gqlRequest), cacheStrategy)
 
         val errors = gqlResponse.getError(GetProgressDataResponse::class.java)
         if (errors.isNullOrEmpty()) {
             val data = gqlResponse.getData<GetProgressDataResponse>()
-            val widgetData = data.getProgressBarData?.progressData.orEmpty()
-            return progressMapper.mapResponseToUi(widgetData)
+            return mapper.mapRemoteDataToUiData(data, cacheStrategy.type == CacheType.CACHE_ONLY)
         } else {
             throw MessageErrorException(errors.joinToString(", ") { it.message })
         }
@@ -50,7 +57,7 @@ class GetProgressDataUseCase constructor(
         }
 
         private val QUERY = """
-            query (${'$'}dataKeys: [dataKey!]!) {
+            query getProgressData(${'$'}dataKeys: [dataKey!]!) {
               fetchProgressBarWidgetData(dataKeys: ${'$'}dataKeys) {
                 data {
                   dataKey
@@ -62,6 +69,7 @@ class GetProgressDataUseCase constructor(
                   subtitle
                   error
                   errorMsg
+                  showWidget
                 }
               }
             }

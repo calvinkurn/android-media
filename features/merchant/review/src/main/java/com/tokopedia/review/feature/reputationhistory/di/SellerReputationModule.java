@@ -13,15 +13,15 @@ import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.interceptor.DebugInterceptor;
 import com.tokopedia.network.interceptor.FingerprintInterceptor;
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor;
-import com.tokopedia.product.manage.item.common.data.mapper.SimpleDataResponseMapper;
-import com.tokopedia.product.manage.item.common.data.source.ShopInfoDataSource;
-import com.tokopedia.product.manage.item.common.data.source.cloud.ShopInfoCloud;
-import com.tokopedia.product.manage.item.common.data.source.cloud.ShopApi;
-import com.tokopedia.product.manage.item.common.domain.repository.ShopInfoRepositoryImpl;
+import com.tokopedia.review.feature.reputationhistory.data.mapper.SimpleDataResponseMapper;
 import com.tokopedia.review.feature.reputationhistory.data.repository.ReputationRepositoryImpl;
 import com.tokopedia.review.feature.reputationhistory.data.repository.ReputationReviewRepositoryImpl;
+import com.tokopedia.review.feature.reputationhistory.data.repository.ShopInfoRepositoryImpl;
+import com.tokopedia.review.feature.reputationhistory.data.source.ShopInfoDataSource;
 import com.tokopedia.review.feature.reputationhistory.data.source.cloud.CloudReputationReviewDataSource;
+import com.tokopedia.review.feature.reputationhistory.data.source.cloud.ShopInfoCloud;
 import com.tokopedia.review.feature.reputationhistory.data.source.cloud.apiservice.api.SellerReputationApi;
+import com.tokopedia.review.feature.reputationhistory.data.source.cloud.apiservice.api.ShopApi;
 import com.tokopedia.review.feature.reputationhistory.domain.ReputationRepository;
 import com.tokopedia.review.feature.reputationhistory.domain.ReputationReviewRepository;
 import com.tokopedia.shop.common.constant.ShopCommonUrl;
@@ -37,7 +37,6 @@ import retrofit2.Retrofit;
  */
 
 @Module
-@SellerReputationScope
 public class SellerReputationModule {
 
     @SellerReputationScope
@@ -56,7 +55,7 @@ public class SellerReputationModule {
     @SellerReputationScope
     @Provides
     public ShopInfoDataSource provideShopInfoDataSource(ShopInfoCloud shopInfoCloud,
-                                                            SimpleDataResponseMapper simpleDataResponseMapper) {
+                                                        SimpleDataResponseMapper simpleDataResponseMapper) {
         return new ShopInfoDataSource(shopInfoCloud, simpleDataResponseMapper);
     }
 

@@ -1,10 +1,9 @@
 package com.tokopedia.product.detail.data.model.datamodel
 
+import android.os.Bundle
 import com.tokopedia.kotlin.model.ImpressHolder
-import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.common.data.model.pdplayout.ProductInfoContent
-import com.tokopedia.product.detail.common.data.model.product.Video
-import com.tokopedia.product.detail.data.model.spesification.ProductSpecificationResponse
+import com.tokopedia.product.detail.common.data.model.product.YoutubeVideo
 import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactory
 
 /**
@@ -15,7 +14,7 @@ data class ProductInfoDataModel(
         val name: String = "",
 
         val data: List<ProductInfoContent>? = null,
-        var videos: List<Video> = listOf()
+        var youtubeVideos: List<YoutubeVideo> = listOf()
 ) : DynamicPdpDataModel {
 
     override val impressHolder: ImpressHolder = ImpressHolder()
@@ -26,5 +25,22 @@ data class ProductInfoDataModel(
 
     override fun type(typeFactory: DynamicProductDetailAdapterFactory): Int {
         return typeFactory.type(this)
+    }
+
+    override fun equalsWith(newData: DynamicPdpDataModel): Boolean {
+        return if (newData is ProductInfoDataModel) {
+            data.hashCode() == newData.data.hashCode()
+                    && youtubeVideos.hashCode() == newData.youtubeVideos.hashCode()
+        } else {
+            false
+        }
+    }
+
+    override fun newInstance(): DynamicPdpDataModel {
+        return this.copy()
+    }
+
+    override fun getChangePayload(newData: DynamicPdpDataModel): Bundle? {
+        return null
     }
 }

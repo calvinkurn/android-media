@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="default_nav_toolbar_start_transition">90dp</dimen>
+    <dimen name="use_case_and_dynamic_image_size">52dp</dimen>
+</resources>

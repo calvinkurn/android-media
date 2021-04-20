@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white">
+    android:background="@color/Unify_N0">
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/replyUserImage"
@@ -46,7 +46,7 @@
             android:layout_marginStart="@dimen/spacing_lvl1"
             android:layout_marginLeft="@dimen/spacing_lvl1"
             app:layout_goneMarginStart="@dimen/layout_lvl0"
-            android:textColor="@color/light_N700_68"
+            android:textColor="@color/Unify_N700_68"
             app:layout_constraintStart_toEndOf="@id/labelMyQuestion"
             app:layout_constraintTop_toTopOf="@id/labelMyQuestion"
             app:layout_constraintBottom_toBottomOf="@id/labelMyQuestion"
@@ -60,7 +60,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/spacing_lvl1"
             android:layout_marginLeft="@dimen/spacing_lvl1"
-            android:textColor="@color/Neutral_N700_68"
+            android:textColor="@color/Unify_N700_68"
             app:layout_constraintStart_toEndOf="@+id/replyUserName"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -77,6 +77,7 @@
         android:layout_marginRight="@dimen/layout_lvl2"
         android:layout_marginTop="@dimen/layout_lvl1"
         android:visibility="gone"
+        android:contentDescription="@null"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/reply_header_user_details_container"
         app:srcCompat="@drawable/talk_ic_kebab"
@@ -98,6 +99,34 @@
         app:typographyWeight="bold"
         tools:text="Ini barangnya anti air gak yah gan?" />
 
+    <com.tokopedia.unifycomponents.ticker.Ticker
+        android:id="@+id/replyQuestionTicker"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_12"
+        android:layout_marginEnd="@dimen/dp_12"
+        android:layout_marginTop="@dimen/spacing_lvl2"
+        android:visibility="gone"
+        app:closeButtonVisibility="gone"
+        app:tickerType="warning"
+        app:layout_constraintTop_toBottomOf="@id/replyHeaderMessage" />
+
+    <com.tokopedia.talk.feature.reply.presentation.widget.TalkReplyUnmaskCard
+        android:id="@+id/replyUnmaskCard"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_12"
+        android:layout_marginEnd="@dimen/dp_12"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/replyHeaderMessage"/>
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/card_barrier"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="bottom"
+        app:constraint_referenced_ids="replyUnmaskCard, replyHeaderMessage, replyQuestionTicker"/>
+
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/replyHeaderFollowButton"
         android:layout_width="wrap_content"
@@ -107,11 +136,18 @@
         android:minWidth="@dimen/dp_104"
         android:visibility="gone"
         app:layout_constraintStart_toStartOf="@+id/replyHeaderMessage"
-        app:layout_constraintTop_toBottomOf="@+id/replyHeaderMessage"
+        app:layout_constraintTop_toBottomOf="@+id/card_barrier"
         app:unifyButtonSize="micro"
         app:unifyButtonVariant="ghost"
         tools:text="Follow"
         tools:visibility="visible" />
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/reply_header_barrier"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="replyHeaderFollowButton, card_barrier"
+        app:barrierDirection="bottom"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/replyHeaderTNC"
@@ -121,11 +157,11 @@
         android:layout_marginTop="@dimen/layout_lvl2"
         android:layout_marginEnd="@dimen/layout_lvl2"
         android:layout_marginBottom="@dimen/layout_lvl2"
-        android:textColor="@color/Neutral_N700_32"
+        android:textColor="@color/Unify_N700_32"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/replyHeaderFollowButton"
+        app:layout_constraintTop_toBottomOf="@id/reply_header_barrier"
         app:typographyType="small"
         tools:text="QA adalah tempat kamu bertanya dan kasih jawaban seputar produk. Tetap sopan dan jangan lupa baca SK." />
 

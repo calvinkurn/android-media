@@ -1,22 +1,21 @@
 package com.tokopedia.cart.view.presenter
 
-import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
+import com.google.gson.Gson
 import com.tokopedia.atc_common.domain.usecase.AddToCartExternalUseCase
+import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
 import com.tokopedia.cart.data.model.response.recentview.GqlRecentViewResponse
-import com.tokopedia.cart.domain.usecase.*
-import com.tokopedia.network.exception.ResponseErrorException
-import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
-import com.tokopedia.purchase_platform.common.schedulers.TestSchedulers
-import com.tokopedia.purchase_platform.common.feature.insurance.usecase.GetInsuranceCartUseCase
-import com.tokopedia.purchase_platform.common.feature.insurance.usecase.RemoveInsuranceProductUsecase
-import com.tokopedia.purchase_platform.common.feature.insurance.usecase.UpdateInsuranceProductDataUsecase
 import com.tokopedia.cart.domain.model.cartlist.CartListData
+import com.tokopedia.cart.domain.usecase.*
 import com.tokopedia.cart.view.CartListPresenter
 import com.tokopedia.cart.view.ICartListView
+import com.tokopedia.network.exception.ResponseErrorException
+import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ValidateUsePromoRevampUseCase
+import com.tokopedia.purchase_platform.common.schedulers.TestSchedulers
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
-import com.tokopedia.seamless_login.domain.usecase.SeamlessLoginUsecase
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.seamless_login_common.domain.usecase.SeamlessLoginUsecase
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.GetWishlistUseCase
@@ -37,7 +36,9 @@ import rx.subscriptions.CompositeSubscription
 object CartListPresenterGetCartListTest : Spek({
 
     val getCartListSimplifiedUseCase: GetCartListSimplifiedUseCase = mockk()
-    val deleteCartListUseCase: DeleteCartUseCase = mockk()
+    val deleteCartUseCase: DeleteCartUseCase = mockk()
+    val undoDeleteCartUseCase: UndoDeleteCartUseCase = mockk()
+    val addCartToWishlistUseCase: AddCartToWishlistUseCase = mockk()
     val updateCartUseCase: UpdateCartUseCase = mockk()
     val updateCartAndValidateUseUseCase: UpdateCartAndValidateUseUseCase = mockk()
     val validateUsePromoRevampUseCase: ValidateUsePromoRevampUseCase = mockk()
@@ -47,30 +48,29 @@ object CartListPresenterGetCartListTest : Spek({
     val updateAndReloadCartUseCase: UpdateAndReloadCartUseCase = mockk()
     val userSessionInterface: UserSessionInterface = mockk()
     val clearCacheAutoApplyStackUseCase: ClearCacheAutoApplyStackUseCase = mockk()
-    val getRecentViewUseCase: GetRecentViewUseCase = mockk()
+    val getRecentViewUseCase: GetRecommendationUseCase = mockk()
     val getWishlistUseCase: GetWishlistUseCase = mockk()
     val getRecommendationUseCase: GetRecommendationUseCase = mockk()
     val addToCartUseCase: AddToCartUseCase = mockk()
     val addToCartExternalUseCase: AddToCartExternalUseCase = mockk()
-    val getInsuranceCartUseCase: GetInsuranceCartUseCase = mockk()
-    val removeInsuranceProductUsecase: RemoveInsuranceProductUsecase = mockk()
-    val updateInsuranceProductDataUsecase: UpdateInsuranceProductDataUsecase = mockk()
     val seamlessLoginUsecase: SeamlessLoginUsecase = mockk()
     val updateCartCounterUseCase: UpdateCartCounterUseCase = mockk()
+    val setCartlistCheckboxStateUseCase: SetCartlistCheckboxStateUseCase = mockk()
+    val followShopUseCase: FollowShopUseCase = mockk()
     val view: ICartListView = mockk(relaxed = true)
 
     Feature("get cart list") {
 
         val cartListPresenter by memoized {
             CartListPresenter(
-                    getCartListSimplifiedUseCase, deleteCartListUseCase, updateCartUseCase,
-                    compositeSubscription, addWishListUseCase, removeWishListUseCase,
-                    updateAndReloadCartUseCase, userSessionInterface, clearCacheAutoApplyStackUseCase,
-                    getRecentViewUseCase, getWishlistUseCase, getRecommendationUseCase,
-                    addToCartUseCase, addToCartExternalUseCase, getInsuranceCartUseCase,
-                    removeInsuranceProductUsecase, updateInsuranceProductDataUsecase, seamlessLoginUsecase,
-                    updateCartCounterUseCase, updateCartAndValidateUseUseCase, validateUsePromoRevampUseCase,
-                    TestSchedulers
+                    getCartListSimplifiedUseCase, deleteCartUseCase, undoDeleteCartUseCase,
+                    updateCartUseCase, compositeSubscription, addWishListUseCase,
+                    addCartToWishlistUseCase, removeWishListUseCase, updateAndReloadCartUseCase,
+                    userSessionInterface, clearCacheAutoApplyStackUseCase, getRecentViewUseCase,
+                    getWishlistUseCase, getRecommendationUseCase, addToCartUseCase,
+                    addToCartExternalUseCase, seamlessLoginUsecase, updateCartCounterUseCase,
+                    updateCartAndValidateUseUseCase, validateUsePromoRevampUseCase, setCartlistCheckboxStateUseCase,
+                    followShopUseCase, TestSchedulers
             )
         }
 
@@ -84,6 +84,11 @@ object CartListPresenterGetCartListTest : Spek({
 
             Given("empty response") {
                 every { getCartListSimplifiedUseCase.createObservable(any()) } returns Observable.just(emptyCartListData)
+                every { getCartListSimplifiedUseCase.buildParams(any()) } returns emptyMap()
+            }
+
+            Given("update cart counter") {
+                every { updateCartCounterUseCase.createObservable(any()) } answers { Observable.just(1) }
             }
 
             When("process initial get cart data") {
@@ -110,6 +115,11 @@ object CartListPresenterGetCartListTest : Spek({
 
             Given("empty response") {
                 every { getCartListSimplifiedUseCase.createObservable(any()) } returns Observable.just(emptyCartListData)
+                every { getCartListSimplifiedUseCase.buildParams(any()) } returns emptyMap()
+            }
+
+            Given("update cart counter") {
+                every { updateCartCounterUseCase.createObservable(any()) } answers { Observable.just(1) }
             }
 
             When("process initial get cart data") {
@@ -134,9 +144,27 @@ object CartListPresenterGetCartListTest : Spek({
 
             val exception = ResponseErrorException("Terjadi kesalahan pada server. Ulangi beberapa saat lagi")
 
+            val recommendationWidgetStringData = """
+                {
+                    "recommendationItemList": 
+                    [
+                    ]
+                }
+            """.trimIndent()
+
+            val response = mutableListOf<RecommendationWidget>().apply {
+                val recommendationWidget = Gson().fromJson(recommendationWidgetStringData, RecommendationWidget::class.java)
+                add(recommendationWidget)
+            }
+
             Given("throw error") {
                 every { getCartListSimplifiedUseCase.createObservable(any()) } returns Observable.error(exception)
-                every { getRecentViewUseCase.createObservable(any()) } answers { Observable.just(GqlRecentViewResponse()) }
+                every { getCartListSimplifiedUseCase.buildParams(any()) } returns emptyMap()
+                every { getRecentViewUseCase.createObservable(any()) } answers { Observable.just(response) }
+            }
+
+            Given("update cart counter") {
+                every { updateCartCounterUseCase.createObservable(any()) } answers { Observable.just(1) }
             }
 
             When("process initial get cart data") {
@@ -154,9 +182,26 @@ object CartListPresenterGetCartListTest : Spek({
 
             val exception = ResponseErrorException("Terjadi kesalahan pada server. Ulangi beberapa saat lagi")
 
+            val recommendationWidgetStringData = """
+                {
+                    "recommendationItemList": 
+                    [
+                    ]
+                }
+            """.trimIndent()
+
+            val response = mutableListOf<RecommendationWidget>().apply {
+                val recommendationWidget = Gson().fromJson(recommendationWidgetStringData, RecommendationWidget::class.java)
+                add(recommendationWidget)
+            }
             Given("throw error") {
                 every { getCartListSimplifiedUseCase.createObservable(any()) } returns Observable.error(exception)
-                every { getRecentViewUseCase.createObservable(any()) } answers { Observable.just(GqlRecentViewResponse()) }
+                every { getCartListSimplifiedUseCase.buildParams(any()) } returns emptyMap()
+                every { getRecentViewUseCase.createObservable(any()) } answers { Observable.just(response) }
+            }
+
+            Given("update cart counter") {
+                every { updateCartCounterUseCase.createObservable(any()) } answers { Observable.just(1) }
             }
 
             When("process initial get cart data") {

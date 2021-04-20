@@ -14,7 +14,7 @@
         android:layout_marginBottom="@dimen/dp_16"
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginStart="@dimen/dp_16"
-        android:textColor="@color/Neutral_N700"
+        android:textColor="@color/Unify_N700"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="heading_4"
@@ -27,7 +27,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_8"
         android:layout_marginLeft="@dimen/dp_8"
-        android:textColor="@color/Neutral_N700_44"
+        android:textColor="@color/Unify_N700_44"
         app:layout_constraintBaseline_toBaselineOf="@+id/txtVariantCategoryName"
         app:layout_constraintBottom_toBottomOf="@+id/txtVariantCategoryName"
         app:layout_constraintStart_toEndOf="@+id/txtVariantCategoryName"
@@ -44,7 +44,7 @@
         android:layout_marginEnd="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_16"
         android:text="@string/variant_guideline"
-        android:textColor="@color/green_500"
+        android:textColor="@color/Unify_G500"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@+id/txtVariantCategoryName"
         app:layout_constraintEnd_toEndOf="parent"
@@ -61,7 +61,7 @@
         app:layout_constraintStart_toStartOf="@+id/txtVariantCategoryName"
         app:layout_constraintTop_toBottomOf="@+id/rv_variant"
         app:typographyType="body_3"
-        android:textColor="@color/Neutral_N700_96"
+        android:textColor="@color/Unify_N700_96"
         tools:visibility="gone" />
 
     <androidx.recyclerview.widget.RecyclerView

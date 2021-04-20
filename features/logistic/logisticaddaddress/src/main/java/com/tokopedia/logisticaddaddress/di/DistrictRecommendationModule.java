@@ -9,6 +9,7 @@ import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.network.converter.TokopediaWsV4ResponseConverter;
 import com.tokopedia.config.GlobalConfig;
+import com.tokopedia.logisticCommon.domain.usecase.RevGeocodeUseCase;
 import com.tokopedia.logisticaddaddress.data.repository.DistrictRecommendationRepository;
 import com.tokopedia.logisticaddaddress.data.repository.ShopAddressRepository;
 import com.tokopedia.logisticaddaddress.data.service.KeroApi;
@@ -24,7 +25,7 @@ import com.tokopedia.logisticaddaddress.domain.usecase.GetDistrictRecommendation
 import com.tokopedia.logisticaddaddress.domain.usecase.GetDistrictRequestUseCase;
 import com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomContract;
 import com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomPresenter;
-import com.tokopedia.logisticdata.data.converter.GeneratedHostConverter;
+import com.tokopedia.logisticCommon.data.converter.GeneratedHostConverter;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.constant.TkpdBaseURL;
 import com.tokopedia.network.converter.StringResponseConverter;
@@ -206,9 +207,11 @@ public class DistrictRecommendationModule {
     @Provides
     @DistrictRecommendationScope
     DiscomContract.Presenter provideDistrictRecommendationPresenter(
-            GetDistrictRequestUseCase getDistrictRequestUseCase, GetDistrictRecommendation getDistrictRecommendation,
+            GetDistrictRequestUseCase getDistrictRequestUseCase,
+            RevGeocodeUseCase revGeocodeUseCase,
+            GetDistrictRecommendation getDistrictRecommendation,
             DistrictRecommendationMapper mapper) {
-        return new DiscomPresenter(getDistrictRequestUseCase, getDistrictRecommendation, mapper);
+        return new DiscomPresenter(getDistrictRequestUseCase, revGeocodeUseCase, getDistrictRecommendation, mapper);
     }
 
     @Provides

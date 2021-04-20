@@ -37,6 +37,9 @@ public class ImageProduct extends ImpressHolder implements Parcelable {
     private String imageClickUrl = "";
     private boolean loaded;
 
+    public ImageProduct() {
+    }
+
     public ImageProduct(JSONObject object) throws JSONException {
         if(!object.isNull(KEY_PRODUCT_ID)) {
             setProductId(object.getString(KEY_PRODUCT_ID));

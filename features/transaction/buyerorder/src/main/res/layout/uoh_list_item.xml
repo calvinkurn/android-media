@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.unifycomponents.CardUnify xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="@dimen/dp_4"
+    android:layout_marginRight="@dimen/dp_4"
+    android:layout_marginTop="@dimen/dp_8"
+    android:layout_marginBottom="@dimen/dp_8"
+    app:cardCornerRadius="@dimen/dp_8">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_data_product"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/dp_12">
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/ic_uoh_vertical"
+            android:layout_width="@dimen/dp_24"
+            android:layout_height="@dimen/dp_24"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:contentDescription="@string/icon_placeholder"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_uoh_categories"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toEndOf="@id/ic_uoh_vertical"
+            app:layout_constraintTop_toTopOf="@id/ic_uoh_vertical"
+            android:layout_marginStart="@dimen/dp_8"
+            app:typographyWeight="bold"
+            app:typographyType="small"
+            tools:text="Belanja"
+            android:textColor="@color/Unify_N700_96"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_uoh_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="@id/tv_uoh_categories"
+            app:layout_constraintTop_toBottomOf="@id/tv_uoh_categories"
+            app:layout_constraintBottom_toBottomOf="@id/ic_uoh_vertical"
+            tools:text="6 Mei 2020"
+            app:typographyType="small"
+            app:typographyWeight="reguler"
+            android:textSize="@dimen/sp_10"
+            android:textColor="@color/Unify_N700_68"/>
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/iv_kebab_menu"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="@id/tv_uoh_date"
+            app:srcCompat="@drawable/ic_kebab_buyer"
+            android:contentDescription="@string/icon_placeholder"
+            android:paddingStart="@dimen/dp_12"
+            android:paddingEnd="@dimen/dp_8"/>
+
+        <com.tokopedia.unifycomponents.Label
+            android:id="@+id/label_uoh_order"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toStartOf="@id/iv_kebab_menu"
+            app:layout_constraintTop_toTopOf="@id/iv_kebab_menu"
+            app:layout_constraintBottom_toBottomOf="@id/iv_kebab_menu"
+            app:labelType="general_dark_orange"
+            tools:text="Butuh Revisi"
+            android:textStyle="bold"/>
+        
+        <View
+            android:id="@+id/divider_uoh_order_1"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_1"
+            app:layout_constraintTop_toBottomOf="@id/tv_uoh_date"
+            android:layout_marginTop="@dimen/dp_12"
+            android:background="@color/Unify_N50"/>
+
+        <com.tokopedia.unifycomponents.ticker.Ticker
+            android:id="@+id/ticker_info_inside_card"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/divider_uoh_order_1"
+            app:layout_constraintLeft_toLeftOf="@id/cl_data_product"
+            app:layout_constraintRight_toRightOf="@id/cl_data_product"
+            android:visibility="gone"
+            tools:visibility="visible"
+            app:tickerShapeType="loose"
+            app:tickerType="warning"
+            app:closeButtonVisibility="gone"
+            android:layout_marginTop="@dimen/dp_8"/>
+
+        <RelativeLayout
+            android:id="@+id/rl_uoh_product"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/ticker_info_inside_card"
+            app:layout_constraintLeft_toLeftOf="@id/cl_data_product"
+            app:layout_constraintStart_toStartOf="@id/cl_data_product"
+            android:layout_marginTop="@dimen/dp_10"
+            android:layout_marginBottom="@dimen/dp_12">
+
+            <com.tokopedia.unifycomponents.ImageUnify
+                android:id="@+id/iv_uoh_product"
+                android:layout_width="@dimen/dp_40"
+                android:layout_height="@dimen/dp_40"
+                tools:ignore="ContentDescription"
+                android:layout_marginEnd="@dimen/dp_10"/>
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tv_uoh_product_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@id/iv_uoh_product"
+                app:typographyWeight="bold"
+                app:typographyType="heading_5"
+                android:textColor="@color/Unify_N700_96"
+                tools:text="Kartu Nama Standar"
+                android:ellipsize="end"
+                android:maxLines="1"/>
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tv_uoh_product_desc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@id/iv_uoh_product"
+                android:layout_below="@id/tv_uoh_product_name"
+                app:typographyType="body_3"
+                app:typographyWeight="reguler"
+                tools:text="1 Barang (0.100 kg)"
+                android:textColor="@color/Unify_N700_68"/>
+
+        </RelativeLayout>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/label_other_info"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/rl_uoh_product"
+            app:layout_constraintStart_toStartOf="parent"
+            app:typographyWeight="reguler"
+            app:typographyType="body_3"
+            tools:text="+2 produk lainnya"
+            android:layout_marginTop="@dimen/dp_12"
+            android:textColor="@color/Unify_N700_96"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_uoh_total_belanja"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/label_other_info"
+            android:layout_marginTop="@dimen/dp_12"
+            app:typographyWeight="reguler"
+            app:typographyType="small"
+            android:textColor="@color/Unify_N700_96"
+            tools:text="Total Belanja"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_uoh_total_belanja_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:typographyType="body_3"
+            app:typographyWeight="bold"
+            android:textColor="@color/Unify_N700_96"
+            app:layout_constraintStart_toStartOf="@id/tv_uoh_total_belanja"
+            app:layout_constraintTop_toBottomOf="@id/tv_uoh_total_belanja"
+            app:layout_constraintBottom_toBottomOf="parent"
+            tools:text="Rp30.000"/>
+        
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/uoh_btn_action"
+            android:layout_width="wrap_content"
+            android:minWidth="@dimen/dp_110"
+            android:layout_height="@dimen/dp_24"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            tools:text="Revisi File"
+            app:unifyButtonSize="micro"
+            app:unifyButtonType="main"
+            app:unifyButtonVariant="filled"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</com.tokopedia.unifycomponents.CardUnify>

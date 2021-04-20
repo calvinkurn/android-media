@@ -17,6 +17,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.network.utils.ErrorHandler
@@ -38,35 +39,40 @@ import com.tokopedia.unifycomponents.setImage
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
 /**
  * A simple [Fragment] subclass.
  */
-class ChangePinFragment : BaseDaggerFragment(), CoroutineScope {
+open class ChangePinFragment : BaseDaggerFragment(), CoroutineScope {
 
     @Inject
     lateinit var trackingPinUtil: TrackingPinUtil
+
     @Inject
     lateinit var userSession: UserSessionInterface
+
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
     @Inject
     lateinit var loadingDialog: LoadingDialog
 
     private val viewModelProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
-    private val changePinViewModel by lazy { viewModelProvider.get(ChangePinViewModel::class.java) }
+    protected val changePinViewModel by lazy { viewModelProvider.get(ChangePinViewModel::class.java) }
 
-    private var isConfirm = false
-    private var isValidated = false
-    private var isForgotPin = false
-    private var inputNewPin = false
+    protected var isConfirm = false
+    protected var isValidated = false
+    protected var inputNewPin = false
     private val job = Job()
 
-    private var pin = ""
+    protected var pin = ""
     private var oldPin = ""
+    protected var source = 0
 
     private var changePinInput: PinUnify? = null
     private var methodIcon: ImageUnify? = null
@@ -129,12 +135,12 @@ class ChangePinFragment : BaseDaggerFragment(), CoroutineScope {
         })
     }
 
-    private fun handleInputPin(text: String) {
+    open fun handleInputPin(text: String) {
         if (text.length == PIN_LENGTH) {
             when {
                 isConfirm -> handleConfirmState(text)
                 inputNewPin -> handleInputNewPinState(text)
-                isValidated || isForgotPin -> handleValidatedAndForgotState(text)
+                isValidated -> handleValidatedAndForgotState(text)
                 else -> {
                     changePinViewModel.validatePin(text)
                 }
@@ -144,25 +150,21 @@ class ChangePinFragment : BaseDaggerFragment(), CoroutineScope {
         }
     }
 
-    private fun handleValidatedAndForgotState(input: String) {
+    open fun handleValidatedAndForgotState(input: String) {
         pin = input
         konfirmasiState()
     }
 
-    private fun handleConfirmState(input: String) {
+    open fun handleConfirmState(input: String) {
         if (pin == input) {
-            if (isForgotPin) {
-                goToVerificationActivity()
-            } else {
-                showLoading()
-                changePinViewModel.changePin(pin, input, oldPin)
-            }
+            showLoading()
+            changePinViewModel.changePin(pin, input, oldPin)
         } else {
             displayErrorPin(getString(R.string.error_wrong_pin))
         }
     }
 
-    private fun handleInputNewPinState(input: String) {
+    open fun handleInputNewPinState(input: String) {
         changePinViewModel.checkPin(input)
     }
 
@@ -174,7 +176,7 @@ class ChangePinFragment : BaseDaggerFragment(), CoroutineScope {
         }
     }
 
-    private fun goToVerificationActivity() {
+    open fun goToVerificationActivity() {
         val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.COTP)
         val bundle = Bundle().apply {
             putString(ApplinkConstInternalGlobal.PARAM_EMAIL, userSession.email)
@@ -221,13 +223,11 @@ class ChangePinFragment : BaseDaggerFragment(), CoroutineScope {
         changePinInput?.pinSecondaryActionText = ""
     }
 
-    private fun forgotPinState() {
-        isForgotPin = true
-        inputNewPinState()
-        if (activity is ChangePinActivity) (activity as ChangePinActivity).supportActionBar?.title = resources.getString(R.string.change_pin_title_setting)
+    protected fun forgotPinState() {
+        arguments?.let { (activity as ChangePinActivity).goToForgotPin(it) }
     }
 
-    private fun inputNewPinState() {
+    open fun inputNewPinState() {
         inputNewPin = true
         resetInputPin()
         changePinInput?.pinTitle = getString(R.string.change_pin_title_new_pin)
@@ -247,7 +247,7 @@ class ChangePinFragment : BaseDaggerFragment(), CoroutineScope {
         } else {
             changePinInput?.pinSecondaryActionView?.apply {
                 text = getString(R.string.change_pin_forgot_btn)
-                setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Green_G500))
+                setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
                 setOnClickListener(onForgotPinClick)
                 isEnabled = true
             }
@@ -301,10 +301,14 @@ class ChangePinFragment : BaseDaggerFragment(), CoroutineScope {
         onError(error)
     }
 
-    private fun goToSuccessPage() {
+    open fun goToSuccessPage() {
         val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_PIN_COMPLETE).apply {
             flags = Intent.FLAG_ACTIVITY_FORWARD_RESULT
-            putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, if (isForgotPin) PinCompleteFragment.SOURCE_FORGOT_PIN else PinCompleteFragment.SOURCE_CHANGE_PIN)
+            if(source < 1) {
+                source = PinCompleteFragment.SOURCE_CHANGE_PIN
+            }
+            putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, source)
+            source = 0
         }
         startActivity(intent)
         activity?.finish()
@@ -316,9 +320,9 @@ class ChangePinFragment : BaseDaggerFragment(), CoroutineScope {
         else onError(Throwable())
     }
 
-    private fun onSuccessChangePin(data: AddChangePinData){
+    private fun onSuccessChangePin(data: AddChangePinData) {
         dismissLoading()
-        if(data.success) goToSuccessPage()
+        if (data.success) goToSuccessPage()
         else onError(Throwable())
     }
 
@@ -326,6 +330,17 @@ class ChangePinFragment : BaseDaggerFragment(), CoroutineScope {
         changePinViewModel.resetPinResponse.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> onSuccessResetPin(it.data)
+                is Fail -> onError(it.throwable)
+            }
+        })
+
+        changePinViewModel.resetPin2FAResponse.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Success -> {
+                    dismissLoading()
+                    if (it.data.is_success == 1) goToSuccessPage()
+                    else onError(Throwable())
+                }
                 is Fail -> onError(it.throwable)
             }
         })
@@ -345,7 +360,7 @@ class ChangePinFragment : BaseDaggerFragment(), CoroutineScope {
         })
 
         changePinViewModel.changePinResponse.observe(viewLifecycleOwner, Observer {
-            when(it){
+            when (it) {
                 is Success -> onSuccessChangePin(it.data)
                 is Fail -> onError(it.throwable)
             }

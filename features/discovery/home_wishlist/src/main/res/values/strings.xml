@@ -26,4 +26,13 @@
     <string name="wishlist_search_not_found_description">Hasil pencarian untuk %s tidak ditemukan</string>
     <string name="wishlist_delete_text">Hapus %s produk</string>
     <string name="wishlist_delete_zero_text">Hapus produk</string>
+    <string name="content_desc_edit_text_search">input search wishlist</string>
+    <string name="content_desc_wishlist_checkbox">checkbox pilih wishlist</string>
+    <string name="content_desc_delete_button">button hapus produk</string>
+    <string name="label_cart_wishlist">Keranjang</string>
+    <string name="label_delete_wishlist_cancel">Batal</string>
+    <string name="label_delete_wishlist_manage">Atur</string>
+
+    <string name="content_desc_close_text_search">Close search wishlist</string>
+    <string name="content_desc_custom_search_magnify_icon">Search</string>
 </resources>

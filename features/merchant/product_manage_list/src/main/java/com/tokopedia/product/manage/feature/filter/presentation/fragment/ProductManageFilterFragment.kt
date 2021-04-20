@@ -29,7 +29,7 @@ import com.tokopedia.product.manage.feature.filter.presentation.viewmodel.Produc
 import com.tokopedia.product.manage.feature.filter.presentation.widget.ChipsAdapter
 import com.tokopedia.product.manage.feature.filter.presentation.widget.SeeAllListener
 import com.tokopedia.product.manage.feature.filter.presentation.widget.ShowChipsListener
-import com.tokopedia.product.manage.feature.list.analytics.ProductManageTracking
+import com.tokopedia.product.manage.common.feature.list.analytics.ProductManageTracking
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.usecase.coroutines.Fail
@@ -232,7 +232,7 @@ class ProductManageFilterFragment(private var onFinishedListener: OnFinishedList
     }
 
     private fun observeCombinedResponse() {
-        productManageFilterViewModel.filterOptionsResponse.observe(this, Observer {
+        productManageFilterViewModel.filterOptionsResponse.observe(viewLifecycleOwner, Observer {
             when(it) {
                 is Success -> {
                     val mappedResult = ProductManageFilterMapper.mapCombinedResultToFilterViewModels(it.data)
@@ -283,7 +283,7 @@ class ProductManageFilterFragment(private var onFinishedListener: OnFinishedList
     }
 
     private fun observeFilterData() {
-        productManageFilterViewModel.filterData.observe(this, Observer {
+        productManageFilterViewModel.filterData.observe(viewLifecycleOwner, Observer {
             if (needToPostponeActivityResult) {
                 postponedActivityResult?.run()
             }

@@ -12,13 +12,17 @@ import com.tokopedia.kotlin.model.ImpressHolder
 
 class HomepageBannerDataModel : ImpressHolder(), HomeVisitable {
     var slides: List<BannerSlidesModel>? = null
+    var createdTimeMillis = ""
     private var isCache: Boolean = false
     private var trackingData: Map<String, Any>? = null
     private var trackingDataForCombination: List<Any>? = null
     private var isCombined: Boolean = false
 
     override fun equalsWith(b: Any?): Boolean {
-        return b is HomepageBannerDataModel && b.slides == slides && b.slides?.size == b.slides?.size
+        return if (b is HomepageBannerDataModel) {
+            createdTimeMillis == b.createdTimeMillis
+        }
+        else false
     }
 
     override fun getChangePayloadFrom(b: Any?): Bundle? {

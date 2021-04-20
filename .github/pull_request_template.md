@@ -33,3 +33,32 @@ https://phab.tokopedia.com/XXXXX
 ## Affected Module / Feature
 
 ## QA Name
+
+## Command List
+- **/check all** - run all pr checker
+- **/check build** - run MainApp and/or SellerApp checker based on affected modules
+- **/check unittest** - run unit test checker
+- **/check review** - run auto mention code review system
+- **/check risk** - run risk analysis
+- **/check lint** - run linter checker
+- **/check instrument** - run TopAds Checker instrumentation test
+- **/check datatest** - run data tracking test (Cassava)
+- **/check performance** - run performance check
+- **/check smoketest <MA_APK_LINK> <SA_APK_LINK>** - run auto mention smoke test request to slack due to changed libs version, with MainApp and SellerApp apk google drive link to test (the changed libraries version will be listed automatically)
+
+## Gatekeeper Spells
+- **approved for app-size** - send along with the approval to cast the magic 
+*(more info: @tokopedia/android-gatekeeper-app-size)*
+
+- **approved for risk** - send along with the approval to cast the magic 
+*(more info: @tokopedia/android-gatekeeper-risk-analysis)*
+
+- **approved for linter** - send along with the approval to cast the magic 
+*(more info: @tokopedia/android-gatekeeper-linter)*
+
+- **approved for new module** - send along with the approval to cast the magic 
+*(more info: @tokopedia/android-gatekeeper-new-module)*
+
+- **approved for dark mode** - send along with the approval to cast the magic
+*(more info: @tokopedia/android-gatekeeper-dark-mode)*
+

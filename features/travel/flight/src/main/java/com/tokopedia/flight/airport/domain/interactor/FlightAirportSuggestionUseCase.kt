@@ -1,10 +1,8 @@
 package com.tokopedia.flight.airport.domain.interactor
 
-import android.content.Context
 import android.text.TextUtils
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.flight.airportv2.data.FlightAirportQuery
 import com.tokopedia.flight.airportv2.data.source.entity.ResponseFlightAirportSuggesstion
 import com.tokopedia.flight.airportv2.domain.FlightAirportMapper
 import com.tokopedia.graphql.data.model.GraphqlRequest
@@ -19,15 +17,14 @@ import javax.inject.Inject
 /**
  * Created by nabillasabbaha on 06/03/19.
  */
-class FlightAirportSuggestionUseCase @Inject constructor(@ApplicationContext val context: Context,
-                                                         val graphqlUseCase: GraphqlUseCase,
+class FlightAirportSuggestionUseCase @Inject constructor(val graphqlUseCase: GraphqlUseCase,
                                                          val mapper: FlightAirportMapper)
     : UseCase<@JvmSuppressWildcards List<Visitable<*>>>() {
 
     override fun createObservable(requestParams: RequestParams): Observable<List<Visitable<*>>> {
         return Observable.just(requestParams)
                 .flatMap(Func1<RequestParams, Observable<GraphqlResponse>> {
-                    val query = GraphqlHelper.loadRawString(context.resources, com.tokopedia.flight.R.raw.flight_airport_suggestion)
+                    val query = FlightAirportQuery.QUERY_AIRPORT_SUGGESTION
                     val variable = requestParams.parameters
                     if (!TextUtils.isEmpty(query)) {
                         graphqlUseCase.clearRequest()
@@ -44,7 +41,7 @@ class FlightAirportSuggestionUseCase @Inject constructor(@ApplicationContext val
                 .map { mapper.transformToVisitable(it) }
     }
 
-    fun createRequestParam(keyword : String) : RequestParams {
+    fun createRequestParam(keyword: String): RequestParams {
         val requestParams = RequestParams.create()
         requestParams.putString(INPUT_VARIABLE, keyword)
         return requestParams

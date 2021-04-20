@@ -1,12 +1,11 @@
 package com.tokopedia.discovery2.viewcontrollers.activity
 
 import android.content.Context
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.*
 import com.tokopedia.applink.RouteManager
 
 
-abstract class DiscoveryBaseViewModel() {
+abstract class DiscoveryBaseViewModel : LifecycleObserver {
     open fun initDaggerInject() {}
     val syncData: MutableLiveData<Boolean> = MutableLiveData()
     fun getSyncPageLiveData(): LiveData<Boolean> {
@@ -26,7 +25,7 @@ abstract class DiscoveryBaseViewModel() {
         }
     }
 
-    fun onDetachToViewHolder() {
+    open fun onDetachToViewHolder() {
 
     }
 
@@ -35,6 +34,36 @@ abstract class DiscoveryBaseViewModel() {
     }
 
     open fun isPhoneVerificationSuccess(phoneVerifyStatus: Boolean) {
+
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
+    open fun onCreate() {
+
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_START)
+    open fun onStart() {
+
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
+    open fun onStop() {
+
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
+    open fun onResume() {
+
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
+    open fun onPause() {
+
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
+    open fun onDestroy() {
 
     }
 }

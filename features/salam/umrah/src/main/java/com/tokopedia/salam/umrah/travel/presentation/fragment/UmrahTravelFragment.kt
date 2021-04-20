@@ -23,6 +23,7 @@ import com.tokopedia.salam.umrah.R
 import com.tokopedia.salam.umrah.common.analytics.*
 import com.tokopedia.salam.umrah.common.data.TravelAgent
 import com.tokopedia.salam.umrah.common.data.UmrahItemWidgetModel
+import com.tokopedia.salam.umrah.common.util.UmrahQuery
 import com.tokopedia.salam.umrah.common.util.UmrahShare
 import com.tokopedia.salam.umrah.travel.data.UmrahTravelAgentBySlugNameEntity
 import com.tokopedia.salam.umrah.travel.di.UmrahTravelComponent
@@ -80,7 +81,7 @@ class UmrahTravelFragment : BaseDaggerFragment(), UmrahTravelActivity.TravelList
     private fun requestData() {
         slugName?.let {
             umrahTravelViewModel.requestTravelData(
-                    GraphqlHelper.loadRawString(resources, R.raw.gql_query_umrah_travel_by_slugname), it)
+                    UmrahQuery.UMRAH_TRAVEL_BY_SLUGNAME, it)
         }
     }
 
@@ -100,7 +101,7 @@ class UmrahTravelFragment : BaseDaggerFragment(), UmrahTravelActivity.TravelList
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        umrahTravelViewModel.travelAgentData.observe(this, Observer {
+        umrahTravelViewModel.travelAgentData.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     travelAgent = it.data.umrahTravelAgentBySlug

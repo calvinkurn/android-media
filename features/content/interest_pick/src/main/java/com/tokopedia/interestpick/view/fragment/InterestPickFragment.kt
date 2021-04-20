@@ -9,6 +9,8 @@ import android.text.style.ClickableSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
@@ -20,7 +22,10 @@ import com.tokopedia.interest_pick_common.view.adapter.InterestPickAdapter.Compa
 import com.tokopedia.interest_pick_common.view.viewmodel.InterestPickDataViewModel
 import com.tokopedia.interestpick.R
 import com.tokopedia.interestpick.di.DaggerInterestPickComponent
-import com.tokopedia.interestpick.view.listener.InterestPickContract
+import com.tokopedia.interestpick.view.subscriber.InterestPickViewState
+import com.tokopedia.interestpick.view.viewmodel.InterestPickViewModel
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import kotlinx.android.synthetic.main.fragment_interest_pick.*
 import javax.inject.Inject
 
@@ -28,17 +33,19 @@ import javax.inject.Inject
  * @author by milhamj on 03/09/18.
  */
 
-class InterestPickFragment : BaseDaggerFragment(), InterestPickContract.View, InterestPickAdapter.InterestPickItemListener {
+class InterestPickFragment : BaseDaggerFragment(), InterestPickAdapter.InterestPickItemListener {
 
     companion object {
         fun createInstance() = InterestPickFragment()
     }
 
     @Inject
-    lateinit var presenter: InterestPickContract.Presenter
-    lateinit var adapter: InterestPickAdapter
-    var selectedCount = 0
-    var isSaved = false
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    private lateinit var adapter: InterestPickAdapter
+    private lateinit var interestPickViewModel: InterestPickViewModel
+
+    private var selectedCount = 0
 
     override fun getScreenName() = null
 
@@ -61,32 +68,55 @@ class InterestPickFragment : BaseDaggerFragment(), InterestPickContract.View, In
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initView()
-        presenter.attachView(this)
-        presenter.fetchData()
+        setUpObservers()
+        interestPickViewModel.onViewCreated()
     }
 
-    override fun onDestroy() {
-        presenter.detachView()
-        super.onDestroy()
+    private fun setUpObservers() {
+        interestPickViewModel.getInterestPickLiveData().observe(viewLifecycleOwner, Observer {
+            hideLoading()
+            when (it) {
+                is InterestPickViewState.GetInterestSuccess -> {
+                    onSuccessGetInterest(it.interestList, it.headerModel)
+                }
+                is InterestPickViewState.UpdateInterestSuccess -> {
+                    onSuccessUpdateInterest()
+                }
+                is InterestPickViewState.Error -> {
+                    if (it.onUpdate) {
+                        onErrorUpdateInterest(it.error)
+                    } else {
+                        onErrorGetInterest(it.error)
+                    }
+
+                }
+                is InterestPickViewState.LoadingState -> {
+                    showLoading()
+                }
+                is InterestPickViewState.ProgressState -> {
+                    showProgress()
+                }
+            }
+        })
     }
 
-    override fun showLoading() {
-        mainView.visibility = View.GONE
-        loadingView.visibility = View.VISIBLE
+    private fun showLoading() {
+        mainView.hide()
+        loadingView.show()
     }
 
-    override fun showProgress() {
-        progressBar.visibility = View.VISIBLE
+    private fun showProgress() {
+        progressBar.show()
     }
 
-    override fun hideLoading() {
-        mainView.visibility = View.VISIBLE
-        loadingView.visibility = View.GONE
-        progressBar.visibility = View.GONE
+    private fun hideLoading() {
+        mainView.show()
+        loadingView.hide()
+        progressBar.hide()
     }
 
-    override fun onSuccessGetInterest(interestList: ArrayList<InterestPickDataViewModel>,
-                                      title: String) {
+    private fun onSuccessGetInterest(interestList: ArrayList<InterestPickDataViewModel>,
+                                     title: String) {
         for (item in interestList) {
             if (item.isSelected) {
                 selectedCount++
@@ -98,13 +128,13 @@ class InterestPickFragment : BaseDaggerFragment(), InterestPickContract.View, In
         titleTextView.text = title
     }
 
-    override fun onErrorGetInterest(message: String) {
-        NetworkErrorHelper.showEmptyState(context, view, message, {
-            presenter.fetchData()
-        })
+    private fun onErrorGetInterest(message: String) {
+        NetworkErrorHelper.showEmptyState(context, view, message) {
+            interestPickViewModel.onRetry()
+        }
     }
 
-    override fun onSuccessUpdateInterest() {
+    private fun onSuccessUpdateInterest() {
         val selectedList = ArrayList<InterestPickDataViewModel>()
         for (item in adapter.getList()) {
             if (item.isSelected) {
@@ -117,7 +147,7 @@ class InterestPickFragment : BaseDaggerFragment(), InterestPickContract.View, In
 
         val goToAccountHome = object : ClickableSpan() {
             override fun onClick(view: View) {
-                RouteManager.route(context, ApplinkConst.HOME_ACCOUNT);
+                RouteManager.route(context, ApplinkConst.HOME_ACCOUNT)
                 activity?.finish()
             }
 
@@ -132,8 +162,8 @@ class InterestPickFragment : BaseDaggerFragment(), InterestPickContract.View, In
         val subtitleSpan = SpannableString(subtitle)
         subtitleSpan.setSpan(
                 goToAccountHome,
-                subtitle.indexOf(subtitleEnd, ignoreCase=true),
-                subtitle.indexOf(subtitleEnd, ignoreCase=true) + subtitleEnd.length,
+                subtitle.indexOf(subtitleEnd, ignoreCase = true),
+                subtitle.indexOf(subtitleEnd, ignoreCase = true) + subtitleEnd.length,
                 Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
         )
         subtitleTextView.text = subtitleSpan
@@ -144,17 +174,14 @@ class InterestPickFragment : BaseDaggerFragment(), InterestPickContract.View, In
             RouteManager.route(context, ApplinkConst.FEED)
             activity?.finish()
         }
-        isSaved = true
     }
 
-    override fun onErrorUpdateInterest(message: String) {
+    private fun onErrorUpdateInterest(message: String) {
         NetworkErrorHelper.showRedSnackbar(view, message)
     }
 
-    override fun onBackPressed() {
-        if (!isSaved) {
-            presenter.onBackPressed()
-        }
+    fun onBackPressed() {
+        interestPickViewModel.onBackPressed()
     }
 
     private fun updateSaveButtonState() {
@@ -168,10 +195,14 @@ class InterestPickFragment : BaseDaggerFragment(), InterestPickContract.View, In
     }
 
     private fun initView() {
+        activity?.let {
+            val viewModelProvider = ViewModelProvider(this, viewModelFactory)
+            interestPickViewModel = viewModelProvider.get(InterestPickViewModel::class.java)
+        }
         adapter = InterestPickAdapter(this, SOURCE_ACCOUNTS)
         interestList.adapter = adapter
         saveInterest.setOnClickListener {
-            presenter.updateInterest(adapter.getSelectedItemIdList())
+            interestPickViewModel.updateInterest(adapter.getSelectedItemIdList())
         }
     }
 

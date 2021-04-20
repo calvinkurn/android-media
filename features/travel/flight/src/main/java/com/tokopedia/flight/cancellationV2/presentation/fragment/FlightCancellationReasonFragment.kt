@@ -12,6 +12,8 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.flight.R
 import com.tokopedia.flight.cancellation.view.fragment.customview.FlightCancellationViewImageDialogFragment
 import com.tokopedia.flight.cancellationV2.di.FlightCancellationComponent
@@ -24,10 +26,9 @@ import com.tokopedia.flight.cancellationV2.presentation.model.FlightCancellation
 import com.tokopedia.flight.cancellationV2.presentation.model.FlightCancellationWrapperModel
 import com.tokopedia.flight.cancellationV2.presentation.viewmodel.FlightCancellationReasonViewModel
 import com.tokopedia.flight.common.util.FlightAnalytics
-import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
-import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder
-import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef
-import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
+import com.tokopedia.imagepicker.common.ImagePickerBuilder
+import com.tokopedia.imagepicker.common.ImagePickerResultExtractor
+import com.tokopedia.imagepicker.common.putImagePickerBuilder
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
@@ -117,6 +118,7 @@ class FlightCancellationReasonFragment : BaseDaggerFragment(),
         cancellationReasonViewModel.canNavigateToNextStep.observe(viewLifecycleOwner, Observer {
             hideProgressBar()
             if (it) {
+                cancellationReasonViewModel.trackOnNext()
                 navigateToReviewPage()
             }
         })
@@ -135,8 +137,8 @@ class FlightCancellationReasonFragment : BaseDaggerFragment(),
             }
             REQUEST_CODE_IMAGE -> {
                 data?.let {
-                    val imagePathList = data.getStringArrayListExtra(ImagePickerActivity.PICKER_RESULT_PATHS)
-                    if (imagePathList == null || imagePathList.isEmpty()) {
+                    val imagePathList = ImagePickerResultExtractor.extract(data).imageUrlOrPathList
+                    if (imagePathList.isEmpty()) {
                         return
                     }
 
@@ -165,17 +167,10 @@ class FlightCancellationReasonFragment : BaseDaggerFragment(),
 
     override fun onUploadAttachmentButtonClicked(position: Int) {
         cancellationReasonViewModel.editedAttachmentPosition = position
-        val imagePickerBuilder = ImagePickerBuilder(getString(com.tokopedia.imagepicker.R.string.choose_image),
-                intArrayOf(ImagePickerTabTypeDef.TYPE_GALLERY, ImagePickerTabTypeDef.TYPE_CAMERA),
-                GalleryType.IMAGE_ONLY,
-                ImagePickerBuilder.DEFAULT_MAX_IMAGE_SIZE_IN_KB,
-                ImagePickerBuilder.DEFAULT_MIN_RESOLUTION,
-                null,
-                true,
-                null,
-                null)
-        startActivityForResult(ImagePickerActivity.getIntent(requireContext(), imagePickerBuilder),
-                REQUEST_CODE_IMAGE)
+        val imagePickerBuilder = ImagePickerBuilder.getOriginalImageBuilder(requireContext())
+        val intent = RouteManager.getIntent(requireContext(), ApplinkConstInternalGlobal.IMAGE_PICKER)
+        intent.putImagePickerBuilder(imagePickerBuilder)
+        startActivityForResult(intent, REQUEST_CODE_IMAGE)
     }
 
     override fun viewImage(filePath: String) {
@@ -183,7 +178,10 @@ class FlightCancellationReasonFragment : BaseDaggerFragment(),
     }
 
     private fun buildView() {
-        et_saved_passenger.setOnClickListener {
+        til_saved_passenger.textFieldInput.isClickable = true
+        til_saved_passenger.textFieldInput.isFocusable = false
+        til_saved_passenger.textFieldInput.isSingleLine = true
+        til_saved_passenger.textFieldInput.setOnClickListener {
             startActivityForResult(FlightCancellationChooseReasonActivity.getCallingIntent(requireContext(), cancellationReasonViewModel.selectedReason),
                     REQUEST_CODE_CHOOSE_REASON)
             requireActivity().overridePendingTransition(com.tokopedia.common.travel.R.anim.travel_slide_up_in, com.tokopedia.common.travel.R.anim.travel_anim_stay)
@@ -220,7 +218,7 @@ class FlightCancellationReasonFragment : BaseDaggerFragment(),
 
     private fun renderSelectedReason() {
         cancellationReasonViewModel.selectedReason?.let {
-            et_saved_passenger.setText(it.title)
+            til_saved_passenger.textFieldInput.setText(it.title)
             deleteAllAttachments()
             if (it.formattedRequiredDocs.size > 0) {
                 cancellationReasonViewModel.buildViewAttachmentList(it.formattedRequiredDocs[0].id.toInt())
@@ -281,11 +279,11 @@ class FlightCancellationReasonFragment : BaseDaggerFragment(),
     }
 
     private fun showErrorSnackbar(resId: Int) {
-        Toaster.make(requireView(), getString(resId), Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR)
+        Toaster.build(requireView(), getString(resId), Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
     }
 
     private fun showErrorSnackbar(message: String) {
-        Toaster.make(requireView(), message, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR)
+        Toaster.build(requireView(), message, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
     }
 
     private fun showImageInFragment(filePath: String) {

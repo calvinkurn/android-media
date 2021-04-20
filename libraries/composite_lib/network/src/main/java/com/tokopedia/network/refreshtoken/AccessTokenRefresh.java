@@ -1,17 +1,19 @@
 package com.tokopedia.network.refreshtoken;
 
 import android.content.Context;
+import android.text.TextUtils;
 
 import com.google.gson.GsonBuilder;
-import com.tokopedia.network.interceptor.akamai.AkamaiBotInterceptor;
-import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.converter.StringResponseConverter;
 import com.tokopedia.network.interceptor.FingerprintInterceptor;
+import com.tokopedia.network.interceptor.TkpdAuthenticator;
+import com.tokopedia.network.interceptor.akamai.AkamaiBotInterceptor;
 import com.tokopedia.network.utils.TkpdOkHttpBuilder;
+import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.user.session.UserSessionInterface;
 
-import java.io.IOException;
+import java.net.SocketException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -19,6 +21,7 @@ import okhttp3.OkHttpClient;
 import retrofit2.Call;
 import retrofit2.Response;
 import retrofit2.Retrofit;
+import timber.log.Timber;
 
 /**
  * @author ricoharisin .
@@ -31,15 +34,22 @@ public class AccessTokenRefresh {
     private static final String ACCESS_TOKEN = "access_token";
     private static final String GRANT_TYPE = "grant_type";
     private static final String REFRESH_TOKEN = "refresh_token";
+    private static final String PATH = "path";
 
     public String refreshToken(Context context, UserSessionInterface userSession, NetworkRouter
             networkRouter) {
+        return refreshToken(context, userSession, networkRouter, "/");
+    }
+
+    public String refreshToken(Context context, UserSessionInterface userSession, NetworkRouter
+            networkRouter, String path) {
 
         Map<String, String> params = new HashMap<>();
 
         params.put(ACCESS_TOKEN, userSession.getAccessToken());
         params.put(GRANT_TYPE, REFRESH_TOKEN);
         params.put(REFRESH_TOKEN, EncoderDecoder.Decrypt(userSession.getFreshToken(), userSession.getRefreshTokenIV()));
+        params.put(PATH, path);
 
         Call<String> responseCall = getRetrofit(context, userSession, networkRouter).create(AccountsBasicApi.class).getTokenSynchronous(params);
 
@@ -50,17 +60,24 @@ public class AccessTokenRefresh {
 
             if (response.errorBody() != null) {
                 tokenResponseError = response.errorBody().string();
-                checkShowForceLogout(tokenResponseError, networkRouter);
+                Timber.w("P2#USER_AUTHENTICATOR#'%s';oldToken='%s';error='%s';path='%s'", "error_refresh_token", userSession.getAccessToken(), tokenResponseError, path);
+                networkRouter.sendRefreshTokenAnalytics(tokenResponseError);
+                checkShowForceLogout(tokenResponseError, networkRouter, path, userSession);
             } else if (response.body() != null) {
                 tokenResponse = response.body();
+                networkRouter.sendRefreshTokenAnalytics("");
             } else {
                 return "";
             }
 
-        } catch (IOException e) {
+        } catch (SocketException e) {
             e.printStackTrace();
+            Timber.w("P2#USER_AUTHENTICATOR#'%s';error='%s';path='%s'", "socket_exception", TkpdAuthenticator.Companion.formatThrowable(e), path);
         } catch (Exception e) {
             e.printStackTrace();
+            networkRouter.sendRefreshTokenAnalytics(e.toString());
+            Timber.w("P2#USER_AUTHENTICATOR#'%s';oldToken='%s';error='%s';path='%s'", "failed_refresh_token", userSession.getAccessToken(), TkpdAuthenticator.Companion.formatThrowable(e), path);
+            forceLogoutAndShowDialogForLoggedInUsers(userSession, networkRouter, path);
         }
 
         TokenModel model = null;
@@ -83,6 +100,13 @@ public class AccessTokenRefresh {
         }
     }
 
+    private void forceLogoutAndShowDialogForLoggedInUsers(UserSessionInterface userSession, NetworkRouter networkRouter, String path) {
+        if(!TextUtils.isEmpty(userSession.getAccessToken())) {
+            userSession.logoutSession();
+            networkRouter.showForceLogoutTokenDialog(path);
+        }
+    }
+
     private Retrofit getRetrofit(Context context, UserSessionInterface userSession, NetworkRouter
             networkRouter) {
         TkpdOkHttpBuilder tkpdOkHttpBuilder = new TkpdOkHttpBuilder(context, new OkHttpClient.Builder());
@@ -100,9 +124,10 @@ public class AccessTokenRefresh {
         return responseString.toLowerCase().contains(FORCE_LOGOUT);
     }
 
-    protected void checkShowForceLogout(String response, NetworkRouter networkRouter) {
+    protected void checkShowForceLogout(String response, NetworkRouter networkRouter, String path, UserSessionInterface userSession) {
         if (isRequestDenied(response)) {
-            networkRouter.showForceLogoutTokenDialog(response);
+            networkRouter.showForceLogoutTokenDialog(path);
+            forceLogoutAndShowDialogForLoggedInUsers(userSession, networkRouter, path);
         }
     }
 }

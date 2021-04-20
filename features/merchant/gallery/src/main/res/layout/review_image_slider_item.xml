@@ -5,13 +5,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    android:background="@color/black">
+    android:background="@color/Unify_Static_Black">
 
     <ImageView
         android:id="@+id/review_image_slider_item_image_view"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
+        android:contentDescription="@null"
         android:layout_marginTop="@dimen/review_image_slider_item_image_view_vertical_spacing"
         android:layout_marginBottom="@dimen/review_image_slider_item_image_view_vertical_spacing"/>
 
@@ -19,21 +20,22 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_marginLeft="17dp"
+        android:layout_marginStart="@dimen/dp_17"
         android:gravity="center_vertical">
 
         <ImageView
             android:id="@+id/review_image_slider_rating"
             android:layout_width="@dimen/review_image_slider_rating_width"
             android:layout_height="@dimen/review_image_slider_rating_height"
+            android:contentDescription="@null"
             tools:src="@drawable/ic_gold_star_five"/>
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/review_image_slider_date"
             style="@style/TextView.Micro.WhitePrimary"
-            android:layout_marginLeft="9dp"
-            tools:text="20 Okt 2018"
-            />
+            android:layout_marginStart="@dimen/dp_9"
+            app:typographyType="body_3"
+            app:typographyWeight="reguler" />
 
     </LinearLayout>
 
@@ -42,21 +44,23 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_marginTop="2dp"
-        android:layout_marginBottom="24dp"
-        android:layout_marginLeft="17dp"
+        android:layout_marginTop="@dimen/dp_2"
+        android:layout_marginBottom="@dimen/dp_24"
+        android:layout_marginStart="@dimen/dp_17"
         android:gravity="center_vertical">
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             style="@style/TextView.Micro.WhitePrimary"
             android:text="@string/review_image_slider_by_prefix"
-            />
+            app:typographyType="body_3"
+            app:typographyWeight="reguler" />
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/review_image_slider_name"
             style="@style/TextView.Small.White.Bold"
-            android:layout_marginLeft="4dp"
-            tools:text="Achmad Zaky"/>
+            android:layout_marginStart="@dimen/dp_4"
+            app:typographyType="body_2"
+            app:typographyWeight="bold" />
 
     </LinearLayout>
 

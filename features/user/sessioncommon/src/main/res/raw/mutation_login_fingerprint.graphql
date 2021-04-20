@@ -13,5 +13,10 @@ mutation login_after_sq($grant_type: String!, $password_type: String!, $username
       message
     }
     event_code
+    popup_error {
+      header
+      body
+      action
+    }
   }
 }

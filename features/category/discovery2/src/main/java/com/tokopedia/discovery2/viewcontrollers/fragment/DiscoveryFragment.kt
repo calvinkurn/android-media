@@ -1,7 +1,9 @@
 package com.tokopedia.discovery2.viewcontrollers.fragment
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -9,63 +11,97 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import android.widget.ImageView
-import android.widget.ProgressBar
+import androidx.appcompat.widget.Toolbar
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.ADD_PHONE
+import com.tokopedia.coachmark.CoachMark2
+import com.tokopedia.coachmark.CoachMark2Item
+import com.tokopedia.discovery.common.manager.AdultManager
+import com.tokopedia.discovery2.Constant
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.Utils
-import com.tokopedia.discovery2.analytics.DiscoveryAnalytics
-import com.tokopedia.discovery2.data.AdditionalInfo
-import com.tokopedia.discovery2.data.ComponentsItem
-import com.tokopedia.discovery2.data.DataItem
-import com.tokopedia.discovery2.data.PageInfo
-import com.tokopedia.discovery2.di.DaggerDiscoveryComponent
+import com.tokopedia.discovery2.analytics.BaseDiscoveryAnalytics
+import com.tokopedia.discovery2.data.*
+import com.tokopedia.discovery2.datamapper.discoComponentQuery
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity
+import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.ACTIVE_TAB
+import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.CATEGORY_ID
+import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.COMPONENT_ID
+import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.EMBED_CATEGORY
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.END_POINT
-import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.PINNED_ACTIVE_TAB
-import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.PINNED_COMPONENT_ID
-import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.PINNED_COMP_ID
+import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.PIN_PRODUCT
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.PRODUCT_ID
-import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.SOURCE_QUERY
+import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.SOURCE
+import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.TARGET_COMP_ID
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.DiscoveryRecycleAdapter
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.lihatsemua.LihatSemuaViewHolder
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.masterproductcarditem.MasterProductCardItemDecorator
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.playwidget.DiscoveryPlayWidgetViewModel
 import com.tokopedia.discovery2.viewcontrollers.customview.CustomTopChatView
 import com.tokopedia.discovery2.viewcontrollers.customview.StickyHeadRecyclerView
 import com.tokopedia.discovery2.viewmodel.DiscoveryViewModel
+import com.tokopedia.discovery2.viewmodel.livestate.GoToAgeRestriction
+import com.tokopedia.discovery2.viewmodel.livestate.RouteToApplink
 import com.tokopedia.globalerror.GlobalError
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
+import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.linker.LinkerManager
+import com.tokopedia.linker.LinkerUtils
+import com.tokopedia.linker.interfaces.ShareCallback
+import com.tokopedia.linker.model.LinkerData
+import com.tokopedia.linker.model.LinkerError
+import com.tokopedia.linker.model.LinkerShareData
+import com.tokopedia.linker.model.LinkerShareResult
+import com.tokopedia.media.loader.loadImage
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
+import com.tokopedia.play.widget.ui.adapter.viewholder.medium.PlayWidgetCardMediumChannelViewHolder
+import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform
+import com.tokopedia.searchbar.data.HintData
+import com.tokopedia.searchbar.navigation_component.NavToolbar
+import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
+import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.trackingoptimizer.TrackingQueue
-import com.tokopedia.unifycomponents.BottomSheetUnify
-import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifycomponents.*
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
-import timber.log.Timber
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
-import javax.inject.Inject
 
 
 private const val LOGIN_REQUEST_CODE = 35769
 private const val MOBILE_VERIFICATION_REQUEST_CODE = 35770
 const val PAGE_REFRESH_LOGIN = 35771
+private const val OPEN_PLAY_CHANNEL = 35772
 private const val SCROLL_TOP_DIRECTION = -1
 private const val DEFAULT_SCROLL_POSITION = 0
+private const val EXP_NAME = AbTestPlatform.NAVIGATION_EXP_TOP_NAV
+private const val VARIANT_OLD = AbTestPlatform.NAVIGATION_VARIANT_OLD
+private const val VARIANT_REVAMP = AbTestPlatform.NAVIGATION_VARIANT_REVAMP
 
-class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshListener, View.OnClickListener, LihatSemuaViewHolder.OnLihatSemuaClickListener {
+class DiscoveryFragment :
+        BaseDaggerFragment(),
+        SwipeRefreshLayout.OnRefreshListener,
+        View.OnClickListener,
+        LihatSemuaViewHolder.OnLihatSemuaClickListener,
+        TabLayout.OnTabSelectedListener,
+        ChooseAddressWidget.ChooseAddressWidgetListener {
 
     private lateinit var discoveryViewModel: DiscoveryViewModel
     private lateinit var mDiscoveryFab: CustomTopChatView
@@ -75,23 +111,27 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
     private lateinit var ivSearch: ImageView
     private lateinit var ivToTop: ImageView
     private lateinit var globalError: GlobalError
+    private lateinit var navToolbar: NavToolbar
+    private var bottomNav: TabsUnify? = null
     private lateinit var discoveryAdapter: DiscoveryRecycleAdapter
-    private val analytics: DiscoveryAnalytics by lazy {
-        DiscoveryAnalytics(trackingQueue = trackingQueue, pagePath = discoveryViewModel.pagePath, pageType = discoveryViewModel.pageType,
-                pageIdentifier = discoveryViewModel.pageIdentifier, campaignCode = discoveryViewModel.campaignCode, sourceIdentifier = arguments?.getString(SOURCE_QUERY, "")
-                ?: "")
+    private var chooseAddressWidget: ChooseAddressWidget? = null
+    private var chooseAddressWidgetDivider: View? = null
+
+    private val analytics: BaseDiscoveryAnalytics by lazy {
+        (context as DiscoveryActivity).getAnalytics()
+    }
+    private val trackingQueue: TrackingQueue by lazy {
+        (context as DiscoveryActivity).trackingQueue
     }
     private lateinit var mSwipeRefreshLayout: SwipeRefreshLayout
-    private lateinit var mProgressBar: ProgressBar
+    private lateinit var mProgressBar: LoaderUnify
     var pageEndPoint = ""
     private var componentPosition: Int? = null
     private var openScreenStatus = false
     private var pinnedAlreadyScrolled = false
-
     var pageLoadTimePerformanceInterface: PageLoadTimePerformanceInterface? = null
-
-    @Inject
-    lateinit var trackingQueue: TrackingQueue
+    private var showOldToolbar: Boolean = false
+    private var userAddressData: LocalCacheModel? = null
 
     companion object {
         fun getInstance(endPoint: String?, queryParameterMap: Map<String, String?>?): DiscoveryFragment {
@@ -100,15 +140,22 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
             if (!endPoint.isNullOrEmpty()) {
                 bundle.putString(END_POINT, endPoint)
             }
-            queryParameterMap?.let {
-                bundle.putString(SOURCE_QUERY, queryParameterMap[SOURCE_QUERY])
-                bundle.putString(PINNED_COMPONENT_ID, queryParameterMap[PINNED_COMPONENT_ID])
-                bundle.putString(PINNED_ACTIVE_TAB, queryParameterMap[PINNED_ACTIVE_TAB])
-                bundle.putString(PINNED_COMP_ID, queryParameterMap[PINNED_COMP_ID])
-                bundle.putString(PRODUCT_ID, queryParameterMap[PRODUCT_ID])
-            }
+            getQueryParams(bundle, queryParameterMap)
             fragment.arguments = bundle
             return fragment
+        }
+
+        private fun getQueryParams(bundle: Bundle, queryParameterMap: Map<String, String?>?) {
+            queryParameterMap?.let {
+                bundle.putString(SOURCE, queryParameterMap[SOURCE])
+                bundle.putString(COMPONENT_ID, queryParameterMap[COMPONENT_ID])
+                bundle.putString(ACTIVE_TAB, queryParameterMap[ACTIVE_TAB])
+                bundle.putString(TARGET_COMP_ID, queryParameterMap[TARGET_COMP_ID])
+                bundle.putString(PRODUCT_ID, queryParameterMap[PRODUCT_ID])
+                bundle.putString(PIN_PRODUCT, queryParameterMap[PIN_PRODUCT])
+                bundle.putString(CATEGORY_ID, queryParameterMap[CATEGORY_ID])
+                bundle.putString(EMBED_CATEGORY, queryParameterMap[EMBED_CATEGORY])
+            }
         }
     }
 
@@ -122,26 +169,56 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
     }
 
     override fun initInjector() {
-        DaggerDiscoveryComponent.builder()
-                .baseAppComponent((context?.applicationContext
-                        as BaseMainApplication).baseAppComponent)
-                .build()
-                .inject(this)
+        with(context) {
+            if (this is DiscoveryActivity) {
+                this.discoveryComponent
+                        .inject(this@DiscoveryFragment)
+            }
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        mDiscoveryFab = view.findViewById(R.id.fab)
+        initToolbar(view)
+        initChooseAddressWidget(view)
         initView(view)
     }
 
+    private fun initChooseAddressWidget(view: View) {
+        chooseAddressWidget = view.findViewById(R.id.choose_address_widget)
+        chooseAddressWidgetDivider = view.findViewById(R.id.divider_view)
+        chooseAddressWidget?.bindChooseAddress(this)
+        context?.let {
+            if (ChooseAddressUtils.isRollOutUser(it)) {
+                fetchUserLatestAddressData()
+            }
+        }
+    }
+
+    private fun initToolbar(view: View) {
+        showOldToolbar = !RemoteConfigInstance.getInstance().abTestPlatform.getString(EXP_NAME, VARIANT_OLD).equals(VARIANT_REVAMP, true)
+        val oldToolbar: Toolbar = view.findViewById(R.id.oldToolbar)
+        navToolbar = view.findViewById(R.id.navToolbar)
+        if (showOldToolbar) {
+            oldToolbar.visibility = View.VISIBLE
+            navToolbar.visibility = View.GONE
+        } else {
+            navToolbar.visibility = View.VISIBLE
+            oldToolbar.visibility = View.GONE
+            navToolbar.setOnBackButtonClickListener(disableDefaultGtmTracker = true, backButtonClickListener = ::handleBackPress)
+        }
+
+        bottomNav = view.findViewById(R.id.bottomNav)
+        bottomNav?.tabLayout?.addOnTabSelectedListener(this)
+    }
+
     private fun initView(view: View) {
-//        mDiscoveryFab = view.findViewById(R.id.fab)
         typographyHeader = view.findViewById(R.id.typography_header)
         ivShare = view.findViewById(R.id.iv_share)
         ivSearch = view.findViewById(R.id.iv_search)
         view.findViewById<ImageView>(R.id.iv_back).setOnClickListener {
-            getDiscoveryAnalytics().trackBackClick()
-            activity?.onBackPressed()
+            handleBackPress()
         }
         globalError = view.findViewById(R.id.global_error)
         recyclerView = view.findViewById(R.id.discovery_recyclerView)
@@ -171,7 +248,6 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
         })
     }
 
-
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         discoveryViewModel = (activity as DiscoveryActivity).getViewModel()
@@ -184,9 +260,9 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
         setUpObserver()
     }
 
-
     private fun setAdapter() {
         recyclerView.apply {
+            addDecorator(MasterProductCardItemDecorator())
             setLayoutManager(StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL))
             discoveryAdapter = DiscoveryRecycleAdapter(this@DiscoveryFragment).also {
                 setAdapter(it)
@@ -199,22 +275,29 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
     }
 
     private fun setUpObserver() {
-        discoveryViewModel.getDiscoveryResponseList().observe(viewLifecycleOwner, Observer {
+        discoveryViewModel.getDiscoveryResponseList().observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> {
                     it.data.let { listComponent ->
                         if (mSwipeRefreshLayout.isRefreshing) setAdapter()
                         discoveryAdapter.addDataList(listComponent)
-                        scrollToPinnedComponent(listComponent)
+                        if (listComponent.isNullOrEmpty()) {
+                            setPageErrorState(Fail(IllegalStateException()))
+                        } else {
+                            scrollToPinnedComponent(listComponent)
+                        }
                     }
                     mProgressBar.hide()
                     stopDiscoveryPagePerformanceMonitoring()
+                }
+                is Fail -> {
+                    mProgressBar.hide()
                 }
             }
             mSwipeRefreshLayout.isRefreshing = false
         })
 
-        discoveryViewModel.getDiscoveryFabLiveData().observe(viewLifecycleOwner, Observer {
+        discoveryViewModel.getDiscoveryFabLiveData().observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> {
                     it.data.data?.get(0)?.let { data ->
@@ -228,44 +311,260 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
             }
         })
 
-        discoveryViewModel.getDiscoveryPageInfo().observe(viewLifecycleOwner, Observer {
+        discoveryViewModel.getDiscoveryPageInfo().observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> {
-                    ivSearch.show()
-                    setPageInfo(it.data)
+                    setToolBarPageInfoOnSuccess(it.data)
                 }
-
                 is Fail -> {
-                    typographyHeader.text = ""
-                    ivSearch.hide()
-                    ivShare.hide()
-                    mProgressBar.hide()
-                    mSwipeRefreshLayout.isRefreshing = false
+                    setToolBarPageInfoOnFail()
+                    setPageErrorState(it)
+                }
+            }
+        })
 
-                    if (it.throwable is UnknownHostException
-                            || it.throwable is SocketTimeoutException) {
-                        globalError.setType(GlobalError.NO_CONNECTION)
-                    } else {
-                        globalError.setType(GlobalError.SERVER_ERROR)
-                        Timber.w("P2#DISCOVERY_PAGE_ERROR#'${discoveryViewModel.pageIdentifier}';path='${discoveryViewModel.pagePath}';type='${discoveryViewModel.pageType}';err='${Log.getStackTraceString(it.throwable)}'")
+        discoveryViewModel.getDiscoveryLiveStateData().observe(viewLifecycleOwner, {
+            when (it) {
+                is RouteToApplink -> {
+                    RouteManager.route(context, it.applink)
+                    activity?.finish()
+                }
+                is GoToAgeRestriction -> {
+                    AdultManager.showAdultPopUp(this, it.origin, it.departmentId)
+                }
+            }
+        })
+
+        discoveryViewModel.getDiscoveryBottomNavLiveData().observe(viewLifecycleOwner, {
+            when (it) {
+                is Success -> {
+                    setBottomNavigationComp(it)
+                }
+                is Fail -> {
+                    bottomNav?.hide()
+                }
+            }
+        })
+
+        discoveryViewModel.checkAddressVisibility().observe(viewLifecycleOwner, { widgetVisibilityStatus ->
+            context?.let {
+                if (ChooseAddressUtils.isRollOutUser(it) && widgetVisibilityStatus) {
+                    chooseAddressWidget?.show()
+                    chooseAddressWidgetDivider?.show()
+                    if (ChooseAddressUtils.isLocalizingAddressNeedShowCoachMark(it) == true) {
+                        ChooseAddressUtils.coachMarkLocalizingAddressAlreadyShown(it)
+                        showLocalizingAddressCoachMark()
                     }
-                    globalError.show()
-                    globalError.setOnClickListener {
-                        globalError.hide()
-                        fetchDiscoveryPageData()
-                    }
+                    fetchUserLatestAddressData()
+                } else {
+                    chooseAddressWidget?.hide()
+                    chooseAddressWidgetDivider?.hide()
                 }
             }
         })
     }
 
+    private fun showLocalizingAddressCoachMark() {
+        chooseAddressWidget?.let {
+            val coachMarkItem = ArrayList<CoachMark2Item>()
+            val coachMark = CoachMark2(requireContext())
+            coachMark.isOutsideTouchable = true
+            coachMarkItem.add(
+                    CoachMark2Item(
+                            it,
+                            getString(R.string.choose_address_title),
+                            getString(R.string.choose_address_description)
+                    )
+            )
+            coachMark.showCoachMark(coachMarkItem)
+        }
+    }
+
+    private fun setBottomNavigationComp(it: Success<ComponentsItem>) {
+        if (bottomNav != null && !it.data.data.isNullOrEmpty()) {
+            bottomNav?.let { bottomTabHolder ->
+                bottomTabHolder.tabLayout.apply {
+                    tabMode = TabLayout.MODE_FIXED
+                    removeAllTabs()
+                    setBackgroundResource(0)
+                }
+                bottomTabHolder.getUnifyTabLayout().setSelectedTabIndicator(null)
+                it.data.data!!.forEach { item ->
+                    if (item.image.isNotEmpty()) {
+                        val tab = bottomTabHolder.tabLayout.newTab()
+                        tab.customView = LayoutInflater.from(this.context).inflate(R.layout.bottom_nav_item, bottomTabHolder, false).apply {
+                            findViewById<ImageUnify>(R.id.tab_image).loadImage(item.image)
+                            findViewById<Typography>(R.id.tab_text).apply {
+                                text = item.name
+                                setTextColor(getTabTextColor(this.context, item.fontColor))
+                            }
+                        }
+                        bottomTabHolder.tabLayout.addTab(tab, false)
+                    }
+                }
+                bottomTabHolder.show()
+            }
+        }
+    }
+
+    private fun setToolBarPageInfoOnSuccess(data: PageInfo?) {
+        handleShare(data)
+        if (showOldToolbar) {
+            ivSearch.show()
+            ivSearch.setOnClickListener {
+                getDiscoveryAnalytics().trackSearchClick()
+                handleSearchClick(data)
+            }
+            typographyHeader.text = data?.name ?: getString(R.string.discovery_tokopedia)
+        } else {
+            setupSearchBar(data)
+        }
+    }
+
+    private fun handleShare(data: PageInfo?) {
+        if (data?.share?.enabled == true) {
+            if (showOldToolbar) {
+                ivShare.show()
+                ivShare.setOnClickListener {
+                    handleShareClick(data)
+                }
+            } else {
+                navToolbar.setIcon(
+                        IconBuilder()
+                                .addIcon(iconId = IconList.ID_SHARE, disableRouteManager = true, onClick = { handleShareClick(data) }, disableDefaultGtmTracker = true)
+                                .addIcon(iconId = IconList.ID_CART, onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.CART) }, disableDefaultGtmTracker = true)
+                                .addIcon(iconId = IconList.ID_NAV_GLOBAL, onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.GLOBAL_MENU) }, disableDefaultGtmTracker = true)
+                )
+            }
+        } else {
+            if (showOldToolbar) {
+                ivShare.hide()
+            } else {
+                setCartAndNavIcon()
+            }
+        }
+    }
+
+    private fun handleShareClick(data: PageInfo?) {
+        if (showOldToolbar) {
+            getDiscoveryAnalytics().trackShareClick()
+        } else {
+            handleGlobalNavClick(Constant.TOP_NAV_BUTTON.SHARE)
+        }
+        LinkerManager.getInstance().executeShareRequest(LinkerUtils.createShareRequest(0,
+                linkerDataMapper(data), object : ShareCallback {
+            override fun urlCreated(linkerShareData: LinkerShareResult) {
+                if (linkerShareData.url != null) {
+                    Utils.shareData(activity, data?.share?.description, linkerShareData.url)
+                }
+            }
+
+            override fun onError(linkerError: LinkerError) {
+                Utils.shareData(activity, data?.share?.description, data?.share?.url)
+            }
+        }))
+    }
+
+    private fun linkerDataMapper(data: PageInfo?): LinkerShareData {
+        val linkerData = LinkerData()
+        linkerData.id = data?.id?.toString() ?: ""
+        linkerData.name = data?.name ?: ""
+        linkerData.uri = Utils.getShareUrlQueryParamAppended(data?.share?.url
+                ?: "", discoComponentQuery)
+        linkerData.description = data?.share?.description ?: ""
+        linkerData.isThrowOnError = true
+        val linkerShareData = LinkerShareData()
+        linkerShareData.linkerData = linkerData
+        return linkerShareData
+    }
+
+    private fun setToolBarPageInfoOnFail() {
+        if (showOldToolbar) {
+            typographyHeader.text = getString(R.string.discovery_tokopedia)
+            ivSearch.hide()
+            ivShare.hide()
+        } else {
+            setCartAndNavIcon()
+            setupSearchBar(null)
+        }
+        mProgressBar.hide()
+        mSwipeRefreshLayout.isRefreshing = false
+    }
+
+    private fun setCartAndNavIcon() {
+        navToolbar.setIcon(
+                IconBuilder()
+                        .addIcon(iconId = IconList.ID_CART, onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.CART) }, disableDefaultGtmTracker = true)
+                        .addIcon(iconId = IconList.ID_NAV_GLOBAL, onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.GLOBAL_MENU) }, disableDefaultGtmTracker = true)
+        )
+    }
+
+    private fun setupSearchBar(data: PageInfo?) {
+        navToolbar.setupSearchbar(
+                hints = listOf(HintData(placeholder = data?.searchTitle
+                        ?: getString(R.string.discovery_default_search_title))),
+                searchbarClickCallback = {
+                    handleGlobalNavClick(Constant.TOP_NAV_BUTTON.SEARCH_BAR)
+                    handleSearchClick(data)
+                },
+                disableDefaultGtmTracker = true
+        )
+    }
+
+    private fun handleSearchClick(data: PageInfo?) {
+        if (data?.searchApplink?.isNotEmpty() == true) {
+            RouteManager.route(context, data.searchApplink)
+        } else {
+            RouteManager.route(context, Utils.SEARCH_DEEPLINK)
+        }
+    }
+
+    private fun handleBackPress() {
+        if (showOldToolbar) {
+            getDiscoveryAnalytics().trackBackClick()
+        } else {
+            handleGlobalNavClick(Constant.TOP_NAV_BUTTON.BACK_BUTTON)
+        }
+        activity?.onBackPressed()
+    }
+
+    private fun handleGlobalNavClick(navBarIcon: String) {
+        getDiscoveryAnalytics().trackGlobalNavBarClick(navBarIcon, getUserID())
+    }
+
+    private fun setPageErrorState(it: Fail) {
+        when (it.throwable) {
+            is UnknownHostException, is SocketTimeoutException -> {
+                globalError.setType(GlobalError.NO_CONNECTION)
+            }
+            is IllegalStateException -> {
+                globalError.setType(GlobalError.PAGE_FULL)
+            }
+            else -> {
+                globalError.setType(GlobalError.SERVER_ERROR)
+                ServerLogger.log(Priority.P2, "DISCOVERY_PAGE_ERROR",
+                        mapOf(
+                                "identifier" to discoveryViewModel.pageIdentifier,
+                                "path" to discoveryViewModel.pagePath,
+                                "type" to discoveryViewModel.pageType,
+                                "err" to Log.getStackTraceString(it.throwable)
+                        ))
+            }
+        }
+        globalError.show()
+        globalError.setActionClickListener {
+            globalError.hide()
+            showLoadingWithRefresh()
+        }
+    }
+
     private fun fetchDiscoveryPageData() {
-        discoveryViewModel.getDiscoveryData(discoveryViewModel.getQueryParameterMapFromBundle(arguments))
+        discoveryViewModel.getDiscoveryData(discoveryViewModel.getQueryParameterMapFromBundle(arguments), userAddressData)
     }
 
     private fun scrollToPinnedComponent(listComponent: List<ComponentsItem>) {
         if (!pinnedAlreadyScrolled) {
-            val pinnedComponentId = arguments?.getString(PINNED_COMPONENT_ID, "")
+            val pinnedComponentId = arguments?.getString(COMPONENT_ID, "")
             if (!pinnedComponentId.isNullOrEmpty()) {
                 val position = discoveryViewModel.scrollToPinnedComponent(listComponent, pinnedComponentId)
                 if (position >= 0) {
@@ -273,27 +572,6 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
                 }
             }
             pinnedAlreadyScrolled = true
-        }
-    }
-
-    private fun setPageInfo(data: PageInfo?) {
-        typographyHeader.text = data?.name
-        ivSearch.setOnClickListener {
-            getDiscoveryAnalytics().trackSearchClick()
-            if (data?.searchApplink?.isNotEmpty() == true) {
-                RouteManager.route(context, data.searchApplink)
-            } else {
-                RouteManager.route(context, Utils.SEARCH_DEEPLINK)
-            }
-        }
-        if (data?.share?.enabled == true) {
-            ivShare.show()
-            ivShare.setOnClickListener {
-                getDiscoveryAnalytics().trackShareClick()
-                Utils.shareData(activity, data.share.description, data.share.url)
-            }
-        } else {
-            ivShare.hide()
         }
     }
 
@@ -320,14 +598,19 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
         }
     }
 
-    fun getDiscoveryAnalytics(): DiscoveryAnalytics {
+    fun getDiscoveryAnalytics(): BaseDiscoveryAnalytics {
         return analytics
+    }
+
+    private fun showLoadingWithRefresh() {
+        mProgressBar.show()
+        refreshPage()
     }
 
     override fun onPause() {
         super.onPause()
         trackingQueue.sendAll()
-        getDiscoveryAnalytics().clearProductViewIds()
+        getDiscoveryAnalytics().clearProductViewIds(false)
     }
 
     override fun onRefresh() {
@@ -336,10 +619,10 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
 
     private fun refreshPage() {
         trackingQueue.sendAll()
-        getDiscoveryAnalytics().clearProductViewIds()
+        getDiscoveryAnalytics().clearProductViewIds(true)
         discoveryViewModel.clearPageData()
         fetchDiscoveryPageData()
-        getDiscoveryAnalytics().clearProductViewIds()
+        getDiscoveryAnalytics().clearProductViewIds(true)
     }
 
     fun openLoginScreen(componentPosition: Int = -1) {
@@ -350,6 +633,12 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
     fun openMobileVerificationWithBottomSheet(componentPosition: Int = -1) {
         this.componentPosition = componentPosition
         showVerificationBottomSheet()
+    }
+
+    fun openPlay(componentPosition: Int = -1, appLink: String) {
+        this.componentPosition = componentPosition
+        val intent = RouteManager.getIntent(requireContext(), appLink)
+        startActivityForResult(intent, OPEN_PLAY_CHANNEL)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -376,7 +665,27 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
                     refreshPage()
                 }
             }
+            OPEN_PLAY_CHANNEL -> {
+                if (data == null)
+                    return
+                val channelId = data.getStringExtra(PlayWidgetCardMediumChannelViewHolder.KEY_EXTRA_CHANNEL_ID).orEmpty()
+                val totalView = data.getStringExtra(PlayWidgetCardMediumChannelViewHolder.KEY_EXTRA_TOTAL_VIEW).orEmpty()
+                if (discoveryBaseViewModel is DiscoveryPlayWidgetViewModel)
+                    (discoveryBaseViewModel as DiscoveryPlayWidgetViewModel).updatePlayWidgetTotalView(channelId, totalView)
+            }
         }
+        AdultManager.handleActivityResult(activity, requestCode, resultCode, data, object : AdultManager.Callback {
+            override fun onFail() {
+                activity?.finish()
+            }
+
+            override fun onVerificationSuccess(message: String?) {
+            }
+
+            override fun onLoginPreverified() {
+            }
+
+        })
     }
 
     private fun showVerificationBottomSheet() {
@@ -413,6 +722,10 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
         return UserSession(activity).isLoggedIn
     }
 
+    private fun getUserID(): String? {
+        return UserSession(activity).userId
+    }
+
     private fun stopDiscoveryPagePerformanceMonitoring() {
         recyclerView.viewTreeObserver
                 .addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
@@ -426,7 +739,7 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
 
     override fun onResume() {
         super.onResume()
-        discoveryViewModel.getDiscoveryPageInfo().observe(viewLifecycleOwner, Observer {
+        discoveryViewModel.getDiscoveryPageInfo().observe(viewLifecycleOwner, {
             if (!openScreenStatus) {
                 when (it) {
                     is Success -> {
@@ -436,6 +749,12 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
                 }
             }
         })
+        context?.let {
+            if (ChooseAddressUtils.isRollOutUser(it) && discoveryViewModel.getAddressVisibilityValue()) {
+                updateChooseAddressWidget()
+                checkAddressUpdate()
+            }
+        }
     }
 
     private fun sendOpenScreenAnalytics(identifier: String?, additionalInfo: AdditionalInfo? = null) {
@@ -453,11 +772,106 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
         openScreenStatus = false
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        discoComponentQuery = null
+    }
+
     override fun onProductCardHeaderClick(componentsItem: ComponentsItem) {
         getDiscoveryAnalytics().trackHeaderSeeAllClick(isUserLoggedIn(), componentsItem)
     }
 
     override fun onLihatSemuaClick(data: DataItem) {
         getDiscoveryAnalytics().trackLihatSemuaClick(data.name)
+    }
+
+    override fun onTabReselected(tab: TabLayout.Tab?) {
+        tabItemRedirection(tab)
+    }
+
+    override fun onTabUnselected(tab: TabLayout.Tab?) {
+
+    }
+
+    override fun onTabSelected(tab: TabLayout.Tab?) {
+        tabItemRedirection(tab)
+    }
+
+    private fun tabItemRedirection(tab: TabLayout.Tab?) {
+        tab?.let {
+            discoveryViewModel.getTabItem(it.position)?.let { dataItem ->
+                getDiscoveryAnalytics().trackBottomNavBarClick(dataItem.name ?: "", getUserID())
+                RouteManager.route(this.context, dataItem.applinks)
+                activity?.finish()
+            }
+        }
+    }
+
+    private fun getTabTextColor(context: Context, textColor: String?): Int {
+        return try {
+            Color.parseColor(textColor)
+        } catch (exception: Exception) {
+            ContextCompat.getColor(context, R.color.Green_G500)
+        }
+    }
+
+    override fun onLocalizingAddressUpdatedFromWidget() {
+        updateChooseAddressWidget()
+        checkAddressUpdate()
+    }
+
+    override fun onLocalizingAddressServerDown() {
+        chooseAddressWidget?.hide()
+        chooseAddressWidgetDivider?.hide()
+    }
+
+    override fun onLocalizingAddressRollOutUser(isRollOutUser: Boolean) {
+        if (isRollOutUser && discoveryViewModel.getAddressVisibilityValue()) {
+            chooseAddressWidget?.show()
+            chooseAddressWidgetDivider?.show()
+        } else {
+            chooseAddressWidget?.hide()
+            chooseAddressWidgetDivider?.hide()
+        }
+    }
+
+    override fun getLocalizingAddressHostFragment(): Fragment {
+        return this
+    }
+
+    override fun getLocalizingAddressHostSourceData(): String {
+        return Constant.ChooseAddressGTMSSource.HOST_SOURCE
+    }
+
+    override fun getLocalizingAddressHostSourceTrackingData(): String {
+        return Constant.ChooseAddressGTMSSource.HOST_TRACKING_SOURCE
+    }
+
+    override fun onLocalizingAddressLoginSuccess() {
+    }
+
+    override fun onLocalizingAddressUpdatedFromBackground() {
+
+    }
+
+    private fun fetchUserLatestAddressData() {
+        context?.let {
+            userAddressData = ChooseAddressUtils.getLocalizingAddressData(it)
+        }
+    }
+
+    private fun checkAddressUpdate() {
+        context?.let {
+            if (userAddressData != null) {
+                if (ChooseAddressUtils.isLocalizingAddressHasUpdated(it, userAddressData!!)) {
+                    userAddressData = ChooseAddressUtils.getLocalizingAddressData(it)
+                    showLoadingWithRefresh()
+                }
+            }
+        }
+    }
+
+    private fun updateChooseAddressWidget() {
+        chooseAddressWidget?.updateWidget()
     }
 }

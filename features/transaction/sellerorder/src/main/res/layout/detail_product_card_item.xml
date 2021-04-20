@@ -1,24 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.tokopedia.unifycomponents.CardUnify xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/detail_product_card_item"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_marginTop="@dimen/dp_8"
-    android:layout_marginBottom="@dimen/dp_8"
-    app:cardCornerRadius="@dimen/dp_8"
-    app:cardElevation="@dimen/dp_3"
-    android:layout_marginLeft="@dimen/dp_16"
-    android:layout_marginStart="@dimen/dp_16"
-    android:layout_marginRight="@dimen/dp_16"
-    android:layout_marginEnd="@dimen/dp_16">
+    android:layout_marginTop="@dimen/spacing_lvl1"
+    android:layout_marginStart="@dimen/dp_12"
+    android:layout_marginEnd="@dimen/dp_12">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/cl_product_card"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/dp_16">
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/dp_12"
+        android:layout_marginBottom="@dimen/dp_12">
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_product_notes"
@@ -28,14 +26,13 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:typographyType="body_3"
             app:typographyWeight="reguler"
-            android:textColor="@color/Neutral_N700_96"
+            android:textColor="@color/Unify_N700_96"
             tools:text="Bonusin apa aja yak bang" />
 
-        <View
+        <com.tokopedia.unifycomponents.DividerUnify
             android:id="@+id/divider_product"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_1"
-            android:background="@color/Neutral_N75"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toTopOf="@+id/tv_product_notes"
@@ -45,36 +42,33 @@
 
         <androidx.cardview.widget.CardView
             android:id="@+id/cv_product_img"
-            android:layout_width="@dimen/dp_56"
-            android:layout_height="@dimen/dp_56"
-            app:cardCornerRadius="6dp"
+            android:layout_width="@dimen/som_list_product_image_size"
+            android:layout_height="@dimen/som_list_product_image_size"
+            app:cardCornerRadius="@dimen/dp_6"
             app:cardElevation="@dimen/dp_0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toTopOf="@id/divider_product"
-            android:layout_marginRight="@dimen/dp_8"
             android:layout_marginEnd="@dimen/dp_8">
 
             <ImageView
                 android:id="@+id/iv_product"
-                android:layout_width="@dimen/dp_56"
-                android:layout_height="@dimen/dp_56"
+                android:layout_width="@dimen/som_list_product_image_size"
+                android:layout_height="@dimen/som_list_product_image_size"
                 tools:ignore="ContentDescription" />
 
         </androidx.cardview.widget.CardView>
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_product_name"
-            android:layout_width="0dp"
+            android:layout_width="@dimen/layout_lvl0"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_8"
-            android:layout_marginLeft="@dimen/dp_8"
-            android:textColor="@color/Neutral_N700_96"
+            android:textColor="@color/Unify_N700_96"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/cv_product_img"
-            app:layout_constraintTop_toTopOf="parent"
-            app:typographyType="body_3"
-            app:typographyWeight="bold"
+            app:layout_constraintTop_toTopOf="@id/cv_product_img"
+            app:typographyType="heading_6"
             tools:text="Fujifilm Instax Square Fujifilm Instax Square Fujifilm Instax Square" />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -85,26 +79,11 @@
             app:layout_constraintStart_toEndOf="@id/cv_product_img"
             app:layout_constraintBottom_toTopOf="@id/divider_product"
             app:typographyType="body_3"
-            app:typographyWeight="bold"
-            android:textColor="@color/Neutral_N700_68"
-            tools:text="1 Barang (3kg)"
-            android:layout_marginStart="@dimen/dp_8"
-            android:layout_marginLeft="@dimen/dp_8"/>
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tv_product_price"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/Neutral_N700_44"
             app:typographyWeight="reguler"
-            app:typographyType="body_3"
-            app:layout_constraintTop_toBottomOf="@id/tv_product_name"
-            app:layout_constraintStart_toEndOf="@id/tv_product_desc"
-            app:layout_constraintBottom_toTopOf="@id/divider_product"
-            tools:text="Rp2.913.000"
-            android:layout_marginStart="@dimen/dp_8"
-            android:layout_marginLeft="@dimen/dp_8"/>
+            android:textColor="@color/Unify_N700_96"
+            tools:text="1 x Rp 2.913.000"
+            android:layout_marginStart="@dimen/dp_8" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-</androidx.cardview.widget.CardView>
+</com.tokopedia.unifycomponents.CardUnify>

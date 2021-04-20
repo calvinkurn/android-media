@@ -1,5 +1,8 @@
 package com.tokopedia.home_component.model
 
+import com.tokopedia.kotlin.model.ImpressHolder
+
+
 data class ChannelGrid(
         val id: String = "",
         val warehouseId: String = "",
@@ -26,9 +29,14 @@ data class ChannelGrid(
         val labelGroup: List<LabelGroup> = listOf(),
         val hasBuyButton: Boolean = false,
         val rating: Int = 0,
+        val ratingFloat: String = "",
         val countReview: Int = 0,
+        val countReviewFormat: String = "",
         val backColor: String = "",
+        val textColor: String = "",
         val benefit: ChannelBenefit = ChannelBenefit(),
-        val textColor: String = ""
-
-)
+        val recommendationType: String = "",
+        val shop: ChannelShop = ChannelShop(),
+        val campaignCode: String = "",
+        val badges: List<ChannelGridBadges> = listOf()
+): ImpressHolder()

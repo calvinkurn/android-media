@@ -15,7 +15,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:textColor="@color/clr_f531353b"
+        android:textColor="@color/Unify_N700_96"
         android:text="@string/no_reviews_yet"
         android:visibility="visible"
         app:typographyType="heading_2"

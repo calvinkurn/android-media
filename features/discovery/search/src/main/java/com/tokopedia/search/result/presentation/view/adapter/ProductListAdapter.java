@@ -14,13 +14,13 @@ import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.discovery.common.constants.SearchConstant;
 import com.tokopedia.search.R;
-import com.tokopedia.search.result.presentation.model.BroadMatchItemViewModel;
-import com.tokopedia.search.result.presentation.model.BroadMatchViewModel;
-import com.tokopedia.search.result.presentation.model.EmptySearchProductViewModel;
-import com.tokopedia.search.result.presentation.model.GlobalNavViewModel;
-import com.tokopedia.search.result.presentation.model.ProductItemViewModel;
-import com.tokopedia.search.result.presentation.model.RecommendationItemViewModel;
-import com.tokopedia.search.result.presentation.model.TickerViewModel;
+import com.tokopedia.search.result.presentation.model.BroadMatchItemDataView;
+import com.tokopedia.search.result.presentation.model.BroadMatchDataView;
+import com.tokopedia.search.result.presentation.model.EmptySearchProductDataView;
+import com.tokopedia.search.result.presentation.model.GlobalNavDataView;
+import com.tokopedia.search.result.presentation.model.ProductItemDataView;
+import com.tokopedia.search.result.presentation.model.RecommendationItemDataView;
+import com.tokopedia.search.result.presentation.model.TickerDataView;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.RecommendationItemViewHolder;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.SmallGridInspirationCardViewHolder;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.SmallGridProductItemViewHolder;
@@ -37,12 +37,32 @@ public final class ProductListAdapter extends RecyclerView.Adapter<AbstractViewH
     private List<Visitable> list = new ArrayList<>();
     private ProductListTypeFactory typeFactory;
     private LoadingMoreModel loadingMoreModel = new LoadingMoreModel();
-    private GlobalNavViewModel globalNavViewModel;
     private OnItemChangeView itemChangeView;
 
     public ProductListAdapter(OnItemChangeView itemChangeView, ProductListTypeFactory typeFactory) {
         this.itemChangeView = itemChangeView;
         this.typeFactory = typeFactory;
+    }
+
+    public void changeSearchNavigationListView(int position) {
+        if (position >= 0 && position < list.size()) {
+            typeFactory.setRecyclerViewItem(SearchConstant.RecyclerView.VIEW_LIST);
+            notifyItemChanged(position, SearchConstant.RecyclerView.VIEW_LIST);
+        }
+    }
+
+    public void changeSearchNavigationDoubleGridView(int position) {
+        if (position >= 0 && position < list.size()) {
+            typeFactory.setRecyclerViewItem(SearchConstant.RecyclerView.VIEW_PRODUCT_SMALL_GRID);
+            notifyItemChanged(position, SearchConstant.RecyclerView.VIEW_PRODUCT_SMALL_GRID);
+        }
+    }
+
+    public void changeSearchNavigationSingleGridView(int position) {
+        if (position >= 0 && position < list.size()) {
+            typeFactory.setRecyclerViewItem(SearchConstant.RecyclerView.VIEW_PRODUCT_BIG_GRID);
+            notifyItemChanged(position, SearchConstant.RecyclerView.VIEW_PRODUCT_BIG_GRID);
+        }
     }
 
     public void changeListView() {
@@ -154,8 +174,8 @@ public final class ProductListAdapter extends RecyclerView.Adapter<AbstractViewH
 
     public void setWishlistButtonEnabled(String productId, boolean isEnabled) {
         for (int i = 0; i < list.size(); i++) {
-            if (list.get(i) instanceof ProductItemViewModel) {
-                ProductItemViewModel model = ((ProductItemViewModel) list.get(i));
+            if (list.get(i) instanceof ProductItemDataView) {
+                ProductItemDataView model = ((ProductItemDataView) list.get(i));
                 if (productId.equals(model.getProductID())) {
                     model.setWishlistButtonEnabled(isEnabled);
                     notifyItemChanged(i);
@@ -166,23 +186,23 @@ public final class ProductListAdapter extends RecyclerView.Adapter<AbstractViewH
 
     public void updateWishlistStatus(String productId, boolean isWishlisted) {
         for (int i = 0; i < list.size(); i++) {
-            if (list.get(i) instanceof ProductItemViewModel) {
-                ProductItemViewModel model = ((ProductItemViewModel) list.get(i));
+            if (list.get(i) instanceof ProductItemDataView) {
+                ProductItemDataView model = ((ProductItemDataView) list.get(i));
                 if (productId.equals(model.getProductID())) {
                     model.setWishlisted(isWishlisted);
                     notifyItemChanged(i, "wishlist");
                 }
-            } else if(list.get(i) instanceof RecommendationItemViewModel){
-                RecommendationItemViewModel model = (RecommendationItemViewModel) list.get(i);
+            } else if(list.get(i) instanceof RecommendationItemDataView){
+                RecommendationItemDataView model = (RecommendationItemDataView) list.get(i);
                 if(productId.equals(String.valueOf(model.getRecommendationItem().getProductId()))){
                     model.getRecommendationItem().setWishlist(isWishlisted);
                     notifyItemChanged(i, "wishlist");
                 }
-            } else if (list.get(i) instanceof BroadMatchViewModel) {
-                BroadMatchViewModel broadMatchViewModel = (BroadMatchViewModel) list.get(i);
-                for (BroadMatchItemViewModel broadMatchItemViewModel : broadMatchViewModel.getBroadMatchItemViewModelList()) {
-                    if (broadMatchItemViewModel.getId().equals(productId)) {
-                        broadMatchItemViewModel.setWishlisted(isWishlisted);
+            } else if (list.get(i) instanceof BroadMatchDataView) {
+                BroadMatchDataView broadMatchDataView = (BroadMatchDataView) list.get(i);
+                for (BroadMatchItemDataView broadMatchItemDataView : broadMatchDataView.getBroadMatchItemDataViewList()) {
+                    if (broadMatchItemDataView.getId().equals(productId)) {
+                        broadMatchItemDataView.setWishlisted(isWishlisted);
                     }
                 }
             }
@@ -190,11 +210,11 @@ public final class ProductListAdapter extends RecyclerView.Adapter<AbstractViewH
     }
 
     public void updateWishlistStatus(int adapterPosition, boolean isWishlisted) {
-        if (adapterPosition >= 0 && list.get(adapterPosition) instanceof ProductItemViewModel) {
-            ((ProductItemViewModel) list.get(adapterPosition)).setWishlisted(isWishlisted);
+        if (adapterPosition >= 0 && list.get(adapterPosition) instanceof ProductItemDataView) {
+            ((ProductItemDataView) list.get(adapterPosition)).setWishlisted(isWishlisted);
             notifyItemChanged(adapterPosition);
-        }else if (adapterPosition >= 0 && list.get(adapterPosition) instanceof RecommendationItemViewModel) {
-            ((RecommendationItemViewModel) list.get(adapterPosition)).getRecommendationItem().setWishlist(isWishlisted);
+        }else if (adapterPosition >= 0 && list.get(adapterPosition) instanceof RecommendationItemDataView) {
+            ((RecommendationItemDataView) list.get(adapterPosition)).getRecommendationItem().setWishlist(isWishlisted);
             notifyItemChanged(adapterPosition);
         }
     }
@@ -205,11 +225,11 @@ public final class ProductListAdapter extends RecyclerView.Adapter<AbstractViewH
     }
 
     public boolean isProductItem(int position) {
-        return checkDataSize(position) && list.get(position) instanceof ProductItemViewModel;
+        return checkDataSize(position) && list.get(position) instanceof ProductItemDataView;
     }
 
     public boolean isRecommendationItem(int position){
-        return checkDataSize(position) && list.get(position) instanceof RecommendationItemViewModel;
+        return checkDataSize(position) && list.get(position) instanceof RecommendationItemDataView;
     }
 
     public void addLoading() {
@@ -230,13 +250,16 @@ public final class ProductListAdapter extends RecyclerView.Adapter<AbstractViewH
         }
     }
 
-    public void showEmptyState(Context context, boolean isFilterActive) {
+    public void showEmptyState(GlobalNavDataView globalNavDataView, EmptySearchProductDataView emptySearchProductDataView) {
         clearData();
-        if (globalNavViewModel != null) {
-            list.add(globalNavViewModel);
+
+        if (globalNavDataView != null) {
+            list.add(globalNavDataView);
         }
-        list.add(mapEmptySearch(context, isFilterActive, globalNavViewModel == null));
-        notifyDataSetChanged();
+
+        list.add(emptySearchProductDataView);
+
+        notifyItemRangeInserted(0, list.size());
     }
 
     public void clearData() {
@@ -245,27 +268,6 @@ public final class ProductListAdapter extends RecyclerView.Adapter<AbstractViewH
         list.clear();
 
         notifyItemRangeRemoved(0, itemSizeBeforeCleared);
-    }
-
-    private EmptySearchProductViewModel mapEmptySearch(Context context,
-                                                boolean isFilterActive,
-                                                boolean isBannerAdsAllowed) {
-        EmptySearchProductViewModel emptySearchViewModel = new EmptySearchProductViewModel();
-        emptySearchViewModel.setImageRes(com.tokopedia.resources.common.R.drawable.ic_product_search_not_found);
-        emptySearchViewModel.setBannerAdsAllowed(isBannerAdsAllowed);
-        if (isFilterActive) {
-            emptySearchViewModel.setTitle(context.getString(R.string.msg_empty_search_product_title));
-            emptySearchViewModel.setContent(context.getString(R.string.msg_empty_search_product_content_with_filter));
-        } else {
-            emptySearchViewModel.setTitle(context.getString(R.string.msg_empty_search_product_title));
-            emptySearchViewModel.setContent(context.getString(R.string.msg_empty_search_product_content));
-            emptySearchViewModel.setButtonText(context.getString(R.string.msg_empty_search_product_button));
-        }
-        return emptySearchViewModel;
-    }
-
-    public void setGlobalNavViewModel(GlobalNavViewModel globalNavViewModel) {
-        this.globalNavViewModel = globalNavViewModel;
     }
 
     public boolean isListEmpty() {
@@ -279,7 +281,7 @@ public final class ProductListAdapter extends RecyclerView.Adapter<AbstractViewH
         while(iterator.hasNext()) {
             Object visitable = iterator.next();
 
-            if (visitable instanceof TickerViewModel) {
+            if (visitable instanceof TickerDataView) {
                 iterator.remove();
                 notifyItemRangeRemoved(i, 1);
                 return;
@@ -287,6 +289,12 @@ public final class ProductListAdapter extends RecyclerView.Adapter<AbstractViewH
 
             i++;
         }
+    }
+
+    public void refreshItemAtIndex(int index) {
+        if (index < 0 || index >= list.size()) return;
+
+        notifyItemChanged(index);
     }
 
     public List<Visitable> getItemList() {

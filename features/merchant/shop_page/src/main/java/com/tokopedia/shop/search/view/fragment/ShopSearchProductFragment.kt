@@ -19,7 +19,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.snackbar.Snackbar
-import com.tokopedia.abstraction.base.view.fragment.BaseSearchListFragment
+import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst.DISCOVERY_SEARCH
@@ -53,16 +53,20 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_shop_search_product.*
 import java.util.*
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import kotlin.concurrent.schedule
 
-class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataModel, ShopSearchProductAdapterTypeFactory>() {
+class ShopSearchProductFragment : BaseListFragment<ShopSearchProductDataModel, ShopSearchProductAdapterTypeFactory>() {
 
     companion object {
         private const val KEY_SHOP_ID = "SHOP_ID"
         private const val KEY_SHOP_NAME = "SHOP_NAME"
         private const val KEY_IS_OFFICIAL = "IS_OFFICIAL"
         private const val KEY_IS_GOLD_MERCHANT = "IS_GOLD_MERCHANT"
+        val SEARCH_SUBMIT_RESULT_REDIRECTION = "SEARCH_SUBMIT_RESULT_REDIRECTION"
+        val ETALASE_CLICK_RESULT_REDIRECTION = "ETALASE_CLICK_RESULT_REDIRECTION"
+        private val DEFAULT_DELAY_TEXT_CHANGED = TimeUnit.MILLISECONDS.toMillis(300)
 
         fun createInstance(
                 shopId: String,
@@ -162,10 +166,6 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
         observeShopSearchProductResult()
     }
 
-    override fun getSearchInputViewResourceId(): Int {
-        return R.id.search_input_view
-    }
-
     override fun onPause() {
         viewFragment?.run {
             hideKeyboard(this)
@@ -175,7 +175,6 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
 
     override fun onDestroy() {
         viewModel.shopSearchProductResult.removeObservers(this)
-        searchInputView.setListener(null)
         super.onDestroy()
     }
 
@@ -201,12 +200,7 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
                 redirectToProductDetailPage(model.appLink)
             }
             ShopSearchProductDataModel.Type.TYPE_SEARCH_STORE -> {
-                if (productListData.isNotEmpty()) {
-                    shopPageTrackingShopSearchProduct.clickAutocompleteInternalShopPage(isMyShop, searchQuery, customDimensionShopPage)
-                } else {
-                    shopPageTrackingShopSearchProduct.clickAutocompleteInternalShopPageProductEmpty(isMyShop, searchQuery, customDimensionShopPage)
-                }
-                redirectToShopProductListPage()
+                redirectToShopProductListPage(ETALASE_CLICK_RESULT_REDIRECTION)
             }
         }
         activity?.finish()
@@ -227,20 +221,15 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
         }
     }
 
-    override fun onSearchSubmitted(keyword: String) {
+    fun onSearchSubmitted(keyword: String) {
         searchQuery = keyword
         if (searchQuery.isNotEmpty()) {
-            if (productListData.isNotEmpty()) {
-                shopPageTrackingShopSearchProduct.shopPageProductSearchResult(isMyShop, keyword, customDimensionShopPage)
-            } else {
-                shopPageTrackingShopSearchProduct.shopPageProductSearchNoResult(isMyShop, keyword, customDimensionShopPage)
-            }
-            redirectToShopProductListPage()
+            redirectToShopProductListPage(SEARCH_SUBMIT_RESULT_REDIRECTION)
             activity?.finish()
         }
     }
 
-    override fun onSearchTextChanged(text: String) {
+    fun onSearchTextChanged(text: String) {
         searchQuery = text
         searchProduct()
     }
@@ -265,15 +254,15 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
         }
     }
 
-    private fun redirectToShopProductListPage() {
-        val intent = ShopProductListResultActivity.createIntent(
+    private fun redirectToShopProductListPage(sourceOfRedirection: String) {
+        val intent = ShopProductListResultActivity.createIntentWithSourceRedirection(
                 context,
                 shopId,
                 searchQuery,
                 "",
                 shopAttribution,
-
-                shopRef
+                shopRef,
+                sourceOfRedirection
         )
         intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
         startActivity(intent)
@@ -342,13 +331,12 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
 
     private fun initViewNew(view: View) {
         hideClearButton()
-        with(getRecyclerView(view) as VerticalRecyclerView) {
+        (getRecyclerView(view) as? VerticalRecyclerView)?.run {
             clearItemDecoration()
             addItemDecoration(ShopSearchProductDividerItemDecoration(
-                    view.context.resources.getDrawable(com.tokopedia.design.R.drawable.bg_line_separator_thin)
+                    view.context.resources.getDrawable(R.drawable.shop_page_bg_line_separator_thin)
             ))
         }
-        searchInputView.visibility = View.GONE
         textCancel.setOnClickListener {
             onClickCancel()
         }
@@ -392,7 +380,7 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
 
             private fun runTimer(text: String) {
                 timer = Timer()
-                timer?.schedule(delayTextChanged) {
+                timer?.schedule(DEFAULT_DELAY_TEXT_CHANGED) {
                     updateListener(text)
                 }
             }

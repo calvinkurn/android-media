@@ -4,8 +4,8 @@ import androidx.appcompat.widget.AppCompatTextView;
 import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
 
-import com.tokopedia.common_digital.cart.view.model.cart.CartItemDigital;
 import com.tokopedia.digital.R;
+import com.tokopedia.digital.newcart.presentation.model.cart.CartItemDigital;
 
 public class DigitalCartDetailViewHolder extends RecyclerView.ViewHolder {
     public static final int LAYOUT = R.layout.view_digital_item_cart_detail;

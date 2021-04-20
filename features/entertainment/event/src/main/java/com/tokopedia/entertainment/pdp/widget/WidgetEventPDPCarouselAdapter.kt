@@ -20,7 +20,7 @@ class WidgetEventPDPCarouselAdapter(private val images: MutableList<String>, pri
         if (images[position] != null && images[position].isNotEmpty()) {
             if (clickListener != null) holder.bannerImage.setOnClickListener { clickListener.onImageClicked(position) }
         }
-        holder.bannerImage.loadImage(images.get(position), com.tokopedia.design.R.drawable.ic_loading_image)
+        holder.bannerImage.loadImage(images.get(position), R.drawable.ic_loading_event)
     }
 
     fun addImages(list: List<String>) {

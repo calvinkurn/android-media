@@ -1,6 +1,5 @@
 package com.tokopedia.hotel.hoteldetail.data.entity
 
-import android.os.Parcel
 import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
@@ -30,8 +29,11 @@ class PropertyDetailData(@SerializedName("property")
                          val mainFacility: List<FacilityItem> = listOf(),
                          @SerializedName("propertyPolicy")
                          @Expose
-                         val propertyPolicy: List<PropertyPolicyData> = listOf())
-    : Parcelable {
+                         val propertyPolicy: List<PropertyPolicyData> = listOf(),
+                         @SerializedName("safetyBadge")
+                         @Expose
+                         val safetyBadge: PropertySafetyBadge = PropertySafetyBadge())
+: Parcelable {
     class Response(
             @SerializedName("propertyDetail")
             @Expose

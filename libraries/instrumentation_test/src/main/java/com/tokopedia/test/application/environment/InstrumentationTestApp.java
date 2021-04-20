@@ -5,20 +5,24 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Base64;
+
+import androidx.appcompat.app.AppCompatDelegate;
+
 import com.google.android.gms.ads.identifier.AdvertisingIdClient;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.play.core.splitcompat.SplitCompat;
-import com.google.firebase.FirebaseApp;
 import com.google.gson.Gson;
 import com.tkpd.remoteresourcerequest.task.ResourceDownloadManager;
 import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.abstraction.base.app.BaseMainApplication;
-import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
+import com.tokopedia.analytics.performance.util.SplashScreenPerformanceTracker;
+import com.tokopedia.analyticsdebugger.AnalyticsSource;
 import com.tokopedia.analyticsdebugger.debugger.FpmLogger;
+import com.tokopedia.analyticsdebugger.debugger.GtmLogger;
 import com.tokopedia.applink.ApplinkDelegate;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.ApplinkUnsupported;
+import com.tokopedia.cachemanager.CacheManager;
 import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.common.network.util.NetworkClient;
 import com.tokopedia.config.GlobalConfig;
@@ -28,10 +32,9 @@ import com.tokopedia.core.analytics.container.GTMAnalytics;
 import com.tokopedia.core.analytics.container.MoengageAnalytics;
 import com.tokopedia.core.analytics.fingerprint.LocationCache;
 import com.tokopedia.core.analytics.fingerprint.domain.model.FingerPrint;
-import com.tokopedia.core.deprecated.SessionHandler;
-import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.gcm.base.IAppNotificationReceiver;
 import com.tokopedia.core.gcm.model.NotificationPass;
+import com.tokopedia.core.network.CoreNetworkApplication;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.instrumentation.test.R;
 import com.tokopedia.linker.LinkerManager;
@@ -46,9 +49,11 @@ import com.tokopedia.test.application.util.DeviceInfo;
 import com.tokopedia.test.application.util.DeviceScreenInfo;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.interfaces.ContextAnalytics;
+
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -61,7 +66,7 @@ import kotlin.jvm.functions.Function1;
 import okhttp3.Interceptor;
 import okhttp3.Response;
 
-public class InstrumentationTestApp extends BaseMainApplication
+public class InstrumentationTestApp extends CoreNetworkApplication
         implements AbstractionRouter,
         TkpdCoreRouter,
         NetworkRouter,
@@ -73,14 +78,17 @@ public class InstrumentationTestApp extends BaseMainApplication
     private int topAdsProductCount = 0;
     private Long totalSizeInBytes = 0L;
     private Map<String, Interceptor> testInterceptors = new HashMap<>();
+    private CacheManager cacheManager;
 
     @Override
     public void onCreate() {
+        SplashScreenPerformanceTracker.isColdStart = true;
         GlobalConfig.DEBUG = true;
-        GlobalConfig.VERSION_NAME = "3.66";
+        GlobalConfig.VERSION_NAME = "3.115";
         SplitCompat.install(this);
-        FirebaseApp.initializeApp(this);
         FpmLogger.init(this);
+        PersistentCacheManager.init(this);
+
         TrackApp.initTrackApp(this);
         TrackApp.getInstance().registerImplementation(TrackApp.GTM, GTMAnalytics.class);
         TrackApp.getInstance().registerImplementation(TrackApp.APPSFLYER, DummyAppsFlyerAnalytics.class);
@@ -89,12 +97,8 @@ public class InstrumentationTestApp extends BaseMainApplication
         LinkerManager.initLinkerManager(getApplicationContext()).setGAClientId(TrackingUtils.getClientID(getApplicationContext()));
         TrackApp.getInstance().initializeAllApis();
         NetworkClient.init(this);
-        GlobalConfig.DEBUG = true;
-        GlobalConfig.VERSION_NAME = "3.90";
         GraphqlClient.init(this);
-        com.tokopedia.config.GlobalConfig.DEBUG = true;
         RemoteConfigInstance.initAbTestPlatform(this);
-        PersistentCacheManager.init(this);
 
         super.onCreate();
 
@@ -114,6 +118,14 @@ public class InstrumentationTestApp extends BaseMainApplication
         }
     }
 
+    public void setDarkMode(Boolean isDarkMode) {
+        if (isDarkMode) {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+        } else {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        }
+    }
+
     public void enableTopAdsDetector() {
         if (GlobalConfig.DEBUG) {
             addInterceptor(new TopAdsDetectorInterceptor(new Function1<Integer, Unit>() {
@@ -128,7 +140,10 @@ public class InstrumentationTestApp extends BaseMainApplication
 
     public void enableSizeDetector(@Nullable List<String> listToAnalyze) {
         if (GlobalConfig.DEBUG) {
-            addInterceptor(new GqlNetworkAnalyzerInterceptor(listToAnalyze));
+            GqlNetworkAnalyzerInterceptor.reset();
+            GqlNetworkAnalyzerInterceptor.addGqlQueryListToAnalyze(listToAnalyze);
+
+            addInterceptor(new GqlNetworkAnalyzerInterceptor());
         }
     }
 
@@ -138,6 +153,18 @@ public class InstrumentationTestApp extends BaseMainApplication
             ArrayList<Interceptor> interceptorList = new ArrayList<Interceptor>(testInterceptors.values());
             GraphqlClient.reInitRetrofitWithInterceptors(interceptorList, this);
         }
+    }
+
+    public void setInterceptor(Interceptor interceptor) {
+        GraphqlClient.reInitRetrofitWithInterceptors(Collections.singletonList(interceptor), this);
+    }
+
+    /**
+     * this method is just for mock response API with custom interceptor
+     * common_network with use case RestRequestSupportInterceptorUseCase
+     */
+    public void addRestSupportInterceptor(Interceptor interceptor) {
+        NetworkClient.getApiInterfaceCustomInterceptor(Collections.singletonList(interceptor), this);
     }
 
     @Override
@@ -152,6 +179,11 @@ public class InstrumentationTestApp extends BaseMainApplication
 
     @Override
     public void goToApplinkActivity(Activity activity, String applink, Bundle bundle) {
+
+    }
+
+    @Override
+    public void sendRefreshTokenAnalytics(String errorMessage) {
 
     }
 
@@ -213,7 +245,17 @@ public class InstrumentationTestApp extends BaseMainApplication
 
         @Override
         public void sendEvent(String eventName, Map<String, Object> eventValue) {
+            GtmLogger.getInstance(getContext()).save(eventName, eventValue, AnalyticsSource.APPS_FLYER);
+        }
 
+        @Override
+        public void sendTrackEvent(Map<String, Object> data, String eventName) {
+            sendTrackEvent(eventName, data);
+        }
+
+        @Override
+        public void sendTrackEvent(String eventName, Map<String, Object> eventValue) {
+            GtmLogger.getInstance(getContext()).save(eventName, eventValue, AnalyticsSource.APPS_FLYER);
         }
     }
 
@@ -263,28 +305,10 @@ public class InstrumentationTestApp extends BaseMainApplication
     }
 
     @Override
-    public SessionHandler legacySessionHandler() {
-        return new SessionHandler(this) {
-
-            @Override
-            public String getLoginID() {
-                return "null";
-            }
-
-            @Override
-            public String getRefreshToken() {
-                return "null";
-            }
-
-        };
+    public Intent getMaintenancePageIntent() {
+        return new Intent();
     }
 
-    @Override
-    public GCMHandler legacyGCMHandler() {
-        return new GCMHandler(this);
-    }
-
-    @Override
     public void refreshFCMTokenFromBackgroundToCM(String token, boolean force) {
 
     }
@@ -310,7 +334,7 @@ public class InstrumentationTestApp extends BaseMainApplication
     }
 
     @Override
-    public void sendForceLogoutAnalytics(Response response, boolean isInvalidToken, boolean isRequestDenied) {
+    public void sendForceLogoutAnalytics(String url, boolean isInvalidToken, boolean isRequestDenied) {
 
     }
 
@@ -430,8 +454,10 @@ public class InstrumentationTestApp extends BaseMainApplication
     }
 
     @Override
-    public CacheManager getGlobalCacheManager() {
-        return null;
+    public CacheManager getPersistentCacheManager() {
+        if (cacheManager == null)
+            cacheManager = new PersistentCacheManager(this);
+        return cacheManager;
     }
 
     @Override
@@ -448,5 +474,4 @@ public class InstrumentationTestApp extends BaseMainApplication
     public void sendAnalyticsAnomalyResponse(String s, String s1, String s2, String s3, String s4) {
 
     }
-
 }

@@ -2,7 +2,7 @@ package com.tokopedia.topads.edit.data
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.tokopedia.topads.edit.data.response.GetKeywordResponse
+import com.tokopedia.topads.common.data.response.GetKeywordResponse
 
 /**
  * Created by Pika on 14/4/20.
@@ -11,16 +11,11 @@ import com.tokopedia.topads.edit.data.response.GetKeywordResponse
 class SharedViewModel : ViewModel() {
 
     private var productId: MutableLiveData<MutableList<String>> = MutableLiveData()
-    private var groupName: MutableLiveData<String> = MutableLiveData()
     private var groupId: MutableLiveData<Int> = MutableLiveData()
     private var negKeyword: MutableLiveData<List<GetKeywordResponse.KeywordsItem>> = MutableLiveData()
 
     fun setProductIds(text: MutableList<String>) {
         productId.value = text
-    }
-
-    fun setGroupName(text: String) {
-        groupName.value = text
     }
 
     fun setGroupId(id: Int) {

@@ -1,60 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/view_tap_card"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="@dimen/dp_30"
-    android:id="@+id/view_tap_card"
+    android:gravity="center"
     android:orientation="vertical"
-    android:gravity="center">
+    android:padding="@dimen/spacing_lvl6">
 
     <FrameLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/dp_16">
+        android:layout_marginBottom="@dimen/spacing_lvl4">
 
         <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/lottie_animation_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/lottie_animation_view"
+            app:lottie_autoPlay="true"
             app:lottie_fileName="emoney_animation.json"
-            app:lottie_loop="true"
-            app:lottie_autoPlay="true"/>
+            app:lottie_loop="true" />
 
         <ImageView
+            android:id="@+id/imageview_error"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:visibility="gone"
-            app:srcCompat="@drawable/emoney_ic_nfc_need_activation"
-            android:id="@+id/imageview_error" />
+            app:srcCompat="@drawable/emoney_ic_nfc_need_activation" />
 
     </FrameLayout>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="@dimen/sp_20"
-        android:textColor="@color/black"
-        android:textStyle="bold"
-        android:gravity="center"
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/text_title"
-        android:text="@string/emoney_tap_card_instruction_title"/>
-
-    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:id="@+id/text_label"
-        android:layout_marginTop="@dimen/dp_16"
-        android:text="@string/emoney_tap_card_instruction_message"/>
+        android:text="@string/emoney_tap_card_instruction_title"
+        android:textColor="@color/Unify_N700_96"
+        app:typographyType="heading_2" />
 
-    <androidx.appcompat.widget.AppCompatButton
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/text_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:gravity="center"
+        android:text="@string/emoney_tap_card_instruction_message"
+        android:textColor="@color/Unify_N700_68"
+        app:typographyType="body_2" />
+
+    <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/button_try_again"
-        android:visibility="gone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl4"
         android:text="@string/emoney_nfc_tap_card_button_label_error"
-        style="@style/Button.Submit.Green" />
+        android:visibility="gone"
+        app:unifyButtonSize="medium"
+        app:unifyButtonType="main"
+        app:unifyButtonVariant="filled" />
 
 </LinearLayout>

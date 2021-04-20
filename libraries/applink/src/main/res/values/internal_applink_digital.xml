@@ -12,7 +12,8 @@
     <string name="path_telco" translatable="false">/telco</string>
     <string name="path_telco_prepaid" translatable="false">/telcopre</string>
     <string name="path_telco_postpaid" translatable="false">/telcopost</string>
-    <string name="path_telco_cart" translatable="false">/cart</string>
+    <string name="path_digital_checkout" translatable="false">/checkout</string>
+    <string name="path_digital_cart" translatable="false">/cart</string>
     <string name="path_home" translatable="false">/home</string>
     <string name="path_dynamic_home" translatable="false">/home/dynamic</string>
     <string name="title_digital_subhomepage"><![CDATA[Top-up & Tagihan]]></string>

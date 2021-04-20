@@ -3,14 +3,14 @@ apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 
 repositories {
-    maven { url 'https://hansel.io/maven' }
+    maven { url 'https://maven-hansel.tokopedia.com/maven' }
     mavenCentral()
 }
 
 buildscript {
     repositories {
         mavenCentral()
-        maven { url 'https://hansel.io/maven' }
+        maven { url 'https://maven-hansel.tokopedia.com/maven' }
     }
     dependencies {
         classpath rootProject.ext.miscDependencies.hansel
@@ -28,28 +28,30 @@ dependencies {
     implementation project(rootProject.ext.libraries.weaver)
     implementation project(rootProject.ext.libraries.kotlinExtensions)
     implementation project(rootProject.ext.libraries.adapterDelegate)
+    implementation project(rootProject.ext.libraries.graphql)
+    implementation project(rootProject.ext.libraries.logger)
 
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.components
+    implementation rootProject.ext.unifyDependencies.icons
     implementation rootProject.ext.unifyDependencies.global_error
 
     implementation rootProject.ext.tkpdInternalLibDependencies.url
-    implementation project(rootProject.ext.libraries.graphql)
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
-
-    kapt rootProject.ext.miscDependencies.lifeCycleRuntime
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk7
 
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
+    kapt rootProject.ext.miscDependencies.lifeCycleRuntime
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.miscDependencies.dagger
+    kapt rootProject.ext.miscDependencies.daggerCompiler
     implementation rootProject.ext.miscDependencies.rxKotlin
     implementation (rootProject.ext.miscDependencies.viewPager2){
         ['androidx.collection', 'androidx.fragment'].each {
@@ -57,16 +59,14 @@ dependencies {
         }
     }
 
-
-    testImplementation rootProject.ext.testDependencies.assertJ
+    // unit test
+    testImplementation rootProject.ext.testDependencies.junit
+    implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk8
     testImplementation rootProject.ext.testDependencies.archCoreTesting
     testImplementation rootProject.ext.testDependencies.mockk
-    testImplementation rootProject.ext.testDependencies.spek2Api
-    testImplementation rootProject.ext.testDependencies.spek2Dsl
-    testImplementation rootProject.ext.supportLibDependencies.kotlinReflection
-    testImplementation rootProject.ext.testDependencies.json
-    testImplementation rootProject.ext.miscDependencies.coroutineCore
+    testImplementation rootProject.ext.testDependencies.assertJCore
     testImplementation rootProject.ext.miscDependencies.coroutineTest
+    testImplementation project(rootProject.ext.libraries.unitTest)
 }
 
 project.ext {
@@ -77,3 +77,6 @@ project.ext {
 }
 
 apply from: '../../../publish_local.gradle'
+
+apply from: '../../../jacoco_task.gradle'
+apply from: '../../../sonar_config.gradle'

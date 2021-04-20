@@ -68,7 +68,7 @@ data class ShopLayoutWidget(
                 @SerializedName("linkUrl")
                 val linkUrl: String = "",
                 @SerializedName("productID")
-                val productID: Int = -1,
+                val productID: String = "",
                 @SerializedName("name")
                 val name: String = "",
                 @SerializedName("campaignID")
@@ -87,6 +87,8 @@ data class ShopLayoutWidget(
                 val totalNotify: Int = 0,
                 @SerializedName("totalNotifyWording")
                 val totalNotifyWording: String = "",
+                @SerializedName("dynamicRule")
+                val dynamicRule: DynamicRule = DynamicRule(),
                 @SerializedName("banners")
                 val listBanner: List<Banner> = listOf(),
                 @SerializedName("products")
@@ -97,26 +99,6 @@ data class ShopLayoutWidget(
                 val originalPrice: String = "",
                 @SerializedName("discountPercentage")
                 val discountPercentage: String = "",
-                @SerializedName("voucherID")
-                val voucherID: Int = -1,
-                @SerializedName("voucherType")
-                val voucherType: VoucherType,
-                @SerializedName("voucherCode")
-                val voucherCode: String = "",
-                @SerializedName("amount")
-                val amount: Amount = Amount(),
-                @SerializedName("minimumSpend")
-                val minimumSpend: Int = -1,
-                @SerializedName("minimumSpendFormatted")
-                val minimumSpendFormatted: String = "",
-                @SerializedName("owner")
-                val owner: Owner = Owner(),
-                @SerializedName("validThru")
-                val validThru: String = "",
-                @SerializedName("tnc")
-                val tnc: String = "",
-                @SerializedName("inUseExpiry")
-                val inUseExpiry: String = "",
                 @SerializedName("productUrl")
                 val productUrl: String = "",
                 @SerializedName("isShowFreeOngkir")
@@ -133,41 +115,16 @@ data class ShopLayoutWidget(
                 val isPO: Boolean = false,
                 @SerializedName("cashback")
                 val cashback: Int = -1,
-                @SerializedName("status")
-                val status: Status = Status(),
                 @SerializedName("statusCampaign")
-                val statusCampaign: String = ""
+                val statusCampaign: String = "",
+                @SerializedName("labelGroups")
+                val labelGroups: List<LabelGroup> = listOf(),
+                @SerializedName("recommendationType")
+                val recommendationType: String = "",
+                @SerializedName("minimumOrder")
+                val minimumOrder: Int? = 1
+
         ) {
-            data class VoucherType(
-                    @SerializedName("voucherType")
-                    val voucherType: Int = -1,
-                    @SerializedName("identifier")
-                    val identifier: String = ""
-            )
-
-            data class Amount(
-                    @SerializedName("amountType")
-                    val amountType: Int = -1,
-                    @SerializedName("amount")
-                    val amount: Int = -1,
-                    @SerializedName("amountFormatted")
-                    val amountFormatted: String = ""
-            )
-
-            data class Owner(
-                    @SerializedName("ownerId")
-                    val ownerId: Int = -1,
-                    @SerializedName("identifier")
-                    val identifier: String = ""
-            )
-
-            data class Status(
-                    @SerializedName("status")
-                    val status: Int = -1,
-                    @SerializedName("identifier")
-                    val identifier: String = ""
-            )
-
             data class Banner(
                     @SerializedName("imageID")
                     val imageId: Int = -1,
@@ -181,7 +138,7 @@ data class ShopLayoutWidget(
 
             data class Product(
                     @SerializedName("id")
-                    val id: Int = -1,
+                    val id: String = "",
                     @SerializedName("name")
                     val name: String = "",
                     @SerializedName("url")
@@ -218,6 +175,18 @@ data class ShopLayoutWidget(
                 data class StockWording(
                         @SerializedName("title")
                         val title: String = ""
+                )
+            }
+
+            data class DynamicRule(
+                    @SerializedName("descriptionHeader")
+                    val descriptionHeader: String = "",
+                    @SerializedName("dynamicRoleData")
+                    val dynamicRoleData: List<DynamicRoleData> = listOf()
+            ){
+                data class DynamicRoleData(
+                        @SerializedName("ruleID")
+                        val ruleID: String = ""
                 )
             }
         }

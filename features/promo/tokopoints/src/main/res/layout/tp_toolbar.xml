@@ -7,6 +7,7 @@
     android:layout_height="?actionBarSize"
     app:contentInsetEnd="0dp"
     app:contentInsetStart="0dp"
+    android:background="@color/transparent"
     app:contentInsetStartWithNavigation="0dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -15,7 +16,7 @@
         android:orientation="horizontal"
         android:paddingTop="@dimen/dp_8"
         android:paddingBottom="@dimen/dp_8"
-        tools:background="@color/black">
+        tools:background="@color/Unify_N700">
 
         <TextView
             android:id="@+id/tv_tpToolbar_title"
@@ -23,7 +24,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_8"
             android:layout_marginBottom="@dimen/dp_8"
-            android:textColor="@color/white"
+            android:textColor="@color/Unify_N0"
             android:textSize="@dimen/tp_text_size_regular"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"

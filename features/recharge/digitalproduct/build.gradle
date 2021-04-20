@@ -3,7 +3,7 @@ apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 
 repositories {
-    maven { url 'https://hansel.io/maven' }
+    maven { url 'https://maven-hansel.tokopedia.com/maven' }
 }
 
 buildscript {
@@ -11,32 +11,40 @@ buildscript {
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         mavenCentral()
         jcenter()
-        maven { url 'https://hansel.io/maven' }
+        maven { url 'https://maven-hansel.tokopedia.com/maven' }
     }
     dependencies {
         classpath rootProject.ext.miscDependencies.hansel
     }
 }
 
+android {
+    packagingOptions {
+        exclude 'META-INF/**'
+    }
+
+    defaultConfig {
+        multiDexEnabled true
+        testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
+    }
+}
+
 dependencies {
-    implementation project(rootProject.ext.features.nps)
-    implementation project(rootProject.ext.features.resourcesCommon)
-    implementation project(rootProject.ext.features.commonWallet)
     implementation project(rootProject.ext.features.common_promo)
     implementation project(rootProject.ext.features.commonPayment)
     implementation project(rootProject.ext.features.commonDigital)
     implementation project(rootProject.ext.features.promoCheckoutCommon)
-
-    implementation project(rootProject.ext.libraries.tkpddesign)
+    implementation project(rootProject.ext.features.resourcesCommon)
+    implementation project(rootProject.ext.libraries.commonNetwork)
+    implementation project(rootProject.ext.libraries.deviceInfo)
     implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.libraries.baseList)
     implementation project(rootProject.ext.libraries.track)
     implementation project(rootProject.ext.libraries.analytics)
     implementation project(rootProject.ext.libraries.youtubeutil)
-    implementation project(rootProject.ext.libraries.permissionchecker)
+    implementation project(rootProject.ext.libraries.utils)
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.remoteConfig)
-    implementation project(rootProject.ext.libraries.fingerprint)
 
     implementation rootProject.ext.tkpdInternalLibDependencies.network
     implementation rootProject.ext.tkpdInternalLibDependencies.authentication
@@ -44,30 +52,37 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
     implementation rootProject.ext.tkpdInternalLibDependencies.url
-    implementation project(rootProject.ext.libraries.graphql)
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation project(rootProject.ext.libraries.akamaiBotLib)
 
+    implementation rootProject.ext.unifyDependencies.dialog
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.global_error
+    implementation rootProject.ext.unifyDependencies.empty_state
 
+    implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk7
     implementation rootProject.ext.miscDependencies.dagger
     kapt rootProject.ext.miscDependencies.daggerCompiler
     implementation rootProject.ext.tkpdLibDependencies.youtubePlayer
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.playServicesDependencies.core
-    implementation rootProject.ext.miscDependencies.loaderviewlibrary
-    implementation rootProject.ext.miscDependencies.roundCornerProgressBar
-    implementation rootProject.ext.miscDependencies.lottie
     implementation rootProject.ext.miscDependencies.gson
-    implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
-    implementation(rootProject.ext.tkpdLibDependencies.showcase) {
-        exclude group: "com.android.support"
-    }
 
     implementation rootProject.ext.debugToolsDependencies.chuck
+
+    androidTestImplementation rootProject.ext.testDependencies.androidTestRunner
+    androidTestImplementation rootProject.ext.testDependencies.androidRulesVersion
+    androidTestImplementation rootProject.ext.testDependencies.espressoCore
+    androidTestImplementation rootProject.ext.testDependencies.espressoContrib
+    androidTestImplementation project(rootProject.ext.libraries.instrumentation_test)
+    androidTestImplementation(rootProject.ext.testDependencies.androidRulesVersion) {
+        exclude module: 'support-annotations'
+    }
+    androidTestImplementation(rootProject.ext.testDependencies.espressoIntents) {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    }
 }
 
 project.ext {

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="horizontal"
+    tools:layout_height="wrap_content"
+    tools:layout_marginEnd="@dimen/unify_space_8"
+    tools:layout_width="match_parent"
+    tools:orientation="horizontal"
+    tools:padding="@dimen/unify_space_4"
+    tools:parentTag="android.widget.LinearLayout">
+
+    <ImageView
+        android:id="@+id/iv_order_icon"
+        android:layout_width="@dimen/unify_space_24"
+        android:layout_height="@dimen/unify_space_24"
+        android:layout_gravity="center"
+        android:layout_marginStart="@dimen/unify_space_4"
+        android:layout_marginTop="@dimen/unify_space_4"
+        android:layout_marginEnd="@dimen/unify_space_4"
+        android:layout_marginBottom="@dimen/unify_space_4"
+        android:contentDescription="@null"
+        android:scaleType="fitCenter"
+        tools:src="@tools:sample/avatars" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tp_order_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_weight="1"
+        android:ellipsize="end"
+        android:gravity="center_vertical"
+        android:maxLines="1"
+        android:minHeight="@dimen/unify_space_32"
+        android:textColor="@color/Unify_N700_68"
+        app:typographyType="body_3"
+        tools:text="Transaksi berlangsung" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tp_counter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginStart="@dimen/unify_space_4"
+        android:textColor="@color/Unify_N700_68"
+        app:typographyType="body_3"
+        app:typographyWeight="bold"
+        tools:text="99+" />
+
+    <com.tokopedia.iconunify.IconUnify
+        android:layout_width="@dimen/unify_space_16"
+        android:layout_height="@dimen/unify_space_16"
+        android:layout_gravity="center"
+        android:layout_marginStart="@dimen/unify_space_2"
+        android:layout_marginTop="@dimen/unify_space_4"
+        android:layout_marginEnd="@dimen/unify_space_4"
+        android:layout_marginBottom="@dimen/unify_space_4"
+        app:icon_color_light_enable="@color/Unify_N200"
+        app:icon_name="CHEVRON_RIGHT"
+        tools:src="@drawable/ic_arrow_right_grey" />
+</merge>

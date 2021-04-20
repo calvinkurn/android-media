@@ -13,7 +13,6 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.navigation.GlobalNavAnalytics;
-import com.tokopedia.navigation.GlobalNavRouter;
 import com.tokopedia.navigation.R;
 import com.tokopedia.navigation_common.model.NotifcenterUnread;
 import com.tokopedia.navigation_common.model.NotificationsModel;
@@ -83,7 +82,7 @@ public class NotificationFragment extends BaseParentFragment implements Notifica
         emptyLayout = parentView.findViewById(R.id.empty_layout);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
         recyclerView.setHasFixedSize(true);
-        swipeRefreshLayout.setColorSchemeResources(R.color.tkpd_main_green);
+        swipeRefreshLayout.setColorSchemeResources(com.tokopedia.unifyprinciples.R.color.Unify_G400);
 
         adapter = new NotificationAdapter(getActivity());
         recyclerView.setAdapter(adapter);
@@ -172,20 +171,20 @@ public class NotificationFragment extends BaseParentFragment implements Notifica
             childBuyer.add(new DrawerNotification.ChildDrawerNotification(MENUNGGU_KONFIRMASI,
                     getString(R.string.menunggu_konfirmasi), ApplinkConst.MARKETPLACE_WAITING_CONFIRMATION));
             childBuyer.add(new DrawerNotification.ChildDrawerNotification(PESANAN_DIPROSES,
-                    getString(R.string.pesanan_diproses), ApplinkConst.MARKETPLACE_ORDER_PROCESSED));
+                    getString(R.string.pesanan_diproses_uoh), ApplinkConst.MARKETPLACE_ORDER_PROCESSED));
             childBuyer.add(new DrawerNotification.ChildDrawerNotification(SEDANG_DIKIRIM,
-                    getString(R.string.sedang_dikirim), ApplinkConst.MARKETPLACE_SENT));
+                    getString(R.string.sedang_dikirim_uoh), ApplinkConst.MARKETPLACE_SENT));
             childBuyer.add(new DrawerNotification.ChildDrawerNotification(SAMPAI_TUJUAN,
-                    getString(R.string.sampai_tujuan), ApplinkConst.MARKETPLACE_DELIVERED));
+                    getString(R.string.sampai_tujuan_uoh), ApplinkConst.MARKETPLACE_DELIVERED));
         }else {
             childBuyer.add(new DrawerNotification.ChildDrawerNotification(MENUNGGU_KONFIRMASI,
                     getString(R.string.menunggu_konfirmasi), ApplinkConst.PURCHASE_CONFIRMED));
             childBuyer.add(new DrawerNotification.ChildDrawerNotification(PESANAN_DIPROSES,
-                    getString(R.string.pesanan_diproses), ApplinkConst.PURCHASE_PROCESSED));
+                    getString(R.string.pesanan_diproses_uoh), ApplinkConst.PURCHASE_PROCESSED));
             childBuyer.add(new DrawerNotification.ChildDrawerNotification(SEDANG_DIKIRIM,
-                    getString(R.string.sedang_dikirim), ApplinkConst.PURCHASE_SHIPPED));
+                    getString(R.string.sedang_dikirim_uoh), ApplinkConst.PURCHASE_SHIPPED));
             childBuyer.add(new DrawerNotification.ChildDrawerNotification(SAMPAI_TUJUAN,
-                    getString(R.string.sampai_tujuan), ApplinkConst.PURCHASE_DELIVERED));
+                    getString(R.string.sampai_tujuan_uoh), ApplinkConst.PURCHASE_DELIVERED));
         }
 
         buyer.setChilds(childBuyer);
@@ -268,7 +267,6 @@ public class NotificationFragment extends BaseParentFragment implements Notifica
 
     private boolean shouldAddUserInfo() {
         return getActivity()!= null
-                && getActivity().getApplicationContext() instanceof GlobalNavRouter
                 && remoteConfig.getBoolean(IS_ENABLE_NOTIF_CENTER, Boolean.TRUE);
     }
 }

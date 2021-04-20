@@ -76,6 +76,9 @@ public class Shop {
     @SerializedName("official_store")
     @Expose
     private OfficialStore officialStore;
+    @SerializedName("shop_alert_message")
+    @Expose
+    private String shopAlertMessage;
 
     public int getShopId() {
         return shopId;
@@ -167,5 +170,9 @@ public class Shop {
 
     public OfficialStore getOfficialStore() {
         return officialStore;
+    }
+
+    public String getShopAlertMessage() {
+        return shopAlertMessage;
     }
 }

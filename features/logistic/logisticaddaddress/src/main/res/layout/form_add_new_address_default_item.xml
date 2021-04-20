@@ -16,6 +16,7 @@
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/et_label_address"
+            android:contentDescription="@string/content_desc_et_label_address"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:imeOptions="actionDone"
@@ -24,7 +25,7 @@
             android:overScrollMode="always"
             android:scrollbarStyle="insideInset"
             android:scrollbars="vertical"
-            android:textColor="#ae31353b"
+            android:textColor="@color/Unify_N700_68"
             android:textSize="@dimen/sp_14"/>
 
     </com.google.android.material.textfield.TextInputLayout>
@@ -45,8 +46,10 @@
         android:layout_marginBottom="@dimen/dp_24"
         android:hint="@string/add_new_address_name_label">
 
+
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/et_receiver_name"
+            android:contentDescription="@string/content_desc_et_receiver_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:imeOptions="actionDone"
@@ -55,36 +58,58 @@
             android:overScrollMode="always"
             android:scrollbarStyle="insideInset"
             android:scrollbars="vertical"
-            android:textColor="#ae31353b"
+            android:textColor="@color/Unify_N700_68"
             android:textSize="@dimen/sp_14"/>
 
     </com.google.android.material.textfield.TextInputLayout>
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/et_phone_wrapper"
-        style="@style/HintTextInputLayout"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/dp_24"
-        android:hint="@string/add_new_address_phone_label">
+        android:layout_marginBottom="@dimen/dp_10">
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/et_phone"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/et_phone_wrapper"
+            style="@style/HintTextInputLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:imeOptions="actionDone"
-            android:inputType="phone"
-            android:maxLines="1"
-            android:overScrollMode="always"
-            android:scrollbarStyle="insideInset"
-            android:scrollbars="vertical"
-            android:textColor="#ae31353b"
-            android:textSize="@dimen/sp_14"/>
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:hint="@string/add_new_address_phone_label"
+            app:layout_constraintEnd_toStartOf="@id/btn_contact_picker">
 
-    </com.google.android.material.textfield.TextInputLayout>
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/et_phone"
+                android:contentDescription="@string/content_desc_et_phone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:imeOptions="actionDone"
+                android:inputType="phone"
+                android:maxLines="1"
+                android:overScrollMode="always"
+                android:scrollbarStyle="insideInset"
+                android:scrollbars="vertical"
+                android:textColor="@color/Unify_N700_68"
+                android:textSize="@dimen/sp_14"/>
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/btn_contact_picker"
+            android:layout_width="@dimen/dp_24"
+            android:layout_height="@dimen/dp_24"
+            android:layout_marginRight="@dimen/unify_space_16"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:visibility="visible"
+            app:icon_name="CONTACT"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <com.tokopedia.design.component.ButtonCompat
         android:id="@+id/btn_save_address"
+        android:contentDescription="@string/content_desc_btn_save_address"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/dp_10"

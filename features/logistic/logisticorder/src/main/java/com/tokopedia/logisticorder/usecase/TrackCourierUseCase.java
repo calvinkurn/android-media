@@ -1,7 +1,7 @@
 package com.tokopedia.logisticorder.usecase;
 
 import com.tokopedia.logisticorder.mapper.ITrackingPageMapper;
-import com.tokopedia.logisticdata.data.repository.ITrackingPageRepository;
+import com.tokopedia.logisticCommon.data.repository.ITrackingPageRepository;
 import com.tokopedia.logisticorder.uimodel.TrackingUiModel;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;

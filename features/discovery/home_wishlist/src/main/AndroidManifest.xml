@@ -7,9 +7,10 @@
             android:name=".WishlistActivity"
             android:label="@string/title_home_wishlist_module_name"
             android:launchMode="singleTask"
+            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"
             android:screenOrientation="portrait">
-            <intent-filter android:autoVerify="true">
-                <action android:name="android.intent.action.VIEW"/>
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW"/>
                 <category android:name="android.intent.category.DEFAULT"/>
                 <category android:name="android.intent.category.BROWSABLE"/>
                 <data

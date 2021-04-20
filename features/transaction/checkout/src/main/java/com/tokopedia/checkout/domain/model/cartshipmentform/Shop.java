@@ -29,6 +29,7 @@ public class Shop implements Parcelable {
     private int provinceId;
     private int cityId;
     private String cityName;
+    private String shopAlertMessage;
 
     public void setShopId(int shopId) {
         this.shopId = shopId;
@@ -206,6 +207,14 @@ public class Shop implements Parcelable {
         this.shopBadge = shopBadge;
     }
 
+    public String getShopAlertMessage() {
+        return shopAlertMessage;
+    }
+
+    public void setShopAlertMessage(String shopAlertMessage) {
+        this.shopAlertMessage = shopAlertMessage;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -235,6 +244,7 @@ public class Shop implements Parcelable {
         dest.writeInt(this.cityId);
         dest.writeString(this.cityName);
         dest.writeString(this.shopBadge);
+        dest.writeString(this.shopAlertMessage);
     }
 
     public Shop() {
@@ -263,6 +273,7 @@ public class Shop implements Parcelable {
         this.cityId = in.readInt();
         this.cityName = in.readString();
         this.shopBadge = in.readString();
+        this.shopAlertMessage = in.readString();
     }
 
     public static final Parcelable.Creator<Shop> CREATOR = new Parcelable.Creator<Shop>() {

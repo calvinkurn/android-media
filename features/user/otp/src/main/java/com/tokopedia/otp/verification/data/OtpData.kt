@@ -19,5 +19,8 @@ data class OtpData(
         @Expose @SerializedName("otpMode") var otpMode: String = "",
         @Expose @SerializedName("canUseOtherMethod") var canUseOtherMethod: Boolean = false,
         @Expose @SerializedName("isShowChooseMethod") var isShowChooseMethod: Boolean = false,
-        @Expose @SerializedName("source") var source: String = ""
-) : Parcelable
+        @Expose @SerializedName("source") var source: String = "",
+        @Expose @SerializedName("userIdEnc") var userIdEnc: String = "",
+        @Expose @SerializedName("accessToken") var accessToken: String = ""
+
+        ) : Parcelable

@@ -23,6 +23,7 @@ class CardViewHolder(
 
     companion object {
         val RES_LAYOUT = R.layout.shc_card_widget
+        private const val GO_TO_INBOX_REVIEW = "GO_TO_INBOX_REVIEW"
     }
 
     override fun bind(element: CardWidgetUiModel) {
@@ -71,7 +72,7 @@ class CardViewHolder(
                         selectableItemBg, true)
                 containerCard.setBackgroundResource(selectableItemBg.resourceId)
             } else
-                containerCard.setBackgroundColor(context.getResColor(R.color.Neutral_N0))
+                containerCard.setBackgroundColor(context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_N0))
 
             tvCardTitle.text = element.title
             tvCardValue.text = element.data?.value ?: "0"

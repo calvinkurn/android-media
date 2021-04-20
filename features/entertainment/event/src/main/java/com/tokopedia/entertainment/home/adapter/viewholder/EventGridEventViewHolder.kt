@@ -13,10 +13,11 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalEntertainment
 import com.tokopedia.entertainment.R
 import com.tokopedia.entertainment.home.adapter.HomeEventViewHolder
+import com.tokopedia.entertainment.home.adapter.listener.TrackingListener
 import com.tokopedia.entertainment.home.adapter.viewmodel.EventGridModel
 import com.tokopedia.entertainment.home.adapter.viewmodel.EventItemModel
-import com.tokopedia.entertainment.home.analytics.EventHomePageTracking
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.gone
 import kotlinx.android.synthetic.main.ent_layout_viewholder_event_grid.view.*
 import kotlinx.android.synthetic.main.ent_layout_viewholder_event_grid_adapter_item.view.*
 
@@ -25,27 +26,33 @@ import kotlinx.android.synthetic.main.ent_layout_viewholder_event_grid_adapter_i
  */
 class EventGridEventViewHolder(itemView: View, action: ((data: EventItemModel,
                                                          onSuccess: (EventItemModel) -> Unit,
-                                                         onError: (Throwable) -> Unit) -> Unit))
+                                                         onError: (Throwable) -> Unit) -> Unit),
+                               val gridlistener: TrackingListener)
     : HomeEventViewHolder<EventGridModel>(itemView) {
 
-    var itemAdapter = InnerItemAdapter(action)
+    var itemAdapter = InnerItemAdapter(action, gridlistener)
 
     init {
-        itemView.ent_recycle_view.apply {
+        itemView.ent_recycle_view_grid.apply {
             layoutManager = GridLayoutManager(itemView.context, 2, LinearLayoutManager.VERTICAL, false)
             adapter = itemAdapter
         }
     }
 
     override fun bind(element: EventGridModel) {
+        if(element.items.isEmpty()){
+            itemView.ent_title_card.gone()
+            itemView.btn_see_all.gone()
+            itemView.ent_recycle_view_grid.gone()
+        }
         itemView.ent_title_card.text = element.title
         itemAdapter.titleGrid = element.title
         itemAdapter.setList(element.items)
         itemView.btn_see_all.setOnClickListener {
-            RouteManager.route(itemView.context, ApplinkConstInternalEntertainment.EVENT_CATEGORY
-                    , element.id,  "", "")
-            EventHomePageTracking.getInstance().clickSeeAllCuratedEventProduct(element.title,
+            gridlistener.clickSeeAllCuratedEventProduct(element.title,
                     adapterPosition + 1)
+            RouteManager.route(itemView.context, ApplinkConstInternalEntertainment.EVENT_CATEGORY
+                    , element.id, "", "")
         }
     }
 
@@ -58,7 +65,7 @@ class EventGridEventViewHolder(itemView: View, action: ((data: EventItemModel,
 
     class InnerItemAdapter(val action: (data: EventItemModel,
                                         onSuccess: (EventItemModel) -> Unit,
-                                        onError: (Throwable) -> Unit) -> Unit)
+                                        onError: (Throwable) -> Unit) -> Unit, val gridlistener: TrackingListener)
         : RecyclerView.Adapter<InnerViewHolder>() {
 
         lateinit var items: List<EventItemModel>
@@ -85,12 +92,12 @@ class EventGridEventViewHolder(itemView: View, action: ((data: EventItemModel,
                 holder.view.iv_favorite.setImageResource(R.drawable.ent_ic_wishlist_inactive)
             }
             holder.view.setOnClickListener {
-                RouteManager.route(holder.view.context, item.appUrl)
-                EventHomePageTracking.getInstance().clickSectionEventProduct(item, items, titleGrid,
+                gridlistener.clickSectionEventProduct(item, items, titleGrid,
                         position + 1)
+                RouteManager.route(holder.view.context, item.appUrl)
             }
             holder.view.addOnImpressionListener(item, {
-                EventHomePageTracking.getInstance().impressionSectionEventProduct(item, items, titleGrid,
+                gridlistener.impressionSectionEventProduct(item, items, titleGrid,
                         position + 1)
             })
             holder.view.iv_favorite.setOnClickListener {
@@ -107,7 +114,7 @@ class EventGridEventViewHolder(itemView: View, action: ((data: EventItemModel,
             Log.e(TAG, throwable.localizedMessage)
         }
 
-        fun setList(list : MutableList<EventItemModel>){
+        fun setList(list: MutableList<EventItemModel>) {
             items = list
             notifyDataSetChanged()
         }

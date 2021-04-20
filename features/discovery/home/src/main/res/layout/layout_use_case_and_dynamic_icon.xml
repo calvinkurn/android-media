@@ -6,7 +6,8 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:gravity="center_horizontal|top"
-    android:layout_marginTop="@dimen/dp_8"
+    android:layout_marginBottom="@dimen/dp_8"
+    android:layout_marginTop="@dimen/dp_16"
     android:orientation="vertical">
     <FrameLayout
         android:layout_width="@dimen/use_case_and_dynamic_image_size"
@@ -30,7 +31,6 @@
 
     <TextView
         android:id="@+id/title"
-        android:contentDescription="@string/content_desc_title"
         android:layout_width="@dimen/use_case_and_dynamic_icon_size"
         android:layout_height="wrap_content"
         android:maxLines="2"
@@ -40,9 +40,9 @@
         android:fontFamily="sans-serif"
         android:gravity="center_horizontal|top"
         android:lineSpacingExtra="4sp"
-        android:textColor="@color/black_70"
+        android:textColor="@color/Unify_N700_68"
         android:textSize="@dimen/sp_10"
         android:textStyle="normal"
-        tools:text="Ajukan" />
+        tools:text="Ajukan Ada deh" />
 
 </LinearLayout>

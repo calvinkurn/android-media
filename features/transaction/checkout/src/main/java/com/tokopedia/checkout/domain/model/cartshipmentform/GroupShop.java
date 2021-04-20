@@ -31,10 +31,13 @@ public class GroupShop implements Parcelable {
     private boolean isFulfillment;
     private int fulfillmentId;
     private String fulfillmentName;
+    private String fulfillmentBadgeUrl;
 
     private boolean isLeasingProduct;
     private int bookingFee;
     private List<String> listPromoCodes;
+
+    private ShipmentInformationData shipmentInformationData;
 
     public Shop getShop() {
         return shop;
@@ -140,6 +143,14 @@ public class GroupShop implements Parcelable {
         this.fulfillmentName = fulfillmentName;
     }
 
+    public String getFulfillmentBadgeUrl() {
+        return fulfillmentBadgeUrl;
+    }
+
+    public void setFulfillmentBadgeUrl(String fulfillmentBadgeUrl) {
+        this.fulfillmentBadgeUrl = fulfillmentBadgeUrl;
+    }
+
     public String getCartString() { return cartString; }
 
     public void setCartString(String cartString) { this.cartString = cartString; }
@@ -171,6 +182,14 @@ public class GroupShop implements Parcelable {
 
     public void setListPromoCodes(List<String> listPromoCodes) { this.listPromoCodes = listPromoCodes; }
 
+    public ShipmentInformationData getShipmentInformationData() {
+        return shipmentInformationData;
+    }
+
+    public void setShipmentInformationData(ShipmentInformationData shipmentInformationData) {
+        this.shipmentInformationData = shipmentInformationData;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -191,12 +210,14 @@ public class GroupShop implements Parcelable {
         dest.writeByte(this.isFulfillment ? (byte) 1 : (byte) 0);
         dest.writeInt(this.fulfillmentId);
         dest.writeString(this.fulfillmentName);
+        dest.writeString(this.fulfillmentBadgeUrl);
         dest.writeString(cartString);
         dest.writeByte(this.hasPromoList ? (byte) 1 : (byte) 0);
         dest.writeByte(this.saveStateFlag ? (byte) 1 : (byte) 0);
         dest.writeByte(this.isLeasingProduct ? (byte) 1 : (byte) 0);
         dest.writeInt(this.bookingFee);
         dest.writeStringList(this.listPromoCodes);
+        dest.writeParcelable(this.shipmentInformationData, flags);
     }
 
     protected GroupShop(Parcel in) {
@@ -213,12 +234,14 @@ public class GroupShop implements Parcelable {
         this.isFulfillment = in.readByte() != 0;
         this.fulfillmentId = in.readInt();
         this.fulfillmentName = in.readString();
+        this.fulfillmentBadgeUrl = in.readString();
         this.cartString = in.readString();
         this.hasPromoList = in.readByte() != 0;
         this.saveStateFlag = in.readByte() != 0;
         this.isLeasingProduct = in.readByte() != 0;
         this.bookingFee = in.readInt();
         this.listPromoCodes = in.createStringArrayList();
+        this.shipmentInformationData = in.readParcelable(ShipmentInformationData.class.getClassLoader());
     }
 
     public static final Creator<GroupShop> CREATOR = new Creator<GroupShop>() {

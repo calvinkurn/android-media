@@ -4,8 +4,8 @@ import com.tokopedia.core.common.category.domain.interactor.GetCategoryListUseCa
 import com.tokopedia.core.common.category.domain.interactor.GetCategoryListUseCase.Companion.PARAM_FILTER
 import com.tokopedia.core.common.category.domain.model.CategoriesResponse
 import com.tokopedia.product.manage.feature.filter.data.model.FilterOptionsResponse
-import com.tokopedia.product.manage.feature.filter.data.model.ProductListMetaResponse
-import com.tokopedia.product.manage.feature.filter.domain.GetProductListMetaUseCase.Companion.PARAM_SHOP_ID
+import com.tokopedia.product.manage.common.feature.list.data.model.filter.ProductListMetaResponse
+import com.tokopedia.product.manage.common.feature.list.domain.usecase.GetProductListMetaUseCase
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
 import com.tokopedia.shop.common.graphql.domain.usecase.shopetalase.GetShopEtalaseByShopUseCase
 import com.tokopedia.shop.common.graphql.domain.usecase.shopetalase.GetShopEtalaseByShopUseCase.Companion.HIDE_NO_COUNT
@@ -20,9 +20,9 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class GetProductManageFilterOptionsUseCase @Inject constructor(
-        private val getProductListMetaUseCase: GetProductListMetaUseCase,
-        private val getShopEtalaseByShopUseCase: GetShopEtalaseByShopUseCase,
-        private val getCategoryListUseCase: GetCategoryListUseCase
+    private val getProductListMetaUseCase: GetProductListMetaUseCase,
+    private val getShopEtalaseByShopUseCase: GetShopEtalaseByShopUseCase,
+    private val getCategoryListUseCase: GetCategoryListUseCase
         ) : UseCase<FilterOptionsResponse>() {
 
     var params: RequestParams = RequestParams.EMPTY
@@ -31,6 +31,8 @@ class GetProductManageFilterOptionsUseCase @Inject constructor(
         const val DEFAULT_HIDE_NO_COUNT = false
         const val DEFAULT_HIDE_SHOWCASE_GROUP = true
         private const val DEFAULT_CATEGORIES_FILTER = "seller"
+        private const val RELOAD_ETALASE = true
+        private const val PARAM_SHOP_ID = "shopID"
 
         fun createRequestParams(shopId: String, isOwner: Boolean): RequestParams {
             return RequestParams.create().apply {
@@ -68,6 +70,7 @@ class GetProductManageFilterOptionsUseCase @Inject constructor(
                         params.getBoolean(HIDE_SHOWCASE_GROUP, DEFAULT_HIDE_SHOWCASE_GROUP),
                         params.getBoolean(IS_OWNER, false))
                 getShopEtalaseByShopUseCase.run {
+                    isFromCacheFirst = !RELOAD_ETALASE
                     createObservable(params).toBlocking().first()
                 }
             }

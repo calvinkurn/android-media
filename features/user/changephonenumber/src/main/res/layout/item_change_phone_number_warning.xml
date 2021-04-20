@@ -12,11 +12,11 @@
         android:orientation="horizontal">
 
         <ImageView
-            android:layout_width="16dp"
-            android:layout_height="12dp"
-            android:layout_marginEnd="12dp"
-            android:layout_marginRight="12dp"
-            android:layout_marginTop="4dp"
+            android:layout_width="@dimen/layout_lvl2"
+            android:layout_height="@dimen/changephonenumber_dp_12"
+            android:layout_marginEnd="@dimen/changephonenumber_dp_12"
+            android:layout_marginRight="@dimen/changephonenumber_dp_12"
+            android:layout_marginTop="@dimen/spacing_lvl2"
             app:srcCompat="@drawable/ic_warning_triangle_yellow" />
 
         <LinearLayout
@@ -24,15 +24,13 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/warning"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif-medium"
-                android:textColor="@color/black_70"
-                android:textSize="14sp"
-                android:textStyle="normal"
-                android:lineSpacingExtra="4sp"
+                app:typographyType="body_2"
+                app:typographyWeight="bold"
                 tools:text="Dana dari Tokocash sebelumnya tidak dapat dipindahkan ke Tokocash dengan nomor yang baru.*" />
 
         </LinearLayout>
@@ -41,8 +39,8 @@
     <View
         android:id="@+id/separator"
         android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginBottom="20dp"
-        android:layout_marginTop="20dp"
-        android:background="@color/white_two" />
+        android:layout_height="@dimen/changephonenumber_dp_1"
+        android:layout_marginBottom="@dimen/changephonenumber_dp_20"
+        android:layout_marginTop="@dimen/changephonenumber_dp_20"
+        android:background="@color/Unify_N100" />
 </LinearLayout>

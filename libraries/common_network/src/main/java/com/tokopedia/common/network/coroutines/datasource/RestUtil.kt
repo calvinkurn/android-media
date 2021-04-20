@@ -2,7 +2,6 @@ package com.tokopedia.common.network.coroutines.datasource
 
 import android.content.Context
 import com.tokopedia.common.network.data.source.cloud.api.RestApi
-import com.tokopedia.network.CoroutineCallAdapterFactory
 import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.converter.StringResponseConverter
 import com.tokopedia.network.interceptor.FingerprintInterceptor
@@ -34,7 +33,6 @@ object RestUtil {
                 .baseUrl("https://tokopedia.com/")
                 .addConverterFactory(StringResponseConverter())
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
-                .addCallAdapterFactory(CoroutineCallAdapterFactory.invoke())
                 .client(okkHttpBuilder.build()).build().create(RestApi::class.java)
     }
 }

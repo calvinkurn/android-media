@@ -7,19 +7,12 @@
         android:supportsRtl="true">
 
         <activity
-            android:name="com.tokopedia.checkout.subfeature.multiple_address.view.MultipleAddressFormActivity"
-            android:label="@string/checkout_module_title_activity_multiple_address"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White"
-            android:windowSoftInputMode="stateAlwaysHidden" />
-
-        <activity
             android:name="com.tokopedia.checkout.view.ShipmentActivity"
             android:label="@string/checkout_module_title_activity_checkout"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White">
-            <intent-filter android:autoVerify="true">
-                <action android:name="android.intent.action.VIEW" />
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />

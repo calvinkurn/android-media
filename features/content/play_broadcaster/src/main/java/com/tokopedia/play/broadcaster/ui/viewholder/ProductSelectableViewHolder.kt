@@ -14,11 +14,10 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.type.StockAvailable
 import com.tokopedia.play.broadcaster.ui.model.ProductContentUiModel
-import com.tokopedia.play.broadcaster.util.extension.compatTransitionName
 import com.tokopedia.play.broadcaster.util.extension.loadImageFromUrl
 import com.tokopedia.play.broadcaster.view.state.NotSelectable
 import com.tokopedia.play.broadcaster.view.state.Selectable
-import com.tokopedia.unifycomponents.Label
+import com.tokopedia.play_common.util.extension.compatTransitionName
 import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
 
 /**
@@ -35,7 +34,6 @@ class ProductSelectableViewHolder(
     private val cbSelected: CheckboxUnify = itemView.findViewById(R.id.cb_selected)
     private val tvProductName: TextView = itemView.findViewById(R.id.tv_product_name)
     private val tvProductAmount: TextView = itemView.findViewById(R.id.tv_product_amount)
-    private val lblEmptyStock: Label = itemView.findViewById(R.id.lbl_empty_stock)
 
     private var onCheckedChangeListener: (CompoundButton, Boolean) -> Unit = { _ , _ -> }
 
@@ -62,11 +60,6 @@ class ProductSelectableViewHolder(
             cbSelected.gone()
             flImage.foreground = null
         }
-
-        lblEmptyStock.unlockFeature = true
-        lblEmptyStock.setLabelType(
-                "#${Integer.toHexString(MethodChecker.getColor(lblEmptyStock.context, com.tokopedia.unifyprinciples.R.color.Neutral_N700_68))}"
-        )
     }
 
     fun bind(item: ProductContentUiModel) {
@@ -75,16 +68,7 @@ class ProductSelectableViewHolder(
         ivImage.compatTransitionName = item.transitionName
 
         tvProductName.text = item.name
-
-        if (item.stock is StockAvailable) {
-            lblEmptyStock.gone()
-            cbSelected.isEnabled = true
-            tvProductAmount.text = getString(R.string.play_product_stock_amount, item.stock.stock)
-        } else {
-            lblEmptyStock.show()
-            cbSelected.isEnabled = false
-            tvProductAmount.text = getString(R.string.play_product_stock_amount, 0)
-        }
+        tvProductAmount.text = getString(R.string.play_product_stock_amount, if (item.stock is StockAvailable) item.stock.stock else "-")
 
         itemView.setOnClickListener {
             if (cbSelected.isEnabled) {

@@ -4,10 +4,10 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:paddingBottom="@dimen/dp_3"
-    android:paddingLeft="@dimen/dp_10"
-    android:paddingRight="@dimen/dp_10"
-    android:paddingTop="@dimen/dp_2">
+    android:paddingLeft="@dimen/flight_orderlist_10dp"
+    android:paddingTop="@dimen/spacing_lvl1"
+    android:paddingRight="@dimen/flight_orderlist_10dp"
+    android:paddingBottom="@dimen/spacing_lvl2">
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
@@ -25,27 +25,27 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:layout_marginBottom="@dimen/dp_5"
-                android:layout_marginTop="@dimen/dp_5"
+                android:layout_marginTop="@dimen/spacing_lvl2"
+                android:layout_marginBottom="@dimen/spacing_lvl2"
                 android:background="@drawable/bg_line_separator" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:padding="@dimen/dp_10">
+                android:padding="@dimen/flight_orderlist_10dp">
 
                 <androidx.appcompat.widget.AppCompatImageView
-                    android:layout_width="@dimen/dp_40"
-                    android:layout_height="@dimen/dp_40"
+                    android:layout_width="@dimen/flight_orderlist_40dp"
+                    android:layout_height="@dimen/flight_orderlist_40dp"
                     card_view:srcCompat="@drawable/ic_flight_round" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:paddingLeft="@dimen/dp_10"
-                    android:paddingStart="@dimen/dp_10">
+                    android:paddingStart="@dimen/flight_orderlist_10dp"
+                    android:paddingLeft="@dimen/flight_orderlist_10dp">
 
                     <include layout="@layout/partial_flight_order_journey_view" />
 
@@ -57,23 +57,23 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:layout_marginTop="@dimen/dp_5"
+                android:layout_marginTop="@dimen/spacing_lvl2"
                 android:background="@drawable/bg_line_separator" />
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_order_detail"
-                style="@style/TextView.Title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:alpha="0.7"
                 android:background="@drawable/selectable_background_tokopedia"
                 android:gravity="center_horizontal"
-                android:paddingBottom="@dimen/dp_20"
-                android:paddingLeft="@dimen/dp_10"
-                android:paddingRight="@dimen/dp_10"
-                android:paddingTop="@dimen/dp_20"
+                android:paddingLeft="@dimen/flight_orderlist_10dp"
+                android:paddingTop="@dimen/flight_orderlist_20dp"
+                android:paddingRight="@dimen/flight_orderlist_10dp"
+                android:paddingBottom="@dimen/flight_orderlist_20dp"
                 android:text="@string/flight_order_detail_button_label"
-                android:textColor="@color/black" />
+                android:textColor="@color/Unify_N700"
+                card_view:typographyType="heading_4" />
         </LinearLayout>
 
     </androidx.cardview.widget.CardView>

@@ -1,0 +1,15 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_view"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity">
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/iv_loading"
+        android:layout_width="@dimen/dp_48"
+        android:layout_height="@dimen/dp_48"
+        android:layout_gravity="center"
+        android:visibility="visible"
+        tools:srcCompat="@drawable/ic_loading_indeterminate" />
+</FrameLayout>

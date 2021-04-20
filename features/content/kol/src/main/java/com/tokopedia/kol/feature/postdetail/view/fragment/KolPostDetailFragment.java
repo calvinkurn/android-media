@@ -25,6 +25,7 @@ import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalContent;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.design.component.Dialog;
 import com.tokopedia.design.component.Menus;
 import com.tokopedia.feedcomponent.analytics.posttag.PostTagAnalytics;
@@ -83,7 +84,6 @@ import com.tokopedia.kolcommon.view.listener.KolPostLikeListener;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.user.session.UserSessionInterface;
-import com.tokopedia.vote.domain.model.VoteStatisticDomainModel;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -281,7 +281,9 @@ public class KolPostDetailFragment extends BaseDaggerFragment
         if (!postDetailViewModel.getDynamicPostViewModel().getPostList().isEmpty()) {
             this.dynamicPostViewModel = ((DynamicPostViewModel) postDetailViewModel.getDynamicPostViewModel().getPostList().get(0));
             trackImpression(dynamicPostViewModel);
-            presenter.getRelatedPost(String.valueOf(dynamicPostViewModel.getId()));
+            if(!GlobalConfig.isSellerApp()) {
+                presenter.getRelatedPost(String.valueOf(dynamicPostViewModel.getId()));
+            }
 
             if (isOwner()) {
                 presenter.getWhitelist();
@@ -494,58 +496,6 @@ public class KolPostDetailFragment extends BaseDaggerFragment
             );
             adapter.notifyItemChanged(0, DynamicPostViewHolder.PAYLOAD_FOLLOW);
         }
-    }
-
-    @Override
-    public void onErrorSendVote(String errorMessage) {
-        NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
-    }
-
-    @Override
-    public void onSuccessSendVote(int rowNumber, String optionId,
-                                  VoteStatisticDomainModel voteStatisticDomainModel) {
-
-        int DEFAULT = 0;
-        int UNSELECTED = 1;
-        int SELECTED = 2;
-
-        if (adapter.getList().size() > 0
-                && adapter.getList().get(0) instanceof DynamicPostViewModel) {
-            DynamicPostViewModel model = (DynamicPostViewModel) adapter.getList().get(0);
-            for (BasePostViewModel basePostViewModel : model.getContentList()) {
-                if (basePostViewModel instanceof PollContentViewModel) {
-                    PollContentViewModel pollContentViewModel = (PollContentViewModel) basePostViewModel;
-                    pollContentViewModel.setVoted(true);
-
-                    int totalVoter;
-                    try {
-                        totalVoter = Integer.valueOf(voteStatisticDomainModel.getTotalParticipants());
-                    } catch (NumberFormatException ignored) {
-                        totalVoter = 0;
-                    }
-                    pollContentViewModel.setTotalVoterNumber(totalVoter);
-
-                    for (int i = 0; i < pollContentViewModel.getOptionList().size(); i++) {
-                        PollContentOptionViewModel optionViewModel
-                                = pollContentViewModel.getOptionList().get(i);
-
-                        optionViewModel.setSelected(optionId.equals(optionViewModel.getOptionId()) ?
-                                SELECTED : UNSELECTED);
-
-                        int newPercentage = 0;
-                        try {
-                            newPercentage = Integer.valueOf(
-                                    voteStatisticDomainModel.getListOptions().get(i).getPercentage()
-                            );
-                        } catch (NumberFormatException | IndexOutOfBoundsException ignored) {
-                        }
-                        optionViewModel.setPercentage(newPercentage);
-                    }
-                }
-            }
-        }
-
-        adapter.notifyItemChanged(0);
     }
 
     @Override
@@ -897,7 +847,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
             if (isVoted) {
                 onGoToLink(redirectLink);
             } else {
-                presenter.sendVote(0, pollId, optionId);
+
             }
         } else {
             RouteManager.route(getActivity(), ApplinkConst.LOGIN);

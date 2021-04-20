@@ -3,55 +3,61 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/flight_dp_20"
     android:orientation="vertical"
-    android:layout_marginTop="@dimen/dp_20"
-    android:background="@color/white"
-    android:paddingBottom="@dimen/padding_16"
-    android:paddingTop="@dimen/padding_16">
+    android:paddingTop="@dimen/padding_16"
+    android:paddingBottom="@dimen/padding_16">
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/counter_flight"
-        style="@style/TextView.TitleBig.Bold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/flight_dp_20"
+        android:paddingRight="@dimen/flight_dp_20"
         android:text="@string/flight_label_detail_order"
-        android:paddingLeft="@dimen/dp_20"
-        android:paddingRight="@dimen/dp_20"
-        android:textSize="18sp" />
+        android:textColor="@color/Unify_N700_96"
+        android:textSize="18sp"
+        app:typographyType="heading_2" />
 
     <LinearLayout
         android:id="@+id/layout_expendable_flight"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingLeft="@dimen/dp_20"
-        android:paddingRight="@dimen/dp_20"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:paddingLeft="@dimen/flight_dp_20"
+        android:paddingRight="@dimen/flight_dp_20">
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/title_expendable_passenger"
-            style="@style/style_expandable_flight_detail_order_title"
-            android:textStyle="normal"
-            android:paddingTop="@dimen/dp_3"
-            android:layout_width="0dp"
-            android:ellipsize="end"
-            android:lines="1"
+            android:layout_width="@dimen/layout_lvl0"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/flight_label_passenger_data" />
+            android:ellipsize="end"
+            android:lines="1"
+            android:paddingTop="@dimen/spacing_lvl2"
+            android:paddingRight="@dimen/flight_dp_10"
+            android:paddingBottom="@dimen/flight_dp_10"
+            android:text="@string/flight_label_passenger_data"
+            android:textColor="@color/Unify_N700_96"
+            android:textStyle="normal"
+            app:typographyType="heading_4" />
 
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/image_expendable_passenger"
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/image_expendable_journey"
             android:layout_width="wrap_content"
-            android:layout_height="@dimen/dp_20"
+            android:layout_height="@dimen/flight_dp_20"
+            app:icon_name="CHEVRON_UP"
             android:layout_gravity="center_vertical"
-            app:srcCompat="@drawable/ic_arrow_up" />
-
+            app:icon_color_light_enable="@color/Unify_G500"
+            app:icon_color_night_enable="@color/Unify_G500"/>
     </LinearLayout>
 
     <View
         android:id="@+id/flight_detail_order_separator_line"
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
-        android:layout_marginTop="@dimen/dp_8"
-        android:background="@drawable/bg_line_separator" />
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:background="@drawable/flight_bg_line_seperator" />
 
     <com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
         android:id="@+id/recycler_view_flight_detail_journey"
@@ -59,15 +65,17 @@
         android:layout_height="wrap_content" />
 
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/text_view_flight_cek_syarat"
-        style="@style/TextView.Micro.BlackSecondary"
         android:layout_width="match_parent"
-        android:background="@color/white"
-        android:paddingBottom="@dimen/dp_20"
-        android:paddingLeft="@dimen/dp_20"
-        android:paddingRight="@dimen/dp_20"
-        android:paddingTop="@dimen/dp_20"
-        android:text="@string/flight_label_cek_t_and_c" />
+        android:layout_height="wrap_content"
+        android:background="@color/Unify_N0"
+        android:paddingLeft="@dimen/flight_dp_20"
+        android:paddingTop="@dimen/flight_dp_20"
+        android:paddingRight="@dimen/flight_dp_20"
+        android:paddingBottom="@dimen/flight_dp_20"
+        android:text="@string/flight_label_cek_t_and_c"
+        android:textColor="@color/Unify_N700_68"
+        app:typographyType="body_3" />
 
 </LinearLayout>

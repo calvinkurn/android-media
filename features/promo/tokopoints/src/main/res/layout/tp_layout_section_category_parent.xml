@@ -15,7 +15,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_16"
         android:layout_marginLeft="@dimen/dp_16"
-        android:textColor="@color/tp_loyalty_color"
+        android:textColor="@color/Unify_N700_96"
         android:textStyle="bold"
         android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
@@ -31,7 +31,7 @@
         android:layout_marginStart="@dimen/dp_16"
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_4"
-        android:textColor="@color/tp_section_category_sub_color"
+        android:textColor="@color/Unify_N150"
         android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_sectionTitle"
@@ -46,10 +46,10 @@
         android:layout_marginRight="@dimen/dp_16"
         android:text="@string/tp_see_all"
         android:visibility="gone"
-        android:textColor="@color/tp_tab_indicator_text_color_"
+        android:textColor="@color/Unify_G500"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/tv_sectionTitle"
-        app:typographyType="heading_5"
+        app:typographyType="heading_6"
         app:typographyWeight="bold" />
 
 

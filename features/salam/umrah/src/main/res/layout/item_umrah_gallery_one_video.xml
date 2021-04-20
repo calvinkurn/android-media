@@ -5,11 +5,11 @@
     android:id="@+id/container_umrah_youtube_player"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginLeft="@dimen/dp_16"
-    android:layout_marginTop="@dimen/dp_12"
-    android:layout_marginRight="@dimen/dp_16"
+    android:layout_marginLeft="@dimen/spacing_lvl4"
+    android:layout_marginTop="@dimen/unify_space_12"
+    android:layout_marginRight="@dimen/spacing_lvl4"
     android:foreground="?attr/selectableItemBackgroundBorderless"
-    app:cardCornerRadius="@dimen/dp_8"
+    app:cardCornerRadius="@dimen/spacing_lvl3"
     app:cardUseCompatPadding="true">
 
     <LinearLayout
@@ -21,8 +21,8 @@
             android:id="@+id/tg_umrah_gallery_one_video_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dp_12"
-            android:layout_marginTop="@dimen/dp_12"
+            android:layout_marginLeft="@dimen/unify_space_12"
+            android:layout_marginTop="@dimen/unify_space_12"
             android:textColor="@color/Neutral_N700"
             app:typographyType="heading_5"
             tools:text="Perjalanan Umroh" />
@@ -31,7 +31,7 @@
             android:id="@+id/tg_umrah_gallery_one_video_sub_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dp_12"
+            android:layout_marginLeft="@dimen/unify_space_12"
             app:typographyType="body_3"
             tools:text="20 Nov - 29 Nov 2018" />
 
@@ -42,11 +42,11 @@
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/dp_12"
-                android:layout_marginTop="@dimen/dp_12"
-                android:layout_marginRight="@dimen/dp_12"
-                android:layout_marginBottom="@dimen/dp_12"
-                app:cardCornerRadius="@dimen/dp_8"
+                android:layout_marginLeft="@dimen/unify_space_12"
+                android:layout_marginTop="@dimen/unify_space_12"
+                android:layout_marginRight="@dimen/unify_space_12"
+                android:layout_marginBottom="@dimen/unify_space_12"
+                app:cardCornerRadius="@dimen/spacing_lvl3"
                 app:cardElevation="0dp"
                 tools:ignore="MissingConstraints">
 
@@ -70,8 +70,8 @@
             android:id="@+id/tg_umrah_gallery_one_video_desc"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginLeft="@dimen/dp_12"
-            android:layout_marginBottom="@dimen/dp_12"
+            android:layout_marginLeft="@dimen/unify_space_12"
+            android:layout_marginBottom="@dimen/unify_space_12"
             app:typographyType="body_3"
             tools:text="Alhamdulillah ibadah umroh kami berjalan dengan lancar tanpa halangan berarti." />
     </LinearLayout>

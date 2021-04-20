@@ -6,6 +6,21 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <com.tokopedia.searchbar.navigation_component.NavToolbar
+        android:id="@+id/searchNavigationToolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/Unify_N0"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:contentInsetLeft="0dp"
+        app:contentInsetStart="0dp"
+        app:toolbarAlwaysShowShadow="false"
+        app:toolbarBackButton="back"
+        app:toolbarContentType="typeSearchbar"
+        app:toolbarInitialTheme="light" />
+
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="@dimen/dp_0"
@@ -16,11 +31,11 @@
         app:contentInsetEnd="@dimen/dp_0"
         android:paddingTop="@dimen/dp_4"
         android:paddingBottom="@dimen/dp_4"
-        android:background="@color/white"
+        android:background="@color/Unify_N0"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:titleTextColor="@color/black_70">
+        app:titleTextColor="@color/Unify_N700_68">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -31,6 +46,7 @@
 
             <ImageView
                 android:id="@+id/action_up_btn"
+                android:contentDescription="@string/content_desc_search_back_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_12"
@@ -41,31 +57,28 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:srcCompat="@drawable/search_ic_back" />
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/searchTextView"
                 android:contentDescription="@string/content_desc_searchTextView"
                 android:layout_width="@dimen/dp_0"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/dp_8"
+                android:layout_marginStart="@dimen/dp_8"
                 android:layout_weight="1"
                 android:background="@drawable/search_bg_autocomplete_input"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
                 android:paddingStart="@dimen/dp_28"
-                android:paddingLeft="@dimen/dp_28"
                 android:paddingTop="@dimen/dp_8"
                 android:paddingEnd="@dimen/dp_32"
-                android:paddingRight="@dimen/dp_32"
                 android:paddingBottom="@dimen/dp_8"
-                android:textSize="@dimen/sp_14"
                 android:inputType="none"
                 android:focusable="false"
                 android:enabled="true"
                 android:focusableInTouchMode="true"
                 android:maxLines="1"
                 android:ellipsize="end"
-                android:textColor="@color/search_text_view_color"
-                android:textColorHint="@android:color/darker_gray"
+                app:typographyType="body_2"
+                app:typographyWeight="reguler"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toRightOf="@id/action_up_btn"
                 app:layout_constraintRight_toLeftOf="@id/search_home_button"
@@ -73,6 +86,7 @@
 
             <ImageView
                 android:id="@+id/search_ic_search"
+                android:contentDescription="@string/content_desc_search_icon_search"
                 android:layout_width="@dimen/dp_24"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -110,8 +124,8 @@
                 android:layout_width="@dimen/dp_24"
                 android:layout_height="@dimen/dp_24"
                 android:layout_marginStart="@dimen/dp_8"
-                android:layout_marginLeft="@dimen/dp_8"
                 android:scaleType="centerInside"
+                app:layout_goneMarginEnd="@dimen/dp_16"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toRightOf="@id/search_home_button"
                 app:layout_constraintRight_toLeftOf="@id/search_change_grid_button"
@@ -123,8 +137,8 @@
                 android:contentDescription="@string/content_desc_search_change_grid_button"
                 android:layout_width="@dimen/dp_24"
                 android:layout_height="@dimen/dp_24"
-                android:layout_marginLeft="@dimen/dp_8"
-                android:layout_marginRight="@dimen/dp_16"
+                android:layout_marginStart="@dimen/dp_8"
+                android:layout_marginEnd="@dimen/dp_16"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toRightOf="@id/search_cart_button"
                 app:layout_constraintRight_toRightOf="parent"
@@ -133,6 +147,13 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.appcompat.widget.Toolbar>
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/searchBottomToolbarBarrier"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="bottom"
+        app:constraint_referenced_ids="toolbar, searchNavigationToolbar" />
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/progressBar"
@@ -152,22 +173,23 @@
         android:layout_width="@dimen/dp_0"
         android:layout_height="@dimen/dp_0"
         android:orientation="vertical"
-        android:background="@color/white"
-        app:layout_constraintTop_toBottomOf="@id/toolbar"
+        android:background="@color/Unify_N0"
+        tools:ignore="MotionLayoutInvalidSceneFileReference"
+        app:layout_constraintTop_toBottomOf="@id/searchBottomToolbarBarrier"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent">
 
-        <com.tokopedia.design.component.Tabs
+        <com.google.android.material.tabs.TabLayout
             android:id="@+id/tabs"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_40"
             app:tabMode="fixed"
             app:tabGravity="fill"
-            app:tabSelectedTextColor="@color/tkpd_main_green"
-            app:tabTextColor="@color/font_black_disabled_38"
+            app:tabSelectedTextColor="@color/Unify_G500"
+            app:tabTextColor="@color/Unify_N700_32"
             app:tabTextAppearance="@style/SearchTabLayoutTextStyle"
-            app:tabIndicatorColor="@color/tkpd_main_green"
+            app:tabIndicatorColor="@color/Unify_G500"
             app:tabPaddingBottom="@dimen/dp_12"
             android:theme="@style/ThemeOverlay.AppCompat.Light"
             app:layout_constraintTop_toTopOf="parent"

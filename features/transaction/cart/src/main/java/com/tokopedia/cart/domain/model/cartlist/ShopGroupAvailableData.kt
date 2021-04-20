@@ -1,14 +1,15 @@
 package com.tokopedia.cart.domain.model.cartlist
 
-import android.os.Parcel
 import android.os.Parcelable
 import com.tokopedia.cart.view.uimodel.CartItemHolderData
+import kotlinx.android.parcel.Parcelize
 import java.util.*
 
 /**
  * Created by Irfan Khoirul on 21/08/18.
  */
 
+@Parcelize
 data class ShopGroupAvailableData(
 
         var cartItemHolderDataList: MutableList<CartItemHolderData>? = ArrayList(),
@@ -28,6 +29,7 @@ data class ShopGroupAvailableData(
         var shopBadge: String? = null,
         var isFulfillment: Boolean = false,
         var fulfillmentName: String? = null,
+        var fulfillmentBadgeUrl: String = "",
         var isHasPromoList: Boolean = false,
         var cartString: String? = null,
         var promoCodes: List<String>? = emptyList(),
@@ -35,90 +37,17 @@ data class ShopGroupAvailableData(
         // Total data which is calculated from cartItemDataList
         var totalPrice: Long = 0,
         var totalCashback: Long = 0,
-        var totalItem: Int = 0
+        var totalItem: Int = 0,
+
+        var preOrderInfo: String = "",
+        var isFreeShippingExtra: Boolean = false,
+        var freeShippingBadgeUrl: String = "",
+        var incidentInfo: String = "",
+        var estimatedTimeArrival: String = ""
 
 ) : Parcelable {
 
     val cartItemDataList: MutableList<CartItemHolderData>?
         get() = cartItemHolderDataList
-
-    fun setCartItemDataList(cartItemDataList: List<CartItemData>) {
-        for (cartItemData in cartItemDataList) {
-            val cartItemHolderData = CartItemHolderData(
-                    cartItemData = cartItemData,
-                    isEditableRemark = false,
-                    errorFormItemValidationMessage = "",
-                    isSelected = if (cartItemData.isError) {
-                        false
-                    } else {
-                        cartItemData.originData?.isCheckboxState ?: false
-                    }
-            )
-            cartItemHolderDataList?.add(cartItemHolderData)
-        }
-    }
-
-    constructor(parcel: Parcel) : this() {
-        isChecked = parcel.readByte() != 0.toByte()
-        isError = parcel.readByte() != 0.toByte()
-        errorTitle = parcel.readString()
-        errorDescription = parcel.readString()
-        similarProductUrl = parcel.readString()
-        isWarning = parcel.readByte() != 0.toByte()
-        warningTitle = parcel.readString()
-        warningDescription = parcel.readString()
-        shopName = parcel.readString()
-        shopId = parcel.readString()
-        shopType = parcel.readString()
-        isGoldMerchant = parcel.readByte() != 0.toByte()
-        isOfficialStore = parcel.readByte() != 0.toByte()
-        shopBadge = parcel.readString()
-        isFulfillment = parcel.readByte() != 0.toByte()
-        fulfillmentName = parcel.readString()
-        isHasPromoList = parcel.readByte() != 0.toByte()
-        cartString = parcel.readString()
-        totalPrice = parcel.readLong()
-        totalCashback = parcel.readLong()
-        totalItem = parcel.readInt()
-        promoCodes = parcel.createStringArrayList()
-    }
-
-    override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeByte(if (isChecked) 1 else 0)
-        parcel.writeByte(if (isError) 1 else 0)
-        parcel.writeString(errorTitle)
-        parcel.writeString(errorDescription)
-        parcel.writeString(similarProductUrl)
-        parcel.writeByte(if (isWarning) 1 else 0)
-        parcel.writeString(warningTitle)
-        parcel.writeString(warningDescription)
-        parcel.writeString(shopName)
-        parcel.writeString(shopId)
-        parcel.writeString(shopType)
-        parcel.writeByte(if (isGoldMerchant) 1 else 0)
-        parcel.writeByte(if (isOfficialStore) 1 else 0)
-        parcel.writeString(shopBadge)
-        parcel.writeByte(if (isFulfillment) 1 else 0)
-        parcel.writeString(fulfillmentName)
-        parcel.writeByte(if (isHasPromoList) 1 else 0)
-        parcel.writeString(cartString)
-        parcel.writeLong(totalPrice)
-        parcel.writeLong(totalCashback)
-        parcel.writeInt(totalItem)
-    }
-
-    override fun describeContents(): Int {
-        return 0
-    }
-
-    companion object CREATOR : Parcelable.Creator<ShopGroupAvailableData> {
-        override fun createFromParcel(parcel: Parcel): ShopGroupAvailableData {
-            return ShopGroupAvailableData(parcel)
-        }
-
-        override fun newArray(size: Int): Array<ShopGroupAvailableData?> {
-            return arrayOfNulls(size)
-        }
-    }
 
 }

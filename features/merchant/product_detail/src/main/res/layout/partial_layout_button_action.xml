@@ -26,7 +26,7 @@
         app:layout_constraintRight_toLeftOf="@+id/btn_buy_now"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_topchat_variant_green"
+        app:srcCompat="@drawable/ic_pdp_topchat"
         tools:visibility="visible" />
 
     <com.tokopedia.unifycomponents.UnifyButton
@@ -106,7 +106,7 @@
         android:visibility="gone">
 
         <com.tokopedia.unifycomponents.UnifyButton
-            android:id="@+id/btn_top_ads"
+            android:id="@+id/btn_edit_product"
             android:layout_width="@dimen/dp_0"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_8"
@@ -116,33 +116,33 @@
             android:layout_marginRight="@dimen/dp_4"
             android:layout_marginBottom="@dimen/dp_8"
             android:gravity="center"
-            android:text="@string/promote_topads"
+            android:text="@string/edit_product_text"
             android:visibility="visible"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/btn_edit_product"
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/btn_top_ads"
             app:layout_constraintTop_toTopOf="parent"
             app:unifyButtonSize="medium"
-            app:unifyButtonType="transaction"
+            app:unifyButtonType="alternate"
             app:unifyButtonVariant="ghost" />
 
         <com.tokopedia.unifycomponents.UnifyButton
-            android:id="@+id/btn_edit_product"
+            android:id="@+id/btn_top_ads"
             android:layout_width="@dimen/dp_0"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_4"
-            android:layout_marginLeft="@dimen/dp_8"
+            android:layout_marginLeft="@dimen/dp_4"
             android:layout_marginTop="@dimen/dp_8"
             android:layout_marginEnd="@dimen/dp_8"
             android:layout_marginRight="@dimen/dp_8"
             android:layout_marginBottom="@dimen/dp_8"
             android:gravity="center"
-            android:text="@string/edit_product_text"
+            android:text="@string/promote_topads"
             android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/btn_top_ads"
+            app:layout_constraintStart_toEndOf="@+id/btn_edit_product"
             app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:unifyButtonSize="medium"
             app:unifyButtonType="main"
             app:unifyButtonVariant="filled" />

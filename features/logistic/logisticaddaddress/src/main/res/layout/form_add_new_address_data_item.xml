@@ -17,7 +17,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_24"
         android:text="@string/address_based_on_pinpoint"
-        android:textColor="@color/label_grey"
+        android:textColor="@color/Unify_N700_68"
         android:textSize="@dimen/sp_12" />
 
     <TextView
@@ -25,7 +25,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/dp_24"
-        android:textColor="@color/title_search_location_color"
+        android:textColor="@color/Unify_N700_96"
         android:textSize="@dimen/sp_14" />
 
     <com.google.android.material.textfield.TextInputLayout
@@ -37,6 +37,7 @@
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/et_detail_address"
+            android:contentDescription="@string/content_desc_et_detail_address"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:enabled="true"
@@ -46,7 +47,7 @@
             android:overScrollMode="always"
             android:scrollbarStyle="insideInset"
             android:scrollbars="vertical"
-            android:textColor="#ae31353b"
+            android:textColor="@color/Unify_N700_68"
             android:textSize="@dimen/sp_14" />
 
     </com.google.android.material.textfield.TextInputLayout>
@@ -63,7 +64,7 @@
             android:layout_alignParentStart="true"
             android:layout_alignParentLeft="true"
             android:text="@string/tv_detail_address_info"
-            android:textColor="@color/label_grey"
+            android:textColor="@color/Unify_N700_68"
             android:textSize="@dimen/sp_12" />
 
         <TextView
@@ -72,7 +73,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
-            android:textColor="@color/label_grey"
+            android:textColor="@color/Unify_N700_68"
             android:textSize="@dimen/sp_12"
             tools:ignore="RelativeOverlap" />
 

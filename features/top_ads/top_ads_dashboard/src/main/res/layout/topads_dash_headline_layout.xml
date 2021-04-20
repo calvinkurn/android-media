@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/loader"
+        android:layout_width="@dimen/dp_24"
+        android:layout_height="@dimen/dp_24"
+        android:translationY="@dimen/dp_20"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:loader_type="circular" />
+
+    <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
+        android:id="@+id/swipe_refresh_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.coordinatorlayout.widget.CoordinatorLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <include
+                android:id="@+id/empty_view"
+                layout="@layout/topads_dash_product_iklan_empty_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone" />
+
+            <include
+                android:id="@+id/headlinList"
+                layout="@layout/topads_dash_fragment_headline_group_list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+            <com.google.android.material.appbar.AppBarLayout
+                android:id="@+id/app_bar_layout_2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:elevation="@dimen/dp_4"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <com.google.android.material.appbar.CollapsingToolbarLayout
+                    android:id="@+id/collapsing_toolbar_2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:contentScrim="@color/white"
+                    app:layout_scrollFlags="scroll|enterAlways">
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:layout_scrollFlags="scroll">
+
+                        <include
+                            android:id="@+id/hari_ini"
+                            layout="@layout/topads_dash_layout_hari_ini"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" />
+
+                        <com.tokopedia.unifycomponents.CardUnify
+                            android:id="@+id/statistic_graph"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="@dimen/dp_8"
+                            android:padding="@dimen/dp_8"
+                            app:layout_constraintTop_toBottomOf="@id/hari_ini">
+
+                            <LinearLayout
+                                android:id="@+id/topads_dashboard_content"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical">
+
+                                <include layout="@layout/partial_top_ads_dashboard_statistics" />
+
+                            </LinearLayout>
+                        </com.tokopedia.unifycomponents.CardUnify>
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                </com.google.android.material.appbar.CollapsingToolbarLayout>
+
+                <include
+                    android:id="@+id/search"
+                    layout="@layout/topads_dash_layout_common_searchbar_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+            </com.google.android.material.appbar.AppBarLayout>
+        </androidx.coordinatorlayout.widget.CoordinatorLayout>
+    </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
+</androidx.constraintlayout.widget.ConstraintLayout>

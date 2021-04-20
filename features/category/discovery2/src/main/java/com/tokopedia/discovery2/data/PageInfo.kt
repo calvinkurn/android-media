@@ -22,14 +22,23 @@ data class PageInfo(
         @SerializedName("Id")
         val id: Int = 0,
 
-        @SerializedName("Tags")
-        val tags: String? = "",
-
         @SerializedName("share_config", alternate = ["share"])
         val share: Share? = null,
 
         @SerializedName("campaign_code")
         val campaignCode: String? = null,
 
-        var additionalInfo: AdditionalInfo? = null
+        @SerializedName("search_title")
+        val searchTitle: String = "Cari di Tokopedia",
+
+        @SerializedName("show_choose_address")
+        val showChooseAddress: Boolean = false,
+
+        var additionalInfo: AdditionalInfo? = null,
+
+        var redirectionUrl: String? = null,
+
+        var isAdult: Int = 0,
+
+        var origin: Int = 0
 )

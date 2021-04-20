@@ -1,0 +1,36 @@
+[
+  {
+    "data": {
+      "discussionMostHelpful": {
+        "productID": "1060957410",
+        "question": [
+          {
+            "answer": {
+              "answerID": "599501005",
+              "attachedProductCount": 0,
+              "content": "Hi Toppers, Mohon Maaf jika ada keterlambatan respondnya , Terus follow Toko Kami agar terus terupdate jika ada Stock dan produk baru :)",
+              "createTime": "2021-03-16T13:09:16Z",
+              "createTimeFormatted": "16 Mar",
+              "isSeller": true,
+              "userID": "65370927",
+              "userName": "Tokopedia Merchandise",
+              "userThumbnail": "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2020/11/10/d54ad402-71a0-45c8-badd-64d8f78bd66a.png",
+              "userThumbnail2": "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2020/11/10/d54ad402-71a0-45c8-badd-64d8f78bd66a.png"
+            },
+            "content": "ready kahh.. SCREENSHOT TEST?",
+            "createTime": "2020-12-21T17:09:29Z",
+            "createTimeFormatted": "Des 2020",
+            "questionID": "300689192",
+            "totalAnswer": 1,
+            "userID": "28357290",
+            "userName": "Nayda",
+            "userThumbnail": "https://accounts.tokopedia.com/image/v1/u/28357290/user_thumbnail/desktop"
+          }
+        ],
+        "shopID": "1990266",
+        "shopURL": "https://www.tokopedia.com/merchandise",
+        "totalQuestion": 1
+      }
+    }
+  }
+]

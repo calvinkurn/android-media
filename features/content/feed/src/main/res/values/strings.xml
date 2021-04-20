@@ -10,6 +10,7 @@
     <string name="period">Periode: "</string>
     <string name="title_code">Kode:</string>
     <string name="title_copy">Salin</string>
+    <string name="label_close">Tutup</string>
     <string name="title_share_feed">Bagikan Post ini</string>
     <string name="title_detail_feed">Product Lainnya</string>
     <string name="title_feed_onboarding">Topik Favorit</string>
@@ -77,7 +78,6 @@
     <string name="feed_see_profile">Lihat Profil</string>
     <string name="feed_report">Laporkan</string>
     <string name="feed_delete">Hapus</string>
-    <string name="feed_cancel">Batal</string>
     <string name="feed_non_login_title">Mau tahu update terbaru Toko dan Konten kesayanganmu?</string>
     <string name="feed_after_post">Post sedang diunggah. Cek proses unggah di notifikasi.</string>
     <string name="post_personal">Post Pribadi</string>
@@ -102,4 +102,7 @@
     <string name="feed_see_inspiration">Lihat Inspirasi Untukmu</string>
     <string name="feed_choose_topic_you_like">Pilih %s topik yang kamu suka:</string>
     <string name="feed_onboarding_name_format">Hai, %s</string>
+
+    <string name="feed_con_desc_btn_search">button search</string>
+
 </resources>

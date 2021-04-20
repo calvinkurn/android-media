@@ -6,5 +6,6 @@ data class PaymentModel(
         var gatewayCode: String = "",
         var url: String = "",
         var gatewayName: String = "",
-        var metadata: String = ""
+        var metadata: String = "",
+        var tickerMessage: String = ""
 )

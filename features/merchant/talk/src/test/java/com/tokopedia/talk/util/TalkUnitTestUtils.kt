@@ -1,28 +1,9 @@
 package com.tokopedia.talk.util
 
 import androidx.lifecycle.LiveData
+import com.tokopedia.talk.feature.sellersettings.template.data.TalkTemplateMutationResults
 import com.tokopedia.talk.feature.write.data.model.DiscussionGetWritingFormCategory
-import com.tokopedia.talk.feature.write.presentation.uimodel.TalkWriteCategory
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Success
-import junit.framework.Assert
-
-fun LiveData<*>.verifyValueEquals(expected: Any) {
-    val actual = value
-    Assert.assertEquals(expected, actual)
-}
-
-fun LiveData<*>.verifySuccessEquals(expected: Success<*>) {
-    val expectedResult = expected.data
-    val actualResult = (value as Success<*>).data
-    Assert.assertEquals(expectedResult, actualResult)
-}
-
-fun LiveData<*>.verifyErrorEquals(expected: Fail) {
-    val expectedResult = expected.throwable::class.java
-    val actualResult = (value as Fail).throwable::class.java
-    Assert.assertEquals(expectedResult, actualResult)
-}
+import junit.framework.Assert.assertTrue
 
 val unselectedCategories: List<DiscussionGetWritingFormCategory> = listOf(
         DiscussionGetWritingFormCategory("Stock", ""),
@@ -31,3 +12,17 @@ val unselectedCategories: List<DiscussionGetWritingFormCategory> = listOf(
         DiscussionGetWritingFormCategory("Logistik", ""),
         DiscussionGetWritingFormCategory("Lainnya", "")
 )
+
+internal fun <T: TalkTemplateMutationResults> LiveData<T>.verifyTemplateMutationErrorEquals(talkTemplateMutationResults: TalkTemplateMutationResults) {
+    when (value) {
+        is TalkTemplateMutationResults.MutationFailed -> {
+            assertTrue(talkTemplateMutationResults is TalkTemplateMutationResults.MutationFailed)
+        }
+        is TalkTemplateMutationResults.RearrangeTemplateFailed -> {
+            assertTrue(talkTemplateMutationResults is TalkTemplateMutationResults.RearrangeTemplateFailed)
+        }
+        is TalkTemplateMutationResults.DeleteTemplateFailed -> {
+            assertTrue(talkTemplateMutationResults is TalkTemplateMutationResults.DeleteTemplateFailed)
+        }
+    }
+}

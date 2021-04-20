@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="@dimen/dp_4"
+    android:layout_marginRight="@dimen/dp_4"
+    android:layout_marginTop="@dimen/dp_8"
+    android:layout_marginBottom="@dimen/dp_8"
+    app:cardCornerRadius="@dimen/dp_8">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_loader"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/dp_12">
+
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/loader_ic_uoh_vertical"
+            android:layout_width="@dimen/dp_20"
+            android:layout_height="@dimen/dp_20"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:loader_type="rect"/>
+        
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/loader_tv_uoh_categories"
+            android:layout_width="55dp"
+            android:layout_height="@dimen/dp_20"
+            android:layout_marginStart="@dimen/dp_8"
+            app:layout_constraintStart_toEndOf="@id/loader_ic_uoh_vertical"
+            app:layout_constraintTop_toTopOf="parent"
+            app:loader_type="rect"/>
+        
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/loader_label_status_and_three_dots"
+            android:layout_width="@dimen/dp_128"
+            android:layout_height="@dimen/dp_20"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:loader_type="rect"/>
+
+        <RelativeLayout
+            android:id="@+id/rl_uoh_product_loader"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/loader_ic_uoh_vertical"
+            app:layout_constraintLeft_toLeftOf="@id/cl_loader"
+            app:layout_constraintStart_toStartOf="@id/cl_loader"
+            android:layout_marginTop="@dimen/dp_20"
+            android:layout_marginBottom="@dimen/dp_12">
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cv_uoh_product_loader"
+                android:layout_width="@dimen/dp_40"
+                android:layout_height="@dimen/dp_40"
+                app:cardCornerRadius="6dp"
+                app:cardElevation="@dimen/dp_0">
+
+                <com.tokopedia.unifycomponents.LoaderUnify
+                    android:id="@+id/loader_iv_uoh_product"
+                    android:layout_width="@dimen/dp_45"
+                    android:layout_height="@dimen/dp_45"
+                    app:loader_type="rect"/>
+                
+            </androidx.cardview.widget.CardView>
+
+            <com.tokopedia.unifycomponents.LoaderUnify
+                android:id="@+id/loader_product_name"
+                android:layout_width="185dp"
+                android:layout_height="@dimen/dp_16"
+                android:layout_marginStart="@dimen/dp_8"
+                android:layout_toEndOf="@id/cv_uoh_product_loader"
+                app:loader_type="rect"/>
+            
+            <com.tokopedia.unifycomponents.LoaderUnify
+                android:id="@+id/loader_product_desc"
+                android:layout_width="68dp"
+                android:layout_height="@dimen/dp_13"
+                android:layout_below="@id/loader_product_name"
+                android:layout_alignStart="@id/loader_product_name"
+                android:layout_marginTop="@dimen/dp_4"
+                app:loader_type="rect"/>
+
+        </RelativeLayout>
+        
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/loader_label_total_harga"
+            android:layout_width="55dp"
+            android:layout_height="@dimen/dp_13"
+            android:layout_marginTop="@dimen/dp_12"
+            app:layout_constraintTop_toBottomOf="@id/rl_uoh_product_loader"
+            app:layout_constraintStart_toStartOf="parent"
+            app:loader_type="rect"/>
+        
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/loader_value_total_harga"
+            android:layout_width="111dp"
+            android:layout_height="@dimen/dp_13"
+            android:layout_marginTop="@dimen/dp_4"
+            app:layout_constraintTop_toBottomOf="@id/loader_label_total_harga"
+            app:layout_constraintStart_toStartOf="parent"
+            app:loader_type="rect"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.cardview.widget.CardView>

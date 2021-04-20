@@ -1,0 +1,25 @@
+{
+  "channel": {
+    "channelID": "15230",
+    "metrics": {
+      "channel_id": "12345",
+      "add_to_cart": "5",
+      "remove_from_cart": "2",
+      "wish_list": "1",
+      "remove_wish_list": "0",
+      "payment_verified": "1",
+      "follow_shop": "10",
+      "unfollow_shop": "1",
+      "like_channel": "5",
+      "like_channel_fmt": "5",
+      "unlike_channel": "1",
+      "unlike_channel_fmt": "1",
+      "total_like": "10",
+      "total_like_fmt": "10",
+      "visit_shop": "20",
+      "visit_pdp": "150",
+      "visit_channel": "50"
+    }
+  },
+  "duration": "00:20:48"
+}

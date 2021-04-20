@@ -25,9 +25,10 @@ import com.tokopedia.common_electronic_money.util.CardUtils
 import com.tokopedia.common_electronic_money.util.NfcCardErrorTypeDef
 import com.tokopedia.emoney.R
 import com.tokopedia.emoney.di.DaggerDigitalEmoneyComponent
+import com.tokopedia.emoney.util.DigitalEmoneyGqlQuery
 import com.tokopedia.emoney.viewmodel.EmoneyBalanceViewModel
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.permissionchecker.PermissionCheckerHelper
+import com.tokopedia.utils.permission.PermissionCheckerHelper
 import javax.inject.Inject
 
 open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
@@ -103,7 +104,7 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
             val tag = intent.getParcelableExtra<Tag>(NfcAdapter.EXTRA_TAG)
             if (tag != null) {
                 emoneyBalanceViewModel.processEmoneyTagIntent(IsoDep.get(tag),
-                        GraphqlHelper.loadRawString(resources, R.raw.query_emoney_inquiry_balance),
+                        DigitalEmoneyGqlQuery.rechargeEmoneyInquiryBalance,
                         0)
             } else {
                 showError(NfcCardErrorTypeDef.FAILED_READ_CARD)

@@ -45,8 +45,8 @@ class AttachInvoiceActivity : BaseSimpleActivity(), AttachInvoiceContract.Activi
                     .bg_white_toolbar_drop_shadow))
             supportActionBar?.setHomeAsUpIndicator(resources.getDrawable(com.tokopedia.design.R.drawable
                     .ic_close_default));
-            toolbar.setSubtitleTextAppearance(this, com.tokopedia.attachproduct.R.style.AttachProductToolbarSubTitle_SansSerif);
-            toolbar.setTitleTextAppearance(this, com.tokopedia.attachproduct.R.style.AttachProductToolbarTitle_SansSerif);
+            toolbar.setSubtitleTextAppearance(this, com.tokopedia.chat_common.R.style.AttachProductToolbarSubTitle_SansSerif);
+            toolbar.setTitleTextAppearance(this, com.tokopedia.chat_common.R.style.AttachProductToolbarTitle_SansSerif);
         }
     }
 

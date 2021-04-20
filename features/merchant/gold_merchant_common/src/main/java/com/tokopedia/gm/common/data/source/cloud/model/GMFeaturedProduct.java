@@ -54,14 +54,6 @@ public class GMFeaturedProduct {
     @Expose
     private String totalReview;
 
-    public String getParentId() {
-        return parentId;
-    }
-
-    public void setParentId(String parentId) {
-        this.parentId = parentId;
-    }
-
     public String getProductId() {
         return productId;
     }
@@ -114,10 +106,6 @@ public class GMFeaturedProduct {
         return returnable;
     }
 
-    public void setReturnable(boolean returnable) {
-        this.returnable = returnable;
-    }
-
     public boolean isWholesale() {
         return wholesale;
     }
@@ -138,10 +126,6 @@ public class GMFeaturedProduct {
         return cashbackDetail;
     }
 
-    public void setCashbackDetail(GMFeaturedCashBackDetail cashbackDetail) {
-        this.cashbackDetail = cashbackDetail;
-    }
-
     public List<GMFeaturedLabel> getLabels() {
         return labels;
     }
@@ -150,13 +134,6 @@ public class GMFeaturedProduct {
         this.labels = labels;
     }
 
-    public boolean isRated() {
-        return isRated;
-    }
-
-    public void setRated(boolean rated) {
-        isRated = rated;
-    }
 
     public double getRating() {
         return rating;

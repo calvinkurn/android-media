@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/white">
+    android:background="@color/Unify_N0">
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/main_view"
@@ -14,76 +14,67 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/white"
+            android:background="@color/Unify_N0"
             android:orientation="vertical"
-            android:padding="16dp">
+            android:padding="@dimen/spacing_lvl4">
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:fontFamily="sans-serif"
-                android:lineSpacingExtra="@dimen/sp_6"
-                android:paddingBottom="@dimen/dp_16"
-                android:paddingTop="@dimen/dp_8"
+                app:typographyType="heading_2"
+                android:paddingBottom="@dimen/spacing_lvl4"
+                android:paddingTop="@dimen/spacing_lvl3"
                 android:text="@string/are_you_sure_change_phone_number"
-                android:textColor="@color/black_70"
-                android:textSize="@dimen/sp_20"
-                android:textStyle="bold" />
+                android:textColor="@color/Unify_N700_68" />
 
             <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/dp_16"
-                android:layout_marginTop="@dimen/dp_8"
+                android:layout_marginBottom="@dimen/spacing_lvl4"
+                android:layout_marginTop="@dimen/spacing_lvl3"
                 android:background="@drawable/card_background_with_shadow">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:paddingBottom="@dimen/dp_8"
-                    android:paddingLeft="@dimen/dp_16"
-                    android:paddingRight="@dimen/dp_16"
-                    android:paddingTop="@dimen/dp_10">
+                    android:paddingBottom="@dimen/spacing_lvl3"
+                    android:paddingLeft="@dimen/spacing_lvl4"
+                    android:paddingRight="@dimen/spacing_lvl4"
+                    android:paddingTop="@dimen/changephonenumber_dp_10">
 
-                    <TextView
+                    <com.tokopedia.unifyprinciples.Typography
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="9dp"
-                        android:fontFamily="sans-serif"
-                        android:lineSpacingExtra="9sp"
+                        android:layout_marginBottom="@dimen/changephonenumber_dp_9"
+                        android:lineSpacingExtra="@dimen/changephonenumber_sp_9"
                         android:text="@string/you_have"
-                        android:textColor="@color/black_38"
-                        android:textSize="@dimen/sp_12"
-                        android:textStyle="normal" />
+                        android:textColor="@color/Unify_N700_32"
+                        app:typographyType="body_3" />
 
                     <LinearLayout
                         android:id="@+id/tokopedia_balance_layout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="@dimen/dp_8"
+                        android:layout_marginBottom="@dimen/spacing_lvl3"
                         android:orientation="horizontal">
 
-                        <com.tokopedia.design.component.TextViewCompat
+                        <com.tokopedia.unifyprinciples.Typography
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:drawablePadding="9dp"
-                            android:fontFamily="sans-serif"
+                            android:drawablePadding="@dimen/changephonenumber_dp_9"
                             android:gravity="center_vertical"
                             android:text="@string/tokopedia_balance"
-                            android:textColor="@color/black_70"
-                            android:textSize="@dimen/sp_12"
-                            android:textStyle="normal" />
+                            android:textColor="@color/Unify_N700_68"
+                            app:typographyType="body_3" />
 
-                        <TextView
+                        <com.tokopedia.unifyprinciples.Typography
                             android:id="@+id/tokopedia_balance_value"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:fontFamily="sans-serif"
                             android:gravity="end|center_vertical"
-                            android:textColor="@color/black_70"
-                            android:textSize="@dimen/sp_12"
-                            android:textStyle="bold"
+                            android:textColor="@color/Unify_N700_68"
+                            app:typographyType="heading_6"
                             tools:text="Rp 2.430.034,123" />
                     </LinearLayout>
 
@@ -91,78 +82,71 @@
                         android:id="@+id/tokocash_layout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="@dimen/dp_8"
+                        android:layout_marginBottom="@dimen/spacing_lvl3"
                         android:orientation="horizontal">
 
-                        <com.tokopedia.design.component.TextViewCompat
+                        <com.tokopedia.unifyprinciples.Typography
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:drawablePadding="9dp"
-                            android:fontFamily="sans-serif"
+                            android:drawablePadding="@dimen/changephonenumber_dp_9"
                             android:gravity="center_vertical"
                             android:text="@string/tokocash"
-                            android:textColor="@color/black_70"
-                            android:textSize="12sp"
-                            android:textStyle="normal" />
+                            android:textColor="@color/Unify_N700_68"
+                            app:typographyType="body_3" />
 
-                        <TextView
+                        <com.tokopedia.unifyprinciples.Typography
                             android:id="@+id/tokocash_value"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:fontFamily="sans-serif"
                             android:gravity="end|center_vertical"
-                            android:textColor="@color/black_70"
-                            android:textSize="12sp"
-                            android:textStyle="bold"
+                            android:textColor="@color/Unify_N700_68"
+                            app:typographyType="heading_6"
                             tools:text="Rp 100.000" />
                     </LinearLayout>
                 </LinearLayout>
 
             </FrameLayout>
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:fontFamily="sans-serif"
-                android:lineSpacingExtra="7sp"
-                android:paddingTop="8dp"
+                android:lineSpacingExtra="@dimen/changephonenumber_sp_7"
+                android:paddingTop="@dimen/spacing_lvl3"
                 android:text="@string/if_you_change_phone_number_then"
-                android:textColor="@color/black_70"
-                android:textSize="14sp"
-                android:textStyle="normal" />
+                android:textColor="@color/Unify_N700_68"
+                app:typographyType="body_2" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/warning_rv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingBottom="16dp"
-                android:paddingTop="8dp"
+                android:paddingTop="@dimen/spacing_lvl3"
+                android:paddingBottom="@dimen/spacing_lvl4"
                 tools:listitem="@layout/item_change_phone_number_warning" />
 
-            <TextView
+            <com.tokopedia.unifycomponents.UnifyButton
                 android:id="@+id/next_button"
                 android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:layout_marginTop="8dp"
-                android:background="@drawable/green_button_rounded"
+                android:layout_height="@dimen/layout_lvl6"
+                android:layout_marginTop="@dimen/spacing_lvl3"
                 android:fontFamily="sans-serif-medium"
                 android:gravity="center"
                 android:text="@string/change_phone_number"
-                android:textColor="@color/white"
-                android:textSize="13sp"
+                android:textColor="@color/Unify_N0"
+                android:textSize="@dimen/changephonenumber_sp_13"
                 android:textStyle="bold" />
 
-            <TextView
+            <com.tokopedia.unifycomponents.UnifyButton
                 android:id="@+id/withdraw_button"
                 android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:layout_marginTop="8dp"
-                android:background="@drawable/white_button_rounded"
+                android:layout_height="@dimen/layout_lvl6"
+                android:layout_marginTop="@dimen/spacing_lvl3"
+                app:unifyButtonType="alternate"
                 android:fontFamily="sans-serif-medium"
                 android:gravity="center"
                 android:text="@string/withdraw_tokopedia_balance"
-                android:textColor="@color/black_54"
-                android:textSize="13sp"
+                android:textColor="@color/Unify_N700_44"
+                android:textSize="@dimen/changephonenumber_sp_13"
                 android:textStyle="bold" />
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>

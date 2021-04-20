@@ -2,8 +2,8 @@ package com.tokopedia.loginregister.common.di;
 
 import android.content.Context;
 
-import android.content.res.Resources;
-
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers;
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider;
 import com.tokopedia.akamai_bot_lib.interceptor.AkamaiBotInterceptor;
 import com.chuckerteam.chucker.api.ChuckerInterceptor;
 import com.tokopedia.abstraction.common.data.model.response.TkpdV4ResponseError;
@@ -18,18 +18,22 @@ import com.tokopedia.loginregister.common.analytics.RegisterAnalytics;
 import com.tokopedia.loginregister.common.analytics.SeamlessLoginAnalytics;
 import com.tokopedia.loginregister.common.data.LoginRegisterApi;
 import com.tokopedia.loginregister.common.data.LoginRegisterUrl;
+import com.tokopedia.loginregister.external_register.ovo.analytics.OvoCreationAnalytics;
 import com.tokopedia.network.interceptor.DebugInterceptor;
 import com.tokopedia.network.interceptor.FingerprintInterceptor;
-import com.tokopedia.network.interceptor.RiskAnalyticsInterceptor;
-import com.tokopedia.permissionchecker.PermissionCheckerHelper;
+import com.tokopedia.utils.permission.PermissionCheckerHelper;
 import com.tokopedia.sessioncommon.di.SessionModule;
 import com.tokopedia.sessioncommon.network.TkpdOldAuthInterceptor;
 import com.tokopedia.user.session.UserSessionInterface;
+
+import org.jetbrains.annotations.NotNull;
 
 import javax.inject.Named;
 
 import dagger.Module;
 import dagger.Provides;
+import kotlinx.coroutines.CoroutineDispatcher;
+import kotlinx.coroutines.Dispatchers;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -65,6 +69,13 @@ public class LoginRegisterModule {
 
     @LoginRegisterScope
     @Provides
+    OvoCreationAnalytics provideOvoCreationAnalytics(
+            @Named(SessionModule.SESSION_MODULE) UserSessionInterface userSessionInterface) {
+        return new OvoCreationAnalytics(userSessionInterface);
+    }
+
+    @LoginRegisterScope
+    @Provides
     OkHttpClient provideOkHttpClient(@ApplicationContext Context context,
                                      TkpdOldAuthInterceptor tkpdAuthInterceptor,
                                      ChuckerInterceptor chuckInterceptor,
@@ -81,7 +92,6 @@ public class LoginRegisterModule {
         });
         builder.addInterceptor(new HeaderErrorResponseInterceptor(HeaderErrorListResponse.class));
         builder.addInterceptor(new ErrorResponseInterceptor(TkpdV4ResponseError.class));
-        builder.addInterceptor(new RiskAnalyticsInterceptor(context));
         builder.addInterceptor(new AkamaiBotInterceptor(context));
 
         if (GlobalConfig.isAllowDebuggingTools()) {
@@ -118,5 +128,11 @@ public class LoginRegisterModule {
     @Provides
     IrisSession provideIrisSession(@ApplicationContext Context context) {
         return new IrisSession(context);
+    }
+
+    @LoginRegisterScope
+    @Provides
+    CoroutineDispatchers provideCoroutineDispatchers() {
+        return CoroutineDispatchersProvider.INSTANCE;
     }
 }

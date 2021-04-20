@@ -16,6 +16,7 @@ import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.unifycomponents.ChipsUnify
 import kotlinx.android.synthetic.main.sort_filter_bottom_sheet_chips_layout.view.*
 import kotlinx.android.synthetic.main.sort_filter_bottom_sheet_filter_view_holder.view.*
+import com.tokopedia.utils.contentdescription.TextAndContentDescriptionUtil;
 
 internal class FilterViewHolder(
         itemView: View,
@@ -34,8 +35,8 @@ internal class FilterViewHolder(
             .build()
 
     private val spacingItemDecoration = ChipSpacingItemDecoration(
-            itemView.context.resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_8),
-            itemView.context.resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_8)
+            itemView.context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_8),
+            itemView.context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_8)
     )
 
     init {
@@ -54,7 +55,7 @@ internal class FilterViewHolder(
     }
 
     private fun bindTitle(element: FilterViewModel) {
-        itemView.filterTitleTextView?.text = element.filter.title
+        itemView.filterTitleTextView?.let { TextAndContentDescriptionUtil.setTextAndContentDescription(it, element.filter.title, getString(R.string.content_desc_filterTitleTextView)) }
     }
 
     private fun bindOptionList(element: FilterViewModel) {
@@ -66,9 +67,9 @@ internal class FilterViewHolder(
         itemView.filterSeeAll?.post {
             itemView.filterSeeAll?.expandTouchArea(
                     0,
-                    itemView.context.resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_18),
+                    itemView.context.resources.getDimensionPixelSize(R.dimen.dp_18),
                     0,
-                    itemView.context.resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_18)
+                    itemView.context.resources.getDimensionPixelSize(R.dimen.dp_18)
             )
         }
         itemView.filterSeeAll?.setOnClickListener {

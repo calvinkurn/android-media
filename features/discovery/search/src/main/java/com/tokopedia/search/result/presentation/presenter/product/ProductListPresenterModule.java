@@ -6,7 +6,6 @@ import com.tokopedia.search.result.presentation.ProductListSectionContract;
 import dagger.Module;
 import dagger.Provides;
 
-@SearchScope
 @Module
 public class ProductListPresenterModule {
 

@@ -36,6 +36,7 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/title_tv"
+            android:contentDescription="@string/content_desc_title_tv"
             android:layout_width="@dimen/dp_0"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dp_8"

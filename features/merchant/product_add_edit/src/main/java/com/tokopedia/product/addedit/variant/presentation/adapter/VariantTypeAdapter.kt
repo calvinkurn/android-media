@@ -33,6 +33,7 @@ class VariantTypeAdapter(private val clickListener: OnVariantTypeClickListener)
     }
 
     override fun onVariantTypeSelected(position: Int) {
+        if (position < 0 || position > selectedItems.lastIndex) return
         // from normal to selected
         selectedItems[position] = VariantTypeViewHolder.ViewHolderState.SELECTED
         // disable unselected items when maximum selected items reached
@@ -42,6 +43,7 @@ class VariantTypeAdapter(private val clickListener: OnVariantTypeClickListener)
     }
 
     override fun onVariantTypeDeselected(position: Int): Boolean {
+        if (position < 0 || position > selectedItems.lastIndex) return false
         // execute the callback function
         val isConfirmed = clickListener.onVariantTypeDeselected(position, items[position])
         // from selected to normal if confirmed
@@ -68,15 +70,6 @@ class VariantTypeAdapter(private val clickListener: OnVariantTypeClickListener)
     fun deselectItem(adapterPosition: Int) {
         selectedItems[adapterPosition] = VariantTypeViewHolder.ViewHolderState.NORMAL
         manageUnselectedItems(getSelectedCount())
-    }
-
-    fun getPositionsByIds(variantIds: List<Int>): List<Int> {
-        val positions = mutableListOf<Int>()
-        items.forEachIndexed { index, variantDetail ->
-            val variantId = variantDetail.variantID
-            if (variantIds.contains(variantId)) positions.add(index)
-        }
-        return positions
     }
 
     fun getSelectedItems(): List<VariantDetail> {

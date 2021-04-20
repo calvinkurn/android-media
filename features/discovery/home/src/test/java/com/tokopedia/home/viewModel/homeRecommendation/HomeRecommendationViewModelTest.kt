@@ -7,7 +7,7 @@ import com.tokopedia.home.beranda.domain.interactor.GetHomeRecommendationUseCase
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.*
 import com.tokopedia.home.beranda.presentation.viewModel.HomeRecommendationViewModel
 import com.tokopedia.home.ext.observeOnce
-import com.tokopedia.home.rules.TestDispatcherProvider
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
@@ -27,7 +27,7 @@ class HomeRecommendationViewModelTest{
     private val getHomeRecommendationUseCase = mockk<GetHomeRecommendationUseCase>(relaxed = true)
     private val topAdsImageViewUseCase = mockk< TopAdsImageViewUseCase>(relaxed = true)
     private val topAdsUrlHitter = mockk<TopAdsUrlHitter>(relaxed = true)
-    private val homeRecommendationViewModel = HomeRecommendationViewModel(getHomeRecommendationUseCase, topAdsImageViewUseCase, TestDispatcherProvider())
+    private val homeRecommendationViewModel = HomeRecommendationViewModel(getHomeRecommendationUseCase, topAdsImageViewUseCase, CoroutineTestDispatchersProvider)
 
     @Test
     fun `Get Success Data Home Recommendation Initial Page`(){
@@ -36,7 +36,7 @@ class HomeRecommendationViewModelTest{
                 homeRecommendations = listOf(
                         HomeRecommendationItemDataModel(
                                 Product(),
-                                1
+                                position = 1
                         )
                 ),
                 isHasNextPage = false
@@ -119,11 +119,11 @@ class HomeRecommendationViewModelTest{
                 homeRecommendations = listOf(
                         HomeRecommendationItemDataModel(
                                 Product(),
-                                1
+                                position = 1
                         ),
                         HomeRecommendationItemDataModel(
                                 Product(),
-                                1
+                                position = 1
                         )
                 ),
                 isHasNextPage = true
@@ -132,11 +132,11 @@ class HomeRecommendationViewModelTest{
                 homeRecommendations = listOf(
                         HomeRecommendationItemDataModel(
                                 Product(),
-                                1
+                                position = 1
                         ),
                         HomeRecommendationItemDataModel(
                                 Product(),
-                                1
+                                position = 1
                         )
                 ),
                 isHasNextPage = true
@@ -181,11 +181,11 @@ class HomeRecommendationViewModelTest{
                 homeRecommendations = listOf(
                         HomeRecommendationItemDataModel(
                                 Product(),
-                                1
+                                position = 1
                         ),
                         HomeRecommendationItemDataModel(
                                 Product(),
-                                1
+                                position = 1
                         )
                 ),
                 isHasNextPage = true
@@ -230,7 +230,7 @@ class HomeRecommendationViewModelTest{
                 homeRecommendations = listOf(
                         HomeRecommendationItemDataModel(
                                 Product(id = "12", isWishlist = false),
-                                1
+                                position = 1
                         )
                 ),
                 isHasNextPage = false
@@ -269,7 +269,7 @@ class HomeRecommendationViewModelTest{
                 homeRecommendations = listOf(
                         HomeRecommendationItemDataModel(
                                 Product(id = "12", isWishlist = false),
-                                1
+                                position = 1
                         )
                 ),
                 isHasNextPage = false
@@ -308,7 +308,7 @@ class HomeRecommendationViewModelTest{
                 homeRecommendations = listOf(
                         HomeRecommendationItemDataModel(
                                 Product(id = "12", isWishlist = false),
-                                1
+                                position = 1
                         )
                 ),
                 isHasNextPage = false
@@ -341,7 +341,7 @@ class HomeRecommendationViewModelTest{
         val item = HomeRecommendationItemDataModel(
                 Product(id = "12", isWishlist = false, trackerImageUrl = "coba",
                         name = "Nama Produk", imageUrl = "https://ecs.tokopedia.com/blablabla.png"),
-                1
+                position = 1
         )
         val homeRecommendationDataModel = HomeRecommendationDataModel(
                 homeRecommendations = listOf(
@@ -401,7 +401,7 @@ class HomeRecommendationViewModelTest{
         val observerHomeRecommendation: Observer<HomeRecommendationDataModel> = mockk(relaxed = true)
         val item = HomeRecommendationItemDataModel(
                 Product(id = "12", isWishlist = false, trackerImageUrl = "coba", clickUrl = "clickUrl"),
-                1
+                position = 1
         )
         val homeRecommendationDataModel = HomeRecommendationDataModel(
                 homeRecommendations = listOf(
@@ -499,7 +499,7 @@ class HomeRecommendationViewModelTest{
                 homeRecommendations = listOf(
                         HomeRecommendationItemDataModel(
                                 Product(),
-                                1
+                                position = 1
                         ),
                         HomeRecommendationBannerTopAdsDataModel(position = 1)
                 ),
@@ -535,7 +535,7 @@ class HomeRecommendationViewModelTest{
                 homeRecommendations = listOf(
                         HomeRecommendationItemDataModel(
                                 Product(),
-                                1
+                                position = 1
                         ),
                         HomeRecommendationBannerTopAdsDataModel(position = 1)
                 ),
@@ -571,7 +571,7 @@ class HomeRecommendationViewModelTest{
                 homeRecommendations = listOf(
                         HomeRecommendationItemDataModel(
                                 Product(),
-                                1
+                                position = 1
                         ),
                         HomeRecommendationBannerTopAdsDataModel(position = 1)
                 ),
@@ -607,7 +607,7 @@ class HomeRecommendationViewModelTest{
                 homeRecommendations = listOf(
                         HomeRecommendationItemDataModel(
                                 Product(),
-                                1
+                                position = 1
                         ),
                         HomeRecommendationBannerTopAdsDataModel(position = 1)
                 ),
@@ -617,7 +617,7 @@ class HomeRecommendationViewModelTest{
                 homeRecommendations = listOf(
                         HomeRecommendationItemDataModel(
                                 Product(),
-                                1
+                                position = 1
                         ),
                         HomeRecommendationBannerTopAdsDataModel(position = 1)
                 ),
@@ -667,11 +667,11 @@ class HomeRecommendationViewModelTest{
                 homeRecommendations = listOf(
                         HomeRecommendationItemDataModel(
                                 Product(),
-                                1
+                                position = 1
                         ),
                         HomeRecommendationItemDataModel(
                                 Product(),
-                                1
+                                position = 1
                         ),
                         HomeRecommendationBannerTopAdsDataModel(position = 2)
                 ),
@@ -681,11 +681,11 @@ class HomeRecommendationViewModelTest{
                 homeRecommendations = listOf(
                         HomeRecommendationItemDataModel(
                                 Product(),
-                                1
+                                position = 1
                         ),
                         HomeRecommendationItemDataModel(
                                 Product(),
-                                1
+                                position = 1
                         ),
                         HomeRecommendationBannerTopAdsDataModel(position = 2)
                 ),
@@ -734,11 +734,11 @@ class HomeRecommendationViewModelTest{
                 homeRecommendations = listOf(
                         HomeRecommendationItemDataModel(
                                 Product(),
-                                1
+                                position = 1
                         ),
                         HomeRecommendationItemDataModel(
                                 Product(),
-                                1
+                                position = 1
                         ),
                         HomeRecommendationBannerTopAdsDataModel(position = 2)
                 ),
@@ -748,11 +748,11 @@ class HomeRecommendationViewModelTest{
                 homeRecommendations = listOf(
                         HomeRecommendationItemDataModel(
                                 Product(),
-                                1
+                                position = 1
                         ),
                         HomeRecommendationItemDataModel(
                                 Product(),
-                                1
+                                position = 1
                         ),
                         HomeRecommendationBannerTopAdsDataModel(position = 2)
                 ),

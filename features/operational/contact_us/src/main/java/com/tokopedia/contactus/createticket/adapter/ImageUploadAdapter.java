@@ -113,7 +113,7 @@ public class ImageUploadAdapter extends RecyclerView.Adapter<ImageUploadAdapter.
         if (data.get(position).isSelected()) {
             holder.image.setBackgroundColor(context.getResources().getColor(com.tokopedia.design.R.color.green_500));
         } else {
-            holder.image.setBackgroundColor(context.getResources().getColor(com.tokopedia.design.R.color.white));
+            holder.image.setBackgroundColor(context.getResources().getColor(com.tokopedia.unifyprinciples.R.color.Unify_N0));
         }
     }
 

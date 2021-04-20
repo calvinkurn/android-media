@@ -9,13 +9,15 @@
     <color name="topads_common_tab_green">#03ac0e</color>
     <color name="divider_notif_big">#f3f4f5</color>
     <color name="text_color">#fa31353b</color>
+    <color name="topads_common_white">#ffffff</color>
     <color name="topads_dash_cardview_color">#80F3F4F5</color>
-    <color name="topads_clr_7031353b">#7031353b</color>"
+    <color name="topads_clr_7031353b">#7031353b</color>
     <color name="topads_actionbar_black">#31353B</color>
     <color name="topads_action_bar_image">#9FA6B0</color>
     <color name="topads_light_shadow">#AD31353B</color>
     <color name="topads_common_red">#d6001c</color>
+    <color name="topads_common_light_grey">#778092</color>
+    <color name="topads_common_neutral">#EFF3F9</color>
     <color name="topads_item_selected">#EBFFEF</color>
-
-
+    <color name="topads_common_text_disabled">#5231353B</color>
 </resources>

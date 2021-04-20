@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@color/Unify_N0">
 
     <com.tokopedia.unifycomponents.SearchBarUnify
         android:id="@+id/flightAirportSearchBar"
@@ -13,12 +14,14 @@
         android:layout_marginRight="@dimen/spacing_lvl4"
         app:search_bar_clearable="true"
         app:search_bar_placeholder="@string/flight_label_search_hint_airport"
-        app:search_bar_show_icon="false" />
+        app:search_bar_show_icon="false"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvFlightAirport"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_constraintTop_toBottomOf="@+id/flightAirportSearchBar" />
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/flightAirportSearchBar"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:background="@color/Unify_N0"/>
 
 </LinearLayout>

@@ -1,14 +1,14 @@
 package com.tokopedia.oneclickcheckout.preference.edit.domain.shipping.mapper
 
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ServiceData
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ServiceTextData
 import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData
-import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ServiceData
-import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ServiceTextData
 import com.tokopedia.oneclickcheckout.preference.edit.view.shipping.model.*
 import javax.inject.Inject
 
 class ShippingDurationModelWithPriceMapper @Inject constructor() {
 
-    fun convertToDomainModelWithPrice(response: ShippingRecommendationData): ShippingListModel {
+    fun convertToDomainModelWithPrice(response: ShippingRecommendationData, isNewLayout: Boolean): ShippingListModel {
         return ShippingListModel().apply {
             val servicesList: ArrayList<ServicesItem> = ArrayList()
             if (response.shippingDurationViewModels != null) {
@@ -17,7 +17,11 @@ class ShippingDurationModelWithPriceMapper @Inject constructor() {
                 }
             }
             if (response.logisticPromo != null) {
-                servicesList.add(0, LogisticPromoInfo(response.logisticPromo.imageUrl))
+                if (isNewLayout) {
+                    servicesList.add(LogisticPromoInfo(response.logisticPromo.imageUrl, true))
+                } else {
+                    servicesList.add(0, LogisticPromoInfo(response.logisticPromo.imageUrl, false))
+                }
             }
             services = servicesList
         }
@@ -37,6 +41,7 @@ class ShippingDurationModelWithPriceMapper @Inject constructor() {
         return TextsModel().apply {
             textRangePrice = data.textRangePrice
             textsServiceDesc = data.textServiceDesc
+            textEta = if (data.errorCode == 0) data.textEtaSummarize else null
         }
     }
 

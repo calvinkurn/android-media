@@ -35,4 +35,6 @@ interface TopChatViewState : BaseChatViewState {
 
     fun showConfirmationBlockChat()
 
+    fun updateTemplateState()
+
 }

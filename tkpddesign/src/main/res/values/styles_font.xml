@@ -46,7 +46,7 @@
         <item name="android:textSize">@dimen/sp_20</item>
     </style>
     <style name="TextView.TitleBig.White">
-        <item name="android:textColor">@color/white</item>
+        <item name="android:textColor">@color/Unify_N0</item>
     </style>
     <style name="TextView.TitleBig.Bold">
         <item name="android:textStyle">bold</item>
@@ -75,7 +75,7 @@
         <item name="android:textSize">@dimen/sp_16</item>
     </style>
     <style name="TextView.Title.White">
-        <item name="android:textColor">@color/white</item>
+        <item name="android:textColor">@color/Unify_N0</item>
     </style>
     <style name="TextView.Title.Bold">
         <item name="android:textStyle">bold</item>
@@ -144,7 +144,7 @@
         <item name="android:textStyle">bold</item>
     </style>
     <style name="TextView.Small.White">
-        <item name="android:textColor">@color/white</item>
+        <item name="android:textColor">@color/Unify_N0</item>
     </style>
     <style name="TextView.Small.White.Bold">
         <item name="android:textStyle">bold</item>
@@ -299,7 +299,7 @@
 
 
     <style name="TextView.Small.FontMedium.White">
-        <item name="android:textColor">@color/white</item>
+        <item name="android:textColor">@color/Unify_N0</item>
     </style>
 
     <style name="TextView.Micro.Black40">
@@ -386,7 +386,7 @@
     </style>
 
     <style name="TextView.Micro11.FontMedium.White">
-        <item name="android:textColor">@color/white</item>
+        <item name="android:textColor">@color/Unify_N0</item>
     </style>
 
     <style name="TextView.Micro11.FontMedium.BlackPrimary">

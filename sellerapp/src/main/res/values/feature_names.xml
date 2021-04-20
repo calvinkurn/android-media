@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="host_sellerapp">sellerapp</string>
+
     <!--Travel & Hotel-->
     <string name="title_hotel_travel">Hotel</string>
     <string name="hotel_app_name">Hotel</string>
@@ -102,6 +104,11 @@
     <string name="title_top_ads_credit_history">Riwayat Kredit</string>
     <string name="title_top_ads_auto_topup">Tambah Kredit Otomatis</string>
     <string name="topads_menu_seller_centre">Seller Center</string>
+    <string name="topads_dash_desc_credit_label">Kredit TopAds</string>
+    <string name="topads_dash_auto_topup_title">Pengaturan Kredit Otomatis</string>
+    <string name="topads_dashboard_ad_type_selection_title">Tambah Iklan</string>
+    <string name="topads_headline_detail_title">Detail Iklan Toko</string>
+
 
     <!--Auto Ads-->
     <string name="title_module_auto_ads">AutoAds Module</string>
@@ -190,6 +197,7 @@
     <string name="title_som_change_courier">Ganti Kurir</string>
     <string name="title_som_scan_barcode">Scan Resi</string>
     <string name="title_som_booking_code">Detail Kode Booking</string>
+    <string name="title_logistic_info">Informasi Terkait Kurir</string>
 
 
     <!-- Dynamic feature for Umrah-->
@@ -256,4 +264,17 @@
     <!-- Dynamic feature Statistic -->
     <string name="title_statistic">Statistic</string>
 
+    <!-- Logistic -->
+    <string name="title_layanan">Layanan</string>
+    <string name="label_manage_address">Daftar Alamat</string>
+    <string name="title_activity_shop_edit_address">Ubah Detail Lokasi</string>
+    <string name="title_activity_search_address">Kota atau kecamatan</string>
+
+    <!-- Seller Menu -->
+    <string name="title_seller_menu">Toko Saya</string>
+    <string name="title_seller_settings">Pengaturan Toko</string>
+    <string name="admin_authorize_title">Admin Role Access Authorize</string>
+    
+    <!-- Dynamic feature seller action -->
+    <string name="path_seller_action">/seller-action</string>
 </resources>

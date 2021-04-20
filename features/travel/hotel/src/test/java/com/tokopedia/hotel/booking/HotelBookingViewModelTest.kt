@@ -1,7 +1,9 @@
 package com.tokopedia.hotel.booking
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.common.travel.utils.TravelTestDispatcherProvider
+import com.tokopedia.common.travel.ticker.domain.TravelTickerCoroutineUseCase
+import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerModel
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
@@ -37,7 +39,7 @@ class HotelBookingViewModelTest {
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
-    private val dispatcher = TravelTestDispatcherProvider()
+    private val dispatcher = CoroutineTestDispatchersProvider
     private lateinit var hotelBookingViewModel: HotelBookingViewModel
 
     private val graphqlRepository = mockk<GraphqlRepository>()
@@ -48,10 +50,13 @@ class HotelBookingViewModelTest {
     @RelaxedMockK
     lateinit var upsertContactListUseCase: UpsertContactListUseCase
 
+    private val travelTickerCoroutineUseCase = mockk<TravelTickerCoroutineUseCase>()
+
     @Before
     fun setUp() {
         MockKAnnotations.init(this)
-        hotelBookingViewModel = HotelBookingViewModel(graphqlRepository, getContactListUseCase, upsertContactListUseCase, dispatcher)
+        hotelBookingViewModel = HotelBookingViewModel(graphqlRepository, getContactListUseCase, upsertContactListUseCase,
+                travelTickerCoroutineUseCase, dispatcher)
     }
 
     @Test
@@ -227,5 +232,41 @@ class HotelBookingViewModelTest {
 
         //then
         assert((hotelBookingViewModel.tokopointSumCouponResult.value as String).isEmpty())
+    }
+
+    @Test
+    fun getTickerData_shouldData() {
+        //given
+        val title = "Title ABC"
+        val message = "this is a message"
+        val response = TravelTickerModel(title = title, message = message, url = "", type = 0, status = 0,
+                endTime = "", startTime = "", instances = 0, page = "", isPeriod = true)
+        coEvery {
+            travelTickerCoroutineUseCase.execute(any(), any())
+        } returns Success(response)
+
+        //when
+        hotelBookingViewModel.fetchTickerData()
+
+        //then
+        val actual = hotelBookingViewModel.tickerData.value
+        assert(actual is Success)
+        assert((actual as Success).data.title == title)
+        assert(actual.data.message == message)
+    }
+
+    @Test
+    fun getTickerData_shouldReturnFail() {
+        //given
+        coEvery {
+            travelTickerCoroutineUseCase.execute(any(), any())
+        } returns Fail(Throwable())
+
+        //when
+        hotelBookingViewModel.fetchTickerData()
+
+        //then
+        val actual = hotelBookingViewModel.tickerData.value
+        assert(actual is Fail)
     }
 }

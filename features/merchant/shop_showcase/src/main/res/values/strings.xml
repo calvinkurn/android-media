@@ -43,4 +43,15 @@
     <string name="text_confirm_dialog_description">Produk akan gagal terhapus jika kamu \nlanjut pilih produk</string>
     <string name="text_exit_confirm_dialog_description">Jika keluar, perubahan di etalasemu\n akan gagal</string>
     <string name="text_label_campaign">Rilisan Spesial</string>
+    <string name="picker_add_action_showcase_text">Tambah</string>
+    <string name="picker_apply_showcase_text">Terapkan</string>
+    <string name="picker_apply_showcase_counter_text">Terapkan (%1$s)</string>
+    <string name="bottomsheet_showcase_name_text">Nama</string>
+    <string name="bottomsheet_add_showcase_textfield_hint_text">Tulis nama etalase yang kamu inginkan.</string>
+    <string name="max_selected_showcase_text">Produk ini sudah ada di 10 etalase.</string>
+    <string name="max_total_showcase_error_text">Etalase kamu sudah penuh. Gunakan etalase yang tersedia untuk produk ini.</string>
+    <string name="empty_state_picker_description">Ayo, tambah etalase agar memudahkan pembeli cari produk di tokomu.</string>
+    <string name="empty_state_picker_title_text">Kamu belum ada etalase</string>
+    <string name="empty_state_hint_text">Tambah &lt;b>\"%1$s\"&lt;/b></string>
+    <string name="new_showcase_hint_button_content_desc">new_showcase_hint_button</string>
 </resources>

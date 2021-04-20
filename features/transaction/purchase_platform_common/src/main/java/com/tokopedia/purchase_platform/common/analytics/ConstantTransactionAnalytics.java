@@ -60,6 +60,8 @@ public interface ConstantTransactionAnalytics {
         String VIEW_TRADEIN = "viewTradeIn";
         String CLICK_TRADEIN = "clickTradeIn";
         String CART = "Cart";
+        String CLICK_WISHLIST = "clickWishlist";
+        String CLICK_NAVIGATION_DRAWER = "clickNavigationDrawer";
     }
 
     interface EventCategory {
@@ -459,10 +461,65 @@ public interface ConstantTransactionAnalytics {
         String VIEW_PROMO_RELEASED = "view promo released after adjust item";
         String VIEW_PROMO_DECREASED = "view promo decreased after adjust item";
 
+        // OCC Revamp
+        String CLICK_TAMBAH_TEMPLATE = "preference - click tambah template";
+        String CLICK_PILIH_TEMPLATE_LAIN = "preference - click pilih template lain";
+        String VIEW_PROFILE_LIST = "view profile list";
+        String CLICK_ARROW_TO_CHANGE_ADDRESS_OPTION = "address - click arrow to change address option";
+        String CLICK_SELECTED_ADDRESS_OPTION = "address - click selected address option";
+        String CLICK_ARROW_TO_CHANGE_DURATION_OPTION = "duration - click arrow to change duration option";
+        String CLICK_SELECTED_DURATION_OPTION_NEW = "duration - click selected duration option";
+        String CLICK_ARROW_TO_CHANGE_PAYMENT_OPTION = "payment - click arrow to change payment option";
+        String CLICK_SELECTED_PAYMENT_OPTION = "payment - click selected payment option";
+        String CLICK_PROFILE_OPTION_ON_PROFILE_LIST = "preference - click profile option on profile list";
+        String CLICK_TAMBAH_TEMPLATE_BELI_LANGSUNG_ON_ORDER_SUMMARY = "preference - click tambah template beli langsung on order summary";
+        String CLICK_TAMBAH_TEMPLATE_BELI_LANGSUNG_ON_PROFILE_LIST = "preference - click tambah template beli langsung on profile list";
+        String CLICK_EDIT_PROFILE_ON_PROFILE_LIST = "preference - click edit profile on profile list";
+
+        String VIEW_COACHMARK_1_FOR_EXISTING_USER_ONE_PROFILE = "view coachmark 1 for existing user one profile";
+        String VIEW_COACHMARK_2_FOR_EXISTING_USER_ONE_PROFILE = "view coachmark 2 for existing user one profile";
+        String CLICK_DONE_ON_COACHMARK_2_FOR_EXISTING_USER_ONE_PROFILE = "click done on coachmark 2 for existing user one profile";
+
+        String VIEW_COACHMARK_1_FOR_EXISTING_USER_MULTI_PROFILE = "view coachmark 1 for existing user multi profile";
+        String VIEW_COACHMARK_2_FOR_EXISTING_USER_MULTI_PROFILE = "view coachmark 2 for existing user multi profile";
+        String CLICK_DONE_ON_COACHMARK_2_FOR_EXISTING_USER_MULTI_PROFILE = "click done on coachmark 2 for existing user multi profile";
+
+        String VIEW_COACHMARK_1_FOR_NEW_BUYER_BEFORE_CREATE_PROFILE = "view coachmark 1 for new buyer before create profile";
+        String VIEW_COACHMARK_2_FOR_NEW_BUYER_BEFORE_CREATE_PROFILE = "view coachmark 2 for new buyer before create profile";
+        String CLICK_LANJUT_ON_COACHMARK_2_FOR_NEW_BUYER_BEFORE_CREATE_PROFILE = "click lanjut on coachmark 2 for new buyer before create profile";
+
+        String VIEW_COACHMARK_1_FOR_NEW_BUYER_AFTER_CREATE_PROFILE = "view coachmark 1 for new buyer after create profile";
+        String VIEW_COACHMARK_2_FOR_NEW_BUYER_AFTER_CREATE_PROFILE = "view coachmark 2 for new buyer after create profile";
+        String VIEW_COACHMARK_3_FOR_NEW_BUYER_AFTER_CREATE_PROFILE = "view coachmark 3 for new buyer after create profile";
+        String CLICK_DONE_ON_COACHMARK_3_FOR_NEW_BUYER_AFTER_CREATE_PROFILE = "click done on coachmark 3 for new buyer after create profile";
+
+        // OCC PP
+        String PP_IMPRESSION_ON_INSURANCE_SECTION = "pp - impression on insurance section";
+        String PP_CLICK_TOOLTIP = "pp - click tooltip";
+        String PP_CLICK_BAYAR = "pp - click bayar";
+
         // Shipping experience
         String VIEW_SUMMARY_TRANSACTION_TICKER_COURIER_NOT_COMPLETE = "view summary transaction ticker courier not complete";
         String CLICK_CEK_ON_SUMMARY_TRANSACTION_TICKER_COURIER_NOT_COMPLETE = "click cek on summary transaction ticker courier not complete";
 
+        // Cart Revamp
+        String VIEW_REMAINING_STOCK_INFO = "view remaining stock info";
+        String VIEW_INFORMATION_LABEL_IN_PRODUCT_CARD = "view information label in product card";
+        String CLICK_DETAIL_TAGIHAN = "click detail tagihan";
+        String ADD_WISHLIST_CART_LOGIN = "add wishlist - cart - login";
+        String REMOVE_WISHLIST_CART_LOGIN = "remove wishlist - cart - login";
+        String CLICK_DELETE_PRODUCT_ON_UNAVAILABLE_SECTION = "click delete product on unavailable section";
+        String CLICK_LIHAT_PRODUK_SERUPA_ON_UNAVAILABLE_SECTION = "click lihat produk serupa on unavailable section";
+        String CLICK_CHECKOUT_MELALUI_BROWSER_ON_UNAVAILABLE_SECTION = "click checkout melalui browser on unavailable section";
+        String CLICK_DELETE_ALL_UNAVAILABLE_PRODUCT = "click delete all unavailable product";
+        String CLICK_ACCORDION_ON_UNAVAILABLE_PRODUCT = "click %s on unavailable section";
+        String CLICK_UNDO_AFTER_DELETE_PRODUCT = "click undo after delete product";
+        String VIEW_ERROR_PAGE_WHEN_LOAD_CART = "view error page when load cart";
+        String CLICK_WISHLIST_ICON_IN_CART_PAGE = "click wishlist icon in cart page";
+        String CLICK_FOLLOW_SHOP_ON_UNAVAILABLE_SECTION = "click follow shop on unavailable section";
+        String CLICK_BACK_BUTTON_NAV = "click back button nav";
+        String CLICK_GLOBAL_MENU_NAV = "click global menu nav";
+        String CLICK_WISHLIST_NAV = "click wishlist nav";
     }
 
     interface EventLabel {
@@ -528,6 +585,11 @@ public interface ConstantTransactionAnalytics {
     interface ExtraKey {
         String USER_ID = "userId";
         String PROMO_CODE = "promoCode";
+        String PAYMENT_TYPE = "paymentType";
+        String BUSINESS_UNIT = "businessUnit";
+        String CURRENT_SITE = "currentSite";
+        String PAGE_TYPE = "pageType";
+        String PAGE_PATH = "pagePath";
     }
 
     interface ScreenName {
@@ -550,5 +612,7 @@ public interface ConstantTransactionAnalytics {
 
     interface CustomDimension {
         String DIMENSION_CURRENT_SITE_MARKETPLACE = "tokopediamarketplace";
+        String DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM = "purchase platform";
+        String DIMENSION_BUSINESS_UNIT_HOME_BROWSE = "home & browse";
     }
 }

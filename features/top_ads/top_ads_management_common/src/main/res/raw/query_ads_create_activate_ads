@@ -1,0 +1,16 @@
+mutation topadsCreateGroupAds($input: TopadsCreateGroupAdsInput!){
+  topadsCreateGroupAds(input:$input){
+    errors {
+      code
+      detail
+      title
+    }
+    meta{
+      messages {
+        code
+        detail
+        title
+      }
+    }
+  }
+}

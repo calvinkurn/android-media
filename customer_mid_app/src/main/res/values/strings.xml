@@ -1,0 +1,216 @@
+<resources>
+    <string name="app_name">Tokopedia</string>
+    <string name="lihat_smua_promo">Lihat Semua Promo</string>
+
+    <!-- Push Notif -->
+    <string name="purchase_finish">Pesanan Selesai</string>
+    <string name="purchase_confirm">Konfirmasi Pesanan</string>
+    <string name="purchase_confirm_receiving">Konfirmasikan Penerimaan</string>
+    <string name="purchase_shipped">Konfirmasi Pengiriman</string>
+    <string name="purchase_canceled">Pesanan Dibatalkan</string>
+    <string name="title_home_official_store">Official Store</string>
+    <string name="label_gold_merchant">Gold Merchant</string>
+    <string name="hint_search_wishlist">Cari produk di wishlist</string>
+    <string name="title_empty_stock">Stok Habis</string>
+
+    <!--favorite page-->
+    <string name="msg_empty_wishlist">Empty wishlist</string>
+    <string name="msg_fav_shop_success">Sukses memfavoritkan toko</string>
+    <string name="msg_fav_shop_failed">Gagal memfavoritkan toko silahkan coba lagi</string>
+    <string name="empty_wishlist">Wishlist Anda masih kosong</string>
+    <string name="find_product">Mulai cari produk</string>
+    <string name="lihat_semua_product">Lihat Semua Produk</string>
+    <string name="textview_redirect_seller_app">Fitur ini hanya tersedia pada aplikasi TopSeller. Nikmati berbagai kemudahan berjualan online dalam genggaman Anda.</string>
+    <string name="drawer_title_wishlist">Wishlist</string>
+    <string name="drawer_title_mybills">MyBills</string>
+    <string name="drawer_title_buyer">Pembelian</string>
+    <string name="drawer_title_payment_status">Status Pembayaran</string>
+    <string name="drawer_title_order_status">Status Pemesanan</string>
+    <string name="drawer_title_confirm_delivery">Konfirmasi Penerimaan</string>
+    <string name="drawer_title_transaction_canceled">Transaksi Dibatalkan</string>
+    <string name="drawer_title_purchase_list">Daftar Pembelian</string>
+    <string name="introducing">Memperkenalkan</string>
+    <string name="download_topseller_app">Download Aplikasi TopSeller</string>
+
+    <!--tokocash cashback-->
+    <string name="toko_cash_pending_title">Bonus Cashback</string>
+    <string name="toko_cash_pending_proceed_button">Dapatkan Cashback Sekarang</string>
+    <string name="toko_cash_pending_close_button">Tutup</string>
+    <string name="toko_cash_pending_body">Anda mendapatkan cashback TokoCash sebesar %s dari transaksi terakhir</string>
+
+    <string name="deeplink_receiver_applink_update_button_title">Update</string>
+    <string name="deeplink_receiver_applink_update_button_cancel_title">Batal</string>
+
+    <!--tokocash history-->
+    <string name="toko_cash_title_page_date_range">Rentang Tanggal</string>
+    <string name="toko_cash_tab_choose_date">Pilih Tanggal</string>
+    <string name="toko_cash_tab_choose_date_range">Pilih Rentang Waktu</string>
+    <string name="lihat_semua">Lihat Semua</string>
+    <string name="kunjungi_sekarang">Kunjungi Sekarang</string>
+
+    <!--home-->
+    <string name="format_btn_category_more">+%d Kategori Lainnya</string>
+    <string name="buka_toko">Buka Toko</string>
+    <string name="manage_toko">Atur Toko</string>
+    <string name="empty_shop_wording_subtitle">Nikmati transaksi yang mudah, aman, dan menguntungkan</string>
+    <string name="manage_shop_wording_subtitle">Kelola pengaturan toko Anda untuk meningkatkan penjualan</string>
+    <string name="empty_shop_wording_title">Buka toko sekarang, banyak lebihnya!</string>
+    <string name="top_up_button">Top Up</string>
+    <string name="open_shop_wording_title">Atur Toko, Raih Keuntungan!</string>
+
+    <string name="promo_title_terms">Syarat &amp; Ketentuan</string>
+    <string name="digital_widget_title">Produk Digital</string>
+
+    <!--For QR Code-->
+    <string name="title_scan_qr">Scan Kode QR</string>
+    <string name="title_dialog_wrong_scan">Oops!</string>
+    <string name="msg_dialog_wrong_scan">Kode QR yang Anda scan invalid.</string>
+    <string name="btn_dialog_wrong_scan">OK</string>
+    <string name="scanner_info">Arahkan kode QR ke area yang telah ditentukan</string>
+    <string name="no_available_feature">Fitur akan segera hadir untuk anda.</string>
+    <string name="error_actiivty_open_permission">Gagal membuka scan kode QR</string>
+
+    <string name="payment_description_transfer_procedure">Mohon lakukan pembayaran pesanan Rp. %1$s ke %2$s %3$s sebelum %4$s. Untuk info lebih lanjut cek status pembayaran Anda.</string>
+    <string name="wishlist_empty_title">Wishlist masih kosong</string>
+    <string name="wishlist_empty_message">Masuk untuk melihat produk-produk pilihan Anda</string>
+    <string name="wishlist_check_cart">Cek Keranjang</string>
+
+
+    <!-- Shake Shake Campaign -->
+
+    <string name="shake_shake_success">Berhasil shake shake</string>
+
+    <string name="drawer_title_shopping_list">Daftar Belanja</string>
+    <string name="drawer_title_payment_list">Menunggu Pembayaran</string>
+    <string name="drawer_title_digital_transaction_list"><![CDATA[Daftar Top-Up & Tagihan]]></string>
+    <string name="exit_message">Tekan sekali lagi untuk keluar</string>
+    <string name="sedang_dalam_proses_shake">Sedang dalam Proses Shake</string>
+    <string name="ok">OK</string>
+    <string name="disable_shake_shake">“Sepertinya sistem Shake di hp-mu sedang lelah. Istirahat dulu yuk main Shake Shake-nya.” OK
+</string>
+    <string name="yes">Ya</string>
+    <string name="mainapp_extend_gold_merchant">Perpanjang Gold Merchant</string>
+    <string name="mainapp_upgrade_gold_merchant">Upgrade ke Gold Merchant</string>
+    <string name="video_not_play_error">Video can not be played.</string>
+    <string name="cta_here">CTA Here</string>
+    <string name="video_title_bar_lable">Tokopedia</string>
+    <string name="loren_impsum">Loren Impsum</string>
+    <string name="video_desc">Loren Impsum Loren Impsum Loren ImpsumLoren Impsum</string>
+
+    <!-- BEGIN NEW ON BOARDING RELATED STRING RESOURCE -->
+    <string name="nonb_1_title">Bebas Beli Apa Saja</string>
+    <string name="nonb_1_desc">
+        <![CDATA[Tersedia jutaan produk dari <em>merchant</em> &#38; <em>official store</em> tepercaya]]>
+    </string>
+    <string name="nonb_2_title">Bayar Tagihan Bebas Cemas</string>
+    <string name="nonb_2_desc">Tagihan mulai BPJS, gas, hingga air bisa terbayar tanpa was-was</string>
+    <string name="nonb_3_title">Pesan Kebutuhan Liburan</string>
+    <string name="nonb_3_desc">Dapatkan tiket kereta, wahana rekreasi, dan event seru bebas antre</string>
+    <string name="nonb_4_title">Ajukan Asuransi hingga Modal</string>
+    <string name="nonb_4_desc">Lengkapi kebutuhan finansial mulai kartu kredit hingga pinjaman modal</string>
+    <string name="nonb_5_title">Jual Barang Ciptakan Peluang</string>
+    <string name="nonb_5_desc">Buka toko gratis, nikmati transaksi mudah, aman, dan dikunjungi jutaan pembeli</string>
+
+    <string name="title_skip_2">Lewati</string>
+    <string name="title_activity_login">Masuk</string>
+
+    <!-- END NEW ON BOARDING RELATED STRING RESOURCE -->
+    <string name="share_link">Bagikan Produk Ini</string>
+    <string name="produk_yang_mungkin_anda_suka">Produk yang mungkin Anda suka</string>
+    <string name="title_header_saldo_intro">Info Detail Saldo</string>
+
+    <string name="title_dialog_tokopedia_app_not_valid">Aplikasi Tokopedia tidak valid</string>
+    <string name="title_message_install_from_playstore">Install Tokopedia dari Google Play Store untuk melanjutkan</string>
+
+    <!-- Dynamic features Shop Setting -->
+    <string name="shop_settings_manage_shop_info">Informasi</string>
+    <string name="shop_settings_manage_address">Lokasi</string>
+    <string name="shop_settings_manage_etalase">Etalase</string>
+    <string name="shop_settings_manage_notes">Catatan</string>
+    <string name="shop_settings_basic_info">Informasi Dasar</string>
+    <string name="shop_settings_add_note">Tambah Catatan</string>
+    <string name="shop_settings_add_etalase">Tambah Etalase</string>
+    <string name="shop_settings_add_address">Tambah Lokasi</string>
+    <string name="shop_settings_shop_status">Status Toko</string>
+    <!-- Home Recommendation Extras -->
+    <string name="home_recommendation_extra_product_id">PRODUCT_ID</string>
+    <string name="home_recommendation_extra_ref">REF</string>
+    <string name="home_recommendation_extra_internal_ref">INTERNAL_REF</string>
+    <string name="title_homepage_digital">Digital</string>
+    <string name="title_saldo_deposit">Saldo Deposit</string>
+    <string name="df_ovo_pay_with_qr_title">Ovo Pay By Qr DF</string>
+
+    <string name="saldo_detail_title_activity_people_deposit">Detail Saldo</string>
+    <string name="saldo_detail_title_header_saldo_intro">Info Detail Saldo</string>
+
+    <string name="oqr_payment_summary">Pembayaran</string>
+    <string name="title_instantloan">Dana Instan</string>
+
+    <string name="title_im_referral">referral</string>
+    <string name="title_fintech_wallet">fintech_wallet</string>
+    <string name="title_activity_all_brands">Brands</string>
+    <string name="title_digital_deals">Deals</string>
+    <string name="title_activity_deals">Deals</string>
+
+    <string name="title_emoney">emoney</string>
+    <string name="permission_emoney_not_granted">Aplikasi ini membutuhkan izin untuk mengakses NFC</string>
+
+    <!-- Content -->
+    <string name="title_profile">Profile</string>
+    <string name="title_profile_following">Following</string>
+    <string name="title_profile_follower">Followers</string>
+
+    <!--affilate page-->
+    <string name="posted_product" translatable="false">Produk Dipost</string>
+    <string name="title_af_dashboard_detail" translatable="false">Riwayat</string>
+    <string name="text_button_sort" translatable="false">Sort</string>
+
+    <string name="saldo_webview_title">Tokopedia</string>
+
+    <string name="title_logout" translatable="false">logout</string>
+
+    <!--Talk-->
+    <string name="title_reading_page">Diskusi</string>
+    <string name="title_reply_page">Balas Pertanyaan</string>
+    <string name="title_write_page">Kirim Pertanyaan</string>
+    <string name="title_seller_settings_page">Pengaturan Diskusi</string>
+
+    <!-- Dynamic feature Product Add Edit -->
+    <string name="action_pick_photo">Pilih Foto</string>
+    <string name="action_edit_photo">Ubah Foto</string>
+    <string name="label_title_add_product">Tambah Produk</string>
+    <string name="label_title_category_picker">Pilih Kategori</string>
+
+    <!-- Product Detail -->
+    <string name="title_activity_product_detail">Rincian Produk</string>
+    <string name="product_detail_courier">Pengiriman</string>
+    <string name="label_rates_estimation_detail">Estimasi Ongkir</string>
+    <string name="label_product_installment">Cicilan</string>
+    <string name="label_product_wholesale">Harga Grosir</string>
+    <string name="label_product_desc">Deskripsi Produk</string>
+    <string name="label_image_preview_pdp">Gambar produk</string>
+
+    <!-- DF Shop Score -->
+    <string name="title_shopscore">Skor Performa Toko</string>
+
+    <string name="title_notif_purchase_confirmed">Pembayaran sudah terverifikasi</string>
+    <string name="title_notif_purchase_accepted">Pesanan kamu sedang diproses </string>
+    <string name="title_notif_purchase_partial_accepted">Pesanan kamu diproses sebagian</string>
+    <string name="title_notif_purchase_rejected">Pesanan kamu tidak dapat diproses </string>
+    <string name="title_notif_purchase_delivered">Pesanan kamu telah tiba</string>
+    <string name="title_gold_merchant_redirect">Akses maupun pembelian fitur %1$s hanya
+        dapat dilakukan di aplikasi TopSeller</string>
+    <string name="title_activity_deep_link">Tokopedia</string>
+    <string name="title_activity_manage_product">Daftar Produk</string>
+    <string name="shop_shipping_setting">Pengaturan Pengiriman</string>
+    <string name="gold_merchant_redirect_text">Gunakan aplikasi TopSeller untuk mengelola toko
+        online, terima order dan upload produk, kapan pun dan di mana pun.</string>
+    <string name="title_add_product">TAMBAH PRODUK</string>
+    <string name="action_reset">Reset</string>
+    <string name="navigate_browser">Lanjut ke Aplikasi TopSeller</string>
+    <string name="navigate_back">Kembali</string>
+
+    <!-- Order Management History   -->
+    <string name="transaction_title_activity_order_history">Detail Status</string>
+    <string name="title_seller_info">Info Penjual</string>
+</resources>

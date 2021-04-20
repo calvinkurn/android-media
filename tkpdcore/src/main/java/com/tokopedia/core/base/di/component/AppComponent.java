@@ -4,15 +4,11 @@ import android.content.Context;
 
 import com.chuckerteam.chucker.api.ChuckerInterceptor;
 import com.google.gson.Gson;
-import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.base.di.module.AppModule;
 import com.tokopedia.core.base.di.module.UtilModule;
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.base.di.scope.ApplicationScope;
-import com.tokopedia.core.base.domain.executor.PostExecutionThread;
-import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.di.qualifier.AceQualifier;
 import com.tokopedia.core.network.di.qualifier.CartQualifier;
@@ -23,7 +19,6 @@ import com.tokopedia.core.network.di.qualifier.MerlinQualifier;
 import com.tokopedia.core.network.di.qualifier.MojitoQualifier;
 import com.tokopedia.core.network.di.qualifier.ResolutionQualifier;
 import com.tokopedia.core.network.di.qualifier.TomeQualifier;
-import com.tokopedia.core.network.di.qualifier.UploadWsV4Qualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4Qualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4QualifierWithErrorHander;
 import com.tokopedia.core.network.di.qualifier.YoutubeQualifier;
@@ -45,10 +40,6 @@ import retrofit2.Retrofit;
 public interface AppComponent {
 
     void inject(MainApplication mainApplication);
-
-    void inject(BaseActivity baseActivity);
-
-    void inject(TActivity baseActivity);
 
     @ApplicationContext
     Context context();
@@ -90,15 +81,8 @@ public interface AppComponent {
     @WsV4Qualifier
     Retrofit baseDomainRetrofit();
 
-    @UploadWsV4Qualifier
-    Retrofit uploadWsV4Retrofit();
-
     @WsV4QualifierWithErrorHander
     Retrofit baseDomainWithErrorHandlerRetrofit();
-
-    ThreadExecutor threadExecutor();
-
-    PostExecutionThread postExecutionThread();
 
     ChuckerInterceptor ChuckerInterceptor();
 

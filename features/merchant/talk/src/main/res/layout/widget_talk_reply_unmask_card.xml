@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.unifycomponents.CardUnify xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:card_type="border">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/dp_12">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/talk_reply_unmask_warning_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_12"
+            android:layout_marginStart="@dimen/dp_12"
+            app:srcCompat="@drawable/ic_talk_inbox_alert_signifier"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/talk_reply_unmask_body"
+            android:layout_width="@dimen/layout_lvl0"
+            android:layout_height="wrap_content"
+            android:text="@string/reply_unmask"
+            android:layout_marginStart="@dimen/dp_12"
+            android:layout_marginEnd="@dimen/layout_lvl2"
+            app:typographyType="body_3"
+            app:layout_constraintTop_toTopOf="@id/talk_reply_unmask_warning_icon"
+            app:layout_constraintStart_toEndOf="@id/talk_reply_unmask_warning_icon"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/talkReplyUnmaskYesOption"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/reply_unmask_no"
+            android:layout_marginTop="@dimen/dp_12"
+            android:layout_marginEnd="@dimen/layout_lvl2"
+            android:textColor="@color/Unify_N700_68"
+            app:typographyWeight="bold"
+            app:typographyType="body_3"
+            app:layout_constraintTop_toBottomOf="@id/talk_reply_unmask_body"
+            app:layout_constraintEnd_toStartOf="@id/talkReplyUnmaskNoOption"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/talkReplyUnmaskNoOption"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/layout_lvl2"
+            android:text="@string/reply_unmask_yes"
+            android:textColor="@color/Unify_G500"
+            app:typographyWeight="bold"
+            app:typographyType="body_3"
+            app:layout_constraintTop_toTopOf="@id/talkReplyUnmaskYesOption"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</com.tokopedia.unifycomponents.CardUnify>

@@ -1,5 +1,6 @@
 package com.tokopedia.thankyou_native.presentation.activity
 
+import android.net.Uri
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -8,17 +9,43 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.header.HeaderUnify
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.nps.helper.InAppReviewHelper
+import com.tokopedia.promotionstarget.domain.presenter.GratificationPresenter
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform
+import com.tokopedia.searchbar.data.HintData
+import com.tokopedia.searchbar.navigation_component.NavToolbar
+import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
+import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.thankyou_native.R
+import com.tokopedia.thankyou_native.TkpdIdlingResource
+import com.tokopedia.thankyou_native.TkpdIdlingResourceProvider
 import com.tokopedia.thankyou_native.analytics.ThankYouPageAnalytics
 import com.tokopedia.thankyou_native.data.mapper.*
 import com.tokopedia.thankyou_native.di.component.DaggerThankYouPageComponent
 import com.tokopedia.thankyou_native.di.component.ThankYouPageComponent
 import com.tokopedia.thankyou_native.domain.model.ThanksPageData
+import com.tokopedia.thankyou_native.presentation.DialogController
 import com.tokopedia.thankyou_native.presentation.fragment.*
 import com.tokopedia.thankyou_native.presentation.helper.ThankYouPageDataLoadCallback
 import kotlinx.android.synthetic.main.thank_activity_thank_you.*
+import java.lang.ref.WeakReference
 import javax.inject.Inject
+
+var idlingResource: TkpdIdlingResource? = null
+
+
+const val SCREEN_NAME = "Finish Transaction"
+const val ARG_PAYMENT_ID = "payment_id"
+const val ARG_MERCHANT = "merchant"
+
+private const val GLOBAL_NAV_HINT = "Cari lagi barang impianmu"
+
+private const val KEY_CONFIG_NEW_NAVIGATION = "app_flag_thankyou_new_navigation"
 
 class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComponent>,
         ThankYouPageDataLoadCallback {
@@ -30,6 +57,10 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
 
     lateinit var thanksPageData: ThanksPageData
 
+    private val dialogController: DialogController by lazy {
+        DialogController(GratificationPresenter(this))
+    }
+
     fun getHeader(): HeaderUnify = thank_header
 
     override fun getScreenName(): String {
@@ -40,11 +71,12 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
         super.onCreate(savedInstanceState)
         updateTitle("")
         component.inject(this)
+        sendOpenScreenEvent(intent.data)
+        idlingResource = TkpdIdlingResourceProvider.provideIdlingResource("Purchase")
+        idlingResource?.increment()
     }
 
     override fun getLayoutRes() = R.layout.thank_activity_thank_you
-
-    override fun getToolbarResourceID() = R.id.thank_header
 
     override fun getParentViewResourceID(): Int = R.id.thank_parent_view
 
@@ -57,25 +89,58 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
                 bundle.putAll(intent.extras)
             }
         }
-        thank_header.isShowBackButton = false
+        showToolbarBeforeLoading()
         return LoaderFragment.getLoaderFragmentInstance(bundle)
+    }
+
+    override fun sendScreenAnalytics() {
+        //Empty to remove double open screen events
+    }
+
+    private fun sendOpenScreenEvent(data: Uri?) {
+        data?.apply {
+            thankYouPageAnalytics.get().sendScreenAuthenticatedEvent(
+                    getQueryParameter(ARG_PAYMENT_ID),
+                    getQueryParameter(ARG_MERCHANT),
+                    SCREEN_NAME)
+        }
     }
 
     override fun onThankYouPageDataLoaded(thanksPageData: ThanksPageData) {
         this.thanksPageData = thanksPageData
-        val fragment = getGetFragmentByPaymentMode(thanksPageData)
-        fragment?.let {
+        val fragmentByPaymentMode = getGetFragmentByPaymentMode(thanksPageData)
+        fragmentByPaymentMode?.let {
+            showToolbarAfterLoading(fragmentByPaymentMode.title)
             supportFragmentManager.beginTransaction()
-                    .replace(parentViewResourceID, fragment, tagFragment)
+                    .replace(parentViewResourceID, fragmentByPaymentMode.fragment, tagFragment)
                     .commit()
+            decideDialogs(it.fragment, thanksPageData)
         } ?: run { gotoHomePage() }
-        showAppFeedbackBottomSheet(thanksPageData)
         postEventOnThankPageDataLoaded(thanksPageData)
+        idlingResource?.decrement()
     }
 
-    private fun showAppFeedbackBottomSheet(thanksPageData: ThanksPageData){
+    private fun decideDialogs(selectedFragment: Fragment?, thanksPageData: ThanksPageData) {
+        if (selectedFragment is InstantPaymentFragment && !isGratifDisabled()) {
+            dialogController.showGratifDialog(WeakReference(this), thanksPageData.paymentID,
+                    object : GratificationPresenter.AbstractGratifPopupCallback() {
+                override fun onIgnored(reason: Int) {
+                    showAppFeedbackBottomSheet(thanksPageData)
+                }
+
+            }, selectedFragment::class.java.name)
+        } else {
+            showAppFeedbackBottomSheet(thanksPageData)
+        }
+    }
+
+    fun cancelGratifDialog() {
+        dialogController.cancelJob()
+    }
+
+    private fun showAppFeedbackBottomSheet(thanksPageData: ThanksPageData) {
         val paymentStatus = PaymentStatusMapper.getPaymentStatusByInt(thanksPageData.paymentStatus)
-        if(paymentStatus == PaymentVerified || paymentStatus == PaymentPreAuth) {
+        if (paymentStatus == PaymentVerified || paymentStatus == PaymentPreAuth) {
             InAppReviewHelper.launchInAppReview(this, null)
         }
     }
@@ -86,6 +151,7 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
 
     override fun onInvalidThankYouPage() {
         gotoHomePage()
+        idlingResource?.decrement()
         finish()
     }
 
@@ -97,30 +163,29 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
         return thankYouPageComponent
     }
 
-    private fun getGetFragmentByPaymentMode(thanksPageData: ThanksPageData): Fragment? {
-        thank_header.isShowBackButton = true
+    private fun getGetFragmentByPaymentMode(thanksPageData: ThanksPageData): FragmentByPaymentMode? {
         val bundle = Bundle()
         if (intent.extras != null) {
             bundle.putAll(intent.extras)
         }
         return when (PaymentPageMapper.getPaymentPageType(thanksPageData.pageType)) {
             is ProcessingPaymentPage -> {
-                updateHeaderTitle(ProcessingPaymentFragment.SCREEN_NAME)
-                ProcessingPaymentFragment.getFragmentInstance(bundle, thanksPageData)
+                FragmentByPaymentMode(ProcessingPaymentFragment.getFragmentInstance(bundle, thanksPageData),
+                        ProcessingPaymentFragment.SCREEN_NAME)
             }
             is InstantPaymentPage -> {
-                updateHeaderTitle(InstantPaymentFragment.SCREEN_NAME)
-                InstantPaymentFragment.getFragmentInstance(bundle, thanksPageData)
+                FragmentByPaymentMode(InstantPaymentFragment.getFragmentInstance(bundle, thanksPageData),
+                        InstantPaymentFragment.SCREEN_NAME)
             }
             is WaitingPaymentPage -> {
                 return when (PaymentStatusMapper.getPaymentStatusByInt(thanksPageData.paymentStatus)) {
                     is PaymentWaitingCOD -> {
-                        updateHeaderTitle(CashOnDeliveryFragment.SCREEN_NAME)
-                        CashOnDeliveryFragment.getFragmentInstance(bundle, thanksPageData)
+                        FragmentByPaymentMode(CashOnDeliveryFragment.getFragmentInstance(bundle, thanksPageData),
+                                CashOnDeliveryFragment.SCREEN_NAME)
                     }
                     is PaymentWaiting -> {
-                        updateHeaderTitle(DeferredPaymentFragment.SCREEN_NAME)
-                        DeferredPaymentFragment.getFragmentInstance(bundle, thanksPageData)
+                        FragmentByPaymentMode(DeferredPaymentFragment.getFragmentInstance(bundle, thanksPageData),
+                                DeferredPaymentFragment.SCREEN_NAME)
                     }
                     else -> null
                 }
@@ -128,6 +193,66 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
             else -> null
         }
 
+    }
+
+    private fun showToolbarBeforeLoading() {
+        thank_header.isShowBackButton = false
+        thank_header.visible()
+        globalNabToolbar.gone()
+    }
+
+    private fun showToolbarAfterLoading(title: String) {
+        if (isGlobalNavEnable()) {
+            thank_header.gone()
+            globalNabToolbar.visible()
+            initializeGlobalNav(title)
+        } else {
+            globalNabToolbar.gone()
+            thank_header.visible()
+            setupOldToolbar(title)
+        }
+    }
+
+    private fun setupOldToolbar(title: String){
+        thank_header.isShowBackButton = true
+        toolbar = thank_header
+        setSupportActionBar(toolbar)
+        supportActionBar?.let {
+            supportActionBar?.setDisplayHomeAsUpEnabled(true)
+            supportActionBar?.setDisplayShowTitleEnabled(true)
+        }
+        updateHeaderTitle(title)
+    }
+
+    private fun isGlobalNavEnable(): Boolean {
+        val isNewNavigationEnabled = FirebaseRemoteConfigImpl(this).getBoolean(KEY_CONFIG_NEW_NAVIGATION,
+                false)
+        if(isNewNavigationEnabled) {
+            getAbTestPlatform()?.let {
+                return (it.getString(AbTestPlatform.NAVIGATION_EXP_TOP_NAV, AbTestPlatform.NAVIGATION_VARIANT_OLD)
+                        == AbTestPlatform.NAVIGATION_VARIANT_REVAMP)
+            }
+        }
+        return false
+    }
+
+    private fun getAbTestPlatform(): AbTestPlatform? {
+        return try {
+            RemoteConfigInstance.getInstance().abTestPlatform
+        } catch (e: IllegalStateException) {
+            null
+        }
+    }
+
+
+    private fun initializeGlobalNav(title: String) {
+        globalNabToolbar?.apply {
+            setBackButtonType(NavToolbar.Companion.BackType.BACK_TYPE_BACK)
+            setIcon(IconBuilder().addIcon(IconList.ID_NAV_GLOBAL) {})
+            setupSearchbar(listOf(HintData(GLOBAL_NAV_HINT)))
+            setToolbarPageName(title)
+            show()
+        }
     }
 
     private fun updateHeaderTitle(screenName: String) {
@@ -139,8 +264,9 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
      * status if payment type is deferred/Processing
      * */
     override fun onBackPressed() {
-        if(::thanksPageData.isInitialized)
-            thankYouPageAnalytics.get().sendBackPressedEvent(thanksPageData.paymentID.toString())
+        if (::thanksPageData.isInitialized)
+            thankYouPageAnalytics.get().sendBackPressedEvent(thanksPageData.profileCode,
+                    thanksPageData.paymentID.toString())
         if (!isOnBackPressOverride()) {
             gotoHomePage()
             finish()
@@ -165,9 +291,18 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
     }
 
     companion object {
-        const val SCREEN_NAME = "Finish Transaction"
-        const val ARG_PAYMENT_ID = "payment_id"
-        const val ARG_MERCHANT = "merchant"
+        const val REMOTE_GRATIF_DISABLED = "android_disable_gratif_thankyou"
     }
+
+    private fun isGratifDisabled(): Boolean {
+        return try {
+            val remoteConfig = FirebaseRemoteConfigImpl(this)
+            return remoteConfig.getBoolean(REMOTE_GRATIF_DISABLED, false)
+        } catch (e: Exception) {
+            false
+        }
+    }
+
+    data class FragmentByPaymentMode(val fragment: Fragment, val title : String)
 }
 

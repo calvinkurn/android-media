@@ -8,7 +8,7 @@ dependencies {
 project.ext {
     artifactId = 'analytic_constant'
     groupId = 'com.tokopedia.analytic_constant'
-    versionName = "1.0.3"
+    versionName = "1.0.6"
     artifactName = "analytic_constant-release"
 }
 

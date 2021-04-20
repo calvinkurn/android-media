@@ -44,6 +44,7 @@ class CreateShopShowcaseUseCase(
                 "  addShopShowcase(input: \$input) {\n" +
                 "  \tsuccess\n" +
                 "    message\n" +
+                "    createdId\n" +
                 "  }\n" +
                 "}"
     }

@@ -22,10 +22,11 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
-import com.tokopedia.imagepicker.picker.gallery.type.GalleryType;
-import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder;
-import com.tokopedia.imagepicker.picker.main.builder.ImageRatioTypeDef;
-import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
+import com.tokopedia.imagepicker.common.ImagePickerBuilder;
+import com.tokopedia.imagepicker.common.ImagePickerResultExtractor;
+import com.tokopedia.imagepicker.common.ImagePickerRouterKt;
 import com.tokopedia.pms.R;
 import com.tokopedia.pms.common.Constant;
 import com.tokopedia.pms.payment.view.model.PaymentListModel;
@@ -33,14 +34,9 @@ import com.tokopedia.pms.proof.di.DaggerUploadProofPaymentComponent;
 import com.tokopedia.pms.proof.di.UploadProofPaymentModule;
 import com.tokopedia.pms.proof.model.PaymentProofResponse;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
-
-import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder.DEFAULT_MIN_RESOLUTION;
-import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef.TYPE_CAMERA;
-import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef.TYPE_GALLERY;
-import static com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.PICKER_RESULT_PATHS;
 
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.unifycomponents.Toaster;
@@ -101,7 +97,7 @@ public class UploadProofPaymentFragment extends BaseDaggerFragment implements Up
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_upload_proof_payment, container, false);
         progressDialog = new ProgressDialog(getActivity());
-        progressDialog.setMessage(getString(R.string.title_loading));
+        progressDialog.setMessage(getString(com.tokopedia.abstraction.R.string.title_loading));
         containerHelpUploadProof = view.findViewById(R.id.container_helper);
         containerImageUpload = view.findViewById(R.id.container_image_helper);
         buttonActionCloseImage = view.findViewById(R.id.iv_action_image);
@@ -153,7 +149,7 @@ public class UploadProofPaymentFragment extends BaseDaggerFragment implements Up
                 buttonChooseAnotherImage.setVisibility(View.VISIBLE);
                 titleUploadImage.setText(R.string.payment_label_succes_upload_proof);
             } else {
-                buttonActionCloseImage.setImageDrawable(MethodChecker.getDrawable(getActivity(), R.drawable.ic_close_default));
+                buttonActionCloseImage.setImageDrawable(MethodChecker.getDrawable(getActivity(), com.tokopedia.design.R.drawable.ic_close_default));
                 buttonSave.setText(R.string.payment_label_save_image);
                 buttonChooseAnotherImage.setVisibility(View.GONE);
                 titleUploadImage.setText(R.string.payment_label_confirmation_upload_image);
@@ -177,12 +173,9 @@ public class UploadProofPaymentFragment extends BaseDaggerFragment implements Up
     }
 
     private void openImagePicker() {
-        ImagePickerBuilder builder = new ImagePickerBuilder(getString(R.string.choose_image),
-                new int[]{TYPE_GALLERY, TYPE_CAMERA}, GalleryType.IMAGE_ONLY, MAX_FILE_SIZE_IN_KB,
-                DEFAULT_MIN_RESOLUTION, ImageRatioTypeDef.ORIGINAL, true,
-                null
-                , null);
-        Intent intent = ImagePickerActivity.getIntent(getActivity(), builder);
+        ImagePickerBuilder builder = ImagePickerBuilder.getOriginalImageBuilder(requireContext());
+        Intent intent = RouteManager.getIntent(requireContext(), ApplinkConstInternalGlobal.IMAGE_PICKER);
+        ImagePickerRouterKt.putImagePickerBuilder(intent, builder);
         startActivityForResult(intent, REQUEST_CODE_IMAGE_PROOF);
     }
 
@@ -190,8 +183,8 @@ public class UploadProofPaymentFragment extends BaseDaggerFragment implements Up
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CODE_IMAGE_PROOF && resultCode == Activity.RESULT_OK && data != null) {
-            ArrayList<String> imageUrlOrPathList = data.getStringArrayListExtra(PICKER_RESULT_PATHS);
-            if (imageUrlOrPathList != null && imageUrlOrPathList.size() > 0) {
+            List<String> imageUrlOrPathList = ImagePickerResultExtractor.extract(data).getImageUrlOrPathList();
+            if (imageUrlOrPathList.size() > 0) {
                 imageUrl = imageUrlOrPathList.get(0);
             }
             isUploaded = false;

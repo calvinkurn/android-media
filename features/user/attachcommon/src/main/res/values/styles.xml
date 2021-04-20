@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.AttachCommon" parent="Theme.AppCompat.DayNight.NoActionBar">
+        <item name="titleTextAppearance">@style/TitleTextAppearance.AttachCommon</item>
+        <item name="subtitleTextAppearance">@style/SubTitleTextAppearance.AttachCommon</item>
+    </style>
+
+    <style name="TitleTextAppearance.AttachCommon">
+        <item name="android:textColor">@color/Unify_N700_96</item>
+        <item name="android:fontFamily">sans-serif</item>
+    </style>
+
+    <style name="SubTitleTextAppearance.AttachCommon">
+        <item name="android:textColor">@color/Unify_N700_68</item>
+        <item name="android:fontFamily">sans-serif</item>
+    </style>
+
+    <style name="TitleTextAppearance" parent="@style/TextAppearance.Widget.AppCompat.Toolbar.Title">
+        <item name="android:textSize">@dimen/unify_font_18</item>
+    </style>
+
+    <style name="SubTitleTextAppearance" parent="@style/TextAppearance.Widget.AppCompat.Toolbar.Subtitle">
+        <item name="android:textSize">@dimen/unify_font_12</item>
+    </style>
+
+    <style name="Theme.ChatSetting" parent="Theme.AppCompat.DayNight.NoActionBar">
+        <item name="titleTextAppearance">@style/TitleTextAppearance.ChatSetting</item>
+    </style>
+
+    <style name="TitleTextAppearance.ChatSetting">
+        <item name="android:textColor">@color/Unify_N700_96</item>
+        <item name="android:fontFamily">sans-serif</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+</resources>

@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@drawable/header_bottom_sheet_rounded_white"
-    android:orientation="vertical">
+    android:layout_height="wrap_content"
+    tools:layout_gravity="bottom"
+    tools:background="@drawable/header_bottom_sheet_rounded_white"
+    tools:orientation="vertical">
 
-    <TextView
+    <View
         android:id="@+id/tray_close"
         android:layout_width="@dimen/dp_28"
         android:layout_height="@dimen/dp_4"
@@ -27,10 +29,10 @@
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tvTitle"
+                android:text="@string/gami_pdp_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_16"
-                android:layout_marginLeft="@dimen/dp_16"
                 android:textColor="@color/gf_clr_31353b"
                 app:typographyType="heading_2" />
 
@@ -53,11 +55,6 @@
             android:orientation="vertical"
             android:paddingBottom="@dimen/dp_20" />
 
-        <com.tokopedia.globalerror.GlobalError
-            android:id="@+id/globalError"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal" />
     </ViewFlipper>
-</LinearLayout>
+</merge>
 

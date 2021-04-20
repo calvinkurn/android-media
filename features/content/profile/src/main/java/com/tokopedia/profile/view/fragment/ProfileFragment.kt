@@ -96,10 +96,6 @@ import com.tokopedia.profile.view.viewmodel.*
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
-import com.tokopedia.showcase.ShowCaseBuilder
-import com.tokopedia.showcase.ShowCaseContentPosition
-import com.tokopedia.showcase.ShowCaseDialog
-import com.tokopedia.showcase.ShowCaseObject
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -271,7 +267,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
             }
         })
         recyclerView.addItemDecoration(object : RecyclerView.ItemDecoration() {
-            val spacing = requireContext().resources.getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_16)
+            val spacing = requireContext().resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_16)
             val halfSpacing = spacing / 2
             val spanCount = 2
             override fun getItemOffsets(outRect: Rect, view: View,
@@ -649,7 +645,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     override fun onLikeKolClicked(rowNumber: Int, id: Int, hasMultipleContent: Boolean,
                                   activityType: String) {
         if (userSession.isLoggedIn) {
-            presenter.likeKol(id, rowNumber, this)
+            presenter.likeKol(id, rowNumber, this, isLiked = true)
             if (isOwner.not()) {
                 profileAnalytics.eventClickLike(hasMultipleContent, id.toString(), activityType)
             }
@@ -661,7 +657,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     override fun onUnlikeKolClicked(rowNumber: Int, id: Int, hasMultipleContent: Boolean,
                                     activityType: String) {
         if (userSession.isLoggedIn) {
-            presenter.unlikeKol(id, rowNumber, this)
+            presenter.likeKol(id, rowNumber, this, isLiked = false)
             if (isOwner.not()) {
                 profileAnalytics.eventClickUnlike(hasMultipleContent, id.toString(), activityType)
             }
@@ -1334,15 +1330,14 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
     private fun followUnfollowUser(userId: Int, follow: Boolean, source: String) {
         if (userSession.isLoggedIn) {
+            presenter.followKol(userId, follow)
             if (follow) {
-                presenter.followKol(userId)
                 if (source == FOLLOW_HEADER) {
                     profileAnalytics.eventClickFollow(isOwner, userId.toString())
                 } else if (source == FOLLOW_FOOTER) {
                     profileAnalytics.eventClickFollowFooter(isOwner, userId.toString())
                 }
             } else {
-                presenter.unfollowKol(userId)
                 if (source == FOLLOW_HEADER) {
                     profileAnalytics.eventClickUnfollow(isOwner, userId.toString())
                 } else if (source == FOLLOW_FOOTER) {
@@ -1386,7 +1381,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
             override fun updateDrawState(ds: TextPaint) {
                 super.updateDrawState(ds)
                 ds.setUnderlineText(false)
-                ds.color = MethodChecker.getColor(requireContext(), com.tokopedia.design.R.color.white)
+                ds.color = MethodChecker.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_N0)
             }
         }
 
@@ -1398,7 +1393,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
             override fun updateDrawState(ds: TextPaint) {
                 super.updateDrawState(ds)
                 ds.setUnderlineText(false)
-                ds.color = MethodChecker.getColor(requireContext(), com.tokopedia.design.R.color.white)
+                ds.color = MethodChecker.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_N0)
             }
         }
         if (spannableString.indexOf(followers) != -1) {
@@ -1532,33 +1527,6 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         context?.let {
             Toast.makeText(it, R.string.profile_after_post, Toast.LENGTH_LONG).show()
         }
-    }
-
-    private fun showShowCaseDialog(view: View?) {
-        val showCaseTag = this::class.java.simpleName
-        val showCaseDialog = createShowCaseDialog()
-        val showcases = ArrayList<ShowCaseObject>()
-        showcases.add(ShowCaseObject(
-                view,
-                getString(R.string.profile_showcase_title),
-                getString(R.string.profile_showcase_description),
-                ShowCaseContentPosition.UNDEFINED))
-        showCaseDialog.show(this.activity, showCaseTag, showcases)
-    }
-
-    private fun createShowCaseDialog(): ShowCaseDialog {
-        return ShowCaseBuilder()
-                .backgroundContentColorRes(R.color.profile_showcase_black)
-                .shadowColorRes(R.color.profile_showcase_shadow)
-                .titleTextColorRes(com.tokopedia.design.R.color.white)
-                .titleTextSizeRes(com.tokopedia.design.R.dimen.sp_16)
-                .textColorRes(com.tokopedia.design.R.color.white)
-                .textSizeRes(com.tokopedia.design.R.dimen.sp_14)
-                .nextStringRes(com.tokopedia.affiliatecommon.R.string.af_title_ok)
-                .finishStringRes(com.tokopedia.affiliatecommon.R.string.af_title_ok)
-                .clickable(true)
-                .useArrow(true)
-                .build()
     }
 
     private fun checkShouldChangeUsername(link: String, doIfNotChange: () -> Unit) {

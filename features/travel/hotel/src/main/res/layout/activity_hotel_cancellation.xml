@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/Neutral_N0">
+    android:background="@color/Unify_N0">
     <com.tokopedia.header.HeaderUnify
         android:id="@+id/hotel_cancellation_header"
         android:layout_width="match_parent"

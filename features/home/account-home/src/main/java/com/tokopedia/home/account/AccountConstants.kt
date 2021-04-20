@@ -15,8 +15,11 @@ object AccountConstants {
     const val SALDO_QUERY = "saldo_query"
     const val REWARD_SHORTCUT_QUERY= "reward_shortcut_query"
     const val SHOP_LOCATION_QUERY = "query_shop_location"
-    const val ACCOUNT_TAB = "ACCOUNT_TAB"
-    const val ACCOUNT_TAB_SELLER = "ACCOUNT_TAB_SELLER"
+    const val TITLE_UOH_MENUNGGU_PEMBAYARAN = "Menunggu Pembayaran"
+    const val TITLE_UOH_DALAM_PROSES = "Dalam Proses"
+    const val TITLE_UOH_SEMUA_TRANSAKSI = "Semua Transaksi"
+    const val TITLE_UOH_ETICKET = "E-tiket & E-voucher Aktif"
+    const val TITLE_UOH_TRANSAKSI_BERLANGSUNG = "Transaksi Berlangsung"
 
     object Navigation {
         const val SEE_ALL = "lihat_semua"
@@ -28,6 +31,7 @@ object AccountConstants {
         const val CLICK_HOME_PAGE = "clickHomePage"
         const val CLICK_SETTING = "clickSetting"
         const val CLICK_ACCOUNT = "clickAccount"
+        const val CLICK_OTP = "clickOtp"
         const val SHOP_MANAGE = "clickManageShop"
         const val CATEGORY_SHOP_MANAGE = "Manage Shop"
         const val SHOP_SHIPPING = "Shop Shipping"
@@ -97,6 +101,10 @@ object AccountConstants {
         const val EVENT_CLICK_SAMPAI = "clickRegister"
         const val EVENT_CATEGORY_SAMPAI = "register tokopedia corner"
         const val EVENT_ACTION_SAMPAI = "click button daftar"
+        const val EVENT_ACTION_MENUNGGU_PEMBAYARAN = "click on button menunggu pembayaran"
+        const val EVENT_ACTION_SEMUA_TRANSAKSI = "click on button semua transaksi"
+        const val EVENT_ACTION_DALAM_PROSES = "click on button dalam proses"
+        const val EVENT_ACTION_ETICKET_EVOUCHER = "click on e-tiket & e-voucher aktif"
         const val OVO_PAY_LATER_CATEGORY = "fin - android main screen"
         const val OVO_PAY_LATER_CLICK = "ovo - pay later click"
         const val OVO_PAY_LATER_LABEL = "success - %s"
@@ -113,6 +121,7 @@ object AccountConstants {
         const val EVENT_CATEGORY_ACCOUNT_PAGE_BUYER = "account page - buyer"
         const val EVENT_ACTION_IMPRESSION_PRODUCT_RECOMMENDATION = "impression - product recommendation"
         const val CURRENCY_CODE = "currencyCode"
+        const val CURRENT_SITE = "currentSite"
         const val IDR = "IDR"
         const val IMPRESSIONS = "impressions"
         const val DATA_NAME = "name"
@@ -169,6 +178,14 @@ object AccountConstants {
         const val FIELD_SHOP_TYPE = "shopType"
         const val SHOP_TYPE_RM = "RM"
         const val SHOP_TYPE_PM = "PM"
+        const val EVENT_NAME_CLICK_NOTIF_CENTER = "clickNotifCenter"
+        const val CATEGORY_NOTIF_CENTER = "notif center"
+        const val EVENT_ACTION_TS_USR_MENU = "click on notif setting from setting page"
+        const val USER_BELI = "user/beli"
+        const val TOKOPEDIA_MARKETPLACE = "tokopediamarketplace"
+        const val USER_ID = "userId"
+        const val BUSINESS_UNIT = "businessUnit"
+        const val USER_PLATFORM = "user platform"
     }
 
     object MOENGAGE {
@@ -178,20 +195,6 @@ object AccountConstants {
         const val TOPADS_AMT = "topads_amt"
         const val HAS_PURCHASED_MARKETPLACE = "has_purchased_marketplace"
         const val LAST_TRANSACT_DATE = "last_transaction_date"
-    }
-
-    interface VccStatus {
-        companion object {
-            const val ELIGIBLE = "eligible"
-            const val NOT_ELIGIBLE = "not_eligible"
-            const val HOLD = "hold"
-            const val ACTIVE = "active"
-            const val BLOCKED = "blocked"
-            const val KYC_PENDING = "kyc pending"
-            const val NOT_FOUND = "not_found"
-            const val REJECTED = "rejected"
-            const val DEACTIVATED = "deactivated"
-        }
     }
 
     interface ErrorCodes {
@@ -205,10 +208,6 @@ object AccountConstants {
 
     object Query {
         const val NEW_QUERY_BUYER_ACCOUNT_HOME = "new_query_buyer_account_home"
-        const val QUERY_SELLER_ACCOUNT_HOME = "query_seller_account_home"
-        const val QUERY_TOP_ADS = "gql_get_deposit"
-        const val NEW_QUERY_SALDO_BALANCE = "new_query_saldo_balance"
-        const val QUERY_SHOP_LOCATION = "query_shop_location"
         const val QUERY_USER_REWARDSHORCUT = "query_user_rewardshortcut"
     }
 }

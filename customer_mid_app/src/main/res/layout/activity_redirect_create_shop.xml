@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/tkpd_main_green"
+    android:orientation="vertical"
+    tools:context="com.tokopedia.tkpd.redirect.RedirectCreateShopActivity">
+
+    <TextView
+        android:id="@+id/textview1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/margin_small"
+        android:fontFamily="sans-serif-light"
+        android:gravity="center_horizontal"
+        android:text="@string/introducing"
+        android:textColor="@color/white"
+        android:textSize="@dimen/fontm"
+        android:textStyle="normal" />
+
+    <ImageView
+        android:id="@+id/imageview1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/textview1"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="28dp"
+        app:srcCompat="@drawable/ic_icon_title_seller_app" />
+
+    <TextView
+        android:id="@+id/button_redirect"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="40dp"
+        android:layout_marginRight="40dp"
+        android:layout_marginBottom="40dp"
+        android:background="@drawable/btn_share_transaparent"
+        android:fontFamily="sans-serif"
+        android:gravity="center_horizontal"
+        android:padding="@dimen/margin_small"
+        android:text="@string/download_topseller_app"
+        android:textColor="@color/medium_green"
+        android:textSize="@dimen/fonts"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/textview2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/button_redirect"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginBottom="40dp"
+        android:fontFamily="sans-serif-light"
+        android:gravity="center_horizontal"
+        android:text="@string/textview_redirect_seller_app"
+        android:textColor="@color/white"
+        android:textSize="@dimen/fontm"
+        android:textStyle="normal" />
+
+    <com.tkpd.remoteresourcerequest.view.DeferredImageView
+        android:id="@+id/imageview2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/textview2"
+        android:layout_below="@id/imageview1"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="23dp"
+        android:padding="@dimen/padding_med"
+        app:remoteFileName="ic_icon_redirect_seller_app.png" />
+</RelativeLayout>

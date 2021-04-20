@@ -12,13 +12,12 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.viewpager2.widget.ViewPager2
+import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
@@ -34,14 +33,11 @@ import com.tokopedia.common.topupbills.widget.TopupBillsCheckoutWidget
 import com.tokopedia.common.topupbills.widget.TopupBillsInputDropdownWidget
 import com.tokopedia.common.topupbills.widget.TopupBillsInputDropdownWidget.Companion.SHOW_KEYBOARD_DELAY
 import com.tokopedia.common.topupbills.widget.TopupBillsInputFieldWidget
-import com.tokopedia.common.topupbills.widget.TopupBillsWidgetInterface
-import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
-import com.tokopedia.common_digital.common.RechargeAnalytics
+import com.tokopedia.common_digital.atc.DigitalAddToCartViewModel
 import com.tokopedia.common_digital.product.presentation.model.ClientNumberType
-import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.onTabSelected
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.promocheckout.common.data.REQUEST_CODE_PROMO_DETAIL
 import com.tokopedia.promocheckout.common.data.REQUEST_CODE_PROMO_LIST
@@ -53,6 +49,7 @@ import com.tokopedia.rechargegeneral.model.RechargeGeneralDynamicInput
 import com.tokopedia.rechargegeneral.model.RechargeGeneralOperatorCluster
 import com.tokopedia.rechargegeneral.model.RechargeGeneralProductInput
 import com.tokopedia.rechargegeneral.model.mapper.RechargeGeneralMapper
+import com.tokopedia.rechargegeneral.presentation.activity.RechargeGeneralActivity.Companion.RECHARGE_PRODUCT_EXTRA
 import com.tokopedia.rechargegeneral.presentation.adapter.RechargeGeneralAdapter
 import com.tokopedia.rechargegeneral.presentation.adapter.RechargeGeneralAdapterFactory
 import com.tokopedia.rechargegeneral.presentation.adapter.viewholder.OnInputListener
@@ -61,18 +58,17 @@ import com.tokopedia.rechargegeneral.presentation.viewmodel.RechargeGeneralViewM
 import com.tokopedia.rechargegeneral.presentation.viewmodel.RechargeGeneralViewModel.Companion.NULL_PRODUCT_ERROR
 import com.tokopedia.rechargegeneral.presentation.viewmodel.SharedRechargeGeneralViewModel
 import com.tokopedia.rechargegeneral.util.RechargeGeneralAnalytics
+import com.tokopedia.rechargegeneral.util.RechargeGeneralGqlQuery
 import com.tokopedia.rechargegeneral.widget.RechargeGeneralCheckoutBottomSheet
 import com.tokopedia.rechargegeneral.widget.RechargeGeneralProductSelectBottomSheet
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.*
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_recharge_general.*
 import kotlinx.android.synthetic.main.view_recharge_general_product_input_info_bottom_sheet.view.*
-import java.util.*
 import javax.inject.Inject
-import kotlin.collections.ArrayList
-import kotlin.collections.HashMap
 
 class RechargeGeneralFragment: BaseTopupBillsFragment(),
         OnInputListener,
@@ -81,12 +77,14 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+    private val viewModelFragmentProvider by lazy { ViewModelProvider(requireActivity(), viewModelFactory) }
+
     lateinit var viewModel: RechargeGeneralViewModel
     lateinit var sharedViewModel: SharedRechargeGeneralViewModel
-    @Inject
-    lateinit var rechargeAnalytics: RechargeAnalytics
+
     @Inject
     lateinit var rechargeGeneralAnalytics: RechargeGeneralAnalytics
+
     @Inject
     lateinit var mapper: RechargeGeneralMapper
 
@@ -98,29 +96,21 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
     private var inputData: HashMap<String, String> = hashMapOf()
     private var inputDataKeys = mutableListOf<String>()
 
+    var rechargeProductFromSlice: String = ""
+
     private var operatorId: Int = 0
     set(value) {
         field = value
         // Get operator name for tracking
         operatorName = getOperatorData(value)?.attributes?.name ?: ""
     }
-    private var selectedProduct: RechargeGeneralProductSelectData? = null
+    override var productId: Int = 0
         set(value) {
             field = value
-            value?.run {
-                productId = id.toIntOrNull() ?: 0
-                productName = title
-                this@RechargeGeneralFragment.price = price.toIntOrNull() ?: 0
-
-                // Show product info ticker
-                if (description.isNotEmpty()) {
-                    ticker_recharge_general_product_info.show()
-                    ticker_recharge_general_product_info.setHtmlDescription(description)
-                } else {
-                    ticker_recharge_general_product_info.hide()
-                }
-            }
+            updateProductData()
         }
+    private var needProductDataUpdate = false
+    private var isPromo: Boolean = false
     private var operatorCluster: String = ""
     private var hasInputData = false
     private var hasFavoriteNumbers = false
@@ -155,9 +145,8 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
         super.onCreate(savedInstanceState)
 
         activity?.let {
-            val viewModelProvider = ViewModelProviders.of(it, viewModelFactory)
-            viewModel = viewModelProvider.get(RechargeGeneralViewModel::class.java)
-            sharedViewModel = viewModelProvider.get(SharedRechargeGeneralViewModel::class.java)
+            viewModel = viewModelFragmentProvider.get(RechargeGeneralViewModel::class.java)
+            sharedViewModel = viewModelFragmentProvider.get(SharedRechargeGeneralViewModel::class.java)
 
             saveInstanceManager = SaveInstanceCacheManager(it, savedInstanceState)
             val savedEnquiryData: TopupBillsEnquiry? = saveInstanceManager!!.get(EXTRA_PARAM_ENQUIRY_DATA, TopupBillsEnquiry::class.java)
@@ -174,8 +163,9 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
             categoryId = it.getInt(EXTRA_PARAM_CATEGORY_ID, 0)
             menuId = it.getInt(EXTRA_PARAM_MENU_ID, 0)
             operatorId = it.getInt(EXTRA_PARAM_OPERATOR_ID, 0)
-            selectedProduct = it.getParcelable(EXTRA_PARAM_PRODUCT)
+            productId = it.getInt(EXTRA_PARAM_PRODUCT_ID, 0)
             hasInputData = operatorId > 0
+            rechargeProductFromSlice = it.getString(RECHARGE_PRODUCT_EXTRA, "")
         }
     }
 
@@ -187,7 +177,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        viewModel.operatorCluster.observe(this, Observer {
+        viewModel.operatorCluster.observe(viewLifecycleOwner, Observer {
             when(it) {
                 is Success -> {
                     loading_view.hide()
@@ -203,13 +193,14 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
             }
         })
 
-        viewModel.productList.observe(this, Observer {
+        viewModel.productList.observe(viewLifecycleOwner, Observer {
             when(it) {
                 is Success -> {
                     setupInputAndProduct(it.data)
                     if (hasFavoriteNumbers) {
                         updateFavoriteNumberInputField()
                     }
+                    if (needProductDataUpdate) updateProductData()
                     hideLoading()
                 }
                 is Fail -> {
@@ -226,17 +217,20 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
                     } else {
                         hideLoading()
                     }
-                    NetworkErrorHelper.showRedSnackbar(activity, getString(R.string.selection_null_product_error))
+                    view?.let { v ->
+                        Toaster.build(v, getString(R.string.selection_null_product_error), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
+                                getString(com.tokopedia.resources.common.R.string.general_label_ok)).show()
+                    }
                 }
             }
         })
 
-        sharedViewModel.recommendationItem.observe(this, Observer {
+        sharedViewModel.recommendationItem.observe(viewLifecycleOwner, Observer {
             val operatorClusters = viewModel.operatorCluster.value
             if (operatorClusters is Success) {
                 rechargeGeneralAnalytics.eventClickRecentIcon(it, categoryName, it.position)
                 operatorId = it.operatorId
-                selectedProduct = RechargeGeneralProductSelectData(it.productId.toString(), it.title, it.description)
+                productId = it.productId
                 inputData[PARAM_CLIENT_NUMBER] = it.clientNumber
                 renderInitialData()
                 // Enquire & navigate to checkout
@@ -252,9 +246,15 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
             categoryId = savedInstanceState.getInt(EXTRA_PARAM_CATEGORY_ID, categoryId)
             menuId = savedInstanceState.getInt(EXTRA_PARAM_MENU_ID, menuId)
             operatorId = savedInstanceState.getInt(EXTRA_PARAM_OPERATOR_ID, operatorId)
-            selectedProduct = savedInstanceState.getParcelable(EXTRA_PARAM_PRODUCT)
+            productId = savedInstanceState.getInt(EXTRA_PARAM_PRODUCT_ID)
             inputData = (savedInstanceState.getSerializable(EXTRA_PARAM_INPUT_DATA) as? HashMap<String, String>) ?: inputData
             inputDataKeys = savedInstanceState.getStringArrayList(EXTRA_PARAM_INPUT_DATA_KEYS)?.toMutableList() ?: inputDataKeys
+        }
+
+        if(rechargeProductFromSlice.isNotEmpty()){
+            rechargeGeneralAnalytics.onClickSliceRecharge(userSession.userId, rechargeProductFromSlice)
+            rechargeGeneralAnalytics.onOpenPageFromSlice()
+
         }
 
         rv_digital_product.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
@@ -317,7 +317,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
         outState.putInt(EXTRA_PARAM_CATEGORY_ID, categoryId)
         outState.putInt(EXTRA_PARAM_MENU_ID, menuId)
         outState.putInt(EXTRA_PARAM_OPERATOR_ID, operatorId)
-        outState.putParcelable(EXTRA_PARAM_PRODUCT, selectedProduct)
+        outState.putInt(EXTRA_PARAM_PRODUCT_ID, productId)
         outState.putSerializable(EXTRA_PARAM_INPUT_DATA, inputData)
         if (inputDataKeys.isNotEmpty()) {
             outState.putStringArrayList(EXTRA_PARAM_INPUT_DATA_KEYS, ArrayList(inputDataKeys))
@@ -381,6 +381,10 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
                         val dropdownData = groups.map { TopupBillsInputDropdownData(it.name) }
                         showOperatorSelectDropdown(operator_cluster_select, dropdownData, cluster.text)
                     }
+
+                    override fun onTextChangeInput() {
+                        //do nothing
+                    }
                 }
                 operator_cluster_select.show()
 
@@ -418,6 +422,10 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
                         TopupBillsInputDropdownData(it.attributes.name, it.attributes.imageUrl)
                     }
                     showOperatorSelectDropdown(operator_select, dropdownData)
+                }
+
+                override fun onTextChangeInput() {
+                    //do nothing
                 }
             }
 
@@ -460,21 +468,15 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
                     if (productData.isShowingProduct) {
                         val productSelectData = it
                         productSelectData?.apply {
-                            selectedProduct?.run { rechargeGeneralProductItemData.selectedProductId = id }
+                            rechargeGeneralProductItemData.selectedProductId = productId.toString()
                             dataList.add(rechargeGeneralProductItemData)
                         }
                     } else {
-                        val product = it.dataCollections.getOrNull(0)?.products?.getOrNull(0)
+                        val product = it.dataCollections.firstOrNull()?.products?.firstOrNull()
                         product?.let { catalogProduct ->
                             with(catalogProduct.attributes) {
                                 val slashedPrice = if (promo != null) price else ""
-                                selectedProduct = RechargeGeneralProductSelectData(
-                                        catalogProduct.id,
-                                        desc,
-                                        detailCompact,
-                                        promo?.newPrice ?: price,
-                                        slashedPrice,
-                                        isPromo = promo != null)
+                                productId = catalogProduct.id.toIntOrZero()
                             }
                         }
                     }
@@ -500,7 +502,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
     // Reset product id & input data
     private fun resetInputData() {
         operatorId = 0
-        selectedProduct = null
+        productId = 0
         inputData = hashMapOf()
         // Reset product info ticker
         ticker_recharge_general_product_info.hide()
@@ -559,7 +561,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
 
                     // Show label & store id for enquiry
                     field.setInputText(item.title, false)
-                    selectedProduct = item
+                    productId = item.id.toIntOrZero()
                     rechargeGeneralAnalytics.eventClickProductCard(categoryName, operatorName, item.title.toLowerCase())
                     toggleEnquiryButton()
                 }
@@ -613,7 +615,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
     private fun setupAutoFillData(data: TopupBillsRecommendation) {
         with (data) {
             this@RechargeGeneralFragment.operatorId = operatorId
-            selectedProduct = RechargeGeneralProductSelectData(productId.toString(), title)
+            this@RechargeGeneralFragment.productId = productId
             if (clientNumber.isNotEmpty()) {
                 inputData[PARAM_CLIENT_NUMBER] = clientNumber
             }
@@ -679,32 +681,56 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
         val listProductTab = mutableListOf<TopupBillsTabItem>()
         var recentTransactionFragment: RechargeGeneralRecentTransactionFragment? = null
         var promoListFragment: RechargeGeneralPromoListFragment? = null
+        val showTitle = !(recommendations.isNotEmpty() && promos.isNotEmpty())
         if (recommendations.isNotEmpty()) {
-            recentTransactionFragment = RechargeGeneralRecentTransactionFragment.newInstance(recommendations)
-            listProductTab.add(TopupBillsTabItem(recentTransactionFragment, getString(R.string.recent_transaction_tab_title)))
+            recentTransactionFragment = RechargeGeneralRecentTransactionFragment.newInstance(recommendations, showTitle)
+            listProductTab.add(TopupBillsTabItem(recentTransactionFragment, RECENT_TRANSACTION_LABEL))
         }
         if (promos.isNotEmpty()) {
-            promoListFragment = RechargeGeneralPromoListFragment.newInstance(promos)
-            listProductTab.add(TopupBillsTabItem(promoListFragment, getString(R.string.promo_tab_title)))
+            promoListFragment = RechargeGeneralPromoListFragment.newInstance(promos, showTitle)
+            listProductTab.add(TopupBillsTabItem(promoListFragment, PROMO_LIST_LABEL))
         }
 
         if (listProductTab.isNotEmpty()) {
-            val pagerAdapter = TopupBillsProductTabAdapter(listProductTab, childFragmentManager)
+            val pagerAdapter = TopupBillsProductTabAdapter(this, listProductTab)
             product_view_pager.adapter = pagerAdapter
             product_view_pager.offscreenPageLimit = listProductTab.size
+            tab_layout.customTabMode = TabLayout.MODE_FIXED
+            tab_layout.customTabGravity = TabLayout.GRAVITY_FILL
 
             if (listProductTab.size > 1) {
-                tab_layout.setupWithViewPager(product_view_pager)
-                tab_layout.onTabSelected {
-                    if (it.text == getString(R.string.promo_tab_title)) {
-                        rechargeGeneralAnalytics.eventClickPromoTab(categoryName, operatorName)
-                    }
+                tab_layout.getUnifyTabLayout().removeAllTabs()
+                for (item in listProductTab) {
+                    tab_layout.addNewTab(item.title)
                 }
-                tab_layout.show()
+                tab_layout.getUnifyTabLayout().addOnTabSelectedListener(object: TabLayout.OnTabSelectedListener {
+                    override fun onTabSelected(tab: TabLayout.Tab) {
+                        product_view_pager.setCurrentItem(tab.position, true)
+                        val promoListIndex = listProductTab.indexOfFirst { it.title == getString(R.string.promo_tab_title) }
+                        if (tab.position == promoListIndex) {
+                            rechargeGeneralAnalytics.eventClickPromoTab(categoryName, operatorName)
+                        }
+                    }
 
-                // Hide widget title
-                (product_view_pager.getChildAt(0) as? TopupBillsWidgetInterface)?.toggleTitle(false)
-                (product_view_pager.getChildAt(1) as? TopupBillsWidgetInterface)?.toggleTitle(false)
+                    override fun onTabUnselected(tab: TabLayout.Tab?) {
+
+                    }
+
+                    override fun onTabReselected(tab: TabLayout.Tab?) {
+
+                    }
+
+                })
+                product_view_pager.registerOnPageChangeCallback(object: ViewPager2.OnPageChangeCallback() {
+                    override fun onPageSelected(position: Int) {
+                        tab_layout.getUnifyTabLayout().getTabAt(position)?.let {
+                            it.select()
+                        }
+                    }
+                })
+                tab_layout.show()
+            } else {
+                tab_layout.hide()
             }
             product_view_pager.show()
         } else {
@@ -716,7 +742,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
         with (favNumber) {
             operatorId.toIntOrNull()?.let { oprId -> this@RechargeGeneralFragment.operatorId = oprId }
             if (clientNumber.isNotEmpty()) inputData[PARAM_CLIENT_NUMBER] = clientNumber
-            if (productId.isNotEmpty()) selectedProduct = RechargeGeneralProductSelectData(productId)
+            if (productId.isNotEmpty()) this@RechargeGeneralFragment.productId = productId.toIntOrZero()
 
             if (adapter.data.isNotEmpty()) {
                 val clientNumberInput: RechargeGeneralProductInput? = adapter.data.find { it is RechargeGeneralProductInput && it.name == PARAM_CLIENT_NUMBER } as? RechargeGeneralProductInput
@@ -745,7 +771,6 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
 
     private fun hideFooterView() {
         tab_layout.hide()
-        separator.hide()
         product_view_pager.hide()
     }
 
@@ -761,7 +786,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
 
     private fun getOperatorCluster(menuId: Int) {
         viewModel.getOperatorCluster(
-                GraphqlHelper.loadRawString(resources, R.raw.query_catalog_operator_select_group),
+                RechargeGeneralGqlQuery.catalogOperatorSelectGroup,
                 viewModel.createOperatorClusterParams(menuId),
                 recharge_general_swipe_refresh_layout.isRefreshing
         )
@@ -769,7 +794,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
 
     private fun getProductList(menuId: Int, operator: Int) {
         viewModel.getProductList(
-                GraphqlHelper.loadRawString(resources, com.tokopedia.common.topupbills.R.raw.query_catalog_product_input),
+                com.tokopedia.common.topupbills.utils.CommonTopupBillsGqlQuery.rechargeCatalogProductInput,
                 viewModel.createProductListParams(menuId, operator),
                 recharge_general_swipe_refresh_layout.isRefreshing
         )
@@ -780,6 +805,10 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
             rechargeGeneralAnalytics.eventInputManualNumber(categoryName, operatorName, position + 1)
         }
         updateInputData(label, input)
+    }
+
+    override fun onTextChangeInput() {
+        recharge_general_enquiry_button.isEnabled = false
     }
 
     override fun onCustomInputClick(field: TopupBillsInputFieldWidget,
@@ -815,7 +844,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
     }
 
     private fun validateEnquiry(): Boolean {
-        return operatorId > 0 && selectedProduct != null
+        return operatorId > 0 && productId > 0
                 && (inputDataKeys.isEmpty()
                 || inputData.keys.toList().sorted() == inputDataKeys.sorted())
     }
@@ -829,7 +858,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
                 if (!userSession.isLoggedIn) {
                     navigateToLoginPage()
                 } else {
-                    selectedProduct?.run { getEnquiry(operatorId.toString(), id, inputData) }
+                    getEnquiry(operatorId.toString(), productId.toString(), inputData)
                 }
             }
         }
@@ -862,6 +891,10 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
         // do nothing
     }
 
+    override fun onLoadingAtc(showLoading: Boolean) {
+        recharge_general_enquiry_button.isLoading = showLoading
+    }
+
     override fun processFavoriteNumbers(data: TopupBillsFavNumber) {
         favoriteNumbers = data.favNumberList
         updateFavoriteNumberInputField()
@@ -880,7 +913,10 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
     }
 
     override fun onEnquiryError(error: Throwable) {
-        NetworkErrorHelper.showRedSnackbar(activity, error.message)
+        view?.let { v ->
+            Toaster.build(v, error.message ?: "", Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
+                    getString(com.tokopedia.resources.common.R.string.general_label_ok)).show()
+        }
     }
 
     override fun onMenuDetailError(error: Throwable) {
@@ -896,11 +932,17 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
     }
 
     override fun onCheckVoucherError(error: Throwable) {
-        NetworkErrorHelper.showRedSnackbar(activity, error.message)
+        view?.let { v ->
+            Toaster.build(v, error.message ?: "", Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
+                    getString(com.tokopedia.resources.common.R.string.general_label_ok)).show()
+        }
     }
 
     override fun onExpressCheckoutError(error: Throwable) {
-        NetworkErrorHelper.showRedSnackbar(activity, error.message)
+        view?.let { v ->
+            Toaster.build(v, error.message ?: "", Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
+                    getString(com.tokopedia.resources.common.R.string.general_label_ok)).show()
+        }
     }
 
     private fun renderCheckoutView(data: TopupBillsEnquiry) {
@@ -934,12 +976,16 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
         return null
     }
 
+    override fun initAddToCartViewModel() {
+        addToCartViewModel = viewModelFragmentProvider.get(DigitalAddToCartViewModel::class.java)
+    }
+
     override fun onPromoTickerNull(data: PromoData) {
         pendingPromoData = data
     }
 
     override fun onClickCheckout(data: TopupBillsEnquiry) {
-        rechargeGeneralAnalytics.eventClickCheckBills(categoryName, operatorName, selectedProduct?.title ?: "")
+        rechargeGeneralAnalytics.eventClickCheckBills(categoryName, operatorName, productName)
         rechargeGeneralAnalytics.eventClickBuy(categoryName, operatorName, false, data)
 
         processCheckout()
@@ -948,19 +994,14 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
     private fun processCheckout() {
         // Setup checkout pass data
         if (validateEnquiry()) {
-            selectedProduct?.run {
-                var checkoutPassDataBuilder = DigitalCheckoutPassData.Builder()
-                        .action(DigitalCheckoutPassData.DEFAULT_ACTION)
+            if (productId > 0) {
+                var checkoutPassDataBuilder = getDefaultCheckoutPassDataBuilder()
                         .categoryId(categoryId.toString())
-                        .instantCheckout("0")
                         .isPromo(if (isPromo) "1" else "0")
                         .operatorId(operatorId.toString())
-                        .productId(id)
+                        .productId(productId.toString())
                         .utmCampaign(categoryId.toString())
-                        .utmContent(GlobalConfig.VERSION_NAME)
-                        .utmSource(DigitalCheckoutPassData.UTM_SOURCE_ANDROID)
-                        .utmMedium(DigitalCheckoutPassData.UTM_MEDIUM_WIDGET)
-                        .voucherCodeCopied("")
+
                 if (inputData.containsKey(PARAM_CLIENT_NUMBER)) {
                     checkoutPassDataBuilder = checkoutPassDataBuilder.clientNumber(inputData[PARAM_CLIENT_NUMBER]!!)
                 }
@@ -992,7 +1033,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
     }
 
     private fun getFirstOperatorId(cluster: RechargeGeneralOperatorCluster): Int {
-        return cluster.operatorGroups?.getOrNull(0)?.operators?.getOrNull(0)?.id ?: 0
+        return cluster.operatorGroups?.firstOrNull()?.operators?.firstOrNull()?.id ?: 0
     }
 
     private fun getOperatorData(operatorId: Int): CatalogOperator? {
@@ -1021,6 +1062,34 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
         return null
     }
 
+    private fun updateProductData() {
+        if (viewModel.productList.value is Success) {
+            needProductDataUpdate = false
+            val products = (viewModel.productList.value as Success).data.enquiryFields.firstOrNull {
+                it.name == RechargeGeneralViewModel.PARAM_PRODUCT
+            }?.dataCollections?.firstOrNull()?.products
+            products?.let {
+                val product = products.firstOrNull { it.id == productId.toString() }
+                product?.run {
+                    productName = attributes.desc
+                    this@RechargeGeneralFragment.price = attributes.pricePlain.toIntOrZero()
+                    isPromo = attributes.promo != null
+
+                    // Show product info ticker
+                    val description = attributes.detailCompact
+                    if (description.isNotEmpty()) {
+                        ticker_recharge_general_product_info.show()
+                        ticker_recharge_general_product_info.setHtmlDescription(description)
+                    } else {
+                        ticker_recharge_general_product_info.hide()
+                    }
+                }
+            }
+        } else {
+            needProductDataUpdate = true
+        }
+    }
+
     fun onBackPressed() {
         rechargeGeneralAnalytics.eventClickBackButton(categoryName, operatorName)
     }
@@ -1043,7 +1112,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
         const val EXTRA_PARAM_MENU_ID = "EXTRA_PARAM_MENU_ID"
         const val EXTRA_PARAM_CATEGORY_ID = "EXTRA_PARAM_CATEGORY_ID"
         const val EXTRA_PARAM_OPERATOR_ID = "EXTRA_PARAM_OPERATOR_ID"
-        const val EXTRA_PARAM_PRODUCT = "EXTRA_PARAM_PRODUCT_ID"
+        const val EXTRA_PARAM_PRODUCT_ID = "EXTRA_PARAM_PRODUCT_ID"
         const val EXTRA_PARAM_INPUT_DATA = "EXTRA_PARAM_INPUT_DATA"
         const val EXTRA_PARAM_INPUT_DATA_KEYS = "EXTRA_PARAM_INPUT_DATA_KEYS"
         const val EXTRA_PARAM_ENQUIRY_DATA = "EXTRA_PARAM_ENQUIRY_DATA"
@@ -1057,20 +1126,25 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
         const val PARAM_CLIENT_NUMBER = "client_number"
         const val PARAM_ZONE_ID = "zone_id"
 
+        const val PROMO_LIST_LABEL = "Promo"
+        const val RECENT_TRANSACTION_LABEL = "Transaksi Terakhir"
+
         const val REQUEST_CODE_DIGITAL_SEARCH_NUMBER = 77
 
-        val ITEM_DECORATOR_SIZE = com.tokopedia.design.R.dimen.dp_8
+        val ITEM_DECORATOR_SIZE = com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3
 
         fun newInstance(categoryId: Int,
                         menuId: Int,
                         operatorId: Int = 0,
-                        selectedProduct: String = ""): RechargeGeneralFragment {
+                        productId: Int = 0,
+                        rechargeProductFromSlice: String = ""): RechargeGeneralFragment {
             val fragment = RechargeGeneralFragment()
             val bundle = Bundle()
             bundle.putInt(EXTRA_PARAM_CATEGORY_ID, categoryId)
             bundle.putInt(EXTRA_PARAM_MENU_ID, menuId)
             bundle.putInt(EXTRA_PARAM_OPERATOR_ID, operatorId)
-            bundle.putString(EXTRA_PARAM_PRODUCT, selectedProduct)
+            bundle.putInt(EXTRA_PARAM_PRODUCT_ID, productId)
+            bundle.putString(RECHARGE_PRODUCT_EXTRA, rechargeProductFromSlice)
             fragment.arguments = bundle
             return fragment
         }

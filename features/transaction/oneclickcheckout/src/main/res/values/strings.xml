@@ -1,12 +1,15 @@
 <resources>
     <string name="title_one_click_checkout">Beli Langsung</string>
     <string name="pay">Bayar</string>
+    <string name="continue_pay">Lanjutkan</string>
+    <string name="change_payment_method">Ganti Metode Bayar</string>
     <string name="preference_number">Pilihan %1d</string>
     <string name="preference_number_summary">Pilihan</string>
 
     <string name="lbl_summary_preference_title">Pengaturan Beli Langsung</string>
     <string name="lbl_summary_preference_option">Pilihan</string>
     <string name="lbl_summary_preference_with_number_title">Atur</string>
+    <string name="lbl_new_summary_preference">Atur Template</string>
     <string name="lbl_summary_preference_subtitle">Cek ringkasan pengaturanmu</string>
 
     <string name="lbl_choose_payment_method">Pilih Metode Pembayaran</string>
@@ -14,7 +17,9 @@
     <string name="lbl_save">Simpan</string>
 
     <string name="lbl_delete_preference_title">Hapus pilihan ini?</string>
+    <string name="lbl_new_delete_preference_title">Hapus template ini?</string>
     <string name="lbl_delete_preference_desc">Pengaturan Beli Langsung yang sudah dihapus tidak bisa dipakai untuk belanja.</string>
+    <string name="lbl_new_delete_preference_desc">Template Beli Langsung yang sudah dihapus tidak bisa dipakai untuk belanja.</string>
     <string name="lbl_delete_preference_ok">Ya, Hapus</string>
     <string name="atur_pilihan">Atur Pilihan</string>
     <string name="label_pilih">Pilih</string>
@@ -32,15 +37,20 @@
     <string name="lbl_osp_header">Barang yang dibeli</string>
     <string name="lbl_osp_secondary_header_intro">Hai!</string>
     <string name="lbl_osp_secondary_header">Pengiriman dan pembayaran</string>
+    <string name="lbl_osp_secondary_header_info">Info</string>
 
     <string name="default_osp_error_message">Terjadi kesalahan pada server. Ulangi beberapa saat lagi</string>
 
     <string name="title_one_click_checkout_preference">Pengaturan Beli Langsung</string>
     <string name="preference_list_empty_header">Kamu belum punya pengaturan Beli Langsung</string>
     <string name="preference_list_empty_subtitle">Atur kombinasi pengiriman dan pembayaran favoritmu untuk langsung dipakai setiap belanja.</string>
+    <string name="new_preference_list_empty_header">Kamu belum punya template Beli Langsung </string>
+    <string name="new_preference_list_empty_subtitle">Atur kombinasi pengiriman dan pembayaran favoritmu sebagai template, tinggal langsung pakai setiap belanja.</string>
     <string name="add_first_preference">Atur</string>
+    <string name="new_add_first_preference">Buat Template</string>
     <string name="add_preference">Tambah Pilihan</string>
     <string name="lbl_make_default_preference">Jadikan Pilihan Utama</string>
+    <string name="lbl_new_make_default_preference">Jadikan template utama</string>
     <string name="lbl_default_preference">Utama</string>
     <string name="lbl_default_preference_profile">Pilihan Utama</string>
 
@@ -54,6 +64,7 @@
     <string name="activity_subtitle_choose_address">Langkah 1 dari 3</string>
     <string name="no_pinpoint">Belum Pinpoint</string>
     <string name="pinpoint">Sudah Pinpoint</string>
+    <string name="bottom_sheet_title_choose_address">Pilih Alamat</string>
 
     <!--Shipping Duration-->
     <string name="label_button_choose_shipping_duration">Simpan Durasi Pengiriman</string>
@@ -62,6 +73,7 @@
     <string name="ticker_label_text">Perkiraan tiba dihitung sejak pesanan dikirim</string>
     <string name="logistic_promo_info_title">Bebas Ongkir</string>
     <string name="logistic_promo_info_desc">Bebas Ongkir tidak bisa disimpan sebagai pilihan pengiriman, tapi bisa digunakan saat Beli Langsung.</string>
+    <string name="new_logistic_promo_info_desc">Bebas Ongkir tidak bisa disimpan sebagai template. Jika tersedia, akan direkomendasikan sebelum kamu bayar.</string>
 
     <string name="default_action_occ_info_bottom_sheet">Lanjut Belanja</string>
     <string name="search_not_found">Pencarian tidak dapat ditemukan</string>
@@ -69,6 +81,7 @@
     <string name="lbl_change_template">Ubah</string>
     <string name="lbl_order_summary">Ringkasan Belanja</string>
     <string name="lbl_total_item_price">Total Harga Barang</string>
+    <string name="lbl_purchase_protection_price">Total Proteksi Produk</string>
     <string name="lbl_additional_fee">Biaya Layanan</string>
 
     <string name="lbl_try_again">Coba Lagi</string>
@@ -89,4 +102,20 @@
     <string name="lbl_installment_payment_minimum_before_fee">Min. %1$s sebelum biaya layanan</string>
     <string name="lbl_installment_payment_monthly">%1$s/bulan</string>
     <string name="lbl_choose_installment_type">Pilih Jenis Pembayaran</string>
+
+    <string name="lbl_activate_ovo_now">Aktivasi OVO Sekarang</string>
+    <string name="message_ovo_activation_success">Yay, aktivasi OVO berhasil. Sekarang kamu bisa bayar pakai OVO.</string>
+
+    <string name="title_one_click_checkout_top_up_ovo">Top-up OVO</string>
+    <string name="message_ovo_activation_failed">Yaah, aktivasi OVO gagal. Coba lagi dalam beberapa saat.</string>
+    <string name="button_ok_message_ovo_activation">Oke</string>
+
+    <string name="lbl_new_occ_profile_name">Template Beli Langsung</string>
+    <string name="lbl_add_new_occ_profile_name">Buat Template Baru</string>
+
+    <string name="lbl_occ_profile_name_with_suffix">Template %1$s</string>
+
+    <string name="lbl_reload_shipping">Refresh</string>
+
+    <string name="content_description_img_payment">Payment Image</string>
 </resources>

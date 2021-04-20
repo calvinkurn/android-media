@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/bgTicket"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/ent_pdp_ticket_normal_bg"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="horizontal"
-    android:focusableInTouchMode="true">
+    android:focusableInTouchMode="true"
+    android:orientation="horizontal">
 
     <View
         android:id="@+id/greenDivider"
         android:layout_width="@dimen/spacing_lvl2"
         android:layout_height="match_parent"
         android:background="@drawable/ent_pdp_greenverticalview"
-        android:visibility="gone"/>
+        android:visibility="gone"
+        tools:visibility="visible" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -24,23 +24,23 @@
         android:focusableInTouchMode="true">
 
         <View
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dimen_dp_1"
-            android:background="@color/Neutral_N100" />
+            android:background="@color/Unify_N100"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <com.tokopedia.unifyprinciples.Typography
-            android:paddingLeft="@dimen/spacing_lvl4"
-            android:layout_marginTop="@dimen/spacing_lvl4"
             android:id="@+id/txtTitle_ticket"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:typographyType="body_2"
-            android:textColor="@color/Neutral_N700"
-            tools:text="Day 1 Presale - Adult"
+            android:layout_marginTop="@dimen/spacing_lvl4"
+            android:paddingLeft="@dimen/spacing_lvl4"
+            android:textColor="@color/Unify_N700"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
+            app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="body_2"
+            tools:text="Day 1 Presale - Adult" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/txtTermurah_ticket"
@@ -53,45 +53,46 @@
             android:paddingTop="@dimen/spacing_lvl1"
             android:paddingRight="@dimen/spacing_lvl2"
             android:paddingBottom="@dimen/spacing_lvl1"
-            android:textColor="@color/light_R400"
-            app:typographyType="small"
-            app:typographyWeight="bold"
+            android:textColor="@color/Unify_R400"
             android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="Termurah" />
+            app:typographyType="small"
+            app:typographyWeight="bold"
+            tools:text="Termurah"
+            tools:visibility="visible" />
 
         <com.tokopedia.unifyprinciples.Typography
-            android:paddingLeft="@dimen/spacing_lvl4"
             android:id="@+id/txtSubtitle_ticket"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/txtTitle_ticket"
-            app:layout_constraintStart_toStartOf="parent"
             android:layout_marginTop="@dimen/spacing_lvl2"
+            android:paddingLeft="@dimen/spacing_lvl4"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/txtTitle_ticket"
             app:typographyType="body_3"
             tools:text="Tiket berlaku hingga 60 hari setelah pembelian" />
 
 
         <com.tokopedia.unifyprinciples.Typography
-            android:paddingLeft="@dimen/spacing_lvl4"
             android:id="@+id/txtMulaidari_ticket"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/txtSubtitle_ticket"
-            app:layout_constraintStart_toStartOf="parent"
             android:layout_marginTop="@dimen/spacing_lvl4"
+            android:paddingLeft="@dimen/spacing_lvl4"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/txtSubtitle_ticket"
             app:typographyType="small"
             tools:text="Mulai dari" />
 
         <com.tokopedia.unifyprinciples.Typography
-            android:paddingLeft="@dimen/spacing_lvl4"
             android:id="@+id/txtPrice_ticket"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/txtMulaidari_ticket"
-            app:layout_constraintStart_toStartOf="parent"
             android:layout_marginBottom="@dimen/spacing_lvl4"
+            android:paddingLeft="@dimen/spacing_lvl4"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/txtMulaidari_ticket"
             app:typographyType="body_2"
             app:typographyWeight="bold"
             tools:text="Rp123.000" />
@@ -100,25 +101,29 @@
             android:id="@+id/txtPilih_ticket"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/spacing_lvl4"
             android:background="@drawable/ent_pdp_ticket_pilih_bg"
             android:paddingLeft="@dimen/spacing_lvl7"
             android:paddingTop="@dimen/spacing_lvl2"
             android:paddingRight="@dimen/spacing_lvl7"
             android:paddingBottom="@dimen/spacing_lvl2"
             android:text="@string/ent_pdp_ticket_pilih"
-            android:textColor="@color/Green_G500"
+            android:textColor="@color/Unify_G500"
             android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@id/txtPrice_ticket"
+            app:layout_constraintEnd_toEndOf="parent"
             app:typographyType="heading_6"
             app:typographyWeight="bold"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginRight="@dimen/spacing_lvl4"
-            app:layout_constraintBottom_toBottomOf="@id/txtPrice_ticket" />
+            tools:visibility="visible" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/txtUbah_ticket"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignBottom="@id/txtPrice_ticket"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="@dimen/spacing_lvl4"
             android:alpha="0.68"
             android:background="@drawable/ent_pdp_ticket_ubah_bg"
             android:paddingLeft="@dimen/spacing_lvl4"
@@ -126,82 +131,103 @@
             android:paddingRight="@dimen/spacing_lvl4"
             android:paddingBottom="@dimen/spacing_lvl2"
             android:text="@string/ent_pdp_ticket_ubah"
-            android:textColor="@color/Neutral_N700"
+            android:textColor="@color/Unify_N700"
             android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@id/txtPrice_ticket"
+            app:layout_constraintEnd_toEndOf="parent"
             app:typographyType="heading_6"
             app:typographyWeight="bold"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="@dimen/spacing_lvl4"
-            android:layout_alignParentEnd="true"
-            app:layout_constraintBottom_toBottomOf="@id/txtPrice_ticket"
-            app:layout_constraintEnd_toEndOf="parent"/>
+            tools:visibility="visible" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/txtHabis_ticket"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/spacing_lvl4"
             android:background="@drawable/ent_pdp_ticket_habis_bg"
             android:paddingLeft="@dimen/spacing_lvl6"
             android:paddingTop="@dimen/spacing_lvl2"
             android:paddingRight="@dimen/spacing_lvl6"
             android:paddingBottom="@dimen/spacing_lvl2"
             android:text="@string/ent_pdp_ticket_habis"
-            android:textColor="@color/Neutral_N300"
+            android:textColor="@color/Unify_N300"
             android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@id/txtPrice_ticket"
+            app:layout_constraintEnd_toEndOf="parent"
             app:typographyType="heading_6"
             app:typographyWeight="bold"
-            android:layout_marginRight="@dimen/spacing_lvl4"
-            app:layout_constraintBottom_toBottomOf="@id/txtPrice_ticket"
-            app:layout_constraintEnd_toEndOf="parent"/>
+            tools:visibility="visible" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/txtNotStarted"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/spacing_lvl4"
             android:background="@drawable/ent_pdp_ticket_habis_bg"
             android:paddingLeft="@dimen/spacing_lvl6"
             android:paddingTop="@dimen/spacing_lvl2"
             android:paddingRight="@dimen/spacing_lvl6"
             android:paddingBottom="@dimen/spacing_lvl2"
             android:text="@string/ent_pdp_ticket_belum_tersedia"
-            android:textColor="@color/Neutral_N300"
+            android:textColor="@color/Unify_N300"
             android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@id/txtPrice_ticket"
+            app:layout_constraintEnd_toEndOf="parent"
             app:typographyType="heading_6"
             app:typographyWeight="bold"
-            android:layout_marginRight="@dimen/spacing_lvl4"
-            app:layout_constraintBottom_toBottomOf="@id/txtPrice_ticket"
-            app:layout_constraintEnd_toEndOf="parent"/>
+            tools:visibility="visible" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/txtAlreadyEnd"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/spacing_lvl4"
             android:background="@drawable/ent_pdp_ticket_habis_bg"
             android:paddingLeft="@dimen/spacing_lvl6"
             android:paddingTop="@dimen/spacing_lvl2"
             android:paddingRight="@dimen/spacing_lvl6"
             android:paddingBottom="@dimen/spacing_lvl2"
             android:text="@string/ent_pdp_ticket_telah_selesai"
-            android:textColor="@color/Neutral_N300"
+            android:textColor="@color/Unify_N300"
             android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@id/txtPrice_ticket"
+            app:layout_constraintEnd_toEndOf="parent"
             app:typographyType="heading_6"
             app:typographyWeight="bold"
+            tools:visibility="visible" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/txtisRecommeded"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginRight="@dimen/spacing_lvl4"
+            android:background="@drawable/ent_pdp_ticket_habis_bg"
+            android:paddingLeft="@dimen/spacing_lvl6"
+            android:paddingTop="@dimen/spacing_lvl2"
+            android:paddingRight="@dimen/spacing_lvl6"
+            android:paddingBottom="@dimen/spacing_lvl2"
+            android:text="@string/ent_pdp_ticket_recommended"
+            android:textColor="@color/Unify_N300"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@id/txtPrice_ticket"
-            app:layout_constraintEnd_toEndOf="parent"/>
+            app:layout_constraintEnd_toEndOf="parent"
+            app:typographyType="heading_6"
+            app:typographyWeight="bold"
+            tools:visibility="visible" />
 
         <com.tokopedia.unifycomponents.QuantityEditorUnify
             android:id="@+id/quantityEditor"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignBottom="@id/txtPrice_ticket"
+            android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_marginRight="@dimen/spacing_lvl4"
-            android:layout_alignParentEnd="true"
-            android:visibility="gone"
             android:focusableInTouchMode="true"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@id/txtPrice_ticket"
-            app:layout_constraintEnd_toEndOf="parent"/>
+            app:layout_constraintEnd_toEndOf="parent"
+            tools:visibility="visible" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </LinearLayout>

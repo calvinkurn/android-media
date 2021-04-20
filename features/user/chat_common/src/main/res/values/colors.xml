@@ -24,4 +24,9 @@
     <color name="chatcommon_grey_68">#ae31353b</color>
     <color name="chatcommon_wishlist_selected">#EF144A</color>
 
+    <color name="black_70">#b3000000</color>
+    <color name="attach_product_title">#fa31353b</color>
+    <color name="attachproduct_deep_orange_500">#ff5722</color>
+    <color name="attachproduct_black">#000000</color>
+
 </resources>

@@ -64,6 +64,11 @@ public class CMInApp {
     public String screen = "*";
 
     @Expose
+    @ColumnInfo(name = "campaignCode")
+    @SerializedName("campaignCode")
+    public String campaignCode = "";
+
+    @Expose
     @SerializedName("d")
     @ColumnInfo(name = "d")
     public boolean cancelable = false;
@@ -108,6 +113,12 @@ public class CMInApp {
     @ColumnInfo(name = "is_interacted")
     private boolean isInteracted = false;
 
+    @ColumnInfo(name = "is_amplification")
+    private boolean isAmplification = false;
+
+    @ColumnInfo(name = "customValues")
+    private String customValues = "";
+
     public CMInApp(){}
 
     public String getType() {
@@ -132,6 +143,14 @@ public class CMInApp {
 
     public void setScreen(String screen) {
         this.screen = screen;
+    }
+
+    public String getCampaignCode() {
+        return campaignCode;
+    }
+
+    public void setCampaignCode(String campaignCode) {
+        this.campaignCode = campaignCode;
     }
 
     public boolean isCancelable() {
@@ -269,5 +288,21 @@ public class CMInApp {
 
     public void setInteracted(boolean interacted) {
         isInteracted = interacted;
+    }
+
+    public void setCustomValues(String customValues) {
+        this.customValues = customValues;
+    }
+
+    public String getCustomValues() {
+        return customValues;
+    }
+
+    public boolean isAmplification() {
+        return isAmplification;
+    }
+
+    public void setAmplification(boolean amplification) {
+        isAmplification = amplification;
     }
 }

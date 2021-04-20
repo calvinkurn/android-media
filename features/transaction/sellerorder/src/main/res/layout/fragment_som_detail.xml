@@ -12,8 +12,17 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/white">
+        android:layout_height="match_parent">
+
+        <com.tokopedia.header.HeaderUnify
+            android:id="@+id/som_detail_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:unify_header_is_show_back_button="true"
+            app:unify_header_is_show_shadow="true" />
 
         <com.tokopedia.globalerror.GlobalError
             android:id="@+id/somGlobalError"
@@ -24,8 +33,21 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/som_detail_toolbar"
             tools:visibility="visible" />
+
+        <!-- admin no permission error view -->
+
+        <com.tokopedia.globalerror.GlobalError
+            android:id="@+id/somDetailAdminPermissionView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/som_detail_toolbar"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:visibility="gone"
+            app:globalerrors_type="PAGE_NOT_FOUND"/>
 
         <com.tokopedia.unifycomponents.LoaderUnify
             android:id="@+id/progressBarSom"
@@ -35,7 +57,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@id/som_detail_toolbar" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_detail"
@@ -45,7 +67,7 @@
             app:layout_constraintBottom_toTopOf="@id/containerBtnDetail"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@id/som_detail_toolbar" />
 
         <ProgressBar
             android:id="@+id/progress_bar"
@@ -55,13 +77,13 @@
             android:indeterminate="true"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@id/som_detail_toolbar" />
 
         <androidx.cardview.widget.CardView
             android:id="@+id/containerBtnDetail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/white"
+            app:cardBackgroundColor="@color/Unify_N0"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -77,6 +99,7 @@
 
                 <com.tokopedia.unifycomponents.UnifyImageButton
                     android:id="@+id/btn_secondary"
+                    android:contentDescription="@string/content_desc_btn_secondary"
                     android:layout_width="@dimen/dp_40"
                     android:layout_height="@dimen/dp_40"
                     android:layout_marginStart="@dimen/dp_16"

@@ -1,0 +1,61 @@
+<resources>
+    <string name="app_name">seller_menu_common</string>
+
+    <string name="setting_menu_buyer_info">KATA PEMBELI</string>
+    <string name="setting_menu_review">Ulasan</string>
+    <string name="setting_menu_discussion">Diskusi</string>
+    <string name="setting_menu_complaint">Pesanan Dikomplain</string>
+    <string name="setting_menu_other_info">Bantuan dan info lainnya</string>
+    <string name="setting_menu_seller_education_center">Pusat Edukasi Seller</string>
+    <string name="setting_menu_tokopedia_care">Bantuan Tokopedia Care</string>
+    <string name="setting_menu_shop_setting">Pengaturan toko</string>
+    <string name="setting_menu_setting">Pengaturan</string>
+    <string name="setting_menu_shop_profile">PROFIL TOKO</string>
+    <string name="setting_menu_basic_info">Informasi Dasar</string>
+    <string name="setting_menu_shop_notes">Catatan Toko</string>
+    <string name="setting_menu_shop_working_hours">Jam Buka Tutup Toko</string>
+    <string name="setting_menu_location_and_shipment">LOKASI DAN PENGIRIMAN</string>
+    <string name="setting_menu_add_and_shop_location">Lokasi Toko</string>
+    <string name="setting_menu_set_shipment_method">Atur Layanan Pengiriman</string>
+    <string name="setting_error_message">Data tidak dapat ditampilkan</string>
+    <string name="setting_error_description">Ketuk icon untuk memuat ulang</string>
+    <string name="setting_active">Aktif</string>
+    <string name="setting_not_active">Tidak Aktif</string>
+    <string name="setting_on_verification">Sedang Diverifikasi</string>
+    <string name="regular_merchant">Regular Merchant</string>
+    <string name="setting_upgrade">Upgrade</string>
+    <string name="setting_verifikasi">Verifikasi</string>
+    <string name="setting_followers">Followers</string>
+    <string name="setting_balance">Saldo</string>
+    <string name="setting_topads_credits">Kredit TopAds</string>
+
+    <string name="settings_free_shipping_title">Bebas Ongkir Aktif</string>
+    <string name="settings_free_shipping_detail">Detail Bebas Ongkir</string>
+    <string name="settings_free_shipping_description">Status Bebas Ongkir aktif untuk kurir **SiCepat** dan **Anteraja**</string>
+    <string name="sah_free_ongkir_title">Tokomu Bebas Ongkir</string>
+
+    <string name="dot_string">&#160;\u2022&#160;</string>
+    <string name="official_store">Official Store</string>
+    <string name="power_merchant_status">Power Merchant:&#160;</string>
+
+    <string name="setting_toaster_error_message">Oops, informasi gagal ditampilkan</string>
+    <string name="setting_toaster_error_retry">Muat Ulang</string>
+    <string name="seller_menu_new_order">Pesanan baru</string>
+    <string name="seller_menu_delivery">Siap dikirim</string>
+    <string name="seller_menu_product_count">%1d produk</string>
+    <string name="seller_menu_business_section">Pengembangan Bisnis</string>
+    <string name="seller_menu_seller_app_only">Di Tokopedia Seller</string>
+    <string name="seller_menu_product_list">Daftar Produkmu</string>
+    <string name="seller_menu_shop_statistics">Statistik Toko</string>
+    <string name="seller_menu_shop_statistics_description">Cek perkembangan statistik produk dan toko agar jadi lebih kompetitif.</string>
+    <string name="seller_menu_ads_and_promo">Iklan dan Promosi</string>
+    <string name="seller_menu_ads_and_promo_description">Iklankan produkmu untuk jangkau lebih banyak pembeli.</string>
+    <string name="seller_menu_feed_and_play">Feed</string>
+    <string name="seller_menu_feed_and_play_description">Posting info terbaru dan promo khusus toko untuk pelanggan setia.</string>
+    <string name="seller_menu_financial_service">Layanan Keuangan</string>
+    <string name="seller_menu_financial_service_description">Kelola arus dana untuk keuangan tokomu dengan mudah dan cepat.</string>
+    <string name="seller_menu_shop_score_label">Skor performa Toko</string>
+    <string name="seller_menu_shop_score_max_label">/100</string>
+    <string name="seller_menu_admin_no_permission_oops">Oops, kamu tidak punya izin untuk mengakses halaman ini</string>
+
+</resources>

@@ -4,23 +4,24 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white"
+    android:background="@color/Unify_N0"
     android:gravity="center_vertical"
     android:orientation="horizontal"
-    android:padding="@dimen/dp_16">
+    android:padding="@dimen/spacing_lvl4">
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/title"
-        style="@style/TextView.Title"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:layout_weight="1"
+        android:textColor="@color/Unify_N700_96"
+        app:typographyType="heading_4"
         tools:text="HARGA KHUSUS" />
 
     <androidx.appcompat.widget.SwitchCompat
         android:id="@+id/toggle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:trackTint="@color/switch_track_color_state" />
+        app:trackTint="@color/flight_switch_track_color_state" />
 
 </LinearLayout>

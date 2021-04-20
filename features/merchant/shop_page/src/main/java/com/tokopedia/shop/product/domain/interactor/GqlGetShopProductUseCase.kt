@@ -8,22 +8,81 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.shop.product.data.model.ShopProduct
 import com.tokopedia.shop.product.data.source.cloud.model.ShopProductFilterInput
 import com.tokopedia.usecase.coroutines.UseCase
+import javax.inject.Inject
 
-class GqlGetShopProductUseCase (val gqlQuery: String,
-                                private val gqlUseCase: MultiRequestGraphqlUseCase): UseCase<ShopProduct.GetShopProduct>() {
+class GqlGetShopProductUseCase @Inject constructor (
+        private val gqlUseCase: MultiRequestGraphqlUseCase
+): UseCase<ShopProduct.GetShopProduct>() {
+
+    private val query = """
+            query getShopProduct(${'$'}shopId: String!,${'$'}filter: ProductListFilter!){
+              GetShopProduct(shopID:${'$'}shopId, filter:${'$'}filter){
+                status
+                errors
+                data {
+                  product_id
+                  name
+                  product_url
+                  stock
+                  status
+                  price{
+                    text_idr
+                  }
+                  flags{
+                    isFeatured
+                    isPreorder
+                    isFreereturn
+                    isVariant
+                    isWholesale
+                    isWishlist
+                    isSold
+                    supportFreereturn
+                    mustInsurance
+                    withStock
+                  }
+                  stats{
+                    reviewCount
+                    rating
+                  }
+                  campaign{
+                    original_price
+                    original_price_fmt
+                    discounted_price_fmt
+                    discounted_percentage
+                    discounted_price
+                  }
+                  primary_image{
+                    original
+                    thumbnail
+                    resize300
+                  }
+                  cashback{
+                    cashback
+                    cashback_amount
+                  }
+                  freeOngkir {
+                    isActive
+                    imgURL
+                  }
+                  label_groups {
+                    position
+                    type
+                    title
+                    url
+                  }
+                }
+                totalData
+              }
+            }
+        """.trimIndent()
 
     var params = mapOf<String, Any>()
-    var isFromCacheFirst: Boolean = true
-    val request by lazy {
-        GraphqlRequest(gqlQuery, ShopProduct.Response::class.java, params)
-    }
 
     override suspend fun executeOnBackground(): ShopProduct.GetShopProduct {
         gqlUseCase.clearRequest()
-        gqlUseCase.setCacheStrategy(GraphqlCacheStrategy
-                .Builder(if (isFromCacheFirst) CacheType.CACHE_FIRST else CacheType.ALWAYS_CLOUD).build())
-
-        val gqlRequest = GraphqlRequest(gqlQuery, ShopProduct.Response::class.java, params)
+        val gqlCacheStrategyBuilder = GraphqlCacheStrategy.Builder(CacheType.CLOUD_THEN_CACHE)
+        gqlUseCase.setCacheStrategy(gqlCacheStrategyBuilder.build())
+        val gqlRequest = GraphqlRequest(query, ShopProduct.Response::class.java, params)
         gqlUseCase.addRequest(gqlRequest)
         val gqlResponse = gqlUseCase.executeOnBackground()
         val error = gqlResponse.getError(ShopProduct.Response::class.java)

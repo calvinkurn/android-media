@@ -1,7 +1,7 @@
 package com.tokopedia.manageaddress.ui.addresschoice
 
-import com.tokopedia.logisticdata.data.entity.address.RecipientAddressModel
-import com.tokopedia.logisticdata.data.entity.address.Token
+import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
+import com.tokopedia.logisticCommon.data.entity.address.Token
 
 /**
  * Created by fajarnuha on 2019-05-24.
@@ -11,8 +11,6 @@ interface AddressListContract {
     interface View {
 
         fun showList(list: MutableList<RecipientAddressModel>)
-
-        fun onChooseCorner(cornerAddressModel: RecipientAddressModel)
 
         fun updateList(list: MutableList<RecipientAddressModel>)
 
@@ -37,11 +35,9 @@ interface AddressListContract {
     interface Presenter {
         fun attachView(view: View)
         fun detachView()
-        fun getAddress()
-        fun searchAddress(query: String)
-        fun loadMore()
-        fun saveLastCorner(model: RecipientAddressModel)
-        fun getLastCorner(): RecipientAddressModel?
+        fun getAddress(prevState: Int, localChosenAddrId: Int, isWhitelistChosenAddress: Boolean)
+        fun searchAddress(query: String, prevState: Int, localChosenAddrId: Int, isWhitelistChosenAddress: Boolean)
+        fun loadMore(prevState: Int, localChosenAddrId: Int, isWhitelistChosenAddress: Boolean)
     }
 
 }

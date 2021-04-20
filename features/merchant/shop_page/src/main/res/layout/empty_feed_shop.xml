@@ -3,46 +3,47 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/white"
     android:orientation="vertical">
 
-    <ImageView
+    <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/iv_image"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_200"
         app:srcCompat="@drawable/ic_empty_shop_feed"/>
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="@dimen/sp_15"
         android:layout_marginTop="@dimen/dp_40"
         android:layout_gravity="center"
         android:gravity="center"
-        android:textColor="@color/black_70"
+        android:textColor="@color/Unify_N700_68"
         android:text="@string/empty_feed_title"
-        android:textStyle="bold"/>
+        app:typographyWeight="bold" />
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_8"
         android:layout_marginLeft="@dimen/dp_24"
         android:layout_marginRight="@dimen/dp_24"
-        android:textColor="@color/black_54"
+        android:textColor="@color/Unify_N700_44"
         android:textSize="@dimen/sp_12"
         android:text="@string/empty_feed_subtitle"
         android:layout_gravity="center"
         android:gravity="center"/>
 
-    <com.tokopedia.design.component.ButtonCompat
+    <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/btn_post"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_40"
         android:layout_marginLeft="@dimen/dp_24"
         android:layout_marginRight="@dimen/dp_24"
         android:layout_marginTop="@dimen/dp_16"
-        app:buttonCompatType="primary"
+        app:unifyButtonSize="medium"
+        app:unifyButtonType="main"
+        app:unifyButtonVariant="filled"
         android:layout_gravity="center"
         android:gravity="center"
         android:text="@string/empty_feed_btn"/>

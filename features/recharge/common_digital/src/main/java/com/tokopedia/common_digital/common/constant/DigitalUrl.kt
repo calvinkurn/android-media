@@ -1,5 +1,6 @@
 package com.tokopedia.common_digital.common.constant
 
+import com.tokopedia.network.constant.TkpdBaseURL.DigitalApi.PATH_PATCH_OTP_SUCCESS
 import com.tokopedia.url.TokopediaUrl
 
 /**
@@ -14,4 +15,7 @@ object DigitalUrl {
 
     val BASE_URL = DIGITAL_API_DOMAIN + VERSION
 
+    val CART = BASE_URL + "cart"
+    val CHECKOUT = BASE_URL + "checkout"
+    val OTP = BASE_URL + PATH_PATCH_OTP_SUCCESS
 }

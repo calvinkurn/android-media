@@ -76,6 +76,7 @@ public class TextDrawable extends Drawable {
     private Rect mTextBounds;
     /* Text string to draw */
     private CharSequence mText = "";
+    private Context context;
 
     /* Attribute lists to pull default values from the current theme */
     private static final int[] themeAttributes = {
@@ -91,6 +92,7 @@ public class TextDrawable extends Drawable {
 
     public TextDrawable(Context context) {
         super();
+        this.context = context;
         //Used to load and scale resource items
         mResources = context.getResources();
         //Definition of this drawables size
@@ -368,7 +370,12 @@ public class TextDrawable extends Drawable {
      * Internal method to apply the correct text color based on the drawable's state
      */
     private boolean updateTextColors(int[] stateSet) {
-        int newColor = mTextColors.getColorForState(stateSet, Color.WHITE);
+        int newColor;
+        if (context != null) {
+            newColor = mTextColors.getColorForState(stateSet, androidx.core.content.ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0));
+        } else {
+            newColor = mTextColors.getColorForState(stateSet, Color.WHITE);
+        }
         if (mTextPaint.getColor() != newColor) {
             mTextPaint.setColor(newColor);
             return  true;

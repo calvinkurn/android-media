@@ -2,13 +2,31 @@
 <resources>
     <string name="notif_title">Troubleshooter</string>
 
-    <string name="notif_menu_push">Push Notification</string>
-    <string name="notif_menu_setting">Pengaturan Notifikasi</string>
-    <string name="notif_menu_channel">Pengaturan Kategori Notifikasi</string>
-    <string name="notif_menu_ringtone">Suara Notifikasi</string>
+    <string name="notif_bottomsheet_info">Kami mengirimkan pesan di atas setelah proses pemeriksaan selesai, untuk memastikan HP-mu bisa terima push notification dari Tokopedia.</string>
+
+    <string name="notif_status_waiting">Tunggu sebentar, ya</string>
+    <string name="notif_status_checked">Push notification aktif</string>
+    <string name="notif_status_warning">Kami menemukan kendala di HP-mu</string>
+
+    <string name="notif_menu_notification">Notifikasi Tokopedia aktif.</string>
+    <string name="notif_menu_device">Notifikasi HP aktif.</string>
+    <string name="notif_menu_ringtone">Bunyi notifikasi aktif.</string>
+    <string name="notif_menu_push">Push notification berhasil dites.</string>
+
+    <string name="notif_failed_menu_notification">Notifikasi Tokopedia belum aktif.</string>
+    <string name="notif_failed_menu_device">Notifikasi HP belum aktif.</string>
+    <string name="notif_failed_menu_ringtone">Bunyi notifikasi mati.</string>
+    <string name="notif_failed_menu_push">Push notification gagal dites.</string>
+
+    <string name="notif_loading_menu_notification">Memeriksa aplikasi Tokopedia kamu…</string>
+    <string name="notif_loading_menu_device">Memeriksa pengaturan HP kamu…</string>
+    <string name="notif_loading_menu_ringtone">Memeriksa bunyi notifikasi…</string>
+    <string name="notif_loading_menu_push">Mengirim push notification…</string>
+
+    <string name="notif_ticker_title">Terima info yang lebih lengkap</string>
 
     <string name="notif_success_update_token">Berhasil perbaharui token</string>
-    <string name="notif_ticker_title">Error!</string>
+    <string name="notif_error_update_token">Gagal perbaharui token</string>
     <string name="notif_ticker_resolve">Aktifkan Notifikasi</string>
 
     <string name="notif_ringtone_success">Ringtone berjalan dengan baik</string>
@@ -30,5 +48,37 @@
     <string name="notif_ticker_importance_none">
         <![CDATA[Nilai prioritas "Notifikasi": <b>None(%1$d)</b>. Notifikasi muncul, atur ke nilai prioritas lebih tinggi.]]>
     </string>
+
+    <string name="notif_footer_title">Belum terima tes push notification? </string>
+    <string name="notif_footer_message">Coba bersihkan cache agar kamu bisa tetap terima push notification dari Tokopedia.</string>
+    <string name="notif_footer_dnd_message">Matikan mode ini agar kamu bisa tetap terima push notification dari Tokopedia.</string>
+
+    <string name="notif_footer_status">Status HP : <b>Jangan Ganggu</b></string>
+
+    <string name="btn_notif_clear_cache">Bersihkan Cache</string>
+    <string name="btn_notif_turnoff_dnd">Matikan Mode</string>
+    <string name="btn_notif_try_again">Coba lagi</string>
+    <string name="btn_notif_activation">Aktifkan</string>
+    <string name="btn_notif_choose">Pilih</string>
+    <string name="btn_notif_repair">Perbaiki</string>
+    <string name="btn_notif_play">Nyalakan Suara</string>
+    <string name="btn_notif_test_play">Tes Bunyi</string>
+
+    <string name="notif_ticker_net_error">Pemeriksaan notifikasi gagal, silahkan coba lagi.</string>
+    <string name="notif_us_ticker_error">Belum ada Informasi jenis push yang kamu aktifkan.</string>
+    <string name="notif_us_ticker_warning">Kamu belum mengaktifkan push notification untuk %1$s jenis info.</string>
+    <string name="notif_dv_none_ticker_warning">Ada kategori push notification Tokopedia yang belum aktif di HP.</string>
+    <string name="notif_dv_low_ticker_warning">Pilih \'Suara dan pop-up\' atau \'Kepentingan Tinggi\' di pengaturan notifikasi HP-mu.</string>
+    <string name="notif_rn_ticker_warning">HP-mu dalam Mode Getar atau Mode Sunyi dan tidak bisa menyetel bunyi notifikasi.</string>
+
+    <string name="notif_clear_cache_warning">Peringatan</string>
+    <string name="notif_clear_cache_message">Dengan membersihkan cache, berarti Anda juga setuju untuk <b>keluar</b> dan <b>menutup aplikasi</b>.</string>
+    <string name="notif_label_clear_cache_ok">Lakukan</string>
+    <string name="notif_label_clear_cache_cancel">Batal</string>
+
+    <string name="notif_network_issue">Ada gangguan dalam proses pemeriksaan, coba restart aplikasimu dan lakukan pemeriksaan ulang.</string>
+
+    <string name="notif_footer_care">Butuh bantuan lebih lanjut? Kunjungi Tokopedia Care</string>
+    <string name="notif_footer_visit_care">Kunjungi Tokopedia Care</string>
 
 </resources>

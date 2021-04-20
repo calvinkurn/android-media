@@ -3,17 +3,23 @@
     <dimen name="kyc_centralized_0dp">0dp</dimen>
     <dimen name="kyc_centralized_1dp">1dp</dimen>
     <dimen name="kyc_centralized_4dp">4dp</dimen>
+    <dimen name="kyc_centralized_12dp">12dp</dimen>
     <dimen name="kyc_centralized_17dp">17dp</dimen>
     <dimen name="kyc_centralized_17_9dp">17.9dp</dimen>
+    <dimen name="kyc_centralized_18dp">18dp</dimen>
+    <dimen name="kyc_centralized_23dp">23dp</dimen>
     <dimen name="kyc_centralized_33dp">33dp</dimen>
     <dimen name="kyc_centralized_46dp">46dp</dimen>
     <dimen name="kyc_centralized_50dp">50dp</dimen>
+    <dimen name="kyc_centralized_52dp">52dp</dimen>
     <dimen name="kyc_centralized_58dp">58dp</dimen>
     <dimen name="kyc_centralized_98dp">98dp</dimen>
     <dimen name="kyc_centralized_110dp">110dp</dimen>
     <dimen name="kyc_centralized_132dp">132dp</dimen>
     <dimen name="kyc_centralized_144dp">144dp</dimen>
     <dimen name="kyc_centralized_154dp">154dp</dimen>
+    <dimen name="kyc_centralized_179dp">179dp</dimen>
+    <dimen name="kyc_centralized_224dp">224dp</dimen>
     <dimen name="kyc_centralized_218dp">218dp</dimen>
     <dimen name="kyc_centralized_272dp">272dp</dimen>
 
@@ -23,4 +29,12 @@
     <dimen name="kyc_centralized_17sp">17sp</dimen>
 
     <dimen name="kyc_centralized_1">1px</dimen>
+
+    <dimen name="kyc_status_image_width">288dp</dimen>
+    <dimen name="kyc_status_image_height">210dp</dimen>
+
+    <dimen name="useridentification_124dp">124dp</dimen>
+    <dimen name="useridentification_35dp">35dp</dimen>
+
+    <dimen name="useridentification_6sp">6sp</dimen>
 </resources>

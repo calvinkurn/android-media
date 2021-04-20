@@ -36,6 +36,12 @@
     <color name="tp_green_token">#afd564</color>
     <color name="tp_coupon_flash_sale_timer_text_color">#D23B4D</color>
     <color name="tp_coupon_stack_new_badge_color">#ef144a</color>
+    <color name="tp_red_d43000">#d43000</color>
+    <color name="tp_black_38">#60000000</color>
     <color name="tp_subtitle_color_topads">#8f000000</color>
     <color name="tp_green_btn">#239229</color>
+    <color name="tp_toast_text_color">#FAFAFA</color>
+    <color name="red_error">#f13700</color>
+    <color name="tp_bg_tokomember_clr">#E5E7E9</color>
+    <color name="tp_user_saving_title_clr">#F531353B</color>
 </resources>

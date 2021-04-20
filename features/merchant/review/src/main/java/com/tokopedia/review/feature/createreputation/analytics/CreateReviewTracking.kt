@@ -6,7 +6,7 @@ import java.util.HashMap
 
 object CreateReviewTracking {
 
-    val tracker = TrackApp.getInstance().gtm
+    private val tracker = TrackApp.getInstance().gtm
 
     fun reviewOnAnonymousClickTracker(
             orderId: String,
@@ -23,12 +23,12 @@ object CreateReviewTracking {
     }
 
 
-    fun reviewOnCloseTracker(orderId: String, productId: String) {
+    fun reviewOnCloseTracker(orderId: String, productId: String, isEligible: Boolean) {
         tracker.sendGeneralEvent(createEventMap(
                 "clickReview",
                 CreateReviewTrackingConstants.EVENT_CATEGORY,
                 "click - back button on product review detail page",
-                "$orderId - $productId"
+                "$orderId - $productId - product_is_incentive_eligible: $isEligible;"
         ))
     }
 
@@ -40,7 +40,8 @@ object CreateReviewTracking {
             imageNum: String,
             isAnonymous: Boolean,
             isEditReview: Boolean,
-            feedbackId: String
+            feedbackId: String,
+            isEligible: Boolean
     ) {
         val messageState = if (isMessageEmpty) "blank" else "filled"
         val anonymousState = if (isAnonymous) "true" else "false"
@@ -53,7 +54,8 @@ object CreateReviewTracking {
                         " - star : " + ratingValue +
                         " - ulasan : " + messageState +
                         " - gambar : " + imageNum +
-                        " - anonim : " + anonymousState
+                        " - anonim : " + anonymousState +
+                        " - feedback is incentive eligible : " + isEligible
         ))
     }
 
@@ -150,6 +152,91 @@ object CreateReviewTracking {
                 ReviewTrackingConstant.CLICK_SMILEY,
                 String.format(CreateReviewTrackingConstants.EVENT_LABEL_ORDER_ID_PRODUCT_ID, orderId, productId)
         ))
+    }
+
+    fun eventViewDialog(dialogTitle: String) {
+        tracker.sendGeneralEvent(createEventMap(
+                ReviewTrackingConstant.VIEW_REVIEW,
+                CreateReviewTrackingConstants.EVENT_CATEGORY,
+                String.format(CreateReviewTrackingConstants.VIEW_DIALOG, dialogTitle),
+                CreateReviewTrackingConstants.EMPTY_LABEL
+        ))
+    }
+
+    fun eventClickContinueWrite(dialogTitle: String) {
+        tracker.sendGeneralEvent(createEventMap(
+                ReviewTrackingConstant.EVENT_CLICK_REVIEW,
+                CreateReviewTrackingConstants.EVENT_CATEGORY,
+                String.format(CreateReviewTrackingConstants.CLICK_CONTINUE_IN_DIALOG, dialogTitle),
+                CreateReviewTrackingConstants.EMPTY_LABEL
+        ))
+    }
+
+    fun eventClickLeavePage(dialogTitle: String) {
+        tracker.sendGeneralEvent(createEventMap(
+                ReviewTrackingConstant.EVENT_CLICK_REVIEW,
+                CreateReviewTrackingConstants.EVENT_CATEGORY,
+                String.format(CreateReviewTrackingConstants.CLICK_LEAVE_PAGE, dialogTitle),
+                CreateReviewTrackingConstants.EMPTY_LABEL
+        ))
+    }
+
+    fun eventViewThankYouBottomSheet(bottomSheetTitle: String, hasPendingIncentive: Boolean) {
+        tracker.sendGeneralEvent(createEventMap(
+                ReviewTrackingConstant.VIEW_REVIEW,
+                CreateReviewTrackingConstants.EVENT_CATEGORY,
+                String.format(CreateReviewTrackingConstants.VIEW_DIALOG, bottomSheetTitle),
+                String.format(CreateReviewTrackingConstants.EVENT_LABEL_PENDING_INCENTIVE_QUEUE, hasPendingIncentive.toString())
+        ))
+    }
+
+    fun eventClickSendAnother(title: String, hasPendingIncentive: Boolean) {
+        tracker.sendGeneralEvent(createEventMap(
+                ReviewTrackingConstant.EVENT_CLICK_REVIEW,
+                CreateReviewTrackingConstants.EVENT_CATEGORY,
+                String.format(CreateReviewTrackingConstants.CLICK_SEND_ANOTHER, title),
+                String.format(CreateReviewTrackingConstants.EVENT_LABEL_PENDING_INCENTIVE_QUEUE, hasPendingIncentive.toString())
+        ))
+    }
+
+    fun eventClickLater(title: String, hasPendingIncentive: Boolean) {
+        tracker.sendGeneralEvent(createEventMap(
+                ReviewTrackingConstant.EVENT_CLICK_REVIEW,
+                CreateReviewTrackingConstants.EVENT_CATEGORY,
+                String.format(CreateReviewTrackingConstants.CLICK_LATER, title),
+                String.format(CreateReviewTrackingConstants.EVENT_LABEL_PENDING_INCENTIVE_QUEUE, hasPendingIncentive.toString())
+        ))
+    }
+
+    fun eventClickOk(title: String, hasPendingIncentive: Boolean) {
+        tracker.sendGeneralEvent(createEventMap(
+                ReviewTrackingConstant.EVENT_CLICK_REVIEW,
+                CreateReviewTrackingConstants.EVENT_CATEGORY,
+                String.format(CreateReviewTrackingConstants.CLICK_OK, title),
+                String.format(CreateReviewTrackingConstants.EVENT_LABEL_PENDING_INCENTIVE_QUEUE, hasPendingIncentive.toString())
+        ))
+    }
+
+    fun eventClickCompleteReviewFirst(dialogTitle: String) {
+        tracker.sendGeneralEvent(createEventMap(
+                ReviewTrackingConstant.EVENT_CLICK_REVIEW,
+                CreateReviewTrackingConstants.EVENT_CATEGORY,
+                String.format(CreateReviewTrackingConstants.CLICK_COMPLETE_REVIEW_FIRST, dialogTitle),
+                CreateReviewTrackingConstants.EMPTY_LABEL
+        ))
+    }
+
+    fun eventClickSendNow(dialogTitle: String) {
+        tracker.sendGeneralEvent(createEventMap(
+                ReviewTrackingConstant.EVENT_CLICK_REVIEW,
+                CreateReviewTrackingConstants.EVENT_CATEGORY,
+                String.format(CreateReviewTrackingConstants.CLICK_SEND_NOW, dialogTitle),
+                CreateReviewTrackingConstants.EMPTY_LABEL
+        ))
+    }
+
+    fun openScreen(screenName: String) {
+        tracker.sendScreenAuthenticated(screenName)
     }
 
     private fun createEventMap(event: String, category: String, action: String, label: String): HashMap<String, Any>? {

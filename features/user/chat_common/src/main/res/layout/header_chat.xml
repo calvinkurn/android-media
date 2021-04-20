@@ -1,25 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main_header"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/dp_56"
+    android:layout_height="@dimen/chatcommon_56dp"
     android:layout_gravity="center"
     android:gravity="center_vertical"
     android:orientation="vertical">
 
     <FrameLayout
         android:id="@+id/flPhotoContainer"
-        android:layout_width="@dimen/avatar_thumb_size"
-        android:layout_height="@dimen/avatar_thumb_size"
+        android:layout_width="@dimen/chatcommon_40dp"
+        android:layout_height="@dimen/chatcommon_40dp"
         android:layout_centerVertical="true">
 
         <ImageView
             android:id="@+id/user_avatar"
-            android:layout_width="@dimen/avatar_thumb_size"
-            android:layout_height="@dimen/avatar_thumb_size"
-            tools:src="@color/red_800" />
+            android:layout_width="@dimen/chatcommon_40dp"
+            android:layout_height="@dimen/chatcommon_40dp"
+            tools:src="@color/Unify_Y500"
+            android:contentDescription="user_avatar"/>
 
         <ImageView
             android:id="@+id/online_status"
@@ -28,7 +30,9 @@
             android:layout_gravity="end|bottom"
             android:visibility="gone"
             tools:srcCompat="@drawable/status_indicator_offline"
-            tools:visibility="visible" />
+            tools:visibility="visible"
+            android:contentDescription="online_status"/>
+
     </FrameLayout>
 
     <ImageButton
@@ -36,25 +40,22 @@
         android:layout_width="@dimen/layout_lvl6"
         android:layout_height="@dimen/layout_lvl6"
         android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
         android:layout_marginLeft="@dimen/spacing_lvl2"
         android:layout_marginRight="@dimen/spacing_lvl2"
-        android:background="@color/white"
+        android:background="@color/Unify_N0"
         android:visibility="gone"
         app:srcCompat="@drawable/ic_toolbar_overflow_level_two_black"
-        tools:visibility="visible" />
+        tools:visibility="visible"
+        android:contentDescription="header_menu"/>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:layout_marginStart="@dimen/chatcommon_9dp"
-        android:layout_marginLeft="@dimen/chatcommon_9dp"
         android:layout_marginEnd="@dimen/chatcommon_60dp"
-        android:layout_marginRight="@dimen/chatcommon_60dp"
         android:layout_toEndOf="@+id/flPhotoContainer"
-        android:layout_toRightOf="@+id/flPhotoContainer"
         android:gravity="center_vertical">
 
         <ImageView
@@ -64,15 +65,14 @@
             android:layout_gravity="center_vertical"
             android:layout_marginTop="@dimen/chatcommon_1dp"
             android:layout_marginEnd="@dimen/spacing_lvl2"
-            android:layout_marginRight="@dimen/spacing_lvl2"
             android:paddingEnd="@dimen/spacing_lvl2"
-            android:paddingRight="@dimen/spacing_lvl2"
             android:visibility="gone"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:ignore="RtlSymmetry"
             tools:src="@drawable/ic_badge_shop_official"
-            tools:visibility="visible" />
+            tools:visibility="visible"
+            android:contentDescription="badge"/>
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/title"
@@ -81,7 +81,7 @@
             android:ellipsize="end"
             android:includeFontPadding="false"
             android:maxLines="1"
-            android:textColor="@color/black_70"
+            android:textColor="@color/Unify_N700_96"
             app:layout_constrainedWidth="true"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
@@ -95,13 +95,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:layout_marginStart="@dimen/dp_7"
-            android:layout_marginLeft="@dimen/dp_7"
+            android:layout_marginStart="@dimen/chatcommon_7dp"
             android:background="@drawable/label_user_chat"
             android:fontFamily="sans-serif"
-            android:padding="@dimen/dp_4"
-            android:textColor="@color/medium_green"
-            android:textSize="@dimen/chat_person_tag_text_size"
+            android:padding="@dimen/chatcommon_4dp"
+            android:textColor="@color/Unify_G400"
+            android:textSize="@dimen/chatcommon_9sp"
             android:textStyle="normal"
             android:visibility="gone"
             app:layout_constrainedWidth="true"
@@ -119,12 +118,21 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/chatcommon_1dp"
             android:includeFontPadding="false"
-            android:textColor="@color/black_38"
+            android:textColor="@color/Unify_N700_32"
             android:visibility="gone"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/title"
+            app:layout_constraintTop_toBottomOf="@id/title"
             app:typographyType="body_3"
-            tools:visibility="visible"
-            tools:text="Terakhir online 3 menit yang lalu" />
+            tools:text="Terakhir online 3 menit yang lalu"
+            tools:visibility="visible" />
+
+        <include
+            android:id="@+id/cl_typing"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            layout="@layout/layout_typing"
+            app:layout_constraintTop_toBottomOf="@id/title" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
+
 </RelativeLayout>

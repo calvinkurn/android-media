@@ -10,6 +10,7 @@ import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Display;
 import android.view.Gravity;
@@ -25,7 +26,10 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.tokopedia.logger.ServerLogger;
+import com.tokopedia.logger.utils.Priority;
 import com.tokopedia.notifications.R;
+import com.tokopedia.notifications.common.CMConstant;
 import com.tokopedia.notifications.inApp.CMInAppManager;
 import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.inappdata.CMBackground;
 import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.inappdata.CMButton;
@@ -34,25 +38,29 @@ import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.inappdata.C
 import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.inappdata.CMText;
 
 import java.lang.ref.WeakReference;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintSet;
+
+import timber.log.Timber;
 
 /**
  * @author lalit.singh
  */
 public class ViewEngine {
 
-    private WeakReference<Activity> activityWeakReference;
+    private final WeakReference<Activity> activityWeakReference;
 
     private View inAppView;
 
-    private int resCmClose = R.id.iv_close;
-    private int resCmImage = R.id.iv_cmImage;
-    private int resCmTitle = R.id.tv_cmTitle;
-    private int resCmMessage = R.id.tv_cmMessage;
-    private int buttonContainer = R.id.ll_buttonContainer;
+    private final int resCmClose = R.id.iv_close;
+    private final int resCmImage = R.id.iv_cmImage;
+    private final int resCmTitle = R.id.tv_cmTitle;
+    private final int resCmMessage = R.id.tv_cmMessage;
+    private final int buttonContainer = R.id.ll_buttonContainer;
 
     public ViewEngine(Activity activity) {
         activityWeakReference = new WeakReference<>(activity);
@@ -135,6 +143,12 @@ public class ViewEngine {
             handleBackPress(view, cmInApp);
             return inAppView;
         } catch (Exception e) {
+            Map<String, String> messageMap = new HashMap<>();
+            messageMap.put("type", "exception");
+            messageMap.put("err", Log.getStackTraceString(e)
+                    .substring(0, (Math.min(Log.getStackTraceString(e).length(), CMConstant.TimberTags.MAX_LIMIT))));
+            messageMap.put("data", cmInApp.toString().substring(0, (Math.min(cmInApp.toString().length(), CMConstant.TimberTags.MAX_LIMIT))));
+            ServerLogger.log(Priority.P2, "CM_VALIDATION", messageMap);
             inAppView = null;
             CmInAppListener listener = CMInAppManager.getCmInAppListener();
             if (listener != null) {
@@ -341,10 +355,15 @@ public class ViewEngine {
             if (size != null && TextUtils.isEmpty(size.trim()))
                 button.setTextSize(TypedValue.COMPLEX_UNIT_SP,
                         Float.parseFloat(size));
-        } catch (NumberFormatException ignored) {
+        } catch (NumberFormatException e) {
+            Map<String, String> messageMap = new HashMap<>();
+            messageMap.put("type", "exception");
+            messageMap.put("err", Log.getStackTraceString(e).substring(0, (Math.min(Log.getStackTraceString(e).length(), CMConstant.TimberTags.MAX_LIMIT))));
+            messageMap.put("data", cmButton.toString().substring(0, (Math.min(cmButton.toString().length(), CMConstant.TimberTags.MAX_LIMIT))));
+            ServerLogger.log(Priority.P2, "CM_VALIDATION", messageMap);
         }
 
-        int margin[] = {0, 0, 0, 0};
+        int[] margin = {0, 0, 0, 0};
         switch (orientation) {
             case CmInAppConstant.ORIENTATION_VERTICAL:
                 margin[1] = (int) getPXtoDP(8);
@@ -529,7 +548,7 @@ public class ViewEngine {
         constraintSet.clear(resCmImage);
         constraintSet.clear(resCmMessage);
 
-        if (!TextUtils.isEmpty(cmInApp.cmLayout.img)) {
+        if (!TextUtils.isEmpty(cmInApp.cmLayout.getImg())) {
             constraintSet.constrainHeight(resCmImage, (int) getPXtoDP(80));
             constraintSet.constrainWidth(resCmImage, (int) getPXtoDP(80));
             if (isCLoseButtonVisible)
@@ -580,7 +599,7 @@ public class ViewEngine {
                 ConstraintSet.PARENT_ID, ConstraintSet.END);
 
 
-        if (TextUtils.isEmpty(cmInApp.cmLayout.img)) {
+        if (TextUtils.isEmpty(cmInApp.cmLayout.getImg())) {
 
             /*title*/
             constraintSet.connect(resCmTitle, ConstraintSet.START,

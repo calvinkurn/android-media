@@ -37,7 +37,10 @@ data class RatesParam(
         var is_express_checkout: Int? = null,
         var val_rates: String? = null,
         var used_otdg: Int? = null,
-        var occ: String = "0"
+        var occ: String = "0",
+        var po_time: Int = 0,
+        var is_fulfillment: Boolean = false,
+        var mvc: String = ""
 ) {
 
     private constructor(builder: Builder) : this(
@@ -61,7 +64,10 @@ data class RatesParam(
             vehicle_leasing = builder.vehicle_leasing,
             psl_code = builder.psl_code,
             products = builder.products,
-            unique_id = builder.unique_id)
+            unique_id = builder.unique_id,
+            is_fulfillment = builder.is_fulfillment,
+            po_time = builder.po_time,
+            mvc = builder.mvc)
 
     fun toMap(): Map<String, Any> = mapOf(
             "spids" to spids,
@@ -88,7 +94,10 @@ data class RatesParam(
             "psl_code" to psl_code,
             "products" to products,
             "unique_id" to unique_id,
-            "occ" to occ
+            "occ" to occ,
+            "mvc" to mvc,
+            "po_time" to po_time,
+            "is_fulfillment" to is_fulfillment
     )
 
     class Builder(val shopShipments: List<ShopShipment>, val shipping: ShippingParam) {
@@ -123,7 +132,7 @@ data class RatesParam(
             private set
         var is_blackbox: Int = if (shipping.isBlackbox) 1 else 0
             private set
-        var address_id: String = shipping.addressId.toString()
+        var address_id: String = shipping.addressId ?: "0"
             private set
         var preorder: Int = if (shipping.isPreorder) 1 else 0
             private set
@@ -135,6 +144,11 @@ data class RatesParam(
             private set
         var unique_id: String = shipping.uniqueId
             private set
+        var is_fulfillment: Boolean = shipping.isFulfillment
+            private set
+        var po_time: Int = shipping.preOrderDuration
+            private set
+        var mvc: String = ""
 
         fun isCorner(is_corner: Boolean) = apply { this.is_corner = if (is_corner) 1 else 0 }
 
@@ -143,6 +157,8 @@ data class RatesParam(
         fun isLeasing(leasing: Boolean) = apply { this.vehicle_leasing = if (leasing) 1 else 0 }
 
         fun promoCode(code: String?) = apply { this.psl_code = code ?: "" }
+
+        fun mvc(mvc: String?) = apply { this.mvc = mvc ?: "" }
 
         fun build() = RatesParam(this)
 

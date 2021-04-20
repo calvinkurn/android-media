@@ -12,6 +12,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.hide
@@ -22,7 +23,6 @@ import com.tokopedia.topupbills.R
 import com.tokopedia.topupbills.common.analytics.DigitalTopupAnalytics
 import com.tokopedia.topupbills.telco.common.di.DigitalTelcoComponent
 import com.tokopedia.topupbills.telco.data.FilterTagDataCollection
-import com.tokopedia.topupbills.telco.data.TelcoCatalogProductInput
 import com.tokopedia.topupbills.telco.data.TelcoFilterTagComponent
 import com.tokopedia.topupbills.telco.data.TelcoProduct
 import com.tokopedia.topupbills.telco.data.constant.TelcoComponentName
@@ -34,6 +34,7 @@ import com.tokopedia.topupbills.telco.prepaid.model.TelcoFilterData
 import com.tokopedia.topupbills.telco.prepaid.viewmodel.SharedTelcoPrepaidViewModel
 import com.tokopedia.topupbills.telco.prepaid.widget.DigitalTelcoProductWidget
 import com.tokopedia.unifycomponents.ChipsUnify
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -107,7 +108,7 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
             selectedOperatorName = it.getString(OPERATOR_NAME) ?: ""
             categoryId = it.getInt(CATEGORY_ID)
 
-            sharedModelPrepaid.productList.observe(this, Observer {
+            sharedModelPrepaid.productList.observe(viewLifecycleOwner, Observer {
                 if (telcoFilterData.isFilterSelected()) titleFilterResult.show() else titleFilterResult.hide()
                 when (it) {
                     is Success -> onSuccessProductList()
@@ -115,13 +116,13 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
                 }
             })
 
-            sharedModelPrepaid.productCatalogItem.observe(this, Observer {
+            sharedModelPrepaid.productCatalogItem.observe(viewLifecycleOwner, Observer {
                 if (it.id == DigitalTelcoPrepaidFragment.ID_PRODUCT_EMPTY) {
                     telcoTelcoProductView.resetSelectedProductItem()
                 }
             })
 
-            sharedModelPrepaid.loadingProductList.observe(this, Observer {
+            sharedModelPrepaid.loadingProductList.observe(viewLifecycleOwner, Observer {
                 if (it) {
                     showShimmering()
                     titleFilterResult.hide()
@@ -130,17 +131,21 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
                 }
             })
 
-            sharedModelPrepaid.positionScrollItem.observe(this, Observer {
+            sharedModelPrepaid.positionScrollItem.observe(viewLifecycleOwner, Observer {
                 telcoTelcoProductView.scrollToPosition(it)
             })
 
-            sharedModelPrepaid.selectedCategoryViewPager.observe(this, Observer {
-                if (sharedModelPrepaid.productList.value != null) {
+            sharedModelPrepaid.selectedCategoryViewPager.observe(viewLifecycleOwner, Observer {
+                if (sharedModelPrepaid.productList.value is Success) {
                     val productList = (sharedModelPrepaid.productList.value as Success).data
                     productList.map { list ->
                         if (list.label == titleProduct && it == titleProduct &&
                                 list.product.dataCollections.isNotEmpty()) {
-                            telcoTelcoProductView.getVisibleProductItemsToUsersTracking(list.product.dataCollections[0].products)
+                            telcoTelcoProductView.calculateProductItemVisibleItemTracking(list.product.dataCollections[0].products)
+
+                            if (list.filterTagComponents.isNotEmpty()) {
+                                topupAnalytics.impressionFilterCluster(categoryId, userSession.userId)
+                            }
                         }
                     }
                 }
@@ -168,20 +173,21 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
                         itemProduct.attributes.desc,
                         MethodChecker.fromHtml(itemProduct.attributes.detail).toString(),
                         itemProduct.attributes.price,
-                        itemProduct.attributes.productPromo?.newPrice)
+                        itemProduct.attributes.productPromo?.newPrice,
+                        object: DigitalProductBottomSheet.ActionListener {
+                            override fun onClickOnProduct() {
+                                activity?.run {
+                                    telcoTelcoProductView.selectProductItem(position)
+                                    sharedModelPrepaid.setProductCatalogSelected(itemProduct)
+                                    sharedModelPrepaid.setProductAutoCheckout(itemProduct)
+                                    topupAnalytics.pickProductDetail(itemProduct, selectedOperatorName, userSession.userId)
+                                }
+                            }
+                        }
+                )
                 seeMoreBottomSheet.setOnDismissListener {
                     topupAnalytics.eventCloseDetailProduct(itemProduct.attributes.categoryId)
                 }
-                seeMoreBottomSheet.setListener(object : DigitalProductBottomSheet.ActionListener {
-                    override fun onClickOnProduct() {
-                        activity?.run {
-                            telcoTelcoProductView.selectProductItem(position)
-                            sharedModelPrepaid.setProductCatalogSelected(itemProduct)
-                            sharedModelPrepaid.setProductAutoCheckout(itemProduct)
-                            topupAnalytics.pickProductDetail(itemProduct, selectedOperatorName, userSession.userId)
-                        }
-                    }
-                })
                 seeMoreBottomSheet.show(it.supportFragmentManager, "bottom_sheet_product_telco")
 
             }
@@ -208,7 +214,7 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
                 filterData.add(sortFilterItem)
             }
             sortFilter.addItem(filterData)
-            sortFilter.chipItems.map {
+            sortFilter.chipItems?.map {
                 it.refChipUnify.setChevronClickListener {}
             }
             sortFilter.filterType = SortFilter.TYPE_QUICK
@@ -218,6 +224,8 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
                 sharedModelPrepaid.setSelectedFilter(telcoFilterData.getAllFilter())
                 topupAnalytics.eventClickResetFilterCluster(categoryId, userSession.userId)
             }
+
+            topupAnalytics.impressionFilterCluster(categoryId, userSession.userId)
         }
     }
 
@@ -268,7 +276,6 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
 
                     renderSortFilter(it.product.id, it.filterTagComponents)
                     telcoTelcoProductView.renderProductList(productType, showTitle, it.product.dataCollections)
-
                 } else {
                     onErrorProductList()
                 }
@@ -277,7 +284,7 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
             }
         }
 
-        sharedModelPrepaid.favNumberSelected.observe(this, Observer { favNumber ->
+        sharedModelPrepaid.favNumberSelected.observe(viewLifecycleOwner, Observer { favNumber ->
             val activeCategory = sharedModelPrepaid.selectedCategoryViewPager.value
             if (activeCategory == titleProduct) {
                 telcoTelcoProductView.selectProductFromFavNumber(favNumber.productId)

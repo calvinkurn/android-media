@@ -26,6 +26,8 @@ import com.tokopedia.travel.passenger.presentation.activity.TravelContactDataAct
 import com.tokopedia.travel.passenger.presentation.adapter.TravelContactArrayAdapter
 import com.tokopedia.travel.passenger.presentation.model.TravelContactData
 import com.tokopedia.travel.passenger.presentation.viewmodel.TravelContactDataViewModel
+import com.tokopedia.travel.passenger.util.TravelPassengerGqlMutation
+import com.tokopedia.travel.passenger.util.TravelPassengerGqlQuery
 import kotlinx.android.synthetic.main.fragment_travel_contact_data.*
 import javax.inject.Inject
 
@@ -69,13 +71,13 @@ class TravelContactDataFragment : BaseDaggerFragment(), TravelContactArrayAdapte
 
         initView()
 
-        contactViewModel.getContactList(GraphqlHelper.loadRawString(resources, R.raw.query_get_travel_contact_list), travelProduct)
+        contactViewModel.getContactList(TravelPassengerGqlQuery.CONTACT_LIST, travelProduct)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        contactViewModel.contactListResult.observe(this, androidx.lifecycle.Observer { contactList ->
+        contactViewModel.contactListResult.observe(viewLifecycleOwner, androidx.lifecycle.Observer { contactList ->
             contactList?.let { travelContactArrayAdapter.updateItem(it.toMutableList()) }
         })
 
@@ -114,12 +116,9 @@ class TravelContactDataFragment : BaseDaggerFragment(), TravelContactArrayAdapte
         til_contact_name.editText.setText(contactData.name)
         til_contact_name.setErrorTextAppearance(R.style.ErrorTextAppearance)
 
-        til_contact_email.setLabel(getString(R.string.travel_contact_data_email_title))
-        til_contact_email.editText.setText(contactData.email)
-        til_contact_email.setErrorTextAppearance(R.style.ErrorTextAppearance)
+        til_contact_email.textFieldInput.setText(contactData.email)
 
-        til_contact_phone_number.editText.setText(contactData.phone)
-        til_contact_phone_number.setErrorTextAppearance(R.style.ErrorTextAppearance)
+        til_contact_phone_number.textFieldInput.setText(contactData.phone)
 
         val initialPhoneCode = getString(R.string.phone_code_format, contactData.phoneCode)
         if (contactData.phoneCode != 0) spinnerData += initialPhoneCode
@@ -153,8 +152,8 @@ class TravelContactDataFragment : BaseDaggerFragment(), TravelContactArrayAdapte
         if (contact != null) {
             selectedContact = TravelContactListModel.Contact(fullName = contact.fullName, email = contact.email, phoneNumber = contact.phoneNumber)
 
-            til_contact_email.editText.setText(contact.email)
-            til_contact_phone_number.editText.setText(contact.phoneNumber)
+            til_contact_email.textFieldInput.setText(contact.email)
+            til_contact_phone_number.textFieldInput.setText(contact.phoneNumber)
 
             contactData.phoneCode = contact.phoneCountryCode
             spinnerData.clear()
@@ -167,11 +166,11 @@ class TravelContactDataFragment : BaseDaggerFragment(), TravelContactArrayAdapte
     private fun onSaveButtonClicked() {
         if (validateData()) {
             contactData.name = til_contact_name.editText.text.toString()
-            contactData.email = til_contact_email.editText.text.toString()
-            contactData.phone = til_contact_phone_number.editText.text.toString()
+            contactData.email = til_contact_email.textFieldInput.text.toString()
+            contactData.phone = til_contact_phone_number.textFieldInput.text.toString()
             contactData.phoneCode = (sp_contact_phone_code.selectedItem as String).toInt()
 
-            contactViewModel.updateContactList(GraphqlHelper.loadRawString(resources, R.raw.query_upsert_travel_contact_list),
+            contactViewModel.updateContactList(TravelPassengerGqlMutation.UPSERT_CONTACT,
                     TravelUpsertContactModel.Contact(fullName = contactData.name, email = contactData.email, phoneNumber = contactData.phone,
                             phoneCountryCode = contactData.phoneCode))
 
@@ -194,12 +193,14 @@ class TravelContactDataFragment : BaseDaggerFragment(), TravelContactArrayAdapte
             til_contact_name.error = getString(R.string.travel_contact_data_name_alphabet_only)
             isValid = false
         }
-        if (!isValidEmail(til_contact_email.editText.text.toString())) {
-            til_contact_email.error = getString(R.string.travel_contact_data_email_error)
+        if (!isValidEmail(til_contact_email.textFieldInput.text.toString())) {
+            til_contact_email.setError(true)
+            til_contact_email.setMessage(getString(R.string.travel_contact_data_email_error))
             isValid = false
         }
-        if (til_contact_phone_number.editText.text.length < MIN_PHONE_NUMBER_DIGIT) {
-            til_contact_phone_number.error = getString(R.string.travel_contact_data_phone_number_error)
+        if (til_contact_phone_number.textFieldInput.text.length < MIN_PHONE_NUMBER_DIGIT) {
+            til_contact_phone_number.setError(true)
+            til_contact_phone_number.setMessage(getString(R.string.travel_contact_data_phone_number_error))
             isValid = false
         }
         return isValid
@@ -210,9 +211,12 @@ class TravelContactDataFragment : BaseDaggerFragment(), TravelContactArrayAdapte
     }
 
     private fun resetEditTextError() {
-        til_contact_email.error = ""
+        til_contact_email.setMessage("")
+        til_contact_email.setError(false)
+
         til_contact_name.error = ""
-        til_contact_phone_number.error = ""
+        til_contact_phone_number.setMessage("")
+        til_contact_email.setError(false)
     }
 
     private fun isValidEmail(contactEmail: String): Boolean {

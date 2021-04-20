@@ -1,0 +1,28 @@
+apply plugin: 'com.android.library'
+apply from: "$rootProject.projectDir/buildconfig/kotlin/core-module.gradle"
+apply plugin: 'io.hansel.preprocessor.module'
+apply plugin: 'kotlin-android-extensions'
+
+repositories {
+    maven { url 'https://maven-hansel.tokopedia.com/maven' }
+}
+
+buildscript {
+    repositories {
+        mavenCentral()
+        maven { url 'https://maven-hansel.tokopedia.com/maven' }
+        jcenter()
+    }
+    dependencies {
+        classpath rootProject.ext.miscDependencies.hansel
+    }
+}
+
+dependencies {
+
+	implementation rootProject.ext.unifyDependencies.principles
+    implementation project(rootProject.ext.libraries.tkpdabstraction)
+    implementation rootProject.ext.supportLibDependencies.recyclerViewV7
+    implementation rootProject.ext.networkDependencies.glide
+    implementation project(rootProject.ext.libraries.utils)
+}

@@ -6,7 +6,7 @@
     android:layout_height="wrap_content"
     android:paddingStart="@dimen/layout_lvl2"
     android:paddingLeft="@dimen/layout_lvl2"
-    android:background="@color/Neutral_N0">
+    android:background="@color/Unify_N0">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/hotel_cancellation_reason_hotel_description"
@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:paddingTop="@dimen/layout_lvl2"
         android:paddingBottom="@dimen/layout_lvl2"
-        android:textColor="@color/Neutral_N700_68"
+        android:textColor="@color/Unify_N700_68"
         app:layout_constraintEnd_toStartOf="@+id/hotel_cancellation_reason_radio_button"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -55,7 +55,7 @@
         android:id="@+id/hotel_cancellation_seperator"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/Neutral_N75"
+        android:background="@color/Unify_N75"
         app:layout_constraintBottom_toBottomOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

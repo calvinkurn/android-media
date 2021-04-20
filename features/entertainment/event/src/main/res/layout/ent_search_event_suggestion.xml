@@ -4,7 +4,7 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:padding="16dp">
+    android:padding="@dimen/spacing_lvl4">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/pilKegiatan"
@@ -21,7 +21,7 @@
         android:id="@+id/recycler_view_kegiatan"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="@dimen/spacing_lvl4"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         tools:listitem="@layout/ent_search_event_list_item"
         app:layout_constraintTop_toBottomOf="@+id/pilKegiatan"/>

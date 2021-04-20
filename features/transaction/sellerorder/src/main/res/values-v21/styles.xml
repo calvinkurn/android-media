@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="WaitingPaymentOrderTheme" parent="@style/Theme.White">
+        <item name="android:windowAnimationStyle">@style/WaitingPaymentOrderActivityTransition
+        </item>
+    </style>
+
+    <style name="WaitingPaymentOrderActivityTransition">
+        <item name="android:activityOpenEnterAnimation">@anim/slide_right_in_medium</item>
+        <item name="android:activityOpenExitAnimation">@anim/slide_left_out_medium</item>
+        <item name="android:activityCloseEnterAnimation">@anim/slide_left_in_medium</item>
+        <item name="android:activityCloseExitAnimation">@anim/slide_right_out_medium</item>
+    </style>
+</resources>

@@ -7,17 +7,21 @@ import android.net.Uri
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.provider.Settings
+import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.material.snackbar.Snackbar
+import com.google.gson.Gson
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.base.view.appupdate.model.DataUpdateApp
 import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -37,9 +41,7 @@ import com.tokopedia.home.account.AccountConstants.Analytics.NOTIFICATION
 import com.tokopedia.home.account.AccountConstants.Analytics.PAYMENT_METHOD
 import com.tokopedia.home.account.AccountConstants.Analytics.PRIVACY_POLICY
 import com.tokopedia.home.account.AccountConstants.Analytics.SAFE_MODE
-import com.tokopedia.home.account.AccountConstants.Analytics.SETTING
 import com.tokopedia.home.account.AccountConstants.Analytics.SHAKE_SHAKE
-import com.tokopedia.home.account.AccountConstants.Analytics.SHOP
 import com.tokopedia.home.account.AccountConstants.Analytics.TERM_CONDITION
 import com.tokopedia.home.account.R
 import com.tokopedia.home.account.analytics.AccountAnalytics
@@ -48,7 +50,6 @@ import com.tokopedia.home.account.constant.SettingConstant.Url.PATH_CHECKOUT_TEM
 import com.tokopedia.home.account.data.util.NotifPreference
 import com.tokopedia.home.account.di.component.DaggerAccountLogoutComponent
 import com.tokopedia.home.account.di.module.SettingsModule
-import com.tokopedia.home.account.presentation.activity.StoreSettingActivity
 import com.tokopedia.home.account.presentation.activity.TkpdPaySettingActivity
 import com.tokopedia.home.account.presentation.adapter.setting.GeneralSettingAdapter
 import com.tokopedia.home.account.presentation.listener.RedDotGimmickView
@@ -57,14 +58,22 @@ import com.tokopedia.home.account.presentation.presenter.RedDotGimmickPresenter
 import com.tokopedia.home.account.presentation.presenter.SettingsPresenter
 import com.tokopedia.home.account.presentation.viewmodel.SettingItemViewModel
 import com.tokopedia.home.account.presentation.viewmodel.base.SwitchSettingItemViewModel
+import com.tokopedia.internal_review.factory.createReviewHelper
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.navigation_common.model.WalletPref
-import com.tokopedia.permissionchecker.PermissionCheckerHelper
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
+import com.tokopedia.seller_migration_common.isSellerMigrationEnabled
+import com.tokopedia.seller_migration_common.presentation.util.initializeSellerMigrationAccountSettingTicker
 import com.tokopedia.sessioncommon.ErrorHandlerSession
-import com.tokopedia.sessioncommon.data.Token.Companion.GOOGLE_API_KEY
+import com.tokopedia.sessioncommon.data.Token.Companion.getGoogleClientId
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.url.TokopediaUrl
+import com.tokopedia.utils.permission.PermissionCheckerHelper
+import kotlinx.android.synthetic.main.fragment_general_setting.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
 
@@ -80,12 +89,14 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), RedDotGimmickView, 
 
     private lateinit var loadingView: View
     private lateinit var baseSettingView: View
+    private lateinit var updateButton: UnifyButton
 
     private lateinit var accountAnalytics: AccountAnalytics
     private lateinit var permissionCheckerHelper: PermissionCheckerHelper
     private lateinit var notifPreference: NotifPreference
     private lateinit var googleSignInClient: GoogleSignInClient
     private val remoteConfig by lazy { FirebaseRemoteConfigImpl(context) }
+    private val reviewHelper by lazy { createReviewHelper(context?.applicationContext) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -95,13 +106,15 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), RedDotGimmickView, 
             notifPreference = NotifPreference(it)
         }
 
-        val googleSignInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(GOOGLE_API_KEY)
-                .requestEmail()
-                .requestProfile()
-                .build()
+        activity?.run {
+            val googleSignInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                    .requestIdToken(getGoogleClientId(this))
+                    .requestEmail()
+                    .requestProfile()
+                    .build()
 
-        googleSignInClient = activity?.let { GoogleSignIn.getClient(it, googleSignInOptions) } as GoogleSignInClient
+            googleSignInClient = GoogleSignIn.getClient(this, googleSignInOptions)
+        }
     }
 
     override fun onResume() {
@@ -143,17 +156,15 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), RedDotGimmickView, 
         recyclerView.isNestedScrollingEnabled = false
         recyclerView.addItemDecoration(DividerItemDecoration(activity))
         val appVersion = view.findViewById<TextView>(R.id.text_view_app_version)
+        updateButton = view.findViewById(R.id.force_update_button)
         appVersion.text = getString(R.string.application_version_fmt, GlobalConfig.RAW_VERSION_NAME)
+        showForceUpdate()
     }
 
     override fun getSettingItems(): List<SettingItemViewModel> {
         val settingItems = ArrayList<SettingItemViewModel>()
         settingItems.add(SettingItemViewModel(SettingConstant.SETTING_ACCOUNT_ID,
-                getString(R.string.title_account_setting), getString(R.string.subtitle_account_setting)))
-        if (userSession.hasShop()) {
-            settingItems.add(SettingItemViewModel(SettingConstant.SETTING_SHOP_ID,
-                    getString(R.string.account_home_title_shop_setting), getString(R.string.account_home_subtitle_shop_setting)))
-        }
+                getString(R.string.general_setting_title_account_setting_item), getString(R.string.subtitle_account_setting)))
 
         val walletModel = try { walletPref.retrieveWallet() } catch (throwable: Throwable) { null }
         val walletName = if (walletModel != null) {
@@ -174,10 +185,8 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), RedDotGimmickView, 
             }
         }
 
-        if (remoteConfig.getBoolean(RemoteConfigKey.ENABLE_ONE_CLICK_CHECKOUT, true)) {
-            settingItems.add(SettingItemViewModel(SettingConstant.SETTING_OCC_PREFERENCE_ID,
-                    getString(R.string.title_occ_preference_setting), getString(R.string.subtitle_occ_preference_setting)))
-        }
+        settingItems.add(SettingItemViewModel(SettingConstant.SETTING_OCC_PREFERENCE_ID,
+                getString(R.string.title_occ_preference_setting), getString(R.string.subtitle_occ_preference_setting)))
 
         settingItems.add(SettingItemViewModel(SettingConstant.SETTING_NOTIFICATION_ID,
                 getString(R.string.title_notification_setting), getString(R.string.subtitle_notification_setting)))
@@ -185,6 +194,9 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), RedDotGimmickView, 
                 getString(R.string.title_shake_setting), getString(R.string.subtitle_shake_setting), false))
         settingItems.add(SwitchSettingItemViewModel(SettingConstant.SETTING_GEOLOCATION_ID,
                 getString(R.string.title_geolocation_setting), getString(R.string.subtitle_geolocation_setting), true))
+
+        settingItems.add(SettingItemViewModel(SettingConstant.SETTING_IMAGE_QUALITY,
+                getString(R.string.image_quality_setting_screen), getString(R.string.image_quality_setting_title)))
 
         if (settingsPresenter.adultAgeVerified)
             settingItems.add(SwitchSettingItemViewModel(SettingConstant.SETTING_SAFE_SEARCH_ID,
@@ -202,6 +214,12 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), RedDotGimmickView, 
                 getString(R.string.title_help_center_setting)))
         settingItems.add(SettingItemViewModel(SettingConstant.SETTING_APP_ADVANCED_SETTING,
                 getString(R.string.title_app_advanced_setting)))
+
+
+        if (GlobalConfig.APPLICATION_TYPE == 3) {
+            settingItems.add(SettingItemViewModel(SettingConstant.SETTING_FEEDBACK_FORM,
+                    getString(R.string.feedback_form)))
+        }
 
         if (GlobalConfig.isAllowDebuggingTools()) {
             settingItems.add(SettingItemViewModel(SettingConstant.SETTING_DEV_OPTIONS,
@@ -225,10 +243,6 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), RedDotGimmickView, 
                 accountAnalytics.eventClickSetting(ACCOUNT)
                 RouteManager.route(activity, ApplinkConstInternalGlobal.ACCOUNT_SETTING)
             }
-            SettingConstant.SETTING_SHOP_ID -> {
-                accountAnalytics.eventClickSetting(String.format("%s %s", SHOP, SETTING))
-                startActivity(StoreSettingActivity.createIntent(activity))
-            }
             SettingConstant.SETTING_TKPD_PAY_ID -> {
                 accountAnalytics.eventClickSetting(PAYMENT_METHOD)
                 startActivity(TkpdPaySettingActivity.createIntent(activity))
@@ -240,6 +254,7 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), RedDotGimmickView, 
             SettingConstant.SETTING_NOTIFICATION_ID -> {
                 RouteManager.route(context, ApplinkConstInternalMarketplace.USER_NOTIFICATION_SETTING)
                 accountAnalytics.eventClickSetting(NOTIFICATION)
+                accountAnalytics.eventTroubleshooterClicked()
             }
             SettingConstant.SETTING_TNC_ID -> {
                 accountAnalytics.eventClickSetting(TERM_CONDITION)
@@ -259,7 +274,7 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), RedDotGimmickView, 
             }
             SettingConstant.SETTING_APP_REVIEW_ID -> {
                 accountAnalytics.eventClickSetting(APPLICATION_REVIEW)
-                goToPlaystore()
+                goToReviewApp()
             }
             SettingConstant.SETTING_HELP_CENTER_ID -> {
                 accountAnalytics.eventClickSetting(HELP_CENTER)
@@ -277,11 +292,27 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), RedDotGimmickView, 
                 accountAnalytics.eventClickSetting(DEVELOPER_OPTIONS)
                 RouteManager.route(activity, ApplinkConst.DEVELOPER_OPTIONS)
             }
+            SettingConstant.SETTING_FEEDBACK_FORM -> {
+                RouteManager.route(context, ApplinkConst.FEEDBACK_FORM)
+            }
             SettingConstant.SETTING_OCC_PREFERENCE_ID -> {
                 RouteManager.route(context, ApplinkConstInternalMarketplace.PREFERENCE_LIST)
             }
+            SettingConstant.SETTING_IMAGE_QUALITY -> {
+                RouteManager.route(context, ApplinkConstInternalGlobal.MEDIA_QUALITY_SETTING)
+            }
             else -> {
             }
+        }
+    }
+
+    private fun goToReviewApp() {
+        if (reviewHelper != null) {
+            lifecycleScope.launch(Dispatchers.IO) {
+                reviewHelper?.checkForCustomerReview(context, childFragmentManager, ::goToPlaystore)
+            }
+        } else {
+            goToPlaystore()
         }
     }
 
@@ -329,6 +360,26 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), RedDotGimmickView, 
         activity?.let {
             startActivity(RouteManager.getIntent(it, ApplinkConstInternalGlobal.LOGOUT))
         }
+    }
+
+    private fun showForceUpdate() {
+            val dataAppUpdate = remoteConfig.getString(RemoteConfigKey.CUSTOMER_APP_UPDATE)
+            if (!TextUtils.isEmpty(dataAppUpdate)) {
+                val gson = Gson()
+                val dataUpdateApp = gson.fromJson(dataAppUpdate, DataUpdateApp::class.java)
+                if(GlobalConfig.VERSION_CODE < dataUpdateApp.latestVersionForceUpdate) {
+                    updateButton.visibility = View.VISIBLE
+                    updateButton.setOnClickListener {
+                        if (activity != null) {
+                            val intent = RouteManager.getIntent(activity, String.format("%s?titlebar=false&url=%s", ApplinkConst.WEBVIEW, dataUpdateApp.link))
+                            this.startActivity(intent)
+                        }
+                    }
+                } else {
+                    updateButton.visibility = View.GONE
+                }
+
+            }
     }
 
     private fun saveSettingValue(key: String, isChecked: Boolean) {
@@ -440,6 +491,7 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), RedDotGimmickView, 
 
     override fun refreshSettingOptionsList() {
         if (adapter != null) {
+            setupTickerSellerMigration()
             adapter.setSettingItems(settingItems)
             adapter.notifyDataSetChanged()
         }
@@ -457,6 +509,14 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), RedDotGimmickView, 
         if (view != null) {
             val errorMessage = ErrorHandlerSession.getErrorMessage(context, throwable)
             Toaster.showError(view!!, errorMessage, Snackbar.LENGTH_LONG)
+        }
+    }
+
+    private fun setupTickerSellerMigration() {
+        if(isSellerMigrationEnabled(context) && userSession.hasShop()) {
+            initializeSellerMigrationAccountSettingTicker(tickerSellerMigrationAccountSetting)
+        } else {
+            tickerSellerMigrationAccountSetting.hide()
         }
     }
 

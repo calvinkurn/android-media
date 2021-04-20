@@ -24,19 +24,11 @@ class Weaver{
         }
 
         fun executeWeaveCoRoutineWithFirebase(weaverInterface: WeaveInterface, remoteConfigKey: String, context: Context?) {
-            if(!::weaverFirebaseConditionCheck.isInitialized) {
-                context?.let { initFirebaseRemoteConfig(it, remoteConfigKey) } ?: weaverInterface.execute()
+            if(!::firebaseRemoteConfig.isInitialized) {
+                context?.let { firebaseRemoteConfig = FirebaseRemoteConfigImpl(context) } ?: weaverInterface.execute()
             }
+            weaverFirebaseConditionCheck = WeaverFirebaseConditionCheck(remoteConfigKey, firebaseRemoteConfig)
             executeWeaveCoRoutine(weaverInterface, weaverFirebaseConditionCheck)
-        }
-
-        fun initFirebaseRemoteConfig(context: Context, remoteConfigKey: String){
-            if(!::firebaseRemoteConfig.isInitialized){
-                firebaseRemoteConfig = FirebaseRemoteConfigImpl(context)
-            }
-            if(!::weaverFirebaseConditionCheck.isInitialized) {
-                weaverFirebaseConditionCheck = WeaverFirebaseConditionCheck(remoteConfigKey, firebaseRemoteConfig)
-            }
         }
 
         fun executeWeaveCoRoutineNow(weaverInterface: WeaveInterface) {

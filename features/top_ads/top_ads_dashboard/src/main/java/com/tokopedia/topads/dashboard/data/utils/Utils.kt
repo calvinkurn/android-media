@@ -9,7 +9,8 @@ import android.widget.TextView
 import com.tokopedia.abstraction.common.utils.view.DateFormatUtils.DEFAULT_LOCALE
 import com.tokopedia.datepicker.range.view.constant.DatePickerConstant
 import com.tokopedia.datepicker.range.view.model.PeriodRangeModel
-import com.tokopedia.topads.auto.view.fragment.AutoAdsBaseBudgetFragment
+import com.tokopedia.topads.common.data.util.Utils.locale
+import com.tokopedia.topads.common.data.util.Utils.removeCommaRawString
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.unifycomponents.SearchBarUnify
 import java.text.DateFormat
@@ -25,8 +26,8 @@ import kotlin.collections.ArrayList
 
 object Utils {
 
-    val outputFormat: DateFormat = SimpleDateFormat("dd MMM yyyy")
-    val format = SimpleDateFormat("yyyy-MM-dd")
+    val outputFormat: DateFormat = SimpleDateFormat("dd MMM yyyy", locale)
+    val format = SimpleDateFormat("yyyy-MM-dd", locale)
 
     fun setSearchListener(context: Context?, view: View, onSuccess: () -> Unit) {
         val searchbar = view.findViewById<SearchBarUnify>(R.id.searchBar)
@@ -39,7 +40,7 @@ object Utils {
 
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                     onSuccess.invoke()
-                    dismissKeyboard(context,view)
+                    dismissKeyboard(context, view)
                     return true
                 }
                 return false
@@ -48,7 +49,7 @@ object Utils {
         searchClearButton?.setOnClickListener {
             searchTextField?.text?.clear()
             onSuccess.invoke()
-            dismissKeyboard(context,view)
+            dismissKeyboard(context, view)
         }
     }
 
@@ -73,7 +74,7 @@ object Utils {
     }
 
     @Throws(ParseException::class)
-    fun String.stringToDate(format: String) : Date {
+    fun String.stringToDate(format: String): Date {
         val fromFormat = SimpleDateFormat(format, DEFAULT_LOCALE)
         try {
             return fromFormat.parse(this)
@@ -96,6 +97,7 @@ object Utils {
 
 
     }
+
     fun getEndDate(): Date? {
         val endCalendar = Calendar.getInstance()
         return endCalendar.time
@@ -103,12 +105,18 @@ object Utils {
 
 
     fun convertToCurrencyString(value: Long): String {
-        return (NumberFormat.getNumberInstance(AutoAdsBaseBudgetFragment.locale).format(value))
+        return (NumberFormat.getNumberInstance(locale).format(value))
     }
 
-    fun convertMoneyToValue(price: String):Int {
-        return price.replace("Rp", "").
-        replace(".", "").
-        replace(",","").trim().toInt()
+    fun convertMoneyToValue(price: String): Int {
+        return price.replace("Rp", "").replace(".", "").replace(",", "").trim().toInt()
+    }
+
+    fun calculatePercentage(number: String, percent: Int): Int {
+        val price = number.removeCommaRawString()
+        var result = 0
+        if (price.isNotEmpty())
+            result = (price.toInt() * percent) / 100
+        return result
     }
 }

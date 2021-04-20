@@ -160,7 +160,7 @@ class FlightSelectPassengerBottomSheet : BottomSheetUnify() {
     }
 
     private fun showErrorMessage(@StringRes resId: Int) {
-        Toaster.make(mChildView, getString(resId), Toaster.LENGTH_SHORT, type = Toaster.TYPE_ERROR)
+        Toaster.build(mChildView, getString(resId), Toaster.LENGTH_SHORT, type = Toaster.TYPE_ERROR).show()
     }
 
     private fun validatePassenger(passengers: FlightPassengerModel): Boolean {

@@ -8,150 +8,16 @@ const val GQL_NAV_CATEGORY_DETAIL_V3: String = """query CategoryDetailQueryV3(${
       message
     }
         data{
-      id
+        id
+        rootId
+        parent
       name
-      tree
-	rootId      
-      parent
       url
-      redirectionURL
       appRedirectionURL
-      displayButton
-      applinks
-      redirectTo
-      iconImageURL
-      hidden
-      view
-      intermediary
       isAdult
  	  isBanned
       bannedMsg
       bannedMsgHeader
-      appRedirection
-      brandCurated
-      titleTag
-      description
-      metaDescription
-      bannerTemplate
-      bannerType
-      filterAttribute{
-        brandId
-      }
-      widget{
-        bannerCpm
-        bannerPromo
-        catalogLatest
-        catalogPopular
-        catalogCurated
-        subCategoryNavigation
-        subCategoryThumbnail
-        othersSubCategoryThumbnail
-        contentVideo
-        hotlist
-        officialStore
-        contentStaticHeader
-        contentFeaturedCategory
-        contentBrand
-        contentCuratedProduct
-        staticHeader{
-          headerImage
-          headerImageHexColor
-        }
-        curatedProduct{
-          departmentId
-          section{
-            title
-            products{
-              productId
-              departmentId
-              condition
-              imageUrl
-              name
-              price
-              rating
-              review
-              url
-              applinks
-              wholesale{
-                quantityMin
-                quantityMax
-                price
-              }
-              badges{
-                title
-                imageUrl
-              }
-              labels{
-                title
-                color
-              }
-              shop{
-                id
-                name
-                url
-                location
-                city
-                reputation
-                freeReturn
-                clover
-                goldmerchant
-                official
-              }
-            }
-          }
-        }
-        banner{
-          id
-          title
-          url
-          imageUrl
-          applinks
-          position
-        }
-        videoCategory{
-          title
-          description
-          videoUrl
-          youtubeId
-        }
-        brandCategory{
-          id
-          name
-          url
-          imageUrl
-          applinks
-        }
-        featuredCategory{
-          id
-          name
-          categoryID
-          isAdult
-          url
-          imageUrl
-          applinks
-        }
-        catalogCategory{
-          id
-          name
-          url
-          imageUrl
-          type
-          bgImageUrl
-          color
-          catalogs {
-            id
-            catalogId
-            name
-            url
-            imageUrl
-            marketPrice
-          }
-        }
-        longDescription{
-          title
-          description
-        }
-      }
       child{
         id
         name
@@ -159,16 +25,6 @@ const val GQL_NAV_CATEGORY_DETAIL_V3: String = """query CategoryDetailQueryV3(${
         thumbnailImage
         isAdult
         applinks
-      }
-      relatedHotlist{
-        id
-        url
-        name
-      }
-        relatedCategory{
-        id
-        url
-        name
       }
     }
   }

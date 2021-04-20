@@ -4,8 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="@color/Unify_N0"
     android:descendantFocusability="beforeDescendants"
+    android:focusable="true"
     android:focusableInTouchMode="true"
     android:orientation="vertical">
 
@@ -32,7 +33,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/spacing_lvl4"
-                    app:card_type="shadow" >
+                    app:card_type="shadow">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -83,38 +84,21 @@
 
                 </com.tokopedia.unifycomponents.CardUnify>
 
-                <com.tokopedia.design.component.Tabs
+                <com.tokopedia.unifycomponents.TabsUnify
                     android:id="@+id/tab_layout"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/spacing_lvl7"
-                    android:layout_marginTop="@dimen/spacing_lvl4"
-                    android:background="@color/white"
-                    android:theme="@style/ThemeOverlay.AppCompat.Light"
+                    android:layout_height="wrap_content"
                     android:visibility="gone"
-                    app:tabGravity="fill"
-                    app:tabIndicatorColor="@color/tkpd_main_green"
-                    app:tabMode="fixed"
-                    app:tabSelectedTextColor="@color/tkpd_main_green"
-                    app:tabTextAppearance="@style/Tabs.Secondary"
-                    app:tabTextColor="@color/font_black_disabled_38"
                     tools:visibility="visible" />
 
-                <View
-                    android:id="@+id/separator"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/recharge_general_seperator_size"
-                    android:background="@color/separator_voucher"
-                    android:visibility="gone" />
-
-                <com.tokopedia.design.viewpager.WrapContentViewPager
+                <androidx.viewpager2.widget.ViewPager2
                     android:id="@+id/product_view_pager"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/spacing_lvl4"
                     android:layout_marginRight="@dimen/spacing_lvl4"
                     android:layout_marginBottom="@dimen/spacing_lvl4"
-                    android:visibility="visible"
-                    app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+                    android:orientation="horizontal" />
 
             </LinearLayout>
 
@@ -126,7 +110,7 @@
         android:id="@+id/loading_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/white"
+        android:background="@color/Unify_N0"
         tools:visibility="gone">
 
         <com.tokopedia.unifycomponents.LoaderUnify

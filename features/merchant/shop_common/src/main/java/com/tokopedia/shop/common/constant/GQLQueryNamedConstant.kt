@@ -23,7 +23,6 @@ object GQLQueryNamedConstant {
 
     const val GO_TO_MEMBERSHIP_DETAIL = "membership detail"
     const val GO_TO_MEMBERSHIP_REGISTER = "membership register"
-    const val SHOP_TRANSACTION_STATISTIC = "gql_get_shop_transaction_statistic"
     const val GQL_CHECK_WISHLIST = "gql_check_wishlist"
     const val SHOP_PAGE_P1_QUERIES = "shop_page_p1_queries"
 }

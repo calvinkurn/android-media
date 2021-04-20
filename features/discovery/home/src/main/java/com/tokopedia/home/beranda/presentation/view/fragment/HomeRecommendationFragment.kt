@@ -50,6 +50,8 @@ import com.tokopedia.home.beranda.presentation.view.adapter.factory.homeRecommen
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.HomeFeedItemDecoration
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.HomeRecommendationItemViewHolder.Companion.LAYOUT
 import com.tokopedia.home.beranda.presentation.viewModel.HomeRecommendationViewModel
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils.convertToLocationParams
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.smart_recycler_helper.SmartExecutors
 import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker
@@ -103,6 +105,7 @@ open class HomeRecommendationFragment : Fragment(), HomeRecommendationListener {
         super.onCreate(savedInstanceState)
         initInjector()
         initViewModel()
+        viewModel.topAdsBannerNextPageToken = homeCategoryListener?.getTopAdsBannerNextPageToken()?:""
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -214,7 +217,7 @@ open class HomeRecommendationFragment : Fragment(), HomeRecommendationListener {
     private fun createEndlessRecyclerViewListener(){
         endlessRecyclerViewScrollListener = object : HomeFeedEndlessScrollListener(recyclerView?.layoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
-                viewModel.loadNextData(tabName, recomId, DEFAULT_TOTAL_ITEM_HOME_RECOM_PER_PAGE, page)
+                viewModel.loadNextData(tabName, recomId, DEFAULT_TOTAL_ITEM_HOME_RECOM_PER_PAGE, page, getLocationParamString())
             }
         }
     }
@@ -308,7 +311,7 @@ open class HomeRecommendationFragment : Fragment(), HomeRecommendationListener {
     }
 
     override fun onRetryGetProductRecommendationData() {
-        viewModel.loadInitialPage(tabName, recomId, DEFAULT_TOTAL_ITEM_HOME_RECOM_PER_PAGE)
+        viewModel.loadInitialPage(tabName, recomId, DEFAULT_TOTAL_ITEM_HOME_RECOM_PER_PAGE, getLocationParamString())
     }
 
     private fun initListeners() {
@@ -364,7 +367,7 @@ open class HomeRecommendationFragment : Fragment(), HomeRecommendationListener {
     private fun loadFirstPageData() {
         if (userVisibleHint && isAdded && activity != null && !hasLoadData) {
             hasLoadData = true
-            viewModel.loadInitialPage(tabName, recomId, DEFAULT_TOTAL_ITEM_HOME_RECOM_PER_PAGE)
+            viewModel.loadInitialPage(tabName, recomId, DEFAULT_TOTAL_ITEM_HOME_RECOM_PER_PAGE, getLocationParamString())
         }
     }
 
@@ -475,5 +478,9 @@ open class HomeRecommendationFragment : Fragment(), HomeRecommendationListener {
             homeFeedFragment.arguments = bundle
             return homeFeedFragment
         }
+    }
+
+    private fun getLocationParamString() : String {
+        return ChooseAddressUtils.getLocalizingAddressData(requireContext())?.convertToLocationParams() ?: ""
     }
 }

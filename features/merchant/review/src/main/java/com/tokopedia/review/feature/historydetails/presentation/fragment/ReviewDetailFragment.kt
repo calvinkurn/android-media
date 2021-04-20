@@ -3,7 +3,6 @@ package com.tokopedia.review.feature.historydetails.presentation.fragment
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -36,6 +35,7 @@ import com.tokopedia.review.feature.historydetails.di.ReviewDetailComponent
 import com.tokopedia.review.feature.historydetails.presentation.viewmodel.ReviewDetailViewModel
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.ticker.Ticker
 import kotlinx.android.synthetic.main.fragment_review_detail.*
 import kotlinx.android.synthetic.main.partial_review_connection_error.view.*
 import javax.inject.Inject
@@ -53,10 +53,10 @@ class ReviewDetailFragment : BaseDaggerFragment(),
         const val SCORE_ZERO = 0
         const val SCORE_MAX = 2
 
-        fun createNewInstance(feedbackId: Int) : ReviewDetailFragment{
+        fun createNewInstance(feedbackId: Long) : ReviewDetailFragment{
             return ReviewDetailFragment().apply {
                 arguments = Bundle().apply {
-                    putInt(KEY_FEEDBACK_ID, feedbackId)
+                    putLong(KEY_FEEDBACK_ID, feedbackId)
                 }
             }
         }
@@ -105,7 +105,7 @@ class ReviewDetailFragment : BaseDaggerFragment(),
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        activity?.window?.decorView?.setBackgroundColor(Color.WHITE)
+        activity?.window?.decorView?.setBackgroundColor(ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_N0))
     }
 
     override fun getScreenName(): String {
@@ -154,8 +154,10 @@ class ReviewDetailFragment : BaseDaggerFragment(),
     }
 
     override fun onBackPressed() {
-        (viewModel.reviewDetails.value as? Success)?.let {
-            ReviewDetailTracking.eventClickBack(it.data.product.productId, it.data.review.feedbackId, viewModel.getUserId())
+        if(::viewModel.isInitialized) {
+            (viewModel.reviewDetails.value as? Success)?.let {
+                ReviewDetailTracking.eventClickBack(it.data.product.productId, it.data.review.feedbackId, viewModel.getUserId())
+            }
         }
     }
 
@@ -180,7 +182,7 @@ class ReviewDetailFragment : BaseDaggerFragment(),
 
     private fun getDataFromArguments() {
         arguments?.let {
-            viewModel.setFeedbackId(it.getInt(KEY_FEEDBACK_ID))
+            viewModel.setFeedbackId(it.getLong(KEY_FEEDBACK_ID))
         }
     }
 
@@ -198,6 +200,7 @@ class ReviewDetailFragment : BaseDaggerFragment(),
                             setReview(review, product.productName)
                             setResponse(response)
                             setReputation(reputation, response.shopName)
+                            setTicker(review.editable)
                         }
                     } else {
                         with(it.data) {
@@ -236,7 +239,7 @@ class ReviewDetailFragment : BaseDaggerFragment(),
         })
     }
 
-    private fun setProduct(product: ProductrevGetReviewDetailProduct, feedbackId: Int) {
+    private fun setProduct(product: ProductrevGetReviewDetailProduct, feedbackId: Long) {
         with(product) {
             reviewDetailProductCard.setOnClickListener {
                 ReviewDetailTracking.eventClickProductCard(productId, feedbackId, viewModel.getUserId())
@@ -282,13 +285,13 @@ class ReviewDetailFragment : BaseDaggerFragment(),
             if(reviewText.isEmpty()) {
                 reviewDetailContent.apply {
                     text = getString(R.string.no_reviews_yet)
-                    setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Neutral_N700_32))
+                    setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_32))
                     show()
                 }
             } else {
                 reviewDetailContent.apply {
                     text = reviewText
-                    setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Neutral_N700_96))
+                    setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
                     show()
                 }
             }
@@ -341,6 +344,22 @@ class ReviewDetailFragment : BaseDaggerFragment(),
                     }
                 }
             }
+        }
+    }
+
+    private fun setTicker(isEditable: Boolean) {
+        if(isEditable) {
+            reviewDetailTicker.apply {
+                tickerType = Ticker.TYPE_ANNOUNCEMENT
+                tickerTitle = getString(R.string.review_history_details_ticker_editable_title)
+                setTextDescription(getString(R.string.review_history_details_ticker_editable_subtitle))
+            }
+            return
+        }
+        reviewDetailTicker.apply {
+            tickerType = Ticker.TYPE_INFORMATION
+            tickerTitle = ""
+            setTextDescription(getString(R.string.review_history_details_ticker_uneditable_subtitle))
         }
     }
 
@@ -427,7 +446,7 @@ class ReviewDetailFragment : BaseDaggerFragment(),
         startActivity(context?.let { ImagePreviewSliderActivity.getCallingIntent(it, productName, attachedImages, attachedImages, position) })
     }
 
-    private fun goToPdp(productId: Int) {
+    private fun goToPdp(productId: Long) {
         RouteManager.route(context, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId.toString())
     }
 

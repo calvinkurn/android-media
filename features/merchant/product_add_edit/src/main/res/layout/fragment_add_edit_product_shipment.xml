@@ -1,55 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/main_layout"
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white">
+    android:fillViewport="true">
 
-    <include
-        android:id="@+id/weight_input_layout"
-        layout="@layout/add_edit_product_weight_input_layout"
+    <LinearLayout
+        android:id="@+id/main_layout"
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_lvl5"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_height="wrap_content">
 
-    <include
-        android:id="@+id/insurance_input_layout"
-        layout="@layout/add_edit_product_insurance_input_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_lvl7"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/weight_input_layout" />
+        <include
+            android:id="@+id/weight_input_layout"
+            layout="@layout/add_edit_product_weight_input_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_lvl4"/>
 
-    <com.tokopedia.unifycomponents.UnifyButton
-        android:id="@+id/btn_end"
-        android:contentDescription="@string/content_desc_btn_end"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_lvl4"
-        android:layout_marginLeft="@dimen/spacing_lvl4"
-        android:layout_marginRight="@dimen/spacing_lvl4"
-        android:layout_marginBottom="@dimen/spacing_lvl3"
-        android:text="@string/action_end_button"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        <include
+            android:id="@+id/insurance_input_layout"
+            layout="@layout/add_edit_product_insurance_input_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_lvl4" />
 
-    <com.tokopedia.unifycomponents.UnifyButton
-        android:id="@+id/btn_save"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_lvl4"
-        android:layout_marginLeft="@dimen/spacing_lvl4"
-        android:layout_marginRight="@dimen/spacing_lvl4"
-        android:layout_marginBottom="@dimen/spacing_lvl3"
-        android:text="@string/action_save"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/btn_end"
+            android:contentDescription="@string/content_desc_btn_end"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_lvl4"
+            android:layout_marginLeft="@dimen/spacing_lvl4"
+            android:layout_marginRight="@dimen/spacing_lvl4"
+            android:layout_marginBottom="@dimen/spacing_lvl3"
+            android:text="@string/action_end_button" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/btn_save"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_lvl4"
+            android:layout_marginLeft="@dimen/spacing_lvl4"
+            android:layout_marginRight="@dimen/spacing_lvl4"
+            android:layout_marginBottom="@dimen/spacing_lvl3"
+            android:text="@string/action_save"
+            android:visibility="gone" />
+
+    </LinearLayout>
+
+</ScrollView>

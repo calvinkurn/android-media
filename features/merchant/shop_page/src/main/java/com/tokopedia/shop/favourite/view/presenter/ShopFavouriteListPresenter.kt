@@ -2,7 +2,7 @@ package com.tokopedia.shop.favourite.view.presenter
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.network.exception.UserNotLoginException
-import com.tokopedia.feedcomponent.util.coroutine.CoroutineDispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase.Companion.FAVORITE_LIST_SOURCE
@@ -31,7 +31,7 @@ constructor(private val getShopFollowerListUseCase: GetShopFollowerListUseCase,
             private val gqlGetShopInfoUseCase: GQLGetShopInfoUseCase,
             private val userSession: UserSessionInterface,
             private val toggleFavouriteShopAndDeleteCacheUseCase: ToggleFavouriteShopAndDeleteCacheUseCase,
-            private val dispatchers: CoroutineDispatcherProvider) : BaseDaggerPresenter<ShopFavouriteListView>(), CoroutineScope {
+            private val dispatchers: CoroutineDispatchers) : BaseDaggerPresenter<ShopFavouriteListView>(), CoroutineScope {
 
     //region CoroutineScope
     private val job: Job = SupervisorJob()

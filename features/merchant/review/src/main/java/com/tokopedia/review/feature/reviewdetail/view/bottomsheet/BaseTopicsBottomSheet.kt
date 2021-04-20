@@ -36,7 +36,6 @@ abstract class BaseTopicsBottomSheet(private val mActivity: FragmentActivity?,
         rvSortFilter = contentView.findViewById(R.id.rvSortFilter)
         tvTopicTitle = contentView.findViewById(R.id.tvTopicTitle)
         isDragable = true
-        isFullpage = true
         isHideable = true
         showKnob = true
         setTitle(BOTTOM_SHEET_TITLE)

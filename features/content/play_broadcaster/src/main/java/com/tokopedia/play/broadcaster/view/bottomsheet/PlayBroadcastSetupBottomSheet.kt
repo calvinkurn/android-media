@@ -21,9 +21,6 @@ import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
 import com.tokopedia.play.broadcaster.di.provider.PlayBroadcastComponentProvider
 import com.tokopedia.play.broadcaster.di.setup.DaggerPlayBroadcastSetupComponent
 import com.tokopedia.play.broadcaster.util.bottomsheet.PlayBroadcastDialogCustomizer
-import com.tokopedia.play.broadcaster.util.coroutine.CoroutineDispatcherProvider
-import com.tokopedia.play.broadcaster.util.extension.cleanBackstack
-import com.tokopedia.play.broadcaster.util.extension.compatTransitionName
 import com.tokopedia.play.broadcaster.util.model.BreadcrumbsModel
 import com.tokopedia.play.broadcaster.view.contract.PlayBottomSheetCoordinator
 import com.tokopedia.play.broadcaster.view.contract.ProductSetupListener
@@ -32,6 +29,9 @@ import com.tokopedia.play.broadcaster.view.fragment.PlayCoverSetupFragment
 import com.tokopedia.play.broadcaster.view.fragment.PlayEtalaseDetailFragment
 import com.tokopedia.play.broadcaster.view.fragment.PlayEtalasePickerFragment
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseSetupFragment
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.play_common.util.extension.cleanBackstack
+import com.tokopedia.play_common.util.extension.compatTransitionName
 import java.util.*
 import javax.inject.Inject
 
@@ -53,7 +53,7 @@ class PlayBroadcastSetupBottomSheet(
     lateinit var fragmentFactory: FragmentFactory
 
     @Inject
-    lateinit var dispatcher: CoroutineDispatcherProvider
+    lateinit var dispatcher: CoroutineDispatchers
 
     @Inject
     lateinit var dialogCustomizer: PlayBroadcastDialogCustomizer
@@ -180,10 +180,12 @@ class PlayBroadcastSetupBottomSheet(
                 height = ViewGroup.LayoutParams.MATCH_PARENT
             }
             bottomSheet?.setBackgroundColor(Color.TRANSPARENT)
-            bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet)
-            bottomSheetBehavior.isHideable = false
-            bottomSheetBehavior.peekHeight = maxHeight()
-            bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+            bottomSheet?.let {
+                bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet)
+                bottomSheetBehavior.isHideable = false
+                bottomSheetBehavior.peekHeight = maxHeight()
+                bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+            }
 
             isCancelable = false
         }

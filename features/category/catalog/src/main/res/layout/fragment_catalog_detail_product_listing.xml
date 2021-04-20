@@ -1,37 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    >
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/quickfilter_recyclerview"
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/headerTitle"
         android:layout_width="0dp"
-        android:paddingTop="@dimen/dp_16"
-        android:paddingBottom="@dimen/dp_8"
         android:layout_height="wrap_content"
-        app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        tools:itemCount="5"
-        tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        tools:orientation="horizontal"
-        tools:listitem="@layout/item_nav_quick_filter"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:text="Lihat 99 produk pilihan"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        app:typographyType="heading_4"
+        />
+
+    <com.tokopedia.sortfilter.SortFilter
+        android:id="@+id/search_product_quick_sort_filter"
+        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        app:layout_constraintTop_toBottomOf="@id/headerTitle"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:paddingTop="@dimen/spacing_lvl3"
+        android:paddingBottom="@dimen/dp_8"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        app:sort_filter_relationship="AND"
+        app:sort_filter_type="advanced"
+        android:background="@color/Unify_N0"
+        android:visibility="gone" />
+
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/product_recyclerview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingBottom="@dimen/dp_16"
-        app:layout_constraintTop_toBottomOf="@+id/quickfilter_recyclerview"/>
+        app:layout_constrainedHeight="true"
+        android:paddingStart="@dimen/unify_space_12"
+        android:paddingEnd="@dimen/unify_space_12"
+        android:paddingBottom="@dimen/unify_space_64"
+        app:layout_constraintTop_toBottomOf="@+id/search_product_quick_sort_filter"/>
 
-    <com.tokopedia.common_category.customview.NoDataView
+    <include
         android:id="@+id/layout_no_data"
+        layout="@layout/products_no_data_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@+id/quickfilter_recyclerview"
+        app:layout_constraintTop_toBottomOf="@+id/search_product_quick_sort_filter"
         android:visibility="gone"
-        tools:visibility="visible"/>
+        tools:visibility="visible"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

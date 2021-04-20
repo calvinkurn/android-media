@@ -5,8 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/transparent"
-    android:paddingTop="@dimen/dp_20"
-    android:paddingBottom="@dimen/dp_20">
+    android:paddingTop="@dimen/travel_homepage_dp_20"
+    android:paddingBottom="@dimen/travel_homepage_dp_20">
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/iv_travel_destination_recommendation_item_category"
@@ -16,7 +16,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:background="@color/Green_G500"
+        tools:background="@color/Unify_G500"
         android:scaleType="fitXY"/>
 
     <com.tokopedia.unifyprinciples.Typography
@@ -24,8 +24,8 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="12dp"
-        android:layout_marginLeft="@dimen/dp_12"
-        android:textColor="@color/Neutral_N700_96"
+        android:layout_marginLeft="@dimen/travel_homepage_dp_12"
+        android:textColor="@color/Unify_N700_96"
         app:layout_constraintBottom_toTopOf="@+id/tv_travel_destination_recommendation_item_title"
         app:layout_constraintLeft_toRightOf="@+id/iv_travel_destination_recommendation_item_category"
         app:layout_constraintStart_toEndOf="@+id/iv_travel_destination_recommendation_item_category"
@@ -34,15 +34,15 @@
         tools:text="Tiket Pesawat"
         android:layout_marginEnd="@dimen/layout_lvl1"
         android:layout_marginRight="@dimen/layout_lvl1"
-        android:layout_marginBottom="@dimen/dp_2"/>
+        android:layout_marginBottom="@dimen/spacing_lvl1"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_travel_destination_recommendation_item_title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="12dp"
-        android:layout_marginLeft="@dimen/dp_12"
-        android:textColor="@color/Neutral_N700_96"
+        android:layout_marginLeft="@dimen/travel_homepage_dp_12"
+        android:textColor="@color/Unify_N700_96"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toRightOf="@+id/iv_travel_destination_recommendation_item_category"
         app:layout_constraintStart_toEndOf="@+id/iv_travel_destination_recommendation_item_category"
@@ -59,22 +59,22 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/layout_lvl1"
         android:layout_marginRight="@dimen/layout_lvl1"
-        android:textColor="@color/Neutral_N700_96"
+        android:textColor="@color/Unify_N700_96"
         app:layout_constraintBottom_toTopOf="@+id/tv_travel_destination_recommendation_item_desc_title"
         app:layout_constraintRight_toLeftOf="@+id/iv_travel_destination_recommendation_item_arrow"
         app:layout_constraintEnd_toStartOf="@+id/iv_travel_destination_recommendation_item_arrow"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="body_3"
         tools:text="Mulai dari"
-        android:layout_marginBottom="@dimen/dp_2" />
+        android:layout_marginBottom="@dimen/spacing_lvl1" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_travel_destination_recommendation_item_desc_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="12dp"
-        android:layout_marginLeft="@dimen/dp_12"
-        android:textColor="@color/Neutral_N700_96"
+        android:layout_marginStart="@dimen/travel_homepage_dp_12"
+        android:layout_marginLeft="@dimen/travel_homepage_dp_12"
+        android:textColor="@color/Unify_N700_96"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toLeftOf="@+id/iv_travel_destination_recommendation_item_arrow"
         app:layout_constraintEnd_toStartOf="@+id/iv_travel_destination_recommendation_item_arrow"

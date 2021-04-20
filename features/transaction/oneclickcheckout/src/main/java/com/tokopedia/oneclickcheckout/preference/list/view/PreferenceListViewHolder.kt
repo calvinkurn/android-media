@@ -1,14 +1,19 @@
 package com.tokopedia.oneclickcheckout.preference.list.view
 
+import android.graphics.Typeface
+import android.text.SpannableString
+import android.text.style.StyleSpan
 import android.view.View
+import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.oneclickcheckout.R
 import com.tokopedia.oneclickcheckout.common.view.model.preference.ProfilesItemModel
-import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageViewModel
-import kotlinx.android.synthetic.main.card_preference.view.*
+import com.tokopedia.unifycomponents.Label
+import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
+import com.tokopedia.unifyprinciples.Typography
 
 class PreferenceListViewHolder(itemView: View, private val listener: PreferenceListAdapter.PreferenceListAdapterListener) : RecyclerView.ViewHolder(itemView) {
 
@@ -16,24 +21,23 @@ class PreferenceListViewHolder(itemView: View, private val listener: PreferenceL
         val LAYOUT = R.layout.card_preference
     }
 
-    private val tvChoosePreference = itemView.tv_choose_preference
-    private val tvChosenPreference = itemView.tv_choosen_preference
-    private val ivEditPreference = itemView.iv_edit_preference
-    private val tvCardHeader = itemView.tv_card_header
-    private val lblMainPreference = itemView.lbl_main_preference
-    private val cbMainPreference = itemView.cb_main_preference
-    private val tvMainPreference = itemView.tv_main_preference
+    private val tvChoosePreference = itemView.findViewById<Typography>(R.id.tv_choose_preference)
+    private val tvChosenPreference = itemView.findViewById<Typography>(R.id.tv_choosen_preference)
+    private val ivEditPreference = itemView.findViewById<ImageView>(R.id.iv_edit_preference)
+    private val tvCardHeader = itemView.findViewById<Typography>(R.id.tv_card_header)
+    private val lblMainPreference = itemView.findViewById<Label>(R.id.lbl_main_preference)
+    private val cbMainPreference = itemView.findViewById<CheckboxUnify>(R.id.cb_main_preference)
+    private val tvMainPreference = itemView.findViewById<Typography>(R.id.tv_main_preference)
 
-    private val tvAddressName = itemView.tv_address_name
-    private val tvAddressReceiver = itemView.tv_address_receiver
-    private val tvAddressDetail = itemView.tv_address_detail
+    private val tvAddressName = itemView.findViewById<Typography>(R.id.tv_address_name)
+    private val tvAddressDetail = itemView.findViewById<Typography>(R.id.tv_address_detail)
 
-    private val tvShippingName = itemView.tv_shipping_name
-    private val tvShippingDuration = itemView.tv_shipping_duration
+    private val tvShippingName = itemView.findViewById<Typography>(R.id.tv_shipping_name)
+    private val tvShippingDuration = itemView.findViewById<Typography>(R.id.tv_shipping_duration)
 
-    private val ivPayment = itemView.iv_payment
-    private val tvPaymentName = itemView.tv_payment_name
-    private val tvPaymentDetail = itemView.tv_payment_detail
+    private val ivPayment = itemView.findViewById<ImageView>(R.id.iv_payment)
+    private val tvPaymentName = itemView.findViewById<Typography>(R.id.tv_payment_name)
+    private val tvPaymentDetail = itemView.findViewById<Typography>(R.id.tv_payment_detail)
 
     fun bind(preference: ProfilesItemModel, currentProfileId: Int, profileSize: Int) {
         tvCardHeader.text = itemView.context.getString(R.string.preference_number, adapterPosition + 1)
@@ -55,7 +59,7 @@ class PreferenceListViewHolder(itemView: View, private val listener: PreferenceL
                 cbMainPreference.isChecked = false
                 cbMainPreference.isEnabled = true
                 cbMainPreference.setOnClickListener {
-                    listener.onPreferenceSelected(preference)
+                    listener.onPreferenceSelected(preference, false)
                 }
             }
         } else {
@@ -74,13 +78,20 @@ class PreferenceListViewHolder(itemView: View, private val listener: PreferenceL
                 tvChoosePreference.text = itemView.context.getString(R.string.label_choose_this_preference)
                 tvChoosePreference.visible()
             }
-            tvChoosePreference.setOnClickListener {
-                listener.onPreferenceSelected(preference)
+            if (preference.enable) {
+                tvChoosePreference.setOnClickListener {
+                    listener.onPreferenceSelected(preference, false)
+                }
+                itemView.alpha = 1f
+            } else {
+                tvChoosePreference.setOnClickListener {
+                    //no op
+                }
+                itemView.alpha = 0.5f
             }
         }
 
         val addressModel = preference.addressModel
-        tvAddressName.text = addressModel.addressName
         val receiverName = addressModel.receiverName
         val phone = addressModel.phone
         var receiverText = ""
@@ -90,12 +101,9 @@ class PreferenceListViewHolder(itemView: View, private val listener: PreferenceL
                 receiverText = "$receiverText ($phone)"
             }
         }
-        if (receiverText.isNotEmpty()) {
-            tvAddressReceiver.text = receiverText
-            tvAddressReceiver.visible()
-        } else {
-            tvAddressReceiver.gone()
-        }
+        val span = SpannableString(addressModel.addressName + receiverText)
+        span.setSpan(StyleSpan(Typeface.BOLD), 0, addressModel.addressName.length, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
+        tvAddressName?.text = span
         tvAddressDetail.text = addressModel.fullAddress
 
         val shipmentModel = preference.shipmentModel
@@ -120,7 +128,9 @@ class PreferenceListViewHolder(itemView: View, private val listener: PreferenceL
         }
 
         ivEditPreference.setOnClickListener {
-            listener.onPreferenceEditClicked(preference, adapterPosition + 1, profileSize)
+            if (preference.enable) {
+                listener.onPreferenceEditClicked(preference, adapterPosition + 1, profileSize)
+            }
         }
     }
 }

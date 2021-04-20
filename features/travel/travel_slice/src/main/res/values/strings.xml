@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="slice_hotel_order_title">Hotel Order List</string>
+    <string name="slice_hotel_title">Hotel</string>
+    <string name="slice_loading_text">Loading...</string>
+    <string name="slice_not_login_desc">Anda belum log in di aplikasi Tokopedia</string>
+    <string name="slice_hotel_failed_desc">Gagal mendapatkan informasi hotel</string>
+    <string name="slice_empty_hotel_desc">Tidak terdapat informasi hotel di kota ini</string>
+    <string name="slice_get_hotel_result_title">Hotel di %1$s</string>
+
+    <string name="slice_empty_order_list">Tidak terdapat informasi pesanan</string>
+
+    <string name="hotel_detail_applink">tokopedia://hotel/detail/%1$s?check_in=%2$s</string>
+    <string name="hotel_dashboard_applink">tokopedia://hotel/dashboard</string>
+
+    <string name="slice_flight_title">Tiket Pesawat</string>
+    <string name="slice_flight_see_more">Lihat Pesanan Lainnya</string>
+    <string name="slice_flight_failed_desc">Gagal mendapatkan informasi pesawat</string>
+</resources>

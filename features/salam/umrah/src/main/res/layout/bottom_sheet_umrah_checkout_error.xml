@@ -1,23 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/bottom_sheet_checkout_error">
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:srcCompat="@drawable/umrah_ic_home_page_closed"
-        android:id="@+id/img_umrah_checkout_error_bottom_sheet_closed"
-        android:layout_margin="@dimen/dp_16"
-        />
+    android:id="@+id/bottom_sheet_checkout_error"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <com.tokopedia.empty_state.EmptyStateUnify
         android:id="@+id/es_checkout"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
-
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 </RelativeLayout>

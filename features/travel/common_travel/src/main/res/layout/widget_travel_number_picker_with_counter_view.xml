@@ -17,8 +17,8 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:layout_gravity="center_vertical"
-        android:layout_marginLeft="@dimen/dp_5"
-        android:layout_marginRight="@dimen/dp_5">
+        android:layout_marginLeft="@dimen/spacing_lvl2"
+        android:layout_marginRight="@dimen/spacing_lvl2">
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/decimal_input_view"
             android:layout_width="match_parent"
@@ -31,8 +31,8 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="@color/grey_400"
-            android:layout_marginBottom="@dimen/dp_3"/>
+            android:background="@color/Unify_N150"
+            android:layout_marginBottom="@dimen/spacing_lvl2"/>
 
     </LinearLayout>
 

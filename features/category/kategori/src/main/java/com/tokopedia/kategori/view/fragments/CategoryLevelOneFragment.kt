@@ -16,7 +16,7 @@ import com.tokopedia.kategori.R
 import com.tokopedia.kategori.adapters.CategoryLevelOneAdapter
 import com.tokopedia.kategori.di.CategoryNavigationComponent
 import com.tokopedia.kategori.di.DaggerCategoryNavigationComponent
-import com.tokopedia.kategori.model.CategoriesItem
+import com.tokopedia.common_category.data.kategorymodel.CategoriesItem
 import com.tokopedia.kategori.view.PerformanceMonitoringListener
 import com.tokopedia.kategori.view.activity.ActivityStateListener
 import com.tokopedia.kategori.view.activity.CategoryChangeListener

@@ -28,8 +28,10 @@ public class ShipmentCartData implements Parcelable {
     private String ut;
     private int insurance;
     private int productInsurance;
-    private int orderValue;
+    private long orderValue;
     private String categoryIds;
+    private int preOrderDuration;
+    private boolean isFulfillment;
 
     public ShipmentCartData() {
     }
@@ -178,11 +180,11 @@ public class ShipmentCartData implements Parcelable {
         this.productInsurance = productInsurance;
     }
 
-    public int getOrderValue() {
+    public long getOrderValue() {
         return orderValue;
     }
 
-    public void setOrderValue(int orderValue) {
+    public void setOrderValue(long orderValue) {
         this.orderValue = orderValue;
     }
 
@@ -219,8 +221,10 @@ public class ShipmentCartData implements Parcelable {
         dest.writeString(this.ut);
         dest.writeInt(this.insurance);
         dest.writeInt(this.productInsurance);
-        dest.writeInt(this.orderValue);
+        dest.writeLong(this.orderValue);
         dest.writeString(this.categoryIds);
+        dest.writeInt(this.preOrderDuration);
+        dest.writeByte((byte) (isFulfillment? 1 : 0));
     }
 
     protected ShipmentCartData(Parcel in) {
@@ -242,8 +246,10 @@ public class ShipmentCartData implements Parcelable {
         this.ut = in.readString();
         this.insurance = in.readInt();
         this.productInsurance = in.readInt();
-        this.orderValue = in.readInt();
+        this.orderValue = in.readLong();
         this.categoryIds = in.readString();
+        this.preOrderDuration = in.readInt();
+        this.isFulfillment = in.readByte() != 0;
     }
 
     public static final Creator<ShipmentCartData> CREATOR = new Creator<ShipmentCartData>() {
@@ -257,4 +263,20 @@ public class ShipmentCartData implements Parcelable {
             return new ShipmentCartData[size];
         }
     };
+
+    public int getPreOrderDuration() {
+        return preOrderDuration;
+    }
+
+    public void setPreOrderDuration(int preOrderDuration) {
+        this.preOrderDuration = preOrderDuration;
+    }
+
+    public boolean isFulfillment() {
+        return isFulfillment;
+    }
+
+    public void setFulfillment(boolean fulfillment) {
+        isFulfillment = fulfillment;
+    }
 }

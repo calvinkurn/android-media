@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.LayoutInflater;
@@ -27,22 +26,24 @@ import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.design.label.LabelView;
 import com.tokopedia.imagepicker.R;
+import com.tokopedia.imagepicker.common.GalleryType;
 import com.tokopedia.imagepicker.picker.album.AlbumPickerActivity;
-import com.tokopedia.imagepicker.picker.gallery.adapter.AlbumMediaAdapter;
-import com.tokopedia.imagepicker.picker.gallery.loader.AlbumLoader;
-import com.tokopedia.imagepicker.picker.gallery.loader.AlbumMediaLoader;
-import com.tokopedia.imagepicker.picker.gallery.model.AlbumItem;
-import com.tokopedia.imagepicker.picker.gallery.model.MediaItem;
-import com.tokopedia.imagepicker.picker.gallery.type.GalleryType;
-import com.tokopedia.imagepicker.picker.gallery.widget.MediaGridInset;
+import com.tokopedia.imagepicker.common.adapter.AlbumMediaAdapter;
+import com.tokopedia.imagepicker.common.internal.entity.Album;
+import com.tokopedia.imagepicker.common.loader.AlbumLoader;
+import com.tokopedia.imagepicker.common.loader.AlbumMediaLoader;
+import com.tokopedia.imagepicker.common.model.AlbumItem;
+import com.tokopedia.imagepicker.common.model.MediaItem;
+import com.tokopedia.imagepicker.common.widget.MediaGridInset;
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerInterface;
 
 import java.io.File;
 import java.util.ArrayList;
 
+import static com.tokopedia.imagepicker.common.BuilderConstantKt.DEFAULT_MIN_RESOLUTION;
 import static com.tokopedia.imagepicker.picker.album.AlbumPickerActivity.EXTRA_ALBUM_ITEM;
 import static com.tokopedia.imagepicker.picker.album.AlbumPickerActivity.EXTRA_ALBUM_POSITION;
-import static com.tokopedia.imagepicker.picker.gallery.model.AlbumItem.ALBUM_ID_ALL;
+import static com.tokopedia.imagepicker.common.model.AlbumItem.ALBUM_ID_ALL;
 
 /**
  * Created by hendry on 19/04/18.
@@ -75,10 +76,10 @@ public class ImagePickerGalleryFragment extends TkpdBaseV4Fragment
 
     private AlbumItem selectedAlbumItem;
     private int selectedAlbumPosition;
-    private @GalleryType
-    int galleryType;
-    private boolean supportMultipleSelection;
-    private int minImageResolution;
+    private
+    GalleryType galleryType = GalleryType.IMAGE_ONLY;
+    private boolean supportMultipleSelection = false;
+    private int minImageResolution = DEFAULT_MIN_RESOLUTION;
     private String belowMinImageResolutionErrorMessage = "";
     private String imageTooLargeErrorMessage = "";
 
@@ -96,14 +97,14 @@ public class ImagePickerGalleryFragment extends TkpdBaseV4Fragment
 
     @SuppressLint("MissingPermission")
     @RequiresPermission("android.permission.CAMERA")
-    public static ImagePickerGalleryFragment newInstance(@GalleryType int galleryType,
+    public static ImagePickerGalleryFragment newInstance(GalleryType galleryType,
                                                          boolean supportMultipleSelection,
                                                          int minImageResolution,
                                                          String imageBelowMinresolutionErrorMessage,
                                                          String imageTooLargeErrorMessage) {
         ImagePickerGalleryFragment imagePickerGalleryFragment = new ImagePickerGalleryFragment();
         Bundle bundle = new Bundle();
-        bundle.putInt(ARGS_GALLERY_TYPE, galleryType);
+        bundle.putParcelable(ARGS_GALLERY_TYPE, galleryType);
         bundle.putBoolean(ARGS_SUPPORT_MULTIPLE, supportMultipleSelection);
         bundle.putInt(ARGS_MIN_RESOLUTION, minImageResolution);
         bundle.putString(ARGS_ERROR_MIN_RESOLUTION, imageBelowMinresolutionErrorMessage);
@@ -114,7 +115,7 @@ public class ImagePickerGalleryFragment extends TkpdBaseV4Fragment
 
     @SuppressLint("MissingPermission")
     @RequiresPermission("android.permission.CAMERA")
-    public static ImagePickerGalleryFragment newInstance(@GalleryType int galleryType,
+    public static ImagePickerGalleryFragment newInstance(GalleryType galleryType,
                                                          boolean supportMultipleSelection,
                                                          int minImageResolution) {
         return newInstance(galleryType, supportMultipleSelection, minImageResolution, "", "");
@@ -125,14 +126,16 @@ public class ImagePickerGalleryFragment extends TkpdBaseV4Fragment
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Bundle bundle = getArguments();
-        galleryType = bundle.getInt(ARGS_GALLERY_TYPE);
-        supportMultipleSelection = bundle.getBoolean(ARGS_SUPPORT_MULTIPLE);
-        minImageResolution = bundle.getInt(ARGS_MIN_RESOLUTION);
-        belowMinImageResolutionErrorMessage = bundle.getString(ARGS_ERROR_MIN_RESOLUTION, "");
+        if (bundle != null) {
+            galleryType = bundle.getParcelable(ARGS_GALLERY_TYPE);
+            supportMultipleSelection = bundle.getBoolean(ARGS_SUPPORT_MULTIPLE);
+            minImageResolution = bundle.getInt(ARGS_MIN_RESOLUTION);
+            belowMinImageResolutionErrorMessage = bundle.getString(ARGS_ERROR_MIN_RESOLUTION, "");
+            imageTooLargeErrorMessage = bundle.getString(ARGS_ERROR_IMAGE_TOO_LARGE, "");
+        }
         if (belowMinImageResolutionErrorMessage == null || belowMinImageResolutionErrorMessage.isEmpty()) {
             belowMinImageResolutionErrorMessage = getString(R.string.image_under_x_resolution, minImageResolution);
         }
-        imageTooLargeErrorMessage = bundle.getString(ARGS_ERROR_IMAGE_TOO_LARGE, "");
         if (imageTooLargeErrorMessage == null || imageTooLargeErrorMessage.isEmpty()) {
             imageTooLargeErrorMessage = getString(R.string.max_file_size_reached);
         }
@@ -153,7 +156,7 @@ public class ImagePickerGalleryFragment extends TkpdBaseV4Fragment
         recyclerView.setHasFixedSize(true);
         int spanCount = getContext().getResources().getInteger(R.integer.gallery_span_count);
         recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), spanCount));
-        int spacing = getResources().getDimensionPixelSize(R.dimen.image_picker_media_grid_spacing);
+        int spacing = getResources().getDimensionPixelSize(com.tokopedia.imagepicker.common.R.dimen.image_picker_media_grid_spacing);
         recyclerView.addItemDecoration(new MediaGridInset(spanCount, spacing, false));
         recyclerView.setAdapter(albumMediaAdapter);
         RecyclerView.ItemAnimator itemAnimator = recyclerView.getItemAnimator();
@@ -179,7 +182,7 @@ public class ImagePickerGalleryFragment extends TkpdBaseV4Fragment
             if (resultCode == Activity.RESULT_OK && data != null) {
                 selectedAlbumItem = data.getParcelableExtra(EXTRA_ALBUM_ITEM);
                 selectedAlbumPosition = data.getIntExtra(EXTRA_ALBUM_POSITION, 0);
-                getLoaderManager().restartLoader(ALBUM_LOADER_ID, null, ImagePickerGalleryFragment.this);
+                LoaderManager.getInstance(this).restartLoader(ALBUM_LOADER_ID, null, ImagePickerGalleryFragment.this);
             }
         }
     }
@@ -188,15 +191,10 @@ public class ImagePickerGalleryFragment extends TkpdBaseV4Fragment
     @Override
     public void onResume() {
         super.onResume();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            String permission = Manifest.permission.WRITE_EXTERNAL_STORAGE;
-            if (ActivityCompat.checkSelfPermission(getContext(), permission) == PackageManager.PERMISSION_GRANTED) {
-                showLoading();
-                getLoaderManager().initLoader(ALBUM_LOADER_ID, null, ImagePickerGalleryFragment.this);
-            }
-        } else {
+        String permission = Manifest.permission.WRITE_EXTERNAL_STORAGE;
+        if (ActivityCompat.checkSelfPermission(getContext(), permission) == PackageManager.PERMISSION_GRANTED) {
             showLoading();
-            getLoaderManager().initLoader(ALBUM_LOADER_ID, null, ImagePickerGalleryFragment.this);
+            LoaderManager.getInstance(this).initLoader(ALBUM_LOADER_ID, null, ImagePickerGalleryFragment.this);
         }
     }
 
@@ -216,8 +214,9 @@ public class ImagePickerGalleryFragment extends TkpdBaseV4Fragment
     @Override
     public void onDestroy() {
         super.onDestroy();
-        getLoaderManager().destroyLoader(ALBUM_LOADER_ID);
-        getLoaderManager().destroyLoader(MEDIA_LOADER_ID);
+        LoaderManager loaderManager = LoaderManager.getInstance(this);
+        loaderManager.destroyLoader(ALBUM_LOADER_ID);
+        loaderManager.destroyLoader(MEDIA_LOADER_ID);
     }
 
     @Override
@@ -226,9 +225,10 @@ public class ImagePickerGalleryFragment extends TkpdBaseV4Fragment
         if (ActivityCompat.checkSelfPermission(getContext(), permission) == PackageManager.PERMISSION_GRANTED) {
             switch (id) {
                 case ALBUM_LOADER_ID:
-                    return AlbumLoader.createInstance(getContext(), galleryType);
+                    return AlbumLoader.newInstance(getContext(), galleryType);
                 case MEDIA_LOADER_ID:
-                    return AlbumMediaLoader.newInstance(getContext(), selectedAlbumItem, galleryType);
+                    Album album = selectedAlbumItem.intoAlbum();
+                    return AlbumMediaLoader.newInstance(getContext(), album, galleryType);
                 default:
                     return new Loader<>(getContext());
             }
@@ -273,7 +273,7 @@ public class ImagePickerGalleryFragment extends TkpdBaseV4Fragment
         }
     }
 
-    private void onAlbumLoaded(AlbumItem albumItem) {
+    private void onAlbumLoaded(@Nullable AlbumItem albumItem) {
         if (albumItem == null) {
             albumItem = new AlbumItem(ALBUM_ID_ALL, null, null, 0);
         }
@@ -292,9 +292,9 @@ public class ImagePickerGalleryFragment extends TkpdBaseV4Fragment
                 getString(R.string.default_all_album) :
                 albumItem.getDisplayName());
         if (albumItem.isAll() && albumItem.isEmpty()) {
-            NetworkErrorHelper.showEmptyState(getContext(), getView(), getString(R.string.error_no_media_storage), null);
+            NetworkErrorHelper.showEmptyState(getContext(), getView(), getString(com.tokopedia.imagepicker.common.R.string.error_no_media_storage), null);
         } else {
-            getLoaderManager().restartLoader(MEDIA_LOADER_ID, null, this);
+            LoaderManager.getInstance(this).restartLoader(MEDIA_LOADER_ID, null, this);
         }
     }
 
@@ -314,8 +314,12 @@ public class ImagePickerGalleryFragment extends TkpdBaseV4Fragment
 
     @Override
     public boolean isMediaValid(MediaItem item) {
+        Context context = getContext();
+        if (context == null) {
+            return false;
+        }
         // check if file exists
-        File file = new File(item.getRealPath());
+        File file = new File(item.getPath());
         if (!file.exists()) {
             NetworkErrorHelper.showRedCloseSnackbar(getView(),
                     galleryType == GalleryType.VIDEO_ONLY ? getString(R.string.video_not_found) :
@@ -324,8 +328,7 @@ public class ImagePickerGalleryFragment extends TkpdBaseV4Fragment
         }
         //check image resolution
         if (item.isVideo() && item.getDuration() > 0) { // it is video
-            int minVideoResolution = item.getMinimumVideoResolution();
-            if ((file.length() / BYTES_IN_KB) > onImagePickerGalleryFragmentListener.getMaxFileSize()) {
+            if ((item.getSize() / BYTES_IN_KB) > onImagePickerGalleryFragmentListener.getMaxFileSize()) {
                 NetworkErrorHelper.showRedCloseSnackbar(getView(), getString(R.string.max_video_size_reached));
                 return false;
             }
@@ -334,11 +337,11 @@ public class ImagePickerGalleryFragment extends TkpdBaseV4Fragment
                 return false;
             }
         } else {
-            if ((file.length() / BYTES_IN_KB) > onImagePickerGalleryFragmentListener.getMaxFileSize()) {
+            if ((item.getSize() / BYTES_IN_KB) > onImagePickerGalleryFragmentListener.getMaxFileSize()) {
                 NetworkErrorHelper.showRedCloseSnackbar(getView(), imageTooLargeErrorMessage);
                 return false;
             }
-            if (item.getWidth() < minImageResolution || item.getHeight() < minImageResolution) {
+            if (item.getWidth(context) < minImageResolution || item.getHeight(context) < minImageResolution) {
                 NetworkErrorHelper.showRedCloseSnackbar(getView(), belowMinImageResolutionErrorMessage);
                 return false;
             }

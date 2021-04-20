@@ -4,13 +4,13 @@ apply plugin: 'io.hansel.preprocessor.module'
 apply plugin: 'de.mannodermaus.android-junit5'
 
 repositories {
-    maven { url 'https://hansel.io/maven' }
+    maven { url 'https://maven-hansel.tokopedia.com/maven' }
     mavenCentral()
 }
 
 buildscript {
     repositories {
-        maven { url 'https://hansel.io/maven' }
+        maven { url 'https://maven-hansel.tokopedia.com/maven' }
         mavenCentral()
         jcenter()
     }
@@ -55,6 +55,7 @@ dependencies {
     //Unify Dependencies
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.components
+    implementation rootProject.ext.unifyDependencies.icons
     implementation rootProject.ext.unifyDependencies.global_error
 
     //Tkpd Internal Libs Dependencies
@@ -91,6 +92,7 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.archCoreTesting
     testImplementation rootProject.ext.testDependencies.assertJCore
     testImplementation rootProject.ext.testDependencies.kotlinTest
+    testImplementation project(rootProject.ext.libraries.unitTest)
     if (rootProject.ext.debugToolsEnabled) {
         implementation project(rootProject.ext.libraries.analyticsDebugger)
     } else {

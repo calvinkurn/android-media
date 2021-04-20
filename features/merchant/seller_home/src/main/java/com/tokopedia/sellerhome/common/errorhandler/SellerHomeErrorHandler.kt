@@ -1,6 +1,6 @@
 package com.tokopedia.sellerhome.common.errorhandler
 
-import com.crashlytics.android.Crashlytics
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.sellerhome.BuildConfig
 import com.tokopedia.sellerhome.common.exception.SellerHomeException
 
@@ -9,7 +9,7 @@ object SellerHomeErrorHandler {
         try {
             if (!BuildConfig.DEBUG) {
                 val exceptionMessage = "$message - ${throwable.localizedMessage}"
-                Crashlytics.logException(SellerHomeException(
+                FirebaseCrashlytics.getInstance().recordException(SellerHomeException(
                         message = exceptionMessage,
                         cause = throwable
                 ))

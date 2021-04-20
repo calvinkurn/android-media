@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.unifycomponents.CardUnify xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    app:cardCornerRadius="@dimen/layout_lvl1">
+
+    <LinearLayout
+        android:id="@+id/containerShcCardMetric"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvShcMetricsTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/shc_dimen_12dp"
+            android:layout_marginTop="@dimen/layout_lvl1"
+            android:layout_marginEnd="@dimen/shc_dimen_12dp"
+            android:ellipsize="end"
+            android:gravity="center_vertical"
+            android:maxLines="1"
+            android:minHeight="@dimen/shc_dimen_18dp"
+            android:textColor="@color/Unify_N700_96"
+            android:textSize="@dimen/fontSize_lvl3"
+            app:typographyType="body_3"
+            app:typographyWeight="reguler"
+            tools:text="Pesanan" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvShcMetricsValue"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/shc_dimen_12dp"
+            android:layout_marginEnd="@dimen/shc_dimen_12dp"
+            android:gravity="center_vertical"
+            android:maxLines="1"
+            android:minHeight="@dimen/shc_dimen_22dp"
+            android:text="@string/shc_load_failed"
+            android:textColor="@color/Unify_N700_96"
+            android:textSize="@dimen/fontSize_lvl4"
+            app:typographyWeight="bold"
+            tools:text="Rp999.999.999" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvShcMetricsSubValue"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/shc_dimen_12dp"
+            android:layout_marginEnd="@dimen/shc_dimen_12dp"
+            android:ellipsize="end"
+            android:gravity="center_vertical"
+            android:maxLines="1"
+            android:minHeight="@dimen/shc_dimen_18dp"
+            android:textColor="@color/Unify_N700_68"
+            android:textSize="@dimen/fontSize_lvl2"
+            app:typographyType="body_3"
+            app:typographyWeight="reguler"
+            tools:text="Potensi +Rp10 jt" />
+
+        <View
+            android:id="@+id/viewShcMetricsColor"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/spacing_lvl2"
+            android:layout_marginTop="@dimen/spacing_lvl2"
+            tools:background="@color/Unify_G400" />
+    </LinearLayout>
+</com.tokopedia.unifycomponents.CardUnify>

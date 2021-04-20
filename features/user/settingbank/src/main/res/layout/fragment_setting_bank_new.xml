@@ -45,27 +45,27 @@
         app:layout_constraintBottom_toBottomOf="parent"
         tools:visibility="visible" />
 
-    <ProgressBar
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/progress_bar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/layout_lvl6"
+        android:layout_height="@dimen/layout_lvl6"
         android:layout_centerInParent="true"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible" />
 
     <com.tkpd.remoteresourcerequest.view.DeferredImageView
         android:id="@+id/iv_noBankAccountAdded"
         android:layout_width="@dimen/dp_240"
         android:layout_height="@dimen/dp_240"
-        app:remoteFileName="sbank_no_bank_added.png"
         android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@+id/guidelineBlankPage"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:remoteFileName="sbank_no_bank_added.png" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_no_save_account"
@@ -79,7 +79,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/guidelineBlankPage"
         app:typographyType="heading_5" />
-
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_comeOn_AddBankAccount"
@@ -106,5 +105,16 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="0.5" />
+
+    <com.tokopedia.globalerror.GlobalError
+        android:id="@+id/globalError"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        android:gravity="center"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,24 +1,21 @@
 package com.tokopedia.cart.view.presenter
 
-import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartExternalUseCase
+import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
-import com.tokopedia.cart.domain.usecase.*
-import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
-import com.tokopedia.purchase_platform.common.schedulers.TestSchedulers
-import com.tokopedia.purchase_platform.common.feature.insurance.usecase.GetInsuranceCartUseCase
-import com.tokopedia.purchase_platform.common.feature.insurance.usecase.RemoveInsuranceProductUsecase
-import com.tokopedia.purchase_platform.common.feature.insurance.usecase.UpdateInsuranceProductDataUsecase
 import com.tokopedia.cart.domain.model.cartlist.CartItemData
 import com.tokopedia.cart.domain.model.cartlist.ShopGroupAvailableData
 import com.tokopedia.cart.domain.model.cartlist.WholesalePriceData
+import com.tokopedia.cart.domain.usecase.*
 import com.tokopedia.cart.view.CartListPresenter
 import com.tokopedia.cart.view.ICartListView
 import com.tokopedia.cart.view.uimodel.CartItemHolderData
 import com.tokopedia.cart.view.uimodel.CartShopHolderData
+import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ValidateUsePromoRevampUseCase
+import com.tokopedia.purchase_platform.common.schedulers.TestSchedulers
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
-import com.tokopedia.seamless_login.domain.usecase.SeamlessLoginUsecase
+import com.tokopedia.seamless_login_common.domain.usecase.SeamlessLoginUsecase
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.GetWishlistUseCase
@@ -33,7 +30,9 @@ import rx.subscriptions.CompositeSubscription
 object CartListPresenterCalculateSubTotalTest : Spek({
 
     val getCartListSimplifiedUseCase: GetCartListSimplifiedUseCase = mockk()
-    val deleteCartListUseCase: DeleteCartUseCase = mockk()
+    val deleteCartUseCase: DeleteCartUseCase = mockk()
+    val undoDeleteCartUseCase: UndoDeleteCartUseCase = mockk()
+    val addCartToWishlistUseCase: AddCartToWishlistUseCase = mockk()
     val updateCartUseCase: UpdateCartUseCase = mockk()
     val updateCartAndValidateUseUseCase: UpdateCartAndValidateUseUseCase = mockk()
     val validateUsePromoRevampUseCase: ValidateUsePromoRevampUseCase = mockk()
@@ -43,30 +42,29 @@ object CartListPresenterCalculateSubTotalTest : Spek({
     val updateAndReloadCartUseCase: UpdateAndReloadCartUseCase = mockk()
     val userSessionInterface: UserSessionInterface = mockk()
     val clearCacheAutoApplyStackUseCase: ClearCacheAutoApplyStackUseCase = mockk()
-    val getRecentViewUseCase: GetRecentViewUseCase = mockk()
+    val getRecentViewUseCase: GetRecommendationUseCase = mockk()
     val getWishlistUseCase: GetWishlistUseCase = mockk()
     val getRecommendationUseCase: GetRecommendationUseCase = mockk()
     val addToCartUseCase: AddToCartUseCase = mockk()
     val addToCartExternalUseCase: AddToCartExternalUseCase = mockk()
-    val getInsuranceCartUseCase: GetInsuranceCartUseCase = mockk()
-    val removeInsuranceProductUsecase: RemoveInsuranceProductUsecase = mockk()
-    val updateInsuranceProductDataUsecase: UpdateInsuranceProductDataUsecase = mockk()
     val seamlessLoginUsecase: SeamlessLoginUsecase = mockk()
     val updateCartCounterUseCase: UpdateCartCounterUseCase = mockk()
+    val setCartlistCheckboxStateUseCase: SetCartlistCheckboxStateUseCase = mockk()
+    val followShopUseCase: FollowShopUseCase = mockk()
     val view: ICartListView = mockk(relaxed = true)
 
     Feature("calculate subtotal") {
 
         val cartListPresenter by memoized {
             CartListPresenter(
-                    getCartListSimplifiedUseCase, deleteCartListUseCase, updateCartUseCase,
-                    compositeSubscription, addWishListUseCase, removeWishListUseCase,
-                    updateAndReloadCartUseCase, userSessionInterface, clearCacheAutoApplyStackUseCase,
-                    getRecentViewUseCase, getWishlistUseCase, getRecommendationUseCase,
-                    addToCartUseCase, addToCartExternalUseCase, getInsuranceCartUseCase,
-                    removeInsuranceProductUsecase, updateInsuranceProductDataUsecase, seamlessLoginUsecase,
-                    updateCartCounterUseCase, updateCartAndValidateUseUseCase, validateUsePromoRevampUseCase,
-                    TestSchedulers
+                    getCartListSimplifiedUseCase, deleteCartUseCase, undoDeleteCartUseCase,
+                    updateCartUseCase, compositeSubscription, addWishListUseCase,
+                    addCartToWishlistUseCase, removeWishListUseCase, updateAndReloadCartUseCase,
+                    userSessionInterface, clearCacheAutoApplyStackUseCase, getRecentViewUseCase,
+                    getWishlistUseCase, getRecommendationUseCase, addToCartUseCase,
+                    addToCartExternalUseCase, seamlessLoginUsecase, updateCartCounterUseCase,
+                    updateCartAndValidateUseUseCase, validateUsePromoRevampUseCase, setCartlistCheckboxStateUseCase,
+                    followShopUseCase, TestSchedulers
             )
         }
 
@@ -213,13 +211,13 @@ object CartListPresenterCalculateSubTotalTest : Spek({
             }
 
             When("recalculate subtotal") {
-                cartListPresenter.reCalculateSubTotal(cartShops, arrayListOf())
+                cartListPresenter.reCalculateSubTotal(cartShops)
             }
 
             Then("should have no subtotal and no cashback") {
                 verify {
                     view.updateCashback(0.0)
-                    view.renderDetailInfoSubTotal("0", "-", false, true, false)
+                    view.renderDetailInfoSubTotal("0", 0.0, 0.0, false, true, false)
                 }
             }
         }
@@ -245,13 +243,13 @@ object CartListPresenterCalculateSubTotalTest : Spek({
             }
 
             When("recalculate subtotal") {
-                cartListPresenter.reCalculateSubTotal(cartShops, arrayListOf())
+                cartListPresenter.reCalculateSubTotal(cartShops)
             }
 
             Then("should have 1004 subtotal and 100 cashback") {
                 verify {
                     view.updateCashback(100.0)
-                    view.renderDetailInfoSubTotal("5", "Rp1.004", false, false, false)
+                    view.renderDetailInfoSubTotal("5", 1004.0, 1004.0, false, false, false)
                 }
             }
         }
@@ -277,13 +275,13 @@ object CartListPresenterCalculateSubTotalTest : Spek({
             }
 
             When("recalculate subtotal") {
-                cartListPresenter.reCalculateSubTotal(cartShops, arrayListOf())
+                cartListPresenter.reCalculateSubTotal(cartShops)
             }
 
             Then("should have 1000 subtotal, 100 cashback and selected all item") {
                 verify {
                     view.updateCashback(100.0)
-                    view.renderDetailInfoSubTotal("1", "Rp1.000", true, false, false)
+                    view.renderDetailInfoSubTotal("1", 1000.0, 1000.0, true, false, false)
                 }
             }
         }
@@ -311,13 +309,13 @@ object CartListPresenterCalculateSubTotalTest : Spek({
             }
 
             When("recalculate subtotal") {
-                cartListPresenter.reCalculateSubTotal(cartShops, arrayListOf())
+                cartListPresenter.reCalculateSubTotal(cartShops)
             }
 
             Then("should have 1684 subtotal and 100 cashback") {
                 verify {
                     view.updateCashback(100.0)
-                    view.renderDetailInfoSubTotal("10", "Rp1.684", true, false, false)
+                    view.renderDetailInfoSubTotal("10", 1684.0, 1684.0, true, false, false)
                 }
             }
         }
@@ -354,13 +352,13 @@ object CartListPresenterCalculateSubTotalTest : Spek({
             }
 
             When("recalculate subtotal") {
-                cartListPresenter.reCalculateSubTotal(cartShops, arrayListOf())
+                cartListPresenter.reCalculateSubTotal(cartShops)
             }
 
             Then("should have 1684 subtotal from 19 items and 100 cashback") {
                 verify {
                     view.updateCashback(100.0)
-                    view.renderDetailInfoSubTotal("19", "Rp1.684", true, false, false)
+                    view.renderDetailInfoSubTotal("19", 1684.0, 1684.0, true, false, false)
                 }
             }
         }
@@ -396,13 +394,13 @@ object CartListPresenterCalculateSubTotalTest : Spek({
             }
 
             When("recalculate subtotal") {
-                cartListPresenter.reCalculateSubTotal(cartShops, arrayListOf())
+                cartListPresenter.reCalculateSubTotal(cartShops)
             }
 
             Then("should have 1684 subtotal and 100 cashback") {
                 verify {
                     view.updateCashback(100.0)
-                    view.renderDetailInfoSubTotal("10", "Rp1.684", true, false, false)
+                    view.renderDetailInfoSubTotal("10", 1684.0, 1684.0, true, false, false)
                 }
             }
         }
@@ -437,13 +435,13 @@ object CartListPresenterCalculateSubTotalTest : Spek({
             }
 
             When("recalculate subtotal") {
-                cartListPresenter.reCalculateSubTotal(cartShops, arrayListOf())
+                cartListPresenter.reCalculateSubTotal(cartShops)
             }
 
             Then("should have 1684 subtotal and 160 cashback") {
                 verify {
                     view.updateCashback(160.0)
-                    view.renderDetailInfoSubTotal("10", "Rp1.684", true, false, false)
+                    view.renderDetailInfoSubTotal("10", 1684.0, 1684.0, true, false, false)
                 }
             }
         }
@@ -479,13 +477,13 @@ object CartListPresenterCalculateSubTotalTest : Spek({
             }
 
             When("recalculate subtotal") {
-                cartListPresenter.reCalculateSubTotal(cartShops, arrayListOf())
+                cartListPresenter.reCalculateSubTotal(cartShops)
             }
 
             Then("should have 4084 subtotal and 400 cashback") {
                 verify {
                     view.updateCashback(400.0)
-                    view.renderDetailInfoSubTotal("10", "Rp4.084", true, false, false)
+                    view.renderDetailInfoSubTotal("10", 4084.0, 4084.0, true, false, false)
                 }
             }
         }

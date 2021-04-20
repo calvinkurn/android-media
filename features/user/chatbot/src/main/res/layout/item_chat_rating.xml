@@ -11,7 +11,7 @@
     android:paddingBottom="@dimen/dp_3">
 
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -19,7 +19,7 @@
         android:layout_marginBottom="@dimen/dp_16"
         android:textAllCaps="true"
         android:textColor="@color/grey_500"
-        android:textSize="@dimen/sp_12"
+        app:typographyType="body_3"
         tools:text="13:16 wib" />
 
     <ImageView
@@ -28,8 +28,7 @@
         android:layout_height="@dimen/dp_50"
         android:layout_below="@id/name"
         android:layout_alignParentStart="true"
-        android:layout_alignParentLeft="true"
-        android:layout_marginRight="@dimen/dp_10"
+        android:layout_marginEnd="@dimen/dp_10"
         android:visibility="gone" />
 
     <androidx.cardview.widget.CardView
@@ -38,9 +37,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/name"
         android:layout_alignParentStart="true"
-        android:layout_alignParentLeft="true"
         android:layout_marginEnd="@dimen/dp_10"
-        android:layout_marginRight="@dimen/dp_10"
         app:cardBackgroundColor="@color/cardview_light_background"
         app:cardCornerRadius="@dimen/dp_3"
         app:cardElevation="0dp"
@@ -87,43 +84,38 @@
                     android:layout_height="wrap_content"
                     android:background="@drawable/left_bubble">
 
-                    <TextView
+                    <com.tokopedia.unifyprinciples.Typography
                         android:id="@+id/message"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:linksClickable="true"
                         android:maxWidth="@dimen/max_width_chat_bubble"
                         android:paddingStart="@dimen/dp_16"
-                        android:paddingLeft="@dimen/dp_16"
                         android:paddingTop="@dimen/dp_8"
                         android:paddingEnd="@dimen/dp_18"
-                        android:paddingRight="@dimen/dp_18"
                         android:paddingBottom="@dimen/dp_8"
                         android:textColor="@color/black_70"
-                        android:textColorLink="@color/black_70"
+                        android:textColorLink="@color/read_more_color"
                         android:textIsSelectable="true"
-                        android:textSize="@dimen/sp_14"
+                        app:typographyType="body_2"
                         android:visibility="visible"
                         tools:text="opesjkajd aasdfkalskdjfla;ksdfajsdlfkjalsdjflaksjdfl;aks;dlfalskdfj;alksdflaksdjfsdfkj" />
 
-                    <TextView
+                    <com.tokopedia.unifyprinciples.Typography
                         android:id="@+id/bottom_view"
                         android:layout_width="@dimen/max_width_chat_bubble"
                         android:layout_height="wrap_content"
                         android:layout_below="@+id/message"
-                        android:background="@drawable/left_bubble_bottom_rounded"
-                        android:gravity="end"
+                        android:gravity="start"
                         android:maxWidth="@dimen/max_width_chat_bubble"
                         android:paddingStart="@dimen/dp_16"
-                        android:paddingLeft="@dimen/dp_16"
-                        android:paddingTop="@dimen/dp_8"
                         android:paddingEnd="@dimen/dp_8"
-                        android:paddingRight="@dimen/dp_8"
                         android:paddingBottom="@dimen/dp_8"
                         android:text="@string/read_more"
                         android:textColor="@color/read_more_color"
                         android:textStyle="bold"
-                        android:visibility="gone" />
+                        android:visibility="gone"
+                        tools:visibility="visible"/>
                 </RelativeLayout>
 
                 <ImageView
@@ -148,7 +140,7 @@
                 android:orientation="horizontal"
                 app:layout_constraintTop_toBottomOf="@id/message_content_holder">
 
-                <TextView
+                <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/hour"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -163,7 +155,6 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dp_8"
                     android:layout_marginEnd="@dimen/margin_selected_rating"
-                    android:layout_marginRight="@dimen/margin_selected_rating"
                     android:foregroundGravity="right"
                     android:gravity="end"
                     android:orientation="horizontal"
@@ -174,7 +165,6 @@
                         android:layout_width="@dimen/rating_icon_size"
                         android:layout_height="@dimen/rating_icon_size"
                         android:layout_marginEnd="@dimen/dp_4"
-                        android:layout_marginRight="@dimen/dp_4"
                         android:background="@drawable/circle_green_border"
                         android:padding="@dimen/dp_8"
                         android:scaleType="fitCenter"

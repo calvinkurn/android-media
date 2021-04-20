@@ -8,6 +8,6 @@ import com.tokopedia.feedplus.domain.model.feed.WhitelistDomain
  */
 data class DynamicFeedFirstPageDomainModel(
         val dynamicFeedDomainModel: DynamicFeedDomainModel = DynamicFeedDomainModel(),
-        val isInterestWhitelist: Boolean = false) {
-
-}
+        val isInterestWhitelist: Boolean = false,
+        val shouldOverwrite: Boolean = true
+)

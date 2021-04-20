@@ -4,13 +4,16 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.PackageManager
-import android.net.ConnectivityManager
-import android.net.NetworkCapabilities
 import android.os.Build
 import android.provider.Settings
 import android.telephony.TelephonyManager
 import androidx.core.content.ContextCompat
+import com.google.android.gms.ads.identifier.AdvertisingIdClient
 import com.tokopedia.device.info.cache.DeviceInfoCache
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
+import kotlinx.coroutines.*
+import timber.log.Timber
 import java.io.BufferedReader
 import java.io.File
 import java.io.InputStreamReader
@@ -18,6 +21,10 @@ import java.util.*
 import java.util.concurrent.TimeUnit
 
 object DeviceInfo {
+
+    const val ADVERTISINGID = "ADVERTISINGID"
+    const val KEY_ADVERTISINGID = "KEY_ADVERTISINGID"
+    const val X_86 = "x86"
 
     @JvmStatic
     fun isRooted(): Boolean {
@@ -47,13 +54,13 @@ object DeviceInfo {
     @JvmStatic
     fun isEmulated(): Boolean {
         return (Build.FINGERPRINT.startsWith("generic")
-            || Build.FINGERPRINT.startsWith("unknown")
-            || Build.MODEL.contains("google_sdk")
-            || Build.MODEL.contains("Emulator")
-            || Build.MODEL.contains("Android SDK built for x86")
-            || Build.MANUFACTURER.contains("Genymotion")
-            || Build.BRAND.startsWith("generic") && Build.DEVICE.startsWith("generic")
-            || "google_sdk" == Build.PRODUCT)
+                || Build.FINGERPRINT.startsWith("unknown")
+                || Build.MODEL.contains("google_sdk")
+                || Build.MODEL.contains("Emulator")
+                || Build.MODEL.contains("Android SDK built for x86")
+                || Build.MANUFACTURER.contains("Genymotion")
+                || Build.BRAND.startsWith("generic") && Build.DEVICE.startsWith("generic")
+                || "google_sdk" == Build.PRODUCT)
     }
 
     @JvmStatic
@@ -114,51 +121,95 @@ object DeviceInfo {
     }
 
     @JvmStatic
-    fun isx86() =
-        try {
-            if (Build.VERSION.SDK_INT < 21) {
-                Build.CPU_ABI.contains("x86") || Build.CPU_ABI.contains("x86")
-            } else {
-                Build.SUPPORTED_ABIS.any { it.contains("x86") }
+    fun getAdsId(context: Context): String {
+        val appContext = context.applicationContext
+        val adsIdCache: String = getCacheAdsId(appContext)
+        if (adsIdCache.isNotBlank()) {
+            return adsIdCache
+        } else {
+            var adId = ""
+            runBlocking(Dispatchers.IO) {
+                try {
+                    withTimeout(2000) {
+                        adId = getlatestAdId(appContext)
+                    }
+                } catch (ignored:Exception) { }
             }
-        } catch (e: Exception) {
-            false
+            return adId
         }
+    }
+
+    fun getlatestAdId(context: Context): String {
+        return try {
+            val appContext = context.applicationContext
+            val adInfo = AdvertisingIdClient.getAdvertisingIdInfo(appContext)
+            if (adInfo != null) {
+                val adID = adInfo.id
+                setCacheAdsId(appContext, adID)
+            }
+            adInfo.id
+        } catch (e: Exception) {
+            e.printStackTrace()
+            ServerLogger.log(Priority.P2, "FINGERPRINT", mapOf("type" to "$e | ${Build.FINGERPRINT} | ${Build.MANUFACTURER} | ${Build.BRAND} | ${Build.DEVICE} | ${Build.PRODUCT} | ${Build.MODEL} | ${Build.TAGS}"))
+            ""
+        }
+    }
 
     @JvmStatic
-    @SuppressLint("HardwareIds")
+    fun getAdsIdSuspend(context: Context, onSuccessGetAdsId: ((adsId:String)->Unit)?) {
+        GlobalScope.launch(Dispatchers.IO) {
+            val adsIdCache: String = getCacheAdsId(context)
+            if (adsIdCache.isNotBlank()) {
+                withContext(Dispatchers.Main) {
+                    onSuccessGetAdsId?.invoke(adsIdCache)
+                }
+            } else {
+                val adId = getlatestAdId(context)
+                withContext(Dispatchers.Main) {
+                    onSuccessGetAdsId?.invoke(adId)
+                }
+            }
+        }
+    }
+
+    @JvmStatic
+    fun getUUID(context: Context): String {
+        return DeviceInfoCache(context).getUUID()
+    }
+
+    private fun getCacheAdsId(context: Context): String {
+        val sp = context.getSharedPreferences(ADVERTISINGID, Context.MODE_PRIVATE)
+        return sp.getString(KEY_ADVERTISINGID, "") ?: ""
+    }
+
+    private fun setCacheAdsId(context: Context, adsId: String) {
+        val sp = context.getSharedPreferences(ADVERTISINGID, Context.MODE_PRIVATE)
+        sp.edit().putString(KEY_ADVERTISINGID, adsId).apply()
+    }
+
+    @JvmStatic
+    fun isx86() =
+            try {
+                if (Build.VERSION.SDK_INT < 21) {
+                    Build.CPU_ABI.contains(X_86) || Build.CPU_ABI2.contains(X_86)
+                } else {
+                    Build.SUPPORTED_ABIS.any { it.contains(X_86) }
+                }
+            } catch (e: Exception) {
+                false
+            }
+
+    @JvmStatic
     fun getImei(context: Context): String? {
         return try {
             val deviceInfoCache = DeviceInfoCache(context.applicationContext)
             val (imeiCache, isCached) = deviceInfoCache.getImei()
             if (isCached) {
                 return imeiCache
-            }
-            val tm = context.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
-            if (ContextCompat.checkSelfPermission(
-                    context,
-                    Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED) {
-                try {
-                    if (Build.VERSION.SDK_INT < 26) {
-                        val deviceId = tm.deviceId
-                        val hash = deviceInfoCache.setImei(deviceId)
-                        return hash
-                    } else {
-                        var imei = tm.imei
-                        val hash = if (imei.isNotEmpty()) {
-                            deviceInfoCache.setImei(imei)
-                        } else {
-                            imei = tm.meid
-                            deviceInfoCache.setImei(imei)
-                        }
-                        hash
-                    }
-                } catch (e: Exception) {
-                    deviceInfoCache.setImei("")
-                    ""
-                }
             } else {
-                ""
+                // target sdk 29 can no longer get imei without READ_PRIVILEGED_PHONE_STATE
+                // set to empty
+                deviceInfoCache.setImei("")
             }
         } catch (e: Exception) {
             ""

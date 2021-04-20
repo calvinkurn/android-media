@@ -1,0 +1,19 @@
+[
+  {
+    "data": {
+      "shopDomainSuggestion": {
+        "result": {
+          "shopDomain": "helloworld",
+          "shopDomains": [
+            "helloworld-1",
+            "helloworld-2",
+            "helloworld-3"
+          ]
+        },
+        "error": {
+          "message": ""
+        }
+      }
+    }
+  }
+]

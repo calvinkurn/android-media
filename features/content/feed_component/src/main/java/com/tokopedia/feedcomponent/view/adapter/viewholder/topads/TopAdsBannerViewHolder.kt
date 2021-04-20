@@ -15,8 +15,8 @@ import com.tokopedia.topads.sdk.widget.TopAdsImageView
 import kotlinx.android.synthetic.main.feed_item_topads_banner.view.*
 
 class TopAdsBannerViewHolder(view: View,
-                             private val topAdsBannerListener: TopAdsBannerListener,
-                             private val cardTitleListener: CardTitleView.CardTitleListener)
+                             private val topAdsBannerListener: TopAdsBannerListener?,
+                             private val cardTitleListener: CardTitleView.CardTitleListener?)
     : AbstractViewHolder<TopAdsBannerViewModel>(view) {
     private var topAdsBannerViewModel: TopAdsBannerViewModel? = null
 
@@ -50,7 +50,7 @@ class TopAdsBannerViewHolder(view: View,
         itemView.top_ads_banner.loadImage(topAdsBanner)
         itemView.top_ads_banner.setTopAdsImageViewImpression(object : TopAdsImageViewImpressionListener {
             override fun onTopAdsImageViewImpression(viewUrl: String) {
-                topAdsBannerListener.onTopAdsViewImpression(topAdsBanner.bannerId
+                topAdsBannerListener?.onTopAdsViewImpression(topAdsBanner.bannerId
                         ?: "", topAdsBanner.imageUrl ?: "")
             }
         })

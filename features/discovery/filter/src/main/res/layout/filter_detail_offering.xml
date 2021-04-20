@@ -3,7 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white"
     android:paddingLeft="@dimen/dynamic_filter_item_padding"
     android:paddingRight="@dimen/dynamic_filter_item_padding"
     android:paddingTop="12dp"
@@ -28,10 +27,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:typographyType="heading_5"
-                android:textColor="#f531353b"/>
+                android:textColor="@color/Unify_N700_96"/>
 
             <ImageView
                 android:id="@+id/icon_new"
+                android:contentDescription="@string/content_desc_iconNew"
                 android:layout_width="28dp"
                 android:layout_height="10dp"
                 app:srcCompat="@drawable/ic_new"
@@ -48,7 +48,7 @@
             android:layout_marginTop="2dp"
             app:typographyType="body_3"
             app:typographyWeight="reguler"
-            android:textColor="#ae31353b"/>
+            android:textColor="@color/Unify_N700_68"/>
 
     </LinearLayout>
 
@@ -58,7 +58,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
-        app:buttonTint="@color/checkbox_color_state"
+        app:buttonTint="@color/filter_dms_checkbox_color_state"
         style="@style/CheckBox"/>
 
 </RelativeLayout>

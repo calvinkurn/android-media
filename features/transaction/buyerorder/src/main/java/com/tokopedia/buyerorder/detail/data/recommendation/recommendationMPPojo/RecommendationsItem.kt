@@ -1,29 +1,29 @@
-package com.tokopedia.buyerorder.detail.data.recommendationMPPojo
+package com.tokopedia.buyerorder.detail.data.recommendation.recommendationMPPojo
 
 import com.google.gson.annotations.SerializedName
 
 data class RecommendationsItem(
 
         @field:SerializedName("productId")
-        val productId: Int,
+        val productId: Long = -1,
 
         @field:SerializedName("webLink")
-        val webLink: String? = "",
+        val webLink: String = "",
 
         @field:SerializedName("description")
-        val description: String? = "",
+        val description: String = "",
 
         @field:SerializedName("clientNumber")
-        val clientNumber: String? = "",
+        val clientNumber: String = "",
 
         @field:SerializedName("title")
-        val title: String? = "",
+        val title: String = "",
 
         @field:SerializedName("type")
-        val type: String? = "",
+        val type: String = "",
 
         @field:SerializedName("categoryName")
-        val categoryName: String? = "",
+        val categoryName: String = "",
 
         @field:SerializedName("operatorName")
         val operatorName: String? = "",
@@ -32,29 +32,29 @@ data class RecommendationsItem(
         val productName: String? = "",
 
         @field:SerializedName("appLink")
-        val appLink: String? = "",
+        val appLink: String = "",
 
         @field:SerializedName("tagType")
-        val tagType: Int,
+        val tagType: Int = -1,
 
         @field:SerializedName("isATC")
-        val isATC: Boolean,
+        val isATC: Boolean = false,
 
         @field:SerializedName("iconUrl")
-        val iconUrl: String? = "",
+        val iconUrl: String = "",
 
         @field:SerializedName("position")
-        val position: Int,
+        val position: Int = -1,
 
         @field:SerializedName("tag")
-        val tag: String? = "",
+        val tag: String = "",
 
         @field:SerializedName("operatorID")
-        val operatorID: Int,
+        val operatorID: Int = -1,
 
         @field:SerializedName("categoryId")
-        val categoryId: Int,
+        val categoryId: Int = -1,
 
         @field:SerializedName("productPrice")
-        val productPrice: Int
+        val productPrice: Int = -1
 )

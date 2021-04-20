@@ -7,11 +7,12 @@
         naming: path_{module}_{page}
         order by name
     -->
-    <string name="path_change_inactive_phone_form">/change-inactive-phone-form</string>
+    <string name="path_change_inactive_phone">/change-inactive-phone</string>
     <string name="path_choose_account">/choose-account</string>
     <string name="path_withdraw">/withdraw</string>
     <string name="path_autoWithdrawSettings">/autoWithdrawSettings</string>
     <string name="path_add_name_register">/add-name-register</string>
+    <string name="path_add_name_register_clean_view">/add-name-register/clean-view</string>
     <string name="path_forgot_password">/forgot-password</string>
     <string name="path_add_password">/add-password</string>
     <string name="path_profile_completion">/profile-completion</string>
@@ -25,6 +26,7 @@
     <string name="path_product_talk">/product-talk/.*\\/</string>
     <string name="path_detail_talk">/detail-talk/.*\\/</string>
     <string name="path_add_talk">/add-talk</string>
+    <string name="path_talk_seller_settings">/talk-seller-settings/</string>
     <string name="path_shop_talk">/shop-talk/.*\\/</string>
     <string name="path_user_identification_info">/user-identification-info</string>
     <string name="path_user_identification_form">/user-identification-form</string>
@@ -37,15 +39,21 @@
     <string name="path_add_email">/add-email</string>
     <string name="path_add_phone">/add-phone</string>
     <string name="path_cotp">/cotp</string>
+    <string name="path_otp_push_notif_receiver">/otp-push-notif-receiver</string>
+    <string name="path_otp_push_notif_setting">/otp-push-notif-setting</string>
     <string name="path_otp_validator">/otp-validator</string>
     <string name="path_image_picker">/image-picker</string>
+    <string name="path_video_picker">/video-picker</string>
+    <string name="path_image_editor">/image-editor</string>
     <string name="path_webview" translatable="false">/webview</string>
+    <string name="path_webview_download_html" translatable="false">/webview-download-html</string>
     <string name="path_setting_profile_phone_verification" translatable="false">/setting-profile-phone-verification</string>
     <string name="path_setting_referral_phone_verification" translatable="false">/setting-referral-phone-verification</string>
     <string name="path_dynamic_features_install" translatable="false">/dynamic-features-install/.*\\/</string>
     <string name="path_add_bod">/add-bod</string>
     <string name="path_logout" translatable="false">/logout</string>
     <string name="path_add_pin">/add-pin</string>
+    <string name="path_add_pin_from_2fa">/add-pin-from-2fa</string>
     <string name="path_add_pin_onboarding">/add-pin-onboarding</string>
     <string name="path_add_pin_complete">/add-pin-complete</string>
     <string name="path_setting_bank" translatable="false">/setting-bank</string>
@@ -53,11 +61,14 @@
     <string name="path_general_setting" translatable="false">/general-setting</string>
     <string name="path_account_setting" translatable="false">/account-setting</string>
     <string name="path_advanced_setting" translatable="false">/advanced-setting</string>
+    <string name="path_payment_setting" translatable="false">/payment-setting</string>
+    <string name="path_home_account_old" translatable="false">/account-home-old</string>
+
     <string name="path_push_notification_troubleshooter" translatable="false">/push-notification-troubleshooter</string>
-    <string name="path_change_email_register">/change-email-register</string>
-    <string name="path_login">/login</string>
+    <string name="path_user_login" translatable="false">/login</string>
     <string name="path_init_register">/init-register</string>
     <string name="path_manage_name">/manage-name</string>
+    <string name="path_image_quality_setting" translatable="false">/media-quality-setting</string>
 
     <string name="path_email_register">/email-register</string>
     <string name="path_ovo_pay_with_qr">/ovo-pay-with-qr</string>
@@ -70,9 +81,23 @@
     <string name="path_add_fingerprint_onboarding">/add-fingerprint-onboarding</string>
     <string name="path_manage_notification">/manage-notification</string>
 
+
     <string name="path_seller_seamless_login" translatable="false">/login-seamless</string>
     <string name="path_reply_talk" translatable="false">/reply-talk/.*\\/</string>
     <string name="two_factor_register">/two-factor-register</string>
+    <string name="path_term_privacy">/term-privacy/.*\</string>
+
+    <string name="old_home_account">/old-home-account</string>
+
+    <string name="new_home_account">/new-home-account</string>
 
     <string name="path_screen_recorder">/screen-recorder</string>
+
+    <string name="path_internal_feedback">/internal-feedback</string>
+
+    <!-- Ovo Register -->
+    <string name="path_ovo_add_name">/ovo-add-name</string>
+    <string name="path_ovo_final_page">/ovo-final-page</string>
+    <string name="path_ovo_regis_init">/ovo-reg-init</string>
+
 </resources>

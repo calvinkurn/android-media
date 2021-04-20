@@ -28,6 +28,7 @@ class VariantChipViewHolder(val view: View,
     }
 
     override fun bind(element: VariantOptionWithAttribute) = with(view) {
+        txtChipVariant.contentDescription = context.getString(R.string.content_desc_txtChipVariant, element.variantName)
         txtChipVariant.text = element.variantName
         setState(element)
     }
@@ -49,19 +50,19 @@ class VariantChipViewHolder(val view: View,
         when (element.currentState) {
             VariantConstant.STATE_EMPTY -> {
                 containerChipVariant.background = MethodChecker.getDrawable(context, R.drawable.bg_variant_chip_disabled)
-                txtChipVariant.setTextColor(MethodChecker.getColor(context, R.color.Neutral_N700_32))
+                txtChipVariant.setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_44))
                 view.isEnabled = false
                 view.setOnClickListener(null)
             }
             VariantConstant.STATE_SELECTED -> {
                 containerChipVariant.background = MethodChecker.getDrawable(context, R.drawable.bg_variant_chip_selected)
-                txtChipVariant.setTextColor(MethodChecker.getColor(context,R.color.g_500))
+                txtChipVariant.setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
                 view.isEnabled = true
                 view.setOnClickListener(null)
             }
             VariantConstant.STATE_UNSELECTED -> {
                 containerChipVariant.background = MethodChecker.getDrawable(context, R.drawable.bg_variant_chip_unselected)
-                txtChipVariant.setTextColor(MethodChecker.getColor(context, R.color.Neutral_N700_68))
+                txtChipVariant.setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
                 view.isEnabled = true
             }
         }

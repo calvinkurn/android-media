@@ -2,9 +2,6 @@ package com.tokopedia.search
 
 import android.app.Activity
 import android.app.Instrumentation.ActivityResult
-import android.content.Intent
-import android.net.Uri
-import android.util.Log
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.IdlingRegistry
@@ -18,22 +15,14 @@ import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.platform.app.InstrumentationRegistry
-import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
-import com.tokopedia.analyticsdebugger.validator.core.*
-import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
-import com.tokopedia.discovery.common.constants.SearchConstant.FreeOngkir.FREE_ONGKIR_LOCAL_CACHE_NAME
-import com.tokopedia.discovery.common.constants.SearchConstant.FreeOngkir.FREE_ONGKIR_SHOW_CASE_ALREADY_SHOWN
-import com.tokopedia.discovery.common.constants.SearchConstant.OnBoarding.FILTER_ONBOARDING_SHOWN
-import com.tokopedia.discovery.common.constants.SearchConstant.OnBoarding.LOCAL_CACHE_NAME
-import com.tokopedia.search.result.presentation.model.ProductItemViewModel
+import com.tokopedia.cassavatest.getAnalyticsWithQuery
+import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.search.result.presentation.view.activity.SearchActivity
-import com.tokopedia.search.result.presentation.view.adapter.ProductListAdapter
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.ProductItemViewHolder
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
-import org.junit.After
 import org.hamcrest.MatcherAssert.assertThat
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -93,14 +82,6 @@ internal class SearchProductTrackingTest {
         onView(withId(recyclerViewId)).perform(actionOnItemAtPosition<ProductItemViewHolder>(organicItemPosition, click()))
 
         activityRule.activity.finish()
-    }
-
-    private fun List<Visitable<*>>.getFirstTopAdsProductPosition(): Int {
-        return indexOfFirst { it is ProductItemViewModel && it.isTopAds }
-    }
-
-    private fun List<Visitable<*>>.getFirstOrganicProductPosition(): Int {
-        return indexOfFirst { it is ProductItemViewModel && !it.isTopAds }
     }
 
     @After

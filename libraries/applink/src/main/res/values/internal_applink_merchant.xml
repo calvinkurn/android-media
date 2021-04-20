@@ -4,6 +4,7 @@
     <string name="path_redirect_create_shop" translatable="false">/redirect-create-shop</string>
     <string name="path_open_catalog_picker">/open-catalog-picker</string>
     <string name="path_open_product_preview" translatable="false">/open-product-preview</string>
+    <string name="path_product_draft" translatable="false">/product-draft</string>
     <string name="path_brandlist" translatable="false">/official-store/brand/.*\\/</string>
     <string name="path_brandlist_search" translatable="false">/official-store/brand/search</string>
 

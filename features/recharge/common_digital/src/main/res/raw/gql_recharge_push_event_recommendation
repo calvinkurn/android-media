@@ -1,6 +1,0 @@
-mutation rechargePushEventRecommendation($categoryID: Int!, $action: EventRecommendationActionType!) {
-    rechargePushEventRecommendation(categoryID: $categoryID, action: $action) {
-        Message
-        IsError
-    }
-}

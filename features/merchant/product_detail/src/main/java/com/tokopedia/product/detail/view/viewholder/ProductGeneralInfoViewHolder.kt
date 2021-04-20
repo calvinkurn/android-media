@@ -3,18 +3,16 @@ package com.tokopedia.product.detail.view.viewholder
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.media.loader.loadIcon
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductGeneralInfoDataModel
-import com.tokopedia.product.detail.view.adapter.ProductGeneralItemAdapter
+import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import kotlinx.android.synthetic.main.item_dynamic_general_info.view.*
+import kotlinx.android.synthetic.main.item_protection_partner_info_detail.view.*
 
 class ProductGeneralInfoViewHolder(val view: View, private val listener: DynamicProductDetailListener) : AbstractViewHolder<ProductGeneralInfoDataModel>(view) {
 
@@ -23,62 +21,56 @@ class ProductGeneralInfoViewHolder(val view: View, private val listener: Dynamic
     }
 
     override fun bind(element: ProductGeneralInfoDataModel) {
-        if (element.data.first().subtitle.isEmpty()) {
-            showLoading()
-        } else {
-            hideLoading()
+        renderView(element.subtitle)
+
+        view.addOnImpressionListener(element.impressHolder) {
+            listener.onImpressComponent(getComponentTrackData(element))
         }
 
-        element.data.run {
-            if (element.data.firstOrNull()?.subtitle?.isEmpty() == true) {
-                view.info_separator.gone()
-                view.general_info_container.layoutParams.height = 0
-            } else {
-                view.info_separator.show()
-                view.general_info_container.layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
-            }
-
-            view.addOnImpressionListener(element.impressHolder) {
-                listener.onImpressComponent(getComponentTrackData(element))
-            }
-
-            view.rv_general_info.adapter = ProductGeneralItemAdapter(this, element.name, listener, element.type, element.name, adapterPosition)
-
-            if (element.isApplink) {
-                view.pdp_arrow_right.show()
-            } else {
-                view.pdp_arrow_right.hide()
-            }
+        if (element.additionalDesc.isEmpty() && element.additionalIcon.isEmpty()) {
+            view.pdp_general_info_desc_detail?.hide()
+        } else {
+            view.pdp_general_info_desc_detail?.show()
         }
 
         view.pdp_info_title.text = MethodChecker.fromHtml(element.title)
+        view.pdp_info_title.show()
+        view.pdp_info_desc?.text = MethodChecker.fromHtml(element.subtitle)
+        view.pdp_additional_info_desc.shouldShowWithAction(element.additionalDesc.isNotEmpty()) {
+            view.pdp_additional_info_desc?.text = element.additionalDesc
+        }
+
         view.setOnClickListener {
-            listener.onInfoClicked(element.name, getComponentTrackData(element))
+            if (element.name == ProductDetailConstant.PRODUCT_INSTALLMENT_PAYLATER_INFO) {
+                listener.goToApplink(element.applink)
+            } else {
+                listener.onInfoClicked(element.name, getComponentTrackData(element))
+            }
+        }
+        renderIcon(element)
+    }
+
+    private fun renderIcon(element: ProductGeneralInfoDataModel) = with(itemView) {
+        pdp_arrow_right?.showWithCondition(element.isApplink)
+
+        pdp_icon?.shouldShowWithAction(element.parentIcon.isNotEmpty()) {
+            view.pdp_icon?.loadIcon(element.parentIcon)
         }
 
-        if (element.parentIcon.isNotEmpty()) {
-            view.pdp_icon.show()
-            ImageHandler.LoadImage(view.pdp_icon, element.parentIcon)
+        view.ic_pdp_additional_info?.shouldShowWithAction(element.additionalIcon.isNotEmpty()) {
+            view.ic_pdp_additional_info?.loadIcon(element.additionalIcon)
+        }
+    }
+
+    private fun renderView(subtitle: String) = with(itemView) {
+        if (subtitle.isEmpty()) {
+            info_separator.gone()
+            general_info_container.layoutParams.height = 0
         } else {
-            view.pdp_icon.hide()
+            info_separator.show()
+            general_info_container.layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
         }
     }
-
-    private fun hideLoading() = with(view) {
-        rv_general_info.show()
-        pdp_info_title.show()
-        titleShimmering.hide()
-        descShimmering.hide()
-    }
-
-    private fun showLoading() = with(view) {
-        pdp_arrow_right.hide()
-        pdp_info_title.hide()
-        rv_general_info.hide()
-        titleShimmering.show()
-        descShimmering.show()
-    }
-
 
     private fun getComponentTrackData(element: ProductGeneralInfoDataModel?) = ComponentTrackDataModel(element?.type
             ?: "",

@@ -6,14 +6,16 @@
     android:layout_height="wrap_content"
     android:paddingBottom="@dimen/dp_16">
 
-    <ImageView
+    <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/image_empty_profile"
         android:layout_width="@dimen/dp_240"
-        android:layout_height="@dimen/dp_180"
+        android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_24"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:unify_image_corner_radius="0"
+        app:unify_image_type="rect"
         tools:ignore="ContentDescription" />
 
     <com.tokopedia.unifycomponents.UnifyButton

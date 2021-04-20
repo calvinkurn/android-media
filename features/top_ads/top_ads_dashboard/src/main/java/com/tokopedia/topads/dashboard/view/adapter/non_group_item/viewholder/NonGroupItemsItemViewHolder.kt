@@ -3,20 +3,20 @@ package com.tokopedia.topads.dashboard.view.adapter.non_group_item.viewholder
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.design.image.ImageLoader
+import com.tokopedia.kotlin.extensions.view.getResDrawable
+import com.tokopedia.topads.common.data.response.nongroupItem.WithoutGroupDataItem
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.ACTIVE
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.TIDAK_AKTIF
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.TIDAK_TAMPIL
-import com.tokopedia.topads.dashboard.data.model.nongroupItem.WithoutGroupDataItem
 import com.tokopedia.topads.dashboard.data.utils.Utils
-import com.tokopedia.topads.dashboard.view.adapter.non_group_item.viewmodel.NonGroupItemsItemViewModel
+import com.tokopedia.topads.dashboard.view.adapter.non_group_item.viewmodel.NonGroupItemsItemModel
 import com.tokopedia.topads.dashboard.view.sheet.TopadsSelectActionSheet
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.ProgressBarUnify
 import kotlinx.android.synthetic.main.topads_dash_item_non_group_card.view.*
-import java.lang.NumberFormatException
 
 
 /**
@@ -27,13 +27,18 @@ class NonGroupItemsItemViewHolder(val view: View,
                                   var selectMode: ((select: Boolean) -> Unit),
                                   var actionDelete: ((pos: Int) -> Unit),
                                   var actionStatusChange: ((pos: Int, status: Int) -> Unit),
-                                  var editDone: ((groupId: Int, adPriceBid: Int) -> Unit)) : NonGroupItemsViewHolder<NonGroupItemsItemViewModel>(view) {
+                                  var editDone: ((groupId: Int, adPriceBid: Int) -> Unit)) : NonGroupItemsViewHolder<NonGroupItemsItemModel>(view) {
     companion object {
         @LayoutRes
         var LAYOUT = R.layout.topads_dash_item_non_group_card
     }
 
-    override fun bind(item: NonGroupItemsItemViewModel, selectedMode: Boolean, fromSearch: Boolean, statsData: MutableList<WithoutGroupDataItem>) {
+    private val sheet: TopadsSelectActionSheet? by lazy(LazyThreadSafetyMode.NONE) {
+        TopadsSelectActionSheet.newInstance()
+    }
+
+    override fun bind(item: NonGroupItemsItemModel, selectedMode: Boolean, fromSearch: Boolean, statsData: MutableList<WithoutGroupDataItem>) {
+        view.img_menu.setImageDrawable(view.context.getResDrawable(com.tokopedia.topads.common.R.drawable.ic_topads_menu))
         item.let {
             when (it.data.adStatusDesc) {
 
@@ -59,7 +64,7 @@ class NonGroupItemsItemViewHolder(val view: View,
             }
 
             view.label.text = it.data.adStatusDesc
-            ImageLoader.LoadImage(view.product_img, it.data.productImageUri)
+            view.product_img.setImageUrl(it.data.productImageUri)
             view.product_name.text = it.data.productName
             setProgressBar(it.data)
             view.check_box.isChecked = item.isChecked
@@ -92,16 +97,15 @@ class NonGroupItemsItemViewHolder(val view: View,
         }
 
         view.img_menu.setOnClickListener {
-            val sheet = TopadsSelectActionSheet.newInstance(view.context, item.data.adStatus, item.data.productName)
-            sheet.show()
-            sheet.onEditAction = {
+            sheet?.show(((view.context as FragmentActivity).supportFragmentManager),item.data.adStatus, item.data.productName, item.data.groupId)
+            sheet?.onEditAction = {
                 editDone.invoke(item.data.adId, item.data.adPriceBid)
             }
-            sheet.onDeleteClick = {
+            sheet?.onDeleteClick = {
                 if (adapterPosition != RecyclerView.NO_POSITION)
                     actionDelete(adapterPosition)
             }
-            sheet.changeStatus = {
+            sheet?.changeStatus = {
                 if (adapterPosition != RecyclerView.NO_POSITION)
                     actionStatusChange(adapterPosition, it)
             }

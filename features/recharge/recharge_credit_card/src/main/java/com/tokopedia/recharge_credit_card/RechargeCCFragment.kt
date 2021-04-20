@@ -13,20 +13,21 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConsInternalDigital
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
+import com.tokopedia.common_digital.cart.DigitalCheckoutUtil
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.recharge_credit_card.analytics.CreditCardAnalytics
 import com.tokopedia.recharge_credit_card.bottomsheet.CCBankListBottomSheet
+import com.tokopedia.recharge_credit_card.datamodel.RechargeCreditCard
 import com.tokopedia.recharge_credit_card.datamodel.TickerCreditCard
 import com.tokopedia.recharge_credit_card.di.RechargeCCInstance
+import com.tokopedia.recharge_credit_card.util.RechargeCCGqlQuery
 import com.tokopedia.recharge_credit_card.util.RechargeCCUtil
 import com.tokopedia.recharge_credit_card.viewmodel.RechargeCCViewModel
 import com.tokopedia.recharge_credit_card.viewmodel.RechargeSubmitCCViewModel
@@ -121,7 +122,7 @@ class RechargeCCFragment : BaseDaggerFragment() {
             }
         }
         observeData()
-        creditCardAnalytics.impressionInitialPage(categoryId, "none", userSession.userId)
+        creditCardAnalytics.impressionInitialPage(userSession.userId)
     }
 
     private fun getDataBundle() {
@@ -141,8 +142,8 @@ class RechargeCCFragment : BaseDaggerFragment() {
 
     private fun observeData() {
         rechargeCCViewModel.creditCardSelected.observe(viewLifecycleOwner, Observer {
-            operatorIdSelected = it.operatorId.toString()
-            productIdSelected = it.defaultProductId.toString()
+            operatorIdSelected = it.operatorId
+            productIdSelected = it.defaultProductId
             cc_widget_client_number.setImageIcon(it.imageUrl)
         })
 
@@ -154,7 +155,7 @@ class RechargeCCFragment : BaseDaggerFragment() {
             cc_widget_client_number.setErrorTextField(getString(R.string.cc_bank_is_not_supported))
         })
 
-        rechargeCCViewModel.tickers.observe(this, Observer {
+        rechargeCCViewModel.tickers.observe(viewLifecycleOwner, Observer {
             renderTicker(it)
             performanceMonitoring.stopTrace()
         })
@@ -176,9 +177,10 @@ class RechargeCCFragment : BaseDaggerFragment() {
                     .idemPotencyKey(RechargeCCUtil.generateIdemPotencyCheckout(userSession.userId))
                     .utmSource(DigitalCheckoutPassData.UTM_SOURCE_ANDROID)
                     .utmMedium(DigitalCheckoutPassData.UTM_MEDIUM_WIDGET)
-                    .needGetCart(true)
+                    .isFromPDP(true)
                     .build()
             checkoutPassDataState = passData
+
             navigateToCart(passData)
         })
 
@@ -189,8 +191,7 @@ class RechargeCCFragment : BaseDaggerFragment() {
     }
 
     private fun getTickerData() {
-        rechargeCCViewModel.getMenuDetail(
-                GraphqlHelper.loadRawString(resources, R.raw.query_cc_menu_detail), menuId)
+        rechargeCCViewModel.getMenuDetail(RechargeCCGqlQuery.catalogMenuDetail, menuId)
     }
 
     private fun renderTicker(tickers: List<TickerCreditCard>) {
@@ -217,14 +218,14 @@ class RechargeCCFragment : BaseDaggerFragment() {
 
     private fun checkPrefixCreditCardNumber(clientNumber: String) {
         rechargeCCViewModel.getPrefixes(
-                GraphqlHelper.loadRawString(resources, R.raw.query_cc_prefix_operator),
+                RechargeCCGqlQuery.catalogPrefix,
                 clientNumber, menuId)
     }
 
     private fun showErrorToaster(message: String) {
         KeyboardHandler.hideSoftKeyboard(activity)
         view?.run {
-            Toaster.make(this, message, Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR)
+            Toaster.build(this, message, Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
         }
     }
 
@@ -261,8 +262,7 @@ class RechargeCCFragment : BaseDaggerFragment() {
             val mapParam = rechargeSubmitCCViewModel.createMapParam(clientNumber, operatorId, productId,
                     userSession.userId)
 
-            rechargeSubmitCCViewModel.postCreditCard(GraphqlHelper.loadRawString(resources,
-                    R.raw.query_cc_signature), categoryId, mapParam)
+            rechargeSubmitCCViewModel.postCreditCard(RechargeCCGqlQuery.rechargeCCSignature, categoryId, mapParam)
         } else {
             navigateUserLogin()
         }
@@ -282,9 +282,19 @@ class RechargeCCFragment : BaseDaggerFragment() {
     }
 
     private fun navigateToCart(passData: DigitalCheckoutPassData) {
-        val intent = RouteManager.getIntent(activity, ApplinkConsInternalDigital.CART_DIGITAL)
-        intent.putExtra(DigitalExtraParam.EXTRA_PASS_DIGITAL_CART_DATA, passData)
-        startActivityForResult(intent, REQUEST_CODE_CART)
+        trackAddToCartEvent()
+        context?.let {
+            val intent = RouteManager.getIntent(activity, DigitalCheckoutUtil.getApplinkCartDigital(it))
+            intent.putExtra(DigitalExtraParam.EXTRA_PASS_DIGITAL_CART_DATA, passData)
+            startActivityForResult(intent, REQUEST_CODE_CART)
+        }
+    }
+
+    private fun trackAddToCartEvent() {
+        val creditCardSelected = rechargeCCViewModel.creditCardSelected.value
+                ?: RechargeCreditCard()
+        creditCardAnalytics.addToCart(userSession.userId, rechargeCCViewModel.categoryName, categoryId,
+                creditCardSelected.prefixName, creditCardSelected.operatorId)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

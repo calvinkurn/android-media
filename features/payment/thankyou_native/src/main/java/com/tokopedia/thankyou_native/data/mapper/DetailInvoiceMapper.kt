@@ -1,38 +1,28 @@
 package com.tokopedia.thankyou_native.data.mapper
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.thankyou_native.domain.model.ThanksPageData
 import com.tokopedia.thankyou_native.presentation.adapter.model.*
+import com.tokopedia.utils.currency.CurrencyFormatUtil
+import com.tokopedia.thankyou_native.data.mapper.PaymentDeductionKey.THANK_STACKED_CASHBACK_TITLE
 
 class DetailInvoiceMapper(val thanksPageData: ThanksPageData) {
 
     private val visitableList = arrayListOf<Visitable<*>>()
 
     fun getDetailedInvoice(): ArrayList<Visitable<*>> {
-        createInvoiceSummary(thanksPageData)
+        addInvoiceSummary()
+        addTotalFee()
+        addPaymentInfo()
+        addCashBackEarned()
         createShopsSummery(thanksPageData)
         return visitableList
     }
 
-    private fun createInvoiceSummary(thanksPageData: ThanksPageData) {
-
-        var totalPrice = 0F
+    private fun addInvoiceSummary() {
+        var totalPrice = 0.0
         var totalItemCount = 0
-
-        var totalProductProtectionStr: String? = null
-        var totalDiscountStr: String? = null
-        var totalShippingStr: String? = null
-        var totalShippingDiscountStr: String? = null
-        var totalShippingInsurance: String? = null
-        var donationStr: String? = null
-        var eGold: String? = null
-
-        var totalServiceFeeStr: String? = null
-
-
-        val paymentModeMapList = arrayListOf<PaymentModeMap>()
-        val benefitMapList = arrayListOf<BenefitMap>()
+        val invoiceSummaryMapList = arrayListOf<InvoiceSummaryMap>()
 
         thanksPageData.shopOrder.forEach { shopOrder ->
             shopOrder.purchaseItemList.forEach {
@@ -41,57 +31,81 @@ class DetailInvoiceMapper(val thanksPageData: ThanksPageData) {
             }
         }
 
-        thanksPageData.paymentItems?.forEach {
-            when (it.itemName) {
-                PaymentItemKey.PROTECTION_PLAN -> totalProductProtectionStr = it.amountStr
-                PaymentItemKey.E_GOLD -> eGold = it.amountStr
-                PaymentItemKey.DONATION -> donationStr = it.amountStr
-                PaymentItemKey.SERVICE_FEE -> totalServiceFeeStr = it.amountStr
-                PaymentItemKey.TOTAL_SHIPPING -> totalShippingStr = it.amountStr
-                PaymentItemKey.TOTAL_SHIPPING_INSURANCE -> totalShippingInsurance = it.amountStr
-            }
+        thanksPageData.paymentItems?.filter {
+            it.itemName != PaymentItemKey.SERVICE_FEE
+        }?.forEach {
+            invoiceSummaryMapList.add(InvoiceSummaryMap(it.itemDesc, it.amountStr))
         }
 
+        thanksPageData.paymentDeductions?.filter {
+            (it.itemName == PaymentDeductionKey.TOTAL_SHIPPING_DISCOUNT) ||
+                    (it.itemName == PaymentDeductionKey.TOTAL_DISCOUNT)
+
+        }?.forEach {
+            invoiceSummaryMapList.add(InvoiceSummaryMap(it.itemDesc, it.amountStr, true))
+        }
+        val totalPriceStr = CurrencyFormatUtil.convertPriceValueToIdrFormat(totalPrice, false)
+        visitableList.add(InvoiceSummery(totalPriceStr, totalItemCount, invoiceSummaryMapList))
+    }
+
+    private fun addTotalFee() {
+        val totalFee = TotalFee(thanksPageData.orderAmountStr, arrayListOf())
+        thanksPageData.feeDetailList?.forEach {
+            val formattedAmountStr = CurrencyFormatUtil.convertPriceValueToIdrFormat(it.amount, false)
+            totalFee.feeDetailList.add(FeeDetail(it.name, formattedAmountStr))
+        }
+        if (totalFee.feeDetailList.isNotEmpty())
+            visitableList.add(totalFee)
+    }
+
+    private fun addPaymentInfo() {
+        val paymentModeMapList = arrayListOf<PaymentModeMap>()
+        thanksPageData.paymentDeductions?.filter {
+            it.itemName == PaymentDeductionKey.REWARDS_POINT
+        }?.forEach {
+            when (it.itemName) {
+                PaymentDeductionKey.REWARDS_POINT -> paymentModeMapList.add(PaymentModeMap(it.itemDesc, it.amountStr, null))
+            }
+        }
+        thanksPageData.paymentDetails?.forEach { paymentDetail ->
+            paymentModeMapList.add(PaymentModeMap(paymentDetail.gatewayName,
+                    paymentDetail.amountStr, paymentDetail.gatewayCode))
+        }
+        visitableList.add(PaymentInfo(thanksPageData.amountStr, paymentModeList = paymentModeMapList))
+    }
+
+    private fun addCashBackEarned() {
+        var cashBackMapList = arrayListOf<CashBackMap>()
+        var isCashBackOVOPoint = false
         thanksPageData.paymentDeductions?.forEach {
             when (it.itemName) {
-                PaymentDeductionKey.TOTAL_SHIPPING_DISCOUNT -> totalShippingDiscountStr = it.amountStr
-                PaymentDeductionKey.TOTAL_DISCOUNT -> totalDiscountStr = it.amountStr
-                PaymentDeductionKey.REWARDS_POINT -> paymentModeMapList.add(PaymentModeMap(it.itemDesc, it.amountStr, null))
-                PaymentDeductionKey.CASH_BACK_OVO_POINT -> benefitMapList.add(BenefitMap(it.itemDesc, it.amountStr))
-                PaymentDeductionKey.POTENTIAL_CASH_BACK -> benefitMapList.add(BenefitMap(it.itemDesc, it.amountStr, true))
+                PaymentDeductionKey.CASH_BACK_OVO_POINT -> {
+                    isCashBackOVOPoint = true
+                    cashBackMapList.add(CashBackMap(it.itemDesc,
+                            it.amountStr, null))
+                }
+                PaymentDeductionKey.POTENTIAL_CASH_BACK -> cashBackMapList.add(CashBackMap(it.itemDesc,
+                        it.amountStr, null, isBBICashBack = true))
+                PaymentDeductionKey.CASHBACK_STACKED -> {
+                    val cashBackMap = CashBackMap(THANK_STACKED_CASHBACK_TITLE, it.amountStr,
+                            it.itemDesc, isBBICashBack = false, isStackedCashBack = true)
+                    if(cashBackMapList.size>0){
+                        val tempCashBackList = arrayListOf<CashBackMap>()
+                        tempCashBackList.add(cashBackMap)
+                        tempCashBackList.addAll(cashBackMapList)
+                        cashBackMapList = tempCashBackList
+                    }else{
+                        cashBackMapList.add(cashBackMap)
+                    }
+                }
             }
         }
-        val invoiceSummery = InvoiceSummery(
-                totalItemCount = totalItemCount.toString(),
-                totalPriceStr = CurrencyFormatUtil.convertPriceValue(totalPrice.toDouble(), false),
-                totalItemDiscountStr = totalDiscountStr,
-                totalProductProtectionStr = totalProductProtectionStr,
-                totalShippingChargeStr = totalShippingStr,
-                totalShippingDiscountStr = totalShippingDiscountStr,
-                totalShippingInsuranceStr = totalShippingInsurance,
-                donationAmountStr = donationStr,
-                eGoldPriceStr = eGold)
-
-        visitableList.add(invoiceSummery)
-
-        totalServiceFeeStr?.let {
-            val billDetail = BillDetail(thanksPageData.orderAmountStr, null, totalServiceFeeStr)
-            visitableList.add(billDetail)
+        if (cashBackMapList.isNotEmpty()) {
+            val cashBackEarned = CashBackEarned(cashBackMapList, isCashBackOVOPoint)
+            visitableList.add(cashBackEarned)
         }
-
-        thanksPageData.paymentDetails?.forEach { paymentDetail ->
-            paymentModeMapList.add(PaymentModeMap(paymentDetail.gatewayName, paymentDetail.amountStr, paymentDetail.gatewayCode))
-        }
-
-        val paymentInfo = PaymentInfo(thanksPageData.amountStr, paymentModeList = paymentModeMapList)
-        visitableList.add(paymentInfo)
-
-        if (benefitMapList.isNotEmpty()) {
-            val obtainedAfterTransaction = ObtainedAfterTransaction(benefitMapList)
-            visitableList.add(obtainedAfterTransaction)
-        }
-
     }
+
 
     private fun createShopsSummery(thanksPageData: ThanksPageData) {
         if (thanksPageData.shopOrder.isNotEmpty())
@@ -118,20 +132,27 @@ class DetailInvoiceMapper(val thanksPageData: ThanksPageData) {
                 }
             }
 
+            val shippingDurationOrETA = if (shopOrder.logisticETA.isNullOrBlank()) {
+                if (shopOrder.logisticDuration.isNullOrBlank()) "" else shopOrder.logisticDuration
+            } else shopOrder.logisticETA
+
+            val shippingInfo = if (shippingDurationOrETA.isBlank())
+                shopOrder.logisticType
+            else shopOrder.logisticType + "\n" + shippingDurationOrETA
+
             val shopInvoice = ShopInvoice(
                     shopOrder.storeName,
                     orderedItemList,
                     discountFromMerchant,
                     if (totalProductProtectionForShop > 0.0)
-                        CurrencyFormatUtil.convertPriceValue(totalProductProtectionForShop,
+                        CurrencyFormatUtil.convertPriceValueToIdrFormat(totalProductProtectionForShop,
                                 false)
                     else null,
                     if (shopOrder.shippingAmount > 0F) shopOrder.shippingAmountStr else null,
-                    shopOrder.logisticType,
+                    shippingInfo,
                     logisticDiscountStr,
                     if (shopOrder.insuranceAmount > 0F) shopOrder.insuranceAmountStr else null,
                     shopOrder.address)
-
             visitableList.add(shopInvoice)
             currentIndex++
         }
@@ -145,12 +166,9 @@ object PromoDataKey {
 }
 
 object PaymentItemKey {
-    const val PROTECTION_PLAN = "purchase_plan_protection"
+    const val SERVICE_FEE = "total_fee"
     const val E_GOLD = "egold"
     const val DONATION = "donation"
-    const val SERVICE_FEE = "total_fee"
-    const val TOTAL_SHIPPING_INSURANCE = "total_insurance_fee"
-    const val TOTAL_SHIPPING = "total_shipping"
 }
 
 object PaymentDeductionKey {
@@ -159,4 +177,8 @@ object PaymentDeductionKey {
     const val REWARDS_POINT = "rewards_point"
     const val CASH_BACK_OVO_POINT = "cashback"
     const val POTENTIAL_CASH_BACK = "potential_cashback"
+    const val CASHBACK_STACKED = "cashback_stacked"
+
+    const val THANK_STACKED_CASHBACK_TITLE = "Dapat cashback senilai"
 }
+

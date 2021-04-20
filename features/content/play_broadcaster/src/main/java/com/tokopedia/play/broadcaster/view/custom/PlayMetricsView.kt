@@ -1,13 +1,7 @@
 package com.tokopedia.play.broadcaster.view.custom
 
 import android.content.Context
-import android.graphics.Typeface
 import android.os.Build
-import android.text.Spannable
-import android.text.SpannableString
-import android.text.Spanned
-import android.text.style.ForegroundColorSpan
-import android.text.style.StyleSpan
 import android.util.AttributeSet
 import android.view.Gravity
 import android.view.View
@@ -19,14 +13,11 @@ import androidx.transition.Fade
 import androidx.transition.Slide
 import androidx.transition.TransitionManager
 import androidx.transition.TransitionSet
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.ui.model.PlayMetricUiModel
 import kotlinx.coroutines.*
-import kotlinx.coroutines.channels.BroadcastChannel
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.consumeAsFlow
 
 /**
  * Created by jegul on 10/06/20
@@ -44,15 +35,15 @@ class PlayMetricsView : LinearLayout {
     private val scope = CoroutineScope(Dispatchers.Main + job)
 
     private var currentIndex = -1
-    private val textViewList: List<TextView>
+    private val metricBubbleList: List<PlayMetricBubble>
 
-    private val metricsChannel = BroadcastChannel<PlayMetricUiModel>(Channel.BUFFERED)
+    private val metricsChannel = Channel<PlayMetricUiModel>(Channel.BUFFERED)
 
     init {
         scope.launch(Dispatchers.Main.immediate) { initMetricsChannel() }
         gravity = Gravity.BOTTOM
         orientation = VERTICAL
-        textViewList = List(2) { getTextViewInstance() }
+        metricBubbleList = List(2) { getMetricBubbleInstance() }
     }
 
     fun addMetricToQueue(metric: PlayMetricUiModel) {
@@ -66,10 +57,10 @@ class PlayMetricsView : LinearLayout {
     }
 
     private fun show(metric: PlayMetricUiModel) {
-        val nextIndex = (currentIndex + 1) % textViewList.size
-        val nextView = textViewList[nextIndex]
+        val nextIndex = (currentIndex + 1) % metricBubbleList.size
+        val nextView = metricBubbleList[nextIndex]
 
-        nextView.text = getSpannedMetric(metric)
+        nextView.setMetric(metric)
 
         val transition = TransitionSet()
                 .addTransition(Slide(Gravity.BOTTOM)
@@ -101,28 +92,14 @@ class PlayMetricsView : LinearLayout {
         job.cancelChildren()
     }
 
-    private fun getSpannedMetric(metric: PlayMetricUiModel): CharSequence {
-        val spannedText = SpannableString(metric.fullSentence)
-        val secondSentenceFirstIndex = spannedText.indexOf(metric.secondSentence)
-        val secondSentenceLastIndex = secondSentenceFirstIndex + metric.secondSentence.length
-        spannedText.setSpan(
-                ForegroundColorSpan(
-                        MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.dark_G500)
-                ), secondSentenceFirstIndex, secondSentenceLastIndex, Spannable.SPAN_INCLUSIVE_EXCLUSIVE
-        )
-        spannedText.setSpan(StyleSpan(Typeface.BOLD), secondSentenceFirstIndex, secondSentenceLastIndex, Spanned.SPAN_INCLUSIVE_EXCLUSIVE)
-
-        return spannedText
-    }
-
-    private fun getTextViewInstance(): TextView {
-        val view = View.inflate(context, R.layout.item_play_metrics, null) as TextView
-        view.layoutParams = LayoutParams(LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-        return view
+    private fun getMetricBubbleInstance(): PlayMetricBubble {
+        return PlayMetricBubble(context).apply {
+            layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+        }
     }
 
     private suspend fun initMetricsChannel() = withContext(Dispatchers.Default) {
-        metricsChannel.asFlow().collect {
+        metricsChannel.consumeAsFlow().collect {
             onRetrievedNewMetric(it)
             delay(it.interval)
             removeCurrentMetric()
@@ -135,7 +112,7 @@ class PlayMetricsView : LinearLayout {
     }
 
     private suspend fun removeCurrentMetric() = withContext(Dispatchers.Main) {
-        removeMetric(textViewList[currentIndex])
+        removeMetric(metricBubbleList[currentIndex])
     }
 
     companion object {

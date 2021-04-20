@@ -1,29 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.tokopedia.topads.auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    package="com.tokopedia.topads.auto">
 
     <application>
         <activity
-            android:name=".view.activity.AutoAdsRouteActivity"
-            android:label="" >
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <data
-                    android:scheme="@string/sellerapp_scheme"
-                    android:host="@string/host_topads"
-                    android:path="@string/path_topads_autoads"/>
-            </intent-filter>
-        </activity>
-        <activity
             android:name=".view.activity.CreateAutoAdsActivity"
-            android:theme="@style/Theme.White"
+            android:theme="@style/Theme.WhiteUnify"
             android:label="@string/auto_ads_creation" >
             <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
+                <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
@@ -34,22 +19,12 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".view.activity.AutoAdsActivatedActivity"
-            android:label="@string/autoads_iklan_otomatis"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White" />
-        <activity
-            android:name=".view.activity.EmptyProductActivity"
-            android:label="@string/autoads_iklan_otomatis"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White" />
-        <activity
             android:name=".view.activity.EditBudgetAutoAdsActivity"
             android:label="@string/autoads_pengaturan_iklan"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White" >
+            android:theme="@style/Theme.WhiteUnify" >
             <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
+                <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
@@ -63,9 +38,9 @@
             android:name=".view.activity.AutoAdsOnboardingActivity"
             android:label="@string/auto_ads_creation"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White">
+            android:theme="@style/Theme.WhiteUnify">
         <intent-filter>
-            <action android:name="android.intent.action.VIEW" />
+            <action android:name="com.tokopedia.internal.VIEW" />
 
             <category android:name="android.intent.category.DEFAULT" />
             <category android:name="android.intent.category.BROWSABLE" />
@@ -74,8 +49,6 @@
                 android:host="@string/host_topads"
                 android:path="@string/path_autoads_onboarding"/>
         </intent-filter></activity>
-        <activity
-            android:name=".view.activity.ConfirmationDialogActivity" />
     </application>
 
 </manifest>

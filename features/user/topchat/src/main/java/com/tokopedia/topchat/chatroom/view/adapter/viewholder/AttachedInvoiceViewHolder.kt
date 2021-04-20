@@ -6,6 +6,7 @@ import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.annotation.LayoutRes
+import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.chat_common.data.AttachInvoiceSentViewModel
 import com.tokopedia.chat_common.data.DeferredAttachment
@@ -16,6 +17,8 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ErrorAttachment
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.DeferredViewHolderAttachment
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.getStrokeWidthSenderDimenRes
+import com.tokopedia.topchat.common.util.ViewUtil
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.LoaderUnify
 
@@ -26,11 +29,40 @@ class AttachedInvoiceViewHolder(
 ) : BaseChatViewHolder<AttachInvoiceSentViewModel>(itemView) {
 
     private val container: RelativeLayout? = itemView.findViewById(R.id.rl_container)
+    private val clContainer: ConstraintLayout? = itemView.findViewById(R.id.cl_chat_bubble)
     private val thumbnail: ImageView? = itemView.findViewById(R.id.iv_thumbnail)
     private val status: Label? = itemView.findViewById(R.id.tv_status)
     private val invoiceId: TextView? = itemView.findViewById(R.id.tv_invoice_id)
     private val price: TextView? = itemView.findViewById(R.id.tv_price)
     private var loadView: LoaderUnify? = itemView.findViewById(R.id.loader_invoice)
+    private val radiusInvoice: Float = itemView.context.resources.getDimension(R.dimen.dp_topchat_6)
+
+    private val bgOpposite = ViewUtil.generateBackgroundWithShadow(
+            clContainer,
+            com.tokopedia.unifyprinciples.R.color.Unify_N0,
+            com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
+            com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
+            com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
+            com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
+            com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
+            R.dimen.dp_topchat_2,
+            R.dimen.dp_topchat_1,
+            Gravity.CENTER
+    )
+    private val bgSender = ViewUtil.generateBackgroundWithShadow(
+            clContainer,
+            com.tokopedia.unifyprinciples.R.color.Unify_N0,
+            com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
+            com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
+            com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
+            com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
+            com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
+            R.dimen.dp_topchat_2,
+            R.dimen.dp_topchat_1,
+            Gravity.CENTER,
+            com.tokopedia.unifyprinciples.R.color.Unify_G200,
+            getStrokeWidthSenderDimenRes()
+    )
 
     interface InvoiceThumbnailListener {
         fun onClickInvoiceThumbnail(url: String, id: String)
@@ -60,6 +92,15 @@ class AttachedInvoiceViewHolder(
             bindIsLoading(invoice)
             bindViewWithModel(invoice)
             assignInteraction(invoice)
+            bindBackground(invoice)
+        }
+    }
+
+    private fun bindBackground(invoice: AttachInvoiceSentViewModel) {
+        if (invoice.isSender) {
+            clContainer?.background = bgSender
+        } else {
+            clContainer?.background = bgOpposite
         }
     }
 
@@ -106,7 +147,7 @@ class AttachedInvoiceViewHolder(
     private fun bindViewWithModel(viewModel: AttachInvoiceSentViewModel) {
         val labelType = getLabelType(viewModel.statusId)
 
-        ImageHandler.loadImageRounded2(itemView.context, thumbnail, viewModel.imageUrl)
+        ImageHandler.loadImageRounded2(itemView.context, thumbnail, viewModel.imageUrl, radiusInvoice)
         status?.text = viewModel.status
         status?.setLabelType(labelType)
         invoiceId?.text = viewModel.invoiceId

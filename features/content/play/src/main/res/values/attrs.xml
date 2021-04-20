@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <declare-styleable name="RoundedConstraintLayout">
-        <attr name="cornerRadius" format="dimension" />
-    </declare-styleable>
-
     <declare-styleable name="MaximumHeightRecyclerView">
         <attr name="maximumHeight" format="dimension"/>
+    </declare-styleable>
+
+    <declare-styleable name="NestedScrollableHost">
+        <attr name="lockScroll" format="boolean"/>
     </declare-styleable>
 </resources>

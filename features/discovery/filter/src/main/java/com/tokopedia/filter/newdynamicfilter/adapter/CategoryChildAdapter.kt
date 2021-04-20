@@ -46,8 +46,8 @@ class CategoryChildAdapter(private val clickListener: OnItemClickListener) : Mul
         var categoryContainer: LinearLayout? = view.findViewById<View>(R.id.category_child_container) as LinearLayout
         var categoryName: TextView? = view.findViewById<View>(R.id.category_child_text) as TextView
         private var dropdown: ImageView? = view.findViewById<View>(R.id.category_child_dropdown) as ImageView
-        private var colorTextNormal = view.context.resources.getColor(R.color.font_black_primary_70)
-        private var colorTextSelected: Int = view.context.resources.getColor(R.color.medium_green)
+        private var colorTextNormal = view.context.resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_68)
+        private var colorTextSelected: Int = view.context.resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_G400)
 
         fun bindData(category: Category) {
             this.categoryName?.text = category.name

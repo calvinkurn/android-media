@@ -9,6 +9,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.viewpager.widget.PagerAdapter
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -21,6 +22,7 @@ import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.util.getParamInt
 import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.analytics.NotificationUpdateAnalytics
+import com.tokopedia.notifcenter.data.consts.Resources.Unify_N0
 import com.tokopedia.notifcenter.data.entity.NotificationTabItem
 import com.tokopedia.notifcenter.data.entity.NotificationUpdateUnread
 import com.tokopedia.notifcenter.di.DaggerNotificationComponent
@@ -35,6 +37,7 @@ import com.tokopedia.notifcenter.presentation.presenter.NotificationActivityPres
 import com.tokopedia.notifcenter.util.CacheManager
 import com.tokopedia.notifcenter.widget.NotificationTabLayout
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 /**
@@ -49,6 +52,7 @@ class NotificationActivity : BaseTabActivity(), HasComponent<BaseAppComponent>,
 
     @Inject lateinit var presenter: NotificationActivityPresenter
     @Inject lateinit var analytics: NotificationUpdateAnalytics
+    @Inject lateinit var userSession: UserSessionInterface
     @Inject lateinit var cacheManager: CacheManager
 
     private var fragmentAdapter: NotificationFragmentAdapter? = null
@@ -220,7 +224,7 @@ class NotificationActivity : BaseTabActivity(), HasComponent<BaseAppComponent>,
             }
         })
 
-        tabLayout.setBackgroundResource(R.color.white)
+        tabLayout.setBackgroundResource(Unify_N0)
         tabLayout.tabMode = TabLayout.MODE_FIXED
         tabLayout.getTabAt(initialIndexPage)?.select()
     }
@@ -283,7 +287,10 @@ class NotificationActivity : BaseTabActivity(), HasComponent<BaseAppComponent>,
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         return when (item?.itemId) {
-            R.id.notif_settting -> openNotificationSettingPage()
+            R.id.notif_settting -> {
+                analytics.trackTroubleshooterGearClicked(userSession.userId, userSession.shopId)
+                openNotificationSettingPage()
+            }
             else -> super.onOptionsItemSelected(item)
         }
     }
@@ -294,7 +301,9 @@ class NotificationActivity : BaseTabActivity(), HasComponent<BaseAppComponent>,
     }
 
     private fun setWindowBackground() {
-        window.decorView.setBackgroundColor(Color.WHITE)
+        try {
+            window.decorView.setBackgroundColor(ContextCompat.getColor(this, Unify_N0))
+        } catch (e: Exception) {}
     }
 
     override fun onDestroy() {

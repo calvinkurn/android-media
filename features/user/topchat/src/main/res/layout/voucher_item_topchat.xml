@@ -10,14 +10,10 @@
         android:id="@+id/merchantVoucherView"
         android:layout_width="270dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/spacing_lvl4"
-        android:layout_marginLeft="@dimen/spacing_lvl4"
-        android:layout_marginEnd="@dimen/spacing_lvl4"
-        android:layout_marginRight="@dimen/spacing_lvl4"
-        android:maxWidth="270dp"
-        android:paddingLeft="@dimen/dp_topchat_3"
-        android:paddingTop="@dimen/spacing_lvl3"
-        android:paddingRight="@dimen/dp_topchat_3"
-        android:paddingBottom="@dimen/spacing_lvl3" />
+        android:layout_marginStart="@dimen/dp_topchat_12"
+        android:layout_marginLeft="@dimen/dp_topchat_12"
+        android:layout_marginEnd="@dimen/dp_topchat_12"
+        android:layout_marginRight="@dimen/dp_topchat_12"
+        android:maxWidth="270dp" />
 
 </LinearLayout>

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.unifycomponents.CardUnify xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="@dimen/dp_16"
+    app:cardCornerRadius="@dimen/dp_8"
+    app:cardUseCompatPadding="true">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/linearLayout9"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <com.elyeproj.loaderviewlibrary.LoaderTextView
+            android:id="@+id/product_name"
+            style="@style/TextView.Title.Bold"
+            android:layout_width="@dimen/dp_180"
+            android:layout_height="10dp"
+            android:layout_marginStart="8dp"
+            app:corners="8"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:use_gradient="true" />
+
+        <com.elyeproj.loaderviewlibrary.LoaderTextView
+            android:id="@+id/include"
+            android:layout_width="@dimen/dp_80"
+            android:layout_height="10dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="@dimen/dp_4"
+            app:corners="8"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/product_name"
+            app:use_gradient="true" />
+
+        <com.elyeproj.loaderviewlibrary.LoaderTextView
+            android:id="@+id/product_price"
+            android:layout_width="@dimen/dp_80"
+            android:layout_height="10dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="@dimen/dp_4"
+            android:textColor="#FA591D"
+            app:corners="8"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/include"
+            app:use_gradient="true" />
+
+        <com.elyeproj.loaderviewlibrary.LoaderTextView
+            android:id="@+id/checkBox"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:checked="false"
+            app:corners="8"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:use_gradient="true" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</com.tokopedia.unifycomponents.CardUnify>

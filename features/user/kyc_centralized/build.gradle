@@ -5,7 +5,7 @@ apply plugin: 'io.hansel.preprocessor.module'
 buildscript {
     repositories {
         mavenCentral()
-        maven { url 'https://hansel.io/maven' }
+        maven { url 'https://maven-hansel.tokopedia.com/maven' }
     }
     dependencies {
         classpath rootProject.ext.miscDependencies.hansel
@@ -20,14 +20,12 @@ dependencies {
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.track)
     implementation project(rootProject.ext.libraries.imageuploader)
-    implementation project(rootProject.ext.libraries.imagePicker)
-    implementation project(rootProject.ext.libraries.permissionchecker)
+    implementation project(rootProject.ext.libraries.utils)
     implementation project(rootProject.ext.libraries.remoteConfig)
+    implementation project(rootProject.ext.libraries.dynamicFeatures)
+    implementation project(rootProject.ext.libraries.kotlinExtensions)
+    implementation project(rootProject.ext.libraries.logger)
 
-    implementation rootProject.ext.unifyDependencies.principles
-    implementation rootProject.ext.unifyDependencies.components
-    implementation rootProject.ext.unifyDependencies.global_error
-    implementation rootProject.ext.tkpdInternalLibDependencies.cacheapi
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.network
@@ -35,32 +33,35 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
 
-    implementation rootProject.ext.unifyDependencies.global_error
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.components
+    implementation rootProject.ext.unifyDependencies.icons
     implementation rootProject.ext.unifyDependencies.global_error
     implementation rootProject.ext.unifyDependencies.icon
     implementation rootProject.ext.unifyDependencies.dialog
     implementation rootProject.ext.miscDependencies.lottie
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
+    implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     implementation rootProject.ext.miscDependencies.cameraView
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     implementation rootProject.ext.miscDependencies.multiDex
-    implementation (rootProject.ext.miscDependencies.ucrop){
-        exclude group: 'com.android.support'
-    }
     implementation rootProject.ext.miscDependencies.dagger
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
+
+    implementation project(rootProject.ext.libraries.akamaiBotLib)
+    implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
+    implementation rootProject.ext.debugToolsDependencies.chuck
     
     //TEST
-    testImplementation rootProject.ext.testDependencies.junit
-    testImplementation rootProject.ext.testDependencies.kotlinMockito
-    testImplementation rootProject.ext.testDependencies.spekApi
-    testImplementation rootProject.ext.testDependencies.platformEngine
-    testImplementation rootProject.ext.testDependencies.junitPlatformRunner
-
+    testImplementation rootProject.ext.testDependencies.mockk
+    testImplementation rootProject.ext.testDependencies.kotlinTest
+    testImplementation rootProject.ext.testDependencies.assertJCore
+    testImplementation rootProject.ext.miscDependencies.coroutineTest
+    testImplementation rootProject.ext.testDependencies.archCoreTesting
+    testImplementation rootProject.ext.supportLibDependencies.kotlinReflection
+    testImplementation project(rootProject.ext.libraries.unitTest)
 }
 
 project.ext {
@@ -71,3 +72,5 @@ project.ext {
 }
 
 apply from: '../../../publish_local.gradle'
+apply from: '../../../jacoco_task.gradle'
+apply from: '../../../sonar_config.gradle'

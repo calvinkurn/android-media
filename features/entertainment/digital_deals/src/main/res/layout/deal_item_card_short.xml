@@ -22,7 +22,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/image_width_deal"
             android:scaleType="centerCrop"
-            android:src="@color/grey_1100"
+            android:src="@color/Unify_N50"
             app:layout_constraintTop_toTopOf="parent" />
 
 
@@ -107,7 +107,7 @@
             android:layout_marginRight="@dimen/dp_24"
             android:ellipsize="end"
             style="@style/TextView.Micro"
-            android:textColor="@color/black_38"
+            android:textColor="@color/Unify_N700_32"
             android:lines="1"
             app:layout_constraintBottom_toBottomOf="@+id/iv_tag"
             app:layout_constraintLeft_toRightOf="@+id/iv_tag"
@@ -153,7 +153,7 @@
             android:layout_height="wrap_content"
             android:layout_marginRight="@dimen/dp_8"
             android:includeFontPadding="false"
-            android:textColor="@color/red_800"
+            android:textColor="@color/Unify_Y500"
             style="@style/TextView.Medium.FontMedium"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_off"

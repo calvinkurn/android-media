@@ -13,8 +13,9 @@
     <string name="hotel_facility_title">Fasilitas</string>
     <string name="hotel_policy_title">Kebijakan</string>
 
-    <string name="hotel_google_map_intent_link">geo:%1$f,%2$f?z=20&amp;q=%3$f,%4$f(%3$s)</string>
+    <string name="hotel_ticker_desc">\u0020&lt;a href=&quot;%1$s&quot;&gt;Lihat detail&lt;/a&gt;</string>
 
+    <string name="hotel_search_result_applink_format">tokopedia://hotel/result?type=%1$s&amp;id=%2$s&amp;name=%3$s</string>
     <string name="hotel_search_result_change">Ubah</string>
     <string name="hotel_search_filter_label">Filter</string>
     <string name="hotel_search_sort_label">Urutkan</string>
@@ -40,6 +41,8 @@
     <string name="hotel_search_filter_max_string_format_with_plus">Rp%s+</string>
     <string name="hotel_search_filter_max_string_format">Rp%s</string>
     <string name="hotel_search_filter_rating_all">Semua</string>
+    <string name="hotel_search_advance_filter_coachmark_title">Mau sesuaikan pencarianmu?</string>
+    <string name="hotel_search_advance_filter_coachmark_desc">Klik filter ini untuk mengurutkan dan memilih penginapan berdasarkan harga, bintang, rating, atau kategori lainnya.</string>
 
     <string name="hotel_check_in_calendar_title">Check-in</string>
     <string name="hotel_check_out_calendar_title">Check-out</string>
@@ -55,6 +58,7 @@
     <string name="hotel_homepage_last_search_title">Terakhir dicari</string>
     <string name="hotel_delete_all_last_search">Hapus Semua</string>
     <string name="hotel_homepage_promo_title">Promo</string>
+    <string name="hotel_homepage_night_counter" formatted="false"> %d malam</string>
     <string name="hotel_homepage_guest_detail_without_child" formatted="false"> %d kamar, %d tamu</string>
     <string name="hotel_bottom_sheets_room_guest_title">Kamar dan Tamu</string>
     <string name="hotel_bottom_sheets_room_count_title">Kamar</string>
@@ -62,6 +66,10 @@
     <string name="hotel_button_save">Simpan</string>
     <string name="hotel_guest_info_room_more_than_adult_error_message">Jumlah kamar tidak boleh melebihi jumlah tamu dewasa.</string>
     <string name="hotel_homepage_near_by_destination">Hotel dekat lokasimu</string>
+    <string name="hotel_homepage_popular_city_section_subtitle">TUJUAN POPULER</string>
+    <string name="hotel_homepage_popular_city_section_title">Kota menarik untuk dikunjungi</string>
+    <string name="hotel_homepage_popular_city_button_see_more">Lihat Selengkapnya</string>
+    <string name="hotel_homepage_popular_city_button_see_less">Sembunyikan</string>
 
     <string name="hotel_calendar_error_max_range">Maks. 30 malam. Coba ubah tanggal cek-in atau check-out</string>
 
@@ -112,6 +120,13 @@
     <string name="hotel_detail_based_on_review_number">Berdasarkan %1$s ulasan</string>
     <string name="hotel_detail_no_rating">Belum ada rating</string>
     <string name="hotel_detail_no_rating_review">Belum ada rating dan ulasan</string>
+    <string name="hotel_detail_share_link_title">%1$s di %2$s - Tokopedia</string>
+    <string name="hotel_detail_share_link_content">"Booking %1$s di %2$s dengan harga termurah serta dapatkan promo menarik lainnya di Tokopedia!</string>
+    <string name="hotel_detail_share_applink">tokopedia://hotel/detail/%1$s</string>
+    <string name="hotel_detail_share_weblink">https://www.tokopedia.com/hotel/%1$s/h/%2$s</string>
+    <string name="hotel_detail_share_bottomsheet_title">Bagikan Produk Ini</string>
+    <string name="hotel_detail_share_cta_link">Hai, coba cek %1$s - %2$s yang kutemukan di Tokopedia, deh! %3$s </string>
+    <string name="hotel_detail_share_loading">Loading</string>
 
     <string name="hotel_review_title">Ulasan</string>
     <string name="hotel_review_indonesia_not_found_title">Belum ada ulasan dari Indonesia</string>
@@ -216,6 +231,8 @@
     <string name="hotel_share_add_email">Tambah E-mail</string>
     <string name="hotel_share_empty_email_error">E-mail harus diisi</string>
     <string name="hotel_share_format_email_error">Format e-mail salah</string>
+    <string name="hotel_save_as_image">Simpan gambar</string>
+    <string name="hotel_save_as_image_success">Gambar berhasil disimpan</string>
 
     <string name="hotel_error_no_internet_connection_title">Nggak ada koneksi Internet</string>
     <string name="hotel_error_no_internet_connection_subtitle">"Kamu bisa pindah tempat atau cek paket data / jaringan Wi-Fi."</string>
@@ -268,4 +285,6 @@
     <string name="hotel_cancellation_hyperlink_close_tag">&lt;&#47;hyperlink&gt;</string>
     <string name="hotel_cancellation_a_hyperlink_open_tag">&lt;a href=""&gt;</string>
     <string name="hotel_cancellation_a_hyperlink_close_tag">&lt;&#47;a&gt;</string>
+
+    <string name="hotel_invoice_download_button">Unduh</string>
 </resources>

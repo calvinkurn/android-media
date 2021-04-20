@@ -1,12 +1,19 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <com.tokopedia.webview.TkpdWebView
-        android:id="@+id/webview"
+    <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
+        android:id="@+id/general_web_view_lib_swipe_refresh_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent">
+
+        <com.tokopedia.webview.TkpdWebView
+            android:id="@+id/webview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
 
     <ProgressBar
         android:id="@+id/progressbar"
@@ -16,4 +23,13 @@
         android:layout_marginTop="-6dp"
         android:max="100" />
 
-</RelativeLayout>
+    <com.tokopedia.globalerror.GlobalError
+        app:globalerrors_type="NO_CONNECTION"
+        app:globalerrors_button_full="true"
+        android:id="@+id/unify_global_error"
+        android:layout_gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"/>
+
+</FrameLayout>

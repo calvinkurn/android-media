@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="loginphone_dp_5">5dp</dimen>
+    <dimen name="loginphone_dp_12">12dp</dimen>
+    <dimen name="loginphone_dp_18">18dp</dimen>
+    <dimen name="loginphone_sp_6">6sp</dimen>
+</resources>

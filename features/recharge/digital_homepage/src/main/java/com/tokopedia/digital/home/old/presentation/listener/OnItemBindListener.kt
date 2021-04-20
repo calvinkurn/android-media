@@ -1,9 +1,7 @@
-package com.tokopedia.digital.home.presentation.listener
+package com.tokopedia.digital.home.old.presentation.listener
 
 import com.tokopedia.common_digital.common.presentation.model.RecommendationItemEntity
-import com.tokopedia.digital.home.model.DigitalHomePageBannerModel
-import com.tokopedia.digital.home.model.DigitalHomePageCategoryModel
-import com.tokopedia.digital.home.model.DigitalHomePageSectionModel
+import com.tokopedia.digital.home.old.model.*
 
 interface OnItemBindListener {
     fun onCategoryItemClicked(element: DigitalHomePageCategoryModel.Submenu?, position: Int)

@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white"
+    android:background="@color/Unify_N0"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
@@ -57,6 +57,8 @@
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
             android:layout_marginEnd="@dimen/spacing_lvl3"
+            android:textColor="@color/Unify_N700_96"
+            android:textColorHint="@color/Unify_N700_96"
             android:layout_toStartOf="@+id/replySendButton"
             android:background="@drawable/bg_rounded_chat_input"
             android:hint="@string/reply_editText_placeholder"

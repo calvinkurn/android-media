@@ -1,8 +1,8 @@
-package com.tokopedia.digital.home.domain
+package com.tokopedia.digital.home.old.domain
 
-import com.tokopedia.digital.home.model.DigitalHomePageCategoryModel
-import com.tokopedia.digital.home.model.DigitalHomePageSearchCategoryModel
-import com.tokopedia.digital.home.presentation.util.DigitalHomePageCategoryDataMapper
+import com.tokopedia.digital.home.old.model.DigitalHomePageCategoryModel
+import com.tokopedia.digital.home.old.model.DigitalHomePageSearchCategoryModel
+import com.tokopedia.digital.home.old.presentation.util.DigitalHomePageCategoryDataMapper
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType

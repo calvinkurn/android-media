@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white"
+    android:background="@color/Unify_N0"
     android:foreground="?android:attr/selectableItemBackground"
     android:orientation="vertical"
     android:paddingLeft="@dimen/spacing_lvl4"
@@ -14,7 +14,7 @@
         android:id="@+id/city"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/Neutral_N700_96"
+        android:textColor="@color/Unify_N700_96"
         app:typographyType="body_2"
         app:typographyWeight="bold"
         tools:text="Jakarta, Indonesia" />
@@ -24,13 +24,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/spacing_lvl4"
-        android:textColor="@color/Neutral_N700_68"
+        android:textColor="@color/Unify_N700_68"
         app:typographyType="body_3"
         tools:text="Semua Bandara" />
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/flight_search_list_background" />
+        android:background="@color/Unify_N75" />
 
 </LinearLayout>

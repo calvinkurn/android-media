@@ -1,0 +1,38 @@
+{
+  "ace_search_product_v4": {
+    "header": {
+      "responseCode": 1,
+      "keywordProcess": "2",
+      "totalData": 0,
+      "totalDataText": "0",
+      "additionalParams": "",
+      "errorMessage": "",
+      "defaultView": 1
+    },
+    "data": {
+      "isQuerySafe": true,
+      "autocompleteApplink": "tokopedia://search-autocomplete?navsource=campaign&q=asus&navsource=campaign&srp_page_id=160&srp_page_title=Waktu+Indonesia+Belanja",
+      "redirection": {
+        "redirectApplink": ""
+      },
+      "ticker": {
+        "text": "",
+        "query": ""
+      },
+      "suggestion": {
+        "currentKeyword": "",
+        "suggestion": "",
+        "suggestionCount": 0,
+        "instead": "",
+        "insteadCount": 0,
+        "text": "",
+        "query": ""
+      },
+      "related": {
+        "relatedKeyword": "",
+        "otherRelated": []
+      },
+      "products": []
+    }
+  }
+}

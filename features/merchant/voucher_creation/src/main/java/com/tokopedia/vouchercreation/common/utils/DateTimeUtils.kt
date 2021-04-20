@@ -3,6 +3,8 @@ package com.tokopedia.vouchercreation.common.utils
 import android.content.Context
 import com.tokopedia.datepicker.LocaleUtils
 import com.tokopedia.kotlin.extensions.convertToDate
+import com.tokopedia.kotlin.extensions.view.toBlankOrString
+import com.tokopedia.vouchercreation.R
 import timber.log.Timber
 import java.text.ParseException
 import java.text.SimpleDateFormat
@@ -26,6 +28,17 @@ object DateTimeUtils {
     const val EXTRA_WEEK = 7
     const val EXTRA_DAYS = 30
     const val MINUTE_INTERVAL = 30
+
+
+    private const val DISPLAYED_DATE_FORMAT = "dd MMM yyyy"
+    private const val RAW_DATE_FORMAT = "yyyy-MM-dd"
+
+    private val rawDateFormatter by lazy {
+        SimpleDateFormat(RAW_DATE_FORMAT, LocaleUtils.getIDLocale())
+    }
+    private val displayedDateFormatter by lazy {
+        SimpleDateFormat(DISPLAYED_DATE_FORMAT, LocaleUtils.getIDLocale())
+    }
 
     fun reformatDateTime(dateTime: String, oldFormat: String, newFormat: String): String {
         val locale = Locale.getDefault()
@@ -120,6 +133,37 @@ object DateTimeUtils {
                     add(Calendar.DATE, EXTRA_DAYS)
                 }
             }
+
+    internal fun getDisplayedDateString(context: Context?,
+                                        startDate: String,
+                                        startHour: String,
+                                        endDate: String,
+                                        endHour: String): String {
+        val formattedStartDate = startDate.formatToDisplayedDate()
+        val formattedEndDate = endDate.formatToDisplayedDate()
+        return String.format(context?.getString(R.string.mvc_displayed_date_format).toBlankOrString(),
+                formattedStartDate, startHour, formattedEndDate, endHour)
+    }
+
+    internal fun getDisplayedDateString(context: Context?,
+                                        startDate: String,
+                                        endDate: String): String {
+        val formattedStartDate = startDate.formatToDisplayedDate()
+        val formattedEndDate = endDate.formatToDisplayedDate()
+        return String.format(context?.getString(R.string.mvc_displayed_date_post_format).toBlankOrString(),
+                formattedStartDate, formattedEndDate)
+    }
+
+    private fun String.formatToDisplayedDate(): String {
+        try {
+            rawDateFormatter.parse(this)?.let {
+                return displayedDateFormatter.format(it)
+            }
+        } catch (ex: Exception) {
+            ex.printStackTrace()
+        }
+        return ""
+    }
 
 }
 

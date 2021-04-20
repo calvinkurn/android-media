@@ -1,7 +1,11 @@
 package com.tokopedia.notifications.common
 
 import android.content.Context
+import android.text.TextUtils
+import android.util.Log
 import com.tokopedia.iris.IrisAnalytics
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
 import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.inappdata.CMInApp
 import com.tokopedia.notifications.model.BaseNotificationModel
 import com.tokopedia.track.TrackApp
@@ -39,6 +43,8 @@ object IrisAnalyticsEvents {
     const val INAPP_CANCELLED = "inappCancelled"
     const val INAPP_DELIVERED = "inappDelivered"
     const val INAPP_PREREAD = "inappPreread"
+    const val INAPP_READ = "inappRead"
+    const val INAPP_EXPIRED = "inappExpired"
 
     private const val EVENT_NAME = "event"
     private const val EVENT_TIME = "event_time"
@@ -51,15 +57,19 @@ object IrisAnalyticsEvents {
     private const val IS_SILENT = "is_silent"
     private const val CLICKED_ELEMENT_ID = "clicked_element_id"
     private const val INAPP_TYPE = "inapp_type"
+    private const val LABEL = "eventlabel"
+
+    private const val AMPLIFICATION = "amplification"
 
     fun sendPushEvent(context: Context, eventName: String, baseNotificationModel: BaseNotificationModel) {
-        if (baseNotificationModel.isTest)
-            return
+        if (baseNotificationModel.isTest) return
         val irisAnalytics = IrisAnalytics(context)
-        if (irisAnalytics != null) {
-            val values = addBaseValues(context, eventName, baseNotificationModel)
-            trackEvent(context, irisAnalytics, values)
+        val values = addBaseValues(context, eventName, baseNotificationModel)
+        if (baseNotificationModel.isAmplification) {
+            values[LABEL] = AMPLIFICATION
         }
+
+        trackEvent(context, irisAnalytics, values)
     }
 
     fun sendPushEvent(context: Context, eventName: String, baseNotificationModel: BaseNotificationModel, elementID: String?) {
@@ -98,7 +108,7 @@ object IrisAnalyticsEvents {
 
     }
 
-    fun sendPushEvent(context: Context, eventName: String, cmInApp: CMInApp) {
+    fun sendInAppEvent(context: Context, eventName: String, cmInApp: CMInApp) {
         if (cmInApp.isTest)
             return
         val irisAnalytics = IrisAnalytics(context)
@@ -109,7 +119,7 @@ object IrisAnalyticsEvents {
         }
     }
 
-    fun sendPushEvent(context: Context, eventName: String, cmInApp: CMInApp, elementID: String?) {
+    fun sendInAppEvent(context: Context, eventName: String, cmInApp: CMInApp, elementID: String?) {
         if (cmInApp.isTest)
             return
         val irisAnalytics = IrisAnalytics(context)
@@ -125,10 +135,54 @@ object IrisAnalyticsEvents {
 
     }
 
+    fun sendAmplificationInAppEvent(context: Context, eventName: String, cmInApp: CMInApp) {
+        if (cmInApp.isTest) return
+        val irisAnalytics = IrisAnalytics(context)
+        trackEvent(context, irisAnalytics, addBaseValues(context, eventName, cmInApp).apply {
+            put(LABEL, AMPLIFICATION)
+        })
+    }
+
     private fun trackEvent(context: Context, irisAnalytics: IrisAnalytics, values: HashMap<String, Any>) {
+        logTimber(values)
         if (CMNotificationUtils.isNetworkAvailable(context))
             irisAnalytics.sendEvent(values)
         else irisAnalytics.saveEvent(values)
+    }
+
+    private fun logTimber(values: HashMap<String, Any>) {
+        val push = "_push'"
+        val inapp = "_inapp'"
+        if (values.containsKey(CAMPAIGN_ID) && TextUtils.isEmpty(values[CAMPAIGN_ID].toString()))
+            ServerLogger.log(Priority.P2, "CM_VALIDATION",
+                mapOf("type" to "validation",
+                        "reason" to "no_campaignId".plus(if(values.containsKey(PUSH_TYPE)) push else inapp),
+                        "data" to values.toString().take(CMConstant.TimberTags.MAX_LIMIT)))
+        else if (!values.containsKey(CAMPAIGN_ID))
+            ServerLogger.log(Priority.P2, "CM_VALIDATION",
+                    mapOf("type" to "validation",
+                            "reason" to "campaignId_removed".plus(if(values.containsKey(PUSH_TYPE)) push else inapp),
+                            "data" to values.toString().take(CMConstant.TimberTags.MAX_LIMIT)))
+        else if (values.containsKey(PARENT_ID) && TextUtils.isEmpty(values[PARENT_ID].toString()))
+            ServerLogger.log(Priority.P2, "CM_VALIDATION",
+                    mapOf("type" to "validation",
+                            "reason" to "no_parentId".plus(if(values.containsKey(PUSH_TYPE)) push else inapp),
+                            "data" to values.toString().take(CMConstant.TimberTags.MAX_LIMIT)))
+        else if (!values.containsKey(PARENT_ID))
+            ServerLogger.log(Priority.P2, "CM_VALIDATION",
+                mapOf("type" to "validation",
+                        "reason" to "parentId_removed".plus(if(values.containsKey(PUSH_TYPE)) push else inapp),
+                        "data" to values.toString().take(CMConstant.TimberTags.MAX_LIMIT)))
+        else if (values.containsKey(NOTIFICATION_ID) && TextUtils.isEmpty(values[NOTIFICATION_ID].toString()))
+            ServerLogger.log(Priority.P2, "CM_VALIDATION",
+                mapOf("type" to "validation",
+                        "reason" to "no_notificationId".plus(if(values.containsKey(PUSH_TYPE)) push else inapp),
+                        "data" to values.toString().take(CMConstant.TimberTags.MAX_LIMIT)))
+        else if (!values.containsKey(NOTIFICATION_ID))
+            ServerLogger.log(Priority.P2, "CM_VALIDATION",
+                mapOf("type" to "validation",
+                        "reason" to "notificationId_removed".plus(if(values.containsKey(PUSH_TYPE)) push else inapp),
+                        "data" to values.toString().take(CMConstant.TimberTags.MAX_LIMIT)))
     }
 
     private fun addBaseValues(context: Context, eventName: String, cmInApp: CMInApp): HashMap<String, Any> {

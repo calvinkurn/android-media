@@ -1,7 +1,7 @@
 package com.tokopedia.product.manage.feature.stockreminder.view.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.product.manage.coroutine.TestCoroutineDispatchers
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.product.manage.feature.stockreminder.domain.usecase.StockReminderDataUseCase
 import io.mockk.MockKAnnotations
 import io.mockk.impl.annotations.RelaxedMockK
@@ -25,6 +25,6 @@ abstract class StockReminderViewModelTestFixture {
     fun setUp() {
         MockKAnnotations.init(this)
 
-        viewModel = StockReminderViewModel(stockReminderDataUseCase, TestCoroutineDispatchers)
+        viewModel = StockReminderViewModel(stockReminderDataUseCase, CoroutineTestDispatchersProvider)
     }
 }

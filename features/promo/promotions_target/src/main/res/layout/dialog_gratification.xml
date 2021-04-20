@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nestedScrollView"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="bottom"
+    android:animateLayoutChanges="true"
+    android:background="@color/white">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="bottom"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:paddingBottom="@dimen/dp_16">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clipChildren="false"
+            android:clipToPadding="false"
+            android:layout_marginBottom="@dimen/dp_8"
+            app:layout_constraintBottom_toTopOf="@+id/tvTitle"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_16"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginEnd="@dimen/dp_16"
+            android:layout_marginRight="@dimen/dp_16"
+            android:layout_marginBottom="@dimen/dp_4"
+            android:gravity="center"
+            android:textColor="@color/t_promo_grey96"
+            app:layout_constraintBottom_toTopOf="@+id/tvSubTitle"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:typographyType="heading_2"
+            tools:text="Title" />
+
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvSubTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_16"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginEnd="@dimen/dp_16"
+            android:layout_marginRight="@dimen/dp_16"
+            android:layout_marginBottom="@dimen/dp_24"
+            android:gravity="center"
+            android:textColor="@color/t_promo_grey68"
+            app:layout_constraintBottom_toTopOf="@+id/btnAction"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:typographyType="body_3"
+            tools:layout_height="80dp"
+            tools:text="@string/app_name" />
+
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/btnAction"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_48"
+            android:layout_marginStart="@dimen/dp_16"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginEnd="@dimen/dp_16"
+            android:layout_marginRight="@dimen/dp_16"
+            android:background="@drawable/t_promo_bg_round"
+            android:gravity="center"
+            android:text="@string/t_promo_lanjut_berbelanja"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            app:layout_constraintBottom_toTopOf="@+id/space"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:typographyType="body_1"
+            app:typographyWeight="bold" />
+
+
+        <ProgressBar
+            android:id="@+id/targetProgressBar"
+            android:layout_width="@dimen/dp_24"
+            android:layout_height="@dimen/dp_24"
+            android:indeterminate="true"
+            android:indeterminateTint="@color/white"
+            android:indeterminateTintMode="src_atop"
+            android:max="100"
+            android:progress="100"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@+id/btnAction"
+            app:layout_constraintEnd_toEndOf="@+id/btnAction"
+            app:layout_constraintStart_toStartOf="@+id/btnAction"
+            app:layout_constraintTop_toTopOf="@+id/btnAction"
+            tools:background="@color/red_30"
+            tools:visibility="visible" />
+
+        <Space
+            android:id="@+id/space"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/dp_8"
+            app:layout_constraintBottom_toTopOf="@+id/btnAction2"
+            tools:ignore="MissingConstraints" />
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/btnAction2"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_48"
+            android:layout_marginStart="@dimen/dp_16"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginEnd="@dimen/dp_16"
+            android:layout_marginRight="@dimen/dp_16"
+            android:gravity="center"
+            android:textAllCaps="false"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:unifyButtonSize="large"
+            app:unifyButtonType="main"
+            app:unifyButtonVariant="ghost"
+            tools:text="@string/app_name" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.core.widget.NestedScrollView>

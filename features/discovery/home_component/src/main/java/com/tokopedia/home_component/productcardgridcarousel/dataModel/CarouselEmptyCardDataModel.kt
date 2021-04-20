@@ -8,7 +8,8 @@ import com.tokopedia.home_component.model.ChannelModel
 data class CarouselEmptyCardDataModel (
      val channel: ChannelModel,
      val parentPosition: Int,
-     val listener: CommonProductCardCarouselListener
+     val listener: CommonProductCardCarouselListener,
+     val applink: String = ""
 ): Visitable<CommonCarouselProductCardTypeFactory>{
     override fun type(typeFactory: CommonCarouselProductCardTypeFactory): Int {
         return typeFactory.type(this)

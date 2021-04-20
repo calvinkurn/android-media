@@ -10,12 +10,16 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.widget.Toolbar
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.util.LetUtil
 import com.tokopedia.loginregister.R
+import com.tokopedia.loginregister.common.analytics.RegisterAnalytics
 import com.tokopedia.loginregister.common.analytics.ShopCreationAnalytics
 import com.tokopedia.loginregister.common.analytics.ShopCreationAnalytics.Companion.SCREEN_OPEN_SHOP_CREATION
 import com.tokopedia.loginregister.shopcreation.common.IOnBackPressed
@@ -47,6 +51,8 @@ class NameShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
     lateinit var userSession: UserSessionInterface
     @Inject
     lateinit var shopCreationAnalytics: ShopCreationAnalytics
+    @Inject
+    lateinit var registerAnalytics: RegisterAnalytics
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
@@ -115,6 +121,10 @@ class NameShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
     }
 
     private fun initView() {
+        textFieldName.textFieldInput.setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
+        context?.let {
+            textFieldName.textFieldWrapper.setHelperTextColor(ContextCompat.getColorStateList(it, com.tokopedia.unifycomponents.R.color.Unify_N700_68))
+        }
         textFieldName.textFieldInput.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {}
 
@@ -191,7 +201,7 @@ class NameShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
     }
 
     private fun initObserver() {
-        shopCreationViewModel.addNameResponse.observe(this, Observer {
+        shopCreationViewModel.addNameResponse.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     onSuccessAddName()
@@ -201,7 +211,7 @@ class NameShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
                 }
             }
         })
-        shopCreationViewModel.registerPhoneAndName.observe(this, Observer {
+        shopCreationViewModel.registerPhoneAndName.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     onSuccessRegisterPhoneAndName(it.data)
@@ -240,6 +250,7 @@ class NameShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
 
     private fun onSuccessRegisterPhoneAndName(registerInfo: RegisterInfo) {
         shopCreationAnalytics.eventSuccessClickContinueNameShopCreation()
+        successRegisterTracking()
         userSession.clearToken()
         userSession.setToken(registerInfo.accessToken, "Bearer", registerInfo.refreshToken)
         buttonContinue.isLoading = false
@@ -254,6 +265,19 @@ class NameShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
         userSession.clearToken()
         toastError(throwable)
         buttonContinue.isLoading = false
+    }
+
+    private fun successRegisterTracking() {
+        registerAnalytics.trackSuccessRegister(
+                userSession.loginMethod,
+                userSession.userId,
+                userSession.name,
+                userSession.email,
+                userSession.phoneNumber,
+                userSession.isGoldMerchant,
+                userSession.shopId,
+                userSession.shopName
+        )
     }
 
     private fun emptyStatePhoneField() {

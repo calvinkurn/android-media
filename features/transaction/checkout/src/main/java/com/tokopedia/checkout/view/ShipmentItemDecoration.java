@@ -6,14 +6,12 @@ import android.view.View;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.view.viewholder.PromoCheckoutViewHolder;
 import com.tokopedia.checkout.view.viewholder.ShipmentButtonPaymentViewHolder;
 import com.tokopedia.checkout.view.viewholder.ShipmentCostViewHolder;
 import com.tokopedia.checkout.view.viewholder.ShipmentDonationViewHolder;
 import com.tokopedia.checkout.view.viewholder.ShipmentEmasViewHolder;
 import com.tokopedia.checkout.view.viewholder.ShipmentInsuranceTncViewHolder;
-import com.tokopedia.checkout.view.viewholder.ShipmentNotifierViewHolder;
 import com.tokopedia.purchase_platform.features.checkout.view.viewholder.ShippingCompletionTickerViewHolder;
 
 /**
@@ -35,9 +33,7 @@ public class ShipmentItemDecoration extends RecyclerView.ItemDecoration {
             verticalSpaceHeight = (int) context.getResources().getDimension(com.tokopedia.abstraction.R.dimen.dp_8);
         }
         RecyclerView.ViewHolder viewHolder = parent.getChildViewHolder(view);
-        if (viewHolder instanceof ShipmentNotifierViewHolder) {
-            outRect.bottom = (int) context.getResources().getDimension(com.tokopedia.abstraction.R.dimen.dp_0);
-        } else if (viewHolder instanceof ShipmentDonationViewHolder) {
+        if (viewHolder instanceof ShipmentDonationViewHolder) {
             outRect.bottom = (int) context.getResources().getDimension(com.tokopedia.abstraction.R.dimen.dp_8);
         } else if (viewHolder instanceof PromoCheckoutViewHolder) {
             outRect.bottom = (int) context.getResources().getDimension(com.tokopedia.abstraction.R.dimen.dp_8);

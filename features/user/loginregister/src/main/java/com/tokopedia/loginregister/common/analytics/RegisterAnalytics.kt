@@ -20,6 +20,11 @@ import javax.inject.Inject
  */
 class RegisterAnalytics @Inject constructor() {
 
+    val MEDIUM_EMAIL = "email"
+    val MEDIUM_PHONE = "phone"
+    val MEDIUM_FACEBOOK = "facebook"
+    val MEDIUM_GOOGLE = "google"
+
     //#R1
     fun trackClickTopSignUpButton() {
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
@@ -458,7 +463,7 @@ class RegisterAnalytics @Inject constructor() {
 
     fun trackSuccessRegister(
             loginMethod: String,
-            userId: Int,
+            userId: String,
             name: String,
             email: String,
             phoneNumber: String,
@@ -467,24 +472,21 @@ class RegisterAnalytics @Inject constructor() {
             shopName:String
     ) {
         when (loginMethod) {
-            UserSessionInterface.LOGIN_METHOD_EMAIL -> onSuccessRegisterEmail(userId, name, email)
-            UserSessionInterface.LOGIN_METHOD_PHONE -> onSuccessRegisterPhone()
-            UserSessionInterface.LOGIN_METHOD_GOOGLE -> onSuccessRegisterGoogle()
-            UserSessionInterface.LOGIN_METHOD_FACEBOOK -> onSuccessRegisterFacebook()
+            UserSessionInterface.LOGIN_METHOD_EMAIL -> onSuccessRegisterEmail(userId.toString(), name, email)
+            UserSessionInterface.LOGIN_METHOD_PHONE -> onSuccessRegisterPhone(userId.toString())
+            UserSessionInterface.LOGIN_METHOD_GOOGLE -> onSuccessRegisterGoogle(userId.toString())
+            UserSessionInterface.LOGIN_METHOD_FACEBOOK -> onSuccessRegisterFacebook(userId.toString())
         }
         sendSuccessRegisterToMoengage(
                 userId,
-                name,
-                email,
                 getLoginMethodMoengage(loginMethod),
-                phoneNumber,
                 isGoldMerchant,
                 shopId,
                 shopName)
     }
 
     //#R7
-    private fun onSuccessRegisterFacebook() {
+    private fun onSuccessRegisterFacebook(userId: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                 EVENT_CLICK_REGISTER,
                 CATEGORY_REGISTER_PAGE,
@@ -498,10 +500,11 @@ class RegisterAnalytics @Inject constructor() {
                 ACTION_REGISTER_SUCCESS,
                 FACEBOOK
         ))
+        sendBranchRegisterEvent(userId, MEDIUM_FACEBOOK)
     }
 
     //#R6
-    private fun onSuccessRegisterGoogle() {
+    private fun onSuccessRegisterGoogle(userId: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                 EVENT_CLICK_REGISTER,
                 CATEGORY_REGISTER_PAGE,
@@ -515,19 +518,20 @@ class RegisterAnalytics @Inject constructor() {
                 ACTION_REGISTER_SUCCESS,
                 LoginRegisterAnalytics.GOOGLE
         ))
+        sendBranchRegisterEvent(userId, MEDIUM_GOOGLE)
     }
 
-    private fun onSuccessRegisterPhone() {
+    private fun onSuccessRegisterPhone(userId: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                 EVENT_CLICK_REGISTER,
                 CATEGORY_REGISTER_PAGE,
                 ACTION_CLICK_ON_BUTTON_DAFTAR_PHONE_NUMBER,
                 LABEL_SUCCESS
         ))
-
+        sendBranchRegisterEvent(userId, MEDIUM_PHONE)
     }
 
-    private fun onSuccessRegisterEmail(userId: Int, name: String, email: String) {
+    private fun onSuccessRegisterEmail(userId: String, name: String, email: String) {
         trackSuccessClickEmailSignUpButton()
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                 EVENT_REGISTER_SUCCESS,
@@ -536,18 +540,18 @@ class RegisterAnalytics @Inject constructor() {
                 LABEL_EMAIL
         ))
 
-        TrackApp.getInstance().appsFlyer.sendAppsflyerRegisterEvent(userId.toString(), EMAIL_METHOD)
-        sendBranchRegisterEvent(email)
+        TrackApp.getInstance().appsFlyer.sendAppsflyerRegisterEvent(userId, EMAIL_METHOD)
+        sendBranchRegisterEvent(userId, MEDIUM_EMAIL)
     }
 
-    private fun sendSuccessRegisterToMoengage(userId: Int, name: String, email: String, loginMethod: String?, phoneNumber: String, isGoldMerchant: Boolean, shopId: String,shopName:String){
-        TrackApp.getInstance().moEngage.sendMoengageRegisterEvent(name, userId.toString(),email, loginMethod?:"", phoneNumber,  isGoldMerchant, shopId,shopName)
+    private fun sendSuccessRegisterToMoengage(userId: String, loginMethod: String?, isGoldMerchant: Boolean, shopId: String,shopName:String){
+        TrackApp.getInstance().moEngage.sendMoengageRegisterEvent("", userId,"", loginMethod?:"", "",  isGoldMerchant, shopId,shopName)
     }
 
-    private fun sendBranchRegisterEvent(email: String) {
+    private fun sendBranchRegisterEvent(userId: String, medium: String) {
         val userData = UserData()
-        userData.email = email
-        userData.phoneNumber = ""
+        userData.userId = userId
+        userData.medium = medium
         LinkerManager.getInstance().sendEvent(LinkerUtils.createGenericRequest(LinkerConstants.EVENT_USER_REGISTRATION_VAL, userData))
     }
 

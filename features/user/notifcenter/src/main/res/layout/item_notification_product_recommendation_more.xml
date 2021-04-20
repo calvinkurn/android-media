@@ -10,9 +10,9 @@
         android:id="@+id/tvMoreCount"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/clr_ae31353b"
+        android:background="@color/Unify_N700_68"
         android:gravity="center"
-        android:textColor="@color/white"
+        android:textColor="@color/Unify_N0"
         android:textSize="@dimen/notif_sp_18"
         android:textStyle="bold"
         tools:text="+99" />

@@ -4,11 +4,11 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import android.widget.ImageView
-import android.widget.TextView
-import androidx.appcompat.widget.AppCompatButton
 import com.airbnb.lottie.LottieAnimationView
 import com.tokopedia.common_electronic_money.R
 import com.tokopedia.unifycomponents.BaseCustomView
+import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifyprinciples.Typography
 import org.jetbrains.annotations.NotNull
 
 /**
@@ -18,10 +18,10 @@ class TapETollCardView @JvmOverloads constructor(@NotNull context: Context, attr
                                                  defStyleAttr: Int = 0)
     : BaseCustomView(context, attrs, defStyleAttr) {
 
-    private val textTitle: TextView
-    private val textLabel: TextView
+    private val textTitle: Typography
+    private val textLabel: Typography
     private val lottieAnimationView: LottieAnimationView
-    private val buttonTryAgain: AppCompatButton
+    private val buttonTryAgain: UnifyButton
     private val imageviewError: ImageView
     private var issuerId: Int = 0
 
@@ -47,7 +47,7 @@ class TapETollCardView @JvmOverloads constructor(@NotNull context: Context, attr
 
     fun showLoading() {
         textTitle.text = resources.getString(R.string.emoney_reading_card_label_title)
-        textTitle.setTextColor(resources.getColor(R.color.emoney_black))
+        textTitle.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700))
         textLabel.text = resources.getString(R.string.emoney_reading_card_label_message)
         lottieAnimationView.visibility = View.VISIBLE
         lottieAnimationView.clearAnimation()
@@ -59,7 +59,7 @@ class TapETollCardView @JvmOverloads constructor(@NotNull context: Context, attr
 
     fun showInitialState() {
         textTitle.text = resources.getString(R.string.emoney_tap_card_instruction_title)
-        textTitle.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Red_R600))
+        textTitle.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700))
         textLabel.text = resources.getString(R.string.emoney_tap_card_instruction_message)
         lottieAnimationView.visibility = View.VISIBLE
         lottieAnimationView.clearAnimation()
@@ -79,7 +79,7 @@ class TapETollCardView @JvmOverloads constructor(@NotNull context: Context, attr
 
     fun showErrorState(errorMessage: String) {
         textTitle.text = resources.getString(R.string.emoney_tap_card_instruction_title)
-        textTitle.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Red_R600))
+        textTitle.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_R600))
         textLabel.text = errorMessage
         lottieAnimationView.visibility = View.GONE
         imageviewError.visibility = View.VISIBLE
@@ -93,7 +93,7 @@ class TapETollCardView @JvmOverloads constructor(@NotNull context: Context, attr
 
     fun showErrorDeviceUnsupportedState(errorMessage: String) {
         textTitle.text = resources.getString(R.string.emoney_tap_card_instruction_title)
-        textTitle.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Red_R600))
+        textTitle.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_R600))
         textLabel.text = errorMessage
         lottieAnimationView.visibility = View.GONE
         imageviewError.visibility = View.VISIBLE

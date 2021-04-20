@@ -4,11 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="@color/Unify_N0"
     android:clickable="true"
     android:focusable="true">
 
     <androidx.core.widget.NestedScrollView
+        android:id="@+id/nsvFlightBooking"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -40,22 +41,22 @@
                 android:layout_height="wrap_content"
                 android:background="@drawable/bg_flight_booking_route_summary"
                 android:nestedScrollingEnabled="false"
-                android:paddingStart="@dimen/dp_16"
-                android:paddingLeft="@dimen/dp_16"
-                android:paddingTop="@dimen/dp_16"
-                android:paddingEnd="@dimen/dp_16"
-                android:paddingBottom="@dimen/dp_10"
+                android:paddingStart="@dimen/spacing_lvl4"
+                android:paddingLeft="@dimen/spacing_lvl4"
+                android:paddingTop="@dimen/spacing_lvl4"
+                android:paddingEnd="@dimen/spacing_lvl4"
+                android:paddingBottom="@dimen/flight_dp_10"
                 app:layout_constraintTop_toBottomOf="@+id/flightBookingTicker" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_traveller_info_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_16"
-                android:layout_marginLeft="@dimen/dp_16"
-                android:layout_marginTop="@dimen/dp_20"
+                android:layout_marginStart="@dimen/spacing_lvl4"
+                android:layout_marginLeft="@dimen/spacing_lvl4"
+                android:layout_marginTop="@dimen/flight_dp_20"
                 android:text="@string/flight_booking_contact_information"
-                android:textColor="@color/Neutral_N700_96"
+                android:textColor="@color/Unify_N700_96"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/rv_flight_booking_route_summary"
                 app:typographyType="heading_3" />
@@ -63,11 +64,11 @@
             <com.tokopedia.unifyprinciples.Typography
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_4"
-                android:layout_marginLeft="@dimen/dp_4"
-                android:layout_marginTop="@dimen/dp_2"
+                android:layout_marginStart="@dimen/spacing_lvl2"
+                android:layout_marginLeft="@dimen/spacing_lvl2"
+                android:layout_marginTop="@dimen/spacing_lvl1"
                 android:text="@string/flight_booking_contact_sublabel"
-                android:textColor="@color/Neutral_N700_96"
+                android:textColor="@color/Unify_N700_96"
                 app:layout_constraintBottom_toBottomOf="@+id/tv_traveller_info_title"
                 app:layout_constraintStart_toEndOf="@+id/tv_traveller_info_title"
                 app:layout_constraintTop_toTopOf="@id/tv_traveller_info_title"
@@ -77,46 +78,46 @@
                 android:id="@+id/widget_traveller_info"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_16"
-                android:layout_marginLeft="@dimen/dp_16"
-                android:layout_marginTop="@dimen/dp_10"
-                android:layout_marginEnd="@dimen/dp_16"
-                android:layout_marginRight="@dimen/dp_16"
+                android:layout_marginStart="@dimen/spacing_lvl4"
+                android:layout_marginLeft="@dimen/spacing_lvl4"
+                android:layout_marginTop="@dimen/flight_dp_10"
+                android:layout_marginEnd="@dimen/spacing_lvl4"
+                android:layout_marginRight="@dimen/spacing_lvl4"
                 app:layout_constraintTop_toBottomOf="@+id/tv_traveller_info_title" />
 
             <View
                 android:id="@+id/seperator_1"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_8"
-                android:layout_marginTop="@dimen/dp_16"
-                android:background="#f3f4f5"
+                android:layout_height="@dimen/layout_lvl1"
+                android:layout_marginTop="@dimen/spacing_lvl4"
+                android:background="@color/Unify_N50"
                 app:layout_constraintTop_toBottomOf="@+id/widget_traveller_info" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_passenger_info_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_16"
-                android:layout_marginLeft="@dimen/dp_16"
-                android:layout_marginTop="@dimen/dp_16"
-                android:layout_marginEnd="@dimen/dp_16"
-                android:layout_marginRight="@dimen/dp_16"
+                android:layout_marginStart="@dimen/spacing_lvl4"
+                android:layout_marginLeft="@dimen/spacing_lvl4"
+                android:layout_marginTop="@dimen/spacing_lvl4"
+                android:layout_marginEnd="@dimen/spacing_lvl4"
+                android:layout_marginRight="@dimen/spacing_lvl4"
                 android:text="@string/flight_booking_passenger_data_label"
-                android:textColor="@color/Neutral_N700_96"
+                android:textColor="@color/Unify_N700_96"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/seperator_1"
                 app:typographyType="heading_3" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_traveller_as_passenger"
-                android:layout_width="@dimen/dp_0"
+                android:layout_width="@dimen/layout_lvl0"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_16"
-                android:layout_marginLeft="@dimen/dp_16"
-                android:layout_marginTop="@dimen/dp_16"
-                android:layout_marginEnd="@dimen/dp_16"
+                android:layout_marginStart="@dimen/spacing_lvl4"
+                android:layout_marginLeft="@dimen/spacing_lvl4"
+                android:layout_marginTop="@dimen/spacing_lvl4"
+                android:layout_marginEnd="@dimen/spacing_lvl4"
                 android:text="@string/flight_booking_passenger_data_same_as_contact"
-                android:textColor="@color/Neutral_N700_96"
+                android:textColor="@color/Unify_N700_96"
                 app:layout_constraintEnd_toStartOf="@+id/switch_traveller_as_passenger"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -126,9 +127,9 @@
             <com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
                 android:id="@+id/switch_traveller_as_passenger"
                 android:layout_width="wrap_content"
-                android:layout_height="@dimen/dp_24"
-                android:layout_marginEnd="@dimen/dp_16"
-                android:layout_marginRight="@dimen/dp_16"
+                android:layout_height="@dimen/layout_lvl3"
+                android:layout_marginEnd="@dimen/spacing_lvl4"
+                android:layout_marginRight="@dimen/spacing_lvl4"
                 app:layout_constraintBottom_toBottomOf="@+id/tv_traveller_as_passenger"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
@@ -138,7 +139,7 @@
                 android:id="@+id/rv_passengers_info"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_16"
+                android:layout_marginTop="@dimen/spacing_lvl4"
                 android:nestedScrollingEnabled="false"
                 app:layout_constraintTop_toBottomOf="@+id/tv_traveller_as_passenger" />
 
@@ -152,32 +153,32 @@
             <View
                 android:id="@+id/seperator_3"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_8"
-                android:background="#f3f4f5"
+                android:layout_height="@dimen/layout_lvl1"
+                android:background="@color/Unify_N50"
                 app:layout_constraintTop_toBottomOf="@+id/rv_insurance_list" />
 
             <com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView
                 android:id="@+id/flight_promo_ticker_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/dp_16"
+                android:layout_margin="@dimen/spacing_lvl4"
                 app:layout_constraintTop_toBottomOf="@+id/seperator_3" />
 
             <View
                 android:id="@+id/seperator_4"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_8"
-                android:layout_marginTop="@dimen/dp_16"
-                android:background="#f3f4f5"
+                android:layout_height="@dimen/layout_lvl1"
+                android:layout_marginTop="@dimen/spacing_lvl4"
+                android:background="@color/Unify_N50"
                 app:layout_constraintTop_toBottomOf="@+id/flight_promo_ticker_view" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_total_payment"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_16"
-                android:layout_marginLeft="@dimen/dp_16"
-                android:layout_marginTop="@dimen/dp_14"
+                android:layout_marginStart="@dimen/spacing_lvl4"
+                android:layout_marginLeft="@dimen/spacing_lvl4"
+                android:layout_marginTop="@dimen/flight_dp_14"
                 android:text="@string/flight_booking_total_payment_title"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/seperator_4"
@@ -187,9 +188,9 @@
                 android:id="@+id/tv_total_payment_amount"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/dp_16"
-                android:layout_marginRight="@dimen/dp_16"
-                android:textColor="@color/Neutral_N700_96"
+                android:layout_marginEnd="@dimen/spacing_lvl4"
+                android:layout_marginRight="@dimen/layout_lvl2"
+                android:textColor="@color/Unify_N700_96"
                 app:layout_constraintBottom_toBottomOf="@id/tv_total_payment"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/tv_total_payment"
@@ -207,63 +208,65 @@
                     android:id="@+id/tv_see_detail_price"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:padding="@dimen/dp_4"
+                    android:padding="@dimen/spacing_lvl2"
                     android:text="@string/flight_label_see_detail"
-                    android:textColor="@color/Green_G500"
+                    android:textColor="@color/Unify_G500"
                     app:typographyType="body_3"
                     app:typographyWeight="bold" />
 
-                <androidx.appcompat.widget.AppCompatImageView
+                <com.tokopedia.iconunify.IconUnify
                     android:id="@+id/iv_see_detail_price_arrow"
-                    android:layout_width="@dimen/dp_16"
-                    android:layout_height="@dimen/dp_16"
+                    android:layout_width="@dimen/layout_lvl2"
+                    android:layout_height="@dimen/layout_lvl2"
+                    app:icon_name="CHEVRON_DOWN"
                     android:layout_gravity="center_vertical"
                     app:layout_constraintBottom_toBottomOf="@+id/tv_see_detail_price"
                     app:layout_constraintEnd_toEndOf="@+id/tv_total_payment_amount"
                     app:layout_constraintTop_toTopOf="@+id/tv_see_detail_price"
-                    tools:src="@drawable/ic_system_action_arrow_down_normal_24" />
+                    app:icon_color_light_enable="@color/Unify_G500"
+                    app:icon_color_night_enable="@color/Unify_G500"/>
             </LinearLayout>
 
 
             <View
                 android:id="@+id/thin_seperator_1"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_1"
-                android:layout_margin="@dimen/dp_16"
-                android:background="#f3f4f5"
+                android:layout_height="@dimen/flight_dp_1"
+                android:layout_margin="@dimen/layout_lvl2"
+                android:background="@color/Unify_N50"
                 app:layout_constraintTop_toBottomOf="@+id/layout_see_detail_price" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_flight_price_detail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_6"
+                android:layout_marginTop="@dimen/flight_dp_6"
                 android:nestedScrollingEnabled="false"
-                android:paddingStart="@dimen/dp_16"
-                android:paddingLeft="@dimen/dp_16"
-                android:paddingEnd="@dimen/dp_16"
-                android:paddingRight="@dimen/dp_16"
+                android:paddingStart="@dimen/layout_lvl2"
+                android:paddingLeft="@dimen/layout_lvl2"
+                android:paddingEnd="@dimen/layout_lvl2"
+                android:paddingRight="@dimen/layout_lvl2"
                 app:layout_constraintTop_toBottomOf="@+id/thin_seperator_1" />
 
             <View
                 android:id="@+id/seperator_5"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_8"
-                android:layout_marginTop="@dimen/dp_16"
-                android:background="#f3f4f5"
+                android:layout_height="@dimen/layout_lvl1"
+                android:layout_marginTop="@dimen/layout_lvl2"
+                android:background="@color/Unify_N50"
                 app:layout_constraintTop_toBottomOf="@+id/rv_flight_price_detail" />
 
-            <androidx.appcompat.widget.AppCompatButton
+            <com.tokopedia.unifycomponents.UnifyButton
                 android:id="@+id/button_submit"
-                style="@style/Button.Submit.Orange"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_16"
-                android:layout_marginBottom="@dimen/dp_16"
+                android:layout_margin="@dimen/spacing_lvl4"
                 android:text="@string/flight_label_continued_payment"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/seperator_5" />
+                app:layout_constraintTop_toBottomOf="@+id/seperator_5"
+                app:unifyButtonType="transaction"
+                app:unifyButtonSize="large"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

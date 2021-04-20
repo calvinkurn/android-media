@@ -2,12 +2,12 @@ package com.tokopedia.officialstore.official.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.LiveData
-import com.tokopedia.officialstore.TestDispatcherProvider
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.officialstore.category.data.model.Category
 import com.tokopedia.officialstore.official.data.model.OfficialStoreBanners
 import com.tokopedia.officialstore.official.data.model.OfficialStoreBenefits
+import com.tokopedia.officialstore.official.data.model.OfficialStoreChannel
 import com.tokopedia.officialstore.official.data.model.OfficialStoreFeaturedShop
-import com.tokopedia.officialstore.official.data.model.dynamic_channel.DynamicChannel
 import com.tokopedia.officialstore.official.domain.GetOfficialStoreBannerUseCase
 import com.tokopedia.officialstore.official.domain.GetOfficialStoreBenefitUseCase
 import com.tokopedia.officialstore.official.domain.GetOfficialStoreDynamicChannelUseCase
@@ -17,7 +17,6 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsWishlishedUseCase
 import com.tokopedia.topads.sdk.domain.model.WishlistModel
-import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -85,7 +84,7 @@ class OfficialStoreHomeViewModelTest {
                 addWishListUseCase,
                 topAdsWishlishedUseCase,
                 removeWishListUseCase,
-                TestDispatcherProvider()
+                CoroutineTestDispatchersProvider
         )
     }
 
@@ -99,14 +98,15 @@ class OfficialStoreHomeViewModelTest {
             val osBanners = OfficialStoreBanners()
             val osBenefits = OfficialStoreBenefits()
             val osFeatured = OfficialStoreFeaturedShop()
-            val osDynamicChannel = DynamicChannel()
+            val osDynamicChannel = mutableListOf<OfficialStoreChannel>()
 
             onGetOfficialStoreBanners_thenReturn(osBanners)
             onGetOfficialStoreBenefits_thenReturn(osBenefits)
             onGetOfficialStoreFeaturedShop_thenReturn(osFeatured)
+            onGetDynamicChannel_thenReturn(osDynamicChannel)
             onSetupDynamicChannelParams_thenCompleteWith(channelType)
 
-            viewModel.loadFirstData(category)
+            viewModel.loadFirstData(category, "")
 
             val expectedOSBanners = Success(osBanners)
             val expectedOSBenefits = Success(osBenefits)
@@ -133,7 +133,7 @@ class OfficialStoreHomeViewModelTest {
             onGetOfficialStoreData_thenReturn(error)
             onSetupDynamicChannelParams_thenCompleteWith(channelType)
 
-            viewModel.loadFirstData(category)
+            viewModel.loadFirstData(category, "")
             val expectedError = Fail(NullPointerException())
 
             verifyLiveDataValueError(expectedError)
@@ -186,12 +186,15 @@ class OfficialStoreHomeViewModelTest {
             val recommendation = RecommendationItem(isTopAds = isTopAds)
             val callback = mockk<((Boolean, Throwable?) -> Unit)>()
 
+
             coEvery {
                 topAdsWishlishedUseCase.createObservable(any())
             } returns mockObservable(wishList)
 
             viewModel.addWishlist(recommendation, callback)
             coVerify { topAdsWishlishedUseCase.createObservable(any()) }
+
+            verify { callback.invoke(any(), any()) }
 
             print(viewModel.topAdsWishlistResult)
             Assert.assertTrue(viewModel.topAdsWishlistResult.value is Success)
@@ -346,7 +349,7 @@ class OfficialStoreHomeViewModelTest {
     }
 
     private fun onGetOfficialStoreBanners_thenReturn(osBanners: OfficialStoreBanners) {
-        coEvery { getOfficialStoreBannersUseCase.executeOnBackground() } returns osBanners
+        coEvery { getOfficialStoreBannersUseCase.executeOnBackground(any()) } returns osBanners
     }
 
     private fun onGetOfficialStoreBenefits_thenReturn(osBenefits: OfficialStoreBenefits) {
@@ -357,9 +360,8 @@ class OfficialStoreHomeViewModelTest {
         coEvery { getOfficialStoreFeaturedShopUseCase.executeOnBackground() } returns osFeatured
     }
 
-    private fun onGetOfficialStoreProductRecommendation_thenReturn(recommendations: List<RecommendationWidget>) {
-        coEvery { getRecommendationUseCase.getOfficialStoreRecomParams(any(), any(), any()) } returns RequestParams()
-        coEvery { getRecommendationUseCase.createObservable(any()) } returns mockObservable(recommendations)
+    private fun onGetDynamicChannel_thenReturn(list: List<OfficialStoreChannel>) {
+        coEvery { getOfficialStoreDynamicChannelUseCase.executeOnBackground() } returns list
     }
 
     private fun onAddWishList_thenCompleteWith(productId: String, userId: String) {
@@ -375,10 +377,11 @@ class OfficialStoreHomeViewModelTest {
         onGetOfficialStoreBanners_thenReturn(error)
         onGetOfficialStoreBenefits_thenReturn(error)
         onGetOfficialStoreFeaturedShop_thenReturn(error)
+        onGetDynamicChannel_thenReturn(error)
     }
 
     private fun onGetOfficialStoreBanners_thenReturn(error: Throwable) {
-        coEvery { getOfficialStoreBannersUseCase.executeOnBackground() } throws error
+        coEvery { getOfficialStoreBannersUseCase.executeOnBackground(any()) } throws error
     }
 
     private fun onGetOfficialStoreBenefits_thenReturn(error: Throwable) {
@@ -389,8 +392,12 @@ class OfficialStoreHomeViewModelTest {
         coEvery { getOfficialStoreFeaturedShopUseCase.executeOnBackground() } throws error
     }
 
+    private fun onGetDynamicChannel_thenReturn(error: Throwable) {
+        coEvery { getOfficialStoreDynamicChannelUseCase.executeOnBackground() } throws error
+    }
+
     private fun onSetupDynamicChannelParams_thenCompleteWith(channelType: String) {
-        coEvery { getOfficialStoreDynamicChannelUseCase.setupParams(channelType) } returns Unit
+        coEvery { getOfficialStoreDynamicChannelUseCase.setupParams(channelType, "") } returns Unit
     }
 
     private fun verifyOfficialStoreBannersEquals(
@@ -421,17 +428,16 @@ class OfficialStoreHomeViewModelTest {
     }
 
     private fun verifyOfficialStoreDynamicChannelEquals(
-            expectedDynamicChannel: Success<DynamicChannel>
+            expectedDynamicChannel: Success<List<OfficialStoreChannel>>
     ) {
-        val dynamicChannel = expectedDynamicChannel.data
-        verifyGetOfficialDynamicChannelCalled(dynamicChannel)
+        verifyGetOfficialDynamicChannelCalled()
 
         viewModel.officialStoreDynamicChannelResult
                 .assertSuccess(expectedDynamicChannel)
     }
 
     private fun verifyGetOfficialStoreBannersUseCaseCalled() {
-        coVerify { getOfficialStoreBannersUseCase.executeOnBackground() }
+        coVerify { getOfficialStoreBannersUseCase.executeOnBackground(any()) }
     }
 
     private fun verifyGetOfficialStoreBenefitsUseCaseCalled() {
@@ -442,14 +448,10 @@ class OfficialStoreHomeViewModelTest {
         coVerify { getOfficialStoreFeaturedShopUseCase.executeOnBackground() }
     }
 
-    private fun verifyGetOfficialDynamicChannelCalled(dynamicChannel: DynamicChannel) {
-        val onSuccess = CapturingSlot<(DynamicChannel) -> Unit>()
-
+    private fun verifyGetOfficialDynamicChannelCalled() {
         coVerify {
-            getOfficialStoreDynamicChannelUseCase.execute(capture(onSuccess), any())
+            getOfficialStoreDynamicChannelUseCase.executeOnBackground()
         }
-
-        onSuccess.captured.invoke(dynamicChannel)
     }
 
     private fun verifyLiveDataValueError(expectedError: Fail) {
@@ -460,14 +462,14 @@ class OfficialStoreHomeViewModelTest {
     }
 
     private fun verifyOfficialStoreBannersError(expectedError: Fail) {
-        coVerify { getOfficialStoreBannersUseCase.executeOnBackground() }
+        coVerify { getOfficialStoreBannersUseCase.executeOnBackground(any()) }
 
         viewModel.officialStoreBannersResult
                 .assertError(expectedError)
     }
 
     private fun verifyOfficialStoreBenefitsError(expectedError: Fail) {
-        coVerify { getOfficialStoreBannersUseCase.executeOnBackground() }
+        coVerify { getOfficialStoreBannersUseCase.executeOnBackground(any()) }
 
         viewModel.officialStoreBenefitsResult
                 .assertError(expectedError)
@@ -489,17 +491,11 @@ class OfficialStoreHomeViewModelTest {
     }
 
     private fun verifyGetOfficialDynamicChannelCalled(error: Throwable) {
-        val onError = CapturingSlot<(Throwable) -> Unit>()
-
-        coVerify {
-            getOfficialStoreDynamicChannelUseCase.execute(any(), capture(onError))
-        }
-
-        onError.captured.invoke(error)
+        coVerify { getOfficialStoreDynamicChannelUseCase.executeOnBackground() }
     }
 
     private fun verifyDynamicChannelParamsEquals(channelType: String) {
-        coVerify { getOfficialStoreDynamicChannelUseCase.setupParams(channelType) }
+        coVerify { getOfficialStoreDynamicChannelUseCase.setupParams(channelType, "") }
     }
 
 

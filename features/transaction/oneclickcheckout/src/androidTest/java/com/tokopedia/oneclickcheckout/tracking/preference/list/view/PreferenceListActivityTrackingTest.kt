@@ -8,8 +8,8 @@ import androidx.test.espresso.IdlingResource
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
-import com.tokopedia.analyticsdebugger.validator.core.getAnalyticsWithQuery
-import com.tokopedia.analyticsdebugger.validator.core.hasAllSuccess
+import com.tokopedia.cassavatest.getAnalyticsWithQuery
+import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.oneclickcheckout.R
 import com.tokopedia.oneclickcheckout.common.idling.OccIdlingResource

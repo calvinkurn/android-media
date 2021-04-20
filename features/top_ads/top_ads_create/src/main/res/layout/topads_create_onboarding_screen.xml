@@ -1,0 +1,48 @@
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <com.tokopedia.header.HeaderUnify
+        android:id="@+id/header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:unify_header_is_show_back_button="true"
+        app:unify_header_is_show_shadow="false"
+        app:layout_constraintTop_toTopOf="parent"
+        app:unify_header_action_text="@string/topads_create_onboarding_action_text"
+        app:unify_header_title="@string/topads_create_onboarding_title"/>
+
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/dp_0"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toTopOf="@+id/btn_submit"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/header">
+
+        <com.tokopedia.abstraction.base.view.widget.TouchViewPager
+            android:id="@+id/view_pager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </LinearLayout>
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btn_submit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/dp_16"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        android:text="@string/autoads_selanjutnya"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:unifyButtonSize="large"
+        app:unifyButtonType="main"
+        app:unifyButtonVariant="filled" />
+</androidx.constraintlayout.widget.ConstraintLayout>

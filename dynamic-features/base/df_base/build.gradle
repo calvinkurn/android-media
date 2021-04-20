@@ -5,7 +5,7 @@ apply plugin: 'io.hansel.preprocessor.feature'
 buildscript {
     repositories {
         mavenCentral()
-        maven { url 'https://hansel.io/maven' }
+        maven { url 'https://maven-hansel.tokopedia.com/maven' }
     }
     dependencies {
         classpath rootProject.ext.miscDependencies.hansel
@@ -57,16 +57,14 @@ dependencies {
     implementation project(rootProject.ext.features.catalog)
     implementation project(rootProject.ext.features.kategori)
     implementation project(rootProject.ext.features.categoryLevels)
-    implementation project(rootProject.ext.features.hotlist)
     implementation project(rootProject.ext.features.findNative)
     //implementation project(rootProject.ext.features.agerestriction) //Need to fix the structure
 
     //Content
-    implementation project(rootProject.ext.features.createpost)
-    implementation project(rootProject.ext.features.profile)
     implementation project(rootProject.ext.features.play)
     implementation project(rootProject.ext.features.kol)
     implementation project(rootProject.ext.features.interestPick)
+    implementation project(rootProject.ext.features.feed)
 
     //Digital
     implementation project(rootProject.ext.features.digitalTopupBills)
@@ -79,6 +77,9 @@ dependencies {
     implementation project(rootProject.ext.features.digitalEmoney)
     implementation project(rootProject.ext.features.digitalBrizzi)
     implementation project(rootProject.ext.features.smartBills)
+    implementation project(rootProject.ext.features.recharge_slice)
+    implementation project(rootProject.ext.features.travel_slice)
+    implementation project(rootProject.ext.features.digitalCheckout)
 
     //Discovery
     implementation project(rootProject.ext.features.similarSearch)
@@ -92,6 +93,7 @@ dependencies {
     implementation project(rootProject.ext.features.ovoPayWithQr)
     implementation project(rootProject.ext.features.wallet)
     implementation project(rootProject.ext.features.ovop2p)
+    implementation project(rootProject.ext.features.paylater)
 
     //IM
     //implementation project(rootProject.ext.features.referral) //Need to fix the structure
@@ -106,13 +108,19 @@ dependencies {
     implementation project(rootProject.ext.features.talk)
     implementation project(rootProject.ext.features.shopShowcase)
     implementation project(rootProject.ext.features.brandlist)
+    implementation project(rootProject.ext.features.productDetail)
+    implementation project(rootProject.ext.features.review)
+    implementation project(rootProject.ext.features.reviewProduct)
     implementation project(rootProject.ext.features.shopPage)
     //Operational
 
     //Payment
     implementation project(rootProject.ext.features.paymentSetting)
     implementation project(rootProject.ext.features.instantDebitBca)
+    implementation project(rootProject.ext.features.pms)
+
     //Promo
+    implementation project(rootProject.ext.features.promoCheckout)
 
     //Salam
 
@@ -121,8 +129,6 @@ dependencies {
     implementation project(rootProject.ext.features.hotel)
 
     //User
-    implementation project(rootProject.ext.features.attachinvoice)
-    implementation project(rootProject.ext.features.attachvoucher)
     implementation project(rootProject.ext.features.settingnotif)
     implementation project(rootProject.ext.features.campaignShakeLanding)
     implementation project(rootProject.ext.features.changePhoneNumber)
@@ -134,14 +140,20 @@ dependencies {
     implementation project(rootProject.ext.features.notifTroubleshooter)
     implementation project(rootProject.ext.features.topchat)
     implementation project(rootProject.ext.features.otp)
-    implementation project(rootProject.ext.features.userIdentification)
-
-    //Entertainment
-    implementation project(rootProject.ext.features.orderhistory)
+    implementation project(rootProject.ext.features.loginphone)
+    implementation project(rootProject.ext.features.updateinactivephone)
+    implementation project(rootProject.ext.features.inbox)
 
     //Transaction
     implementation project(rootProject.ext.features.checkout)
     implementation project(rootProject.ext.features.oneclickcheckout)
     implementation project(rootProject.ext.features.promoCheckoutMarketplace)
-    implementation project(rootProject.ext.features.atc_variant)
+    implementation project(rootProject.ext.features.buyerorder)
+    implementation project(rootProject.ext.features.snapshot)
+
+    //Order Management
+    implementation project(rootProject.ext.features.ordermanagementhistory)
+
+    //Library
+    implementation project(rootProject.ext.libraries.imagePicker)
 }

@@ -1,6 +1,0 @@
-mutation ModerateShop($input: ShopModerate!){
-    moderateShop(input: $input){
-        success
-        message
-    }
-}

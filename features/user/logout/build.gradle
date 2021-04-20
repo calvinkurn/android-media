@@ -3,13 +3,13 @@ apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 
 repositories {
-    maven { url 'https://hansel.io/maven' }
+    maven { url 'https://maven-hansel.tokopedia.com/maven' }
     mavenCentral()
 }
 buildscript {
     repositories {
         mavenCentral()
-        maven { url 'https://hansel.io/maven' }
+        maven { url 'https://maven-hansel.tokopedia.com/maven' }
     }
     dependencies {
         classpath rootProject.ext.miscDependencies.hansel
@@ -18,6 +18,7 @@ buildscript {
 
 dependencies {
     implementation project(rootProject.ext.libraries.core_legacy)
+    implementation project(rootProject.ext.features.pushNotificationCommon)
     implementation project(rootProject.ext.features.resourcesCommon)
     implementation project(rootProject.ext.features.navigationCommon)
     implementation project(rootProject.ext.features.sessioncommon)
@@ -28,6 +29,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.irisSession)
     implementation project(rootProject.ext.libraries.analytics)
     implementation project(rootProject.ext.libraries.remoteConfig)
+    implementation project(rootProject.ext.libraries.utils)
     if (rootProject.ext.debugToolsEnabled) {
         implementation project(rootProject.ext.libraries.analyticsDebugger)
     } else {
@@ -38,12 +40,12 @@ dependencies {
 
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.components
+    implementation rootProject.ext.unifyDependencies.icons
     implementation rootProject.ext.unifyDependencies.global_error
     implementation rootProject.ext.unifyDependencies.dialog
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
-    implementation rootProject.ext.tkpdInternalLibDependencies.cacheapi
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.network
@@ -63,6 +65,15 @@ dependencies {
     implementation rootProject.ext.playServicesDependencies.auth
 
     implementation rootProject.ext.debugToolsDependencies.chuck
+
+    // unit test
+    testImplementation rootProject.ext.testDependencies.junit
+    implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk8
+    testImplementation rootProject.ext.testDependencies.archCoreTesting
+    testImplementation rootProject.ext.testDependencies.mockk
+    testImplementation rootProject.ext.testDependencies.assertJCore
+    testImplementation rootProject.ext.miscDependencies.coroutineTest
+
 }
 
 project.ext {
@@ -73,3 +84,6 @@ project.ext {
 }
 
 apply from: '../../../publish_local.gradle'
+
+apply from: '../../../jacoco_task.gradle'
+apply from: '../../../sonar_config.gradle'

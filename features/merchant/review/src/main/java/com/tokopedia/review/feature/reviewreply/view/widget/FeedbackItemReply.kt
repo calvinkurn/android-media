@@ -11,6 +11,7 @@ import com.tokopedia.imagepreviewslider.presentation.activity.ImagePreviewSlider
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.review.R
 import com.tokopedia.review.common.util.PaddingItemDecoratingReview
 import com.tokopedia.review.common.util.getReviewStar
@@ -55,6 +56,7 @@ class FeedbackItemReply : BaseCustomView, ReviewReplyListener {
         setupFeedbackReview(data.reviewText.orEmpty())
         setImageAttachment(data, productReplyUiModel)
         setReplyView(data)
+        showKejarUlasanLabel(data.isKejarUlasan)
     }
 
     private fun setReplyView(data: FeedbackUiModel) {
@@ -71,10 +73,10 @@ class FeedbackItemReply : BaseCustomView, ReviewReplyListener {
         replyFeedbackState?.background = ContextCompat.getDrawable(context, R.drawable.rectangle_8)
         if (feedbackText.isEmpty()) {
             tvFeedbackReview?.text = context.getString(R.string.review_not_found)
-            tvFeedbackReview?.setTextColor(ContextCompat.getColor(context, R.color.light_N700_44))
+            tvFeedbackReview?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_44))
         } else {
             tvFeedbackReview?.apply {
-                setTextColor(ContextCompat.getColor(context, R.color.light_N700_96))
+                setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
                 text = feedbackText
             }
         }
@@ -98,6 +100,10 @@ class FeedbackItemReply : BaseCustomView, ReviewReplyListener {
             replyReviewFeedbackImageAdapter.submitList(element.attachments)
             rvItemAttachmentFeedback?.show()
         }
+    }
+
+    private fun showKejarUlasanLabel(isKejarUlasan: Boolean) {
+        kejarUlasanLabel?.showWithCondition(isKejarUlasan)
     }
 
     override fun onImageItemClicked(imageUrls: List<String>, thumbnailsUrl: List<String>,

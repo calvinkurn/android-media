@@ -27,6 +27,8 @@ query RatesV3($param: OngkirRatesV3Input!) {
           text_etd
           text_notes
           text_service_desc
+          text_eta_summarize
+          error_code
         }
         order_priority {
           is_now
@@ -49,6 +51,12 @@ query RatesV3($param: OngkirRatesV3Input!) {
         cod {
           is_cod
           cod_text
+        }
+        mvc {
+          is_mvc
+          mvc_title
+          mvc_logo
+          mvc_error_message
         }
         products {
           shipper_name
@@ -104,6 +112,15 @@ query RatesV3($param: OngkirRatesV3Input!) {
               url_detail
               icon_url
             }
+            mvc {
+              is_mvc
+              mvc_logo
+              mvc_error_message
+            }
+          }
+          eta {
+            text_eta
+            error_code
           }
         }
       }
@@ -137,6 +154,11 @@ query RatesV3($param: OngkirRatesV3Input!) {
               tnc_text
               tnc_link
             }
+        eta {
+              text_eta
+              error_code
+            }
+        is_bebas_ongkir_extra
       }
       info {
         blackbox_info {

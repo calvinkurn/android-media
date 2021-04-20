@@ -11,11 +11,11 @@ import androidx.transition.Fade
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
-import com.tokopedia.play.broadcaster.ui.model.result.NetworkResult
 import com.tokopedia.play.broadcaster.ui.viewholder.SearchSuggestionViewHolder
 import com.tokopedia.play.broadcaster.view.adapter.SearchSuggestionsAdapter
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseEtalaseSetupFragment
 import com.tokopedia.play.broadcaster.view.viewmodel.PlaySearchSuggestionsViewModel
+import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.unifycomponents.Toaster
 import javax.inject.Inject
 

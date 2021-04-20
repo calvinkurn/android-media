@@ -27,12 +27,14 @@ public class ShippingParam implements Parcelable {
     private long orderValue;
     private String categoryIds;
     private boolean isBlackbox;
-    private int addressId;
+    private String addressId;
     private boolean preorder;
     private boolean isTradein;
     private boolean isTradeInDropOff;
     private List<Product> products;
     private String uniqueId; // this is actually cart string
+    private boolean isFulfillment;
+    private int preOrderDuration;
 
     public ShippingParam() {
     }
@@ -55,12 +57,14 @@ public class ShippingParam implements Parcelable {
         orderValue = in.readLong();
         categoryIds = in.readString();
         isBlackbox = in.readByte() != 0;
-        addressId = in.readInt();
+        addressId = in.readString();
         preorder = in.readByte() != 0;
         isTradein = in.readByte() != 0;
         isTradeInDropOff = in.readByte() != 0;
         products = in.createTypedArrayList(Product.CREATOR);
         uniqueId = in.readString();
+        isFulfillment = in.readByte() != 0;
+        preOrderDuration = in.readInt();
     }
 
     @Override
@@ -82,12 +86,14 @@ public class ShippingParam implements Parcelable {
         dest.writeLong(orderValue);
         dest.writeString(categoryIds);
         dest.writeByte((byte) (isBlackbox ? 1 : 0));
-        dest.writeInt(addressId);
+        dest.writeString(addressId);
         dest.writeByte((byte) (preorder ? 1 : 0));
         dest.writeByte((byte) (isTradein ? 1 : 0));
         dest.writeByte((byte) (isTradeInDropOff ? 1 : 0));
         dest.writeTypedList(products);
         dest.writeString(uniqueId);
+        dest.writeByte((byte) (isFulfillment? 1 : 0));
+        dest.writeInt(preOrderDuration);
     }
 
     @Override
@@ -239,9 +245,9 @@ public class ShippingParam implements Parcelable {
 
     public void setIsBlackbox(boolean blackbox) { isBlackbox = blackbox; }
 
-    public int getAddressId() { return addressId; }
+    public String getAddressId() { return addressId; }
 
-    public void setAddressId(int addressId) { this.addressId = addressId; }
+    public void setAddressId(String addressId) { this.addressId = addressId; }
 
     public boolean getIsPreorder() { return preorder; }
 
@@ -277,5 +283,21 @@ public class ShippingParam implements Parcelable {
 
     public void setTradeInDropOff(boolean tradeInDropOff) {
         isTradeInDropOff = tradeInDropOff;
+    }
+
+    public boolean isFulfillment() {
+        return isFulfillment;
+    }
+
+    public void setFulfillment(boolean fulfillment) {
+        isFulfillment = fulfillment;
+    }
+
+    public int getPreOrderDuration() {
+        return preOrderDuration;
+    }
+
+    public void setPreOrderDuration(int preOrderDuration) {
+        this.preOrderDuration = preOrderDuration;
     }
 }

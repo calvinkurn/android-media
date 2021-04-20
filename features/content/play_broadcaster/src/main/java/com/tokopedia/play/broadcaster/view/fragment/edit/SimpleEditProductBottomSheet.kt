@@ -23,16 +23,16 @@ import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
 import com.tokopedia.play.broadcaster.ui.itemdecoration.PlayGridTwoItemDecoration
 import com.tokopedia.play.broadcaster.ui.model.ProductContentUiModel
-import com.tokopedia.play.broadcaster.ui.model.result.NetworkResult
 import com.tokopedia.play.broadcaster.ui.viewholder.ProductSelectableViewHolder
 import com.tokopedia.play.broadcaster.util.bottomsheet.PlayBroadcastDialogCustomizer
-import com.tokopedia.play.broadcaster.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play.broadcaster.util.extension.showToaster
-import com.tokopedia.play.broadcaster.util.scroll.StopFlingScrollListener
 import com.tokopedia.play.broadcaster.view.adapter.ProductSelectableAdapter
 import com.tokopedia.play.broadcaster.view.viewmodel.DataStoreViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayEditProductViewModel
+import com.tokopedia.play_common.model.result.NetworkResult
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.play_common.util.scroll.StopFlingScrollListener
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import kotlinx.coroutines.*
@@ -43,7 +43,7 @@ import javax.inject.Inject
  */
 class SimpleEditProductBottomSheet @Inject constructor(
         private val viewModelFactory: ViewModelFactory,
-        private val dispatcher: CoroutineDispatcherProvider,
+        private val dispatcher: CoroutineDispatchers,
         private val dialogCustomizer: PlayBroadcastDialogCustomizer
 ) : BottomSheetDialogFragment() {
 
@@ -168,11 +168,13 @@ class SimpleEditProductBottomSheet @Inject constructor(
                 height = (MAX_HEIGHT_MULTIPLIER * maxHeight()).toInt()
             }
             bottomSheet?.setBackgroundColor(Color.TRANSPARENT)
-            bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet)
-            bottomSheetBehavior.isHideable = true
-            bottomSheetBehavior.skipCollapsed = true
-            bottomSheetBehavior.peekHeight = (MAX_HEIGHT_MULTIPLIER * maxHeight()).toInt()
-            bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+            bottomSheet?.let {
+                bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet)
+                bottomSheetBehavior.isHideable = true
+                bottomSheetBehavior.skipCollapsed = true
+                bottomSheetBehavior.peekHeight = (MAX_HEIGHT_MULTIPLIER * maxHeight()).toInt()
+                bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+            }
 
             isCancelable = true
         }

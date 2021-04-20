@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 xmlns:app="http://schemas.android.com/apk/res-auto"
                 xmlns:tools="http://schemas.android.com/tools"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@color/white"
+                android:background="@color/Unify_N0"
                 android:orientation="vertical">
 
     <RelativeLayout
@@ -19,25 +19,29 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <com.tokopedia.design.text.TkpdHintTextInputLayout
+            <com.tokopedia.loginregister.tkpddesign.TkpdHintTextInputLayout
                 android:id="@+id/input_layout"
                 style="@style/HintTextInputLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/dp_3"
+                app:defaultTextColorLabel="@color/Unify_N700_44"
+                app:focusedTextColorLabel="@color/Unify_N700_44"
                 android:hint="@string/phone_or_email_input"
                 android:inputType="phone"
                 android:paddingLeft="-5dp">
 
                 <AutoCompleteTextView
                     android:id="@+id/input_email_phone"
+                    android:contentDescription="@string/content_desc_input_email_phone"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingLeft="@dimen/dp_5"
+                    android:textColor="@color/Unify_N700_96"
                     android:imeOptions="actionDone"
                     android:singleLine="true"/>
 
-            </com.tokopedia.design.text.TkpdHintTextInputLayout>
+            </com.tokopedia.loginregister.tkpddesign.TkpdHintTextInputLayout>
 
             <TextView
                 android:id="@+id/change_button"
@@ -47,11 +51,11 @@
                 android:layout_alignParentRight="true"
                 android:layout_marginRight="@dimen/dp_5"
                 android:gravity="center"
-                android:background="@color/white"
+                android:background="@color/Unify_N0"
                 android:layout_marginTop="@dimen/dp_20"
                 android:padding="@dimen/dp_8"
                 android:text="@string/change_2"
-                android:textColor="@color/medium_green"
+                android:textColor="@color/Unify_G400"
                 android:textSize="12sp"
                 android:textStyle="bold"
                 android:visibility="gone"
@@ -66,7 +70,7 @@
             android:fontFamily="sans-serif"
             android:gravity="end"
             android:text="@string/default_placeholder"
-            android:textColor="@color/black_54"
+            android:textColor="@color/Unify_N700_44"
             android:textSize="@dimen/sp_12"
             android:textStyle="normal"
             android:visibility="visible"
@@ -81,60 +85,47 @@
             android:layout_below="@+id/email_phone_layout"
             android:fontFamily="sans-serif"
             android:gravity="end"
-            android:textColor="@color/red_500"
+            android:textColor="@color/Unify_R600"
             android:textSize="@dimen/sp_12"
             android:textStyle="normal"
             android:visibility="invisible"
             tools:visibility="visible"/>
 
-        <com.tokopedia.design.text.TkpdHintTextInputLayout
+        <com.tokopedia.unifycomponents.TextFieldUnify
             android:id="@+id/wrapper_password"
-            style="@style/HintTextInputLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/error_message"
-            android:hint="@string/title_password"
-            android:paddingLeft="-5dp"
             android:visibility="gone"
-            app:passwordToggleDrawable="@drawable/asl_password_visibility"
-            app:passwordToggleEnabled="true">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/password"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:imeActionLabel="Lanjut"
-                android:imeOptions="actionDone"
-                android:paddingLeft="5dp"
-                android:inputType="textPassword"
-                android:maxLines="1"
-                android:textColor="@color/black"
-                android:textSize="@dimen/sp_16"
-                android:typeface="sans"/>
-        </com.tokopedia.design.text.TkpdHintTextInputLayout>
+            app:text_field_label="@string/title_password"
+            app:text_field_label_static = "true"
+            app:text_field_input_type="textPassword"/>
 
         <TextView
             android:id="@+id/forgot_pass"
+            android:contentDescription="@string/content_desc_forgot_pass"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_below="@id/wrapper_password"
             android:layout_gravity="end"
-            android:layout_marginTop="@dimen/dp_5"
             android:fontFamily="sans-serif"
             android:gravity="end"
             android:lineSpacingExtra="9sp"
-            android:padding="@dimen/dp_10"
+            android:paddingTop="@dimen/spacing_lvl2"
+            android:paddingLeft="@dimen/dp_10"
+            android:paddingRight="@dimen/dp_10"
+            android:paddingBottom="@dimen/spacing_lvl2"
             android:layout_marginRight="-10dp"
             android:text="@string/title_forgot_password"
-            android:textColor="@color/medium_green"
+            android:textColor="@color/Unify_G400"
             android:textSize="12sp"
             android:textStyle="normal"
             android:visibility="gone"
             />
 
-        <com.tokopedia.design.component.ButtonCompat
+        <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/register_btn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -143,8 +134,10 @@
             android:layout_marginTop="@dimen/dp_16"
             android:text="@string/register"
             android:textAllCaps="false"
-            app:buttonCompatType="disable"/>
+            app:unifyButtonSize="large"
+            app:unifyButtonType="main"
+            app:unifyButtonVariant="filled"/>
 
     </RelativeLayout>
 
-</RelativeLayout>
+</FrameLayout>

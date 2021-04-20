@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <solid android:color="@color/Unify_G200" />
+    <corners android:radius="@dimen/spacing_lvl3" />
+    <padding
+        android:bottom="@dimen/layout_lvl0"
+        android:left="@dimen/layout_lvl0"
+        android:right="@dimen/layout_lvl0"
+        android:top="@dimen/layout_lvl0" />
+</shape>

@@ -29,7 +29,9 @@
                 "text_range_price": "Rp13.000 - Rp19.000",
                 "text_etd": "1-4 hari",
                 "text_notes": "",
-                "text_service_desc": ""
+                "text_service_desc": "",
+                "text_eta_summarize": "",
+                "error_code": 1
               },
               "order_priority": {
                 "is_now": false,
@@ -105,6 +107,10 @@
                       "url_detail": "",
                       "icon_url": ""
                     }
+                  },
+                  "eta": {
+                    "text_eta": "",
+                    "error_code": 1
                   }
                 },
                 {
@@ -159,6 +165,10 @@
                       "url_detail": "",
                       "icon_url": ""
                     }
+                  },
+                  "eta": {
+                    "text_eta": "",
+                    "error_code": 1
                   }
                 }
               ]
@@ -193,6 +203,10 @@
               "formatted_price": "",
               "tnc_text": "",
               "tnc_link": ""
+            },
+            "eta": {
+              "text_eta": "",
+              "error_code": 1
             }
           },
           "info": {

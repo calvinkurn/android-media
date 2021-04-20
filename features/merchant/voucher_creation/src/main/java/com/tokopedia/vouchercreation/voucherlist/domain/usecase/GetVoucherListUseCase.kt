@@ -32,37 +32,26 @@ class GetVoucherListUseCase @Inject constructor(
                 "                  }\n" +
                 "                  vouchers {\n" +
                 "                    voucher_id\n" +
-                "                    shop_id\n" +
                 "                    voucher_name\n" +
                 "                    voucher_type\n" +
                 "                    voucher_type_formatted\n" +
                 "                    voucher_image\n" +
                 "                    voucher_image_square\n" +
                 "                    voucher_status\n" +
-                "                    voucher_status_formatted\n" +
-                "                    voucher_discount_type\n" +
                 "                    voucher_discount_type_formatted\n" +
                 "                    voucher_discount_amt\n" +
                 "                    voucher_discount_amt_formatted\n" +
                 "                    voucher_discount_amt_max\n" +
-                "                    voucher_discount_amt_max_formatted\n" +
                 "                    voucher_minimum_amt\n" +
-                "                    voucher_minimum_amt_formatted\n" +
                 "                    voucher_quota\n" +
-                "                    remaining_quota\n" +
+                "                    confirmed_global_quota\n" +
                 "                    booked_global_quota\n" +
                 "                    voucher_start_time\n" +
                 "                    voucher_finish_time\n" +
                 "                    voucher_code\n" +
-                "                    galadriel_voucher_id\n" +
-                "                    galadriel_catalog_id\n" +
                 "                    create_time\n" +
-                "                    create_by\n" +
                 "                    update_time\n" +
-                "                    update_by\n" +
                 "                    is_public\n" +
-                "                    is_quota_avaiable\n" +
-                "                    tnc\n" +
                 "                  }\n" +
                 "                }\n" +
                 "              }\n" +

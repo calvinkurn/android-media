@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+android:layout_marginTop="@dimen/dp_14"
+android:orientation="vertical"
+android:id="@+id/transaction_root"
+android:layout_width="match_parent"
+android:layout_height="wrap_content"
+android:descendantFocusability="blocksDescendants"
+xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.tokopedia.unifycomponents.LocalLoad
+        android:layout_width="match_parent"
+        android:id="@+id/localload_transaction"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_14"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginEnd="@dimen/dp_16"
+        app:unify_local_load_title="@string/error_state_transaction_title"
+        app:unify_local_load_description="@string/error_state_transaction_description"/>
+</LinearLayout>

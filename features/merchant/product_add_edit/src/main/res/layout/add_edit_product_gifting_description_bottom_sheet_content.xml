@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/spacing_lvl4">
+
+        <!--Start of Content List-->
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/title_gifting"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/label_gifting_description_numbers"
+            android:textColor="@color/Unify_N700"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="heading_4" />
+
+        <com.tokopedia.unifycomponents.NotificationUnify
+            android:id="@+id/number_content_first"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_lvl5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/title_gifting"
+            app:notificationColor="color_secondary"
+            app:notificationTitle="1"
+            app:notificationType="counter_type" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_content_first"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_lvl4"
+            android:layout_marginTop="@dimen/spacing_lvl4"
+            android:paddingTop="-10dp"
+            android:text="@string/label_gifting_description_first"
+            android:textColor="@color/Unify_N700_96"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/number_content_first"
+            app:layout_constraintTop_toBottomOf="@+id/title_gifting"
+            app:typographyType="body_2" />
+
+        <com.tokopedia.unifycomponents.NotificationUnify
+            android:id="@+id/number_content_second"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_lvl5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_content_first"
+            app:notificationColor="color_secondary"
+            app:notificationTitle="2"
+            app:notificationType="counter_type" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_content_second"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_lvl4"
+            android:layout_marginTop="17dp"
+            android:text="@string/label_gifting_description_second"
+            android:textColor="@color/Unify_N700_96"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/number_content_second"
+            app:layout_constraintTop_toBottomOf="@+id/tv_content_first"
+            app:typographyType="body_2" />
+
+        <com.tokopedia.unifycomponents.NotificationUnify
+            android:id="@+id/number_content_third"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_lvl5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_content_second"
+            app:notificationColor="color_secondary"
+            app:notificationTitle="3"
+            app:notificationType="counter_type" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_content_third"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_lvl4"
+            android:layout_marginTop="@dimen/spacing_lvl4"
+            android:text="@string/label_gifting_description_third"
+            android:textColor="@color/Unify_N700_96"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/number_content_second"
+            app:layout_constraintTop_toBottomOf="@+id/tv_content_second"
+            app:typographyType="body_2" />
+
+        <!--End of Content List-->
+
+        <!--Start of Content Description-->
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/title_description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_lvl5"
+            android:text="@string/label_gifting_description_example"
+            android:textColor="@color/Unify_N700"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_content_third"
+            app:typographyType="heading_4" />
+
+        <com.tokopedia.unifycomponents.CardUnify
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_lvl4"
+            app:card_type="border_disabled"
+            app:layout_constraintTop_toBottomOf="@+id/title_description">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/spacing_lvl3"
+                    android:text="@string/label_gifting_description_template"
+                    android:textColor="@color/Unify_N700_96"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/number_content_second"
+                    app:layout_constraintTop_toTopOf="@+id/number_content_third"
+                    app:typographyType="body_2" />
+
+                <com.tokopedia.unifycomponents.UnifyButton
+                    android:id="@+id/button_copy_template"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/spacing_lvl3"
+                    android:layout_marginEnd="@dimen/spacing_lvl3"
+                    android:layout_marginBottom="@dimen/spacing_lvl4"
+                    android:text="@string/action_copy_template" />
+
+            </LinearLayout>
+
+        </com.tokopedia.unifycomponents.CardUnify>
+
+        <!--End of Content Description-->
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</ScrollView>

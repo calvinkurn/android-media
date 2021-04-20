@@ -3,11 +3,11 @@ package com.tokopedia.common_electronic_money.compoundview
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
-import android.widget.Button
-import android.widget.TextView
 import com.tokopedia.common_electronic_money.R
 import com.tokopedia.common_electronic_money.data.EmoneyInquiry
 import com.tokopedia.unifycomponents.BaseCustomView
+import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifyprinciples.Typography
 import org.jetbrains.annotations.NotNull
 
 /**
@@ -18,9 +18,9 @@ class ETollUpdateBalanceResultView @JvmOverloads constructor(@NotNull context: C
     : BaseCustomView(context, attrs, defStyleAttr) {
 
     private val eTollCardInfoView: ETollCardInfoView
-    private val buttonTopup: Button
-    private val textLabelProgressTitle: TextView
-    private val textLabelProgressMessage: TextView
+    private val buttonTopup: UnifyButton
+    private val textLabelProgressTitle: Typography
+    private val textLabelProgressMessage: Typography
 
     private lateinit var listener: OnTopupETollClickListener
 
@@ -67,10 +67,10 @@ class ETollUpdateBalanceResultView @JvmOverloads constructor(@NotNull context: C
     fun showError(errorMessage: String) {
         textLabelProgressTitle.visibility = View.VISIBLE
         textLabelProgressTitle.text = resources.getString(R.string.emoney_update_card_balance_failed_title)
-        textLabelProgressTitle.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Red_R600))
+        textLabelProgressTitle.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_R600))
         textLabelProgressMessage.visibility = View.VISIBLE
         textLabelProgressMessage.text = errorMessage
-        textLabelProgressMessage.setTextColor(resources.getColor(R.color.emoney_grey))
+        textLabelProgressMessage.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N300))
         eTollCardInfoView.visibility = View.VISIBLE
         eTollCardInfoView.removeCardInfo()
         buttonTopup.visibility = View.GONE
@@ -78,10 +78,10 @@ class ETollUpdateBalanceResultView @JvmOverloads constructor(@NotNull context: C
 
     fun showLoading() {
         textLabelProgressTitle.visibility = View.VISIBLE
-        textLabelProgressTitle.setTextColor(resources.getColor(R.color.emoney_black))
+        textLabelProgressTitle.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700))
         textLabelProgressTitle.text = resources.getString(R.string.emoney_update_card_balance_progress_label_title)
         textLabelProgressMessage.visibility = View.VISIBLE
-        textLabelProgressMessage.setTextColor(resources.getColor(R.color.emoney_grey))
+        textLabelProgressMessage.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N300))
         textLabelProgressMessage.text = resources.getString(R.string.emoney_update_card_balance_progress_label_message)
         eTollCardInfoView.visibility = View.VISIBLE
         eTollCardInfoView.showLoading()

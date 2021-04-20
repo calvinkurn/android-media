@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  android:background="@color/Neutral_N700">
+  
+  <com.otaliastudios.cameraview.CameraView
+    android:id="@+id/cameraView"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:keepScreenOn="true"
+    android:adjustViewBounds="true"
+    app:cameraGrid="off"
+    app:cameraFlash="off"
+    app:cameraPlaySounds="true"
+    app:cameraAudio="off"
+    app:cameraMode="picture"
+    app:cameraPreview="glSurface"
+    app:cameraUseDeviceOrientation="false"
+    app:layout_constraintTop_toTopOf="parent"
+    app:layout_constraintLeft_toLeftOf="parent"
+    app:layout_constraintRight_toRightOf="parent"
+    app:layout_constraintBottom_toBottomOf="parent"/>
+  
+  <ImageView
+    android:id="@+id/imgPreview"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:adjustViewBounds="true"
+    android:scaleType="centerCrop"
+    android:visibility="gone"
+    android:contentDescription="@string/image_preview"
+    app:layout_constraintTop_toTopOf="parent"
+    app:layout_constraintLeft_toLeftOf="parent"
+    app:layout_constraintRight_toRightOf="parent"
+    app:layout_constraintBottom_toBottomOf="parent"/>
+  
+  <com.tokopedia.updateinactivephone.common.cameraview.LayoutCameraView
+    android:id="@+id/layoutCameraView"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/layout_lvl0"
+    app:layoutType="idCard"
+    app:layout_constraintTop_toTopOf="parent"
+    app:layout_constraintLeft_toLeftOf="parent"
+    app:layout_constraintRight_toRightOf="parent"
+    app:layout_constraintBottom_toBottomOf="parent"/>
+  
+  <ImageButton
+    android:id="@+id/btnBack"
+    android:layout_width="@dimen/layout_lvl7"
+    android:layout_height="@dimen/layout_lvl7"
+    android:background="@android:color/transparent"
+    android:contentDescription="@string/button_back"
+    app:layout_constraintLeft_toLeftOf="parent"
+    app:layout_constraintTop_toTopOf="parent"
+    app:srcCompat="@drawable/ic_arrow_back_inactive_phone" />
+  
+  <com.tokopedia.unifyprinciples.Typography
+    android:id="@+id/txtTitle"
+    android:layout_width="@dimen/layout_lvl0"
+    android:layout_height="wrap_content"
+    android:textColor="@color/Neutral_N0"
+    app:typographyType="heading_3"
+    app:layout_constraintBottom_toBottomOf="@+id/btnBack"
+    app:layout_constraintLeft_toRightOf="@+id/btnBack"
+    app:layout_constraintTop_toTopOf="@+id/btnBack"
+    app:layout_constraintRight_toRightOf="parent" />
+  
+  <FrameLayout
+    android:id="@+id/layoutDescription"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/layout_lvl7"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintLeft_toLeftOf="parent"
+    app:layout_constraintRight_toRightOf="parent" >
+    
+    <com.tokopedia.unifyprinciples.Typography
+      android:id="@+id/txtDescription"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginBottom="@dimen/layout_lvl4"
+      android:paddingLeft="@dimen/spacing_lvl4"
+      android:paddingRight="@dimen/spacing_lvl4"
+      android:textAlignment="center"
+      android:textColor="@color/Neutral_N0"
+      android:visibility="gone"
+      app:typographyType="body_1"
+      app:typographyWeight="bold"/>
+  
+<!--    DELETE SOON -->
+    <com.tokopedia.unifyprinciples.Typography
+      android:id="@+id/txtDescriptionSavingBook"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginBottom="@dimen/layout_lvl4"
+      android:layout_marginLeft="@dimen/layout_lvl2"
+      android:layout_marginRight="@dimen/layout_lvl2"
+      android:padding="@dimen/layout_lvl1"
+      android:paddingLeft="@dimen/spacing_lvl4"
+      android:paddingRight="@dimen/spacing_lvl4"
+      android:textAlignment="center"
+      android:textColor="@color/dark_N100"
+      android:text="@string/text_camera_description_saving_book"
+      android:background="@color/Neutral_N0"
+      android:visibility="gone"
+      app:typographyType="body_1"
+      app:typographyWeight="bold" />
+<!--    END -->
+  
+  </FrameLayout>
+  
+  <ImageView
+    android:id="@+id/btnFlipCamera"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="@dimen/layout_lvl6"
+    android:padding="@dimen/spacing_lvl3"
+    android:visibility="visible"
+    android:contentDescription="@string/button_flip_camera"
+    app:srcCompat="@drawable/ic_flip_camera_inactive_phone"
+    app:layout_constraintBottom_toBottomOf="@+id/btnShutter"
+    app:layout_constraintLeft_toRightOf="@+id/btnShutter"
+    app:layout_constraintRight_toRightOf="parent"
+    app:layout_constraintTop_toTopOf="@+id/btnShutter" />
+  
+  <FrameLayout
+    android:id="@+id/btnShutter"
+    android:layout_width="@dimen/layout_lvl6"
+    android:layout_height="@dimen/layout_lvl6"
+    android:layout_marginBottom="@dimen/spacing_lvl4"
+    android:clickable="true"
+    android:focusable="true"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintLeft_toLeftOf="parent"
+    app:layout_constraintRight_toRightOf="parent">
+    
+    <ImageView
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:contentDescription="@string/image_shutter_1"
+      android:src="@drawable/ic_shutter_background_inactive_phone" />
+    
+    <ImageView
+      android:layout_width="@dimen/layout_lvl5"
+      android:layout_height="@dimen/layout_lvl5"
+      android:layout_gravity="center"
+      android:contentDescription="@string/image_shutter_2"
+      android:src="@drawable/ic_shutter_inactive_phone" />
+  
+  </FrameLayout>
+  
+  <LinearLayout
+    android:id="@+id/layoutButtonPreview"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/layout_lvl6"
+    android:layout_margin="@dimen/spacing_lvl4"
+    android:orientation="horizontal"
+    android:visibility="visible"
+    android:weightSum="2"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent">
+  
+    <com.tokopedia.unifyprinciples.Typography
+      android:id="@+id/btnReCapture"
+      android:layout_width="@dimen/layout_lvl0"
+      android:layout_height="match_parent"
+      android:layout_marginEnd="@dimen/spacing_lvl2"
+      android:layout_weight="1"
+      android:background="@drawable/white_button_ghost_inactive_phone"
+      android:gravity="center"
+      android:text="@string/camera_recapture_text"
+      android:textColor="@color/Neutral_N0"
+      android:textSize="@dimen/fontSize_lvl3"
+      app:typographyType="heading_4" />
+  
+    <com.tokopedia.unifyprinciples.Typography
+      android:id="@+id/btnNext"
+      android:layout_width="@dimen/layout_lvl0"
+      android:layout_height="match_parent"
+      android:layout_marginEnd="@dimen/spacing_lvl2"
+      android:layout_weight="1"
+      android:background="@drawable/white_button_fill_inactive_phone"
+      android:gravity="center"
+      android:text="@string/camera_next_button"
+      android:textColor="@color/Green_G500"
+      android:textSize="@dimen/fontSize_lvl3"
+      app:typographyType="heading_4" />
+    
+  </LinearLayout>
+  
+</androidx.constraintlayout.widget.ConstraintLayout>

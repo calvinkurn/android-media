@@ -1,5 +1,6 @@
 package com.tokopedia.review.feature.reviewreply.domain
 
+import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlRequest
@@ -14,7 +15,8 @@ class GetReviewTemplateListUseCase @Inject constructor(
 
     companion object {
         private const val SHOP_ID = "shopId"
-        private val gqlQuery = """
+        const val GET_REVIEW_RESPONSE_CLASS_NAME = "ReviewResponseQuery"
+        const val GET_REVIEW_RESPONSE = """
             query get_review_response_template_list(${'$'}shopId: Int!) {
                 reviewResponseTemplateList(shopId: ${'$'}shopId) {
                   autoReply {
@@ -30,7 +32,7 @@ class GetReviewTemplateListUseCase @Inject constructor(
                   }
                 }
             }
-        """.trimIndent()
+        """
 
         @JvmStatic
         fun createParams(shopId: Int): Map<String, Any> = mapOf(SHOP_ID to shopId)
@@ -38,8 +40,9 @@ class GetReviewTemplateListUseCase @Inject constructor(
 
     var params = mapOf<String, Any>()
 
+    @GqlQuery(GET_REVIEW_RESPONSE_CLASS_NAME, GET_REVIEW_RESPONSE)
     override suspend fun executeOnBackground(): ReviewReplyTemplateListResponse.ReviewResponseTemplateList {
-        val gqlRequest = GraphqlRequest(gqlQuery, ReviewReplyTemplateListResponse::class.java, params)
+        val gqlRequest = GraphqlRequest(ReviewResponseQuery.GQL_QUERY, ReviewReplyTemplateListResponse::class.java, params)
         val gqlResponse = graphQlRepository.getReseponse(listOf(gqlRequest))
         val error = gqlResponse.getError(GraphqlError::class.java)
         if (error.isNullOrEmpty()) {

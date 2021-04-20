@@ -1,18 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@android:color/white"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <com.tokopedia.design.label.LabelView
+    <com.tokopedia.shop.common.view.ShopPageLabelView
         android:id="@+id/label_view"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_64"
-        app:lv_title_text_size="@dimen/sp_14"
-        app:lv_content_text_size="@dimen/sp_14"
-        app:lv_content_color="@color/tkpd_main_green"
-        app:lv_content="@string/read"/>
+        app:shop_lv_title_text_size="@dimen/sp_14"
+        app:shop_lv_title="asdadasd"
+        app:shop_lv_title_color="@color/Unify_N600_96"
+        app:shop_lv_content_text_size="@dimen/sp_14"
+        app:shop_lv_content_color="@color/Unify_G400"
+        app:shop_lv_content="@string/read"/>
 
 </LinearLayout>

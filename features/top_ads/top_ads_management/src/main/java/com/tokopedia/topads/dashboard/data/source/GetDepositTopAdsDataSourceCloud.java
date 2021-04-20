@@ -1,7 +1,7 @@
 package com.tokopedia.topads.dashboard.data.source;
 
-import com.tokopedia.product.manage.item.common.data.mapper.SimpleDataResponseMapper;
-import com.tokopedia.seller.common.topads.deposit.data.model.DataDeposit;
+import com.tokopedia.topads.dashboard.data.model.DataDeposit;
+import com.tokopedia.topads.dashboard.data.mapper.SimpleDataResponseMapper;
 import com.tokopedia.topads.dashboard.data.source.cloud.apiservice.api.TopAdsOldManagementApi;
 
 import java.util.HashMap;

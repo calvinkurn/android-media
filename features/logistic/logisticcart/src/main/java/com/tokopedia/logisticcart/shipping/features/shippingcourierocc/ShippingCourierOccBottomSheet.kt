@@ -3,11 +3,13 @@ package com.tokopedia.logisticcart.shipping.features.shippingcourierocc
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ServiceData
 import com.tokopedia.logisticcart.R
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierAdapterListener
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.ShippingDurationAdapterListener
-import com.tokopedia.logisticcart.shipping.model.*
-import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ServiceData
+import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
+import com.tokopedia.logisticcart.shipping.model.RatesViewModelType
+import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlinx.android.synthetic.main.bottomsheet_shipping_occ.view.*
 
@@ -15,14 +17,17 @@ class ShippingCourierOccBottomSheet : ShippingCourierAdapterListener, ShippingDu
 
     private lateinit var listener: ShippingCourierOccBottomSheetListener
     private lateinit var bottomSheetUnify: BottomSheetUnify
+    private var isNewOccFlow = false
 
-    fun showBottomSheet(fragment: Fragment, list: List<RatesViewModelType>, listener: ShippingCourierOccBottomSheetListener) {
+    fun showBottomSheet(fragment: Fragment, isNewOccFlow: Boolean, list: List<RatesViewModelType>, listener: ShippingCourierOccBottomSheetListener) {
+        this.isNewOccFlow = isNewOccFlow
         fragment.context?.let { context ->
             fragment.fragmentManager?.let { fm ->
                 this.listener = listener
                 bottomSheetUnify = BottomSheetUnify().apply {
                     isDragable = true
                     isHideable = true
+                    clearContentPadding = true
                     setTitle(context.getString(R.string.title_shipment_courier_bottomsheet_occ))
                     val child = View.inflate(context, R.layout.bottomsheet_shipping_occ, null)
                     setupChild(child, list)
@@ -40,7 +45,7 @@ class ShippingCourierOccBottomSheet : ShippingCourierAdapterListener, ShippingDu
         val rvShipping = child.rv_shipping
 
         rvShipping.layoutManager = LinearLayoutManager(child.context, LinearLayoutManager.VERTICAL, false)
-        rvShipping.adapter = ShippingCourierOccAdapter(list, this, this)
+        rvShipping.adapter = ShippingCourierOccAdapter(list, isNewOccFlow, this, this)
     }
 
     override fun onCourierChoosen(shippingCourierViewModel: ShippingCourierUiModel, cartPosition: Int, isNeedPinpoint: Boolean) {

@@ -10,9 +10,9 @@ import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
+import androidx.core.graphics.ColorUtils
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.gms.common.api.ResolvableApiException
@@ -34,14 +34,14 @@ import com.tokopedia.dropoff.ui.autocomplete.AutoCompleteActivity
 import com.tokopedia.dropoff.ui.dropoff_picker.model.DropoffNearbyModel
 import com.tokopedia.dropoff.util.SimpleVerticalDivider
 import com.tokopedia.dropoff.util.getDescription
-import com.tokopedia.logisticdata.data.constant.LogisticConstant
-import com.tokopedia.logisticdata.util.bitmapDescriptorFromVector
-import com.tokopedia.logisticdata.util.getLatLng
-import com.tokopedia.logisticdata.util.rxPinPoint
-import com.tokopedia.permissionchecker.PermissionCheckerHelper
+import com.tokopedia.logisticCommon.data.constant.LogisticConstant
+import com.tokopedia.logisticCommon.util.bitmapDescriptorFromVector
+import com.tokopedia.logisticCommon.util.getLatLng
+import com.tokopedia.logisticCommon.util.rxPinPoint
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.utils.permission.PermissionCheckerHelper
 import rx.Subscriber
 import javax.inject.Inject
 
@@ -66,6 +66,10 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
     private lateinit var mNoPermissionsView: View
     private lateinit var mStoreDetail: LocationDetailBottomSheet
 
+    private val storeBitmap: BitmapDescriptor? by lazy {
+        bitmapDescriptorFromVector(this, R.drawable.ic_map_store_green)
+    }
+
     @Inject
     lateinit var dropoffMapper: GetStoreMapper
 
@@ -73,9 +77,10 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
     lateinit var tracker: DropOffAnalytics
 
     @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
-    private val viewModelProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
-    private val viewModel by lazy { viewModelProvider.get(DropoffPickerViewModel::class.java) }
+    lateinit var factory: ViewModelProvider.Factory
+    private val viewModel by lazy {
+        ViewModelProvider(this, factory).get(DropoffPickerViewModel::class.java)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -301,10 +306,11 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
 
     private fun drawCircle(radius: Int) {
         if (radius > 0) {
-            val circleColor = ContextCompat.getColor(this, R.color.polygon_map)
+            val circleColor = ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_G600)
+            val alphaCircleColor = ColorUtils.setAlphaComponent(circleColor, 40)
             mMap?.addCircle(CircleOptions().center(mLastLocation)
                     .radius(radius * 1000.0)
-                    .fillColor(circleColor)
+                    .fillColor(alphaCircleColor)
                     .strokeWidth(0.0f))
         }
     }
@@ -370,7 +376,7 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
         for (datum in data) {
             val marker = mMap?.addMarker(MarkerOptions()
                     .position(getLatLng(datum.latitude, datum.longitude))
-                    .icon(bitmapDescriptorFromVector(this, R.drawable.ic_map_store_green)))
+                    .icon(storeBitmap))
             marker?.let {
                 it.tag = datum
                 mMarkerList.add(it)

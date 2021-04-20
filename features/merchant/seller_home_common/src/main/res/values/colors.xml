@@ -1,11 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="shc_green_light">#66E76B</color>
     <color name="shc_description_desc">#ae31353b</color>
     <color name="shc_max_progress">#5131353b</color>
     <color name="shc_description">#ae31353b</color>
 
-    <color name="shc_color_fbe7ff">#fbe7ff</color>
-    <color name="shc_color_00ebffef">#00ebffef</color>
-    <color name="shc_color_ebffef">#ebffef</color>
+    <color name="shc_icon_color">#525A67</color>
 </resources>

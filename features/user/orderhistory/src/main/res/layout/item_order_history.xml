@@ -47,13 +47,13 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_product_name"
-            android:layout_width="0dp"
+            android:layout_width="@dimen/layout_lvl0"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_orderhistory_12"
             android:layout_marginLeft="@dimen/dp_orderhistory_12"
             android:ellipsize="end"
             android:maxLines="2"
-            android:textColor="@color/light_N700_96"
+            android:textColor="@color/Unify_N700_96"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/iv_thumbnail"
             app:layout_constraintTop_toTopOf="parent"
@@ -90,7 +90,7 @@
             android:layout_marginStart="@dimen/spacing_lvl2"
             android:layout_marginLeft="@dimen/spacing_lvl2"
             android:maxLines="1"
-            android:textColor="@color/light_N700_44"
+            android:textColor="@color/Unify_N700_44"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@+id/tv_campaign_discount"
             app:layout_constraintStart_toEndOf="@+id/tv_campaign_discount"
@@ -107,7 +107,7 @@
             android:layout_marginLeft="@dimen/dp_orderhistory_12"
             android:layout_marginTop="@dimen/spacing_lvl2"
             android:maxLines="1"
-            android:textColor="@color/light_N700_96"
+            android:textColor="@color/Unify_N700_96"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/iv_thumbnail"
             app:layout_constraintTop_toBottomOf="@+id/tv_campaign_discount"
@@ -138,7 +138,7 @@
 
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/tv_buy"
-            android:layout_width="0dp"
+            android:layout_width="@dimen/layout_lvl0"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_lvl3"
             android:gravity="center"
@@ -154,7 +154,7 @@
 
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/tv_wishlist"
-            android:layout_width="0dp"
+            android:layout_width="@dimen/layout_lvl0"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_lvl3"
             android:gravity="center"

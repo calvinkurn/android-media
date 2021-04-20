@@ -5,7 +5,6 @@ query shipment_address_form($params: ShipmentAddressFormParams) {
     data {
       errors
       error_code
-      is_multiple
       kero_token
       kero_discom_token
       kero_unix_time
@@ -18,6 +17,7 @@ query shipment_address_form($params: ShipmentAddressFormParams) {
       donation_checkbox_status
       open_prerequisite_site
       eligible_new_shipping_experience
+      pop_up_message
       group_address {
         errors
         user_address {
@@ -40,6 +40,8 @@ query shipment_address_form($params: ShipmentAddressFormParams) {
           longitude
           corner_id
           is_corner
+          state
+          state_detail
         }
         group_shop {
           errors
@@ -47,8 +49,28 @@ query shipment_address_form($params: ShipmentAddressFormParams) {
           sp_id
           is_insurance
           is_fulfillment_service
+          toko_cabang {
+            message
+            badge_url
+          }
           cart_string
           has_promo_list
+          shipment_information {
+            shop_location
+            estimation
+            free_shipping {
+              eligible
+              badge_url
+            }
+            free_shipping_extra {
+              eligible
+              badge_url
+            }
+            preorder {
+              is_preorder
+              duration
+            }
+          }
           save_state_flag
           promo_codes
           vehicle_leasing {
@@ -86,6 +108,7 @@ query shipment_address_form($params: ShipmentAddressFormParams) {
               is_official
               os_logo_url
             }
+            shop_alert_message
           }
           shop_shipments {
             ship_id
@@ -179,8 +202,14 @@ query shipment_address_form($params: ShipmentAddressFormParams) {
               old_device_price
               old_device_price_fmt
               drop_off_enable
+              device_model
+              diagnostic_id
             }
             free_shipping {
+              eligible
+              badge_url
+            }
+            free_shipping_extra {
               eligible
               badge_url
             }
@@ -188,6 +217,13 @@ query shipment_address_form($params: ShipmentAddressFormParams) {
               show_ticker
               message
             }
+            variant_description_detail {
+              variant_name
+              variant_description
+            }
+            product_alert_message
+            product_information
+            campaign_id
           }
           warehouse {
             warehouse_id
@@ -212,6 +248,7 @@ query shipment_address_form($params: ShipmentAddressFormParams) {
       egold_attributes {
         eligible
         is_tiering
+        is_opt_in
         range {
           min
           max
@@ -251,6 +288,7 @@ query shipment_address_form($params: ShipmentAddressFormParams) {
       }
       addresses {
         active
+        disable_tabs
         data {
           key
           value {
@@ -362,6 +400,7 @@ query shipment_address_form($params: ShipmentAddressFormParams) {
                 type
                 amount_str
                 amount
+                currency_details_str
               }
               message_info {
                 message
@@ -374,6 +413,13 @@ query shipment_address_form($params: ShipmentAddressFormParams) {
                 image_url
                 detail
                 message
+              }
+              promo_sp_ids {
+                unique_id
+                mvc_shipping_benefits {
+                  benefit_amount
+                  sp_id
+                }
               }
             }
             benefit_summary_info {

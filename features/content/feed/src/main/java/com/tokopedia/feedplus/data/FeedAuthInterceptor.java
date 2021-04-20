@@ -5,8 +5,10 @@ import android.os.Build;
 
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
-import com.tokopedia.abstraction.common.network.interceptor.TkpdAuthInterceptor;
 import com.tokopedia.abstraction.common.utils.network.AuthUtil;
+import com.tokopedia.network.NetworkRouter;
+import com.tokopedia.network.interceptor.TkpdAuthInterceptor;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.Map;
 
@@ -24,9 +26,10 @@ public class FeedAuthInterceptor extends TkpdAuthInterceptor {
     private static final String HEADER_OS_VERSION = "os_version";
 
     @Inject
-    public FeedAuthInterceptor(@ApplicationContext Context context,
-                              AbstractionRouter abstractionRouter) {
-        super(context, abstractionRouter);
+    public FeedAuthInterceptor(@ApplicationContext Context context
+                    , UserSessionInterface userSession,
+                               NetworkRouter abstractionRouter) {
+        super(context, abstractionRouter, userSession);
     }
 
 

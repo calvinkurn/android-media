@@ -49,7 +49,7 @@ class PromoTicketView : View {
 
         if (attrs != null) {
             val typedArray = context.obtainStyledAttributes(attrs, R.styleable.PromoTicketView)
-            mBackgroundColor = typedArray.getColor(R.styleable.PromoTicketView_backgroundcolor, resources.getColor(android.R.color.white))
+            mBackgroundColor = typedArray.getColor(R.styleable.PromoTicketView_backgroundcolor, resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N0))
             mScallopRadius = typedArray.getDimensionPixelSize(R.styleable.PromoTicketView_scallopRadius, convertDpToPx(8).toInt())
             mShowBorder = typedArray.getBoolean(R.styleable.PromoTicketView_showborder, true)
             mBorderWidth = typedArray.getDimensionPixelSize(R.styleable.PromoTicketView_borderwidth, convertDpToPx(2).toInt())
@@ -74,16 +74,16 @@ class PromoTicketView : View {
     }
 
     private fun setBorderPaint() {
-        mDividerPaint.color = resources.getColor(R.color.promo_ticket_colorshadow)
-        mDividerPaint.strokeWidth = resources.getDimension(R.dimen.dp_2)
+        mDividerPaint.color = resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N100)
+        mDividerPaint.strokeWidth = resources.getDimension(com.tokopedia.abstraction.R.dimen.dp_2)
         mDividerPaint.pathEffect = DashPathEffect(floatArrayOf(10f, 5f), 1.0.toFloat())
     }
 
     private fun setBackgroundPaint() {
         mPaint.style = Paint.Style.FILL_AND_STROKE
-        mPaint.color = Color.WHITE
+        mPaint.color = androidx.core.content.ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0)
         mPaint.isAntiAlias = true
-        mPaint.setShadowLayer(mShadowblur.toFloat() / 2F, 0F, 0F, resources.getColor(R.color.promo_ticket_colorshadow))
+        mPaint.setShadowLayer(mShadowblur.toFloat() / 2F, 0F, 0F, resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N100))
         setLayerType(LAYER_TYPE_SOFTWARE, mPaint)
     }
 

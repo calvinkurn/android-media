@@ -2,27 +2,25 @@ package com.tokopedia.gallery
 
 import android.content.Context
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-
+import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.gallery.adapter.GalleryAdapter
 import com.tokopedia.gallery.adapter.TypeFactory
 import com.tokopedia.gallery.customview.BottomSheetImageReviewSlider
 import com.tokopedia.gallery.domain.GetImageReviewUseCase
+import com.tokopedia.gallery.presenter.ReviewGalleryPresenterContract
 import com.tokopedia.gallery.presenter.ReviewGalleryPresenter
-import com.tokopedia.gallery.presenter.ReviewGalleryPresenterImpl
 import com.tokopedia.gallery.tracking.ImageReviewGalleryTracking
 import com.tokopedia.gallery.viewmodel.ImageReviewItem
 import com.tokopedia.graphql.domain.GraphqlUseCase
-
-import java.util.ArrayList
+import java.util.*
 
 class ImageReviewGalleryFragment : BaseListFragment<ImageReviewItem, TypeFactory>(), BottomSheetImageReviewSlider.Callback, GalleryView {
 
-    private var presenter: ReviewGalleryPresenter? = null
+    private var presenter: ReviewGalleryPresenterContract? = null
     private var activity: ImageReviewGalleryActivity? = null
 
     override val isAllowLoadMore: Boolean
@@ -62,7 +60,7 @@ class ImageReviewGalleryFragment : BaseListFragment<ImageReviewItem, TypeFactory
         }
 
         activity!!.bottomSheetImageReviewSlider!!.onLoadingData()
-        presenter!!.loadData(activity!!.productId, page)
+        presenter!!.loadData(activity!!.productId.toLongOrNull() ?: 0L, page)
     }
 
     private fun convertToImageReviewItemList(imageUrlList: ArrayList<String>): List<ImageReviewItem> {
@@ -85,7 +83,7 @@ class ImageReviewGalleryFragment : BaseListFragment<ImageReviewItem, TypeFactory
     }
 
     override fun initInjector() {
-        presenter = ReviewGalleryPresenterImpl(
+        presenter = ReviewGalleryPresenter(
                 GetImageReviewUseCase(context, GraphqlUseCase()),
                 this)
     }
@@ -97,7 +95,7 @@ class ImageReviewGalleryFragment : BaseListFragment<ImageReviewItem, TypeFactory
     override fun onGalleryItemClicked(position: Int) {
         activity!!.bottomSheetImageReviewSlider!!.displayImage(position)
         ImageReviewGalleryTracking.eventClickReviewGalleryItem(getActivity()!!,
-                Integer.toString(activity!!.productId))
+                activity?.productId ?: "")
     }
 
     override fun handleItemResult(imageReviewItemList: List<ImageReviewItem>, isHasNextPage: Boolean) {
@@ -121,6 +119,14 @@ class ImageReviewGalleryFragment : BaseListFragment<ImageReviewItem, TypeFactory
     override fun loadInitialData() {
         activity!!.bottomSheetImageReviewSlider!!.resetState()
         super.loadInitialData()
+    }
+
+    override fun getRecyclerViewResourceId(): Int {
+        return R.id.image_review_gallery_recycler_view
+    }
+
+    override fun getSwipeRefreshLayoutResourceId(): Int {
+        return R.id.image_review_gallery_swipe_refresh_layout
     }
 
     companion object {

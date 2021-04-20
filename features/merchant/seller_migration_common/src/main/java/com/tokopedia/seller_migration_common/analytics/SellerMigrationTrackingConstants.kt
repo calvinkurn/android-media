@@ -14,10 +14,6 @@ object SellerMigrationTrackingConstants {
     const val EVENT_CLICK_SELLER_MIGRATION = "clickSellerMigration"
     const val EVENT_CATEGORY_SELLER_MIGRATION = "seller app migration"
     const val EVENT_CATEGORY_MIGRATION_PAGE = "migration page"
-    const val EVENT_CLICK_ACCOUNT_TICKER = "click in here - store tab"
-    const val EVENT_CLICK_CHAT_TICKER = "$EVENT_CLICK_LEARN_MORE - chat page"
-    const val EVENT_CLICK_PRODUCT_TICKER = "$EVENT_CLICK_LEARN_MORE - product page"
-    const val EVENT_CLICK_REVIEW_TICKER = "$EVENT_CLICK_LEARN_MORE - review page"
     const val EVENT_CLICK_LEARN_MORE_VOUCHER = "$EVENT_CLICK_LEARN_MORE - mvc sheet"
     const val EVENT_CLICK_VOUCHER_BOTTOM_SHEET = "click voucher toko cashback"
     const val EVENT_CLICK_GO_TO_SELLER_APP_ACCOUNT = "$EVENT_CLICK_GO_TO_SELLER_APP - store tab"
@@ -34,6 +30,13 @@ object SellerMigrationTrackingConstants {
     const val VALUE_CUSTOM_DIMENSION_CURRENT_SITE = "tokopediaseller"
     const val KEY_CUSTOM_DIMENSION_BUSINESS_UNIT = "businessUnit"
     const val VALUE_CUSTOM_DIMENSION_BUSINESS_UNIT_PG = "physical goods"
+
+    const val EVENT_CLICK_SHOP_ACCOUNT = "clickShopAccount"
+    const val EVENT_CONTENT_FEED_SHOP_PAGE = "content feed - shop page"
+    const val EVENT_CLICK_TOKOPEDIA_SELLER = "click tokopedia seller"
+    const val EVENT_TOKOPEDIA_MARKET_PLACE = "tokopediamarketplace"
+    const val EVENT_CLICK_SELLER_NOTIFICATION = "click seller notifications"
+    const val VALUE_SETTINGS = "settings"
 
     val USER_REDIRECTION_EVENT_NAME = mapOf(
             SellerMigrationFeatureName.FEATURE_TEMPLATE_CHAT to "clickInboxChat",

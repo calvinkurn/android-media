@@ -3,238 +3,91 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@color/white"
-    android:padding="@dimen/dp_16">
+    android:layout_height="match_parent"
+    android:background="@color/Unify_N0">
 
-    <TextView
-        android:id="@+id/text_title"
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/iv_col_1"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:lineSpacingExtra="6sp"
-        android:textColor="#f531353b"
-        android:textSize="@dimen/sp_13"
-        android:textStyle="bold"
-        android:visibility="gone"
-        app:layout_constraintHeight_default="wrap"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintDimensionRatio="h,3:4"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintWidth_default="wrap"
-        tools:text="Huge News!" />
+        app:layout_constraintVertical_bias="0.0"
+        app:unify_image_corner_radius="8" />
 
-    <TextView
-        android:id="@+id/text_see_all"
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/text_title_banner"
         android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:text="Lihat Semua"
-        android:textColor="@color/medium_green"
-        android:textSize="16sp"
-        android:visibility="gone"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_12"
+        android:layout_marginLeft="@dimen/dp_12"
+        android:layout_marginTop="@dimen/dp_8"
+        android:ellipsize="end"
+        android:maxLines="2"
+        android:textColor="@color/Unify_N0"
+        app:typographyType="heading_2"
+        app:typographyWeight="bold"
+        app:layout_constraintEnd_toEndOf="@id/iv_col_1"
+        app:layout_constraintLeft_toLeftOf="@+id/iv_col_1"
+        app:layout_constraintStart_toStartOf="@+id/iv_col_1"
+        app:layout_constraintTop_toTopOf="@+id/iv_col_1"
+        tools:text="Title in banner" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/text_sub_title_banner"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_2"
+        android:textColor="@color/Unify_N0"
+        app:typographyType="heading_5"
+        app:typographyWeight="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHeight_default="wrap"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintWidth_default="wrap" />
+        app:layout_constraintLeft_toLeftOf="@+id/text_title_banner"
+        app:layout_constraintStart_toStartOf="@+id/text_title_banner"
+        app:layout_constraintTop_toBottomOf="@+id/text_title_banner"
+        app:layout_constraintWidth_default="wrap"
+        tools:text="Subtitle in banner" />
 
-    <TextView
-        android:id="@+id/text_sub_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_4"
-        android:lineSpacingExtra="6sp"
-        android:textColor="#8f000000"
-        android:textSize="12sp"
-        android:visibility="gone"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/text_title"
-        tools:text="Cari tahu sekarang juga" />
-
-    <LinearLayout
-        android:id="@+id/ll_inner"
-        android:layout_width="match_parent"
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/text_title_bottom_1"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_8"
-        android:orientation="horizontal"
-        app:layout_constraintTop_toBottomOf="@+id/text_sub_title">
+        android:ellipsize="end"
+        android:singleLine="true"
+        android:textColor="@color/Unify_N700_96"
+        app:typographyType="heading_5"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="@id/iv_col_1"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/iv_col_1"
+        tools:text="Subtitle in banner Subtitle in banner Subtit  ubtitle in banner Subtitle i"
+        tools:visibility="visible" />
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1">
-
-            <com.tokopedia.unifycomponents.ImageUnify
-                android:id="@+id/iv_col_1"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                app:unify_image_corner_radius="8"
-                android:background="@drawable/bg_tp_section_border"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintDimensionRatio="h,1:1"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.0" />
-
-            <TextView
-                android:id="@+id/text_title_banner"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_marginStart="@dimen/dp_12"
-                android:layout_marginLeft="@dimen/dp_12"
-                android:layout_marginTop="@dimen/dp_8"
-                android:textColor="@color/white"
-                android:textSize="@dimen/sp_20"
-                android:textStyle="bold"
-                app:layout_constraintHeight_default="wrap"
-                app:layout_constraintLeft_toLeftOf="@+id/iv_col_1"
-                app:layout_constraintStart_toStartOf="@+id/iv_col_1"
-                app:layout_constraintTop_toTopOf="@+id/iv_col_1"
-                app:layout_constraintWidth_default="wrap"
-                tools:text="Title in banner" />
-
-            <TextView
-                android:id="@+id/text_sub_title_banner"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_2"
-                android:textColor="@color/white"
-                android:textSize="@dimen/sp_14"
-                android:textStyle="bold"
-                app:layout_constraintHeight_default="wrap"
-                app:layout_constraintLeft_toLeftOf="@+id/text_title_banner"
-                app:layout_constraintStart_toStartOf="@+id/text_title_banner"
-                app:layout_constraintTop_toBottomOf="@+id/text_title_banner"
-                app:layout_constraintWidth_default="wrap"
-                tools:text="Subtitle in banner" />
-
-            <TextView
-                android:id="@+id/text_title_bottom_1"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_8"
-                android:ellipsize="end"
-                android:singleLine="true"
-                android:textColor="#f531353b"
-                android:textSize="@dimen/sp_14"
-                android:visibility="gone"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/iv_col_1"
-                tools:text="Subtitle in banner Subtitle in banner Subtit  ubtitle in banner Subtitle i"
-                tools:visibility="visible" />
-
-            <TextView
-                android:id="@+id/text_sub_title_bottom_1"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_2"
-                android:ellipsize="end"
-                android:lines="2"
-                android:maxLines="2"
-                android:textColor="#8f000000"
-                android:textSize="@dimen/sp_10"
-                android:visibility="gone"
-                app:layout_constraintHeight_default="wrap"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/text_title_bottom_1"
-                tools:text="Subtitle in banner Subtitle in banner Subtitle in banner Subtitle in banner   banner Subtitle in banner Subtitle in banner Subtitle in banner  banner Subtitle in banner Subtitle in banner Subtitle in banner"
-                tools:visibility="visible" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dp_12"
-            android:layout_weight="1">
-
-            <com.tokopedia.design.image.RoundedCornerImageView
-                android:id="@+id/iv_col_2"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:background="@drawable/bg_tp_section_border"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintDimensionRatio="h,1:1"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.0" />
-
-            <TextView
-                android:id="@+id/text_title_banner2"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_marginStart="@dimen/dp_12"
-                android:layout_marginLeft="@dimen/dp_12"
-                android:layout_marginTop="@dimen/dp_8"
-                android:textColor="@color/white"
-                android:textSize="@dimen/sp_20"
-                android:textStyle="bold"
-                app:layout_constraintHeight_default="wrap"
-                app:layout_constraintLeft_toLeftOf="@+id/iv_col_2"
-                app:layout_constraintStart_toStartOf="@+id/iv_col_2"
-                app:layout_constraintTop_toTopOf="@+id/iv_col_2"
-                app:layout_constraintWidth_default="wrap"
-                tools:text="Title in banner" />
-
-            <TextView
-                android:id="@+id/text_sub_title_banner2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_2"
-                android:textColor="@color/white"
-                android:textSize="@dimen/sp_14"
-                android:textStyle="bold"
-                app:layout_constraintHeight_default="wrap"
-                app:layout_constraintLeft_toLeftOf="@+id/text_title_banner2"
-                app:layout_constraintStart_toStartOf="@+id/text_title_banner2"
-                app:layout_constraintTop_toBottomOf="@+id/text_title_banner2"
-                app:layout_constraintWidth_default="wrap"
-                tools:text="Subtitle in banner" />
-
-            <TextView
-                android:id="@+id/text_title_bottom_2"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_8"
-                android:ellipsize="end"
-                android:singleLine="true"
-                android:textColor="#f531353b"
-                android:textSize="@dimen/sp_14"
-                android:visibility="gone"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/iv_col_2"
-                tools:text="Subtitle in banner Subtitle in banner Subtit  ubtitle in banner Subtitle i"
-                tools:visibility="visible" />
-
-            <TextView
-                android:id="@+id/text_sub_title_bottom_2"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_2"
-                android:ellipsize="end"
-                android:lines="2"
-                android:maxLines="2"
-                android:textColor="#8f000000"
-                android:textSize="@dimen/sp_10"
-                android:visibility="gone"
-                app:layout_constraintHeight_default="wrap"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/text_title_bottom_2"
-                tools:text="Subtitle in banner Subtitle in banner Subtitle in banner Subtitle in banner   banner Subtitle in banner Subtitle in banner Subtitle in banner  banner Subtitle in banner Subtitle in banner Subtitle in banner"
-                tools:visibility="visible" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </LinearLayout>
-
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/text_sub_title_bottom_1"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_2"
+        android:ellipsize="end"
+        android:lines="2"
+        android:maxLines="2"
+        android:textColor="@color/Unify_N700_68"
+        app:typographyType="small"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="@id/iv_col_1"
+        app:layout_constraintHeight_default="wrap"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_title_bottom_1"
+        tools:text="Subtitle in banner Subtitle in banner Subtitle in banner Subtitle in banner   banner Subtitle in banner Subtitle in banner Subtitle in banner  banner Subtitle in banner Subtitle in banner Subtitle in banner"
+        tools:visibility="visible" />
 </androidx.constraintlayout.widget.ConstraintLayout>

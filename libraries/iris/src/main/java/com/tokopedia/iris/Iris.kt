@@ -19,7 +19,7 @@ interface Iris {
      * config, ex: {"row_limit":25,"interval":1}
      * isEnabled, ex: true
      */
-    fun setService(config: String, isEnabled: Boolean, isWorkManagerEnabled: Boolean)
+    fun setService(config: String, isEnabled: Boolean)
 
     fun setService(config: Configuration)
 

@@ -2,19 +2,19 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:state_selected="true">
         <shape android:shape="rectangle">
-            <stroke android:width="@dimen/dp_2" android:color="@color/tkpd_main_green" />
+            <stroke android:width="@dimen/dp_2" android:color="@color/Unify_G400" />
             <solid android:color="@android:color/transparent" />
         </shape>
     </item>
     <item android:state_pressed="true">
         <shape android:shape="rectangle">
-            <stroke android:width="@dimen/dp_2" android:color="@color/tkpd_main_green" />
+            <stroke android:width="@dimen/dp_2" android:color="@color/Unify_G400" />
             <solid android:color="@android:color/transparent" />
         </shape>
     </item>
     <item>
         <shape android:shape="rectangle">
-            <stroke android:width="@dimen/dp_2" android:color="@color/grey_700" />
+            <stroke android:width="@dimen/dp_2" android:color="@color/Unify_N500" />
             <solid android:color="@android:color/transparent" />
         </shape>
     </item>

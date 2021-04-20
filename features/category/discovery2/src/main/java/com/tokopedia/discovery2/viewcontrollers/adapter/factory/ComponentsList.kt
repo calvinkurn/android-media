@@ -2,6 +2,7 @@ package com.tokopedia.discovery2.viewcontrollers.adapter.factory
 
 import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.R
+import com.tokopedia.play.widget.PlayWidgetViewHolder
 
 
 enum class ComponentsList(val id: Int, val componentName: String) {
@@ -17,7 +18,7 @@ enum class ComponentsList(val id: Int, val componentName: String) {
     BrandRecommendationItem(R.layout.brand_recommendation_layout_item, ComponentNames.BrandRecommendationItem.componentName),
     CarouselBanner(R.layout.carousel_banner_layout, ComponentNames.CarouselBanner.componentName),
     CarouselBannerItemView(R.layout.carousel_banner_item_layout, ComponentNames.CarouselBannerItemView.componentName),
-    SliderBanner(R.layout.slider_banner_layout, ComponentNames.SliderBanner.componentName),
+    SliderBanner(R.layout.circular_slider_banner_layout, ComponentNames.SliderBanner.componentName),
     BannerTimer(R.layout.banner_timer_layout, ComponentNames.BannerTimer.componentName),
     Tokopoints(R.layout.horizontal_recycler_view_layout, ComponentNames.Tokopoints.componentName),
     TokopointsItem(R.layout.tokopoints_item_layout, ComponentNames.TokopointsItem.componentName),
@@ -49,22 +50,36 @@ enum class ComponentsList(val id: Int, val componentName: String) {
     // CustomTopChat(R.layout.coming_soon_view, ComponentNames.CustomTopchat.componentName),
     // Product Card Revamp
     ProductCardRevamp(R.layout.product_card_revamp_layout, ComponentNames.ProductCardRevamp.componentName),
-    ProductCardRevampItem(R.layout.product_item_layout, ComponentNames.ProductCardRevampItem.componentName),
+    ProductCardRevampItem(R.layout.master_product_card_item_layout, ComponentNames.ProductCardRevampItem.componentName),
+    MasterProductCardItemList(R.layout.master_product_card_item_list_layout, ComponentNames.MasterProductCardItemList.componentName),
 
     // Product Card Revamp Carousel
     ProductCardCarousel(R.layout.carousel_product_card_recycler_view, ComponentNames.ProductCardCarousel.componentName),
-    ProductCardCarouselItem(R.layout.product_item_horizontal_layout, ComponentNames.ProductCardCarouselItem.componentName),
+    ProductCardCarouselItem(R.layout.master_product_card_item_layout, ComponentNames.ProductCardCarouselItem.componentName),
 
     // Product Card Sprint Sale
     ProductCardSprintSale(R.layout.product_card_revamp_layout, ComponentNames.ProductCardSprintSale.componentName),
-    ProductCardSprintSaleItem(R.layout.product_item_layout, ComponentNames.ProductCardSprintSaleItem.componentName),
+    ProductCardSprintSaleItem(R.layout.master_product_card_item_layout, ComponentNames.ProductCardSprintSaleItem.componentName),
 
     // Product Card Sprint Sale Carousel
     ProductCardSprintSaleCarousel(R.layout.carousel_product_card_recycler_view, ComponentNames.ProductCardSprintSaleCarousel.componentName),
-    ProductCardSprintSaleCarouselItem(R.layout.product_item_horizontal_layout, ComponentNames.ProductCardSprintSaleCarouselItem.componentName),
+    ProductCardSprintSaleCarouselItem(R.layout.master_product_card_item_layout, ComponentNames.ProductCardSprintSaleCarouselItem.componentName),
+
     ProductListEmptyState(R.layout.product_list_state, ComponentNames.ProductListEmptyState.componentName),
+    SaleEndState(R.layout.sale_end_state, ComponentNames.SaleEndState.componentName),
 
     //Quick Filter
     QuickFilter(R.layout.discovery_quick_filter_layout, ComponentNames.QuickFilter.componentName),
+
+    //Navigation Chips
+    NavigationChips(R.layout.navigation_chips_view, ComponentNames.NavigationChips.componentName),
+    NavigationCHipsItem(R.layout.navigation_chips_item, ComponentNames.NavigationChipsItem.componentName),
+
+    //Banned View
+    BannedView(R.layout.banned_view, ComponentNames.BannedView.componentName),
+
+    //Discovery Play Widget
+    DiscoPlayWidgetView(PlayWidgetViewHolder.layout, ComponentNames.DiscoPlayWidgetView.componentName),
+
 
 }

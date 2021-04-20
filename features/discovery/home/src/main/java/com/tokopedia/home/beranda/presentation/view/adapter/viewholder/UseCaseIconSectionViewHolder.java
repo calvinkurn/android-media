@@ -7,13 +7,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import androidx.annotation.LayoutRes;
-import androidx.appcompat.widget.AppCompatImageView;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.home.R;
 import com.tokopedia.home.analytics.HomePageTracking;
 import com.tokopedia.home.beranda.domain.model.DynamicHomeIcon;
@@ -21,6 +15,13 @@ import com.tokopedia.home.beranda.helper.DynamicLinkHelper;
 import com.tokopedia.home.beranda.listener.HomeCategoryListener;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.UseCaseIconSectionDataModel;
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils;
+import com.tokopedia.media.loader.JvmMediaLoader;
+import com.tokopedia.media.loader.wrapper.MediaCacheStrategy;
+
+import androidx.annotation.LayoutRes;
+import androidx.appcompat.widget.AppCompatImageView;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 /**
  * @author by errysuprayogi on 11/28/17.
@@ -78,7 +79,10 @@ public class UseCaseIconSectionViewHolder extends AbstractViewHolder<UseCaseIcon
         @Override
         public void onBindViewHolder(UseCaseIconViewHolder holder, final int position) {
             holder.title.setText(sectionViewModel.getItemList().get(position).getName());
-            ImageHandler.loadImageThumbs(holder.getContext(), holder.icon, sectionViewModel.getItemList().get(position).getImageUrl());
+            JvmMediaLoader.loadImage(holder.icon, sectionViewModel.getItemList().get(position).getImageUrl(), properties -> {
+                properties.setCacheStrategy(MediaCacheStrategy.RESOURCE);
+                return null;
+            });
             holder.container.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -90,7 +94,7 @@ public class UseCaseIconSectionViewHolder extends AbstractViewHolder<UseCaseIcon
         }
 
         private void eventClickUseCase(Context context, DynamicHomeIcon.DynamicIcon homeIconItem, int position) {
-            HomePageTracking.eventClickHomeUseCase(context, homeIconItem.getName());
+            HomePageTracking.eventClickHomeUseCase(homeIconItem.getName());
 
             HomeTrackingUtils.homeUsedCaseClick(context,
                     homeIconItem.getName(), position + 1, homeIconItem.getApplinks());

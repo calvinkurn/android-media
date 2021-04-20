@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
@@ -14,18 +16,55 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
+            <com.tokopedia.unifycomponents.ticker.Ticker
+                android:id="@+id/tickerSellerMigrationAccountSetting"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:tickerType="announcement"
+                app:tickerShapeType="loose"
+                app:closeButtonVisibility="gone"
+                android:visibility="gone"
+                tools:visibility="visible"
+                android:layout_marginTop="@dimen/spacing_lvl3"
+                android:layout_marginEnd="@dimen/spacing_lvl4"
+                android:layout_marginStart="@dimen/spacing_lvl4"
+                android:layout_marginBottom="@dimen/spacing_lvl4" />
+
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerview"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingBottom="@dimen/dp_2"
-                android:background="@android:color/white"/>
+                android:background="@color/Unify_N0"/>
 
-            <TextView style="@style/TextView.Small.BlackDisabled"
-                android:id="@+id/text_view_app_version"
-                android:padding="@dimen/dp_16"
-                android:layout_marginTop="@dimen/dp_8"
-                android:layout_marginBottom="@dimen/dp_40"/>
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/dp_16">
+
+                <TextView style="@style/TextView.Small.BlackDisabled"
+                    android:id="@+id/text_view_app_version"
+                    android:padding="@dimen/spacing_lvl4"
+                    android:layout_marginTop="@dimen/spacing_lvl3"
+                    android:layout_marginBottom="@dimen/dp_40"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"/>
+
+                <com.tokopedia.unifycomponents.UnifyButton
+                    android:id="@+id/force_update_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Update"
+                    android:layout_marginRight="@dimen/dp_16"
+                    android:layout_marginTop="@dimen/dp_8"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:unifyButtonSize="small"
+                    app:unifyButtonType="main"
+                    app:unifyButtonVariant="ghost"
+                    app:layout_constraintTop_toTopOf="@id/text_view_app_version"
+                    android:visibility="visible"/>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
         </LinearLayout>
 
     </androidx.core.widget.NestedScrollView>
@@ -42,7 +81,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:layout_marginBottom="8dp"/>
+            android:layout_marginBottom="@dimen/spacing_lvl3"/>
 
     </RelativeLayout>
 </FrameLayout>

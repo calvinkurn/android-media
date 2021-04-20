@@ -20,12 +20,11 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvSearchResultOrderTitle"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         app:typographyWeight="reguler"
         app:typographyType="body_2"
         android:layout_marginStart="@dimen/spacing_lvl3"
-        android:layout_marginLeft="@dimen/spacing_lvl3"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/ivSearchResultOrder"
         app:layout_constraintTop_toTopOf="parent"
@@ -33,12 +32,11 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvSearchResultOrderDesc"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         app:typographyWeight="reguler"
         app:typographyType="body_3"
         android:layout_marginStart="@dimen/spacing_lvl3"
-        android:layout_marginLeft="@dimen/spacing_lvl3"
         android:layout_marginTop="@dimen/spacing_lvl2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/ivSearchResultOrder"

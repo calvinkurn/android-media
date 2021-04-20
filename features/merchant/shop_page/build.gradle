@@ -4,12 +4,12 @@ apply from: "../../../compile-instrument-test.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 
 repositories {
-    maven { url 'https://hansel.io/maven' }
+    maven { url 'https://maven-hansel.tokopedia.com/maven' }
 }
 buildscript {
     repositories {
         mavenCentral()
-        maven { url 'https://hansel.io/maven' }
+        maven { url 'https://maven-hansel.tokopedia.com/maven' }
     }
     dependencies {
         classpath rootProject.ext.miscDependencies.hansel
@@ -23,8 +23,9 @@ android {
 }
 
 dependencies {
+    implementation project(rootProject.ext.features.medialoader)
     implementation project(rootProject.ext.features.resourcesCommon)
-    implementation project(rootProject.ext.features.playCommon)
+    implementation project(rootProject.ext.features.playWidget)
     implementation project(rootProject.ext.libraries.tkpddesign)
     implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.libraries.baseList)
@@ -33,12 +34,11 @@ dependencies {
     implementation project(rootProject.ext.libraries.analytics)
     implementation project(rootProject.ext.libraries.trackingOptimizer)
     implementation project(rootProject.ext.libraries.kotlinExtensions)
-    implementation project(rootProject.ext.libraries.permissionchecker)
+    implementation project(rootProject.ext.libraries.utils)
     implementation project(rootProject.ext.libraries.webview)
     implementation project(rootProject.ext.libraries.remoteConfig)
-    implementation project(rootProject.ext.libraries.imagePicker)
+    implementation project(rootProject.ext.libraries.imagePickerCommon)
     implementation project(rootProject.ext.features.shopCommon)
-    implementation project(rootProject.ext.features.shopEtalasePicker)
     implementation project(rootProject.ext.features.goldMerchantCommon)
     implementation project(rootProject.ext.features.merchantVoucher)
     implementation project(rootProject.ext.features.reputationCommon)
@@ -48,7 +48,6 @@ dependencies {
     implementation project(rootProject.ext.features.kolCommon)
     implementation project(rootProject.ext.features.topAdsSdk)
     implementation project(rootProject.ext.features.atc_common)
-    implementation project(rootProject.ext.features.reputation)
     implementation project(rootProject.ext.libraries.remoteResourceRequest)
     implementation project(rootProject.ext.libraries.track)
     implementation project(rootProject.ext.features.stickyLogin)
@@ -57,22 +56,28 @@ dependencies {
     implementation project(rootProject.ext.features.discoveryCommon)
     implementation project(rootProject.ext.features.youtubeCommon)
     implementation project(rootProject.ext.libraries.commonNetwork)
+    implementation project(rootProject.ext.libraries.logger)
 
     implementation rootProject.ext.tkpdLibDependencies.youtubePlayer
     implementation project(rootProject.ext.libraries.youtubeutil)
     implementation project(rootProject.ext.libraries.videoplayer)
 
+    implementation project(rootProject.ext.features.sellerMigrationCommon)
+
     implementation rootProject.ext.networkDependencies.glide
 
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.components
+    implementation rootProject.ext.unifyDependencies.icons
     implementation rootProject.ext.unifyDependencies.global_error
     implementation rootProject.ext.unifyDependencies.banner
     implementation rootProject.ext.unifyDependencies.carousel
     implementation rootProject.ext.unifyDependencies.global_error
     implementation rootProject.ext.unifyDependencies.sortFilter
+    implementation rootProject.ext.unifyDependencies.coach_mark
+    implementation rootProject.ext.unifyDependencies.empty_state
+    implementation rootProject.ext.unifyDependencies.dialog
 
-    implementation rootProject.ext.tkpdInternalLibDependencies.cacheapi
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation project(rootProject.ext.libraries.graphql)
@@ -99,26 +104,39 @@ dependencies {
     implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
+    implementation rootProject.ext.miscDependencies.viewPager2
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.archCoreTesting
+    testImplementation project(rootProject.ext.libraries.unitTest)
+    implementation (rootProject.ext.firebase.crashlytics) {
+        transitive = true
+    }
 
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
 
     implementation project(rootProject.ext.libraries.track)
-    implementation rootProject.ext.unifyDependencies.components
     implementation project(rootProject.ext.features.productCard)
+    implementation project(rootProject.ext.features.promoMvcWidget)
     implementation project(rootProject.ext.libraries.imagePreview)
     implementation rootProject.ext.networkDependencies.glide
+    implementation project(rootProject.ext.features.filter)
+    implementation project(rootProject.ext.features.searchbar)
+    implementation project(rootProject.ext.features.localizationchooseaddress)
+    implementation rootProject.ext.unifyDependencies.coach_mark
 
     // UI Test
     androidTestImplementation rootProject.ext.testDependencies.androidTestRunner
     androidTestImplementation rootProject.ext.testDependencies.androidRulesVersion
     androidTestImplementation rootProject.ext.testDependencies.espressoCore
+    androidTestImplementation rootProject.ext.testDependencies.junit
     androidTestImplementation rootProject.ext.testDependencies.espressoContrib
+    androidTestImplementation rootProject.ext.testDependencies.espressoIntents
     androidTestImplementation project(rootProject.ext.libraries.instrumentation_test)
     implementation rootProject.ext.tkpdInternalLibDependencies.authentication
+    implementation rootProject.ext.testDependencies.espressoIdlingResource
+    androidTestImplementation project(rootProject.ext.libraries.cassavaTest)
 }
 
 project.ext {
@@ -129,3 +147,5 @@ project.ext {
 }
 
 apply from: '../../../publish_local.gradle'
+apply from: '../../../jacoco_task.gradle'
+apply from: '../../../sonar_config.gradle'

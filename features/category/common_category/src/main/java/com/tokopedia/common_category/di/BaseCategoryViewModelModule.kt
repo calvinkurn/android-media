@@ -11,7 +11,6 @@ import dagger.multibindings.IntoMap
 
 
 @Module
-@BaseCategoryNavScope
 abstract class BaseCategoryViewModelModule {
 
     @Binds

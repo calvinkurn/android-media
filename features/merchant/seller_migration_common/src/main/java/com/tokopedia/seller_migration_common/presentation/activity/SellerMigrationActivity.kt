@@ -9,7 +9,7 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst
 import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
 import com.tokopedia.seller_migration_common.analytics.SellerMigrationTracking
@@ -22,6 +22,7 @@ import com.tokopedia.seller_migration_common.analytics.SellerMigrationTrackingCo
 import com.tokopedia.seller_migration_common.analytics.SellerMigrationTrackingConstants.USER_REDIRECTION_EVENT_NAME
 import com.tokopedia.seller_migration_common.constants.SellerMigrationConstants
 import com.tokopedia.seller_migration_common.presentation.fragment.SellerMigrationFragment
+import com.tokopedia.seller_migration_common.presentation.util.getRegisteredMigrationApplinks
 import com.tokopedia.user.session.UserSession
 
 
@@ -42,7 +43,8 @@ class SellerMigrationActivity : BaseSimpleActivity() {
     override fun getScreenName(): String = "/migration-page"
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        featureName = intent.extras?.getString(SellerMigrationFragment.KEY_PARAM_FEATURE_NAME).orEmpty()
+        featureName = intent.extras?.getString(SellerMigrationFragment.KEY_PARAM_FEATURE_NAME)
+                ?: intent.data?.getQueryParameter(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME).orEmpty()
         super.onCreate(savedInstanceState)
         processAppLink()
     }
@@ -51,28 +53,25 @@ class SellerMigrationActivity : BaseSimpleActivity() {
         val openedPage = if (isSellerAppInstalled()) {
             val uri = intent.data
             if (uri != null) {
-                val appLinks = ArrayList<String>(intent.extras?.getStringArrayList(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA).orEmpty())
+                val appLinks = ArrayList<String>(intent.extras?.getStringArrayList(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA)
+                        ?: getRegisteredMigrationApplinks(featureName))
+
                 if (appLinks.isNotEmpty()) {
-                    val firstAppLink = appLinks.firstOrNull().orEmpty()
-                    val parameterizedFirstAppLink = Uri.parse(firstAppLink)
-                            .buildUpon()
-                            .appendQueryParameter(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME, featureName)
-                            .build()
-                            .toString()
-                    val sellerAppSeamlessLoginAppLink = Uri.parse(ApplinkConstInternalGlobal.SEAMLESS_LOGIN).buildUpon()
-                            .appendQueryParameter(ApplinkConstInternalGlobal.KEY_REDIRECT_SEAMLESS_APPLINK, parameterizedFirstAppLink)
+                    val parameterizedAppLinks = appLinks.map {
+                        Uri.parse(it).buildUpon()
+                                .appendQueryParameter(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME, featureName)
+                                .toString()
+                    }
+                    val sellerHomeAppLink = Uri.parse(ApplinkConstInternalSellerapp.SELLER_HOME).buildUpon()
                             .appendQueryParameter(RouteManager.KEY_REDIRECT_TO_SELLER_APP, "true")
                             .appendQueryParameter(SellerMigrationApplinkConst.QUERY_PARAM_IS_AUTO_LOGIN, "true")
-                            .build()
                             .toString()
-                    appLinks.removeAt(0)
-                    RouteManager.getIntent(this, sellerAppSeamlessLoginAppLink)?.apply {
-                        putStringArrayListExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA, appLinks)
-                        putExtra(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME, featureName)
+                    val sellerHomeIntent = RouteManager.getIntent(this, sellerHomeAppLink).apply {
+                        putStringArrayListExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA, ArrayList(parameterizedAppLinks))
                         flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
-                        startActivity(this)
-                        finish()
                     }
+                    startActivity(sellerHomeIntent)
+                    finish()
                 }
             }
             EVENT_LABEL_TO_SELLER_APP

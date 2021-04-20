@@ -10,6 +10,20 @@
     android:focusableInTouchMode="true"
     android:orientation="vertical">
 
+    <com.tokopedia.searchbar.navigation_component.NavToolbar
+        android:id="@+id/new_navigation_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="top"
+        android:minHeight="?actionBarSize"
+        app:contentInsetLeft="0dp"
+        app:contentInsetStart="0dp"
+        app:toolbarContentType="typeSearchbar"
+        app:toolbarBackButton="back"
+        app:toolbarInitialTheme="light"
+        android:visibility="gone"
+        tools:visibility="visible" />
+
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
@@ -22,7 +36,9 @@
         app:contentInsetStartWithNavigation="0dp"
         app:elevation="0dp"
         app:subtitleTextAppearance="?subtitleTextAppearance"
-        app:titleTextAppearance="?titleTextAppearance">
+        app:titleTextAppearance="?titleTextAppearance"
+        android:visibility="gone"
+        tools:visibility="visible">
 
         <FrameLayout
             android:layout_width="match_parent"
@@ -33,10 +49,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_gravity="center_vertical"
-                android:text="@string/text_your_shop"
-                android:textColor="@color/clr_f531353b"
                 android:layout_marginEnd="@dimen/dp_12"
                 android:layout_marginRight="@dimen/dp_12"
+                android:text="@string/text_your_shop"
+                android:textColor="@color/Unify_N700_96"
                 app:typographyType="heading_4" />
 
             <androidx.appcompat.widget.LinearLayoutCompat
@@ -75,88 +91,18 @@
 
     </androidx.appcompat.widget.Toolbar>
 
-    <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
-        android:id="@+id/swipeToRefresh"
+    <androidx.appcompat.widget.AppCompatImageView
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintHorizontal_bias="0"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_1"
+        android:src="@color/Unify_N75" />
+
+    <ViewStub
+        android:id="@+id/view_stub_content_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fitsSystemWindows="true">
-
-        <androidx.coordinatorlayout.widget.CoordinatorLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
-
-            <include
-                android:id="@+id/shopPageLoadingState"
-                layout="@layout/partial_shop_page_loading_state"
-                android:visibility="gone" />
-
-            <include
-                android:id="@+id/shopPageErrorState"
-                layout="@layout/partial_empty_page_error"
-                android:visibility="gone" />
-
-            <com.google.android.material.appbar.AppBarLayout
-                android:id="@+id/appBarLayout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:elevation="0dp"
-                android:background="@null">
-
-                <include
-                    layout="@layout/partial_new_shop_page_header"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="bottom"
-                    app:layout_scrollFlags="scroll"
-                    tools:visibility="gone" />
-
-                <com.google.android.material.tabs.TabLayout
-                    android:id="@+id/tabLayout"
-                    style="@style/TabBar.White"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:layout_scrollFlags="enterAlways"
-                    android:background="@drawable/bg_tab_layout_shop_page"
-                    app:tabIndicator="@drawable/tab_indicator_shop_page"
-                    app:tabMode="fixed" />
-
-            </com.google.android.material.appbar.AppBarLayout>
-
-            <com.tokopedia.abstraction.base.view.widget.TouchViewPager
-                android:id="@+id/viewPager"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:can_swipe="false"
-                app:layout_behavior="@string/appbar_scrolling_view_behavior" />
-
-
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/button_chat"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="end|bottom"
-                android:layout_marginEnd="@dimen/dp_16"
-                android:layout_marginRight="@dimen/dp_16"
-                android:layout_marginBottom="@dimen/dp_16"
-                app:backgroundTint="@color/white"
-                app:fabCustomSize="@dimen/dp_56"
-                app:layout_behavior="com.tokopedia.shop.ShopPageFABBehaviour"
-                app:maxImageSize="@dimen/dp_32"
-                app:srcCompat="@drawable/ic_chat_floating_button" />
-
-            <com.tokopedia.stickylogin.view.StickyLoginView
-                android:id="@+id/sticky_login_text"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom"
-                android:visibility="gone"
-                app:sticky_highlight_color="@color/g_500"
-                app:sticky_left_icon="@drawable/ic_toped_widget_login"
-                tools:visibility="visible" />
-
-        </androidx.coordinatorlayout.widget.CoordinatorLayout>
-    </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
-
+        android:layout="@layout/shop_page_fragment_content_layout"
+        />
 
 </androidx.appcompat.widget.LinearLayoutCompat>

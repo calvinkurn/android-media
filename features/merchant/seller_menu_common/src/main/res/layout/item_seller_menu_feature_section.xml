@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/spacing_lvl4"
+    android:orientation="vertical">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/textTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/spacing_lvl4"
+        android:layout_marginRight="@dimen/spacing_lvl4"
+        android:layout_marginBottom="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:text="@string/seller_menu_business_section"
+        android:textColor="@color/Unify_N700_96"
+        app:typographyType="body_1"
+        app:typographyWeight="bold"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.unifycomponents.Label
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl3"
+        android:text="@string/seller_menu_seller_app_only"
+        app:labelType="general_light_green"
+        app:layout_constraintBottom_toBottomOf="@id/textTitle"
+        app:layout_constraintLeft_toRightOf="@id/textTitle"
+        app:layout_constraintTop_toTopOf="@id/textTitle" />
+
+    <com.tokopedia.seller.menu.common.view.widget.SellerMenuFeatureCard
+        android:id="@+id/cardStatistics"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl3"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        app:layout_constraintHorizontal_chainStyle="spread"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/cardPromo"
+        app:layout_constraintTop_toBottomOf="@id/textTitle"
+        app:menuDescription="@string/seller_menu_shop_statistics_description"
+        app:menuIcon="statistics"
+        app:menuTitle="@string/seller_menu_shop_statistics" />
+
+    <com.tokopedia.seller.menu.common.view.widget.SellerMenuFeatureCard
+        android:id="@+id/cardPromo"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:layout_marginEnd="@dimen/spacing_lvl3"
+        app:layout_constraintHorizontal_chainStyle="spread"
+        app:layout_constraintLeft_toRightOf="@id/cardStatistics"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/textTitle"
+        app:menuDescription="@string/seller_menu_ads_and_promo_description"
+        app:menuIcon="promo"
+        app:menuTitle="@string/seller_menu_ads_and_promo" />
+
+    <com.tokopedia.seller.menu.common.view.widget.SellerMenuFeatureCard
+        android:id="@+id/cardFeedAndPlay"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl3"
+        app:layout_constraintHorizontal_chainStyle="spread"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/cardFintech"
+        app:layout_constraintTop_toBottomOf="@id/cardStatistics"
+        app:menuDescription="@string/seller_menu_feed_and_play_description"
+        app:menuIcon="play"
+        app:menuTitle="@string/seller_menu_feed_and_play" />
+
+    <com.tokopedia.seller.menu.common.view.widget.SellerMenuFeatureCard
+        android:id="@+id/cardFintech"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/spacing_lvl3"
+        app:layout_constraintHorizontal_chainStyle="spread"
+        app:layout_constraintLeft_toRightOf="@id/cardFeedAndPlay"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/cardPromo"
+        app:menuDescription="@string/seller_menu_financial_service_description"
+        app:menuIcon="finance"
+        app:menuTitle="@string/seller_menu_financial_service" />
+</androidx.constraintlayout.widget.ConstraintLayout>

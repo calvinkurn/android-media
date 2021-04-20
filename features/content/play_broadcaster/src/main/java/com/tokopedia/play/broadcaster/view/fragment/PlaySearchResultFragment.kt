@@ -21,10 +21,10 @@ import com.tokopedia.play.broadcaster.ui.model.result.PageResultState
 import com.tokopedia.play.broadcaster.ui.viewholder.ProductSelectableViewHolder
 import com.tokopedia.play.broadcaster.util.extension.productNotFoundState
 import com.tokopedia.play.broadcaster.util.scroll.EndlessRecyclerViewScrollListener
-import com.tokopedia.play.broadcaster.util.scroll.StopFlingScrollListener
 import com.tokopedia.play.broadcaster.view.adapter.ProductSelectableAdapter
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseEtalaseSetupFragment
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayEtalasePickerViewModel
+import com.tokopedia.play_common.util.scroll.StopFlingScrollListener
 import com.tokopedia.unifycomponents.Toaster
 import javax.inject.Inject
 

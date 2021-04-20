@@ -9,7 +9,7 @@
         android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white"
+        android:background="@color/Unify_N0"
         android:orientation="vertical">
 
         <com.tokopedia.unifyprinciples.Typography
@@ -18,7 +18,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/spacing_lvl4"
             android:layout_marginTop="@dimen/spacing_lvl5"
-            android:textColor="@color/Neutral_N700"
+            android:textColor="@color/Unify_N700"
             app:typographyType="body_1"
             app:typographyWeight="bold" />
 

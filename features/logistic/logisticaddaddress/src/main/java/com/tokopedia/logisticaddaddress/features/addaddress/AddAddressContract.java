@@ -2,9 +2,8 @@ package com.tokopedia.logisticaddaddress.features.addaddress;
 
 import android.content.Context;
 
-import com.tokopedia.logisticdata.data.entity.address.Destination;
-
-import rx.subscriptions.CompositeSubscription;
+import com.tokopedia.logisticCommon.data.entity.address.Destination;
+import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass;
 
 /**
  * Created by fajarnuha on 03/12/18.
@@ -23,7 +22,7 @@ public interface AddAddressContract {
 
         void finishActivity();
 
-        void showErrorSnackbar(String errorMessage);
+        void showErrorToaster(String errorMessage);
 
         boolean isValidAddress();
 

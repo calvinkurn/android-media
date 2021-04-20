@@ -11,16 +11,17 @@
         android:layout_height="wrap_content"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent">
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:paddingVertical="@dimen/spacing_lvl3">
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_brand_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_lvl5"
+            android:layout_marginTop="@dimen/spacing_lvl3"
             android:layout_marginStart="@dimen/spacing_lvl4"
             android:layout_marginLeft="@dimen/spacing_lvl4"
-            android:textColor="@color/Neutral_N700_96"
+            android:textColor="@color/Unify_N700_96"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -38,15 +39,15 @@
             android:layout_marginEnd="@dimen/spacing_lvl4"
             android:layout_width="0dp"
             android:layout_height="@dimen/deals_dp_1"
-            android:background="@color/deals_search_divider_color" />
+            android:background="@color/Unify_N75" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/txt_brand_see_all"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/layout_lvl2"
-            android:layout_marginRight="@dimen/layout_lvl2"
-            android:textColor="@color/Green_G500"
+            android:layout_marginEnd="@dimen/layout_lvl1"
+            android:layout_marginRight="@dimen/layout_lvl1"
+            android:textColor="@color/Unify_G500"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@+id/tv_brand_title"
             app:layout_constraintEnd_toEndOf="parent"
@@ -60,8 +61,8 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/spacing_lvl3"
             android:layout_marginLeft="@dimen/spacing_lvl3"
-            android:layout_marginEnd="@dimen/spacing_lvl4"
-            android:layout_marginRight="@dimen/spacing_lvl4"
+            android:layout_marginEnd="@dimen/spacing_lvl3"
+            android:layout_marginRight="@dimen/spacing_lvl3"
             android:layout_marginTop="@dimen/deals_dp_12"
             app:layout_constraintTop_toBottomOf="@+id/tv_brand_title"
             app:layout_constraintVertical_chainStyle="packed"
@@ -82,6 +83,6 @@
         layout="@layout/item_deals_brands_page_shimmering"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="gone" />
+        android:visibility="gone"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

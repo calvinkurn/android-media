@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/ll_event_form_bottom_sheet"
+    android:orientation="vertical">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tg_event_form_bottom_sheet"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:layout_marginBottom="@dimen/spacing_lvl4"
+        app:typographyType="body_2"
+        app:typographyWeight="reguler"
+        tools:text="Confirm" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dimen_dp_1"
+        android:background="@color/Unify_N100"
+        android:layout_marginLeft="@dimen/spacing_lvl4"
+        />
+</LinearLayout>

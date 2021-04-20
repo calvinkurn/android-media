@@ -1,45 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/ll_header"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:gravity="center_vertical"
-    android:orientation="horizontal"
-    android:paddingLeft="@dimen/dp_16"
-    android:paddingTop="@dimen/dp_8"
-    android:paddingRight="@dimen/dp_16"
-    android:paddingBottom="@dimen/dp_8">
+    android:layout_alignParentTop="true"
+    android:background="@color/Unify_N0"
+    android:paddingStart="@dimen/dp_16"
+    android:paddingEnd="0dp">
 
     <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
-        android:id="@+id/cb_select_all"
+        android:id="@+id/checkbox_global"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_4"
-        android:layout_marginLeft="@dimen/dp_4"
-        android:paddingEnd="@dimen/dp_10"
-        android:paddingRight="@dimen/dp_10"
-        tools:ignore="RtlSymmetry" />
+        android:layout_marginTop="@dimen/dp_10"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:layout_width="0dp"
+        android:id="@+id/text_select_all"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
         android:text="@string/label_select_all_product"
+        app:layout_constraintBottom_toBottomOf="@+id/checkbox_global"
+        app:layout_constraintStart_toEndOf="@+id/checkbox_global"
+        app:layout_constraintTop_toTopOf="@+id/checkbox_global"
         app:typographyType="body_3"
-        android:textColor="@color/Neutral_N700_96"
-        tools:ignore="RelativeOverlap" />
+        app:typographyWeight="reguler" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/btn_delete_all_cart"
+        android:id="@+id/text_action_delete"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingStart="@dimen/dp_16"
-        android:paddingLeft="@dimen/dp_16"
-        android:text="@string/checkout_module_label_hapus"
-        android:textColor="@color/unify_G500"
+        android:paddingStart="@dimen/unify_space_16"
+        android:paddingTop="@dimen/dp_12"
+        android:paddingEnd="@dimen/unify_space_16"
+        android:paddingBottom="@dimen/unify_space_16"
+        android:text="@string/label_menu_cart_remove"
+        android:textColor="@color/Unify_G500"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         app:typographyType="heading_5"
-        tools:ignore="RtlSymmetry" />
+        app:typographyWeight="bold" />
 
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

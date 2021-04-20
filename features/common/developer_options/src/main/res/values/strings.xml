@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">Developer Options</string>
     <string name="remote_config_title">Remote Config Editor</string>
+    <string name="ab_test_rollence_title">Ab Test Rollence Editor</string>
+
     <string name="screen_name">Developer page</string>
 
     <string name="remote_config_prefix_placeholder">(Optional) Find Remote Config by Prefix</string>
@@ -11,4 +13,10 @@
     <string name="remote_config_type_label">TYPE</string>
     <string name="remote_config_edit_placeholder">Input new value here</string>
     <string name="remote_config_edit_btn_save">Save</string>
+
+    <string name="ab_test_rollence_start_button">List AB Test Rollence Keys</string>
+    <string name="ab_test_rollence_edit_text_search_hint">Search key</string>
+    <string name="ab_test_rollence_revision_version_prefix">Revision version: %d</string>
+
+
 </resources>

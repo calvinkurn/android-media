@@ -2,23 +2,24 @@ package com.tokopedia.oneclickcheckout.tracking.order.view
 
 import android.app.Activity
 import android.app.Instrumentation.ActivityResult
+import android.content.Intent
+import androidx.test.espresso.Espresso
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.IdlingResource
+import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intending
 import androidx.test.espresso.intent.matcher.IntentMatchers.anyIntent
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
-import com.tokopedia.analyticsdebugger.validator.core.getAnalyticsWithQuery
-import com.tokopedia.analyticsdebugger.validator.core.hasAllSuccess
+import com.tokopedia.cassavatest.getAnalyticsWithQuery
+import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.oneclickcheckout.common.idling.OccIdlingResource
-import com.tokopedia.oneclickcheckout.common.interceptor.CHECKOUT_EMPTY_STOCK_RESPONSE_PATH
-import com.tokopedia.oneclickcheckout.common.interceptor.GET_OCC_CART_PAGE_NO_PROFILE_RESPONSE_PATH
-import com.tokopedia.oneclickcheckout.common.interceptor.OneClickCheckoutInterceptor
-import com.tokopedia.oneclickcheckout.common.interceptor.VALIDATE_USE_PROMO_REVAMP_BBO_APPLIED_RESPONSE
+import com.tokopedia.oneclickcheckout.common.interceptor.*
 import com.tokopedia.oneclickcheckout.common.robot.orderSummaryPage
 import com.tokopedia.oneclickcheckout.common.rule.FreshIdlingResourceTestRule
 import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageActivity
+import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import org.junit.After
 import org.junit.Assert.assertThat
 import org.junit.Before
@@ -50,6 +51,8 @@ class OrderSummaryPageActivityTrackingTest {
 
     @Before
     fun setup() {
+        InstrumentationAuthHelper.loginInstrumentationTestUser1()
+
         gtmLogDBSource.deleteAll().subscribe()
         OneClickCheckoutInterceptor.resetAllCustomResponse()
 
@@ -69,18 +72,26 @@ class OrderSummaryPageActivityTrackingTest {
     fun performOrderSummaryPageTrackingActions() {
         cartInterceptor.customGetOccCartResponsePath = GET_OCC_CART_PAGE_NO_PROFILE_RESPONSE_PATH
         activityRule.launchActivity(null)
+
+        performOrderSummaryPageBackAction()
+
         intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, null))
 
         orderSummaryPage {
             clickOnboardingInfo()
             closeBottomSheet()
 
-            cartInterceptor.customGetOccCartResponsePath = null
+            cartInterceptor.customGetOccCartResponsePath = GET_OCC_CART_PAGE_DEFAULT_RESPONSE_PATH
             clickAddPreferenceForNewBuyer()
+
+            clickButtonPromo()
 
             clickChangePreference {
                 clickAddPreference()
             }
+
+            cartInterceptor.customGetOccCartResponsePath = GET_OCC_CART_PAGE_LAST_APPLY_RESPONSE_PATH
+            promoInterceptor.customValidateUseResponsePath = VALIDATE_USE_PROMO_REVAMP_CASHBACK_FULL_APPLIED_RESPONSE
 
             clickChangePreference {
                 clickEditPreference(1)
@@ -91,11 +102,16 @@ class OrderSummaryPageActivityTrackingTest {
             }
 
             clickChangeCourier {
+                promoInterceptor.customValidateUseResponsePath = VALIDATE_USE_PROMO_REVAMP_CASHBACK_HALF_APPLIED_RESPONSE
                 chooseCourierWithText("AnterAja")
             }
 
+            clickButtonPromo()
+
             promoInterceptor.customValidateUseResponsePath = VALIDATE_USE_PROMO_REVAMP_BBO_APPLIED_RESPONSE
             clickBboTicker()
+
+            clickButtonPromo()
 
             checkoutInterceptor.customCheckoutResponsePath = CHECKOUT_EMPTY_STOCK_RESPONSE_PATH
             pay()
@@ -105,6 +121,37 @@ class OrderSummaryPageActivityTrackingTest {
             pay()
         }
 
+        cartInterceptor.customGetOccCartResponsePath = GET_OCC_CART_PAGE_LAST_APPLY_WITH_LOW_MAXIMUM_PAYMENT_RESPONSE_PATH
+        promoInterceptor.customValidateUseResponsePath = VALIDATE_USE_PROMO_REVAMP_CASHBACK_FULL_APPLIED_RESPONSE
+        Intents.release()
+        activityRule.launchActivity(null)
+
+        intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, null))
+
+        orderSummaryPage {
+            promoInterceptor.customValidateUseResponsePath = VALIDATE_USE_PROMO_REVAMP_CASHBACK_RED_STATE_RESPONSE
+            clickAddProductQuantity()
+
+            clickButtonPromo()
+
+            checkoutInterceptor.customCheckoutResponsePath = CHECKOUT_EMPTY_STOCK_RESPONSE_PATH
+            pay()
+            clickButtonContinueWithRedPromo()
+            closeBottomSheet()
+            closeBottomSheet()
+
+            checkoutInterceptor.customCheckoutResponsePath = null
+            pay()
+            clickButtonContinueWithRedPromo()
+        }
+
         assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME), hasAllSuccess())
+    }
+
+    private fun performOrderSummaryPageBackAction() {
+        // prevent press back on non-root activity
+        val activity = activityRule.activity
+        activity.startActivity(Intent(activity, OrderSummaryPageActivity::class.java))
+        Espresso.pressBack()
     }
 }

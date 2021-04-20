@@ -9,13 +9,22 @@ android {
                 arguments = ['targetModuleName': 'TkpdEntertainment']
             }
         }
+        multiDexEnabled true
+        testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
+        testInstrumentationRunnerArguments clearPackageData: 'true'
+    }
+    packagingOptions {
+        exclude 'META-INF/**'
+    }
+    testOptions {
+        execution 'ANDROIDX_TEST_ORCHESTRATOR'
     }
 }
 
 buildscript {
     repositories {
         mavenCentral()
-        maven { url 'https://hansel.io/maven' }
+        maven { url 'https://maven-hansel.tokopedia.com/maven' }
     }
     dependencies {
         classpath rootProject.ext.miscDependencies.hansel
@@ -34,7 +43,6 @@ dependencies {
     implementation project(rootProject.ext.libraries.linker)
     implementation project(rootProject.ext.libraries.imagePreviewSlider)
     implementation project(rootProject.ext.libraries.remoteConfig)
-    implementation project(rootProject.ext.features.resourcesCommon)
     implementation project(rootProject.ext.libraries.travelCalendar)
     implementation project(rootProject.ext.libraries.mapviewer)
     implementation project(rootProject.ext.features.promoCheckoutCommon)
@@ -42,6 +50,8 @@ dependencies {
     implementation project(rootProject.ext.libraries.iris)
     implementation project(rootProject.ext.libraries.irisSession)
     implementation project(rootProject.ext.libraries.webview)
+    implementation project(rootProject.ext.features.commonTravel)
+    implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
 
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
@@ -49,19 +59,17 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.network
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
 
-
-    implementation rootProject.ext.unifyDependencies.icon
     implementation rootProject.ext.unifyDependencies.banner
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.components
+    implementation rootProject.ext.unifyDependencies.icons
     implementation rootProject.ext.unifyDependencies.coach_mark
     implementation rootProject.ext.unifyDependencies.calendar
+    implementation rootProject.ext.unifyDependencies.datepicker
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.playServicesDependencies.analytics
-    implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
-    implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     implementation rootProject.ext.miscDependencies.dagger
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     implementation rootProject.ext.debugToolsDependencies.chuck
@@ -71,15 +79,36 @@ dependencies {
     }
 
     kapt rootProject.ext.miscDependencies.daggerCompiler
-    kapt rootProject.ext.miscDependencies.lifeCycleRuntime
 
     testImplementation rootProject.ext.testDependencies.junit
-    testImplementation rootProject.ext.testDependencies.mockitorCore
     testImplementation rootProject.ext.testDependencies.mockk
-    testImplementation rootProject.ext.testDependencies.spek2Api
-    testImplementation rootProject.ext.testDependencies.spek2Dsl
-    testImplementation rootProject.ext.supportLibDependencies.kotlinReflection
     testImplementation rootProject.ext.testDependencies.archCoreTesting
+
+    // UI Test
+    androidTestImplementation rootProject.ext.testDependencies.androidTestRunner
+    androidTestImplementation rootProject.ext.testDependencies.androidRulesVersion
+    androidTestImplementation rootProject.ext.testDependencies.junit
+    androidTestImplementation rootProject.ext.testDependencies.mockkAndroid
+    androidTestImplementation rootProject.ext.testDependencies.espressoCore
+    androidTestImplementation rootProject.ext.testDependencies.espressoContrib
+    androidTestImplementation(rootProject.ext.testDependencies.androidRulesVersion) {
+        exclude module: 'support-annotations'
+    }
+    androidTestImplementation(rootProject.ext.testDependencies.espressoIntents) {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    }
+    androidTestImplementation project(rootProject.ext.libraries.instrumentation_test), {
+        exclude group: 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
+        exclude group: 'org.jetbrains.kotlin:kotlin-reflect'
+        exclude group: 'org.jetbrains.kotlin:kotlin-stdlib-jdk7'
+        exclude group: 'com.google.android.gms'
+    }
+    androidTestAnnotationProcessor rootProject.ext.miscDependencies.daggerCompiler
+    androidTestImplementation rootProject.ext.testDependencies.archCoreTesting
+    androidTestImplementation project(rootProject.ext.libraries.analyticsDebugger)
+    implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk7
+    androidTestImplementation project(rootProject.ext.libraries.cassavaTest)
+    androidTestUtil rootProject.ext.testDependencies.orchestrator
 }
 
 project.ext {

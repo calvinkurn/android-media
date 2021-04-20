@@ -1,9 +1,0 @@
-query RichieGetTNCBankAccount($type : String!){
-  RichieGetTNCBankAccount(type : $type){
-    status
-    message
-    data{
-      template
-    }
-  }
-}

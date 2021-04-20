@@ -10,7 +10,6 @@ import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
 
-@LogoutScope
 @Module
 abstract class LogoutViewModelModule {
 

@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/box_1"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_120"
+            android:layout_marginStart="@dimen/dp_16"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_24"
+            android:layout_marginEnd="@dimen/dp_16"
+            android:layout_marginRight="@dimen/dp_16"
+            app:layout_constraintCircleRadius="@dimen/dp_8"
+            app:loader_type="rect" />
+
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:layout_width="@dimen/dp_280"
+            android:layout_height="@dimen/dp_16"
+            android:layout_marginStart="@dimen/dp_16"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_12"
+            android:layout_marginEnd="@dimen/dp_16"
+            android:layout_marginRight="@dimen/dp_16"
+            app:layout_constraintCircleRadius="@dimen/dp_5"
+            app:loader_type="rect" />
+
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:paddingTop="@dimen/dp_12"
+            android:paddingBottom="@dimen/dp_12">
+
+            <com.tokopedia.unifycomponents.LoaderUnify
+                android:id="@+id/timer_shimmer"
+                android:layout_width="@dimen/dp_20"
+                android:layout_height="@dimen/dp_20"
+                android:layout_marginStart="@dimen/dp_16"
+                android:layout_marginLeft="@dimen/dp_16"
+                app:layout_constraintCircleRadius="@dimen/dp_5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:loader_type="circle" />
+
+            <com.tokopedia.unifycomponents.LoaderUnify
+                android:id="@+id/timer_label"
+                android:layout_width="@dimen/dp_90"
+                android:layout_height="@dimen/dp_8"
+                android:layout_marginStart="@dimen/dp_8"
+                android:layout_marginLeft="@dimen/dp_8"
+                android:layout_marginEnd="@dimen/dp_16"
+                android:layout_marginRight="@dimen/dp_16"
+                app:layout_constraintBottom_toBottomOf="@id/timer_shimmer"
+                app:layout_constraintCircleRadius="@dimen/dp_5"
+                app:layout_constraintStart_toEndOf="@id/timer_shimmer"
+                app:layout_constraintTop_toTopOf="parent"
+                app:loader_type="rect" />
+
+            <com.tokopedia.unifycomponents.LoaderUnify
+                android:layout_width="@dimen/dp_90"
+                android:layout_height="@dimen/dp_8"
+                android:layout_marginStart="@dimen/dp_8"
+                android:layout_marginLeft="@dimen/dp_120"
+                android:layout_marginEnd="@dimen/dp_120"
+                android:layout_marginRight="@dimen/dp_16"
+                app:layout_constraintCircleRadius="@dimen/dp_5"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@id/timer_label"
+                app:loader_type="rect" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:paddingTop="@dimen/dp_12"
+            android:paddingBottom="@dimen/dp_12">
+
+            <com.tokopedia.unifycomponents.LoaderUnify
+                android:id="@+id/transks_shimmer"
+                android:layout_width="@dimen/dp_20"
+                android:layout_height="@dimen/dp_20"
+                android:layout_marginStart="@dimen/dp_16"
+                android:layout_marginLeft="@dimen/dp_16"
+                app:layout_constraintCircleRadius="@dimen/dp_5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:loader_type="circle" />
+
+            <com.tokopedia.unifycomponents.LoaderUnify
+                android:id="@+id/transks_label"
+                android:layout_width="@dimen/dp_90"
+                android:layout_height="@dimen/dp_8"
+                android:layout_marginStart="@dimen/dp_8"
+                android:layout_marginLeft="@dimen/dp_8"
+                android:layout_marginEnd="@dimen/dp_16"
+                android:layout_marginRight="@dimen/dp_16"
+                app:layout_constraintBottom_toBottomOf="@id/transks_shimmer"
+                app:layout_constraintCircleRadius="@dimen/dp_5"
+                app:layout_constraintStart_toEndOf="@id/transks_shimmer"
+                app:layout_constraintTop_toTopOf="parent"
+                app:loader_type="rect" />
+
+            <com.tokopedia.unifycomponents.LoaderUnify
+                android:layout_width="@dimen/dp_90"
+                android:layout_height="@dimen/dp_8"
+                android:layout_marginStart="@dimen/dp_8"
+                android:layout_marginLeft="@dimen/dp_120"
+                android:layout_marginEnd="@dimen/dp_120"
+                android:layout_marginRight="@dimen/dp_16"
+                app:layout_constraintCircleRadius="@dimen/dp_5"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@id/transks_label"
+                app:loader_type="rect" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_8"
+            android:background="@color/Unify_N50" />
+
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:layout_width="@dimen/dp_220"
+            android:layout_height="@dimen/dp_16"
+            android:layout_marginStart="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_50"
+            app:layout_constraintCircleRadius="@dimen/dp_5"
+            app:loader_type="rect" />
+
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:layout_width="@dimen/dp_300"
+            android:layout_height="@dimen/dp_20"
+            android:layout_marginStart="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_60"
+            app:layout_constraintCircleRadius="@dimen/dp_5"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/transks_label"
+            app:loader_type="rect" />
+
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:layout_width="@dimen/dp_250"
+            android:layout_height="@dimen/dp_20"
+            android:layout_marginStart="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_50"
+            app:layout_constraintCircleRadius="@dimen/dp_5"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/transks_label"
+            app:loader_type="rect" />
+
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:layout_width="@dimen/dp_150"
+            android:layout_height="@dimen/dp_20"
+            android:layout_marginStart="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_50"
+            android:layout_marginEnd="@dimen/dp_120"
+            app:layout_constraintCircleRadius="@dimen/dp_5"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/transks_label"
+            app:loader_type="rect" />
+
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:layout_width="@dimen/dp_76"
+            android:layout_height="@dimen/dp_20"
+            android:layout_marginStart="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_50"
+            app:layout_constraintCircleRadius="@dimen/dp_5"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/transks_label"
+            app:loader_type="rect" />
+
+    </LinearLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_72"
+        android:layout_alignParentBottom="true">
+
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/cost_shimmer"
+            android:layout_width="@dimen/dp_40"
+            android:layout_height="@dimen/dp_10"
+            android:layout_marginStart="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_18"
+            app:layout_constraintCircleRadius="@dimen/dp_5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:loader_type="rect" />
+
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:layout_width="@dimen/dp_76"
+            android:layout_height="@dimen/dp_12"
+            android:layout_marginStart="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_14"
+            app:layout_constraintCircleRadius="@dimen/dp_5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/cost_shimmer"
+            app:loader_type="rect" />
+
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:layout_width="@dimen/dp_160"
+            android:layout_height="@dimen/dp_48"
+            android:layout_marginStart="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_14"
+            android:layout_marginEnd="@dimen/dp_16"
+            app:layout_constraintCircleRadius="@dimen/dp_5"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:loader_type="rect" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</RelativeLayout>

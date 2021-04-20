@@ -12,5 +12,6 @@ data class GetDistrictDataUiModel (
         var postalCode: String = "",
         var cityId: Int = 0,
         var provinceId: Int = 0,
-        var errMessage: String? = null
+        var errMessage: String? = null,
+        var errorCode: Int = 0
 )

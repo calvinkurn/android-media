@@ -8,5 +8,6 @@ data class UpdateLiveDataModel (
         val action: Int = -1,
         val visitable: Visitable<*>? = null,
         val position: Int = -1,
-        val homeData: HomeDataModel? = null
+        val homeData: HomeDataModel? = null,
+        val needToEvaluateRecommendation: Boolean = false
 )

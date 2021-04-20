@@ -1,11 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="green_header">#ebffef</color>
-    <color name="red_header">#ffeaef</color>
-    <color name="red_due_response">#fa591d</color>
-    <color name="grey_divider">#f3f4f5</color>
-    <color name="green_text">#03ac0e</color>
-    <color name="grey_text">#31353b</color>
-    <color name="grey_shadow">#20ededed</color>
-    <color name="dropshipper_bg">#FDF0DC</color>
+    <color name="_dms_zxing_custom_possible_result_points">#903A89CF</color>
+    <color name="_dms_zxing_custom_result_view">#b0000000</color>
+    <color name="_dms_zxing_custom_viewfinder_mask">#60000000</color>
+    <color name="_dms_zxing_status_text">#ffffffff</color>
 </resources>

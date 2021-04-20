@@ -20,7 +20,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/spacing_lvl3"
-            android:textColor="@color/Neutral_N700_96"
+            android:textColor="@color/Unify_N700_96"
             app:typographyType="heading_4"
             tools:text="Pilihan voucher paling worth it" />
 
@@ -29,7 +29,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/spacing_lvl3"
-            android:textColor="@color/Neutral_N700_68"
+            android:textColor="@color/Unify_N700_68"
             app:typographyType="body_3"
             tools:text="Ngapain aja lebih hemat pakai voucher ini!" />
 
@@ -53,7 +53,7 @@
             android:gravity="center_horizontal"
             android:text="@string/deals_product_category_see_all"
             android:textAllCaps="false"
-            android:textColor="@color/Neutral_N700_68"
+            android:textColor="@color/Unify_N700_68"
             android:textStyle="bold"
             app:unifyButtonSize="medium"
             app:unifyButtonType="alternate"

@@ -50,7 +50,7 @@ class AddToCartDataMapper @Inject constructor() {
                 success = it.data.success
                 message = it.data.message
                 cartId = it.data.detail.cartId.toString()
-                productId = it.data.detail.productId.toInt()
+                productId = it.data.detail.productId
                 quantity = it.data.detail.quantity
                 notes = it.data.detail.notes
                 shopId = it.data.detail.shopId
@@ -72,7 +72,7 @@ class AddToCartDataMapper @Inject constructor() {
                 success = it.data.success
                 message = it.data.message
                 cartId = it.data.detail.cartId.toString()
-                productId = it.data.detail.productId.toInt()
+                productId = it.data.detail.productId
                 quantity = it.data.detail.quantity
                 notes = it.data.detail.notes
                 shopId = it.data.detail.shopId

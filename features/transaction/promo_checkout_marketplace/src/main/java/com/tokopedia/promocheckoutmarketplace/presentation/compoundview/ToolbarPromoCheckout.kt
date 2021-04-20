@@ -6,6 +6,7 @@ import android.view.View
 import android.widget.ImageView
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.promocheckoutmarketplace.R
@@ -13,7 +14,7 @@ import com.tokopedia.unifyprinciples.Typography
 
 class ToolbarPromoCheckout : Toolbar {
 
-    lateinit var buttonBack: ImageView
+    lateinit var buttonBack: IconUnify
     lateinit var labelTitle: Typography
     lateinit var buttonResetPromo: Typography
     lateinit var listener: ToolbarPromoCheckoutListener
@@ -32,12 +33,12 @@ class ToolbarPromoCheckout : Toolbar {
 
     fun disableResetButton() {
         buttonResetPromo.isEnabled = false
-        buttonResetPromo.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Neutral_N700_20))
+        buttonResetPromo.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_44))
     }
 
     fun enableResetButton() {
         buttonResetPromo.isEnabled = true
-        buttonResetPromo.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Green_G500))
+        buttonResetPromo.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
     }
 
     fun hideResetButton() {

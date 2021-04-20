@@ -4,51 +4,50 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@color/Unify_N0"
     android:paddingLeft="@dimen/dp_16"
-    android:paddingTop="@dimen/dp_16"
-    android:paddingRight="@dimen/dp_16"
-    android:background="@color/Neutral_N0">
+    android:paddingRight="@dimen/dp_16">
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/text_shop_name"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:ellipsize="end"
-        android:maxLines="1"
-        android:textColor="@color/Neutral_N700_96"
-        app:layout_constraintEnd_toStartOf="@+id/label_error"
+    <View
+        android:id="@+id/v_divider_item_cart_error"
+        android:layout_width="@dimen/dp_0"
+        android:layout_height="@dimen/dp_1"
+        android:background="@color/Unify_N75"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="heading_6"
-        app:typographyWeight="bold"
-        tools:text="Makmur Subur Subur Subur Subur Subur Subur adalah " />
+        tools:visibility="visible" />
 
-    <com.tokopedia.unifycomponents.Label
-        android:id="@+id/label_error"
-        android:layout_width="wrap_content"
+    <com.google.android.flexbox.FlexboxLayout
+        android:id="@+id/layout_product_info"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        app:labelType="general_dark_red"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        tools:labelTitle="Toko Tutup" />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/text_shop_location"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_2"
-        android:layout_marginBottom="@dimen/dp_3"
-        android:ellipsize="end"
-        android:maxLines="1"
-        android:textColor="@color/Neutral_N700_96"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/text_shop_name"
+        android:foregroundGravity="center_vertical"
+        android:paddingTop="@dimen/dp_16"
+        app:flexWrap="wrap"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/text_shop_name"
-        app:typographyType="small"
-        tools:text="Tangerang" />
+        app:layout_constraintTop_toBottomOf="@+id/v_divider_item_cart_error"
+        tools:visibility="visible">
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/img_shop_badge"
+            android:layout_width="@dimen/dp_18"
+            android:layout_height="@dimen/dp_18"
+            android:layout_marginEnd="@dimen/dp_4"
+            tools:src="@drawable/ic_badge_shop_official"
+            tools:visibility="visible" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/text_shop_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textColor="@color/Unify_N700_96"
+            app:typographyType="heading_6"
+            app:typographyWeight="bold"
+            tools:text="Makmur  adalah aaaaaa bbbbb" />
+
+    </com.google.android.flexbox.FlexboxLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

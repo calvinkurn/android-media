@@ -13,7 +13,7 @@
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="stateAlwaysHidden">
             <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
+                <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
@@ -33,7 +33,7 @@
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="stateAlwaysHidden">
             <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
+                <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
@@ -41,6 +41,10 @@
                 <data
                     android:host="@string/host_global"
                     android:pathPattern="@string/path_add_name_register"
+                    android:scheme="@string/internal_scheme" />
+                <data
+                    android:host="@string/host_global"
+                    android:pathPattern="@string/path_add_name_register_clean_view"
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
 
@@ -60,7 +64,7 @@
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="stateAlwaysHidden">
             <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
+                <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
@@ -80,7 +84,7 @@
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize">
             <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
+                <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
@@ -100,7 +104,7 @@
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize">
             <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
+                <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
@@ -119,7 +123,7 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White">
             <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
+                <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
@@ -139,7 +143,7 @@
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize">
             <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
+                <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
@@ -159,7 +163,7 @@
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize">
             <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
+                <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
@@ -178,7 +182,7 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White">
             <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
+                <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
@@ -192,13 +196,32 @@
         </activity>
 
         <activity
+            android:name=".addpin.view.activity.AddPinFrom2FAActivity"
+            android:label="@string/create_pin"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White">
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_global"
+                    android:pathPattern="@string/path_add_pin_from_2fa"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
+
+        </activity>
+
+        <activity
             android:name=".addpin.view.activity.PinCompleteActivity"
             android:label="@string/create_pin"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize">
             <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
+                <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
@@ -217,7 +240,7 @@
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="stateAlwaysHidden">
             <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
+                <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
@@ -236,7 +259,7 @@
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="adjustResize">
             <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
+                <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />

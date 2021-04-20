@@ -11,7 +11,7 @@
     <string name="play_etalase_product_amount">%d Produk</string>
     <string name="play_etalase_detail_header">%s (%d)</string>
 
-    <string name="play_product_stock_amount">Stok: %d</string>
+    <string name="play_product_stock_amount">Stok: %s</string>
     <string name="play_product_select_max_info">Pilih maks. %d produk</string>
     <string name="play_empty_stock">Stok Habis</string>
     <string name="play_product_not_found_title">Oops, produk nggak ditemukan</string>
@@ -103,12 +103,15 @@
     <string name="play_loader_live_paused">Live streaming berhenti sementara.</string>
 
     <string name="play_live_broadcast_network_recover">Yay, koneksi internetmu kembali terhubung!</string>
-    <string name="play_live_broadcast_network_loss">Koneksi internetmu terputus, nih.</string>
     <string name="play_live_broadcast_network_poor">Koneksi internetmu melambat, nih.</string>
     <string name="play_live_broadcast_connect_fail">Oops, gagal menyambungkan siaran.</string>
+    <string name="play_broadcaster_default_error">Tunggu sebentar, biar Toped bereskan. Coba lagi atau kembali nanti.</string>
+    <string name="play_live_broadcast_network_loss_desc">Segera sambungkan ke koneksi yang stabil, atau akhiri siarannya.</string>
+    <string name="play_live_broadcast_network_loss">Yaah, koneksimu putus</string>
 
     <string name="play_summary_title">Laporan Live Streaming</string>
-    <string name="play_summary_button_finish">Selesai</string>
+    <string name="play_summary_button_save_video">Simpan Video di Halaman Toko</string>
+    <string name="play_summary_button_delete_video">Hapus Video</string>
     <string name="play_summary_total_view">Penonton</string>
     <string name="play_summary_total_likes">Menyukai</string>
     <string name="play_summary_shop_visit">Mengunjungi Tokomu</string>
@@ -118,6 +121,10 @@
     <string name="play_summary_new_followers">Followers Baru</string>
     <string name="play_summary_error_desc">Yuk, coba lagi untuk menampilkan laporannya.</string>
     <string name="play_summary_error_title">Laporanmu gagal ditampilkan</string>
+    <string name="play_summary_delete_dialog_title">Yakin ingin hapus video?</string>
+    <string name="play_summary_delete_dialog_message">Live streaming tidak akan\njadi video di Halaman Toko\njika kamu ingin menghapusnya.</string>
+    <string name="play_summary_delete_dialog_action_delete">Hapus</string>
+    <string name="play_summary_delete_dialog_action_back">Kembali</string>
 
     <string name="play_terms_condition_full">Dengan menekan tombol %s, saya menyetujui %s live streaming.</string>
     <string name="play_terms_condition">Syarat &amp; Ketentuan</string>
@@ -142,4 +149,24 @@
     <string name="play_storage_permission_denied_error">Kamu harus mengaktifkan akses foto, media, &amp; file untuk dapat melanjutkan proses</string>
 
     <string name="play_error_image_edit_text">Gambar/GIF tidak diperbolehkan</string>
+
+    <string name="mock_super_long_text">Aku bergabung loh wau kok gabung keren abis wooo allala gabung terus dong</string>
+
+    <string name="mock_report_live_duration">00:00</string>
+
+    <!--Schedule-->
+    <string name="play_broadcast_add_schedule_info">Atur Jadwal Siaran</string>
+    <string name="play_broadcast_schedule_set_info">Jadwal Siaran</string>
+    <string name="play_broadcast_set_schedule">Simpan Jadwal</string>
+    <string name="play_broadcast_schedule_set_success">Jadwal berhasil disimpan. Kembali lagi ketika mulai siaran, ya!</string>
+    <string name="play_broadcast_start_streaming_action">Mulai</string>
+    <string name="play_broadcast_cancel_streaming_action">Batal</string>
+    <string name="play_broadcast_early_streaming_dialog_title">Mulai siarannya sekarang?</string>
+    <string name="play_broadcast_early_streaming_dialog_desc">Jadwal yang sudah diatur akan pindah menjadi sekarang.</string>
+    <string name="play_broadcast_delete_schedule_action">Hapus</string>
+    <string name="play_broadcast_delete_schedule_dialog_title">Yakin mau hapus jadwal?</string>
+    <string name="play_broadcast_delete_schedule_dialog_desc">Jika dihapus, maka pengingat siaran untuk calon penontonmu batal dikirimkan.</string>
+    <string name="play_broadcast_schedule_deleted">Jadwal sudah dihapus</string>
+
+    <string name="album">Album</string>
 </resources>

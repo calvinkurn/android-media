@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/action_overflow_menu"
+        android:id="@+id/action_overflow_menu_white"
         android:orderInCategory="100"
         app:showAsAction="always"
         android:icon="@drawable/ic_toolbar_overflow_level_two_white"

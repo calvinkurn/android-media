@@ -1,6 +1,8 @@
 package com.tokopedia.logisticcart.shipping.model
 
 import android.os.Parcelable
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.CodDataPromo
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.EstimatedTimeArrivalPromo
 import kotlinx.android.parcel.Parcelize
 
 /**
@@ -23,4 +25,7 @@ data class LogisticPromoUiModel(val promoCode: String,
                                 val shippingRate: Int,
                                 val benefitAmount: Int,
                                 val disabled: Boolean,
-                                val hideShipperName: Boolean) : RatesViewModelType, Parcelable
+                                val hideShipperName: Boolean,
+                                val codData: CodDataPromo,
+                                val etaData: EstimatedTimeArrivalPromo,
+                                val isBebasOngkirExtra: Boolean) : RatesViewModelType, Parcelable

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <solid android:color="@color/Unify_N50" />
+    <corners android:radius="@dimen/layout_lvl1" />
+    <stroke
+        android:width="@dimen/dp_topchat_3"
+        android:color="@color/Unify_G200" />
+</shape>

@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="white">#FFFFFF</color>
-    <color name="shadow">#B0000000</color>
-    <color name="green">#42b549</color>
-    <color name="light_gray">#DDDDDD</color>
-    <color name="search_layover_bg">#baa0a7be</color>
-    <color name="white_four">#e0e0e0</color>
-    <color name="grey_400">#bdbdbd</color>
-    <color name="edit_text_color">#f531353b</color>
-    <color name="edit_text_color_hint">#7031353b</color>
+    <color name="white">@color/Unify_N0</color>
+    <color name="shadow">@color/Unify_N700_68</color>
+    <color name="green">@color/Unify_G400</color>
+    <color name="light_gray">@color/Unify_N100</color>
+    <color name="search_layover_bg">@color/Unify_N200</color>
+    <color name="white_four">@color/Unify_N100</color>
+    <color name="grey_400">@color/Unify_N150</color>
+    <color name="edit_text_color">@color/Unify_N700_96</color>
+    <color name="edit_text_color_hint">@color/Unify_N700_44</color>
 
-    <color name="charcoal_grey_44">#7031353b</color>
-    <color name="charcoal_grey_96">#f531353b</color>
-    <color name="initial_state_clear_all">#ef144a</color>
-    <color name="initial_state_refresh">#03ac0e</color>
+    <color name="charcoal_grey_44">@color/Unify_N700_44</color>
+    <color name="charcoal_grey_96">@color/Unify_N700_96</color>
+    <color name="initial_state_clear_all">@color/Unify_R500</color>
+    <color name="initial_state_refresh">@color/Unify_G500</color>
 
 </resources>

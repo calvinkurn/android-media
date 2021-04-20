@@ -78,9 +78,9 @@ public class BuildAndShowNotification {
         mBuilder.setGroupSummary(true);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            mBuilder.setColor(mContext.getColor(R.color.tkpd_dark_green));
+            mBuilder.setColor(mContext.getColor(com.tokopedia.unifyprinciples.R.color.Unify_G400));
         } else {
-            mBuilder.setColor(mContext.getResources().getColor(R.color.tkpd_dark_green));
+            mBuilder.setColor(mContext.getResources().getColor(com.tokopedia.unifyprinciples.R.color.Unify_G400));
         }
 
         if (configuration.isBell()) {

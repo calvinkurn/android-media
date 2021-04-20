@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">recommendation_widget_common</string>
+    <string name="best_seller_title_other_product">Produk Lainnya</string>
+    <string name="best_seller_see_more">Lihat Semua</string>
+    <string name="recommendation_carousel_see_more_product">Lihat Produk Lainnya</string>
+    <string name="comparison_see_more_title">Lihat semua</string>
+    <string name="comparison_see_more_specs">Lihat Spesifikasi Selengkapnya</string>
 </resources>

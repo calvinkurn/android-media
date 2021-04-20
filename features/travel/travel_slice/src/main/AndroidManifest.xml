@@ -1,0 +1,35 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.tokopedia.travel_slice">
+
+    <uses-sdk tools:overrideLibrary="androidx.slice.builders.ktx" />
+
+    <application>
+        <provider
+            android:name="com.tokopedia.travel_slice.ui.provider.MainSliceProvider"
+            android:authorities="com.tokopedia.tkpd.travel_slice"
+            android:exported="true"
+            android:grantUriPermissions="true">
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
+                <category android:name="android.app.slice.category.SLICE" />
+            </intent-filter>
+        </provider>
+
+        <activity android:name="com.tokopedia.travel_slice.ui.provider.TravelSliceActivity"
+            android:theme="@style/Theme.AppCompat"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/travel_slice_host_name"
+                    android:pathPattern="@string/travel_slice_path_name"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
+        </activity>
+    </application>
+</manifest>

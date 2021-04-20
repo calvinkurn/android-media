@@ -15,7 +15,7 @@
             android:id="@+id/toolbar_coupon_listing_tokopoint"
             android:layout_width="match_parent"
             android:layout_height="?actionBarSize"
-            android:background="@color/white"
+            android:background="@color/Unify_N0"
             android:theme="?toolbarTheme"
             app:contentInsetLeft="0dp"
             app:contentInsetStart="0dp"
@@ -27,13 +27,13 @@
             android:id="@+id/tabs_sort_type"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/white"
+            android:background="@color/Unify_N0"
             android:visibility="gone"
-            app:tabIndicatorColor="@color/tkpd_main_green"
+            app:tabIndicatorColor="@color/Unify_G400"
             app:tabMode="scrollable"
-            app:tabSelectedTextColor="@color/tp_tab_indicator_text_color_"
+            app:tabSelectedTextColor="@color/Unify_G500"
             app:tabTextAppearance="@style/TokoPointsTabs"
-            app:tabTextColor="@color/discount_color" />
+            app:tabTextColor="@color/Unify_N700_44" />
     </com.google.android.material.appbar.AppBarLayout>
 
 
@@ -44,11 +44,7 @@
         android:orientation="vertical"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <ProgressBar
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_margin="@dimen/tp_margin_large" />
+        <include layout="@layout/tp_shimmer_tab"/>
 
         <androidx.viewpager.widget.ViewPager
             android:id="@+id/view_pager_sort_type"

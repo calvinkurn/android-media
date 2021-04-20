@@ -10,17 +10,23 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.settingbank.di.DaggerSettingBankComponent
 import com.tokopedia.settingbank.di.SettingBankComponent
 import com.tokopedia.settingbank.di.SettingBankModule
-import com.tokopedia.settingbank.domain.Bank
+import com.tokopedia.settingbank.domain.model.Bank
 import com.tokopedia.settingbank.view.fragment.AddBankFragment
 import com.tokopedia.settingbank.view.fragment.OnBankSelectedListener
 
 class AddBankActivity : BaseSimpleActivity(), HasComponent<SettingBankComponent>,
         OnBankSelectedListener {
 
-    override fun getComponent(): SettingBankComponent = DaggerSettingBankComponent.builder()
-            .baseAppComponent((applicationContext as BaseMainApplication).baseAppComponent)
-            .settingBankModule(SettingBankModule(this))
-            .build()
+    private lateinit var settingBankComponent: SettingBankComponent
+
+    override fun getComponent(): SettingBankComponent {
+        if (!::settingBankComponent.isInitialized)
+            settingBankComponent = DaggerSettingBankComponent.builder()
+                    .baseAppComponent((applicationContext as BaseMainApplication).baseAppComponent)
+                    .settingBankModule(SettingBankModule(this))
+                    .build()
+        return settingBankComponent
+    }
 
     override fun getNewFragment(): Fragment {
         val bundle = Bundle()
@@ -41,7 +47,6 @@ class AddBankActivity : BaseSimpleActivity(), HasComponent<SettingBankComponent>
         val fragment = supportFragmentManager.findFragmentByTag(tagFragment)
         fragment?.let {
             if (fragment is AddBankFragment) {
-                fragment.closeBottomSheet()
                 fragment.onBankSelected(bank)
             }
         }

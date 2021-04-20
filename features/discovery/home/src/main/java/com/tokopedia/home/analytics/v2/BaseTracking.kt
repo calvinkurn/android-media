@@ -31,6 +31,7 @@ abstract class BaseTracking {
         const val KEY = "eventCategory"
         const val HOMEPAGE = "homepage"
         const val HOMEPAGE_TOPADS = "homepage-topads"
+        const val HOMEPAGE_TOKOPOINTS = "homepage-tokopoints"
     }
 
     protected object Action{
@@ -71,6 +72,7 @@ abstract class BaseTracking {
     protected object BusinessUnit{
         const val KEY = "businessUnit"
         const val DEFAULT = "home & browse"
+        const val ADS_SOLUTION = "ads solution"
     }
 
     protected object ChannelId{
@@ -237,7 +239,13 @@ abstract class BaseTracking {
             if(product.clusterId != -1) map[KEY_DIMENSION_11] = product.clusterId.toString()
             if (product.channelId.isNotEmpty()) map[KEY_DIMENSION_84] = product.channelId else NONE
             if (product.categoryId.isNotEmpty() || product.persoType.isNotEmpty()) map[KEY_DIMENSION_96] = String.format(FORMAT_2_ITEMS_UNDERSCORE, product.persoType, product.categoryId) else NONE
-            if (list.isNotEmpty()) map[KEY_LIST] = list + if(product.isTopAds) " - topads" else ""
+            if (list.isNotEmpty()) {
+                var newList = list + if(product.isTopAds) " - topads" else ""
+                if(product.isCarousel != null) newList += if (product.isCarousel == true) " - carousel" else "- non carousel"
+                if(product.recommendationType.isNotEmpty()) newList += " - ${product.recommendationType}"
+                if(product.headerName.isNotEmpty()) newList += " - ${product.headerName}"
+                map[KEY_LIST] = newList
+            }
             if(product.cartId.isNotEmpty()) map[KEY_DIMENSION_45] = product.cartId
             if(product.quantity.isNotEmpty()) map[KEY_QUANTITY] = product.quantity
             return map
@@ -260,7 +268,10 @@ abstract class BaseTracking {
             val cartId: String = "",
             val categoryId: String = "",
             val clusterId: Int = -1,
-            val quantity: String = ""): ImpressHolder()
+            val quantity: String = "",
+            val headerName: String = "",
+            val isCarousel: Boolean? = null,
+            val recommendationType: String = ""): ImpressHolder()
 
     open fun getBasicPromotionView(
         event: String,

@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_marginBottom="@dimen/spacing_lvl4">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/textProductName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Unify_N700_96"
+        app:typographyType="body_2"
+        app:typographyWeight="bold"
+        app:layout_constraintTop_toTopOf="@id/switchStatus"
+        app:layout_constraintLeft_toLeftOf="@id/leftGuideline"
+        app:layout_constraintRight_toLeftOf="@id/labelInactive"
+        app:layout_constraintBottom_toBottomOf="@id/switchStatus"
+        tools:text="Warna | Biru"/>
+
+    <com.tokopedia.unifycomponents.Label
+        android:id="@+id/labelInactive"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        app:layout_constraintLeft_toRightOf="@id/textProductName"
+        app:layout_constraintTop_toTopOf="@id/switchStatus"
+        app:layout_constraintBottom_toBottomOf="@id/switchStatus"
+        app:labelType="general_light_grey"
+        app:labelTitle="@string/product_manage_inactive"
+        tools:visibility="visible"/>
+
+    <com.tokopedia.unifycomponents.Label
+        android:id="@+id/labelCampaign"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/layout_lvl1"
+        android:visibility="gone"
+        app:labelTitle="@string/product_manage_campaign_label"
+        app:labelType="general_light_red"
+        app:layout_constraintBottom_toBottomOf="@id/switchStatus"
+        app:layout_constraintLeft_toRightOf="@id/labelInactive"
+        app:layout_constraintTop_toTopOf="@id/switchStatus"
+        tools:visibility="visible" />
+
+    <com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
+        android:id="@+id/switchStatus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintRight_toRightOf="@id/rightGuideline" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/textTotalStockLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/product_manage_quick_edit_stock_total_stock"
+        android:textColor="@color/Unify_N700_68"
+        android:layout_marginTop="@dimen/spacing_lvl6"
+        app:typographyType="body_3"
+        app:typographyWeight="reguler"
+        app:layout_constraintTop_toBottomOf="@id/textProductName"
+        app:layout_constraintLeft_toLeftOf="@id/leftGuideline"
+        app:layout_constraintHorizontal_chainStyle="spread_inside" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/textTotalStockHint"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/product_manage_stock_info_description"
+        android:textColor="@color/Unify_N0_44"
+        android:visibility="visible"
+        android:lines="2"
+        android:gravity="center_vertical"
+        app:typographyType="body_3"
+        app:typographyWeight="reguler"
+        app:layout_constraintTop_toBottomOf="@id/textTotalStockLabel"
+        app:layout_constraintLeft_toLeftOf="@id/leftGuideline" />
+
+    <com.tokopedia.unifycomponents.QuantityEditorUnify
+        android:id="@+id/quantityEditorStock"
+        android:layout_width="@dimen/layout_lvl8"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="@id/textTotalStockLabel"
+        app:layout_constraintBottom_toBottomOf="@id/textTotalStockLabel"
+        app:layout_constraintRight_toRightOf="@id/rightGuideline" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/textStock"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="@id/textTotalStockLabel"
+        app:layout_constraintBottom_toBottomOf="@id/textTotalStockLabel"
+        app:layout_constraintRight_toRightOf="@id/rightGuideline"
+        app:typographyType="body_3" />
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/layout_lvl1"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        app:layout_constraintTop_toBottomOf="@id/textTotalStockHint"/>
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/leftGuideline"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="@dimen/layout_lvl3"/>
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/rightGuideline"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_end="@dimen/layout_lvl3"/>
+</androidx.constraintlayout.widget.ConstraintLayout>

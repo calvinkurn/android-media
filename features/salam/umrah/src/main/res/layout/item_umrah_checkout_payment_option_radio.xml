@@ -4,11 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginLeft="@dimen/dp_16"
-    android:layout_marginTop="@dimen/dp_12"
-    android:layout_marginRight="@dimen/dp_16"
-    app:cardCornerRadius="@dimen/dp_8"
-    app:cardElevation="@dimen/dp_2"
+    android:layout_marginLeft="@dimen/spacing_lvl4"
+    android:layout_marginTop="@dimen/unify_space_12"
+    android:layout_marginRight="@dimen/spacing_lvl4"
+    app:cardCornerRadius="@dimen/spacing_lvl3"
+    app:cardElevation="@dimen/spacing_lvl1"
     app:cardUseCompatPadding="true"
     >
 
@@ -32,7 +32,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
-                android:layout_margin="@dimen/dp_16"
+                android:layout_margin="@dimen/spacing_lvl4"
                 android:text="@string/umrah_home_page_search_spinner_price_label"
                 android:textColor="@color/Neutral_N700_96"
                 app:typographyType="body_2"
@@ -40,12 +40,12 @@
 
             <com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
                 android:id="@+id/radio_umrah_checkout_bottom_sheet_payment_option"
-                android:layout_width="@dimen/dp_32"
-                android:layout_height="@dimen/dp_32"
+                android:layout_width="@dimen/spacing_lvl6"
+                android:layout_height="@dimen/spacing_lvl6"
                 android:clickable="false"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
-                android:layout_marginRight="@dimen/dp_16" />
+                android:layout_marginRight="@dimen/spacing_lvl4" />
         </RelativeLayout>
         <RelativeLayout
             android:clickable="true"
@@ -76,8 +76,8 @@
                     android:layout_weight="1"
                     android:text="@string/umrah_checkout_payment_option_label_installment"
                     android:textColor="@color/Neutral_N700"
-                    android:layout_marginTop="@dimen/dp_8"
-                    android:layout_marginLeft="@dimen/dp_12"
+                    android:layout_marginTop="@dimen/spacing_lvl3"
+                    android:layout_marginLeft="@dimen/unify_space_12"
                     app:typographyType="heading_6"
                     android:gravity="start"
                     app:typographyWeight="bold" />
@@ -89,16 +89,16 @@
                     android:text="@string/umrah_chekcout_payment_option_label_due_date"
                     android:textColor="@color/Neutral_N700"
                     app:typographyType="heading_6"
-                    android:layout_marginTop="@dimen/dp_8"
+                    android:layout_marginTop="@dimen/spacing_lvl3"
                     android:gravity="start"
-                    android:layout_marginLeft="@dimen/dp_6"
+                    android:layout_marginLeft="@dimen/spacing_lvl3"
                     app:typographyWeight="bold" />
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:layout_marginTop="@dimen/dp_8"
+                    android:layout_marginTop="@dimen/spacing_lvl3"
                     android:text="@string/umrah_checkout_payment_option_label_price"
                     android:textColor="@color/Neutral_N700"
                     app:typographyType="heading_6"
@@ -108,10 +108,10 @@
             </LinearLayout>
 
             <androidx.recyclerview.widget.RecyclerView
-                android:layout_marginTop="@dimen/dp_8"
-                android:layout_marginBottom="@dimen/dp_16"
-                android:layout_marginLeft="@dimen/dp_12"
-                android:layout_marginRight="@dimen/dp_12"
+                android:layout_marginTop="@dimen/spacing_lvl3"
+                android:layout_marginBottom="@dimen/spacing_lvl4"
+                android:layout_marginLeft="@dimen/unify_space_12"
+                android:layout_marginRight="@dimen/unify_space_12"
                 android:id="@+id/rv_umrah_checkout_list_due_date"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

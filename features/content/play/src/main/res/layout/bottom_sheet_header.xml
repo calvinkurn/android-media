@@ -16,11 +16,12 @@
         tools:layout_width="match_parent"
         >
 
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/iv_close"
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/iv_sheet_close"
             android:layout_width="@dimen/layout_lvl3"
             android:layout_height="@dimen/layout_lvl3"
-            app:srcCompat="@drawable/ic_system_close_default"
+            app:icon_color_light_enable="@color/play_dms_bottom_sheet_action_close"
+            app:icon_name="CLOSE"
             />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -29,7 +30,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/play_product_sheet_title_margin_start"
             android:layout_marginLeft="@dimen/play_product_sheet_title_margin_start"
-            android:textColor="@color/Neutral_N700_96"
+            android:textColor="@color/play_dms_bottom_sheet_title"
             app:typographyType="heading_3"
             app:typographyWeight="bold"
             android:ellipsize="end"

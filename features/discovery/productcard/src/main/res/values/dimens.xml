@@ -7,6 +7,7 @@
     <dimen name="product_card_list_image_size">96dp</dimen>
     <dimen name="product_card_carousel_list_image_size">80dp</dimen>
 
+    <dimen name="product_card_content_margin_top">4dp</dimen>
     <dimen name="product_card_content_margin">8dp</dimen>
 
     <dimen name="product_card_text_view_gimmick_height">18dp</dimen>
@@ -16,6 +17,9 @@
     <dimen name="product_card_text_view_product_name_gone_margin_bottom">0dp</dimen>
     <dimen name="product_card_text_view_product_name_height">36dp</dimen>
     <dimen name="product_card_flashsale_text_view_product_name_margin_bottom">4dp</dimen>
+
+    <dimen name="product_card_label_variant_margin_top">4dp</dimen>
+    <dimen name="product_card_label_variant_height">20dp</dimen>
 
     <dimen name="product_card_label_discount_margin_top">4dp</dimen>
     <dimen name="product_card_label_discount_height">20dp</dimen>
@@ -29,7 +33,7 @@
     <dimen name="product_card_label_price_margin_top">4dp</dimen>
     <dimen name="product_card_label_price_height">20dp</dimen>
 
-    <dimen name="product_card_text_view_price_margin_top">4dp</dimen>
+    <dimen name="product_card_text_view_price_margin_top">2dp</dimen>
     <dimen name="product_card_text_view_price_height">20dp</dimen>
     <dimen name="product_card_flashsale_text_view_price_margin_bottom">8dp</dimen>
     <dimen name="product_card_flashsale_text_view_price_gone_margin_bottom">0dp</dimen>
@@ -55,32 +59,61 @@
     <dimen name="product_card_text_view_integrity_margin_top">2dp</dimen>
     <dimen name="product_card_text_view_integrity_height">18dp</dimen>
 
+    <dimen name="product_card_icon_shop_rating_margin_top">3dp</dimen>
+    <dimen name="product_card_icon_shop_rating_size">16dp</dimen>
+
+    <dimen name="product_card_text_shop_rating_margin_top">2dp</dimen>
+    <dimen name="product_card_text_shop_rating_height">18dp</dimen>
+
     <dimen name="product_card_free_ongkir_badge_margin_top">4dp</dimen>
     <dimen name="product_card_free_ongkir_badge_height">20dp</dimen>
 
     <dimen name="product_card_text_view_shipping_margin_top">4dp</dimen>
     <dimen name="product_card_text_view_shipping_height">18dp</dimen>
 
+    <dimen name="product_card_text_view_eta_margin_top">4dp</dimen>
+    <dimen name="product_card_text_view_eta_height">14dp</dimen>
+
     <dimen name="product_card_button_delete_product_margin_top">8dp</dimen>
     <dimen name="product_card_button_delete_product_height">40dp</dimen>
 
     <dimen name="product_card_button_add_to_cart_margin_top">8dp</dimen>
     <dimen name="product_card_button_add_to_cart_height">32dp</dimen>
+    <dimen name="product_card_button_notify_me_margin_top">8dp</dimen>
+    <dimen name="product_card_button_notify_me_height">32dp</dimen>
 
 
-    <dimen name="product_card_flashsale_width">136dp</dimen>
+    <dimen name="product_card_flashsale_width">148dp</dimen>
 
     <dimen name="product_card_flashsale_pdpcount_height">16dp</dimen>
     <dimen name="product_card_flashsale_pdpcount_margintop">2dp</dimen>
     <dimen name="product_card_flashsale_pdpcount_gone_margintop">0dp</dimen>
     <dimen name="product_card_flashsale_pdpcount_marginbottom">2dp</dimen>
 
-    <dimen name="product_card_flashsale_progressbar_height">4dp</dimen>
-    <dimen name="product_card_flashsale_progressbar_margintop">8dp</dimen>
+    <dimen name="product_card_flashsale_progressbar_height">16dp</dimen>
+    <dimen name="product_card_flashsale_progressbar_height_bar">4dp</dimen>
+    <dimen name="product_card_flashsale_progressbar_margintop">0dp</dimen>
     <dimen name="product_card_flashsale_progressbar_gone_margintop">8dp</dimen>
     <dimen name="product_card_flashsale_progressbar_marginbottom">2dp</dimen>
 
     <dimen name="product_card_flashsale_label_height">16dp</dimen>
     <dimen name="product_card_flashsale_label_margintop">2dp</dimen>
+
+    <dimen name="product_card_label_campaign_height">20dp</dimen>
+
+    <dimen name="product_card_label_best_seller_height">20dp</dimen>
+    <dimen name="product_card_label_best_seller_margintop">8dp</dimen>
+    <dimen name="product_card_label_best_seller_paddingtop">3dp</dimen>
+    <dimen name="dp_6">6dp</dimen>
+
+    <dimen name="product_card_fulfillment_badge_margin_top">5dp</dimen>
+    <dimen name="product_card_fulfillment_badge_height">12dp</dimen>
+    <dimen name="product_card_fulfillment_badge_width">16dp</dimen>
+
+    <dimen name="product_card_text_fulfillment_margin_top">4dp</dimen>
+    <dimen name="product_card_text_fulfillment_height">18dp</dimen>
+
+    <dimen name="carousel_product_card_grid_width">140dp</dimen>
+    <dimen name="carousel_product_card_list_width">248dp</dimen>
 
 </resources>

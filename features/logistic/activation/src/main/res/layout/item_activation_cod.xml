@@ -1,0 +1,282 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.unifycomponents.CardUnify xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/main_activation_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <RelativeLayout
+            android:id="@+id/cod_rl"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:padding="@dimen/dp_16">
+
+            <ImageView
+                android:id="@+id/cod_icon"
+                android:layout_width="@dimen/dp_32"
+                android:layout_height="@dimen/dp_32"
+                android:padding="@dimen/dp_2"
+                android:visibility="visible"
+                tools:visibility="visible"
+                app:srcCompat="@drawable/ic_cod_logo"/>
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/cod_title_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_marginStart="@dimen/dp_8"
+                android:layout_toEndOf="@id/cod_icon"
+                android:text="@string/cod_title_text"
+                app:typographyType="heading_5"
+                app:typographyWeight="bold"/>
+
+            <com.tokopedia.unifycomponents.Label
+                android:id="@+id/lbl_cod_activation"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@id/cod_title_text"
+                android:text="@string/cod_label"
+                android:layout_marginStart="@dimen/dp_12"
+                android:visibility="gone"
+                app:labelType="general_light_green" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/cod_desc_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/cod_title_text"
+                android:layout_toEndOf="@id/cod_icon"
+                android:layout_toStartOf="@id/cod_layout_extend"
+                android:layout_marginStart="@dimen/dp_8"
+                android:layout_marginTop="@dimen/dp_5"
+                android:text="@string/cod_desc_text"
+                android:layout_marginEnd="@dimen/dp_16"
+                app:typographyType="body_3"/>
+
+            <ImageView
+                android:id="@+id/cod_layout_extend"
+                android:layout_width="@dimen/dp_24"
+                android:layout_height="@dimen/dp_24"
+                android:layout_alignWithParentIfMissing="true"
+                android:layout_alignTop="@+id/cod_desc_text"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:padding="@dimen/dp_3"
+                app:srcCompat="@drawable/ic_arrow_up_cod"
+                android:visibility="visible"
+                tools:visibility="visible"
+                android:contentDescription="@string/desc_cod_layout_extend"/>
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:id="@+id/cod_expand_ll"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/cod_rl"
+            app:layout_constraintStart_toStartOf="parent"
+            android:animateLayoutChanges="true"
+            android:orientation="vertical">
+
+            <View
+                android:id="@+id/cod_separator_1"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_1"
+                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginRight="@dimen/dp_16"
+                android:background="@color/grey_300" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/advantage_title_cod"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_16"
+                android:layout_marginTop="@dimen/dp_16"
+                android:text="@string/advantage_title_text"
+                app:typographyType="heading_5"
+                app:typographyWeight="bold"/>
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/advantage_desc_cod"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/dp_16"
+                android:layout_marginStart="@dimen/dp_16"
+                android:layout_marginTop="@dimen/dp_8"
+                android:text="@string/advantage_desc_text"
+                app:typographyType="body_3"/>
+
+            <View
+                android:id="@+id/cod_separator_2"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_1"
+                android:layout_marginTop="@dimen/dp_16"
+                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginRight="@dimen/dp_16"
+                android:background="@color/grey_300"/>
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tnc_title_cod"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_16"
+                android:layout_marginTop="@dimen/dp_16"
+                android:text="@string/tnc_title_cod"
+                app:typographyType="heading_5"
+                app:typographyWeight="bold"/>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_16">
+
+                <ImageView
+                    android:id="@+id/check_icon_1"
+                    android:layout_width="@dimen/dp_16"
+                    android:layout_height="@dimen/dp_12"
+                    android:visibility="visible"
+                    tools:visibility="visible"
+                    android:layout_marginStart="@dimen/dp_18"
+                    android:layout_centerVertical="true"
+                    app:srcCompat="@drawable/ic_check_cod"/>
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/tnc_decs_1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dp_16"
+                    android:layout_marginEnd="@dimen/dp_16"
+                    android:text="@string/tnc_desc"
+                    app:typographyType="body_3"
+                    android:layout_toEndOf="@id/check_icon_1"/>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_16">
+
+                <ImageView
+                    android:id="@+id/check_icon_2"
+                    android:layout_width="@dimen/dp_16"
+                    android:layout_height="@dimen/dp_12"
+                    android:visibility="visible"
+                    tools:visibility="visible"
+                    android:layout_marginStart="@dimen/dp_18"
+                    android:layout_centerVertical="true"
+                    app:srcCompat="@drawable/ic_check_cod"/>
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/tnc_decs_2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dp_16"
+                    android:layout_marginEnd="@dimen/dp_16"
+                    android:text="@string/tnc_desc"
+                    app:typographyType="body_3"
+                    android:layout_toEndOf="@id/check_icon_2"/>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_16">
+
+                <ImageView
+                    android:id="@+id/check_icon_3"
+                    android:layout_width="@dimen/dp_16"
+                    android:layout_height="@dimen/dp_12"
+                    android:visibility="visible"
+                    tools:visibility="visible"
+                    android:layout_marginStart="@dimen/dp_18"
+                    android:layout_centerVertical="true"
+                    app:srcCompat="@drawable/ic_check_cod"/>
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/tnc_decs_3"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dp_16"
+                    android:layout_marginEnd="@dimen/dp_16"
+                    android:text="@string/tnc_desc"
+                    app:typographyType="body_3"
+                    android:layout_toEndOf="@id/check_icon_3"/>
+
+            </RelativeLayout>
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/see_more"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_16"
+                android:layout_marginTop="@dimen/dp_16"
+                android:text="@string/see_more"
+                app:typographyType="body_3"/>
+
+            <View
+                android:id="@+id/cod_separator_3"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_8"
+                android:layout_marginTop="@dimen/dp_16"
+                android:background="@color/grey_300"/>
+
+            <RelativeLayout
+                android:id="@+id/checkbox_cod_rl"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_16"
+                android:visibility="gone">
+
+                <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
+                    android:id="@+id/cb_tnc"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dp_16"
+                    android:layout_centerVertical="true"/>
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/checkbox_tnc"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dp_10"
+                    android:layout_marginEnd="@dimen/dp_16"
+                    android:text="@string/tnc_desc"
+                    app:typographyType="body_3"
+                    android:layout_toEndOf="@id/cb_tnc"/>
+
+            </RelativeLayout>
+
+            <com.tokopedia.unifycomponents.UnifyButton
+                android:id="@+id/btn_save"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_12"
+                android:layout_marginBottom="@dimen/dp_24"
+                android:layout_marginStart="@dimen/dp_16"
+                android:layout_marginEnd="@dimen/dp_16"
+                android:text="@string/cod_button_active"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/checkbox_tnc"
+                app:layout_constraintVertical_bias="1"
+                app:unifyButtonVariant="ghost"
+                android:enabled="false"/>
+
+            </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</com.tokopedia.unifycomponents.CardUnify>

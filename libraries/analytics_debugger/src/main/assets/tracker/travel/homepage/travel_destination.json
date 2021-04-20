@@ -1,0 +1,178 @@
+{
+  "readme": "this tracker to track travel destination activity",
+  "mode": "exact",
+  "query": [
+    {
+      "event": "view_item",
+      "eventAction": "booking widget impression",
+      "eventCategory": "digital - subhomepage - travel&entertainment - destination",
+      "eventLabel": "view booking widget",
+      "sessionIris": "{{.+}}",
+      "promotions": [
+        {
+          "creative_name": "{{.+}}",
+          "creative_slot": "{{.+}}",
+          "item_id": "{{.+}}",
+          "item_name": "{{.+}}",
+          "category": "{{.+}}"
+        }
+      ]
+    },
+    {
+      "event": "select_content",
+      "eventAction": "click booking widget",
+      "eventCategory": "digital - subhomepage - travel&entertainment - destination",
+      "eventLabel": "{{.+ - .+ - .+}}",
+      "sessionIris": "{{.+}}",
+      "promotions": [
+        {
+          "creative_name": "{{.+}}",
+          "creative_slot": "{{.+}}",
+          "item_id": "{{.+}}",
+          "item_name": "{{.+}}",
+          "category": "{{.+}}"
+        }
+      ]
+    },
+    {
+      "event": "view_item",
+      "eventAction": "cross sell widget impression",
+      "eventCategory": "digital - subhomepage - travel&entertainment - destination",
+      "eventLabel": "view cross sell widget",
+      "sessionIris": "{{.+}}",
+      "promotions": [
+        {
+          "creative_name": "{{.+}}",
+          "creative_slot": "{{.+}}",
+          "item_id": "{{.+}}",
+          "item_name": "{{.+}}",
+          "category": "{{.+}}"
+        }
+      ]
+    },
+    {
+      "event": "select_content",
+      "eventAction": "click cross sell widget",
+      "eventCategory": "digital - subhomepage - travel&entertainment - destination",
+      "eventLabel": "{{.+ - .+ - .+}}",
+      "sessionIris": "{{.+}}",
+      "promotions": [
+        {
+          "creative_name": "{{.+}}",
+          "creative_slot": "{{.+}}",
+          "item_id": "{{.+}}",
+          "item_name": "{{.+}}",
+          "category": "{{.+}}"
+        }
+      ]
+    },
+    {
+      "event": "view_item_list",
+      "eventAction": "events widget impression",
+      "eventCategory": "digital - subhomepage - travel&entertainment - destination",
+      "item_list": "/event",
+      "eventLabel": "view events widget",
+      "sessionIris": "{{.+}}",
+      "items": [
+        {
+          "item_id": "{{.+}}",
+          "item_name": "{{.+}}",
+          "item_brand": "{{.+}}",
+          "item_variant": "none / other",
+          "item_category": "{{.+}}",
+          "price": "{{.+}}",
+          "index": "{{.+}}",
+          "dimension40": "/event"
+        }
+      ]
+    },{
+      "event": "select_content",
+      "eventAction": "click events widget",
+      "eventCategory": "digital - subhomepage - travel&entertainment - destination",
+      "item_list": "/event",
+      "eventLabel": "{{.+ - .+ - .+}}",
+      "sessionIris": "{{.+}}"
+    },
+    {
+      "event": "clickHomepage",
+      "eventAction": "click view all events widget",
+      "eventCategory": "digital - subhomepage - travel&entertainment - destination",
+      "eventLabel": "click",
+      "sessionIris": "{{.+}}"
+    },
+    {
+      "event": "view_item_list",
+      "eventAction": "deals widget impression",
+      "eventCategory": "digital - subhomepage - travel&entertainment - destination",
+      "item_list": "/deals",
+      "eventLabel": "view deals widget",
+      "sessionIris": "{{.+}}",
+      "items": [
+        {
+          "item_id": "{{.+}}",
+          "item_name": "{{.+}}",
+          "item_brand": "{{.+}}",
+          "item_variant": "none / other",
+          "item_category": "{{.+}}",
+          "price": "{{.+}}",
+          "index": "{{.+}}",
+          "dimension40": "/deals"
+        }
+      ]
+    }, {
+      "event": "select_content",
+      "eventAction": "click deals widget",
+      "eventCategory": "digital - subhomepage - travel&entertainment - destination",
+      "item_list": "/deals",
+      "eventLabel": "{{.+ - .+ - .+}}",
+      "sessionIris": "{{.+}}"
+    }, {
+      "event": "clickHomepage",
+      "eventAction": "click view all deals widget",
+      "eventCategory": "digital - subhomepage - travel&entertainment - destination",
+      "eventLabel": "click",
+      "sessionIris": "{{.+}}"
+    },
+    {
+      "event": "view_item",
+      "eventAction": "blogspot impression",
+      "eventCategory": "digital - subhomepage - travel&entertainment - destination",
+      "eventLabel": "view blogspot",
+      "sessionIris": "{{.+}}",
+      "promotions": [
+        {
+          "creative_name": "{{.+}}",
+          "creative_slot": "{{.+}}",
+          "item_id": "{{.+}}",
+          "item_name": "{{.+}}",
+          "category": "{{.+}}",
+          "creative_url": "{{.+}}"
+        }
+      ]
+    },
+    {
+      "event": "select_content",
+      "eventAction": "click blogspot",
+      "eventCategory": "digital - subhomepage - travel&entertainment - destination",
+      "eventLabel": "{{.+ - .+}}",
+      "sessionIris": "{{.+}}",
+      "promotions": [
+        {
+          "creative_name": "{{.+}}",
+          "creative_slot": "{{.+}}",
+          "item_id": "{{.+}}",
+          "item_name": "{{.+}}",
+          "category": "{{.+}}",
+          "creative_url": "{{.+}}"
+        }
+      ]
+    },
+    {
+      "event": "clickHomepage",
+      "eventAction": "click view all blogspot widget",
+      "eventCategory": "digital - subhomepage - travel&entertainment - destination",
+      "eventLabel": "click",
+      "sessionIris": "{{.+}}"
+    }
+  ]
+}

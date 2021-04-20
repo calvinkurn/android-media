@@ -1,0 +1,13 @@
+<manifest xmlns:dist="http://schemas.android.com/apk/distribution"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.tokopedia.df.recharge.emoney">
+
+    <dist:module
+        dist:title="@string/title_digital_emoney">
+        <dist:delivery>
+            <dist:on-demand/>
+        </dist:delivery>
+        <dist:fusing dist:include="true" />
+    </dist:module>
+    <application android:hasCode="false" />
+</manifest>

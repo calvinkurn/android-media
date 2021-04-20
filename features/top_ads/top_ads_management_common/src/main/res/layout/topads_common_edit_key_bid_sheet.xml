@@ -13,7 +13,7 @@
         app:layout_constraintBottom_toBottomOf="@+id/title"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/title"
-        app:srcCompat="@drawable/topads_common_ic_close" />
+        app:srcCompat="@drawable/topads_create_ic_group_close" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/title"
@@ -22,7 +22,7 @@
         android:layout_marginStart="@dimen/dp_12"
         android:gravity="center_vertical"
         android:text="@string/topads_common_keyword_edit_bid_sheet_title"
-        android:textColor="@color/black"
+        android:textColor="@color/Unify_N700"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/btn_close"
         app:layout_constraintTop_toTopOf="@id/title"
@@ -148,7 +148,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/dp_16"
-        android:text="@string/topads_common_simpan"
+        android:text="@string/topads_common_save_butt"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/divider1"
         app:unifyButtonSize="medium"

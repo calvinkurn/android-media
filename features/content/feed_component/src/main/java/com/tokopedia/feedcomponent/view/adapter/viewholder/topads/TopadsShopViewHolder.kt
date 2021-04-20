@@ -17,8 +17,8 @@ import kotlinx.android.synthetic.main.item_topads_shop.view.*
 /**
  * @author by milhamj on 08/01/19.
  */
-class TopadsShopViewHolder(v: View, private val topadsShopListener: TopadsShopListener,
-                           private val cardTitleListener: CardTitleView.CardTitleListener)
+class TopadsShopViewHolder(v: View, private val topadsShopListener: TopadsShopListener?,
+                           private val cardTitleListener: CardTitleView.CardTitleListener?)
     : AbstractViewHolder<TopadsShopViewModel>(v), TopAdsItemClickListener, DynamicFeedShopAdapter.TopAdsShopImpressionListener {
 
     companion object {
@@ -65,11 +65,11 @@ class TopadsShopViewHolder(v: View, private val topadsShopListener: TopadsShopLi
     }
 
     override fun onShopItemClicked(position: Int, shop: Shop) {
-        topadsShopListener.onShopItemClicked(adapterPosition, position, shop)
+        topadsShopListener?.onShopItemClicked(adapterPosition, position, shop)
     }
 
     override fun onAddFavorite(position: Int, data: Data) {
-        topadsShopListener.onAddFavorite(adapterPosition, position, data)
+        topadsShopListener?.onAddFavorite(adapterPosition, position, data)
     }
 
     override fun onViewRecycled() {
@@ -85,6 +85,6 @@ class TopadsShopViewHolder(v: View, private val topadsShopListener: TopadsShopLi
     }
 
     override fun onImpressionShopAds(url: String, shopId: String, shopName: String, imageUrl: String) {
-        topadsShopListener.onTopAdsImpression(url, shopId, shopName, imageUrl)
+        topadsShopListener?.onTopAdsImpression(url, shopId, shopName, imageUrl)
     }
 }

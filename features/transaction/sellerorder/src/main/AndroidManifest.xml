@@ -4,126 +4,124 @@
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <application>
-
         <activity
-            android:name="com.tokopedia.sellerorder.list.presentation.activity.SomListActivity"
+            android:name=".list.presentation.activities.SomListActivity"
             android:label="@string/title_som_list"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White">
-
+            android:theme="@style/Theme.White"
+            android:windowSoftInputMode="adjustPan">
             <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
+                <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:scheme="@string/internal_scheme"
                     android:host="@string/host_seller"
-                    android:path="@string/path_new_order"/>
+                    android:path="@string/path_new_order"
+                    android:scheme="@string/internal_scheme" />
 
                 <data
-                    android:scheme="@string/internal_scheme"
                     android:host="@string/host_seller"
-                    android:path="@string/path_ready_to_ship"/>
+                    android:path="@string/path_ready_to_ship"
+                    android:scheme="@string/internal_scheme" />
 
                 <data
-                    android:scheme="@string/internal_scheme"
                     android:host="@string/host_seller"
-                    android:path="@string/path_shipped"/>
+                    android:path="@string/path_shipped"
+                    android:scheme="@string/internal_scheme" />
 
                 <data
-                    android:scheme="@string/internal_scheme"
                     android:host="@string/host_seller"
-                    android:path="@string/path_delivered"/>
+                    android:path="@string/path_delivered"
+                    android:scheme="@string/internal_scheme" />
 
                 <data
-                    android:scheme="@string/internal_scheme"
                     android:host="@string/host_seller"
-                    android:path="@string/path_history"/>
+                    android:path="@string/path_history"
+                    android:scheme="@string/internal_scheme" />
 
                 <data
-                    android:scheme="@string/internal_scheme"
                     android:host="@string/host_seller"
-                    android:path="@string/path_cancelled"/>
+                    android:path="@string/path_cancelled"
+                    android:scheme="@string/internal_scheme" />
 
                 <data
-                    android:scheme="@string/internal_scheme"
                     android:host="@string/host_seller"
-                    android:path="@string/path_waiting_pickup"/>
+                    android:path="@string/path_waiting_pickup"
+                    android:scheme="@string/internal_scheme" />
 
                 <data
-                    android:scheme="@string/internal_scheme"
                     android:host="@string/host_seller"
-                    android:path="@string/path_waiting_awb"/>
+                    android:path="@string/path_waiting_awb"
+                    android:scheme="@string/internal_scheme" />
 
                 <data
-                    android:scheme="@string/internal_scheme"
                     android:host="@string/host_seller"
-                    android:path="@string/path_awb_invalid"/>
+                    android:path="@string/path_awb_invalid"
+                    android:scheme="@string/internal_scheme" />
 
                 <data
-                    android:scheme="@string/internal_scheme"
                     android:host="@string/host_seller"
-                    android:path="@string/path_awb_change"/>
+                    android:path="@string/path_awb_change"
+                    android:scheme="@string/internal_scheme" />
 
                 <data
-                    android:scheme="@string/internal_scheme"
                     android:host="@string/host_seller"
-                    android:path="@string/path_retur"/>
+                    android:path="@string/path_retur"
+                    android:scheme="@string/internal_scheme" />
 
                 <data
-                    android:scheme="@string/internal_scheme"
                     android:host="@string/host_seller"
-                    android:path="@string/path_complaint"/>
+                    android:path="@string/path_complaint"
+                    android:scheme="@string/internal_scheme" />
 
                 <data
-                    android:scheme="@string/internal_scheme"
                     android:host="@string/host_seller"
-                    android:path="@string/path_finished"/>
+                    android:path="@string/path_finished"
+                    android:scheme="@string/internal_scheme" />
+
+                <data
+                    android:host="@string/host_seller"
+                    android:path="@string/path_cancellation_request"
+                    android:scheme="@string/internal_scheme" />
 
             </intent-filter>
         </activity>
 
         <activity
-            android:name=".list.presentation.activity.SomFilterActivity"
-            android:label="@string/title_som_filter"
+            android:name=".filter.presentation.activity.SomSubFilterActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
-            android:windowSoftInputMode="stateHidden" />
+            android:windowSoftInputMode="adjustPan|stateHidden" />
 
         <activity
-            android:name=".list.presentation.activity.SomSubFilterActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White" />
-
-        <activity
-            android:name=".detail.presentation.activity.SomDetailActivity"
+            android:name="com.tokopedia.sellerorder.detail.presentation.activity.SomDetailActivity"
             android:label="@string/title_som_detail"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White">
 
             <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
+                <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:scheme="@string/internal_scheme"
                     android:host="@string/host_seller"
-                    android:pathPattern="@string/path_order"/>
+                    android:path="@string/path_order"
+                    android:scheme="@string/internal_scheme" />
 
             </intent-filter>
 
         </activity>
 
         <activity
-            android:name=".detail.presentation.activity.SomSeeInvoiceActivity"
-            android:screenOrientation="portrait"
+            android:name="com.tokopedia.sellerorder.detail.presentation.activity.SomSeeInvoiceActivity"
             android:configChanges="uiMode"
-            android:theme="@style/Theme.White"/>
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White" />
 
         <activity
             android:name=".requestpickup.presentation.activity.SomConfirmReqPickupActivity"
@@ -144,8 +142,26 @@
             android:theme="@style/Theme.White" />
 
         <activity
-            android:name=".detail.presentation.activity.SomDetailBookingCodeActivity"
+            android:name="com.tokopedia.sellerorder.detail.presentation.activity.SomDetailBookingCodeActivity"
             android:label="@string/title_som_booking_code"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White" />
+
+        <activity
+            android:name="com.tokopedia.sellerorder.detail.presentation.activity.SomDetailLogisticInfoActivity"
+            android:label="@string/title_logistic_info"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White" />
+
+        <activity
+            android:name=".waitingpaymentorder.presentation.activity.WaitingPaymentOrderActivity"
+            android:label="@string/title_som_waiting_payment"
+            android:screenOrientation="portrait"
+            android:theme="@style/WaitingPaymentOrderTheme" />
+
+        <activity
+            android:name=".common.presenter.activities.SomPrintAwbActivity"
+            android:configChanges="uiMode"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
 

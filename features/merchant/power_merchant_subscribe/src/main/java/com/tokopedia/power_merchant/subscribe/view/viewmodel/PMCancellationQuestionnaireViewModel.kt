@@ -3,6 +3,7 @@ package com.tokopedia.power_merchant.subscribe.view.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.gm.common.data.source.cloud.model.PMCancellationQuestionnaireAnswerModel
 import com.tokopedia.gm.common.domain.interactor.DeactivatePowerMerchantUseCase
 import com.tokopedia.power_merchant.subscribe.data.model.GoldCancellationsQuestionaire
@@ -18,16 +19,14 @@ import com.tokopedia.power_merchant.subscribe.view.model.PMCancellationQuestionn
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.coroutines.CoroutineDispatcher
 import rx.Subscriber
 import javax.inject.Inject
-import javax.inject.Named
 
 class PMCancellationQuestionnaireViewModel @Inject constructor(
         private val getPMCancellationQuestionnaireDataUseCase: GetPMCancellationQuestionnaireDataUseCase,
         private val deactivatePowerMerchantUseCase: DeactivatePowerMerchantUseCase,
-        @Named("Main") dispatcher: CoroutineDispatcher
-) : BaseViewModel(dispatcher) {
+        dispatcher: CoroutineDispatchers
+) : BaseViewModel(dispatcher.main) {
 
     private val _pmCancellationQuestionnaireData by lazy {
         MutableLiveData<Result<PMCancellationQuestionnaireData>>()

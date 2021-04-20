@@ -1,41 +1,33 @@
 package com.tokopedia.travelhomepage.homepage.presentation.viewmodel
 
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.common.travel.utils.TravelDispatcherProvider
-import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
-import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.graphql.data.model.CacheType
-import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
-import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.travelhomepage.homepage.data.ParamData
 import com.tokopedia.travelhomepage.homepage.data.TravelHomepageItemModel
 import com.tokopedia.travelhomepage.homepage.data.TravelLayoutSubhomepage
-import com.tokopedia.travelhomepage.homepage.data.TravelUnifiedSubhomepageData
 import com.tokopedia.travelhomepage.homepage.data.mapper.TravelHomepageMapper
 import com.tokopedia.travelhomepage.homepage.usecase.GetEmptyModelsUseCase
+import com.tokopedia.travelhomepage.homepage.usecase.GetSubhomepageUnifiedDataUseCase
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import java.lang.reflect.Type
 import javax.inject.Inject
-import kotlin.coroutines.CoroutineContext
 
 /**
  * @author by jessica on 2019-08-09
  */
 
 class TravelHomepageViewModel @Inject constructor(
-        private val graphqlRepository: GraphqlRepository,
         private val getEmptyModelsUseCase: GetEmptyModelsUseCase,
-        private val dispatcherProvider: TravelDispatcherProvider)
-    : BaseViewModel(dispatcherProvider.io()) {
+        dispatcherProvider: CoroutineDispatchers,
+        private val getSubhomepageUnifiedDataUseCase: GetSubhomepageUnifiedDataUseCase)
+    : BaseViewModel(dispatcherProvider.io) {
 
     var travelItemList = mutableListOf<TravelHomepageItemModel>()
-    val renderList = MutableLiveData<Boolean>()
+    val travelItemListLiveData = MutableLiveData<MutableList<TravelHomepageItemModel>>()
     val isAllError = MutableLiveData<Boolean>()
     private val mapper = TravelHomepageMapper()
 
@@ -47,16 +39,17 @@ class TravelHomepageViewModel @Inject constructor(
             val layoutResult = getEmptyModelsUseCase.getTravelLayoutSubhomepage(rawQuery, isLoadFromCloud)
             if (layoutResult is Success) {
                 travelItemList = layoutResult.data.toMutableList()
-                renderList.postValue(true)
+                travelItemListLiveData.postValue(travelItemList)
             } else isAllError.postValue(true)
         }) {
             isAllError.postValue(true)
         }
     }
 
-    fun getTravelUnifiedData(rawQuery: String, layoutData: TravelLayoutSubhomepage.Data, isFromCloud: Boolean) {
+    fun getTravelUnifiedData(rawQuery: String, layoutData: TravelLayoutSubhomepage.Data, isFromCloud: Boolean,
+                             type: Type) {
         launch {
-
+            delay(200)
             if (!calledApiList.containsKey(layoutData.position.toString())) {
                 calledApiList[layoutData.position.toString()] = layoutData.position.toString()
 
@@ -64,37 +57,22 @@ class TravelHomepageViewModel @Inject constructor(
                         WIDGET_TYPE_PARAM to layoutData.widgetType, "data" to ParamData())
 
                 try {
-                    getSubhomepageData(rawQuery, param, isFromCloud).let {
+                    getSubhomepageUnifiedDataUseCase.execute(rawQuery, param, isFromCloud, type).let {
                         val item = mapper.mapToViewModel(layoutData, it)
                         item.isLoaded = true
                         item.isSuccess = true
                         item.isLoadFromCloud = false
                         travelItemList[layoutData.position] = item
-                        renderList.postValue(true)
+                        travelItemListLiveData.postValue(travelItemList)
                     }
 
                 } catch (e: Throwable) {
                     travelItemList[layoutData.position].isLoaded = true
                     travelItemList[layoutData.position].isSuccess = false
                     if (checkIfAllError()) isAllError.postValue(true)
-                    else renderList.postValue(true)
+                    else travelItemListLiveData.postValue(travelItemList)
                 }
             }
-        }
-    }
-
-    private suspend fun getSubhomepageData(rawQuery: String, param: Map<String, Any>, isFromCloud: Boolean): List<TravelUnifiedSubhomepageData> {
-
-        val graphQlCacheStrategy = if (isFromCloud) GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
-        else GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST).build()
-
-        return withContext(SupervisorJob()) {
-            val response = withContext(dispatcherProvider.ui()) {
-                val graphqlRequest = GraphqlRequest(rawQuery, TravelUnifiedSubhomepageData.Response::class.java, param)
-                graphqlRepository.getReseponse(listOf(graphqlRequest), graphQlCacheStrategy)
-                        .getSuccessData<TravelUnifiedSubhomepageData.Response>()
-            }
-            response.response
         }
     }
 

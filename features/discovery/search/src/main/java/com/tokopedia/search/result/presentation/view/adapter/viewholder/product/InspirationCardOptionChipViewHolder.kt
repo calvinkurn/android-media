@@ -3,9 +3,10 @@ package com.tokopedia.search.result.presentation.view.adapter.viewholder.product
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.discovery.common.constants.SearchConstant.InspirationCard.*
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.search.R
-import com.tokopedia.search.result.presentation.model.InspirationCardOptionViewModel
+import com.tokopedia.search.result.presentation.model.InspirationCardOptionDataView
 import com.tokopedia.search.result.presentation.view.listener.InspirationCardListener
 import com.tokopedia.search.utils.createColorSampleDrawable
 import com.tokopedia.unifycomponents.ChipsUnify
@@ -19,21 +20,18 @@ class InspirationCardOptionChipViewHolder(
 
     companion object {
         val LAYOUT = R.layout.search_result_product_inspiration_card_option_chip_layout
-        const val TYPE_ANNOTATION = "annotation"
-        const val TYPE_CATEGORY = "category"
-        const val TYPE_GUIDED = "guided"
     }
 
-    internal fun bind(option: InspirationCardOptionViewModel) {
-        setChipType(option)
-        if (option.img.isNotEmpty()) bindIcon(option.img)
-        else bindIconColor(option)
-        bindOptionTitle(option)
-        bindListener(option)
+    internal fun bind(optionData: InspirationCardOptionDataView) {
+        setChipType(optionData)
+        if (optionData.img.isNotEmpty()) bindIcon(optionData.img)
+        else bindIconColor(optionData)
+        bindOptionTitle(optionData)
+        bindListener(optionData)
     }
 
-    private fun setChipType(option: InspirationCardOptionViewModel) {
-        when(option.inspirationCardType) {
+    private fun setChipType(optionData: InspirationCardOptionDataView) {
+        when(optionData.inspirationCardType) {
             TYPE_ANNOTATION, TYPE_CATEGORY -> itemView.inspirationCardOptionChip?.chipType = ChipsUnify.TYPE_NORMAL
             TYPE_GUIDED -> itemView.inspirationCardOptionChip?.chipType = ChipsUnify.TYPE_ALTERNATE
             else -> itemView.inspirationCardOptionChip?.chipType = ChipsUnify.TYPE_NORMAL
@@ -46,24 +44,24 @@ class InspirationCardOptionChipViewHolder(
         itemView.inspirationCardOptionChip?.chip_image_icon?.visibility = View.VISIBLE
     }
 
-    private fun bindIconColor(option: InspirationCardOptionViewModel) {
-        itemView.inspirationCardOptionChip?.shouldShowWithAction(option.color.isNotEmpty()) {
-            val gradientDrawable = createColorSampleDrawable(itemView.context, option.color)
+    private fun bindIconColor(optionData: InspirationCardOptionDataView) {
+        itemView.inspirationCardOptionChip?.shouldShowWithAction(optionData.hexColor.isNotEmpty()) {
+            val gradientDrawable = createColorSampleDrawable(itemView.context, optionData.hexColor)
             itemView.inspirationCardOptionChip?.chip_image_icon?.setImageDrawable(gradientDrawable)
             itemView.inspirationCardOptionChip?.chip_image_icon?.visibility = View.VISIBLE
         }
     }
 
-    private fun bindOptionTitle(option: InspirationCardOptionViewModel) {
-        itemView.inspirationCardOptionChip?.shouldShowWithAction(option.text.isNotEmpty()) {
-            itemView.inspirationCardOptionChip?.chip_text?.text = MethodChecker.fromHtml(option.text)
+    private fun bindOptionTitle(optionData: InspirationCardOptionDataView) {
+        itemView.inspirationCardOptionChip?.shouldShowWithAction(optionData.text.isNotEmpty()) {
+            itemView.inspirationCardOptionChip?.chip_text?.text = MethodChecker.fromHtml(optionData.text)
         }
     }
 
-    private fun bindListener(option: InspirationCardOptionViewModel) {
+    private fun bindListener(optionData: InspirationCardOptionDataView) {
         itemView.inspirationCardOptionChip?.setOnClickListener {
             //Tracker
-            inspirationCardListener.onInspirationCardOptionClicked(option)
+            inspirationCardListener.onInspirationCardOptionClicked(optionData)
         }
     }
 

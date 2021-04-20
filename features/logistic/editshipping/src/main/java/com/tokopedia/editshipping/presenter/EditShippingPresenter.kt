@@ -5,8 +5,8 @@ import com.tokopedia.editshipping.domain.model.editshipping.EditShippingCouriers
 import com.tokopedia.editshipping.domain.model.editshipping.ProvinceCitiesDistrict
 import com.tokopedia.editshipping.domain.model.editshipping.ShopShipping
 import com.tokopedia.editshipping.domain.model.openshopshipping.OpenShopData
-import com.tokopedia.logisticdata.data.entity.address.DistrictRecommendationAddress
-import com.tokopedia.logisticdata.data.entity.address.Token
+import com.tokopedia.logisticCommon.data.entity.address.DistrictRecommendationAddress
+import com.tokopedia.logisticCommon.data.entity.address.Token
 
 /**
  * Created by Kris on 2/23/2016.

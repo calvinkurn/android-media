@@ -1,11 +1,9 @@
 package com.tokopedia.checkout.domain.usecase
 
 import com.tokopedia.checkout.data.model.response.changeshippingaddress.ChangeShippingAddressGqlResponse
-import com.tokopedia.checkout.domain.model.cartmultipleshipment.SetShippingAddressData
+import com.tokopedia.checkout.domain.model.changeaddress.SetShippingAddressData
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
-import com.tokopedia.network.exception.ResponseErrorException
-import com.tokopedia.purchase_platform.common.constant.CartConstant
 import com.tokopedia.purchase_platform.common.constant.CartConstant.CART_ERROR_GLOBAL
 import com.tokopedia.purchase_platform.common.exception.CartResponseErrorException
 import com.tokopedia.purchase_platform.common.schedulers.ExecutorSchedulers
@@ -36,10 +34,10 @@ class ChangeShippingAddressGqlUseCase @Inject constructor(@Named(CHANGE_SHIPPING
                 .map {
                     val gqlResponse = it.getData<ChangeShippingAddressGqlResponse>(ChangeShippingAddressGqlResponse::class.java)
                     if (gqlResponse != null) {
-                        SetShippingAddressData.Builder()
-                                .success(gqlResponse.changeShippingAddressResponse.dataResponse.success == 1)
-                                .messages(gqlResponse.changeShippingAddressResponse.dataResponse.messages ?: emptyList())
-                                .build()
+                        SetShippingAddressData().apply {
+                            isSuccess = gqlResponse.changeShippingAddressResponse.dataResponse.success == 1
+                            messages = gqlResponse.changeShippingAddressResponse.dataResponse.messages ?: emptyList()
+                        }
                     } else {
                         throw CartResponseErrorException(CART_ERROR_GLOBAL)
                     }

@@ -10,7 +10,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.FragmentManager;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
@@ -25,48 +24,53 @@ import com.tokopedia.cachemanager.SaveInstanceCacheManager;
 import com.tokopedia.common.payment.PaymentConstant;
 import com.tokopedia.common.payment.model.PaymentPassData;
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier;
-import com.tokopedia.common_digital.cart.view.activity.InstantCheckoutActivity;
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
-import com.tokopedia.common_digital.cart.view.model.cart.CartAdditionalInfo;
-import com.tokopedia.common_digital.cart.view.model.cart.CartDigitalInfoData;
-import com.tokopedia.common_digital.cart.view.model.cart.CartItemDigital;
-import com.tokopedia.common_digital.cart.view.model.cart.UserInputPriceDigital;
-import com.tokopedia.common_digital.cart.view.model.checkout.CheckoutDataParameter;
-import com.tokopedia.common_digital.cart.view.model.checkout.InstantCheckoutData;
-import com.tokopedia.common_digital.common.DigitalRouter;
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam;
-import com.tokopedia.design.component.Dialog;
+import com.tokopedia.device.info.DeviceInfo;
+import com.tokopedia.dialog.DialogUnify;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.common.analytic.DigitalAnalytics;
 import com.tokopedia.digital.newcart.domain.model.CheckoutDigitalData;
 import com.tokopedia.digital.newcart.presentation.compoundview.DigitalCartCheckoutHolderView;
 import com.tokopedia.digital.newcart.presentation.compoundview.DigitalCartDetailHolderView;
+import com.tokopedia.digital.newcart.presentation.compoundview.DigitalCartMyBillsView;
 import com.tokopedia.digital.newcart.presentation.compoundview.InputPriceHolderView;
 import com.tokopedia.digital.newcart.presentation.contract.DigitalBaseContract;
 import com.tokopedia.digital.newcart.presentation.model.DigitalSubscriptionParams;
+import com.tokopedia.digital.newcart.presentation.model.cart.CartAdditionalInfo;
+import com.tokopedia.digital.newcart.presentation.model.cart.CartDigitalInfoData;
+import com.tokopedia.digital.newcart.presentation.model.cart.CartItemDigital;
+import com.tokopedia.digital.newcart.presentation.model.cart.FintechProduct;
+import com.tokopedia.digital.newcart.presentation.model.cart.UserInputPriceDigital;
+import com.tokopedia.digital.newcart.presentation.model.checkout.CheckoutDataParameter;
 import com.tokopedia.digital.utils.DeviceUtil;
+import com.tokopedia.empty_state.EmptyStateUnify;
 import com.tokopedia.network.constant.ErrorNetMessage;
 import com.tokopedia.network.utils.ErrorHandler;
-import com.tokopedia.nps.presentation.view.dialog.AppFeedbackRatingBottomSheet;
 import com.tokopedia.promocheckout.common.data.ConstantKt;
 import com.tokopedia.promocheckout.common.util.TickerCheckoutUtilKt;
 import com.tokopedia.promocheckout.common.view.model.PromoData;
 import com.tokopedia.promocheckout.common.view.uimodel.PromoDigitalModel;
 import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView;
-import com.tokopedia.track.TrackApp;
-import com.tokopedia.track.interfaces.AFAdsIDCallback;
+import com.tokopedia.unifycomponents.BottomSheetUnify;
 import com.tokopedia.unifycomponents.Toaster;
+import com.tokopedia.unifyprinciples.Typography;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import kotlin.Unit;
+import timber.log.Timber;
+
+
 public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Presenter> extends BaseDaggerFragment
         implements DigitalBaseContract.View,
         InputPriceHolderView.ActionListener,
         TickerCheckoutView.ActionListener,
-        DigitalCartCheckoutHolderView.ActionListener {
+        DigitalCartCheckoutHolderView.ActionListener,
+        DigitalCartMyBillsView.OnMoreInfoClickListener {
     protected static final String ARG_PASS_DATA = "ARG_PASS_DATA";
     protected static final String ARG_CART_INFO = "ARG_CART_INFO";
     protected static final String ARG_SUBSCRIPTION_PARAMS = "ARG_SUBSCRIPTION_PARAMS";
@@ -80,6 +84,7 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
     protected DigitalCheckoutPassData cartPassData;
     protected DigitalCartDetailHolderView detailHolderView;
     protected DigitalCartCheckoutHolderView checkoutHolderView;
+    protected DigitalCartMyBillsView mybillEgold;
     protected InputPriceHolderView inputPriceHolderView;
     protected LinearLayout inputPriceContainer;
     private boolean traceStop;
@@ -96,19 +101,11 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
 
     protected P presenter;
 
+    protected EmptyStateUnify emptyState;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        TrackApp.getInstance().getAppsFlyer().getAdsID(new AFAdsIDCallback() {
-            @Override
-            public void onGetAFAdsID(String string) {
-                // do nothing
-            }
-
-            @Override
-            public void onErrorAFAdsID() {
-                //do nothing
-            }
-        });
+        DeviceInfo.getAdsIdSuspend(requireContext(), null);
         super.onCreate(savedInstanceState);
         cartPassData = getArguments().getParcelable(ARG_PASS_DATA);
         DigitalSubscriptionParams subParams = getArguments().getParcelable(ARG_SUBSCRIPTION_PARAMS);
@@ -125,9 +122,12 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        //if user don't keep activities
         if (savedInstanceState != null) {
             checkoutDataParameterBuilder = saveInstanceCacheManager.get(EXTRA_STATE_CHECKOUT_DATA_PARAMETER_BUILDER,
                     CheckoutDataParameter.Builder.class, null);
+            cartPassData.setNeedGetCart(true);
         }
         setupView(view);
         presenter.attachView(this);
@@ -230,6 +230,7 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
     public void onInputPriceByUserFilled(long paymentAmount) {
         checkoutHolderView.renderCheckout(paymentAmount);
         checkoutDataParameterBuilder.transactionAmount(paymentAmount);
+        presenter.updateTotalPriceWithFintechAmount(isEgoldChecked(), paymentAmount);
     }
 
     @Override
@@ -244,7 +245,7 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
 
     @Override
     public void onClickUsePromo() {
-        digitalAnalytics.eventclickUseVoucher(getCategoryName());
+        presenter.onClickPromoButton();
         Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalPromo.PROMO_LIST_DIGITAL);
         intent.putExtra("EXTRA_COUPON_ACTIVE",
                 Objects.requireNonNull(cartDigitalInfoData.getAttributes()).isCouponActive()
@@ -255,7 +256,7 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
 
     private PromoDigitalModel getPromoDigitalModel() {
         Long price = cartDigitalInfoData.getAttributes() != null ? cartDigitalInfoData.getAttributes().getPricePlain() : 0;
-        if(inputPriceContainer.getVisibility() == View.VISIBLE){
+        if (inputPriceContainer.getVisibility() == View.VISIBLE) {
             price = inputPriceHolderView.getPriceInput();
         }
         return new PromoDigitalModel(
@@ -300,6 +301,7 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
 
     @Override
     public void onClickDetailPromo() {
+        presenter.onClickPromoDetail();
         Intent intent;
         String promoCode = promoData.getPromoCode();
         if (!promoCode.isEmpty()) {
@@ -369,18 +371,6 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
         } else if (requestCode == PaymentConstant.REQUEST_CODE) {
             switch (resultCode) {
                 case PaymentConstant.PAYMENT_SUCCESS:
-                    if (getActivity() != null) {
-                        FragmentManager manager = getActivity().getSupportFragmentManager();
-
-                        AppFeedbackRatingBottomSheet rating = new AppFeedbackRatingBottomSheet();
-                        rating.setDialogDismissListener(() -> {
-                            if (getActivity() != null) {
-                                getActivity().setResult(DigitalRouter.Companion.getPAYMENT_SUCCESS());
-                                closeView();
-                            }
-                        });
-                        rating.showDialog(manager, getContext());
-                    }
                     presenter.onPaymentSuccess(cartPassData.getCategoryId());
                     break;
                 case PaymentConstant.PAYMENT_FAILED:
@@ -403,8 +393,6 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
             } else {
                 closeView();
             }
-        } else if (requestCode == InstantCheckoutActivity.Companion.getREQUEST_CODE()) {
-            closeView();
         }
     }
 
@@ -415,8 +403,9 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
     @Override
     public void showToastMessage(String message) {
         View view = getView();
-        if (view != null) Toaster.make(getView(), message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR,
-                getString(com.tokopedia.abstraction.R.string.close), v->{});
+        if (view != null) Toaster.build(getView(), message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR,
+                getString(com.tokopedia.abstraction.R.string.close), v -> {
+                }).show();
         else Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
     }
 
@@ -438,31 +427,48 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
 
     @Override
     public String getIdemPotencyKey() {
+        if (cartPassData.getIdemPotencyKey() == null) return "";
         return cartPassData.getIdemPotencyKey();
     }
 
     @Override
     public String getClientNumber() {
+        if (cartPassData.getClientNumber() == null) return "";
         return cartPassData.getClientNumber();
     }
 
     @Override
+    public long getOrderId() {
+        if (cartPassData.getOrderId() == null) return 0L;
+        String orderIdString = cartPassData.getOrderId();
+        try {
+            return TextUtils.isEmpty(orderIdString) ? 0L : Long.parseLong(orderIdString);
+        } catch (Exception e) {
+            return 0L;
+        }
+    }
+
+    @Override
     public String getZoneId() {
+        if (cartPassData.getZoneId() == null) return "";
         return cartPassData.getZoneId();
     }
 
     @Override
     public HashMap<String, String> getFields() {
+        if (cartPassData.getFields() == null) return new HashMap<>();
         return cartPassData.getFields();
     }
 
     @Override
     public boolean isInstantCheckout() {
+        if (cartPassData.getInstantCheckout() == null) return false;
         return cartPassData.getInstantCheckout().equals("1");
     }
 
     @Override
     public int getProductId() {
+        if (cartPassData.getProductId() == null) return 0;
         String productIdString = cartPassData.getProductId();
         try {
             return TextUtils.isEmpty(productIdString) ? 0 : Integer.parseInt(productIdString);
@@ -473,10 +479,52 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
 
     @Override
     public void closeViewWithMessageAlert(String message) {
-        Intent intent = new Intent();
-        intent.putExtra(DigitalExtraParam.EXTRA_MESSAGE, message);
-        getActivity().setResult(Activity.RESULT_OK, intent);
-        getActivity().finish();
+        if (cartPassData == null || cartPassData.isFromPDP()) {
+            Intent intent = new Intent();
+            intent.putExtra(DigitalExtraParam.EXTRA_MESSAGE, message);
+            getActivity().setResult(Activity.RESULT_OK, intent);
+            getActivity().finish();
+        } else {
+            showError(message);
+        }
+    }
+
+    @Override
+    public void showError(String message) {
+        try {
+            if (emptyState != null) {
+                String errorDesc = ErrorNetMessage.MESSAGE_ERROR_DEFAULT;
+                String errorTitle = getString(R.string.digital_transaction_failed_title);
+
+                if (message == null || message.isEmpty()) {
+                    emptyState.setImageUrl(getString(R.string.digital_image_url_failed_transaction));
+                } else {
+                    if (message.equals(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL) || message.equals(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION) || message.equals(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT)) {
+                        errorDesc = message;
+                        errorTitle = getString(com.tokopedia.globalerror.R.string.noConnectionAction);
+                        emptyState.setImageDrawable(getResources().getDrawable(com.tokopedia.globalerror.R.drawable.unify_globalerrors_connection));
+                    } else if (message.equals(ErrorNetMessage.MESSAGE_ERROR_SERVER) || message.equals(ErrorNetMessage.MESSAGE_ERROR_DEFAULT)) {
+                        errorDesc = getString(com.tokopedia.globalerror.R.string.error500Desc);
+                        errorTitle = getString(com.tokopedia.globalerror.R.string.error500Title);
+                        emptyState.setImageDrawable(getResources().getDrawable(com.tokopedia.globalerror.R.drawable.unify_globalerrors_500));
+                    } else {
+                        errorDesc = message;
+                        emptyState.setImageUrl(getString(R.string.digital_image_url_failed_transaction));
+                    }
+                }
+                emptyState.setDescription(errorDesc);
+                emptyState.setTitle(errorTitle);
+                emptyState.setPrimaryCTAText(getString(R.string.digital_empty_state_checkout_btn));
+                emptyState.setPrimaryCTAClickListener(() -> {
+                    emptyState.setVisibility(View.GONE);
+                    presenter.onViewCreated();
+                    return Unit.INSTANCE;
+                });
+                emptyState.setVisibility(View.VISIBLE);
+            } else showToastMessage(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+        } catch (Exception e) {
+            Timber.e("P2#OLD_CHECKOUT_DG#EMPTY_STATE#%s", message);
+        }
     }
 
     @Override
@@ -511,15 +559,6 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
     }
 
     @Override
-    public void renderToInstantCheckoutPage(InstantCheckoutData instantCheckoutData) {
-        navigateToActivityRequest(
-                InstantCheckoutActivity.Companion.newInstance(getActivity(), instantCheckoutData),
-                InstantCheckoutActivity.Companion.getREQUEST_CODE()
-        );
-        closeView();
-    }
-
-    @Override
     public void expandAdditionalInfo() {
         detailHolderView.expandAdditional();
     }
@@ -534,23 +573,92 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
                                    String content,
                                    String confirmButtonTitle) {
         try {
-            Dialog dialog = new Dialog(
-                    getActivity(),
-                    Dialog.Type.RETORIC
-            );
-            dialog.setTitle(title);
-            dialog.setDesc(MethodChecker.fromHtml(content));
-            dialog.setBtnOk(confirmButtonTitle);
-            dialog.setOnOkClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    dialog.dismiss();
-                }
+            DialogUnify dialogUnify = new DialogUnify(getActivity(),
+                    DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE);
+            dialogUnify.setTitle(title);
+            dialogUnify.setDescription(MethodChecker.fromHtml(content));
+            dialogUnify.setPrimaryCTAText(confirmButtonTitle);
+            dialogUnify.setPrimaryCTAClickListener(() -> {
+                dialogUnify.dismiss();
+                return Unit.INSTANCE;
             });
-            dialog.show();
+            dialogUnify.show();
         } catch (Throwable e) {
 
         }
+    }
+
+    @Override
+    public Boolean isEgoldChecked() {
+        if (mybillEgold != null) {
+            return mybillEgold.isChecked();
+        } else return false;
+    }
+
+    @Override
+    public void renderMyBillsEgoldView(FintechProduct fintechProduct) {
+        if (fintechProduct != null && mybillEgold != null) {
+            mybillEgold.setOnCheckedChangeListener((compoundButton, isChecked) -> {
+                presenter.onEgoldCheckedListener(isChecked, inputPriceHolderView.getPriceInput());
+            });
+
+            if (fintechProduct.getCheckBoxDisabled()) {
+                mybillEgold.getSubscriptionCheckbox().setVisibility(View.GONE);
+            } else {
+                mybillEgold.getSubscriptionCheckbox().setVisibility(View.VISIBLE);
+                if (!mybillEgold.isChecked()) mybillEgold.setChecked(fintechProduct.getOptIn());
+                presenter.onEgoldCheckedListener(mybillEgold.isChecked(), inputPriceHolderView.getPriceInput());
+            }
+
+            mybillEgold.hasMoreInfo(true);
+            if (fintechProduct.getInfo() != null) {
+                if (fintechProduct.getInfo().getTitle() != null)
+                    mybillEgold.setHeaderTitle(fintechProduct.getInfo().getTitle());
+                if (fintechProduct.getInfo().getSubtitle() != null)
+                    mybillEgold.setDescription(fintechProduct.getInfo().getSubtitle());
+            }
+            mybillEgold.setVisibility(View.VISIBLE);
+        } else {
+            if (mybillEgold != null) mybillEgold.setVisibility(View.GONE);
+        }
+    }
+
+    @Override
+    public void renderEgoldMoreInfo(String title, String tooltip, String linkUrl) {
+        if (linkUrl != null && !linkUrl.isEmpty()) {
+            if (getContext() != null) RouteManager.route(getContext(), linkUrl);
+        } else if (tooltip != null && !tooltip.isEmpty()) {
+            if (getContext() != null) {
+                View moreInfoView = View.inflate(getContext(), R.layout.view_digital_egold_info_bottom_sheet, null);
+                Typography moreInfoText = moreInfoView.findViewById(R.id.egold_tooltip);
+                moreInfoText.setText(tooltip);
+
+                BottomSheetUnify moreInfoBottomSheet = new BottomSheetUnify();
+                if (title != null) moreInfoBottomSheet.setTitle(title);
+                moreInfoBottomSheet.setFullPage(false);
+                moreInfoBottomSheet.setChild(moreInfoView);
+                moreInfoBottomSheet.clearAction();
+                moreInfoBottomSheet.setCloseClickListener(view -> {
+                    moreInfoBottomSheet.dismiss();
+                    return Unit.INSTANCE;
+                });
+                if (getFragmentManager() != null) {
+                    moreInfoBottomSheet.show(getFragmentManager(), "E-gold more info bottom sheet");
+                }
+            }
+        }
+    }
+
+
+    public void updateTotalPriceWithFintechAmount() {
+        if (mybillEgold != null && mybillEgold.getVisibility() == View.VISIBLE) {
+            presenter.updateTotalPriceWithFintechAmount(mybillEgold.isChecked(), inputPriceHolderView.getPriceInput());
+        }
+    }
+
+    @Override
+    public void onMoreInfoClicked() {
+        presenter.onEgoldMoreInfoClicked();
     }
 
     @Override

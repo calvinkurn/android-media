@@ -118,7 +118,8 @@
     </entry>
     <entry>
         <key>app_refferal_content</key>
-        <value>Ayo share kode ini ke temanmu dan nikmati bonus TokoCash setelah transaksi pertama mereka berhasil.
+        <value>Ayo share kode ini ke temanmu dan nikmati bonus TokoCash setelah transaksi pertama
+            mereka berhasil.
         </value>
     </entry>
     <entry>
@@ -247,11 +248,11 @@
         <value>true</value>
     </entry>
     <entry>
-        <key>mainapp_flight_new_search_flow</key>
+        <key>app_flag_flight_rapid_test</key>
         <value>true</value>
     </entry>
     <entry>
-        <key>android_customer_flight_booking_new_flow</key>
+        <key>app_flag_flight_seat_distancing</key>
         <value>true</value>
     </entry>
     <entry>
@@ -268,7 +269,8 @@
     </entry>
     <entry>
         <key>nonb_1_dsc</key>
-        <value><![CDATA[Tersedia jutaan produk dari <em>merchant</em> &#38; <em>official store</em> tepercaya]]></value>
+        <value>
+            <![CDATA[Tersedia jutaan produk dari <em>merchant</em> &#38; <em>official store</em> tepercaya]]></value>
     </entry>
     <entry>
         <key>nonb_2_ttl</key>
@@ -300,10 +302,11 @@
     </entry>
     <entry>
         <key>nonb_5_dsc</key>
-        <value>Buka toko gratis, nikmati transaksi mudah, aman, dan dikunjungi jutaan pembeli</value>
+        <value>Buka toko gratis, nikmati transaksi mudah, aman, dan dikunjungi jutaan pembeli
+        </value>
     </entry>
     <entry>
-    <key>android_seller_account_ticker_msg</key>
+        <key>android_seller_account_ticker_msg</key>
         <value>Perkuat bisnismu dengan Power Merchant versi baru.</value>
     </entry>
     <entry>
@@ -348,14 +351,6 @@
     </entry>
     <entry>
         <key>android_main_app_enable_new_shop_page</key>
-        <value>true</value>
-    </entry>
-    <entry>
-        <key>android_main_app_enabled_cache_pdp</key>
-        <value>true</value>
-    </entry>
-    <entry>
-        <key>app_semua_category_enable</key>
         <value>true</value>
     </entry>
     <entry>
@@ -451,6 +446,10 @@
         <value>false</value>
     </entry>
     <entry>
+        <key>android_async_gcm_legacy</key>
+        <value>true</value>
+    </entry>
+    <entry>
         <key>android_async_remoteconfig_mainapp_init</key>
         <value>false</value>
     </entry>
@@ -485,5 +484,81 @@
     <entry>
         <key>android_gql_connection_warm_up</key>
         <value>false</value>
+    </entry>
+    <entry>
+        <key>android_add_brotli_interceptor</key>
+        <value>false</value>
+    </entry>
+    <entry>
+        <key>android_do_query_hashing</key>
+        <value>false</value>
+    </entry>
+    <entry>
+        <key>android_async_user_based_timber_session</key>
+        <value>false</value>
+    </entry>
+    <entry>
+        <key>android_async_crashlytics_user_info</key>
+        <value>false</value>
+    </entry>
+    <entry>
+        <key>android_async_branch_user_info</key>
+        <value>false</value>
+    </entry>
+    <entry>
+        <key>android_iris_custom_user_agent_enable</key>
+        <value>true</value>
+    </entry>
+    <entry>
+        <key>seller_home_dashboard_enable_cache</key>
+        <value>false</value>
+    </entry>
+    <entry>
+        <key>seller_home_dashboard_enable_new_cache</key>
+        <value>false</value>
+    </entry>
+    <entry>
+        <key>app_enable_video_pdp</key>
+        <value>true</value>
+    </entry>
+    <entry>
+        <key>is_go_to_pdp_for_old_normal_checkout</key>
+        <value>false</value>
+    </entry>
+    <entry>
+        <key>app_iris_gtm_enabled</key>
+        <value>true</value>
+    </entry>
+    <entry>
+        <key>app_cm_push_enable_new2</key>
+        <value>true</value>
+    </entry>
+    <entry>
+        <key>app_cm_inapp_enable_new2</key>
+        <value>true</value>
+    </entry>
+    <entry>
+        <key>android_enable_branch_reinitflow</key>
+        <value>false</value>
+    </entry>
+    <entry>
+        <key>android_enable_xiaomi_pai_tracking</key>
+        <value>true</value>
+    </entry>
+    <entry>
+        <key>ANDROID_SELLERAPP_POC_NEW_RELIC_DASHBOARD</key>
+        <value>0.0</value>
+    </entry>
+    <entry>
+        <key>app_notif_tray_clear_v2</key>
+        <value>false</value>
+    </entry>
+    <entry>
+        <key>app_enable_branch_utm_only_branch_link</key>
+        <value>true</value>
+    </entry>
+    <entry>
+        <key>app_enable_skip_deeplink_from_non_branch_link</key>
+        <value>true</value>
     </entry>
 </defaultsMap>

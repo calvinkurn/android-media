@@ -9,7 +9,7 @@ import android.text.TextWatcher;
 
 public class QuantityTextWatcher implements TextWatcher {
 
-    public static final int TEXTWATCHER_QUANTITY_DEBOUNCE_TIME = 500;
+    public static final int TEXTWATCHER_QUANTITY_DEBOUNCE_TIME = 1000;
 
     private int qtyBefore;
     private QuantityWrapper quantityWrapper = new QuantityWrapper();

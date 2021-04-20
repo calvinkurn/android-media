@@ -3,13 +3,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:paddingBottom="@dimen/dp_3"
     android:paddingLeft="@dimen/dp_15"
     android:paddingRight="@dimen/dp_15"
     android:paddingTop="@dimen/dp_3">
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -17,7 +18,7 @@
         android:layout_marginBottom="@dimen/dp_16"
         android:textAllCaps="true"
         android:textColor="@color/grey_500"
-        android:textSize="@dimen/sp_12"
+        app:typographyType="body_3"
         android:visibility="gone"
         tools:text="13:16 wib"/>
 
@@ -28,48 +29,42 @@
         android:orientation="vertical"
         android:background="@drawable/left_bubble"
         android:layout_below="@+id/date">
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/message"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:linksClickable="true"
             android:paddingBottom="@dimen/dp_8"
             android:paddingEnd="@dimen/dp_18"
-            android:paddingLeft="@dimen/dp_16"
-            android:paddingRight="@dimen/dp_18"
             android:paddingStart="@dimen/dp_16"
             android:paddingTop="@dimen/dp_8"
             android:textColor="@color/black_70"
-            android:textColorLink="@color/black_70"
+            android:textColorLink="@color/read_more_color"
             android:textIsSelectable="true"
-            android:textSize="@dimen/sp_14"
+            app:typographyType="body_2"
             android:visibility="visible"
             android:maxWidth="@dimen/max_width_chat_bubble"
             tools:text="opesjkajd aasdfkalskdjfla;ksdfajsdlfkjalsdjflaksjdfl;aks;dlfalskdfj;alksdflaksdjfsdfkj"/>
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:layout_below="@+id/message"
             android:id="@+id/bottom_view"
             android:layout_width="270dp"
             android:layout_height="wrap_content"
             android:paddingBottom="@dimen/dp_8"
-            android:paddingLeft="@dimen/dp_16"
             android:paddingStart="@dimen/dp_16"
-            android:paddingRight="@dimen/dp_8"
             android:paddingEnd="@dimen/dp_8"
-            android:paddingTop="@dimen/dp_8"
             android:textColor="@color/read_more_color"
             android:maxWidth="@dimen/max_width_chat_bubble"
             android:text="@string/read_more"
             android:textStyle="bold"
-            android:gravity="right"
+            android:gravity="start"
             android:visibility="gone"
-            android:background="@drawable/left_bubble_bottom_rounded"
-            />
+            tools:visibility="visible" />
     </RelativeLayout>
 
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/hour"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

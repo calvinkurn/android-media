@@ -1,18 +1,19 @@
 package com.tokopedia.chatbot.view.listener
 
 import android.app.Activity
-import androidx.annotation.NonNull
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import androidx.appcompat.widget.Toolbar
 import android.text.TextUtils
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.annotation.NonNull
+import androidx.appcompat.widget.Toolbar
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.chat_common.data.*
 import com.tokopedia.chat_common.domain.pojo.attachmentmenu.AttachmentMenu
 import com.tokopedia.chat_common.view.BaseChatViewStateImpl
@@ -21,12 +22,16 @@ import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.analytics.ChatbotAnalytics.Companion.chatbotAnalytics
 import com.tokopedia.chatbot.data.ConnectionDividerViewModel
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionSelectionBubbleViewModel
+import com.tokopedia.chatbot.data.csatoptionlist.CsatOptionsViewModel
+import com.tokopedia.chatbot.data.helpfullquestion.HelpFullQuestionsViewModel
 import com.tokopedia.chatbot.data.invoice.AttachInvoiceSelectionViewModel
 import com.tokopedia.chatbot.data.quickreply.QuickReplyListViewModel
 import com.tokopedia.chatbot.data.quickreply.QuickReplyViewModel
 import com.tokopedia.chatbot.data.rating.ChatRatingViewModel
+import com.tokopedia.chatbot.data.seprator.ChatSepratorViewModel
 import com.tokopedia.chatbot.domain.mapper.ChatbotGetExistingChatMapper.Companion.SHOW_TEXT
 import com.tokopedia.chatbot.domain.pojo.chatrating.SendRatingPojo
+import com.tokopedia.chatbot.view.adapter.ChatbotAdapter
 import com.tokopedia.chatbot.view.adapter.QuickReplyAdapter
 import com.tokopedia.chatbot.view.adapter.viewholder.listener.QuickReplyListener
 import com.tokopedia.chatbot.view.customview.ReasonBottomSheet
@@ -46,7 +51,8 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
                            typingListener: TypingListener,
                            attachmentMenuListener: AttachmentMenu.AttachmentMenuListener,
                            override val toolbar: Toolbar,
-                           private val adapter: BaseListAdapter<Visitable<*>, BaseAdapterTypeFactory>
+                           private val adapter: BaseListAdapter<Visitable<*>, BaseAdapterTypeFactory>,
+                           private val onChatMenuButtonClicked: () -> Unit
 ) : BaseChatViewStateImpl(view, toolbar, typingListener, attachmentMenuListener), ChatbotViewState {
 
     private lateinit var quickReplyAdapter: QuickReplyAdapter
@@ -56,7 +62,6 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
 
     override fun initView() {
         recyclerView = view.findViewById(getRecyclerViewId())
-        mainLoading = view.findViewById(getProgressId())
         replyEditText = view.findViewById(getNewCommentId())
         replyBox = view.findViewById(getReplyBoxId())
         actionBox = view.findViewById(getActionBoxId())
@@ -96,7 +101,7 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
     }
 
     override fun loadAvatar(avatarUrl: String) {
-        val avatar = toolbar.findViewById<ImageView>(com.tokopedia.chat_common.R.id.user_avatar)
+        val avatar = toolbar.findViewById<ImageView>(R.id.user_avatar)
         ImageHandler.loadImageCircle2(avatar.context, avatar, avatarUrl,
                 R.drawable.chatbot_avatar)
     }
@@ -140,9 +145,22 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
     }
 
     override fun onShowInvoiceToChat(generatedInvoice: AttachInvoiceSentViewModel) {
-        if (adapter.dataSize > 0 && adapter.data[0] is AttachInvoiceSelectionViewModel)
-            getAdapter().removeElement(adapter.data[0])
+        removeInvoiceCarousel()
         super.onReceiveMessageEvent(generatedInvoice)
+    }
+
+    private fun removeInvoiceCarousel() {
+        var item: AttachInvoiceSelectionViewModel? = null
+        for (it in adapter.list) {
+            if (it is AttachInvoiceSelectionViewModel) {
+                item = it
+                break
+            }
+        }
+
+        if (item != null && adapter.list.isNotEmpty()) {
+            adapter.clearElement(item)
+        }
     }
 
     override fun onSuccessSendRating(element: SendRatingPojo, rating: Int,
@@ -177,6 +195,7 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
 
     override fun onImageUpload(it: ImageUploadViewModel) {
         getAdapter().addElement(it)
+        scrollDownWhenInBottom()
     }
 
     private fun isMyMessage(fromUid: String?): Boolean {
@@ -184,10 +203,10 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
     }
 
     private fun showQuickReply(list: List<QuickReplyViewModel>) {
-            if (::quickReplyAdapter.isInitialized) {
+            if (::quickReplyAdapter.isInitialized && list.isNotEmpty()) {
                 quickReplyAdapter.setList(list)
+                rvQuickReply.visibility = View.VISIBLE
             }
-            rvQuickReply.visibility = View.VISIBLE
     }
 
     private fun hasQuickReply(): Boolean {
@@ -221,6 +240,11 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
         }
     }
 
+
+    override fun showLiveChatSeprator(chatSepratorViewModel: ChatSepratorViewModel) {
+        getAdapter().addElement(0, chatSepratorViewModel)
+    }
+
     override fun hideEmptyMessage(visitable: Visitable<*>) {
         if (visitable is FallbackAttachmentViewModel && visitable.message.isEmpty()) {
             getAdapter().removeElement(visitable)
@@ -239,6 +263,64 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
         }
     }
 
+    override fun hideOptionList(model: HelpFullQuestionsViewModel) {
+        val adapter = getAdapter()
+        if (adapter.list.isNotEmpty() && adapter.list[0] is HelpFullQuestionsViewModel) {
+            model.isSubmited = true
+            adapter.setElement(0, model)
+        }
+    }
+
+    override fun hideCsatOptionList(model: CsatOptionsViewModel) {
+        val adapter = getAdapter()
+        var position: Int = 0
+        for (msg in adapter.list) {
+            if (msg is CsatOptionsViewModel && model.csat?.caseChatId == msg.csat?.caseChatId) {
+                model.isSubmited = true
+                adapter.setElement(position, model)
+                break;
+            }
+            position++
+        }
+    }
+
+    override fun hideActionBubbleOnSenderMsg() {
+        var item: ChatActionSelectionBubbleViewModel? = null
+        for (it in adapter.list) {
+            if (it is ChatActionSelectionBubbleViewModel) {
+                item = it
+                break
+            }
+        }
+
+        if (item != null && adapter.list.isNotEmpty()) {
+            adapter.clearElement(item)
+        }
+    }
+
+    override fun showRetryUploadImages(image: ImageUploadViewModel, retry: Boolean){
+        getAdapter().showRetryFor(image, retry)
+    }
+
+    override fun removeDummy(visitable: Visitable<*>) {
+        getAdapter().removeDummy(visitable)
+    }
+
+    override fun hideInvoiceList() {
+        removeInvoiceCarousel()
+    }
+
+    override fun getAdapter(): ChatbotAdapter {
+        return super.getAdapter() as ChatbotAdapter
+    }
+
+    override fun updateHeader(chatroomViewModel: ChatroomViewModel, onToolbarClicked: () -> Unit) {
+        val title = toolbar.findViewById<TextView>(R.id.title)
+        val interlocutorName = getInterlocutorName(chatroomViewModel.getHeaderName())
+        title.text = MethodChecker.fromHtml(interlocutorName)
+        loadAvatar(chatroomViewModel.headerModel.image)
+    }
+
     override fun getInterlocutorName(headerName: String): String  = headerName
 
     override fun showErrorWebSocket(isWebSocketError: Boolean) {
@@ -255,12 +337,14 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
         }
     }
 
-    override fun getRecyclerViewId(): Int {
-        return R.id.recycler_view
+    override fun setupChatMenu() {
+        chatMenuButton.setOnClickListener {
+            onChatMenuButtonClicked.invoke()
+        }
     }
 
-    override fun getProgressId(): Int {
-        return R.id.progress
+    override fun getRecyclerViewId(): Int {
+        return R.id.recycler_view
     }
 
     override fun getNewCommentId(): Int {

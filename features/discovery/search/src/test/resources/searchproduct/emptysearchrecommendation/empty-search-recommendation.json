@@ -1,0 +1,974 @@
+{
+    "productRecommendationWidget": {
+      "data": [
+        {
+          "tID": "GTQCc63QqbYNmG-6PuO3jJe8sns=",
+          "source": "custom",
+          "title": "Rekomendasi Untuk Anda",
+          "foreignTitle": "Recommendation For You",
+          "widgetUrl": "",
+          "pageName": "empty_search",
+          "seeMoreAppLink": "",
+          "layoutType": "Infinite",
+          "pagination": {
+            "currentPage": 1,
+            "nextPage": 2,
+            "prevPage": -1,
+            "hasNext": true
+          },
+          "recommendation": [
+            {
+              "id": 1106707689,
+              "name": "Sinocare Safe-Accu Alat Cek Gula Darah",
+              "categoryBreadcrumbs": "Kesehatan/Perlengkapan Medis/Alat Diagnosa",
+              "url": "https://www.tokopedia.com/sinocareofficial/sinocare-safe-accu-alat-cek-gula-darah?src=topads",
+              "appUrl": "tokopedia://product/1106707689",
+              "clickUrl": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEosya6_URosyDUMVj9RzNrc1i6sJDUSC5rfB7q3YXUsthbm-7q3OBUsthosnfH_JaHAHpbm-srcHi6sepH_jDUMVj9RosQR-BUst7oAUXo_eho_JaHAUpHsJfbm-pHOYDQfri6i-B812kgJxGgBBXZSgjH7NDZ325q1OAoAz6ucHO_1zSoJNJyRxvzVJO_7zgH7B2PfBgHO-N3Ao6QVByZM2xe7jfZ32-P1YJu_oouVVN_7zuH7O119BvzV1pZ3BRq3JausujHsBN3jyN8Bja69Bq17jfZ32Cq1hAZSuiHsuk3Bo-ojBkqpV68j17_92uHJh1QchoqBB7_jzZquB_HAzgHj7O_VzsH7YJyp-6qBJp_7P-8BB2Z9o-Q_BNyuPjrc-D63Wq3J-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7-Nys-ZHujp1MgxuOV2_fB-P7B2PfBiH72F3s-DPuKp_MYiH7-MyuPzq1Y2Z9P-q9P2yOx3QcoXQcgjz7gXyRB-ojB2Z9o-QjNkysoGQVKaZSBiHfzE3Bo-ojBk1_Coq_eh_jzVH1O1Z9PoqjON_uzgq1hAZS2gHsBN3ByN8B29zSBgHMP2_fB-8jY139uoqjBR_1zoP7NJgpVvuJOd_joG6ZUDUSupg9-wq3ei6iUp6AyaH_eRUiFirfuprfB5QBY2gmUEUM2j_Joz3JOHrItd39Cae3Vm6AuG8SjN8S-U_3BJ3VgZ3uVF_cHa8IPx6chd1OzhzACWu_xIrcoS69ub3uPW63PJ89y7HOB013J7rchieMYhgIocr9eWQjzfZjgE6ZOb3_P6_1oAQjhAZMNfe3W93chkrMhzHM2mQ3r7uBjFg3zIUiFiy3hSUstiyMupPVYpg3hDg9Uibm-XP3Oig9-wQfgwy3zpUstdbm-XP3Oig9-wy3zp9R-BrZUE6mFiyfV79fBjraUE3prhoZFhopeabAUpH_CPbm-X9foxQMz2gcV7guYxgIHi6sJdbm-xyBY7g9o7Usti_iUDUSC5rRzwy3hSUstigcuMUiFiPMuarfB5QiUEUSyaUiFiyfhOrRzBrBY2gVYfHiUE6AeNoS7?management_type=1&sid=jdLCQXMLpz8YprAaB85Jzy9zrHMiDXVRYQpLc2xwa8lxSTqD0mU8Gpcg9uKYWm9gDyv43YkQa4plbBoqdsFqt-nDvJFz9-KY7NMCCnLCJnvAkWXljrlQ2jBmg4VY0edG&t=android&page=1&r=https%3A%2F%2Fwww.tokopedia.com%2Fsinocareofficial%2Fsinocare-safe-accu-alat-cek-gula-darah%3Fsrc%3Dtopads&src=recom_widget_empty_search&dv=android",
+              "wishlistUrl": "https://ta.tokopedia.com/promo/v1/wishlists/8a-xgVY2gmUEosya6_URosyDUMVj9RzNrc1i6sJDUSC5rfB7q3YXUsthbm-7q3OBUsthosnfH_JaHAHpbm-srcHi6sepH_jDUMVj9RosQR-BUst7oAUXo_eho_JaHAUpHsJfbm-pHOYDQfri6i-B812kgJxGgBBXZSgjH7NDZ325q1OAoAz6ucHO_1zSoJNJyRxvzVJO_7zgH7B2PfBgHO-N3Ao6QVByZM2xe7jfZ32-P1YJu_oouVVN_7zuH7O119BvzV1pZ3BRq3JausujHsBN3jyN8Bja69Bq17jfZ32Cq1hAZSuiHsuk3Bo-ojBkqpV68j17_92uHJh1QchoqBB7_jzZquB_HAzgHj7O_VzsH7YJyp-6qBJp_7P-8BB2Z9o-Q_BNyuPjrc-D63Wq3J-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7-Nys-ZHujp1MgxuOV2_fB-P7B2PfBiH72F3s-DPuKp_MYiH7-MyuPzq1Y2Z9P-q9P2yOx3QcoXQcgjz7gXyRB-ojB2Z9o-QjNkysoGQVKaZSBiHfzE3Bo-ojBk1_Coq_eh_jzVH1O1Z9PoqjON_uzgq1hAZS2gHsBN3ByN8B29zSBgHMP2_fB-8jY139uoqjBR_1zoP7NJgpVvuJOd_joG6ZUDUSupg9-wq3ei6iUp6AyaH_eRUiFirfuprfB5QBY2gmUEUM2j_Joz3JOHrItd39Cae3Vm6AuG8SjN8S-U_3BJ3VgZ3uVF_cHa8IPx6chd1OzhzACWu_xIrcoS69ub3uPW63PJ89y7HOB013J7rchieMYhgIocr9eWQjzfZjgE6ZOb3_P6_1oAQjhAZMNfe3W93chkrMhzHM2mQ3r7uBjFg3zIUiFiy3hSUstiyMupPVYpg3hDg9Uibm-XP3Oig9-wQfgwy3zpUstdbm-XP3Oig9-wy3zp9R-BrZUE6mFiyfV79fBjraUE3prhoZFhopeabAUpH_CPbm-X9foxQMz2gcV7guYxgIHi6sJdbm-xyBY7g9o7Usti_iUDUSC5rRzwy3hSUstigcuMUiFiPMuarfB5QiUEUSyaUiFiyfhOrRzBrBY2gVYfHiUE6AeNoS7?sid=jdLCQXMLpz8YprAaB85Jzy9zrHMiDXVRYQpLc2xwa8lxSTqD0mU8Gpcg9uKYWm9gDyv43YkQa4plbBoqdsFqt-nDvJFz9-KY7NMCCnLCJnvAkWXljrlQ2jBmg4VY0edG&page=1&src=recom_widget_empty_search&dv=android&r=https%3A%2F%2Fwww.tokopedia.com%2Fsinocareofficial%2Fsinocare-safe-accu-alat-cek-gula-darah%3Fsrc%3Dtopads&product_id=1106707689&uid=3862147&t=android&management_type=1",
+              "trackerImageUrl": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6syfHsjaopyfbm-xgVY789CBUsthbm-FQRo2PcB5QiUEHZFiPcBWgZUEH_yFosJhHsnpHaFircV7qmUEUMusrprWrmN7QfW5rcujq3JXQMu7bfBWgaYsy3otgZ4pHAnWrRVOy9-BbRCaQfzOyReWHZ4aHAUFbpj5HZ4hH_n7HpeaH_K5H_JFoAH7HsJd9p-jH_KaH31Fb_jfoseWoczxgiOi6AJhb3e7gczjy3HNH_jR6V4dHACw6AnFUiFiy3zwrfo5rM1i6se7HidOoAJOH_UFHsHaH_yDUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_1H7oJN1ypuozcr7_jzs8JYJ1_uvzVjpZ3BRqujp1SByH7ND3uxGqMVAZ_g-qjBO_7zuH7O119BvzV1p_uzz81YJu_o-q9P2y_-3o3ea69BqzsBE3_UN8u2_Z_g-qjV2_JoGP3Uao32q17jfZ320H1NEz_zo8B1F_VzDQJOk39z6zV-23uHFoVja__uHucHp_7zsHjNk1_ovz7BE33B-r7BW69BxufzFyMFNqO2yeMgxuOV2_fB-P7B2PfBiH72F3s-DPuKpeSBiHBUh3_oZgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Ao6QfUpeMgxuOV2_fB-P7B2PfBs3VgDyfNDgMzIzMNs81jfZ3B-r7BX_M2iH72D3A-G83UpgI2q17jfZ32zHJO2oAV6zJ1h_uz-P7Ok_9BouVB2_JoG8Bja69BqusBE3BPc8ujagfBvq1BE_OzgP1OkZ9PozJOR_jzSH1Y1_9x6e7tNUiFiP9oBrBY2gmUEUsHdosUhoAribm-pg9opq3YX9fBjUstiqMzHeOVy_1hF8sxgrI-Cy1Udo12E8_BErjxoq1zyuB-g19CHyp-dPfJdQIx_uIVJHcOu6JPFyfrNP1Wguf7Ng7zNPsep33Wzy_zFQc-mQRVjr7ghPmOXzIgGzStNb1Wgo7Noe7oX_JoGQSgCqOPyQc2aQVJaqj-Wgpz33_CBgJribm-xQcri6i-ig9o79RoBQchBriUDUMNOQ3-BrBY5gBYxgIHi6sKDUMNOQ3-BrBYxgIowrMuhUstdbm-X9foxQMz2gcV7guYxgIHi6sJdbm-xyBY7g9o7Usti_iUDUSC5rRzwy3hSUs2QUMzBgi-Pbm-fg9-pq3YXUstiPsUibm-sQIupPcua9fBj9RyaUstdoAjfwe?management_type=1&t=android&page=1&dv=android&sid=jdLCQXMLpz8YprAaB85Jzy9zrHMiDXVRYQpLc2xwa8lxSTqD0mU8Gpcg9uKYWm9gDyv43YkQa4plbBoqdsFqt-nDvJFz9-KY7NMCCnLCJnvAkWXljrlQ2jBmg4VY0edG&src=recom_widget_empty_search",
+              "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/300-square/product-1/2020/9/1/110434218/110434218_2d1821e0-9664-4daf-b811-d4dddac91978_800_800",
+              "price": "Rp79.900",
+              "labelgroup": [],
+              "priceInt": 79900,
+              "discountPercentage": 0,
+              "slashedPrice": "",
+              "slashedPriceInt": 0,
+              "isWishlist": false,
+              "minOrder": 0,
+              "shop": {
+                "id": 9358174,
+                "name": "Sinocare Official Store",
+                "city": "Kab. Tangerang"
+              },
+              "departmentId": 2310,
+              "badges": [
+                {
+                  "imageUrl": "https://ecs7-p.tokopedia.net/ta/icon/badge/PM-Badge-80.png"
+                }
+              ],
+              "freeOngkir": {
+                "isActive": true,
+                "imageUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+              },
+              "rating": 5,
+              "ratingAverage": "4.9",
+              "countReview": 115,
+              "recommendationType": "best_seller",
+              "stock": 0,
+              "isTopads": true
+            },
+            {
+              "id": 1117396692,
+              "name": "Pulse Oximeter Oxymeter SpO2 Fingertip Pengukur Detak Jantung Oksigen",
+              "categoryBreadcrumbs": "Kesehatan/Perlengkapan Medis/Alat Diagnosa",
+              "url": "https://www.tokopedia.com/owl-indonesia/pulse-oximeter-oxymeter-spo2-fingertip-pengukur-detak-jantung-oksigen?src=topads",
+              "appUrl": "tokopedia://product/1117396692",
+              "clickUrl": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEosU76ArOHAKDUMVj9RzNrc1i6sJDUSC5rfB7q3YXUstabm-7q3OBUsthosnfH_JaHAHpbm-srcHi6s1OHmFiy3zwrfo5rM1i6sHRoadRopnRopyF6AKOH_HFoiFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBoq_zR_Ozz81NJe_zo8MHa_Ozg8jOEu3BHe72kgJxGgMHauMxsQ1N5Z325q1OAZ9o-Q9zDguxjPMoW1MgsHjNfyfOuq1Y2Z9P-q9P2yM7NPujau3Bvq1jO_Bzs8JYJ__V6epnO3Bz-Hjh11_CgQ1u7_7P6qjY_HAo68Mrp_M2gHJNEqcBoHjB2_JoGPMoWQcNxupuM3jP3POKaQcW-qMY2_1o-r7BW69BxufzFyMFNPfoW63Wju7dF3A-Dq7BkQfBoe7BpZ37N83V9gICiQABEy1rNPOKaQcW-qMY2_1o-r7BXzsVq3JtO3AoZqVtp_3Bvq1B2_JoG8Bja69BqusB2yf7NHfHau3Bvq1BE_S2sP1NEyRP68MHa_1zSoJN1z92ozVB2_JoG8Bja69BqusBE3BPc8ujagfBvq1BN_M20P1YJ_9xvzJVR_OzzHjY1Z9BozVV2gBJYvZUDUSupg9-wq3ei6iUp6AyaH_eRUiFirfuprfB5QBY2gmUEUM2j_Joz3JOHrItd39Cae3Vm6AuG8SjN8S-U_3BJ3VgZ3uVF_cHa8IPx6chd1OzhzACWu_xIrcoS69ub3uPW63PJ89y7HOB013J7rchieMYhgIocr9eWQjzfZjgE6ZOb3_P6_1oAQjhAZMNfe3W93chkrMhzHM2mQ3r7uBjFg3zIUiFiy3hSUstiyMupPVYpg3hDg9Uibm-XP3Oig9-wQfgwy3zpUstdbm-XP3Oig9-wy3zp9R-BrZUE6mFiyfV79fBjraUE3prhoZFhopeabAUpH_CPbm-X9foxQMz2gcV7guYxgIHi6sJdbm-xyBY7g9o7Usti_iUDUSC5rRzwy3hSUstigcuMUiFiPMuarfB5QiUEUSyaUiFiyfhOrRzBrBY2gVYfHiUEHpURo_VY?page=1&dv=android&sid=jdLCQXMLpz8YprAaB85Jzy9zrHMiDXVRYQpLc2xwa8lxSTqD0mU8Gpcg9uKYWm9gDyv43YkQa4plbBoqdsFqt-nDvJFz9-KY7NMCCnLCJnvAkWXljrlQ2jBmg4VY0edG&src=recom_widget_empty_search&management_type=1&r=https%3A%2F%2Fwww.tokopedia.com%2Fowl-indonesia%2Fpulse-oximeter-oxymeter-spo2-fingertip-pengukur-detak-jantung-oksigen%3Fsrc%3Dtopads&t=android",
+              "wishlistUrl": "https://ta.tokopedia.com/promo/v1/wishlists/8a-xgVY2gmUEosU76ArOHAKDUMVj9RzNrc1i6sJDUSC5rfB7q3YXUstabm-7q3OBUsthosnfH_JaHAHpbm-srcHi6s1OHmFiy3zwrfo5rM1i6sHRoadRopnRopyF6AKOH_HFoiFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBoq_zR_Ozz81NJe_zo8MHa_Ozg8jOEu3BHe72kgJxGgMHauMxsQ1N5Z325q1OAZ9o-Q9zDguxjPMoW1MgsHjNfyfOuq1Y2Z9P-q9P2yM7NPujau3Bvq1jO_Bzs8JYJ__V6epnO3Bz-Hjh11_CgQ1u7_7P6qjY_HAo68Mrp_M2gHJNEqcBoHjB2_JoGPMoWQcNxupuM3jP3POKaQcW-qMY2_1o-r7BW69BxufzFyMFNPfoW63Wju7dF3A-Dq7BkQfBoe7BpZ37N83V9gICiQABEy1rNPOKaQcW-qMY2_1o-r7BXzsVq3JtO3AoZqVtp_3Bvq1B2_JoG8Bja69BqusB2yf7NHfHau3Bvq1BE_S2sP1NEyRP68MHa_1zSoJN1z92ozVB2_JoG8Bja69BqusBE3BPc8ujagfBvq1BN_M20P1YJ_9xvzJVR_OzzHjY1Z9BozVV2gBJYvZUDUSupg9-wq3ei6iUp6AyaH_eRUiFirfuprfB5QBY2gmUEUM2j_Joz3JOHrItd39Cae3Vm6AuG8SjN8S-U_3BJ3VgZ3uVF_cHa8IPx6chd1OzhzACWu_xIrcoS69ub3uPW63PJ89y7HOB013J7rchieMYhgIocr9eWQjzfZjgE6ZOb3_P6_1oAQjhAZMNfe3W93chkrMhzHM2mQ3r7uBjFg3zIUiFiy3hSUstiyMupPVYpg3hDg9Uibm-XP3Oig9-wQfgwy3zpUstdbm-XP3Oig9-wy3zp9R-BrZUE6mFiyfV79fBjraUE3prhoZFhopeabAUpH_CPbm-X9foxQMz2gcV7guYxgIHi6sJdbm-xyBY7g9o7Usti_iUDUSC5rRzwy3hSUstigcuMUiFiPMuarfB5QiUEUSyaUiFiyfhOrRzBrBY2gVYfHiUEHpURo_VY?dv=android&sid=jdLCQXMLpz8YprAaB85Jzy9zrHMiDXVRYQpLc2xwa8lxSTqD0mU8Gpcg9uKYWm9gDyv43YkQa4plbBoqdsFqt-nDvJFz9-KY7NMCCnLCJnvAkWXljrlQ2jBmg4VY0edG&management_type=1&r=https%3A%2F%2Fwww.tokopedia.com%2Fowl-indonesia%2Fpulse-oximeter-oxymeter-spo2-fingertip-pengukur-detak-jantung-oksigen%3Fsrc%3Dtopads&page=1&src=recom_widget_empty_search&product_id=1117396692&t=android&uid=3862147",
+              "trackerImageUrl": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6syaoAKRo_ndbm-xgVY789CBUsthbm-FQRo2PcB5QiUEHiFiPcBWgZUEH_yFosJhHsnpHaFircV7qmUEUMusrprWrmN7QfW5rcujq3JXQMu7bfBWgaYsy3otgZ4pHAnWrRVOy9-BbRCaQfzOyReWHZ4aHAUFbpK5HsU5opjaHAnOHa4R6_UFHA1p9pjRgsnhHAJpb_UNypUWocefoZ7dg_rdb_1fosVxo_HfyM1dyB4hHAKF9pJF6Anibm-xgVYpyfYagZUEHprRbsrRHArRosnd6A1hHpnfbm-pHOYDQfri6i-B812kgJxGgBBXZSgjH7NDZ325q1O2oIPvuVVN_jzCoJOEyp-vuVBE_92uq1hAZM2jZJ2Myp-3qcoW_MY-qMY2_1o-r7BWPchB3czfyfOZgMHa_SgsQuu2_fB-P7B2PfBiQ_BO3_-uq1Y2Z_u6ucod_7zoH1NAHAuquJja_VzzHVBWz9zvz7Nk_OHFH7NEgpo6qBjF_S2tq17aZ3BHe72fyfODQMV9o3gqzOgR3A-Dq7BkQfBoe7BpZ37N83V9gICiQABRyf7Nqfz9_sCyHMh0Z325q1OAZ9o-Q_BNyuPjrc-D692xzpBR3A-Dq7BkQfBoe7BpZ3NcHu2yZsuyHO-t3sooq1Y2Z3BHe72E3_UN8u2363BsQ_jpyp-uq1Y2Z9268MoO_S2sP7NEyp-ozcr7_BzV8jOJ33BHe72E3_UN8u23692qu7gN3_-Sq1Y2Z9B6qMWO_7zo8JYJe9PvuVJa_Oz-81OJ13BM1_7YUiFiP9oBrBY2gmUEUsHdosUhoAribm-pg9opq3YX9fBjUstiqMzHeOVy_1hF8sxgrI-Cy1Udo12E8_BErjxoq1zyuB-g19CHyp-dPfJdQIx_uIVJHcOu6JPFyfrNP1Wguf7Ng7zNPsep33Wzy_zFQc-mQRVjr7ghPmOXzIgGzStNb1Wgo7Noe7oX_JoGQSgCqOPyQc2aQVJaqj-Wgpz33_CBgJribm-xQcri6i-ig9o79RoBQchBriUDUMNOQ3-BrBY5gBYxgIHi6sKDUMNOQ3-BrBYxgIowrMuhUstdbm-X9foxQMz2gcV7guYxgIHi6sJdbm-xyBY7g9o7Usti_iUDUSC5rRzwy3hSUs2QUMzBgi-Pbm-fg9-pq3YXUstiPsUibm-sQIupPcua9fBj9RyaUstpHsrOH97?t=android&dv=android&management_type=1&src=recom_widget_empty_search&sid=jdLCQXMLpz8YprAaB85Jzy9zrHMiDXVRYQpLc2xwa8lxSTqD0mU8Gpcg9uKYWm9gDyv43YkQa4plbBoqdsFqt-nDvJFz9-KY7NMCCnLCJnvAkWXljrlQ2jBmg4VY0edG&page=1",
+              "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/300-square/product-1/2020/8/22/7920053/7920053_97f01013-29c2-4d65-8e78-5661a536be8b_1080_1080",
+              "price": "Rp42.500",
+              "labelgroup": [
+                {
+                  "position": "promo",
+                  "title": "Gratis Ongkir",
+                  "type": "lightGreen"
+                },
+                {
+                  "position": "price",
+                  "title": "Cashback",
+                  "type": "lightGreen"
+                }
+              ],
+              "priceInt": 42500,
+              "discountPercentage": 0,
+              "slashedPrice": "",
+              "slashedPriceInt": 0,
+              "isWishlist": false,
+              "minOrder": 0,
+              "shop": {
+                "id": 948574,
+                "name": "NetPlus",
+                "city": "Tangerang"
+              },
+              "departmentId": 2310,
+              "badges": [
+                {
+                  "imageUrl": "https://ecs7-p.tokopedia.net/ta/icon/badge/PM-Badge-80.png"
+                }
+              ],
+              "freeOngkir": {
+                "isActive": true,
+                "imageUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+              },
+              "rating": 5,
+              "ratingAverage": "4.8",
+              "countReview": 288,
+              "recommendationType": "best_seller",
+              "stock": 0,
+              "isTopads": true
+            },
+            {
+              "id": 1122534364,
+              "name": "Pulse Oxymeter - Cek Oksigen dalam darah - Bergaransi dan Akurat",
+              "categoryBreadcrumbs": "Kesehatan/Perlengkapan Medis/Alat Diagnosa",
+              "url": "https://www.tokopedia.com/atestore/pulse-oxymeter-cek-oksigen-dalam-darah-bergaransi-dan-akurat?src=topads",
+              "appUrl": "tokopedia://product/1122534364",
+              "clickUrl": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEosUfHArF6AeDUMVj9RzNrc1i6sJDUSC5rfB7q3YXUstpbm-7q3OBUsthosnfH_JaHAHpbm-srcHi6s1FHmFiy3zwrfo5rM1i6sHRoad7HAHRH_rfHp1doAehoZFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBoepzE_OzCHjOku3BHe72kgJxGgMHauMxsQ1N5Z325q1OAoA-o8MrF_32V8jN1gRPvuVBE_jzoHjB2PfBxHByOgAUN8u2c692gHsBN3Bo-ojBke3BHe72OysUOqB2_Z_g-qMDh_S2VoJOEu_CHuchD_32gPJNJ1MBg1pn73_-oo1h1ypovzcHa_M2zH7YIZ92gq1BpZ37N83V9gICiQAB03BxmgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Aom83Ua1sVgHO-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7N5ysomgMV913Bvq1BRZ3BRq3oyuMhsQMhMgJPcQMoNZ_g-q1BpZ3N6qMUpZMhyHj2Nysoj8B2_Z_g-qj7p_Sj7HJOJ__ooucHa_92uoJNJ19x617BpZ3N6qMUpZMhyH7ND3uxGqMVAZ_g-qjjF_jH7H7Y11_-ouJ1O_32CoJOkZ_--QsnYUiFiP9oBrBY2gmUEUsHdosUhoAribm-pg9opq3YX9fBjUstiqMzHeOVy_1hF8sxgrI-Cy1Udo12E8_BErjxoq1zyuB-g19CHyp-dPfJdQIx_uIVJHcOu6JPFyfrNP1Wguf7Ng7zNPsep33Wzy_zFQc-mQRVjr7ghPmOXzIgGzStNb1Wgo7Noe7oX_JoGQSgCqOPyQc2aQVJaqj-Wgpz33_CBgJribm-xQcri6i-ig9o79RoBQchBriUDUMNOQ3-BrBY5gBYxgIHi6sKDUMNOQ3-BrBYxgIowrMuhUstdbm-sy9zwq3zpUs2QopJObAJRoAUDHsHhHV7DUMNwyfVXgcBjy9zB9fVjraUEH_KDUMVi9RzBrRei6i-6UiFircYpPVYxQcri6i-jg3yibm-fg9-pq3YXUstiPsUibm-sQIupPcua9fBj9RyaUsth6_UhHI7?dv=android&management_type=1&t=android&r=https%3A%2F%2Fwww.tokopedia.com%2Fatestore%2Fpulse-oxymeter-cek-oksigen-dalam-darah-bergaransi-dan-akurat%3Fsrc%3Dtopads&src=recom_widget_empty_search&sid=jdLCQXMLpz8YprAaB85Jzy9zrHMiDXVRYQpLc2xwa8lxSTqD0mU8Gpcg9uKYWm9gDyv43YkQa4plbBoqdsFqt-nDvJFz9-KY7NMCCnLCJnvAkWXljrlQ2jBmg4VY0edG&page=1",
+              "wishlistUrl": "https://ta.tokopedia.com/promo/v1/wishlists/8a-xgVY2gmUEosUfHArF6AeDUMVj9RzNrc1i6sJDUSC5rfB7q3YXUstpbm-7q3OBUsthosnfH_JaHAHpbm-srcHi6s1FHmFiy3zwrfo5rM1i6sHRoad7HAHRH_rfHp1doAehoZFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBoepzE_OzCHjOku3BHe72kgJxGgMHauMxsQ1N5Z325q1OAoA-o8MrF_32V8jN1gRPvuVBE_jzoHjB2PfBxHByOgAUN8u2c692gHsBN3Bo-ojBke3BHe72OysUOqB2_Z_g-qMDh_S2VoJOEu_CHuchD_32gPJNJ1MBg1pn73_-oo1h1ypovzcHa_M2zH7YIZ92gq1BpZ37N83V9gICiQAB03BxmgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Aom83Ua1sVgHO-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7N5ysomgMV913Bvq1BRZ3BRq3oyuMhsQMhMgJPcQMoNZ_g-q1BpZ3N6qMUpZMhyHj2Nysoj8B2_Z_g-qj7p_Sj7HJOJ__ooucHa_92uoJNJ19x617BpZ3N6qMUpZMhyH7ND3uxGqMVAZ_g-qjjF_jH7H7Y11_-ouJ1O_32CoJOkZ_--QsnYUiFiP9oBrBY2gmUEUsHdosUhoAribm-pg9opq3YX9fBjUstiqMzHeOVy_1hF8sxgrI-Cy1Udo12E8_BErjxoq1zyuB-g19CHyp-dPfJdQIx_uIVJHcOu6JPFyfrNP1Wguf7Ng7zNPsep33Wzy_zFQc-mQRVjr7ghPmOXzIgGzStNb1Wgo7Noe7oX_JoGQSgCqOPyQc2aQVJaqj-Wgpz33_CBgJribm-xQcri6i-ig9o79RoBQchBriUDUMNOQ3-BrBY5gBYxgIHi6sKDUMNOQ3-BrBYxgIowrMuhUstdbm-sy9zwq3zpUs2QopJObAJRoAUDHsHhHV7DUMNwyfVXgcBjy9zB9fVjraUEH_KDUMVi9RzBrRei6i-6UiFircYpPVYxQcri6i-jg3yibm-fg9-pq3YXUstiPsUibm-sQIupPcua9fBj9RyaUsth6_UhHI7?t=android&uid=3862147&page=1&dv=android&management_type=1&r=https%3A%2F%2Fwww.tokopedia.com%2Fatestore%2Fpulse-oxymeter-cek-oksigen-dalam-darah-bergaransi-dan-akurat%3Fsrc%3Dtopads&sid=jdLCQXMLpz8YprAaB85Jzy9zrHMiDXVRYQpLc2xwa8lxSTqD0mU8Gpcg9uKYWm9gDyv43YkQa4plbBoqdsFqt-nDvJFz9-KY7NMCCnLCJnvAkWXljrlQ2jBmg4VY0edG&src=recom_widget_empty_search&product_id=1122534364",
+              "trackerImageUrl": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6syaosnRHAK7bm-xgVY789CBUsthbm-FQRo2PcB5QiUEHaFiPcBWgZUEH_yFosJhHsnpHaFircV7qmUEUMusrprWrmN7QfW5rcujq3JXQMu7bfBWgaYsy3otgZ4pHAnWrRVOy9-BbOghyMoW_Z4aHAUFbpJFbpy5H_Vsyf1dH3yWgsnRgZ77g_y7b_xMo_nWopHpopehH_Vio_yNbM2FgaUDUMVj9RosQR-BUstpoprXoAnpopJRosHO6Ae7H_1DUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_1H78jY1e_-oqBu2_JoGqMzUZMgsHBgtyfO6Q7BkQfBoepea_92SHJOkz926ucPR_Ozg8jNJ__--q9P2y_-3o3ea69BqzsBE3_UN8u2_Z_g-qjV2_JoGP3Uao32q17jfZ320H1NEz_zo8B1F_VzDQJOk39z6zV-23uHFoVja__uHucHp_7zsHjNk1_ovz7BE33B-r7BW69BxufzFyMFNqO2yeMgxuOV2_fB-P7B2PfBiH72F3s-DPuKpeSBiHBUh3_oZgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Ao6QfUpeMgxuOV2_fB-P7B2PfBs3VgDyfNDgMzIzMNs81jfZ3B-r7BX_M2iH72D3A-G83UpgI2q17jfZ32oH7NNoACozJ7p_uzsHjOEu_z6zVVd_Bo-r7BX_M2iH72D3Ao6QVByZM2xe7jfZ32-HJNAoAovuVJa_uzVo1Oke_zoqjjaZ3dFvZUDUSupg9-wq3ei6iUp6AyaH_eRUiFirfuprfB5QBY2gmUEUM2j_Joz3JOHrItd39Cae3Vm6AuG8SjN8S-U_3BJ3VgZ3uVF_cHa8IPx6chd1OzhzACWu_xIrcoS69ub3uPW63PJ89y7HOB013J7rchieMYhgIocr9eWQjzfZjgE6ZOb3_P6_1oAQjhAZMNfe3W93chkrMhzHM2mQ3r7uBjFg3zIUiFiy3hSUstiyMupPVYpg3hDg9Uibm-XP3Oig9-wQfgwy3zpUstdbm-XP3Oig9-wy3zp9R-BrZUE6mFiQBYsy3Njq3zxPcuwy3zpUsth6mFiy3-wPcupPmUEUjdibm-FQRo79fVDgaUE3a-jg3yi9ZFiPMuarfB5QiUEUSyaUiFiyfhOrRzBrBY2gVYfHiUEH_jaH_CY?management_type=1&dv=android&sid=jdLCQXMLpz8YprAaB85Jzy9zrHMiDXVRYQpLc2xwa8lxSTqD0mU8Gpcg9uKYWm9gDyv43YkQa4plbBoqdsFqt-nDvJFz9-KY7NMCCnLCJnvAkWXljrlQ2jBmg4VY0edG&src=recom_widget_empty_search&page=1&t=android",
+              "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/300-square/VqbcmM/2020/10/6/11cce81f-f07e-4e64-8f50-73374111b569.jpg",
+              "price": "Rp53.000",
+              "labelgroup": [
+                {
+                  "position": "promo",
+                  "title": "Cashback",
+                  "type": "lightGreen"
+                },
+                {
+                  "position": "price",
+                  "title": "Cashback",
+                  "type": "lightGreen"
+                }
+              ],
+              "priceInt": 53000,
+              "discountPercentage": 0,
+              "slashedPrice": "",
+              "slashedPriceInt": 0,
+              "isWishlist": false,
+              "minOrder": 0,
+              "shop": {
+                "id": 2715566,
+                "name": "ATE Store",
+                "city": "Jakarta Pusat"
+              },
+              "departmentId": 2310,
+              "badges": [
+                {
+                  "imageUrl": "https://ecs7-p.tokopedia.net/ta/icon/badge/PM-Badge-80.png"
+                }
+              ],
+              "freeOngkir": {
+                "isActive": true,
+                "imageUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+              },
+              "rating": 5,
+              "ratingAverage": "4.8",
+              "countReview": 275,
+              "recommendationType": "best_seller",
+              "stock": 0,
+              "isTopads": true
+            },
+            {
+              "id": 1042920281,
+              "name": "Alat Cek Pengukur Tekanan Tensi Darah Digital Tensimeter Sphygmomanome",
+              "categoryBreadcrumbs": "Kesehatan/Perlengkapan Medis/Alat Diagnosa",
+              "url": "https://www.tokopedia.com/teknologeek/alat-cek-pengukur-tekanan-tensi-darah-digital-tensimeter-sphygmomanome?src=topads",
+              "appUrl": "tokopedia://product/1042920281",
+              "clickUrl": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEosJpopUaHprDUMVj9RzNrc1i6sJDUSC5rfB7q3YXUst7bm-7q3OBUsthosnfH_JaHAHpbm-srcHi6srFHmFiy3zwrfo5rM1i6sHRoiddHAHFopKpH_rdHAehomFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBo1pea_jzgP7Y1e_Vo8BJO_S20HJOk13BHe72kgJxGgMHauMxsQ1N5Z325q1O1z9u6qj17_32uH7Ok39x6zJuR_S2SoJB2PfBxHByOgAUN8u2c692gHsBN3Bo-ojBke3BHe72OysUOqB2_Z_g-qMDh_S2VoJOEu_CHuchD_32gPJNJ1MBg1pn73_-oo1h1ypovzcHa_M2zH7YIZ92gq1BpZ37N83V9gICiQAB03BxmgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Aom83Ua1sVgHO-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7N5ysomgMV913Bvq1BRZ3BRq3oyuMhsQMhMgJPcQMoNZ_g-q1BpZ3N6qMUpZMhyHj2Nysoj8B2_Z_g-qj7p_Mj7oJOJ_9P68MPE_uzsoJOJ19x6e7BpZ3N6qMUpZMhyH7ND3uxGqMVAZ_g-qjOR_BH78jY1e9B6zJ1F_uz-P7N1e9P617tNUiFiP9oBrBY2gmUEUsHdosUhoAribm-pg9opq3YX9fBjUstiqMzHeOVy_1hF8sxgrI-Cy1Udo12E8_BErjxoq1zyuB-g19CHyp-dPfJdQIx_uIVJHcOu6JPFyfrNP1Wguf7Ng7zNPsep33Wzy_zFQc-mQRVjr7ghPmOXzIgGzStNb1Wgo7Noe7oX_JoGQSgCqOPyQc2aQVJaqj-Wgpz33_CBgJribm-xQcri6i-ig9o79RoBQchBriUDUMNOQ3-BrBY5gBYxgIHi6sKDUMNOQ3-BrBYxgIowrMuhUstdbm-sy9zwq3zpUs2QopJObAJRoAUDHsHhHV7DUMNwyfVXgcBjy9zB9fVjraUEH_KDUMVi9RzBrRei6i-6UiFircYpPVYxQcri6i-jg3yibm-fg9-pq3YXUstiPsUibm-sQIupPcua9fBj9RyaUstaopUao97?dv=android&page=1&sid=jdLCQXMLpz8YprAaB85Jzy9zrHMiDXVRYQpLc2xwa8lxSTqD0mU8Gpcg9uKYWm9gDyv43YkQa4plbBoqdsFqt-nDvJFz9-KY7NMCCnLCJnvAkWXljrlQ2jBmg4VY0edG&r=https%3A%2F%2Fwww.tokopedia.com%2Fteknologeek%2Falat-cek-pengukur-tekanan-tensi-darah-digital-tensimeter-sphygmomanome%3Fsrc%3Dtopads&src=recom_widget_empty_search&management_type=1&t=android",
+              "wishlistUrl": "https://ta.tokopedia.com/promo/v1/wishlists/8a-xgVY2gmUEosJpopUaHprDUMVj9RzNrc1i6sJDUSC5rfB7q3YXUst7bm-7q3OBUsthosnfH_JaHAHpbm-srcHi6srFHmFiy3zwrfo5rM1i6sHRoiddHAHFopKpH_rdHAehomFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBo1pea_jzgP7Y1e_Vo8BJO_S20HJOk13BHe72kgJxGgMHauMxsQ1N5Z325q1O1z9u6qj17_32uH7Ok39x6zJuR_S2SoJB2PfBxHByOgAUN8u2c692gHsBN3Bo-ojBke3BHe72OysUOqB2_Z_g-qMDh_S2VoJOEu_CHuchD_32gPJNJ1MBg1pn73_-oo1h1ypovzcHa_M2zH7YIZ92gq1BpZ37N83V9gICiQAB03BxmgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Aom83Ua1sVgHO-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7N5ysomgMV913Bvq1BRZ3BRq3oyuMhsQMhMgJPcQMoNZ_g-q1BpZ3N6qMUpZMhyHj2Nysoj8B2_Z_g-qj7p_Mj7oJOJ_9P68MPE_uzsoJOJ19x6e7BpZ3N6qMUpZMhyH7ND3uxGqMVAZ_g-qjOR_BH78jY1e9B6zJ1F_uz-P7N1e9P617tNUiFiP9oBrBY2gmUEUsHdosUhoAribm-pg9opq3YX9fBjUstiqMzHeOVy_1hF8sxgrI-Cy1Udo12E8_BErjxoq1zyuB-g19CHyp-dPfJdQIx_uIVJHcOu6JPFyfrNP1Wguf7Ng7zNPsep33Wzy_zFQc-mQRVjr7ghPmOXzIgGzStNb1Wgo7Noe7oX_JoGQSgCqOPyQc2aQVJaqj-Wgpz33_CBgJribm-xQcri6i-ig9o79RoBQchBriUDUMNOQ3-BrBY5gBYxgIHi6sKDUMNOQ3-BrBYxgIowrMuhUstdbm-sy9zwq3zpUs2QopJObAJRoAUDHsHhHV7DUMNwyfVXgcBjy9zB9fVjraUEH_KDUMVi9RzBrRei6i-6UiFircYpPVYxQcri6i-jg3yibm-fg9-pq3YXUstiPsUibm-sQIupPcua9fBj9RyaUstaopUao97?sid=jdLCQXMLpz8YprAaB85Jzy9zrHMiDXVRYQpLc2xwa8lxSTqD0mU8Gpcg9uKYWm9gDyv43YkQa4plbBoqdsFqt-nDvJFz9-KY7NMCCnLCJnvAkWXljrlQ2jBmg4VY0edG&page=1&dv=android&product_id=1042920281&r=https%3A%2F%2Fwww.tokopedia.com%2Fteknologeek%2Falat-cek-pengukur-tekanan-tensi-darah-digital-tensimeter-sphygmomanome%3Fsrc%3Dtopads&management_type=1&t=android&src=recom_widget_empty_search&uid=3862147",
+              "trackerImageUrl": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6syhHpraHsHRbm-xgVY789CBUsthbm-FQRo2PcB5QiUEomFiPcBWgZUEH_yFosJhHsnpHaFircV7qmUEUMusrprWrmN7QfW5rcujq3JXQMu7bfBWgaYsy3otgZ4pHAnWrRVOy9-BbRCaQfzOyReWHZ4aHAUFbpr5HsU5os17oAnpHAH5os17oAnpHAowyMzjosjRHcJWHcHOya776Auxb3Udgc1WHpxiof1popKaoseO9pJFHACwH_nFHmUDUMVj9RosQR-BUstpopyX6AnpHArdHpJR6An7H_eDUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_uH7HjNJ39PvuJJh_92zo1NEqpCoqBV2_JoGqMzUZMgsHBgtyfO6Q7BkQfBouJuO_M2VoJOku_ooqBBd_jzVP7NEgpz-q9P2y_-3o3ea69BqzsBE3_UN8u2_Z_g-qjV2_JoGP3Uao32q17jfZ320H1NEz_zo8B1F_VzDQJOk39z6zV-23uHFoVja__uHucHp_7zsHjNk1_ovz7BE33B-r7BW69BxufzFyMFNqO2yeMgxuOV2_fB-P7B2PfBiH72F3s-DPuKpeSBiHBUh3_oZgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Ao6QfUpeMgxuOV2_fB-P7B2PfBs3VgDyfNDgMzIzMNs81jfZ3B-r7BX_M2iH72D3A-G83UpgI2q17jfZ32oH7N2oAzozJOR_S2S8jO1ypzozVVd_jo-r7BX_M2iH72D3Ao6QVByZM2xe7jfZ32oP7N_oI2vuJVN_jzVHJO1Z9P6uJVR_BoG6ZUDUSupg9-wq3ei6iUp6AyaH_eRUiFirfuprfB5QBY2gmUEUM2j_Joz3JOHrItd39Cae3Vm6AuG8SjN8S-U_3BJ3VgZ3uVF_cHa8IPx6chd1OzhzACWu_xIrcoS69ub3uPW63PJ89y7HOB013J7rchieMYhgIocr9eWQjzfZjgE6ZOb3_P6_1oAQjhAZMNfe3W93chkrMhzHM2mQ3r7uBjFg3zIUiFiy3hSUstiyMupPVYpg3hDg9Uibm-XP3Oig9-wQfgwy3zpUstdbm-XP3Oig9-wy3zp9R-BrZUE6mFiQBYsy3Njq3zxPcuwy3zpUsth6mFiy3-wPcupPmUEUjdibm-FQRo79fVDgaUE3a-jg3yi9ZFiPMuarfB5QiUEUSyaUiFiyfhOrRzBrBY2gVYfHiUEHsraHsuY?sid=jdLCQXMLpz8YprAaB85Jzy9zrHMiDXVRYQpLc2xwa8lxSTqD0mU8Gpcg9uKYWm9gDyv43YkQa4plbBoqdsFqt-nDvJFz9-KY7NMCCnLCJnvAkWXljrlQ2jBmg4VY0edG&src=recom_widget_empty_search&dv=android&page=1&management_type=1&t=android",
+              "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/300-square/product-1/2020/7/22/65440303/65440303_bdd6970a-0c5c-485a-b8de-38b7e3782645_1000_1000",
+              "price": "Rp155.000",
+              "labelgroup": [],
+              "priceInt": 155000,
+              "discountPercentage": 0,
+              "slashedPrice": "",
+              "slashedPriceInt": 0,
+              "isWishlist": false,
+              "minOrder": 0,
+              "shop": {
+                "id": 6046092,
+                "name": "teknologeek",
+                "city": "Jakarta Pusat"
+              },
+              "departmentId": 2310,
+              "badges": [
+                {
+                  "imageUrl": "https://ecs7-p.tokopedia.net/ta/icon/badge/PM-Badge-80.png"
+                }
+              ],
+              "freeOngkir": {
+                "isActive": false,
+                "imageUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+              },
+              "rating": 5,
+              "ratingAverage": "4.9",
+              "countReview": 87,
+              "recommendationType": "best_seller",
+              "stock": 0,
+              "isTopads": true
+            },
+            {
+              "id": 1001849770,
+              "name": "Buku Anak Pintar Kreatif Berbahasa Semester 2 Usia 5-6 tahun",
+              "categoryBreadcrumbs": "Buku/Buku Remaja dan Anak/Buku Islami Anak",
+              "url": "https://www.tokopedia.com/tbaufar/buku-anak-pintar-kreatif-berbahasa-semester-2-usia-5-6-tahun",
+              "appUrl": "tokopedia://product/1001849770",
+              "clickUrl": "https://ace.tokopedia.com/r3/v2/track?category=3324&event=click&experimentVersion=v1.4&page=1&page_name=empty_search&pid=1001849770&pos=1&recommendation=best_seller&rectype=best_seller&redirect=https://www.tokopedia.com/tbaufar/buku-anak-pintar-kreatif-berbahasa-semester-2-usia-5-6-tahun?catid3324=%26ref=empty_search_pa1_po1%26src=r3best_seller&tid=GTQCc63QqbYNmG-6PuO3jJe8sns=&uid=3862147&unique_id=&utime=1606112033&widget=r3_widget&xdevice=android",
+              "wishlistUrl": "",
+              "trackerImageUrl": "https://ecs7-p.tokopedia.net/img/cache/300-square/attachment/2020/9/17/66236640/66236640_7bac26ff-9cca-4372-b538-08f273913ed0.jpg",
+              "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/300-square/attachment/2020/9/17/66236640/66236640_7bac26ff-9cca-4372-b538-08f273913ed0.jpg",
+              "price": "Rp 10.000",
+              "labelgroup": [
+                {
+                  "position": "integrity",
+                  "title": "Terjual 62",
+                  "type": "textDarkGrey"
+                }
+              ],
+              "priceInt": 10000,
+              "discountPercentage": 0,
+              "slashedPrice": "",
+              "slashedPriceInt": 0,
+              "isWishlist": false,
+              "minOrder": 1,
+              "shop": {
+                "id": 920698,
+                "name": "Toko Buku dan Stationery",
+                "city": "Jakarta Pusat"
+              },
+              "departmentId": 3324,
+              "badges": [
+                {
+                  "imageUrl": "https://ecs7-p.tokopedia.net/img/official_store_badge.png"
+                }
+              ],
+              "freeOngkir": {
+                "isActive": true,
+                "imageUrl": "https://ecs7-p.tokopedia.net/img/ic_bebas_ongkir.png"
+              },
+              "rating": 5,
+              "ratingAverage": "4.9",
+              "countReview": 21,
+              "recommendationType": "best_seller",
+              "stock": 938,
+              "isTopads": false
+            },
+            {
+              "id": 1107171847,
+              "name": "TP-Link Bluetooth 4.0 Dongle USB Nano UB400 Adapter PC Wireless ver1.1",
+              "categoryBreadcrumbs": "Komputer & Laptop/Networking/Adapter",
+              "url": "https://www.tokopedia.com/reformasicompute/tp-link-bluetooth-4-0-dongle-usb-nano-ub400-adapter-pc-wireless-ver1-1",
+              "appUrl": "tokopedia://product/1107171847",
+              "clickUrl": "https://ace.tokopedia.com/r3/v2/track?category=335&event=click&experimentVersion=v1.4&page=1&page_name=empty_search&pid=1107171847&pos=2&recommendation=best_seller&rectype=best_seller&redirect=https://www.tokopedia.com/reformasicompute/tp-link-bluetooth-4-0-dongle-usb-nano-ub400-adapter-pc-wireless-ver1-1?catid0335=%26ref=empty_search_pa1_po2%26src=r3best_seller&tid=GTQCc63QqbYNmG-6PuO3jJe8sns=&uid=3862147&unique_id=&utime=1606112033&widget=r3_widget&xdevice=android",
+              "wishlistUrl": "",
+              "trackerImageUrl": "https://ecs7-p.tokopedia.net/img/cache/300-square/product-1/2020/11/3/17218065/17218065_0a43caa0-8455-41e8-a800-c37cd5f31173_1010_1010",
+              "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/300-square/product-1/2020/11/3/17218065/17218065_0a43caa0-8455-41e8-a800-c37cd5f31173_1010_1010",
+              "price": "Rp 67.800",
+              "labelgroup": [
+                {
+                  "position": "promo",
+                  "title": "Cashback",
+                  "type": "lightGreen"
+                },
+                {
+                  "position": "integrity",
+                  "title": "Terjual 262",
+                  "type": "textDarkGrey"
+                }
+              ],
+              "priceInt": 67800,
+              "discountPercentage": 0,
+              "slashedPrice": "",
+              "slashedPriceInt": 0,
+              "isWishlist": false,
+              "minOrder": 1,
+              "shop": {
+                "id": 1960706,
+                "name": "REFORMASI COMPUTER",
+                "city": "Jakarta Barat"
+              },
+              "departmentId": 335,
+              "badges": [
+                {
+                  "imageUrl": "https://ecs7-p.tokopedia.net/img/power_merchant_badge.png"
+                }
+              ],
+              "freeOngkir": {
+                "isActive": true,
+                "imageUrl": "https://ecs7-p.tokopedia.net/img/ic_bebas_ongkir.png"
+              },
+              "rating": 5,
+              "ratingAverage": "4.9",
+              "countReview": 122,
+              "recommendationType": "best_seller",
+              "stock": 9741,
+              "isTopads": false
+            },
+            {
+              "id": 1002755201,
+              "name": "Tensimeter Alat Pengukur Detak Jantung, Tekanan Darah Digital",
+              "categoryBreadcrumbs": "Kesehatan/Perlengkapan Medis/Alat Diagnosa",
+              "url": "https://www.tokopedia.com/gadgetmate/tensimeter-alat-pengukur-detak-jantung-tekanan-darah-digital",
+              "appUrl": "tokopedia://product/1002755201",
+              "clickUrl": "https://ace.tokopedia.com/r3/v2/track?category=2310&event=click&experimentVersion=v1.4&page=1&page_name=empty_search&pid=1002755201&pos=3&recommendation=best_seller&rectype=best_seller&redirect=https://www.tokopedia.com/gadgetmate/tensimeter-alat-pengukur-detak-jantung-tekanan-darah-digital?catid2310=%26ref=empty_search_pa1_po3%26src=r3best_seller&tid=GTQCc63QqbYNmG-6PuO3jJe8sns=&uid=3862147&unique_id=&utime=1606112033&widget=r3_widget&xdevice=android",
+              "wishlistUrl": "",
+              "trackerImageUrl": "https://ecs7-p.tokopedia.net/img/cache/300-square/product-1/2020/7/7/65453958/65453958_d9956e53-d09c-46b1-8706-6c3056c5691f_593_593",
+              "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/300-square/product-1/2020/7/7/65453958/65453958_d9956e53-d09c-46b1-8706-6c3056c5691f_593_593",
+              "price": "Rp 149.000",
+              "labelgroup": [
+                {
+                  "position": "integrity",
+                  "title": "Terjual 351",
+                  "type": "textDarkGrey"
+                }
+              ],
+              "priceInt": 149000,
+              "discountPercentage": 0,
+              "slashedPrice": "",
+              "slashedPriceInt": 0,
+              "isWishlist": false,
+              "minOrder": 1,
+              "shop": {
+                "id": 6046597,
+                "name": "gadget mate",
+                "city": "Jakarta Pusat"
+              },
+              "departmentId": 2310,
+              "badges": [
+                {
+                  "imageUrl": "https://ecs7-p.tokopedia.net/img/power_merchant_badge.png"
+                }
+              ],
+              "freeOngkir": {
+                "isActive": true,
+                "imageUrl": "https://ecs7-p.tokopedia.net/img/ic_bebas_ongkir.png"
+              },
+              "rating": 5,
+              "ratingAverage": "4.9",
+              "countReview": 138,
+              "recommendationType": "best_seller",
+              "stock": 705,
+              "isTopads": false
+            },
+            {
+              "id": 1010732148,
+              "name": "Xiaomi Redmi Note 9 Biasa Soft Case Colored Frosted Matte Dove Fuze",
+              "categoryBreadcrumbs": "Handphone & Tablet/Aksesoris Handphone/Soft Case Handphone",
+              "url": "https://www.tokopedia.com/sensee99/xiaomi-redmi-note-9-biasa-soft-case-colored-frosted-matte-dove-fuze",
+              "appUrl": "tokopedia://product/1010732148",
+              "clickUrl": "https://ace.tokopedia.com/r3/v2/track?category=69&event=click&experimentVersion=v1.4&page=1&page_name=empty_search&pid=1010732148&pos=4&recommendation=best_seller&rectype=best_seller&redirect=https://www.tokopedia.com/sensee99/xiaomi-redmi-note-9-biasa-soft-case-colored-frosted-matte-dove-fuze?catid0069=%26ref=empty_search_pa1_po4%26src=r3best_seller&tid=GTQCc63QqbYNmG-6PuO3jJe8sns=&uid=3862147&unique_id=&utime=1606112033&widget=r3_widget&xdevice=android",
+              "wishlistUrl": "",
+              "trackerImageUrl": "https://ecs7-p.tokopedia.net/img/cache/300-square/product-1/2020/8/5/1010732148/1010732148_8aaa477f-67b2-497e-b631-61001a1b3c9f_1075_1075.jpg",
+              "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/300-square/product-1/2020/8/5/1010732148/1010732148_8aaa477f-67b2-497e-b631-61001a1b3c9f_1075_1075.jpg",
+              "price": "Rp 17.500",
+              "labelgroup": [
+                {
+                  "position": "integrity",
+                  "title": "Terjual 318",
+                  "type": "textDarkGrey"
+                }
+              ],
+              "priceInt": 17500,
+              "discountPercentage": 0,
+              "slashedPrice": "",
+              "slashedPriceInt": 0,
+              "isWishlist": false,
+              "minOrder": 1,
+              "shop": {
+                "id": 2933946,
+                "name": "sense accessories",
+                "city": "Jakarta Pusat"
+              },
+              "departmentId": 69,
+              "badges": [
+                {
+                  "imageUrl": "https://ecs7-p.tokopedia.net/img/power_merchant_badge.png"
+                }
+              ],
+              "freeOngkir": {
+                "isActive": true,
+                "imageUrl": "https://ecs7-p.tokopedia.net/img/ic_bebas_ongkir.png"
+              },
+              "rating": 5,
+              "ratingAverage": "4.8",
+              "countReview": 144,
+              "recommendationType": "best_seller",
+              "stock": 525,
+              "isTopads": false
+            },
+            {
+              "id": 1034336193,
+              "name": "Daily Farm - Benih Bibit Sawi Pagoda Ta Ke Cai",
+              "categoryBreadcrumbs": "Rumah Tangga/Taman/Benih Bibit Tanaman",
+              "url": "https://www.tokopedia.com/damai-shop/daily-farm-benih-bibit-sawi-pagoda-ta-ke-cai",
+              "appUrl": "tokopedia://product/1034336193",
+              "clickUrl": "https://ace.tokopedia.com/r3/v2/track?category=1655&event=click&experimentVersion=v1.4&page=1&page_name=empty_search&pid=1034336193&pos=5&recommendation=best_seller&rectype=best_seller&redirect=https://www.tokopedia.com/damai-shop/daily-farm-benih-bibit-sawi-pagoda-ta-ke-cai?catid1655=%26ref=empty_search_pa1_po5%26src=r3best_seller&tid=GTQCc63QqbYNmG-6PuO3jJe8sns=&uid=3862147&unique_id=&utime=1606112033&widget=r3_widget&xdevice=android",
+              "wishlistUrl": "",
+              "trackerImageUrl": "https://ecs7-p.tokopedia.net/img/cache/300-square/VqbcmM/2020/7/18/6d1f576a-e5c4-4562-88f1-3a1310e0c658.jpg",
+              "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/300-square/VqbcmM/2020/7/18/6d1f576a-e5c4-4562-88f1-3a1310e0c658.jpg",
+              "price": "Rp 10.000",
+              "labelgroup": [
+                {
+                  "position": "integrity",
+                  "title": "Terjual 1,7rb",
+                  "type": "textDarkGrey"
+                }
+              ],
+              "priceInt": 10000,
+              "discountPercentage": 0,
+              "slashedPrice": "",
+              "slashedPriceInt": 0,
+              "isWishlist": false,
+              "minOrder": 1,
+              "shop": {
+                "id": 97008,
+                "name": "Damai-Shop",
+                "city": "Kota Tangerang"
+              },
+              "departmentId": 1655,
+              "badges": [
+                {
+                  "imageUrl": "https://ecs7-p.tokopedia.net/img/power_merchant_badge.png"
+                }
+              ],
+              "freeOngkir": {
+                "isActive": true,
+                "imageUrl": "https://ecs7-p.tokopedia.net/img/ic_bebas_ongkir.png"
+              },
+              "rating": 5,
+              "ratingAverage": "4.9",
+              "countReview": 281,
+              "recommendationType": "best_seller",
+              "stock": 175,
+              "isTopads": false
+            },
+            {
+              "id": 1027880907,
+              "name": "CASE REDMI NOTE 9 PRO - CASE ARMOR SHOCKPROOF XIAOMI REDMI NOTE 9 PRO - Hitam",
+              "categoryBreadcrumbs": "Handphone & Tablet/Aksesoris Handphone/Soft Case Handphone",
+              "url": "https://www.tokopedia.com/benuacell143/case-redmi-note-9-pro-case-armor-shockproof-xiaomi-redmi-note-9-pro-hitam",
+              "appUrl": "tokopedia://product/1027880907",
+              "clickUrl": "https://ace.tokopedia.com/r3/v2/track?category=69&event=click&experimentVersion=v1.4&page=1&page_name=empty_search&pid=1027880907&pos=6&recommendation=best_seller&rectype=best_seller&redirect=https://www.tokopedia.com/benuacell143/case-redmi-note-9-pro-case-armor-shockproof-xiaomi-redmi-note-9-pro-hitam?catid0069=%26ref=empty_search_pa1_po6%26src=r3best_seller&tid=GTQCc63QqbYNmG-6PuO3jJe8sns=&uid=3862147&unique_id=&utime=1606112033&widget=r3_widget&xdevice=android",
+              "wishlistUrl": "",
+              "trackerImageUrl": "https://ecs7-p.tokopedia.net/img/cache/300-square/product-1/2020/6/18/2488772/2488772_1686fafe-14f5-49ad-a356-832a0cf7b990_1078_1078.jpg",
+              "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/300-square/product-1/2020/6/18/2488772/2488772_1686fafe-14f5-49ad-a356-832a0cf7b990_1078_1078.jpg",
+              "price": "Rp 14.000",
+              "labelgroup": [
+                {
+                  "position": "integrity",
+                  "title": "Terjual 1,4rb",
+                  "type": "textDarkGrey"
+                }
+              ],
+              "priceInt": 14000,
+              "discountPercentage": 0,
+              "slashedPrice": "",
+              "slashedPriceInt": 0,
+              "isWishlist": false,
+              "minOrder": 1,
+              "shop": {
+                "id": 2488772,
+                "name": "BenuaCell",
+                "city": "Jakarta Utara"
+              },
+              "departmentId": 69,
+              "badges": [
+                {
+                  "imageUrl": "https://ecs7-p.tokopedia.net/img/power_merchant_badge.png"
+                }
+              ],
+              "freeOngkir": {
+                "isActive": true,
+                "imageUrl": "https://ecs7-p.tokopedia.net/img/ic_bebas_ongkir.png"
+              },
+              "rating": 5,
+              "ratingAverage": "4.7",
+              "countReview": 292,
+              "recommendationType": "best_seller",
+              "stock": 412,
+              "isTopads": false
+            },
+            {
+              "id": 1018462927,
+              "name": "[ MODEL U ] Audio Splitter Jack 3.5mm to dual female U Shape 2in1 - Random",
+              "categoryBreadcrumbs": "Handphone & Tablet/Aksesoris Handphone/Soft Case Handphone",
+              "url": "https://www.tokopedia.com/rgaksesorishp/model-u-audio-splitter-jack-3-5mm-to-dual-female-u-shape-2in1-random",
+              "appUrl": "tokopedia://product/1018462927",
+              "clickUrl": "https://ace.tokopedia.com/r3/v2/track?category=69&event=click&experimentVersion=v1.4&page=1&page_name=empty_search&pid=1018462927&pos=7&recommendation=best_seller&rectype=best_seller&redirect=https://www.tokopedia.com/rgaksesorishp/model-u-audio-splitter-jack-3-5mm-to-dual-female-u-shape-2in1-random?catid0069=%26ref=empty_search_pa1_po7%26src=r3best_seller&tid=GTQCc63QqbYNmG-6PuO3jJe8sns=&uid=3862147&unique_id=&utime=1606112033&widget=r3_widget&xdevice=android",
+              "wishlistUrl": "",
+              "trackerImageUrl": "https://ecs7-p.tokopedia.net/img/cache/300-square/attachment/2020/11/23/29652022/29652022_50ff43ff-123c-4626-a1af-9297dfd96b8a.jpg",
+              "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/300-square/attachment/2020/11/23/29652022/29652022_50ff43ff-123c-4626-a1af-9297dfd96b8a.jpg",
+              "price": "Rp 4.000",
+              "labelgroup": [
+                {
+                  "position": "offers",
+                  "title": "Grosir",
+                  "type": "lightGrey"
+                },
+                {
+                  "position": "price",
+                  "title": "Grosir",
+                  "type": "lightGreen"
+                },
+                {
+                  "position": "integrity",
+                  "title": "Terjual 26,6rb",
+                  "type": "textDarkGrey"
+                }
+              ],
+              "priceInt": 4000,
+              "discountPercentage": 0,
+              "slashedPrice": "",
+              "slashedPriceInt": 0,
+              "isWishlist": false,
+              "minOrder": 1,
+              "shop": {
+                "id": 259456,
+                "name": "RG AKSESORIS HP",
+                "city": "Kota Tangerang Selatan"
+              },
+              "departmentId": 69,
+              "badges": [
+                {
+                  "imageUrl": "https://ecs7-p.tokopedia.net/img/power_merchant_badge.png"
+                }
+              ],
+              "freeOngkir": {
+                "isActive": true,
+                "imageUrl": "https://ecs7-p.tokopedia.net/img/ic_bebas_ongkir.png"
+              },
+              "rating": 5,
+              "ratingAverage": "4.7",
+              "countReview": 482,
+              "recommendationType": "best_seller",
+              "stock": 19677,
+              "isTopads": false
+            },
+            {
+              "id": 1000773387,
+              "name": "tabung air regulator oksigen",
+              "categoryBreadcrumbs": "Kesehatan/Perlengkapan Medis/Alat Bantu Pernafasan",
+              "url": "https://www.tokopedia.com/ayumedika-1/tabung-air-regulator-oksigen",
+              "appUrl": "tokopedia://product/1000773387",
+              "clickUrl": "https://ace.tokopedia.com/r3/v2/track?category=2521&event=click&experimentVersion=v1.4&page=1&page_name=empty_search&pid=1000773387&pos=8&recommendation=best_seller&rectype=best_seller&redirect=https://www.tokopedia.com/ayumedika-1/tabung-air-regulator-oksigen?catid2521=%26ref=empty_search_pa1_po8%26src=r3best_seller&tid=GTQCc63QqbYNmG-6PuO3jJe8sns=&uid=3862147&unique_id=&utime=1606112033&widget=r3_widget&xdevice=android",
+              "wishlistUrl": "",
+              "trackerImageUrl": "https://ecs7-p.tokopedia.net/img/cache/300-square/VqbcmM/2020/10/30/8a8c0ca7-76a3-436d-919c-d1bcec53d978.jpg",
+              "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/300-square/VqbcmM/2020/10/30/8a8c0ca7-76a3-436d-919c-d1bcec53d978.jpg",
+              "price": "Rp 58.000",
+              "labelgroup": [
+                {
+                  "position": "integrity",
+                  "title": "Terjual 163",
+                  "type": "textDarkGrey"
+                }
+              ],
+              "priceInt": 58000,
+              "discountPercentage": 0,
+              "slashedPrice": "",
+              "slashedPriceInt": 0,
+              "isWishlist": false,
+              "minOrder": 1,
+              "shop": {
+                "id": 7523823,
+                "name": "ayumedika",
+                "city": "Kota Bekasi"
+              },
+              "departmentId": 2521,
+              "badges": [
+                {
+                  "imageUrl": "https://ecs7-p.tokopedia.net/img/power_merchant_badge.png"
+                }
+              ],
+              "freeOngkir": {
+                "isActive": true,
+                "imageUrl": "https://ecs7-p.tokopedia.net/img/ic_bebas_ongkir.png"
+              },
+              "rating": 5,
+              "ratingAverage": "4.9",
+              "countReview": 51,
+              "recommendationType": "best_seller",
+              "stock": 44,
+              "isTopads": false
+            },
+            {
+              "id": 1025640748,
+              "name": "oximeter jari alat ukur kadar oxigen oksigen OXYMETER Fingertip",
+              "categoryBreadcrumbs": "Kesehatan/Perlengkapan Medis/Alat Diagnosa",
+              "url": "https://www.tokopedia.com/alfredowei/oximeter-jari-alat-ukur-kadar-oxigen-oksigen-oxymeter-fingertip?src=topads",
+              "appUrl": "tokopedia://product/1025640748",
+              "clickUrl": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEosJFo_eaHpHDUMVj9RzNrc1i6sJDUSC5rfB7q3YXUstObm-7q3OBUsthosnfH_JaHAHpbm-srcHi6seOHmFiy3zwrfo5rM1i6sHf6md7HpK7opra6_nfos1DUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_uH7HjOEqR26zVVN_M2-81Y1u9PvzJB2_JoGqMzUZMgsHBgtyfO6Q7BkQfBoe7BpZ3O7QcuygIgsQu-Myp-6PMoWu3Bvq1BRZ3BRq3-W69ugHBu2_fB-o1N1yRxvzJ7h_jHFou21Z_-HuVJF33OVPJYI_M2v1pnp_S2SH7Nk3_C68Mx2__--q1hAZSgsQ3hXyurOgB2IuSPyHMh0Z325q1OAZ9o-Q_BNyuPjrc-D69PsQ_B0gVP6HVKaQcW-qMY2_1o-r7BW69BxufzFyMFN8MVI69PyHMh0Z325q1OAZ9o-Qjyh3BxGouKp1MxqH7O2_fB-q1hAZS2gHsBN3ByNq3oW6_osHBu2_fB-8jNkgRu6zJ77_jzsH7OkqRP6qBjhZ3BRq3Ha_SgsQugMyp-3qcoW_MY-qMY2_32gH1hk_9xvuJBd_92S8jNk3_uvuJB2gBJYvZUDUSupg9-wq3ei6iUp6AyaH_eRUiFirfuprfB5QBY2gmUEUM2j_Joz3JOHrItd39Cae3Vm6AuG8SjN8S-U_3BJ3VgZ3uVF_cHa8IPx6chd1OzhzACWu_xIrcoS69ub3uPW63PJ89y7HOB013J7rchieMYhgIocr9eWQjzfZjgE6ZOb3_P6_1oAQjhAZMNfe3W93chkrMhzHM2mQ3r7uBjFg3zIUiFiy3hSUstiyMupPVYpg3hDg9Uibm-XP3Oig9-wQfgwy3zpUstdbm-XP3Oig9-wy3zp9R-BrZUE6mFiyfV79fBjraUE3prhoZFhopeabAUpH_CPbm-X9foxQMz2gcV7guYxgIHi6sJdbm-xyBY7g9o7Usti_iUDUSC5rRzwy3hSUstigcuMUiFiPMuarfB5QiUEUSyaUiFiyfhOrRzBrBY2gVYfHiUEopKRoI7?page=1&dv=android&src=recom_widget_empty_search&t=android&r=https%3A%2F%2Fwww.tokopedia.com%2Falfredowei%2Foximeter-jari-alat-ukur-kadar-oxigen-oksigen-oxymeter-fingertip%3Fsrc%3Dtopads&management_type=1&sid=jdLCQXMLpz8YprAaB85Jzy9zrHMiDXVRYQpLc2xwa8lxSTqD0mU8Gpcg9uKYWm9gDyv43YkQa4plbBoqdsFqt-nDvJFz9-KY7NMCCnLCJnvAkWXljrlQ2jBmg4VY0edG",
+              "wishlistUrl": "https://ta.tokopedia.com/promo/v1/wishlists/8a-xgVY2gmUEosJFo_eaHpHDUMVj9RzNrc1i6sJDUSC5rfB7q3YXUstObm-7q3OBUsthosnfH_JaHAHpbm-srcHi6seOHmFiy3zwrfo5rM1i6sHf6md7HpK7opra6_nfos1DUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_uH7HjOEqR26zVVN_M2-81Y1u9PvzJB2_JoGqMzUZMgsHBgtyfO6Q7BkQfBoe7BpZ3O7QcuygIgsQu-Myp-6PMoWu3Bvq1BRZ3BRq3-W69ugHBu2_fB-o1N1yRxvzJ7h_jHFou21Z_-HuVJF33OVPJYI_M2v1pnp_S2SH7Nk3_C68Mx2__--q1hAZSgsQ3hXyurOgB2IuSPyHMh0Z325q1OAZ9o-Q_BNyuPjrc-D69PsQ_B0gVP6HVKaQcW-qMY2_1o-r7BW69BxufzFyMFN8MVI69PyHMh0Z325q1OAZ9o-Qjyh3BxGouKp1MxqH7O2_fB-q1hAZS2gHsBN3ByNq3oW6_osHBu2_fB-8jNkgRu6zJ77_jzsH7OkqRP6qBjhZ3BRq3Ha_SgsQugMyp-3qcoW_MY-qMY2_32gH1hk_9xvuJBd_92S8jNk3_uvuJB2gBJYvZUDUSupg9-wq3ei6iUp6AyaH_eRUiFirfuprfB5QBY2gmUEUM2j_Joz3JOHrItd39Cae3Vm6AuG8SjN8S-U_3BJ3VgZ3uVF_cHa8IPx6chd1OzhzACWu_xIrcoS69ub3uPW63PJ89y7HOB013J7rchieMYhgIocr9eWQjzfZjgE6ZOb3_P6_1oAQjhAZMNfe3W93chkrMhzHM2mQ3r7uBjFg3zIUiFiy3hSUstiyMupPVYpg3hDg9Uibm-XP3Oig9-wQfgwy3zpUstdbm-XP3Oig9-wy3zp9R-BrZUE6mFiyfV79fBjraUE3prhoZFhopeabAUpH_CPbm-X9foxQMz2gcV7guYxgIHi6sJdbm-xyBY7g9o7Usti_iUDUSC5rRzwy3hSUstigcuMUiFiPMuarfB5QiUEUSyaUiFiyfhOrRzBrBY2gVYfHiUEopKRoI7?management_type=1&t=android&r=https%3A%2F%2Fwww.tokopedia.com%2Falfredowei%2Foximeter-jari-alat-ukur-kadar-oxigen-oksigen-oxymeter-fingertip%3Fsrc%3Dtopads&uid=3862147&page=1&product_id=1025640748&dv=android&sid=jdLCQXMLpz8YprAaB85Jzy9zrHMiDXVRYQpLc2xwa8lxSTqD0mU8Gpcg9uKYWm9gDyv43YkQa4plbBoqdsFqt-nDvJFz9-KY7NMCCnLCJnvAkWXljrlQ2jBmg4VY0edG&src=recom_widget_empty_search",
+              "trackerImageUrl": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6syhHA17HsHpbm-xgVY789CBUsthbm-FQRo2PcB5QiUEoZFiPcBWgZUEH_yFosJhHsnpHaFircV7qmUEUMusrprWrmN7QfW5rcujq3JXQMu7bfBWgaYsy3otgZ4pHAnWrRVOy9-BbRCaQfzOyReWHZ4aHAUFbpj5H_n5o_HfHp1hHZ4OHpypo_Jh9fURH3zBoAJpb_PjofJWocuMgi7doMzBb_Cso3ypoACBop1OyO4f6_-wosjaUiFiy3zwrfo5rM1i6sHf6md7HpK7opra6_nfos1DUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_uH7HjOEqR26zVVN_M2-81Y1u9PvzJB2_JoGqMzUZMgsHBgtyfO6Q7BkQfBoe7BpZ3O7QcuygIgsQu-Myp-6PMoWu3Bvq1BRZ3BRq3-W69ugHBu2_fB-o1N1yRxvzJ7h_jHFou21Z_-HuVJF33OVPJYI_M2v1pnp_S2SH7Nk3_C68Mx2__--q1hAZSgsQ3hXyurOgB2IuSPyHMh0Z325q1OAZ9o-Q_BNyuPjrc-D69PsQ_B0gVP6HVKaQcW-qMY2_1o-r7BW69BxufzFyMFN8MVI69PyHMh0Z325q1OAZ9o-Qjyh3BxGouKp1MxqH7O2_fB-q1hAZS2gHsBN3ByNq3oW6_osHBu2_fB-8jNkgRu6zJ77_jzsH7OkqRP6qBjhZ3BRq3Ha_SgsQugMyp-3qcoW_MY-qMY2_32gH1hk_9xvuJBd_92S8jNk3_uvuJB2gBJYvZUDUSupg9-wq3ei6iUp6AyaH_eRUiFirfuprfB5QBY2gmUEUM2j_Joz3JOHrItd39Cae3Vm6AuG8SjN8S-U_3BJ3VgZ3uVF_cHa8IPx6chd1OzhzACWu_xIrcoS69ub3uPW63PJ89y7HOB013J7rchieMYhgIocr9eWQjzfZjgE6ZOb3_P6_1oAQjhAZMNfe3W93chkrMhzHM2mQ3r7uBjFg3zIUiFiy3hSUstiyMupPVYpg3hDg9Uibm-XP3Oig9-wQfgwy3zpUstdbm-XP3Oig9-wy3zp9R-BrZUE6mFiQBYsy3Njq3zxPcuwy3zpUsth6mFiy3-wPcupPmUEUjdibm-FQRo79fVDgaUE3a-jg3yi9ZFiPMuarfB5QiUEUSyaUiFiyfhOrRzBrBY2gVYfHiUEopKRoI7?sid=jdLCQXMLpz8YprAaB85Jzy9zrHMiDXVRYQpLc2xwa8lxSTqD0mU8Gpcg9uKYWm9gDyv43YkQa4plbBoqdsFqt-nDvJFz9-KY7NMCCnLCJnvAkWXljrlQ2jBmg4VY0edG&management_type=1&src=recom_widget_empty_search&page=1&t=android&dv=android",
+              "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/300-square/product-1/2020/9/10/5363511/5363511_b71de413-7d7a-4eff-86de-0c5f340e755c_692_692",
+              "price": "Rp34.800",
+              "labelgroup": [],
+              "priceInt": 34800,
+              "discountPercentage": 0,
+              "slashedPrice": "",
+              "slashedPriceInt": 0,
+              "isWishlist": false,
+              "minOrder": 0,
+              "shop": {
+                "id": 753901,
+                "name": "Kastil Drakula",
+                "city": "Jakarta Barat"
+              },
+              "departmentId": 2310,
+              "badges": [
+                {
+                  "imageUrl": "https://ecs7-p.tokopedia.net/ta/icon/badge/PM-Badge-80.png"
+                }
+              ],
+              "freeOngkir": {
+                "isActive": true,
+                "imageUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+              },
+              "rating": 5,
+              "ratingAverage": "4.7",
+              "countReview": 99,
+              "recommendationType": "best_seller",
+              "stock": 0,
+              "isTopads": true
+            },
+            {
+              "id": 1221615528,
+              "name": "Fast connector sc apc dropcore conector adapter fiber optik",
+              "categoryBreadcrumbs": "Komputer & Laptop/Networking/Adapter",
+              "url": "https://www.tokopedia.com/joinwit/fast-connector-sc-apc-dropcore-conector-adapter-fiber-optik?src=topads",
+              "appUrl": "tokopedia://product/1221615528",
+              "clickUrl": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEosyNoAUhopyDUMVj9RzNrc1i6sJDUSC5rfB7q3YXUstfbm-7q3OBUsthosnfH_JaHAHpbm-srcHi6sjOHmFiy3zwrfo5rM1i6sHfHZdao_1RH_JaosKaHpUDUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_uH7o1OkZ9P6uJVd_7zgoJNku_uvuJJhZ3BRqujp1SByH7ND3uxGqMVAZ_g-qjOO_1zg8JOkZ_C6zcrO_S20H1Y1z_z-q9P2y_-3o3ea69BqzsBE3_UN8u2_Z_g-qjV2_JoGP3Uao32q17jfZ320H1NEz_zo8B1F_VzDQJOk39z6zV-23uHFoVja__uHucHp_7zsHjNk1_ovz7BE33B-r7BW69BxufzFyMFNqO2yeMgxuOV2_fB-P7B2PfBiH72F3s-DPuKpeSBiHBUh3_oZgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Ao6QfUpeMgxuOV2_fB-P7B2PfBs3VgDyfNDgMzIzMNs81jfZ3B-r7BX_M2iH72D3A-G83UpgI2q17jfZ32oHjO_oIB6uV1p_uzV81NkgRBo8jB2_JoG8Bja69BqusBE3BPc8ujagfBvq1BN_OzuP1Okyp-6qMod_S2Vo1YJe_u617tNUiFiP9oBrBY2gmUEUsHdosUhoAribm-pg9opq3YX9fBjUstiqMzHeOVy_1hF8sxgrI-Cy1Udo12E8_BErjxoq1zyuB-g19CHyp-dPfJdQIx_uIVJHcOu6JPFyfrNP1Wguf7Ng7zNPsep33Wzy_zFQc-mQRVjr7ghPmOXzIgGzStNb1Wgo7Noe7oX_JoGQSgCqOPyQc2aQVJaqj-Wgpz33_CBgJribm-xQcri6i-ig9o79RoBQchBriUDUMNOQ3-BrBY5gBYxgIHi6sKDUMNOQ3-BrBYxgIowrMuhUstdbm-sy9zwq3zpUs2QHsjRbAHpHiFpHpuPbm-X9foxQMz2gcV7guYxgIHi6sJdbm-xyBY7g9o7Usti_iUDUSC5rRzwy3hSUstigcuMUiFiPMuarfB5QiUEUSyaUiFiyfhOrRzBrBY2gVYfHiUEHpJdoAoY?sid=jdLCQXMLpz8YprAaB85Jzy9zrHMiDXVRYQpLc2xwa8lxSTqD0mU8Gpcg9uKYWm9gDyv43YkQa4plbBoqdsFqt-nDvJFz9-KY7NMCCnLCJnvAkWXljrlQ2jBmg4VY0edG&t=android&r=https%3A%2F%2Fwww.tokopedia.com%2Fjoinwit%2Ffast-connector-sc-apc-dropcore-conector-adapter-fiber-optik%3Fsrc%3Dtopads&src=recom_widget_empty_search&page=1&management_type=1&dv=android",
+              "wishlistUrl": "https://ta.tokopedia.com/promo/v1/wishlists/8a-xgVY2gmUEosyNoAUhopyDUMVj9RzNrc1i6sJDUSC5rfB7q3YXUstfbm-7q3OBUsthosnfH_JaHAHpbm-srcHi6sjOHmFiy3zwrfo5rM1i6sHfHZdao_1RH_JaosKaHpUDUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_uH7o1OkZ9P6uJVd_7zgoJNku_uvuJJhZ3BRqujp1SByH7ND3uxGqMVAZ_g-qjOO_1zg8JOkZ_C6zcrO_S20H1Y1z_z-q9P2y_-3o3ea69BqzsBE3_UN8u2_Z_g-qjV2_JoGP3Uao32q17jfZ320H1NEz_zo8B1F_VzDQJOk39z6zV-23uHFoVja__uHucHp_7zsHjNk1_ovz7BE33B-r7BW69BxufzFyMFNqO2yeMgxuOV2_fB-P7B2PfBiH72F3s-DPuKpeSBiHBUh3_oZgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Ao6QfUpeMgxuOV2_fB-P7B2PfBs3VgDyfNDgMzIzMNs81jfZ3B-r7BX_M2iH72D3A-G83UpgI2q17jfZ32oHjO_oIB6uV1p_uzV81NkgRBo8jB2_JoG8Bja69BqusBE3BPc8ujagfBvq1BN_OzuP1Okyp-6qMod_S2Vo1YJe_u617tNUiFiP9oBrBY2gmUEUsHdosUhoAribm-pg9opq3YX9fBjUstiqMzHeOVy_1hF8sxgrI-Cy1Udo12E8_BErjxoq1zyuB-g19CHyp-dPfJdQIx_uIVJHcOu6JPFyfrNP1Wguf7Ng7zNPsep33Wzy_zFQc-mQRVjr7ghPmOXzIgGzStNb1Wgo7Noe7oX_JoGQSgCqOPyQc2aQVJaqj-Wgpz33_CBgJribm-xQcri6i-ig9o79RoBQchBriUDUMNOQ3-BrBY5gBYxgIHi6sKDUMNOQ3-BrBYxgIowrMuhUstdbm-sy9zwq3zpUs2QHsjRbAHpHiFpHpuPbm-X9foxQMz2gcV7guYxgIHi6sJdbm-xyBY7g9o7Usti_iUDUSC5rRzwy3hSUstigcuMUiFiPMuarfB5QiUEUSyaUiFiyfhOrRzBrBY2gVYfHiUEHpJdoAoY?product_id=1221615528&t=android&page=1&uid=3862147&r=https%3A%2F%2Fwww.tokopedia.com%2Fjoinwit%2Ffast-connector-sc-apc-dropcore-conector-adapter-fiber-optik%3Fsrc%3Dtopads&dv=android&sid=jdLCQXMLpz8YprAaB85Jzy9zrHMiDXVRYQpLc2xwa8lxSTqD0mU8Gpcg9uKYWm9gDyv43YkQa4plbBoqdsFqt-nDvJFz9-KY7NMCCnLCJnvAkWXljrlQ2jBmg4VY0edG&management_type=1&src=recom_widget_empty_search",
+              "trackerImageUrl": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6syf6_eaH_rfbm-xgVY789CBUsthbm-FQRo2PcB5QiUEoiFiPcBWgZUEH_yFosJhHsnpHaFircV7qmUEUMusrprWrmN7QfW5rcujq3JXQMu7bfBWgaYsy3otgZ4pHAnWrRVOy9-BbOghyMoW_Z4aHAUFbpJFbpJObpzsHAxiyp-Bb3uMoAKWocef6ZOxofoMb_CBysCBgMziosPjHZNkrcribm-xgVYpyfYagZUEHpyhbsUOo_rhH_Uf6AUpHiFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBo1peO_32-P7N1e9xvzVj7_M2uo1Y1e_V-q9P23_oZ8uKp_Mhg3J2ky1o-ojBk_9uozVBd_32-HJNJgpu68MDh_OzVoJB2PfBxHByOgAUN8u2c692gHsBN3Bo-ojBke3BHe72OysUOqB2_Z_g-qMDh_S2VoJOEu_CHuchD_32gPJNJ1MBg1pn73_-oo1h1ypovzcHa_M2zH7YIZ92gq1BpZ37N83V9gICiQAB03BxmgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Aom83Ua1sVgHO-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7N5ysomgMV913Bvq1BRZ3BRq3oyuMhsQMhMgJPcQMoNZ_g-q1BpZ3N6qMUpZMhyHj2Nysoj8B2_Z_g-qj7a_uH781N1u_oouJuN_M2S81OEZ3BHe72E3_UN8u23692qu7gN3_-Sq1Y2Z9BvuVuO_32sHjNkyRx68j1O_7zCo1N_Zsjibm-Orfua9fBjUstiHpKfHsJ7oaUDUSoBrRo2QfNwq3ei6i-kgJhA1uxo_ICE6VBFrjVxesKOZS2N692aZJO2zVx31BBzrJhsHSxRy_xD8Vo1r1eFQu1dzRCsgpBOZOB9Q_BSzIBfoAogqOVxoICDyj-5r3zpzSV7b3NJPj2c8sjWZOjR_jOAefNHe72XPjV0uOxDqS-D1_-keMOSoVggHcujzaUDUMVDgaUEUM-BrRzwrfuDQcuaUiFiQSuWyMua9fYM9fVjraUE6mFiQSuWyMua9fVjrOYag9Ji6sKDUMNwyfVXgcBjy9zB9fVjraUEH_KDUMVi9RzBrRei6i-6UiFircYpPVYxQcri6BDigcuMUB7DUSgBrSo2Qfdi6i-fHiUDUMoDP9o7g9-wq3zwPsUi6sHh6Aepwe?dv=android&page=1&t=android&sid=jdLCQXMLpz8YprAaB85Jzy9zrHMiDXVRYQpLc2xwa8lxSTqD0mU8Gpcg9uKYWm9gDyv43YkQa4plbBoqdsFqt-nDvJFz9-KY7NMCCnLCJnvAkWXljrlQ2jBmg4VY0edG&management_type=1&src=recom_widget_empty_search",
+              "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/300-square/VqbcmM/2020/10/15/4c08bc2e-ef48-4d69-a7cf-0eb0efdb67d1.jpg",
+              "price": "Rp46.000",
+              "labelgroup": [],
+              "priceInt": 46000,
+              "discountPercentage": 23,
+              "slashedPrice": "Rp60.000",
+              "slashedPriceInt": 60000,
+              "isWishlist": false,
+              "minOrder": 0,
+              "shop": {
+                "id": 2968320,
+                "name": "Joinwit",
+                "city": "Jakarta Utara"
+              },
+              "departmentId": 335,
+              "badges": [
+                {
+                  "imageUrl": "https://ecs7-p.tokopedia.net/ta/icon/badge/OS-Badge-80.png"
+                }
+              ],
+              "freeOngkir": {
+                "isActive": true,
+                "imageUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+              },
+              "rating": 5,
+              "ratingAverage": "4.9",
+              "countReview": 48,
+              "recommendationType": "best_seller",
+              "stock": 0,
+              "isTopads": true
+            },
+            {
+              "id": 1024611481,
+              "name": "USB WIFI TP-LINK TL-WN725N Nano USB Wireless Adapter 150 Mbps",
+              "categoryBreadcrumbs": "Komputer & Laptop/Networking/Adapter",
+              "url": "https://www.tokopedia.com/voguetech/usb-wifi-tp-link-tl-wn725n-nano-usb-wireless-adapter-150-mbps?src=topads",
+              "appUrl": "tokopedia://product/1024611481",
+              "clickUrl": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEosndosjf6A1DUMVj9RzNrc1i6sJDUSC5rfB7q3YXUstRbm-7q3OBUsthosnfH_JaHAHpbm-srcHi6s1FHmFiy3zwrfo5rM1i6sH7HidfoA1do_epopn7HAeOoZFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfB6epeh_OzsH7OJz9x6zcDF_32u81YJyfBHe72kgJxGgMHauMxsQ1N5Z325q1OAZ9o-Q9zDguxjPMoW1MgsHjNfyfOuq1Y2Z9P-q9P2yM7NPujau3Bvq1jO_Bzs8JYJ__V6epnO3Bz-Hjh11_CgQ1u7_7P6qjY_HAo68Mrp_M2gHJNEqcBoHjB2_JoGPMoWQcNxupuM3jP3POKaQcW-qMY2_1o-r7BW69BxufzFyMFNPfoW63Wju7dF3A-Dq7BkQfBoe7BpZ37N83V9gICiQABEy1rNPOKaQcW-qMY2_1o-r7BXzsVq3JtO3AoZqVtp_3Bvq1B2_JoG8Bja69BqusB2yf7NHfHau3Bvq1BE_jz-P1Nk1_VvzV1F_92sP7NJe_C6uVu2_JoG8Bja69BqusBE3BPc8ujagfBvq1BN_jzsP1OE1_C68j7a_BzC8jYJZ_Vv17tNUiFiP9oBrBY2gmUEUsHdosUhoAribm-pg9opq3YX9fBjUstiqMzHeOVy_1hF8sxgrI-Cy1Udo12E8_BErjxoq1zyuB-g19CHyp-dPfJdQIx_uIVJHcOu6JPFyfrNP1Wguf7Ng7zNPsep33Wzy_zFQc-mQRVjr7ghPmOXzIgGzStNb1Wgo7Noe7oX_JoGQSgCqOPyQc2aQVJaqj-Wgpz33_CBgJribm-xQcri6i-ig9o79RoBQchBriUDUMNOQ3-BrBY5gBYxgIHi6sKDUMNOQ3-BrBYxgIowrMuhUstdbm-sy9zwq3zpUs2QHsjRbAHpHiFpHpuPbm-X9foxQMz2gcV7guYxgIHi6sJdbm-xyBY7g9o7Usti_iUDUSC5rRzwy3hSUstigcuMUiFiPMuarfB5QiUEUSyaUiFiyfhOrRzBrBY2gVYfHiUE6_U7o97?page=1&src=recom_widget_empty_search&t=android&management_type=1&dv=android&sid=jdLCQXMLpz8YprAaB85Jzy9zrHMiDXVRYQpLc2xwa8lxSTqD0mU8Gpcg9uKYWm9gDyv43YkQa4plbBoqdsFqt-nDvJFz9-KY7NMCCnLCJnvAkWXljrlQ2jBmg4VY0edG&r=https%3A%2F%2Fwww.tokopedia.com%2Fvoguetech%2Fusb-wifi-tp-link-tl-wn725n-nano-usb-wireless-adapter-150-mbps%3Fsrc%3Dtopads",
+              "wishlistUrl": "https://ta.tokopedia.com/promo/v1/wishlists/8a-xgVY2gmUEosndosjf6A1DUMVj9RzNrc1i6sJDUSC5rfB7q3YXUstRbm-7q3OBUsthosnfH_JaHAHpbm-srcHi6s1FHmFiy3zwrfo5rM1i6sH7HidfoA1do_epopn7HAeOoZFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfB6epeh_OzsH7OJz9x6zcDF_32u81YJyfBHe72kgJxGgMHauMxsQ1N5Z325q1OAZ9o-Q9zDguxjPMoW1MgsHjNfyfOuq1Y2Z9P-q9P2yM7NPujau3Bvq1jO_Bzs8JYJ__V6epnO3Bz-Hjh11_CgQ1u7_7P6qjY_HAo68Mrp_M2gHJNEqcBoHjB2_JoGPMoWQcNxupuM3jP3POKaQcW-qMY2_1o-r7BW69BxufzFyMFNPfoW63Wju7dF3A-Dq7BkQfBoe7BpZ37N83V9gICiQABEy1rNPOKaQcW-qMY2_1o-r7BXzsVq3JtO3AoZqVtp_3Bvq1B2_JoG8Bja69BqusB2yf7NHfHau3Bvq1BE_jz-P1Nk1_VvzV1F_92sP7NJe_C6uVu2_JoG8Bja69BqusBE3BPc8ujagfBvq1BN_jzsP1OE1_C68j7a_BzC8jYJZ_Vv17tNUiFiP9oBrBY2gmUEUsHdosUhoAribm-pg9opq3YX9fBjUstiqMzHeOVy_1hF8sxgrI-Cy1Udo12E8_BErjxoq1zyuB-g19CHyp-dPfJdQIx_uIVJHcOu6JPFyfrNP1Wguf7Ng7zNPsep33Wzy_zFQc-mQRVjr7ghPmOXzIgGzStNb1Wgo7Noe7oX_JoGQSgCqOPyQc2aQVJaqj-Wgpz33_CBgJribm-xQcri6i-ig9o79RoBQchBriUDUMNOQ3-BrBY5gBYxgIHi6sKDUMNOQ3-BrBYxgIowrMuhUstdbm-sy9zwq3zpUs2QHsjRbAHpHiFpHpuPbm-X9foxQMz2gcV7guYxgIHi6sJdbm-xyBY7g9o7Usti_iUDUSC5rRzwy3hSUstigcuMUiFiPMuarfB5QiUEUSyaUiFiyfhOrRzBrBY2gVYfHiUE6_U7o97?uid=3862147&r=https%3A%2F%2Fwww.tokopedia.com%2Fvoguetech%2Fusb-wifi-tp-link-tl-wn725n-nano-usb-wireless-adapter-150-mbps%3Fsrc%3Dtopads&page=1&management_type=1&sid=jdLCQXMLpz8YprAaB85Jzy9zrHMiDXVRYQpLc2xwa8lxSTqD0mU8Gpcg9uKYWm9gDyv43YkQa4plbBoqdsFqt-nDvJFz9-KY7NMCCnLCJnvAkWXljrlQ2jBmg4VY0edG&t=android&src=recom_widget_empty_search&dv=android&product_id=1024611481",
+              "trackerImageUrl": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6syF6AyNosKObm-xgVY789CBUsthbm-FQRo2PcB5QiUEoaFiPcBWgZUEH_yFosJhHsnpHaFircV7qmUEUMusrprWrmN7QfW5rcujq3JXQMu7bfBWgaYsy3otgZ4pHAnWrRVOy9-BbOghyMoW_Z4aHAUFbpj5Hsn5y3yOoAJpHAjWysef6m77o3zxb_j7HfHW6A1OgcyOgsCiHsJpbM2FgaUDUMVj9RosQR-BUstpoAUXoseO6A17HprFoAn7o_1DUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_jH7H1Y1ypoozJud_jz0HJOku9Bvzco2_JoGqMzUZMgsHBgtyfO6Q7BkQfBoe7BpZ3O7QcuygIgsQu-Myp-6PMoWu3Bvq1BRZ3BRq3-W69ugHBu2_fB-o1N1yRxvzJ7h_jHFou21Z_-HuVJF33OVPJYI_M2v1pnp_S2SH7Nk3_C68Mx2__--q1hAZSgsQ3hXyurOgB2IuSPyHMh0Z325q1OAZ9o-Q_BNyuPjrc-D69PsQ_B0gVP6HVKaQcW-qMY2_1o-r7BW69BxufzFyMFN8MVI69PyHMh0Z325q1OAZ9o-Qjyh3BxGouKp1MxqH7O2_fB-q1hAZS2gHsBN3ByNq3oW6_osHBu2_fB-8jNJZ9u6qBJh_7zuHJOEyRP6zJJF_Bzuq1hAZS2gHsBN3ByN8B29zSBgHMP2_fB-81NJyRuo8BJF_S2oHjN1e92vzJjh_OoG6ZUDUSupg9-wq3ei6iUp6AyaH_eRUiFirfuprfB5QBY2gmUEUM2j_Joz3JOHrItd39Cae3Vm6AuG8SjN8S-U_3BJ3VgZ3uVF_cHa8IPx6chd1OzhzACWu_xIrcoS69ub3uPW63PJ89y7HOB013J7rchieMYhgIocr9eWQjzfZjgE6ZOb3_P6_1oAQjhAZMNfe3W93chkrMhzHM2mQ3r7uBjFg3zIUiFiy3hSUstiyMupPVYpg3hDg9Uibm-XP3Oig9-wQfgwy3zpUstdbm-XP3Oig9-wy3zp9R-BrZUE6mFiQBYsy3Njq3zxPcuwy3zpUsth6mFiy3-wPcupPmUEUjdibm-FQRo79fVDgaUE3a-jg3yi9ZFiPMuarfB5QiUEUSyaUiFiyfhOrRzBrBY2gVYfHiUE6_U7o97?sid=jdLCQXMLpz8YprAaB85Jzy9zrHMiDXVRYQpLc2xwa8lxSTqD0mU8Gpcg9uKYWm9gDyv43YkQa4plbBoqdsFqt-nDvJFz9-KY7NMCCnLCJnvAkWXljrlQ2jBmg4VY0edG&management_type=1&page=1&t=android&dv=android&src=recom_widget_empty_search",
+              "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/300-square/VqbcmM/2020/9/20/af541309-b468-45da-943c-855df5f0b213.jpg",
+              "price": "Rp78.000",
+              "labelgroup": [
+                {
+                  "position": "promo",
+                  "title": "Cashback",
+                  "type": "lightGreen"
+                },
+                {
+                  "position": "price",
+                  "title": "Cashback",
+                  "type": "lightGreen"
+                }
+              ],
+              "priceInt": 78000,
+              "discountPercentage": 0,
+              "slashedPrice": "",
+              "slashedPriceInt": 0,
+              "isWishlist": false,
+              "minOrder": 0,
+              "shop": {
+                "id": 5897626,
+                "name": "Vogue Tech",
+                "city": "Jakarta Selatan"
+              },
+              "departmentId": 335,
+              "badges": [
+                {
+                  "imageUrl": "https://ecs7-p.tokopedia.net/ta/icon/badge/PM-Badge-80.png"
+                }
+              ],
+              "freeOngkir": {
+                "isActive": true,
+                "imageUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+              },
+              "rating": 5,
+              "ratingAverage": "4.9",
+              "countReview": 131,
+              "recommendationType": "best_seller",
+              "stock": 0,
+              "isTopads": true
+            },
+            {
+              "id": 1128380743,
+              "name": "Vention USB to LAN Rj45 Ethernet Adapter High Speed For Mac Windows - CEG USB 2.0",
+              "categoryBreadcrumbs": "Komputer & Laptop/Networking/Adapter",
+              "url": "https://www.tokopedia.com/sinshe-tekno/vention-usb-to-lan-rj45-ethernet-adapter-high-speed-for-mac-windows-ceg-usb-2-0?src=topads",
+              "appUrl": "tokopedia://product/1128380743",
+              "clickUrl": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEosHhH_efopyDUMVj9RzNrc1i6sJDUSC5rfB7q3YXUstdbm-7q3OBUsthosnfH_JaHAHpbm-srcHi6syFHmFiy3zwrfo5rM1i6sHp6mdR6A1doAyaopjhoAKRbm-pHOYDQfri6i-B812kgJxGgBBXZSgjH7NDZ325q1OAZ9o-Q1dFyfFN8B29zSBgHMP2_fB-o1hke_uozcWR_OzCo1OJqRPvuJJO_3B-r7BWPchB3czfyfOZgMHa_SgsQuu2_fB-P7B2PfBiQ_BO3_-uq1Y2Z_u6ucod_7zoH1NAHAuquJja_VzzHVBWz9zvz7Nk_OHFH7NEgpo6qBjF_S2tq17aZ3BHe72fyfODQMV9o3gqzOgR3A-Dq7BkQfBoe7BpZ37N83V9gICiQABRyf7Nqfz9_sCyHMh0Z325q1OAZ9o-Q_BNyuPjrc-D692xzpBR3A-Dq7BkQfBoe7BpZ3NcHu2yZsuyHO-t3sooq1Y2Z3BHe72E3_UN8u2363BsQ_jpyp-uq1Y2Z92o8MPO_S2SH1YJ1_-oqMHO_uzzoJNNZ9o-QjNkysoGQVKp_Mhg3J2ky1o-ojBkZ_uo8_e7_32gH1N11_u68MoN_Ozz8jNAZsjibm-Orfua9fBjUstiHpKfHsJ7oaUDUSoBrRo2QfNwq3ei6i-kgJhA1uxo_ICE6VBFrjVxesKOZS2N692aZJO2zVx31BBzrJhsHSxRy_xD8Vo1r1eFQu1dzRCsgpBOZOB9Q_BSzIBfoAogqOVxoICDyj-5r3zpzSV7b3NJPj2c8sjWZOjR_jOAefNHe72XPjV0uOxDqS-D1_-keMOSoVggHcujzaUDUMVDgaUEUM-BrRzwrfuDQcuaUiFiQSuWyMua9fYM9fVjraUE6mFiQSuWyMua9fVjrOYag9Ji6sKDUMoxPVY2gIHi6BDa6_rDHpHabAHpou7DUMNwyfVXgcBjy9zB9fVjraUEH_KDUMVi9RzBrRei6i-6UiFircYpPVYxQcri6i-jg3yibm-fg9-pq3YXUstiPsUibm-sQIupPcua9fBj9RyaUsth6Ajpwe?dv=android&src=recom_widget_empty_search&r=https%3A%2F%2Fwww.tokopedia.com%2Fsinshe-tekno%2Fvention-usb-to-lan-rj45-ethernet-adapter-high-speed-for-mac-windows-ceg-usb-2-0%3Fsrc%3Dtopads&page=1&management_type=2&t=android&sid=jdLCQXMLpz8YprAaB85Jzy9zrHMiDXVRYQpLc2xwa8lxSTqD0mU8Gpcg9uKYWm9gDyv43YkQa4plbBoqdsFqt-nDvJFz9-KY7NMCCnLCJnvAkWXljrlQ2jBmg4VY0edG",
+              "wishlistUrl": "https://ta.tokopedia.com/promo/v1/wishlists/8a-xgVY2gmUEosHhH_efopyDUMVj9RzNrc1i6sJDUSC5rfB7q3YXUstdbm-7q3OBUsthosnfH_JaHAHpbm-srcHi6syFHmFiy3zwrfo5rM1i6sHp6mdR6A1doAyaopjhoAKRbm-pHOYDQfri6i-B812kgJxGgBBXZSgjH7NDZ325q1OAZ9o-Q1dFyfFN8B29zSBgHMP2_fB-o1hke_uozcWR_OzCo1OJqRPvuJJO_3B-r7BWPchB3czfyfOZgMHa_SgsQuu2_fB-P7B2PfBiQ_BO3_-uq1Y2Z_u6ucod_7zoH1NAHAuquJja_VzzHVBWz9zvz7Nk_OHFH7NEgpo6qBjF_S2tq17aZ3BHe72fyfODQMV9o3gqzOgR3A-Dq7BkQfBoe7BpZ37N83V9gICiQABRyf7Nqfz9_sCyHMh0Z325q1OAZ9o-Q_BNyuPjrc-D692xzpBR3A-Dq7BkQfBoe7BpZ3NcHu2yZsuyHO-t3sooq1Y2Z3BHe72E3_UN8u2363BsQ_jpyp-uq1Y2Z92o8MPO_S2SH1YJ1_-oqMHO_uzzoJNNZ9o-QjNkysoGQVKp_Mhg3J2ky1o-ojBkZ_uo8_e7_32gH1N11_u68MoN_Ozz8jNAZsjibm-Orfua9fBjUstiHpKfHsJ7oaUDUSoBrRo2QfNwq3ei6i-kgJhA1uxo_ICE6VBFrjVxesKOZS2N692aZJO2zVx31BBzrJhsHSxRy_xD8Vo1r1eFQu1dzRCsgpBOZOB9Q_BSzIBfoAogqOVxoICDyj-5r3zpzSV7b3NJPj2c8sjWZOjR_jOAefNHe72XPjV0uOxDqS-D1_-keMOSoVggHcujzaUDUMVDgaUEUM-BrRzwrfuDQcuaUiFiQSuWyMua9fYM9fVjraUE6mFiQSuWyMua9fVjrOYag9Ji6sKDUMoxPVY2gIHi6BDa6_rDHpHabAHpou7DUMNwyfVXgcBjy9zB9fVjraUEH_KDUMVi9RzBrRei6i-6UiFircYpPVYxQcri6i-jg3yibm-fg9-pq3YXUstiPsUibm-sQIupPcua9fBj9RyaUsth6Ajpwe?t=android&sid=jdLCQXMLpz8YprAaB85Jzy9zrHMiDXVRYQpLc2xwa8lxSTqD0mU8Gpcg9uKYWm9gDyv43YkQa4plbBoqdsFqt-nDvJFz9-KY7NMCCnLCJnvAkWXljrlQ2jBmg4VY0edG&page=1&dv=android&r=https%3A%2F%2Fwww.tokopedia.com%2Fsinshe-tekno%2Fvention-usb-to-lan-rj45-ethernet-adapter-high-speed-for-mac-windows-ceg-usb-2-0%3Fsrc%3Dtopads&management_type=2&src=recom_widget_empty_search&product_id=1128380743&uid=3862147",
+              "trackerImageUrl": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6sypH_J7osrfbm-xgVY789CBUsthbm-FQRo2PcB5QiUE6mFiPcBWgZUEH_yFosJhHsnpHaFircV7qmUEUMusrprWrmN7QfW5rcujq3JXQMu7bfBWgaYsy3otgZ4pHAnWrRVOy9-BbRCaQfzOyReWHZ4aHAUFbpK5Hsy5H_1hoAJposJ5H_1hoAJposVwH_Cso_rFyM1Wg_epHm77gAUhb3-s6_HWgsjfgA-sofJNgM1d9pKFHV4dHAnibm-xgVYpyfYagZUEHpHdbsrdo_K7osUR6_J76ArDUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_1o-r7BW_sCsQABE3BPc8ujagfBvq1jO_c2Co1OJqRPvuJJO_1z0P7Y1e_uoq1BpZ3O7QcuygIgsQu-Myp-6PMoWu3Bvq1BRZ3BRq3-W69ugHBu2_fB-o1N1yRxvzJ7h_jHFou21Z_-HuVJF33OVPJYI_M2v1pnp_S2SH7Nk3_C68Mx2__--q1hAZSgsQ3hXyurOgB2IuSPyHMh0Z325q1OAZ9o-Q_BNyuPjrc-D69PsQ_B0gVP6HVKaQcW-qMY2_1o-r7BW69BxufzFyMFN8MVI69PyHMh0Z325q1OAZ9o-Qjyh3BxGouKp1MxqH7O2_fB-q1hAZS2gHsBN3ByNq3oW6_osHBu2_fB-8jOEgRu68Mrh_7zzHjOkypuouVJ7_SB-r7BX_M2iH72D3Ao6QVByZM2xe7jfZ32-o1ONoAzoqBjh_Bzzo1NEyRBvuVVE_joG6ZUDUSupg9-wq3ei6iUp6AyaH_eRUiFirfuprfB5QBY2gmUEUM2j_Joz3JOHrItd39Cae3Vm6AuG8SjN8S-U_3BJ3VgZ3uVF_cHa8IPx6chd1OzhzACWu_xIrcoS69ub3uPW63PJ89y7HOB013J7rchieMYhgIocr9eWQjzfZjgE6ZOb3_P6_1oAQjhAZMNfe3W93chkrMhzHM2mQ3r7uBjFg3zIUiFiy3hSUstiyMupPVYpg3hDg9Uibm-XP3Oig9-wQfgwy3zpUstdbm-XP3Oig9-wy3zp9R-BrZUE6mFiQBYsy3Njq3zxPcuwy3zpUsth6mFiy3-wPcupPmUEUjdibm-FQRo79fVDgaUE3a-jg3yi9ZFiPMuarfB5QiUEUSyaUiFiyfhOrRzBrBY2gVYfHiUEH_KNHR7?management_type=2&t=android&dv=android&page=1&sid=jdLCQXMLpz8YprAaB85Jzy9zrHMiDXVRYQpLc2xwa8lxSTqD0mU8Gpcg9uKYWm9gDyv43YkQa4plbBoqdsFqt-nDvJFz9-KY7NMCCnLCJnvAkWXljrlQ2jBmg4VY0edG&src=recom_widget_empty_search",
+              "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/300-square/product-1/2020/8/26/15141361/15141361_10c570be-e430-4d21-bc93-f96d2c7a9fe8_800_800",
+              "price": "Rp99.000",
+              "labelgroup": [],
+              "priceInt": 99000,
+              "discountPercentage": 0,
+              "slashedPrice": "",
+              "slashedPriceInt": 0,
+              "isWishlist": false,
+              "minOrder": 0,
+              "shop": {
+                "id": 1727084,
+                "name": "SinShe-Tekno",
+                "city": "Jakarta Barat"
+              },
+              "departmentId": 335,
+              "badges": [
+                {
+                  "imageUrl": "https://ecs7-p.tokopedia.net/ta/icon/badge/OS-Badge-80.png"
+                }
+              ],
+              "freeOngkir": {
+                "isActive": true,
+                "imageUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+              },
+              "rating": 5,
+              "ratingAverage": "4.9",
+              "countReview": 108,
+              "recommendationType": "best_seller",
+              "stock": 0,
+              "isTopads": true
+            },
+            {
+              "id": 1011357557,
+              "name": "Bantal Duduk Custom Size, Best Quality",
+              "categoryBreadcrumbs": "Rumah Tangga/Ruang Tamu & Keluarga/Bantal Sofa",
+              "url": "https://www.tokopedia.com/zamrilashop/bantal-duduk-custom-size-best-quality",
+              "appUrl": "tokopedia://product/1011357557",
+              "clickUrl": "https://ace.tokopedia.com/r3/v2/track?category=3726&event=click&experimentVersion=v1.4&page=1&page_name=empty_search&pid=1011357557&pos=9&recommendation=best_seller&rectype=best_seller&redirect=https://www.tokopedia.com/zamrilashop/bantal-duduk-custom-size-best-quality?catid3726=%26ref=empty_search_pa1_po9%26src=r3best_seller&tid=GTQCc63QqbYNmG-6PuO3jJe8sns=&uid=3862147&unique_id=&utime=1606112033&widget=r3_widget&xdevice=android",
+              "wishlistUrl": "",
+              "trackerImageUrl": "https://ecs7-p.tokopedia.net/img/cache/300-square/product-1/2020/7/10/1333378/1333378_3a695964-935b-4434-8081-cfb047499f38_2048_2048",
+              "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/300-square/product-1/2020/7/10/1333378/1333378_3a695964-935b-4434-8081-cfb047499f38_2048_2048",
+              "price": "Rp 12.000",
+              "labelgroup": [
+                {
+                  "position": "offers",
+                  "title": "PO",
+                  "type": "lightGrey"
+                },
+                {
+                  "position": "status",
+                  "title": "Preorder",
+                  "type": "transparentBlack"
+                },
+                {
+                  "position": "integrity",
+                  "title": "Terjual 1,1rb",
+                  "type": "textDarkGrey"
+                }
+              ],
+              "priceInt": 12000,
+              "discountPercentage": 0,
+              "slashedPrice": "",
+              "slashedPriceInt": 0,
+              "isWishlist": false,
+              "minOrder": 1,
+              "shop": {
+                "id": 713279,
+                "name": "Zamrila Shop",
+                "city": "Kota Tangerang"
+              },
+              "departmentId": 3726,
+              "badges": [
+                {
+                  "imageUrl": "https://ecs7-p.tokopedia.net/img/power_merchant_badge.png"
+                }
+              ],
+              "freeOngkir": {
+                "isActive": true,
+                "imageUrl": "https://ecs7-p.tokopedia.net/img/ic_bebas_ongkir.png"
+              },
+              "rating": 5,
+              "ratingAverage": "4.9",
+              "countReview": 24,
+              "recommendationType": "best_seller",
+              "stock": 9865,
+              "isTopads": false
+            },
+            {
+              "id": 1046920477,
+              "name": "Watch Dogs Legion PC Uplay Original ONLINE - Standard",
+              "categoryBreadcrumbs": "Gaming/CD Game/CD PC dan Laptop Gaming",
+              "url": "https://www.tokopedia.com/anugrahnetshop/watch-dogs-legion-pc-uplay-original-online-standard",
+              "appUrl": "tokopedia://product/1046920477",
+              "clickUrl": "https://ace.tokopedia.com/r3/v2/track?category=2121&event=click&experimentVersion=v1.4&page=1&page_name=empty_search&pid=1046920477&pos=10&recommendation=best_seller&rectype=best_seller&redirect=https://www.tokopedia.com/anugrahnetshop/watch-dogs-legion-pc-uplay-original-online-standard?catid2121=%26ref=empty_search_pa1_po10%26src=r3best_seller&tid=GTQCc63QqbYNmG-6PuO3jJe8sns=&uid=3862147&unique_id=&utime=1606112033&widget=r3_widget&xdevice=android",
+              "wishlistUrl": "",
+              "trackerImageUrl": "https://ecs7-p.tokopedia.net/img/cache/300-square/product-1/2020/7/23/1141110/1141110_fbced8b1-cc9f-40aa-935c-b2a60aa0ec74_2048_2048.jpg",
+              "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/300-square/product-1/2020/7/23/1141110/1141110_fbced8b1-cc9f-40aa-935c-b2a60aa0ec74_2048_2048.jpg",
+              "price": "Rp 490.000",
+              "labelgroup": [
+                {
+                  "position": "integrity",
+                  "title": "Terjual 33",
+                  "type": "textDarkGrey"
+                }
+              ],
+              "priceInt": 490000,
+              "discountPercentage": 0,
+              "slashedPrice": "",
+              "slashedPriceInt": 0,
+              "isWishlist": false,
+              "minOrder": 1,
+              "shop": {
+                "id": 1141110,
+                "name": "Anugrah Net Shop",
+                "city": "Jakarta Selatan"
+              },
+              "departmentId": 2121,
+              "badges": [
+                {
+                  "imageUrl": "https://ecs7-p.tokopedia.net/img/power_merchant_badge.png"
+                }
+              ],
+              "freeOngkir": {
+                "isActive": true,
+                "imageUrl": "https://ecs7-p.tokopedia.net/img/ic_bebas_ongkir.png"
+              },
+              "rating": 5,
+              "ratingAverage": "5.0",
+              "countReview": 24,
+              "recommendationType": "best_seller",
+              "stock": 8,
+              "isTopads": false
+            },
+            {
+              "id": 1009415915,
+              "name": "VGA Asrock Phantom Gaming D Radeon RX 570 4GB - RX570 Dual 4 GB DDR5",
+              "categoryBreadcrumbs": "Komputer & Laptop/Komponen Komputer/VGA Card",
+              "url": "https://www.tokopedia.com/jayapc/vga-asrock-phantom-gaming-d-radeon-rx-570-4gb-rx570-dual-4-gb-ddr5",
+              "appUrl": "tokopedia://product/1009415915",
+              "clickUrl": "https://ace.tokopedia.com/r3/v2/track?category=3951&event=click&experimentVersion=v1.4&page=1&page_name=empty_search&pid=1009415915&pos=11&recommendation=best_seller&rectype=best_seller&redirect=https://www.tokopedia.com/jayapc/vga-asrock-phantom-gaming-d-radeon-rx-570-4gb-rx570-dual-4-gb-ddr5?catid3951=%26ref=empty_search_pa1_po11%26src=r3best_seller&tid=GTQCc63QqbYNmG-6PuO3jJe8sns=&uid=3862147&unique_id=&utime=1606112033&widget=r3_widget&xdevice=android",
+              "wishlistUrl": "",
+              "trackerImageUrl": "https://ecs7-p.tokopedia.net/img/cache/300-square/attachment/2020/11/23/29652022/29652022_8fac2073-9ddc-4275-a8ed-95a45fe05cad.jpg",
+              "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/300-square/attachment/2020/11/23/29652022/29652022_8fac2073-9ddc-4275-a8ed-95a45fe05cad.jpg",
+              "price": "Rp 2.180.000",
+              "labelgroup": [
+                {
+                  "position": "promo",
+                  "title": "Cashback",
+                  "type": "lightGreen"
+                },
+                {
+                  "position": "integrity",
+                  "title": "Terjual 34",
+                  "type": "textDarkGrey"
+                }
+              ],
+              "priceInt": 2180000,
+              "discountPercentage": 0,
+              "slashedPrice": "",
+              "slashedPriceInt": 0,
+              "isWishlist": false,
+              "minOrder": 1,
+              "shop": {
+                "id": 243690,
+                "name": "Jaya PC",
+                "city": "Jakarta Pusat"
+              },
+              "departmentId": 3951,
+              "badges": [
+                {
+                  "imageUrl": "https://ecs7-p.tokopedia.net/img/power_merchant_badge.png"
+                }
+              ],
+              "freeOngkir": {
+                "isActive": true,
+                "imageUrl": "https://ecs7-p.tokopedia.net/img/ic_bebas_ongkir.png"
+              },
+              "rating": 5,
+              "ratingAverage": "4.9",
+              "countReview": 14,
+              "recommendationType": "best_seller",
+              "stock": 999928,
+              "isTopads": false
+            },
+            {
+              "id": 1008736375,
+              "name": "3M 7093 Filter P100 u/ Respirator Masker 7502 6200 6800 2091 2097",
+              "categoryBreadcrumbs": "Kesehatan/Perlengkapan Medis/Alat Bantu Pernafasan",
+              "url": "https://www.tokopedia.com/eseman/3m-7093-filter-p100-u-respirator-masker-7502-6200-6800-2091-2097",
+              "appUrl": "tokopedia://product/1008736375",
+              "clickUrl": "https://ace.tokopedia.com/r3/v2/track?category=2521&event=click&experimentVersion=v1.4&page=1&page_name=empty_search&pid=1008736375&pos=12&recommendation=best_seller&rectype=best_seller&redirect=https://www.tokopedia.com/eseman/3m-7093-filter-p100-u-respirator-masker-7502-6200-6800-2091-2097?catid2521=%26ref=empty_search_pa1_po12%26src=r3best_seller&tid=GTQCc63QqbYNmG-6PuO3jJe8sns=&uid=3862147&unique_id=&utime=1606112033&widget=r3_widget&xdevice=android",
+              "wishlistUrl": "",
+              "trackerImageUrl": "https://ecs7-p.tokopedia.net/img/cache/300-square/product-1/2020/7/9/2807458/2807458_d6cb3aa9-ac1a-46f6-af4c-a4aace5cce58_1128_1128.jpg",
+              "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/300-square/product-1/2020/7/9/2807458/2807458_d6cb3aa9-ac1a-46f6-af4c-a4aace5cce58_1128_1128.jpg",
+              "price": "Rp 179.800",
+              "labelgroup": [
+                {
+                  "position": "promo",
+                  "title": "Cashback",
+                  "type": "lightGreen"
+                },
+                {
+                  "position": "offers",
+                  "title": "Grosir",
+                  "type": "lightGrey"
+                },
+                {
+                  "position": "price",
+                  "title": "Grosir",
+                  "type": "lightGreen"
+                },
+                {
+                  "position": "integrity",
+                  "title": "Terjual 281",
+                  "type": "textDarkGrey"
+                }
+              ],
+              "priceInt": 179800,
+              "discountPercentage": 0,
+              "slashedPrice": "",
+              "slashedPriceInt": 0,
+              "isWishlist": false,
+              "minOrder": 1,
+              "shop": {
+                "id": 2807458,
+                "name": "Eseman Dental",
+                "city": "Kota Surabaya"
+              },
+              "departmentId": 2521,
+              "badges": [
+                {
+                  "imageUrl": "https://ecs7-p.tokopedia.net/img/power_merchant_badge.png"
+                }
+              ],
+              "freeOngkir": {
+                "isActive": true,
+                "imageUrl": "https://ecs7-p.tokopedia.net/img/ic_bebas_ongkir.png"
+              },
+              "rating": 5,
+              "ratingAverage": "4.9",
+              "countReview": 71,
+              "recommendationType": "best_seller",
+              "stock": 2,
+              "isTopads": false
+            }
+          ]
+        }
+      ]
+    }
+}

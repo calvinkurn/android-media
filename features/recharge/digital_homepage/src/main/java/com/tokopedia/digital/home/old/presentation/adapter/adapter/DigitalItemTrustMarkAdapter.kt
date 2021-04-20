@@ -1,11 +1,11 @@
-package com.tokopedia.digital.home.presentation.adapter.adapter
+package com.tokopedia.digital.home.old.presentation.adapter.adapter
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.digital.home.R
-import com.tokopedia.digital.home.model.DigitalHomePageSectionModel
+import com.tokopedia.digital.home.old.model.DigitalHomePageSectionModel
 import com.tokopedia.kotlin.extensions.view.loadImage
 import kotlinx.android.synthetic.main.layout_digital_home_trustmark_item.view.*
 

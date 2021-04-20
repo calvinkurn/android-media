@@ -15,7 +15,7 @@
         android:layout_height="wrap_content"
         android:textStyle="bold"
         tools:text="Pembayaran"
-        android:textColor="@color/chorcoal_black"
+        android:textColor="@color/Unify_N700"
         android:textSize="@dimen/notif_sp_16"/>
 
     <TextView
@@ -24,7 +24,7 @@
         android:layout_height="wrap_content"
         android:text="@string/title_read_more"
         android:layout_centerVertical="true"
-        android:textColor="@color/green_500"
+        android:textColor="@color/Unify_G500"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"/>
 

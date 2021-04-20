@@ -15,12 +15,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.product.view.adapter.BannerAdapter;
 import com.tokopedia.digital.product.view.model.BannerData;
 import com.tokopedia.digital.utils.LinearLayoutManagerNonScroll;
+import com.tokopedia.unifycomponents.Toaster;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -149,7 +149,9 @@ public class DigitalPromoFragment extends Fragment implements BannerAdapter.Acti
 
     private void showToastMessage(String message) {
         View view = getView();
-        if (view != null) NetworkErrorHelper.showGreenCloseSnackbar(getActivity(), message);
+        if (view != null) {
+            Toaster.build(view, message, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL).show();
+        }
         else Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
     }
 

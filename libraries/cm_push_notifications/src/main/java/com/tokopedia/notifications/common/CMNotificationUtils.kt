@@ -3,9 +3,11 @@ package com.tokopedia.notifications.common
 import android.content.Context
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
+import android.content.res.Configuration
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.ConnectivityManager
+import android.net.Uri
 import android.os.Build
 import android.text.Html
 import android.text.SpannableStringBuilder
@@ -14,12 +16,15 @@ import android.text.TextUtils
 import android.util.DisplayMetrics
 import android.util.Log
 import com.tokopedia.notifications.model.BaseNotificationModel
+import com.tokopedia.track.TrackApp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.net.MalformedURLException
+import java.net.URLDecoder
 import java.net.UnknownHostException
 import java.util.*
+import kotlin.ClassCastException
 import kotlin.coroutines.CoroutineContext
 
 /**
@@ -33,8 +38,11 @@ object CMNotificationUtils {
     internal val STATE_LOGGED_IN = "LOGGED_IN"
 
     val CUSTOMER_APP_PAKAGE = "com.tokopedia.tkpd"
+    val CUSTOMER_APP_NAME = "Tokopedia"
     val SELLER_APP_PAKAGE = "com.tokopedia.sellerapp"
+    val SELLER_APP_NAME = "seller"
     val MITRA_APP_PAKAGE = "com.tokopedia.kelontongapp"
+    val MITRA_APP_NAME = "mitra"
 
     val currentLocalTimeStamp: Long
         get() = System.currentTimeMillis()
@@ -112,7 +120,17 @@ object CMNotificationUtils {
     }
 
     private fun mapTokenWithAppVersionRequired(appVersionName: String, cacheHandler: CMNotificationCacheHandler): Boolean {
-        val oldAppVersionName = cacheHandler.getStringValue(CMConstant.APP_VERSION_CACHE_KEY)
+        val oldAppVersionName = try {
+            cacheHandler.getStringValue(CMConstant.APP_VERSION_CACHE_KEY)
+        } catch (e: ClassCastException) {
+            try {
+                cacheHandler.remove(CMConstant.APP_VERSION_CACHE_KEY)
+                ""
+            } catch (e: Exception) {
+                e.printStackTrace()
+                ""
+            }
+        }
         Timber.d("CMUser-APP_VERSION$oldAppVersionName#new-$appVersionName")
         return TextUtils.isEmpty(oldAppVersionName) || !oldAppVersionName.equals(appVersionName, ignoreCase = true)
     }
@@ -219,12 +237,12 @@ object CMNotificationUtils {
         if (context != null) {
             val packageName = context.packageName
             if (CUSTOMER_APP_PAKAGE.equals(packageName, ignoreCase = true)) {
-                appName = "Tokopedia"
+                appName = CUSTOMER_APP_NAME
             } else if (SELLER_APP_PAKAGE.equals(packageName, ignoreCase = true)) {
-                appName = "seller"
+                appName = SELLER_APP_NAME
             }
             if (MITRA_APP_PAKAGE.equals(packageName, ignoreCase = true)) {
-                appName = "mitra"
+                appName = MITRA_APP_NAME
             }
         }
         return appName
@@ -234,6 +252,72 @@ object CMNotificationUtils {
         val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         val activeNetworkInfo = connectivityManager.activeNetworkInfo
         return activeNetworkInfo != null && activeNetworkInfo.isConnected
+    }
+
+    private fun isValidCampaignUrl(uri: Uri): Boolean {
+        val maps: Map<String, String>? = splitQuery(uri)
+        maps?.let {
+            return it.containsKey(CMConstant.UTMParams.UTM_GCLID) ||
+                    it.containsKey(CMConstant.UTMParams.UTM_SOURCE) &&
+                    it.containsKey(CMConstant.UTMParams.UTM_MEDIUM) &&
+                    it.containsKey(CMConstant.UTMParams.UTM_CAMPAIGN)
+        } ?: return false
+
+    }
+
+
+    private fun splitQuery(url: Uri): MutableMap<String, String>? {
+        val queryPairs: MutableMap<String, String> = LinkedHashMap()
+        val query = url.query
+        if (!TextUtils.isEmpty(query)) {
+            val pairs = query!!.split("&|\\?".toRegex()).toTypedArray()
+            for (pair in pairs) {
+                val indexKey = pair.indexOf("=")
+                if (indexKey > 0 && indexKey + 1 <= pair.length) {
+                    try {
+                        queryPairs[URLDecoder.decode(pair.substring(0, indexKey), "UTF-8")] = URLDecoder.decode(pair.substring(indexKey + 1), "UTF-8")
+                    } catch (e: java.lang.Exception) {
+                        e.printStackTrace()
+                    }
+                }
+            }
+        }
+        return queryPairs
+    }
+
+    fun sendUTMParamsInGTM(appLink: String?) {
+        val uri = Uri.parse(appLink)
+        if (!isValidCampaignUrl(uri))
+            return
+
+        val campaign = splitQuery(uri)
+        campaign?.let {
+            if (!it.containsKey(CMConstant.UTMParams.UTM_TERM) || it[CMConstant.UTMParams.UTM_TERM] == null)
+                it[CMConstant.UTMParams.UTM_TERM] = ""
+            if (!it.containsKey(CMConstant.UTMParams.SCREEN_NAME) || it[CMConstant.UTMParams.SCREEN_NAME] == null)
+                it[CMConstant.UTMParams.SCREEN_NAME] = CMConstant.UTMParams.SCREEN_NAME_VALUE
+        }
+        TrackApp.getInstance().gtm.sendCampaign(campaign as Map<String, Any>?)
+    }
+
+
+    fun isDarkMode(context: Context): Boolean {
+        return try {
+            when (context.resources.configuration.uiMode and
+                    Configuration.UI_MODE_NIGHT_MASK) {
+                Configuration.UI_MODE_NIGHT_YES -> true
+                Configuration.UI_MODE_NIGHT_NO -> false
+                Configuration.UI_MODE_NIGHT_UNDEFINED -> false
+                else -> false
+            }
+        } catch (ignored: Exception) {
+            false
+        }
+    }
+
+
+    fun checkTokenValidity(token: String): Boolean {
+        return token.length <= 36
     }
 }
 

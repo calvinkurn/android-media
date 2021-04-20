@@ -8,6 +8,7 @@ kapt {
     useBuildCache = true
 }
 
+
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
 
@@ -19,6 +20,14 @@ android {
         versionName "1.0"
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
         multiDexEnabled (project.hasProperty('coverage'))
+    }
+
+    lintOptions {
+        checkReleaseBuilds false
+        checkDependencies true
+        htmlReport false
+        warningsAsErrors false
+        abortOnError false
     }
     buildTypes {
         debug{
@@ -79,6 +88,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.coroutineCore
     implementation rootProject.ext.miscDependencies.coroutineAndroid
     implementation rootProject.ext.miscDependencies.robust
+    implementation rootProject.ext.miscDependencies.autopatchbase
 
     compileOnly rootProject.ext.miscDependencies.javaxAnnotation
     implementation rootProject.ext.miscDependencies.dagger
@@ -94,11 +104,6 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.mockitorCore
     testImplementation rootProject.ext.testDependencies.junit
     testImplementation rootProject.ext.testDependencies.assertJCore
-    testImplementation rootProject.ext.testDependencies.powerMock
-    testImplementation rootProject.ext.testDependencies.powerMockJUnit
-    testImplementation rootProject.ext.testDependencies.powerMockJUnitRule
-    testImplementation rootProject.ext.testDependencies.powerMockito
-    testImplementation rootProject.ext.testDependencies.powerMockXstream
 
     androidTestImplementation(rootProject.ext.testDependencies.androidTestRunner) {
         exclude module: 'support-annotations'
@@ -109,4 +114,6 @@ dependencies {
     androidTestImplementation rootProject.ext.testDependencies.mockitorCore,     { exclude group: 'net.bytebuddy' } // DexMaker has it"s own MockMaker==============================--
     androidTestImplementation rootProject.ext.testDependencies.mockitorAndroid
     androidTestImplementation rootProject.ext.testDependencies.androidRulesVersion
+
+    lintChecks rootProject.ext.tkpdInternalLibDependencies.lint
 }

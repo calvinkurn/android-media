@@ -5,11 +5,6 @@ import com.tokopedia.vouchercreation.create.view.fragment.bottomsheet.VoucherDis
 
 enum class CreateVoucherBottomSheetType(var key: Int,
                                         var tag: String) {
-    CREATE_PROMO_CODE(0, CreateVoucherBottomSheetTags.CREATE_PROMO_CODE),
-    VOUCHER_DISPLAY(1, CreateVoucherBottomSheetTags.VOUCHER_DISPLAY)
-}
-
-object CreateVoucherBottomSheetTags {
-    val CREATE_PROMO_CODE = CreatePromoCodeBottomSheetFragment::javaClass.name
-    val VOUCHER_DISPLAY = VoucherDisplayBottomSheetFragment::javaClass.name
+    CREATE_PROMO_CODE(0, CreatePromoCodeBottomSheetFragment.TAG),
+    VOUCHER_DISPLAY(1, VoucherDisplayBottomSheetFragment.TAG)
 }

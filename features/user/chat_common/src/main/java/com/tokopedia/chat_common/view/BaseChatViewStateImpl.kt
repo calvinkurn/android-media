@@ -43,12 +43,11 @@ open class BaseChatViewStateImpl(
     protected lateinit var rootView: ViewGroup
     protected lateinit var recyclerView: RecyclerView
     protected lateinit var replyEditText: EditText
-    protected lateinit var replyBox: RelativeLayout
+    protected lateinit var replyBox: ViewGroup
     protected lateinit var actionBox: LinearLayout
     protected lateinit var sendButton: View
     protected lateinit var notifier: View
     protected lateinit var chatMenuButton: ImageView
-    protected var mainLoading: ProgressBar? = null
     protected var attachmentMenu: AttachmentMenuRecyclerView? = null
     protected var attachmentMenuContainer: FrameLayout? = null
 
@@ -61,7 +60,6 @@ open class BaseChatViewStateImpl(
     override fun initView() {
         rootView = view.findViewById(getRootViewId())
         recyclerView = view.findViewById(getRecyclerViewId())
-        mainLoading = view.findViewById(getProgressId())
         replyEditText = view.findViewById(getNewCommentId())
         replyBox = view.findViewById(getReplyBoxId())
         actionBox = view.findViewById(getActionBoxId())
@@ -78,30 +76,33 @@ open class BaseChatViewStateImpl(
                 scrollDownWhenInBottom()
             }
         }
-        replyWatcher = EventsWatcher.text(replyEditText)
 
-        replyIsTyping = replyWatcher.map { t -> t.isNotEmpty() }
-
-        val onError = Action1<Throwable> { it.printStackTrace() }
-
-        replyIsTyping.subscribe(Action1 {
-            if (it && !isTyping) {
-                typingListener.onStartTyping()
-                isTyping = true
+        if (useDefaultReplyWatcher()) {
+            replyWatcher = EventsWatcher.text(replyEditText)
+            replyIsTyping = replyWatcher.map { t -> t.isNotEmpty() }
+            val onError = Action1<Throwable> { it.printStackTrace() }
+            replyIsTyping.subscribe(Action1 {
+                if (it && !isTyping) {
+                    typingListener.onStartTyping()
+                    isTyping = true
+                }
+            }, onError)
+            val onChatDeBounceSubscriber = Action1<Boolean> {
+                typingListener.onStopTyping()
+                isTyping = false
             }
-        }, onError)
-
-        val onChatDeBounceSubscriber = Action1<Boolean> {
-            typingListener.onStopTyping()
-            isTyping = false
+            replyIsTyping.debounce(2, TimeUnit.SECONDS)
+                    .skip(1)
+                    .subscribe(onChatDeBounceSubscriber, onError)
         }
-        replyIsTyping.debounce(2, TimeUnit.SECONDS)
-                .skip(1)
-                .subscribe(onChatDeBounceSubscriber, onError)
 
 
         rootView.viewTreeObserver.addOnGlobalLayoutListener(this)
         setupChatMenu()
+    }
+
+    protected open fun useDefaultReplyWatcher(): Boolean {
+        return true
     }
 
     protected open fun setupChatMenu() {
@@ -141,7 +142,7 @@ open class BaseChatViewStateImpl(
 
     }
 
-   override fun loadAvatar(avatarUrl: String) {
+    override fun loadAvatar(avatarUrl: String) {
         val avatar = toolbar.findViewById<ImageView>(R.id.user_avatar)
         ImageHandler.loadImageCircle2(avatar.context, avatar, avatarUrl,
                 R.drawable.ic_default_avatar)
@@ -200,17 +201,17 @@ open class BaseChatViewStateImpl(
         when {
             labelText == SELLER_TAG && shouldShowSellerLabel() -> {
                 label.setBackgroundResource(R.drawable.topchat_seller_label)
-                label.setTextColor(MethodChecker.getColor(label.context, R.color.medium_green))
+                label.setTextColor(MethodChecker.getColor(label.context, com.tokopedia.unifyprinciples.R.color.Green_G400))
                 label.visibility = View.VISIBLE
             }
             labelText == ADMIN_TAG -> {
                 label.setBackgroundResource(R.drawable.topchat_admin_label)
-                label.setTextColor(MethodChecker.getColor(label.context, R.color.topchat_admin_label_text_color))
+                label.setTextColor(MethodChecker.getColor(label.context, com.tokopedia.unifyprinciples.R.color.Yellow_Y400))
                 label.visibility = View.VISIBLE
             }
             labelText == OFFICIAL_TAG -> {
                 label.setBackgroundResource(R.drawable.topchat_admin_label)
-                label.setTextColor(MethodChecker.getColor(label.context, R.color.topchat_admin_label_text_color))
+                label.setTextColor(MethodChecker.getColor(label.context, com.tokopedia.unifyprinciples.R.color.Yellow_Y400))
                 label.visibility = View.VISIBLE
             }
             else -> label.visibility = View.GONE
@@ -235,15 +236,6 @@ open class BaseChatViewStateImpl(
 
     open fun checkLastCompletelyVisibleItemIsFirst(): Boolean {
         return (recyclerView.layoutManager as LinearLayoutManager).findFirstCompletelyVisibleItemPosition() < 2
-    }
-
-
-    fun showLoading() {
-        mainLoading?.visibility = View.VISIBLE
-    }
-
-    fun hideLoading() {
-        mainLoading?.visibility = View.GONE
     }
 
     fun setAdapter(adapter: BaseChatAdapter) {
@@ -345,7 +337,6 @@ open class BaseChatViewStateImpl(
 
     open fun getInterlocutorName(headerName: String): String = headerName
     open fun getRecyclerViewId() = R.id.recycler_view
-    open fun getProgressId() = R.id.progress
     open fun getNewCommentId() = R.id.new_comment
     open fun getReplyBoxId() = R.id.reply_box
     open fun getActionBoxId() = R.id.add_comment_area
@@ -355,5 +346,4 @@ open class BaseChatViewStateImpl(
     open fun getAttachmentMenuId() = R.id.rv_attachment_menu
     open fun getRootViewId() = R.id.main
     open fun getAttachmentMenuContainer(): Int = R.id.rv_attachment_menu_container
-
 }

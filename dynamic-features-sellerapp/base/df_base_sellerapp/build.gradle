@@ -12,7 +12,7 @@ repositories{
 buildscript {
     repositories {
         mavenCentral()
-        maven { url 'https://hansel.io/maven' }
+        maven { url 'https://maven-hansel.tokopedia.com/maven' }
     }
     dependencies {
         classpath rootProject.ext.miscDependencies.hansel
@@ -63,7 +63,6 @@ dependencies {
     implementation project(rootProject.ext.features.layanan)
 
     //Content
-//    implementation project(rootProject.ext.features.profile)
     implementation project(rootProject.ext.features.playBroadcaster)
 
     //Discovery
@@ -75,6 +74,9 @@ dependencies {
     //Merchant
 //    implementation project(rootProject.ext.features.report)
 //    implementation project(rootProject.ext.features.shopOpen)
+    implementation project(rootProject.ext.features.productDetail)
+    implementation project(rootProject.ext.features.review)
+    implementation project(rootProject.ext.features.reviewProduct)
 
     //User
 //    implementation project(rootProject.ext.features.changePhoneNumber)
@@ -88,13 +90,17 @@ dependencies {
 //    implementation project(rootProject.ext.features.notifCenter)
     implementation project(rootProject.ext.features.talk)
     implementation project(rootProject.ext.features.attachvoucher)
+    implementation project(rootProject.ext.features.attachproduct)
 //    implementation project(rootProject.ext.features.topchat)
     implementation project(rootProject.ext.features.liveness)
+    implementation project(rootProject.ext.features.updateinactivephone)
+
     implementation project(rootProject.ext.features.sellerOnboarding)
     implementation project(rootProject.ext.features.shopShowcase)
     implementation project(rootProject.ext.features.voucherCreation)
     implementation project(rootProject.ext.features.sellerSearch)
-    implementation project(rootProject.ext.features.userIdentification)
+    implementation project(rootProject.ext.features.activation)
+    implementation project(rootProject.ext.features.manageaddress)
     implementation project(rootProject.ext.features.createpost)
     implementation project(rootProject.ext.features.kol)
     implementation project(rootProject.ext.features.notifTroubleshooter)
@@ -102,4 +108,10 @@ dependencies {
 //    Merchant
     implementation project(rootProject.ext.features.shopPage)
     implementation project(rootProject.ext.features.statistic)
+    implementation project(rootProject.ext.features.sellerMenu)
+    implementation project(rootProject.ext.features.sellerAction)
+    implementation project(rootProject.ext.features.snapshot)
+
+    // Order Management
+    implementation project(rootProject.ext.features.ordermanagementhistory)
 }

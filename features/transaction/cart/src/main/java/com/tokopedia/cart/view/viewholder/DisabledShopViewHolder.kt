@@ -1,34 +1,50 @@
 package com.tokopedia.cart.view.viewholder
 
-import android.view.View
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.cart.R
+import com.tokopedia.cart.databinding.ItemCartDisabledShopBinding
 import com.tokopedia.cart.view.ActionListener
 import com.tokopedia.cart.view.uimodel.DisabledShopHolderData
-import kotlinx.android.synthetic.main.item_cart_disabled_shop.view.*
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.show
 
 /**
  * Created by Irfan Khoirul on 2019-10-16.
  */
 
-class DisabledShopViewHolder(itemView: View, val actionListener: ActionListener?) : RecyclerView.ViewHolder(itemView) {
+class DisabledShopViewHolder(private val binding: ItemCartDisabledShopBinding, val actionListener: ActionListener?) : RecyclerView.ViewHolder(binding.root) {
 
     companion object {
         val LAYOUT = R.layout.item_cart_disabled_shop
     }
 
     fun bind(data: DisabledShopHolderData) {
-        itemView.text_shop_name.text = data.shopName
-        itemView.text_shop_location.text = data.shopLocation
-        itemView.label_error.apply {
-            text = data.errorLabel
-            if (data.errorLabel.isNotBlank()) {
-                visibility = View.VISIBLE
-            } else {
-                visibility = View.GONE
-            }
+        renderShopName(data)
+        renderDivider(data)
+        renderShopBadge(data)
+    }
+
+    private fun renderShopName(data: DisabledShopHolderData) {
+        binding.textShopName.text = data.shopName
+        binding.textShopName.setOnClickListener { actionListener?.onCartShopNameClicked(data.shopId, data.shopName) }
+    }
+
+    private fun renderShopBadge(data: DisabledShopHolderData) {
+        if (data.shopBadgeUrl.isNotBlank()) {
+            ImageHandler.loadImageWithoutPlaceholder(binding.imgShopBadge, data.shopBadgeUrl)
+            binding.imgShopBadge.show()
+        } else {
+            binding.imgShopBadge.gone()
         }
-        itemView.text_shop_name.setOnClickListener{ actionListener?.onCartShopNameClicked(data.shopId, data.shopName) }
+    }
+
+    private fun renderDivider(data: DisabledShopHolderData) {
+        if (data.showDivider) {
+            binding.vDividerItemCartError.show()
+        } else {
+            binding.vDividerItemCartError.gone()
+        }
     }
 
 }

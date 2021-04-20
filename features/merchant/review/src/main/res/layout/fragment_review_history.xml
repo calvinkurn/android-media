@@ -7,7 +7,7 @@
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/review_pending_app_bar_layout"
-        android:background="@android:color/white"
+        android:background="@color/Unify_N0"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:elevation="@dimen/layout_lvl0">

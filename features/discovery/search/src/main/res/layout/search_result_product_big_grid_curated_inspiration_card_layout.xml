@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/inspirationCardCurated"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+        <View
+            android:id="@+id/inspirationCardCuratedBackground"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_48"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"/>
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/inspirationCardCuratedIcon"
+            android:layout_width="@dimen/dp_32"
+            android:layout_height="@dimen/dp_32"
+            android:layout_marginTop="@dimen/dp_8"
+            android:layout_marginStart="@dimen/dp_12"
+            android:scaleType="center"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/inspirationCardCuratedTitle"
+            android:layout_width="@dimen/dp_0"
+            android:layout_height="wrap_content"
+            android:textColor="@color/Unify_N700_96"
+            tools:text="@string/search_inspiration_card_curated_title"
+            android:maxLines="2"
+            android:ellipsize="end"
+            android:layout_marginTop="@dimen/dp_8"
+            android:layout_marginBottom="@dimen/dp_12"
+            android:layout_marginStart="@dimen/dp_12"
+            android:layout_marginEnd="@dimen/dp_8"
+            app:layout_constraintTop_toBottomOf="@id/inspirationCardCuratedIcon"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@id/inspirationCardCuratedButton"
+            app:typographyType="heading_5"/>
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/inspirationCardCuratedButton"
+            android:foreground="?attr/selectableItemBackground"
+            android:layout_width="@dimen/dp_110"
+            android:layout_height="wrap_content"
+            android:text="@string/search_inspiration_card_curated_button"
+            android:layout_marginTop="@dimen/dp_12"
+            android:layout_marginBottom="@dimen/dp_8"
+            android:layout_marginEnd="@dimen/dp_8"
+            app:unifyButtonVariant="ghost"
+            app:unifyButtonSize="small"
+            app:unifyButtonType="main"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintRight_toRightOf="parent"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

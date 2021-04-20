@@ -8,12 +8,15 @@ import com.tokopedia.logisticaddaddress.domain.usecase.GetDistrictUseCase
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.district_boundary.DistrictBoundaryGeometryUiModel
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.district_boundary.DistrictBoundaryResponseUiModel
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.get_district.GetDistrictDataUiModel
-import com.tokopedia.logisticdata.data.entity.response.Data
-import com.tokopedia.logisticdata.data.entity.response.KeroMapsAutofill
-import com.tokopedia.logisticdata.domain.usecase.RevGeocodeUseCase
+import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
+import com.tokopedia.logisticCommon.data.entity.response.Data
+import com.tokopedia.logisticCommon.data.entity.response.KeroMapsAutofill
+import com.tokopedia.logisticCommon.domain.usecase.RevGeocodeUseCase
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertFalse
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.gherkin.Feature
 import rx.Observable
@@ -49,24 +52,24 @@ object PinpointMapPresenterTest : Spek({
         }
     }
 
-//    Feature("get district") {
-//        Scenario("get succcess district") {
-//            val successModel = GetDistrictDataUiModel(
-//                    districtId = 1
-//            )
-//            Given("usecase gives success") {
-//                every { getDistrictUseCase.execute(any()) } returns Observable.just(successModel)
-//            }
-//            When("executed") {
-//                presenter.getDistrict("123")
-//            }
-//            Then("on success is called") {
-//                verify {
-//                    view.onSuccessPlaceGetDistrict(successModel)
-//                }
-//            }
-//        }
-//    }
+    Feature("get district") {
+        Scenario("get succcess district") {
+            val successModel = GetDistrictDataUiModel(
+                    districtId = 1
+            )
+            Given("usecase gives success") {
+                every { getDistrictUseCase.execute(any()) } returns Observable.just(successModel)
+            }
+            When("executed") {
+                presenter.getDistrict("123")
+            }
+            Then("on success is called") {
+                verify {
+                    view.onSuccessPlaceGetDistrict(successModel)
+                }
+            }
+        }
+    }
 
     Feature("auto fill") {
         Scenario("has default lat long") {
@@ -80,18 +83,18 @@ object PinpointMapPresenterTest : Spek({
             }
         }
 
-//        Scenario("success") {
-//            val keroMaps = KeroMapsAutofill(data = Data(title = "city test"), messageError = listOf("error"))
-//            Given("success response") {
-//                every { revGeoCodeUseCase.execute(any()) } returns Observable.just(keroMaps)
-//            }
-//            When("executed") {
-//                presenter.autoFill(0.1, 0.1, 0.0f)
-//            }
-//            Then("on success is called") {
-//                verify { view.onSuccessAutofill(keroMaps.data) }
-//            }
-//        }
+        Scenario("success") {
+            val keroMaps = KeroMapsAutofill(data = Data(title = "city test"), messageError = listOf())
+            Given("success response") {
+                every { revGeoCodeUseCase.execute(any()) } returns Observable.just(keroMaps)
+            }
+            When("executed") {
+                presenter.autoFill(0.1, 0.1, 0.0f)
+            }
+            Then("on success is called") {
+                verify { view.onSuccessAutofill(keroMaps.data) }
+            }
+        }
 
         Scenario("success with foreign country") {
             val keroMaps = KeroMapsAutofill(data = Data(title = "city test"), messageError = listOf("Lokasi di luar Indonesia."))
@@ -142,5 +145,23 @@ object PinpointMapPresenterTest : Spek({
                 verify { view.showBoundaries(listBoundaries) }
             }
         }
+    }
+
+    Feature("get unnamed") {
+        Scenario("set") {
+            val address = SaveAddressDataModel(formattedAddress = "Unnamed Road, Jl Testimoni", selectedDistrict = "Testimoni")
+            var result: SaveAddressDataModel? = null
+            Given("set address") {
+                presenter.setAddress(address)
+            }
+            When("retrieved") {
+                result = presenter.getUnnamedRoadModelFormat()
+            }
+            Then("Unnamed road is removed") {
+                assertFalse(result?.formattedAddress?.contains("Unnamed Road") ?: true)
+                assertEquals(result?.formattedAddress, result?.selectedDistrict)
+            }
+        }
+
     }
 })

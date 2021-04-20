@@ -35,7 +35,7 @@
         android:layout_marginRight="@dimen/spacing_lvl6"
         android:paddingTop="4dp"
         android:text="@string/lorem"
-        android:textColor="@color/Neutral_N700_96"
+        android:textColor="@color/Unify_N700_96"
         app:layout_constraintBottom_toBottomOf="@id/cardContent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/cardContent"

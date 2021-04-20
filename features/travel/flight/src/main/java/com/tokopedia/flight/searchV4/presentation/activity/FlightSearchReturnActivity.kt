@@ -70,7 +70,7 @@ class FlightSearchReturnActivity : FlightSearchActivity(),
     override fun initializeToolbarData() {
         dateString = FlightDateUtil.formatDate(
                 FlightDateUtil.DEFAULT_FORMAT,
-                FlightDateUtil.DEFAULT_VIEW_FORMAT,
+                FlightDateUtil.FORMAT_DATE_SHORT_MONTH,
                 flightSearchPassDataModel.returnDate)
         passengerString = buildPassengerTextFormatted(flightSearchPassDataModel.flightPassengerModel)
         classString = flightSearchPassDataModel.flightClass.title

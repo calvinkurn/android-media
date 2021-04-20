@@ -3,7 +3,6 @@ package com.tokopedia.core.analytics.container;
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -11,16 +10,16 @@ import android.text.TextUtils;
 import com.appsflyer.AFInAppEventType;
 import com.appsflyer.AppsFlyerConversionListener;
 import com.appsflyer.AppsFlyerLib;
-import com.google.android.gms.ads.identifier.AdvertisingIdClient;
-import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
-import com.google.android.gms.common.GooglePlayServicesRepairableException;
+import com.tokopedia.analyticsdebugger.AnalyticsSource;
+import com.tokopedia.analyticsdebugger.debugger.GtmLogger;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.BuildConfig;
 import com.tokopedia.core.TkpdCoreRouter;
 import com.tokopedia.core.analytics.AppEventTracking;
-import com.tokopedia.core.deprecated.SessionHandler;
-import com.tokopedia.core.gcm.utils.RouterUtils;
+import com.tokopedia.core.analytics.appsflyer.AppsflyerEventValidation;
+import com.tokopedia.device.info.DeviceInfo;
+import com.tokopedia.keys.Keys;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
-import com.tokopedia.track.interfaces.AFAdsIDCallback;
 import com.tokopedia.track.interfaces.ContextAnalytics;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -29,14 +28,9 @@ import com.tokopedia.weaver.Weaver;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import rx.Observable;
-import rx.Observer;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
 import static com.appsflyer.AFInAppEventParameterName.CUSTOMER_USER_ID;
@@ -60,10 +54,8 @@ public class AppsflyerAnalytics extends ContextAnalytics {
     public void initialize() {
         super.initialize();
 
-        final SessionHandler sessionHandler = RouterUtils.getRouterFromContext(getContext())
-                .legacySessionHandler();
         UserSessionInterface userSession = new UserSession(context);
-        final String userID = userSession.isLoggedIn() ? sessionHandler.getLoginID() : "00000";
+        final String userID = userSession.isLoggedIn() ? userSession.getUserId() : "00000";
 
 
         Timber.d("Appsflyer login userid " + userID);
@@ -120,7 +112,7 @@ public class AppsflyerAnalytics extends ContextAnalytics {
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
             Timber.d("Error key Appsflyer");
-            initAppsFlyer(AppsflyerContainer.APPSFLYER_KEY, userID, conversionListener);
+            initAppsFlyer(Keys.getAppsFlyerKey(context), userID, conversionListener);
         }
     }
 
@@ -185,7 +177,7 @@ public class AppsflyerAnalytics extends ContextAnalytics {
         AppsFlyerLib.getInstance().setCurrencyCode("IDR");
         setUserID(userID);
         AppsFlyerLib.getInstance().setDebugLog(BuildConfig.DEBUG);
-        if(com.tokopedia.config.GlobalConfig.IS_PREINSTALL) {
+        if (com.tokopedia.config.GlobalConfig.IS_PREINSTALL) {
             AppsFlyerLib.getInstance().setPreinstallAttribution(
                     com.tokopedia.config.GlobalConfig.PREINSTALL_NAME,
                     com.tokopedia.config.GlobalConfig.PREINSTALL_DESC,
@@ -198,6 +190,8 @@ public class AppsflyerAnalytics extends ContextAnalytics {
 
     public void sendEvent(String eventName, Map<String, Object> eventValue) {
         AppsFlyerLib.getInstance().trackEvent(getContext(), eventName, eventValue);
+        new AppsflyerEventValidation().validateAppsflyerData(eventName,eventValue);
+        saveAppsFlyerEvent(eventName, eventValue);
     }
 
     //aliasing
@@ -209,78 +203,18 @@ public class AppsflyerAnalytics extends ContextAnalytics {
     @Override
     public void sendTrackEvent(String eventName, Map<String, Object> eventValue) {
         AppsFlyerLib.getInstance().trackEvent(getContext(), eventName, eventValue);
+        new AppsflyerEventValidation().validateAppsflyerData(eventName,eventValue);
+        saveAppsFlyerEvent(eventName, eventValue);
     }
 
     public void sendDeeplinkData(Activity activity) {
         AppsFlyerLib.getInstance().sendDeepLinkData(activity);
     }
 
-    public void getAdsID(final AFAdsIDCallback callback) {
-        SharedPreferences sharedPrefs = context.getSharedPreferences(ADVERTISINGID, Context.MODE_PRIVATE);
-
-        String adsId = sharedPrefs.getString(KEY_ADVERTISINGID, "");
-        if (adsId != null && !"".equalsIgnoreCase(adsId.trim())) {
-            callback.onGetAFAdsID(adsId);
-            return;
-        }
-
-        Observable.fromCallable(() -> {
-            AdvertisingIdClient.Info adInfo;
-            adInfo = AdvertisingIdClient.getAdvertisingIdInfo(context);
-            return adInfo.getId();
-        }).doOnNext(s -> {
-            if (!TextUtils.isEmpty(s)) {
-                sharedPrefs.edit().putString(KEY_ADVERTISINGID, s).apply();
-            }
-        }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io())
-        .subscribe(new Observer<String>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                callback.onErrorAFAdsID();
-            }
-
-            @Override
-            public void onNext(String s) {
-                if (TextUtils.isEmpty(s)) {
-                    callback.onErrorAFAdsID();
-                } else {
-                    callback.onGetAFAdsID(s);
-                }
-            }
-        });
-    }
-
     @Deprecated
     @Override
     public String getGoogleAdId() {
-        SharedPreferences sharedPrefs = context.getSharedPreferences(ADVERTISINGID, Context.MODE_PRIVATE);
-
-        String adsId = sharedPrefs.getString(KEY_ADVERTISINGID, "");
-        if (adsId != null && !"".equalsIgnoreCase(adsId.trim())) {
-            return adsId;
-        }
-
-        return (Observable.just("").subscribeOn(Schedulers.newThread())
-                .map(string -> {
-                    AdvertisingIdClient.Info adInfo = null;
-                    try {
-                        adInfo = AdvertisingIdClient.getAdvertisingIdInfo(context);
-                    } catch (IOException | GooglePlayServicesNotAvailableException | GooglePlayServicesRepairableException e) {
-                        e.printStackTrace();
-                    }
-                    return adInfo.getId();
-                }).onErrorReturn(throwable -> "")
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnNext(adID -> {
-                    if (!TextUtils.isEmpty(adID)) {
-                        sharedPrefs.edit().putString(KEY_ADVERTISINGID, adID).apply();
-                    }
-                })).toBlocking().single();
+        return DeviceInfo.getAdsId(context);
     }
 
     public String getUniqueId() {
@@ -304,5 +238,17 @@ public class AppsflyerAnalytics extends ContextAnalytics {
     public void setDefferedDeeplinkPathIfExists(String deeplinkPath) {
         deferredDeeplinkPath = deeplinkPath;
 
+    }
+
+    public void saveAppsFlyerEvent(String eventName, Map<String, Object> eventValue) {
+        if (!GlobalConfig.isAllowDebuggingTools()) {
+            return;
+        }
+
+        try {
+            GtmLogger.getInstance(getContext()).save(eventName, eventValue, AnalyticsSource.APPS_FLYER);
+        } catch (Exception e) {
+            Timber.e(e);
+        }
     }
 }

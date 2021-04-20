@@ -7,7 +7,7 @@ import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.STATUS_ACTIVE
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.STATUS_TIDAK_TAMPIL
-import com.tokopedia.topads.dashboard.view.adapter.keyword.viewmodel.KeywordItemViewModel
+import com.tokopedia.topads.dashboard.view.adapter.keyword.viewmodel.KeywordItemModel
 import com.tokopedia.unifycomponents.Label
 import kotlinx.android.synthetic.main.topads_dash_item_keyword_card.view.*
 
@@ -17,16 +17,19 @@ import kotlinx.android.synthetic.main.topads_dash_item_keyword_card.view.*
  */
 
 class KeywordItemViewHolder(val view: View,
-                            private var onSwitchAction: ((pos: Int, isChecked: Boolean) -> Unit),
-                            private var onSelectMode: ((select: Boolean) -> Unit)) : KeywordViewHolder<KeywordItemViewModel>(view) {
+                            private var onSwitchAction: (pos: Int, isChecked: Boolean) -> Unit,
+                            private var onSelectMode: (select: Boolean) -> Unit,
+                            var headline: Boolean = false) : KeywordViewHolder<KeywordItemModel>(view) {
 
     companion object {
         @LayoutRes
         var LAYOUT = R.layout.topads_dash_item_keyword_card
     }
 
-    override fun bind(item: KeywordItemViewModel, selectMode: Boolean, fromSearch: Boolean) {
+    override fun bind(item: KeywordItemModel, selectMode: Boolean, fromSearch: Boolean) {
         item.let {
+            if (headline)
+                view.per_click.text = view.context.getString(com.tokopedia.topads.common.R.string.topads_common_headline_klik)
             if (selectMode) {
                 view.btn_switch.visibility = View.INVISIBLE
                 view.check_box.visibility = View.VISIBLE
@@ -38,7 +41,11 @@ class KeywordItemViewHolder(val view: View,
             view.img_total.setImageDrawable(view.context.getResDrawable(R.drawable.topads_dash_rupee))
             view.check_box.isChecked = item.isChecked
             view.key_title.text = it.result.keywordTag
-            view.btn_switch.isChecked = it.result.keywordStatus == STATUS_ACTIVE || it.result.keywordStatus == STATUS_TIDAK_TAMPIL
+            view.btn_switch.setOnCheckedChangeListener(null)
+            if (!item.isChanged)
+                view.btn_switch.isChecked = it.result.keywordStatus == STATUS_ACTIVE || it.result.keywordStatus == STATUS_TIDAK_TAMPIL
+            else
+                view.btn_switch.isChecked = item.changedValue
             view.label.setLabelType(Label.GENERAL_LIGHT_GREEN)
             view.label.text = it.result.keywordTypeDesc
             view.tampil_count.text = it.result.statTotalImpression
@@ -54,6 +61,8 @@ class KeywordItemViewHolder(val view: View,
                 view.card_view.setBackgroundColor(ContextCompat.getColor(view.context, R.color.topads_select_color))
             }
             view.btn_switch.setOnCheckedChangeListener { buttonView, isChecked ->
+                item.changedValue = isChecked
+                item.isChanged = true
                 onSwitchAction.invoke(adapterPosition, isChecked)
             }
 

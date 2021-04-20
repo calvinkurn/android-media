@@ -1,6 +1,7 @@
 package com.tokopedia.home_recom.analytics
 
 import com.tokopedia.analyticconstant.DataLayer
+import com.tokopedia.recommendation_widget_common.extension.hasLabelGroupFulfillment
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.interfaces.ContextAnalytics
@@ -27,6 +28,9 @@ object SimilarProductRecommendationTracking {
     private const val ACTION_IMPRESSION_PRODUCT_RECOMMENDATION_NON_LOGIN = "impression - product recommendation - non login"
     private const val ACTION_CLICK_PRODUCT_RECOMMENDATION = "click - product recommendation"
     private const val ACTION_CLICK_PRODUCT_RECOMMENDATION_NON_LOGIN = "click - product recommendation - non login"
+    private const val EVENT_ACTION_CLICK_ANNOTATION_CHIP = "click - quick filter"
+    private const val EVENT_ACTION_CLICK_FULL_FILTER_CHIP = "click - full filter chip on this page"
+    private const val EVENT_ACTION_CLICK_SHOW_PRODUCT = "click - `tampilkan product` button after choose multiple filter / sort"
 
     private const val IMPRESSION = "impressions"
     private const val CLICK = "click"
@@ -44,6 +48,7 @@ object SimilarProductRecommendationTracking {
     private const val FIELD_PRODUCT_POSITION = "position"
     private const val FIELD_ACTION_FIELD = "actionField"
     private const val FIELD_ATTRIBUTE = "attribution"
+    private const val FIELD_DIMENSION_61 = "dimension61"
     private const val FIELD_DIMENSION_83 = "dimension83"
     private const val FIELD_DIMENSION_90 = "dimension90"
 
@@ -56,6 +61,13 @@ object SimilarProductRecommendationTracking {
     private const val VALUE_IDR = "IDR"
     private const val VALUE_EMPTY = ""
     private const val VALUE_BEBAS_ONGKIR = "bebas ongkir"
+    private const val VALUE_BEBAS_ONGKIR_EXTRA = "bebas ongkir extra"
+
+    private const val BUSINESS_UNIT = "businessUnit"
+    private const val BU_HOME_AND_BROWSE = "Home & Browse"
+    private const val CURRENT_SITE = "currentSite"
+    private const val TOKOPEDIA_MARKETPLACE = "tokopediamarketplace"
+    private const val USER_ID = "userId"
 
     private fun getTracker(): ContextAnalytics {
         return TrackApp.getInstance().gtm
@@ -80,7 +92,8 @@ object SimilarProductRecommendationTracking {
                         FIELD_PRODUCT_LIST, list,
                         FIELD_PRODUCT_POSITION, position,
                         FIELD_ATTRIBUTE, VALUE_EMPTY,
-                        FIELD_DIMENSION_83, if(item.isFreeOngkirActive) VALUE_BEBAS_ONGKIR else VALUE_NONE_OTHER,
+                        FIELD_DIMENSION_61, item.dimension61,
+                        FIELD_DIMENSION_83, getBebasOngkirValue(item),
                         FIELD_DIMENSION_90, internalRef
                 )
         )
@@ -100,9 +113,17 @@ object SimilarProductRecommendationTracking {
                 FIELD_PRODUCT_CATEGORY, item.categoryBreadcrumbs,
                 FIELD_PRODUCT_LIST, list,
                 FIELD_PRODUCT_POSITION, position,
-                FIELD_DIMENSION_83, if(item.isFreeOngkirActive) VALUE_BEBAS_ONGKIR else VALUE_NONE_OTHER,
-                FIELD_DIMENSION_90, internalRef
+                FIELD_DIMENSION_83, getBebasOngkirValue(item),
+                FIELD_DIMENSION_90, internalRef,
+                FIELD_DIMENSION_61, item.dimension61
         )
+    }
+
+    private fun getBebasOngkirValue(item: RecommendationItem): String{
+        val hasFulfillment = item.labelGroupList.hasLabelGroupFulfillment()
+        return if(item.isFreeOngkirActive && hasFulfillment) VALUE_BEBAS_ONGKIR_EXTRA
+        else if(item.isFreeOngkirActive && !hasFulfillment) VALUE_BEBAS_ONGKIR
+        else VALUE_NONE_OTHER
     }
 
     fun eventImpression(
@@ -252,5 +273,47 @@ object SimilarProductRecommendationTracking {
                 EVENT_LABEL, VALUE_EMPTY
         )
         getTracker().sendEnhanceEcommerceEvent(data)
+    }
+
+    fun eventUserClickQuickFilterChip(userId: String, parameter: String) {
+        val tracker = getTracker()
+        val data = DataLayer.mapOf(
+                EVENT, EVENT_CLICK_RECOMMENDATION,
+                EVENT_CATEGORY, EVENT_CATEGORY_SIMILAR_PRODUCT,
+                EVENT_ACTION, EVENT_ACTION_CLICK_ANNOTATION_CHIP,
+                EVENT_LABEL, parameter,
+                BUSINESS_UNIT, BU_HOME_AND_BROWSE,
+                CURRENT_SITE, TOKOPEDIA_MARKETPLACE,
+                USER_ID, userId
+        )
+        tracker.sendEnhanceEcommerceEvent(data)
+    }
+
+    fun eventUserClickFullFilterChip(userId: String, param: String){
+        val tracker = getTracker()
+        val data = DataLayer.mapOf(
+                EVENT, EVENT_CLICK_RECOMMENDATION,
+                EVENT_CATEGORY, EVENT_CATEGORY_SIMILAR_PRODUCT,
+                EVENT_ACTION, EVENT_ACTION_CLICK_FULL_FILTER_CHIP,
+                EVENT_LABEL, param,
+                BUSINESS_UNIT, BU_HOME_AND_BROWSE,
+                CURRENT_SITE, TOKOPEDIA_MARKETPLACE,
+                USER_ID, userId
+        )
+        tracker.sendEnhanceEcommerceEvent(data)
+    }
+
+    fun eventUserClickShowProduct(userId: String, param: String){
+        val tracker = getTracker()
+        val data = DataLayer.mapOf(
+                EVENT, EVENT_CLICK_RECOMMENDATION,
+                EVENT_CATEGORY, EVENT_CATEGORY_SIMILAR_PRODUCT,
+                EVENT_ACTION, EVENT_ACTION_CLICK_SHOW_PRODUCT,
+                EVENT_LABEL, param,
+                BUSINESS_UNIT, BU_HOME_AND_BROWSE,
+                CURRENT_SITE, TOKOPEDIA_MARKETPLACE,
+                USER_ID, userId
+        )
+        tracker.sendEnhanceEcommerceEvent(data)
     }
 }

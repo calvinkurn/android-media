@@ -6,10 +6,13 @@
     android:layout_height="wrap_content"
     android:background="?attr/selectableItemBackground"
     android:orientation="vertical"
-    android:padding="@dimen/spacing_lvl4">
+    android:paddingStart="@dimen/spacing_lvl4"
+    android:paddingTop="@dimen/dp_topchat_12"
+    android:paddingEnd="@dimen/spacing_lvl4"
+    android:paddingBottom="@dimen/dp_topchat_15">
 
     <ImageView
-        android:id="@+id/imageView3"
+        android:id="@+id/ivChevron"
         android:layout_width="@dimen/spacing_lvl5"
         android:layout_height="@dimen/spacing_lvl5"
         android:padding="@dimen/spacing_lvl2"
@@ -18,34 +21,43 @@
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_arrow_right_grey_rounded" />
 
-
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvTitle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_topchat_12"
-        android:layout_marginLeft="@dimen/dp_topchat_12"
-        android:includeFontPadding="false"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:includeFontPadding="true"
+        android:textColor="@color/Unify_N700_96"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="body_2"
         app:typographyWeight="bold"
         tools:text="Notifikasi Chat" />
 
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvDesc"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl1"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:textColor="@color/Unify_N700_68"
+        app:layout_constraintEnd_toStartOf="@+id/ivChevron"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvTitle"
+        app:typographyType="body_3"
+        tools:text="Akses fitur Template Chat, Balasan Otomatis, dan Pengumuman toko di Tokopedia Seller" />
+
     <com.tokopedia.unifycomponents.Label
-        android:id="@+id/labelSellerMigration"
+        android:id="@+id/label_chat_setting"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/layout_lvl1"
-        android:layout_marginLeft="@dimen/layout_lvl1"
+        android:layout_marginStart="@dimen/dp_topchat_6"
+        android:text="@string/seller_migration_label_seller_app_only"
         android:visibility="gone"
         app:labelType="general_light_green"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/imageView3"
+        app:layout_constraintBottom_toBottomOf="@id/tvTitle"
+        app:layout_constraintEnd_toStartOf="@id/ivChevron"
         app:layout_constraintHorizontal_bias="0"
         app:layout_constraintStart_toEndOf="@id/tvTitle"
-        app:layout_constraintTop_toTopOf="parent"
-        android:text="@string/seller_migration_label_seller_app_only"
+        app:layout_constraintTop_toTopOf="@id/tvTitle"
         tools:visibility="visible" />
 </androidx.constraintlayout.widget.ConstraintLayout>

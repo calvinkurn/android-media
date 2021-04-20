@@ -53,9 +53,9 @@ data class ProductAddParam (
         @SerializedName("category")
         @Expose
         var category: Category? = null,
-        @SerializedName("menu")
+        @SerializedName("menus")
         @Expose
-        var productEtalase: ProductEtalase? = null,
+        var productShowCases: List<ProductEtalase>? = null,
         @SerializedName("pictures")
         @Expose
         var picture: Pictures = Pictures(),
@@ -70,7 +70,10 @@ data class ProductAddParam (
         var videos: Videos = Videos(),
         @SerializedName("variant")
         @Expose
-        var variant: Variant? = null
+        var variant: Variant? = null,
+        @SerializedName("annotations")
+        @Expose
+        var annotations: List<String>? = null
 ) : Parcelable
 
 @Parcelize

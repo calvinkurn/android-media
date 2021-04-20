@@ -11,7 +11,6 @@ import kotlinx.android.synthetic.main.item_attachvoucher_empty.view.*
 
 class EmptyAttachVoucherViewHolder(itemView: View?) : AbstractViewHolder<EmptyModel>(itemView) {
 
-    private val shopVoucherUrl = "https://www.tokopedia.com/v1/vouchertoko"
     private val emptyIconUrl = "https://ecs7.tokopedia.net/android/others/Voucher_Ilustration@3x.png"
 
     override fun bind(element: EmptyModel?) {
@@ -25,7 +24,7 @@ class EmptyAttachVoucherViewHolder(itemView: View?) : AbstractViewHolder<EmptyMo
 
     private fun bindButtonClick() {
         itemView.btnCreateVoucher?.setOnClickListener {
-            RouteManager.route(it.context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, shopVoucherUrl))
+            RouteManager.route(it.context, ApplinkConst.SellerApp.CREATE_VOUCHER)
         }
     }
 

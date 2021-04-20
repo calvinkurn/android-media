@@ -1,0 +1,11 @@
+[{
+  "data": {
+    "getCampaignNotifyMe": {
+      "campaign_id": 15934,
+      "success": true,
+      "message": "",
+      "error_message": "",
+      "is_available": false
+    }
+  }
+}]

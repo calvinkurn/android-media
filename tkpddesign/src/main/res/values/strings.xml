@@ -83,4 +83,7 @@
     //content-desc
     <string name="content_desc_edit_text_search">input search</string>
 
+    <string name="design_kembali">Kembali</string>
+    <string name="design_beri_akses">Beri Akses</string>
+
 </resources>

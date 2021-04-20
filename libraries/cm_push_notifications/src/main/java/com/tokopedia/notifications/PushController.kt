@@ -5,10 +5,10 @@ import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import com.google.gson.Gson
-import com.tokopedia.notifications.common.CMConstant
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
+import com.tokopedia.notifications.common.*
 import com.tokopedia.notifications.common.IrisAnalyticsEvents
-import com.tokopedia.notifications.common.PayloadConverter
-import com.tokopedia.notifications.common.launchCatchError
 import com.tokopedia.notifications.data.converters.JsonBundleConverter.jsonToBundle
 import com.tokopedia.notifications.database.pushRuleEngine.PushRepository
 import com.tokopedia.notifications.factory.CMNotificationFactory
@@ -18,6 +18,7 @@ import com.tokopedia.notifications.model.NotificationMode
 import com.tokopedia.notifications.model.NotificationStatus
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import timber.log.Timber
 import kotlin.coroutines.CoroutineContext
 
 class PushController(val context: Context) : CoroutineScope {
@@ -25,44 +26,72 @@ class PushController(val context: Context) : CoroutineScope {
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.IO
 
+    private val cmRemoteConfigUtils by lazy { CMRemoteConfigUtils(context) }
+
     private val isOfflinePushEnabled
-        get() = (context.applicationContext as CMRouter).getBooleanRemoteConfig(CMConstant.RemoteKeys.KEY_IS_OFFLINE_PUSH_ENABLE, false)
+        get() = cmRemoteConfigUtils.getBooleanRemoteConfig(CMConstant.RemoteKeys.KEY_IS_OFFLINE_PUSH_ENABLE, false)
 
-    fun handleNotificationBundle(bundle: Bundle) {
+    fun handleNotificationBundle(bundle: Bundle, isAmplification: Boolean = false) {
         try {
-            //todo event notification received offline
-            launchCatchError(
-                    block = {
-                        Log.d("PUSHController", "Code update")
-
-                        val baseNotificationModel = PayloadConverter.convertToBaseModel(bundle)
-                        if (baseNotificationModel.notificationMode == NotificationMode.OFFLINE) {
-                            if (isOfflinePushEnabled)
-                                onOfflinePushPayloadReceived(baseNotificationModel)
-                        } else {
-                            onLivePushPayloadReceived(baseNotificationModel)
-                        }
-                    }, onError = {
-                Log.d("PUSHController", it.message)
-            })
-
+            val baseNotificationModel = PayloadConverter.convertToBaseModel(bundle)
+            handleNotificationBundle(baseNotificationModel, isAmplification)
         } catch (e: Exception) {
+            ServerLogger.log(Priority.P2, "CM_VALIDATION",
+                    mapOf("type" to "exception",
+                            "err" to Log.getStackTraceString(e).take(CMConstant.TimberTags.MAX_LIMIT),
+                            "data" to bundle.toString().take(CMConstant.TimberTags.MAX_LIMIT)))
         }
+    }
+
+    private fun handleNotificationBundle(baseNotificationModel: BaseNotificationModel, isAmplification: Boolean = false) {
+        launchCatchError(
+                block = {
+                    if (isAmplification) baseNotificationModel.isAmplification = true
+                    if (baseNotificationModel.notificationMode == NotificationMode.OFFLINE) {
+                        if (isOfflinePushEnabled)
+                            onOfflinePushPayloadReceived(baseNotificationModel)
+                    } else {
+                        onLivePushPayloadReceived(baseNotificationModel)
+                    }
+                }, onError = {
+            ServerLogger.log(Priority.P2, "CM_VALIDATION",
+                    mapOf("type" to "exception",
+                            "err" to Log.getStackTraceString(it).take(CMConstant.TimberTags.MAX_LIMIT),
+                            "data" to baseNotificationModel.toString().take(CMConstant.TimberTags.MAX_LIMIT)))
+        })
     }
 
     fun handleNotificationAmplification(payloadJson: String) {
         try {
             launchCatchError(block = {
-                val toModel = Gson().fromJson(
+                val model = Gson().fromJson(
                         payloadJson,
                         BaseNotificationModel::class.java
                 )
-                if (!isOfflineNotificationActive(toModel.notificationId)) {
+                if (!isOfflineNotificationActive(model.notificationId)) {
                     val bundle = jsonToBundle(payloadJson)
-                    handleNotificationBundle(bundle)
+                    handleNotificationBundle(bundle, true)
                 }
-            }, onError = {})
-        } catch (e: Exception) { }
+            }, onError = {
+                ServerLogger.log(Priority.P2, "CM_VALIDATION",
+                        mapOf("type" to "exception",
+                                "err" to Log.getStackTraceString(it).take(CMConstant.TimberTags.MAX_LIMIT),
+                                "data" to ""))
+            })
+        } catch (e: Exception) {
+            ServerLogger.log(Priority.P2, "CM_VALIDATION",
+                    mapOf("type" to "exception",
+                            "err" to Log.getStackTraceString(e).take(CMConstant.TimberTags.MAX_LIMIT),
+                            "data" to ""))
+        }
+    }
+
+    fun cancelPushNotification(bundle: Bundle) {
+        PayloadConverter.convertToBaseModel(bundle).apply {
+            type = CMConstant.NotificationType.DROP_NOTIFICATION
+        }.also {
+            handleNotificationBundle(it)
+        }
     }
 
     private suspend fun onLivePushPayloadReceived(baseNotificationModel: BaseNotificationModel) {
@@ -119,6 +148,7 @@ class PushController(val context: Context) : CoroutineScope {
     }
 
     suspend fun postOfflineNotification(baseNotificationModel: BaseNotificationModel) {
+        IrisAnalyticsEvents.sendPushEvent(context, IrisAnalyticsEvents.PUSH_RECEIVED, baseNotificationModel)
         createAndPostNotification(baseNotificationModel)
         baseNotificationModel.status = NotificationStatus.ACTIVE
         PushRepository.getInstance(context).updateNotificationModel(baseNotificationModel)
@@ -141,9 +171,10 @@ class PushController(val context: Context) : CoroutineScope {
                 notificationManager.notify(baseNotification.baseNotificationModel.notificationId, notification)
             }
         } catch (e: Exception) {
-            Log.d(
-                    "PushController", e.message
-            )
+            ServerLogger.log(Priority.P2, "CM_VALIDATION",
+                    mapOf("type" to "exception",
+                            "err" to Log.getStackTraceString(e).take(CMConstant.TimberTags.MAX_LIMIT),
+                            "data" to baseNotificationModel.toString().take(CMConstant.TimberTags.MAX_LIMIT)))
         }
     }
 

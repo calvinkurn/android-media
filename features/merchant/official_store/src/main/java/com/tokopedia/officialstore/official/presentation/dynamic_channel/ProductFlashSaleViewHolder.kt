@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.officialstore.R
+import com.tokopedia.officialstore.common.OfficialStoreConstant
 import com.tokopedia.officialstore.official.data.model.dynamic_channel.Channel
 import com.tokopedia.officialstore.official.presentation.viewmodel.ProductFlashSaleDataModel
 import com.tokopedia.productcard.ProductCardGridView
@@ -44,7 +45,8 @@ class ProductFlashSaleViewHolder(
                                     element.grid.impression,
                                     element.grid.id.toString(),
                                     element.grid.name,
-                                    element.grid.imageUrl
+                                    element.grid.imageUrl,
+                                    OfficialStoreConstant.TopAdsComponent.getProductCardTopAdsComponentName(channel)
                             )
                         }
                     }

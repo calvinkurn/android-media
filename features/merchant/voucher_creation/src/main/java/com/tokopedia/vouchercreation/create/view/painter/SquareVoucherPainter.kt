@@ -13,7 +13,9 @@ import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toBitmap
+import com.tokopedia.kotlin.extensions.view.whenAlive
 import com.tokopedia.vouchercreation.create.view.enums.PostImageTextType
 import com.tokopedia.vouchercreation.create.view.enums.VoucherImageType
 import com.tokopedia.vouchercreation.create.view.enums.getScaledValuePair
@@ -22,13 +24,14 @@ import com.tokopedia.vouchercreation.create.view.uimodel.voucherimage.PostVouche
 
 class SquareVoucherPainter(private val context: Context,
                            private val bitmap: Bitmap,
-                           private val onSuccessGetBitmap: (Bitmap) -> Unit) {
+                           private val onSuccessGetBitmap: (Bitmap) -> Unit,
+                           private val onErrorGetBitmap: (Throwable) -> Unit = {}) {
 
     companion object {
         private const val INITIAL_X = 0.15f
         private const val SHOP_NAME_Y = 0.25f
         private const val PROMO_NAME_Y = 0.425f
-        private const val SHOP_AVATAR_X = 0.665f
+        private const val SHOP_AVATAR_X = 0.663f
         private const val SHOP_AVATAR_Y = 0.145f
         private const val SHOP_AVATAR_SIZE = 0.2f
         private const val SHOP_AVATAR_RADIUS = 0.6f
@@ -40,7 +43,7 @@ class SquareVoucherPainter(private val context: Context,
         private const val PROMO_CODE_Y = 0.87f
         private const val PROMO_PERIOD_Y = 0.93f
 
-
+        private const val DASH = "-"
         private const val ASTERISK = "*"
         private const val PERCENT = "%"
     }
@@ -143,7 +146,13 @@ class SquareVoucherPainter(private val context: Context,
     fun drawInfo(postVoucherUiModel: PostVoucherUiModel) {
         postVoucherUiModel.run {
             canvas.run {
-                drawTextInformation(shopName, promoName, promoCode, promoPeriod)
+                val displayedPromoCode =
+                        if (isPublic == true) {
+                            DASH
+                        } else {
+                            promoCode
+                        }
+                drawTextInformation(shopName, promoName, displayedPromoCode, promoPeriod)
                 drawShopAvatar(shopAvatar)
                 drawPromoInfo(imageType, postBaseUiModel)
             }
@@ -161,23 +170,28 @@ class SquareVoucherPainter(private val context: Context,
     }
 
     private fun Canvas.drawShopAvatar(avatarUrl: String) {
-        Glide.with(context)
-                .asBitmap()
-                .load(avatarUrl)
-                .listener(object : RequestListener<Bitmap> {
-                    override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Bitmap>?, isFirstResource: Boolean): Boolean {
-                        return false
-                    }
-
-                    override fun onResourceReady(resource: Bitmap, model: Any?, target: Target<Bitmap>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
-                        val bitmapRect = Rect().apply {
-                            set(shopAvatarX, shopAvatarY, shopAvatarX + shopAvatarSize, shopAvatarY + shopAvatarSize)
+        context.whenAlive {
+            Glide.with(it)
+                    .asBitmap()
+                    .load(avatarUrl)
+                    .listener(object : RequestListener<Bitmap> {
+                        override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Bitmap>?, isFirstResource: Boolean): Boolean {
+                            e?.let { ex ->
+                                onErrorGetBitmap(ex)
+                            }
+                            return false
                         }
-                        drawBitmap(ImageHandler.getRoundedCornerBitmap(resource, shopAvatarRadius), null, bitmapRect, shopAvatarPaint)
-                        return false
-                    }
-                })
-                .submit()
+
+                        override fun onResourceReady(resource: Bitmap, model: Any?, target: Target<Bitmap>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
+                            val bitmapRect = Rect().apply {
+                                set(shopAvatarX, shopAvatarY, shopAvatarX + shopAvatarSize, shopAvatarY + shopAvatarSize)
+                            }
+                            drawBitmap(ImageHandler.getRoundedCornerBitmap(resource, shopAvatarRadius), null, bitmapRect, shopAvatarPaint)
+                            return false
+                        }
+                    })
+                    .submit()
+        }
     }
 
     private fun Canvas.drawPromoInfo(imageType: VoucherImageType, postBaseUiModel: PostBaseUiModel) {
@@ -187,43 +201,35 @@ class SquareVoucherPainter(private val context: Context,
                 } else {
                     postBaseUiModel.cashbackLabelUrl
                 }
-
-        Glide.with(context)
-                .asBitmap()
-                .load(leftLabelImageUrl)
-                .listener(object : RequestListener<Bitmap> {
-                    override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Bitmap>?, isFirstResource: Boolean): Boolean {
-                        return false
-                    }
-
-                    override fun onResourceReady(resource: Bitmap, model: Any?, target: Target<Bitmap>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
-                        val imageValue: Int
-                        val isPercentageType: Boolean =
-                                if (imageType is VoucherImageType.Percentage) {
-                                    imageValue = imageType.percentage
-                                    true
-                                } else {
-                                    imageValue = imageType.value
-                                    false
-                                }
-
-                        drawPromotionLabel(resource, leftPromoInfoX.toInt(), imageValue, PostValuePosition.LEFT, isPercentageType)
-                        return false
-                    }
-                })
-                .submit()
-
-        if (imageType is VoucherImageType.Percentage) {
-            Glide.with(context)
+        context.whenAlive {
+            Glide.with(it)
                     .asBitmap()
-                    .load(postBaseUiModel.cashbackUntilLabelUrl)
+                    .load(leftLabelImageUrl)
                     .listener(object : RequestListener<Bitmap> {
                         override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Bitmap>?, isFirstResource: Boolean): Boolean {
+                            e?.let { ex ->
+                                onErrorGetBitmap(ex)
+                            }
                             return false
                         }
 
                         override fun onResourceReady(resource: Bitmap, model: Any?, target: Target<Bitmap>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
-                            drawPromotionLabel(resource, rightPromoInfoX.toInt(), imageType.value, PostValuePosition.RIGHT)
+                            val imageValue: Int
+                            val isPercentageType: Boolean =
+                                    if (imageType is VoucherImageType.Percentage) {
+                                        imageValue = imageType.percentage
+                                        true
+                                    } else {
+                                        imageValue = imageType.value
+                                        false
+                                    }
+                            val percentageValue: Int? =
+                                    if (imageType is VoucherImageType.Percentage) {
+                                        imageType.value
+                                    } else {
+                                        null
+                                    }
+                            drawPromotionLabel(resource, leftPromoInfoX.toInt(), imageValue, PostValuePosition.LEFT, isPercentageType, percentageValue, postBaseUiModel.cashbackUntilLabelUrl)
                             return false
                         }
                     })
@@ -231,7 +237,13 @@ class SquareVoucherPainter(private val context: Context,
         }
     }
 
-    private fun Canvas.drawPromotionLabel(resource: Bitmap, xPosition: Int, value: Int, @PostValuePosition postValuePosition: Int, isPercentage: Boolean = false) {
+    private fun Canvas.drawPromotionLabel(resource: Bitmap,
+                                          xPosition: Int,
+                                          value: Int,
+                                          @PostValuePosition postValuePosition: Int,
+                                          isPercentage: Boolean = false,
+                                          percentageValue: Int? = null,
+                                          cashbackLabelUrl: String? = null) {
         val bitmapRatio = resource.width / resource.height
         val fittedLabelWidth = (bitmapRatio * promoLabelHeight)
         val bitmapRect = Rect().apply {
@@ -239,10 +251,10 @@ class SquareVoucherPainter(private val context: Context,
         }
         drawBitmap(resource, null, bitmapRect, promoLabelPaint)
 
-        drawValueText(value, postValuePosition, isPercentage)
+        drawValueText(value, postValuePosition, isPercentage, percentageValue, cashbackLabelUrl)
     }
 
-    private fun Canvas.drawValueText(value: Int, @PostValuePosition postValuePosition: Int, isPercentage: Boolean) {
+    private fun Canvas.drawValueText(value: Int, @PostValuePosition postValuePosition: Int, isPercentage: Boolean, percentageValue: Int? = null, cashbackLabelUrl: String? = null) {
         val horizontalLinearLayout = getValueLinearLayout(value, isPercentage)
         val xPosition: Float = when(postValuePosition) {
             PostValuePosition.LEFT -> leftPromoInfoX
@@ -250,7 +262,29 @@ class SquareVoucherPainter(private val context: Context,
             else -> return
         }
         drawBitmap(horizontalLinearLayout.toBitmap(null, null), xPosition, promoValueY - horizontalLinearLayout.height/2, null)
-        onSuccessGetBitmap(bitmap)
+        if (percentageValue == null || !isPercentage) {
+            onSuccessGetBitmap(bitmap)
+        } else {
+            context.whenAlive {
+                Glide.with(it)
+                        .asBitmap()
+                        .load(cashbackLabelUrl.orEmpty())
+                        .listener(object : RequestListener<Bitmap> {
+                            override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Bitmap>?, isFirstResource: Boolean): Boolean {
+                                e?.let { ex ->
+                                    onErrorGetBitmap(ex)
+                                }
+                                return false
+                            }
+
+                            override fun onResourceReady(resource: Bitmap, model: Any?, target: Target<Bitmap>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
+                                drawPromotionLabel(resource, rightPromoInfoX.toInt(), percentageValue.orZero(), PostValuePosition.RIGHT)
+                                return false
+                            }
+                        })
+                        .submit()
+            }
+        }
     }
 
     private fun getValueLinearLayout(value: Int, isPercentage: Boolean): LinearLayout {
@@ -264,9 +298,9 @@ class SquareVoucherPainter(private val context: Context,
                 layoutParams = wrapContentLayoutParams
             }
         } else {
-            val valuePair = getScaledValuePair(context, value)
-            val valueTextView = getTextView(valuePair.first, PostImageTextType.VALUE)
-            val scaleTextView = getTextView(valuePair.second, PostImageTextType.SCALE)
+            val (nominal, currencyScale) = getScaledValuePair(context, value)
+            val valueTextView = getTextView(nominal, PostImageTextType.VALUE)
+            val scaleTextView = getTextView(currencyScale, PostImageTextType.SCALE)
             val asterixTextView = getTextView(ASTERISK, PostImageTextType.ASTERISK)
             LinearLayout(context).apply {
                 orientation = LinearLayout.HORIZONTAL
@@ -283,7 +317,7 @@ class SquareVoucherPainter(private val context: Context,
                 visibility = View.VISIBLE
                 typeface = Typeface.DEFAULT_BOLD
                 text = value
-                textSize = context.resources.getDimensionPixelSize(type.dimenRes).toFloat()
+                textSize = type.textSize
 
                 var textColor = Color.BLACK
                 if (type == PostImageTextType.SCALE) {

@@ -1,0 +1,25 @@
+[
+  {
+    "data": {
+      "TravelCollectiveOrderList": {
+        "orders": [
+          {
+            "product": "Product",
+            "title": "product title",
+            "subtitle": "product subtitle",
+            "prefix": "",
+            "value": "Rp. 30.000",
+            "webURL": "",
+            "imageURL": "",
+            "appURL": "tokopedia://hotel/dashboard"
+          }
+        ],
+        "meta": {
+          "title": "Pesanan saya",
+          "appURL": "tokopedia://pesawat/order",
+          "webURL": "https://m.tokopedia.com/order-list?tab=FLIGHTS"
+        }
+      }
+    }
+  }
+]

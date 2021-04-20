@@ -1,0 +1,327 @@
+[
+  {
+    "data": {
+      "ratesV3": {
+        "ratesv3": {
+          "id": ":3608:2270:10",
+          "rates_id": "1596441505131090522",
+          "type": "rates",
+          "error": {
+            "error_id": "",
+            "error_message": ""
+          },
+          "services": [
+            {
+              "service_name": "Kargo (2-4 hari)",
+              "service_id": 1001,
+              "service_order": 0,
+              "status": 200,
+              "is_promo": 0,
+              "range_price": {
+                "min_price": 40000,
+                "max_price": 40000
+              },
+              "etd": {
+                "min_etd": 0,
+                "max_etd": 0
+              },
+              "texts": {
+                "text_range_price": "Rp40.000",
+                "text_etd": "2-4 hari",
+                "text_notes": "",
+                "text_service_desc": "Rekomendasi berat di atas 5kg",
+                "text_eta_summarize": "",
+                "error_code": 1
+              },
+              "order_priority": {
+                "is_now": false,
+                "inactive_message": "",
+                "price": 0,
+                "formatted_price": "",
+                "static_messages": {
+                  "duration_message": "",
+                  "checkbox_message": "",
+                  "warningbox_message": "",
+                  "fee_message": "",
+                  "pdp_message": ""
+                }
+              },
+              "error": {
+                "error_id": "",
+                "error_message": ""
+              },
+              "cod": {
+                "is_cod": 0,
+                "cod_text": ""
+              },
+              "products": [
+                {
+                  "shipper_name": "SiCepat GOKIL",
+                  "shipper_id": 11,
+                  "shipper_product_id": 43,
+                  "shipper_product_name": "GOKIL",
+                  "shipper_product_desc": "Layanan pengiriman standard dengan kecepatan pengiriman 3-8 hari tergantung rute pengiriman. Harga lebih murah/ ekonomis dan berskala besar (bulk shipment) dengan durasi pengiriman yang lebih lama karena menggunakan jalur darat.",
+                  "is_show_map": 0,
+                  "shipper_weight": 1000,
+                  "status": 200,
+                  "recommend": true,
+                  "checksum": "Oqld1cywamg1DRW8qhB4tiZHC1c%3D",
+                  "ut": "1596441505",
+                  "promo_code": "",
+                  "price": {
+                    "price": 40000,
+                    "formatted_price": "Rp40.000"
+                  },
+                  "etd": {
+                    "min_etd": 172800,
+                    "max_etd": 345600
+                  },
+                  "texts": {
+                    "text_price": "Rp40.000",
+                    "text_etd": "2-4 hari"
+                  },
+                  "insurance": {
+                    "insurance_price": 0,
+                    "insurance_type": 3,
+                    "insurance_type_info": "Must insurance",
+                    "insurance_used_type": 2,
+                    "insurance_used_info": "Pembelian Produk di Official Store akan mendapatkan jaminan ganti rugi dari asuransi tanpa tambahan biaya",
+                    "insurance_used_default": 2
+                  },
+                  "error": {
+                    "error_id": "",
+                    "error_message": ""
+                  },
+                  "cod": {
+                    "is_cod_available": 0,
+                    "cod_price": 0,
+                    "cod_text": "",
+                    "formatted_price": ""
+                  },
+                  "features": {
+                    "ontime_delivery_guarantee": {
+                      "available": false,
+                      "value": 0,
+                      "text_label": "",
+                      "text_detail": "",
+                      "url_detail": "",
+                      "icon_url": ""
+                    }
+                  },
+                  "eta": {
+                    "text_eta": "",
+                    "error_code": 1
+                  }
+                }
+              ]
+            },
+            {
+              "service_name": "Ekonomi (3-4 hari)",
+              "service_id": 1005,
+              "service_order": 0,
+              "status": 200,
+              "is_promo": 0,
+              "range_price": {
+                "min_price": 7000,
+                "max_price": 13000
+              },
+              "etd": {
+                "min_etd": 0,
+                "max_etd": 0
+              },
+              "texts": {
+                "text_range_price": "Rp7.000 - Rp13.000",
+                "text_etd": "3-4 hari",
+                "text_notes": "",
+                "text_service_desc": "",
+                "text_eta_summarize": "",
+                "error_code": 1
+              },
+              "order_priority": {
+                "is_now": false,
+                "inactive_message": "",
+                "price": 0,
+                "formatted_price": "",
+                "static_messages": {
+                  "duration_message": "",
+                  "checkbox_message": "",
+                  "warningbox_message": "",
+                  "fee_message": "",
+                  "pdp_message": ""
+                }
+              },
+              "error": {
+                "error_id": "",
+                "error_message": ""
+              },
+              "cod": {
+                "is_cod": 0,
+                "cod_text": ""
+              },
+              "products": [
+                {
+                  "shipper_name": "JNE OKE",
+                  "shipper_id": 1,
+                  "shipper_product_id": 2,
+                  "shipper_product_name": "OKE",
+                  "shipper_product_desc": "JNE OKE adalah paket ekonomis yang ditawarkan JNE. Umumnya pengiriman melalui paket ini membutuhkan waktu yang lebih lama. Dukungan kota nya pun masih terbatas.",
+                  "is_show_map": 0,
+                  "shipper_weight": 1000,
+                  "status": 200,
+                  "recommend": true,
+                  "checksum": "M3dHl0XeSCu2afHHEEva9j0FrzQ%3D",
+                  "ut": "1596441505",
+                  "promo_code": "",
+                  "price": {
+                    "price": 13000,
+                    "formatted_price": "Rp13.000"
+                  },
+                  "etd": {
+                    "min_etd": 259200,
+                    "max_etd": 345600
+                  },
+                  "texts": {
+                    "text_price": "Rp13.000",
+                    "text_etd": "3-4 hari"
+                  },
+                  "insurance": {
+                    "insurance_price": 0,
+                    "insurance_type": 3,
+                    "insurance_type_info": "Must insurance",
+                    "insurance_used_type": 2,
+                    "insurance_used_info": "Pembelian Produk di Official Store akan mendapatkan jaminan ganti rugi dari asuransi tanpa tambahan biaya",
+                    "insurance_used_default": 2
+                  },
+                  "error": {
+                    "error_id": "",
+                    "error_message": ""
+                  },
+                  "cod": {
+                    "is_cod_available": 0,
+                    "cod_price": 0,
+                    "cod_text": "",
+                    "formatted_price": ""
+                  },
+                  "features": {
+                    "ontime_delivery_guarantee": {
+                      "available": false,
+                      "value": 0,
+                      "text_label": "",
+                      "text_detail": "",
+                      "url_detail": "",
+                      "icon_url": ""
+                    }
+                  },
+                  "eta": {
+                    "text_eta": "",
+                    "error_code": 1
+                  }
+                },
+                {
+                  "shipper_name": "Wahana",
+                  "shipper_id": 6,
+                  "shipper_product_id": 8,
+                  "shipper_product_name": "Service Normal",
+                  "shipper_product_desc": "Service Normal adalah pengiriman paket yang ditawarkan Wahana ke seluruh kota besar Indonesia dengan lead time pengiriman estimasi 3-4 hari untuk kota besar propinsi dan +10 hari untuk kota kabupaten sesuai kecamatan yang dituju.",
+                  "is_show_map": 0,
+                  "shipper_weight": 1000,
+                  "status": 200,
+                  "recommend": false,
+                  "checksum": "Zeoq2%2FUa2sgXw0aDhWqfimvUnzs%3D",
+                  "ut": "1596441505",
+                  "promo_code": "",
+                  "price": {
+                    "price": 7000,
+                    "formatted_price": "Rp7.000"
+                  },
+                  "etd": {
+                    "min_etd": 259200,
+                    "max_etd": 259200
+                  },
+                  "texts": {
+                    "text_price": "Rp7.000",
+                    "text_etd": "3 hari"
+                  },
+                  "insurance": {
+                    "insurance_price": 0,
+                    "insurance_type": 3,
+                    "insurance_type_info": "Must insurance",
+                    "insurance_used_type": 2,
+                    "insurance_used_info": "Pembelian Produk di Official Store akan mendapatkan jaminan ganti rugi dari asuransi tanpa tambahan biaya",
+                    "insurance_used_default": 2
+                  },
+                  "error": {
+                    "error_id": "",
+                    "error_message": ""
+                  },
+                  "cod": {
+                    "is_cod_available": 0,
+                    "cod_price": 0,
+                    "cod_text": "",
+                    "formatted_price": "",
+                    "tnc_text": "",
+                    "tnc_link": ""
+                  },
+                  "features": {
+                    "ontime_delivery_guarantee": {
+                      "available": false,
+                      "value": 0,
+                      "text_label": "",
+                      "text_detail": "",
+                      "url_detail": "",
+                      "icon_url": ""
+                    }
+                  },
+                  "eta": {
+                    "text_eta": "",
+                    "error_code": 1
+                  }
+                }
+              ]
+            }
+          ],
+          "promo_stacking": {
+            "is_promo": 0,
+            "promo_code": "",
+            "title": "",
+            "shipper_id": 0,
+            "shipper_product_id": 0,
+            "shipper_name": "",
+            "shipper_desc": "",
+            "promo_detail": "",
+            "benefit_desc": "",
+            "point_change": 0,
+            "user_point": 0,
+            "promo_tnc_html": "",
+            "shipper_disable_text": "",
+            "service_id": 0,
+            "is_applied": 0,
+            "image_url": "",
+            "discounted_rate": 0,
+            "shipping_rate": 0,
+            "benefit_amount": 0,
+            "disabled": false,
+            "hide_shipper_name": false,
+            "cod": {
+              "is_cod_available": 0,
+              "cod_text": "",
+              "cod_price": 0,
+              "formatted_price": "",
+              "tnc_text": "",
+              "tnc_link": ""
+            },
+            "eta": {
+              "text_eta": "",
+              "error_code": 1
+            }
+          },
+          "info": {
+            "blackbox_info": {
+              "text_info": ""
+            }
+          }
+        }
+      }
+    }
+  }
+]

@@ -3,8 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/white">
+    android:layout_height="match_parent">
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loading"
@@ -18,12 +17,11 @@
         app:layout_constraintTop_toTopOf="parent"
         app:loader_type="circular" />
 
-    <ImageView
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/create_auto_bg"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_200"
-        android:src="@drawable/card_auto_ads_create"
         app:layout_constraintTop_toTopOf="parent" />
-
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/price_range"
@@ -64,17 +62,16 @@
         app:layout_constraintTop_toBottomOf="@+id/price_range"
         app:typographyType="body_3" />
 
-
-    <androidx.cardview.widget.CardView
+    <com.tokopedia.unifycomponents.CardUnify
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginStart="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_24"
-        android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginEnd="@dimen/dp_16"
         android:orientation="vertical"
+        android:padding="@dimen/dp_16"
         app:cardCornerRadius="@dimen/dp_8"
         app:cardUseCompatPadding="true"
-        app:contentPadding="@dimen/dp_16"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/price_range_text">
@@ -87,16 +84,17 @@
                 android:id="@+id/seekbar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/dp_3"
+                android:layout_marginStart="@dimen/dp_3"
                 android:layout_marginTop="@dimen/dp_24"
-                android:layout_marginRight="@dimen/dp_3"
+                android:layout_marginEnd="@dimen/dp_3"
                 android:progress="0"
                 android:progressTint="@color/tkpd_main_green"
                 android:thumb="@drawable/seekbar_thumb"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/title" />
+                app:layout_constraintTop_toBottomOf="@id/title"
+                tools:targetApi="lollipop" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/range_start"
@@ -106,7 +104,6 @@
                 android:lineSpacingExtra="6sp"
                 android:text="@string/range_start"
                 android:textSize="12sp"
-                app:layout_constraintBottom_toTopOf="@+id/budget_parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/seekbar"
                 app:typographyType="body_3" />
@@ -119,29 +116,21 @@
                 android:lineSpacingExtra="6sp"
                 android:text="@string/range_end"
                 android:textSize="12sp"
-                app:layout_constraintBottom_toTopOf="@+id/budget_parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/seekbar"
                 app:typographyType="body_3" />
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/budget_parent"
+            <com.tokopedia.unifycomponents.TextFieldUnify
+                android:id="@+id/budgetEditText"
                 style="@style/TextInputLayout"
                 android:layout_width="0dp"
-                app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout.VerySmall"
+                android:layout_marginTop="@dimen/dp_24"
+                android:maxLines="1"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/range_start"
-                app:layout_constraintWidth_percent=".70">
-
-                <com.tokopedia.seller.common.widget.PrefixEditText
-                    android:id="@+id/budgetEditText"
-                    style="@style/EditText.Currency"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_24"
-                    android:maxLines="1"
-                    app:prefix="Rp " />
-            </com.google.android.material.textfield.TextInputLayout>
+                app:layout_constraintWidth_percent=".70"
+                app:prefix="Rp "
+                app:text_field_input_type="number" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/error_text"
@@ -149,8 +138,8 @@
                 android:layout_height="wrap_content"
                 android:textColor="@color/bright_red"
                 android:visibility="gone"
-                app:layout_constraintStart_toStartOf="@+id/budget_parent"
-                app:layout_constraintTop_toBottomOf="@+id/budget_parent"
+                app:layout_constraintStart_toStartOf="@+id/budgetEditText"
+                app:layout_constraintTop_toBottomOf="@+id/budgetEditText"
                 app:typographyType="body_3"
                 tools:text="error"
                 tools:visibility="visible" />
@@ -159,7 +148,7 @@
                 android:id="@+id/title"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:gravity="left"
+                android:gravity="start"
                 android:text="@string/budget_range"
                 android:textColor="@color/topads_heading_color"
                 app:layout_constraintBottom_toTopOf="@+id/seekbar"
@@ -169,23 +158,17 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_bias="0.0"
                 app:typographyType="heading_4" />
-
         </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.tokopedia.unifycomponents.CardUnify>
 
-    </androidx.cardview.widget.CardView>
-
-    <com.tokopedia.design.component.RoundFloatingButton
+    <com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify
         android:id="@+id/tip_btn"
-        style="@style/TextView.Micro.Green"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/dp_10"
-        android:backgroundTint="#FFFCF5"
-        android:text="@string/tip_title"
+        android:layout_marginBottom="@dimen/dp_24"
         android:textAllCaps="false"
         android:visibility="visible"
-        app:buttonCompatSize="medium"
-        app:buttonDrawableLeftCompat="@drawable/topads_create_ic_tips"
+        app:fbType="group"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintBottom_toTopOf="@+id/btn_submit"
         app:layout_constraintEnd_toEndOf="parent"
@@ -193,34 +176,44 @@
         app:layout_constraintStart_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <com.tokopedia.design.component.ButtonCompat
+    <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/btn_submit"
-        style="@style/Button.Submit.Green.Full"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_margin="@dimen/dp_16"
         android:layout_marginStart="16dp"
-        android:layout_marginLeft="16dp"
         android:layout_marginEnd="16dp"
-        android:layout_marginRight="16dp"
         android:enabled="false"
         android:text="@string/iklankan"
         app:layout_constraintBottom_toTopOf="@+id/info_text"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:unifyButtonType="main"
+        app:unifyButtonVariant="filled" />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btn_cancel"
+        android:layout_width="@dimen/dp_0"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/dp_16"
+        android:text="@string/topads_common_cancel_btn"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btn_submit"
+        app:unifyButtonType="alternate"
+        app:unifyButtonVariant="ghost" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/info_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginStart="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_8"
-        android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginEnd="@dimen/dp_16"
         android:layout_marginBottom="@dimen/dp_16"
         android:gravity="center_horizontal"
         android:text="@string/info_text"
         app:layout_constraintBottom_toBottomOf="parent"
         app:typographyType="body_3" />
-
 </androidx.constraintlayout.widget.ConstraintLayout>

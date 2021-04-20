@@ -28,13 +28,20 @@ public class ChangePhoneNumberWarningActivity extends BaseSimpleActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        setupBundlePass(getIntent().getExtras());
+        if (getIntent() != null && getIntent().getExtras() != null) {
+            setupBundlePass(getIntent().getExtras());
+        } else {
+            finish();
+        }
         super.onCreate(savedInstanceState);
     }
 
     private void setupBundlePass(Bundle extras) {
-        email = extras.getString(ApplinkConstInternalGlobal.PARAM_EMAIL);
-        phoneNumber = extras.getString(ApplinkConstInternalGlobal.PARAM_MSISDN);
+        email = extras.getString(ApplinkConstInternalGlobal.PARAM_EMAIL, "");
+        phoneNumber = extras.getString(ApplinkConstInternalGlobal.PARAM_MSISDN, "");
+        if (email.isEmpty() || phoneNumber.isEmpty()) {
+            finish();
+        }
     }
 
     @Override

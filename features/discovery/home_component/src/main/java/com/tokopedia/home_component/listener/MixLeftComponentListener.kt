@@ -14,8 +14,8 @@ interface MixLeftComponentListener {
     fun onSeeAllBannerClicked(channel: ChannelModel, applink: String)
 
     //product card click and impression
-    fun onProductCardImpressed(channel: ChannelModel, channelGrid: ChannelGrid, position: Int)
-    fun onProductCardClicked(channel: ChannelModel, channelGrid: ChannelGrid, position: Int, applink: String)
+    fun onProductCardImpressed(channel: ChannelModel, channelGrid: ChannelGrid, adapterPosition: Int, position: Int)
+    fun onProductCardClicked(channel: ChannelModel, channelGrid: ChannelGrid, adapterPosition: Int, position: Int, applink: String)
 
     //for see more card click
     fun onSeeMoreCardClicked(channel: ChannelModel, applink: String)

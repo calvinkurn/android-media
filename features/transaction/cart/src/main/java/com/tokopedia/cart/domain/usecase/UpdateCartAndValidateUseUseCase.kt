@@ -2,7 +2,7 @@ package com.tokopedia.cart.domain.usecase
 
 import com.tokopedia.purchase_platform.common.schedulers.ExecutorSchedulers
 import com.tokopedia.cart.data.model.request.UpdateCartRequest
-import com.tokopedia.cart.domain.model.cartlist.UpdateAndValidateUseData
+import com.tokopedia.cart.domain.model.updatecart.UpdateAndValidateUseData
 import com.tokopedia.purchase_platform.common.exception.CartResponseErrorException
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ValidateUsePromoRevampUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest

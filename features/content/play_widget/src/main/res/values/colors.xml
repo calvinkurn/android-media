@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="play_widget_dms_small_border_gradient_top">#FFD15C</color>
+    <color name="play_widget_dms_light_gray">#e0e0e0</color>
+    <color name="play_widget_dms_info_container">#CCFFFFFF</color>
+
+    <color name="play_widget_dms_small_gradient_top">#80FFFFFF</color>
+    <color name="play_widget_dms_small_gradient_bottom">#80E5F5FF</color>
+
+    <color name="play_widget_dms_small_overlay_gradient_top">#00000000</color>
+    <color name="play_widget_dms_small_overlay_gradient_center">#4D000000</color>
+    <color name="play_widget_dms_small_overlay_gradient_bottom">#CC000000</color>
+
+    <color name="play_dms_Y300">#FFC400</color>
+
+</resources>

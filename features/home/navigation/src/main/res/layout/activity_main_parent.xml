@@ -15,17 +15,17 @@
         android:id="@+id/line_bottom_nav"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/color_line_bottom_nav"/>
+        android:background="@color/Unify_N75"/>
 
     <com.tokopedia.navigation.presentation.customview.LottieBottomNavbar android:id="@+id/bottom_navbar"
         android:layout_width="match_parent"
-        android:layout_height="100dp"
+        android:layout_height="@dimen/dp_48"
         tools:layout_height="100dp"
         android:elevation="15dp"
         android:orientation="vertical"
-        app:buttonColor="#525A67"
-        app:buttonContainerBackgroundColor="@android:color/white"
-        app:buttonsHeight="56dp"
+        app:buttonColor="@color/Unify_N500"
+        app:buttonContainerBackgroundColor="@color/Unify_N0"
+        app:buttonsHeight="@dimen/dp_48"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -33,7 +33,7 @@
         app:offscreenPageLimit="4"
         app:setViewPagerSwipeable="false"
         app:navbarElevation="15dp"
-        app:viewPagerBackground="@android:color/white"
+        app:viewPagerBackground="@color/Unify_N0"
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools" />

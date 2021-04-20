@@ -10,10 +10,23 @@
         android:id="@+id/ivRatingFeedback"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginStart="@dimen/spacing_lvl4"
-        tools:src="@drawable/ic_rating_star_four"/>
+        app:layout_constraintTop_toTopOf="@id/kejarUlasanLabel"
+        app:layout_constraintBottom_toBottomOf="@id/kejarUlasanLabel"
+        tools:src="@drawable/review_ic_rating_star_four"/>
+
+    <com.tokopedia.unifycomponents.Label
+        android:id="@+id/kejarUlasanLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:text="@string/kejar_ulasan_label"
+        android:layout_marginStart="@dimen/layout_lvl1"
+        app:labelType="general_light_orange"
+        app:layout_constraintStart_toEndOf="@id/ivRatingFeedback"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible"/>
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/ivOptionReviewFeedback"
@@ -32,7 +45,7 @@
         app:layout_constraintTop_toBottomOf="@+id/ivRatingFeedback"
         app:layout_constraintStart_toStartOf="@+id/ivRatingFeedback"
         app:layout_constraintEnd_toStartOf="@+id/tvFeedbackDate"
-        android:textColor="@color/light_N700_96"
+        android:textColor="@color/Unify_N700_96"
         android:layout_marginTop="@dimen/spacing_lvl4"
         app:typographyType="body_3"
         app:typographyWeight="reguler"
@@ -65,7 +78,7 @@
         app:layout_constraintTop_toBottomOf="@id/partialFeedbackVariantReviewDetail"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:textColor="@color/light_N700_96"
+        android:textColor="@color/Unify_N700_96"
         android:maxLines="@integer/int_3"
         android:layout_marginLeft="@dimen/spacing_lvl4"
         android:layout_marginStart="@dimen/spacing_lvl4"
@@ -96,6 +109,7 @@
         android:id="@+id/replyFeedbackState"
         android:layout_width="@dimen/spacing_lvl2"
         android:layout_height="@dimen/layout_lvl0"
+        tools:background="@drawable/rectangle_8"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toBottomOf="@+id/tvReplyComment"
         app:layout_constraintTop_toBottomOf="@id/rvItemAttachmentFeedback"
@@ -110,7 +124,7 @@
         android:layout_marginStart="@dimen/spacing_lvl4"
         app:typographyType="body_3"
         app:typographyWeight="bold"
-        android:textColor="@color/light_N700_96"
+        android:textColor="@color/Unify_N700_96"
         app:layout_constraintTop_toBottomOf="@id/rvItemAttachmentFeedback"
         app:layout_constraintStart_toEndOf="@id/replyFeedbackState"
         tools:text="Balasan otomatis •"/>
@@ -124,7 +138,7 @@
         android:layout_marginStart="@dimen/spacing_lvl2"
         android:layout_marginTop="@dimen/spacing_lvl4"
         android:layout_marginEnd="@dimen/spacing_lvl4"
-        android:textColor="@color/Neutral_N700_68"
+        android:textColor="@color/Unify_N700_68"
         app:typographyWeight="reguler"
         app:typographyType="body_3"
         tools:text="Hari ini"/>

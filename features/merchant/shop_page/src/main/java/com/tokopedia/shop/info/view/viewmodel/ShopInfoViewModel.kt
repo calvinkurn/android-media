@@ -10,9 +10,10 @@ import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase.Compani
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopBadge
 import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.GetShopReputationUseCase
 import com.tokopedia.shop.common.graphql.domain.usecase.shopnotes.GetShopNotesByShopIdUseCase
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.shop.info.data.model.ShopStatisticsResp
 import com.tokopedia.shop.info.domain.usecase.GetShopStatisticUseCase
-import com.tokopedia.shop.note.view.model.ShopNoteViewModel
+import com.tokopedia.shop.note.view.model.ShopNoteUiModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -25,18 +26,20 @@ class ShopInfoViewModel @Inject constructor(private val userSessionInterface: Us
                                             private val getShopInfoUseCase: GQLGetShopInfoUseCase,
                                             private val getShopStatisticUseCase: GetShopStatisticUseCase,
                                             private val getShopReputationUseCase: GetShopReputationUseCase,
-                                            dispatcher: CoroutineDispatcher): BaseViewModel(dispatcher){
+                                            private val coroutineDispatcherProvider: CoroutineDispatchers
+): BaseViewModel(coroutineDispatcherProvider.main){
 
     fun isMyShop(shopId: String) = userSessionInterface.shopId == shopId
 
-    val shopNotesResp = MutableLiveData<Result<List<ShopNoteViewModel>>>()
+    val shopNotesResp = MutableLiveData<Result<List<ShopNoteUiModel>>>()
     val shopStatisticsResp = MutableLiveData<ShopStatisticsResp>()
     val shopInfo = MutableLiveData<ShopInfoData>()
+    val shopBadgeReputation = MutableLiveData<Result<ShopBadge>>()
 
     fun getShopInfo(shopId: String) {
         launchCatchError(block = {
             coroutineScope{
-                val getShopInfo = withContext(Dispatchers.IO) {
+                val getShopInfo = withContext(coroutineDispatcherProvider.io) {
                     val shopIdParams = listOf(shopId.toIntOrZero())
 
                     getShopInfoUseCase.isFromCacheFirst = false
@@ -55,13 +58,13 @@ class ShopInfoViewModel @Inject constructor(private val userSessionInterface: Us
     fun getShopNotes(shopId: String) {
         launchCatchError(block = {
             coroutineScope{
-                val shopNotes = withContext(Dispatchers.IO) {
+                val shopNotes = withContext(coroutineDispatcherProvider.io) {
                     getShopNoteUseCase.params = GetShopNotesByShopIdUseCase.createParams(shopId)
                     getShopNoteUseCase.isFromCacheFirst = false
 
                     try {
                         Success(getShopNoteUseCase.executeOnBackground().map {
-                            ShopNoteViewModel().apply {
+                            ShopNoteUiModel().apply {
                                 shopNoteId = it.id?.toLongOrNull() ?: 0
                                 title = it.title
                                 position = it.position.toLong()
@@ -79,13 +82,21 @@ class ShopInfoViewModel @Inject constructor(private val userSessionInterface: Us
         }){}
     }
 
+    fun getShopReputationBadge(shopId: String) {
+        launchCatchError(coroutineDispatcherProvider.io, block = {
+            getShopReputation(shopId)?.let {
+                shopBadgeReputation.postValue(Success(it))
+            }
+        }) {}
+    }
+
     fun getShopStats(shopId: String) {
         launchCatchError(block = {
             coroutineScope{
-                val getShopStatisticRespAsync = async(Dispatchers.IO) {
+                val getShopStatisticRespAsync = async(coroutineDispatcherProvider.io) {
                     getShopStatistics(shopId)
                 }
-                val getShopReputationRespAsync = async(Dispatchers.IO) {
+                val getShopReputationRespAsync = async(coroutineDispatcherProvider.io) {
                     getShopReputation(shopId)
                 }
 

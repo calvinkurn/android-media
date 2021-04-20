@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingBottom="3dp"
     android:paddingLeft="@dimen/dp_15"
+    android:paddingTop="3dp"
     android:paddingRight="@dimen/dp_15"
-    android:paddingTop="3dp">
+    android:paddingBottom="3dp">
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -17,63 +18,61 @@
         android:layout_marginBottom="@dimen/dp_16"
         android:textAllCaps="true"
         android:textColor="@color/grey_500"
-        android:textSize="@dimen/sp_12"
-        tools:text="13:16 wib"/>
+        app:typographyType="body_3"
+        tools:text="13:16 wib" />
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignEnd="@+id/main"
-        android:layout_alignRight="@+id/main"
         android:layout_below="@+id/date"
-        android:layout_marginLeft="@dimen/dp_3"
+        android:layout_alignEnd="@+id/main"
+        android:layout_marginStart="@dimen/dp_3"
         android:fontFamily="sans-serif"
         android:lineSpacingExtra="3sp"
         android:textColor="@color/black_38"
         android:textSize="@dimen/sp_11"
         android:textStyle="normal"
-        tools:text="Pengguna"/>
+        tools:text="Pengguna" />
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/dot"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_alignBottom="@id/label"
         android:layout_alignTop="@id/label"
-        android:layout_marginLeft="3dp"
-        android:layout_toLeftOf="@+id/label"
+        android:layout_alignBottom="@id/label"
+        android:layout_marginStart="3dp"
         android:layout_toStartOf="@+id/label"
         android:fontFamily="sans-serif-medium"
         android:gravity="center_vertical"
         android:lineSpacingExtra="3sp"
-        android:text="●"
+        android:text="@string/cb_dot"
         android:textColor="@color/grey_500"
         android:textSize="@dimen/sp_5"
-        android:textStyle="normal"/>
+        android:textStyle="normal" />
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/date"
         android:layout_marginBottom="@dimen/dp_5"
-        android:layout_toLeftOf="@id/dot"
+        android:layout_toStartOf="@id/dot"
         android:fontFamily="sans-serif-medium"
         android:lineSpacingExtra="3sp"
         android:textColor="@color/black_54"
         android:textSize="@dimen/sp_11"
         android:textStyle="normal"
-        tools:text="AHAJA"/>
+        tools:text="AHAJA" />
 
-    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <RelativeLayout
         android:id="@+id/main"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/name"
         android:background="@drawable/right_bubble">
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/message"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -83,66 +82,58 @@
             android:textColor="@color/white"
             android:textColorLink="@color/white"
             android:textIsSelectable="true"
-            android:textSize="@dimen/sp_14"
-            tools:text="Gukguk meong meongaksjdkajshdkajhsdkajhsdkajhsdaksdjhaksjhkahsdk"/>
+            app:typographyType="body_2"
+            tools:text="Gukguk meong meongaksjdkajshdkajhsdkajhsdkajhsdaksdjhaksjhkahsdk" />
 
-        <TextView
-            android:layout_below="@+id/message"
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/bottom_view"
             android:layout_width="270dp"
             android:layout_height="wrap_content"
+            android:layout_below="@+id/message"
+            android:gravity="start"
+            android:paddingStart="@dimen/dp_10"
+            android:paddingEnd="@dimen/dp_10"
             android:paddingBottom="@dimen/dp_8"
-            android:paddingLeft="@dimen/dp_16"
-            android:paddingStart="@dimen/dp_16"
-            android:paddingRight="@dimen/dp_8"
-            android:paddingEnd="@dimen/dp_8"
-            android:paddingTop="@dimen/dp_8"
-            android:textColor="@color/read_more_color"
             android:text="@string/read_more"
+            android:textColor="@color/read_more_color"
             android:textStyle="bold"
-            android:gravity="right"
             android:visibility="gone"
-            android:background="@drawable/left_bubble_bottom_rounded"
-            />
+            tools:visibility="visible" />
     </RelativeLayout>
 
-    <ProgressBar
+    <com.tokopedia.unifycomponents.ProgressBarUnify
         android:id="@+id/progress_bar"
         android:layout_width="@dimen/dp_24"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/main"
         android:layout_alignTop="@+id/main"
-        android:layout_toLeftOf="@+id/main"
+        android:layout_alignBottom="@+id/main"
         android:layout_toStartOf="@+id/main"
         android:indeterminateDrawable="@drawable/progress"
         android:visibility="gone"
-        tools:visibility="gone"/>
+        tools:visibility="gone" />
 
     <ImageView
         android:id="@+id/chat_status"
         android:layout_width="11dp"
         android:layout_height="6dp"
-        android:layout_alignBottom="@+id/hour"
-        android:layout_alignTop="@+id/hour"
         android:layout_below="@+id/main"
+        android:layout_alignTop="@+id/hour"
+        android:layout_alignBottom="@+id/hour"
         android:layout_marginEnd="5dp"
-        android:layout_marginRight="5dp"
-        android:layout_toLeftOf="@+id/hour"
         android:layout_toStartOf="@+id/hour"
         android:adjustViewBounds="true"
-        tools:src="@drawable/ic_read_thin"/>
+        tools:ignore="ContentDescription"
+        tools:src="@drawable/ic_read_thin" />
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/hour"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignEnd="@id/card_group_chat_message"
-        android:layout_alignRight="@id/card_group_chat_message"
         android:layout_below="@id/main"
         android:layout_marginTop="@dimen/dp_3"
         android:textColor="@color/time_color"
         android:textSize="@dimen/sp_10"
         tools:text="10:13 pm"
-        tools:visibility="visible"
-        />
+        tools:visibility="visible" />
 </RelativeLayout>

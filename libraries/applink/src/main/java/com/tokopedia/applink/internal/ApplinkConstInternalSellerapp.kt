@@ -13,6 +13,7 @@ object ApplinkConstInternalSellerapp {
     @JvmField
     val HOST_SELLERAPP = "sellerapp"
 
+
     @JvmField
     val INTERNAL_SELLERAPP = "${DeeplinkConstant.SCHEME_INTERNAL}://${HOST_SELLERAPP}"
 
@@ -47,6 +48,9 @@ object ApplinkConstInternalSellerapp {
     @JvmField
     val SELLER_HOME_SOM_CANCELLED = "$INTERNAL_SELLERAPP/sellerhome-som-cancelled"
 
+    @JvmField
+    val SELLER_HOME_SOM_CANCELLATION_REQUEST = "$INTERNAL_SELLERAPP/sellerhome-som-cancellation-request"
+
     //SellerOnboardingActivity
     @JvmField
     val WELCOME = "$INTERNAL_SELLERAPP/welcome"
@@ -80,4 +84,20 @@ object ApplinkConstInternalSellerapp {
 
     @JvmStatic
     val VOUCHER_DETAIL = "$INTERNAL_SELLERAPP/voucher-detail"
+
+    //SellerMenuActivity
+    @JvmField
+    val SELLER_MENU = "$INTERNAL_SELLERAPP/seller-menu"
+
+    // SellerActionActivity
+    @JvmField
+    val SELLER_ACTION = "$INTERNAL_SELLERAPP/seller-action"
+
+    // SellerSettingsActivity
+    @JvmField
+    val SELLER_SETTINGS = "$INTERNAL_SELLERAPP/seller-settings"
+
+    //AdminRoleAuthorizeActivity
+    @JvmField
+    val ADMIN_AUTHORIZE = "$INTERNAL_SELLERAPP/admin-authorize/{feature}/"
 }

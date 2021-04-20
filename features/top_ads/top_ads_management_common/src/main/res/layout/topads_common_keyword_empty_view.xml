@@ -5,10 +5,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="@dimen/dp_14"
     android:layout_gravity="center_vertical"
-    app:cardUseCompatPadding="true"
+    android:layout_margin="@dimen/dp_14"
     app:cardCornerRadius="@dimen/dp_8"
+    app:cardUseCompatPadding="true"
     app:contentPadding="@dimen/dp_16">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -17,11 +17,10 @@
         android:layout_height="match_parent">
 
 
-        <ImageView
+        <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/ic_tip"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintBottom_toTopOf="@+id/typography22"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
@@ -30,74 +29,70 @@
             app:srcCompat="@drawable/ic_bulp_fill" />
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/typography22"
+            android:id="@+id/title_bottomsheet"
             style="@style/TextView.TitleBig.Bold"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_18"
             android:gravity="center"
             android:text="@string/topads_common_tip_memilih_kata_kunci"
-            app:layout_constraintBottom_toTopOf="@+id/typography23"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/ic_tip" />
 
-
-        <ImageView
+        <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/imageView2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="@dimen/dp_2"
-            app:layout_constraintBottom_toBottomOf="@+id/typography23"
+            app:layout_constraintBottom_toBottomOf="@+id/desc1"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/typography23"
+            app:layout_constraintTop_toTopOf="@+id/desc1"
             app:srcCompat="@drawable/topads_create_ic_checklist" />
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/typography23"
+            android:id="@+id/desc1"
             style="@style/TextView.Small"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dp_8"
+            android:layout_marginStart="@dimen/dp_8"
             android:layout_marginTop="@dimen/dp_16"
             android:gravity="top"
             android:text="@string/sesuaikan_kata_kunci_dengan_nama_produk"
-            app:layout_constraintBottom_toTopOf="@+id/typography25"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/imageView2"
-            app:layout_constraintTop_toBottomOf="@+id/typography22"
+            app:layout_constraintTop_toBottomOf="@+id/title_bottomsheet"
             app:typographyType="body_2" />
 
 
-        <ImageView
+        <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/imageView3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="@dimen/dp_2"
-            app:layout_constraintBottom_toBottomOf="@+id/typography25"
+            app:layout_constraintBottom_toBottomOf="@+id/desc2"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/typography25"
+            app:layout_constraintTop_toTopOf="@+id/desc2"
             app:srcCompat="@drawable/topads_create_ic_checklist" />
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/typography25"
+            android:id="@+id/desc2"
             style="@style/TextView.Small"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dp_8"
+            android:layout_marginStart="@dimen/dp_8"
             android:layout_marginTop="@dimen/dp_16"
             android:text="@string/lebih_efektif_dengan_kata_kunci_spesifik"
-            app:layout_constraintBottom_toTopOf="@+id/typography26"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/imageView3"
-            app:layout_constraintTop_toBottomOf="@+id/typography23"
+            app:layout_constraintTop_toBottomOf="@+id/desc1"
             app:typographyType="body_2" />
 
 
-        <ImageView
+        <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/imageView4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -112,14 +107,13 @@
             style="@style/TextView.Small"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dp_8"
+            android:layout_marginStart="@dimen/dp_8"
             android:layout_marginTop="@dimen/dp_16"
             android:text="@string/gunakan_kata_kunci_umum_dengan_maksimum_2_kata"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/imageView4"
-            app:layout_constraintTop_toBottomOf="@+id/typography25"
+            app:layout_constraintTop_toBottomOf="@+id/desc2"
             app:typographyType="body_2" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

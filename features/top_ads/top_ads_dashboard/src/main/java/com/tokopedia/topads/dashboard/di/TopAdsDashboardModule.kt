@@ -2,6 +2,8 @@ package com.tokopedia.topads.dashboard.di
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
@@ -9,27 +11,10 @@ import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.shop.common.R
 import com.tokopedia.shop.common.constant.GQLQueryNamedConstant
 import com.tokopedia.shop.common.constant.ShopCommonUrl
-import com.tokopedia.shop.common.data.repository.ShopCommonRepositoryImpl
 import com.tokopedia.shop.common.data.source.ShopCommonDataSource
 import com.tokopedia.shop.common.data.source.cloud.ShopCommonCloudDataSource
 import com.tokopedia.shop.common.data.source.cloud.api.ShopCommonApi
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
-import com.tokopedia.shop.common.domain.repository.ShopCommonRepository
-import com.tokopedia.topads.common.data.api.TopAdsManagementApi
-import com.tokopedia.topads.common.data.repository.TopAdsShopDepositRepositoryImpl
-import com.tokopedia.topads.common.data.source.ShopDepositDataSource
-import com.tokopedia.topads.common.data.source.cloud.ShopDepositDataSourceCloud
-import com.tokopedia.topads.common.data.source.local.TopAdsCacheDataSource
-import com.tokopedia.topads.common.data.source.local.TopAdsCacheDataSourceImpl
-import com.tokopedia.topads.common.domain.interactor.TopAdsDatePickerInteractor
-import com.tokopedia.topads.common.domain.interactor.TopAdsDatePickerInteractorImpl
-import com.tokopedia.topads.common.domain.repository.TopAdsShopDepositRepository
-import com.tokopedia.topads.dashboard.data.repository.TopAdsDashboardRepositoryImpl
-import com.tokopedia.topads.dashboard.data.source.TopAdsDashboardDataSource
-import com.tokopedia.topads.dashboard.data.source.cloud.TopAdsDashboardDataSourceCloud
-import com.tokopedia.topads.dashboard.data.source.cloud.serviceapi.TopAdsDashboardApi
-import com.tokopedia.topads.dashboard.domain.interactor.DeleteTopAdsStatisticsUseCase
-import com.tokopedia.topads.dashboard.domain.repository.TopAdsDashboardRepository
 import com.tokopedia.topads.sourcetagging.data.repository.TopAdsSourceTaggingRepositoryImpl
 import com.tokopedia.topads.sourcetagging.data.source.TopAdsSourceTaggingDataSource
 import com.tokopedia.topads.sourcetagging.data.source.TopAdsSourceTaggingLocal
@@ -47,7 +32,6 @@ import javax.inject.Named
  * Created by hadi.putra on 23/04/18.
  */
 
-@TopAdsDashboardScope
 @Module
 class TopAdsDashboardModule {
 
@@ -55,11 +39,6 @@ class TopAdsDashboardModule {
     @TopAdsDashboardScope
     fun provideUserSessionInterface(@ApplicationContext context: Context): UserSessionInterface = com.tokopedia.user.session.UserSession(context)
 
-    @Provides
-    @TopAdsDashboardScope
-    fun provideTopAdsManagementApi(@TopAdsDashboardQualifier retrofit: Retrofit): TopAdsManagementApi {
-        return retrofit.create(TopAdsManagementApi::class.java)
-    }
 
     @ShopWsQualifier
     @TopAdsDashboardScope
@@ -88,66 +67,6 @@ class TopAdsDashboardModule {
         return ShopCommonDataSource(shopInfoCloudDataSource)
     }
 
-    @Provides
-    @TopAdsDashboardScope
-    fun provideShopCommonRepository(shopInfoDataSource: ShopCommonDataSource): ShopCommonRepository {
-        return ShopCommonRepositoryImpl(shopInfoDataSource)
-    }
-
-    @Provides
-    @TopAdsDashboardScope
-    fun provideShopDepositDataSource(shopDepositDataSourceCloud: ShopDepositDataSourceCloud): ShopDepositDataSource {
-        return ShopDepositDataSource(shopDepositDataSourceCloud)
-    }
-
-    @Provides
-    @TopAdsDashboardScope
-    fun provideShopDepositDataSourceCloud(topAdsManagementApi: TopAdsManagementApi): ShopDepositDataSourceCloud {
-        return ShopDepositDataSourceCloud(topAdsManagementApi)
-    }
-
-    @Provides
-    @TopAdsDashboardScope
-    fun provideTopAdsShopDepositRepository(shopDepositDataSource: ShopDepositDataSource): TopAdsShopDepositRepository {
-        return TopAdsShopDepositRepositoryImpl(shopDepositDataSource)
-    }
-
-    @Provides
-    @TopAdsDashboardScope
-    fun provideTopAdsCacheDataSource(@ApplicationContext context: Context): TopAdsCacheDataSource {
-        return TopAdsCacheDataSourceImpl(context)
-    }
-
-    @Provides
-    @TopAdsDashboardScope
-    fun provideTopAdsDatePickerInteractor(topAdsCacheDataSource: TopAdsCacheDataSource): TopAdsDatePickerInteractor {
-        return TopAdsDatePickerInteractorImpl(topAdsCacheDataSource)
-    }
-
-    @Provides
-    @TopAdsDashboardScope
-    fun provideTopAdsDashboadrApi(@TopAdsDashboardQualifier retrofit: Retrofit): TopAdsDashboardApi {
-        return retrofit.create(TopAdsDashboardApi::class.java)
-    }
-
-    @Provides
-    @TopAdsDashboardScope
-    fun provideTopAdsDashboardDataSourceCloud(topAdsDashboardApi: TopAdsDashboardApi): TopAdsDashboardDataSourceCloud {
-        return TopAdsDashboardDataSourceCloud(topAdsDashboardApi)
-    }
-
-    @Provides
-    @TopAdsDashboardScope
-    fun provideTopAdsDashboardDataSource(topAdsDashboardDataSourceCloud: TopAdsDashboardDataSourceCloud): TopAdsDashboardDataSource {
-        return TopAdsDashboardDataSource(topAdsDashboardDataSourceCloud)
-    }
-
-    @Provides
-    @TopAdsDashboardScope
-    fun provideTopAdsDashboardRepository(topAdsDashboardDataSource: TopAdsDashboardDataSource): TopAdsDashboardRepository {
-        return TopAdsDashboardRepositoryImpl(topAdsDashboardDataSource)
-    }
-
     @TopAdsDashboardScope
     @Provides
     fun provideTopAdsSourceTaggingLocal(@ApplicationContext context: Context): TopAdsSourceTaggingLocal {
@@ -168,10 +87,6 @@ class TopAdsDashboardModule {
 
     @TopAdsDashboardScope
     @Provides
-    fun provideDeleteTopAdsStatisticsUseCase(@ApplicationContext context: Context) = DeleteTopAdsStatisticsUseCase(context)
-
-    @TopAdsDashboardScope
-    @Provides
     fun provideGraphqlUseCase(): GraphqlUseCase = GraphqlUseCase()
 
     @Provides
@@ -181,6 +96,11 @@ class TopAdsDashboardModule {
     @Provides
     @Named("Main")
     fun provideMainDispatcher(): CoroutineDispatcher = Dispatchers.Main
+
+    @Provides
+    @TopAdsDashboardScope
+    @Named("Main")
+    fun provideDispatcherProvider(): CoroutineDispatchers = CoroutineDispatchersProvider
 
     @Provides
     @Named(GQLQueryNamedConstant.SHOP_INFO)

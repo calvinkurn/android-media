@@ -14,6 +14,7 @@ import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.invisible
@@ -21,7 +22,8 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.onboarding.R
 import com.tokopedia.onboarding.analytics.OnboardingAnalytics
 import com.tokopedia.onboarding.common.IOnBackPressed
-import com.tokopedia.onboarding.common.OnboardingIoDispatcher
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.onboarding.data.OnboardingConstant.PARAM_SOURCE_ONBOARDING
 import com.tokopedia.onboarding.data.OnboardingScreenItem
 import com.tokopedia.onboarding.di.OnboardingComponent
 import com.tokopedia.onboarding.view.adapter.OnboardingViewPagerAdapter
@@ -68,7 +70,7 @@ class OnboardingFragment : BaseDaggerFragment(), CoroutineScope, IOnBackPressed 
     lateinit var remoteConfig: RemoteConfig
 
     @Inject
-    lateinit var dispatcher: OnboardingIoDispatcher
+    lateinit var dispatcher: CoroutineDispatchers
 
     override val coroutineContext: CoroutineContext
         get() = job + dispatcher.main
@@ -215,7 +217,10 @@ class OnboardingFragment : BaseDaggerFragment(), CoroutineScope, IOnBackPressed 
                         val taskStackBuilder = TaskStackBuilder.create(it)
                         val homeIntent = getIntentforApplink(it, ApplinkConst.HOME)
                         taskStackBuilder.addNextIntent(homeIntent)
+
                         val intent = getIntentforApplink(it, ApplinkConst.REGISTER)
+                        intent.putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, PARAM_SOURCE_ONBOARDING)
+
                         taskStackBuilder.addNextIntent(intent)
                         taskStackBuilder.startActivities()
                         finishOnBoarding()

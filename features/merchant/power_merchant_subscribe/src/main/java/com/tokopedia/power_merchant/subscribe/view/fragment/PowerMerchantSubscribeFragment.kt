@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
@@ -37,8 +38,8 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.user_identification_common.KYCConstant.MERCHANT_KYC_PROJECT_ID
-import com.tokopedia.user_identification_common.KYCConstant.PARAM_PROJECT_ID
+import com.tokopedia.user_identification_common.KYCConstant
+import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import kotlinx.android.synthetic.main.fragment_power_merchant_subscribe.*
 import javax.inject.Inject
 
@@ -72,7 +73,7 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
         const val MINIMUM_SCORE_ACTIVATE_REGULAR = 75
         const val MINIMUM_SCORE_ACTIVATE_IDLE = 65
 
-        private const val APPLINK_PARAMS_KYC = "${PARAM_PROJECT_ID}=${MERCHANT_KYC_PROJECT_ID}"
+        private const val APPLINK_PARAMS_KYC = "${KYCConstant.PARAM_PROJECT_ID}=${KYCConstant.MERCHANT_KYC_PROJECT_ID}"
         const val APPLINK_POWER_MERCHANT_KYC = "${ApplinkConst.KYC_NO_PARAM}?$APPLINK_PARAMS_KYC"
     }
 
@@ -88,9 +89,21 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
         observeGetPmStatusInfo()
         observeViewState()
 
+        setupCallToActionBtn()
         setupFreeShippingError()
 
         viewModel.getPmStatusInfo()
+    }
+
+    private fun setupCallToActionBtn() {
+        btnCallToAction.apply {
+            val backgroundColor = if (context?.isDarkMode() == true) {
+                ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N50)
+            } else {
+                ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0)
+            }
+            setBackgroundColor(backgroundColor)
+        }
     }
 
     private fun setupFreeShippingError() {

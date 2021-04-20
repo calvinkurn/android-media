@@ -99,6 +99,40 @@ object EventQuery {
         }
     }"""
 
+    fun mutationEventCheckoutInstant()="""
+        mutation checkout_general_v2_instant(${'$'}params: CheckoutGeneralV2InstantParams) {
+            checkout_general_v2_instant(params: ${'$'}params){
+                header {
+                    process_time
+                    reason
+                    messages
+                    error_code
+                 }
+                data {
+                    success
+                    error
+                    error_state
+                    message
+                    data {
+                        redirect_url
+                        method
+                        content_type
+                        payload
+                    }
+                }
+                status
+                error_reporter {
+                eligible
+                texts {
+                submit_title
+                submit_description
+                submit_button
+                cancel_button
+                  }
+             }
+             }
+        }"""
+
     fun mutationVerifyV2()="""
         mutation verify_v2(${'$'}eventVerify: VerifyRequest!) {
         event_verify(verifyRequestParam: ${'$'}eventVerify)
@@ -208,6 +242,7 @@ object EventQuery {
                     }
                 }
             }
+            gateway_code
         }
     }"""
 
@@ -369,6 +404,22 @@ object EventQuery {
                     sales_price
                     dates
                     end_date
+                    forms_package {
+                        id
+                        product_id
+                        options
+                        name
+                        title
+                        value
+                        element_type
+                        help_text
+                        required
+                        validator_regex
+                        error_message
+                        status
+                        created_at
+                        updated_at
+                    }
                     package_items{
                         id
                         product_id
@@ -391,6 +442,22 @@ object EventQuery {
                         start_date
                         end_date
                         provider_custom_text
+                        forms_item {
+                           id
+                           product_id
+                           options
+                            name
+                           title
+                           value
+                           element_type
+                           help_text
+                           required
+                           validator_regex
+                           error_message
+                           status
+                           created_at
+                           updated_at
+                        }
                     }
                 }
                 facilities{
@@ -406,6 +473,7 @@ object EventQuery {
                 forms {
                     id
                     product_id
+                    options
                     name
                     title
                     value

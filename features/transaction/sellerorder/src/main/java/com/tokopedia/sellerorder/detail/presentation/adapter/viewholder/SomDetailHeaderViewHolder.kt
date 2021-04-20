@@ -1,21 +1,18 @@
 package com.tokopedia.sellerorder.detail.presentation.adapter.viewholder
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
-import android.text.Spannable
-import android.text.SpannableStringBuilder
-import android.text.style.ForegroundColorSpan
 import android.view.View
 import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import com.google.android.flexbox.AlignItems
+import com.google.android.flexbox.FlexboxLayoutManager
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder
-import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImageDrawable
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.sellerorder.R
@@ -29,130 +26,108 @@ import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_CODE_ORDER_DELIVER
 import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_CODE_ORDER_DELIVERED_DUE_LIMIT
 import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_CODE_ORDER_REJECTED
 import com.tokopedia.sellerorder.common.util.Utils
+import com.tokopedia.sellerorder.common.util.Utils.toStringFormatted
 import com.tokopedia.sellerorder.detail.data.model.SomDetailData
 import com.tokopedia.sellerorder.detail.data.model.SomDetailHeader
 import com.tokopedia.sellerorder.detail.presentation.adapter.SomDetailAdapter
-import com.tokopedia.sellerorder.detail.presentation.adapter.SomDetailLabelInfoAdapter
-import com.tokopedia.unifycomponents.UrlSpanNoUnderline
+import com.tokopedia.sellerorder.detail.presentation.adapter.SomDetailLabelAdapter
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import kotlinx.android.synthetic.main.detail_header_item.view.*
-import kotlinx.android.synthetic.main.detail_header_resi_item.view.*
 
 /**
  * Created by fwidjaja on 2019-10-03.
  */
 class SomDetailHeaderViewHolder(itemView: View, private val actionListener: SomDetailAdapter.ActionListener?) : SomDetailAdapter.BaseViewHolder<SomDetailData>(itemView) {
-    private val somDetailLabelInfoAdapter = SomDetailLabelInfoAdapter()
-    private val viewPool = RecyclerView.RecycledViewPool()
 
-    val coachMarkItems: ArrayList<CoachMarkItem> = ArrayList()
+    private val adapter: SomDetailLabelAdapter = SomDetailLabelAdapter(emptyList())
 
-    @SuppressLint("Range")
     override fun bind(item: SomDetailData, position: Int) {
         if (item.dataObject is SomDetailHeader) {
             setupOrderStatus(item.dataObject.statusText, item.dataObject.statusCode)
-            itemView.header_see_history?.setOnClickListener {
-                itemView.context.startActivity(RouteManager.getIntent(it.context, ApplinkConstInternalOrder.TRACK, "")
-                        .putExtra(EXTRA_ORDER_ID, item.dataObject.orderId)
-                        .putExtra(EXTRA_USER_MODE, 2))
-            }
-
-            if (item.dataObject.isBuyerRequestCancel && item.dataObject.tickerInfo.text.isNotEmpty()) {
-                setupTicker(itemView.ticker_detail_buyer_request_cancel, item.dataObject.tickerInfo)
-                itemView.ticker_detail_buyer_request_cancel?.show()
-            } else {
-                itemView.ticker_detail_buyer_request_cancel?.gone()
-            }
-
-            itemView.header_buyer_value?.text = item.dataObject.custName
-            itemView.header_date_value?.text = item.dataObject.paymentDate
-
-            if (item.dataObject.deadlineText.isNotEmpty()) {
-                itemView.header_deadline_label?.visibility = View.VISIBLE
-                if (item.dataObject.statusCode == STATUS_CODE_ORDER_DELIVERED || item.dataObject.statusCode == STATUS_CODE_ORDER_DELIVERED_DUE_LIMIT) {
-                    itemView.header_deadline_label?.text = itemView.context.getString(R.string.som_deadline_done)
+            with(itemView) {
+                if (item.dataObject.isWarehouse) {
+                    warehouseLabel?.apply {
+                        show()
+                        unlockFeature = true
+                        setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
+                    }
                 } else {
-                    itemView.header_deadline_label?.text = itemView.context.getString(R.string.som_deadline)
+                    warehouseLabel.hide()
                 }
 
-                itemView.label_due_response_day_count?.text = item.dataObject.deadlineText
-                itemView.ic_time?.loadImageDrawable(R.drawable.ic_label_due_time)
-                itemView.ic_time?.setColorFilter(Color.WHITE)
-
-                if (item.dataObject.deadlineColor.isNotEmpty() && !item.dataObject.deadlineColor.equals(LABEL_EMPTY, true)) {
-                    itemView.due_label?.setCardBackgroundColor(Color.parseColor(item.dataObject.deadlineColor))
+                if (item.dataObject.statusIndicatorColor.isNotBlank()) {
+                    somOrderDetailIndicator.background = Utils.getColoredIndicator(context, item.dataObject.statusIndicatorColor)
                 }
-            } else {
-                itemView.header_deadline_label?.visibility = View.GONE
-                itemView.due_label?.visibility = View.GONE
-            }
 
-            if (item.dataObject.listLabelOrder.isNotEmpty()) {
-                itemView.rv_detail_order_label?.visibility = View.VISIBLE
-                itemView.rv_detail_order_label?.apply {
-                    layoutManager = LinearLayoutManager(this.context, LinearLayoutManager.HORIZONTAL, false)
-                    adapter = somDetailLabelInfoAdapter
-                    setRecycledViewPool(viewPool)
+                header_see_history?.setOnClickListener {
+                    context.startActivity(RouteManager.getIntent(it.context, ApplinkConstInternalOrder.TRACK, "")
+                            .putExtra(EXTRA_ORDER_ID, item.dataObject.orderId)
+                            .putExtra(EXTRA_USER_MODE, 2))
                 }
-                somDetailLabelInfoAdapter.listLabelInfo = item.dataObject.listLabelOrder.toMutableList()
-            } else {
-                itemView.rv_detail_order_label?.visibility = View.GONE
-            }
 
-            itemView.header_invoice?.text = item.dataObject.invoice
-
-            itemView.header_invoice_copy?.setOnClickListener {
-                actionListener?.onCopiedInvoice(itemView.context.getString(R.string.invoice_label), item.dataObject.invoice)
-            }
-
-            itemView.header_see_invoice?.setOnClickListener {
-                actionListener?.onSeeInvoice(item.dataObject.invoiceUrl)
-            }
-
-            if (item.dataObject.awb.isNotEmpty()) {
-                itemView.layout_resi?.visibility = View.VISIBLE
-                itemView.header_resi_value?.text = item.dataObject.awb
-                if (item.dataObject.awbTextColor.isNotEmpty()) {
-                    itemView.header_resi_value?.setTextColor(Color.parseColor(item.dataObject.awbTextColor))
-                }
-                itemView.header_copy_resi?.setOnClickListener {
-                    actionListener?.onTextCopied(itemView.context.getString(R.string.awb_label), item.dataObject.awb)
-                }
-            } else {
-                itemView.layout_resi?.visibility = View.GONE
-            }
-
-            if (item.dataObject.awbUploadProofText.isNotEmpty()) {
-                val completeDesc = item.dataObject.awbUploadProofText + " " + itemView.context.getString(R.string.additional_invalid_resi)
-                itemView.ticker_invalid_resi?.apply {
-                    visibility = View.VISIBLE
-                    setHtmlDescription(completeDesc)
-                    tickerShape = Ticker.SHAPE_FULL
-                    tickerType = Ticker.TYPE_ERROR
-                    closeButtonVisibility = View.GONE
-                    post {
-                        measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
-                                View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED))
-                        requestLayout()
+                if (item.dataObject.tickerInfo.text.isNotEmpty() || item.dataObject.awbUploadProofText.isNotEmpty()) {
+                    val tickerContent = if (item.dataObject.tickerInfo.text.isNotEmpty()) {
+                        item.dataObject.tickerInfo.text
+                    } else {
+                        item.dataObject.awbUploadProofText
                     }
-                    if (item.dataObject.awbUploadUrl.isNotEmpty()) {
-                        setOnClickListener { actionListener?.onInvalidResiUpload(item.dataObject.awbUploadUrl) }
+                    val isAwb = item.dataObject.tickerInfo.text.isEmpty()
+                    val tickerUrl = if (item.dataObject.tickerInfo.actionUrl.isNotEmpty()) {
+                        item.dataObject.tickerInfo.actionUrl
+                    } else {
+                        item.dataObject.awbUploadUrl
                     }
+
+                    setupTicker(ticker_detail_buyer_request_cancel, item.dataObject.tickerInfo, tickerContent, tickerUrl, isAwb)
+                    ticker_detail_buyer_request_cancel?.show()
+                } else {
+                    ticker_detail_buyer_request_cancel?.gone()
                 }
-            } else {
-                itemView.ticker_invalid_resi?.visibility = View.GONE
+
+                header_buyer_value?.text = item.dataObject.custName.toStringFormatted(MAX_BUYER_NAME)
+                header_date_value?.text = item.dataObject.paymentDate
+
+                if (item.dataObject.deadlineText.isNotEmpty()) {
+                    header_deadline_label?.show()
+                    due_label?.show()
+                    if (item.dataObject.statusCode == STATUS_CODE_ORDER_DELIVERED || item.dataObject.statusCode == STATUS_CODE_ORDER_DELIVERED_DUE_LIMIT) {
+                        header_deadline_label?.text = itemView.context.getString(R.string.som_deadline_done)
+                    } else {
+                        header_deadline_label?.text = itemView.context.getString(R.string.som_deadline)
+                    }
+
+                    label_due_response_day_count?.text = item.dataObject.deadlineText
+                    ic_time?.loadImageDrawable(R.drawable.ic_label_due_time)
+                    ic_time?.setColorFilter(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+
+                    if (item.dataObject.deadlineColor.isNotEmpty() && !item.dataObject.deadlineColor.equals(LABEL_EMPTY, true)) {
+                        due_label?.setCardBackgroundColor(Color.parseColor(item.dataObject.deadlineColor))
+                    }
+                } else {
+                    header_deadline_label?.hide()
+                    due_label?.hide()
+                }
+
+                header_invoice?.text = item.dataObject.invoice
+
+                header_invoice_copy?.setOnClickListener {
+                    actionListener?.onCopiedInvoice(itemView.context.getString(R.string.invoice_label), item.dataObject.invoice)
+                }
+
+                header_see_invoice?.setOnClickListener {
+                    actionListener?.onSeeInvoice(item.dataObject.invoiceUrl, item.dataObject.invoice)
+                }
+
+                // labels
+                rvSomDetailLabels.isNestedScrollingEnabled = false
+                rvSomDetailLabels.layoutManager = FlexboxLayoutManager(context).apply {
+                    alignItems = AlignItems.FLEX_START
+                }
+                rvSomDetailLabels.adapter = adapter
+                adapter.setLabels(item.dataObject.listLabelOrder)
             }
         }
-
-        val coachmarkHeader = CoachMarkItem(itemView,
-                itemView.context.getString(R.string.coachmark_header),
-                itemView.context.getString(R.string.coachmark_header_info))
-
-        actionListener?.onAddedCoachMarkHeader(
-                coachmarkHeader
-        )
-
     }
 
     private fun setupOrderStatus(statusText: String, statusCode: Int) {
@@ -160,18 +135,19 @@ class SomDetailHeaderViewHolder(itemView: View, private val actionListener: SomD
         if (statusCode == STATUS_CODE_ORDER_CANCELLED ||
                 statusCode == STATUS_CODE_ORDER_AUTO_CANCELLED ||
                 statusCode == STATUS_CODE_ORDER_REJECTED) {
-            itemView.header_title?.setTextColor(MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Red_R600))
+            itemView.header_title?.setTextColor(MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_R600))
         }
     }
 
-    private fun setupTicker(tickerBuyerRequestCancel: Ticker?, tickerInfo: TickerInfo) {
+    private fun setupTicker(tickerBuyerRequestCancel: Ticker?, tickerInfo: TickerInfo, tickerContent: String, tickerUrl: String, isAwb: Boolean) {
         tickerBuyerRequestCancel?.apply {
-            val tickerDescription = makeTickerDescription(context, tickerInfo)
-            setTextDescription(tickerDescription)
+            val tickerDescription = makeTickerDescription(context, tickerInfo, tickerContent, isAwb)
+            setHtmlDescription(tickerDescription)
+
             setDescriptionClickEvent(object : TickerCallback {
                 override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                    if (tickerInfo.actionUrl.isNotBlank()) {
-                        RouteManager.route(context, String.format("%s?=url", ApplinkConst.WEBVIEW, tickerInfo.actionUrl))
+                    if (tickerUrl.isNotBlank()) {
+                        RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, tickerUrl)
                     }
                 }
 
@@ -182,28 +158,17 @@ class SomDetailHeaderViewHolder(itemView: View, private val actionListener: SomD
         }
     }
 
-    private fun makeTickerDescription(context: Context, tickerInfo: TickerInfo): String {
+    private fun makeTickerDescription(context: Context, tickerInfo: TickerInfo, tickerContent: String, isAwb: Boolean): String {
         val message = Utils.getL2CancellationReason(tickerInfo.text, context.getString(R.string.som_header_detail_ticker_cancellation))
-        val messageLink = tickerInfo.actionText
-        val spannedMessage = SpannableStringBuilder()
-                .append(message)
-                .append(" $messageLink")
-
-        if (messageLink.isNotBlank()) {
-            spannedMessage.setSpan(
-                    UrlSpanNoUnderline(messageLink),
-                    message.length + 2,
-                    message.length + messageLink.length,
-                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-            )
-            spannedMessage.setSpan(
-                    ForegroundColorSpan(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Green_G500)),
-                    message.length + 2,
-                    message.length + messageLink.length,
-                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-            )
+        val additionalInvalidResi = itemView.context.getString(R.string.additional_invalid_resi)
+        return if (isAwb) {
+            String.format(itemView.context.getString(R.string.som_detail_ticker_description), tickerContent, additionalInvalidResi)
+        } else {
+            String.format(itemView.context.getString(R.string.som_detail_ticker_description), message, tickerInfo.actionText)
         }
+    }
 
-        return spannedMessage.toString()
+    companion object {
+        const val MAX_BUYER_NAME = 35
     }
 }

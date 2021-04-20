@@ -4,13 +4,13 @@
     android:id="@+id/date_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="@dimen/dp_7"
-    android:minHeight="@dimen/dp_28">
+    android:layout_marginBottom="@dimen/spacing_lvl3"
+    android:minHeight="@dimen/travel_calendar_28dp">
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/date"
-        android:layout_width="@dimen/dp_28"
-        android:layout_height="@dimen/dp_28"
+        android:layout_width="@dimen/travel_calendar_28dp"
+        android:layout_height="@dimen/travel_calendar_28dp"
         android:layout_centerInParent="true"
         android:gravity="center_vertical"
         android:textAlignment="center"

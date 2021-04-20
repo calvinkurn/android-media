@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android" >
+    <item>
+        <inset
+            android:drawable="@drawable/umrah_ic_loading_image"
+
+            android:insetBottom="@dimen/spacing_lvl3"
+            android:insetLeft="@dimen/spacing_lvl3"
+            android:insetRight="@dimen/spacing_lvl3"
+            android:insetTop="@dimen/spacing_lvl3"
+            />
+    </item>
+</layer-list>

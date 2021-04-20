@@ -26,13 +26,13 @@ constructor(@param:ApplicationContext private val context: Context,
         )
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(graphqlRequest)
-        return graphqlUseCase.createObservable(RequestParams.EMPTY).map({
+        return graphqlUseCase.createObservable(RequestParams.EMPTY).map {
             val data: AffiliateCheckData? = it.getData(AffiliateCheckData::class.java)
             if (data?.affiliateCheck == null) {
-                throw RuntimeException()
+                throw RuntimeException("Check Affiliate Failed")
             }
 
-            data.affiliateCheck!!.isIsAffiliate
-        })
+            data.affiliateCheck.isIsAffiliate
+        }
     }
 }

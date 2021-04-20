@@ -52,9 +52,9 @@ class HotelFilterPriceRangeSlider @JvmOverloads constructor(context: Context, at
         min_label.text = resources.getString(R.string.hotel_search_filter_price_min_label)
         max_label.text = resources.getString(R.string.hotel_search_filter_price_max_label)
 
-        seekbar_background.activeRailColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.light_G300)
-        seekbar_background.backgroundRailColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Neutral_N75)
-        seekbar_background.knobColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Green_G500)
+        seekbar_background.activeRailColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G300)
+        seekbar_background.backgroundRailColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N75)
+        seekbar_background.knobColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500)
 
         seekbar_background.updateEndValue(getPositionFromMaxValue(maxBound))
         seekbar_background.setInitialValue(getPositionFromMinValue(selectedMinPrice), getPositionFromMaxValue(selectedMaxPrice))

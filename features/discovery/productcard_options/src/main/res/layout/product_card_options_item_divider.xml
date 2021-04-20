@@ -5,4 +5,4 @@
     android:layout_height="0.5dp"
     android:layout_marginLeft="@dimen/dp_16"
     android:layout_marginStart="@dimen/dp_16"
-    android:background="@color/product_card_options_item_divider"/>
+    android:background="@color/Unify_N75"/>

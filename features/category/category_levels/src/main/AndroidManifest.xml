@@ -3,13 +3,13 @@
 
     <application>
         <activity
-            android:name="com.tokopedia.categorylevels.view.activity.CategoryNavActivity"
+            android:name="com.tokopedia.categorylevels.view.activity.CategoryRevampActivity"
             android:label="@string/label_category"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White">
 
             <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
+                <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />

@@ -6,33 +6,73 @@
     android:layout_height="wrap_content"
     android:foreground="?selectableItemBackground"
     android:paddingLeft="@dimen/dp_16"
+    android:paddingTop="@dimen/dp_16"
     android:paddingRight="@dimen/dp_16">
 
-    <TextView
+    <FrameLayout
+        android:id="@+id/fl_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/layout_mvc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dp_4"
+            android:visibility="visible">
+
+            <ImageView
+                android:id="@+id/img_mvc"
+                android:layout_width="@dimen/dp_20"
+                android:layout_height="@dimen/dp_20"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:ignore="ContentDescription" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tv_mvc_text"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginStart="@dimen/dp_7"
+                android:layout_toEndOf="@id/img_mvc"
+                android:lineSpacingExtra="@dimen/sp_4"
+                android:textColor="@color/Unify_G500"
+                app:layout_constraintBottom_toBottomOf="@id/img_mvc"
+                app:layout_constraintStart_toEndOf="@id/img_mvc"
+                app:layout_constraintTop_toTopOf="@id/img_mvc"
+                app:typographyType="body_3"
+                app:typographyWeight="bold"
+                tools:text="@string/tv_mvc_text" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </FrameLayout>
+
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_courier"
-        style="@style/TextMidMediumBlack70"
-        android:contentDescription="@string/content_desc_tv_courier"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_16"
-        android:lineSpacingExtra="@dimen/sp_4"
+        android:layout_below="@id/fl_container"
+        android:textColor="@color/Unify_N700_96"
+        app:typographyType="body_2"
+        app:typographyWeight="bold"
         tools:text="@string/tv_courier" />
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_promo_potency"
         style="@style/TextSmallNormal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignBaseline="@+id/tv_courier"
-        android:layout_marginLeft="@dimen/dp_8"
-        android:layout_toRightOf="@+id/tv_courier"
+        android:layout_marginStart="@dimen/dp_8"
+        android:layout_toEndOf="@+id/tv_courier"
         android:background="@drawable/bg_promo_potency"
         android:paddingLeft="@dimen/dp_8"
         android:paddingTop="@dimen/dp_2"
         android:paddingRight="@dimen/dp_8"
         android:paddingBottom="@dimen/dp_2"
         android:text="@string/label_text_promo_potency"
-        android:textColor="@color/text_promo_potency"
+        android:textColor="@color/Unify_R600"
         android:visibility="gone"
         tools:visibility="visible" />
 
@@ -40,32 +80,55 @@
         android:id="@+id/lbl_cod_available"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_8"
-        android:layout_marginLeft="@dimen/dp_8"
-        android:layout_toEndOf="@+id/tv_courier"
-        android:layout_toRightOf="@+id/tv_courier"
-        android:layout_alignBottom="@id/tv_courier"
         android:layout_alignTop="@id/tv_courier"
+        android:layout_alignBottom="@id/tv_courier"
+        android:layout_marginStart="@dimen/dp_8"
+        android:layout_toEndOf="@+id/tv_courier"
         android:text="@string/tersedia_bayar_di_tempat"
         android:visibility="gone"
         app:labelType="general_light_green" />
 
-    <TextView
-        android:id="@+id/tv_price"
-        style="@style/TextSmallNormalBlack54"
+    <com.tokopedia.unifycomponents.Label
+        android:id="@+id/lbl_cod_available_eta"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/tv_courier"
+        android:layout_marginTop="@dimen/dp_4"
+        android:text="@string/tersedia_bayar_di_tempat"
+        android:visibility="gone"
+        app:labelType="general_light_green" />
+
+    <!--price in old view, duration in ETA-->
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_price_or_duration"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/lbl_cod_available_eta"
         android:layout_marginTop="4dp"
+        android:textColor="@color/Unify_N700_68"
+        app:typographyType="body_3"
+        app:typographyWeight="reguler"
         tools:text="@string/tv_price" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_mvc_error"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_price_or_duration"
+        android:layout_marginTop="@dimen/dp_4"
+        android:text="@string/label_shipping_information"
+        android:visibility="gone"
+        app:typographyType="small"
+        app:typographyWeight="reguler" />
+
 
     <com.tokopedia.unifycomponents.Label
         android:id="@+id/lbl_otd_available"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/tv_price"
-        android:text="@string/jaminan_tepat_waktu"
+        android:layout_below="@+id/tv_mvc_error"
         android:layout_marginTop="@dimen/dp_4"
+        android:text="@string/jaminan_tepat_waktu"
         app:labelType="general_light_green" />
 
     <ImageView
@@ -75,8 +138,8 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
-        app:srcCompat="@drawable/ic_check"
-        android:contentDescription="@string/content_img_check"/>
+        android:contentDescription="@string/content_img_check"
+        app:srcCompat="@drawable/ic_check" />
 
     <View
         android:id="@+id/separator"
@@ -84,6 +147,6 @@
         android:layout_height="@dimen/dp_half"
         android:layout_below="@id/lbl_otd_available"
         android:layout_marginTop="@dimen/dp_16"
-        android:background="@color/separator_color" />
+        android:background="@color/Unify_N100" />
 
 </RelativeLayout>

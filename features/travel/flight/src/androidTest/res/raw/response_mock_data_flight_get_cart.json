@@ -1,0 +1,280 @@
+[
+  {
+    "data": {
+      "flightCart": {
+        "meta": {
+          "needRefresh": false,
+          "refreshTime": 2,
+          "maxRetry": 15
+        },
+        "included": [
+          {
+            "id": "JT",
+            "type": "airline",
+            "attributes": {
+              "name": "Lion Air",
+              "shortName": "Lion",
+              "logo": "https://ecs7.tokopedia.net/img/attachment/2017/12/20/5512496/5512496_dac705fb-9f2b-4e6e-a63c-cbbef9c5e91a.png",
+              "city": ""
+            }
+          },
+          {
+            "id": "KNO",
+            "type": "airport",
+            "attributes": {
+              "name": "Kualanamu",
+              "shortName": "",
+              "logo": "",
+              "city": "Medan"
+            }
+          },
+          {
+            "id": "MKQ",
+            "type": "airport",
+            "attributes": {
+              "name": "Mopah",
+              "shortName": "",
+              "logo": "",
+              "city": "Merauke"
+            }
+          },
+          {
+            "id": "SUB",
+            "type": "airport",
+            "attributes": {
+              "name": "Juanda",
+              "shortName": "",
+              "logo": "",
+              "city": "Surabaya"
+            }
+          }
+        ],
+        "data": {
+          "id": "5987896955006d26e35dd6a56cb08e82d9adc56",
+          "status": 2,
+          "newPrice": [],
+          "flight": {
+            "email": "",
+            "phone": "",
+            "contactName": "",
+            "countryID": "",
+            "totalAdult": "Rp 3.999.600",
+            "totalAdultNumeric": 3999600,
+            "totalChild": "",
+            "totalChildNumeric": 0,
+            "totalInfant": "",
+            "totalInfantNumeric": 0,
+            "totalPrice": "Rp 3.999.600",
+            "totalPriceNumeric": 3999600,
+            "currency": "",
+            "isDomestic": true,
+            "repriceTime": 360,
+            "adult": 1,
+            "child": 0,
+            "infant": 0,
+            "class": 1,
+            "priceDetail": [
+              {
+                "label": "KNO - MKQ (x1 Dewasa)",
+                "price": "Rp 3.999.600",
+                "priceNumeric": 3999600
+              }
+            ],
+            "mandatoryDOB": false,
+            "amenityOptions": [
+              {
+                "id": "_KNO_SUB_972_SUB_MKQ_1798_1",
+                "journeyID": "7443d1540065e701cd5dc76453052bfd-2",
+                "arrivalAirportID": "MKQ",
+                "departureAirportID": "KNO",
+                "key": "_KNO_SUB_972_SUB_MKQ_1798",
+                "type": 1,
+                "description": "KNO - MKQ",
+                "items": [
+                  {
+                    "id": "5.0;570000.0",
+                    "price": "Rp 570.000",
+                    "priceNumeric": 570000,
+                    "description": "5kg",
+                    "currency": "IDR"
+                  },
+                  {
+                    "id": "10.0;1140000.0",
+                    "price": "Rp 1.140.000",
+                    "priceNumeric": 1140000,
+                    "description": "10kg",
+                    "currency": "IDR"
+                  },
+                  {
+                    "id": "15.0;1710000.0",
+                    "price": "Rp 1.710.000",
+                    "priceNumeric": 1710000,
+                    "description": "15kg",
+                    "currency": "IDR"
+                  },
+                  {
+                    "id": "20.0;2280000.0",
+                    "price": "Rp 2.280.000",
+                    "priceNumeric": 2280000,
+                    "description": "20kg",
+                    "currency": "IDR"
+                  },
+                  {
+                    "id": "25.0;2725000.0",
+                    "price": "Rp 2.725.000",
+                    "priceNumeric": 2725000,
+                    "description": "25kg",
+                    "currency": "IDR"
+                  },
+                  {
+                    "id": "30.0;3420000.0",
+                    "price": "Rp 3.420.000",
+                    "priceNumeric": 3420000,
+                    "description": "30kg",
+                    "currency": "IDR"
+                  }
+                ]
+              }
+            ],
+            "insuranceOptions": [
+              {
+                "id": "1",
+                "name": "Asuransi Perjalanan",
+                "description": "Rp 40.000/orang",
+                "totalPriceNumeric": 40000,
+                "defaultChecked": true,
+                "tncAggrement": "",
+                "tncURL": "https://www.tokopedia.com/asuransi/perjalanan/",
+                "benefits": [
+                  {
+                    "title": "Penundaan Perjalanan (Travel Delay)",
+                    "description": "Rp 500,000 untuk setiap 2 jam delay maksimum 3.000.000",
+                    "icon": "https://ecs7.tokopedia.net/assets-insurance-frontend/flight/penerbangan-terlambat.png"
+                  },
+                  {
+                    "title": "Kehilangan Perjalanan Lanjutan",
+                    "description": "hingga Rp 7.500.000",
+                    "icon": "https://ecs7.tokopedia.net/assets-insurance-frontend/flight/kehilangan-penerbangan.png"
+                  },
+                  {
+                    "title": "Perlindungan Bagasi Pribadi",
+                    "description": "hingga Rp500.000",
+                    "icon": "https://ecs7.tokopedia.net/assets-insurance-frontend/flight/perlindungan-bagasi.png"
+                  },
+                  {
+                    "title": "Pembatalan Perjalanan",
+                    "description": "hingga Rp 25.000.000",
+                    "icon": "https://ecs7.tokopedia.net/assets-insurance-frontend/flight/pembatalan-perjalanan.png"
+                  },
+                  {
+                    "title": "Keterlambatan Bagasi",
+                    "description": "Rp 500,000 untuk 2* jam berturut-turut,\r\nmaksimum Rp 3,000,000",
+                    "icon": "https://ecs7.tokopedia.net/assets-insurance-frontend/flight/bagasi-terlambat.png"
+                  },
+                  {
+                    "title": "Perlindungan Kecelakaan Diri",
+                    "description": "hingga Rp 300.000.000",
+                    "icon": "https://ecs7.tokopedia.net/assets-insurance-frontend/flight/perlindungan-kecelekaan-diri.png"
+                  }
+                ]
+              }
+            ],
+            "journeys": [
+              {
+                "id": "7443d1540065e701cd5dc76453052bfd-2",
+                "searchTerm": "knomkq20210211",
+                "departureAirportID": "KNO",
+                "departureTime": "2021-02-11T12:40:00Z",
+                "departureTerminal": "",
+                "arrivalAirportID": "MKQ",
+                "arrivalTime": "2021-02-12T08:10:00Z",
+                "arrivalTerminal": "",
+                "totalTransit": 1,
+                "totalStop": 0,
+                "addDayArrival": 1,
+                "duration": "17j 30m",
+                "durationMinute": 1050,
+                "durationLong": "17 jam 30 menit",
+                "fare": {
+                  "adult": "Rp 3.999.600",
+                  "child": "Rp 0",
+                  "infant": "Rp 0",
+                  "adultNumeric": 3999600,
+                  "childNumeric": 0,
+                  "infantNumeric": 0
+                },
+                "routes": [
+                  {
+                    "operatingAirlineID": "",
+                    "departureAirportID": "KNO",
+                    "departureTime": "2021-02-11T12:40:00Z",
+                    "arrivalAirportID": "SUB",
+                    "arrivalTime": "2021-02-11T16:50:00Z",
+                    "airlineID": "JT",
+                    "flightNumber": "972",
+                    "duration": "4 jam 10 menit",
+                    "layover": "4 jam 30 menit",
+                    "refundable": true,
+                    "departureTerminal": "",
+                    "arrivalTerminal": "1",
+                    "stop": 1,
+                    "stopDetail": [],
+                    "infos": [
+                      {
+                        "label": "Bagasi Kabin",
+                        "value": "7kg"
+                      }
+                    ],
+                    "amenities": []
+                  },
+                  {
+                    "operatingAirlineID": "",
+                    "departureAirportID": "SUB",
+                    "departureTime": "2021-02-11T21:20:00Z",
+                    "arrivalAirportID": "MKQ",
+                    "arrivalTime": "2021-02-12T08:10:00Z",
+                    "airlineID": "JT",
+                    "flightNumber": "1798",
+                    "duration": "8 jam 50 menit",
+                    "layover": "",
+                    "refundable": true,
+                    "departureTerminal": "",
+                    "arrivalTerminal": "",
+                    "stop": 0,
+                    "stopDetail": [],
+                    "infos": [
+                      {
+                        "label": "Bagasi Kabin",
+                        "value": "7kg"
+                      }
+                    ],
+                    "amenities": []
+                  }
+                ]
+              }
+            ],
+            "passengers": [],
+            "insurances": []
+          },
+          "voucher": {
+            "enableVoucher": true,
+            "isCouponActive": 1,
+            "defaultPromo": "voucher",
+            "autoApply": {
+              "success": false,
+              "code": "",
+              "isCoupon": 0,
+              "discountAmount": 0,
+              "discountPrice": "",
+              "discountedAmount": 0,
+              "discountedPrice": "",
+              "titleDescription": "",
+              "messageSuccess": "",
+              "promoID": 0
+            }
+          }
+        }
+      }
+    }
+  }
+]

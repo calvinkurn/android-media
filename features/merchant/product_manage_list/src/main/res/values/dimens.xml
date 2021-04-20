@@ -3,7 +3,6 @@
     <dimen name="dp_1">1dp</dimen>
     <dimen name="dp_10">10dp</dimen>
     <dimen name="dp_18">18dp</dimen>
-    <dimen name="dp_175">175dp</dimen>
     <dimen name="dp_36">36dp</dimen>
     <dimen name="product_manage_list_padding_top">9dp</dimen>
     <dimen name="product_manage_list_padding_bottom">20dp</dimen>
@@ -60,4 +59,5 @@
     <dimen name="product_manage_campaign_stock_redirection_desc_margin">30dp</dimen>
     <dimen name="product_manage_campaign_stock_ticker_custom_margin">12dp</dimen>
     <dimen name="fontvs">12sp</dimen>
+    <dimen name="divider_height">1dp</dimen>
 </resources>

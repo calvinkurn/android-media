@@ -1,0 +1,16 @@
+{
+  "readme": "Seller Home Dashboard - post widget CTA click",
+  "mode": "exact",
+  "query": [
+    {
+      "event": "clickHomepage",
+      "eventCategory": "seller app - home",
+      "eventAction": "{{click widget post - .{1,} - see more}}",
+      "eventLabel": "{{(empty|not empty)}}",
+      "sessionIris": "{{.{1,}}}",
+      "businessUnit": "physical goods",
+      "currentSite": "tokopediaseller",
+      "userId": "{{.{1,}}}"
+    }
+  ]
+}

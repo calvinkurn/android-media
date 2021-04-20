@@ -148,7 +148,7 @@ class ProfileCompletionFragment : BaseDaggerFragment(), ProfileCompletionContrac
         get() {
             val drawable = context?.let { ProfileCompletionTextDrawable(it) }
             drawable?.text = resources.getString(R.string.skip_form)
-            drawable?.setTextColor(R.color.grey_700)
+            drawable?.setTextColor(com.tokopedia.unifyprinciples.R.color.Unify_N500)
             return drawable
         }
 
@@ -307,11 +307,11 @@ class ProfileCompletionFragment : BaseDaggerFragment(), ProfileCompletionContrac
     override fun canProceed(answer: Boolean) {
         txtProceed?.isEnabled = answer
         if (answer) {
-            txtProceed?.background?.setColorFilter(MethodChecker.getColor(activity, R.color.medium_green), PorterDuff.Mode.SRC_IN)
-            txtProceed?.setTextColor(MethodChecker.getColor(activity, R.color.color_white))
+            txtProceed?.background?.setColorFilter(MethodChecker.getColor(activity, com.tokopedia.unifyprinciples.R.color.Unify_G400), PorterDuff.Mode.SRC_IN)
+            txtProceed?.setTextColor(MethodChecker.getColor(activity, com.tokopedia.unifyprinciples.R.color.Unify_N0))
         } else {
-            txtProceed?.background?.setColorFilter(MethodChecker.getColor(activity, R.color.grey_300), PorterDuff.Mode.SRC_IN)
-            txtProceed?.setTextColor(MethodChecker.getColor(activity, R.color.grey_500))
+            txtProceed?.background?.setColorFilter(MethodChecker.getColor(activity, com.tokopedia.unifyprinciples.R.color.Unify_N100), PorterDuff.Mode.SRC_IN)
+            txtProceed?.setTextColor(MethodChecker.getColor(activity, com.tokopedia.unifyprinciples.R.color.Unify_N200))
         }
     }
 

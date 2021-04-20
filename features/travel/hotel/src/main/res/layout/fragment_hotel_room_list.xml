@@ -13,7 +13,7 @@
         <com.google.android.material.appbar.CollapsingToolbarLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:contentScrim="@color/Neutral_N0"
+            app:contentScrim="@color/Unify_N0"
             app:layout_scrollFlags="scroll|enterAlways">
 
             <include
@@ -29,7 +29,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="fill_parent"
-        android:background="@color/Neutral_N0"
+        android:background="@color/Unify_N0"
         android:orientation="vertical"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         >

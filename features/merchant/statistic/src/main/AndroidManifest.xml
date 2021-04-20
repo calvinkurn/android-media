@@ -4,13 +4,13 @@
     <application android:label="@string/app_name">
 
         <activity
-            android:name=".presentation.view.activity.StatisticActivity"
+            android:name=".view.activity.StatisticActivity"
             android:exported="true"
             android:label="@string/title_statistic"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White">
             <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
+                <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />

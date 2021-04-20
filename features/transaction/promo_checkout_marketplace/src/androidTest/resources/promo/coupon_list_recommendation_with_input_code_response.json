@@ -1,0 +1,133 @@
+[
+  {
+    "data": {
+      "coupon_list_recommendation": {
+        "message": [],
+        "error_code": "200",
+        "status": "OK",
+        "data": {
+          "result_status": {
+            "code": "200",
+            "message": [
+              "Success"
+            ],
+            "reason": "OK"
+          },
+          "empty_state": {
+            "title": "",
+            "description": "",
+            "image_url": ""
+          },
+          "promo_recommendation": {
+            "codes": [
+              "KRDCICIL598GSNML0AM",
+              "POMAH09JBL"
+            ],
+            "message": "Kamu bisa hemat Rp168.100"
+          },
+          "coupon_sections": [
+            {
+              "title": "Pilih promo",
+              "sub_title": "Kamu bisa gabungkan promo biar makin hemat",
+              "icon_url": "",
+              "is_enabled": true,
+              "is_collapsed": false,
+              "tags": [],
+              "coupons": [],
+              "sub_sections": [
+                {
+                  "title": "Kode promo \u0026 kupon saya",
+                  "sub_title": "Promo dipilih",
+                  "icon_url": "https://ecs7.tokopedia.net/img/blog/promo/2020/03/color%403x.png",
+                  "is_enabled": true,
+                  "is_collapsed": false,
+                  "tags": [],
+                  "coupons": [
+                    {
+                      "code": "TESTCODE",
+                      "title": "Discount Rp30.000",
+                      "message": "",
+                      "expiry_info": "",
+                      "expiry_count_down": -1,
+                      "coupon_url": "",
+                      "coupon_app_link": "",
+                      "unique_id": "",
+                      "shop_id": 0,
+                      "tag_image_urls": [],
+                      "benefit_amount": 30000,
+                      "is_recommended": false,
+                      "is_selected": true,
+                      "is_attempted": true,
+                      "radio_check_state": "enabled",
+                      "clashing_infos": []
+                    },
+                    {
+                      "code": "KRDCICIL598GSNML0AM",
+                      "title": "Discount Rp143.100",
+                      "message": "",
+                      "expiry_info": "Berakhir 3 hari lagi!",
+                      "expiry_count_down": 1593536399,
+                      "coupon_url": "",
+                      "coupon_app_link": "",
+                      "unique_id": "",
+                      "shop_id": 0,
+                      "tag_image_urls": [
+                        "https://ecs7.tokopedia.net/img/blog/promo/2020/05/Kredivo-1.png"
+                      ],
+                      "benefit_amount": 143100,
+                      "is_recommended": true,
+                      "is_selected": false,
+                      "is_attempted": false,
+                      "radio_check_state": "enabled",
+                      "clashing_infos": []
+                    }
+                  ]
+                },
+                {
+                  "title": "Pomade Murrays",
+                  "sub_title": "Promo dipilih",
+                  "icon_url": "https://ecs7.tokopedia.net/img/newtkpd/powermerchant/ic-powermerchant-130px.png",
+                  "is_enabled": true,
+                  "is_collapsed": false,
+                  "tags": [],
+                  "coupons": [
+                    {
+                      "code": "POMAH09JBL",
+                      "title": "Cashback Rp25.000",
+                      "message": "",
+                      "expiry_info": "Berakhir 29 menit lagi!",
+                      "expiry_count_down": 1593275350,
+                      "coupon_url": "HCKCSCP239594-",
+                      "coupon_app_link": "HCKCSCP239594-",
+                      "unique_id": "239594-0-301643",
+                      "shop_id": 239594,
+                      "tag_image_urls": [],
+                      "benefit_amount": 25000,
+                      "is_recommended": true,
+                      "is_selected": false,
+                      "is_attempted": false,
+                      "radio_check_state": "enabled",
+                      "clashing_infos": []
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "attempted_promo_code_error": {
+            "code": "",
+            "message": ""
+          },
+          "additional_message": "Kamu bisa hemat",
+          "reward_points_info": {
+            "message": "",
+            "gain_reward_points_tnc": {
+              "title": "",
+              "tnc_details": []
+            }
+          }
+        }
+      }
+    }
+  }
+]

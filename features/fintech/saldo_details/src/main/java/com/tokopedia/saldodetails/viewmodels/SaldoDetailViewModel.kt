@@ -1,10 +1,7 @@
 package com.tokopedia.saldodetails.viewmodels
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.saldodetails.di.DispatcherModule
 import com.tokopedia.saldodetails.response.model.*
 import com.tokopedia.saldodetails.usecase.*
@@ -16,7 +13,6 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
-import java.util.*
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -30,11 +26,6 @@ class SaldoDetailViewModel @Inject constructor(
         @Named(DispatcherModule.IO) val workerDispatcher: CoroutineDispatcher
 ) : BaseViewModel(uiDispatcher) {
 
-    companion object {
-        private const val MERCHANT_CREDIT_ELIGIBLE_STATUS = 101
-        private const val SALDO_PRIORITY_ELIGIBLE_STATUS = 1
-    }
-
     var isSeller: Boolean = false
 
     val gqlMerchantSaldoDetailLiveData: MutableLiveData<Resources<GqlMerchantSaldoDetailsResponse>> = MutableLiveData()
@@ -42,21 +33,6 @@ class SaldoDetailViewModel @Inject constructor(
     val gqlLateCountResponseLiveData: MutableLiveData<Resources<GqlMclLateCountResponse>> = MutableLiveData()
     val gqlTickerWithdrawalLiveData: MutableLiveData<Resources<GqlWithdrawalTickerResponse>> = MutableLiveData()
     val gqlUserSaldoBalanceLiveData: MutableLiveData<Resources<GqlSaldoBalanceResponse>> = MutableLiveData()
-
-    private val mTickerMigrationEligibilityLiveData = MediatorLiveData<Pair<Boolean, Boolean>>().apply {
-        addSource(gqlMerchantCreditDetailLiveData) { merchantCredit ->
-            gqlMerchantSaldoDetailLiveData.value?.let { saldoPriority ->
-                value = checkMigrationEligibility(merchantCredit, saldoPriority)
-            }
-        }
-        addSource(gqlMerchantSaldoDetailLiveData) { saldoPriority ->
-            gqlMerchantCreditDetailLiveData.value?.let { merchantCredit ->
-                value = checkMigrationEligibility(merchantCredit, saldoPriority)
-            }
-        }
-    }
-    val tickerMigrationEligibilityLiveData: LiveData<Pair<Boolean, Boolean>>
-        get() = mTickerMigrationEligibilityLiveData
 
     fun getUserSaldoBalance() {
         launchCatchError(block = {
@@ -117,13 +93,6 @@ class SaldoDetailViewModel @Inject constructor(
         }, onError = {
             gqlLateCountResponseLiveData.postValue(ErrorMessage(it.toString()))
         })
-    }
-
-    private fun checkMigrationEligibility(merchantCreditResult: Resources<GqlMerchantCreditDetailsResponse>,
-                                          saldoPriorityResult: Resources<GqlMerchantSaldoDetailsResponse>): Pair<Boolean, Boolean> {
-        val isMerchantCreditEligible = (merchantCreditResult as? Success)?.data?.data?.status.toZeroIfNull() >= MERCHANT_CREDIT_ELIGIBLE_STATUS
-        val isSaldoPriorityEligible = (saldoPriorityResult as? Success)?.data?.data?.status.toZeroIfNull() >= SALDO_PRIORITY_ELIGIBLE_STATUS
-        return Pair(isMerchantCreditEligible, isSaldoPriorityEligible)
     }
 
 }

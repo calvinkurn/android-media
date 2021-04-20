@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout android:layout_width="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:paddingBottom="@dimen/dp_12"
+    android:paddingBottom="@dimen/unify_space_12"
     android:layout_height="wrap_content"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
@@ -10,18 +10,18 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_90" />
+        android:layout_height="@dimen/unify_space_96" />
 
     <com.elyeproj.loaderviewlibrary.LoaderImageView
         android:id="@+id/iv_umrah_provider_logo_loading"
-        android:layout_width="@dimen/dp_48"
-        android:layout_height="@dimen/dp_48"
-        android:padding="@dimen/dp_6"
-        android:layout_marginStart="@dimen/dp_12"
-        android:layout_marginTop="@dimen/dp_80"
+        android:layout_width="@dimen/spacing_lvl8"
+        android:layout_height="@dimen/spacing_lvl8"
+        android:padding="@dimen/spacing_lvl3"
+        android:layout_marginStart="@dimen/unify_space_12"
+        android:layout_marginTop="@dimen/dimen_dp_80"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginLeft="@dimen/dp_12"
+        android:layout_marginLeft="@dimen/unify_space_12"
         app:use_gradient="true"
         android:background="@drawable/umrah_bg_homepage_gray_rounded"
         />
@@ -33,20 +33,20 @@
         android:maxLines="2"
         app:layout_constraintTop_toBottomOf="@+id/iv_umrah_image_loading"
         android:ellipsize="end"
-        android:layout_marginTop="@dimen/dp_8"
-        android:layout_marginEnd="@dimen/dp_12"
-        android:layout_marginLeft="@dimen/dp_72"
-        android:layout_marginRight="@dimen/dp_12"
-        android:layout_marginStart="@dimen/dp_72"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:layout_marginEnd="@dimen/unify_space_12"
+        android:layout_marginLeft="@dimen/dimen_dp_72"
+        android:layout_marginRight="@dimen/unify_space_12"
+        android:layout_marginStart="@dimen/dimen_dp_72"
         app:use_gradient="true"
         android:background="@drawable/umrah_bg_homepage_gray_rounded"
         />
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/tg_umrah_mulai_dari_loading"
-        android:layout_width="@dimen/dp_50"
-        android:layout_height="@dimen/dp_16"
-        android:layout_marginTop="@dimen/dp_6"
+        android:layout_width="@dimen/spacing_lvl8"
+        android:layout_height="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/spacing_lvl3"
         app:use_gradient="true"
         android:background="@drawable/umrah_bg_homepage_gray_rounded"
         app:layout_constraintStart_toStartOf="@+id/iv_umrah_provider_logo_loading"
@@ -54,9 +54,9 @@
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/tg_umrah_price_loading"
-        android:layout_width="@dimen/dp_140"
-        android:layout_height="@dimen/dp_16"
-        android:layout_marginTop="@dimen/dp_6"
+        android:layout_width="@dimen/dimen_dp_140"
+        android:layout_height="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/spacing_lvl3"
         app:use_gradient="true"
         android:background="@drawable/umrah_bg_homepage_gray_rounded"
         app:layout_constraintStart_toStartOf="@+id/tg_umrah_mulai_dari_loading"
@@ -64,9 +64,9 @@
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/iv_umrah_calendar_loading"
-        android:layout_marginTop="@dimen/dp_10"
-        android:layout_width="@dimen/dp_160"
-        android:layout_height="@dimen/dp_16"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:layout_width="@dimen/dimen_dp_160"
+        android:layout_height="@dimen/spacing_lvl4"
         android:adjustViewBounds="true"
         app:use_gradient="true"
         android:background="@drawable/umrah_bg_homepage_gray_rounded"
@@ -75,9 +75,9 @@
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/iv_umrah_hotel_loading"
-        android:layout_marginTop="@dimen/dp_10"
-        android:layout_width="@dimen/dp_160"
-        android:layout_height="@dimen/dp_16"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:layout_width="@dimen/dimen_dp_160"
+        android:layout_height="@dimen/spacing_lvl4"
         android:adjustViewBounds="true"
         app:use_gradient="true"
         android:background="@drawable/umrah_bg_homepage_gray_rounded"
@@ -86,9 +86,9 @@
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/iv_umrah_plane_loading"
-        android:layout_marginTop="@dimen/dp_10"
-        android:layout_width="@dimen/dp_160"
-        android:layout_height="@dimen/dp_16"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:layout_width="@dimen/dimen_dp_160"
+        android:layout_height="@dimen/spacing_lvl4"
         android:adjustViewBounds="true"
         app:use_gradient="true"
         android:background="@drawable/umrah_bg_homepage_gray_rounded"

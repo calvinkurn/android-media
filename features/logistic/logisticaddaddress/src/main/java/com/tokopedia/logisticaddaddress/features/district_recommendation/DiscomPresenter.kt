@@ -5,13 +5,17 @@ import com.tokopedia.logisticaddaddress.domain.model.AddressResponse
 import com.tokopedia.logisticaddaddress.domain.usecase.GetDistrictRecommendation
 import com.tokopedia.logisticaddaddress.domain.usecase.GetDistrictRequestUseCase
 import com.tokopedia.logisticaddaddress.utils.SimpleIdlingResource
-import com.tokopedia.logisticdata.data.entity.address.Token
+import com.tokopedia.logisticCommon.data.entity.address.Token
+import com.tokopedia.logisticCommon.domain.usecase.RevGeocodeUseCase
+import com.tokopedia.logisticaddaddress.common.AddressConstants
+import com.tokopedia.logisticaddaddress.domain.usecase.GetDistrictUseCase
 import com.tokopedia.usecase.RequestParams
 import rx.Subscriber
 import javax.inject.Inject
 
 class DiscomPresenter @Inject constructor(
         private val restUsecase: GetDistrictRequestUseCase,
+        private val revGeocodeUseCase: RevGeocodeUseCase,
         private val gqlUsecase: GetDistrictRecommendation,
         private val mapper: DistrictRecommendationMapper) : DiscomContract.Presenter {
 
@@ -86,6 +90,38 @@ class DiscomPresenter @Inject constructor(
         }
 
         override fun onCompleted() {}
+    }
+
+    override fun autoFill(lat: Double, long: Double) {
+        val param = "$lat,$long"
+        revGeocodeUseCase.clearCache()
+        revGeocodeUseCase.execute(param)
+                .subscribe(
+                        {
+                            when {
+                                it.messageError.isEmpty() -> {
+                                    view?.setResultDistrict(it.data, lat, long)
+                                }
+                                it.errorCode == AddressConstants.CIRCUIT_BREAKER_ON_CODE -> {
+                                    view?.showToasterError()
+                                }
+                                else -> {
+                                    val msg = it.messageError[0]
+                                    when {
+                                        msg.contains(GetDistrictUseCase.FOREIGN_COUNTRY_MESSAGE) -> {
+                                            view?.showToasterError()
+                                        }
+                                        msg.contains(GetDistrictUseCase.LOCATION_NOT_FOUND_MESSAGE) -> {
+                                            view?.showToasterError()
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        {
+                            it?.printStackTrace()
+                        }, {}
+                )
     }
 
 }

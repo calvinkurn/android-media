@@ -11,13 +11,4 @@ data class CartTickerErrorData(
         var errorInfo: String? = null,
         var actionInfo: String? = null,
         var errorCount: Int = 0
-) : Parcelable {
-
-    override fun equals(other: Any?): Boolean {
-        if (other is CartTickerErrorData) {
-            val data = other as CartTickerErrorData?
-            return errorCount == data?.errorCount && errorInfo == data.errorInfo && actionInfo == data.actionInfo
-        }
-        return super.equals(other)
-    }
-}
+) : Parcelable

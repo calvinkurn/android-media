@@ -1,0 +1,11 @@
+<FrameLayout
+    android:layout_height="wrap_content"
+    android:layout_width="match_parent"
+    android:layout_marginBottom="@dimen/dp_200"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <com.tokopedia.unifycomponents.LoaderUnify android:id="@+id/progressBar"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:visibility="visible"
+        android:layout_gravity="center_horizontal"/>
+</FrameLayout>

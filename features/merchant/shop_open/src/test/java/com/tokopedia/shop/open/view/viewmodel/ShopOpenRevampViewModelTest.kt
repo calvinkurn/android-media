@@ -1,30 +1,26 @@
 package com.tokopedia.shop.open.view.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.lifecycle.LiveData
+import com.tokopedia.shop.common.graphql.data.shopopen.SaveShipmentLocation
 import com.tokopedia.shop.common.graphql.data.shopopen.ShopDomainSuggestionData
 import com.tokopedia.shop.common.graphql.data.shopopen.ValidateShopDomainNameResult
 import com.tokopedia.shop.common.graphql.domain.usecase.shopopen.GetShopDomainNameSuggestionUseCase
+import com.tokopedia.shop.common.graphql.domain.usecase.shopopen.ShopOpenRevampSaveShipmentLocationUseCase
 import com.tokopedia.shop.common.graphql.domain.usecase.shopopen.ValidateDomainShopNameUseCase
 import com.tokopedia.shop.open.data.model.*
 import com.tokopedia.shop.open.domain.*
 import com.tokopedia.shop.open.presentation.viewmodel.ShopOpenRevampViewModel
+import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.runBlocking
 import org.junit.Assert
-import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.mockito.Matchers.anyMap
 import org.mockito.Matchers.anyString
-import org.mockito.Matchers.anyInt
-
 
 @ExperimentalCoroutinesApi
 class ShopOpenRevampViewModelTest  {
@@ -50,64 +46,72 @@ class ShopOpenRevampViewModelTest  {
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
+    @get:Rule
+    val coroutineTestRule = CoroutineTestRule()
 
-    private val viewModel by lazy {
-        ShopOpenRevampViewModel(
-                validateDomainShopNameUseCase,
-                getDomainNameSuggestionUseCase,
-                getSurveyUseCase,
-                sendSurveyUseCase,
-                createShopUseCase,
-                saveShopShipmentLocationUseCase,
-                TestDispatcherProvider()
-        )
-    }
+    private lateinit var viewModel: ShopOpenRevampViewModel
 
     @Before
     fun setup() {
         MockKAnnotations.init(this)
+
+        viewModel = ShopOpenRevampViewModel(
+            validateDomainShopNameUseCase,
+            getDomainNameSuggestionUseCase,
+            getSurveyUseCase,
+            sendSurveyUseCase,
+            createShopUseCase,
+            saveShopShipmentLocationUseCase,
+            coroutineTestRule.dispatchers
+        )
     }
 
     @Test
     fun `given shop name validation when shop name is not empty`() {
-        mockkObject(ValidateDomainShopNameUseCase)
-        coEvery {
-            validateDomainShopNameUseCase.executeOnBackground()
-        } returns ValidateShopDomainNameResult()
-        val shopName: String = anyString()
-        viewModel.validateShopName(shopName)
-        Thread.sleep(1000)
+        coroutineTestRule.runBlockingTest {
+            mockkObject(ValidateDomainShopNameUseCase)
+            coEvery {
+                validateDomainShopNameUseCase.executeOnBackground()
+            } returns ValidateShopDomainNameResult()
+            val shopName: String = anyString()
+            viewModel.validateShopName(shopName)
 
-        verify {
-            ValidateDomainShopNameUseCase.createRequestParams(shopName)
-        }
+            advanceTimeBy(400)
 
-        Assert.assertTrue(validateDomainShopNameUseCase.params.parameters.isNotEmpty())
-        coVerify {
-            validateDomainShopNameUseCase.executeOnBackground()
+            verify {
+                ValidateDomainShopNameUseCase.createRequestParams(shopName)
+            }
+
+            Assert.assertTrue(validateDomainShopNameUseCase.params.parameters.isNotEmpty())
+            coVerify {
+                validateDomainShopNameUseCase.executeOnBackground()
+            }
+            Assert.assertTrue(viewModel.checkShopNameResponse.value is Success)
         }
-        Assert.assertTrue(viewModel.checkShopNameResponse.value is Success)
     }
 
     @Test
     fun `given domain name validation when domain name is not empty`() {
-        mockkObject(ValidateDomainShopNameUseCase)
-        coEvery {
-            validateDomainShopNameUseCase.executeOnBackground()
-        } returns ValidateShopDomainNameResult()
-        val domainName: String = anyString()
-        viewModel.validateDomainName(domainName)
-        Thread.sleep(1000)
+        coroutineTestRule.runBlockingTest {
+            mockkObject(ValidateDomainShopNameUseCase)
+            coEvery {
+                validateDomainShopNameUseCase.executeOnBackground()
+            } returns ValidateShopDomainNameResult()
+            val domainName: String = anyString()
+            viewModel.validateDomainName(domainName)
 
-        verify {
-            ValidateDomainShopNameUseCase.createRequestParam(domainName)
-        }
+            advanceTimeBy(400)
 
-        Assert.assertTrue(validateDomainShopNameUseCase.params.parameters.isNotEmpty())
-        coVerify {
-            validateDomainShopNameUseCase.executeOnBackground()
+            verify {
+                ValidateDomainShopNameUseCase.createRequestParam(domainName)
+            }
+
+            Assert.assertTrue(validateDomainShopNameUseCase.params.parameters.isNotEmpty())
+            coVerify {
+                validateDomainShopNameUseCase.executeOnBackground()
+            }
+            Assert.assertTrue(viewModel.checkDomainNameResponse.value is Success)
         }
-        Assert.assertTrue(viewModel.checkDomainNameResponse.value is Success)
     }
 
     @Test
@@ -178,7 +182,6 @@ class ShopOpenRevampViewModelTest  {
         } returns SaveShipmentLocation()
         val saveShippingData: MutableMap<String, Any> = viewModel.getSaveShopShippingLocationData(shopId, postCode, courierOrigin, addrStreet, lat, long)
         viewModel.saveShippingLocation(saveShippingData)
-        Thread.sleep(1000)
 
         verify {
             ShopOpenRevampSaveShipmentLocationUseCase.createRequestParams(saveShippingData)
@@ -192,54 +195,97 @@ class ShopOpenRevampViewModelTest  {
 
     @Test
     fun `given success response when validate shop name is called`() {
-        mockkObject(ValidateDomainShopNameUseCase)
-        val shopName: String = "tokohape"
-        viewModel.checkShopName(shopName)
+        coroutineTestRule.runBlockingTest {
+            mockkObject(ValidateDomainShopNameUseCase)
+            val shopName = "tokohape"
 
-        coEvery {
-            validateDomainShopNameUseCase.executeOnBackground()
-        } returns ValidateShopDomainNameResult()
-        Thread.sleep(1000)
+            coEvery {
+                validateDomainShopNameUseCase.executeOnBackground()
+            } returns ValidateShopDomainNameResult()
 
-        verify {
-            ValidateDomainShopNameUseCase.createRequestParams(shopName)
+            viewModel.checkShopName(shopName)
+
+            advanceTimeBy(400)
+
+            verify {
+                ValidateDomainShopNameUseCase.createRequestParams(shopName)
+            }
+
+            Assert.assertTrue(validateDomainShopNameUseCase.params.parameters.isNotEmpty())
+            coVerify {
+                validateDomainShopNameUseCase.executeOnBackground()
+            }
+
+            Assert.assertTrue(viewModel.checkShopNameResponse.value is Success)
         }
+    }
 
-        Assert.assertTrue(validateDomainShopNameUseCase.params.parameters.isNotEmpty())
-        coVerify {
-            validateDomainShopNameUseCase.executeOnBackground()
+    @Test
+    fun `check shop name is return if given shop name is empty`() {
+        coroutineTestRule.runBlockingTest {
+            val shopName = ""
+            viewModel.checkShopName(shopName)
+
+            // check validateDomainShopNameUseCase not called because domainName is Empty
+            coVerify(exactly = 0) {
+                validateDomainShopNameUseCase.executeOnBackground()
+            }
         }
-        Assert.assertTrue(viewModel.checkShopNameResponse.value is Success)
     }
 
     @Test
     fun `given success response when validate domain name is called`() {
-        mockkObject(ValidateDomainShopNameUseCase)
-        coEvery {
-            validateDomainShopNameUseCase.executeOnBackground()
-        } returns ValidateShopDomainNameResult()
+        coroutineTestRule.runBlockingTest {
+            mockkObject(ValidateDomainShopNameUseCase)
+            coEvery {
+                validateDomainShopNameUseCase.executeOnBackground()
+            } returns ValidateShopDomainNameResult()
 
-        val domainName: String = "tokohapee"
-        viewModel.checkDomainName(domainName)
-        Thread.sleep(1000)
+            val domainName: String = "tokohapee"
+            viewModel.checkDomainName(domainName)
 
-        verify {
-            ValidateDomainShopNameUseCase.createRequestParam(domainName)
+            advanceTimeBy(400)
+
+            verify {
+                ValidateDomainShopNameUseCase.createRequestParam(domainName)
+            }
+
+            Assert.assertTrue(validateDomainShopNameUseCase.params.parameters.isNotEmpty())
+            coVerify {
+                validateDomainShopNameUseCase.executeOnBackground()
+            }
+            Assert.assertTrue(viewModel.checkDomainNameResponse.value is Success)
         }
+    }
 
-        Assert.assertTrue(validateDomainShopNameUseCase.params.parameters.isNotEmpty())
-        coVerify {
-            validateDomainShopNameUseCase.executeOnBackground()
+    @Test
+    fun `check domain name is return if given domain name is empty`() {
+        coroutineTestRule.runBlockingTest {
+            val domainName = ""
+            viewModel.checkDomainName(domainName)
+
+            // check validateDomainShopNameUseCase not called because domainName is Empty
+            coVerify(exactly = 0) {
+                validateDomainShopNameUseCase.executeOnBackground()
+            }
         }
-        Assert.assertTrue(viewModel.checkDomainNameResponse.value is Success)
     }
 
     @Test
     fun `given survey payload when data survey is provided`() {
-        val dataSurvey: MutableMap<Int, MutableList<Int>> = anyMap()
-        viewModel.getDataSurveyInput(dataSurvey)
 
-        Assert.assertTrue(viewModel.getDataSurveyInput(dataSurvey) is MutableMap<String, Any>)
+        val exampleQuestionID = 1
+        val exampleQuestionID2 = 2
+        val exampleChoices1 = mutableListOf(1, 2, 3)
+        val exampleChoices2 = mutableListOf(3, 4, 5)
+
+        val dataSurvey: MutableMap<Int, MutableList<Int>> = mutableMapOf()
+        dataSurvey[exampleQuestionID] = exampleChoices1
+        dataSurvey[exampleQuestionID2] = exampleChoices2
+
+        val surveyPayload = viewModel.getDataSurveyInput(dataSurvey)
+
+        Assert.assertTrue(surveyPayload.isNotEmpty())
     }
 
     @Test

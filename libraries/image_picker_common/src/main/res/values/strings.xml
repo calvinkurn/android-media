@@ -1,0 +1,12 @@
+<resources>
+    <string name="choose_image">Pilih Gambar</string>
+    <string name="album_name_all">Semua Media</string>
+
+    <string name="x_photos">%1$d foto</string>
+    <string name="x_media">%1$d media</string>
+    <string name="x_videos">%1$d video</string>
+    <string name="error_no_media_storage">Penyimpanan Media Kosong</string>
+    <string name="cp_continue">Lanjutkan</string>
+    <string name="save">Simpan</string>
+
+</resources>

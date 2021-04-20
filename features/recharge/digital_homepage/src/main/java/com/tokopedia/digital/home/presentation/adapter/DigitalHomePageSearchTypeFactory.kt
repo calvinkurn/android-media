@@ -4,7 +4,7 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.digital.home.model.*
+import com.tokopedia.digital.home.old.model.DigitalHomePageSearchCategoryModel
 import com.tokopedia.digital.home.presentation.adapter.viewholder.*
 
 class DigitalHomePageSearchTypeFactory(val onSearchCategoryClickListener: DigitalHomePageSearchViewHolder.OnSearchCategoryClickListener)

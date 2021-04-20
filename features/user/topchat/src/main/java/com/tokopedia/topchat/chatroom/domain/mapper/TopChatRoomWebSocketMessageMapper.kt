@@ -7,8 +7,10 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_QUOTATION
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_STICKER
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_VOUCHER
+import com.tokopedia.chat_common.data.MessageViewModel
 import com.tokopedia.chat_common.domain.mapper.WebsocketMessageMapper
 import com.tokopedia.chat_common.domain.pojo.ChatSocketPojo
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.merchantvoucher.common.gql.data.*
 import com.tokopedia.topchat.chatroom.domain.pojo.QuotationAttributes
 import com.tokopedia.topchat.chatroom.domain.pojo.TopChatVoucherPojo
@@ -22,7 +24,9 @@ import javax.inject.Inject
 /**
  * @author by nisie on 10/12/18.
  */
-class TopChatRoomWebSocketMessageMapper @Inject constructor() : WebsocketMessageMapper() {
+class TopChatRoomWebSocketMessageMapper @Inject constructor(
+
+) : WebsocketMessageMapper() {
 
     override fun mapAttachmentMessage(pojo: ChatSocketPojo, jsonAttributes: JsonObject): Visitable<*> {
         return when (pojo.attachment!!.type) {
@@ -60,14 +64,17 @@ class TopChatRoomWebSocketMessageMapper @Inject constructor() : WebsocketMessage
         val voucher = pojo.voucher
         var voucherType = MerchantVoucherType(voucher.voucherType, "")
         var voucherAmount = MerchantVoucherAmount(voucher.amountType, voucher.amount)
-        var voucherOwner = MerchantVoucherOwner(identifier = voucher.identifier, ownerId = voucher.ownerId)
+        var voucherOwner = MerchantVoucherOwner(
+                identifier = voucher.identifier,
+                ownerId = voucher.ownerId.toIntOrZero()
+        )
         var voucherBanner = MerchantVoucherBanner(mobileUrl = voucher.mobileUrl)
-        var voucherModel = MerchantVoucherModel(voucherId = voucher.voucherId,
+        var voucherModel = MerchantVoucherModel(voucherId = voucher.voucherId.toIntOrZero(),
                 voucherName = voucher.voucherName,
                 voucherCode = voucher.voucherCode,
                 merchantVoucherType = voucherType,
                 merchantVoucherAmount = voucherAmount,
-                minimumSpend = voucher.minimumSpend,
+                minimumSpend = voucher.minimumSpend.toIntOrZero(),
                 merchantVoucherOwner = voucherOwner,
                 validThru = voucher.validThru.toString(),
                 tnc = voucher.tnc,
@@ -117,5 +124,17 @@ class TopChatRoomWebSocketMessageMapper @Inject constructor() : WebsocketMessage
 
     fun parseResponse(response: WebSocketResponse?): ChatSocketPojo {
         return Gson().fromJson(response?.jsonObject, ChatSocketPojo::class.java)
+    }
+
+    fun mapToDummyMessage(
+            messageId: String,
+            userId: String,
+            name: String,
+            startTime: String,
+            messageText: String
+    ): Visitable<*> {
+        return MessageViewModel(
+                messageId, userId, name, startTime, messageText
+        )
     }
 }

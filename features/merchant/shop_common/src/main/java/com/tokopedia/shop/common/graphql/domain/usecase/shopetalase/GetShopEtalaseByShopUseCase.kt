@@ -31,8 +31,14 @@ constructor(@ApplicationContext context: Context) : UseCase<ArrayList<ShopEtalas
               type
               highlighted
               alias
+              uri
               useAce
               badge
+              aceDefaultSort
+              rules {
+                name
+              }
+              imageURL
             }
             error {
               message
@@ -100,7 +106,7 @@ constructor(@ApplicationContext context: Context) : UseCase<ArrayList<ShopEtalas
 
         object SellerQueryParam {
             const val HIDE_NO_COUNT_VALUE = false
-            const val HIDE_SHOWCASE_GROUP_VALUE = false
+            const val HIDE_SHOWCASE_GROUP_VALUE = false     // Can be true
             const val IS_OWNER_VALUE = true
         }
 

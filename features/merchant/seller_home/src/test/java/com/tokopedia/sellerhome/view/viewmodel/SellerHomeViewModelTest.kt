@@ -2,31 +2,29 @@ package com.tokopedia.sellerhome.view.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.sellerhome.domain.model.GetShopStatusResponse
+import com.tokopedia.sellerhome.config.SellerHomeRemoteConfig
 import com.tokopedia.sellerhome.domain.model.ShippingLoc
 import com.tokopedia.sellerhome.domain.usecase.GetShopLocationUseCase
-import com.tokopedia.sellerhome.domain.usecase.GetStatusShopUseCase
+import com.tokopedia.sellerhome.utils.observeAwaitValue
 import com.tokopedia.sellerhomecommon.domain.model.DynamicParameterModel
 import com.tokopedia.sellerhomecommon.domain.usecase.*
 import com.tokopedia.sellerhomecommon.presentation.model.*
+import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import io.mockk.MockKAnnotations
-import io.mockk.coEvery
-import io.mockk.coVerify
-import io.mockk.every
+import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
-import org.mockito.Matchers.anyString
+import org.mockito.ArgumentMatchers.anyString
 
 /**
  * Created By @ilhamsuaib on 19/03/20
@@ -34,9 +32,6 @@ import org.mockito.Matchers.anyString
 
 @ExperimentalCoroutinesApi
 class SellerHomeViewModelTest {
-
-    @RelaxedMockK
-    lateinit var getShopStatusUseCase: GetStatusShopUseCase
 
     @RelaxedMockK
     lateinit var userSession: UserSessionInterface
@@ -74,21 +69,29 @@ class SellerHomeViewModelTest {
     @RelaxedMockK
     lateinit var getBarChartDataUseCase: GetBarChartDataUseCase
 
+    @RelaxedMockK
+    lateinit var getMultiLineGraphUseCase: GetMultiLineGraphUseCase
+
+    @RelaxedMockK
+    lateinit var getAnnouncementDataUseCase: GetAnnouncementDataUseCase
+
+    @RelaxedMockK
+    lateinit var remoteConfig: SellerHomeRemoteConfig
+
     @get:Rule
     val rule = InstantTaskExecutorRule()
+
+    @get:Rule
+    val coroutineTestRule = CoroutineTestRule()
 
     private lateinit var viewModel: SellerHomeViewModel
     private lateinit var dynamicParameter: DynamicParameterModel
 
-    private lateinit var testDispatcher: TestCoroutineDispatcher
-
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-        testDispatcher = TestCoroutineDispatcher()
 
         viewModel = SellerHomeViewModel(
-                dagger.Lazy { getShopStatusUseCase },
                 dagger.Lazy { userSession },
                 dagger.Lazy { getTickerUseCase },
                 dagger.Lazy { getLayoutUseCase },
@@ -101,7 +104,10 @@ class SellerHomeViewModelTest {
                 dagger.Lazy { getTableDataUseCase },
                 dagger.Lazy { getPieChartDataUseCase },
                 dagger.Lazy { getBarChartDataUseCase },
-                testDispatcher
+                dagger.Lazy { getMultiLineGraphUseCase },
+                dagger.Lazy { getAnnouncementDataUseCase },
+                remoteConfig,
+                coroutineTestRule.dispatchers
         )
 
         dynamicParameter = getDynamicParameter()
@@ -117,9 +123,11 @@ class SellerHomeViewModelTest {
 
     @Test
     fun `get ticker should success`() = runBlocking {
+        val isNewCachingEnabled = false
         val tickerList = listOf(TickerItemUiModel())
         val pageName = "seller"
 
+        onGetIsNewCachingEnabled_thenReturn(isNewCachingEnabled)
         getTickerUseCase.params = GetTickerUseCase.createParams(pageName)
 
         coEvery {
@@ -157,64 +165,6 @@ class SellerHomeViewModelTest {
         }
 
         assert(viewModel.homeTicker.value is Fail)
-    }
-
-    @Test
-    fun `get shop status should success`() = runBlocking {
-        val shopStatus = GetShopStatusResponse()
-        val shopId = "123456"
-
-        getShopStatusUseCase.params = GetStatusShopUseCase.createRequestParams(shopId)
-
-        every {
-            userSession.shopId
-        } returns shopId
-
-        coEvery {
-            getShopStatusUseCase.executeOnBackground()
-        } returns shopStatus
-
-        viewModel.getShopStatus()
-
-        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
-        coVerify {
-            userSession.shopId
-        }
-        coVerify {
-            getShopStatusUseCase.executeOnBackground()
-        }
-
-        assertEquals(Success(shopStatus), viewModel.shopStatus.value)
-    }
-
-    @Test
-    fun `get shop status should failed`() = runBlocking {
-        val throwable = MessageErrorException("error")
-        val shopId = "123456"
-
-        getShopStatusUseCase.params = GetStatusShopUseCase.createRequestParams("123456")
-
-        every {
-            userSession.shopId
-        } returns shopId
-
-        coEvery {
-            getShopStatusUseCase.executeOnBackground()
-        } throws throwable
-
-        viewModel.getShopStatus()
-
-        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
-
-        coVerify {
-            userSession.shopId
-        }
-
-        coEvery {
-            getShopStatusUseCase.executeOnBackground()
-        }
-
-        assert(viewModel.shopStatus.value is Fail)
     }
 
     @Test
@@ -422,7 +372,6 @@ class SellerHomeViewModelTest {
 
     @Test
     fun `get progress widget data then returns success result`() = runBlocking {
-        val shopId = "124456"
         val dateStr = "02-02-2020"
         val dataKeys = listOf("x", "y", "z")
         val progressDataList = listOf(ProgressDataUiModel(), ProgressDataUiModel(), ProgressDataUiModel())
@@ -470,7 +419,7 @@ class SellerHomeViewModelTest {
 
     @Test
     fun `get post widget data then returns success result`() = runBlocking {
-        val dataKeys = listOf("x", "x")
+        val dataKeys = listOf(Pair("x", "x"),  Pair("y", "y"))
         val postList = listOf(PostListDataUiModel(), PostListDataUiModel())
 
         getPostDataUseCase.params = GetPostDataUseCase.getRequestParams(dataKeys, dynamicParameter)
@@ -494,7 +443,7 @@ class SellerHomeViewModelTest {
 
     @Test
     fun `get post widget data then returns failed result`() = runBlocking {
-        val dataKeys = listOf("x", "x")
+        val dataKeys = listOf(Pair("x", "x"),  Pair("y", "y"))
         val exception = MessageErrorException("error msg")
 
         getPostDataUseCase.params = GetPostDataUseCase.getRequestParams(dataKeys, dynamicParameter)
@@ -692,5 +641,336 @@ class SellerHomeViewModelTest {
         }
 
         assert(viewModel.barChartWidgetData.value is Fail)
+    }
+
+    @Test
+    fun `should success when get multi line graph widget data`() = runBlocking {
+        val dataKeys = listOf(anyString(), anyString())
+        val result = listOf(MultiLineGraphDataUiModel(), MultiLineGraphDataUiModel())
+
+        getMultiLineGraphUseCase.params = GetMultiLineGraphUseCase.getRequestParams(dataKeys, dynamicParameter)
+
+        coEvery {
+            getMultiLineGraphUseCase.executeOnBackground()
+        } returns result
+
+        viewModel.getMultiLineGraphWidgetData(dataKeys)
+
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+
+        coVerify {
+            getMultiLineGraphUseCase.executeOnBackground()
+        }
+
+        //number of data keys and result should same
+        assertTrue(dataKeys.size == result.size)
+
+        val expectedResult = Success(result)
+        assertTrue(expectedResult.data.size == dataKeys.size)
+        assertEquals(expectedResult, viewModel.multiLineGraphWidgetData.value)
+    }
+
+    @Test
+    fun `should failed when get multi line graph widget data`() = runBlocking {
+        val dataKeys = listOf(anyString(), anyString())
+
+        getMultiLineGraphUseCase.params = GetMultiLineGraphUseCase.getRequestParams(dataKeys, dynamicParameter)
+
+        coEvery {
+            getMultiLineGraphUseCase.executeOnBackground()
+        } throws RuntimeException("error")
+
+        viewModel.getMultiLineGraphWidgetData(dataKeys)
+
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+
+        coVerify {
+            getMultiLineGraphUseCase.executeOnBackground()
+        }
+
+        assert(viewModel.multiLineGraphWidgetData.value is Fail)
+    }
+
+    @Test
+    fun `should success when get announcement widget data`() = runBlocking {
+        val dataKeys = listOf(anyString())
+        val result = listOf(AnnouncementDataUiModel())
+
+        getAnnouncementDataUseCase.params = GetAnnouncementDataUseCase.createRequestParams(dataKeys)
+
+        coEvery {
+            getAnnouncementDataUseCase.executeOnBackground()
+        } returns result
+
+        viewModel.getAnnouncementWidgetData(dataKeys)
+
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+
+        coVerify {
+            getAnnouncementDataUseCase.executeOnBackground()
+        }
+
+        //number of data keys and result should same
+        assertTrue(dataKeys.size == result.size)
+
+        val expectedResult = Success(result)
+        assertTrue(expectedResult.data.size == dataKeys.size)
+        assertEquals(expectedResult, viewModel.announcementWidgetData.value)
+    }
+
+    @Test
+    fun `should failed when get announcement widget data`() = runBlocking {
+        val dataKeys = listOf(anyString(), anyString())
+
+        getAnnouncementDataUseCase.params = GetAnnouncementDataUseCase.createRequestParams(dataKeys)
+
+        coEvery {
+            getAnnouncementDataUseCase.executeOnBackground()
+        } throws RuntimeException("error")
+
+        viewModel.getAnnouncementWidgetData(dataKeys)
+
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+
+        coVerify {
+            getAnnouncementDataUseCase.executeOnBackground()
+        }
+
+        assert(viewModel.announcementWidgetData.value is Fail)
+    }
+
+    // example using get card widget data, any usecase is fine
+    @Test
+    fun `should execute use case two times when caching enabled and is first load`() {
+        val dataKeys = listOf("a", "b", "c")
+
+        val cardDataResult = listOf(CardDataUiModel(), CardDataUiModel(), CardDataUiModel())
+        getCardDataUseCase.params = GetCardDataUseCase.getRequestParams(dataKeys, dynamicParameter)
+
+        every {
+            remoteConfig.isSellerHomeDashboardCachingEnabled()
+        } returns true
+
+        every {
+            getCardDataUseCase.isFirstLoad
+        } returns true
+
+        coEvery {
+            getCardDataUseCase.executeOnBackground()
+        } returns cardDataResult
+
+        viewModel.getCardWidgetData(dataKeys)
+
+        verify (exactly = 1) {
+            getCardDataUseCase.setUseCache(true)
+        }
+
+        verify (exactly = 1) {
+            getCardDataUseCase.setUseCache(false)
+        }
+
+        coVerify (exactly = 2) {
+            getCardDataUseCase.executeOnBackground()
+        }
+
+        val expectedResult = Success(cardDataResult)
+        assertTrue(dataKeys.size == expectedResult.data.size)
+        assertEquals(expectedResult, viewModel.cardWidgetData.observeAwaitValue())
+    }
+
+    // example using get card widget data, any usecase is fine
+    @Test
+    fun `should still success when there is no cached data`() {
+        var useCaseExecuteCount = 0
+        val dataKeys = listOf("a", "b", "c")
+
+        val cardDataResult = listOf(CardDataUiModel(), CardDataUiModel(), CardDataUiModel())
+        getCardDataUseCase.params = GetCardDataUseCase.getRequestParams(dataKeys, dynamicParameter)
+
+        every {
+            remoteConfig.isSellerHomeDashboardCachingEnabled()
+        } returns true
+
+        every {
+            getCardDataUseCase.isFirstLoad
+        } returns true
+
+        coEvery {
+            getCardDataUseCase.executeOnBackground()
+        } coAnswers {
+            useCaseExecuteCount++
+            if (useCaseExecuteCount == 1) {
+                throw Exception()
+            } else {
+                cardDataResult
+            }
+        }
+
+        viewModel.getCardWidgetData(dataKeys)
+
+        verify (exactly = 1) {
+            getCardDataUseCase.setUseCache(true)
+        }
+
+        verify (exactly = 1) {
+            getCardDataUseCase.setUseCache(false)
+        }
+
+        coVerify (exactly = 2) {
+            getCardDataUseCase.executeOnBackground()
+        }
+
+        val expectedResult = Success(cardDataResult)
+        assertTrue(dataKeys.size == expectedResult.data.size)
+        assertEquals(expectedResult, viewModel.cardWidgetData.observeAwaitValue())
+    }
+
+    @Test
+    fun `should not get data from cache if not first load`() {
+        val dataKeys = listOf("a", "b", "c")
+
+        val cardDataResult = listOf(CardDataUiModel(), CardDataUiModel(), CardDataUiModel())
+        getCardDataUseCase.params = GetCardDataUseCase.getRequestParams(dataKeys, dynamicParameter)
+
+        every {
+            remoteConfig.isSellerHomeDashboardCachingEnabled()
+        } returns true
+
+        every {
+            getCardDataUseCase.isFirstLoad
+        } returns false
+
+        coEvery {
+            getCardDataUseCase.executeOnBackground()
+        } returns cardDataResult
+
+        viewModel.getCardWidgetData(dataKeys)
+
+        verify (inverse = true) {
+            getCardDataUseCase.setUseCache(true)
+        }
+
+        verify (exactly = 1) {
+            getCardDataUseCase.setUseCache(false)
+        }
+
+        coVerify (exactly = 1) {
+            getCardDataUseCase.executeOnBackground()
+        }
+
+        val expectedResult = Success(cardDataResult)
+        assertTrue(dataKeys.size == expectedResult.data.size)
+        assertEquals(expectedResult, viewModel.cardWidgetData.observeAwaitValue())
+    }
+
+    @Test
+    fun `given new caching enabled when getTicker flow success should set homeTicker liveData success`() {
+        coroutineTestRule.runBlockingTest {
+            val isNewCachingEnabled = true
+            val tickerList = listOf(TickerItemUiModel())
+
+            onGetIsNewCachingEnabled_thenReturn(isNewCachingEnabled)
+            onGetTickerListFlow_thenReturn(tickerList)
+
+            viewModel.getTicker()
+
+            verifyGetTickerResultFlowCalled()
+            verifyGetTickerUseCaseCalled()
+
+            val expectedResult = Success(listOf(TickerItemUiModel()))
+            val actualResult = viewModel.homeTicker.value
+
+            assertEquals(expectedResult, actualResult)
+        }
+    }
+
+    @Test
+    fun `given new caching enabled when getTicker twice should set homeTicker liveData with first value`() {
+        coroutineTestRule.runBlockingTest {
+            val isCollectingResult = true
+            val isNewCachingEnabled = true
+            val firstTickerList = listOf(TickerItemUiModel(message = "ticker"))
+            val secondTickerList = listOf(TickerItemUiModel(message = "another ticker"))
+
+            onGetIsNewCachingEnabled_thenReturn(isNewCachingEnabled)
+            onGetTickerListFlow_thenReturn(firstTickerList)
+
+            viewModel.getTicker()
+
+            verifyGetTickerResultFlowCalled()
+            verifyGetTickerUseCaseCalled()
+
+            onGetCollectingResult_thenReturn(isCollectingResult)
+            onGetTickerListFlow_thenReturn(secondTickerList)
+
+            viewModel.getTicker()
+
+            verifyGetTickerResultFlowCalled()
+            verifyGetTickerUseCaseCalled()
+
+            val expectedResult = Success(firstTickerList)
+            val actualResult = viewModel.homeTicker.value
+
+            assertEquals(expectedResult, actualResult)
+        }
+    }
+
+    @Test
+    fun `given new caching enabled when getTicker flow error should set homeTicker liveData error`() {
+        coroutineTestRule.runBlockingTest {
+            val isNewCachingEnabled = true
+            val error = IllegalStateException()
+
+            onGetIsNewCachingEnabled_thenReturn(isNewCachingEnabled)
+            onGetTickerListFlow_thenReturn(error)
+
+            viewModel.getTicker()
+
+            verifyGetTickerResultFlowCalled()
+            verifyGetTickerUseCaseCalled()
+
+            val expectedResult = Fail(error)
+            val actualResult = viewModel.homeTicker.value
+
+            assertEquals(expectedResult, actualResult)
+        }
+    }
+
+    private suspend fun onGetTickerListFlow_thenReturn(tickerList: List<TickerItemUiModel>) {
+        coEvery {
+            getTickerUseCase.getResultFlow()
+        } returns  MutableSharedFlow<List<TickerItemUiModel>>(replay = 1).apply {
+            emit(tickerList)
+        }
+    }
+
+    private fun onGetCollectingResult_thenReturn(isCollectingResult: Boolean) {
+        coEvery {
+            getTickerUseCase.collectingResult
+        } returns isCollectingResult
+    }
+
+    private fun onGetTickerListFlow_thenReturn(error: Throwable) {
+        coEvery {
+            getTickerUseCase.getResultFlow()
+        } throws error
+    }
+
+    private fun onGetIsNewCachingEnabled_thenReturn(isNewCachingEnabled: Boolean) {
+        coEvery {
+            remoteConfig.isSellerHomeDashboardNewCachingEnabled()
+        } returns isNewCachingEnabled
+    }
+
+    private fun verifyGetTickerUseCaseCalled() {
+        coVerify {
+            getTickerUseCase.executeOnBackground(any(), any())
+        }
+    }
+
+    private fun verifyGetTickerResultFlowCalled() {
+        coVerify {
+            getTickerUseCase.getResultFlow()
+        }
     }
 }

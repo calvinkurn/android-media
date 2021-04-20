@@ -89,8 +89,8 @@ internal class SearchProductHandleQuickFilterTest : ProductListPresenterTestFixt
 
     private fun `Then verify SortFilterItem list`(quickFilterModel: DataValue) {
         val sortFilterItemList = listItemSlot.captured
-        sortFilterItemList.listShouldBe(quickFilterModel.filter.map { it.options }.flatten()) { sortFilterItem, option ->
-            sortFilterItem.title shouldBe option.name
+        sortFilterItemList.listShouldBe(quickFilterModel.filter) { sortFilterItem, filter ->
+            sortFilterItem.title shouldBe filter.title
         }
     }
 

@@ -4,12 +4,14 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.settingnotif.usersetting.data.pojo.*
-import com.tokopedia.settingnotif.usersetting.view.listener.SectionItemListener
 import com.tokopedia.settingnotif.usersetting.view.adapter.viewholder.*
+import com.tokopedia.settingnotif.usersetting.view.listener.ActivationItemListener
+import com.tokopedia.settingnotif.usersetting.view.listener.SectionItemListener
 import com.tokopedia.user.session.UserSessionInterface
 
 class SettingFieldTypeFactoryImpl(
-        private val listener: SectionItemListener,
+        private val sectionListener: SectionItemListener,
+        private val activationListener: ActivationItemListener,
         private val userSession: UserSessionInterface
 ) : BaseAdapterTypeFactory(), SettingFieldTypeFactory {
 
@@ -36,9 +38,9 @@ class SettingFieldTypeFactoryImpl(
         return when (type) {
             ParentSettingViewHolder.LAYOUT -> ParentSettingViewHolder(parent, settingListener)
             ChildSettingViewHolder.LAYOUT -> ChildSettingViewHolder(parent, settingListener)
-            SellerSectionViewHolder.LAYOUT -> SellerSectionViewHolder(listener, parent)
+            SellerSectionViewHolder.LAYOUT -> SellerSectionViewHolder(sectionListener, parent)
             ChangeItemViewHolder.LAYOUT -> ChangeItemViewHolder(userSession, parent)
-            ActivationItemViewHolder.LAYOUT -> ActivationItemViewHolder(parent)
+            ActivationItemViewHolder.LAYOUT -> ActivationItemViewHolder(activationListener, parent)
             SmsSectionViewHolder.LAYOUT -> SmsSectionViewHolder(parent)
             else -> createViewHolder(parent, type)
         }

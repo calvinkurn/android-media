@@ -1,27 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:app="http://schemas.android.com/apk/res-auto"
-                xmlns:tools="http://schemas.android.com/tools"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@color/white"
-                android:clipToPadding="false"
-                android:descendantFocusability="beforeDescendants"
-                android:focusableInTouchMode="true">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/Unify_N0"
+    android:clipToPadding="false"
+    android:descendantFocusability="beforeDescendants"
+    android:focusableInTouchMode="true">
 
     <RelativeLayout
         android:id="@+id/search_input_container"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@color/grey_200">
+        android:layout_marginLeft="@dimen/spacing_lvl3"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:layout_marginRight="@dimen/spacing_lvl3"
+        android:background="@color/Unify_N50">
 
-        <com.tokopedia.design.text.SearchInputView
+        <com.tokopedia.unifycomponents.SearchBarUnify
             android:id="@+id/search_input_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
-            app:siv_search_hint="@string/string_attach_product_search_placeholder_text"
-            />
+            app:search_bar_placeholder="@string/string_attach_product_search_placeholder_text"
+            app:search_bar_show_icon="false" />
     </RelativeLayout>
 
     <LinearLayout
@@ -29,20 +32,20 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:background="@color/white"
-        android:elevation="8dp"
-        android:padding="16dp">
+        android:background="@color/Unify_N0"
+        android:elevation="@dimen/spacing_lvl3"
+        android:padding="@dimen/spacing_lvl4">
 
         <Button
             android:id="@+id/send_button_attach_product"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/bg_button_green"
+            android:background="@drawable/bg_attach_product_button_green"
             android:enabled="false"
             android:fontFamily="sans-serif-medium"
             android:textAllCaps="false"
-            android:textColor="@color/text_submit_button"
-            tools:visibility="gone"/>
+            android:textColor="@color/attach_product_dms_text_submit_button"
+            tools:visibility="gone" />
     </LinearLayout>
 
     <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
@@ -55,7 +58,7 @@
         <com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
             android:id="@+id/recycler_view"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent" />
     </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
 
 </RelativeLayout>

@@ -6,12 +6,18 @@ import android.content.Context;
 import android.os.Build;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
+
+import com.tokopedia.logger.ServerLogger;
+import com.tokopedia.logger.utils.Priority;
 import com.tokopedia.notifications.common.CMConstant;
 import com.tokopedia.notifications.common.CMEvents;
 import com.tokopedia.notifications.common.CMNotificationUtils;
 import com.tokopedia.notifications.common.IrisAnalyticsEvents;
 import com.tokopedia.notifications.common.PersistentEvent;
 import com.tokopedia.notifications.model.BaseNotificationModel;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author lalit.singh
@@ -23,7 +29,6 @@ public class CMNotificationFactory {
         if (context == null) {
             return null;
         }
-        IrisAnalyticsEvents.INSTANCE.sendPushEvent(context, IrisAnalyticsEvents.PUSH_RECEIVED, baseNotificationModel);
 
         if (CMConstant.NotificationType.SILENT_PUSH.equals(baseNotificationModel.getType())) {
             handleSilentPush(context, baseNotificationModel);
@@ -33,8 +38,15 @@ public class CMNotificationFactory {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && isChannelBlocked(context, baseNotificationModel)) {
             //todo notify to server for Blocked Channel By User.
         } else {
-            if (baseNotificationModel.getType() == null)
+            if (baseNotificationModel.getType() == null) {
+                Map<String, String> messageMap = new HashMap<>();
+                messageMap.put("type", "validation");
+                messageMap.put("reason", "type_missing");
+                messageMap.put("data", baseNotificationModel.toString().substring(0, (Math.min(baseNotificationModel.toString().length(),
+                        CMConstant.TimberTags.MAX_LIMIT))));
+                ServerLogger.log(Priority.P2, "CM_VALIDATION", messageMap);
                 return null;
+            }
             switch (baseNotificationModel.getType()) {
 
                 case CMConstant.NotificationType.GENERAL:

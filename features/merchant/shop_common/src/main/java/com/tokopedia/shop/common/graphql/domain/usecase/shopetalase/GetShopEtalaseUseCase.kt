@@ -1,58 +1,60 @@
 package com.tokopedia.shop.common.graphql.domain.usecase.shopetalase
 
-import android.content.Context
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.shop.common.R
-import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
-import com.tokopedia.shop.common.graphql.data.shopetalase.gql.ShopEtalaseQuery
-import com.tokopedia.shop.common.graphql.domain.mapper.GraphQLResultMapper
-import com.tokopedia.shop.common.graphql.domain.usecase.base.SingleGraphQLUseCase
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.data.model.GraphqlError
+import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.shop.common.graphql.data.shopetalase.ShopShowcaseListSellerResponse
 import com.tokopedia.usecase.RequestParams
-import com.tokopedia.usecase.UseCase
-import rx.Observable
-import java.util.*
+import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
-class GetShopEtalaseUseCase @Inject
-constructor(@ApplicationContext context: Context) : UseCase<ArrayList<ShopEtalaseModel>>() {
-    private val graphQLUseCase: SingleGraphQLUseCase<ShopEtalaseQuery>
-
-    init {
-        graphQLUseCase = object : SingleGraphQLUseCase<ShopEtalaseQuery>(context, ShopEtalaseQuery::class.java) {
-
-            override fun getRawString(): String {
-                return GraphqlHelper.loadRawString(context.resources, R.raw.gql_query_shop_etalase)
-            }
-
-            override fun createGraphQLVariable(requestParams: RequestParams): HashMap<String, Any> {
-                val variables = HashMap<String, Any>()
-                val withDefault = requestParams.getBoolean(WITH_DEFAULT, true)
-                variables[WITH_DEFAULT] = withDefault
-                return variables
-            }
-        }
-    }
-
-    override fun createObservable(requestParams: RequestParams): Observable<ArrayList<ShopEtalaseModel>> {
-        return graphQLUseCase.createObservable(requestParams)
-                .flatMap(GraphQLResultMapper())
-    }
-
-    override fun unsubscribe() {
-        super.unsubscribe()
-        graphQLUseCase.unsubscribe()
-    }
+class GetShopEtalaseUseCase @Inject constructor(
+        private val graphqlRepository: GraphqlRepository
+) : UseCase<ShopShowcaseListSellerResponse>() {
 
     companion object {
+        private const val WITH_DEFAULT = "withDefault"
 
-        val WITH_DEFAULT = "withDefault"
+        fun createRequestParams(
+                withDefault: Boolean = false
+        ): RequestParams = RequestParams.create().apply {
+            putBoolean(WITH_DEFAULT, withDefault)
+        }
 
-        @JvmStatic
-        fun createRequestParams(withDefault: Boolean): RequestParams {
-            val requestParams = RequestParams.create()
-            requestParams.putBoolean(WITH_DEFAULT, withDefault)
-            return requestParams
+        private const val QUERY = "query shopShowcases(\$withDefault: Boolean) {\n" +
+                "  shopShowcases(withDefault:\$withDefault) {\n" +
+                "    result {\n" +
+                "      id\n" +
+                "      name\n" +
+                "      count\n" +
+                "      type\n" +
+                "      highlighted\n" +
+                "      alias\n" +
+                "      uri\n" +
+                "      useAce\n" +
+                "      badge\n" +
+                "      aceDefaultSort\n" +
+                "      imageURL\n" +
+                "    }\n" +
+                "    error {\n" +
+                "      message\n" +
+                "    }\n" +
+                "  }\n" +
+                "}"
+    }
+
+    var params: RequestParams = RequestParams.EMPTY
+
+    override suspend fun executeOnBackground(): ShopShowcaseListSellerResponse {
+        val graphqlRequest = GraphqlRequest(QUERY, ShopShowcaseListSellerResponse::class.java, params.parameters)
+        val graphqlResponse: GraphqlResponse = graphqlRepository.getReseponse(listOf(graphqlRequest))
+        val errors: List<GraphqlError>? = graphqlResponse.getError(ShopShowcaseListSellerResponse::class.java)
+        if (errors.isNullOrEmpty()) {
+            return graphqlResponse.getData(ShopShowcaseListSellerResponse::class.java)
+        } else {
+            throw MessageErrorException(errors.joinToString(", ") { it.message })
         }
     }
 }

@@ -4,6 +4,7 @@ import android.view.View;
 
 import androidx.annotation.LayoutRes;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatDelegate;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.home.account.AccountHomeUrl;
@@ -33,12 +34,14 @@ public class TokopediaPayViewHolder extends AbstractViewHolder<TokopediaPayViewM
         String imageUrl;
         imageUrl = listener.getRemoteConfig().getString(AccountHomeUrl.ImageUrl.KEY_IMAGE_HOST, AccountHomeUrl.CDN_URL);
         imageUrl = imageUrl + AccountHomeUrl.CDN_IMAGE_PATH;
-        tokopediaPayCardView.setBackgroundImage(imageUrl);
+        if(AppCompatDelegate.getDefaultNightMode() != AppCompatDelegate.MODE_NIGHT_YES) {
+            tokopediaPayCardView.setBackgroundImage(imageUrl);
+        }
         tokopediaPayCardView.setTextAmountLeft(element.getAmountLeft());
         if (element.isLinked()) {
-            tokopediaPayCardView.setAmountColorLeft(android.R.color.primary_text_light);
+            tokopediaPayCardView.setAmountColorLeft(com.tokopedia.unifyprinciples.R.color.Unify_N700_96);
         } else {
-            tokopediaPayCardView.setAmountColorLeft(com.tokopedia.design.R.color.tkpd_main_green);
+            tokopediaPayCardView.setAmountColorLeft(com.tokopedia.unifyprinciples.R.color.Unify_G400);
         }
 
         if(element.getBsDataCentre() == null) {
@@ -75,7 +78,7 @@ public class TokopediaPayViewHolder extends AbstractViewHolder<TokopediaPayViewM
         tokopediaPayCardView.setRightItemClickListener(v -> listener.onTokopediaPayRightItemClicked(
                 element.isRightSaldo(),
                 element.getLabelRight(),
-                element.getVccUserStatus(),
+                "",
                 element.getApplinkRight(),
                 element.getBsDataRight()));
     }

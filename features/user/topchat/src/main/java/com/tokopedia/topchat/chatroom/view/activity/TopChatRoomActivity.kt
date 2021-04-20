@@ -1,22 +1,31 @@
 package com.tokopedia.topchat.chatroom.view.activity
 
-import android.graphics.Color
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.view.View
 import androidx.fragment.app.Fragment
+import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.chat_common.BaseChatToolbarActivity
 import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderViewModel
 import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderViewModel.Companion.MODE_DEFAULT_GET_CHAT
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.kotlin.extensions.view.toZeroStringIfNull
+import com.tokopedia.topchat.chatroom.di.ChatComponent
+import com.tokopedia.topchat.chatroom.di.ChatRoomContextModule
+import com.tokopedia.topchat.chatroom.di.DaggerChatComponent
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.StickerViewHolder
+import com.tokopedia.topchat.chatroom.view.fragment.StickerFragment
 import com.tokopedia.topchat.chatroom.view.fragment.TopChatRoomFragment
 import com.tokopedia.topchat.common.TopChatInternalRouter.Companion.RESULT_INBOX_CHAT_PARAM_INDEX
 import com.tokopedia.topchat.common.analytics.TopChatAnalytics
 
-class TopChatRoomActivity : BaseChatToolbarActivity() {
+open class TopChatRoomActivity : BaseChatToolbarActivity(), HasComponent<ChatComponent>,
+        StickerFragment.Listener {
+
+    private var chatComponent: ChatComponent? = null
 
     override fun getScreenName(): String {
         return "/${TopChatAnalytics.Category.CHAT_DETAIL}"
@@ -30,29 +39,46 @@ class TopChatRoomActivity : BaseChatToolbarActivity() {
             bundle.putAll(intent.extras)
         }
 
+        return createChatRoomFragment(bundle)
+    }
+
+    protected open fun createChatRoomFragment(bundle: Bundle): Fragment {
         return TopChatRoomFragment.createInstance(bundle)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(null)
-        useLightNotificationBar()
         initWindowBackground()
-        initTopchatToolbar()
+    }
+
+    override fun getComponent(): ChatComponent {
+        return chatComponent ?: initializeChatComponent()
+    }
+
+    protected open fun initializeChatComponent(): ChatComponent {
+        return DaggerChatComponent.builder()
+                .baseAppComponent((application as BaseMainApplication).baseAppComponent)
+                .chatRoomContextModule(ChatRoomContextModule(this))
+                .build().also {
+                    chatComponent = it
+                }
+    }
+
+    override fun getTagFragment(): String {
+        return TAG
+    }
+
+    override fun getStickerViewHolderListener(): StickerViewHolder.Listener? {
+        val fragment = supportFragmentManager.findFragmentByTag(tagFragment)
+        if (fragment is StickerViewHolder.Listener) {
+            return fragment
+        }
+        return null
     }
 
     private fun initWindowBackground() {
-        window.decorView.setBackgroundColor(Color.WHITE)
-    }
-
-    private fun initTopchatToolbar() {
-        supportActionBar?.setBackgroundDrawable(null)
-    }
-
-    private fun useLightNotificationBar() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
-            window.statusBarColor = Color.WHITE
-        }
+        val color = MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N50)
+        window.decorView.setBackgroundColor(color)
     }
 
     override fun setupToolbar() {
@@ -130,6 +156,7 @@ class TopChatRoomActivity : BaseChatToolbarActivity() {
         val LABEL_SELLER = "Penjual"
         val ROLE_SELLER = "shop"
         val ROLE_USER = "user"
+        val TAG = TopChatRoomActivity::class.java.name
     }
 
 }

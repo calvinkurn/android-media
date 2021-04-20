@@ -1,42 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_height="match_parent"
     android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <androidx.coordinatorlayout.widget.CoordinatorLayout
-        android:id="@+id/mainView"
-        android:layout_height="match_parent"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
         android:layout_width="match_parent"
-        android:background="@color/white"
-        android:fitsSystemWindows="true">
-
-        <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
-            android:id="@+id/swipeToRefresh"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:clipToPadding="false">
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recyclerView"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:paddingTop="@dimen/dp_8"
-                android:orientation="vertical"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                app:reverseLayout="false" />
-
-        </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
-
-    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+        android:layout_height="match_parent"
+        android:clipToPadding="false"
+        android:orientation="vertical"
+        android:paddingTop="@dimen/dp_8"
+        android:paddingBottom="@dimen/spacing_lvl3"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:reverseLayout="false" />
 
     <FrameLayout
         android:id="@+id/loadingLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/white"
+        android:background="@color/Unify_N0"
         android:visibility="gone">
 
         <ProgressBar
@@ -51,8 +35,8 @@
         android:layout_height="@dimen/dp_60"
         android:layout_alignParentRight="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_16"
-        app:backgroundTint="@color/tkpd_main_green"
-        app:srcCompat="@drawable/ic_feed_post_plus"/>
+        android:layout_marginBottom="@dimen/dp_16"
+        app:backgroundTint="@color/Unify_G400"
+        app:srcCompat="@drawable/ic_feed_post_plus" />
 </RelativeLayout>

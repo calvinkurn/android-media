@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.text.TextUtils;
 
+import com.tokopedia.authentication.AuthConstant;
+import com.tokopedia.authentication.AuthHelper;
 import com.tokopedia.core.network.CoreNetworkApplication;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.user.session.UserSession;
@@ -24,7 +26,6 @@ public class AccountsInterceptor extends TkpdAuthInterceptor {
     private static final String DATE_FORMAT = "EEE, dd MMM yyyy HH:mm:ss ZZZ";
     private static final String CONTENT_TYPE = "application/x-www-form-urlencoded";
 
-    private static final String TAG = AccountsInterceptor.class.getSimpleName();
     private final String authKey;
     private final boolean isUsingHMAC;
     private final boolean isUsingBothAuthorization;
@@ -57,6 +58,7 @@ public class AccountsInterceptor extends TkpdAuthInterceptor {
                 getToken(),
                 DATE_FORMAT);
         authHeaders.put(X_TKPD_PATH, originRequest.url().uri().getPath());
+        authHeaders.put(AuthConstant.HEADER_USER_AGENT, AuthHelper.getUserAgent());
         generateHeader(authHeaders, originRequest, newRequest);
     }
 
@@ -65,6 +67,7 @@ public class AccountsInterceptor extends TkpdAuthInterceptor {
         Map<String, String> authHeaders = new HashMap<>();
         authHeaders = prepareHeader(authHeaders, originRequest);
         authHeaders.put(X_TKPD_PATH, originRequest.url().uri().getPath());
+        authHeaders.put(AuthConstant.HEADER_USER_AGENT, AuthHelper.getUserAgent());
         generateHeader(authHeaders, originRequest, newRequest);
     }
 
@@ -72,6 +75,7 @@ public class AccountsInterceptor extends TkpdAuthInterceptor {
             throws IOException {
         Map<String, String> authHeaders = AuthUtil.generateHeadersAccount(getToken());
         authHeaders.put(X_TKPD_PATH, originRequest.url().uri().getPath());
+        authHeaders.put(AuthConstant.HEADER_USER_AGENT, AuthHelper.getUserAgent());
         generateHeader(authHeaders, originRequest, newRequest);
     }
 

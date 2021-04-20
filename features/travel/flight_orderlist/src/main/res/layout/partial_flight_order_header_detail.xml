@@ -5,31 +5,39 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <androidx.appcompat.widget.AppCompatTextView
+    <com.tokopedia.unifyprinciples.Typography
+        app:typographyType="body_2"
+        app:typographyWeight="bold"
+        android:textColor="@color/Unify_N700_68"
         android:id="@+id/tv_title"
-        style="@style/TextView.Small.Bold.BlackSecondary"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/light_green"
-        android:paddingTop="@dimen/dp_8"
-        android:paddingBottom="@dimen/dp_8"
+        android:background="@color/Unify_G100"
+        android:paddingTop="@dimen/spacing_lvl3"
+        android:paddingBottom="@dimen/spacing_lvl3"
         android:gravity="center"
         tools:text="Transaksi Berhasil" />
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_10"
-        android:padding="@dimen/dp_10">
+        android:layout_marginTop="@dimen/flight_orderlist_10dp"
+        android:padding="@dimen/flight_orderlist_10dp">
 
-        <androidx.appcompat.widget.AppCompatTextView
+        <com.tokopedia.unifyprinciples.Typography
+            app:typographyType="body_3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/Unify_N700_96"
             android:id="@+id/tv_order_date"
-            style="@style/TextView.Micro"
             tools:text="9 Jan 2017" />
 
-        <androidx.appcompat.widget.AppCompatTextView
+        <com.tokopedia.unifyprinciples.Typography
+            app:typographyType="body_3"
+            android:textColor="@color/Unify_N700_96"
             android:id="@+id/tv_order_id"
-            style="@style/TextView.Micro"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_below="@+id/tv_order_date"
             tools:text="Order ID: 323088926194" />
 

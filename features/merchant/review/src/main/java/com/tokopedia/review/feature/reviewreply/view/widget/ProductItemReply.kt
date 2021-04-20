@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.review.R
 import com.tokopedia.review.feature.reviewreply.view.model.ProductReplyUiModel
@@ -28,7 +29,7 @@ class ProductItemReply: BaseCustomView {
     }
 
     fun setItem(data: ProductReplyUiModel) {
-        ivItemProduct?.setImageUrl(data.productImageUrl.orEmpty())
+        ivItemProduct?.loadImage(data.productImageUrl.orEmpty())
         tgTitleProduct?.text = data.productName
         setupVariant(data.variantName.orEmpty())
     }

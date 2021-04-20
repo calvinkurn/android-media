@@ -15,7 +15,6 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import javax.inject.Named
 
-@ProductDetailScope
 @Module
 class ProductDetailUserModule {
 

@@ -11,7 +11,7 @@ import com.tokopedia.productcard.ProductCardListView
 import com.tokopedia.shop.R
 import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
 import com.tokopedia.shop.home.view.listener.ShopHomeEndlessProductListener
-import com.tokopedia.shop.home.view.model.ShopHomeProductViewModel
+import com.tokopedia.shop.home.view.model.ShopHomeProductUiModel
 
 /**
  * @author by alvarisi on 12/12/17.
@@ -20,9 +20,9 @@ import com.tokopedia.shop.home.view.model.ShopHomeProductViewModel
 open class ShopHomeProductItemListViewHolder(
         itemView: View,
         private val shopHomeEndlessProductListener: ShopHomeEndlessProductListener?
-) : AbstractViewHolder<ShopHomeProductViewModel>(itemView) {
+) : AbstractViewHolder<ShopHomeProductUiModel>(itemView) {
     lateinit var productCard: ProductCardListView
-    protected var shopHomeProductViewModel: ShopHomeProductViewModel? = null
+    protected var shopHomeProductViewModel: ShopHomeProductUiModel? = null
 
     init {
         findViews(itemView)
@@ -37,7 +37,7 @@ open class ShopHomeProductItemListViewHolder(
         productCard = view.findViewById(R.id.productCardView)
     }
 
-    override fun bind(shopHomeProductViewModel: ShopHomeProductViewModel) {
+    override fun bind(shopHomeProductViewModel: ShopHomeProductUiModel) {
         this.shopHomeProductViewModel = shopHomeProductViewModel
         productCard.setProductModel(ShopPageHomeMapper.mapToProductCardModel(
                 isHasAddToCartButton = false,

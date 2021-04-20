@@ -50,10 +50,10 @@
                     android:orientation="vertical"
                     android:paddingStart="@dimen/layout_lvl2"
                     android:paddingLeft="@dimen/layout_lvl2"
-                    android:paddingTop="@dimen/dp_25"
+                    android:paddingTop="@dimen/spacing_lvl5"
                     android:paddingEnd="@dimen/layout_lvl2"
                     android:paddingRight="@dimen/layout_lvl2"
-                    android:paddingBottom="@dimen/dp_25" />
+                    android:paddingBottom="@dimen/spacing_lvl5" />
             </androidx.cardview.widget.CardView>
 
         </LinearLayout>
@@ -64,11 +64,11 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="gone"
-        android:background="@color/Neutral_N0">
+        android:background="@color/Unify_N0">
 
         <ProgressBar
-            android:layout_width="@dimen/dp_50"
-            android:layout_height="@dimen/dp_50"
+            android:layout_width="@dimen/hotel_50dp"
+            android:layout_height="@dimen/hotel_50dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"

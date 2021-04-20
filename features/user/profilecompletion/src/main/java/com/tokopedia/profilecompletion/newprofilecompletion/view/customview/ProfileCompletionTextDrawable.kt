@@ -32,6 +32,7 @@ import android.text.Layout
 import android.text.StaticLayout
 import android.text.TextPaint
 import android.util.TypedValue
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 
 /**
  * A Drawable object that draws text.
@@ -46,7 +47,7 @@ import android.util.TypedValue
  * [setBounds()][.setBounds] to provide the Drawable
  * size based on the Path constraints.
  */
-class ProfileCompletionTextDrawable(context: Context) : Drawable() {
+class ProfileCompletionTextDrawable(private val context: Context) : Drawable() {
     /* Resources for scaling values to the given device */
     private val mResources: Resources = context.resources
 
@@ -251,7 +252,7 @@ class ProfileCompletionTextDrawable(context: Context) : Drawable() {
      * Internal method to apply the correct text color based on the drawable's state
      */
     private fun updateTextColors(stateSet: IntArray): Boolean {
-        val newColor = mTextColors?.getColorForState(stateSet, Color.WHITE)
+        val newColor = mTextColors?.getColorForState(stateSet, MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
         if (mTextPaint.color != newColor) {
             mTextPaint.color = newColor ?: 0
             return true

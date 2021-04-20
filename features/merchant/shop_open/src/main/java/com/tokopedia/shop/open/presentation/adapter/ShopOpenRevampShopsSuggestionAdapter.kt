@@ -52,10 +52,10 @@ class ShopOpenRevampShopsSuggestionAdapter(
             chipTextView.text = shopDomainItem
             if (selectedPosition == position) {
                 chipContainer.background = ContextCompat.getDrawable(context, R.drawable.unify_chip_selected_small)
-                chipTextView.setTextColor(context.resources.getColor(com.tokopedia.design.R.color.green_500))
+                chipTextView.setTextColor(context.resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_G500))
             } else {
                 chipContainer.background = ContextCompat.getDrawable(context, R.drawable.unify_chip_normal_small)
-                chipTextView.setTextColor(context.resources.getColor(com.tokopedia.design.R.color.grey_500))
+                chipTextView.setTextColor(context.resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N200))
             }
             chipTextView.setOnClickListener {
                 with(itemView.context){

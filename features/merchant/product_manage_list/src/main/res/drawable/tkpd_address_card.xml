@@ -9,7 +9,7 @@
 
 <!--     <item> -->
 <!--         <shape> -->
-<!--             <solid android:color="#10cccccc" /> -->
+<!--             <solid android:color="@color/Unify_N150" /> -->
 <!--             <padding android:top="0dp" android:right="0dp" android:bottom="0.5dp" android:left="0dp" /> -->
 <!--         </shape> -->
 <!--     </item> -->
@@ -21,11 +21,11 @@
 <!--             android:shape="rectangle" > -->
 <!--             <corners android:radius="2.5dp" /> -->
 
-<!--             <solid android:color="#ffffff" /> -->
+<!--             <solid android:color="@color/Unify_N0" /> -->
 
 <!--             <stroke -->
 <!--                 android:width="1dp" -->
-<!--                 android:color="#c7c7c7" /> -->
+<!--                 android:color="@color/Unify_N150" /> -->
             
 <!--             <padding -->
 <!--                 android:bottom="2dp" -->
@@ -44,15 +44,15 @@
         		<shape>
                         <corners android:radius="3dp" />
 
-                        <solid android:color="#D6D6D6" />
+                        <solid android:color="@color/Unify_N100" />
                     </shape>
                     
                     </item>
                 <item android:bottom="2dp">
                     <shape>
-                       <solid android:color="@color/tkpd_detail_address"></solid>
+                       <solid android:color="@color/Unify_G100"></solid>
 
-                        <stroke android:width="1dp" android:color="@color/tkpd_detail_address" />
+                        <stroke android:width="1dp" android:color="@color/Unify_G100" />
 
                         <corners android:radius="2.5dp" />
 

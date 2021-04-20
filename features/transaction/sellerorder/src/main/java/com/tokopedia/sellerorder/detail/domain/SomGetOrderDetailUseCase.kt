@@ -1,10 +1,16 @@
 package com.tokopedia.sellerorder.detail.domain
 
-import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_LANG_ID
 import com.tokopedia.sellerorder.common.util.SomConsts.VAR_PARAM_LANG
 import com.tokopedia.sellerorder.common.util.SomConsts.VAR_PARAM_ORDERID
+import com.tokopedia.sellerorder.detail.data.model.GetSomDetailResponse
 import com.tokopedia.sellerorder.detail.data.model.SomDetailOrder
+import com.tokopedia.sellerorder.detail.data.model.SomDynamicPriceRequest
+import com.tokopedia.sellerorder.detail.data.model.SomDynamicPriceResponse
+import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -13,35 +19,52 @@ import javax.inject.Inject
 /**
  * Created by fwidjaja on 10/05/20.
  */
-class SomGetOrderDetailUseCase @Inject constructor(private val useCase: GraphqlUseCase<SomDetailOrder.Data>) {
+class SomGetOrderDetailUseCase @Inject constructor(
+        private val graphQlRepository: GraphqlRepository
+) {
 
-    init {
-        useCase.setGraphqlQuery(QUERY)
-    }
+    private var params: RequestParams = RequestParams.EMPTY
 
-    suspend fun execute(orderId: String): Result<SomDetailOrder.Data.GetSomDetail> {
-        useCase.setTypeClass(SomDetailOrder.Data::class.java)
-        useCase.setRequestParams(generateParam(orderId))
-
-        return try {
-            val orderDetail = useCase.executeOnBackground().getSomDetail
-            Success(orderDetail)
-        } catch (throwable: Throwable) {
-            Fail(throwable)
+    fun setParamDynamicPrice(param: SomDynamicPriceRequest) {
+        params = RequestParams.create().apply {
+            putObject(SomConsts.PARAM_INPUT, param)
         }
     }
 
-    private fun generateParam(orderId: String): HashMap<String, String> {
+    suspend fun execute(orderId: String): Result<GetSomDetailResponse> {
+
+        val getSomDetailResponse = GetSomDetailResponse()
+        val dynamicPriceParam = params.getObject(SomConsts.PARAM_INPUT) as SomDynamicPriceRequest
+        val somDynamicPriceParams = mapOf(SomConsts.PARAM_INPUT to dynamicPriceParam)
+
+        val somDetailRequest = GraphqlRequest(QUERY_SOM_DETAIL, SomDetailOrder.Data::class.java, generateParam(orderId))
+        val somDynamicPriceRequest = GraphqlRequest(QUERY_DYNAMIC_PRICE, SomDynamicPriceResponse::class.java, somDynamicPriceParams)
+
+        val multipleRequest = mutableListOf(somDetailRequest, somDynamicPriceRequest)
+
+        return try {
+            val gqlResponse = graphQlRepository.getReseponse(multipleRequest)
+            getSomDetailResponse.getSomDetail = requireNotNull(gqlResponse.getData<SomDetailOrder.Data>(SomDetailOrder.Data::class.java).getSomDetail)
+            getSomDetailResponse.somDynamicPriceResponse = requireNotNull(gqlResponse.getData<SomDynamicPriceResponse>(SomDynamicPriceResponse::class.java).getSomDynamicPrice)
+            Success(getSomDetailResponse)
+        } catch (e: Throwable) {
+            Fail(e)
+        }
+    }
+
+    private fun generateParam(orderId: String): HashMap<String, Any> {
         return hashMapOf(VAR_PARAM_ORDERID to orderId, VAR_PARAM_LANG to PARAM_LANG_ID)
     }
 
     companion object {
-        val QUERY = """
+        val QUERY_SOM_DETAIL = """
             query GetSOMDetail(${'$'}orderID: String!, ${'$'}lang: String!){
               get_som_detail(orderID: ${'$'}orderID, lang: ${'$'}lang){
                 order_id
                 status
                 status_text
+                status_text_color
+                status_indicator_color
                 invoice
                 invoice_url
                 checkout_date
@@ -151,6 +174,7 @@ class SomGetOrderDetailUseCase @Inject constructor(private val useCase: GraphqlU
                   is_request_cancel
                   request_cancel_time
                   reason
+                  status
                 }
                 flag_order_type{
                   is_order_cod
@@ -161,43 +185,14 @@ class SomGetOrderDetailUseCase @Inject constructor(private val useCase: GraphqlU
                 }
                 flag_order_meta{
                     is_free_shipping_campaign
+                    is_topads
+                    is_tokocabang
+                    is_shipping_printed
                 }
                 label_info{
                   flag_name
                   flag_color
                   flag_background
-                }
-                payment_method{
-                  gateway_id
-                  gateway_name
-                  gateway_url
-                }
-                payment_summary{
-                  products_price
-                  products_price_text
-                  promo_price_text
-                  shipping_price
-                  shipping_price_text
-                  insurance_price
-                  insurance_price_text
-                  promo_price
-                  promo_price_text
-                  promo_code
-                  additional_price
-                  additional_price_text
-                  additional_info
-                  cod_fee
-                  cod_fee_text
-                  now_fee
-                  now_fee_text
-                  total_purchase_protection_fee
-                  total_purchase_protection_fee_text
-                  total_purchase_protection_quantity
-                  total_item
-                  total_weight
-                  total_weight_text
-                  total_price
-                  total_price_text
                 }
                 logistic_info{
                   all{
@@ -265,6 +260,27 @@ class SomGetOrderDetailUseCase @Inject constructor(private val useCase: GraphqlU
                 }
               }
             }
+        """.trimIndent()
+
+        val QUERY_DYNAMIC_PRICE = """
+        query GetSOMDynamicPrice(${'$'}input: SOMDynamicPriceRequest!) {
+              get_som_dynamic_price(input: ${'$'}input) {
+                payment_method {
+                  label
+                  value
+                }
+                payment_data {
+                  label
+                  value
+                  text_color
+                }
+                pricing_data{
+                  label
+                  value
+                  text_color
+                }
+            }
+        }
         """.trimIndent()
     }
 }

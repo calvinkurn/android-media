@@ -26,7 +26,7 @@ import com.tokopedia.deals.location_picker.ui.customview.SelectLocationBottomShe
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.permissionchecker.PermissionCheckerHelper
+import com.tokopedia.utils.permission.PermissionCheckerHelper
 import kotlinx.android.synthetic.main.activity_base_deals.*
 import kotlinx.android.synthetic.main.content_base_deals_search_bar.*
 import kotlinx.android.synthetic.main.content_base_toolbar.*

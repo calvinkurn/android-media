@@ -1,0 +1,401 @@
+{
+  "readme": "Shop page tracker",
+  "mode": "exact",
+  "query": [
+    {
+      "pageType": "/shoppage",
+      "eventCategory": "{{shop page - (buyer|seller)}}",
+      "shopId": "{{.+}}",
+      "shopType": "{{.+}}",
+      "event": "clickShopPage",
+      "eventAction": "merchant voucher code - click see all",
+      "sessionIris": "{{.+}}",
+      "eventLabel":"{{(.+) - merchant voucher - (.+)}}"
+    },
+    {
+      "promotions": [{
+        "creative_name": "{{.+}}",
+        "creative_slot": "{{\\d*.\\d*}}",
+        "item_id": "{{.+}}",
+        "item_name": "{{.+}}",
+        "promo_code": "{{.+}}",
+        "promo_id": "{{.+}}",
+        "creative_url": "{{.*}}"
+      }],
+      "pageType": "/shoppage",
+      "eventCategory": "{{shop page - (buyer|seller)}}",
+      "shopId": "{{.+}}",
+      "shopType": "{{.+}}",
+      "event": "select_content",
+      "eventAction": "{{home - merchant voucher code - click detail}}",
+      "sessionIris": "{{.+}}",
+      "eventLabel":"{{(.+) - merchant voucher - (.+) - (.+)}}"
+    },
+    {
+      "promotions": [{
+        "creative_name": "{{.+}}",
+        "creative_slot": "{{\\d*.\\d*}}",
+        "item_id": "{{.+}}",
+        "item_name": "{{.+}}",
+        "promo_code": "{{.+}}",
+        "promo_id": "{{.+}}",
+        "creative_url": "{{.*}}"
+      }],
+      "pageType": "/shoppage",
+      "eventCategory": "{{shop page - (buyer|seller)}}",
+      "shopId": "{{.+}}",
+      "shopType": "{{.+}}",
+      "event": "view_item",
+      "eventAction": "{{home - merchant voucher code - impression}}",
+      "sessionIris": "{{.+}}",
+      "eventLabel":"{{(.+) - merchant voucher - (.+) - (.+)}}"
+    },
+    {
+      "promotions": [{
+        "creative_name": "{{.+}}",
+        "creative_slot": "{{\\d*.\\d*}}",
+        "item_id": "{{.+}}",
+        "item_name": "{{.+}}",
+        "dimension81": "{{.+}}",
+        "dimension79": "{{.+}}",
+        "creative_url": "{{.+}}"
+      }],
+      "pageType": "/shoppage",
+      "eventCategory": "{{shop page - (buyer|seller)}}",
+      "shopId": "{{.+}}",
+      "shopType": "{{.+}}",
+      "event": "view_item",
+      "eventAction": "impression",
+      "sessionIris": "{{.+}}",
+      "eventLabel":"{{(.+) - display widget - (.+) - (.+)}}"
+    },
+    {
+      "promotions": [{
+        "creative_name": "{{.+}}",
+        "creative_slot": "{{\\d*.\\d*}}",
+        "item_id": "{{.+}}",
+        "item_name": "{{.+}}",
+        "dimension81": "{{.+}}",
+        "dimension79": "{{.+}}",
+        "creative_url": "{{.+}}"
+      }],
+      "pageType": "/shoppage",
+      "eventCategory": "{{shop page - (buyer|seller)}}",
+      "shopId": "{{.+}}",
+      "shopType": "{{.+}}",
+      "event": "select_content",
+      "eventAction": "click",
+      "sessionIris": "{{.+}}",
+      "eventLabel":"{{(.+) - display widget - (.+) - (.+)}}"
+    },
+    {
+      "pageType": "/shoppage",
+      "eventCategory": "{{shop page - (buyer|seller)}}",
+      "productId": "{{.+}}",
+      "item_list": "{{.+}}",
+      "dimension90": "{{.*}}",
+      "shopId": "{{.+}}",
+      "shopType": "{{.+}}",
+      "event": "view_item_list",
+      "eventAction": "{{product list impression - home - (.+) - (.+)}}",
+      "sessionIris": "{{.+}}",
+      "items": [{
+        "item_id": "{{.+}}",
+        "price": "{{^\\d+(.\\d+)*$}}",
+        "dimension40": "{{.+}}",
+        "dimension90": "{{.*}}",
+        "dimension83": "{{.*}}",
+        "index": "{{\\d*.\\d*}}",
+        "item_name": "{{.+}}",
+        "dimension81": "{{.+}}",
+        "item_brand": "{{.+}}",
+        "dimension79": "{{.+}}",
+        "item_variant": "{{.+}}",
+        "item_category": "{{.+}}"
+      }],
+      "eventLabel":""
+    },
+    {
+      "pageType": "/shoppage",
+      "eventCategory": "{{shop page - (buyer|seller)}}",
+      "productId": "{{.+}}",
+      "item_list": "{{.+}}",
+      "dimension90": "{{.*}}",
+      "shopId": "{{.+}}",
+      "shopType": "{{.+}}",
+      "event": "select_content",
+      "eventAction": "{{click product - home - (.+) - (.+)}}",
+      "sessionIris": "{{.+}}",
+      "items": [{
+        "item_id": "{{.+}}",
+        "price": "{{^\\d+(.\\d+)*$}}",
+        "dimension40": "{{.+}}",
+        "dimension90": "{{.*}}",
+        "dimension83": "{{.*}}",
+        "index": "{{\\d*.\\d*}}",
+        "item_name": "{{.+}}",
+        "dimension81": "{{.+}}",
+        "item_brand": "{{.+}}",
+        "dimension79": "{{.+}}",
+        "item_variant": "{{.+}}",
+        "item_category": "{{.+}}"
+      }],
+      "eventLabel":"{{.+}}"
+    },
+    {
+      "pageType": "/shoppage",
+      "eventCategory": "{{shop page - (buyer|seller)}}",
+      "shopId": "{{.+}}",
+      "shopType": "{{.+}}",
+      "event": "add_to_cart",
+      "eventAction": "{{click add to cart - home - (.+) - (.+)}}",
+      "sessionIris": "{{.+}}",
+      "items": [{
+        "quantity": "{{\\d*.\\d*}}",
+        "item_id": "{{.+}}",
+        "item_name": "{{.+}}",
+        "dimension81": "{{.+}}",
+        "dimension80": "{{.+}}",
+        "item_brand": "{{.+}}",
+        "item_category": "{{.+}}",
+        "dimension45": "{{.+}}",
+        "dimension82": "{{.*}}",
+        "price": "{{^\\d+(.\\d+)*$}}",
+        "dimension40": "{{.+}}",
+        "dimension79": "{{.+}}",
+        "item_variant": "{{.+}}",
+        "dimension38": "{{.*}}"
+      }],
+      "eventLabel":"{{.+}}"
+    },
+    {
+      "pageType": "/shoppage",
+      "eventCategory": "{{shop page - (buyer|seller)}}",
+      "productId": "{{.+}}",
+      "dimension90": "{{.*}}",
+      "shopId": "{{.+}}",
+      "shopType": "{{.+}}",
+      "event": "clickWishlist",
+      "eventAction": "{{(add|remove) wishlist - (.+) - (.+) - (.+)}}",
+      "sessionIris": "{{.+}}",
+      "eventLabel":"{{(.+) - general - (.+)}}"
+    },
+    {
+      "pageType": "/shoppage",
+      "eventCategory": "{{shop page - (buyer|seller)}}",
+      "shopId": "{{.+}}",
+      "shopType": "{{.+}}",
+      "event": "clickShopPage",
+      "eventAction": "{{click lihat semua produk - (.+) - (.+)}}",
+      "sessionIris": "{{.+}}",
+      "eventLabel":"{{(.+) - (.+)}}"
+    },
+    {
+      "promotions": [{
+        "creative_name": "{{.+}}",
+        "creative_slot": "{{\\d*.\\d*}}",
+        "item_id": "{{.+}}",
+        "item_name": "{{.+}}"
+      }],
+      "eventCategory": "{{shop page - (buyer|seller)}}",
+      "event": "select_content",
+      "userId": "{{.*}}",
+      "eventAction": "click",
+      "sessionIris": "{{.+}}",
+      "eventLabel":"{{click on banner play - (.+) - (.+)}}"
+    },
+    {
+      "promotions": [{
+        "creative_name": "{{.+}}",
+        "creative_slot": "{{\\d*.\\d*}}",
+        "item_id": "{{.+}}",
+        "item_name": "{{.+}}"
+      }],
+      "eventCategory": "{{shop page - (buyer|seller)}}",
+      "event": "view_item",
+      "userId": "{{.*}}",
+      "eventAction": "impression on play sgc banner",
+      "sessionIris": "{{.+}}",
+      "eventLabel":"{{view on banner play - (.+) - (.+)}}"
+    },
+    {
+      "promotions": [{
+        "creative_name": "{{.+}}",
+        "creative_slot": "{{\\d*.\\d*}}",
+        "item_id": "{{.+}}",
+        "item_name": "{{.+}}"
+      }],
+      "eventCategory": "{{shop page - (buyer|seller)}}",
+      "event": "select_content",
+      "userId": "{{.*}}",
+      "eventAction": "click",
+      "sessionIris": "{{.+}}",
+      "eventLabel":"{{click channel - (.+) - (.+) - (.+) - (.+) - (.+)}}"
+    },
+    {
+      "promotions": [{
+        "creative_name": "{{.+}}",
+        "creative_slot": "{{\\d*.\\d*}}",
+        "item_id": "{{.+}}",
+        "item_name": "{{.+}}"
+      }],
+      "eventCategory": "{{shop page - (buyer|seller)}}",
+      "event": "view_item",
+      "userId": "{{.*}}",
+      "eventAction": "impression on play sgc channel",
+      "sessionIris": "{{.+}}",
+      "eventLabel":"{{view channel - (.+) - (.+) - (.+) - (.+) - (.+)}}"
+    },
+    {
+      "eventCategory": "{{shop page - (buyer|seller)}}",
+      "event": "clickShopPage",
+      "userId": "{{.*}}",
+      "eventAction": "click other content",
+      "sessionIris": "{{.+}}",
+      "eventLabel":"{{.+}}"
+    },
+    {
+      "promotions": [{
+        "creative_name": "{{.*}}",
+        "creative_slot": "{{\\d*.\\d*}}",
+        "item_id": "{{.+}}",
+        "item_name": "{{.+}}",
+        "creative_url": "{{.+}}"
+      }],
+      "pageType": "/shoppage",
+      "eventCategory": "{{shop page - (buyer|seller)}}",
+      "shopId": "{{.+}}",
+      "shopType": "{{.+}}",
+      "event": "view_item",
+      "eventAction": "impression",
+      "sessionIris": "{{.+}}",
+      "eventLabel":"{{(upcoming|ongoing|finished) banner - (.+) - (.+)}}"
+    },
+    {
+      "pageType": "/shoppage",
+      "eventCategory": "{{shop page - (buyer|seller)}}",
+      "shopId": "{{.+}}",
+      "shopType": "{{.+}}",
+      "event": "clickShopPage",
+      "eventAction": "{{click t&c - (upcoming|ongoing) campaign}}",
+      "sessionIris": "{{.+}}",
+      "eventLabel":""
+    },
+    {
+      "pageType": "/shoppage",
+      "eventCategory": "{{shop page - (buyer|seller)}}",
+      "shopId": "{{.+}}",
+      "shopType": "{{.+}}",
+      "event": "viewShopPageIris",
+      "eventAction": "{{impression t&c - (upcoming|ongoing) campaign}}",
+      "sessionIris": "{{.+}}",
+      "eventLabel":""
+    },
+    {
+      "pageType": "/shoppage",
+      "eventCategory": "{{shop page - (buyer|seller)}}",
+      "shopId": "{{.+}}",
+      "shopType": "{{.+}}",
+      "event": "clickShopPage",
+      "eventAction": "{{click close t&c - (upcoming|ongoing) campaign}}",
+      "sessionIris": "{{.+}}",
+      "eventLabel":""
+    },
+    {
+      "pageType": "/shoppage",
+      "eventCategory": "{{shop page - (buyer|seller)}}",
+      "shopId": "{{.+}}",
+      "shopType": "{{.+}}",
+      "event": "clickShopPage",
+      "eventAction": "{{click (activate|deactivate) reminder}}",
+      "sessionIris": "{{.+}}",
+      "eventLabel":""
+    },
+    {
+      "pageType": "/shoppage",
+      "eventCategory": "{{shop page - (buyer|seller)}}",
+      "shopId": "{{.+}}",
+      "shopType": "{{.+}}",
+      "event": "viewShopPageIris",
+      "eventAction": "impression toaster notify me",
+      "sessionIris": "{{.+}}",
+      "eventLabel":""
+    },
+    {
+      "pageType": "/shoppage",
+      "eventCategory": "{{shop page - (buyer|seller)}}",
+      "shopId": "{{.+}}",
+      "shopType": "{{.+}}",
+      "event": "clickShopPage",
+      "eventAction": "click ok on toaster notify me",
+      "sessionIris": "{{.+}}",
+      "eventLabel":""
+    },
+    {
+      "pageType": "/shoppage",
+      "eventCategory": "{{shop page - (buyer|seller)}}",
+      "shopId": "{{.+}}",
+      "shopType": "{{.+}}",
+      "event": "clickShopPage",
+      "eventAction": "{{click see all - (upcoming|ongoing) campaign}}",
+      "sessionIris": "{{.+}}",
+      "eventLabel":""
+    },
+    {
+      "pageType": "/shoppage",
+      "eventCategory": "{{shop page - (buyer|seller)}}",
+      "item_list": "{{.+}}",
+      "shopId": "{{.+}}",
+      "shopType": "{{.+}}",
+      "event": "view_item_list",
+      "eventAction": "{{product list impression - home - (upcoming|ongoing) campaign}}",
+      "sessionIris": "{{.+}}",
+      "items": [{
+        "item_id": "{{.+}}",
+        "price": "{{^\\d+(.\\d+)*$}}",
+        "dimension40": "{{.+}}",
+        "index": "{{\\d*.\\d*}}",
+        "item_name": "{{.+}}",
+        "dimension81": "{{.+}}",
+        "item_brand": "{{.+}}",
+        "dimension79": "{{.+}}",
+        "item_variant": "{{.+}}",
+        "item_category": "{{.+}}"
+      }],
+      "eventLabel":""
+    },
+    {
+      "pageType": "/shoppage",
+      "eventCategory": "{{shop page - (buyer|seller)}}",
+      "item_list": "{{.+}}",
+      "shopId": "{{.+}}",
+      "shopType": "{{.+}}",
+      "event": "select_content",
+      "eventAction": "{{click product - home - (upcoming|ongoing) campaign}}",
+      "sessionIris": "{{.+}}",
+      "items": [{
+        "item_id": "{{.+}}",
+        "price": "{{^\\d+(.\\d+)*$}}",
+        "dimension40": "{{.+}}",
+        "index": "{{\\d*.\\d*}}",
+        "item_name": "{{.+}}",
+        "dimension81": "{{.+}}",
+        "item_brand": "{{.+}}",
+        "dimension79": "{{.+}}",
+        "item_variant": "{{.+}}",
+        "item_category": "{{.+}}"
+      }],
+      "eventLabel":"{{.+}}"
+    },
+    {
+      "pageType": "/shoppage",
+      "eventCategory": "{{shop page - (buyer|seller)}}",
+      "shopId": "{{.+}}",
+      "shopType": "{{.+}}",
+      "event": "clickShopPage",
+      "eventAction": "click product list toggle",
+      "sessionIris": "{{.+}}",
+      "eventLabel":"{{.+}}"
+    }
+  ]
+}

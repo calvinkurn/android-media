@@ -11,14 +11,14 @@
         android:id="@+id/app_bar_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white"
+        android:background="@color/Unify_N0"
         android:theme="@style/AppTheme.AppBarOverlay">
 
         <View
             android:id="@+id/status_bar_bg"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_25"
-            android:background="@color/green_600"
+            android:background="@color/Unify_G500"
             android:visibility="invisible"
             app:layout_collapseMode="pin" />
 
@@ -27,9 +27,25 @@
             android:layout_width="match_parent"
             android:layout_height="?actionBarSize"
             android:minHeight="?attr/actionBarSize"
+            android:visibility="gone"
             app:contentInsetLeft="0dp"
             app:contentInsetStart="0dp"
             app:contentInsetStartWithNavigation="0dp" />
+
+        <com.tokopedia.searchbar.navigation_component.NavToolbar
+            android:id="@+id/nav_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?actionBarSize"
+            android:gravity="top"
+            android:minHeight="?attr/actionBarSize"
+            android:visibility="gone"
+            app:contentInsetLeft="0dp"
+            app:contentInsetStart="0dp"
+            app:toolbarAlwaysShowShadow="false"
+            app:toolbarContentType="typeTitle"
+            app:toolbarInitialTheme="light"
+            app:toolbarPageName="@string/toolbar_page_name_cart"
+            app:toolbarTitle="@string/cart" />
 
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -53,35 +69,21 @@
                     android:id="@+id/rv_cart"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_above="@+id/bottom_layout"
-                    android:layout_alignParentTop="true" />
-
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/card_header"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentTop="true"
-                    android:clickable="false"
-                    android:visibility="gone"
-                    app:cardElevation="@dimen/dp_3"
-                    tools:visibility="visible">
-
-                    <include layout="@layout/item_select_all" />
-
-                </androidx.cardview.widget.CardView>
+                    android:layout_above="@+id/bottom_layout" />
 
                 <View
                     android:id="@+id/bottom_layout_shadow"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/dp_4"
                     android:layout_above="@+id/bottom_layout"
-                    android:background="@drawable/bottom_sheet_shadow" />
+                    android:background="@drawable/shadow_top" />
 
                 <LinearLayout
                     android:id="@+id/ll_promo_checkout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_above="@id/bottom_layout"
+                    android:layout_marginBottom="-10dp"
                     android:orientation="vertical"
                     android:visibility="gone"
                     tools:visibility="visible">
@@ -89,7 +91,7 @@
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/dp_4"
-                        android:background="@drawable/bottom_sheet_shadow" />
+                        android:background="@drawable/shadow_top" />
 
                     <com.tokopedia.promocheckout.common.view.widget.ButtonPromoCheckoutView
                         android:id="@+id/promo_checkout_btn_cart"
@@ -103,7 +105,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_alignParentBottom="true"
-                    android:background="@color/white"
+                    android:background="@color/Unify_N0"
                     android:orientation="vertical"
                     android:visibility="gone"
                     tools:visibility="visible">
@@ -112,8 +114,10 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/dp_16"
-                        android:background="@color/white"
-                        android:orientation="horizontal">
+                        android:layout_marginBottom="@dimen/dp_14"
+                        android:background="@color/Unify_N0"
+                        android:orientation="horizontal"
+                        tools:ignore="DisableBaselineAlignment">
 
                         <LinearLayout
                             android:layout_width="0dp"
@@ -123,49 +127,93 @@
                             android:paddingStart="@dimen/dp_16"
                             android:paddingLeft="@dimen/dp_16"
                             android:paddingEnd="@dimen/dp_16"
-                            android:paddingRight="@dimen/dp_16"
-                            android:paddingBottom="@dimen/dp_16">
+                            android:paddingRight="@dimen/dp_16">
 
                             <com.tokopedia.unifyprinciples.Typography
-                                android:id="@+id/tv_item_count"
+                                android:id="@+id/text_total_payment_label"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:lineSpacingExtra="4sp"
                                 android:text="@string/label_price_total"
-                                android:textColor="@color/text_black"
-                                app:typographyType="body_2"
-                                app:typographyWeight="bold" />
+                                android:textColor="@color/Unify_N700_96"
+                                app:typographyType="body_2" />
 
-                            <com.tokopedia.unifyprinciples.Typography
-                                android:id="@+id/tv_total_prices"
+                            <LinearLayout
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:gravity="end"
-                                android:textColor="@color/price_label"
-                                app:typographyType="heading_4"
-                                app:typographyWeight="bold"
-                                tools:text="Rp600.000" />
+                                android:layout_marginTop="@dimen/dp_4"
+                                android:gravity="center_vertical">
+
+                                <com.tokopedia.unifyprinciples.Typography
+                                    android:id="@+id/tv_total_prices"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="end"
+                                    android:textColor="@color/Unify_N700_96"
+                                    app:typographyType="heading_4"
+                                    tools:text="Rp600.000" />
+
+                                <com.tokopedia.unifycomponents.UnifyImageButton
+                                    android:id="@+id/img_chevron_summary"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="@dimen/dp_20"
+                                    android:rotation="180"
+                                    app:srcCompat="@drawable/unify_chips_ic_chevron_normal"
+                                    app:unifyImageButtonVariant="image" />
+
+                            </LinearLayout>
 
                         </LinearLayout>
 
-                        <com.tokopedia.unifycomponents.UnifyButton
-                            android:id="@+id/go_to_courier_page_button"
-                            android:contentDescription="@string/content_desc_go_to_courier_page_button"
+                        <FrameLayout
                             android:layout_width="@dimen/dp_150"
                             android:layout_height="@dimen/dp_40"
+                            android:layout_gravity="center_vertical"
                             android:layout_marginStart="@dimen/dp_10"
-                            android:layout_marginLeft="@dimen/dp_10"
                             android:layout_marginEnd="@dimen/dp_16"
-                            android:layout_marginRight="@dimen/dp_16"
-                            android:layout_marginBottom="@dimen/dp_10"
-                            app:unifyButtonSize="medium"
-                            app:unifyButtonType="transaction"
-                            app:unifyButtonVariant="filled"
-                            tools:text="Checkout" />
+                            android:gravity="center_vertical">
+
+                            <com.tokopedia.unifycomponents.UnifyButton
+                                android:id="@+id/go_to_courier_page_button"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_gravity="center_vertical"
+                                android:contentDescription="@string/content_desc_go_to_courier_page_button"
+                                android:gravity="center_vertical"
+                                app:unifyButtonSize="medium"
+                                app:unifyButtonType="main"
+                                app:unifyButtonVariant="filled"
+                                tools:text="Checkout" />
+
+                            <View
+                                android:id="@+id/v_disabled_go_to_courier_page_button"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent" />
+
+                        </FrameLayout>
 
                     </LinearLayout>
 
                 </LinearLayout>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <include
+                    android:id="@+id/top_layout"
+                    layout="@layout/item_select_all"
+                    android:visibility="gone"
+                    tools:visibility="visible" />
+
+                <View
+                    android:id="@+id/top_layout_shadow"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp_4"
+                    android:layout_below="@+id/top_layout"
+                    android:background="@drawable/shadow_bottom" />
 
             </RelativeLayout>
 
@@ -177,8 +225,23 @@
                 android:visibility="gone"
                 tools:visibility="visible" />
 
+            <com.tokopedia.globalerror.GlobalError
+                android:id="@+id/layout_global_error"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/Unify_N0"
+                android:gravity="center"
+                android:visibility="gone"
+                tools:visibility="gone" />
+
         </FrameLayout>
 
     </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/tmp_animated_image"
+        android:layout_width="@dimen/dp_72"
+        android:layout_height="@dimen/dp_72"
+        android:visibility="gone" />
 
 </LinearLayout>

@@ -16,10 +16,22 @@ android {
             }
         }
     }
+    packagingOptions {
+        exclude 'META-INF/**'
+    }
+
+    defaultConfig {
+        multiDexEnabled true
+        if (project.hasProperty("benchmark")) {
+            testInstrumentationRunner 'com.tokopedia.test.application.environment.TkpdAndroidBenchmarkTestRunner'
+        } else {
+            testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
+        }
+    }
 }
 
 repositories {
-    maven { url 'https://hansel.io/maven' }
+    maven { url 'https://maven-hansel.tokopedia.com/maven' }
 }
 
 
@@ -28,7 +40,7 @@ buildscript {
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         mavenCentral()
         jcenter()
-        maven { url 'https://hansel.io/maven' }
+        maven { url 'https://maven-hansel.tokopedia.com/maven' }
         google()
     }
     dependencies {
@@ -49,15 +61,15 @@ dependencies {
     implementation project(rootProject.ext.features.kolCommon)
     implementation project(rootProject.ext.features.wishlistCommon)
     implementation project(rootProject.ext.features.navigationCommon)
-    implementation project(rootProject.ext.features.vote)
     implementation project(rootProject.ext.features.searchbar)
     implementation project(rootProject.ext.features.explore)
     implementation project(rootProject.ext.features.shopCommon)
     implementation project(rootProject.ext.features.goldMerchantCommon)
     implementation project(rootProject.ext.features.atc_common)
+    implementation project(rootProject.ext.features.playWidget)
     implementation project(rootProject.ext.libraries.analytics)
     implementation project(rootProject.ext.libraries.applink)
-    implementation project(rootProject.ext.libraries.imagePicker)
+    implementation project(rootProject.ext.libraries.imagePickerCommon)
     implementation project(rootProject.ext.libraries.imageuploader)
     implementation project(rootProject.ext.libraries.kotlinExtensions)
     implementation project(rootProject.ext.libraries.linker)
@@ -72,6 +84,7 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.coach_mark
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.components
+    implementation rootProject.ext.unifyDependencies.icons
     implementation rootProject.ext.unifyDependencies.global_error
     implementation project(rootProject.ext.libraries.graphql)
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
@@ -92,25 +105,12 @@ dependencies {
     implementation rootProject.ext.debugToolsDependencies.chuck
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
-    implementation rootProject.ext.miscDependencies.cameraView
     implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.miscDependencies.lottie
 
-    testImplementation rootProject.ext.testDependencies.archCoreTesting
-    testImplementation rootProject.ext.testDependencies.mockk
-    testImplementation rootProject.ext.testDependencies.kotlinMockito2
-    testImplementation rootProject.ext.testDependencies.powerMockito
-    testImplementation rootProject.ext.miscDependencies.coroutineCore
-    testImplementation rootProject.ext.testDependencies.spek2Api
-    testImplementation rootProject.ext.testDependencies.spek2Dsl
-    testImplementation rootProject.ext.testDependencies.junit
-    testImplementation rootProject.ext.testDependencies.couroutinesTest
-    testImplementation rootProject.ext.testDependencies.json
+    implementation project(rootProject.ext.features.sellerMigrationCommon)
 
     implementation rootProject.ext.networkDependencies.glide
-    implementation(rootProject.ext.miscDependencies.ucrop) {
-        exclude group: 'com.android.support'
-    }
     implementation rootProject.ext.miscDependencies.exoPlayerCore
     implementation rootProject.ext.miscDependencies.exoPlayerUi
     implementation rootProject.ext.miscDependencies.exoPlayerRtmp
@@ -119,12 +119,26 @@ dependencies {
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.components
+    implementation rootProject.ext.unifyDependencies.icons
     implementation rootProject.ext.unifyDependencies.global_error
 
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
     implementation project(rootProject.ext.features.basemvvm)
     implementation rootProject.ext.miscDependencies.viewModelKtx
+
+    testImplementation rootProject.ext.testDependencies.archCoreTesting
+    testImplementation rootProject.ext.testDependencies.mockk
+    testImplementation rootProject.ext.testDependencies.kotlinMockito2
+    testImplementation rootProject.ext.miscDependencies.coroutineCore
+    testImplementation rootProject.ext.testDependencies.spek2Api
+    testImplementation rootProject.ext.testDependencies.spek2Dsl
+    testImplementation rootProject.ext.miscDependencies.coroutineTest
+    testImplementation rootProject.ext.testDependencies.json
+    testImplementation project(rootProject.ext.libraries.unitTest)
+
+    androidTestImplementation project(rootProject.ext.libraries.instrumentation_test)
+    androidTestImplementation rootProject.ext.testDependencies.espressoContrib
 }
 
 project.ext {

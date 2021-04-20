@@ -1,16 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:versionCode="1"
-    android:versionName="1.0.0"
-    package="com.tokopedia.navigation">
-    <application
-        android:label="Navigation Test"
-        tools:ignore="HardcodedDebugMode"
-        tools:replace="android:debuggable,android:label"
-        android:debuggable="false">
+  xmlns:tools="http://schemas.android.com/tools"
+  android:versionCode="1"
+  android:versionName="1.0.0"
+  package="com.tokopedia.navigation.test">
+  
+  <application
+    android:label="Navigation Test"
+    android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+    android:debuggable="false"
+    tools:replace="android:debuggable,android:label">
+    
+    <activity
+      android:name="com.tokopedia.navigation.TestBottomNavActivity"
+      android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+    
+    <activity
+      android:name="com.tokopedia.navigation.environment.InstrumentationInboxTestActivity"
+      android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 
-        <activity android:name=".TestBottomNavActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+    <activity android:name="com.tokopedia.navigation.presentation.activity.MainParentActivity"
+        android:exported="true"
+        android:label="Tokopedia"
+        android:launchMode="singleTask"
+        android:windowSoftInputMode="adjustPan"
+        android:screenOrientation="portrait">
 
-    </application>
+      <meta-data
+          android:name="APPS_HOME"
+          android:value="true"/>
+
+      <intent-filter>
+        <action android:name="android.intent.action.VIEW" />
+        <category android:name="android.intent.category.DEFAULT" />
+        <category android:name="android.intent.category.BROWSABLE" />
+        <data
+            android:scheme="@string/internal_scheme"
+            android:host="@string/host_home"
+            android:path="@string/path_navigation"/>
+      </intent-filter>
+
+    </activity>
+    
+  </application>
 </manifest>

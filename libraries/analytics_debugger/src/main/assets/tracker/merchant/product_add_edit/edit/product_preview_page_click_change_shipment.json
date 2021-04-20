@@ -1,0 +1,13 @@
+{
+  "readme": "click change product variant on product preview page",
+  "mode": "subset",
+  "query": [
+    {
+      "event" : "clickEditProduct",
+      "eventCategory" : "edit product page",
+      "eventAction" : "click change shipping detail",
+      "eventLabel" : "{{.*}}",
+      "shopId" : "{{.+}}"
+    }
+  ]
+}

@@ -28,7 +28,10 @@ data class TableDataModel(
         val error: Boolean = false,
         @Expose
         @SerializedName("errorMsg")
-        val errorMsg: String = ""
+        val errorMsg: String = "",
+        @Expose
+        @SerializedName("showWidget")
+        val showWidget: Boolean = false
 )
 
 data class TableDataSetModel(

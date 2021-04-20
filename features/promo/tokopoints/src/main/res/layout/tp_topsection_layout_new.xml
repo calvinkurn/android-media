@@ -1,0 +1,134 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/Unify_N0"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/img_bg_header"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/tp_home_top_bg_height"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="@dimen/tp_bg_img_margintop"
+        android:layout_marginEnd="0dp"
+        android:layout_marginRight="0dp"
+        android:scaleType="centerCrop" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/img_egg"
+        android:layout_width="@dimen/dp_48"
+        android:layout_height="@dimen/dp_48"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginTop="@dimen/tp_top_margin_big_image"
+        android:contentDescription="@string/tp_label_see_loyalty" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/text_membership_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@id/img_egg"
+        android:layout_marginStart="@dimen/dp_12"
+        android:layout_marginLeft="@dimen/dp_12"
+        android:layout_toEndOf="@id/img_egg"
+        android:layout_toRightOf="@id/img_egg"
+        android:textColor="@color/Unify_N0"
+        app:typographyType="heading_5"
+        tools:text="Gulfikar Rinjani" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/text_membership_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/text_membership_label"
+        android:layout_marginStart="@dimen/dp_12"
+        android:layout_marginLeft="@dimen/dp_12"
+        android:layout_marginTop="@dimen/dp_3"
+        android:layout_marginBottom="@dimen/dp_4"
+        android:layout_toEndOf="@id/img_egg"
+        android:layout_toRightOf="@id/img_egg"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textColor="@color/Unify_N0"
+        app:typographyType="heading_3"
+        app:typographyWeight="bold"
+        tools:text="Classic Member" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/container_target"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/img_egg"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_9"
+        android:layout_marginEnd="@dimen/tp_margin_medium"
+        android:layout_marginRight="@dimen/tp_margin_medium">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_targetText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_12"
+            android:layout_marginLeft="@dimen/dp_12"
+            android:layout_marginTop="@dimen/dp_12"
+            android:layout_marginBottom="@dimen/dp_12"
+            android:lineSpacingExtra="4sp"
+            android:textColor="@color/Unify_Y200"
+            android:translationY="-1.84sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/ic_arrow_icon"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="body_2"
+            tools:text="Transact 6x more or as much as Rp1.754.000 to become Platinum Member by 31 Des e or as much as Rp1.754.000 to become Platinum Member by 31 Des " />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/ic_arrow_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_16"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginEnd="@dimen/dp_20"
+            android:layout_marginRight="@dimen/dp_20"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/tv_targetText"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_right_arrow_white" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <com.tokopedia.unifycomponents.CardUnify
+        android:id="@+id/card_point"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/container_target"
+        android:layout_marginStart="@dimen/dp_10"
+        android:layout_marginLeft="@dimen/dp_10"
+        android:layout_marginTop="@dimen/dp_9"
+        android:layout_marginEnd="@dimen/dp_10"
+        android:layout_marginRight="@dimen/dp_10"
+        android:background="@color/Unify_N0"
+        android:visibility="visible">
+
+        <com.tokopedia.tokopoints.view.customview.DynamicItemActionView
+            android:id="@+id/dynamic_widget"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_100" />
+
+    </com.tokopedia.unifycomponents.CardUnify>
+
+    <include
+        layout="@layout/tp_layout_usersaving"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/card_point"
+        android:layout_marginTop="@dimen/dp_8"
+        android:visibility="gone" />
+
+</RelativeLayout>

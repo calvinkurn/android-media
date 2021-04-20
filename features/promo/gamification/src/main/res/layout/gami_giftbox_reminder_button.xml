@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:background="@color/colorAccent"
+    tools:paddingBottom="@dimen/gami_green_gradient_btn_top_padding"
+    tools:paddingEnd="@dimen/gami_green_gradient_btn_side_padding"
+    tools:paddingStart="@dimen/gami_green_gradient_btn_side_padding"
+    tools:paddingTop="@dimen/gami_green_gradient_btn_top_padding">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:orientation="horizontal">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/imageBell"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginEnd="@dimen/gami_bell_end_margin"
+            app:srcCompat="@drawable/gami_bell_1" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvReminderBtn1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            tools:text="Ingatkan Besok"
+            android:textColor="@color/white"
+            app:typographyType="@integer/gami_green_gradient_btn_typography" />
+    </LinearLayout>
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/loaderReminder1"
+        android:layout_width="@dimen/dp_18"
+        android:layout_height="@dimen/dp_18"
+        android:layout_gravity="center"
+        android:visibility="gone" />
+</merge>

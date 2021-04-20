@@ -1,8 +1,6 @@
 <resources>
     <string name="app_name">Tokopedia Seller</string>
 
-    <string name="GOOGLE_API_KEY_SA">AIzaSyA5wS94D52rNG0ygrt0Od8UdMrLUTBMyB8</string>
-
     <string name="extend_gold_merchant">Perpanjang %1$s</string>
     <string name="upgrade_gold_merchant">Upgrade ke %1$s</string>
     <string name="payment_and_topup">Pembayaran dan Top Up</string>
@@ -51,6 +49,7 @@
     <string name="shop_settings_manage_etalase">Etalase</string>
     <string name="shop_settings_manage_notes">Catatan</string>
     <string name="shop_settings_basic_info">Informasi Dasar</string>
+    <string name="shop_settings_info">Informasi Toko</string>
     <string name="shop_settings_add_note">Tambah Catatan</string>
     <string name="shop_settings_add_etalase">Tambah Etalase</string>
     <string name="shop_settings_add_address">Tambah Lokasi</string>
@@ -89,13 +88,44 @@
     <string name="title_shop_showcase">Shop Showcase</string>
 
     <!-- Shop Score Title  -->
-    <string name="title_shopscore">Performa Toko/ Shop Score</string>
+    <string name="title_shopscore">Skor Performa Toko</string>
     
     <!-- Dynamic feature Product Add Edit -->
     <string name="action_pick_photo">Pilih Foto</string>
     <string name="action_edit_photo">Ubah Foto</string>
     <string name="label_title_add_product">Tambah Produk</string>
+    <string name="label_title_draft_product">Draft Produk</string>
+    <string name="label_title_category_picker">Pilih Kategori</string>
 
     <string name="vidpick_app_name">Video Recorder</string>
+
+    <!-- Review   -->
+    <string name="review_text">Ulasan</string>
+    <string name="title_review_reply">Balas Ulasan</string>
+    <string name="title_activity_reputation_review">Ulasan</string>
+    <string name="reputation_point_calculation">Perhitungan Poin Reputasi</string>
+    <string name="title_filter">Filter</string>
+    <string name="title_report">Laporkan</string>
+
+    <string name="drawer_title_home">Home</string>
+    <string name="welcome_text_1">Ini adalah aplikasi khusus untuk berjualan di Tokopedia.</string>
+    <string name="welcome_text_2">Yuk mulai kelola tokomu di Tokopedia, mudah &amp; gratis!</string>
+    <string name="title_activity_shop_transaction_new">Penjualan</string>
+    <string name="set_date">Atur Tanggal</string>
+
+    <!-- Product Detail -->
+    <string name="title_activity_product_detail">Rincian Produk</string>
+    <string name="product_detail_courier">Pengiriman</string>
+    <string name="label_rates_estimation_detail">Estimasi Ongkir</string>
+    <string name="label_product_installment">Cicilan</string>
+    <string name="label_product_wholesale">Harga Grosir</string>
+    <string name="label_product_desc">Deskripsi Produk</string>
+    <string name="label_image_preview_pdp">Gambar produk</string>
+    <string name="gallery_top_bar_title">Foto dari Pembeli</string>
+
+    <!-- Order Management History   -->
+    <string name="transaction_title_activity_order_history">Detail Status</string>
+
+    <string name="review_reminder_title">Pengingat Ulasan</string>
 
 </resources>

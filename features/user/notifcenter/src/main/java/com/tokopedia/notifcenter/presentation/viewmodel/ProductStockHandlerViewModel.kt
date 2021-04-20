@@ -14,13 +14,18 @@ import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.network.constant.ErrorNetMessage
 import com.tokopedia.notifcenter.data.entity.ProductData
 import com.tokopedia.notifcenter.data.entity.ProductStockReminder
+import com.tokopedia.notifcenter.data.entity.deletereminder.DeleteReminderResponse
 import com.tokopedia.notifcenter.data.mapper.ProductHighlightMapper
 import com.tokopedia.notifcenter.data.viewbean.ProductHighlightViewBean
 import com.tokopedia.notifcenter.domain.ProductHighlightUseCase
+import com.tokopedia.notifcenter.domain.ProductStockReminderDeleteUseCase
 import com.tokopedia.notifcenter.domain.ProductStockReminderUseCase
 import com.tokopedia.notifcenter.util.SingleLiveEvent
-import com.tokopedia.notifcenter.util.coroutines.DispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.usecase.RequestParams
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.usecase.coroutines.Success
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 import java.net.ConnectException
@@ -32,8 +37,9 @@ import com.tokopedia.notifcenter.domain.ProductStockReminderUseCase.Companion.pa
 
 interface ProductStockHandlerContract {
     fun setProductReminder(productId: String, notificationId: String)
+    fun deleteReminder(productId: String, notificationId: String)
     fun getHighlightProduct(shopId: String)
-    fun addProductToCart(product: ProductData?)
+    fun addProductToCart(userId: String, product: ProductData?)
     fun onErrorMessage(throwable: Throwable)
 }
 
@@ -41,11 +47,16 @@ class ProductStockHandlerViewModel @Inject constructor(
         private val stockReminderUseCase: ProductStockReminderUseCase,
         private val productHighlightUseCase: ProductHighlightUseCase,
         private var addToCartUseCase: AddToCartUseCase,
-        dispatcher: DispatcherProvider
-): BaseViewModel(dispatcher.io()), ProductStockHandlerContract {
+        private val deleteReminderUseCase: ProductStockReminderDeleteUseCase,
+        dispatcher: CoroutineDispatchers
+): BaseViewModel(dispatcher.io), ProductStockHandlerContract {
 
     private val _productStockReminder = SingleLiveEvent<ProductStockReminder>()
     val productStockReminder: LiveData<ProductStockReminder> get() = _productStockReminder
+
+    private val _deleteReminder = SingleLiveEvent<Result<DeleteReminderResponse>>()
+    val deleteReminder: LiveData<Result<DeleteReminderResponse>>
+        get() = _deleteReminder
 
     private val _productHighlight = MutableLiveData<List<ProductHighlightViewBean>>()
     val productHighlight: LiveData<List<ProductHighlightViewBean>> get() = _productHighlight
@@ -70,9 +81,9 @@ class ProductStockHandlerViewModel @Inject constructor(
         }, {})
     }
 
-    override fun addProductToCart(product: ProductData?) {
+    override fun addProductToCart(userId: String, product: ProductData?) {
         if (product == null) return
-        addToCartUseCase.createObservable(atcParams(product))
+        addToCartUseCase.createObservable(atcParams(userId, product))
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -106,12 +117,20 @@ class ProductStockHandlerViewModel @Inject constructor(
         }
     }
 
+    override fun deleteReminder(productId: String, notificationId: String) {
+        deleteReminderUseCase.get(productId, notificationId, {
+            _deleteReminder.setValue(Success(it))
+        }, {
+            _deleteReminder.setValue(Fail(it))
+        })
+    }
+
     fun cleared() {
         onCleared()
     }
 
     companion object {
-        private fun atcParams(product: ProductData?): RequestParams {
+        private fun atcParams(userId: String, product: ProductData?): RequestParams {
             val addToCartRequestParams = AddToCartRequestParams()
             addToCartRequestParams.productId = product?.productId.toLongOrZero()
             addToCartRequestParams.shopId = product?.shop?.id ?: -1
@@ -119,6 +138,7 @@ class ProductStockHandlerViewModel @Inject constructor(
             addToCartRequestParams.notes = ""
             addToCartRequestParams.productName = product?.name?: ""
             addToCartRequestParams.price = product?.price?: ""
+            addToCartRequestParams.userId = userId
 
             return RequestParams.create().apply {
                 putObject(AddToCartUseCase.REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST, addToCartRequestParams)

@@ -1,6 +1,6 @@
 <resources>
     <string name="title_search_result" >Pencarian</string>
-    <string name="app_name">Search</string>
+    <string name="app_name_search">Search</string>
     <string name="search_result_page">Search Result Page</string>
     <string name="OK">OK</string>
 
@@ -46,9 +46,11 @@
     <string name="empty_search_shop_recommendation_title">Toko rekomendasi</string>
 
     <string name="msg_empty_search_product_title">Oops, Produk Nggak Ditemukan</string>
+    <string name="msg_empty_search_product_title_local">Oops, barangnya nggak ketemu</string>
     <string name="msg_empty_search_product_content">Coba kata kunci lain atau cek produk rekomendasi di bawah.</string>
     <string name="msg_empty_search_product_content_with_filter">Coba kurangi salah satu filter yang kamu gunakan :</string>
     <string name="msg_empty_search_product_button">Ganti Kata Kunci</string>
+    <string name="msg_empty_search_product_content_local">\"%s\" sepertinya belum ada di %s</string>
 
     <string name="post_count_value">%1$s post</string>
     <string name="btn_following_text">Following</string>
@@ -64,7 +66,6 @@
     <string name="free_ongkir_promo_show_case_description">Semua barang berlogo Bebas Ongkir, biaya kirimnya berpotensi GRATIS!</string>
 
     <string name="banned_products_empty_search_title">Pencarian terbatas</string>
-    <string name="banned_products_empty_search_go_to_browser_button">Cari di Browser</string>
     <string name="banned_products_ticker_title">Hasil pencarian terbatas</string>
 
     <string name="inspiration_carousel_title">Pilih sesuai budget-mu</string>
@@ -74,18 +75,30 @@
     <string name="inspiration_carousel_product_description">Layar 6.22 in.\nKamera 12MP\nRAM 3/4GB\nBaterai 5000mAH</string>
     <string name="inspiration_carousel_product_price">Rp50.000.000</string>
     <string name="inspiration_carousel_review_count">(60)</string>
+    <string name="inspiration_carousel_button">Cek Sekarang</string>
 
     <string name="broad_match_title">Pot tanaman alumunium IKEA</string>
     <string name="broad_match_see_more">Lihat Semua</string>
+    <string name="broad_match_in_tokopedia">di Tokopedia</string>
 
-    <string name="search_product_filter_onboarding_title">Urutkan &amp; filter kini jadi satu</string>
-    <string name="search_product_filter_onboarding_description">Kamu bisa lebih mudah cari barang sesuai lokasi, kurir, hingga mengurutkannya sesuai harga dalam satu tempat.</string>
+    <string name="search_product_boe_label_onboarding_title">Pengiriman gratis &amp; cepat dengan TokoCabang</string>
+    <string name="search_product_boe_label_onboarding_description">Dikirim dari penyimpanan Tokopedia terdekat, dan dapatkan Bebas Ongkir Extra sepuasnya</string>
 
     <string name="search_inspiration_card_title">Mungkin maksud kamu ini?</string>
     <string name="search_inspiration_card_option">putih</string>
+    <string name="search_inspiration_card_curated_title">Fashion Pria</string>
+    <string name="search_inspiration_card_curated_button">Lihat Sekarang</string>
 
     <string name="content_desc_searchTextView">edit text search</string>
     <string name="content_desc_search_home_button">button home</string>
     <string name="content_desc_search_cart_button">button keranjang</string>
     <string name="content_desc_search_change_grid_button">button ganti layout</string>
+    <string name="content_desc_search_back_button">button back</string>
+    <string name="content_desc_search_icon_search">search icon</string>
+
+    <string name="search_add_to_cart_success">Sukses menambah ke keranjang</string>
+
+    <string name="search_result_global_search_text">Belum nemu barang yang cocok?</string>
+    <string name="search_result_global_search_button_text">Cari di Tokopedia</string>
+    <string name="search_result_local_search_other_products">Barang lainnya di %s</string>
 </resources>

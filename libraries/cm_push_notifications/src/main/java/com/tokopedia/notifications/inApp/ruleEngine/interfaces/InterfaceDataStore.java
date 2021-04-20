@@ -10,13 +10,12 @@ import rx.Completable;
 public interface InterfaceDataStore {
     Completable putDataToStore(CMInApp value);
     Completable putDataToStore(List<CMInApp> inAppDataRecords);
-    List<CMInApp> getDataFromStore(String key);
+    List<CMInApp> getDataFromStore(String key, boolean isActivity);
     Completable putElapsedTimeToStore(ElapsedTime elapsedTime);
     ElapsedTime getElapsedTimeFromStore();
     Completable deleteRecord(long id);
     CMInApp getInAppData(long id);
     Completable updateInAppDataFreq(long id);
-    Completable updateInAppDataFreq(long id, long newSt);
     Completable viewDismissed(long id);
     Completable interactedWithView(long id);
 }

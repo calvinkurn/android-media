@@ -1,79 +1,77 @@
 package com.tokopedia.onboarding.viewmodel
 
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.tokopedia.onboarding.domain.model.ConfigDataModel
 import com.tokopedia.onboarding.domain.usecase.DynamicOnboardingUseCase
-import com.tokopedia.onboarding.util.InstantRunExecutorSpek
-import com.tokopedia.onboarding.util.TestDispatcherProvider
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.onboarding.view.viewmodel.DynamicOnboardingViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.every
-import io.mockk.invoke
 import io.mockk.mockk
 import io.mockk.verify
-import org.spekframework.spek2.Spek
-import org.spekframework.spek2.style.gherkin.Feature
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import org.junit.Before
+import org.junit.Rule
+import org.junit.Test
 
-class DynamicOnboardingViewModelTest : Spek({
+class DynamicOnboardingViewModelTest {
 
-    InstantRunExecutorSpek(this)
+    @get:Rule
+    val instantTaskExecutorRule = InstantTaskExecutorRule()
 
-    val dynamicOnboardingUseCase = mockk<DynamicOnboardingUseCase>(relaxed = true)
-    val viewModel = DynamicOnboardingViewModel(TestDispatcherProvider(), dynamicOnboardingUseCase)
+    @ExperimentalCoroutinesApi
+    val dispatcher = CoroutineTestDispatchersProvider
 
-    Feature("dynamic onboarding data config") {
-        val observer = mockk<Observer<Result<ConfigDataModel>>>(relaxed = true)
-        val sampleConfig = ConfigDataModel()
+    private val onboardingUseCase = mockk<DynamicOnboardingUseCase>(relaxed = true)
+    private val observer = mockk<Observer<Result<ConfigDataModel>>>(relaxed = true)
 
-        Scenario("get valid config") {
-            val success = Success(sampleConfig)
+    lateinit var viewmodel : DynamicOnboardingViewModel
 
-            Given("usecase return success data") {
-                every {
-                    dynamicOnboardingUseCase.getDynamicOnboardingData(captureLambda(), any())
-                } answers {
-                    val config = lambda<(ConfigDataModel) -> Unit>()
-                    config.invoke(sampleConfig)
-                }
+    @ExperimentalCoroutinesApi
+    @Before
+    fun setup() {
+        viewmodel = DynamicOnboardingViewModel(dispatcher, onboardingUseCase)
+        viewmodel.configData.observeForever(observer)
+    }
 
-                viewModel.configData.observeForever(observer)
-            }
+    @Test
+    fun `get data config - success`() {
+        val mockkResponse = ConfigDataModel()
+        val successValue = Success(mockkResponse)
 
-            When("get data") {
-                viewModel.getData()
-            }
-
-            Then("it should be return success data") {
-                verify { observer.onChanged(success) }
-                assert(viewModel.configData.value == success)
-            }
+        every {
+            onboardingUseCase.getDynamicOnboardingData(any(), any())
+        } answers {
+            firstArg<(ConfigDataModel) -> Unit>().invoke(mockkResponse)
         }
 
-        Scenario("get valid config") {
-            val throwableMock = Throwable("Opps!")
-            val fail = Fail(throwableMock)
+        viewmodel.getData()
 
-            Given("usecase return success data") {
-                every {
-                    dynamicOnboardingUseCase.getDynamicOnboardingData(any(), captureLambda())
-                } answers {
-                    val throwable = lambda<(Throwable) -> Unit>()
-                    throwable.invoke(throwableMock)
-                }
-
-                viewModel.configData.observeForever(observer)
-            }
-
-            When("get data") {
-                viewModel.getData()
-            }
-
-            Then("it should be return success data") {
-                verify { observer.onChanged(fail) }
-                assert(viewModel.configData.value == fail)
-            }
+        verify {
+            observer.onChanged((Success(mockkResponse)))
+            assert(viewmodel.configData.value == successValue)
         }
     }
-})
+
+    @Test
+    fun `get data config  - fail`() {
+        val mockThrowable = Throwable("Ops!")
+        val errorValue = Fail(mockThrowable)
+
+        every {
+            onboardingUseCase.getDynamicOnboardingData(any(), any())
+        } answers {
+            secondArg<(Throwable) -> Unit>().invoke(mockThrowable)
+        }
+
+        viewmodel.getData()
+
+        verify {
+            observer.onChanged((Fail(mockThrowable)))
+            assert(viewmodel.configData.value == errorValue)
+        }
+    }
+}

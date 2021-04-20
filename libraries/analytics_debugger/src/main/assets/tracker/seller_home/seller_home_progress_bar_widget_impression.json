@@ -1,0 +1,13 @@
+{
+  "readme": "Seller Home Dashboard - progress bar widget impression",
+  "mode": "exact",
+  "query": [
+    {
+      "event": "viewSellerWidget",
+      "eventCategory": "seller app - home",
+      "eventAction": "{{impression widget progress bar - .{1,}}}",
+      "eventLabel": "{{.{1,}}}",
+      "sessionIris": "{{.{1,}}}"
+    }
+  ]
+}

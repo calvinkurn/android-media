@@ -7,6 +7,18 @@
         <activity
             android:name=".view.activity.AttachProductActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White" />
+            android:theme="@style/Theme.AttachCommon">
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_marketplace"
+                    android:path="@string/path_user_attach_product"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
+        </activity>
     </application>
 </manifest>

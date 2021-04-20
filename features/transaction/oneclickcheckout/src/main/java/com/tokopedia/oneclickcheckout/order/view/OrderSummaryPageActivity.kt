@@ -5,21 +5,19 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.purchase_platform.common.constant.Constant
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
 import com.tokopedia.oneclickcheckout.order.di.DaggerOrderSummaryPageComponent
 import com.tokopedia.oneclickcheckout.order.di.OrderSummaryPageComponent
 import com.tokopedia.oneclickcheckout.order.di.OrderSummaryPageModule
 import javax.inject.Inject
 
-class OrderSummaryPageActivity : BaseSimpleActivity(), HasComponent<OrderSummaryPageComponent> {
+open class OrderSummaryPageActivity : BaseSimpleActivity(), HasComponent<OrderSummaryPageComponent> {
 
     @Inject
     lateinit var orderSummaryAnalytics: OrderSummaryAnalytics
 
     override fun getNewFragment(): Fragment? {
-        return OrderSummaryPageFragment.newInstance(intent?.getBooleanExtra(Constant.EXTRA_OCC_SOURCE_PDP, false) ?: false,
-                intent?.data?.getQueryParameter(OrderSummaryPageFragment.QUERY_PRODUCT_ID))
+        return OrderSummaryPageFragment.newInstance(intent?.data?.getQueryParameter(OrderSummaryPageFragment.QUERY_PRODUCT_ID))
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

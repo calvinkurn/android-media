@@ -5,7 +5,7 @@
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/Neutral_N0"
+    android:background="@color/Unify_N0"
     android:fitsSystemWindows="true"
     android:orientation="vertical">
 
@@ -27,9 +27,9 @@
             <com.google.android.material.appbar.CollapsingToolbarLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@color/Neutral_N0"
+                android:background="@color/Unify_N0"
                 android:fitsSystemWindows="true"
-                app:contentScrim="@color/Neutral_N0"
+                app:contentScrim="@color/Unify_N0"
                 app:layout_scrollFlags="scroll|enterAlways">
 
                 <include

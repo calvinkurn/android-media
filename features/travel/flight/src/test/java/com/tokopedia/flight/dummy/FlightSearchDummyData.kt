@@ -1,6 +1,9 @@
 package com.tokopedia.flight.dummy
 
 import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerModel
+import com.tokopedia.flight.promo_chips.data.model.AirlinePrice
+import com.tokopedia.flight.promo_chips.data.model.DataPromoChips
+import com.tokopedia.flight.promo_chips.data.model.FlightLowestPrice
 import com.tokopedia.flight.searchV4.data.cloud.single.Route
 import com.tokopedia.flight.searchV4.presentation.model.FlightAirlineModel
 import com.tokopedia.flight.searchV4.presentation.model.FlightFareModel
@@ -45,11 +48,11 @@ val SEARCH_STATISTICS_DATA = FlightSearchStatisticModel(
                 DepartureStat(DepartureTimeEnum._12, 2000000, "Rp2.000.000"),
                 DepartureStat(DepartureTimeEnum._18, 2500000, "Rp2.500.000")),
         arrayListOf(RefundableStat(RefundableEnum.REFUNDABLE, 1000000, "Rp1.000.000")),
-        true, true, true)
+        true, true, true, true, true)
 
 val JOURNEY_LIST_DATA = arrayListOf(
         FlightJourneyModel(
-                "", "DummyId", "CGK",
+                "", "DummyId", false, true, "CGK",
                 "Bandara International Soekarno Hatta", "",
                 "10.00", 111111, "BTJ", "12.40",
                 "Bandara International Sultan Iskandar Muda", "",
@@ -63,7 +66,7 @@ val JOURNEY_LIST_DATA = arrayListOf(
                 arrayListOf(), "", ""
         ),
         FlightJourneyModel(
-                "", "DummyId", "CGK",
+                "", "DummyId", true, false, "CGK",
                 "Bandara International Soekarno Hatta", "",
                 "10.00", 111111, "BTJ", "12.40",
                 "Bandara International Sultan Iskandar Muda", "",
@@ -91,7 +94,7 @@ val META_MODEL_NEED_REFRESH_MAX_RETRY = FlightSearchMetaModel(
         arrayListOf("GA", "QA"), "asdasd", "", 0)
 
 val DEPARTURE_JOURNEY = FlightJourneyModel(
-        "", "DummyId", "CGK",
+        "", "DummyId", true, true, "CGK",
         "Bandara International Soekarno Hatta", "",
         "10.00", 111111, "BTJ", "12.40",
         "Bandara International Sultan Iskandar Muda", "",
@@ -106,7 +109,7 @@ val DEPARTURE_JOURNEY = FlightJourneyModel(
 )
 
 val VALID_RETURN_JOURNEY = FlightJourneyModel(
-        "", "DummyId", "BTJ",
+        "", "DummyId", false, false, "BTJ",
         "Bandara International Sultan Iskandar Muda", "",
         "10.00", 111111, "CGK", "12.40",
         "Bandara International Soekarno Hatta", "",
@@ -121,7 +124,7 @@ val VALID_RETURN_JOURNEY = FlightJourneyModel(
 )
 
 val NOT_VALID_DIFF_HOUR_RETURN_JOURNEY = FlightJourneyModel(
-        "", "DummyId", "BTJ",
+        "", "DummyId", false, false, "BTJ",
         "Bandara International Sultan Iskandar Muda", "",
         "10.00", 111111, "CGK", "12.40",
         "Bandara International Soekarno Hatta", "",
@@ -136,7 +139,7 @@ val NOT_VALID_DIFF_HOUR_RETURN_JOURNEY = FlightJourneyModel(
 )
 
 val NOT_VALID_RETURN_JOURNEY = FlightJourneyModel(
-        "", "DummyId", "BTJ",
+        "", "DummyId", false, false, "BTJ",
         "Bandara International Sultan Iskandar Muda", "",
         "10.00", 111111, "CGK", "12.40",
         "Bandara International Soekarno Hatta", "",
@@ -151,3 +154,8 @@ val NOT_VALID_RETURN_JOURNEY = FlightJourneyModel(
 )
 
 val COMBO_KEY = "DUMMY_COMBOKEY"
+
+val PROMO_CHIPS = FlightLowestPrice(listOf(DataPromoChips(
+        "20210305", listOf(AirlinePrice("QZ","https://ecs7.tokopedia.net/img/attachment/2017/12/20/5512496/5512496_6367d556-f391-4270-9444-8e740fb2f2a4.png","Indonesia AirAsia", "Rp 471.901", 471901),
+        AirlinePrice("QG","https://ecs7.tokopedia.net/img/attachment/2017/12/20/5512496/5512496_7f755496-e7cd-480d-bcc0-081c84828d37.png","Citilink Indonesia", "Rp 471.920", 471920)))))
+val PROMO_CHIPS_EMPTY = FlightLowestPrice()

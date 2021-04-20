@@ -12,9 +12,6 @@ public class ProductList {
     @SerializedName("id")
     @Expose
     private String id;
-    @SerializedName("price")
-    @Expose
-    private int price;
     @SerializedName("quantity")
     @Expose
     private int quantity;
@@ -24,10 +21,6 @@ public class ProductList {
 
     public String getId() {
         return id;
-    }
-
-    public int getPrice() {
-        return price;
     }
 
     public int getQuantity() {

@@ -10,7 +10,11 @@ object DynamicChannelComponentMapper {
                 id = channel.id,
                 groupId = channel.groupId,
                 type = channel.type,
+                layout = channel.layout,
                 verticalPosition = verticalPosition,
+                contextualInfo = channel.contextualInfo,
+                widgetParam = channel.widgetParam,
+                pageName = channel.pageName,
                 channelHeader = ChannelHeader(
                         channel.header.id,
                         channel.header.name,
@@ -46,6 +50,7 @@ object DynamicChannelComponentMapper {
                         channel.showPromoBadge,
                         channel.hasCloseButton,
                         ServerTimeOffsetUtil.getServerTimeOffsetFromUnix(channel.header.serverTimeUnix),
+                        channel.timestamp,
                         channel.isAutoRefreshAfterExpired
                 ),
                 trackingAttributionModel = TrackingAttributionModel(
@@ -82,23 +87,37 @@ object DynamicChannelComponentMapper {
                             isOutOfStock = it.isOutOfStock,
                             isFreeOngkirActive = it.freeOngkir.isActive,
                             freeOngkirImageUrl = it.freeOngkir.imageUrl,
-                            shopId = it.shop.shopId,
+                            shop =  ChannelShop(
+                                    id = it.shop.shopId,
+                                    shopLocation = it.shop.city
+                            ),
                             labelGroup = it.labelGroup.map { label ->
                                 LabelGroup(
                                         title = label.title,
                                         position = label.position,
-                                        type = label.type
+                                        type = label.type,
+                                        url = label.imageUrl
                                 )
                             },
                             hasBuyButton = it.hasBuyButton,
                             rating = it.rating,
+                            ratingFloat = it.ratingFloat,
                             countReview = it.countReview,
                             backColor = it.backColor,
                             benefit = ChannelBenefit(
                                     it.benefit.type,
                                     it.benefit.value
                             ),
-                            textColor = it.textColor
+                            textColor = it.textColor,
+                            recommendationType = it.recommendationType,
+                            campaignCode = it.campaignCode,
+                            shopId = it.shop.shopId,
+                            badges = it.badges.map { badge ->
+                                ChannelGridBadges(
+                                        title = badge.title,
+                                        imageUrl = badge.imageUrl
+                                )
+                            }
                     )
                 }
         )

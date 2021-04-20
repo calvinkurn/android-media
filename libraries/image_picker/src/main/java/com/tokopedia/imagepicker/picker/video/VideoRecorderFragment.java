@@ -3,14 +3,16 @@ package com.tokopedia.imagepicker.picker.video;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 
 import com.otaliastudios.cameraview.CameraListener;
 import com.otaliastudios.cameraview.CameraOptions;
@@ -22,12 +24,13 @@ import com.otaliastudios.cameraview.controls.Mode;
 import com.otaliastudios.cameraview.gesture.Gesture;
 import com.otaliastudios.cameraview.gesture.GestureAction;
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
-import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
-import com.tokopedia.imagepicker.R;
-import com.tokopedia.imagepicker.common.util.VideoUtils;
+import com.tokopedia.config.GlobalConfig;
+import com.tokopedia.iconunify.IconUnify;
 import com.tokopedia.imagepicker.picker.main.builder.StateRecorderType;
 import com.tokopedia.imagepicker.picker.widget.VideoPlayerView;
+import com.tokopedia.imagepicker.R;
+import com.tokopedia.utils.file.FileUtil;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -41,6 +44,9 @@ import java.util.concurrent.TimeUnit;
 public class VideoRecorderFragment extends TkpdBaseV4Fragment {
     private static final String SAVED_FLASH_INDEX = "saved_flash_index";
     private static final int DURATION_MAX = 60000;
+    private static final String VIDEO_EXT = ".mp4";
+    private static final String DIR_PREFIX = "tkpdvideo";
+    private static final String RESULT_DIR = String.format("%s%s/", "Tokopedia/", DIR_PREFIX);
 
     private List<Flash> flashList = new ArrayList<>();
     private int flashIndex = 0;
@@ -48,7 +54,7 @@ public class VideoRecorderFragment extends TkpdBaseV4Fragment {
     private VideoPickerCallback videoCallback;
 
     private CameraView cameraView;
-    private ImageButton btnFlash;
+    private IconUnify btnFlash;
     private ImageButton btnFlip;
     private ProgressBar progress;
     private TextView txtDuration;
@@ -65,7 +71,7 @@ public class VideoRecorderFragment extends TkpdBaseV4Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (savedInstanceState != null){
+        if (savedInstanceState != null) {
             flashIndex = savedInstanceState.getInt(SAVED_FLASH_INDEX, 0);
         }
     }
@@ -128,7 +134,7 @@ public class VideoRecorderFragment extends TkpdBaseV4Fragment {
         super.onResume();
         try {
             cameraView.open();
-        } catch (Throwable t){
+        } catch (Throwable t) {
             if (GlobalConfig.isAllowDebuggingTools())
                 t.printStackTrace();
         }
@@ -139,7 +145,7 @@ public class VideoRecorderFragment extends TkpdBaseV4Fragment {
         super.onPause();
         try {
             cameraView.close();
-        } catch (Throwable t){
+        } catch (Throwable t) {
             if (GlobalConfig.isAllowDebuggingTools())
                 t.printStackTrace();
         }
@@ -150,7 +156,7 @@ public class VideoRecorderFragment extends TkpdBaseV4Fragment {
         try {
             cameraView.destroy();
             timer.cancel();
-        } catch (Throwable t){
+        } catch (Throwable t) {
             if (GlobalConfig.isAllowDebuggingTools())
                 t.printStackTrace();
         }
@@ -166,7 +172,7 @@ public class VideoRecorderFragment extends TkpdBaseV4Fragment {
             }
 
             @Override
-            public void onVideoTaken(@NonNull VideoResult result){
+            public void onVideoTaken(@NonNull VideoResult result) {
                 super.onVideoTaken(result);
                 videoPath = result.getFile().getAbsolutePath();
                 videoPreview.setVideoURI(Uri.parse(result.getFile().getAbsolutePath()));
@@ -192,12 +198,12 @@ public class VideoRecorderFragment extends TkpdBaseV4Fragment {
     private void playPreview(String videoPath) {
         if (videoPreview.isPlaying()) return;
 
-        if (new File(videoPath).exists()){
+        if (new File(videoPath).exists()) {
             videoPreview.start();
         }
     }
 
-    private void recording(){
+    private void recording() {
         videoCallback.onVideoRecorder(StateRecorderType.START);
 
         //set default value
@@ -217,44 +223,49 @@ public class VideoRecorderFragment extends TkpdBaseV4Fragment {
             progress.setVisibility(View.VISIBLE);
             btnFlip.setVisibility(View.GONE);
             btnFlash.setVisibility(View.GONE);
-            File file = VideoUtils.getVideoPath();
+            File file = getVideoPath();
             cameraView.takeVideo(file, DURATION_MAX);
             //progress and duration countdown
             timer = new Timer();
             timer.schedule(
                     new TimerTask() {
-                           @Override
-                           public void run() {
-                               if (cameraView != null && cameraView.isTakingVideo()) {
-                                   if (getActivity() != null) {
-                                       getActivity().runOnUiThread(() -> {
-                                           long minutes = TimeUnit.MILLISECONDS.toMinutes(countDownMills[0]);
-                                           long seconds = TimeUnit.MILLISECONDS.toSeconds(countDownMills[0]) - TimeUnit.MINUTES.toSeconds(minutes);
-                                           txtDuration.setText(getString(R.string.vidpick_duration_format,
-                                                   String.format(Locale.getDefault(), "%02d",minutes),
-                                                   String.format(Locale.getDefault(), "%02d", seconds)));
-                                           progress.setProgress(progress.getProgress() + 1000);
-                                           countDownMills[0] -= 1000;
-                                       });
-                                   }
-                               }
-                           }
-                       },1, 1000);
+                        @Override
+                        public void run() {
+                            if (cameraView != null && cameraView.isTakingVideo()) {
+                                if (getActivity() != null) {
+                                    getActivity().runOnUiThread(() -> {
+                                        long minutes = TimeUnit.MILLISECONDS.toMinutes(countDownMills[0]);
+                                        long seconds = TimeUnit.MILLISECONDS.toSeconds(countDownMills[0]) - TimeUnit.MINUTES.toSeconds(minutes);
+                                        txtDuration.setText(getString(R.string.vidpick_duration_format,
+                                                String.format(Locale.getDefault(), "%02d", minutes),
+                                                String.format(Locale.getDefault(), "%02d", seconds)));
+                                        progress.setProgress(progress.getProgress() + 1000);
+                                        countDownMills[0] -= 1000;
+                                    });
+                                }
+                            }
+                        }
+                    }, 1, 1000);
         }
+    }
+
+    public static File getVideoPath() {
+        File publicDir = FileUtil.getTokopediaInternalDirectory(RESULT_DIR, true);
+        return new File(publicDir.getAbsolutePath(), FileUtil.generateUniqueFileName() + VIDEO_EXT);
     }
 
     private void initCameraFlash() {
         if (cameraView == null || cameraView.getCameraOptions() == null) return;
 
-        if (cameraView.getCameraOptions() != null){
+        if (cameraView.getCameraOptions() != null) {
             Collection<Flash> supportedFlash = cameraView.getCameraOptions().getSupportedFlash();
-            for (Flash flash : supportedFlash){
+            for (Flash flash : supportedFlash) {
                 if (flash != Flash.TORCH)
                     flashList.add(flash);
             }
         }
 
-        if (flashList.size() > 0){
+        if (flashList.size() > 0) {
             btnFlash.setVisibility(View.VISIBLE);
             setCameraFlash();
         } else {
@@ -282,12 +293,13 @@ public class VideoRecorderFragment extends TkpdBaseV4Fragment {
     }
 
     private void setUIFlashCamera(int flashEnum) {
-        if (flashEnum == Flash.AUTO.ordinal()){
-            btnFlash.setImageDrawable(MethodChecker.getDrawable(btnFlash.getContext(),R.drawable.ic_auto_flash));
-        } else if (flashEnum == Flash.ON.ordinal()){
-            btnFlash.setImageDrawable(MethodChecker.getDrawable(btnFlash.getContext(),R.drawable.ic_on_flash));
-        } else if (flashEnum == Flash.OFF.ordinal()){
-            btnFlash.setImageDrawable(MethodChecker.getDrawable(btnFlash.getContext(),R.drawable.ic_off_flash));
+        int colorWhite = ContextCompat.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_Static_White);
+        if (flashEnum == Flash.AUTO.ordinal()) {
+            btnFlash.setImageDrawable(MethodChecker.getDrawable(getActivity(), com.tokopedia.imagepicker.common.R.drawable.ic_auto_flash));
+        } else if (flashEnum == Flash.ON.ordinal()) {
+            btnFlash.setImage(IconUnify.FLASH_ON, colorWhite, colorWhite, colorWhite, colorWhite);
+        } else if (flashEnum == Flash.OFF.ordinal()) {
+            btnFlash.setImage(IconUnify.FLASH_OFF, colorWhite, colorWhite, colorWhite, colorWhite);
         }
     }
 
@@ -316,10 +328,13 @@ public class VideoRecorderFragment extends TkpdBaseV4Fragment {
         return null;
     }
 
-    public interface VideoPickerCallback{
+    public interface VideoPickerCallback {
         void onVideoTaken(String filePath);
+
         void onVideoRecorder(@StateRecorderType int state);
+
         void onVideoPreviewVisible();
+
         void onVideoRecorderVisible();
     }
 }

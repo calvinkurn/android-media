@@ -9,11 +9,11 @@ object SaldoDetailsConstants {
     private val WEB_DOMAIN_URL = TokopediaUrl.getInstance().WEB
 
     @JvmField
-    val SALDO_HELP_URL = "https://www.tokopedia.com/help/article/a-1709?refid=st-1005"
+    val SALDO_HELP_URL = "https://www.tokopedia.com/help/browse/t-0057-saldo-tarik-dana?refid=st-1005"
     @JvmField
     val SALDOLOCK_PAYNOW_URL = WEB_DOMAIN_URL + "fm/modal-toko/dashboard/pembayaran"
-    val SALDO_HOLD_HELP_URL = WEB_DOMAIN_URL + "help/article/mengapa-saldo-saya-tidak-dapat-digunakan?refid=st-1235"
-    val SALDO_HOLD_HELP_URL_TWO = WEB_DOMAIN_URL + "help/article/mengapa-saldo-saya-direview?refid=st-1235"
+    val SALDO_HOLD_HELP_URL = "https://www.tokopedia.com/help/article/t-0057-saldo-tidak-dapat-digunakan?refid=st-1235"
+    val SALDO_HOLD_HELP_URL_TWO =  "https://www.tokopedia.com/help/article/t-0057-saldo-direview?refid=st-1235"
 
 
     @JvmField

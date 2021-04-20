@@ -29,10 +29,10 @@ import com.google.android.material.snackbar.Snackbar;
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.authentication.AuthHelper;
+import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.uimodel.AutoCompleteUiModel;
+import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.uimodel.PredictionResult;
 import com.tokopedia.logisticaddaddress.R;
 import com.tokopedia.logisticaddaddress.data.IMapsRepository;
-import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.viewmodel.AutoCompleteViewModel;
-import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.viewmodel.PredictionResult;
 import com.tokopedia.network.utils.TKPDMapParam;
 import com.tokopedia.user.session.UserSession;
 
@@ -296,7 +296,7 @@ public class SuggestionLocationAdapter extends ArrayAdapter<PredictionResult>
                         .subscribeOn(Schedulers.newThread())
                         .observeOn(AndroidSchedulers.mainThread())
                         .unsubscribeOn(Schedulers.newThread())
-                        .subscribe(new Subscriber<AutoCompleteViewModel>() {
+                        .subscribe(new Subscriber<AutoCompleteUiModel>() {
                             @Override
                             public void onCompleted() {
 
@@ -314,7 +314,7 @@ public class SuggestionLocationAdapter extends ArrayAdapter<PredictionResult>
                             }
 
                             @Override
-                            public void onNext(AutoCompleteViewModel response) {
+                            public void onNext(AutoCompleteUiModel response) {
                                 Timber.d("PORING Terima Result");
                                 mResultList = response.getListOfPredictionResults();
                                 notifyDataSetChanged();

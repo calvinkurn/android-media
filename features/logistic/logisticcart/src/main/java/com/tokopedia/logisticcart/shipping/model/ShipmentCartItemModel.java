@@ -3,7 +3,6 @@ package com.tokopedia.logisticcart.shipping.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.tokopedia.logisticdata.data.entity.address.RecipientAddressModel;
 import com.tokopedia.promocheckout.common.view.uimodel.VoucherLogisticItemUiModel;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
@@ -16,7 +15,7 @@ import java.util.List;
  * @author Irfan Khoirul on 23/04/18.
  */
 
-public class ShipmentCartItemModel implements ShipmentData, Parcelable {
+public class ShipmentCartItemModel implements Parcelable {
 
     private boolean allItemError;
     private boolean isError;
@@ -33,6 +32,12 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
     private boolean isGoldMerchant;
     private boolean isOfficialStore;
     private String shopBadge;
+    private int orderNumber;
+    private String preOrderInfo;
+    private boolean isFreeShippingExtra;
+    private String freeShippingBadgeUrl;
+    private String shopLocation;
+    private String shopAlertMessage;
 
     // Cart item state
     private String cartString;
@@ -50,12 +55,6 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
 
     private List<CartItemModel> cartItemModels = new ArrayList<>();
 
-    // For pickup point
-    private String destinationDistrictId;
-    private String destinationDistrictName;
-    private String tokenPickup;
-    private String unixTime;
-
     // View state
     private boolean stateDetailSubtotalViewExpanded;
     private boolean stateAllItemViewExpanded = true;
@@ -66,21 +65,18 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
     private boolean stateHasLoadCourierTradeInDropOffState;
     private boolean stateHasExtraMarginTop;
 
-    // Address Model for multiple address shipment, null if single address shipment
-    private RecipientAddressModel recipientAddressModel;
-
     // Flag for courier recommendation
     private boolean useCourierRecommendation;
     private boolean isHidingCourier;
 
     // for robinhood III
     private boolean isBlackbox;
-    private int addressId;
+    private String addressId;
     private String blackboxInfo;
 
     private boolean isFulfillment;
+    private String fulfillmentBadgeUrl;
     private int fulfillmentId;
-    private String fulfillmentName;
 
     // promo stacking
     private boolean hasPromoList;
@@ -111,8 +107,14 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         shipmentCartData = in.readParcelable(ShipmentCartData.class.getClassLoader());
         selectedShipmentDetailData = in.readParcelable(ShipmentDetailData.class.getClassLoader());
         shopShipmentList = in.createTypedArrayList(ShopShipment.CREATOR);
+        orderNumber = in.readInt();
         shopId = in.readInt();
         shopName = in.readString();
+        preOrderInfo = in.readString();
+        isFreeShippingExtra = in.readByte() != 0;
+        freeShippingBadgeUrl = in.readString();
+        shopLocation = in.readString();
+        shopAlertMessage = in.readString();
         isGoldMerchant = in.readByte() != 0;
         isOfficialStore = in.readByte() != 0;
         shopBadge = in.readString();
@@ -128,10 +130,6 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         productFcancelPartial = in.readByte() != 0;
         productIsPreorder = in.readByte() != 0;
         cartItemModels = in.createTypedArrayList(CartItemModel.CREATOR);
-        destinationDistrictId = in.readString();
-        destinationDistrictName = in.readString();
-        tokenPickup = in.readString();
-        unixTime = in.readString();
         stateDetailSubtotalViewExpanded = in.readByte() != 0;
         stateAllItemViewExpanded = in.readByte() != 0;
         stateDropshipperDetailExpanded = in.readByte() != 0;
@@ -140,15 +138,14 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         stateHasLoadCourierState = in.readByte() != 0;
         stateHasLoadCourierTradeInDropOffState = in.readByte() != 0;
         stateHasExtraMarginTop = in.readByte() != 0;
-        recipientAddressModel = in.readParcelable(RecipientAddressModel.class.getClassLoader());
         useCourierRecommendation = in.readByte() != 0;
         isHidingCourier = in.readByte() != 0;
         isBlackbox = in.readByte() != 0;
-        addressId = in.readInt();
+        addressId = in.readString();
         blackboxInfo = in.readString();
         isFulfillment = in.readByte() != 0;
+        fulfillmentBadgeUrl = in.readString();
         fulfillmentId = in.readInt();
-        fulfillmentName = in.readString();
         hasPromoList = in.readByte() != 0;
         voucherLogisticItemUiModel = in.readParcelable(VoucherLogisticItemUiModel.class.getClassLoader());
         isLeasingProduct = in.readByte() != 0;
@@ -166,8 +163,14 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         dest.writeParcelable(shipmentCartData, flags);
         dest.writeParcelable(selectedShipmentDetailData, flags);
         dest.writeTypedList(shopShipmentList);
+        dest.writeInt(orderNumber);
         dest.writeInt(shopId);
         dest.writeString(shopName);
+        dest.writeString(preOrderInfo);
+        dest.writeByte((byte) (isFreeShippingExtra ? 1 : 0));
+        dest.writeString(freeShippingBadgeUrl);
+        dest.writeString(shopLocation);
+        dest.writeString(shopAlertMessage);
         dest.writeByte((byte) (isGoldMerchant ? 1 : 0));
         dest.writeByte((byte) (isOfficialStore ? 1 : 0));
         dest.writeString(shopBadge);
@@ -183,27 +186,22 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         dest.writeByte((byte) (productFcancelPartial ? 1 : 0));
         dest.writeByte((byte) (productIsPreorder ? 1 : 0));
         dest.writeTypedList(cartItemModels);
-        dest.writeString(destinationDistrictId);
-        dest.writeString(destinationDistrictName);
-        dest.writeString(tokenPickup);
-        dest.writeString(unixTime);
         dest.writeByte((byte) (stateDetailSubtotalViewExpanded ? 1 : 0));
         dest.writeByte((byte) (stateAllItemViewExpanded ? 1 : 0));
         dest.writeByte((byte) (stateDropshipperDetailExpanded ? 1 : 0));
         dest.writeByte((byte) (stateDropshipperHasError ? 1 : 0));
         dest.writeByte((byte) (stateLoadingCourierState ? 1 : 0));
         dest.writeByte((byte) (stateHasLoadCourierState ? 1 : 0));
-        dest.writeByte((byte) (stateHasLoadCourierTradeInDropOffState ? 1: 0));
+        dest.writeByte((byte) (stateHasLoadCourierTradeInDropOffState ? 1 : 0));
         dest.writeByte((byte) (stateHasExtraMarginTop ? 1 : 0));
-        dest.writeParcelable(recipientAddressModel, flags);
         dest.writeByte((byte) (useCourierRecommendation ? 1 : 0));
         dest.writeByte((byte) (isHidingCourier ? 1 : 0));
         dest.writeByte((byte) (isBlackbox ? 1 : 0));
-        dest.writeInt(addressId);
+        dest.writeString(addressId);
         dest.writeString(blackboxInfo);
         dest.writeByte((byte) (isFulfillment ? 1 : 0));
+        dest.writeString(fulfillmentBadgeUrl);
         dest.writeInt(fulfillmentId);
-        dest.writeString(fulfillmentName);
         dest.writeByte((byte) (hasPromoList ? 1 : 0));
         dest.writeParcelable(voucherLogisticItemUiModel, flags);
         dest.writeByte((byte) (isLeasingProduct ? 1 : 0));
@@ -238,8 +236,6 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         newShipmentCartItemModel.setErrorDescription(shipmentCartItemModel.getErrorDescription());
         newShipmentCartItemModel.setError(shipmentCartItemModel.isError());
         newShipmentCartItemModel.setWeightUnit(shipmentCartItemModel.getWeightUnit());
-        newShipmentCartItemModel.setUnixTime(shipmentCartItemModel.getUnixTime());
-        newShipmentCartItemModel.setTokenPickup(shipmentCartItemModel.getTokenPickup());
         newShipmentCartItemModel.setStateDetailSubtotalViewExpanded(shipmentCartItemModel.isStateDetailSubtotalViewExpanded());
         newShipmentCartItemModel.setStateAllItemViewExpanded(shipmentCartItemModel.isStateAllItemViewExpanded());
         newShipmentCartItemModel.setStateDropshipperDetailExpanded(shipmentCartItemModel.isStateDropshipperDetailExpanded());
@@ -249,13 +245,10 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         newShipmentCartItemModel.setProductIsPreorder(shipmentCartItemModel.isProductIsPreorder());
         newShipmentCartItemModel.setProductFinsurance(shipmentCartItemModel.isProductFinsurance());
         newShipmentCartItemModel.setProductFcancelPartial(shipmentCartItemModel.isProductFcancelPartial());
-        newShipmentCartItemModel.setDestinationDistrictName(shipmentCartItemModel.getDestinationDistrictName());
-        newShipmentCartItemModel.setDestinationDistrictId(shipmentCartItemModel.getDestinationDistrictId());
-        newShipmentCartItemModel.setRecipientAddressModel(shipmentCartItemModel.getRecipientAddressModel());
         newShipmentCartItemModel.setOfficialStore(shipmentCartItemModel.isOfficialStore());
         newShipmentCartItemModel.setGoldMerchant(shipmentCartItemModel.isGoldMerchant());
         newShipmentCartItemModel.setShopShipmentList(shipmentCartItemModel.getShopShipmentList());
-        newShipmentCartItemModel.setUseCourierRecommendation(shipmentCartItemModel.isUseCourierRecommendation());
+        newShipmentCartItemModel.setOrderNumber(shipmentCartItemModel.getOrderNumber());
         newShipmentCartItemModel.setHidingCourier(shipmentCartItemModel.isHidingCourier());
         newShipmentCartItemModel.setCartString(shipmentCartItemModel.getCartString());
         newShipmentCartItemModel.setShippingId(shipmentCartItemModel.getShippingId());
@@ -271,8 +264,8 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         newShipmentCartItemModel.setIsBlackbox(shipmentCartItemModel.getIsBlackbox());
         newShipmentCartItemModel.setAddressId(shipmentCartItemModel.getAddressId());
         newShipmentCartItemModel.setFulfillment(shipmentCartItemModel.isFulfillment);
+        newShipmentCartItemModel.setFulfillmentBadgeUrl(shipmentCartItemModel.fulfillmentBadgeUrl);
         newShipmentCartItemModel.setFulfillmentId(shipmentCartItemModel.getFulfillmentId());
-        newShipmentCartItemModel.setFulfillmentName(shipmentCartItemModel.getFulfillmentName());
         newShipmentCartItemModel.setBlackboxInfo(shipmentCartItemModel.getBlackboxInfo());
         newShipmentCartItemModel.setHasPromoList(shipmentCartItemModel.getHasPromoList());
         newShipmentCartItemModel.setVoucherLogisticItemUiModel(shipmentCartItemModel.getVoucherLogisticItemUiModel());
@@ -361,38 +354,6 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         this.productFcancelPartial = productFcancelPartial;
     }
 
-    public String getDestinationDistrictId() {
-        return destinationDistrictId;
-    }
-
-    public void setDestinationDistrictId(String destinationDistrictId) {
-        this.destinationDistrictId = destinationDistrictId;
-    }
-
-    public String getDestinationDistrictName() {
-        return destinationDistrictName;
-    }
-
-    public void setDestinationDistrictName(String destinationDistrictName) {
-        this.destinationDistrictName = destinationDistrictName;
-    }
-
-    public String getTokenPickup() {
-        return tokenPickup;
-    }
-
-    public void setTokenPickup(String tokenPickup) {
-        this.tokenPickup = tokenPickup;
-    }
-
-    public String getUnixTime() {
-        return unixTime;
-    }
-
-    public void setUnixTime(String unixTime) {
-        this.unixTime = unixTime;
-    }
-
     public int getWeightUnit() {
         return weightUnit;
     }
@@ -441,14 +402,6 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         this.stateDropshipperHasError = stateDropshipperHasError;
     }
 
-    public RecipientAddressModel getRecipientAddressModel() {
-        return recipientAddressModel;
-    }
-
-    public void setRecipientAddressModel(RecipientAddressModel recipientAddressModel) {
-        this.recipientAddressModel = recipientAddressModel;
-    }
-
     public List<CartItemModel> getCartItemModels() {
         return cartItemModels;
     }
@@ -481,14 +434,6 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         this.shopShipmentList = shopShipmentList;
     }
 
-    public boolean isUseCourierRecommendation() {
-        return useCourierRecommendation;
-    }
-
-    public void setUseCourierRecommendation(boolean useCourierRecommendation) {
-        this.useCourierRecommendation = useCourierRecommendation;
-    }
-
     public boolean isHidingCourier() {
         return isHidingCourier;
     }
@@ -497,9 +442,13 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         isHidingCourier = hidingCourier;
     }
 
-    public String getCartString() { return cartString; }
+    public String getCartString() {
+        return cartString;
+    }
 
-    public void setCartString(String cartString) { this.cartString = cartString; }
+    public void setCartString(String cartString) {
+        this.cartString = cartString;
+    }
 
     public int getShippingId() {
         return shippingId;
@@ -589,11 +538,11 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         this.isBlackbox = blackbox;
     }
 
-    public int getAddressId() {
+    public String getAddressId() {
         return addressId;
     }
 
-    public void setAddressId(int addressId) {
+    public void setAddressId(String addressId) {
         this.addressId = addressId;
     }
 
@@ -605,6 +554,14 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         isFulfillment = fulfillment;
     }
 
+    public String getFulfillmentBadgeUrl() {
+        return fulfillmentBadgeUrl;
+    }
+
+    public void setFulfillmentBadgeUrl(String fulfillmentBadgeUrl) {
+        this.fulfillmentBadgeUrl = fulfillmentBadgeUrl;
+    }
+
     public int getFulfillmentId() {
         return fulfillmentId;
     }
@@ -613,19 +570,17 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         this.fulfillmentId = fulfillmentId;
     }
 
-    public String getFulfillmentName() {
-        return fulfillmentName;
+    public String getBlackboxInfo() {
+        return blackboxInfo;
     }
 
-    public void setFulfillmentName(String fulfillmentName) {
-        this.fulfillmentName = fulfillmentName;
+    public void setBlackboxInfo(String blackboxInfo) {
+        this.blackboxInfo = blackboxInfo;
     }
 
-    public String getBlackboxInfo() { return blackboxInfo; }
-
-    public void setBlackboxInfo(String blackboxInfo) { this.blackboxInfo = blackboxInfo; }
-
-    public boolean getHasPromoList() { return hasPromoList; }
+    public boolean getHasPromoList() {
+        return hasPromoList;
+    }
 
     public void setHasPromoList(boolean hasPromoList) {
         this.hasPromoList = hasPromoList;
@@ -647,13 +602,21 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         this.saveStateFlag = saveStateFlag;
     }
 
-    public boolean getIsLeasingProduct() { return isLeasingProduct; }
+    public boolean getIsLeasingProduct() {
+        return isLeasingProduct;
+    }
 
-    public void setIsLeasingProduct(boolean leasingProduct) { isLeasingProduct = leasingProduct; }
+    public void setIsLeasingProduct(boolean leasingProduct) {
+        isLeasingProduct = leasingProduct;
+    }
 
-    public int getBookingFee() { return bookingFee; }
+    public int getBookingFee() {
+        return bookingFee;
+    }
 
-    public void setBookingFee(int bookingFee) { this.bookingFee = bookingFee; }
+    public void setBookingFee(int bookingFee) {
+        this.bookingFee = bookingFee;
+    }
 
     public boolean isDropshipperDisable() {
         return isDropshipperDisable;
@@ -711,6 +674,54 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         isEligibleNewShippingExperience = eligibleNewShippingExperience;
     }
 
+    public int getOrderNumber() {
+        return orderNumber;
+    }
+
+    public void setOrderNumber(int orderNumber) {
+        this.orderNumber = orderNumber;
+    }
+
+    public String getPreOrderInfo() {
+        return preOrderInfo;
+    }
+
+    public void setPreOrderInfo(String preOrderInfo) {
+        this.preOrderInfo = preOrderInfo;
+    }
+
+    public boolean isFreeShippingExtra() {
+        return isFreeShippingExtra;
+    }
+
+    public void setFreeShippingExtra(boolean freeShippingExtra) {
+        isFreeShippingExtra = freeShippingExtra;
+    }
+
+    public String getFreeShippingBadgeUrl() {
+        return freeShippingBadgeUrl;
+    }
+
+    public void setFreeShippingBadgeUrl(String freeShippingBadgeUrl) {
+        this.freeShippingBadgeUrl = freeShippingBadgeUrl;
+    }
+
+    public String getShopLocation() {
+        return shopLocation;
+    }
+
+    public void setShopLocation(String shopLocation) {
+        this.shopLocation = shopLocation;
+    }
+
+    public String getShopAlertMessage() {
+        return shopAlertMessage;
+    }
+
+    public void setShopAlertMessage(String shopAlertMessage) {
+        this.shopAlertMessage = shopAlertMessage;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -733,12 +744,6 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
                 .append(getErrorDescription(), that.getErrorDescription())
                 .append(getShopName(), that.getShopName())
                 .append(getCartItemModels(), that.getCartItemModels())
-                .append(getDestinationDistrictId(), that.getDestinationDistrictId())
-                .append(getDestinationDistrictName(), that.getDestinationDistrictName())
-                .append(getTokenPickup(), that.getTokenPickup())
-                .append(getUnixTime(), that.getUnixTime())
-                .append(getRecipientAddressModel(), that.getRecipientAddressModel())
-                .append(isUseCourierRecommendation(), that.isUseCourierRecommendation())
                 .append(getIsBlackbox(), that.getIsBlackbox())
                 .append(getAddressId(), that.getAddressId())
                 .isEquals();
@@ -760,12 +765,6 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
                 .append(isProductFcancelPartial())
                 .append(isProductIsPreorder())
                 .append(getCartItemModels())
-                .append(getDestinationDistrictId())
-                .append(getDestinationDistrictName())
-                .append(getTokenPickup())
-                .append(getUnixTime())
-                .append(getRecipientAddressModel())
-                .append(isUseCourierRecommendation())
                 .append(getIsBlackbox())
                 .append(getAddressId())
                 .toHashCode();

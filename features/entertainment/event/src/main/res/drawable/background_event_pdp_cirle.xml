@@ -5,7 +5,7 @@
 
     <stroke
         android:width="0.01dp"
-        android:color="@color/Neutral_N300" />
+        android:color="@color/Unify_N300" />
 
     <size
         android:width="@dimen/spacing_lvl4"

@@ -5,8 +5,9 @@ import com.tokopedia.chat_common.domain.pojo.ChatReplies
 import com.tokopedia.chat_common.domain.pojo.GetExistingChatPojo
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.topchat.chatroom.domain.mapper.TopChatRoomGetExistingChatMapper
-import com.tokopedia.topchat.chatroom.view.viewmodel.TopchatCoroutineContextProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import kotlinx.coroutines.*
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
@@ -16,10 +17,10 @@ import kotlin.coroutines.CoroutineContext
  * @author : Steven 30/11/18
  */
 
-class GetChatUseCase @Inject constructor(
+open class GetChatUseCase @Inject constructor(
         private val gqlUseCase: GraphqlUseCase<GetExistingChatPojo>,
         private val mapper: TopChatRoomGetExistingChatMapper,
-        private var dispatchers: TopchatCoroutineContextProvider
+        private var dispatchers: CoroutineDispatchers
 ) : CoroutineScope {
 
     var minReplyTime = "" // for param beforeReplyTime for top
@@ -27,7 +28,7 @@ class GetChatUseCase @Inject constructor(
     var hasNext = false // has next top
     var hasNextAfter = false // has next bottom
 
-    override val coroutineContext: CoroutineContext get() = dispatchers.Main + SupervisorJob()
+    override val coroutineContext: CoroutineContext get() = dispatchers.main + SupervisorJob()
 
     fun getFirstPageChat(
             messageId: String,
@@ -74,7 +75,7 @@ class GetChatUseCase @Inject constructor(
             onResponseReady: (ChatroomViewModel, GetExistingChatPojo) -> Unit
     ) {
         launchCatchError(
-                dispatchers.IO,
+                dispatchers.io,
                 {
                     val response = gqlUseCase.apply {
                         setTypeClass(GetExistingChatPojo::class.java)
@@ -83,12 +84,12 @@ class GetChatUseCase @Inject constructor(
                     }.executeOnBackground()
                     val chatroomViewModel = mapper.map(response)
                     onResponseReady(chatroomViewModel, response)
-                    withContext(dispatchers.Main) {
+                    withContext(dispatchers.main) {
                         onSuccess(chatroomViewModel, response.chatReplies)
                     }
                 },
                 {
-                    withContext(dispatchers.Main) {
+                    withContext(dispatchers.main) {
                         onErrorGetChat(it)
                     }
                 }
@@ -97,7 +98,7 @@ class GetChatUseCase @Inject constructor(
 
     private fun generateFirstPageParam(messageId: String): Map<String, Any> {
         return mutableMapOf<String, Any>(
-                PARAM_MESSAGE_ID to messageId.toInt()
+                PARAM_MESSAGE_ID to messageId.toLongOrZero()
         ).apply {
             if (minReplyTime.isNotEmpty()) {
                 put(PARAM_BEFORE_REPLY_TIME, minReplyTime)
@@ -107,7 +108,7 @@ class GetChatUseCase @Inject constructor(
 
     private fun generateBottomParam(messageId: String): Map<String, Any> {
         return mapOf(
-                PARAM_MESSAGE_ID to messageId.toInt(),
+                PARAM_MESSAGE_ID to messageId.toLongOrZero(),
                 PARAM_AFTER_REPLY_TIME to maxReplyTime
         )
     }
@@ -146,7 +147,7 @@ class GetChatUseCase @Inject constructor(
 
     private fun generateTopParam(messageId: String): Map<String, Any> {
         return mapOf(
-                PARAM_MESSAGE_ID to messageId.toInt(),
+                PARAM_MESSAGE_ID to messageId.toLongOrZero(),
                 PARAM_BEFORE_REPLY_TIME to minReplyTime
         )
     }
@@ -218,6 +219,7 @@ class GetChatUseCase @Inject constructor(
                   senderName
                   role
                   msg
+                  fraudStatus
                   replyTime
                   status
                   attachmentID

@@ -5,7 +5,7 @@ apply plugin: 'io.hansel.preprocessor.module'
 buildscript {
     repositories {
         mavenCentral()
-        maven { url 'https://hansel.io/maven' }
+        maven { url 'https://maven-hansel.tokopedia.com/maven' }
     }
     dependencies {
         classpath rootProject.ext.miscDependencies.hansel
@@ -39,6 +39,7 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     implementation project(rootProject.ext.libraries.akamaiBotLib)
+    implementation project(rootProject.ext.libraries.logger)
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.miscDependencies.gson
     implementation rootProject.ext.tkpdInternalLibDependencies.url
@@ -62,12 +63,12 @@ dependencies {
     2. Adding impl of constraintLayout does not increase the aar size of graphql
     * */
     implementation rootProject.ext.supportLibDependencies.constraintLayout
+    implementation rootProject.ext.networkDependencies.brotli
     if (rootProject.ext.debugToolsEnabled) {
         implementation rootProject.ext.tkpdInternalLibDependencies.fakeresponse
     } else {
         implementation rootProject.ext.tkpdInternalLibDependencies.fakeresponseNoOp
     }
-
 }
 
 project.ext {

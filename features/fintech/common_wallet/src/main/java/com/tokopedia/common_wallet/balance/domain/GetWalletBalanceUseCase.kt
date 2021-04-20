@@ -161,7 +161,7 @@ class GetWalletBalanceUseCase @Inject constructor(@param:ApplicationContext priv
 
             return balanceTokoCash
         }
-        throw RuntimeException("Error")
+        throw RuntimeException("Get Wallet Balance Failed")
     }
 
     companion object {

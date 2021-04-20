@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:paddingTop="@dimen/dp_12"
+    android:paddingBottom="@dimen/dp_12">
+
+    <ImageView
+        android:id="@+id/chat_rating"
+        android:layout_width="@dimen/dp_20"
+        android:layout_height="@dimen/dp_20"
+        android:visibility="gone"
+        android:layout_marginLeft="@dimen/dp_16"
+        app:layout_constraintTop_toTopOf="@id/helpfull_question_option"
+        app:layout_constraintBottom_toBottomOf="@id/helpfull_question_option"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:contentDescription="@null"
+        tools:src="@drawable/rating_active_5"
+        tools:visibility="visible"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/helpfull_question_option"
+        app:typographyType="body_2"
+        tools:text="Ya, sudah membantu"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/dp_16"
+        android:paddingRight="@dimen/dp_16"
+        android:ellipsize="end"
+        android:maxLines="2"
+        android:textColor="@color/chatbot_color_option_list_text"
+        app:layout_constraintLeft_toRightOf="@id/chat_rating"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="@dimen/dp_12"
+        android:contentDescription="@null"
+        android:src="@drawable/ic_option_list_arrow"
+        app:layout_constraintTop_toTopOf="@id/helpfull_question_option"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/helpfull_question_option"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

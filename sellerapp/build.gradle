@@ -2,10 +2,9 @@ apply plugin: 'com.android.application'
 if (project.hasProperty("auto-patch")) {
     apply plugin: 'auto-patch-plugin'
 }
+apply plugin: 'com.google.firebase.crashlytics'
 apply plugin: 'robust'
-apply plugin: 'io.fabric'
 apply plugin: 'io.hansel.preprocessor'
-apply plugin: 'com.bugsnag.android.gradle'
 
 apply from: '../tools/dynamic_feature_inclusion.gradle'
 apply from: '../tools/set_debug_tools.gradle'
@@ -15,10 +14,6 @@ def allowDistribution() {
         return "true";
     }
     return "false";
-}
-
-def allowProguard() {
-    return project.hasProperty('tkpdBuildType')
 }
 
 def getTkpdVersionCode() {
@@ -37,8 +32,7 @@ buildscript {
     repositories {
         mavenCentral()
         google()
-        maven { url 'https://maven.fabric.io/public' }
-        maven { url 'https://hansel.io/maven' }
+        maven { url 'https://maven-hansel.tokopedia.com/maven' }
     }
     dependencies {
         classpath rootProject.ext.gradlePlugin.crashlytics
@@ -56,6 +50,7 @@ android {
 
     packagingOptions {
         exclude 'META-INF/**'
+        exclude "**/module-info.class"
     }
 
     compileSdkVersion rootProject.ext.compileSdkVersion
@@ -98,23 +93,18 @@ android {
             buildConfigField "boolean", "ENABLE_DISTRIBUTION", allowDistribution()
             proguardFiles 'proguard-rules.txt'
             ext.enableHansel = project.hasProperty('hanselEnableDebug')
-            ext.enableBugsnag = false
         }
         release {
             if (devMode()) {
                 signingConfig signingConfigs.debug
             }
-            debuggable = isDebugable(project).toBoolean()
+            debuggable = project.hasProperty('enableDebug') && enableDebug == "true"
             ext.enableHansel = !project.hasProperty('hanselDisableRelease')
             minifyEnabled true
             zipAlignEnabled true
 //            shrinkResources true
             buildConfigField "boolean", "ENABLE_DISTRIBUTION", allowDistribution()
-            if (allowProguard()) {
-                proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
-            } else {
-                proguardFiles 'proguard-rules.txt'
-            }
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
             ext.betaDistributionReleaseNotesFilePath = 'release_notes.txt'
             ext.betaDistributionGroupAliasesFilePath = 'group_beta.txt'
         }
@@ -187,8 +177,11 @@ repositories {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-
+    implementation project(rootProject.ext.features.pushNotificationCommon)
     implementation project(rootProject.ext.libraries.pushNotification)
+    implementation project(rootProject.ext.libraries.cmPushNotifications)
+    implementation project(rootProject.ext.libraries.encryption)
+
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.libraries.baseList)
@@ -207,32 +200,31 @@ dependencies {
     implementation project(rootProject.ext.libraries.dynamicFeatures)
     implementation project(rootProject.ext.libraries.track)
     implementation project(rootProject.ext.libraries.deviceInfo)
+    implementation project(rootProject.ext.libraries.deviceFingerprint)
+    implementation project(rootProject.ext.libraries.workManagerUtil)
+    implementation project(rootProject.ext.libraries.utils)
     if (rootProject.ext.debugToolsEnabled) {
         implementation project(rootProject.ext.features.developerOptions)
     } else {
         implementation project(rootProject.ext.features.developerOptionsNoop)
     }
     implementation rootProject.ext.tkpdInternalLibDependencies.authentication
-    implementation project(rootProject.ext.features.commonDigital)
     implementation project(rootProject.ext.features.tkpdcore)
     implementation project(rootProject.ext.features.sellerorder)
+    implementation project(rootProject.ext.features.sellerAppWidget)
     implementation project(rootProject.ext.features.sellerHome)
     implementation project(rootProject.ext.features.merchantLendingWidget)
     implementation project(rootProject.ext.features.goldMerchantCommon)
     implementation project(rootProject.ext.features.powerMerchantSubscribe)
-    implementation project(rootProject.ext.features.goldMerchant)
     implementation project(rootProject.ext.features.topAdsDashboard)
-    implementation project(rootProject.ext.features.topAdsWidget)
     implementation project(rootProject.ext.features.topAdsManagementCommon)
     implementation project(rootProject.ext.features.topAdsManagement)
     implementation project(rootProject.ext.features.report)
     implementation project(rootProject.ext.features.topAdsAutoAds)
     implementation project(rootProject.ext.features.topAdsCreate)
-    implementation project(rootProject.ext.features.tkpdseller)
-    implementation project(rootProject.ext.features.reputation)
-    implementation project(rootProject.ext.features.inboxReputation)
+    implementation project(rootProject.ext.features.topAdsEdit)
+    implementation project(rootProject.ext.features.topAdsHeadline)
     implementation project(rootProject.ext.features.reputationCommon)
-    implementation project(rootProject.ext.features.review)
     implementation project(rootProject.ext.features.sellerActiveCommon)
     implementation project(rootProject.ext.features.topAdsSdk)
     implementation project(rootProject.ext.features.payment)
@@ -242,14 +234,15 @@ dependencies {
     implementation project(rootProject.ext.features.otp)
     implementation project(rootProject.ext.features.logout)
     implementation project(rootProject.ext.features.userIdentificationCommon)
-    implementation project(rootProject.ext.features.logisticaddaddress)
     implementation project(rootProject.ext.features.saldodetails)
     implementation project(rootProject.ext.features.homecredit)
     implementation project(rootProject.ext.libraries.imageuploader)
     implementation project(rootProject.ext.libraries.imagePicker)
+    implementation project(rootProject.ext.libraries.imagePickerCommon)
     implementation project(rootProject.ext.libraries.linker)
+    implementation project(rootProject.ext.libraries.weaver)
     implementation project(rootProject.ext.features.logisticaddaddress)
-    implementation project(rootProject.ext.features.logisticdata)
+    implementation project(rootProject.ext.features.logisticCommon)
     implementation project(rootProject.ext.features.logisticorder)
     implementation project(rootProject.ext.features.editshipping)
     implementation project(rootProject.ext.features.topchat)
@@ -257,27 +250,22 @@ dependencies {
     implementation project(rootProject.ext.features.chatcommon)
     implementation project(rootProject.ext.features.attachproduct)
     implementation project(rootProject.ext.features.talk)
-    implementation project(rootProject.ext.features.productDetail)
-    implementation project(rootProject.ext.features.productManageItem)
     implementation project(rootProject.ext.features.productManageList)
+    implementation project(rootProject.ext.features.productManageCommon)
     implementation project(rootProject.ext.features.kolCommon)
     implementation project(rootProject.ext.features.merchantVoucher)
     implementation project(rootProject.ext.features.categoryCommon)
+    implementation project(rootProject.ext.features.youtubeCommon)
     implementation project(rootProject.ext.features.notifCenter)
     implementation project(rootProject.ext.features.settingbank)
     implementation project(rootProject.ext.features.managepassword)
     implementation project(rootProject.ext.features.voucherCreation)
-
     implementation project(rootProject.ext.features.shopCommon)
-    implementation project(rootProject.ext.features.commonDigital)
-    implementation project(rootProject.ext.features.digitalproduct)
     implementation project(rootProject.ext.features.shopOpen)
-//    implementation project(rootProject.ext.features.shopShowcase)
     implementation project(rootProject.ext.features.withdraw)
+    implementation project(rootProject.ext.features.mediaCommon)
 
     implementation project(rootProject.ext.features.changePhoneNumber)
-    implementation project(rootProject.ext.features.phoneVerification)
-    implementation project(rootProject.ext.features.updateinactivephone)
     implementation project(rootProject.ext.features.loginregister)
     implementation project(rootProject.ext.features.loginphone)
     implementation project(rootProject.ext.features.sessioncommon)
@@ -290,14 +278,18 @@ dependencies {
     implementation project(rootProject.ext.features.attachvoucher)
 
     implementation project(rootProject.ext.features.playCommon)
+    implementation project(rootProject.ext.features.filter)
+
+    implementation project(rootProject.ext.features.additional_check)
 
     implementation rootProject.ext.unifyDependencies.icon
     implementation rootProject.ext.unifyDependencies.components
+    implementation rootProject.ext.unifyDependencies.icons
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.tkpdLibDependencies.youtubePlayer
     implementation rootProject.ext.tkpdInternalLibDependencies.akamaiBMP
+    implementation project(rootProject.ext.libraries.akamaiBotLib)
 
-    implementation rootProject.ext.tkpdInternalLibDependencies.cacheapi
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation project(rootProject.ext.libraries.graphql)
@@ -332,15 +324,15 @@ dependencies {
     } else {
         implementation rootProject.ext.tkpdInternalLibDependencies.fakeresponseNoOp
     }
-    implementation(rootProject.ext.analyticsDependencies.moengage)
+    implementation project(rootProject.ext.features.moengageWrapper)
 
     implementation rootProject.ext.playServicesDependencies.analytics
     implementation rootProject.ext.playServicesDependencies.core
     implementation rootProject.ext.playServicesDependencies.maps
-    implementation rootProject.ext.serviceDependencies.crashlytics
 
     implementation rootProject.ext.firebase.config
     implementation rootProject.ext.firebase.messaging
+    implementation rootProject.ext.firebase.crashlytics
 
     implementation rootProject.ext.supportLibDependencies.cardViewV7
     implementation rootProject.ext.supportLibDependencies.appCompactV7
@@ -359,6 +351,8 @@ dependencies {
     implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.miscDependencies.gson
     implementation rootProject.ext.miscDependencies.robust
+    implementation rootProject.ext.miscDependencies.autopatchbase
+    implementation project(rootProject.ext.libraries.keys)
 
     implementation rootProject.ext.miscDependencies.rxAndroid
     implementation rootProject.ext.miscDependencies.rxJava
@@ -367,6 +361,9 @@ dependencies {
     implementation project(rootProject.ext.libraries.logger)
     implementation project(rootProject.ext.libraries.tokopatch)
 
+    // Warning: removing imageCropper lib might cause youtube library crash
+    // when load recommendation at the end of video
+    // Need to recheck
     implementation(rootProject.ext.miscDependencies.imagecropper) {
         exclude group: "com.android.support"
     }
@@ -389,7 +386,6 @@ dependencies {
     implementation('de.hdodenhof:circleimageview:2.1.0') {
         exclude group: 'com.android.support', module: 'support-annotations'
     }
-    implementation rootProject.ext.monitoringDependencies.bugSnag
 
     if (rootProject.ext.debugToolsEnabled) {
         implementation project(rootProject.ext.libraries.blockCanary)

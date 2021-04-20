@@ -2,6 +2,7 @@ package com.tokopedia.atc_common.data.model.request
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.atc_common.data.model.request.chosenaddress.ChosenAddressAddToCart
 
 data class AddToCartOccRequestParams(
         @SerializedName("product_id")
@@ -34,9 +35,19 @@ data class AddToCartOccRequestParams(
         @SerializedName("notes")
         @Expose
         var notes: String = "",
+        @SerializedName("chosen_address")
+        @Expose
+        var chosenAddressAddToCart: ChosenAddressAddToCart? = null,
 
-        // appflyer analytics data
+        // analytics data
         var productName: String = "",
         var category: String = "",
-        var price: String = ""
+        var price: String = "",
+        var userId: String = "",
+        var categoryLevel1Id: String = "",
+        var categoryLevel1Name: String = "",
+        var categoryLevel2Id: String = "",
+        var categoryLevel2Name: String = "",
+        var categoryLevel3Id: String = "",
+        var categoryLevel3Name: String = ""
 )

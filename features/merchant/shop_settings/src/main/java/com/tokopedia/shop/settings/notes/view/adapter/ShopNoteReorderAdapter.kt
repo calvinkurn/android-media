@@ -1,14 +1,14 @@
 package com.tokopedia.shop.settings.notes.view.adapter
 
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
-import com.tokopedia.design.touchhelper.ItemTouchHelperAdapter
-import com.tokopedia.shop.settings.notes.data.ShopNoteViewModel
+import com.tokopedia.shop.settings.common.util.ItemTouchHelperAdapter
+import com.tokopedia.shop.settings.notes.data.ShopNoteUiModel
 import com.tokopedia.shop.settings.notes.view.adapter.factory.ShopNoteReorderFactory
 
 /**
  * Created by hendry on 20/08/18.
  */
-class ShopNoteReorderAdapter(baseListAdapterTypeFactory: ShopNoteReorderFactory) : BaseListAdapter<ShopNoteViewModel, ShopNoteReorderFactory>(baseListAdapterTypeFactory), ItemTouchHelperAdapter {
+class ShopNoteReorderAdapter(baseListAdapterTypeFactory: ShopNoteReorderFactory) : BaseListAdapter<ShopNoteUiModel, ShopNoteReorderFactory>(baseListAdapterTypeFactory), ItemTouchHelperAdapter {
 
     override fun isItemClickableByDefault(): Boolean {
         return false

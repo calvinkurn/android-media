@@ -16,7 +16,7 @@ import com.tokopedia.unifyprinciples.Typography
 class DynamicChannelSprintSaleViewHolder(
         view: View?,
         private val dcEventHandler: DynamicChannelEventHandler
-) : AbstractViewHolder<DynamicChannelViewModel>(view) {
+) : AbstractViewHolder<DynamicChannelDataModel>(view) {
 
     private val mainContainer = itemView.findViewById<ConstraintLayout>(R.id.dc_sprintsale_main_container)
     private val headerContainer = itemView.findViewById<ConstraintLayout>(R.id.dc_header_main_container)
@@ -25,11 +25,11 @@ class DynamicChannelSprintSaleViewHolder(
     private val headerActionText = itemView.findViewById<AppCompatTextView>(R.id.dc_header_action_text)
     private val contentList = itemView.findViewById<RecyclerView>(R.id.dc_sprintsale_rv)
 
-    override fun bind(element: DynamicChannelViewModel?) {
+    override fun bind(element: DynamicChannelDataModel?) {
         element?.run {
-            dcEventHandler.flashSaleImpression(dynamicChannelData)
-            setupHeader(dynamicChannelData.header)
-            setupContent(dynamicChannelData)
+            dcEventHandler.flashSaleImpression(dynamicChannelData.channel)
+            setupHeader(dynamicChannelData.channel.header)
+            setupContent(dynamicChannelData.channel)
         }
     }
 

@@ -13,7 +13,7 @@ import com.tokopedia.logisticaddaddress.domain.MapsMapper;
 import com.tokopedia.logisticaddaddress.features.pinpoint.GeolocationContract;
 import com.tokopedia.logisticaddaddress.features.pinpoint.GeolocationPresenter;
 import com.tokopedia.logisticaddaddress.features.pinpoint.GoogleMapFragment;
-import com.tokopedia.logisticdata.data.apiservice.MapsApi;
+import com.tokopedia.logisticCommon.data.apiservice.MapsApi;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.converter.StringResponseConverter;
 import com.tokopedia.network.interceptor.FingerprintInterceptor;
@@ -33,7 +33,6 @@ import retrofit2.converter.gson.GsonConverterFactory;
 /**
  * Created by Fajar Ulin Nuha on 30/10/18.
  */
-@GeolocationScope
 @Module
 public class GeolocationModule {
 

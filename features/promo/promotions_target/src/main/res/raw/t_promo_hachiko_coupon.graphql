@@ -1,0 +1,22 @@
+query hachikoCouponDetail($code: String!, $apiVersion: String!) {
+    hachikoCouponDetail(code:$code , apiVersion: $apiVersion){
+       real_code
+       minimum_usage
+       minimum_usage_label
+       icon
+       thumbnail_url_mobile
+       image_url_mobile
+       quota
+       usage {
+         text
+         usage_str
+         btn_usage {
+           text
+           applink
+         }
+       }
+       is_applicable
+       status
+       statusStr
+    }
+}

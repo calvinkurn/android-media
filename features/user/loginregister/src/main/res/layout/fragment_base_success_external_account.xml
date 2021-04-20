@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout android:background="@color/Unify_N0"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/fragment_base_success_loader"
+        android:visibility="gone"
+        android:layout_gravity="center"
+        android:layout_width="@dimen/layout_lvl6"
+        android:layout_height="@dimen/layout_lvl6"/>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/fragment_base_success_main_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="@dimen/unify_space_24">
+
+        <ImageView
+            android:id="@+id/fragment_base_success_main_img"
+            android:layout_width="@dimen/external_register_270_dp"
+            android:layout_height="@dimen/external_register_190_dp"
+            android:layout_marginTop="@dimen/unify_space_32"
+            android:padding="@dimen/unify_space_8"
+            android:contentDescription="@string/content_desc_ovo_success"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/fragment_base_success_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/unify_space_2"
+            app:typographyType="heading_2"
+            android:text="@string/ovo_external_register_title_success"
+            android:textAlignment="center"
+            android:textSize="@dimen/fontSize_lvl6"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/fragment_base_success_main_img"
+            app:typographyWeight="bold" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/fragment_base_success_description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/unify_space_12"
+            android:text="@string/ovo_external_register_description_success"
+            android:textAlignment="center"
+            android:textSize="@dimen/fontSize_lvl3"
+            android:textColor="@color/Neutral_N500"
+            app:typographyType="body_2"
+            app:layout_constraintEnd_toEndOf="@+id/fragment_base_success_title"
+            app:layout_constraintStart_toStartOf="@+id/fragment_base_success_title"
+            app:layout_constraintTop_toBottomOf="@+id/fragment_base_success_title" />
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/fragment_base_success_main_btn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/unify_space_24"
+            android:text="@string/external_account_success_btn_text"
+            app:layout_constraintEnd_toEndOf="@+id/fragment_base_success_description"
+            app:layout_constraintStart_toStartOf="@+id/fragment_base_success_description"
+            app:layout_constraintTop_toBottomOf="@+id/fragment_base_success_description" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</FrameLayout>

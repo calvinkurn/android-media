@@ -153,25 +153,29 @@ class OrderSummaryAnalytics : TransactionAnalytics() {
         )
     }
 
-    fun eventViewOrderSummaryPage(ee: Map<String, Any>) {
+    fun eventViewOrderSummaryPage(userId: String, paymentType: String, ee: Map<String, Any>) {
         val dataLayer = DataLayer.mapOf(
                 Key.EVENT, EventName.CHECKOUT,
                 Key.EVENT_CATEGORY, EventCategory.ORDER_SUMMARY,
                 Key.EVENT_ACTION, EventAction.VIEW_ORDER_SUMMARY_PAGE,
                 Key.EVENT_LABEL, "success",
-                Key.E_COMMERCE, ee
+                Key.E_COMMERCE, ee,
+                ExtraKey.USER_ID, userId,
+                ExtraKey.PAYMENT_TYPE, paymentType
         )
         sendEnhancedEcommerce(dataLayer)
     }
 
-    fun eventClickBayarSuccess(isButtonPilihPembayaran: Boolean, paymentId: String, ee: Map<String, Any>) {
+    fun eventClickBayarSuccess(isButtonPilihPembayaran: Boolean, userId: String, paymentId: String, paymentType: String, ee: Map<String, Any>) {
         val dataLayer = DataLayer.mapOf(
                 Key.EVENT, EventName.CHECKOUT,
                 Key.EVENT_CATEGORY, EventCategory.ORDER_SUMMARY,
                 Key.EVENT_ACTION, if (isButtonPilihPembayaran) EventAction.CLICK_PILIH_PEMBAYARAN else EventAction.CLICK_BAYAR,
                 Key.EVENT_LABEL, "success",
                 Key.E_COMMERCE, ee,
-                Key.PAYMENT_ID, paymentId
+                Key.PAYMENT_ID, paymentId,
+                ExtraKey.USER_ID, userId,
+                ExtraKey.PAYMENT_TYPE, paymentType
         )
         sendEnhancedEcommerce(dataLayer)
     }
@@ -315,6 +319,386 @@ class OrderSummaryAnalytics : TransactionAnalytics() {
         )
         gtmData[ExtraKey.USER_ID] = userId
         sendGeneralEvent(gtmData)
+    }
+
+    // =============== Revamp ===============
+
+    fun eventClickTambahTemplate(userId: String) {
+        val gtmData = getGtmData(
+                EventName.CLICK_CHECKOUT_EXPRESS,
+                EventCategory.ORDER_SUMMARY,
+                EventAction.CLICK_TAMBAH_TEMPLATE,
+                ""
+        )
+        gtmData[ExtraKey.USER_ID] = userId
+        gtmData[ExtraKey.BUSINESS_UNIT] = CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM
+        gtmData[ExtraKey.CURRENT_SITE] = CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
+        sendGeneralEvent(gtmData)
+    }
+
+    fun eventClickPilihTemplateLain(userId: String) {
+        val gtmData = getGtmData(
+                EventName.CLICK_CHECKOUT_EXPRESS,
+                EventCategory.ORDER_SUMMARY,
+                EventAction.CLICK_PILIH_TEMPLATE_LAIN,
+                ""
+        )
+        gtmData[ExtraKey.USER_ID] = userId
+        gtmData[ExtraKey.BUSINESS_UNIT] = CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM
+        gtmData[ExtraKey.CURRENT_SITE] = CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
+        sendGeneralEvent(gtmData)
+    }
+
+    fun eventViewProfileList(userId: String) {
+        val gtmData = getGtmData(
+                EventName.VIEW_CHECKOUT_EXPRESS_IRIS,
+                EventCategory.ORDER_SUMMARY,
+                EventAction.VIEW_PROFILE_LIST,
+                ""
+        )
+        gtmData[ExtraKey.USER_ID] = userId
+        gtmData[ExtraKey.BUSINESS_UNIT] = CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM
+        gtmData[ExtraKey.CURRENT_SITE] = CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
+        sendGeneralEvent(gtmData)
+    }
+
+    fun eventClickArrowToChangeAddressOption(currentAddressId: String, userId: String) {
+        val gtmData = getGtmData(
+                EventName.CLICK_CHECKOUT_EXPRESS,
+                EventCategory.ORDER_SUMMARY,
+                EventAction.CLICK_ARROW_TO_CHANGE_ADDRESS_OPTION,
+                currentAddressId
+        )
+        gtmData[ExtraKey.USER_ID] = userId
+        gtmData[ExtraKey.BUSINESS_UNIT] = CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM
+        gtmData[ExtraKey.CURRENT_SITE] = CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
+        sendGeneralEvent(gtmData)
+    }
+
+    fun eventClickSelectedAddressOption(newAddressId: String, userId: String) {
+        val gtmData = getGtmData(
+                EventName.CLICK_CHECKOUT_EXPRESS,
+                EventCategory.ORDER_SUMMARY,
+                EventAction.CLICK_SELECTED_ADDRESS_OPTION,
+                newAddressId
+        )
+        gtmData[ExtraKey.USER_ID] = userId
+        gtmData[ExtraKey.BUSINESS_UNIT] = CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM
+        gtmData[ExtraKey.CURRENT_SITE] = CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
+        sendGeneralEvent(gtmData)
+    }
+
+    fun eventClickArrowToChangeDurationOption(currentSpId: String, userId: String) {
+        val gtmData = getGtmData(
+                EventName.CLICK_CHECKOUT_EXPRESS,
+                EventCategory.ORDER_SUMMARY,
+                EventAction.CLICK_ARROW_TO_CHANGE_DURATION_OPTION,
+                currentSpId
+        )
+        gtmData[ExtraKey.USER_ID] = userId
+        gtmData[ExtraKey.BUSINESS_UNIT] = CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM
+        gtmData[ExtraKey.CURRENT_SITE] = CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
+        sendGeneralEvent(gtmData)
+    }
+
+    fun eventClickSelectedDurationOptionNew(newSpId: String, userId: String) {
+        val gtmData = getGtmData(
+                EventName.CLICK_CHECKOUT_EXPRESS,
+                EventCategory.ORDER_SUMMARY,
+                EventAction.CLICK_SELECTED_DURATION_OPTION_NEW,
+                newSpId
+        )
+        gtmData[ExtraKey.USER_ID] = userId
+        gtmData[ExtraKey.BUSINESS_UNIT] = CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM
+        gtmData[ExtraKey.CURRENT_SITE] = CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
+        sendGeneralEvent(gtmData)
+    }
+
+    fun eventClickArrowToChangePaymentOption(currentGateway: String, userId: String) {
+        val gtmData = getGtmData(
+                EventName.CLICK_CHECKOUT_EXPRESS,
+                EventCategory.ORDER_SUMMARY,
+                EventAction.CLICK_ARROW_TO_CHANGE_PAYMENT_OPTION,
+                currentGateway
+        )
+        gtmData[ExtraKey.USER_ID] = userId
+        gtmData[ExtraKey.BUSINESS_UNIT] = CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM
+        gtmData[ExtraKey.CURRENT_SITE] = CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
+        sendGeneralEvent(gtmData)
+    }
+
+    fun eventClickSelectedPaymentOption(newGateway: String, userId: String) {
+        val gtmData = getGtmData(
+                EventName.CLICK_CHECKOUT_EXPRESS,
+                EventCategory.ORDER_SUMMARY,
+                EventAction.CLICK_SELECTED_PAYMENT_OPTION,
+                newGateway
+        )
+        gtmData[ExtraKey.USER_ID] = userId
+        gtmData[ExtraKey.BUSINESS_UNIT] = CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM
+        gtmData[ExtraKey.CURRENT_SITE] = CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
+        sendGeneralEvent(gtmData)
+    }
+
+    fun eventClickProfileOptionOnProfileList(newProfileId: String, userId: String) {
+        val gtmData = getGtmData(
+                EventName.CLICK_CHECKOUT_EXPRESS,
+                EventCategory.ORDER_SUMMARY,
+                EventAction.CLICK_PROFILE_OPTION_ON_PROFILE_LIST,
+                newProfileId
+        )
+        gtmData[ExtraKey.USER_ID] = userId
+        gtmData[ExtraKey.BUSINESS_UNIT] = CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM
+        gtmData[ExtraKey.CURRENT_SITE] = CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
+        sendGeneralEvent(gtmData)
+    }
+
+    fun eventClickTambahTemplateBeliLangsungOnOrderSummary(userId: String) {
+        val gtmData = getGtmData(
+                EventName.CLICK_CHECKOUT_EXPRESS,
+                EventCategory.ORDER_SUMMARY,
+                EventAction.CLICK_TAMBAH_TEMPLATE_BELI_LANGSUNG_ON_ORDER_SUMMARY,
+                ""
+        )
+        gtmData[ExtraKey.USER_ID] = userId
+        gtmData[ExtraKey.BUSINESS_UNIT] = CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM
+        gtmData[ExtraKey.CURRENT_SITE] = CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
+        sendGeneralEvent(gtmData)
+    }
+
+    fun eventClickTambahTemplateBeliLangsungOnProfileList(userId: String) {
+        val gtmData = getGtmData(
+                EventName.CLICK_CHECKOUT_EXPRESS,
+                EventCategory.ORDER_SUMMARY,
+                EventAction.CLICK_TAMBAH_TEMPLATE_BELI_LANGSUNG_ON_PROFILE_LIST,
+                ""
+        )
+        gtmData[ExtraKey.USER_ID] = userId
+        gtmData[ExtraKey.BUSINESS_UNIT] = CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM
+        gtmData[ExtraKey.CURRENT_SITE] = CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
+        sendGeneralEvent(gtmData)
+    }
+
+    fun eventClickEditProfileOnProfileList(profileId: String, userId: String) {
+        val gtmData = getGtmData(
+                EventName.CLICK_CHECKOUT_EXPRESS,
+                EventCategory.ORDER_SUMMARY,
+                EventAction.CLICK_EDIT_PROFILE_ON_PROFILE_LIST,
+                profileId
+        )
+        gtmData[ExtraKey.USER_ID] = userId
+        gtmData[ExtraKey.BUSINESS_UNIT] = CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM
+        gtmData[ExtraKey.CURRENT_SITE] = CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
+        sendGeneralEvent(gtmData)
+    }
+
+    fun eventViewCoachmark1ForExistingUserOneProfile(userId: String) {
+        val gtmData = getGtmData(
+                EventName.VIEW_CHECKOUT_EXPRESS_IRIS,
+                EventCategory.ORDER_SUMMARY,
+                EventAction.VIEW_COACHMARK_1_FOR_EXISTING_USER_ONE_PROFILE,
+                ""
+        )
+        gtmData[ExtraKey.USER_ID] = userId
+        gtmData[ExtraKey.BUSINESS_UNIT] = CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM
+        gtmData[ExtraKey.CURRENT_SITE] = CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
+        sendGeneralEvent(gtmData)
+    }
+
+    fun eventViewCoachmark2ForExistingUserOneProfile(userId: String) {
+        val gtmData = getGtmData(
+                EventName.VIEW_CHECKOUT_EXPRESS_IRIS,
+                EventCategory.ORDER_SUMMARY,
+                EventAction.VIEW_COACHMARK_2_FOR_EXISTING_USER_ONE_PROFILE,
+                ""
+        )
+        gtmData[ExtraKey.USER_ID] = userId
+        gtmData[ExtraKey.BUSINESS_UNIT] = CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM
+        gtmData[ExtraKey.CURRENT_SITE] = CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
+        sendGeneralEvent(gtmData)
+    }
+
+    fun eventClickDoneOnCoachmark2ForExistingUserOneProfile(userId: String) {
+        val gtmData = getGtmData(
+                EventName.CLICK_CHECKOUT_EXPRESS,
+                EventCategory.ORDER_SUMMARY,
+                EventAction.CLICK_DONE_ON_COACHMARK_2_FOR_EXISTING_USER_ONE_PROFILE,
+                ""
+        )
+        gtmData[ExtraKey.USER_ID] = userId
+        gtmData[ExtraKey.BUSINESS_UNIT] = CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM
+        gtmData[ExtraKey.CURRENT_SITE] = CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
+        sendGeneralEvent(gtmData)
+    }
+
+    fun eventViewCoachmark1ForExistingUserMultiProfile(userId: String) {
+        val gtmData = getGtmData(
+                EventName.VIEW_CHECKOUT_EXPRESS_IRIS,
+                EventCategory.ORDER_SUMMARY,
+                EventAction.VIEW_COACHMARK_1_FOR_EXISTING_USER_MULTI_PROFILE,
+                ""
+        )
+        gtmData[ExtraKey.USER_ID] = userId
+        gtmData[ExtraKey.BUSINESS_UNIT] = CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM
+        gtmData[ExtraKey.CURRENT_SITE] = CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
+        sendGeneralEvent(gtmData)
+    }
+
+    fun eventViewCoachmark2ForExistingUserMultiProfile(userId: String) {
+        val gtmData = getGtmData(
+                EventName.VIEW_CHECKOUT_EXPRESS_IRIS,
+                EventCategory.ORDER_SUMMARY,
+                EventAction.VIEW_COACHMARK_2_FOR_EXISTING_USER_MULTI_PROFILE,
+                ""
+        )
+        gtmData[ExtraKey.USER_ID] = userId
+        gtmData[ExtraKey.BUSINESS_UNIT] = CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM
+        gtmData[ExtraKey.CURRENT_SITE] = CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
+        sendGeneralEvent(gtmData)
+    }
+
+    fun eventClickDoneOnCoachmark2ForExistingUserMultiProfile(userId: String) {
+        val gtmData = getGtmData(
+                EventName.CLICK_CHECKOUT_EXPRESS,
+                EventCategory.ORDER_SUMMARY,
+                EventAction.CLICK_DONE_ON_COACHMARK_2_FOR_EXISTING_USER_MULTI_PROFILE,
+                ""
+        )
+        gtmData[ExtraKey.USER_ID] = userId
+        gtmData[ExtraKey.BUSINESS_UNIT] = CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM
+        gtmData[ExtraKey.CURRENT_SITE] = CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
+        sendGeneralEvent(gtmData)
+    }
+
+    fun eventViewCoachmark1ForNewBuyerBeforeCreateProfile(userId: String) {
+        val gtmData = getGtmData(
+                EventName.VIEW_CHECKOUT_EXPRESS_IRIS,
+                EventCategory.ORDER_SUMMARY,
+                EventAction.VIEW_COACHMARK_1_FOR_NEW_BUYER_BEFORE_CREATE_PROFILE,
+                ""
+        )
+        gtmData[ExtraKey.USER_ID] = userId
+        gtmData[ExtraKey.BUSINESS_UNIT] = CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM
+        gtmData[ExtraKey.CURRENT_SITE] = CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
+        sendGeneralEvent(gtmData)
+    }
+
+    fun eventViewCoachmark2ForNewBuyerBeforeCreateProfile(userId: String) {
+        val gtmData = getGtmData(
+                EventName.VIEW_CHECKOUT_EXPRESS_IRIS,
+                EventCategory.ORDER_SUMMARY,
+                EventAction.VIEW_COACHMARK_2_FOR_NEW_BUYER_BEFORE_CREATE_PROFILE,
+                ""
+        )
+        gtmData[ExtraKey.USER_ID] = userId
+        gtmData[ExtraKey.BUSINESS_UNIT] = CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM
+        gtmData[ExtraKey.CURRENT_SITE] = CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
+        sendGeneralEvent(gtmData)
+    }
+
+    fun eventClickLanjutOnCoachmark2ForNewBuyerBeforeCreateProfile(userId: String) {
+        val gtmData = getGtmData(
+                EventName.CLICK_CHECKOUT_EXPRESS,
+                EventCategory.ORDER_SUMMARY,
+                EventAction.CLICK_LANJUT_ON_COACHMARK_2_FOR_NEW_BUYER_BEFORE_CREATE_PROFILE,
+                ""
+        )
+        gtmData[ExtraKey.USER_ID] = userId
+        gtmData[ExtraKey.BUSINESS_UNIT] = CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM
+        gtmData[ExtraKey.CURRENT_SITE] = CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
+        sendGeneralEvent(gtmData)
+    }
+
+    fun eventViewCoachmark1ForNewBuyerAfterCreateProfile(userId: String) {
+        val gtmData = getGtmData(
+                EventName.VIEW_CHECKOUT_EXPRESS_IRIS,
+                EventCategory.ORDER_SUMMARY,
+                EventAction.VIEW_COACHMARK_1_FOR_NEW_BUYER_AFTER_CREATE_PROFILE,
+                ""
+        )
+        gtmData[ExtraKey.USER_ID] = userId
+        gtmData[ExtraKey.BUSINESS_UNIT] = CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM
+        gtmData[ExtraKey.CURRENT_SITE] = CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
+        sendGeneralEvent(gtmData)
+    }
+
+    fun eventViewCoachmark2ForNewBuyerAfterCreateProfile(userId: String) {
+        val gtmData = getGtmData(
+                EventName.VIEW_CHECKOUT_EXPRESS_IRIS,
+                EventCategory.ORDER_SUMMARY,
+                EventAction.VIEW_COACHMARK_2_FOR_NEW_BUYER_AFTER_CREATE_PROFILE,
+                ""
+        )
+        gtmData[ExtraKey.USER_ID] = userId
+        gtmData[ExtraKey.BUSINESS_UNIT] = CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM
+        gtmData[ExtraKey.CURRENT_SITE] = CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
+        sendGeneralEvent(gtmData)
+    }
+
+    fun eventViewCoachmark3ForNewBuyerAfterCreateProfile(userId: String) {
+        val gtmData = getGtmData(
+                EventName.VIEW_CHECKOUT_EXPRESS_IRIS,
+                EventCategory.ORDER_SUMMARY,
+                EventAction.VIEW_COACHMARK_3_FOR_NEW_BUYER_AFTER_CREATE_PROFILE,
+                ""
+        )
+        gtmData[ExtraKey.USER_ID] = userId
+        gtmData[ExtraKey.BUSINESS_UNIT] = CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM
+        gtmData[ExtraKey.CURRENT_SITE] = CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
+        sendGeneralEvent(gtmData)
+    }
+
+    fun eventClickDoneOnCoachmark3ForNewBuyerAfterCreateProfile(userId: String) {
+        val gtmData = getGtmData(
+                EventName.CLICK_CHECKOUT_EXPRESS,
+                EventCategory.ORDER_SUMMARY,
+                EventAction.CLICK_DONE_ON_COACHMARK_3_FOR_NEW_BUYER_AFTER_CREATE_PROFILE,
+                ""
+        )
+        gtmData[ExtraKey.USER_ID] = userId
+        gtmData[ExtraKey.BUSINESS_UNIT] = CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM
+        gtmData[ExtraKey.CURRENT_SITE] = CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
+        sendGeneralEvent(gtmData)
+    }
+
+    fun eventPPImpressionOnInsuranceSection(userId: String, categoryLvl3Id: String, insuranceBrand: String, protectionName: String) {
+        val gtmData = getGtmData(
+                EventName.PROMO_VIEW,
+                EventCategory.ORDER_SUMMARY,
+                EventAction.PP_IMPRESSION_ON_INSURANCE_SECTION,
+                "$categoryLvl3Id - $insuranceBrand - $protectionName"
+        )
+        gtmData[ExtraKey.USER_ID] = userId
+        gtmData[ExtraKey.BUSINESS_UNIT] = CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM
+        gtmData[ExtraKey.CURRENT_SITE] = CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
+        sendGeneralEvent(gtmData)
+    }
+
+    fun eventPPClickTooltip(userId: String, categoryLvl3Id: String, insuranceBrand: String, protectionName: String) {
+        val gtmData = getGtmData(
+                EventName.PROMO_CLICK,
+                EventCategory.ORDER_SUMMARY,
+                EventAction.PP_CLICK_TOOLTIP,
+                "$categoryLvl3Id - $insuranceBrand - $protectionName"
+        )
+        gtmData[ExtraKey.USER_ID] = userId
+        gtmData[ExtraKey.BUSINESS_UNIT] = CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM
+        gtmData[ExtraKey.CURRENT_SITE] = CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
+        sendGeneralEvent(gtmData)
+    }
+
+    fun eventPPClickBayar(userId: String, categoryLvl3Id: String, insuranceBrand: String, protectionName: String, isChecked: Boolean, ee: Map<String, Any>) {
+        val dataLayer = DataLayer.mapOf(
+                Key.EVENT, EventName.CHECKOUT,
+                Key.EVENT_CATEGORY, EventCategory.ORDER_SUMMARY,
+                Key.EVENT_ACTION, EventAction.PP_CLICK_BAYAR,
+                Key.EVENT_LABEL, "$categoryLvl3Id - $insuranceBrand - $protectionName - $isChecked",
+                Key.E_COMMERCE, ee,
+                ExtraKey.USER_ID, userId,
+                ExtraKey.BUSINESS_UNIT, CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM,
+                ExtraKey.CURRENT_SITE, CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
+        )
+        sendEnhancedEcommerce(dataLayer)
     }
 
     companion object {

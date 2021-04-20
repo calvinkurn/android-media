@@ -7,25 +7,25 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
-
-import com.crashlytics.android.Crashlytics;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.google.firebase.messaging.RemoteMessage;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
-import com.moengage.pushbase.push.MoEngageNotificationUtils;
 import com.tkpd.library.utils.legacy.AnalyticsLog;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.BuildConfig;
 import com.tokopedia.core.TkpdCoreRouter;
-import com.tokopedia.core.deprecated.SessionHandler;
 import com.tokopedia.core.gcm.base.BaseNotificationMessagingService;
 import com.tokopedia.core.gcm.base.IAppNotificationReceiver;
 import com.tokopedia.core.gcm.intentservices.PushNotificationIntentService;
-import com.tokopedia.core.gcm.utils.RouterUtils;
 import com.tokopedia.fcmcommon.FirebaseMessagingManagerImpl;
+import com.tokopedia.logger.ServerLogger;
+import com.tokopedia.logger.utils.Priority;
+import com.tokopedia.moengage_wrapper.MoengageInteractor;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import io.hansel.hanselsdk.Hansel;
@@ -36,10 +36,10 @@ import timber.log.Timber;
  */
 
 public class BaseMessagingService extends BaseNotificationMessagingService {
+    private static final String REVERT_PUSH_NOTIFICATION_SHOW_PROMO = "android_revert_push_notif_show_promo";
     private static IAppNotificationReceiver appNotificationReceiver;
     private SharedPreferences sharedPreferences;
-    private Context mContext;;
-    private SessionHandler sessionHandler;
+    private Context mContext;
     private LocalBroadcastManager localBroadcastManager;
     private UserSessionInterface userSession;
 
@@ -47,7 +47,6 @@ public class BaseMessagingService extends BaseNotificationMessagingService {
     public void onMessageReceived(RemoteMessage remoteMessage) {
         super.onMessageReceived(remoteMessage);
         mContext = getApplicationContext();
-        sessionHandler = RouterUtils.getRouterFromContext(mContext).legacySessionHandler();
         localBroadcastManager = LocalBroadcastManager.getInstance(mContext);
         userSession = new UserSession(this);
 
@@ -61,21 +60,33 @@ public class BaseMessagingService extends BaseNotificationMessagingService {
 
         if (Hansel.isPushFromHansel(data) && !GlobalConfig.isSellerApp()) {
             Hansel.handlePushPayload(this, data);
-            Timber.w("P1#MESSAGING_SERVICE#HanselPush;from='%s';data='%s'", remoteMessage.getFrom(), data.toString());
-        }else if (MoEngageNotificationUtils.isFromMoEngagePlatform(remoteMessage.getData()) && showPromoNotification()) {
+            Map<String, String> messageMap = new HashMap<>();
+            messageMap.put("type", "HanselPush");
+            messageMap.put("from", remoteMessage.getFrom());
+            messageMap.put("data", data.toString());
+            ServerLogger.log(Priority.P1, "MESSAGING_SERVICE", messageMap);
+        } else if (MoengageInteractor.INSTANCE.isFromMoEngagePlatform(remoteMessage.getData()) && showPromoNotification()) {
             appNotificationReceiver.onMoengageNotificationReceived(remoteMessage);
-            Timber.w("P1#MESSAGING_SERVICE#MoengageNotification;from='%s';data='%s'", remoteMessage.getFrom(), data.toString());
-        }else if (appNotificationReceiver.isFromCMNotificationPlatform(remoteMessage.getData())) {
+            Map<String, String> messageMap = new HashMap<>();
+            messageMap.put("type", "MoengageNotification");
+            messageMap.put("from", remoteMessage.getFrom());
+            messageMap.put("data", data.toString());
+            ServerLogger.log(Priority.P1, "MESSAGING_SERVICE", messageMap);
+        } else if (appNotificationReceiver.isFromCMNotificationPlatform(remoteMessage.getData())) {
             appNotificationReceiver.onCampaignManagementNotificationReceived(remoteMessage);
-            Timber.w("P1#MESSAGING_SERVICE#CampaignManagementNotification;from='%s';data='%s'", remoteMessage.getFrom(), data.toString());
+            Map<String, String> messageMap = new HashMap<>();
+            messageMap.put("type", "CampaignManagementNotification");
+            messageMap.put("from", remoteMessage.getFrom());
+            messageMap.put("data", data.toString());
+            ServerLogger.log(Priority.P1, "MESSAGING_SERVICE", messageMap);
         } else {
-            AnalyticsLog.logNotification(mContext, sessionHandler, remoteMessage.getFrom(), data.getString(Constants.ARG_NOTIFICATION_CODE, ""));
+            AnalyticsLog.logNotification(mContext, userSession.getUserId(), remoteMessage.getFrom(), data.getString(Constants.ARG_NOTIFICATION_CODE, ""));
             appNotificationReceiver.onNotificationReceived(remoteMessage.getFrom(), data);
             logTokopediaNotification(remoteMessage);
         }
         logOnMessageReceived(data);
 
-        if (com.tokopedia.config.GlobalConfig.isSellerApp()) {
+        if (GlobalConfig.isSellerApp()) {
             sendPushNotificationIntent();
         }
     }
@@ -95,12 +106,11 @@ public class BaseMessagingService extends BaseNotificationMessagingService {
     private void executeLogOnMessageReceived(Bundle data) {
         if (!BuildConfig.DEBUG) {
             String logMessage = generateLogMessage(data);
-            Crashlytics.logException(new Exception(logMessage));
-            Timber.w(
-                    "P2#LOG_PUSH_NOTIF#'%s';data='%s'",
-                    "BaseMessagingService::onMessageReceived",
-                    logMessage
-            );
+            FirebaseCrashlytics.getInstance().recordException(new Exception(logMessage));
+            Map<String, String> messageMap = new HashMap<>();
+            messageMap.put("type", logMessage);
+            messageMap.put("data", logMessage);
+            ServerLogger.log(Priority.P2, "LOG_PUSH_NOTIF", messageMap);
         }
     }
 
@@ -124,9 +134,14 @@ public class BaseMessagingService extends BaseNotificationMessagingService {
     }
 
     private boolean showPromoNotification() {
-        if(sharedPreferences == null) sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-
-        return sharedPreferences.getBoolean(Constants.Settings.NOTIFICATION_PROMO, true);
+        boolean revert = FirebaseRemoteConfig.getInstance().getBoolean(REVERT_PUSH_NOTIFICATION_SHOW_PROMO);
+        if(!revert) {
+            return true;
+        } else{
+            if (sharedPreferences == null)
+                sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+            return sharedPreferences.getBoolean(Constants.Settings.NOTIFICATION_PROMO, true);
+        }
     }
 
     /**
@@ -143,7 +158,11 @@ public class BaseMessagingService extends BaseNotificationMessagingService {
         Bundle bundleTemp = convertMap(remoteMessage);
         bundleTemp.remove("summary");
         bundleTemp.remove("desc");
-        Timber.w("P1#MESSAGING_SERVICE#TokopediaNotification;from='%s';data='%s'", remoteMessage.getFrom(), bundleTemp.toString());
+        Map<String, String> messageMap = new HashMap<>();
+        messageMap.put("type", "TokopediaNotification");
+        messageMap.put("from", remoteMessage.getFrom());
+        messageMap.put("data", bundleTemp.toString());
+        ServerLogger.log(Priority.P1, "MESSAGING_SERVICE", messageMap);
     }
 
     public static IAppNotificationReceiver createInstance(Context context) {

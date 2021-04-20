@@ -44,7 +44,7 @@ object HotelTextHyperlinkUtil {
                 override fun updateDrawState(ds: TextPaint) {
                     super.updateDrawState(ds)
                     ds.isUnderlineText = false
-                    ds.color = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Green_G500) // specific color for this link
+                    ds.color = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500) // specific color for this link
                 }
             }, tag - (index * ("<${hyperlinkTag}><z${hyperlinkTag}>".length)),
                     posCloseTags[index] - ((index * ("<${hyperlinkTag}><z${hyperlinkTag}>".length)) + "<${hyperlinkTag}>".length),

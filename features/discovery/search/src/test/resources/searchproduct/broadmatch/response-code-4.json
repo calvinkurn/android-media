@@ -33,171 +33,149 @@
         "position": 1,
         "otherRelated": [
           {
-            "keyword": "baju kaos anak",
-            "url": "https://staging.tokopedia.com/search?q=baju+kaos+anak&source=related_keyword&st=product",
-            "applink": "tokopedia://search?q=baju kaos anak&source=related_keyword&st=product",
+            "keyword": "samsung a30",
+            "url": "https://www.tokopedia.com/search?q=samsung+a30&source=related_keyword&st=product",
+            "applink": "tokopedia://search?q=samsung+a30&source=related_keyword&st=product",
             "product": [
               {
-                "id": 15340985,
-                "name": "tes hidden category blazer 1",
-                "price": 150000,
-                "imageUrl": "",
-                "rating": 0,
-                "countReview": 0,
-                "url": "https://staging.tokopedia.com/aqua/tes-hidden-category-blazer-1-hitam?refined=true&trkid=f%3DCa83L000P0W0S0Sh%2C%2C%2C%2C%2CCo0Po0Fr0Cb0_src%3Dsearch_page%3D1_ob%3D203_q%3Dbaju+kaos+anak+balapan_bmexp%3D1_po%3D1_catid%3D148_bmexp%3D1&whid=0",
-                "applink": "tokopedia://product/15340985?",
-                "priceStr": "",
+                "id": 554631097,
+                "name": "Samsung A30 Ram 4GB/64GB",
+                "price": 2045000,
+                "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/200-square/product-1/2019/9/8/6723360/6723360_b8b7fdc0-c4f5-4e0e-8d9a-42d1c6e2fad6_1072_1072.jpg",
+                "url": "https://www.tokopedia.com/wijayasamsung/samsung-a30-ram-4gb-64gb?whid=0",
+                "applink": "tokopedia://product/554631097",
+                "priceStr": "Rp2.045.000",
+                "wishlist": false,
+                "ratingAverage": "4.6",
+                "labelGroups": [
+                  {
+                    "title": "Terjual 72",
+                    "position": "integrity",
+                    "type": "textDarkGrey",
+                    "url": ""
+                  }
+                ],
                 "shop": {
-                  "city": "Jakarta Pusat"
+                  "city": "Kab. Sidoarjo"
                 },
                 "badges": [
                   {
-                    "imageUrl": "https://ecs7-p.tokopedia.net/img/official_store_badge.png",
+                    "imageUrl": "https://ecs7-p.tokopedia.net/img/power_merchant_badge.png",
                     "show": true
                   }
                 ],
                 "freeOngkir": {
                   "isActive": true,
                   "imgUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                },
+                "ads": {
+                  "id": "",
+                  "productClickUrl": "",
+                  "productWishlistUrl": "",
+                  "productViewUrl": ""
                 }
               },
               {
-                "id": 15340991,
-                "name": "test hidden category oy 1",
-                "price": 24000,
-                "imageUrl": "",
-                "rating": 0,
-                "countReview": 0,
-                "url": "https://staging.tokopedia.com/aqua/test-hidden-category-oy-1?refined=true&trkid=f%3DCa83L000P0W0S0Sh%2C%2C%2C%2C%2CCo0Po0Fr0Cb0_src%3Dsearch_page%3D1_ob%3D203_q%3Dbaju+kaos+anak+balapan_bmexp%3D1_po%3D2_catid%3D148_bmexp%3D1&whid=0",
-                "applink": "tokopedia://product/15340991?",
-                "price_str": "",
+                "id": 1107195585,
+                "name": "SAMSUNG GALAXY A30 - NEW - RESMI SEIN",
+                "price": 2450000,
+                "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/200-square/VqbcmM/2020/11/30/7fcc865b-03b2-4a91-9724-580e90665ddc.jpg",
+                "url": "https://www.tokopedia.com/fensilista/samsung-galaxy-a30-new-resmi-sein?whid=0",
+                "applink": "tokopedia://product/1107195585",
+                "priceStr": "Rp2.450.000",
+                "wishlist": false,
+                "ratingAverage": "4.8",
+                "labelGroups": [
+                  {
+                    "title": "Terjual 18",
+                    "position": "integrity",
+                    "type": "textDarkGrey",
+                    "url": ""
+                  }
+                ],
                 "shop": {
-                  "city": "Jakarta Pusat"
+                  "city": "Kab. Bogor"
                 },
                 "badges": [
                   {
-                    "imageUrl": "https://ecs7-p.tokopedia.net/img/official_store_badge.png",
+                    "imageUrl": "https://ecs7-p.tokopedia.net/img/power_merchant_badge.png",
                     "show": true
                   }
                 ],
                 "freeOngkir": {
-                  "isActive": true,
-                  "imgUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                  "isActive": false,
+                  "imgUrl": ""
+                },
+                "ads": {
+                  "id": "",
+                  "productClickUrl": "",
+                  "productWishlistUrl": "",
+                  "productViewUrl": ""
                 }
               },
               {
-                "id": 15302003,
-                "name": "liquid vape gratis baju anak",
-                "price": 123,
-                "imageUrl": "",
-                "rating": 0,
-                "countReview": 0,
-                "url": "https://staging.tokopedia.com/ratubadisshop/liquid-vape-gratis-baju-anak?refined=true&trkid=f%3DCa83L000P0W0S0Sh%2C%2C%2C%2C%2CCo0Po0Fr0Cb0_src%3Dsearch_page%3D1_ob%3D203_q%3Dbaju+kaos+anak+balapan_bmexp%3D1_po%3D3_catid%3D36_bmexp%3D1&whid=0",
-                "applink": "tokopedia://product/15302003?",
-                "priceStr": "",
+                "id": 615953085,
+                "name": "SAMSUNG GALAXY A30 4/64GB GARANSI RESMI SEIN",
+                "price": 2799000,
+                "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/200-square/product-1/2019/11/25/29275594/29275594_68205c81-5520-495a-bbf8-3bc43de41065_1080_1080",
+                "url": "https://www.tokopedia.com/acygadget/samsung-galaxy-a30-4-64gb-garansi-resmi-sein?whid=0",
+                "applink": "tokopedia://product/615953085",
+                "priceStr": "Rp2.799.000",
+                "wishlist": false,
+                "ratingAverage": "4.5",
+                "labelGroups": [
+                  {
+                    "title": "Terjual 75",
+                    "position": "integrity",
+                    "type": "textDarkGrey",
+                    "url": ""
+                  }
+                ],
                 "shop": {
-                  "city": "Jakarta Pusat"
+                  "city": "Jakarta Utara"
                 },
                 "badges": [
                   {
-                    "imageUrl": "https://ecs7-p.tokopedia.net/img/official_store_badge.png",
+                    "imageUrl": "https://ecs7-p.tokopedia.net/img/power_merchant_badge.png",
                     "show": true
                   }
                 ],
                 "freeOngkir": {
                   "isActive": true,
                   "imgUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
-                }
-              },
-              {
-                "id": 15327250,
-                "name": "baju anak",
-                "price": 1000,
-                "imageUrl": "",
-                "rating": 0,
-                "countReview": 0,
-                "url": "https://staging.tokopedia.com/ratubadisshop/baju-anak?refined=true&trkid=f%3DCa83L000P0W0S0Sh%2C%2C%2C%2C%2CCo0Po0Fr0Cb0_src%3Dsearch_page%3D1_ob%3D203_q%3Dbaju+kaos+anak+balapan_bmexp%3D1_po%3D4_catid%3D2071_bmexp%3D1&whid=0",
-                "applink": "tokopedia://product/15327250?",
-                "priceStr": "",
-                "shop": {
-                  "city": "Jakarta Pusat"
                 },
-                "badges": [
-                  {
-                    "imageUrl": "https://ecs7-p.tokopedia.net/img/official_store_badge.png",
-                    "show": true
-                  }
-                ],
-                "freeOngkir": {
-                  "isActive": true,
-                  "imgUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
-                }
-              },
-              {
-                "id": 15213541,
-                "name": "Baju Kaos Anak Laki Hijau Mom n Bab - Buaya",
-                "price": 125000,
-                "imageUrl": "",
-                "rating": 0,
-                "countReview": 0,
-                "url": "https://staging.tokopedia.com/mustika-ratu/baju-kaos-anak-laki-hijau-mom-n-bab-buaya?refined=true&trkid=f%3DCa83L000P0W0S0Sh%2C%2C%2C%2C%2CCo0Po0Fr0Cb0_src%3Dsearch_page%3D1_ob%3D203_q%3Dbaju+kaos+anak+balapan_bmexp%3D1_po%3D5_catid%3D2144_bmexp%3D1&whid=0",
-                "applink": "tokopedia://product/15213541?",
-                "priceStr": "",
-                "shop": {
-                  "city": "Jakarta Pusat"
-                },
-                "badges": [
-                  {
-                    "imageUrl": "https://ecs7-p.tokopedia.net/img/official_store_badge.png",
-                    "show": true
-                  }
-                ],
-                "freeOngkir": {
-                  "isActive": true,
-                  "imgUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
-                }
-              },
-              {
-                "id": 15213547,
-                "name": "Baju Kaos Anak Laki (isi 2 pcs) Mom n Bab - Pesawat",
-                "price": 108750,
-                "imageUrl": "",
-                "rating": 0,
-                "countReview": 0,
-                "url": "https://staging.tokopedia.com/mustika-ratu/baju-kaos-anak-laki-isi-2-pcs-mom-n-bab-pesawat?refined=true&trkid=f%3DCa83L000P0W0S0Sh%2C%2C%2C%2C%2CCo0Po0Fr0Cb0_src%3Dsearch_page%3D1_ob%3D203_q%3Dbaju+kaos+anak+balapan_bmexp%3D1_po%3D6_catid%3D2144_bmexp%3D1&whid=0",
-                "applink": "tokopedia://product/15213547?",
-                "priceStr": "",
-                "shop": {
-                  "city": "Jakarta Pusat"
-                },
-                "badges": [
-                  {
-                    "imageUrl": "https://ecs7-p.tokopedia.net/img/official_store_badge.png",
-                    "show": true
-                  }
-                ],
-                "freeOngkir": {
-                  "isActive": true,
-                  "imgUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                "ads": {
+                  "id": "",
+                  "productClickUrl": "",
+                  "productWishlistUrl": "",
+                  "productViewUrl": ""
                 }
               }
             ]
           },
           {
-            "keyword": "baju kaos",
-            "url": "https://staging.tokopedia.com/search?q=baju+kaos&source=related_keyword&st=product",
-            "applink": "tokopedia://search?q=baju kaos&source=related_keyword&st=product",
+            "keyword": "samsung a8",
+            "url": "https://www.tokopedia.com/search?q=samsung+a8&source=related_keyword&st=product",
+            "applink": "tokopedia://search?q=samsung+a8&source=related_keyword&st=product",
             "product": [
               {
-                "id": 15340985,
-                "name": "tes hidden category blazer 1",
-                "price": 150000,
-                "imageUrl": "",
-                "rating": 0,
-                "countReview": 0,
-                "url": "https://staging.tokopedia.com/aqua/tes-hidden-category-blazer-1-hitam?refined=true&trkid=f%3DCa83L000P0W0S0Sh%2C%2C%2C%2C%2CCo0Po0Fr0Cb0_src%3Dsearch_page%3D1_ob%3D203_q%3Dbaju+kaos+anak+balapan_bmexp%3D1_po%3D1_catid%3D148_bmexp%3D1&whid=0",
-                "applink": "tokopedia://product/15340985?",
-                "priceStr": "",
+                "id": 630037796,
+                "name": "SAMSUNG TAB A8\" 2019 T295 RAM 2/32GB GRS RESMI SEIN",
+                "price": 1859000,
+                "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/200-square/VqbcmM/2020/9/25/31b4a28b-8f52-4dc3-a20b-9fad96741459.jpg",
+                "url": "https://www.tokopedia.com/cmpphone/samsung-tab-a8-2019-t295-ram-2-32gb-grs-resmi-sein?whid=0",
+                "applink": "tokopedia://product/630037796",
+                "priceStr": "Rp1.859.000",
+                "wishlist": false,
+                "ratingAverage": "5.0",
+                "labelGroups": [
+                  {
+                    "title": "Terjual 1.0 rb",
+                    "position": "integrity",
+                    "type": "textDarkGrey",
+                    "url": ""
+                  }
+                ],
                 "shop": {
                   "city": "Jakarta Pusat"
                 },
@@ -210,145 +188,108 @@
                 "freeOngkir": {
                   "isActive": true,
                   "imgUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                },
+                "ads": {
+                  "id": "",
+                  "productClickUrl": "",
+                  "productWishlistUrl": "",
+                  "productViewUrl": ""
                 }
               },
               {
-                "id": 15340991,
-                "name": "test hidden category oy 1",
-                "price": 24000,
-                "imageUrl": "",
-                "rating": 0,
-                "countReview": 0,
-                "url": "https://staging.tokopedia.com/aqua/test-hidden-category-oy-1?refined=true&trkid=f%3DCa83L000P0W0S0Sh%2C%2C%2C%2C%2CCo0Po0Fr0Cb0_src%3Dsearch_page%3D1_ob%3D203_q%3Dbaju+kaos+anak+balapan_bmexp%3D1_po%3D2_catid%3D148_bmexp%3D1&whid=0",
-                "applink": "tokopedia://product/15340991?",
-                "priceStr": "",
+                "id": 295482998,
+                "name": "Samsung Galaxy A8 2018 Fullset OK",
+                "price": 2050000,
+                "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/200-square/product-1/2018/6/1/563736/563736_396f2199-3250-4ff8-83e6-fb8656fd7700_780_1040.jpg",
+                "url": "https://www.tokopedia.com/tokoacoy/samsung-galaxy-a8-2018-fullset-ok?whid=0",
+                "applink": "tokopedia://product/295482998",
+                "priceStr": "Rp2.050.000",
+                "wishlist": false,
+                "ratingAverage": "4.6",
+                "labelGroups": [
+                  {
+                    "title": "Terjual 116",
+                    "position": "integrity",
+                    "type": "textDarkGrey",
+                    "url": ""
+                  }
+                ],
                 "shop": {
-                  "city": "Jakarta Pusat"
+                  "city": "Jakarta Utara"
                 },
                 "badges": [
                   {
-                    "imageUrl": "https://ecs7-p.tokopedia.net/img/official_store_badge.png",
+                    "imageUrl": "https://ecs7-p.tokopedia.net/img/power_merchant_badge.png",
                     "show": true
                   }
                 ],
                 "freeOngkir": {
                   "isActive": true,
                   "imgUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                },
+                "ads": {
+                  "id": "",
+                  "productClickUrl": "",
+                  "productWishlistUrl": "",
+                  "productViewUrl": ""
                 }
               },
               {
-                "id": 15327250,
-                "name": "baju anak",
-                "price": 1000,
-                "imageUrl": "",
-                "rating": 0,
-                "countReview": 0,
-                "url": "https://staging.tokopedia.com/ratubadisshop/baju-anak?refined=true&trkid=f%3DCa83L000P0W0S0Sh%2C%2C%2C%2C%2CCo0Po0Fr0Cb0_src%3Dsearch_page%3D1_ob%3D203_q%3Dbaju+kaos+anak+balapan_bmexp%3D1_po%3D3_catid%3D2071_bmexp%3D1&whid=0",
-                "applink": "tokopedia://product/15327250?",
-                "priceStr": "",
+                "id": 368344890,
+                "name": "samsung galaxy a8 2018 dual sein cakep garansi panjang",
+                "price": 2199000,
+                "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/200-square/product-1/2019/9/1/2205315/2205315_976bf499-1c3c-4cb8-900d-37baa800488f_1280_1280",
+                "url": "https://www.tokopedia.com/temanponsel/samsung-galaxy-a8-2018-dual-sein-cakep-garansi-panjang?whid=0",
+                "applink": "tokopedia://product/368344890",
+                "priceStr": "Rp2.199.000",
+                "wishlist": false,
+                "ratingAverage": "4.8",
+                "labelGroups": [
+                  {
+                    "title": "Terjual 175",
+                    "position": "integrity",
+                    "type": "textDarkGrey",
+                    "url": ""
+                  }
+                ],
                 "shop": {
-                  "city": "Jakarta Pusat"
+                  "city": "Bekasi"
                 },
                 "badges": [
                   {
-                    "imageUrl": "https://ecs7-p.tokopedia.net/img/official_store_badge.png",
+                    "imageUrl": "https://ecs7-p.tokopedia.net/img/power_merchant_badge.png",
                     "show": true
                   }
                 ],
                 "freeOngkir": {
                   "isActive": true,
                   "imgUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
-                }
-              },
-              {
-                "id": 15356072,
-                "name": "Kaos Disco Testing non var 1",
-                "price": 10000,
-                "imageUrl": "",
-                "rating": 0,
-                "countReview": 0,
-                "url": "https://staging.tokopedia.com/rshop2/kaos-disco-testing-non-var-1?refined=true&trkid=f%3DCa83L000P0W0S0Sh%2C%2C%2C%2C%2CCo0Po0Fr0Cb0_src%3Dsearch_page%3D1_ob%3D203_q%3Dbaju+kaos+anak+balapan_bmexp%3D1_po%3D4_catid%3D2072_bmexp%3D1&whid=0",
-                "applink": "tokopedia://product/15356072?",
-                "priceStr": "",
-                "shop": {
-                  "city": "Jakarta Pusat"
                 },
-                "badges": [
-                  {
-                    "imageUrl": "https://ecs7-p.tokopedia.net/img/official_store_badge.png",
-                    "show": true
-                  }
-                ],
-                "freeOngkir": {
-                  "isActive": true,
-                  "imgUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
-                }
-              },
-              {
-                "id": 15356071,
-                "name": "Kaos Disco Testing non var 2",
-                "price": 10000,
-                "imageUrl": "",
-                "rating": 0,
-                "countReview": 0,
-                "url": "https://staging.tokopedia.com/rshop2/kaos-disco-testing-non-var-2?refined=true&trkid=f%3DCa83L000P0W0S0Sh%2C%2C%2C%2C%2CCo0Po0Fr0Cb0_src%3Dsearch_page%3D1_ob%3D203_q%3Dbaju+kaos+anak+balapan_bmexp%3D1_po%3D5_catid%3D2072_bmexp%3D1&whid=0",
-                "applink": "tokopedia://product/15356071?",
-                "priceStr": "",
-                "shop": {
-                  "city": "Jakarta Pusat"
-                },
-                "badges": [
-                  {
-                    "imageUrl": "https://ecs7-p.tokopedia.net/img/official_store_badge.png",
-                    "show": true
-                  }
-                ],
-                "freeOngkir": {
-                  "isActive": true,
-                  "imgUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
-                }
-              },
-              {
-                "id": 15356070,
-                "name": "Kaos Disco Testing non var 3",
-                "price": 10000,
-                "imageUrl": "",
-                "rating": 0,
-                "countReview": 0,
-                "url": "https://staging.tokopedia.com/rshop2/kaos-disco-testing-non-var-3?refined=true&trkid=f%3DCa83L000P0W0S0Sh%2C%2C%2C%2C%2CCo0Po0Fr0Cb0_src%3Dsearch_page%3D1_ob%3D203_q%3Dbaju+kaos+anak+balapan_bmexp%3D1_po%3D6_catid%3D2072_bmexp%3D1&whid=0",
-                "applink": "tokopedia://product/15356070?",
-                "priceStr": "",
-                "shop": {
-                  "city": "Jakarta Pusat"
-                },
-                "badges": [
-                  {
-                    "imageUrl": "https://ecs7-p.tokopedia.net/img/official_store_badge.png",
-                    "show": true
-                  }
-                ],
-                "freeOngkir": {
-                  "isActive": true,
-                  "imgUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                "ads": {
+                  "id": "",
+                  "productClickUrl": "",
+                  "productWishlistUrl": "",
+                  "productViewUrl": ""
                 }
               }
             ]
           },
           {
-            "keyword": "baju anak",
-            "url": "https://staging.tokopedia.com/search?q=baju+anak&source=related_keyword&st=product",
-            "applink": "tokopedia://search?q=baju anak&source=related_keyword&st=product",
+            "keyword": "samsung m11",
+            "url": "https://www.tokopedia.com/search?q=samsung+m11&source=related_keyword&st=product",
+            "applink": "tokopedia://search?q=samsung+m11&source=related_keyword&st=product",
             "product": [
               {
-                "id": 15340985,
-                "name": "tes hidden category blazer 1",
-                "price": 150000,
-                "imageUrl": "",
-                "rating": 0,
-                "countReview": 0,
-                "url": "https://staging.tokopedia.com/aqua/tes-hidden-category-blazer-1-hitam?refined=true&trkid=f%3DCa83L000P0W0S0Sh%2C%2C%2C%2C%2CCo0Po0Fr0Cb0_src%3Dsearch_page%3D1_ob%3D203_q%3Dbaju+kaos+anak+balapan_bmexp%3D1_po%3D1_catid%3D148_bmexp%3D1&whid=0",
-                "applink": "tokopedia://product/15340985?",
-                "priceStr": "",
+                "id": 884018884,
+                "name": "SAMSUNG GALAXY M11 3/32GB RAM 3GB ROM 32GB GARANSI RESMI - Hitam",
+                "price": 1799000,
+                "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/200-square/VqbcmM/2020/11/11/af24255e-6ef7-4543-8118-7e01f4898f94.jpg",
+                "url": "https://www.tokopedia.com/gawaimart/samsung-galaxy-m11-3-32gb-ram-3gb-rom-32gb-garansi-resmi-hitam?whid=0",
+                "applink": "tokopedia://product/884018884",
+                "priceStr": "Rp1.799.000",
+                "wishlist": false,
+                "ratingAverage": "4.9",
+                "labelGroups": [],
                 "shop": {
                   "city": "Jakarta Pusat"
                 },
@@ -361,145 +302,63 @@
                 "freeOngkir": {
                   "isActive": true,
                   "imgUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                },
+                "ads": {
+                  "id": "",
+                  "productClickUrl": "",
+                  "productWishlistUrl": "",
+                  "productViewUrl": ""
                 }
               },
               {
-                "id": 15340991,
-                "name": "test hidden category oy 1",
-                "price": 24000,
-                "imageUrl": "",
-                "rating": 0,
-                "countReview": 0,
-                "url": "https://staging.tokopedia.com/aqua/test-hidden-category-oy-1?refined=true&trkid=f%3DCa83L000P0W0S0Sh%2C%2C%2C%2C%2CCo0Po0Fr0Cb0_src%3Dsearch_page%3D1_ob%3D203_q%3Dbaju+kaos+anak+balapan_bmexp%3D1_po%3D2_catid%3D148_bmexp%3D1&whid=0",
-                "applink": "tokopedia://product/15340991?",
-                "priceStr": "",
+                "id": 1289310293,
+                "name": "Samsung Galaxy M11 3GB/32GB 3/32 GB Sein Garansi Resmi - Random",
+                "price": 1767900,
+                "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/200-square/product-1/2020/8/9/1046950743/1046950743_905ee3cf-f2d6-4b8a-81a9-8bd31de13222_1560_1560.jpg",
+                "url": "https://www.tokopedia.com/wwwyoofixcom/samsung-galaxy-m11-3gb-32gb-3-32-gb-sein-garansi-resmi-random?whid=0",
+                "applink": "tokopedia://product/1289310293",
+                "priceStr": "Rp1.767.900",
+                "wishlist": false,
+                "ratingAverage": "4.9",
+                "labelGroups": [],
                 "shop": {
-                  "city": "Jakarta Pusat"
+                  "city": "Jakarta Selatan"
                 },
                 "badges": [
                   {
-                    "imageUrl": "https://ecs7-p.tokopedia.net/img/official_store_badge.png",
+                    "imageUrl": "https://ecs7-p.tokopedia.net/img/power_merchant_badge.png",
                     "show": true
                   }
                 ],
                 "freeOngkir": {
                   "isActive": true,
                   "imgUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
-                }
-              },
-              {
-                "id": 15327250,
-                "name": "baju anak",
-                "price": 1000,
-                "imageUrl": "",
-                "rating": 0,
-                "countReview": 0,
-                "url": "https://staging.tokopedia.com/ratubadisshop/baju-anak?refined=true&trkid=f%3DCa83L000P0W0S0Sh%2C%2C%2C%2C%2CCo0Po0Fr0Cb0_src%3Dsearch_page%3D1_ob%3D203_q%3Dbaju+kaos+anak+balapan_bmexp%3D1_po%3D3_catid%3D2071_bmexp%3D1&whid=0",
-                "applink": "tokopedia://product/15327250?",
-                "priceStr": "",
-                "shop": {
-                  "city": "Jakarta Pusat"
                 },
-                "badges": [
-                  {
-                    "imageUrl": "https://ecs7-p.tokopedia.net/img/official_store_badge.png",
-                    "show": true
-                  }
-                ],
-                "freeOngkir": {
-                  "isActive": true,
-                  "imgUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
-                }
-              },
-              {
-                "id": 15356072,
-                "name": "Kaos Disco Testing non var 1",
-                "price": 10000,
-                "imageUrl": "",
-                "rating": 0,
-                "countReview": 0,
-                "url": "https://staging.tokopedia.com/rshop2/kaos-disco-testing-non-var-1?refined=true&trkid=f%3DCa83L000P0W0S0Sh%2C%2C%2C%2C%2CCo0Po0Fr0Cb0_src%3Dsearch_page%3D1_ob%3D203_q%3Dbaju+kaos+anak+balapan_bmexp%3D1_po%3D4_catid%3D2072_bmexp%3D1&whid=0",
-                "applink": "tokopedia://product/15356072?",
-                "priceStr": "",
-                "shop": {
-                  "city": "Jakarta Pusat"
-                },
-                "badges": [
-                  {
-                    "imageUrl": "https://ecs7-p.tokopedia.net/img/official_store_badge.png",
-                    "show": true
-                  }
-                ],
-                "freeOngkir": {
-                  "isActive": true,
-                  "imgUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
-                }
-              },
-              {
-                "id": 15356071,
-                "name": "Kaos Disco Testing non var 2",
-                "price": 10000,
-                "imageUrl": "",
-                "rating": 0,
-                "countReview": 0,
-                "url": "https://staging.tokopedia.com/rshop2/kaos-disco-testing-non-var-2?refined=true&trkid=f%3DCa83L000P0W0S0Sh%2C%2C%2C%2C%2CCo0Po0Fr0Cb0_src%3Dsearch_page%3D1_ob%3D203_q%3Dbaju+kaos+anak+balapan_bmexp%3D1_po%3D5_catid%3D2072_bmexp%3D1&whid=0",
-                "applink": "tokopedia://product/15356071?",
-                "priceStr": "",
-                "shop": {
-                  "city": "Jakarta Pusat"
-                },
-                "badges": [
-                  {
-                    "imageUrl": "https://ecs7-p.tokopedia.net/img/official_store_badge.png",
-                    "show": true
-                  }
-                ],
-                "freeOngkir": {
-                  "isActive": true,
-                  "imgUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
-                }
-              },
-              {
-                "id": 15356070,
-                "name": "Kaos Disco Testing non var 3",
-                "price": 10000,
-                "imageUrl": "",
-                "rating": 0,
-                "countReview": 0,
-                "url": "https://staging.tokopedia.com/rshop2/kaos-disco-testing-non-var-3?refined=true&trkid=f%3DCa83L000P0W0S0Sh%2C%2C%2C%2C%2CCo0Po0Fr0Cb0_src%3Dsearch_page%3D1_ob%3D203_q%3Dbaju+kaos+anak+balapan_bmexp%3D1_po%3D6_catid%3D2072_bmexp%3D1&whid=0",
-                "applink": "tokopedia://product/15356070?",
-                "priceStr": "",
-                "shop": {
-                  "city": "Jakarta Pusat"
-                },
-                "badges": [
-                  {
-                    "imageUrl": "https://ecs7-p.tokopedia.net/img/official_store_badge.png",
-                    "show": true
-                  }
-                ],
-                "freeOngkir": {
-                  "isActive": true,
-                  "imgUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                "ads": {
+                  "id": "",
+                  "productClickUrl": "",
+                  "productWishlistUrl": "",
+                  "productViewUrl": ""
                 }
               }
             ]
           },
           {
-            "keyword": "kaos anak",
-            "url": "https://staging.tokopedia.com/search?q=kaos+anak&source=related_keyword&st=product",
-            "applink": "tokopedia://search?q=kaos anak&source=related_keyword&st=product",
+            "keyword": "samsung a10",
+            "url": "https://www.tokopedia.com/search?q=samsung+a10&source=related_keyword&st=product",
+            "applink": "tokopedia://search?q=samsung+a10&source=related_keyword&st=product",
             "product": [
               {
-                "id": 15340985,
-                "name": "tes hidden category blazer 1",
-                "price": 150000,
-                "imageUrl": "",
-                "rating": 0,
-                "countReview": 0,
-                "url": "https://staging.tokopedia.com/aqua/tes-hidden-category-blazer-1-hitam?refined=true&trkid=f%3DCa83L000P0W0S0Sh%2C%2C%2C%2C%2CCo0Po0Fr0Cb0_src%3Dsearch_page%3D1_ob%3D203_q%3Dbaju+kaos+anak+balapan_bmexp%3D1_po%3D1_catid%3D148_bmexp%3D1&whid=0",
-                "applink": "tokopedia://product/15340985?",
-                "priceStr": "",
+                "id": 1274003805,
+                "name": "Samsung Galaxy A10s 2/32GB Garansi Resmi SEIN a10 s 32 GB Hitam Hijau - Non Bundle",
+                "price": 1498000,
+                "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/200-square/VqbcmM/2020/11/23/00bce730-8aa3-46f4-963d-1ddd9e40c4d3.jpg",
+                "url": "https://www.tokopedia.com/distriponsel/samsung-galaxy-a10s-2-32gb-garansi-resmi-sein-a10-s-32-gb-hitam-hijau-non-bundle?whid=0",
+                "applink": "tokopedia://product/1274003805",
+                "priceStr": "Rp1.498.000",
+                "wishlist": false,
+                "ratingAverage": "4.8",
+                "labelGroups": [],
                 "shop": {
                   "city": "Jakarta Pusat"
                 },
@@ -512,126 +371,81 @@
                 "freeOngkir": {
                   "isActive": true,
                   "imgUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                },
+                "ads": {
+                  "id": "",
+                  "productClickUrl": "",
+                  "productWishlistUrl": "",
+                  "productViewUrl": ""
                 }
               },
               {
-                "id": 15340991,
-                "name": "test hidden category oy 1",
-                "price": 24000,
-                "imageUrl": "",
-                "rating": 0,
-                "countReview": 0,
-                "url": "https://staging.tokopedia.com/aqua/test-hidden-category-oy-1?refined=true&trkid=f%3DCa83L000P0W0S0Sh%2C%2C%2C%2C%2CCo0Po0Fr0Cb0_src%3Dsearch_page%3D1_ob%3D203_q%3Dbaju+kaos+anak+balapan_bmexp%3D1_po%3D2_catid%3D148_bmexp%3D1&whid=0",
-                "applink": "tokopedia://product/15340991?",
-                "priceStr": "",
+                "id": 651090016,
+                "name": "SAMSUNG GALAXY A10S/A10 S RAM 2GB/32GB GARANSI RESMI SEIN NEW- Random",
+                "price": 1479999,
+                "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/200-square/product-1/2020/8/6/651090016/651090016_0e500a83-e404-49c7-abb7-d6b237427f67_1024_1024.jpg",
+                "url": "https://www.tokopedia.com/olivertoy/samsung-galaxy-a10s-a10-s-ram-2gb-32gb-garansi-resmi-sein-new-random?whid=0",
+                "applink": "tokopedia://product/651090016",
+                "priceStr": "Rp1.479.999",
+                "wishlist": false,
+                "ratingAverage": "4.9",
+                "labelGroups": [
+                  {
+                    "title": "Terjual 820",
+                    "position": "integrity",
+                    "type": "textDarkGrey",
+                    "url": ""
+                  }
+                ],
                 "shop": {
                   "city": "Jakarta Pusat"
                 },
                 "badges": [
                   {
-                    "imageUrl": "https://ecs7-p.tokopedia.net/img/official_store_badge.png",
+                    "imageUrl": "https://ecs7-p.tokopedia.net/img/power_merchant_badge.png",
                     "show": true
                   }
                 ],
                 "freeOngkir": {
-                  "isActive": true,
-                  "imgUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                  "isActive": false,
+                  "imgUrl": ""
+                },
+                "ads": {
+                  "id": "",
+                  "productClickUrl": "",
+                  "productWishlistUrl": "",
+                  "productViewUrl": ""
                 }
               },
               {
-                "id": 15327250,
-                "name": "baju anak",
-                "price": 1000,
-                "imageUrl": "",
-                "rating": 0,
-                "countReview": 0,
-                "url": "https://staging.tokopedia.com/ratubadisshop/baju-anak?refined=true&trkid=f%3DCa83L000P0W0S0Sh%2C%2C%2C%2C%2CCo0Po0Fr0Cb0_src%3Dsearch_page%3D1_ob%3D203_q%3Dbaju+kaos+anak+balapan_bmexp%3D1_po%3D3_catid%3D2071_bmexp%3D1&whid=0",
-                "applink": "tokopedia://product/15327250?",
-                "priceStr": "",
+                "id": 819862868,
+                "name": "SAMSUNG GALAXY A10S/ A10 S RAM 2GB/32GB GARANSI RESMI SEIN NEW - Random",
+                "price": 1469000,
+                "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/200-square/product-1/2019/12/25/617997854/617997854_8a624ca5-49be-484d-9ac5-d0cd2cf1f8c0_1125_1125.jpg",
+                "url": "https://www.tokopedia.com/ones-ollshop/samsung-galaxy-a10s-a10-s-ram-2gb-32gb-garansi-resmi-sein-new-random?whid=0",
+                "applink": "tokopedia://product/819862868",
+                "priceStr": "Rp1.469.000",
+                "wishlist": false,
+                "ratingAverage": "4.8",
+                "labelGroups": [],
                 "shop": {
                   "city": "Jakarta Pusat"
                 },
                 "badges": [
                   {
-                    "imageUrl": "https://ecs7-p.tokopedia.net/img/official_store_badge.png",
+                    "imageUrl": "https://ecs7-p.tokopedia.net/img/power_merchant_badge.png",
                     "show": true
                   }
                 ],
                 "freeOngkir": {
-                  "isActive": true,
-                  "imgUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
-                }
-              },
-              {
-                "id": 15356072,
-                "name": "Kaos Disco Testing non var 1",
-                "price": 10000,
-                "imageUrl": "",
-                "rating": 0,
-                "countReview": 0,
-                "url": "https://staging.tokopedia.com/rshop2/kaos-disco-testing-non-var-1?refined=true&trkid=f%3DCa83L000P0W0S0Sh%2C%2C%2C%2C%2CCo0Po0Fr0Cb0_src%3Dsearch_page%3D1_ob%3D203_q%3Dbaju+kaos+anak+balapan_bmexp%3D1_po%3D4_catid%3D2072_bmexp%3D1&whid=0",
-                "applink": "tokopedia://product/15356072?",
-                "priceStr": "",
-                "shop": {
-                  "city": "Jakarta Pusat"
+                  "isActive": false,
+                  "imgUrl": ""
                 },
-                "badges": [
-                  {
-                    "imageUrl": "https://ecs7-p.tokopedia.net/img/official_store_badge.png",
-                    "show": true
-                  }
-                ],
-                "freeOngkir": {
-                  "isActive": true,
-                  "imgUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
-                }
-              },
-              {
-                "id": 15356071,
-                "name": "Kaos Disco Testing non var 2",
-                "price": 10000,
-                "imageUrl": "",
-                "rating": 0,
-                "countReview": 0,
-                "url": "https://staging.tokopedia.com/rshop2/kaos-disco-testing-non-var-2?refined=true&trkid=f%3DCa83L000P0W0S0Sh%2C%2C%2C%2C%2CCo0Po0Fr0Cb0_src%3Dsearch_page%3D1_ob%3D203_q%3Dbaju+kaos+anak+balapan_bmexp%3D1_po%3D5_catid%3D2072_bmexp%3D1&whid=0",
-                "applink": "tokopedia://product/15356071?",
-                "priceStr": "",
-                "shop": {
-                  "city": "Jakarta Pusat"
-                },
-                "badges": [
-                  {
-                    "imageUrl": "https://ecs7-p.tokopedia.net/img/official_store_badge.png",
-                    "show": true
-                  }
-                ],
-                "freeOngkir": {
-                  "isActive": true,
-                  "imgUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
-                }
-              },
-              {
-                "id": 15356070,
-                "name": "Kaos Disco Testing non var 3",
-                "price": 10000,
-                "imageUrl": "",
-                "rating": 0,
-                "countReview": 0,
-                "url": "https://staging.tokopedia.com/rshop2/kaos-disco-testing-non-var-3?refined=true&trkid=f%3DCa83L000P0W0S0Sh%2C%2C%2C%2C%2CCo0Po0Fr0Cb0_src%3Dsearch_page%3D1_ob%3D203_q%3Dbaju+kaos+anak+balapan_bmexp%3D1_po%3D6_catid%3D2072_bmexp%3D1&whid=0",
-                "applink": "tokopedia://product/15356070?",
-                "priceStr": "",
-                "shop": {
-                  "city": "Jakarta Pusat"
-                },
-                "badges": [
-                  {
-                    "imageUrl": "https://ecs7-p.tokopedia.net/img/official_store_badge.png",
-                    "show": true
-                  }
-                ],
-                "freeOngkir": {
-                  "isActive": true,
-                  "imgUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                "ads": {
+                  "id": "",
+                  "productClickUrl": "",
+                  "productWishlistUrl": "",
+                  "productViewUrl": ""
                 }
               }
             ]

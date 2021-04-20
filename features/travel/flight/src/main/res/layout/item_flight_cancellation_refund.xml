@@ -1,28 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:tools="http://schemas.android.com/tools"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:layout_marginBottom="@dimen/dp_8"
-              android:layout_marginEnd="@dimen/dp_5"
-              android:layout_marginLeft="@dimen/dp_5"
-              android:layout_marginRight="@dimen/dp_5"
-              android:layout_marginStart="@dimen/dp_5"
-              android:orientation="horizontal">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="@dimen/spacing_lvl2"
+    android:layout_marginLeft="@dimen/spacing_lvl2"
+    android:layout_marginEnd="@dimen/spacing_lvl2"
+    android:layout_marginRight="@dimen/spacing_lvl2"
+    android:layout_marginBottom="@dimen/spacing_lvl3"
+    android:orientation="horizontal">
 
     <androidx.appcompat.widget.AppCompatImageView
-        android:layout_width="@dimen/dp_5"
-        android:layout_height="@dimen/dp_5"
-        android:layout_marginRight="@dimen/dp_4"
-        android:layout_marginTop="@dimen/dp_10"
-        android:src="@drawable/ic_flight_circle_black"/>
+        android:layout_width="@dimen/spacing_lvl2"
+        android:layout_height="@dimen/spacing_lvl2"
+        android:layout_marginTop="@dimen/flight_dp_10"
+        android:layout_marginRight="@dimen/spacing_lvl2"
+        android:src="@drawable/ic_flight_circle_black" />
 
-    <com.tokopedia.design.component.TextViewCompat
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_description"
-        style="@style/TextView.Small.Bold"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:paddingBottom="@dimen/dp_4"
-        tools:text="afads"/>
+        android:paddingBottom="@dimen/spacing_lvl2"
+        android:textColor="@color/Unify_N700_96"
+        app:typographyType="body_2"
+        app:typographyWeight="bold"
+        tools:text="afads" />
 </LinearLayout>

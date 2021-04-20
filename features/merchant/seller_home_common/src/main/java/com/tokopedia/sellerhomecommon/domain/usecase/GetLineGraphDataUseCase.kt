@@ -1,14 +1,16 @@
 package com.tokopedia.sellerhomecommon.domain.usecase
 
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.sellerhomecommon.domain.mapper.LineGraphMapper
 import com.tokopedia.sellerhomecommon.domain.model.DataKeyModel
-import com.tokopedia.sellerhomecommon.domain.model.GetLineGraphDataResponse
 import com.tokopedia.sellerhomecommon.domain.model.DynamicParameterModel
+import com.tokopedia.sellerhomecommon.domain.model.GetLineGraphDataResponse
 import com.tokopedia.sellerhomecommon.presentation.model.LineGraphDataUiModel
 import com.tokopedia.usecase.RequestParams
 
@@ -17,19 +19,24 @@ import com.tokopedia.usecase.RequestParams
  */
 
 class GetLineGraphDataUseCase(
-        private val gqlRepository: GraphqlRepository,
-        private val lineGraphMapper: LineGraphMapper
-) : BaseGqlUseCase<List<LineGraphDataUiModel>>() {
+        gqlRepository: GraphqlRepository,
+        lineGraphMapper: LineGraphMapper,
+        dispatchers: CoroutineDispatchers
+) : CloudAndCacheGraphqlUseCase<GetLineGraphDataResponse, List<LineGraphDataUiModel>>(
+        gqlRepository, lineGraphMapper, dispatchers, GetLineGraphDataResponse::class.java, QUERY, false) {
+
+    override suspend fun executeOnBackground(requestParams: RequestParams, includeCache: Boolean) {
+        super.executeOnBackground(requestParams, includeCache).also { isFirstLoad = false }
+    }
 
     override suspend fun executeOnBackground(): List<LineGraphDataUiModel> {
         val gqlRequest = GraphqlRequest(QUERY, GetLineGraphDataResponse::class.java, params.parameters)
-        val gqlResponse: GraphqlResponse = gqlRepository.getReseponse(listOf(gqlRequest))
+        val gqlResponse: GraphqlResponse = graphqlRepository.getReseponse(listOf(gqlRequest), cacheStrategy)
 
         val errors: List<GraphqlError>? = gqlResponse.getError(GetLineGraphDataResponse::class.java)
         if (errors.isNullOrEmpty()) {
             val data = gqlResponse.getData<GetLineGraphDataResponse>()
-            val widgetDataList = data.getLineGraphData?.widgetData.orEmpty()
-            return lineGraphMapper.mapRemoteDataModelToUiDataModel(widgetDataList)
+            return mapper.mapRemoteDataToUiData(data, cacheStrategy.type == CacheType.CACHE_ONLY)
         } else {
             throw MessageErrorException(errors.joinToString(", ") { it.message })
         }
@@ -52,7 +59,7 @@ class GetLineGraphDataUseCase(
         }
 
         private val QUERY = """
-            query (${'$'}dataKeys: [dataKey!]!) {
+            query getLineGraphData(${'$'}dataKeys: [dataKey!]!) {
               fetchLineGraphWidgetData(dataKeys: ${'$'}dataKeys) {
                 data {
                   dataKey
@@ -68,6 +75,7 @@ class GetLineGraphDataUseCase(
                     xLabel
                   }
                   error
+                  showWidget
                 }
               }
             }

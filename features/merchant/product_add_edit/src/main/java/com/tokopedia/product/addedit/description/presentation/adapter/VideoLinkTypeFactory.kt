@@ -6,7 +6,9 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.isValidGlideContext
 import com.tokopedia.product.addedit.R
+import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.WEB_PREFIX_HTTPS
 import com.tokopedia.product.addedit.common.util.replaceTextAndRestoreCursorPosition
 import com.tokopedia.product.addedit.common.util.setText
 import com.tokopedia.product.addedit.description.presentation.model.VideoLinkModel
@@ -33,7 +35,7 @@ class VideoLinkTypeFactory: BaseAdapterTypeFactory(){
 
         var isFirstLoaded = true
 
-        var textWatcher: TextWatcher = object : TextWatcher {
+        private var textWatcher: TextWatcher = object : TextWatcher {
             override fun beforeTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {}
 
             override fun onTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {}
@@ -46,18 +48,22 @@ class VideoLinkTypeFactory: BaseAdapterTypeFactory(){
         override fun bind(element: VideoLinkModel) {
             itemView.textFieldUrl.textAreaInput.apply {
                 maxLines = 1
-                setSingleLine(true)
+                isSingleLine = true
             }
             itemView.textFieldUrl.apply {
                 isLabelStatic = false
                 textAreaLabel = getString(R.string.label_video_url_placeholder)
                 textAreaPlaceholder = getString(R.string.label_video_url_placeholder)
             }
-            // Remove listener and set the text so it will not trigger textWatcher
             if (isFirstLoaded) {
                 itemView.textFieldUrl.apply {
                     textAreaInput.addTextChangedListener(textWatcher)
-                    if (element.inputUrl.isNotEmpty()) setText(element.inputUrl)
+                    if (element.inputUrl.isNotEmpty()) {
+                        setText(element.inputUrl)
+                    }
+                    if (!element.inputUrl.startsWith(WEB_PREFIX_HTTPS) && element.inputUrl.isNotBlank()) {
+                        setText("$WEB_PREFIX_HTTPS${element.inputUrl}")
+                    }
                 }
                 isFirstLoaded = false
             } else {
@@ -87,10 +93,16 @@ class VideoLinkTypeFactory: BaseAdapterTypeFactory(){
             itemView.apply {
                 cardThumbnail.visibility = if (inputTitle.isEmpty()) View.GONE else View.VISIBLE
                 itemView.textFieldUrl.textAreaIconClose.visibility = if (inputUrl.isEmpty()) View.GONE else View.VISIBLE
-                imgThumbnail.urlSrc = imageUrl
+
+                try {
+                    if(imgThumbnail?.context?.isValidGlideContext() == true)
+                        imgThumbnail.urlSrc = imageUrl
+                } catch (e: Throwable) { }
+
                 tvVideoTitle.text = inputTitle
                 tvVideoSubtitle.text = inputDescription
-                if (errorMessage.isNotEmpty() && !textFieldUrl.textAreaInput.text.isBlank()) {
+
+                if (errorMessage.isNotEmpty() && textFieldUrl.textAreaInput.text.isNotBlank()) {
                     textFieldUrl.isError = true
                     textFieldUrl.textAreaMessage = errorMessage
                 } else {

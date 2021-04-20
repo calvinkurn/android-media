@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:paddingStart="@dimen/dp_16"
-    android:paddingEnd="@dimen/dp_16"
-    android:paddingBottom="@dimen/dp_4">
+    android:paddingStart="@dimen/layout_lvl2"
+    android:paddingEnd="@dimen/layout_lvl2"
+    android:paddingBottom="@dimen/chatcommon_4dp">
 
     <com.tokopedia.unifycomponents.ticker.Ticker
         android:id="@+id/banned_warning"
@@ -26,24 +27,23 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/bg_shadow_attach_product"
-            android:maxWidth="@dimen/attachment_container_width"
-            android:padding="@dimen/dp_12">
+            android:maxWidth="@dimen/chatcommon_270dp"
+            android:padding="@dimen/chatcommon_12dp">
 
             <TextView
                 android:id="@+id/product_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_12"
-                android:layout_marginLeft="@dimen/dp_12"
+                android:layout_marginStart="@dimen/chatcommon_12dp"
                 android:alpha="@dimen/opacity_disabled"
                 android:ellipsize="end"
                 android:fontFamily="sans-serif-medium"
                 android:includeFontPadding="false"
                 android:lineSpacingExtra="4sp"
-                android:maxWidth="@dimen/attachment_title_max_width"
+                android:maxWidth="@dimen/chatcommon_172dp"
                 android:maxLines="1"
-                android:textColor="@color/black_70"
-                android:textSize="@dimen/sp_14"
+                android:textColor="@color/Unify_N700_68"
+                android:textSize="@dimen/fontSize_lvl3"
                 android:textStyle="bold"
                 app:layout_constraintStart_toEndOf="@+id/product_image"
                 app:layout_constraintTop_toTopOf="@+id/product_image"
@@ -53,14 +53,13 @@
                 android:id="@+id/product_price"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_12"
-                android:layout_marginLeft="@dimen/dp_12"
-                android:layout_marginTop="@dimen/dp_4"
+                android:layout_marginStart="@dimen/chatcommon_12dp"
+                android:layout_marginTop="@dimen/chatcommon_4dp"
                 android:alpha="@dimen/opacity_disabled"
                 android:fontFamily="sans-serif-medium"
                 android:includeFontPadding="false"
-                android:textColor="@color/orange_red"
-                android:textSize="@dimen/sp_14"
+                android:textColor="@color/Unify_Y500"
+                android:textSize="@dimen/fontSize_lvl3"
                 android:textStyle="bold"
                 app:layout_constraintStart_toEndOf="@+id/product_image"
                 app:layout_constraintTop_toBottomOf="@+id/product_name"
@@ -68,11 +67,10 @@
 
             <com.tokopedia.unifycomponents.UnifyButton
                 android:id="@+id/btn_buy"
-                android:layout_width="@dimen/dp_150"
+                android:layout_width="@dimen/chatcommon_150dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_10"
-                android:layout_marginEnd="@dimen/dp_4"
-                android:layout_marginRight="@dimen/dp_4"
+                android:layout_marginTop="@dimen/chatcommon_10dp"
+                android:layout_marginEnd="@dimen/chatcommon_4dp"
                 android:gravity="center"
                 android:text="@string/action_resume_on_browser"
                 android:textAllCaps="false"
@@ -84,15 +82,17 @@
 
             <ImageView
                 android:id="@+id/product_image"
-                android:layout_width="@dimen/dp_50"
-                android:layout_height="@dimen/dp_50"
+                android:layout_width="@dimen/chatcommon_50dp"
+                android:layout_height="@dimen/chatcommon_50dp"
                 android:alpha="@dimen/opacity_disabled"
                 android:scaleType="centerCrop"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:srcCompat="@drawable/ic_loading_toped"
                 tools:srcCompat="@tools:sample/backgrounds/scenic" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
+
     </RelativeLayout>
 
 </LinearLayout>

@@ -2,17 +2,43 @@
 <resources>
     <dimen name="toolbar_padding">24dp</dimen>
     <dimen name="toolbar_transition_range">32dp</dimen>
-    <dimen name="banner_margin_top">80dp</dimen>
     <dimen name="card_image_corner_radius">14dp</dimen>
+    <dimen name="order_list_icon_size">20dp</dimen>
 
     <dimen name="category_icon_margin">12dp</dimen>
     <dimen name="section_header_margin">12dp</dimen>
     <dimen name="banner_min_height">182dp</dimen>
+    <dimen name="banner_width">200dp</dimen>
+    <dimen name="banner_see_all_line_spacing">3sp</dimen>
     <dimen name="video_highlight_title_margin_bottom">3dp</dimen>
     <dimen name="video_highlight_desc_margin_bottom">12dp</dimen>
     <dimen name="video_highlight_play_icon_size">34dp</dimen>
+    <dimen name="video_highlight_live_badge_height">20dp</dimen>
+    <dimen name="video_highlight_title_line_spacing">6sp</dimen>
     <dimen name="single_banner_margin">12dp</dimen>
     <dimen name="dual_banners_shimmering_height">320dp</dimen>
-    <dimen name="product_card_title_min_height">36dp</dimen>
+    <dimen name="product_card_title_min_height">54dp</dimen>
     <dimen name="card_image_margin">12dp</dimen>
+    <dimen name="quick_buy_icon_card_size">44dp</dimen>
+    <dimen name="loading_divider_view_height">0.5dp</dimen>
+    <dimen name="transaction_divider_view_width">1dp</dimen>
+    <dimen name="quick_buy_margin_top">20dp</dimen>
+    <dimen name="quick_buy_footer_height">20dp</dimen>
+    <dimen name="quick_buy_text_size">10dp</dimen>
+    <dimen name="quick_buy_text_spacing">6sp</dimen>
+    <dimen name="subscription_item_width">210dp</dimen>
+    <dimen name="spotlight_item_width">260dp</dimen>
+    <dimen name="bills_item_width">260dp</dimen>
+    <dimen name="bills_item_image_width">28dp</dimen>
+    <dimen name="bills_shimmering_width">220dp</dimen>
+    <dimen name="shimmering_text_view_width">150dp</dimen>
+
+    <dimen name="recharge_custom_product_card_iv_margin">40dp</dimen>
+    <dimen name="recharge_custom_product_card_parallax_margin">-40dp</dimen>
+    <dimen name="recharge_custom_product_card_item_width">166dp</dimen>
+    <dimen name="recharge_custom_product_shimmering_height">188dp</dimen>
+    <dimen name="recharge_custom_product_card_header_card_width">3dp</dimen>
+
+    <dimen name="recharge_custom_image_carousel_height">180dp</dimen>
+    <dimen name="recharge_custom_image_carousel_width">120dp</dimen>
 </resources>

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingLeft="@dimen/dp_16"
+    android:paddingTop="@dimen/dp_20">
+
+    <TextView
+        android:id="@+id/tv_showcase_name"
+        style="@style/TextView.Title"
+        android:layout_width="wrap_content"
+        android:ellipsize="end"
+        android:lineSpacingExtra="@dimen/sp_6"
+        android:singleLine="true"
+        android:textColor="@color/Unify_N700_96"
+        android:textStyle="bold"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintBottom_toTopOf="parent"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/guideline_action_picker"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0"
+        tools:text="@string/batik_solo" />
+
+    <com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
+        android:id="@+id/btn_radio_showcase_picker"
+        android:layout_marginRight="@dimen/dp_10"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0"
+        app:bold="false"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:clickable="false"
+        />
+
+    <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
+        android:id="@+id/btn_checkbox_showcase_picker"
+        app:bold="false"
+        app:unify_checkbox_type="type_default"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="@dimen/dp_10"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0"
+        android:clickable="false"
+        android:visibility="gone"
+        />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_action_picker"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_end="@dimen/dp_45"
+        />
+
+    <View
+        android:id="@+id/view_line_separator"
+        android:layout_width="fill_parent"
+        android:layout_height="@dimen/dp_1"
+        android:layout_marginTop="@dimen/dp_20"
+        android:background="@color/Unify_N75"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_showcase_name" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

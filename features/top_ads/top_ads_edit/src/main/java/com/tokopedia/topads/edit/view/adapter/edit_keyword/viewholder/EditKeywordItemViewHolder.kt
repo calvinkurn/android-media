@@ -24,7 +24,7 @@ class EditKeywordItemViewHolder(val view: View,
         private const val EXACT_POSITIVE = 21
     }
 
-    override fun bind(item: EditKeywordItemViewModel, added: MutableList<Boolean>, minBid: Int) {
+    override fun bind(item: EditKeywordItemViewModel, added: MutableList<Boolean>, minBid: String) {
 
         item.data.let {
             view.keywordName.text = it.tag
@@ -33,22 +33,22 @@ class EditKeywordItemViewHolder(val view: View,
             } else {
                 view.keywordType.text = BROAD_TYPE
             }
-            if(it.priceBid == 0){
-                view.keywordBudget.text = minBid.toString()
-            }else
-                view.keywordBudget.text = "Rp " + it.priceBid.toString()
+            if (it.priceBid == "0") {
+                view.keywordBudget.text = minBid
+            } else
+                view.keywordBudget.text = "Rp " + it.priceBid
             if (added.isNotEmpty() && added.size > adapterPosition && adapterPosition != RecyclerView.NO_POSITION) {
                 if (added[adapterPosition]) {
                     view.setBackgroundColor(ContextCompat.getColor(view.context, R.color.topads_item_selected))
                     view.dotImg.visibility = View.VISIBLE
-                }
-                else {
+                } else {
                     view.dotImg.visibility = View.INVISIBLE
                     view.setBackgroundColor(ContextCompat.getColor(view.context, R.color.white))
                 }
             }
             view.setOnClickListener {
-                actionClick?.invoke(adapterPosition)
+                if (adapterPosition != RecyclerView.NO_POSITION)
+                    actionClick?.invoke(adapterPosition)
             }
         }
     }

@@ -1,7 +1,9 @@
 package com.tokopedia.home.account.presentation.util
 
 import android.text.TextUtils
-import com.crashlytics.android.Crashlytics
+import com.google.firebase.crashlytics.FirebaseCrashlytics
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
 import com.tokopedia.network.data.model.response.ResponseV4ErrorException
 import timber.log.Timber
 
@@ -25,16 +27,16 @@ object AccountHomeErrorHandler {
     @JvmStatic
     fun logExceptionToCrashlytics(t: Throwable, userId: String, email:String, errorCode:String) {
         val errorMessage = String.format(
-                "userId='%s';email='%s';error_msg='%s';error_code='%s'",
+                "userId='%s';error_msg='%s';error_code='%s'",
                 userId,
-                email,
                 getExceptionMessage(t),
                 errorCode)
         val exception = AccountHomeException(errorMessage, t)
 
-        Timber.w("P2#ACCOUNT_HOME_ERROR#'Failed render';$errorMessage;'$exception'")
+        ServerLogger.log(Priority.P2, "ACCOUNT_HOME_ERROR",
+                mapOf("type" to "Failed render", "exception" to getExceptionMessage(t), "errorCode" to errorCode))
         try {
-            Crashlytics.logException(exception)
+            FirebaseCrashlytics.getInstance().recordException(exception)
         } catch (exception: Exception) {
 
         }
@@ -44,9 +46,10 @@ object AccountHomeErrorHandler {
     fun logDataNull(source: String, t: Throwable) {
         val exception = AccountHomeException(t.message ?: "", t)
 
-        Timber.w("P2#ACCOUNT_HOME_ERROR#'Failed parsing model'; $source;'$exception'")
+        ServerLogger.log(Priority.P2, "ACCOUNT_HOME_ERROR",
+                mapOf("type" to "Failed parsing model", "source" to source, "exception" to exception.toString()))
         try {
-            Crashlytics.logException(exception)
+            FirebaseCrashlytics.getInstance().recordException(exception)
         } catch (exception: Exception) {
 
         }

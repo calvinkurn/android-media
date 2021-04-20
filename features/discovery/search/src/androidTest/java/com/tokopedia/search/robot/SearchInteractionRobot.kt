@@ -13,7 +13,7 @@ import com.tokopedia.analytics.performance.util.PerformanceDataFileUtils
 import com.tokopedia.analytics.performance.util.PltPerformanceData
 import com.tokopedia.search.R
 import com.tokopedia.search.getProductListAdapter
-import com.tokopedia.search.result.presentation.model.ProductItemViewModel
+import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.result.presentation.view.activity.SearchActivity
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.ProductItemViewHolder
 
@@ -27,17 +27,17 @@ internal class SearchInteractionRobot(
     private val productListAdapter = recyclerView.getProductListAdapter()
     private var topAdsIndex = productListAdapter.itemList?.getFirstTopAdsProductPosition() ?: -1
     private var organicIndex = productListAdapter.itemList?.getFirstOrganicProductPosition() ?: -1
-    private val topAdsCount = productListAdapter.itemList?.filter { it is ProductItemViewModel && it.isTopAdsOrOrganicAds() }?.size ?: 0
+    private val topAdsCount = productListAdapter.itemList?.filter { it is ProductItemDataView && it.isTopAdsOrOrganicAds() }?.size ?: 0
 
     private fun List<Visitable<*>>.getFirstTopAdsProductPosition(): Int {
-        return indexOfFirst { it is ProductItemViewModel && it.isTopAds }
+        return indexOfFirst { it is ProductItemDataView && it.isTopAds }
     }
 
     private fun List<Visitable<*>>.getFirstOrganicProductPosition(): Int {
-        return indexOfFirst { it is ProductItemViewModel && !it.isTopAds }
+        return indexOfFirst { it is ProductItemDataView && !it.isTopAds }
     }
 
-    private fun ProductItemViewModel.isTopAdsOrOrganicAds() = isTopAds || isOrganicAds
+    private fun ProductItemDataView.isTopAdsOrOrganicAds() = isTopAds || isOrganicAds
 
     fun clickNextOrganicProduct() {
         if (organicIndex == -1) return
@@ -59,7 +59,7 @@ internal class SearchInteractionRobot(
     }
 
     private fun scrollAndClickTopAds(index: Int, visitable: Visitable<*>) {
-        if (visitable is ProductItemViewModel && visitable.isTopAdsOrOrganicAds()) {
+        if (visitable is ProductItemDataView && visitable.isTopAdsOrOrganicAds()) {
             onView(withId(recyclerViewId)).perform(scrollToPosition<ProductItemViewHolder>(index))
             onView(withId(recyclerViewId)).perform(actionOnItemAtPosition<ProductItemViewHolder>(index, click()))
         }

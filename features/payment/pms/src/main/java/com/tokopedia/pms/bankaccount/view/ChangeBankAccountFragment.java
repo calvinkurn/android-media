@@ -85,7 +85,7 @@ public class ChangeBankAccountFragment extends BaseDaggerFragment implements Cha
         notes = view.findViewById(R.id.input_note_optional);
         buttonUse = view.findViewById(R.id.button_use);
         progressDialog = new ProgressDialog(getActivity());
-        progressDialog.setMessage(getString(R.string.title_loading));
+        progressDialog.setMessage(getString(com.tokopedia.abstraction.R.string.title_loading));
 
         inputAccountNo.setText(paymentListModel.getUserAccountNo());
         inputAccountName.setText(paymentListModel.getUserAccountName());

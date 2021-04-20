@@ -5,6 +5,7 @@ import android.widget.TextView
 import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.circular_view_pager.presentation.widgets.circularViewPager.CircularListener
 import com.tokopedia.circular_view_pager.presentation.widgets.circularViewPager.CircularModel
 import com.tokopedia.circular_view_pager.presentation.widgets.circularViewPager.CircularPageChangeListener
@@ -35,10 +36,11 @@ class BannerViewHolder(itemView: View, private val listener: HomeCategoryListene
     private val adapter = HomeBannerAdapter(listOf(), this)
 
     init {
-        indicatorView.activeColor = ContextCompat.getColor(itemView.context, R.color.home_hpb_indicator_active)
-        indicatorView.inactiveColor = ContextCompat.getColor(itemView.context, R.color.home_hpb_indicator_inactive)
+        indicatorView.activeColor = ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N0)
+        indicatorView.inactiveColor = ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N0_32)
         seeAllPromo.unlockFeature = true
-        seeAllPromo.setLabelType("#31353b")
+        val labelColorHexString = "#${Integer.toHexString(ContextCompat.getColor(itemView.context, R.color.home_dms_color_banner_label_type))}"
+        seeAllPromo.setLabelType(labelColorHexString)
         seeAllPromo.opacityLevel = 0.9f
     }
 
@@ -114,7 +116,7 @@ class BannerViewHolder(itemView: View, private val listener: HomeCategoryListene
     }
 
     private fun onPromoScrolled(position: Int) {
-        if (listener?.isMainViewVisible?:false) {
+        if (listener?.isMainViewVisible?:false && !isCache) {
             slidesList?.let {
                 listener?.onPromoScrolled(it[position])
                 it[position].invoke()
@@ -131,12 +133,12 @@ class BannerViewHolder(itemView: View, private val listener: HomeCategoryListene
     }
 
     fun onResume(){
-        circularViewPager.resetImpressions()
+        circularViewPager.resetScrollToStart()
         circularViewPager.resumeAutoScroll()
     }
 
     fun resetImpression(){
-        circularViewPager.reset()
+        circularViewPager.resetScrollToStart()
     }
 
     fun onPause(){

@@ -6,20 +6,28 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.autocomplete.R
 import com.tokopedia.autocomplete.initialstate.InitialStateItemClickListener
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
-import kotlinx.android.synthetic.main.layout_title_auto_complete.view.*
+import kotlinx.android.synthetic.main.layout_title_popular_search.view.*
+import com.tokopedia.utils.contentdescription.TextAndContentDescriptionUtil;
 
-class PopularSearchTitleViewHolder(itemView: View, private val clickListener: InitialStateItemClickListener) : AbstractViewHolder<PopularSearchTitleViewModel>(itemView) {
+class PopularSearchTitleViewHolder(itemView: View, private val clickListener: InitialStateItemClickListener) : AbstractViewHolder<PopularSearchTitleDataView>(itemView) {
 
-    override fun bind(element: PopularSearchTitleViewModel) {
-        itemView.titleTextView?.text = element.title
-        itemView.actionRefreshButton?.visibility = if (element.isVisible) View.VISIBLE else View.GONE
+    override fun bind(element: PopularSearchTitleDataView) {
+        bindTitle(element)
         bindActionRefreshButton(element)
-        itemView.actionRefreshButton?.setOnClickListener { clickListener.onRefreshPopularSearch() }
     }
 
-    private fun bindActionRefreshButton(item: PopularSearchTitleViewModel) {
+    private fun bindTitle(item: PopularSearchTitleDataView) {
+        itemView.titleTextView?.let { TextAndContentDescriptionUtil.setTextAndContentDescription(it, item.title, getString(R.string.content_desc_titleTextView)) }
+    }
+
+    private fun bindActionRefreshButton(item: PopularSearchTitleDataView) {
         itemView.actionRefreshButton?.shouldShowWithAction(item.labelAction.isNotEmpty()) {
             itemView.actionRefreshButton?.text = item.labelAction
+            itemView.actionRefreshButton?.isEnabled = true
+            itemView.actionRefreshButton?.setOnClickListener {
+                itemView.actionRefreshButton?.isEnabled = false
+                clickListener.onRefreshPopularSearch(item.featureId)
+            }
         }
     }
 

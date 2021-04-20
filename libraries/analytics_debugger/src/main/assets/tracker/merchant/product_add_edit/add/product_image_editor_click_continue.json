@@ -1,0 +1,14 @@
+{
+  "readme": "click continue on product image picker",
+  "mode": "subset",
+  "query": [
+    {
+      "event" : "clickAddProduct",
+      "eventCategory" : "add product page",
+      "eventAction" : "click continue on edit photo page",
+      "eventLabel" : "{{.*}}",
+      "shopId" : "{{.+}}",
+      "screenName":"/addproductpage - edit photo"
+    }
+  ]
+}

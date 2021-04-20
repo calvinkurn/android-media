@@ -14,14 +14,15 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/bg_green_e_voucher"
+            android:background="@color/Unify_G300"
             android:orientation="vertical"
             android:padding="@dimen/layout_lvl2">
 
-            <com.tokopedia.hotel.common.presentation.widget.TicketView
+            <com.tokopedia.common.travel.widget.TicketView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:tv_anchor1="@+id/ticket_head"
+                app:tv_dashSize="@dimen/layout_lvl0"
                 app:tv_circleRadius="@dimen/layout_lvl1">
 
                 <LinearLayout
@@ -45,7 +46,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="@dimen/layout_lvl1"
                         android:gravity="center"
-                        android:textColor="@color/Neutral_N700_96"
+                        android:textColor="@color/Unify_N700_96"
                         app:typographyType="heading_2"
                         tools:text="Avissa Suites" />
 
@@ -55,7 +56,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="@dimen/layout_lvl1"
                         android:gravity="center"
-                        android:textColor="@color/Neutral_N700_68"
+                        android:textColor="@color/Unify_N700_68"
                         app:typographyType="body_3"
                         tools:text="Jalan Cihampelas No 211-217 Bandung 40131, Cihampelas, Jawa Barat." />
 
@@ -65,7 +66,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="@dimen/layout_lvl1"
                         android:gravity="center"
-                        android:textColor="@color/Neutral_N700_68"
+                        android:textColor="@color/Unify_N700_68"
                         app:typographyType="body_3"
                         tools:text="No. Telepon: 0231 204464" />
 
@@ -99,7 +100,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/layout_lvl2"
                         android:layout_marginRight="@dimen/layout_lvl2"
-                        android:textColor="@color/Neutral_N700_68"
+                        android:textColor="@color/Unify_N700_68"
                         app:typographyType="body_3"
                         tools:text="Nama Tamu" />
 
@@ -110,7 +111,7 @@
                         android:layout_marginLeft="@dimen/layout_lvl2"
                         android:layout_marginRight="@dimen/layout_lvl2"
                         android:layout_marginBottom="@dimen/layout_lvl2"
-                        android:textColor="@color/Neutral_N700_96"
+                        android:textColor="@color/Unify_N700_96"
                         app:typographyType="body_2"
                         app:typographyWeight="bold"
                         tools:text="Muhammad Furqan" />
@@ -121,7 +122,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/layout_lvl2"
                         android:layout_marginRight="@dimen/layout_lvl2"
-                        android:textColor="@color/Neutral_N700_68"
+                        android:textColor="@color/Unify_N700_68"
                         app:typographyType="body_3"
                         tools:text="Kode Booking" />
 
@@ -132,14 +133,14 @@
                         android:layout_marginLeft="@dimen/layout_lvl2"
                         android:layout_marginRight="@dimen/layout_lvl2"
                         android:layout_marginBottom="@dimen/layout_lvl2"
-                        android:textColor="@color/Neutral_N700_96"
+                        android:textColor="@color/Unify_N700_96"
                         app:typographyType="body_2"
                         app:typographyWeight="bold"
                         tools:text="XYZABABA110" />
 
                 </LinearLayout>
 
-            </com.tokopedia.hotel.common.presentation.widget.TicketView>
+            </com.tokopedia.common.travel.widget.TicketView>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -154,7 +155,7 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/layout_lvl2"
                     android:text="@string/hotel_e_voucher_detail_order_title"
-                    android:textColor="@color/Neutral_N700_96"
+                    android:textColor="@color/Unify_N700_96"
                     app:typographyType="body_3"
                     app:typographyWeight="bold"
                     tools:text="DETAIL PESANAN" />
@@ -167,7 +168,7 @@
                     android:layout_marginTop="@dimen/layout_lvl1"
                     android:layout_marginRight="@dimen/layout_lvl2"
                     android:layout_marginBottom="@dimen/layout_lvl1"
-                    android:textColor="@color/Neutral_N700_96"
+                    android:textColor="@color/Unify_N700_96"
                     app:typographyType="body_2"
                     app:typographyWeight="bold"
                     tools:text="Kamar Deluxe Double" />
@@ -178,7 +179,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/layout_lvl2"
                     android:layout_marginRight="@dimen/layout_lvl2"
-                    android:textColor="@color/Neutral_N700_68"
+                    android:textColor="@color/Unify_N700_68"
                     app:typographyType="body_3"
                     tools:text="2 Kamar • 2 Tamu" />
 
@@ -188,7 +189,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/layout_lvl2"
                     android:layout_marginRight="@dimen/layout_lvl2"
-                    android:textColor="@color/Neutral_N700_68"
+                    android:textColor="@color/Unify_N700_68"
                     app:typographyType="body_3"
                     tools:text="Termasuk Sarapan, Refund Bersyarat" />
 
@@ -207,7 +208,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/layout_lvl2"
                     android:layout_marginRight="@dimen/layout_lvl2"
-                    android:textColor="@color/Neutral_N700_68"
+                    android:textColor="@color/Unify_N700_68"
                     app:typographyType="body_3"
                     tools:text="Permintaan Khusus" />
 
@@ -217,7 +218,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/layout_lvl2"
                     android:layout_marginRight="@dimen/layout_lvl2"
-                    android:textColor="@color/Neutral_N700_96"
+                    android:textColor="@color/Unify_N700_96"
                     app:typographyType="body_2"
                     tools:text="Saya ingin kamar yang view nya pantai, dingin, dan tambahan extra bed 2 yah mas tolong." />
 
@@ -235,7 +236,7 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/layout_lvl2"
                     android:text="@string/hotel_e_voucher_cancellation_policy_title"
-                    android:textColor="@color/Neutral_N700_96"
+                    android:textColor="@color/Unify_N700_96"
                     app:typographyType="body_2"
                     app:typographyWeight="bold" />
 
@@ -253,7 +254,7 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/layout_lvl2"
                     android:text="@string/hotel_e_voucher_local_time"
-                    android:textColor="@color/Neutral_N700_68"
+                    android:textColor="@color/Unify_N700_68"
                     app:typographyType="small" />
 
             </LinearLayout>
@@ -263,7 +264,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/Neutral_N0"
+            android:background="@color/Unify_N0"
             android:orientation="horizontal"
             android:padding="@dimen/layout_lvl2">
 
@@ -272,7 +273,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/hotel_e_voucher_powered_by"
-                android:textColor="@color/Neutral_N700_68"
+                android:textColor="@color/Unify_N700_68"
                 app:typographyType="body_3" />
 
             <androidx.appcompat.widget.AppCompatImageView

@@ -1,8 +1,6 @@
 package com.tokopedia.home.account.presentation.fragment;
 
-import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.webkit.URLUtil;
@@ -10,19 +8,14 @@ import android.webkit.URLUtil;
 import androidx.annotation.Nullable;
 
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
-import com.tokopedia.abstraction.common.utils.network.URLGenerator;
 import com.tokopedia.affiliatecommon.data.util.AffiliatePreference;
-import com.tokopedia.analytics.TrackAnalytics;
-import com.tokopedia.analytics.firebase.FirebaseEvent;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
-import com.tokopedia.applink.internal.ApplinkConstInternalMechant;
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds;
 import com.tokopedia.applink.internal.ApplinkConstInternalTravel;
-import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.home.account.AccountConstants;
 import com.tokopedia.home.account.AccountHomeUrl;
@@ -30,25 +23,20 @@ import com.tokopedia.home.account.R;
 import com.tokopedia.home.account.analytics.AccountAnalytics;
 import com.tokopedia.home.account.constant.SettingConstant;
 import com.tokopedia.home.account.presentation.activity.TkpdPaySettingActivity;
-import com.tokopedia.home.account.presentation.bottomsheet.BottomSheetAddProduct;
 import com.tokopedia.home.account.presentation.listener.AccountItemListener;
 import com.tokopedia.home.account.presentation.util.AccountByMeHelper;
 import com.tokopedia.home.account.presentation.view.SeeAllView;
 import com.tokopedia.home.account.presentation.viewmodel.BuyerCardViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.InfoCardViewModel;
+import com.tokopedia.home.account.presentation.viewmodel.MenuGridIconNotificationItemViewModel;
+import com.tokopedia.home.account.presentation.viewmodel.MenuGridIconNotificationViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.MenuGridItemViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.MenuGridViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.MenuListViewModel;
-import com.tokopedia.home.account.presentation.viewmodel.RekeningPremiumViewModel;
-import com.tokopedia.home.account.presentation.viewmodel.SellerSaldoViewModel;
-import com.tokopedia.home.account.presentation.viewmodel.ShopCardViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.TokopediaPayBSModel;
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
-import com.tokopedia.seller_migration_common.presentation.activity.SellerMigrationActivity;
-import com.tokopedia.seller_migration_common.presentation.model.SellerFeatureUiModel;
-import com.tokopedia.seller_migration_common.presentation.widget.SellerFeatureCarousel;
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
 import com.tokopedia.user.session.UserSession;
@@ -56,25 +44,24 @@ import com.tokopedia.user_identification_common.KycCommonUrl;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
 import static com.tokopedia.affiliatecommon.AffiliateCommonConstantKt.DISCOVERY_BY_ME;
-import static com.tokopedia.gm.common.constant.GMCommonConstantKt.POWER_MERCHANT_URL;
 import static com.tokopedia.home.account.AccountConstants.Analytics.AKUN_SAYA;
 import static com.tokopedia.home.account.AccountConstants.Analytics.BY_ME_CURATION;
 import static com.tokopedia.home.account.AccountConstants.Analytics.CLICK;
 import static com.tokopedia.home.account.AccountConstants.Analytics.EVENT_CATEGORY_AKUN_PEMBELI;
 import static com.tokopedia.home.account.AccountConstants.Analytics.PEMBELI;
-import static com.tokopedia.home.account.AccountConstants.Analytics.PENJUAL;
 import static com.tokopedia.home.account.AccountConstants.Analytics.PROFILE;
-import static com.tokopedia.home.account.data.util.StaticBuyerModelGeneratorKt.RESCENTER_BUYER;
+import static com.tokopedia.home.account.AccountConstants.TITLE_UOH_ETICKET;
+import static com.tokopedia.home.account.constant.SettingConstant.POWER_MERCHANT_URL;
+import static com.tokopedia.home.account.constant.SettingConstant.SELLER_CENTER_URL;
 import static com.tokopedia.remoteconfig.RemoteConfigKey.APP_ENABLE_SALDO_SPLIT;
 
 /**
  * @author okasurya on 7/26/18.
  */
-public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements AccountItemListener, BottomSheetAddProduct.AddEditMenuClickListener, SellerFeatureCarousel.SellerFeatureClickListener {
+public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements AccountItemListener {
 
     public static final String PARAM_USER_ID = "{user_id}";
     public static final String PARAM_SHOP_ID = "{shop_id}";
@@ -83,15 +70,12 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements 
     public static final String OVO = "OVO";
     private static final String TOKOPEDIA_TITLE = "Tokopedia";
     private boolean mShowTokopointNative = false;
-    private BottomSheetAddProduct addProductBottomSheet = null;
 
     private AccountAnalytics accountAnalytics;
     UserSession userSession;
     private AffiliatePreference affiliatePreference;
     private TrackingQueue trackingQueue;
     private RemoteConfig remoteConfig;
-
-    private static final String URL_ACCOUNT_PAGE = "https://m.tokopedia.com/user/settings/account";
 
     abstract void notifyItemChanged(int position);
 
@@ -107,7 +91,6 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements 
 
     @Override
     public void onPause() {
-        dismissProductBottomSheet();
         super.onPause();
         trackingQueue.sendAll();
     }
@@ -136,7 +119,7 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements 
             RouteManager.route(getContext(), ApplinkConstInternalTopAds.TOPADS_DASHBOARD_CUSTOMER);
         } else if (applink.equals(AccountConstants.Navigation.TRAIN_ORDER_LIST)) {
             goToTrainOrderListIntent();
-        } else if (applink.equals(RESCENTER_BUYER) || applink.equals(SettingConstant.RESCENTER_SELLER)) {
+        } else if (applink.equals(SettingConstant.RESCENTER_BUYER) || applink.equals(SettingConstant.RESCENTER_SELLER)) {
             return true;
         }
 
@@ -146,7 +129,7 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements 
     @Override
     public void onProfileClicked(BuyerCardViewModel element) {
         sendTracking(PEMBELI, AKUN_SAYA, String.format("%s %s", CLICK, PROFILE));
-        openWebview(URL_ACCOUNT_PAGE);
+        RouteManager.route(getContext(), ApplinkConstInternalGlobal.GENERAL_SETTING);
     }
 
     @Override
@@ -214,19 +197,31 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements 
     }
 
     @Override
+    public void onMenuGridBackgroundItemClicked(@NotNull MenuGridIconNotificationItemViewModel item) {
+        if (item.getDescription().equalsIgnoreCase(AccountConstants.TITLE_UOH_MENUNGGU_PEMBAYARAN)) {
+            accountAnalytics.clickMenungguPembayaranUoh(userSession.getUserId());
+        } else if (item.getDescription().equalsIgnoreCase(AccountConstants.TITLE_UOH_DALAM_PROSES)) {
+            accountAnalytics.clickDalamProsesUoh(userSession.getUserId());
+        } else if (item.getDescription().equalsIgnoreCase(AccountConstants.TITLE_UOH_SEMUA_TRANSAKSI)) {
+            accountAnalytics.clickSemuaTransaksiUoh(userSession.getUserId());
+        }
+        openApplink(item.getApplink());
+    }
+
+    @Override
     public void onMenuGridLinkClicked(MenuGridViewModel item) {
         sendTracking(item.getTitleTrack(), item.getSectionTrack(), item.getLinkText());
         openApplink(item.getApplinkUrl());
     }
 
     @Override
-    public void onInfoCardClicked(InfoCardViewModel item, int adapterPosition) {
+    public void onMenuGridBackgroundLinkClicked(@NotNull MenuGridIconNotificationViewModel item) {
+        sendTracking(item.getTitleTrack(), item.getSectionTrack(), item.getLinkText());
+        openApplink(item.getApplinkUrl());
+    }
 
-        if (getContext() != null && getContext().getString(R.string.title_menu_loan)
-                .equalsIgnoreCase(item.getMainText())) {
-            TrackAnalytics.sendEvent(FirebaseEvent.SellerHome.HOMEPAGE_AKUN_PENJUAL_CLICK,
-                    new HashMap<>(), getContext());
-        }
+    @Override
+    public void onInfoCardClicked(InfoCardViewModel item, int adapterPosition) {
 
         if (getContext() != null
                 && item.getMainText().equals(
@@ -253,32 +248,12 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements 
 
     @Override
     public void onMenuListClicked(MenuListViewModel item) {
-        sendTracking(item.getTitleTrack(), item.getSectionTrack(), item.getMenu());
+        if (item.getMenu().equalsIgnoreCase(TITLE_UOH_ETICKET)) {
+            accountAnalytics.clickEticketEvoucherUoh(userSession.getUserId());
+        } else {
+            sendTracking(item.getTitleTrack(), item.getSectionTrack(), item.getMenu());
+        }
         openApplink(item.getApplink());
-    }
-
-    @Override
-    public void onShopAvatarClicked(ShopCardViewModel element) {
-        if (element != null && !TextUtils.isEmpty(element.getShopId())) {
-            openApplink(ApplinkConst.SHOP.replace(PARAM_SHOP_ID, element.getShopId()));
-        }
-    }
-
-    @Override
-    public void onShopNameClicked(ShopCardViewModel element) {
-        if (element != null && !TextUtils.isEmpty(element.getShopId())) {
-            openApplink(ApplinkConst.SHOP.replace(PARAM_SHOP_ID, element.getShopId()));
-        }
-    }
-
-    @Override
-    public void onAddProductClicked() {
-        sendTracking(PENJUAL, getString(R.string.title_menu_product), getString(R.string
-                .label_button_add_product));
-        if (addProductBottomSheet == null) {
-            addProductBottomSheet = new BottomSheetAddProduct(getView(), this, this, getChildFragmentManager());
-        }
-        addProductBottomSheet.show();
     }
 
     @Override
@@ -380,11 +355,6 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements 
     }
 
     @Override
-    public void onDepositClicked(SellerSaldoViewModel element) {
-        openSladoPage(ApplinkConstInternalGlobal.SALDO_DEPOSIT);
-    }
-
-    @Override
     public void onTopadsInfoClicked() {
         openApplink(String.format("%s?url=%s", ApplinkConst.WEBVIEW, TopAdsCommonConstant.TOPADS_SELLER_CENTER));
     }
@@ -396,7 +366,7 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements 
 
     @Override
     public void onSellerCenterInfoClicked() {
-        openApplink(ApplinkConst.SELLER_CENTER);
+        openApplink(String.format("%s?url=%s", ApplinkConst.WEBVIEW, SELLER_CENTER_URL));
     }
 
     @Override
@@ -553,50 +523,9 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements 
         trackingQueue.putEETracking(data);
     }
 
-    @Override
-    public void openRekeningPremiumWebLink(RekeningPremiumViewModel rekeningPremiumViewModel) {
-        String resultGenerateUrl = URLGenerator.generateURLSessionLogin(
-                Uri.encode(rekeningPremiumViewModel.getWebLink()), userSession.getDeviceId(), userSession.getUserId());
-        RouteManager.route(getContext(), resultGenerateUrl);
-        sendTracking(rekeningPremiumViewModel.getTitleTrack(), rekeningPremiumViewModel.getSectionTrack(),
-                rekeningPremiumViewModel.getMenu());
-    }
-
     @NotNull
     @Override
     public RemoteConfig getRemoteConfig() {
         return remoteConfig;
-    }
-
-    @Override
-    public void onAddProductWithNoVariantClicked() {
-        Context context = getContext();
-        if (context != null) {
-            RouteManager.route(context, ApplinkConst.PRODUCT_ADD);
-        }
-    }
-
-    @Override
-    public void onSellerFeatureClicked(@NotNull SellerFeatureUiModel item) {
-        if (item instanceof SellerFeatureUiModel.ProductManageSetVariantFeatureWithDataUiModel) {
-            ArrayList<String> appLinks = new ArrayList();
-            appLinks.add(ApplinkConst.PRODUCT_MANAGE);
-            appLinks.add(ApplinkConstInternalMechant.MERCHANT_OPEN_PRODUCT_PREVIEW);
-            Intent intent = SellerMigrationActivity.Companion.createIntent(getContext(), SellerMigrationFeatureName.FEATURE_SET_VARIANT, getScreenName(), appLinks);
-            startActivity(intent);
-            dismissProductBottomSheet();
-        }
-    }
-
-    @Override
-    public void onDestroy() {
-        dismissProductBottomSheet();
-        super.onDestroy();
-    }
-
-    private void dismissProductBottomSheet(){
-        if(addProductBottomSheet != null){
-            addProductBottomSheet.dismiss();
-        }
     }
 }

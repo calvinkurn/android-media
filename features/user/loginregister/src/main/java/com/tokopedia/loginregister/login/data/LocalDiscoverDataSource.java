@@ -3,9 +3,9 @@ package com.tokopedia.loginregister.login.data;
 import android.text.TextUtils;
 
 import com.google.gson.reflect.TypeToken;
-import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.abstraction.common.utils.network.CacheUtil;
-import com.tokopedia.loginregister.login.view.model.DiscoverViewModel;
+import com.tokopedia.cachemanager.CacheManager;
+import com.tokopedia.loginregister.login.view.model.DiscoverDataModel;
 
 import javax.inject.Inject;
 
@@ -21,29 +21,29 @@ public class LocalDiscoverDataSource {
     public static final String KEY_DISCOVER = "KEY_DISCOVER";
     private static final String CACHE_EXPIRED = "Cache has expired";
     public static final long CACHE_DURATION = 3600;
-    private final CacheManager globalCacheManager;
+    private final CacheManager cacheManager;
 
     @Inject
-    public LocalDiscoverDataSource(CacheManager globalCacheManager) {
-        this.globalCacheManager = globalCacheManager;
+    public LocalDiscoverDataSource(CacheManager cacheManager) {
+        this.cacheManager = cacheManager;
     }
 
-    public Observable<DiscoverViewModel> getDiscover(String source) {
+    public Observable<DiscoverDataModel> getDiscover(String source) {
         return Observable.just(KEY_DISCOVER + source)
-                .map((Func1<String, DiscoverViewModel>) s -> {
+                .map((Func1<String, DiscoverDataModel>) s -> {
                     if (getCache(s) != null) {
                         return CacheUtil.convertStringToModel(getCache(s),
-                                new TypeToken<DiscoverViewModel>() {
+                                new TypeToken<DiscoverDataModel>() {
                                 }.getType());
                     } else {
                         throw new RuntimeException(CACHE_EXPIRED);
                     }
                 })
-                .first(discoverViewModel -> !discoverViewModel.getProviders().isEmpty()
-                        && !TextUtils.isEmpty(discoverViewModel.getUrlBackground()));
+                .first(discoverDataModel -> !discoverDataModel.getProviders().isEmpty()
+                        && !TextUtils.isEmpty(discoverDataModel.getUrlBackground()));
     }
 
     private String getCache(String source) {
-        return globalCacheManager.get(source);
+        return cacheManager.getString(source);
     }
 }

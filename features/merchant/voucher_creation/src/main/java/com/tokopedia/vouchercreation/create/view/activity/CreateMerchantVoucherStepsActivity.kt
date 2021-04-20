@@ -13,11 +13,11 @@ import android.view.ViewTreeObserver
 import android.view.animation.AccelerateDecelerateInterpolator
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager2.widget.ViewPager2
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.kotlin.extensions.view.gone
@@ -29,11 +29,15 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.analytics.VoucherCreationAnalyticConstant
 import com.tokopedia.vouchercreation.common.analytics.VoucherCreationTracking
+import com.tokopedia.vouchercreation.common.consts.VoucherRecommendationStatus
+import com.tokopedia.vouchercreation.common.consts.VoucherUrl
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
+import com.tokopedia.vouchercreation.common.errorhandler.MvcErrorHandler
 import com.tokopedia.vouchercreation.common.plt.MvcPerformanceMonitoring
 import com.tokopedia.vouchercreation.common.plt.MvcPerformanceMonitoringInterface
 import com.tokopedia.vouchercreation.common.plt.MvcPerformanceMonitoringType
 import com.tokopedia.vouchercreation.common.utils.DateTimeUtils
+import com.tokopedia.vouchercreation.common.utils.dismissBottomSheetWithTags
 import com.tokopedia.vouchercreation.create.domain.model.validation.VoucherTargetType
 import com.tokopedia.vouchercreation.create.view.adapter.CreateMerchantVoucherStepsAdapter
 import com.tokopedia.vouchercreation.create.view.dialog.CreateVoucherCancelDialog
@@ -57,18 +61,13 @@ import kotlinx.android.synthetic.main.activity_create_merchant_voucher_steps.*
 import timber.log.Timber
 import javax.inject.Inject
 
-class CreateMerchantVoucherStepsActivity : FragmentActivity() {
+class CreateMerchantVoucherStepsActivity : BaseActivity(){
 
     companion object {
         private const val PROGRESS_ATTR_TAG = "progress"
         private const val PROGRESS_DURATION = 200L
 
-        //These are default url for banners that we will use in case the server returned error
-        const val BANNER_BASE_URL = "https://ecs7.tokopedia.net/img/merchant-coupon/banner/v3/base_image/banner.jpg"
-        const val FREE_DELIVERY_URL = "https://ecs7.tokopedia.net/img/merchant-coupon/banner/v3/label/label_gratis_ongkir.png"
-        const val CASHBACK_URL = "https://ecs7.tokopedia.net/img/merchant-coupon/banner/v3/label/label_cashback.png"
-        const val CASHBACK_UNTIL_URL = "https://ecs7.tokopedia.net/img/merchant-coupon/banner/v3/label/label_cashback_hingga.png"
-        const val POST_IMAGE_URL = "https://ecs7.tokopedia.net/img/merchant-coupon/banner/v3/base_image/ig_post.jpg"
+        private const val ERROR_MESSAGE = "Error get voucher initial data"
 
         const val DUPLICATE_VOUCHER = "duplicate_voucher"
         const val IS_DUPLICATE = "is_duplicate"
@@ -79,6 +78,8 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
 
         const val ERROR_INITIATE = "error_initiate"
         const val REQUEST_CODE = 7137
+
+        const val FROM_VOUCHER_LIST = "from_voucher_list"
     }
 
     @Inject
@@ -90,7 +91,6 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
     private val viewModelProvider by lazy {
         ViewModelProvider(this, viewModelFactory)
     }
-
 
     private val viewModel by lazy {
         viewModelProvider.get(CreateMerchantVoucherStepsViewModel::class.java)
@@ -113,9 +113,10 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
                             ::getVoucherReviewUiModel,
                             isCreateNew,
                             isEditVoucher))
-            put(VoucherCreationStepInfo.STEP_TWO,
+                put(VoucherCreationStepInfo.STEP_TWO,
                     PromotionBudgetAndTypeFragment.createInstance(
                             ::setVoucherBenefit,
+                            ::setVoucherRecommendationStatus,
                             ::getBannerVoucherUiModel,
                             ::getBannerBaseUiModel,
                             ::onSetShopInfo,
@@ -134,6 +135,7 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
                     ReviewVoucherFragment.createInstance(
                             ::getVoucherReviewUiModel,
                             ::getToken,
+                            ::getRecommendationStatus,
                             ::getPostBaseUiModel,
                             ::onReturnToStep,
                             ::getBannerBitmap,
@@ -229,21 +231,23 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
 
     private var bannerBaseUiModel =
             BannerBaseUiModel(
-                    BANNER_BASE_URL,
-                    FREE_DELIVERY_URL,
-                    CASHBACK_URL,
-                    CASHBACK_UNTIL_URL
+                    VoucherUrl.BANNER_BASE_URL,
+                    VoucherUrl.FREE_DELIVERY_URL,
+                    VoucherUrl.CASHBACK_URL,
+                    VoucherUrl.CASHBACK_UNTIL_URL
             )
 
     private var postBaseUiModel =
             PostBaseUiModel(
-                    POST_IMAGE_URL,
-                    FREE_DELIVERY_URL,
-                    CASHBACK_URL,
-                    CASHBACK_UNTIL_URL
+                    VoucherUrl.POST_IMAGE_URL,
+                    VoucherUrl.FREE_DELIVERY_URL,
+                    VoucherUrl.CASHBACK_URL,
+                    VoucherUrl.CASHBACK_UNTIL_URL
             )
 
     private var token = ""
+
+    private var recommendationStatus = 0
 
     private var bannerVoucherUiModel =
             BannerVoucherUiModel(
@@ -259,6 +263,13 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         performanceMonitoring.initMvcPerformanceMonitoring()
         super.onCreate(savedInstanceState)
+        // Finish activity when fragments on view pager are being restored because of low memory or don`t keep activity.
+        // When restored, the lambdas that being passed to fragments in view pager are not working as intended (eg. next action is not running).
+        // While you can save lambdas into savedInstanceState, it is not recommended to do that.
+        // So, the best option right now is to finish activity when state is being restored to avoid anomalies in those fragments.
+//        if (savedInstanceState != null) {
+//            finish()
+//        }
         setContentView(R.layout.activity_create_merchant_voucher_steps)
         initInjector()
         setupView()
@@ -290,7 +301,10 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        viewModel.flush()
+        supportFragmentManager.dismissBottomSheetWithTags(
+                TipsAndTrickBottomSheetFragment.TAG,
+                ChangeDetailPromptBottomSheetFragment.TAG
+        )
     }
 
     private fun initInjector() {
@@ -303,7 +317,7 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
     private fun setupStatusBar() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             try {
-                setStatusBarColor(ContextCompat.getColor(this, com.tokopedia.design.R.color.transparent))
+                setStatusBarColor(Color.TRANSPARENT)
             } catch (ex: Resources.NotFoundException) {
                 Timber.e(ex)
             }
@@ -323,7 +337,7 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
             try {
                 addRightIcon(R.drawable.ic_tips).setOnClickListener {
                     KeyboardHandler.hideSoftKeyboard(this@CreateMerchantVoucherStepsActivity)
-                    bottomSheet.show(supportFragmentManager, TipsAndTrickBottomSheetFragment::javaClass.name)
+                    bottomSheet.show(supportFragmentManager, TipsAndTrickBottomSheetFragment.TAG)
                     VoucherCreationTracking.sendCreateVoucherClickTracking(
                             step = currentStepPosition,
                             action = VoucherCreationAnalyticConstant.EventAction.Click.LAMP_ICON,
@@ -413,6 +427,7 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
                     createMerchantVoucherViewPager?.setOnLayoutListenerReady()
                 }
                 is Fail -> {
+                    MvcErrorHandler.logToCrashlytics(result.throwable, ERROR_MESSAGE)
                     val returnIntent = Intent().apply {
                         putExtra(ERROR_INITIATE, result.throwable.message)
                     }
@@ -537,6 +552,10 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
         onNextStep()
     }
 
+    private fun setVoucherRecommendationStatus(@VoucherRecommendationStatus status: Int) {
+        this.recommendationStatus = status
+    }
+
     private fun setVoucherPeriod(dateStart: String,
                                  dateEnd: String,
                                  hourStart: String,
@@ -571,6 +590,8 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
 
     private fun getToken() = token
 
+    private fun getRecommendationStatus() = recommendationStatus
+
     private fun getPostBaseUiModel() = postBaseUiModel
 
     private fun getBannerBitmap() = bannerBitmap
@@ -591,7 +612,9 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
             addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
                 override fun onGlobalLayout() {
                     performanceMonitoring.stopPerformanceMonitoring()
-                    removeOnGlobalLayoutListener(this)
+                    if (isAlive) {
+                        removeOnGlobalLayoutListener(this)
+                    }
                 }
             })
         }

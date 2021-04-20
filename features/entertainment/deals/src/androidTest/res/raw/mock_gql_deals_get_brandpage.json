@@ -1,0 +1,174 @@
+[
+  {
+    "data": {
+      "event_search": {
+        "category": {
+          "title": ""
+        },
+        "brands": [
+          {
+            "id": "3351",
+            "title": "KFC",
+            "description": "KFC merupakan restoran cepat saji yang menyediakan ayam goreng serta berbagai menu pilihan lainnya seperti burger, sup, dan salad. Dengan rasa yang renyah dan gurih, siapa pun dijamin ketagihan dengan ayam goreng yang satu ini. Mau menikmati berbagai menu dari si \"Jagonya Ayam\" dengan lebih hemat? Beli vouchernya di Tokopedia aja!",
+            "seo_url": "kfc-3351",
+            "featured_thumbnail_image": "https://ecs7.tokopedia.net/img/banner/2019/3/6/2892668/2892668_d1a2752a-cf38-4525-9d22-bf1ba834eab8.png",
+            "city_name": ""
+          },
+          {
+            "id": "2182",
+            "title": "Shaburi",
+            "description": "Shaburi menawarkan menu shabu-shabu dengan ramuan yang dieksekusi dengan gaya, presisi, dan kesederhanaan yang dapat dinikmati dalam suasana yang mewah. Selain itu, Shaburi telah mendapatkan pujian dan penghargaan dari media di berbagai negara.",
+            "seo_url": "shaburi-2182",
+            "featured_thumbnail_image": "https://ecs7.tokopedia.net/img/banner/2018/11/16/2892668/2892668_3c524778-266f-4041-b9dd-f4968dff54bb.png",
+            "city_name": ""
+          },
+          {
+            "id": "2181",
+            "title": "Kintan Buffet",
+            "description": "Kintan Buffet adalah All You Can Eat BBQ restaurant ala Jepang yang halal. Kintan Buffet memiliki berbagai pilihan daging serta side dish. Dengan menggunakan pemanggang non-smoke yang diimpor langsung dari Jepang, maka pelanggan dapat menikmati pengalaman BBQ bebas bau asap.",
+            "seo_url": "kintan-2181",
+            "featured_thumbnail_image": "https://ecs7.tokopedia.net/img/banner/2018/11/16/2892668/2892668_baec79d8-40c8-44f2-9c92-a6bf8349b945.png",
+            "city_name": ""
+          },
+          {
+            "id": "3379",
+            "title": "Yoshinoya",
+            "description": "YOSHINOYA adalah restoran BEEF BOWL No. 1 di Jepang yang berdiri sejak tahun 1899 di Tokyo, Jepang. Menunya yang terkenal adalah “BEEF BOWL”, irisan daging sapi gurih yang disajikan di atas nasi dengan resep asli Jepang yang sudah lebih dari 100 tahun. Beef Bowl YOSHINOYA sudah terbukti sebagai makanan khas Jepang yang sangat digemari karena selalu menggunakan pilihan bahan terbaik seperti 100% daging sapi Amerika (USA) dan sayuran segar. ",
+            "seo_url": "yoshinoya-3379",
+            "featured_thumbnail_image": "https://ecs7.tokopedia.net/img/banner/2018/12/6/2892668/2892668_61e80f5f-3b7f-496f-9f22-8002e1bbcfb9.png",
+            "city_name": ""
+          },
+          {
+            "id": "3382",
+            "title": "Ichiban Sushi",
+            "description": "Pilih dari berbagai macam sushi dan sashimi dengan kombinasi mengatur makan dengan harga terjangkau, dan menikmati tulus, layanan yang kami bangga diri kita sendiri. Ajak orang-orang tersayang ke gerai Ichiban Sushi terdekat dan nikmati momen kenyang dan senang kalian bersama jaringan restoran sushi pertama, terbesar, dan paling menyenangkan di Indonesia!",
+            "seo_url": "ichiban-sushi-3382",
+            "featured_thumbnail_image": "https://fave-production-main.myfave.gdn/attachments/fd27aba6aec180f6f351f1d06a04eedaea7190e1/store/fill/200/200/90588ff8255ac173b738958337855e819fd739afdc2d371bf4e3693928bb/logo.jpg",
+            "city_name": ""
+          },
+          {
+            "id": "1653",
+            "title": "Ta Wan",
+            "description": "Ta Wan hadir di Indonesia sejak tahun 1996. Sajian Ta Wan bercita rasa buatan rumah dengan rasa otentik dan harga yang ramah. Varian bubur di Ta Wan menjadi menu legendaris yang lekar dengan citra hangat Ta Wan. Ta Wan telah tersebar di seluruh kota di Indonesia.",
+            "seo_url": "ta-wan-1653",
+            "featured_thumbnail_image": "https://ecs7.tokopedia.net/img/banner/2018/10/15/2892668/2892668_a643d2e3-05e2-4773-a7dc-a172d1017851.png",
+            "city_name": ""
+          },
+          {
+            "id": "2232",
+            "title": "Nannys Pavillon",
+            "description": "Nannys Pavillon ini memiliki konsep yang unik karena menghidangkan berbagai pilihan menu pancake dengan macam-macam pilihan rasa Kekuatan dari pancake Nannys Pavillon adalah olahan bahan baku yang mempertahankan tradisi French America Bukan hanya menu pancake tapi juga menu lainnya seperti waffle dan minuman yang bisa dicoba ketika berkunjung ke outletnya",
+            "seo_url": "nannys-pavillon-2232",
+            "featured_thumbnail_image": "https://fave-production-main.myfave.gdn/attachments/9e6e7b115b7e7839ee75166570f25bfacb436931/store/fill/200/200/941034e2381a9c216f2c52ba6f96ac43b3f94c42f438c63f967808610c09/logo.jpg",
+            "city_name": ""
+          },
+          {
+            "id": "4900",
+            "title": "KOKUMI",
+            "description": "Seburuk apapun hari kamu pasti akan kembali menyenangkan dengan segelas minuman segar dari Kokumi Nikmati berbagai macam minuman segar dengan aneka toppingnya Salah satu menu yang wajib kamu coba di Kokumi adalah Okinawa Brown Sugar Minuman ini terdiri dari campuran susu brown sugar dan juga boba Campuran susu dan brown sugarnya sangat seimbang sehingga menciptakan rasa yang manis creamy dan juga ringan",
+            "seo_url": "kokumi-4900",
+            "featured_thumbnail_image": "https://fave-production-main.myfave.gdn/attachments/4b73b14aaafb008764e6d6a5bc7a223bdb72452a/store/fill/200/200/c21ba7bbb0b910fb89327596f566244b074d47dda67a132aa15f91f99877/logo.jpg",
+            "city_name": ""
+          },
+          {
+            "id": "1522",
+            "title": "Haagen-Dazs",
+            "description": "Haagen-Dazs merupakan super premium ice cream brand yang berasal dari Amerika Serikat ini cukup populer di Indonesia Haagen-Dazs membuka outlet-nya di mall-mall besar di Jakarta Bandung Surabaya Yogyakarta Semarang Bali dan Medan Gerai dengan konsep kafe ini bisa dijadikan sebagai tempat hangout sambil menghibur diri sambil melepas lelah setelah seharian beraktivitas Haagen-Dazs menyediakan hampir sekitar 20 varian menu ice cream yang langsung diimpor dari Perancis ",
+            "seo_url": "haagen-dazs-1522",
+            "featured_thumbnail_image": "https://fave-production-main.myfave.gdn/attachments/a6761a7dd53c274e03d84864cc36f28b033f0d3b/store/fill/200/200/f3c7e79383a43097c075f21571e7415fb2e9519cc36ce9b5949089865490/logo.jpg",
+            "city_name": ""
+          },
+          {
+            "id": "2505",
+            "title": "Fish & Co",
+            "description": "Fish & Co. adalah restoran keluarga yang menyajikan makanan laut segar dalam wajan, pengalaman bersantap yang unik terinspirasi dari nelayan Mediterania yang menangkap makanan laut segar dari laut. Fish & Co. hanya menggunakan bahan-bahan alami seperti minyak zaitun, jamu dan berbagai rempah-rempah dari seluruh dunia. Fish & Co. telah menyenangkan pelanggan dengan mencicipi makanan dalam porsi besar dan hangat, menandai kualitas & nilai.",
+            "seo_url": "fish-and-co-2505",
+            "featured_thumbnail_image": "https://ecs7.tokopedia.net/img/banner/2018/12/14/2892668/2892668_4998c6dc-5539-4d6a-946f-14ef09f9c857.png",
+            "city_name": ""
+          },
+          {
+            "id": "1321",
+            "title": "Pepper Lunch",
+            "description": "Pepper Lunch merupakan The Original Japanese Teppan Restaurant yang menghadirkan pengalaman Do It Yourself DIY alias memasak makanan sendiri menurut selera masing-masing Konsep unik tersebut diwujudkan dengan penyajian makanan di atas hot plate bersuhu 260 derajat celcius",
+            "seo_url": "pepper-lunch-1321",
+            "featured_thumbnail_image": "https://image-assets.access.myfave.gdn/attachments/b78f2e43471e029750d52ed89f65db4c8c09c55f/store/fill/200/200/1084a5f7de6474c1a37c87fc13dea4d31a11b20a3709cccd726aa5f469c0/logo.jpg",
+            "city_name": ""
+          },
+          {
+            "id": "3371",
+            "title": "Bakmi GM",
+            "description": "BAKMI GM dirancang khusus untuk memberikan rasa yang lezat, yang dibuat dari bahan baku pilihan dan disajikan dengan harga yang ekonomis. Tersedia lebih dari 50 menu yang dapat dipilih oleh pelanggan, dengan menu Bakmi Special GM dan Pangsit Goreng yang menjadi favorit pelanggan. ",
+            "seo_url": "bakmi-gm-3371",
+            "featured_thumbnail_image": "https://ecs7.tokopedia.net/img/banner/2019/5/15/2892668/2892668_9526d4dc-95f3-4bcd-871c-0b57ddca618b.png",
+            "city_name": ""
+          },
+          {
+            "id": "1665",
+            "title": "Hop Hop",
+            "description": "Hop Hop menyediakan lebih dari 20 macam rasa minuman bubble yang siap untuk menemani aktivitas sehari-hari kamu. Paduan bubble, flavor powder, gula, es dan berbagai topping-nya yang menyatu pastinya fresh banget. Yuk, bikin harimu jadi makin seru dengan Hop Hop, bisa lebih hemat dengan beli vouchernya di Tokopedia. So, get your Hop Hop!",
+            "seo_url": "hop-hop-1665",
+            "featured_thumbnail_image": "https://ecs7.tokopedia.net/img/banner/2018/10/15/2892668/2892668_cb01247f-96ec-43a8-8cef-32486095a21c.png",
+            "city_name": ""
+          },
+          {
+            "id": "4858",
+            "title": "Yakiniku Like",
+            "description": "Yakiniku Like sebuah restoran BBQ Jepang yang melayani penyajian makanan cepat dengan berbagai macam daging premium yang ditawarkan dengan harga terjangkau Dengan set panggangan pribadi yang diinstal di setiap meja dan layanan yang lebih cepat Anda dapat menikmati pengalaman memasak sendiri dengan santai bersama teman cocok untuk makan siang perayaan dan acara lainnyaYakiniku Like sebuah restoran BBQ Jepang yang melayani penyajian makanan cepat dengan berbagai macam daging premium yang ditawarkan dengan harga terjangkau Dengan set panggangan pribadi yang diinstal di setiap meja dan layanan yang lebih cepat Anda dapat menikmati pengalaman memasak sendiri dengan santai bersama teman cocok untuk makan siang perayaan dan acara lainnya",
+            "seo_url": "yakiniku-like-4858",
+            "featured_thumbnail_image": "https://ecs7.tokopedia.net/img/banner/2020/1/23/42857236/42857236_f8ef37f7-4b5d-43d7-963c-e38b60c88853.jpg",
+            "city_name": ""
+          },
+          {
+            "id": "3355",
+            "title": "Platinum Resto",
+            "description": "Platinum Resto &Cafe merupakan restaurant modern yang menyediakan banyak variasi menu international hingga minuman kopi dari berbagai negara. Hanya dengan mengunjungi Platinum, customer dapat menikmati berbagai citarasa kuliner mancanegara dengan harga yang terjangkau. Mulai dari Western Food, Oriental Food, hingga Indonesian Food. Selain itu, restaurant Platinum juga sudah bersertifikasi HALAL.",
+            "seo_url": "platinum-3355",
+            "featured_thumbnail_image": "https://ecs7.tokopedia.net/img/banner/2018/11/16/2892668/2892668_301481cb-a92c-486a-87fb-0ae9a358cfde.png",
+            "city_name": ""
+          },
+          {
+            "id": "3354",
+            "title": "Raa Cha Suki & BBQ",
+            "description": "Raa Cha merupakan restaurant yang menyajikan menu rebusan dan bakaran yang fresh, enak dan sehat. Dilengkapi dengan alat makan personal yang unik, sehingga mampu menciptakan pengalaman makan tersendiri sesuai selera customer. Di Raa Cha, customer dapat membayar menu sesuai dengan apa yang diambil, terdapat lebih dari 100 variasi menu mulai dari sayuran, Suki, dan BBQ. Customer juga dapat memilih 3 jenis pilihan kuah suki (Tom Yum, Kaldu Ayam, dan Kaldu Spicy) serta dengan 5 pilihan saus special yang nikmat ",
+            "seo_url": "raachasuki-3354",
+            "featured_thumbnail_image": "https://ecs7.tokopedia.net/img/banner/2018/11/16/2892668/2892668_52a13aac-1adf-4706-a8f5-9899de0b5cd0.png",
+            "city_name": ""
+          },
+          {
+            "id": "3356",
+            "title": "Baso Malang Karapitan",
+            "description": "Baso Malang Karapitan menyuguhkan berbagai variasi menu tradisional Indonesia yang lezat dan dikelola secara hygienis. Terinsipirasi dari makanan street food di Indonesia yang beragam, BMK menyajikan menu-menu halal dengan menu utamanya yaitu Baso Malang. Tidak hanya variasi Baso, BMK selalu melakukan inovasi produk dengan menambahkan menu lainnya seperti Bakmi, Nasi, dan Soto, hingga ikan Lele!",
+            "seo_url": "bmk-3356",
+            "featured_thumbnail_image": "https://ecs7.tokopedia.net/img/banner/2018/11/16/2892668/2892668_e1070851-e48a-45cd-b8e7-c8b52ed6c65f.png",
+            "city_name": ""
+          },
+          {
+            "id": "544",
+            "title": "The Duck King ",
+            "description": "The Duck King Restaurant adalah salah satu restaurant yang berdiri dari tahun 2003 di mana The Duck King Restaurant menyediakan makanan khas Chinese yang bisa Anda jadikan pilihan menu makan siang ataupun makan malam Anda The Duck King Restaurant menyediakan makanan seperti beberapa varian Dim Sum Bubur dan Seafood",
+            "seo_url": "the-duck-king--544",
+            "featured_thumbnail_image": "https://image-assets.access.myfave.gdn/attachments/44e8cfc008fde5f4e5bf3494311bd5465c7c8ff7/store/fill/200/200/a47fdc0404be72fb5d6cc08f9cfc1aa03fa1b00a4fb603f55838712c81b5/logo.jpg",
+            "city_name": ""
+          },
+          {
+            "id": "2225",
+            "title": "Kimukatsu",
+            "description": "Kimukatsu menawarkan berbagai pilihan Katsu dengan berbagai rasa khas Jepang. Menjadi satu-satunya restoran di Indonesia yang menawarkan berbagai pilihan katsu dengan harga yang terjangkau. Dapatkan vouchernya dengan lebih hemat di Tokopedia!",
+            "seo_url": "kimukatsu-2225",
+            "featured_thumbnail_image": "https://ecs7.tokopedia.net/img/banner/2018/11/16/2892668/2892668_ec89fc0d-f8e2-43a9-9ac6-c0b97cc914fc.png",
+            "city_name": ""
+          },
+          {
+            "id": "2516",
+            "title": "Din Tai Fung",
+            "description": "Din Tai Fung merupakan brand internasional yang terkenal mendunia dengan signature menu xiao long bao-nya. Hadir di Indonesia sejak tahun 2005, Din Tai Fung menyajikan menu-menu dengan racikan istimewa yang siap menemani waktu bersantap anda. Kunjungi outlet Din Tai Fung, Din Tai Fung Chef’s Table dan Din Tai Fung Noodle Bar dan nikmati beragam menu Chinese Taiwanese yang menggugah selera. Dapatkan penawaran menarik di Tokopedia!",
+            "seo_url": "din-tai-fung-2516",
+            "featured_thumbnail_image": "https://ecs7.tokopedia.net/img/banner/2019/6/24/2892668/2892668_a215f114-f1ce-4809-aae1-8c26123ca49f.jpg",
+            "city_name": ""
+          }
+        ],
+        "products": []
+      }
+    }
+  }
+]

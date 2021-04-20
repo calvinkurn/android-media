@@ -18,8 +18,9 @@
     <dimen name="play_product_sheet_title_margin_start">12dp</dimen>
     <dimen name="play_product_voucher_margin">12dp</dimen>
 
-    <dimen name="play_product_line_image_size">61dp</dimen>
-    <dimen name="play_product_line_image_radius">6dp</dimen>
+    <dimen name="play_product_image_size">61dp</dimen>
+    <dimen name="play_product_image_radius">6dp</dimen>
+
     <dimen name="play_product_line_title_image_margin">14dp</dimen>
     <dimen name="play_product_line_discount_radius">3dp</dimen>
     <dimen name="play_product_line_buy_padding_start_end">20dp</dimen>
@@ -31,6 +32,7 @@
     <dimen name="play_voucher_title_image_margin">10dp</dimen>
     <dimen name="play_voucher_sheet_title_margin">20dp</dimen>
     <dimen name="play_voucher_divider_width">18dp</dimen>
+    <dimen name="play_voucher_copy_divider_width">1dp</dimen>
 
     <dimen name="play_cart_badge_size">12dp</dimen>
     <dimen name="play_cart_margin">2dp</dimen>
@@ -54,7 +56,24 @@
 
     <dimen name="play_landscape_video_chat_margin">58dp</dimen>
 
+    <dimen name="play_pip_icon_radius">8dp</dimen>
+    <dimen name="play_pip_view_radius">6dp</dimen>
+
+    <dimen name="play_product_grid_radius">8dp</dimen>
+    <dimen name="play_product_featured_width">240dp</dimen>
+    <dimen name="play_product_featured_height">72dp</dimen>
+    <dimen name="play_product_featured_placeholder_width">@dimen/play_product_featured_height</dimen>
+    <dimen name="play_product_grid_more_action_size">32dp</dimen>
+
+    <dimen name="play_pinned_voucher_radius">8dp</dimen>
+    <dimen name="play_pinned_placeholder_radius">4dp</dimen>
+    <dimen name="play_pinned_placeholder_title_width">110dp</dimen>
+    <dimen name="play_pinned_placeholder_desc_width">80dp</dimen>
+    <dimen name="play_pinned_placeholder_height">10dp</dimen>
+
     <!--General Dimension-->
+    <dimen name="play_offset_44">44dp</dimen>
     <dimen name="play_offset_12">12dp</dimen>
+    <dimen name="play_offset_18">18dp</dimen>
     <dimen name="play_no_offset">0dp</dimen>
 </resources>

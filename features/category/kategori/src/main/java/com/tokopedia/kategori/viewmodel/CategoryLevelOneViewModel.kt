@@ -2,7 +2,7 @@ package com.tokopedia.kategori.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.tokopedia.kategori.model.CategoryAllList
+import com.tokopedia.common_category.data.kategorymodel.CategoryAllList
 import com.tokopedia.kategori.view.PerformanceMonitoringListener
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Result

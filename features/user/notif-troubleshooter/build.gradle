@@ -3,14 +3,14 @@ apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 
 repositories {
-    maven { url 'https://hansel.io/maven' }
+    maven { url 'https://maven-hansel.tokopedia.com/maven' }
     mavenCentral()
 }
 
 buildscript {
     repositories {
         mavenCentral()
-        maven { url 'https://hansel.io/maven' }
+        maven { url 'https://maven-hansel.tokopedia.com/maven' }
     }
     dependencies {
         classpath rootProject.ext.miscDependencies.hansel
@@ -18,17 +18,24 @@ buildscript {
 }
 
 dependencies {
+    implementation project(rootProject.ext.features.settingnotif)
+
     implementation project(rootProject.ext.libraries.kotlinExtensions)
     implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.features.resourcesCommon)
     implementation project(rootProject.ext.features.fcm_common)
     implementation project(rootProject.ext.libraries.baseList)
     implementation project(rootProject.ext.libraries.applink)
+    implementation project(rootProject.ext.libraries.track)
+    implementation project(rootProject.ext.libraries.logger)
 
     implementation rootProject.ext.unifyDependencies.global_error
     implementation rootProject.ext.unifyDependencies.icon
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.components
+    implementation rootProject.ext.unifyDependencies.icons
+    implementation rootProject.ext.unifyDependencies.dialog
+    implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation rootProject.ext.tkpdInternalLibDependencies.network
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
@@ -49,6 +56,7 @@ dependencies {
     testImplementation rootProject.ext.miscDependencies.coroutineTest
     testImplementation rootProject.ext.testDependencies.archCoreTesting
     testImplementation rootProject.ext.supportLibDependencies.kotlinReflection
+    testImplementation project(rootProject.ext.libraries.unitTest)
 }
 
 project.ext {

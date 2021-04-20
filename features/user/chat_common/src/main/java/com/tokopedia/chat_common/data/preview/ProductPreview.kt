@@ -3,7 +3,7 @@ package com.tokopedia.chat_common.data.preview
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 
-open class ProductPreview(
+open class ProductPreview constructor(
         val id: String = "",
         val imageUrl: String = "",
         val name: String = "",

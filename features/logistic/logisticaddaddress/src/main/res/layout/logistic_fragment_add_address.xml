@@ -40,6 +40,7 @@
 
                 <EditText
                     android:id="@+id/address_type"
+                    android:contentDescription="@string/content_desc_address_type"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/dp_5"
@@ -56,6 +57,7 @@
 
                 <EditText
                     android:id="@+id/receiver_name"
+                    android:contentDescription="@string/content_desc_receiver_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:imeOptions="actionNext"
@@ -83,6 +85,7 @@
 
                 <EditText
                     android:id="@+id/address"
+                    android:contentDescription="@string/content_desc_address"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:imeOptions="actionNext"
@@ -113,6 +116,7 @@
 
                 <EditText
                     android:id="@+id/district"
+                    android:contentDescription="@string/content_desc_district"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:clickable="true"
@@ -128,6 +132,7 @@
 
                 <AutoCompleteTextView
                     android:id="@+id/autocomplete_postal_code"
+                    android:contentDescription="@string/content_desc_autocomplete_postal_code"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:completionThreshold="1"
@@ -153,7 +158,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/title_province"
-                android:textColor="@color/label_color"
+                android:textColor="@color/Unify_N300"
                 android:textSize="@dimen/sp_14" />
 
             <Spinner
@@ -168,7 +173,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/error_province"
-                android:textColor="@color/red"
+                android:textColor="@color/Unify_R600"
                 android:textSize="@dimen/sp_12"
                 android:visibility="gone" />
 
@@ -177,7 +182,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/title_regency"
-                android:textColor="@color/label_color"
+                android:textColor="@color/Unify_N300"
                 android:textSize="@dimen/dp_5"
                 android:visibility="gone" />
 
@@ -200,7 +205,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/error_regency"
-                android:textColor="@color/red"
+                android:textColor="@color/Unify_R600"
                 android:textSize="@dimen/sp_12"
                 android:visibility="gone" />
 
@@ -209,7 +214,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/title_sub_district"
-                android:textColor="@color/label_color"
+                android:textColor="@color/Unify_N300"
                 android:textSize="@dimen/dp_5"
                 android:visibility="gone" />
 
@@ -232,7 +237,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/error_sub_district"
-                android:textColor="@color/red"
+                android:textColor="@color/Unify_R600"
                 android:textSize="@dimen/sp_12"
                 android:visibility="gone" />
 
@@ -268,6 +273,7 @@
 
                 <EditText
                     android:id="@+id/receiver_phone"
+                    android:contentDescription="@string/content_desc_receiver_phone"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:imeOptions="actionNext"
@@ -290,7 +296,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/title_delivery_location_pickup"
-                android:textColor="@color/label_color"
+                android:textColor="@color/Unify_N300"
                 android:textSize="@dimen/sp_14" />
 
             <RelativeLayout
@@ -311,6 +317,7 @@
 
                 <EditText
                     android:id="@+id/value_location"
+                    android:contentDescription="@string/content_desc_value_location"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
@@ -331,13 +338,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/desc_delivery_location"
-                android:textColor="@color/label_color"
+                android:textColor="@color/Unify_N300"
                 android:textSize="@dimen/sp_12" />
 
         </LinearLayout>
 
         <TextView
             android:id="@+id/save_button"
+            android:contentDescription="@string/content_desc_save_button"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_44"
             android:layout_marginTop="@dimen/dp_10"
@@ -345,7 +353,7 @@
             android:gravity="center"
             android:padding="@dimen/dp_8"
             android:text="@string/title_save"
-            android:textColor="@color/white"
+            android:textColor="@color/Unify_N0"
             android:textStyle="bold" />
     </LinearLayout>
 

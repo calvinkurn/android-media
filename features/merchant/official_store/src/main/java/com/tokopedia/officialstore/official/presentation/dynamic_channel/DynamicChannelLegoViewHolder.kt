@@ -8,7 +8,6 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.design.countdown.CountDownView
-import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.officialstore.R
 import com.tokopedia.officialstore.official.data.model.dynamic_channel.Channel
 import com.tokopedia.officialstore.official.data.model.dynamic_channel.Header
@@ -18,7 +17,7 @@ import com.tokopedia.unifyprinciples.Typography
 class DynamicChannelLegoViewHolder(
         view: View?,
         private val dcEventHandler: DynamicChannelEventHandler
-) : AbstractViewHolder<DynamicChannelViewModel>(view) {
+) : AbstractViewHolder<DynamicChannelDataModel>(view) {
 
     private val mainContainer = itemView.findViewById<ConstraintLayout>(R.id.dc_lego_main_container)
     private val headerContainer = itemView.findViewById<ConstraintLayout>(R.id.dc_header_main_container)
@@ -27,11 +26,11 @@ class DynamicChannelLegoViewHolder(
     private val headerActionText = itemView.findViewById<AppCompatTextView>(R.id.dc_header_action_text)
     private val contentList = itemView.findViewById<RecyclerView>(R.id.dc_lego_rv)
 
-    override fun bind(element: DynamicChannelViewModel?) {
+    override fun bind(element: DynamicChannelDataModel?) {
         element?.run {
-            dcEventHandler.legoImpression(dynamicChannelData)
-            setupHeader(dynamicChannelData.header)
-            setupContent(dynamicChannelData)
+            dcEventHandler.legoImpression(dynamicChannelData.channel)
+            setupHeader(dynamicChannelData.channel.header)
+            setupContent(dynamicChannelData.channel)
         }
     }
 

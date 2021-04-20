@@ -6,7 +6,7 @@ import com.tokopedia.chat_common.data.ProductAttachmentViewModel
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactory
 
 class ProductCarouselUiModel constructor(
-        var products: List<Visitable<*>>,
+        var products: List<Visitable<*>>, val isSender: Boolean,
         messageId: String, fromUid: String?, from: String, fromRole: String,
         attachmentId: String, attachmentType: String, replyTime: String?, message: String,
         source: String

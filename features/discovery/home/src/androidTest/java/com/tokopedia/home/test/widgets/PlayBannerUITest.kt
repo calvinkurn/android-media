@@ -9,30 +9,22 @@ import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import com.google.gson.Gson
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.atc_common.domain.usecase.AddToCartOccUseCase
 import com.tokopedia.home.R
 import com.tokopedia.home.beranda.data.datasource.default_data_source.HomeDefaultDataSource
 import com.tokopedia.home.beranda.data.mapper.HomeDataMapper
+import com.tokopedia.home.beranda.data.mapper.HomeDynamicChannelDataMapper
+import com.tokopedia.home.beranda.data.mapper.factory.HomeDynamicChannelVisitableFactoryImpl
 import com.tokopedia.home.beranda.data.mapper.factory.HomeVisitableFactoryImpl
 import com.tokopedia.home.beranda.data.model.Config
 import com.tokopedia.home.beranda.data.model.PlayChannel
 import com.tokopedia.home.beranda.data.model.PlayData
 import com.tokopedia.home.beranda.data.model.VideoStream
-import com.tokopedia.home.beranda.data.usecase.HomeUseCase
-import com.tokopedia.home.beranda.domain.interactor.*
 import com.tokopedia.home.beranda.domain.model.HomeData
 import com.tokopedia.home.beranda.helper.Result
 import com.tokopedia.home.beranda.presentation.viewModel.HomeViewModel
 import com.tokopedia.home.test.activity.HomeActivityTest
 import com.tokopedia.home.test.fragment.HomeFragmentTest
-import com.tokopedia.home.test.rules.TestDispatcherProvider
-import com.tokopedia.play_common.domain.usecases.GetPlayWidgetUseCase
-import com.tokopedia.play_common.domain.usecases.PlayToggleChannelReminderUseCase
-import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.stickylogin.domain.usecase.coroutine.StickyLoginUseCase
-import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
-import com.tokopedia.user.session.UserSessionInterface
-import dagger.Lazy
+import com.tokopedia.trackingoptimizer.TrackingQueue
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -52,42 +44,18 @@ class PlayBannerUITest : BaseWidgetUiTest(){
     @JvmField
     val taskExecutorRule = InstantTaskExecutorRule()
 
-    override val userSessionInterface = mockk<dagger.Lazy<UserSessionInterface>>(relaxed = true)
-    override val dismissHomeReviewUseCase = mockk<dagger.Lazy<DismissHomeReviewUseCase>>(relaxed = true)
-    override val getHomeReviewSuggestedUseCase = mockk<dagger.Lazy<GetHomeReviewSuggestedUseCase>>(relaxed = true)
-    override val getKeywordSearchUseCase = mockk<dagger.Lazy<GetKeywordSearchUseCase>>(relaxed = true)
-    override val getRecommendationTabUseCase = mockk<dagger.Lazy<GetRecommendationTabUseCase>>(relaxed = true)
-    override val getHomeTokopointsDataUseCase = mockk<dagger.Lazy<GetHomeTokopointsDataUseCase>>(relaxed = true)
-    override val getCoroutinePendingCashbackUseCase = mockk<dagger.Lazy<GetCoroutinePendingCashbackUseCase>> (relaxed = true)
-    override val getPlayLiveDynamicUseCase = mockk<dagger.Lazy<GetPlayLiveDynamicUseCase>> (relaxed = true)
-    override val getCoroutineWalletBalanceUseCase = mockk<dagger.Lazy<GetCoroutineWalletBalanceUseCase>> (relaxed = true)
-    override val getHomeUseCase = mockk<dagger.Lazy<HomeUseCase>> (relaxed = true)
-    override val getSendGeolocationInfoUseCase = mockk<dagger.Lazy<SendGeolocationInfoUseCase>> (relaxed = true)
-    override val getStickyLoginUseCase = mockk<dagger.Lazy<StickyLoginUseCase>> (relaxed = true)
-    override val getBusinessWidgetTab = mockk<dagger.Lazy<GetBusinessWidgetTab>> (relaxed = true)
-    override val getBusinessUnitDataUseCase = mockk<dagger.Lazy<GetBusinessUnitDataUseCase>> (relaxed = true)
-    override val getPopularKeywordUseCase = mockk<dagger.Lazy<GetPopularKeywordUseCase>> (relaxed = true)
-    override val getDynamicChannelsUseCase = mockk<dagger.Lazy<GetDynamicChannelsUseCase>> (relaxed = true)
-    override val getAtcUseCase = mockk<dagger.Lazy<AddToCartOccUseCase>>(relaxed = true)
-    override val getRechargeRecommendationUseCase = mockk<dagger.Lazy<GetRechargeRecommendationUseCase>>(relaxed = true)
-    override val declineRechargeRecommendationUseCase = mockk<dagger.Lazy<DeclineRechargeRecommendationUseCase>>(relaxed = true)
-    override val declineSalamWIdgetUseCase = mockk<dagger.Lazy<DeclineSalamWIdgetUseCase>>(relaxed = true)
-    override val getSalamWIdgetUseCase = mockk<dagger.Lazy<GetSalamWidgetUseCase>>(relaxed = true)
-    override val closeChannelUseCase = mockk<dagger.Lazy<CloseChannelUseCase>>(relaxed = true)
-    override val topAdsImageViewUseCase = mockk<Lazy<TopAdsImageViewUseCase>>(relaxed = true)
-    override val injectCouponTimeBasedUseCase = mockk<dagger.Lazy<InjectCouponTimeBasedUseCase>>(relaxed = true)
-    override val playToggleChannelReminderUseCase = mockk<Lazy<PlayToggleChannelReminderUseCase>> (relaxed = true)
-    override val getPlayBannerUseCase = mockk<Lazy<GetPlayWidgetUseCase>> (relaxed = true)
-    override val remoteConfig = mockk<RemoteConfig>(relaxed = true)
-    override val homeDataMapper = HomeDataMapper(InstrumentationRegistry.getInstrumentation().context, HomeVisitableFactoryImpl(userSessionInterface.get(), remoteConfig, HomeDefaultDataSource()), mockk(relaxed = true))
-    private val context = InstrumentationRegistry.getInstrumentation().context
+    override val homeVisitableFactory = HomeVisitableFactoryImpl(userSessionInterface.get(), remoteConfig, HomeDefaultDataSource())
+    override val homeDynamicChannelVisitableFactory = HomeDynamicChannelVisitableFactoryImpl(userSessionInterface.get(), remoteConfig, HomeDefaultDataSource())
+    override val instrumentationContext = InstrumentationRegistry.getInstrumentation().context
+    override val homeDataMapper = HomeDataMapper(instrumentationContext, homeVisitableFactory, mockk(relaxed = true),
+            HomeDynamicChannelDataMapper(instrumentationContext, homeDynamicChannelVisitableFactory, TrackingQueue(instrumentationContext)))
+    val context = InstrumentationRegistry.getInstrumentation().context
     private lateinit var viewModel: HomeViewModel
 
     companion object{
         private val CONTAINER = R.id.play_frame_layout
         private val TITLE = R.id.title
         private val TITLE_CONTENT = R.id.title_play
-
     }
 
     @Test
@@ -331,34 +299,4 @@ class PlayBannerUITest : BaseWidgetUiTest(){
         onView(withId(TITLE)).check(matches(withText("Play Widget")))
         onView(withId(TITLE_CONTENT)).check(matches(withText("Channel 2")))
     }
-
-    override fun reInitViewModel() = HomeViewModel(
-            dismissHomeReviewUseCase = dismissHomeReviewUseCase,
-            getBusinessUnitDataUseCase = getBusinessUnitDataUseCase,
-            getBusinessWidgetTab = getBusinessWidgetTab,
-            getDynamicChannelsUseCase = getDynamicChannelsUseCase,
-            getHomeReviewSuggestedUseCase = getHomeReviewSuggestedUseCase,
-            getHomeTokopointsDataUseCase = getHomeTokopointsDataUseCase,
-            getKeywordSearchUseCase = getKeywordSearchUseCase,
-            getPendingCashbackUseCase = getCoroutinePendingCashbackUseCase,
-            getPlayCardHomeUseCase = getPlayLiveDynamicUseCase,
-            getRecommendationTabUseCase = getRecommendationTabUseCase,
-            getWalletBalanceUseCase = getCoroutineWalletBalanceUseCase,
-            homeDispatcher = TestDispatcherProvider(),
-            homeUseCase = getHomeUseCase,
-            popularKeywordUseCase = getPopularKeywordUseCase,
-            sendGeolocationInfoUseCase = getSendGeolocationInfoUseCase,
-            stickyLoginUseCase = getStickyLoginUseCase,
-            userSession = userSessionInterface,
-            getAtcUseCase = getAtcUseCase,
-            closeChannelUseCase = closeChannelUseCase,
-            getRechargeRecommendationUseCase = getRechargeRecommendationUseCase,
-            declineRechargeRecommendationUseCase = declineRechargeRecommendationUseCase,
-            getSalamWidgetUseCase = getSalamWIdgetUseCase,
-            declineSalamWidgetUseCase = declineSalamWIdgetUseCase,
-            injectCouponTimeBasedUseCase = injectCouponTimeBasedUseCase,
-            topAdsImageViewUseCase = topAdsImageViewUseCase,
-            playToggleChannelReminderUseCase = playToggleChannelReminderUseCase,
-            getPlayBannerUseCase = getPlayBannerUseCase
-    )
 }

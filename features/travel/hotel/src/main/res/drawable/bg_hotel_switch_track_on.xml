@@ -14,8 +14,8 @@
             <gradient
                 android:type="linear"
                 android:angle="0"
-                android:endColor="@color/hotel_green_250"
-                android:startColor="@color/hotel_lightish_green"/>
+                android:endColor="@color/Unify_G400"
+                android:startColor="@color/Unify_G300"/>
         </shape>
     </item>
 </layer-list>

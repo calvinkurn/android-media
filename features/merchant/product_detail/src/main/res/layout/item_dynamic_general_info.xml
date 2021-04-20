@@ -5,8 +5,8 @@
     android:id="@+id/general_info_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@color/Unify_N0"
     android:orientation="vertical"
-    android:background="@color/white"
     android:paddingBottom="@dimen/dp_16"
     tools:ignore="RtlSymmetry">
 
@@ -14,101 +14,83 @@
         android:id="@+id/info_separator"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_8"
-        android:background="@color/grey_separator"
+        android:background="@color/Unify_N50"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/rv_general_info" />
+        app:layout_constraintTop_toBottomOf="@+id/txt_pdp_general_info_desc" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:paddingTop="@dimen/dp_16"
+        android:layout_height="wrap_content"
         android:paddingLeft="@dimen/dp_16"
-        android:paddingRight="@dimen/dp_16"
-        android:layout_height="wrap_content">
+        android:paddingTop="@dimen/dp_16"
+        android:paddingRight="@dimen/dp_16">
 
-    <ImageView
-        android:id="@+id/pdp_icon"
-        android:layout_width="@dimen/dp_24"
-        android:layout_height="0dp"
-        android:layout_marginEnd="@dimen/dp_4"
-        android:layout_marginRight="@dimen/dp_4"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="@+id/pdp_info_title"
-        app:layout_constraintEnd_toStartOf="@+id/pdp_info_title"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/pdp_info_title"
-        tools:src="@drawable/ic_product_fintech_qr_normal_24"
-        tools:visibility="visible" />
+        <ImageView
+            android:id="@+id/pdp_icon"
+            android:layout_width="@dimen/dp_24"
+            android:layout_height="0dp"
+            android:layout_marginEnd="@dimen/dp_4"
+            android:layout_marginRight="@dimen/dp_4"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@+id/pdp_info_title"
+            app:layout_constraintEnd_toStartOf="@+id/pdp_info_title"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/pdp_info_title"
+            tools:src="@drawable/ic_product_fintech_qr_normal_24"
+            tools:visibility="visible" />
 
-    <ImageView
-        android:id="@+id/pdp_arrow_right"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="@+id/rv_general_info"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/pdp_info_title"
-        app:srcCompat="@drawable/ic_arrow_right_info"
-        tools:visibility="visible" />
+        <ImageView
+            android:id="@+id/pdp_arrow_right"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@+id/pdp_general_info_desc_detail"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/pdp_info_title"
+            app:srcCompat="@drawable/ic_arrow_right_info"
+            tools:visibility="visible" />
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/pdp_info_title"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:layout_constraintEnd_toStartOf="@+id/pdp_arrow_right"
-        app:layout_constraintStart_toEndOf="@+id/pdp_icon"
-        app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="heading_4"
-        app:typographyWeight="bold"
-        tools:text="Varian Produk"
-        android:visibility="invisible"
-        android:layout_marginEnd="@dimen/dp_16"
-        android:layout_marginRight="@dimen/dp_16"
-        tools:visibility="visible"
-        />
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/pdp_info_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/dp_16"
+            android:layout_marginRight="@dimen/dp_16"
+            android:visibility="invisible"
+            app:layout_constraintEnd_toStartOf="@+id/pdp_arrow_right"
+            app:layout_constraintStart_toEndOf="@+id/pdp_icon"
+            app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="heading_4"
+            app:typographyWeight="bold"
+            tools:text="Varian Produk"
+            tools:visibility="visible" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_general_info"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/dp_16"
-        android:layout_marginRight="@dimen/dp_16"
-        android:orientation="vertical"
-        android:visibility="gone"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/pdp_arrow_right"
-        app:layout_constraintStart_toStartOf="@+id/pdp_icon"
-        app:layout_constraintTop_toBottomOf="@+id/pdp_info_title"
-        tools:visibility="visible" />
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/pdp_info_desc"
+            android:layout_width="@dimen/dp_0"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_4"
+            android:layout_marginEnd="@dimen/unify_space_8"
+            android:lineSpacingExtra="@dimen/pdp_dp_3"
+            android:textColor="@color/Unify_N700_68"
+            app:layout_constraintEnd_toStartOf="@+id/pdp_arrow_right"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/pdp_info_title"
+            app:typographyType="body_2"
+            tools:text="@string/ktp_protection" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
-        android:id="@+id/titleShimmering"
-        android:layout_width="0dp"
-        android:layout_height="@dimen/dp_8"
-        android:layout_marginStart="@dimen/dp_16"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginBottom="@dimen/dp_8"
-        app:corners="@integer/corner_radius_shimmering"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:width_weight="0.8"
-        tools:visibility="gone" />
-
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
-        android:id="@+id/descShimmering"
-        android:layout_width="0dp"
-        android:layout_height="@dimen/dp_8"
-        android:layout_marginStart="@dimen/dp_16"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginTop="@dimen/dp_10"
-        android:layout_marginBottom="@dimen/dp_8"
-        app:corners="@integer/corner_radius_shimmering"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/titleShimmering"
-        app:width_weight="0.6"
-        tools:visibility="gone" />
+        <include
+            android:id="@+id/pdp_general_info_desc_detail"
+            layout="@layout/item_protection_partner_info_detail"
+            android:layout_width="@dimen/dp_0"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/dp_16"
+            android:visibility="gone"
+            android:layout_marginTop="@dimen/dp_8"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/pdp_arrow_right"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/pdp_info_desc" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

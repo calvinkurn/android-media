@@ -1,149 +1,153 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/fmParent"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <ViewFlipper
-        android:id="@+id/viewFlipper"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:visibility="visible">
-
         <FrameLayout
-            android:id="@+id/giftBoxParent"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <com.tokopedia.gamification.giftbox.presentation.views.GiftBoxDailyView
-                android:id="@+id/gift_box_view"
+            <ViewFlipper
+                android:id="@+id/viewFlipper"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent"
+                tools:visibility="visible">
 
-            <androidx.appcompat.widget.AppCompatImageView
-                android:alpha="0"
-                android:visibility="gone"
-                android:id="@+id/imageSound"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="right|end"
-                android:layout_marginTop="@dimen/dp_56"
-                android:layout_marginEnd="@dimen/dp_12"
-                android:layout_marginRight="@dimen/dp_12"
-                app:srcCompat="@drawable/gf_ic_sound_on" />
+                <FrameLayout
+                    android:id="@+id/giftBoxParent"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
 
-            <com.tokopedia.gamification.giftbox.presentation.views.StarsContainer
-                android:id="@+id/starsContainer"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                    <com.tokopedia.gamification.giftbox.presentation.views.GiftBoxDailyView
+                        android:id="@+id/gift_box_view"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
 
-            <com.tokopedia.gamification.giftbox.presentation.views.RewardContainer
-                android:id="@+id/reward_container"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                    <com.tokopedia.gamification.giftbox.presentation.views.StarsContainer
+                        android:id="@+id/starsContainer"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
 
-            <include layout="@layout/gf_gift_tap_hint" />
+                    <com.tokopedia.gamification.giftbox.presentation.views.RewardContainerDaily
+                        android:id="@+id/reward_container"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        app:source="daily" />
 
-            <include layout="@layout/gami_prize_list"/>
+                    <include layout="@layout/gf_gift_tap_hint" />
 
-            <LinearLayout
-                android:id="@+id/ll_reward_message"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/gami_dp_70"
-                android:gravity="center_horizontal"
-                android:orientation="vertical"
-                tools:alpha="0">
+                    <LinearLayout
+                        android:id="@+id/ll_reward_message"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/gami_ll_reward_message_top_margin"
+                        android:layout_marginBottom="@dimen/gami_dp_70"
+                        android:gravity="center_horizontal"
+                        android:orientation="vertical"
+                        tools:alpha="1">
 
-                <com.tokopedia.unifyprinciples.Typography
-                    android:id="@+id/tvRewardFirstLine"
-                    android:layout_width="wrap_content"
+                        <com.tokopedia.unifyprinciples.Typography
+                            android:id="@+id/tvRewardFirstLine"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/dp_4"
+                            android:textColor="@android:color/white"
+                            app:typographyType="heading_5"
+                            app:typographyWeight="bold"
+                            tools:text="Yay, kamu dapat hadia" />
+
+                        <com.tokopedia.unifyprinciples.Typography
+                            android:paddingStart="@dimen/gami_reward_second_line_side_margin"
+                            android:paddingEnd="@dimen/gami_reward_second_line_side_margin"
+                            android:id="@+id/tvRewardSecondLine"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/dp_15"
+                            android:gravity="center_horizontal"
+                            tools:text="Kupon Cashback and 1000000 tokopoints \nasdasd asdasd\n asdasdasda"
+                            android:textColor="@android:color/white"
+                            app:typographyType="heading_4"
+                            app:typographyWeight="bold" />
+
+                        <com.tokopedia.gamification.giftbox.presentation.views.CekTokoButtonContainer
+                            android:id="@+id/tokoBtnContainer"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/dp_16"
+                            android:layout_marginEnd="@dimen/dp_16" />
+
+                    </LinearLayout>
+
+                    <com.tokopedia.gamification.giftbox.presentation.views.GamiDirectGiftView
+                        android:id="@+id/direct_gift_view"
+                        style="@style/GamiDirectViewParent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="bottom|center_horizontal"
+                        android:paddingStart="@dimen/dp_16"
+                        android:paddingTop="@dimen/dp_16"
+                        android:paddingEnd="@dimen/dp_16"
+                        android:paddingBottom="@dimen/gami_direct_view_bottom_margin"
+                        android:gravity="center_horizontal" />
+
+                </FrameLayout>
+
+                <LinearLayout
+                    android:id="@+id/llLoader"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/dp_4"
-                    android:textColor="@android:color/white"
-                    app:typographyType="heading_5"
-                    app:typographyWeight="bold"
-                    tools:text="Yay, kamu dapat hadia" />
+                    android:layout_gravity="center"
+                    android:orientation="vertical">
 
-                <com.tokopedia.unifyprinciples.Typography
-                    android:id="@+id/tvRewardSecondLine"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/dp_15"
-                    android:gravity="center_horizontal"
-                    android:textColor="@android:color/white"
-                    app:typographyType="heading_2"
-                    app:typographyWeight="bold" />
+                    <com.tokopedia.unifycomponents.LoaderUnify
+                        android:id="@+id/loader"
+                        android:layout_width="@dimen/dp_48"
+                        android:layout_height="@dimen/dp_48"
+                        android:layout_gravity="center" />
 
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/btnAction"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/gf_bg_orange_3d"
-                    android:fontFamily="sans-serif"
-                    android:paddingStart="@dimen/dp_64"
-                    android:paddingLeft="@dimen/dp_64"
-                    android:paddingTop="@dimen/dp_11"
-                    android:paddingEnd="@dimen/dp_64"
-                    android:paddingRight="@dimen/dp_64"
-                    android:paddingBottom="@dimen/dp_15"
-                    android:textColor="@android:color/white"
-                    android:textSize="@dimen/sp_16"
-                    android:textStyle="bold"
-                    tools:text="@string/gami_palai_kupon_ovo_points" />
+                    <com.tokopedia.unifyprinciples.Typography
+                        android:id="@+id/tvLoaderTitle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/dp_18"
+                        android:layout_marginLeft="@dimen/dp_18"
+                        android:layout_marginTop="@dimen/dp_16"
+                        android:layout_marginEnd="@dimen/dp_18"
+                        android:layout_marginRight="@dimen/dp_18"
+                        android:gravity="center"
+                        android:text="@string/gami_beli_ketupat"
+                        android:textColor="@color/gf_loader_title_color"
+                        app:typographyType="heading_3"
+                        app:typographyWeight="bold" />
 
-            </LinearLayout>
+                    <com.tokopedia.unifyprinciples.Typography
+                        android:id="@+id/tvLoaderMessage"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/dp_18"
+                        android:layout_marginLeft="@dimen/dp_18"
+                        android:layout_marginTop="@dimen/dp_4"
+                        android:layout_marginEnd="@dimen/dp_18"
+                        android:layout_marginRight="@dimen/dp_18"
+                        android:gravity="center"
+                        android:text="@string/gami_penasaran_bakal_dapat"
+                        android:textColor="@color/gf_loader_message_color"
+                        app:typographyType="heading_5"
+                        app:typographyWeight="reguler" />
+                </LinearLayout>
+            </ViewFlipper>
 
-            <include layout="@layout/gami_gift_reminder"/>
+            <include layout="@layout/gami_gift_box_toolbar" />
 
         </FrameLayout>
 
-        <LinearLayout
-            android:id="@+id/llLoader"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:orientation="vertical">
-
-            <com.tokopedia.unifycomponents.LoaderUnify
-                android:id="@+id/loader"
-                android:layout_width="@dimen/dp_48"
-                android:layout_height="@dimen/dp_48"
-                android:layout_gravity="center" />
-
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/tvLoaderTitle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_18"
-                android:layout_marginLeft="@dimen/dp_18"
-                android:layout_marginTop="@dimen/dp_16"
-                android:layout_marginEnd="@dimen/dp_18"
-                android:layout_marginRight="@dimen/dp_18"
-                android:gravity="center"
-                android:text="@string/gami_beli_ketupat"
-                android:textColor="@color/gf_loader_title_color"
-                app:typographyType="heading_3"
-                app:typographyWeight="bold" />
-
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/tvLoaderMessage"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_18"
-                android:layout_marginLeft="@dimen/dp_18"
-                android:layout_marginTop="@dimen/dp_4"
-                android:layout_marginEnd="@dimen/dp_18"
-                android:layout_marginRight="@dimen/dp_18"
-                android:gravity="center"
-                android:text="@string/gami_penasaran_bakal_dapat"
-                android:textColor="@color/gf_loader_message_color"
-                app:typographyType="heading_5"
-                app:typographyWeight="reguler" />
-        </LinearLayout>
-    </ViewFlipper>
-
-    <include layout="@layout/gami_gift_box_toolbar" />
-</FrameLayout>
+    <com.tokopedia.gamification.pdp.presentation.views.PdpGamificationView
+        android:id="@+id/pdpGamificationView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="invisible"
+        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
+        tools:layout_height="0dp" />
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

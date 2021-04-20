@@ -6,6 +6,8 @@ data class OrderProfile(
         val onboardingHeaderMessage: String = "",
         val onboardingComponent: OnboardingComponentResponse = OnboardingComponentResponse(),
         val hasPreference: Boolean = false,
+        val profileRevampWording: String = "",
+        val isRecom: Boolean = false,
         val profileId: Int = 0,
         val status: Int = 0,
         val enable: Boolean = true,
@@ -29,13 +31,19 @@ data class OrderProfileAddress(
         val phone: String = "",
         val longitude: String = "",
         val latitude: String = "",
-        val postalCode: String = ""
+        val postalCode: String = "",
+        val state: Int = 0,
+        val stateDetail: String = ""
 )
 
 data class OrderProfileShipment(
         val serviceName: String = "",
         val serviceId: Int = 0,
-        val serviceDuration: String = ""
+        val serviceDuration: String = "",
+        val spId: Int = 0,
+        val recommendationServiceId: Int = 0,
+        val recommendationSpId: Int = 0,
+        val isFreeShippingSelected: Boolean = false
 )
 
 data class OrderProfilePayment(
@@ -45,13 +53,6 @@ data class OrderProfilePayment(
         val gatewayName: String = "",
         val image: String = "",
         val description: String = "",
-        val url: String = "",
-        val minimumAmount: Long = 0,
-        val maximumAmount: Long = 0,
-        val fee: Double = 0.0,
-        val walletAmount: Long = 0,
         val metadata: String = "",
-        val mdr: Float = 0f,
-        val creditCard: OrderPaymentCreditCard = OrderPaymentCreditCard(),
-        val errorMessage: OrderPaymentErrorMessage = OrderPaymentErrorMessage()
+        val tickerMessage: String = ""
 )

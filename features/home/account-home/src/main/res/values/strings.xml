@@ -8,7 +8,6 @@
     <string name="label_user_tokopoint">TokoPoints</string>
     <string name="label_user_voucher">Kupon Saya</string>
     <string name="label_user_tokomember">TokoMember</string>
-    <string name="title_account_setting">Akun</string>
     <string name="account_home_title_shop_setting">Toko</string>
     <string name="title_tkpd_pay_setting">Pembayaran</string>
     <string name="title_tkpd_template_setting">Template Pembelian</string>
@@ -17,6 +16,7 @@
     <string name="title_tnc_setting">Syarat dan Ketentuan</string>
     <string name="title_privacy_setting">Kebijakan Privasi</string>
     <string name="title_help_center_setting">Tokopedia Care</string>
+    <string name="general_setting_title_account_setting_item">Akun</string>
     <string name="subtitle_account_setting">Data Diri, Alamat, dan Keamanan Akun</string>
     <string name="account_home_subtitle_shop_setting">Lokasi, Etalase, Pengiriman, dan lainnya</string>
     <string name="subtitle_template_setting">Nikmati Transaksi Mudah dan Cepat</string>
@@ -28,6 +28,7 @@
     <string name="title_password_setting">Ubah Kata Sandi</string>
     <string name="title_kyc_setting">Verifikasi Data Diri</string>
     <string name="title_setting_pin">PIN Tokopedia</string>
+    <string name="title_signin_with_notification">Masuk Lewat Notifikasi</string>
     <string name="title_address_setting">Daftar Alamat</string>
     <string name="title_sampai_project">Tokopedia Corner</string>
     <string name="screentitle_account_setting">Atur Akun</string>
@@ -41,9 +42,11 @@
     <string name="title_tokocard_setting">TokoSwipe</string>
     <string name="title_saldo_setting">Saldo</string>
     <string name="title_bank_account_setting">Akun Bank</string>
-    <string name="title_credit_card_setting">Kartu Kredit</string>
+    <string name="title_credit_card_setting">Kartu Kredit/Debit</string>
     <string name="title_debit_instant_setting">Debit Instan</string>
     <string name="screentitle_tkpd_pay_setting">Atur Pembayaran</string>
+    <string name="title_account_setting">Atur Pembayaran</string>
+
     <string name="screentitle_notification_setting">Atur Notifikasi</string>
     <string name="save_setting_label">Simpan</string>
     <string name="header_privacy_account_setting">Keamanan</string>
@@ -96,19 +99,16 @@
     <string name="label_tokopedia_pay_see_all">Lihat Semua</string>
     <string name="label_tokopedia_pay_deposit">Saldo</string>
     <string name="label_tokopedia_pay_wallet">TokoCash</string>
-    <string name="title_menu_transaction">Transaksi</string>
+    <string name="title_menu_transaction">Daftar Transaksi</string>
     <string name="title_menu_waiting_for_payment">Menunggu Pembayaran</string>
     <string name="label_menu_waiting_for_payment">Semua transaksi yang belum dibayar</string>
     <string name="title_menu_shopping_transaction">Transaksi Belanja</string>
-    <string name="label_menu_show_history">Lihat Riwayat</string>
     <string name="label_menu_waiting_confirmation">Menunggu Konfirmasi</string>
     <string name="label_menu_order_processed">Pesanan Diproses</string>
     <string name="label_menu_shipping">Sedang Dikirim</string>
     <string name="label_menu_delivered">Sampai Tujuan</string>
     <string name="title_menu_buyer_complain">Komplain Sebagai Pembeli</string>
     <string name="label_menu_buyer_complain">Lihat status komplain</string>
-    <string name="title_menu_seller_complain">Komplain Sebagai Penjual</string>
-    <string name="label_menu_seller_complain">Lihat status komplain</string>
     <string name="title_menu_other_transaction">Daftar Transaksi</string>
     <string name="title_menu_favorites">Favorit Saya</string>
     <string name="title_menu_favorite_topic">Topik Favorit</string>
@@ -144,34 +144,12 @@
     <string name="title_menu_zakat">Zakat</string>
     <string name="title_menu_donation">Donasi</string>
     <string name="title_menu_show_all">Lihat\nSemua</string>
-    <string name="title_menu_sales">Penjualan</string>
-    <string name="label_menu_new_order">Pesanan Baru</string>
-    <string name="label_menu_ready_to_ship">Siap Dikirim</string>
-    <string name="label_menu_shipped">Sedang Dikirim</string>
-    <string name="label_menu_arrive_at_destination">Sampai Tujuan</string>
-    <string name="title_menu_product">Produk</string>
-    <string name="title_menu_product_list">Produk Anda</string>
-    <string name="label_menu_product_list">Lihat dan atur semua Produk</string>
-    <string name="title_menu_product_feature">Produk Unggulan</string>
-    <string name="label_menu_product_feature">Tampilkan 5 Produk terbaik Toko Anda</string>
-    <string name="title_menu_product_draft">Draft Produk</string>
-    <string name="label_menu_product_draft">Selesaikan kelengkapan detail Produk</string>
-    <string name="title_menu_other_features">Fitur Lainnya</string>
-    <string name="title_menu_seller_center">Pusat Edukasi Seller</string>
-    <string name="title_menu_topads">TopAds</string>
-    <string name="label_menu_topads">Lihat dan atur promo Anda</string>
-    <string name="title_menu_voucher_toko">Voucher Cashback</string>
-    <string name="description_menu_voucher_toko">Lihat dan kelola promo tokomu</string>
     <string name="label_menu_voucher_toko">Khusus aplikasi Tokopedia Seller</string>
-    <string name="label_menu_seller_center">Edukasi dan inspirasi berjualan</string>
-    <string name="title_menu_loan">Modal usaha untuk Toko Anda</string>
-    <string name="label_menu_loan">Potensi pinjaman senilai</string>
     <string name="label_tokopoint_see_voucher">Lihat Kupon</string>
     <string name="title_app_notif_setting">Push Notification</string>
     <string name="title_email_notif_setting">Notifikasi Email</string>
     <string name="title_menu_wishlist">Wishlist</string>
     <string name="label_menu_wishlist">Lihat Produk yang sudah Anda wishlist</string>
-    <string name="label_button_add_product">+ Tambah Produk</string>
     <string name="title_dev_options">Developer Options</string>
     <string name="title_shake_setting">Shake Shake</string>
     <string name="subtitle_shake_setting">Aktifkan untuk mendapatkan penawaran menarik</string>
@@ -183,9 +161,9 @@
     <string name="account_home_label_cancel">Batal</string>
     <string name="title_app_review_setting">Review Aplikasi</string>
     <string name="label_wallet_activation">Aktivasi TokoCash</string>
+
     <string name="title_pm_card">Pengaturan Power Merchant</string>
     <string name="desc_pm_card">Kelola toko dengan fitur eksklusif</string>
-
 
     <string name="msg_has_no_shop">Mulai dengan Tokopedia!</string>
     <string name="msg_desc_has_no_shop">Buka Toko di Tokopedia, Sekarang! <b>Mudah, Aman,</b> dan
@@ -242,7 +220,6 @@
 
     <string name="title_app_advanced_setting">Pengaturan Tambahan</string>
     <string name="title_app_advanced_clear_cache">Bersihkan Cache</string>
-    <string name="title_app_advanced_push_notification">Push Notification Troubleshooter</string>
 
     <string name="account_home_clear_cache_warning">Peringatan</string>
     <string name="account_home_clear_cache_message">Dengan membersihkan cache, berarti Anda juga setuju untuk <b>keluar</b> dan <b>menutup aplikasi</b>.</string>
@@ -252,15 +229,43 @@
     <string name="account_home_add_phone_title">Tambah Nomor Ponsel</string>
     <string name="account_home_add_phone_message">Tambah dan verifikasi nomor ponsel terlebih dahulu sebelum membuat PIN</string>
     <string name="clear_cache">clear cache</string>
+    <string name="account_home_seller_open_shop">Buka Toko Gratis</string>
+    <string name="account_home_shop_name_card">Toko Saya: <![CDATA[<strong>%1$s</strong>]]></string>
+    <string name="account_home_role_name_card">Peran Saya: <![CDATA[<strong>%1$s</strong>]]></string>
+
+    <string name="feedback_form">Feedback Form</string>
+
+    <string name="image_quality_setting_screen">Kualitas Gambar</string>
+    <string name="image_quality_setting_title">Atur kualitas gambar yang kamu lihat</string>
+    <string name="image_quality_setting_subtitle">Pilihanmu akan menentukan kejelasan gambar yang kamu lihat di berbagai halaman Tokopedia.</string>
+
+    <string name="image_quality_low_title">Rendah</string>
+    <string name="image_quality_low_subtitle">Dapat mempermudah proses muat gambar, berlaku di semua jaringan HP.</string>
+    <string name="image_quality_low_toast">Kualitas rendah berhasil dipilih.</string>
+
+    <string name="image_quality_high_title">Tinggi</string>
+    <string name="image_quality_high_subtitle">Dapat meningkatkan kejelasan gambar, berlaku di semua jaringan HP.</string>
+    <string name="image_quality_high_toast">Kualitas tinggi berhasil dipilih.</string>
+
+    <string name="image_quality_auto_title">Otomatis (direkomendasikan)</string>
+    <string name="image_quality_auto_subtitle">Kualitas gambar otomatis diturunkan jika jaringan HP kamu lebih rendah dari 4G.</string>
+    <string name="image_quality_auto_toast">Pengaturan otomatis berhasil dipilih.</string>
 
     <!--CONTENT DESC-->
-    <string name="content_desc_text_shop_name">text nama toko</string>
-    <string name="content_desc_image_shop">image logo toko</string>
-    <string name="content_desc_image_badge">image badge toko</string>
-    <string name="content_desc_text_desc">text menu status pesanan</string>
-    <string name="content_desc_button_add_product">button tambah produk</string>
     <string name="content_desc_tv_add_product_title">text tambah produk</string>
-    <string name="content_desc_text_view_title">text menu</string>
 
+
+    <string name="account_buyer">Akun Pembeli</string>
+    <string name="title_uoh_1">Menunggu Pembayaran</string>
+    <string name="title_uoh_3">Semua Transaksi</string>
+    <string name="e_ticket_desc">Cek tiket dan voucher siap pakai</string>
+  
+    <string name="text_description_add_name_bottom_sheet">Nama asli akan mempermudah proses verifikasi jika akunmu bermasalah. Akunmu jadi makin aman, deh!</string>
+    <string name="text_title_add_name_bottom_sheet">Ubah nama akun jadi nama asli</string>
+    <string name="text_button_add_name_bottom_sheet">Ubah Nama Akun</string>
+    <string name="desc_image_profile_completed">image_profile_completed</string>
+    <string name="desc_image_tokopoint">image_tokopoint</string>
+    <string name="desc_image_voucher">image_voucher</string>
+    <string name="desc_image_tokomember">image_tokomember</string>
 
 </resources>

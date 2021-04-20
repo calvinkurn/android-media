@@ -9,11 +9,10 @@ import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.product.data.model.ShopProduct
 
 data class ShopPageHeaderP1(
-        val isShopOfficialStore: GetIsShopOfficialStore,
-        val isShopPowerMerchant: GetIsShopPowerMerchant,
-        val shopInfoTopContentData: ShopInfo,
-        val shopInfoHomeTypeData: ShopPageGetHomeType,
-        val shopInfoCoreAndAssetsData: ShopInfo,
-        val feedWhitelist: Whitelist,
-        val productList: ShopProduct.GetShopProduct
+        val isShopOfficialStore: GetIsShopOfficialStore = GetIsShopOfficialStore(),
+        val isShopPowerMerchant: GetIsShopPowerMerchant = GetIsShopPowerMerchant(),
+        val shopInfoTopContentData: ShopInfo = ShopInfo(),
+        val shopInfoHomeTypeData: ShopPageGetHomeType = ShopPageGetHomeType(),
+        val shopInfoCoreAndAssetsData: ShopInfo = ShopInfo(),
+        val feedWhitelist: Whitelist = Whitelist()
 )

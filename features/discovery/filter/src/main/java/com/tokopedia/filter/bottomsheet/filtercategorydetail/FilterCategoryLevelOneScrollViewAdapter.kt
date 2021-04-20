@@ -95,13 +95,13 @@ internal class FilterCategoryLevelOneScrollViewAdapter(
         }
 
         private fun bindAsSelected() {
-            val selectedTextColor = ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Green_G500)
+            val selectedTextColor = ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_G500)
             itemView.filterCategoryName?.setTextColor(selectedTextColor)
             itemView.filterCategorySelectedIndicator?.visibility = View.VISIBLE
         }
 
         private fun bindAsUnSelected() {
-            val selectedTextColor = ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Neutral_N700_68)
+            val selectedTextColor = ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68)
             itemView.filterCategoryName?.setTextColor(selectedTextColor)
             itemView.filterCategorySelectedIndicator?.visibility = View.GONE
         }

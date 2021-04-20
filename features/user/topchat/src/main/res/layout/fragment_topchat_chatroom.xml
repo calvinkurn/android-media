@@ -19,6 +19,13 @@
         android:descendantFocusability="beforeDescendants"
         android:scrollbars="vertical">
 
+        <com.tokopedia.topchat.chatroom.view.customview.BackgroundImageView
+            android:id="@+id/iv_bg_chat"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="bottom"
+            android:adjustViewBounds="true" />
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_view"
             android:layout_width="match_parent"
@@ -26,6 +33,7 @@
             android:layout_above="@+id/footer"
             android:layout_alignParentTop="true"
             android:layout_gravity="center"
+            android:clipToPadding="false"
             android:descendantFocusability="beforeDescendants"
             android:scrollbars="vertical" />
 
@@ -55,7 +63,7 @@
         android:id="@+id/notifier"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/topchat_header_chat"
+        android:background="@color/Unify_N700"
         android:gravity="center_vertical"
         android:orientation="horizontal"
         android:paddingStart="@dimen/spacing_lvl4"
@@ -72,7 +80,7 @@
             android:layout_marginEnd="@dimen/dp_topchat_85"
             android:layout_marginRight="@dimen/dp_topchat_85"
             android:layout_weight="1"
-            android:textColor="@color/white"
+            android:textColor="@color/Unify_N0"
             app:typographyType="body_3"
             tools:text="@string/error_no_connection_retrying" />
 
@@ -80,7 +88,7 @@
             android:id="@+id/action"
             android:layout_width="@dimen/layout_lvl2"
             android:layout_height="@dimen/layout_lvl2"
-            android:textColor="@color/white"
+            android:textColor="@color/Unify_N0"
             app:loader_type="circular_white" />
 
     </LinearLayout>
@@ -111,7 +119,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal"
                 android:text="@string/desc_chat_blocked"
-                android:textColor="@color/Neutral_N700_68"
+                android:textColor="@color/Unify_N700_68"
                 app:typographyType="body_3" />
 
             <com.tokopedia.unifyprinciples.Typography
@@ -121,7 +129,7 @@
                 android:layout_below="@+id/blocked_text"
                 android:gravity="center_horizontal"
                 android:text="@string/enable_chat_settings"
-                android:textColor="@color/light_G500"
+                android:textColor="@color/Unify_G500"
                 app:typographyType="body_3"
                 app:typographyWeight="bold" />
 
@@ -154,74 +162,67 @@
 
             <include layout="@layout/layout_product_preview" />
 
-            <RelativeLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/reply_box"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingStart="@dimen/spacing_lvl4"
                 android:paddingTop="@dimen/dp_topchat_12"
-                android:paddingEnd="@dimen/spacing_lvl4"
-                android:paddingBottom="@dimen/spacing_lvl4">
+                android:paddingEnd="@dimen/spacing_lvl4">
 
                 <ImageView
                     android:id="@+id/send_but"
                     android:layout_width="@dimen/spacing_lvl7"
                     android:layout_height="@dimen/spacing_lvl7"
-                    android:layout_alignBottom="@+id/new_comment"
-                    android:layout_alignParentEnd="true"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"
-                    android:layout_gravity="center"
-                    app:srcCompat="@drawable/ic_send_grey_chat_common" />
+                    android:layout_marginBottom="@dimen/spacing_lvl4"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:srcCompat="@drawable/ic_chat_common_send_grey" />
 
                 <EditText
                     android:id="@+id/new_comment"
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentStart="true"
-                    android:layout_alignParentLeft="true"
                     android:layout_marginEnd="@dimen/spacing_lvl3"
-                    android:layout_marginRight="@dimen/spacing_lvl3"
-                    android:layout_toStartOf="@+id/send_but"
-                    android:layout_toLeftOf="@+id/send_but"
-                    android:background="@drawable/bg_rounded_chat_input"
+                    android:layout_marginBottom="@dimen/dp_topchat_14"
                     android:hint="@string/chat_edit_text"
+                    android:textColorHint="@color/Unify_N700_32"
                     android:inputType="textMultiLine"
                     android:maxLines="5"
+                    android:minHeight="@dimen/dp_topchat_40"
                     android:paddingStart="@dimen/spacing_lvl7"
-                    android:paddingLeft="@dimen/spacing_lvl7"
-                    android:paddingTop="@dimen/dp_topchat_9"
+                    android:paddingTop="@dimen/dp_topchat_10"
                     android:paddingEnd="@dimen/spacing_lvl8"
-                    android:paddingRight="@dimen/spacing_lvl8"
-                    android:paddingBottom="@dimen/dp_topchat_11"
+                    android:paddingBottom="@dimen/dp_topchat_10"
                     android:textSize="@dimen/fontSize_lvl4"
+                    android:textColor="@color/Unify_N700_96"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/send_but"
+                    app:layout_constraintStart_toStartOf="parent"
                     tools:text="@tools:sample/lorem/random" />
 
                 <ImageView
                     android:id="@+id/iv_chat_sticker"
                     android:layout_width="@dimen/spacing_lvl7"
                     android:layout_height="@dimen/spacing_lvl7"
-                    android:layout_alignStart="@+id/new_comment"
-                    android:layout_alignLeft="@+id/new_comment"
-                    android:layout_alignBottom="@+id/new_comment"
                     android:layout_marginBottom="@dimen/dp_topchat_1"
                     android:padding="@dimen/spacing_lvl3"
+                    app:layout_constraintBottom_toBottomOf="@+id/new_comment"
+                    app:layout_constraintStart_toStartOf="@+id/new_comment"
                     app:srcCompat="@drawable/ic_topchat_sticker" />
 
                 <ImageView
                     android:id="@+id/iv_chat_menu"
                     android:layout_width="@dimen/spacing_lvl7"
                     android:layout_height="@dimen/spacing_lvl7"
-                    android:layout_alignEnd="@+id/new_comment"
-                    android:layout_alignRight="@+id/new_comment"
-                    android:layout_alignBottom="@+id/new_comment"
                     android:layout_marginEnd="@dimen/spacing_lvl1"
-                    android:layout_marginRight="@dimen/spacing_lvl1"
                     android:layout_marginBottom="@dimen/dp_topchat_1"
                     android:padding="@dimen/spacing_lvl3"
+                    app:layout_constraintBottom_toBottomOf="@+id/new_comment"
+                    app:layout_constraintEnd_toEndOf="@+id/new_comment"
                     app:srcCompat="@drawable/ic_add_grey_chat_common" />
 
-            </RelativeLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <com.tokopedia.topchat.chatroom.view.custom.ChatMenuView
                 android:id="@+id/fl_chat_menu"

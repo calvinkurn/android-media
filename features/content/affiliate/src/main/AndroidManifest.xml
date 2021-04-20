@@ -11,7 +11,7 @@
             android:windowSoftInputMode="stateAlwaysHidden">
 
             <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
+                <action android:name="com.tokopedia.internal.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
@@ -40,7 +40,7 @@
             android:windowSoftInputMode="stateAlwaysHidden|adjustPan" >
             <intent-filter>
 
-                <action android:name="android.intent.action.VIEW" />
+                <action android:name="com.tokopedia.internal.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data
@@ -63,7 +63,7 @@
             android:windowSoftInputMode="stateAlwaysHidden" >
             <intent-filter>
 
-                <action android:name="android.intent.action.VIEW" />
+                <action android:name="com.tokopedia.internal.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data
@@ -80,7 +80,7 @@
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity android:name=".feature.tracking.view.activity.AffiliateTrackingActivity" >
             <intent-filter android:order="1">
-                <action android:name="android.intent.action.VIEW" />
+                <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.BROWSABLE" />
                 <category android:name="android.intent.category.DEFAULT" />

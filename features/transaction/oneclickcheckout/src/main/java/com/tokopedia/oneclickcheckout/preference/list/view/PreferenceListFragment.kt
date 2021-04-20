@@ -1,7 +1,6 @@
 package com.tokopedia.oneclickcheckout.preference.list.view
 
 import android.content.Intent
-import android.graphics.Color
 import android.graphics.Rect
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -11,9 +10,7 @@ import android.widget.ImageView
 import androidx.appcompat.app.AlertDialog
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.Group
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -54,7 +51,7 @@ class PreferenceListFragment : BaseDaggerFragment(), PreferenceListAdapter.Prefe
     lateinit var preferenceListAnalytics: PreferenceListAnalytics
 
     private val viewModel: PreferenceListViewModel by lazy {
-        ViewModelProviders.of(this, viewModelFactory)[PreferenceListViewModel::class.java]
+        ViewModelProvider(this, viewModelFactory)[PreferenceListViewModel::class.java]
     }
 
     private val adapter = PreferenceListAdapter(this)
@@ -71,6 +68,8 @@ class PreferenceListFragment : BaseDaggerFragment(), PreferenceListAdapter.Prefe
     private val emptyStateGroup by lazy { view?.findViewById<Group>(R.id.group_empty_state) }
 
     private val globalError by lazy { view?.findViewById<GlobalError>(R.id.global_error) }
+
+    private var isNewLayout = false
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -106,7 +105,7 @@ class PreferenceListFragment : BaseDaggerFragment(), PreferenceListAdapter.Prefe
     }
 
     private fun initViewModel() {
-        viewModel.preferenceList.observe(viewLifecycleOwner, Observer {
+        viewModel.preferenceList.observe(viewLifecycleOwner, {
             when (it) {
                 is OccState.Success -> {
                     swipeRefreshLayout?.isRefreshing = false
@@ -114,27 +113,34 @@ class PreferenceListFragment : BaseDaggerFragment(), PreferenceListAdapter.Prefe
                     mainContent?.visible()
                     val profiles = it.data.profiles
                     val maxProfiles = it.data.maxProfile
-                    adapter.submitList(profiles)
+                    isNewLayout = it.data.enableOccRevamp
+                    adapter.submitList(profiles, isNewLayout)
                     if (profiles.isEmpty()) {
                         ImageHandler.LoadImage(ivEmptyState, EMPTY_STATE_PREFERENCE_PICT)
-                        tvHeaderEmptyState?.setText(R.string.preference_list_empty_header)
-                        tvSubtitleEmptyState?.setText(R.string.preference_list_empty_subtitle)
+                        if (isNewLayout) {
+                            tvHeaderEmptyState?.setText(R.string.new_preference_list_empty_header)
+                            tvSubtitleEmptyState?.setText(R.string.new_preference_list_empty_subtitle)
+                            buttonPreferenceListAction?.setText(R.string.new_add_first_preference)
+                        } else {
+                            tvHeaderEmptyState?.setText(R.string.preference_list_empty_header)
+                            tvSubtitleEmptyState?.setText(R.string.preference_list_empty_subtitle)
+                            buttonPreferenceListAction?.setText(R.string.add_first_preference)
+                        }
                         emptyStateGroup?.visible()
                         preferenceList?.gone()
                         buttonPreferenceListAction?.isEnabled = true
-                        buttonPreferenceListAction?.setText(R.string.add_first_preference)
                         buttonPreferenceListAction?.visible()
                     } else if (profiles.isNotEmpty() && profiles.size >= maxProfiles) {
                         emptyStateGroup?.gone()
                         preferenceList?.visible()
-                        buttonPreferenceListAction?.setText(R.string.add_preference)
+                        buttonPreferenceListAction?.setText(if (isNewLayout) R.string.lbl_add_new_occ_profile_name else R.string.add_preference)
                         buttonPreferenceListAction?.isEnabled = false
                         buttonPreferenceListAction?.visible()
                     } else {
                         emptyStateGroup?.gone()
                         preferenceList?.visible()
                         buttonPreferenceListAction?.isEnabled = true
-                        buttonPreferenceListAction?.setText(R.string.add_preference)
+                        buttonPreferenceListAction?.setText(if (isNewLayout) R.string.lbl_add_new_occ_profile_name else R.string.add_preference)
                         buttonPreferenceListAction?.visible()
                     }
                 }
@@ -147,7 +153,7 @@ class PreferenceListFragment : BaseDaggerFragment(), PreferenceListAdapter.Prefe
                 else -> swipeRefreshLayout?.isRefreshing = true
             }
         })
-        viewModel.setDefaultPreference.observe(viewLifecycleOwner, Observer {
+        viewModel.setDefaultPreference.observe(viewLifecycleOwner, {
             when (it) {
                 is OccState.Success -> {
                     progressDialog?.dismiss()
@@ -225,7 +231,9 @@ class PreferenceListFragment : BaseDaggerFragment(), PreferenceListAdapter.Prefe
     }
 
     private fun initViews() {
-        activity?.window?.decorView?.setBackgroundColor(Color.WHITE)
+        context?.let {
+            activity?.window?.decorView?.setBackgroundColor(androidx.core.content.ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+        }
         buttonPreferenceListAction?.setOnClickListener {
             preferenceListAnalytics.eventAddPreferenceFromPurchaseSetting()
             val profileNumber = adapter.itemCount + 1
@@ -240,21 +248,23 @@ class PreferenceListFragment : BaseDaggerFragment(), PreferenceListAdapter.Prefe
         preferenceList?.addItemDecoration(object : RecyclerView.ItemDecoration() {
             override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
                 super.getItemOffsets(outRect, view, parent, state)
-                outRect.left = context?.resources?.getDimension(com.tokopedia.design.R.dimen.dp_16)?.toInt()
+                outRect.left = context?.resources?.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_16)?.toInt()
                         ?: 0
-                outRect.right = context?.resources?.getDimension(com.tokopedia.design.R.dimen.dp_16)?.toInt()
+                outRect.right = context?.resources?.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_16)?.toInt()
                         ?: 0
-                outRect.top = context?.resources?.getDimension(com.tokopedia.design.R.dimen.dp_8)?.toInt()
+                outRect.top = context?.resources?.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_8)?.toInt()
                         ?: 0
-                outRect.bottom = context?.resources?.getDimension(com.tokopedia.design.R.dimen.dp_8)?.toInt()
+                outRect.bottom = context?.resources?.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_8)?.toInt()
                         ?: 0
             }
         })
     }
 
-    override fun onPreferenceSelected(preference: ProfilesItemModel) {
-        preferenceListAnalytics.eventClickJadikanPilihanUtama()
-        viewModel.changeDefaultPreference(preference)
+    override fun onPreferenceSelected(preference: ProfilesItemModel, isMainProfile: Boolean) {
+        if (!isMainProfile) {
+            preferenceListAnalytics.eventClickJadikanPilihanUtama()
+            viewModel.changeDefaultPreference(preference)
+        }
     }
 
     override fun onPreferenceEditClicked(preference: ProfilesItemModel, position: Int, profileSize: Int) {
@@ -266,6 +276,7 @@ class PreferenceListFragment : BaseDaggerFragment(), PreferenceListAdapter.Prefe
             putExtra(PreferenceEditActivity.EXTRA_ADDRESS_ID, preference.addressModel.addressId)
             putExtra(PreferenceEditActivity.EXTRA_SHIPPING_ID, preference.shipmentModel.serviceId)
             putExtra(PreferenceEditActivity.EXTRA_GATEWAY_CODE, preference.paymentModel.gatewayCode)
+            putExtra(PreferenceEditActivity.EXTRA_IS_NEW_FLOW, isNewLayout)
         }
         startActivityForResult(intent, REQUEST_EDIT_PREFERENCE)
     }

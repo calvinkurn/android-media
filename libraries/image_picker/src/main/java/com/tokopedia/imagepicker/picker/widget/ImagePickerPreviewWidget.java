@@ -83,9 +83,9 @@ public class ImagePickerPreviewWidget extends FrameLayout implements ImagePicker
         this.onImagePickerThumbnailListWidgetListener = onImagePickerThumbnailListWidgetListener;
     }
 
-    public void setData(List<String> imagePathList, @StringRes int primaryImageStringRes,
+    public void setData(List<String> imagePathList, boolean usePrimaryString,
                         List<Integer> placeholderDrawableList) {
-        imagePickerThumbnailAdapter.setData(imagePathList, primaryImageStringRes, placeholderDrawableList);
+        imagePickerThumbnailAdapter.setData(imagePathList, usePrimaryString, placeholderDrawableList);
     }
 
     public void addData(String imagePath) {

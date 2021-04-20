@@ -17,7 +17,7 @@
         tools:node="remove"/>
     <uses-permission
         android:name="android.permission.READ_CALL_LOG"
-        tools:node="remove"/>
+        tools:node="merge"/>
     <uses-permission
         android:name="android.permission.WRITE_CONTACTS"
         tools:node="remove"/>
@@ -48,6 +48,7 @@
         android:supportsRtl="true"
         android:fullBackupContent="@xml/backup_descriptor"
         android:theme="@style/Theme.Tokopedia3"
+        android:requestLegacyExternalStorage="true"
         tools:replace="name,android:label,android:hasCode,android:fullBackupContent,android:allowBackup">
         <meta-data android:name="com.facebook.sdk.AutoLogAppEventsEnabled"
            android:value="false"/>
@@ -57,12 +58,8 @@
             android:name="com.google.android.gms.ads.AD_MANAGER_APP"
             android:value="true"/>
         <meta-data
-            android:name="com.crashlytics.ApiKey"
-            android:value="d02324f74e70ffcd2dc00ab722d32baecf1884b4"
-            tools:replace="android:value"/>
-        <meta-data
             android:name="APP_ID"
-            android:value="@string/key_moengage"
+            android:value="@string/moengage_key_ma"
             tools:replace="android:value"/>
         <meta-data
             android:name="SENDER_ID"
@@ -88,144 +85,40 @@
             tools:replace="android:value"/>
         <meta-data
             android:name="HANSEL_APP_ID"
-            android:value="JM8LWF8S5B951JQOAZAFRNX14"/>
+            android:value="@string/hansel_app_id_ma"/>
         <meta-data
             android:name="HANSEL_APP_KEY"
-            android:value="8CDH74MC9EZLPFIHNNJPT39ERKS5BODETYX2LBFQ83ECSV86WY"/>
+            android:value="@string/hansel_app_key_ma"/>
         <meta-data android:name="com.google.android.actions" android:resource="@xml/actions" />
         <meta-data
+            tools:replace="android:value"
+            android:name="io.branch.sdk.BranchKey"
+            android:value="@string/branch_sdk_key_ma" />
+        <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="@string/GOOGLE_API_KEY" />
+            android:value="@string/google_goe_api_key_ma" />
+        <meta-data
+            android:name="com.facebook.sdk.ApplicationId"
+            android:value="@string/facebook_id_ma" />
         <uses-library
             android:name="org.apache.http.legacy"
             android:required="false" />
-        <activity
-            android:name=".ConsumerSplashScreen"
-            android:label="@string/app_name"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustPan"
-            android:theme="@style/Theme.Tokopedia3.CustomerApp.Launcher">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-
-                <category android:name="android.intent.category.LAUNCHER"/>
-            </intent-filter>
-            <intent-filter>
-                <action android:name="android.intent.action.CREATE_SHORTCUT"/>
-            </intent-filter>
-            <intent-filter android:autoVerify="true">
-                <action android:name="android.intent.action.VIEW"/>
-
-                <category android:name="android.intent.category.DEFAULT"/>
-                <category android:name="android.intent.category.BROWSABLE"/>
-
-                <data
-                    android:host="tokopedia.link"
-                    android:scheme="https"/>
-                <data
-                    android:host="tokopedia-alternate.app.link"
-                    android:scheme="https"/>
-                <data
-                    android:host="tokopedia.app.link"
-                    android:scheme="https"/>
-            </intent-filter>
-        </activity>
-
-        <activity
-            android:name=".FallbackActivity"
-            android:label="@string/app_name"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.Tokopedia3.PlainGreen">
-        </activity>
-
-        <activity
-            android:name=".deeplink.activity.DeepLinkActivity"
-            android:hardwareAccelerated="true"
-            android:label="@string/title_activity_deep_link"
-            android:theme="@style/Theme.White"
-            android:screenOrientation="portrait">
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW"/>
-
-                <category android:name="android.intent.category.DEFAULT"/>
-                <category android:name="android.intent.category.BROWSABLE"/>
-
-                <data
-                    android:host="www.tokopedia.com"
-                    android:pathPattern=".*"
-                    android:scheme="https"/>
-                <data
-                    android:host="m.tokopedia.com"
-                    android:pathPattern=".*"
-                    android:scheme="https"/>
-
-                <data
-                    android:host="tokopedia.by"
-                    android:pathPattern="/.*"
-                    android:scheme="https" />
-                <data
-                    android:host="tokopedia.by"
-                    android:pathPattern="/.*"
-                    android:scheme="http" />
-
-            </intent-filter>
-
-        </activity>
 
         <meta-data
             android:name="GTM_RESOURCE"
             android:resource="@raw/gtm_consumer"/>
         <meta-data
             android:name="GTM_ID"
-            android:value="@string/key_gtm"/>
+            android:value="@string/gtm_id_ma"/>
         <meta-data
             android:name="GA_ID"
-            android:value="@string/key_ga"/>
+            android:value="@string/ga_id_ma"/>
         <meta-data
             android:name="APPSFLYER_KEY"
-            android:value="@string/key_appsflyer"/>
-        <activity android:name="com.tokopedia.navigation.presentation.activity.MainParentActivity"
-            android:exported="true"
-            android:label="Tokopedia"
-            android:launchMode="singleTask"
-            android:theme="@style/TokopediaTransparentStatus"
-            android:windowSoftInputMode="adjustPan"
-            android:screenOrientation="portrait">
+            android:value="@string/appsflyer_key_ma"/>
 
-            <meta-data
-                android:name="APPS_HOME"
-                android:value="true"/>
+        <meta-data android:name="asset_statements" android:resource="@string/asset_statements" />
 
-            <intent-filter android:autoVerify="true">
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <data
-                    android:scheme="@string/internal_scheme"
-                    android:host="@string/host_home"
-                    android:path="@string/path_navigation"/>
-            </intent-filter>
-
-        </activity>
-        <activity
-            android:name=".goldmerchant.GoldMerchantRedirectActivity"
-            android:label="@string/label_gold_merchant"
-            android:screenOrientation="portrait" >
-            <intent-filter android:autoVerify="true">
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <data
-                    android:scheme="@string/internal_scheme"
-                    android:host="@string/host_marketplace"
-                    android:path="@string/path_gold_merchant_redirect"/>
-            </intent-filter>
-        </activity>
-        <activity
-            android:name="com.tokopedia.feedplus.view.activity.FeedPlusDetailActivity"
-            android:label="@string/title_detail_feed"
-            android:screenOrientation="portrait" />
         <provider
             android:name="com.facebook.internal.FacebookInitProvider"
             android:authorities="${applicationId}.FacebookInitProvider"
@@ -237,57 +130,6 @@
             android:authorities="com.facebook.app.FacebookContentProviderOQcSB25ec2f92263c41b5a3d10152ace7888e"
             android:exported="true"/>
 
-        <activity
-            android:name=".deeplink.DeeplinkHandlerActivity"
-            android:screenOrientation="portrait">
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW"/>
-
-                <category android:name="android.intent.category.DEFAULT"/>
-                <category android:name="android.intent.category.BROWSABLE"/>
-
-                <data android:scheme="tokopedia"/>
-                <data android:scheme="sellerapp"/>
-            </intent-filter>
-        </activity>
-
-        <activity
-            android:name="com.tokopedia.otp.phoneverification.view.activity.RidePhoneNumberVerificationActivity"
-            android:label="@string/title_activity_phone_verification"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize" />
-
-        <service
-            android:name=".home.feed.data.source.cloud.AddFavoriteShopService"
-            android:exported="false"/>
-
-        <activity
-            android:name=".redirect.RedirectCreateShopActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.Tokopedia3" >
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <data
-                    android:scheme="@string/internal_scheme"
-                    android:host="@string/host_merchant"
-                    android:path="@string/path_redirect_create_shop"/>
-            </intent-filter>
-        </activity>
-        <activity
-            android:name=".home.ReactNativeDiscoveryActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".thankyou.view.ReactNativeThankYouPageActivity"
-            android:screenOrientation="portrait" />
-        <activity android:name=".home.ReactNativeSubPromoPageActivity"
-            android:screenOrientation="portrait" />
-        <service
-            android:name=".thankyou.view.ThanksTrackerService"
-            android:permission="android.permission.BIND_JOB_SERVICE"
-            android:exported="false"/>
 
         <provider
             android:name="androidx.core.content.FileProvider"
@@ -301,45 +143,17 @@
                 android:resource="@xml/filepaths" />
         </provider>
 
-        <activity
-            android:name=".home.TkpdYoutubeVideoActivity"
-            android:screenOrientation="sensor"/>
-
-        <activity android:name=".nfc.NFCHandlerActivity"
-            android:theme="@style/Theme.White" >
-            <intent-filter>
-                <action android:name="android.nfc.action.TECH_DISCOVERED" />
-            </intent-filter>
-            <meta-data
-                android:name="android.nfc.action.TECH_DISCOVERED"
-                android:resource="@xml/nfc_tech_filter" />
-        </activity>
-
-
-        <receiver
-            android:name="com.tokopedia.tkpd.utils.NotificationBroadcast">
-            <intent-filter>
-                <action android:name="com.tokopedia.tkpd.utils.delete" />
-            </intent-filter>
-        </receiver>
-
         <!--  Add preview activity. -->
         <activity
             android:name="com.google.android.gms.tagmanager.PreviewActivity"
             android:noHistory="true">  <!-- optional, removes the previewActivity from the activity stack. -->
             <intent-filter>
                 <data android:scheme="com.tokopedia.tkpd" />
-                <action android:name="android.intent.action.VIEW" />
+                <action android:name="com.tokopedia.internal.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE"/>
             </intent-filter>
         </activity>
-
-        <receiver android:name=".receiver.AppMediaButtonReceiver" >
-            <intent-filter>
-                <action android:name="android.intent.action.MEDIA_BUTTON" />
-            </intent-filter>
-        </receiver>
       
     </application>
 

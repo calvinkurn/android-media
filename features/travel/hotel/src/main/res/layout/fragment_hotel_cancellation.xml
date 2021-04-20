@@ -2,9 +2,10 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/hotelCancellationScrollView"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white">
+    android:background="@color/Unify_N0">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -22,12 +23,12 @@
             android:id="@+id/hotel_cancellation_room_duration_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/Neutral_N0" />
+            android:background="@color/Unify_N0" />
 
         <View
             android:layout_width="match_parent"
             android:layout_height="@dimen/hotel_6dp"
-            android:background="@color/Neutral_N50" />
+            android:background="@color/Unify_N50" />
 
         <com.tokopedia.hotel.cancellation.presentation.widget.HotelCancellationPolicyWidget
             android:id="@+id/hotel_cancellation_policy_widget"
@@ -37,7 +38,7 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="@dimen/hotel_6dp"
-            android:background="@color/Neutral_N50" />
+            android:background="@color/Unify_N50" />
 
         <include layout="@layout/layout_hotel_cancellation_refund_detail" />
 
@@ -59,7 +60,7 @@
             android:layout_marginRight="@dimen/layout_lvl2"
             android:layout_marginBottom="@dimen/layout_lvl2"
             android:gravity="center"
-            android:textColor="@color/Neutral_N700_68"
+            android:textColor="@color/Unify_N700_68"
             app:typographyType="body_3"
             tools:text="alawlkndjanfjenfjrbhfbrhgbhgb" />
 

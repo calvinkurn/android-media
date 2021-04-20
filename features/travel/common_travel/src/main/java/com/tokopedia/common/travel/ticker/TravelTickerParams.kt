@@ -6,9 +6,9 @@ package com.tokopedia.common.travel.ticker
 
 class TravelTickerInstanceId {
     companion object {
-        val FLIGHT = "flights"
-        val KAI = "kai"
-        val HOTEL = "hotel"
+        val FLIGHT = "FLIGHT"
+        val KAI = "TRAIN"
+        val HOTEL = "HOTEL"
     }
 }
 

@@ -6,6 +6,10 @@ import com.tokopedia.entertainment.pdp.EventJsonMapper.getJson
 import com.tokopedia.entertainment.pdp.data.EventContentByIdEntity
 import com.tokopedia.entertainment.pdp.data.EventPDPContentCombined
 import com.tokopedia.entertainment.pdp.data.EventProductDetailEntity
+import com.tokopedia.entertainment.pdp.data.checkout.AdditionalType
+import com.tokopedia.entertainment.pdp.data.checkout.EventCheckoutAdditionalData
+import com.tokopedia.entertainment.pdp.data.checkout.mapper.EventFormMapper
+import com.tokopedia.entertainment.pdp.data.checkout.mapper.EventPackageMapper
 import com.tokopedia.entertainment.pdp.usecase.EventProductDetailUseCase
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.usecase.coroutines.Fail
@@ -51,20 +55,76 @@ class EventPDPFormViewModelTest {
     }
 
     @Test
-    fun `ProductdetailFormData_SuccessShowProduct_ShowActualResult`(){
+    fun `ProductdetailFormData_SuccessShowFormItem_ShowActualResult`(){
         //given
         val contentMock = Gson().fromJson(getJson("content_mock.json"), EventContentByIdEntity::class.java)
         val pdpMock = Gson().fromJson(getJson("pdp_mock.json"), EventProductDetailEntity::class.java)
+        val eventCheckoutAdditionalData = EventCheckoutAdditionalData(
+                additionalType = AdditionalType.ITEM_UNFILL,
+                idItem = "46197",
+                idItemMap = "46197",
+                idPackage = "2104",
+                position = 0,
+                titleItem = "Youth (0-6) 1")
+
+        val mapperData = EventFormMapper.eventFormMapper(pdpMock.eventProductDetail.productDetailData,eventCheckoutAdditionalData)
 
         coEvery {
             eventProductDetailUseCase.executeUseCase("", "", false, "")
         } returns Success(EventPDPContentCombined(contentMock, pdpMock))
 
         //when
-        eventPDPFormViewModel.getData("","","")
+        eventPDPFormViewModel.getData("","","", eventCheckoutAdditionalData)
 
         //then
-        assertEquals(eventPDPFormViewModel.mFormData.value, pdpMock.eventProductDetail.productDetailData.forms)
+        assertEquals(eventPDPFormViewModel.mFormData.value, mapperData)
+    }
+
+    @Test
+    fun `ProductdetailFormData_SuccessShowFormPackage_ShowActualResult`(){
+        //given
+        val contentMock = Gson().fromJson(getJson("content_mock.json"), EventContentByIdEntity::class.java)
+        val pdpMock = Gson().fromJson(getJson("pdp_mock.json"), EventProductDetailEntity::class.java)
+        val eventCheckoutAdditionalData = EventCheckoutAdditionalData(
+                additionalType = AdditionalType.PACKAGE_UNFILL,
+                idItem = "46197",
+                idItemMap = "46197",
+                idPackage = "2104",
+                position = 0,
+                titleItem = "Youth (0-6) 1")
+
+        val mapperData = EventFormMapper.eventFormMapper(pdpMock.eventProductDetail.productDetailData,eventCheckoutAdditionalData)
+
+        coEvery {
+            eventProductDetailUseCase.executeUseCase("", "", false, "")
+        } returns Success(EventPDPContentCombined(contentMock, pdpMock))
+
+        //when
+        eventPDPFormViewModel.getData("","","", eventCheckoutAdditionalData)
+
+        //then
+        assertEquals(eventPDPFormViewModel.mFormData.value, mapperData)
+    }
+
+    @Test
+    fun `ProductdetailFormData_SuccessShowForm_ShowActualResult`(){
+        //given
+        val contentMock = Gson().fromJson(getJson("content_mock.json"), EventContentByIdEntity::class.java)
+        val pdpMock = Gson().fromJson(getJson("pdp_mock.json"), EventProductDetailEntity::class.java)
+        val eventCheckoutAdditionalData = EventCheckoutAdditionalData(
+                additionalType = AdditionalType.NULL_DATA)
+
+        val mapperData = EventFormMapper.eventFormMapper(pdpMock.eventProductDetail.productDetailData,eventCheckoutAdditionalData)
+
+        coEvery {
+            eventProductDetailUseCase.executeUseCase("", "", false, "")
+        } returns Success(EventPDPContentCombined(contentMock, pdpMock))
+
+        //when
+        eventPDPFormViewModel.getData("","","", eventCheckoutAdditionalData)
+
+        //then
+        assertEquals(eventPDPFormViewModel.mFormData.value, mapperData)
     }
 
     @Test
@@ -72,9 +132,14 @@ class EventPDPFormViewModelTest {
         //given
         val error = Throwable("Error Form Data")
         coEvery { eventProductDetailUseCase.executeUseCase("", "", false, "") } returns Fail(error)
+        val eventCheckoutAdditionalData = EventCheckoutAdditionalData(
+                additionalType = AdditionalType.ITEM_UNFILL,
+                idPackage = "2104",
+                position = 0,
+                titleItem = "Youth (0-6) 1")
 
         //when
-        eventPDPFormViewModel.getData("","","")
+        eventPDPFormViewModel.getData("","","", eventCheckoutAdditionalData)
 
         //then
         assertNull(eventPDPFormViewModel.mFormData.value)

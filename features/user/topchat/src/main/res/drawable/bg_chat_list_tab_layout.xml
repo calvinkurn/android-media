@@ -5,10 +5,10 @@
         android:right="-10dp"
         android:top="-10dp">
         <shape android:shape="rectangle">
-            <solid android:color="@android:color/white" />
+            <solid android:color="@color/Unify_N0" />
             <stroke
                 android:width="@dimen/dp_topchat_1"
-                android:color="@color/grey_button" />
+                android:color="@color/Unify_N75" />
         </shape>
     </item>
 

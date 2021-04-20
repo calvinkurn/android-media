@@ -1,12 +1,20 @@
 apply plugin: 'com.android.library'
-apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 
+android {
+    compileSdkVersion rootProject.ext.compileSdkVersion
 
-project.ext {
-    artifactId = 'analytics-debugger-noop'
-    groupId = 'com.tokopedia.library'
-    versionName = "0.0.2"
-    artifactName = "analytics_debugger_noop-release"
+    defaultConfig {
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 }
 
-apply from: '../../publish_local.gradle'
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation rootProject.ext.testDependencies.androidAnnotation
+}

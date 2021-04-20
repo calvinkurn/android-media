@@ -1,7 +1,7 @@
 query {
   status
   isAuthenticated
-  profile {
+  profile(skipCache: true) {
     name
     full_name
     completion
@@ -69,31 +69,6 @@ query {
       sumUserCard
       sumUserCardStr
     }
-  vcc_user_status {
-      status
-      redirection_url
-      message_header
-      message_body
-      message_button_name
-      message_url
-      icon
-      title
-      body
-  }
-  vcc_user_balance {
-    data{
-      vcc_id
-      vcc_number
-      available_balance
-      credit_limit
-      outstanding_balance
-      available_balance_text
-      credit_limit_text
-      currency
-      lender_name
-      vcc_expire_at
-    }
-  }
   openDebitSettings {
       data {
         redirectURL
@@ -102,5 +77,13 @@ query {
    balance {
            buyer_usable
            seller_usable
+   }
+   uohOrderCount {
+           onProcess
+           onProcessText
+           sedangBerlangsung
+           sedangBerlangsungText
+           activeTickets
+           activeTicketsText
    }
 }

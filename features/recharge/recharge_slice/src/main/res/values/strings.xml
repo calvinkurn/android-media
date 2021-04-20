@@ -1,14 +1,15 @@
 <resources>
     <string name="app_name">recharge_slice</string>
-    <string name="tokopedia_scheme">tokopedia</string>
     <string name="recharge_slice_host">recharge_slice</string>
     <string name="main_path">/main</string>
     <string name="slice_loading">Loading...</string>
     <string name="slice_daftar_rekomendasi">Daftar Rekomendasi</string>
-    <string name="slice_pembelian_terakhir">Pembelian Terakhir :</string>
+    <string name="slice_rekomendasi">Rekomendasi :</string>
     <string name="slice_search_title">SEARCH</string>
     <string name="slice_track_timber_impression">P2#ACTION_SLICE_RECHARGE_IMPRESSION#</string>
     <string name="slice_not_login">Anda Belum Login</string>
     <string name="slice_not_access">Layanan sedang tidak tersedia</string>
+    <string name="slice_empty_data">Data Anda Kosong</string>
     <string name="slice_user_not_login">User Not Login</string>
+    <string name="recharge_slice_main_path">/main</string>
 </resources>

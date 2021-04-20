@@ -4,6 +4,16 @@ import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.search.result.domain.model.AceSearchProductModel
 import com.tokopedia.search.result.domain.model.ProductTopAdsModel
+import com.tokopedia.usecase.RequestParams
+
+internal fun graphqlRequests(request: MutableList<GraphqlRequest>.() -> Unit) =
+        mutableListOf<GraphqlRequest>().apply {
+                request()
+        }
+
+internal fun MutableList<GraphqlRequest>.addAceSearchProductRequest(params: String) {
+        add(createAceSearchProductRequest(params))
+}
 
 internal fun createAceSearchProductRequest(params: String) =
         GraphqlRequest(
@@ -11,6 +21,12 @@ internal fun createAceSearchProductRequest(params: String) =
                 AceSearchProductModel::class.java,
                 mapOf(SearchConstant.GQL.KEY_PARAMS to params)
         )
+
+internal fun MutableList<GraphqlRequest>.addProductAdsRequest(requestParams: RequestParams, params: String) {
+        if (!requestParams.isSkipProductAds()) {
+                add(createTopAdsProductRequest(params = params))
+        }
+}
 
 internal fun createTopAdsProductRequest(params: String) =
         GraphqlRequest(
@@ -42,6 +58,12 @@ private const val ACE_SEARCH_PRODUCT_QUERY = """
                     query
                     typeId
                 }
+                banner {
+                    position
+                    text
+                    applink
+                    imageUrl
+                }
                 related {
                     relatedKeyword
                     position
@@ -54,12 +76,17 @@ private const val ACE_SEARCH_PRODUCT_QUERY = """
                             name
                             price
                             imageUrl
-                            rating
-                            countReview
                             url
                             applink
                             priceStr
                             wishlist
+                            ratingAverage
+                            labelGroups {
+                                title
+                                position
+                                type
+                                url
+                            }
                             shop {
                                 city
                             }
@@ -70,6 +97,12 @@ private const val ACE_SEARCH_PRODUCT_QUERY = """
                             freeOngkir {
                                 isActive
                                 imgUrl
+                            }
+                            ads {
+                                id
+                                productClickUrl
+                                productWishlistUrl
+                                productViewUrl
                             }
                         }
                     }
@@ -92,6 +125,9 @@ private const val ACE_SEARCH_PRODUCT_QUERY = """
                         id
                         name
                         city
+                        url
+                        isOfficial
+                        isPowerBadge
                     }
                     freeOngkir {
                         isActive
@@ -106,19 +142,26 @@ private const val ACE_SEARCH_PRODUCT_QUERY = """
                     categoryId
                     categoryName
                     categoryBreadcrumb
-                    rating
                     ratingAverage
-                    countReview
                     priceInt
                     originalPrice
                     discountPercentage
                     warehouseIdDefault
                     boosterList
                     source_engine
+                    minOrder
+                    url
                     labelGroups {
                         title
                         position
                         type
+                        url
+                    }
+                    labelGroupVariant {
+                        title
+                        type
+                        type_variant
+                        hex_color
                     }
                     badges {
                         title
@@ -186,6 +229,8 @@ private const val TOPADS_PRODUCT_QUERY = """
                     product_cashback_rate
                     product_rating
                     product_rating_format
+                    product_item_sold_payment_verified
+                    product_minimum_order
                     free_ongkir {
                       is_active
                       img_url
@@ -198,6 +243,7 @@ private const val TOPADS_PRODUCT_QUERY = """
                         position
                         type
                         title
+                        url
                     }
                 }
                 shop{
@@ -213,6 +259,7 @@ private const val TOPADS_PRODUCT_QUERY = """
                     owner_id
                     is_owner
                     shop_is_official
+                    shop_rating_avg
                     badges {
                         title
                         image_url

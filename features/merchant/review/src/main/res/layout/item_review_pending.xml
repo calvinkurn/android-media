@@ -34,7 +34,7 @@
             android:layout_marginRight="@dimen/layout_lvl2"
             android:layout_marginTop="@dimen/spacing_lvl1"
             android:visibility="gone"
-            android:textColor="@color/Neutral_N700_96"
+            android:textColor="@color/Unify_N700_96"
             android:maxLines="1"
             android:ellipsize="end"
             app:typographyWeight="bold"
@@ -50,7 +50,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_lvl1"
             android:visibility="gone"
-            android:textColor="@color/Neutral_N700_96"
+            android:textColor="@color/Unify_N700_96"
             app:typographyWeight="reguler"
             app:typographyType="body_3"
             app:layout_constraintStart_toStartOf="@id/reviewPendingProductName"
@@ -64,7 +64,7 @@
             android:layout_marginTop="@dimen/dp_12"
             android:layout_marginStart="@dimen/dp_12"
             android:layout_marginLeft="@dimen/dp_12"
-            android:textColor="@color/Neutral_N700_68"
+            android:textColor="@color/Unify_N700_68"
             android:visibility="gone"
             app:typographyWeight="reguler"
             app:typographyType="body_3"
@@ -94,6 +94,18 @@
             app:layout_constraintBottom_toBottomOf="@id/reviewPendingStars"
             app:notificationType="none_type"
             app:layout_constraintEnd_toEndOf="parent"
+            tools:visibility="visible"/>
+
+        <com.tokopedia.unifycomponents.Label
+            android:id="@+id/reviewPendingOvoIncentiveLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:layout_marginTop="@dimen/layout_lvl1"
+            app:labelType="general_light_green"
+            app:labelTitle="@string/incentive_review_pending"
+            app:layout_constraintTop_toBottomOf="@id/reviewPendingStars"
+            app:layout_constraintStart_toStartOf="@id/reviewPendingProductName"
             tools:visibility="visible"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

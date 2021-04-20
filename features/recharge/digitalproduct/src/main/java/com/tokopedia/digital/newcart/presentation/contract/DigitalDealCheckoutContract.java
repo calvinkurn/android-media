@@ -3,8 +3,8 @@ package com.tokopedia.digital.newcart.presentation.contract;
 import androidx.annotation.DimenRes;
 import androidx.annotation.StringRes;
 
-import com.tokopedia.common_digital.cart.view.model.checkout.CheckoutDataParameter;
 import com.tokopedia.digital.newcart.domain.model.DealProductViewModel;
+import com.tokopedia.digital.newcart.presentation.model.checkout.CheckoutDataParameter;
 
 import java.util.List;
 
@@ -54,8 +54,6 @@ public interface DigitalDealCheckoutContract {
         boolean isAlreadyCollapsByUser();
 
         void showPromoOnlyForTopUpAndBillMessage();
-
-        boolean isAlreadyShowOnBoard();
     }
 
     interface Presenter extends DigitalBaseContract.Presenter<View>{

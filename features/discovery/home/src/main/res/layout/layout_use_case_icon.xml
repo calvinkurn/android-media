@@ -22,7 +22,7 @@
         android:fontFamily="sans-serif"
         android:gravity="center_horizontal|top"
         android:lineSpacingExtra="4sp"
-        android:textColor="@color/black_70"
+        android:textColor="@color/Unify_N700_68"
         android:textSize="10sp"
         android:textStyle="normal"
         tools:text="Ajukan" />

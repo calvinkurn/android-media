@@ -50,10 +50,12 @@ class CouponListingStackedFragment : BaseDaggerFragment(), CouponListingStackedC
 
     private val mAdapter: CouponListStackedBaseAdapter by lazy { CouponListStackedBaseAdapter(presenter, this) }
     private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
+    private var redeemMessage: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         startPerformanceMonitoring()
         super.onCreate(savedInstanceState)
+        redeemMessage = arguments?.getString(CommonConstant.CATALOG_CLAIM_MESSAGE, "") ?: ""
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -65,6 +67,7 @@ class CouponListingStackedFragment : BaseDaggerFragment(), CouponListingStackedC
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initListener()
+        ToasterHelper.showCouponClaimToast(redeemMessage,view)
     }
 
     override fun onResume() {
@@ -110,8 +113,8 @@ class CouponListingStackedFragment : BaseDaggerFragment(), CouponListingStackedC
 
     private fun initViews(view: View) {
         mItemDecoration = SpacesItemDecoration(0,
-                activityContext!!.resources.getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_0),
-                activityContext!!.resources.getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_0))
+                activityContext!!.resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_0),
+                activityContext!!.resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_0))
         if (view.recycler_view_coupons.itemDecorationCount > 0) {
             view.recycler_view_coupons.removeItemDecoration(mItemDecoration!!)
         }
@@ -144,7 +147,7 @@ class CouponListingStackedFragment : BaseDaggerFragment(), CouponListingStackedC
         addInStackedObserverList()
     }
 
-    private fun addInStackedObserverList() = presenter.inStackedAdapter.observe(this, Observer {
+    private fun addInStackedObserverList() = presenter.inStackedAdapter.observe(viewLifecycleOwner, Observer {
         it?.let {
             showCouponInStackBottomSheet(it)
         }
@@ -208,6 +211,7 @@ class CouponListingStackedFragment : BaseDaggerFragment(), CouponListingStackedC
     override fun onError(pageNumber: Int) {
         if (pageNumber == 1) {
             container.displayedChild = CONTAINER_ERROR
+            server_error_view?.showErrorUi(NetworkDetector.isConnectedToInternet(appContext))
         }
         swipe_refresh_layout.isRefreshing = false
     }

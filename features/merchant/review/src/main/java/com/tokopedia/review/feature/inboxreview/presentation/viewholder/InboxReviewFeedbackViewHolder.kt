@@ -1,14 +1,12 @@
 package com.tokopedia.review.feature.inboxreview.presentation.viewholder
 
-import android.graphics.Color
 import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.review.R
 import com.tokopedia.review.common.util.PaddingItemDecoratingReview
 import com.tokopedia.review.common.util.getReviewStar
@@ -31,6 +29,7 @@ class InboxReviewFeedbackViewHolder(view: View,
     }
 
     private var reviewInboxFeedbackImageAdapter: InboxReviewFeedbackImageAdapter? = null
+    private val impressHolder = ImpressHolder()
 
     override fun bind(element: FeedbackInboxUiModel) {
         reviewInboxFeedbackImageAdapter = InboxReviewFeedbackImageAdapter(feedbackInboxReviewListener)
@@ -39,9 +38,9 @@ class InboxReviewFeedbackViewHolder(view: View,
                 feedbackInboxReviewListener.onBackgroundMarginIsReplied(element.replyText.isBlank())
             }
             if(element.replyText.isNotBlank()) {
-                containerInboxReview?.setBackgroundColor(Color.WHITE)
+                containerInboxReview?.setBackgroundColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
             } else {
-                containerInboxReview?.setBackgroundColor(ContextCompat.getColor(itemView.context, R.color.light_G100))
+                containerInboxReview?.setBackgroundColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G100))
             }
             tvProductTitle.text = element.productName
             ivRatingFeedback.setImageResource(getReviewStar(element.rating.orZero()))
@@ -54,6 +53,7 @@ class InboxReviewFeedbackViewHolder(view: View,
             setFeedbackReply(element)
             setupFeedbackReview(element.reviewText, element.feedbackId.toString(), element.productID.toString())
             setImageAttachment(element)
+            showKejarUlasanLabel(element.isKejarUlasan)
         }
     }
 
@@ -75,11 +75,11 @@ class InboxReviewFeedbackViewHolder(view: View,
             replyFeedbackState?.background = ContextCompat.getDrawable(context, R.drawable.rectangle_8)
             if (feedbackText.isEmpty()) {
                 tvFeedbackReview?.text = getString(R.string.review_not_found)
-                tvFeedbackReview?.setTextColor(ContextCompat.getColor(context, R.color.light_N700_44))
+                tvFeedbackReview?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_44))
             } else {
                 tvFeedbackReview?.apply {
-                    setTextColor(ContextCompat.getColor(context, R.color.light_N700_96))
-                    text = feedbackText.toReviewDescriptionFormatted(ProductFeedbackDetailViewHolder.FEEDBACK_MAX_CHAR)
+                    setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
+                    text = feedbackText.toReviewDescriptionFormatted(ProductFeedbackDetailViewHolder.FEEDBACK_MAX_CHAR, itemView.context)
                     setOnClickListener {
                         feedbackInboxReviewListener.onInFullReviewClicked(
                                 feedbackId,
@@ -105,7 +105,7 @@ class InboxReviewFeedbackViewHolder(view: View,
 
                 tvReplyComment?.text = element.replyText
                 tvReplyComment?.let {
-                    it.text = element.replyText.toReviewDescriptionFormatted(FEEDBACK_MAX_CHAR)
+                    it.text = element.replyText.toReviewDescriptionFormatted(FEEDBACK_MAX_CHAR, itemView.context)
                     it.setOnClickListener { _ ->
                         it.maxLines = Integer.MAX_VALUE
                         it.text = MethodChecker.fromHtml(element.replyText)
@@ -171,6 +171,17 @@ class InboxReviewFeedbackViewHolder(view: View,
             tvReplyUser?.show()
             tvReplyDate?.show()
             tvReplyComment?.show()
+        }
+    }
+
+    private fun showKejarUlasanLabel(isKejarUlasan: Boolean) {
+        with(itemView) {
+            kejarUlasanLabel?.showWithCondition(isKejarUlasan)
+            if(isKejarUlasan) {
+                itemView.kejarUlasanLabel.addOnImpressionListener(impressHolder) {
+                    feedbackInboxReviewListener.showCoachMark(kejarUlasanLabel)
+                }
+            }
         }
     }
 

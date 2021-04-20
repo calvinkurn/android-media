@@ -67,4 +67,16 @@
     <dimen name="new_margin_med">16dp</dimen>
 
     <dimen name="sp_11">11sp</dimen>
+
+
+    <dimen name="margin_vs">5dp</dimen>
+    <dimen name="padding_small">10dp</dimen>
+    <dimen name="img_thumb_m">50dp</dimen>
+    <dimen name="padding_med">20dp</dimen>
+    <dimen name="margin_vvs">3.3dp</dimen>
+    <dimen name="font_medium">16sp</dimen>
+    <dimen name="med_dp">20dp</dimen>
+    <dimen name="margin_med">20dp</dimen>
+    <dimen name="margin_small">10dp</dimen>
+    <dimen name="chat_widget_margin">236dp</dimen>
 </resources>

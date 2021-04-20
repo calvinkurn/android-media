@@ -89,15 +89,15 @@ public class DateUtilHelper {
         Calendar startCalendar = Calendar.getInstance();
         Calendar endCalendar = Calendar.getInstance();
         startCalendar.add(Calendar.DATE, -1);
-        periodRangeList.add(new PeriodRangeModel(startCalendar.getTimeInMillis(), startCalendar.getTimeInMillis(), context.getString(R.string.yesterday)));
+        periodRangeList.add(new PeriodRangeModel(startCalendar.getTimeInMillis(), startCalendar.getTimeInMillis(), context.getString(com.tokopedia.datepicker.range.R.string.yesterday)));
         startCalendar = Calendar.getInstance();
         startCalendar.setTimeInMillis(endCalendar.getTimeInMillis());
         startCalendar.add(Calendar.DATE, -DatePickerConstant.DIFF_ONE_WEEK);
-        periodRangeList.add(new PeriodRangeModel(startCalendar.getTimeInMillis(), endCalendar.getTimeInMillis(), context.getString(R.string.seven_days_ago)));
+        periodRangeList.add(new PeriodRangeModel(startCalendar.getTimeInMillis(), endCalendar.getTimeInMillis(), context.getString(com.tokopedia.datepicker.range.R.string.seven_days_ago)));
         startCalendar = Calendar.getInstance();
         startCalendar.setTimeInMillis(endCalendar.getTimeInMillis());
         startCalendar.add(Calendar.DATE, -DatePickerConstant.DIFF_ONE_MONTH);
-        periodRangeList.add(new PeriodRangeModel(startCalendar.getTimeInMillis(), endCalendar.getTimeInMillis(), context.getString(R.string.thirty_days_ago)));
+        periodRangeList.add(new PeriodRangeModel(startCalendar.getTimeInMillis(), endCalendar.getTimeInMillis(), context.getString(com.tokopedia.datepicker.range.R.string.thirty_days_ago)));
         return periodRangeList;
     }
 

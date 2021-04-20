@@ -12,7 +12,7 @@
         android:id="@+id/smart_bills_item_content_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white"
+        android:background="@color/Unify_N0"
         android:gravity="center_vertical"
         android:orientation="horizontal"
         android:paddingTop="@dimen/smart_bills_item_padding"
@@ -35,10 +35,12 @@
             app:cardCornerRadius="@dimen/smart_bills_icon_corner_size">
 
             <ImageView
+                android:contentDescription="@string/smart_bills_action_bar_title"
                 android:id="@+id/iv_smart_bills_item_icon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center" />
+                android:layout_width="@dimen/spacing_lvl6"
+                android:layout_height="@dimen/spacing_lvl6"
+                android:layout_gravity="center"
+                android:layout_margin="@dimen/spacing_lvl2" />
 
         </androidx.cardview.widget.CardView>
 
@@ -57,23 +59,76 @@
                 app:typographyWeight="bold"
                 tools:text="Pascabayar" />
 
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/tv_smart_bills_item_description"
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/spacing_lvl1"
-                app:typographyType="body_3"
-                tools:text="081298587943 - Telkomsel" />
+                android:orientation="horizontal"
+                >
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/tv_smart_bills_item_description_bill_name"
+                    android:maxLines="1"
+                    android:maxWidth="@dimen/layout_lvl8"
+                    android:ellipsize="end"
+                    android:singleLine="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_lvl1"
+                    app:typographyType="body_3"
+                    tools:text="Kos Bulanan" />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/tv_smart_bills_item_description_number"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_lvl1"
+                    app:typographyType="body_3"
+                    tools:text="081298587943" />
+
+            </LinearLayout>
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_smart_bills_item_price"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/spacing_lvl2"
-                android:textColor="@color/tkpd_main_orange"
+                android:textColor="@color/Unify_Y500"
                 app:typographyType="body_3"
                 app:typographyWeight="bold"
                 tools:text="Rp 200.000.000" />
+
+            <LinearLayout
+                android:id="@+id/view_urgency_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:layout_marginRight="@dimen/spacing_lvl3"
+                    android:id="@+id/tv_due_message"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:typographyType="body_3"
+                    tools:text="Bayar Sebelum"
+                    />
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/iv_urgency_icon"
+                    android:layout_marginRight="@dimen/spacing_lvl1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:src="@drawable/ic_countdown_black"
+                    android:layout_gravity="center"
+                    />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/tv_due_date_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:typographyType="body_3"
+                    tools:text="10 Februari"
+                    />
+            </LinearLayout>
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_smart_bills_item_detail"
@@ -81,7 +136,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/spacing_lvl1"
                 android:text="@string/smart_bills_item_detail"
-                android:textColor="@color/green_250"
+                android:textColor="@color/Unify_G500"
                 app:typographyType="small" />
 
         </LinearLayout>
@@ -92,7 +147,7 @@
         android:id="@+id/smart_bills_item_disabled_overlay"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:background="@color/smart_bills_item_disabled_overlay"
+        android:background="@color/Unify_N0_32"
         app:layout_constraintBottom_toBottomOf="@id/smart_bills_item_content_container"
         app:layout_constraintLeft_toLeftOf="@id/smart_bills_item_content_container"
         app:layout_constraintRight_toRightOf="@id/smart_bills_item_content_container"

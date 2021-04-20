@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_view"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:cardCornerRadius="@dimen/dp_6"
+    app:cardPreventCornerOverlap="false"
+    android:layout_marginLeft="@dimen/dp_16"
+    android:layout_marginRight="@dimen/dp_16"
+    android:layout_marginTop="@dimen/dp_8"
+    android:layout_marginBottom="@dimen/dp_8"
+    app:cardBackgroundColor="@color/Unify_N0">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <include layout="@layout/reputation_review_header"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_half"
+            android:background="@color/Unify_N100"/>
+
+        <LinearLayout
+            android:id="@+id/add_review_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/action"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="@dimen/footer_height"
+                android:layout_gravity="center_vertical"
+                android:gravity="end|center_vertical"
+                android:paddingRight="@dimen/dp_10"
+                android:paddingLeft="@dimen/dp_10"
+                android:text="@string/review_product"
+                android:textColor="@color/Unify_G500"
+                app:typographyWeight="reguler"
+                app:typographyType="body_1" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginRight="@dimen/dp_16"
+                android:contentDescription="@null"
+                app:srcCompat="@drawable/ic_chevron_right_green"/>
+        </LinearLayout>
+
+        <include
+            android:id="@+id/review_layout"
+            layout="@layout/review_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            tools:visibility="visible"/>
+
+        <RelativeLayout
+            android:id="@+id/add_reply_review_layout"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/footer_height"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:visibility="gone"
+            tools:visibility="visible">
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="@dimen/dp_5"
+                android:gravity="center"
+                android:lineSpacingExtra="5sp"
+                android:text="@string/reply"
+                android:textColor="@color/Unify_N700_68"
+                app:typographyWeight="reguler"
+                app:typographyType="body_1"
+                />
+
+        </RelativeLayout>
+
+        <include
+            android:id="@+id/seller_reply_layout"
+            layout="@layout/seller_reply_layout"
+            android:visibility="gone"
+            tools:visibility="gone"/>
+
+        <include
+            android:id="@+id/seller_add_reply_layout"
+            layout="@layout/seller_add_reply_layout"
+            android:visibility="gone"
+            tools:visibility="visible"/>
+
+    </LinearLayout>
+</androidx.cardview.widget.CardView>

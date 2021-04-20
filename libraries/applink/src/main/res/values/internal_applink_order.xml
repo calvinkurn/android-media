@@ -1,7 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="host_seller" translatable="false">seller</string>
+    <string name="host_buyer" translatable="false">buyer</string>
     <string name="host_order" translatable="false">order</string>
+    <string name="host_snapshot_order" translatable="false">snapshot</string>
+    <string name="host_orderlist" translatable="false">orderlist</string>
+    <string name="host_transaction_buyer" translatable="false">transaction</string>
+    <string name="host_order_list" translatable="false">order_list</string>
+    <string name="host_events" translatable="false">events</string>
+    <string name="host_giftcards" translatable="false">giftcards</string>
+    <string name="host_insurance" translatable="false">insurance</string>
+    <string name="host_modaltoko" translatable="false">modaltoko</string>
+    <string name="host_belanja" translatable="false">belanja</string>
     <!--
         If the link is Ended with {id}, must end with "/"
         Otherwise, do not put "/"
@@ -11,8 +21,10 @@
     <string name="path_shipped" translatable="false">/shipped</string>
     <string name="path_delivered" translatable="false">/delivered</string>
     <string name="path_history" translatable="false">/history</string>
-    <string name="path_order" translatable="false">/order/.*\\/</string>
+    <string name="path_order" translatable="false">/order</string>
+    <string name="path_orderlist" translatable="false">/orderlist</string>
     <string name="path_track" translatable="false">/track</string>
+    <string name="path_cancellation_request" translatable="false">/cancellationrequest</string>
 
     <string name="path_cancelled" translatable="false">/cancelled</string>
     <string name="path_waiting_pickup" translatable="false">/waiting-pickup</string>
@@ -22,7 +34,22 @@
     <string name="path_retur" translatable="false">/retur</string>
     <string name="path_complaint" translatable="false">/complaint</string>
     <string name="path_finished" translatable="false">/finished</string>
-
     <string name="path_invoice" translatable="false">/invoice</string>
     <string name="path_seller_migration" translatable="false">/seller-migration</string>
+
+    <string name="path_order_unified" translatable="false">/unified</string>
+
+    <string name="path_order_confirmed" translatable="false">/confirmed</string>
+    <string name="path_order_list_buyer" translatable="false">/order_list</string>
+    <string name="path_order_processed" translatable="false">/processed</string>
+    <string name="path_order_shipped" translatable="false">/shipped</string>
+    <string name="path_order_delivered" translatable="false">/delivered</string>
+    <string name="path_shipping_confirm" translatable="false">/shipping-confirm</string>
+    <string name="path_marketplace" translatable="false">/marketplace/filter/.*\\/</string>
+    <string name="path_orderlist_digital" translatable="false">/digital</string>
+    <string name="path_any" translatable="false">/.*\\/</string>
+
+    <string name="path_order_snapshot" translatable="false">/snapshot</string>
+
+
 </resources>

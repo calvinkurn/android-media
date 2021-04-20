@@ -9,12 +9,12 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -25,6 +25,7 @@ import com.tokopedia.profilecompletion.changename.viewmodel.ChangeNameViewModel
 import com.tokopedia.profilecompletion.di.ProfileCompletionSettingComponent
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_change_fullname.*
 import javax.inject.Inject
 
@@ -37,6 +38,9 @@ class ChangeNameFragment : BaseDaggerFragment() {
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private val viewModelProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
     private val viewModel by lazy { viewModelProvider.get(ChangeNameViewModel::class.java) }
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
     private var oldName: String = ""
     private var chancesChangeName: String = ""
@@ -67,12 +71,9 @@ class ChangeNameFragment : BaseDaggerFragment() {
             }
         }
 
-        activity?.getString(R.string.change_name_note, chancesChangeName)?.let {
-            changeNameHint -> changeNameTextNote?.text = changeNameHint
-        }
-
         initObserver()
         initListener()
+        viewModel.getUserProfileRole()
     }
 
     private fun initListener() {
@@ -87,7 +88,7 @@ class ChangeNameFragment : BaseDaggerFragment() {
                         s.isEmpty() || s == "" -> activity?.let {
                             changeNameTextMessage?.run {
                                 text = getString(R.string.change_name_visible_on_another_user)
-                                setTextColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Neutral_N700))
+                                setTextColor(MethodChecker.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N700))
                                 changeNameButtonSave?.isEnabled = false
                             }
                         }
@@ -106,7 +107,7 @@ class ChangeNameFragment : BaseDaggerFragment() {
                             activity?.let {
                                 changeNameTextMessage?.run {
                                     text = getString(R.string.change_name_visible_on_another_user)
-                                    setTextColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Neutral_N700))
+                                    setTextColor(MethodChecker.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N700))
                                 }
                             }
                         }
@@ -131,19 +132,31 @@ class ChangeNameFragment : BaseDaggerFragment() {
     }
 
     private fun initObserver() {
-        viewModel.changeNameResponse.observe(
-                this,
-                Observer {
-                    when (it) {
-                        is Success -> onSuccessChangeName(it.data)
-                        is Fail -> onErrorChangeName(it.throwable)
-                    }
-                }
-        )
+        viewModel.changeNameResponse.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Success -> onSuccessChangeName(it.data)
+                is Fail -> onErrorChangeName(it.throwable)
+            }
+        })
+
+        viewModel.userProfileRole.observe(viewLifecycleOwner, Observer {
+            when(it) {
+                is Success -> { updateChangesCounter(it.data.chancesChangeName) }
+                is Fail -> { updateChangesCounter(chancesChangeName) }
+            }
+        })
+    }
+
+    private fun updateChangesCounter(counter: String) {
+        activity?.getString(R.string.change_name_note, counter)?.let { changeNameHint ->
+            changeNameTextNote?.text = changeNameHint
+        }
     }
 
     private fun onSuccessChangeName(result: ChangeNameResult) {
         hideLoading()
+        userSession.name = result.fullName
+
         activity?.run {
             val intent = Intent()
             val bundle = Bundle()
@@ -165,7 +178,7 @@ class ChangeNameFragment : BaseDaggerFragment() {
             activity?.let {
                 changeNameTextMessage?.run {
                     text = message
-                    setTextColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Red_R500))
+                    setTextColor(MethodChecker.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_R500))
                     ChangeNameTracker().onFailedChangeName(throwable.message.toString())
                 }
             }

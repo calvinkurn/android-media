@@ -18,7 +18,7 @@ import com.tokopedia.autocomplete.analytics.AutocompleteTracking
 import com.tokopedia.autocomplete.suggestion.di.DaggerSuggestionComponent
 import com.tokopedia.autocomplete.suggestion.di.SuggestionComponent
 import com.tokopedia.autocomplete.suggestion.di.SuggestionContextModule
-import com.tokopedia.autocomplete.suggestion.topshop.SuggestionTopShopCardViewModel
+import com.tokopedia.autocomplete.suggestion.topshop.SuggestionTopShopCardDataView
 import com.tokopedia.autocomplete.suggestion.topshop.SuggestionTopShopListener
 import com.tokopedia.autocomplete.util.getModifiedApplink
 import com.tokopedia.discovery.common.model.SearchParameter
@@ -133,7 +133,7 @@ class SuggestionFragment :
         presenter.setIsTyping(isTyping)
     }
 
-    override fun onItemClicked(item: BaseSuggestionViewModel) {
+    override fun onItemClicked(item: BaseSuggestionDataView) {
         presenter.onSuggestionItemClicked(item)
     }
 
@@ -184,12 +184,12 @@ class SuggestionFragment :
         AutocompleteTracking.eventClickRecentKeyword(eventLabel)
     }
 
-    override fun onTopShopCardClicked(topShop: SuggestionTopShopCardViewModel) {
-        presenter.onTopShopCardClicked(topShop)
+    override fun onTopShopCardClicked(topShopData: SuggestionTopShopCardDataView) {
+        presenter.onTopShopCardClicked(topShopData)
     }
 
-    override fun onTopShopSeeMoreClicked(topShop: SuggestionTopShopCardViewModel) {
-        presenter.onTopShopCardClicked(topShop)
+    override fun onTopShopSeeMoreClicked(topShopData: SuggestionTopShopCardDataView) {
+        presenter.onTopShopCardClicked(topShopData)
     }
 
     override fun trackEventClickTopShopCard(eventLabel: String) {
@@ -198,5 +198,13 @@ class SuggestionFragment :
 
     override fun trackEventClickTopShopSeeMore(eventLabel: String) {
         AutocompleteTracking.eventClickTopShopSeeMore(eventLabel)
+    }
+
+    override fun trackEventClickLocalKeyword(eventLabel: String, userId: String) {
+        AutocompleteTracking.eventClickLocalKeyword(eventLabel, userId)
+    }
+
+    override fun trackEventClickGlobalKeyword(eventLabel: String, userId: String) {
+        AutocompleteTracking.eventClickGlobalKeyword(eventLabel, userId)
     }
 }

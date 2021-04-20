@@ -5,7 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.dropoff.R
-import com.tokopedia.logisticdata.data.autocomplete.*
+import com.tokopedia.logisticCommon.domain.model.*
 import kotlinx.android.synthetic.main.item_autocomplete_result.view.*
 
 class AutoCompleteAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -44,6 +44,7 @@ class AutoCompleteAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         is LoadingType -> com.tokopedia.design.R.layout.item_shimmering_list
         is HeaderType -> R.layout.item_autocomplete_header
         is NoResultType -> R.layout.item_autocomplete_no_result
+        is Place -> R.layout.item_autocomplete_result
     }
 
     fun setActionListener(listener: ActionListener) {

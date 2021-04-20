@@ -11,6 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import android.widget.EditText
+import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.lifecycle.Observer
@@ -37,13 +38,15 @@ import com.tokopedia.talk.feature.write.presentation.decorator.SpacingItemDecora
 import com.tokopedia.talk.feature.write.presentation.uimodel.TalkWriteCategory
 import com.tokopedia.talk.feature.write.presentation.viewmodel.TalkWriteViewModel
 import com.tokopedia.talk.feature.write.presentation.widget.TalkWriteCategoryChipsWidget
-import com.tokopedia.talk_old.R
+import com.tokopedia.talk.R
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import kotlinx.android.synthetic.main.fragment_talk_inbox.*
 import kotlinx.android.synthetic.main.fragment_talk_write.*
 import kotlinx.android.synthetic.main.partial_talk_connection_error.*
+import kotlinx.android.synthetic.main.partial_talk_connection_error.view.*
 import kotlinx.android.synthetic.main.widget_talk_write_header.*
 import javax.inject.Inject
 
@@ -55,10 +58,10 @@ class TalkWriteFragment : BaseDaggerFragment(),
         const val KEY_SELECTED_CATEGORY = "selected_category"
 
         @JvmStatic
-        fun createNewInstance(productId: Int, isVariantSelected: Boolean, availableVariants: String): TalkWriteFragment {
+        fun createNewInstance(productId: String, isVariantSelected: Boolean, availableVariants: String): TalkWriteFragment {
             return TalkWriteFragment().apply {
                 arguments = Bundle()
-                arguments?.putInt(TalkConstants.PARAM_PRODUCT_ID, productId)
+                arguments?.putString(TalkConstants.PARAM_PRODUCT_ID, productId)
                 arguments?.putBoolean(TalkConstants.PARAM_APPLINK_IS_VARIANT_SELECTED, isVariantSelected)
                 arguments?.putString(TalkConstants.PARAM_APPLINK_AVAILABLE_VARIANT, availableVariants)
             }
@@ -100,6 +103,7 @@ class TalkWriteFragment : BaseDaggerFragment(),
         stopPreparePerfomancePageMonitoring()
         startNetworkRequestPerformanceMonitoring()
         super.onViewCreated(view, savedInstanceState)
+        initToolbar()
         initView()
         initRecycleView()
         initTnC()
@@ -179,6 +183,7 @@ class TalkWriteFragment : BaseDaggerFragment(),
             submitNewQuestion()
         }
         talkConnectionErrorRetryButton.setOnClickListener {
+            reading_image_error.loadImageDrawable(com.tokopedia.globalerror.R.drawable.unify_globalerrors_connection)
             viewModel.refresh()
             showLoading()
         }
@@ -209,12 +214,11 @@ class TalkWriteFragment : BaseDaggerFragment(),
                 context,
                 Uri.parse(UriUtil.buildUri(ApplinkConstInternalGlobal.TALK_REPLY, questionId.toString()))
                         .buildUpon()
-                        .appendQueryParameter(TalkConstants.PARAM_PRODUCT_ID, viewModel.getProductId().toString())
+                        .appendQueryParameter(TalkConstants.PARAM_PRODUCT_ID, viewModel.getProductId())
                         .appendQueryParameter(TalkConstants.PARAM_SHOP_ID, viewModel.shopId)
                         .appendQueryParameter(TalkConstants.PARAM_SOURCE, TalkConstants.WRITING_SOURCE)
                         .build().toString()
         )
-        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK
         startActivity(intent)
         activity?.finish()
     }
@@ -225,7 +229,7 @@ class TalkWriteFragment : BaseDaggerFragment(),
 
     private fun getDataFromArguments() {
         arguments?.let {
-            viewModel.setProductId(it.getInt(TalkConstants.PARAM_PRODUCT_ID))
+            viewModel.setProductId(it.getString(TalkConstants.PARAM_PRODUCT_ID) ?: "")
             viewModel.isVariantSelected = it.getBoolean(TalkConstants.PARAM_APPLINK_IS_VARIANT_SELECTED)
             viewModel.availableVariants = it.getString(TalkConstants.PARAM_APPLINK_AVAILABLE_VARIANT, "0")
         }
@@ -388,6 +392,16 @@ class TalkWriteFragment : BaseDaggerFragment(),
         writeCategoryDetails.apply {
             show()
             setContent(content)
+        }
+    }
+
+    private fun initToolbar() {
+        activity?.run {
+            (this as? AppCompatActivity)?.run {
+                supportActionBar?.hide()
+                setSupportActionBar(headerTalkWrite)
+                headerTalkWrite?.title = getString(R.string.title_write_page)
+            }
         }
     }
 }

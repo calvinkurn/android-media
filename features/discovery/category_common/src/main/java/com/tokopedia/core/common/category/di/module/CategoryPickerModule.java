@@ -7,8 +7,6 @@ import com.chuckerteam.chucker.api.ChuckerInterceptor;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
-import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor;
-import com.tokopedia.cacheapi.util.CacheApiResponseValidator;
 import com.tokopedia.core.common.category.constant.ConstantCategoryCommon;
 import com.tokopedia.core.common.category.data.network.OkHttpFactory;
 import com.tokopedia.core.common.category.data.network.TopAdsAuthInterceptor;
@@ -89,16 +87,13 @@ public class CategoryPickerModule {
                                            TkpdBaseInterceptor tkpdBaseInterceptor,
                                            @Named(ConstantCategoryCommon.CATEGORY_PICKER_CHUCK) ChuckerInterceptor chuckInterceptor,
                                            DebugInterceptor debugInterceptor,
-                                           CacheApiInterceptor cacheApiInterceptor,
                                            @ApplicationContext Context context) {
 
-        cacheApiInterceptor.setResponseValidator(new CacheApiResponseValidator());
         return OkHttpFactory.create(context).buildDaggerClientNoAuthWithBearer(tkpdBearerWithAuthInterceptor,
                 fingerprintInterceptor,
                 tkpdBaseInterceptor,
                 chuckInterceptor,
-                debugInterceptor,
-                cacheApiInterceptor);
+                debugInterceptor);
     }
 
     @Provides
@@ -107,8 +102,8 @@ public class CategoryPickerModule {
     }
 
     @Provides
-    TopAdsAuthInterceptor provideTopAdsAuthInterceptor(@ApplicationContext Context context, AbstractionRouter abstractionRouter) {
-        return new TopAdsAuthInterceptor(context, abstractionRouter);
+    TopAdsAuthInterceptor provideTopAdsAuthInterceptor(@ApplicationContext Context context, NetworkRouter abstractionRouter, UserSessionInterface userSession) {
+        return new TopAdsAuthInterceptor(context, abstractionRouter, userSession);
     }
 
     @Provides
@@ -144,11 +139,6 @@ public class CategoryPickerModule {
     @Provides
     DebugInterceptor provideDebugInterceptor() {
         return new DebugInterceptor();
-    }
-
-    @Provides
-    CacheApiInterceptor provideCacheApiInterceptor(@ApplicationContext Context context) {
-        return new CacheApiInterceptor(context);
     }
 
     @Provides

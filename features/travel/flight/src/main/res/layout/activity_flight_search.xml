@@ -8,7 +8,8 @@
         android:id="@+id/flight_search_header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:elevation="@dimen/layout_lvl0" />
+        android:elevation="@dimen/layout_lvl0"
+        android:background="@color/Unify_N0"/>
 
     <FrameLayout
         android:id="@+id/flight_search_parent_view"

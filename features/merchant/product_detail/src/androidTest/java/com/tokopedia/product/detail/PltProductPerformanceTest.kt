@@ -33,7 +33,7 @@ class PltProductPerformanceTest {
         val context = InstrumentationRegistry.getInstrumentation().targetContext
         setupGraphqlMockResponseWithCheck(createMockModelConfig())
 
-        val intent = ProductDetailActivity.createIntent(context, "1061061424")
+        val intent = ProductDetailActivity.createIntent(context, "1060957410")
         activityRule.launchActivity(intent)
     }
 
@@ -55,7 +55,7 @@ class PltProductPerformanceTest {
     }
 
     private fun waitForData() {
-        Thread.sleep(10000)
+        Thread.sleep(35000)
     }
 
     private fun savePLTPerformanceResultData(tag: String) {
@@ -64,7 +64,7 @@ class PltProductPerformanceTest {
             PerformanceDataFileUtils.writePLTPerformanceFile(
                     activityRule.activity,
                     tag,
-                    performanceData)
+                    performanceData,performanceData.attribution[ProductDetailActivity.PRODUCT_PERFORMANCE_MONITORING_VARIANT_KEY] ?: "")
         }
     }
 }

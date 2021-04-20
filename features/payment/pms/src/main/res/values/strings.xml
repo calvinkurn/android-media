@@ -14,27 +14,21 @@
     <string name="payment_label_close">Tutup</string>
     <string name="payment_title_yes">Ya</string>
     <string name="payment_label_no">Tidak</string>
-    <string name="payment_title_payment_status">Menunggu Pembayaran</string>
     <string name="payment_label_helper_change_click_bca">User ID KlikBCA Anda saat ini adalah %1$s</string>
     <string name="payment_label_hint_click_bca_user_id">KlikBCA User ID</string>
     <string name="payment_label_use">Terapkan</string>
-    <string name="payment_title_activity_change_clik_bca">Ubah KlikBCA User ID</string>
     <string name="payment_label_dest_bank">Bank Tujuan</string>
     <string name="payment_label_account_number">Nomor Rekening</string>
     <string name="payment_label_account_name">Nama Pemilik Rekening</string>
     <string name="payment_label_account_number_hint">Nomor sesuai buku tabungan</string>
     <string name="payment_label_account_name_hint">Nama sesuai buku tabungan</string>
-    <string name="payment_title_activity_change_detail_account">Ubah Detail Rekening</string>
     <string name="payment_label_notes_optional">Catatan (Opsional)</string>
     <string name="payment_title_activity_upload_proof">Unggah Bukti Pembayaran</string>
-    <string name="payment_title_upload_proof">Unggah Bukti Pembayaran</string>
     <string name="payment_label_choose_image">Pilih Gambar</string>
-    <string name="payment_title_activity_dest_bank">Pilih Bank Tujuan</string>
     <string name="payment_title_activity_invoice">Invoice</string>
     <string name="payment_label_acc_sender">Rekening Pengirim</string>
     <string name="payment_label_acc_dest">Rekening Tujuan</string>
     <string name="payment_label_name_acc_formated">a.n %1$s</string>
-    <string name="payment_title_activity_howtopay">Cara Pembayaran</string>
     <string name="payment_label_help_proof">Pastikan bukti pembayaran menampilkan</string>
     <string name="payment_label_help_proof_date">Tanggal/Waktu Transfer</string>
     <string name="payment_label_help_proof_example_date">contoh : tgl. 04/06/19 jam 07:24:06</string>
@@ -52,7 +46,28 @@
     <string name="payment_label_succes_upload_proof">Bukti fisik pembayaran berhasil diunggah</string>
     <string name="payment_label_save_image">Simpan Gambar</string>
     <string name="payment_label_error_empty_user_id">User ID Klik BCA harus diisi</string>
-
+    <string name="pms_hwp_rp">Rp%s</string>
+    <string name="pms_hwp_screenshot">Simpan Screenshot</string>
+    <string name="pms_hwp_payment_code">Kode Pembayaran</string>
+    <string name="pms_hwp_VA_code">Nomor Virtual Account</string>
+    <string name="pms_hwp_user_id">User ID</string>
+    <string name="pms_hwp_account_number">Nomor Rekening</string>
+    <string name="pms_hwp_copy">Salin</string>
+    <string name="pms_hwp_transfer_3_digit_info">Penting! Transfer dengan jumlah yang tepat hingga 3 digit terakhir.</string>
+    <string name="pms_hwp_pay_other_store_info">Kamu juga bisa bayar di gerai lainnya dengan biaya layanan yang bervariasi.</string>
+    <string name="pms_hwp_view_store_list">Lihat Daftar Gerai</string>
+    <string name="pms_hwp_bank_info">%1$s Cabang %2$s</string>
+    <string name="pms_hwp_guaranteed_payment">Pembayaran terjamin</string>
+    <string name="pms_hwp_guaranteed_payment_desc">Tokopedia menjamin keamanan dana yang kamu bayarkan di tiap transaksi.</string>
+    <string name="pms_hwp_data_safety">Jaga keamanan datamu</string>
+    <string name="pms_hwp_data_safety_desc"><![CDATA[Jangan menyebarkan bukti & data pembayaran ke pihak mana pun kecuali Tokopedia.]]></string>
+    <string name="pms_hwp_total_pembayaran">Total Pembayaran</string>
+    <string name="pms_hwp_pay_on_store">Kamu juga bisa bayar di gerai berikut dengan biaya layanan yang bervariasi.</string>
+    <string name="pms_hwp_screenshot_success">Screenshot kode pembayaran berhasil disimpan di Galeri foto HP-mu.</string>
+    <string name="pms_hwp_store_list">Daftar gerai</string>
+    <string name="pms_hwp_bank_account_number_copy">Nomor rekening berhasil disalin.</string>
+    <string name="pms_hwp_code_copy_success">Kode Pembayaran berhasil disalin.</string>
+    <string name="pms_hwp_va_copy_success">Nomor virtual account berhasil disalin.</string>
     <string-array name="payment_list_bank_name">
         <item>BCA</item>
         <item>MANDIRI</item>

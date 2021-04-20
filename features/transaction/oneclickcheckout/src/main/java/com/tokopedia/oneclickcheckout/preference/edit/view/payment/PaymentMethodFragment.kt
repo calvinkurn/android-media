@@ -1,7 +1,9 @@
 package com.tokopedia.oneclickcheckout.preference.edit.view.payment
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
 import android.net.http.SslError
@@ -14,46 +16,57 @@ import android.webkit.SslErrorHandler
 import android.webkit.WebResourceResponse
 import android.webkit.WebView
 import android.webkit.WebViewClient
-import android.widget.ProgressBar
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import com.google.android.play.core.splitcompat.SplitCompat
 import com.google.gson.Gson
+import com.google.gson.JsonParser
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.globalerror.ReponseStatus
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.oneclickcheckout.R
 import com.tokopedia.oneclickcheckout.common.DEFAULT_ERROR_MESSAGE
+import com.tokopedia.oneclickcheckout.common.PAYMENT_LISTING_URL
 import com.tokopedia.oneclickcheckout.common.view.model.OccState
 import com.tokopedia.oneclickcheckout.preference.analytics.PreferenceListAnalytics
-import com.tokopedia.oneclickcheckout.preference.edit.data.payment.ListingParam
 import com.tokopedia.oneclickcheckout.preference.edit.data.payment.PaymentListingParamRequest
 import com.tokopedia.oneclickcheckout.preference.edit.di.PreferenceEditComponent
+import com.tokopedia.oneclickcheckout.preference.edit.view.PreferenceEditActivity
 import com.tokopedia.oneclickcheckout.preference.edit.view.PreferenceEditParent
 import com.tokopedia.oneclickcheckout.preference.edit.view.summary.PreferenceSummaryFragment
+import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSessionInterface
 import java.net.ConnectException
 import java.net.SocketTimeoutException
-import java.net.URLEncoder
 import java.net.UnknownHostException
 import javax.inject.Inject
+import javax.inject.Named
 
 class PaymentMethodFragment : BaseDaggerFragment() {
 
     companion object {
 
         private const val ARG_IS_EDIT = "is_edit"
+        private const val ARG_ADDRESS_STATE = "address_state"
 
-        fun newInstance(isEdit: Boolean = false): PaymentMethodFragment {
+        private const val MERCHANT_CODE = "tokopedia"
+        private const val PROFILE_CODE = "EXPRESS_SAVE"
+
+        private const val QUERY_PARAM_EXPRESS_CHECKOUT_PARAM = "express_checkout_param"
+        private const val QUERY_PARAM_USER_ID = "user_id"
+        private const val QUERY_PARAM_SUCCESS = "success"
+        private const val QUERY_PARAM_GATEWAY_CODE = "gateway_code"
+
+        fun newInstance(isEdit: Boolean = false, addressState: Int): PaymentMethodFragment {
             val paymentMethodFragment = PaymentMethodFragment()
             val bundle = Bundle()
             bundle.putBoolean(ARG_IS_EDIT, isEdit)
+            bundle.putInt(ARG_ADDRESS_STATE, addressState)
             paymentMethodFragment.arguments = bundle
             return paymentMethodFragment
         }
@@ -69,17 +82,19 @@ class PaymentMethodFragment : BaseDaggerFragment() {
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     @Inject
+    @field:Named(PAYMENT_LISTING_URL)
     lateinit var paymentListingUrl: String
 
+    private var paymentAmount = 0.0
+    private var shouldFormatMetadata = false
+
     private val viewModel: PaymentMethodViewModel by lazy {
-        ViewModelProviders.of(this, viewModelFactory)[PaymentMethodViewModel::class.java]
+        ViewModelProvider(this, viewModelFactory)[PaymentMethodViewModel::class.java]
     }
 
     private var webView: WebView? = null
-    private var progressBar: ProgressBar? = null
+    private var progressBar: LoaderUnify? = null
     private var globalError: GlobalError? = null
-
-    private var param: ListingParam? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -115,6 +130,8 @@ class PaymentMethodFragment : BaseDaggerFragment() {
                 parent.showStepper()
                 parent.setStepperValue(75)
             }
+            paymentAmount = parent.getPaymentAmount()
+            shouldFormatMetadata = parent.isDirectPaymentStep()
         }
     }
 
@@ -136,7 +153,7 @@ class PaymentMethodFragment : BaseDaggerFragment() {
     }
 
     private fun loadPaymentParams() {
-        viewModel.paymentListingParam.observe(viewLifecycleOwner, Observer {
+        viewModel.paymentListingPayload.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is OccState.Success -> {
                     loadWebView(it.data)
@@ -154,34 +171,20 @@ class PaymentMethodFragment : BaseDaggerFragment() {
             }
         })
 
-        viewModel.getPaymentListingParam(generatePaymentListingRequest())
+        viewModel.getPaymentListingPayload(generatePaymentListingRequest(), paymentAmount)
     }
 
-    private fun loadWebView(param: ListingParam) {
-        this.param = param
-//        val url = "${TokopediaUrl.getInstance().PAY}/v2/payment/register/listing"
-        webView?.postUrl(paymentListingUrl, getPayload(param).toByteArray())
+    private fun loadWebView(param: String) {
+        webView?.postUrl(paymentListingUrl, param.toByteArray())
         webView?.visible()
         globalError?.gone()
     }
 
-    private fun getPayload(param: ListingParam): String {
-        return "merchant_code=${getUrlEncoded(param.merchantCode)}&" +
-                "profile_code=${getUrlEncoded(param.profileCode)}&" +
-                "user_id=${getUrlEncoded(param.userId)}&" +
-                "customer_name=${getUrlEncoded(param.customerName)}&" +
-                "customer_email=${getUrlEncoded(param.customerEmail)}&" +
-                "customer_msisdn=${getUrlEncoded(param.customerMsisdn)}&" +
-                "address_id=${getUrlEncoded(param.addressId)}&" +
-                "callback_url=${getUrlEncoded(param.callbackUrl)}&" +
-                "version=${getUrlEncoded("android-${GlobalConfig.VERSION_NAME}")}&" +
-                "signature=${getUrlEncoded(param.hash)}"
-    }
-
     private fun generatePaymentListingRequest(): PaymentListingParamRequest {
-        return PaymentListingParamRequest("tokopedia",
-                "EXPRESS_SAVE",
-                "${TokopediaUrl.getInstance().PAY}/dummy/payment/listing",
+        val profileCode = (activity as? PreferenceEditParent)?.getPaymentProfile() ?: PROFILE_CODE
+        return PaymentListingParamRequest(MERCHANT_CODE,
+                profileCode,
+                paymentListingUrl,
                 getAddressId(),
                 "android-${GlobalConfig.VERSION_NAME}")
     }
@@ -192,10 +195,6 @@ class PaymentMethodFragment : BaseDaggerFragment() {
             return parent.getAddressId().toString()
         }
         return ""
-    }
-
-    private fun getUrlEncoded(valueStr: String): String {
-        return URLEncoder.encode(valueStr, "UTF-8")
     }
 
     private fun handleError(throwable: Throwable?) {
@@ -229,7 +228,7 @@ class PaymentMethodFragment : BaseDaggerFragment() {
     private fun showGlobalError(type: Int) {
         globalError?.setType(type)
         globalError?.setActionClickListener {
-            viewModel.getPaymentListingParam(generatePaymentListingRequest())
+            viewModel.getPaymentListingPayload(generatePaymentListingRequest(), paymentAmount)
         }
         globalError?.visible()
         webView?.gone()
@@ -257,10 +256,19 @@ class PaymentMethodFragment : BaseDaggerFragment() {
         if (parent is PreferenceEditParent) {
             parent.setGatewayCode(gatewayCode)
             parent.setPaymentQuery(metadata)
-            if (arguments?.getBoolean(ARG_IS_EDIT) == true) {
+            if (parent.isDirectPaymentStep()) {
+                parent.setResult(Activity.RESULT_OK, Intent().apply {
+                    putExtra(PreferenceEditActivity.EXTRA_RESULT_GATEWAY, gatewayCode)
+                    putExtra(PreferenceEditActivity.EXTRA_RESULT_METADATA, metadata)
+                })
+                parent.finish()
+            } else if (arguments?.getBoolean(ARG_IS_EDIT) == true) {
+                preferenceListAnalytics.eventClickPaymentMethodOptionInPilihMetodePembayaranPage(gatewayCode)
                 parent.goBack()
             } else {
-                parent.addFragment(PreferenceSummaryFragment.newInstance())
+                preferenceListAnalytics.eventClickPaymentMethodOptionInPilihMetodePembayaranPage(gatewayCode)
+                val addressState = arguments?.getInt(ARG_ADDRESS_STATE) ?: 0
+                parent.addFragment(PreferenceSummaryFragment.newInstance(addressState = addressState))
             }
         }
     }
@@ -292,11 +300,10 @@ class PaymentMethodFragment : BaseDaggerFragment() {
 
         override fun shouldInterceptRequest(view: WebView?, url: String?): WebResourceResponse? {
             val uri = Uri.parse(url)
-            val isSuccess = uri.getQueryParameter("success")
+            val isSuccess = uri.getQueryParameter(QUERY_PARAM_SUCCESS)
             if (isSuccess != null && isSuccess.equals("true", true)) {
-                val gatewayCode = uri.getQueryParameter("gateway_code")
+                val gatewayCode = uri.getQueryParameter(QUERY_PARAM_GATEWAY_CODE)
                 if (gatewayCode != null) {
-                    preferenceListAnalytics.eventClickPaymentMethodOptionInPilihMetodePembayaranPage(gatewayCode)
                     goToNextStep(gatewayCode, generateMetadata(uri))
                 }
             }
@@ -304,9 +311,32 @@ class PaymentMethodFragment : BaseDaggerFragment() {
         }
 
         private fun generateMetadata(uri: Uri): String {
-            val map: HashMap<String, String> = HashMap()
+            val map: HashMap<String, Any> = HashMap()
             for (key in uri.queryParameterNames) {
-                map[key] = uri.getQueryParameter(key) ?: ""
+                val value = uri.getQueryParameter(key) ?: ""
+                if (shouldFormatMetadata) {
+                    when (key) {
+                        QUERY_PARAM_EXPRESS_CHECKOUT_PARAM -> {
+                            try {
+                                map[key] = JsonParser().parse(value)
+                            } catch (e: Exception) {
+                                //failed parse json string
+                                map[key] = value
+                            }
+                        }
+                        QUERY_PARAM_USER_ID -> {
+                            map[key] = value.toLongOrZero()
+                        }
+                        QUERY_PARAM_SUCCESS -> {
+                            map[key] = value.toBoolean()
+                        }
+                        else -> {
+                            map[key] = value
+                        }
+                    }
+                } else {
+                    map[key] = value
+                }
             }
             return Gson().toJson(map)
         }

@@ -6,11 +6,9 @@ import android.content.ClipboardManager
 import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.data.BannerAction
 import com.tokopedia.discovery2.data.ComponentsItem
-import com.tokopedia.discovery2.di.DaggerDiscoveryComponent
 import com.tokopedia.discovery2.discoveryext.checkForNullAndSize
 import com.tokopedia.discovery2.usecase.CheckPushStatusUseCase
 import com.tokopedia.discovery2.usecase.SubScribeToUseCase
@@ -47,15 +45,9 @@ class MultiBannerViewModel(val application: Application, var components: Compone
         bannerData.value = components
         pushBannerStatus.value = Utils.BANNER_SUBSCRIPTION_DEFAULT_STATUS
         pushBannerSubscription.value = Utils.BANNER_SUBSCRIPTION_DEFAULT_STATUS
-        initDaggerInject()
+
     }
 
-    override fun initDaggerInject() {
-        DaggerDiscoveryComponent.builder()
-                .baseAppComponent((application.applicationContext as BaseMainApplication).baseAppComponent)
-                .build()
-                .inject(this)
-    }
 
     fun getComponentData(): LiveData<ComponentsItem> = bannerData
     fun getPushBannerStatusData(): LiveData<Int> = pushBannerStatus
@@ -129,14 +121,16 @@ class MultiBannerViewModel(val application: Application, var components: Compone
     }
 
     private fun checkUserPushStatus(position: Int) {
-        launchCatchError(block = {
-            val pushSubscriptionResponse = checkPushStatusUseCase.checkPushStatus(getCampaignId(position))
-            if (pushSubscriptionResponse.notifierCheckReminder?.status == 1) {
-                pushBannerSubscription.value = position
-            }
-        }, onError = {
-            it.printStackTrace()
-        })
+        if (isUserLoggedIn()) {
+            launchCatchError(block = {
+                val pushSubscriptionResponse = checkPushStatusUseCase.checkPushStatus(getCampaignId(position))
+                if (pushSubscriptionResponse.notifierCheckReminder?.status == 1) {
+                    pushBannerSubscription.value = position
+                }
+            }, onError = {
+                it.printStackTrace()
+            })
+        }
     }
 
     private fun getCampaignId(position: Int): Int {

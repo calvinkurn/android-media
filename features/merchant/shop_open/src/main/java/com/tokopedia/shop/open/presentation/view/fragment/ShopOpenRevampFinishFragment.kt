@@ -15,6 +15,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.shop.open.R
 import com.tokopedia.shop.open.analytic.ShopOpenRevampTracking
+import com.tokopedia.shop.open.common.EspressoIdlingResource
 import com.tokopedia.shop.open.common.ScreenNameTracker
 import com.tokopedia.shop.open.listener.FragmentNavigationInterface
 import com.tokopedia.unifycomponents.LoaderUnify
@@ -88,6 +89,7 @@ class ShopOpenRevampFinishFragment : Fragment() {
                     val intent = RouteManager.getIntent(context, ApplinkConst.SHOP, shopId)
                     intent.putExtra(ApplinkConstInternalMarketplace.PARAM_FIRST_CREATE_SHOP, true)
                     startActivity(intent)
+                    EspressoIdlingResource.decrement()
                 }, 3000)
             }
         }

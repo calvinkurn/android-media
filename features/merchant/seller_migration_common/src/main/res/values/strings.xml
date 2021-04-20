@@ -3,53 +3,18 @@
     <string name="seller_migration_bottom_sheet_footer">Pelajari keuntungan lainnya &lt;a href="https://seller.tokopedia.com/edu/aplikasi-topseller/"&gt;di sini&lt;/a&gt;</string>
 
     <string name="seller_migration_warning_title">Semua fitur penjual akan dialihkan pada:</string>
-    <string name="seller_migration_ticker_title">Kembangkan bisnismu di Tokopedia Seller</string>
     <string name="seller_migration_bottom_sheet_redirected">Dialihkan pada</string>
     <string name="seller_migration_bottom_sheet_redirected_dates">11 September 2020</string>
-    <string name="seller_migration_bottom_sheet_redirected_dates_abbv">11 Sep 2020</string>
-    <string name="seller_migration_ticker_desc">%s hanya dapat diakses di aplikasi Tokopedia Seller mulai &lt;b&gt;%s.&lt;/b&gt; &lt;b&gt;&lt;a href="#"&gt;Selengkapnya&lt;/a&gt;&lt;/b&gt;</string>
 
     <string name="seller_migration_generic_ticker_title">Lebih leluasa berjualan dengan Tokopedia Seller</string>
     <string name="seller_migration_generic_ticker_content">Nikmati kendali penuh bertransaksi dengan fitur penjual di aplikasi Tokopedia Seller. &lt;a href="#"&gt;Pelajari Selengkapnya&lt;/a&gt;</string>
     <string name="seller_migration_generic_bottom_sheet_title">Berjualan jadi lebih mudah dengan aplikasi Tokopedia Seller</string>
     <string name="seller_migration_generic_bottom_sheet_set_stock_description">Atur stok dan terima pesanan dengan cepat dan mudah</string>
-    <string name="seller_migration_generic_bottom_sheet_reply_chat_description">Balas chat pembelimu di mana saja, kapan saja</string>
+    <string name="seller_migration_generic_bottom_sheet_reply_chat_description">Balas chat pembeli di mana saja, kapan saja</string>
     <string name="seller_migration_generic_bottom_sheet_promotion_and_ads_description">Pasang promosi dan iklan untuk memajukan bisnismu dengan fitur seperti TopAds, Voucher Toko, Broadcast Chat dan lainnya</string>
 
-    <string name="seller_migration_chat_ticker_title">Cepat balas chat di aplikasi Tokopedia Seller</string>
-    <string name="seller_migration_chat_ticker_description">Kelola chat dari pembeli hanya di aplikasi Tokopedia Seller versi baru. &lt;a href="#"&gt;Pelajari Selengkapnya&lt;/a&gt;</string>
-    <string name="seller_migration_chat_bottom_sheet_title">Balas chat jadi lebih mudah dengan aplikasi Tokopedia Seller</string>
-    <string name="seller_migration_chat_bottom_sheet_title_second_page">Akses cepat untuk menjawab pertanyaan pembeli </string>
-    <string name="seller_migration_chat_bottom_sheet_first_page_description">Jawab semua pertanyaan dari pembeli langsung dari notifikasi chat di HP kamu.</string>
-    <string name="seller_migration_chat_bottom_sheet_second_page_description">Kamu bisa memantau jumlah chat masuk atau langsung balas chat pembeli di notifikasi.</string>
-
-    <string name="seller_migration_product_manage_ticker_title">Kelola stok cepat di aplikasi Tokopedia Seller</string>
-    <string name="seller_migration_product_manage_ticker_content">Penuhi permintaan pembeli dengan rutin cek ketersediaan stok produkmu. Pelajari &lt;a href="#"&gt;di sini&lt;/a&gt;</string>
-    <string name="seller_migration_product_bottom_sheet_title">Tampilan baru pengaturan produk di aplikasi Tokopedia Seller</string>
-    <string name="seller_migration_product_bottom_sheet_content">Kini kamu bisa langsung menambah stok produk, memasang pengingat stok, dan mengubah harga dengan mudah dan cepat.</string>
-
-    <string name="seller_migration_topads_ticker_title">Beragam fitur promosi di Tokopedia Seller</string>
-    <string name="seller_migration_topads_ticker_description">Jangkau pembeli dengan langsung kelola fitur promosi di aplikasi Tokopedia Seller. Pelajari &lt;a href="#"&gt;di sini&lt;/a&gt;</string>
-    <string name="seller_migration_promo_bottom_sheet_title">Ada banyak pilihan fitur promosi di aplikasi Tokopedia Seller, lho!</string>
-    <string name="seller_migration_promo_bottom_sheet_title_second_page">Rutin pantau performa iklan dan promosi tokomu</string>
-    <string name="seller_migration_promo_bottom_sheet_content">Pilih jenis promosi yang sesuai strategi bisnismu atau gunakan rekomendasi dari kami agar lebih optimal beriklan.</string>
-    <string name="seller_migration_promo_bottom_sheet_content_second_page">Laporan performa iklan akan diperbarui secara berkala, agar kamu bisa mengatur strategi promosi untuk tingkatkan penjualan.</string>
-
-    <string name="seller_migration_review_ticker_title">Ulasan dari pembeli sudah berpindah </string>
-    <string name="seller_migration_review_ticker_description">Lihat penilaian dari pembeli setelah beli produkmu di aplikasi Tokopedia Seller. &lt;a href="#"&gt;Pelajari Selengkapnya&lt;/a&gt;</string>
-    <string name="seller_migration_review_bottom_sheet_title">Cek ulasan dari pembeli langsung di aplikasi Tokopedia Seller</string>
-    <string name="seller_migration_review_bottom_sheet_content">Temukan ulasan lengkap untuk setiap produkmu, mulai dari kemasan hingga kualitas produk.</string>
-
-    <string name="seller_migration_account_home_ticker_title">Kejar peluangmu dengan Tokopedia Seller</string>
-    <string name="seller_migration_account_home_ticker_content">Semua fitur khusus penjual akan dialihkan ke Seller App pada &lt;b&gt;%s&lt;/b&gt;. Pelajari &lt;a href="#"&gt;di sini&lt;/a&gt;</string>
-    <string name="seller_migration_account_home_ticker_default_migration_date">10 Juli 2020</string>
-    <string name="seller_migration_account_home_bottom_sheet_title">Yuk, segera beralih ke aplikasi Tokopedia Seller</string>
-    <string name="seller_migration_account_home_bottom_sheet_content">Tampilan baru aplikasi &lt;b&gt;Tokopedia Seller&lt;/b&gt; membuat pengaturan stok dan berkomunikasi dengan pembeli jadi semakin mudah. Penuhi semua kebutuhanmu sebagai seller cukup dari 1 aplikasi.</string>
-    <string name="seller_migration_account_home_bottom_sheet_subtitle">Kenapa Tokopedia Seller bisa memudahkan kamu berjualan?</string>
-    <string name="seller_migration_account_home_bottom_sheet_footer">&lt;a href="https://seller.tokopedia.com/edu/aplikasi-topseller/"&gt;Pelajari Selengkapnya&lt;/a&gt;</string>
-
-    <string name="seller_migration_voucher_toko_title">Buat Voucher Toko Cashback di aplikasi Tokopedia Seller</string>
-    <string name="seller_migration_voucher_toko_content">Gunakan Voucher Toko Cashback untuk meningkatkan &lt;b&gt;lebih banyak pelanggan&lt;/b&gt;, dengan tetap mempertahankan citra brand toko dan harga barang.</string>
+    <string name="seller_migration_account_setting_ticker_title">Pengaturan toko pindah ke Akun Toko</string>
+    <string name="seller_migration_account_setting_ticker_description">Kelola toko lebih efisien dengan akses pengaturan langsung di halaman tokomu. Cek &lt;a href="#"&gt;di sini&lt;/a&gt;</string>
 
     <string name="seller_migration_label_seller_app_only">Di Tokopedia Seller</string>
     <string name="seller_migration_fragment_header_title">Fitur unggulan dapat diakses melalui aplikasi Tokopedia Seller</string>
@@ -59,10 +24,13 @@
 
     <!--    seller migration fragment tabs-->
     <string name="seller_migration_fragment_tab_product">Produk</string>
+    <string name="seller_migration_fragment_tab_discussion">Diskusi</string>
     <string name="seller_migration_fragment_tab_chat">Chat</string>
     <string name="seller_migration_fragment_tab_review">Ulasan</string>
     <string name="seller_migration_fragment_tab_promo_and_ads">Iklan &amp; Promosi</string>
     <string name="seller_migration_fragment_tab_statistic">Statistik</string>
+    <string name="seller_migration_fragment_tab_feed_play">Feed and Play</string>
+    <string name="seller_migration_fragment_tab_financial_services">Layanan Keuangan</string>
 
     <string name="seller_migration_product_manage_set_variant_title">PRODUK VARIAN</string>
     <string name="seller_migration_product_manage_set_variant_description">Tambah produk dengan varian warna dan ukuran dengan mudah.</string>
@@ -75,8 +43,6 @@
     <string name="seller_migration_fragment_product_tab_set_variant_description">Tambah produk bervarian dengan mudah.</string>
     <string name="seller_migration_fragment_product_tab_multi_edit_title">EDIT SEKALIGUS</string>
     <string name="seller_migration_fragment_product_tab_multi_edit_description">Ubah info stok dan harga produk dalam waktu bersamaan.</string>
-    <string name="seller_migration_fragment_product_tab_instagram_import_title">INSTOPED</string>
-    <string name="seller_migration_fragment_product_tab_instagram_import_description">Upload produk langsung dari akun Instagram tokomu.</string>
     <string name="seller_migration_fragment_product_tab_featured_product_title">PRODUK UNGGULAN</string>
     <string name="seller_migration_fragment_product_tab_featured_product_description">Tampilkan 5 produk andalan dan tarik perhatian pembeli.</string>
     <string name="seller_migration_fragment_product_tab_set_cashback_title">ATUR CASHBACK</string>
@@ -89,6 +55,8 @@
     <string name="seller_migration_fragment_chat_tab_template_chat_description">Atur pesan cepat untuk langsung balas chat dari pembeli.</string>
     <string name="seller_migration_fragment_chat_tab_attach_voucher_title">LAMPIRKAN VOUCHER</string>
     <string name="seller_migration_fragment_chat_tab_attach_voucher_description">Kirim voucher tokomu ke pembeli via pesan chat.</string>
+    <string name="seller_migration_fragment_chat_tab_auto_reply_title">BALASAN OTOMATIS</string>
+    <string name="seller_migration_fragment_chat_tab_auto_reply_description">Balas chat dari pembeli berdasarkan pengaturan yang telah kamu tentukan.</string>
 
     <!--    seller migration review seller features-->
     <string name="seller_migration_fragment_review_tab_template_review_title">TEMPLATE ULASAN</string>
@@ -109,6 +77,20 @@
     <string name="seller_migration_fragment_statistic_tab_market_insight_description">Khusus Power Merchant, pantau info pasar agar tokomu jadi lebih kompetitif.</string>
     <string name="title_fetured_product">Fitur Unggulan</string>
 
+    <!--    seller migration feed & play seller features-->
+    <string name="seller_migration_fragment_feed_play_tab_feed_play_title">Feed dan Play</string>
+    <string name="seller_migration_fragment_feed_play_tab_post_feed_title">POST FEED</string>
+    <string name="seller_migration_fragment_feed_play_tab_post_feed_description">Posting info terbaru untuk pelanggan setia tokomu.</string>
+    <string name="seller_migration_fragment_feed_play_tab_live_video_title">LIVE VIDEO</string>
+    <string name="seller_migration_fragment_feed_play_tab_live_video_description">Media streaming video untuk promo khusus secara live.</string>
+
+    <!--    seller migration layanan keuangan seller features-->
+    <string name="seller_migration_fragment_feed_play_tab_financial_services_title">Layanan Keuangan</string>
+    <string name="seller_migration_fragment_financial_service_tab_shop_capital_title">MODAL TOKO</string>
+    <string name="seller_migration_fragment_financial_service_tab_shop_capital_description">Tarik kredit fleksibel hingga Rp300 jt secara instan.</string>
+    <string name="seller_migration_fragment_financial_service_tab_priority_balance_title">SALDO PRIORITAS</string>
+    <string name="seller_migration_fragment_financial_service_tab_priority_balance_description">Tarik hasil jualan tanpa tunggu transaksi selesai.</string>
+
     <!--    product add edit-->
     <string name="seller_migration_add_edit_no_variant_title">Varian Produk</string>
     <string name="seller_migration_add_edit_no_variant_description">Kelola varian warna, ukuran, dan detil lainnya secara mudah hanya di aplikasi &lt;b&gt;Tokopedia Seller&lt;/b&gt;</string>
@@ -117,55 +99,30 @@
     <string name="seller_migration_add_product_in_mainapp_title">Tambah produk</string>
     <string name="seller_migration_add_product_in_mainapp_desc">Pilih produk tanpa varian warna dan ukuran.</string>
 
-    <!--    seller account-->
-    <string name="seller_migration_account_ticker_desc">Fitur unggulan hanya bisa diakses di aplikasi Tokopedia Seller mulai &lt;b&gt;11 Sep 2020&lt;/b&gt;. Pelajari &lt;b&gt;&lt;a href="#"&gt;di sini&lt;/a&gt;&lt;/b&gt;</string>
-    <string name="seller_migration_account_ticker_desc_dynamic">Fitur unggulan hanya bisa diakses di aplikasi Tokopedia Seller mulai &lt;b&gt;%s&lt;/b&gt;. Pelajari &lt;b&gt;&lt;a href="#"&gt;di sini&lt;/a&gt;&lt;/b&gt;</string>
-    <string name="seller_migration_account_bottom_sheet_header_info">Fitur pengembangan bisnis akan dialihkan ke aplikasi</string>
-    <string name="seller_migration_account_bottom_sheet_header_app_name">Tokopedia Seller</string>
-    <string name="seller_migration_account_bottom_sheet_header_start">Mulai dari</string>
-    <string name="seller_migration_account_bottom_sheet_detail"><b>Untuk pengalaman berjualan terbaik,</b> berikut alasan menggunakan aplikasi Tokopedia Seller:</string>
-    <string name="seller_migration_account_bottom_sheet_item_title_focus">Lebih fokus berjualan</string>
-    <string name="seller_migration_account_bottom_sheet_item_title_closer">Dekat dengan pembeli</string>
-    <string name="seller_migration_account_bottom_sheet_item_title_monitor">Pantau perkembangan bisnis</string>
-    <string name="seller_migration_account_bottom_sheet_item_title_effective">Efektif promosikan produkmu</string>
-    <string name="seller_migration_account_bottom_sheet_item_desc_focus">Atur prioritas berjualan melalui fitur "Penting Hari Ini" di dashboard seller.</string>
-    <string name="seller_migration_account_bottom_sheet_item_desc_closer">Tanggapi pembeli langsung dengan fitur quick reply chat dan cek aktivitas berjualan di notifikasi khusus seller.</string>
-    <string name="seller_migration_account_bottom_sheet_item_desc_monitor">Pertajam strategi bisnismu dengan rutin evaluasi hasil penjualan di wawasan toko dan wawasan pasar.</string>
-    <string name="seller_migration_account_bottom_sheet_item_desc_effective">Tingkatkan penjualanmu dengan akses fitur TopAds, Voucher Toko, Feed, Broadcast Chat, dan lainnya.</string>
 
-    <!--    topads-->
-    <string name="seller_migration_topads_ticker_desc_prefix">Fitur TopAds</string>
-    <string name="seller_migration_topads_bottom_sheet_title">TopAds akan dialihkan ke aplikasi Tokopedia Seller</string>
-    <string name="seller_migration_topads_bottom_sheet_desc">Beriklan lebih efektif dan jangkau lebih banyak pembeli dengan pakai fitur TopAds di aplikasi Tokopedia Seller agar:</string>
-    <string name="seller_migration_topads_bottom_sheet_item_product"><b>1.</b> Produkmu tampil &amp; mudah ditemukan.</string>
-    <string name="seller_migration_topads_bottom_sheet_item_strenghten"><b>2.</b> Perkuat daya saing &amp; jangkau banyak pembeli.</string>
-    <string name="seller_migration_topads_bottom_sheet_item_advertise"><b>3.</b> Beriklan lebih efektif dan tepat sasaran.</string>
-
-    <!--    broadcast_chat-->
-    <string name="seller_migration_broadcast_chat_ticker_desc_prefix">Broadcast Chat</string>
-    <string name="seller_migration_broadcast_chat_bottom_sheet_title">Broadcast Chat akan dialihkan ke aplikasi Tokopedia Seller</string>
-    <string name="seller_migration_broadcast_chat_bottom_sheet_desc">Kirim pesan promosi secara langsung ke banyak calon pembeli pakai Broadcast Chat di aplikasi Tokopedia Seller agar bisa:</string>
-    <string name="seller_migration_broadcast_chat_bottom_sheet_item_send"><b>1.</b> Kirim voucher toko &amp; produk ke target pembeli.</string>
-    <string name="seller_migration_broadcast_chat_bottom_sheet_item_match"><b>2.</b> Sesuaikan konten promosi yang kamu mau.</string>
-    <string name="seller_migration_broadcast_chat_bottom_sheet_item_access"><b>3.</b> Akses cepat melalui menu Iklan dan Promosi.</string>
+    <!-- Shop Page Feed -->
+    <string name="seller_migration_tab_feed_bottom_sheet_content">Tambah, edit, dan akses pengaturan feed hanya tersedia di aplikasi &lt;b&gt;&lt;a href="#"&gt;Tokopedia Seller.&lt;/a&gt;&lt;/b&gt;</string>
+    <string name="seller_migration_tab_feed_no_post_title">Tambah post untuk tingkatkan penjualan melalui aplikasi Tokopedia Seller</string>
+    <string name="seller_migration_tab_feed_no_post_description">Upload konten menarik dan update toko kamu dengan fitur Feed untuk meningkatkan pengunjung.</string>
     
-    <!--    feed-->
-    <string name="seller_migration_feed_ticker_desc_prefix">Post Feed</string>
-    <string name="seller_migration_feed_bottom_sheet_title">Fitur Post Feed akan dialihkan ke aplikasi Tokopedia Seller</string>
-    <string name="seller_migration_feed_bottom_sheet_desc">Kini, posting informasi produk dan kabar terbaru untuk pelanggan setia tokomu jadi semakin mudah dengan aplikasi Tokopedia Seller.</string>
+    
+    <!-- Feed -->
+    <string name="seller_migration_bottom_sheet_feed_post_your_favorite_item">Post barang favoritmu</string>
+    <string name="seller_migration_bottom_sheet_feed_post_shop">Post toko</string>
+    <string name="seller_migration_bottom_sheet_feed_in_tokopedia_seller">Di Tokopedia Seller</string>
 
-    <!--    modal toko-->
-    <string name="seller_migration_modal_toko_ticker_desc_prefix">Modal Toko dan Saldo Prioritas</string>
-    <string name="seller_migration_modal_toko_bottom_sheet_title">Modal Toko akan dialihkan ke Layanan Keuangan di aplikasi Tokopedia Seller</string>
-    <string name="seller_migration_modal_toko_bottom_sheet_desc">Tarik dana dengan limit hingga Rp300 juta untuk kembangkan bisnismu. Nikmati keuntungan pakai Modal Toko:</string>
-    <string name="seller_migration_modal_toko_bottom_sheet_item_active"><b>1.</b> Aktifkan Modal Toko hanya dengan upload KTP.</string>
-    <string name="seller_migration_modal_toko_bottom_sheet_item_withdraw"><b>2.</b> Tarik dana hingga ratusan juta kapan saja.</string>
-    <string name="seller_migration_modal_toko_bottom_sheet_item_process"><b>3.</b> Proses cepat &amp; dapat ditarik melalui rekening. </string>
+    <!-- Broadcast chat -->
+    <string name="seller_migration_tab_ads_broadcast_chat_title">BROADCAST CHAT</string>
+    <string name="seller_migration_tab_ads_broadcast_chat_description">Kirim pesan promosi langsung ke banyak calon pembeli.</string>
+    <string name="seller_migration_entry_point_broadcast_chat_description">Kirim chat ke berbagai calon pembeli untuk promosikan produkmu.</string>
 
-    <!--    saldo prioritas-->
-    <string name="seller_migration_saldo_prioritas_bottom_sheet_title">Saldo Prioritas akan dialihkan ke Layanan Keuangan di aplikasi Tokopedia Seller</string>
-    <string name="seller_migration_saldo_prioritas_bottom_sheet_desc">Terima hasil penjualanmu lebih cepat tanpa tunggu konfirmasi pembeli. Nikmati keuntungan pakai Saldo Prioritas:</string>
-    <string name="seller_migration_saldo_prioritas_bottom_sheet_item_process"><b>1.</b> Proses aktivasi cepat maks. 1 hari kerja.</string>
-    <string name="seller_migration_saldo_prioritas_bottom_sheet_item_result"><b>2.</b> Hasil penjualan cair setelah kamu input resi.</string>
-    <string name="seller_migration_saldo_prioritas_bottom_sheet_item_return"><b>3.</b> Pengembalian dana otomatis setelah pesanan selesai.</string>
+    <!-- Discussion Template -->
+    <string name="seller_migration_template_title">Template BALASAN</string>
+    <string name="seller_migration_template_subtitle">Balas diskusi pembeli lebih cepat hingga 5 template.</string>
+
+    <!-- Discussion SmartReply -->
+    <string name="seller_migration_smart_reply_title">SMART REPLY</string>
+    <string name="seller_migration_smart_reply_subtitle">Atur balasan otomatis untuk jawab diskusi tentang stok.</string>
+
+
 </resources>

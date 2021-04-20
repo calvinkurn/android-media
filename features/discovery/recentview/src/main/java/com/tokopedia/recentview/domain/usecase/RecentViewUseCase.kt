@@ -5,14 +5,10 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.recentview.data.entity.Badge
-import com.tokopedia.recentview.data.entity.Label
-import com.tokopedia.recentview.data.entity.RecentViewData
 import com.tokopedia.recentview.data.entity.RecentViewResult
 import com.tokopedia.recentview.data.mapper.RecentViewMapper
 import com.tokopedia.recentview.data.query.RecentViewQuery
-import com.tokopedia.recentview.view.viewmodel.LabelsViewModel
-import com.tokopedia.recentview.view.viewmodel.RecentViewDetailProductViewModel
+import com.tokopedia.recentview.view.viewmodel.RecentViewDetailProductDataModel
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import java.util.*
@@ -23,13 +19,13 @@ import java.util.*
 class RecentViewUseCase (
         private val graphqlRepository: GraphqlRepository,
         private val recentViewMapper: RecentViewMapper
-): UseCase<ArrayList<RecentViewDetailProductViewModel>>() {
+): UseCase<ArrayList<RecentViewDetailProductDataModel>>() {
 
     private val params = RequestParams.create()
 
     private val PARAM_USER_ID = "userID";
 
-    override suspend fun executeOnBackground(): ArrayList<RecentViewDetailProductViewModel> {
+    override suspend fun executeOnBackground(): ArrayList<RecentViewDetailProductDataModel> {
         val cacheStrategy =
                 GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
 
@@ -53,7 +49,7 @@ class RecentViewUseCase (
 
     fun getParam(loginID: String) {
         params.parameters.clear()
-        params.putInt(PARAM_USER_ID, loginID.toInt())
+        params.putInt(PARAM_USER_ID, loginID.toIntOrNull() ?: 0)
     }
 
 }

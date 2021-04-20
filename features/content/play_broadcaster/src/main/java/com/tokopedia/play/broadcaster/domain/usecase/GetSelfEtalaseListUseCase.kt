@@ -1,8 +1,8 @@
 package com.tokopedia.play.broadcaster.domain.usecase
 
 import com.tokopedia.play.broadcaster.type.EtalaseType
-import com.tokopedia.play.broadcaster.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play.broadcaster.util.error.DefaultNetworkThrowable
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
 import com.tokopedia.shop.common.graphql.domain.usecase.shopetalase.GetShopEtalaseByShopUseCase
 import com.tokopedia.usecase.RequestParams
@@ -16,7 +16,7 @@ import javax.inject.Inject
  * Created by jegul on 02/06/20
  */
 class GetSelfEtalaseListUseCase @Inject constructor(
-        dispatcher: CoroutineDispatcherProvider,
+        dispatcher: CoroutineDispatchers,
         private val getShopEtalaseByShopUseCase: GetShopEtalaseByShopUseCase,
         private val userSession: UserSessionInterface
 ) : UseCase<List<ShopEtalaseModel>>(
@@ -34,7 +34,7 @@ class GetSelfEtalaseListUseCase @Inject constructor(
     override suspend fun executeOnBackground(): List<ShopEtalaseModel> {
         try {
             return getShopEtalaseByShopUseCase.getData(params).filter {
-                it.id.toInt() == ALL_PRODUCTS_ID || EtalaseType.getByType(it.type, it.id) == EtalaseType.User
+                it.id == ALL_PRODUCTS_ID || EtalaseType.getByType(it.type, it.id) == EtalaseType.User
             }
         } catch (e: Throwable) {
             throw if (e.hasCauseType(listOf(UnknownHostException::class.java, SocketTimeoutException::class.java))) DefaultNetworkThrowable()
@@ -53,6 +53,6 @@ class GetSelfEtalaseListUseCase @Inject constructor(
 
     companion object {
 
-        private const val ALL_PRODUCTS_ID = 2
+        private const val ALL_PRODUCTS_ID = "2"
     }
 }

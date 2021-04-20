@@ -6,7 +6,7 @@ apply plugin: 'io.hansel.preprocessor.module'
 buildscript {
     repositories {
         mavenCentral()
-        maven { url 'https://hansel.io/maven' }
+        maven { url 'https://maven-hansel.tokopedia.com/maven' }
     }
     dependencies {
         classpath rootProject.ext.miscDependencies.hansel
@@ -14,9 +14,17 @@ buildscript {
 }
 
 android {
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+
     defaultConfig {
         multiDexEnabled true
         testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
+    }
+
+    testOptions {
+        animationsDisabled = true
     }
 }
 
@@ -29,6 +37,9 @@ dependencies {
     implementation project(rootProject.ext.libraries.track)
     implementation project(rootProject.ext.libraries.trackingOptimizer)
     implementation project(rootProject.ext.libraries.analytics)
+    implementation project(rootProject.ext.libraries.floatingWindow)
+    implementation project(rootProject.ext.libraries.remoteConfig)
+    implementation project(rootProject.ext.libraries.keys)
 
     implementation project(rootProject.ext.features.playCommon)
     implementation project(rootProject.ext.features.atc_common)
@@ -37,6 +48,7 @@ dependencies {
 
     implementation rootProject.ext.tkpdLibDependencies.youtubePlayer
 
+    implementation rootProject.ext.tkpdInternalLibDependencies.authentication
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
@@ -46,7 +58,7 @@ dependencies {
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
-    implementation (rootProject.ext.serviceDependencies.crashlytics) {
+    implementation (rootProject.ext.firebase.crashlytics) {
         transitive = true
     }
 
@@ -54,30 +66,39 @@ dependencies {
     implementation rootProject.ext.miscDependencies.coroutineAndroid
     implementation rootProject.ext.miscDependencies.lottie
     implementation rootProject.ext.miscDependencies.multiDex
+    implementation rootProject.ext.miscDependencies.viewModelKtx
 
     implementation rootProject.ext.networkDependencies.glide
 
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.components
+    implementation rootProject.ext.unifyDependencies.icons
     implementation rootProject.ext.unifyDependencies.dialog
     implementation rootProject.ext.unifyDependencies.global_error
 
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.assertJCore
-    testImplementation rootProject.ext.testDependencies.couroutinesTest
+    testImplementation rootProject.ext.miscDependencies.coroutineTest
     testImplementation rootProject.ext.testDependencies.archCoreTesting
     testImplementation rootProject.ext.testDependencies.junitJupiterApi
     testImplementation rootProject.ext.testDependencies.junitPlatformRunner
+    testImplementation project(rootProject.ext.libraries.unitTest)
     testRuntimeOnly rootProject.ext.testDependencies.junitJupiterEngine
 
     implementation rootProject.ext.miscDependencies.exoPlayerCore
     implementation rootProject.ext.miscDependencies.exoPlayerUi
 
+    androidTestImplementation rootProject.ext.testDependencies.assertJCore
+    androidTestImplementation rootProject.ext.miscDependencies.coroutineTest
     androidTestImplementation rootProject.ext.testDependencies.mockkAndroid
-    androidTestImplementation rootProject.ext.testDependencies.espressoContrib
-    androidTestImplementation project(rootProject.ext.libraries.instrumentation_test)
-    androidTestAnnotationProcessor rootProject.ext.miscDependencies.daggerCompiler
     androidTestImplementation rootProject.ext.testDependencies.archCoreTesting
+    androidTestImplementation rootProject.ext.testDependencies.espressoContrib
+    androidTestImplementation rootProject.ext.testDependencies.espressoIntents
+
+    androidTestImplementation project(rootProject.ext.libraries.instrumentation_test)
+    androidTestImplementation project(rootProject.ext.libraries.cassavaTest)
+
+    androidTestAnnotationProcessor rootProject.ext.miscDependencies.daggerCompiler
 }
 
 project.ext {

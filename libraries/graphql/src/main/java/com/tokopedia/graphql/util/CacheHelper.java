@@ -2,6 +2,8 @@ package com.tokopedia.graphql.util;
 
 import android.text.TextUtils;
 
+import androidx.annotation.NonNull;
+
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.graphql.data.model.BackendCache;
 
@@ -151,5 +153,20 @@ public class CacheHelper {
         }
 
         return paramMap;
+    }
+
+    @NonNull
+    public static String[] parseQueryHashHeader(String queryHashHeaderString){
+        String[] qhValues = {};
+        if(!TextUtils.isEmpty(queryHashHeaderString)) {
+            String[] splitFlagQh = queryHashHeaderString.split(";");
+            if(splitFlagQh.length > 0){
+                String[] splitValuesQh = splitFlagQh[0].split(",");
+                if(splitValuesQh.length > 0){
+                    qhValues = splitValuesQh;
+                }
+            }
+        }
+        return qhValues;
     }
 }

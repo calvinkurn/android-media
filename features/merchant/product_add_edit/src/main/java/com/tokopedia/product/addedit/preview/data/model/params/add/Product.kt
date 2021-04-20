@@ -23,7 +23,7 @@ data class Product (
         var status: String = "",
         @SerializedName("stock")
         @Expose
-        var stock: Int = 0,
+        var stock: Int? = 0,
         @SerializedName("isPrimary")
         @Expose
         var isPrimary: Boolean = false,

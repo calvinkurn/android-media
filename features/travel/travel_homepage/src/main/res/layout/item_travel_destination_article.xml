@@ -10,7 +10,7 @@
 
     <androidx.cardview.widget.CardView
         android:layout_width="181dp"
-        android:layout_height="@dimen/dp_110"
+        android:layout_height="110dp"
         app:cardCornerRadius="@dimen/layout_lvl1">
 
         <androidx.appcompat.widget.AppCompatImageView
@@ -24,8 +24,8 @@
         android:id="@+id/tv_article_subtitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_12"
-        android:textColor="@color/Neutral_N700_44"
+        android:layout_marginTop="@dimen/unify_space_12"
+        android:textColor="@color/Unify_N700_44"
         app:typographyType="body_3"
         tools:text="5 Des 2019" />
 
@@ -33,8 +33,8 @@
         android:id="@+id/tv_article_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_4"
-        android:textColor="@color/Neutral_N700_96"
+        android:layout_marginTop="@dimen/spacing_lvl2"
+        android:textColor="@color/Unify_N700_96"
         app:typographyType="body_2"
         app:typographyWeight="bold"
         tools:text="The Most Epic Sumba Journey - TRAVELVLOG"

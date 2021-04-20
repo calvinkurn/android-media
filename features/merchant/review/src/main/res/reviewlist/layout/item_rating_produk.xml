@@ -9,6 +9,7 @@
     android:paddingLeft="@dimen/spacing_lvl4"
     android:paddingRight="@dimen/spacing_lvl4"
     android:paddingEnd="@dimen/spacing_lvl4"
+    android:background="?selectableItemBackground"
     android:orientation="vertical">
 
     <com.tokopedia.unifycomponents.ImageUnify
@@ -28,9 +29,8 @@
         android:layout_height="wrap_content"
         android:maxLines="2"
         android:layout_marginStart="@dimen/dp_12"
-        android:layout_marginLeft="@dimen/dp_12"
         android:layout_marginTop="@dimen/spacing_lvl3"
-        android:textColor="@color/clr_f531353b"
+        android:textColor="@color/Unify_N700_96"
         app:layout_constraintBottom_toTopOf="@id/ivRating"
         app:layout_constraintStart_toEndOf="@+id/ivItemProduct"
         app:layout_constraintTop_toTopOf="parent"
@@ -39,16 +39,27 @@
         app:typographyWeight="bold"
         tools:text="Adidas NMD Pharell William x Human Made" />
 
+    <com.tokopedia.unifycomponents.Label
+        android:id="@+id/kejarUlasanLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:text="@string/kejar_ulasan_label"
+        android:layout_marginTop="@dimen/spacing_lvl2"
+        app:labelType="general_light_orange"
+        app:layout_constraintStart_toStartOf="@id/tgTitleProduct"
+        app:layout_constraintTop_toBottomOf="@id/tgTitleProduct"
+        tools:visibility="visible"/>
+
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/ivRating"
         android:layout_width="@dimen/dp_18"
         android:layout_height="@dimen/dp_18"
         android:layout_marginStart="@dimen/dp_10"
-        android:layout_marginLeft="@dimen/dp_10"
         android:layout_marginTop="@dimen/dp_4"
         app:layout_constraintBottom_toBottomOf="@id/ivItemProduct"
         app:layout_constraintStart_toEndOf="@id/ivItemProduct"
-        app:layout_constraintTop_toBottomOf="@id/tgTitleProduct"
+        app:layout_constraintTop_toBottomOf="@id/kejarUlasanLabel"
         tools:srcCompat="@drawable/ic_rating_star_item" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -57,11 +68,10 @@
         android:layout_height="wrap_content"
         app:typographyType="body_1"
         app:typographyWeight="bold"
-        android:textColor="@color/clr_f531353b"
+        android:textColor="@color/Unify_N700_96"
         android:layout_marginTop="@dimen/dp_4"
-        android:layout_marginLeft="@dimen/dp_4"
         android:layout_marginStart="@dimen/dp_4"
-        app:layout_constraintTop_toBottomOf="@id/tgTitleProduct"
+        app:layout_constraintTop_toBottomOf="@id/kejarUlasanLabel"
         app:layout_constraintBottom_toBottomOf="@id/ivItemProduct"
         app:layout_constraintStart_toEndOf="@id/ivRating"
         tools:text="5.0" />
@@ -72,11 +82,10 @@
         android:layout_height="wrap_content"
         app:typographyType="body_1"
         app:typographyWeight="reguler"
-        android:textColor="@color/clr_f531353b"
+        android:textColor="@color/Unify_N700_96"
         android:layout_marginTop="@dimen/dp_4"
-        android:layout_marginLeft="@dimen/dp_4"
         android:layout_marginStart="@dimen/dp_4"
-        app:layout_constraintTop_toBottomOf="@id/tgTitleProduct"
+        app:layout_constraintTop_toBottomOf="@id/kejarUlasanLabel"
         app:layout_constraintStart_toEndOf="@id/tgRatingCount"
         app:layout_constraintBottom_toBottomOf="@id/ivItemProduct"
         tools:text="/ 5 Ulasan" />

@@ -23,13 +23,40 @@
     <dimen name="chat_width">270dp</dimen>
     <dimen name="attachment_container_width">270dp</dimen>
     <dimen name="attachment_title_max_width">172dp</dimen>
-    <dimen name="chatcommon_14dp">14dp</dimen>
+
     <dimen name="chatcommon_1dp">1dp</dimen>
-    <dimen name="chatcommon_12dp">12dp</dimen>
     <dimen name="chatcommon_3dp">3dp</dimen>
+    <dimen name="chatcommon_4dp">4dp</dimen>
+    <dimen name="chatcommon_5dp">5dp</dimen>
+    <dimen name="chatcommon_6dp">6dp</dimen>
+    <dimen name="chatcommon_7dp">7dp</dimen>
+    <dimen name="chatcommon_8dp">8dp</dimen>
     <dimen name="chatcommon_9dp">9dp</dimen>
+    <dimen name="chatcommon_10dp">10dp</dimen>
+    <dimen name="chatcommon_11dp">11dp</dimen>
+    <dimen name="chatcommon_12dp">12dp</dimen>
+    <dimen name="chatcommon_14dp">14dp</dimen>
+    <dimen name="chatcommon_15dp">15dp</dimen>
+    <dimen name="chatcommon_18dp">18dp</dimen>
+    <dimen name="chatcommon_19dp">19dp</dimen>
+    <dimen name="chatcommon_20dp">20dp</dimen>
     <dimen name="chatcommon_22dp">22dp</dimen>
     <dimen name="chatcommon_26dp">26dp</dimen>
+    <dimen name="chatcommon_28dp">28dp</dimen>
+    <dimen name="chatcommon_30dp">30dp</dimen>
+    <dimen name="chatcommon_40dp">40dp</dimen>
+    <dimen name="chatcommon_50dp">50dp</dimen>
+    <dimen name="chatcommon_56dp">56dp</dimen>
     <dimen name="chatcommon_60dp">60dp</dimen>
+    <dimen name="chatcommon_80dp">80dp</dimen>
+    <dimen name="chatcommon_150dp">150dp</dimen>
+    <dimen name="chatcommon_172dp">172dp</dimen>
+    <dimen name="chatcommon_240dp">240dp</dimen>
+    <dimen name="chatcommon_270dp">270dp</dimen>
 
+    <dimen name="chatcommon_3sp">3sp</dimen>
+    <dimen name="chatcommon_5sp">5sp</dimen>
+    <dimen name="chatcommon_9sp">9sp</dimen>
+    <dimen name="chatcommon_10sp">10sp</dimen>
+    <dimen name="chatcommon_11sp">11sp</dimen>
 </resources>

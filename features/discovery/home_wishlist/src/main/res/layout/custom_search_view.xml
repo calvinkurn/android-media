@@ -1,52 +1,84 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@drawable/bg_searchbar"
-    android:fitsSystemWindows="true"
-    android:padding="@dimen/dp_10"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
     android:descendantFocusability="beforeDescendants"
-    android:focusableInTouchMode="true"
-    xmlns:android="http://schemas.android.com/apk/res/android">
-    <ImageView
-        android:id="@+id/image_view_search"
-        android:layout_marginLeft="@dimen/dp_4"
-        android:layout_marginStart="@dimen/dp_4"
-        android:layout_gravity="center"
+    android:fitsSystemWindows="true"
+    android:focusableInTouchMode="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:background="@drawable/bg_searchbar"
+        android:descendantFocusability="beforeDescendants"
+        android:fitsSystemWindows="true"
+        android:focusableInTouchMode="true"
+        android:padding="@dimen/dp_10">
+
+        <ImageView
+            android:contentDescription="@string/content_desc_custom_search_magnify_icon"
+            android:id="@+id/image_view_search"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginStart="@dimen/dp_4"
+            android:layout_marginLeft="@dimen/dp_4"
+            android:tint="@color/Unify_N200"
+            app:srcCompat="@drawable/ic_system_action_search_grayscale_24" />
+
+        <EditText
+            android:id="@+id/edit_text_search"
+            style="@style/EditText"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="@dimen/dp_4"
+            android:layout_marginRight="@dimen/dp_4"
+            android:layout_weight="1"
+            android:background="@null"
+            android:contentDescription="@string/content_desc_edit_text_search"
+            android:ellipsize="end"
+            android:gravity="center_vertical"
+            android:hint="@string/wishlist_hint_search"
+            android:imeOptions="actionSearch"
+            android:inputType="text"
+            android:maxLines="1"
+            android:textColor="@color/Unify_N700_44"
+            android:textSize="@dimen/sp_16"
+            tools:ignore="ContentDescription" />
+
+        <ImageButton
+            android:contentDescription="@string/content_desc_close_text_search"
+            android:id="@+id/image_button_close"
+            android:layout_width="@dimen/dp_22"
+            android:layout_height="@dimen/dp_22"
+            android:layout_gravity="center"
+            android:layout_marginEnd="@dimen/dp_4"
+            android:layout_marginRight="@dimen/dp_4"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:clickable="true"
+            android:focusable="true"
+            android:tint="@color/Unify_N200"
+            android:visibility="gone"
+            app:srcCompat="@drawable/ic_system_action_close_grayscale_24" />
+
+    </LinearLayout>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/text_manage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:tint="@android:color/darker_gray"
-        app:srcCompat="@drawable/ic_system_action_search_grayscale_24"/>
-
-    <EditText
-        android:id="@+id/edit_text_search"
-        style="@style/EditText"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_marginLeft="@dimen/dp_4"
-        android:layout_marginRight="@dimen/dp_4"
-        android:layout_weight="1"
-        android:background="@null"
-        android:ellipsize="end"
-        android:gravity="center_vertical"
-        android:hint="@string/wishlist_hint_search"
-        android:imeOptions="actionSearch"
-        android:inputType="text"
-        android:maxLines="1"
-        android:textColor="@color/Neutral_N700_44"
-        android:textSize="@dimen/sp_16" />
-
-    <ImageButton
-        android:id="@+id/image_button_close"
-        android:layout_width="@dimen/dp_22"
-        android:layout_height="@dimen/dp_22"
-        android:layout_marginRight="@dimen/dp_4"
-        android:layout_marginEnd="@dimen/dp_4"
         android:layout_gravity="center"
-        android:tint="@android:color/darker_gray"
-        android:clickable="true"
-        android:focusable="true"
-        android:visibility="gone"
-        android:background="?attr/selectableItemBackgroundBorderless"
-        app:srcCompat="@drawable/ic_system_action_close_grayscale_24" />
+        android:layout_marginStart="@dimen/dp_10"
+        android:foreground="?selectableItemBackgroundBorderless"
+        android:paddingStart="@dimen/dp_16"
+        android:paddingTop="@dimen/dp_12"
+        android:paddingEnd="@dimen/dp_16"
+        android:paddingBottom="@dimen/dp_12"
+        android:text="@string/label_manage"
+        android:textColor="@color/Unify_G500"
+        app:typographyType="heading_6" />
+
 </LinearLayout>

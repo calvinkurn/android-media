@@ -5,11 +5,11 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:layout_marginTop="@dimen/spacing_lvl3"
-    android:paddingLeft="@dimen/spacing_lvl4"
+    android:paddingLeft="@dimen/home_component_margin_default"
     android:paddingTop="@dimen/spacing_lvl3"
-    android:paddingRight="@dimen/spacing_lvl4"
+    android:paddingRight="@dimen/home_component_margin_default"
     android:paddingBottom="@dimen/spacing_lvl4"
-    android:background="@color/grey_100">
+    android:background="@color/Unify_N50">
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:layout_width="match_parent"
@@ -26,7 +26,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@android:color/white"
+            android:background="@color/Unify_N0"
             android:padding="@dimen/spacing_lvl3">
 
             <com.elyeproj.loaderviewlibrary.LoaderImageView

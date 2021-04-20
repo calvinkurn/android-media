@@ -1,10 +1,10 @@
 package com.tokopedia.flight.bookingV3.data.mapper
 
 import com.tokopedia.common.travel.utils.TravelDateUtil
-import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.flight.bookingV3.data.FlightCart
 import com.tokopedia.flight.bookingV3.data.FlightCartViewEntity
 import com.tokopedia.flight.bookingV3.data.FlightPromoViewEntity
+import com.tokopedia.flight.common.util.FlightCurrencyFormatUtil
 import com.tokopedia.flight.detail.view.model.FlightDetailModel
 import com.tokopedia.flight.detail.view.model.FlightDetailRouteInfoModel
 import com.tokopedia.flight.detail.view.model.FlightDetailRouteModel
@@ -243,7 +243,7 @@ class FlightBookingMapper {
                 flightDetailViewModel.countAdult = flight.adult
                 flightDetailViewModel.countChild = flight.child
                 flightDetailViewModel.countInfant = flight.infant
-                flightDetailViewModel.total = CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(flightDetailViewModel.totalNumeric)
+                flightDetailViewModel.total = FlightCurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(flightDetailViewModel.totalNumeric)
                 flightDetailViewModel.departureTime = journey.departureTime
                 flightDetailViewModel.arrivalTime = journey.arrivalTime
                 flightDetailViewModel.airlineDataList = listOf()

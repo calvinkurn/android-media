@@ -6,18 +6,18 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.topchat.chatroom.domain.mapper.ChatAttachmentMapper
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.Attachment
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ChatAttachmentResponse
-import com.tokopedia.topchat.chatroom.view.viewmodel.TopchatCoroutineContextProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import kotlinx.coroutines.*
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
-class ChatAttachmentUseCase @Inject constructor(
+open class ChatAttachmentUseCase @Inject constructor(
         private val gqlUseCase: GraphqlUseCase<ChatAttachmentResponse>,
         private val mapper: ChatAttachmentMapper,
-        private var dispatchers: TopchatCoroutineContextProvider
+        private var dispatchers: CoroutineDispatchers
 ) : CoroutineScope {
 
-    override val coroutineContext: CoroutineContext get() = dispatchers.Main + SupervisorJob()
+    override val coroutineContext: CoroutineContext get() = dispatchers.main + SupervisorJob()
 
     private val paramMsgId = "msgId"
     private val paramLimit = "AttachmentIDs"
@@ -30,12 +30,12 @@ class ChatAttachmentUseCase @Inject constructor(
     }
 
     fun getAttachments(
-            msgId: Int,
+            msgId: Long,
             attachmentId: String,
             onSuccess: (ArrayMap<String, Attachment>) -> Unit,
             onError: (Throwable, ArrayMap<String, Attachment>) -> Unit
     ) {
-        launchCatchError(dispatchers.IO,
+        launchCatchError(dispatchers.io,
                 {
                     val params = generateParams(msgId, attachmentId)
                     val response = gqlUseCase.apply {
@@ -44,13 +44,13 @@ class ChatAttachmentUseCase @Inject constructor(
                         setGraphqlQuery(query)
                     }.executeOnBackground()
                     val mapAttachment = mapper.map(response)
-                    withContext(dispatchers.Main) {
+                    withContext(dispatchers.main) {
                         onSuccess(mapAttachment)
                     }
                 },
                 {
                     val mapErrorAttachment = mapper.mapError(attachmentId)
-                    withContext(dispatchers.Main) {
+                    withContext(dispatchers.main) {
                         onError(it, mapErrorAttachment)
                     }
                 }
@@ -58,7 +58,7 @@ class ChatAttachmentUseCase @Inject constructor(
     }
 
     private fun generateParams(
-            msgId: Int,
+            msgId: Long,
             attachmentId: String
     ): Map<String, Any> {
         return mapOf(

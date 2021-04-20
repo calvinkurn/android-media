@@ -1,10 +1,14 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.tokopedia.linker" >
+    package="com.tokopedia.linker">
+
     <application>
         <!-- Branch init -->
         <meta-data
             android:name="io.branch.sdk.BranchKey"
-            android:value="@string/BRANCH_SDK_KEY" />
+            android:value="@string/branch_sdk_key_ma" />
+        <meta-data
+            android:name="io.branch.sdk.BranchKey.test"
+            android:value="@string/BRANCH_SDK_KEY_TEST" />
     </application>
 
 </manifest>

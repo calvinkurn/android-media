@@ -1,0 +1,191 @@
+{
+  "readme": "Impression, item click, and click all for lego banner 3, 4 and 6",
+  "mode": "exact",
+  "query": [
+    {
+      "promotions": [{
+        "creative_name": "{{.*}}",
+        "creative_slot": "{{.*}}",
+        "item_id": "{{.*}}",
+        "item_name": "{{/ - .* - .* - .*}}"
+      }],
+      "eventCategory": "homepage",
+      "event": "view_item",
+      "eventAction": "home banner impression",
+      "sessionIris": "{{.*}}",
+      "eventLabel": "{{.*}}"
+    },
+    {
+      "promotions": [{
+        "creative_name": "{{.*}}",
+        "creative_slot": "{{.*}}",
+        "item_id": "{{.*}}",
+        "item_name": "{{.*}}",
+        "creative_url": "{{.*}}"
+      }],
+      "eventCategory": "homepage",
+      "affinityLabel": "{{.*}}",
+      "attribution": "{{.*}}",
+      "shopId" : "{{.*}}",
+      "event": "select_content",
+      "eventAction": "lego banner 3 image click",
+      "sessionIris": "{{.*}}",
+      "eventLabel": "{{.*}}",
+      "categoryId": "{{.*}}",
+      "channelId": "{{.*}}",
+      "campaignCode": "{{.*}}"
+    },
+    {
+      "businessUnit": "home & browse",
+      "eventCategory": "homepage",
+      "screenName" : "/",
+      "userId" : "{{.*}}",
+      "eventAction": "lego banner 3 image click view all",
+      "sessionIris": "{{.*}}",
+      "eventLabel": "{{.*}}",
+      "affinityLabel": "{{.*}}",
+      "currentSite": "{{.*}}",
+      "attribution": "{{.*}}",
+      "shopId": "{{.*}}",
+      "event": "clickHomepage",
+      "categoryId": "{{.*}}",
+      "channelId": "{{.*}}",
+      "campaignCode": "{{.*}}"
+    },
+    {
+      "promotions": [{
+        "creative_name": "{{.*}}",
+        "creative_slot": "{{.*}}",
+        "item_id": "{{.*}}",
+        "item_name": "{{.*}}",
+        "creative_url": "{{.*}}"
+      }],
+      "eventCategory": "homepage",
+      "affinityLabel": "{{.*}}",
+      "attribution": "{{.*}}",
+      "shopId" : "{{.*}}",
+      "event": "select_content",
+      "eventAction": "lego banner 4 image click",
+      "sessionIris": "{{.*}}",
+      "eventLabel": "{{.*}}",
+      "categoryId": "{{.*}}",
+      "channelId": "{{.*}}",
+      "campaignCode": "{{.*}}"
+    },
+    {
+      "businessUnit": "home & browse",
+      "eventCategory": "homepage",
+      "screenName" : "/",
+      "userId" : "{{.*}}",
+      "eventAction": "lego banner 4 image click view all",
+      "sessionIris": "{{.*}}",
+      "eventLabel": "{{.*}}",
+      "affinityLabel": "{{.*}}",
+      "currentSite": "{{.*}}",
+      "attribution": "{{.*}}",
+      "shopId": "{{.*}}",
+      "event": "clickHomepage",
+      "categoryId": "{{.*}}",
+      "channelId": "{{.*}}",
+      "campaignCode": "{{.*}}"
+    },
+    {
+      "promotions": [{
+        "creative_name": "{{.*}}",
+        "creative_slot": "{{.*}}",
+        "item_id": "{{.*}}",
+        "item_name": "{{.*}}",
+        "creative_url": "{{.*}}"
+      }],
+      "eventCategory": "homepage",
+      "affinityLabel": "{{.*}}",
+      "attribution": "{{.*}}",
+      "shopId" : "{{.*}}",
+      "event": "select_content",
+      "eventAction": "lego banner click",
+      "sessionIris": "{{.*}}",
+      "eventLabel": "{{.*}}",
+      "categoryId": "{{.*}}",
+      "channelId": "{{.*}}",
+      "campaignCode": "{{.*}}",
+      "businessUnit": "home & browse"
+    },
+    {
+      "businessUnit": "home & browse",
+      "eventCategory": "homepage",
+      "screenName" : "/",
+      "userId" : "{{.*}}",
+      "eventAction": "lego banner click view all",
+      "sessionIris": "{{.*}}",
+      "eventLabel": "{{.*}}",
+      "affinityLabel": "{{.*}}",
+      "currentSite": "{{.*}}",
+      "attribution": "{{.*}}",
+      "shopId": "{{.*}}",
+      "event": "clickHomepage",
+      "categoryId": "{{.*}}",
+      "channelId": "{{.*}}",
+      "campaignCode": "{{.*}}"
+    },{
+      "promotions": [{
+        "creative_name": "{{.*}}",
+        "creative_slot": "{{.*}}",
+        "item_id": "{{.*}}",
+        "item_name": "{{.*}}",
+        "creative_url": "{{.*}}"
+      }],
+      "eventCategory": "homepage",
+      "affinityLabel": "{{.*}}",
+      "currentSite": "{{.*}}",
+      "attribution": "{{.*}}",
+      "shopId" : "{{.*}}",
+      "event": "select_content",
+      "eventAction": "lego banner 2 image click",
+      "sessionIris": "{{.*}}",
+      "eventLabel": "{{.*}}",
+      "categoryId": "{{.*}}",
+      "channelId": "{{.*}}",
+      "campaignCode": "{{.*}}",
+      "businessUnit": "home & browse",
+      "userId": "{{.*}}"
+    },
+    {
+      "promotions": [{
+        "creative_name": "{{.*}}",
+        "creative_slot": "{{.*}}",
+        "item_id": "{{.*}}",
+        "item_name": "{{.*}}",
+        "creative_url": ""
+      }],
+      "eventCategory": "homepage",
+      "affinityLabel": "{{.*}}",
+      "attribution": "{{.*}}",
+      "shopId" : "{{.*}}",
+      "event": "select_content",
+      "eventAction": "lego banner 6 auto click",
+      "sessionIris": "{{.*}}",
+      "eventLabel": "{{.*}}",
+      "categoryId": "{{.*}}",
+      "channelId": "{{.*}}",
+      "campaignCode": "{{.*}}",
+      "businessUnit": "home & browse"
+    },
+    {
+      "businessUnit": "home & browse",
+      "eventCategory": "homepage",
+      "screenName" : "/",
+      "userId" : "{{.*}}",
+      "eventAction": "lego banner 6 auto click view all",
+      "sessionIris": "{{.*}}",
+      "eventLabel": "{{.*}}",
+      "affinityLabel": "{{.*}}",
+      "currentSite": "{{.*}}",
+      "attribution": "{{.*}}",
+      "shopId": "{{.*}}",
+      "event": "clickHomepage",
+      "categoryId": "{{.*}}",
+      "channelId": "{{.*}}",
+      "campaignCode": "{{.*}}"
+    }
+  ]
+}

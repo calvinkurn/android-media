@@ -1,6 +1,8 @@
 package com.tokopedia.officialstore.official.domain
 
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
+import com.tokopedia.graphql.data.model.CacheType
+import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.officialstore.GQLQueryConstant.QUERY_OFFICIAL_STORE_FEATURED_SHOPS
 import com.tokopedia.officialstore.official.data.model.OfficialStoreFeaturedShop
@@ -8,10 +10,14 @@ import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 import javax.inject.Named
 
-class GetOfficialStoreFeaturedUseCase @Inject constructor(
+class   GetOfficialStoreFeaturedUseCase @Inject constructor(
         private val graphqlUseCase: MultiRequestGraphqlUseCase,
         @Named(QUERY_OFFICIAL_STORE_FEATURED_SHOPS) val query: String
 ): UseCase<OfficialStoreFeaturedShop>() {
+
+    init {
+        graphqlUseCase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
+    }
 
     var params: Map<String, Any> = mapOf()
 

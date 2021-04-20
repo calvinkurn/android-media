@@ -20,7 +20,6 @@ open class ActionButtonViewHolder(
 ): RecyclerView.ViewHolder(view) {
 
     private val btnAction: UnifyButton = view.findViewById(R.id.btnAction)
-    private val context by lazy(NONE) { view.context }
 
     fun bind(cmInApp: CMInApp, button: CMButton?) {
         if (button == null) return

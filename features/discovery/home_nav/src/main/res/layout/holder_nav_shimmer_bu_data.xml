@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="@dimen/dp_4"
+    android:orientation="vertical">
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_1"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:background="@color/Unify_N200"
+        xmlns:android="http://schemas.android.com/apk/res/android" />
+
+
+    <include
+
+        layout="@layout/holder_home_nav_menu_shimmer"/>
+    <include
+        layout="@layout/holder_home_nav_menu_shimmer"/>
+    <include
+        layout="@layout/holder_home_nav_menu_shimmer"/>
+    <include
+        layout="@layout/holder_home_nav_menu_shimmer"/>
+    <include
+        layout="@layout/holder_home_nav_menu_shimmer"/>
+    <include
+        layout="@layout/holder_home_nav_menu_shimmer"/>
+</LinearLayout>

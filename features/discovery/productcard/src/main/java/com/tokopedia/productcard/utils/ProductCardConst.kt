@@ -12,21 +12,29 @@ internal const val DARK_RED = "darkRed"
 internal const val DARK_ORANGE = "darkOrange"
 internal const val TRANSPARENT_BLACK = "transparentBlack"
 
-internal const val COLOR_LABEL_DEFAULT = "#FFFFFF"
-internal const val COLOR_LABEL_TRANSPARENT_BLACK = "#AD31353B"
-
 internal const val LABEL_PRODUCT_STATUS = "status"
 internal const val LABEL_PRICE = "price"
 internal const val LABEL_GIMMICK = "gimmick"
 internal const val LABEL_INTEGRITY = "integrity"
 internal const val LABEL_SHIPPING = "shipping"
+internal const val LABEL_CAMPAIGN = "campaign"
+internal const val LABEL_BEST_SELLER = "best_seller"
+internal const val LABEL_ETA = "eta"
+internal const val LABEL_FULFILLMENT = "fulfillment"
 
 internal const val TEXT_DARK_ORANGE = "textDarkOrange"
 internal const val TEXT_DARK_RED = "textDarkRed"
 internal const val TEXT_DARK_GREY = "textDarkGrey"
 internal const val TEXT_LIGHT_GREY = "textLightGrey"
 
-internal const val COLOR_TEXT_DARK_ORANGE = "#FF8B00"
-internal const val COLOR_TEXT_DARK_RED = "#EF144A"
-internal const val COLOR_TEXT_DARK_GREY = "#AD31353B"
-internal const val COLOR_TEXT_LIGHT_GREY = "#7031353B"
+internal const val ROBOTO_BOLD = "RobotoBold.ttf"
+internal const val ROBOTO_REGULAR = "RobotoRegular.ttf"
+
+internal const val OPEN_BOLD_TAG = "<b>"
+internal const val CLOSE_BOLD_TAG = "</b>"
+
+internal const val TYPE_VARIANT_COLOR = "colour"
+internal const val TYPE_VARIANT_SIZE = "size"
+internal const val TYPE_VARIANT_CUSTOM = "custom"
+
+internal const val LABEL_VARIANT_TAG = "label_variant_tag"

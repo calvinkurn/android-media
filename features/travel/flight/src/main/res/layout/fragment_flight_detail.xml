@@ -3,7 +3,7 @@
     android:id="@+id/recycler_view"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white"
+    android:background="@color/Unify_N0"
     android:clipToPadding="false"
     android:paddingLeft="@dimen/spacing_lvl4"
     android:paddingRight="@dimen/spacing_lvl4"

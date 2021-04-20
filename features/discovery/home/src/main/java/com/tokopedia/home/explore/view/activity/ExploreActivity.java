@@ -28,7 +28,7 @@ import com.tokopedia.home.beranda.domain.model.DynamicHomeIcon;
 import com.tokopedia.home.explore.di.DaggerExploreComponent;
 import com.tokopedia.home.explore.di.ExploreComponent;
 import com.tokopedia.home.explore.view.adapter.ExploreFragmentAdapter;
-import com.tokopedia.home.explore.view.adapter.viewmodel.ExploreSectionViewModel;
+import com.tokopedia.home.explore.view.adapter.datamodel.ExploreSectionDataModel;
 import com.tokopedia.home.explore.view.fragment.ExploreFragment;
 import com.tokopedia.home.explore.view.presentation.ExploreContract;
 import com.tokopedia.home.explore.view.presentation.ExplorePresenter;
@@ -135,7 +135,7 @@ public class ExploreActivity extends BaseTabActivity implements HasComponent<Exp
     }
 
     @Override
-    public void renderData(List<ExploreSectionViewModel> list) {
+    public void renderData(List<ExploreSectionDataModel> list) {
         fragmentAdapter.setData(list);
         setupTabIcon(list);
         if (getIntent().getExtras() != null) {
@@ -165,19 +165,19 @@ public class ExploreActivity extends BaseTabActivity implements HasComponent<Exp
             public void onPageSelected(int position) {
                 switch (position) {
                     case 0:
-                        tabLayout.setSelectedTabIndicatorColor(ContextCompat.getColor(ExploreActivity.this, R.color.tab_indicator_beli));
+                        tabLayout.setSelectedTabIndicatorColor(ContextCompat.getColor(ExploreActivity.this, com.tokopedia.unifyprinciples.R.color.Unify_G500));
                         break;
                     case 1:
-                        tabLayout.setSelectedTabIndicatorColor(ContextCompat.getColor(ExploreActivity.this, R.color.tab_indicator_bayar));
+                        tabLayout.setSelectedTabIndicatorColor(ContextCompat.getColor(ExploreActivity.this, com.tokopedia.unifyprinciples.R.color.Unify_Y300));
                         break;
                     case 2:
-                        tabLayout.setSelectedTabIndicatorColor(ContextCompat.getColor(ExploreActivity.this, R.color.tab_indicator_pesan));
+                        tabLayout.setSelectedTabIndicatorColor(ContextCompat.getColor(ExploreActivity.this, com.tokopedia.unifyprinciples.R.color.Unify_Y500));
                         break;
                     case 3:
-                        tabLayout.setSelectedTabIndicatorColor(ContextCompat.getColor(ExploreActivity.this, R.color.tab_indicator_ajukan));
+                        tabLayout.setSelectedTabIndicatorColor(ContextCompat.getColor(ExploreActivity.this, com.tokopedia.unifyprinciples.R.color.Unify_T400));
                         break;
                     case 4:
-                        tabLayout.setSelectedTabIndicatorColor(ContextCompat.getColor(ExploreActivity.this, R.color.tab_indicator_jual));
+                        tabLayout.setSelectedTabIndicatorColor(ContextCompat.getColor(ExploreActivity.this, com.tokopedia.unifyprinciples.R.color.Unify_G500));
                         break;
                 }
             }
@@ -194,7 +194,7 @@ public class ExploreActivity extends BaseTabActivity implements HasComponent<Exp
     }
 
 
-    private void setupTabIcon(List<ExploreSectionViewModel> list) {
+    private void setupTabIcon(List<ExploreSectionDataModel> list) {
         sectionList = new ArrayList<>();
         for (int i = 0; i < list.size(); i++) {
             DynamicHomeIcon.UseCaseIcon model = list.get(i).getUseCaseIcon();
@@ -250,7 +250,7 @@ public class ExploreActivity extends BaseTabActivity implements HasComponent<Exp
         public void onClick(View v) {
             TabLayout.Tab currentTab = tab.getTabAt(positionTab);
             if (positionTab != tab.getSelectedTabPosition() && currentTab != null) {
-                HomePageTracking.eventClickTabExplorer(context, title);
+                HomePageTracking.eventClickTabExplorer(title);
                 currentTab.select();
             }
         }

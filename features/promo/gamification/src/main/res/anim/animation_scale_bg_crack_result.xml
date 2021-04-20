@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<scale xmlns:android="http://schemas.android.com/apk/res/android"
-    android:fromXScale="0.0"
-    android:toXScale="@fraction/to_x_scale_bg_reward_anim"
-    android:fromYScale="0.0"
-    android:toYScale="@fraction/to_y_scale_bg_reward_anim"
-    android:pivotX="50%"
-    android:pivotY="50%" />

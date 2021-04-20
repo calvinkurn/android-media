@@ -20,14 +20,6 @@
     <string name="name_confirmation_yes">Ya, benar</string>
     <string name="name_confirmation_no">Tidak</string>
     <string name="error_minimal_name">Minimum 3 karakter</string>
-    <string name="string_bottom_info">Dengan mendaftar, saya menyetujui \n<a href="https://m.tokopedia.com/terms.pl">Syarat dan Ketentuan</a> serta <a href="https://m.tokopedia.com/privacy.pl">Kebijakan Privasi</a>.</string>
-    <string name="detail_term_and_privacy">Dengan mendaftar, saya menyetujui  </string>
-    <string name="link_term_condition">&lt;font color=\'#42b549\'&gt;&lt;a href=\'launch.TermPrivacy://parent?param=0\'&gt;Syarat dan Ketentuan&lt;/a&gt;&lt;/font&gt;</string>
-    <string name="link_privacy_policy">&lt;font color=\'#42b549\'&gt;&lt;a href=\'launch.TermPrivacy://parent?param=1\'&gt;Kebijakan Privasi&lt;/a&gt;&lt;/font&gt;</string>
-    <string name="privacy_pl">https://m.tokopedia.com/privacy.pl?device=android&amp;flag_app=1</string>
-    <string name="term_pl">https://m.tokopedia.com/terms.pl?device=android&amp;flag_app=1</string>
-    <string name="bottom_info_terms_and_privacy">Dengan mendaftar, saya menyetujui \n &lt;font
-        color=\'#42b549\'&gt;&lt;a href=\'launch.TermPrivacy://parent?param=0\'&gt;Syarat dan Ketentuan&lt;/a&gt;&lt;/font&gt; serta &lt;font color=\'#42b549\'&gt;&lt;a href=\'launch.TermPrivacy://parent?param=1\'&gt;Kebijakan Privasi&lt;/a&gt;&lt;/font&gt;</string>
     <string name="change_name_note">Kamu hanya dapat mengubah nama %1$s kali. Pastikan nama sudah benar.</string>
     <string name="change_name_fullname">Nama Lengkap</string>
     <string name="change_name_visible_on_public_note">Nama akan terlihat oleh publik</string>
@@ -79,10 +71,11 @@
     <string name="error_field_required">Harus diisi</string>
     <string name="wrong_email_format">Format email salah</string>
     <string name="success_add_email">Email berhasil ditambah</string>
-    <string name="add_and_verify_phone">Tambah dan verifikasi Nomor HP</string>
-    <string name="add_and_verify_phone_detail">Tambah dan verifikasi Nomor HP terlebih dahulu sebelum mengubah email</string>
-
-    <!-- ADD PHONE -->
+  
+    <string name="add_and_verify_phone">Tambah nomor HP dulu, yuk!</string>
+    <string name="add_and_verify_phone_detail">Proses verifikasi buat akses akun jadi lebih gampang kalau ada nomor HP. Keamanan akunmu makin terjamin, deh!</string>
+  
+  <!-- ADD PHONE -->
     <string name="title_add_phone">Tambah Nomor HP</string>
     <string name="title_verify_phone">Verifikasi Nomor HP</string>
     <string name="warning_add_phone">Jaga akun dan transaksi Anda tetap aman dengan menambahkan nomor HP</string>
@@ -93,6 +86,7 @@
     <string name="phone_number_already_exist">Akun lain telah menggunakan nomor HP ini</string>
     <string name="success_add_phone">Nomor telepon berhasil ditambah</string>
     <string name="button_next">Selanjutnya</string>
+    <string name="success_verify_phone_number">Verifikasi nomor ponsel sudah berhasil.</string>
 
     <!-- CHANGE PHONE -->
     <string name="success_change_phone_number">Nomor telepon berhasil diubah</string>
@@ -172,8 +166,10 @@
     <string name="add_pin_heading">Tambah keamanan ekstra\ndengan PIN Tokopedia</string>
     <string name="add_pin_body">PIN Tokopedia adalah verifikasi 2 langkah untuk meningkatkan keamanan akun.</string>
     <string name="add_pin_button_title">Buat PIN Tokopedia</string>
-
     <string name="add_pin_success_heading">PIN Tokopedia kamu berhasil disimpan</string>
     <string name="add_pin_success_body">Jangan bagikan PIN Tokopedia kamu kepada pihak mana pun.</string>
     <string name="add_pin_success_button_title">Selesai</string>
+    <string name="detail_term_and_privacy">Dengan mendaftar, saya menyetujui Syarat dan Ketentuan serta Kebijakan Privasi.</string>
+
+    <string name="text_change_name_warning_message">Ubah nama akunmu jadi nama asli untuk meningkatkan keamanan akun.</string>
 </resources>

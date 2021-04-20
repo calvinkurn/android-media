@@ -6,6 +6,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.discovery2.R
+import com.tokopedia.discovery2.di.getSubComponent
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
@@ -36,6 +37,7 @@ class CpmTopAdsViewHolder(itemView: View, private val fragment: Fragment) : Abst
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         cpmTopAdsViewModel = discoveryBaseViewModel as CpmTopAdsViewModel
+        getSubComponent().inject(cpmTopAdsViewModel)
     }
 
     override fun setUpObservers(lifecycleOwner: LifecycleOwner?) {

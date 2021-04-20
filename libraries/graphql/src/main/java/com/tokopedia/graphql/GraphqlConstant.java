@@ -8,8 +8,9 @@ public interface GraphqlConstant {
     long DAY_MS = 24 * HOUR_MS;
 
     interface GqlApiKeys {
-        String GRAPHQL_HEADER = "{\"Content-Type: application/json\"}";
+        String ANDROID_FLAG = "x-android: 1";
         String CACHE = "x-tkpd-clc";
+        String QUERYHASH = "queryhash";
         String QUERY = "query";
         String VARIABLES = "variables";
         String OPERATION_NAME = "operationName";

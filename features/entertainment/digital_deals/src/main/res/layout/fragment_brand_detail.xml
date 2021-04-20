@@ -5,7 +5,7 @@
     android:id="@+id/main_content"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/bottomnav_bg">
+    android:background="@color/Unify_N0">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/app_bar_layout"
@@ -16,8 +16,8 @@
             android:id="@+id/collapsing_toolbar"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/white"
-            app:contentScrim="@color/white"
+            android:background="@color/Unify_N0"
+            app:contentScrim="@color/Unify_N0"
             app:expandedTitleGravity="center_horizontal|bottom"
             app:expandedTitleMarginBottom="16dp"
             app:expandedTitleTextAppearance="@style/ToolbarExpandedTitle"
@@ -32,7 +32,7 @@
                     android:id="@+id/header_image"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/dp_160"
-                    android:background="@color/grey_1100"
+                    android:background="@color/Unify_N50"
                     android:scaleType="centerCrop" />
 
                 <ImageView
@@ -93,7 +93,7 @@
         android:id="@+id/base_main_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/bottomnav_bg"
+        android:background="@color/Unify_N0"
         android:orientation="vertical"
         android:visibility="gone"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
@@ -116,7 +116,7 @@
             android:layout_marginLeft="@dimen/dp_16"
             android:layout_marginRight="@dimen/dp_16"
             android:layout_marginTop="@dimen/dp_40"
-            android:background="@color/white"
+            android:background="@color/Unify_N0"
             android:gravity="center_horizontal"
             android:orientation="vertical">
 
@@ -134,7 +134,7 @@
                 android:fontFamily="sans-serif"
                 android:gravity="center_horizontal"
                 android:text="@string/empty_deals_text"
-                android:textColor="@color/black_38"
+                android:textColor="@color/Unify_N700_32"
                 android:textSize="@dimen/sp_14"
                 android:textStyle="normal" />
 
@@ -148,7 +148,7 @@
         android:id="@+id/progress_bar_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/black_12"
+        android:background="@color/Unify_N700_20"
         android:clickable="true"
         android:focusable="true"
         android:visibility="gone">

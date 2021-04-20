@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:versionCode="1"
+  android:versionName="1.0.0"
+  package="com.tokopedia.navigation.test">
+  
+  <application
+    android:label="Navigation Test"
+    android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+    android:debuggable="false"
+    tools:replace="android:debuggable,android:label">
+    
+    <activity
+      android:name="com.tokopedia.navigation.TestBottomNavActivity"
+      android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+    
+    <activity
+      android:name="com.tokopedia.navigation.environment.InstrumentationInboxTestActivity"
+      android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+    
+  </application>
+</manifest>

@@ -29,7 +29,7 @@
             app:typographyType="heading_5"
             android:ellipsize="end"
             android:maxLines="1"
-            android:textColor="@color/charcoal_grey_96"
+            android:textColor="@color/Unify_N700_96"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintRight_toLeftOf="@+id/viewAllOption"/>
@@ -43,7 +43,7 @@
             android:text="@string/inspiration_carousel_option_view_all"
             app:typographyType="body_3"
             app:typographyWeight="bold"
-            android:textColor="@color/green_tokopedia"
+            android:textColor="@color/Unify_G500"
             android:gravity="center"
             android:background="?attr/selectableItemBackground"
             app:layout_constraintTop_toTopOf="@id/optionTitle"
@@ -56,7 +56,7 @@
             android:layout_width="@dimen/dp_0"
             android:layout_height="@dimen/dp_1"
             android:layout_marginTop="@dimen/dp_12"
-            android:background="@color/gray_line"
+            android:background="@color/Unify_N75"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@id/optionTitle" />
@@ -80,7 +80,7 @@
                 android:id="@+id/productImage"
                 android:layout_width="@dimen/dp_80"
                 android:layout_height="@dimen/dp_80"
-                android:scaleType="fitXY"
+                android:scaleType="fitCenter"
                 app:srcCompat="@drawable/search_inspiration_carousel_error_product_image"/>
 
         </androidx.cardview.widget.CardView>
@@ -97,7 +97,7 @@
             app:typographyType="body_3"
             android:ellipsize="end"
             android:maxLines="2"
-            android:textColor="@color/charcoal_grey_96"
+            android:textColor="@color/Unify_N700_96"
             app:layout_constraintTop_toBottomOf="@id/viewSeparator"
             app:layout_constraintLeft_toRightOf="@id/cardViewProductImage"
             app:layout_constraintRight_toRightOf="parent"
@@ -116,104 +116,73 @@
             app:typographyWeight="bold"
             android:ellipsize="end"
             android:maxLines="1"
-            android:textColor="@color/charcoal_grey_96"
+            android:textColor="@color/Unify_N700_96"
             android:gravity="center_vertical"
             app:layout_constraintTop_toBottomOf="@id/productName"
             app:layout_constraintLeft_toRightOf="@id/cardViewProductImage"
             app:layout_constraintRight_toRightOf="parent"
             tools:text="@string/inspiration_carousel_product_price" />
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/productRating"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+        <ImageView
+            android:id="@+id/optionListCardImageSalesRatingFloat"
+            android:layout_width="@dimen/dp_16"
+            android:layout_height="@dimen/dp_16"
+            android:adjustViewBounds="true"
             android:layout_marginStart="@dimen/dp_8"
-            android:layout_marginLeft="@dimen/dp_8"
-            android:layout_marginTop="@dimen/dp_6"
+            android:layout_marginTop="@dimen/dp_2"
             android:gravity="center"
-            android:orientation="horizontal"
+            android:scaleType="centerCrop"
+            android:visibility="gone"
             app:layout_constraintLeft_toRightOf="@id/cardViewProductImage"
             app:layout_constraintTop_toBottomOf="@id/productPrice"
-            android:visibility="gone"
-            tools:visibility="visible">
-
-            <ImageView
-                android:id="@+id/imageViewRating1"
-                android:layout_width="@dimen/dp_12"
-                android:layout_height="@dimen/dp_12"
-                android:adjustViewBounds="true"
-                android:gravity="center"
-                android:scaleType="centerCrop"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:src="@drawable/search_inspiration_carousel_ic_rating_default" />
-
-            <ImageView
-                android:id="@+id/imageViewRating2"
-                android:layout_width="@dimen/dp_12"
-                android:layout_height="@dimen/dp_12"
-                android:adjustViewBounds="true"
-                android:gravity="center"
-                android:scaleType="centerCrop"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintLeft_toRightOf="@id/imageViewRating1"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:src="@drawable/search_inspiration_carousel_ic_rating_default" />
-
-            <ImageView
-                android:id="@+id/imageViewRating3"
-                android:layout_width="@dimen/dp_12"
-                android:layout_height="@dimen/dp_12"
-                android:adjustViewBounds="true"
-                android:gravity="center"
-                android:scaleType="centerCrop"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintLeft_toRightOf="@id/imageViewRating2"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:src="@drawable/search_inspiration_carousel_ic_rating_default" />
-
-            <ImageView
-                android:id="@+id/imageViewRating4"
-                android:layout_width="@dimen/dp_12"
-                android:layout_height="@dimen/dp_12"
-                android:adjustViewBounds="true"
-                android:gravity="center"
-                android:scaleType="centerCrop"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintLeft_toRightOf="@id/imageViewRating3"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:src="@drawable/search_inspiration_carousel_ic_rating_default" />
-
-            <ImageView
-                android:id="@+id/imageViewRating5"
-                android:layout_width="@dimen/dp_12"
-                android:layout_height="@dimen/dp_12"
-                android:adjustViewBounds="true"
-                android:gravity="center"
-                android:scaleType="centerCrop"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintLeft_toRightOf="@id/imageViewRating4"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:src="@drawable/search_inspiration_carousel_ic_rating_default"/>
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
+            app:srcCompat="@drawable/ic_rating_apps_active"
+            tools:visibility="visible" />
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/productReviewCount"
+            android:id="@+id/optionListCardSalesRatingFloat"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_4"
-            android:layout_marginLeft="@dimen/dp_4"
-            app:typographyType="body_3"
+            android:layout_marginStart="@dimen/dp_2"
             android:gravity="center_vertical"
-            android:textColor="@color/product_card_review_count_text_color"
-            app:layout_constraintLeft_toRightOf="@id/productRating"
-            app:layout_constraintTop_toTopOf="@id/productRating"
-            app:layout_constraintBottom_toBottomOf="@id/productRating"
-            tools:text="@string/inspiration_carousel_review_count"
+            android:textColor="@color/Unify_N700_68"
+            app:layout_constraintTop_toTopOf="@id/optionListCardImageSalesRatingFloat"
+            app:layout_constraintBottom_toBottomOf="@id/optionListCardImageSalesRatingFloat"
+            app:layout_constraintLeft_toRightOf="@id/optionListCardImageSalesRatingFloat"
+            app:typographyType="body_3"
+            tools:text="4.8"
+            tools:visibility="visible" />
+
+        <View
+            android:id="@+id/optionListCardImageSalesRatingFloatLine"
+            android:layout_width="@dimen/dp_1"
+            android:layout_height="@dimen/dp_10"
+            android:background="@color/Unify_N700_32"
+            android:layout_marginStart="@dimen/dp_4"
+            android:layout_marginEnd="@dimen/dp_4"
             android:visibility="gone"
-            tools:visibility="visible"/>
+            app:layout_constraintBottom_toBottomOf="@id/optionListCardSalesRatingFloat"
+            app:layout_constraintStart_toEndOf="@+id/optionListCardSalesRatingFloat"
+            app:layout_constraintTop_toTopOf="@id/optionListCardSalesRatingFloat"
+            app:layout_constraintEnd_toStartOf="@+id/optionListCardTextViewSales"
+            tools:visibility="visible" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/optionListCardTextViewSales"
+            android:layout_width="@dimen/dp_0"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/dp_2"
+            android:gravity="center_vertical"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:textColor="@color/Unify_N700_68"
+            android:visibility="gone"
+            app:layout_constraintStart_toEndOf="@id/optionListCardImageSalesRatingFloatLine"
+            app:layout_constraintTop_toTopOf="@id/optionListCardSalesRatingFloat"
+            app:layout_constraintBottom_toBottomOf="@id/optionListCardSalesRatingFloat"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:typographyType="body_3"
+            tools:text="Terjual 122"
+            tools:visibility="visible" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

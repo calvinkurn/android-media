@@ -1,12 +1,12 @@
-package com.tokopedia.digital.home.presentation.adapter.viewholder
+package com.tokopedia.digital.home.old.presentation.adapter.viewholder
 
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.digital.home.R
-import com.tokopedia.digital.home.model.DigitalHomePageCategoryModel
-import com.tokopedia.digital.home.presentation.adapter.adapter.DigitalItemCategoryAdapter
-import com.tokopedia.digital.home.presentation.listener.OnItemBindListener
+import com.tokopedia.digital.home.old.model.DigitalHomePageCategoryModel
+import com.tokopedia.digital.home.old.presentation.adapter.adapter.DigitalItemCategoryAdapter
+import com.tokopedia.digital.home.old.presentation.listener.OnItemBindListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import kotlinx.android.synthetic.main.layout_digital_home_category.view.*

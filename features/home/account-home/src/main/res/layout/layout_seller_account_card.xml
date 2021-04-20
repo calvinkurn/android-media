@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.unifycomponents.CardUnify xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/account_home_seller_account_height"
+    android:layout_margin="@dimen/spacing_lvl3">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <FrameLayout
+            android:id="@+id/iconContainer"
+            android:layout_width="@dimen/account_home_seller_shop_bg_width"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="@dimen/spacing_lvl3">
+
+            <ImageView
+                android:id="@+id/iv_seller_card_icon"
+                android:layout_width="@dimen/account_home_ic_seller_shop_size"
+                android:layout_height="@dimen/account_home_ic_seller_shop_size"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_seller_shop_account"
+                tools:ignore="ContentDescription" />
+        </FrameLayout>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/shopName"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:drawablePadding="@dimen/spacing_lvl2"
+            android:gravity="center_vertical"
+            android:textColor="@color/Unify_N700_96"
+            app:typographyType="body_2"
+            tools:text="Toko Saya: **Kelontong**" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:srcCompat="@drawable/ic_home_chevron_right"
+            tools:ignore="ContentDescription" />
+    </LinearLayout>
+</com.tokopedia.unifycomponents.CardUnify>

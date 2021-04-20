@@ -2,8 +2,8 @@ package com.tokopedia.travelhomepage.homepage.di
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.common.travel.utils.TravelDispatcherProvider
-import com.tokopedia.common.travel.utils.TravelProductionDispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -17,7 +17,6 @@ import dagger.Provides
 /**
  * @author by furqan on 05/08/2019
  */
-@TravelHomepageScope
 @Module
 class TravelHomepageModule {
 
@@ -37,7 +36,7 @@ class TravelHomepageModule {
 
     @TravelHomepageScope
     @Provides
-    fun provideDispatcherProvider(): TravelDispatcherProvider = TravelProductionDispatcherProvider()
+    fun provideDispatcherProvider(): CoroutineDispatchers = CoroutineDispatchersProvider
 
     @TravelHomepageScope
     @Provides

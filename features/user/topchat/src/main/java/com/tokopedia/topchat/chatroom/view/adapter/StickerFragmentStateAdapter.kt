@@ -7,12 +7,10 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.tokopedia.topchat.chatroom.domain.pojo.stickergroup.StickerGroup
 import com.tokopedia.topchat.chatroom.view.adapter.util.StickerGroupDiffUtil
-import com.tokopedia.topchat.chatroom.view.adapter.viewholder.StickerViewHolder
 import com.tokopedia.topchat.chatroom.view.fragment.StickerFragment
 
-class StickerFragmentStateAdapter(
-        private val fragmentActivity: FragmentActivity,
-        private val stickerListener: StickerViewHolder.Listener?
+class StickerFragmentStateAdapter constructor(
+        private val fragmentActivity: FragmentActivity
 ) : FragmentStateAdapter(fragmentActivity) {
 
     private var stickers: List<StickerGroup> = emptyList()
@@ -27,7 +25,7 @@ class StickerFragmentStateAdapter(
         val sticker = stickers[position]
         val fragmentId = sticker.groupUUID
         val needUpdate = needToUpdateSticker.contains(fragmentId)
-        val fragment = StickerFragment.create(sticker, needUpdate, stickerListener)
+        val fragment = StickerFragment.create(sticker, needUpdate)
         stickerFragment[fragmentId] = fragment
         return fragment
     }

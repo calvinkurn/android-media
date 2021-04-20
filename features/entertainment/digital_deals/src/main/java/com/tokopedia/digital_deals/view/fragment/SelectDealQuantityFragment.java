@@ -130,19 +130,19 @@ public class SelectDealQuantityFragment extends BaseDaggerFragment implements Se
     void setButtons() {
 
         if (currentQuantity > 1) {
-            ivSubtract.setColorFilter(ContextCompat.getColor(getContext(), com.tokopedia.design.R.color.green_250), android.graphics.PorterDuff.Mode.SRC_IN);
+            ivSubtract.setColorFilter(ContextCompat.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_G400), android.graphics.PorterDuff.Mode.SRC_IN);
             ivSubtract.setClickable(true);
 
         } else {
-            ivSubtract.setColorFilter(ContextCompat.getColor(getContext(), com.tokopedia.design.R.color.grey_400), android.graphics.PorterDuff.Mode.SRC_IN);
+            ivSubtract.setColorFilter(ContextCompat.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N150), android.graphics.PorterDuff.Mode.SRC_IN);
             ivSubtract.setClickable(false);
         }
         if (currentQuantity < maxQuantity) {
-            ivAdd.setColorFilter(ContextCompat.getColor(getContext(), com.tokopedia.design.R.color.green_250), android.graphics.PorterDuff.Mode.SRC_IN);
+            ivAdd.setColorFilter(ContextCompat.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_G400), android.graphics.PorterDuff.Mode.SRC_IN);
             ivAdd.setClickable(true);
 
         } else {
-            ivAdd.setColorFilter(ContextCompat.getColor(getContext(), com.tokopedia.design.R.color.grey_400), android.graphics.PorterDuff.Mode.SRC_IN);
+            ivAdd.setColorFilter(ContextCompat.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N150), android.graphics.PorterDuff.Mode.SRC_IN);
             ivAdd.setClickable(false);
         }
     }
@@ -211,7 +211,7 @@ public class SelectDealQuantityFragment extends BaseDaggerFragment implements Se
         if (dealDetail == null)
             return;
 
-        ImageHandler.loadImage(getContext(), ivBrand, dealDetails.getImageWeb(), com.tokopedia.design.R.color.grey_1100, com.tokopedia.design.R.color.grey_1100);
+        ImageHandler.loadImage(getContext(), ivBrand, dealDetails.getImageWeb(), com.tokopedia.unifyprinciples.R.color.Unify_N50, com.tokopedia.unifyprinciples.R.color.Unify_N50);
         if (dealDetails.getBrand() != null) {
             tvBrandName.setText(dealDetails.getBrand().getTitle());
         }

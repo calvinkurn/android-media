@@ -19,7 +19,7 @@ android{
 }
 
 repositories {
-    maven { url 'https://hansel.io/maven' }
+    maven { url 'https://maven-hansel.tokopedia.com/maven' }
 }
 
 
@@ -28,7 +28,7 @@ buildscript {
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         mavenCentral()
         jcenter()
-        maven { url 'https://hansel.io/maven' }
+        maven { url 'https://maven-hansel.tokopedia.com/maven' }
         google()
     }
     dependencies {
@@ -39,6 +39,7 @@ buildscript {
 dependencies {
     implementation project(rootProject.ext.features.atc_common)
     implementation project(rootProject.ext.features.carouselProductCard)
+    implementation project(rootProject.ext.features.localizationchooseaddress)
     implementation project(rootProject.ext.features.resourcesCommon)
     implementation project(rootProject.ext.features.recommendationWidgetCommon)
     implementation project(rootProject.ext.features.topAdsSdk)
@@ -53,11 +54,11 @@ dependencies {
     implementation project(rootProject.ext.libraries.linker)
     implementation project(rootProject.ext.libraries.trackingOptimizer)
     implementation project(rootProject.ext.libraries.tkpdabstraction)
-    implementation project(rootProject.ext.libraries.tkpddesign)
     implementation project(rootProject.ext.libraries.track)
 
     implementation rootProject.ext.unifyDependencies.icon
     implementation rootProject.ext.unifyDependencies.components
+    implementation rootProject.ext.unifyDependencies.icons
     implementation rootProject.ext.unifyDependencies.coach_mark
     implementation rootProject.ext.unifyDependencies.dialog
     implementation rootProject.ext.unifyDependencies.global_error
@@ -83,6 +84,7 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.archCoreTesting
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.miscDependencies.coroutineCore
+    testImplementation project(rootProject.ext.libraries.unitTest)
 
     // instrument test
     androidTestImplementation rootProject.ext.testDependencies.androidTestRunner
@@ -91,10 +93,12 @@ dependencies {
     androidTestImplementation rootProject.ext.testDependencies.mockkAndroid
     androidTestImplementation rootProject.ext.testDependencies.espressoCore
     androidTestImplementation rootProject.ext.testDependencies.espressoContrib
+    androidTestImplementation rootProject.ext.testDependencies.espressoIntents
     androidTestImplementation project(rootProject.ext.libraries.instrumentation_test)
     androidTestAnnotationProcessor rootProject.ext.miscDependencies.daggerCompiler
     androidTestImplementation project(rootProject.ext.libraries.analyticsDebugger)
     androidTestImplementation rootProject.ext.testDependencies.archCoreTesting
+    androidTestImplementation project(rootProject.ext.libraries.cassavaTest)
 }
 
 project.ext {

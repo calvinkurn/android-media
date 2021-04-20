@@ -6,7 +6,7 @@ data class OrderShop(
         var shopId: Int = 0,
         var userId: Int = 0,
         var shopName: String = "",
-        var shopImage: String = "",
+        var shopBadge: String = "",
         var shopUrl: String = "",
         var isGold: Int = 0,
         var isOfficial: Int = 0,
@@ -21,6 +21,8 @@ data class OrderShop(
         var provinceId: Int = 0,
         var cityId: Int = 0,
         var cityName: String = "",
+        var isFulfillment: Boolean = false,
+        var fulfillmentBadgeUrl: String = "",
         var shopShipment: List<ShopShipment> = emptyList(),
         var errors: List<String> = emptyList()
 )

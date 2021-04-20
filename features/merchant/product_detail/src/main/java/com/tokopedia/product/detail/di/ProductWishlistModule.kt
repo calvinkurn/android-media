@@ -7,7 +7,6 @@ import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import dagger.Module
 import dagger.Provides
 
-@ProductDetailScope
 @Module
 class ProductWishlistModule {
 

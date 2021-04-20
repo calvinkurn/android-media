@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_centerInParent="true"
-    android:background="@color/white">
+    android:background="@color/Unify_N0">
 
     <FrameLayout
         android:id="@+id/layout_camera"
@@ -30,7 +30,7 @@
             app:cameraMode="picture"
             app:cameraFacing="back" />
 
-        <ImageButton
+        <com.tokopedia.iconunify.IconUnify
             android:id="@+id/image_button_flash"
             android:layout_width="@dimen/dp_48"
             android:layout_height="@dimen/dp_48"
@@ -147,7 +147,7 @@
                     android:layout_marginTop="@dimen/dp_4"
                     android:gravity="center_horizontal"
                     android:text="@string/use_image"
-                    android:textColor="@color/tkpd_main_green" />
+                    android:textColor="@color/Unify_G400" />
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>

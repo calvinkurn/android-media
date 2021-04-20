@@ -6,49 +6,66 @@
     android:orientation="vertical">
 
     <LinearLayout
-        android:id="@+id/searchbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="16dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="8dp"
-        android:background="#F4F5F7"
-        android:descendantFocusability="beforeDescendants"
-        android:fitsSystemWindows="true"
-        android:focusableInTouchMode="true"
-        android:paddingHorizontal="4dp"
-        android:paddingVertical="8dp">
+        android:orientation="horizontal">
 
-        <EditText
-            android:id="@+id/searchbar_textfield"
+        <LinearLayout
+            android:id="@+id/searchbar"
             android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="4dp"
-            android:layout_marginRight="4dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="8dp"
             android:layout_weight="1"
-            android:background="@null"
-            android:ellipsize="end"
-            android:gravity="center_vertical"
-            android:hint="@string/analytics_validator_search_label"
-            android:imeOptions="actionSearch"
-            android:inputType="text"
-            android:maxLines="1"
-            android:textSize="14sp" />
+            android:background="@color/Unify_N50"
+            android:descendantFocusability="beforeDescendants"
+            android:fitsSystemWindows="true"
+            android:focusableInTouchMode="true"
+            android:orientation="horizontal"
+            android:paddingHorizontal="4dp"
+            android:paddingVertical="8dp">
 
-        <ImageButton
-            android:id="@+id/searchbar_clear"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
+            <EditText
+                android:id="@+id/searchbar_textfield"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="4dp"
+                android:layout_marginRight="4dp"
+                android:layout_weight="1"
+                android:background="@null"
+                android:ellipsize="end"
+                android:gravity="center_vertical"
+                android:hint="@string/analytics_validator_search_label"
+                android:imeOptions="actionSearch"
+                android:inputType="text"
+                android:maxLines="1"
+                android:textSize="14sp" />
+
+            <ImageButton
+                android:id="@+id/searchbar_clear"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_gravity="center"
+                android:layout_marginRight="4dp"
+                android:background="@color/Unify_N50"
+                android:clickable="true"
+                android:focusable="true"
+                android:padding="4dp"
+                android:scaleType="centerCrop"
+                app:srcCompat="@android:drawable/ic_menu_close_clear_cancel" />
+
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/iv_delete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginRight="4dp"
-            android:background="#F4F5F7"
-            android:clickable="true"
-            android:focusable="true"
-            android:padding="4dp"
-            android:scaleType="centerCrop"
-            app:srcCompat="@android:drawable/ic_menu_close_clear_cancel" />
-
+            android:padding="12dp"
+            app:srcCompat="@drawable/ic_delete_analytics" />
     </LinearLayout>
+
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv"

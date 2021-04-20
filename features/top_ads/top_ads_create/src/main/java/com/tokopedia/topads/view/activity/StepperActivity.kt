@@ -1,17 +1,15 @@
 package com.tokopedia.topads.view.activity
 
-import android.view.View
-import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import com.tokopedia.abstraction.R
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-
 import com.tokopedia.abstraction.base.view.activity.BaseStepperActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.di.CreateAdsComponent
 import com.tokopedia.topads.di.DaggerCreateAdsComponent
-import com.tokopedia.topads.view.fragment.*
+import com.tokopedia.topads.view.fragment.BudgetingAdsFragment
+import com.tokopedia.topads.view.fragment.ProductAdsListFragment
+import com.tokopedia.topads.view.fragment.SummaryAdsFragment
 
 /**
  * Author errysuprayogi on 29,October,2019
@@ -23,9 +21,8 @@ class StepperActivity : BaseStepperActivity(), HasComponent<CreateAdsComponent> 
     private var fragmentList: MutableList<Fragment>? = null
 
     override fun getListFragment(): MutableList<Fragment> {
-        fragmentList = fragmentList ?: mutableListOf(CreateGroupAdsFragment.createInstance(),
+        fragmentList = fragmentList ?: mutableListOf(
                 ProductAdsListFragment.createInstance(),
-                KeywordAdsListFragment.createInstance(),
                 BudgetingAdsFragment.createInstance(),
                 SummaryAdsFragment.createInstance())
         return fragmentList!!
@@ -37,9 +34,10 @@ class StepperActivity : BaseStepperActivity(), HasComponent<CreateAdsComponent> 
     }
 
     override fun onBackEvent() {
-        if (fragmentList?.get(currentPosition - 1) is BudgetingAdsFragment) {
+        if (currentPosition <= fragmentList?.size ?: 0 && fragmentList?.get(currentPosition - 1) is BudgetingAdsFragment) {
             TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_BACK_BUTTON, "")
         }
         super.onBackEvent()
     }
+
 }

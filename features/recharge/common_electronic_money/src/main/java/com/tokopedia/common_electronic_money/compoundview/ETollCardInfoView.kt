@@ -59,13 +59,13 @@ class ETollCardInfoView @JvmOverloads constructor(@NotNull context: Context, att
 
         textLabelCardNumber.text = resources.getString(R.string.emoney_card_info_label_card_number)
         textCardNumber.text = attributesEmoneyInquiry.formattedCardNumber
-        textCardNumber.setTextColor(resources.getColor(R.color.emoney_black))
+        textCardNumber.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700))
         textCardNumber.setTypeface(textCardNumber.typeface, Typeface.BOLD)
 
         textLabelBalance.text = resources.getString(R.string.emoney_card_info_label_card_balance)
         textRemainingBalance.text = CurrencyFormatUtil
                 .convertPriceValueToIdrFormat(attributesEmoneyInquiry.lastBalance, true)
-        textRemainingBalance.setTextColor(resources.getColor(R.color.emoney_green_400))
+        textRemainingBalance.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_G500))
 
         val simpleDateFormat = SimpleDateFormat("dd MMM yyyy, HH:mm",
                 DateFormatUtils.DEFAULT_LOCALE)
@@ -102,11 +102,11 @@ class ETollCardInfoView @JvmOverloads constructor(@NotNull context: Context, att
     fun removeCardInfo() {
         textLabelCardNumber.text = resources.getString(R.string.emoney_card_info_label_card_number)
         textCardNumber.text = resources.getString(R.string.emoney_card_info_is_not_available_yet)
-        textCardNumber.setTextColor(resources.getColor(R.color.emoney_grey_300))
+        textCardNumber.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700))
         textCardNumber.typeface = Typeface.DEFAULT
         textLabelBalance.text = resources.getString(R.string.emoney_card_info_label_card_balance)
         textRemainingBalance.text = resources.getString(R.string.emoney_card_info_is_not_available_yet)
-        textRemainingBalance.setTextColor(resources.getColor(R.color.emoney_grey_300))
+        textRemainingBalance.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700))
         textDate.text = ""
         imageIssuer.setImageDrawable(null)
     }

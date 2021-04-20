@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white">
+    android:background="@color/Unify_N0">
 
     <com.tokopedia.flight.common.view.HorizontalProgressBar
         android:id="@+id/horizontal_progress_bar"
@@ -35,7 +35,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="@dimen/layout_lvl0"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -49,11 +49,27 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
+            <androidx.core.widget.NestedScrollView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:fillViewport="true">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:descendantFocusability="blocksDescendants">
+            <com.tokopedia.flight.promo_chips.presentation.widget.FlightPromoChips
+                android:id="@+id/flight_promo_chips_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recycler_view"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@color/flight_search_list_background" />
+                android:background="@color/Unify_N75" />
+            </LinearLayout>
+            </androidx.core.widget.NestedScrollView>
 
         </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
 

@@ -29,7 +29,7 @@ import androidx.sqlite.db.SupportSQLiteDatabase;
         CMInApp.class,
         ElapsedTime.class,
         BaseNotificationModel.class
-}, version = 2)
+}, version = 5)
 
 @TypeConverters({ButtonListConverter.class,
         NotificationModeConverter.class,
@@ -57,14 +57,40 @@ public abstract class RoomNotificationDB extends RoomDatabase {
         }
     };
 
+    private static Migration MIGRATION_2_3 = new Migration(2, 3) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+            database.execSQL("ALTER TABLE `BaseNotificationModel` ADD COLUMN `is_amplification` INTEGER NOT NULL DEFAULT 0");
+            database.execSQL("ALTER TABLE `inapp_data` ADD COLUMN `is_amplification` INTEGER NOT NULL DEFAULT 0");
+        }
+    };
+
+    private static Migration MIGRATION_3_4 = new Migration(3, 4) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+            database.execSQL("ALTER TABLE `inapp_data` ADD COLUMN `customValues` TEXT");
+        }
+    };
+
+    private static final Migration MIGRATION_4_5 = new Migration(4, 5) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+            database.execSQL("ALTER TABLE `inapp_data` ADD COLUMN `campaignCode` TEXT");
+        }
+    };
+
     public static RoomNotificationDB getDatabase(final Context context) {
         if (INSTANCE == null) {
             synchronized (RoomNotificationDB.class) {
                 if (INSTANCE == null) {
                     INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
                             RoomNotificationDB.class, "cm_push_notification")
-                            .addMigrations(MIGRATION_1_2)
-                            .build();
+                            .addMigrations(
+                                    MIGRATION_1_2,
+                                    MIGRATION_2_3,
+                                    MIGRATION_3_4,
+                                    MIGRATION_4_5
+                            ).build();
                 }
             }
         }

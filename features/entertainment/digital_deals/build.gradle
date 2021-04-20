@@ -6,7 +6,7 @@ buildscript {
     repositories {
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         mavenCentral()
-        maven { url 'https://hansel.io/maven' }
+        maven { url 'https://maven-hansel.tokopedia.com/maven' }
     }
     dependencies {
         classpath rootProject.ext.miscDependencies.hansel
@@ -14,7 +14,6 @@ buildscript {
 }
 
 dependencies {
-    implementation project(rootProject.ext.features.resourcesCommon)
     implementation project(rootProject.ext.libraries.tkpddesign)
     implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.libraries.oms)
@@ -23,14 +22,12 @@ dependencies {
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.baseAdapter)
     implementation project(rootProject.ext.libraries.track)
-    implementation project(rootProject.ext.features.loyalty)
-    implementation project(rootProject.ext.libraries.permissionchecker)
+    implementation project(rootProject.ext.libraries.utils)
     implementation project(rootProject.ext.libraries.locationmanager)
     implementation project(rootProject.ext.libraries.circularViewPager)
 
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.components
-    implementation rootProject.ext.unifyDependencies.global_error
     implementation rootProject.ext.unifyDependencies.coach_mark
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
@@ -41,18 +38,16 @@ dependencies {
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
-    implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     implementation rootProject.ext.miscDependencies.flexBoxLayout
     implementation(rootProject.ext.tkpdLibDependencies.showcase) {
         exclude group: "com.android.support"
     }
     implementation rootProject.ext.miscDependencies.dagger
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
-    implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.networkDependencies.glide
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.playServicesDependencies.location
-    implementation rootProject.ext.playServicesDependencies.maps
+    implementation project(rootProject.ext.features.promoCheckoutCommon)
 }
 
 project.ext {

@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/relativeLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/topads_bg_top_round">
+
+    <com.tkpd.remoteresourcerequest.view.DeferredImageView
+        android:id="@+id/ic_ilustration"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_210"
+        android:layout_marginStart="@dimen/dp_20"
+        android:layout_marginEnd="@dimen/dp_20"
+        android:contentDescription="@string/ilustration"
+        app:imageDpiSupportType="singleDpi"
+        app:layout_constraintBottom_toTopOf="@+id/title"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="packed"
+        app:remoteFileName="topads_create_manual_confirmation.png" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_8"
+        android:gravity="center"
+        android:text="@string/topads_common_confirmation_switch_manual"
+        android:textColor="@color/Unify_N700_96"
+        app:layout_constraintBottom_toTopOf="@+id/subtitle"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ic_ilustration"
+        app:typographyType="heading_2" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/subtitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_24"
+        android:layout_marginTop="@dimen/dp_8"
+        android:layout_marginEnd="@dimen/dp_24"
+        android:gravity="center"
+        app:layout_constraintBottom_toTopOf="@+id/btn_start_manual_ads"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/title"
+        app:typographyType="body_2" />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btn_start_manual_ads"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_50"
+        android:layout_marginTop="@dimen/dp_24"
+        android:layout_marginEnd="@dimen/dp_50"
+        android:paddingLeft="@dimen/dp_16"
+        android:paddingRight="@dimen/dp_16"
+        android:text="@string/topads_common_gunakan_iklan_manual"
+        app:layout_constraintBottom_toTopOf="@id/cancel_btn_start_manual_ads"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/subtitle"
+        app:unifyButtonType="main" />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/cancel_btn_start_manual_ads"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_50"
+        android:layout_marginTop="@dimen/dp_12"
+        android:layout_marginEnd="@dimen/dp_50"
+        android:layout_marginBottom="@dimen/dp_16"
+        android:text="@string/topads_common_confirmation_sheet_cancel"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btn_start_manual_ads"
+        app:unifyButtonType="alternate"
+        app:unifyButtonVariant="ghost" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

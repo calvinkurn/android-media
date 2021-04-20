@@ -191,7 +191,8 @@ class FeedMediaPreviewViewModel @Inject constructor(baseDispatcher: CoroutineDis
 
     fun addToCart(tagItem: PostTagItem, success: (PostTagItem)->Unit,
                   fail: (Throwable?, PostTagItem)->Unit) {
-        atcUseCase.execute(AddToCartUseCase.getMinimumParams(tagItem.id, tagItem.shop.first().shopId, productName = tagItem.text, price = tagItem.price),
+        atcUseCase.execute(AddToCartUseCase.getMinimumParams(tagItem.id, tagItem.shop.first().shopId, productName = tagItem.text,
+                price = tagItem.price, userId = userSession.userId),
                 object: Subscriber<AddToCartDataModel>(){
                     override fun onNext(t: AddToCartDataModel?) {
                         if (t == null || t.data.success == 0)

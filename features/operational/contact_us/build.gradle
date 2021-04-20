@@ -5,7 +5,7 @@ apply plugin: 'io.hansel.preprocessor.module'
 buildscript {
     repositories {
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
-        maven { url 'https://hansel.io/maven' }
+        maven { url 'https://maven-hansel.tokopedia.com/maven' }
         mavenCentral()
         jcenter()
     }
@@ -20,7 +20,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.libraries.commonNetwork)
     implementation project(rootProject.ext.libraries.applink)
-    implementation project(rootProject.ext.libraries.imagePicker)
+    implementation project(rootProject.ext.libraries.imagePickerCommon)
     implementation project(rootProject.ext.libraries.coreNetwork)
     implementation project(rootProject.ext.libraries.webview)
     implementation project(rootProject.ext.features.basemvvm)
@@ -29,10 +29,11 @@ dependencies {
     implementation project(rootProject.ext.features.csat_rating)
     implementation project(rootProject.ext.libraries.utils)
     implementation project(rootProject.ext.libraries.imageuploader)
-    implementation rootProject.ext.tkpdInternalLibDependencies.cacheapi
+    implementation rootProject.ext.networkDependencies.glide
 
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.components
+    implementation rootProject.ext.unifyDependencies.icons
     implementation rootProject.ext.unifyDependencies.global_error
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
     implementation project(rootProject.ext.libraries.graphql)
@@ -49,16 +50,14 @@ dependencies {
     implementation rootProject.ext.playServicesDependencies.maps
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
-    implementation rootProject.ext.miscDependencies.cameraView
-    implementation (rootProject.ext.miscDependencies.ucrop){
-        exclude group: 'com.android.support'
-    }
     implementation rootProject.ext.miscDependencies.dagger
     kapt rootProject.ext.miscDependencies.daggerCompiler
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.miscDependencies.multiDex
     implementation project(rootProject.ext.libraries.core_legacy)
     implementation rootProject.ext.tkpdInternalLibDependencies.network
+    implementation rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation
+    kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
 
 
     //test
@@ -67,6 +66,7 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.junit
     testImplementation rootProject.ext.miscDependencies.coroutineTest
     testImplementation rootProject.ext.miscDependencies.coroutineCore
+    testImplementation project(rootProject.ext.libraries.unitTest)
 
 }
 
@@ -78,3 +78,4 @@ project.ext {
 }
 
 apply from: '../../../publish_local.gradle'
+apply from: '../../../jacoco_task.gradle'

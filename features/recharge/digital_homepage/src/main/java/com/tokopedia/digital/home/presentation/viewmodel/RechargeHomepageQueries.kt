@@ -8,6 +8,9 @@ object RechargeHomepageQueries {
         """
                 query rechargeGetDynamicPageSkeleton($platformID: Int!, $enablePersonalize: Boolean) {
                   rechargeGetDynamicPageSkeleton(platformID: $platformID, enablePersonalize: $enablePersonalize){
+                    search_bar_placeholder
+                    search_bar_app_link
+                    search_bar_web_link
                     sections {
                       id
                       template
@@ -32,6 +35,9 @@ object RechargeHomepageQueries {
                       sub_title
                       template
                       app_link
+                      text_link
+                      media_url
+                      label_1
                       tracking {
                         action
                         data
@@ -74,6 +80,27 @@ object RechargeHomepageQueries {
                     message
                   }
                 }
+            """.trimIndent()
+    }
+
+    val TICKER_QUERY by lazy {
+        val categoryIDs = "\$categoryIDs"
+        val deviceID = "\$deviceID"
+
+        """query rechargeTicker($categoryIDs: [Int], $deviceID: Int!) {
+                rechargeTicker(categoryIDs:$categoryIDs, deviceID: $deviceID) {
+                     ID
+                     Name
+                     Content
+                     Type
+                     Environment
+                     ActionText
+                     ActionLink
+                     StartDate
+                     ExpireDate
+                     Status
+              }
+           }
             """.trimIndent()
     }
 }

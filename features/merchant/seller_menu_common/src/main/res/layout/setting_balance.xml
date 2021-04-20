@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/setting_balance_height"
+        android:paddingTop="@dimen/setting_balance_padding"
+        android:background="?attr/selectableItemBackground"
+        xmlns:app="http://schemas.android.com/apk/res-auto">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/balanceTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:textColor="@color/Unify_N700_96"
+            app:typographyType="body_2"
+            app:layout_constraintStart_toStartOf="@id/guidelineVerticalLeft"
+            tools:text="Saldo"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/balanceValue"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical|end"
+            android:textColor="@color/Unify_N700_96"
+            app:layout_constraintWidth_percent="0.5"
+            app:typographyType="body_2"
+            app:typographyWeight="bold"
+            app:layout_constraintEnd_toEndOf="@id/guidelineVerticalRight"
+            tools:text="Rp123.456.789"/>
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guidelineVerticalLeft"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.05"/>
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guidelineVerticalRight"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.95"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>

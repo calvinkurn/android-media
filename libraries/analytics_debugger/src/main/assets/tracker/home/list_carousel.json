@@ -23,7 +23,10 @@
         "item_category": "{{.*}}"
       }],
       "eventLabel": "{{.*}}",
-      "channelId": "{{.*}}"
+      "channelId": "{{.*}}",
+      "businessUnit": "home & browse",
+      "currentsite": "tokopediamarketplace",
+      "screenName" : "/"
     },
     {
       "eventCategory": "homepage",
@@ -47,15 +50,19 @@
       }],
       "eventLabel": "{{.*}}",
       "channelId": "{{.*}}",
-      "campaignCode": "{{.*}}"
+      "campaignCode": "{{.*}}",
+      "businessUnit": "home & browse",
+      "currentsite": "tokopediamarketplace",
+      "screenName" : "/"
     },
     {
       "eventCategory": "homepage",
       "currentSite": "tokopediamarketplace",
       "screenName": "/",
+      "businessUnit": "home & browse",
       "event": "add_to_cart",
       "userId": "{{.*}}",
-      "eventAction": "click add to card on dynamic channel list carousel",
+      "eventAction": "click add to cart on dynamic channel list carousel",
       "sessionIris": "{{.*}}",
       "items": [{
         "quantity": "{{\\d*.\\d*}}",
@@ -65,6 +72,10 @@
         "item_brand": "{{.*}}",
         "item_category": "{{.*}}",
         "dimension45": "{{.*}}",
+        "dimension79": "{{.*}}",
+        "dimension80": "none / other",
+        "dimension81": "{{.*}}",
+        "dimension82": "{{.*}}",
         "dimension83": "{{bebas ongkir|none / other}}",
         "dimension96": "{{.*}}",
         "price": "{{\\d*.\\d*|\\d.\\d+E\\d}}",

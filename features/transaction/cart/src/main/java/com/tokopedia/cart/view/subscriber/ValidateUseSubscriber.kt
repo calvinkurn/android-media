@@ -1,6 +1,7 @@
 package com.tokopedia.cart.view.subscriber
 
-import com.tokopedia.cart.domain.model.cartlist.UpdateAndValidateUseData
+import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
+import com.tokopedia.cart.domain.model.updatecart.UpdateAndValidateUseData
 import com.tokopedia.cart.view.CartListPresenter
 import com.tokopedia.cart.view.ICartListView
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
@@ -14,6 +15,9 @@ class ValidateUseSubscriber(private val view: ICartListView?,
     override fun onCompleted() {}
 
     override fun onError(e: Throwable?) {
+        if (e is AkamaiErrorException) {
+            view?.showToastMessageRed(e)
+        }
         view?.showPromoCheckoutStickyButtonInactive()
     }
 

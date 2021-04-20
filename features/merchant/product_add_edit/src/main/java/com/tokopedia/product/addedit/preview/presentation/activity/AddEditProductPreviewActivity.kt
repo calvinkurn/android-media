@@ -1,9 +1,10 @@
 package com.tokopedia.product.addedit.preview.presentation.activity
 
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
+import android.graphics.BlendMode
+import android.graphics.BlendModeColorFilter
+import android.graphics.PorterDuff
 import android.os.Build
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -11,13 +12,8 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
-import com.tokopedia.dialog.DialogUnify
-import com.tokopedia.kotlin.extensions.view.setStatusBarColor
-import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.BUNDLE_DRAFT_ID
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.BUNDLE_IS_PRODUCT_DUPLICATE
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.BUNDLE_PRODUCT_ID
@@ -25,7 +21,6 @@ import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProduc
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_FROM_NOTIF_EDIT_PRODUCT
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_FROM_NOTIF_SUCCESS
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_FROM_UPLOADING
-import com.tokopedia.product.addedit.preview.presentation.fragment.AddEditProductPreviewFragment
 import com.tokopedia.product.addedit.tracking.ProductAddNotifTracking
 import com.tokopedia.product.addedit.tracking.ProductEditNotifTracking
 import com.tokopedia.user.session.UserSession
@@ -34,8 +29,13 @@ import com.tokopedia.user.session.UserSession
 class AddEditProductPreviewActivity : BaseSimpleActivity() {
 
     companion object {
-        fun createInstance(context: Context?): Intent = Intent(context,
-                AddEditProductPreviewActivity::class.java)
+        fun createInstance(context: Context?, draftId: String? = null): Intent {
+            val intent = Intent(context, AddEditProductPreviewActivity::class.java)
+            draftId?.let {
+                intent.putExtra(EXTRA_DRAFT_ID, draftId)
+            }
+            return intent
+        }
 
         fun createInstance(context: Context?, draftId: String, isFromSuccessNotif: Boolean?,
                            isFromNotifEditMode: Boolean?): Intent {
@@ -56,9 +56,7 @@ class AddEditProductPreviewActivity : BaseSimpleActivity() {
     private var draftId = ""
     private var isDuplicate = false
 
-    override fun getNewFragment(): Fragment? {
-        return null
-    }
+    override fun getNewFragment(): Fragment? = null
 
     override fun getLayoutRes() = com.tokopedia.product.addedit.R.layout.activity_add_edit_product_preview
 
@@ -95,13 +93,8 @@ class AddEditProductPreviewActivity : BaseSimpleActivity() {
             }
         }
         super.onCreate(savedInstanceState)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            setStatusBarColor(Color.WHITE)
-        }
 
-        findViewById<androidx.appcompat.widget.Toolbar>(com.tokopedia.product.addedit.R.id.toolbar)?.let {
-            setSupportActionBar(it)
-        }
+        updateActivityToolbar()
         setupNavController()
     }
 
@@ -121,7 +114,21 @@ class AddEditProductPreviewActivity : BaseSimpleActivity() {
         val appBarConfiguration = AppBarConfiguration.Builder().setFallbackOnNavigateUpListener(listener).build()
         navController.setGraph(com.tokopedia.product.addedit.R.navigation.product_add_edit_navigation, bundle)
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration)
+        navController.addOnDestinationChangedListener { _, _, _ ->
+            updateActivityToolbar()
+        }
     }
 
-
+    private fun updateActivityToolbar() {
+        findViewById<androidx.appcompat.widget.Toolbar>(com.tokopedia.product.addedit.R.id.toolbar)?.let {
+            setSupportActionBar(it)
+            // set to dark mode color support
+            val color = androidx.core.content.ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N700)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                it.navigationIcon?.colorFilter = BlendModeColorFilter(color, BlendMode.SRC_IN)
+            }else{
+                it.navigationIcon?.setColorFilter(color, PorterDuff.Mode.SRC_IN)
+            }
+        }
+    }
 }

@@ -8,8 +8,8 @@ import com.chuckerteam.chucker.api.ChuckerInterceptor;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.network.converter.StringResponseConverter;
 import com.tokopedia.network.interceptor.FingerprintInterceptor;
-import com.tokopedia.network.interceptor.RiskAnalyticsInterceptor;
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor;
+import com.tokopedia.network.interceptor.TkpdAuthenticator;
 import com.tokopedia.network.utils.TkpdOkHttpBuilder;
 import com.tokopedia.user.session.UserSession;
 
@@ -38,14 +38,12 @@ public class CommonNetwork {
         TkpdOkHttpBuilder tkpdOkHttpBuilder = new TkpdOkHttpBuilder(context, new OkHttpClient.Builder());
         tkpdOkHttpBuilder.addInterceptor(new TkpdAuthInterceptor(context, networkRouter, userSession));
         tkpdOkHttpBuilder.addInterceptor(new FingerprintInterceptor(networkRouter, userSession));
-        tkpdOkHttpBuilder.addInterceptor(new RiskAnalyticsInterceptor(context));
 
         return new Retrofit.Builder()
                 .baseUrl(baseUrl)
                 .addConverterFactory(new StringResponseConverter())
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
-                .addCallAdapterFactory(CoroutineCallAdapterFactory.create())
                 .client(tkpdOkHttpBuilder.build()).build();
     }
 
@@ -53,7 +51,7 @@ public class CommonNetwork {
      method to create retrofit object if want to use dagger
      */
     public static Retrofit createRetrofit(String baseUrl, TkpdOkHttpBuilder tkpdOkHttpBuilder,
-                                          TkpdAuthInterceptor tkpdAuthInterceptor, FingerprintInterceptor fingerprintInterceptor,
+                                          TkpdAuthInterceptor tkpdAuthInterceptor, FingerprintInterceptor fingerprintInterceptor, TkpdAuthenticator tkpdAuthenticator,
                                           StringResponseConverter stringResponseConverter, GsonBuilder gsonBuilder) {
         Gson gson = gsonBuilder
                 .setDateFormat("yyyy-MM-dd'T'HH:mm:ssZ")
@@ -63,13 +61,13 @@ public class CommonNetwork {
 
         tkpdOkHttpBuilder.addInterceptor(tkpdAuthInterceptor);
         tkpdOkHttpBuilder.addInterceptor(fingerprintInterceptor);
+        tkpdOkHttpBuilder.addAuthenticator(tkpdAuthenticator);
 
         return new Retrofit.Builder()
                 .baseUrl(baseUrl)
                 .addConverterFactory(stringResponseConverter)
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
-                .addCallAdapterFactory(CoroutineCallAdapterFactory.create())
                 .client(tkpdOkHttpBuilder.build()).build();
     }
 }

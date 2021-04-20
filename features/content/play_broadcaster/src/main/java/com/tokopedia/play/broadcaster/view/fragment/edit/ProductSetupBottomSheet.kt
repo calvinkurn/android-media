@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
 import androidx.fragment.app.FragmentManager
@@ -22,8 +23,6 @@ import com.tokopedia.play.broadcaster.data.type.OverwriteMode
 import com.tokopedia.play.broadcaster.di.provider.PlayBroadcastComponentProvider
 import com.tokopedia.play.broadcaster.di.setup.DaggerPlayBroadcastSetupComponent
 import com.tokopedia.play.broadcaster.util.bottomsheet.PlayBroadcastDialogCustomizer
-import com.tokopedia.play.broadcaster.util.extension.cleanBackstack
-import com.tokopedia.play.broadcaster.util.extension.compatTransitionName
 import com.tokopedia.play.broadcaster.util.model.BreadcrumbsModel
 import com.tokopedia.play.broadcaster.view.contract.PlayBottomSheetCoordinator
 import com.tokopedia.play.broadcaster.view.contract.ProductSetupListener
@@ -33,6 +32,8 @@ import com.tokopedia.play.broadcaster.view.fragment.PlayEtalasePickerFragment
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseSetupFragment
 import com.tokopedia.play.broadcaster.view.viewmodel.DataStoreViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
+import com.tokopedia.play_common.util.extension.cleanBackstack
+import com.tokopedia.play_common.util.extension.compatTransitionName
 import java.util.*
 import javax.inject.Inject
 
@@ -92,6 +93,7 @@ class ProductSetupBottomSheet : BottomSheetDialogFragment(),
         childFragmentManager.fragmentFactory = fragmentFactory
         super.onCreate(savedInstanceState)
         cleanBackstack()
+        setStyle(DialogFragment.STYLE_NORMAL, R.style.BottomSheet_Setup_Pinned)
         parentViewModel = ViewModelProviders.of(requireActivity(), viewModelFactory).get(PlayBroadcastViewModel::class.java)
         dataStoreViewModel = ViewModelProviders.of(this, viewModelFactory).get(DataStoreViewModel::class.java)
     }
@@ -222,10 +224,12 @@ class ProductSetupBottomSheet : BottomSheetDialogFragment(),
                 height = ViewGroup.LayoutParams.MATCH_PARENT
             }
             bottomSheet?.setBackgroundColor(Color.TRANSPARENT)
-            bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet)
-            bottomSheetBehavior.isHideable = false
-            bottomSheetBehavior.peekHeight = maxHeight()
-            bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+            bottomSheet?.let {
+                bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet)
+                bottomSheetBehavior.isHideable = false
+                bottomSheetBehavior.peekHeight = maxHeight()
+                bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+            }
 
             isCancelable = false
         }

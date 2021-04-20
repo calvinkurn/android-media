@@ -103,7 +103,7 @@ class HotelSearchResultActivity : HotelBaseActivity(), HasComponent<HotelSearchP
         wrapper = LinearLayout(this)
         wrapper.apply {
             val param = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
-            setBackgroundColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Neutral_N0))
+            setBackgroundColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
             layoutParams = param
         }
 
@@ -112,7 +112,7 @@ class HotelSearchResultActivity : HotelBaseActivity(), HasComponent<HotelSearchP
         textView.layoutParams = param
         textView.text = resources.getString(R.string.hotel_search_result_change)
         textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14f)
-        textView.setTextColor(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Green_G500))
+        textView.setTextColor(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_G500))
 
         wrapper.addView(textView)
         wrapper.setOnClickListener {
@@ -135,7 +135,7 @@ class HotelSearchResultActivity : HotelBaseActivity(), HasComponent<HotelSearchP
                 checkOutString,
                 hotelSearchModel.room,
                 hotelSearchModel.adult)
-        hotel_search_header.subheaderView?.setTextColor(ContextCompat.getColor(this, R.color.search_subtitle))
+        hotel_search_header.subheaderView?.setTextColor(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N700_44))
     }
 
     private fun changeSearchParameter() {

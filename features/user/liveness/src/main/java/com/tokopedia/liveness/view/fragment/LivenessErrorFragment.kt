@@ -20,7 +20,6 @@ import javax.inject.Inject
 class LivenessErrorFragment : BaseDaggerFragment(), OnBackListener {
 
     private var failedType = -1
-    private var errorCode = 0
 
     @Inject
     lateinit var analytics: LivenessDetectionAnalytics
@@ -33,7 +32,6 @@ class LivenessErrorFragment : BaseDaggerFragment(), OnBackListener {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         failedType = arguments?.getInt(LivenessConstants.ARG_FAILED_TYPE)?: -1
-        errorCode = arguments?.getInt(LivenessConstants.ARG_ERROR_CODE)?: 0
         initViews()
     }
 
@@ -50,11 +48,6 @@ class LivenessErrorFragment : BaseDaggerFragment(), OnBackListener {
         }
 
         when(failedType) {
-            LivenessConstants.FAILED_GENERAL -> {
-                setViews(getString(R.string.liveness_failed_reason_general_title),
-                        "${getString(R.string.liveness_failed_reason_general)} ($errorCode)",
-                        LivenessConstants.SCAN_FACE_FAIL_GENERAL)
-            }
             LivenessConstants.FAILED_BADNETWORK -> {
                 setViews(getString(R.string.liveness_failed_reason_bad_network_title),
                         getString(R.string.liveness_failed_reason_bad_network),

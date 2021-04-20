@@ -1,19 +1,22 @@
-{
-  "data": {
-    "getProgressBarData": {
-      "data": [
-        {
-          "dataKey": "sellerInfo",
-          "valueTxt": "",
-          "maxValueTxt": "",
-          "value": 0,
-          "maxValue": 0,
-          "state": "",
-          "subtitle": "",
-          "error": true,
-          "errorMsg": ""
-        }
-      ]
+[
+  {
+    "data": {
+      "fetchProgressBarWidgetData": {
+        "data": [
+          {
+            "dataKey": "shopScore",
+            "valueTxt": "98",
+            "maxValueTxt": "100",
+            "value": 98,
+            "maxValue": 100,
+            "state": "GOOD",
+            "subtitle": "Pertahankan poin minimum 75 untuk tetap menjadi Power Merchant.",
+            "error": false,
+            "errorMsg": "",
+            "showWidget": true
+          }
+        ]
+      }
     }
   }
-}
+]

@@ -10,7 +10,7 @@ class LoadingDialog(context: Context) : Dialog(context) {
 
     init {
         requestWindowFeature(Window.FEATURE_NO_TITLE)
-        setContentView(R.layout.loading_dialog)
+        setContentView(R.layout.loading_dialog_profilecompletion)
         setCancelable(false)
 
         val lp = WindowManager.LayoutParams()

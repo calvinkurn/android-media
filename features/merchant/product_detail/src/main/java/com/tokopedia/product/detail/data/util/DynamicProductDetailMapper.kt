@@ -1,15 +1,18 @@
 package com.tokopedia.product.detail.data.util
 
-import android.util.SparseArray
 import com.tokopedia.gallery.networkmodel.ImageReviewGqlResponse
 import com.tokopedia.gallery.viewmodel.ImageReviewItem
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.product.detail.common.data.model.pdplayout.*
 import com.tokopedia.product.detail.data.model.datamodel.*
-import com.tokopedia.product.detail.data.model.variant.VariantDataModel
-import com.tokopedia.stickylogin.data.StickyLoginTickerPojo
-import com.tokopedia.stickylogin.internal.StickyLoginConstant
+import com.tokopedia.product.detail.data.model.productinfo.ProductInfoParcelData
+import com.tokopedia.product.detail.data.model.ratesestimate.UserLocationRequest
+import com.tokopedia.product.detail.data.model.review.ImageReview
+import com.tokopedia.product.detail.data.model.ticker.GeneralTickerDataModel
+import com.tokopedia.product.detail.data.util.ProductDetailConstant.LAYOUT_FLOATING
 import com.tokopedia.variant_common.model.*
+import com.tokopedia.variant_common.model.ThematicCampaign
 
 object DynamicProductDetailMapper {
 
@@ -24,29 +27,19 @@ object DynamicProductDetailMapper {
                 ProductDetailConstant.NOTIFY_ME -> {
                     listOfComponent.add(ProductNotifyMeDataModel(type = component.type, name = component.componentName))
                 }
-                ProductDetailConstant.DISCUSSION -> {
-                    listOfComponent.add(ProductDiscussionDataModel(type = component.type, name = component.componentName))
-                }
                 ProductDetailConstant.DISCUSSION_FAQ -> {
                     listOfComponent.add(ProductDiscussionMostHelpfulDataModel(type = component.type, name = component.componentName))
                 }
                 ProductDetailConstant.PRODUCT_INFO -> {
                     listOfComponent.add(ProductInfoDataModel(type = component.type, name = component.componentName, data = mapToProductInfoContent(component.componentData)))
                 }
-                ProductDetailConstant.SHOP_INFO -> {
-                    listOfComponent.add(ProductShopInfoDataModel(type = component.type, name = component.componentName))
-                }
-                ProductDetailConstant.SOCIAL_PROOF -> {
-                    if (component.componentName == ProductDetailConstant.SOCIAL_PROOF_PV) {
-                        listOfComponent.add(ProductSocialProofDataModel(type = component.type, name = component.componentName, isSocialProofPv = true))
-                    } else {
-                        listOfComponent.add(ProductSocialProofDataModel(type = component.type, name = component.componentName, isSocialProofPv = false))
-                    }
+                ProductDetailConstant.PRODUCT_DETAIL -> {
+                    listOfComponent.add(ProductDetailInfoDataModel(type = component.type, name = component.componentName, dataContent = mapToProductDetailInfoContent(component.componentData.firstOrNull())))
                 }
                 ProductDetailConstant.MINI_SOCIAL_PROOF -> {
                     listOfComponent.add(ProductMiniSocialProofDataModel(type = component.type, name = component.componentName))
                 }
-                ProductDetailConstant.MOST_HELPFUL_REVIEW -> {
+                ProductDetailConstant.REVIEW -> {
                     listOfComponent.add(ProductMostHelpfulReviewDataModel(type = component.type, name = component.componentName))
                 }
                 ProductDetailConstant.INFO -> {
@@ -55,7 +48,8 @@ object DynamicProductDetailMapper {
                     listOfComponent.add(ProductGeneralInfoDataModel(component.componentName, component.type, contentData?.applink
                             ?: "", contentData?.title ?: "",
                             contentData?.isApplink ?: true, contentData?.icon
-                            ?: "", content ?: listOf(Content()))
+                            ?: "", content?.firstOrNull()?.subtitle
+                            ?: "", content?.firstOrNull()?.icon ?: "")
                     )
                 }
                 ProductDetailConstant.PRODUCT_LIST -> {
@@ -64,22 +58,11 @@ object DynamicProductDetailMapper {
                 ProductDetailConstant.SHOP_VOUCHER -> {
                     listOfComponent.add(ProductMerchantVoucherDataModel(type = component.type, name = component.componentName))
                 }
-                ProductDetailConstant.VALUE_PROPOSITION -> {
-                    listOfComponent.add(ProductValuePropositionDataModel(type = component.type, name = component.componentName))
-                }
                 ProductDetailConstant.VARIANT -> {
                     listOfComponent.add(VariantDataModel(type = component.type, name = component.componentName))
                 }
-                ProductDetailConstant.MINI_SHOP_INFO -> {
-                    listOfComponent.add(ProductMiniShopInfoDataModel(type = component.type, name = component.componentName))
-                }
                 ProductDetailConstant.PRODUCT_CONTENT -> {
-                    //Will be remove soon
-                    if (component.componentName == ProductDetailConstant.PRODUCT_CONTENT) {
-                        listOfComponent.add(ProductContentDataModel(type = component.type, name = component.componentName))
-                    } else {
-                        listOfComponent.add(ProductSnapshotDataModel(type = component.type, name = component.componentName))
-                    }
+                    listOfComponent.add(ProductContentDataModel(type = component.type, name = component.componentName))
                 }
                 ProductDetailConstant.MEDIA -> {
                     listOfComponent.add(ProductMediaDataModel(type = component.type, name = component.componentName))
@@ -101,6 +84,15 @@ object DynamicProductDetailMapper {
                 ProductDetailConstant.TOP_ADS -> {
                     listOfComponent.add(TopAdsImageDataModel(type = component.type, name = component.componentName))
                 }
+                ProductDetailConstant.REPORT -> {
+                    listOfComponent.add(ProductReportDataModel(type = component.type, name = component.componentName))
+                }
+                ProductDetailConstant.SHIPMENT -> {
+                    listOfComponent.add(ProductShipmentDataModel(type = component.type, name = component.componentName))
+                }
+                ProductDetailConstant.MVC -> {
+                    listOfComponent.add(ProductMerchantVoucherSummaryDataModel(type = component.type, name = component.componentName))
+                }
             }
         }
         return listOfComponent
@@ -108,7 +100,7 @@ object DynamicProductDetailMapper {
 
     /**
      * Combine all important data of all component to one Source of Truth
-     * Component need to combine : Snapshot/Content , Notify Me , Media
+     * Component need to combine : Content , Notify Me , Media
      * @param DynamicProductInfoP1 Source of Truth PDP
      */
     fun mapToDynamicProductDetailP1(data: PdpGetLayout): DynamicProductInfoP1 {
@@ -120,24 +112,25 @@ object DynamicProductDetailMapper {
             it.type == ProductDetailConstant.MEDIA
         }?.componentData?.firstOrNull() ?: ComponentData()
 
-        val newDataWithMedia = contentData?.copy(media = mediaData.media, videos = mediaData.videos) ?: ComponentData()
+        val newDataWithMedia = contentData?.copy(media = mediaData.media, youtubeVideos = mediaData.youtubeVideos)
+                ?: ComponentData()
         assignIdToMedia(newDataWithMedia.media)
 
         return DynamicProductInfoP1(layoutName = data.generalName, basic = data.basicInfo, data = newDataWithMedia, pdpSession = data.pdpSession)
     }
 
-    private fun assignIdToMedia(listOfMedia: List<Media>){
+    private fun assignIdToMedia(listOfMedia: List<Media>) {
         listOfMedia.forEachIndexed { index, it ->
             it.id = (index + 1).toString()
         }
     }
 
-    fun hashMapLayout(data: List<DynamicPdpDataModel>): Map<String, DynamicPdpDataModel> {
+    fun hashMapLayout(data: List<DynamicPdpDataModel>): MutableMap<String, DynamicPdpDataModel> {
         return data.associateBy({
             it.name()
         }, {
             it
-        })
+        }).toMutableMap()
     }
 
     // Because the new variant data have several different type, we need to map this into the old one
@@ -150,11 +143,11 @@ object DynamicProductDetailMapper {
         val variants = networkData.variants.map { it ->
             val newOption = it.options.map { data ->
                 Option(id = data.id.toIntOrZero(), vuv = data.vuv.toIntOrZero(), value = data.value, hex = data.hex, picture = Picture(original = data.picture?.original
-                        ?: "", thumbnail = data.picture?.thumbnail ?: ""))
+                        ?: "", thumbnail = data.picture?.thumbnail ?: "", url100 = data.picture?.url100 ?: ""))
             }
 
-            Variant(pv = it.pv.toIntOrZero(),
-                    v = it.v.toIntOrZero(),
+            Variant(pv = it.pv,
+                    v = it.v,
                     name = it.name,
                     identifier = it.identifier,
                     options = newOption)
@@ -170,17 +163,25 @@ object DynamicProductDetailMapper {
                     campaignType = newCampaignData?.campaignType.toIntOrZero(), campaignTypeName = newCampaignData?.campaignTypeName,
                     startDate = newCampaignData?.startDate, endDateUnix = newCampaignData?.endDateUnix, stock = newCampaignData?.stock, isAppsOnly = newCampaignData?.isAppsOnly, applinks = newCampaignData?.applinks,
                     stockSoldPercentage = newCampaignData?.stockSoldPercentage, isUsingOvo = newCampaignData?.isUsingOvo
-                    ?: false, isCheckImei = newCampaignData?.isCheckImei, minOrder = newCampaignData?.minOrder, hideGimmick = newCampaignData?.hideGimmick)
+                    ?: false, isCheckImei = newCampaignData?.isCheckImei, minOrder = newCampaignData?.minOrder, hideGimmick = newCampaignData?.hideGimmick,
+                    background = newCampaignData?.background ?: "", campaignIdentifier = newCampaignData?.campaignIdentifier ?: 0)
 
-            VariantChildCommon(productId = it.productId.toIntOrZero(), price = it.price, priceFmt = it.priceFmt, sku = it.sku, stock = stock,
+            val thematicCampaignData = it.thematicCampaign
+            val thematicCampaign = ThematicCampaign(
+                    campaignName = thematicCampaignData?.campaignName,
+                    icon = thematicCampaignData?.icon,
+                    background = thematicCampaignData?.background,
+                    additionalInfo = thematicCampaignData?.additionalInfo)
+
+            VariantChildCommon(productId = it.productId, price = it.price, priceFmt = it.priceFmt, sku = it.sku, stock = stock,
                     optionIds = it.optionIds, name = it.name, url = it.url, picture = Picture(original = it.picture?.original, thumbnail = it.picture?.thumbnail),
-                    campaign = campaign)
+                    campaign = campaign, thematicCampaign = thematicCampaign,isCod = it.isCod)
         }
 
         return ProductVariantCommon(
-                parentId = networkData.parentId.toIntOrZero(),
+                parentId = networkData.parentId,
                 errorCode = networkData.errorCode,
-                defaultChild = networkData.defaultChild.toIntOrZero(),
+                defaultChild = networkData.defaultChild,
                 sizeChart = networkData.sizeChart,
                 variant = variants,
                 children = child
@@ -200,6 +201,12 @@ object DynamicProductDetailMapper {
             it == ProductDetailConstant.KEY_OCC_BUTTON -> {
                 ProductDetailConstant.OCC_BUTTON
             }
+            it == ProductDetailConstant.KEY_REMIND_ME -> {
+                ProductDetailConstant.REMIND_ME_BUTTON
+            }
+            it == ProductDetailConstant.KEY_CHECK_WISHLIST -> {
+                ProductDetailConstant.CHECK_WISHLIST_BUTTON
+            }
             else -> ProductDetailConstant.BUY_BUTTON
         }
     }
@@ -215,7 +222,7 @@ object DynamicProductDetailMapper {
     }
 
     fun convertMediaToDataModel(media: MutableList<Media>): List<MediaDataModel> {
-        return media.map { it ->
+        return media.map {
             MediaDataModel(it.id, it.type, it.uRL300, it.uRLOriginal, it.uRLThumbnail, it.description, it.videoURLAndroid, it.isAutoplay)
         }
     }
@@ -228,6 +235,11 @@ object DynamicProductDetailMapper {
                 ProductInfoContent(it.row, it.content)
             }
         }
+    }
+
+    private fun mapToProductDetailInfoContent(data: ComponentData?): List<ProductDetailInfoContent> {
+        if (data == null) return listOf()
+        return data.content.map { ProductDetailInfoContent(icon = it.icon, title = it.title, subtitle = it.subtitle, applink = it.applink, showAtFront = it.showAtFront, isAnnotation = it.isAnnotation) }
     }
 
     private fun mapToCustomInfoUiModel(componentData: ComponentData?, componentName: String, componentType: String): ProductCustomInfoDataModel? {
@@ -257,27 +269,50 @@ object DynamicProductDetailMapper {
      * Ticker is used for show general message like : corona, shipping delay,  etc
      * since we are using the same GQL as sticky login, we don't want sticky login item so we remove this
      * LAYOUT_FLOATING should be sticky login
+     * *
+     * update : now it's not used class from sticky login module anymore
      */
-    fun getTickerInfoData(tickerData: StickyLoginTickerPojo.TickerResponse): List<StickyLoginTickerPojo.TickerDetail> {
-        return tickerData.response.tickers.filter {
-            it.layout != StickyLoginConstant.LAYOUT_FLOATING
+    fun getTickerInfoData(tickerData: GeneralTickerDataModel.TickerResponse): List<GeneralTickerDataModel.TickerDetailDataModel> {
+        return tickerData.response.tickerDataModels.filter {
+            it.layout != LAYOUT_FLOATING
         }
     }
 
-    fun generateImageReviewUiData(data: ImageReviewGqlResponse): List<ImageReviewItem> {
-        val images = SparseArray<ImageReviewGqlResponse.Image>()
-        val reviews = SparseArray<ImageReviewGqlResponse.Review>()
-        val hasNext = data.productReviewImageListQuery?.isHasNext ?: false
+    fun generateImageReviewUiData(data: ImageReviewGqlResponse.ProductReviewImageListQuery): ImageReview {
+        val result = mutableListOf<ImageReviewItem>()
 
-        data.productReviewImageListQuery?.detail?.images?.forEach { images.put(it.imageAttachmentID, it) }
-        data.productReviewImageListQuery?.detail?.reviews?.forEach { reviews.put(it.reviewId, it) }
+        data.detail?.images?.forEach {
+            val review = data.detail?.reviews?.firstOrNull { review ->
+                review.reviewId == it.reviewID
+            } ?: return@forEach
+            result.add(ImageReviewItem(it.reviewID.toString(), review.timeFormat?.dateTimeFmt1,
+                    review.reviewer?.fullName, it.uriThumbnail,
+                    it.uriLarge, review.rating, data.isHasNext, data.detail?.imageCountFmt))
+        }
 
-        return data.productReviewImageListQuery?.list?.map {
-            val image = images[it.imageID]
-            val review = reviews[it.reviewID]
-            ImageReviewItem(it.reviewID.toString(), review.timeFormat?.dateTimeFmt1,
-                    review.reviewer?.fullName, image.uriThumbnail,
-                    image.uriLarge, review.rating, hasNext, data.productReviewImageListQuery?.detail?.imageCount)
-        } ?: listOf()
+        return ImageReview(result, data.detail?.imageCount ?: "")
+    }
+
+    fun generateProductInfoParcel(productInfoP1: DynamicProductInfoP1?, variantGuideLine: String, productInfoContent: List<ProductDetailInfoContent>, forceRefresh: Boolean): ProductInfoParcelData {
+        val data = productInfoP1?.data
+        val basic = productInfoP1?.basic
+        return ProductInfoParcelData(basic?.productID ?: "", basic?.shopID
+                ?: "", data?.name ?: "", data?.getProductImageUrl()
+                ?: "", variantGuideLine, productInfoP1?.basic?.stats?.countTalk.toIntOrZero(), data?.youtubeVideos
+                ?: listOf(), productInfoContent, forceRefresh)
+    }
+
+    fun generateUserLocationRequest(localData: LocalCacheModel): UserLocationRequest {
+        val latlong = if (localData.lat.isEmpty() && localData.long.isEmpty()) "" else "${localData.lat},${localData.long}"
+        return UserLocationRequest(
+                localData.district_id,
+                localData.address_id,
+                localData.postal_code,
+                latlong)
+    }
+
+    fun generateUserLocationRequestRates(localData: LocalCacheModel): String {
+        val latlong = if (localData.lat.isEmpty() && localData.long.isEmpty()) "" else "${localData.lat},${localData.long}"
+        return "${localData.district_id}|${localData.postal_code}|${latlong}"
     }
 }

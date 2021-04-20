@@ -10,7 +10,7 @@ import kotlin.reflect.KClass
 /**
  * Created by jegul on 2019-10-02.
  */
-open class BaseCommonAdapter : BaseDiffUtilAdapter<Any>() {
+open class BaseCommonAdapter(isFlexibleType: Boolean = false) : BaseDiffUtilAdapter<Any>(isFlexibleType) {
 
     init {
         delegatesManager

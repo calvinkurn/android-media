@@ -4,7 +4,7 @@
     android:id="@+id/ll_invoice_item"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white"
+    android:background="@color/Unify_N0"
     android:orientation="vertical">
 
     <include
@@ -14,7 +14,7 @@
 
     <include
         layout="@layout/item_shipment_seller_info"
-        tools:visibility="gone" />
+        tools:visibility="visible" />
 
     <FrameLayout
         android:id="@+id/fl_disable_container"
@@ -34,25 +34,6 @@
                 layout="@layout/item_shipment_other_product"
                 tools:visibility="visible" />
 
-            <include
-                layout="@layout/item_shipment_address"
-                tools:visibility="visible" />
-
-            <!--Shipping: Trade In Pickup-->
-            <include
-                layout="@layout/item_shipment_trade_in_pickup"
-                tools:visibility="visible" />
-
-            <!--Shipping: Robinhood v2.1-->
-            <include
-                layout="@layout/item_shipment_courier_recommendation"
-                tools:visibility="visible" />
-
-            <!--Shipping: Robinhood v3-->
-            <include
-                layout="@layout/item_shipment_courier_blackbox"
-                tools:visibility="visible" />
-
             <!--Shipping: Shipping Experience-->
             <include
                 layout="@layout/item_shipment_shipping_experience"
@@ -61,7 +42,7 @@
             <!--Shipping: Option (Insurance, dropshipper, etc)-->
             <include
                 layout="@layout/item_shipment_shipping_options"
-                tools:visibility="visible" />
+                tools:visibility="gone" />
 
             <include
                 layout="@layout/item_shipment_subtotal"

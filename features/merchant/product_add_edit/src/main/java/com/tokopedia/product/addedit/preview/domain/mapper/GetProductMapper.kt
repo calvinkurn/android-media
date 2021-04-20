@@ -12,6 +12,7 @@ import com.tokopedia.product.addedit.preview.presentation.model.ProductInputMode
 import com.tokopedia.product.addedit.shipment.presentation.model.ShipmentInputModel
 import com.tokopedia.product.addedit.variant.presentation.model.*
 import com.tokopedia.product.addedit.variant.presentation.model.ProductVariantInputModel
+import com.tokopedia.shop.common.data.model.ShowcaseItemPicker
 import javax.inject.Inject
 
 /**
@@ -24,7 +25,9 @@ class GetProductMapper @Inject constructor() {
             mapDetailInputModel(product),
             mapDescriptionInputModel(product),
             mapShipmentInputModel(product),
-            mapVariantInputModel(product.variant))
+            mapVariantInputModel(product.variant),
+            itemSold = product.txStats.itemSold
+    )
 
     private fun mapVariantInputModel(variant: Variant): VariantInputModel =
             VariantInputModel(
@@ -58,6 +61,7 @@ class GetProductMapper @Inject constructor() {
     private fun mapProductVariants(products: List<ProductVariant>): ArrayList<ProductVariantInputModel> {
         val variantCombination = products.map {
             ProductVariantInputModel(
+                    it.id,
                     it.combination,
                     mapVariantPictureInputModel(it.pictures),
                     it.price,
@@ -112,6 +116,7 @@ class GetProductMapper @Inject constructor() {
     private fun mapDetailInputModel(product: Product): DetailInputModel =
             DetailInputModel(
                     product.productName,
+                    product.productName,
                     product.category.name,
                     product.category.id,
                     product.catalog.catalogID,
@@ -124,7 +129,9 @@ class GetProductMapper @Inject constructor() {
                     imageUrlOrPathList = mapImageUrlOrPathList(product),
                     preorder = mapPreorderInputModel(product.preorder),
                     wholesaleList = mapWholeSaleInputModel(product.wholesales),
-                    pictureList = mapPictureInputModel(product.pictures)
+                    pictureList = mapPictureInputModel(product.pictures),
+                    productShowCases = mapProductShowCaseInputModel(product.menus),
+                    null
             )
 
     private fun mapImageUrlOrPathList(product: Product): MutableList<String> {
@@ -150,6 +157,11 @@ class GetProductMapper @Inject constructor() {
                         it.url300,
                         it.status
                 )
+            }
+
+    private fun mapProductShowCaseInputModel(showCases: List<String>): List<ShowcaseItemPicker> =
+            showCases.map {
+                ShowcaseItemPicker(showcaseId = it)
             }
 
     private fun mapPreorderInputModel(preorder: Preorder): PreorderInputModel {
@@ -183,7 +195,7 @@ class GetProductMapper @Inject constructor() {
     private fun mapVideoInputModel(videos: List<Video>): List<VideoLinkModel> =
             videos.map {
                 VideoLinkModel(
-                        inputUrl = it.source + getYoutubeDelimiter(it.source) + it.url
+                        inputUrl = getYoutubeHost(it.source) + getYoutubeDelimiter(it.source) + it.url
                 )
             }
 
@@ -217,7 +229,9 @@ class GetProductMapper @Inject constructor() {
         const val UNIT_KILOGRAM_SRING = "KG"
         const val YOUTUBE_URL_DELIMITER = "/watch?v="
         const val YOUTUBE_URL_DELIMITER_SHORT = "/"
-        const val YOUTUBE_URL = "www.youtube.com"
+        const val YOUTUBE_URL = "youtube.com"
+        const val YOUTUBE_URL_SHORTEN = "youtu.be"
+        const val YOUTUBE_SOURCE = "youtube"
 
         fun getActiveStatus(type: String) =
                 when (type) {
@@ -229,5 +243,9 @@ class GetProductMapper @Inject constructor() {
         fun getYoutubeDelimiter(source: String) =
                 if (source.contains(YOUTUBE_URL)) YOUTUBE_URL_DELIMITER
                 else YOUTUBE_URL_DELIMITER_SHORT
+
+        fun getYoutubeHost(source: String) =
+                if (source == YOUTUBE_SOURCE) YOUTUBE_URL_SHORTEN
+                else source
     }
 }

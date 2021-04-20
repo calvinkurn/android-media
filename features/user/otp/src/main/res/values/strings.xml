@@ -28,4 +28,27 @@
     <string name="with_other_method">gunakan metode verifikasi lain.</string>
     <string name="resend_otp">Kirim ulang</string>
     <string name="verification_coundown_text"><![CDATA[Mohon tunggu dalam %d detik untuk kirim ulang.]]></string>
+    <string name="forgot_pin">Lupa PIN Tokopedia</string>
+    <string name="cellphone_number_has_changed">Nomor HP Sudah Berubah</string>
+    <string name="change_inactive_phone_number">Nomor HP kamu tidak aktif lagi? Ubah Nomor HP</string>
+    <string name="change_phone_number">Ubah Nomor HP</string>
+    <string name="change_inactive_phone_number_html"><![CDATA[Nomor HP kamu tidak aktif lagi? <a href="(%1$s)">Ubah Nomor HP</a>.]]></string>
+
+    <string name="title_push_notif_receiver">Ada perangkat baru yang ingin mengakses akunmu</string>
+    <string name="subtitle_push_notif_receiver">Jangan berikan akses ke perangkat orang lain, agar akun &amp; data pribadimu tetap aman.</string>
+    <string name="subtitle_push_notif_setting">Kamu bisa masuk ke akunmu dengan melakukan verifikasi lewat notifikasi yang dikirim ke perangkat terdaftar</string>
+    <string name="title_device_push_notif_receiver">Perangkat</string>
+    <string name="title_time_push_notif_receiver">Waktu</string>
+    <string name="title_location_push_notif_receiver">Lokasi</string>
+    <string name="accept_push_notif_receiver">Terima Akses</string>
+    <string name="reject_push_notif_receiver">Tolak Akses</string>
+    <string name="text_switch_push_notif_setting">Aktifkan Masuk Lewat Notifikasi</string>
+    <string name="close_result_push_notif">Tutup</string>
+    <string name="change_pin_result_push_notif">Ubah PIN Tokopedia</string>
+    <string name="change_password_result_push_notif">Ubah Kata Sandi</string>
+    <string name="remove_device_ticker"><![CDATA[Untuk menghapus semua perangkat terdaftar, <a href="(%1$s)">Atur Ulang Kata Sandi\</a>.]]></string>
+    <string name="activate_push_notif_ticker"><![CDATA[Fitur ini akan tersedia jika perangkatmu telah memenuhi standar keamanan Tokopedia & sudah mengaktifkan <a href="(%1$s)">Push Notification Tokopedia\</a>.]]></string>
+    <string name="title_setting_push_notif">Masuk Lewat Notifikasi</string>
+    <string name="title_registered_device">Perangkat terdaftar</string>
+    <string name="subtitle_registered_device">Ingin berhenti terima notifikasi di salah satu perangkat? Keluar dari akunmu lewat perangkat tersebut.</string>
 </resources>

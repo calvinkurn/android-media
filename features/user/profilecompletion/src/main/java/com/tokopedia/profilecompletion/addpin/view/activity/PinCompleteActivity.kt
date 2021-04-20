@@ -13,6 +13,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.profilecompletion.R
 import com.tokopedia.profilecompletion.addpin.view.fragment.PinCompleteFragment
 import com.tokopedia.profilecompletion.di.DaggerProfileCompletionSettingComponent
@@ -64,7 +65,7 @@ class PinCompleteActivity : BaseSimpleActivity(), HasComponent<ProfileCompletion
             setHomeAsUpIndicator(R.drawable.ic_close_toolbar_profile_completion)
             setDisplayHomeAsUpEnabled(true)
             elevation = 0f
-            setBackgroundDrawable(ColorDrawable(ContextCompat.getColor(this@PinCompleteActivity, R.color.Neutral_N0)))
+            setBackgroundDrawable(ColorDrawable(MethodChecker.getColor(this@PinCompleteActivity, com.tokopedia.unifyprinciples.R.color.Unify_N0)))
         }
     }
 
@@ -80,7 +81,7 @@ class PinCompleteActivity : BaseSimpleActivity(), HasComponent<ProfileCompletion
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             setWindowFlag(false)
-            window.statusBarColor = ContextCompat.getColor(this, R.color.Neutral_N0)
+            window.statusBarColor = MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N0)
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {

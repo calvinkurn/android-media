@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="@dimen/setting_status_padding_top"
+    android:paddingBottom="@dimen/setting_status_padding_bottom"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/statusCard"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/setting_card_height"
+        android:background="@drawable/bg_other_rounded"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_percent="0.925">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="@string/official_store"
+            android:gravity="center_vertical"
+            android:textColor="@color/Unify_N700"
+            app:typographyType="heading_5"
+            app:typographyWeight="bold"
+            app:layout_constraintStart_toStartOf="@id/middleGuideline"/>
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:scaleType="fitXY"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="@id/leftGuideline"
+            app:srcCompat="@drawable/setting_tip_bar_os"/>
+
+        <View
+            android:id="@+id/badgeBorder"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintWidth_percent="0.07"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="@id/middleGuideline"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintDimensionRatio="1:1"
+            android:background="@drawable/setting_image_circular"/>
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_margin="@dimen/setting_shop_badge_border_os_margin"
+            app:layout_constraintTop_toTopOf="@id/badgeBorder"
+            app:layout_constraintBottom_toBottomOf="@id/badgeBorder"
+            app:layout_constraintStart_toStartOf="@id/badgeBorder"
+            app:layout_constraintEnd_toEndOf="@id/badgeBorder"
+            app:srcCompat="@drawable/ic_official_store"/>
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/leftGuideline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_begin="14dp" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/middleGuideline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.1"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

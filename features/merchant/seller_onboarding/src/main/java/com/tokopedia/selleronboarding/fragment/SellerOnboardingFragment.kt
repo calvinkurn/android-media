@@ -29,6 +29,10 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 class SellerOnboardingFragment : Fragment() {
 
     companion object {
+        const val SELLER_ONBOARDING_URL_1 = "https://images.tokopedia.net/img/android/seller_onboarding/sellerapp_onboarding_ramadhan_1.webp"
+        const val SELLER_ONBOARDING_URL_2 = "https://images.tokopedia.net/img/android/seller_onboarding/sellerapp_onboarding_ramadhan_2.webp"
+        const val SELLER_ONBOARDING_URL_3 = "https://images.tokopedia.net/img/android/seller_onboarding/sellerapp_onboarding_ramadhan_3.webp"
+
         fun newInstance(): SellerOnboardingFragment = SellerOnboardingFragment()
     }
 
@@ -76,15 +80,15 @@ class SellerOnboardingFragment : Fragment() {
 
     private fun initOnboardingSlides() {
         sliderAdapter.clearSlideItems()
-        sliderAdapter.addSlideItem(getSlideItem(getString(R.string.sob_header_text_page_1), R.drawable.sob_vector_illustration_onboarding_1, R.drawable.sob_illustration_onboarding_1))
-        sliderAdapter.addSlideItem(getSlideItem(getString(R.string.sob_header_text_page_2), R.drawable.sob_vector_illustration_onboarding_2, R.drawable.sob_illustration_onboarding_2))
-        sliderAdapter.addSlideItem(getSlideItem(getString(R.string.sob_header_text_page_3), R.drawable.sob_vector_illustration_onboarding_3, R.drawable.sob_illustration_onboarding_3))
+        sliderAdapter.addSlideItem(getSlideItem(getString(R.string.sob_header_text_page_1), SELLER_ONBOARDING_URL_1))
+        sliderAdapter.addSlideItem(getSlideItem(getString(R.string.sob_header_text_page_2), SELLER_ONBOARDING_URL_2))
+        sliderAdapter.addSlideItem(getSlideItem(getString(R.string.sob_header_text_page_3), SELLER_ONBOARDING_URL_3))
 
         view?.pageIndicatorSob?.setIndicator(sliderAdapter.itemCount)
     }
 
-    private fun getSlideItem(headerText: String, @DrawableRes vectorDrawableRes: Int, @DrawableRes drawableRes: Int): SlideUiModel {
-        return SlideUiModel(headerText, vectorDrawableRes, drawableRes)
+    private fun getSlideItem(headerText: String, imageUrl: String): SlideUiModel {
+        return SlideUiModel(headerText, imageUrl)
     }
 
     private fun openApp() = view?.run {

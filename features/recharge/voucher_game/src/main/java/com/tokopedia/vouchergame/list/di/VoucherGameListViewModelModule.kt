@@ -14,7 +14,6 @@ import dagger.multibindings.IntoMap
  * @author by resakemal on 13/08/19
  */
 @Module
-@VoucherGameListScope
 abstract class VoucherGameListViewModelModule {
 
     @VoucherGameListScope

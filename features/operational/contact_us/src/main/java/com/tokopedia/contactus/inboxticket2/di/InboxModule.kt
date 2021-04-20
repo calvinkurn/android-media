@@ -5,14 +5,16 @@ import android.content.SharedPreferences
 import android.preference.PreferenceManager
 import com.google.gson.Gson
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.contactus.R
 import com.tokopedia.contactus.inboxticket2.data.UploadImageResponse
 import com.tokopedia.contactus.inboxticket2.domain.usecase.*
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxBaseContract.InboxBasePresenter
-import com.tokopedia.contactus.inboxticket2.view.contract.InboxDetailContract.InboxDetailPresenter
-import com.tokopedia.contactus.inboxticket2.view.presenter.InboxDetailPresenterImpl
-import com.tokopedia.contactus.inboxticket2.view.presenter.InboxListPresenterImpl
+import com.tokopedia.contactus.inboxticket2.view.contract.InboxDetailContract
+import com.tokopedia.contactus.inboxticket2.view.presenter.InboxDetailPresenter
+import com.tokopedia.contactus.inboxticket2.view.presenter.InboxListPresenter
 import com.tokopedia.imageuploader.di.ImageUploaderModule
 import com.tokopedia.imageuploader.di.qualifier.ImageUploaderQualifier
 import com.tokopedia.imageuploader.domain.GenerateHostRepository
@@ -50,8 +52,8 @@ class InboxModule(private val context: Context) {
 
     @Provides
     @Named("InboxListPresenter")
-    fun provideTicketListPresenter(useCase: GetTicketListUseCase, userSession: UserSessionInterface): InboxBasePresenter {
-        return InboxListPresenterImpl(useCase, userSession)
+    fun provideTicketListPresenter(useCase: GetTicketListUseCase, chipTopBotStatusUseCase: ChipTopBotStatusUseCase, userSession: UserSessionInterface): InboxBasePresenter {
+        return InboxListPresenter(useCase, chipTopBotStatusUseCase, userSession)
     }
 
     @Provides
@@ -64,10 +66,12 @@ class InboxModule(private val context: Context) {
                                   closeTicketByUserUseCase: CloseTicketByUserUseCase,
                                   contactUsUploadImageUseCase: ContactUsUploadImageUseCase,
                                   userSession: UserSessionInterface,
-                                  dispatcher: CoroutineDispatcher): InboxDetailPresenter {
-        return InboxDetailPresenterImpl(messageUseCase, messageUseCase2, ratingUseCase, inboxOptionUseCase, submitRatingUseCase, closeTicketByUserUseCase, contactUsUploadImageUseCase, userSession, dispatcher)
+                                  dispatcher: CoroutineDispatchers): InboxDetailContract.Presenter {
+        return InboxDetailPresenter(messageUseCase, messageUseCase2, ratingUseCase, inboxOptionUseCase, submitRatingUseCase, closeTicketByUserUseCase, contactUsUploadImageUseCase, userSession, dispatcher)
     }
 
+    @Provides
+    fun provideCoroutineDispatchers(): CoroutineDispatchers = CoroutineDispatchersProvider
 
     @Provides
     fun getDefaultDispatcher(): CoroutineDispatcher {

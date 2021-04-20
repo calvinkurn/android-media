@@ -22,13 +22,15 @@ import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.RemoteApi
 import com.tokopedia.loginregister.common.analytics.SeamlessLoginAnalytics
 import com.tokopedia.loginregister.common.di.LoginRegisterComponent
+import com.tokopedia.loginregister.common.utils.SellerAppWidgetHelper
 import com.tokopedia.loginregister.login.di.DaggerLoginComponent
 import com.tokopedia.loginregister.login.router.LoginRouter
-import com.tokopedia.loginregister.login.view.activity.LoginActivity
 import com.tokopedia.loginregister.login.view.constant.SeamlessSellerConstant
 import com.tokopedia.loginregister.login.view.viewmodel.SellerSeamlessViewModel
 import com.tokopedia.network.utils.ErrorHandler
@@ -54,7 +56,6 @@ class SellerSeamlessLoginFragment : BaseDaggerFragment() {
     private var serviceConnection: RemoteServiceConnection? = null
 
     private var autoLogin = false
-    private var redirectUrl = ""
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -71,7 +72,7 @@ class SellerSeamlessLoginFragment : BaseDaggerFragment() {
 
     override fun onStart() {
         super.onStart()
-        activity?.run {
+        activity?.let {
             analytics.trackScreen(screenName)
         }
     }
@@ -165,10 +166,9 @@ class SellerSeamlessLoginFragment : BaseDaggerFragment() {
         super.onCreate(savedInstanceState)
         arguments?.run {
             autoLogin = getBoolean(KEY_AUTO_LOGIN, false)
-            redirectUrl = getString(ApplinkConstInternalGlobal.KEY_REDIRECT_SEAMLESS_APPLINK, "")
         }
-        if (context?.applicationContext is LoginRouter) {
-            (context?.applicationContext as LoginRouter).setOnboardingStatus(true)
+        (context?.applicationContext as? LoginRouter)?.let {
+            it.setOnboardingStatus(true)
         }
     }
 
@@ -201,7 +201,7 @@ class SellerSeamlessLoginFragment : BaseDaggerFragment() {
     private fun onNegativeBtnClick(){
         analytics.eventClickLoginWithOtherAcc()
         context?.run {
-            val i =LoginActivity.DeepLinkIntents.getCallingIntent(this)
+            val i = RouteManager.getIntent(this, ApplinkConst.LOGIN)
             startActivity(i)
         }
     }
@@ -218,35 +218,22 @@ class SellerSeamlessLoginFragment : BaseDaggerFragment() {
     private fun goToSecurityQuestion(){
         activity?.let {
             val intent = Intent().putExtra(ApplinkConstInternalGlobal.PARAM_IS_SQ_CHECK, true)
-            setApplinkResult(intent)
             it.setResult(Activity.RESULT_OK, intent)
             it.finish()
         }
     }
 
-    private fun  setApplinkResult(intent: Intent){
-        if(redirectUrl.isNotEmpty()) {
-            intent.putExtra(ApplinkConstInternalGlobal.KEY_REDIRECT_SEAMLESS_APPLINK, redirectUrl)
-        }
-    }
-
     private fun finishIntent(){
-        if(redirectUrl.isNotEmpty()) {
-            val intent = Intent()
-            setApplinkResult(intent)
-            activity?.setResult(Activity.RESULT_OK, intent)
-        }else {
-            activity?.setResult(Activity.RESULT_OK)
-        }
+        activity?.setResult(Activity.RESULT_OK)
         activity?.finish()
     }
 
     private fun initObserver(){
-        seamlessViewModel.goToSecurityQuestion.observe(this, Observer {
+        seamlessViewModel.goToSecurityQuestion.observe(viewLifecycleOwner, Observer {
             if(it) goToSecurityQuestion()
         })
 
-        seamlessViewModel.loginTokenResponse.observe(this, Observer {
+        seamlessViewModel.loginTokenResponse.observe(viewLifecycleOwner, Observer {
             when(it){
                 is Success -> onSuccessLoginToken()
                 is Fail -> onErrorLoginToken(it.throwable)
@@ -258,6 +245,8 @@ class SellerSeamlessLoginFragment : BaseDaggerFragment() {
     private fun onSuccessLoginToken(){
         analytics.eventClickLoginSeamless(SeamlessLoginAnalytics.LABEL_SUCCESS)
         hideProgressBar()
+        SellerAppWidgetHelper.fetchSellerAppWidgetData(context)
+
         finishIntent()
     }
 
@@ -278,7 +267,8 @@ class SellerSeamlessLoginFragment : BaseDaggerFragment() {
             }
             val success = activity?.bindService(i, serviceConnection!!, Context.BIND_AUTO_CREATE)
             if(success == false)  {
-                Timber.w("P2#SEAMLESS_SELLER#'ErrorBindingService';reason='Connect Service Failed';detail='Bind Service: $success'")
+                ServerLogger.log(Priority.P2, "SEAMLESS_SELLER",
+                        mapOf("type" to "ErrorBindingService", "reason" to "Connect Service Failed", "detail" to "Bind Service: $success"))
                 moveToNormalLogin()
             }
         }
@@ -323,7 +313,8 @@ class SellerSeamlessLoginFragment : BaseDaggerFragment() {
         }
 
         override fun onServiceDisconnected(name: ComponentName) {
-            Timber.w("P2#SEAMLESS_SELLER#'ErrorBindingService';reason='Service Disconnected';detail='$name'")
+            ServerLogger.log(Priority.P2, "SEAMLESS_SELLER",
+                    mapOf("type" to "ErrorBindingService", "reason" to "Service Disconnected", "detail" to name.toString()))
             service = null
             activity?.finish()
         }

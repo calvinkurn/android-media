@@ -6,8 +6,8 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.managename.constant.ManageNameConstants
-import com.tokopedia.managename.coroutines.AppDispatcherProvider
-import com.tokopedia.managename.coroutines.DispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.managename.data.model.UpdateNameResponse
 import com.tokopedia.managename.di.scope.ManageNameContext
 import com.tokopedia.managename.domain.AddNameUseCase
@@ -15,8 +15,6 @@ import dagger.Module
 import dagger.Provides
 import javax.inject.Named
 
-
-@ManageNameScope
 @Module
 class ManageNameModule(val context: Context) {
 
@@ -28,7 +26,7 @@ class ManageNameModule(val context: Context) {
 
     @Provides
     @ManageNameScope
-    fun provideDispatchers(): DispatcherProvider = AppDispatcherProvider()
+    fun provideDispatchers(): CoroutineDispatchers = CoroutineDispatchersProvider
 
     @Provides
     @ManageNameScope

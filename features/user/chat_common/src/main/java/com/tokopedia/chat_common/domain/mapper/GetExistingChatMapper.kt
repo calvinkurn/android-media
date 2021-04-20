@@ -23,6 +23,7 @@ import javax.inject.Inject
 open class GetExistingChatMapper @Inject constructor() {
 
     protected var latestHeaderDate: String = ""
+    protected val gson = GsonBuilder().create()
 
     open fun map(pojo: GetExistingChatPojo): ChatroomViewModel {
         val listChat = mappingListChat(pojo)
@@ -124,7 +125,7 @@ open class GetExistingChatMapper @Inject constructor() {
     }
 
     private fun convertToImageAnnouncement(item: Reply): Visitable<*> {
-        val pojoAttribute = GsonBuilder().create().fromJson<ImageAnnouncementPojo>(item.attachment?.attributes,
+        val pojoAttribute = gson.fromJson<ImageAnnouncementPojo>(item.attachment?.attributes,
                 ImageAnnouncementPojo::class.java)
         val imageAnnouncement = ImageAnnouncementViewModel(
                 messageId = item.msgId.toString(),
@@ -136,6 +137,7 @@ open class GetExistingChatMapper @Inject constructor() {
                 replyTime = item.replyTime,
                 imageUrl = pojoAttribute.imageUrl,
                 redirectUrl = pojoAttribute.url,
+                isHideBanner = pojoAttribute.isHideBanner,
                 message = item.msg,
                 blastId = item.blastId,
                 source = item.source
@@ -163,7 +165,7 @@ open class GetExistingChatMapper @Inject constructor() {
     }
 
     private fun convertToImageUpload(chatItemPojoByDateByTime: Reply): Visitable<*> {
-        val pojoAttribute = GsonBuilder().create().fromJson<ImageUploadAttributes>(chatItemPojoByDateByTime.attachment?.attributes,
+        val pojoAttribute = gson.fromJson<ImageUploadAttributes>(chatItemPojoByDateByTime.attachment?.attributes,
                 ImageUploadAttributes::class.java)
         return ImageUploadViewModel(
                 messageId = chatItemPojoByDateByTime.msgId.toString(),
@@ -184,7 +186,7 @@ open class GetExistingChatMapper @Inject constructor() {
 
     open fun convertToProductAttachment(chatItemPojoByDateByTime: Reply): Visitable<*> {
 
-        val pojoAttribute = GsonBuilder().create().fromJson<ProductAttachmentAttributes>(chatItemPojoByDateByTime.attachment?.attributes,
+        val pojoAttribute = gson.fromJson<ProductAttachmentAttributes>(chatItemPojoByDateByTime.attachment?.attributes,
                 ProductAttachmentAttributes::class.java)
 
         val variant: List<AttachmentVariant> = pojoAttribute.productProfile.variant ?: emptyList()
@@ -270,7 +272,7 @@ open class GetExistingChatMapper @Inject constructor() {
 
     private fun convertToInvoiceSent(pojo: Reply): AttachInvoiceSentViewModel {
         val invoiceAttributes = pojo.attachment?.attributes
-        val invoiceSentPojo = GsonBuilder().create().fromJson(invoiceAttributes, InvoiceSentPojo::class.java)
+        val invoiceSentPojo = gson.fromJson(invoiceAttributes, InvoiceSentPojo::class.java)
         return AttachInvoiceSentViewModel(
                 msgId = pojo.msgId.toString(),
                 fromUid = pojo.senderId.toString(),

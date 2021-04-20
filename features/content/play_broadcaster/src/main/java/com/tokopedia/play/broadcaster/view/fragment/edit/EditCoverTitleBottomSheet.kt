@@ -21,15 +21,15 @@ import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.di.provider.PlayBroadcastComponentProvider
 import com.tokopedia.play.broadcaster.di.setup.DaggerPlayBroadcastSetupComponent
-import com.tokopedia.play.broadcaster.ui.model.result.NetworkResult
 import com.tokopedia.play.broadcaster.util.bottomsheet.PlayBroadcastDialogCustomizer
-import com.tokopedia.play.broadcaster.util.coroutine.CoroutineDispatcherProvider
-import com.tokopedia.play.broadcaster.util.extension.setTextFieldColor
 import com.tokopedia.play.broadcaster.util.extension.showToaster
 import com.tokopedia.play.broadcaster.view.contract.SetupResultListener
 import com.tokopedia.play.broadcaster.view.viewmodel.DataStoreViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.EditCoverTitleViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
+import com.tokopedia.play_common.model.result.NetworkResult
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.play_common.util.extension.setTextFieldColor
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
@@ -46,7 +46,7 @@ class EditCoverTitleBottomSheet : BottomSheetUnify() {
     lateinit var viewModelFactory: ViewModelFactory
 
     @Inject
-    lateinit var dispatcher: CoroutineDispatcherProvider
+    lateinit var dispatcher: CoroutineDispatchers
 
     @Inject
     lateinit var analytic: PlayBroadcastAnalytic
@@ -180,7 +180,7 @@ class EditCoverTitleBottomSheet : BottomSheetUnify() {
             if (actionId == EditorInfo.IME_ACTION_DONE) v.clearFocus()
             false
         }
-        etCoverTitle.setTextFieldColor(com.tokopedia.unifyprinciples.R.color.Neutral_N150)
+        etCoverTitle.setTextFieldColor(com.tokopedia.unifyprinciples.R.color.Unify_N150)
 
         setupTitleCounter()
         setupSaveButton()

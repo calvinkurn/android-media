@@ -5,16 +5,18 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <ImageView
+    <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/iv_empty_state"
         android:layout_width="@dimen/dp_280"
-        android:layout_height="142dp"
+        android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginLeft="@dimen/dp_40"
         android:layout_marginTop="@dimen/dp_72"
         android:layout_marginRight="@dimen/dp_40"
         android:layout_marginBottom="@dimen/dp_16"
-        android:adjustViewBounds="true" />
+        android:adjustViewBounds="true"
+        app:unify_image_corner_radius="0"
+        app:unify_image_type="rect" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:layout_width="wrap_content"
@@ -25,7 +27,7 @@
         android:layout_marginRight="@dimen/dp_40"
         android:gravity="center"
         android:text="@string/title_empty_address"
-        android:textColor="@color/black"
+        android:textColor="@color/Unify_N700"
         app:typographyType="heading_3" />
 
     <com.tokopedia.unifyprinciples.Typography

@@ -10,7 +10,7 @@
     android:paddingRight="@dimen/spacing_lvl4"
     android:paddingBottom="@dimen/spacing_lvl2">
 
-    <ImageView
+    <com.tokopedia.topchat.chatroom.view.custom.BroadcastBannerImageView
         android:id="@+id/image"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -29,7 +29,7 @@
         android:focusable="true"
         android:text="@string/title_chatcommon_check"
         android:textAllCaps="false"
-        android:textColor="@android:color/white"
+        android:textColor="@color/Unify_N0"
         android:textStyle="bold" />
 
 </LinearLayout>

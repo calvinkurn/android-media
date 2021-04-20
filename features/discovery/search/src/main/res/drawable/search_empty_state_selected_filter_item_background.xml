@@ -3,10 +3,10 @@
 
     <corners android:radius="12dp" />
 
-    <solid android:color="#ebffef" />
+    <solid android:color="@color/Unify_G100" />
 
     <stroke
         android:width="1dp"
-        android:color="#26dc46" />
+        android:color="@color/Unify_G500" />
 
 </shape>

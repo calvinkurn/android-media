@@ -6,7 +6,8 @@ object SellerFeatureChatStaticDataProvider : StaticDataProvider {
     override fun getData(): List<SellerFeatureUiModel> {
         return listOf(
                 SellerFeatureUiModel.TemplateChatFeatureUiModel(),
-                SellerFeatureUiModel.AttachVoucherFeatureUiModel()
+                SellerFeatureUiModel.AttachVoucherFeatureUiModel(),
+                SellerFeatureUiModel.AutoReplyFeatureUiModel()
         )
     }
 }

@@ -50,6 +50,11 @@ class TopAdsAssertion(val context: Context,
         val allCount = listTopAdsDbFirst.size
         val callerClass = Class.forName(Thread.currentThread().stackTrace[3].className).simpleName
 
+        for (item in listTopAdsDbFirst) {
+            logTestMessage("eventType: ${item.eventType} componentName: ${item.componentName} sourceName: ${item.sourceName} productName: ${item.productName} imageUrl: ${item.imageUrl}")
+        }
+
+        verifyTopAdsExists(allCount)
         verifyImpressionMoreThanClick(allCount, impressedCount, clickCount)
         verifyImpressionMoreThanResponse(impressedCount, topAdsVerificatorInterface)
         verifyUrlWithTopAdsVerificator(callerClass)
@@ -71,6 +76,13 @@ class TopAdsAssertion(val context: Context,
         requestParams.putString(AnalyticsDebuggerConst.KEYWORD, keyword)
         requestParams.putInt(AnalyticsDebuggerConst.PAGE, page)
         requestParams.putString(AnalyticsDebuggerConst.ENVIRONMENT, AnalyticsDebuggerConst.ENVIRONMENT_TEST)
+    }
+
+    private fun verifyTopAdsExists(allCount: Int) {
+        logTestMessage("Check if topads exists (count > 0)...")
+        logTestMessage("Topads product recorded on database : " + allCount)
+        Assert.assertTrue("Topads should exist (topAdsCount should be more than 0)",allCount > 0)
+        logTestMessage("Topads exist (count > 0)! -> PASSED")
     }
 
     private fun verifyImpressionMoreThanClick(allCount: Int, impressedCount: Int, clickCount: Int) {

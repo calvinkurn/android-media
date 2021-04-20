@@ -1,34 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
     android:paddingTop="@dimen/dp_6"
     android:paddingBottom="@dimen/dp_6">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_total_cashback_label"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_16"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:textColor="@color/Neutral_N700_96"
+        android:textColor="@color/Unify_N700_96"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/tv_total_cashback_value"
+        app:layout_constraintTop_toTopOf="parent"
         app:typographyType="body_3"
-        app:typographyWeight="reguler" />
+        app:typographyWeight="reguler"
+        tools:text="Dapat Cashback Senilai" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_total_cashback_value"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_16"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginEnd="@dimen/dp_16"
-        android:layout_marginRight="@dimen/dp_16"
         android:layout_weight="1"
         android:gravity="end"
-        android:textColor="@color/Neutral_N700_96"
+        android:textColor="@color/Unify_N700_96"
+        app:layout_constraintLeft_toRightOf="@id/tv_total_cashback_label"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         app:typographyType="body_3"
-        app:typographyWeight="bold" />
-</LinearLayout>
+        app:typographyWeight="bold"
+        tools:text="Rp1.000.000" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_total_cashback_currency_info"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_weight="1"
+        android:gravity="end"
+        android:maxWidth="@dimen/max_cashback_desc_width"
+        android:textColor="@color/Unify_N700_68"
+        app:layout_constraintRight_toRightOf="@id/tv_total_cashback_value"
+        app:layout_constraintTop_toBottomOf="@id/tv_total_cashback_value"
+        app:typographyType="small"
+        app:typographyWeight="reguler"
+        tools:text="(20.000 TokoPoints + 1.000.000 OvoPoints)" />
+</androidx.constraintlayout.widget.ConstraintLayout>

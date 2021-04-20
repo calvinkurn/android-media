@@ -77,6 +77,8 @@ class FlightSearchJouneyByIdUseCase @Inject constructor(
             return FlightJourneyModel(
                     term,
                     id,
+                    hasFreeRapidTest,
+                    isSeatDistancing,
                     departureAirport,
                     departureAirportName,
                     departureAirportCity,
@@ -102,7 +104,7 @@ class FlightSearchJouneyByIdUseCase @Inject constructor(
                     isReturn,
                     fare,
                     routes,
-                    flightAirlineDBS,
+                    flightAirlineDBS ?: arrayListOf(),
                     comboId,
                     ""
             )

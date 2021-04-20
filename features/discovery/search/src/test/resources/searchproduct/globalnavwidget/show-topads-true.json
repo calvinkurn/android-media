@@ -590,7 +590,9 @@
           "button_text": "Cek Sekarang",
           "promoted_text": "Dipromosikan oleh",
           "description": "original produk",
-          "uri": "https://www.tokopedia.com/lineacc"
+          "uri": "https://www.tokopedia.com/lineacc",
+          "layout": 1,
+          "position": 1
         },
         "applinks": "tokopedia://shop/602812"
       }

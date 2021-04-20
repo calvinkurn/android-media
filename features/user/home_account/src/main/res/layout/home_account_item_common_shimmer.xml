@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_marginTop="22dp"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:id="@+id/loaderTextView"
+        android:layout_width="@dimen/home_account_dp_80"
+        app:corners="8"
+
+        android:layout_height="@dimen/home_account_shimmer_text_title_height"
+        android:layout_marginLeft="@dimen/home_account_dp_16"
+        app:layout_constraintStart_toEndOf="@+id/imageView"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        app:corners="8"
+        android:layout_width="@dimen/home_account_shimmer_text_title_width_regular"
+        android:layout_height="@dimen/home_account_shimmer_text_title_height_bold"
+        android:layout_marginTop="@dimen/home_account_dp_8"
+        app:layout_constraintStart_toStartOf="@+id/loaderTextView"
+        app:layout_constraintTop_toBottomOf="@+id/loaderTextView" />
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="@dimen/unify_space_24"
+        android:layout_height="@dimen/unify_space_24"
+        app:srcCompat="@drawable/ic_empty_radio"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

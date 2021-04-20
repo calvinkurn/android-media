@@ -45,7 +45,7 @@ class PreferenceListViewModel @Inject constructor(private val getPreferenceListU
         }, { throwable: Throwable ->
             _preferenceList.value = OccState.Failed(Failure(throwable))
             OccIdlingResource.decrement()
-        })
+        }, getPreferenceListUseCase.generateRequestParams())
     }
 
 }

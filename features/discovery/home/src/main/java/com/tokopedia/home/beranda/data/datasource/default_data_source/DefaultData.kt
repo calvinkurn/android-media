@@ -38,13 +38,13 @@ const val DEFAULT_DYNAMIC_CHANNEL_1_BANNER = "https://ecs7.tokopedia.net/default
 
 const val DEFAULT_DYNAMIC_CHANNEL_2_ID = "4"
 const val DEFAULT_DYNAMIC_CHANNEL_2_GRID_1_IMAGE_URL = "https://ecs7.tokopedia.net/defaultpage/channel/Produk-Terlaris-Banner-2.jpg"
-const val DEFAULT_DYNAMIC_CHANNEL_2_GRID_1_APPLINK = "tokopedia://category-explore?type=1"
+const val DEFAULT_DYNAMIC_CHANNEL_2_GRID_1_APPLINK = "tokopedia://discovery/produk-terlaris"
 
 const val DEFAULT_DYNAMIC_CHANNEL_2_GRID_2_IMAGE_URL = "https://ecs7.tokopedia.net/defaultpage/channel/Produk-Terlaris-Banner-1.jpg"
-const val DEFAULT_DYNAMIC_CHANNEL_2_GRID_2_APPLINK = "tokopedia://category-explore?type=1"
+const val DEFAULT_DYNAMIC_CHANNEL_2_GRID_2_APPLINK = "tokopedia://discovery/produk-terlaris"
 
 const val DEFAULT_DYNAMIC_CHANNEL_2_GRID_3_IMAGE_URL = "https://ecs7.tokopedia.net/defaultpage/channel/Produk-Terlaris-Banner-3.jpg"
-const val DEFAULT_DYNAMIC_CHANNEL_2_GRID_3_APPLINK = "tokopedia://category-explore?type=1"
+const val DEFAULT_DYNAMIC_CHANNEL_2_GRID_3_APPLINK = "tokopedia://discovery/produk-terlaris"
 
 const val DEFAULT_DYNAMIC_CHANNEL_2_GRID_4_IMAGE_URL = "https://ecs7.tokopedia.net/defaultpage/channel/Produk-Terlaris-Banner-4.jpg"
 const val DEFAULT_DYNAMIC_CHANNEL_2_GRID_4_APPLINK = "tokopedia://discovery/clp_fashion-pria_1759"

@@ -1,0 +1,13 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.tokopedia.moengage_wrapper" >
+    <application>
+
+    <receiver android:name=".util.NotificationBroadcast">
+        <intent-filter>
+            <action android:name="com.tokopedia.moengage_wrapper.util.delete" />
+        </intent-filter>
+    </receiver>
+
+    </application>
+
+</manifest>

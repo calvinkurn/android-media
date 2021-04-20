@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/layout_lvl1"
         android:lines="1"
-        android:textColor="@color/Neutral_N700_96"
+        android:textColor="@color/Unify_N700_96"
         app:typographyType="body_3"
         tools:text="Operator" />
 
@@ -25,7 +25,7 @@
         android:layout_alignParentRight="true"
         android:layout_marginTop="@dimen/layout_lvl1"
         android:lines="1"
-        android:textColor="@color/Neutral_N700_96"
+        android:textColor="@color/Unify_N700_96"
         app:typographyType="body_3"
         app:typographyWeight="bold"
         tools:text="Simpati" />

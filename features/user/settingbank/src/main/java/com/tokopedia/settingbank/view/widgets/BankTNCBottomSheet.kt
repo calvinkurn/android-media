@@ -4,10 +4,9 @@ import android.app.Activity
 import android.view.LayoutInflater
 import android.view.View
 import android.webkit.WebView
-import com.google.android.play.core.splitcompat.SplitCompat
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
 import com.tokopedia.settingbank.R
-import com.tokopedia.settingbank.domain.TemplateData
+import com.tokopedia.settingbank.domain.model.TemplateData
 
 class BankTNCBottomSheet(val context: Activity) : CloseableBottomSheetDialog.CloseClickedListener {
 
@@ -15,7 +14,6 @@ class BankTNCBottomSheet(val context: Activity) : CloseableBottomSheetDialog.Clo
     lateinit var tncDialog: CloseableBottomSheetDialog
 
     fun show(data: TemplateData) {
-        SplitCompat.installActivity(context)
         this.templateData = data
         val view = createBottomSheetView()
         if (!::tncDialog.isInitialized)

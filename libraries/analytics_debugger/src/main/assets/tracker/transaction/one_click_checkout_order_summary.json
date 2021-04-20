@@ -2,11 +2,13 @@
   "mode": "exact",
   "query": [
     {
+      "eventAction": "view order summary page",
       "eventCategory": "order summary",
       "checkout_step": "1",
       "event": "begin_checkout",
-      "eventAction": "view order summary page",
       "sessionIris": "{{.*}}",
+      "userId": "{{\\d+}}",
+      "paymentType": "{{.*}}",
       "items": [
         {
           "dimension81": "{{.*}}",
@@ -16,6 +18,7 @@
           "dimension53": "{{true|false}}",
           "dimension56": "{{\\d+}}",
           "dimension11": "{{\\d+}}",
+          "dimension12": "{{\\d*}}",
           "price": "{{\\d*.\\d*|\\d.\\d+E\\d}}",
           "dimension14": "{{\\d+}}",
           "dimension58": "{{true|false}}",
@@ -33,23 +36,27 @@
           "dimension82": "{{\\d+}}",
           "dimension40": "{{.*}}",
           "dimension49": "",
-          "dimension48": "{{\\d+}}"
+          "dimension48": "{{\\d+}}",
+          "dimension16": "{{.*}}",
+          "dimension104": "{{\\d*}}"
         }
       ],
       "eventLabel": "success",
       "checkout_option": "order summary page loaded"
     },
     {
+      "eventAction": "{{click (?:bayar|pilih pembayaran)}}",
       "eventCategory": "order summary",
       "checkout_step": "2",
       "payment_id": "{{\\d+}}",
       "event": "checkout_progress",
-      "eventAction": "{{click (?:bayar|pilih pembayaran)}}",
       "sessionIris": "{{.*}}",
+      "userId": "{{\\d+}}",
+      "paymentType": "{{.*}}",
       "items": [
         {
-          "dimension81": "{{.*}}",
-          "dimension80": "{{.*}}",
+          "dimension81": "{{.+}}",
+          "dimension80": "{{.+}}",
           "item_category": "{{.*}}",
           "dimension10": "{{true|false}}",
           "dimension53": "{{true|false}}",
@@ -65,101 +72,104 @@
           "dimension59": "{{.*}}",
           "quantity": "{{\\d*.\\d*|\\d.\\d+E\\d}}",
           "item_id": "{{\\d+}}",
-          "item_name": "{{.*}}",
+          "item_name": "{{.+}}",
           "item_brand": "none / other",
           "dimension45": "{{\\d+}}",
           "dimension83": "",
           "dimension82": "{{\\d+}}",
           "dimension40": "{{.*}}",
           "dimension49": "",
-          "dimension48": "{{\\d+}}"
+          "dimension48": "{{\\d+}}",
+          "dimension16": "{{.+}}",
+          "dimension12": "{{\\d+}}",
+          "dimension104": "{{\\d*}}"
         }
       ],
       "eventLabel": "success",
       "checkout_option": "click bayar success"
     },
     {
+      "eventAction": "view preselected courier option",
       "eventCategory": "order summary",
       "event": "viewCheckoutExpressIris",
-      "userId": "{{\\d*}}",
-      "eventAction": "view preselected courier option",
+      "userId": "{{\\d+}}",
       "sessionIris": "{{.*}}",
       "eventLabel": "{{\\d+}}"
     },
     {
-      "eventCategory": "order summary",
-      "event": "clickCheckoutExpress",
       "eventAction": "courier - click arrow to change courier option",
+      "eventCategory": "order summary",
+      "event": "clickCheckoutExpress",
       "sessionIris": "{{.*}}",
       "eventLabel": "{{\\d+}}"
     },
     {
-      "eventCategory": "order summary",
-      "event": "clickCheckoutExpress",
       "eventAction": "courier - click selected courier option",
+      "eventCategory": "order summary",
+      "event": "clickCheckoutExpress",
       "sessionIris": "{{.*}}",
       "eventLabel": "{{\\d+}}"
     },
     {
-      "eventCategory": "order summary",
-      "event": "clickCheckoutExpress",
       "eventAction": "courier - click pilih on tersedia bebas ongkir",
+      "eventCategory": "order summary",
+      "event": "clickCheckoutExpress",
       "sessionIris": "{{.*}}",
       "eventLabel": ""
     },
     {
-      "eventCategory": "order summary",
-      "event": "clickCheckoutExpress",
       "eventAction": "preference - click ganti pilihan on order summary",
+      "eventCategory": "order summary",
+      "event": "clickCheckoutExpress",
       "sessionIris": "{{.*}}",
       "eventLabel": ""
     },
     {
-      "eventCategory": "order summary",
-      "event": "clickCheckoutExpress",
       "eventAction": "preference - click gear logo from ganti pilihan",
+      "eventCategory": "order summary",
+      "event": "clickCheckoutExpress",
       "sessionIris": "{{.*}}",
       "eventLabel": ""
     },
     {
-      "eventCategory": "order summary",
-      "event": "clickCheckoutExpress",
       "eventAction": "preference - click tambah pilihan from ganti pilihan",
+      "eventCategory": "order summary",
+      "event": "clickCheckoutExpress",
       "sessionIris": "{{.*}}",
       "eventLabel": ""
     },
     {
-      "eventCategory": "order summary",
-      "event": "clickCheckoutExpress",
       "eventAction": "preference -  click gunakan pilihan ini from ganti pilihan",
+      "eventCategory": "order summary",
+      "event": "clickCheckoutExpress",
       "sessionIris": "{{.*}}",
       "eventLabel": ""
     },
     {
+      "eventAction": "click button info on order summary page",
       "eventCategory": "order summary",
       "event": "clickCheckoutExpress",
-      "eventAction": "click button info on order summary page",
       "sessionIris": "{{.*}}",
       "eventLabel": "new buyer"
     },
     {
+      "eventAction": "view onboarding info",
       "eventCategory": "order summary",
       "event": "viewCheckoutExpressIris",
-      "eventAction": "view onboarding info",
       "sessionIris": "{{.*}}",
       "eventLabel": ""
     },
     {
+      "eventAction": "preference - click atur preferensi for new buyer",
       "eventCategory": "order summary",
       "event": "clickCheckoutExpress",
-      "eventAction": "preference - click atur preferensi for new buyer",
       "sessionIris": "{{.*}}",
       "eventLabel": "{{.*}}"
     },
     {
+      "eventAction": "{{click (?:bayar|pilih pembayaran) - not success}}",
       "eventCategory": "order summary",
       "event": "clickCheckoutExpress",
-      "eventAction": "{{click (?:bayar|pilih pembayaran) - not success}}",
       "sessionIris": "{{.*}}",
       "eventLabel": "{{not success - (?:.*)}}"
     },
@@ -168,7 +178,35 @@
       "event": "viewCheckoutExpressIris",
       "eventAction": "view error message",
       "sessionIris": "{{.*}}",
+      "eventLabel": "{{.+}}"
+    },
+    {
+      "eventAction": "click back in order summary page",
+      "eventCategory": "order summary",
+      "event": "clickCheckoutExpress",
+      "sessionIris": "{{.*}}",
+      "eventLabel": ""
+    },
+    {
+      "eventAction": "{{click promo section with promo (?:applied|not applied)}}",
+      "eventCategory": "order summary",
+      "event": "clickCheckoutExpress",
+      "sessionIris": "{{.*}}",
       "eventLabel": "{{.*}}"
+    },
+    {
+      "eventAction": "view promo already applied in order summary list",
+      "eventCategory": "order summary",
+      "event": "viewCheckoutExpressIris",
+      "sessionIris": "{{.*}}",
+      "eventLabel": ""
+    },
+    {
+      "eventAction": "{{view promo (?:released|decreased) after adjust item}}",
+      "eventCategory": "order summary",
+      "event": "viewCheckoutExpressIris",
+      "sessionIris": "{{.*}}",
+      "eventLabel": ""
     }
   ],
   "readme": "OCC Order Summary Page Tracking"

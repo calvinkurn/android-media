@@ -14,31 +14,22 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
-import androidx.viewpager.widget.ViewPager;
 
-import com.google.android.material.appbar.AppBarLayout;
-import com.google.android.material.tabs.TabLayout;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
 import com.tokopedia.abstraction.common.utils.DisplayMetricUtils;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.component.badge.BadgeView;
-import com.tokopedia.home.account.AccountConstants;
 import com.tokopedia.home.account.R;
 import com.tokopedia.home.account.analytics.AccountAnalytics;
 import com.tokopedia.home.account.di.component.AccountHomeComponent;
 import com.tokopedia.home.account.di.component.DaggerAccountHomeComponent;
 import com.tokopedia.home.account.presentation.AccountHome;
+import com.tokopedia.home.account.presentation.activity.AccountHomeActivity;
 import com.tokopedia.home.account.presentation.activity.GeneralSettingActivity;
-import com.tokopedia.home.account.presentation.adapter.AccountFragmentItem;
-import com.tokopedia.home.account.presentation.adapter.AccountHomePagerAdapter;
-import com.tokopedia.home.account.presentation.listener.BaseAccountView;
 import com.tokopedia.navigation_common.listener.AllNotificationListener;
 import com.tokopedia.navigation_common.listener.FragmentListener;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -48,14 +39,8 @@ import javax.inject.Inject;
 public class AccountHomeFragment extends TkpdBaseV4Fragment implements
         AccountHome.View, AllNotificationListener, FragmentListener {
 
-    public static final int SELLER_TAB_INDEX = 1;
-
     @Inject
     AccountHome.Presenter presenter;
-    private TabLayout tabLayout;
-    private ViewPager viewPager;
-    private AppBarLayout appBarLayout;
-    private AccountHomePagerAdapter adapter;
     private BadgeView badgeViewInbox;
     private BadgeView badgeViewNotification;
     private ImageButton menuNotification;
@@ -87,18 +72,6 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements
     }
 
     @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-
-        setPage();
-
-        if (getArguments() != null && getArguments().containsKey(AccountConstants.ACCOUNT_TAB)) {
-            String param = getArguments().getString(AccountConstants.ACCOUNT_TAB);
-            presenter.openTabByParam(param);
-        }
-    }
-
-    @Override
     public void onResume() {
         super.onResume();
         presenter.sendUserAttributeTracker();
@@ -108,29 +81,6 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements
     public void onHiddenChanged(boolean hidden) {
         super.onHiddenChanged(hidden);
         if (!hidden) presenter.sendUserAttributeTracker();
-    }
-
-    public void setPage() {
-        if (getContext() != null) {
-            List<AccountFragmentItem> fragmentItems = new ArrayList<>();
-
-            AccountFragmentItem item = new AccountFragmentItem();
-            item.setFragment(BuyerAccountFragment.Companion.newInstance());
-            item.setTitle(getContext().getString(R.string.label_account_buyer));
-            fragmentItems.add(item);
-
-            item = new AccountFragmentItem();
-            item.setFragment(SellerAccountFragment.Companion.newInstance());
-            item.setTitle(getContext().getString(R.string.label_account_seller));
-            fragmentItems.add(item);
-
-            adapter.setItems(fragmentItems);
-        }
-    }
-
-    @Override
-    public void openSellerTab() {
-        viewPager.setCurrentItem(SELLER_TAB_INDEX);
     }
 
     @Override
@@ -146,22 +96,29 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements
     }
 
     private void initView(View view) {
-        accountAnalytics = new AccountAnalytics(getActivity());
         setToolbar(view);
-        appBarLayout = view.findViewById(R.id.app_bar_layout);
-        tabLayout = view.findViewById(R.id.tab_home_account);
-        viewPager = view.findViewById(R.id.pager_home_account);
-        setAdapter();
+        accountAnalytics = new AccountAnalytics(getActivity());
+        onNotificationChanged(counterNumber, 0, 0);
+        showBuyerPage();
+    }
+
+    private void showBuyerPage() {
+        getChildFragmentManager()
+            .beginTransaction()
+            .add(R.id.container, BuyerAccountFragment.Companion.newInstance())
+            .commit();
     }
 
     private void setToolbar(View view) {
-        Toolbar toolbar = view.findViewById(R.id.toolbar);
+        Toolbar toolbar = view.findViewById(R.id.toolbar_account);
+
         View statusBarBackground = view.findViewById(R.id.status_bar_bg);
         if (getActivity() != null) {
             statusBarBackground.getLayoutParams().height =
                     DisplayMetricUtils.getStatusBarHeight(getActivity());
         }
         TextView title = toolbar.findViewById(R.id.toolbar_title);
+
         title.setText(getString(R.string.title_account));
         menuNotification = toolbar.findViewById(R.id.action_notification);
         menuInbox = toolbar.findViewById(R.id.action_inbox);
@@ -185,6 +142,16 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements
             ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
         }
 
+        ImageButton backBtn = view.findViewById(R.id.action_back);
+        if(getActivity() != null && getActivity() instanceof AccountHomeActivity) {
+            backBtn.setVisibility(View.VISIBLE);
+            backBtn.setOnClickListener(v -> {
+                getActivity().onBackPressed();
+            });
+        }else {
+            backBtn.setVisibility(View.GONE);
+        }
+
         //status bar background compability
         statusBarBackground.getLayoutParams().height =
                 DisplayMetricUtils.getStatusBarHeight(getActivity());
@@ -199,64 +166,8 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements
         setHasOptionsMenu(true);
     }
 
-    private void setAdapter() {
-        adapter = new AccountHomePagerAdapter(getChildFragmentManager());
-        viewPager.setAdapter(adapter);
-        tabLayout.setupWithViewPager(viewPager);
-        tabLayout.addTab(tabLayout.newTab().setText(R.string.label_account_buyer));
-        tabLayout.addTab(tabLayout.newTab().setText(R.string.label_account_seller));
-
-        onNotificationChanged(counterNumber, 0);
-    }
-
     @Override
-    public void showLoading() {
-        Fragment currentFragment = adapter.getItem(viewPager.getCurrentItem());
-        if (currentFragment != null && currentFragment instanceof BaseAccountView) {
-            ((BaseAccountView) currentFragment).showLoading();
-        }
-    }
-
-    @Override
-    public void hideLoading() {
-        Fragment currentFragment = adapter.getItem(viewPager.getCurrentItem());
-        if (currentFragment != null && currentFragment instanceof BaseAccountView) {
-            ((BaseAccountView) currentFragment).hideLoading();
-        }
-    }
-
-    @Override
-    public void showError(String message) {
-        Fragment currentFragment = adapter.getItem(viewPager.getCurrentItem());
-        if (currentFragment != null && currentFragment instanceof BaseAccountView) {
-            ((BaseAccountView) currentFragment).showError(message);
-        }
-    }
-
-    @Override
-    public void showError(Throwable e, String errorCode) {
-        Fragment currentFragment = adapter.getItem(viewPager.getCurrentItem());
-        if (currentFragment != null && currentFragment instanceof BaseAccountView) {
-            ((BaseAccountView) currentFragment).showError(e, errorCode);
-        }
-    }
-
-    @Override
-    public void showErrorNoConnection() {
-        showError(getString(R.string.error_no_internet_connection));
-    }
-
-    @Override
-    public void onScrollToTop() {
-        if (viewPager != null && adapter != null) {
-            Fragment currentFragment = adapter.getItem(viewPager.getCurrentItem());
-            if (currentFragment != null && currentFragment instanceof FragmentListener) {
-                ((FragmentListener) currentFragment).onScrollToTop();
-            }
-            if (appBarLayout != null)
-                appBarLayout.setExpanded(true);
-        }
-    }
+    public void onScrollToTop() {}
 
     @Override
     public boolean isLightThemeStatusBar() {
@@ -264,7 +175,7 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements
     }
 
     @Override
-    public void onNotificationChanged(int notificationCount, int inboxCount) {
+    public void onNotificationChanged(int notificationCount, int inboxCount, int cartCount) {
         setToolbarNotificationCount(notificationCount);
         setToolbarInboxCount(inboxCount);
     }

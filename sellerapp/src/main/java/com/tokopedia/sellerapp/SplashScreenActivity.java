@@ -12,13 +12,17 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp;
 import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst;
+import com.tokopedia.applink.sellermigration.SellerMigrationRedirectionUtil;
 import com.tokopedia.core.SplashScreen;
 import com.tokopedia.core.gcm.Constants;
+import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.fcmcommon.service.SyncFcmTokenService;
+import com.tokopedia.graphql.util.LoggingUtils;
+import com.tokopedia.logger.LogManager;
+import com.tokopedia.notifications.CMPushNotificationManager;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.sellerapp.deeplink.DeepLinkDelegate;
 import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
-import com.tokopedia.sellerapp.utils.timber.TimberWrapper;
 import com.tokopedia.sellerapp.utils.SellerOnboardingPreference;
 import com.tokopedia.sellerhome.view.activity.SellerHomeActivity;
 import com.tokopedia.user.session.UserSession;
@@ -26,7 +30,7 @@ import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
 
-import static com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.OPEN_SHOP;
+import static com.tokopedia.applink.internal.ApplinkConstInternalGlobal.LANDING_SHOP_CREATION;
 
 /**
  * Created by normansyahputa on 11/29/16.
@@ -36,6 +40,7 @@ public class SplashScreenActivity extends SplashScreen {
 
     private boolean isApkTempered;
     private static String KEY_AUTO_LOGIN = "is_auto_login";
+    private static String KEY_CONFIG_RESPONSE_SIZE_LOG = "android_resp_size_log_threshold";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -51,43 +56,37 @@ public class SplashScreenActivity extends SplashScreen {
             startActivity(new Intent(this, FallbackActivity.class));
             finish();
         }
+        CMPushNotificationManager.getInstance()
+                .refreshFCMTokenFromForeground(FCMCacheManager.getRegistrationId(this.getApplicationContext()), false);
+
         syncFcmToken();
     }
 
     /**
      * handle/forward app link redirection from customer app to seller app
-     * */
+     */
     private boolean handleAppLink(UserSessionInterface userSession) {
         Uri uri = getIntent().getData();
         if (null != uri) {
             boolean isFromMainApp = uri.getBooleanQueryParameter(RouteManager.KEY_REDIRECT_TO_SELLER_APP, false);
             boolean isAutoLogin = uri.getBooleanQueryParameter(KEY_AUTO_LOGIN, false);
             if (isFromMainApp) {
-                String redirectApplink = uri.getQueryParameter(ApplinkConstInternalGlobal.KEY_REDIRECT_SEAMLESS_APPLINK);
-                Intent intent;
-                if (redirectApplink != null && !redirectApplink.isEmpty()) {
-                    intent = RouteManager.getIntent(this, redirectApplink);
-                } else {
-                    intent = RouteManager.getIntent(this, uri.toString());
-                }
                 if (isAutoLogin && userSession.getUserId().isEmpty()) {
                     ArrayList<String> remainingAppLinks = getIntent().getStringArrayListExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA);
-                    seamlessLogin(true, remainingAppLinks, redirectApplink);
+                    seamlessLogin(true, remainingAppLinks);
                     return true;
                 }
-                if (intent != null) {
-                    ArrayList<String> remainingAppLinks = getIntent().getStringArrayListExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA);
-                    String featureName = getIntent().getStringExtra(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME);
-                    if (remainingAppLinks != null && !remainingAppLinks.isEmpty()) {
-                        intent.putStringArrayListExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA, remainingAppLinks);
+                ArrayList<String> remainingAppLinks = getIntent().getStringArrayListExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA);
+                if (remainingAppLinks == null || remainingAppLinks.size() == 0) {
+                    Intent intent = RouteManager.getIntent(this, uri.toString());
+                    if (intent!= null &&intent.resolveActivity(this.getPackageManager()) != null) {
+                        startActivity(intent);
+                        return true;
                     }
-                    if (featureName != null && !featureName.isEmpty()) {
-                        intent.putExtra(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME, featureName);
-                    }
-                    startActivity(intent);
-                    return true;
+                    return false;
                 }
-                return false;
+                new SellerMigrationRedirectionUtil().startRedirectionActivities(this, remainingAppLinks);
+                return true;
             }
             return false;
         }
@@ -133,12 +132,12 @@ public class SplashScreenActivity extends SplashScreen {
             startActivity(intent);
         } else {
             boolean isAutoLoginSeamless = getIntent().getBooleanExtra(KEY_AUTO_LOGIN, false);
-            seamlessLogin(isAutoLoginSeamless, null, "");
+            seamlessLogin(isAutoLoginSeamless, null);
         }
         finish();
     }
 
-    private void seamlessLogin(boolean isAutoLoginSeamless, ArrayList<String> remainingApplinks, String redirectApplink) {
+    private void seamlessLogin(boolean isAutoLoginSeamless, ArrayList<String> remainingApplinks) {
         boolean hasOnboarding = new SellerOnboardingPreference(this)
                 .getBoolean(SellerOnboardingPreference.HAS_OPEN_ONBOARDING);
         Intent intent;
@@ -146,9 +145,6 @@ public class SplashScreenActivity extends SplashScreen {
             intent = RouteManager.getIntent(this, ApplinkConstInternalGlobal.SEAMLESS_LOGIN);
             Bundle b = new Bundle();
             b.putBoolean(KEY_AUTO_LOGIN, true);
-            if(redirectApplink != null && redirectApplink.length() > 0)
-                b.putString(ApplinkConstInternalGlobal.KEY_REDIRECT_SEAMLESS_APPLINK, redirectApplink);
-
             if (remainingApplinks != null && !remainingApplinks.isEmpty()) {
                 intent.putStringArrayListExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA, remainingApplinks);
             }
@@ -167,7 +163,7 @@ public class SplashScreenActivity extends SplashScreen {
 
     @NonNull
     public static Intent moveToCreateShop(Context context) {
-        Intent intent = RouteManager.getIntent(context, OPEN_SHOP);
+        Intent intent = RouteManager.getIntent(context, LANDING_SHOP_CREATION);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         return intent;
@@ -178,7 +174,11 @@ public class SplashScreenActivity extends SplashScreen {
         return new RemoteConfig.Listener() {
             @Override
             public void onComplete(RemoteConfig remoteConfig) {
-                TimberWrapper.initByRemoteConfig(getApplication(), remoteConfig);
+                LogManager logManager = LogManager.instance;
+                if(logManager!= null) {
+                    logManager.refreshConfig();
+                }
+                LoggingUtils.setResponseSize(remoteConfig.getLong(KEY_CONFIG_RESPONSE_SIZE_LOG));
             }
 
             @Override

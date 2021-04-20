@@ -4,16 +4,53 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/top_container"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_56"
+        android:orientation="vertical"
+        app:layout_constraintStart_toStartOf="parent"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <com.tokopedia.unifycomponents.ImageUnify
+                    android:id="@+id/iv_back_error"
+                    android:layout_width="@dimen/dp_28"
+                    android:layout_height="@dimen/dp_28"
+                    android:padding="@dimen/dp_2"
+                    app:srcCompat="@drawable/ic_tp_arrow_back" />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/toolbar_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="@dimen/dp_12"
+                    android:text="@string/tp_title_tokopoints"
+                    app:typographyType="heading_3"
+                    app:typographyWeight="bold" />
+            </LinearLayout>
+        </RelativeLayout>
+    </androidx.appcompat.widget.Toolbar>
+
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/img_error"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_24"
+        android:layout_marginTop="@dimen/dp_30"
         android:scaleType="fitCenter"
-        app:srcCompat="@drawable/ic_tp_toped_sorry"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/top_container" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/text_title_error"
@@ -21,12 +58,10 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_8"
         android:gravity="center_horizontal"
-        android:paddingStart="@dimen/dp_10"
-        android:paddingLeft="@dimen/dp_10"
-        android:paddingEnd="@dimen/dp_10"
-        android:paddingRight="@dimen/dp_10"
+        android:layout_marginStart="@dimen/dp_50"
+        android:layout_marginEnd="@dimen/dp_50"
         android:text="@string/tp_label_server_error"
-        android:textColor="@color/tp_no_connection_title_color"
+        android:textColor="@color/Unify_N700_96"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/img_error"
@@ -34,16 +69,14 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/text_label_error"
-        android:layout_width="wrap_content"
+        android:layout_width="@dimen/dp_0"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/tp_margin_xsmall"
         android:gravity="center_horizontal"
         android:paddingStart="@dimen/tp_margin_large"
-        android:paddingLeft="@dimen/tp_margin_large"
         android:paddingEnd="@dimen/tp_margin_large"
-        android:paddingRight="@dimen/tp_margin_large"
         android:text="@string/tp_label_try_again"
-        android:textColor="@color/tp_no_connection_subtitle_color"
+        android:textColor="@color/Unify_N700_68"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/text_title_error"
@@ -53,15 +86,15 @@
         android:id="@+id/text_failed_action"
         android:layout_width="@dimen/dp_200"
         android:layout_height="@dimen/dp_48"
-        android:layout_marginTop="@dimen/tp_margin_top_error_button"
+        android:layout_marginTop="@dimen/tp_margin_large"
         android:gravity="center"
         android:text="@string/tp_try_again"
         android:textAllCaps="false"
-        android:textColor="@color/tkpd_main_green"
+        android:textColor="@color/Unify_G400"
         android:textSize="@dimen/tp_text_size_small"
-        app:tpRbCornerRadius="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/text_label_error" />
+        app:layout_constraintTop_toBottomOf="@+id/text_label_error"
+        app:tpRbCornerRadius="8dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

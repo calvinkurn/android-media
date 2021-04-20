@@ -19,23 +19,24 @@ import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.ui.itemdecoration.PlayGridTwoItemDecoration
 import com.tokopedia.play.broadcaster.ui.model.ProductLoadingUiModel
-import com.tokopedia.play.broadcaster.ui.model.result.NetworkResult
 import com.tokopedia.play.broadcaster.ui.model.result.PageResultState
 import com.tokopedia.play.broadcaster.ui.viewholder.ProductSelectableViewHolder
-import com.tokopedia.play.broadcaster.util.coroutine.CoroutineDispatcherProvider
-import com.tokopedia.play.broadcaster.util.extension.doOnPreDraw
 import com.tokopedia.play.broadcaster.util.extension.productEtalaseEmpty
 import com.tokopedia.play.broadcaster.util.extension.showToaster
 import com.tokopedia.play.broadcaster.util.scroll.EndlessRecyclerViewScrollListener
-import com.tokopedia.play.broadcaster.util.scroll.StopFlingScrollListener
 import com.tokopedia.play.broadcaster.view.adapter.ProductSelectableAdapter
 import com.tokopedia.play.broadcaster.view.contract.ProductSetupListener
 import com.tokopedia.play.broadcaster.view.custom.PlayBottomSheetHeader
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseSetupFragment
-import com.tokopedia.play.broadcaster.view.partial.BottomActionPartialView
-import com.tokopedia.play.broadcaster.view.partial.SelectedProductPagePartialView
+import com.tokopedia.play.broadcaster.view.partial.BottomActionViewComponent
+import com.tokopedia.play.broadcaster.view.partial.SelectedProductPageViewComponent
 import com.tokopedia.play.broadcaster.view.viewmodel.DataStoreViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayEtalasePickerViewModel
+import com.tokopedia.play_common.model.result.NetworkResult
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.play_common.util.extension.doOnPreDraw
+import com.tokopedia.play_common.util.scroll.StopFlingScrollListener
+import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.*
 import javax.inject.Inject
@@ -45,7 +46,7 @@ import javax.inject.Inject
  */
 class PlayEtalaseDetailFragment @Inject constructor(
         private val viewModelFactory: ViewModelFactory,
-        private val dispatcher: CoroutineDispatcherProvider,
+        private val dispatcher: CoroutineDispatchers,
         private val analytic: PlayBroadcastAnalytic
 ) : PlayBaseSetupFragment() {
 
@@ -63,8 +64,28 @@ class PlayEtalaseDetailFragment @Inject constructor(
     private lateinit var errorEmptyProduct: GlobalError
     private lateinit var bottomSheetHeader: PlayBottomSheetHeader
 
-    private lateinit var selectedProductPage: SelectedProductPagePartialView
-    private lateinit var bottomActionView: BottomActionPartialView
+    private val selectedProductPageView by viewComponent {
+        SelectedProductPageViewComponent(view as ViewGroup, object : SelectedProductPageViewComponent.Listener {
+            override fun onProductSelectStateChanged(productId: Long, isSelected: Boolean) {
+                viewModel.selectProduct(productId, isSelected)
+                onSelectedProductChanged()
+            }
+        })
+    }
+
+    private val bottomActionView by viewComponent {
+        BottomActionViewComponent(it, object : BottomActionViewComponent.Listener {
+            override fun onInventoryIconClicked() {
+                showSelectedProductPage()
+                analytic.clickSelectedProductIcon()
+            }
+
+            override fun onNextButtonClicked() {
+                uploadProduct()
+                analytic.clickContinueOnProductBottomSheet()
+            }
+        })
+    }
 
     private var shouldLoadFirst = true
 
@@ -110,8 +131,8 @@ class PlayEtalaseDetailFragment @Inject constructor(
     }
 
     override fun onInterceptBackPressed(): Boolean {
-        return if (selectedProductPage.isShown) {
-            selectedProductPage.hide()
+        return if (selectedProductPageView.isShown()) {
+            selectedProductPageView.hide()
             true
         } else false
     }
@@ -127,25 +148,6 @@ class PlayEtalaseDetailFragment @Inject constructor(
             errorEmptyProduct = findViewById(R.id.error_empty_product)
             bottomSheetHeader = findViewById(R.id.bottom_sheet_header)
         }
-
-        selectedProductPage = SelectedProductPagePartialView(view as ViewGroup, object : SelectedProductPagePartialView.Listener {
-            override fun onProductSelectStateChanged(productId: Long, isSelected: Boolean) {
-                viewModel.selectProduct(productId, isSelected)
-                onSelectedProductChanged()
-            }
-        })
-
-        bottomActionView = BottomActionPartialView(view, object : BottomActionPartialView.Listener {
-            override fun onInventoryIconClicked() {
-                showSelectedProductPage()
-                analytic.clickSelectedProductIcon()
-            }
-
-            override fun onNextButtonClicked() {
-                uploadProduct()
-                analytic.clickContinueOnProductBottomSheet()
-            }
-        })
     }
 
     private fun setupView(view: View) {
@@ -217,11 +219,11 @@ class PlayEtalaseDetailFragment @Inject constructor(
     }
 
     private fun showSelectedProductPage() {
-        if (selectedProductPage.isShown) {
-            selectedProductPage.hide()
+        if (selectedProductPageView.isShown()) {
+            selectedProductPageView.hide()
         } else {
-            selectedProductPage.setSelectedProductList(viewModel.selectedProductList)
-            selectedProductPage.show()
+            selectedProductPageView.setSelectedProductList(viewModel.selectedProductList)
+            selectedProductPageView.show()
         }
     }
 
@@ -308,7 +310,7 @@ class PlayEtalaseDetailFragment @Inject constructor(
     private fun observeSelectedProducts() {
         viewModel.observableSelectedProducts.observe(viewLifecycleOwner, Observer {
             bottomActionView.setupBottomActionWithProducts(it)
-            selectedProductPage.onSelectedProductsUpdated(it)
+            selectedProductPageView.onSelectedProductsUpdated(it)
         })
     }
 

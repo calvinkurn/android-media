@@ -5,29 +5,29 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/container_umrah_widget_my_umrah"
     android:layout_width="wrap_content"
-    app:cardCornerRadius="@dimen/dp_8"
+    app:cardCornerRadius="@dimen/spacing_lvl3"
     android:layout_height="wrap_content"
     app:cardUseCompatPadding="true">
 
     <com.tokopedia.unifycomponents.ContainerUnify
         android:id="@+id/container_inner_umrah_widget_my_umrah"
-        android:layout_width="270dp"
-        android:layout_height="126dp"
+        android:layout_width="@dimen/dimen_dp_270"
+        android:layout_height="@dimen/layout_lvl9"
         app:container_color="BLUE">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/dp_8"
-            android:layout_marginRight="@dimen/dp_8"
-            android:elevation="@dimen/dp_4"
-            android:padding="@dimen/dp_16"
+            android:layout_marginEnd="@dimen/spacing_lvl3"
+            android:layout_marginRight="@dimen/spacing_lvl3"
+            android:elevation="@dimen/spacing_lvl2"
+            android:padding="@dimen/spacing_lvl4"
             tools:ignore="UnusedAttribute"
             tools:targetApi="lollipop">
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/iv_my_umrah"
-                android:layout_width="@dimen/dp_40"
+                android:layout_width="@dimen/spacing_lvl7"
                 android:layout_height="wrap_content"
                 android:adjustViewBounds="true"
                 app:layout_constraintStart_toStartOf="parent"
@@ -36,10 +36,10 @@
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tg_umrah_package"
-                android:layout_width="0dp"
+                android:layout_width="@dimen/unify_space_0"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_8"
-                android:layout_marginLeft="@dimen/dp_8"
+                android:layout_marginStart="@dimen/spacing_lvl3"
+                android:layout_marginLeft="@dimen/spacing_lvl3"
                 android:ellipsize="end"
                 android:lines="1"
                 android:textColor="@color/Neutral_N700_68"
@@ -51,10 +51,10 @@
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tg_umrah_departure"
-                android:layout_width="0dp"
+                android:layout_width="@dimen/unify_space_0"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_8"
-                android:layout_marginLeft="@dimen/dp_8"
+                android:layout_marginStart="@dimen/spacing_lvl3"
+                android:layout_marginLeft="@dimen/spacing_lvl3"
                 android:ellipsize="end"
                 android:lines="1"
                 android:singleLine="true"
@@ -69,7 +69,7 @@
                 android:id="@+id/tg_umrah_next_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_13"
+                android:layout_marginTop="@dimen/spacing_lvl4"
                 android:text="@string/my_umrah_widget_next_step_label"
                 android:ellipsize="end"
                 android:lines="1"
@@ -97,7 +97,7 @@
                 android:id="@+id/btn_my_umrah_detail"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_20"
+                android:layout_marginTop="@dimen/spacing_lvl5"
                 android:clickable="true"
                 android:focusable="true"
                 android:foreground="?attr/selectableItemBackgroundBorderless"
@@ -109,28 +109,28 @@
 
             <com.elyeproj.loaderviewlibrary.LoaderImageView
                 android:id="@+id/iv_my_umrah_loading"
-                android:layout_width="@dimen/dp_40"
-                android:layout_height="@dimen/dp_40"
+                android:layout_width="@dimen/spacing_lvl7"
+                android:layout_height="@dimen/spacing_lvl7"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <com.elyeproj.loaderviewlibrary.LoaderTextView
                 android:id="@+id/tg_umrah_package_loading"
-                android:layout_width="0dp"
+                android:layout_width="@dimen/unify_space_0"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_8"
-                android:layout_marginLeft="@dimen/dp_8"
+                android:layout_marginStart="@dimen/spacing_lvl3"
+                android:layout_marginLeft="@dimen/spacing_lvl3"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/iv_my_umrah_loading"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <com.elyeproj.loaderviewlibrary.LoaderTextView
                 android:id="@+id/tg_umrah_departure_loading"
-                android:layout_width="0dp"
+                android:layout_width="@dimen/unify_space_0"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_8"
-                android:layout_marginLeft="@dimen/dp_8"
-                android:layout_marginTop="@dimen/dp_4"
+                android:layout_marginStart="@dimen/spacing_lvl3"
+                android:layout_marginLeft="@dimen/spacing_lvl3"
+                android:layout_marginTop="@dimen/spacing_lvl2"
                 android:ellipsize="end"
                 android:textColor="@color/Neutral_N700_96"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -139,26 +139,26 @@
 
             <com.elyeproj.loaderviewlibrary.LoaderTextView
                 android:id="@+id/tg_umrah_next_label_loading"
-                android:layout_width="@dimen/dp_100"
+                android:layout_width="@dimen/unify_space_96"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_8"
+                android:layout_marginTop="@dimen/spacing_lvl3"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/iv_my_umrah_loading" />
 
             <com.elyeproj.loaderviewlibrary.LoaderTextView
                 android:id="@+id/tg_umrah_next_loading"
-                android:layout_width="@dimen/dp_100"
+                android:layout_width="@dimen/unify_space_96"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_4"
+                android:layout_marginTop="@dimen/spacing_lvl2"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tg_umrah_next_label_loading" />
 
             <com.elyeproj.loaderviewlibrary.LoaderTextView
                 android:id="@+id/btn_my_umrah_detail_loading"
-                android:layout_width="@dimen/dp_100"
-                android:layout_height="0dp"
-                android:layout_marginTop="@dimen/dp_8"
-                android:layout_marginBottom="@dimen/dp_8"
+                android:layout_width="@dimen/unify_space_96"
+                android:layout_height="@dimen/unify_space_0"
+                android:layout_marginTop="@dimen/spacing_lvl3"
+                android:layout_marginBottom="@dimen/spacing_lvl3"
                 app:layout_constraintBottom_toBottomOf="@+id/tg_umrah_next_loading"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/tg_umrah_next_label_loading" />

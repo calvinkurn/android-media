@@ -17,32 +17,19 @@ class LoadMoreViewModel(val application: Application, private val components: Co
 
     @Inject
     lateinit var productCardUseCase: ProductCardsUseCase
-
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + SupervisorJob()
 
-    init {
-        initDaggerInject()
-    }
 
+
+    fun getViewOrientation() = components.loadForHorizontal
 
     override fun onAttachToViewHolder() {
         super.onAttachToViewHolder()
-
         launchCatchError(block = {
-            syncData.value = productCardUseCase.getProductCardsUseCase(components.id, components.pageEndPoint)
+            if(!getViewOrientation()) syncData.value = productCardUseCase.getProductCardsUseCase(components.id, components.pageEndPoint)
         }, onError = {
             it.printStackTrace()
         })
-
-
-    }
-
-
-    override fun initDaggerInject() {
-        DaggerDiscoveryComponent.builder()
-                .baseAppComponent((application.applicationContext as BaseMainApplication).baseAppComponent)
-                .build()
-                .inject(this)
     }
 }

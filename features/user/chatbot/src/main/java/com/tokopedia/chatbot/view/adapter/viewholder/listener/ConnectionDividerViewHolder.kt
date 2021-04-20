@@ -1,9 +1,9 @@
 package com.tokopedia.chatbot.view.adapter.viewholder.listener
 
 import android.app.Activity
-import androidx.annotation.LayoutRes
 import android.view.View
 import android.widget.TextView
+import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.data.ConnectionDividerViewModel
@@ -23,7 +23,7 @@ class ConnectionDividerViewHolder(itemView: View) : AbstractViewHolder<Connectio
     }
 
     override fun bind(element: ConnectionDividerViewModel) {
-        dividerMessage.text = element.message ?: ""
+        dividerMessage.text = element.dividerMessage ?: ""
         if (element.isShowButton) dividerButton.show() else dividerButton.hide()
         dividerButton.setOnClickListener {
             val mContext = itemView.context

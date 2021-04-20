@@ -1,25 +1,22 @@
 package com.tokopedia.cart.view.presenter
 
-import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartExternalUseCase
+import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
-import com.tokopedia.cart.domain.usecase.*
-import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
-import com.tokopedia.purchase_platform.common.exception.CartResponseErrorException
-import com.tokopedia.purchase_platform.common.schedulers.TestSchedulers
-import com.tokopedia.purchase_platform.common.feature.insurance.usecase.GetInsuranceCartUseCase
-import com.tokopedia.purchase_platform.common.feature.insurance.usecase.RemoveInsuranceProductUsecase
-import com.tokopedia.purchase_platform.common.feature.insurance.usecase.UpdateInsuranceProductDataUsecase
 import com.tokopedia.cart.domain.model.cartlist.CartItemData
 import com.tokopedia.cart.domain.model.cartlist.ShopGroupAvailableData
-import com.tokopedia.cart.domain.model.cartlist.UpdateCartData
+import com.tokopedia.cart.domain.model.updatecart.UpdateCartData
+import com.tokopedia.cart.domain.usecase.*
 import com.tokopedia.cart.view.CartListPresenter
 import com.tokopedia.cart.view.ICartListView
 import com.tokopedia.cart.view.uimodel.CartItemHolderData
 import com.tokopedia.cart.view.uimodel.CartShopHolderData
+import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
+import com.tokopedia.purchase_platform.common.exception.CartResponseErrorException
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ValidateUsePromoRevampUseCase
+import com.tokopedia.purchase_platform.common.schedulers.TestSchedulers
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
-import com.tokopedia.seamless_login.domain.usecase.SeamlessLoginUsecase
+import com.tokopedia.seamless_login_common.domain.usecase.SeamlessLoginUsecase
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.GetWishlistUseCase
@@ -39,7 +36,9 @@ import rx.subscriptions.CompositeSubscription
 object CartListPresenterUpdateCartTest : Spek({
 
     val getCartListSimplifiedUseCase: GetCartListSimplifiedUseCase = mockk()
-    val deleteCartListUseCase: DeleteCartUseCase = mockk()
+    val deleteCartUseCase: DeleteCartUseCase = mockk()
+    val undoDeleteCartUseCase: UndoDeleteCartUseCase = mockk()
+    val addCartToWishlistUseCase: AddCartToWishlistUseCase = mockk()
     val updateCartUseCase: UpdateCartUseCase = mockk()
     val updateCartAndValidateUseUseCase: UpdateCartAndValidateUseUseCase = mockk()
     val validateUsePromoRevampUseCase: ValidateUsePromoRevampUseCase = mockk()
@@ -49,30 +48,29 @@ object CartListPresenterUpdateCartTest : Spek({
     val updateAndReloadCartUseCase: UpdateAndReloadCartUseCase = mockk()
     val userSessionInterface: UserSessionInterface = mockk()
     val clearCacheAutoApplyStackUseCase: ClearCacheAutoApplyStackUseCase = mockk()
-    val getRecentViewUseCase: GetRecentViewUseCase = mockk()
+    val getRecentViewUseCase: GetRecommendationUseCase = mockk()
     val getWishlistUseCase: GetWishlistUseCase = mockk()
     val getRecommendationUseCase: GetRecommendationUseCase = mockk()
     val addToCartUseCase: AddToCartUseCase = mockk()
     val addToCartExternalUseCase: AddToCartExternalUseCase = mockk()
-    val getInsuranceCartUseCase: GetInsuranceCartUseCase = mockk()
-    val removeInsuranceProductUsecase: RemoveInsuranceProductUsecase = mockk()
-    val updateInsuranceProductDataUsecase: UpdateInsuranceProductDataUsecase = mockk()
     val seamlessLoginUsecase: SeamlessLoginUsecase = mockk()
     val updateCartCounterUseCase: UpdateCartCounterUseCase = mockk()
+    val setCartlistCheckboxStateUseCase: SetCartlistCheckboxStateUseCase = mockk()
+    val followShopUseCase: FollowShopUseCase = mockk()
     val view: ICartListView = mockk(relaxed = true)
 
     Feature("update cart list") {
 
         val cartListPresenter by memoized {
             CartListPresenter(
-                    getCartListSimplifiedUseCase, deleteCartListUseCase, updateCartUseCase,
-                    compositeSubscription, addWishListUseCase, removeWishListUseCase,
-                    updateAndReloadCartUseCase, userSessionInterface, clearCacheAutoApplyStackUseCase,
-                    getRecentViewUseCase, getWishlistUseCase, getRecommendationUseCase,
-                    addToCartUseCase, addToCartExternalUseCase, getInsuranceCartUseCase,
-                    removeInsuranceProductUsecase, updateInsuranceProductDataUsecase, seamlessLoginUsecase,
-                    updateCartCounterUseCase, updateCartAndValidateUseUseCase, validateUsePromoRevampUseCase,
-                    TestSchedulers
+                    getCartListSimplifiedUseCase, deleteCartUseCase, undoDeleteCartUseCase,
+                    updateCartUseCase, compositeSubscription, addWishListUseCase,
+                    addCartToWishlistUseCase, removeWishListUseCase, updateAndReloadCartUseCase,
+                    userSessionInterface, clearCacheAutoApplyStackUseCase, getRecentViewUseCase,
+                    getWishlistUseCase, getRecommendationUseCase, addToCartUseCase,
+                    addToCartExternalUseCase, seamlessLoginUsecase, updateCartCounterUseCase,
+                    updateCartAndValidateUseUseCase, validateUsePromoRevampUseCase, setCartlistCheckboxStateUseCase,
+                    followShopUseCase, TestSchedulers
             )
         }
 
@@ -102,6 +100,10 @@ object CartListPresenterUpdateCartTest : Spek({
             }
 
             Given("shop data list") {
+                every { view.getAllAvailableCartDataList() } answers { cartItemDataList }
+            }
+
+            Given("shop data list for COD eligibility checking") {
                 every { view.getAllSelectedCartDataList() } answers { cartItemDataList }
             }
 
@@ -138,7 +140,7 @@ object CartListPresenterUpdateCartTest : Spek({
             }
 
             Given("shop data list") {
-                every { view.getAllSelectedCartDataList() } answers { cartItemDataList }
+                every { view.getAllAvailableCartDataList() } answers { cartItemDataList }
             }
 
             Given("attach view") {
@@ -411,7 +413,7 @@ object CartListPresenterUpdateCartTest : Spek({
         Scenario("failed update cart because data is empty") {
 
             Given("shop data list") {
-                every { view.getAllSelectedCartDataList() } answers { emptyList() }
+                every { view.getAllAvailableCartDataList() } answers { emptyList() }
             }
 
             When("process to update cart data") {

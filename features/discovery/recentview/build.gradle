@@ -1,24 +1,41 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/module.gradle"
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
+apply from: "../../../compile-instrument-test.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 
 repositories {
-    maven { url 'https://hansel.io/maven' }
+    maven { url 'https://maven-hansel.tokopedia.com/maven' }
 }
 buildscript {
     repositories {
+        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         mavenCentral()
-        maven { url 'https://hansel.io/maven' }
+        jcenter()
+        maven { url 'https://maven-hansel.tokopedia.com/maven' }
+        google()
     }
     dependencies {
         classpath rootProject.ext.miscDependencies.hansel
+        classpath rootProject.ext.miscDependencies.androidjunit5
+    }
+}
+
+android {
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+    defaultConfig {
+        multiDexEnabled true
     }
 }
 
 dependencies {
+    implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk7
+    implementation rootProject.ext.miscDependencies.multiDex
+    implementation project(rootProject.ext.libraries.analytics)
+    implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
     implementation project(rootProject.ext.features.resourcesCommon)
-    implementation project(rootProject.ext.libraries.tkpddesign)
     implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.libraries.baseList)
     implementation project(rootProject.ext.libraries.applink)
@@ -29,6 +46,7 @@ dependencies {
 
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.components
+    implementation rootProject.ext.unifyDependencies.icons
     implementation rootProject.ext.unifyDependencies.global_error
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
@@ -49,6 +67,23 @@ dependencies {
     implementation rootProject.ext.networkDependencies.glide
     debugImplementation rootProject.ext.debugToolsDependencies.stetho
     implementation rootProject.ext.debugToolsDependencies.chuck
+    implementation project(rootProject.ext.libraries.kotlinExtensions)
+    implementation project(rootProject.ext.libraries.trackingOptimizer)
+
+    androidTestImplementation project(rootProject.ext.libraries.cassavaTest)
+    androidTestImplementation project(rootProject.ext.libraries.instrumentation_test)
+    androidTestImplementation rootProject.ext.testDependencies.testCore
+    androidTestImplementation rootProject.ext.testDependencies.androidTestRunner
+    androidTestImplementation rootProject.ext.testDependencies.androidRulesVersion
+    androidTestImplementation rootProject.ext.testDependencies.espressoCore
+    androidTestImplementation rootProject.ext.testDependencies.espressoContrib
+    androidTestImplementation rootProject.ext.playServicesDependencies.analytics
+
+    testImplementation rootProject.ext.testDependencies.archCoreTesting
+    testImplementation rootProject.ext.testDependencies.mockk
+    testImplementation rootProject.ext.miscDependencies.coroutineCore
+    testImplementation rootProject.ext.miscDependencies.coroutineTest
+    testImplementation project(rootProject.ext.libraries.unitTest)
 }
 
 project.ext {
@@ -59,4 +94,7 @@ project.ext {
 }
 
 apply from: '../../../publish_local.gradle'
-
+apply from: '../../../jacoco_task.gradle'
+apply from: '../../../sonar_config.gradle'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'

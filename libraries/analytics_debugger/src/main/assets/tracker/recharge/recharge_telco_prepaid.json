@@ -3,21 +3,6 @@
   "mode": "exact",
   "query": [
     {
-      "event": "openScreen",
-      "screenName": "{{/digital/.*}}",
-      "isLoggedInStatus": "{{true|false}}",
-      "currentSite": "tokopediadigital",
-      "userId": "{{.*}}",
-      "businessUnit": "recharge",
-      "category": "{{.*}}",
-      "digitalCategoryId": "{{.*}}",
-      "clientId": "{{.*}}",
-      "sessionIris": "{{.*}}",
-      "shopId": "{{.*}}",
-      "appsflyerId": "{{.*}}",
-      "networkSpeed": "{{.*}}"
-    },
-    {
       "event": "clickHomepage",
       "eventCategory": "digital - homepage",
       "eventAction": "input manual number",
@@ -51,24 +36,6 @@
       "eventAction": "click x on detail product",
       "eventLabel": "{{.*}}",
       "sessionIris": "{{.*}}"
-    },
-    {
-      "event": "view_item",
-      "eventCategory": "digital - homepage",
-      "eventAction": "impression promo digital",
-      "eventLabel": "{{.*}}",
-      "sessionIris": "{{.*}}",
-      "promotions": [
-        {
-          "creative_name": "{{.*}}",
-          "creative_slot": "{{.*}}",
-          "item_id": "{{.*}}",
-          "item_name": "{{.*}}",
-          "promo_code": "{{.*}}",
-          "promo_id": "{{.*}}",
-          "category": "{{.*}}"
-        }
-      ]
     },
     {
       "event": "clickHomepage",
@@ -142,6 +109,16 @@
           "dimension40": "{{.*}}"
         }
       ]
+    },
+    {
+      "event": "viewHomepageIris",
+      "eventCategory": "digital - homepage",
+      "eventAction": "impression filter cluster",
+      "eventLabel": "{{.*}}",
+      "currentSite": "tokopediadigital",
+      "userId": "{{.*}}",
+      "businessUnit": "recharge",
+      "sessionIris": "{{.*}}"
     },
     {
       "event": "clickHomepage",

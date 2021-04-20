@@ -416,55 +416,6 @@ public class AuthUtil {
         return params;
     }
 
-    public static TKPDMapParam<String, String> generateParamsNetwork(Context context) {
-        String deviceId = GCMHandler.getRegistrationId(context);
-        UserSession userSession = new UserSession(CoreNetworkApplication.getAppContext());
-        String userId = userSession.getUserId();
-        String hash = md5(userId + "~" + deviceId);
-        TKPDMapParam<String, String> params = new TKPDMapParam<>();
-        params.put(PARAM_USER_ID, userId);
-        params.put(PARAM_DEVICE_ID, deviceId);
-        params.put(PARAM_HASH, hash);
-        params.put(PARAM_OS_TYPE, "1");
-        params.put(PARAM_TIMESTAMP, String.valueOf((new Date().getTime()) / 1000));
-        //      params.put(PARAM_X_TKPD_USER_ID, userId);
-        return params;
-    }
-
-
-    public static TKPDMapParam<String, String> generateParamsNetwork(Context context,
-                                                                     TKPDMapParam<String, String> params,
-                                                                     String userId) {
-
-        String deviceId = GCMHandler.getRegistrationId(context);
-        String hash = md5(userId + "~" + deviceId);
-
-        params.put(PARAM_USER_ID, userId);
-        params.put(PARAM_DEVICE_ID, deviceId);
-        params.put(PARAM_HASH, hash);
-        params.put(PARAM_OS_TYPE, "1");
-        params.put(PARAM_TIMESTAMP, String.valueOf((new Date().getTime()) / 1000));
-
-        return params;
-    }
-
-    public static TKPDMapParam<String, Object> generateParamsNetworkObject(Context context,
-                                                                           TKPDMapParam<String, Object>
-                                                                                   params,
-                                                                           String userId) {
-
-        String deviceId = GCMHandler.getRegistrationId(context);
-        String hash = md5(userId + "~" + deviceId);
-
-        params.put(PARAM_USER_ID, userId);
-        params.put(PARAM_DEVICE_ID, deviceId);
-        params.put(PARAM_HASH, hash);
-        params.put(PARAM_OS_TYPE, "1");
-        params.put(PARAM_TIMESTAMP, String.valueOf((new Date().getTime()) / 1000));
-
-        return params;
-    }
-
     public static String calculateRFC2104HMAC(String authString, String authKey) {
         try {
             SecretKeySpec signingKey = new SecretKeySpec(authKey.getBytes(), MAC_ALGORITHM);

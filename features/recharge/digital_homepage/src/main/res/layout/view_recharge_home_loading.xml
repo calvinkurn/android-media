@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:background="@color/Unify_N0"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingTop="?attr/actionBarSize">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/spacing_lvl4"
+        android:layout_marginBottom="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/spacing_lvl7"
+        android:orientation="vertical">
+
+        <com.elyeproj.loaderviewlibrary.LoaderTextView
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/layout_lvl1"
+            android:layout_marginBottom="@dimen/spacing_lvl3"
+            app:corners="@integer/corner_radius_shimmering"
+            app:width_weight="0.8" />
+
+        <com.elyeproj.loaderviewlibrary.LoaderTextView
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/layout_lvl1"
+            android:layout_marginBottom="@dimen/spacing_lvl3"
+            app:corners="@integer/corner_radius_shimmering"
+            app:width_weight="0.6" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/loading_divider_view_height"
+        android:layout_marginBottom="@dimen/spacing_lvl3"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:background="@color/Unify_N100" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/spacing_lvl4"
+        android:orientation="vertical">
+
+        <com.elyeproj.loaderviewlibrary.LoaderTextView
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/layout_lvl1"
+            android:layout_marginBottom="@dimen/spacing_lvl3"
+            app:corners="@integer/corner_radius_shimmering"
+            app:width_weight="0.8" />
+
+        <com.elyeproj.loaderviewlibrary.LoaderTextView
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/layout_lvl1"
+            android:layout_marginBottom="@dimen/spacing_lvl3"
+            app:corners="@integer/corner_radius_shimmering"
+            app:width_weight="0.6" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/loading_divider_view_height"
+        android:layout_marginBottom="@dimen/spacing_lvl3"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:background="@color/Unify_N100" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/spacing_lvl4"
+        android:orientation="vertical">
+
+        <com.elyeproj.loaderviewlibrary.LoaderTextView
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/layout_lvl1"
+            android:layout_marginBottom="@dimen/spacing_lvl3"
+            app:corners="@integer/corner_radius_shimmering"
+            app:width_weight="0.8" />
+
+        <com.elyeproj.loaderviewlibrary.LoaderTextView
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/layout_lvl1"
+            android:layout_marginBottom="@dimen/spacing_lvl3"
+            app:corners="@integer/corner_radius_shimmering"
+            app:width_weight="0.6" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/loading_divider_view_height"
+        android:layout_marginBottom="@dimen/spacing_lvl3"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:background="@color/Unify_N100" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/spacing_lvl4"
+        android:orientation="vertical">
+
+        <com.elyeproj.loaderviewlibrary.LoaderTextView
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/layout_lvl1"
+            android:layout_marginBottom="@dimen/spacing_lvl3"
+            app:corners="@integer/corner_radius_shimmering"
+            app:width_weight="0.8" />
+
+        <com.elyeproj.loaderviewlibrary.LoaderTextView
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/layout_lvl1"
+            android:layout_marginBottom="@dimen/spacing_lvl3"
+            app:corners="@integer/corner_radius_shimmering"
+            app:width_weight="0.6" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/loading_divider_view_height"
+        android:layout_marginBottom="@dimen/spacing_lvl3"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:background="@color/Unify_N100" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/spacing_lvl4"
+        android:orientation="vertical">
+
+        <com.elyeproj.loaderviewlibrary.LoaderTextView
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/layout_lvl1"
+            android:layout_marginBottom="@dimen/spacing_lvl3"
+            app:corners="@integer/corner_radius_shimmering"
+            app:width_weight="0.8" />
+
+        <com.elyeproj.loaderviewlibrary.LoaderTextView
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/layout_lvl1"
+            android:layout_marginBottom="@dimen/spacing_lvl3"
+            app:corners="@integer/corner_radius_shimmering"
+            app:width_weight="0.6" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/loading_divider_view_height"
+        android:layout_marginBottom="@dimen/spacing_lvl3"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:background="@color/Unify_N100" />
+
+</LinearLayout>

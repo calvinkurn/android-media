@@ -11,11 +11,13 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.feedcomponent.view.viewmodel.carousel.CarouselPlayCardViewModel
 import com.tokopedia.feedplus.view.adapter.typefactory.feed.FeedPlusTypeFactory
 import com.tokopedia.feedplus.view.util.EndlessScrollRecycleListener
 import com.tokopedia.feedplus.view.util.FeedDiffUtilCallback
 import com.tokopedia.feedplus.view.viewmodel.EmptyFeedBeforeLoginModel
 import com.tokopedia.feedplus.view.viewmodel.RetryModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
 
 import kotlin.collections.ArrayList
 
@@ -180,6 +182,19 @@ class FeedPlusAdapter(private val typeFactory: FeedPlusTypeFactory, val loadList
         list.addAll(newList)
 
         diffResult.dispatchUpdatesTo(this)
+    }
+
+    fun removePlayWidget() {
+        val playCarousel = list.firstOrNull { it is CarouselPlayCardViewModel }
+        if (playCarousel != null) remove(playCarousel)
+    }
+
+    fun updatePlayWidget(newModel: CarouselPlayCardViewModel) {
+        val newList = list.map {
+            if (it is CarouselPlayCardViewModel) newModel
+            else it
+        }
+        updateList(newList)
     }
 
     interface OnLoadListener {

@@ -5,11 +5,12 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.settingnotif.R
 import com.tokopedia.settingnotif.usersetting.data.pojo.ParentSetting
 import com.tokopedia.settingnotif.usersetting.view.dataview.NotificationActivationDataView.activationPushNotif
+import com.tokopedia.settingnotif.usersetting.view.dataview.NotificationActivationDataView.activationTroubleshooter
 import com.tokopedia.settingnotif.usersetting.view.dataview.UserSettingDataView
 import com.tokopedia.settingnotif.usersetting.view.fragment.base.SettingFieldFragment
 import com.tokopedia.settingnotif.usersetting.view.fragment.dialog.InformationDialog.showInformationDialog
@@ -17,7 +18,12 @@ import com.tokopedia.settingnotif.usersetting.view.viewmodel.SettingStateViewMod
 
 class PushNotifFieldFragment : SettingFieldFragment() {
 
-    private lateinit var viewModel: SettingStateViewModel
+    private val viewModel: SettingStateViewModel by lazy {
+        ViewModelProvider(
+                this,
+                viewModelFactory
+        ).get(SettingStateViewModel::class.java)
+    }
 
     private val settingStates by lazy(LazyThreadSafetyMode.NONE) {
         viewModel.getSettingStates()
@@ -30,13 +36,6 @@ class PushNotifFieldFragment : SettingFieldFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setHasOptionsMenu(true)
-        initViewModel()
-    }
-
-    private fun initViewModel() {
-        viewModel = ViewModelProviders
-                .of(this, viewModelFactory)
-                .get(SettingStateViewModel::class.java)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -79,9 +78,15 @@ class PushNotifFieldFragment : SettingFieldFragment() {
     }
 
     private fun pushNotifValidation() {
-        permissionValidation(
-                isNotificationEnabled(),
-                activationPushNotif(),
+        val isNotificationEnabled = isNotificationEnabled()
+        val notificationAction = if(isNotificationEnabled) {
+            activationTroubleshooter()
+        } else {
+            activationPushNotif()
+        }
+        permissionValidationNotification(
+                isNotificationEnabled,
+                notificationAction,
                 settingStates
         )
     }

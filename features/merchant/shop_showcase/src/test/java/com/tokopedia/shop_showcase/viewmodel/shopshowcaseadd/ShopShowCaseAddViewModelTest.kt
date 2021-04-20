@@ -29,6 +29,8 @@ class ShopShowCaseAddViewModelTest : ShopShowCaseAddViewModelTestFixture() {
             onCreateShopShowCase_thenReturn()
             shopShowCaseAddViewModel.addShopShowcase(AddShopShowcaseParam())
 
+            shopShowCaseAddViewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+
             verifySuccessCreateShopShowCaseCalled()
 
             val expectedValue = Success(AddShopShowcaseResponse())
@@ -46,8 +48,6 @@ class ShopShowCaseAddViewModelTest : ShopShowCaseAddViewModelTestFixture() {
             val getProductListFilter = GetProductListFilter()
             getProductListFilter.fkeyword = "baju"
             shopShowCaseAddViewModel.getSelectedProductList(filter = getProductListFilter)
-
-            assertTrue(shopShowCaseAddViewModel.loaderState.value == true)
 
             shopShowCaseAddViewModel.coroutineContext[Job]?.children?.forEach { it.join() }
 

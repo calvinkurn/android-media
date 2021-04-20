@@ -13,13 +13,38 @@
             android:theme="@style/Theme.White"
             android:label="@string/choose_image"
             android:screenOrientation="portrait"
-            android:launchMode="singleTop"/>
+            android:launchMode="singleTop">
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
 
-        <activity android:name=".picker.main.view.VideoPickerActivity"
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:scheme="@string/internal_scheme"
+                    android:host="@string/host_global"
+                    android:pathPattern="@string/path_image_picker"/>
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".videorecorder.VideoPickerActivity"
             android:theme="@style/Theme.White"
-            android:label="@string/choose_image"
+            android:label="@string/vidpick_app_name"
             android:screenOrientation="portrait"
-            android:launchMode="singleTop"/>
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:launchMode="singleTop">
+
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:scheme="@string/internal_scheme"
+                    android:host="@string/host_global"
+                    android:pathPattern="@string/path_video_picker"/>
+            </intent-filter>
+        </activity>
 
         <activity android:name=".picker.album.AlbumPickerActivity"
             android:theme="@style/Theme.White"
@@ -31,7 +56,18 @@
             android:theme="@style/Theme.White"
             android:label="@string/edit_image"
             android:screenOrientation="portrait"
-            android:launchMode="singleTop"/>
+            android:launchMode="singleTop">
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:scheme="@string/internal_scheme"
+                    android:host="@string/host_global"
+                    android:pathPattern="@string/path_image_editor"/>
+            </intent-filter>
+        </activity>
 
         <activity android:name=".picker.instagram.view.activity.InstagramLoginActivity"
             android:theme="@style/Theme.White"

@@ -164,7 +164,7 @@ class TravelCalendarWidgetView @JvmOverloads constructor(context: Context, attrs
         quickFilterItem.name = monthName
         quickFilterItem.type = month.toString()
         quickFilterItem.isSelected = false
-        quickFilterItem.setColorBorder(R.color.tkpd_main_green)
+        quickFilterItem.setColorBorder(com.tokopedia.unifyprinciples.R.color.Unify_G400)
         return quickFilterItem
     }
 

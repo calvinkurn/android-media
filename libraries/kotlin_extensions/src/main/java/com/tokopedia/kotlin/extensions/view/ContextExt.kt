@@ -1,5 +1,6 @@
 package com.tokopedia.kotlin.extensions.view
 
+import android.app.Activity
 import android.content.Context
 import android.graphics.drawable.Drawable
 import android.util.TypedValue
@@ -30,3 +31,18 @@ fun Context.pxToDp(px: Int): Float = TypedValue.applyDimension(
         px.toFloat(),
         resources.displayMetrics
 )
+
+/**
+ * Extension function to avoid java.lang.IllegalArgumentException when using activity context prior to its lifecycle
+ */
+fun Context?.whenAlive(predicate: (Context) -> Unit) {
+    if (this != null) {
+        if (this is Activity) {
+            if (!(isDestroyed || isFinishing)) {
+                predicate(this)
+            }
+        } else {
+            predicate(this)
+        }
+    }
+}

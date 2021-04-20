@@ -1,8 +1,8 @@
 package com.tokopedia.search.result.presentation.view.listener;
 
-import com.tokopedia.search.result.presentation.model.SuggestionViewModel;
+import com.tokopedia.search.result.presentation.model.SuggestionDataView;
 
 public interface SuggestionListener {
 
-    void onSuggestionClicked(SuggestionViewModel suggestionViewModel);
+    void onSuggestionClicked(SuggestionDataView suggestionDataView);
 }

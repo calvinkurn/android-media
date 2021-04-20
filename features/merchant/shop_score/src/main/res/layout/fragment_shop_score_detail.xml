@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/tkpd_bg_color"
+    android:background="@color/Unify_N75"
     android:orientation="vertical">
 
     <FrameLayout
@@ -30,7 +30,7 @@
                 android:id="@+id/text_view_shop_score_summary_detail_tittle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/white"
+                android:background="@color/Unify_N0"
                 android:lineSpacingMultiplier="1.25"
                 android:paddingEnd="16dp"
                 android:paddingLeft="16dp"
@@ -42,7 +42,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/white"
+                android:background="@color/Unify_N0"
                 android:lineSpacingMultiplier="1.25"
                 android:paddingBottom="30dp"
                 android:paddingEnd="16dp"
@@ -51,18 +51,18 @@
                 android:paddingStart="16dp"
                 android:paddingTop="8dp"
                 android:text="@string/subtitle_shop_score_detail_summary_description"
-                android:textColor="@color/tkpd_grey_text"
+                android:textColor="@color/Unify_N700_44"
                 android:textSize="12sp" />
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="@color/tkpd_grey" />
+                android:background="@color/Unify_N100" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/white"
+                android:background="@color/Unify_N0"
                 android:paddingEnd="16dp"
                 android:paddingLeft="16dp"
                 android:paddingRight="16dp"
@@ -74,21 +74,21 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/white"
+                android:background="@color/Unify_N0"
                 android:paddingEnd="16dp"
                 android:paddingLeft="16dp"
                 android:paddingRight="16dp"
                 android:paddingStart="16dp"
                 android:paddingTop="4dp"
                 android:text="@string/subtitle_shop_score_indicator_thirtydays"
-                android:textColor="@color/tkpd_grey_text"
+                android:textColor="@color/Unify_N700_44"
                 android:textSize="12sp" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recycler_view_shop_score_detail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/white"
+                android:background="@color/Unify_N0"
                 android:paddingBottom="20dp"
                 android:paddingEnd="16dp"
                 android:paddingLeft="16dp"
@@ -99,12 +99,12 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="@color/tkpd_grey" />
+                android:background="@color/Unify_N100" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/white"
+                android:background="@color/Unify_N0"
                 android:orientation="horizontal"
                 android:paddingBottom="26dp"
                 android:paddingEnd="16dp"
@@ -134,7 +134,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
                         android:lineSpacingMultiplier="1.25"
-                        android:textColor="@color/tkpd_grey_text" />
+                        android:textColor="@color/Unify_N700_32" />
 
                     <TextView
                         android:id="@+id/button_go_to_complete_information"
@@ -142,7 +142,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="19dp"
                         android:text="@string/button_shop_score_go_to_complete_information"
-                        android:textColor="@color/tkpd_main_green"
+                        android:textColor="@color/Unify_G400"
                         android:textSize="14sp" />
 
                 </LinearLayout>

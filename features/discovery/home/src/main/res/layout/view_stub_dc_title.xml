@@ -2,7 +2,6 @@
 <com.tokopedia.unifyprinciples.Typography
     app:typographyType="heading_3"
     android:id="@+id/channel_title"
-    android:contentDescription="@string/content_desc_channel_title"
     android:layout_marginLeft="@dimen/dp_16"
     android:layout_marginStart="@dimen/dp_16"
     android:layout_width="wrap_content"

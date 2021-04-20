@@ -8,7 +8,7 @@ import android.view.MenuItem;
 
 import androidx.fragment.app.Fragment;
 
-import com.tokopedia.logisticdata.data.analytics.CodAnalytics;
+import com.tokopedia.logisticCommon.data.analytics.CodAnalytics;
 import com.tokopedia.webview.BaseSessionWebViewFragment;
 import com.tokopedia.webview.BaseSimpleWebViewActivity;
 

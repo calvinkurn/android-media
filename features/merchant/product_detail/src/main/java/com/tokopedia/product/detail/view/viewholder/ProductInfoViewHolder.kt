@@ -11,7 +11,7 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.pdplayout.Content
-import com.tokopedia.product.detail.common.data.model.product.Video
+import com.tokopedia.product.detail.common.data.model.product.YoutubeVideo
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductInfoDataModel
 import com.tokopedia.product.detail.data.util.ProductCustomMovementMethod
@@ -45,22 +45,22 @@ class ProductInfoViewHolder(private val view: View,
             }
 
             val bottomData = data.find { it.row == BOTTOM_ROW_DESCRIPTION_DATA } ?: return
-            renderDescriptionData(bottomData.listOfContent, element.videos, getComponentTrackData(element))
+            renderDescriptionData(bottomData.listOfContent, element.youtubeVideos, getComponentTrackData(element))
         }
     }
 
-    private fun renderDescriptionData(listOfData: List<Content>, videos: List<Video>, componentTrackData: ComponentTrackDataModel) = with(view) {
-        if (videos.isNotEmpty()) {
+    private fun renderDescriptionData(listOfData: List<Content>, youtubeVideos: List<YoutubeVideo>, componentTrackData: ComponentTrackDataModel) = with(view) {
+        if (youtubeVideos.isNotEmpty()) {
             youtube_scroll.layoutManager = LinearLayoutManager(context,
                     LinearLayoutManager.HORIZONTAL, false)
 
             if (youtube_scroll.itemDecorationCount == 0)
-                youtube_scroll.addItemDecoration(SpaceItemDecoration(context?.resources?.getDimensionPixelSize(R.dimen.dp_16)
+                youtube_scroll.addItemDecoration(SpaceItemDecoration(context?.resources?.getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_16)
                         ?: 0, LinearLayoutManager.HORIZONTAL))
 
             youtube_scroll.show()
-            youtube_scroll.adapter = YoutubeThumbnailAdapter(videos.toMutableList()) { _, index ->
-                listener.gotoVideoPlayer(videos, index)
+            youtube_scroll.adapter = YoutubeThumbnailAdapter(youtubeVideos.toMutableList()) { _, index ->
+                listener.gotoVideoPlayer(youtubeVideos, index)
             }
             youtube_scroll.adapter?.notifyDataSetChanged()
         } else {

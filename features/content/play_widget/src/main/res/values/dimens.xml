@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="play_widget_dp_3">3dp</dimen>
+    <dimen name="play_widget_dp_6">6dp</dimen>
+    <dimen name="play_widget_dp_12">12dp</dimen>
+    <dimen name="play_widget_dp_14">14dp</dimen>
+    <dimen name="play_widget_dp_18">18dp</dimen>
+    <dimen name="play_widget_dp_20">20dp</dimen>
+
+    <!--Play Widget Small-->
+    <dimen name="play_widget_small_height">144dp</dimen>
+    <dimen name="play_widget_small_width">104dp</dimen>
+    <dimen name="play_widget_small_radius">10dp</dimen>
+    <dimen name="play_widget_small_border_width">2dp</dimen>
+    <dimen name="play_widget_small_total_view_height">20dp</dimen>
+
+    <!--Play Widget Card Small-->
+    <dimen name="play_widget_card_small_left_margin">14dp</dimen>
+
+    <dimen name="play_widget_card_medium_width">136dp</dimen>
+    <dimen name="play_widget_card_medium_height">242dp</dimen>
+
+    <dimen name="play_widget_badge_height">20dp</dimen>
+    <dimen name="play_widget_more_action_size">@dimen/play_widget_badge_height</dimen>
+
+    <dimen name="play_widget_medium_overlay">40dp</dimen>
+    <dimen name="play_widget_medium_overlay_negative">-40dp</dimen>
+
+    <!--Play Widget Placeholder-->
+    <dimen name="play_widget_placeholder_title_width">188dp</dimen>
+    <dimen name="play_widget_placeholder_action_width">62dp</dimen>
+
+    <!--Play Widget Card Placeholder-->
+    <dimen name="play_widget_card_placeholder_height">144dp</dimen>
+    <dimen name="play_widget_card_placeholder_width">104dp</dimen>
+    <dimen name="play_widget_card_placeholder_detail_radius">8dp</dimen>
+
+    <dimen name="play_widget_unify_loader_size">40dp</dimen>
+    <dimen name="play_widget_info_image_size">40dp</dimen>
+</resources>

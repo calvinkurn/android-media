@@ -47,7 +47,11 @@ data class ShopDataResponse(
         @SerializedName("city_name")
         val cityName: String = "",
         @SerializedName("shop_shipments")
-        val shopShipments: List<OccShopShipment> = emptyList()
+        val shopShipments: List<OccShopShipment> = emptyList(),
+        @SerializedName("gold_merchant")
+        val goldMerchant: GoldMerchant = GoldMerchant(),
+        @SerializedName("official_store")
+        val officialStore: OfficialStore = OfficialStore()
 )
 
 data class OccShopShipment(
@@ -78,4 +82,20 @@ data class OccShipProd(
         val additionalFee: Int = 0,
         @SerializedName("minimum_weight")
         val minimumWeight: Int = 0
+)
+
+data class OfficialStore(
+        @SerializedName("is_official")
+        val isOfficial: Int = 0,
+        @SerializedName("os_logo_url")
+        val osLogoUrl: String = ""
+)
+
+data class GoldMerchant(
+        @SerializedName("is_gold")
+        val isGold: Int = 0,
+        @SerializedName("is_gold_badge")
+        val isGoldBadge: Boolean = false,
+        @SerializedName("gold_merchant_logo_url")
+        val goldMerchantLogoUrl: String = ""
 )

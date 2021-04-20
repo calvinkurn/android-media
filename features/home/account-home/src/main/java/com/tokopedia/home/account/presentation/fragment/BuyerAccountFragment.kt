@@ -1,5 +1,6 @@
 package com.tokopedia.home.account.presentation.fragment
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -17,7 +18,9 @@ import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrol
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.discovery.common.manager.ProductCardOptionsWishlistCallback
 import com.tokopedia.discovery.common.manager.handleProductCardOptionsActivityResult
 import com.tokopedia.discovery.common.manager.showProductCardOptions
@@ -32,20 +35,29 @@ import com.tokopedia.home.account.presentation.adapter.AccountTypeFactory
 import com.tokopedia.home.account.presentation.adapter.buyer.BuyerAccountAdapter
 import com.tokopedia.home.account.presentation.util.AccountHomeErrorHandler
 import com.tokopedia.home.account.presentation.viewmodel.AccountRecommendationTitleViewModel
+import com.tokopedia.home.account.presentation.viewmodel.BuyerCardViewModel
 import com.tokopedia.home.account.presentation.viewmodel.RecommendationProductViewModel
+import com.tokopedia.home.account.presentation.viewmodel.TopadsHeadlineUiModel
 import com.tokopedia.home.account.presentation.viewmodel.base.BuyerViewModel
 import com.tokopedia.home.account.revamp.domain.data.mapper.BuyerAccountMapper
+import com.tokopedia.home.account.revamp.domain.data.mapper.BuyerAccountStaticMapper
 import com.tokopedia.home.account.revamp.viewmodel.BuyerAccountViewModel
 import com.tokopedia.navigation_common.listener.FragmentListener
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
-import com.tokopedia.topads.sdk.utils.ImpresionTask
+import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.RemoteConfigKey
+import com.tokopedia.sessioncommon.view.admin.dialog.LocationAdminDialog
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.track.TrackApp
+import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.utils.image.ImageUtils
 import kotlinx.android.synthetic.main.fragment_buyer_account.*
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
@@ -64,13 +76,19 @@ class BuyerAccountFragment : BaseAccountFragment(), FragmentListener {
     @Inject
     lateinit var buyerAccountMapper: BuyerAccountMapper
 
-    private val adapter: BuyerAccountAdapter = BuyerAccountAdapter(AccountTypeFactory(this), arrayListOf())
+    @Inject
+    lateinit var buyerAccountStaticMapper: BuyerAccountStaticMapper
+
+    private var adapter: BuyerAccountAdapter? = null
     private var endlessRecyclerViewScrollListener: EndlessRecyclerViewScrollListener? = null
     private var fpmBuyer: PerformanceMonitoring? = null
     private var layoutManager: StaggeredGridLayoutManager = StaggeredGridLayoutManager(
             DEFAULT_SPAN_COUNT, StaggeredGridLayoutManager.VERTICAL)
 
     private var shouldRefreshOnResume = true
+    private var UOH_AB_TEST_KEY = "uoh_android_v2"
+    private var UOH_AB_TEST_VALUE = "uoh_android_v2"
+    private var canGoToShopAccount = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -91,10 +109,12 @@ class BuyerAccountFragment : BaseAccountFragment(), FragmentListener {
         endlessRecyclerViewScrollListener?.let {
             recycler_buyer.addOnScrollListener(it)
         }
+
+        adapter = BuyerAccountAdapter(AccountTypeFactory(this, userSession), arrayListOf())
         recycler_buyer.layoutManager = layoutManager
         recycler_buyer.adapter = adapter
 
-        swipe_refresh_layout.setColorSchemeResources(R.color.tkpd_main_green)
+        swipe_refresh_layout.setColorSchemeResources(com.tokopedia.unifyprinciples.R.color.Unify_G400)
 
         swipe_refresh_layout.setOnRefreshListener { this.getData() }
         sendBuyerAccountItemImpression()
@@ -105,7 +125,7 @@ class BuyerAccountFragment : BaseAccountFragment(), FragmentListener {
     private fun setObservers() {
         viewModel.buyerAccountDataData.observe(viewLifecycleOwner, Observer {
             hideLoading()
-            when(it) {
+            when (it) {
                 is Success -> {
                     loadBuyerData(buyerAccountMapper.call(it.data))
                 }
@@ -115,12 +135,13 @@ class BuyerAccountFragment : BaseAccountFragment(), FragmentListener {
                     } else {
                         showError(it.throwable, AccountConstants.ErrorCodes.ERROR_CODE_BUYER_ACCOUNT)
                     }
+                    loadStaticBuyerData()
                 }
             }
         })
 
         viewModel.addWishList.observe(viewLifecycleOwner, Observer {
-            when(it) {
+            when (it) {
                 is Success -> {
                     showSuccessAddWishlist()
                 }
@@ -135,7 +156,7 @@ class BuyerAccountFragment : BaseAccountFragment(), FragmentListener {
         })
 
         viewModel.removeWishList.observe(viewLifecycleOwner, Observer {
-            when(it) {
+            when (it) {
                 is Success -> {
                     showSuccessRemoveWishlist()
                 }
@@ -151,12 +172,13 @@ class BuyerAccountFragment : BaseAccountFragment(), FragmentListener {
 
         viewModel.firstRecommendation.observe(viewLifecycleOwner, Observer {
             hideLoadMoreLoading()
-            when(it) {
+            when (it) {
                 is Success -> {
                     val visitable = ArrayList<Visitable<*>>()
                     visitable.add(AccountRecommendationTitleViewModel(it.data.title))
+                    addTopAdsHeadLine(visitable)
                     visitable.addAll(getRecommendationVisitable(it.data))
-                    adapter.addElement(visitable)
+                    adapter?.addElement(visitable)
                 }
                 is Fail -> {
                     if (it.throwable is UnknownHostException || it.throwable is SocketTimeoutException) {
@@ -170,14 +192,18 @@ class BuyerAccountFragment : BaseAccountFragment(), FragmentListener {
 
         viewModel.recommendation.observe(viewLifecycleOwner, Observer {
             hideLoadMoreLoading()
-            when(it) {
+            when (it) {
                 is Success -> {
-                    adapter.addElement(getRecommendationVisitable(it.data))
+                    adapter?.addElement(getRecommendationVisitable(it.data))
                 }
                 is Fail -> {
                     showError(it.throwable.message ?: "")
                 }
             }
+        })
+
+        viewModel.canGoToSellerAccount.observe(viewLifecycleOwner, Observer {
+            canGoToShopAccount = it
         })
     }
 
@@ -223,8 +249,8 @@ class BuyerAccountFragment : BaseAccountFragment(), FragmentListener {
     private fun loadBuyerData(model: BuyerViewModel?) {
         if (model != null) {
             model.items?.let {
-                adapter.clearAllElements()
-                adapter.setElement(it)
+                adapter?.clearAllElements()
+                adapter?.setElement(it)
                 try {
                     Toaster.snackBar.dismiss()
                 } catch (e: Exception) {
@@ -232,8 +258,8 @@ class BuyerAccountFragment : BaseAccountFragment(), FragmentListener {
             }
         } else {
             context?.let {
-                adapter.clearAllElements()
-                adapter.setElement(StaticBuyerModelGenerator.getModel(it, null, getRemoteConfig()))
+                adapter?.clearAllElements()
+                adapter?.setElement(StaticBuyerModelGenerator.getModel(it, null, getRemoteConfig(), useUoh()))
             }
         }
 
@@ -241,13 +267,18 @@ class BuyerAccountFragment : BaseAccountFragment(), FragmentListener {
         viewModel.getFirstRecommendationData()
     }
 
+    private fun loadStaticBuyerData() {
+        adapter?.clearAllElements()
+        adapter?.setElement(buyerAccountStaticMapper.getStaticBuyerModel(useUoh()).items)
+    }
+
     private fun showLoading() {
-        adapter.showLoading()
+        adapter?.showLoading()
         scrollToTop()
     }
 
     private fun hideLoading() {
-        adapter.hideLoading()
+        adapter?.hideLoading()
 
         if (swipe_refresh_layout != null && swipe_refresh_layout.isRefreshing)
             swipe_refresh_layout.isRefreshing = false
@@ -300,13 +331,13 @@ class BuyerAccountFragment : BaseAccountFragment(), FragmentListener {
     }
 
     internal override fun notifyItemChanged(position: Int) {
-        adapter.notifyItemChanged(position)
+        adapter?.notifyItemChanged(position)
     }
 
     override fun onProductRecommendationClicked(product: RecommendationItem, adapterPosition: Int, widgetTitle: String) {
         sendProductClickTracking(product, adapterPosition, widgetTitle)
         activity?.let {
-            if (product.isTopAds) TopAdsUrlHitter(it).hitClickUrl(it::class.qualifiedName, product.clickUrl, product.productId.toString(), product.name, product.imageUrl)
+            if (product.isTopAds) TopAdsUrlHitter(it).hitClickUrl(it::class.qualifiedName, product.clickUrl, product.productId.toString(), product.name, product.imageUrl, COMPONENT_NAME_TOP_ADS)
         }
 
         RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, product.productId.toString()).run {
@@ -318,7 +349,7 @@ class BuyerAccountFragment : BaseAccountFragment(), FragmentListener {
     override fun onProductRecommendationImpression(product: RecommendationItem, adapterPosition: Int) {
         sendProductImpressionTracking(getTrackingQueue(), product, adapterPosition)
         activity?.let {
-            if (product.isTopAds) TopAdsUrlHitter(it).hitImpressionUrl(it::class.qualifiedName, product.trackerImageUrl, product.productId.toString(), product.name, product.imageUrl)
+            if (product.isTopAds) TopAdsUrlHitter(it).hitImpressionUrl(it::class.qualifiedName, product.trackerImageUrl, product.productId.toString(), product.name, product.imageUrl, COMPONENT_NAME_TOP_ADS)
         }
     }
 
@@ -350,13 +381,23 @@ class BuyerAccountFragment : BaseAccountFragment(), FragmentListener {
         )
     }
 
+    override fun onSellerAccountCardClicked() {
+        context?.let {
+            if (canGoToShopAccount) {
+                RouteManager.route(it, ApplinkConstInternalSellerapp.SELLER_MENU)
+            } else {
+                LocationAdminDialog(it).show()
+            }
+        }
+    }
+
     private fun hideLoadMoreLoading() {
-        adapter.hideLoading()
+        adapter?.hideLoading()
         endlessRecyclerViewScrollListener?.updateStateAfterGetData()
     }
 
     private fun showLoadMoreLoading() {
-        adapter.showLoading()
+        adapter?.showLoading()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -369,6 +410,14 @@ class BuyerAccountFragment : BaseAccountFragment(), FragmentListener {
                 val position = data.getIntExtra(PDP_EXTRA_UPDATED_POSITION, -1)
                 updateWishlist(wishlistStatusFromPdp, position)
             }
+        }
+
+        if (requestCode == REQUEST_CODE_CHANGE_NAME && resultCode == Activity.RESULT_OK) {
+            gotoSettingProfile()
+        }
+
+        if (requestCode == REQUEST_CODE_PROFILE_SETTING) {
+            getData()
         }
 
         handleProductCardOptionsActivityResult(requestCode, resultCode, data, object : ProductCardOptionsWishlistCallback {
@@ -388,7 +437,7 @@ class BuyerAccountFragment : BaseAccountFragment(), FragmentListener {
     }
 
     private fun handleWishlistActionSuccess(productCardOptionsModel: ProductCardOptionsModel) {
-        val recommendationItem = adapter.list.getOrNull(productCardOptionsModel.productPosition) as? RecommendationProductViewModel
+        val recommendationItem = adapter?.list?.getOrNull(productCardOptionsModel.productPosition) as? RecommendationProductViewModel
                 ?: return
         recommendationItem.product.isWishlist = productCardOptionsModel.wishlistResult.isAddWishlist
 
@@ -463,14 +512,18 @@ class BuyerAccountFragment : BaseAccountFragment(), FragmentListener {
     }
 
     private fun updateWishlist(wishlistStatusFromPdp: Boolean, position: Int) {
-        if (adapter.list.get(position) is RecommendationProductViewModel) {
-            (adapter.list.get(position) as RecommendationProductViewModel).product.isWishlist = wishlistStatusFromPdp
-            adapter.notifyItemChanged(position)
+        if (adapter?.list?.get(position) is RecommendationProductViewModel) {
+            (adapter?.list?.get(position) as RecommendationProductViewModel).product.isWishlist = wishlistStatusFromPdp
+            adapter?.notifyItemChanged(position)
         }
     }
 
     private fun scrollToTop() {
         recycler_buyer.scrollToPosition(0)
+    }
+
+    private fun addTopAdsHeadLine(visitable: ArrayList<Visitable<*>>) {
+        visitable.add(TopadsHeadlineUiModel())
     }
 
     private fun getRecommendationVisitable(recommendationWidget: RecommendationWidget): List<Visitable<*>> {
@@ -479,6 +532,60 @@ class BuyerAccountFragment : BaseAccountFragment(), FragmentListener {
             recommendationList.add(RecommendationProductViewModel(item, recommendationWidget.title))
         }
         return recommendationList
+    }
+
+    private fun useUoh(): Boolean {
+        return try {
+            val remoteConfigRollenceValue = RemoteConfigInstance.getInstance().abTestPlatform.getString(UOH_AB_TEST_KEY, "")
+
+            val remoteConfigFirebase: Boolean = getRemoteConfig().getBoolean(RemoteConfigKey.ENABLE_UOH)
+            (remoteConfigRollenceValue == UOH_AB_TEST_VALUE && remoteConfigFirebase)
+
+        } catch (e: Exception) {
+            false
+        }
+    }
+
+    override fun onIconWarningNameClick(element: BuyerCardViewModel) {
+        showBottomSheetAddName(element)
+    }
+
+    private fun showBottomSheetAddName(element: BuyerCardViewModel) {
+        activity?.let {
+            val addNameLayout = View.inflate(context, com.tokopedia.home_account.R.layout.layout_bottom_sheet_add_name, null)
+            val btnAddName: UnifyButton = addNameLayout.findViewById(R.id.layout_bottom_sheet_add_name_button)
+            val iconAddName: ImageUnify = addNameLayout.findViewById(R.id.layout_bottom_sheet_add_name_icon)
+            val bottomSheet = BottomSheetUnify()
+
+            ImageUtils.loadImage(iconAddName, URL_ICON_ADD_NAME_BOTTOM_SHEET)
+            iconAddName.setOnClickListener {
+                gotoChangeName(element)
+                bottomSheet.dismiss()
+            }
+            btnAddName.setOnClickListener {
+                gotoChangeName(element)
+                bottomSheet.dismiss()
+            }
+
+            bottomSheet.setChild(addNameLayout)
+            bottomSheet.clearAction()
+            bottomSheet.setCloseClickListener {
+                bottomSheet.dismiss()
+            }
+            childFragmentManager.run {
+                bottomSheet.show(this, "bottom sheet add name")
+            }
+        }
+    }
+
+    private fun gotoChangeName(element: BuyerCardViewModel) {
+        val intent = RouteManager.getIntent(requireContext(), ApplinkConstInternalGlobal.CHANGE_NAME, element.name, "")
+        startActivityForResult(intent, REQUEST_CODE_CHANGE_NAME)
+    }
+
+    private fun gotoSettingProfile() {
+        val intent = RouteManager.getIntent(requireContext(), ApplinkConstInternalGlobal.SETTING_PROFILE)
+        startActivity(intent)
     }
 
     companion object {
@@ -494,8 +601,13 @@ class BuyerAccountFragment : BaseAccountFragment(), FragmentListener {
         private const val PDP_EXTRA_UPDATED_POSITION = "wishlistUpdatedPosition"
         private const val REQUEST_FROM_PDP = 394
         private const val className: String = "com.tokopedia.home.account.presentation.fragment.BuyerAccountFragment"
+        private const val URL_ICON_ADD_NAME_BOTTOM_SHEET = "https://images.tokopedia.net/img/android/user/profile_page/Group3082@3x.png"
 
         private val DEFAULT_SPAN_COUNT = 2
+        private const val REQUEST_CODE_CHANGE_NAME = 300
+        private const val REQUEST_CODE_PROFILE_SETTING = 301
+
+        private const val COMPONENT_NAME_TOP_ADS = "Account Home Recommendation Top Ads"
 
         fun newInstance(): Fragment {
             val fragment = BuyerAccountFragment()

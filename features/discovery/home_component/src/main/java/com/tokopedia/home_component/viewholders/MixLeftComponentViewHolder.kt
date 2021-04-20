@@ -5,6 +5,7 @@ import android.view.Gravity
 import android.view.View
 import android.widget.ImageView
 import androidx.annotation.LayoutRes
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SnapHelper
@@ -13,18 +14,16 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.home_component.R
 import com.tokopedia.home_component.customview.HeaderListener
 import com.tokopedia.home_component.listener.HomeComponentListener
-import com.tokopedia.home_component.productcardgridcarousel.listener.CommonProductCardCarouselListener
 import com.tokopedia.home_component.listener.MixLeftComponentListener
+import com.tokopedia.home_component.mapper.ChannelModelMapper
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselEmptyCardDataModel
 import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselProductCardDataModel
 import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselSeeMorePdpDataModel
+import com.tokopedia.home_component.productcardgridcarousel.listener.CommonProductCardCarouselListener
 import com.tokopedia.home_component.productcardgridcarousel.typeFactory.CommonCarouselProductCardTypeFactoryImpl
-import com.tokopedia.home_component.util.GravitySnapHelper
-import com.tokopedia.home_component.util.ImageHandler
-import com.tokopedia.home_component.util.loadImage
-import com.tokopedia.home_component.util.setGradientBackground
+import com.tokopedia.home_component.util.*
 import com.tokopedia.home_component.viewholders.adapter.MixLeftAdapter
 import com.tokopedia.home_component.visitable.MixLeftDataModel
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
@@ -48,7 +47,7 @@ import kotlin.math.abs
 class MixLeftComponentViewHolder (itemView: View,
                                   val mixLeftComponentListener: MixLeftComponentListener?,
                                   val homeComponentListener: HomeComponentListener?,
-                                  private val parentRecycledViewPool: RecyclerView.RecycledViewPool?)
+                                  private val parentRecycledViewPool: RecyclerView.RecycledViewPool? = null)
     : AbstractViewHolder<MixLeftDataModel>(itemView), CoroutineScope, CommonProductCardCarouselListener {
 
     private lateinit var adapter: MixLeftAdapter
@@ -61,18 +60,22 @@ class MixLeftComponentViewHolder (itemView: View,
     private lateinit var image: ImageView
     private lateinit var loadingBackground: ImageView
     private lateinit var parallaxBackground: View
-    private lateinit var parallaxView: View
+    private lateinit var containerMixLeft: ConstraintLayout
 
     private lateinit var layoutManager: LinearLayoutManager
+
+    private var isCacheData = false
 
 
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.global_dc_mix_left
+        val RECYCLER_VIEW_ID = R.id.rv_product
         private const val FPM_MIX_LEFT = "home_mix_left"
     }
 
     override fun bind(element: MixLeftDataModel) {
+        isCacheData = element.isCache
         initVar()
         setupBackground(element.channelModel)
         setupList(element.channelModel)
@@ -80,7 +83,8 @@ class MixLeftComponentViewHolder (itemView: View,
         setHeaderComponent(element)
 
         itemView.addOnImpressionListener(element.channelModel)  {
-            mixLeftComponentListener?.onMixLeftImpressed(element.channelModel, adapterPosition)
+            if (!isCacheData)
+                mixLeftComponentListener?.onMixLeftImpressed(element.channelModel, adapterPosition)
         }
     }
 
@@ -89,11 +93,12 @@ class MixLeftComponentViewHolder (itemView: View,
     }
 
     override fun onProductCardImpressed(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int) {
-        mixLeftComponentListener?.onProductCardImpressed(channelModel, channelGrid, position)
+        if (!isCacheData)
+            mixLeftComponentListener?.onProductCardImpressed(channelModel, channelGrid, adapterPosition, position)
     }
 
     override fun onProductCardClicked(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int, applink: String) {
-        mixLeftComponentListener?.onProductCardClicked(channelModel, channelGrid, position, applink)
+        mixLeftComponentListener?.onProductCardClicked(channelModel, channelGrid, adapterPosition, position, applink)
     }
 
     override fun onSeeMoreCardClicked(channel: ChannelModel, applink: String) {
@@ -109,16 +114,17 @@ class MixLeftComponentViewHolder (itemView: View,
         image = itemView.findViewById(R.id.parallax_image)
         loadingBackground = itemView.findViewById(R.id.background_loader)
         parallaxBackground = itemView.findViewById(R.id.parallax_background)
-        parallaxView = itemView.findViewById(R.id.parallax_view)
+        containerMixLeft = itemView.findViewById(R.id.container_mixleft)
     }
 
     private fun setupBackground(channel: ChannelModel) {
         if (channel.channelBanner.imageUrl.isNotEmpty()) {
             loadingBackground.show()
             image.addOnImpressionListener(channel){
-                mixLeftComponentListener?.onImageBannerImpressed(channel, adapterPosition)
+                if (!isCacheData)
+                    mixLeftComponentListener?.onImageBannerImpressed(channel, adapterPosition)
             }
-            image.loadImage(channel.channelBanner.imageUrl, FPM_MIX_LEFT, object : ImageHandler.ImageLoaderStateListener{
+            image.loadImageWithoutPlaceholder(channel.channelBanner.imageUrl, FPM_MIX_LEFT, object : ImageHandler.ImageLoaderStateListener{
                 override fun successLoad() {
                     parallaxBackground.setGradientBackground(channel.channelBanner.gradientColor)
                     loadingBackground.hide()
@@ -141,14 +147,13 @@ class MixLeftComponentViewHolder (itemView: View,
         recyclerView.layoutManager = layoutManager
         val typeFactoryImpl = CommonCarouselProductCardTypeFactoryImpl(channel)
         val listData = mutableListOf<Visitable<*>>()
-        listData.add(CarouselEmptyCardDataModel(channel, adapterPosition, this))
+        listData.add(CarouselEmptyCardDataModel(channel, adapterPosition, this, channel.channelBanner.applink))
         val productDataList = convertDataToProductData(channel)
         listData.addAll(productDataList)
 
         launch {
             try {
                 recyclerView.setHeightBasedOnProductCardMaxHeight(productDataList.map {it.productModel})
-                parentRecycledViewPool?.let {recyclerView.setRecycledViewPool(it) }
             }
             catch (throwable: Throwable) {
                 throwable.printStackTrace()
@@ -171,17 +176,21 @@ class MixLeftComponentViewHolder (itemView: View,
         return object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
-                if (layoutManager.findFirstVisibleItemPosition() == 0) {
+                if (layoutManager.findFirstVisibleItemPosition() == 0 && dx != 0) {
                     val firstView = layoutManager.findViewByPosition(layoutManager.findFirstVisibleItemPosition())
                     firstView?.let {
                         val distanceFromLeft = it.left
                         val translateX = distanceFromLeft * 0.2f
-                        parallaxView.translationX = translateX
-
-                        if (distanceFromLeft <= 0) {
-                            val itemSize = it.width.toFloat()
-                            val alpha = (abs(distanceFromLeft).toFloat() / itemSize * 0.80f)
-                            image.alpha = 1 - alpha
+                        if (translateX <= 0) {
+                            image.translationX = translateX
+                            if (distanceFromLeft <= 0) {
+                                val itemSize = it.width.toFloat()
+                                val alpha = (abs(distanceFromLeft).toFloat() / itemSize * 0.80f)
+                                image.alpha = 1 - alpha
+                            }
+                        } else {
+                            image.translationX = 0f
+                            image.alpha = 1f
                         }
                     }
                 }
@@ -193,31 +202,7 @@ class MixLeftComponentViewHolder (itemView: View,
         val list :MutableList<CarouselProductCardDataModel> = mutableListOf()
         for (element in channel.channelGrids) {
             list.add(CarouselProductCardDataModel(
-                    ProductCardModel(
-                            slashedPrice = element.slashedPrice,
-                            productName = element.name,
-                            formattedPrice = element.price,
-                            productImageUrl = element.imageUrl,
-                            discountPercentage = element.discount,
-                            pdpViewCount = element.productViewCountFormatted,
-                            stockBarLabel = element.label,
-                            isTopAds = element.isTopads,
-                            stockBarPercentage = element.soldPercentage,
-                            labelGroupList = element.labelGroup.map {
-                                ProductCardModel.LabelGroup(
-                                        position = it.position,
-                                        title = it.title,
-                                        type = it.type
-                                )
-                            },
-                            freeOngkir = ProductCardModel.FreeOngkir(
-                                    element.isFreeOngkirActive,
-                                    element.freeOngkirImageUrl
-                            ),
-                            isOutOfStock = element.isOutOfStock,
-                            ratingCount = element.rating,
-                            reviewCount = element.countReview
-                    ),
+                    ChannelModelMapper.mapToProductCardModel(element),
                     blankSpaceConfig = BlankSpaceConfig(),
                     grid = element,
                     applink = element.applink,

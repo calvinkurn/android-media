@@ -4,7 +4,7 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="@color/Unify_N0"
     android:clickable="true"
     android:focusable="true">
 
@@ -12,7 +12,7 @@
         android:id="@+id/shimmering_back_icon"
         android:layout_width="@dimen/layout_lvl3"
         android:layout_height="@dimen/layout_lvl3"
-        android:layout_margin="@dimen/dp_12"
+        android:layout_margin="@dimen/unify_space_12"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:srcCompat="@drawable/ic_system_action_back_white_24"/>
@@ -49,7 +49,7 @@
         <com.elyeproj.loaderviewlibrary.LoaderImageView
             android:layout_width="92dp"
             android:layout_height="@dimen/layout_lvl1"
-            android:layout_marginTop="@dimen/dp_4"
+            android:layout_marginTop="@dimen/spacing_lvl2"
             android:layout_gravity="center"
             app:corners="8" />
     </LinearLayout>

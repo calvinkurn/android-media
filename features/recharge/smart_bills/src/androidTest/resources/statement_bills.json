@@ -1,0 +1,90 @@
+[
+  {
+    "data": {
+      "rechargeStatementBills": {
+        "total": 949600,
+        "totalText": "Rp 949.600",
+        "month": 12,
+        "monthText": "December",
+        "dateRangeText": "1 - 6 December",
+        "isOngoing": true,
+        "summaries": [
+          {
+            "categoryID": 5,
+            "categoryName": "Air PDAM",
+            "total": 102500,
+            "totalText": "Rp 102.500",
+            "percentage": 10.794018745422363
+          },
+          {
+            "categoryID": 9,
+            "categoryName": "Pasca Bayar",
+            "total": 80000,
+            "totalText": "Rp 80.000",
+            "percentage": 8.424599647521973
+          }
+        ],
+        "bills": [
+          {
+            "index": 0,
+            "productID": 1976,
+            "productName": "ATB BATAM",
+            "categoryID": 5,
+            "categoryName": "Air PDAM",
+            "operatorID": 623,
+            "operatorName": "ATB BATAM",
+            "clientNumber": "13111516111",
+            "amount": 102500,
+            "amountText": "Rp 102.500",
+            "iconURL": "https://ecs7.tokopedia.net/img/recharge/operator/pdamatb.png",
+            "date": "",
+            "dateText": "",
+            "disabled": false,
+            "disabledText": "",
+            "checkoutFields": [
+              {
+                "name": "product_id",
+                "value": "1976"
+              },
+              {
+                "name": "client_number",
+                "value": "13111516111"
+              }
+            ],
+            "billName": "",
+            "isChecked": false
+          },
+          {
+            "index": 1,
+            "productID": 563,
+            "productName": "Prioritas XL Pascabayar",
+            "categoryID": 9,
+            "categoryName": "Pasca Bayar",
+            "operatorID": 116,
+            "operatorName": "XL Prioritas",
+            "clientNumber": "0818405100",
+            "amount": 80000,
+            "amountText": "Rp 80.000",
+            "iconURL": "https://ecs7.tokopedia.net/img/recharge/operator/xl_3.png",
+            "date": "",
+            "dateText": "",
+            "disabled": false,
+            "disabledText": "",
+            "checkoutFields": [
+              {
+                "name": "product_id",
+                "value": "563"
+              },
+              {
+                "name": "client_number",
+                "value": "0818405100"
+              }
+            ],
+            "billName": "",
+            "isChecked": false
+          }
+        ]
+      }
+    }
+  }
+]

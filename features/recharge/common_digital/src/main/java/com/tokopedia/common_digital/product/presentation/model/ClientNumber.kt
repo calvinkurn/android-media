@@ -1,6 +1,5 @@
 package com.tokopedia.common_digital.product.presentation.model
 
-import android.os.Parcel
 import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
 

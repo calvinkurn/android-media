@@ -1,0 +1,28 @@
+[
+  {
+    "data": {
+      "update_cart_occ": {
+        "error_message": [],
+        "status": "OK",
+        "data": {
+          "messages": [],
+          "success": 0,
+          "prompt": {
+            "type": "dialog_box",
+            "title": "title prompt",
+            "description": "description prompt",
+            "image_url": "",
+            "buttons": [
+              {
+                "text": "button",
+                "link": "open",
+                "action": "tokopedia://home",
+                "color": "primary"
+              }
+            ]
+          }
+        }
+      }
+    }
+  }
+]

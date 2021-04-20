@@ -5,7 +5,7 @@
     android:layout_height="wrap_content"
     android:background="@drawable/digital_common_bg_chooser_operator_product_item"
     android:orientation="vertical"
-    android:paddingTop="@dimen/dp_10">
+    android:paddingTop="@dimen/layout_lvl1">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -14,13 +14,13 @@
         <TextView
             android:id="@+id/title_price"
             style="@style/TextView.Small.BlackPrimary"
-            android:textColor="#b3000000"
-            android:textSize="@dimen/sp_14"
+            android:textColor="@color/Unify_N700_68"
+            android:textSize="@dimen/fontSize_lvl3"
             tools:text="Rp 25.000"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dp_8"
-            android:layout_marginStart="@dimen/dp_8"
+            android:layout_marginLeft="@dimen/layout_lvl1"
+            android:layout_marginStart="@dimen/layout_lvl1"
             android:paddingBottom="3dp"/>
 
         <TextView
@@ -30,9 +30,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/title_price"
-            android:layout_marginBottom="@dimen/dp_5"
-            android:layout_marginLeft="@dimen/dp_8"
-            android:layout_marginStart="@dimen/dp_8"
+            android:layout_marginBottom="@dimen/spacing_lvl2"
+            android:layout_marginLeft="@dimen/layout_lvl1"
+            android:layout_marginStart="@dimen/layout_lvl1"
             android:paddingTop="3dp"/>
 
         <TextView
@@ -42,15 +42,15 @@
             android:layout_alignBaseline="@+id/title_price"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
-            android:layout_marginEnd="@dimen/dp_10"
-            android:layout_marginRight="@dimen/dp_10"
+            android:layout_marginEnd="@dimen/spacing_lvl3"
+            android:layout_marginRight="@dimen/spacing_lvl3"
             android:background="@drawable/digital_common_bg_out_of_stock"
             android:paddingEnd="@dimen/dp_10"
-            android:paddingLeft="@dimen/dp_10"
-            android:paddingRight="@dimen/dp_10"
-            android:paddingStart="@dimen/dp_10"
+            android:paddingLeft="@dimen/unify_space_12"
+            android:paddingRight="@dimen/unify_space_12"
+            android:paddingStart="@dimen/unify_space_12"
             android:text="@string/digital_common_title_empty_stock"
-            android:textColor="@color/white"
+            android:textColor="@color/Unify_N0"
             android:textStyle="bold"
             android:visibility="gone"
             tools:visibility="visible" />
@@ -61,7 +61,7 @@
         android:id="@+id/separator"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_marginTop="@dimen/dp_5"
-        android:background="@color/separator_voucher" />
+        android:layout_marginTop="@dimen/spacing_lvl2"
+        android:background="@color/Unify_N700_20" />
 
 </LinearLayout>

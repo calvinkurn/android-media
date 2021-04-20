@@ -4,95 +4,57 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white"
-    android:orientation="vertical">
+    android:background="@color/Unify_N0"
+    android:orientation="horizontal"
+    tools:ignore="Overdraw">
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_8"
+        android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginBottom="@dimen/dp_8"
+        android:layout_weight="1"
+        android:gravity="center_vertical"
         android:orientation="vertical">
 
-        <!--<View
-            android:layout_width="match_parent"
-            android:layout_height="0.5dp"
-            android:background="@color/grey_300" />-->
-
-        <LinearLayout
-            android:layout_width="match_parent"
+        <com.tokopedia.unifyprinciples.Typography
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            tools:visibility="visible">
+            android:text="@string/label_payment_total"
+            android:textColor="@color/Unify_N700_96"
+            app:typographyType="body_2"
+            app:typographyWeight="bold" />
 
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_marginLeft="@dimen/dp_16"
-                android:layout_marginTop="@dimen/dp_8"
-                android:layout_marginRight="@dimen/dp_16"
-                android:layout_marginBottom="@dimen/dp_8"
-                android:layout_weight="1"
-                android:gravity="center_vertical"
-                android:orientation="vertical">
-
-                <com.tokopedia.unifyprinciples.Typography
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/label_payment_total"
-                    android:textColor="@color/text_black"
-                    app:typographyType="body_2"
-                    app:typographyWeight="bold"/>
-
-                <com.tokopedia.unifyprinciples.Typography
-                    android:id="@+id/tv_total_payment"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="end"
-                    android:text="-"
-                    android:textColor="@color/price_label"
-                    app:typographyType="heading_4"
-                    app:typographyWeight="bold" />
-
-            </LinearLayout>
-
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/tv_select_cod"
-                style="@style/button_payment"
-                android:layout_marginEnd="4dp"
-                android:layout_marginRight="4dp"
-                android:background="@drawable/checkout_module_bg_button_white_red_border"
-                android:paddingLeft="5dp"
-                android:paddingRight="5dp"
-                android:text="@string/label_pay_cod"
-                android:textColor="@color/price_label"
-                android:visibility="gone"
-                tools:visibility="visible"
-                app:typographyType="heading_6"
-                app:typographyWeight="bold"/>
-
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/tv_select_payment_method"
-                android:contentDescription="@string/content_desc_tv_select_payment_method"
-                android:layout_width="wrap_content"
-                android:layout_height="@dimen/dp_40"
-                android:layout_gravity="center_vertical"
-                android:layout_marginTop="@dimen/dp_10"
-                android:layout_marginEnd="16dp"
-                android:layout_marginRight="16dp"
-                android:layout_marginBottom="@dimen/dp_10"
-                android:background="@drawable/checkout_module_red_button_rounded"
-                android:gravity="center"
-                android:paddingStart="@dimen/dp_20"
-                android:paddingLeft="@dimen/dp_20"
-                android:paddingEnd="@dimen/dp_20"
-                android:paddingRight="@dimen/dp_20"
-                android:paddingTop="@dimen/dp_5"
-                android:paddingBottom="@dimen/dp_5"
-                android:text="@string/label_choose_payment"
-                android:textColor="@color/white"
-                app:typographyType="heading_5"
-                app:typographyWeight="bold" />
-
-        </LinearLayout>
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_total_payment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="end"
+            android:text="-"
+            android:textColor="@color/Unify_Y500"
+            app:typographyType="heading_4"
+            app:typographyWeight="bold" />
 
     </LinearLayout>
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btn_select_payment_method"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/dp_40"
+        android:layout_gravity="center_vertical"
+        android:layout_marginTop="@dimen/dp_10"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="@dimen/dp_10"
+        android:contentDescription="@string/content_desc_tv_select_payment_method"
+        android:paddingStart="@dimen/dp_20"
+        android:paddingLeft="@dimen/dp_20"
+        android:paddingEnd="@dimen/dp_20"
+        android:paddingRight="@dimen/dp_20"
+        android:text="@string/label_choose_payment"
+        app:unifyButtonSize="medium"
+        app:unifyButtonType="main"
+        app:unifyButtonVariant="filled" />
 
 </LinearLayout>

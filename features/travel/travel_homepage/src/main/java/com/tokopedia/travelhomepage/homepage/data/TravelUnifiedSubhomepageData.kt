@@ -60,7 +60,7 @@ data class TravelUnifiedSubhomepageData(
         @Expose
         val appUrl: String = ""
 ) {
-    data class Response(
+    open class Response(
             @SerializedName("TravelGetDynamicSubhomepage")
             @Expose
             val response: List<TravelUnifiedSubhomepageData> = listOf()

@@ -1,52 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/Unify_N0"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <ImageButton
-        android:id="@+id/btn_close"
-        android:layout_width="@dimen/dp_24"
-        android:layout_height="@dimen/dp_24"
-        android:layout_margin="16dp"
-        android:background="@null"
-        app:srcCompat="@drawable/ic_close" />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tv_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/btn_close"
-        android:layout_alignBottom="@+id/btn_close"
-        android:gravity="center_vertical"
-        android:layout_toRightOf="@+id/btn_close"
-        android:textColor="@color/grey_750"
-        android:textSize="@dimen/sp_18"
-        android:maxLines="1"
-        android:ellipsize="end"
-        app:typographyType="heading_3"
-        tools:text="TITLE"/>
-
-    <RelativeLayout
+    <com.tokopedia.calendar.UnifyCalendar
+        android:id="@+id/calendar_unify"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@+id/tv_title">
+        android:layout_height="match_parent" />
 
-        <com.tokopedia.calendar.UnifyCalendar
-            android:id="@+id/calendar_unify"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
-        <ProgressBar
-            android:id="@+id/loading_progress_bar"
-            android:layout_width="@dimen/dp_32"
-            android:layout_height="@dimen/dp_32"
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="@dimen/dp_60"
-            android:visibility="gone" />
-    </RelativeLayout>
-
+    <ProgressBar
+        android:id="@+id/loading_progress_bar"
+        android:layout_width="@dimen/progress_bar_width_height"
+        android:layout_height="@dimen/progress_bar_width_height"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/progress_bar_margin_top"
+        android:visibility="gone" />
 </RelativeLayout>

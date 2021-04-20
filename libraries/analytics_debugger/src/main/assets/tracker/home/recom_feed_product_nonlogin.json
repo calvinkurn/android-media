@@ -1,0 +1,46 @@
+{
+  "readme": "recom product nonlogin & topads, impression & click",
+  "mode": "exact",
+  "query": [
+    {
+      "eventCategory": "homepage",
+      "item_list": "{{.*}}",
+      "event": "select_content",
+      "eventAction": "product recommendation click",
+      "sessionIris": "{{.*}}",
+      "items": [{
+        "dimension11": "{{.*}}",
+        "dimension83": "{{.*}}",
+        "item_id": "{{.*}}",
+        "price": "{{\\d*.\\d*|\\d.\\d+E\\d}}",
+        "dimension40": "{{.*}}",
+        "index": "{{\\d*.\\d*}}",
+        "item_name": "{{.*}}",
+        "item_brand": "{{.*}}",
+        "item_variant": "{{.*}}",
+        "item_category": "{{.*}}"
+      }],
+      "eventLabel": "{{.*}}"
+    },
+    {
+      "eventCategory": "homepage",
+      "item_list": "{{.*}}",
+      "event": "view_item_list",
+      "eventAction": "product recommendation impression",
+      "sessionIris": "{{.*}}",
+      "items": [{
+        "dimension11": "{{.*}}",
+        "dimension83": "{{.*}}",
+        "item_id": "{{.*}}",
+        "price": "{{\\d*.\\d*|\\d.\\d+E\\d}}",
+        "dimension40": "{{.*}}",
+        "index": "{{\\d*.\\d*}}",
+        "item_name": "{{.*}}",
+        "item_brand": "{{.*}}",
+        "item_variant": "{{.*}}",
+        "item_category": "{{.*}}"
+      }],
+      "eventLabel": "{{.*}}"
+    }
+  ]
+}

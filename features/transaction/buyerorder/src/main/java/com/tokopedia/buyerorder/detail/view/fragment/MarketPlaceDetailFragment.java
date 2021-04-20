@@ -42,26 +42,31 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.snackbar.Snackbar;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
+import com.tokopedia.abstraction.common.utils.GraphqlHelper;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.abstraction.common.utils.view.RefreshHandler;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
+import com.tokopedia.applink.internal.ApplinkConstInternalOrder;
+import com.tokopedia.atc_common.domain.model.response.AtcMultiData;
 import com.tokopedia.buyerorder.R;
 import com.tokopedia.buyerorder.common.util.BuyerConsts;
-import com.tokopedia.buyerorder.common.util.UnifiedOrderListRouter;
-import com.tokopedia.buyerorder.common.util.Utils;
-import com.tokopedia.buyerorder.common.view.DoubleTextView;
+import com.tokopedia.buyerorder.common.util.BuyerUtils;
 import com.tokopedia.buyerorder.detail.data.ActionButton;
 import com.tokopedia.buyerorder.detail.data.AdditionalInfo;
 import com.tokopedia.buyerorder.detail.data.AdditionalTickerInfo;
 import com.tokopedia.buyerorder.detail.data.ContactUs;
 import com.tokopedia.buyerorder.detail.data.Detail;
+import com.tokopedia.buyerorder.detail.data.Discount;
 import com.tokopedia.buyerorder.detail.data.DriverDetails;
 import com.tokopedia.buyerorder.detail.data.DropShipper;
+import com.tokopedia.buyerorder.detail.data.Flags;
 import com.tokopedia.buyerorder.detail.data.Invoice;
 import com.tokopedia.buyerorder.detail.data.Items;
 import com.tokopedia.buyerorder.detail.data.OrderDetails;
@@ -72,7 +77,7 @@ import com.tokopedia.buyerorder.detail.data.ShopInfo;
 import com.tokopedia.buyerorder.detail.data.Status;
 import com.tokopedia.buyerorder.detail.data.TickerInfo;
 import com.tokopedia.buyerorder.detail.data.Title;
-import com.tokopedia.buyerorder.detail.data.recommendationMPPojo.RecommendationResponse;
+import com.tokopedia.buyerorder.detail.data.recommendation.recommendationMPPojo.RecommendationResponse;
 import com.tokopedia.buyerorder.detail.di.OrderDetailsComponent;
 import com.tokopedia.buyerorder.detail.view.OrderListAnalytics;
 import com.tokopedia.buyerorder.detail.view.activity.BuyerRequestCancelActivity;
@@ -81,31 +86,39 @@ import com.tokopedia.buyerorder.detail.view.adapter.ProductItemAdapter;
 import com.tokopedia.buyerorder.detail.view.adapter.RecommendationMPAdapter;
 import com.tokopedia.buyerorder.detail.view.presenter.OrderListDetailContract;
 import com.tokopedia.buyerorder.detail.view.presenter.OrderListDetailPresenter;
-import com.tokopedia.buyerorder.list.common.OrderListContants;
 import com.tokopedia.buyerorder.list.data.ConditionalInfo;
+import com.tokopedia.buyerorder.list.data.OrderCategory;
 import com.tokopedia.buyerorder.list.data.PaymentData;
-import com.tokopedia.design.component.Dialog;
 import com.tokopedia.dialog.DialogUnify;
-import com.tokopedia.remoteconfig.RemoteConfig;
-import com.tokopedia.remoteconfig.RemoteConfigInstance;
+import com.tokopedia.iconunify.IconUnify;
+import com.tokopedia.unifycomponents.BottomSheetUnify;
 import com.tokopedia.unifycomponents.Toaster;
+import com.tokopedia.unifycomponents.UnifyButton;
 import com.tokopedia.unifycomponents.ticker.Ticker;
 import com.tokopedia.unifycomponents.ticker.TickerCallback;
+import com.tokopedia.unifyprinciples.Typography;
 import com.tokopedia.url.TokopediaUrl;
+import com.tokopedia.user.session.UserSessionInterface;
+import com.tokopedia.utils.view.DoubleTextView;
 
 import java.io.Serializable;
 import java.util.List;
-import java.util.Objects;
 
 import javax.inject.Inject;
 
 import kotlin.Unit;
+import timber.log.Timber;
+
 import static android.content.Context.CLIPBOARD_SERVICE;
-import static com.tokopedia.buyerorder.common.util.BuyerConsts.CANCEL_BUYER_REQUEST_TWO_LAYER;
+import static com.tokopedia.applink.internal.ApplinkConstInternalOrder.EXTRA_ORDER_ID;
+import static com.tokopedia.applink.internal.ApplinkConstInternalOrder.EXTRA_USER_MODE;
+import static com.tokopedia.buyerorder.common.util.BuyerConsts.ACTION_FINISH_ORDER;
 import static com.tokopedia.buyerorder.common.util.BuyerConsts.RESULT_CODE_INSTANT_CANCEL;
 import static com.tokopedia.buyerorder.common.util.BuyerConsts.RESULT_MSG_INSTANT_CANCEL;
 import static com.tokopedia.buyerorder.common.util.BuyerConsts.RESULT_POPUP_BODY_INSTANT_CANCEL;
 import static com.tokopedia.buyerorder.common.util.BuyerConsts.RESULT_POPUP_TITLE_INSTANT_CANCEL;
+import static com.tokopedia.buyerorder.common.util.BuyerUtils.formatTitleHtml;
+import static com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.FINISH_ORDER_BOTTOMSHEET_TITLE;
 
 public class MarketPlaceDetailFragment extends BaseDaggerFragment implements RefreshHandler.OnRefreshHandlerListener, OrderListDetailContract.View {
 
@@ -137,20 +150,19 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
     private static final String CLICK_VIEW_COMPLAIN = "click view complain";
     private static final String TOTAL_SHIPPING_PRICE = "Total Ongkos Kirim";
     private static final String CLICK_LIHAT_PRODUK_SERUPA_LEVEL_ORDER = "click lihat produk serupa - order";
-    private static final String REVIEW_AB_TEST_KEY = "InboxUlasanRevamp2";
-    private static final String NEW_REVIEW_FLOW = "New Review Flow";
 
     public static final String SIMILAR_PRODUCTS_ACTION_BUTTON_KEY = "see_similar_products";
     public static final String WAITING_INVOICE_STATUS_TEXT = "Menunggu Invoice";
 
     public static final int REQUEST_CANCEL_ORDER = 101;
-    public static final int REJECT_BUYER_REQUEST = 102;
-    public static final int CANCEL_BUYER_REQUEST = 103;
     public static final int INSTANT_CANCEL_BUYER_REQUEST = 100;
+    public static final int CANCEL_ORDER_DISABLE = 102;
     public static final int TEXT_SIZE_MEDIUM = 12;
     public static final int TEXT_SIZE_LARGE = 14;
     @Inject
     OrderListDetailPresenter presenter;
+    @Inject
+    UserSessionInterface userSessionInterface;
     private LinearLayout mainView;
     private LinearLayout viewRecomendItems;
     private TextView statusLabel;
@@ -204,6 +216,9 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
     private String boughtDate;
     private Boolean isRequestedCancel;
     private String _helplink;
+    private View dividerDiscount;
+    private LinearLayout llDiscount;
+    private OrderDetails orderDetails;
 
     @Override
     protected String getScreenName() {
@@ -265,10 +280,14 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
         progressBarLayout = view.findViewById(R.id.progress_bar_layout);
         swipeToRefresh = view.findViewById(R.id.swipe_refresh_layout);
         stickyButton = view.findViewById(R.id.sticky_btn);
-        myClipboard = (ClipboardManager) getContext().getSystemService(CLIPBOARD_SERVICE);
+        if (getContext() != null) {
+            myClipboard = (ClipboardManager) getContext().getSystemService(CLIPBOARD_SERVICE);
+        }
         recommendationList = view.findViewById(R.id.recommendation_list);
         recommendListTitle = view.findViewById(R.id.recommend_title);
         viewRecomendItems = view.findViewById(R.id.recommend_items);
+        dividerDiscount = view.findViewById(R.id.divider_discount);
+        llDiscount = view.findViewById(R.id.ll_info_discount);
         setMainViewVisible(View.GONE);
         itemsRecyclerView.setNestedScrollingEnabled(false);
         setUpScrollChangeListener();
@@ -279,9 +298,106 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        refreshHandler = new RefreshHandler(getActivity(), getView().findViewById(R.id.swipe_refresh_layout), this);
-        refreshHandler.startRefresh();
-        refreshHandler.setPullEnabled(true);
+        if (getView() != null) {
+            refreshHandler = new RefreshHandler(getActivity(), getView().findViewById(R.id.swipe_refresh_layout), this);
+            refreshHandler.startRefresh();
+            refreshHandler.setPullEnabled(true);
+        }
+    }
+
+    @Override
+    public void setDetailsData(OrderDetails details) {
+        hideProgressBar();
+        this.orderDetails = details;
+        setStatus(details.status());
+        clearDynamicViews();
+        if (details.conditionalInfo().text() != null && !details.conditionalInfo().text().equals("")) {
+            setConditionalInfo(details.conditionalInfo());
+        }
+        for (Title title : details.title()) {
+            setTitle(title);
+        }
+        setInvoice(details.invoice());
+        setOrderToken(details.orderToken());
+        for (int i = 0; i < details.detail().size(); i++) {
+            if (i == 2) {
+                if (details.getDriverDetails() != null) {
+                    showDriverInfo(details.getDriverDetails());
+                }
+            }
+            if (i == details.detail().size() - 1) {
+                if (!TextUtils.isEmpty(details.getDropShipper().getDropShipperName()) && !TextUtils.isEmpty(details.getDropShipper().getDropShipperPhone())) {
+                    showDropshipperInfo(details.getDropShipper());
+                }
+            }
+            setDetail(details.detail().get(i));
+        }
+
+        if (details.getRequestCancelInfo() != null && details.getRequestCancelInfo().getIsRequestedCancel() != null) {
+            setIsRequestedCancel(details.getRequestCancelInfo().getIsRequestedCancel());
+        }
+        setBoughtDate(details.getBoughtDate());
+        if (details.getShopInfo() != null) {
+            setShopInfo(details.getShopInfo());
+        }
+        if (details.getItems() != null && details.getItems().size() > 0) {
+            Flags flags = details.getFlags();
+            if (flags != null)
+                setItems(details.getItems(), flags.isIsOrderTradeIn(), details);
+            else
+                setItems(details.getItems(), false, details);
+        }
+        if (details.additionalInfo().size() > 0) {
+            setAdditionInfoVisibility(View.VISIBLE);
+        }
+        for (AdditionalInfo additionalInfo : details.additionalInfo()) {
+            setAdditionalInfo(additionalInfo);
+        }
+
+        if (details.getAdditionalTickerInfos() != null
+                && details.getAdditionalTickerInfos().size() > 0) {
+            String url = null;
+            for (AdditionalTickerInfo tickerInfo : details.getAdditionalTickerInfos()) {
+                if (tickerInfo.getUrlDetail() != null && !tickerInfo.getUrlDetail().isEmpty()) {
+                    String formattedTitle = formatTitleHtml(
+                            tickerInfo.getNotes(),
+                            tickerInfo.getUrlDetail(),
+                            tickerInfo.getUrlText()
+                    );
+                    tickerInfo.setNotes(formattedTitle);
+                    url = tickerInfo.getUrlDetail();
+                }
+            }
+            setAdditionalTickerInfo(details.getAdditionalTickerInfos(), url);
+        }
+
+        if (details.getTickerInfo() != null) {
+            setTickerInfo(details.getTickerInfo());
+        }
+
+        for (PayMethod payMethod : details.getPayMethods()) {
+            if (!TextUtils.isEmpty(payMethod.getValue()))
+                setPayMethodInfo(payMethod);
+        }
+
+        for (Pricing pricing : details.pricing()) {
+            setPricing(pricing);
+        }
+
+        if (details.discounts() != null && details.discounts().size() > 0) {
+            setDiscountVisibility(View.VISIBLE);
+            for (Discount discount : details.discounts()) {
+                setDiscount(discount);
+            }
+        } else {
+            setDiscountVisibility(View.GONE);
+        }
+
+        setPaymentData(details.paymentData());
+        setContactUs(details.contactUs(), details.getHelpLink());
+
+        setActionButtons(details.actionButtons());
+        setMainViewVisible(View.VISIBLE);
     }
 
     @Override
@@ -300,10 +416,12 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                 @Override
                 public void onClick(View view) {
                     orderListAnalytics.sendLihatStatusClick(status.status());
-                    // TODO: cek apakah masih butuh UnifiedOrderListRouter
-                    startActivity(((UnifiedOrderListRouter) getActivity().getApplication()).getOrderHistoryIntent(
-                            getActivity(), getArguments().getString(KEY_ORDER_ID)
-                    ));
+
+                    if (getArguments() != null) {
+                        startActivity(RouteManager.getIntent(getActivity(), ApplinkConstInternalOrder.TRACK, "")
+                                .putExtra(EXTRA_ORDER_ID, getArguments().getString(KEY_ORDER_ID))
+                                .putExtra(EXTRA_USER_MODE, 1));
+                    }
                 }
             });
         }
@@ -315,12 +433,12 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
         conditionalInfoText.setVisibility(View.VISIBLE);
         GradientDrawable shape = new GradientDrawable();
         shape.setShape(GradientDrawable.RECTANGLE);
-        shape.setCornerRadius(getResources().getDimensionPixelSize(R.dimen.dp_9));
+        shape.setCornerRadius(getResources().getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_8));
         if (!TextUtils.isEmpty(conditionalInfo.color().background())) {
             shape.setColor(Color.parseColor(conditionalInfo.color().background()));
         }
         if (!TextUtils.isEmpty(conditionalInfo.color().border())) {
-            shape.setStroke(getResources().getDimensionPixelOffset(R.dimen.dp_1), Color.parseColor(conditionalInfo.color().border()));
+            shape.setStroke(getResources().getDimensionPixelOffset(com.tokopedia.abstraction.R.dimen.dp_2), Color.parseColor(conditionalInfo.color().border()));
         }
         conditionalInfoText.setBackground(shape);
         conditionalInfoText.setText(conditionalInfo.text());
@@ -336,16 +454,16 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
         DoubleTextView doubleTextView = new DoubleTextView(getActivity(), LinearLayout.HORIZONTAL);
         doubleTextView.setTopText(title.label());
         doubleTextView.setBottomText(title.value());
-        doubleTextView.setBottomGravity(Gravity.RIGHT);
+        doubleTextView.setBottomGravity(Gravity.END);
         if (!TextUtils.isEmpty(title.textColor())) {
             doubleTextView.setBottomTextColor(Color.parseColor(title.textColor()));
         } else {
-            doubleTextView.setBottomTextColor(Color.parseColor(getResources().getString(R.color.font_black_secondary_54)));
+            doubleTextView.setBottomTextColor(Color.parseColor(getResources().getString(com.tokopedia.unifyprinciples.R.color.Unify_N700_44)));
         }
-        if (title.backgroundColor() != null && !title.backgroundColor().isEmpty()) {
-            Drawable drawable = ContextCompat.getDrawable(getContext(), R.drawable.background_deadline);
+        if (title.backgroundColor() != null && !title.backgroundColor().isEmpty() && getContext() != null) {
+            Drawable drawable = ContextCompat.getDrawable(getContext(), R.drawable.background_deadline_buyer);
             doubleTextView.setBottomTextBackground(drawable);
-            doubleTextView.setBottomTextRightPadding(getResources().getDimensionPixelSize(R.dimen.dp_20), getResources().getDimensionPixelSize(R.dimen.dp_10), getResources().getDimensionPixelSize(R.dimen.dp_20), getResources().getDimensionPixelSize(R.dimen.dp_10));
+            doubleTextView.setBottomTextRightPadding(getResources().getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_20), getResources().getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_10), getResources().getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_20), getResources().getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_10));
 
             doubleTextView.setBottomTextBackgroundColor(Color.parseColor(title.backgroundColor()));
         }
@@ -363,19 +481,24 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
             invoiceCopy.setOnClickListener(view -> {
                 ClipboardManager clipboard = (ClipboardManager) view.getContext().getSystemService(Context.CLIPBOARD_SERVICE);
                 ClipData clip = ClipData.newPlainText(getString(R.string.invoice_label), invoice.invoiceRefNum());
-                clipboard.setPrimaryClip(clip);
-                Toaster.INSTANCE.make(view, getString(R.string.invoice_copied), Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL, "", v -> { });
+                if (clipboard != null) {
+                    clipboard.setPrimaryClip(clip);
+                }
+                Toaster.build(view, getString(R.string.invoice_copied), Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL, "", v -> {
+                }).show();
             });
-            if (!presenter.isValidUrl(invoice.invoiceUrl())) {
+            if (!BuyerUtils.isValidUrl(invoice.invoiceUrl())) {
                 lihat.setVisibility(View.GONE);
             }
             lihat.setOnClickListener(view -> {
                 orderListAnalytics.sendViewInvoiceClickEvent();
                 orderListAnalytics.sendLihatInvoiceClick(status.status());
 
-                Intent intent = SeeInvoiceActivity.newInstance(Objects.requireNonNull(getContext()), status, invoice,
-                        getString(R.string.title_invoice));
-                startActivity(intent);
+                if (getContext() != null) {
+                    Intent intent = SeeInvoiceActivity.newInstance(getContext(), status, invoice,
+                            invoiceNum, boughtDate, getString(R.string.title_invoice), OrderCategory.MARKETPLACE);
+                    startActivity(intent);
+                }
             });
         } else {
             dividerInvoice.setVisibility(View.GONE);
@@ -390,21 +513,23 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
 
     @Override
     public void setDetail(Detail detail) {
-        detailLabel.setText(getContext().getResources().getString(R.string.detail_product));
+        if (getContext() != null) {
+            detailLabel.setText(getContext().getResources().getString(R.string.detail_product));
+        }
         DoubleTextView doubleTextView = new DoubleTextView(getActivity(), LinearLayout.HORIZONTAL);
         if (!detail.label().equalsIgnoreCase(NAMA_TOKO)) {
             if (!detail.label().equalsIgnoreCase(NO_SALIN)) {
                 doubleTextView.setTopText(detail.label());
-                doubleTextView.setTopTextColor(getContext().getResources().getColor(R.color.font_black_secondary_54));
+                doubleTextView.setTopTextColor(MethodChecker.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N700_44));
                 doubleTextView.setBottomText(detail.value());
-                doubleTextView.setBottomTextColor(getContext().getResources().getColor(R.color.black_70_new));
+                doubleTextView.setBottomTextColor(MethodChecker.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N700_68));
                 doubleTextView.setBottomTextStyle("bold");
                 doubleTextView.setBottomTextSize(TEXT_SIZE_MEDIUM);
             } else {
                 doubleTextView.setTopText(detail.label());
                 String text = detail.value() + NO_SANIN_NEXT_LINE;
                 SpannableString spannableString = new SpannableString(text);
-                doubleTextView.setBottomTextColor(getContext().getResources().getColor(R.color.black_70_new));
+                doubleTextView.setBottomTextColor(MethodChecker.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N700_68));
                 doubleTextView.setBottomTextSize(TEXT_SIZE_MEDIUM);
                 int startIndexOfLink = text.indexOf("Salin");
                 spannableString.setSpan(new ClickableSpan() {
@@ -413,8 +538,11 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                         try {
                             myClip = ClipData.newPlainText("text", detail.value());
                             myClipboard.setPrimaryClip(myClip);
-                            Toaster.INSTANCE.make(getView(), getContext().getResources().getString(R.string.awb_number_copied),
-                                    Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL, getString(R.string.close), v->{});
+                            if (getView() != null && getContext() != null) {
+                                Toaster.build(getView(), getContext().getResources().getString(R.string.awb_number_copied),
+                                        Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL, getString(com.tokopedia.design.R.string.close), v -> {
+                                        }).show();
+                            }
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -424,7 +552,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                     public void updateDrawState(TextPaint ds) {
                         super.updateDrawState(ds);
                         ds.setUnderlineText(false);
-                        ds.setColor(getResources().getColor(R.color.green_250)); // specific color for this link
+                        ds.setColor(getResources().getColor(com.tokopedia.unifyprinciples.R.color.Unify_G400)); // specific color for this link
                     }
                 }, startIndexOfLink, text.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                 doubleTextView.setBottomText(spannableString);
@@ -441,7 +569,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
             additionalText.setOnClickListener(null);
             additionalText.setText(getResources().getString(R.string.additional_text));
             additionalText.setTypeface(Typeface.DEFAULT_BOLD);
-            additionalText.setTextColor(getResources().getColor(R.color.black_70));
+            additionalText.setTextColor(getResources().getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_68));
             additionalInfoLayout.setVisibility(View.VISIBLE);
         });
     }
@@ -483,7 +611,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
             mTickerCancellationInfo.setVisibility(View.VISIBLE);
             mTickerCancellationInfo.setTextDescription(tickerInfo.getText());
             mTickerCancellationInfo.setTickerShape(Ticker.SHAPE_LOOSE);
-            mTickerCancellationInfo.setTickerType(Utils.getTickerType(tickerInfo.getType()));
+            mTickerCancellationInfo.setTickerType(BuyerUtils.getTickerType(tickerInfo.getType()));
         }
     }
 
@@ -491,28 +619,47 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
     public void setPricing(Pricing pricing) {
         DoubleTextView doubleTextView = new DoubleTextView(getActivity(), LinearLayout.HORIZONTAL);
         doubleTextView.setTopText(pricing.label());
-        doubleTextView.setTopTextColor(getContext().getResources().getColor(R.color.font_black_secondary_54));
+        doubleTextView.setTopTextColor(MethodChecker.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N700_44));
         doubleTextView.setTopTextSize(TEXT_SIZE_MEDIUM);
         if (pricing.label().contains(TOTAL_SHIPPING_PRICE) && pricing.value().contains("Rp 0"))
             doubleTextView.setBottomText(getResources().getString(R.string.tkpdtransaction_bebas_ongkir));
         else
             doubleTextView.setBottomText(pricing.value());
-        doubleTextView.setBottomTextColor(getContext().getResources().getColor(R.color.black_70));
+        doubleTextView.setBottomTextColor(MethodChecker.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N700_68));
         doubleTextView.setBottomTextSize(TEXT_SIZE_MEDIUM);
-        doubleTextView.setBottomGravity(Gravity.RIGHT);
+        doubleTextView.setBottomGravity(Gravity.END);
         infoValue.addView(doubleTextView);
+    }
+
+    @Override
+    public void setDiscount(Discount discount) {
+        DoubleTextView doubleTextView = new DoubleTextView(getActivity(), LinearLayout.HORIZONTAL);
+        doubleTextView.setTopText(discount.getLabel());
+        doubleTextView.setTopTextColor(MethodChecker.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N700_44));
+        doubleTextView.setTopTextSize(TEXT_SIZE_MEDIUM);
+        doubleTextView.setBottomText(discount.getValue());
+        doubleTextView.setBottomTextColor(MethodChecker.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N700_68));
+        doubleTextView.setBottomTextSize(TEXT_SIZE_MEDIUM);
+        doubleTextView.setBottomGravity(Gravity.END);
+        llDiscount.addView(doubleTextView);
+    }
+
+    @Override
+    public void setDiscountVisibility(int visibility) {
+        dividerDiscount.setVisibility(visibility);
+        llDiscount.setVisibility(visibility);
     }
 
     @Override
     public void setPayMethodInfo(PayMethod payMethod) {
         DoubleTextView doubleTextView = new DoubleTextView(getActivity(), LinearLayout.HORIZONTAL);
         doubleTextView.setTopText(payMethod.getLabel());
-        doubleTextView.setTopTextColor(getContext().getResources().getColor(R.color.font_black_secondary_54));
+        doubleTextView.setTopTextColor(MethodChecker.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N700_44));
         doubleTextView.setBottomText(payMethod.getValue());
         doubleTextView.setBottomTextSize(TEXT_SIZE_MEDIUM);
         doubleTextView.setTopTextSize(TEXT_SIZE_MEDIUM);
-        doubleTextView.setBottomTextColor(getContext().getResources().getColor(R.color.black_70));
-        doubleTextView.setBottomGravity(Gravity.RIGHT);
+        doubleTextView.setBottomTextColor(MethodChecker.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N700_68));
+        doubleTextView.setBottomGravity(Gravity.END);
         paymentMethod.addView(doubleTextView);
     }
 
@@ -588,20 +735,28 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
     }
 
     @Override
-    public void showSucessMessage(String message) {
-        Toaster.INSTANCE.make(getView(), message,
-                Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL, "", v->{});
+    public void showSuccessMessage(String message) {
+        if (getView() != null) {
+            Toaster.build(getView(), message,
+                    Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL, "", v -> {
+                    }).show();
+        }
     }
 
     @Override
     public void showSuccessMessageWithAction(String message) {
-        Toaster.INSTANCE.make(getView(), message, Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL,
-                getString(R.string.bom_check_cart), v -> RouteManager.route(getContext(), ApplinkConst.CART));
+        if (getView() != null) {
+            Toaster.build(getView(), message, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL,
+                    getString(R.string.bom_check_cart), v -> RouteManager.route(getContext(), ApplinkConst.CART)).show();
+        }
     }
 
     @Override
     public void showErrorMessage(String message) {
-        Toaster.INSTANCE.make(getView(), message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR,"", v -> {});
+        if (getView() != null) {
+            Toaster.build(getView(), message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR, "", v -> {
+            }).show();
+        }
     }
 
     @Override
@@ -613,11 +768,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
         totalPrice.removeAllViews();
         actionBtnLayout.removeAllViews();
         paymentMethod.removeAllViews();
-    }
-
-    @Override
-    public void askPermission() {
-
+        llDiscount.removeAllViews();
     }
 
     @Override
@@ -627,20 +778,20 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
         boolean stickyButtonAdded = false;
         for (ActionButton actionButton : actionButtons) {
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-            params.setMargins(getResources().getDimensionPixelSize(R.dimen.dp_16), getResources().getDimensionPixelSize(R.dimen.dp_0), getResources().getDimensionPixelSize(R.dimen.dp_16), getResources().getDimensionPixelSize(R.dimen.dp_16));
-            TextView textView = new TextView(getContext());
+            params.setMargins(getResources().getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_16), getResources().getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_0), getResources().getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_16), getResources().getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_16));
+            Typography textView = new Typography(getContext());
             textView.setText(actionButton.getLabel());
-            textView.setPadding(getResources().getDimensionPixelSize(R.dimen.dp_16), getResources().getDimensionPixelSize(R.dimen.dp_16), getResources().getDimensionPixelSize(R.dimen.dp_16), getResources().getDimensionPixelSize(R.dimen.dp_16));
+            textView.setPadding(getResources().getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_16), getResources().getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_16), getResources().getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_16), getResources().getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_16));
             textView.setTypeface(Typeface.DEFAULT_BOLD);
             textView.setGravity(Gravity.CENTER);
             GradientDrawable shape = new GradientDrawable();
             shape.setShape(GradientDrawable.RECTANGLE);
-            shape.setCornerRadius(getResources().getDimensionPixelSize(R.dimen.dp_4));
+            shape.setCornerRadius(getResources().getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_4));
             if (!actionButton.getActionColor().getBackground().equals("")) {
                 shape.setColor((Color.parseColor(actionButton.getActionColor().getBackground())));
             }
             if (!actionButton.getActionColor().getBorder().equals("")) {
-                shape.setStroke(getResources().getDimensionPixelSize(R.dimen.dp_2), Color.parseColor(actionButton.getActionColor().getBorder()));
+                shape.setStroke(getResources().getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_2), Color.parseColor(actionButton.getActionColor().getBorder()));
             }
             textView.setBackground(shape);
             textView.setLayoutParams(params);
@@ -651,7 +802,12 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                 textView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        presenter.onBuyAgainAllItems(" - order", status.status());
+                        if (getContext() != null && getContext().getResources() != null) {
+                            presenter.onBuyAgainItems(
+                                    GraphqlHelper.loadRawString(getContext().getResources(),
+                                            com.tokopedia.atc_common.R.raw.mutation_add_to_cart_multi),
+                                    orderDetails.getItems(), " - order", status.status());
+                        }
                     }
                 });
             } else {
@@ -662,18 +818,18 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
             actionBtnLayout.addView(textView);
             if (!stickyButtonAdded) {
                 //Cant add the same textview as it has a parent already so making a new instance of the textview and adding it for the sticky
-                TextView stickyTextView = new TextView(getContext());
+                Typography stickyTextView = new Typography(getContext());
                 stickyTextView.setText(actionButton.getLabel());
-                stickyTextView.setPadding(getResources().getDimensionPixelSize(R.dimen.dp_16), getResources().getDimensionPixelSize(R.dimen.dp_16), getResources().getDimensionPixelSize(R.dimen.dp_16), getResources().getDimensionPixelSize(R.dimen.dp_16));
+                stickyTextView.setPadding(getResources().getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_16), getResources().getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_16), getResources().getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_16), getResources().getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_16));
                 stickyTextView.setTypeface(Typeface.DEFAULT_BOLD);
                 stickyTextView.setGravity(Gravity.CENTER);
                 shape.setShape(GradientDrawable.RECTANGLE);
-                shape.setCornerRadius(getResources().getDimensionPixelSize(R.dimen.dp_4));
+                shape.setCornerRadius(getResources().getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_4));
                 if (!actionButton.getActionColor().getBackground().equals("")) {
                     shape.setColor((Color.parseColor(actionButton.getActionColor().getBackground())));
                 }
                 if (!actionButton.getActionColor().getBorder().equals("")) {
-                    shape.setStroke(getResources().getDimensionPixelSize(R.dimen.dp_2), Color.parseColor(actionButton.getActionColor().getBorder()));
+                    shape.setStroke(getResources().getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_2), Color.parseColor(actionButton.getActionColor().getBorder()));
                 }
                 LinearLayout.LayoutParams stickyButtonParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
                 stickyTextView.setBackground(shape);
@@ -685,7 +841,11 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                     stickyTextView.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            presenter.onBuyAgainAllItems(" - order", status.status());
+                            if (getContext() != null && getContext().getResources() != null) {
+                                presenter.onBuyAgainItems(GraphqlHelper.loadRawString(getContext().getResources(),
+                                        com.tokopedia.atc_common.R.raw.mutation_add_to_cart_multi),
+                                        orderDetails.getItems(), " - order", status.status());
+                            }
                         }
                     });
                 } else {
@@ -697,6 +857,11 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                 stickyButtonAdded = true;
             }
         }
+    }
+
+    @Override
+    public void hitAnalyticsBuyAgain(List<AtcMultiData.AtcMulti.BuyAgainData.AtcProduct> listAtcProducts, Boolean isAtcMultiSuccess) {
+        orderListAnalytics.sendBuyAgainEvent(orderDetails.getItems(), orderDetails.getShopInfo(), listAtcProducts, isAtcMultiSuccess, true, " - order", status.status());
     }
 
     @Override
@@ -720,43 +885,10 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
 
     @Override
     public void finishOrderDetail() {
-//        mainView.requestLayout();
         refreshHandler.startRefresh();
-//        presenter.setOrderDetailsContent((String) getArguments().get(KEY_ORDER_ID), (String) getArguments().get(KEY_ORDER_CATEGORY), getArguments().getString(KEY_FROM_PAYMENT));
     }
 
     private View.OnClickListener clickActionButton(ActionButton actionButton) {
-        if (!TextUtils.isEmpty(actionButton.getKey())) {
-            String orderStatusEvent = "";
-            switch (actionButton.getKey()) {
-                case "ask_seller":
-                    orderStatusEvent = "click ask seller";
-                    break;
-                case "request_cancel":
-                    orderStatusEvent = "click request cancel";
-                    break;
-                case "receive_confirmation":
-                    orderStatusEvent = "";
-                    break;
-                case "track":
-                    orderStatusEvent = "click track";
-                    break;
-                case "complaint":
-                    orderStatusEvent = "click complain";
-                    break;
-                case "finish_order":
-                    orderStatusEvent = "click finished";
-                    break;
-                case "view_complaint":
-                    orderStatusEvent = "click view complain";
-                    break;
-                case "cancel_peluang":
-                    orderStatusEvent = "click cancel search";
-                    break;
-                default:
-                    break;
-            }
-        }
         return view -> {
             if (actionButton.getActionButtonPopUp() != null && !TextUtils.isEmpty(actionButton.getActionButtonPopUp().getTitle())) {
                 if (actionButton.getActionButtonPopUp().getActionButtonList().get(1).getLabel().equalsIgnoreCase("Tanya Penjual")) {
@@ -772,7 +904,9 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                     buyerReqCancelIntent.putExtra(BuyerConsts.PARAM_SHOP_NAME, shopInfo.getShopName());
                     buyerReqCancelIntent.putExtra(BuyerConsts.PARAM_INVOICE, invoiceNum);
                     buyerReqCancelIntent.putExtra(BuyerConsts.PARAM_LIST_PRODUCT, (Serializable) listProducts);
-                    buyerReqCancelIntent.putExtra(BuyerConsts.PARAM_ORDER_ID, getArguments().getString(KEY_ORDER_ID));
+                    if (getArguments() != null) {
+                        buyerReqCancelIntent.putExtra(BuyerConsts.PARAM_ORDER_ID, getArguments().getString(KEY_ORDER_ID));
+                    }
                     buyerReqCancelIntent.putExtra(BuyerConsts.PARAM_URI, actionButton.getUri());
                     buyerReqCancelIntent.putExtra(BuyerConsts.PARAM_IS_CANCEL_ALREADY_REQUESTED, isRequestedCancel);
                     buyerReqCancelIntent.putExtra(BuyerConsts.PARAM_TITLE_CANCEL_REQUESTED, actionButton.getActionButtonPopUp().getTitle());
@@ -783,78 +917,75 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                     buyerReqCancelIntent.putExtra(BuyerConsts.PARAM_STATUS_ID, status.status());
                     buyerReqCancelIntent.putExtra(BuyerConsts.PARAM_STATUS_INFO, status.statusText());
                     startActivityForResult(buyerReqCancelIntent, REQUEST_CANCEL_ORDER);
+
                 } else {
-                    final Dialog dialog = new Dialog(getActivity(), Dialog.Type.PROMINANCE) {
-                        @Override
-                        public int layoutResId() {
-                            if (actionButton.getActionButtonPopUp().getActionButtonList().get(1).getLabel().equalsIgnoreCase("Selesai")) {
-                                return R.layout.dialog_seller_finish;
-                            } else {
-                                return super.layoutResId();
-                            }
+                    // dialog finish order --> now bottomsheet
+                    if (!TextUtils.isEmpty(actionButton.getActionButtonPopUp().getActionButtonList().get(1).getUri())) {
+                        if (actionButton.getActionButtonPopUp().getActionButtonList().get(1).getLabel().equalsIgnoreCase("Selesai") && getArguments() != null) {
+                            BottomSheetUnify bottomSheetFinishOrder = new BottomSheetUnify();
+                            View bottomSheetView = View.inflate(getContext(), R.layout.bottomsheet_finish_order_uoh, null);
+
+                            IconUnify iconFinish1 = bottomSheetView.findViewById(R.id.ic_finish_detail_1);
+                            iconFinish1.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.ic_bound_icon));
+
+                            IconUnify iconFinish2 = bottomSheetView.findViewById(R.id.ic_finish_detail_2);
+                            iconFinish2.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.ic_bound_icon));
+
+                            UnifyButton finishBtn = bottomSheetView.findViewById(R.id.btn_finish_order);
+                            finishBtn.setOnClickListener(view13 -> {
+                                String actionStatus = "";
+                                if (!status.status().isEmpty() && Integer.parseInt(status.status()) < 600) {
+                                    actionStatus = ACTION_FINISH_ORDER;
+                                }
+
+                                presenter.finishOrderGql(
+                                        GraphqlHelper.loadRawString(getView().getResources(), R.raw.uoh_finish_order),
+                                        getArguments().getString(KEY_ORDER_ID),
+                                        actionStatus,
+                                        userSessionInterface.getUserId());
+                                bottomSheetFinishOrder.dismiss();
+
+                            });
+
+                            UnifyButton komplainBtn = bottomSheetView.findViewById(R.id.btn_ajukan_komplain);
+                            komplainBtn.setOnClickListener(view14 -> {
+                                Intent newIntent = RouteManager.getIntent(getContext(), ApplinkConstInternalGlobal.WEBVIEW, String.format(TokopediaUrl.Companion.getInstance().getMOBILEWEB() + ApplinkConst.ResCenter.RESO_CREATE, getArguments().getString(KEY_ORDER_ID)));
+                                startActivityForResult(newIntent, CREATE_RESCENTER_REQUEST_CODE);
+                                bottomSheetFinishOrder.dismiss();
+                            });
+
+                            bottomSheetFinishOrder.setChild(bottomSheetView);
+                            bottomSheetFinishOrder.setTitle(FINISH_ORDER_BOTTOMSHEET_TITLE);
+                            bottomSheetFinishOrder.setCloseClickListener(view8 -> {
+                                bottomSheetFinishOrder.dismiss();
+                                return Unit.INSTANCE;
+                            });
+                            bottomSheetFinishOrder.show(getChildFragmentManager(), getString(R.string.show_bottomsheet));
+
+                        } else if (actionButton.getActionButtonPopUp().getActionButtonList().get(1).getLabel().equalsIgnoreCase("Komplain") && getArguments() != null) {
+                            Intent newIntent = RouteManager.getIntent(getContext(), ApplinkConstInternalGlobal.WEBVIEW, String.format(TokopediaUrl.Companion.getInstance().getMOBILEWEB() + ApplinkConst.ResCenter.RESO_CREATE, getArguments().getString(KEY_ORDER_ID)));
+                            startActivityForResult(newIntent, CREATE_RESCENTER_REQUEST_CODE);
                         }
-                    };
-                    dialog.setTitle(actionButton.getActionButtonPopUp().getTitle());
-                    dialog.setDesc(actionButton.getActionButtonPopUp().getBody());
-                    if (actionButton.getActionButtonPopUp().getActionButtonList() != null && actionButton.getActionButtonPopUp().getActionButtonList().size() > 0) {
-                        dialog.setBtnOk(actionButton.getActionButtonPopUp().getActionButtonList().get(1).getLabel());
-                        dialog.setOnOkClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                if (!TextUtils.isEmpty(actionButton.getActionButtonPopUp().getActionButtonList().get(1).getUri())) {
-                                    if (actionButton.getActionButtonPopUp().getActionButtonList().get(1).getLabel().equalsIgnoreCase("Selesai")) {
-                                        presenter.finishOrder(getArguments().getString(KEY_ORDER_ID), actionButton.getUri());
-                                        dialog.dismiss();
-                                    } else if (actionButton.getActionButtonPopUp().getActionButtonList().get(1).getLabel().equalsIgnoreCase("Komplain") && getArguments()!=null) {
-                                        Intent newIntent = RouteManager.getIntent(getContext(), ApplinkConstInternalGlobal.WEBVIEW, String.format(TokopediaUrl.Companion.getInstance().getMOBILEWEB() + ApplinkConst.ResCenter.RESO_CREATE, getArguments().getString(KEY_ORDER_ID)));
-                                        startActivityForResult(newIntent, CREATE_RESCENTER_REQUEST_CODE);
-                                        dialog.dismiss();
-                                    } else {
-                                        if (actionButton.getActionButtonPopUp().getActionButtonList().get(1).getUri().contains("askseller")) {
-                                            orderListAnalytics.sendActionButtonClickEvent(CLICK_ASK_SELLER_CANCELATION, status.status());
-                                            startSellerAndAddInvoice(actionButton.getActionButtonPopUp().getActionButtonList().get(1).getUri());
-                                        } else
-                                            RouteManager.route(getContext(), actionButton.getActionButtonPopUp().getActionButtonList().get(1).getUri());
-                                    }
-                                } else {
-                                    dialog.dismiss();
-                                }
-                            }
-                        });
-                        dialog.setBtnCancel(actionButton.getActionButtonPopUp().getActionButtonList().get(0).getLabel());
-                        dialog.setOnCancelClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                if (!TextUtils.isEmpty(actionButton.getActionButtonPopUp().getActionButtonList().get(0).getUri())) {
-                                    RouteManager.route(getContext(), actionButton.getActionButtonPopUp().getActionButtonList().get(0).getUri());
-                                } else {
-                                    if (actionButton.getActionButtonPopUp().getActionButtonList().get(0).getLabel().equalsIgnoreCase("Kembali")) {
-                                        orderListAnalytics.sendActionButtonClickEvent(CLICK_KEMBALI, status.status());
-                                    }
-                                    dialog.dismiss();
-                                }
-                            }
-                        });
                     }
-                    dialog.show();
                 }
             } else if (!TextUtils.isEmpty(actionButton.getUri())) {
                 if (actionButton.getUri().contains("askseller")) {
-                    startSellerAndAddInvoice(actionButton.getUri());
+                    startSellerAndAddInvoice();
                     orderListAnalytics.sendActionButtonClickEvent(CLICK_ASK_SELLER, statusValue.getText().toString());
                 } else if (actionButton.getKey().contains("view_complaint")) {
                     orderListAnalytics.sendActionButtonClickEvent(CLICK_VIEW_COMPLAIN, statusValue.getText().toString());
                     RouteManager.route(getContext(), actionButton.getUri());
                 } else if (actionButton.getKey().equalsIgnoreCase(SIMILAR_PRODUCTS_ACTION_BUTTON_KEY)) {
-                    orderListAnalytics.sendActionButtonClickEvent(CLICK_LIHAT_PRODUK_SERUPA_LEVEL_ORDER, presenter.getFirstProductId());
+
+                    String firstProductId = "";
+                    if (orderDetails != null && orderDetails.getItems() != null && !orderDetails.getItems().isEmpty()) {
+                        firstProductId = String.valueOf(orderDetails.getItems().get(0).getId());
+                    }
+                    orderListAnalytics.sendActionButtonClickEvent(CLICK_LIHAT_PRODUK_SERUPA_LEVEL_ORDER, firstProductId);
                     RouteManager.route(getContext(), actionButton.getUri());
                 } else if (actionButton.getKey().equalsIgnoreCase(KEY_TULIS_REVIEW)) {
                     orderListAnalytics.sendTulisReviewEventData(status.status());
-                    if(useNewPage()) {
-                        RouteManager.route(getContext(), ApplinkConst.REPUTATION);
-                    } else {
-                        RouteManager.route(getContext(), actionButton.getUri());
-                    }
+                    RouteManager.route(getContext(), actionButton.getUri());
                 } else if (!TextUtils.isEmpty(actionButton.getUri())) {
                     if (this.status.status().equals(STATUS_CODE_220) || this.status.status().equals(STATUS_CODE_400)) {
                         Intent buyerReqCancelIntent = new Intent(getContext(), BuyerRequestCancelActivity.class);
@@ -894,6 +1025,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                     } else if (actionButton.getLabel().equalsIgnoreCase("Lacak")) {
 
                         orderListAnalytics.sendActionButtonClickEvent(CLICK_TRACK);
+
                         String routingAppLink;
                         routingAppLink = ApplinkConst.ORDER_TRACKING.replace("{order_id}", getArguments().getString(KEY_ORDER_ID));
 
@@ -915,30 +1047,25 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
         };
     }
 
-    private void startSellerAndAddInvoice(String uriString) {
+    private void startSellerAndAddInvoice() {
         if (shopInfo != null) {
             String shopId = String.valueOf(this.shopInfo.getShopId());
-            String shopName = this.shopInfo.getShopName();
-            String shopLogo = this.shopInfo.getShopLogo();
-            String shopUrl = this.shopInfo.getShopUrl();
-            String invoiceUrl;
-            Uri uri = Uri.parse(uriString);
-            invoiceUrl = uri.getQueryParameter(INVOICE_URL);
             String applink = "tokopedia://topchat/askseller/" + shopId;
             Intent intent = RouteManager.getIntent(getContext(), applink);
-            presenter.assignInvoiceDataTo(intent);
+            if (orderDetails != null) {
+                intent.putExtra(ApplinkConst.Chat.INVOICE_ID, orderDetails.getInvoiceId());
+                intent.putExtra(ApplinkConst.Chat.INVOICE_CODE, orderDetails.getInvoiceCode());
+                intent.putExtra(ApplinkConst.Chat.INVOICE_TITLE, orderDetails.getProductName());
+                intent.putExtra(ApplinkConst.Chat.INVOICE_DATE, orderDetails.getBoughtDate());
+                intent.putExtra(ApplinkConst.Chat.INVOICE_IMAGE_URL, orderDetails.getProductImageUrl());
+                intent.putExtra(ApplinkConst.Chat.INVOICE_URL, orderDetails.getInvoiceUrl());
+                intent.putExtra(ApplinkConst.Chat.INVOICE_STATUS_ID, orderDetails.getStatusId());
+                intent.putExtra(ApplinkConst.Chat.INVOICE_STATUS, orderDetails.getStatusInfo());
+                intent.putExtra(ApplinkConst.Chat.INVOICE_TOTAL_AMOUNT, orderDetails.getTotalPriceAmount());
+            }
             intent.putExtra(ApplinkConst.Chat.SOURCE, TX_ASK_SELLER);
             startActivity(intent);
         }
-    }
-
-    private RemoteConfig getABTestRemoteConfig() {
-        return RemoteConfigInstance.getInstance().getABTestPlatform();
-    }
-
-    private Boolean useNewPage() {
-        String remoteConfigValue = getABTestRemoteConfig().getString(REVIEW_AB_TEST_KEY);
-        return remoteConfigValue.equals(NEW_REVIEW_FLOW);
     }
 
     @Override
@@ -946,29 +1073,13 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CANCEL_ORDER) {
             String reason = "";
-            int reasonCode = 1;
-            if (resultCode == REJECT_BUYER_REQUEST) {
-                // cuma ada di activity lama (RequestCancelActivity.java, yg skrg udah diarahin ke BuyerRequestCancelActivity.kt) --> gada yg setResult REJECT_BUYER_REQUEST lagi
-                reason = data.getStringExtra(OrderListContants.REASON);
-                reasonCode = data.getIntExtra(OrderListContants.REASON_CODE, 1);
-                presenter.updateOrderCancelReason(reason, getArguments().getString(KEY_ORDER_ID), reasonCode, data.getStringExtra(ACTION_BUTTON_URL));
-            } else if (resultCode == CANCEL_BUYER_REQUEST) {
-                // ini dari BuyerRequestCancelFragment juga
-                reason = data.getStringExtra(OrderListContants.REASON);
-                reasonCode = data.getIntExtra(OrderListContants.REASON_CODE, 1);
-                presenter.updateOrderCancelReason(reason, getArguments().getString(KEY_ORDER_ID), reasonCode, data.getStringExtra(ACTION_BUTTON_URL));
-            } else if (resultCode == CANCEL_BUYER_REQUEST_TWO_LAYER) {
-                // kok gada ya yg manggil ini hmm
-                reason = data.getStringExtra(OrderListContants.REASON);
-                reasonCode = data.getIntExtra(OrderListContants.REASON_CODE, 1);
-                presenter.updateOrderCancelReason(reason, getArguments().getString(KEY_ORDER_ID), reasonCode, data.getStringExtra(ACTION_BUTTON_URL));
-            } else if (resultCode == INSTANT_CANCEL_BUYER_REQUEST) {
+            if (resultCode == INSTANT_CANCEL_BUYER_REQUEST) {
                 String resultMsg = data.getStringExtra(RESULT_MSG_INSTANT_CANCEL);
                 int result = data.getIntExtra(RESULT_CODE_INSTANT_CANCEL, 1);
                 if (result == 1) {
-                    // show toaster
-                    if (getView() != null && resultMsg != null) {
-                        Toaster.make(getView(), resultMsg, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL, "", v -> { });
+                    if (resultMsg != null && getView() != null) {
+                        Toaster.build(getView(), resultMsg, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL, "", v -> {
+                        }).show();
                     }
                 } else if (result == 3) {
                     String popupTitle = data.getStringExtra(RESULT_POPUP_TITLE_INSTANT_CANCEL);
@@ -996,9 +1107,10 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                 if (result != 0) {
                     finishOrderDetail();
                 }
+            } else if (resultCode == CANCEL_ORDER_DISABLE) {
+                finishOrderDetail();
             }
             orderListAnalytics.sendActionButtonClickEvent(CLICK_SUBMIT_CANCELATION, statusValue.getText().toString() + "-" + reason);
-//            presenter.setOrderDetailsContent((String) getArguments().get(KEY_ORDER_ID), (String) getArguments().get(KEY_ORDER_CATEGORY), getArguments().getString(KEY_FROM_PAYMENT));
         }
     }
 
@@ -1016,15 +1128,15 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
     public void setPaymentData(PaymentData paymentData) {
         DoubleTextView doubleTextView = new DoubleTextView(getActivity(), LinearLayout.HORIZONTAL);
         doubleTextView.setTopText(paymentData.label());
-        doubleTextView.setTopTextColor(getContext().getResources().getColor(R.color.black_70_new));
+        doubleTextView.setTopTextColor(MethodChecker.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N700_68));
         doubleTextView.setTopTextSize(TEXT_SIZE_LARGE);
         doubleTextView.setTopTextStyle("bold");
         doubleTextView.setBottomText(paymentData.value());
         if (!paymentData.textColor().equals(""))
             doubleTextView.setBottomTextColor(Color.parseColor(paymentData.textColor()));
         doubleTextView.setBottomTextSize(TEXT_SIZE_LARGE);
-        doubleTextView.setBottomTextColor(getContext().getResources().getColor(R.color.orange));
-        doubleTextView.setBottomGravity(Gravity.RIGHT);
+        doubleTextView.setBottomTextColor(MethodChecker.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_Y500));
+        doubleTextView.setBottomGravity(Gravity.END);
         totalPrice.addView(doubleTextView);
     }
 
@@ -1032,8 +1144,9 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
     public void setContactUs(final ContactUs contactUs, String helpLink) {
         _helplink = helpLink;
         String text = getResources().getString(R.string.contact_us_text);
+        String clickableLink = getResources().getString(R.string.contact_us_clickable_text);
         SpannableString spannableString = new SpannableString(text);
-        int startIndexOfLink = text.indexOf("disini");
+        int startIndexOfLink = text.indexOf(clickableLink);
         spannableString.setSpan(new ClickableSpan() {
             @Override
             public void onClick(View view) {
@@ -1045,9 +1158,9 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
             public void updateDrawState(TextPaint ds) {
                 super.updateDrawState(ds);
                 ds.setUnderlineText(false);
-                ds.setColor(getResources().getColor(R.color.green_250)); // specific color for this link
+                ds.setColor(getResources().getColor(com.tokopedia.unifyprinciples.R.color.Unify_G400)); // specific color for this link
             }
-        }, startIndexOfLink, startIndexOfLink + "disini".length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }, startIndexOfLink, startIndexOfLink + clickableLink.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         helpLabel.setHighlightColor(Color.TRANSPARENT);
         helpLabel.setMovementMethod(LinkMovementMethod.getInstance());
         helpLabel.setText(spannableString, TextView.BufferType.SPANNABLE);
@@ -1056,16 +1169,16 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
     @Override
     public void setTopActionButton(ActionButton actionButton) {
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        params.setMargins(getResources().getDimensionPixelSize(R.dimen.dp_16), getResources().getDimensionPixelSize(R.dimen.dp_0), getResources().getDimensionPixelSize(R.dimen.dp_16), getResources().getDimensionPixelSize(R.dimen.dp_24));
+        params.setMargins(getResources().getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_16), getResources().getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_0), getResources().getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_16), getResources().getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_24));
         primaryActionBtn.setText(actionButton.getLabel());
         GradientDrawable shape = new GradientDrawable();
         shape.setShape(GradientDrawable.RECTANGLE);
-        shape.setCornerRadius(getResources().getDimensionPixelSize(R.dimen.dp_4));
+        shape.setCornerRadius(getResources().getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_4));
         if (!actionButton.getActionColor().getBackground().equals("")) {
             shape.setColor((Color.parseColor(actionButton.getActionColor().getBackground())));
         }
         if (!actionButton.getActionColor().getBorder().equals("")) {
-            shape.setStroke(getResources().getDimensionPixelSize(R.dimen.dp_2), Color.parseColor(actionButton.getActionColor().getBorder()));
+            shape.setStroke(getResources().getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_2), Color.parseColor(actionButton.getActionColor().getBorder()));
         }
         primaryActionBtn.setBackground(shape);
         if (isSingleButton) {
@@ -1084,12 +1197,12 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
         secondaryActionBtn.setText(actionButton.getLabel());
         GradientDrawable shape = new GradientDrawable();
         shape.setShape(GradientDrawable.RECTANGLE);
-        shape.setCornerRadius(getResources().getDimensionPixelSize(R.dimen.dp_4));
+        shape.setCornerRadius(getResources().getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_4));
         if (!actionButton.getActionColor().getBackground().equals("")) {
             shape.setColor((Color.parseColor(actionButton.getActionColor().getBackground())));
         }
         if (!actionButton.getActionColor().getBorder().equals("")) {
-            shape.setStroke(getResources().getDimensionPixelSize(R.dimen.dp_2), Color.parseColor(actionButton.getActionColor().getBorder()));
+            shape.setStroke(getResources().getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_2), Color.parseColor(actionButton.getActionColor().getBorder()));
         }
         secondaryActionBtn.setBackground(shape);
         if (!actionButton.getActionColor().getTextColor().equals("")) {
@@ -1125,11 +1238,13 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
 
         SpannableStringBuilder completeLabelShop = new SpannableStringBuilder();
         completeLabelShop.append(labelShop);
-        completeLabelShop.append(shopName);
+        completeLabelShop.append(MethodChecker.fromHtml(shopName));
         completeLabelShop.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), startLabelShop, completeLabelShop.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         shopInformationTitle.setText(completeLabelShop);
 
-        ivShopInfo.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.ic_right));
+        if (getContext() != null) {
+            ivShopInfo.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.ic_right));
+        }
 
         rlShopInfo.setOnClickListener(v -> {
             orderListAnalytics.sendClickShopName(status.status());
@@ -1137,15 +1252,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
             RouteManager.route(getContext(), applink);
         });
         itemsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        itemsRecyclerView.setAdapter(new ProductItemAdapter(getContext(), items, presenter, isTradeIn, status));
-    }
-
-    @Override
-    public Context getAppContext() {
-        if (getActivity() != null)
-            return getActivity().getApplicationContext();
-        else
-            return null;
+        itemsRecyclerView.setAdapter(new ProductItemAdapter(getContext(), items, presenter, isTradeIn, status, userSessionInterface.getUserId(), getArguments().getString(KEY_ORDER_ID)));
     }
 
     @Override
@@ -1161,8 +1268,9 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
 
     @Override
     public void onRefresh(View view) {
-        presenter.setOrderDetailsContent((String) getArguments().get(KEY_ORDER_ID), (String) getArguments().get(KEY_ORDER_CATEGORY), getArguments().getString(KEY_FROM_PAYMENT), null, getArguments().getString(KEY_PAYMENT_ID), getArguments().getString(KEY_CART_STRING));
-
+        if (getArguments() != null) {
+            presenter.setOrderDetailsContent((String) getArguments().get(KEY_ORDER_ID), (String) getArguments().get(KEY_ORDER_CATEGORY), getArguments().getString(KEY_FROM_PAYMENT), null, getArguments().getString(KEY_PAYMENT_ID), getArguments().getString(KEY_CART_STRING));
+        }
     }
 
     private void setUpScrollChangeListener() {
@@ -1183,7 +1291,8 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
     @Override
     public void setRecommendation(Object recommendationResponse) {
         RecommendationResponse rechargeWidgetResponse = (RecommendationResponse) recommendationResponse;
-        if (rechargeWidgetResponse != null && rechargeWidgetResponse.getRechargeFavoriteRecommendationList() != null) {
+        if (rechargeWidgetResponse != null && rechargeWidgetResponse.getRechargeFavoriteRecommendationList() != null
+                && rechargeWidgetResponse.getRechargeFavoriteRecommendationList().getRecommendations() != null) {
             if (!rechargeWidgetResponse.getRechargeFavoriteRecommendationList().getRecommendations().isEmpty() && getContext() != null) {
                 viewRecomendItems.setVisibility(View.VISIBLE);
                 recommendListTitle.setText(rechargeWidgetResponse.getRechargeFavoriteRecommendationList().getTitle());
@@ -1191,5 +1300,51 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                 recommendationList.setAdapter(new RecommendationMPAdapter(rechargeWidgetResponse.getRechargeFavoriteRecommendationList().getRecommendations()));
             }
         }
+    }
+
+    @Override
+    public JsonArray generateInputQueryBuyAgain(List<Items> items) {
+        JsonArray jsonArray = new JsonArray();
+        for (Items item : items) {
+            JsonObject passenger = new JsonObject();
+
+            String productId = "";
+            int quantity = 0;
+            int shopId = 0;
+            String notes = "";
+            String price = "";
+            String category = "";
+            String productName = "";
+            try {
+                productId = item.getId();
+                quantity = item.getQuantity();
+                shopId = shopInfo.getShopId();
+                notes = item.getDescription();
+                price = item.getPrice();
+                category = item.getCategory();
+                productName = item.getTitle();
+            } catch (Exception e) {
+                Timber.d("error parse - %s", e.getMessage());
+            }
+            passenger.addProperty(BuyerConsts.PRODUCT_ID, productId);
+            passenger.addProperty(BuyerConsts.QUANTITY, quantity);
+            passenger.addProperty(BuyerConsts.NOTES, notes);
+            passenger.addProperty(BuyerConsts.SHOP_ID, shopId);
+            passenger.addProperty(BuyerConsts.PRODUCT_PRICE, price);
+            passenger.addProperty(BuyerConsts.CATEGORY, category);
+            passenger.addProperty(BuyerConsts.PRODUCT_NAME, productName);
+            jsonArray.add(passenger);
+        }
+        return jsonArray;
+    }
+
+    @Override
+    public void setActionButtonLayoutClickable(Boolean isClickable) {
+        // no op
+    }
+
+    @Override
+    public void setActionButtonText(String txt) {
+        // no op
     }
 }

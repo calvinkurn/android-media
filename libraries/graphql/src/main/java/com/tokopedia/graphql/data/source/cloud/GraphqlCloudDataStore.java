@@ -19,6 +19,8 @@ import com.tokopedia.graphql.data.source.cloud.api.GraphqlApi;
 import com.tokopedia.graphql.util.CacheHelper;
 import com.tokopedia.graphql.util.Const;
 import com.tokopedia.graphql.util.LoggingUtils;
+import com.tokopedia.logger.ServerLogger;
+import com.tokopedia.logger.utils.Priority;
 
 import java.io.InterruptedIOException;
 import java.net.SocketException;
@@ -36,6 +38,7 @@ import timber.log.Timber;
 
 import static com.tokopedia.akamai_bot_lib.UtilsKt.isAkamai;
 import static com.tokopedia.graphql.util.Const.AKAMAI_SENSOR_DATA_HEADER;
+import static com.tokopedia.graphql.util.Const.QUERY_HASHING_HEADER;
 
 /**
  * Retrieve the response from Cloud and dump the same in disk if cache was enable by consumer.
@@ -43,10 +46,10 @@ import static com.tokopedia.graphql.util.Const.AKAMAI_SENSOR_DATA_HEADER;
  */
 @Deprecated
 public class GraphqlCloudDataStore implements GraphqlDataStore {
-    private GraphqlApi mApi;
-    private GraphqlCacheManager mCacheManager;
-    private FingerprintManager mFingerprintManager;
-    private static String TAG = GraphqlCloudDataStore.class.getSimpleName();
+    private final GraphqlApi mApi;
+    private final GraphqlCacheManager mCacheManager;
+    private final FingerprintManager mFingerprintManager;
+    private static final String TAG = GraphqlCloudDataStore.class.getSimpleName();
 
     @Inject
     public GraphqlCloudDataStore() {
@@ -62,13 +65,35 @@ public class GraphqlCloudDataStore implements GraphqlDataStore {
      * */
     private Observable<Response<JsonArray>> getResponse(List<GraphqlRequest> requests) {
         CYFMonitor.setLogLevel(CYFMonitor.INFO);
-        if (isAkamai(requests.get(0).getQuery())) {
-            Map<String, String> header = new HashMap<>();
-            header.put(AKAMAI_SENSOR_DATA_HEADER, GraphqlClient.getFunction().getAkamaiValue());
-            return mApi.getResponse(requests, header, FingerprintManager.getQueryDigest(requests));
-        } else {
-            return mApi.getResponse(requests, new HashMap<>(), FingerprintManager.getQueryDigest(requests));
+        Map<String, String> header = new HashMap<>();
+        if(requests.get(0).isDoQueryHash()){
+            StringBuilder queryHashingHeaderValue = new StringBuilder();
+            for (GraphqlRequest graphqlRequest:requests) {
+                String queryHashValue = mCacheManager.getQueryHashValue(graphqlRequest.getMd5());
+                if(TextUtils.isEmpty(queryHashValue)){
+                    queryHashingHeaderValue.append("");
+                } else {
+                    if(queryHashingHeaderValue.length() <= 0) {
+                        queryHashingHeaderValue.append(queryHashValue);
+                    } else {
+                        queryHashingHeaderValue.append(",")
+                                .append(queryHashValue);
+                    }
+                    graphqlRequest.setQuery("");
+                }
+            }
+            if(TextUtils.isEmpty(queryHashingHeaderValue.toString())){
+                queryHashingHeaderValue.append(";true");
+            }
+            else{
+                queryHashingHeaderValue.append(";false");
+            }
+            header.put(QUERY_HASHING_HEADER, queryHashingHeaderValue.toString());
         }
+        if (isAkamai(requests.get(0).getQuery())) {
+            header.put(AKAMAI_SENSOR_DATA_HEADER, GraphqlClient.getFunction().getAkamaiValue());
+        }
+        return mApi.getResponse(requests, header, FingerprintManager.getQueryDigest(requests));
     }
 
     @Override
@@ -89,29 +114,72 @@ public class GraphqlCloudDataStore implements GraphqlDataStore {
                     if (httpResponse == null) {
                         return null;
                     }
+                    if(httpResponse.code() == Const.GQL_QUERY_HASHING_ERROR){
+                        StringBuilder queryHashValues = new StringBuilder();
+                        //Reset request bodies
+                        if(requests.size() > 0) {
+                            for (GraphqlRequest graphqlRequest : requests) {
+                                graphqlRequest.setQuery(graphqlRequest.getQueryCopy());
+                                queryHashValues.append(mCacheManager.getQueryHashValue(graphqlRequest.getMd5())).append(",");
+                                mCacheManager.deleteQueryHashValue(graphqlRequest.getMd5());
+                            }
+                        }
+                        Map<String, String> header = new HashMap<>();
+                        if(requests.get(0).getQueryHashRetryCount() > 0) {
+                            header.put(QUERY_HASHING_HEADER, ";true");
+                            requests.get(0).setQueryHashRetryCount(requests.get(0).getQueryHashRetryCount()-1);
+                        }
+                        else {
+                            header.put(QUERY_HASHING_HEADER, "");
+                        }
+                        Map<String, String> messageMap = new HashMap<>();
+                        messageMap.put("type", "error");
+                        messageMap.put("name", CacheHelper.getQueryName(requests.get(0).getQuery()));
+                        messageMap.put("key", requests.get(0).getMd5());
+                        messageMap.put("hash", queryHashValues.toString());
+                        ServerLogger.log(Priority.P1, "GQL_HASHING", messageMap);
+                        mApi.getResponse(requests, header, FingerprintManager.getQueryDigest(requests));
+                    }
                     if (httpResponse.code() != Const.GQL_RESPONSE_HTTP_OK && httpResponse.body() != null) {
                         LoggingUtils.logGqlResponseCode(httpResponse.code(), requests.toString(), httpResponse.body().toString());
                         return null;
                     }
                     if (httpResponse.body() != null) {
-                        LoggingUtils.logGqlSize("java", requests.toString(), httpResponse.body().toString());
+                        LoggingUtils.logGqlSize("java", requests, httpResponse.body().toString());
                     }
 
                     JsonArray gJsonArray = CommonUtils.getOriginalResponse(httpResponse);
 
-                    return new GraphqlResponseInternal(gJsonArray, false, httpResponse.headers().get(GraphqlConstant.GqlApiKeys.CACHE));
+                    return new GraphqlResponseInternal(gJsonArray, false,
+                            httpResponse.headers().get(GraphqlConstant.GqlApiKeys.CACHE),
+                            httpResponse.headers().get(GraphqlConstant.GqlApiKeys.QUERYHASH));
                 }).doOnNext(graphqlResponseInternal -> {
                     //Handling backend cache
                     Map<String, BackendCache> caches = CacheHelper.parseCacheHeaders(graphqlResponseInternal.getBeCache());
+                    String[] qhValues = CacheHelper.parseQueryHashHeader(graphqlResponseInternal.getQueryHash());
+                    boolean executeCacheFlow = false;
+                    boolean executeQueryHashFlow = false;
+                    if(qhValues.length > 0){
+                        executeQueryHashFlow = true;
+                    }
                     if (caches != null && !caches.isEmpty()) {
+                        executeCacheFlow = true;
+                    }
                         int size = requests.size();
                         for (int i = 0; i < size; i++) {
                             GraphqlRequest request = requests.get(i);
-                            if (request == null || request.isNoCache() || caches.get(request.getMd5()) == null) {
+                            if(executeQueryHashFlow){
+                                mCacheManager.saveQueryHash(request.getMd5(), qhValues[i]);
+                                Map<String, String> messageMap = new HashMap<>();
+                                messageMap.put("type", "success");
+                                messageMap.put("name", CacheHelper.getQueryName(request.getQuery()));
+                                messageMap.put("key", request.getMd5());
+                                messageMap.put("hash", qhValues[i]);
+                                ServerLogger.log(Priority.P1, "GQL_HASHING", messageMap);
+                            }
+                            if (request == null || request.isNoCache() || (executeCacheFlow && caches.get(request.getMd5()) == null)) {
                                 continue;
                             }
-
-                            BackendCache cache = caches.get(request.getMd5());
 
                             JsonElement rawResp = graphqlResponseInternal.getOriginalResponse().get(i);
                             if (rawResp == null
@@ -121,13 +189,12 @@ public class GraphqlCloudDataStore implements GraphqlDataStore {
                             }
 
                             JsonElement childResp = rawResp.getAsJsonObject().get(GraphqlConstant.GqlApiKeys.DATA);
-                            if (childResp != null) {
+                            if (executeCacheFlow && childResp != null) {
+                                BackendCache cache = caches.get(request.getMd5());
                                 mCacheManager.save(request.cacheKey(), childResp.toString(), cache.getMaxAge() * 1000);
                                 Timber.d("Android CLC - Request saved to cache " + CacheHelper.getQueryName(request.getQuery()) + " KEY: " + request.cacheKey());
                             }
                         }
-                    }
-
 
                     if (cacheStrategy == null || graphqlResponseInternal == null) {
                         return;

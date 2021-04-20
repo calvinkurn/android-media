@@ -1,0 +1,64 @@
+{
+  "readme": "Digital checkout with subscription (user already subscribed) & fintech product (proteksi tagihan)",
+  "mode": "exact",
+  "query": [
+    {
+      "event": "begin_checkout",
+      "eventCategory": "digital - checkout",
+      "eventAction": "view checkout",
+      "eventLabel": "{{.+ - .+}}",
+      "checkout_step": "1",
+      "checkout_option": "cart page loaded",
+      "currentSite": "tokopediadigitalRecharge",
+      "sessionIris": "{{.+}}",
+      "businessUnit": "recharge",
+      "userId": "{{.+}}",
+      "items": [
+        {
+          "cart_id": "{{.+}}",
+          "quantity": "{{\\d*.\\d*}}",
+          "category_id": "{{.+}}",
+          "item_id": "{{.+}}",
+          "item_name": "{{.+}}",
+          "item_brand": "{{.+}}",
+          "item_variant": "{{.+}}",
+          "item_category": "{{.+}}",
+          "price": "{{\\d*.\\d*|\\d.\\d+E\\d}}",
+          "shop_id": "{{.+}}",
+          "shop_name": "{{.+}}",
+          "shop_type": "{{.+}}"
+        }
+      ]
+    },
+    {
+      "event":"clickCheckout",
+      "eventCategory":"digital - checkout page",
+      "eventAction":"tick protection",
+      "eventLabel":"{{.+ - .+}}",
+      "businessUnit":"recharge",
+      "currentSite":"tokopediadigital",
+      "sessionIris": "{{.+}}",
+      "userId":"{{.+}}"
+    },
+    {
+      "event":"clickCheckout",
+      "eventCategory":"digital - checkout page",
+      "eventAction":"untick protection",
+      "eventLabel":"{{.+ - .+}}",
+      "businessUnit":"recharge",
+      "currentSite":"tokopediadigital",
+      "userId":"{{.+}}",
+      "sessionIris": "{{.+}}"
+    },
+    {
+      "event":"clickCheckout",
+      "eventCategory":"digital - checkout page",
+      "eventAction":"click promo button",
+      "eventLabel":"{{.+ - .+}}",
+      "businessUnit":"recharge",
+      "currentSite":"tokopediadigital",
+      "userId":"{{.+}}",
+      "sessionIris": "{{.+}}"
+    }
+  ]
+}

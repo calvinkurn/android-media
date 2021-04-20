@@ -3,7 +3,7 @@ package com.tokopedia.loginfingerprint.utils.crypto
 import android.annotation.TargetApi
 import android.os.Build
 import androidx.core.hardware.fingerprint.FingerprintManagerCompat
-import com.tokopedia.loginfingerprint.data.model.FingerprintSignature
+import com.tokopedia.loginfingerprint.data.model.SignatureData
 import java.security.*
 
 /**
@@ -22,9 +22,9 @@ interface Cryptography {
 
     fun getPublicKey(): String
 
-    fun generateFingerprintSignature(userId: String, deviceId: String): FingerprintSignature
+    fun generateFingerprintSignature(userId: String, deviceId: String): SignatureData
 
-    fun getSignature(textToEncrypt: String): String
+    fun getSignature(textToEncrypt: String, algorithm: String): String
 
     fun getCryptoObject(): FingerprintManagerCompat.CryptoObject?
 

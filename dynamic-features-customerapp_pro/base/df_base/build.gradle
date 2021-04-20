@@ -1,0 +1,152 @@
+apply plugin: 'com.android.dynamic-feature'
+apply from: "$rootProject.projectDir/buildconfig/module.gradle"
+apply plugin: 'io.hansel.preprocessor.feature'
+
+buildscript {
+    repositories {
+        mavenCentral()
+        maven { url 'https://maven-hansel.tokopedia.com/maven' }
+    }
+    dependencies {
+        classpath rootProject.ext.miscDependencies.hansel
+    }
+}
+
+android {
+
+    signingConfigs {
+        debug {
+            storeFile file("debug.keystore")
+        }
+    }
+
+    compileSdkVersion rootProject.ext.compileSdkVersion
+
+    defaultConfig {
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+    }
+
+    // Specifies 4 flavor dimensions.
+    flavorDimensions "tier", "client"
+
+    productFlavors {
+        live {
+            dimension "tier"
+        }
+        staging {
+            dimension "tier"
+        }
+        dev {
+            dimension "client"
+        }
+        prod {
+            dimension "client"
+        }
+    }
+}
+
+dependencies {
+    implementation project(rootProject.ext.app.customerapp_pro)
+
+    //Base
+    implementation project(rootProject.ext.features.onboarding)
+
+    //Category
+    implementation project(rootProject.ext.features.exploreCategory)
+    implementation project(rootProject.ext.features.catalog)
+    implementation project(rootProject.ext.features.kategori)
+    implementation project(rootProject.ext.features.categoryLevels)
+    implementation project(rootProject.ext.features.findNative)
+    //implementation project(rootProject.ext.features.agerestriction) //Need to fix the structure
+
+    //Content
+    implementation project(rootProject.ext.features.play)
+    implementation project(rootProject.ext.features.kol)
+    implementation project(rootProject.ext.features.interestPick)
+    implementation project(rootProject.ext.features.feed)
+
+    //Digital
+    implementation project(rootProject.ext.features.digitalTopupBills)
+    implementation project(rootProject.ext.features.digitalHomepage)
+    implementation project(rootProject.ext.features.voucherGame)
+    implementation project(rootProject.ext.features.rechargeOcr)
+    implementation project(rootProject.ext.features.rechargeGeneral)
+    implementation project(rootProject.ext.features.digitalproduct)
+    implementation project(rootProject.ext.features.rechargeCreditCard)
+    implementation project(rootProject.ext.features.digitalEmoney)
+    implementation project(rootProject.ext.features.digitalBrizzi)
+    implementation project(rootProject.ext.features.smartBills)
+    implementation project(rootProject.ext.features.digitalCheckout)
+
+    //Discovery
+    implementation project(rootProject.ext.features.similarSearch)
+    implementation project(rootProject.ext.features.search)
+    implementation project(rootProject.ext.features.autocomplete)
+    implementation project(rootProject.ext.features.homeRecom)
+    implementation project(rootProject.ext.features.homeWishlist)
+    implementation project(rootProject.ext.features.productCardOptions)
+
+    //Fintech
+    implementation project(rootProject.ext.features.ovoPayWithQr)
+    implementation project(rootProject.ext.features.wallet)
+    implementation project(rootProject.ext.features.ovop2p)
+
+    //IM
+    //implementation project(rootProject.ext.features.referral) //Need to fix the structure
+
+    //Logistic
+    implementation project(rootProject.ext.features.logisticorder)
+    implementation project(rootProject.ext.features.logisticaddaddress)
+    implementation project(rootProject.ext.features.manageaddress)
+
+    //Merchant
+    implementation project(rootProject.ext.features.shopOpen)
+    implementation project(rootProject.ext.features.talk)
+    implementation project(rootProject.ext.features.shopShowcase)
+    implementation project(rootProject.ext.features.brandlist)
+    implementation project(rootProject.ext.features.productDetail)
+    implementation project(rootProject.ext.features.review)
+    implementation project(rootProject.ext.features.reviewProduct)
+    implementation project(rootProject.ext.features.shopPage)
+    //Operational
+
+    //Payment
+    implementation project(rootProject.ext.features.paymentSetting)
+    implementation project(rootProject.ext.features.instantDebitBca)
+    implementation project(rootProject.ext.features.pms)
+
+    //Promo
+    implementation project(rootProject.ext.features.promoCheckout)
+
+    //Salam
+
+    //Travel
+    implementation project(rootProject.ext.features.travelHomepage)
+    implementation project(rootProject.ext.features.hotel)
+
+    //User
+    implementation project(rootProject.ext.features.settingnotif)
+    implementation project(rootProject.ext.features.campaignShakeLanding)
+    implementation project(rootProject.ext.features.changePhoneNumber)
+    implementation project(rootProject.ext.features.kyccentralized)
+    implementation project(rootProject.ext.features.loginfingerprint)
+    implementation project(rootProject.ext.features.managename)
+    implementation project(rootProject.ext.features.managepassword)
+    implementation project(rootProject.ext.features.notifCenter)
+    implementation project(rootProject.ext.features.notifTroubleshooter)
+    implementation project(rootProject.ext.features.topchat)
+    implementation project(rootProject.ext.features.otp)
+    implementation project(rootProject.ext.features.loginphone)
+    implementation project(rootProject.ext.features.updateinactivephone)
+    implementation project(rootProject.ext.features.inbox)
+
+    //Transaction
+    implementation project(rootProject.ext.features.checkout)
+    implementation project(rootProject.ext.features.oneclickcheckout)
+    implementation project(rootProject.ext.features.promoCheckoutMarketplace)
+    implementation project(rootProject.ext.features.buyerorder)
+
+    //Order Management
+    implementation project(rootProject.ext.features.ordermanagementhistory)
+}

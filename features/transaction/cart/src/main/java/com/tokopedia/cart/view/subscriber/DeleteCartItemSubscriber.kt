@@ -13,13 +13,18 @@ class DeleteCartItemSubscriber(private val view: ICartListView?,
                                private val presenter: ICartListPresenter,
                                private val toBeDeletedCartIds: List<String>,
                                private val removeAllItems: Boolean,
-                               private val removeInsurance: Boolean) : Subscriber<DeleteCartData>() {
+                               private val forceExpandCollapsedUnavailableItems: Boolean,
+                               private val isMoveToWishlist: Boolean,
+                               private val isFromGlobalCheckbox: Boolean) : Subscriber<DeleteCartData>() {
     override fun onCompleted() {
 
     }
 
     override fun onError(e: Throwable) {
         view?.let {
+            if (forceExpandCollapsedUnavailableItems) {
+                it.reCollapseExpandedDeletedUnavailableItems()
+            }
             it.hideProgressLoading()
             e.printStackTrace()
             it.showToastMessageRed(e)
@@ -28,30 +33,19 @@ class DeleteCartItemSubscriber(private val view: ICartListView?,
 
     override fun onNext(deleteCartData: DeleteCartData) {
         view?.let { view ->
-            view.hideProgressLoading()
             view.renderLoadGetCartDataFinish()
 
             if (deleteCartData.isSuccess) {
-                if (removeInsurance) {
-                    view.getInsuranceCartShopData()?.let {
-                        presenter.processDeleteCartInsurance(it, false)
-                    }
-                }
-
-                if (removeAllItems) {
-                    view.resetRecentViewList()
-                    presenter.processInitialGetCartData(view.getCartId(), false, false)
-                } else {
-                    view.onDeleteCartDataSuccess(toBeDeletedCartIds)
-                }
+                view.onDeleteCartDataSuccess(toBeDeletedCartIds, removeAllItems, forceExpandCollapsedUnavailableItems, isMoveToWishlist, isFromGlobalCheckbox)
 
                 val params = view.generateGeneralParamValidateUse()
                 if (!removeAllItems && (view.checkHitValidateUseIsNeeded(params))) {
                     view.showPromoCheckoutStickyButtonLoading()
                     presenter.doUpdateCartAndValidateUse(params)
                 }
-                view.updateCartCounter(deleteCartData.cartCounter)
+                presenter.processUpdateCartCounter()
             } else {
+                view.hideProgressLoading()
                 view.showToastMessageRed(deleteCartData.message ?: "")
             }
         }

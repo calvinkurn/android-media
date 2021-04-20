@@ -129,8 +129,8 @@ class DynamicFilterItemPriceViewHolder(itemView: View, private val dynamicFilter
             pricePillsRecyclerView.layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
         }
 
-        val spacingBetween = itemView.context.resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_8)
-        val edgeMargin = itemView.context.resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_16)
+        val spacingBetween = itemView.context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_8)
+        val edgeMargin = itemView.context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_16)
 
         if (pricePillsRecyclerView.itemDecorationCount == 0) {
             pricePillsRecyclerView.addItemDecoration(LinearHorizontalSpacingDecoration(spacingBetween, edgeMargin))

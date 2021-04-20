@@ -12,8 +12,7 @@ import com.tokopedia.home_recom.view.viewholder.TitleViewHolder
 class TitleDataModel (
         val title: String,
         val pageName: String,
-        val seeMoreAppLink: String,
-        val listener: TitleListener
+        val seeMoreAppLink: String
 ) : HomeRecommendationDataModel {
 
     companion object {

@@ -47,13 +47,6 @@ public class SectionCategoryAdapter extends RecyclerView.Adapter<SectionCategory
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        MarginLayoutParams params = (MarginLayoutParams) holder.itemView.getLayoutParams();
-        if (position == 0) {
-            params.setMargins(CommanUtilsKt.convertDpToPixel(16,holder.itemView.getContext()),0,0,0);
-        } else {
-            params.setMargins(0,0,0,0);
-        }
-        holder.itemView.setLayoutParams(params);
         holder.bindData(mCategories.get(position));
     }
 

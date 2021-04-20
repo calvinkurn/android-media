@@ -3,8 +3,8 @@ package com.tokopedia.home.explore.di;
 import android.content.Context;
 
 import com.google.gson.Gson;
-import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
+import com.tokopedia.cachemanager.CacheManager;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.home.common.HomeDataApi;
 import com.tokopedia.home.explore.data.repository.ExploreRepositoryImpl;
@@ -28,13 +28,12 @@ import static com.tokopedia.shop.common.constant.GQLQueryNamedConstant.DEFAULT_S
  * Created by errysuprayogi on 2/2/18.
  */
 
-@ExploreScope
 @Module
 public class ExploreModule {
 
     @Provides
-    ExplorePresenter explorePresenter() {
-        return new ExplorePresenter();
+    ExplorePresenter explorePresenter(UserSession userSession, GetExploreLocalDataUseCase localDataUseCase, GetExploreDataUseCase dataUseCase) {
+        return new ExplorePresenter(dataUseCase, localDataUseCase, userSession);
     }
 
     @ExploreScope

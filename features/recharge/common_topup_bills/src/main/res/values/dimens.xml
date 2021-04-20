@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="checkout_view_padding">12dp</dimen>
-    <dimen name="checkout_view_label_margin">12dp</dimen>
+    <dimen name="separator_size">1dp</dimen>
+    <dimen name="input_dropdown_item_height">56dp</dimen>
+    <dimen name="input_field_info_icon_size">14dp</dimen>
 </resources>

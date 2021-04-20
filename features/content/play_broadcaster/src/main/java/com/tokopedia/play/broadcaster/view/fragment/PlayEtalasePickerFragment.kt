@@ -20,9 +20,6 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
-import com.tokopedia.play.broadcaster.ui.model.result.NetworkResult
-import com.tokopedia.play.broadcaster.util.coroutine.CoroutineDispatcherProvider
-import com.tokopedia.play.broadcaster.util.extension.compatTransitionName
 import com.tokopedia.play.broadcaster.util.extension.showToaster
 import com.tokopedia.play.broadcaster.view.contract.PlayEtalaseSetupCoordinator
 import com.tokopedia.play.broadcaster.view.contract.ProductSetupListener
@@ -30,10 +27,14 @@ import com.tokopedia.play.broadcaster.view.custom.PlayBottomSheetHeader
 import com.tokopedia.play.broadcaster.view.custom.PlaySearchBar
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseEtalaseSetupFragment
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseSetupFragment
-import com.tokopedia.play.broadcaster.view.partial.BottomActionPartialView
-import com.tokopedia.play.broadcaster.view.partial.SelectedProductPagePartialView
+import com.tokopedia.play.broadcaster.view.partial.BottomActionViewComponent
+import com.tokopedia.play.broadcaster.view.partial.SelectedProductPageViewComponent
 import com.tokopedia.play.broadcaster.view.viewmodel.DataStoreViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayEtalasePickerViewModel
+import com.tokopedia.play_common.model.result.NetworkResult
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.play_common.util.extension.compatTransitionName
+import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.*
 import javax.inject.Inject
@@ -43,7 +44,7 @@ import javax.inject.Inject
  */
 class PlayEtalasePickerFragment @Inject constructor(
         private val viewModelFactory: ViewModelFactory,
-        dispatcher: CoroutineDispatcherProvider,
+        dispatcher: CoroutineDispatchers,
         private val analytic: PlayBroadcastAnalytic
 ) : PlayBaseSetupFragment(), PlayEtalaseSetupCoordinator {
 
@@ -60,8 +61,27 @@ class PlayEtalasePickerFragment @Inject constructor(
     private lateinit var errorEtalase: GlobalError
     private lateinit var bottomSheetHeader : PlayBottomSheetHeader
 
-    private lateinit var selectedProductPage: SelectedProductPagePartialView
-    private lateinit var bottomActionView: BottomActionPartialView
+    private val selectedProductPage by viewComponent {
+        SelectedProductPageViewComponent(view as ViewGroup, object : SelectedProductPageViewComponent.Listener {
+            override fun onProductSelectStateChanged(productId: Long, isSelected: Boolean) {
+                viewModel.selectProduct(productId, isSelected)
+                onSelectedProductChanged()
+            }
+        })
+    }
+
+    private val bottomActionView by viewComponent {
+        BottomActionViewComponent(view as ViewGroup, object : BottomActionViewComponent.Listener {
+            override fun onInventoryIconClicked() {
+                showSelectedProductPage()
+                analytic.clickSelectedProductIcon()
+            }
+
+            override fun onNextButtonClicked() {
+                uploadProduct()
+            }
+        })
+    }
 
     private var mListener: Listener? = null
 
@@ -119,7 +139,7 @@ class PlayEtalasePickerFragment @Inject constructor(
 
     override fun onInterceptBackPressed(): Boolean {
         return when {
-            selectedProductPage.isShown -> {
+            selectedProductPage.isShown() -> {
                 selectedProductPage.hide()
                 true
             }
@@ -178,23 +198,6 @@ class PlayEtalasePickerFragment @Inject constructor(
             errorEtalase = findViewById(R.id.error_etalase)
             bottomSheetHeader = findViewById(R.id.bottom_sheet_header)
         }
-
-        selectedProductPage = SelectedProductPagePartialView(view as ViewGroup, object : SelectedProductPagePartialView.Listener {
-            override fun onProductSelectStateChanged(productId: Long, isSelected: Boolean) {
-                viewModel.selectProduct(productId, isSelected)
-                onSelectedProductChanged()
-            }
-        })
-
-        bottomActionView = BottomActionPartialView(view as ViewGroup, object : BottomActionPartialView.Listener {
-            override fun onInventoryIconClicked() {
-                showSelectedProductPage()
-            }
-
-            override fun onNextButtonClicked() {
-                uploadProduct()
-            }
-        })
     }
 
     private fun setupView(view: View) {
@@ -217,7 +220,10 @@ class PlayEtalasePickerFragment @Inject constructor(
             }
 
             override fun onSearchButtonClicked(view: PlaySearchBar, keyword: String) {
-                if (keyword.isNotEmpty()) openProductSearchPage(keyword)
+                if (keyword.isNotEmpty()) {
+                    openProductSearchPage(keyword)
+                    analytic.clickSearchBar(view.text)
+                }
                 else psbSearch.cancel()
             }
         })
@@ -266,7 +272,7 @@ class PlayEtalasePickerFragment @Inject constructor(
     }
 
     private fun showSelectedProductPage() {
-        if (selectedProductPage.isShown) {
+        if (selectedProductPage.isShown()) {
             selectedProductPage.hide()
         } else {
             selectedProductPage.setSelectedProductList(viewModel.selectedProductList)

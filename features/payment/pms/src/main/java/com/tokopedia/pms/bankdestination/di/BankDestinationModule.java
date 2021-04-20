@@ -1,5 +1,7 @@
 package com.tokopedia.pms.bankdestination.di;
 
+import android.content.Context;
+
 import com.tokopedia.pms.bankdestination.data.BankListDataSourceLocal;
 import com.tokopedia.pms.bankdestination.data.BankListRepositoryImpl;
 import com.tokopedia.pms.bankdestination.domain.BankListRepository;
@@ -13,9 +15,18 @@ import dagger.Provides;
  * Created by zulfikarrahman on 6/21/18.
  */
 
-@BankDestinationScope
 @Module
 public class BankDestinationModule {
+    private Context context;
+    public BankDestinationModule(Context context){
+        this.context = context;
+    }
+
+    @BankDestinationScope
+    @Provides
+    Context getContext() {
+        return context;
+    }
 
     @BankDestinationScope
     @Provides

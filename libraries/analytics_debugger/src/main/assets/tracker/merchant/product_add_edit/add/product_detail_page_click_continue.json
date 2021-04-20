@@ -1,0 +1,14 @@
+{
+  "readme": "click continue on product detail page",
+  "mode": "subset",
+  "query": [
+    {
+      "event" : "clickAddProduct",
+      "eventCategory" : "add product page",
+      "eventAction" : "click continue on main page",
+      "eventLabel" : "{{.*}}",
+      "shopId" : "{{.+}}",
+      "screenName":"/addproductpage - main"
+    }
+  ]
+}

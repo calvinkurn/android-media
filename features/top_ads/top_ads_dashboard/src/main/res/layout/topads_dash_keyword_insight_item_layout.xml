@@ -31,18 +31,6 @@
         tools:text="@tools:sample/lorem" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/insightCount"
-        android:layout_width="@dimen/dp_22"
-        android:layout_height="@dimen/dp_20"
-        android:background="@drawable/topads_insight_count"
-        android:gravity="center"
-        android:textColor="@color/topads_light_shadow"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="small"
-        tools:text="25" />
-
-    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/txtPotential"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

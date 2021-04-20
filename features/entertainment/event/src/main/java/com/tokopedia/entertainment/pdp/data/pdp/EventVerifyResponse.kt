@@ -23,7 +23,10 @@ data class EventVerifyResponse(
         val metadata: MetaDataResponse = MetaDataResponse(),
         @SerializedName("status")
         @Expose
-        val status: String = ""
+        val status: String = "",
+        @SerializedName("gateway_code")
+        @Expose
+        val gatewayCode: String = ""
 )
 
 @Parcelize

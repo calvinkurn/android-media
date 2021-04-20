@@ -1,0 +1,66 @@
+{
+  "readme": "Shop Open Tracker",
+  "mode": "subset",
+  "query": [
+    {
+      "screenName": "/shop registration"
+    },
+    {
+      "screenName": "/registration page - shop/hooray"
+    },
+    {
+      "screenName": "/registration page - shop/congratulation"
+    },
+    {
+      "screenName": "/shop survey"
+    },
+    {
+      "event": "clickCreateShop",
+      "eventCategory": "registration page - shop",
+      "eventAction": "click register shop",
+      "eventLabel": ""
+    },
+    {
+      "event": "clickCreateShop",
+      "eventCategory": "registration page - shop",
+      "eventAction": "click shop domain recommendation",
+      "eventLabel": "{{.*}}"
+    },
+    {
+      "event": "clickCreateShop",
+      "eventCategory": "registration page - shop",
+      "eventAction": "click back",
+      "eventLabel": ""
+    },
+    {
+      "event": "clickCreateShop",
+      "eventCategory": "registration page - shop",
+      "eventAction": "click term and condition",
+      "eventLabel": ""
+    },
+    {
+      "event": "clickCreateShop",
+      "eventCategory": "registration page - shop",
+      "eventAction": "click privacy term",
+      "eventLabel": ""
+    },
+    {
+      "event": "clickCreateShop",
+      "eventCategory": "registration page - survey",
+      "eventAction": "click back",
+      "eventLabel": ""
+    },
+    {
+      "event": "clickCreateShop",
+      "eventCategory": "registration page - survey",
+      "eventAction": "click continue",
+      "eventLabel": ""
+    },
+    {
+      "event": "clickCreateShop",
+      "eventCategory": "registration page - survey",
+      "eventAction": "click skip",
+      "eventLabel": ""
+    }
+  ]
+}

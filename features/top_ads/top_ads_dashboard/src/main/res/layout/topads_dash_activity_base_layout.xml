@@ -14,20 +14,12 @@
         app:unify_header_is_show_shadow="false"
         app:unify_header_title="@string/top_ads_title_dashboard" />
 
-    <com.tokopedia.unifycomponents.ticker.Ticker
-        android:id="@+id/ticker_seller_migration_topads"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        app:tickerType="announcement"
-        app:layout_constraintTop_toBottomOf="@id/header_toolbar"/>
-
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/ticker_seller_migration_topads">
+        app:layout_constraintTop_toBottomOf="@id/header_toolbar">
 
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/app_bar_layout"
@@ -41,19 +33,11 @@
                 android:layout_height="wrap_content"
                 app:layout_scrollFlags="scroll|enterAlways|enterAlwaysCollapsed">
 
-                <com.google.android.material.tabs.TabLayout
+                <com.tokopedia.unifycomponents.TabsUnify
                     android:id="@+id/tab_layout"
-                    style="?tabTheme"
                     android:layout_width="match_parent"
-                    android:layout_height="?attr/actionBarSize"
-                    android:background="@color/white"
-                    app:elevation="4dp"
-                    app:layout_behavior="@string/appbar_scrolling_view_behavior"
-                    app:layout_scrollFlags="scroll|enterAlways"
-                    app:tabIndicatorColor="@color/topads_common_tab_green"
-                    app:tabMode="fixed"
-                    app:tabSelectedTextColor="@color/Green_G500"
-                    app:tabTextColor="@color/font_black_disabled_38" />
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="fill" />
             </com.google.android.material.appbar.CollapsingToolbarLayout>
         </com.google.android.material.appbar.AppBarLayout>
 
@@ -63,34 +47,29 @@
             android:layout_height="match_parent"
             app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
-        <LinearLayout
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/bottom"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
-            android:orientation="vertical">
+            android:background="@color/white"
+            android:padding="@dimen/dp_8"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/view">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/bottom"
-                android:layout_width="match_parent"
+            <com.tokopedia.unifycomponents.UnifyButton
+                android:id="@+id/multiActionBtn"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:background="@color/white"
-                android:padding="@dimen/dp_8"
+                android:gravity="center_vertical"
+                android:text="@string/topads_dash_button_submit_beranda"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/view">
-
-                <com.tokopedia.unifycomponents.UnifyButton
-                    android:id="@+id/createAd"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:gravity="center_vertical"
-                    android:text="@string/topads_dash_button_submit_beranda"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:unifyButtonSize="large"
-                    app:unifyButtonType="main"
-                    app:unifyButtonVariant="filled" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
-        </LinearLayout>
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:unifyButtonSize="large"
+                app:unifyButtonType="main"
+                app:unifyButtonVariant="filled" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

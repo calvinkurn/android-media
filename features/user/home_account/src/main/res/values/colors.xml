@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="home_account_toolbar_navigation_white_color">@color/Unify_N0</color>
+    <color name="home_account_toolbar_navigation_grey_color">@color/Unify_N700</color>
+    <color name="home_account_separator_color">@color/Unify_N50</color>
+
+    <color name="vertical_divider_light">#E4EAF3</color>
+    <color name="vertical_divider_dark">#6C727C</color>
+
+    <color name="home_account_icon_dark">#C7CBD2</color>
+  
+    <color name="icon_bg_shadow_1">#1031353B</color>
+    <color name="icon_bg_shadow_2">#1531353B</color>
+    <color name="icon_bg_shadow_3">#2031353B</color>
+</resources>

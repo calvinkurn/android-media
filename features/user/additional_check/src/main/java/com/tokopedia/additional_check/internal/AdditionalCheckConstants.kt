@@ -30,6 +30,7 @@ object AdditionalCheckConstants {
     const val QUERY_CHECK_BOTTOM_SHEET = "showInterrupt"
 
     const val REMOTE_CONFIG_2FA = "android_user_two_factor_check"
+    const val REMOTE_CONFIG_2FA_SELLER_APP = "android_user_two_factor_check_seller_app"
     const val REMOTE_CONFIG_DOUBLE_TAP = "android_user_two_factor_double_tap"
 
     const val POPUP_TYPE_NONE = 0

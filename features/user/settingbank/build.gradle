@@ -1,49 +1,17 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
-apply plugin: "de.mannodermaus.android-junit5"
 
 repositories {
-    maven { url 'https://hansel.io/maven' }
-    mavenCentral()
+    maven { url 'https://maven-hansel.tokopedia.com/maven' }
 }
 buildscript {
     repositories {
-        jcenter()
         mavenCentral()
-        maven { url 'https://hansel.io/maven' }
+        maven { url 'https://maven-hansel.tokopedia.com/maven' }
     }
     dependencies {
         classpath rootProject.ext.miscDependencies.hansel
-        classpath rootProject.ext.miscDependencies.androidjunit5
-    }
-}
-
-
-android {
-    defaultConfig {
-        multiDexEnabled(project.hasProperty('coverage') ? true : false)
-        testInstrumentationRunner 'com.tokopedia.test.application.InstrumentationTestRunner'
-    }
-    sourceSets.each {
-        it.java.srcDirs += "src/$it.name/kotlin"
-    }
-
-    testOptions {
-        junitPlatform {
-            filters {
-                engines {
-                    include 'spek2'
-                }
-            }
-        }
-        unitTests.all {
-            testLogging.events = ["passed", "skipped", "failed"]
-        }
-    }
-
-    packagingOptions {
-        exclude('META-INF/androidx.*.version')
     }
 }
 
@@ -56,8 +24,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.kotlinExtensions)
     implementation project(rootProject.ext.features.otp)
     implementation project(rootProject.ext.libraries.track)
-    implementation project(rootProject.ext.libraries.imagePicker)
-    implementation project(rootProject.ext.libraries.remoteConfig)
+    implementation project(rootProject.ext.libraries.imagePickerCommon)
     implementation project(rootProject.ext.libraries.remoteResourceRequest)
 
     implementation rootProject.ext.tkpdInternalLibDependencies.url
@@ -69,63 +36,34 @@ dependencies {
 
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.components
+    implementation rootProject.ext.unifyDependencies.icons
     implementation rootProject.ext.unifyDependencies.global_error
     implementation rootProject.ext.unifyDependencies.icon
     implementation rootProject.ext.unifyDependencies.dialog
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
-    implementation rootProject.ext.miscDependencies.lottie
     implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
-    implementation rootProject.ext.miscDependencies.cameraView
-    implementation (rootProject.ext.miscDependencies.ucrop){
-        exclude group: 'com.android.support'
-    }
-    implementation rootProject.ext.dbDependencies.dbRoomRuntime
-    kapt rootProject.ext.dbDependencies.dbRoomCompiler
-    androidTestImplementation rootProject.ext.dbDependencies.dbRoomTesting
-    implementation rootProject.ext.miscDependencies.dagger
-    annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
+
     implementation rootProject.ext.debugToolsDependencies.chuck
-    implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk7
-    implementation rootProject.ext.miscDependencies.rxKotlin
-    implementation rootProject.ext.playServicesDependencies.core
+
+    implementation rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation
+    kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
     
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
 
-    testImplementation rootProject.ext.testDependencies.mockitorCore
 
-    androidTestImplementation rootProject.ext.testDependencies.androidRulesVersion
-    androidTestImplementation rootProject.ext.playServicesDependencies.core
-    androidTestImplementation rootProject.ext.firebase.core
-    androidTestImplementation project(rootProject.ext.libraries.core_legacy)
-    // For espresso test cases
-    androidTestImplementation(rootProject.ext.testDependencies.espressoCore, {
-        exclude group: 'com.android.support', module: 'support-annotations'
-    })
-    androidTestImplementation(project(rootProject.ext.libraries.instrumentation_test)) {
-        exclude group: 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
-        exclude group: 'org.jetbrains.kotlin:kotlin-reflect'
-        exclude group: 'org.jetbrains.kotlin:kotlin-stdlib-jdk7'
-    }
+    implementation rootProject.ext.miscDependencies.dagger
+    kapt rootProject.ext.miscDependencies.daggerCompiler
 
-    androidTestImplementation rootProject.ext.testDependencies.androidxTest
-    // For recycler view actions
-    androidTestImplementation(rootProject.ext.testDependencies.espressoContrib) {
-        exclude group: 'com.android.support', module: 'appcompat'
-        exclude group: 'com.android.support', module: 'support-v4'
-        exclude module: 'recyclerview-v7'
-    }
-    androidTestImplementation rootProject.ext.testDependencies.retrofitMockWebser
-    androidTestImplementation rootProject.ext.miscDependencies.dagger
-    kaptAndroidTest rootProject.ext.miscDependencies.daggerCompiler
-    testImplementation rootProject.ext.testDependencies.spek2Api
-    testImplementation rootProject.ext.testDependencies.spek2Dsl
-    implementation (rootProject.ext.testDependencies.espressoIdlingResource){
-        exclude group: 'androidx.lifecycle', module: 'lifecycle-common'
-    }
+    //test
+    testImplementation rootProject.ext.testDependencies.mockk
+    testImplementation rootProject.ext.testDependencies.archCoreTesting
+    testImplementation rootProject.ext.testDependencies.junit
+    testImplementation rootProject.ext.miscDependencies.coroutineTest
+    testImplementation rootProject.ext.miscDependencies.coroutineCore
 }
 
 project.ext {
@@ -136,3 +74,5 @@ project.ext {
 }
 
 apply from: '../../../publish_local.gradle'
+apply from: '../../../jacoco_task.gradle'
+apply from: '../../../sonar_config.gradle'

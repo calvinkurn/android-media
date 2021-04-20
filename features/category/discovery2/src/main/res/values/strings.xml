@@ -40,5 +40,28 @@
     <string name="empty_state_description">Aktifkan pengingat supaya kamu nggak ketinggalan penawaran seru dari seller-seller Tokopedia!</string>
     <string name="discovery_bottom_sheet_filter_finish_button_text">Tampilkan produk</string>
     <string name="cashback">Cashback</string>
-
+    <string name="ongoing_end_title">Yaah, Kejar Diskon ini udah selesai</string>
+    <string name="ongoing_end_description">Jangan sedih ya. Banyak produk dan promo menarik dapat kamu temukan di Kejar Diskon selanjutnya!</string>
+    <string name="ongoing_end_button">Lanjut Belanja</string>
+    <string name="content_desc_brand_recom_iv">image recom brand</string>
+    <string name="content_desc_promo_image">image promo carousel</string>
+    <string name="content_desc_appCompatImageViewDouble">image kupon</string>
+    <string name="content_desc_claim_btn">button klaim kupon</string>
+    <string name="content_desc_banner_image_view">image banner timer</string>
+    <string name="content_desc_title_tv">text title banner</string>
+    <string name="error_message">Ada yang salah. Silakan coba lagi</string>
+    <string name="discovery_default_search_title">Cari di Tokopedia</string>
+    <string name="discovery_tokopedia">Tokopedia</string>
+    <string name="discovery_page_name">discovery page</string>
+    <string name="discovery_filter_empty_state_title">Oops, barangnya nggak ketemu</string>
+    <string name="discovery_filter_empty_state_description">Coba kurangi filter yang sedang aktif, atau reset filter buat lanjutkan penjelajahanmu!</string>
+    <string name="discovery_filter_reset">Reset Filter</string>
+    <string name="discovery_msg_success_remove_wishlist">Sukses menghapus wishlist</string>
+    <string name="discovery_msg_success_add_wishlist">Sukses menambah wishlist</string>
+    <string name="discovery_msg_error_add_wishlist">Error menambah wishlist</string>
+    <string name="discovery_msg_error_remove_wishlist">Error menghapus wishlist</string>
+    <string name="discovery_top_to_bottom">Top to bottom</string>
+    <string name="discovery_top_chat_button_description">Top Chat</string>
+    <string name="choose_address_title">Bisa pilih alamat pengirimanmu dulu</string>
+    <string name="choose_address_description">Biar pengalaman belanjamu lebih asyik dan mudah.</string>
 </resources>

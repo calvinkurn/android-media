@@ -4,21 +4,24 @@ import android.app.Activity
 import androidx.lifecycle.MutableLiveData
 import com.google.android.gms.location.*
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.common.travel.utils.TravelDispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.hotel.R
+import com.tokopedia.hotel.destination.HotelDestinationQueries
 import com.tokopedia.hotel.destination.data.model.HotelSuggestion
 import com.tokopedia.hotel.destination.data.model.PopularSearch
 import com.tokopedia.hotel.destination.data.model.RecentSearch
 import com.tokopedia.hotel.destination.data.model.SearchDestination
+import com.tokopedia.hotel.destination.usecase.GetHotelRecentSearchUseCase
+import com.tokopedia.hotel.destination.usecase.GetPropertyPopularUseCase
 import com.tokopedia.hotel.destination.view.fragment.HotelRecommendationFragment
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.locationmanager.DeviceLocation
 import com.tokopedia.locationmanager.LocationDetectorHelper
-import com.tokopedia.permissionchecker.PermissionCheckerHelper
+import com.tokopedia.utils.permission.PermissionCheckerHelper
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -32,8 +35,10 @@ import javax.inject.Inject
 
 class HotelDestinationViewModel @Inject constructor(
         private val userSessionInterface: UserSessionInterface,
+        private val getPropertyPopularUseCase: GetPropertyPopularUseCase,
+        private val getHotelRecentSearchUseCase: GetHotelRecentSearchUseCase,
         val graphqlRepository: GraphqlRepository,
-        val dispatcher: TravelDispatcherProvider) : BaseViewModel(dispatcher.io()) {
+        val dispatcher: CoroutineDispatchers) : BaseViewModel(dispatcher.io) {
 
     private lateinit var permissionCheckerHelper: PermissionCheckerHelper
     val popularSearch = MutableLiveData<Result<List<PopularSearch>>>()
@@ -45,31 +50,17 @@ class HotelDestinationViewModel @Inject constructor(
     private lateinit var locationRequest: LocationRequest
     private lateinit var locationCallback: LocationCallback
 
-    fun getHotelRecommendation(popularRawQuery: String, recentSearchRawQuery: String) {
-
+    fun getHotelRecommendation() {
         launchCatchError(block = {
-            lateinit var gqlResponse: GraphqlResponse
-
-            val popularSearchRequest = GraphqlRequest(popularRawQuery, TYPE_POPULAR_RESPONSE, false)
+            val popularPropertyData = getPropertyPopularUseCase.executeOnBackground()
+            if (popularPropertyData.isNotEmpty()) popularSearch.postValue(Success(popularPropertyData))
 
             if (userSessionInterface.isLoggedIn) {
                 val params = mapOf(PARAM_USER_ID to userSessionInterface.userId.toInt())
-                val recentSearchRequest = GraphqlRequest(recentSearchRawQuery, RecentSearch.Response::class.java, params, false)
-                gqlResponse = graphqlRepository.getReseponse(listOf(popularSearchRequest, recentSearchRequest))
-
-                if (gqlResponse.getError(RecentSearch.Response::class.java)?.isNotEmpty() != true) {
-                    val result = (gqlResponse.getData(RecentSearch.Response::class.java) as RecentSearch.Response).recentSearch
-                    if (result.isNotEmpty()) recentSearch.postValue(Success(result))
-                }
-            } else {
-                gqlResponse = graphqlRepository.getReseponse(listOf(popularSearchRequest))
+                getHotelRecentSearchUseCase.params = params
+                val recentSearchData = getHotelRecentSearchUseCase.executeOnBackground()
+                if (recentSearchData.isNotEmpty()) recentSearch.postValue(Success(recentSearchData))
             }
-
-            if (gqlResponse.getError(PopularSearch.Response::class.java)?.isNotEmpty() != true) {
-                val result = (gqlResponse.getData(PopularSearch.Response::class.java) as PopularSearch.Response).popularSearchList
-                if (result.isNotEmpty()) popularSearch.postValue(Success(result))
-            }
-
         }) {
             popularSearch.postValue(Fail(it))
             recentSearch.postValue(Fail(it))
@@ -81,7 +72,7 @@ class HotelDestinationViewModel @Inject constructor(
         val dataParams = mapOf(PARAM_DATA to params)
         launchCatchError(block = {
             searchDestination.postValue(Shimmering)
-            val data = withContext(dispatcher.ui()) {
+            val data = withContext(dispatcher.main) {
                 val graphqlRequest = GraphqlRequest(rawQuery, TYPE_SEARCH_RESPONSE, dataParams)
                 graphqlRepository.getReseponse(listOf(graphqlRequest))
             }.getSuccessData<HotelSuggestion.Response>()
@@ -94,7 +85,7 @@ class HotelDestinationViewModel @Inject constructor(
     fun deleteRecentSearch(query: String, uuid: String) {
         val params = mapOf(PARAM_USER_ID to userSessionInterface.userId.toInt(), PARAM_DELETE_RECENT_UUID to uuid)
         launchCatchError(block = {
-            val data = withContext(dispatcher.ui()) {
+            val data = withContext(dispatcher.main) {
                 val graphqlRequest = GraphqlRequest(query, RecentSearch.DeleteResponse::class.java, params)
                 graphqlRepository.getReseponse(listOf(graphqlRequest))
             }.getSuccessData<RecentSearch.DeleteResponse>()
@@ -143,7 +134,6 @@ class HotelDestinationViewModel @Inject constructor(
                 if (!locationAvailability.isLocationAvailable) longLat.postValue(Fail(Throwable(HotelRecommendationFragment.GPS_FAILED_SHOW_ERROR)))
             }
         }
-
         fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, null)
     }
 
@@ -156,8 +146,6 @@ class HotelDestinationViewModel @Inject constructor(
 
     companion object {
         private const val LOCATION_REQUEST_INTERVAL: Long = 10 * 1000
-
-        private val TYPE_POPULAR_RESPONSE = PopularSearch.Response::class.java
         private val TYPE_SEARCH_RESPONSE = HotelSuggestion.Response::class.java
 
         const val PARAM_SEARCH_KEY = "searchKey"

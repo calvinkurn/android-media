@@ -33,19 +33,19 @@ import com.tokopedia.user.session.UserSession
 import javax.inject.Inject
 
 import com.tokopedia.tokopoints.view.util.*
-import com.tokopedia.tokopoints.view.util.CommonConstant.TAB_SETUP_DELAY_MS
+import com.tokopedia.tokopoints.view.util.CommonConstant.Companion.TAB_SETUP_DELAY_MS
 import kotlinx.android.synthetic.main.tp_activity_stacked_coupon_list.*
 
 class CouponListingStackedActivity : BaseSimpleActivity(), StackedCouponActivityContract.View, HasComponent<TokopointBundleComponent> {
     private val tokoPointComponent: TokopointBundleComponent by lazy { initInjector() }
     private var mTabsFilter: TabLayout? = null
     private var mAdapter: StackedCouponFilterPagerAdapter? = null
-    private var bundle : Bundle? = null
+    private var bundle: Bundle? = null
 
     @Inject
-    internal lateinit var factory : ViewModelFactory
+    internal lateinit var factory: ViewModelFactory
 
-    private val mPresenter: StackedCouponActivtyViewModel by lazy { ViewModelProviders.of(this,factory)[StackedCouponActivtyViewModel::class.java] }
+    private val mPresenter: StackedCouponActivtyViewModel by lazy { ViewModelProviders.of(this, factory)[StackedCouponActivtyViewModel::class.java] }
 
     override fun getToolbarResourceID(): Int {
         return R.id.toolbar_coupon_listing_tokopoint
@@ -57,9 +57,9 @@ class CouponListingStackedActivity : BaseSimpleActivity(), StackedCouponActivity
         val userSession = UserSession(this)
         updateTitle(getString(R.string.tp_label_my_coupon_new))
         component.inject(this)
-        server_error_view.setErrorButtonClickListener { view ->
+        server_error_view.setErrorButtonClickListener(View.OnClickListener {
             mPresenter.getFilter()
-        }
+        })
         initViews()
         addObserver()
         if (!userSession.isLoggedIn) {
@@ -68,6 +68,7 @@ class CouponListingStackedActivity : BaseSimpleActivity(), StackedCouponActivity
             mPresenter.getFilter()
         }
     }
+
     private fun forDeeplink() {
         bundle = intent.extras
         if (intent.data != null) {
@@ -78,9 +79,9 @@ class CouponListingStackedActivity : BaseSimpleActivity(), StackedCouponActivity
     private fun addObserver() {
         mPresenter.couponFilterViewModel.observe(this, Observer {
             it.let {
-                when(it){
+                when (it) {
                     is Loading -> showLoading()
-                    is ErrorMessage -> onError(it.data,NetworkDetector.isConnectedToInternet(this@CouponListingStackedActivity))
+                    is ErrorMessage -> onError(it.data, NetworkDetector.isConnectedToInternet(this@CouponListingStackedActivity))
                     is Success -> {
                         hideLoading()
                         onSuccess(it.data.filter.categories)
@@ -102,12 +103,12 @@ class CouponListingStackedActivity : BaseSimpleActivity(), StackedCouponActivity
         return tokoPointComponent
     }
 
-    private  fun initInjector()  =
-        DaggerTokopointBundleComponent.builder()
-                .bundleModule(BundleModule( bundle ?: Bundle()))
-                .baseAppComponent((application as BaseMainApplication).baseAppComponent)
-                .tokopointsQueryModule(TokopointsQueryModule(this))
-                .build()
+    private fun initInjector() =
+            DaggerTokopointBundleComponent.builder()
+                    .bundleModule(BundleModule(bundle ?: Bundle()))
+                    .baseAppComponent((application as BaseMainApplication).baseAppComponent)
+                    .tokopointsQueryModule(TokopointsQueryModule(this))
+                    .build()
 
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -148,16 +149,16 @@ class CouponListingStackedActivity : BaseSimpleActivity(), StackedCouponActivity
                     val fragment = mAdapter?.getRegisteredFragment(position) as CouponListingStackedFragment?
 
                     fragment?.apply {
-                        if(isAdded ){
+                        if (isAdded) {
                             presenter.getCoupons(data[position].id)
                         }
                     }
-                        AnalyticsTrackerUtil.sendEvent(activityContext,
-                                AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
-                                AnalyticsTrackerUtil.CategoryKeys.KUPON_MILIK_SAYA,
-                                "click " + data[position],
-                                "")
-                    }
+                    AnalyticsTrackerUtil.sendEvent(activityContext,
+                            AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
+                            AnalyticsTrackerUtil.CategoryKeys.KUPON_MILIK_SAYA,
+                            "click " + data[position],
+                            "")
+                }
 
 
                 override fun onPageScrollStateChanged(state: Int) {
@@ -168,7 +169,9 @@ class CouponListingStackedActivity : BaseSimpleActivity(), StackedCouponActivity
             postDelayed({
                 val ids = getSelectedCategoryId(data)
                 currentItem = ids[1]
-                loadFirstTab(ids[0])
+                if (ids[0] == FIRST_TAB_NUM) {
+                    loadFirstTab(ids[0])
+                }
             }, TAB_SETUP_DELAY_MS.toLong())
         }
         //Setting up sort types tabsK
@@ -199,7 +202,7 @@ class CouponListingStackedActivity : BaseSimpleActivity(), StackedCouponActivity
     fun loadFirstTab(categoryId: Int) {
         val fragment = mAdapter?.getRegisteredFragment(view_pager_sort_type.currentItem) as CouponListingStackedFragment?
         fragment?.apply {
-            if(isAdded ){
+            if (isAdded) {
                 presenter.getCoupons(categoryId)
             }
         }
@@ -223,6 +226,7 @@ class CouponListingStackedActivity : BaseSimpleActivity(), StackedCouponActivity
 
     companion object {
         private val REQUEST_CODE_LOGIN = 1
+        private const val FIRST_TAB_NUM = -1
 
         fun getCallingIntent(context: Context, extras: Bundle): Intent {
             val intent = Intent(context, CouponListingStackedActivity::class.java)

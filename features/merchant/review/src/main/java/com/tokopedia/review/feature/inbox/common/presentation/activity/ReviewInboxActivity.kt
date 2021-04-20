@@ -11,26 +11,28 @@ import com.tokopedia.review.common.analytics.ReviewPerformanceMonitoringListener
 import com.tokopedia.review.common.util.ReviewConstants
 import com.tokopedia.review.feature.inbox.common.ReviewInboxConstants
 import com.tokopedia.review.feature.inbox.container.presentation.fragment.ReviewInboxContainerFragment
-import com.tokopedia.tkpd.tkpdreputation.createreputation.ui.activity.CreateReviewActivityOld
 
 class ReviewInboxActivity : BaseSimpleActivity(), ReviewPerformanceMonitoringListener {
 
     companion object {
-        const val GO_TO_REPUTATION_HISTORY = "GO_TO_REPUTATION_HISTORY"
-        fun createNewInstance(context: Context): Intent {
-            return Intent(context, ReviewInboxActivity::class.java)
+        fun createNewInstance(context: Context, tab: String?, source: String?): Intent {
+            val intent = Intent(context, ReviewInboxActivity::class.java)
+            intent.putExtra(ReviewInboxConstants.PARAM_TAB, tab ?: "")
+            intent.putExtra(ReviewInboxConstants.PARAM_SOURCE, source ?: ReviewInboxConstants.DEFAULT_SOURCE)
+            return intent
         }
     }
 
     private var reviewInboxContainerFragment: ReviewInboxContainerFragment? = null
     private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
+    private var tab: String = ""
+    private var source: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        val goToReputationHistory = getArgumentsFromApplink() ?: false
-        reviewInboxContainerFragment = ReviewInboxContainerFragment.createNewInstance(goToReputationHistory)
+        getArgumentsFromApplink()
+        reviewInboxContainerFragment = ReviewInboxContainerFragment.createNewInstance(tab, source)
         super.onCreate(savedInstanceState)
         startPerformanceMonitoring()
-        setUpToolBar()
     }
 
     override fun getNewFragment(): Fragment? {
@@ -100,12 +102,9 @@ class ReviewInboxActivity : BaseSimpleActivity(), ReviewPerformanceMonitoringLis
         }
     }
 
-    private fun setUpToolBar() {
-        supportActionBar?.elevation = ReviewInboxConstants.NO_SHADOW_ELEVATION
-    }
-
-    private fun getArgumentsFromApplink(): Boolean? {
-        return intent?.getBooleanExtra(GO_TO_REPUTATION_HISTORY, false)
+    private fun getArgumentsFromApplink() {
+        tab = intent?.getStringExtra(ReviewInboxConstants.PARAM_TAB) ?: ""
+        source = intent?.getStringExtra(ReviewInboxConstants.PARAM_SOURCE) ?: ReviewInboxConstants.DEFAULT_SOURCE
     }
 
 }

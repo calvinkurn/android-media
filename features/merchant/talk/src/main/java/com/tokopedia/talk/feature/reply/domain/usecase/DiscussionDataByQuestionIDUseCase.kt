@@ -1,5 +1,6 @@
 package com.tokopedia.talk.feature.reply.domain.usecase
 
+import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.talk.feature.reply.data.model.discussion.DiscussionDataByQuestionIDResponseWrapper
@@ -12,18 +13,22 @@ class DiscussionDataByQuestionIDUseCase @Inject constructor(graphqlRepository: G
 
         const val PARAM_QUESTION_ID = "questionID"
         const val PARAM_SHOP_ID = "shopID"
-
-        private val query by lazy {
-            val questionID = "\$questionID"
-            val shopID = "\$shopID"
+        private const val TALK_DISCUSSION_DATA_BY_QUESTION_ID_QUERY_CLASS_NAME = "TalkDiscussionDataByQuestionId"
+        private const val query =
             """
-                query discussionDataByQuestionID($questionID: String!, $shopID: String) {
-                  discussionDataByQuestionID(questionID: $questionID, shopID: $shopID) {
+                query discussionDataByQuestionID(${'$'}questionID: String!, ${'$'}shopID: String) {
+                  discussionDataByQuestionID(questionID: ${'$'}questionID, shopID: ${'$'}shopID) {
+                    shopID
+                    shopURL
                     productName
                     productID
                     thumbnail
+                    isSellerView
                     url
                     maxAnswerLength
+                    productStock
+                    productStockMessage
+                    isSellerView
                     question {
                       questionID
                       content
@@ -63,6 +68,7 @@ class DiscussionDataByQuestionIDUseCase @Inject constructor(graphqlRepository: G
                           allowReport
                           allowDelete
                           isYours
+                          isAutoReplied
                         }
                         attachedProductCount
                         attachedProduct {
@@ -76,12 +82,16 @@ class DiscussionDataByQuestionIDUseCase @Inject constructor(graphqlRepository: G
                     }
                   }
                 }
-            """.trimIndent()
-        }
+            """
     }
 
     init {
-        setGraphqlQuery(query)
+        setupUseCase()
+    }
+
+    @GqlQuery(TALK_DISCUSSION_DATA_BY_QUESTION_ID_QUERY_CLASS_NAME, query)
+    private fun setupUseCase() {
+        setGraphqlQuery(TalkDiscussionDataByQuestionId.GQL_QUERY)
         setTypeClass(DiscussionDataByQuestionIDResponseWrapper::class.java)
     }
 

@@ -20,8 +20,7 @@ open class ProductAttachmentViewModel : SendableViewModel,
     override var isError: Boolean = false
     override val id: String get() = attachmentId
 
-    var isLoadingOcc: Boolean = false
-    var productId: Int = 0
+    var productId: String = "0"
         private set
     var productName: String = ""
         private set
@@ -35,9 +34,9 @@ open class ProductAttachmentViewModel : SendableViewModel,
         private set
     var canShowFooter: Boolean = false
         private set
-    var blastId: Int = 0
+    var blastId: Long = 0
         private set
-    var priceInt: Int = 0
+    var priceInt: Long = 0
         private set
     var category: String = ""
         private set
@@ -45,10 +44,10 @@ open class ProductAttachmentViewModel : SendableViewModel,
         private set
     var priceBefore: String = ""
         private set
-    var shopId: Int = 0
+    var shopId: Long = 0
     var freeShipping: FreeShipping = FreeShipping()
     var playStoreData: PlayStoreData = PlayStoreData()
-    var categoryId: Int = 0
+    var categoryId: Long = 0
     var minOrder: Int = 1
     var variants: List<AttachmentVariant> = emptyList()
     var colorVariantId: String = ""
@@ -74,7 +73,7 @@ open class ProductAttachmentViewModel : SendableViewModel,
             return priceBefore.isNotEmpty() && dropPercentage.isNotEmpty()
         }
     val stringBlastId: String get() = blastId.toString()
-    var campaignId: Int = 0
+    var campaignId: Long = 0
 
     override fun updateData(attribute: Any?) {
         if (attribute is ProductAttachmentAttributes) {
@@ -146,11 +145,11 @@ open class ProductAttachmentViewModel : SendableViewModel,
     constructor(
             messageId: String, fromUid: String, from: String, fromRole: String,
             attachmentId: String, attachmentType: String, replyTime: String, isRead: Boolean,
-            productId: Int, productName: String, productPrice: String, productUrl: String,
+            productId: String, productName: String, productPrice: String, productUrl: String,
             productImage: String, isSender: Boolean, message: String, canShowFooter: Boolean,
-            blastId: Int, productPriceInt: Int, category: String, variants: List<AttachmentVariant>,
-            dropPercentage: String, priceBefore: String, shopId: Int, freeShipping: FreeShipping,
-            categoryId: Int, playStoreData: PlayStoreData, minOrder: Int, remainingStock: Int,
+            blastId: Long, productPriceInt: Long, category: String, variants: List<AttachmentVariant>,
+            dropPercentage: String, priceBefore: String, shopId: Long, freeShipping: FreeShipping,
+            categoryId: Long, playStoreData: PlayStoreData, minOrder: Int, remainingStock: Int,
             status: Int, wishList: Boolean, images: List<String>, source: String,
             rating: TopchatProductRating, replyId: String
     ) : super(
@@ -217,12 +216,12 @@ open class ProductAttachmentViewModel : SendableViewModel,
      */
     constructor(
             messageId: String, fromUid: String, from: String, fromRole: String,
-            attachmentId: String, attachmentType: String, replyTime: String, productId: Int,
+            attachmentId: String, attachmentType: String, replyTime: String, productId: String,
             productName: String, productPrice: String, productUrl: String, productImage: String,
             isSender: Boolean, message: String, startTime: String, canShowFooter: Boolean,
-            blastId: Int, productPriceInt: Int, category: String, variants: List<AttachmentVariant>,
-            dropPercentage: String, priceBefore: String, shopId: Int, freeShipping: FreeShipping,
-            categoryId: Int, playStoreData: PlayStoreData, remainingStock: Int, status: Int,
+            blastId: Long, productPriceInt: Long, category: String, variants: List<AttachmentVariant>,
+            dropPercentage: String, priceBefore: String, shopId: Long, freeShipping: FreeShipping,
+            categoryId: Long, playStoreData: PlayStoreData, remainingStock: Int, status: Int,
             source: String, rating: TopchatProductRating
     ) : super(
             messageId, fromUid, from, fromRole,
@@ -281,9 +280,9 @@ open class ProductAttachmentViewModel : SendableViewModel,
      * @param startTime    send time to validate dummy mesages.
      */
     constructor(
-            loginID: String, productId: Int, productName: String, productPrice: String,
+            loginID: String, productId: String, productName: String, productPrice: String,
             productUrl: String, productImage: String, startTime: String, canShowFooter: Boolean,
-            shopId: Int
+            shopId: Long
     ) : super(
             "", loginID, "", "",
             "", AttachmentType.Companion.TYPE_PRODUCT_ATTACHMENT, SENDING_TEXT, startTime,
@@ -314,9 +313,9 @@ open class ProductAttachmentViewModel : SendableViewModel,
 
     fun getAtcEventLabel(): String {
         val atcEventLabel = when {
-            blastId == 0 -> "chat"
-            blastId == -1 -> "drop price alert"
-            blastId == -2 -> "limited stock"
+            blastId == 0L -> "chat"
+            blastId == -1L -> "drop price alert"
+            blastId == -2L -> "limited stock"
             blastId > 0 -> "broadcast"
             else -> "chat"
         }
@@ -389,7 +388,7 @@ open class ProductAttachmentViewModel : SendableViewModel,
     }
 
     fun fromBroadcast(): Boolean {
-        return blastId != 0
+        return blastId != 0L
     }
 
     fun isEligibleOcc(): Boolean {
@@ -397,7 +396,7 @@ open class ProductAttachmentViewModel : SendableViewModel,
     }
 
     fun isFlashSaleProduct(): Boolean {
-        return campaignId == -10000
+        return campaignId == -10000L
     }
 
     companion object {

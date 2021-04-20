@@ -1,6 +1,5 @@
 package com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data
 
-import android.text.TextUtils
 import java.util.*
 
 /**
@@ -174,6 +173,10 @@ class EnhancedECommerceProductCartMapData {
         Product[KEY_DIMENSION_77] = if (!cartId.isNullOrBlank()) cartId else ""
     }
 
+    fun setCampaignId(campaignId: String) {
+        Product[KEY_CAMPAIGN_ID] = campaignId
+    }
+
     companion object {
         const val SHOP_TYPE_REGULER = "reguler"
         const val SHOP_TYPE_OFFICIAL_STORE = "official_store"
@@ -218,8 +221,10 @@ class EnhancedECommerceProductCartMapData {
         private const val KEY_IS_FULFILLMENT = "dimension58"
         private const val KEY_PICTURE = "picture"
         private const val KEY_URL = "url"
+        private const val KEY_CAMPAIGN_ID = "dimension104"
         const val DEFAULT_VALUE_NONE_OTHER = "none/other"
         const val VALUE_BEBAS_ONGKIR = "bebas ongkir"
+        const val VALUE_BEBAS_ONGKIR_EXTRA = "bebas ongkir extra"
         const val RECOMMENDATION_ATTRIBUTION = "recommendation"
     }
 }

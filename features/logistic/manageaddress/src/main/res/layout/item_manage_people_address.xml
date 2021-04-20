@@ -1,45 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.tokopedia.unifycomponents.CardUnify xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/card_address"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginLeft="@dimen/dp_16"
+    android:layout_marginStart="@dimen/dp_16"
+    android:layout_marginEnd="@dimen/dp_16"
     android:orientation="vertical"
-    android:layout_marginRight="@dimen/dp_16"
     app:cardCornerRadius="@dimen/dp_4">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/dp_16">
 
-        <ImageView
+        <com.tokopedia.iconunify.IconUnify
             android:id="@+id/img_location_state"
-            android:layout_width="@dimen/dp_14"
-            android:layout_height="@dimen/dp_20"
+            android:layout_width="@dimen/dp_24"
+            android:layout_height="@dimen/dp_24"
             android:layout_marginStart="@dimen/dp_18"
-            android:layout_marginLeft="@dimen/dp_18"
             android:layout_marginTop="@dimen/dp_12"
             android:layout_marginBottom="@dimen/dp_18"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tokopedia_note"
-            app:srcCompat="@drawable/ic_pinpoint_green"
             tools:ignore="ContentDescription" />
+
+        <ImageView
+            android:id="@+id/view_indicator_vert"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:srcCompat="@drawable/ic_mark_ico"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginTop="@dimen/dp_12"
+            tools:ignore="ContentDescription"/>
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/address_name"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_16"
-            android:layout_marginLeft="@dimen/dp_16"
-            android:layout_marginTop="@dimen/dp_12"
             android:ellipsize="end"
             android:singleLine="true"
-            android:text="@string/address_name"
-            android:textColor="@color/Neutral_N700_96"
+            android:text="daps djpasjd apj a daspjd"
+            android:textColor="@color/Unify_N700_96"
             android:textSize="@dimen/sp_16"
+            app:layout_constraintEnd_toStartOf="@id/lbl_main_address"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintHorizontal_chainStyle="packed"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toTopOf="@id/view_indicator_vert"
+            app:layout_constraintBottom_toBottomOf="@id/view_indicator_vert"
+            app:layout_constraintWidth_default="wrap"
             app:typographyType="heading_6" />
 
         <com.tokopedia.unifycomponents.Label
@@ -47,27 +60,16 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_8"
-            android:layout_marginLeft="@dimen/dp_8"
-            android:layout_marginEnd="@dimen/dp_16"
-            android:layout_marginRight="@dimen/dp_16"
-            android:text="@string/address_label"
-            android:visibility="gone"
+            android:layout_marginEnd="@dimen/dp_4"
+            android:text="@string/address_label_new"
+            android:visibility="visible"
             app:labelType="general_light_grey"
-            app:layout_constraintTop_toTopOf="@id/address_name"
-            app:layout_constraintBottom_toBottomOf="@id/address_name"
+            app:layout_constraintBaseline_toBaselineOf="@id/address_name"
             app:layout_constraintHorizontal_bias="0"
-            app:layout_constraintStart_toEndOf="@+id/address_name" />
-
-        <ImageView
-            android:id="@+id/label_lainnya"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/dp_16"
-            android:layout_marginRight="@dimen/dp_16"
-            app:srcCompat="@drawable/ic_kebab"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/address_name"
             app:layout_constraintTop_toTopOf="@id/address_name"
-            />
+            app:layout_constraintBottom_toBottomOf="@+id/address_name"
+            app:layout_constraintEnd_toEndOf="parent"/>
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/receiver_name"
@@ -76,10 +78,8 @@
             android:layout_marginStart="@dimen/dp_16"
             android:layout_marginLeft="@dimen/dp_16"
             android:layout_marginTop="@dimen/dp_8"
-            android:layout_marginEnd="@dimen/dp_16"
-            android:layout_marginRight="@dimen/dp_16"
             android:text="@string/receiver_name"
-            android:textColor="@color/Neutral_N700_96"
+            android:textColor="@color/Unify_N700_96"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/address_name"
@@ -92,10 +92,8 @@
             android:layout_marginStart="@dimen/dp_16"
             android:layout_marginLeft="@dimen/dp_16"
             android:layout_marginTop="@dimen/dp_4"
-            android:layout_marginEnd="@dimen/dp_16"
-            android:layout_marginRight="@dimen/dp_16"
             android:text="@string/receiver_number"
-            android:textColor="@color/Neutral_N700_96"
+            android:textColor="@color/Unify_N700_96"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/receiver_name"
@@ -106,13 +104,11 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_16"
-            android:layout_marginLeft="@dimen/dp_16"
-            android:layout_marginTop="@dimen/dp_4"
             android:layout_marginEnd="@dimen/dp_16"
-            android:layout_marginRight="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_4"
             android:layout_marginBottom="@dimen/dp_6"
             android:text="@string/address_detail"
-            android:textColor="@color/Neutral_N700_96"
+            android:textColor="@color/Unify_N700_96"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/receiver_phone"
@@ -123,14 +119,12 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_16"
-            android:layout_marginLeft="@dimen/dp_16"
-            android:layout_marginTop="@dimen/dp_4"
             android:layout_marginEnd="@dimen/dp_16"
-            android:layout_marginRight="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_4"
             android:layout_marginBottom="@dimen/dp_6"
             android:text="@string/tokopedia_note"
             android:visibility="gone"
-            android:textColor="@color/Neutral_N700_96"
+            android:textColor="@color/Unify_N700_96"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/address_detail"
@@ -141,31 +135,45 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_4"
-            android:layout_marginLeft="@dimen/dp_4"
             android:gravity="center_vertical"
-            android:textColor="@color/Neutral_N700_96"
+            android:textColor="@color/Unify_N700_96"
             app:layout_constraintBottom_toBottomOf="@+id/img_location_state"
             app:layout_constraintStart_toEndOf="@+id/img_location_state"
             app:typographyType="body_3"
             app:typographyWeight="bold"
             tools:text="Sudah Pin Point" />
 
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/action_edit"
-            android:background="@drawable/bg_button_ubah"
-            android:layout_width="match_parent"
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/btn_primary"
+            android:layout_width="@dimen/dp_0"
             android:layout_height="wrap_content"
-            android:paddingTop="@dimen/dp_8"
-            android:paddingBottom="@dimen/dp_8"
-            android:layout_margin="@dimen/dp_16"
-            android:text="Ubah Alamat"
+            android:text="@string/ubah_alamat"
             android:textAlignment="center"
-            android:textColor="@color/Neutral_N700_68"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_pinpoint_state"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/btn_secondary"
+            app:unifyButtonType="alternate"
+            app:unifyButtonSize="medium"
+            app:unifyButtonVariant="ghost"
+            android:paddingTop="@dimen/dp_8"
+            android:paddingBottom="@dimen/dp_8"
+            android:layout_marginStart="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_16"
+            android:layout_marginBottom="@dimen/dp_16"/>
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/btn_secondary"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dp_40"
+            android:layout_marginStart="@dimen/dp_10"
+            app:layout_constraintStart_toEndOf="@id/btn_primary"
             app:layout_constraintEnd_toEndOf="parent"
-            android:gravity="center_horizontal" />
+            app:layout_constraintTop_toTopOf="@id/btn_primary"
+            app:layout_constraintBottom_toBottomOf="@id/btn_primary"
+            app:unifyButtonType="alternate"
+            app:unifyButtonVariant="ghost"
+            app:unifyButtonSize="medium"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

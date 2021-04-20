@@ -1,4 +1,4 @@
-package com.tokopedia.digital.home.model
+package com.tokopedia.digital.home.old.model
 
 import android.os.Parcelable
 import com.google.gson.annotations.Expose

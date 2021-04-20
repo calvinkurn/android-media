@@ -2,19 +2,20 @@ package com.tokopedia.entertainment.pdp.data
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.entertainment.pdp.adapter.EventPDPFormAdapter.Companion.EMPTY_TYPE
 import com.tokopedia.entertainment.pdp.adapter.factory.PackageTypeFactory
 import java.io.Serializable
 
-data class EventProductDetailEntity (
+data class EventProductDetailEntity(
         @SerializedName("event_product_detail_v3")
         @Expose
-        val eventProductDetail : EventProductDetail = EventProductDetail()
+        val eventProductDetail: EventProductDetail = EventProductDetail()
 )
 
 data class EventProductDetail(
         @SerializedName("productDetailData")
         @Expose
-        val productDetailData : ProductDetailData = ProductDetailData()
+        val productDetailData: ProductDetailData = ProductDetailData()
 )
 
 data class ProductDetailData(
@@ -408,6 +409,9 @@ data class Form(
         @SerializedName("element_type")
         @Expose
         val elementType: String = "",
+        @SerializedName("options")
+        @Expose
+        val options: String = "",
         @SerializedName("error_message")
         @Expose
         val errorMessage: String = "",
@@ -440,8 +444,12 @@ data class Form(
         val validatorRegex: String = "",
         @SerializedName("value")
         @Expose
-        var value: String = ""
-): Serializable
+        var value: String = "",
+        var valuePosition: String = "",
+        var valueList: String = "",
+        var isError: Boolean = false,
+        var errorType: Int = EMPTY_TYPE
+) : Serializable
 
 data class Group(
         @SerializedName("created_at")
@@ -803,12 +811,16 @@ data class PackageV3(
         val endDate: String = "",
         @SerializedName("package_items")
         @Expose
-        val packageItems: List<PackageItem> = emptyList()
-): EventPDPTicketModel(){
+        val packageItems: List<PackageItem> = emptyList(),
+        @SerializedName("forms_package")
+        @Expose
+        val formsPackages: List<Form> = emptyList(),
+        var isRecommendationPackage: Boolean = false
+) : EventPDPTicketModel() {
 
-        override fun type(typeFactory: PackageTypeFactory): Int {
-                return typeFactory.type(this)
-        }
+    override fun type(typeFactory: PackageTypeFactory): Int {
+        return typeFactory.type(this)
+    }
 }
 
 data class PackageItem(
@@ -872,6 +884,9 @@ data class PackageItem(
         @SerializedName("provider_custom_text")
         @Expose
         val providerCustomText: String = "",
+        @SerializedName("forms_item")
+        @Expose
+        val formsItems: List<Form> = emptyList(),
         var isClicked: Boolean = false
 
 )

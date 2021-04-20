@@ -59,13 +59,14 @@
         app:typographyType="body_3"
         tools:text="800" />
 
-    <ImageButton
+    <com.tokopedia.unifycomponents.UnifyImageButton
         android:id="@+id/btnNxt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/dp_16"
         android:background="@color/transparent"
         android:gravity="center_vertical"
+        app:unifyImageButtonVariant="image"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"

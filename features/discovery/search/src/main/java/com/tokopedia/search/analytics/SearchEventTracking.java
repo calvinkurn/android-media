@@ -14,6 +14,7 @@ public interface SearchEventTracking {
         String PROMO_CLICK = "promoClick";
         String PRODUCT_VIEW = "productView";
         String PRODUCT_CLICK = "productClick";
+        String CREATIVE = "creative";
     }
 
     interface Category {
@@ -66,20 +67,26 @@ public interface SearchEventTracking {
         String IMPRESSION_INSPIRATION_CAROUSEL_INFO_PRODUCT = "impression - carousel banner";
         String CLICK_INSPIRATION_CAROUSEL_SEARCH = "click - inspiration carousel search";
         String CLICK_INSPIRATION_CAROUSEL_PRODUCT = "click - inspiration carousel product";
-        String CLICK_INSPIRATION_CAROUSEL_INFO_PRODUCT = "click - carousel banner";
+        String CLICK_INSPIRATION_CAROUSEL_GRID_BANNER = "click lihat sekarang - carousel banner";
         String CLICK = "click";
         String CLICK_FUZZY_KEYWORDS_SUGGESTION = "click - fuzzy keywords - suggestion";
         String IMPRESSION_BROAD_MATCH = "impression - broad match";
         String CLICK_BROAD_MATCH_LIHAT_SEMUA = "click - broad match lihat semua";
         String CLICK_BROAD_MATCH = "click - broad match";
         String CLICK_INSPIRATION_CARD = "click inspiration card";
+        String CLICK_ADD_TO_CART_ON_PRODUCT_OPTIONS = "click add to cart on product options";
+        String CLICK_SHARE_PRODUCT_OPTIONS = "click - share - product options";
+        String IMPRESSION_INSPIRATION_CAROUSEL_CHIPS_PRODUCT = "impression - inspiration carousel chips product";
+        String CLICK_INSPIRATION_CAROUSEL_CHIPS_PRODUCT = "click - inspiration carousel chips product";
+        String CLICK_INSPIRATION_CAROUSEL_CHIPS_LIHAT_SEMUA = "click - inspiration carousel chips lihat semua";
+        String CLICK_INSPIRATION_CAROUSEL_CHIPS_VARIANT = "click - inspiration carousel chips variant";
     }
 
     interface Label {
         String KEYWORD_PRODUCT_ID = "Keyword: %s - product id: %s";
         String TOPADS = "topads";
         String GENERAL = "general";
-        String KEYWORD_TREATMENT_RESPONSE = "keyword: %s - treatment: %s - response: %s";
+        String GENERAL_SEARCH_EVENT_LABEL = "%s|%s|%s|%s|%s|%s|%s";
     }
 
     interface MOENGAGE {
@@ -93,5 +100,19 @@ public interface SearchEventTracking {
         String SEARCH_ATTEMPT = "Search_Attempt";
     }
 
+    interface ECommerce {
+        String CURRENCY_CODE = "currencyCode";
+        String IDR = "IDR";
+        String ADD = "add";
+        String ACTION_FIELD = "actionField";
+        String PRODUCTS = "products";
+    }
+
+    String CURRENT_SITE = "currentSite";
+    String TOKOPEDIA_MARKETPLACE = "tokopediamarketplace";
+    String BUSINESS_UNIT = "businessUnit";
+    String SEARCH = "search";
+
     String NONE = "none";
+    String OTHER = "other";
 }

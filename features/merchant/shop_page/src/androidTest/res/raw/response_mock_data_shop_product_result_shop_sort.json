@@ -1,0 +1,49 @@
+[{
+  "data": {
+    "shopSort": {
+      "data": {
+        "sort": [{
+          "name": "Paling Sesuai",
+          "key": "order_by",
+          "value": "23",
+          "input_type": "checkbox"
+        }, {
+          "name": "Terbaru",
+          "key": "order_by",
+          "value": "2",
+          "input_type": "checkbox"
+        }, {
+          "name": "Harga Tertinggi",
+          "key": "order_by",
+          "value": "10",
+          "input_type": "checkbox"
+        }, {
+          "name": "Harga Terendah",
+          "key": "order_by",
+          "value": "9",
+          "input_type": "checkbox"
+        }, {
+          "name": "Ulasan Terbanyak",
+          "key": "order_by",
+          "value": "11",
+          "input_type": "checkbox"
+        }, {
+          "name": "Pembelian Terbanyak",
+          "key": "order_by",
+          "value": "8",
+          "input_type": "checkbox"
+        }, {
+          "name": "Dilihat Terbanyak",
+          "key": "order_by",
+          "value": "5",
+          "input_type": "checkbox"
+        }, {
+          "name": "Pembaruan Terakhir",
+          "key": "order_by",
+          "value": "3",
+          "input_type": "checkbox"
+        }]
+      }
+    }
+  }
+}]

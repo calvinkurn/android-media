@@ -1,10 +1,12 @@
 package com.tokopedia.checkout.data.model.response.shipment_address_form;
 
+import android.annotation.SuppressLint;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.tokopedia.purchase_platform.common.feature.tickerannouncement.Ticker;
 import com.tokopedia.checkout.data.model.response.egold.EgoldAttributes;
 import com.tokopedia.purchase_platform.common.feature.promo.domain.model.PromoSAFResponse;
+import com.tokopedia.purchase_platform.common.feature.tickerannouncement.Ticker;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,9 +22,6 @@ public class ShipmentAddressFormDataResponse {
     @SerializedName("error_code")
     @Expose
     private int errorCode;
-    @SerializedName("is_multiple")
-    @Expose
-    private int isMultiple;
     @SerializedName("group_address")
     @Expose
     private List<GroupAddress> groupAddress = new ArrayList<>();
@@ -44,9 +43,7 @@ public class ShipmentAddressFormDataResponse {
     @SerializedName("message")
     @Expose
     private Message message;
-    @SerializedName("is_robinhood")
-    @Expose
-    private int isRobinhood;
+    @SuppressLint("Invalid Data Type")
     @SerializedName("is_hide_courier_name")
     @Expose
     private boolean isHidingCourier;
@@ -89,6 +86,9 @@ public class ShipmentAddressFormDataResponse {
     @SerializedName("eligible_new_shipping_experience")
     @Expose
     private boolean eligibleNewShippingExperience;
+    @SerializedName("pop_up_message")
+    @Expose
+    private String popUpMessage = "";
 
     public List<String> getErrors() {
         return errors;
@@ -96,10 +96,6 @@ public class ShipmentAddressFormDataResponse {
 
     public int getErrorCode() {
         return errorCode;
-    }
-
-    public int getIsMultiple() {
-        return isMultiple;
     }
 
     public List<GroupAddress> getGroupAddress() {
@@ -128,10 +124,6 @@ public class ShipmentAddressFormDataResponse {
 
     public Message getMessage() {
         return message;
-    }
-
-    public int getIsRobinhood() {
-        return isRobinhood;
     }
 
     public boolean getHideCourier() {
@@ -188,4 +180,7 @@ public class ShipmentAddressFormDataResponse {
         return eligibleNewShippingExperience;
     }
 
+    public String getPopUpMessage() {
+        return popUpMessage;
+    }
 }

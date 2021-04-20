@@ -9,34 +9,34 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import android.widget.Button
-import android.widget.EditText
 import android.widget.SeekBar
 import android.widget.TextView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst
-import com.tokopedia.design.text.watcher.NumberTextWatcher
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.topads.auto.R
-import com.tokopedia.topads.auto.data.network.param.AutoAdsParam
 import com.tokopedia.topads.auto.data.network.response.EstimationResponse
-import com.tokopedia.topads.auto.data.network.response.TopadsBidInfo
 import com.tokopedia.topads.auto.di.AutoAdsComponent
 import com.tokopedia.topads.auto.view.factory.DailyBudgetViewModelFactory
 import com.tokopedia.topads.auto.view.viewmodel.DailyBudgetViewModel
 import com.tokopedia.topads.auto.view.widget.Range
 import com.tokopedia.topads.auto.view.widget.RangeSeekBar
-import com.tokopedia.topads.common.activity.NoCreditActivity
-import com.tokopedia.topads.common.activity.SuccessActivity
+import com.tokopedia.topads.common.constant.TopAdsCommonConstant
 import com.tokopedia.topads.common.data.internal.AutoAdsStatus
-import com.tokopedia.topads.common.getSellerMigrationFeatureName
-import com.tokopedia.topads.common.getSellerMigrationRedirectionApplinks
-import com.tokopedia.topads.common.isFromPdpSellerMigration
+import com.tokopedia.topads.common.data.model.AutoAdsParam
+import com.tokopedia.topads.common.data.response.ResponseBidInfo
+import com.tokopedia.topads.common.data.util.Utils.convertToCurrency
+import com.tokopedia.topads.common.data.util.Utils.removeCommaRawString
+import com.tokopedia.topads.common.view.sheet.TopAdsOutofCreditSheet
+import com.tokopedia.topads.common.view.sheet.TopAdsSuccessSheet
 import com.tokopedia.unifycomponents.LoaderUnify
+import com.tokopedia.unifycomponents.TextFieldUnify
+import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify
 import com.tokopedia.user.session.UserSessionInterface
-import java.text.NumberFormat
-import java.util.*
+import com.tokopedia.utils.text.currency.NumberTextWatcher
 import javax.inject.Inject
 
 /**
@@ -45,19 +45,19 @@ import javax.inject.Inject
 abstract class AutoAdsBaseBudgetFragment : BaseDaggerFragment() {
     lateinit var seekBar: RangeSeekBar
     lateinit var priceRange: TextView
-    lateinit var iklakanButton: Button
-    lateinit var priceEditText: EditText
+    lateinit var priceEditText: TextFieldUnify
     lateinit var budgetViewModel: DailyBudgetViewModel
     lateinit var progressBar: LoaderUnify
     lateinit var errorText: TextView
     lateinit var rangeStart: TextView
     lateinit var rangeEnd: TextView
-    lateinit var btnSubmit: Button
-    lateinit var tipBtn: Button
+    lateinit var btnSubmit: UnifyButton
+    lateinit var cancelBtn: UnifyButton
+    lateinit var tipBtn: FloatingButtonUnify
     private var lowClickDivider = 1
     private var minDailyBudget = 1
     private var maxDailyBudget = 1
-
+    private var isEditFlow = false
     var topAdsDeposit: Int = 0
 
     val requestType = "auto_ads"
@@ -78,6 +78,8 @@ abstract class AutoAdsBaseBudgetFragment : BaseDaggerFragment() {
 
     abstract fun hideLoading()
 
+    abstract fun showButtonLayout()
+
     override fun initInjector() {
         getComponent(AutoAdsComponent::class.java).inject(this)
     }
@@ -93,28 +95,38 @@ abstract class AutoAdsBaseBudgetFragment : BaseDaggerFragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         showLoading()
-        budgetViewModel.getTopAdsDeposit(userSession.shopId.toInt())
-        budgetViewModel.topAdsDeposit.observe(viewLifecycleOwner, Observer {
+        budgetViewModel.getTopAdsDeposit()
+        budgetViewModel.getTopAdsDepositLiveData().observe(viewLifecycleOwner, Observer {
             topAdsDeposit = it
-            budgetViewModel.getBudgetInfo(userSession.shopId.toInt(), requestType, source, this::onSuccessBudgetInfo)
+            budgetViewModel.getBudgetInfo(requestType, source, this::onSuccessBudgetInfo)
         })
-        budgetViewModel.autoAdsData.observe(this, Observer {
-            if (topAdsDeposit <= 0) {
-                insufficientCredit()
-            } else
-                eligible()
+        budgetViewModel.autoAdsData.observe(viewLifecycleOwner, Observer {
+            if (!isEditFlow) {
+                if (topAdsDeposit <= 0) {
+                    insufficientCredit()
+                } else
+                    eligible()
+            } else {
+                val intent = RouteManager.getIntent(context, ApplinkConstInternalTopAds.TOPADS_DASHBOARD_INTERNAL).apply {
+                    putExtra(TopAdsCommonConstant.TOPADS_AUTOADS_BUDGET_UPDATED, TopAdsCommonConstant.PARAM_AUTOADS_BUDGET)
+                    putExtra(TopAdsCommonConstant.TOPADS_MOVE_TO_DASHBOARD, TopAdsCommonConstant.PARAM_PRODUK_IKLAN)
+                }
+                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                startActivity(intent)
+            }
         })
 
-        priceEditText.addTextChangedListener(
-                object : NumberTextWatcher(priceEditText, "0") {
-
-                    override fun afterTextChanged(s: Editable?) {
-                        priceEditText.removeTextChangedListener(this)
-                        var text = replace(s.toString())
+        priceEditText.textFieldInput.addTextChangedListener(
+                object : NumberTextWatcher(priceEditText.textFieldInput, "0") {
+                    override fun afterTextChanged(s: Editable) {
+                        if (s.toString().removeCommaRawString() != minDailyBudget.toString())
+                            showButtonLayout()
+                        priceEditText.textFieldInput.removeTextChangedListener(this)
+                        var text = s.toString().removeCommaRawString()
                         if (text.isEmpty())
                             text = "0"
                         try {
-                            priceEditText.setText(convertToCurrencyString(text.toLong()))
+                            priceEditText.textFieldInput.setText(convertToCurrency(text.toLong()))
                         } catch (e: NumberFormatException) {
                             e.printStackTrace()
                         }
@@ -128,28 +140,29 @@ abstract class AutoAdsBaseBudgetFragment : BaseDaggerFragment() {
                             errorText.visibility = View.GONE
                             btnSubmit.isEnabled = true
                         }
-                        priceEditText.addTextChangedListener(this)
+                        priceEditText.textFieldInput.setSelection(priceEditText.textFieldInput.length())
+                        priceEditText.textFieldInput.addTextChangedListener(this)
                     }
                 })
     }
 
-
-    private fun onSuccessBudgetInfo(response: TopadsBidInfo.Response) {
-        val data = response.bidInfo.data[0]
-        var budget = data.minDailyBudget
-        val status = arguments!!.getInt(KEY_AUTOADS_STATUS, 0)
-        if (status == AutoAdsStatus.STATUS_ACTIVE || status == AutoAdsStatus.STATUS_NOT_DELIVERED) {
-            budget = arguments!!.getInt(KEY_DAILY_BUDGET, 0)
+    private fun onSuccessBudgetInfo(response: ResponseBidInfo.Result) {
+        response.topadsBidInfo.data.firstOrNull()?.let { data ->
+            var budget = data.minDailyBudget
+            val status = arguments!!.getInt(KEY_AUTOADS_STATUS, 0)
+            if (status == AutoAdsStatus.STATUS_ACTIVE || status == AutoAdsStatus.STATUS_NOT_DELIVERED) {
+                budget = arguments!!.getInt(KEY_DAILY_BUDGET, 0)
+            }
+            rangeStart.text = data.minDailyBudgetFmt
+            rangeEnd.text = data.maxDailyBudgetFmt
+            minDailyBudget = data.minDailyBudget
+            maxDailyBudget = data.maxDailyBudget
+            priceEditText.textFieldInput.setText(data.minDailyBudgetFmt.removeCommaRawString())
+            shopStatus = data.shopStatus
+            seekBar.range = Range(data.minDailyBudget, data.maxDailyBudget, 1000)
+            seekBar.value = budget
+            budgetViewModel.topadsStatisticsEstimationPotentialReach(this::onSuccessPotentialEstimation, userSession.shopId, source)
         }
-        rangeStart.text = data.minDailyBudgetFmt
-        rangeEnd.text = data.maxDailyBudgetFmt
-        minDailyBudget = data.minDailyBudget
-        maxDailyBudget = data.maxDailyBudget
-        priceEditText.setText(data.minDailyBudgetFmt.replace("Rp", ""))
-        shopStatus = data.shopStatus
-        seekBar.range = Range(data.minDailyBudget, data.maxDailyBudget, 1000)
-        seekBar.value = budget
-        budgetViewModel.topadsStatisticsEstimationPotentialReach(this::onSuccessPotentialEstimation, userSession.shopId, source)
         seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
                 estimateImpression(progress)
@@ -161,26 +174,25 @@ abstract class AutoAdsBaseBudgetFragment : BaseDaggerFragment() {
         })
     }
 
-    fun onSuccessPotentialEstimation(data: EstimationResponse.TopadsStatisticsEstimationAttribute.DataItem) {
+    private fun onSuccessPotentialEstimation(data: EstimationResponse.TopadsStatisticsEstimationAttribute.DataItem) {
         lowClickDivider = data.lowClickDivider
-        priceRange.text = convertToCurrencyString(replace(getPotentialReach().toString()).toLong())
+        priceRange.text = convertToCurrency(getPotentialReach().toString().removeCommaRawString().toLong())
         hideLoading()
     }
 
     private fun getPotentialReach(): CharSequence? {
-        return budgetViewModel.getPotentialImpressionGQL(replace(priceEditText.text.toString()).toInt()
+        return budgetViewModel.getPotentialImpressionGQL(priceEditText.textFieldInput.text.toString().removeCommaRawString().toInt()
                 , lowClickDivider)
     }
 
     fun estimateImpression(progress: Int) {
-        priceEditText.setText(progress.toString())
-        priceRange.text = convertToCurrencyString(replace(getPotentialReach().toString()).toLong())
+        priceEditText.textFieldInput.setText(progress.toString())
+        priceRange.text = convertToCurrency(getPotentialReach().toString().removeCommaRawString().toLong())
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(getLayoutId(), container, false)
         priceRange = view.findViewById(R.id.price_range)
-        iklakanButton = view.findViewById(R.id.btn_submit)
         priceEditText = view.findViewById(R.id.budgetEditText)
         seekBar = view.findViewById(R.id.seekbar)
         progressBar = view.findViewById(R.id.loading)
@@ -189,6 +201,7 @@ abstract class AutoAdsBaseBudgetFragment : BaseDaggerFragment() {
         rangeStart = view.findViewById(R.id.range_start)
         rangeEnd = view.findViewById(R.id.range_end)
         tipBtn = view.findViewById(R.id.tip_btn)
+        cancelBtn = view.findViewById(R.id.btn_cancel)
         setUpView(view)
         setListener()
         return view
@@ -204,8 +217,10 @@ abstract class AutoAdsBaseBudgetFragment : BaseDaggerFragment() {
         }
     }
 
-    fun activatedAds() {
-        val budget = replace(priceEditText.text.toString()).toInt()
+    fun activatedAds(editAutoads: Int = 0) {
+        btnSubmit.isEnabled = false
+        isEditFlow = editAutoads == 1
+        val budget = priceEditText.textFieldInput.text.toString().removeCommaRawString().toInt()
         budgetViewModel.postAutoAds(AutoAdsParam(AutoAdsParam.Input(
                 TOGGLE_ON,
                 CHANNEL,
@@ -216,45 +231,28 @@ abstract class AutoAdsBaseBudgetFragment : BaseDaggerFragment() {
     }
 
     private fun eligible() {
-        val intent = Intent(context, SuccessActivity::class.java).apply {
-            if (isFromPdpSellerMigration(activity?.intent?.extras)) {
-                putExtra(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME, getSellerMigrationFeatureName(activity?.intent?.extras))
-                putStringArrayListExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA, getSellerMigrationRedirectionApplinks(activity?.intent?.extras))
-            }
-        }
-        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-        startActivity(intent)
+        val sheet = TopAdsSuccessSheet()
+        sheet.overlayClickDismiss = false
+        sheet.show(childFragmentManager)
     }
 
     private fun insufficientCredit() {
-        val intent = Intent(context, NoCreditActivity::class.java).apply {
-            if (isFromPdpSellerMigration(activity?.intent?.extras)) {
-                putExtra(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME, getSellerMigrationFeatureName(activity?.intent?.extras))
-                putStringArrayListExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA, getSellerMigrationRedirectionApplinks(activity?.intent?.extras))
-            }
-        }
-        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-        startActivity(intent)
+        val sheet = TopAdsOutofCreditSheet()
+        sheet.overlayClickDismiss = false
+        sheet.show(childFragmentManager)
     }
 
+    fun moveToIntialState() {
+        seekBar.value = minDailyBudget
+        priceEditText.textFieldInput.setText(minDailyBudget.toString())
+    }
 
     companion object {
-        var locale = Locale("in", "ID")
         val KEY_DAILY_BUDGET = "BUDGET"
         val KEY_AUTOADS_STATUS = "AUTOADS_STATUS"
         val TOGGLE_ON = "toggle_on"
         val TOGGLE_OFF = "toggle_off"
         val CHANNEL = "topchat"
         val SOURCE = "sellerapp_autoads_creation"
-    }
-
-    fun replace(text: String): String {
-        return text.replace(",", "").replace(".", "")
-                .replace("Rp", "").trim()
-    }
-
-
-    fun convertToCurrencyString(value: Long): String {
-        return (NumberFormat.getNumberInstance(locale).format(value))
     }
 }

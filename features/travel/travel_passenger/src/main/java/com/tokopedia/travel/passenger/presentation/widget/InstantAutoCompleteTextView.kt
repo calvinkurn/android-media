@@ -1,4 +1,4 @@
-package com.tokopedia.common.travel.widget
+package com.tokopedia.travel.passenger.presentation.widget
 
 import android.content.Context
 import android.graphics.Rect

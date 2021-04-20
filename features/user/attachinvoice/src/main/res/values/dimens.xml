@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <dimen name="dp_12_attachinvoice">12dp</dimen>
+    <dimen name="dp_28_attachinvoice">28dp</dimen>
     <dimen name="dp_51_attachinvoice">51dp</dimen>
 </resources>

@@ -1,0 +1,101 @@
+<resources>
+    <string name="home_account_title">Akun Saya</string>
+
+    <string name="new_home_account_clear_cache_warning">Lanjut bersihkan cache?</string>
+    <string name="new_home_account_clear_cache_message">Kami akan menutup aplikasimu biar cache-nya bersih semua. Nanti buka Tokopedia lagi, ya!</string>
+    <string name="new_home_account_label_clear_cache_ok">Bersihkan Cache</string>
+    <string name="new_home_account_label_clear_cache_cancel">Batal</string>
+
+    <string name="error_bank_no_password_title">Anda tidak memiliki kata sandi</string>
+    <string name="error_bank_no_password_content">Silahkan buat kata sandi Tokopedia terlebih dahulu untuk menambah rekening.</string>
+    <string name="error_no_password_yes">Buat kata sandi</string>
+    <string name="error_no_password_no">Tutup</string>
+
+    <string name="new_home_account_label_logout">Keluar dari Tokopedia</string>
+    <string name="new_home_account_button_logout">Keluar</string>
+    <string name="new_home_account_label_logout_confirmation">Apakah Anda ingin keluar?</string>
+    <string name="new_home_account_label_cancel">Batal</string>
+
+    <string name="new_home_account_title_geolocation_alertdialog">Bagikan lokasimu ke Tokopedia?</string>
+    <string name="new_home_account_body_geolocation_alertdialog">Kami perlu lokasimu biar bisa kasih rekomendasi yang cocok. Aktifkan pengaturan HP untuk membagikan lokasi.</string>
+
+    <string name="new_home_account_ok_geolocation_alertdialog">Bagikan Lokasi</string>
+    <string name="new_home_account_batal_geolocation_alertdialog">Batal</string>
+
+    <string name="new_home_account_safe_mode_selected_dialog_title">Aktifkan Safe Mode</string>
+    <string name="new_home_account_safe_mode_selected_dialog_msg">Fitur ini akan otomatis menyaring hasil pencarian sesuai kebijakan dan batasan usia pengguna</string>
+    <string name="new_home_account_safe_mode_unselected_dialog_msg">Hasil pencarian tidak disaring otomais sesuai kebijakan dan batasan usia pengguna</string>
+    <string name="new_home_account_safe_mode_unselected_dialog_title">Nonaktifkan Safe Mode</string>
+    <string name="new_home_account_safe_mode_selected_dialog_positive_button">Aktifkan</string>
+    <string name="new_home_account_safe_mode_unselected_dialog_positive_button">Nonaktifkan</string>
+
+
+    <!-- Menu Setting Section Title -->
+    <string name="menu_account_section_title_account_setting">Pengaturan Akun</string>
+    <string name="menu_account_section_title_app_setting">Pengaturan Aplikasi</string>
+    <string name="menu_account_section_title_about_us">Seputar Tokopedia</string>
+    <string name="menu_account_section_title_developer">Pengaturan Developer</string>
+
+    <!-- Menu Setting Item Title -->
+    <string name="menu_account_title_address_list">Daftar Alamat</string>
+    <string name="menu_account_title_bank">Rekening Bank</string>
+    <string name="menu_account_title_instant_payment">Pembayaran Instan</string>
+    <string name="menu_account_title_quick_buy">Beli Langsung</string>
+    <string name="menu_account_title_security">Keamanan Akun</string>
+    <string name="menu_account_title_notification">Notifikasi</string>
+    <string name="menu_account_title_shake">Shake Shake</string>
+    <string name="menu_account_title_geolocation">Geolokasi</string>
+    <string name="menu_account_title_safe_mode">Safe Mode</string>
+    <string name="menu_account_title_quality_setting">Kualitas Gambar</string>
+    <string name="menu_account_title_clear_cache">Bersihkan Cache</string>
+    <string name="menu_account_title_about_us">Kenali Tokopedia</string>
+    <string name="menu_account_title_terms">Syarat dan Ketentuan</string>
+    <string name="menu_account_title_privacy_policy">Kebijakan Privasi</string>
+    <string name="menu_account_title_intellectual_property">Hak Kekayaan Intelektual</string>
+    <string name="menu_account_title_review">Ulas Aplikasi Ini</string>
+    <string name="menu_account_title_sign_out">Keluar Akun</string>
+    <string name="menu_account_title_dev_options">Developer Options</string>
+    <string name="menu_account_title_feedback_form">Feedback Form</string>
+    <string name="menu_account_old_account">Switch to old Fragment</string>
+
+    <!-- Menu Setting Item Description -->
+    <string name="menu_account_desc_icon">Atur alamat pengiriman belanjaan</string>
+    <string name="menu_account_desc_address">Atur alamat pengiriman belanjaan</string>
+    <string name="menu_account_desc_bank">Tarik Saldo Tokopedia ke rekening tujuan</string>
+    <string name="menu_account_desc_instant_payment">OVO, kartu kredit, &amp; debit instan terdaftar</string>
+    <string name="menu_account_desc_quick_buy">Atur pengiriman &amp; pembayaran favorit</string>
+    <string name="menu_account_desc_security">Kata sandi, PIN, &amp; verifikasi data diri</string>
+    <string name="menu_account_desc_notification">Atur segala jenis pesan notifikasi</string>
+    <string name="menu_account_desc_shake">Goyang HP untuk dapat promo menarik</string>
+    <string name="menu_account_desc_geolocation">Atur rekomendasi berdasarkan lokasi</string>
+    <string name="menu_account_desc_safe_mode">Hasil pencarian aman untuk segala usia</string>
+    <string name="menu_account_desc_quality_setting">Atur kualitas gambar yang kamu lihat</string>
+    <string name="menu_account_desc_clear_cache">Solusi cepat untuk atasi masalah aplikasi</string>
+
+    <string name="new_home_account_go_to_wishlist">Lihat Wishlist</string>
+    <string name="new_home_account_error_no_internet_connection">Tidak ada koneksi internet</string>
+    <string name="home_account_item_error_msg">Refresh untuk tampilkan data</string>
+    <string name="account_title_saldo_section"><![CDATA[Dana & Investasi]]></string>
+    <string name="account_title_saldo_item">Saldo</string>
+    <string name="account_title_points_item">Points </string>
+    
+    <string name="new_home_account_finance_failed_to_load">Gagal Memuat</string>
+    <string name="new_home_account_finance_try_again">Coba Lagi</string>
+  
+    <string name="text_description_add_name_bottom_sheet">Nama asli akan mempermudah proses verifikasi jika akunmu bermasalah. Akunmu jadi makin aman, deh!</string>
+    <string name="text_title_add_name_bottom_sheet">Ubah nama akun jadi nama asli</string>
+    <string name="text_button_add_name_bottom_sheet">Ubah Nama Akun</string>
+
+    <string name="coachmark_title_account_info">Info tentang akunmu ada di sini</string>
+    <string name="coachmark_desc_account_info">Kamu bisa ubah data diri, lihat saldo atau investasi, dan cek keuntungan dari promo Tokopedia, lho!</string>
+    <string name="coachmark_title_setting">Ubah pengaturan dan cek info lainnya</string>
+    <string name="coachmark_desc_setting">Mau atur akun dan aplikasi sesuai seleramu atau lihat info tentang Tokopedia? Lewat sini aja!</string>
+
+    <string name="new_home_account_finance_failed_config_title">Konten gagal ditampilkan</string>
+    <string name="new_home_account_finance_failed_config_desc">Klik ikon di samping buat coba lagi.</string>
+
+    <string name="new_home_account_local_load_title">Konten gagal ditampilkan</string>
+    <string name="new_home_account_local_load_desc">Klik ikon di samping buat coba lagi.</string>
+
+    <string name="default_member_title">Rewards</string>
+</resources>

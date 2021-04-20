@@ -1,6 +1,7 @@
 package com.tokopedia.discovery2.data
 
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.discovery2.Constant
 import com.tokopedia.discovery2.LABEL_PRICE
 import com.tokopedia.discovery2.LABEL_PRODUCT_STATUS
 import com.tokopedia.discovery2.StockWording
@@ -25,19 +26,22 @@ data class DataItem(
         val value: String? = "",
 
         @SerializedName("target_component_id")
-        val targetComponentId: String? = "",
+        var targetComponentId: String? = "",
 
         @SerializedName("background_image")
         val backgroundImage: String? = "",
 
         @SerializedName("filters")
-        val filter: ArrayList<Filter>? = null,
+        var filter: ArrayList<Filter>? = null,
 
         @SerializedName("sort")
-        val sort: ArrayList<Sort>? = null,
+        var sort: ArrayList<Sort>? = null,
 
         @SerializedName("filter_value")
         val filterValue: String? = "",
+
+        @SerializedName("filter")
+        val filterKey: String? = "",
 
         @SerializedName("isSelected")
         var isSelected: Boolean = false,
@@ -130,7 +134,7 @@ data class DataItem(
         val boxColor: String? = "",
 
         @SerializedName("font_color", alternate = ["text_color"])
-        val fontColor: String? = "",
+        val  fontColor: String? = Constant.StaticFontColor.FONT_COLOR,
 
         @SerializedName("button_text")
         var buttonText: String? = "",
@@ -190,7 +194,7 @@ data class DataItem(
         val dynamicComponentId: String? = "",
 
         @SerializedName("shop_id")
-        val shopId: String? = "",
+        var shopId: String? = "",
 
         @SerializedName("basecode")
         val basecode: String? = "",
@@ -259,49 +263,52 @@ data class DataItem(
         val cashback: String? = "",
 
         @SerializedName("is_topads")
-        val isTopads: Boolean? = false,
+        var isTopads: Boolean? = false,
 
         @SerializedName("discounted_price")
-        val discountedPrice: String? = "",
+        var discountedPrice: String? = "",
 
         @SerializedName("gold_merchant")
-        val goldMerchant: Boolean? = false,
+        var goldMerchant: Boolean? = false,
 
         @SerializedName("price")
-        val price: String? = "",
+        var price: String? = "",
 
         @SerializedName("shop_name")
-        val shopName: String? = "",
+        var shopName: String? = "",
 
         @SerializedName("shop_location")
-        val shopLocation: String? = "",
+        var shopLocation: String? = "",
 
         @SerializedName("discount_percentage")
-        val discountPercentage: String? = "",
+        var discountPercentage: String? = "",
 
         @SerializedName("shop_applink")
         val shopApplink: String? = "",
-
-        @SerializedName("count_review")
-        val countReview: String? = "",
 
         @SerializedName("preorder")
         val preorder: String? = "",
 
         @SerializedName("topads_view_url")
-        val topadsViewUrl: String? = "",
+        var topadsViewUrl: String? = "",
 
         @SerializedName("product_id")
-        val productId: String? = "",
+        var productId: String? = "",
+
+        @SerializedName("count_review")
+        var countReview: String? = "",
 
         @SerializedName("rating")
-        val rating: String? = "",
+        var rating: String? = "",
+
+        @SerializedName("rating_average")
+        var averageRating: String = "",
 
         @SerializedName("shop_logo")
         val shopLogo: String? = "",
 
         @SerializedName("official_store")
-        val officialStore: Boolean? = false,
+        var officialStore: Boolean? = false,
 
         @SerializedName("stock")
         val stock: String? = "",
@@ -310,10 +317,10 @@ data class DataItem(
         val stockSoldPercentage: String? = "",
 
         @SerializedName("topads_click_url")
-        val topadsClickUrl: String? = "",
+        var topadsClickUrl: String? = "",
 
         @SerializedName("free_ongkir")
-        val freeOngkir: FreeOngkir? = null,
+        var freeOngkir: FreeOngkir? = null,
 
         @SerializedName("pdp_view")
         val pdpView: String = "0",
@@ -328,7 +335,7 @@ data class DataItem(
         val customStock: String? = null,
 
         @SerializedName("stock_wording")
-        val stockWording: StockWording? = null,
+        var stockWording: StockWording? = null,
 
         @SerializedName("total_interest_notify_me")
         val notifyMeCount: String = "0",
@@ -337,7 +344,7 @@ data class DataItem(
         val thresholdInterest: String? = null,
 
         @SerializedName("notify_me")
-        var notifyMe: Boolean = false,
+        var notifyMe: Boolean? = null,
 
         @SerializedName("campaign_id")
         val campaignId: String = "",
@@ -357,6 +364,15 @@ data class DataItem(
         @SerializedName("labels")
         var labelsGroupList: List<LabelsGroup>? = null,
 
+        @SerializedName("carousel_component_id")
+        var flashTimerTargetComponent: String = "",
+
+        @SerializedName("play_id")
+        var playWidgetPlayID: String? = null,
+
+        @SerializedName("campaign_code")
+        var campaignCode: String? = null,
+
         var shopAdsClickURL: String? = "",
 
         var shopAdsViewURL: String? = "",
@@ -367,7 +383,19 @@ data class DataItem(
 
         var positionForParentItem: Int = 0,
 
-        var typeProductCard: String? = ""
+        var typeProductCard: String? = "",
+
+        var tabName: String? = "",
+
+        var hasNotifyMe: Boolean = false,
+
+        var departmentID: Int = 0,
+
+        var hasThreeDots: Boolean = false,
+
+        var isWishList: Boolean = false,
+
+        var wishlistUrl: String? = ""
 ) {
     val leftMargin: Int
         get() {

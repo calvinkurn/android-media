@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="desc_cod_layout_extend">Cod layout extend</string>
+    <string name="cod_desc_text">Produk jualanmu dapat dibeli dengan sistem pembayaran di tempat.</string>
+    <string name="cod_title_text">Bayar di Tempat</string>
+    <string name="advantage_title_text">Keuntungan</string>
+    <string name="advantage_desc_text">Layanan Bayar di Tempat dapat menarik pengguna baru untuk membeli produkmu</string>
+    <string name="tnc_title_cod">Syarat &amp; ketentuan</string>
+    <string name="tnc_text_1">Semua produk yang memenuhi &lt;a href="https://www.tokopedia.com/help/article/bayar-di-tempat#syarat-dan-ketentuan-bayar-di-tempat/"&gt;syarat dan ketentuan&lt;/a&gt; akan &lt;b&gt;otomatis terdaftar&lt;/b&gt; layanan Bayar di Tempat.</string>
+    <string name="tnc_text_2">Proses &lt;b&gt; pengiriman &amp; pengambilan&lt;/b&gt; produk harus sesuai kebijakan Bayar di Tempat.</string>
+    <string name="tnc_text_3">Pengiriman produk harus menggunakan kurir &lt;b&gt;SiCepat.&lt;/b&gt; Harap tempelkan &lt;b&gt;label pengiriman&lt;/b&gt; pada paket yang akan dikirim.</string>
+
+    <string name="see_more_cod">&lt;a href="https://www.tokopedia.com/help/article/bayar-di-tempat#syarat-dan-ketentuan-bayar-di-tempat/"&gt;Pelajari Selengkapnya&lt;/a&gt;</string>
+    <string name="tnc_checkbox_text_cod">Saya menyetujui &lt;a href="https://www.tokopedia.com/help/article/bayar-di-tempat#syarat-dan-ketentuan-bayar-di-tempat/"&gt;Syarat dan Ketentuan&lt;/a&gt; Bayar di Tempat.</string>
+
+    <string name="title_layanan">Layanan</string>
+    <string name="cod_label">Aktif</string>
+    <string name="cod_button_active">Aktifkan Layanan</string>
+    <string name="cod_button_inactive">Nonaktifkan Layanan</string>
+
+    <string name="dialog_title_inactive">Nonaktifkan Bayar di Tempat?</string>
+    <string name="dialog_description_inactive">Pesanan dengan Bayar di Tempat yang telah masuk akan tetap diproses.</string>
+    <string name="dialog_primary_button_inactive">Nonaktifkan</string>
+    <string name="dialog_secondary_button_inactive">Batal</string>
+
+    <string name="dialog_title_active">Aktifkan Bayar di Tempat?</string>
+    <string name="dialog_description_active">Dengan aktifkan layanan ini, kurir SiCepat juga diaktifkan e produk yang memenuhi syarat otomatis terdaftar.&lt;br/&gt; &lt;br/&gt;Kamu tetap bisa ubah kurir di halaman &lt;a href="sellerapp://setting/shipping-editor"&gt;Pengaturan Pengiriman&lt;/a&gt;.</string>
+    <string name="dialog_primary_button_active">Aktifkan Layanan</string>
+    <string name="dialog_secondary_button_active">Batal</string>
+    <string name="tnc_desc">Syarat adalah blabla</string>
+    <string name="see_more">Pelajari Selengkapnya</string>
+
+    <string name="dialog_title_coverage">Gagal Mengaktifkan Bayar di Tempat</string>
+    <string name="dialog_description_coverage">Lokasi toko anda belum dapat mendukung layanan Bayar di Tempat</string>
+    <string name="dialog_button_coverage">Ditutup</string>
+</resources>

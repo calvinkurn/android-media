@@ -10,9 +10,8 @@ import androidx.fragment.app.Fragment;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.appupdate.ApplicationUpdate;
-import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 
-import com.tokopedia.navigation.GlobalNavRouter;
+import com.tokopedia.cachemanager.CacheManager;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
 
@@ -25,45 +24,10 @@ import okhttp3.Response;
 import static org.mockito.Mockito.mock;
 
 @Instrument
-public class HomeApp extends BaseMainApplication implements GlobalNavRouter, NetworkRouter, AbstractionRouter {
+public class HomeApp extends BaseMainApplication implements NetworkRouter, AbstractionRouter {
     @Override
     public void onCreate() {
         super.onCreate();
-    }
-
-    @Override
-    public boolean getBooleanRemoteConfig(String key, boolean defaultValue) {
-        return false;
-    }
-
-    @Override
-    public void sendOpenHomeEvent() {
-
-    }
-
-    @Override
-    public Fragment getHomeFragment(boolean scroll) {
-        return null;
-    }
-
-    @Override
-    public Fragment getFeedPlusFragment(Bundle bundle) {
-        return new Fragment();
-    }
-
-    @Override
-    public Fragment getOfficialStoreFragment(Bundle bundle) {
-        return null;
-    }
-
-    @Override
-    public ApplicationUpdate getAppUpdate(Context context) {
-        return mock(ApplicationUpdate.class);
-    }
-
-    @Override
-    public Intent getHomeIntent(Context context) {
-        return null;
     }
 
     @Override
@@ -82,7 +46,12 @@ public class HomeApp extends BaseMainApplication implements GlobalNavRouter, Net
     }
 
     @Override
-    public void sendForceLogoutAnalytics(Response response, boolean b, boolean b1) {
+    public void sendForceLogoutAnalytics(String url, boolean isInvalidToken, boolean isRequestDenied) {
+
+    }
+
+    @Override
+    public void sendRefreshTokenAnalytics(String errorMessage) {
 
     }
 
@@ -107,7 +76,7 @@ public class HomeApp extends BaseMainApplication implements GlobalNavRouter, Net
     }
 
     @Override
-    public CacheManager getGlobalCacheManager() {
+    public CacheManager getPersistentCacheManager() {
         return mock(CacheManager.class);
     }
 

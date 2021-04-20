@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <ImageView
+        android:id="@+id/ic_merchant_voucher"
+        android:layout_width="@dimen/dp_24"
+        android:layout_height="@dimen/dp_24"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:src="@drawable/ic_voucher_shipping"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/merchant_voucher_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/ic_merchant_voucher"
+        android:layout_marginStart="@dimen/dp_10"
+        app:typographyType="body_3"
+        app:typographyWeight="bold"
+        tools:text="Cashback 20rb" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/merchant_voucher_desc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="@+id/merchant_voucher_title"
+        app:layout_constraintStart_toEndOf="@+id/ic_merchant_voucher"
+        app:layout_constraintTop_toBottomOf="@+id/merchant_voucher_title"
+        app:typographyType="small"
+        android:textColor="@color/Unify_N700_68"
+        tools:text="min. pembelian 100rb" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

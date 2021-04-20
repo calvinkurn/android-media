@@ -11,16 +11,16 @@ open class ActionButtonAdapter(
         private val onClick: (CMButton, CMInApp) -> Unit
 ): RecyclerView.Adapter<ActionButtonViewHolder>() {
 
-    private val buttons = data.getCmLayout().getButton()
+    private val buttons = data.getCmLayout().button
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ActionButtonViewHolder {
         return ActionButtonViewHolder.create(parent, onClick)
     }
 
     override fun onBindViewHolder(holder: ActionButtonViewHolder, position: Int) {
-        holder.bind(data, buttons[position])
+        holder.bind(data, buttons?.get(position))
     }
 
-    override fun getItemCount(): Int = buttons.size
+    override fun getItemCount(): Int = buttons?.size?: 1
 
 }

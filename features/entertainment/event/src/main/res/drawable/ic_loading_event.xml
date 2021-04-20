@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android" >
+    <item>
+        <inset
+            android:drawable="@drawable/ic_loading"
+            android:insetBottom="@dimen/dimen_dp_10"
+            android:insetLeft="@dimen/dimen_dp_10"
+            android:insetRight="@dimen/dimen_dp_10"
+            android:insetTop="@dimen/dimen_dp_10"
+            />
+    </item>
+</layer-list>

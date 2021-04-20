@@ -1,22 +1,22 @@
 package com.tokopedia.checkout.view.converter;
 
-import android.text.TextUtils;
-
 import androidx.annotation.NonNull;
 
-import com.tokopedia.logisticcart.shipping.model.CartItemModel;
-import com.tokopedia.logisticdata.data.entity.address.RecipientAddressModel;
-import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel;
-import com.tokopedia.logisticdata.data.entity.address.LocationDataModel;
 import com.tokopedia.checkout.domain.model.cartshipmentform.AddressesData;
 import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData;
-import com.tokopedia.checkout.domain.model.cartshipmentform.GroupAddress;
 import com.tokopedia.checkout.domain.model.cartshipmentform.GroupShop;
 import com.tokopedia.checkout.domain.model.cartshipmentform.Product;
-import com.tokopedia.checkout.domain.model.cartshipmentform.PurchaseProtectionPlanData;
+import com.tokopedia.checkout.domain.model.cartshipmentform.ShipmentInformationData;
 import com.tokopedia.checkout.domain.model.cartshipmentform.Shop;
-import com.tokopedia.checkout.domain.model.cartshipmentform.UserAddress;
 import com.tokopedia.checkout.view.uimodel.ShipmentDonationModel;
+import com.tokopedia.logisticCommon.data.entity.address.LocationDataModel;
+import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel;
+import com.tokopedia.logisticCommon.data.entity.address.UserAddress;
+import com.tokopedia.logisticcart.shipping.model.CartItemModel;
+import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel;
+import com.tokopedia.purchase_platform.common.feature.purchaseprotection.domain.PurchaseProtectionPlanData;
+import com.tokopedia.purchase_platform.common.utils.Utils;
+import com.tokopedia.purchase_platform.common.utils.UtilsKt;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,21 +39,20 @@ public class ShipmentDataConverter {
     }
 
     public RecipientAddressModel getRecipientAddressModel(CartShipmentAddressFormData cartShipmentAddressFormData) {
-        if (cartShipmentAddressFormData.getGroupAddress() != null && cartShipmentAddressFormData.getGroupAddress().size() > 0) {
+        if (cartShipmentAddressFormData.getGroupAddress().size() > 0) {
             UserAddress defaultAddress = null;
-            UserAddress tradeInAddress = null;
+            UserAddress tradeInDropOffAddress = null;
             if (cartShipmentAddressFormData.getAddressesData() != null && cartShipmentAddressFormData.getAddressesData().getData() != null) {
                 if (cartShipmentAddressFormData.getAddressesData().getData().getDefaultAddress() != null &&
-                        cartShipmentAddressFormData.getAddressesData().getData().getDefaultAddress().getAddressId() != 0) {
+                        Utils.isNotNullOrEmptyOrZero(cartShipmentAddressFormData.getAddressesData().getData().getDefaultAddress().getAddressId())) {
                     defaultAddress = cartShipmentAddressFormData.getAddressesData().getData().getDefaultAddress();
                 }
                 if (cartShipmentAddressFormData.getAddressesData().getData().getTradeInAddress() != null &&
-                        cartShipmentAddressFormData.getAddressesData().getData().getTradeInAddress().getAddressId() != 0) {
-                    tradeInAddress = cartShipmentAddressFormData.getAddressesData().getData().getTradeInAddress();
+                        Utils.isNotNullOrEmptyOrZero(cartShipmentAddressFormData.getAddressesData().getData().getTradeInAddress().getAddressId())) {
+                    tradeInDropOffAddress = cartShipmentAddressFormData.getAddressesData().getData().getTradeInAddress();
                 }
             }
             boolean isTradeIn = false;
-            boolean isTradeInDropOffEnable = false;
             if (cartShipmentAddressFormData.getGroupAddress().get(0).getGroupShop() != null &&
                     cartShipmentAddressFormData.getGroupAddress().get(0).getGroupShop().size() > 0) {
                 for (GroupShop groupShop : cartShipmentAddressFormData.getGroupAddress().get(0).getGroupShop()) {
@@ -62,7 +61,6 @@ public class ShipmentDataConverter {
                         for (Product product : groupShop.getProducts()) {
                             if (product.getTradeInInfoData() != null && product.getTradeInInfoData().isValidTradeIn()) {
                                 isTradeIn = true;
-                                isTradeInDropOffEnable = product.getTradeInInfoData().isDropOffEnable();
                                 foundData = true;
                                 break;
                             }
@@ -71,14 +69,10 @@ public class ShipmentDataConverter {
                     }
                 }
             }
-            RecipientAddressModel recipientAddressModel = createRecipientAddressModel(defaultAddress, tradeInAddress, isTradeIn, isTradeInDropOffEnable);
-            String disableMultipleAddressMessage = "";
-            if (cartShipmentAddressFormData.getDisabledFeaturesDetailData() != null) {
-                disableMultipleAddressMessage = cartShipmentAddressFormData.getDisabledFeaturesDetailData().getDisabledMultiAddressMessage();
-            }
-            recipientAddressModel.setDisabledMultiAddressMessage(disableMultipleAddressMessage);
+            RecipientAddressModel recipientAddressModel = createRecipientAddressModel(defaultAddress, tradeInDropOffAddress, isTradeIn);
             recipientAddressModel.setSelectedTabIndex(RecipientAddressModel.TAB_ACTIVE_ADDRESS_DEFAULT);
             if (cartShipmentAddressFormData.getAddressesData() != null) {
+                recipientAddressModel.setDisabledAddress(cartShipmentAddressFormData.getAddressesData().getDisableTabs());
                 if (cartShipmentAddressFormData.getAddressesData().getActive().equalsIgnoreCase(AddressesData.DEFAULT_ADDRESS)) {
                     recipientAddressModel.setSelectedTabIndex(RecipientAddressModel.TAB_ACTIVE_ADDRESS_DEFAULT);
                 } else if (cartShipmentAddressFormData.getAddressesData().getActive().equalsIgnoreCase(AddressesData.TRADE_IN_ADDRESS)) {
@@ -90,52 +84,48 @@ public class ShipmentDataConverter {
         return null;
     }
 
-    public RecipientAddressModel getRecipientAddressModel(UserAddress defaultAddress) {
-        // Trade in is only available on OCS.
-        // OCS is not available to send to multiple address
-        return createRecipientAddressModel(defaultAddress, null, false, false);
-    }
-
     public ShipmentDonationModel getShipmentDonationModel(CartShipmentAddressFormData cartShipmentAddressFormData) {
-        ShipmentDonationModel shipmentDonationModel = new ShipmentDonationModel();
-        shipmentDonationModel.setChecked(cartShipmentAddressFormData.getDonation().isChecked());
-        shipmentDonationModel.setDonation(cartShipmentAddressFormData.getDonation());
+        if (cartShipmentAddressFormData.getDonation() != null) {
+            ShipmentDonationModel shipmentDonationModel = new ShipmentDonationModel();
+            shipmentDonationModel.setChecked(cartShipmentAddressFormData.getDonation().isChecked());
+            shipmentDonationModel.setDonation(cartShipmentAddressFormData.getDonation());
 
-        return shipmentDonationModel;
+            return shipmentDonationModel;
+        } else {
+            return null;
+        }
     }
 
     @NonNull
     private RecipientAddressModel createRecipientAddressModel(UserAddress defaultAddress,
                                                               UserAddress tradeInAddress,
-                                                              boolean isTradeIn,
-                                                              boolean isTradeInDropOffEnable) {
+                                                              boolean isTradeIn) {
         RecipientAddressModel recipientAddress = new RecipientAddressModel();
 
         if (defaultAddress != null) {
-            recipientAddress.setId(String.valueOf(defaultAddress.getAddressId()));
+            recipientAddress.setId(defaultAddress.getAddressId());
             recipientAddress.setAddressStatus(defaultAddress.getStatus());
             recipientAddress.setAddressName(defaultAddress.getAddressName());
             recipientAddress.setCountryName(defaultAddress.getCountry());
             recipientAddress.setProvinceName(defaultAddress.getProvinceName());
             recipientAddress.setDestinationDistrictName(defaultAddress.getDistrictName());
             recipientAddress.setCityName(defaultAddress.getCityName());
-            recipientAddress.setDestinationDistrictId(String.valueOf(defaultAddress.getDistrictId()));
+            recipientAddress.setDestinationDistrictId(defaultAddress.getDistrictId());
             recipientAddress.setStreet(defaultAddress.getAddress());
             recipientAddress.setPostalCode(defaultAddress.getPostalCode());
-            recipientAddress.setCityId(String.valueOf(defaultAddress.getCityId()));
-            recipientAddress.setProvinceId(String.valueOf(defaultAddress.getProvinceId()));
+            recipientAddress.setCityId(defaultAddress.getCityId());
+            recipientAddress.setProvinceId(defaultAddress.getProvinceId());
 
             recipientAddress.setRecipientName(defaultAddress.getReceiverName());
             recipientAddress.setRecipientPhoneNumber(defaultAddress.getPhone());
-            recipientAddress.setLatitude(!TextUtils.isEmpty(defaultAddress.getLatitude()) ?
+            recipientAddress.setLatitude(!UtilsKt.isNullOrEmpty(defaultAddress.getLatitude()) ?
                     defaultAddress.getLatitude() : null);
-            recipientAddress.setLongitude(!TextUtils.isEmpty(defaultAddress.getLongitude()) ?
+            recipientAddress.setLongitude(!UtilsKt.isNullOrEmpty(defaultAddress.getLongitude()) ?
                     defaultAddress.getLongitude() : null);
 
             recipientAddress.setSelected(defaultAddress.getStatus() == PRIME_ADDRESS);
-            recipientAddress.setCornerId(String.valueOf(defaultAddress.getCornerId()));
+            recipientAddress.setCornerId(defaultAddress.getCornerId());
             recipientAddress.setTradeIn(isTradeIn);
-            recipientAddress.setTradeInDropOffEnable(isTradeInDropOffEnable);
             recipientAddress.setCornerAddress(defaultAddress.isCorner());
         }
 
@@ -171,56 +161,40 @@ public class ShipmentDataConverter {
                                                         boolean hasTradeInDropOffAddress) {
         List<ShipmentCartItemModel> shipmentCartItemModels = new ArrayList<>();
 
-        int addressIndex = 0;
-        ShipmentCartItemModel shipmentCartItemModel = null;
-        if (cartShipmentAddressFormData.isMultiple()) {
-            for (GroupAddress groupAddress : cartShipmentAddressFormData.getGroupAddress()) {
-                UserAddress userAddress = groupAddress.getUserAddress();
-                for (GroupShop groupShop : groupAddress.getGroupShop()) {
-                    shipmentCartItemModel = new ShipmentCartItemModel();
-                    shipmentCartItemModel.setUseCourierRecommendation(cartShipmentAddressFormData
-                            .isUseCourierRecommendation());
-                    shipmentCartItemModel.setHidingCourier(cartShipmentAddressFormData.isHidingCourier());
-                    shipmentCartItemModel.setIsBlackbox(cartShipmentAddressFormData.getIsBlackbox());
-                    shipmentCartItemModel.setAddressId(cartShipmentAddressFormData.getGroupAddress()
-                            .get(addressIndex).getUserAddress().getAddressId());
-                    getShipmentItem(shipmentCartItemModel, userAddress, groupShop,
-                            cartShipmentAddressFormData.getKeroToken(),
-                            String.valueOf(cartShipmentAddressFormData.getKeroUnixTime()), true, hasTradeInDropOffAddress);
-                    shipmentCartItemModel.setFulfillment(groupShop.isFulfillment());
-                    shipmentCartItemModel.setFulfillmentId(groupShop.getFulfillmentId());
-                    shipmentCartItemModel.setFulfillmentName(groupShop.getFulfillmentName());
-                    setCartItemModelError(shipmentCartItemModel);
-                    shipmentCartItemModels.add(shipmentCartItemModel);
-                }
-                addressIndex++;
-            }
-        } else {
-            UserAddress userAddress = cartShipmentAddressFormData.getGroupAddress().get(0).getUserAddress();
-            for (GroupShop groupShop : cartShipmentAddressFormData.getGroupAddress().get(0).getGroupShop()) {
-                shipmentCartItemModel = new ShipmentCartItemModel();
-                shipmentCartItemModel.setDropshipperDisable(cartShipmentAddressFormData.isDropshipperDisable());
-                shipmentCartItemModel.setOrderPrioritasDisable(cartShipmentAddressFormData.isOrderPrioritasDisable());
-                shipmentCartItemModel.setUseCourierRecommendation(cartShipmentAddressFormData.isUseCourierRecommendation());
-                shipmentCartItemModel.setIsBlackbox(cartShipmentAddressFormData.getIsBlackbox());
-                shipmentCartItemModel.setHidingCourier(cartShipmentAddressFormData.isHidingCourier());
-                shipmentCartItemModel.setAddressId(cartShipmentAddressFormData.getGroupAddress()
-                        .get(0).getUserAddress().getAddressId());
+        if (cartShipmentAddressFormData.getGroupAddress().isEmpty() || cartShipmentAddressFormData.getGroupAddress().get(0) == null) {
+            return shipmentCartItemModels;
+        }
 
-                getShipmentItem(shipmentCartItemModel, userAddress, groupShop, cartShipmentAddressFormData.getKeroToken(),
-                        String.valueOf(cartShipmentAddressFormData.getKeroUnixTime()), false, hasTradeInDropOffAddress);
-                shipmentCartItemModel.setFulfillment(groupShop.isFulfillment());
-                shipmentCartItemModel.setFulfillmentId(groupShop.getFulfillmentId());
-                shipmentCartItemModel.setFulfillmentName(groupShop.getFulfillmentName());
-                setCartItemModelError(shipmentCartItemModel);
-                shipmentCartItemModel.setEligibleNewShippingExperience(cartShipmentAddressFormData.isEligibleNewShippingExperience());
-                shipmentCartItemModels.add(shipmentCartItemModel);
+        UserAddress userAddress = cartShipmentAddressFormData.getGroupAddress().get(0).getUserAddress();
+        List<GroupShop> groupShopList = cartShipmentAddressFormData.getGroupAddress().get(0).getGroupShop();
+        for (GroupShop groupShop : groupShopList) {
+            ShipmentCartItemModel shipmentCartItemModel = new ShipmentCartItemModel();
+            shipmentCartItemModel.setDropshipperDisable(cartShipmentAddressFormData.isDropshipperDisable());
+            shipmentCartItemModel.setOrderPrioritasDisable(cartShipmentAddressFormData.isOrderPrioritasDisable());
+            shipmentCartItemModel.setIsBlackbox(cartShipmentAddressFormData.isBlackbox());
+            shipmentCartItemModel.setHidingCourier(cartShipmentAddressFormData.isHidingCourier());
+            shipmentCartItemModel.setAddressId(cartShipmentAddressFormData.getGroupAddress()
+                    .get(0).getUserAddress().getAddressId());
+
+            int orderIndex = 0;
+            if (groupShopList.size() > 1) {
+                orderIndex = groupShopList.indexOf(groupShop) + 1;
             }
+            shipmentCartItemModel.setFulfillment(groupShop.isFulfillment());
+            shipmentCartItemModel.setFulfillmentId(groupShop.getFulfillmentId());
+            shipmentCartItemModel.setFulfillmentBadgeUrl(groupShop.getFulfillmentBadgeUrl());
+            getShipmentItem(shipmentCartItemModel, userAddress, groupShop, cartShipmentAddressFormData.getKeroToken(),
+                    String.valueOf(cartShipmentAddressFormData.getKeroUnixTime()), hasTradeInDropOffAddress, orderIndex);
+            if (groupShop.isFulfillment()) {
+                shipmentCartItemModel.setShopLocation(groupShop.getFulfillmentName());
+            }
+            setCartItemModelError(shipmentCartItemModel);
+            shipmentCartItemModel.setEligibleNewShippingExperience(cartShipmentAddressFormData.isEligibleNewShippingExperience());
+            shipmentCartItemModels.add(shipmentCartItemModel);
         }
 
         return shipmentCartItemModels;
     }
-
 
     private void setCartItemModelError(ShipmentCartItemModel shipmentCartItemModel) {
         if (shipmentCartItemModel.isAllItemError()) {
@@ -233,17 +207,29 @@ public class ShipmentDataConverter {
     private void getShipmentItem(ShipmentCartItemModel shipmentCartItemModel,
                                  UserAddress userAddress, GroupShop groupShop,
                                  String keroToken, String keroUnixTime,
-                                 boolean isMultiple, boolean hasTradeInDropOffAddress) {
-        if (isMultiple) {
-            shipmentCartItemModel.setRecipientAddressModel(getRecipientAddressModel(userAddress));
-        }
-
+                                 boolean hasTradeInDropOffAddress, int orderIndex) {
         shipmentCartItemModel.setShopShipmentList(groupShop.getShopShipments());
         shipmentCartItemModel.setError(groupShop.isError());
         if (shipmentCartItemModel.isError()) {
             shipmentCartItemModel.setAllItemError(true);
         }
         shipmentCartItemModel.setErrorTitle(groupShop.getErrorMessage());
+        if (orderIndex > 0) {
+            shipmentCartItemModel.setOrderNumber(orderIndex);
+        }
+        ShipmentInformationData shipmentInformationData = groupShop.getShipmentInformationData();
+        if (shipmentInformationData != null) {
+            if (shipmentInformationData.getPreorder().isPreorder()) {
+                shipmentCartItemModel.setPreOrderInfo(shipmentInformationData.getPreorder().getDuration());
+            }
+            if (shipmentInformationData.getFreeShippingExtra().getEligible()) {
+                shipmentCartItemModel.setFreeShippingBadgeUrl(shipmentInformationData.getFreeShippingExtra().getBadgeUrl());
+                shipmentCartItemModel.setFreeShippingExtra(true);
+            } else if (shipmentInformationData.getFreeShipping().getEligible()) {
+                shipmentCartItemModel.setFreeShippingBadgeUrl(shipmentInformationData.getFreeShipping().getBadgeUrl());
+            }
+            shipmentCartItemModel.setShopLocation(shipmentInformationData.getShopLocation());
+        }
 
         Shop shop = groupShop.getShop();
         shipmentCartItemModel.setShopId(shop.getShopId());
@@ -251,6 +237,7 @@ public class ShipmentDataConverter {
         shipmentCartItemModel.setOfficialStore(shop.isOfficial());
         shipmentCartItemModel.setGoldMerchant(shop.isGold());
         shipmentCartItemModel.setShopBadge(shop.getShopBadge());
+        shipmentCartItemModel.setShopAlertMessage(shop.getShopAlertMessage());
 
         shipmentCartItemModel.setCartString(groupShop.getCartString());
         shipmentCartItemModel.setShippingId(groupShop.getShippingId());
@@ -299,8 +286,10 @@ public class ShipmentDataConverter {
         cartItemModel.setCurrency(product.getProductPriceCurrency());
         if (product.getProductWholesalePrice() != 0) {
             cartItemModel.setPrice(product.getProductWholesalePrice());
+            cartItemModel.setWholesalePrice(true);
         } else {
             cartItemModel.setPrice(product.getProductPrice());
+            cartItemModel.setWholesalePrice(false);
         }
         cartItemModel.setOriginalPrice(product.getProductOriginalPrice());
         cartItemModel.setQuantity(product.getProductQuantity());
@@ -312,22 +301,27 @@ public class ShipmentDataConverter {
         cartItemModel.setPreOrderDurationDay(product.getPreOrderDurationDay());
         cartItemModel.setFreeReturn(product.isProductIsFreeReturns());
         cartItemModel.setCashback(product.getProductCashback());
-        cartItemModel.setCashback(!TextUtils.isEmpty(product.getProductCashback()));
+        cartItemModel.setCashback(!UtilsKt.isNullOrEmpty(product.getProductCashback()));
         cartItemModel.setFreeReturnLogo(product.getFreeReturnLogo());
-        cartItemModel.setfInsurance(product.isProductFcancelPartial());
-        cartItemModel.setfCancelPartial(product.isProductFinsurance());
+        cartItemModel.setFInsurance(product.isProductFcancelPartial());
+        cartItemModel.setFCancelPartial(product.isProductFinsurance());
         cartItemModel.setError(product.isError());
         cartItemModel.setErrorMessage(product.getErrorMessage());
         cartItemModel.setErrorMessageDescription(product.getErrorMessageDescription());
+        cartItemModel.setFreeShippingExtra(product.isFreeShippingExtra());
         cartItemModel.setFreeShipping(product.isFreeShipping());
-        cartItemModel.setFreeShippingBadgeUrl(product.getFreeShippingBadgeUrl());
         cartItemModel.setShowTicker(product.isShowTicker());
         cartItemModel.setTickerMessage(product.getTickerMessage());
+        cartItemModel.setVariant(product.getVariant());
+        cartItemModel.setProductAlertMessage(product.getProductAlertMessage());
+        cartItemModel.setProductInformation(product.getProductInformation());
 
         if (product.getTradeInInfoData() != null && product.getTradeInInfoData().isValidTradeIn()) {
             cartItemModel.setValidTradeIn(true);
             cartItemModel.setOldDevicePrice(product.getTradeInInfoData().getOldDevicePrice());
             cartItemModel.setNewDevicePrice(product.getTradeInInfoData().getNewDevicePrice());
+            cartItemModel.setDeviceModel(product.getTradeInInfoData().getDeviceModel());
+            cartItemModel.setDiagnosticId(product.getTradeInInfoData().getDiagnosticId());
         }
 
         if (product.getPurchaseProtectionPlanData() != null) {
@@ -357,10 +351,10 @@ public class ShipmentDataConverter {
             if (cartItem.isPreOrder()) {
                 isPreOrder = 1;
             }
-            if (cartItem.isfInsurance()) {
+            if (cartItem.getFInsurance()) {
                 isFcancelPartial = 1;
             }
-            if (cartItem.isfCancelPartial()) {
+            if (cartItem.getFCancelPartial()) {
                 isFinsurance = 1;
             }
         }

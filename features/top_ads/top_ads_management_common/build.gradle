@@ -5,7 +5,7 @@ apply plugin: 'io.hansel.preprocessor.module'
 buildscript {
     repositories {
         mavenCentral()
-        maven { url 'https://hansel.io/maven' }
+        maven { url 'https://maven-hansel.tokopedia.com/maven' }
     }
     dependencies {
         classpath rootProject.ext.miscDependencies.hansel
@@ -14,15 +14,16 @@ buildscript {
 
 dependencies {
     implementation project(rootProject.ext.features.resourcesCommon)
-    implementation project(rootProject.ext.libraries.tkpddesign)
     implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.libraries.applink)
+    implementation project(rootProject.ext.libraries.commonNetwork)
     implementation project(rootProject.ext.libraries.datePickerRange)
 
     implementation rootProject.ext.unifyDependencies.principles
+    implementation rootProject.ext.unifyDependencies.list
     implementation rootProject.ext.unifyDependencies.components
+    implementation rootProject.ext.unifyDependencies.icons
     implementation rootProject.ext.unifyDependencies.global_error
-    implementation rootProject.ext.tkpdInternalLibDependencies.cacheapi
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation project(rootProject.ext.libraries.graphql)
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
@@ -31,7 +32,8 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation project(rootProject.ext.libraries.trackingOptimizer)
     implementation project(rootProject.ext.libraries.track)
-    
+    implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
+    implementation project(rootProject.ext.libraries.remoteResourceRequest)
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
@@ -42,7 +44,12 @@ dependencies {
     })
 
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
+    implementation project(rootProject.ext.libraries.kotlinExtensions)
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
+    implementation rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation
+    kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
+    implementation project(rootProject.ext.libraries.adapterDelegate)
+    implementation rootProject.ext.unifyDependencies.datepicker
 }
 
 project.ext {

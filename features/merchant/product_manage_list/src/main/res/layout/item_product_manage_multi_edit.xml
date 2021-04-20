@@ -9,4 +9,4 @@
     android:layout_height="wrap_content"
     android:paddingTop="@dimen/product_manage_edit_item_vertical_spacing"
     android:paddingBottom="@dimen/product_manage_edit_item_vertical_spacing"
-    android:textColor="@color/product_manage_title_color" />
+    android:textColor="@color/Unify_N700_96" />

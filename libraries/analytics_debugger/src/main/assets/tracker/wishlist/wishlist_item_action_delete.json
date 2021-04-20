@@ -1,0 +1,20 @@
+{
+  "readme": "Wishlist and ads wishlist, impression and click",
+  "mode": "exact",
+  "query": [
+    {
+      "eventCategory": "wishlist page",
+      "event": "clickWishlist",
+      "eventAction": "remove wishlist - wishlist - login",
+      "sessionIris": "{{.*}}",
+      "eventLabel": "{{.*}}"
+    },
+    {
+      "eventCategory": "wishlist page",
+      "event": "clickWishlist",
+      "eventAction": "click batalkan hapus wishlist",
+      "sessionIris": "{{.*}}",
+      "eventLabel": "{{.*}}"
+    }
+  ]
+}

@@ -2,16 +2,13 @@ package com.tokopedia.settingnotif.usersetting.view.fragment.base
 
 import android.app.Activity
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.annotation.RawRes
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationManagerCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -19,36 +16,47 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PUSH_NOTIFICATION_TROUBLESHOOTER
 import com.tokopedia.network.constant.ErrorNetMessage.MESSAGE_ERROR_SERVER
+import com.tokopedia.seller_migration_common.analytics.SellerMigrationTracking
 import com.tokopedia.settingnotif.R
+import com.tokopedia.settingnotif.usersetting.analytics.NotifSettingAnalytics.trackTroubleshooterClicked
 import com.tokopedia.settingnotif.usersetting.data.pojo.NotificationActivation
 import com.tokopedia.settingnotif.usersetting.data.pojo.ParentSetting
 import com.tokopedia.settingnotif.usersetting.di.DaggerUserSettingComponent
 import com.tokopedia.settingnotif.usersetting.di.module.UserSettingModule
+import com.tokopedia.settingnotif.usersetting.util.intent
 import com.tokopedia.settingnotif.usersetting.view.activity.ParentActivity
 import com.tokopedia.settingnotif.usersetting.view.adapter.SettingFieldAdapter
 import com.tokopedia.settingnotif.usersetting.view.adapter.factory.SettingFieldTypeFactory
 import com.tokopedia.settingnotif.usersetting.view.adapter.factory.SettingFieldTypeFactoryImpl
 import com.tokopedia.settingnotif.usersetting.view.dataview.UserSettingDataView
+import com.tokopedia.settingnotif.usersetting.view.listener.ActivationItemListener
 import com.tokopedia.settingnotif.usersetting.view.listener.SectionItemListener
+import com.tokopedia.settingnotif.usersetting.view.state.UserSettingErrorState.GetSettingError
+import com.tokopedia.settingnotif.usersetting.view.state.UserSettingErrorState.SetSettingError
 import com.tokopedia.settingnotif.usersetting.view.viewmodel.UserSettingViewModel
 import com.tokopedia.settingnotif.usersetting.widget.NotifSettingBigDividerDecoration
 import com.tokopedia.settingnotif.usersetting.widget.NotifSettingDividerDecoration
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
-import com.tokopedia.settingnotif.usersetting.view.state.UserSettingErrorState.GetSettingError as GetSettingError
-import com.tokopedia.settingnotif.usersetting.view.state.UserSettingErrorState.SetSettingError as SetSettingError
 
 abstract class SettingFieldFragment : BaseListFragment<Visitable<*>,
         BaseAdapterTypeFactory>(),
         SettingFieldAdapter.SettingFieldAdapterListener,
-        SectionItemListener {
+        SectionItemListener,
+        ActivationItemListener {
 
     @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
     @Inject lateinit var userSession: UserSessionInterface
 
-    protected lateinit var settingViewModel: UserSettingViewModel
+    protected val settingViewModel: UserSettingViewModel by lazy {
+        ViewModelProvider(
+                this,
+                viewModelFactory
+        ).get(UserSettingViewModel::class.java)
+    }
 
     /*
     * a flag for preventing request network if needed
@@ -69,27 +77,12 @@ abstract class SettingFieldFragment : BaseListFragment<Visitable<*>,
         adapter as SettingFieldAdapter
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        initViewModel()
-    }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setupToolbar()
+        setupRecyclerView(view)
 
-    override fun onCreateView(
-            inflater: LayoutInflater,
-            container: ViewGroup?,
-            savedInstanceState: Bundle?
-    ): View? {
         initObservable()
-        return super.onCreateView(inflater, container, savedInstanceState).also {
-            setupToolbar()
-            setupRecyclerView(it)
-        }
-    }
-
-    private fun initViewModel() {
-        settingViewModel = ViewModelProviders
-                .of(this, viewModelFactory)
-                .get(UserSettingViewModel::class.java)
     }
 
     private fun initObservable() {
@@ -154,8 +147,9 @@ abstract class SettingFieldFragment : BaseListFragment<Visitable<*>,
     }
 
     override fun onItemClicked() {
+        SellerMigrationTracking.trackClickNotificationSeller(userSession.userId.orEmpty())
         activity?.let {
-            (it as ParentActivity).openSellerFiled()
+            (it as ParentActivity).openPushNotificationFiled()
         }
     }
 
@@ -180,6 +174,21 @@ abstract class SettingFieldFragment : BaseListFragment<Visitable<*>,
         }
     }
 
+    protected fun permissionValidationNotification(
+            notificationEnabled: Boolean,
+            pinnedItem: NotificationActivation,
+            lastStateItems: List<ParentSetting>
+    ) {
+        with(settingFieldAdapter) {
+            addPinnedActivation(pinnedItem)
+            if (notificationEnabled) {
+                enableSwitchComponent(lastStateItems)
+            } else {
+                disableSwitchComponent()
+            }
+        }
+    }
+
     protected fun isNotificationEnabled(): Boolean {
         return context?.let {
             NotificationManagerCompat
@@ -195,7 +204,7 @@ abstract class SettingFieldFragment : BaseListFragment<Visitable<*>,
     }
 
     private fun setupRecyclerView(view: View?) {
-        getRecyclerView(view).also {
+        getRecyclerView(view)?.also {
             if (it is VerticalRecyclerView) {
                 it.clearItemDecoration()
                 it.addItemDecoration(NotifSettingDividerDecoration(context))
@@ -206,7 +215,16 @@ abstract class SettingFieldFragment : BaseListFragment<Visitable<*>,
     }
 
     override fun getAdapterTypeFactory(): BaseAdapterTypeFactory {
-        return SettingFieldTypeFactoryImpl(this, userSession)
+        return SettingFieldTypeFactoryImpl(
+                this,
+                this,
+                userSession
+        )
+    }
+
+    override fun onTroubleshooterClicked() {
+        trackTroubleshooterClicked(userSession.userId, userSession.shopId)
+        context?.let { it.startActivity(it.intent(PUSH_NOTIFICATION_TROUBLESHOOTER)) }
     }
 
     override fun createAdapterInstance(): BaseListAdapter<Visitable<*>, BaseAdapterTypeFactory> {

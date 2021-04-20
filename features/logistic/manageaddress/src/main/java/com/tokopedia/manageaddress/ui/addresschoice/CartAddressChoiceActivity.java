@@ -8,20 +8,19 @@ import androidx.fragment.app.Fragment;
 
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic;
-import com.tokopedia.logisticdata.data.constant.LogisticConstant;
-import com.tokopedia.logisticdata.data.entity.address.RecipientAddressModel;
-import com.tokopedia.logisticdata.data.entity.address.Token;
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel;
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils;
+import com.tokopedia.logisticCommon.data.constant.LogisticConstant;
+import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel;
+import com.tokopedia.logisticCommon.data.entity.address.Token;
 import com.tokopedia.manageaddress.R;
 import com.tokopedia.manageaddress.domain.mapper.AddressModelMapper;
 import com.tokopedia.manageaddress.ui.addresschoice.recyclerview.ShipmentAddressListFragment;
-import com.tokopedia.manageaddress.ui.cornerlist.CornerListFragment;
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsChangeAddress;
 import com.tokopedia.purchase_platform.common.base.BaseCheckoutActivity;
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant;
 
-import org.jetbrains.annotations.NotNull;
-
-import static com.tokopedia.logisticdata.data.constant.LogisticConstant.INSTANCE_TYPE_EDIT_ADDRESS_FROM_SINGLE_CHECKOUT;
+import static com.tokopedia.logisticCommon.data.constant.LogisticConstant.INSTANCE_TYPE_EDIT_ADDRESS_FROM_SINGLE_CHECKOUT;
 import static com.tokopedia.purchase_platform.common.constant.CartConstant.SCREEN_NAME_CART_NEW_USER;
 import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.EXTRA_REF;
 import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.KERO_TOKEN;
@@ -32,35 +31,25 @@ import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.K
  * Fajar U N
  */
 public class CartAddressChoiceActivity extends BaseCheckoutActivity
-        implements ShipmentAddressListFragment.ICartAddressChoiceActivityListener, CornerListFragment.ActionListener {
+        implements ShipmentAddressListFragment.ICartAddressChoiceActivityListener {
 
     // Attention !!
     // If these constants will be used on other module, please move into CheckoutConstant.kt class on package purchase_platform_common
     public static final int RESULT_CODE_ACTION_ADD_DEFAULT_ADDRESS = 102;
     public static final int RESULT_CODE_ACTION_EDIT_ADDRESS = 103;
 
-    private static final String TAG_CORNER_FRAGMENT = "TAG_CORNER_FRAGMENT";
     private int typeRequest;
     private Token token;
+    private int prevState;
+    private LocalCacheModel localChosenAddr;
     private String PARAM_ADDRESS_MODEL = "EDIT_PARAM";
     private CheckoutAnalyticsChangeAddress mAnalytics = new CheckoutAnalyticsChangeAddress();
-
-    @Override
-    public void onAttachFragment(Fragment fragment) {
-        if (fragment instanceof CornerListFragment) {
-            ((CornerListFragment) fragment).setCornerListener(this);
-        }
-    }
-
-    @Override
-    protected void initInjector() {
-
-    }
 
     @Override
     protected void setupBundlePass(Bundle extras) {
         this.typeRequest = extras.getInt(CheckoutConstant.EXTRA_TYPE_REQUEST);
         this.token = extras.getParcelable(CheckoutConstant.EXTRA_DISTRICT_RECOMMENDATION_TOKEN);
+        this.prevState = extras.getInt(CheckoutConstant.EXTRA_PREVIOUS_STATE_ADDRESS);
     }
 
     @Override
@@ -148,45 +137,24 @@ public class CartAddressChoiceActivity extends BaseCheckoutActivity
     }
 
     @Override
-    public void requestCornerList() {
-        updateTitle(getString(R.string.button_choose_corner));
-        getSupportFragmentManager().beginTransaction()
-                .setCustomAnimations(R.anim.checkout_module_slide_in_up, R.anim.checkout_module_stay_still)
-                .replace(com.tokopedia.abstraction.R.id.parent_view, CornerListFragment.newInstance(), TAG_CORNER_FRAGMENT)
-                .addToBackStack(null)
-                .commit();
-    }
-
-    @Override
-    public void onCornerChosen(@NotNull RecipientAddressModel corner) {
-        updateTitle(getString(R.string.checkout_module_title_activity_shipping_address));
-        getSupportFragmentManager().popBackStack();
-        ((ShipmentAddressListFragment) getFragment()).onChooseCorner(corner);
-    }
-
-    @Override
     protected Fragment getNewFragment() {
         RecipientAddressModel currentAddress = getIntent().getParcelableExtra(CheckoutConstant.EXTRA_CURRENT_ADDRESS);
         switch (typeRequest) {
             case CheckoutConstant.TYPE_REQUEST_SELECT_ADDRESS_FROM_COMPLETE_LIST:
-                return ShipmentAddressListFragment.newInstance(currentAddress);
+                return ShipmentAddressListFragment.newInstance(currentAddress, prevState);
             case CheckoutConstant.TYPE_REQUEST_SELECT_ADDRESS_FROM_COMPLETE_LIST_FOR_MONEY_IN:
                 return ShipmentAddressListFragment.newInstance(currentAddress, CheckoutConstant.TYPE_REQUEST_SELECT_ADDRESS_FROM_COMPLETE_LIST_FOR_MONEY_IN);
             case CheckoutConstant.TYPE_REQUEST_MULTIPLE_ADDRESS_ADD_SHIPMENT:
             case CheckoutConstant.TYPE_REQUEST_MULTIPLE_ADDRESS_CHANGE_ADDRESS:
-                return ShipmentAddressListFragment.newInstanceFromMultipleAddressForm(currentAddress, true);
+                return ShipmentAddressListFragment.newInstanceFromMultipleAddressForm(currentAddress, prevState);
             default:
-                return ShipmentAddressListFragment.newInstance(currentAddress);
+                return ShipmentAddressListFragment.newInstance(currentAddress, prevState);
         }
     }
 
     @Override
     public void onBackPressed() {
-        if (getCurrentFragment() instanceof ShipmentAddressListFragment) {
-            mAnalytics.eventClickAtcCartChangeAddressClickArrowBackFromGantiAlamat();
-        } else if (getCurrentFragment() instanceof CornerListFragment) {
-            updateTitle(getString(R.string.checkout_module_title_activity_shipping_address));
-        }
+        mAnalytics.eventClickAtcCartChangeAddressClickArrowBackFromGantiAlamat();
         super.onBackPressed();
     }
 }

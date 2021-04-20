@@ -40,6 +40,18 @@
             android:textColor="@color/white" />
 
         <TextView
+            android:id="@+id/app_auth_secret"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/margin_small"
+            android:background="@drawable/btn_share"
+            android:gravity="center"
+            android:padding="@dimen/margin_small"
+            android:text="App Auth Secret (IT Risk)"
+            android:textColor="@color/white" />
+
+        <TextView
             android:id="@+id/reset_onboarding"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -74,6 +86,31 @@
             android:padding="@dimen/margin_small"
             android:text="Force Crash"
             android:textColor="@color/white" />
+
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/et_firebase_crash"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_lvl4"
+            android:textSize="@dimen/fontSize_lvl4"
+            android:lines="1"
+            android:gravity="center_vertical"
+            android:inputType="text"
+            android:hint="crash message"
+            app:backgroundTint="@color/Green_G500" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/btn_send_firebase_crash"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/spacing_lvl2"
+            android:layout_marginBottom="@dimen/spacing_lvl4"
+            android:background="@drawable/btn_share"
+            android:gravity="center"
+            android:padding="@dimen/spacing_lvl3"
+            android:text="Send Firebase Exception"
+            android:textColor="@color/Neutral_N0" />
 
         <TextView
             android:id="@+id/goto_screen_recorder"
@@ -117,6 +154,15 @@
             android:gravity="center"
             android:padding="@dimen/margin_small"
             android:text="Device ID: 1213124" />
+
+        <CheckBox
+            android:id="@+id/toggle_dark_mode"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/margin_small"
+            android:padding="@dimen/margin_small"
+            android:text="Force Dark Mode" />
 
         <CheckBox
             android:id="@+id/toggle_topads_debugger_notif"
@@ -208,7 +254,7 @@
             android:background="@drawable/btn_share"
             android:gravity="center"
             android:padding="@dimen/margin_small"
-            android:text="Client Analytics Validator"
+            android:text="Cassava"
             android:textColor="@color/white" />
 
         <TextView
@@ -221,18 +267,6 @@
             android:gravity="center"
             android:padding="@dimen/margin_small"
             android:text="View Analytics Log"
-            android:textColor="@color/white" />
-
-        <TextView
-            android:id="@+id/goto_analytics_error"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="@dimen/margin_small"
-            android:background="@drawable/btn_share"
-            android:gravity="center"
-            android:padding="@dimen/margin_small"
-            android:text="View Analytics Error Log"
             android:textColor="@color/white" />
 
         <LinearLayout
@@ -378,16 +412,9 @@
 
             <TableRow>
                 <TextView
-                    android:text="Enable Timber Logging To Server"
+                    android:text="Logging To Server"
                     android:paddingRight="25dip"
                     style="@style/TextView.Title.Bold"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-                <ToggleButton
-                    android:id="@+id/toggle_timber_dev_options"
-                    android:background="@drawable/btn_share"
-                    android:textColor="@color/white"
-                    android:layout_marginRight="1dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
             </TableRow>
@@ -402,7 +429,7 @@
             android:lines="1"
             android:gravity="center_vertical"
             android:inputType="text"
-            android:hint="Pno#TAG#message (required Server Logging ON)"
+            android:hint="Pno##TAG##message (message: abc=123##edf=4) (required Server Logging ON)"
             app:backgroundTint="@color/Green_G500" />
 
         <androidx.appcompat.widget.AppCompatTextView
@@ -417,6 +444,15 @@
             android:padding="@dimen/spacing_lvl3"
             android:text="Send Log to Server"
             android:textColor="@color/Neutral_N0" />
+
+        <CheckBox
+            android:id="@+id/toggle_seller_app_review"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/margin_small"
+            android:padding="@dimen/margin_small"
+            android:text="Enable Seller App Review Debugging" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -505,5 +541,125 @@
             android:layout_height="wrap_content"
             android:id="@+id/requestFcmToken"
             android:text="Request New FCM Token" />
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/resetOnboardingNavigation"
+            android:text="RESET ONBOARDING NAVIGATION!" />
+
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:layout_marginTop="@dimen/dp_20"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Rollance AB Testing Manual Switcher : "/>
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/input_rollence_key"
+            android:hint="input rollence key"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_4"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="@dimen/dp_4">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/input_rollence_variant"
+                android:hint="input rollence variant"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"/>
+
+            <Button
+                android:id="@+id/btn_apply_rollence"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="APPLY"/>
+        </LinearLayout>
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/ab_test_rollence_editor_start"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/spacing_lvl2"
+            android:layout_marginBottom="@dimen/spacing_lvl4"
+            android:background="@drawable/btn_share"
+            android:gravity="center"
+            android:padding="@dimen/spacing_lvl3"
+            android:text="@string/ab_test_rollence_start_button"
+            android:textColor="@color/Neutral_N0" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:layout_marginTop="@dimen/dp_10"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Home and Navigation Revamp Switcher : "/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:id="@+id/buttonAlwaysOldNavigation"
+                android:text="ALWAYS_OLD_NAVIGATION" />
+
+            <Button
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:id="@+id/buttonAlwaysNewNavigation"
+                android:text="ALWAYS_NEW_NAVIGATION" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:id="@+id/buttonAlwaysOldHome"
+                android:text="ALWAYS_OLD_HOME" />
+
+            <Button
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:id="@+id/buttonAlwaysNewHome"
+                android:text="ALWAYS_NEW_HOME" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:id="@+id/buttonAlwaysOldBalanceWidget"
+                android:text="ALWAYS_OLD_BALANCE_WIDGET" />
+
+            <Button
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:id="@+id/buttonAlwaysNewBalanceWidget"
+                android:text="ALWAYS_NEW_BALANCE_WIDGET" />
+        </LinearLayout>
+
     </LinearLayout>
 </ScrollView>

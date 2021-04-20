@@ -25,7 +25,6 @@ import com.tokopedia.deals.common.analytics.DealsAnalytics
 import com.tokopedia.deals.common.listener.*
 import com.tokopedia.deals.common.model.LoadingMoreUnifyModel
 import com.tokopedia.deals.common.ui.activity.DealsBaseActivity
-import com.tokopedia.deals.common.ui.adapter.DealsProductCardAdapter
 import com.tokopedia.deals.common.ui.dataview.*
 import com.tokopedia.deals.common.ui.fragment.DealsBaseFragment
 import com.tokopedia.deals.common.ui.viewmodel.DealsBaseViewModel
@@ -81,12 +80,11 @@ class DealsCategoryFragment : DealsBaseFragment(),
         observeLayout()
     }
 
-
     private fun observeLayout() {
         dealCategoryViewModel.observableDealsCategoryLayout.observe(viewLifecycleOwner, Observer {
             isLoadingInitialData = true
-            handleShimering(it)
             handleRanderList(it)
+            handleShimering(it)
         })
 
         dealCategoryViewModel.errorMessage.observe(viewLifecycleOwner, Observer {
@@ -120,7 +118,7 @@ class DealsCategoryFragment : DealsBaseFragment(),
                     isNotEmpty = true
                 }
             }
-            if (isNotEmpty == true) {
+            if (isNotEmpty) {
                 renderList(list, nextPage)
             }
         } else {
@@ -188,12 +186,7 @@ class DealsCategoryFragment : DealsBaseFragment(),
                 val totalSpanCount = getTotalSpanCount(parent)
 
                 if (position != RecyclerView.NO_POSITION) {
-                    when (position) {
-                        1 -> outRect.top = resources.getInteger(R.integer.twenty_four).toPx()
-                        2 -> outRect.top = resources.getInteger(R.integer.twenty_four).toPx()
-                        else -> outRect.top = 0
-                    }
-                    outRect.bottom = if (isInTheFirstRow(position + 2, totalSpanCount)) resources.getInteger(R.integer.twenty_four).toPx() else resources.getInteger(R.integer.four).toPx()
+                    outRect.bottom = if (isInTheFirstRow(position + 2, totalSpanCount)) resources.getInteger(R.integer.sixteen).toPx() else resources.getInteger(R.integer.four).toPx()
                     outRect.left = if (isFirstInRow(position + 2, totalSpanCount)) resources.getInteger(R.integer.two).toPx() else resources.getInteger(R.integer.sixteen).toPx()
                     outRect.right = if (isFirstInRow(position + 2, totalSpanCount))resources.getInteger(R.integer.sixteen).toPx() else resources.getInteger(R.integer.two).toPx()
                 }
@@ -296,25 +289,27 @@ class DealsCategoryFragment : DealsBaseFragment(),
     }
 
     override fun getInitialLayout(): Int = R.layout.fragment_deals_category
-    override fun getRecyclerView(view: View): RecyclerView = view.findViewById(R.id.recycler_view)
+    override fun getRecyclerView(view: View): RecyclerView = view.findViewById(R.id.deals_category_recycler_view)
 
     private var additionalSelectedFilterCount = 0
 
     private fun selectFilterFromChipsData() {
-        sort_filter_deals_category.let {
-            for ((i, item) in it.chipItems.withIndex()) {
-                if (chips[i].isSelected) item.type = ChipsUnify.TYPE_SELECTED
-                else item.type = ChipsUnify.TYPE_NORMAL
-            }
-
-            it.indicatorCounter -= additionalSelectedFilterCount
-            additionalSelectedFilterCount = 0
-            if (chips.size > it.chipItems.size) {
-                for (i in it.chipItems.size until chips.size) {
-                    if (chips[i].isSelected) additionalSelectedFilterCount++
+        sort_filter_deals_category.let { sortFilter ->
+            sortFilter.chipItems?.let { chipItems ->
+                for ((i, item) in chipItems.withIndex()) {
+                    if (chips[i].isSelected) item.type = ChipsUnify.TYPE_SELECTED
+                    else item.type = ChipsUnify.TYPE_NORMAL
                 }
+
+                sortFilter.indicatorCounter -= additionalSelectedFilterCount
+                additionalSelectedFilterCount = 0
+                if (chips.size > chipItems.size) {
+                    for (i in chipItems.size until chips.size) {
+                        if (chips[i].isSelected) additionalSelectedFilterCount++
+                    }
+                }
+                sortFilter.indicatorCounter += additionalSelectedFilterCount
             }
-            it.indicatorCounter += additionalSelectedFilterCount
         }
     }
 
@@ -370,10 +365,10 @@ class DealsCategoryFragment : DealsBaseFragment(),
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         categoryID = arguments?.getString(DealsCategoryActivity.EXTRA_CATEGORY_ID, "") ?: ""
+        getRecyclerView(view).tag = arguments?.getString(EXTRA_TAB_NAME, "") ?: ""
 
         (activity as DealsBaseActivity).searchBarActionListener = this
 
-        loadInitialData()
         dealCategoryViewModel.getChipsData()
     }
 
@@ -399,8 +394,8 @@ class DealsCategoryFragment : DealsBaseFragment(),
     }
 
     override fun onClickSearchBar() {
-        startActivityForResult(Intent(activity, DealsSearchActivity::class.java), DEALS_SEARCH_REQUEST_CODE)
         analytics.eventClickSearchCategoryPage()
+        startActivityForResult(Intent(activity, DealsSearchActivity::class.java), DEALS_SEARCH_REQUEST_CODE)
     }
 
     override fun afterSearchBarTextChanged(text: String) { /* do nothing */
@@ -427,7 +422,7 @@ class DealsCategoryFragment : DealsBaseFragment(),
     private fun applyFilter() {
         var categoryIDs = chips.filter { it.isSelected }.joinToString(separator = ",") { it.id }
         if (categoryIDs.isEmpty()) categoryIDs = categoryID
-        dealCategoryViewModel.updateChips(getCurrentLocation(), categoryIDs, true)
+        dealCategoryViewModel.updateChips(getCurrentLocation(), categoryIDs, categoryIDs.isNotEmpty())
     }
 
     override fun showTitle(brand: DealsBrandsDataView) {
@@ -447,11 +442,14 @@ class DealsCategoryFragment : DealsBaseFragment(),
         const val DEFAULT_MIN_ITEMS = 21
         const val INITIAL_SIZE_BASE_ITEM_VIEW = 2
 
-        fun getInstance(categoryId: String?): DealsCategoryFragment = DealsCategoryFragment().also {
+        private const val EXTRA_TAB_NAME = ""
+
+        fun getInstance(categoryId: String?, tabName: String = ""): DealsCategoryFragment = DealsCategoryFragment().also {
             it.arguments = Bundle().apply {
                 categoryId?.let { id ->
                     putString(DealsCategoryActivity.EXTRA_CATEGORY_ID, id)
                 }
+                putString(EXTRA_TAB_NAME, tabName)
             }
         }
     }

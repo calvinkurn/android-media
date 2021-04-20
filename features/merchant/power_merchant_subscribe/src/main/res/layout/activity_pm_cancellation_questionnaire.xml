@@ -22,9 +22,9 @@
             android:id="@+id/stepper_progress_pm"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_2"
-            app:rcBackgroundColor="@color/black_12"
+            app:rcBackgroundColor="@color/Unify_N700_20"
             app:rcMax="100"
-            app:rcProgressColor="@color/tkpd_main_green"
+            app:rcProgressColor="@color/Unify_G400"
             app:rcRadius="0dp" />
 
         <FrameLayout

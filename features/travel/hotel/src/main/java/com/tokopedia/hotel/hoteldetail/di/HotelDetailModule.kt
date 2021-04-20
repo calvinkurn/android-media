@@ -9,7 +9,6 @@ import dagger.Provides
  * @author by furqan on 22/04/19
  */
 @Module
-@HotelDetailScope
 class HotelDetailModule {
 
     @HotelDetailScope

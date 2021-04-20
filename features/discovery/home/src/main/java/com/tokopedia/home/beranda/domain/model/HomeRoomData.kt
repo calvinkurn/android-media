@@ -13,7 +13,7 @@ data class HomeRoomData (
     @NonNull
     val id: Int = 1,
     @SerializedName("home_data")
-    val homeData: HomeData,
+    val homeData: HomeData? = HomeData(),
     @ColumnInfo(name = "modification_date")
     @SerializedName(value = "modification_date")
     var modificationDate: Date = Date(System.currentTimeMillis())

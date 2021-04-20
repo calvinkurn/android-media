@@ -48,11 +48,9 @@ class CouponLisitingStackedViewModel @Inject constructor(private val respositor:
             if (catalogListingOuter != null) {
                 if (catalogListingOuter.coupon.coupons != null) {
                     inStackedAdapter.value = catalogListingOuter
-
                 }
-            }
+            } else throw NullPointerException()
         }) {
-
         }
 
     }

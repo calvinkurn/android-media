@@ -6,6 +6,7 @@ import com.github.mikephil.charting.components.MarkerView
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.highlight.Highlight
 import com.github.mikephil.charting.utils.MPPointF
+import com.tokopedia.charts.model.LineChartEntry
 
 /**
  * Created By @ilhamsuaib on 28/06/20
@@ -17,7 +18,7 @@ open class ChartTooltip(
 ) {
 
     internal val markerView: MarkerView
-    private var refreshContent: ((view: View, data: Any, x: Float, y: Float) -> Unit)? = null
+    private var refreshContent: ((view: View, data: Any?, x: Float, y: Float) -> Unit)? = null
 
     init {
         markerView = object : MarkerView(context, layoutResource) {
@@ -34,7 +35,7 @@ open class ChartTooltip(
         }
     }
 
-    fun setOnDisplayContent(callback: (view: View, data: Any, x: Float, y: Float) -> Unit): ChartTooltip {
+    fun setOnDisplayContent(callback: (view: View, data: Any?, x: Float, y: Float) -> Unit): ChartTooltip {
         this.refreshContent = callback
         return this
     }

@@ -14,6 +14,8 @@ object PreferenceModelMapper {
             }
             profiles = profilesModules
             maxProfile = data.maxProfile
+            ticker = data.tickers.firstOrNull()
+            enableOccRevamp = data.enableOccRevamp
         }
     }
 
@@ -22,6 +24,7 @@ object PreferenceModelMapper {
         return ProfilesItemModel().apply {
             profileId = profilesItem.profileId
             status = profilesItem.status
+            enable = profilesItem.enable
             addressModel = getAddressModel(profilesItem.address)
             paymentModel = getPaymentModel(profilesItem.payment)
             shipmentModel = getShipmentModel(profilesItem.shipment)
@@ -51,6 +54,7 @@ object PreferenceModelMapper {
             serviceId = shipment.serviceId
             serviceDuration = shipment.serviceDuration
             serviceName = shipment.serviceName
+            estimation = shipment.estimation
         }
     }
 
@@ -62,6 +66,7 @@ object PreferenceModelMapper {
             image = payment.image
             url = payment.url
             metadata = payment.metadata
+            tickerMessage = payment.tickerMessage
         }
     }
 }

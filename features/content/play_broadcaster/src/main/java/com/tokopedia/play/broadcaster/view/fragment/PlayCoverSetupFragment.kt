@@ -24,11 +24,8 @@ import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
 import com.tokopedia.play.broadcaster.ui.model.CoverSource
-import com.tokopedia.play.broadcaster.ui.model.result.NetworkResult
-import com.tokopedia.play.broadcaster.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play.broadcaster.util.cover.YalantisImageCropper
 import com.tokopedia.play.broadcaster.util.cover.YalantisImageCropperImpl
-import com.tokopedia.play.broadcaster.util.extension.exhaustive
 import com.tokopedia.play.broadcaster.util.extension.getDialog
 import com.tokopedia.play.broadcaster.util.extension.showToaster
 import com.tokopedia.play.broadcaster.util.helper.CoverImagePickerHelper
@@ -40,13 +37,17 @@ import com.tokopedia.play.broadcaster.util.preference.PermissionSharedPreference
 import com.tokopedia.play.broadcaster.view.activity.PlayBroadcastActivity
 import com.tokopedia.play.broadcaster.view.custom.PlayBottomSheetHeader
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseSetupFragment
-import com.tokopedia.play.broadcaster.view.partial.CoverCropPartialView
-import com.tokopedia.play.broadcaster.view.partial.CoverSetupPartialView
+import com.tokopedia.play.broadcaster.view.partial.CoverCropViewComponent
+import com.tokopedia.play.broadcaster.view.partial.CoverSetupViewComponent
 import com.tokopedia.play.broadcaster.view.state.Changeable
 import com.tokopedia.play.broadcaster.view.state.CoverSetupState
 import com.tokopedia.play.broadcaster.view.state.NotChangeable
 import com.tokopedia.play.broadcaster.view.viewmodel.DataStoreViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayCoverSetupViewModel
+import com.tokopedia.play_common.model.result.NetworkResult
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.play_common.util.extension.exhaustive
+import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.unifycomponents.Toaster
 import com.yalantis.ucrop.model.ExifInfo
 import kotlinx.coroutines.*
@@ -57,10 +58,10 @@ import javax.inject.Inject
  */
 class PlayCoverSetupFragment @Inject constructor(
         private val viewModelFactory: ViewModelFactory,
-        private val dispatcher: CoroutineDispatcherProvider,
+        private val dispatcher: CoroutineDispatchers,
         private val permissionPref: PermissionSharedPreferences,
         private val analytic: PlayBroadcastAnalytic
-) : PlayBaseSetupFragment() {
+) : PlayBaseSetupFragment(), CoverCropViewComponent.Listener, CoverSetupViewComponent.Listener {
 
     private val job = SupervisorJob()
     private val scope = CoroutineScope(dispatcher.main + job)
@@ -72,8 +73,27 @@ class PlayCoverSetupFragment @Inject constructor(
 
     private lateinit var bottomSheetHeader: PlayBottomSheetHeader
 
-    private lateinit var coverSetupView: CoverSetupPartialView
-    private lateinit var coverCropView: CoverCropPartialView
+    private val coverSetupView by viewComponent(isEagerInit = true) {
+        CoverSetupViewComponent(
+                container = view as ViewGroup,
+                dataSource = object : CoverSetupViewComponent.DataSource {
+                    override fun getMaxTitleCharacters(): Int {
+                        return viewModel.maxTitleChars
+                    }
+
+                    override fun isValidCoverTitle(coverTitle: String): Boolean {
+                        return viewModel.isValidCoverTitle(coverTitle)
+                    }
+
+                    override fun getCurrentCoverUri(): Uri? {
+                        return viewModel.coverUri
+                    }
+                },
+                listener = this
+        )
+    }
+
+    private val coverCropView by viewComponent { CoverCropViewComponent(it, this) }
 
     private lateinit var imagePickerHelper: CoverImagePickerHelper
 
@@ -186,7 +206,6 @@ class PlayCoverSetupFragment @Inject constructor(
 
     override fun onDestroyView() {
         super.onDestroyView()
-        viewModel.saveCover(coverSetupView.coverTitle)
         job.cancelChildren()
     }
 
@@ -194,6 +213,61 @@ class PlayCoverSetupFragment @Inject constructor(
         super.onAttachFragment(childFragment)
 
         getImagePickerHelper().onAttachFragment(childFragment)
+    }
+
+    /**
+     * CoverCrop View Component Listener
+     */
+    override fun onAddButtonClicked(view: CoverCropViewComponent, imageInputPath: String, cropRect: RectF, currentImageRect: RectF, currentScale: Float, currentAngle: Float, exifInfo: ExifInfo, viewBitmap: Bitmap) {
+        if (isGalleryPermissionGranted()) {
+            scope.launch {
+                try {
+                    val croppedUri = withContext(dispatcher.io) {
+                        yalantisImageCropper.cropImage(
+                                inputPath = imageInputPath,
+                                cropRect = cropRect,
+                                currentRect = currentImageRect,
+                                currentScale = currentScale,
+                                currentAngle = currentAngle,
+                                exifInfo = exifInfo,
+                                viewBitmap = viewBitmap
+                        )
+                    }
+
+                    viewModel.setDraftCroppedCover(croppedUri)
+                    if (isEditCoverMode) shouldUploadCover(viewModel.savedCoverTitle)
+                } catch (e: Throwable) {  /* Fail to crop */ }
+            }
+        } else requestGalleryPermission(REQUEST_CODE_PERMISSION_CROP_COVER)
+
+        analytic.clickContinueOnCroppingPage()
+    }
+
+    override fun onChangeButtonClicked(view: CoverCropViewComponent) {
+        onChangeCoverFromCropping(viewModel.source)
+        analytic.clickChangeCoverOnCroppingPage()
+    }
+
+    /**
+     * CoverSetup View Component Listener
+     */
+    override fun onImageAreaClicked(view: CoverSetupViewComponent) {
+        viewModel.saveCover(coverSetupView.coverTitle)
+        requestGalleryPermission(REQUEST_CODE_PERMISSION_COVER_CHOOSER, isFullFlow = true)
+        analytic.clickAddCover()
+    }
+
+    override fun onNextButtonClicked(view: CoverSetupViewComponent, coverTitle: String) {
+        shouldUploadCover(coverTitle)
+        analytic.clickContinueOnAddCoverAndTitlePage()
+    }
+
+    override fun onTitleAreaHasFocus() {
+        analytic.clickAddTitle()
+    }
+
+    override fun onViewDestroyed(view: CoverSetupViewComponent) {
+        viewModel.saveCover(view.coverTitle)
     }
 
     fun setListener(listener: Listener) {
@@ -223,79 +297,6 @@ class PlayCoverSetupFragment @Inject constructor(
         with(view) {
             bottomSheetHeader = findViewById(R.id.bottom_sheet_header)
         }
-
-        coverSetupView = CoverSetupPartialView(
-                container = view as ViewGroup,
-                dataSource = object : CoverSetupPartialView.DataSource {
-                    override fun getMaxTitleCharacters(): Int {
-                        return viewModel.maxTitleChars
-                    }
-
-                    override fun isValidCoverTitle(coverTitle: String): Boolean {
-                        return viewModel.isValidCoverTitle(coverTitle)
-                    }
-
-                    override fun getCurrentCoverUri(): Uri? {
-                        return viewModel.coverUri
-                    }
-                },
-                listener = object : CoverSetupPartialView.Listener {
-                    override fun onImageAreaClicked(view: CoverSetupPartialView) {
-                        viewModel.saveCover(coverSetupView.coverTitle)
-                        requestGalleryPermission(REQUEST_CODE_PERMISSION_COVER_CHOOSER, isFullFlow = true)
-                        analytic.clickAddCover()
-                    }
-
-                    override fun onNextButtonClicked(view: CoverSetupPartialView, coverTitle: String) {
-                        shouldUploadCover(coverTitle)
-                        analytic.clickContinueOnAddCoverAndTitlePage()
-                    }
-
-                    override fun onTitleAreaHasFocus() {
-                        analytic.clickAddTitle()
-                    }
-                }
-        )
-        viewLifecycleOwner.lifecycle.addObserver(coverSetupView)
-
-        coverCropView = CoverCropPartialView(view, object : CoverCropPartialView.Listener {
-            override fun onAddButtonClicked(
-                    view: CoverCropPartialView,
-                    imageInputPath: String,
-                    cropRect: RectF,
-                    currentImageRect: RectF,
-                    currentScale: Float,
-                    currentAngle: Float,
-                    exifInfo: ExifInfo,
-                    viewBitmap: Bitmap
-            ) {
-                if (isGalleryPermissionGranted()) {
-                    scope.launch {
-                        val croppedUri = withContext(dispatcher.io) {
-                            yalantisImageCropper.cropImage(
-                                    inputPath = imageInputPath,
-                                    cropRect = cropRect,
-                                    currentRect = currentImageRect,
-                                    currentScale = currentScale,
-                                    currentAngle = currentAngle,
-                                    exifInfo = exifInfo,
-                                    viewBitmap = viewBitmap
-                            )
-                        }
-
-                        viewModel.setDraftCroppedCover(croppedUri)
-                        if (isEditCoverMode) shouldUploadCover(viewModel.savedCoverTitle)
-                    }
-                } else requestGalleryPermission(REQUEST_CODE_PERMISSION_CROP_COVER)
-
-                analytic.clickContinueOnCroppingPage()
-            }
-
-            override fun onChangeButtonClicked(view: CoverCropPartialView) {
-                onChangeCoverFromCropping(viewModel.source)
-                analytic.clickChangeCoverOnCroppingPage()
-            }
-        })
     }
 
     private fun setupView() {

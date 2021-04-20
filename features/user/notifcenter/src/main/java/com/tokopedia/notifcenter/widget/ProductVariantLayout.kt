@@ -12,6 +12,7 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.core.graphics.ColorUtils
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.toPx
@@ -59,8 +60,9 @@ class ProductVariantLayout @JvmOverloads constructor(
 
     private fun getBackgroundDrawable(hexColor: String?): Drawable? {
         val backgroundDrawable = ContextCompat.getDrawable(context, R.drawable.notifcenter_circle_color_variant_indicator)
+        val color = Color.parseColor(hexColor)
 
-        if (isWhiteColor(hexColor)) {
+        if (isWhiteColor(color)) {
             applyStrokeTo(backgroundDrawable)
             return backgroundDrawable
         }
@@ -69,14 +71,14 @@ class ProductVariantLayout @JvmOverloads constructor(
         return backgroundDrawable
     }
 
-    private fun isWhiteColor(hexColor: String?): Boolean {
-        return hexColor == "#ffffff" || hexColor == "#fff"
+    private fun isWhiteColor(color: Int): Boolean {
+        return ColorUtils.calculateLuminance(color) > 0.90
     }
 
     private fun applyStrokeTo(backgroundDrawable: Drawable?) {
         if (backgroundDrawable is GradientDrawable) {
             val strokeWidth = 1f.toPx()
-            backgroundDrawable.setStroke(strokeWidth.toInt(), ContextCompat.getColor(context, R.color.grey_300))
+            backgroundDrawable.setStroke(strokeWidth.toInt(), ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N100))
         }
     }
 

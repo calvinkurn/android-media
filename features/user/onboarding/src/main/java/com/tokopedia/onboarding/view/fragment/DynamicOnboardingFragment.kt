@@ -13,11 +13,13 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.DeeplinkDFMapper
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.dynamicfeatures.DFInstaller
 import com.tokopedia.onboarding.R
 import com.tokopedia.onboarding.analytics.OnboardingAnalytics
 import com.tokopedia.onboarding.common.IOnBackPressed
+import com.tokopedia.onboarding.data.OnboardingConstant
 import com.tokopedia.onboarding.di.OnboardingComponent
 import com.tokopedia.onboarding.domain.model.ConfigDataModel
 import com.tokopedia.onboarding.view.adapter.PageAdapter
@@ -212,6 +214,11 @@ class DynamicOnboardingFragment : BaseDaggerFragment(), IOnBackPressed {
             val page = RouteManager.getIntent(it, appLink)
 
             if (defferedDeeplinkPath.isEmpty()) {
+
+                if (appLink.contains(ApplinkConst.REGISTER)) {
+                    page.putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, OnboardingConstant.PARAM_SOURCE_ONBOARDING)
+                }
+
                 if (appLink != ApplinkConst.HOME) {
                     taskStackBuilder.addNextIntent(homeIntent)
                     taskStackBuilder.addNextIntent(page)

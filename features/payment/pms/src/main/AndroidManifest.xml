@@ -6,32 +6,56 @@
         <activity
             android:label="@string/payment_title_payment_status"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White"
-            android:name=".payment.view.activity.PaymentListActivity"/>
+            android:theme="@style/Theme.WhiteUnify"
+            android:name=".payment.view.activity.PaymentListActivity">
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_pms"
+                    android:path="@string/path_pms"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
+        </activity>
         <activity
             android:label="@string/payment_title_activity_change_clik_bca"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White"
+            android:theme="@style/Theme.WhiteUnify"
             android:name=".clickbca.view.ChangeClickBcaActivity"/>
         <activity
             android:label="@string/payment_title_activity_change_detail_account"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White"
+            android:theme="@style/Theme.WhiteUnify"
             android:name=".bankaccount.view.ChangeBankAccountActivity"/>
         <activity
             android:label="@string/payment_title_activity_howtopay"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White"
-            android:name=".howtopay.ReactNativeHowToPayActivity" />
+            android:theme="@style/Theme.WhiteUnify"
+            android:name=".howtopay_native.ui.activity.HowToPayActivity" >
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_how_to_pay"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
+        </activity>
+
         <activity
             android:label="@string/payment_title_activity_dest_bank"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White"
+            android:theme="@style/Theme.WhiteUnify"
             android:name=".bankdestination.view.activity.BankDestinationActivity"/>
         <activity
             android:label="@string/payment_title_upload_proof"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White"
+            android:theme="@style/Theme.WhiteUnify"
             android:name=".proof.view.UploadProofPaymentActivity"/>
     </application>
 

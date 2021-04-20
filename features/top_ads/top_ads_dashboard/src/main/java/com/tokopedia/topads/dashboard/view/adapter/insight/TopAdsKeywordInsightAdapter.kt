@@ -41,10 +41,10 @@ class TopAdsKeywordInsightAdapter(private var onCheck: ((pos:Int) -> Unit)) : Re
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.view.img.setImageDrawable(holder.view.context.getResDrawable(R.drawable.topads_dashboard_folder))
-        holder.view.keywordName.text = items[position].name
-        holder.view.insightCount.text = items[position].count.toString()
+        val name = items[position].name + "(" + items[position].count + ")"
+        holder.view.keywordName.text = name
         holder.view.txtPotential.text = String.format(holder.view.resources.getString(R.string.topads_dash_insight_key_item_tampil_potensi), Utils.convertToCurrencyString(setPotentialValue(position).toLong()))
-        holder.view.txtSavings.text = String.format(holder.view.resources.getString(R.string.topads_dash_insight_key_item_hemat_potensi),Utils.convertToCurrencyString(setSavingsValue(position).toLong()))
+        holder.view.txtSavings.text = String.format(holder.view.resources.getString(R.string.topads_dash_insight_key_item_hemat_potensi), Utils.convertToCurrencyString(setSavingsValue(position).toLong()))
         holder.view.setOnClickListener {
             onCheck.invoke(position)
         }

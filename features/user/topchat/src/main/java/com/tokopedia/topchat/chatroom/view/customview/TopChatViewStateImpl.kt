@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.chat_common.data.*
 import com.tokopedia.chat_common.domain.pojo.attachmentmenu.AttachmentMenu
 import com.tokopedia.chat_common.util.ChatTimeConverter
@@ -40,7 +41,10 @@ import com.tokopedia.topchat.chattemplate.view.adapter.TemplateChatAdapter
 import com.tokopedia.topchat.chattemplate.view.adapter.TemplateChatTypeFactoryImpl
 import com.tokopedia.topchat.chattemplate.view.listener.ChatTemplateListener
 import com.tokopedia.topchat.common.analytics.TopChatAnalytics
+import com.tokopedia.topchat.common.util.ImageUtil
+import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.toPx
+import com.tokopedia.unifyprinciples.Typography
 
 /**
  * @author : Steven 29/11/18
@@ -68,6 +72,9 @@ class TopChatViewStateImpl constructor(
     private var attachmentPreviewRecyclerView = view.findViewById<RecyclerView>(com.tokopedia.chat_common.R.id.rv_attachment_preview)
     var chatStickerMenuButton: ImageView? = view.findViewById(R.id.iv_chat_sticker)
     var chatMenu: ChatMenuView? = view.findViewById(R.id.fl_chat_menu)
+    private var userStatus: Typography? = null
+    private var typingImage: ImageUnify? = null
+    private var typingText: Typography? = null
 
     lateinit var attachmentPreviewAdapter: AttachmentPreviewAdapter
     lateinit var templateAdapter: TemplateChatAdapter
@@ -95,10 +102,12 @@ class TopChatViewStateImpl constructor(
     }
 
     override fun getChatRoomHeaderModel(): ChatRoomHeaderViewModel = chatRoomViewModel.headerModel
+    override fun useDefaultReplyWatcher(): Boolean = false
 
     override fun initView() {
         super.initView()
         recyclerView.setHasFixedSize(true)
+        recyclerView.itemAnimator = null
         (recyclerView.layoutManager as LinearLayoutManager).stackFromEnd = false
         (recyclerView.layoutManager as LinearLayoutManager).reverseLayout = true
         replyEditText.setOnFocusChangeListener { v, hasFocus ->
@@ -113,6 +122,13 @@ class TopChatViewStateImpl constructor(
         templateRecyclerView.adapter = templateAdapter
         templateRecyclerView.hide()
 
+        userStatus = toolbar.findViewById(com.tokopedia.chat_common.R.id.subtitle)
+        typingImage = toolbar.findViewById(com.tokopedia.chat_common.R.id.iv_typing)
+        typingText = toolbar.findViewById(com.tokopedia.chat_common.R.id.tv_typing)
+
+        typingImage?.let {
+            ImageUtil.setTypingAnimation(it)
+        }
         initProductPreviewLayout()
         initHeaderLayout()
         setupChatStickerMenu()
@@ -205,8 +221,9 @@ class TopChatViewStateImpl constructor(
     }
 
     override fun clearAttachmentPreview() {
-        hideProductPreviewLayout()
+        attachmentPreviewAdapter.clear()
         sendListener.onEmptyProductPreview()
+        hideProductPreviewLayout()
     }
 
     override fun hideProductPreviewLayout() {
@@ -233,7 +250,9 @@ class TopChatViewStateImpl constructor(
     }
 
     override fun onSetCustomMessage(customMessage: String) {
-        replyEditText.setText(customMessage)
+        if (customMessage.isNotEmpty()) {
+            replyEditText.setText(customMessage)
+        }
     }
 
     override fun getAdapter(): TopChatRoomAdapter {
@@ -259,7 +278,15 @@ class TopChatViewStateImpl constructor(
         showLastTimeOnline(viewModel)
         setHeaderMenuButton(headerMenuListener, alertDialog)
         showReplyBox(viewModel.replyable)
+        initListPadding(viewModel)
         onCheckChatBlocked(viewModel.headerModel.role, viewModel.headerModel.name, viewModel.blockedStatus)
+    }
+
+    private fun initListPadding(viewModel: ChatroomViewModel) {
+        if (!viewModel.replyable) {
+            val bottomPadding = recyclerView.context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4)
+            recyclerView.setPadding(0, 0, 0, bottomPadding.toInt())
+        }
     }
 
     private fun updateBlockStatus(viewModel: ChatroomViewModel) {
@@ -554,7 +581,7 @@ class TopChatViewStateImpl constructor(
         myAlertDialog.setOnOkClickListener {
             headerMenuListener.onDeleteConversation()
         }
-        myAlertDialog.setBtnCancel(view.context.getString(com.tokopedia.imagepicker.R.string.cancel))
+        myAlertDialog.setBtnCancel(view.context.getString(com.tokopedia.resources.common.R.string.general_label_cancel))
         myAlertDialog.setOnCancelClickListener { myAlertDialog.dismiss() }
         myAlertDialog.show()
     }
@@ -573,15 +600,36 @@ class TopChatViewStateImpl constructor(
         }
     }
 
-    fun setTemplate(listTemplate: List<Visitable<Any>>?) {
+    override fun updateTemplateState() {
+        if (!templateRecyclerView.isVisible && templateAdapter.hasTemplateChat()) {
+            showTemplateChat()
+        }
+    }
+
+    fun setTemplate(
+            listTemplate: List<Visitable<Any>>?,
+            isLastMessageBroadcast: Boolean = false,
+            amIBuyer: Boolean = true
+    ) {
+        val isLastMsgFromBroadcastAndIamBuyer = isLastMessageBroadcast && amIBuyer
         templateRecyclerView.visibility = View.GONE
         listTemplate?.let {
             templateAdapter.list = listTemplate
-            templateRecyclerView.showWithCondition(templateAdapter.hasTemplateChat())
-            if (attachmentPreviewContainer.isVisible) {
-                addBottomPaddingTemplateChat(8.toPx())
+            if (templateAdapter.hasTemplateChat() && !isLastMsgFromBroadcastAndIamBuyer) {
+                showTemplateChat()
+            } else {
+                hideTemplateChat()
             }
         }
+    }
+
+    private fun showTemplateChat() {
+        templateRecyclerView.show()
+        addBottomPaddingTemplateChat(8.toPx())
+    }
+
+    private fun hideTemplateChat() {
+        templateRecyclerView.hide()
     }
 
     fun addTemplateString(message: String) {
@@ -607,4 +655,21 @@ class TopChatViewStateImpl constructor(
         replyEditText.requestFocus()
     }
 
+    override fun onShowStartTyping() {
+        userStatus?.hide()
+        typingImage?.show()
+        typingText?.show()
+        typingImage?.let {
+            ImageUtil.startAVDTypingAnimation(it)
+        }
+    }
+
+    override fun onShowStopTyping() {
+        userStatus?.show()
+        typingImage?.hide()
+        typingText?.hide()
+        typingImage?.let {
+            ImageUtil.stopAVDTypingAnimation(it)
+        }
+    }
 }

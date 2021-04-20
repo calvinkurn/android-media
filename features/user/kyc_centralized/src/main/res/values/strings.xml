@@ -28,7 +28,8 @@
 
     <string name="kyc_failed_title">Gagal Verifikasi</string>
     <string name="kyc_failed_text">Sistem tidak dapat membaca informasi yang terdapat di dokumen Anda.\n\nSilakan unggah ulang dokumen Anda. Pastikan foto tidak terpotong dan informasi di dalamnya terbaca jelas.</string>
-    <string name="kyc_failed_button">Verifikasi Ulang</string>
+    <string name="kyc_failed_text_with_reason">Sistem kami tidak bisa memproses foto identitasmu karena:</string>
+    <string name="kyc_failed_button">Upload Ulang</string>
 
     <string name="kyc_verified_title">Dokumen Telah Terverifikasi!</string>
     <string name="kyc_verified_text">Data yang Anda berikan telah tersimpan\ndan terlindungi dengan aman di dalam\nsistem Tokopedia.</string>
@@ -77,6 +78,7 @@
     <string name="error_text_image_file_too_big">Foto melebihi ukuran maksimum 10 MB</string>
     <string name="error_text_image_cant_be_accessed">Foto ktp tidak dapat diakses</string>
     <string name="error_text_liveness_image_cant_be_accessed">Foto tidak dapat diakses</string>
+    <string name="error_text_image_fail_to_encrypt">Foto tidak dapat disimpan</string>
 
     <string name="title_kyc_form_ktp">1. Foto KTP</string>
     <string name="title_kyc_form_selfie">2. Foto Diri &amp; KTP</string>
@@ -130,4 +132,31 @@
     <string name="kyc_ktp_face_fail_button">Coba Lagi</string>
     <string name="kyc_ktp_fail_face_ok_button">Foto Ulang KTP</string>
 
+    <string name="user_identification_default_request_error_unknown">Terjadi kesalahan. Ulangi beberapa saat lagi</string>
+
+    <string name="kyc_upload_retry" translatable="false">Coba Lagi</string>
+
+    <string name="kyc_failed_image">Failed Image</string>
+    <string name="kyc_upload_failed_reason_general_title" translatable="false">Ada gangguan di rumah Toped</string>
+    <string name="kyc_upload_failed_reason_general">Kami akan bereskan secepatnya. Klik tombol di bawah atau balik lagi nanti.</string>
+
+    <string name="kyc_upload_failed_reason_bad_network_title" translatable="false">Koneksi internetmu terganggu!</string>
+    <string name="kyc_upload_failed_reason_bad_network">Yuk, pastikan internetmu lancar dengan cek ulang paket data, WiFi, atau jaringan di tempatmu.</string>
+    
+    <string name="kyc_desc_foto_ktp">Foto KTP</string>
+    <string name="kyc_desc_verifikasi_wajah">Verifikasi wajah</string>
+    <string name="kyc_desc_foto_ktp_result">Result foto KTP</string>
+    <string name="kyc_desc_verifikasi_wajah_result">Result verifikasi wajah</string>
+
+    <string name="kyc_benefit_onboarding_title">Verifikasi datamu, yuk!</string>
+    <string name="kyc_benefit_onboarding_subtitle">Dapatkan akses ke berbagai layanan ini dengan upload foto KTP dan wajah:</string>
+
+    <string name="kyc_benefit_one_title">Bisa jadi Power Merchant</string>
+    <string name="kyc_benefit_one_desc">Upgrade status toko &amp; tingkatkan penjualan dengan berbagai fitur khusus.</string>
+
+    <string name="kyc_benefit_two_title">Tambah skor Performa Toko</string>
+    <string name="kyc_benefit_two_desc">Performa Toko kamu akan meningkat setelah KTP berhasil diverifikasi.</string>
+
+    <string name="kyc_benefit_three_title">Tingkatkan keamanan toko</string>
+    <string name="kyc_benefit_three_desc">Datamu akan digunakan untuk mengamankan akses ke tokomu.</string>
 </resources>

@@ -14,7 +14,7 @@ dependencies {
 project.ext {
     artifactId = 'gtmutil'
     groupId = 'com.tokopedia.analytic'
-    versionName = "0.0.3"
+    versionName = "0.0.2"
     artifactName = "analytic_gtmutil-release"
 }
 

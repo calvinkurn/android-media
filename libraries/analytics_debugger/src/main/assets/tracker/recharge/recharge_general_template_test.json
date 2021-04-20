@@ -1,0 +1,55 @@
+{
+  "readme": "Recharge general template test",
+  "mode": "exact",
+  "query": [
+    {
+      "event": "clickHomepage",
+      "eventCategory": "digital - homepage",
+      "eventAction": "click dropdown operator cluster list",
+      "eventLabel": "{{.+}}",
+      "sessionIris": "{{.+}}"
+    },
+    {
+      "event": "clickHomepage",
+      "eventCategory": "digital - homepage",
+      "eventAction": "choose operator cluster",
+      "eventLabel": "{{.+ - .+}}",
+      "sessionIris": "{{.+}}"
+    },
+    {
+      "event": "clickHomepage",
+      "eventCategory": "digital - homepage",
+      "eventAction": "click dropdown operator list",
+      "eventLabel": "{{.+}}",
+      "sessionIris": "{{.+}}"
+    },
+    {
+      "event": "clickHomepage",
+      "eventCategory": "digital - homepage",
+      "eventAction": "choose operator",
+      "eventLabel": "{{.+ - .+}}",
+      "sessionIris": "{{.+}}"
+    },
+    {
+      "event": "clickCategory",
+      "eventCategory": "digital - homepage",
+      "eventAction": "click dropdown product list",
+      "eventLabel": "{{.+ - .+}}",
+      "sessionIris": "{{.+}}"
+    },
+    {
+      "event": "clickHomepage",
+      "eventCategory": "digital - homepage",
+      "eventAction": "click on product card",
+      "eventLabel": "{{.+ - .+ - .+}}",
+      "sessionIris": "{{.+}}"
+    },
+    {
+      "event": "clickHomepage",
+      "eventCategory": "digital - homepage",
+      "eventAction": "{{input manual number|input manual number \\d+}}",
+      "eventLabel": "{{.+ - .+}}",
+      "sessionIris": "{{.+}}"
+    }
+  ]
+}

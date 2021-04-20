@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tool="http://schemas.android.com/tools"
+    android:id="@+id/waitingPaymentOrderContainer"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="@dimen/layout_lvl2">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvLabelPaymentDeadline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingStart="@dimen/layout_lvl2"
+        android:text="@string/label_payment_deadline"
+        android:textColor="@color/Unify_N700_68"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="body_3" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvValuePaymentDeadline"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl1"
+        android:paddingEnd="@dimen/layout_lvl2"
+        android:textColor="@color/Unify_N700_68"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/tvLabelPaymentDeadline"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="body_3"
+        app:typographyWeight="bold"
+        tool:text="13 Sep, 14:55" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvLabelBuyerNameAndPlace"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_4"
+        android:paddingStart="@dimen/layout_lvl2"
+        android:text="@string/label_buyer_and_place_name"
+        android:textColor="@color/Unify_N700_96"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvLabelPaymentDeadline"
+        app:typographyType="body_3" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvValueBuyerNameAndPlace"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl1"
+        android:layout_marginTop="@dimen/dp_4"
+        android:paddingEnd="@dimen/layout_lvl2"
+        android:textColor="@color/Unify_N700_96"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/tvLabelBuyerNameAndPlace"
+        app:layout_constraintTop_toBottomOf="@id/tvLabelPaymentDeadline"
+        app:typographyType="body_3"
+        app:typographyWeight="bold"
+        tool:text="Y*******y (Jakarta Selatan)" />
+
+    <View
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_1"
+        android:layout_marginStart="@dimen/layout_lvl2"
+        android:layout_marginTop="@dimen/dp_12"
+        android:layout_marginEnd="@dimen/layout_lvl2"
+        android:background="@color/Unify_N75"
+        app:layout_constraintTop_toBottomOf="@id/tvValueBuyerNameAndPlace" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvWaitingPaymentOrderProducts"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/waiting_order_recycler_margin_top"
+        android:layoutAnimation="@anim/recycler_view_animation_top_to_bottom"
+        android:paddingStart="@dimen/layout_lvl2"
+        android:paddingEnd="@dimen/layout_lvl2"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintTop_toBottomOf="@id/divider"
+        tool:itemCount="5"
+        tool:listitem="@layout/item_waiting_payment_order" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvToggleCollapseMoreProducts"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/layout_lvl1"
+        android:paddingStart="@dimen/layout_lvl2"
+        android:paddingEnd="@dimen/layout_lvl1"
+        android:textColor="@color/Unify_G500"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/rvWaitingPaymentOrderProducts"
+        app:typographyType="body_2"
+        tool:text="Tampilkan Lebih Banyak" />
+
+    <ImageView
+        android:id="@+id/icLoadMoreDropDown"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_3"
+        android:contentDescription="@string/content_description_ic_load_more_product_drop_down_indicator"
+        app:layout_constraintBottom_toBottomOf="@id/tvToggleCollapseMoreProducts"
+        app:layout_constraintStart_toEndOf="@id/tvToggleCollapseMoreProducts"
+        app:layout_constraintTop_toTopOf="@id/tvToggleCollapseMoreProducts"
+        app:srcCompat="@drawable/ic_arrow_dropdown" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/layout_lvl1"
+        android:layout_marginTop="@dimen/layout_lvl2"
+        android:background="@drawable/som_detail_divider"
+        app:layout_constraintTop_toBottomOf="@id/tvToggleCollapseMoreProducts" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

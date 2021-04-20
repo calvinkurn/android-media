@@ -9,7 +9,7 @@
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/white">
+        android:background="@color/Unify_N0">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -21,7 +21,7 @@
                 android:layout_height="wrap_content"
                 android:animateLayoutChanges="true"
                 android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
-                android:background="@color/white"
+                android:background="@color/Unify_N0"
                 app:layout_constraintTop_toTopOf="parent">
 
                 <androidx.appcompat.widget.Toolbar
@@ -35,17 +35,19 @@
                     app:subtitleTextAppearance="?subtitleTextAppearance"
                     app:titleTextAppearance="?titleTextAppearance">
 
-                    <com.tokopedia.design.text.SearchInputView
+                    <com.tokopedia.unifycomponents.SearchBarUnify
                         android:id="@+id/search_input_view"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:clickable="true"
                         android:focusable="true"
-                        android:background="@drawable/bg_corner"
-                        android:textColorHint="@android:color/darker_gray"
+                        android:background="@drawable/toolbar_bg_corner"
+                        android:textColorHint="@color/Unify_N200"
                         android:textSize="@dimen/sp_16"
-                        app:siv_search_hint="@string/brandlist_search_view_hint"
-                        app:siv_search_icon="@drawable/ic_search_bar" />
+                        android:layout_margin="@dimen/spacing_lvl3"
+                        app:search_bar_clearable="true"
+                        app:search_bar_show_icon="false"
+                        app:search_bar_placeholder="@string/brandlist_search_view_hint" />
 
                 </androidx.appcompat.widget.Toolbar>
             </com.google.android.material.appbar.AppBarLayout>
@@ -60,7 +62,7 @@
                     android:id="@+id/rv_brandlist_search"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="@color/white" />
+                    android:background="@color/Unify_N0" />
 
             </com.tokopedia.brandlist.common.widget.StickySingleHeaderView>
 

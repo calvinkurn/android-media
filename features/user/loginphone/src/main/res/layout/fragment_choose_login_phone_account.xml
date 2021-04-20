@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -12,17 +12,17 @@
         android:paddingTop="?attr/actionBarSize">
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/title"
+            android:id="@+id/chooseAccountTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_16"
-            android:layout_marginLeft="@dimen/dp_16"
-            android:layout_marginTop="@dimen/dp_16"
-            android:layout_marginEnd="@dimen/dp_16"
-            android:layout_marginRight="@dimen/dp_16"
+            android:layout_marginStart="@dimen/spacing_lvl4"
+            android:layout_marginLeft="@dimen/spacing_lvl4"
+            android:layout_marginTop="@dimen/spacing_lvl4"
+            android:layout_marginEnd="@dimen/spacing_lvl4"
+            android:layout_marginRight="@dimen/spacing_lvl4"
             android:text="@string/choose_account_title"
-            android:textColor="#f531353b"
-            android:textSize="@dimen/sp_24"
+            android:textColor="@color/Unify_N700_96"
+            android:textSize="@dimen/fontSize_lvl7"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -30,26 +30,23 @@
             app:typographyWeight="bold" />
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/list_account"
+            android:id="@+id/chooseAccountList"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_0"
-            android:layout_marginTop="@dimen/dp_8"
+            android:layout_height="@dimen/layout_lvl0"
+            android:layout_marginTop="@dimen/spacing_lvl3"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/title" />
-
-        <com.tokopedia.unifycomponents.LoaderUnify
-            android:id="@+id/progress_bar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
+            app:layout_constraintTop_toBottomOf="@+id/chooseAccountTitle"/>
+      
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/chooseAccountLoader"
+        android:layout_width="@dimen/layout_lvl6"
+        android:layout_height="@dimen/layout_lvl6"
+        android:layout_gravity="center"
+        android:visibility="gone" />
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar_shop_creation"

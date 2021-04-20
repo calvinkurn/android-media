@@ -12,7 +12,6 @@ import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.common.travel.utils.TextHtmlUtils
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.cancellation.data.HotelCancellationButtonEnum
@@ -104,7 +103,7 @@ class HotelCancellationFragment : HotelBaseFragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        cancellationViewModel.cancellationData.observe(this, androidx.lifecycle.Observer {
+        cancellationViewModel.cancellationData.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             when (it) {
                 is Success -> {
                     initView(it.data)
@@ -188,7 +187,7 @@ class HotelCancellationFragment : HotelBaseFragment() {
                     typography.layoutParams = ViewGroup.MarginLayoutParams(ViewGroup.MarginLayoutParams.MATCH_PARENT, ViewGroup.MarginLayoutParams.WRAP_CONTENT)
                     typography.setMargin(0, 0, 0, resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.layout_lvl2))
                     typography.setLineSpacing(6f, 1f)
-                    typography.setTextColor(ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Neutral_N700_68))
+                    typography.setTextColor(ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
                     cancelInfoBottomSheet.setChild(typography)
 
                     hotel_cancellation_ticker_refund_info.setDescriptionClickEvent(object : TickerCallback {

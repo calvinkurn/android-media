@@ -22,7 +22,7 @@ internal class StatusBarColorHelper(private val activity: Activity) {
 
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
             window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
-            window.statusBarColor = ContextCompat.getColor(activity, com.tokopedia.unifycomponents.R.color.light_N700_68)
+            window.statusBarColor = ContextCompat.getColor(activity, com.tokopedia.unifycomponents.R.color.Unify_N700_68)
         }
     }
 

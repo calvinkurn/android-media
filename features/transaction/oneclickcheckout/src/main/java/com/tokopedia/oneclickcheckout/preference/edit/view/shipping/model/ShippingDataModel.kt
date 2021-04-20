@@ -23,9 +23,11 @@ data class ServicesItemModel(
 
 data class TextsModel(
         var textRangePrice: String? = null,
-        var textsServiceDesc: String = ""
+        var textsServiceDesc: String = "",
+        var textEta: String? = null
 )
 
 data class LogisticPromoInfo(
-        val imageUrl: String = ""
+        val imageUrl: String = "",
+        val isNewLayout: Boolean = false
 ) : ServicesItem()

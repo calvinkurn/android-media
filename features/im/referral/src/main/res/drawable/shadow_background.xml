@@ -4,7 +4,7 @@
     <!-- dropshadow -->
     <item>
         <shape>
-            <solid android:color="#10CCCCCC" />
+            <solid android:color="@color/im_referral_dms_shadow_1" />
             <padding
                 android:bottom="2dp"
                 android:left="0dp"
@@ -15,7 +15,7 @@
 
     <item>
         <shape>
-            <solid android:color="#20CCCCCC" />
+            <solid android:color="@color/im_referral_dms_shadow_2" />
             <padding
                 android:bottom="2dp"
                 android:left="0dp"
@@ -26,7 +26,7 @@
 
     <item>
         <shape>
-            <solid android:color="#40CCCCCC" />
+            <solid android:color="@color/im_referral_dms_shadow_3" />
             <padding
                 android:bottom="2dp"
                 android:left="0dp"
@@ -39,7 +39,7 @@
     <item>
         <shape xmlns:android="http://schemas.android.com/apk/res/android"
             android:shape="rectangle">
-            <solid android:color="@color/white" />
+            <solid android:color="@color/Unify_N0" />
         </shape>
     </item>
 </layer-list>

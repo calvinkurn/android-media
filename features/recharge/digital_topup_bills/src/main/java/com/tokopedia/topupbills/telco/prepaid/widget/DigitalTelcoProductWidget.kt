@@ -67,7 +67,7 @@ class DigitalTelcoProductWidget @JvmOverloads constructor(context: Context, attr
         }))
         recyclerView.adapter = adapter
         if (productType == TelcoProductType.PRODUCT_GRID) {
-            recyclerView.layoutManager = GridLayoutManager(context, 2)
+            recyclerView.layoutManager = GridLayoutManager(context, 2, RecyclerView.VERTICAL, false)
             if (recyclerView.itemDecorationCount == 0) {
                 recyclerView.addItemDecoration(DigitalProductGridDecorator(CELL_MARGIN_DP, resources))
             }
@@ -77,17 +77,18 @@ class DigitalTelcoProductWidget @JvmOverloads constructor(context: Context, attr
         }
         adapter.renderList(dataCollection)
 
+        getVisibleProductItemsToUsersTracking(DEFAULT_POS_FIRST_ITEM, DEFAULT_POS_LAST_ITEM, dataTracking)
         recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
                 if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                    getVisibleProductItemsToUsersTracking(dataTracking)
+                    calculateProductItemVisibleItemTracking(dataTracking)
                 }
             }
         })
     }
 
-    fun getVisibleProductItemsToUsersTracking(productList: List<TelcoProduct>) {
+    fun calculateProductItemVisibleItemTracking(productList: List<TelcoProduct>) {
         var firstPos = 0
         var lastPos = 0
         if (recyclerView.layoutManager is LinearLayoutManager) {
@@ -97,7 +98,10 @@ class DigitalTelcoProductWidget @JvmOverloads constructor(context: Context, attr
             firstPos = (recyclerView.layoutManager as GridLayoutManager).findFirstCompletelyVisibleItemPosition()
             lastPos = (recyclerView.layoutManager as GridLayoutManager).findLastCompletelyVisibleItemPosition()
         }
+        getVisibleProductItemsToUsersTracking(firstPos, lastPos, productList)
+    }
 
+    private fun getVisibleProductItemsToUsersTracking(firstPos: Int, lastPos: Int, productList: List<TelcoProduct>) {
         val digitalTrackProductTelcoList = mutableListOf<DigitalTrackProductTelco>()
         for (i in firstPos..lastPos) {
             if (firstPos >= 0 && lastPos <= productList.size - 1) {
@@ -120,6 +124,8 @@ class DigitalTelcoProductWidget @JvmOverloads constructor(context: Context, attr
     }
 
     fun getLabelProductItem(productId: String): String {
+        if (!::adapter.isInitialized) return ""
+
         var label = ""
         var itemTitle = ""
 
@@ -141,6 +147,7 @@ class DigitalTelcoProductWidget @JvmOverloads constructor(context: Context, attr
 
     fun selectProductFromFavNumber(productId: String) {
         val label = getLabelProductItem(productId)
+        if (!::adapter.isInitialized) return
         for (i in adapter.data.indices) {
             if (adapter.data[i] is TelcoProduct) {
                 val itemProduct = adapter.data[i] as TelcoProduct
@@ -167,6 +174,10 @@ class DigitalTelcoProductWidget @JvmOverloads constructor(context: Context, attr
 
     companion object {
         const val CELL_MARGIN_DP: Int = 2
+
+        //add default pos first and last to fire tracking visible item for first time
+        const val DEFAULT_POS_FIRST_ITEM = 0
+        const val DEFAULT_POS_LAST_ITEM = 3
     }
 
 }

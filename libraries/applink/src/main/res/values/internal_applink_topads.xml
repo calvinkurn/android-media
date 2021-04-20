@@ -18,8 +18,15 @@
     <string name="path_topads_ad_chooser" translatable="false">/ad-picker</string>
     <string name="path_topads_ad_creation" translatable="false">/create-ads</string>
     <string name="path_topads_edit_manual" translatable="false">/edit-ads</string>
+    <string name="path_topads_edit_negative_keyword" translatable="false">/edit-ads-negative-keyword</string>
     <string name="path_autoads_onboarding" translatable="false">/autoads-onboarding</string>
     <string name="path_topads_edit_autoads" translatable="false">/edit-autoads</string>
     <string name="path_topads_edit_without_group" translatable="false">/edit-without-group</string>
+    <string name="path_topads_creation_onboard" translatable="false">/creation-onboard</string>
+    <string name="path_topads_ad_selection" translatable="false">/ad-selection</string>
+    <string name="path_topads_headline_ads_creation" translatable="false">/headline-ad-creation</string>
+    <string name="path_topads_headline_ads_edit" translatable="false">/headline-ad-edit</string>
+    <string name="path_topads_headline_ads_detail" translatable="false">/headline-ad-detail</string>
+
 
 </resources>

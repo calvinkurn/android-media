@@ -4,27 +4,25 @@ import android.content.Context
 import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.collection.SparseArrayCompat
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.FragmentStatePagerAdapter
-import androidx.viewpager.widget.PagerAdapter
+import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.shop.R
-import com.tokopedia.shop.home.view.fragment.ShopPageHomeFragment
+import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.pageheader.data.model.ShopPageTabModel
-import com.tokopedia.shop.product.view.fragment.ShopPageProductListFragment
+import com.tokopedia.shop.showcase.presentation.fragment.ShopPageShowcaseFragment
 import kotlinx.android.synthetic.main.shop_page_tab_view.view.*
 import java.lang.ref.WeakReference
 
 internal class ShopPageFragmentPagerAdapter(
         ctx: Context?,
-        fragmentManager: FragmentManager
-) : FragmentStatePagerAdapter(fragmentManager) {
+        fragment: Fragment
+) : FragmentStateAdapter(fragment) {
     private val registeredFragments = SparseArrayCompat<Fragment>()
     private var listShopPageTabModel = listOf<ShopPageTabModel>()
 
@@ -34,12 +32,6 @@ internal class ShopPageFragmentPagerAdapter(
 
     private val ctxRef = WeakReference(ctx)
 
-    override fun getCount(): Int = listShopPageTabModel.size
-
-    override fun getItem(position: Int): Fragment {
-        return listShopPageTabModel[position].tabFragment
-    }
-
     fun getTabView(position: Int, selectedPosition: Int): View? = LayoutInflater.from(ctxRef.get())
             .inflate(tabViewLayout, null)?.apply {
                 shop_page_tab_view_icon.setImageDrawable(getTabIconDrawable(position,  position == selectedPosition))
@@ -47,41 +39,70 @@ internal class ShopPageFragmentPagerAdapter(
 
     fun handleSelectedTab(tab: TabLayout.Tab, isActive: Boolean) {
         tab.customView?.apply {
+            if (listShopPageTabModel[tab.position].tabFragment is ShopPageShowcaseFragment) {
+                icon_tab_label?.gone()
+            }
             shop_page_tab_view_icon.setImageDrawable(getTabIconDrawable(tab.position, isActive))
         }
     }
 
     private fun getTabIconDrawable(position: Int, isActive: Boolean = false): Drawable? = ctxRef.get()?.run {
-        MethodChecker.getDrawable(
-                this,
-                listShopPageTabModel[position].tabIcon
-        )?.let { iconDrawable ->
-            DrawableCompat.wrap(iconDrawable)
-        }?.also { iconDrawable ->
-            DrawableCompat.setTint(iconDrawable, ContextCompat.getColor(
+        if (ShopUtil.isUsingNewNavigation()) {
+            val tabIconActiveSrc = listShopPageTabModel[position].tabIconActive
+            val tabIconInactiveSrc = listShopPageTabModel[position].tabIconInactive
+            if (isActive) {
+                MethodChecker.getDrawable(this, tabIconActiveSrc.takeIf { it != -1 }?:tabIconInactiveSrc)
+            } else {
+                MethodChecker.getDrawable(this, tabIconInactiveSrc)
+            }
+        } else {
+            MethodChecker.getDrawable(
                     this,
-                    if (isActive) R.color.color_green_shop_tab else R.color.color_gray_shop_tab
-            ))
+                    listShopPageTabModel[position].tabIconInactive
+            )?.let { iconDrawable ->
+                DrawableCompat.wrap(iconDrawable)
+            }?.also { iconDrawable ->
+                DrawableCompat.setTint(iconDrawable, ContextCompat.getColor(
+                        this,
+                        if (isActive) getTabActivateColor() else getTabInactiveColor()
+                ))
+            }
         }
     }
 
-    override fun instantiateItem(container: ViewGroup, position: Int): Any {
-        val o = super.instantiateItem(container, position)
-        registeredFragments.put(position, o as Fragment)
-        return o
+    private fun getTabInactiveColor(): Int {
+        return if (ShopUtil.isUsingNewNavigation())
+            com.tokopedia.unifyprinciples.R.color.Unify_N500
+        else
+            com.tokopedia.unifyprinciples.R.color.Unify_N200
     }
 
-    override fun destroyItem(container: ViewGroup, position: Int, `object`: Any) {
-        registeredFragments.remove(position)
-        super.destroyItem(container, position, `object`)
+    private fun getTabActivateColor(): Int {
+        return if (ShopUtil.isUsingNewNavigation())
+            com.tokopedia.unifyprinciples.R.color.Unify_G600
+        else
+            com.tokopedia.unifyprinciples.R.color.Unify_G500
     }
 
-    override fun getItemPosition(`object`: Any): Int {
-        return PagerAdapter.POSITION_NONE
+    override fun getItemId(position: Int): Long {
+        return listShopPageTabModel[position].hashCode().toLong()
     }
+
+    override fun containsItem(itemId: Long): Boolean {
+        return listShopPageTabModel.any {
+            it.hashCode().toLong() == itemId
+        }
+    }
+
+    override fun getItemCount(): Int =  listShopPageTabModel.size
+
+    override fun createFragment(position: Int): Fragment = listShopPageTabModel[position].tabFragment
 
     fun getRegisteredFragment(position: Int): Fragment? {
-        return registeredFragments.get(position)
+        return if (listShopPageTabModel.isNotEmpty())
+            listShopPageTabModel.getOrNull(position)?.tabFragment
+        else
+            null
     }
 
     fun setTabData(listShopPageTabModel: List<ShopPageTabModel>) {

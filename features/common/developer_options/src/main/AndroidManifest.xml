@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.tokopedia.developer_options">
 
@@ -5,32 +6,36 @@
         <activity
             android:name=".presentation.activity.DeveloperOptionActivity"
             android:label="@string/app_name"
-            android:windowSoftInputMode="stateHidden"
-            android:screenOrientation="portrait" >
-
-            <intent-filter android:autoVerify="true">
-                <action android:name="android.intent.action.VIEW" />
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden">
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+
                 <data
-                    android:scheme="@string/tokopedia_scheme"
                     android:host="@string/host_setting"
-                    android:pathPrefix="@string/path_dev_opt"/>
+                    android:pathPrefix="@string/path_dev_opt"
+                    android:scheme="@string/tokopedia_scheme" />
             </intent-filter>
-
         </activity>
-
         <activity
             android:name=".remote_config.RemoteConfigFragmentActivity"
             android:label="@string/remote_config_title"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustPan" />
-
-        <service android:name=".presentation.service.DeleteFirebaseTokenService"
-            android:exported="false"/>
+        <activity
+            android:name=".ab_test_rollence.AbTestRollenceConfigFragmentActivity"
+            android:label="@string/ab_test_rollence_title"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden|adjustPan" />
+        <service
+            android:name=".presentation.service.DeleteFirebaseTokenService"
+            android:exported="false" />
 
         <receiver android:name=".notification.ReviewNotificationUpdateExample" />
+
     </application>
 
 </manifest>

@@ -21,8 +21,7 @@ import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel;
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.imagepicker.R;
-import com.tokopedia.imagepicker.picker.gallery.type.GalleryType;
-import com.tokopedia.imagepicker.picker.gallery.widget.MediaGridInset;
+import com.tokopedia.imagepicker.common.widget.MediaGridInset;
 import com.tokopedia.imagepicker.picker.instagram.data.source.exception.ShouldLoginInstagramException;
 import com.tokopedia.imagepicker.picker.instagram.di.DaggerInstagramComponent;
 import com.tokopedia.imagepicker.picker.instagram.di.InstagramModule;
@@ -65,21 +64,17 @@ public class ImagePickerInstagramFragment extends BaseListFragment<InstagramMedi
     private String code = "";
     private String nextMediaId = "";
 
-    private @GalleryType
-    int galleryType;
     private boolean supportMultipleSelection;
     private int minImageResolution;
     private String belowMinImageResolutionErrorMessage = "";
 
     private ImageInstagramAdapter imageInstagramAdapter;
 
-    public static ImagePickerInstagramFragment newInstance(@GalleryType int galleryType,
-                                                           boolean supportMultipleSelection,
+    public static ImagePickerInstagramFragment newInstance(boolean supportMultipleSelection,
                                                            int minImageResolution,
                                                            String belowMinImageResolutionErrorMessage) {
         ImagePickerInstagramFragment fragment = new ImagePickerInstagramFragment();
         Bundle bundle = new Bundle();
-        bundle.putInt(ARGS_GALLERY_TYPE, galleryType);
         bundle.putBoolean(ARGS_SUPPORT_MULTIPLE, supportMultipleSelection);
         bundle.putInt(ARGS_MIN_RESOLUTION, minImageResolution);
         bundle.putString(ARGS_BELOW_MIN_RESOLUTION_ERROR_MESSAGE, belowMinImageResolutionErrorMessage);
@@ -87,17 +82,15 @@ public class ImagePickerInstagramFragment extends BaseListFragment<InstagramMedi
         return fragment;
     }
 
-    public static ImagePickerInstagramFragment newInstance(@GalleryType int galleryType,
-                                                           boolean supportMultipleSelection,
+    public static ImagePickerInstagramFragment newInstance(boolean supportMultipleSelection,
                                                            int minImageResolution) {
-        return newInstance(galleryType, supportMultipleSelection, minImageResolution, "");
+        return newInstance(supportMultipleSelection, minImageResolution, "");
     }
 
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         Bundle bundle = getArguments();
-        galleryType = bundle.getInt(ARGS_GALLERY_TYPE);
         supportMultipleSelection = bundle.getBoolean(ARGS_SUPPORT_MULTIPLE);
         minImageResolution = bundle.getInt(ARGS_MIN_RESOLUTION);
         if(savedInstanceState != null) {
@@ -150,7 +143,6 @@ public class ImagePickerInstagramFragment extends BaseListFragment<InstagramMedi
 
     @Override
     public void onSwipeRefresh() {
-        imagePickerInstagramPresenter.clearCacheInstagramMedia();
         super.onSwipeRefresh();
     }
 

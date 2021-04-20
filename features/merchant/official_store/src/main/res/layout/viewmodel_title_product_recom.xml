@@ -7,7 +7,7 @@
     android:text="@string/os_product_recommendation_title"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:textColor="@color/Neutral_N700_96"
+    android:textColor="@color/Unify_N700_96"
     android:layout_marginLeft="@dimen/spacing_lvl4"
     android:layout_marginRight="@dimen/spacing_lvl4"
     android:layout_marginTop="@dimen/dp_20"

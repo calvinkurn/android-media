@@ -10,34 +10,22 @@ import android.graphics.Color
 import android.graphics.PorterDuff
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
-import android.graphics.drawable.TransitionDrawable
 import android.os.Build
 import android.util.AttributeSet
-import android.util.DisplayMetrics
 import android.view.View
-import android.view.WindowManager
-import android.widget.ImageView
 import android.widget.LinearLayout
-import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.annotation.ColorInt
 import androidx.appcompat.widget.AppCompatImageButton
-import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
-import androidx.core.view.ViewCompat
 import androidx.transition.Fade
 import androidx.transition.Transition
 import androidx.transition.TransitionManager
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.applink.RouteManager
-import com.tokopedia.kotlin.extensions.view.loadImage
-import com.tokopedia.kotlin.extensions.view.pxToDp
-import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.view.model.rewardtopsection.DynamicActionListItem
-import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil
 import com.tokopedia.tokopoints.view.util.ImageUtil
 import com.tokopedia.tokopoints.view.util.convertDpToPixel
 import com.tokopedia.unifycomponents.NotificationUnify
@@ -79,7 +67,7 @@ class TokoPointToolbar : Toolbar {
             val v = getChildAt(NAV_ICON_POSITION)
             if (v != null && v.layoutParams is LayoutParams && v is AppCompatImageButton) {
                 val lp = v.getLayoutParams() as LayoutParams
-                lp.width = context.resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_48)
+                lp.width = context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_48)
                 v.setLayoutParams(lp)
                 v.invalidate()
                 v.requestLayout()
@@ -102,8 +90,8 @@ class TokoPointToolbar : Toolbar {
     fun switchToDarkMode() {
         if (currentToolbarState == ToolbarState.TOOLBAR_DARK) return
         currentToolbarState = ToolbarState.TOOLBAR_DARK
-        val whiteColor = MethodChecker.getColor(context, R.color.tp_toolbar_navigation_white_color)
-        val greyColor = MethodChecker.getColor(context, R.color.tp_toolbar_navigation_grey_color)
+        val whiteColor = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0)
+        val greyColor = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N400)
         toggleNavigationIconColor(whiteColor, greyColor)
         val colorAnim = ObjectAnimator.ofInt(tvToolbarTitle, "textColor",
                 whiteColor, greyColor)
@@ -124,8 +112,8 @@ class TokoPointToolbar : Toolbar {
     fun switchToTransparentMode() {
         if (currentToolbarState == ToolbarState.TOOLBAR_TRANSPARENT) return
         currentToolbarState = ToolbarState.TOOLBAR_TRANSPARENT
-        val whiteColor = MethodChecker.getColor(context, R.color.tp_toolbar_navigation_white_color)
-        val greyColor = MethodChecker.getColor(context, R.color.tp_toolbar_navigation_grey_color)
+        val whiteColor = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0)
+        val greyColor = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N400)
         toggleNavigationIconColor(greyColor, whiteColor)
         val colorAnim = ObjectAnimator.ofInt(tvToolbarTitle, "textColor", greyColor, whiteColor)
         colorAnim.duration = 200
@@ -134,7 +122,7 @@ class TokoPointToolbar : Toolbar {
     }
 
     fun applyAlphaToToolbarBackground(alpha: Float) {
-        mContext?.resources?.getColor(com.tokopedia.design.R.color.white)?.let { adjustAlpha(it, alpha) }?.let {
+        mContext?.resources?.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N0)?.let { adjustAlpha(it, alpha) }?.let {
             setBackgroundColor(it)
         }
     }
@@ -185,7 +173,7 @@ class TokoPointToolbar : Toolbar {
             if (dynamicActionItem.counter?.isShowCounter != null && dynamicActionItem.counter.counterStr != null
                     && dynamicActionItem.counter.counterStr.isNotEmpty() && dynamicActionItem.counter.counterStr != "0") {
                 viewCntainer.notif_dynamic.visibility = View.VISIBLE
-                viewCntainer.notif_dynamic.setNotification(dynamicActionItem.counter.counterStr, NotificationUnify.TEXT_TYPE, NotificationUnify.COLOR_PRIMARY)
+                viewCntainer.notif_dynamic.setNotification(dynamicActionItem.counter.counterStr, NotificationUnify.NONE_TYPE, NotificationUnify.COLOR_PRIMARY)
             }
             it.container_scrolledState.addView(viewCntainer, param)
             return viewCntainer

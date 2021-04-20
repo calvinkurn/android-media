@@ -34,7 +34,7 @@
         android:layout_marginTop="@dimen/spacing_lvl2"
         android:gravity="center"
         android:text="@string/reply_empty_subtitle_default"
-        android:textColor="@color/Neutral_N700_68"
+        android:textColor="@color/Unify_N700_68"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/talkReplyEmptyTitle"

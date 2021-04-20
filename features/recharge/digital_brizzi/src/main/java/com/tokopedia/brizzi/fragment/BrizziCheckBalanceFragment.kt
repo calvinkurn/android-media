@@ -17,13 +17,15 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital
 import com.tokopedia.brizzi.di.DaggerDigitalBrizziComponent
+import com.tokopedia.brizzi.util.DigitalBrizziGqlMutation
+import com.tokopedia.brizzi.util.DigitalBrizziGqlQuery
 import com.tokopedia.brizzi.viewmodel.BrizziBalanceViewModel
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam
 import com.tokopedia.common_digital.common.presentation.model.DigitalCategoryDetailPassData
 import com.tokopedia.common_electronic_money.di.NfcCheckBalanceInstance
 import com.tokopedia.common_electronic_money.fragment.NfcCheckBalanceFragment
 import com.tokopedia.common_electronic_money.util.CardUtils
-import com.tokopedia.permissionchecker.PermissionCheckerHelper
+import com.tokopedia.utils.permission.PermissionCheckerHelper
 import id.co.bri.sdk.Brizzi
 import javax.inject.Inject
 
@@ -155,8 +157,8 @@ class BrizziCheckBalanceFragment : NfcCheckBalanceFragment() {
     private fun getBalanceBrizzi(needRefreshToken: Boolean, intent: Intent) {
         try {
             brizziBalanceViewModel.processBrizziTagIntent(intent, brizziInstance,
-                    GraphqlHelper.loadRawString(resources, com.tokopedia.brizzi.R.raw.query_token_brizzi),
-                    GraphqlHelper.loadRawString(resources, com.tokopedia.brizzi.R.raw.mutation_emoney_log_brizzi),
+                    DigitalBrizziGqlQuery.tokenBrizzi,
+                    DigitalBrizziGqlMutation.emoneyLogBrizzi,
                     needRefreshToken)
         } catch (e: Exception) {
             Log.e(BrizziCheckBalanceFragment.javaClass.simpleName, e.message)

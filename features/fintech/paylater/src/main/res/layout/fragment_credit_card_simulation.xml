@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/clSimulationContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/unify_space_16"
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/unify_space_32">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvTitleSimulation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/unify_space_16"
+            android:text="@string/pay_later_simulation_header_title"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="heading_4"
+            app:typographyWeight="bold"
+            tools:textSize="@dimen/unify_font_16" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvSubtitleSimulationInstallment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/unify_space_16"
+            android:text="@string/credit_card_simulation_installment_sub_header"
+            app:layout_constraintStart_toStartOf="@+id/tvTitleSimulation"
+            app:layout_constraintTop_toBottomOf="@+id/tvTitleSimulation"
+            app:typographyType="body_2" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvCreditCardSimulation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="@dimen/credit_card_dp_10"
+            android:layout_marginTop="@dimen/unify_space_4"
+            android:clipToPadding="false"
+            android:orientation="horizontal"
+            android:paddingEnd="@dimen/credit_card_dp_10"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvSubtitleSimulationInstallment"
+            tools:listitem="@layout/credit_card_simulation_info_item" />
+
+        <ImageView
+            android:id="@+id/offerLabel"
+            android:layout_width="@dimen/unify_space_0"
+            android:layout_height="@dimen/unify_space_0"
+            android:scaleType="fitXY"
+            app:srcCompat="@drawable/bg_credit_card_installment_interest"
+            app:layout_constraintBottom_toBottomOf="@id/tvAllInstallments"
+            app:layout_constraintEnd_toEndOf="@id/tvAllInstallments"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/tvAllInstallments"
+            android:contentDescription="Offer Label" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvAllInstallments"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/unify_space_16"
+            android:paddingTop="@dimen/unify_space_8"
+            android:paddingEnd="@dimen/unify_space_16"
+            android:paddingBottom="@dimen/unify_space_8"
+            android:text="@string/credit_card_simulation_offer"
+            android:textColor="@color/Unify_N0"
+            app:layout_constraintStart_toStartOf="@+id/tvTitleSimulation"
+            app:layout_constraintTop_toBottomOf="@+id/rvCreditCardSimulation"
+            app:typographyType="body_3"
+            app:typographyWeight="bold" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvValidCreditCardBanks"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/unify_space_16"
+            app:layout_constraintStart_toStartOf="@+id/tvTitleSimulation"
+            app:layout_constraintTop_toBottomOf="@+id/offerLabel"
+            app:typographyType="body_2"
+            tools:text="Berlaku kartu kredit dari: 16 bank" />
+
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/titleShimmer"
+            android:layout_width="@dimen/pay_later_shimmer_width_dp_256"
+            android:layout_height="@dimen/unify_space_16"
+            android:layout_marginStart="@dimen/unify_space_16"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvValidCreditCardBanks"
+            app:loader_type="rect" />
+
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/subTitleShimmer"
+            android:layout_width="@dimen/unify_space_128"
+            android:layout_height="@dimen/unify_space_16"
+            android:layout_marginStart="@dimen/unify_space_16"
+            android:layout_marginTop="@dimen/unify_space_12"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/titleShimmer"
+            app:loader_type="rect" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvAvailableBanks"
+            android:layout_width="@dimen/unify_space_0"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/credit_card_dp_10"
+            android:layout_marginTop="@dimen/pay_later_benefit_margin_dp_6"
+            android:layout_marginEnd="@dimen/credit_card_dp_10"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/subTitleShimmer"
+            tools:listitem="@layout/credit_card_available_bank_item" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvSeeAll"
+            android:layout_width="@dimen/unify_space_0"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/unify_space_16"
+            android:gravity="center"
+            android:textColor="@color/Unify_G500"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/rvAvailableBanks"
+            app:typographyType="body_2"
+            app:typographyWeight="bold"
+            tools:text="Lihat Semua (10)" />
+
+        <com.tokopedia.empty_state.EmptyStateUnify
+            android:id="@+id/creditCardTermsEmptyView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/unify_space_16"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvSeeAll"
+            app:unifyEmptyStateDescription="@string/credit_card_simulation_empty_view_description"
+            app:unifyEmptyStateOrientation="vertical"
+            app:unifyEmptyStatePrimaryCTAText=""
+            app:unifyEmptyStateSecondaryCTAText=""
+            app:unifyEmptyStateTitle="@string/credit_card_simulation_empty_view_title" />
+
+
+        <com.tokopedia.globalerror.GlobalError
+            android:id="@+id/simulationGlobalError"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/unify_space_64"
+            android:gravity="center"
+            android:visibility="gone"
+            app:layout_constraintTop_toBottomOf="@+id/creditCardTermsEmptyView" />
+
+        <com.tokopedia.unifycomponents.DividerUnify
+            android:id="@+id/dividerVertical"
+            android:layout_width="@dimen/unify_space_0"
+            android:layout_height="@dimen/unify_space_8"
+            android:layout_marginTop="@dimen/unify_space_16"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/simulationGlobalError" />
+
+        <com.tokopedia.unifycomponents.ticker.Ticker
+            android:id="@+id/tickerSimulation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/unify_space_16"
+            android:layout_marginTop="@dimen/unify_space_16"
+            android:layout_marginEnd="@dimen/unify_space_16"
+            android:visibility="gone"
+            app:closeButtonVisibility="gone"
+            app:descriptionText="@string/pay_later_simulation_ticker_text"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/dividerVertical"
+            app:tickerType="information" />
+
+        <include
+            android:id="@+id/creditCardRegisterWidget"
+            layout="@layout/paylater_daftar_widget"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/unify_space_8"
+            android:layout_marginTop="@dimen/unify_space_16"
+            android:layout_marginEnd="@dimen/unify_space_12"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tickerSimulation" />
+
+        <include
+            android:id="@+id/supervisorWidget"
+            layout="@layout/paylater_supervisor_widget"
+            android:layout_width="@dimen/unify_space_0"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/unify_space_24"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/creditCardRegisterWidget" />
+
+        <androidx.constraintlayout.widget.Group
+            android:id="@+id/simulationDataGroup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:constraint_referenced_ids="tvTitleSimulation, tvSubtitleSimulationInstallment, rvCreditCardSimulation, tvAllInstallments, tvValidCreditCardBanks, supervisorWidget " />
+
+        <androidx.constraintlayout.widget.Group
+            android:id="@+id/creditSimulationShimmerGroup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:constraint_referenced_ids="titleShimmer, subTitleShimmer" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

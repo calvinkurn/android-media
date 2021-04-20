@@ -25,6 +25,7 @@ open class PromoCheckoutListDigitalFragment : BasePromoCheckoutListFragment(), P
 
     @Inject
     lateinit var promoCheckoutListDigitalPresenter: PromoCheckoutListDigitalPresenter
+
     @Inject
     lateinit var userSession: UserSession
     lateinit var promoDigitalModel: PromoDigitalModel
@@ -75,7 +76,7 @@ open class PromoCheckoutListDigitalFragment : BasePromoCheckoutListFragment(), P
     }
 
     override fun onClickItemLastSeen(promoCheckoutLastSeenModel: PromoCheckoutLastSeenModel) {
-        textInputCoupon.setText(promoCheckoutLastSeenModel.promoCode)
+        textInputCoupon.textFieldInput.setText(promoCheckoutLastSeenModel.promoCode)
         promoCheckoutAnalytics.clickDigitalLastSeenPromo(promoCheckoutLastSeenModel.promoCode, userSession.userId)
     }
 

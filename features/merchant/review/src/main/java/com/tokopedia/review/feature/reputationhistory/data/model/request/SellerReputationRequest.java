@@ -111,8 +111,14 @@ public class SellerReputationRequest {
             filterValueJsonObject.remove(DUE_DATE);
         }
 
-        param.put(PARAM_PAGE, pageValueJsonObject.toString());
-        param.put(PARAM_FILTER, filterValueJsonObject.toString());
+        String pageValue = pageValueJsonObject.toString();
+        if(pageValue!= null) {
+            param.put(PARAM_PAGE, pageValue);
+        }
+        String filterValue = filterValueJsonObject.toString();
+        if(filterValue!= null) {
+            param.put(PARAM_FILTER, filterValue);
+        }
         return param;
     }
 }

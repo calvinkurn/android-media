@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/home_account_member_layout_member_icon"
+        android:layout_width="@dimen/unify_space_24"
+        android:layout_height="@dimen/unify_space_24"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/home_account_member_layout_member_forward"
+        android:layout_width="@dimen/layout_lvl4"
+        android:layout_height="@dimen/layout_lvl4"
+        android:paddingStart="@dimen/spacing_lvl3"
+        android:paddingTop="@dimen/layout_lvl0"
+        android:paddingEnd="@dimen/layout_lvl0"
+        android:paddingBottom="@dimen/spacing_lvl3"
+        app:icon_color_night_enable="@color/home_account_icon_dark"
+        app:icon_name="CHEVRON_RIGHT"
+        app:layout_constraintBottom_toBottomOf="@+id/home_account_member_layout_title"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/home_account_member_layout_title"
+        app:srcCompat="@drawable/ic_arrow_forward_24" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/home_account_member_layout_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Unify_N700_96"
+        android:textSize="@dimen/fontSize_lvl4"
+        android:text="@string/default_member_title"
+        app:layout_constraintBottom_toBottomOf="@+id/home_account_member_layout_member_icon"
+        app:layout_constraintStart_toEndOf="@+id/home_account_member_layout_member_icon"
+        app:layout_constraintTop_toTopOf="@+id/home_account_member_layout_member_icon"
+        app:typographyWeight="bold" />
+
+    <com.tokopedia.unifycomponents.CardUnify
+        android:id="@+id/home_account_member_card"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/card_view_padding_normalizer"
+        android:layout_marginTop="@dimen/home_account_dp_8"
+        android:layout_marginEnd="@dimen/card_view_padding_normalizer"
+        android:visibility="visible"
+        app:card_type="shadow"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/home_account_member_layout_title"
+        tools:visibility="gone">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/home_account_member_layout_rv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </com.tokopedia.unifycomponents.CardUnify>
+
+    <com.tokopedia.unifycomponents.LocalLoad
+        android:id="@+id/home_account_local_load"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/home_account_dp_90"
+        android:layout_marginStart="@dimen/card_view_padding_normalizer"
+        android:layout_marginTop="@dimen/home_account_dp_8"
+        android:layout_marginEnd="@dimen/card_view_padding_normalizer"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/home_account_member_layout_title"
+        app:unify_local_load_description="@string/new_home_account_local_load_desc"
+        app:unify_local_load_title="@string/new_home_account_local_load_title"
+        tools:visibility="visible" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

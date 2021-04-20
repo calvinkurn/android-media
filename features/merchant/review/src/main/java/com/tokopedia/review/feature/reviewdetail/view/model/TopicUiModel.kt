@@ -5,7 +5,7 @@ import com.tokopedia.review.feature.reviewdetail.view.adapter.SellerReviewDetail
 
 data class TopicUiModel(
         var sortFilterItemList: ArrayList<SortFilterItemWrapper> = arrayListOf(),
-        var countFeedback: Int? = 0
+        var countFeedback: Long? = 0
 ) : BaseSellerReviewDetail {
     override fun type(typeFactory: SellerReviewDetailAdapterTypeFactory): Int {
         return typeFactory.type(this)

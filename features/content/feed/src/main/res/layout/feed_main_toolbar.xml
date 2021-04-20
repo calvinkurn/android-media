@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/toolbar"
+    android:layout_width="match_parent"
+    android:layout_height="?actionBarSize"
+    app:contentInsetEnd="@dimen/dp_0"
+    app:contentInsetStart="@dimen/dp_0"
+    app:contentInsetStartWithNavigation="@dimen/dp_0"
+    tools:layout_height="@dimen/dp_130">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="?actionBarSize"
+        android:orientation="horizontal"
+        android:padding="@dimen/spacing_lvl3"
+        tools:layout_height="@dimen/dp_100">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="@dimen/spacing_lvl4"
+            android:layout_toStartOf="@id/btn_search"
+            android:text="@string/search_title_feed"
+            android:textColor="@color/Unify_N0"
+            app:typographyType="heading_3" />
+
+        <ImageView
+            android:id="@+id/btn_search"
+            android:layout_width="@dimen/icon_toolbar"
+            android:layout_height="@dimen/icon_toolbar"
+            android:layout_centerVertical="true"
+            android:layout_toStartOf="@id/btn_inbox"
+            android:contentDescription="@string/feed_con_desc_btn_search"
+            android:scaleType="center"
+            app:srcCompat="@drawable/ic_searchbar_feed_search" />
+
+        <ImageView
+            android:id="@+id/btn_inbox"
+            android:layout_width="@dimen/icon_toolbar"
+            android:layout_height="@dimen/icon_toolbar"
+            android:layout_centerVertical="true"
+            android:layout_toStartOf="@+id/btn_notification"
+            android:contentDescription="@string/content_desc_btn_inbox"
+            android:scaleType="center"
+            app:srcCompat="@drawable/ic_searchbar_feed_message" />
+
+        <ImageView
+            android:id="@+id/btn_notification"
+            android:layout_width="@dimen/icon_toolbar"
+            android:layout_height="@dimen/icon_toolbar"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:contentDescription="@string/content_desc_btn_notification"
+            android:scaleType="center"
+            app:srcCompat="@drawable/ic_searchbar_feed_notification" />
+
+    </RelativeLayout>
+</androidx.appcompat.widget.Toolbar>

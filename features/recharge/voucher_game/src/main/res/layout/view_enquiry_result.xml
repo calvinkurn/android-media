@@ -5,13 +5,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="@dimen/dp_4">
+    android:layout_marginBottom="@dimen/unify_space_4">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/enquiry_result_field"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/black_70"
+        android:textColor="@color/Unify_N700_96"
         android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -23,7 +23,7 @@
         android:id="@+id/enquiry_result_value"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/black_70"
+        android:textColor="@color/Unify_N700_96"
         android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

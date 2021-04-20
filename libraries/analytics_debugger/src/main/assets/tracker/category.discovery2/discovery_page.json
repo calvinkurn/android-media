@@ -1,0 +1,50 @@
+{
+  "readme": "Discovery Screen Page level Tracker",
+  "mode": "exact",
+  "query": [
+    {
+      "discoveryName": "{{.*}}",
+      "currentSite": "tokopediamarketplace",
+      "event": "openScreen",
+      "eventName": "openScreen",
+      "userId": "{{.*}}",
+      "categoryId": "{{.*}}",
+      "screenName": "{{.*}}",
+      "isLoggedInStatus": "{{true|false}}",
+      "shopId": "{{.*}}",
+      "subcategory": "{{.*}}",
+      "networkSpeed": "{{.*}}",
+      "businessUnit": "discovery",
+      "clientId": "{{.*}}",
+      "discoverySlug": "{{.*}}",
+      "subcategoryId": "{{.*}}",
+      "category": "{{.*}}",
+      "appsflyerId": "{{.*}}",
+      "sessionIris": "{{.*}}"
+    },
+    {
+      "discoveryName": "{{.*}}",
+      "currentSite": "tokopediamarketplace",
+      "event": "openScreen",
+      "screenName": "{{.*}}",
+      "categoryId": "{{.*}}",
+      "isLoggedInStatus": "{{true|false}}",
+      "subcategoryId": "{{.*}}",
+      "contactInfo": {
+        "afUniqueId": "{{.*}}",
+        "userSeller": "{{\\d*.\\d*}}",
+        "userId": "{{.*}}",
+        "userFullName": "{{.*}}",
+        "userEmail": "{{.*}}",
+        "shopID": "{{.*}}"
+      },
+      "businessUnit": "discovery",
+      "clientId": "{{.*}}",
+      "androidId": "{{.*}}",
+      "discoverySlug": "{{.*}}",
+      "category": "{{.*}}",
+      "subcategory": "{{.*}}",
+      "eventName": "openScreen"
+    }
+  ]
+}

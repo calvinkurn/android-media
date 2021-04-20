@@ -17,14 +17,15 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.network.TextApiUtils
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
 import com.tokopedia.shop.R
 import com.tokopedia.shop.ShopComponentHelper
-import com.tokopedia.shop.common.di.component.ShopComponent
 import com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity
 import com.tokopedia.shop.product.di.component.DaggerShopProductComponent
 import com.tokopedia.shop.product.di.module.ShopProductModule
 import com.tokopedia.shop.product.util.ShopProductOfficialStoreUtils
-import com.tokopedia.shop.product.view.datamodel.ShopProductPromoViewModel
+import com.tokopedia.shop.product.view.datamodel.ShopProductPromoUiModel
 import com.tokopedia.shop.product.view.widget.NestedWebView
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.item_shop_product_limited_promo.*
@@ -44,7 +45,7 @@ class HomeProductFragment : BaseDaggerFragment() {
     lateinit var layoutLoading: View
     private var shopId: String = ""
 
-    private var shopProductPromoViewModel: ShopProductPromoViewModel = ShopProductPromoViewModel()
+    private var shopProductPromoUiModel: ShopProductPromoUiModel = ShopProductPromoUiModel()
 
     companion object {
         private const val MIN_SHOW_WEB_VIEW_PROGRESS = 80
@@ -86,18 +87,18 @@ class HomeProductFragment : BaseDaggerFragment() {
         shopId = arguments?.getString(SHOP_ID, "") ?: ""
         findViews()
         layoutLoading = view.findViewById(R.id.layout_loading)
-        shopProductPromoViewModel = getHomeData(getOfficialWebViewUrl())
-        if (isBind && isLogin == shopProductPromoViewModel.isLogin) {
+        shopProductPromoUiModel = getHomeData(getOfficialWebViewUrl())
+        if (isBind && isLogin == shopProductPromoUiModel.isLogin) {
             return
         }
         clearCache(shopPageNestedWebView)
-        if (shopProductPromoViewModel.isLogin) {
-            shopPageNestedWebView.loadAuthUrl(shopProductPromoViewModel.url, userSession)
+        if (shopProductPromoUiModel.isLogin) {
+            shopPageNestedWebView.loadAuthUrl(shopProductPromoUiModel.url.orEmpty(), userSession)
         } else {
-            shopPageNestedWebView.loadUrl(shopProductPromoViewModel.url)
+            shopPageNestedWebView.loadUrl(shopProductPromoUiModel.url)
         }
 
-        isLogin = shopProductPromoViewModel.isLogin
+        isLogin = shopProductPromoUiModel.isLogin
         isBind = true
     }
 
@@ -110,20 +111,19 @@ class HomeProductFragment : BaseDaggerFragment() {
         webView?.clearCache(true)
     }
 
-    private fun getHomeData(contentUrl: String): ShopProductPromoViewModel {
+    private fun getHomeData(contentUrl: String): ShopProductPromoUiModel {
         if (contentUrl.isNotBlank()) {
             val url = if (userSession.isLoggedIn) {
                 ShopProductOfficialStoreUtils.getLogInUrl(contentUrl, userSession.deviceId, userSession.userId)
             } else contentUrl
 
-            return ShopProductPromoViewModel(url, userSession.userId, userSession.accessToken, userSession.isLoggedIn)
+            return ShopProductPromoUiModel(url, userSession.userId, userSession.accessToken, userSession.isLoggedIn)
         }
-        return ShopProductPromoViewModel()
+        return ShopProductPromoUiModel()
     }
 
     private fun getOfficialWebViewUrl(): String {
         var officialWebViewUrl = arguments?.getString(SHOP_TOP_CONTENT_URL, "") ?: ""
-        officialWebViewUrl = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) officialWebViewUrl else ""
         officialWebViewUrl = if (TextApiUtils.isTextEmpty(officialWebViewUrl)) "" else officialWebViewUrl
         return officialWebViewUrl
     }
@@ -143,16 +143,12 @@ class HomeProductFragment : BaseDaggerFragment() {
     }
 
     private fun optimizeWebView() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            shopPageNestedWebView.setLayerType(View.LAYER_TYPE_HARDWARE, null)
-        } else {
-            shopPageNestedWebView.setLayerType(View.LAYER_TYPE_SOFTWARE, null)
-        }
+        shopPageNestedWebView.setLayerType(View.LAYER_TYPE_HARDWARE, null)
     }
 
     fun promoClicked(url: String?) {
         activity?.let {
-            val urlProceed = ShopProductOfficialStoreUtils.proceedUrl(it, url, shopId,
+            val urlProceed = ShopProductOfficialStoreUtils.proceedUrl(it, url.orEmpty(), shopId,
                     userSession.isLoggedIn,
                     userSession.deviceId,
                     userSession.userId)
@@ -201,7 +197,8 @@ class HomeProductFragment : BaseDaggerFragment() {
         override fun onReceivedError(view: WebView, errorCode: Int, description: String, failingUrl: String) {
             super.onReceivedError(view, errorCode, description, failingUrl)
             finishLoading()
-            Timber.w("P1#WEBVIEW_ERROR#'%s';error_code=%s;desc='%s'", failingUrl, errorCode, description)
+            ServerLogger.log(Priority.P1, "WEBVIEW_ERROR", mapOf("type" to failingUrl,
+                    "error_code" to errorCode.toString(), "desc" to description))
             stopPerformanceMonitoring()
         }
 

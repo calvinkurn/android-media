@@ -1,11 +1,18 @@
 package com.tokopedia.vouchercreation.create.view.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.vouchercreation.coroutine.TestCoroutineDispatchers
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
+import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.vouchercreation.common.consts.VoucherRecommendationStatus
+import com.tokopedia.vouchercreation.create.data.source.PromotionTypeUiListStaticDataSource
+import com.tokopedia.vouchercreation.create.domain.model.VoucherRecommendationData
+import com.tokopedia.vouchercreation.create.domain.usecase.GetVoucherRecommendationUseCase
 import com.tokopedia.vouchercreation.create.domain.usecase.validation.CashbackPercentageValidationUseCase
 import com.tokopedia.vouchercreation.create.domain.usecase.validation.CashbackRupiahValidationUseCase
 import com.tokopedia.vouchercreation.create.view.enums.CashbackType
@@ -19,7 +26,6 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Before
@@ -46,10 +52,108 @@ class CashbackVoucherCreateViewModelTest {
     lateinit var cashbackPercentageValidationUseCase: CashbackPercentageValidationUseCase
 
     @RelaxedMockK
+    lateinit var getVoucherRecommendationUseCase: GetVoucherRecommendationUseCase
+
+    @RelaxedMockK
     lateinit var expenseEstimationObserver: Observer<in Int>
 
     @RelaxedMockK
     lateinit var cashbackPercentageInfoUiModelObserver: Observer<in CashbackPercentageInfoUiModel>
+
+    @Suppress("UNCHECKED_CAST")
+    private val idrRecommendationData: VoucherRecommendationData by lazy {
+        getPrivateField(mViewModel, "idrRecommendationData") as VoucherRecommendationData
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    private val percentageRecommendationData: VoucherRecommendationData by lazy {
+        getPrivateField(mViewModel, "percentageRecommendationData") as VoucherRecommendationData
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    private val mRupiahMaximumDiscountErrorPairLiveData: MutableLiveData<Pair<Boolean, String>> by lazy {
+        getPrivateField(mViewModel, "mRupiahMaximumDiscountErrorPairLiveData") as MutableLiveData<Pair<Boolean, String>>
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    private val mRupiahMinimumPurchaseErrorPairLiveData: MutableLiveData<Pair<Boolean, String>> by lazy {
+        getPrivateField(mViewModel, "mRupiahMinimumPurchaseErrorPairLiveData") as MutableLiveData<Pair<Boolean, String>>
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    private val mRupiahVoucherQuotaErrorPairLiveData: MutableLiveData<Pair<Boolean, String>> by lazy {
+        getPrivateField(mViewModel, "mRupiahVoucherQuotaErrorPairLiveData") as MutableLiveData<Pair<Boolean, String>>
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    private val mPercentageDiscountAmountErrorPairLiveData: MutableLiveData<Pair<Boolean, String>> by lazy {
+        getPrivateField(mViewModel, "mPercentageDiscountAmountErrorPairLiveData") as MutableLiveData<Pair<Boolean, String>>
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    private val mPercentageMaximumDiscountErrorPairLiveData: MutableLiveData<Pair<Boolean, String>> by lazy {
+        getPrivateField(mViewModel, "mPercentageMaximumDiscountErrorPairLiveData") as MutableLiveData<Pair<Boolean, String>>
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    private val mPercentageMinimumPurchaseErrorPairLiveData: MutableLiveData<Pair<Boolean, String>> by lazy {
+        getPrivateField(mViewModel, "mPercentageMinimumPurchaseErrorPairLiveData") as MutableLiveData<Pair<Boolean, String>>
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    private val mPercentageVoucherQuotaErrorPairLiveData: MutableLiveData<Pair<Boolean, String>> by lazy {
+        getPrivateField(mViewModel, "mPercentageVoucherQuotaErrorPairLiveData") as MutableLiveData<Pair<Boolean, String>>
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    private val mRupiahMaximumDiscountLiveData: MutableLiveData<Int> by lazy {
+        getPrivateField(mViewModel, "mRupiahMaximumDiscountLiveData") as MutableLiveData<Int>
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    private val mRupiahMinimumPurchaseLiveData: MutableLiveData<Int> by lazy {
+        getPrivateField(mViewModel, "mRupiahMinimumPurchaseLiveData") as MutableLiveData<Int>
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    private val mRupiahVoucherQuotaLiveData: MutableLiveData<Int> by lazy {
+        getPrivateField(mViewModel, "mRupiahVoucherQuotaLiveData") as MutableLiveData<Int>
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    private val mPercentageDiscountAmountLiveData: MutableLiveData<Int> by lazy {
+        getPrivateField(mViewModel, "mPercentageDiscountAmountLiveData") as MutableLiveData<Int>
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    private val mPercentageMaximumDiscountLiveData: MutableLiveData<Int> by lazy {
+        getPrivateField(mViewModel, "mPercentageMaximumDiscountLiveData") as MutableLiveData<Int>
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    private val mPercentageMinimumPurchaseLiveData: MutableLiveData<Int> by lazy {
+        getPrivateField(mViewModel, "mPercentageMinimumPurchaseLiveData") as MutableLiveData<Int>
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    private val mPercentageVoucherQuotaLiveData: MutableLiveData<Int> by lazy {
+        getPrivateField(mViewModel, "mPercentageVoucherQuotaLiveData") as MutableLiveData<Int>
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    private val mIdrVoucherRecommendationResult: MutableLiveData<Result<VoucherRecommendationData>> by lazy {
+        getPrivateField(mViewModel, "mIdrVoucherRecommendationResult") as MutableLiveData<Result<VoucherRecommendationData>>
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    private val mPercentageVoucherRecommendationResult: MutableLiveData<Result<VoucherRecommendationData>> by lazy {
+        getPrivateField(mViewModel, "mPercentageVoucherRecommendationResult") as MutableLiveData<Result<VoucherRecommendationData>>
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    private val mVoucherRecommendationStatus: MutableLiveData<Int> by lazy {
+        getPrivateField(mViewModel, "mVoucherRecommendationStatus") as MutableLiveData<Int>
+    }
 
     @get:Rule
     val rule = InstantTaskExecutorRule()
@@ -59,7 +163,7 @@ class CashbackVoucherCreateViewModelTest {
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-        mViewModel = CashbackVoucherCreateViewModel(TestCoroutineDispatchers, cashbackRupiahValidationUseCase, cashbackPercentageValidationUseCase)
+        mViewModel = CashbackVoucherCreateViewModel(CoroutineTestDispatchersProvider, cashbackRupiahValidationUseCase, cashbackPercentageValidationUseCase, getVoucherRecommendationUseCase)
 
         mViewModel.expenseEstimationLiveData.observeForever(expenseEstimationObserver)
         mViewModel.cashbackPercentageInfoUiModelLiveData.observeForever(cashbackPercentageInfoUiModelObserver)
@@ -207,8 +311,6 @@ class CashbackVoucherCreateViewModelTest {
 
             validateCashbackRupiahValues()
 
-            coroutineContext[Job]?.children?.forEach { it.join() }
-
             coVerify {
                 cashbackRupiahValidationUseCase.executeOnBackground()
             }
@@ -231,8 +333,6 @@ class CashbackVoucherCreateViewModelTest {
             addTextFieldValueToCalculation(DUMMY_QUOTA, PromotionType.Cashback.Rupiah.VoucherQuota)
 
             validateCashbackRupiahValues()
-
-            coroutineContext[Job]?.children?.forEach { it.join() }
 
             coVerify {
                 cashbackRupiahValidationUseCase.executeOnBackground()
@@ -258,8 +358,6 @@ class CashbackVoucherCreateViewModelTest {
 
             validateCashbackPercentageValues()
 
-            coroutineContext[Job]?.children?.forEach { it.join() }
-
             coVerify {
                 cashbackPercentageValidationUseCase.executeOnBackground()
             }
@@ -284,8 +382,6 @@ class CashbackVoucherCreateViewModelTest {
 
             validateCashbackPercentageValues()
 
-            coroutineContext[Job]?.children?.forEach { it.join() }
-
             coVerify {
                 cashbackPercentageValidationUseCase.executeOnBackground()
             }
@@ -301,8 +397,6 @@ class CashbackVoucherCreateViewModelTest {
             refreshValue()
             refreshValue()
 
-            coroutineContext[Job]?.children?.forEach { it.join() }
-
             assert((voucherImageValueLiveData.value as? VoucherImageType.Rupiah)?.value == DUMMY_MAX_VALUE)
         }
     }
@@ -315,8 +409,6 @@ class CashbackVoucherCreateViewModelTest {
             addTextFieldValueToCalculation(DUMMY_MAX_VALUE, PromotionType.Cashback.Percentage.MaximumDiscount)
             refreshValue()
             refreshValue()
-
-            coroutineContext[Job]?.children?.forEach { it.join() }
 
             val isSuccess = (voucherImageValueLiveData.value as? VoucherImageType.Percentage)?.run {
                 value == DUMMY_MAX_VALUE && percentage == DUMMY_PERCENTAGE
@@ -388,4 +480,199 @@ class CashbackVoucherCreateViewModelTest {
         }
     }
 
+    @Test
+    fun `when static voucher recommendation data is retrieved expect predefined values`() {
+        val staticRecommendationData = mViewModel.getStaticRecommendationData()
+        // asserting voucher discount amount
+        assert(PromotionTypeUiListStaticDataSource.InitialValue.DISCOUNT == staticRecommendationData.voucherDiscountAmt)
+        // asserting minimum purchase
+        assert(PromotionTypeUiListStaticDataSource.InitialValue.MINIMUM_PURCHASE == staticRecommendationData.voucherMinimumAmt)
+        // asserting voucher quota
+        assert(PromotionTypeUiListStaticDataSource.InitialValue.VOUCHER_QUOTA == staticRecommendationData.voucherQuota)
+    }
+
+    @Test
+    fun  `when updating idr recommendation data expect new idr recommendation data`() {
+        val expectedData = VoucherRecommendationData(voucherDiscountAmt = 10000)
+        mViewModel.updateVoucherRecommendation(CashbackType.Rupiah, expectedData)
+        assert(idrRecommendationData == expectedData)
+    }
+
+    @Test
+    fun `when updating percentage recommendation data expect new percentage recommendation data `() {
+        val expectedData = VoucherRecommendationData(voucherMinimumAmt = 10000)
+        mViewModel.updateVoucherRecommendation(CashbackType.Percentage, expectedData)
+        assert(percentageRecommendationData == expectedData)
+    }
+
+    @Test
+    fun `when updating recommendation status with idr recommendation data applied expect with recommendation status `() {
+        val expectedStatus = VoucherRecommendationStatus.WITH_RECOMMENDATION
+        // recommendation data
+        idrRecommendationData.voucherDiscountAmtMax = 10000
+        idrRecommendationData.voucherMinimumAmt = 10000
+        idrRecommendationData.voucherQuota = 10000
+        // field values
+        mRupiahMaximumDiscountLiveData.value = 10000
+        mRupiahMinimumPurchaseLiveData.value = 10000
+        mRupiahVoucherQuotaLiveData.value = 10000
+        mViewModel.updateRecommendationStatus(CashbackType.Rupiah)
+        assert(mVoucherRecommendationStatus.value == expectedStatus)
+    }
+
+    @Test
+    fun `when updating recommendation status with edited idr recommendation data applied expect edited recommendation status`() {
+        val expectedStatus = VoucherRecommendationStatus.EDITED_RECOMMENDATION
+        // recommendation data
+        idrRecommendationData.voucherDiscountAmtMax = 10000
+        idrRecommendationData.voucherMinimumAmt = 10000
+        idrRecommendationData.voucherQuota = 10000
+        // field values
+        mRupiahMaximumDiscountLiveData.value = 10000
+        mRupiahMinimumPurchaseLiveData.value = 20000
+        mRupiahVoucherQuotaLiveData.value = 10000
+        mViewModel.updateRecommendationStatus(CashbackType.Rupiah)
+        assert(mVoucherRecommendationStatus.value == expectedStatus)
+    }
+
+    @Test
+    fun `when updating recommendation status with no idr recommendation data applied expect no recommendation status`() {
+        val expectedStatus = VoucherRecommendationStatus.NO_RECOMMENDATION
+        // recommendation data
+        idrRecommendationData.voucherDiscountAmtMax = 10000
+        idrRecommendationData.voucherMinimumAmt = 10000
+        idrRecommendationData.voucherQuota = 10000
+        // field values
+        mRupiahMaximumDiscountLiveData.value = 20000
+        mRupiahMinimumPurchaseLiveData.value = 20000
+        mRupiahVoucherQuotaLiveData.value = 20000
+        mViewModel.updateRecommendationStatus(CashbackType.Rupiah)
+        assert(mVoucherRecommendationStatus.value == expectedStatus)
+    }
+
+    @Test
+    fun `when updating recommendation status with percentage recommendation data applied expect with recommendation status `() {
+        val expectedStatus = VoucherRecommendationStatus.WITH_RECOMMENDATION
+        // recommendation data
+        percentageRecommendationData.voucherDiscountAmt = 10000
+        percentageRecommendationData.voucherDiscountAmtMax = 10000
+        percentageRecommendationData.voucherMinimumAmt = 10000
+        percentageRecommendationData.voucherQuota = 10000
+        // field values
+        mPercentageDiscountAmountLiveData.value = 10000
+        mPercentageMaximumDiscountLiveData.value = 10000
+        mPercentageMinimumPurchaseLiveData.value = 10000
+        mPercentageVoucherQuotaLiveData.value = 10000
+        mViewModel.updateRecommendationStatus(CashbackType.Percentage)
+        assert(mVoucherRecommendationStatus.value == expectedStatus)
+    }
+
+    @Test
+    fun `when updating recommendation status with edited percentage recommendation data applied expect edited recommendation status `() {
+        val expectedStatus = VoucherRecommendationStatus.EDITED_RECOMMENDATION
+        // recommendation data
+        percentageRecommendationData.voucherDiscountAmt = 10000
+        percentageRecommendationData.voucherDiscountAmtMax = 10000
+        percentageRecommendationData.voucherMinimumAmt = 10000
+        percentageRecommendationData.voucherQuota = 10000
+        // field values
+        mPercentageDiscountAmountLiveData.value = 20000
+        mPercentageMaximumDiscountLiveData.value = 20000
+        mPercentageMinimumPurchaseLiveData.value = 10000
+        mPercentageVoucherQuotaLiveData.value = 10000
+        mViewModel.updateRecommendationStatus(CashbackType.Percentage)
+        assert(mVoucherRecommendationStatus.value == expectedStatus)
+    }
+
+    @Test
+    fun `when updating recommendation status with no percentage recommendation data applied expect edited recommendation status `() {
+        val expectedStatus = VoucherRecommendationStatus.NO_RECOMMENDATION
+        // recommendation data
+        percentageRecommendationData.voucherDiscountAmt = 10000
+        percentageRecommendationData.voucherDiscountAmtMax = 10000
+        percentageRecommendationData.voucherMinimumAmt = 10000
+        percentageRecommendationData.voucherQuota = 10000
+        // field values
+        mPercentageDiscountAmountLiveData.value = 20000
+        mPercentageMaximumDiscountLiveData.value = 20000
+        mPercentageMinimumPurchaseLiveData.value = 20000
+        mPercentageVoucherQuotaLiveData.value = 20000
+        mViewModel.updateRecommendationStatus(CashbackType.Percentage)
+        assert(mVoucherRecommendationStatus.value == expectedStatus)
+    }
+
+    @Test
+    fun `when resetting idr error fields expect no errors on idr fields`() {
+        val emptyErrorPair = Pair(false, "")
+        mViewModel.resetErrorPairList(CashbackType.Rupiah)
+        assert(mRupiahMaximumDiscountErrorPairLiveData.value == emptyErrorPair)
+        assert(mRupiahMinimumPurchaseErrorPairLiveData.value == emptyErrorPair)
+        assert(mRupiahVoucherQuotaErrorPairLiveData.value == emptyErrorPair)
+    }
+
+    @Test
+    fun `when resetting percentage error fields expect no errors on percentage fields`() {
+        val emptyErrorPair = Pair(false, "")
+        mViewModel.resetErrorPairList(CashbackType.Percentage)
+        assert(mPercentageDiscountAmountErrorPairLiveData.value == emptyErrorPair)
+        assert(mPercentageMaximumDiscountErrorPairLiveData.value == emptyErrorPair)
+        assert(mPercentageMinimumPurchaseErrorPairLiveData.value == emptyErrorPair)
+        assert(mPercentageVoucherQuotaErrorPairLiveData.value == emptyErrorPair)
+    }
+
+    @Test
+    fun `when getting voucher recommendation from api expect getVoucherRecommendationUseCase to be executed`() {
+        mViewModel.getVoucherRecommendationFromApi()
+        coVerify {
+            getVoucherRecommendationUseCase.executeOnBackground()
+        }
+    }
+
+    @Test
+    fun `when getVoucherRecommendationUseCase is successful expect successful results`() {
+        val successResponse = VoucherRecommendationData()
+        coEvery {
+            getVoucherRecommendationUseCase.executeOnBackground()
+        } returns successResponse
+        mViewModel.getVoucherRecommendationFromApi()
+        assert(mIdrVoucherRecommendationResult.value == Success(successResponse))
+        assert(mPercentageVoucherRecommendationResult.value == Success(successResponse))
+    }
+
+    @Test
+    fun `when getVoucherRecommendationUseCase is failed expect fail results`() {
+        val throwable = MessageErrorException("")
+        val failResponse = VoucherRecommendationData()
+        coEvery {
+            getVoucherRecommendationUseCase.executeOnBackground()
+        } throws throwable
+        mViewModel.getVoucherRecommendationFromApi()
+        assert(mIdrVoucherRecommendationResult.value is Fail)
+        assert(mPercentageVoucherRecommendationResult.value is Fail)
+    }
+
+    @Test
+    fun `when getting idr recommendation data from view model expect idr recommendation data`() {
+        val expectedData = VoucherRecommendationData(voucherDiscountAmt = 10000, voucherMinimumAmt = 100)
+        mViewModel.updateVoucherRecommendation(CashbackType.Rupiah, expectedData)
+        val actualData = mViewModel.getVoucherRecommendationData(CashbackType.Rupiah)
+        assert(expectedData == actualData)
+    }
+
+    @Test
+    fun `when getting percentage recommendation data from view model expect percentage recommendation data`() {
+        val expectedData = VoucherRecommendationData(voucherDiscountAmt = 20000, voucherMinimumAmt = 200)
+        mViewModel.updateVoucherRecommendation(CashbackType.Percentage, expectedData)
+        val actualData = mViewModel.getVoucherRecommendationData(CashbackType.Percentage)
+        assert(expectedData == actualData)
+    }
+
+    // helper functions
+
+    private fun getPrivateField(owner: Any, name: String): Any? {
+        return owner::class.java.getDeclaredField(name).let {
+            it.isAccessible = true
+            return@let it.get(owner)
+        }
+    }
 }

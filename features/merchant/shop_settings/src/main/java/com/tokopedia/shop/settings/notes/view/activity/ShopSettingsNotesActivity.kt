@@ -8,9 +8,10 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.appcompat.widget.Toolbar
 import android.view.View
+import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.shop.settings.R
-import com.tokopedia.shop.settings.notes.data.ShopNoteViewModel
+import com.tokopedia.shop.settings.notes.data.ShopNoteUiModel
 import com.tokopedia.shop.settings.notes.view.fragment.ShopSettingsNotesListFragment
 import com.tokopedia.shop.settings.notes.view.fragment.ShopSettingsNotesReorderFragment
 import kotlinx.android.synthetic.main.partial_toolbar_save_button.*
@@ -50,12 +51,15 @@ class ShopSettingsNotesActivity : BaseSimpleActivity(),
 
     override fun setupLayout(savedInstanceState: Bundle?) {
         setContentView(layoutRes)
-        toolbar = findViewById<View>(R.id.toolbar) as Toolbar
-        setSupportActionBar(toolbar)
+        window.decorView.setBackgroundColor(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+        findViewById<Toolbar>(R.id.toolbar).apply {
+            setTitleTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700))
+            setSupportActionBar(this)
+        }
         if (supportActionBar != null) {
-            supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-            supportActionBar!!.setDisplayShowTitleEnabled(true)
-            supportActionBar!!.title = this.title
+            supportActionBar?.setDisplayHomeAsUpEnabled(true)
+            supportActionBar?.setDisplayShowTitleEnabled(true)
+            supportActionBar?.title = this.title
         }
     }
 
@@ -73,11 +77,11 @@ class ShopSettingsNotesActivity : BaseSimpleActivity(),
     }
 
     override fun getLayoutRes(): Int {
-        return R.layout.activity_shop_setting_note
+        return R.layout.activity_shop_settings_note
     }
 
-    override fun goToReorderFragment(shopNoteViewModels: ArrayList<ShopNoteViewModel>) {
-        val fragment = ShopSettingsNotesReorderFragment.newInstance(shopNoteViewModels)
+    override fun goToReorderFragment(shopNoteUiModels: ArrayList<ShopNoteUiModel>) {
+        val fragment = ShopSettingsNotesReorderFragment.newInstance(shopNoteUiModels)
         replaceAndHideOldFragment(fragment, true, ShopSettingsNotesReorderFragment.TAG)
         invalidateOptionsMenu()
         // handler is to prevent flicker when invalidating option menu

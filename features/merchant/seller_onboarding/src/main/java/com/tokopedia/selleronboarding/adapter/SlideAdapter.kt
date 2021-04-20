@@ -1,13 +1,12 @@
 package com.tokopedia.selleronboarding.adapter
 
-import android.content.res.Resources
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.iris.util.IrisSession
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
-import com.tokopedia.kotlin.extensions.view.loadImageDrawable
+import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.selleronboarding.R
 import com.tokopedia.selleronboarding.analytic.SellerOnboardingAnalytic
 import com.tokopedia.selleronboarding.model.SlideUiModel
@@ -60,14 +59,9 @@ class SlideAdapter : RecyclerView.Adapter<SlideAdapter.SlideViewHolder>() {
 
         private fun showIllustrationImage(item: SlideUiModel) = with(itemView) {
             try {
-                imgIllustrationSob.loadImageDrawable(item.vectorDrawableRes)
+                imgIllustrationSob.loadImage(item.drawableUrl)
             } catch (e: Exception) {
                 Timber.e(e)
-                try {
-                    imgIllustrationSob.loadImageDrawable(item.pngDrawableRes)
-                } catch (nfe: Resources.NotFoundException) {
-                    Timber.e(nfe)
-                }
             }
         }
 

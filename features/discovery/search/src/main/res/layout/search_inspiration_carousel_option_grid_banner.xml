@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/optionGridCardViewBanner"
+    android:layout_width="@dimen/carousel_product_card_grid_width"
+    android:layout_height="match_parent"
+    android:foreground="?attr/selectableItemBackground"
+    android:background="@color/Unify_N0"
+    app:cardCornerRadius="@dimen/dp_8"
+    app:cardElevation="@dimen/dp_4"
+    app:cardPreventCornerOverlap="false"
+    app:cardUseCompatPadding="true">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/optionGridCardViewConstraintLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/optionGridCardViewBannerImage"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone"
+            android:scaleType="centerCrop"
+            android:adjustViewBounds="true"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/optionGridBannerDesc"
+            android:layout_width="@dimen/dp_0"
+            android:layout_height="wrap_content"
+            tools:text="@string/inspiration_carousel_product_description"
+            android:layout_marginTop="@dimen/dp_30"
+            android:layout_marginStart="@dimen/dp_12"
+            android:layout_marginEnd="@dimen/dp_12"
+            android:maxLines="5"
+            android:ellipsize="end"
+            android:textColor="@color/Unify_N700_96"
+            android:visibility="gone"
+            android:gravity="center"
+            tools:visibility="visible"
+            app:typographyType="heading_5"
+            app:typographyWeight="bold"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/optionGridBannerButton"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"/>
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/optionGridBannerButton"
+            android:foreground="?attr/selectableItemBackground"
+            android:layout_width="@dimen/dp_0"
+            android:layout_height="wrap_content"
+            android:text="@string/inspiration_carousel_button"
+            android:layout_marginStart="@dimen/dp_8"
+            android:layout_marginEnd="@dimen/dp_8"
+            android:visibility="gone"
+            android:gravity="center"
+            tools:visibility="visible"
+            app:unifyButtonType="main"
+            app:unifyButtonVariant="ghost"
+            app:unifyButtonSize="small"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/optionGridBannerDesc"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.cardview.widget.CardView>

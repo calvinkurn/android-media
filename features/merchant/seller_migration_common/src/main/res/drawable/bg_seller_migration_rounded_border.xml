@@ -4,6 +4,6 @@
         android:radius="@dimen/dp_10"/>
     <solid android:color="@color/transparent" />
     <stroke
-        android:color="@color/Neutral_N75"
+        android:color="@color/Unify_N75"
         android:width="@dimen/dp_1"/>
 </shape>

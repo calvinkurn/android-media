@@ -3,11 +3,9 @@ package com.tokopedia.favorite.di.modul
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor
-import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor
 import com.tokopedia.favorite.data.source.apis.interceptor.TopAdsAuthInterceptor
 import com.tokopedia.favorite.data.source.apis.response.TopAdsResponseError
 import com.tokopedia.favorite.data.source.apis.service.TopAdsService
-import com.tokopedia.favorite.data.source.apis.validator.CacheApiTKPDResponseValidator
 import com.tokopedia.favorite.di.qualifier.TopAdsQualifier
 import com.tokopedia.favorite.di.scope.FavoriteScope
 import com.tokopedia.network.interceptor.FingerprintInterceptor
@@ -18,10 +16,8 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 
-@FavoriteScope
 @Module(includes = [
     FavoriteRetrofitBuilderModule::class,
-    CacheApiInterceptorModule::class,
     TopAdsAuthInterceptorModule::class,
     FingerprintInterceptorModule::class
 ])
@@ -51,17 +47,13 @@ class TopAdsServiceModule {
             fingerprintInterceptor: FingerprintInterceptor,
             topAdsAuthInterceptor: TopAdsAuthInterceptor,
             @TopAdsQualifier errorResponseInterceptor: ErrorResponseInterceptor,
-            cacheApiInterceptor: CacheApiInterceptor,
             httpLoggingInterceptor: HttpLoggingInterceptor
     ): OkHttpClient {
 
-        cacheApiInterceptor.setResponseValidator(
-                CacheApiTKPDResponseValidator(TopAdsResponseError::class.java))
         val client = TkpdOkHttpBuilder(context, OkHttpClient.Builder())
                 .addInterceptor(httpLoggingInterceptor)
                 .build()
         return TkpdOkHttpBuilder(context, client.newBuilder())
-                .addInterceptor(cacheApiInterceptor)
                 .addInterceptor(fingerprintInterceptor)
                 .addInterceptor(topAdsAuthInterceptor)
                 .addInterceptor(errorResponseInterceptor)

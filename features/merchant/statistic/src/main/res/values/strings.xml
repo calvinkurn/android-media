@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Statistic</string>
+    <string name="stc_statistic">Statistik</string>
     <string name="stc_shop_statistic">Statistik Toko</string>
     <string name="stc_select_date">Pilih Tanggal</string>
     <string name="stc_select_date_">Pilih tanggal</string>
+    <string name="stc_other_menu">Menu Lainnya</string>
     <string name="stc_failed_to_get_information">Informasi gagal dimuat</string>
     <string name="stc_reload">Muat ulang</string>
     <string name="stc_change_date_range">Ubah Rentang Waktu</string>
@@ -26,4 +28,8 @@
     <string name="stc_per_day_fmt">Per Hari (%1$s)</string>
     <string name="stc_per_week_fmt">Per Minggu (%1$s)</string>
     <string name="stc_per_month_fmt">Per Bulan (%1$s)</string>
+    <string name="stc_shop">Toko</string>
+    <string name="stc_buyer">Pembeli</string>
+    <string name="stc_give_suggestions">Beri Saran</string>
+    <string name="stc_learn_more">Pelajari Selengkapnya</string>
 </resources>

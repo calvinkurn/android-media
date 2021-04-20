@@ -8,8 +8,8 @@ import androidx.annotation.NonNull;
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.abstraction.common.utils.network.CacheUtil;
 import com.tokopedia.cachemanager.PersistentCacheManager;
+import com.tokopedia.common_digital.common.util.CommonDigitalGqlMutation;
 import com.tokopedia.config.GlobalConfig;
-import com.tokopedia.digital.R;
 import com.tokopedia.digital.common.constant.DigitalCache;
 import com.tokopedia.digital.common.data.apiservice.DigitalGqlApi;
 import com.tokopedia.digital.common.data.entity.response.RechargeResponseEntity;
@@ -185,13 +185,13 @@ public class CategoryDetailDataSource {
     }
 
     private String getCategoryRequestPayload(String categoryId) {
-        String query = loadRawString(context.getResources(), com.tokopedia.common_digital.R.raw.common_digital_category_query);
+        String query = CommonDigitalGqlMutation.INSTANCE.getDigitalCategory();
         String isSeller = GlobalConfig.isSellerApp() ? "1" : "0";
         return String.format(query, categoryId, isSeller);
     }
 
     private String getCategoryAndFavRequestPayload(String categoryId, String operatorId, String clientNumber, String productId) {
-        String query = loadRawString(context.getResources(), com.tokopedia.common_digital.R.raw.common_digital_category_favourites_query);
+        String query = CommonDigitalGqlMutation.INSTANCE.getDigitalCategoryFavorites();
 
         String isSeller = GlobalConfig.isSellerApp() ? "1" : "0";
 

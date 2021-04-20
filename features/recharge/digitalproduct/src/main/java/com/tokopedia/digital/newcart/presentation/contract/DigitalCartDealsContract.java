@@ -5,9 +5,9 @@ import androidx.annotation.StringRes;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
-import com.tokopedia.common_digital.cart.view.model.cart.CartDigitalInfoData;
 import com.tokopedia.digital.newcart.domain.model.DealCategoryViewModel;
 import com.tokopedia.digital.newcart.domain.model.DealProductViewModel;
+import com.tokopedia.digital.newcart.presentation.model.cart.CartDigitalInfoData;
 
 import java.util.List;
 import java.util.Map;
@@ -47,10 +47,6 @@ public interface DigitalCartDealsContract {
         Map<DealProductViewModel, Integer> getSelectedDealsMap();
 
         void notifyAdapterInSpecifyFragment(Integer position);
-
-        boolean isOnboardAlreadyShown();
-
-        void renderOnboarding();
 
         void notifyCheckoutPageToStartAnimation();
     }

@@ -9,7 +9,7 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductContentDataModel
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.view.fragment.partialview.PartialContentView
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
-import kotlinx.android.synthetic.main.partial_product_detail_header.view.*
+import kotlinx.android.synthetic.main.item_product_content.view.*
 
 /**
  * Created by Yehezkiel on 06/05/20
@@ -34,7 +34,7 @@ class ProductContentViewHolder(private val view: View,
             view.addOnImpressionListener(element.impressHolder) {
                 listener.onImpressComponent(getComponentTrackData(element))
             }
-            header?.renderData(it, element.isUpcomingNplType(), element.upcomingNplData)
+            header?.renderData(it, element.isNpl(), element.freeOngkirImgUrl)
         }
 
         header?.updateWishlist(element.isWishlisted, listener.shouldShowWishlist())
@@ -49,6 +49,13 @@ class ProductContentViewHolder(private val view: View,
 
         when (payloads[0] as Int) {
             ProductDetailConstant.PAYLOAD_WISHLIST -> header?.updateWishlist(element.isWishlisted, listener.shouldShowWishlist())
+            ProductDetailConstant.PAYLOAD_TRADEIN_AND_BOE -> {
+                header?.renderTradein(element.showTradeIn())
+
+                header?.updateWishlist(element.isWishlisted, listener.shouldShowWishlist())
+                //only triggered when get data from p2, will update with boe/bo imageurl from Restriction Engine p2
+                header?.renderFreeOngkir(element.freeOngkirImgUrl)
+            }
         }
     }
 

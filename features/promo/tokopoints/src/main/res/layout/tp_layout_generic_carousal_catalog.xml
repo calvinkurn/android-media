@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/parent_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/Unify_N0"
+    android:paddingTop="@dimen/dp_16"
+    android:paddingBottom="@dimen/dp_8">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/text_title_column"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginEnd="@dimen/dp_8"
+        android:ellipsize="end"
+        android:lineSpacingExtra="0sp"
+        android:maxLines="2"
+        android:textColor="@color/Unify_N700_96"
+        android:visibility="gone"
+        app:layout_constraintEnd_toStartOf="@id/text_see_all_column"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="heading_4"
+        app:typographyWeight="bold"
+        tools:text="Huge News!"
+        tools:visibility="visible" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/timer_msg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_3"
+        android:textColor="@color/Unify_N700_68"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/text_sub_title_column"
+        app:typographyType="body_3"
+        tools:text="Kupon berakhir dalam" />
+
+    <com.tokopedia.unifycomponents.timer.TimerUnifySingle
+        android:id="@+id/tp_count_down_view_column"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_4"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/timer_msg"
+        app:layout_constraintStart_toEndOf="@id/timer_msg"
+        app:layout_constraintTop_toTopOf="@id/timer_msg"
+        app:timer_unify_single_remainingDays="5"
+        app:timer_unify_single_remainingHours="12"
+        app:timer_unify_single_remainingMinutes="12"
+        app:timer_unify_single_remainingSeconds="00"
+        app:timer_unify_single_showClockIcon="true"
+        app:timer_unify_single_textWidth="full_radius"
+        app:timer_unify_single_type="auto"
+        app:timer_unify_single_variant="informative"
+        tools:visibility="gone" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/text_see_all_column"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/dp_14"
+        android:layout_marginRight="@dimen/dp_14"
+        android:layout_marginTop="@dimen/dp_4"
+        android:textColor="@color/Unify_G400"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/text_title_column"
+        app:typographyType="heading_6"
+        tools:text="Lihat Semua"
+        tools:visibility="visible" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/text_sub_title_column"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_4"
+        android:layout_marginEnd="@dimen/dp_8"
+        android:ellipsize="end"
+        android:lineSpacingExtra="@dimen/sp_6"
+        android:maxLines="2"
+        android:textColor="@color/Unify_N700_68"
+        android:visibility="gone"
+        app:layout_constraintEnd_toStartOf="@id/text_see_all_column"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_title_column"
+        app:typographyType="body_3"
+        tools:text="Cari tahu sekarang" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_column"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_12"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/timer_msg"
+        tools:visibility="visible" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

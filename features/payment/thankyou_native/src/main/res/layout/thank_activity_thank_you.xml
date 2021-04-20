@@ -1,13 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
-    <com.tokopedia.header.HeaderUnify
-        android:id="@+id/thank_header"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content">
+
+        <com.tokopedia.searchbar.navigation_component.NavToolbar
+            android:id="@+id/globalNabToolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="top"
+            app:toolbarInitialTheme="light"
+            android:minHeight="?actionBarSize"
+            app:contentInsetLeft="0dp"
+            app:contentInsetStart="0dp"
+            android:visibility="visible"/>
+
+        <com.tokopedia.header.HeaderUnify
+            android:id="@+id/thank_header"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"/>
+
+    </FrameLayout>
+
 
     <FrameLayout
         android:id="@+id/thank_parent_view"

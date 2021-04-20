@@ -8,9 +8,12 @@ import com.tokopedia.chat_common.data.ImageUploadViewModel
 import com.tokopedia.chat_common.view.listener.BaseChatViewState
 import com.tokopedia.chatbot.data.ConnectionDividerViewModel
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionSelectionBubbleViewModel
+import com.tokopedia.chatbot.data.csatoptionlist.CsatOptionsViewModel
+import com.tokopedia.chatbot.data.helpfullquestion.HelpFullQuestionsViewModel
 import com.tokopedia.chatbot.data.quickreply.QuickReplyListViewModel
 import com.tokopedia.chatbot.data.quickreply.QuickReplyViewModel
 import com.tokopedia.chatbot.data.rating.ChatRatingViewModel
+import com.tokopedia.chatbot.data.seprator.ChatSepratorViewModel
 import com.tokopedia.chatbot.domain.pojo.chatrating.SendRatingPojo
 
 /**
@@ -42,10 +45,24 @@ interface ChatbotViewState : BaseChatViewState {
 
     fun showDividerViewOnConnection(connectionDividerViewModel: ConnectionDividerViewModel)
 
+    fun showLiveChatSeprator(chatSepratorViewModel: ChatSepratorViewModel)
+
     fun hideEmptyMessage(visitable: Visitable<*>)
 
     fun showLiveChatQuickReply(quickReplyList: List<QuickReplyViewModel>)
 
     fun hideActionBubble(model: ChatActionSelectionBubbleViewModel)
+
+    fun hideOptionList(model: HelpFullQuestionsViewModel)
+
+    fun hideCsatOptionList(model: CsatOptionsViewModel)
+
+    fun hideActionBubbleOnSenderMsg()
+
+    fun showRetryUploadImages(it: ImageUploadViewModel, b: Boolean)
+
+    fun removeDummy(visitable: Visitable<*>)
+
+    fun hideInvoiceList()
 
 }

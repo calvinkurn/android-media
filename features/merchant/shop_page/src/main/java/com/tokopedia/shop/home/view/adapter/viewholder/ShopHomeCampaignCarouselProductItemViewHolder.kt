@@ -11,7 +11,7 @@ import com.tokopedia.shop.R
 import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
 import com.tokopedia.shop.home.view.listener.ShopHomeCampaignNplWidgetListener
 import com.tokopedia.shop.home.view.model.ShopHomeNewProductLaunchCampaignUiModel
-import com.tokopedia.shop.home.view.model.ShopHomeProductViewModel
+import com.tokopedia.shop.home.view.model.ShopHomeProductUiModel
 
 /**
  * @author by alvarisi on 12/12/17.
@@ -22,9 +22,9 @@ open class ShopHomeCampaignCarouselProductItemViewHolder(
         private val parentPosition: Int,
         private val shopHomeNewProductLaunchCampaignUiModel: ShopHomeNewProductLaunchCampaignUiModel,
         private val shopHomeCampaignNplWidgetListener: ShopHomeCampaignNplWidgetListener
-) : AbstractViewHolder<ShopHomeProductViewModel>(itemView) {
+) : AbstractViewHolder<ShopHomeProductUiModel>(itemView) {
     lateinit var productCard: ProductCardGridView
-    protected var shopHomeProductViewModel: ShopHomeProductViewModel? = null
+    protected var shopHomeProductViewModel: ShopHomeProductUiModel? = null
 
     init {
         findViews(itemView)
@@ -39,7 +39,7 @@ open class ShopHomeCampaignCarouselProductItemViewHolder(
         productCard = view.findViewById(R.id.product_card)
     }
 
-    override fun bind(shopHomeProductViewModel: ShopHomeProductViewModel) {
+    override fun bind(shopHomeProductViewModel: ShopHomeProductUiModel) {
         this.shopHomeProductViewModel = shopHomeProductViewModel
         productCard.applyCarousel()
         productCard.setProductModel(ShopPageHomeMapper.mapToProductCardCampaignModel(
@@ -51,11 +51,10 @@ open class ShopHomeCampaignCarouselProductItemViewHolder(
     }
 
     protected open fun setListener() {
-        val totalProduct = shopHomeNewProductLaunchCampaignUiModel.data?.firstOrNull()?.productList?.size?.minus(1) ?: 0
         productCard.setOnClickListener {
             shopHomeCampaignNplWidgetListener.onCampaignCarouselProductItemClicked(
                     parentPosition,
-                    totalProduct - adapterPosition,
+                    adapterPosition,
                     shopHomeNewProductLaunchCampaignUiModel,
                     shopHomeProductViewModel
             )
@@ -65,7 +64,7 @@ open class ShopHomeCampaignCarouselProductItemViewHolder(
                 override fun onViewHint() {
                     shopHomeCampaignNplWidgetListener.onCampaignCarouselProductItemImpression(
                             parentPosition,
-                            totalProduct - adapterPosition,
+                            adapterPosition,
                             shopHomeNewProductLaunchCampaignUiModel,
                             shopHomeProductViewModel
                     )

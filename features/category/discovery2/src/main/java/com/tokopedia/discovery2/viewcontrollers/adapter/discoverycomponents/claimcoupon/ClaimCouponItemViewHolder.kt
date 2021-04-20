@@ -15,12 +15,13 @@ import com.tokopedia.discovery2.Constant.ClaimCouponConstant.NOT_LOGGEDIN
 import com.tokopedia.discovery2.GenerateUrl
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.data.DataItem
+import com.tokopedia.discovery2.di.getSubComponent
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyprinciples.Typography
 
@@ -33,10 +34,10 @@ class ClaimCouponItemViewHolder(itemView: View, private val fragment: Fragment) 
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         claimCouponItemViewModel = discoveryBaseViewModel as ClaimCouponItemViewModel
+        getSubComponent().inject(claimCouponItemViewModel)
         claimCouponItemViewModel.getComponentData().observe(fragment.viewLifecycleOwner, Observer {
             setData(it, claimCouponItemViewModel.getIsDouble())
         })
-
     }
 
     private fun setData(dataItem: DataItem?, isDouble: Boolean) {
@@ -57,22 +58,28 @@ class ClaimCouponItemViewHolder(itemView: View, private val fragment: Fragment) 
         }
 
         claimBtn.setOnClickListener {
-            claimCouponItemViewModel.redeemCoupon()
+            claimCouponItemViewModel.redeemCoupon { message ->
+                Toaster.make(itemView, message, Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR)
+            }
             claimCouponItemViewModel.getRedeemCouponCode().observe(fragment.viewLifecycleOwner, Observer { item ->
-                if (item == NOT_LOGGEDIN) {
-                    Toaster.make(itemView.rootView, itemView.context.getString(R.string.discovery_please_log_in), Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL, itemView.context.getString(R.string.discovery_login), View.OnClickListener {
-                        RouteManager.route(itemView.context, ApplinkConst.LOGIN)
-                    })
-                } else {
-                    setBtn(DIKLAIM)
-                    Toaster.make(itemView.rootView, itemView.context.getString(R.string.claim_coupon_redeem_coupon_msg),
-                            Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL, itemView.context.getString(R.string.claim_coupon_lihat_text), View.OnClickListener {
+                try {
+                    if (item == NOT_LOGGEDIN) {
+                        Toaster.make(itemView.rootView, itemView.context.getString(R.string.discovery_please_log_in), Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL, itemView.context.getString(R.string.discovery_login), View.OnClickListener {
+                            RouteManager.route(itemView.context, ApplinkConst.LOGIN)
+                        })
+                    } else {
+                        setBtn(DIKLAIM)
+                        Toaster.make(itemView.rootView, itemView.context.getString(R.string.claim_coupon_redeem_coupon_msg),
+                                Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL, itemView.context.getString(R.string.claim_coupon_lihat_text), View.OnClickListener {
 
-                        claimCouponItemViewModel.getCouponSlug()?.let { slug ->
-                            val applink = GenerateUrl.getClaimCouponApplink(slug)
-                            claimCouponItemViewModel.navigate(itemView.context, applink)
-                        }
-                    })
+                            claimCouponItemViewModel.getCouponSlug()?.let { slug ->
+                                val applink = GenerateUrl.getClaimCouponApplink(slug)
+                                claimCouponItemViewModel.navigate(itemView.context, applink)
+                            }
+                        })
+                    }
+                } catch (e: Exception) {
+                    e.printStackTrace()
                 }
             })
             (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackClickClaimCoupon(dataItem?.title, dataItem?.slug)

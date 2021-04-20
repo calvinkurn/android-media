@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".view.fragment.AdContentFragment">
+
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/nestedScrollView"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_0"
+        app:layout_constraintBottom_toTopOf="@id/btnSubmit"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:context=".view.fragment.AdContentFragment">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/text1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/dp_16"
+                android:text="@string/topads_headline_ad_content_name_header"
+                android:textColor="@color/black"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:typographyType="heading_4"
+                app:typographyWeight="bold" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/contentSelectedText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_16"
+                android:layout_marginTop="@dimen/dp_4"
+                android:text="@string/topads_headline_product_selected"
+                app:layout_constraintEnd_toStartOf="@id/text2"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/text1"
+                app:typographyType="body_3"
+                app:typographyWeight="bold" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/text2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_4"
+                android:layout_marginTop="@dimen/dp_4"
+                android:text="@string/topads_headline_as_recommended_text"
+                app:layout_constraintStart_toEndOf="@+id/contentSelectedText"
+                app:layout_constraintTop_toBottomOf="@+id/text1"
+                app:typographyType="body_3"
+                app:typographyWeight="reguler" />
+
+            <com.tokopedia.topads.common.view.TopAdsProductImagePreviewWidget
+                android:id="@+id/productImagePreviewWidget"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/dp_8"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/contentSelectedText" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/productPickerErrorText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_16"
+                android:layout_marginTop="@dimen/dp_4"
+                android:text="@string/topads_headline_product_not_selected"
+                android:textColor="@color/bright_red"
+                android:visibility="gone"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/productImagePreviewWidget"
+                app:typographyType="heading_6"
+                tools:visibility="visible" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/promotionalMessageText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_16"
+                android:layout_marginTop="@dimen/dp_10"
+                android:layout_marginBottom="@dimen/dp_10"
+                android:clickable="true"
+                android:focusable="true"
+                android:text="@string/topads_headline_promotional_message"
+                android:textColor="@color/black"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/productPickerErrorText"
+                app:typographyType="heading_4"
+                app:typographyWeight="bold" />
+
+            <com.tokopedia.unifycomponents.TextFieldUnify
+                android:id="@+id/promotionalMessageInputText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_16"
+                android:layout_marginEnd="@dimen/dp_16"
+                android:imeOptions="actionSearch"
+                android:lines="4"
+                app:layout_constraintBottom_toTopOf="@id/text3"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/promotionalMessageText"
+                app:text_field_counter="70"
+                app:text_field_input_type="text"
+                app:text_field_label_static="true"
+                app:text_field_message="@string/topads_headline_promotional_message_summary"
+                app:text_field_placeholder="@string/topads_headline_promotional_message_hint" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/text3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/dp_16"
+                android:text="@string/topads_headline_ad_preview_text"
+                android:textColor="@color/black"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/promotionalMessageInputText"
+                app:typographyType="heading_4"
+                app:typographyWeight="bold" />
+
+            <com.tokopedia.topads.sdk.widget.TopAdsBannerView
+                android:id="@+id/topAdsBannerView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/text3" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/text4"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/dp_16"
+                android:text="@string/topads_headline_ad_disclaimer"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/topAdsBannerView"
+                app:typographyType="body_3" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.core.widget.NestedScrollView>
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btnSubmit"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_8"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginBottom="@dimen/dp_8"
+        android:text="@string/topads_headline_continue"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/nestedScrollView"
+        app:unifyButtonType="main"
+        app:unifyButtonVariant="filled" />
+</androidx.constraintlayout.widget.ConstraintLayout>

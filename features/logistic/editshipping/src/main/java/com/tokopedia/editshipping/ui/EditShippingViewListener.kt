@@ -4,7 +4,7 @@ import android.content.Context
 import com.tokopedia.editshipping.domain.model.ValidateShippingModel
 import com.tokopedia.editshipping.domain.model.editshipping.Courier
 import com.tokopedia.editshipping.domain.model.editshipping.ShopShipping
-import com.tokopedia.logisticdata.data.entity.address.DistrictRecommendationAddress
+import com.tokopedia.logisticCommon.data.entity.address.DistrictRecommendationAddress
 
 /**
  * Created by Kris on 2/23/2016.

@@ -6,7 +6,7 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.tokopedia.logisticdata.data.entity.address.RecipientAddressModel;
+import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel;
 import com.tokopedia.manageaddress.R;
 import com.tokopedia.manageaddress.ui.addresschoice.recyclerview.ShipmentAddressListAdapter;
 import com.tokopedia.purchase_platform.common.utils.Utils;
@@ -32,23 +32,21 @@ public class RecipientAddressViewHolder extends RecyclerView.ViewHolder {
     private TextView mTvChangeAddress;
     private RadioButton mRbCheckAddress;
     private TextView mButtonAddAddress;
-    private TextView mHeaderText;
 
     private ShipmentAddressListAdapter.ActionListener mListener;
 
     public RecipientAddressViewHolder(View view) {
         super(view);
         mViewAddress = view.findViewById(R.id.rl_shipment_recipient_address_layout);
-        mTvAddressName = view.findViewById(com.tokopedia.logisticdata.R.id.tv_address_name);
-        mTvAddressStatus = view.findViewById(com.tokopedia.logisticdata.R.id.tv_address_status);
-        mTvRecipientName = view.findViewById(com.tokopedia.logisticdata.R.id.tv_recipient_name);
-        mTvRecipientAddress = view.findViewById(com.tokopedia.logisticdata.R.id.tv_recipient_address);
-        mTvRecipientPhone = view.findViewById(com.tokopedia.logisticdata.R.id.tv_recipient_phone);
+        mTvAddressName = view.findViewById(com.tokopedia.logisticCommon.R.id.tv_address_name);
+        mTvAddressStatus = view.findViewById(com.tokopedia.logisticCommon.R.id.tv_address_status);
+        mTvRecipientName = view.findViewById(com.tokopedia.logisticCommon.R.id.tv_recipient_name);
+        mTvRecipientAddress = view.findViewById(com.tokopedia.logisticCommon.R.id.tv_recipient_address);
+        mTvRecipientPhone = view.findViewById(com.tokopedia.logisticCommon.R.id.tv_recipient_phone);
 
         mTvChangeAddress = view.findViewById(R.id.button_change_address);
         mRbCheckAddress = view.findViewById(R.id.rb_check_address);
         mButtonAddAddress = view.findViewById(R.id.button_add_new_address);
-        mHeaderText = view.findViewById(R.id.text_view_address_header);
     }
 
     public void bind(RecipientAddressModel address, ShipmentAddressListAdapter.ActionListener listener, int position) {
@@ -59,7 +57,6 @@ public class RecipientAddressViewHolder extends RecyclerView.ViewHolder {
         mTvRecipientName.setText(Utils.getHtmlFormat(address.getRecipientName()));
         mTvRecipientAddress.setText(Utils.getHtmlFormat(getFullAddress(address)));
         mTvRecipientPhone.setText(address.getRecipientPhoneNumber());
-        mHeaderText.setVisibility(address.isHeader() ? View.VISIBLE : View.GONE);
         mButtonAddAddress.setVisibility(address.isFooter() ? View.VISIBLE : View.GONE);
 
         mRbCheckAddress.setChecked(address.isSelected());

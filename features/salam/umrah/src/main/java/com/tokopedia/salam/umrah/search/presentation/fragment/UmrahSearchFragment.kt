@@ -23,7 +23,6 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.design.list.adapter.SpaceItemDecoration
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.salam.umrah.R
@@ -31,6 +30,8 @@ import com.tokopedia.salam.umrah.common.analytics.UmrahTrackingAnalytics
 import com.tokopedia.salam.umrah.common.data.DefaultOption
 import com.tokopedia.salam.umrah.common.data.UmrahOption
 import com.tokopedia.salam.umrah.common.data.UmrahSearchParameterEntity
+import com.tokopedia.salam.umrah.common.util.UmrahQuery
+import com.tokopedia.salam.umrah.common.util.UmrahSpaceItemDecoration
 import com.tokopedia.salam.umrah.pdp.presentation.activity.UmrahPdpActivity
 import com.tokopedia.salam.umrah.search.data.UmrahSearchProduct
 import com.tokopedia.salam.umrah.search.data.UmrahSearchProductDataParam
@@ -266,14 +267,14 @@ class UmrahSearchFragment : BaseListFragment<Visitable<UmrahSearchAdapterTypeFac
 
     override fun loadData(page: Int) {
         umrahSearchViewModel.searchUmrahProducts(page,
-                GraphqlHelper.loadRawString(resources, R.raw.gql_query_umrah_search_product))
+                UmrahQuery.UMRAH_SEARCH_PRODUCT_QUERY)
     }
 
     private fun onSuccessGetResult(data: List<UmrahSearchProduct>) {
         if (!isRVInited) umrah_search_recycler_view.apply {
             setHasFixedSize(true)
             setItemViewCacheSize(searchParam.limit * 2)
-            addItemDecoration(SpaceItemDecoration(resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_4), RecyclerView.VERTICAL))
+            addItemDecoration(UmrahSpaceItemDecoration(resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2), RecyclerView.VERTICAL))
             addOnScrollListener(object : RecyclerView.OnScrollListener() {
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                     super.onScrolled(recyclerView, dx, dy)
@@ -381,7 +382,7 @@ class UmrahSearchFragment : BaseListFragment<Visitable<UmrahSearchAdapterTypeFac
     }
 
     private fun loadSortData() {
-        val searchQuery = GraphqlHelper.loadRawString(resources, R.raw.gql_query_umrah_home_page_search_parameter)
+        val searchQuery = UmrahQuery.UMRAH_HOMEPAGE_SEARCH_PARAM_QUERY
         umrahSearchFilterSortViewModel.getUmrahSearchParameter(searchQuery)
     }
 

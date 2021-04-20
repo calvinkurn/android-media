@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
     android:shape="oval">
-    <solid android:color="@color/flight_search_reverse_background" />
+    <solid android:color="@color/Unify_N50" />
     <size
         android:width="@dimen/layout_lvl4"
         android:height="@dimen/layout_lvl4" />

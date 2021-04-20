@@ -17,8 +17,12 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder
-import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
+import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.imagepicker.common.ImagePickerBuilder
+import com.tokopedia.imagepicker.common.ImagePickerResultExtractor
+import com.tokopedia.imagepicker.common.putImagePickerBuilder
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.profilecompletion.R
 import com.tokopedia.profilecompletion.addemail.view.fragment.AddEmailFragment
@@ -26,7 +30,6 @@ import com.tokopedia.profilecompletion.addphone.data.analitycs.AddPhoneNumberTra
 import com.tokopedia.profilecompletion.addphone.view.fragment.AddPhoneFragment
 import com.tokopedia.profilecompletion.changegender.view.ChangeGenderFragment
 import com.tokopedia.profilecompletion.changename.data.analytics.ChangeNameTracker
-import com.tokopedia.profilecompletion.customview.UnifyDialog
 import com.tokopedia.profilecompletion.di.ProfileCompletionSettingComponent
 import com.tokopedia.profilecompletion.settingprofile.data.ProfileCompletionData
 import com.tokopedia.profilecompletion.settingprofile.data.ProfileRoleData
@@ -72,6 +75,7 @@ class SettingProfileFragment : BaseDaggerFragment() {
 
     lateinit var overlayView: View
     lateinit var tickerPhoneVerification: Ticker
+    private var tickerAddNameWarning: Ticker? = null
 
     private var chancesChangeName = "0"
 
@@ -80,6 +84,7 @@ class SettingProfileFragment : BaseDaggerFragment() {
         val view = inflater.inflate(R.layout.fragment_setting_profile, container, false)
         overlayView = view.findViewById(R.id.overlay_view)
         tickerPhoneVerification = view.findViewById(R.id.ticker_phone_verification)
+        tickerAddNameWarning = view.findViewById(R.id.ticker_default_name_warning)
         return view
     }
 
@@ -103,43 +108,57 @@ class SettingProfileFragment : BaseDaggerFragment() {
     }
 
     private fun showChangeEmailDialog() {
-        val dialog = UnifyDialog(activity as Activity, UnifyDialog.VERTICAL_ACTION, UnifyDialog.NO_HEADER)
-        dialog.setTitle(getString(R.string.add_and_verify_phone))
-        dialog.setDescription(getString(R.string.add_and_verify_phone_detail))
-        dialog.setOk(getString(R.string.title_add_phone))
-        dialog.setOkOnClickListner(View.OnClickListener { goToAddPhone() })
-        dialog.setSecondary(getString(R.string.label_cancel))
-        dialog.setSecondaryOnClickListner(View.OnClickListener { dialog.dismiss() })
-        dialog.show()
+        context?.let {
+            DialogUnify(it, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE).apply {
+                setTitle(getString(R.string.add_and_verify_phone))
+                setDescription(getString(R.string.add_and_verify_phone_detail))
+                setPrimaryCTAText(getString(R.string.title_add_phone))
+                setPrimaryCTAClickListener {
+                    goToAddPhone()
+                    this.dismiss()
+                }
+                setSecondaryCTAText(getString(R.string.label_cancel))
+                setSecondaryCTAClickListener {
+                    this.dismiss()
+                }
+            }.show()
+        }
     }
 
     private fun showVerifyEmailDialog() {
-        val dialog = UnifyDialog(activity as Activity, UnifyDialog.VERTICAL_ACTION, UnifyDialog.NO_HEADER)
-        dialog.setTitle(getString(R.string.add_and_verify_phone))
-        dialog.setDescription(getString(R.string.add_and_verify_phone_detail))
-        dialog.setOk(getString(R.string.title_verify_phone))
-        dialog.setOkOnClickListner(View.OnClickListener { goToVerifyPhone() })
-        dialog.setSecondary(getString(R.string.label_cancel))
-        dialog.setSecondaryOnClickListner(View.OnClickListener { dialog.dismiss() })
-        dialog.show()
+        context?.let {
+            DialogUnify(it, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE).apply {
+                setTitle(getString(R.string.add_and_verify_phone))
+                setDescription(getString(R.string.add_and_verify_phone_detail))
+                setPrimaryCTAText(getString(R.string.title_verify_phone))
+                setPrimaryCTAClickListener {
+                    goToAddPhone()
+                    this.dismiss()
+                }
+                setSecondaryCTAText(getString(R.string.label_cancel))
+                setSecondaryCTAClickListener {
+                    this.dismiss()
+                }
+            }.show()
+        }
     }
 
     private fun initObserver() {
-        profileInfoViewModel.userProfileInfo.observe(this, Observer {
+        profileInfoViewModel.userProfileInfo.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> onSuccessGetUserProfileInfo(it.data)
                 is Fail -> onErrorGetProfileInfo(it.throwable)
             }
         })
 
-        profileInfoViewModel.uploadProfilePictureResponse.observe(this, Observer {
+        profileInfoViewModel.uploadProfilePictureResponse.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> onSuccessUploadProfilePicture(it.data)
                 is Fail -> onErrorUploadProfilePicture(it.throwable)
             }
         })
 
-        profileRoleViewModel.userProfileRole.observe(this, Observer {
+        profileRoleViewModel.userProfileRole.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> onSuccessGetProfileRole(it.data)
                 is Fail -> onErrorGetProfileRole(it.throwable)
@@ -176,7 +195,7 @@ class SettingProfileFragment : BaseDaggerFragment() {
 
     private fun initSettingProfileData() {
         showLoading()
-        profileInfoViewModel.getUserProfileInfo(context!!)
+        profileInfoViewModel.getUserProfileInfo(requireContext())
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -210,7 +229,7 @@ class SettingProfileFragment : BaseDaggerFragment() {
                 }
             }
             else -> {
-                when(requestCode) {
+                when (requestCode) {
                     REQUEST_CODE_ADD_PHONE -> {
                         AddPhoneNumberTracker().viewPersonalDataPage(false)
                     }
@@ -245,7 +264,7 @@ class SettingProfileFragment : BaseDaggerFragment() {
 
     private fun refreshProfile() {
         showLoading(true)
-        profileInfoViewModel.getUserProfileInfo(context!!)
+        profileInfoViewModel.getUserProfileInfo(requireContext())
     }
 
     private fun onSuccessAddGender(data: Intent?) {
@@ -291,8 +310,8 @@ class SettingProfileFragment : BaseDaggerFragment() {
 
     private fun onSuccessGetProfilePhoto(data: Intent?) {
         if (data != null) {
-            val imageUrlOrPathList = data.getStringArrayListExtra(ImagePickerActivity.PICKER_RESULT_PATHS)
-            if (imageUrlOrPathList != null && imageUrlOrPathList.size > 0) {
+            val imageUrlOrPathList = ImagePickerResultExtractor.extract(data).imageUrlOrPathList
+            if (imageUrlOrPathList.size > 0) {
                 val savedLocalImageUrl = imageUrlOrPathList[0]
                 val file = File(savedLocalImageUrl)
 
@@ -300,7 +319,7 @@ class SettingProfileFragment : BaseDaggerFragment() {
                     onErrorGetProfilePhoto(MessageErrorException(getString(R.string.failed_to_get_picture)))
                 } else {
                     showLoading(true)
-                    profileInfoViewModel.uploadProfilePicture(context!!, savedLocalImageUrl)
+                    profileInfoViewModel.uploadProfilePicture(requireContext(), savedLocalImageUrl)
                 }
 
             } else {
@@ -332,20 +351,11 @@ class SettingProfileFragment : BaseDaggerFragment() {
 
         ImageHandler.loadImageCircle2(context, profilePhoto, profileCompletionData.profilePicture)
 
-        name?.showFilled(
-                getString(R.string.subtitle_name_setting_profile),
-                profileCompletionData.fullName,
-                showVerified = false,
-                showButton = true,
-                fieldClickListener = View.OnClickListener {
-                    ChangeNameTracker().clickOnChangeName()
-                    val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.CHANGE_NAME, profileCompletionData.fullName, chancesChangeName)
-                    startActivityForResult(intent, REQUEST_CODE_CHANGE_NAME)
-                }
-        )
+        renderWarningTickerName(profileCompletionData)
+        renderNameField(profileCompletionData)
 
         if (profileCompletionData.birthDay.isEmpty()) {
-            bod.showEmpty(
+            bod?.showEmpty(
                     getString(R.string.subtitle_bod_setting_profile),
                     getString(R.string.hint_bod_setting_profile),
                     true,
@@ -354,7 +364,7 @@ class SettingProfileFragment : BaseDaggerFragment() {
                     }
             )
         } else {
-            bod.showFilled(
+            bod?.showFilled(
                     getString(R.string.subtitle_bod_setting_profile),
                     DateFormatUtils.formatDate(
                             DateFormatUtils.FORMAT_YYYY_MM_DD,
@@ -369,7 +379,7 @@ class SettingProfileFragment : BaseDaggerFragment() {
         }
 
         if (profileCompletionData.gender != 1 && profileCompletionData.gender != 2) {
-            gender.showEmpty(
+            gender?.showEmpty(
                     getString(R.string.subtitle_gender_setting_profile),
                     getString(R.string.hint_gender_setting_profile),
                     true,
@@ -379,7 +389,7 @@ class SettingProfileFragment : BaseDaggerFragment() {
                     }
             )
         } else {
-            gender.showFilled(
+            gender?.showFilled(
                     getString(R.string.subtitle_gender_setting_profile),
                     if (profileCompletionData.gender == 1)
                         getString(R.string.profile_completion_man)
@@ -390,7 +400,7 @@ class SettingProfileFragment : BaseDaggerFragment() {
         }
         val isEmailDone = profileCompletionData.isEmailDone
         if (profileCompletionData.email.isEmpty() || !isEmailDone) {
-            email.showEmpty(
+            email?.showEmpty(
                     getString(R.string.subtitle_email_setting_profile),
                     getString(R.string.hint_email_setting_profile),
                     getString(R.string.message_email_setting_profile),
@@ -398,20 +408,19 @@ class SettingProfileFragment : BaseDaggerFragment() {
                     View.OnClickListener {
                         val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_EMAIL)
                         startActivityForResult(intent, REQUEST_CODE_ADD_EMAIL)
-                    }
-            )
+                    })
         } else {
-            email.showFilled(
+            email?.showFilled(
                     getString(R.string.subtitle_email_setting_profile),
                     profileCompletionData.email,
                     true,
                     true,
                     View.OnClickListener {
-                        if(profileCompletionData.msisdn.isNotEmpty() && profileCompletionData.isMsisdnVerified){
+                        if (profileCompletionData.msisdn.isNotEmpty() && profileCompletionData.isMsisdnVerified) {
                             goToChangeEmail()
-                        } else if(profileCompletionData.msisdn.isNotEmpty() && !profileCompletionData.isMsisdnVerified) {
+                        } else if (profileCompletionData.msisdn.isNotEmpty() && !profileCompletionData.isMsisdnVerified) {
                             showVerifyEmailDialog()
-                        }else{
+                        } else {
                             showChangeEmailDialog()
                         }
                     }
@@ -419,7 +428,7 @@ class SettingProfileFragment : BaseDaggerFragment() {
         }
 
         if (profileCompletionData.msisdn.isEmpty()) {
-            phone.showEmpty(
+            phone?.showEmpty(
                     getString(R.string.subtitle_phone_setting_profile),
                     getString(R.string.hint_phone_setting_profile),
                     getString(R.string.message_phone_setting_profile),
@@ -430,7 +439,7 @@ class SettingProfileFragment : BaseDaggerFragment() {
             )
             tickerPhoneVerification.visibility = View.GONE
         } else {
-            phone.showFilled(
+            phone?.showFilled(
                     getString(R.string.subtitle_phone_setting_profile),
                     PhoneNumberUtil.transform(profileCompletionData.msisdn),
                     profileCompletionData.isMsisdnVerified,
@@ -439,7 +448,7 @@ class SettingProfileFragment : BaseDaggerFragment() {
                         if (profileCompletionData.isMsisdnVerified) {
                             goToChangePhone(profileCompletionData.msisdn, profileCompletionData.email)
                         } else {
-                            goToVerifyPhone()
+                            goToAddPhoneBy(PhoneNumberUtil.replace62with0(profileCompletionData.msisdn))
                         }
                     }
             )
@@ -453,7 +462,7 @@ class SettingProfileFragment : BaseDaggerFragment() {
                 )
                 tickerPhoneVerification.setDescriptionClickEvent(object : TickerCallback {
                     override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                        goToVerifyPhone()
+                        goToAddPhoneBy(PhoneNumberUtil.replace62with0(profileCompletionData.msisdn))
                     }
 
                     override fun onDismiss() {
@@ -479,7 +488,7 @@ class SettingProfileFragment : BaseDaggerFragment() {
 
     private fun onSuccessGetProfileRole(profileRoleData: ProfileRoleData) {
         dismissLoading()
-        bod.isEnabled = profileRoleData.isAllowedChangeDob
+        bod?.isEnabled = profileRoleData.isAllowedChangeDob
         name?.isEnabled = profileRoleData.isAllowedChangeName && remoteConfig.getBoolean(REMOTE_KEY_CHANGE_NAME, false)
         chancesChangeName = profileRoleData.chancesChangeName
     }
@@ -499,9 +508,9 @@ class SettingProfileFragment : BaseDaggerFragment() {
         startActivityForResult(intent, REQUEST_CODE_ADD_PHONE)
     }
 
-    private fun goToVerifyPhone() {
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.SETTING_PROFILE_PHONE_VERIFICATION)
-        startActivityForResult(intent, REQUEST_CODE_EDIT_PHONE)
+    private fun goToAddPhoneBy(phone: String) {
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_PHONE_WITH, phone)
+        startActivityForResult(intent, REQUEST_CODE_ADD_PHONE)
     }
 
     private fun goToChangePhone(phone: String, email: String) {
@@ -524,7 +533,7 @@ class SettingProfileFragment : BaseDaggerFragment() {
         startActivityForResult(intent, REQUEST_CODE_EDIT_BOD)
     }
 
-    private fun goToChangeEmail(){
+    private fun goToChangeEmail() {
         val url = Uri.parse(TokopediaUrl.getInstance().MOBILEWEB).buildUpon().apply {
             appendPath(UrlSettingProfileConst.USER_PATH_URL)
             appendPath(UrlSettingProfileConst.PROFILE_PATH_URL)
@@ -537,6 +546,28 @@ class SettingProfileFragment : BaseDaggerFragment() {
         )
     }
 
+    private fun renderNameField(profileCompletionData: ProfileCompletionData) {
+        name?.showFilled(
+                getString(R.string.subtitle_name_setting_profile),
+                profileCompletionData.fullName,
+                showVerified = false,
+                showButton = true,
+                fieldClickListener = View.OnClickListener {
+                    ChangeNameTracker().clickOnChangeName()
+                    val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.CHANGE_NAME, profileCompletionData.fullName, chancesChangeName)
+                    startActivityForResult(intent, REQUEST_CODE_CHANGE_NAME)
+                }
+        )
+    }
+
+    private fun renderWarningTickerName(profileCompletionData: ProfileCompletionData) {
+        if (profileCompletionData.fullName.contains(DEFAULT_NAME)) {
+            tickerAddNameWarning?.show()
+        } else {
+            tickerAddNameWarning?.hide()
+        }
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         profileInfoViewModel.userProfileInfo.removeObservers(this)
@@ -545,11 +576,12 @@ class SettingProfileFragment : BaseDaggerFragment() {
 
     inner class EditUserProfilePhotoListener : View.OnClickListener {
         override fun onClick(v: View?) {
-            val MAX_SIZE = 2048
-            val builder = ImagePickerBuilder.getDefaultBuilder(context)
-            builder.maxFileSizeInKB = 2048
-            builder.imagePickerMultipleSelectionBuilder = null
-            val intent = ImagePickerActivity.getIntent(context, builder)
+            val ctx = context ?: return
+            val builder = ImagePickerBuilder.getSquareImageBuilder(ctx).apply {
+                maxFileSizeInKB = 2048
+            }
+            val intent = RouteManager.getIntent(ctx, ApplinkConstInternalGlobal.IMAGE_PICKER)
+            intent.putImagePickerBuilder(builder)
             startActivityForResult(intent, REQUEST_CODE_EDIT_PROFILE_PHOTO)
         }
     }
@@ -558,16 +590,16 @@ class SettingProfileFragment : BaseDaggerFragment() {
         if (isOverlay) {
             overlayView.visibility = View.VISIBLE
         } else {
-            mainView.visibility = View.GONE
+            mainView?.visibility = View.GONE
         }
 
-        progressBar.visibility = View.VISIBLE
+        progressBar?.visibility = View.VISIBLE
     }
 
     private fun dismissLoading() {
         overlayView.visibility = View.GONE
-        mainView.visibility = View.VISIBLE
-        progressBar.visibility = View.GONE
+        mainView?.visibility = View.VISIBLE
+        progressBar?.visibility = View.GONE
     }
 
     companion object {
@@ -585,6 +617,8 @@ class SettingProfileFragment : BaseDaggerFragment() {
         const val REMOTE_KEY_CHANGE_NAME = "android_customer_change_public_name"
 
         const val HEADER_PICT_URL = "https://ecs7.tokopedia.net/img/android/others/bg_setting_profile_header.png"
+
+        private const val DEFAULT_NAME = "Toppers-"
 
         fun createInstance(bundle: Bundle): SettingProfileFragment {
             val fragment = SettingProfileFragment()

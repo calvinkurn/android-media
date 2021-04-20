@@ -1,93 +1,141 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/talkReplyContainer"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:layout_height="wrap_content">
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/replyProfilePicture"
         android:layout_width="@dimen/layout_lvl4"
         android:layout_height="@dimen/layout_lvl4"
-        android:layout_marginTop="@dimen/layout_lvl2"
         android:layout_marginStart="@dimen/layout_lvl2"
         android:layout_marginLeft="@dimen/layout_lvl2"
+        android:layout_marginTop="@dimen/layout_lvl2"
         app:unify_image_type="circle"
-        tools:src="@tools:sample/avatars"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
-    <com.tokopedia.unifycomponents.Label
-        android:id="@+id/replySellerLabel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/reading_seller_label"
-        android:layout_marginStart="@dimen/layout_lvl2"
-        android:layout_marginLeft="@dimen/layout_lvl2"
-        android:visibility="gone"
-        tools:visibility="visible"
-        app:labelType="general_light_green"
-        app:layout_constraintTop_toTopOf="@id/replyProfilePicture"
-        app:layout_constraintStart_toEndOf="@id/replyProfilePicture" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/replyDisplayName"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/dp_18"
-        android:layout_marginStart="@dimen/spacing_lvl1"
-        android:layout_marginLeft="@dimen/spacing_lvl1"
+        android:layout_marginStart="@dimen/layout_lvl2"
+        android:layout_marginEnd="@dimen/spacing_lvl2"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textColor="@color/Unify_N700_68"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintEnd_toStartOf="@id/replySellerLabel"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toEndOf="@id/replyProfilePicture"
+        app:layout_constraintTop_toTopOf="@id/replyProfilePicture"
         app:layout_goneMarginLeft="@dimen/layout_lvl1"
-        android:textColor="@color/Neutral_N700_68"
         app:layout_goneMarginStart="@dimen/layout_lvl2"
         app:typographyType="body_3"
         app:typographyWeight="bold"
-        tools:text="Budi"
+        tools:text="Budi" />
+
+    <com.tokopedia.unifycomponents.Label
+        android:id="@+id/replySellerLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/spacing_lvl2"
+        android:text="@string/reading_seller_label"
+        android:visibility="gone"
+        app:labelType="general_light_green"
+        app:layout_constraintEnd_toStartOf="@id/replyDate"
+        app:layout_constraintStart_toEndOf="@id/replyDisplayName"
         app:layout_constraintTop_toTopOf="@id/replyProfilePicture"
-        app:layout_constraintStart_toEndOf="@id/replySellerLabel" />
+        tools:visibility="visible" />
 
     <androidx.constraintlayout.widget.Barrier
         android:id="@+id/barrierReplyLabelName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:constraint_referenced_ids="replyDisplayName, replySellerLabel"
-        app:barrierDirection="end" />
+        app:barrierDirection="end"
+        app:constraint_referenced_ids="replyDisplayName, replySellerLabel" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/replyDate"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/dp_18"
-        android:layout_marginStart="@dimen/spacing_lvl2"
-        android:layout_marginLeft="@dimen/spacing_lvl2"
-        android:textColor="@color/Neutral_N700_68"
+        android:layout_marginTop="@dimen/layout_lvl2"
+        android:layout_marginEnd="@dimen/layout_lvl4"
+        android:textColor="@color/Unify_N700_68"
+        app:layout_constraintEnd_toStartOf="@id/replyKebab"
+        app:layout_constraintStart_toEndOf="@id/replySellerLabel"
+        app:layout_constraintTop_toTopOf="parent"
         app:typographyType="body_3"
         app:typographyWeight="reguler"
-        tools:text="Kemarin"
-        android:layout_marginTop="@dimen/layout_lvl2"
-        app:layout_constraintStart_toEndOf="@+id/barrierReplyLabelName"
-        app:layout_constraintTop_toTopOf="parent" />
+        tools:text="Kemarin" />
 
     <androidx.constraintlayout.widget.Barrier
         android:id="@+id/barrierReplyMessage"
         android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         app:barrierDirection="bottom"
-        app:constraint_referenced_ids="replyDisplayName, replySellerLabel, replyDate"
-        android:layout_height="wrap_content"/>
+        app:constraint_referenced_ids="replyDisplayName, replySellerLabel, replyDate" />
+
+    <com.tokopedia.unifycomponents.Label
+        android:id="@+id/replySmartReplyLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl2"
+        android:layout_marginStart="@dimen/layout_lvl2"
+        android:visibility="gone"
+        app:labelTitle="@string/smart_reply_label"
+        app:labelType="general_light_grey"
+        app:layout_constraintTop_toBottomOf="@id/barrierReplyMessage"
+        app:layout_constraintStart_toEndOf="@id/replyProfilePicture"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/replyMessage"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl2"
         android:layout_marginTop="@dimen/spacing_lvl2"
         android:layout_marginEnd="@dimen/layout_lvl2"
-        android:layout_marginRight="@dimen/layout_lvl2"
-        app:layout_goneMarginStart="@dimen/layout_lvl2"
-        tools:text="Sama sekalian deh nanya kalo yang produk2 ini juga tahan air juga gak yah?"
-        app:layout_constraintStart_toStartOf="@id/replySellerLabel"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_goneMarginStart="@dimen/layout_lvl2"
+        app:layout_constraintStart_toEndOf="@id/replySmartReplyLabel"
         app:layout_constraintTop_toBottomOf="@+id/barrierReplyMessage"
         app:typographyType="body_2"
-        app:typographyWeight="reguler" />
+        app:typographyWeight="reguler"
+        tools:text="Sama sekalian deh nanya kalo yang produk2 ini juga tahan air juga gak yah?" />
+
+    <com.tokopedia.unifycomponents.ticker.Ticker
+        android:id="@+id/replyCommentTicker"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/layout_lvl1"
+        android:layout_marginEnd="@dimen/layout_lvl2"
+        android:visibility="gone"
+        app:closeButtonVisibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/replyMessage"
+        app:layout_constraintTop_toBottomOf="@id/replyMessage"
+        app:tickerType="warning" />
+
+    <com.tokopedia.talk.feature.reply.presentation.widget.TalkReplyUnmaskCard
+        android:id="@+id/replyCommentUnmaskCard"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/layout_lvl1"
+        android:layout_marginEnd="@dimen/layout_lvl2"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/replyMessage"
+        app:layout_constraintTop_toBottomOf="@id/replyMessage" />
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/barrierReplyMasking"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="bottom"
+        app:constraint_referenced_ids="replyCommentTicker, replyMessage, replyCommentUnmaskCard" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/replyAttachedProductsRecyclerView"
@@ -97,58 +145,43 @@
         android:clipToPadding="false"
         android:orientation="horizontal"
         android:paddingStart="@dimen/layout_lvl2"
-        android:paddingEnd="@dimen/layout_lvl2"
         android:paddingTop="@dimen/layout_lvl1"
+        android:paddingEnd="@dimen/layout_lvl2"
         android:paddingBottom="@dimen/layout_lvl1"
         android:visibility="gone"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/replyMessage"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
-
-    <ImageView
-        android:id="@+id/likeIcon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_12"
-        android:visibility="gone"
-        app:layout_goneMarginTop="@dimen/dp_12"
-        app:layout_goneMarginStart="@dimen/layout_lvl2"
-        app:srcCompat="@drawable/talk_ic_like"
-        app:layout_constraintStart_toStartOf="@id/replyMessage"
-        app:layout_constraintTop_toBottomOf="@id/replyAttachedProductsRecyclerView" />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/replyLikeCount"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/talk_like_count_place_holder"
-        android:layout_marginStart="@dimen/layout_lvl1"
-        android:layout_marginLeft="@dimen/layout_lvl1"
-        android:visibility="gone"
-        app:typographyType="body_3"
-        app:typographyWeight="reguler"
-        app:layout_constraintStart_toEndOf="@id/likeIcon"
-        app:layout_constraintTop_toTopOf="@id/likeIcon" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/barrierReplyMasking" />
 
     <ImageView
         android:id="@+id/replyKebab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl2"
         android:layout_marginEnd="@dimen/layout_lvl2"
         android:layout_marginRight="@dimen/layout_lvl2"
-        android:layout_marginTop="@dimen/spacing_lvl2"
         android:visibility="gone"
-        app:layout_goneMarginTop="@dimen/dp_12"
-        app:layout_constraintTop_toBottomOf="@id/replyAttachedProductsRecyclerView"
+        android:contentDescription="@null"
+        app:layout_constraintBottom_toBottomOf="@id/replyDisplayName"
         app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@drawable/talk_ic_kebab" />
+        app:layout_constraintTop_toTopOf="@id/replyDisplayName"
+        app:layout_goneMarginTop="@dimen/dp_12"
+        app:srcCompat="@drawable/talk_ic_kebab"
+        tools:visibility="visible" />
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/barrierReplyContent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="bottom"
+        app:constraint_referenced_ids="replyCommentTicker, replyMessage, replyCommentUnmaskCard, replyAttachedProductsRecyclerView" />
 
     <com.tokopedia.unifycomponents.DividerUnify
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_1"
         android:layout_marginTop="@dimen/layout_lvl2"
-        app:layout_constraintTop_toBottomOf="@id/replyKebab"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/barrierReplyContent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

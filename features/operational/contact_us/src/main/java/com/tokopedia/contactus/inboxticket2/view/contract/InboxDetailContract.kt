@@ -37,13 +37,11 @@ interface InboxDetailContract {
         fun showNoTicketView(messageError: List<String?>?)
     }
 
-    interface InboxDetailPresenter : InboxBasePresenter {
+    interface Presenter : InboxBasePresenter {
         fun getSearchListener(): CustomEditText.Listener
         fun onImageSelect(image: ImageUpload)
         fun watcher(): TextWatcher
         fun sendMessage()
-        fun setBadRating(position: Int)
-        fun sendCustomReason(customReason: String)
         fun getNextResult(): Int
         fun getPreviousResult(): Int
         fun getUtils(): Utils
@@ -54,6 +52,7 @@ interface InboxDetailContract {
         fun getTicketStatus(): String
         fun getTicketDetails(ticketId: String?)
         fun getTicketId(): String?
+        fun getUserId():String
 
     }
 }

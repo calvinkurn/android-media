@@ -1,26 +1,28 @@
 ext {
 
     compileSdkVersion = 29
-    minSdkVersion = 17
-    targetSdkVersion = 28
+    minSdkVersion = 21
+    targetSdkVersion = 29
     buildToolsVersion = "29.0.2"
 
     jacocoVersion = "0.8.5"
-    kotlinVersion = "1.3.70"
+    kotlinVersion = "1.4.10"
 
     navigationVersion = "2.3.0"
     lifeCycleVersion = "2.2.0"
     lifeCycleExtensionsVersion = "2.2.0"
     archCoreVersion = "2.1.0"
-    workManagerVersion = "2.3.4"
+    workManagerVersion = "2.5.0"
 
     appCompatVersion = '1.2.0-rc01'
     supportLibraryVersion = '1.1.0-rc01'
+    androidxCoreVersion = '1.3.2'
     supportLegacyLibraryVersion = '1.0.0'
     playServiceVersion = '11.0.4'
-    coroutineVersion = '1.3.3'
+    coroutineVersion = '1.4.2'
     retrofitVersion = '2.6.0'
     okHttpVersion = '3.12.5'
+    brotliVersion = '0.1.2'
     glideVersion = '4.9.0'
     viewPager2 = '1.0.0'
     deeplinkDispatchVersion = '4.1.0'
@@ -30,14 +32,13 @@ ext {
     apolloVersion = '0.3.0'
     lottieVersion = '3.4.1'
     cardioVersion = '5.5.1'
-    reactNativeVersion = '0.60.5'
-    powerMockVersion = '1.6.2'
     roomVersion = '2.2.5'
     sqliteFrameworkVersion = '2.1.0'
     multiDexVersion = '2.0.0'
     twitter4JVersion = '4.0.7'
     constraintLayoutVersion = '2.0.0-beta3'
-    materialVersion = '1.0.0'
+    materialVersion = '1.2.1'
+    swipeRefreshVersion = '1.0.0'
 
     exoPlayerVersion = '2.11.8'
     stfalconVersion = '1.0.0'
@@ -48,23 +49,27 @@ ext {
 
     playCoreVersion = '1.8.0'
     playServiceGms = '16.0.0'
-    playServiceBase = '16.1.0'
+    playServiceBase = '17.5.0'
     playServiceAppIndexing = '17.1.0'
-    playServiceAnalytics = '16.0.6'
-    playServiceFirebaseMessaging = '17.3.4'
+    playServiceAnalytics = '17.0.0'
+    playServiceFirebaseMessaging = '20.2.3'
     playServiceLocation = '17.0.0'
     playServiceMaps = '17.0.0'
     playServiceAuth = '17.0.0'
     playServicePlace = '17.0.0'
     playServiceAuthApiPhone = '16.0.0'
     playServiceMapsUtil = '1.0.2'
-    playServiceFirebaseRemoteConfig = '16.1.3'
-    playServiceFirebasePerfMon = '16.2.3'
+    playServiceFirebaseRemoteConfig = '19.2.0'
+    playServiceFirebasePerfMon = '19.0.8'
+    playServiceFirebaseFirestore = '17.1.2'
+    firebaseCrashlyticsVersion = '17.2.1'
+    firebaseAnalyticsVersion = '17.5.0'
+    firebaseAuthVersion = '17.0.0'
     playServiceAds = '17.0.0'
-    playServiceFirebaseCore = '16.0.6'
-    playServiceTagManager = '16.0.6'
+    playServiceFirebaseCore = '18.0.0'
+    playServiceTagManager = '17.0.0'
     playServiceSafetyNet = '16.0.0'
-    playServiceMeasurementBase = '16.0.5'
+    playServiceMeasurementBase = '18.0.0'
     playServiceMeasurementApi = '16.0.4'
 
     JunitVersion = '4.12'
@@ -73,51 +78,49 @@ ext {
     kotlinTestVersion = '1.3.70'
     KotlinMockitoVersion = '1.5.0'
     SpekVersion = "1.1.5"
-    crashlyticsGradleVersion = '1.28.0'
+    crashlyticsGradleVersion = '2.2.0'
     googleServiceGradleVersion = '4.3.3'
-    coroutineTestVersion = '1.3.2'
-    chuckerVersion = '3.0.1'
+    chuckerVersion = '3.1.2'
     sliceVersion = '1.0.0-alpha6'
+    sliceCoreVersion = '1.0.0'
     transitionVersion = '1.3.1'
+    robolectricVersion = "4.4"
+    orchestratorVersion = '1.1.0'
 
     benchmarkTestVersion = '1.0.0'
     testCore = '1.2.0'
     fragmentTest = "1.1.0"
-
-    debugToolsEnabled = true
-
+    androidxFragment = '1.2.4'
     debugToolsEnabled = true
 
     // Sort and categorize alphabetically by folder name
     app = [
             customerapp: ":customerapp",
+            customerapp_pro: ":customerapp_pro",
             sellerapp  : ":sellerapp"
     ]
 
     unifyIconVersion = '0.0.4'
-    unifyPrinciplesVersion = '1.2.0'
-    unifyComponentsVersion = '1.1.46'
-    unifyCoachMarkVersion = '1.2.6'
-    unifyCalendarVersion = '1.0.2'
+    unifyIconsVersion = '1.0.7'
+    unifyPrinciplesVersion = '1.3.5'
+    unifyComponentsVersion = '1.1.63'
+    unifyCoachMarkVersion = '1.2.10'
+    unifyCalendarVersion = '1.1.2'
     unifyBannerVersion = '1.0.4'
-    unifyDialogVersion = '1.0.3'
+    unifyDialogVersion = '1.0.9'
     unifyDatePickerVersion = '1.0.6'
-    unifyPinVersion = '1.0.3'
-    unifyEmptyStateVersion = '1.0.6-beta-1'
-    unifyGlobalErrorVersion = '1.0.9'
-    unifyHeaderVersion = '1.1.4'
-    unifySortFilterVersion = '1.0.3'
+    unifyPinVersion = '1.0.5'
+    unifyEmptyStateVersion = '1.0.11.1'
+    unifyGlobalErrorVersion = '1.0.12'
+    unifyHeaderVersion = '1.1.5'
+    unifySortFilterVersion = '1.1.3'
     unifyIconNotificationVersion = '1.0.0'
     unifyCarouselVersion = '1.0.4'
     unifyListVersion = '1.0.5'
 
     gradlePlugin = [
-            crashlytics   : "io.fabric.tools:gradle:${crashlyticsGradleVersion}",
+            crashlytics   : "com.google.firebase:firebase-crashlytics-gradle:${crashlyticsGradleVersion}",
             googleServices: "com.google.gms:google-services:${googleServiceGradleVersion}"
-    ]
-
-    monitoringDependencies = [
-            bugSnag       : "com.bugsnag:bugsnag-android:4.22.3"
     ]
 
     networkDependencies = [
@@ -125,10 +128,12 @@ ext {
             converterGson           : "com.squareup.retrofit2:converter-gson:${retrofitVersion}",
             adapterRxJava           : "com.squareup.retrofit2:adapter-rxjava:${retrofitVersion}",
             okHttp                  : "com.squareup.okhttp3:okhttp:${okHttpVersion}",
+            brotli                  : "org.brotli:dec:${brotliVersion}",
             loggingInterceptor      : "com.squareup.okhttp3:logging-interceptor:${okHttpVersion}",
             glide                   : "com.github.bumptech.glide:glide:${glideVersion}",
             retrofitKotlinCoroutine : "com.jakewharton.retrofit:retrofit2-kotlin-coroutines-adapter:0.9.2",
-            glideProcessor          : "com.github.bumptech.glide:compiler:${glideVersion}"
+            glideProcessor          : "com.github.bumptech.glide:compiler:${glideVersion}",
+            glideOkhttp             : "com.github.bumptech.glide:okhttp3-integration:${glideVersion}"
     ]
 
     dbDependencies = [
@@ -146,6 +151,7 @@ ext {
             appCompactV7      : "androidx.appcompat:appcompat:${appCompatVersion}",
             supportV13        : "androidx.legacy:legacy-support-v13:${supportLegacyLibraryVersion}",
             design            : "com.google.android.material:material:${materialVersion}",
+            swipeRefresh      : "androidx.swiperefreshlayout:swiperefreshlayout:${swipeRefreshVersion}",
             cardViewV7        : "androidx.cardview:cardview:${supportLegacyLibraryVersion}",
             exifinterface     : "androidx.exifinterface:exifinterface:${supportLibraryVersion}",
             constraintLayout  : "androidx.constraintlayout:constraintlayout:${constraintLayoutVersion}",
@@ -179,7 +185,10 @@ ext {
             messaging  : "com.google.firebase:firebase-messaging:${playServiceFirebaseMessaging}",
             config     : "com.google.firebase:firebase-config:${playServiceFirebaseRemoteConfig}",
             performance: "com.google.firebase:firebase-perf:${playServiceFirebasePerfMon}",
-            fireStore  : "com.google.firebase:firebase-firestore:17.1.2"
+            fireStore  : "com.google.firebase:firebase-firestore:21.5.0",
+            crashlytics: "com.google.firebase:firebase-crashlytics-ktx:${firebaseCrashlyticsVersion}",
+            analytics  : "com.google.firebase:firebase-analytics-ktx:${firebaseAnalyticsVersion}",
+            auth       : "com.google.firebase:firebase-auth:${firebaseAuthVersion}"
     ]
 
     viewDependencies = [
@@ -187,7 +196,6 @@ ext {
     ]
 
     serviceDependencies = [
-            crashlytics : "com.crashlytics.sdk.android:crashlytics:2.9.9",
             anrWatchDogs: "com.salomonbrys.anrwatchdog:anrwatchdog:1.3.0"
     ]
 
@@ -196,7 +204,7 @@ ext {
             installRef : "com.android.installreferrer:installreferrer:1.1",
             moengage   : "com.moengage:moe-android-sdk:9.8.02",
             moengageAmp: "com.moengage:push-amp-plus:0.3.00",
-            branch     : "io.branch.sdk.android:library:4.1.1",
+            branch     : "io.branch.sdk.android:library:5.0.4",
     ]
 
     deeplinkDispatchDependencies = [
@@ -209,7 +217,7 @@ ext {
             autoService           : "com.google.auto.service:auto-service:1.0-rc6",
             kotlinPoet            : "com.squareup:kotlinpoet:1.4.3",
             scannerZxing          : "com.journeyapps:zxing-android-embedded:3.5.0",
-            facebook              : "com.facebook.android:facebook-android-sdk:6.2.0",
+            facebook              : "com.facebook.android:facebook-android-sdk:8.1.0",
             parcelerApi           : "org.parceler:parceler-api:1.1.12",
             parceler              : "org.parceler:parceler:1.1.12",
             gson                  : "com.google.code.gson:gson:2.7",
@@ -219,8 +227,8 @@ ext {
             rxJavaComputation     : 'io.reactivex:rxjava-computation-expressions:0.21.0',
             multiDex              : "androidx.multidex:multidex:$multiDexVersion",
             javaxAnnotation       : "javax.annotation:jsr250-api:1.0",
-            dagger                : "com.google.dagger:dagger:2.5",
-            daggerCompiler        : "com.google.dagger:dagger-compiler:2.5",
+            dagger                : "com.google.dagger:dagger:2.30.1",
+            daggerCompiler        : "com.google.dagger:dagger-compiler:2.30.1",
             bcaxcoWidget          : "com.bca.xco.widget:BCAXCOWidget:1.0@aar",
 
             chips                 : 'com.beloo.widget:ChipsLayoutManager:0.3.7@aar',
@@ -228,21 +236,20 @@ ext {
             lottie                : "com.airbnb.android:lottie:$lottieVersion",
             loaderviewlibrary     : "com.elyeproj.libraries:loaderviewlibrary:1.5.0",
             imagecropper          : "com.theartofdev.edmodo:android-image-cropper:2.5.1",
-            reactNative           : "com.facebook.react:react-native:$reactNativeVersion@aar",
-            codePushReactNative   : "com.microsoft.codepush:rn-codepush:5.6.0@aar",
-            hansel                : "io.hansel.preprocessor:preprocessor:8.3.18",
-            robust                : "com.meituan.robust:robust:0.4.99",
+            hansel                : "io.hansel.preprocessor:preprocessor:8.4.4",
+            robust                : "com.tokopedia.patch:robust:0.0.1@aar",
+            autopatchbase         : "com.tokopedia.patch:autopatchbase:0.0.1",
             apacheLang            : "org.apache.commons:commons-lang3:3.0",
             ucrop                 : "com.github.yalantis:ucrop:2.2.2",
             flexBoxLayout         : "com.google.android:flexbox:0.3.2",
-            cameraView            : "com.otaliastudios:cameraview:2.6.1",
+            cameraView            : "com.otaliastudios:cameraview:2.6.4",
             coroutineCore         : "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutineVersion",
             coroutineAndroid      : "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutineVersion",
             coroutineTest         : "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutineVersion",
             guava24               : 'com.google.guava:guava:24.1-jre',
             incap                 : "net.ltgt.gradle.incap:incap:0.2",
             incapProcessor        : "net.ltgt.gradle.incap:incap-processor:0.2",
-
+            navigationSafeArgs    : "androidx.navigation:navigation-safe-args-gradle-plugin:$navigationVersion",
             navigationFragmentKtx : "androidx.navigation:navigation-fragment-ktx:$navigationVersion",
             navigationUiKtx       : "androidx.navigation:navigation-ui-ktx:$navigationVersion",
             viewModel             : "androidx.lifecycle:lifecycle-viewmodel:$lifeCycleVersion",
@@ -253,11 +260,14 @@ ext {
             exoPlayerRtmp         : "com.google.android.exoplayer:extension-rtmp:$exoPlayerVersion",
             lifeCycleExtentions   : "androidx.lifecycle:lifecycle-extensions:$lifeCycleExtensionsVersion",
             lifeCycleRuntime      : "androidx.lifecycle:lifecycle-compiler:$lifeCycleVersion",
+            lifeCycleCommon       : "androidx.lifecycle:lifecycle-common-java8:$lifeCycleVersion",
+            lifecycleRuntimeKtx   : "androidx.lifecycle:lifecycle-runtime-ktx:$lifeCycleVersion",
             liveData              : "androidx.lifecycle:lifecycle-livedata:$lifeCycleVersion",
+            liveDataKtx           : "androidx.lifecycle:lifecycle-livedata-ktx:$lifeCycleVersion",
             archCoreRuntime       : "androidx.arch.core:core-runtime:$archCoreVersion",
             archCoreCommon        : "androidx.arch.core:core-common:$archCoreVersion",
             twitter               : "org.twitter4j:twitter4j-core:$twitter4JVersion",
-            laku6Sdk              : "com.gitlab.Laku6:laku6-trade-in-sdk-android:1.4.8",
+            laku6Sdk              : "com.gitlab.Laku6:laku6-trade-in-sdk-android:2.1.13",
             androidjunit5         : "de.mannodermaus.gradle.plugins:android-junit5:1.5.1.0",
             rootbeer              : "com.scottyab:rootbeer-lib:0.0.7",
             viewPager2            : "androidx.viewpager2:viewpager2:$viewPager2",
@@ -266,6 +276,7 @@ ext {
             liveness              : "ai.advance.liveness:guardian_core_v1.6@aar",
             javaxInject           :  "javax.inject:javax.inject:1",
             slice                 : "androidx.slice:slice-builders-ktx:$sliceVersion",
+            sliceCore             : "androidx.slice:slice-core:$sliceCoreVersion",
             transition            : "androidx.transition:transition:$transitionVersion"
     ]
 
@@ -293,11 +304,6 @@ ext {
             dexMakerMockito       : 'com.linkedin.dexmaker:dexmaker-mockito:2.25.1',
             assertJ               : "org.assertj:assertj-core:1.7.1",
             assertJCore           : 'org.assertj:assertj-core:3.8.0',
-            powerMock             : "org.powermock:powermock:$powerMockVersion",
-            powerMockJUnit        : "org.powermock:powermock-module-junit4:$powerMockVersion",
-            powerMockJUnitRule    : "org.powermock:powermock-module-junit4-rule:$powerMockVersion",
-            powerMockito          : "org.powermock:powermock-api-mockito:$powerMockVersion",
-            powerMockXstream      : "org.powermock:powermock-classloading-xstream:$powerMockVersion",
             kotlinMockito         : "com.nhaarman:mockito-kotlin:${KotlinMockitoVersion}",
             kotlinMockito2        : "com.nhaarman.mockitokotlin2:mockito-kotlin:2.1.0",
             kotlinTest            : "org.jetbrains.kotlin:kotlin-test:$kotlinTestVersion",
@@ -307,12 +313,13 @@ ext {
             platformEngine        : "org.jetbrains.spek:spek-junit-platform-engine:${SpekVersion}",
             junitPlatformRunner   : "org.junit.platform:junit-platform-runner:1.0.0",
             archCoreTesting       : "androidx.arch.core:core-testing:$archCoreVersion",
-            couroutinesTest       : "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutineTestVersion",
             json                  : "org.json:json:20140107",
             benchmark             : "androidx.benchmark:benchmark-junit4:$benchmarkTestVersion",
             testCore              : "androidx.test:core:$testCore",
             testCoreKtx           : "androidx.test:core-ktx:$testCore",
-            fragmentTest          : "androidx.fragment:fragment-testing:$fragmentTest"
+            fragmentTest          : "androidx.fragment:fragment-testing:$fragmentTest",
+            robolectric           : "org.robolectric:robolectric:$robolectricVersion",
+            orchestrator          : "androidx.test:orchestrator:$orchestratorVersion"
     ]
 
     debugToolsDependencies = [
@@ -332,10 +339,10 @@ ext {
 
     unifyDependencies = [
             icon            : "com.tokopedia.unify:icon:${unifyIconVersion}@aar",
-            principles      : "com.tokopedia.unify:principles:${unifyPrinciplesVersion}@aar",
-            components      : "com.tokopedia.unify:components:${unifyComponentsVersion}@aar",
+            principles      : "com.tokopedia.unify:principles:${unifyPrinciplesVersion}",
+            components      : "com.tokopedia.unify:components:${unifyComponentsVersion}",
             coach_mark      : "com.tokopedia.unify.compositions:coach_mark:${unifyCoachMarkVersion}@aar",
-            calendar        : "com.tokopedia.unify.compositions:calendar:${unifyCalendarVersion}@aar",
+            calendar        : "com.tokopedia.unify.compositions:calendar:${unifyCalendarVersion}",
             banner          : "com.tokopedia.unify.compositions:banner:${unifyBannerVersion}@aar",
             dialog          : "com.tokopedia.unify.compositions:dialog:${unifyDialogVersion}@aar",
             datepicker      : "com.tokopedia.unify.compositions:datepicker:${unifyDatePickerVersion}@aar",
@@ -346,6 +353,7 @@ ext {
             header          : "com.tokopedia.unify.compositions:header:${unifyHeaderVersion}@aar",
             iconNotification: "com.tokopedia.unify.compositions:icon_notification:${unifyIconNotificationVersion}@aar",
             sortFilter      : "com.tokopedia.unify.compositions:sort_filter:${unifySortFilterVersion}@aar",
-            carousel        : "com.tokopedia.unify.compositions:carousel:${unifyCarouselVersion}@aar"
+            carousel        : "com.tokopedia.unify.compositions:carousel:${unifyCarouselVersion}@aar",
+            icons           : "com.tokopedia.unify:icons:${unifyIconsVersion}@aar"
     ]
 }

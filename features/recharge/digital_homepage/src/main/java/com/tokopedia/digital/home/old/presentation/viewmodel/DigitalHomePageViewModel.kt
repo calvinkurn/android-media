@@ -1,27 +1,18 @@
-package com.tokopedia.digital.home.presentation.viewmodel
+package com.tokopedia.digital.home.old.presentation.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.digital.home.domain.DigitalHomePageUseCase
-import com.tokopedia.digital.home.domain.DigitalHomePageUseCase.Companion.BANNER_ORDER
-import com.tokopedia.digital.home.domain.DigitalHomePageUseCase.Companion.CATEGORY_ORDER
-import com.tokopedia.digital.home.domain.DigitalHomePageUseCase.Companion.FAVORITES_ORDER
-import com.tokopedia.digital.home.domain.DigitalHomePageUseCase.Companion.NEW_USER_ZONE_ORDER
-import com.tokopedia.digital.home.domain.DigitalHomePageUseCase.Companion.PROMO_ORDER
-import com.tokopedia.digital.home.domain.DigitalHomePageUseCase.Companion.RECOMMENDATION_ORDER
-import com.tokopedia.digital.home.domain.DigitalHomePageUseCase.Companion.SPOTLIGHT_ORDER
-import com.tokopedia.digital.home.domain.DigitalHomePageUseCase.Companion.SUBSCRIPTION_ORDER
-import com.tokopedia.digital.home.domain.DigitalHomePageUseCase.Companion.TRUST_MARK_ORDER
-import com.tokopedia.digital.home.model.DigitalHomePageItemModel
-import com.tokopedia.digital.home.old.presentation.util.DigitalHomePageDispatchersProvider
+import com.tokopedia.digital.home.old.domain.*
+import com.tokopedia.digital.home.old.model.DigitalHomePageItemModel
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class DigitalHomePageViewModel @Inject constructor(
         private val digitalHomePageUseCase: DigitalHomePageUseCase,
-        private val dispatcher: DigitalHomePageDispatchersProvider)
-    : BaseViewModel(dispatcher.Main) {
+        private val dispatcher: CoroutineDispatchers)
+    : BaseViewModel(dispatcher.main) {
 
     private val mutableDigitalHomePageList = MutableLiveData<List<DigitalHomePageItemModel>>()
     val digitalHomePageList: LiveData<List<DigitalHomePageItemModel>>
@@ -40,7 +31,7 @@ class DigitalHomePageViewModel @Inject constructor(
 
     fun getData(isLoadFromCloud: Boolean) {
         digitalHomePageUseCase.isFromCloud = isLoadFromCloud
-        launch(dispatcher.IO) {
+        launch(dispatcher.io) {
             val data = digitalHomePageUseCase.executeOnBackground()
             if (data.isEmpty() || checkError(data)) {
                 mutableIsAllError.postValue(true)
@@ -57,15 +48,15 @@ class DigitalHomePageViewModel @Inject constructor(
     companion object {
         const val CATEGORY_SECTION_ORDER: Int = 7
         val SECTION_ORDERING = mapOf(
-                BANNER_ORDER to 0,
-                FAVORITES_ORDER to 1,
-                TRUST_MARK_ORDER to 2,
-                RECOMMENDATION_ORDER to 3,
-                NEW_USER_ZONE_ORDER to 4,
-                SPOTLIGHT_ORDER to 5,
-                SUBSCRIPTION_ORDER to 6,
-                CATEGORY_ORDER to CATEGORY_SECTION_ORDER,
-                PROMO_ORDER to 8
+                DigitalHomePageUseCase.BANNER_ORDER to 0,
+                DigitalHomePageUseCase.FAVORITES_ORDER to 1,
+                DigitalHomePageUseCase.TRUST_MARK_ORDER to 2,
+                DigitalHomePageUseCase.RECOMMENDATION_ORDER to 3,
+                DigitalHomePageUseCase.NEW_USER_ZONE_ORDER to 4,
+                DigitalHomePageUseCase.SPOTLIGHT_ORDER to 5,
+                DigitalHomePageUseCase.SUBSCRIPTION_ORDER to 6,
+                DigitalHomePageUseCase.CATEGORY_ORDER to CATEGORY_SECTION_ORDER,
+                DigitalHomePageUseCase.PROMO_ORDER to 8
         )
     }
 }

@@ -2,11 +2,11 @@ package com.tokopedia.logisticaddaddress.domain.usecase
 
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
+import com.tokopedia.logisticCommon.data.response.AutoCompleteResponse
+import com.tokopedia.logisticCommon.domain.model.Place
 import com.tokopedia.logisticaddaddress.data.query.AutoCompleteQuery
 import com.tokopedia.logisticaddaddress.domain.executor.SchedulerProvider
 import com.tokopedia.logisticaddaddress.domain.mapper.AutoCompleteMapper
-import com.tokopedia.logisticaddaddress.domain.model.autocomplete.AutocompleteResponse
-import com.tokopedia.logisticdata.data.autocomplete.SuggestedPlace
 import com.tokopedia.network.exception.MessageErrorException
 import rx.Observable
 import javax.inject.Inject
@@ -17,18 +17,18 @@ class AutoCompleteUseCase
         private val scheduler: SchedulerProvider,
         private val mapper: AutoCompleteMapper) {
 
-    fun execute(query: String): Observable<List<SuggestedPlace>> {
+    fun execute(query: String): Observable<Place> {
         val param = mapOf("param" to query)
-        val gqlRequest = GraphqlRequest(AutoCompleteQuery.keroAutoCompleteGeocode, AutocompleteResponse::class.java, param)
+        val gqlRequest = GraphqlRequest(AutoCompleteQuery.keroAutoCompleteGeocode, AutoCompleteResponse::class.java, param)
         gql.clearRequest()
         gql.addRequest(gqlRequest)
         return gql.getExecuteObservable(null)
                 .map { gqlResponse ->
-                    val response: AutocompleteResponse? =
-                            gqlResponse.getData(AutocompleteResponse::class.java)
+                    val response: AutoCompleteResponse? =
+                            gqlResponse.getData(AutoCompleteResponse::class.java)
                     response
                             ?: throw MessageErrorException(
-                                    gqlResponse.getError(AutocompleteResponse::class.java)[0].message)
+                                    gqlResponse.getError(AutoCompleteResponse::class.java)[0].message)
                 }
                 .map { mapper.mapAutoComplete(it) }
                 .subscribeOn(scheduler.io())

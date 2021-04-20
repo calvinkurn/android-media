@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center|center_horizontal"
-    android:background="@color/white"
+    android:background="@color/Unify_N0"
     android:orientation="vertical"
     tools:visibility="visible">
 
@@ -15,9 +15,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        app:srcCompat="@drawable/ic_emptycart" />
+        app:srcCompat="@drawable/ic_emptycart"
+        android:contentDescription="@string/img_content_desc" />
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/empty_state_marketplace_heading"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -40,8 +41,6 @@
         android:id="@+id/filterDate"
         android:layout_width="110dp"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
         android:layout_marginBottom="@dimen/dp_16"
         android:background="@drawable/filter_button_white_bg"
         android:elevation="@dimen/dp_5"
@@ -53,18 +52,19 @@
             android:layout_width="20dp"
             android:layout_height="20dp"
             android:layout_gravity="center_vertical"
-            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginStart="@dimen/dp_16"
             android:layout_marginTop="@dimen/dp_10"
-            android:layout_marginRight="@dimen/dp_4"
+            android:layout_marginEnd="@dimen/dp_4"
             android:layout_marginBottom="@dimen/dp_10"
-            app:srcCompat="@drawable/ic_filter" />
-        <TextView
+            app:srcCompat="@drawable/ic_filter_buyer"
+            android:contentDescription="@string/img_content_desc" />
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/filter_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:fontFamily="sans-serif-medium"
-            android:layout_marginRight="@dimen/dp_8"
+            android:layout_marginEnd="@dimen/dp_8"
             android:letterSpacing="0.02"
             android:text="@string/filter"
             android:textSize="@dimen/sp_14"
@@ -72,10 +72,11 @@
             />
         <ImageView
             android:id="@+id/checkImageView"
-            android:layout_marginRight="@dimen/dp_16"
+            android:layout_marginEnd="@dimen/dp_16"
             android:layout_gravity="center_vertical"
             android:layout_width="@dimen/dp_16"
             android:layout_height="@dimen/dp_16"
-            app:srcCompat="@drawable/ic_check" />
+            app:srcCompat="@drawable/ic_check"
+            android:contentDescription="@string/img_content_desc" />
     </LinearLayout>
 </LinearLayout>

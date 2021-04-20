@@ -2,5 +2,6 @@
 <resources>
     <declare-styleable name="DiscoveryBannerView">
         <attr name="autoScroll" format="boolean" />
+        <attr name="textColor" format="color|reference"/>
     </declare-styleable>
 </resources>

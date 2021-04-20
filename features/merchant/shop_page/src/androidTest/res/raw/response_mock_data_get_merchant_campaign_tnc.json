@@ -1,0 +1,12 @@
+[{
+  "data": {
+    "getMerchantCampaignTNC": {
+      "title": "S\u0026K pembelian",
+      "messages": ["Hanya bisa bayar menggunakan Virtual Account, kartu kredit, debit, OVO, \u0026 pembayaran instan lainnya", "Durasi pembayaran 5 menit. Jika melewati batas pembayaran, barang akan otomatis dikembalikan ke stok produk.", "S\u0026K hanya berlaku untuk campaign ini."],
+      "error": {
+        "error_code": 0,
+        "error_message": ""
+      }
+    }
+  }
+}]

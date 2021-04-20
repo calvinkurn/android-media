@@ -69,14 +69,14 @@ class PopularTopicsBottomSheet(mActivity: FragmentActivity?,
     }
 
     override fun setAdapter() {
-        sortAdapter?.setSortFilter(sortTopicData)
         rvSortFilter?.adapter = sortAdapter
+        sortAdapter?.setSortFilter(sortTopicData)
 
         if (filterTopicData.isEmpty()) {
             tvTopicTitle?.hide()
         }
-        topicAdapter?.setTopicFilter(filterTopicData)
         rvTopicFilter?.adapter = topicAdapter
+        topicAdapter?.setTopicFilter(filterTopicData)
     }
 
     private fun resetFilterClicked() {

@@ -10,14 +10,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.common.topupbills.data.TopupBillsFavNumberItem
 import com.tokopedia.common.topupbills.view.fragment.TopupBillsSearchNumberFragment
-import com.tokopedia.permissionchecker.PermissionCheckerHelper
+import com.tokopedia.utils.permission.PermissionCheckerHelper
 import com.tokopedia.topupbills.R
 import com.tokopedia.topupbills.common.analytics.DigitalTopupAnalytics
 import com.tokopedia.topupbills.searchnumber.di.DigitalTelcoSearchComponent
 import com.tokopedia.topupbills.telco.common.covertContactUriToContactData
+import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.fragment_search_number_telco.*
 import java.util.*
 import javax.inject.Inject
@@ -72,7 +72,7 @@ class DigitalSearchNumberFragment : TopupBillsSearchNumberFragment() {
                             override fun onPermissionGranted() {
                                 openContactPicker()
                             }
-                        }, "")
+                        })
             }
         } else {
             openContactPicker()
@@ -85,8 +85,9 @@ class DigitalSearchNumberFragment : TopupBillsSearchNumberFragment() {
         try {
             startActivityForResult(contactPickerIntent, REQUEST_CODE_CONTACT_PICKER)
         } catch (e: ActivityNotFoundException) {
-            NetworkErrorHelper.showSnackbar(activity,
-                    getString(R.string.error_message_contact_not_found))
+            view?.let {
+                Toaster.build(it, getString(R.string.error_message_contact_not_found), Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL).show()
+            }
         }
     }
 

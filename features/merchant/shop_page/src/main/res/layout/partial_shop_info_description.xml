@@ -8,16 +8,21 @@
     android:paddingRight="@dimen/dp_16"
     android:paddingBottom="@dimen/dp_8"
     android:paddingTop="@dimen/dp_24"
-    android:orientation="vertical"
-    android:background="@color/white">
+    android:orientation="vertical">
 
-    <TextView
-        style="@style/TextView.Title.Bold"
+    <com.tokopedia.unifyprinciples.Typography
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:typographyType="body_1"
+        android:textColor="@color/Unify_N700"
         android:text="@string/shop_page_label_description" />
     
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:layout_marginTop="@dimen/dp_16"
-        style="@style/TextView.Micro.BlackSecondary"
+        app:typographyType="body_2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Unify_N700_68"
         android:id="@+id/shopInfoDescription"
         tools:text="@string/shop_page_label_favorite"/>
 
@@ -35,8 +40,11 @@
             android:layout_marginRight="@dimen/dp_8"
             android:layout_marginEnd="@dimen/dp_8"/>
 
-        <com.tokopedia.design.component.TextViewCompat
-            style="@style/TextView.Micro.BlackSecondary"
+        <com.tokopedia.unifyprinciples.Typography
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/Unify_N700_68"
+            app:typographyType="body_3"
             android:id="@+id/shopInfoLocation"
             tools:text="@string/shop_page_label_favorite"/>
 
@@ -56,12 +64,24 @@
             android:layout_marginRight="@dimen/dp_8"
             android:layout_marginEnd="@dimen/dp_8"/>
 
-        <com.tokopedia.design.component.TextViewCompat
-            style="@style/TextView.Micro.BlackSecondary"
+        <com.tokopedia.unifyprinciples.Typography
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:typographyType="body_3"
+            android:textColor="@color/Unify_N700_68"
             android:id="@+id/shopInfoOpenSince"
             tools:text="@string/shop_info_label_open_since_v3"/>
 
     </LinearLayout>
 
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/image_view_shop_reputation_badge"
+        android:contentDescription="@string/content_desc_image_view_shop_reputation_badge"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_8"
+        android:layout_marginBottom="@dimen/dp_8"
+        android:visibility="gone"
+        tools:visibility="visible" />
 
 </LinearLayout>

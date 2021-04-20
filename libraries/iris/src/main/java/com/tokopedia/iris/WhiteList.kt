@@ -18,4 +18,15 @@ object WhiteList {
             "appSiteOpen"
     )
 
+    val CM_REALTIME_EVENT_LIST = mutableListOf(
+            "pushClicked",
+            "pushReceived",
+            "appInstall",
+            "appSiteOpen",
+            "pushDismissed",
+            "inappReceived",
+            "inappClicked",
+            "inappDismissed"
+    )
+
 }

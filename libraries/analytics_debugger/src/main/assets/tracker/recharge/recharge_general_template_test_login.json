@@ -1,0 +1,46 @@
+{
+  "readme": "Recharge general template",
+  "mode": "exact",
+  "query": [
+    {
+      "event": "clickHomepage",
+      "eventCategory": "digital - homepage",
+      "eventAction": "click promo tab",
+      "eventLabel": "{{.+}}",
+      "sessionIris": "{{.+}}"
+    },
+    {
+      "event": "clickHomepage",
+      "eventCategory": "digital - homepage",
+      "eventAction": "click salin promo digital",
+      "eventLabel": "{{.+ - .+}}",
+      "sessionIris": "{{.+}}"
+    },
+    {
+      "event": "clickHomepage",
+      "eventCategory": "digital - homepage",
+      "eventAction": "input from favorite number",
+      "eventLabel": "{{.+ - .+}}",
+      "sessionIris": "{{.+}}"
+    },
+    {
+      "event": "select_content",
+      "eventCategory": "digital - homepage",
+      "eventAction": "click recent icon",
+      "sessionIris": "{{.+}}",
+      "item_list": "{{.+}}",
+      "items": [
+        {
+          "item_id": "{{.+}}",
+          "price": "{{.+}}",
+          "dimension40": "{{.+}}",
+          "index": "{{.+}}",
+          "item_brand": "none / other",
+          "item_variant": "none / other",
+          "item_category": "{{.+}}"
+        }
+      ],
+      "eventLabel": "{{.+ - .+}}"
+    }
+  ]
+}

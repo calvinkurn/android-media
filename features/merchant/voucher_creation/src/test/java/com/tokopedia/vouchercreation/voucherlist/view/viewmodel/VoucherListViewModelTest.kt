@@ -7,9 +7,10 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.vouchercreation.common.domain.usecase.CancelVoucherUseCase
-import com.tokopedia.vouchercreation.coroutine.TestCoroutineDispatchers
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.vouchercreation.detail.domain.usecase.VoucherDetailUseCase
 import com.tokopedia.vouchercreation.voucherlist.domain.model.ShopBasicDataResult
+import com.tokopedia.vouchercreation.voucherlist.domain.usecase.GetBroadCastMetaDataUseCase
 import com.tokopedia.vouchercreation.voucherlist.domain.usecase.GetVoucherListUseCase
 import com.tokopedia.vouchercreation.voucherlist.domain.usecase.ShopBasicDataUseCase
 import com.tokopedia.vouchercreation.voucherlist.model.ui.VoucherUiModel
@@ -43,6 +44,9 @@ class VoucherListViewModelTest {
     lateinit var voucherDetailUseCase: VoucherDetailUseCase
 
     @RelaxedMockK
+    lateinit var getBroadCastMetaDataUseCase: GetBroadCastMetaDataUseCase
+
+    @RelaxedMockK
     lateinit var voucherUiModel: VoucherUiModel
 
     @RelaxedMockK
@@ -66,7 +70,15 @@ class VoucherListViewModelTest {
     fun setup() {
         MockKAnnotations.init(this)
 
-        mViewModel = VoucherListViewModel(getVoucherListUseCase, getNotStartedVoucherListUseCase, cancelVoucherUseCase, shopBasicDataUseCase, voucherDetailUseCase, TestCoroutineDispatchers)
+        mViewModel = VoucherListViewModel(
+                getVoucherListUseCase,
+                getNotStartedVoucherListUseCase,
+                cancelVoucherUseCase,
+                shopBasicDataUseCase,
+                voucherDetailUseCase,
+                getBroadCastMetaDataUseCase,
+                CoroutineTestDispatchersProvider
+        )
 
         with(mViewModel) {
             successVoucherLiveData.observeForever(successVoucherObserver)
@@ -102,8 +114,6 @@ class VoucherListViewModelTest {
             } returns listOf(voucherUiModel)
 
             getActiveVoucherList(true)
-
-            coroutineContext[Job]?.children?.forEach { it.join() }
 
             coVerify {
                 shopBasicDataUseCase.executeOnBackground()
@@ -161,8 +171,6 @@ class VoucherListViewModelTest {
 
             getActiveVoucherList(true)
 
-            coroutineContext[Job]?.children?.forEach { it.join() }
-
             coVerify {
                 shopBasicDataUseCase.executeOnBackground()
             }
@@ -182,8 +190,6 @@ class VoucherListViewModelTest {
             } returns listOf(voucherUiModel)
 
             getActiveVoucherList(false)
-
-            coroutineContext[Job]?.children?.forEach { it.join() }
 
             coVerify {
                 shopBasicDataUseCase wasNot Called
@@ -208,14 +214,9 @@ class VoucherListViewModelTest {
 
             getActiveVoucherList(false)
 
-            coroutineContext[Job]?.children?.forEach { it.join() }
-
             coVerify {
                 shopBasicDataUseCase wasNot Called
-            }
-            coVerify {
                 getVoucherListUseCase.executeOnBackground()
-                getNotStartedVoucherListUseCase.executeOnBackground()
             }
             assert(voucherList.value is Fail)
         }
@@ -229,8 +230,6 @@ class VoucherListViewModelTest {
             } returns listOf(voucherUiModel)
 
             getVoucherListHistory(anyInt(), listOf(anyInt()), anyString(), anyInt(), anyBoolean())
-
-            coroutineContext[Job]?.children?.forEach { it.join() }
 
             coVerify {
                 getVoucherListUseCase.executeOnBackground()
@@ -251,8 +250,6 @@ class VoucherListViewModelTest {
 
             getVoucherListHistory(anyInt(), listOf(anyInt()), anyString(), anyInt(), anyBoolean())
 
-            coroutineContext[Job]?.children?.forEach { it.join() }
-
             coVerify {
                 getVoucherListUseCase.executeOnBackground()
             }
@@ -265,8 +262,6 @@ class VoucherListViewModelTest {
     fun `setting search keyword will change local voucher list`() = runBlocking {
         with(mViewModel) {
             setSearchKeyword(anyString())
-
-            coroutineContext[Job]?.children?.forEach { it.join() }
 
             assert(localVoucherListLiveData.value != null)
         }
@@ -286,8 +281,6 @@ class VoucherListViewModelTest {
             } returns dummyKeyword
 
             getVoucherListHistory(anyInt(), listOf(anyInt()), anyString(), anyInt(), anyBoolean())
-
-            coroutineContext[Job]?.children?.forEach { it.join() }
 
             coVerify {
                 getVoucherListUseCase.executeOnBackground()
@@ -310,8 +303,6 @@ class VoucherListViewModelTest {
 
             cancelVoucher(anyInt(), false)
 
-            coroutineContext[Job]?.children?.forEach { it.join() }
-
             coVerify {
                 cancelVoucherUseCase.executeOnBackground()
             }
@@ -330,8 +321,6 @@ class VoucherListViewModelTest {
             } throws dummyThrowable
 
             cancelVoucher(anyInt(), false)
-
-            coroutineContext[Job]?.children?.forEach { it.join() }
 
             coVerify {
                 cancelVoucherUseCase.executeOnBackground()
@@ -352,8 +341,6 @@ class VoucherListViewModelTest {
 
             cancelVoucher(anyInt(), true)
 
-            coroutineContext[Job]?.children?.forEach { it.join() }
-
             coVerify {
                 cancelVoucherUseCase.executeOnBackground()
             }
@@ -373,8 +360,6 @@ class VoucherListViewModelTest {
 
             cancelVoucher(anyInt(), true)
 
-            coroutineContext[Job]?.children?.forEach { it.join() }
-
             coVerify {
                 cancelVoucherUseCase.executeOnBackground()
             }
@@ -391,8 +376,6 @@ class VoucherListViewModelTest {
             } returns voucherUiModel
 
             getSuccessCreatedVoucher(anyInt())
-
-            coroutineContext[Job]?.children?.forEach { it.join() }
 
             coVerify {
                 voucherDetailUseCase.executeOnBackground()
@@ -412,8 +395,6 @@ class VoucherListViewModelTest {
             } throws dummyThrowable
 
             getSuccessCreatedVoucher(anyInt())
-
-            coroutineContext[Job]?.children?.forEach { it.join() }
 
             coVerify {
                 voucherDetailUseCase.executeOnBackground()

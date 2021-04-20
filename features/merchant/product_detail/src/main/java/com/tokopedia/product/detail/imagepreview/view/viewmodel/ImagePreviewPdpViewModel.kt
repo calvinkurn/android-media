@@ -1,21 +1,21 @@
 package com.tokopedia.product.detail.imagepreview.view.viewmodel
 
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
-import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject
-import javax.inject.Named
 
 class ImagePreviewPdpViewModel @Inject constructor(
         private val userSessionInterface: UserSessionInterface,
         private val addWishListUseCase: AddWishListUseCase,
         private val removeWishlistUseCase: RemoveWishListUseCase,
-        @Named("Main")
-        val dispatcher: CoroutineDispatcher
-) : BaseViewModel(dispatcher) {
+        val dispatcher: CoroutineDispatchers
+) : BaseViewModel(dispatcher.main) {
+
+    fun isShopOwner(shopId: String): Boolean = userSessionInterface.isLoggedIn && userSessionInterface.shopId == shopId
 
     private fun isProductIdValid(productId: String): Boolean {
         return productId.isNotEmpty() && productId.matches(Regex(PATTERN_REGEX))

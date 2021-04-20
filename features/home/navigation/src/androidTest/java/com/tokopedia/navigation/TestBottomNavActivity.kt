@@ -15,12 +15,39 @@ class TestBottomNavActivity: AppCompatActivity() {
         val bottomNav: LottieBottomNavbar = findViewById(R.id.bottom_navbar)
 
         val menu: ArrayList<BottomMenu> = ArrayList()
-        menu.add(BottomMenu(com.tokopedia.navigation.R.id.menu_home, resources.getString(com.tokopedia.navigation.R.string.home), com.tokopedia.navigation.R.raw.bottom_nav_home, com.tokopedia.navigation.R.raw.bottom_nav_home_to_enabled, com.tokopedia.navigation.R.drawable.ic_bottom_nav_home_active, com.tokopedia.navigation.R.drawable.ic_bottom_nav_home_enabled, com.tokopedia.navigation.R.color.color_active_bottom_nav, true, 1f, 3f))
-        menu.add(BottomMenu(com.tokopedia.navigation.R.id.menu_feed, resources.getString(com.tokopedia.navigation.R.string.feed), com.tokopedia.navigation.R.raw.bottom_nav_feed, com.tokopedia.navigation.R.raw.bottom_nav_feed_to_enabled, com.tokopedia.navigation.R.drawable.ic_bottom_nav_feed_active, com.tokopedia.navigation.R.drawable.ic_bottom_nav_feed_enabled, com.tokopedia.navigation.R.color.color_active_bottom_nav, true, 1f, 3f))
-        menu.add(BottomMenu(com.tokopedia.navigation.R.id.menu_os, resources.getString(com.tokopedia.navigation.R.string.official), com.tokopedia.navigation.R.raw.bottom_nav_official, com.tokopedia.navigation.R.raw.bottom_nav_os_to_enabled, com.tokopedia.navigation.R.drawable.ic_bottom_nav_os_active, com.tokopedia.navigation.R.drawable.ic_bottom_nav_os_enabled, com.tokopedia.navigation.R.color.color_active_bottom_nav_os, true, 1f, 3f))
-        menu.add(BottomMenu(com.tokopedia.navigation.R.id.menu_cart, resources.getString(com.tokopedia.navigation.R.string.keranjang), com.tokopedia.navigation.R.raw.bottom_nav_cart, com.tokopedia.navigation.R.raw.bottom_nav_cart_to_enabled, com.tokopedia.navigation.R.drawable.ic_bottom_nav_cart_active, com.tokopedia.navigation.R.drawable.ic_bottom_nav_cart_enabled, com.tokopedia.navigation.R.color.color_active_bottom_nav, true, 1f, 3f))
-        menu.add(BottomMenu(com.tokopedia.navigation.R.id.menu_account, resources.getString(com.tokopedia.navigation.R.string.akun), com.tokopedia.navigation.R.raw.bottom_nav_account, com.tokopedia.navigation.R.raw.bottom_nav_account_to_enabled, com.tokopedia.navigation.R.drawable.ic_bottom_nav_account_active, com.tokopedia.navigation.R.drawable.ic_bottom_nav_account_enabled, com.tokopedia.navigation.R.color.color_active_bottom_nav, true, 1f, 3f))
-
+        menu.add(BottomMenu(
+                id = 0,
+                title = resources.getString(com.tokopedia.navigation.R.string.home),
+                animName = com.tokopedia.navigation.R.raw.bottom_nav_home,
+                animToEnabledName = com.tokopedia.navigation.R.raw.bottom_nav_home_to_enabled,
+                imageName = com.tokopedia.navigation.R.drawable.ic_bottom_nav_home_active,
+                imageEnabledName = com.tokopedia.navigation.R.drawable.ic_bottom_nav_home_enabled,
+                activeButtonColor =com.tokopedia.navigation.R.color.navigation_dms_color_active_bottom_nav,
+                useBadge = true,
+                animSpeed = 1f,
+                animToEnabledSpeed = 3f))
+        menu.add(BottomMenu(
+                id = 1,
+                title = resources.getString(com.tokopedia.navigation.R.string.feed),
+                animName = com.tokopedia.navigation.R.raw.bottom_nav_feed,
+                animToEnabledName = com.tokopedia.navigation.R.raw.bottom_nav_feed_to_enabled,
+                imageName = com.tokopedia.navigation.R.drawable.ic_bottom_nav_feed_active,
+                imageEnabledName = com.tokopedia.navigation.R.drawable.ic_bottom_nav_feed_enabled,
+                activeButtonColor = com.tokopedia.navigation.R.color.navigation_dms_color_active_bottom_nav,
+                useBadge = true,
+                animSpeed = 1f,
+                animToEnabledSpeed = 3f))
+        menu.add(BottomMenu(
+                id = 2,
+                title = resources.getString(com.tokopedia.navigation.R.string.official),
+                animName = com.tokopedia.navigation.R.raw.bottom_nav_official,
+                animToEnabledName = com.tokopedia.navigation.R.raw.bottom_nav_os_to_enabled,
+                imageName = com.tokopedia.navigation.R.drawable.ic_bottom_nav_os_active,
+                imageEnabledName = com.tokopedia.navigation.R.drawable.ic_bottom_nav_os_enabled,
+                activeButtonColor = com.tokopedia.navigation.R.color.navigation_dms_color_active_bottom_nav_os,
+                useBadge = true,
+                animSpeed = 1f,
+                animToEnabledSpeed = 3f))
         bottomNav.setMenu(menu)
         bottomNav.setMenuClickListener(object: IBottomClickListener {
             override fun menuClicked(position: Int, id: Int): Boolean {

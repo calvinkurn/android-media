@@ -25,12 +25,6 @@ public class TkpdBaseURL {
     public static String DIGITAL_API_DOMAIN = TokopediaUrl.Companion.getInstance().getPULSA_API();
     public static String SCROOGE_DOMAIN = TokopediaUrl.Companion.getInstance().getPAY();
 
-    public static class Product {
-        public static final String V4_PRODUCT = "v4/product/";
-
-        public static final String PATH_GET_EDIT_PRODUCT_FORM = "get_edit_product_form.pl";
-    }
-
     public static class User {
         public static final String URL_PEOPLE = BASE_DOMAIN + "v4/people/";
         public static final String PATH_GET_PEOPLE_INFO = "get_people_info.pl";
@@ -52,7 +46,6 @@ public class TkpdBaseURL {
 
         public static final String PATH_GET_OPEN_SHOP_FORM = "get_open_shop_form.pl";
 
-        public static final String PATH_EVENT_SHOP_ADD_ETALASE = "event_shop_add_etalase.pl";
         public static final String PATH_GET_SHOP_ETALASE = "get_shop_etalase.pl";
 
         public static final String PATH_GET_SHOP_INFO = "get_shop_info.pl";
@@ -74,12 +67,8 @@ public class TkpdBaseURL {
 
     public static class Upload {
         public static final String V4_ACTION_GENERATE_HOST = "v4/action/generate-host/";
-        public static final String URL_GENERATE_HOST_ACTION = BASE_DOMAIN + V4_ACTION_GENERATE_HOST;
 
         public static final String PATH_GENERATE_HOST = "generate_host.pl";
-
-        public static final String PATH_UPLOAD_IMAGE_HELPER = "/web-service/v4/action/upload-image-helper/";
-        public static final String PATH_ADD_PRODUCT_PICTURE = "add_product_picture.pl";
     }
 
     public static class Ace {

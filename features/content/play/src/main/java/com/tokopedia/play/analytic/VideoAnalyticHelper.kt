@@ -2,9 +2,7 @@ package com.tokopedia.play.analytic
 
 import android.content.Context
 import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.play.ERR_STATE_VIDEO
-import com.tokopedia.play.view.type.PlayChannelType
-import com.tokopedia.play_common.state.PlayVideoState
+import com.tokopedia.play.util.video.state.PlayViewerVideoState
 import kotlin.math.abs
 
 /**
@@ -12,7 +10,7 @@ import kotlin.math.abs
  */
 class VideoAnalyticHelper(
         private val context: Context,
-        private val channelId: String
+        private val analytic: PlayAnalytic
 ) {
 
     @TrackingField
@@ -37,16 +35,16 @@ class VideoAnalyticHelper(
         )
     }
 
-    fun onNewVideoState(userId: String, channelType: PlayChannelType, state: PlayVideoState) {
-        handleBufferAnalytics(userId, channelType, state)
+    fun onNewVideoState(state: PlayViewerVideoState) {
+        handleBufferAnalytics(state)
         handleDurationAnalytics(state)
     }
 
-    private fun handleBufferAnalytics(userId: String, channelType: PlayChannelType, state: PlayVideoState) {
-        if (state is PlayVideoState.Error) {
-            sendErrorStateVideoAnalytic(channelType, state.error.message ?: context.getString(com.tokopedia.play_common.R.string.play_common_video_error_message))
+    private fun handleBufferAnalytics(state: PlayViewerVideoState) {
+        if (state is PlayViewerVideoState.Error) {
+            sendErrorStateVideoAnalytic(state.error.message ?: context.getString(com.tokopedia.play_common.R.string.play_common_video_error_message))
 
-        } else if (state is PlayVideoState.Buffering && !bufferTrackingModel.isBuffering) {
+        } else if (state is PlayViewerVideoState.Buffer && !bufferTrackingModel.isBuffering) {
             val nextBufferCount = if (bufferTrackingModel.shouldTrackNext) bufferTrackingModel.bufferCount + 1 else bufferTrackingModel.bufferCount
 
             bufferTrackingModel = BufferTrackingModel(
@@ -56,8 +54,8 @@ class VideoAnalyticHelper(
                     shouldTrackNext = bufferTrackingModel.shouldTrackNext
             )
 
-        } else if ((state is PlayVideoState.Playing || state is PlayVideoState.Pause) && bufferTrackingModel.isBuffering) {
-            if (bufferTrackingModel.shouldTrackNext) sendVideoBufferingAnalytic(userId, channelType)
+        } else if ((state is PlayViewerVideoState.Play || state is PlayViewerVideoState.Pause) && bufferTrackingModel.isBuffering) {
+            if (bufferTrackingModel.shouldTrackNext) sendVideoBufferingAnalytic()
 
             bufferTrackingModel = bufferTrackingModel.copy(
                     isBuffering = false,
@@ -66,8 +64,8 @@ class VideoAnalyticHelper(
         }
     }
 
-    private fun handleDurationAnalytics(state: PlayVideoState) {
-        if (state is PlayVideoState.Playing) {
+    private fun handleDurationAnalytics(state: PlayViewerVideoState) {
+        if (state is PlayViewerVideoState.Play) {
             if (watchDurationModel.watchTime == null) watchDurationModel = watchDurationModel.copy(
                     watchTime = System.currentTimeMillis()
             )
@@ -83,25 +81,20 @@ class VideoAnalyticHelper(
     /**
      * Send Analytic
      */
-    fun sendLeaveRoomAnalytic(channelType: PlayChannelType) {
+    fun sendLeaveRoomAnalytic() {
         val currentWatchDuration = watchDurationModel.watchTime?.let { abs(System.currentTimeMillis() - it) }.orZero()
         val totalDuration = watchDurationModel.cumulationDuration + currentWatchDuration
-        PlayAnalytics.clickLeaveRoom(channelId, totalDuration, channelType)
+        analytic.clickLeaveRoom(totalDuration)
     }
 
-    private fun sendVideoBufferingAnalytic(userId: String, channelType: PlayChannelType) {
-        PlayAnalytics.trackVideoBuffering(
+    private fun sendVideoBufferingAnalytic() {
+        analytic.trackVideoBuffering(
                 bufferCount = bufferTrackingModel.bufferCount,
-                bufferDurationInSecond = ((System.currentTimeMillis() - bufferTrackingModel.lastBufferMs) / 1000).toInt(),
-                userId = userId,
-                channelId = channelId,
-                channelType = channelType
+                bufferDurationInSecond = ((System.currentTimeMillis() - bufferTrackingModel.lastBufferMs) / 1000).toInt()
         )
     }
 
-    private fun sendErrorStateVideoAnalytic(channelType: PlayChannelType, errorMessage: String) {
-        PlayAnalytics.errorState(channelId,
-                "$ERR_STATE_VIDEO: $errorMessage",
-                channelType)
+    private fun sendErrorStateVideoAnalytic(errorMessage: String) {
+        analytic.trackVideoError(errorMessage)
     }
 }

@@ -1,12 +1,9 @@
 package com.tokopedia.manageaddress.ui.addresschoice
 
-import com.tokopedia.cachemanager.PersistentCacheManager
-import com.tokopedia.logisticdata.data.entity.address.RecipientAddressModel
-import com.tokopedia.logisticdata.domain.model.AddressListModel
-import com.tokopedia.logisticdata.domain.usecase.GetAddressCornerUseCase
+import com.tokopedia.logisticCommon.domain.model.AddressListModel
+import com.tokopedia.logisticCommon.domain.usecase.GetAddressCornerUseCase
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsChangeAddress
 import rx.Subscriber
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 const val EMPTY_STRING: String = ""
@@ -33,8 +30,8 @@ class AddressListPresenter @Inject constructor(
         mView = null
     }
 
-    override fun getAddress() {
-        usecase.execute(EMPTY_STRING)
+    override fun getAddress(prevState: Int, localChosenAddrId: Int, isWhitelistChosenAddress: Boolean) {
+        usecase.execute(EMPTY_STRING, prevState, localChosenAddrId, isWhitelistChosenAddress)
                 .doOnSubscribe { mView?.showLoading() }
                 .doOnTerminate {
                     mView?.hideLoading()
@@ -43,8 +40,8 @@ class AddressListPresenter @Inject constructor(
                 .subscribe(getAddressHandler(EMPTY_STRING))
     }
 
-    override fun searchAddress(query: String) {
-         usecase.execute(query)
+    override fun searchAddress(query: String, prevState: Int, localChosenAddrId: Int, isWhitelistChosenAddress: Boolean) {
+         usecase.execute(query, prevState, localChosenAddrId, isWhitelistChosenAddress)
                 .doOnSubscribe { mView?.showLoading() }
                 .doOnTerminate {
                     mView?.hideLoading()
@@ -53,10 +50,10 @@ class AddressListPresenter @Inject constructor(
                 .subscribe(getAddressHandler(query))
     }
 
-    override fun loadMore() {
+    override fun loadMore(prevState: Int, localChosenAddrId: Int, isWhitelistChosenAddress: Boolean) {
         // Always true until has_next property is ready from backend, still works fine
         // if (!mHasNext) return
-        usecase.loadMore(mCurrentQuery, mCurrentPage + 1)
+        usecase.loadMore(mCurrentQuery, mCurrentPage + 1, prevState, localChosenAddrId, isWhitelistChosenAddress)
                 .doOnSubscribe { mView?.showLoading() }
                 .doOnTerminate {
                     mView?.hideLoading()
@@ -68,15 +65,6 @@ class AddressListPresenter @Inject constructor(
                             mView?.updateList(result.listAddress.toMutableList())
                         }, { e -> mView?.showError(e) }, {}
                 )
-    }
-
-    override fun saveLastCorner(model: RecipientAddressModel) {
-        PersistentCacheManager.instance.put("last_chosen_corner", model, TimeUnit.DAYS.toMillis(7))
-    }
-
-    override fun getLastCorner(): RecipientAddressModel? {
-        return PersistentCacheManager.instance.get(
-                "last_chosen_corner", RecipientAddressModel::class.java, null)
     }
 
     private fun getAddressHandler(query: String): Subscriber<AddressListModel> =

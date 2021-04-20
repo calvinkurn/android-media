@@ -11,7 +11,7 @@ import com.tokopedia.productcard.ProductCardGridView
 import com.tokopedia.shop.R
 import com.tokopedia.shop.analytic.model.ShopTrackProductTypeDef
 import com.tokopedia.shop.product.utils.mapper.ShopPageProductListMapper
-import com.tokopedia.shop.product.view.datamodel.ShopProductViewModel
+import com.tokopedia.shop.product.view.datamodel.ShopProductUiModel
 import com.tokopedia.shop.product.view.listener.ShopProductClickedListener
 import com.tokopedia.shop.product.view.listener.ShopProductImpressionListener
 
@@ -27,7 +27,7 @@ class ShopProductViewHolder(
         private val deviceWidth: Int,
         @param:ShopTrackProductTypeDef @field:ShopTrackProductTypeDef private val shopTrackType: Int,
         private val layoutType: Int
-) : AbstractViewHolder<ShopProductViewModel>(itemView) {
+) : AbstractViewHolder<ShopProductUiModel>(itemView) {
     private val totalReview: TextView? = null
     lateinit var productCard: ProductCardGridView
 
@@ -45,15 +45,15 @@ class ShopProductViewHolder(
         productCard = view.findViewById(R.id.product_card)
     }
 
-    override fun bind(shopProductViewModel: ShopProductViewModel) {
+    override fun bind(shopProductUiModel: ShopProductUiModel) {
         productCard.setProductModel(
-                ShopPageProductListMapper.mapToProductCardModel(shopProductViewModel)
+                ShopPageProductListMapper.mapToProductCardModel(shopProductUiModel)
         )
 
         if (shopProductImpressionListener?.getSelectedEtalaseName().orEmpty().isNotEmpty()) {
-            productCard.setImageProductViewHintListener(shopProductViewModel, object : ViewHintListener {
+            productCard.setImageProductViewHintListener(shopProductUiModel, object : ViewHintListener {
                 override fun onViewHint() {
-                    shopProductImpressionListener?.onProductImpression(shopProductViewModel, shopTrackType, adapterPosition)
+                    shopProductImpressionListener?.onProductImpression(shopProductUiModel, shopTrackType, adapterPosition)
                 }
             })
         }
@@ -63,19 +63,19 @@ class ShopProductViewHolder(
         }
 
         productCard.setOnClickListener {
-            shopProductClickedListener?.onProductClicked(shopProductViewModel, shopTrackType, adapterPosition)
+            shopProductClickedListener?.onProductClicked(shopProductUiModel, shopTrackType, adapterPosition)
         }
 
         productCard.setThreeDotsOnClickListener {
-            shopProductClickedListener?.onThreeDotsClicked(shopProductViewModel, shopTrackType)
+            shopProductClickedListener?.onThreeDotsClicked(shopProductUiModel, shopTrackType)
         }
     }
 
-    override fun bind(shopProductViewModel: ShopProductViewModel, payloads: MutableList<Any>) {
+    override fun bind(shopProductUiModel: ShopProductUiModel, payloads: MutableList<Any>) {
         if (payloads.getOrNull(0) !is Boolean) return
 
         productCard.setThreeDotsOnClickListener {
-            shopProductClickedListener?.onThreeDotsClicked(shopProductViewModel, shopTrackType)
+            shopProductClickedListener?.onThreeDotsClicked(shopProductUiModel, shopTrackType)
         }
     }
 }

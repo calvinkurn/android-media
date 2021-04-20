@@ -4,6 +4,7 @@ import androidx.sqlite.db.SimpleSQLiteQuery
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.common.travel.constant.TravelSortOption
+import com.tokopedia.flight.common.util.FlightDateUtil
 import com.tokopedia.flight.filter.presentation.FlightFilterFacilityEnum
 import com.tokopedia.flight.searchV4.data.FlightRouteDao
 import com.tokopedia.flight.searchV4.data.cache.db.FlightJourneyTable
@@ -17,6 +18,7 @@ import com.tokopedia.flight.searchV4.presentation.model.filter.DepartureTimeEnum
 import com.tokopedia.flight.searchV4.presentation.model.filter.FlightFilterModel
 import com.tokopedia.flight.searchV4.presentation.model.filter.RefundableEnum
 import com.tokopedia.flight.searchV4.presentation.model.filter.TransitEnum
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 /**
@@ -51,10 +53,17 @@ open class FlightSearchSingleDataDbSource @Inject constructor(
         val query = buildQuery(sqlQuery, filterModel, flightSortOption)
         val filteredJourney = getFilteredJourneysByFilter(flightJourneyDao.findFilteredJourneys(query), filterModel)
         val facilityFilterList = getFacilityFilter(filterModel.facilityList)
+        val facilityFilteredJourney = getJourneyFilteredByFacility(filteredJourney, facilityFilterList)
 
-        return getJourneyFilteredByFacility(filteredJourney, facilityFilterList).map {
-            populateCompactJourneyAndRoutes(it)
-        }.toList()
+        return if (filterModel.departureArrivalTime.isNotEmpty()) {
+            getJourneyFilteredByDepartureArrival(facilityFilteredJourney, filterModel.departureArrivalTime).map {
+                populateCompactJourneyAndRoutes(it)
+            }.toList()
+        } else {
+            facilityFilteredJourney.map {
+                populateCompactJourneyAndRoutes(it)
+            }.toList()
+        }
     }
 
     suspend fun getFilteredJourneysStatistic(filterModel: FlightFilterModel, @TravelSortOption flightSortOption: Int):
@@ -118,8 +127,13 @@ open class FlightSearchSingleDataDbSource @Inject constructor(
         val query = buildQuery(sqlQuery, filterModel, TravelSortOption.CHEAPEST)
         val filteredJourney = flightJourneyDao.findFilteredJourneys(query)
         val facilityFilter = getFacilityFilter(filterModel.facilityList)
+        val facilityFilteredJourney = getJourneyFilteredByFacility(filteredJourney, facilityFilter)
 
-        return getJourneyFilteredByFacility(filteredJourney, facilityFilter).size
+        return if (filterModel.departureArrivalTime.isNotEmpty()) {
+            getJourneyFilteredByDepartureArrival(facilityFilteredJourney, filterModel.departureArrivalTime).size
+        } else {
+            facilityFilteredJourney.size
+        }
     }
 
     private fun getFacilityFilter(facilityFilterList: List<FlightFilterFacilityEnum>?): Map<FlightFilterFacilityEnum, Boolean> {
@@ -178,6 +192,33 @@ open class FlightSearchSingleDataDbSource @Inject constructor(
         }.toList()
     }
 
+    private fun getJourneyFilteredByDepartureArrival(filteredJourney: List<JourneyAndRoutes>,
+                                                     departureArrivalTimeString: String)
+            : List<JourneyAndRoutes> {
+
+        val departureArrivalTime = FlightDateUtil.stringToDate(
+                FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, departureArrivalTimeString)
+
+        return filteredJourney.filter {
+            var shouldCount = false
+
+            if (it.routes.isNotEmpty()) {
+                val firstReturnRoute = it.routes[0]
+                val returnDepartureTime = FlightDateUtil.stringToDate(
+                        FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, firstReturnRoute.departureTimestamp)
+                val different = returnDepartureTime.time - departureArrivalTime.time
+
+                shouldCount = if (different >= 0) {
+                    val hours = different / ONE_HOUR
+                    hours >= MIN_DIFF_HOURS
+                } else {
+                    false
+                }
+            }
+            shouldCount
+        }.toList()
+    }
+
     private fun buildQueryStatistic(sqlQuery: String, filterModel: FlightFilterModel, flightSortOption: Int): SimpleSQLiteQuery {
         val sqlStringBuilder = StringBuilder()
         sqlStringBuilder.append(sqlQuery)
@@ -217,6 +258,12 @@ open class FlightSearchSingleDataDbSource @Inject constructor(
         }
         if (filterModel.isReturn) {
             sqlStringBuilder.append("FlightJourneyTable.isBestPairing = $isBestPairing AND ")
+        }
+        if (filterModel.canFilterFreeRapidTest && filterModel.isFreeRapidTest) {
+            sqlStringBuilder.append("FlightJourneyTable.hasFreeRapidTest = 1 AND ")
+        }
+        if (filterModel.canFilterSeatDistancing && filterModel.isSeatDistancing) {
+            sqlStringBuilder.append("FlightJourneyTable.isSeatDistancing = 1 AND ")
         }
         sqlStringBuilder.append("FlightJourneyTable.isReturn = $isReturnInt")
 
@@ -383,6 +430,11 @@ open class FlightSearchSingleDataDbSource @Inject constructor(
         journey.arrivalAirportCity = arrivalAirport.cityName
         journey.flightAirlineDBS = airlines
         return journey
+    }
+
+    companion object {
+        private val ONE_HOUR: Long = TimeUnit.HOURS.toMillis(1)
+        private const val MIN_DIFF_HOURS = 6
     }
 
 }

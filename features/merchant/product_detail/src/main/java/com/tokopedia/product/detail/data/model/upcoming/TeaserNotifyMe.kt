@@ -8,12 +8,6 @@ data class TeaserNotifyMe(
 )
 
 data class Result(
-        @SerializedName("campaign_id")
-        val campaignId: Int = 0,
-
-        @SerializedName("product_id")
-        val productId: Int = 0,
-
         @SerializedName("success")
         val isSuccess: Boolean = false,
 

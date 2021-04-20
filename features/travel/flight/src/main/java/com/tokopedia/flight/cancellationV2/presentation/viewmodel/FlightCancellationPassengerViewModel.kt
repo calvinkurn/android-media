@@ -4,12 +4,15 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.common.travel.utils.TravelDateUtil
-import com.tokopedia.common.travel.utils.TravelDispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.flight.cancellationV2.domain.FlightCancellationGetPassengerUseCase
 import com.tokopedia.flight.cancellationV2.presentation.model.FlightCancellationModel
 import com.tokopedia.flight.cancellationV2.presentation.model.FlightCancellationPassengerModel
+import com.tokopedia.flight.common.util.FlightAnalytics
+import com.tokopedia.flight.common.util.FlightDateUtil
 import com.tokopedia.flight.orderlist.view.viewmodel.FlightCancellationJourney
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 /**
@@ -17,8 +20,12 @@ import javax.inject.Inject
  */
 class FlightCancellationPassengerViewModel @Inject constructor(
         private val getCancellablePassengerUseCase: FlightCancellationGetPassengerUseCase,
-        private val dispatcherProvider: TravelDispatcherProvider)
-    : BaseViewModel(dispatcherProvider.io()) {
+        private val flightAnalytics: FlightAnalytics,
+        private val userSession: UserSessionInterface,
+        private val dispatcherProvider: CoroutineDispatchers)
+    : BaseViewModel(dispatcherProvider.io) {
+
+    var invoiceId: String = ""
 
     private val passengerRelationsMap: HashMap<String, FlightCancellationPassengerModel> = hashMapOf()
     val selectedCancellationPassengerList: MutableList<FlightCancellationModel> = arrayListOf()
@@ -26,6 +33,18 @@ class FlightCancellationPassengerViewModel @Inject constructor(
     private val mutableCancellationPassengerList = MutableLiveData<List<FlightCancellationModel>>()
     val cancellationPassengerList: LiveData<List<FlightCancellationModel>>
         get() = mutableCancellationPassengerList
+
+    fun trackOnNext() {
+        for (item in selectedCancellationPassengerList) {
+            val route = "${item.flightCancellationJourney.departureAirportId}${item.flightCancellationJourney.arrivalAirportId}"
+            val departureDate = FlightDateUtil.formatDate(FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, FlightDateUtil.YYYYMMDD, item.flightCancellationJourney.departureTime)
+
+            flightAnalytics.eventClickNextOnCancellationPassenger(
+                    "$route - ${item.flightCancellationJourney.airlineName} - $departureDate - $invoiceId",
+                    userSession.userId
+            )
+        }
+    }
 
     fun canGoNext(): Boolean {
         var canGoNext = false
@@ -40,7 +59,8 @@ class FlightCancellationPassengerViewModel @Inject constructor(
     }
 
     fun getCancellablePassenger(invoiceId: String, flightCancellationJourneyList: List<FlightCancellationJourney>) {
-        launchCatchError(dispatcherProvider.ui(), block = {
+        this.invoiceId = invoiceId
+        launchCatchError(dispatcherProvider.main, block = {
             val cancellationPassengers = getCancellablePassengerUseCase.fetchCancellablePassenger(invoiceId)
 
             val selectedList = arrayListOf<FlightCancellationModel>()

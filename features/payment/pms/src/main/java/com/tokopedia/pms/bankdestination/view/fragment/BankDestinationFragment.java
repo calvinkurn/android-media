@@ -33,7 +33,7 @@ public class BankDestinationFragment extends BaseListFragment<BankListModel,Bank
     @Override
     protected void initInjector() {
         DaggerBankDestinationComponent.builder()
-                .bankDestinationModule(new BankDestinationModule())
+                .bankDestinationModule(new BankDestinationModule(getContext()))
                 .baseAppComponent(((BaseMainApplication) getActivity().getApplication()).getBaseAppComponent())
                 .build()
                 .inject(this);

@@ -10,9 +10,11 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.highlight.HighlightVi
 import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopAdsBannerViewHolder
 import com.tokopedia.feedcomponent.view.viewmodel.banner.BannerViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.banner.TopAdsBannerViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.carousel.CarouselPlayCardViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.highlight.HighlightViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.recommendation.FeedRecommendationViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsHeadlineUiModel
 import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsShopViewModel
 import com.tokopedia.feedcomponent.view.widget.CardTitleView
 
@@ -38,12 +40,20 @@ class DynamicFeedTypeFactoryImpl(val highlightListener: HighlightAdapter.Highlig
         return 0
     }
 
+    override fun type(topadsHeadlineUiModel: TopadsHeadlineUiModel): Int {
+        return 0
+    }
+
     override fun type(highlightViewModel: HighlightViewModel): Int {
         return HighlightViewHolder.LAYOUT
     }
 
     override fun type(topAdsBannerViewmodel: TopAdsBannerViewModel): Int {
         return TopAdsBannerViewHolder.LAYOUT
+    }
+
+    override fun type(carouselPlayCardViewModel: CarouselPlayCardViewModel): Int {
+        return 0
     }
 
     @Suppress("UNCHECKED_CAST")

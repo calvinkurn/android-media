@@ -3,6 +3,7 @@ package com.tokopedia.topchat.chatlist.pojo
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.topchat.chatlist.adapter.typefactory.ChatListTypeFactory
 import com.tokopedia.topchat.chatlist.adapter.viewholder.ChatItemListViewHolder
 import com.tokopedia.topchat.chatlist.adapter.viewholder.ChatItemListViewHolder.Companion.BUYER_TAG
@@ -25,9 +26,12 @@ data class ItemChatListPojo(
         @Expose
         var messageKey: String = ""
 ) : Visitable<ChatListTypeFactory> {
+
+    val label: String get() = attributes?.label ?: ""
     val tag: String get() = attributes?.contact?.tag ?: ""
     val lastReplyTime: Long get() = attributes?.lastReplyTimestamp ?: 0
     val lastReplyTimeStr: String get() = attributes?.lastReplyTimeStr ?: ""
+    val lastReplyTimeMillis: Long get() = lastReplyTimeStr.toLongOrZero()
     val lastReplyMessage: String get() = attributes?.lastReplyMessage ?: ""
     val thumbnail: String get() = attributes?.contact?.thumbnail ?: ""
     val name: String get() = attributes?.contact?.contactName ?: ""
@@ -36,6 +40,10 @@ data class ItemChatListPojo(
 
     override fun type(typeFactory: ChatListTypeFactory): Int {
         return typeFactory.type(this)
+    }
+
+    fun hasLabel(): Boolean {
+        return label.isNotEmpty()
     }
 
     fun hasUnreadItem(): Boolean {
@@ -56,7 +64,8 @@ data class ItemChatListPojo(
     }
 
     fun markAsRead() {
-        attributes?.readStatus = ChatItemListViewHolder.STATE_CHAT_READ
+        attributes?.readStatus = STATE_CHAT_READ
+        attributes?.unreadReply = 0
     }
 
     fun hasTheSameMsgId(state: ChatStateItem): Boolean {

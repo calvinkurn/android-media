@@ -2,7 +2,7 @@ package com.tokopedia.cart.view.subscriber
 
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceActionField
 import com.tokopedia.cart.domain.model.cartlist.CartItemData
-import com.tokopedia.cart.domain.model.cartlist.UpdateCartData
+import com.tokopedia.cart.domain.model.updatecart.UpdateCartData
 import com.tokopedia.cart.view.CartListPresenter
 import com.tokopedia.cart.view.ICartListPresenter
 import com.tokopedia.cart.view.ICartListView
@@ -35,13 +35,18 @@ class UpdateCartSubscriber(private val view: ICartListView?,
             view?.let {
                 it.hideProgressLoading()
                 if (!data.isSuccess) {
-                    it.renderErrorToShipmentForm(data.message ?: "")
+                    if (data.outOfServiceData.id != 0) {
+                        it.renderErrorToShipmentForm(data.outOfServiceData)
+                    } else {
+                        it.renderErrorToShipmentForm(data.message, if (data.toasterActionData.showCta) data.toasterActionData.text else "")
+                    }
                 } else {
                     val checklistCondition = getChecklistCondition()
                     val cartItemDataList = it.getAllSelectedCartDataList()
                     cartItemDataList?.let { data ->
                         it.renderToShipmentFormSuccess(
-                                presenter?.generateCheckoutDataAnalytics(data, EnhancedECommerceActionField.STEP_1) ?: hashMapOf(),
+                                presenter?.generateCheckoutDataAnalytics(data, EnhancedECommerceActionField.STEP_1)
+                                        ?: hashMapOf(),
                                 data, isCheckoutProductEligibleForCashOnDelivery(data), checklistCondition)
                     }
                 }

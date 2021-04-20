@@ -19,38 +19,55 @@ buildscript {
         maven { url 'http://central.maven.org/maven2/' }
         mavenCentral()
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+        maven {
+            url "${artifactory_url}" + "/libs-release-local";
+            credentials {
+                username = "${artifactory_username}"
+                password = "${artifactory_password}"
+            }
+        }
     }
     dependencies {
-        classpath ('com.android.tools.build:gradle:3.5.3') {
+        classpath ('com.android.tools.build:gradle:3.6.4') {
             exclude module: 'proguard-gradle'
         }
         classpath "org.jacoco:org.jacoco.core:$jacocoVersion"
         classpath('net.sf.proguard:proguard-gradle:6.0') {
             force = true
         }
-        classpath("org.jfrog.buildinfo:build-info-extractor-gradle:4.9.0") {
+        classpath("org.jfrog.buildinfo:build-info-extractor-gradle:4.18.2") {
             exclude group: 'org.codehaus.groovy', module: 'groovy-all'
         }
         classpath 'com.google.firebase:perf-plugin:1.3.1'
         classpath "com.google.gms:google-services:4.3.3"
-        classpath 'io.fabric.tools:gradle:1.28.0'
+        classpath rootProject.ext.gradlePlugin.crashlytics
         classpath "com.vanniktech:gradle-code-quality-tools-plugin:0.17.0"
-        classpath "org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:2.7"
+        classpath "org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:2.7.1"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
-        classpath 'com.meituan.robust:gradle-plugin:0.4.99'
-        classpath 'com.meituan.robust:auto-patch-plugin:0.4.99'
-        classpath 'com.bugsnag:bugsnag-android-gradle-plugin:4.7.3'
+        classpath 'com.tokopedia.patch:gradle-plugin:0.0.1'
+        classpath 'com.tokopedia.patch:auto-patch-plugin:0.0.1'
+        classpath 'com.tokopedia.patch:autopatchbase:0.0.1'
+        classpath 'org.javassist:javassist:3.20.0-GA'
         classpath "androidx.benchmark:benchmark-gradle-plugin:1.0.0"
         classpath "android.arch.navigation:navigation-safe-args-gradle-plugin:1.0.0"
+    }
+}
+
+if (hasProperty('buildScan')) {
+    buildScan {
+        termsOfServiceUrl = 'https://gradle.com/terms-of-service'
+        termsOfServiceAgree = 'yes'
     }
 }
 
 apply from: 'buildproj.gradle'
 
 //Installing Git Hooks
-task installGitHooks(type: Copy) {
-    ("cp " + rootProject.rootDir+ "/git_hooks/pre-commit " + rootProject.rootDir+ "/.git/hooks/pre-commit").execute()
-    Runtime.getRuntime().exec("chmod -R +x .git/hooks/")
+task installGitHooks {
+    doLast {
+        ("cp " + rootProject.rootDir+ "/git_hooks/pre-commit " + rootProject.rootDir+ "/.git/hooks/pre-commit").execute()
+        Runtime.getRuntime().exec("chmod -R +x .git/hooks/")
+    }
 }
 clean.dependsOn installGitHooks
 

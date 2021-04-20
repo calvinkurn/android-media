@@ -1,0 +1,61 @@
+<resources>
+    <string name="app_name">feedback_form</string>
+    <string name="create_report_title">Create Report</string>
+
+    <!--Feedback Page-->
+    <string name="category">Category*</string>
+    <string name="email">Email Address*</string>
+    <string name="bugs_detail">Bugs Detail*</string>
+    <string name="actual_result">Actual Result</string>
+    <string name="expected_behavior">Expected Behavior</string>
+    <string name="page">Page Name*</string>
+    <string name="btn_submit_feedback_page">Submit</string>
+    <string name="tokopedia_email">\@tokopedia.com</string>
+    <string name="ticket_text_1">Terima kasih atas laporanmu. Kamu bisa cek status tiketmu di link ini :</string>
+    <string name="ticket_text_2">Atau di channel slack &lt;b&gt;#help_tokopedia_pro_android&lt;/b&gt;</string>
+    <string name="link_ticket">Link ticket</string>
+    <string name="warning_email">Email should not be empty</string>
+    <string name="warning_page">Page should not be empty</string>
+    <string name="warning_str">Step to Reproduce should not be empty</string>
+    <string name="warning_actual">Actual Result should not be empty</string>
+    <string name="warning_expected">Expected Result should not be empty</string>
+    <string name="warning_feedback">Feedback should not be empty</string>
+    <string name="marshmallow">MARSHMALLOW</string>
+    <string name="nougat">NOUGAT</string>
+    <string name="oreo">OREO</string>
+    <string name="pie">PIE</string>
+    <string name="android10">ANDROID 10</string>
+    <string name="copy_success">Text telah tersalin</string>
+    <string name="image_picker_title">Pilih foto</string>
+    <string name="review_add_photo_txt">Tambah \nfoto</string>
+    <string name="tv_journey">Ex: steps:pdp>search>click filter, then suddenly the whole app crash and shut down</string>
+    <string name="feedback">Feedback</string>
+
+    <string name="draw_on_picture_label">Edit Images</string>
+    <string name="developer_options_feedback_next_label">Next</string>
+    <string name="open_link">Buka Link</string>
+
+    <string-array name="bug_type_array">
+        <item>Others</item>
+        <item>Crash</item>
+        <item>Design</item>
+        <item>Functionality</item>
+        <item>Tracker</item>
+    </string-array>
+
+    <string-array name="brush_color_options">
+        <item>#FFFFFF</item>
+        <item>#000000</item>
+        <item>#002AFF</item>
+        <item>#FF0000</item>
+        <item>#00FF00</item>
+        <item>#009BFF</item>
+        <item>#94DDDC</item>
+        <item>#FD8AA7</item>
+        <item>#FFEAEF</item>
+        <item>#F36B5E</item>
+        <item>#FFC415</item>
+        <item>#A12EC5</item>
+    </string-array>
+
+</resources>

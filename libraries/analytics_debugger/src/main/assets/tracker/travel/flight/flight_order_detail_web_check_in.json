@@ -1,0 +1,32 @@
+{
+  "readme": "Flight Order Detail E-Ticket and Invoice Tracking",
+  "mode": "exact",
+  "query": [
+    {
+      "event": "clickFlight",
+      "eventAction": "click checkin on depart route",
+      "eventCategory": "digital - flight",
+      "eventLabel": "{{flight - .* - .* - .* - .*}}",
+      "sessionIris": "{{.*}}",
+      "screenName" : "/flight/webcheckindetail",
+      "currentSite" : "tokopediadigitalflight",
+      "clientId" : "{{.*}}",
+      "userId" : "{{.*}}",
+      "businessUnit" : "travel & entertainment",
+      "category" : "flight"
+    },
+    {
+      "event": "clickFlight",
+      "eventAction": "click checkin on return route",
+      "eventCategory": "digital - flight",
+      "eventLabel": "{{flight - .* - .* - .* - .*}}",
+      "sessionIris": "{{.*}}",
+      "screenName" : "/flight/webcheckindetail",
+      "currentSite" : "tokopediadigitalflight",
+      "clientId" : "{{.*}}",
+      "userId" : "{{.*}}",
+      "businessUnit" : "travel & entertainment",
+      "category" : "flight"
+    }
+  ]
+}

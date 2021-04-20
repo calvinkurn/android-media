@@ -3,12 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@color/white">
+    android:layout_height="wrap_content">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/titleTextView"
-        android:contentDescription="@string/content_desc_titleTextView"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/dp_22"
         android:layout_centerVertical="true"
@@ -16,7 +14,7 @@
         android:paddingEnd="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_8"
         android:layout_marginBottom="@dimen/dp_8"
-        android:textColor="@color/charcoal_grey_96"
+        android:textColor="@color/Unify_N700_96"
         app:typographyType="heading_4"
         tools:text="Toko" />
 
@@ -32,7 +30,7 @@
         android:paddingStart="@dimen/dp_16"
         android:paddingEnd="@dimen/dp_16"
         android:text="@string/delete_all"
-        android:textColor="@color/initial_state_clear_all"
+        android:textColor="@color/Unify_R500"
         android:background="?attr/selectableItemBackgroundBorderless"
         app:typographyType="body_3"
         app:typographyWeight="bold"
@@ -50,7 +48,7 @@
         android:paddingStart="@dimen/dp_16"
         android:paddingEnd="@dimen/dp_16"
         android:text="@string/refresh"
-        android:textColor="@color/initial_state_refresh"
+        android:textColor="@color/Unify_G500"
         android:background="?attr/selectableItemBackgroundBorderless"
         app:typographyType="body_3"
         app:typographyWeight="bold"

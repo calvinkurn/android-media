@@ -11,9 +11,9 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.shop.R
 import com.tokopedia.shop.common.util.CircleIndicatorView
 import com.tokopedia.shop.common.view.adapter.MembershipStampAdapter
-import com.tokopedia.shop.product.view.datamodel.MembershipStampProgressViewModel
+import com.tokopedia.shop.product.view.datamodel.MembershipStampProgressUiModel
 
-class MembershipStampProgressViewHolder(itemView: View, listener: MembershipStampAdapter.MembershipStampAdapterListener?) : AbstractViewHolder<MembershipStampProgressViewModel>(itemView) {
+class MembershipStampProgressViewHolder(itemView: View, listener: MembershipStampAdapter.MembershipStampAdapterListener?) : AbstractViewHolder<MembershipStampProgressUiModel>(itemView) {
 
     lateinit var rvMembership: RecyclerView
     lateinit var circleIndicator: CircleIndicatorView
@@ -31,7 +31,7 @@ class MembershipStampProgressViewHolder(itemView: View, listener: MembershipStam
         findViews(itemView)
     }
 
-    override fun bind(element: MembershipStampProgressViewModel) {
+    override fun bind(element: MembershipStampProgressUiModel) {
         circleIndicator.setIndicator(element.listOfData.size)
 
         itemView.show()

@@ -15,7 +15,6 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 import com.tokopedia.withdraw.R
 import com.tokopedia.withdraw.saldowithdrawal.domain.model.BankAccount
-import com.tokopedia.withdraw.saldowithdrawal.domain.model.CheckEligible
 import com.tokopedia.withdraw.saldowithdrawal.presentation.adapter.BankAccountAdapter
 import kotlinx.android.synthetic.main.swd_item_bank_account.view.*
 
@@ -38,7 +37,7 @@ class BankAccountViewHolder(view: View) : RecyclerView.ViewHolder(view) {
                 bankAccount.accountName)
 
         if (bankAccount.adminFee > 0) {
-            val bankAdminFeeStr: String = CurrencyFormatHelper.convertToRupiah(bankAdminFee.toString())
+            val bankAdminFeeStr: String = CurrencyFormatHelper.convertToRupiah(bankAccount.adminFee.toString())
             bankAdminFee.text = context.getString(R.string.swd_admin_fee, bankAdminFeeStr)
             bankAdminFee.visible()
         } else {
@@ -72,7 +71,7 @@ class BankAccountViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         }
 
         if (bankAccount.status == INACTIVE_BANK_STATUS) {
-            val disabledColor = ContextCompat.getColor(context, R.color.Neutral_N700_32)
+            val disabledColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_32)
             bankName.setTextColor(disabledColor)
             bankAccountNumber.setTextColor(disabledColor)
             bankAdminFee.setTextColor(disabledColor)
@@ -83,9 +82,9 @@ class BankAccountViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         } else {
             ivPremiumAccount.alpha = ALPHA_ENABLED
             tvSpecialOffer.alpha = ALPHA_ENABLED
-            bankName.setTextColor(ContextCompat.getColor(context, R.color.Neutral_N700_96))
-            bankAccountNumber.setTextColor(ContextCompat.getColor(context, R.color.Neutral_N700_68))
-            bankAdminFee.setTextColor(ContextCompat.getColor(context, R.color.Neutral_N700_68))
+            bankName.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
+            bankAccountNumber.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
+            bankAdminFee.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
             itemView.setOnClickListener { onBankAccountSelected(bankAccount) }
             ivPremiumAccount.setOnClickListener { listener.showPremiumAccountDialog(bankAccount) }
         }

@@ -60,6 +60,8 @@ public class ImageEditThumbnailAdapter extends RecyclerView.Adapter<ImageEditThu
         @Override
         public void onClick(View v) {
             int position = getAdapterPosition();
+            if (position < 0) return;
+
             if (recyclerView != null) {
                 scrollToCenter(position);
             }

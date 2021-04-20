@@ -4,9 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="@dimen/interest_image_height"
-    android:layout_marginBottom="@dimen/dp_5"
     android:layout_marginEnd="@dimen/dp_5"
-    android:layout_marginRight="@dimen/dp_5">
+    android:layout_marginBottom="@dimen/dp_5">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -17,6 +16,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scaleType="centerCrop"
+            tools:ignore="ContentDescription"
             tools:src="@tools:sample/avatars" />
 
         <View
@@ -26,9 +26,10 @@
             android:background="@color/interest_background_active"
             android:clickable="true"
             android:focusable="true"
-            android:foreground="?android:attr/selectableItemBackground"/>
+            android:foreground="?android:attr/selectableItemBackground"
+            tools:ignore="UnusedAttribute" />
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/category"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -37,16 +38,16 @@
             android:foregroundGravity="center"
             android:gravity="center_horizontal"
             android:maxLines="3"
-            android:paddingLeft="@dimen/dp_4"
-            android:paddingRight="@dimen/dp_4"
+            android:paddingLeft="@dimen/spacing_lvl2"
+            android:paddingRight="@dimen/spacing_lvl2"
             android:textAlignment="center"
             android:textColor="@color/white"
-            android:textSize="@dimen/sp_12"
-            android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="heading_6"
+            app:typographyWeight="bold"
             tools:text="Anak-anak Anak-anak Anak-anak Anak-anak Anak-anak " />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>

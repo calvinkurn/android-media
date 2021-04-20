@@ -12,6 +12,7 @@ import com.tokopedia.oneclickcheckout.R
 import com.tokopedia.oneclickcheckout.common.idling.OccIdlingResource
 import com.tokopedia.oneclickcheckout.common.interceptor.OneClickCheckoutInterceptor
 import com.tokopedia.oneclickcheckout.common.interceptor.RATES_WITH_INSURANCE_RESPONSE_PATH
+import com.tokopedia.oneclickcheckout.common.interceptor.RATES_WITH_NO_PROFILE_DURATION_RESPONSE_PATH
 import com.tokopedia.oneclickcheckout.common.interceptor.VALIDATE_USE_PROMO_REVAMP_BBO_APPLIED_RESPONSE
 import com.tokopedia.oneclickcheckout.common.robot.orderSummaryPage
 import com.tokopedia.oneclickcheckout.common.rule.FreshIdlingResourceTestRule
@@ -24,7 +25,7 @@ import java.io.IOException
 class OrderSummaryPageActivityTest {
 
     @get:Rule
-    var activityRule = IntentsTestRule(OrderSummaryPageActivity::class.java, false, false)
+    var activityRule = IntentsTestRule(TestOrderSummaryPageActivity::class.java, false, false)
 
     @get:Rule
     val freshIdlingResourceTestRule = FreshIdlingResourceTestRule()
@@ -61,6 +62,8 @@ class OrderSummaryPageActivityTest {
             assertProductCard(
                     shopName = "tokocgk",
                     shopLocation = "Kota Yogyakarta",
+                    hasShopLocationImg = false,
+                    hasShopBadge = true,
                     productName = "Product1",
                     productPrice = "Rp100.000",
                     productSlashPrice = null,
@@ -70,8 +73,7 @@ class OrderSummaryPageActivityTest {
 
             assertProfileAddress(
                     headerMessage = "Pilihan 1",
-                    addressName = "Address 1",
-                    addressReceiver = " - User 1 (1)",
+                    addressName = "Address 1 - User 1 (1)",
                     addressDetail = "Address Street 1, District 1, City 1, Province 1 1",
                     isMainPreference = true
             )
@@ -86,6 +88,16 @@ class OrderSummaryPageActivityTest {
             assertProfilePayment("Payment 1")
 
             assertPayment("Rp116.000", "Bayar")
+
+            clickButtonOrderDetail {
+                assertSummary(
+                        productPrice = "Rp100.000",
+                        shippingPrice = "Rp15.000",
+                        paymentFee = "Rp1.000",
+                        totalPrice = "Rp116.000"
+                )
+                closeBottomSheet()
+            }
         } pay {
             assertGoToPayment(
                     redirectUrl = "https://www.tokopedia.com/payment",
@@ -161,6 +173,17 @@ class OrderSummaryPageActivityTest {
             assertInsurance(true)
 
             assertPayment("Rp117.000", "Bayar")
+
+            clickButtonOrderDetail {
+                assertSummary(
+                        productPrice = "Rp100.000",
+                        shippingPrice = "Rp15.000",
+                        insurancePrice = "Rp1.000",
+                        paymentFee = "Rp1.000",
+                        totalPrice = "Rp117.000"
+                )
+                closeBottomSheet()
+            }
         } pay {
             assertGoToPayment(
                     redirectUrl = "https://www.tokopedia.com/payment",
@@ -183,13 +206,24 @@ class OrderSummaryPageActivityTest {
             clickBboTicker()
 
             assertShipment(
-                    shippingName = context.getString(R.string.lbl_osp_free_shipping),
+                    shippingName = "Pengiriman Bebas Ongkir",
                     shippingDuration = "Durasi 4-6 hari",
                     shippingPrice = context.getString(R.string.lbl_osp_free_shipping_only_price),
                     hasPromo = false
             )
 
             assertPayment("Rp101.000", "Bayar")
+
+            clickButtonOrderDetail {
+                assertSummary(
+                        productPrice = "Rp100.000",
+                        shippingPrice = "Rp0",
+                        isBbo = true,
+                        paymentFee = "Rp1.000",
+                        totalPrice = "Rp101.000"
+                )
+                closeBottomSheet()
+            }
         } pay {
             assertGoToPayment(
                     redirectUrl = "https://www.tokopedia.com/payment",
@@ -200,15 +234,50 @@ class OrderSummaryPageActivityTest {
     }
 
     @Test
-    fun reloadPage_ErrorGetOccCartPage() {
+    fun happyFlow_ChangeDurationAndCourier() {
+        logisticInterceptor.customRatesResponsePath = RATES_WITH_NO_PROFILE_DURATION_RESPONSE_PATH
+
         activityRule.launchActivity(null)
         intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, null))
 
         orderSummaryPage {
-            cartInterceptor.customGetOccCartThrowable = IOException()
+            assertShipment(
+                    shippingName = "Pengiriman Reguler",
+                    shippingDuration = "Durasi 2-4 hari",
+                    shippingPrice = null,
+                    hasPromo = false
+            )
 
-            clickEditPreference()
+            assertShipmentError(OrderSummaryPageViewModel.NO_DURATION_AVAILABLE)
 
+            clickUbahDuration {
+                chooseDurationWithText("Ekonomi (3-4 hari)")
+            }
+
+            assertShipmentWithCustomDuration(
+                    shippingNameAndDuration = "Ekonomi (3-4 hari)",
+                    shippingCourierAndPrice = "JNE OKE - Rp13.000",
+                    hasPromo = false
+            )
+
+            assertPayment("Rp114.000", "Bayar")
+        } pay {
+            assertGoToPayment(
+                    redirectUrl = "https://www.tokopedia.com/payment",
+                    queryString = "transaction_id=123",
+                    method = "POST"
+            )
+        }
+    }
+
+    @Test
+    fun errorFlow_ErrorGetOccCartPage() {
+        cartInterceptor.customGetOccCartThrowable = IOException()
+
+        activityRule.launchActivity(null)
+        intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, null))
+
+        orderSummaryPage {
             assertGlobalErrorVisible()
         }
     }

@@ -6,8 +6,13 @@
         <item name="bottomSheetStyle">@style/BottomSheet</item>
     </style>
 
-    <style name="BottomSheetDialogTheme" parent="BaseBottomSheetDialog" />
+    <style name="ProductBottomSheetDialogTheme" parent="Theme.Design.Light.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/AppModalStyle</item>
+    </style>
 
+    <style name="AppModalStyle" parent="Widget.Design.BottomSheet.Modal">
+        <item name="android:background">@drawable/product_detail_rounded_corner_top_left_top_right</item>
+    </style>
 
     <declare-styleable name="ProductRoundedImageView">
         <attr name="borderRadius" format="dimension" />

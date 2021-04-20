@@ -27,6 +27,12 @@ data class RegisterInfo(
         @SerializedName("refresh_token")
         @Expose
         var refreshToken: String = "",
+        @SerializedName("enable_2fa")
+        @Expose
+        var enable2Fa: Boolean = false,
+        @SerializedName("enable_skip_2fa")
+        @Expose
+        var enableSkip2Fa: Boolean = false,
         @SerializedName("errors")
         @Expose
         var errors: ArrayList<Error> = arrayListOf()

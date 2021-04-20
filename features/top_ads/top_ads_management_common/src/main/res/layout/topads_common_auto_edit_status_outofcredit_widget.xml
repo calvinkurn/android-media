@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/main_parent"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/auto_ad_status_image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/dp_8"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/iklan_otomatis"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/topads_common_iklan_otomatis"
+            android:textColor="@color/Unify_N700"
+            android:typeface="normal"
+            app:layout_constraintStart_toEndOf="@id/auto_ad_status_image"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="heading_6"
+            app:typographyWeight="bold" />
+
+        <com.tokopedia.unifycomponents.Label
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_4"
+            android:text="@string/topads_common_ads_not_delivered"
+            app:labelType="general_light_orange"
+            app:layout_constraintStart_toStartOf="@id/iklan_otomatis"
+            app:layout_constraintTop_toBottomOf="@id/iklan_otomatis" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/status_desc"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_8"
+        android:text="@string/topads_common_autoads_outofcredit_desc"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/btn_switch"
+        app:layout_constraintStart_toEndOf="@id/auto_ad_status_image"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="small" />
+
+    <com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
+        android:id="@+id/btn_switch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/dp_16"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/setting"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/dp_8"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/btn_switch"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -8,13 +8,13 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.home.R;
 import com.tokopedia.home.beranda.listener.HomeCategoryListener;
-import com.tokopedia.home.explore.view.adapter.viewmodel.SellViewModel;
+import com.tokopedia.home.explore.view.adapter.datamodel.SellDataModel;
 
 /**
  * Created by errysuprayogi on 12/5/17.
  */
 
-public class SellViewHolder extends AbstractViewHolder<SellViewModel> {
+public class SellViewHolder extends AbstractViewHolder<SellDataModel> {
 
     @LayoutRes
     public static final int LAYOUT = R.layout.layout_sell;
@@ -40,7 +40,7 @@ public class SellViewHolder extends AbstractViewHolder<SellViewModel> {
     }
 
     @Override
-    public void bind(SellViewModel element) {
+    public void bind(SellDataModel element) {
         titleTxt.setText(element.getTitle());
         subtitleTxt.setText(element.getSubtitle());
         button.setText(element.getBtn_title());

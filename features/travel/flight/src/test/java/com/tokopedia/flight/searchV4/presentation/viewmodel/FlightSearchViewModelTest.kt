@@ -4,12 +4,15 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.common.travel.constant.TravelSortOption
 import com.tokopedia.common.travel.ticker.domain.TravelTickerCoroutineUseCase
 import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerModel
-import com.tokopedia.common.travel.utils.TravelTestDispatcherProvider
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.flight.airport.view.model.FlightAirportModel
 import com.tokopedia.flight.common.util.FlightAnalytics
 import com.tokopedia.flight.dummy.*
 import com.tokopedia.flight.homepage.presentation.model.FlightClassModel
 import com.tokopedia.flight.homepage.presentation.model.FlightPassengerModel
+import com.tokopedia.flight.promo_chips.data.model.AirlinePrice
+import com.tokopedia.flight.promo_chips.data.model.FlightLowestPrice
+import com.tokopedia.flight.promo_chips.domain.FlightLowestPriceUseCase
 import com.tokopedia.flight.searchV4.data.FlightSearchThrowable
 import com.tokopedia.flight.searchV4.data.cloud.single.FlightSearchErrorEntity
 import com.tokopedia.flight.searchV4.domain.*
@@ -20,6 +23,7 @@ import com.tokopedia.flight.searchV4.presentation.util.FlightSearchCache
 import com.tokopedia.flight.shouldBe
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
 import org.junit.Before
@@ -33,7 +37,7 @@ class FlightSearchViewModelTest {
 
     @get:Rule
     val rule = InstantTaskExecutorRule()
-    private val testDispatcherProvider = TravelTestDispatcherProvider()
+    private val testDispatcherProvider = CoroutineTestDispatchersProvider
 
     @RelaxedMockK
     private lateinit var flightAnalytics: FlightAnalytics
@@ -50,7 +54,10 @@ class FlightSearchViewModelTest {
     @RelaxedMockK
     private lateinit var flightSearchStatisticUseCase: FlightSearchStatisticsUseCase
     @RelaxedMockK
+    private lateinit var flightLowestPriceUseCase: FlightLowestPriceUseCase
+    @RelaxedMockK
     private lateinit var flightSearchCache: FlightSearchCache
+    private val userSession = mockk<UserSessionInterface>()
 
     private val flightSearchJourneyByIdUseCase = mockk<FlightSearchJouneyByIdUseCase>()
     private val travelTickerUseCase = mockk<TravelTickerCoroutineUseCase>()
@@ -94,8 +101,10 @@ class FlightSearchViewModelTest {
                 flightSearchCombineUseCase,
                 travelTickerUseCase,
                 flightSearchStatisticUseCase,
+                flightLowestPriceUseCase,
                 flightAnalytics,
                 flightSearchCache,
+                userSession,
                 testDispatcherProvider)
         flightSearchViewModel.flightSearchPassData = defaultSearchData
         flightSearchViewModel.filterModel = defaultFilterModel
@@ -117,8 +126,10 @@ class FlightSearchViewModelTest {
                 flightSearchCombineUseCase,
                 travelTickerUseCase,
                 flightSearchStatisticUseCase,
+                flightLowestPriceUseCase,
                 flightAnalytics,
                 flightSearchCache,
+                mockk(),
                 testDispatcherProvider)
         newFlightSearchViewModel.selectedSortOption = TravelSortOption.CHEAPEST
 
@@ -629,30 +640,52 @@ class FlightSearchViewModelTest {
     }
 
     @Test
-    fun onSearchItemClickedByNullJourney_shouldDeleteFlightReturn() {
+    fun onSearchItemClickedByNullJourney_whenLoggedIn_shouldDeleteFlightReturn() {
         // given
         val journeyModel: FlightJourneyModel? = null
+        coEvery { userSession.isLoggedIn } returns true
+        coEvery { userSession.userId } returns "dummy user id"
 
         // when
         flightSearchViewModel.onSearchItemClicked(journeyModel)
 
         // then
         coVerifySequence {
-            flightAnalytics.eventSearchProductClickFromList(flightSearchViewModel.flightSearchPassData, journeyModel)
+            flightAnalytics.eventSearchProductClickV2FromList(flightSearchViewModel.flightSearchPassData, journeyModel,
+                    FlightAnalytics.Screen.SEARCH, any())
         }
     }
 
     @Test
-    fun onSearchItemClickedByJourneyWithoutAdapterPosition_shouldDeleteFlightReturn() {
+    fun onSearchItemClickedByNullJourney_whenNotLoggedIn_shouldDeleteFlightReturn() {
         // given
-        val journeyModel = JOURNEY_LIST_DATA[0]
+        val journeyModel: FlightJourneyModel? = null
+        coEvery { userSession.isLoggedIn } returns false
 
         // when
         flightSearchViewModel.onSearchItemClicked(journeyModel)
 
         // then
         coVerifySequence {
-            flightAnalytics.eventSearchProductClickFromList(flightSearchViewModel.flightSearchPassData, journeyModel)
+            flightAnalytics.eventSearchProductClickV2FromList(flightSearchViewModel.flightSearchPassData, journeyModel,
+                    FlightAnalytics.Screen.SEARCH, any())
+        }
+    }
+
+    @Test
+    fun onSearchItemClickedByJourneyWithoutAdapterPosition_whenLoggedIn_shouldDeleteFlightReturn() {
+        // given
+        val journeyModel = JOURNEY_LIST_DATA[0]
+        coEvery { userSession.isLoggedIn } returns true
+        coEvery { userSession.userId } returns "dummy user id"
+
+        // when
+        flightSearchViewModel.onSearchItemClicked(journeyModel)
+
+        // then
+        coVerifySequence {
+            flightAnalytics.eventSearchProductClickV2FromList(flightSearchViewModel.flightSearchPassData, journeyModel,
+                    FlightAnalytics.Screen.SEARCH, any())
             flightSearchDeleteReturnDataUseCase.execute()
         }
         val selectedJourney = flightSearchViewModel.selectedJourney.value as FlightSearchSelectedModel
@@ -671,17 +704,50 @@ class FlightSearchViewModelTest {
     }
 
     @Test
-    fun onSearchItemClickedByJourneyRoundTrip_shouldDeleteFlightReturn() {
+    fun onSearchItemClickedByJourneyWithoutAdapterPosition_whenNotLoggedIn_shouldDeleteFlightReturn() {
         // given
         val journeyModel = JOURNEY_LIST_DATA[0]
-        flightSearchViewModel.flightSearchPassData.isOneWay = false
+        coEvery { userSession.isLoggedIn } returns false
 
         // when
         flightSearchViewModel.onSearchItemClicked(journeyModel)
 
         // then
         coVerifySequence {
-            flightAnalytics.eventSearchProductClickFromList(flightSearchViewModel.flightSearchPassData, journeyModel)
+            flightAnalytics.eventSearchProductClickV2FromList(flightSearchViewModel.flightSearchPassData, journeyModel,
+                    FlightAnalytics.Screen.SEARCH, any())
+            flightSearchDeleteReturnDataUseCase.execute()
+        }
+        val selectedJourney = flightSearchViewModel.selectedJourney.value as FlightSearchSelectedModel
+        selectedJourney.journeyModel shouldBe journeyModel
+        selectedJourney.priceModel.departurePrice!!.adult shouldBe journeyModel.fare.adult
+        selectedJourney.priceModel.departurePrice!!.adultNumeric shouldBe journeyModel.fare.adultNumeric
+        selectedJourney.priceModel.departurePrice!!.child shouldBe journeyModel.fare.child
+        selectedJourney.priceModel.departurePrice!!.childNumeric shouldBe journeyModel.fare.childNumeric
+        selectedJourney.priceModel.departurePrice!!.infant shouldBe journeyModel.fare.infant
+        selectedJourney.priceModel.departurePrice!!.adultCombo shouldBe ""
+        selectedJourney.priceModel.departurePrice!!.adultNumericCombo shouldBe 0
+        selectedJourney.priceModel.departurePrice!!.childCombo shouldBe ""
+        selectedJourney.priceModel.departurePrice!!.childNumericCombo shouldBe 0
+        selectedJourney.priceModel.departurePrice!!.infantCombo shouldBe ""
+        selectedJourney.priceModel.departurePrice!!.infantNumericCombo shouldBe 0
+    }
+
+    @Test
+    fun onSearchItemClickedByJourneyRoundTrip_whenLoggedIn_shouldDeleteFlightReturn() {
+        // given
+        val journeyModel = JOURNEY_LIST_DATA[0]
+        flightSearchViewModel.flightSearchPassData.isOneWay = false
+        coEvery { userSession.isLoggedIn } returns true
+        coEvery { userSession.userId } returns "dummy user id"
+
+        // when
+        flightSearchViewModel.onSearchItemClicked(journeyModel)
+
+        // then
+        coVerifySequence {
+            flightAnalytics.eventSearchProductClickV2FromList(flightSearchViewModel.flightSearchPassData,
+                    journeyModel, FlightAnalytics.Screen.SEARCH, any())
             flightSearchDeleteReturnDataUseCase.execute()
         }
         val selectedJourney = flightSearchViewModel.selectedJourney.value as FlightSearchSelectedModel
@@ -700,17 +766,82 @@ class FlightSearchViewModelTest {
     }
 
     @Test
-    fun onSearchItemClickedByJourneyWithAdapterPosition_shouldDeleteFlightReturn() {
+    fun onSearchItemClickedByJourneyRoundTrip_whenNotLoggedIn_shouldDeleteFlightReturn() {
+        // given
+        val journeyModel = JOURNEY_LIST_DATA[0]
+        flightSearchViewModel.flightSearchPassData.isOneWay = false
+        coEvery { userSession.isLoggedIn } returns false
+
+        // when
+        flightSearchViewModel.onSearchItemClicked(journeyModel)
+
+        // then
+        coVerifySequence {
+            flightAnalytics.eventSearchProductClickV2FromList(flightSearchViewModel.flightSearchPassData,
+                    journeyModel, FlightAnalytics.Screen.SEARCH, any())
+            flightSearchDeleteReturnDataUseCase.execute()
+        }
+        val selectedJourney = flightSearchViewModel.selectedJourney.value as FlightSearchSelectedModel
+        selectedJourney.journeyModel shouldBe journeyModel
+        selectedJourney.priceModel.departurePrice!!.adult shouldBe journeyModel.fare.adult
+        selectedJourney.priceModel.departurePrice!!.adultNumeric shouldBe journeyModel.fare.adultNumeric
+        selectedJourney.priceModel.departurePrice!!.child shouldBe journeyModel.fare.child
+        selectedJourney.priceModel.departurePrice!!.childNumeric shouldBe journeyModel.fare.childNumeric
+        selectedJourney.priceModel.departurePrice!!.infant shouldBe journeyModel.fare.infant
+        selectedJourney.priceModel.departurePrice!!.adultCombo shouldBe journeyModel.fare.adultCombo
+        selectedJourney.priceModel.departurePrice!!.adultNumericCombo shouldBe journeyModel.fare.adultNumericCombo
+        selectedJourney.priceModel.departurePrice!!.childCombo shouldBe journeyModel.fare.childCombo
+        selectedJourney.priceModel.departurePrice!!.childNumericCombo shouldBe journeyModel.fare.childNumericCombo
+        selectedJourney.priceModel.departurePrice!!.infantCombo shouldBe journeyModel.fare.infantCombo
+        selectedJourney.priceModel.departurePrice!!.infantNumericCombo shouldBe journeyModel.fare.infantNumericCombo
+    }
+
+    @Test
+    fun onSearchItemClickedByJourneyWithAdapterPosition_whenLoggedIn_shouldDeleteFlightReturn() {
         // given
         val adapterPosition = 0
         val journeyModel = JOURNEY_LIST_DATA[0]
+        coEvery { userSession.isLoggedIn } returns true
+        coEvery { userSession.userId } returns "dummy user id"
 
         // when
         flightSearchViewModel.onSearchItemClicked(journeyModel, adapterPosition)
 
         // then
         coVerifySequence {
-            flightAnalytics.eventSearchProductClickFromList(flightSearchViewModel.flightSearchPassData, journeyModel, adapterPosition)
+            flightAnalytics.eventSearchProductClickV2FromList(flightSearchViewModel.flightSearchPassData, journeyModel,
+                    adapterPosition, FlightAnalytics.Screen.SEARCH, any())
+            flightSearchDeleteReturnDataUseCase.execute()
+        }
+        val selectedJourney = flightSearchViewModel.selectedJourney.value as FlightSearchSelectedModel
+        selectedJourney.journeyModel shouldBe journeyModel
+        selectedJourney.priceModel.departurePrice!!.adult shouldBe journeyModel.fare.adult
+        selectedJourney.priceModel.departurePrice!!.adultNumeric shouldBe journeyModel.fare.adultNumeric
+        selectedJourney.priceModel.departurePrice!!.child shouldBe journeyModel.fare.child
+        selectedJourney.priceModel.departurePrice!!.childNumeric shouldBe journeyModel.fare.childNumeric
+        selectedJourney.priceModel.departurePrice!!.infant shouldBe journeyModel.fare.infant
+        selectedJourney.priceModel.departurePrice!!.adultCombo shouldBe ""
+        selectedJourney.priceModel.departurePrice!!.adultNumericCombo shouldBe 0
+        selectedJourney.priceModel.departurePrice!!.childCombo shouldBe ""
+        selectedJourney.priceModel.departurePrice!!.childNumericCombo shouldBe 0
+        selectedJourney.priceModel.departurePrice!!.infantCombo shouldBe ""
+        selectedJourney.priceModel.departurePrice!!.infantNumericCombo shouldBe 0
+    }
+
+    @Test
+    fun onSearchItemClickedByJourneyWithAdapterPosition_whenNotLoggedIn_shouldDeleteFlightReturn() {
+        // given
+        val adapterPosition = 0
+        val journeyModel = JOURNEY_LIST_DATA[0]
+        coEvery { userSession.isLoggedIn } returns false
+
+        // when
+        flightSearchViewModel.onSearchItemClicked(journeyModel, adapterPosition)
+
+        // then
+        coVerifySequence {
+            flightAnalytics.eventSearchProductClickV2FromList(flightSearchViewModel.flightSearchPassData, journeyModel,
+                    adapterPosition, FlightAnalytics.Screen.SEARCH, any())
             flightSearchDeleteReturnDataUseCase.execute()
         }
         val selectedJourney = flightSearchViewModel.selectedJourney.value as FlightSearchSelectedModel
@@ -827,8 +958,10 @@ class FlightSearchViewModelTest {
                 flightSearchCombineUseCase,
                 travelTickerUseCase,
                 flightSearchStatisticUseCase,
+                flightLowestPriceUseCase,
                 flightAnalytics,
                 flightSearchCache,
+		mockk(),
                 testDispatcherProvider)
 
         // when
@@ -925,15 +1058,30 @@ class FlightSearchViewModelTest {
     }
 
     @Test
-    fun sendQuickFilterTrack() {
+    fun sendQuickFilterTrackWhenLoggedIn() {
         // given
         val filterName = "Langsung"
+        coEvery { userSession.isLoggedIn } returns true
+        coEvery { userSession.userId } returns "dummy user id"
 
         // when
         flightSearchViewModel.sendQuickFilterTrack(filterName)
 
         // then
-        verify { flightAnalytics.eventQuickFilterClick(filterName) }
+        verify { flightAnalytics.eventQuickFilterClick(filterName, any()) }
+    }
+
+    @Test
+    fun sendQuickFilterTrackWhenNotLoggedIn() {
+        // given
+        val filterName = "Langsung"
+        coEvery { userSession.isLoggedIn } returns false
+
+        // when
+        flightSearchViewModel.sendQuickFilterTrack(filterName)
+
+        // then
+        verify { flightAnalytics.eventQuickFilterClick(filterName, any()) }
     }
 
     @Test
@@ -950,5 +1098,140 @@ class FlightSearchViewModelTest {
             flightAnalytics.eventSearchDetailClick(journeyModel, adapterPosition)
             flightAnalytics.eventProductDetailImpression(journeyModel, adapterPosition)
         }
+    }
+
+    @Test
+    fun fetchPromoList_shouldReturnSuccessEmpty() {
+        // given
+        coEvery { flightLowestPriceUseCase.execute(any() as String, any()) } returns Success(PROMO_CHIPS_EMPTY)
+        flightSearchViewModel.flightSearchPassData = defaultSearchData
+
+        // when
+        flightSearchViewModel.fetchPromoList(isReturnTrip = false)
+
+        // then
+        flightSearchViewModel.promoData.value is Success
+
+        flightSearchViewModel.promoData.value is Success
+        val promoData = (flightSearchViewModel.promoData.value as Success<FlightLowestPrice>).data.dataPromoChips
+        promoData.size shouldBe 0
+    }
+
+    @Test
+    fun fetchPromoList_oneWay_shouldReturnSuccessNotEmpty() {
+        // given
+        coEvery { flightLowestPriceUseCase.execute(any() as String, any()) } returns Success(PROMO_CHIPS)
+        flightSearchViewModel.flightSearchPassData = defaultSearchData
+
+        // when
+        flightSearchViewModel.fetchPromoList(isReturnTrip = false)
+
+        // then
+        flightSearchViewModel.promoData.value is Success
+
+        flightSearchViewModel.promoData.value is Success
+        val promoData = (flightSearchViewModel.promoData.value as Success<FlightLowestPrice>).data.dataPromoChips
+        promoData.size shouldBe 1
+        promoData[0].date shouldBe PROMO_CHIPS.dataPromoChips[0].date
+        promoData[0].airlinePrices shouldBe PROMO_CHIPS.dataPromoChips[0].airlinePrices
+        promoData[0].airlinePrices[0] shouldBe PROMO_CHIPS.dataPromoChips[0].airlinePrices[0]
+        promoData[0].airlinePrices[0].airlineID shouldBe PROMO_CHIPS.dataPromoChips[0].airlinePrices[0].airlineID
+    }
+
+    @Test
+    fun fetchPromoList_roundTrip_shouldReturnSuccessNotEmpty() {
+        // given
+        coEvery { flightLowestPriceUseCase.execute(any() as String, any()) } returns Success(PROMO_CHIPS)
+        flightSearchViewModel.flightSearchPassData = defaultSearchData
+
+        // when
+        flightSearchViewModel.fetchPromoList(isReturnTrip = true)
+        
+        // then
+        flightSearchViewModel.promoData.value is Success
+        val promoData = (flightSearchViewModel.promoData.value as Success<FlightLowestPrice>).data.dataPromoChips
+        promoData.size shouldBe 1
+        promoData[0].date shouldBe PROMO_CHIPS.dataPromoChips[0].date
+        promoData[0].airlinePrices shouldBe PROMO_CHIPS.dataPromoChips[0].airlinePrices
+        promoData[0].airlinePrices[0] shouldBe PROMO_CHIPS.dataPromoChips[0].airlinePrices[0]
+        promoData[0].airlinePrices[0].airlineID shouldBe PROMO_CHIPS.dataPromoChips[0].airlinePrices[0].airlineID
+    }
+
+    @Test
+    fun fetchPromoList_shouldReturnFail() {
+        // given
+        val fakeEntity = FlightSearchErrorEntity("1", "Error", "Error Dummy")
+        coEvery { flightLowestPriceUseCase.execute(any() as String, any()) } coAnswers {
+            throw FlightSearchThrowable().apply {
+                errorList = arrayListOf(fakeEntity)
+            }
+        }
+
+        // when
+        try {
+            flightSearchViewModel.fetchPromoList(isReturnTrip = true)
+        } catch (t: Throwable) {
+        }
+
+        // then
+        flightSearchViewModel.promoData.value is Fail
+        val errorList = ((flightSearchViewModel.promoData.value as Fail).throwable as FlightSearchThrowable).errorList
+
+        errorList.size shouldBe 1
+        errorList[0].id shouldBe fakeEntity.id
+        errorList[0].status shouldBe fakeEntity.status
+        errorList[0].title shouldBe fakeEntity.title
+    }
+
+    @Test
+    fun onPromotionChipsClickedTrackWhenLoggedIn_oneWay() {
+        // given
+        val position = 0
+        val airlinePrice: AirlinePrice = PROMO_CHIPS.dataPromoChips[0].airlinePrices[0]
+        val isReturn = false
+        flightSearchViewModel.flightSearchPassData = defaultSearchData
+        coEvery { userSession.isLoggedIn } returns true
+        coEvery { userSession.userId } returns "dummy user id"
+
+        // when
+        flightSearchViewModel.onPromotionChipsClicked(position, airlinePrice = airlinePrice, isReturnTrip = isReturn)
+
+        // then
+        verify { flightAnalytics.eventFlightPromotionClick(position + 1, airlinePrice, flightSearchViewModel.flightSearchPassData,
+                FlightAnalytics.Screen.SEARCH, any(), isReturn) }
+    }
+
+    @Test
+    fun onPromotionChipsClickedTrackWhenLoggedIn_returnTrip() {
+        // given
+        val position = 0
+        val airlinePrice: AirlinePrice = PROMO_CHIPS.dataPromoChips[0].airlinePrices[0]
+        val isReturn = true
+        flightSearchViewModel.flightSearchPassData = defaultSearchData
+        coEvery { userSession.isLoggedIn } returns true
+        coEvery { userSession.userId } returns "dummy user id"
+
+        // when
+        flightSearchViewModel.onPromotionChipsClicked(position, airlinePrice = airlinePrice, isReturnTrip = isReturn)
+
+        // then
+        verify { flightAnalytics.eventFlightPromotionClick(position + 1, airlinePrice, flightSearchViewModel.flightSearchPassData,
+                FlightAnalytics.Screen.SEARCH, any(), isReturn) }
+    }
+
+    @Test
+    fun onPromotionChipsClickedTrackWhenNotLoggedIn() {
+        // given
+        val position = 0
+        val airlinePrice: AirlinePrice = PROMO_CHIPS.dataPromoChips[0].airlinePrices[0]
+        val isReturn = false
+        flightSearchViewModel.flightSearchPassData = defaultSearchData
+        coEvery { userSession.isLoggedIn } returns false
+        // when
+        flightSearchViewModel.onPromotionChipsClicked(position, airlinePrice = airlinePrice, isReturnTrip = isReturn)
+
+        // then
+        verify { flightAnalytics.eventFlightPromotionClick(position + 1, airlinePrice, flightSearchViewModel.flightSearchPassData,
+                FlightAnalytics.Screen.SEARCH, any(), isReturn) }
     }
 }

@@ -6,10 +6,10 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 
-import com.tokopedia.buyerorder.common.util.UnifiedOrderListRouter;
 import com.tokopedia.buyerorder.list.data.OrderCategory;
 import com.tokopedia.buyerorder.list.data.OrderLabelList;
 import com.tokopedia.buyerorder.list.view.fragment.OrderListFragment;
+import com.tokopedia.flight.orderlist.view.fragment.FlightOrderListFragment;
 
 import java.util.List;
 
@@ -38,8 +38,8 @@ public class OrderTabAdapter extends FragmentStatePagerAdapter {
         arg.putParcelable(ORDER_TAB_LIST, orderLabelList);
         arg.putString(ORDER_CATEGORY, orderCategory);
         Fragment fragment = null;
-        if(orderCategory.equals(OrderCategory.FLIGHTS) && listener.getAppContext() instanceof UnifiedOrderListRouter) {
-            fragment = ((UnifiedOrderListRouter) listener.getAppContext()).getFlightOrderListFragment();
+        if(orderCategory.equals(OrderCategory.FLIGHTS)) {
+            fragment = FlightOrderListFragment.createInstance();
         }
         if (fragment == null) {
             fragment = new OrderListFragment();
@@ -50,7 +50,6 @@ public class OrderTabAdapter extends FragmentStatePagerAdapter {
     }
 
     public interface Listener {
-        Context getAppContext();
         Bundle getBundle();
     }
 }

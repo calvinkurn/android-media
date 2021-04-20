@@ -8,11 +8,11 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/key"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:layout_gravity="start"
         android:layout_weight="1"
-        android:textColor="@color/black_54"
+        android:textColor="@color/Unify_N700_44"
         app:typographyType="body_3"
         tools:text="Metode Refund" />
 
@@ -21,7 +21,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="end"
-        android:textColor="@color/black_70"
+        android:textColor="@color/Unify_N700_68"
         app:typographyType="body_3"
         app:typographyWeight="bold"
         tools:text="Kartu Kredit" />

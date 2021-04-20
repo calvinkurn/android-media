@@ -11,19 +11,9 @@
         <item name="android:textColor">@color/white</item>
     </style>
 
-    <style name="AttachProductToolbarTitle.SansSerif" parent="ToolbarText">
-        <item name="android:fontFamily">sans-serif</item>
-        <item name="android:textColor">@color/black_70</item>
-    </style>
-
     <style name="AttachProductToolbarSubTitle" parent="@style/TextAppearance.Widget.AppCompat.Toolbar.Subtitle">
         <item name="android:textSize">12sp</item>
         <item name="android:textColor">@color/white</item>
-    </style>
-
-    <style name="AttachProductToolbarSubTitle.SansSerif" parent="ToolbarSubtitleText">
-        <item name="android:fontFamily">sans-serif</item>
-        <item name="android:textColor">@color/black_38</item>
     </style>
 
     <style name="Tabs.ContactUs" parent="Tabs">

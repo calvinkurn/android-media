@@ -1,43 +1,37 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
-apply plugin: "de.mannodermaus.android-junit5"
 
 android {
-    testOptions {
-        junitPlatform {
-            filters {
-                engines {
-                    include 'spek2'
-                }
-            }
-        }
-        unitTests.all {
-            testLogging.events = ["passed", "skipped", "failed"]
-        }
+
+    packagingOptions {
+        exclude 'META-INF/**'
+    }
+
+    defaultConfig {
+        multiDexEnabled true
+        testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
     }
 }
 
 repositories {
-    maven { url 'https://hansel.io/maven' }
+    maven { url 'https://maven-hansel.tokopedia.com/maven' }
 }
 
 buildscript {
     repositories {
         mavenCentral()
-        maven { url 'https://hansel.io/maven' }
-        jcenter()
+        maven { url 'https://maven-hansel.tokopedia.com/maven' }
     }
     dependencies {
         classpath rootProject.ext.miscDependencies.hansel
-        classpath rootProject.ext.miscDependencies.androidjunit5
     }
 }
 
 dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     implementation project(rootProject.ext.libraries.tkpdabstraction)
-    implementation project(rootProject.ext.libraries.tkpddesign)
     implementation project(rootProject.ext.libraries.akamaiBotLib)
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.analytics)
@@ -56,36 +50,37 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.network
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
-    implementation rootProject.ext.tkpdInternalLibDependencies.url
 
     implementation rootProject.ext.debugToolsDependencies.chuck
-
-    implementation(rootProject.ext.tkpdLibDependencies.showcase) {
-        exclude group: "com.android.support"
-    }
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
 
     implementation rootProject.ext.unifyDependencies.components
+    implementation rootProject.ext.unifyDependencies.icons
     implementation rootProject.ext.unifyDependencies.dialog
+    implementation rootProject.ext.unifyDependencies.empty_state
+    implementation rootProject.ext.unifyDependencies.icons
     implementation rootProject.ext.unifyDependencies.principles
+    implementation rootProject.ext.unifyDependencies.coach_mark
 
     implementation rootProject.ext.miscDependencies.apacheLang
     implementation rootProject.ext.miscDependencies.flexBoxLayout
 
     implementation project(rootProject.ext.features.purchase_platform_common)
+    implementation project(rootProject.ext.features.localizationchooseaddress)
     implementation project(rootProject.ext.features.logisticcart)
-    implementation project(rootProject.ext.features.logisticdata)
+    implementation project(rootProject.ext.features.logisticCommon)
     implementation project(rootProject.ext.features.commonPayment)
     implementation project(rootProject.ext.features.promoCheckoutCommon)
 
-    testImplementation rootProject.ext.testDependencies.junitJupiterApi
     testImplementation rootProject.ext.testDependencies.mockk
-    testImplementation rootProject.ext.testDependencies.spek2Api
-    testImplementation rootProject.ext.testDependencies.spek2Dsl
-    testImplementation rootProject.ext.supportLibDependencies.kotlinReflection
-    implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk8
+    testImplementation rootProject.ext.testDependencies.archCoreTesting
 
+    androidTestImplementation rootProject.ext.testDependencies.espressoIntents
+    androidTestImplementation rootProject.ext.testDependencies.espressoCore
+    androidTestImplementation rootProject.ext.testDependencies.espressoContrib
+    androidTestImplementation project(rootProject.ext.libraries.cassavaTest)
+    androidTestImplementation project(rootProject.ext.libraries.instrumentation_test)
 }
 
 project.ext {

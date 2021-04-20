@@ -1,5 +1,7 @@
 package com.tokopedia.home.viewModel.homepage
 
+import android.app.Activity
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.atc_common.domain.usecase.AddToCartOccUseCase
 import com.tokopedia.home.beranda.data.model.HomeWidget
 import com.tokopedia.home.beranda.data.model.PlayChannel
@@ -14,16 +16,21 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDataMo
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.BusinessUnitItemDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelDataModel
 import com.tokopedia.home.beranda.presentation.viewModel.HomeViewModel
-import com.tokopedia.home.rules.TestDispatcherProvider
-import com.tokopedia.play_common.domain.usecases.GetPlayWidgetUseCase
-import com.tokopedia.play_common.domain.usecases.PlayToggleChannelReminderUseCase
-import com.tokopedia.play_common.widget.playBannerCarousel.model.PlayBannerCarouselDataModel
-import com.tokopedia.stickylogin.domain.usecase.coroutine.StickyLoginUseCase
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
+import com.tokopedia.home.util.HomeCommandProcessor
+import com.tokopedia.play.widget.data.PlayWidget
+import com.tokopedia.play.widget.domain.PlayWidgetUseCase
+import com.tokopedia.play.widget.util.PlayWidgetTools
+import com.tokopedia.recharge_component.model.RechargePerso
+import com.tokopedia.recommendation_widget_common.domain.GetRecommendationFilterChips
+import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
+import com.tokopedia.recommendation_widget_common.widget.bestseller.mapper.BestSellerMapper
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
 import io.mockk.coEvery
 import io.mockk.mockk
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flow
 import java.util.concurrent.TimeoutException
 
@@ -42,54 +49,62 @@ fun createHomeViewModel(
         getKeywordSearchUseCase: GetKeywordSearchUseCase = mockk(relaxed = true),
         getRecommendationTabUseCase: GetRecommendationTabUseCase = mockk(relaxed = true),
         getHomeTokopointsDataUseCase: GetHomeTokopointsDataUseCase = mockk(relaxed = true),
+        getHomeTokopointsListDataUseCase: GetHomeTokopointsListDataUseCase = mockk(relaxed = true),
         getCoroutinePendingCashbackUseCase: GetCoroutinePendingCashbackUseCase = mockk(relaxed = true),
         getPlayLiveDynamicUseCase: GetPlayLiveDynamicUseCase = mockk(relaxed = true),
-        getPlayBannerUseCase: GetPlayWidgetUseCase = mockk(relaxed = true),
-        playToggleChannelReminderUseCase: PlayToggleChannelReminderUseCase = mockk(relaxed = true),
         getCoroutineWalletBalanceUseCase: GetCoroutineWalletBalanceUseCase = mockk(relaxed = true),
         getSendGeolocationInfoUseCase: SendGeolocationInfoUseCase = mockk(relaxed = true),
-        getStickyLoginUseCase: StickyLoginUseCase = mockk(relaxed = true),
         getPopularKeywordUseCase: GetPopularKeywordUseCase = mockk(relaxed = true),
         getDynamicChannelsUseCase: GetDynamicChannelsUseCase = mockk(relaxed = true),
+        getRecommendationUseCase: GetRecommendationUseCase = mockk(relaxed = true),
+        getRecommendationFilterChips: GetRecommendationFilterChips = mockk(relaxed = true),
         closeChannelUseCase: CloseChannelUseCase = mockk(relaxed = true),
         injectCouponTimeBasedUseCase: InjectCouponTimeBasedUseCase = mockk(relaxed = true),
         getRechargeRecommendationUseCase: GetRechargeRecommendationUseCase = mockk(relaxed = true),
         getSalamWidgetUseCase: GetSalamWidgetUseCase = mockk(relaxed = true),
         declineSalamWidgetUseCase: DeclineSalamWIdgetUseCase = mockk{ mockk(relaxed = true)},
+        getRechargeBUWidgetUseCase: GetRechargeBUWidgetUseCase = mockk{ mockk(relaxed = true)},
         declineRechargeRecommendationUseCase: DeclineRechargeRecommendationUseCase = mockk(relaxed = true),
         topadsImageViewUseCase: TopAdsImageViewUseCase = mockk(relaxed = true),
-        dispatcher: TestDispatcherProvider = TestDispatcherProvider()
+        getDisplayHeadlineAds: GetDisplayHeadlineAds = mockk(relaxed = true),
+        playWidgetTools: PlayWidgetTools = mockk(relaxed = true),
+        bestSellerMapper: BestSellerMapper = mockk(relaxed = true),
+        dispatchers: CoroutineDispatchers = CoroutineTestDispatchersProvider,
+        homeProcessor: HomeCommandProcessor = HomeCommandProcessor(Dispatchers.Unconfined)
 ): HomeViewModel{
-
-
+    val context: Activity = mockk(relaxed = true)
     return HomeViewModel(
             dismissHomeReviewUseCase = Lazy{dismissHomeReviewUseCase},
             getBusinessUnitDataUseCase = Lazy{getBusinessUnitDataUseCase},
             getBusinessWidgetTab = Lazy{getBusinessWidgetTab},
-            getDynamicChannelsUseCase = Lazy{getDynamicChannelsUseCase},
             getHomeReviewSuggestedUseCase = Lazy{getHomeReviewSuggestedUseCase},
-            getHomeTokopointsDataUseCase = Lazy{getHomeTokopointsDataUseCase},
+            getHomeTokopointsListDataUseCase = Lazy{getHomeTokopointsListDataUseCase},
             getKeywordSearchUseCase = Lazy{getKeywordSearchUseCase},
             getPendingCashbackUseCase = Lazy{getCoroutinePendingCashbackUseCase},
             getPlayCardHomeUseCase = Lazy{getPlayLiveDynamicUseCase},
             getRecommendationTabUseCase = Lazy{getRecommendationTabUseCase},
             getWalletBalanceUseCase = Lazy{getCoroutineWalletBalanceUseCase},
-            homeDispatcher = Lazy{ dispatcher },
+            homeDispatcher = Lazy{ dispatchers },
             homeUseCase = Lazy{ getHomeUseCase },
             popularKeywordUseCase = Lazy{getPopularKeywordUseCase},
             sendGeolocationInfoUseCase = Lazy{getSendGeolocationInfoUseCase},
-            stickyLoginUseCase = Lazy{getStickyLoginUseCase},
+            injectCouponTimeBasedUseCase = Lazy{injectCouponTimeBasedUseCase},
             getAtcUseCase = Lazy{getAtcUseCase},
             userSession = Lazy{userSessionInterface},
             closeChannelUseCase = Lazy{closeChannelUseCase},
-            injectCouponTimeBasedUseCase = Lazy{injectCouponTimeBasedUseCase},
             declineSalamWidgetUseCase = Lazy{declineSalamWidgetUseCase},
             declineRechargeRecommendationUseCase = Lazy {declineRechargeRecommendationUseCase},
             getSalamWidgetUseCase = Lazy{getSalamWidgetUseCase},
+            getRechargeBUWidgetUseCase = Lazy{getRechargeBUWidgetUseCase},
             topAdsImageViewUseCase = Lazy{topadsImageViewUseCase},
-            getPlayBannerUseCase = Lazy{getPlayBannerUseCase},
-            playToggleChannelReminderUseCase = Lazy{playToggleChannelReminderUseCase},
-            getRechargeRecommendationUseCase = Lazy{getRechargeRecommendationUseCase}
+            getDisplayHeadlineAds = Lazy{ getDisplayHeadlineAds },
+            getRecommendationUseCase = Lazy{ getRecommendationUseCase},
+            getRecommendationFilterChips = Lazy { getRecommendationFilterChips },
+            getRechargeRecommendationUseCase = Lazy{getRechargeRecommendationUseCase},
+            playWidgetTools = Lazy { playWidgetTools },
+            bestSellerMapper = Lazy { bestSellerMapper },
+            homeProcessor = Lazy{ homeProcessor },
+            getHomeTokopointsDataUseCase = Lazy { getHomeTokopointsDataUseCase }
     )
 }
 
@@ -100,21 +115,14 @@ fun GetPlayLiveDynamicUseCase.givenGetPlayLiveDynamicUseCaseReturn(channel: Play
     )
 }
 
-fun GetPlayWidgetUseCase.givenGetPlayCarouselUseCaseReturn(playBannerCarouselDataModel: PlayBannerCarouselDataModel) {
-    coEvery { executeOnBackground() } returns playBannerCarouselDataModel
-}
-
-fun GetPlayWidgetUseCase.givenGetPlayCarouselUseCaseReturnError() {
-    coEvery { executeOnBackground() } throws TimeoutException()
+fun PlayWidgetTools.givenPlayWidgetToolsReturn(playWidget: PlayWidget, dispatchers: CoroutineDispatchers) {
+    coEvery { getWidgetFromNetwork(PlayWidgetUseCase.WidgetType.Home, dispatchers.io) } returns playWidget
 }
 
 fun GetBusinessWidgetTab.givenGetBusinessWidgetTabUseCaseReturn(homeWidget: HomeWidget) {
     coEvery { executeOnBackground() } returns homeWidget
 }
 
-fun GetDynamicChannelsUseCase.givenGetDynamicChannelsUseCase(dynamicChannelDataModels: List<DynamicChannelDataModel>) {
-    coEvery { executeOnBackground() } returns dynamicChannelDataModels
-}
 fun GetDynamicChannelsUseCase.givenGetDynamicChannelsUseCaseThrowReturn() {
     coEvery { executeOnBackground() } throws TimeoutException()
 }
@@ -150,6 +158,14 @@ fun DeclineSalamWIdgetUseCase.givenDeclineSalamWidgetUseCase(salamWidget: SalamW
     coEvery { executeOnBackground() } returns salamWidget
 }
 
+fun GetRechargeBUWidgetUseCase.givenGetRechargeBUWidgetUseCase(rechargePerso: RechargePerso){
+    coEvery { executeOnBackground() } returns rechargePerso
+}
+
+fun GetRechargeBUWidgetUseCase.givenGetRechargeBUWidgetThrowReturn(){
+    coEvery { executeOnBackground() } throws Exception()
+}
+
 fun HomeUseCase.givenGetHomeDataReturn(homeDataModel: HomeDataModel) {
     coEvery { getHomeData() } returns flow{
         emit(homeDataModel)
@@ -161,6 +177,10 @@ fun HomeUseCase.givenGetHomeDataReturn(homeDataModel: HomeDataModel, newHomeData
         emit(homeDataModel)
         emit(newHomeDataModel)
     }
+}
+
+fun HomeUseCase.givenGetDynamicChannelsUseCase(dynamicChannelDataModels: List<DynamicChannelDataModel>) {
+    coEvery { onDynamicChannelExpired(any()) } returns dynamicChannelDataModels
 }
 
 fun InjectCouponTimeBasedUseCase.givenInjectCouponTimeBasedUseCaseReturn(setInjectCouponTimeBased: SetInjectCouponTimeBased) {

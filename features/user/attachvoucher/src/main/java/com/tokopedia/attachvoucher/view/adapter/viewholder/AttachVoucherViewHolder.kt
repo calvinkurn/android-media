@@ -2,9 +2,9 @@ package com.tokopedia.attachvoucher.view.adapter.viewholder
 
 import android.graphics.Color
 import android.view.View
-import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.attachvoucher.R
 import com.tokopedia.attachvoucher.data.VoucherUiModel
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
@@ -80,7 +80,7 @@ class AttachVoucherViewHolder(itemView: View?, val listener: Listener) : Abstrac
     }
 
     private fun stateChecked() {
-        val color = ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Green_G100)
+        val color = MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_G100)
         itemView.clContainer?.setBackgroundColor(color)
         itemView.rbSelect?.isChecked = true
     }

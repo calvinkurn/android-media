@@ -33,7 +33,7 @@ public class TkpdFirebaseAnalytics {
                 if (analytics == null) {
                     analytics = new TkpdFirebaseAnalytics();
                     analytics.context = context.getApplicationContext();
-                    FirebaseAnalytics.getInstance(analytics.context).setMinimumSessionDuration(1L);
+                    FirebaseAnalytics.getInstance(analytics.context);
                 }
             }
         }

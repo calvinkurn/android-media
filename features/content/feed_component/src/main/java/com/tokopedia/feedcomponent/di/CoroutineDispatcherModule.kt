@@ -1,7 +1,7 @@
 package com.tokopedia.feedcomponent.di
 
-import com.tokopedia.feedcomponent.util.coroutine.CommonCoroutineDispatcherProvider
-import com.tokopedia.feedcomponent.util.coroutine.CoroutineDispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import dagger.Module
 import dagger.Provides
 
@@ -12,5 +12,5 @@ import dagger.Provides
 class CoroutineDispatcherModule {
 
     @Provides
-    fun provideCoroutineDispatcherModule(): CoroutineDispatcherProvider = CommonCoroutineDispatcherProvider
+    fun provideCoroutineDispatcherModule(): CoroutineDispatchers = CoroutineDispatchersProvider
 }

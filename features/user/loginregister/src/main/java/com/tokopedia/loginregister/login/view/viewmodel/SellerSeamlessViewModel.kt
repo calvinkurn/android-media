@@ -3,9 +3,10 @@ package com.tokopedia.loginregister.login.view.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.loginregister.common.analytics.SeamlessLoginAnalytics
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.seamless_login.utils.AESUtils
+import com.tokopedia.seamless_login_common.utils.AESUtils
 import com.tokopedia.sessioncommon.data.LoginToken
 import com.tokopedia.sessioncommon.data.LoginTokenPojo
 import com.tokopedia.sessioncommon.di.SessionModule
@@ -15,7 +16,6 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -27,7 +27,8 @@ import javax.inject.Named
 class SellerSeamlessViewModel @Inject constructor(@Named(SessionModule.SESSION_MODULE)
                                                   private val userSession: UserSessionInterface,
                                                   private val loginTokenUseCase: LoginTokenUseCase,
-                                                  dispatcher: CoroutineDispatcher): BaseViewModel(dispatcher) {
+                                                  private val dispatchers: CoroutineDispatchers
+): BaseViewModel(dispatchers.main) {
 
     private val mutableLoginTokenResponse = MutableLiveData<Result<LoginToken>>()
     val loginTokenResponse: LiveData<Result<LoginToken>>
@@ -46,7 +47,9 @@ class SellerSeamlessViewModel @Inject constructor(@Named(SessionModule.SESSION_M
                     LoginTokenSubscriber(
                             userSession,
                             onSuccessLoginToken(),
-                            onFailedLoginToken(), {},
+                            onFailedLoginToken(),
+                            onSuccessLoginToken(),
+                            {},
                             onGoToSecurityQuestion()
                     )
             )
@@ -56,13 +59,13 @@ class SellerSeamlessViewModel @Inject constructor(@Named(SessionModule.SESSION_M
     private fun onFailedLoginToken(): (Throwable) -> Unit {
         return {
             userSession.clearToken()
-            mutableLoginTokenResponse.value = Fail(it)
+            mutableLoginTokenResponse.postValue(Fail(it))
         }
     }
     private fun onGoToSecurityQuestion(): () -> Unit {
         return {
             userSession.loginMethod = SeamlessLoginAnalytics.LOGIN_METHOD_SEAMLESS
-            mutableGoToSecurityQuestion.value = true
+            mutableGoToSecurityQuestion.postValue(true)
         }
     }
 
@@ -71,14 +74,13 @@ class SellerSeamlessViewModel @Inject constructor(@Named(SessionModule.SESSION_M
             if (it.loginToken.accessToken.isNotEmpty() &&
                     it.loginToken.refreshToken.isNotEmpty() &&
                     it.loginToken.tokenType.isNotEmpty()) {
-                mutableLoginTokenResponse.value = Success(it.loginToken)
+                mutableLoginTokenResponse.postValue(Success(it.loginToken))
             } else if (it.loginToken.errors.isNotEmpty() &&
                     it.loginToken.errors[0].message.isNotEmpty()) {
-                mutableLoginTokenResponse.value = Fail(MessageErrorException(it.loginToken.errors[0].message))
+                mutableLoginTokenResponse.postValue(Fail(MessageErrorException(it.loginToken.errors[0].message)))
             } else {
-                mutableLoginTokenResponse.value = Fail(RuntimeException())
+                mutableLoginTokenResponse.postValue(Fail(RuntimeException()))
             }
         }
     }
-
 }

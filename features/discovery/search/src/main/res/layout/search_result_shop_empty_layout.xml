@@ -29,7 +29,7 @@
         android:layout_marginEnd="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_16"
         android:text="@string/msg_empty_search_shop_title"
-        android:textColor="@color/shop_empty_search_title_color"
+        android:textColor="@color/Unify_N700_96"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/imageSearchShopEmpty"
         app:layout_constraintTop_toTopOf="parent"

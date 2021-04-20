@@ -9,21 +9,27 @@ import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.vouchercreation.common.coroutines.CoroutineDispatchers
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.vouchercreation.common.domain.model.UpdateVoucherParam
+import com.tokopedia.vouchercreation.common.domain.usecase.UpdateVoucherUseCase
 import com.tokopedia.vouchercreation.create.domain.model.CreateVoucherParam
-import com.tokopedia.vouchercreation.create.domain.usecase.*
+import com.tokopedia.vouchercreation.create.domain.usecase.CreateVoucherUseCase
+import com.tokopedia.vouchercreation.create.domain.usecase.SaveBannerVoucherUseCase
+import com.tokopedia.vouchercreation.create.domain.usecase.SaveSquareVoucherUseCase
+import com.tokopedia.vouchercreation.create.domain.usecase.UploadVoucherUseCase
 import com.tokopedia.vouchercreation.create.view.uimodel.voucherreview.VoucherReviewUiModel
 import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
 import rx.Observable
+import rx.Scheduler
 import rx.Subscriber
-import rx.android.schedulers.AndroidSchedulers
-import rx.schedulers.Schedulers
 import javax.inject.Inject
+import javax.inject.Named
 
 class ReviewVoucherViewModel @Inject constructor(
         private val dispatchers: CoroutineDispatchers,
+        @Named("io") private val ioScheduler: Scheduler,
+        @Named("main") private val mainThreadScheduler: Scheduler,
         private val createVoucherUseCase: CreateVoucherUseCase,
         private val updateVoucherUseCase: UpdateVoucherUseCase,
         private val uploadVoucherUseCase: UploadVoucherUseCase,
@@ -86,8 +92,8 @@ class ReviewVoucherViewModel @Inject constructor(
                                        squareImagePath: String,
                                        createVoucherParam: CreateVoucherParam) {
         getUploadVoucherImagesObservable(bannerImagePath, squareImagePath)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(ioScheduler)
+                .observeOn(mainThreadScheduler)
                 .subscribe( object : Subscriber<MutableList<String?>>() {
                     override fun onNext(urlList: MutableList<String?>?) {
                         createVoucherParam.run {
@@ -125,8 +131,8 @@ class ReviewVoucherViewModel @Inject constructor(
                                        squareImagePath: String,
                                        updateVoucherParam: UpdateVoucherParam) {
         getUploadVoucherImagesObservable(bannerImagePath, squareImagePath)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(ioScheduler)
+                .observeOn(mainThreadScheduler)
                 .subscribe( object : Subscriber<MutableList<String?>>() {
                     override fun onNext(urlList: MutableList<String?>?) {
                         updateVoucherParam.run {
@@ -141,7 +147,7 @@ class ReviewVoucherViewModel @Inject constructor(
                     }
 
                     override fun onError(e: Throwable) {
-                        mCreateVoucherResponseLiveData.value = Fail(e)
+                        mUpdateVoucherSuccessLiveData.value = Fail(e)
                     }
                 })
     }

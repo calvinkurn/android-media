@@ -10,8 +10,8 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
 import com.tokopedia.common.travel.utils.TrackingCrossSellUtil;
-import com.tokopedia.common.travel.utils.TravelDispatcherProvider;
-import com.tokopedia.common.travel.utils.TravelProductionDispatcherProvider;
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers;
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.flight.cancellation.data.cloud.FlightCancellationCloudDataSource;
 import com.tokopedia.flight.common.constant.FlightUrl;
@@ -59,7 +59,6 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * Created by User on 10/24/2017.
  */
 
-@FlightScope
 @Module
 public class FlightModule {
     private static final int NET_READ_TIMEOUT = 60;
@@ -166,7 +165,7 @@ public class FlightModule {
     @Provides
     @FlightScope
     FlightSearchRoomDb provideFlightSearchRoomDb(@ApplicationContext Context context) {
-        return FlightSearchRoomDb.getInstance(context);
+        return FlightSearchRoomDb.Companion.getInstance(context);
     }
 
     @Provides
@@ -241,8 +240,8 @@ public class FlightModule {
 
     @FlightScope
     @Provides
-    public TravelDispatcherProvider provideDispatcherProvider() {
-        return new TravelProductionDispatcherProvider();
+    public CoroutineDispatchers provideDispatcherProvider() {
+        return CoroutineDispatchersProvider.INSTANCE;
     }
 
 }

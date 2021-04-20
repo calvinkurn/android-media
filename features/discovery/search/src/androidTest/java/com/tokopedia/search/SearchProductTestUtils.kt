@@ -3,8 +3,12 @@ package com.tokopedia.search
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.view.View
 import androidx.recyclerview.widget.RecyclerView
+import androidx.test.espresso.UiController
+import androidx.test.espresso.ViewAction
 import androidx.test.platform.app.InstrumentationRegistry
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.discovery.common.constants.SearchConstant
@@ -16,17 +20,13 @@ import com.tokopedia.search.result.presentation.view.activity.SearchActivity
 import com.tokopedia.search.result.presentation.view.adapter.ProductListAdapter
 import com.tokopedia.search.result.presentation.view.listener.*
 import com.tokopedia.topads.sdk.domain.model.CpmData
+import org.hamcrest.Matcher
 
 internal const val QUERY_PARAMS_WITH_KEYWORD = "?q=samsung"
 
 internal fun disableOnBoarding(context: Context) {
     LocalCacheHandler(context, SearchConstant.FreeOngkir.FREE_ONGKIR_LOCAL_CACHE_NAME).also {
         it.putBoolean(SearchConstant.FreeOngkir.FREE_ONGKIR_SHOW_CASE_ALREADY_SHOWN, true)
-        it.applyEditor()
-    }
-
-    LocalCacheHandler(context, SearchConstant.OnBoarding.LOCAL_CACHE_NAME).also {
-        it.putBoolean(SearchConstant.OnBoarding.FILTER_ONBOARDING_SHOWN, true)
         it.applyEditor()
     }
 }
@@ -50,38 +50,49 @@ internal fun RecyclerView?.getProductListAdapter(): ProductListAdapter {
 
 internal fun createProductItemListener(): ProductListener {
     return object: ProductListener {
-        override fun onThreeDotsClick(item: ProductItemViewModel?, adapterPosition: Int) {}
-        override fun onItemClicked(item: ProductItemViewModel?, adapterPosition: Int) {}
-        override fun onProductImpressed(item: ProductItemViewModel?) {}
+        override fun onThreeDotsClick(itemData: ProductItemDataView?, adapterPosition: Int) {}
+        override fun onItemClicked(itemData: ProductItemDataView?, adapterPosition: Int) {}
+        override fun onProductImpressed(itemData: ProductItemDataView?, adapterPosition: Int) {}
     }
 }
 
 internal fun createInspirationCardListener(): InspirationCardListener {
     return object: InspirationCardListener {
-        override fun onInspirationCardOptionClicked(option: InspirationCardOptionViewModel) {}
+        override fun onInspirationCardOptionClicked(optionData: InspirationCardOptionDataView) {}
     }
 }
 
 internal fun createInspirationCarouselListener(): InspirationCarouselListener {
     return object: InspirationCarouselListener {
-        override fun onInspirationCarouselListProductClicked(product: InspirationCarouselViewModel.Option.Product) {}
-        override fun onInspirationCarouselSeeAllClicked(inspirationCarouselViewModelOption: InspirationCarouselViewModel.Option) {}
-        override fun onInspirationCarouselInfoProductClicked(product: InspirationCarouselViewModel.Option.Product) {}
+        override fun onInspirationCarouselListProductClicked(product: InspirationCarouselDataView.Option.Product) {}
+        override fun onInspirationCarouselSeeAllClicked(inspirationCarouselDataViewOption: InspirationCarouselDataView.Option) {}
+        override fun onInspirationCarouselInfoProductClicked(product: InspirationCarouselDataView.Option.Product) {}
+        override fun onImpressedInspirationCarouselInfoProduct(product: InspirationCarouselDataView.Option.Product) {}
+        override fun onImpressedInspirationCarouselListProduct(product: InspirationCarouselDataView.Option.Product) {}
+        override fun onImpressedInspirationCarouselGridProduct(product: InspirationCarouselDataView.Option.Product) {}
+        override fun onInspirationCarouselGridProductClicked(product: InspirationCarouselDataView.Option.Product) {}
+        override fun onInspirationCarouselGridBannerClicked(product: InspirationCarouselDataView.Option) {}
+        override fun onInspirationCarouselChipsProductClicked(product: InspirationCarouselDataView.Option.Product) {}
+        override fun onImpressedInspirationCarouselChipsProduct(product: InspirationCarouselDataView.Option.Product) {}
+        override fun onInspirationCarouselChipsSeeAllClicked(inspirationCarouselDataViewOption: InspirationCarouselDataView.Option) {}
+        override fun onInspirationCarouselChipsClicked(inspirationCarouselAdapterPosition: Int, inspirationCarouselViewModel: InspirationCarouselDataView, inspirationCarouselOption: InspirationCarouselDataView.Option) {}
+
     }
 }
 
 internal fun createBroadMatchListener(): BroadMatchListener {
     return object: BroadMatchListener {
-        override fun onBroadMatchItemClicked(broadMatchItemViewModel: BroadMatchItemViewModel) {}
-        override fun onBroadMatchSeeMoreClicked(broadMatchViewModel: BroadMatchViewModel) {}
-        override fun onBroadMatchThreeDotsClicked(broadMatchItemViewModel: BroadMatchItemViewModel) {}
+        override fun onBroadMatchItemClicked(broadMatchItemDataView: BroadMatchItemDataView) {}
+        override fun onBroadMatchSeeMoreClicked(broadMatchDataView: BroadMatchDataView) {}
+        override fun onBroadMatchThreeDotsClicked(broadMatchItemDataView: BroadMatchItemDataView) {}
+        override fun onBroadMatchItemImpressed(broadMatchItemDataView: BroadMatchItemDataView) {}
     }
 }
 
 internal fun createGlobalNavListener(): GlobalNavListener {
     return object: GlobalNavListener {
-        override fun onGlobalNavWidgetClicked(item: GlobalNavViewModel.Item?, keyword: String?) {}
-        override fun onGlobalNavWidgetClickSeeAll(globalNavViewModel: GlobalNavViewModel?) {}
+        override fun onGlobalNavWidgetClicked(item: GlobalNavDataView.Item?, keyword: String?) {}
+        override fun onGlobalNavWidgetClickSeeAll(globalNavDataView: GlobalNavDataView?) {}
     }
 }
 
@@ -101,14 +112,9 @@ internal fun createEmptyStateListener(): EmptyStateListener {
         override fun getUserId(): String { return "" }
         override fun getSelectedFilterAsOptionList(): MutableList<Option> { return mutableListOf() }
         override fun onSelectedFilterRemoved(uniqueId: String?) {}
+        override fun onEmptySearchToGlobalSearchClicked(applink: String?) {}
         override fun getRegistrationId(): String { return "" }
         override fun onEmptyButtonClicked() {}
-    }
-}
-
-internal fun createBannedProductsEmptySearch(): BannedProductsRedirectToBrowserListener {
-    return object: BannedProductsRedirectToBrowserListener {
-        override fun onGoToBrowserClicked(isEmptySearch: Boolean, liteUrl: String) {}
     }
 }
 
@@ -118,4 +124,53 @@ internal fun createRecommendationListener(): RecommendationListener {
         override fun onProductImpression(item: RecommendationItem) {}
         override fun onWishlistClick(item: RecommendationItem, isAddWishlist: Boolean, callback: (Boolean, Throwable?) -> Unit) {}
     }
+}
+
+internal fun clickChildViewWithId(id: Int): ViewAction {
+    return object : ViewAction {
+        override fun getConstraints(): Matcher<View>? {
+            return null
+        }
+
+        override fun getDescription(): String {
+            return "Click on a child view with specified id."
+        }
+
+        override fun perform(uiController: UiController?, view: View) {
+            val v: View = view.findViewById(id)
+            v.performClick()
+        }
+    }
+}
+
+internal fun List<Visitable<*>>.getGlobalNavViewModelPosition(): Int {
+    return indexOfFirst { it is GlobalNavDataView }
+}
+
+internal fun List<Visitable<*>>.getFirstTopAdsProductPosition(): Int {
+    return indexOfFirst { it is ProductItemDataView && it.isTopAds }
+}
+
+internal fun List<Visitable<*>>.getFirstOrganicProductPosition(): Int {
+    return indexOfFirst { it is ProductItemDataView && !it.isTopAds }
+}
+
+internal fun List<Visitable<*>>.getEmptySearchProductViewModelPosition(): Int {
+    return indexOfFirst { it is EmptySearchProductDataView }
+}
+
+internal fun List<Visitable<*>>.getRecommendationTitleViewModelPosition(): Int {
+    return indexOfFirst { it is RecommendationTitleDataView }
+}
+
+internal fun List<Visitable<*>>.getRecommendationItemViewModelPosition(): Int {
+    return indexOfFirst { it is RecommendationItemDataView }
+}
+
+internal fun List<Visitable<*>>.getSuggestionViewModelPosition(): Int {
+    return indexOfFirst { it is SuggestionDataView }
+}
+
+internal fun List<Visitable<*>>.getBroadMatchViewModelPosition(): Int {
+    return indexOfFirst { it is BroadMatchDataView }
 }

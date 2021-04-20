@@ -1,12 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/Unify_N0">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/lstConfig"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-</LinearLayout>
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/txtToken"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:lineSpacingExtra="@dimen/dp_6"
+        android:maxLines="2"
+        android:padding="@dimen/dp_8"
+        android:background="@color/Unify_N0"
+        android:textColor="@color/Unify_N700_68"
+        android:textAlignment="center"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:typographyType="body_2"
+        app:typographyWeight="reguler"
+        android:visibility="gone"
+        tools:visibility="visible"
+        tools:text="Token anda" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

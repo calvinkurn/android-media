@@ -40,6 +40,12 @@ public abstract class TransactionAnalytics {
         TrackApp.getInstance().getGTM().sendScreenAuthenticated(screenName, customDimension);
     }
 
+    public void sendScreenName(Activity activity, String screenName,  Map<String, String> customDimension) {
+        customDimension.put(ConstantKt.KEY_SESSION_IRIS, new IrisSession(activity).getSessionId());
+
+        TrackApp.getInstance().getGTM().sendScreenAuthenticated(screenName, customDimension);
+    }
+
     protected void sendEventCategoryActionLabel(String event, String eventCategory,
                                                 String eventAction, String eventLabel) {
 

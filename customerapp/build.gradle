@@ -1,18 +1,10 @@
 apply plugin: 'com.android.application'
-apply plugin: 'io.fabric'
+apply plugin: 'com.google.firebase.crashlytics'
 apply plugin: 'kotlin-android'
 if (project.hasProperty("enable-shrinkresource")) {
     apply from: "$rootProject.projectDir/buildconfig/appcompile/enable-shrinkresource.gradle"
 }
 apply plugin: 'com.google.firebase.firebase-perf'
-
-if (hasProperty('buildScan')) {
-    buildScan {
-        termsOfServiceUrl = 'https://gradle.com/terms-of-service'
-        termsOfServiceAgree = 'yes'
-    }
-}
-
 apply plugin: 'io.hansel.preprocessor'
 
 apply from: '../tools/dynamic_feature_inclusion.gradle'
@@ -50,10 +42,6 @@ def getDynamicProperty(param) {
     return ""
 }
 
-def allowProguard() {
-    return project.hasProperty('tkpdBuildType')
-}
-
 def devMode() {
     return !project.hasProperty('tkpdBuildType')
 }
@@ -73,26 +61,24 @@ def isFirebasePerformanceLogEnabled() {
     return "false"
 }
 
-project.ext {
-    defaultVersionCode = 418001101;
-    defaultVersionName = "3.80";
-    react = [
-            nodeExecutableAndArgs: ["${nodeExecutableAndArgs}"],
-            enableHermes         : true,
-    ]
+android.applicationVariants.all { variant ->
+    def variantNameCap = variant.name.capitalize()
+    task ("generateBundledResourcesHash${variantNameCap}")
+    task ("bundle${variantNameCap}JsAndAssets")
 }
 
-//def hermesPath = "../hermes/";
-def jscFlavor = 'org.webkit:android-jsc:+'
-def enableHermes = project.ext.react.get("enableHermes", false);
+project.ext {
+    defaultVersionCode = 418001101;
+    defaultVersionName = "4.01-test";
+}
 
 buildscript {
     repositories {
-        maven { url 'https://maven.fabric.io/public' }
+        google()
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         mavenCentral()
         jcenter()
-        maven { url 'https://hansel.io/maven' }
+        maven { url 'https://maven-hansel.tokopedia.com/maven' }
         maven {
             url 'https://www.jitpack.io'
         }
@@ -100,6 +86,7 @@ buildscript {
     dependencies {
         classpath rootProject.ext.gradlePlugin.crashlytics
         classpath rootProject.ext.miscDependencies.hansel
+        classpath rootProject.ext.gradlePlugin.googleServices
     }
 }
 ext.lintchecks = [
@@ -149,12 +136,9 @@ android {
     }
 
     lintOptions {
-        checkReleaseBuilds false
-        checkDependencies true
-        htmlReport false
-        warningsAsErrors false
         abortOnError false
-        check lintchecks
+        xmlReport true
+        htmlReport false
     }
 
     signingConfigs {
@@ -176,8 +160,8 @@ android {
             buildConfigField "String", "PREINSTALL_DESC", "\"\""
             buildConfigField "String", "PREINSTALL_SITE", "\"\""
             buildConfigField "boolean", "ENABLE_DEBUG_TRACE", isDebugTraceEnabled()
+            buildConfigField "String", "DEBUG_TRACE_NAME", "\"${getDynamicProperty("debugTraceName")}\""
             ext.enableHansel = project.hasProperty('hanselEnableDebug')
-            ext.enableCrashlytics = false
             FirebasePerformance {
                 // Set this flag to 'false' to disable @AddTrace annotation processing and
                 // automatic HTTP/S network request monitoring
@@ -189,7 +173,7 @@ android {
             if (devMode()) {
                 signingConfig signingConfigs.debug
             }
-            debuggable = isDebugable(project).toBoolean()
+            debuggable = project.hasProperty('enableDebug') && enableDebug == "true"
             ext.enableHansel = !project.hasProperty('hanselDisableRelease')
 
             if (isFirebasePerformanceLogEnabled().toBoolean()) {
@@ -208,13 +192,8 @@ android {
             buildConfigField "String", "PREINSTALL_DESC", "\"${getDynamicProperty("preInstallDesc")}\""
             buildConfigField "String", "PREINSTALL_SITE", "\"${getDynamicProperty("preInstallSite")}\""
             buildConfigField "boolean", "ENABLE_DEBUG_TRACE", isDebugTraceEnabled()
-            multiDexKeepFile file('multidex-config.txt')
-            multiDexKeepProguard file('multidex-config.pro')
-            if (allowProguard()) {
-                proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
-            } else {
-                proguardFiles 'proguard-rules.txt'
-            }
+            buildConfigField "String", "DEBUG_TRACE_NAME", "\"${getDynamicProperty("debugTraceName")}\""
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
             ext.betaDistributionReleaseNotesFilePath = 'release_notes.txt'
             ext.betaDistributionGroupAliasesFilePath = 'group_beta.txt'
         }
@@ -249,7 +228,6 @@ android {
         resolutionStrategy.force 'androidx.multidex:multidex:2.0.0'
         resolutionStrategy.force 'com.google.code.findbugs:jsr305:1.3.9'
         resolutionStrategy.force 'com.squareup.okio:okio:2.2.2'
-        resolutionStrategy.force 'com.facebook.soloader:soloader:0.8.0'
     }
 
     // Specifies 4 flavor dimensions.
@@ -281,180 +259,32 @@ android {
 dependencies {
 
     implementation fileTree(include: ['*.jar'], dir: 'libs')
+    lintChecks rootProject.ext.tkpdInternalLibDependencies.lint
+
+    implementation project(rootProject.ext.features.customer_mid_app)
     implementation project(rootProject.ext.features.tkpdcore)
-    implementation project(rootProject.ext.features.affiliateCommon)
-    implementation project(rootProject.ext.features.feed)
-    implementation project(rootProject.ext.features.feedComponent)
-    implementation project(rootProject.ext.features.kolCommon)
-    implementation project(rootProject.ext.features.explore)
-    implementation project(rootProject.ext.features.interestPickCommon)
-    implementation project(rootProject.ext.features.home)
-    implementation project(rootProject.ext.features.vote)
-    implementation project(rootProject.ext.features.commonWallet)
-    implementation project(rootProject.ext.features.loyalty)
-    implementation project(rootProject.ext.features.commonElectronicMoney)
-    implementation project(rootProject.ext.features.loyalty)
-    implementation project(rootProject.ext.features.flightOrderList)
-    implementation project(rootProject.ext.features.travelCountryCode)
-    implementation project(rootProject.ext.features.travelPassenger)
-    implementation project(rootProject.ext.features.reputation)
-    implementation project(rootProject.ext.features.inboxReputation)
-    implementation project(rootProject.ext.features.review)
-    implementation project(rootProject.ext.features.sellerActiveCommon)
-    implementation project(rootProject.ext.features.buyerorder)
-    implementation project(rootProject.ext.features.tkpdseller)
-    implementation project(rootProject.ext.features.productDetailCommon)
-    implementation project(rootProject.ext.features.variantCommon)
-    implementation project(rootProject.ext.features.productDetail)
-    implementation project(rootProject.ext.features.payment)
-    implementation project(rootProject.ext.features.thankYouNative)
-    implementation project(rootProject.ext.features.commonPayment)
-    implementation project(rootProject.ext.features.recommendationWidgetCommon)
-    implementation project(rootProject.ext.features.topAdsSdk)
-    implementation project(rootProject.ext.features.reputationCommon)
-    implementation project(rootProject.ext.features.commonTopupBills)
-    implementation project(rootProject.ext.features.otp)
-    implementation project(rootProject.ext.features.logout)
-    implementation project(rootProject.ext.features.topAdsManagementCommon)
-    implementation project(rootProject.ext.features.goldMerchantCommon)
-    implementation project(rootProject.ext.features.homecredit)
-    implementation project(rootProject.ext.features.topAdsManagementSourceTagging)
-    implementation project(rootProject.ext.features.atc_common)
-    implementation project(rootProject.ext.features.fcm_common)
-    implementation project(rootProject.ext.features.discovery2)
-    implementation project(rootProject.ext.features.logisticcart)
-    implementation project(rootProject.ext.features.logisticdata)
-    implementation project(rootProject.ext.features.chatcommon)
-    implementation project(rootProject.ext.features.nps)
-    if (rootProject.ext.debugToolsEnabled) {
-        implementation project(rootProject.ext.features.developerOptions)
-    } else {
-        implementation project(rootProject.ext.features.developerOptionsNoop)
-    }
-    implementation project(rootProject.ext.features.qrscanner)
-    implementation project(rootProject.ext.features.withdraw)
-    implementation project(rootProject.ext.features.wishlistCommon)
-    implementation project(rootProject.ext.features.productCard)
-    implementation project(rootProject.ext.features.digitalBrowse)
-    implementation project(rootProject.ext.features.commonTravel)
-    implementation project(rootProject.ext.features.searchbar)
-    implementation project(rootProject.ext.features.navigation)
-    implementation project(rootProject.ext.features.navigationCommon)
-    implementation project(rootProject.ext.features.accountHome)
-    implementation project(rootProject.ext.features.updateinactivephone)
-    implementation project(rootProject.ext.features.phoneVerification)
-    implementation project(rootProject.ext.features.attachproduct)
-    implementation project(rootProject.ext.features.basemvvm)
-    implementation project(rootProject.ext.features.loginregister)
-    implementation project(rootProject.ext.features.loginphone)
-    implementation project(rootProject.ext.features.sessioncommon)
-    implementation project(rootProject.ext.features.commonDigital)
-    implementation project(rootProject.ext.features.pms)
-    implementation project(rootProject.ext.features.promoCheckout)
-    implementation project(rootProject.ext.features.loyaltyCommon)
-    implementation project(rootProject.ext.features.promoCheckoutCommon)
-    implementation project(rootProject.ext.features.userIdentificationCommon)
-    implementation project(rootProject.ext.features.gallery)
-    implementation project(rootProject.ext.features.categoryCommon)
-    implementation project(rootProject.ext.features.officialStore)
-    implementation project(rootProject.ext.features.playCommon)
-    implementation rootProject.ext.tkpdInternalLibDependencies.akamaiBMP
-    implementation project(rootProject.ext.libraries.iris)
-    implementation project(rootProject.ext.libraries.irisSession)
-    implementation project(rootProject.ext.libraries.pushNotification)
-    implementation project(rootProject.ext.libraries.applink)
-    implementation project(rootProject.ext.libraries.reactNative)
-    implementation project(rootProject.ext.libraries.tkpdabstraction)
-    implementation project(rootProject.ext.libraries.baseList)
-    implementation project(rootProject.ext.libraries.tkpddesign)
-    implementation project(rootProject.ext.libraries.dynamicFeatures)
-    implementation project(rootProject.ext.libraries.mediauploader)
-    implementation project(rootProject.ext.libraries.oms)
-    implementation project(rootProject.ext.libraries.fingerprint)
-    implementation project(rootProject.ext.libraries.imageuploader)
-    implementation project(rootProject.ext.libraries.imagePicker)
-    implementation project(rootProject.ext.libraries.videoRecorder)
-    implementation project(rootProject.ext.libraries.travelCalendar)
-    implementation project(rootProject.ext.libraries.datePickerRange)
-    implementation project(rootProject.ext.libraries.commonNetwork)
-    implementation project(rootProject.ext.libraries.baseListSeller)
-    implementation project(rootProject.ext.libraries.remoteConfig)
-    implementation project(rootProject.ext.libraries.core_legacy)
     implementation project(rootProject.ext.libraries.coreNetwork)
-    implementation project(rootProject.ext.libraries.trackingOptimizer)
-    implementation project(rootProject.ext.libraries.locationmanager)
-    implementation project(rootProject.ext.libraries.permissionchecker)
-    implementation project(rootProject.ext.libraries.kotlinExtensions)
-    implementation project(rootProject.ext.libraries.imagePreviewSlider)
-    implementation project(rootProject.ext.libraries.devMonitoringTools)
-    implementation project(rootProject.ext.features.shopCommon)
-    implementation project(rootProject.ext.features.merchantVoucher)
-    implementation project(rootProject.ext.features.navigationCommon)
-    implementation project(rootProject.ext.libraries.analytics)
-    if (rootProject.ext.debugToolsEnabled) {
-        implementation project(rootProject.ext.libraries.analyticsDebugger)
-    } else {
-        implementation project(rootProject.ext.libraries.analyticsDebuggerNoop)
-    }
-    implementation project(rootProject.ext.libraries.linker)
-    implementation project(rootProject.ext.libraries.weaver)
-    implementation project(rootProject.ext.features.common_promo)
-    implementation project(rootProject.ext.libraries.cmPushNotifications)
-    implementation project(rootProject.ext.libraries.track)
-    implementation project(rootProject.ext.libraries.bannerDynamic)
-    implementation project(rootProject.ext.features.kyc)
-    implementation project(rootProject.ext.libraries.webview)
-    implementation project(rootProject.ext.libraries.logger)
-    implementation project(rootProject.ext.features.filter)
-    implementation project(rootProject.ext.features.commonTradein)
-    implementation project(rootProject.ext.libraries.inappupdate)
-    implementation project(rootProject.ext.libraries.youtubeutil)
-    implementation project(rootProject.ext.features.tokopointsNotification)
-    implementation project(rootProject.ext.libraries.collapsingTabLayout)
-    implementation project(rootProject.ext.libraries.videoplayer)
-    implementation project(rootProject.ext.libraries.websocket)
-    implementation project(rootProject.ext.libraries.baseAdapter)
-    implementation project(rootProject.ext.features.csat_rating)
-    implementation project(rootProject.ext.features.resourcesCommon)
-    implementation project(rootProject.ext.features.agerestriction)
-
-    implementation project(rootProject.ext.features.promotionsTarget)
-    implementation project(rootProject.ext.features.promoGamificationCommon)
-    implementation project(rootProject.ext.libraries.shakeDetect)
-    implementation project(rootProject.ext.libraries.mapviewer)
-    if (rootProject.ext.debugToolsEnabled) {
-        implementation project(rootProject.ext.libraries.preReleaseInspector)
-    } else {
-        implementation project(rootProject.ext.libraries.preReleaseInspectorNoop)
-    }
-    implementation project(rootProject.ext.libraries.deviceInfo)
-    implementation rootProject.ext.unifyDependencies.principles
-    implementation rootProject.ext.unifyDependencies.components
-    implementation rootProject.ext.unifyDependencies.global_error
-    implementation rootProject.ext.unifyDependencies.coach_mark
-    implementation rootProject.ext.unifyDependencies.banner
-    implementation rootProject.ext.unifyDependencies.datepicker
-    implementation rootProject.ext.unifyDependencies.header
-    implementation rootProject.ext.unifyDependencies.iconNotification
-    implementation rootProject.ext.unifyDependencies.sortFilter
-    implementation rootProject.ext.unifyDependencies.pin
-    implementation rootProject.ext.tkpdInternalLibDependencies.cacheapi
-    implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
-    implementation project(rootProject.ext.libraries.graphql)
-    implementation rootProject.ext.tkpdInternalLibDependencies.usersession
-    implementation rootProject.ext.tkpdInternalLibDependencies.usecase
-    implementation rootProject.ext.tkpdInternalLibDependencies.network
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
-    implementation rootProject.ext.tkpdInternalLibDependencies.url
-    implementation project(rootProject.ext.libraries.akamaiBotLib)
-    implementation rootProject.ext.tkpdInternalLibDependencies.williamchart
+    implementation project(rootProject.ext.libraries.deviceInfo)
+    implementation project(rootProject.ext.features.navigation)
+    implementation project(rootProject.ext.libraries.tkpdabstraction)
+    implementation project(rootProject.ext.libraries.core_legacy)
+    implementation project(rootProject.ext.features.loyalty)
+    implementation project(rootProject.ext.features.promoGamificationCommon)
+    implementation project(rootProject.ext.libraries.oms)
+    implementation project(rootProject.ext.libraries.analytics)
+    implementation project(rootProject.ext.libraries.linker)
+    implementation project(rootProject.ext.features.commonDigital)
+    implementation project(rootProject.ext.features.pushNotificationCommon)
+    implementation project(rootProject.ext.libraries.cmPushNotifications)
+    implementation project(rootProject.ext.features.kyc)
+    implementation project(rootProject.ext.libraries.applink)
+    implementation rootProject.ext.tkpdInternalLibDependencies.usecase
+    implementation project(rootProject.ext.libraries.utils)
+    implementation project(rootProject.ext.features.mediaCommon)
 
-    if (rootProject.ext.debugToolsEnabled) {
-        implementation rootProject.ext.tkpdInternalLibDependencies.fakeresponse
-    } else {
-        implementation rootProject.ext.tkpdInternalLibDependencies.fakeresponseNoOp
-    }
-    implementation rootProject.ext.tkpdInternalLibDependencies.authentication
+    implementation rootProject.ext.tkpdInternalLibDependencies.network
+
     implementation rootProject.ext.playServicesDependencies.maps
     implementation rootProject.ext.playServicesDependencies.core
     implementation rootProject.ext.playServicesDependencies.auth
@@ -463,13 +293,15 @@ dependencies {
     implementation rootProject.ext.supportLibDependencies.supportV13
     implementation rootProject.ext.tkpdLibDependencies.youtubePlayer
     implementation rootProject.ext.miscDependencies.lottie
-    implementation project(rootProject.ext.features.recharge_slice)
-    implementation project(rootProject.ext.features.install_referral)
 
     implementation rootProject.ext.firebase.config
     implementation rootProject.ext.firebase.messaging
+    implementation rootProject.ext.firebase.auth
     implementation rootProject.ext.playServicesDependencies.analytics
     implementation rootProject.ext.firebase.fireStore
+    implementation (rootProject.ext.firebase.crashlytics) {
+        transitive = true
+    }
     implementation rootProject.ext.playServicesDependencies.location
     implementation rootProject.ext.debugToolsDependencies.chuck
     implementation rootProject.ext.supportLibDependencies.design
@@ -481,18 +313,19 @@ dependencies {
     implementation rootProject.ext.networkDependencies.loggingInterceptor
     implementation rootProject.ext.networkDependencies.glide
     implementation rootProject.ext.analyticsDependencies.appsflyer
-    implementation(rootProject.ext.analyticsDependencies.moengage)
+    implementation project(rootProject.ext.features.moengageWrapper)
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     implementation rootProject.ext.miscDependencies.apacheLang
+    implementation project(rootProject.ext.libraries.remoteConfig)
     implementation project(rootProject.ext.libraries.remoteResourceRequest)
     implementation(rootProject.ext.miscDependencies.flexBoxLayout) {
         exclude group: 'com.android.support'
     }
-    implementation(rootProject.ext.miscDependencies.ucrop) {
-        exclude group: 'com.android.support'
-    }
+    // Warning: removing imageCropper lib might cause youtube library crash
+    // when load recommendation at the end of video
+    // Need to recheck
     implementation(rootProject.ext.miscDependencies.imagecropper) {
         exclude group: "com.android.support"
     }
@@ -507,16 +340,11 @@ dependencies {
     implementation(rootProject.ext.tkpdLibDependencies.showcase) {
         exclude group: "com.android.support"
     }
-    implementation(rootProject.ext.serviceDependencies.crashlytics) {
-        transitive = true
-    }
     implementation(rootProject.ext.analyticsDependencies.branch) {
         exclude module: 'answers-shim'
     }
     implementation rootProject.ext.supportLibDependencies.preferenceV7
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
-    implementation rootProject.ext.miscDependencies.codePushReactNative
-    implementation rootProject.ext.miscDependencies.reactNative
     implementation 'com.facebook.fresco:fresco:1.10.0'
     implementation 'com.facebook.fresco:imagepipeline-okhttp3:1.10.0'
     implementation rootProject.ext.dbDependencies.dbRoomRuntime
@@ -525,7 +353,6 @@ dependencies {
     implementation rootProject.ext.miscDependencies.coroutineAndroid
     implementation rootProject.ext.miscDependencies.chips
     implementation rootProject.ext.miscDependencies.gson
-    implementation rootProject.ext.miscDependencies.reactNative
     implementation rootProject.ext.miscDependencies.parcelerApi
     annotationProcessor rootProject.ext.miscDependencies.parceler
     implementation rootProject.ext.miscDependencies.rxAndroid
@@ -539,7 +366,6 @@ dependencies {
     implementation(rootProject.ext.miscDependencies.facebook) {
         exclude group: 'com.android.support'
     }
-    implementation 'com.facebook.soloader:soloader:0.8.0'
     implementation 'com.facebook.infer.annotation:infer-annotation:0.11.2'
     implementation(rootProject.ext.debugToolsDependencies.timber) {
         exclude group: 'org.jetbrains', module: 'annotations'
@@ -591,17 +417,9 @@ dependencies {
     }
     androidTestImplementation rootProject.ext.supportLibDependencies.appCompactV7
     androidTestImplementation rootProject.ext.supportLibDependencies.cardViewV7
-    implementation project(rootProject.ext.features.additional_check)
-
-    if (enableHermes) {
-        debugImplementation 'com.facebook.hermes:hermes-debug:0.1.2@aar'
-        releaseImplementation 'com.facebook.hermes:hermes-release:0.1.2@aar'
-    } else {
-        implementation jscFlavor
-    }
-    lintChecks project(rootProject.ext.libraries.lint)
+    implementation rootProject.ext.tkpdInternalLibDependencies.analyticAnnotation
+    implementation rootProject.ext.tkpdInternalLibDependencies.analyticFirebaseRules
+    implementation rootProject.ext.tkpdInternalLibDependencies.analyticParam
 }
 
-
-apply from: "../buildconfig/reactnative/react.gradle"
-apply from: "../buildconfig/reactnative/codepush.gradle"
+apply plugin: 'com.google.gms.google-services'

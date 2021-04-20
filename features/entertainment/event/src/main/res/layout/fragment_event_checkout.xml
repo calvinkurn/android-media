@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/scroll_view_event_checkout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -12,7 +14,7 @@
             android:visibility="invisible"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/Neutral_N100"
+            android:background="@color/Unify_N100"
             android:orientation="vertical">
 
             <include
@@ -23,12 +25,33 @@
                 android:visibility="visible" />
 
             <include
+                android:id="@+id/partial_event_checkout_passenger"
                 layout="@layout/partial_event_checkout_passenger"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
                 android:layout_marginTop="@dimen/spacing_lvl2"
                 android:visibility="visible" />
+
+            <include
+                android:id="@+id/partial_event_checkout_additional_item"
+                layout="@layout/partial_event_checkout_additional_item"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:layout_marginTop="@dimen/spacing_lvl2"
+                android:visibility="visible"
+                />
+
+            <include
+                android:id="@+id/partial_event_checkout_additional_package"
+                layout="@layout/partial_event_checkout_additional_package"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:layout_marginTop="@dimen/spacing_lvl2"
+                android:visibility="visible"
+                />
 
             <include
                 layout="@layout/partial_event_checkout_summary"

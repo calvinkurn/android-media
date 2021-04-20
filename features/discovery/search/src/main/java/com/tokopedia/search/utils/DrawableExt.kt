@@ -10,7 +10,7 @@ internal fun createColorSampleDrawable(context: Context, colorString: String): G
 
     gradientDrawable.shape = GradientDrawable.OVAL
     gradientDrawable.cornerRadii = floatArrayOf(0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f)
-    gradientDrawable.setStroke(2, ContextCompat.getColor(context, com.tokopedia.design.R.color.grey_300))
+    gradientDrawable.setStroke(2, ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N100))
     gradientDrawable.setColor(safeParseColor(colorString))
 
     return gradientDrawable

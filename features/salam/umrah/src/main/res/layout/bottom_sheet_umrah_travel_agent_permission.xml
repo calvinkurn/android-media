@@ -9,9 +9,9 @@
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/img_umrah_travel_agent_permission"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_220"
+        android:layout_height="@dimen/dimen_dp_220"
         android:src="@drawable/umrah_img_travel_permission"
-        android:layout_margin="@dimen/dp_16"
+        android:layout_margin="@dimen/spacing_lvl4"
         />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -34,9 +34,9 @@
         tools:text="Sesuai dengan SK Ditjen Penyelenggaraan Haji dan Umroh nomor 300 tahun 2017. "
         android:gravity="center"
         android:layout_gravity="center"
-        android:layout_marginRight="@dimen/dp_16"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginTop="@dimen/dp_5"
+        android:layout_marginRight="@dimen/spacing_lvl4"
+        android:layout_marginLeft="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/spacing_lvl2"
         />
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/btn_travel_permission_close"
@@ -46,9 +46,9 @@
         app:unifyButtonType="alternate"
         app:unifyButtonVariant="ghost"
         android:text="@string/umrah_travel_permission_close"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginRight="@dimen/dp_16"
-        android:layout_marginTop="@dimen/dp_24"
-        android:layout_marginBottom="@dimen/dp_24"
+        android:layout_marginLeft="@dimen/spacing_lvl4"
+        android:layout_marginRight="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/spacing_lvl5"
+        android:layout_marginBottom="@dimen/spacing_lvl5"
         />
 </LinearLayout>

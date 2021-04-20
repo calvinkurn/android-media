@@ -1,0 +1,63 @@
+apply plugin: 'com.android.library'
+apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
+apply plugin: 'io.hansel.preprocessor.module'
+
+buildscript {
+    repositories {
+        mavenCentral()
+        maven { url 'https://maven-hansel.tokopedia.com/maven' }
+        jcenter()
+        google()
+    }
+    dependencies {
+        classpath rootProject.ext.miscDependencies.hansel
+    }
+}
+
+dependencies {
+    implementation project(rootProject.ext.features.resourcesCommon)
+    implementation project(rootProject.ext.features.sessioncommon)
+    implementation project(rootProject.ext.features.shopCommon)
+    implementation project(rootProject.ext.features.sellerMigrationCommon)
+
+    implementation project(rootProject.ext.libraries.tkpddesign)
+    implementation project(rootProject.ext.libraries.tkpdabstraction)
+    implementation project(rootProject.ext.libraries.baseList)
+    implementation project(rootProject.ext.libraries.kotlinExtensions)
+    implementation project(rootProject.ext.libraries.track)
+    implementation project(rootProject.ext.libraries.applink)
+    implementation project(rootProject.ext.libraries.graphql)
+    implementation project(rootProject.ext.libraries.remoteConfig)
+
+    implementation rootProject.ext.unifyDependencies.principles
+    implementation rootProject.ext.unifyDependencies.components
+    implementation rootProject.ext.unifyDependencies.icons
+    implementation rootProject.ext.unifyDependencies.global_error
+    implementation rootProject.ext.unifyDependencies.icons
+    implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
+    implementation rootProject.ext.tkpdInternalLibDependencies.usecase
+    implementation rootProject.ext.tkpdInternalLibDependencies.url
+    implementation rootProject.ext.tkpdInternalLibDependencies.usersession
+    implementation rootProject.ext.tkpdInternalLibDependencies.network
+
+    implementation rootProject.ext.supportLibDependencies.constraintLayout
+    implementation rootProject.ext.miscDependencies.loaderviewlibrary
+    implementation rootProject.ext.miscDependencies.roundCornerProgressBar
+
+    implementation (rootProject.ext.firebase.crashlytics) {
+        transitive = true
+    }
+
+    testImplementation rootProject.ext.testDependencies.mockk
+    testImplementation rootProject.ext.testDependencies.archCoreTesting
+    testImplementation project(rootProject.ext.libraries.unitTest)
+}
+
+project.ext {
+    artifactId = 'seller-menu-common'
+    groupId = 'com.tokopedia.merchant'
+    versionName = "0.0.1"
+    artifactName = "seller_menu_common-release"
+}
+
+apply from: '../../../publish_local.gradle'

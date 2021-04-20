@@ -1,5 +1,7 @@
 package com.tokopedia.troubleshooter.notification.ui.activity
 
+import android.graphics.Color
+import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import androidx.fragment.app.Fragment

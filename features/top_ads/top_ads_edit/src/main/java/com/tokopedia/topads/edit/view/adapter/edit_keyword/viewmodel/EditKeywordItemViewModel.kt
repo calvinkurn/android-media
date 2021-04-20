@@ -1,6 +1,6 @@
 package com.tokopedia.topads.edit.view.adapter.edit_keyword.viewmodel
 
-import com.tokopedia.topads.edit.data.response.GetKeywordResponse
+import com.tokopedia.topads.common.data.response.GetKeywordResponse
 import com.tokopedia.topads.edit.view.adapter.edit_keyword.EditKeywordListAdapterTypeFactory
 
 /**

@@ -1,20 +1,25 @@
 package com.tokopedia.checkout.view.viewholder
 
-import android.os.Build
-import androidx.recyclerview.widget.RecyclerView
-import android.util.TypedValue
 import android.view.View
-import android.widget.LinearLayout
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.checkout.R
 import com.tokopedia.checkout.view.ShipmentAdapterActionListener
 import com.tokopedia.checkout.view.uimodel.ShipmentButtonPaymentModel
-import kotlinx.android.synthetic.main.item_shipment_button_payment.view.*
+import com.tokopedia.purchase_platform.common.utils.rxViewClickDebounce
+import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.utils.contentdescription.TextAndContentDescriptionUtil
+import rx.Subscriber
+import rx.subscriptions.CompositeSubscription
 
 /**
  * Created by Irfan Khoirul on 2019-05-06.
  */
 
-class ShipmentButtonPaymentViewHolder(val view: View, val actionListener: ShipmentAdapterActionListener) : RecyclerView.ViewHolder(view) {
+class ShipmentButtonPaymentViewHolder(val view: View, val actionListener: ShipmentAdapterActionListener, val compositeSubscription: CompositeSubscription) : RecyclerView.ViewHolder(view) {
+
+    private val tvTotalPayment: Typography = itemView.findViewById(R.id.tv_total_payment)
+    private val btnSelectPaymentMethod: UnifyButton = itemView.findViewById(R.id.btn_select_payment_method)
 
     companion object {
         @JvmStatic
@@ -22,32 +27,23 @@ class ShipmentButtonPaymentViewHolder(val view: View, val actionListener: Shipme
     }
 
     fun bindViewHolder(model: ShipmentButtonPaymentModel) {
-        if (model.isCod) {
-            itemView.tv_select_cod.visibility = View.VISIBLE
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                itemView.tv_total_payment.setTextAppearance(R.style.button_payment)
-            } else {
-                itemView.tv_total_payment.setTextSize(TypedValue.COMPLEX_UNIT_SP, 11.0f)
-                itemView.tv_total_payment.height = itemView.resources.getDimensionPixelOffset(com.tokopedia.abstraction.R.dimen.dp_40)
-                val params: LinearLayout.LayoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
-                params.setMargins(itemView.resources.getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_3),
-                        itemView.resources.getDimensionPixelOffset(com.tokopedia.abstraction.R.dimen.dp_8),
-                        itemView.resources.getDimensionPixelOffset(com.tokopedia.abstraction.R.dimen.dp_16),
-                        itemView.resources.getDimensionPixelOffset(com.tokopedia.abstraction.R.dimen.dp_8)
-                )
-                itemView.tv_total_payment.layoutParams = params
-            }
-            itemView.tv_total_payment.setPadding(itemView.resources.getDimensionPixelOffset(com.tokopedia.abstraction.R.dimen.dp_8), 0,
-                    itemView.resources.getDimensionPixelOffset(com.tokopedia.abstraction.R.dimen.dp_8), 0)
-        } else {
-            itemView.tv_select_cod.visibility = View.GONE
+        TextAndContentDescriptionUtil.setTextAndContentDescription(tvTotalPayment, model.totalPrice, itemView.context.getString(R.string.content_desc_tv_total_payment))
+
+        btnSelectPaymentMethod.let {
+            compositeSubscription.add(
+                    rxViewClickDebounce(it).subscribe(object : Subscriber<Boolean>() {
+                        override fun onNext(t: Boolean?) {
+                            actionListener.onProcessToPayment()
+                        }
+
+                        override fun onCompleted() {
+                        }
+
+                        override fun onError(e: Throwable?) {
+                        }
+                    })
+            )
         }
-        itemView.tv_total_payment.text = model.totalPrice
-        itemView.tv_select_payment_method.setOnClickListener {
-            actionListener.onProcessToPayment()
-        }
-        itemView.tv_select_cod.setOnClickListener {
-            actionListener.onProcessToPaymentCod()
-        }
+
     }
 }

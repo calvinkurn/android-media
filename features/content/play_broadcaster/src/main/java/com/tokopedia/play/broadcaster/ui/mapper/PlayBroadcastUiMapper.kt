@@ -5,6 +5,8 @@ import android.net.Uri
 import android.text.SpannableStringBuilder
 import android.text.Spanned
 import android.text.style.StyleSpan
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.kotlin.extensions.toFormattedString
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.play.broadcaster.data.model.ProductData
 import com.tokopedia.play.broadcaster.domain.model.*
@@ -12,19 +14,27 @@ import com.tokopedia.play.broadcaster.type.EtalaseType
 import com.tokopedia.play.broadcaster.type.OutOfStock
 import com.tokopedia.play.broadcaster.type.StockAvailable
 import com.tokopedia.play.broadcaster.ui.model.*
+import com.tokopedia.play.broadcaster.util.extension.DATE_FORMAT_BROADCAST_SCHEDULE
+import com.tokopedia.play.broadcaster.util.extension.DATE_FORMAT_RFC3339
 import com.tokopedia.play.broadcaster.util.extension.convertMillisToMinuteSecond
+import com.tokopedia.play.broadcaster.util.extension.toDateWithFormat
 import com.tokopedia.play.broadcaster.view.state.CoverSetupState
 import com.tokopedia.play.broadcaster.view.state.SelectableState
 import com.tokopedia.play.broadcaster.view.state.SetupDataState
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
+import com.tokopedia.play_common.transformer.HtmlTextTransformer
+import com.tokopedia.play_common.types.PlayChannelStatusType
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
+import java.util.*
 
 /**
  * Created by jegul on 02/06/20
  */
-object PlayBroadcastUiMapper {
+class PlayBroadcastUiMapper(
+        private val textTransformer: HtmlTextTransformer
+) : PlayBroadcastMapper {
 
-    fun mapEtalaseList(etalaseList: List<ShopEtalaseModel>): List<EtalaseContentUiModel> = etalaseList.map {
+    override fun mapEtalaseList(etalaseList: List<ShopEtalaseModel>): List<EtalaseContentUiModel> = etalaseList.map {
         val type = EtalaseType.getByType(it.type, it.id)
         EtalaseContentUiModel(
                 id = if (type is EtalaseType.Group) type.fMenu else it.id,
@@ -35,7 +45,7 @@ object PlayBroadcastUiMapper {
         )
     }
 
-    fun mapProductList(
+    override fun mapProductList(
             productsResponse: GetProductsByEtalaseResponse.GetProductListData,
             isSelectedHandler: (Long) -> Boolean,
             isSelectableHandler: (Boolean) -> SelectableState
@@ -51,7 +61,7 @@ object PlayBroadcastUiMapper {
         )
     }
 
-    fun mapSearchSuggestionList(
+    override fun mapSearchSuggestionList(
             keyword: String,
             productsResponse: GetProductsByEtalaseResponse.GetProductListData
     ) = productsResponse.data.map {
@@ -69,7 +79,7 @@ object PlayBroadcastUiMapper {
         )
     }
 
-    fun mapLiveFollowers(
+    override fun mapLiveFollowers(
             response: GetLiveFollowersResponse
     ) : FollowerDataUiModel {
         val totalRetrievedFollowers = response.shopFollowerList.data.size
@@ -82,13 +92,13 @@ object PlayBroadcastUiMapper {
         )
     }
 
-    fun mapLiveStream(channelId: String, media: CreateLiveStreamChannelResponse.GetMedia) =
+    override fun mapLiveStream(channelId: String, media: CreateLiveStreamChannelResponse.GetMedia) =
             LiveStreamInfoUiModel(
                     channelId = channelId,
                     ingestUrl = media.ingestUrl,
                     streamUrl = media.streamUrl)
 
-    fun mapToLiveTrafficUiMetrics(metrics: LiveStats): List<TrafficMetricUiModel> = mutableListOf(
+    override fun mapToLiveTrafficUiMetrics(metrics: LiveStats): List<TrafficMetricUiModel> = mutableListOf(
                 TrafficMetricUiModel(TrafficMetricsEnum.TotalViews, metrics.visitChannel),
                 TrafficMetricUiModel(TrafficMetricsEnum.VideoLikes, metrics.likeChannel),
                 TrafficMetricUiModel(TrafficMetricsEnum.NewFollowers, metrics.followShop),
@@ -98,24 +108,22 @@ object PlayBroadcastUiMapper {
                 TrafficMetricUiModel(TrafficMetricsEnum.NumberOfPaidOrders, metrics.paymentVerified)
         )
 
-    fun mapTotalView(totalView: TotalView): TotalViewUiModel = TotalViewUiModel(
+    override fun mapTotalView(totalView: TotalView): TotalViewUiModel = TotalViewUiModel(
             totalView.totalViewFmt
     )
 
-    fun mapTotalLike(totalLike: TotalLike): TotalLikeUiModel = TotalLikeUiModel(totalLike.totalLikeFmt)
+    override fun mapTotalLike(totalLike: TotalLike): TotalLikeUiModel = TotalLikeUiModel(totalLike.totalLikeFmt)
 
-    fun mapMetricList(metric: Metric): MutableList<PlayMetricUiModel> {
-        val metricList = mutableListOf<PlayMetricUiModel>()
-        if (metric.newParticipant.firstSentence.isNotEmpty())
-            metricList.add(mapMetric(metric.newParticipant))
-        if (metric.pdpVisitor.firstSentence.isNotEmpty())
-            metricList.add(mapMetric(metric.pdpVisitor))
-        if (metric.shopVisitor.firstSentence.isNotEmpty())
-            metricList.add(mapMetric(metric.shopVisitor))
-        return metricList
+    override fun mapNewMetricList(metric: NewMetricList): List<PlayMetricUiModel> = metric.metricList.map {
+        PlayMetricUiModel(
+                iconUrl = it.icon,
+                spannedSentence = MethodChecker.fromHtml(it.sentence),
+                type = it.metricType,
+                interval = it.interval
+        )
     }
 
-    fun mapProductTag(productTag: ProductTagging): List<ProductData> = productTag.productList.map {
+    override fun mapProductTag(productTag: ProductTagging): List<ProductData> = productTag.productList.map {
         ProductData(
                 id = it.id,
                 name = it.name,
@@ -125,23 +133,12 @@ object PlayBroadcastUiMapper {
         )
     }
 
-    private fun mapMetric(data: Metric.MetricData): PlayMetricUiModel {
-        val firstSentence = data.firstSentence
-        val secondSentence = data.secondSentence
-        val fullSentence = "$firstSentence $secondSentence"
-        return PlayMetricUiModel(
-                firstSentence = firstSentence,
-                secondSentence = secondSentence,
-                fullSentence = fullSentence,
-                interval = data.interval
-        )
-    }
-
-    fun mapConfiguration(config: Config): ConfigurationUiModel {
+    override fun mapConfiguration(config: Config): ConfigurationUiModel {
         val channelStatus = ChannelType.getChannelType(
                 config.activeLiveChannel,
                 config.pausedChannel,
-                config.draftChannel
+                config.draftChannel,
+                config.completeDraft
         )
 
         val maxDuration = config.maxDuration * 1000
@@ -171,20 +168,25 @@ object PlayBroadcastUiMapper {
                 coverConfig = CoverConfigUiModel(
                         maxChars = config.maxTitleLength
                 ),
-                countDown = config.countdownSec
+                countDown = config.countdownSec,
+                scheduleConfig = BroadcastScheduleConfigUiModel(
+                        minimum = config.scheduledTime.minimum.toDateWithFormat(DATE_FORMAT_RFC3339),
+                        maximum = config.scheduledTime.maximum.toDateWithFormat(DATE_FORMAT_RFC3339),
+                        default = config.scheduledTime.default.toDateWithFormat(DATE_FORMAT_RFC3339)
+                )
         )
     }
 
-    fun mapChannelInfo(channel: GetChannelResponse.Channel) = ChannelInfoUiModel(
+   override fun mapChannelInfo(channel: GetChannelResponse.Channel) = ChannelInfoUiModel(
             channelId = channel.basic.channelId,
             title = channel.basic.title,
             description = channel.basic.description,
             ingestUrl = channel.medias.firstOrNull { it.id == channel.basic.activeMediaID }?.ingestUrl.orEmpty(),
             coverUrl = channel.basic.coverUrl,
-            status = PlayChannelStatus.getByValue(channel.basic.status.id)
+            status = PlayChannelStatusType.getByValue(channel.basic.status.id)
     )
 
-    fun mapChannelProductTags(productTags: List<GetChannelResponse.ProductTag>) = productTags.map {
+    override fun mapChannelProductTags(productTags: List<GetChannelResponse.ProductTag>) = productTags.map {
         ProductData(
                 id = it.productID.toLongOrZero(),
                 name = it.productName,
@@ -194,7 +196,18 @@ object PlayBroadcastUiMapper {
         )
     }
 
-    fun mapCover(setupCover: PlayCoverUiModel?, coverUrl: String, coverTitle: String): PlayCoverUiModel {
+    override fun mapChannelSchedule(timestamp: GetChannelResponse.Timestamp): BroadcastScheduleUiModel {
+        return if (timestamp.publishedAt.isBlank()) BroadcastScheduleUiModel.NoSchedule
+        else {
+            val scheduleDate = timestamp.publishedAt.toDateWithFormat(DATE_FORMAT_RFC3339)
+            BroadcastScheduleUiModel.Scheduled(
+                    time = scheduleDate,
+                    formattedTime = scheduleDate.toFormattedString(DATE_FORMAT_BROADCAST_SCHEDULE, Locale("id", "ID"))
+            )
+        }
+    }
+
+    override fun mapCover(setupCover: PlayCoverUiModel?, coverUrl: String, coverTitle: String): PlayCoverUiModel {
         val prevSource = when (val prevCover = setupCover?.croppedCover) {
             is CoverSetupState.Cropped -> prevCover.coverSource
             else -> null
@@ -211,27 +224,41 @@ object PlayBroadcastUiMapper {
         )
     }
 
-    fun mapShareInfo(channel: GetChannelResponse.Channel) = ShareUiModel(
+    override fun mapShareInfo(channel: GetChannelResponse.Channel) = ShareUiModel(
             id = channel.basic.channelId,
             title = channel.share.metaTitle,
             description = channel.share.metaDescription,
             imageUrl = channel.basic.coverUrl,
-            textContent = channel.share.text,
+            textContent = textTransformer.transform(channel.share.text),
             redirectUrl = channel.share.redirectURL,
             shortenUrl = channel.share.useShortURL
     )
 
-    fun mapLiveDuration(duration: LiveDuration): DurationUiModel = DurationUiModel(
-            duration = duration.duration,
-            remaining = duration.remaining * 1000,
-            maxDuration = duration.maxDuration
+    override fun mapLiveDuration(duration: String): LiveDurationUiModel = LiveDurationUiModel(
+            duration = duration
     )
 
-    fun mapIncomingChat(chat: Chat): PlayChatUiModel =  PlayChatUiModel(
+    override fun mapIncomingChat(chat: Chat): PlayChatUiModel = PlayChatUiModel(
             messageId = chat.messageId,
             message = chat.message,
             userId = chat.user.id,
             name = chat.user.name,
             isSelfMessage = false
+    )
+
+    override fun mapFreezeEvent(freezeEvent: Freeze, event: EventUiModel?): EventUiModel = EventUiModel(
+            freeze = freezeEvent.isFreeze,
+            banned = event?.banned?:false,
+            title = event?.title.orEmpty(),
+            message = event?.message.orEmpty(),
+            buttonTitle = event?.buttonTitle.orEmpty()
+    )
+
+    override fun mapBannedEvent(bannedEvent: Banned, event: EventUiModel?): EventUiModel = EventUiModel(
+            freeze = event?.freeze?:false,
+            banned = true,
+            title = bannedEvent.title,
+            message = bannedEvent.reason,
+            buttonTitle = bannedEvent.btnText
     )
 }

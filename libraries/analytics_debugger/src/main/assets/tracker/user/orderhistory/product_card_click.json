@@ -1,0 +1,31 @@
+{
+  "readme": "Product click from chat order history",
+  "mode": "subset",
+  "query": [
+    {
+      "businessUnit": "",
+      "clientId": "{{.*}}",
+      "eventCategory": "chat detail",
+      "currentSite": "",
+      "item_list": "/chat - buy again",
+      "screenName": "",
+      "event": "select_content",
+      "userId": "{{.*}}",
+      "eventAction": "click on product history order",
+      "sessionIris": "{{.+}}",
+      "items": [
+        {
+          "item_id": "{{.+}}",
+          "price": "{{.+}}",
+          "dimension40": "/chat - buy again",
+          "index": "{{.+}}",
+          "item_name": "{{.+}}",
+          "currency": "{{.+}}",
+          "item_brand": "{{.+}}",
+          "item_variant": "",
+          "item_category": "{{.+}}"
+        }
+      ]
+    }
+  ]
+}

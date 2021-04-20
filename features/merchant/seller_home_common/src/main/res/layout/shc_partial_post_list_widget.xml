@@ -18,8 +18,8 @@
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/layout_lvl1"
-        android:layout_marginLeft="@dimen/layout_lvl1"
-        android:textColor="@color/Neutral_N700_96"
+        android:drawablePadding="@dimen/layout_lvl1"
+        android:textColor="@color/Unify_N700_96"
         android:textSize="@dimen/fontSize_lvl3"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -29,19 +29,23 @@
         app:typographyWeight="bold"
         tools:text="Info Seller" />
 
-    <ImageView
-        android:id="@+id/imgInfo"
-        android:layout_width="@dimen/layout_lvl3"
-        android:layout_height="@dimen/layout_lvl3"
-        android:background="@android:color/transparent"
-        android:padding="@dimen/shc_dimen_7dp"
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/filterShcPostList"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/layout_lvl1"
+        android:background="@drawable/shc_post_list_view_background"
+        android:drawablePadding="@dimen/shc_dimen_10dp"
+        android:paddingStart="@dimen/layout_lvl2"
+        android:paddingTop="@dimen/shc_dimen_6dp"
+        android:paddingEnd="@dimen/shc_dimen_12dp"
+        android:paddingBottom="@dimen/shc_dimen_6dp"
+        android:textColor="@color/Unify_N700"
         app:layout_constraintBottom_toBottomOf="@+id/tvPostListTitle"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/tvPostListTitle"
         app:layout_constraintTop_toTopOf="@+id/tvPostListTitle"
-        app:srcCompat="@drawable/ic_info"
-        tools:visibility="visible" />
+        app:typographyType="body_2"
+        tools:text="Pilih Kategori" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvPostList"
@@ -68,16 +72,15 @@
         android:gravity="end"
         android:maxLines="1"
         android:paddingStart="@dimen/layout_lvl1"
-        android:paddingLeft="@dimen/layout_lvl1"
         android:paddingEnd="@dimen/spacing_lvl2"
-        android:paddingRight="@dimen/spacing_lvl2"
         android:text="@string/shc_more"
-        android:textColor="@color/Green_G500"
+        android:textColor="@color/Unify_G500"
         android:textSize="@dimen/fontSize_lvl3"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/icPostListSeeDetails"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/rvPostList"
+        app:layout_constraintVertical_bias="1.0"
         app:typographyType="body_2"
         app:typographyWeight="reguler" />
 
@@ -87,10 +90,81 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_lvl1"
         android:layout_marginEnd="@dimen/layout_lvl1"
-        android:layout_marginRight="@dimen/layout_lvl1"
         app:layout_constraintBottom_toBottomOf="@+id/tvPostListSeeDetails"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/tvPostListSeeDetails"
-        app:srcCompat="@drawable/ic_arrow_right_default" />
+        app:srcCompat="@drawable/ic_arrow_right_default"
+        android:contentDescription="@string/shc_content_desc_button_lihat_selengkapnya" />
+
+    <ImageView
+        android:id="@+id/imgShcPostEmpty"
+        android:layout_width="@dimen/shc_dimen_140dp"
+        android:layout_height="@dimen/shc_dimen_110dp"
+        android:layout_marginTop="@dimen/layout_lvl3"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/tvShcPostEmptyTitle"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvPostListTitle"
+        app:layout_constraintVertical_chainStyle="packed"
+        tools:src="@drawable/unify_globalerrors_connection"
+        tools:visibility="visible"
+        android:contentDescription="@string/shc_content_desc_image_post_empty" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvShcPostEmptyTitle"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/layout_lvl3"
+        android:layout_marginTop="@dimen/layout_lvl2"
+        android:layout_marginEnd="@dimen/layout_lvl3"
+        android:gravity="center_horizontal"
+        tools:text="@string/shc_empty_state_title_post_list"
+        android:textColor="@color/Unify_N700_96"
+        android:textSize="@dimen/fontSize_lvl3"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@id/tvShcPostEmptyDescription"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imgShcPostEmpty"
+        app:typographyWeight="bold"
+        tools:visibility="visible" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvShcPostEmptyDescription"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/layout_lvl3"
+        android:layout_marginTop="@dimen/spacing_lvl2"
+        android:layout_marginEnd="@dimen/layout_lvl3"
+        android:gravity="center_horizontal"
+        tools:text="@string/shc_empty_state_description_post_list"
+        android:textColor="@color/Unify_N700_68"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@id/btnShcPostEmpty"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvShcPostEmptyTitle"
+        app:typographyType="body_3"
+        app:typographyWeight="reguler"
+        tools:visibility="visible" />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btnShcPostEmpty"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/layout_lvl3"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:layout_marginEnd="@dimen/layout_lvl3"
+        tools:text="@string/shc_empty_state_button_post_list"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvShcPostEmptyDescription"
+        app:unifyButtonSize="small"
+        tools:visibility="visible" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

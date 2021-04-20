@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="TooltipCardView">
+        <attr name="text" format="string" />
+    </declare-styleable>
+    <declare-styleable name="TooltipCardViewSelectable">
+        <attr name="textTitle" format="string" />
+        <attr name="textDescription" format="string" />
+    </declare-styleable>
+</resources>

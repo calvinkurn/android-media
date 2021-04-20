@@ -3,7 +3,7 @@ package com.tokopedia.logisticcart.shipping.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ServiceData;
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ServiceData;
 
 import java.util.List;
 
@@ -21,6 +21,8 @@ public class ShippingDurationUiModel implements Parcelable, RatesViewModelType {
     private boolean isCodAvailable;
     private String codText;
     private boolean showShippingInformation;
+    private MerchantVoucherModel merchantVoucherModel;
+    private int etaErrorCode;
 
     public ShippingDurationUiModel() {
     }
@@ -32,6 +34,7 @@ public class ShippingDurationUiModel implements Parcelable, RatesViewModelType {
         showShowCase = in.readByte() != 0;
         errorMessage = in.readString();
         showShippingInformation = in.readByte() != 0;
+        etaErrorCode = in.readInt();
     }
 
     @Override
@@ -42,6 +45,7 @@ public class ShippingDurationUiModel implements Parcelable, RatesViewModelType {
         dest.writeByte((byte) (showShowCase ? 1 : 0));
         dest.writeString(errorMessage);
         dest.writeByte((byte) (showShippingInformation ? 1 : 0));
+        dest.writeInt(etaErrorCode);
     }
 
     @Override
@@ -123,5 +127,21 @@ public class ShippingDurationUiModel implements Parcelable, RatesViewModelType {
 
     public void setShowShippingInformation(boolean showShippingInformation) {
         this.showShippingInformation = showShippingInformation;
+    }
+
+    public MerchantVoucherModel getMerchantVoucherModel() {
+        return merchantVoucherModel;
+    }
+
+    public void setMerchantVoucherModel(MerchantVoucherModel merchantVoucherModel) {
+        this.merchantVoucherModel = merchantVoucherModel;
+    }
+
+    public int getEtaErrorCode() {
+        return etaErrorCode;
+    }
+
+    public void setEtaErrorCode(int etaErrorCode) {
+        this.etaErrorCode = etaErrorCode;
     }
 }

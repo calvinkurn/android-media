@@ -9,7 +9,7 @@
         android:id="@+id/merchant_voucher_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white"
+        android:background="@color/Unify_N0"
         android:descendantFocusability="beforeDescendants"
         android:focusableInTouchMode="true"
         android:orientation="vertical">
@@ -38,7 +38,7 @@
                     android:layout_height="wrap_content"
                     android:hint="@string/hint_promo_code"
                     android:inputType="text"
-                    android:textColor="#ae31353b" />
+                    android:textColor="@color/Unify_N700_68" />
 
             </com.tokopedia.design.text.TkpdHintTextInputLayout>
 
@@ -63,7 +63,7 @@
             android:layout_height="0.5dp"
             android:layout_marginLeft="@dimen/dp_14"
             android:layout_marginRight="@dimen/dp_14"
-            android:background="@color/separator_color" />
+            android:background="@color/Unify_N100" />
 
         <LinearLayout
             android:layout_width="match_parent"

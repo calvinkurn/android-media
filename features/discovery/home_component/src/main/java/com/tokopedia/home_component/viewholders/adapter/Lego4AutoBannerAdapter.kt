@@ -15,19 +15,20 @@ import com.tokopedia.home_component.R
 import com.tokopedia.home_component.listener.Lego4AutoBannerListener
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
-import com.tokopedia.home_component.util.loadImage
 import com.tokopedia.home_component.util.setGradientBackground
 import com.tokopedia.home_component.visitable.Lego4AutoDataModel
 import com.tokopedia.home_component.visitable.Lego4AutoItem
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.media.loader.loadImageRounded
 import com.tokopedia.unifyprinciples.Typography
 
 /**
  * @author by yoasfs on 28/07/20
  */
 class Lego4AutoBannerAdapter(
-        val listener: Lego4AutoBannerListener?,
-        val positionInWidget: Int
+        private val listener: Lego4AutoBannerListener?,
+        private val positionInWidget: Int,
+        private val isCacheData: Boolean
 ) : RecyclerView.Adapter<Lego4AutoBannerAdapter.Holder>() {
 
     private lateinit var dataModel: Lego4AutoDataModel
@@ -42,7 +43,7 @@ class Lego4AutoBannerAdapter(
     }
 
     override fun onBindViewHolder(holder: Holder, position: Int) {
-        holder.bind(itemList[position], positionInWidget, listener, dataModel.channelModel)
+        holder.bind(itemList[position], positionInWidget, listener, dataModel.channelModel, isCacheData)
     }
 
     fun addData(dataModel: Lego4AutoDataModel) {
@@ -63,9 +64,9 @@ class Lego4AutoBannerAdapter(
         private val template = "%s %s"
 
 
-        fun bind(item: Lego4AutoItem, parentPosition: Int, listener: Lego4AutoBannerListener?, channelModel: ChannelModel) {
+        fun bind(item: Lego4AutoItem, parentPosition: Int, listener: Lego4AutoBannerListener?, channelModel: ChannelModel, isCacheData: Boolean) {
             itemName.text = item.grid.name
-            itemImage.loadImage(item.grid.imageUrl)
+            itemImage.loadImageRounded(item.grid.imageUrl, 10f)
             itemDesc.text = constructBoldFont(item.grid.benefit.type, item.grid.benefit.value)
             if (item.grid.textColor.isNotEmpty()) {
                 itemName.setTextColor(Color.parseColor(item.grid.textColor))
@@ -75,7 +76,9 @@ class Lego4AutoBannerAdapter(
                 itemLayout.setGradientBackground(arrayListOf(item.grid.backColor))
             }
             itemLayout.addOnImpressionListener(item.impressHolder){
-                listener?.onLegoItemImpressed(channelModel, item.grid, adapterPosition, parentPosition)
+                if (!isCacheData) {
+                    listener?.onLegoItemImpressed(channelModel, item.grid, adapterPosition, parentPosition)
+                }
             }
             itemLayout.setOnClickListener {
                 listener?.onLegoItemClicked(channelModel, item.grid, adapterPosition, parentPosition)

@@ -12,20 +12,16 @@
         android:id="@+id/cl_chat_bubble"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/spacing_lvl4"
-        android:layout_marginEnd="@dimen/spacing_lvl4"
-        android:layout_marginBottom="@dimen/spacing_lvl1"
-        android:background="@drawable/bg_shadow_attach_product"
-        android:minWidth="@dimen/chat_width"
-        android:paddingBottom="@dimen/dp_topchat_12">
+        android:layout_marginStart="@dimen/dp_topchat_12"
+        android:layout_marginEnd="@dimen/dp_topchat_12"
+        android:minWidth="@dimen/chat_width">
 
         <ImageView
             android:id="@+id/iv_thumbnail"
             android:layout_width="@dimen/dp_topchat_50"
             android:layout_height="@dimen/dp_topchat_50"
-            android:layout_marginStart="@dimen/dp_topchat_12"
-            android:layout_marginLeft="@dimen/dp_topchat_12"
-            android:layout_marginTop="@dimen/dp_topchat_12"
+            android:layout_marginStart="@dimen/spacing_lvl3"
+            android:layout_marginTop="@dimen/spacing_lvl3"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:srcCompat="@tools:sample/avatars[0]" />
@@ -35,9 +31,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_topchat_12"
-            android:layout_marginLeft="@dimen/dp_topchat_12"
             android:layout_marginEnd="@dimen/spacing_lvl4"
-            android:layout_marginRight="@dimen/spacing_lvl4"
             android:maxLines="1"
             android:paddingStart="@dimen/spacing_lvl3"
             android:paddingEnd="@dimen/spacing_lvl3"
@@ -55,15 +49,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_topchat_12"
-            android:layout_marginLeft="@dimen/dp_topchat_12"
             android:layout_marginTop="@dimen/spacing_lvl2"
             android:maxLines="1"
             android:paddingEnd="@dimen/spacing_lvl4"
-            android:paddingRight="@dimen/spacing_lvl4"
-            android:textColor="@color/black_70"
+            android:textColor="@color/Unify_N700_96"
             app:layout_constraintStart_toEndOf="@+id/iv_thumbnail"
             app:layout_constraintTop_toBottomOf="@+id/tv_status"
-            app:typographyType="heading_6"
+            app:typographyType="body_3"
             tools:ignore="RtlSymmetry"
             tools:text="INV/20190212/XIX/II/271200396" />
 
@@ -72,17 +64,18 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_topchat_12"
-            android:layout_marginLeft="@dimen/dp_topchat_12"
             android:layout_marginTop="@dimen/spacing_lvl2"
             android:layout_marginEnd="@dimen/spacing_lvl4"
-            android:layout_marginRight="@dimen/spacing_lvl4"
+            android:layout_marginBottom="@dimen/spacing_lvl3"
             android:gravity="top"
             android:includeFontPadding="false"
             android:maxLines="1"
-            android:textColor="@color/orange_red"
+            android:textColor="@color/Unify_N700_96"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/iv_thumbnail"
             app:layout_constraintTop_toBottomOf="@+id/tv_invoice_id"
+            app:layout_constraintVertical_bias="0"
             app:typographyType="body_2"
             app:typographyWeight="bold"
             tools:text="Rp 25.500" />
@@ -98,6 +91,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:loader_type="rect"
             tools:visibility="gone" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </RelativeLayout>

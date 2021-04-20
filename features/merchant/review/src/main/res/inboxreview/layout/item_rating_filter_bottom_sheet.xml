@@ -4,10 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="@dimen/spacing_lvl4"
+    android:paddingTop="@dimen/spacing_lvl4"
     android:paddingStart="@dimen/spacing_lvl4"
     android:paddingEnd="@dimen/spacing_lvl4"
-    android:orientation="horizontal">
+    android:orientation="horizontal"
+    android:background="?attr/selectableItemBackground">
 
     <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
         android:id="@+id/rating_checkbox"
@@ -24,7 +25,6 @@
         android:layout_width="@dimen/dp_20"
         android:layout_height="@dimen/dp_20"
         android:layout_marginStart="@dimen/dp_18"
-        android:layout_marginLeft="@dimen/dp_18"
         android:layout_marginTop="@dimen/spacing_lvl1"
         android:contentDescription="@string/rating_star_icon_content_description"
         android:adjustViewBounds="true"
@@ -37,9 +37,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_lvl3"
-        android:layout_marginLeft="@dimen/spacing_lvl3"
         android:layout_marginTop="@dimen/spacing_lvl1"
-        android:textColor="@color/typography_black"
+        android:textColor="@color/Unify_N700_96"
         app:layout_constraintStart_toEndOf="@id/rating_star_icon"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="body_1"

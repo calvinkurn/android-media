@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/Neutral_N700_68">
+    android:background="@color/play_dms_N700_68">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_page_title"
@@ -11,10 +11,10 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_lvl4"
         android:layout_marginBottom="@dimen/spacing_lvl3"
-        app:layout_constraintTop_toTopOf="parent"
         android:gravity="center"
         android:text="@string/play_summary_title"
-        android:textColor="@color/Neutral_N0"
+        android:textColor="@color/Unify_Static_White"
+        app:layout_constraintTop_toTopOf="parent"
         app:typographyType="heading_4" />
 
     <androidx.core.widget.NestedScrollView
@@ -23,7 +23,9 @@
         android:layout_height="@dimen/layout_lvl0"
         android:fillViewport="true"
         android:overScrollMode="never"
-        app:layout_constraintBottom_toTopOf="@+id/fl_button_sticky"
+        app:layout_constraintBottom_toTopOf="@+id/ll_button_sticky"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_page_title">
 
         <include
@@ -32,27 +34,39 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/layout_lvl0"
             android:layout_marginTop="@dimen/spacing_lvl4"
-            app:layout_constraintBottom_toTopOf="@+id/fl_button_sticky"
+            app:layout_constraintBottom_toTopOf="@+id/ll_button_sticky"
             app:layout_constraintTop_toBottomOf="@+id/tv_page_title" />
 
     </androidx.core.widget.NestedScrollView>
 
-    <FrameLayout
-        android:id="@+id/fl_button_sticky"
+    <LinearLayout
+        android:id="@+id/ll_button_sticky"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/Neutral_N700_68"
+        android:background="@color/play_dms_N700_68"
+        android:orientation="vertical"
+        android:padding="@dimen/spacing_lvl4"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/layout_summary_info">
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
 
         <com.tokopedia.unifycomponents.UnifyButton
-            android:id="@+id/btn_finish"
+            android:id="@+id/btn_save_video"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/spacing_lvl4"
-            android:text="@string/play_summary_button_finish"
+            android:text="@string/play_summary_button_save_video"
             app:unifyButtonSize="medium" />
 
-    </FrameLayout>
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/btn_delete_video"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_lvl3"
+            android:text="@string/play_summary_button_delete_video"
+            app:unifyButtonInvers="true"
+            app:unifyButtonSize="medium"
+            app:unifyButtonVariant="ghost" />
+
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

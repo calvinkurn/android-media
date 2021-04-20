@@ -1,19 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.tokopedia.design.loading.LoadingStateView xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/loadingStateView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/white"
-    app:lsv_full_screen="true"
-    app:lsv_error_layout="@layout/partial_empty_page_error"
-    app:lsv_loading_layout="@layout/partial_shop_note_detail_loading_state">
+    android:background="@color/Unify_N0">
+
+    <include
+        android:id="@+id/view_error_state"
+        android:visibility="gone"
+        tools:visibility="visible"
+        layout="@layout/partial_empty_page_error" />
+
+    <include
+        android:id="@+id/view_loading_state"
+        android:visibility="gone"
+        tools:visibility="visible"
+        layout="@layout/partial_shop_note_detail_loading_state" />
 
     <androidx.core.widget.NestedScrollView
+        android:id="@+id/main_container"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@android:color/white">
+        android:layout_height="wrap_content">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -21,18 +30,24 @@
             android:padding="@dimen/dp_16"
             android:orientation="vertical">
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/textViewDate"
-                style="@style/TextView.Micro.BlackDisabled"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/Unify_N700_44"
+                app:typographyType="body_3"
                 android:lineSpacingExtra="@dimen/sp_6"
                 tools:text="@string/app_name" />
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/textViewDesc"
-                style="@style/TextView.Small.BlackSecondary"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:typographyType="body_2"
+                android:textColor="@color/Unify_N700_68"
                 android:layout_marginTop="@dimen/dp_8"
                 android:lineSpacingExtra="@dimen/sp_6"
                 tools:text="@string/app_name" />
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
-</com.tokopedia.design.loading.LoadingStateView>
+</FrameLayout>

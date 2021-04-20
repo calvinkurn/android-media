@@ -1,7 +1,6 @@
 package com.tokopedia.changephonenumber.view.listener;
 
 import android.content.Context;
-import android.text.Editable;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
@@ -34,9 +33,8 @@ public interface ChangePhoneNumberInputFragmentListener {
     }
 
     public interface Presenter extends CustomerPresenter<View> {
-        void initView();
 
-        void onNewNumberTextChanged(Editable editable, int selection);
+        void onNewNumberTextChanged(String phoneNumber, int selection);
 
         void validateNumber(String newPhoneNumber);
 

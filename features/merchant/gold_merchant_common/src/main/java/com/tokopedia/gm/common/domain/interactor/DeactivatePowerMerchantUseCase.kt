@@ -9,7 +9,6 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
-import org.json.JSONArray
 import rx.Observable
 import javax.inject.Inject
 import javax.inject.Named

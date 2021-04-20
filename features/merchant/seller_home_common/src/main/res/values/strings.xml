@@ -1,9 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="shc_load_failed">Gagal memuat</string>
+    <string name="shc_failed_to_load">Gagal dimuat</string>
     <string name="shc_failed_to_load_information">Oops, informasi gagal ditampilkan</string>
+    <string name="shc_empty_state_title_post_list">Belum ada informasi untukmu</string>
     <string name="shc_more">Selengkapnya</string>
     <string name="shc_score">Skor</string>
     <string name="shc_max_progress">/100</string>
     <string name="shc_table_widget_on_empty_message">Oops, belum ada data yang dapat \nditampilkan saat ini.</string>
+    <string name="shc_current_period">Periode ini</string>
+    <string name="shc_last_period">Periode sebelumnya</string>
+    <string name="shc_select_category">Pilih Kategori</string>
+    <string name="shc_apply_btn">Terapkan</string>
+    <string name="multi_line_empty_state_title">Belum ada data hari ini</string>
+    <string name="multi_line_empty_state_description">Statistik penjualan tokomu akan ditampilkan di sini jika produkmu sudah terjual.</string>
+    <string name="multi_line_empty_state_cta">Yuk, Promosikan Produkmu!</string>
+    <string name="shc_empty_state_description_post_list">Tenang, kamu tetap bisa ikuti semua update mengenai Seller di Pusat Edukasi Seller, ya.</string>
+    <string name="shc_empty_state_button_post_list">Ke Pusat Edukasi Seller</string>
+    <string name="shc_content_desc_button_lihat_selengkapnya">button lihat selengkapnya</string>
+    <string name="shc_content_desc_image_post">image post</string>
+    <string name="shc_content_desc_image_post_empty">image post empty</string>
+    <string name="shc_content_desc_image_dot">image dot</string>
+    <string name="shc_content_desc_image_error">image error</string>
+    <string name="shc_content_desc_image_table_empty">image table empty</string>
 </resources>

@@ -10,7 +10,7 @@ import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import com.tokopedia.oneclickcheckout.R
-import com.tokopedia.oneclickcheckout.preference.edit.view.address.AddressListItemAdapter.AddressListViewHolder
+import com.tokopedia.oneclickcheckout.preference.edit.view.address.AddressListItemViewHolder
 import org.hamcrest.Matcher
 
 fun addressListPage(func: AddressListRobot.() -> Unit) = AddressListRobot().apply(func)
@@ -18,7 +18,7 @@ fun addressListPage(func: AddressListRobot.() -> Unit) = AddressListRobot().appl
 class AddressListRobot {
 
     fun clickAddress(position: Int = 0) {
-        onView(withId(R.id.address_list_rv)).perform(actionOnItemAtPosition<AddressListViewHolder>(position, object : ViewAction {
+        onView(withId(R.id.address_list_rv)).perform(actionOnItemAtPosition<AddressListItemViewHolder>(position, object : ViewAction {
             override fun getDescription(): String = "perform click on address item"
 
             override fun getConstraints(): Matcher<View>? = null
@@ -36,6 +36,10 @@ class AddressListRobot {
     fun clickBack() {
         onView(withId(R.id.btn_back)).perform(click())
     }
+
+    fun clickAddButton() {
+        onView(withId(R.id.btn_add)).perform(click())
+    }
 }
 
 fun shippingDurationPage(func: ShippingDurationRobot.() -> Unit) = ShippingDurationRobot().apply(func)
@@ -43,7 +47,7 @@ fun shippingDurationPage(func: ShippingDurationRobot.() -> Unit) = ShippingDurat
 class ShippingDurationRobot {
 
     fun clickShippingDuration(position: Int = 0) {
-        onView(withId(R.id.shipping_duration_rv)).perform(actionOnItemAtPosition<AddressListViewHolder>(position, object : ViewAction {
+        onView(withId(R.id.shipping_duration_rv)).perform(actionOnItemAtPosition<AddressListItemViewHolder>(position, object : ViewAction {
             override fun getDescription(): String = "perform click on shipping duration item"
 
             override fun getConstraints(): Matcher<View>? = null

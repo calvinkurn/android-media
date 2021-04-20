@@ -3,16 +3,20 @@ apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
+apply from: "../../../compile-unit-test.gradle"
+apply from: "../../../compile-instrument-test.gradle"
 
 buildscript {
     repositories {
+        google()
         mavenCentral()
-        maven { url 'https://hansel.io/maven' }
+        maven { url 'https://maven-hansel.tokopedia.com/maven' }
     }
     dependencies {
         classpath rootProject.ext.miscDependencies.hansel
     }
 }
+
 android {
     packagingOptions {
         exclude 'META-INF/**'
@@ -20,7 +24,7 @@ android {
 
     defaultConfig {
         multiDexEnabled true
-        testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
+        testInstrumentationRunner 'com.tokopedia.test.application.environment.InstrumentationTestRunner'
     }
 }
 
@@ -54,15 +58,20 @@ dependencies {
     implementation project(rootProject.ext.libraries.core_legacy)
     implementation project(rootProject.ext.features.cart)
     implementation project(rootProject.ext.features.purchase_platform_common)
+    implementation project(rootProject.ext.features.officialStore)
+    implementation project(rootProject.ext.features.home)
 
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.components
+    implementation rootProject.ext.unifyDependencies.icons
     implementation rootProject.ext.unifyDependencies.global_error
     implementation rootProject.ext.unifyDependencies.coach_mark
     implementation project(rootProject.ext.libraries.graphql)
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
     implementation rootProject.ext.tkpdInternalLibDependencies.network
+    implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
+    implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
 
     implementation rootProject.ext.supportLibDependencies.preferenceV7
     implementation rootProject.ext.supportLibDependencies.constraintLayout
@@ -70,7 +79,9 @@ dependencies {
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     implementation rootProject.ext.playServicesDependencies.maps
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
-    
+    implementation project(rootProject.ext.libraries.cmPushNotifications)
+    implementation project(rootProject.ext.libraries.deviceFingerprint)
+
     compileOnly rootProject.ext.miscDependencies.javaxAnnotation
     implementation rootProject.ext.miscDependencies.dagger
     kapt rootProject.ext.miscDependencies.daggerCompiler
@@ -84,7 +95,7 @@ dependencies {
         exclude group: "com.android.support"
     }
     implementation rootProject.ext.miscDependencies.chips
-    testImplementation "org.robolectric:robolectric:3.8"
+    testImplementation rootProject.ext.testDependencies.robolectric
     testImplementation "org.robolectric:multidex:3.4.2"
 
     testImplementation rootProject.ext.testDependencies.assertJ
@@ -97,6 +108,8 @@ dependencies {
     testImplementation rootProject.ext.miscDependencies.coroutineCore
     testImplementation rootProject.ext.miscDependencies.coroutineTest
 
+    androidTestImplementation rootProject.ext.testDependencies.androidxTest
+
     // UI Test
     androidTestImplementation rootProject.ext.testDependencies.androidTestRunner
     androidTestImplementation rootProject.ext.testDependencies.androidRulesVersion
@@ -104,12 +117,18 @@ dependencies {
     androidTestImplementation rootProject.ext.testDependencies.mockkAndroid
     androidTestImplementation rootProject.ext.testDependencies.espressoCore
     androidTestImplementation rootProject.ext.testDependencies.espressoContrib
+    androidTestImplementation rootProject.ext.testDependencies.espressoIntents
     androidTestImplementation project(rootProject.ext.libraries.instrumentation_test)
     androidTestAnnotationProcessor rootProject.ext.miscDependencies.daggerCompiler
     androidTestImplementation rootProject.ext.testDependencies.archCoreTesting
     androidTestImplementation rootProject.ext.testDependencies.benchmark
     androidTestImplementation rootProject.ext.testDependencies.testCore
-    androidTestImplementation project(rootProject.ext.libraries.analyticsDebugger)
+
+    // Unit test
+    testImplementation rootProject.ext.testDependencies.archCoreTesting
+    testImplementation rootProject.ext.testDependencies.mockk
+    testImplementation rootProject.ext.miscDependencies.coroutineCore
+    testImplementation rootProject.ext.miscDependencies.coroutineTest
 }
 
 project.ext {
@@ -120,3 +139,4 @@ project.ext {
 }
 
 apply from: '../../../publish_local.gradle'
+apply from: '../../../jacoco_task.gradle'

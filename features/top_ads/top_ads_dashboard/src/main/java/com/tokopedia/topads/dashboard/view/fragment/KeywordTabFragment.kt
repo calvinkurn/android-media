@@ -30,8 +30,8 @@ import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
 import com.tokopedia.topads.dashboard.view.activity.TopAdsGroupDetailViewActivity
 import com.tokopedia.topads.dashboard.view.adapter.keyword.KeywordAdapter
 import com.tokopedia.topads.dashboard.view.adapter.keyword.KeywordAdapterTypeFactoryImpl
-import com.tokopedia.topads.dashboard.view.adapter.keyword.viewmodel.KeywordEmptyViewModel
-import com.tokopedia.topads.dashboard.view.adapter.keyword.viewmodel.KeywordItemViewModel
+import com.tokopedia.topads.dashboard.view.adapter.keyword.viewmodel.KeywordEmptyModel
+import com.tokopedia.topads.dashboard.view.adapter.keyword.viewmodel.KeywordItemModel
 import com.tokopedia.topads.dashboard.view.model.GroupDetailViewModel
 import com.tokopedia.topads.dashboard.view.sheet.TopadsGroupFilterSheet
 import com.tokopedia.unifycomponents.Toaster
@@ -50,6 +50,7 @@ import javax.inject.Inject
  */
 
 private const val CLICK_TAMBAH_KATA_KUNCI = "click - tambah kata kunci"
+
 class KeywordTabFragment : BaseDaggerFragment() {
 
     private lateinit var adapter: KeywordAdapter
@@ -82,7 +83,7 @@ class KeywordTabFragment : BaseDaggerFragment() {
 
     private val groupFilterSheet: TopadsGroupFilterSheet by lazy {
         context.run {
-            TopadsGroupFilterSheet.newInstance(context!!)
+            TopadsGroupFilterSheet.newInstance(requireContext())
         }
     }
 
@@ -138,7 +139,7 @@ class KeywordTabFragment : BaseDaggerFragment() {
         else
             TopAdsDashboardConstant.ACTION_DEACTIVATE
         viewModel.setKeywordAction(actionActivate,
-                listOf((adapter.items[pos] as KeywordItemViewModel).result.keywordId.toString()), resources, ::onSuccessAction)
+                listOf((adapter.items[pos] as KeywordItemModel).result.keywordId.toString()), resources, ::onSuccessAction)
     }
 
     private fun onSuccessAction() {
@@ -162,7 +163,7 @@ class KeywordTabFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         btnFilter.setOnClickListener {
-            groupFilterSheet.show()
+            groupFilterSheet.show(childFragmentManager, "")
             groupFilterSheet.onSubmitClick = { fetchData() }
         }
         fetchData()
@@ -171,7 +172,7 @@ class KeywordTabFragment : BaseDaggerFragment() {
         activate.setOnClickListener { performAction(TopAdsDashboardConstant.ACTION_ACTIVATE) }
         deactivate.setOnClickListener { performAction(TopAdsDashboardConstant.ACTION_DEACTIVATE) }
         delete.setOnClickListener {
-            showConfirmationDialog(context!!)
+            showConfirmationDialog(requireContext())
         }
         Utils.setSearchListener(context, view, ::fetchData)
         btnAddItem.setOnClickListener {
@@ -181,13 +182,13 @@ class KeywordTabFragment : BaseDaggerFragment() {
 
     private fun successCount(list: List<CountDataItem>) {
         totalCount = list[0].totalKeywords
+        (activity as TopAdsGroupDetailViewActivity).setKeywordCount(totalCount)
     }
 
     private fun startEditActivity() {
         val intent = RouteManager.getIntent(context, ApplinkConstInternalTopAds.TOPADS_EDIT_ADS)?.apply {
             putExtra(TopAdsDashboardConstant.TAB_POSITION, 1)
             putExtra(TopAdsDashboardConstant.GROUPID, arguments?.getInt(GROUP_ID).toString())
-            putExtra(TopAdsDashboardConstant.GROUPNAME, arguments?.getString(TopAdsDashboardConstant.GROUP_NAME))
         }
         startActivityForResult(intent, TopAdsDashboardConstant.EDIT_GROUP_REQUEST_CODE)
         TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsDashboardEvent(CLICK_TAMBAH_KATA_KUNCI, "")
@@ -243,16 +244,18 @@ class KeywordTabFragment : BaseDaggerFragment() {
     }
 
     private fun onSuccessKeyword(response: KeywordsResponse.GetTopadsDashboardKeywords) {
-        totalPage = (totalCount / response.meta.page.perPage) + 1
+        totalPage = if (totalCount % response.meta.page.perPage == 0) {
+            totalCount / response.meta.page.perPage
+        } else
+            (totalCount / response.meta.page.perPage) + 1
         recyclerviewScrollListener.updateStateAfterGetData()
         loader.visibility = View.GONE
         recyclerviewScrollListener.updateStateAfterGetData()
         response.data.forEach { result ->
-            adapter.items.add(KeywordItemViewModel(result))
+            adapter.items.add(KeywordItemModel(result))
         }
         adapter.notifyDataSetChanged()
         setFilterCount()
-        (activity as TopAdsGroupDetailViewActivity).setKeywordCount(totalCount)
     }
 
     private fun setFilterCount() {
@@ -264,7 +267,7 @@ class KeywordTabFragment : BaseDaggerFragment() {
     }
 
     private fun onEmpty() {
-        adapter.items.add(KeywordEmptyViewModel())
+        adapter.items.add(KeywordEmptyModel())
         if (searchBar?.searchBarTextField?.text.toString().isEmpty()) {
             adapter.setEmptyView(!EMPTY_SEARCH_VIEW)
         } else {

@@ -1,0 +1,49 @@
+{
+  "readme": "Similar recom impression and click",
+  "mode": "exact",
+  "query": [
+    {
+      "eventCategory": "similar product recommendation page",
+      "item_list": "{{.*}}",
+      "event": "select_content",
+      "eventAction": "click - product recommendation",
+      "sessionIris" : "{{.*}}",
+      "items": [{
+        "item_id": "{{.*}}",
+        "price": "{{\\d*.\\d*|\\d.\\d+E\\d}}",
+        "dimension40": "{{.*}}",
+        "dimension83": "{{.*}}",
+        "dimension90": "{{.*}}",
+        "dimension61": "{{.*}}",
+        "attribution": "{{.*}}",
+        "index": "{{\\d*.\\d*}}",
+        "item_name": "{{.*}}",
+        "item_brand": "{{.*}}",
+        "item_variant": "{{.*}}",
+        "item_category": "{{.*}}"
+      }],
+      "eventLabel": "{{.*}}"
+    },
+    {
+      "eventCategory": "similar product recommendation page",
+      "item_list": "{{.*}}",
+      "event": "view_item_list",
+      "eventAction": "{{impression - product recommendation|impression - product recommendation - non login}}",
+      "sessionIris" : "{{.*}}",
+      "items": [{
+        "dimension83": "{{.*}}",
+        "item_id": "{{.*}}",
+        "price": "{{\\d*.\\d*|\\d.\\d+E\\d}}",
+        "dimension40": "{{.*}}",
+        "dimension90": "{{.*}}",
+        "dimension61": "{{.*}}",
+        "index": "{{\\d*.\\d*}}",
+        "item_name": "{{.*}}",
+        "item_brand": "{{.*}}",
+        "item_variant": "{{.*}}",
+        "item_category": "{{.*}}"
+      }],
+      "eventLabel": "{{.*}}"
+    }
+  ]
+}

@@ -5,7 +5,7 @@ apply plugin: 'io.hansel.preprocessor.module'
 buildscript {
     repositories {
         mavenCentral()
-        maven { url 'https://hansel.io/maven' }
+        maven { url 'https://maven-hansel.tokopedia.com/maven' }
     }
     dependencies {
         classpath rootProject.ext.miscDependencies.hansel
@@ -24,6 +24,7 @@ dependencies {
 
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.components
+    implementation rootProject.ext.unifyDependencies.icons
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
     implementation project(rootProject.ext.libraries.graphql)
 
@@ -41,13 +42,12 @@ dependencies {
     implementation project(rootProject.ext.features.commonCategory)
     implementation project(rootProject.ext.libraries.linker)
     implementation rootProject.ext.tkpdInternalLibDependencies.authentication
-    implementation project(rootProject.ext.libraries.sharedata)
     implementation project(rootProject.ext.features.basemvvm)
     implementation rootProject.ext.miscDependencies.chips
     implementation rootProject.ext.miscDependencies.viewModelKtx
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.archCoreTesting
-    testImplementation rootProject.ext.testDependencies.couroutinesTest
+    testImplementation rootProject.ext.miscDependencies.coroutineTest
 
 }
 
@@ -59,3 +59,5 @@ project.ext {
 }
 
 apply from: '../../../publish_local.gradle'
+apply from: '../../../jacoco_task.gradle'
+apply from: '../../../sonar_config.gradle'

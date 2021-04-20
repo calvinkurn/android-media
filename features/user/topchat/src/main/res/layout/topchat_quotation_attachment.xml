@@ -13,7 +13,6 @@
         android:layout_marginBottom="@dimen/spacing_lvl3"
         android:minWidth="270dp"
         android:paddingStart="@dimen/spacing_lvl3"
-        android:paddingLeft="@dimen/spacing_lvl3"
         android:paddingTop="@dimen/spacing_lvl3"
         tools:ignore="RtlSymmetry">
 
@@ -30,9 +29,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_topchat_10"
-            android:layout_marginLeft="@dimen/dp_topchat_10"
             android:layout_toEndOf="@id/ivThumbnail"
-            android:layout_toRightOf="@id/ivThumbnail"
             android:maxWidth="172dp">
 
             <com.tokopedia.unifyprinciples.Typography
@@ -41,11 +38,10 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
                 android:layout_marginEnd="@dimen/dp_topchat_19"
-                android:layout_marginRight="@dimen/dp_topchat_19"
                 android:ellipsize="end"
                 android:maxWidth="172dp"
                 android:maxLines="1"
-                android:textColor="@color/attach_product_title"
+                android:textColor="@color/Unify_N700"
                 app:typographyType="heading_5"
                 app:typographyWeight="bold"
                 tools:text="Nama Produk YANG PANJAAAANG ASLKDAJLSKDJALSKJD" />
@@ -56,7 +52,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/tvQuotationName"
                 android:layout_marginTop="@dimen/spacing_lvl1"
-                android:textColor="@color/orange_red"
+                android:textColor="@color/Unify_Y500"
                 app:typographyType="body_2"
                 app:typographyWeight="bold"
                 tools:text="Rp 2.099.000" />
@@ -69,9 +65,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/main_product_attach"
         android:layout_alignEnd="@+id/main_product_attach"
-        android:layout_alignRight="@+id/main_product_attach"
         android:layout_marginEnd="@dimen/dp_topchat_12"
-        android:layout_marginRight="@dimen/dp_topchat_12"
         android:gravity="center_vertical"
         android:orientation="horizontal"
         android:paddingBottom="@dimen/spacing_lvl3">
@@ -86,36 +80,6 @@
             android:textAllCaps="false"
             app:unifyButtonSize="small"
             app:unifyButtonType="transaction" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/footer_layout"
-        android:layout_alignEnd="@+id/main_product_attach"
-        android:layout_alignRight="@+id/main_product_attach"
-        android:layout_marginEnd="@dimen/dp_topchat_12"
-        android:layout_marginRight="@dimen/dp_topchat_12"
-        android:paddingBottom="@dimen/spacing_lvl3">
-
-        <ImageView
-            android:id="@+id/chat_status"
-            android:layout_width="@dimen/attachproduct_14dp"
-            android:layout_height="@dimen/attachproduct_14dp"
-            android:layout_gravity="center_vertical"
-            android:layout_marginEnd="@dimen/spacing_lvl1"
-            android:layout_marginRight="@dimen/spacing_lvl1"
-            tools:srcCompat="@drawable/ic_check" />
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/hour"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:includeFontPadding="false"
-            android:textColor="@color/Neutral_N700_44"
-            app:typographyType="body_3"
-            tools:text="11:00" />
     </LinearLayout>
 
 </RelativeLayout>

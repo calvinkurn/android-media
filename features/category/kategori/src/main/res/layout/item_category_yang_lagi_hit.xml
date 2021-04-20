@@ -9,6 +9,7 @@
 
     <ImageView
         android:id="@+id/item_icon"
+        android:contentDescription="@string/content_desc_item_icon"
         android:layout_width="@dimen/dp_64"
         android:layout_height="@dimen/dp_64"
         android:layout_marginTop="@dimen/dp_5"
@@ -27,7 +28,7 @@
         android:lines="2"
         android:maxLines="2"
         android:padding="@dimen/dp_10"
-        android:textColor="@color/white"
+        android:textColor="@color/Unify_N0"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/item_icon"
@@ -35,6 +36,6 @@
         app:typographyType="heading_6"
         app:typographyWeight="bold"
         tools:text="kesehatan"
-        tools:textColor="@color/black" />
+        tools:textColor="@color/Unify_N700" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,7 +1,7 @@
 package com.tokopedia.talk.feature.write
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.talk.coroutines.TestCoroutineDispatchers
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.talk.feature.write.domain.usecase.DiscussionGetWritingFormUseCase
 import com.tokopedia.talk.feature.write.domain.usecase.DiscussionSubmitFormUseCase
 import com.tokopedia.talk.feature.write.presentation.viewmodel.TalkWriteViewModel
@@ -30,7 +30,7 @@ abstract class TalkWriteViewModelTestFixture {
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-        viewModel = TalkWriteViewModel(TestCoroutineDispatchers,
+        viewModel = TalkWriteViewModel(CoroutineTestDispatchersProvider,
                 discussionGetWritingFormUseCase,
                 discussionSubmitFormUseCase,
                 userSession)

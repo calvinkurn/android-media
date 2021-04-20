@@ -11,12 +11,11 @@
         android:isScrollContainer="true"
         android:orientation="vertical">
 
-        <ImageView
+        <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/imageView7"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:adjustViewBounds="true"
-            app:srcCompat="@drawable/ill_header"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -30,10 +29,11 @@
             android:paddingTop="@dimen/dp_20"
             android:text="@string/yuk_iklankan_produkmu"
             android:textColor="@color/black"
-            app:typographyType="heading_2"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="heading_2"
+            app:typographyWeight="reguler" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/subtitle"
@@ -43,28 +43,45 @@
             android:paddingBottom="@dimen/dp_20"
             android:text="@string/pilih_cara_beriklan_yang_sesuai_kebutuhanmu"
             android:textColor="#AD31353B"
-            app:typographyType="body_3"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/title" />
+            app:layout_constraintTop_toBottomOf="@+id/title"
+            app:typographyType="body_3" />
 
-        <androidx.cardview.widget.CardView
+        <com.tokopedia.unifycomponents.ticker.Ticker
+            android:id="@+id/ticker_info"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginRight="@dimen/dp_16"
+            android:visibility="gone"
+            app:descriptionText="@string/topads_create_ticker_desc_actiivate"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/subtitle"
+            app:tickerShapeType="loose"
+            app:tickerType="announcement"
+            app:titleText="@string/topads_create_ticker_title_activate"
+            tools:visibility="visible" />
+
+        <com.tokopedia.unifycomponents.CardUnify
             android:id="@+id/card1"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginRight="@dimen/dp_16"
             android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_24"
+            android:layout_marginRight="@dimen/dp_16"
             app:cardCornerRadius="@dimen/dp_8"
             app:cardUseCompatPadding="true"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/subtitle">
+            app:layout_constraintTop_toBottomOf="@+id/ticker_info">
 
-            <ImageView
+            <com.tokopedia.unifycomponents.ImageUnify
+                android:id="@+id/top_corner_bg1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="end|top"
-                app:srcCompat="@drawable/topads_create_bg_top_corner" />
+                android:layout_gravity="end|top" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
@@ -75,172 +92,135 @@
                     android:id="@+id/typography4"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="left"
-                    android:text="@string/iklan_otomatis"
+                    android:layout_marginStart="@dimen/dp_16"
+                    android:layout_marginTop="@dimen/dp_22"
+                    android:gravity="start"
+                    android:text="@string/topads_common_iklan_otomatis"
                     android:textColor="@color/black"
-                    app:typographyType="heading_3"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:typographyType="heading_3" />
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/typography8"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="left"
-                    android:text="@string/beriklan_hanya_dengan_1x_klik"
+                    android:layout_marginStart="@dimen/dp_16"
+                    android:gravity="start"
+                    android:text="@string/iklan_otomatis_subtitle"
                     app:layout_constraintTop_toBottomOf="@id/typography4"
                     app:typographyType="body_3"
                     tools:layout_editor_absoluteX="16dp" />
 
-                <ImageView
-                    android:id="@+id/icon1"
+                <com.tokopedia.unifycomponents.ImageUnify
+                    android:id="@+id/top_corner_icon1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    app:layout_constraintBottom_toBottomOf="@+id/typography8"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="@dimen/dp_16"
+                    android:layout_marginEnd="@dimen/dp_16"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="@+id/typography4"
-                    app:srcCompat="@drawable/topads_create_ic_thumb_up" />
+                    app:layout_constraintTop_toTopOf="parent" />
 
-                <ImageView
+                <com.tokopedia.unifycomponents.ImageUnify
                     android:id="@+id/icon2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
-                    app:layout_constraintBottom_toBottomOf="@+id/typography7"
+                    android:layout_width="@dimen/dp_24"
+                    android:layout_height="@dimen/dp_24"
+                    android:layout_alignParentStart="true"
+                    android:layout_marginStart="@dimen/dp_16"
+                    app:layout_constraintBottom_toBottomOf="@+id/typography"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="@+id/typography"
-                    app:srcCompat="@drawable/topads_create_ic_iklan_otomatis_1" />
+                    app:layout_constraintTop_toBottomOf="@+id/typography8"
+                    app:layout_constraintTop_toTopOf="@+id/typography" />
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/typography"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="12dp"
-                    android:layout_marginTop="@dimen/dp_16"
-                    android:gravity="left"
-                    android:text="@string/beriklan_jadi_mudah"
-                    android:textColor="@color/black"
-                    android:textStyle="bold"
-                    app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_marginStart="12dp"
+                    android:layout_marginTop="@dimen/dp_20"
+                    android:gravity="start"
+                    android:text="@string/iklan_otomatis_desc1"
                     app:layout_constraintStart_toEndOf="@+id/icon2"
                     app:layout_constraintTop_toBottomOf="@+id/typography8"
-                    app:typographyType="heading_5" />
+                    app:typographyType="body_3" />
 
 
-                <ImageView
+                <com.tokopedia.unifycomponents.ImageUnify
                     android:id="@+id/icon3"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
-                    app:layout_constraintBottom_toBottomOf="@+id/typography6"
+                    android:layout_width="@dimen/dp_24"
+                    android:layout_height="@dimen/dp_24"
+                    android:layout_alignParentStart="true"
+                    android:layout_marginStart="@dimen/dp_16"
+                    app:layout_constraintBottom_toBottomOf="@+id/typography2"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="@+id/typography2"
-                    app:srcCompat="@drawable/topads_create_ic_iklan_otomatis_2" />
+                    app:layout_constraintTop_toBottomOf="@+id/icon2"
+                    app:layout_constraintTop_toTopOf="@+id/typography2" />
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/typography2"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dp_12"
+                    android:layout_marginTop="@dimen/dp_20"
+                    android:gravity="start"
+                    android:text="@string/iklan_otomatis_desc2"
                     android:textColor="@color/black"
-                    android:textStyle="bold"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/dp_12"
-                    android:layout_marginTop="@dimen/dp_12"
-                    android:gravity="left"
-                    android:text="@string/pengaturan_iklan_lebih_optimal"
-                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/icon3"
-                    app:layout_constraintTop_toBottomOf="@+id/typography7"
-                    app:typographyType="heading_5" />
-
-                <com.tokopedia.unifyprinciples.Typography
-                    android:id="@+id/typography7"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/dp_12"
-                    android:gravity="left"
-                    android:text="@string/iklan_produk_akan_otomatis_aktif_sesuai_jumlah_nominal_anggaran_harianmu"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/icon2"
                     app:layout_constraintTop_toBottomOf="@+id/typography"
                     app:typographyType="body_3" />
 
+                <com.tokopedia.unifycomponents.ImageUnify
+                    android:id="@+id/icon4"
+                    android:layout_width="@dimen/dp_24"
+                    android:layout_height="@dimen/dp_24"
+                    android:layout_alignParentStart="true"
+                    android:layout_marginStart="@dimen/dp_16"
+                    app:layout_constraintBottom_toBottomOf="@+id/typography3"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/icon3"
+                    app:layout_constraintTop_toTopOf="@+id/typography3" />
+
                 <com.tokopedia.unifyprinciples.Typography
-                    android:id="@+id/typography6"
+                    android:id="@+id/typography3"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/dp_12"
-                    android:gravity="left"
-                    android:text="@string/kami_akan_memilih_produk_dan_biaya_iklan_terbaik_untuk_optimalkan_iklanmu"
-                    app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_marginStart="@dimen/dp_12"
+                    android:layout_marginTop="@dimen/dp_20"
+                    android:gravity="start"
+                    android:text="@string/iklan_otomatis_desc3"
+                    android:textColor="@color/black"
                     app:layout_constraintStart_toEndOf="@+id/icon3"
                     app:layout_constraintTop_toBottomOf="@+id/typography2"
                     app:typographyType="body_3" />
 
-                <ImageView
-                    android:id="@+id/icon4"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
-                    app:layout_constraintBottom_toBottomOf="@+id/typography5"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="@+id/typography3"
-                    app:srcCompat="@drawable/topads_create_ic_iklan_otomatis_3" />
-
-
-                <com.tokopedia.unifyprinciples.Typography
-                    android:id="@+id/typography3"
-                    android:textColor="@color/black"
-                    android:textStyle="bold"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_12"
-                    android:layout_marginLeft="@dimen/dp_12"
-                    android:gravity="left"
-                    android:text="@string/hemat_waktu_dalam_beriklan"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/icon3"
-                    app:layout_constraintTop_toBottomOf="@+id/typography6"
-                    app:typographyType="heading_5" />
-
-
-                <com.tokopedia.unifyprinciples.Typography
-                    android:id="@+id/typography5"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/dp_12"
-                    android:gravity="left"
-                    android:text="@string/pengaturan_iklan_akan_diperbarui_secara_berkala_untuk_tingkatkan_potensi_penjualanmu"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/icon4"
-                    app:layout_constraintTop_toBottomOf="@+id/typography3"
-                    app:typographyType="body_3" />
-
-
-                <Button
+                <com.tokopedia.unifycomponents.UnifyButton
                     android:id="@+id/btn_start_auto_ads"
-                    style="@style/Button.Submit.Green.Full"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_16"
+                    android:layout_marginTop="@dimen/dp_36"
+                    android:layout_marginBottom="@dimen/dp_16"
                     android:text="@string/mulai_iklan_otomatis"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/typography5" />
-
+                    app:layout_constraintTop_toBottomOf="@+id/typography3"
+                    app:unifyButtonSize="medium"
+                    app:unifyButtonType="main"
+                    app:unifyButtonVariant="filled" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-        </androidx.cardview.widget.CardView>
+        </com.tokopedia.unifycomponents.CardUnify>
 
-        <androidx.cardview.widget.CardView
+        <com.tokopedia.unifycomponents.CardUnify
             android:id="@+id/card2"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginRight="@dimen/dp_16"
             android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_16"
+            android:layout_marginRight="@dimen/dp_16"
             android:layout_marginBottom="@dimen/dp_16"
             app:cardCornerRadius="@dimen/dp_8"
             app:cardUseCompatPadding="true"
@@ -248,11 +228,11 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/card1">
 
-            <ImageView
+            <com.tokopedia.unifycomponents.ImageUnify
+                android:id="@+id/top_corner_bg2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="end|top"
-                app:srcCompat="@drawable/topads_create_bg_top_corner" />
+                android:layout_gravity="end|top" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
@@ -261,170 +241,124 @@
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/typography9"
-                    style="@style/TextView.SubHeadline.Bold"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="left"
+                    android:layout_marginStart="@dimen/dp_16"
+                    android:layout_marginTop="@dimen/dp_22"
                     android:text="@string/iklan_manual"
                     android:textColor="@color/black"
-                    app:typographyType="heading_3"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:typographyType="heading_3" />
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/typography10"
-                    style="@style/TextView.Small"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="left"
-                    android:text="@string/buat_iklan_dengan_pengaturan_lengkap"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
+                    android:layout_marginStart="@dimen/dp_16"
+                    android:text="@string/iklan_manual_subtitle"
                     app:layout_constraintTop_toBottomOf="@id/typography9"
                     app:typographyType="body_3" />
 
-                <ImageView
-                    android:id="@+id/icon5"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    app:layout_constraintBottom_toBottomOf="@+id/typography10"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="@+id/typography9"
-                    app:srcCompat="@drawable/topads_create_ic_gear" />
 
-                <ImageView
-                    android:id="@+id/icon6"
+                <com.tokopedia.unifycomponents.ImageUnify
+                    android:id="@+id/top_corner_icon2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
-                    app:layout_constraintBottom_toBottomOf="@+id/typography14"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="@dimen/dp_16"
+                    android:layout_marginEnd="@dimen/dp_16"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <com.tokopedia.unifycomponents.ImageUnify
+                    android:id="@+id/icon6"
+                    android:layout_width="@dimen/dp_24"
+                    android:layout_height="@dimen/dp_24"
+                    android:layout_alignParentStart="true"
+                    android:layout_marginStart="@dimen/dp_16"
+                    app:layout_constraintBottom_toBottomOf="@+id/desc1"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="@+id/typography11"
-                    app:srcCompat="@drawable/topads_create_ic_iklan_manual_1" />
+                    app:layout_constraintTop_toBottomOf="@+id/typography10"
+                    app:layout_constraintTop_toTopOf="@+id/desc_1"
+                    tools:ignore="UnknownIdInLayout" />
 
                 <com.tokopedia.unifyprinciples.Typography
-                    android:id="@+id/typography11"
-                    android:textColor="@color/black"
-                    android:textStyle="bold"
-                    android:layout_width="0dp"
+                    android:id="@+id/desc_1"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/dp_12"
-                    android:layout_marginTop="@dimen/dp_16"
-                    android:gravity="left"
-                    android:text="@string/atur_biaya_iklan_manual"
-                    app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_marginStart="@dimen/dp_12"
+                    android:layout_marginTop="@dimen/dp_20"
+                    android:gravity="start"
+                    android:text="@string/iklan_manual_desc1"
                     app:layout_constraintStart_toEndOf="@+id/icon6"
                     app:layout_constraintTop_toBottomOf="@+id/typography10"
-                    app:typographyType="heading_5" />
-
-
-                <com.tokopedia.unifyprinciples.Typography
-                    android:id="@+id/typography14"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:gravity="left"
-                    android:layout_marginLeft="@dimen/dp_12"
-                    android:text="@string/pilih_produk_produk_terbaik_yang_ingin_kamu_iklankan"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/icon6"
-                    app:layout_constraintTop_toBottomOf="@+id/typography11"
                     app:typographyType="body_3" />
 
-
-                <com.tokopedia.unifyprinciples.Typography
-                    android:id="@+id/typography13"
-                    android:textColor="@color/black"
-                    android:textStyle="bold"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_16"
-                    android:gravity="left"
-                    android:layout_marginLeft="@dimen/dp_12"
-                    android:text="@string/atur_biaya_iklan_manual"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/icon8"
-                    app:layout_constraintTop_toBottomOf="@+id/typography16"
-                    app:typographyType="heading_5" />
-
-                <ImageView
+                <com.tokopedia.unifycomponents.ImageUnify
                     android:id="@+id/icon7"
+                    android:layout_width="@dimen/dp_24"
+                    android:layout_height="@dimen/dp_24"
+                    android:layout_alignParentStart="true"
+                    android:layout_marginStart="@dimen/dp_16"
+                    app:layout_constraintBottom_toBottomOf="@id/desc_2"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/icon6"
+                    app:layout_constraintTop_toTopOf="@id/desc_2" />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/desc_2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
-                    app:layout_constraintBottom_toBottomOf="@+id/typography16"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="@+id/typography15"
-                    app:srcCompat="@drawable/topads_create_ic_iklan_manual_2" />
-
-                <com.tokopedia.unifyprinciples.Typography
-                    android:id="@+id/typography15"
-                    android:textColor="@color/black"
-                    android:textStyle="bold"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/dp_12"
-                    android:layout_marginTop="@dimen/dp_16"
-                    android:gravity="left"
-                    android:text="@string/atur_strategi_kata_kunci"
-                    app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_marginStart="@dimen/dp_12"
+                    android:layout_marginTop="@dimen/dp_24"
+                    android:text="@string/iklan_manual_desc2"
                     app:layout_constraintStart_toEndOf="@+id/icon7"
-                    app:layout_constraintTop_toBottomOf="@+id/typography14"
-                    app:typographyType="heading_5" />
-
-                <com.tokopedia.unifyprinciples.Typography
-                    android:id="@+id/typography16"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:gravity="left"
-                    android:layout_marginLeft="@dimen/dp_12"
-                    android:text="@string/masukkan_kata_kunci_yang_sesuai_untuk_produkmu_secara_manual"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/icon7"
-                    app:layout_constraintTop_toBottomOf="@+id/typography15"
+                    app:layout_constraintTop_toBottomOf="@+id/desc_1"
                     app:typographyType="body_3" />
 
-                <com.tokopedia.unifyprinciples.Typography
-                    android:id="@+id/typography17"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:gravity="left"
-                    android:layout_marginLeft="@dimen/dp_12"
-                    android:text="@string/pasang_biaya_iklan_sesuai_dengan_rekomendasi"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/icon8"
-                    app:layout_constraintTop_toBottomOf="@+id/typography13"
-                    app:typographyType="body_3" />
-
-                <ImageView
+                <com.tokopedia.unifycomponents.ImageUnify
                     android:id="@+id/icon8"
+                    android:layout_width="@dimen/dp_24"
+                    android:layout_height="@dimen/dp_24"
+                    android:layout_alignParentStart="true"
+                    android:layout_marginStart="@dimen/dp_16"
+                    app:layout_constraintBottom_toBottomOf="@+id/desc_3"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/icon7"
+                    app:layout_constraintTop_toTopOf="@+id/desc_3" />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/desc_3"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
-                    app:layout_constraintBottom_toBottomOf="@+id/typography17"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="@+id/typography13"
-                    app:srcCompat="@drawable/topads_create_ic_iklan_manual_3" />
+                    android:layout_marginStart="@dimen/dp_12"
+                    android:layout_marginTop="@dimen/dp_24"
+                    android:text="@string/iklan_manual_desc3"
+                    app:layout_constraintStart_toEndOf="@+id/icon8"
+                    app:layout_constraintTop_toBottomOf="@+id/desc_2"
+                    app:typographyType="body_3" />
 
-
-                <com.tokopedia.design.component.ButtonCompat
+                <com.tokopedia.unifycomponents.UnifyButton
                     android:id="@+id/btn_start_manual_ads"
-                    style="@style/Button.Submit.Green.Full"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_16"
-                    android:text="@string/mulai_iklan_manual"
-                    app:buttonCompatType="ghost"
+                    android:layout_marginTop="@dimen/dp_36"
+                    android:layout_marginBottom="@dimen/dp_16"
+                    android:gravity="center"
+                    android:text="@string/gunakan_iklan_manual"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/typography17" />
-
+                    app:layout_constraintTop_toBottomOf="@+id/desc_3"
+                    app:unifyButtonSize="medium"
+                    app:unifyButtonType="main"
+                    app:unifyButtonVariant="filled" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-        </androidx.cardview.widget.CardView>
+        </com.tokopedia.unifycomponents.CardUnify>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.core.widget.NestedScrollView>

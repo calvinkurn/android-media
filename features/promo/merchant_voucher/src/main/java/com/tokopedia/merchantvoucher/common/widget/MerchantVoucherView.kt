@@ -1,13 +1,11 @@
 package com.tokopedia.merchantvoucher.common.widget
 
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
-import com.tokopedia.merchantvoucher.common.constant.MerchantVoucherStatusTypeDef
-import com.tokopedia.merchantvoucher.common.model.*
-import android.content.ClipData
-import android.content.ClipboardManager
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
@@ -18,7 +16,9 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.merchantvoucher.R
 import com.tokopedia.merchantvoucher.common.constant.MerchantVoucherConst.DELIVERY_VOUCHER_IMAGE_URL
 import com.tokopedia.merchantvoucher.common.constant.MerchantVoucherConst.DISCOUNT_OR_CASHBACK_VOUCHER_IMAGE_URL
+import com.tokopedia.merchantvoucher.common.constant.MerchantVoucherStatusTypeDef
 import com.tokopedia.merchantvoucher.common.constant.MerchantVoucherTypeDef.*
+import com.tokopedia.merchantvoucher.common.model.*
 
 
 /*
@@ -188,7 +188,7 @@ open class MerchantVoucherView : CustomVoucherView {
                             MethodChecker.getDrawable(context, R.drawable.bg_voucher_button_in_use)
                     )
                     btnUseVoucher?.setTextColor(
-                            MethodChecker.getColor(context, R.color.white)
+                            MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0)
                     )
                     btnUseVoucher?.visibility = View.VISIBLE
                     btnUseVoucher?.isEnabled = false

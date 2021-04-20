@@ -52,10 +52,10 @@ data class Contact(
         val role: String = "",
         @Expose
         @SerializedName("userId")
-        val userId: Int = 0,
+        val userId: Long = 0L,
         @Expose
         @SerializedName("shopId")
-        val shopId: Int = 0,
+        val shopId: Long = 0L,
         @Expose
         @SerializedName("interlocutor")
         val isInterlocutor: Boolean = false,
@@ -118,19 +118,22 @@ data class Chat(
 data class Reply(
         @Expose
         @SerializedName("msgId")
-        val msgId: Int = 0,
+        val msgId: Long = 0,
         @Expose
         @SerializedName("replyId")
-        val replyId: String,
+        val replyId: String = "",
         @Expose
         @SerializedName("senderId")
-        val senderId: Int = 0,
+        val senderId: Long = 0,
         @Expose
         @SerializedName("senderName")
         val senderName: String = "",
         @Expose
         @SerializedName("role")
         val role: String = "",
+        @Expose
+        @SerializedName("fraudStatus")
+        val fraudStatus: Int = 0,
         @Expose
         @SerializedName("msg")
         val msg: String = "",
@@ -142,7 +145,7 @@ data class Reply(
         val status: Int = 0,
         @Expose
         @SerializedName("attachment")
-        val attachment: Attachment?,
+        val attachment: Attachment = Attachment(),
         @Expose
         @SerializedName("isOpposite")
         val isOpposite: Boolean = false,
@@ -154,13 +157,20 @@ data class Reply(
         val isRead: Boolean = true,
         @Expose
         @SerializedName("blastId")
-        val blastId: Int = 0,
+        val blastId: Long = 0,
         @Expose
         @SerializedName("source")
         val source: String = ""
 ) {
-    fun isMultipleProductAttachment(nextItem: Reply): Boolean {
-        return isProductAttachment() && nextItem.isProductAttachment()
+
+    val attachmentType: Int get(): Int = attachment?.type ?: 0
+
+    fun isAlsoProductAttachment(nextItem: Reply?): Boolean {
+        return nextItem != null && isProductAttachment() && nextItem.isProductAttachment()
+    }
+
+    fun isAlsoTheSameBroadcast(nextItem: Reply?): Boolean {
+        return nextItem != null && isBroadCast() && nextItem.isBroadCast() && blastId == nextItem.blastId
     }
 
     fun isProductAttachment(): Boolean {
@@ -168,7 +178,7 @@ data class Reply(
     }
 
     fun isBroadCast(): Boolean {
-        return blastId == 0
+        return blastId > 0
     }
 
 }
@@ -182,7 +192,7 @@ data class Attachment(
         val type: Int = 0,
         @Expose
         @SerializedName("attributes")
-        val attributes: String = "",
+        var attributes: String = "",
         @Expose
         @SerializedName("fallback")
         val fallback: Fallback = Fallback()
@@ -207,7 +217,7 @@ data class Fallback(
 data class Block(
         @Expose
         @SerializedName("isPromoBlocked")
-        val isPromoBlocked: Boolean = false,
+        var isPromoBlocked: Boolean = false,
         @Expose
         @SerializedName("isBlocked")
         val isBlocked: Boolean = false,

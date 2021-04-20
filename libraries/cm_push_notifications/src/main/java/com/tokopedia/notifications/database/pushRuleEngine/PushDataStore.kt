@@ -4,6 +4,7 @@ import com.tokopedia.notifications.model.BaseNotificationModel
 import com.tokopedia.notifications.model.NotificationStatus
 
 class PushDataStore(private val baseNotificationDao: BaseNotificationDao) : IPushDataStore {
+
     override suspend fun getNotificationById(notificationId: Int): BaseNotificationModel? {
         return baseNotificationDao.getNotificationById(notificationId)
     }
@@ -28,8 +29,12 @@ class PushDataStore(private val baseNotificationDao: BaseNotificationDao) : IPus
         baseNotificationDao.updateNotificationStatus(notificationId, status)
     }
 
-
-
-
+    override suspend fun getNotification(): List<BaseNotificationModel> {
+        return try {
+            baseNotificationDao.getNotification()
+        } catch (e: Exception) {
+            arrayListOf()
+        }
+    }
 
 }

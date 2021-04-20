@@ -40,11 +40,20 @@ data class CampaignModular(
         @SerializedName("isCheckImei")
         val isCheckImei: Boolean = false,
         @SerializedName("isUsingOvo")
-        val isUsingOvo: Boolean = false
+        val isUsingOvo: Boolean = false,
+        @SerializedName("campaignIdentifier")
+        val campaignIdentifier: Int = 0,
+        @SerializedName("background")
+        val background: String = "",
+        @SerializedName("paymentInfoWording")
+        val paymentInfoWording:String = ""
 ) {
     companion object {
         const val CAMPAIGN_ID_NEW_USER = 68
     }
+
+    var discountedPriceFmt: String = ""
+    var originalPriceFmt:String = ""
 
     private fun timeIsUnder1Day(): Boolean {
         return try {
@@ -67,15 +76,10 @@ data class CampaignModular(
      * Campaign For New User, always show even when timer > 24H but remove count down timer
      * when timer < 24H show count down timer
      */
-    val isCampaignNewUser
-        get() = isActive && (campaignType.toIntOrNull() == CAMPAIGN_ID_NEW_USER)
-
     val shouldShowRibbonCampaign
         get() = isActive && timeIsUnder1Day()
 
     val activeAndHasId
         get() = isActive && (campaignID.toIntOrNull() ?: 0) > 0
 
-    val getEndDataInt
-        get() = endDateUnix.toIntOrNull() ?: 0
 }

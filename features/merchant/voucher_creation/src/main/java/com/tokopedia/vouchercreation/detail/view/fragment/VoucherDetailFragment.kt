@@ -19,10 +19,10 @@ import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.kotlin.util.DownloadHelper
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.permission.PermissionCheckerHelper
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.analytics.VoucherCreationAnalyticConstant
 import com.tokopedia.vouchercreation.common.analytics.VoucherCreationAnalyticConstant.EventAction.Click
@@ -31,16 +31,20 @@ import com.tokopedia.vouchercreation.common.analytics.VoucherCreationTracking
 import com.tokopedia.vouchercreation.common.bottmsheet.StopVoucherDialog
 import com.tokopedia.vouchercreation.common.bottmsheet.downloadvoucher.DownloadVoucherBottomSheet
 import com.tokopedia.vouchercreation.common.bottmsheet.tipstrick.TipsTrickBottomSheet
+import com.tokopedia.vouchercreation.common.consts.VoucherCreationConst.JPEG_EXT
 import com.tokopedia.vouchercreation.common.consts.VoucherStatusConst
 import com.tokopedia.vouchercreation.common.consts.VoucherTypeConst
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
 import com.tokopedia.vouchercreation.common.domain.usecase.CancelVoucherUseCase
+import com.tokopedia.vouchercreation.common.errorhandler.MvcError
+import com.tokopedia.vouchercreation.common.errorhandler.MvcErrorHandler
 import com.tokopedia.vouchercreation.common.plt.MvcPerformanceMonitoringListener
 import com.tokopedia.vouchercreation.common.utils.DateTimeUtils
 import com.tokopedia.vouchercreation.common.utils.DateTimeUtils.DASH_DATE_FORMAT
 import com.tokopedia.vouchercreation.common.utils.DateTimeUtils.HOUR_FORMAT
-import com.tokopedia.vouchercreation.common.utils.SharingUtil
-import com.tokopedia.vouchercreation.common.utils.Socmed
+import com.tokopedia.vouchercreation.common.utils.DateTimeUtils.getDisplayedDateString
+import com.tokopedia.vouchercreation.common.utils.shareVoucher
+import com.tokopedia.vouchercreation.common.utils.showDownloadActionTicker
 import com.tokopedia.vouchercreation.common.utils.showErrorToaster
 import com.tokopedia.vouchercreation.create.domain.model.validation.VoucherTargetType
 import com.tokopedia.vouchercreation.create.view.activity.CreateMerchantVoucherStepsActivity
@@ -53,7 +57,6 @@ import com.tokopedia.vouchercreation.voucherlist.domain.model.ShopBasicDataResul
 import com.tokopedia.vouchercreation.voucherlist.model.ui.VoucherUiModel
 import com.tokopedia.vouchercreation.voucherlist.view.widget.CancelVoucherDialog
 import com.tokopedia.vouchercreation.voucherlist.view.widget.sharebottomsheet.ShareVoucherBottomSheet
-import com.tokopedia.vouchercreation.voucherlist.view.widget.sharebottomsheet.SocmedType
 import kotlinx.android.synthetic.main.fragment_mvc_voucher_detail.*
 import javax.inject.Inject
 
@@ -61,7 +64,7 @@ import javax.inject.Inject
  * Created By @ilhamsuaib on 30/04/20
  */
 
-class VoucherDetailFragment : BaseDetailFragment() {
+class VoucherDetailFragment : BaseDetailFragment(), DownloadHelper.DownloadHelperListener {
 
     companion object {
         fun newInstance(voucherId: Int): VoucherDetailFragment = VoucherDetailFragment().apply {
@@ -72,11 +75,13 @@ class VoucherDetailFragment : BaseDetailFragment() {
         }
 
         const val DOWNLOAD_REQUEST_CODE = 222
-        private const val SHARE_REQUEST_CODE = 225
+
+        const val COPY_PROMO_CODE_LABEL = "detail_promo_code"
 
         private const val VOUCHER_ID_KEY = "voucher_id"
 
-        private const val COPY_PROMO_CODE_LABEL = "detail_promo_code"
+        private const val ERROR_DETAIL = "Error get voucher detail"
+        private const val ERROR_CANCEL = "Error cancel voucher"
     }
 
     private var voucherUiModel: VoucherUiModel? = null
@@ -87,6 +92,9 @@ class VoucherDetailFragment : BaseDetailFragment() {
 
     @Inject
     lateinit var userSession: UserSessionInterface
+
+    @Inject
+    lateinit var permissionCheckerHelper: PermissionCheckerHelper
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -110,9 +118,7 @@ class VoucherDetailFragment : BaseDetailFragment() {
         GeneralExpensesInfoBottomSheetFragment.createInstance(context)
     }
 
-    private val shareVoucherBottomSheet by lazy {
-        ShareVoucherBottomSheet.createInstance()
-    }
+    private var shareVoucherBottomSheet: ShareVoucherBottomSheet? = null
 
     private val impressHolder = ImpressHolder()
 
@@ -151,7 +157,9 @@ class VoucherDetailFragment : BaseDetailFragment() {
                 .inject(this)
     }
 
-    override fun loadData(page: Int) {}
+    override fun loadData(page: Int) {
+        viewModel.getBroadCastMetaData()
+    }
 
     override fun onInfoContainerCtaClick(dataKey: String) {
         val editStep: Int
@@ -291,16 +299,26 @@ class VoucherDetailFragment : BaseDetailFragment() {
                 voucherUiModel?.imageSquare.toBlankOrString(),
                 userSession.userId)
                 .setOnDownloadClickListener { voucherList ->
-                    activity?.run {
-                        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
-                                && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                            val missingPermissions = arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                            requestPermissions(missingPermissions, DOWNLOAD_REQUEST_CODE)
-                        } else {
-                            voucherList.forEach {
-                                downloadFiles(it.downloadVoucherType.imageUrl)
-                            }
-                        }
+                    context?.run {
+                        permissionCheckerHelper.checkPermission(this@VoucherDetailFragment,
+                                PermissionCheckerHelper.Companion.PERMISSION_WRITE_EXTERNAL_STORAGE,
+                                object : PermissionCheckerHelper.PermissionCheckListener {
+                                    override fun onPermissionDenied(permissionText: String) {
+                                        permissionCheckerHelper.onPermissionDenied(this@run, permissionText)
+                                    }
+
+                                    override fun onNeverAskAgain(permissionText: String) {
+                                        permissionCheckerHelper.onNeverAskAgain(this@run, permissionText)
+                                    }
+
+                                    override fun onPermissionGranted() {
+                                        if (ActivityCompat.checkSelfPermission(this@run, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+                                            voucherList.forEach {
+                                                downloadFiles(it.downloadVoucherType.imageUrl)
+                                            }
+                                        }
+                                    }
+                                })
                     }
                 }
                 .show(childFragmentManager)
@@ -323,6 +341,17 @@ class VoucherDetailFragment : BaseDetailFragment() {
         }
     }
 
+    override fun onDownloadComplete() {
+        view?.showDownloadActionTicker(true)
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            permissionCheckerHelper.onRequestPermissionsResult(context, requestCode, permissions, grantResults)
+        }
+    }
+
     private fun observeLiveData() {
         viewLifecycleOwner.run {
             observe(viewModel.merchantVoucherModelLiveData) { result ->
@@ -338,6 +367,7 @@ class VoucherDetailFragment : BaseDetailFragment() {
                     is Fail -> {
                         clearAllData()
                         renderList(listOf(ErrorDetailUiModel))
+                        MvcErrorHandler.logToCrashlytics(result.throwable, ERROR_DETAIL)
                     }
                 }
             }
@@ -359,12 +389,28 @@ class VoucherDetailFragment : BaseDetailFragment() {
                                 VoucherStatusConst.NOT_STARTED -> showCancellationFailToaster(true)
                             }
                         }
+                        MvcErrorHandler.logToCrashlytics(result.throwable, ERROR_CANCEL)
                     }
                 }
             }
             observe(viewModel.shopBasicLiveData) { result ->
-                if (result is Success) {
-                    shopBasicData = result.data
+                when(result) {
+                    is Success -> shopBasicData = result.data
+                    is Fail -> MvcErrorHandler.logToCrashlytics(result.throwable, ERROR_DETAIL)
+                }
+            }
+            observe(viewModel.broadCastMetadata) { result ->
+                shareVoucherBottomSheet = when(result) {
+                    is Success -> {
+                        val broadCastMetaData = result.data
+                        setupShareBottomSheet(
+                                status = broadCastMetaData.status,
+                                quota = broadCastMetaData.quota
+                        )
+                    }
+                    is Fail -> {
+                        setupShareBottomSheet()
+                    }
                 }
             }
         }
@@ -378,6 +424,13 @@ class VoucherDetailFragment : BaseDetailFragment() {
         }
     }
 
+    private fun setupShareBottomSheet(status: Int = 0, quota: Int = 0): ShareVoucherBottomSheet? {
+        val shareVoucherBottomSheet = ShareVoucherBottomSheet.createInstance()
+        shareVoucherBottomSheet.setBroadCastChatStatus(status)
+        shareVoucherBottomSheet.setBroadCastChatQuota(quota)
+        return shareVoucherBottomSheet
+    }
+
     private fun showLoadingState() {
         adapter.clearAllElements()
         renderList(listOf(
@@ -387,79 +440,17 @@ class VoucherDetailFragment : BaseDetailFragment() {
 
     private fun showShareBottomSheet(voucher: VoucherUiModel) {
         if (!isAdded) return
-        shareVoucherBottomSheet
-                .setOnItemClickListener { socmedType ->
+        shareVoucherBottomSheet?.setOnItemClickListener { socmedType ->
                     context?.run {
-                        if (socmedType != SocmedType.COPY_LINK || socmedType != SocmedType.LAINNYA) {
-                            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                                    val missingPermissions = arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                                    requestPermissions(missingPermissions, SHARE_REQUEST_CODE)
-                                } else {
-                                    shareVoucher(socmedType, voucher)
-                                }
-                            } else {
-                                shareVoucher(socmedType, voucher)
-                            }
-                        }
+                        shopBasicData?.shareVoucher(
+                                context = this,
+                                socmedType = socmedType,
+                                voucher = voucher,
+                                userId = userSession.userId,
+                                shopId = userSession.shopId)
                     }
                 }
-                .show(childFragmentManager)
-    }
-
-    private fun shareVoucher(@SocmedType socmedType: Int,
-                             voucher: VoucherUiModel) {
-        context?.run {
-            shopBasicData?.let { shopData ->
-                val shareUrl = "${TokopediaUrl.getInstance().WEB}${shopData.shopDomain}"
-                val shareMessage =
-                        if (voucher.isPublic) {
-                            StringBuilder().apply {
-                                append(String.format(
-                                        getString(R.string.mvc_share_message_public).toBlankOrString(),
-                                        voucher.typeFormatted,
-                                        shopData.shopName))
-                                append("\n")
-                                append(shareUrl)
-                            }.toString()
-                        } else {
-                            StringBuilder().apply {
-                                append(String.format(
-                                        getString(R.string.mvc_share_message_private).toBlankOrString(),
-                                        voucher.typeFormatted,
-                                        voucher.code,
-                                        shopData.shopName))
-                                append("\n")
-                                append(shareUrl)
-                            }.toString()
-                        }
-                when(socmedType) {
-                    SocmedType.COPY_LINK -> {
-                        SharingUtil.copyTextToClipboard(this, COPY_PROMO_CODE_LABEL, shareMessage)
-                    }
-                    SocmedType.INSTAGRAM -> {
-                        SharingUtil.shareToSocialMedia(Socmed.INSTAGRAM, this, voucher.imageSquare)
-                    }
-                    SocmedType.WHATSAPP -> {
-                        SharingUtil.shareToSocialMedia(Socmed.WHATSAPP, this, voucher.imageSquare, shareMessage)
-                    }
-                    SocmedType.LINE -> {
-                        SharingUtil.shareToSocialMedia(Socmed.LINE, this, voucher.imageSquare, shareMessage)
-                    }
-                    SocmedType.TWITTER -> {
-                        SharingUtil.shareToSocialMedia(Socmed.TWITTER, this, voucher.imageSquare, shareMessage)
-                    }
-                    SocmedType.LAINNYA -> {
-                        SharingUtil.otherShare(this, shareMessage)
-                    }
-                }
-            }
-            VoucherCreationTracking.sendShareClickTracking(
-                    socmedType = socmedType,
-                    userId = userSession.userId,
-                    isDetail = true
-            )
-        }
+        shareVoucherBottomSheet?.show(childFragmentManager)
     }
 
     private fun setToolbarTitle(toolbarTitle: String) {
@@ -477,7 +468,7 @@ class VoucherDetailFragment : BaseDetailFragment() {
             val startHour = DateTimeUtils.reformatUnsafeDateTime(startTime, HOUR_FORMAT)
             val endHour = DateTimeUtils.reformatUnsafeDateTime(finishTime, HOUR_FORMAT)
 
-            val fullDisplayedDate = getDisplayedDateString(startDate, startHour, endDate, endHour)
+            val fullDisplayedDate = getDisplayedDateString(context, startDate, startHour, endDate, endHour)
 
             val voucherDetailInfoList: MutableList<VoucherDetailUiModel> = mutableListOf(
                     VoucherHeaderUiModel(
@@ -503,7 +494,7 @@ class VoucherDetailFragment : BaseDetailFragment() {
 
             if (status == VoucherStatusConst.ONGOING) {
                 voucherDetailInfoList.addAll(listOf(
-                        UsageProgressUiModel(type, quota, remainingQuota, bookedQuota),
+                        UsageProgressUiModel(type, quota, confirmedQuota, bookedQuota),
                         DividerUiModel(DividerUiModel.THICK),
                         getOngoingTipsSection(isPublic)
                 ))
@@ -512,7 +503,7 @@ class VoucherDetailFragment : BaseDetailFragment() {
             if (status == VoucherStatusConst.ENDED) {
                 voucherDetailInfoList.add(
                         // pass empty string for now as product requirement changed temporarily
-                        PromoPerformanceUiModel("", bookedQuota, quota)
+                        PromoPerformanceUiModel("", confirmedQuota, quota)
                 )
             }
 
@@ -652,11 +643,26 @@ class VoucherDetailFragment : BaseDetailFragment() {
 
     @RequiresPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
     private fun downloadFiles(uri: String) {
-        val missingPermissions = arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE)
         activity?.let {
-            ActivityCompat.requestPermissions(it, missingPermissions, DOWNLOAD_REQUEST_CODE)
-            val helper = DownloadHelper(it, uri, System.currentTimeMillis().toString(), null)
-            helper.downloadFile { true }
+            try {
+                val helper = DownloadHelper(it, uri, System.currentTimeMillis().toString() + JPEG_EXT, this)
+                helper.downloadFile { true }
+            } catch (se: SecurityException) {
+                MvcErrorHandler.logToCrashlytics(se, MvcError.ERROR_SECURITY)
+                view?.showDownloadActionTicker(
+                        isSuccess = false,
+                        isInternetProblem = false
+                )
+            } catch (iae: IllegalArgumentException) {
+                MvcErrorHandler.logToCrashlytics(iae, MvcError.ERROR_URI)
+                view?.showDownloadActionTicker(
+                        isSuccess = false,
+                        isInternetProblem = false
+                )
+            } catch (ex: Exception) {
+                MvcErrorHandler.logToCrashlytics(ex, MvcError.ERROR_DOWNLOAD)
+                view?.showDownloadActionTicker(false)
+            }
         }
     }
 

@@ -1,8 +1,8 @@
 package com.tokopedia.purchase_platform.common.feature.promo.view.mapper
 
 import com.tokopedia.purchase_platform.common.feature.promo.data.response.validateuse.*
+import com.tokopedia.purchase_platform.common.feature.promo.domain.model.PromoSpId
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.*
-import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.TrackingDetailsItemUiModel
 
 /**
  * Created by fwidjaja on 2020-03-05.
@@ -102,6 +102,7 @@ class ValidateUsePromoCheckoutMapper {
             var code = ""
             voucherOrdersItem?.code?.let { code = it }
             return PromoCheckoutVoucherOrdersItemUiModel(
+                    success = voucherOrdersItem?.success ?: false,
                     code = code,
                     type = voucherOrdersItem?.type ?: "",
                     uniqueId = voucherOrdersItem?.uniqueId ?: "",
@@ -111,7 +112,6 @@ class ValidateUsePromoCheckoutMapper {
 
         private fun mapToAdditionalInfoUiModel(additionalInfo: AdditionalInfo?): AdditionalInfoUiModel {
             val additionalInfoUiModel = AdditionalInfoUiModel()
-            val listUsageSummariesUiModel = arrayListOf<UsageSummariesUiModel>()
             additionalInfo?.messageInfo?.let {
                 additionalInfoUiModel.messageInfoUiModel.message = it.message
                 additionalInfoUiModel.messageInfoUiModel.detail = it.detail
@@ -124,11 +124,33 @@ class ValidateUsePromoCheckoutMapper {
                 additionalInfoUiModel.emptyCartInfoUiModel.imgUrl = it.imageUrl
                 additionalInfoUiModel.emptyCartInfoUiModel.message = it.message
             }
+            val listUsageSummariesUiModel = arrayListOf<UsageSummariesUiModel>()
             additionalInfo?.usageSummaries?.forEach {
                 listUsageSummariesUiModel.add(mapToUsageSummariesUiModel(it))
             }
             additionalInfoUiModel.usageSummariesUiModel = listUsageSummariesUiModel
+            val promoSpIdUiModels = arrayListOf<PromoSpIdUiModel>()
+            additionalInfo?.promoSpIds?.forEach {
+                promoSpIdUiModels.add(mapPromoSpId(it))
+            }
+            additionalInfoUiModel.promoSpIds = promoSpIdUiModels
             return additionalInfoUiModel
+        }
+
+        private fun mapPromoSpId(promoSpId: PromoSpId): PromoSpIdUiModel {
+            return PromoSpIdUiModel().apply {
+                val mvcShippingBenefitUiModels = arrayListOf<MvcShippingBenefitUiModel>()
+                promoSpId.mvcShippingBenefits.forEach {
+                    mvcShippingBenefitUiModels.add(
+                            MvcShippingBenefitUiModel().apply {
+                                benefitAmount = it.benefitAmount
+                                spId = it.spId
+                            }
+                    )
+                }
+                mvcShippingBenefits = mvcShippingBenefitUiModels
+                uniqueId = promoSpId.uniqueId
+            }
         }
 
         private fun mapToUsageSummariesUiModel(usageSummaries: UsageSummaries): UsageSummariesUiModel {
@@ -136,7 +158,8 @@ class ValidateUsePromoCheckoutMapper {
                     desc = usageSummaries.description,
                     type = usageSummaries.type,
                     amountStr = usageSummaries.amountString,
-                    amount = usageSummaries.amount)
+                    amount = usageSummaries.amount,
+                    currencyDetailStr = usageSummaries.currencyDetailsStr)
         }
 
         private fun mapToBenefitSummaryInfoUiModel(benefitSummaryInfo: BenefitSummaryInfo?): BenefitSummaryInfoUiModel {

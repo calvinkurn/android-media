@@ -5,26 +5,29 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.airbnb.lottie.LottieComposition
 import com.airbnb.lottie.LottieCompositionFactory
-import com.tokopedia.design.image.ImageLoader
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.thankyou_native.R
 import com.tokopedia.thankyou_native.data.mapper.CashOnDelivery
 import com.tokopedia.thankyou_native.data.mapper.PaymentTypeMapper
+import com.tokopedia.thankyou_native.domain.model.GatewayAdditionalData
 import com.tokopedia.thankyou_native.domain.model.ThanksPageData
 import com.tokopedia.thankyou_native.helper.getMaskedNumberSubStringPayment
 import com.tokopedia.thankyou_native.presentation.activity.ThankYouPageActivity
+import com.tokopedia.thankyou_native.presentation.helper.ScrollHelper
 import com.tokopedia.thankyou_native.presentation.viewModel.CheckWhiteListViewModel
+import com.tokopedia.thankyou_native.presentation.views.GyroView
+import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.thank_fragment_success_payment.*
-import java.util.zip.ZipInputStream
 
 
 const val CHARACTER_LOADER_JSON_ZIP_FILE = "thanks_page_instant_anim.zip"
@@ -33,18 +36,25 @@ class InstantPaymentFragment : ThankYouBaseFragment() {
 
     private lateinit var dialogUnify: DialogUnify
 
+    private val scrollHelper: ScrollHelper by lazy {
+        ScrollHelper(this)
+    }
+
     private val checkWhiteListViewModel: CheckWhiteListViewModel by lazy(LazyThreadSafetyMode.NONE) {
         val viewModelProvider = ViewModelProviders.of(this, viewModelFactory.get())
         viewModelProvider.get(CheckWhiteListViewModel::class.java)
     }
 
-    override fun getLoadingView(): View? = loadingView
+    override fun getLoadingView(): View? = loadingLayout
 
     override fun getRecommendationContainer(): LinearLayout? = recommendationContainer
+    override fun getFeatureListingContainer(): GyroView? = featureListingContainer
 
     override fun onThankYouPageDataReLoaded(data: ThanksPageData) {
-        //not reuquired
+        //not required
     }
+
+    override fun getTopTickerView(): Ticker? = topTicker
 
     override fun getScreenName(): String = SCREEN_NAME
 
@@ -58,12 +68,13 @@ class InstantPaymentFragment : ThankYouBaseFragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.thank_fragment_success_payment, container, false)
+        val v = inflater.inflate(R.layout.thank_fragment_success_payment, container, false)
+        scrollHelper.detectHorizontalScroll(v)
+        return v
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setActionMenu()
         showCharacterAnimation()
         context?.let {
             checkCreditCardRegisteredForRBA(it)
@@ -73,8 +84,7 @@ class InstantPaymentFragment : ThankYouBaseFragment() {
 
     private fun showCharacterAnimation() {
         context?.let {
-            val lottieFileZipStream = ZipInputStream(it.assets.open(CHARACTER_LOADER_JSON_ZIP_FILE))
-            val lottieTask = LottieCompositionFactory.fromZipStream(lottieFileZipStream, null)
+            val lottieTask = LottieCompositionFactory.fromAsset(context, CHARACTER_LOADER_JSON_ZIP_FILE)
             lottieTask?.addListener { result: LottieComposition? ->
                 result?.let {
                     lottieAnimationView?.setComposition(result)
@@ -84,13 +94,26 @@ class InstantPaymentFragment : ThankYouBaseFragment() {
         }
     }
 
-
-    private fun setActionMenu() {
-        val headerUnify = (activity as ThankYouPageActivity).getHeader()
-        headerUnify.actionText = getString(R.string.thank_menu_detail)
-        headerUnify.actionTextView?.setOnClickListener { openInvoiceDetail(thanksPageData) }
+    override fun onPause() {
+        super.onPause()
+        cancelGratifDialog()
     }
 
+    override fun onStop() {
+        super.onStop()
+        cancelGratifDialog()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        cancelGratifDialog()
+    }
+
+    fun cancelGratifDialog() {
+        if (activity is ThankYouPageActivity) {
+            (activity as ThankYouPageActivity).cancelGratifDialog()
+        }
+    }
 
     override fun bindThanksPageDataToUI(thanksPageData: ThanksPageData) {
         if (thanksPageData.thanksCustomization == null || thanksPageData.thanksCustomization.customTitle.isNullOrBlank()) {
@@ -110,18 +133,40 @@ class InstantPaymentFragment : ThankYouBaseFragment() {
             btn_see_transaction_list.text = thanksPageData.thanksCustomization.customTitleOrderButton
         }
 
-        ImageLoader.LoadImage(iv_payment, thanksPageData.gatewayImage)
+        if (thanksPageData.gatewayImage.isNotEmpty()) {
+            ivPayment.scaleType = ImageView.ScaleType.CENTER_INSIDE
+            ivPayment.setImageUrl(thanksPageData.gatewayImage)
+        }
+
+        val gatewayAdditionalData = getGatewayAdditionalInfo()
+        if (gatewayAdditionalData != null) {
+            tvInstallmentInfo.text = gatewayAdditionalData.value ?: ""
+            tvInstallmentInfo.visible()
+        } else if (!thanksPageData.additionalInfo.installmentInfo.isNullOrBlank()) {
+            tvInstallmentInfo.text = thanksPageData.additionalInfo.installmentInfo
+            tvInstallmentInfo.visible()
+        }else{
+            tvInstallmentInfo.gone()
+        }
+
         if (thanksPageData.additionalInfo.maskedNumber.isNotBlank()) {
-            tv_payment_method_name.text = thanksPageData.additionalInfo.maskedNumber.getMaskedNumberSubStringPayment()
-            if (thanksPageData.additionalInfo.installmentInfo.isNotBlank()) {
-                tv_payment_interest.text = thanksPageData.additionalInfo.installmentInfo
-                tv_payment_interest.visible()
-            }
+            tv_payment_method.text = thanksPageData.additionalInfo.maskedNumber.getMaskedNumberSubStringPayment()
         } else
-            tv_payment_method_name.text = thanksPageData.gatewayName
-        tv_payment_amount.text = getString(R.string.thankyou_rp_without_space, thanksPageData.amountStr)
+            tv_payment_method.text = thanksPageData.gatewayName
+
+        if (thanksPageData.paymentMethodCount > 0)
+            tvPaymentMethodCount.text = getString(R.string.thank_payment_method_count, thanksPageData.paymentMethodCount)
+        else
+            tvPaymentMethodCount.gone()
+
+
+        tvTotalAmount.text = getString(R.string.thankyou_rp_without_space, thanksPageData.amountStr)
+
+        clPaymentMethod.setOnClickListener { openInvoiceDetail(thanksPageData) }
+
         btn_see_transaction_list.setOnClickListener {
-            if (thanksPageData.thanksCustomization == null || thanksPageData.thanksCustomization.customOrderUrlApp.isNullOrBlank()) {
+            if (thanksPageData.thanksCustomization == null
+                    || thanksPageData.thanksCustomization.customOrderUrlApp.isNullOrBlank()) {
                 gotoOrderList()
             } else {
                 gotoOrderList(thanksPageData.thanksCustomization.customOrderUrlApp)
@@ -130,8 +175,17 @@ class InstantPaymentFragment : ThankYouBaseFragment() {
         setUpHomeButton(btnShopAgain)
     }
 
+    private fun getGatewayAdditionalInfo(): GatewayAdditionalData? {
+        thanksPageData.gatewayAdditionalDataList?.forEach {
+            if (thanksPageData.gatewayName == it.key) {
+                return it
+            }
+        }
+        return null
+    }
+
     private fun observeViewModel() {
-        checkWhiteListViewModel.whiteListResultLiveData.observe(this, Observer {
+        checkWhiteListViewModel.whiteListResultLiveData.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> onSuccessFullyRegister()
                 is Fail -> onSingleAuthRegisterFail()
@@ -141,12 +195,12 @@ class InstantPaymentFragment : ThankYouBaseFragment() {
     }
 
     private fun onSingleAuthRegisterFail() {
-        loadingView.gone()
+        loadingLayout.gone()
         showErrorOnUI(getString(R.string.thank_enable_single_authentication_error)) { enableSingleAuthentication() }
     }
 
     private fun onSuccessFullyRegister() {
-        loadingView.gone()
+        loadingLayout.gone()
         showToaster(getString(R.string.thank_enable_single_authentication_success))
     }
 
@@ -173,7 +227,7 @@ class InstantPaymentFragment : ThankYouBaseFragment() {
     private fun enableSingleAuthentication() {
         if (::dialogUnify.isInitialized)
             dialogUnify.cancel()
-        loadingView.visible()
+        loadingLayout.visible()
         checkWhiteListViewModel.registerForSingleAuth()
     }
 

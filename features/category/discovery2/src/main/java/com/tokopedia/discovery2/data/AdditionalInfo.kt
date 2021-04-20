@@ -4,7 +4,9 @@ import com.google.gson.annotations.SerializedName
 
 data class AdditionalInfo(
         @SerializedName("category")
-        val category: Category?
+        val category: Category?,
+
+        val categoryData : HashMap<String, String>? = null
 )
 
 data class Category(

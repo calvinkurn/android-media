@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.unifycomponents.CardUnify xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    app:cardCornerRadius="@dimen/layout_lvl1">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/shcMlgSuccessState"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/shc_super_large_widget_height">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvShcMultiLineGraphTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/layout_lvl2"
+            android:layout_marginLeft="@dimen/layout_lvl2"
+            android:layout_marginTop="@dimen/layout_lvl2"
+            android:layout_marginEnd="@dimen/layout_lvl3"
+            android:layout_marginRight="@dimen/layout_lvl2"
+            android:drawablePadding="@dimen/layout_lvl1"
+            android:textColor="@color/Unify_N700_96"
+            android:textSize="@dimen/fontSize_lvl3"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="heading_5"
+            app:typographyWeight="bold"
+            tools:text="Total Pendapatan" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvShcGraphMetrics"
+            android:layout_width="@dimen/layout_lvl0"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/shc_dimen_12dp"
+            android:layout_marginTop="@dimen/layout_lvl1"
+            android:layout_marginEnd="@dimen/shc_dimen_12dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvShcMultiLineGraphTitle"
+            tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:listitem="@layout/shc_item_multi_line_metric"
+            tools:orientation="horizontal" />
+
+        <com.tokopedia.sellerhomecommon.presentation.view.customview.MultiLineGraphLegendView
+            android:id="@+id/lvShcCurrentPeriod"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/layout_lvl1"
+            android:layout_marginEnd="@dimen/layout_lvl2"
+            android:visibility="invisible"
+            app:layout_constraintEnd_toStartOf="@+id/lvShcLastPeriod"
+            app:layout_constraintTop_toBottomOf="@+id/rvShcGraphMetrics" />
+
+        <com.tokopedia.sellerhomecommon.presentation.view.customview.MultiLineGraphLegendView
+            android:id="@+id/lvShcLastPeriod"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/layout_lvl1"
+            android:layout_marginEnd="@dimen/layout_lvl2"
+            android:visibility="invisible"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/rvShcGraphMetrics" />
+
+        <com.tokopedia.charts.view.LineChartView
+            android:id="@+id/chartViewShcMultiLine"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/layout_lvl0"
+            android:layout_marginStart="@dimen/shc_dimen_12dp"
+            android:layout_marginTop="@dimen/layout_lvl3"
+            android:layout_marginEnd="@dimen/shc_dimen_12dp"
+            android:layout_marginBottom="@dimen/layout_lvl2"
+            app:layout_constraintBottom_toTopOf="@+id/tvShcMultiLineCta"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/rvShcGraphMetrics"
+            app:layout_constraintVertical_bias="0.0" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvShcMultiLineCta"
+            android:layout_width="@dimen/layout_lvl0"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/layout_lvl1"
+            android:layout_marginTop="@dimen/layout_lvl2"
+            android:layout_marginBottom="@dimen/layout_lvl2"
+            android:gravity="end"
+            android:paddingStart="@dimen/layout_lvl0"
+            android:paddingEnd="@dimen/spacing_lvl2"
+            android:textColor="@color/Unify_G500"
+            android:textSize="@dimen/fontSize_lvl3"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/imgShcMultiLineCta"
+            app:layout_constraintStart_toStartOf="parent"
+            app:typographyType="body_2"
+            app:typographyWeight="reguler"
+            tools:text="Selanjutnya"
+            tools:visibility="visible" />
+
+        <ImageView
+            android:id="@+id/imgShcMultiLineCta"
+            android:layout_width="@dimen/layout_lvl2"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_lvl1"
+            android:layout_marginEnd="@dimen/layout_lvl2"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@id/tvShcMultiLineCta"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/tvShcMultiLineCta"
+            app:srcCompat="@drawable/ic_arrow_right_default"
+            tools:visibility="visible"
+            android:contentDescription="@string/shc_content_desc_button_lihat_selengkapnya" />
+
+        <include
+            layout="@layout/shc_partial_common_widget_state_error"
+            android:layout_width="@dimen/layout_lvl0"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/layout_lvl9"
+            android:layout_marginBottom="@dimen/layout_lvl9"
+            app:layout_constraintBottom_toTopOf="@+id/tvShcMultiLineCta"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/rvShcGraphMetrics" />
+
+        <include
+            layout="@layout/shc_partial_line_graph_state_empty"
+            android:layout_width="@dimen/layout_lvl0"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/spacing_lvl4"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@id/chartViewShcMultiLine"
+            app:layout_constraintEnd_toEndOf="@id/chartViewShcMultiLine"
+            app:layout_constraintStart_toStartOf="@id/chartViewShcMultiLine"
+            app:layout_constraintTop_toTopOf="@id/chartViewShcMultiLine"
+            tools:visibility="visible" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <include layout="@layout/shc_partial_multi_line_graph_loading_state" />
+
+</com.tokopedia.unifycomponents.CardUnify>

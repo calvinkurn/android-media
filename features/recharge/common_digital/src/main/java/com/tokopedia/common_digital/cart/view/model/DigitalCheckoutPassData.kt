@@ -13,6 +13,7 @@ class DigitalCheckoutPassData() : Parcelable {
     var action: String? = null
     var categoryId: String? = null
     var clientNumber: String? = null
+    var orderId: String? = null
     var zoneId: String? = null
     var productId: String? = null
     var operatorId: String? = null
@@ -27,11 +28,13 @@ class DigitalCheckoutPassData() : Parcelable {
     var source: Int = 0
     var fields: HashMap<String, String>? = null
     var needGetCart: Boolean = false
+    var isFromPDP: Boolean = false
 
     constructor(parcel: Parcel) : this() {
         action = parcel.readString()
         categoryId = parcel.readString()
         clientNumber = parcel.readString()
+        orderId = parcel.readString()
         zoneId = parcel.readString()
         productId = parcel.readString()
         operatorId = parcel.readString()
@@ -50,12 +53,14 @@ class DigitalCheckoutPassData() : Parcelable {
             fieldsParam?.run { fields = this as? HashMap<String, String> }
         }
         needGetCart = parcel.readByte() != 0.toByte()
+        isFromPDP = parcel.readByte() != 0.toByte()
     }
 
     private constructor(builder: Builder) : this() {
         action = builder.action
         categoryId = builder.categoryId
         clientNumber = builder.clientNumber
+        orderId = builder.orderId
         zoneId = builder.zoneId
         productId = builder.productId
         operatorId = builder.operatorId
@@ -70,12 +75,14 @@ class DigitalCheckoutPassData() : Parcelable {
         source = builder.source
         fields = builder.fields
         needGetCart = builder.needGetCart
+        isFromPDP = builder.isFromPDP
     }
 
     class Builder {
         var action: String? = null
         var categoryId: String? = null
         var clientNumber: String? = null
+        var orderId: String? = null
         var zoneId: String? = null
         var productId: String? = null
         var operatorId: String? = null
@@ -90,6 +97,7 @@ class DigitalCheckoutPassData() : Parcelable {
         var source: Int = 0
         var fields: HashMap<String, String>? = null
         var needGetCart: Boolean = false
+        var isFromPDP: Boolean = false
 
         fun action(`val`: String): Builder {
             action = `val`
@@ -103,6 +111,11 @@ class DigitalCheckoutPassData() : Parcelable {
 
         fun clientNumber(`val`: String): Builder {
             clientNumber = `val`
+            return this
+        }
+
+        fun orderId(`val`: String): Builder {
+            orderId = `val`
             return this
         }
 
@@ -171,6 +184,11 @@ class DigitalCheckoutPassData() : Parcelable {
             return this
         }
 
+        fun isFromPDP(`val`: Boolean): Builder {
+            isFromPDP = `val`
+            return this
+        }
+
         fun fields(`val`: HashMap<String, String>): Builder {
             fields = `val`
             return this
@@ -187,6 +205,7 @@ class DigitalCheckoutPassData() : Parcelable {
         val PARAM_ACTION = "action"
         val PARAM_CATEGORY_ID = "category_id"
         val PARAM_CLIENT_NUMBER = "client_number"
+        val PARAM_ORDER_ID = "order_id"
         val PARAM_ZONE_ID = "zone_id"
         val PARAM_PRODUCT_ID = "product_id"
         val PARAM_OPERATOR_ID = "operator_id"
@@ -201,6 +220,7 @@ class DigitalCheckoutPassData() : Parcelable {
         val DEFAULT_ACTION = "init_data"
         val UTM_SOURCE_ANDROID = "android"
         val UTM_MEDIUM_WIDGET = "widget"
+        val PARAM_FIELD_LABEL_PREFIX = "field_"
 
         @JvmField
         val CREATOR: Parcelable.Creator<DigitalCheckoutPassData> = object : Parcelable.Creator<DigitalCheckoutPassData> {
@@ -218,6 +238,7 @@ class DigitalCheckoutPassData() : Parcelable {
         parcel.writeString(action)
         parcel.writeString(categoryId)
         parcel.writeString(clientNumber)
+        parcel.writeString(orderId)
         parcel.writeString(zoneId)
         parcel.writeString(productId)
         parcel.writeString(operatorId)
@@ -234,6 +255,7 @@ class DigitalCheckoutPassData() : Parcelable {
         bundle.putSerializable(PARAM_FIELDS, fields)
         parcel.writeBundle(bundle)
         parcel.writeByte(if (needGetCart) 1 else 0)
+        parcel.writeByte(if (isFromPDP) 1 else 0)
     }
 
     override fun describeContents(): Int {

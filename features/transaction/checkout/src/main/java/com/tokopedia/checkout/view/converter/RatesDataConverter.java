@@ -1,16 +1,15 @@
 package com.tokopedia.checkout.view.converter;
 
-import android.text.TextUtils;
-
+import com.tokopedia.checkout.domain.model.cartshipmentform.GroupShop;
+import com.tokopedia.checkout.domain.model.cartshipmentform.Product;
 import com.tokopedia.logisticcart.shipping.model.CartItemModel;
-import com.tokopedia.logisticdata.data.entity.address.RecipientAddressModel;
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartData;
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel;
 import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData;
 import com.tokopedia.logisticcart.shipping.model.ShopShipment;
-import com.tokopedia.checkout.domain.model.cartshipmentform.GroupShop;
-import com.tokopedia.checkout.domain.model.cartshipmentform.Product;
-import com.tokopedia.checkout.domain.model.cartshipmentform.UserAddress;
+import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel;
+import com.tokopedia.logisticCommon.data.entity.address.UserAddress;
+import com.tokopedia.purchase_platform.common.utils.UtilsKt;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,16 +57,20 @@ public class RatesDataConverter {
                                                 ShipmentCartItemModel shipmentCartItemModel, String keroToken, String keroUnixTime) {
         ShipmentCartData shipmentCartData = new ShipmentCartData();
         initializeShipmentCartData(userAddress, groupShop, shipmentCartData, keroToken, keroUnixTime);
-        int orderValue = 0;
+        long orderValue = 0;
         int totalWeight = 0;
+        int preOrderDuration = 0;
         if (shipmentCartItemModel.getCartItemModels() != null) {
             for (CartItemModel cartItemModel : shipmentCartItemModel.getCartItemModels()) {
                 orderValue += (cartItemModel.getQuantity() * cartItemModel.getPrice());
                 totalWeight += (cartItemModel.getQuantity() * cartItemModel.getWeight());
+                preOrderDuration = cartItemModel.getPreOrderDurationDay();
             }
         }
         shipmentCartData.setOrderValue(orderValue);
         shipmentCartData.setWeight(totalWeight);
+        shipmentCartData.setPreOrderDuration(preOrderDuration);
+        shipmentCartData.setFulfillment(shipmentCartItemModel.isFulfillment());
 
         return shipmentCartData;
     }
@@ -78,16 +81,16 @@ public class RatesDataConverter {
         shipmentCartData.setToken(keroToken);
         shipmentCartData.setUt(keroUnixTime);
         shipmentCartData.setDestinationAddress(userAddress.getAddress());
-        shipmentCartData.setDestinationDistrictId(String.valueOf(userAddress.getDistrictId()));
-        shipmentCartData.setDestinationLatitude(!TextUtils.isEmpty(userAddress.getLatitude()) ?
+        shipmentCartData.setDestinationDistrictId(userAddress.getDistrictId());
+        shipmentCartData.setDestinationLatitude(!UtilsKt.isNullOrEmpty(userAddress.getLatitude()) ?
                 userAddress.getLatitude() : null);
-        shipmentCartData.setDestinationLongitude(!TextUtils.isEmpty(userAddress.getLongitude()) ?
+        shipmentCartData.setDestinationLongitude(!UtilsKt.isNullOrEmpty(userAddress.getLongitude()) ?
                 userAddress.getLongitude() : null);
         shipmentCartData.setDestinationPostalCode(userAddress.getPostalCode());
         shipmentCartData.setOriginDistrictId(String.valueOf(groupShop.getShop().getDistrictId()));
-        shipmentCartData.setOriginLatitude(!TextUtils.isEmpty(groupShop.getShop().getLatitude()) ?
+        shipmentCartData.setOriginLatitude(!UtilsKt.isNullOrEmpty(groupShop.getShop().getLatitude()) ?
                 groupShop.getShop().getLatitude() : null);
-        shipmentCartData.setOriginLongitude(!TextUtils.isEmpty(groupShop.getShop().getLongitude()) ?
+        shipmentCartData.setOriginLongitude(!UtilsKt.isNullOrEmpty(groupShop.getShop().getLongitude()) ?
                 groupShop.getShop().getLongitude() : null);
         shipmentCartData.setOriginPostalCode(groupShop.getShop().getPostalCode());
         shipmentCartData.setCategoryIds(getCategoryIds(groupShop.getProducts()));
@@ -109,7 +112,7 @@ public class RatesDataConverter {
                 categoryIds.add(categoryId);
             }
         }
-        return TextUtils.join(",", categoryIds);
+        return UtilsKt.joinToStringFromListInt(categoryIds, ",");
     }
 
     private boolean isForceInsurance(List<com.tokopedia.checkout.domain.model.cartshipmentform.Product> products) {
@@ -129,7 +132,7 @@ public class RatesDataConverter {
                 shippingNames.add(shippingName);
             }
         }
-        return TextUtils.join(",", shippingNames);
+        return UtilsKt.joinToString(shippingNames, ",");
     }
 
     public String getShippingServices(List<ShopShipment> shopShipments) {
@@ -142,7 +145,7 @@ public class RatesDataConverter {
                 }
             }
         }
-        return TextUtils.join(",", shippingServices);
+        return UtilsKt.joinToString(shippingServices, ",");
     }
 
     public static String getLogisticPromoCode(ShipmentCartItemModel itemModel) {

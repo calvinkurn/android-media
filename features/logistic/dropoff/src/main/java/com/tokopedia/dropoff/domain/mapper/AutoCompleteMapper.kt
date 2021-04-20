@@ -1,17 +1,17 @@
 package com.tokopedia.dropoff.domain.mapper
 
-import com.tokopedia.dropoff.data.response.getAddress.AddressResponse
-import com.tokopedia.dropoff.data.response.getDistrict.GetDistrictResponse
+import com.tokopedia.logisticCommon.data.response.AddressResponse
+import com.tokopedia.logisticCommon.data.response.GetDistrictResponse
 import com.tokopedia.dropoff.ui.autocomplete.model.ValidatedDistrict
-import com.tokopedia.dropoff.data.response.autoComplete.AutocompleteResponse
-import com.tokopedia.logisticdata.data.autocomplete.SavedAddress
-import com.tokopedia.logisticdata.data.autocomplete.SuggestedPlace
+import com.tokopedia.logisticCommon.domain.model.SavedAddress
+import com.tokopedia.logisticCommon.domain.model.SuggestedPlace
+import com.tokopedia.logisticCommon.data.response.AutoCompleteResponse
 import javax.inject.Inject
 
 class AutoCompleteMapper @Inject constructor() {
 
-    fun mapAutoComplete(response: AutocompleteResponse): List<SuggestedPlace> {
-        val dataResponse = response.keroMapsAutocomplete.data.predictions
+    fun mapAutoComplete(response: AutoCompleteResponse): List<SuggestedPlace> {
+        val dataResponse = response.keroMapsAutocomplete.AData.predictions
         return dataResponse.map {
             SuggestedPlace(
                     it.structuredFormatting.mainText,
