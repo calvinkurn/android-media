@@ -19,7 +19,6 @@ import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.toDp
 import com.tokopedia.play.widget.R
 import com.tokopedia.play.widget.analytic.medium.PlayWidgetMediumAnalyticListener
-import com.tokopedia.play.widget.extension.isNotEmptyAndBlank
 import com.tokopedia.play.widget.ui.adapter.PlayWidgetCardMediumAdapter
 import com.tokopedia.play.widget.ui.adapter.viewholder.medium.PlayWidgetCardMediumBannerViewHolder
 import com.tokopedia.play.widget.ui.adapter.viewholder.medium.PlayWidgetCardMediumChannelViewHolder
@@ -256,11 +255,11 @@ class PlayWidgetMediumView : ConstraintLayout, IPlayWidgetView {
         )
     }
 
-    private fun shouldHandleOverlayImage(imageUrl: String) = imageUrl.isNotEmptyAndBlank()
+    private fun shouldHandleOverlayImage(imageUrl: String) = imageUrl.isNotBlank()
 
     private fun shouldAddSpacing(data: PlayWidgetBackgroundUiModel): Boolean {
-        return data.overlayImageUrl.isNotEmptyAndBlank()
-                && (data.gradientColors.isNotEmpty() || data.backgroundUrl.isNotEmptyAndBlank())
+        return data.overlayImageUrl.isNotBlank()
+                && (data.gradientColors.isNotEmpty() || data.backgroundUrl.isNotBlank())
     }
 
     private fun overlayImageHandler(data: PlayWidgetBackgroundUiModel): ImageHandler.ImageLoaderStateListener {
