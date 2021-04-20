@@ -13,7 +13,6 @@ import com.tokopedia.product.info.usecase.GetProductDetailBottomSheetUseCase
 import com.tokopedia.product.info.view.BsProductDetailInfoViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.impl.annotations.RelaxedMockK

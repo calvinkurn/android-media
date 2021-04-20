@@ -294,7 +294,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
     override fun onStart() {
         super.onStart()
-        profileAnalytics.sendScreen(activity!!, screenName)
+        profileAnalytics.sendScreen(requireActivity(), screenName)
     }
 
     override fun onResume() {
@@ -351,11 +351,11 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     }
 
     override fun getRecyclerView(view: View?): RecyclerView {
-        return view!!.findViewById(R.id.recyclerView)
+        return requireView().findViewById(R.id.recyclerView)
     }
 
     override fun getSwipeRefreshLayout(view: View?): SwipeRefreshLayout? {
-        return view!!.findViewById(R.id.swipeToRefresh)
+        return requireView().findViewById(R.id.swipeToRefresh)
     }
 
     override fun onSwipeRefresh() {
@@ -588,17 +588,17 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
             if (activity != null &&
                     arguments != null &&
-                    arguments!!.getInt(PARAM_POST_ID, -1) == model.id) {
+                    requireArguments().getInt(PARAM_POST_ID, -1) == model.id) {
 
                 if (resultIntent == null) {
                     resultIntent = Intent()
-                    resultIntent!!.putExtras(arguments!!)
+                    resultIntent!!.putExtras(requireArguments())
                 }
                 resultIntent!!.putExtra(
                         PARAM_IS_LIKED,
                         if (like.isChecked) IS_LIKE_TRUE else IS_LIKE_FALSE)
                 resultIntent!!.putExtra(PARAM_TOTAL_LIKES, like.value)
-                activity!!.setResult(Activity.RESULT_OK, resultIntent)
+                requireActivity().setResult(Activity.RESULT_OK, resultIntent)
             }
         }
     }
@@ -703,7 +703,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
             }
 
             if (it.isFollowed) {
-                Toaster.make(view!!, getString(R.string.follow_success_toast),
+                Toaster.make(requireView(), getString(R.string.follow_success_toast),
                         Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL, getString(R.string.follow_success_check_now), followSuccessOnClickListener(it))
             }
 
@@ -711,14 +711,14 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
             if (activity != null && arguments != null) {
                 if (resultIntent == null) {
                     resultIntent = Intent()
-                    resultIntent!!.putExtras(arguments!!)
+                    resultIntent!!.putExtras(requireArguments())
                 }
                 resultIntent!!.putExtra(
                         ProfileActivity.PARAM_IS_FOLLOWING,
                         if (it.isFollowed) ProfileActivity.IS_FOLLOWING_TRUE
                         else ProfileActivity.IS_FOLLOWING_FALSE
                 )
-                activity!!.setResult(Activity.RESULT_OK, resultIntent)
+                requireActivity().setResult(Activity.RESULT_OK, resultIntent)
             }
         }
         if (!isOwner && footerOthers.isVisible) showFooterOthers()
@@ -735,7 +735,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
             bindCurationQuota(it)
         }
 
-        Toaster.make(view!!, getString(R.string.profile_post_deleted), Snackbar.LENGTH_LONG,
+        Toaster.make(requireView(), getString(R.string.profile_post_deleted), Snackbar.LENGTH_LONG,
                 Toaster.TYPE_NORMAL, getString(com.tokopedia.affiliatecommon.R.string.af_title_ok), View.OnClickListener {  })
         if (adapter.data.isEmpty()) {
             onSwipeRefresh()
@@ -1131,7 +1131,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
             userId = savedInstanceState.getInt(ProfileActivity.EXTRA_PARAM_USER_ID, 0)
         } else if (arguments != null) {
             try {
-                userId = arguments!!
+                userId = requireArguments()
                         .getString(ProfileActivity.EXTRA_PARAM_USER_ID, ProfileActivity.ZERO)
                         .toInt()
             } catch (e: java.lang.NumberFormatException) {
@@ -1139,15 +1139,15 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
             }
 
             afterPost = TextUtils.equals(
-                    arguments!!.getString(ProfileActivity.EXTRA_PARAM_AFTER_POST, ""),
+                    requireArguments().getString(ProfileActivity.EXTRA_PARAM_AFTER_POST, ""),
                     ProfileActivity.TRUE
             )
             afterEdit = TextUtils.equals(
-                    arguments!!.getString(ProfileActivity.EXTRA_PARAM_AFTER_EDIT, ""),
+                    requireArguments().getString(ProfileActivity.EXTRA_PARAM_AFTER_EDIT, ""),
                     ProfileActivity.TRUE
             )
             successPost = TextUtils.equals(
-                    arguments!!.getString(ProfileActivity.EXTRA_PARAM_SUCCESS_POST, ""),
+                    requireArguments().getString(ProfileActivity.EXTRA_PARAM_SUCCESS_POST, ""),
                     ProfileActivity.TRUE
             )
         }
@@ -1640,7 +1640,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
     private fun showError(message: String, listener: View.OnClickListener?) {
         listener?.let {
-            Toaster.make(view!!, message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, getString(com.tokopedia.abstraction.R.string.title_try_again), it)
+            Toaster.make(requireView(), message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, getString(com.tokopedia.abstraction.R.string.title_try_again), it)
         }
     }
 
@@ -1675,14 +1675,14 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     }
 
     private fun onSuccessReportContent() {
-        Toaster.make(view!!,
+        Toaster.make(requireView(),
                         getString(R.string.profile_feed_content_reported),
                         Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL, getString(com.tokopedia.design.R.string.label_close), View.OnClickListener {  })
     }
 
     private fun onErrorReportContent(errorMsg: String?) {
         errorMsg?.let {
-            Toaster.make(view!!, errorMsg, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR,
+            Toaster.make(requireView(), errorMsg, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR,
                     getString(com.tokopedia.design.R.string.label_close), View.OnClickListener { })
         }
     }
