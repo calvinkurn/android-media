@@ -10,4 +10,6 @@ interface TopchatProductAttachmentListener : ProductAttachmentListener {
             adapterPosition: Int,
             parentMetaData: SingleProductAttachmentContainer.ParentViewHolderMetaData?
     )
+
+    fun trackClickUpdateStock(product: ProductAttachmentViewModel)
 }
