@@ -6,7 +6,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
-import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.analyticsdebugger.cassava.data.CassavaSource
 import com.tokopedia.analyticsdebugger.cassava.data.api.CassavaUrl
 import com.tokopedia.analyticsdebugger.cassava.data.request.ValidationResultData
@@ -33,8 +32,7 @@ class ValidatorViewModel @Inject constructor(private val context: Application,
     private val engine: ValidatorEngine by lazy { ValidatorEngine(dao) }
     private val repo: GtmRepo by lazy { GtmRepo(TkpdAnalyticsDatabase.getInstance(context).gtmLogDao()) }
 
-    private val localCacheHandler: LocalCacheHandler by lazy { LocalCacheHandler(context, PREF_NAME) }
-    private var journeyId: Int = -1
+    private var journeyId: String = ""
 
     private val _testCases: MutableLiveData<List<Validator>> = MutableLiveData()
     val testCases: LiveData<List<Validator>>
@@ -57,19 +55,11 @@ class ValidatorViewModel @Inject constructor(private val context: Application,
         get() = _cassavaSource
 
     init {
-        setCassavaSource(localCacheHandler.getBoolean(KEY_IS_NETWORK, true))
-    }
-
-    private fun setCassavaSource(isFromNetwork: Boolean) {
-        _cassavaSource.value = if (isFromNetwork) CassavaSource.NETWORK else CassavaSource.LOCAL
+        changeSource(true)
     }
 
     fun changeSource(isFromNetwork: Boolean) {
-        setCassavaSource(isFromNetwork)
-        localCacheHandler.apply {
-            putBoolean(KEY_IS_NETWORK, isFromNetwork)
-            applyEditor()
-        }
+        _cassavaSource.value = if (isFromNetwork) CassavaSource.NETWORK else CassavaSource.LOCAL
     }
 
     fun run(queries: List<Pair<Int, Map<String, Any>>>, mode: String) {
@@ -111,8 +101,9 @@ class ValidatorViewModel @Inject constructor(private val context: Application,
 
     fun getListFiles(): List<String> = listFiles.value ?: arrayListOf()
 
-    fun fetchQueryFromAsset(filePath: String, journeyId: Int) {
-        this.journeyId = journeyId
+    fun fetchQueryFromAsset(filePath: String, isFromNetwork: Boolean) {
+        if (isFromNetwork) this.journeyId = filePath
+
         viewModelScope.launch(CoroutineDispatchersProvider.io) {
             try {
                 _cassavaQuery.postValue(queryListUseCase.execute(
@@ -143,12 +134,6 @@ class ValidatorViewModel @Inject constructor(private val context: Application,
                             }.toList()
                     ))
         }
-    }
-
-    companion object {
-        private const val PREF_NAME = "pref_cassava"
-
-        private const val KEY_IS_NETWORK = "is_network"
     }
 
 }
