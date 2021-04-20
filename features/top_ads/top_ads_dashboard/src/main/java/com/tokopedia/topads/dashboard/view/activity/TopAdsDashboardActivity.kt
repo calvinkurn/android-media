@@ -19,6 +19,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant.PARAM_AUTOADS_BUDGET
@@ -38,11 +39,11 @@ import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.FIRS
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.IS_CHANGED
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.PARAM_DAILY_BUDGET
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.PARAM_INSIGHT
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.PARAM_INSIGHT_TAB
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.PARAM_KEYWORD
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.PARAM_PRODUCT
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.PARAM_PRODUCT_AD
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.PARAM_SHOP_AD
-import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.PARAM_INSIGHT_TAB
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.PARAM_TAB
 import com.tokopedia.topads.dashboard.data.model.FragmentTabItem
 import com.tokopedia.topads.dashboard.di.DaggerTopAdsDashboardComponent
@@ -68,6 +69,7 @@ private const val CLICK_BUAT_IKLAN = "click - tambah iklan"
 private const val VIEW_BUAT_IKLAN = "view - tambah iklan"
 private const val CLICK_IKLAN_TOKO = " click - iklan toko"
 private const val VIEW_HEADLINE_EVENT = "view - iklan toko"
+
 class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComponent>,
         TopAdsProductIklanFragment.AppBarAction, BerandaTabFragment.GoToInsight,
         TopAdsProductIklanFragment.AdInfo, TopAdsHeadlineBaseFragment.AppBarActionHeadline {
@@ -141,30 +143,35 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
             override fun onTabSelected(tab: TabLayout.Tab?) {
                 when (tab?.position) {
                     CONST_0 -> {
-                        bottom.visibility = View.VISIBLE
+                        bottom?.visible()
                         multiActionBtn.buttonSize = UnifyButton.Size.LARGE
                         multiActionBtn?.text = getString(R.string.topads_dash_button_submit_beranda)
                         setPadding()
                     }
                     INSIGHT_PAGE -> {
-                        bottom.visibility = View.GONE
+                        bottom?.gone()
                         multiActionBtn.buttonSize = UnifyButton.Size.MEDIUM
                         multiActionBtn?.text = getString(com.tokopedia.topads.common.R.string.topads_iklankan_button)
                         checkVisibility()
                     }
                     HEADLINE_ADS_TAB -> {
+                        removeBtn()
                         TopAdsCreateAnalytics.topAdsCreateAnalytics.sendHeadlineAdsEvent(CLICK_IKLAN_TOKO, "{${userSession.shopId}", userSession.userId)
                         TopAdsCreateAnalytics.topAdsCreateAnalytics.sendHeadlineAdsViewEvent(VIEW_HEADLINE_EVENT, "{${userSession.shopId}}", userSession.userId)
                     }
                     else -> {
-                        bottom.visibility = View.GONE
-                        view_pager?.setPadding(0, 0, 0, 0)
+                        removeBtn()
                     }
                 }
             }
         })
         TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsOpenScreenEvent()
         setToast()
+    }
+
+    private fun removeBtn() {
+        bottom?.gone()
+        view_pager?.setPadding(0, 0, 0, 0)
     }
 
     private fun setToast() {
