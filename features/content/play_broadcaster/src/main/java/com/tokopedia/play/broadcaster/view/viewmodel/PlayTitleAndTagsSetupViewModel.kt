@@ -4,6 +4,7 @@ import androidx.lifecycle.*
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.play.broadcaster.data.config.HydraConfigStore
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
+import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagUiModel
 import com.tokopedia.play.broadcaster.ui.validator.tag.TagSetupValidator
 import com.tokopedia.play.broadcaster.ui.validator.title.TitleSetupValidator
 import com.tokopedia.play_common.model.result.NetworkResult
@@ -20,17 +21,20 @@ class PlayTitleAndTagsSetupViewModel @Inject constructor(
         private val setupDataStore: PlayBroadcastSetupDataStore,
 ) : ViewModel(), TitleSetupValidator, TagSetupValidator {
 
-    val observableAddedTags: LiveData<List<String>>
-        get() = Transformations.map(_observableAddedTags) { it.toList() }
-    val observableRecommendedTags: LiveData<List<String>>
-        get() = Transformations.map(_observableRecommendedTags) { it.toList() }
+    val observableRecommendedTags: LiveData<List<PlayTagUiModel>>
+        get() = _observableRecommendedTags
     val observableUploadEvent: LiveData<Event<NetworkResult<Unit>>>
         get() = _observableUploadEvent
 
     private val _observableAddedTags = MutableLiveData<Set<String>>()
-    private val _observableRecommendedTags = MediatorLiveData<Set<String>>().apply {
+    private val _observableRecommendedTags = MediatorLiveData<List<PlayTagUiModel>>().apply {
         addSource(_observableAddedTags) {
-            value = recommendedTags - it
+            value = recommendedTags.map { tag ->
+                PlayTagUiModel(
+                        tag = tag,
+                        isChosen = it.contains(tag)
+                )
+            }
         }
     }
 
@@ -54,10 +58,12 @@ class PlayTitleAndTagsSetupViewModel @Inject constructor(
         return tag.length in 2..32 && validTagRegex.matches(tag)
     }
 
-    fun addTag(tag: String) {
+    fun toggleTag(tag: String) {
         if(!isTagValid(tag)) return
 
-        addedTags.add(tag)
+        if (!addedTags.contains(tag)) addedTags.add(tag)
+        else addedTags.remove(tag)
+
         refreshAddedTags()
     }
 
@@ -106,19 +112,20 @@ class PlayTitleAndTagsSetupViewModel @Inject constructor(
      * Mock data
      */
     private fun getRecommendedTags() = setOf(
-            "adfb",
-            "aaaaaaa",
-            "alola alolaergregre",
-            "1234",
-            "1eberbr",
-            "aergreg"
+            "Review",
+            "Sneakers",
+            "Hipster",
+            "Style",
+            "Modis",
+            "Retro",
+            "Modern",
+            "Minimalis",
+            "Modis",
+            "Trending",
     )
 
     private fun getAddedTags() = setOf(
-            "adfb",
-            "adfb  ergerger  ergeragerg regerg",
-            "adfb ergerag",
-            "adfb  greqgrqeg",
-            "adfb",
+            "Style",
+            "Trending",
     )
 }

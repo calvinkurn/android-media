@@ -1,16 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout
-    android:id="@+id/fl_root"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/fl_root"
     android:layout_width="wrap_content"
-    android:layout_height="match_parent"
-    android:background="@drawable/bg_tag_recommendation"
+    android:layout_height="wrap_content"
     >
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tv_tag_name"
+    <com.tokopedia.unifycomponents.ChipsUnify
+        android:id="@+id/chips_tag"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -18,10 +17,8 @@
         android:layout_marginTop="@dimen/play_dp_6"
         android:layout_marginEnd="@dimen/play_dp_12"
         android:layout_marginBottom="@dimen/play_dp_6"
-        android:maxLines="1"
-        android:textColor="@color/Unify_N700_68"
-        app:typographyType="body_2"
-        tools:text="Tag"
+        app:centerText="true"
+        app:chipSize="medium"
         />
 
 </FrameLayout>

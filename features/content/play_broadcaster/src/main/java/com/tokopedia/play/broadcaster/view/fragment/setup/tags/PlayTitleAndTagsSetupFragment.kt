@@ -91,7 +91,7 @@ class PlayTitleAndTagsSetupFragment @Inject constructor(
      * Tag Recommendation List View Component
      */
     override fun onTagClicked(view: TagRecommendationListViewComponent, tag: String) {
-        viewModel.addTag(tag)
+        viewModel.toggleTag(tag)
     }
 
     /**
@@ -105,7 +105,7 @@ class PlayTitleAndTagsSetupFragment @Inject constructor(
      * Text Field Add Tag View Component
      */
     override fun onTagSubmitted(view: TextFieldAddTagViewComponent, tag: String) {
-        viewModel.addTag(tag)
+        viewModel.toggleTag(tag)
     }
 
     /**
@@ -151,9 +151,9 @@ class PlayTitleAndTagsSetupFragment @Inject constructor(
     }
 
     private fun observeAddedTags() {
-        viewModel.observableAddedTags.observe(viewLifecycleOwner, Observer {
+//        viewModel.observableAddedTags.observe(viewLifecycleOwner, Observer {
 //            tagAddedListView.setTags(it.toList())
-        })
+//        })
     }
 
     private fun observeUploadEvent() {

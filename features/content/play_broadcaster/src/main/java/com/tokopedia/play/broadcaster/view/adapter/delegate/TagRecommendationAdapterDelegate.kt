@@ -4,6 +4,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.adapterdelegate.TypedAdapterDelegate
 import com.tokopedia.play.broadcaster.databinding.ItemTagRecommendationBinding
+import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagUiModel
 import com.tokopedia.play.broadcaster.ui.viewholder.TagRecommendationViewHolder
 
 /**
@@ -11,9 +12,9 @@ import com.tokopedia.play.broadcaster.ui.viewholder.TagRecommendationViewHolder
  */
 class TagRecommendationAdapterDelegate(
         private val listener: TagRecommendationViewHolder.Listener
-) : TypedAdapterDelegate<String, String, TagRecommendationViewHolder>(TagRecommendationViewHolder.LAYOUT) {
+) : TypedAdapterDelegate<PlayTagUiModel, PlayTagUiModel, TagRecommendationViewHolder>(TagRecommendationViewHolder.LAYOUT) {
 
-    override fun onBindViewHolder(item: String, holder: TagRecommendationViewHolder) {
+    override fun onBindViewHolder(item: PlayTagUiModel, holder: TagRecommendationViewHolder) {
         holder.bind(item)
     }
 

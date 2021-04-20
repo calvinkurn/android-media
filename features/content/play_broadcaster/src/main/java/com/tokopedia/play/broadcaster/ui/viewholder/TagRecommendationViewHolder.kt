@@ -3,6 +3,8 @@ package com.tokopedia.play.broadcaster.ui.viewholder
 import com.tokopedia.adapterdelegate.BaseViewHolder
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.databinding.ItemTagRecommendationBinding
+import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagUiModel
+import com.tokopedia.unifycomponents.ChipsUnify
 
 /**
  * Created by jegul on 18/02/21
@@ -12,9 +14,12 @@ class TagRecommendationViewHolder(
         private val listener: Listener
 ) : BaseViewHolder(binding.root) {
 
-    fun bind(item: String) {
-        binding.tvTagName.text = item
-        binding.tvTagName.setOnClickListener {
+    fun bind(item: PlayTagUiModel) {
+        binding.chipsTag.chipText = item.tag
+
+        binding.chipsTag.chipType = if (item.isChosen) ChipsUnify.TYPE_SELECTED else ChipsUnify.TYPE_NORMAL
+
+        binding.chipsTag.setOnClickListener {
             listener.onTagClicked(item)
         }
     }
@@ -26,6 +31,6 @@ class TagRecommendationViewHolder(
 
     interface Listener {
 
-        fun onTagClicked(tag: String)
+        fun onTagClicked(tag: PlayTagUiModel)
     }
 }
