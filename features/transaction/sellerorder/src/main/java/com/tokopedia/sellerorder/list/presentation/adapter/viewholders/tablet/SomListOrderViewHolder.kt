@@ -60,6 +60,14 @@ class SomListOrderViewHolder(
         }
     }
 
+    override fun setupQuickActionButton(element: SomListOrderUiModel) {
+        // Noop, tablet mode doesn't have quick action button
+    }
+
+    override fun onBindFinished(element: SomListOrderUiModel) {
+        // Noop, tablet mode doesn't have quick action button
+    }
+
     private fun View?.animateFade(start: Float, end: Float): ValueAnimator {
         return ValueAnimator.ofFloat(start, end).apply {
             duration = 300L

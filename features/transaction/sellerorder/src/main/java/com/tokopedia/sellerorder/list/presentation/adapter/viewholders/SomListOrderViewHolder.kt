@@ -138,16 +138,16 @@ open class SomListOrderViewHolder(
         super.bind(element, payloads)
     }
 
-    private fun setupQuickActionButton(element: SomListOrderUiModel) {
+    protected open fun setupQuickActionButton(element: SomListOrderUiModel) {
         with(itemView) {
             val firstButton = element.buttons.firstOrNull()
             if (firstButton != null && !listener.isMultiSelectEnabled()) {
-                btnQuickAction.text = firstButton.displayName
-                btnQuickAction.buttonVariant = if (firstButton.type == SomConsts.KEY_PRIMARY_DIALOG_BUTTON) UnifyButton.Variant.FILLED else UnifyButton.Variant.GHOST
-                btnQuickAction.setOnClickListener { onQuickActionButtonClicked(element) }
-                btnQuickAction.show()
+                btnQuickAction?.text = firstButton.displayName
+                btnQuickAction?.buttonVariant = if (firstButton.type == SomConsts.KEY_PRIMARY_DIALOG_BUTTON) UnifyButton.Variant.FILLED else UnifyButton.Variant.GHOST
+                btnQuickAction?.setOnClickListener { onQuickActionButtonClicked(element) }
+                btnQuickAction?.show()
             } else {
-                btnQuickAction.gone()
+                btnQuickAction?.gone()
             }
         }
     }
@@ -341,11 +341,13 @@ open class SomListOrderViewHolder(
         }
     }
 
-    private fun onBindFinished(element: SomListOrderUiModel) {
-        if (element.orderStatusId == SomConsts.STATUS_CODE_ORDER_CREATED &&
-                element.buttons.firstOrNull()?.key == KEY_ACCEPT_ORDER &&
-                itemView.btnQuickAction.isVisible) {
-            listener.onFinishBindNewOrder(itemView.btnQuickAction, adapterPosition.takeIf { it != RecyclerView.NO_POSITION }.orZero())
+    protected open fun onBindFinished(element: SomListOrderUiModel) {
+        itemView.btnQuickAction?.let { btnQuickAction ->
+            if (element.orderStatusId == SomConsts.STATUS_CODE_ORDER_CREATED &&
+                    element.buttons.firstOrNull()?.key == KEY_ACCEPT_ORDER &&
+                    btnQuickAction.isVisible) {
+                listener.onFinishBindNewOrder(btnQuickAction, adapterPosition.takeIf { it != RecyclerView.NO_POSITION }.orZero())
+            }
         }
     }
 
