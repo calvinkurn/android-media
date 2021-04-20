@@ -309,7 +309,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         this.egoldAttributeModel = egoldAttributeModel;
     }
 
-    private void updateEgoldBuyValue() {
+    public void updateEgoldBuyValue() {
 
         long totalPrice = (long) shipmentCostModel.getTotalPrice();
 
