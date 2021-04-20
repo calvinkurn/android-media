@@ -7,7 +7,7 @@
     <color name="play_widget_dms_small_promo_border_gradient_bottom">#00AA5B</color>
 
     <color name="play_widget_dms_light_gray">#e0e0e0</color>
-    <color name="play_widget_dms_info_container">#CCFFFFFF</color>
+    <color name="play_widget_dms_info_container">#AD31353B</color>
 
     <color name="play_widget_dms_small_gradient_top">#80FFFFFF</color>
     <color name="play_widget_dms_small_gradient_bottom">#80E5F5FF</color>
@@ -15,6 +15,8 @@
     <color name="play_widget_dms_small_overlay_gradient_top">#00000000</color>
     <color name="play_widget_dms_small_overlay_gradient_center">#4D000000</color>
     <color name="play_widget_dms_small_overlay_gradient_bottom">#CC000000</color>
+
+    <color name="play_widget_dms_medium_upcoming_date_text">#FFC400</color>
 
     <color name="play_dms_Y300">#FFC400</color>
 

@@ -121,7 +121,8 @@
             android:background="@color/play_widget_dms_info_container"
             android:orientation="vertical"
             android:paddingTop="@dimen/spacing_lvl3"
-            app:layout_constraintBottom_toBottomOf="parent">
+            app:layout_constraintBottom_toBottomOf="parent"
+            >
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/play_widget_channel_date"
@@ -131,10 +132,11 @@
                 android:layout_marginEnd="@dimen/spacing_lvl3"
                 android:ellipsize="end"
                 android:maxLines="1"
-                android:textColor="@color/Unify_Y500"
+                android:textColor="@color/play_widget_dms_medium_upcoming_date_text"
                 android:visibility="visible"
-                android:textSize="@dimen/fontSize_lvl2"
-                tools:text="10 January 2020 - 17.00" />
+                app:typographyType="small"
+                tools:text="10 January 2020 - 17.00"
+                />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/play_widget_channel_title"
@@ -144,10 +146,11 @@
                 android:layout_marginEnd="@dimen/spacing_lvl3"
                 android:ellipsize="end"
                 android:lines="2"
-                android:textColor="@color/Unify_N700_96"
+                android:textColor="@color/Unify_Static_White"
                 android:textIsSelectable="false"
-                android:textSize="@dimen/fontSize_lvl3"
-                tools:text="Google Assistant Google Assistant" />
+                app:typographyType="body_3"
+                tools:text="Google Assistant Google Assistant"
+                />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/play_widget_channel_name"
@@ -158,13 +161,14 @@
                 android:layout_marginBottom="@dimen/spacing_lvl2"
                 android:ellipsize="end"
                 android:maxLines="1"
-                android:textColor="@color/Unify_N700_68"
+                android:textColor="@color/Unify_Static_White_68"
                 android:textIsSelectable="false"
-                android:textSize="@dimen/fontSize_lvl2"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                tools:text="Google" />
+                app:typographyType="small"
+                tools:text="Google"
+                />
 
         </LinearLayout>
 

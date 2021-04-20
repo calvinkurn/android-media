@@ -60,7 +60,7 @@
             android:inputType="text"
             android:textColor="@color/Unify_Static_White"
             android:visibility="visible"
-            app:typographyType="body_3"
+            app:typographyType="small"
             app:typographyWeight="bold"
             tools:text="Diskon 30%"
             />
