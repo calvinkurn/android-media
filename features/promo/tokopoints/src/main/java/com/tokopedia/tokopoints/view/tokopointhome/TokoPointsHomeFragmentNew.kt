@@ -532,10 +532,10 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
     }
 
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        context?.let { PersistentAdsData(it).deletePreference() }
-    }
+//    override fun onDestroyView() {
+//        super.onDestroyView()
+//        context?.let { PersistentAdsData(it).deletePreference() }
+//    }
 
     override fun startPerformanceMonitoring() {
         pageLoadTimePerformanceMonitoring = PageLoadTimePerformanceCallback(
