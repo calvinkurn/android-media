@@ -203,8 +203,6 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicket, PackageTypeFacto
                 showViewBottom(false)
                 showUbah(false)
                 loadInitialData()
-                // TODO: [Misael] confirm ke ka Firman ini kenapa perlu di hide
-//                hideRecommendationView()
             }
         }
     }
@@ -233,8 +231,6 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicket, PackageTypeFacto
                         eventPDPTracking.onClickPickDate()
                         showViewBottom(false)
                         loadInitialData()
-                        // TODO: [Misael] ini juga
-//                        hideRecommendationView()
                     }
 
                     override fun onDateUnselected(date: Date) {}
@@ -320,8 +316,6 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicket, PackageTypeFacto
             NetworkErrorHelper.createSnackbarRedWithAction(activity, String.format(it)) {
                 showViewBottom(false)
                 loadInitialData()
-                // TODO: [Misael] ini tolong cek hideRecommendationView
-//                hideRecommendationView()
             }.showRetrySnackbar()
         })
 

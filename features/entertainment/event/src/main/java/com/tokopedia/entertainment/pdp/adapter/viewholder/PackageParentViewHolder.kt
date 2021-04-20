@@ -80,10 +80,10 @@ class PackageParentViewHolder(
         }
 
         val subtitle = when (isRecommendation) {
-            true -> Html.fromHtml("${getString(R.string.ent_pdp_available_date_label)} " +
+            true -> Html.fromHtml("${getString(R.string.ent_pdp_available_date_label)}  " +
                         "<b>${DateUtils.dateToString(Date(value.dates[0].toLong() * SECOND_IN_MILIS),
                         DateUtils.DEFAULT_VIEW_FORMAT)}</b>")
-            false -> Html.fromHtml("${getString(R.string.ent_checkout_price_expand)}  <b> $salesPrice </b>")
+            false -> Html.fromHtml("${getString(R.string.ent_checkout_price_expand)}   <b>$salesPrice </b>")
         }
 
         return AccordionDataUnify(
