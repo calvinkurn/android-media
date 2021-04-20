@@ -3,6 +3,7 @@ package com.tokopedia.analyticsdebugger.cassava.domain
 import android.content.Context
 import com.tokopedia.analyticsdebugger.cassava.data.CassavaRepository
 import com.tokopedia.analyticsdebugger.cassava.data.CassavaSource
+import com.tokopedia.analyticsdebugger.cassava.di.CassavaQualifier
 import com.tokopedia.analyticsdebugger.cassava.validator.Utils
 import com.tokopedia.analyticsdebugger.cassava.validator.core.CassavaQuery
 import com.tokopedia.analyticsdebugger.cassava.validator.core.QueryMode
@@ -12,10 +13,11 @@ import javax.inject.Inject
 /**
  * @author by furqan on 07/04/2021
  */
-class QueryListUseCase @Inject constructor(private val repository: CassavaRepository) {
+class QueryListUseCase @Inject constructor(
+        @CassavaQualifier private val context: Context,
+        private val repository: CassavaRepository) {
 
-    suspend fun execute(context: Context,
-                        source: CassavaSource,
+    suspend fun execute(source: CassavaSource,
                         filePath: String)
             : CassavaQuery? {
         return if (source == CassavaSource.LOCAL) {
@@ -28,7 +30,7 @@ class QueryListUseCase @Inject constructor(private val repository: CassavaReposi
                     cassavaRegexList.add(Pair(regex.dataLayerId, regex.dataLayer))
                 }
 
-                CassavaQuery(
+                return CassavaQuery(
                         mode = QueryMode.EXACT,
                         readme = it.journeyName,
                         query = cassavaRegexList
