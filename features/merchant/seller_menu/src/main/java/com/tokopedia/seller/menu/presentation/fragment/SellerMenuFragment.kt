@@ -195,8 +195,9 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
                 is Success -> {
                     if (it.data.first) {
                         val tickerShopInfoData = TickerShopScoreUiModel(
-                                tickerTitle = getString(R.string.seller_menu_ticker_title_shop_score,
-                                        getShopScoreDate(requireContext())),
+                                tickerTitle = context?.let {
+                                    context -> getString(R.string.seller_menu_ticker_title_shop_score, getShopScoreDate(context))
+                                } ?: "",
                                 descTitle = getString(R.string.seller_menu_ticker_desc_shop_score))
                         adapter.showShopScoreTicker(tickerShopInfoData)
                     }
