@@ -24,9 +24,6 @@ class DataVisorWorker(appContext: Context, params: WorkerParameters) : Coroutine
     @Inject
     lateinit var submitDVTokenUseCase: SubmitDVTokenUseCase
 
-    @Inject
-    lateinit var userSession: UserSessionInterface
-
     init {
         DaggerDeviceFingerprintComponent.builder()
                 .deviceFingerprintModule(DeviceFingerprintModule(applicationContext))
@@ -105,12 +102,11 @@ class DataVisorWorker(appContext: Context, params: WorkerParameters) : Coroutine
 
     private suspend fun sendDataVisorToServer(token: String = DEFAULT_VALUE_DATAVISOR,
                                               countAttempt: Int, errorMessage: String): SubmitDeviceInitResponse {
-        submitDVTokenUseCase.setParams(
+        return submitDVTokenUseCase.execute(
                 token,
                 countAttempt,
                 errorMessage
         )
-        return submitDVTokenUseCase.executeOnBackground()
     }
 
     companion object {
