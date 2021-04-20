@@ -129,6 +129,7 @@ class LogManager(val application: Application, val loggerProxy: LoggerProxy) {
         fun log(priority: Priority, tag: String, message: Map<String, String>) {
             globalScopeLaunch({
                 val thisInstance = instance ?: return@globalScopeLaunch
+                if (thisInstance.loggerProxy.isDebug) return@globalScopeLaunch
                 val processedLogger = LoggerReporting.getInstance().getProcessedMessage(priority, tag, message,
                         thisInstance.loggerProxy.userId)
                 if (processedLogger != null) {

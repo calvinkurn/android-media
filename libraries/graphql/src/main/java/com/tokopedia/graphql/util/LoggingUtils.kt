@@ -21,7 +21,7 @@ object LoggingUtils {
 
     @JvmStatic
     fun logGqlError(classType: String, request: String, throwable: Throwable) {
-        ServerLogger.log(Priority.P1, "GQL_RESP_CODE", mapOf("type" to classType, "err" to Log.getStackTraceString(throwable).take(Const.GQL_ERROR_MAX_LENGTH).trim(), "resp" to request.take(Const.GQL_ERROR_MAX_LENGTH).trim()))
+        ServerLogger.log(Priority.P1, "GQL_ERROR", mapOf("type" to classType, "err" to Log.getStackTraceString(throwable).take(Const.GQL_ERROR_MAX_LENGTH).trim(), "resp" to request.take(Const.GQL_ERROR_MAX_LENGTH).trim()))
     }
 
     @JvmStatic
