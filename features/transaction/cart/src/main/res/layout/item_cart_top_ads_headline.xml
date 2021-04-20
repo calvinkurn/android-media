@@ -1,15 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<com.tokopedia.topads.sdk.widget.TopAdsHeadlineView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/cart_topads_headline_view"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/Unify_N0">
-
-    <com.tokopedia.topads.sdk.widget.TopAdsHeadlineView
-        android:id="@+id/cart_topads_headline_view"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+    android:layout_marginTop="-16dp" />
