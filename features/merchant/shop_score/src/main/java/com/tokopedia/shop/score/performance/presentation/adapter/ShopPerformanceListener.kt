@@ -17,6 +17,7 @@ interface ItemShopPerformanceListener {
 
 interface ItemHeaderShopPerformanceListener {
     fun onViewHeaderListener(view: View)
+    fun onImpressHeaderTicker()
 }
 
 interface ItemPotentialRegularMerchantListener {
@@ -27,6 +28,7 @@ interface ItemPotentialRegularMerchantListener {
 
 interface ItemRecommendationFeatureListener {
     fun onItemClickedRecommendationFeature(appLink: String)
+    fun onItemImpressRecommendationFeature()
 }
 
 interface ItemStatusPowerMerchantListener {

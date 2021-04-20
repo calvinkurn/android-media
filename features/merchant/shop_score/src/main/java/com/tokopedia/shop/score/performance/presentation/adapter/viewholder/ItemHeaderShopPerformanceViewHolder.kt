@@ -24,6 +24,7 @@ class ItemHeaderShopPerformanceViewHolder(view: View,
     }
 
     private val impressHolder = ImpressHolder()
+    private val impressHolderTicker = ImpressHolder()
 
     override fun bind(element: HeaderShopPerformanceUiModel?) {
         with(itemView) {
@@ -78,6 +79,9 @@ class ItemHeaderShopPerformanceViewHolder(view: View,
         with(itemView) {
             tickerShopHasPenalty?.showWithCondition(element?.scorePenalty.orZero() < 0)
             tickerShopHasPenalty?.apply {
+                addOnImpressionListener(impressHolderTicker) {
+
+                }
                 if (element?.scorePenalty != null) {
                     setHtmlDescription(getString(R.string.ticker_deduction_point_penalty, element.scorePenalty?.toString()))
                 }

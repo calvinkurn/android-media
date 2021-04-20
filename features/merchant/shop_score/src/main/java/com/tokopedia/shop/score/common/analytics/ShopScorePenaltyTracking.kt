@@ -39,7 +39,7 @@ import javax.inject.Inject
  * SHOP SCORE REVAMP
  * https://mynakama.tokopedia.com/datatracker/product/requestdetail/804
  */
-class ShopPerformanceTracking @Inject constructor(private val userSession: UserSessionInterface) {
+class ShopScorePenaltyTracking @Inject constructor(private val userSession: UserSessionInterface) {
     private val tracker: ContextAnalytics by lazy { TrackApp.getInstance().gtm }
 
     private val typeShop = when {
@@ -82,19 +82,6 @@ class ShopPerformanceTracking @Inject constructor(private val userSession: UserS
         sendShopScoreTransitionItemEvent(CLICK_CONTACT_HELP_CENTER)
     }
 
-    fun clickHereTickerOldShopScoreDetail() {
-        val mapData = mapOf(
-                TrackAppUtils.EVENT to CLICK_SHOP_SCORE,
-                TrackAppUtils.EVENT_CATEGORY to OLD_PERFORMA_TOKO_PAGE,
-                TrackAppUtils.EVENT_ACTION to CLICK_LEARN_MORE,
-                TrackAppUtils.EVENT_LABEL to typeShop,
-                BUSSINESS_UNIT to PHYSICAL_GOODS,
-                CURRENT_SITE to TOKOPEDIA_SELLER,
-                USER_ID to userSession.shopId
-        )
-        tracker.sendGeneralEvent(mapData)
-    }
-
     fun clickMerchantToolsRecommendation() {
         val toolsLabel = "" //to be confirm
         val mapData = mapOf(
@@ -104,7 +91,7 @@ class ShopPerformanceTracking @Inject constructor(private val userSession: UserS
                 TrackAppUtils.EVENT_LABEL to toolsLabel,
                 BUSSINESS_UNIT to PHYSICAL_GOODS,
                 CURRENT_SITE to TOKOPEDIA_SELLER,
-                USER_ID to userSession.shopId
+                USER_ID to userSession.userId
         )
         tracker.sendGeneralEvent(mapData)
     }
@@ -133,7 +120,7 @@ class ShopPerformanceTracking @Inject constructor(private val userSession: UserS
         impressShopScoreItemEvent(TRANSITION_PERIOD_SHOP_SCORE, IMPRESSION_SEE_ALL_BENEFIT)
     }
 
-    fun impressTickerPenaltyPage() {
+    fun impressLearnMorePenaltyPage() {
         impressShopScoreItemEvent(TRANSITION_PERIOD_PENALTY_PAGE, IMPRESSION_LEARN_MORE)
     }
 
@@ -150,7 +137,7 @@ class ShopPerformanceTracking @Inject constructor(private val userSession: UserS
                 TrackAppUtils.EVENT_LABEL to toolsLabel,
                 BUSSINESS_UNIT to PHYSICAL_GOODS,
                 CURRENT_SITE to TOKOPEDIA_SELLER,
-                USER_ID to userSession.shopId
+                USER_ID to userSession.userId
         )
         tracker.sendGeneralEvent(mapData)
     }
@@ -163,7 +150,7 @@ class ShopPerformanceTracking @Inject constructor(private val userSession: UserS
                 TrackAppUtils.EVENT_LABEL to typeShop,
                 BUSSINESS_UNIT to PHYSICAL_GOODS,
                 CURRENT_SITE to TOKOPEDIA_SELLER,
-                USER_ID to userSession.shopId
+                USER_ID to userSession.userId
         )
         tracker.sendGeneralEvent(mapData)
     }
@@ -176,7 +163,7 @@ class ShopPerformanceTracking @Inject constructor(private val userSession: UserS
                 TrackAppUtils.EVENT_LABEL to typeShop,
                 BUSSINESS_UNIT to PHYSICAL_GOODS,
                 CURRENT_SITE to TOKOPEDIA_SELLER,
-                USER_ID to userSession.shopId
+                USER_ID to userSession.userId
         )
         tracker.sendGeneralEvent(mapData)
     }

@@ -15,10 +15,11 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.common.ShopScoreCoachMarkPrefs
 import com.tokopedia.shop.score.common.ShopScoreConstant
-import com.tokopedia.shop.score.common.analytics.ShopPerformanceTracking
+import com.tokopedia.shop.score.common.analytics.ShopScorePenaltyTracking
 import com.tokopedia.shop.score.performance.di.component.ShopPerformanceComponent
 import com.tokopedia.shop.score.performance.domain.model.ShopScoreWrapperResponse
 import com.tokopedia.shop.score.performance.presentation.activity.ShopPerformanceYoutubeActivity
@@ -45,7 +46,7 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
 
-    @Inject lateinit var shopPerformanceTracking: ShopPerformanceTracking
+    @Inject lateinit var shopScorePenaltyTracking: ShopScorePenaltyTracking
 
     private val viewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(ShopPerformanceViewModel::class.java)
@@ -64,6 +65,9 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
     private val coachMarkItemList = ArrayList<CoachMark2Item>()
     private val coachMark by lazy { context?.let { CoachMark2(it) } }
     private val shopScoreCoachMarkPrefs by lazy { ShopScoreCoachMarkPrefs(requireContext()) }
+
+    private val impressHolderMenuPenalty = ImpressHolder()
+    private val impressHolderMenuShopInfo = ImpressHolder()
 
     private val penaltyDotBadge: PenaltyDotBadge? by lazy {
         context?.let { PenaltyDotBadge(it) }
@@ -98,21 +102,22 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
         inflater.inflate(R.menu.menu_shop_score, menu)
         this.menu = menu
         showPenaltyBadge()
-        super.onCreateOptionsMenu(menu, inflater)
+        impressMenuShopPerformance()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             INFO_MENU_ID -> {
                 RouteManager.route(context, ShopScoreConstant.SHOP_INFO_URL)
-                shopPerformanceTracking.clickMenuCompleteInfo()
+                shopScorePenaltyTracking.clickMenuCompleteInfo()
             }
             PENALTY_WARNING_MENU_ID -> {
                 goToPenaltyPage()
-                shopPerformanceTracking.clickMenuPenalty()
+                shopScorePenaltyTracking.clickMenuPenalty()
             }
         }
         return super.onOptionsItemSelected(item)
@@ -142,11 +147,11 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
 
     override fun onTickerClickedToPenaltyPage() {
         goToPenaltyPage()
-        shopPerformanceTracking.clickHereTickerPenalty()
+        shopScorePenaltyTracking.clickHereTickerPenalty()
     }
 
     override fun onTickerImpressionToPenaltyPage() {
-        shopPerformanceTracking.impressTickerPenaltyShopScore()
+        shopScorePenaltyTracking.impressTickerPenaltyShopScore()
     }
 
     /**
@@ -190,7 +195,7 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
      */
     override fun onItemClickedGoToPMActivation() {
         goToPowerMerchantSubscribe()
-        shopPerformanceTracking.clickPowerMerchantSection()
+        shopScorePenaltyTracking.clickPowerMerchantSection()
     }
 
     /**
@@ -209,7 +214,7 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
     }
 
     override fun onImpressHeaderPowerMerchantSection() {
-        shopPerformanceTracking.impressPotentialPowerMerchant()
+        shopScorePenaltyTracking.impressPotentialPowerMerchant()
     }
 
     /**
@@ -217,6 +222,7 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
      */
     override fun onItemClickedBenefitPotentialRM() {
         goToPowerMerchantSubscribe()
+        shopScorePenaltyTracking.clickSeeAllBenefitInRM()
     }
 
     /**
@@ -236,7 +242,7 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
     }
 
     override fun onImpressBenefitSeeAll() {
-        shopPerformanceTracking.impressSeeAllBenefitPowerMerchant()
+        shopScorePenaltyTracking.impressSeeAllBenefitPowerMerchant()
     }
 
     /**
@@ -254,18 +260,27 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
         }
     }
 
+    override fun onImpressHeaderTicker() {
+        shopScorePenaltyTracking.impressTickerPenaltyShopScore()
+    }
+
     /**
      * ItemTimerNewSellerListener
      */
     override fun onItemClickedRecommendationFeature(appLink: String) {
+        shopScorePenaltyTracking.clickMerchantToolsRecommendation()
         RouteManager.route(requireContext(), appLink)
+    }
+
+    override fun onItemImpressRecommendationFeature() {
+        shopScorePenaltyTracking.impressMerchantToolsRecommendation()
     }
 
     /**
      * ItemTimerNewSellerListener
      */
     override fun onBtnShopPerformanceToFaqClicked() {
-        val faqData = shopPerformanceAdapter.list.firstOrNull { it is SectionFaqUiModel }
+        val faqData = shopPerformanceAdapter.list.find { it is SectionFaqUiModel }
         if (faqData != null) {
             val positionFaqSection = shopPerformanceAdapter.list.indexOf(faqData)
             val smoothScroller: RecyclerView.SmoothScroller = object : LinearSmoothScroller(context) {
@@ -288,6 +303,15 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
 
     override fun onHelpCenterClicked() {
         RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, ShopScoreConstant.HELP_URL)
+    }
+
+    private fun impressMenuShopPerformance() {
+        menu?.findItem(PENALTY_WARNING_MENU_ID)?.actionView?.addOnImpressionListener(impressHolderMenuPenalty) {
+            shopScorePenaltyTracking.impressMenuPenalty()
+        }
+        menu?.findItem(INFO_MENU_ID)?.actionView?.addOnImpressionListener(impressHolderMenuShopInfo) {
+            shopScorePenaltyTracking.impressMenuInfoPage()
+        }
     }
 
     private fun showPenaltyBadge() {

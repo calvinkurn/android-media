@@ -30,7 +30,7 @@ class ItemStatusRMViewHolder(view: View,
             addOnImpressionListener(impressHolder) {
                 itemPotentialPowerMerchantListener.onViewRegularMerchantListener(this)
             }
-            tv_see_all_benefit_pm.addOnImpressionListener(impressHolderBenefitPM) {
+            tv_see_all_benefit_pm?.addOnImpressionListener(impressHolderBenefitPM) {
                 itemPotentialPowerMerchantListener.onImpressBenefitSeeAll()
             }
         }
