@@ -866,6 +866,8 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         } else {
             layoutTradeInShippingInfo.setVisibility(View.VISIBLE);
             layoutStateNoSelectedShipping.setVisibility(View.GONE);
+            tvTradeInShippingPriceTitle.setVisibility(View.VISIBLE);
+            tvTradeInShippingPriceDetail.setVisibility(View.VISIBLE);
         }
     }
 
