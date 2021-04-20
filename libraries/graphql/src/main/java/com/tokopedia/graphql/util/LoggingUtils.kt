@@ -25,6 +25,11 @@ object LoggingUtils {
     }
 
     @JvmStatic
+    fun logGqlErrorNetwork(classType: String, request: String, throwable: Throwable) {
+        ServerLogger.log(Priority.P1, "GQL_ERROR_NETWORK", mapOf("type" to classType, "err" to Log.getStackTraceString(throwable).take(Const.GQL_ERROR_MAX_LENGTH).trim(), "resp" to request.take(Const.GQL_ERROR_MAX_LENGTH).trim()))
+    }
+
+    @JvmStatic
     fun logGqlResponseCode(respCode: Int, request: String, response: String) {
         val sampleRequest = request.substringAfter("[GraphqlRequest{query='").take(Const.GQL_RESPONSE_MAX_LENGTH).trim()
         val sampleResponse = response.take(Const.GQL_ERROR_MAX_LENGTH).trim()
