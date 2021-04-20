@@ -86,6 +86,10 @@ class MasterProductCardItemViewModel(val application: Application, val component
         return UserSession(application).isLoggedIn
     }
 
+    fun getUserID():String? {
+        return UserSession(application).userId
+    }
+
     fun getDataItemValue() = dataItem
     fun getProductModelValue() = productCardModelLiveData
 

@@ -1,6 +1,6 @@
 package com.tokopedia.oneclickcheckout.order.view.processor
 
-import com.tokopedia.oneclickcheckout.common.dispatchers.ExecutorDispatchers
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.oneclickcheckout.common.idling.OccIdlingResource
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
 import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageViewModel.Companion.CHANGE_PAYMENT_METHOD_MESSAGE
@@ -19,7 +19,7 @@ import javax.inject.Inject
 import kotlin.math.ceil
 
 class OrderSummaryPageCalculator @Inject constructor(private val orderSummaryAnalytics: OrderSummaryAnalytics,
-                                                     private val executorDispatchers: ExecutorDispatchers) {
+                                                     private val executorDispatchers: CoroutineDispatchers) {
 
     private fun shouldButtonStateEnable(orderShipment: OrderShipment, orderCart: OrderCart): Boolean {
         return (orderShipment.isValid() && orderShipment.serviceErrorMessage.isNullOrEmpty() && orderCart.shop.errors.isEmpty() && !orderCart.product.quantity.isStateError)
@@ -58,7 +58,7 @@ class OrderSummaryPageCalculator @Inject constructor(private val orderSummaryAna
             return _orderPayment to orderTotal.copy(orderCost = OrderCost(), buttonState = OccButtonState.DISABLE)
         }
         OccIdlingResource.increment()
-        val result = withContext(executorDispatchers.main) {
+        val result = withContext(executorDispatchers.immediate) {
             val totalProductPrice = quantity.orderQuantity * orderCart.product.getPrice().toDouble()
             var purchaseProtectionPriceMultiplier = quantity.orderQuantity
             if (orderCart.product.purchaseProtectionPlanData.source.equals(PurchaseProtectionPlanData.SOURCE_READINESS, true)) {

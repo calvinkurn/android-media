@@ -19,7 +19,7 @@
     {
       "event": "select_content",
       "eventCategory": "{{.*}}",
-      "eventAction": "{{click - shop - brand of choice list - login|click - shop - brand of choice list - nonlogin}}",
+      "eventAction": "{{click - shop - brand of choice list - login|click - shop - brand of choice list - non login}}",
       "sessionIris" : "{{.*}}",
       "promotions": [{
         "creative_name": "{{.*}}",
@@ -61,21 +61,7 @@
     {
       "eventCategory": "{{.*}}",
       "event": "select_content",
-      "eventAction": "{{click - shop - new brand list - login|click - shop - new brand list - nonlogin}}",
-      "sessionIris" : "{{.*}}",
-      "promotions": [{
-        "creative_name": "{{.*}}",
-        "creative_slot": "{{.*}}",
-        "item_id": "{{.*}}",
-        "item_name": "{{.*}}",
-        "creative_url": "{{.*}}"
-      }],
-      "eventLabel": "{{.*}}"
-    },
-    {
-      "eventCategory": "{{.*}}",
-      "event": "select_content",
-      "eventAction": "{{click - shop - all brand list - search result - login|click - shop - all brand list - search result - nonlogin}}",
+      "eventAction": "{{click - shop - new brand list - login|click - shop - new brand list - non login}}",
       "sessionIris" : "{{.*}}",
       "promotions": [{
         "creative_name": "{{.*}}",
@@ -90,7 +76,7 @@
     {
       "eventCategory": "{{.*}}",
       "event": "view_item",
-      "eventAction": "{{impression - shop - new brand list - login|impression - shop - new brand list - nonlogin}}",
+      "eventAction": "{{impression - shop - new brand list - login|impression - shop - new brand list - non login}}",
       "sessionIris" : "{{.*}}",
       "promotions": [{
         "creative_name": "{{.*}}",
@@ -104,7 +90,7 @@
     {
       "eventCategory": "{{.*}}",
       "event": "view_item",
-      "eventAction": "{{impression - shop - all brand list - login|impression - shop - all brand list - nonlogin}}",
+      "eventAction": "{{impression - shop - all brand list - login|impression - shop - all brand list - non login}}",
       "sessionIris" : "{{.*}}",
       "promotions": [{
         "creative_name": "{{.*}}",

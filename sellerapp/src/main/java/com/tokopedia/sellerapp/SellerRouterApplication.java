@@ -48,6 +48,8 @@ import com.tokopedia.fcmcommon.di.FcmComponent;
 import com.tokopedia.fcmcommon.di.FcmModule;
 import com.tokopedia.iris.IrisAnalytics;
 import com.tokopedia.linker.interfaces.LinkerRouter;
+import com.tokopedia.logger.ServerLogger;
+import com.tokopedia.logger.utils.Priority;
 import com.tokopedia.loginregister.login.router.LoginRouter;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
@@ -86,7 +88,9 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -297,9 +301,14 @@ public abstract class SellerRouterApplication extends MainApplication implements
     public void sendAnalyticsAnomalyResponse(String title,
                                              String accessToken, String refreshToken,
                                              String response, String request) {
-        Timber.w("P2#USER_ANOMALY_REPONSE#AnomalyResponse;title=" + title +
-                ";accessToken=" + accessToken + ";refreshToken=" + refreshToken +
-                ";response=" + response + ";request=" + request);
+        Map<String, String> messageMap = new HashMap<>();
+        messageMap.put("type", "AnomalyResponse");
+        messageMap.put("title", title);
+        messageMap.put("accessToken", accessToken);
+        messageMap.put("refreshToken", refreshToken);
+        messageMap.put("response", response);
+        messageMap.put("request", request);
+        ServerLogger.log(Priority.P2, "USER_ANOMALY_REPONSE", messageMap);
     }
 
     @Override

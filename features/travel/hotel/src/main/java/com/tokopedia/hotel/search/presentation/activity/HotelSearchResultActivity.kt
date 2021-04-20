@@ -7,7 +7,6 @@ import android.os.Bundle
 import android.util.TypedValue
 import android.view.ViewGroup
 import android.widget.LinearLayout
-import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
@@ -23,6 +22,7 @@ import com.tokopedia.hotel.search.data.model.params.ParamFilterV2
 import com.tokopedia.hotel.search.di.DaggerHotelSearchPropertyComponent
 import com.tokopedia.hotel.search.di.HotelSearchPropertyComponent
 import com.tokopedia.hotel.search.presentation.fragment.HotelSearchResultFragment
+import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.activity_hotel_search_result.*
 
 class HotelSearchResultActivity : HotelBaseActivity(), HasComponent<HotelSearchPropertyComponent> {
@@ -107,7 +107,7 @@ class HotelSearchResultActivity : HotelBaseActivity(), HasComponent<HotelSearchP
             layoutParams = param
         }
 
-        val textView = TextView(this)
+        val textView = Typography(this)
         val param = LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
         textView.layoutParams = param
         textView.text = resources.getString(R.string.hotel_search_result_change)
@@ -183,8 +183,8 @@ class HotelSearchResultActivity : HotelBaseActivity(), HasComponent<HotelSearchP
                             id = it.getLongExtra(HotelChangeSearchActivity.DESTINATION_ID, 0),
                             name = it.getStringExtra(HotelChangeSearchActivity.DESTINATION_NAME),
                             type = it.getStringExtra(HotelChangeSearchActivity.DESTINATION_TYPE),
-                            lat = it.getDoubleExtra(HotelChangeSearchActivity.DESTINATION_LAT, 0.0).toFloat(),
-                            long = it.getDoubleExtra(HotelChangeSearchActivity.DESTINATION_LONG, 0.0).toFloat(),
+                            lat = it.getDoubleExtra(HotelChangeSearchActivity.DESTINATION_LAT, 0.0),
+                            long = it.getDoubleExtra(HotelChangeSearchActivity.DESTINATION_LONG, 0.0),
                             checkIn = it.getStringExtra(HotelChangeSearchActivity.CHECK_IN_DATE),
                             checkOut = it.getStringExtra(HotelChangeSearchActivity.CHECK_OUT_DATE),
                             room = it.getIntExtra(HotelChangeSearchActivity.NUM_OF_ROOMS, 1),
