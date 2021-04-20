@@ -274,7 +274,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                 hotelSearchMapViewModel.addFilter(listOf())
                 isSearchByMap = false
             }
-        } else if (resultCode == REQUEST_CODE_GPS) {
+        } else if (requestCode == REQUEST_CODE_GPS) {
             getCurrentLocation()
         }
     }
