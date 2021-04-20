@@ -29,4 +29,5 @@
     <string name="content_desc_notifyMe">button Ingatkan Saya</string>
     <string name="content_desc_imageRating">image rating</string>
     <string name="content_desc_imageWishlist">image wishlist</string>
+    <string name="content_desc_imageBanner">image banner</string>
 </resources>

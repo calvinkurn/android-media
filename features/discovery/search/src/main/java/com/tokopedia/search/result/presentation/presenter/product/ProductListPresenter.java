@@ -33,6 +33,7 @@ import com.tokopedia.search.result.presentation.mapper.RecommendationViewModelMa
 import com.tokopedia.search.result.presentation.model.BadgeItemDataView;
 import com.tokopedia.search.result.presentation.model.BannedProductsEmptySearchDataView;
 import com.tokopedia.search.result.presentation.model.BannedProductsTickerDataView;
+import com.tokopedia.search.result.presentation.model.BannerDataView;
 import com.tokopedia.search.result.presentation.model.BroadMatchItemDataView;
 import com.tokopedia.search.result.presentation.model.BroadMatchDataView;
 import com.tokopedia.search.result.presentation.model.ChooseAddressDataView;
@@ -196,6 +197,7 @@ final class ProductListPresenter
     private boolean bottomSheetFilterEnabled = true;
     private boolean isEnableChooseAddress = false;
     @Nullable private LocalCacheModel chooseAddressData = null;
+    private BannerDataView bannerDataView = null;
 
     @Inject
     ProductListPresenter(
@@ -556,13 +558,16 @@ final class ProductListPresenter
         List<Visitable> list = new ArrayList<>(createProductItemVisitableList(productDataView));
         productList.addAll(list);
 
+        SearchProductModel.SearchProduct searchProduct = searchProductModel.getSearchProduct();
+
         processHeadlineAds(searchParameter, list);
         processTopAdsImageViewModel(searchParameter, list);
         processInspirationCardPosition(searchParameter, list);
         processInspirationCarouselPosition(searchParameter, list);
-        processBroadMatch(searchProductModel.getSearchProduct(), list);
-
-        addSearchInTokopedia(searchProductModel.getSearchProduct(), list);
+        processBannerAndBroadmatchInSamePosition(searchProduct, list);
+        processBanner(searchProduct, list);
+        processBroadMatch(searchProduct, list);
+        addSearchInTokopedia(searchProduct, list);
 
         getView().removeLoading();
         getView().addProductList(list);
@@ -805,6 +810,7 @@ final class ProductListPresenter
         setResponseCode(productDataView.getResponseCode());
         setSuggestionDataView(productDataView.getSuggestionModel());
         setRelatedDataView(productDataView.getRelatedDataView());
+        setBannerDataView(productDataView.getBannerDataView());
         setAutoCompleteApplink(productDataView.getAutocompleteApplink());
         setTotalData(productDataView.getTotalData());
 
@@ -877,6 +883,10 @@ final class ProductListPresenter
 
     private void setAutoCompleteApplink(String autoCompleteApplink) {
         this.autoCompleteApplink = autoCompleteApplink;
+    }
+
+    private void setBannerDataView(BannerDataView bannerDataView) {
+        this.bannerDataView = bannerDataView;
     }
 
     private void getViewToHandleEmptyProductList(
@@ -1166,6 +1176,10 @@ final class ProductListPresenter
         inspirationCardDataView = productDataView.getInspirationCardDataView();
         processInspirationCardPosition(searchParameter, list);
 
+        processBannerAndBroadmatchInSamePosition(searchProduct, list);
+
+        processBanner(searchProduct, list);
+
         processBroadMatch(searchProduct, list);
 
         topAdsImageViewModelList = searchProductModel.getTopAdsImageViewModelList();
@@ -1424,6 +1438,53 @@ final class ProductListPresenter
         return showInspirationCarouselLayout.contains(layout);
     }
 
+    private void processBannerAndBroadmatchInSamePosition(SearchProductModel.SearchProduct searchProduct, List<Visitable> list) {
+        if (isShowBanner() && isShowBroadMatch()) {
+            if (bannerDataView.getPosition() == -1 && relatedDataView.getPosition() == 0) {
+                processBroadMatchAtBottom(searchProduct, list);
+                processBannerAtBottom(searchProduct, list);
+            } else if (bannerDataView.getPosition() == 0 && relatedDataView.getPosition() == 1) {
+                processBroadMatchAtTop(list);
+                processBannerAtTop(list);
+            }
+        }
+    }
+
+    private boolean isShowBanner() {
+        return bannerDataView != null && !bannerDataView.getImageUrl().isEmpty();
+    }
+
+    private void processBannerAtBottom(SearchProductModel.SearchProduct searchProduct, List<Visitable> list) {
+        if (isLastPage(searchProduct)) {
+            list.add(bannerDataView);
+            bannerDataView = null;
+        }
+    }
+
+    private void processBannerAtTop(List<Visitable> list) {
+        list.add(list.indexOf(productList.get(0)), bannerDataView);
+        bannerDataView = null;
+    }
+
+    private void processBanner(SearchProductModel.SearchProduct searchProduct, List<Visitable> list) {
+        if (isShowBanner()) {
+            if (bannerDataView.getPosition() == -1) processBannerAtBottom(searchProduct, list);
+            else if (bannerDataView.getPosition() == 0) processBannerAtTop(list);
+            else processBannerAtPosition(list);
+        }
+    }
+
+    private void processBannerAtPosition(List<Visitable> list) {
+        if (productList.size() < bannerDataView.getPosition()) return;
+
+        int productItemVisitableIndex = bannerDataView.getPosition() - 1;
+        Visitable productItemVisitable = productList.get(productItemVisitableIndex);
+        int bannerVisitableIndex = list.indexOf(productItemVisitable) + 1;
+
+        list.add(bannerVisitableIndex, bannerDataView);
+        bannerDataView = null;
+    }
+
     private void processBroadMatch(SearchProductModel.SearchProduct searchProduct, List<Visitable> list) {
         try {
             if (isShowBroadMatch()) {
@@ -1531,21 +1592,6 @@ final class ProductListPresenter
         boolean isCPMOrProductItem = list.get(index) instanceof CpmDataView || list.get(index) instanceof ProductItemDataView;
 
         return !isCPMOrProductItem;
-    }
-
-    private boolean isExistsFreeOngkirBadge(List<Visitable> productList) {
-        for (Visitable product : productList) {
-            if (product instanceof ProductItemDataView) {
-                ProductItemDataView productItemDataView = (ProductItemDataView) product;
-
-                if (productItemDataView.getFreeOngkirDataView() != null
-                        && productItemDataView.getFreeOngkirDataView().isActive()) {
-                    return true;
-                }
-            }
-        }
-
-        return false;
     }
 
     private void processDefaultQuickFilter(SearchProductModel searchProductModel) {

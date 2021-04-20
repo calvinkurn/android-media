@@ -8,7 +8,7 @@ import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.vouchergame.VoucherGameTestDispatchersProvider
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.vouchergame.detail.data.VoucherGameDetailData
 import com.tokopedia.vouchergame.detail.data.VoucherGameProduct
 import com.tokopedia.vouchergame.detail.data.VoucherGameProductData
@@ -47,7 +47,7 @@ class VoucherGameDetailViewModelTest {
         gqlResponseFail = GraphqlResponse(result, errors, false)
 
         voucherGameDetailViewModel =
-                VoucherGameDetailViewModel(graphqlRepository, VoucherGameTestDispatchersProvider())
+                VoucherGameDetailViewModel(graphqlRepository, CoroutineTestDispatchersProvider)
     }
 
     @Test

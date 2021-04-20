@@ -1,6 +1,6 @@
 package com.tokopedia.orderhistory.stub.di
 
-import com.tokopedia.orderhistory.OrderHistoryAndroidTestCoroutineContextDispatcher
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.orderhistory.data.ChatHistoryProductResponse
 import com.tokopedia.orderhistory.di.OrderHistoryScope
 import com.tokopedia.orderhistory.stub.common.GraphqlUseCaseStub
@@ -25,7 +25,7 @@ class OrderHistoryStubDependencyModule {
     @Provides
     fun provideGetProductOrderHistoryUseCaseStub(
             gqlUseCase: GraphqlUseCaseStub<ChatHistoryProductResponse>,
-            dispatchers: OrderHistoryAndroidTestCoroutineContextDispatcher
+            dispatchers: CoroutineDispatchers
     ): GetProductOrderHistoryUseCaseStub {
         return GetProductOrderHistoryUseCaseStub(gqlUseCase, dispatchers)
     }

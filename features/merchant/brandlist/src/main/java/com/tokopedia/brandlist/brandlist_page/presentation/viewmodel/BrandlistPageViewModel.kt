@@ -10,14 +10,12 @@ import com.tokopedia.brandlist.brandlist_page.data.model.OfficialStoreFeaturedSh
 import com.tokopedia.brandlist.brandlist_page.domain.GetBrandlistAllBrandUseCase
 import com.tokopedia.brandlist.brandlist_page.domain.GetBrandlistFeaturedBrandUseCase
 import com.tokopedia.brandlist.brandlist_page.domain.GetBrandlistPopularBrandUseCase
-import com.tokopedia.brandlist.common.BrandlistDispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Deferred
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import javax.inject.Inject
 
@@ -25,8 +23,8 @@ class BrandlistPageViewModel @Inject constructor(
         private val getBrandListFeaturedBrandUseCase: GetBrandlistFeaturedBrandUseCase,
         private val getBrandListPopularBrandUseCase: GetBrandlistPopularBrandUseCase,
         private val getBrandListAllBrandUseCase: GetBrandlistAllBrandUseCase,
-        private val dispatchers: BrandlistDispatcherProvider
-) : BaseViewModel(dispatchers.ui()) {
+        private val dispatchers: CoroutineDispatchers
+) : BaseViewModel(dispatchers.main) {
 
     private val _getFeaturedBrandResult = MutableLiveData<Result<OfficialStoreFeaturedShop>>()
     val getFeaturedBrandResult: LiveData<Result<OfficialStoreFeaturedShop>>
@@ -156,7 +154,7 @@ class BrandlistPageViewModel @Inject constructor(
     }
 
     private fun getFeaturedBrandsAsync(categoryId: String?): Deferred<OfficialStoreFeaturedShop> {
-        return async(dispatchers.io()) {
+        return async(dispatchers.io) {
             var featuredbrand = OfficialStoreFeaturedShop()
             try {
                 getBrandListFeaturedBrandUseCase.params = GetBrandlistFeaturedBrandUseCase
@@ -170,7 +168,7 @@ class BrandlistPageViewModel @Inject constructor(
     }
 
     private fun getPopularBrandsAsync(userId: String?, categoryId: ArrayList<Int>?): Deferred<OfficialStoreBrandsRecommendation> {
-        return async(dispatchers.io()) {
+        return async(dispatchers.io) {
             var popularBrand = OfficialStoreBrandsRecommendation()
             val categories = categoryId.toString().replace(" ","")
             try {
@@ -188,7 +186,7 @@ class BrandlistPageViewModel @Inject constructor(
     }
 
     private fun getNewBrandsAsync(userId: String?, categoryId: ArrayList<Int>?): Deferred<OfficialStoreBrandsRecommendation> {
-        return async(dispatchers.io()) {
+        return async(dispatchers.io) {
             var newBrand = OfficialStoreBrandsRecommendation()
             val categories = categoryId.toString().replace(" ","")
             try {
@@ -212,7 +210,7 @@ class BrandlistPageViewModel @Inject constructor(
                                  brandSize: Int,
                                  sortType: Int,
                                  firstLetter: String): Deferred<OfficialStoreAllBrands> {
-        return async(dispatchers.io()) {
+        return async(dispatchers.io) {
             var allBrand = OfficialStoreAllBrands()
             try {
                 getBrandListAllBrandUseCase.params = GetBrandlistAllBrandUseCase

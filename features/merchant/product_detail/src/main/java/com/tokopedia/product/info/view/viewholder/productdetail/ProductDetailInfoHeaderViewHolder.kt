@@ -7,13 +7,13 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.media.loader.loadImageRounded
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.ProductDetailInfoContent
 import com.tokopedia.product.info.model.productdetail.uidata.ProductDetailInfoHeaderDataModel
 import com.tokopedia.product.info.view.ProductDetailInfoListener
 import com.tokopedia.product.share.ekstensions.layoutInflater
 import com.tokopedia.unifyprinciples.Typography
-import com.tokopedia.utils.image.ImageUtils
 import kotlinx.android.synthetic.main.bs_item_product_detail_header.view.*
 import kotlinx.android.synthetic.main.item_info_product_detail.view.*
 
@@ -29,7 +29,7 @@ class ProductDetailInfoHeaderViewHolder(private val view: View,
 
     override fun bind(element: ProductDetailInfoHeaderDataModel) {
         view.pdp_header_product_title?.text = element.productTitle
-        ImageUtils.loadImageRounded2(view.context, view.pdp_header_img, element.img, 8F)
+        view.pdp_header_img.loadImageRounded(element.img, 8f)
         setupItemList(element.listOfInfo)
         setupSpecification(element.listOfAnnotation, element.needToShowSpecification())
     }

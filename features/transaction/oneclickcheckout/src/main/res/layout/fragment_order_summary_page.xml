@@ -81,28 +81,44 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/space_note" />
 
+                <com.tokopedia.unifycomponents.ticker.Ticker
+                    android:id="@+id/ticker_preference_info"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/spacing_lvl4"
+                    android:layout_marginTop="@dimen/spacing_lvl4"
+                    android:layout_marginEnd="@dimen/spacing_lvl4"
+                    android:visibility="gone"
+                    app:closeButtonVisibility="gone"
+                    app:descriptionText="Pilihan Utamamu berubah, cek lagi ya"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/divider_top"
+                    app:tickerShapeType="loose"
+                    app:tickerType="announcement" />
+
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/tv_header_2"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/dp_16"
-                    android:layout_marginTop="@dimen/dp_12"
-                    android:layout_marginEnd="@dimen/dp_16"
+                    android:layout_marginStart="@dimen/spacing_lvl4"
+                    android:layout_marginTop="@dimen/spacing_lvl4"
+                    android:layout_marginEnd="@dimen/spacing_lvl4"
                     android:textColor="@color/Unify_N700_96"
                     android:visibility="visible"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/divider_top"
-                    app:typographyType="heading_4"
+                    app:layout_constraintTop_toBottomOf="@+id/ticker_preference_info"
+                    app:typographyType="heading_5"
                     app:typographyWeight="bold" />
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/tv_header_3"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/dp_16"
+                    android:layout_marginStart="@dimen/spacing_lvl4"
                     android:layout_marginTop="@dimen/dp_4"
-                    android:layout_marginEnd="@dimen/dp_16"
+                    android:layout_marginEnd="@dimen/spacing_lvl4"
                     android:textColor="@color/Unify_N700_96"
                     android:visibility="visible"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -110,22 +126,6 @@
                     app:layout_constraintTop_toBottomOf="@+id/tv_header_2"
                     app:typographyType="body_3"
                     app:typographyWeight="reguler" />
-
-                <com.tokopedia.unifycomponents.ticker.Ticker
-                    android:id="@+id/ticker_preference_info"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/dp_16"
-                    android:layout_marginTop="@dimen/dp_8"
-                    android:layout_marginRight="@dimen/dp_16"
-                    android:visibility="gone"
-                    app:closeButtonVisibility="gone"
-                    app:descriptionText="Pilihan Utamamu berubah, cek lagi ya"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/tv_header_3"
-                    app:tickerShapeType="loose"
-                    app:tickerType="announcement" />
 
                 <include
                     android:id="@+id/preference_card"
@@ -137,7 +137,7 @@
                     android:visibility="gone"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/ticker_preference_info" />
+                    app:layout_constraintTop_toBottomOf="@+id/tv_header_3" />
 
                 <include
                     android:id="@+id/new_preference_card"

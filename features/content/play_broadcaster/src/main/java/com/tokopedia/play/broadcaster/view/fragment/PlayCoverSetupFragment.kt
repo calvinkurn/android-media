@@ -45,7 +45,7 @@ import com.tokopedia.play.broadcaster.view.state.NotChangeable
 import com.tokopedia.play.broadcaster.view.viewmodel.DataStoreViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayCoverSetupViewModel
 import com.tokopedia.play_common.model.result.NetworkResult
-import com.tokopedia.play_common.util.coroutine.CoroutineDispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.play_common.util.extension.exhaustive
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.unifycomponents.Toaster
@@ -58,7 +58,7 @@ import javax.inject.Inject
  */
 class PlayCoverSetupFragment @Inject constructor(
         private val viewModelFactory: ViewModelFactory,
-        private val dispatcher: CoroutineDispatcherProvider,
+        private val dispatcher: CoroutineDispatchers,
         private val permissionPref: PermissionSharedPreferences,
         private val analytic: PlayBroadcastAnalytic
 ) : PlayBaseSetupFragment(), CoverCropViewComponent.Listener, CoverSetupViewComponent.Listener {

@@ -28,7 +28,7 @@ import com.tokopedia.seamless_login_common.subscriber.SeamlessLoginSubscriber
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
 import com.tokopedia.topchat.FileUtil
 import com.tokopedia.topchat.R
-import com.tokopedia.topchat.TopchatTestCoroutineContextDispatcher
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.topchat.chatlist.domain.usecase.DeleteMessageListUseCase
 import com.tokopedia.topchat.chatlist.viewmodel.DeleteChatListUiModel
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.Attachment
@@ -67,7 +67,7 @@ import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenterTest.Du
 import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenterTest.Dummy.wsResponseTypingString
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendablePreview
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendableProductPreview
-import com.tokopedia.topchat.chatroom.view.viewmodel.TopchatCoroutineContextProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.topchat.chattemplate.view.viewmodel.GetTemplateUiModel
 import com.tokopedia.topchat.common.util.ImageUtil
 import com.tokopedia.topchat.common.util.ImageUtil.IMAGE_EXCEED_SIZE_LIMIT
@@ -176,7 +176,7 @@ class TopChatRoomPresenterTest {
     @RelaxedMockK
     private lateinit var sharedPref: SharedPreferences
 
-    private val dispatchers: TopchatCoroutineContextProvider = TopchatTestCoroutineContextDispatcher()
+    private val dispatchers: CoroutineDispatchers = CoroutineTestDispatchersProvider
 
     @RelaxedMockK
     private lateinit var webSocket: WebSocket

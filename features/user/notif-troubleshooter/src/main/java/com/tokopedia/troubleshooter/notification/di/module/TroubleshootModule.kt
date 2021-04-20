@@ -19,8 +19,8 @@ import com.tokopedia.troubleshooter.notification.data.service.ringtone.RingtoneM
 import com.tokopedia.troubleshooter.notification.data.service.ringtone.RingtoneModeServiceImpl
 import com.tokopedia.troubleshooter.notification.di.TroubleshootContext
 import com.tokopedia.troubleshooter.notification.di.TroubleshootScope
-import com.tokopedia.troubleshooter.notification.util.dispatchers.AppDispatcherProvider
-import com.tokopedia.troubleshooter.notification.util.dispatchers.DispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -45,8 +45,8 @@ import javax.inject.Named
 
     @Provides
     @TroubleshootScope
-    fun provideMainDispatcher(): DispatcherProvider {
-        return AppDispatcherProvider()
+    fun provideMainDispatcher(): CoroutineDispatchers {
+        return CoroutineDispatchersProvider
     }
 
     @Provides

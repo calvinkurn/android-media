@@ -31,11 +31,10 @@ import com.tokopedia.imagepicker.common.ImageEditorBuilder;
 import com.tokopedia.imagepicker.common.ImagePickerBuilder;
 import com.tokopedia.imagepicker.common.ImagePickerGlobalSettings;
 import com.tokopedia.imagepicker.common.exception.FileSizeAboveMaximumException;
+import com.tokopedia.imagepicker.common.model.MediaItem;
 import com.tokopedia.imagepicker.editor.main.view.ImageEditorActivity;
 import com.tokopedia.imagepicker.picker.camera.ImagePickerCameraFragment;
 import com.tokopedia.imagepicker.picker.gallery.ImagePickerGalleryFragment;
-import com.tokopedia.imagepicker.common.model.MediaItem;
-import com.tokopedia.imagepicker.picker.instagram.view.fragment.ImagePickerInstagramFragment;
 import com.tokopedia.imagepicker.picker.main.adapter.ImagePickerViewPagerAdapter;
 import com.tokopedia.imagepicker.picker.main.builder.StateRecorderType;
 import com.tokopedia.imagepicker.picker.video.VideoRecorderFragment;
@@ -55,7 +54,7 @@ import static com.tokopedia.imagepicker.common.ResultConstantKt.RESULT_PREVIOUS_
 public final class ImagePickerActivity extends BaseSimpleActivity
         implements ImagePickerGalleryFragment.OnImagePickerGalleryFragmentListener,
         ImagePickerCameraFragment.OnImagePickerCameraFragmentListener,
-        ImagePickerInstagramFragment.ListenerImagePickerInstagram, ImagePickerPresenter.ImagePickerView,
+        ImagePickerPresenter.ImagePickerView,
         ImagePickerPreviewWidget.OnImagePickerThumbnailListWidgetListener, VideoRecorderFragment.VideoPickerCallback {
 
     public static final String SAVED_SELECTED_TAB = "saved_sel_tab";
@@ -218,11 +217,11 @@ public final class ImagePickerActivity extends BaseSimpleActivity
     protected void imagePickerViewPagerOnPageSelected(int position) {
         if (selectedTab != position) {
             Fragment previousFragment = imagePickerViewPagerAdapter.getRegisteredFragment(selectedTab);
-            if (previousFragment != null && previousFragment instanceof ImagePickerCameraFragment) {
+            if (previousFragment instanceof ImagePickerCameraFragment) {
                 ((ImagePickerCameraFragment) previousFragment).onInvisible();
             }
             Fragment fragment = imagePickerViewPagerAdapter.getRegisteredFragment(position);
-            if (fragment != null && fragment instanceof ImagePickerCameraFragment) {
+            if (fragment instanceof ImagePickerCameraFragment) {
                 ((ImagePickerCameraFragment) fragment).onVisible();
             }
         }
@@ -417,11 +416,6 @@ public final class ImagePickerActivity extends BaseSimpleActivity
     @Override
     public int getRatioX() {
         return imagePickerBuilder.getRatioX();
-    }
-
-    @Override
-    public void onClickImageInstagram(String url, boolean isChecked, String description) {
-        onImageSelected(url, isChecked, description);
     }
 
     @Override
