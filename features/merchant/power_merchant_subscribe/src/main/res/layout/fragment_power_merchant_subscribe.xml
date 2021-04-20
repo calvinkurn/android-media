@@ -117,10 +117,10 @@
             tools:visibility="visible" />
     </androidx.cardview.widget.CardView>
 
-    <ProgressBar
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/progressBar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/layout_lvl4"
+        android:layout_height="@dimen/layout_lvl4"
         android:layout_gravity="center"
         tools:visibility="gone" />
 </LinearLayout>
