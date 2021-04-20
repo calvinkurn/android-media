@@ -3,11 +3,11 @@ package com.tokopedia.digital.home.presentation.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.digital.home.model.RechargeHomepageSectionAction
 import com.tokopedia.digital.home.model.RechargeHomepageSectionSkeleton
 import com.tokopedia.digital.home.model.RechargeHomepageSections
 import com.tokopedia.digital.home.model.RechargeTickerHomepageModel
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.digital.home.presentation.util.RechargeHomepageSectionMapper
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -187,7 +187,6 @@ class RechargeHomepageViewModel @Inject constructor(
     }
 
     companion object {
-        const val SUBHOMEPAGE_CACHE_500MS = 500L
         const val ID_TICKER = "0"
 
         const val PARAM_RECHARGE_HOMEPAGE_SECTION_ID = "sectionID"
