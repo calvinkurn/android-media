@@ -317,7 +317,7 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
         val blacklistMessage = data.basicInfo.blacklistMessage
 
         if (error != null && error.isNotEmpty()) {
-            throw MessageErrorException(error.mapNotNull { it.message }.joinToString(separator = ", "), error.firstOrNull()?.extensions?.code.toString())
+            throw com.tokopedia.network.exception.MessageErrorException(error.mapNotNull { it.message }.joinToString(separator = ", "), error.firstOrNull()?.extensions?.code.toString())
         } else if (data.basicInfo.isBlacklisted) {
             gqlUseCase.clearCache()
             throw TobacoErrorException(blacklistMessage.description, blacklistMessage.title, blacklistMessage.button, blacklistMessage.url)

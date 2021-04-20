@@ -118,7 +118,7 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
                         height = context.resources.getDimension(FIRE_HEIGHT).toInt())
             }
             progressBarStock.progressBarColorType = ProgressBarUnify.COLOR_RED
-            progressBarStock.setValue(productCardModel.stockBarPercentage, true)
+            progressBarStock.setValue(productCardModel.stockBarPercentage, false)
         }
     }
 
