@@ -106,6 +106,9 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
     private var isFromEditAddress: Boolean? = false
     private var isFromDeleteAddress: Boolean? = false
 
+    /* State for clicked address that has chosen before */
+    private var isChosenAddress: Boolean? = false
+
     override fun getScreenName(): String = ""
 
     override fun initInjector() {
@@ -491,6 +494,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
                 if (isFromCheckoutChangeAddress == true) {
                     _selectedAddressItem = data
                 }
+                isChosenAddress = true
                 viewModel.setDefaultPeopleAddress(data.id, false, prevState, getChosenAddrId(), ChooseAddressUtils.isRollOutUser(context))
                 bottomSheetLainnya?.dismiss()
             }
@@ -500,6 +504,8 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
                 isFromDeleteAddress = true
             }
             btn_alamat_utama_choose?.setOnClickListener {
+                isChosenAddress = false
+
                 context?.let {
                     viewModel.setDefaultPeopleAddress(data.id,true, prevState, data.id.toInt(), ChooseAddressUtils.isRollOutUser(it))
                 }
@@ -593,7 +599,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
     }
 
     private fun setChosenAddress() {
-        if (isLocalization == true) {
+        if (isLocalization == true && isChosenAddress == false) {
             val resultIntent = Intent().apply {
                 putExtra(ChooseAddressConstant.EXTRA_SELECTED_ADDRESS_DATA, _selectedAddressItem)
             }
