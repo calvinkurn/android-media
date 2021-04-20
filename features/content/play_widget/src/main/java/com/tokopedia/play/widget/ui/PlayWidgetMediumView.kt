@@ -148,6 +148,8 @@ class PlayWidgetMediumView : ConstraintLayout, IPlayWidgetView {
 
     private var mIsAutoPlay: Boolean = false
 
+    private val spacing16 by lazy { resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4).toDp().toInt() }
+
     init {
         val view = LayoutInflater.from(context).inflate(R.layout.view_play_widget_medium, this)
 
@@ -246,7 +248,6 @@ class PlayWidgetMediumView : ConstraintLayout, IPlayWidgetView {
      */
     private fun configureOverlay(data: PlayWidgetBackgroundUiModel) {
         if (shouldHandleOverlayImage(data.overlayImageUrl)) overlayImage.loadImage(data.overlayImageUrl, overlayImageHandler(data))
-        val spacing16 = context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4).toDp().toInt()
         recyclerViewItem.setMargin(
                 left = 0,
                 top = if (shouldAddSpacing(data)) spacing16 else 0,
