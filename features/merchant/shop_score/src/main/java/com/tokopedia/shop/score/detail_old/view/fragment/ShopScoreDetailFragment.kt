@@ -82,9 +82,9 @@ class ShopScoreDetailFragment : Fragment() {
 
     private fun initInjector() {
         DaggerShopScoreComponent.builder()
-            .baseAppComponent((requireContext().applicationContext as BaseMainApplication).baseAppComponent)
-            .build()
-            .inject(this)
+                .baseAppComponent((requireContext().applicationContext as BaseMainApplication).baseAppComponent)
+                .build()
+                .inject(this)
     }
 
     private fun setupTickerShopScore(shopInfoPeriodUiModel: ShopInfoPeriodUiModel) {
@@ -100,7 +100,6 @@ class ShopScoreDetailFragment : Fragment() {
                     when (shopInfoPeriodUiModel.periodType) {
                         COMMUNICATION_PERIOD -> {
                             //shop info page (seller edu)
-
                         }
                         else -> {
                             RouteManager.route(context, ApplinkConstInternalMarketplace.SHOP_PERFORMANCE)
@@ -108,6 +107,7 @@ class ShopScoreDetailFragment : Fragment() {
                     }
                     ShopScoreDetailTracking.clickHereTickerOldShopScoreDetail(viewModel.userSession.userId, getTypeShop)
                 }
+
                 override fun onDismiss() {}
             })
         }
@@ -180,14 +180,14 @@ class ShopScoreDetailFragment : Fragment() {
         setGravityCenter()
 
         NetworkErrorHelper
-            .showEmptyState(
-                activity,
-                main_frame,
-                getString(R.string.error_title_shop_score_failed),
-                getString(R.string.error_subtitle_shop_score_failed),
-                getString(R.string.label_try_again),
-                com.tokopedia.globalerror.R.drawable.unify_globalerrors_connection
-            ) { viewModel.getShopScoreDetail()  }
+                .showEmptyState(
+                        activity,
+                        main_frame,
+                        getString(R.string.error_title_shop_score_failed),
+                        getString(R.string.error_subtitle_shop_score_failed),
+                        getString(R.string.label_try_again),
+                        com.tokopedia.globalerror.R.drawable.unify_globalerrors_connection
+                ) { viewModel.getShopScoreDetail() }
     }
 
     private fun showLoading() {
@@ -203,8 +203,8 @@ class ShopScoreDetailFragment : Fragment() {
 
     private fun setGravityCenter() {
         val params = FrameLayout.LayoutParams(
-            ViewGroup.LayoutParams.MATCH_PARENT,
-            ViewGroup.LayoutParams.WRAP_CONTENT
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
         )
         params.gravity = Gravity.CENTER
         main_frame?.layoutParams = params
@@ -212,8 +212,8 @@ class ShopScoreDetailFragment : Fragment() {
 
     private fun setNoGravity() {
         val params = FrameLayout.LayoutParams(
-            ViewGroup.LayoutParams.MATCH_PARENT,
-            ViewGroup.LayoutParams.WRAP_CONTENT
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
         )
         main_frame?.layoutParams = params
     }
@@ -224,23 +224,23 @@ class ShopScoreDetailFragment : Fragment() {
 
     private fun buildStringSummary(summary: ShopScoreDetailSummary?): String {
         return (getString(R.string.subtitle_first_shop_score_detail_summary)
-            + " "
-            + "<font color=#"
-            + summary?.color
-            + "><strong>"
-            + summary?.text
-            + "</strong></font>"
-            + " "
-            + getString(R.string.subtitle_second_shop_score_detail_summary)
-            + " "
-            + "<strong>"
-            + summary?.value?.formatShopScore()
-            + "</strong>"
-            + ".")
+                + " "
+                + "<font color=#"
+                + summary?.color
+                + "><strong>"
+                + summary?.text
+                + "</strong></font>"
+                + " "
+                + getString(R.string.subtitle_second_shop_score_detail_summary)
+                + " "
+                + "<strong>"
+                + summary?.value?.formatShopScore()
+                + "</strong>"
+                + ".")
     }
 
     private fun observeShopScoreDetail() {
-       observe(viewModel.shopScoreData) { result ->
+        observe(viewModel.shopScoreData) { result ->
             dismissLoading()
 
             when (result) {
