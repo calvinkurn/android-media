@@ -455,7 +455,7 @@ class CartItemViewHolder constructor(private val binding: HolderItemCartNewBindi
                 tvLabelRemarkTitle.visibility = View.GONE
                 tvRemark.visibility = View.GONE
                 tvNoteCharCounter.visibility = View.GONE
-                tvLabelRemarkOption.text = tvLabelRemarkOption.context.getString(R.string.label_button_add_note)
+                tvLabelRemarkOption.text = tvLabelRemarkOption.context.getString(com.tokopedia.purchase_platform.common.R.string.label_button_add_note)
                 tvLabelRemarkOption.visibility = View.VISIBLE
                 etRemark.setText("")
                 tvLabelRemarkOption.setTextColor(ContextCompat.getColor(itemView.context, R.color.Unify_G500))
