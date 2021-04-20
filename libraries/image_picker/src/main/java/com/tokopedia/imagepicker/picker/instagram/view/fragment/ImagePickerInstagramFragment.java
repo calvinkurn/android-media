@@ -143,7 +143,6 @@ public class ImagePickerInstagramFragment extends BaseListFragment<InstagramMedi
 
     @Override
     public void onSwipeRefresh() {
-        imagePickerInstagramPresenter.clearCacheInstagramMedia();
         super.onSwipeRefresh();
     }
 

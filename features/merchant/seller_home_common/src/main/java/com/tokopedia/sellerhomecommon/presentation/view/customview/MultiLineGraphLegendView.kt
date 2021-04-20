@@ -4,7 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import android.widget.LinearLayout
-import com.tokopedia.kotlin.extensions.view.getResDrawable
+import com.tokopedia.kotlin.extensions.view.loadImageDrawable
 import com.tokopedia.sellerhomecommon.R
 import kotlinx.android.synthetic.main.shc_multi_line_graph_legend_view.view.*
 
@@ -31,13 +31,11 @@ class MultiLineGraphLegendView : LinearLayout {
     }
 
     fun showDashLine() {
-        val dashedLine = context.getResDrawable(R.drawable.shc_grey_dashed_line)
-        vShcMlgLegendLine.background = dashedLine
+        icShcMlgLegendLine.loadImageDrawable(R.drawable.ic_shc_legend_dash_line)
     }
 
     fun showLine() {
-        val line = context.getResDrawable(R.drawable.shc_grey_line)
-        vShcMlgLegendLine.background = line
+        icShcMlgLegendLine.loadImageDrawable(R.drawable.ic_shc_legend_line)
     }
 
     fun setText(s: String) {

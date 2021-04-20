@@ -148,12 +148,12 @@ class DigitalAnalytics {
         ))
     }
 
-    fun eventCheckout(cartDigitalInfoData: CartDigitalInfoData, userId: String) {
+    fun eventCheckout(cartDigitalInfoData: CartDigitalInfoData, userId: String, categoryId: String) {
         val productName: String = cartDigitalInfoData.attributes.operatorName.toLowerCase() + " " +
                 cartDigitalInfoData.attributes.price.toLowerCase()
 
         val products: MutableList<Any> = ArrayList()
-        products.add(constructProductEnhanceEcommerce(cartDigitalInfoData, productName))
+        products.add(constructProductEnhanceEcommerce(cartDigitalInfoData, productName, categoryId))
 
         val label = String.format("%s - %s",
                 cartDigitalInfoData.attributes.categoryName.toLowerCase(),
@@ -177,12 +177,12 @@ class DigitalAnalytics {
         )
     }
 
-    fun eventProceedToPayment(cartDataInfo: CartDigitalInfoData, voucherCode: String, userId: String) {
+    fun eventProceedToPayment(cartDataInfo: CartDigitalInfoData, voucherCode: String, userId: String, categoryId: String) {
         val productName: String = cartDataInfo.attributes.operatorName.toLowerCase() + " " +
                 cartDataInfo.attributes.price.toLowerCase()
 
         val products: MutableList<Any> = ArrayList()
-        products.add(constructProductEnhanceEcommerce(cartDataInfo, productName))
+        products.add(constructProductEnhanceEcommerce(cartDataInfo, productName, categoryId))
 
         var label = String.format("%s - %s - ",
                 cartDataInfo.attributes.categoryName.toLowerCase(),
@@ -239,20 +239,16 @@ class DigitalAnalytics {
     }
 
     private fun constructProductEnhanceEcommerce(cartDigitalInfoData: CartDigitalInfoData,
-                                                 productName: String): Map<String?, Any?> {
-        var productId = DigitalCheckoutTrackingConst.Value.NONE
-        cartDigitalInfoData.relationProduct.id.let {
-            if (it.isNotEmpty()) productId = it
-        }
+                                                 productName: String, categoryId: String): Map<String?, Any?> {
         return DataLayer.mapOf(
                 DigitalCheckoutTrackingConst.Product.KEY_NAME, productName,
-                DigitalCheckoutTrackingConst.Product.KEY_ID, productId,
+                DigitalCheckoutTrackingConst.Product.KEY_ID, cartDigitalInfoData.productId,
                 DigitalCheckoutTrackingConst.Product.KEY_PRICE, cartDigitalInfoData.attributes.pricePlain.toString(),
                 DigitalCheckoutTrackingConst.Product.KEY_BRAND, cartDigitalInfoData.attributes.operatorName?.toLowerCase(),
                 DigitalCheckoutTrackingConst.Product.KEY_CATEGORY, cartDigitalInfoData.attributes.categoryName?.toLowerCase(),
                 DigitalCheckoutTrackingConst.Product.KEY_VARIANT, DigitalCheckoutTrackingConst.Value.NONE,
                 DigitalCheckoutTrackingConst.Product.KEY_QUANTITY, "1",
-                DigitalCheckoutTrackingConst.Product.KEY_CATEGORY_ID, cartDigitalInfoData.relationCategory.id,
+                DigitalCheckoutTrackingConst.Product.KEY_CATEGORY_ID, categoryId,
                 DigitalCheckoutTrackingConst.Product.KEY_CART_ID, cartDigitalInfoData.id,
                 DigitalCheckoutTrackingConst.Product.KEY_SHOP_ID, DigitalCheckoutTrackingConst.Value.NONE,
                 DigitalCheckoutTrackingConst.Product.KEY_SHOP_NAME, DigitalCheckoutTrackingConst.Value.NONE,

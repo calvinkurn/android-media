@@ -30,6 +30,8 @@ import com.tokopedia.hotel.booking.presentation.activity.HotelBookingActivity
 import com.tokopedia.hotel.common.analytics.TrackingHotelUtil
 import com.tokopedia.hotel.common.data.HotelErrorException
 import com.tokopedia.hotel.common.util.ErrorHandlerHotel
+import com.tokopedia.hotel.common.util.HotelGqlMutation
+import com.tokopedia.hotel.common.util.HotelGqlQuery
 import com.tokopedia.hotel.homepage.presentation.widget.HotelRoomAndGuestBottomSheets
 import com.tokopedia.hotel.roomdetail.presentation.activity.HotelRoomDetailActivity
 import com.tokopedia.hotel.roomdetail.presentation.fragment.HotelRoomDetailFragment
@@ -320,9 +322,9 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
     override fun loadData(page: Int) {
         showFilterRecyclerView(false)
         if (firstTime) {
-            roomListViewModel.getRoomList(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_room_list),
+            roomListViewModel.getRoomList(HotelGqlQuery.PROPERTY_ROOM_LIST,
                     hotelRoomListPageModel, false)
-        } else roomListViewModel.getRoomList(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_room_list),
+        } else roomListViewModel.getRoomList(HotelGqlQuery.PROPERTY_ROOM_LIST,
                 hotelRoomListPageModel, true)
     }
 
@@ -412,7 +414,7 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
         val hotelAddCartParam = mapToAddCartParam(hotelRoomListPageModel, room)
         trackingHotelUtil.hotelChooseRoom(context, room, hotelAddCartParam, ROOM_LIST_SCREEN_NAME)
         if (userSessionInterface.isLoggedIn) {
-            roomListViewModel.addToCart(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_add_to_cart),
+            roomListViewModel.addToCart(HotelGqlMutation.ADD_TO_CART,
                     hotelAddCartParam)
         } else {
             navigateToLoginPage()

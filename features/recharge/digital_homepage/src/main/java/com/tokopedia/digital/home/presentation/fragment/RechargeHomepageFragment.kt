@@ -374,7 +374,7 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
             (it is RechargeHomepageSectionModel && it.visitableId().equals(sectionID)) ||
                     (it is HomeComponentVisitable && it.visitableId().equals(sectionID))
         }
-        if (index >= 0) {
+        if (index >= 0 && index < adapter.data.size) {
             recycler_view.post {
                 adapter.apply {
                     data.removeAt(index)

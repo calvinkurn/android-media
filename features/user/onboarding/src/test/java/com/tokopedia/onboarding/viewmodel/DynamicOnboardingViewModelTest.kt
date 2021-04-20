@@ -4,7 +4,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.tokopedia.onboarding.domain.model.ConfigDataModel
 import com.tokopedia.onboarding.domain.usecase.DynamicOnboardingUseCase
-import com.tokopedia.onboarding.util.TestDispatcherProvider
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.onboarding.view.viewmodel.DynamicOnboardingViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -23,7 +23,7 @@ class DynamicOnboardingViewModelTest {
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
     @ExperimentalCoroutinesApi
-    val dispatcher = TestDispatcherProvider()
+    val dispatcher = CoroutineTestDispatchersProvider
 
     private val onboardingUseCase = mockk<DynamicOnboardingUseCase>(relaxed = true)
     private val observer = mockk<Observer<Result<ConfigDataModel>>>(relaxed = true)

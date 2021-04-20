@@ -20,8 +20,11 @@ import androidx.fragment.app.Fragment;
 import com.tokopedia.analyticsdebugger.debugger.ApplinkLogger;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.dev_monitoring_tools.userjourney.UserJourney;
+import com.tokopedia.logger.ServerLogger;
+import com.tokopedia.logger.utils.Priority;
 import com.tokopedia.utils.uri.DeeplinkUtils;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -293,8 +296,13 @@ public class RouteManager {
             } else if (context instanceof Service) {
                 sourceClass = ((Service) context).getClass().getCanonicalName();
             }
-            Timber.w("P1#APPLINK_OPEN_ERROR#Router;source='%s';referrer='%s';uri='%s';journey='%s'",
-                    sourceClass, referrer, uriString, UserJourney.INSTANCE.getReadableJourneyActivity(5));
+            Map<String, String> messageMap = new HashMap<>();
+            messageMap.put("type", "Router");
+            messageMap.put("source", sourceClass);
+            messageMap.put("referrer", referrer);
+            messageMap.put("uri", uriString);
+            messageMap.put("journey", UserJourney.INSTANCE.getReadableJourneyActivity(5));
+            ServerLogger.log(Priority.P1, "APPLINK_OPEN_ERROR", messageMap);
         } catch (Exception e) {
             Timber.e(e);
         }

@@ -2,13 +2,11 @@ package com.tokopedia.play.view.viewcomponent
 
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.R
-import com.tokopedia.play.ui.product.ProductBasicViewHolder
 import com.tokopedia.play.ui.productfeatured.adapter.ProductFeaturedAdapter
 import com.tokopedia.play.ui.productfeatured.itemdecoration.ProductFeaturedItemDecoration
 import com.tokopedia.play.ui.productfeatured.viewholder.ProductFeaturedSeeMoreViewHolder
+import com.tokopedia.play.ui.productfeatured.viewholder.ProductFeaturedViewHolder
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play_common.viewcomponent.ViewComponent
 
@@ -17,13 +15,17 @@ import com.tokopedia.play_common.viewcomponent.ViewComponent
  */
 class ProductFeaturedViewComponent(
         container: ViewGroup,
-        listener: Listener
+        private val listener: Listener
 ) : ViewComponent(container, R.id.view_product_featured) {
 
     private val rvProductFeatured: RecyclerView = findViewById(R.id.rv_product_featured)
 
     private val adapter = ProductFeaturedAdapter(
-            productFeaturedListener = object : ProductBasicViewHolder.Listener {
+            productFeaturedListener = object : ProductFeaturedViewHolder.Listener {
+                override fun onProductCardImpressed(product: PlayProductUiModel.Product, position: Int) {
+                    listener.onProductFeaturedImpressed(this@ProductFeaturedViewComponent, product, position)
+                }
+
                 override fun onClickProductCard(product: PlayProductUiModel.Product, position: Int) {
                     listener.onProductFeaturedClicked(this@ProductFeaturedViewComponent, product, position)
                 }
@@ -76,6 +78,7 @@ class ProductFeaturedViewComponent(
 
     interface Listener {
 
+        fun onProductFeaturedImpressed(view: ProductFeaturedViewComponent, product: PlayProductUiModel.Product, position: Int)
         fun onProductFeaturedClicked(view: ProductFeaturedViewComponent, product: PlayProductUiModel.Product, position: Int)
         fun onSeeMoreClicked(view: ProductFeaturedViewComponent)
     }

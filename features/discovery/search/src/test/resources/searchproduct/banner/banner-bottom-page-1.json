@@ -1,0 +1,708 @@
+{
+  "ace_search_product_v4": {
+    "header": {
+      "totalData": 16,
+      "totalDataText": "16",
+      "defaultView": 1,
+      "responseCode": 0,
+      "errorMessage": "",
+      "additionalParams": "",
+      "keywordProcess": "0"
+    },
+    "data": {
+      "isQuerySafe": true,
+      "autocompleteApplink": "tokopedia://search-autocomplete?navsource=thematic&q=hampers&srp_page_id=332&srp_page_title=",
+      "redirection": {
+        "redirectApplink": ""
+      },
+      "ticker": {
+        "text": "",
+        "query": "",
+        "typeId": 0
+      },
+      "related": {
+        "relatedKeyword": "",
+        "position": 0,
+        "otherRelated": []
+      },
+      "suggestion": {
+        "currentKeyword": "",
+        "suggestion": "",
+        "suggestionCount": 0,
+        "instead": "",
+        "insteadCount": 0,
+        "text": "",
+        "query": ""
+      },
+      "banner": {
+        "position": -1,
+        "text": "Parsel Ramadan",
+        "applink": "tokopedia://discovery/parsel",
+        "imageUrl": "https://images.tokopedia.net/img/QoeoWz/2021/3/29/6d474b47-5a6b-444c-a1d7-0861fe5ba911.png"
+      },
+      "products": [
+        {
+          "id": 1435343142,
+          "name": "KADO HADIAH HAMPERS PERNIKAHAN ANNIVERSARY WEDDING GIFT",
+          "ads": {
+            "id": "",
+            "productClickUrl": "",
+            "productWishlistUrl": "",
+            "productViewUrl": ""
+          },
+          "shop": {
+            "id": 2281114,
+            "name": "jaya hebat",
+            "city": "Bandung",
+            "url": "https://www.tokopedia.com/jayahebat",
+            "isOfficial": false,
+            "isPowerBadge": true
+          },
+          "freeOngkir": {
+            "isActive": false,
+            "imgUrl": ""
+          },
+          "imageUrl": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2020/12/22/9a6986db-4581-4e97-b8ef-d2cd82f2ae9f.jpg",
+          "imageUrl300": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2020/12/22/9a6986db-4581-4e97-b8ef-d2cd82f2ae9f.jpg",
+          "imageUrl700": "https://images.tokopedia.net/img/cache/700/VqbcmM/2020/12/22/9a6986db-4581-4e97-b8ef-d2cd82f2ae9f.jpg",
+          "price": "Rp95.000",
+          "priceInt": 95000,
+          "priceRange": "",
+          "categoryId": 54,
+          "categoryName": "Perlengkapan Pesta & Craft",
+          "categoryBreadcrumb": "perlengkapan-pesta-craft/hadiah/hampers",
+          "ratingAverage": "4.8",
+          "originalPrice": "",
+          "discountPercentage": 0,
+          "warehouseIdDefault": 0,
+          "boosterList": "-1",
+          "source_engine": "0",
+          "minOrder": 1,
+          "url": "https://www.tokopedia.com/jayahebat/kado-hadiah-hampers-pernikahan-anniversary-wedding-gift-mewah?whid=0",
+          "labelGroups": [
+            {
+              "title": "Cashback",
+              "position": "promo",
+              "type": "lightGreen",
+              "url": ""
+            },
+            {
+              "title": "Cashback",
+              "position": "price",
+              "type": "lightGreen",
+              "url": ""
+            },
+            {
+              "title": "Terjual 624",
+              "position": "integrity",
+              "type": "textDarkGrey",
+              "url": ""
+            }
+          ],
+          "labelGroupVariant": [],
+          "badges": [
+            {
+              "title": "Power Badge",
+              "imageUrl": "https://images.tokopedia.net/img/power_merchant_badge.png",
+              "show": true
+            }
+          ],
+          "wishlist": false
+        },
+        {
+          "id": 1446606972,
+          "name": "HAMPERS KADO ULANGTAHUN/PENGANTIN MUKENA SHABBY FREE TASBIH&GIFT CARD",
+          "ads": {
+            "id": "",
+            "productClickUrl": "",
+            "productWishlistUrl": "",
+            "productViewUrl": ""
+          },
+          "shop": {
+            "id": 1010876,
+            "name": "Mazaya Mukena",
+            "city": "Bekasi",
+            "url": "https://www.tokopedia.com/mazaya85",
+            "isOfficial": false,
+            "isPowerBadge": true
+          },
+          "freeOngkir": {
+            "isActive": false,
+            "imgUrl": ""
+          },
+          "imageUrl": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2021/1/4/74ee3ea8-fc89-44c6-8ebc-5d39da68ae6d.png",
+          "imageUrl300": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2021/1/4/74ee3ea8-fc89-44c6-8ebc-5d39da68ae6d.png",
+          "imageUrl700": "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/1/4/74ee3ea8-fc89-44c6-8ebc-5d39da68ae6d.png",
+          "price": "Rp124.000",
+          "priceInt": 124000,
+          "priceRange": "",
+          "categoryId": 54,
+          "categoryName": "Perlengkapan Pesta & Craft",
+          "categoryBreadcrumb": "perlengkapan-pesta-craft/hadiah/hampers",
+          "ratingAverage": "4.9",
+          "originalPrice": "",
+          "discountPercentage": 0,
+          "warehouseIdDefault": 0,
+          "boosterList": "-1",
+          "source_engine": "0",
+          "minOrder": 1,
+          "url": "https://www.tokopedia.com/mazaya85/hampers-kado-ulangtahun-pengantin-mukena-shabby-free-tasbih-gift-card?whid=0",
+          "labelGroups": [
+            {
+              "title": "Cashback",
+              "position": "promo",
+              "type": "lightGreen",
+              "url": ""
+            },
+            {
+              "title": "Grosir",
+              "position": "offers",
+              "type": "lightGrey",
+              "url": ""
+            },
+            {
+              "title": "Cashback",
+              "position": "price",
+              "type": "lightGreen",
+              "url": ""
+            },
+            {
+              "title": "Terjual 459",
+              "position": "integrity",
+              "type": "textDarkGrey",
+              "url": ""
+            }
+          ],
+          "labelGroupVariant": [],
+          "badges": [
+            {
+              "title": "Power Badge",
+              "imageUrl": "https://images.tokopedia.net/img/power_merchant_badge.png",
+              "show": true
+            }
+          ],
+          "wishlist": false
+        },
+        {
+          "id": 1442646699,
+          "name": "HAMPERS / BIRTHDAY GIFT / HAMPERS ULTAH / HAMPERS HIJAB / KADO PACAR",
+          "ads": {
+            "id": "",
+            "productClickUrl": "",
+            "productWishlistUrl": "",
+            "productViewUrl": ""
+          },
+          "shop": {
+            "id": 2281114,
+            "name": "jaya hebat",
+            "city": "Bandung",
+            "url": "https://www.tokopedia.com/jayahebat",
+            "isOfficial": false,
+            "isPowerBadge": true
+          },
+          "freeOngkir": {
+            "isActive": false,
+            "imgUrl": ""
+          },
+          "imageUrl": "https://images.tokopedia.net/img/cache/200-square/attachment/2021/4/5/74993926/74993926_b2ca612b-4008-4d7e-b6dd-16cede818da7.jpg",
+          "imageUrl300": "https://images.tokopedia.net/img/cache/300-square/attachment/2021/4/5/74993926/74993926_b2ca612b-4008-4d7e-b6dd-16cede818da7.jpg",
+          "imageUrl700": "https://images.tokopedia.net/img/cache/700/attachment/2021/4/5/74993926/74993926_b2ca612b-4008-4d7e-b6dd-16cede818da7.jpg",
+          "price": "Rp120.000",
+          "priceInt": 120000,
+          "priceRange": "",
+          "categoryId": 54,
+          "categoryName": "Perlengkapan Pesta & Craft",
+          "categoryBreadcrumb": "perlengkapan-pesta-craft/hadiah/hampers",
+          "ratingAverage": "4.8",
+          "originalPrice": "",
+          "discountPercentage": 0,
+          "warehouseIdDefault": 0,
+          "boosterList": "-1",
+          "source_engine": "0",
+          "minOrder": 1,
+          "url": "https://www.tokopedia.com/jayahebat/hampers-birthday-gift-hampers-ultah-hampers-hijab-kado-pacar-xl-d02b?whid=0",
+          "labelGroups": [
+            {
+              "title": "Cashback",
+              "position": "promo",
+              "type": "lightGreen",
+              "url": ""
+            },
+            {
+              "title": "Cashback",
+              "position": "price",
+              "type": "lightGreen",
+              "url": ""
+            },
+            {
+              "title": "Terjual 96",
+              "position": "integrity",
+              "type": "textDarkGrey",
+              "url": ""
+            }
+          ],
+          "labelGroupVariant": [],
+          "badges": [
+            {
+              "title": "Power Badge",
+              "imageUrl": "https://images.tokopedia.net/img/power_merchant_badge.png",
+              "show": true
+            }
+          ],
+          "wishlist": false
+        },
+        {
+          "id": 1274728471,
+          "name": "HAMPERS KADO PENGANTIN/WEDDING MUKENA SARUNG FREE TASBIH &KARTU UCAPAN",
+          "ads": {
+            "id": "",
+            "productClickUrl": "",
+            "productWishlistUrl": "",
+            "productViewUrl": ""
+          },
+          "shop": {
+            "id": 1010876,
+            "name": "Mazaya Mukena",
+            "city": "Bekasi",
+            "url": "https://www.tokopedia.com/mazaya85",
+            "isOfficial": false,
+            "isPowerBadge": true
+          },
+          "freeOngkir": {
+            "isActive": false,
+            "imgUrl": ""
+          },
+          "imageUrl": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2020/12/21/44e3a425-cba5-4cab-967c-f6004d0d174a.png",
+          "imageUrl300": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2020/12/21/44e3a425-cba5-4cab-967c-f6004d0d174a.png",
+          "imageUrl700": "https://images.tokopedia.net/img/cache/700/VqbcmM/2020/12/21/44e3a425-cba5-4cab-967c-f6004d0d174a.png",
+          "price": "Rp179.000",
+          "priceInt": 179000,
+          "priceRange": "",
+          "categoryId": 54,
+          "categoryName": "Perlengkapan Pesta & Craft",
+          "categoryBreadcrumb": "perlengkapan-pesta-craft/hadiah/hampers",
+          "ratingAverage": "4.9",
+          "originalPrice": "",
+          "discountPercentage": 0,
+          "warehouseIdDefault": 0,
+          "boosterList": "-1",
+          "source_engine": "0",
+          "minOrder": 1,
+          "url": "https://www.tokopedia.com/mazaya85/hampers-kado-pengantin-wedding-mukena-sarung-free-tasbih-kartu-ucapan?whid=0",
+          "labelGroups": [
+            {
+              "title": "Cashback",
+              "position": "promo",
+              "type": "lightGreen",
+              "url": ""
+            },
+            {
+              "title": "Cashback",
+              "position": "price",
+              "type": "lightGreen",
+              "url": ""
+            },
+            {
+              "title": "Terjual 42",
+              "position": "integrity",
+              "type": "textDarkGrey",
+              "url": ""
+            }
+          ],
+          "labelGroupVariant": [],
+          "badges": [
+            {
+              "title": "Power Badge",
+              "imageUrl": "https://images.tokopedia.net/img/power_merchant_badge.png",
+              "show": true
+            }
+          ],
+          "wishlist": false
+        },
+        {
+          "id": 1439979343,
+          "name": "HAMPERS KADO MUKENA KHADIJAH SERRIES FREE TASBIH&KARTU UCAPAN",
+          "ads": {
+            "id": "",
+            "productClickUrl": "",
+            "productWishlistUrl": "",
+            "productViewUrl": ""
+          },
+          "shop": {
+            "id": 1010876,
+            "name": "Mazaya Mukena",
+            "city": "Bekasi",
+            "url": "https://www.tokopedia.com/mazaya85",
+            "isOfficial": false,
+            "isPowerBadge": true
+          },
+          "freeOngkir": {
+            "isActive": false,
+            "imgUrl": ""
+          },
+          "imageUrl": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2020/12/22/a6abe4b2-a128-4197-9d27-55c7a7d17c61.jpg",
+          "imageUrl300": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2020/12/22/a6abe4b2-a128-4197-9d27-55c7a7d17c61.jpg",
+          "imageUrl700": "https://images.tokopedia.net/img/cache/700/VqbcmM/2020/12/22/a6abe4b2-a128-4197-9d27-55c7a7d17c61.jpg",
+          "price": "Rp215.000",
+          "priceInt": 215000,
+          "priceRange": "",
+          "categoryId": 54,
+          "categoryName": "Perlengkapan Pesta & Craft",
+          "categoryBreadcrumb": "perlengkapan-pesta-craft/hadiah/hampers",
+          "ratingAverage": "5.0",
+          "originalPrice": "",
+          "discountPercentage": 0,
+          "warehouseIdDefault": 0,
+          "boosterList": "-1",
+          "source_engine": "0",
+          "minOrder": 1,
+          "url": "https://www.tokopedia.com/mazaya85/hampers-kado-mukena-khadijah-serries-free-tasbih-kartu-ucapan?whid=0",
+          "labelGroups": [
+            {
+              "title": "Cashback",
+              "position": "promo",
+              "type": "lightGreen",
+              "url": ""
+            },
+            {
+              "title": "Cashback",
+              "position": "price",
+              "type": "lightGreen",
+              "url": ""
+            },
+            {
+              "title": "Terjual 23",
+              "position": "integrity",
+              "type": "textDarkGrey",
+              "url": ""
+            }
+          ],
+          "labelGroupVariant": [],
+          "badges": [
+            {
+              "title": "Power Badge",
+              "imageUrl": "https://images.tokopedia.net/img/power_merchant_badge.png",
+              "show": true
+            }
+          ],
+          "wishlist": false
+        },
+        {
+          "id": 1274008926,
+          "name": "Hampers Kayu Set / Kado Pernikahan / Hampers Set Alat Makan Kayu",
+          "ads": {
+            "id": "",
+            "productClickUrl": "",
+            "productWishlistUrl": "",
+            "productViewUrl": ""
+          },
+          "shop": {
+            "id": 9472759,
+            "name": "AishaWoodArt",
+            "city": "Kab. Malang",
+            "url": "https://www.tokopedia.com/aishawoodart",
+            "isOfficial": false,
+            "isPowerBadge": true
+          },
+          "freeOngkir": {
+            "isActive": false,
+            "imgUrl": ""
+          },
+          "imageUrl": "https://images.tokopedia.net/img/cache/200-square/attachment/2021/4/5/74993926/74993926_c0e393ff-ee0e-4b6d-929f-8d9a6a8c63e0.jpg",
+          "imageUrl300": "https://images.tokopedia.net/img/cache/300-square/attachment/2021/4/5/74993926/74993926_c0e393ff-ee0e-4b6d-929f-8d9a6a8c63e0.jpg",
+          "imageUrl700": "https://images.tokopedia.net/img/cache/700/attachment/2021/4/5/74993926/74993926_c0e393ff-ee0e-4b6d-929f-8d9a6a8c63e0.jpg",
+          "price": "Rp115.000",
+          "priceInt": 115000,
+          "priceRange": "",
+          "categoryId": 54,
+          "categoryName": "Perlengkapan Pesta & Craft",
+          "categoryBreadcrumb": "perlengkapan-pesta-craft/hadiah/hampers",
+          "ratingAverage": "5.0",
+          "originalPrice": "",
+          "discountPercentage": 0,
+          "warehouseIdDefault": 0,
+          "boosterList": "-1",
+          "source_engine": "0",
+          "minOrder": 1,
+          "url": "https://www.tokopedia.com/aishawoodart/hampers-kayu-set-kado-pernikahan-hampers-set-alat-makan-kayu?whid=0",
+          "labelGroups": [
+            {
+              "title": "Terjual 61",
+              "position": "integrity",
+              "type": "textDarkGrey",
+              "url": ""
+            }
+          ],
+          "labelGroupVariant": [],
+          "badges": [
+            {
+              "title": "Power Badge",
+              "imageUrl": "https://images.tokopedia.net/img/power_merchant_badge.png",
+              "show": true
+            }
+          ],
+          "wishlist": false
+        },
+        {
+          "id": 1208014976,
+          "name": "hampers new normal kit",
+          "ads": {
+            "id": "",
+            "productClickUrl": "",
+            "productWishlistUrl": "",
+            "productViewUrl": ""
+          },
+          "shop": {
+            "id": 1076498,
+            "name": "Surya Sinergy",
+            "city": "Semarang",
+            "url": "https://www.tokopedia.com/suryasinergy",
+            "isOfficial": false,
+            "isPowerBadge": true
+          },
+          "freeOngkir": {
+            "isActive": false,
+            "imgUrl": ""
+          },
+          "imageUrl": "https://images.tokopedia.net/img/cache/200-square/attachment/2021/4/5/74993926/74993926_a960907f-8b02-4607-821f-bb862ddf4e74.jpg",
+          "imageUrl300": "https://images.tokopedia.net/img/cache/300-square/attachment/2021/4/5/74993926/74993926_a960907f-8b02-4607-821f-bb862ddf4e74.jpg",
+          "imageUrl700": "https://images.tokopedia.net/img/cache/700/attachment/2021/4/5/74993926/74993926_a960907f-8b02-4607-821f-bb862ddf4e74.jpg",
+          "price": "Rp28.000",
+          "priceInt": 28000,
+          "priceRange": "",
+          "categoryId": 54,
+          "categoryName": "Perlengkapan Pesta & Craft",
+          "categoryBreadcrumb": "perlengkapan-pesta-craft/hadiah/hampers",
+          "ratingAverage": "5.0",
+          "originalPrice": "",
+          "discountPercentage": 0,
+          "warehouseIdDefault": 0,
+          "boosterList": "-1",
+          "source_engine": "0",
+          "minOrder": 1,
+          "url": "https://www.tokopedia.com/suryasinergy/hampers-new-normal-kit-paket-1?whid=0",
+          "labelGroups": [
+            {
+              "title": "Cashback",
+              "position": "promo",
+              "type": "lightGreen",
+              "url": ""
+            },
+            {
+              "title": "PO",
+              "position": "offers",
+              "type": "lightGrey",
+              "url": ""
+            },
+            {
+              "title": "Preorder",
+              "position": "status",
+              "type": "transparentBlack",
+              "url": ""
+            },
+            {
+              "title": "Cashback",
+              "position": "price",
+              "type": "lightGreen",
+              "url": ""
+            },
+            {
+              "title": "Terjual 783",
+              "position": "integrity",
+              "type": "textDarkGrey",
+              "url": ""
+            }
+          ],
+          "labelGroupVariant": [],
+          "badges": [
+            {
+              "title": "Power Badge",
+              "imageUrl": "https://images.tokopedia.net/img/power_merchant_badge.png",
+              "show": true
+            }
+          ],
+          "wishlist": false
+        },
+        {
+          "id": 846478974,
+          "name": "Hampers Lebaran Begreen Honey B",
+          "ads": {
+            "id": "",
+            "productClickUrl": "",
+            "productWishlistUrl": "",
+            "productViewUrl": ""
+          },
+          "shop": {
+            "id": 3368587,
+            "name": "Begreen Honey",
+            "city": "Kab. Sidoarjo",
+            "url": "https://www.tokopedia.com/begreenhoney",
+            "isOfficial": false,
+            "isPowerBadge": true
+          },
+          "freeOngkir": {
+            "isActive": false,
+            "imgUrl": ""
+          },
+          "imageUrl": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2020/5/21/1f8666b9-5220-4b4d-8837-1fe080f4c6f5.jpg",
+          "imageUrl300": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2020/5/21/1f8666b9-5220-4b4d-8837-1fe080f4c6f5.jpg",
+          "imageUrl700": "https://images.tokopedia.net/img/cache/700/VqbcmM/2020/5/21/1f8666b9-5220-4b4d-8837-1fe080f4c6f5.jpg",
+          "price": "Rp145.000",
+          "priceInt": 145000,
+          "priceRange": "",
+          "categoryId": 54,
+          "categoryName": "Perlengkapan Pesta & Craft",
+          "categoryBreadcrumb": "perlengkapan-pesta-craft/hadiah/hampers",
+          "ratingAverage": "4.9",
+          "originalPrice": "",
+          "discountPercentage": 0,
+          "warehouseIdDefault": 0,
+          "boosterList": "-1",
+          "source_engine": "0",
+          "minOrder": 1,
+          "url": "https://www.tokopedia.com/begreenhoney/hampers-lebaran-begreen-honey-b?whid=0",
+          "labelGroups": [
+            {
+              "title": "PO",
+              "position": "offers",
+              "type": "lightGrey",
+              "url": ""
+            },
+            {
+              "title": "Preorder",
+              "position": "status",
+              "type": "transparentBlack",
+              "url": ""
+            },
+            {
+              "title": "Grosir",
+              "position": "price",
+              "type": "lightGreen",
+              "url": ""
+            },
+            {
+              "title": "Terjual 56",
+              "position": "integrity",
+              "type": "textDarkGrey",
+              "url": ""
+            }
+          ],
+          "labelGroupVariant": [],
+          "badges": [
+            {
+              "title": "Power Badge",
+              "imageUrl": "https://images.tokopedia.net/img/power_merchant_badge.png",
+              "show": true
+            }
+          ],
+          "wishlist": false
+        }
+      ]
+    }
+  },
+
+  "headlineAds": {
+    "status": {
+      "error_code": 0,
+      "message": "OK"
+    },
+    "header": {
+      "process_time": 0.035540629,
+      "total_data": 1
+    },
+    "data": [
+      {
+        "id": "66560701",
+        "ad_ref_key": "66560701",
+        "redirect": "https://www.tokopedia.com/advan-official",
+        "ad_click_url": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEosyOosnRHAJDUMVj9RzNrc1i6sHDUSC5rfB7q3YXUsthbm-7q3OBUsthosn7HsjdosH7bm-0g9BRQR-j9fBjUsth6_eOopHFoZFiy3zwrfo5rM1i6sUfoZdh6AHaHsyO6_ypoAjRbm-pHOYDQfri6i-B812kgJxGgBBXZSgjH7NDZ325q1OAZ9o-Q1dFyfFN8B29zSBgHMP2_fB-81hkgR2oucrh_7zzP7NEe_ovuVjF_MB-r7BWPchB3czfyfOZgMHa_SgsQuu2_fB-8Jhkz3BHe72OysUOqB2_Z_g-qBg0_92sHjN9zM2HucDF3MO-PJNJZ_Vgq_n7_M2uoJh9z9xoz7g2__-zP7NkgcBoq1BpZ37N83V9gICiQAB03BxmgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Aom83Ua1sVgHO-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7N5ysomgMV913Bvq1BRZ3BRq3oyuMhsQMhMgJPcQMoNZ_g-q1BpZ3N6qMUpZMhyHj2Nysoj8B2_Z_g-qjV2_JoG8Bja69BqusBE3BPc8ujagfBvq1BN_M2uP1O1gR2oqjja_Bz0HjOE1_u681tNUiFiP9oBrBY2gmUEUsnibm-xQcri6i-0PVYB8cVsPmUDUMNOQ3-BrBY5gBYxgIHi6sJDUMNOQ3-BrBYxgIowrMuhUsthbm-X9foxQMz2gcV7guYxgIHi6sJDUMVi9RzBrRei6i-6UiFiPMuarfB5QiUEUSyaUS7?keywords=samsung&page=1&template_id_used=3&r=https%3A%2F%2Fwww.tokopedia.com%2Fadvan-official&cpm_template_req=3%2C4%2C5&keyword_correction=samsung&click_ad_type=1&t=android&src=search&is_search=1&uid=0",
+        "headline": {
+          "template_id": "3",
+          "name": "Advan Official Store",
+          "image": {
+            "full_url": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6syfo_yFopnhbm-xgVY789CBUstpbm-FQRo2PcB5QiUEHZFiPcBWgZUEH_yFoAUN6AypomFircV7qmUEUMusrprWrmN7QfW5rcujq3JXQMu7bfBWgaYsy3otgZ4hHAnWrRVOy9-BbRotQRCpb_J5Hsnh6m4pbp15HpnRHsJF6m4pHAraH_nd9pBMo3UaHf-xb_CsopJWoAUOHi7dyMeab_HRH_-ioMgMHMgMoaNkrcribm-src7i6sJabm-0g9BRQR-j9fBjUsth6_eOopHFoZFiy3zwrfo5rM1i6sUfoZdh6AHaHsyO6_ypoAjRbm-pHOYDQfri6i-B812kgJxGgBBXZSgjH7NDZ325q1OAZ9o-Q1dFyfFN8B29zSBgHMP2_fB-81hkgR2oucrh_7zzP7NEe_ovuVjF_MB-r7BWPchB3czfyfOZgMHa_SgsQuu2_fB-8Jhkz3BHe72OysUOqB2_Z_g-qBg0_92sHjN9zM2HucDF3MO-PJNJZ_Vgq_n7_M2uoJh9z9xoz7g2__-zP7NkgcBoq1BpZ37N83V9gICiQAB03BxmgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Aom83Ua1sVgHO-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7N5ysomgMV913Bvq1BRZ3BRq3oyuMhsQMhMgJPcQMoNZ_g-q1BpZ3N6qMUpZMhyHj2Nysoj8B2_Z_g-qjV2_JoG8Bja69BqusBE3BPc8ujagfBvq1BN_M2uP1O1gR2oqjja_Bz0HjOE1_u681tNUiFiP9oBrBY2gmUEUsnibm-xQcri6i-0PVYB8cVsPmUDUMNOQ3-BrBY5gBYxgIHi6sJDUMNOQ3-BrBYxgIowrMuhUsthbm-X9foxQMz2gcV7guYxgIHi6sJDUMVi9RzBrRei6i-6UiFiPMuarfB5QiUEUSyaUiFirMuh9fxBy3zDq3NB9RCaQfzOyRzwyfYOQSei6sHDUSg2g9PBgVYFrMYjP3o79fBjraUE3pJaHAy7H_jRHprDH_UhoAeN6A1RoVOY?page=1&cpm_template_req=3%2C4%2C5&template_id_used=3&t=android&uid=0&src=search&keyword_correction=samsung&is_search=1&keywords=samsung",
+            "full_ecs": "https://ecs7-p.tokopedia.net/img/cache/100-square/shops-1/2018/3/5/3072108/3072108_9f5b23ba-0c71-4252-8bd2-3712b6ff2ff7.jpg"
+          },
+          "shop": {
+            "id": "3072108",
+            "name": "Advan Official Store",
+            "domain": "advan-official",
+            "tagline": "Do Great Make Better",
+            "slogan": "Belanja di Advan Official Store dan dapatkan promo\" menarik!",
+            "location": "Kota Administrasi Jakarta Barat",
+            "city": "Kota Administrasi Jakarta Barat",
+            "gold_shop": true,
+            "gold_shop_badge": true,
+            "shop_is_official": true,
+            "product": [
+              {
+                "id": "1206419737",
+                "name": "Advan G5 4 GB 32 GB Smartphone Android Garansi Resmi Bundling TWS 2 - Blue Purple",
+                "price_format": "Rp 1.250.000",
+                "applinks": "tokopedia://product/1206419737",
+                "product_rating": 97,
+                "product_cashback": false,
+                "product_cashback_rate": "",
+                "product_new_label": false,
+                "count_review_format": "87",
+                "image_product": {
+                  "product_id": "1206419737",
+                  "product_name": "Advan G5 4 GB 32 GB Smartphone Android Garansi Resmi Bundling TWS 2 - Blue Purple",
+                  "image_url": "https://ecs7-p.tokopedia.net/img/cache/200-square/attachment/2020/10/20/29652022/29652022_e7e48ec6-b442-4349-8ec3-a8c26802c67a.jpg",
+                  "image_click_url": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEosyOosnRHAJDUMVj9RzNrc1i6sHDUSC5rfB7q3YXUsthbm-7q3OBUsthosn7HsjdosH7bm-0g9BRQR-j9fBjUsth6_eOopHFoZFiy3zwrfo5rM1i6sUfoZdh6AHaHsyO6_ypoAjRbm-pHOYDQfri6i-B812kgJxGgBBXZSgjH7NDZ325q1OAZ9o-Q1dFyfFN8B29zSBgHMP2_fB-81hkgR2oucrh_7zzP7NEe_ovuVjF_MB-r7BWPchB3czfyfOZgMHa_SgsQuu2_fB-8Jhkz3BHe72OysUOqB2_Z_g-qBg0_92sHjN9zM2HucDF3MO-PJNJZ_Vgq_n7_M2uoJh9z9xoz7g2__-zP7NkgcBoq1BpZ37N83V9gICiQAB03BxmgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Aom83Ua1sVgHO-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7N5ysomgMV913Bvq1BRZ3BRq3oyuMhsQMhMgJPcQMoNZ_g-q1BpZ3N6qMUpZMhyHj2Nysoj8B2_Z_g-qjV2_JoG8Bja69BqusBE3BPc8ujagfBvq1BN_M2uP1O1gR2oqjja_Bz0HjOE1_u681tNUiFiP9oBrBY2gmUEUsnibm-xQcri6i-0PVYB8cVsPmUDUMNOQ3-BrBY5gBYxgIHi6sJDUMNOQ3-BrBYxgIowrMuhUsthbm-X9foxQMz2gcV7guYxgIHi6sJDUMVi9RzBrRei6i-6UiFiPMuarfB5QiUEUSyaUS7?keyword_correction=samsung&click_ad_type=2&product_id=1206419737&is_search=1&src=search&page=1&cpm_template_req=3%2C4%2C5&t=android&r=https%3A%2F%2Fwww.tokopedia.com%2Fadvan-official%2Fadvan-g5-4-gb-32-gb-smartphone-android-garansi-resmi-bundling-tws-2-blue-purple&template_id_used=3&uid=0&keywords=samsung"
+                },
+                "campaign": {
+                  "original_price": "Rp 1.599.000",
+                  "discount_percentage": 22
+                }
+              },
+              {
+                "id": "1214498574",
+                "name": "Advan G5 6 Inci Smartphone Android Garansi Resmi Bundling S1 Black - Blue Purple S1",
+                "price_format": "Rp 1.350.000",
+                "applinks": "tokopedia://product/1214498574",
+                "product_rating": 92,
+                "product_cashback": false,
+                "product_cashback_rate": "",
+                "product_new_label": false,
+                "count_review_format": "16",
+                "image_product": {
+                  "product_id": "1214498574",
+                  "product_name": "Advan G5 6 Inci Smartphone Android Garansi Resmi Bundling S1 Black - Blue Purple S1",
+                  "image_url": "https://ecs7-p.tokopedia.net/img/cache/200-square/product-1/2020/10/8/28450045/28450045_310717a2-5c23-49a2-8825-d43cda4c519a_1080_1080",
+                  "image_click_url": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEosyOosnRHAJDUMVj9RzNrc1i6sHDUSC5rfB7q3YXUsthbm-7q3OBUsthosn7HsjdosH7bm-0g9BRQR-j9fBjUsth6_eOopHFoZFiy3zwrfo5rM1i6sUfoZdh6AHaHsyO6_ypoAjRbm-pHOYDQfri6i-B812kgJxGgBBXZSgjH7NDZ325q1OAZ9o-Q1dFyfFN8B29zSBgHMP2_fB-81hkgR2oucrh_7zzP7NEe_ovuVjF_MB-r7BWPchB3czfyfOZgMHa_SgsQuu2_fB-8Jhkz3BHe72OysUOqB2_Z_g-qBg0_92sHjN9zM2HucDF3MO-PJNJZ_Vgq_n7_M2uoJh9z9xoz7g2__-zP7NkgcBoq1BpZ37N83V9gICiQAB03BxmgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Aom83Ua1sVgHO-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7N5ysomgMV913Bvq1BRZ3BRq3oyuMhsQMhMgJPcQMoNZ_g-q1BpZ3N6qMUpZMhyHj2Nysoj8B2_Z_g-qjV2_JoG8Bja69BqusBE3BPc8ujagfBvq1BN_M2uP1O1gR2oqjja_Bz0HjOE1_u681tNUiFiP9oBrBY2gmUEUsnibm-xQcri6i-0PVYB8cVsPmUDUMNOQ3-BrBY5gBYxgIHi6sJDUMNOQ3-BrBYxgIowrMuhUsthbm-X9foxQMz2gcV7guYxgIHi6sJDUMVi9RzBrRei6i-6UiFiPMuarfB5QiUEUSyaUS7?r=https%3A%2F%2Fwww.tokopedia.com%2Fadvan-official%2Fadvan-g5-6-inci-smartphone-android-garansi-resmi-bundling-s1-black-blue-purple-s1&click_ad_type=2&uid=0&product_id=1214498574&page=1&cpm_template_req=3%2C4%2C5&template_id_used=3&t=android&src=search&is_search=1&keywords=samsung&keyword_correction=samsung"
+                },
+                "campaign": {
+                  "original_price": "Rp 1.599.000",
+                  "discount_percentage": 16
+                }
+              }
+            ],
+            "image_shop": {
+              "cover": "https://ecs7-p.tokopedia.net/img/cache/750/shops-1/2020/9/14/28450045/28450045_7782c5dc-f368-4046-bdd7-8bffee865f77",
+              "s_url": "https://ecs7-p.tokopedia.net/img/cache/215-square/shops-1/2018/3/5/3072108/3072108_9f5b23ba-0c71-4252-8bd2-3712b6ff2ff7.jpg",
+              "xs_url": "https://ecs7-p.tokopedia.net/img/cache/100-square/shops-1/2018/3/5/3072108/3072108_9f5b23ba-0c71-4252-8bd2-3712b6ff2ff7.jpg",
+              "cover_ecs": "https://ecs7-p.tokopedia.net/img/cache/750/shops-1/2020/9/14/28450045/28450045_7782c5dc-f368-4046-bdd7-8bffee865f77",
+              "s_ecs": "https://ecs7-p.tokopedia.net/img/cache/215-square/shops-1/2018/3/5/3072108/3072108_9f5b23ba-0c71-4252-8bd2-3712b6ff2ff7.jpg",
+              "xs_ecs": "https://ecs7-p.tokopedia.net/img/cache/100-square/shops-1/2018/3/5/3072108/3072108_9f5b23ba-0c71-4252-8bd2-3712b6ff2ff7.jpg"
+            }
+          },
+          "badges": [
+            {
+              "image_url": "https://ecs7-p.tokopedia.net/ta/icon/badge/OS-Badge-80.png",
+              "show": true,
+              "title": "Official Store"
+            }
+          ],
+          "button_text": "Cek Sekarang",
+          "promoted_text": "Dipromosikan oleh",
+          "description": "Belanja di Advan Official Store dan dapatkan promo&#34; menarik!",
+          "uri": "https://www.tokopedia.com/advan-official",
+          "layout": 1,
+          "position": 0
+        },
+        "applinks": "tokopedia://shop/3072108"
+      }
+    ]
+  }
+}

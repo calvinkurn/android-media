@@ -17,7 +17,7 @@
         {
           "cart_id": "{{.+}}",
           "quantity": "{{\\d*.\\d*}}",
-          "category_id": "{{.*}}",
+          "category_id": "{{.+}}",
           "item_id": "{{.+}}",
           "item_name": "{{.+}}",
           "item_brand": "{{.+}}",
@@ -61,6 +61,20 @@
       "sessionIris": "{{.+}}"
     },
     {
+      "eventCategory": "digital - checkout",
+      "event": "clickCoupon",
+      "eventAction": "click gunakan kode promo atau kupon",
+      "sessionIris": "{{.+}}",
+      "eventLabel": "{{.+}}"
+    },
+    {
+      "eventCategory": "digital - checkout",
+      "event": "clickCoupon",
+      "eventAction": "click x on ticker",
+      "sessionIris": "{{.+}}",
+      "eventLabel": "{{.+ - .+}}"
+    },
+    {
       "event": "clickCheckout",
       "eventCategory": "digital - checkout page",
       "eventAction": "tick auto debit",
@@ -81,13 +95,13 @@
       "sessionIris": "{{.+}}"
     },
     {
-      "event":"clickCheckout",
-      "eventCategory":"digital - checkout page",
-      "eventAction":"tick cross sell",
-      "eventLabel":"{{.+ - .+}}",
-      "businessUnit":"recharge",
-      "currentSite":"tokopediadigital",
-      "userId":"{{.+}}",
+      "event": "clickCheckout",
+      "eventCategory": "digital - checkout page",
+      "eventAction": "tick cross sell",
+      "eventLabel": "{{.+ - .+}}",
+      "businessUnit": "recharge",
+      "currentSite": "tokopediadigital",
+      "userId": "{{.+}}",
       "sessionIris": "{{.+}}"
     },
     {

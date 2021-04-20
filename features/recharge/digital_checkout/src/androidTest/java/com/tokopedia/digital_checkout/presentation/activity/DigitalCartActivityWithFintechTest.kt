@@ -22,6 +22,9 @@ import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam
 import com.tokopedia.digital_checkout.R
 import com.tokopedia.digital_checkout.utils.CustomActionUtils
+import com.tokopedia.promocheckout.common.util.EXTRA_PROMO_DATA
+import com.tokopedia.promocheckout.common.view.model.PromoData
+import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
 import com.tokopedia.test.application.espresso_component.CommonMatcher.getElementFromMatchAtPosition
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
@@ -239,8 +242,27 @@ class DigitalCartActivityWithFintechTest {
         //click use promo
         Thread.sleep(1000)
 
-        Intents.intending(IntentMatchers.anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
+        val dummyPromoDescription = "dummyDescription"
+        val dummyPromoTitle = "Promo Code dummy"
+        val mockIntentData = Intent().apply {
+            putExtra(EXTRA_PROMO_DATA, PromoData(state = TickerCheckoutView.State.ACTIVE,
+                    amount = 1000, promoCode = "dummyPromoCode", description = dummyPromoDescription,
+                    title = dummyPromoTitle))
+        }
+
+        Intents.intending(IntentMatchers.anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, mockIntentData))
         onView(AllOf.allOf(withId(R.id.digitalPromoBtnView))).perform(click())
+        Thread.sleep(1000)
+
+        onView(withId(R.id.tvTotalPayment)).check(matches(withText("Rp13.000")))
+
+        onView(withId(R.id.tv_promo_checkout_title)).check(matches(isDisplayed()))
+        onView(withId(R.id.tv_promo_checkout_title)).check(matches(withText(dummyPromoTitle)))
+        onView(withId(R.id.tv_promo_checkout_desc)).check(matches(isDisplayed()))
+        onView(withId(R.id.tv_promo_checkout_desc)).check(matches(withText(dummyPromoDescription)))
+
+        onView(withId(R.id.iv_promo_checkout_right)).perform(click())
+        Thread.sleep(1000)
     }
 
     private fun validatePaymentPrice() {

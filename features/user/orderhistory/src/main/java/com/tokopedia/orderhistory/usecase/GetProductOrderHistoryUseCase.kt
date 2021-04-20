@@ -3,7 +3,7 @@ package com.tokopedia.orderhistory.usecase
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.orderhistory.data.ChatHistoryProductResponse
-import com.tokopedia.orderhistory.view.viewmodel.OrderHistoryCoroutineContextProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.withContext
@@ -12,10 +12,10 @@ import kotlin.coroutines.CoroutineContext
 
 open class GetProductOrderHistoryUseCase @Inject constructor(
         private val gqlUseCase: GraphqlUseCase<ChatHistoryProductResponse>,
-        private val dispatchers: OrderHistoryCoroutineContextProvider
+        private val dispatchers: CoroutineDispatchers
 ) : CoroutineScope {
 
-    override val coroutineContext: CoroutineContext get() = dispatchers.Main + SupervisorJob()
+    override val coroutineContext: CoroutineContext get() = dispatchers.main + SupervisorJob()
 
     private val paramShopId = "shopID"
     private val paramMinOrderTime = "minOrderTime"
@@ -26,7 +26,7 @@ open class GetProductOrderHistoryUseCase @Inject constructor(
             onSuccess: (ChatHistoryProductResponse) -> Unit,
             onError: (Throwable) -> Unit
     ) {
-        launchCatchError(dispatchers.IO,
+        launchCatchError(dispatchers.io,
                 {
                     val params = generateParams(shopId)
                     val response = gqlUseCase.apply {
@@ -34,13 +34,13 @@ open class GetProductOrderHistoryUseCase @Inject constructor(
                         setRequestParams(params)
                         setGraphqlQuery(query)
                     }.executeOnBackground()
-                    withContext(dispatchers.Main) {
+                    withContext(dispatchers.main) {
                         onSuccess(response)
                         updateMinOrderTime(response)
                     }
                 },
                 {
-                    withContext(dispatchers.Main) {
+                    withContext(dispatchers.main) {
                         onError(it)
                     }
                 }

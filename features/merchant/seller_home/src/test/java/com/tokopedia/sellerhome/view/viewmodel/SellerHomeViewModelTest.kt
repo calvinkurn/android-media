@@ -17,13 +17,14 @@ import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
-import org.mockito.Matchers.anyString
+import org.mockito.ArgumentMatchers.anyString
 
 /**
  * Created By @ilhamsuaib on 19/03/20
@@ -122,9 +123,11 @@ class SellerHomeViewModelTest {
 
     @Test
     fun `get ticker should success`() = runBlocking {
+        val isNewCachingEnabled = false
         val tickerList = listOf(TickerItemUiModel())
         val pageName = "seller"
 
+        onGetIsNewCachingEnabled_thenReturn(isNewCachingEnabled)
         getTickerUseCase.params = GetTickerUseCase.createParams(pageName)
 
         coEvery {
@@ -369,7 +372,6 @@ class SellerHomeViewModelTest {
 
     @Test
     fun `get progress widget data then returns success result`() = runBlocking {
-        val shopId = "124456"
         val dateStr = "02-02-2020"
         val dataKeys = listOf("x", "y", "z")
         val progressDataList = listOf(ProgressDataUiModel(), ProgressDataUiModel(), ProgressDataUiModel())
@@ -859,5 +861,116 @@ class SellerHomeViewModelTest {
         val expectedResult = Success(cardDataResult)
         assertTrue(dataKeys.size == expectedResult.data.size)
         assertEquals(expectedResult, viewModel.cardWidgetData.observeAwaitValue())
+    }
+
+    @Test
+    fun `given new caching enabled when getTicker flow success should set homeTicker liveData success`() {
+        coroutineTestRule.runBlockingTest {
+            val isNewCachingEnabled = true
+            val tickerList = listOf(TickerItemUiModel())
+
+            onGetIsNewCachingEnabled_thenReturn(isNewCachingEnabled)
+            onGetTickerListFlow_thenReturn(tickerList)
+
+            viewModel.getTicker()
+
+            verifyGetTickerResultFlowCalled()
+            verifyGetTickerUseCaseCalled()
+
+            val expectedResult = Success(listOf(TickerItemUiModel()))
+            val actualResult = viewModel.homeTicker.value
+
+            assertEquals(expectedResult, actualResult)
+        }
+    }
+
+    @Test
+    fun `given new caching enabled when getTicker twice should set homeTicker liveData with first value`() {
+        coroutineTestRule.runBlockingTest {
+            val isCollectingResult = true
+            val isNewCachingEnabled = true
+            val firstTickerList = listOf(TickerItemUiModel(message = "ticker"))
+            val secondTickerList = listOf(TickerItemUiModel(message = "another ticker"))
+
+            onGetIsNewCachingEnabled_thenReturn(isNewCachingEnabled)
+            onGetTickerListFlow_thenReturn(firstTickerList)
+
+            viewModel.getTicker()
+
+            verifyGetTickerResultFlowCalled()
+            verifyGetTickerUseCaseCalled()
+
+            onGetCollectingResult_thenReturn(isCollectingResult)
+            onGetTickerListFlow_thenReturn(secondTickerList)
+
+            viewModel.getTicker()
+
+            verifyGetTickerResultFlowCalled()
+            verifyGetTickerUseCaseCalled()
+
+            val expectedResult = Success(firstTickerList)
+            val actualResult = viewModel.homeTicker.value
+
+            assertEquals(expectedResult, actualResult)
+        }
+    }
+
+    @Test
+    fun `given new caching enabled when getTicker flow error should set homeTicker liveData error`() {
+        coroutineTestRule.runBlockingTest {
+            val isNewCachingEnabled = true
+            val error = IllegalStateException()
+
+            onGetIsNewCachingEnabled_thenReturn(isNewCachingEnabled)
+            onGetTickerListFlow_thenReturn(error)
+
+            viewModel.getTicker()
+
+            verifyGetTickerResultFlowCalled()
+            verifyGetTickerUseCaseCalled()
+
+            val expectedResult = Fail(error)
+            val actualResult = viewModel.homeTicker.value
+
+            assertEquals(expectedResult, actualResult)
+        }
+    }
+
+    private suspend fun onGetTickerListFlow_thenReturn(tickerList: List<TickerItemUiModel>) {
+        coEvery {
+            getTickerUseCase.getResultFlow()
+        } returns  MutableSharedFlow<List<TickerItemUiModel>>(replay = 1).apply {
+            emit(tickerList)
+        }
+    }
+
+    private fun onGetCollectingResult_thenReturn(isCollectingResult: Boolean) {
+        coEvery {
+            getTickerUseCase.collectingResult
+        } returns isCollectingResult
+    }
+
+    private fun onGetTickerListFlow_thenReturn(error: Throwable) {
+        coEvery {
+            getTickerUseCase.getResultFlow()
+        } throws error
+    }
+
+    private fun onGetIsNewCachingEnabled_thenReturn(isNewCachingEnabled: Boolean) {
+        coEvery {
+            remoteConfig.isSellerHomeDashboardNewCachingEnabled()
+        } returns isNewCachingEnabled
+    }
+
+    private fun verifyGetTickerUseCaseCalled() {
+        coVerify {
+            getTickerUseCase.executeOnBackground(any(), any())
+        }
+    }
+
+    private fun verifyGetTickerResultFlowCalled() {
+        coVerify {
+            getTickerUseCase.getResultFlow()
+        }
     }
 }

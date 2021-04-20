@@ -69,6 +69,7 @@ import com.tokopedia.search.analytics.SearchEventTracking;
 import com.tokopedia.search.analytics.SearchTracking;
 import com.tokopedia.search.di.module.SearchContextModule;
 import com.tokopedia.search.result.presentation.ProductListSectionContract;
+import com.tokopedia.search.result.presentation.model.BannerDataView;
 import com.tokopedia.search.result.presentation.model.BroadMatchItemDataView;
 import com.tokopedia.search.result.presentation.model.BroadMatchDataView;
 import com.tokopedia.search.result.presentation.model.EmptySearchProductDataView;
@@ -82,6 +83,7 @@ import com.tokopedia.search.result.presentation.model.TickerDataView;
 import com.tokopedia.search.result.presentation.view.adapter.ProductListAdapter;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.decoration.ProductItemDecoration;
 import com.tokopedia.search.result.presentation.view.listener.BannerAdsListener;
+import com.tokopedia.search.result.presentation.view.listener.BannerListener;
 import com.tokopedia.search.result.presentation.view.listener.BroadMatchListener;
 import com.tokopedia.search.result.presentation.view.listener.ChooseAddressListener;
 import com.tokopedia.search.result.presentation.view.listener.EmptyStateListener;
@@ -155,7 +157,8 @@ public class ProductListFragment
         SearchInTokopediaListener,
         SearchNavigationClickListener,
         TopAdsImageViewListener,
-        ChooseAddressListener {
+        ChooseAddressListener,
+        BannerListener {
 
     private static final String SCREEN_SEARCH_PAGE_PRODUCT_TAB = "Search result - Product tab";
     private static final int REQUEST_CODE_GOTO_PRODUCT_DETAIL = 123;
@@ -331,7 +334,7 @@ public class ProductListFragment
                 this, this,
                 this, this, this,
                 this, this, this,
-                this,
+                this, this,
                 topAdsConfig);
 
         adapter = new ProductListAdapter(this, productListTypeFactory);
@@ -2007,5 +2010,10 @@ public class ProductListFragment
         if (adapter == null) return;
 
         adapter.refreshItemAtIndex(index);
+    }
+
+    @Override
+    public void onBannerClicked(@NotNull BannerDataView bannerDataView) {
+        redirectionStartActivity(bannerDataView.getApplink(), "");
     }
 }

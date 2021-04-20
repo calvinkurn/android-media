@@ -141,6 +141,7 @@ object DigitalCheckoutMapper {
 
             cartDigitalInfoData.attributes = attributesDigital
             cartDigitalInfoData.id = responseRechargeGetCart.response.id
+            cartDigitalInfoData.productId = responseRechargeGetCart.response.productId
             cartDigitalInfoData.isInstantCheckout = responseRechargeGetCart.response.isInstantCheckout
             cartDigitalInfoData.isNeedOtp = responseRechargeGetCart.response.isOtpRequired
             cartDigitalInfoData.smsState = responseRechargeGetCart.response.sms_state
