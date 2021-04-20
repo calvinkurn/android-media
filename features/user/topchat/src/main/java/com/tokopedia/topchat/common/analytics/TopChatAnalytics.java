@@ -26,6 +26,10 @@ import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
 import com.tokopedia.user.session.UserSessionInterface;
 
+import androidx.annotation.Nullable;
+
+import com.tokopedia.chat_common.data.ProductAttachmentViewModel;
+
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -161,6 +165,7 @@ public class TopChatAnalytics {
         String CLICK_REVIEW_REMINDER_WIDGET = "click on review reminder widget";
         String VIEW_SRW = "view smart reply widget";
         String CLICK_SRW = "click smart reply widget";
+        String CLICK_UPDATE_STOCK = "click on update stock";
     }
 
     public interface Label {
@@ -753,6 +758,25 @@ public class TopChatAnalytics {
         );
     }
 
+
+    public void trackClickUpdateStock(ProductAttachmentViewModel product) {
+        String eventLabel = "seller - " +
+                product.getProductId() + " - " + product.getProductSource() + " - " +
+                product.getRemainingStock() + " - " + product.getBlastId() + " - " +
+                product.getReplyId();
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                createGeneralEvent(
+                        Name.CHAT_DETAIL,
+                        Category.CHAT_DETAIL,
+                        Action.CLICK_UPDATE_STOCK,
+                        eventLabel,
+                        BusinessUnit.Communication,
+                        CurrentSite.TokopediaMarketplace,
+                        null
+                )
+        );
+    }
+
     public void trackSuccessDoBuyAndAtc(
             ProductAttachmentViewModel element,
             DataModel data,
@@ -816,17 +840,22 @@ public class TopChatAnalytics {
             String action,
             String label,
             String businessUnit,
-            String currentSite,
-            String userId
+            @Nullable String currentSite,
+            @Nullable String userId
     ) {
-        return DataLayer.mapOf(
+        Map<String, Object> data = DataLayer.mapOf(
                 EVENT_NAME, event,
                 EVENT_CATEGORY, category,
                 EVENT_ACTION, action,
                 EVENT_LABEL, label,
-                KEY_BUSINESS_UNIT, businessUnit,
-                KEY_CURRENT_SITE, currentSite,
-                USER_ID, userId
+                KEY_BUSINESS_UNIT, businessUnit
         );
+        if (currentSite != null) {
+            data.put(KEY_CURRENT_SITE, currentSite);
+        }
+        if (userId != null) {
+            data.put(USER_ID, userId);
+        }
+        return data;
     }
 }

@@ -495,6 +495,10 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         startActivityForResult(intent, REQUEST_UPDATE_STOCK)
     }
 
+    override fun trackClickUpdateStock(product: ProductAttachmentViewModel) {
+        analytics.trackClickUpdateStock(product)
+    }
+
     private fun initFireBase() {
         fpm = PerformanceMonitoring.start(getFpmKey())
         remoteConfig = FirebaseRemoteConfigImpl(activity)

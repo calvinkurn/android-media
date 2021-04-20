@@ -398,6 +398,7 @@ class SingleProductAttachmentContainer : ConstraintLayout {
     private fun bindSellerUpdateStockClick(product: ProductAttachmentViewModel) {
         btnUpdateStock?.setOnClickListener {
             listener?.updateProductStock(product, adapterPosition, parentMetaData)
+            listener?.trackClickUpdateStock(product)
         }
     }
 

@@ -407,6 +407,14 @@ open class ProductAttachmentViewModel : SendableViewModel,
         return hasDiscount
     }
 
+    fun getProductSource(): String {
+        return if (fromBroadcast()) {
+            "broadcast"
+        } else {
+            "buyer attached"
+        }
+    }
+
     companion object {
         const val statusDeleted = 0
         const val statusActive = 1
