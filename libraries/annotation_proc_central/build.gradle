@@ -12,6 +12,7 @@ dependencies {
     compileOnly rootProject.ext.supportLibDependencies.kotlinReflection
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticGTMUtil
+    implementation project(rootProject.ext.libraries.logger)
     implementation "com.tokopedia.config:global_config:1.0.3"
 }
 

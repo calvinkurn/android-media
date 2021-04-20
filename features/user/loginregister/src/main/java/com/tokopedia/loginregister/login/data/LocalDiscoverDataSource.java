@@ -5,7 +5,7 @@ import android.text.TextUtils;
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.abstraction.common.utils.network.CacheUtil;
 import com.tokopedia.cachemanager.CacheManager;
-import com.tokopedia.loginregister.login.view.model.DiscoverViewModel;
+import com.tokopedia.loginregister.login.view.model.DiscoverDataModel;
 
 import javax.inject.Inject;
 
@@ -28,19 +28,19 @@ public class LocalDiscoverDataSource {
         this.cacheManager = cacheManager;
     }
 
-    public Observable<DiscoverViewModel> getDiscover(String source) {
+    public Observable<DiscoverDataModel> getDiscover(String source) {
         return Observable.just(KEY_DISCOVER + source)
-                .map((Func1<String, DiscoverViewModel>) s -> {
+                .map((Func1<String, DiscoverDataModel>) s -> {
                     if (getCache(s) != null) {
                         return CacheUtil.convertStringToModel(getCache(s),
-                                new TypeToken<DiscoverViewModel>() {
+                                new TypeToken<DiscoverDataModel>() {
                                 }.getType());
                     } else {
                         throw new RuntimeException(CACHE_EXPIRED);
                     }
                 })
-                .first(discoverViewModel -> !discoverViewModel.getProviders().isEmpty()
-                        && !TextUtils.isEmpty(discoverViewModel.getUrlBackground()));
+                .first(discoverDataModel -> !discoverDataModel.getProviders().isEmpty()
+                        && !TextUtils.isEmpty(discoverDataModel.getUrlBackground()));
     }
 
     private String getCache(String source) {

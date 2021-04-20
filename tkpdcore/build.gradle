@@ -76,6 +76,7 @@ dependencies {
     implementation rootProject.ext.playServicesDependencies.places
 
     implementation rootProject.ext.dbDependencies.dbRoomRuntime
+    implementation project(rootProject.ext.libraries.logger)
     annotationProcessor rootProject.ext.dbDependencies.dbRoomCompiler
     implementation rootProject.ext.networkDependencies.glide
     implementation rootProject.ext.analyticsDependencies.appsflyer
