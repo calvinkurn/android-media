@@ -71,11 +71,11 @@ class SmartBillsViewModel @Inject constructor(
                     SmartBillsQueries.STATEMENT_BILLS_QUERY_CLUSTERING,
                     RechargeListSmartBills.Response::class.java, mapParams
             )
-//            val graphqlCacheStrategy = GraphqlCacheStrategy.Builder(
-//                    if (isLoadFromCloud) CacheType.CLOUD_THEN_CACHE else CacheType.CACHE_FIRST
-//            ).setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * 5).build()
+            val graphqlCacheStrategy = GraphqlCacheStrategy.Builder(
+                    if (isLoadFromCloud) CacheType.CLOUD_THEN_CACHE else CacheType.CACHE_FIRST
+            ).setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * 5).build()
             val data = withContext(dispatcher.io) {
-                graphqlRepository.getReseponse(listOf(graphqlRequest), GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
+                graphqlRepository.getReseponse(listOf(graphqlRequest), graphqlCacheStrategy)
             }.getSuccessData<RechargeListSmartBills.Response>()
 
             if (data.response != null) {
