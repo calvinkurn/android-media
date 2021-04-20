@@ -64,6 +64,7 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
 
     @Inject
     lateinit var sellerMenuTracker: SellerMenuTracker
+
     @Inject
     lateinit var adminPermissionMapper: AdminPermissionMapper
 
@@ -71,6 +72,7 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
     lateinit var pmShopScoreInterruptHelper: PMShopScoreInterruptHelper
 
     private var canShowErrorToaster = true
+    private var isNewSeller = false
 
     private val adapter by lazy {
         SellerMenuAdapter(OtherMenuAdapterTypeFactory(
@@ -135,6 +137,14 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
 
     override fun sendImpressionDataIris(settingShopInfoImpressionTrackable: SettingShopInfoImpressionTrackable) {}
 
+    override fun onScoreClicked() {
+        sellerMenuTracker.sendShopScoreEntryPoint(isNewSeller)
+    }
+
+    override fun onScoreImpressed() {
+        sellerMenuTracker.impressShopScoreEntryPoint(isNewSeller)
+    }
+
     override fun onSaldoClicked() {
         if (remoteConfig.getBoolean(RemoteConfigKey.APP_ENABLE_SALDO_SPLIT_FOR_SELLER_APP, false))
             RouteManager.route(context, ApplinkConstInternalGlobal.SALDO_DEPOSIT)
@@ -183,13 +193,14 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
         observe(viewModel.shopAccountTickerPeriod) {
             when (it) {
                 is Success -> {
-                    if (it.data) {
+                    if (it.data.first) {
                         val tickerShopInfoData = TickerShopScoreUiModel(
                                 tickerTitle = getString(R.string.seller_menu_ticker_title_shop_score,
                                         getShopScoreDate(requireContext())),
                                 descTitle = getString(R.string.seller_menu_ticker_desc_shop_score))
                         adapter.showShopScoreTicker(tickerShopInfoData)
                     }
+                    isNewSeller = it.data.second
                 }
             }
         }

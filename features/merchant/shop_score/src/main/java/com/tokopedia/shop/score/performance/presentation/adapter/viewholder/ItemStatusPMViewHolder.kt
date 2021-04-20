@@ -31,7 +31,7 @@ class ItemStatusPMViewHolder(view: View,
             }
             containerDescPmSection?.showWithCondition(element.isInActivePM)
 
-            potentialPowerMerchantWidget.addOnImpressionListener(impressHolderPowerMerchantHeader) {
+            potentialPowerMerchantWidget?.addOnImpressionListener(impressHolderPowerMerchantHeader) {
                 itemStatusPowerMerchantListener.onImpressHeaderPowerMerchantSection()
             }
         }

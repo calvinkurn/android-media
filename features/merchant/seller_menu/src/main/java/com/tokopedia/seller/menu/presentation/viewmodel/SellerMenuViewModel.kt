@@ -58,22 +58,24 @@ class SellerMenuViewModel @Inject constructor(
     val isToasterAlreadyShown: LiveData<Boolean>
         get() = _isToasterAlreadyShown
 
-    val shopAccountTickerPeriod: LiveData<Result<Boolean>>
+    val shopAccountTickerPeriod: LiveData<Result<Pair<Boolean, Boolean>>>
         get() = _shopAccountTickerPeriod
 
     private val _settingShopInfoLiveData = MutableLiveData<Result<ShopInfoUiModel>>()
     private val _shopProductLiveData = MutableLiveData<Result<ShopProductUiModel>>()
     private val _sellerMenuNotification = MutableLiveData<Result<NotificationUiModel>>()
     private val _isToasterAlreadyShown = MutableLiveData(false)
-    private val _shopAccountTickerPeriod = MutableLiveData<Result<Boolean>>()
+    private val _shopAccountTickerPeriod = MutableLiveData<Result<Pair<Boolean, Boolean>>>()
 
     fun getShopAccountTickerPeriod() {
         launchCatchError(block = {
             val data = withContext(dispatchers.io) {
                 getShopInfoPeriodUseCase.requestParams = GetShopInfoPeriodUseCase.createParams(userSession.shopId.toIntOrZero())
-                SellerUiModelMapper.mapToIsShowTickerShopAccount(getShopInfoPeriodUseCase.executeOnBackground())
+                getShopInfoPeriodUseCase.executeOnBackground()
             }
-            _shopAccountTickerPeriod.value = Success(data)
+            val isTickerShow = SellerUiModelMapper.mapToIsShowTickerShopAccount(data)
+            val isNewSeller = data.isNewSeller
+            _shopAccountTickerPeriod.value = Success(Pair(isTickerShow, isNewSeller))
         }, onError = {
             _shopAccountTickerPeriod.value = Fail(it)
         })

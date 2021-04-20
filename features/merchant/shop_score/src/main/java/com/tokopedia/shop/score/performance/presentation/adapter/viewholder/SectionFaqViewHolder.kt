@@ -4,6 +4,8 @@ import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.common.setTextMakeHyperlink
 import com.tokopedia.shop.score.performance.presentation.adapter.ItemFaqAdapter
@@ -20,6 +22,8 @@ class SectionFaqViewHolder(view: View, private val sectionFaqListener: SectionFa
 
     private var itemFaqAdapter: ItemFaqAdapter? = null
 
+    private val impressHolderHelpCenterFaq = ImpressHolder()
+
     override fun bind(element: SectionFaqUiModel?) {
         with(itemView) {
             itemFaqAdapter = ItemFaqAdapter(this@SectionFaqViewHolder)
@@ -35,6 +39,10 @@ class SectionFaqViewHolder(view: View, private val sectionFaqListener: SectionFa
 
             tv_label_help_center?.setTextMakeHyperlink(getString(R.string.title_help_center_tokopedia)) {
                 sectionFaqListener.onHelpCenterClicked()
+            }
+
+            tv_label_help_center?.addOnImpressionListener(impressHolderHelpCenterFaq) {
+                sectionFaqListener.onImpressHelpCenter()
             }
         }
     }

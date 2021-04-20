@@ -89,22 +89,24 @@ class ShopScoreDetailFragment : Fragment() {
 
     private fun setupTickerShopScore(shopInfoPeriodUiModel: ShopInfoPeriodUiModel) {
         ticker_info_shop_score?.apply {
-            showWithCondition((shopInfoPeriodUiModel.periodType == COMMUNICATION_PERIOD ||
-                    shopInfoPeriodUiModel.periodType == TRANSITION_PERIOD) && !shopInfoPeriodUiModel.isNewSeller)
+            showWithCondition(((shopInfoPeriodUiModel.periodType == COMMUNICATION_PERIOD ||
+                    shopInfoPeriodUiModel.periodType == TRANSITION_PERIOD)) && !shopInfoPeriodUiModel.isNewSeller)
             addOnImpressionListener(tickerImpressHolder) {
-                ShopScoreDetailTracking.clickHereTickerOldShopScoreDetail(viewModel.userSession.userId, getTypeShop)
+                ShopScoreDetailTracking.impressHereTickerOldShopScoreDetail(viewModel.userSession.userId, getTypeShop)
             }
-            setHtmlDescription(getString(R.string.ticker_info_shop_score, getShopScoreDate(requireContext())))
+            setHtmlDescription(getString(R.string.ticker_info_shop_score, getShopScoreDate(context)))
             setDescriptionClickEvent(object : TickerCallback {
                 override fun onDescriptionViewClick(linkUrl: CharSequence) {
                     when (shopInfoPeriodUiModel.periodType) {
                         COMMUNICATION_PERIOD -> {
+                            //shop info page (seller edu)
 
                         }
                         else -> {
                             RouteManager.route(context, ApplinkConstInternalMarketplace.SHOP_PERFORMANCE)
                         }
                     }
+                    ShopScoreDetailTracking.clickHereTickerOldShopScoreDetail(viewModel.userSession.userId, getTypeShop)
                 }
                 override fun onDismiss() {}
             })

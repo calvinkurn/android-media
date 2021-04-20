@@ -61,6 +61,7 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
 
     private val shopPerformanceAdapter by lazy { ShopPerformanceAdapter(shopPerformanceAdapterTypeFactory) }
     private var shopScoreWrapperResponse: ShopScoreWrapperResponse? = null
+    private var isNewSeller = false
 
     private val coachMarkItemList = ArrayList<CoachMark2Item>()
     private val coachMark by lazy { context?.let { CoachMark2(it) } }
@@ -107,6 +108,16 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
         this.menu = menu
         showPenaltyBadge()
         impressMenuShopPerformance()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        showCoachMark()
+    }
+
+    override fun onBtnErrorStateClicked() {
+        loadData()
+        showPenaltyBadge()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -214,7 +225,7 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
     }
 
     override fun onImpressHeaderPowerMerchantSection() {
-        shopScorePenaltyTracking.impressPotentialPowerMerchant()
+        shopScorePenaltyTracking.impressPotentialPowerMerchant(isNewSeller)
     }
 
     /**
@@ -222,7 +233,7 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
      */
     override fun onItemClickedBenefitPotentialRM() {
         goToPowerMerchantSubscribe()
-        shopScorePenaltyTracking.clickSeeAllBenefitInRM()
+        shopScorePenaltyTracking.clickSeeAllBenefitInRM(isNewSeller)
     }
 
     /**
@@ -242,7 +253,7 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
     }
 
     override fun onImpressBenefitSeeAll() {
-        shopScorePenaltyTracking.impressSeeAllBenefitPowerMerchant()
+        shopScorePenaltyTracking.impressSeeAllBenefitPowerMerchant(isNewSeller)
     }
 
     /**
@@ -291,18 +302,40 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
             smoothScroller.targetPosition = positionFaqSection
             rvShopPerformance?.layoutManager?.startSmoothScroll(smoothScroller)
         }
+        shopScorePenaltyTracking.clickLearnShopPerformanceNewSeller()
     }
 
     override fun onBtnShopPerformanceToInterruptClicked(infoPageUrl: String) {
         RouteManager.route(context, infoPageUrl)
+        shopScorePenaltyTracking.clickLearnShopPerformanceNewSeller()
     }
 
     override fun onWatchVideoClicked(videoId: String) {
         context?.startActivity(ShopPerformanceYoutubeActivity.createInstance(context, videoId))
+        shopScorePenaltyTracking.clickWatchVideoNewSeller()
     }
 
+    override fun onImpressBtnLearnPerformance() {
+        shopScorePenaltyTracking.impressLearnShopPerformanceNewSeller(isNewSeller)
+    }
+
+    override fun onImpressWatchVideo() {
+        shopScorePenaltyTracking.impressWatchVideoNewSeller(isNewSeller)
+    }
+
+    /**
+     * SectionFaqListener
+     */
     override fun onHelpCenterClicked() {
         RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, ShopScoreConstant.HELP_URL)
+        shopScorePenaltyTracking.clickHelpCenterFaqNewSeller()
+    }
+
+    /**
+     * SectionFaqListener
+     */
+    override fun onImpressHelpCenter() {
+        shopScorePenaltyTracking.impressHelpCenterFaqNewSeller(isNewSeller)
     }
 
     private fun impressMenuShopPerformance() {
@@ -468,6 +501,7 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
             when (it) {
                 is Success -> {
                     viewModel.getShopScoreLevel(it.data)
+                    this.isNewSeller = it.data.isNewSeller
                 }
                 is Fail -> {
                     shopPerformanceAdapter.hideLoading()
@@ -534,10 +568,5 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
         fun newInstance(): ShopPerformancePageFragment {
             return ShopPerformancePageFragment()
         }
-    }
-
-    override fun onBtnErrorStateClicked() {
-        loadData()
-        showPenaltyBadge()
     }
 }

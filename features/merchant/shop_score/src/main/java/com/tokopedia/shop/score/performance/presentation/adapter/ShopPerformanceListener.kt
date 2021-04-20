@@ -40,6 +40,7 @@ interface ItemStatusPowerMerchantListener {
 
 interface SectionFaqListener {
     fun onHelpCenterClicked()
+    fun onImpressHelpCenter()
 }
 
 interface ItemFaqListener {
@@ -50,6 +51,8 @@ interface ItemTimerNewSellerListener {
     fun onBtnShopPerformanceToFaqClicked()
     fun onBtnShopPerformanceToInterruptClicked(infoPageUrl: String)
     fun onWatchVideoClicked(videoId: String)
+    fun onImpressBtnLearnPerformance()
+    fun onImpressWatchVideo()
 }
 
 interface GlobalErrorListener {
