@@ -42,7 +42,7 @@ class RechargeHomepageViewModel @Inject constructor(
     val rechargeTickerHomepageModel: LiveData<Result<RechargeTickerHomepageModel>>
         get() = mutableRechargeTickerHomepageModel
 
-    private val calledSectionIds = hashMapOf<Int, Int>()
+    private val calledSectionIds = hashSetOf<Int>()
 
     fun getRechargeHomepageSectionSkeleton(mapParams: Map<String, Any>) {
         onRefreshData()
@@ -68,7 +68,7 @@ class RechargeHomepageViewModel @Inject constructor(
         val requestIDs = (mapParams[PARAM_RECHARGE_HOMEPAGE_SECTIONS_SECTION_IDS] as? List<Int>)
                 ?: listOf()
 
-        if (calledSectionIds.containsKey(requestIDs.firstOrNull() ?: 0)) return
+        if (calledSectionIds.contains(requestIDs.firstOrNull() ?: 0)) return
         launchCatchError(block = {
             val graphqlRequest = GraphqlRequest(
                     RechargeHomepageQueries.SECTION_QUERY,
@@ -87,7 +87,7 @@ class RechargeHomepageViewModel @Inject constructor(
                 localRechargeHomepageSections = RechargeHomepageSectionMapper.updateSectionsData(localRechargeHomepageSections, data)
                 mutableRechargeHomepageSections.value = localRechargeHomepageSections
             }
-            calledSectionIds.put(requestIDs.firstOrNull() ?: 0, requestIDs.firstOrNull() ?: 0)
+            calledSectionIds.add(requestIDs.firstOrNull() ?: 0)
         }) {
             // Because error occured, remove sections
             withContext(dispatcher.main) {
@@ -97,7 +97,7 @@ class RechargeHomepageViewModel @Inject constructor(
                 )
                 mutableRechargeHomepageSections.value = localRechargeHomepageSections
             }
-            calledSectionIds.put(requestIDs.firstOrNull() ?: 0, requestIDs.firstOrNull() ?: 0)
+            calledSectionIds.add(requestIDs.firstOrNull() ?: 0)
         }
     }
 
