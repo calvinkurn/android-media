@@ -546,6 +546,7 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
 
     override fun onRefreshAccordion(titleAccordion: String) {
         resetInitialState()
+        updateCheckAll()
         smartBillsAnalytics.clickRefreshAccordion(titleAccordion)
         ongoingMonth?.let {
             viewModel.getSBMWithAction(
