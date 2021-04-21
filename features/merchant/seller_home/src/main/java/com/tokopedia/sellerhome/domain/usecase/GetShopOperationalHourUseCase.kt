@@ -24,7 +24,6 @@ class GetShopOperationalHourUseCase @Inject constructor(
 
         private const val QUERY = "query getShopOperationalHourStatus(\$shopID: String!, \$type: Int!) {\n" +
             "  getShopOperationalHourStatus(shopID: \$shopID, type: \$type) {\n" +
-            "      timestamp\n" +
             "      statusActive\n" +
             "      startTime\n" +
             "      endTime\n" +

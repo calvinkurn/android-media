@@ -104,5 +104,9 @@
     <string name="settings_shop_status_label">Status toko:</string>
     <string name="settings_operational_hour_open">BUKA</string>
     <string name="settings_operational_hour_closed">TUTUP</string>
+    <string name="settings_operational_hour_not_set">LIBUR</string>
     <string name="settings_operational_hour_format">%1$s - %2$s</string>
+    <string name="shop_operational_hour_24_hour">24 Jam</string>
+    <string name="shop_operational_hour_set_operational_time">Atur jam buka toko</string>
+    <string name="sah_content_desc_image_operational_hour">image operational hour</string>
 </resources>

@@ -26,7 +26,7 @@ import com.tokopedia.seller.menu.common.view.uimodel.base.ShopType
 import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.*
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.settings.analytics.SettingFreeShippingTracker
-import com.tokopedia.sellerhome.settings.view.uimodel.menusetting.ShopOperationalHourUiModel
+import com.tokopedia.sellerhome.settings.view.uimodel.menusetting.ShopOperationalUiModel
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.LocalLoad
@@ -173,17 +173,29 @@ class OtherMenuViewHolder(private val itemView: View,
         itemView.shopInfoLayout.findViewById<FrameLayout>(R.id.freeShippingLayout)?.hide()
     }
 
-    fun showOperationalHourLayout(data: ShopOperationalHourUiModel) {
+    fun showOperationalHourLayout(shopOperational: ShopOperationalUiModel) {
         itemView.findViewById<View>(R.id.shopOperationalHour).run {
-            val shopStatus = itemView.context.getString(data.status)
-            val operationalHour = itemView.context.getString(
-                R.string.settings_operational_hour_format, data.startTime, data.endTime)
+            val timeLabel = shopOperational.timeLabel
 
-            findViewById<Typography>(R.id.textOperationalHour).text = operationalHour
-            findViewById<Label>(R.id.labelShopStatus).apply {
-                text = shopStatus
-                setLabelType(data.labelType)
+            findViewById<Typography>(R.id.textOperationalHour).text = if(timeLabel != null) {
+                context.getString(timeLabel)
+            } else {
+                shopOperational.time
             }
+            findViewById<Label>(R.id.labelShopStatus).apply {
+                text = itemView.context.getString(shopOperational.status)
+                setLabelType(shopOperational.labelType)
+            }
+            findViewById<ImageView>(R.id.imageOperationalHour).apply {
+                setImageDrawable(ContextCompat.getDrawable(context, shopOperational.icon))
+            }
+
+            if (shopOperational.hasShopSettingsAccess) {
+                setOnClickListener {
+                    RouteManager.route(context, ApplinkConstInternalMarketplace.SHOP_EDIT_SCHEDULE)
+                }
+            }
+
             visibility = View.VISIBLE
         }
     }

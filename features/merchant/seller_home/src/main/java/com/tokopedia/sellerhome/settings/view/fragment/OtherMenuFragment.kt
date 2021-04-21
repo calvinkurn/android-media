@@ -294,7 +294,7 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
                     is Success -> {
                         showSettingShopInfoState(result.data)
                         otherMenuViewModel.getFreeShippingStatus()
-                        otherMenuViewModel.getOperationalHour()
+                        otherMenuViewModel.getShopOperational()
                     }
                     is Fail -> {
                         SellerHomeErrorHandler.logExceptionToCrashlytics(result.throwable, ERROR_GET_SETTING_SHOP_INFO)
@@ -321,9 +321,10 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
     }
 
     private fun observeShopOperationalHour() {
-        otherMenuViewModel.operationalHour.observe(viewLifecycleOwner, Observer {
-            if(it is Success) {
-                otherMenuViewHolder?.showOperationalHourLayout(it.data)
+        otherMenuViewModel.shopOperational.observe(viewLifecycleOwner, Observer {
+            when(it) {
+                is Success -> otherMenuViewHolder?.showOperationalHourLayout(it.data)
+                is Fail -> otherMenuViewHolder?.onErrorGetSettingShopInfoData()
             }
         })
     }

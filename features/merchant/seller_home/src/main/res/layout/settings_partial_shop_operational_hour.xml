@@ -27,15 +27,16 @@
         app:layout_constraintLeft_toRightOf="@id/textShopStatus"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.tokopedia.unifycomponents.ImageUnify
-        android:id="@+id/imageClock"
+    <ImageView
+        android:id="@+id/imageOperationalHour"
         android:layout_width="@dimen/layout_lvl2"
         android:layout_height="@dimen/layout_lvl2"
         android:layout_marginEnd="@dimen/spacing_lvl2"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toLeftOf="@id/textOperationalHour"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_seller_home_clock" />
+        app:srcCompat="@drawable/ic_sah_clock"
+        android:contentDescription="@string/sah_content_desc_image_operational_hour" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/textOperationalHour"
