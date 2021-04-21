@@ -14,7 +14,7 @@ object ShopOperationalHourMapper {
     private const val OPERATIONAL_HOUR_TIMEZONE = "WIB"
     private const val SHOP_CLOSED_INFO_DATE_FORMAT = "dd MMM"
 
-    fun mapTopShopOperationalHour(
+    fun mapTopShopOperational(
         operationalHourResponse: ShopOperationalHourResponse,
         closedInfoResponse: ShopClosedInfoDetailResponse,
         shopSettingsAccess: Boolean

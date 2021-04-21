@@ -27,7 +27,7 @@ class GetShopOperationalUseCase @Inject constructor(
             val shopClosedInfoResponse = async { getShopClosedInfoUseCase.execute(userSession.shopId.toIntOrZero()) }
             val shopSettingsAccess = async { getSettingsAccess() }
 
-            ShopOperationalHourMapper.mapTopShopOperationalHour(
+            ShopOperationalHourMapper.mapTopShopOperational(
                 shopOperationalResponse.await(),
                 shopClosedInfoResponse.await(),
                 shopSettingsAccess.await()
