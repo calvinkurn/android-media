@@ -3,6 +3,10 @@ package com.tokopedia.play.broadcaster.view.partial
 import android.view.ViewGroup
 import androidx.annotation.IdRes
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.flexbox.FlexDirection
+import com.google.android.flexbox.FlexboxLayoutManager
+import com.google.android.flexbox.JustifyContent
+import com.tokopedia.play.broadcaster.ui.itemdecoration.TagItemDecoration
 import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagUiModel
 import com.tokopedia.play.broadcaster.ui.viewholder.TagRecommendationViewHolder
 import com.tokopedia.play.broadcaster.view.adapter.TagRecommendationListAdapter
@@ -22,7 +26,12 @@ class TagRecommendationListViewComponent(
     private val adapter = TagRecommendationListAdapter(this)
 
     init {
+        val layoutManager = FlexboxLayoutManager(rvTagsRecommendation.context);
+        layoutManager.flexDirection = FlexDirection.ROW
+        layoutManager.justifyContent = JustifyContent.FLEX_START
+        rvTagsRecommendation.layoutManager = layoutManager
         rvTagsRecommendation.adapter = adapter
+        rvTagsRecommendation.addItemDecoration(TagItemDecoration(rvTagsRecommendation.context))
     }
 
     override fun onTagClicked(tag: PlayTagUiModel) {
@@ -31,11 +40,6 @@ class TagRecommendationListViewComponent(
 
     fun setTags(tags: List<PlayTagUiModel>) {
         adapter.setItemsAndAnimateChanges(tags)
-    }
-
-    companion object {
-
-        private const val TAG_PER_ROW = 7
     }
 
     interface Listener {
