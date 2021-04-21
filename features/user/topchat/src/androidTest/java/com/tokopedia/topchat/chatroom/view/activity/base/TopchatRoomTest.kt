@@ -406,7 +406,7 @@ abstract class TopchatRoomTest {
             position: Int, visibilityMatcher: Matcher<in View>
     ) {
         onView(withRecyclerView(R.id.recycler_view).atPositionOnView(
-                position, R.id.tvRole
+                position, R.id.img_sr_blue_dot
         )).check(matches(visibilityMatcher))
     }
 
