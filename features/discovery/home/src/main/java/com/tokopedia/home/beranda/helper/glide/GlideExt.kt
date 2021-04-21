@@ -9,6 +9,7 @@ import com.tokopedia.media.loader.listener.MediaListener
 import com.tokopedia.media.loader.loadAsGif
 import com.tokopedia.media.loader.loadIcon
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.media.loader.loadImageRounded
 import com.tokopedia.media.loader.wrapper.MediaDataSource
 
 const val FPM_ATTRIBUTE_IMAGE_URL = "image_url"
@@ -65,9 +66,8 @@ fun ImageView.loadIconFitCenter(url: String, fpmItemLabel: String = ""){
 
 fun ImageView.loadImageRounded(url: String, roundedRadius: Int, fpmItemLabel: String = ""){
     val performanceMonitoring = getPerformanceMonitoring(url, fpmItemLabel)
-    this.loadImage(url) {
+    this.loadImageRounded(url, roundedRadius.toFloat()) {
         centerCrop()
-        setRoundedRadius(roundedRadius.toFloat())
         listener({ resource, dataSource ->
             handleOnResourceReady(dataSource, resource, performanceMonitoring)
         })
