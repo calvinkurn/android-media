@@ -39,7 +39,7 @@ object ShopOperationalHourMapper {
 
         val endTime = if(isShopClosed) {
             DateFormatUtils.getFormattedDate(
-                closedInfoResponse.openDate,
+                closedInfoResponse.endDate,
                 SHOP_CLOSED_INFO_DATE_FORMAT
             )
         } else {

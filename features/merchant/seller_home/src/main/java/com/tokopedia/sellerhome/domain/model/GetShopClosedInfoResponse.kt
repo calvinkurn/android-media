@@ -35,8 +35,8 @@ data class ShopClosedInfoDetailResponse(
     @SerializedName("startDate")
     val startDate: String,
     @Expose
-    @SerializedName("openDate")
-    val openDate: String
+    @SerializedName("endDate")
+    val endDate: String
 ) {
     companion object {
         private const val START_DATE_SHOP_OPEN = "0"
