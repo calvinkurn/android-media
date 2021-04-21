@@ -105,9 +105,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
     private var localChosenAddr: LocalCacheModel? = null
     private var isFromEditAddress: Boolean? = false
     private var isFromDeleteAddress: Boolean? = false
-
-    /* State for clicked address that has chosen before */
-    private var isChosenAddress: Boolean? = false
+    private var isStayOnPageState: Boolean? = false
 
     override fun getScreenName(): String = ""
 
@@ -494,7 +492,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
                 if (isFromCheckoutChangeAddress == true || isLocalization == true) {
                     _selectedAddressItem = data
                 }
-                isChosenAddress = true
+                isStayOnPageState = true
                 viewModel.setDefaultPeopleAddress(data.id, false, prevState, getChosenAddrId(), ChooseAddressUtils.isRollOutUser(context))
                 bottomSheetLainnya?.dismiss()
             }
@@ -504,8 +502,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
                 isFromDeleteAddress = true
             }
             btn_alamat_utama_choose?.setOnClickListener {
-                isChosenAddress = false
-
+                isStayOnPageState = false
                 context?.let {
                     viewModel.setDefaultPeopleAddress(data.id,true, prevState, data.id.toInt(), ChooseAddressUtils.isRollOutUser(it))
                 }
@@ -599,23 +596,25 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
     }
 
     private fun setChosenAddress() {
-        if (isLocalization == true && isChosenAddress == false) {
-            val resultIntent = Intent().apply {
-                putExtra(ChooseAddressConstant.EXTRA_SELECTED_ADDRESS_DATA, _selectedAddressItem)
+        if (isStayOnPageState == false) {
+            if (isLocalization == true) {
+                val resultIntent = Intent().apply {
+                    putExtra(ChooseAddressConstant.EXTRA_SELECTED_ADDRESS_DATA, _selectedAddressItem)
+                }
+                activity?.setResult(Activity.RESULT_OK, resultIntent)
+                activity?.finish()
+            } else {
+                viewModel.setStateChosenAddress(
+                        status = _selectedAddressItem?.addressStatus,
+                        addressId = _selectedAddressItem?.id,
+                        receiverName = _selectedAddressItem?.recipientName,
+                        addressName = _selectedAddressItem?.addressName,
+                        latitude = _selectedAddressItem?.latitude,
+                        longitude = _selectedAddressItem?.longitude,
+                        districtId = _selectedAddressItem?.destinationDistrictId,
+                        postalCode = _selectedAddressItem?.postalCode
+                )
             }
-            activity?.setResult(Activity.RESULT_OK, resultIntent)
-            activity?.finish()
-        } else {
-            viewModel.setStateChosenAddress(
-                    status = _selectedAddressItem?.addressStatus,
-                    addressId = _selectedAddressItem?.id,
-                    receiverName = _selectedAddressItem?.recipientName,
-                    addressName = _selectedAddressItem?.addressName,
-                    latitude = _selectedAddressItem?.latitude,
-                    longitude = _selectedAddressItem?.longitude,
-                    districtId = _selectedAddressItem?.destinationDistrictId,
-                    postalCode = _selectedAddressItem?.postalCode
-            )
         }
     }
 
@@ -652,6 +651,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
 
     private fun setButtonEnabled(isEnabled: Boolean) {
         if (isEnabled) {
+            isStayOnPageState = false
             buttonChooseAddress?.apply {
                 setEnabled(true)
                 setOnClickListener { setChosenAddress() }
