@@ -1,7 +1,17 @@
 package com.tokopedia.home.beranda.helper.glide
 
 import android.graphics.Bitmap
+import android.graphics.drawable.Drawable
 import android.widget.ImageView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.DecodeFormat
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.load.resource.bitmap.CenterCrop
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.target.Target
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.home.R
 import com.tokopedia.media.loader.data.Resize
@@ -9,7 +19,6 @@ import com.tokopedia.media.loader.listener.MediaListener
 import com.tokopedia.media.loader.loadAsGif
 import com.tokopedia.media.loader.loadIcon
 import com.tokopedia.media.loader.loadImage
-import com.tokopedia.media.loader.loadImageRounded
 import com.tokopedia.media.loader.wrapper.MediaDataSource
 
 const val FPM_ATTRIBUTE_IMAGE_URL = "image_url"
@@ -66,9 +75,35 @@ fun ImageView.loadIconFitCenter(url: String, fpmItemLabel: String = ""){
 
 fun ImageView.loadImageRounded(url: String, roundedRadius: Int, fpmItemLabel: String = ""){
     val performanceMonitoring = getPerformanceMonitoring(url, fpmItemLabel)
-    this.loadImageRounded(url, roundedRadius) { _, dataSource ->
-        handleOnResourceReady(dataSource, null, performanceMonitoring)
-    }
+
+    Glide.with(context)
+            .load(url)
+            .format(DecodeFormat.PREFER_ARGB_8888)
+            .centerCrop()
+            .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+            .transform(CenterCrop(), RoundedCorners(roundedRadius))
+            .listener(object : RequestListener<Drawable> {
+                override fun onLoadFailed(
+                        e: GlideException?,
+                        model: Any?,
+                        target: Target<Drawable>?,
+                        isFirstResource: Boolean
+                ): Boolean {
+                    return false
+                }
+
+                override fun onResourceReady(
+                        resource: Drawable?,
+                        model: Any?,
+                        target: Target<Drawable>?,
+                        dataSource: DataSource?,
+                        isFirstResource: Boolean
+                ): Boolean {
+                    handleOnResourceReady(MediaDataSource.mapTo(dataSource), null, performanceMonitoring)
+                    return false
+                }
+            })
+            .into(this)
 }
 
 fun ImageView.loadMiniImage(
