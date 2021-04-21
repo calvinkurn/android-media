@@ -9,7 +9,7 @@
     <string name="recharge_pdp_emoney_input_card_no_label">Nomor Kartu</string>
 
     <string name="recharge_pdp_emoney_promo_tab">Promo</string>
-    <string name="recharge_pdp_emoney_recents_tab">Recents</string>
+    <string name="recharge_pdp_emoney_recents_tab">Transaksi Terakhir</string>
 
     <string name="recharge_pdp_emoney_check_saldo_title">Cek saldo kamu di sini</string>
     <string name="recharge_pdp_emoney_check_saldo_description">Yuk, coba cek sisa saldo di kartu e-money kamu.</string>

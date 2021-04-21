@@ -286,10 +286,10 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
                     val checkSaldoData = data?.getParcelableExtra<DigitalCategoryDetailPassData>(DigitalExtraParam.EXTRA_CATEGORY_PASS_DATA)
                     checkSaldoData?.run {
                         val clientNumberData = TopupBillsFavNumberItem(
-                                clientNumber = clientNumber,
-                                productId = productId,
-                                operatorId = operatorId,
-                                categoryId = categoryId)
+                                clientNumber = clientNumber ?: "",
+                                productId = productId ?: "",
+                                operatorId = operatorId ?: "",
+                                categoryId = categoryId ?: "")
 
                         renderClientNumber(clientNumberData)
                         //renderProduct
@@ -317,12 +317,6 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
     }
 
     override fun onClickCheckBalance() {
-        val intent = RouteManager.getIntent(activity,
-                ApplinkConsInternalDigital.SMARTCARD, DigitalExtraParam.EXTRA_NFC_FROM_PDP, "false")
-        startActivityForResult(intent, REQUEST_CODE_EMONEY_PDP_CHECK_SALDO)
-    }
-
-    override fun onClickUpdateBalance() {
         val intent = RouteManager.getIntent(activity,
                 ApplinkConsInternalDigital.SMARTCARD, DigitalExtraParam.EXTRA_NFC_FROM_PDP, "false")
         startActivityForResult(intent, REQUEST_CODE_EMONEY_PDP_CHECK_SALDO)

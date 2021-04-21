@@ -72,7 +72,7 @@ class EmoneyPdpHeaderViewWidget @JvmOverloads constructor(@NotNull context: Cont
         emoneyHeaderViewCardBalanceText = cardBalance
         buttonCtaText = resources.getString(R.string.recharge_pdp_emoney_check_saldo_cta)
         setEmoneyHeaderViewButtonListener {
-            actionListener?.onClickUpdateBalance()
+            actionListener?.onClickCheckBalance()
         }
         showEmoneyHeaderWithCardNum()
     }
@@ -89,6 +89,5 @@ class EmoneyPdpHeaderViewWidget @JvmOverloads constructor(@NotNull context: Cont
 
     interface ActionListener {
         fun onClickCheckBalance()
-        fun onClickUpdateBalance()
     }
 }
