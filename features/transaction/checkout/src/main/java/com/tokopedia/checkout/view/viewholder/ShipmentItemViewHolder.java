@@ -853,6 +853,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         layoutStateNoSelectedShipping.setOnClickListener(
                 getOnChangeDurationClickListener(shipmentCartItemModel, currentAddress)
         );
+        containerShippingExperience.setVisibility(View.VISIBLE);
     }
 
     private void renderNoSelectedCourierTradeInDropOff(ShipmentCartItemModel shipmentCartItemModel, RecipientAddressModel currentAddress, boolean hasSelectTradeInLocation) {
@@ -863,6 +864,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             layoutStateNoSelectedShipping.setVisibility(View.GONE);
             tvTradeInShippingPriceTitle.setVisibility(View.VISIBLE);
             tvTradeInShippingPriceDetail.setVisibility(View.VISIBLE);
+            containerShippingExperience.setVisibility(View.VISIBLE);
         }
     }
 
@@ -958,13 +960,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                 shipmentCartItemModel.setStateHasLoadCourierState(true);
                 break;
         }
-    }
-
-    private void renderAlreadyLoadedCourier() {
-        containerShippingExperience.setVisibility(View.VISIBLE);
-        llShippingExperienceStateLoading.setVisibility(View.GONE);
-        tvTradeInShippingPriceTitle.setVisibility(View.GONE);
-        tvTradeInShippingPriceDetail.setVisibility(View.GONE);
     }
 
     private void renderLoadingCourierState() {
