@@ -557,8 +557,4 @@
         <key>app_enable_branch_utm_only_branch_link</key>
         <value>true</value>
     </entry>
-    <entry>
-        <key>app_enable_skip_deeplink_from_non_branch_link</key>
-        <value>true</value>
-    </entry>
 </defaultsMap>
