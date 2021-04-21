@@ -1076,4 +1076,33 @@ class FlightHomepageViewModelTest {
                     any())
         }
     }
+
+    @Test
+    fun validateSendTrackingVideoBannerClick_LoggedIn(){
+        val travelVideoBannerModel = TravelVideoBannerModel(title = "Travelling aman", id = "634")
+        coEvery { userSessionInterface.isLoggedIn } returns true
+        coEvery { userSessionInterface.userId } returns "dummy user id"
+
+        flightHomepageViewModel.sendTrackingVideoBannerClick(travelVideoBannerModel)
+
+        verify {
+            flightAnalytics.eventVideoBannerClick(travelVideoBannerModel,
+                    FlightAnalytics.Screen.HOMEPAGE,
+                    any())
+        }
+    }
+
+    @Test
+    fun validateSendTrackingVideoBannerClick_NotLoggedIn(){
+        val travelVideoBannerModel = TravelVideoBannerModel(title = "Travelling aman", id = "634")
+        coEvery { userSessionInterface.isLoggedIn } returns false
+
+        flightHomepageViewModel.sendTrackingVideoBannerClick(travelVideoBannerModel)
+
+        verify {
+            flightAnalytics.eventVideoBannerClick(travelVideoBannerModel,
+                    FlightAnalytics.Screen.HOMEPAGE,
+                    any())
+        }
+    }
 }
