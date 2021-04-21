@@ -1,9 +1,7 @@
 package com.tokopedia.product.manage.feature.campaignstock.ui.dataview.result
 
-import android.os.Parcelable
-import com.google.gson.annotations.SerializedName
+import com.tokopedia.product.manage.common.feature.variant.presentation.data.UpdateCampaignVariantResult
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
-import kotlinx.android.parcel.Parcelize
 
 data class UpdateCampaignStockResult(
         val productId: String,
@@ -14,13 +12,3 @@ data class UpdateCampaignStockResult(
         val message: String? = null,
         val variantsMap: HashMap<String, UpdateCampaignVariantResult>? = null
 )
-
-@Parcelize
-data class UpdateCampaignVariantResult(
-        @SerializedName("status")
-        val status: ProductStatus,
-        @SerializedName("stockCount")
-        val stockCount: Int,
-        @SerializedName("productName")
-        val productName: String
-): Parcelable
