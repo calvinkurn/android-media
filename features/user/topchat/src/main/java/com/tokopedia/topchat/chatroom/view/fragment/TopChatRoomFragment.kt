@@ -938,7 +938,6 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     private fun sendMessage(message: String? = null) {
         textWatcher?.cancelJob()
-        sendButtontextWatcher?.cancelJob()
         val sendMessage: String = getComposedMessage(message)
         val startTime = SendableViewModel.generateStartTime()
         presenter.sendAttachmentsAndMessage(
