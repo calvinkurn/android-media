@@ -378,7 +378,7 @@ class SingleProductAttachmentContainer : ConstraintLayout {
     }
 
     private fun bindSellerFullfilment(product: ProductAttachmentViewModel) {
-        if (commonListener?.isSeller() == true && product.isFullfilment) {
+        if (commonListener?.isSeller() == true && product.isFulfillment) {
             sellerFullfilment?.show()
             ImageHandler.LoadImage(sellerFullfilmentImage, product.urlTokocabang)
         } else {

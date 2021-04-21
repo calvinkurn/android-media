@@ -68,10 +68,10 @@ class ProductProfile {
     @SerializedName("campaign_id")
     @Expose
     val campaignId: Long = 0
-    @SerializedName("is_fullfilment")
+    @SerializedName("is_fulfillment")
     @Expose
-    val isFullFilment: Boolean = false
-    @SerializedName("url_tokocabang")
+    val isFulFillment: Boolean = false
+    @SerializedName("icon_tokocabang")
     @Expose
     val urlTokocabang: String = ""
 }
