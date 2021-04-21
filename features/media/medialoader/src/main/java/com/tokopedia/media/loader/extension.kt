@@ -7,7 +7,6 @@ import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.view.View
 import android.widget.ImageView
-import com.bumptech.glide.load.DataSource
 import com.tokopedia.media.loader.MediaLoaderApi.loadGifImage
 import com.tokopedia.media.loader.common.Properties
 import com.tokopedia.media.loader.data.ERROR_RES_UNIFY
@@ -15,7 +14,6 @@ import com.tokopedia.media.loader.module.GlideApp
 import com.tokopedia.media.loader.utils.DEFAULT_ROUNDED
 import com.tokopedia.media.loader.utils.MediaTarget
 import com.tokopedia.media.loader.utils.drawableFromId
-import com.tokopedia.media.loader.wrapper.MediaDataSource
 import com.tokopedia.media.loader.MediaLoaderApi.loadImage as loadImageBuilder
 import com.tokopedia.media.loader.MediaLoaderTarget.loadImage as loadImageWithTarget
 
@@ -100,26 +98,6 @@ fun ImageView.loadImageTopRightCrop(source: String) {
     if (context.isValid()) {
         try {
             MediaLoaderApi.loadImage(this, source)
-        } catch (e: Exception) {
-            e.printStackTrace()
-
-            /*
-            * don't let the imageView haven't image
-            * render with error drawable
-            * */
-            this.loadImage(ERROR_RES_UNIFY)
-        }
-    }
-}
-
-fun ImageView.loadImageRounded(
-        source: String,
-        radius: Int,
-        onSuccess: (Drawable?, MediaDataSource?) -> Unit
-) {
-    if (context.isValid()) {
-        try {
-            MediaLoaderApi.loadImageRounded(this, source, radius, onSuccess)
         } catch (e: Exception) {
             e.printStackTrace()
 
