@@ -62,6 +62,7 @@ import com.tokopedia.play.view.wrapper.LoginStateEvent
 import com.tokopedia.play.view.wrapper.PlayResult
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.play.analytic.ProductAnalyticHelper
 import com.tokopedia.play_common.util.event.EventObserver
 import com.tokopedia.play_common.util.extension.awaitMeasured
 import com.tokopedia.play_common.util.extension.changeConstraint
@@ -170,6 +171,8 @@ class PlayUserInteractionFragment @Inject constructor(
 
     private lateinit var onStatsInfoGlobalLayoutListener: ViewTreeObserver.OnGlobalLayoutListener
 
+    private lateinit var productAnalyticHelper: ProductAnalyticHelper
+
     /**
      * Animation
      */
@@ -193,6 +196,7 @@ class PlayUserInteractionFragment @Inject constructor(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initAnalytic()
         setupView(view)
         setupInsets(view)
         setupObserve()
@@ -376,7 +380,7 @@ class PlayUserInteractionFragment @Inject constructor(
      * Product Featured View Component Listener
      */
     override fun onProductFeaturedImpressed(view: ProductFeaturedViewComponent, product: PlayProductUiModel.Product, position: Int) {
-        analytic.impressionFeaturedProduct(product, position)
+        productAnalyticHelper.sendImpressionFeaturedProduct(product, position)
     }
 
     override fun onProductFeaturedClicked(view: ProductFeaturedViewComponent, product: PlayProductUiModel.Product, position: Int) {
@@ -410,6 +414,10 @@ class PlayUserInteractionFragment @Inject constructor(
         scope.launch(dispatchers.immediate) {
             invalidateChatListBounds(maxTopPosition = maxTopPosition)
         }
+    }
+
+    private fun initAnalytic() {
+        productAnalyticHelper = ProductAnalyticHelper(analytic)
     }
 
     private fun setupView(view: View) {
@@ -639,6 +647,11 @@ class PlayUserInteractionFragment @Inject constructor(
 
     private fun observePinned() {
         playViewModel.observablePinned.observe(viewLifecycleOwner, Observer {
+
+            if (it is PlayPinnedUiModel.PinnedProduct && it.productTags is PlayProductTagsUiModel.Complete) {
+                productAnalyticHelper.setProductTags(it.productTags)
+            }
+
             pinnedViewOnStateChanged(pinnedModel = it)
             productFeaturedViewOnStateChanged(pinnedModel = it)
             quickReplyViewOnStateChanged(pinnedModel = it)
