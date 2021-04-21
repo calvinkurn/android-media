@@ -8,6 +8,8 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.gm.common.constant.PMConstant
 import com.tokopedia.gm.common.data.source.local.model.PowerMerchantSettingInfoUiModel
 import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.kotlin.extensions.view.setLightStatusBar
@@ -28,10 +30,9 @@ class SubscriptionActivity : BaseActivity(), SubscriptionActivityInterface, HasC
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initInjector()
+        openPowerMerchantWebView()
         setContentView(R.layout.activity_pm_subsription)
         window.decorView.setBackgroundColor(getResColor(com.tokopedia.unifyprinciples.R.color.Unify_N0))
-
-        setupView()
     }
 
     override fun getComponent(): PowerMerchantSubscribeComponent {
@@ -55,13 +56,16 @@ class SubscriptionActivity : BaseActivity(), SubscriptionActivityInterface, HasC
         showFragment(fragment)
     }
 
+    private fun openPowerMerchantWebView() {
+        RouteManager.route(this, PMConstant.Urls.POWER_MERCHANT_PAGE)
+        finish()
+    }
+
     private fun initInjector() {
         component.inject(this)
     }
 
     private fun setupView() {
-        showFragment(PowerMerchantSubscribeFragment.createInstance())
-
         setSupportActionBar(toolbarPmSubscription)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         setWhiteStatusBar()
