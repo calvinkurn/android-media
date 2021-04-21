@@ -46,7 +46,7 @@ class RechargeAnalytics(private val rechargePushEventRecommendationUseCase: Rech
 
         // Branch
         LinkerManager.getInstance().sendEvent(LinkerUtils.createGenericRequest(
-                LinkerConstants.EVENT_DIGITAL_SCREEN_LAUNCH, createScreenLaunchLinkerData(userId, categoryName, groupWiseCategoryId!!)
+                LinkerConstants.EVENT_DIGITAL_SCREEN_LAUNCH, createScreenLaunchLinkerData(userId, categoryName, groupWiseCategoryId)
         ))
     }
 
