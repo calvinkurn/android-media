@@ -258,4 +258,5 @@
     <string name="som_detail_ticker_description">%1$s &lt;a href="#"&gt;%2$s&lt;/a&gt;</string>
     <string name="som_list_failed_refresh_order">Gagal memperbarui informasi pesanan!</string>
     <string name="content_description_ic_load_more_product_drop_down_indicator">Load More Product Button</string>
+    <string name="label_welcome_to_som_page">Selamat datang di halaman penjualan</string>
 </resources>
