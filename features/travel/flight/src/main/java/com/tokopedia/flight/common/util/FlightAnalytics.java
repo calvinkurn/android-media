@@ -1067,6 +1067,40 @@ public class FlightAnalytics {
         );
     }
 
+    public void eventVideoBannerClick(TravelVideoBannerModel travelVideoBannerModel, String screenName, String userId){
+        List<Object> promos = new ArrayList<>();
+        promos.add(DataLayer.mapOf(
+                EnhanceEccomerce.ID, travelVideoBannerModel.getId(),
+                EnhanceEccomerce.NAME, Label.SLASH_FLIGHT,
+                "creative_name", travelVideoBannerModel.getTitle(),
+                "position", 0));
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
+                DataLayer.mapOf(EVENT, PROMO_CLICK_EVENT,
+                        EVENT_CATEGORY, GENERIC_CATEGORY,
+                        EVENT_ACTION, Action.VIDEO_BANNER_CLICK,
+                        SCREEN_NAME, screenName,
+                        CURRENT_SITE, FLIGHT_CURRENT_SITE,
+                        CLIENT_ID, TrackApp.getInstance().getGTM().getClientIDString(),
+                        BUSSINESS_UNIT, FLIGHT_BU,
+                        CATEGORY, Label.FLIGHT_SMALL,
+                        USER_ID, userId,
+                        EVENT_LABEL, String.format(getDefaultLocale(), "%s - %s",
+                                Label.FLIGHT_SMALL,
+                                Label.FLIGHT_TRAVEL_VIDEO_BANNER
+                        ),
+                        ECOMMERCE, DataLayer.mapOf(
+                                "promoClick",
+                                DataLayer.mapOf(
+                                        "promotions",
+                                        DataLayer.listOf(
+                                                promos.toArray(new Object[promos.size()])
+                                        )
+                                )
+                        )
+                )
+        );
+    }
+
     private void buildGeneralFlightParams(Map<String, Object> params) {
         params.put(CURRENT_SITE, FLIGHT_CURRENT_SITE);
         params.put(CLIENT_ID, TrackApp.getInstance().getGTM().getClientIDString());
@@ -1144,6 +1178,7 @@ public class FlightAnalytics {
         static String CLICK_DEPARTURE_PROMOTION_CHIPS = "click on departure promo chip";
         static String CLICK_RETURN_PROMOTION_CHIPS = "click on return promo chip";
         static String VIDEO_BANNER_VIEW = "view travel video";
+        static String VIDEO_BANNER_CLICK = "click travel video";
     }
 
     private static class Label {

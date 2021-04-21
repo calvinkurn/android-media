@@ -300,6 +300,11 @@ class FlightHomepageViewModel @Inject constructor(
                 if (userSessionInterface.isLoggedIn) userSessionInterface.userId else "")
     }
 
+    fun sendTrackingVideoBannerClick(travelVideoBannerModel: TravelVideoBannerModel){
+        flightAnalytics.eventVideoBannerClick(travelVideoBannerModel, FlightAnalytics.Screen.HOMEPAGE,
+                if (userSessionInterface.isLoggedIn) userSessionInterface.userId else "")
+    }
+
     companion object {
         private const val MAX_YEAR_FOR_FLIGHT = 1
         private const val MINUS_ONE_DAY = -1
