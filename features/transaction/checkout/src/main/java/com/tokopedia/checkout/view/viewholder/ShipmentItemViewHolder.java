@@ -664,7 +664,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             renderSelectedCourier(shipmentCartItemModel, currentAddress, selectedCourierItemData);
         } else {
             // Has not select shipping
-            renderNoSelectedCourier(shipmentCartItemModel, currentAddress, ratesDataConverter, isTradeInDropOff);
+            prepareLoadCourierState(shipmentCartItemModel, currentAddress, ratesDataConverter, isTradeInDropOff);
         }
     }
 
@@ -833,22 +833,17 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         }
     }
 
-    private void renderNoSelectedCourier(ShipmentCartItemModel shipmentCartItemModel, RecipientAddressModel currentAddress, RatesDataConverter ratesDataConverter, boolean isTradeInDropOff) {
+    private void prepareLoadCourierState(ShipmentCartItemModel shipmentCartItemModel, RecipientAddressModel currentAddress, RatesDataConverter ratesDataConverter, boolean isTradeInDropOff) {
         layoutStateHasSelectedFreeShipping.setVisibility(View.GONE);
         layoutStateHasSelectedNormalShipping.setVisibility(View.GONE);
         llShippingOptionsContainer.setVisibility(View.GONE);
 
         if (isTradeInDropOff) {
-            boolean hasSelectTradeInLocation = mActionListener.hasSelectTradeInLocation();
-            renderNoSelectedCourierTradeInDropOff(shipmentCartItemModel, currentAddress, hasSelectTradeInLocation);
+            renderNoSelectedCourier(shipmentCartItemModel, currentAddress, SHIPPING_SAVE_STATE_TYPE_TRADE_IN_DROP_OFF);
+            loadCourierState(shipmentCartItemModel, currentAddress, ratesDataConverter, SHIPPING_SAVE_STATE_TYPE_TRADE_IN_DROP_OFF);
         } else {
-            renderNoSelectedCourierNormalShipping(shipmentCartItemModel, currentAddress);
-        }
-
-        if (isTradeInDropOff) {
-            prepareLoadCourierState(shipmentCartItemModel, currentAddress, ratesDataConverter, SHIPPING_SAVE_STATE_TYPE_TRADE_IN_DROP_OFF);
-        } else {
-            prepareLoadCourierState(shipmentCartItemModel, currentAddress, ratesDataConverter, SHIPPING_SAVE_STATE_TYPE_SHIPPING_EXPERIENCE);
+            renderNoSelectedCourier(shipmentCartItemModel, currentAddress, SHIPPING_SAVE_STATE_TYPE_SHIPPING_EXPERIENCE);
+            loadCourierState(shipmentCartItemModel, currentAddress, ratesDataConverter, SHIPPING_SAVE_STATE_TYPE_SHIPPING_EXPERIENCE);
         }
     }
 
@@ -887,10 +882,10 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         };
     }
 
-    private void prepareLoadCourierState(ShipmentCartItemModel shipmentCartItemModel,
-                                         RecipientAddressModel recipientAddressModel,
-                                         RatesDataConverter ratesDataConverter,
-                                         int saveStateType) {
+    private void loadCourierState(ShipmentCartItemModel shipmentCartItemModel,
+                                  RecipientAddressModel recipientAddressModel,
+                                  RatesDataConverter ratesDataConverter,
+                                  int saveStateType) {
         ShipmentDetailData shipmentDetailData = shipmentCartItemModel.getSelectedShipmentDetailData();
         if (shipmentCartItemModel.isStateLoadingCourierState()) {
             renderLoadingCourierState();
@@ -924,12 +919,24 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                             loadCourierStateData(shipmentCartItemModel, saveStateType, tmpShipmentDetailData, position);
                         }
                     } else {
-                        renderAlreadyLoadedCourier();
+                        renderNoSelectedCourier(shipmentCartItemModel, recipientAddressModel, saveStateType);
                     }
                 }
             } else {
-                renderAlreadyLoadedCourier();
+                renderNoSelectedCourier(shipmentCartItemModel, recipientAddressModel, saveStateType);
             }
+        }
+    }
+
+    private void renderNoSelectedCourier(ShipmentCartItemModel shipmentCartItemModel, RecipientAddressModel recipientAddressModel, int saveStateType) {
+        switch (saveStateType) {
+            case SHIPPING_SAVE_STATE_TYPE_TRADE_IN_DROP_OFF:
+                boolean hasSelectTradeInLocation = mActionListener.hasSelectTradeInLocation();
+                renderNoSelectedCourierTradeInDropOff(shipmentCartItemModel, recipientAddressModel, hasSelectTradeInLocation);
+                break;
+            case SHIPPING_SAVE_STATE_TYPE_SHIPPING_EXPERIENCE:
+                renderNoSelectedCourierNormalShipping(shipmentCartItemModel, recipientAddressModel);
+                break;
         }
     }
 
