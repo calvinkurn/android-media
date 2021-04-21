@@ -17,7 +17,7 @@ object BranchProductGroup {
     private const val TELKOM = "10"
     private const val TV_KABEL = "8"
 
-    fun getGroupWiseProductID(categoryId: String): List<String>? {
+    fun getGroupWiseProductID(categoryId: String): List<String> {
         return when (categoryId) {
             AIR_PDAM            -> listOf("29", "399", "453")
             ANGSURAN_KREDIT     -> listOf("2076", "2097", "798")
